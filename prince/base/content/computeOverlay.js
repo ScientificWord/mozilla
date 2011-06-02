@@ -1032,43 +1032,36 @@ function doGlobalComputeCommand(cmd, editorElement)
     return;
 } }
 
-function getActiveGraph(editorElement)
+//function getActiveGraph(editorElement)
+//{
+//  if(!editorElement)
+//    editorElement = msiGetActiveEditorElement();
+//  if (!editorElement) return null;
+//  var editor = msiGetEditor(editorElement);
+//  if (!editor) return null;
+//  var element = editor.focusedPlot;
+//  if (!element) return null;
+//  var graph;
+//  while (element && (element.localName != "graph")) element = element.parentNode; 
+//  if (!element) return null;   // not necessary if we know for sure that element != void
+//  return element;
+//}
+
+//function getActivePlugin(editorElement)
+//{
+//  var graph = getActiveGraph(editorElement);
+//  if (!graph) return null;
+//  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+//  var obj = graph.getElementsByTagName("object")[0];
+//  return obj;
+//}
+
+var isRunning = false;
+
+function doVCamCommandOnObject(obj, cmd, editorElement)
 {
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
-  if (!editorElement) return null;
-  var editor = msiGetEditor(editorElement);
-  if (!editor) return null;
-  var element = editor.focusedPlot;
-  if (!element) return null;
-  var graph;
-  while (element && (element.localName != "graph")) element = element.parentNode; 
-  if (!element) return null;   // not necessary if we know for sure that element != void
-  return element;
-}
-
-function getActivePlugin(editorElement)
-{
-  var graph = getActiveGraph(editorElement);
-  if (!graph) return null;
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-  var obj = graph.getElementsByTagName("object")[0];
-  return obj;
-}
-
-var isRunning = false;
-function doVCamCommand(cmd, editorElement)
-{
-//  if(!editorElement)
-//    editorElement = msiGetActiveEditorElement();
-//  var editor = msiGetEditor(editorElement);
-//  var plotElement = editor.focusedPlot;
-//  if (!plotElement) return;
-//  var obj = plotElement.getElementsByTagName("object")[0];
-  var graph = getActiveGraph(editorElement);
-  if (!graph) return;
-  var obj = getActivePlugin(editorElement);
-  if (!obj) return;
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
   switch (cmd) {
   case "cmd_vcRotateLeft":
@@ -1143,6 +1136,7 @@ function onVCamMouseDown(screenX, screenY)
 //    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
   editor.selection.collapse(this.parentNode,0);
   editor.checkSelectionStateForAnonymousButtons(editor.selection);
+  doVCamInitialize(this);
 }
 
 function onVCamDblClick(screenX, screenY)
@@ -1175,77 +1169,81 @@ function onVCamMouseUp()
 //  alert("Mouse up in plugin!");
 }
 
-function doVCamInitialize(event)
+var setAnimationTime;
+var doVCamCommand;
+var setActionSpeed;
+var setAnimSpeed;
+var setLoopMode;
+
+
+function doVCamInitialize(obj)  // event is no longer used
 {
   dump("doVCamInitialize");
-  var obj = getActivePlugin();
-  if (!obj) return;
-  var graph = getActiveGraph();
-  document.getElementById("VCamToolbar").setAttribute("hidden",false);  
-  
+  document.getElementById("VCamToolbar").setAttribute("hidden",false);
+  doVCamCommand = (function () {
+    var thisobj = obj;
+    return function(_cmd, _editorElement) {
+      return doVCamCommandOnObject(thisobj, _cmd, _editorElement);
+    };
+  }()); 
+  setActionSpeed = (function() {
+    var thisobj = obj;
+    return function(factor) {
+      thisobj.actionSpeed = factor;
+    };
+  }());
+
   var threedplot = obj.dimension === 3;
-  if (threedplot) threedplot.setAttribute("hidden", obj.dimension==3?"false":"true");
+  document.getElementById("3dplot").setAttribute("hidden", threedplot?"false":"true");
   var animplot = obj.isAnimated;
-//  var graphspec = graph.firstChild;
-//  var isanimated = (graphspec.firstChild.getAttribute("Animate")=="true");
-  if (animplot) animplot.setAttribute("hidden", isanimated?"false":"true");
+  document.getElementById("animplot").setAttribute("hidden", animplot?"false":"true");
   if (animplot) // set up the progress bar
   {
+    setAnimationTime = (function() {
+      var thisobj = obj;
+      return function() {
+        var time = thisobj.beginTime + (gProgressbar.value/100)*(thisobj.endTime-thisobj.beginTime);
+        obj.currentTime = time;
+      };
+    }()); 
     try {
       gProgressbar = document.getElementById("vc-AnimScale");
-      obj.addEvent("currentTimeChange", showAnimationTime );
+      obj.addEvent("currentTimeChange", showAnimationTime(obj));
     }
     catch (e)
     {
       dump("failure: " + e.toString() + "\n");
     }
+    setAnimSpeed = (function() {
+      var thisobj = obj;
+      return function(factor) {
+        thisobj.animationSpeed = factor;
+      }
+    }());
+    setLoopMode = (function() {
+      var thisobj = obj;
+      return function( mode ) {
+        thisobj.animationLoopingMode = mode;
+      }
+   }());
   }
-    
 }
 
 
-function showAnimationTime(time)
+function showAnimationTime(obj)
 {
-  var obj = getActivePlugin();
-//  gProgressbar.onchange=dontSetAnimationTime;
-  var newval = Math.round(100*(time/(obj.endTime - obj.beginTime)));
-//  dump("Changing progressbar value to " + newval + "\n");
-  gProgressbar.value = newval;
+  var thisobj = obj;
+  return function(time) {
+    var newval = Math.round(100*(time/(thisobj.endTime - thisobj.beginTime)));
+    gProgressbar.value = newval;
+  };
 } 
-
-function setAnimationTime()
-{
-  var obj = getActivePlugin();
-  var time = obj.beginTime + (gProgressbar.value/100)*(obj.endTime-obj.beginTime);
-//  dump("Progressbar setting time to " + time + "\n");
-  obj.currentTime = time;
-}
 
 function dontSetAnimationTime()
 {
   return;
 }
 
-//function setLoopMode()
-//{}
-
-function setActionSpeed( factor )
-{
-  var obj = getActivePlugin();
-  obj.actionSpeed = factor;
-}
-
-function setAnimSpeed( factor )
-{
-  var obj = getActivePlugin();
-  obj.animationSpeed = factor;
-}
-
-function setLoopMode( mode )
-{
-  var obj = getActivePlugin();
-  obj.animationLoopingMode = mode;
-}
 
 
 // our connection to the computation code
