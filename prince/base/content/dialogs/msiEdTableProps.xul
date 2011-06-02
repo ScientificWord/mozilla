@@ -63,7 +63,7 @@
                 <row align="center">
                   <label value="&tableRows.label;" control="tableRowCount"  accesskey="&tableRows.accesskey;"/>
                   <textbox type="number" class="medwidth" id="tableRowCount" value="0"/>
-                  <label value="&tableRowHeight.label;" control="tableRowHeight" accesskey="&tableRowHeight.accesskey;"/>
+                  <label id="tableRowHeightLabel" value="&tableRowHeight.label;" control="tableRowHeight" accesskey="&tableRowHeight.accesskey;"/>
                   <textbox type="number" class="medwidth" id="tableRowHeight" value="0"/>
                   <menulist id="tableUnitsList" oncommand="onChangeTableUnits();"/>
                 </row>
