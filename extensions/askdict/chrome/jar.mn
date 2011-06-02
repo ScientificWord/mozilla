@@ -1,0 +1,18 @@
+askdictionary.jar:
+  askdictionary/content/askdictionary.xul    (content/askdictionary.xul)                       
+  askdictionary/content/askdictionary.js     (content/askdictionary.js)                       
+
+en-US.jar:
+  locale/en-US/askdictionary/askDictionary.dtd (locale/en-US/askDictionary.dtd)               
+
+de-DE.jar:
+  locale/de-DE/askdictionary/askDictionary.dtd (locale/de-DE/askDictionary.dtd)               
+
+ru-RU.jar:
+  locale/ru-RU/askdictionary/askDictionary.dtd (locale/ru-RU/askDictionary.dtd)    
+  
+classic.jar:
+        skin/classic/askdictionary/askdictionary.css              (skin/classic/askdictionary.css)
+        skin/classic/askdictionary/dictionary-icon.png            (skin/classic/icons/dictionary-icon.png)
+
+
