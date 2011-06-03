@@ -42,6 +42,7 @@ function Startup()
 
   try {
     gTableElement = gActiveEditor.createElementWithDefaults("table");
+    gTableElement.setAttribute("req","tabulary")
   } catch (e) {}
 
   if(!gTableElement)
