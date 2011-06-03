@@ -45,6 +45,19 @@ function UnitHandler()
     return value*this.units[unit].size/this.units[this.currentUnit].size;
   };
 
+  this.getValueStringAs = function( value, unit )
+    //returns same as this.getValueOf together with the unit
+  {
+    var theVal = this.getValueAs(value, unit);
+    return String(theVal) + unit;
+  };
+
+  this.getValueString = function( value )
+    //returns value in current unit together with the unit
+  {
+    return this.getValueStringAs( value, this.currentUnit );
+  };
+
   this.setCurrentUnit = function( unit ) // returns the previous value
   {
     var prev = this.currentUnit;
