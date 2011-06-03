@@ -1032,31 +1032,63 @@ function doGlobalComputeCommand(cmd, editorElement)
     return;
 } }
 
-//function getActiveGraph(editorElement)
-//{
-//  if(!editorElement)
-//    editorElement = msiGetActiveEditorElement();
-//  if (!editorElement) return null;
-//  var editor = msiGetEditor(editorElement);
-//  if (!editor) return null;
-//  var element = editor.focusedPlot;
-//  if (!element) return null;
-//  var graph;
-//  while (element && (element.localName != "graph")) element = element.parentNode; 
-//  if (!element) return null;   // not necessary if we know for sure that element != void
-//  return element;
-//}
-
-//function getActivePlugin(editorElement)
-//{
-//  var graph = getActiveGraph(editorElement);
-//  if (!graph) return null;
-//  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-//  var obj = graph.getElementsByTagName("object")[0];
-//  return obj;
-//}
-
 var isRunning = false;
+
+function vcamToolbarFromPlugin(obj)
+{
+  // sets the state of the toolbar buttoms from the plugin state
+  // Call for initialization and after each button action.
+  // Cursor tool section
+  var ct = obj.cursorTool;
+  document.getElementById("SelObj").checked = (ct === 'select');
+  document.getElementById("RotateScene").checked = (ct === 'rotate');
+  document.getElementById("Move").checked = (ct === 'move');
+  document.getElementById("Query").checked = (ct === 'query');
+  document.getElementById("Zoom").checked = (ct === 'zoom');
+  document.getElementById("AutoZoomIn").checked = (ct === 'zoomIn');
+  document.getElementById("AutoZoomOut").checked = (ct === 'zoomOut');
+  // Rotation section
+  var va = obj.rotateVerticalAction;
+  document.getElementById("RotateRight").checked = (va === 1);
+  document.getElementById("RotateLeft").checked = (va === 2);
+  var ha = obj.rotateHorizontalAction;
+  document.getElementById("RotateUp").checked = (ha === 1);
+  document.getElementById("RotateDown").checked = (va === 2);
+  // Zoom section
+  var za = obj.zoomAction;
+//  document.getElementById("AutoZoomIn").checked = (za === 1);
+//  document.getElementById("AutoZoomOut").checked = (za === 2);
+  // Speed control
+  var spd = obj.actionSpeed;
+  if (spd <= 0.125) document.getElementId("actionspeed8s").selected = true;
+  else if (spd > 0.125 && spd <= 0.25) 
+    document.getElementId("actionspeed4s").selected = true;
+  else if (spd > 0.25 && spd <= 0.5) 
+    document.getElementId("actionspeed2s").selected = true;
+  else if (spd > 0.5 && spd <= 1.0) 
+    document.getElementId("actionspeedN").selected = true;
+  else if (spd > 1.0 && spd <= 2.0) 
+    document.getElementId("actionspeed2f").selected = true;
+  else if (spd > 2.0 && spd <= 4.0) 
+    document.getElementId("actionspeed4f").selected = true;
+  else if (spd > 4.0) 
+    document.getElementId("actionspeed8f").selected = true;
+  // animation section, including animation speed control
+  var aspd = obj.animationSpeed;
+  if (aspd <= 0.125) document.getElementId("animspeed8s").selected = true;
+  else if (aspd > 0.125 && aspd <= 0.25) 
+    document.getElementId("animspeed4s").selected = true;
+  else if (aspd > 0.25 && aspd <= 0.5) 
+    document.getElementId("animspeed2s").selected = true;
+  else if (aspd > 0.5 && aspd <= 1.0) 
+    document.getElementId("animspeedN").selected = true;
+  else if (aspd > 1.0 && aspd <= 2.0) 
+    document.getElementId("animspeed2f").selected = true;
+  else if (aspd > 2.0 && aspd <= 4.0) 
+    document.getElementId("animspeed4f").selected = true;
+  else if (aspd > 4.0) 
+    document.getElementId("animspeed8f").selected = true;
+}
 
 function doVCamCommandOnObject(obj, cmd, editorElement)
 {
@@ -1081,6 +1113,12 @@ function doVCamCommandOnObject(obj, cmd, editorElement)
     break;
   case "cmd_vcZoom":
     obj.cursorTool = "zoom";
+    break;
+  case "cmd_vcZoomIn":
+    obj.cursorTool = "zoomIn";
+    break;
+  case "cmd_vcZoomOut":
+    obj.cursorTool = "zoomOut";
     break;
   case "cmd_vcMove":
     obj.cursorTool = "move";
@@ -1122,6 +1160,7 @@ function doVCamCommandOnObject(obj, cmd, editorElement)
     break;
   default:
   }
+  vcamToolbarFromPlugin(obj);
   return;
 }
 
@@ -1227,6 +1266,7 @@ function doVCamInitialize(obj)  // event is no longer used
       }
    }());
   }
+  vcamToolbarFromPlugin(obj);
 }
 
 
