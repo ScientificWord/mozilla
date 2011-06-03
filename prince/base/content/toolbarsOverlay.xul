@@ -166,29 +166,29 @@
       <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
       <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/>
       <toolbarseparator/>
-      <toolbarbutton id="vc-SelObj" class="toolbarbutton-1" label="vcSelObj" command="cmd_vcSelObj"/>
-      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
-      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" label="vcZoom" command="cmd_vcZoom"/>
-      <toolbarbutton id="vc-Move" class="toolbarbutton-1" label="vcMove" command="cmd_vcMove"/>
-      <toolbarbutton id="vc-Query" class="toolbarbutton-1" label="vcQuery" command="cmd_vcQuery"/>
+      <toolbarbutton id="vc-SelObj" class="toolbarbutton-1" type="checkbox" group="manipulategroup" label="vcSelObj" command="cmd_vcSelObj"/>
+      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" type="checkbox" group="manipulategroup" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
+      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" type="checkbox" group="manipulategroup" label="vcZoom" command="cmd_vcZoom"/>
+      <toolbarbutton id="vc-Move" class="toolbarbutton-1" type="checkbox" group="manipulategroup" label="vcMove" command="cmd_vcMove"/>
+      <toolbarbutton id="vc-Query" class="toolbarbutton-1" type="checkbox" group="manipulategroup" label="vcQuery" command="cmd_vcQuery"/>
       <toolbarseparator observes="3dplot"/>
-      <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="checkbox" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateRight" class="toolbarbutton-1" type="checkbox" label="vcRotateRight" command="cmd_vcRotateRight" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateUp" class="toolbarbutton-1" type="checkbox" label="vcRotateUp" command="cmd_vcRotateUp" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateDown" class="toolbarbutton-1" type="checkbox" label="vcRotateDown" command="cmd_vcRotateDown" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="checkbox" group="lrrotategroup" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateRight" class="toolbarbutton-1" type="checkbox" group="lrrotategroup" label="vcRotateRight" command="cmd_vcRotateRight" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateUp" class="toolbarbutton-1" type="checkbox" group="udrotategroup" label="vcRotateUp" command="cmd_vcRotateUp" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateDown" class="toolbarbutton-1" type="checkbox" group="udrotategroup" label="vcRotateDown" command="cmd_vcRotateDown" observes="3dplot"/>
       <toolbarseparator observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="checkbox" label="vcAutoZoomIn" command="cmd_vcAutoZoomIn" observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="checkbox" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot"/>
+      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="checkbox" group="zoomgroup" label="vcAutoZoomIn" command="cmd_vcZoomIn" observes="3dplot"/>
+      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="checkbox" group="zoomgroup" label="vcAutoZoomOut" command="cmd_vcZoomOut" observes="3dplot"/>
       <toolbarseparator observes="3dplot"/>
       <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
         <menupopup>
-          <menuitem id="actionspeed8s" type="radio" label="8x slower" oncommand="setActionSpeed(0.125);" />
-          <menuitem id="actionspeed4s" type="radio" label="4x slower" oncommand="setActionSpeed(0.25);" />
-          <menuitem id="actionspeed2s" type="radio" label="2x slower" oncommand="setActionSpeed(0.5);" />
-          <menuitem id="actionspeedN" type="radio" checked="true" label="Natural" oncommand="setActionSpeed(1.0);" />
-          <menuitem id="actionspeed2f" type="radio" label="2x faster" oncommand="setActionSpeed(2.0);" />
-          <menuitem id="actionspeed4f" type="radio" label="4x faster" oncommand="setActionSpeed(4.0);" />
-          <menuitem id="actionspeed8f" type="radio" label="8x faster" oncommand="setActionSpeed(8.0);" />
+          <menuitem id="actionspeed8s" type="checkbox" label="8x slower" oncommand="setActionSpeed(0.125);" />
+          <menuitem id="actionspeed4s" type="checkbox" label="4x slower" oncommand="setActionSpeed(0.25);" />
+          <menuitem id="actionspeed2s" type="checkbox" label="2x slower" oncommand="setActionSpeed(0.5);" />
+          <menuitem id="actionspeedN" type="checkbox" checked="true" label="Natural" oncommand="setActionSpeed(1.0);" />
+          <menuitem id="actionspeed2f" type="checkbox" label="2x faster" oncommand="setActionSpeed(2.0);" />
+          <menuitem id="actionspeed4f" type="checkbox" label="4x faster" oncommand="setActionSpeed(4.0);" />
+          <menuitem id="actionspeed8f" type="checkbox" label="8x faster" oncommand="setActionSpeed(8.0);" />
         </menupopup>
       </toolbarbutton>
       <toolbarseparator observes="animplot"/>
@@ -198,20 +198,20 @@
       <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
       <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
         <menupopup observes = "vc-LoopType">
-          <menuitem id="runonce" type="radio" checked="true" label="Run once" oncommand="setLoopMode(0);" />
-          <menuitem id="loop" type="radio" label="Loop" oncommand="setLoopMode(1);" />
-          <menuitem id="backandforth" type="radio" label="Back and forth" oncommand="setLoopMode(2);" />
+          <menuitem id="runonce" type="checkbox" checked="true" label="Run once" oncommand="setLoopMode(0);" />
+          <menuitem id="loop" type="checkbox" label="Loop" oncommand="setLoopMode(1);" />
+          <menuitem id="backandforth" type="checkbox" label="Back and forth" oncommand="setLoopMode(2);" />
         </menupopup>
       </toolbarbutton>
       <toolbarbutton id="vc-AnimSpeed" type="menu" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
         <menupopup>
-          <menuitem id="animspeed8s" type="radio" label="8x slower" oncommand="setAnimSpeed(0.125);" />
-          <menuitem id="animspeed4s" type="radio" label="4x slower" oncommand="setAnimSpeed(0.250);" />
-          <menuitem id="animspeed2s" type="radio" label="2x slower" oncommand="setAnimSpeed(0.5);" />
-          <menuitem id="animspeedN" type="radio" checked="true" label="Natural" oncommand="setAnimSpeed(1.0);" />
-          <menuitem id="animspeed2f" type="radio" label="2x faster" oncommand="setAnimSpeed(2.0);" />
-          <menuitem id="animspeed4f" type="radio" label="4x faster" oncommand="setAnimSpeed(4.0);" />
-          <menuitem id="animspeed8f" type="radio" label="8x faster" oncommand="setAnimSpeed(8.0);" />
+          <menuitem id="animspeed8s" type="checkbox" label="8x slower" oncommand="setAnimSpeed(0.125);" />
+          <menuitem id="animspeed4s" type="checkbox" label="4x slower" oncommand="setAnimSpeed(0.250);" />
+          <menuitem id="animspeed2s" type="checkbox" label="2x slower" oncommand="setAnimSpeed(0.5);" />
+          <menuitem id="animspeedN" type="checkbox" checked="true" label="Natural" oncommand="setAnimSpeed(1.0);" />
+          <menuitem id="animspeed2f" type="checkbox" label="2x faster" oncommand="setAnimSpeed(2.0);" />
+          <menuitem id="animspeed4f" type="checkbox" label="4x faster" oncommand="setAnimSpeed(4.0);" />
+          <menuitem id="animspeed8f" type="checkbox" label="8x faster" oncommand="setAnimSpeed(8.0);" />
         </menupopup>
       </toolbarbutton>
     </toolbar>
