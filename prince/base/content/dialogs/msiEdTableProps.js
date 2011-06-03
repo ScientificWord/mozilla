@@ -171,7 +171,7 @@ function setUpCollatedCellData(collatedCellData, initialCellData)
 
 function setDataFromReviseData(reviseData, commandStr)
 {
-//  gSelectionTypeStr = reviseData.getSelectionType(commandStr);  //Do we even want to call this?
+  gSelectionTypeStr = reviseData.getSelectionType(commandStr);  //Do we even want to call this?
 //  gSelectedCellsType = translateSelectionTypeString(gSelectionTypeStr);
   gTableElement = reviseData.getReferenceNode();
   gIsMatrix = reviseData.isMatrix();
@@ -1985,7 +1985,7 @@ function ApplyColAndRowAttributes()
 
   var tableDims = data.reviseData.getTableDims();
 
-  var colsInSelection = data.reviseData.getColsInSelection();
+  var colsInSelection = data.reviseData.getColsInSelection(gSelectionTypeStr);
   var colElements = getColElements();
 
   if (!colElements.length && gCollatedCellData.size.bWidthSet && ShouldSetWidthOnCols())
@@ -2151,7 +2151,7 @@ function ApplyColAndRowAttributes()
   }
 
   var theRowElements = getRowElements();
-  var rowsInSelection = data.reviseData.getRowsInSelection();
+  var rowsInSelection = data.reviseData.getRowsInSelection(gSelectionTypeStr);
   if (gCellChangeData.size.height && ShouldSetHeightOnRows())
   {
     var theHeight = "";
@@ -2208,7 +2208,7 @@ function ApplyMatrixColAndRowAttributes()
   for (var nCol = colWidths.length; nCol < tableDims.nCols; ++nCol)
     colWidths[nCol] = defColWidth;
 
-  var colsInSelection = data.reviseData.getColsInSelection();
+  var colsInSelection = data.reviseData.getColsInSelection(gSelectionTypeStr);
   var theWidth = "auto";
   if (gCollatedCellData.size.bWidthSet)
     theWidth = cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px");
@@ -2265,8 +2265,8 @@ function ApplyMatrixColAndRowLines()
   for (var nRow = matrixRowLines.length; nRow < tableDims.nRows-1; ++nRow)
     matrixRowLines[nRow] = defRowLine;
 
-  var colsInSelection = data.reviseData.getColsInSelection();
-  var rowsInSelection = data.reviseData.getRowsInSelection();
+  var colsInSelection = data.reviseData.getColsInSelection(gSelectionTypeStr);
+  var rowsInSelection = data.reviseData.getRowsInSelection(gSelectionTypeStr);
   var rowOffset = 0;
   var colOffset = 0;
   var bDoRows = false;
@@ -2369,8 +2369,8 @@ function ApplyMatrixAlignment()
   for (var nRow = matrixVAlignVals.length; nRow < tableDims.nRows; ++nRow)
     matrixVAlignVals[nRow] = defaultVAlign;
 
-  var colsInSelection = data.reviseData.getColsInSelection();
-  var rowsInSelection = data.reviseData.getRowsInSelection();
+  var colsInSelection = data.reviseData.getColsInSelection(gSelectionTypeStr);
+  var rowsInSelection = data.reviseData.getRowsInSelection(gSelectionTypeStr);
   var logStr;
 
   if (bDoHAlign)
@@ -2399,7 +2399,8 @@ function ApplyMatrixAlignment()
 
 function ApplyCellAttributes()
 {
-  var cellIter = data.reviseData.beginSelectedCellIteration('Cell');
+//  var cellIter = data.reviseData.beginSelectedCellIteration('Cell');
+  var cellIter = data.reviseData.beginSelectedCellIteration(gSelectionTypeStr);
   var currCell = data.reviseData.getNextSelectedCell(cellIter);
   while (currCell)
   {
