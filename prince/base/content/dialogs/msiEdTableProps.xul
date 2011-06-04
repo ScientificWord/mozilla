@@ -115,8 +115,9 @@
                   <label value="Table baseline" control="baselineList"/>
                   <menulist id="baselineList" oncommand="TablePropertyChanged('TableBaselineRadioGroup');">
                     <menupopup>
+                      <menuitem label="baseline" value="baseline"/>
                       <menuitem label="same as top row"  value="top"/>
-                      <menuitem label="at vertical center" value="center"/>
+                      <menuitem label="at vertical center" value="middle"/>
                       <menuitem label="same as bottom row" value="bottom"/>
                     </menupopup>
                   </menulist>
