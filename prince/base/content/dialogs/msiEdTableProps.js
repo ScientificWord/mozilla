@@ -561,6 +561,7 @@ function initTablePanel()
   var match;
   var currUnit = "in";
   tableUnitsHandler = new UnitHandler();
+  var tableStyle = gTableElement.getAttribute("style");
   if (gTableElement.hasAttribute("width"))
   {
     widthVal = tableUnitsHandler.getNumberAndUnitFromString(gTableElement.getAttribute("width"));
@@ -568,7 +569,8 @@ function initTablePanel()
   else if (gTableElement.hasAttribute("style"))
   {
     re = /width:\s*(\d*[^;]*)(;|$)/;
-    match = re.exec(gTableElement.getAttribute("style"));
+//    match = re.exec(gTableElement.getAttribute("style"));
+    match = re.exec(tableStyle);
     if (match && match.length > 1) widthVal = tableUnitsHandler.getNumberAndUnitFromString(match[1]);
   }
   if (gTableElement.hasAttribute("height"))
@@ -578,10 +580,10 @@ function initTablePanel()
   else if (gTableElement.hasAttribute("style"))
   {
     re = /height:\s*(\d*[^;]*)(;|$)/;
-    match = re.exec(gTableElement.getAttribute("style"));
+//    match = re.exec(gTableElement.getAttribute("style"));
+    match = re.exec(tableStyle);
     if (match && match.length > 1) heightVal = tableUnitsHandler.getNumberAndUnitFromString(match[1]);
   }
-
 
   tableUnitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
   if (widthVal)
@@ -601,6 +603,7 @@ function initTablePanel()
   gDialog.tableColumnCount.value = gColCount; 
   if (widthVal && widthVal.number) gDialog.tableWidth.value = widthVal.number;
   if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
+  gDialog.baselineList.value = gTableBaseline;
 
   // Be sure to get caption from table in doc, not the copied "globalTableElement"
   gTableCaptionElement = gTableElement.caption;
@@ -675,8 +678,8 @@ function setCurrSide(newSide)
     return;
 
   gCurrentSide = newSide;
-//  gDialog.CellBorderStyleList.value = gCollatedCellData.border.style[gCurrentSide];
-//  gDialog.CellBorderWidthList.value = gCollatedCellData.border.width[gCurrentSide];
+  gDialog.CellBorderStyleList.value = gCollatedCellData.border.style[gCurrentSide];
+  gDialog.CellBorderWidthList.value = gCollatedCellData.border.width[gCurrentSide];
   var cellBorderColor = gCollatedCellData.border.color[gCurrentSide];
   setColorWell("borderCW", cellBorderColor);
   //Note that this one shouldn't require redrawing sample
