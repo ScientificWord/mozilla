@@ -2837,7 +2837,6 @@ function EditorDblClick(event)
 }
 
 
-var vcamActive = false;
 function EditorClick(event)
 {
   if (!event)
@@ -2855,10 +2854,9 @@ function EditorClick(event)
       doVCamInitialize(event);
       vcamActive = true;
     }
-    else if (vcamActive) 
+    else if (document.getElementById("vcamactive").getAttribute("hidden") !==true) 
     {
-      document.getElementById("VCamToolbar").setAttribute("hidden",true);
-      vcamActive = false;
+      document.getElementById("vcamactive").setAttribute("hidden",true);
     }
   }
 
@@ -6611,13 +6609,30 @@ msiTablePropertiesObjectData.prototype =
     return retDims;
   },
 
-  getColsInSelection : function()
+  getColsInSelection : function(modeStr)
   {
+    var retArray;
+    var nRows = this.mTableInfo.m_nRows;
+    if (modeStr == "Table")
+    {
+      retArray = [];
+      for (var ix = 0; ix < this.mTableInfo.m_nCols; ++ix)
+        retArray.push(ix);
+      return retArray;
+    }
     return this.mColSelectionArray;
   },
 
-  getRowsInSelection : function()
+  getRowsInSelection : function(modeStr)
   {
+    var retArray;
+    if (modeStr == "Table")
+    {
+      retArray = [];
+      for (var ix = 0; ix < this.mTableInfo.m_nRows; ++ix)
+        retArray.push(ix);
+      return retArray;
+    }
     return this.mRowSelectionArray;
   },
 
@@ -9642,7 +9657,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       var theWindow = window;
       if (!("graphClickEvent" in theWindow))
         theWindow = msiGetTopLevelWindow(window);
-      theWindow.graphObjectClickEvent(cmdstr, editorElement);
+      theWindow.graphObjectClickEvent(cmdstr,element, editorElement);
     }
     else
     {
