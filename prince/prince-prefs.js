@@ -186,3 +186,4 @@ pref("ui.caretBlinkTime", 500);
 pref("ui.caretWidth", 1);
 pref("swp.matrix.rows", 3);
 pref("swp.matrix.cols", 3);
+pref("extensions.dss.switchPending",false);
