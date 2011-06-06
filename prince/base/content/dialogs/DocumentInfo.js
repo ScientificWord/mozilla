@@ -511,7 +511,6 @@ function checkEnableMetadataControls()
 
   if (theItem != null && theItem.value != null)
   {
-    bEnableBrowse = true;
     var metaObj = null;
     if (theItem.value in data.metadata)
       metaObj = data.metadata[theItem.value];
@@ -559,6 +558,8 @@ function checkEnableMetadataControls()
     document.getElementById("metadataTypeRadioGroup").selectedItem = document.getElementById("metadataTypeLinkRadio");
   else if (!bCanBeLink && bTypeIsLink)
     document.getElementById("metadataTypeRadioGroup").selectedItem = document.getElementById("metadataTypeDataRadio");
+  
+  bEnableBrowse = bTypeIsLink;
     
   enableControlsByID(["setMetadataSelectionButton"], bEnableSet);
   enableControlsByID(["unsetMetadataSelectionButton"], bEnableUnset);
