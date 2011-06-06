@@ -1,0 +1,23 @@
+
+DEPTH		= ../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+
+include $(DEPTH)/config/autoconf.mk
+include $(topsrcdir)/config/rules.mk
+
+MACPDF_RESOURCES := $(wildcard	$(srcdir)/*.xpi) \
+	$(NULL)
+
+ifeq ($(OS_ARCH),Darwin)
+libs::	$(MACPDF_RESOURCES)
+	-mkdir $(FINAL_TARGET)/shells
+	cp	$(MACPDF_RESOURCES)	$(FINAL_TARGET)/
+endif
+
+
+
+
+	

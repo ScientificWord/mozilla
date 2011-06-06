@@ -469,7 +469,7 @@ enumerate>item:before { content: counter(item-number) ". "; counter-increment: i
    
 
 description {
-  counter-reset: itm;
+  counter-reset: item;
 }
 
 itemize {
