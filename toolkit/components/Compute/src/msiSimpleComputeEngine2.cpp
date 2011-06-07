@@ -279,19 +279,19 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SolveODEExact(const PRUnichar *expr, cons
 /* void solveODELaplace (in wstring expr, in wstring var, [retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::SolveODELaplace(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
 {
-  return CommandWithArgs( expr,result,CCID_Solve_ODE_Laplace, PID_independentvar, var, PID_last );
+  return CommandWithArgs(expr, result, CCID_Solve_ODE_Laplace, PID_independentvar, var, PID_last );
 }
 
 /* void solveODENumeric (in wstring expr, in wstring var, [retval] out wstring result); */
-NS_IMETHODIMP msiSimpleComputeEngine2::SolveODENumeric(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
+NS_IMETHODIMP msiSimpleComputeEngine2::SolveODENumeric(const PRUnichar* expr, const PRUnichar* var, PRUnichar** result)
 {
-  return CommandWithArgs( expr,result,CCID_Solve_ODE_Numeric, PID_independentvar, var, PID_last );
+  return CommandWithArgs(expr, result, CCID_Solve_ODE_Numeric, PID_independentvar, var, PID_last );
 }
 
 /* void solveODESeries (in wstring expr, in wstring var, in wstring order, [retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::SolveODESeries(const PRUnichar *expr, const PRUnichar *var, const PRUnichar *about, const PRUnichar *order, PRUnichar **result)
 {
-  return CommandWithArgs( expr,result,CCID_Solve_ODE_Series,
+  return CommandWithArgs( expr, result, CCID_Solve_ODE_Series,
     PID_ODEIndepVar, var,
     PID_ODEseriesabout, about,
     PID_ODEseriesorder, order,
