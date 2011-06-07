@@ -6609,13 +6609,30 @@ msiTablePropertiesObjectData.prototype =
     return retDims;
   },
 
-  getColsInSelection : function()
+  getColsInSelection : function(modeStr)
   {
+    var retArray;
+    var nRows = this.mTableInfo.m_nRows;
+    if (modeStr == "Table")
+    {
+      retArray = [];
+      for (var ix = 0; ix < this.mTableInfo.m_nCols; ++ix)
+        retArray.push(ix);
+      return retArray;
+    }
     return this.mColSelectionArray;
   },
 
-  getRowsInSelection : function()
+  getRowsInSelection : function(modeStr)
   {
+    var retArray;
+    if (modeStr == "Table")
+    {
+      retArray = [];
+      for (var ix = 0; ix < this.mTableInfo.m_nRows; ++ix)
+        retArray.push(ix);
+      return retArray;
+    }
     return this.mRowSelectionArray;
   },
 
