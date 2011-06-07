@@ -440,13 +440,15 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
       } else if (UI_cmd_ID == CCID_Fixup) {
         semantic_analyzer->TreeToFixupForm(dMML_tree);
       } else {
+        
         semantics_tree =
           semantic_analyzer->BuildSemanticsTree(msr,
                                                 mr, src, dMML_tree, UI_cmd_ID,
                                                 p_input_notation);
-		#ifdef DEBUG
+		    #ifdef DEBUG
           JBM::DumpSList(semantics_tree);
         #endif
+
         curr_IDs_2mml =
           JoinIDsLists(curr_IDs_2mml, semantic_analyzer->GetBackMap());
 
@@ -455,12 +457,14 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
           DisposeSList(semantics_tree);
           return;
         }
+
         if (UI_cmd_ID == CCID_Factor) {
           if (IsMOD(semantics_tree)) {
             // Switch to "Factor in ring" command
             msr.PutOpID(CCID_Factor_in_ring);
           }
         }
+
       }
 
       if (UI_cmd_ID == CCID_Solve_Exact || UI_cmd_ID == CCID_Solve_Integer) {
