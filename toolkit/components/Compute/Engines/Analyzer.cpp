@@ -3976,8 +3976,8 @@ void FixInvisibleTimesAfterFunction2(MNODE* dMML_tree, AnalyzerData* pData)
          
          char* mml_canonical_name = GetCanonicalIDforMathNode(rover, pData -> GetGrammar());
 
-		 if ( (LocateFuncRec(pData -> DE_FuncNames(), mml_canonical_name, NULL)) || 
-		      (NodeIsFunction(rover)) ) {
+		     if ( (LocateFuncRec(pData -> DE_FuncNames(), mml_canonical_name, NULL)) || 
+		          (pData -> IsDefinedFunction(rover) ) ) {
              
              // Look ahead in the MML list for an operator.
              OpIlk op_ilk;
