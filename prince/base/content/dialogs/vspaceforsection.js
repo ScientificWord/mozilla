@@ -9,7 +9,8 @@ function startUp()
   spaceElement= window.arguments[0];
   if (!spaceElement) return;
   unit = window.arguments[1];
-  var spaceHeight = ruleElement.getAttribute("tlheight"); 
+  unitHandler.initCurrentUnit(unit);
+  var spaceHeight = spaceElement.getAttribute("tlheight"); 
   var ht;
   numberAndUnit = unitHandler.getNumberAndUnitFromString(spaceHeight);
   if (numberAndUnit)
