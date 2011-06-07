@@ -69,11 +69,7 @@
        <label observes="secredefok">&docformatUnits;</label>
        <menulist observes="secredefok" id="secoverlay.units" persist="value" 
               oncommand="switchSectionUnits();"  >
-         <menupopup style="width: 4em;">
-           <menuitem id="secoverlay.inch" label="&docformatInch;" value="in"/>
-           <menuitem id="secoverlay.cm" label="&docformatCentimeter;" value="cm"/>
-           <menuitem id="secoverlay.pt" selected="true" label="&docformatPoints;" value="pt"/>
-           <menuitem id="secoverlay.mm" label="&docformatMillimeter;" value="mm"/>
+         <menupopup id="secoverlay.unitspopup" style="width: 12em;">
          </menupopup>
        </menulist>
       </vbox>
@@ -86,7 +82,7 @@
       <vbox>
        <label observes="secredefok">Header Style</label>
        <menulist observes="secredefok" id="sections.style" persist="value" >
-         <menupopup style="width: 6em;">
+         <menupopup style="width: 10 em;">
            <menuitem id="sections.hang" selected="true" label="Hang" value="hang"/>
            <menuitem id="sections.runin" label="Runin" value="runin"/>
            <menuitem id="sections.display" label="Display" value="display"/>

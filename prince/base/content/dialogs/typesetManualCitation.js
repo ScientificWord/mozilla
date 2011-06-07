@@ -23,7 +23,7 @@ function Startup()
   data.Cancel = false;
   if ("reviseData" in data)
   {
-    setDataFromReviseData(reviseData)
+    setDataFromReviseData(data.reviseData)
     //set window title too!
   }
   gDialog.keyList = [""];
@@ -69,10 +69,10 @@ function InitDialog()
 function setDataFromReviseData(reviseData)
 {
   var citeNode = reviseData.getReferenceNode();
-  var theKeys = citeNode.getAttribute("bibcitekey");
+  var theKeys = citeNode.getAttribute("citekey");
   data.keyList = theKeys.split(",");
   for (var ix = 0; ix < data.keyList.length; ++ix)
-    data.keyList = TrimString(data.keyList);
+    data.keyList[ix] = TrimString(data.keyList[ix]);
   data.key = data.keyList[0];  //a string
   data.remark = "";
   var remarks = msiNavigationUtils.getSignificantContents(citeNode);
