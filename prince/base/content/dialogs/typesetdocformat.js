@@ -3,10 +3,8 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 
 var unitHandler = new UnitHandler();
+var secUnitHandler = new UnitHandler();
 var gNumStyles={};
-var currentUnit;
-var sectionUnit;
-var unitConversions;
 var widthElements;
 var heightElements;
 var pagewidth;   // in mm
@@ -34,16 +32,12 @@ var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
 
 function InitializeUnits()
 {
-  currentUnit = document.getElementById("docformat.units").selectedItem.value;
-	sectionUnit = currentUnit;
-	document.getElementById("secoverlay.units").value = sectionUnit;
-  setDecimalPlaces();
-  unitConversions = new Object;
-  unitConversions.pt=.3514598;  //mm per pt
-  unitConversions.in=25.4;  //mm per in
-  unitConversions.mm=1; // mm per mm
-  unitConversions.cm=10; // mm per cm
-  unitConversions.pica=4.2175176; // 12 * (mm per pt)
+  var currentUnit = document.getElementById("docformat.units").selectedItem.value;
+  unitHandler.initCurrentUnit(currentUnit);
+  secUnitHandler.initCurrentUnit(currentUnit);
+  unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
+  secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit)
+//  setDecimalPlaces();
 }
 
 function newValue(element, index, array)
@@ -126,7 +120,7 @@ function Startup()
 //  msiInitializeEditorForElement(editElement, "");
 	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
-  getNumStyles(preamble);
+//  getNumStyles(preamble);
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
 }
@@ -207,10 +201,10 @@ function saveNumStyles(preambleNode)
   for (i=0; i< sectionlist.length; i++) {
     dump("saveNumStyles\n");
     sect = sectionlist[i];
-    if (gNumStyles[sect]) 
+    if (gNumStyles[sect]!=null) 
     {
       dump("checking "+sect+"\n");
-      bHasStyle = ("" != gNumStyles[sect]);
+      bHasStyle = gNumStyles[sect].length > 0;
       break;
     }
   }
@@ -222,16 +216,20 @@ function saveNumStyles(preambleNode)
     dump("adding attribute for "+sect+"\n");
     for (i=0; i< sectionlist.length; i++) {
       sect = sectionlist[i];
-      if (gNumStyles[sect]) node.setAttribute(sect,gNumStyles[sect]);
+      if ((gNumStyles[sect]!=null) && (dNumStyles[sect].length >0))
+        node.setAttribute(sect,gNumStyles[sect]);
     }
   }
 }
 
 function setNumStyle(menulist)
 {                                                                
+  if ((menulist.value != null) && (menulist.value.length > 0))
+  {
     var sectionmenu = document.getElementById("sections.name");
     var sect = sectionmenu.selectedItem.id.replace("sections.","");
     gNumStyles[sect] = menulist.value;
+  }
 }
 
 
@@ -311,7 +309,7 @@ function saveCropMarks(docFormatNode)
   if (document.getElementById("useCropmarks").checked)
   {
     var cropNode = editor.createNode('crop', docFormatNode, 0);
-    cropNode.setAttribute("unit", currentUnit);
+    cropNode.setAttribute("unit", unitHandler.currentUnit);
     cropNode.setAttribute("type", document.getElementById("cropGroup").value);
     pos = document.getElementById("pageonpaperlayout").value;
     cropNode.setAttribute("pos", pos);
@@ -363,10 +361,10 @@ function getPageLayout(node, document)
   if (node){                                                                             
     value = node.getAttribute('unit');
     if (value) {
-      currentUnit = value;
+      unitHandler.setCurrentUnit(value);
       var du = document.getElementById('docformat.units');
       if (du) { 
-        du.value = currentUnit; 
+        du.value = unitHandler.currentUnit; 
       }
     }
     
@@ -684,7 +682,7 @@ function setDefaults()
   bighmargin = pagewidth - bodywidth;
   bigvmargin = pageheight - bodyheight;
   // divide vertical margin by 2:3
-  var oneline = convert(12,"pt",currentUnit);
+  var oneline = unitHandler.getValueOf(12,"pt");
   document.getElementById("tbtmargin").value = unitRound(.4*bigvmargin-2*oneline);
   var roundedOneline = unitRound(oneline);
   document.getElementById("tbfooter").value = roundedOneline;
@@ -729,8 +727,8 @@ function changefinishpageSize(menu)
 // Page layout stuff  
 function changePageDim(textbox)
 {
-  if (textbox.id == "tbpageheight") pageheight = convert(Number(textbox.value),currentUnit,"mm");
-  else pagewidth = convert(Number(textbox.value),currentUnit,"mm");
+  if (textbox.id == "tbpageheight") pageheight = unitHander.GetValueAs(Number(textbox.value),"mm");
+  else pagewidth = unitHander.GetValueAs(Number(textbox.value),"mm");
   setPageDimensions();
 }
 
@@ -832,8 +830,8 @@ function setPageDimensions()
   
   if (!getPageDimensions(obj))
   { 
-    pagewidth = convert(Number(document.getElementById("tbpagewidth").value), currentUnit,"mm");
-    pageheight = convert(Number(document.getElementById("tbpageheight").value), currentUnit,"mm");
+    pagewidth = unitHander.getValueAs(Number(document.getElementById("tbpagewidth").value), "mm");
+    pageheight = unitHander.getValueAs(Number(document.getElementById("tbpageheight").value), "mm");
   } else
   {
     pagewidth = obj.width;
@@ -844,9 +842,9 @@ function setPageDimensions()
     pageheight = pagewidth;
     pagewidth = temp;
   }
-  if (currentUnit != "mm") {
-    pagewidth = convert(pagewidth, "mm", currentUnit);
-    pageheight = convert(pageheight, "mm", currentUnit);
+  if (unitHandler.currentUnit != "mm") {
+    pagewidth = unitHandler.getValueOf(pagewidth, "mm");
+    pageheight = unitHandler.getValueOf(pageheight, "mm");
   }
 //  setHeight("pageh", pageheight);
 //  setWidth("page", pagewidth);
@@ -924,8 +922,8 @@ function setPaperDimensions()
   
   if (!getPageDimensions(obj))
   { 
-    paperwidth = convert(Number(document.getElementById("tbpaperwidth").value), currentUnit,"mm");
-    paperheight = convert(Number(document.getElementById("tbpaperheight").value), currentUnit,"mm");
+    paperwidth = unitHander.getValueAs(Number(document.getElementById("tbpaperwidth").value), "mm");
+    paperheight = unitHander.getValueAs(Number(document.getElementById("tbpaperheight").value),"mm");
   } else
   {
     paperwidth = obj.width;
@@ -936,9 +934,9 @@ function setPaperDimensions()
     paperheight = paperwidth;
     paperwidth = temp;
   }
-  if (currentUnit != "mm") {
-    paperwidth = convert(paperwidth, "mm", currentUnit);
-    paperheight = convert(paperheight, "mm", currentUnit);
+  if (unitHandler.currentUnit != "mm") {
+    paperwidth = unitHandler.getValueAs(paperwidth, "mm");
+    paperheight = unitHandler.getValueAs(paperheight, "mm");
   }
   if (papertype != "other")
   {
@@ -953,7 +951,7 @@ function unitRound( size )
 {
   var places;
   // round off to a number of decimal places appropriate for the units
-  switch (currentUnit) {
+  switch (unitHandler.currentUnit) {
     case "mm" : places = 10;
       break;
     case "cm" : places = 100;
@@ -1018,7 +1016,7 @@ function setDecimalPlaces() // and increments
   var elt;
   var i;
   var s;
-  switch (currentUnit) {
+  switch (unitHandler.currentUnit) {
     case "in" : increment = .1; places = 2; break;
     case "cm" : increment = .1; places = 2; break;
     case "mm" : increment = 1; places = 1; break;
@@ -1171,8 +1169,10 @@ function deactivate(id)
 function switchUnits()
 {
   var newUnit = document.getElementById("docformat.units").selectedItem.value;
-  var factor = convert(1, currentUnit, newUnit);
-  pagewidth *= factor;
+  if (newUnit !== unitHandler.currentUnit) unitHandler.setCurrentUnit(newUnit);
+  return;
+  var factor = 0; //convert(1, currentUnit, newUnit);
+   pagewidth *= factor;
   pageheight *= factor;
   scale = scale/factor;
   currentUnit = newUnit; // this has to be set before unitRound and setDecimalPlaces are called
@@ -1791,7 +1791,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       level = node.getAttribute("level");
       sectitleformat[level] = new Object();
       try {
-        templatebase = node.getElementsByTagName("titleprototype")[0];
+        templatebase = node.getElementsByTagName("dialogbase")[0];
         if (templatebase)
         {
           var ser = new XMLSerializer();
@@ -1863,7 +1863,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       }
     }
   }
-  switchSectionTypeImp(null, document.getElementById("sections.name").label.toLowerCase());
+  switchSectionTypeImp(null, document.getElementById("sections.name").label.toLowerCase(), false);
 }
 
 var currentSectionType = "";
@@ -1871,7 +1871,7 @@ function switchSectionType()
 {
   var from = currentSectionType;
   var to = document.getElementById("sections.name").label.toLowerCase();
-  return switchSectionTypeImp(from, to);          
+  return switchSectionTypeImp(from, to, false);          
 }
 
 function buildStyleForRule(displayVbox)
@@ -1882,14 +1882,14 @@ function buildStyleForRule(displayVbox)
     style += "background-color: "+displayVbox.getAttribute('color')+"; ";
   var tlheight = displayVbox.getAttribute('tlheight');
   var ht;  //tlheight in pixels
-  var oldunit = unitHandler.currentUnit;
+  var oldunit = secUnitHandler.currentUnit;
   unitHandler.initCurrentUnit("px");
-  var numberAndUnit = unitHandler.getNumberAndUnitFromString(tlheight);
+  var numberAndUnit = secUnitHandler.getNumberAndUnitFromString(tlheight);
   if (numberAndUnit)
   {
-    ht = unitHandler.getValueOf(numberAndUnit.number, numberAndUnit.unit);
+    ht = secUnitHandler.getValueOf(numberAndUnit.number, numberAndUnit.unit);
   } else ht = 0;
-  if (oldunit) unitHandler.initCurrentUnit(oldunit);
+  if (oldunit) secUnitHandler.initCurrentUnit(oldunit);
   
   if (ht > 0) {
     ht = scale*ht;
@@ -1902,21 +1902,22 @@ function buildStyleForRule(displayVbox)
   
   
 
-function switchSectionTypeImp(from, to)
+function switchSectionTypeImp(from, to, settingSecRedefOk)
 {
   var i;
   currentSectionType = to;
   var boxlist;
   var box;
-  var enabled;
+  var enabled = document.getElementById("allowsectionheaders").checked;
   var boxdata={};
+  var sec;
   if (from)
   {
-    gNumStyles[from] = document.getElementById("sections.numstyle").value;
+//    gNumStyles[from] = document.getElementById("sections.numstyle").value;
     if (enabled)
     {
       if (!sectitleformat[from]) sectitleformat[from] = new Object();
-      var sec = sectitleformat[from];
+      sec = sectitleformat[from];
       sec.enabled = enabled;
       document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
       sec.newPage = document.getElementById("sectionstartnewpage").checked;
@@ -1958,85 +1959,103 @@ function switchSectionTypeImp(from, to)
     } 
     //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
   }
-  //Now initialize for the new section type
+  //Now initialize for the new section type. 
   if (to)
   {
     if (from != to)
     {
-      document.getElementById("sections.numstyle").value=(gNumStyles[to] ? gNumStyles[to] : "");
-      var e = document.getElementById("allowsectionheaders");
-      if (e){
-        enabled = e.checked = sec ? sec.enabled : false;
-      } else {
-        enabled = false;
-      }
-      if (enabled)
+      sec = sectitleformat[to];
+      if (sec==null) 
       {
-        if (!sectitleformat[to])
-        {
-          sectitleformat[to] = new Object();
-          return; // the dialog will default to the last sections headings. Can we do better? BBM
-        }
-        sec = sectitleformat[to];
-        var newpage = sec.newPage
-        if (!newpage) newpage = false;
-        var rawlabel = document.getElementById("rawlabel").getAttribute("label");
-        document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
-          // for localizability, we should look up a string valued function of "to"
-        document.getElementById("allowsectionheaders").checked = sec.enabled;
-        document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
-        document.getElementById("sectionstartnewpage").checked = newpage;
-        document.getElementById("sections.style").value = sec.sectStyle;
-        document.getElementById("sections.align").value = sec.align; 
-        document.getElementById("secoverlay.units").value = sec.units;
-        sectionUnit = sec.units; 
-        document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
-        document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
-        if (sec.toprules && sec.toprules.length > 0)
-        {
-          document.getElementById("tso_toprules").selectedIndex="1";
-          boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-          for (i=0; i < sec.toprules.length; i++)
-          {
-            boxlist[i].hidden=false;
-            boxlist[i].setAttribute("role", sec.toprules[i].role);
-            boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
-            boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
-            boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
-            boxlist[i].setAttribute("color", sec.toprules[i].color);
-            boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
-          }
-          for (i = sec.toprules.length; i<boxlist.length; i++);
-            boxlist[i].hidden=true;
-        }
-        if (sec.bottomrules && sec.bottomrules.length > 0)
-        {
-          document.getElementById("tso_bottomrules").selectedIndex="1";
-          boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-          for (i=0; i < sec.bottomrules.length; i++)
-          {
-            boxlist[i].hidden=false;
-            boxlist[i].setAttribute("role", sec.bottomrules[i].role);
-            boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
-            boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
-            boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
-            boxlist[i].setAttribute("color", sec.bottomrules[i].color);
-            boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
-          }
-          for (i = sec.bottomrules.length; i<boxlist.length; i++);
-            boxlist[i].hidden=true;
-        }
-        displayTextForSectionHeader(to);
-        setalign(sec.align);
-        settopofpage(document.getElementById("sectionstartnewpage"));
+        sec = sectitleformat[to] = new Object();
       }
+      enabled = sec.enabled;
+      if (enabled==null) enabled = false;
+      var broadcaster = document.getElementById("secredefok");
+      if (!settingSecRedefOk)
+      {
+        if (!enabled) 
+          broadcaster.setAttribute("disabled", true);
+        else
+          broadcaster.removeAttribute("disabled");
+        document.getElementById("allowsectionheaders").checked = enabled;
+      }
+      document.getElementById("sections.numstyle").value = gNumStyles[to];
+
+      var rawlabel = document.getElementById("rawlabel").getAttribute("label");
+      document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
+        // for localizability, we should look up a string valued function of "to"      
+      var newpage = sec.newPage
+      if (newpage==null) newpage = false;
+      else 
+      {
+        document.getElementById("sectionstartnewpage").checked = newpage;
+        settopofpage(newpage);
+      }
+      if (sec.setStyle!=null) document.getElementById("sections.style").value = sec.sectStyle;
+      if (sec.align!=null) document.getElementById("sections.align").value = sec.align; 
+      if (sec.units!=null) 
+      {
+        document.getElementById("secoverlay.units").value = sec.units;
+        secUnitHandler.initCurrentUnit(sec.units); 
+      }
+      if (sec.lhindent!=null) document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
+      if (sec.rhindent!=null) document.getElementById("tbsectrightheadingmargin").value = sec.rhindent;
+      if (sec.toprules && (sec.toprules.length > 0))
+      {
+        document.getElementById("tso_toprules").selectedIndex="1";
+        boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+        for (i=0; i < sec.toprules.length; i++)
+        {
+          boxlist[i].hidden=false;
+          boxlist[i].setAttribute("role", sec.toprules[i].role);
+          boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
+          boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
+          boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
+          boxlist[i].setAttribute("color", sec.toprules[i].color);
+          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+        }
+        for (i = sec.toprules.length; i<boxlist.length; i++)
+        {
+          boxlist[i].hidden=true;
+        };
+      }
+      if (sec.bottomrules && (sec.bottomrules.length > 0))
+      {
+        document.getElementById("tso_bottomrules").selectedIndex="1";
+        boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+        for (i=0; i < sec.bottomrules.length; i++)
+        {
+          boxlist[i].hidden=false;
+          boxlist[i].setAttribute("role", sec.bottomrules[i].role);
+          boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
+          boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
+          boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
+          boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+        }
+        for (i = sec.bottomrules.length; i<boxlist.length; i++)
+        {
+          boxlist[i].hidden=true;
+        }
+      }
+      displayTextForSectionHeader(to);
+      if (sec.align!=null) setalign(sec.align);
     }
   }
 }
 
+function firstElementChild(element)
+{
+  var ptr = element.firstChild;
+  while (ptr && ptr.nodeType != Node.ELEMENT_NODE) ptr = ptr.nextSibling;
+  if (ptr && ptr.nodeType == Node.ELEMENT_NODE) return ptr;
+  return null;
+}
+
 function saveSectionFormatting( docFormatNode, sectitleformat )
 {
-  dump("saveSectionFormattin\n"); // get the list of section-like objects
+  dump("saveSectionFormatting\n"); // get the list of section-like objects
   var menulist = document.getElementById("sections.name");
   var itemlist = menulist.getElementsByTagName("menuitem");
   var sectiondata;
@@ -2092,7 +2111,6 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       var fragment = sectiondata.proto;
       if (fragment)
       {
-        nodeList = stNode.getElementsByTagName("titleprototype");
         // replace #N with \the(section, subsection, etc) and #T with #1
         fragment = fragment.replace(/#N/,"\\the"+name,'g');
         fragment = fragment.replace(/#T/,"#1",'g');
@@ -2102,7 +2120,9 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
         if (doc.documentElement.tagName == 'parserror') {
           dump('Parse error parsing "'+fragment+'", error is '+doc.documentElement.textContent);
         }
-        proto.appendChild(doc.documentElement);
+        var element=doc.documentElement;
+        // assert this is a 'titleprototype' element
+        proto.appendChild(element);
       }
       docFormatNode.appendChild(stNode);
       var rulelistlength = 0;
@@ -2163,36 +2183,22 @@ function getBaseNodeForIFrame( )
   if (theNodes && theNodes.length > 0)
   {
     theNode = theNodes[0];
-    theNodes = theNode.getElementsByTagName("dialogbase"); 
   }
-//  else 
-//  {
-//    theNodes = doc.getElementsByTagName("para");
-//    if (theNodes) theNode = theNodes[0]; 
-//  }
-//  if (!theNode)
-//  {
-//    var bodies = doc.getElementsByTagName("body");
-//    if (bodies) for ( var i = 0; i < bodies.length; i++)
-//    {
-//      theNode = bodies[i];
-//      if (theNode.nodeType == theNode.ELEMENT_NODE)
-//        return theNode;
-//     }
-//  }
   return theNode;
 }
 
 function switchSectionUnits()
 {
   var newUnit = document.getElementById("secoverlay.units").selectedItem.value;
-  var factor = convert(1, sectionUnit, newUnit);
+  if (newUnit !== secUnitHandler.currentUnit) secUnitHandler.setCurrentUnit(newUnit);
+  return;
+  var factor = 0;//convert(1, sectionUnit, newUnit);
   dump("section factor is "+factor+"\n");
   sectScale = sectScale/factor;
-  sectionUnit = newUnit; // this has to be set before unitRound and setDecimalPlaces are called
+  secUnitHandler.setSectionUnit(newUnit); // this has to be set before unitRound and setDecimalPlaces are called
   sectSetDecimalPlaces();
-  document.getElementById("tbsectrightheadingmargin").value = unitRound(factor*document.getElementById("tbsectrightheadingmargin").value);
-  document.getElementById("tbsectleftheadingmargin").value = unitRound(factor*document.getElementById("tbsectleftheadingmargin").value); 
+//    document.getElementById("tbsectrightheadingmargin").value = unitRound(factor*document.getElementById("tbsectrightheadingmargin").value);
+//    document.getElementById("tbsectleftheadingmargin").value = unitRound(factor*document.getElementById("tbsectleftheadingmargin").value); 
 }
 
 
@@ -2203,7 +2209,7 @@ function sectSetDecimalPlaces() // and increments
   var elt;
   var i;
   var s;
-  switch (sectionUnit) {
+  switch (secUnitHandler.currentUnit) {
     case "in" : increment = .1; places = 2; break;
     case "cm" : increment = .1; places = 2; break;
     case "mm" : increment = 1; places = 1; break;
@@ -2453,7 +2459,7 @@ function addrule()
   nextbox.hidden=false;
   nextbox.setAttribute("style","height:3px;background-color:black;");
   window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", 
-    "resizable=yes,chrome,close,titlebar,resizable=true,alwaysRaised", nextbox, sectionUnit);
+    "resizable=yes,chrome,close,titlebar,resizable=true,alwaysRaised", nextbox, secUnitHandler.currentUnit);
   boxlist[i] = nextbox;
 }
 
@@ -2477,7 +2483,7 @@ function addspace()
   nextbox.hidden=false;
   nextbox.setAttribute("style","height:6px;background-color:silver;");
 	window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
+	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, secUnitHandler.currentUnit);
 }
 
 function removeruleorspace()
@@ -2500,10 +2506,10 @@ function reviseruleorspace(element)
 {
   if (element.getAttribute("role")=="rule")
     window.openDialog("chrome://prince/content/addruleforsection.xul", 
-      "addruleforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
+      "addruleforsection", "chrome,close,titlebar,alwaysRaised",element, secUnitHandler.currentUnit);
   else if (element.getAttribute("role")=="vspace")
     window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-      "vspaceforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
+      "vspaceforsection", "chrome,close,titlebar,alwaysRaised",element, secUnitHandler.currentUnit);
 }                                
 
 // add "old style" fonts (those with TeX metrics) to the menu. We get them from a file mathfonts.xml
@@ -2870,10 +2876,10 @@ function enableDisableSectFormat(checkbox)
 {
   var bcaster = document.getElementById("secredefok");
   if (checkbox.checked)
-    bcaster.setAttribute("disabled","false");
+    bcaster.removeAttribute("disabled");
   else bcaster.setAttribute("disabled","true");
-  var to = document.getElementById("sections.name").value;
-  switchSectionTypeImp(null, to);
+  var to = document.getElementById("sections.name").label.toLowerCase();
+  switchSectionTypeImp(null, to, true);
 }
 
 function enableDisableFonts(enabled)

@@ -168,6 +168,8 @@ void CreatePowerForm(MNODE* base, MNODE* power, SEMANTICS_NODE* snode, Analyzer*
 
 bool SetODEvars(MathServiceRequest& msr, MathResult& mr, MNODE * dMML_tree, U32 UI_cmd_ID, Analyzer* pAnalyzer);
 void FixInvisibleTimesAfterFunction(MNODE* dMML_tree, AnalyzerData* pData);
+void FixInvisibleTimesAfterFunction2(MNODE* dMML_tree, AnalyzerData* pData);
+
 
 
 bool SetIMPLICITvars(MathServiceRequest& msr, MathResult& mr, Analyzer* pAnalyzer) ;
@@ -517,6 +519,7 @@ void Analyzer::TreeToCleanupForm(MNODE* dMML_tree)
 void Analyzer::TreeToFixupForm(MNODE* dMML_tree)
 {
   CanonicalTreeGen->TreeToFixupForm(dMML_tree, D_is_derivative);
+  FixInvisibleTimesAfterFunction2(dMML_tree, GetAnalyzerData());
   JBM::DumpTList(dMML_tree, 0);
 }
 
@@ -708,9 +711,8 @@ void AnalyzeMI(MNODE* mml_mi_node,
             is_function = true;
       }
     } else if (symbol_count > 1) {
-      if (entity_count > 0)     // multiple entities?
-        TCI_ASSERT(0);
-      is_function = true;
+        TCI_ASSERT((entity_count > 0)); // multiple entities?
+        is_function = true;
     }
 
     if (is_function || is_ODE_func || is_IMPLDIFF_func) {
@@ -3943,6 +3945,48 @@ void FixInvisibleTimesAfterFunction(MNODE* dMML_tree, AnalyzerData* pData)
 			 if ( ContentIs(rover,"&#x2062;") ){
                 delete rover->p_chdata;
                 rover->p_chdata = DuplicateString("&#x2061;"); // ApplyFunction
+			 }
+			 
+		 }
+	  } else if (rover->first_kid) {
+	     // recursive descent
+		 FixInvisibleTimesAfterFunction(rover->first_kid, pData);
+	  }
+
+      if (rover) 
+	     rover = rover -> next;
+   }
+
+}
+
+
+// A function to replace InvisibleTimes after known function  (Used for diff eqs)
+
+void FixInvisibleTimesAfterFunction2(MNODE* dMML_tree, AnalyzerData* pData)
+{
+   MNODE* rover = dMML_tree;
+
+   // Look for <mi>'s
+   // Use LocateFuncRec to see if they are function names
+   // See if following operator is InvisibleTimes and replace with ApplyFunc
+
+   while (rover) {
+      
+      if ( ElementNameIs(rover, "mi" ) ) {  // an <mi>
+         
+         char* mml_canonical_name = GetCanonicalIDforMathNode(rover, pData -> GetGrammar());
+
+		     if ( (LocateFuncRec(pData -> DE_FuncNames(), mml_canonical_name, NULL)) || 
+		          (pData -> IsDefinedFunction(rover) ) ) {
+             
+             // Look ahead in the MML list for an operator.
+             OpIlk op_ilk;
+             int advance;
+             rover = LocateOperator(rover, op_ilk, advance);
+	        
+			 if ( ContentIs(rover,"&#x2062;") ){
+             delete rover->p_chdata;
+             rover->p_chdata = DuplicateString("&#x2061;"); // ApplyFunction
 			 }
 			 
 		 }
