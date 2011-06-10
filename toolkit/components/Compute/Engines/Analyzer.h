@@ -56,19 +56,11 @@ public:
   void AppendIDList(char* mml_canonical_name, MNODE* mml_node);
 
 
-
-
   U32 CmdID() const { return m_cmd_ID; }
   void SetCmdID(U32 id) { m_cmd_ID = id; }
 
   const char* ScrStr() const { return m_z_scr_str; }
   void SetScrStr(const char* s) { m_z_scr_str = s; }
-
- 
-
-
-
-
 
   
   Tree2StdMML* GetCanonicalTreeGen() { return CanonicalTreeGen; }

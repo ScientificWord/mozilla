@@ -44,7 +44,7 @@
 		</groupbox>
 		<spacer flex='1'/>
 		<description value='&packagesCaption.label;' accesskey='&packagesCaption.accesskey;'/>
-		<textbox id='packagesTextbox' size='80' rows='3'/>
+		<textbox id='packagesTextbox' multiline='true' size='80' rows='6'/>
 		<checkbox id='suppressManagementCheckbox' label='&suppressManagement.label;' accesskey='&suppressManagement.accesskey;'/> 
 	</vbox>
 

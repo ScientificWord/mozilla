@@ -223,7 +223,7 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:titleprototype"><xsl:apply-templates/>
+<xsl:template match="html:titleprototype"><xsl:apply-templates mode="tex"/>
 </xsl:template>
 
 <xsl:template match="html:templatebase">
