@@ -873,7 +873,7 @@ function doReviseManualCitation(editorElement, reviseData, dlgData)
     }
     if (dlgData.remark.length && !currRemNode)
     {
-      currRemNode = editorElement.document.createElement("biblabel");
+      currRemNode = editor.document.createElement("biblabel");
       currRemNode.setAttribute("class", "remark");
       msiEditorEnsureElementAttribute(currRemNode, "xmlns", xhtmlns, editor);
       editor.insertNode(currRemNode, citeNode, 0);  //Remark always goes at the start - though the cite shouldn't have any other content anyway
