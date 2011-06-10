@@ -2441,10 +2441,10 @@ function msiSoftSave( editor, editorElement, noTeX)
     aMimeType = "text/plain";
   else if (GetBoolPref("swp.generateTeXonsave") && !noTeX)
   {
-    var file = currentFile.parent;
-    file.append("tex");
-    file.append("main.tex");
-    documentAsTeXFile(editorDoc, file, compileInfo);
+//    var file = currentFile.parent;
+//    file.append("tex");
+//    file.append("main.tex");
+//    documentAsTeXFile(editorDoc, file, compileInfo);
   }
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
