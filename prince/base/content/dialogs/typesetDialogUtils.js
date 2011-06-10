@@ -54,7 +54,7 @@ function packageListToString(packageList)
     if (i > 0)
       packagesStr += "\n";
     if (packageList[i].packageOptions.length)
-      packagesStr += "[" + packageList[i].getOptionStr() + "]";
+      packagesStr += "[" + packageList[i].getOptionsStr() + "]";
     packagesStr += "{" + packageList[i].packageName + "}";
   }
   return packagesStr;
