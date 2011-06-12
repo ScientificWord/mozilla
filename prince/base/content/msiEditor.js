@@ -9510,7 +9510,7 @@ function msiGetSelectionContainer(editorElement)
   }
 
   // make sure we have an element here
-  while (result.node.nodeType != Node.ELEMENT_NODE)
+  while ((result.node != null) && (result.node.nodeType != Node.ELEMENT_NODE))
     result.node = result.node.parentNode;
 
   // and make sure the element is not a special editor node like
