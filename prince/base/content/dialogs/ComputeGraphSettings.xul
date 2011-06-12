@@ -245,7 +245,7 @@
 		        </vbox>
             <vbox>
               <label control="plot" value="Item number" />
-              <textbox id="plot" class="narrow" type="number" increment="1" decimalplaces="0" min="1" max="1" label="&editplotitem.label;"/>
+              <textbox id="plotnumber" class="narrow" type="number" increment="1" decimalplaces="0" min="1" max="1" label="&editplotitem.label;"/>
               <msibutton label="&newplot.label;"   command="cmd_newPlot"/>
               <msibutton label="&command.delete;"  command="cmd_deletePlot"/>
             </vbox>
