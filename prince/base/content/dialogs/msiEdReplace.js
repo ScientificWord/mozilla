@@ -286,7 +286,7 @@ function msiXPathSearchInstanceState(theEditor, theFlags)
   this.mEditor = theEditor;
   var selection = theEditor.selection;
   var selecRange;
-  if (selection.rangeCount > 0)
+//  if (selection.rangeCount > 0)
     selecRange = selection.getRangeAt(0);
   this.globalRange = selecRange.cloneRange();
   this.flags = theFlags;

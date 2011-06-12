@@ -120,7 +120,7 @@ function Startup()
 //  msiInitializeEditorForElement(editElement, "");
 	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
-  getNumStyles(preamble);
+//  getNumStyles(preamble);
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
 }
@@ -201,10 +201,10 @@ function saveNumStyles(preambleNode)
   for (i=0; i< sectionlist.length; i++) {
     dump("saveNumStyles\n");
     sect = sectionlist[i];
-    if (gNumStyles[sect]) 
+    if (gNumStyles[sect]!=null) 
     {
       dump("checking "+sect+"\n");
-      bHasStyle = ("" != gNumStyles[sect]);
+      bHasStyle = gNumStyles[sect].length > 0;
       break;
     }
   }
@@ -216,16 +216,20 @@ function saveNumStyles(preambleNode)
     dump("adding attribute for "+sect+"\n");
     for (i=0; i< sectionlist.length; i++) {
       sect = sectionlist[i];
-      if (gNumStyles[sect]) node.setAttribute(sect,gNumStyles[sect]);
+      if ((gNumStyles[sect]!=null) && (gNumStyles[sect].length >0))
+        node.setAttribute(sect,gNumStyles[sect]);
     }
   }
 }
 
 function setNumStyle(menulist)
 {                                                                
+  if ((menulist.value != null) && (menulist.value.length > 0))
+  {
     var sectionmenu = document.getElementById("sections.name");
     var sect = sectionmenu.selectedItem.id.replace("sections.","");
     gNumStyles[sect] = menulist.value;
+  }
 }
 
 
@@ -1787,7 +1791,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       level = node.getAttribute("level");
       sectitleformat[level] = new Object();
       try {
-        templatebase = node.getElementsByTagName("titleprototype")[0];
+        templatebase = node.getElementsByTagName("dialogbase")[0];
         if (templatebase)
         {
           var ser = new XMLSerializer();
@@ -1909,7 +1913,7 @@ function switchSectionTypeImp(from, to, settingSecRedefOk)
   var sec;
   if (from)
   {
-    gNumStyles[from] = document.getElementById("sections.numstyle").value;
+//    gNumStyles[from] = document.getElementById("sections.numstyle").value;
     if (enabled)
     {
       if (!sectitleformat[from]) sectitleformat[from] = new Object();
@@ -1955,76 +1959,88 @@ function switchSectionTypeImp(from, to, settingSecRedefOk)
     } 
     //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
   }
-  //Now initialize for the new section type
+  //Now initialize for the new section type. 
   if (to)
   {
     if (from != to)
     {
-      document.getElementById("sections.numstyle").value=(gNumStyles[to] ? gNumStyles[to] : "");
-      var e = document.getElementById("allowsectionheaders");
-      if (!sectitleformat[to])
-      {
-        sectitleformat[to] = new Object();
-      }
       sec = sectitleformat[to];
-      enabled = sec.enabled;
-//      if (enabled)
+      if (sec==null) 
       {
-        sec = sectitleformat[to];
-        var newpage = sec.newPage
-        if (!newpage) newpage = false;
-        var rawlabel = document.getElementById("rawlabel").getAttribute("label");
-        document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
-          // for localizability, we should look up a string valued function of "to"
-        if (settingSecRedefOK) sec.enabled = document.getElementById("allowsectionheaders").checked;
-        
-        document.getElementById("allowsectionheaders").checked = sec.enabled;
-        document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
+        sec = sectitleformat[to] = new Object();
+      }
+      enabled = sec.enabled;
+      if (enabled==null) enabled = false;
+      var broadcaster = document.getElementById("secredefok");
+      if (!settingSecRedefOk)
+      {
+        if (!enabled) 
+          broadcaster.setAttribute("disabled", true);
+        else
+          broadcaster.removeAttribute("disabled");
+        document.getElementById("allowsectionheaders").checked = enabled;
+      }
+      document.getElementById("sections.numstyle").value = gNumStyles[to];
+
+      var rawlabel = document.getElementById("rawlabel").getAttribute("label");
+      document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
+        // for localizability, we should look up a string valued function of "to"      
+      var newpage = sec.newPage
+      if (newpage==null) newpage = false;
+      else 
+      {
         document.getElementById("sectionstartnewpage").checked = newpage;
-        document.getElementById("sections.style").value = sec.sectStyle;
-        document.getElementById("sections.align").value = sec.align; 
+        settopofpage(newpage);
+      }
+      if (sec.setStyle!=null) document.getElementById("sections.style").value = sec.sectStyle;
+      if (sec.align!=null) document.getElementById("sections.align").value = sec.align; 
+      if (sec.units!=null) 
+      {
         document.getElementById("secoverlay.units").value = sec.units;
         secUnitHandler.initCurrentUnit(sec.units); 
-        document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
-        document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
-        if (sec.toprules && sec.toprules.length > 0)
-        {
-          document.getElementById("tso_toprules").selectedIndex="1";
-          boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-          for (i=0; i < sec.toprules.length; i++)
-          {
-            boxlist[i].hidden=false;
-            boxlist[i].setAttribute("role", sec.toprules[i].role);
-            boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
-            boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
-            boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
-            boxlist[i].setAttribute("color", sec.toprules[i].color);
-            boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
-          }
-          for (i = sec.toprules.length; i<boxlist.length; i++);
-            boxlist[i].hidden=true;
-        }
-        if (sec.bottomrules && sec.bottomrules.length > 0)
-        {
-          document.getElementById("tso_bottomrules").selectedIndex="1";
-          boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-          for (i=0; i < sec.bottomrules.length; i++)
-          {
-            boxlist[i].hidden=false;
-            boxlist[i].setAttribute("role", sec.bottomrules[i].role);
-            boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
-            boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
-            boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
-            boxlist[i].setAttribute("color", sec.bottomrules[i].color);
-            boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
-          }
-          for (i = sec.bottomrules.length; i<boxlist.length; i++);
-            boxlist[i].hidden=true;
-        }
-        displayTextForSectionHeader(to);
-        setalign(sec.align);
-        settopofpage(document.getElementById("sectionstartnewpage"));
       }
+      if (sec.lhindent!=null) document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
+      if (sec.rhindent!=null) document.getElementById("tbsectrightheadingmargin").value = sec.rhindent;
+      if (sec.toprules && (sec.toprules.length > 0))
+      {
+        document.getElementById("tso_toprules").selectedIndex="1";
+        boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+        for (i=0; i < sec.toprules.length; i++)
+        {
+          boxlist[i].hidden=false;
+          boxlist[i].setAttribute("role", sec.toprules[i].role);
+          boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
+          boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
+          boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
+          boxlist[i].setAttribute("color", sec.toprules[i].color);
+          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+        }
+        for (i = sec.toprules.length; i<boxlist.length; i++)
+        {
+          boxlist[i].hidden=true;
+        };
+      }
+      if (sec.bottomrules && (sec.bottomrules.length > 0))
+      {
+        document.getElementById("tso_bottomrules").selectedIndex="1";
+        boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+        for (i=0; i < sec.bottomrules.length; i++)
+        {
+          boxlist[i].hidden=false;
+          boxlist[i].setAttribute("role", sec.bottomrules[i].role);
+          boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
+          boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
+          boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
+          boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+        }
+        for (i = sec.bottomrules.length; i<boxlist.length; i++)
+        {
+          boxlist[i].hidden=true;
+        }
+      }
+      displayTextForSectionHeader(to);
+      if (sec.align!=null) setalign(sec.align);
     }
   }
 }
@@ -2039,7 +2055,7 @@ function firstElementChild(element)
 
 function saveSectionFormatting( docFormatNode, sectitleformat )
 {
-  dump("saveSectionFormattin\n"); // get the list of section-like objects
+  dump("saveSectionFormatting\n"); // get the list of section-like objects
   var menulist = document.getElementById("sections.name");
   var itemlist = menulist.getElementsByTagName("menuitem");
   var sectiondata;
@@ -2095,7 +2111,6 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       var fragment = sectiondata.proto;
       if (fragment)
       {
-        nodeList = stNode.getElementsByTagName("titleprototype");
         // replace #N with \the(section, subsection, etc) and #T with #1
         fragment = fragment.replace(/#N/,"\\the"+name,'g');
         fragment = fragment.replace(/#T/,"#1",'g');
@@ -2106,7 +2121,7 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
           dump('Parse error parsing "'+fragment+'", error is '+doc.documentElement.textContent);
         }
         var element=doc.documentElement;
-        while (element.tagName=="titleprototype") element = firstElementChild(element);
+        // assert this is a 'titleprototype' element
         proto.appendChild(element);
       }
       docFormatNode.appendChild(stNode);
@@ -2168,23 +2183,7 @@ function getBaseNodeForIFrame( )
   if (theNodes && theNodes.length > 0)
   {
     theNode = theNodes[0];
-    theNodes = theNode.getElementsByTagName("dialogbase"); 
   }
-//  else 
-//  {
-//    theNodes = doc.getElementsByTagName("para");
-//    if (theNodes) theNode = theNodes[0]; 
-//  }
-//  if (!theNode)
-//  {
-//    var bodies = doc.getElementsByTagName("body");
-//    if (bodies) for ( var i = 0; i < bodies.length; i++)
-//    {
-//      theNode = bodies[i];
-//      if (theNode.nodeType == theNode.ELEMENT_NODE)
-//        return theNode;
-//     }
-//  }
   return theNode;
 }
 
@@ -2880,7 +2879,7 @@ function enableDisableSectFormat(checkbox)
     bcaster.removeAttribute("disabled");
   else bcaster.setAttribute("disabled","true");
   var to = document.getElementById("sections.name").label.toLowerCase();
-  switchSectionTypeImp(null, to);
+  switchSectionTypeImp(null, to, true);
 }
 
 function enableDisableFonts(enabled)
