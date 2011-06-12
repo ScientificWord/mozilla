@@ -4962,8 +4962,17 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case "#text":
       break;
 
-      case "img":
       case "object":
+        if (element.getAttribute("msigraph") == "true")
+        {
+          objStr = name;
+          theMenuStr = GetString("TagPropertiesMenuLabel");
+          theMenuStr = theMenuStr.replace(/%tagname%/, GetString("functiongraph"));
+          scriptStr = "openGraphDialog('graph', event.target.refElement, event.target.refEditor);";
+          break;
+        }
+        //otherwise fallthrough
+      case "img":
         // Check if img is enclosed in link
         //  (use "href" to not be fooled by named anchor)
         try
@@ -5279,6 +5288,13 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("note"));
         scriptStr = "msiNote(event.target.refElement, null);";
+      break;
+
+      case "indexitem":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("IndexEntry"));
+        scriptStr = "doInsertIndexEntry(event.target.refEditor, event.target.refElement);";
       break;
 
       default:
