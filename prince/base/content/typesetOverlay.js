@@ -827,9 +827,10 @@ function setTypesetGenSettings(genSettingsData)
 //  alert("Run MakeIndex not implemented!");
 //}
 
-function doInsertIndexEntry()
+function doInsertIndexEntry(editorElement, indexNode)
 {
-  var editorElement = msiGetParentEditorElementForDialog(window);
+  if (!editorElement)
+    editorElement = msiGetParentEditorElementForDialog(window);
   gActiveEditor = msiGetEditor(editorElement);
   if (!gActiveEditor)
   {
@@ -837,10 +838,10 @@ function doInsertIndexEntry()
     window.close();
     return;
   }
-  var index = gActiveEditor.getSelectedElement("indexitem");
-  window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar,dependent", index);
+  if (!indexNode)
+    indexNode = gActiveEditor.getSelectedElement("indexitem");
+  window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar,dependent", indexNode);
 }
-
 
 function doInsertManualCitation(editorElement, dlgData)
 {
