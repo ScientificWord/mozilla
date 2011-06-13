@@ -45,8 +45,12 @@ function startup()
   format = document.getElementById("format");
   thedeck = document.getElementById("thedeck");
   xreftext = document.getElementById("xref");
+
   var specnode;
-  node = getSelectionParentByTag(activeEditor,"indexitem");
+  if (("arguments" in window) && (window.arguments.length))
+    node = window.arguments[0];
+  if (!node)
+    node = getSelectionParentByTag(activeEditor,"indexitem");
   if (node)
   {
     if (node.hasAttribute("pri")) {
@@ -145,45 +149,60 @@ function stop()
 
 function onAccept()
 {
-  node.setAttribute("req","varioref");
+  activeEditor.beginTransaction();
+//  node.setAttribute("req","varioref");
+  msiEditorEnsureElementAttribute(node, "req", "varioref", activeEditor);
   var v = primary.value;
-  if (v && v.length > 0)
-    node.setAttribute("pri",v);
-  else node.removeAttribute("pri");
+//  if (v && v.length > 0)
+//    node.setAttribute("pri",v);
+//  else node.removeAttribute("pri");
+  msiEditorEnsureElementAttribute(node, "pri", v, activeEditor);
+
   v = secondary.value;
-  if (v && v.length > 0)
-    node.setAttribute("sec",v);
-  else node.removeAttribute("sec");
+//  if (v && v.length > 0)
+//    node.setAttribute("sec",v);
+//  else node.removeAttribute("sec");
+  msiEditorEnsureElementAttribute(node, "sec", v, activeEditor);
   v = tertiary.value;
-  if (v && v.length > 0)
-    node.setAttribute("ter",v);
-  else node.removeAttribute("ter");
+//  if (v && v.length > 0)
+//    node.setAttribute("ter",v);
+//  else node.removeAttribute("ter");
+  msiEditorEnsureElementAttribute(node, "ter", v, activeEditor);
+
   if (node.parentNode) dump(node.parentNode.innerHTML+"\n");
   else dump(node.innerHTML+"\n");
+
   // remove subnodes, if any
-  while(node.firstChild) node.removeChild(node.firstChild);
+  while(node.firstChild) 
+    activeEditor.deleteNode(node.firstChild);
+    //node.removeChild(node.firstChild);
   v = prispecapp.value;
   if (prispec.checked && v && v.length > 0) {
     var prispecnode;
-    prispecnode = domdoc.createElement("prispec");
+    prispecnode = activeEditor.document.createElement("prispec");
     prispecnode.textContent = v;
-    node.appendChild(prispecnode);
+    activeEditor.insertNode(prispecnode, node, node.childNodes.length);
+//    node.appendChild(prispecnode);
   }
   v = secspecapp.value;
   if (secspec.checked && v && v.length > 0) {
     var secspecnode;
-    secspecnode = domdoc.createElement("secspec");
+    secspecnode = activeEditor.document.createElement("secspec");
     secspecnode.textContent = v;
-    node.appendChild(secspecnode);
+    activeEditor.insertNode(secspecnode, node, node.childNodes.length);
+//    node.appendChild(secspecnode);
   }
   v = terspecapp.value;
   if (terspec.checked && v && v.length > 0) {
     var terspecnode;
-    terspecnode = domdoc.createElement("terspec");
+    terspecnode = activeEditor.document.createElement("terspec");
     terspecnode.textContent = v;
-    node.appendChild(terspecnode);
+    activeEditor.insertNode(terspecnode, node, node.childNodes.length);
+//    node.appendChild(terspecnode);
   }
   if (isNewnode) activeEditor.insertElementAtSelection(node, true);
+
+  activeEditor.endTransaction();
 }
 
 
