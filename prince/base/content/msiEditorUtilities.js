@@ -10507,9 +10507,11 @@ function SS_Timer(delayMS, editor, editorElement) {
 
 SS_Timer.prototype.callback_ = function()
 {
-  var modCt = this.editor.getModificationCount();
-  if (modCt != this.modCount) doSoftSave(this.editorElement, this.editor);
-  this.modCount = modCt;
+// TODO: re-enable this when it checks the preferences properly
+
+//  var modCt = this.editor.getModificationCount();
+//  if (modCt != this.modCount) doSoftSave(this.editorElement, this.editor);
+//  this.modCount = modCt;
   return true;
 }
 
