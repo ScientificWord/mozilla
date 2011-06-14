@@ -7572,6 +7572,30 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
 }
 
 
+nsresult 
+GetPreviousElementSibling(nsIDOMNode* node, nsIDOMElement ** sibling)
+{
+  nsCOMPtr<nsIDOMNode> sib;
+  nsCOMPtr<nsIDOMElement>retSib;
+  PRUint16 nodetype;
+  while (true)
+  {
+    node->GetPreviousSibling(getter_AddRefs(sib));
+    if (!sib) {
+      *sibling = nsnull;
+      return NS_OK;
+    }
+    sib->GetNodeType(&nodetype);
+    if (nodetype == 1)
+    {
+      retSib = do_QueryInterface(sib);
+      *sibling = retSib;
+      return NS_OK;
+    }
+    node = sib;
+  }
+}
+
 // GetStructNodeFromNode returns a structure node if the input node is a structure,
 // or the first paragraph of a structure.
 nsresult 
@@ -7624,7 +7648,8 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
       while (curNode != nsnull)
       {
         node2 = curNode;
-        res = curNode->GetPreviousSibling(getter_AddRefs(curNode));
+        res = GetPreviousElementSibling((nsIDOMNode *)curNode, getter_AddRefs(element));
+        curNode = element;
         if (res == NS_OK && curNode) {
           curNode ->GetLocalName(tagName);
           res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isPara);
@@ -7641,6 +7666,11 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
           res = curNode->GetParentNode(getter_AddRefs(curNode));
           if (res == NS_OK && (curNode != nsnull)) {
             curNode ->GetLocalName(tagName);
+            if (tagName.EqualsLiteral("body")) 
+            {
+              *structNode = nsnull;
+              return NS_OK;
+            }
             res = mtagListManager->GetTagInClass(strStruct, tagName, atomNS, &isStructure);
             // curNode is a structure tag, but if its tag name is equal to notThisTag, we return nsnull
           }
@@ -7892,8 +7922,12 @@ nsHTMLEditRules::RemoveEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes)
 // helper function
 void MoveNodesFromRight( nsHTMLEditor * editor, nsIDOMNode * startNode, nsIDOMNode * destNode, PRInt32& offset)
 {
+  nsresult res;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> ptr(startNode);
+  PRBool fCanContain;
+  nsCOMPtr<msiITagListManager> tagListManager;
+  editor->GetTagListManager(getter_AddRefs(tagListManager));
 #ifdef DEBUG_Barry
   printf("Starting MoveNodesFromRight\n");
 #endif
@@ -7905,6 +7939,8 @@ void MoveNodesFromRight( nsHTMLEditor * editor, nsIDOMNode * startNode, nsIDOMNo
    printf("Moving node \n");
    DebExamineNode(startNode);
 #endif
+     res = tagListManager->NodeCanContainNode(destNode, ptr, &fCanContain);
+     if (!fCanContain) return;
      // Get the next node before the link is broken
      ptr->GetNextSibling(getter_AddRefs(node));
      editor->MoveNode( ptr, destNode, offset++);
@@ -8028,7 +8064,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
       res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &destOffset);
 //	printf("Parent of new tag location: offset=%d, ",destOffset+1);
 //  mHTMLEditor->DumpNode(parent); 
-      destOffset++;
+//      destOffset++;
       break;
     } 
     currentNode = parent;
