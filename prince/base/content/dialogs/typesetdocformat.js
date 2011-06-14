@@ -216,7 +216,7 @@ function saveNumStyles(preambleNode)
     dump("adding attribute for "+sect+"\n");
     for (i=0; i< sectionlist.length; i++) {
       sect = sectionlist[i];
-      if ((gNumStyles[sect]!=null) && (dNumStyles[sect].length >0))
+      if ((gNumStyles[sect]!=null) && (gNumStyles[sect].length >0))
         node.setAttribute(sect,gNumStyles[sect]);
     }
   }
