@@ -549,7 +549,6 @@ preface {
   -moz-border-radius: 20px;
 }
 
-
 *[showinvis="true"] preface:before {
   content: "Preface";
   display: block;
@@ -558,38 +557,23 @@ preface {
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] msibr[hard]:before {
+
+/* ordinary breaks -- emulate behavior of <br/>*/
+
+msibr:before {
+  content: "\A";
+  white-space: pre;
+  -moz-user-select: -moz-none;
+} 
+
+*[showinvis="true"] msibr:before {
   content: "\AC\A";
   white-space: pre;
   color: green;
   -moz-user-select: -moz-none;
 }
 
-msibr[hard]:before {
-  content: "\A";
-  white-space: pre;
-}
-
-msibr:before {
-  content: "\A0";
-}
-
-
-
-*[showinvis="true"] msibr:before {
-  content: "\A0";
-}
-
-
-/* ordinary breaks -- emulate behavior of <br/>*/
-
-msibr[hard]:before {
-  content: "\A";
-  white-space: pre;
-  -moz-user-select: -moz-none;
-} 
-
-
+mak
 /* Selection rules */
 
 body {
