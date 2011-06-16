@@ -1149,7 +1149,15 @@
 
 \def\text#1{\msitag{\text{#1}}}
 
-\def\vspace#1{%
+\def\vspace{%
+  \@ifnextchar*{\vspaceStar}{\vspaceB}}
+
+\def\vspaceStar#1#2{%
+  \@starredtrue
+  \vspaceB{#2}}
+
+
+\def\vspaceB#1{%
    \ifmmode
      \string\vspace\@brace{#1}%
    \else
@@ -1327,7 +1335,10 @@
 
 %\MSIMathQuote{\\} %% may need to hard-code this one:
 
-\def\\{\ifmmode\string\\\else\msitag{<br/>}\fi}
+\def\\{\@ifnextchar[{\@linebrk}{\@linebrk[0pt]}}
+
+
+\def\@linebrk[#1]{\ifmmode\string\\\else\msitag{<br/>}\fi}
 
 %% Temporary until prince can read xml
 
