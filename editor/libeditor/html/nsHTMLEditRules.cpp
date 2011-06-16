@@ -7627,7 +7627,7 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
         nodetype = 0;
         while (curNode && (nodetype != 1)) {
           res = curNode->GetPreviousSibling(getter_AddRefs(curNode));
-          curNode->GetNodeType(&nodetype);
+          if (curNode) curNode->GetNodeType(&nodetype);
         }
         if (res == NS_OK && curNode) {
           element = do_QueryInterface(curNode);
