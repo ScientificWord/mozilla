@@ -7571,31 +7571,6 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
   return res;
 }
 
-
-nsresult 
-GetPreviousElementSibling(nsIDOMNode* node, nsIDOMElement ** sibling)
-{
-  nsCOMPtr<nsIDOMNode> sib;
-  nsCOMPtr<nsIDOMElement>retSib;
-  PRUint16 nodetype;
-  while (true)
-  {
-    node->GetPreviousSibling(getter_AddRefs(sib));
-    if (!sib) {
-      *sibling = nsnull;
-      return NS_OK;
-    }
-    sib->GetNodeType(&nodetype);
-    if (nodetype == 1)
-    {
-      retSib = do_QueryInterface(sib);
-      *sibling = retSib;
-      return NS_OK;
-    }
-    node = sib;
-  }
-}
-
 // GetStructNodeFromNode returns a structure node if the input node is a structure,
 // or the first paragraph of a structure.
 nsresult 
@@ -7605,9 +7580,10 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
 {
   nsresult res;
   nsCOMPtr<nsIDOMNode> curNode;
-  nsCOMPtr<nsIDOMElement> element, nullElement;
+  nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMElement> rovingElement;
   nsCOMPtr<nsIDOMElement> structElement = nsnull;
+  PRUint16 nodetype;
   nsAutoString tagName;
   PRBool isStructure;
   PRBool isPara;
@@ -7633,8 +7609,8 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
     if (isStructure)
     {
       // element is a structure tag, but if its tag name is equal to notThisTag, we return nsnull
-      if (notThisTag.Equals(tagName)) *structNode = nullElement;
-      else *structNode = element;
+      if (notThisTag.Equals(tagName)) *structNode = nsnull;
+      else (*structNode) = element;
       return NS_OK; 
     }
     res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isPara);
@@ -7648,14 +7624,18 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
       while (curNode != nsnull)
       {
         node2 = curNode;
-        res = GetPreviousElementSibling((nsIDOMNode *)curNode, getter_AddRefs(element));
-        curNode = element;
+        nodetype = 0;
+        while (curNode && (nodetype != 1)) {
+          res = curNode->GetPreviousSibling(getter_AddRefs(curNode));
+          curNode->GetNodeType(&nodetype);
+        }
         if (res == NS_OK && curNode) {
-          curNode ->GetLocalName(tagName);
+          element = do_QueryInterface(curNode);
+          element ->GetLocalName(tagName);
           res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isPara);
           if (isPara) 
           {  // the node is not the first paragraph node in the section
-            *structNode = nullElement;
+            *structNode = nsnull;
             return NS_OK;
           }
         }
@@ -7665,7 +7645,8 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
           isStructure = PR_FALSE;
           res = curNode->GetParentNode(getter_AddRefs(curNode));
           if (res == NS_OK && (curNode != nsnull)) {
-            curNode ->GetLocalName(tagName);
+            element = do_QueryInterface(curNode);
+            element ->GetLocalName(tagName);
             if (tagName.EqualsLiteral("body")) 
             {
               *structNode = nsnull;
@@ -7678,7 +7659,7 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
           {
             if (notThisTag.Equals(tagName)) 
             {
-              *structNode = nullElement;
+              *structNode = nsnull;
               return NS_OK; //?
             }
             else 
@@ -7991,55 +7972,6 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   RemoveStructure(inNode, aStructureType);
  
   res = nsEditor::GetNodeLocation(inNode, address_of(sourceParentNode), &sourceOffset);
-// BBM Consider the following:
-// If we are already in the first paragraph of a section, and if the current tag has a lower level than 
-// the new tag (which means the current tag can-contain the new tag), then this is a demotion. In this case,
-// it is easiest to remove the current section tag and then insert the new one.
-
-  // TODO: check for junk whitespace
-//  if (offset == 0)
-//  {
-//    res = mtagListManager->GetTagOfNode(parent, &atomNS, str);
-//    res = nsEditor::GetNodeLocation(parent, address_of(grandParent), &offset2);
-//    res = mtagListManager->GetTagOfNode(grandParent, &atomNS, str);
-//    res = grandParent->GetChildNodes(getter_AddRefs(childNodes));
-//    if (NS_FAILED(res)) return res;
-//    if (childNodes)
-//    {
-//      childNodes->GetLength(&nChildCount);
-//      for (PRInt32 i = 0; i < nChildCount; i++)
-//      {
-//        res = childNodes->Item(i, getter_AddRefs(node));
-//        res = mtagListManager->GetTagOfNode(node, &atomNS, str);
-//      }
-//    }  
-//    // TODO: this might be more robust if we check that parent is a structure tag
-//    res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
-//    if (NS_FAILED(res)) return res;
-//    // for debugging
-//    res = parent->GetPreviousSibling(getter_AddRefs(olderUncle));
-//    if (fCanContain) mHTMLEditor->RemoveContainer(parent);
-//    if (olderUncle)
-//    {
-//      // we need to move nodes following olderUncle into olderUncle as long as it can contain them
-//      while(true)
-//      {
-//        res = olderUncle->GetNextSibling(getter_AddRefs(node));
-//        if (!node) break;
-//        mtagListManager->NodeCanContainNode(olderUncle, node, &fCanContain);
-//        if (fCanContain)
-//        {
-//          olderUncle->AppendChild(node, getter_AddRefs(olderUncle));
-//#if DEBUG_BarryNo || DEBUG_BarryNo
-//   DebExamineNode(node);
-//#endif
-//          res = mHTMLEditor->DeleteNode(node);
-//        }
-//        else break; 
-//      }
-//    }
-//    fCanContain = PR_FALSE;  // restore initial value after using
-//  }   
   // find out if this section type has a title
   res = mtagListManager->GetStringPropertyForTag( aStructureType, atomNamespace, NS_LITERAL_STRING("titletag"), strTitle);
   NS_ENSURE_SUCCESS(res, res);
@@ -8062,8 +7994,6 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     { 
       destParentNode = parent;
       res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &destOffset);
-//	printf("Parent of new tag location: offset=%d, ",destOffset+1);
-//  mHTMLEditor->DumpNode(parent); 
 //      destOffset++;
       break;
     } 
