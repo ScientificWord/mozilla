@@ -430,6 +430,23 @@ section[open="false"]>button.expander {
   display: inline;
 }
 
+subsection>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+subsection[open="false"]>sectiontitle {
+  display: block;
+}
+
+subsection>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+
+subsection>sectiontitle {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
 subsection[nonum="true"] {
   counter-increment: none;
 }
@@ -455,6 +472,23 @@ subsubsection[nonum="true"]>*:first-child:before {
 
 subsubsection[nonum="true"]>sectiontitle:before {
   content: "";
+}
+
+
+subsubsection[open="false"]>* {
+  display: none;
+}
+
+subsubsection[open="false"]>*:first-child {
+  display: block;
+}
+
+subsubsection[open="false"]>sectiontitle {
+  display: block;
+}
+
+subsubsection[open="false"]>button.expander {
+  display: inline;
 }
 
 
