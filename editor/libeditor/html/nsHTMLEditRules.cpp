@@ -25,7 +25,6 @@
  *   Neil Deakin <neil@mozdevgroup.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
@@ -7571,31 +7570,6 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
   return res;
 }
 
-
-nsresult 
-GetPreviousElementSibling(nsIDOMNode* node, nsIDOMElement ** sibling)
-{
-  nsCOMPtr<nsIDOMNode> sib;
-  nsCOMPtr<nsIDOMElement>retSib;
-  PRUint16 nodetype;
-  while (true)
-  {
-    node->GetPreviousSibling(getter_AddRefs(sib));
-    if (!sib) {
-      *sibling = nsnull;
-      return NS_OK;
-    }
-    sib->GetNodeType(&nodetype);
-    if (nodetype == 1)
-    {
-      retSib = do_QueryInterface(sib);
-      *sibling = retSib;
-      return NS_OK;
-    }
-    node = sib;
-  }
-}
-
 // GetStructNodeFromNode returns a structure node if the input node is a structure,
 // or the first paragraph of a structure.
 nsresult 
@@ -7605,9 +7579,10 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
 {
   nsresult res;
   nsCOMPtr<nsIDOMNode> curNode;
-  nsCOMPtr<nsIDOMElement> element, nullElement;
+  nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMElement> rovingElement;
   nsCOMPtr<nsIDOMElement> structElement = nsnull;
+  PRUint16 nodetype;
   nsAutoString tagName;
   PRBool isStructure;
   PRBool isPara;
@@ -7633,8 +7608,8 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
     if (isStructure)
     {
       // element is a structure tag, but if its tag name is equal to notThisTag, we return nsnull
-      if (notThisTag.Equals(tagName)) *structNode = nullElement;
-      else *structNode = element;
+      if (notThisTag.Equals(tagName)) *structNode = nsnull;
+      else (*structNode) = element;
       return NS_OK; 
     }
     res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isPara);
@@ -7648,14 +7623,18 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
       while (curNode != nsnull)
       {
         node2 = curNode;
-        res = GetPreviousElementSibling((nsIDOMNode *)curNode, getter_AddRefs(element));
-        curNode = element;
+        nodetype = 0;
+        while (curNode && (nodetype != 1)) {
+          res = curNode->GetPreviousSibling(getter_AddRefs(curNode));
+          if (curNode) curNode->GetNodeType(&nodetype);
+        }
         if (res == NS_OK && curNode) {
-          curNode ->GetLocalName(tagName);
+          element = do_QueryInterface(curNode);
+          element ->GetLocalName(tagName);
           res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isPara);
           if (isPara) 
           {  // the node is not the first paragraph node in the section
-            *structNode = nullElement;
+            *structNode = nsnull;
             return NS_OK;
           }
         }
@@ -7665,7 +7644,8 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
           isStructure = PR_FALSE;
           res = curNode->GetParentNode(getter_AddRefs(curNode));
           if (res == NS_OK && (curNode != nsnull)) {
-            curNode ->GetLocalName(tagName);
+            element = do_QueryInterface(curNode);
+            element ->GetLocalName(tagName);
             if (tagName.EqualsLiteral("body")) 
             {
               *structNode = nsnull;
@@ -7678,7 +7658,7 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
           {
             if (notThisTag.Equals(tagName)) 
             {
-              *structNode = nullElement;
+              *structNode = nsnull;
               return NS_OK; //?
             }
             else 
@@ -7962,9 +7942,6 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
                            nsIDOMNode **outNode, 
                            const nsAString &aStructureType,
                            nsIAtom * atomNamespace )
-//                         const nsAString *aAttribute,
-//                         const nsAString *aValue,
-//                         PRBool aCloneAttributes)
 {
   if (!inNode || !outNode)
     return NS_ERROR_NULL_POINTER;
@@ -7975,8 +7952,11 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   nsCOMPtr<nsIDOMNode> parent;          // a node used for tree traversal
   nsCOMPtr<nsIDOMNode> currentNode;     // a node used for tree traversal
   nsCOMPtr<nsIDOMNode> sourceParentNode;
+  nsCOMPtr<nsIDOMNode> topSplitNode;
   nsCOMPtr<nsIDOMNode> destParentNode;
   nsCOMPtr<nsIDOMNode> sourceNode = inNode;
+  nsCOMPtr<nsIDOMNode> outLeftNode;
+  nsCOMPtr<nsIDOMNode> outRightNode;
   nsCOMPtr<nsIDOMNode> newTitleNode;
   nsCOMPtr<nsIDOMNode> newStructureNode;
 
@@ -7991,55 +7971,6 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   RemoveStructure(inNode, aStructureType);
  
   res = nsEditor::GetNodeLocation(inNode, address_of(sourceParentNode), &sourceOffset);
-// BBM Consider the following:
-// If we are already in the first paragraph of a section, and if the current tag has a lower level than 
-// the new tag (which means the current tag can-contain the new tag), then this is a demotion. In this case,
-// it is easiest to remove the current section tag and then insert the new one.
-
-  // TODO: check for junk whitespace
-//  if (offset == 0)
-//  {
-//    res = mtagListManager->GetTagOfNode(parent, &atomNS, str);
-//    res = nsEditor::GetNodeLocation(parent, address_of(grandParent), &offset2);
-//    res = mtagListManager->GetTagOfNode(grandParent, &atomNS, str);
-//    res = grandParent->GetChildNodes(getter_AddRefs(childNodes));
-//    if (NS_FAILED(res)) return res;
-//    if (childNodes)
-//    {
-//      childNodes->GetLength(&nChildCount);
-//      for (PRInt32 i = 0; i < nChildCount; i++)
-//      {
-//        res = childNodes->Item(i, getter_AddRefs(node));
-//        res = mtagListManager->GetTagOfNode(node, &atomNS, str);
-//      }
-//    }  
-//    // TODO: this might be more robust if we check that parent is a structure tag
-//    res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
-//    if (NS_FAILED(res)) return res;
-//    // for debugging
-//    res = parent->GetPreviousSibling(getter_AddRefs(olderUncle));
-//    if (fCanContain) mHTMLEditor->RemoveContainer(parent);
-//    if (olderUncle)
-//    {
-//      // we need to move nodes following olderUncle into olderUncle as long as it can contain them
-//      while(true)
-//      {
-//        res = olderUncle->GetNextSibling(getter_AddRefs(node));
-//        if (!node) break;
-//        mtagListManager->NodeCanContainNode(olderUncle, node, &fCanContain);
-//        if (fCanContain)
-//        {
-//          olderUncle->AppendChild(node, getter_AddRefs(olderUncle));
-//#if DEBUG_BarryNo || DEBUG_BarryNo
-//   DebExamineNode(node);
-//#endif
-//          res = mHTMLEditor->DeleteNode(node);
-//        }
-//        else break; 
-//      }
-//    }
-//    fCanContain = PR_FALSE;  // restore initial value after using
-//  }   
   // find out if this section type has a title
   res = mtagListManager->GetStringPropertyForTag( aStructureType, atomNamespace, NS_LITERAL_STRING("titletag"), strTitle);
   NS_ENSURE_SUCCESS(res, res);
@@ -8054,36 +7985,48 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   // walk up the tree to find where the new structure tag will fit.
   parent = sourceParentNode;
   currentNode = sourceNode;
-  while (true)
+  while (parent)
   {
     res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
     NS_ENSURE_SUCCESS(res,res);
     if (fCanContain)
     { 
-      destParentNode = parent;
-      res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &destOffset);
-//	printf("Parent of new tag location: offset=%d, ",destOffset+1);
-//  mHTMLEditor->DumpNode(parent); 
+      topSplitNode = currentNode;
+//      res = nsEditor::GetNodeLocation(sourceNode, address_of(parent), &destOffset);
 //      destOffset++;
       break;
     } 
     currentNode = parent;
-    if (!currentNode) break;
-   res = currentNode->GetParentNode(getter_AddRefs(parent));
+    res = currentNode->GetParentNode(getter_AddRefs(parent));
 #if DEBUG_BarryNo || DEBUG_BarryNo
-   DebExamineNode(parent);
+    DebExamineNode(parent);
 #endif
     NS_ENSURE_SUCCESS(res, res);
   }
-  // At this point, destParentNode and destOffset tell where the new structure goes
-
-  // Create the new structure node
+  if (topSplitNode != sourceNode) {
+    NS_ASSERTION(topSplitNode,"no node can hold the section. Not even body?");
+    mHTMLEditor->SplitNodeDeep(topSplitNode, sourceNode, sourceOffset, &destOffset, PR_TRUE, 
+      address_of(outLeftNode), address_of(outRightNode)); 
+    res = nsEditor::GetNodeLocation(outRightNode, address_of(destParentNode), &destOffset);
+  } else
+  {
+    res = nsEditor::GetNodeLocation(sourceNode, address_of(destParentNode), &destOffset);
+  }
+  // Create the new structure node unless SplitNodeDeep left us with one.
   // Old comment from Composer: new call to use instead to get proper HTML element, bug# 39919
-  nsCOMPtr<nsIContent>  newContent;
-  res = mHTMLEditor->CreateHTMLContent(aStructureType, getter_AddRefs(newContent));
-  NS_ENSURE_SUCCESS(res, res);
-  nsCOMPtr<nsIDOMElement> elem(do_QueryInterface(newContent));
-  newStructureNode = do_QueryInterface(elem);
+  nsEditor::GetTagString(outRightNode, str);
+  if (str.Equals(aStructureType))
+  {
+    newStructureNode = outRightNode;
+  }
+  else
+  {
+    nsCOMPtr<nsIContent>  newContent;
+    res = mHTMLEditor->CreateHTMLContent(aStructureType, getter_AddRefs(newContent));
+    NS_ENSURE_SUCCESS(res, res);
+    nsCOMPtr<nsIDOMElement> elem(do_QueryInterface(newContent));
+    newStructureNode = do_QueryInterface(elem);
+  }
   *outNode = newStructureNode; 
   NS_ADDREF(*outNode);
   // Hold off on inserting this node until it is fully populated. This makes counter update more
