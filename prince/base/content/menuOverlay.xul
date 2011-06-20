@@ -855,6 +855,7 @@
     <menuitem id="menu_checkLinks" observes="cmd_checkLinks"
      label="&checkLinksCmd.label;"/>
     <menuseparator / -->
+    <menuitem label="dump document" oncommand="dumpDocument();"/>
     <menuitem label="&testSelectionCmd.label;" accesskey="&testSelectionCmd.accesskey;"
            oncommand="msiEditorTestSelection()"/>
     <!--menuitem label="&testTableLayoutCmd.label;"
