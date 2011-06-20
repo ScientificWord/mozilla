@@ -25,7 +25,6 @@
  *   Neil Deakin <neil@mozdevgroup.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
@@ -7943,9 +7942,6 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
                            nsIDOMNode **outNode, 
                            const nsAString &aStructureType,
                            nsIAtom * atomNamespace )
-//                         const nsAString *aAttribute,
-//                         const nsAString *aValue,
-//                         PRBool aCloneAttributes)
 {
   if (!inNode || !outNode)
     return NS_ERROR_NULL_POINTER;
@@ -7956,8 +7952,11 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   nsCOMPtr<nsIDOMNode> parent;          // a node used for tree traversal
   nsCOMPtr<nsIDOMNode> currentNode;     // a node used for tree traversal
   nsCOMPtr<nsIDOMNode> sourceParentNode;
+  nsCOMPtr<nsIDOMNode> topSplitNode;
   nsCOMPtr<nsIDOMNode> destParentNode;
   nsCOMPtr<nsIDOMNode> sourceNode = inNode;
+  nsCOMPtr<nsIDOMNode> outLeftNode;
+  nsCOMPtr<nsIDOMNode> outRightNode;
   nsCOMPtr<nsIDOMNode> newTitleNode;
   nsCOMPtr<nsIDOMNode> newStructureNode;
 
@@ -7986,34 +7985,48 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   // walk up the tree to find where the new structure tag will fit.
   parent = sourceParentNode;
   currentNode = sourceNode;
-  while (true)
+  while (parent)
   {
     res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
     NS_ENSURE_SUCCESS(res,res);
     if (fCanContain)
     { 
-      destParentNode = parent;
-      res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &destOffset);
+      topSplitNode = currentNode;
+//      res = nsEditor::GetNodeLocation(sourceNode, address_of(parent), &destOffset);
 //      destOffset++;
       break;
     } 
     currentNode = parent;
-    if (!currentNode) break;
-   res = currentNode->GetParentNode(getter_AddRefs(parent));
+    res = currentNode->GetParentNode(getter_AddRefs(parent));
 #if DEBUG_BarryNo || DEBUG_BarryNo
-   DebExamineNode(parent);
+    DebExamineNode(parent);
 #endif
     NS_ENSURE_SUCCESS(res, res);
   }
-  // At this point, destParentNode and destOffset tell where the new structure goes
-
-  // Create the new structure node
+  if (topSplitNode != sourceNode) {
+    NS_ASSERTION(topSplitNode,"no node can hold the section. Not even body?");
+    mHTMLEditor->SplitNodeDeep(topSplitNode, sourceNode, sourceOffset, &destOffset, PR_TRUE, 
+      address_of(outLeftNode), address_of(outRightNode)); 
+    res = nsEditor::GetNodeLocation(outRightNode, address_of(destParentNode), &destOffset);
+  } else
+  {
+    res = nsEditor::GetNodeLocation(sourceNode, address_of(destParentNode), &destOffset);
+  }
+  // Create the new structure node unless SplitNodeDeep left us with one.
   // Old comment from Composer: new call to use instead to get proper HTML element, bug# 39919
-  nsCOMPtr<nsIContent>  newContent;
-  res = mHTMLEditor->CreateHTMLContent(aStructureType, getter_AddRefs(newContent));
-  NS_ENSURE_SUCCESS(res, res);
-  nsCOMPtr<nsIDOMElement> elem(do_QueryInterface(newContent));
-  newStructureNode = do_QueryInterface(elem);
+  nsEditor::GetTagString(outRightNode, str);
+  if (str.Equals(aStructureType))
+  {
+    newStructureNode = outRightNode;
+  }
+  else
+  {
+    nsCOMPtr<nsIContent>  newContent;
+    res = mHTMLEditor->CreateHTMLContent(aStructureType, getter_AddRefs(newContent));
+    NS_ENSURE_SUCCESS(res, res);
+    nsCOMPtr<nsIDOMElement> elem(do_QueryInterface(newContent));
+    newStructureNode = do_QueryInterface(elem);
+  }
   *outNode = newStructureNode; 
   NS_ADDREF(*outNode);
   // Hold off on inserting this node until it is fully populated. This makes counter update more
