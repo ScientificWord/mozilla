@@ -1204,3 +1204,11 @@ function documentToTeXString(document, xslPath)
   }
   return strResult;
 }
+
+
+function dumpDocument()
+{
+  var ed= GetCurrentEditor();
+  var root = ed.document.documentElement;
+  ed.debugDumpContent(root);
+}
