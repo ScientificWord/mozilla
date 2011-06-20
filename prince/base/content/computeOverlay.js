@@ -1755,13 +1755,14 @@ function doVarsComputation(math, label, func, title, editorElement, cmd, cmdHand
     { 
       this.mParentWin.finishVarsComputation(editorElement, this);
     };
-//  var parentWin = msiGetParentWindowForNewDialog(editorElement);
   var theDialog = null;
   try {
     theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                       editorElement, cmd, cmdHandler, o);
-  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsComputation: [" + e + "]"); return;}
-//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
+  } catch(e) {
+   AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsComputation: [" + e + "]"); 
+   return;
+  }
 }
 
 function finishVarsComputation(editorElement, o)
@@ -1772,13 +1773,16 @@ function finishVarsComputation(editorElement, o)
   dump("\n*** Cancel was false");
   var vars = o.vars;
   var mathstr = GetFixedMath(o.theMath);
-//  vars = runFixup(vars);
   msiComputeLogger.Sent4(o.theLabel + " after fixup", mathstr, "specifying", vars);
 
   ComputeCursor(editorElement);
   try {
-    //var out = o.theFunc(mathstr,vars);
-	  var out = GetCurrentEngine().perform(mathstr,o.theFunc);
+    var eng = GetCurrentEngine();
+    if (o.theFunc == eng.Rewrite_Equations_as_Matrix){
+	    out = eng.equationsAsMatrix(mathstr, vars);
+    } else {
+	    out = eng.perform(mathstr, o.theFunc);
+    }
     msiComputeLogger.Received(out);
     appendLabeledResult(out, o.theLabel, o.theMath, editorElement);
   } catch(e) {
