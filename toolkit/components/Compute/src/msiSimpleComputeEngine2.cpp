@@ -691,7 +691,7 @@ static
 void SetupNodeAttrs()
 {
   int res;
-  res = ComputeDLL::SetUserPref( 0/*client_handle*/, CLPF_clr_func_attr, "msiMathname=\"true\"");
+  res = ComputeDLL::SetUserPref( 0/*client_handle*/, CLPF_clr_func_attr, "msimathname=\"true\"");
   res = ComputeDLL::SetUserPref( 0/*client_handle*/, CLPF_clr_text_attr, "");
   res = ComputeDLL::SetUserPref( 0/*client_handle*/, CLPF_clr_unit_attr, "class=\"msi_unit\"");
 }
