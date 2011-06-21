@@ -20,7 +20,6 @@ modern.jar:
   skin/modern/communicator/toolbar.css                             (communicator/toolbar.css)
   skin/modern/communicator/dialogs.css                             (communicator/dialogs.css)
   skin/modern/communicator/smileys.css                            (communicator/smileys.css)
-  skin/modern/communicator/communicator.css                        (communicator/communicator.css)
   skin/modern/communicator/bookmarks/bookmark-folder-closed.gif    (communicator/bookmarks/bookmark-folder-closed.gif)
   skin/modern/communicator/bookmarks/bookmark-folder-dis.gif       (communicator/bookmarks/bookmark-folder-dis.gif)
   skin/modern/communicator/bookmarks/bookmark-folder-open.gif      (communicator/bookmarks/bookmark-folder-open.gif)
