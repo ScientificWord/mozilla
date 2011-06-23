@@ -150,6 +150,9 @@
 <!ENTITY hspaceButton.tooltip "Horizontal space" >
 <!ENTITY hspaceButton.label "Space" >
 
+<!ENTITY vspaceButton.tooltip "Vertical space" >
+<!ENTITY vspaceButton.label "Vertical space" >
+
 <!ENTITY indexentryButton.tooltip "Index entry" >
 <!ENTITY indexentryButton.label "Index entry" >
 
