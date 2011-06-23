@@ -1403,6 +1403,38 @@ toolbar[iconsize="small"] #hspaceButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-disabled-sm.png");
 }
 
+#vspaceButton {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical.png");
+}
+
+toolbar[iconsize="small"] #vspaceButton {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-sm.png");
+}
+
+#vspaceButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-hover.png");
+}
+
+toolbar[iconsize="small"] #vspaceButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-hover-sm.png");
+}
+
+#vspaceButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-active.png");
+}
+
+toolbar[iconsize="small"] #vspaceButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-active-sm.png");
+}
+
+#vspaceButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-disabled.png");
+}
+
+toolbar[iconsize="small"] #vspaceButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-disabled-sm.png");
+}
+
 
 
 #indexentryButton {
