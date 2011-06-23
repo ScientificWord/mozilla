@@ -658,7 +658,6 @@ toolbar[iconsize="small"] #genBracketsButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_brackets-active-sm.png");
 }
 
-/* need to put in small genBrackets stuff */
 
 #sumButton {
   list-style-image: url("chrome://prince/skin/icons/math_sum.png");
