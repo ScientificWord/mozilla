@@ -79,8 +79,9 @@ tab {
   -moz-border-radius-topleft: 2px;
   -moz-border-radius-topright: 2px;
   padding: 3px 4px;
-  background-image: url("chrome://prince/skin/icons/background.png");
+  background-image: url("chrome://prince/skin/icons/symbol-tab-background.png");
   background-repeat: repeat-x;
+  background-position: bottom;
   color: -moz-DialogText;
 }
 
