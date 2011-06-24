@@ -11,7 +11,12 @@
 #sidebar-symbol-tabbox[textsize="large"] tab { font-size: large; }
 #sidebar-symbol-tabbox { font-family: "STIXGeneral"; }
 /* #sidebar-symbol-tabbox[textsize="large"] toolbarbutton { font-size: large; } */
-#sidebar-symbol-tabbox tab { font-size: medium; }
+#sidebar-symbol-tabbox tab { 
+  font-size: medium;
+  background-image: url("chrome://prince/skin/icons/symbol-tab-background.png");
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
 #sidebar-symbol-tabbox toolbarbutton { font-size: medium; }
 /* #sidebar-symbol-tabbox[textsize="small"] tab { font-size: small; }
 #sidebar-symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; } */

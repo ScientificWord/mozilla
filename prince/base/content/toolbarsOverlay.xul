@@ -81,20 +81,21 @@
       <toolbarbutton id="mathnameButton"/>
       <toolbarbutton id="binomialButton"/>
       <toolbarbutton id="decorationButton"/>
-      <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;" observes="cmd_note"/>
-      <toolbarbutton id="footnoteButton" tooltiptext="&footnoteButton.tooltip;" observes="cmd_footnote"/>
-      <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" observes="cmd_marker" />
-      <toolbarbutton id="htlinkButton" tooltiptext="&htlinkButton.tooltip;"/>
-      <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;"/>
-      <toolbarbutton id="packagesButton" tooltiptext="&packagesButton.tooltip;" observes="cmd_MSItypesetOptionsAndPackagesCmd"/>
-      <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" observes="cmd_citation"/>
-      <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" observes="cmd_insertHorizontalSpaces" />
-      <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" observes="cmd_MSIinsertIndexEntryCmd"/>
-      <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" observes="cmd_MSIinsertCrossReferenceCmd"/>
-      <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" observes="cmd_MSIinsertTeXFieldCmd"/>
-      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" observes="cmd_unimp"/>
-      <toolbarbutton id="gifsAnimatedButton" type="checkbox" autoCheck="true"  oncommand="setAnimation();" tooltiptext="&gifsAnimatedButton.tooltip;"/>
-      <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
+      <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;" label="&noteButton.label;" observes="cmd_note"/>
+      <toolbarbutton id="footnoteButton" tooltiptext="&footnoteButton.tooltip;" label="&footnoteButton.label;" observes="cmd_footnote"/>
+      <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" label="&markerButton.label;" observes="cmd_marker" />
+      <toolbarbutton id="htlinkButton" tooltiptext="&htlinkButton.tooltip;" label="&htlinkButton.label;" />
+      <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" />
+      <toolbarbutton id="packagesButton" tooltiptext="&packagesButton.tooltip;" label="&packagesButton.label;" observes="cmd_MSItypesetOptionsAndPackagesCmd"/>
+      <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
+      <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" label="&hspaceButton.label;" observes="cmd_insertHorizontalSpaces" />
+      <toolbarbutton id="vspaceButton" tooltiptext="&vspaceButton.tooltip;"  label="&vspaceButton.label;" observes="cmd_insertVerticalSpaces" />
+      <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" label="&indexentryButton.label;" observes="cmd_MSIinsertIndexEntryCmd"/>
+      <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" label="&xrefButton.label;" observes="cmd_MSIinsertCrossReferenceCmd"/>
+      <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" label="&texfieldButton.label;" observes="cmd_MSIinsertTeXFieldCmd"/>
+      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;" observes="cmd_unimp"/>
+      <toolbarbutton id="gifsAnimatedButton" type="checkbox" autoCheck="true" label="&gifsAnimatedButton.label;"  oncommand="setAnimation();" tooltiptext="&gifsAnimatedButton.tooltip;"/>
+      <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;" label="&pdfcompileButton.label;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
       <toolbarbutton id="boldButton" class="toolbarbutton-1" observes="cmd_textBold"
