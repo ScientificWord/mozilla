@@ -1993,7 +1993,8 @@ char *MuPADWrapper::PRIMEStoEstr(SEMANTICS_NODE * diff_info, int& error_code)
           } else {
             var_str = GetEngNameForVar(frame_ID, user_name, canonical_ID);
           }
-        } else {                // fake it
+        } else {                // fake it    
+          var_str = DuplicateString("t");
         }
       } else
         TCI_ASSERT(0);
