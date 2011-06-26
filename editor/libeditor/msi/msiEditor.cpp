@@ -3362,7 +3362,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         dontcare = splittable->GetParentNode(getter_AddRefs(tempNode));
         if (tempNode == splitParent)
         {
-          res = SplitNodeDeep(splittable, splitChild, splitOffset, &postSplitPos, PR_TRUE, &leftNode, &rightNode);
+          res = SplitNodeDeep(splittable, splitChild, splitOffset, &postSplitPos, PR_TRUE, address_of(leftNode), address_of(rightNode));
           if (nInsertPos == -1)
             doSplitAt = postSplitPos;
         }
