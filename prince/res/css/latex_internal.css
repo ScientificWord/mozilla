@@ -1,54 +1,53 @@
-@namespace sw url("http://www.sciword.com/namespaces/sciword");
-@namespace html url("http:/www.w3.org/1999/xhtml");
 
-sw|invis {
+
+invis {
   display: none;
 }
 
-sw|texbdata {
+texbdata {
   display: none;
 }
 
-sw|space {
+space {
 /*  display: -moz-inline-box;  */
   display: inline-block;
   vertical-align: baseline;
 }
   
-*[showinvis="true"] sw|space {
+*[showinvis="true"] space {
   border-bottom-width: thin;
   border-bottom-style: solid;
   border-bottom-color: green;
 }
 
-*[showinvis="true"] sw|invis {
+*[showinvis="true"] invis {
   display: inline;
 }
 
-*[showinvis="true"] sw|space[type="noIndent"] {
+*[showinvis="true"] space[type="noIndent"] {
   display: none;
 }
 
-*[showinvis="true"] sw|space[type="noIndent"]:after {
+*[showinvis="true"] space[type="noIndent"]:after {
   content: "\002190";
   color: green;
 }
 
-sw|linebox {
+linebox {
   display: -moz-inline-box;
   width: 100%;
 }
 
 /*
-sw|space.stretchySpace[fillWith="line"] {
+space.stretchySpace[fillWith="line"] {
   border-bottom: thin solid;  Note that omitting the border-color causes the text color to be used (per CSS 2.1 specification)
 }
 
-sw|space.stretchySpace[fillWith="dots"] {
+space.stretchySpace[fillWith="dots"] {
   border-bottom: thin dotted;
 }
 
-*[showinvis="true"] sw|space.stretchySpace {
+*[showinvis="true"] space.stretchySpace {
   border-bottom-color: green;
 }
 */
@@ -57,7 +56,7 @@ sw|space.stretchySpace[fillWith="dots"] {
       "-moz-inline-block" breaks line, also ignores width and padding. 
     Solution used is derived from Bugzilla comment at "https://bugzilla.mozilla.org/show_bug.cgi?id=9458#c37", and is
     partially embedded in the XBL in latex.xml#vspace. */
-sw|vertspace {
+vertspace {
   display: -moz-inline-box;
   vertical-align: baseline;
   overflow: hidden;
@@ -73,7 +72,7 @@ span.vertspace, span.breakvspace {
   border-left: thin solid green;
 }
 
-sw|rulebox {
+rulebox {
   display: -moz-inline-box;
   /*vertical-align: baseline;*/
   position: relative;
@@ -91,12 +90,12 @@ msibreak {
   white-space: pre;
 }
 
-sw|breakobj {
+breakobj {
   display: inline;
   white-space: pre;
 }
 
-*[showinvis="true"] sw|breakobj:before {
+*[showinvis="true"] breakobj:before {
   color: green;
   content: attr(invisDisplay);
 }
