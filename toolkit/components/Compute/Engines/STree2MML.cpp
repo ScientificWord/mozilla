@@ -3917,6 +3917,8 @@ char *STree2MML::ComposeFuncCall(SEMANTICS_NODE * s_function,
   char *arglist = NULL;
   U32 arg_ln = 0;
 
+  int n_arg_nodes = 0;
+
   char *comma_markup = GetTmplPtr(TMPL_COMMA);
   size_t c_ln = strlen(comma_markup);
   char *z_comma = new char[c_ln + 1];
@@ -3940,6 +3942,8 @@ char *STree2MML::ComposeFuncCall(SEMANTICS_NODE * s_function,
         z_arg = ProcessSemanticList(head,
                                     error_code, nodes_made,
                                     terms_made, is_signed, NULL, NULL);
+
+        n_arg_nodes = nodes_made;
         if (nodes_made > 1 || terms_made > 1 || is_signed) {
           if (z_arg) {
             z_arg = NestzMMLInMROW(z_arg);
@@ -4035,6 +4039,9 @@ char *STree2MML::ComposeFuncCall(SEMANTICS_NODE * s_function,
         && terms_made < 2 && !is_signed) {
       add_parens = false;
     }
+    
+    if (n_arg_nodes > 1)
+      add_parens = true;
 
     BUCKET_REC *arg_bucket =
       FindBucketRec(s_function->bucket_list, MB_UNNAMED);
