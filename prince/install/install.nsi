@@ -169,11 +169,11 @@ Section
   WriteRegStr HKLM "SOFTWARE\Classes\.sci\PersistentHandler" "" "{098f2470-bae0-11cd-b579-08002b30bfeb}"
   WriteRegStr HKLM "SOFTWARE\Classes\.sci\SciWordDocument\ShellNew" "FileName" "New Scientific WorkPlace 6 Document.sci"
 ; Places bar
-  WriteRegExpandStr HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place0" "$DOCUMENTS\swpdocs"
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place1" 00000000
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place2" 00000005
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place3" 00000011
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place4" 00000012
+;  WriteRegExpandStr HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place0" "$DOCUMENTS\swpdocs"
+;  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place1" 00000000
+;  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place2" 00000005
+;  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place3" 00000011
+;  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Policies\ComDlg32\PlacesBar" "Place4" 00000012
 
 
 
