@@ -89,6 +89,12 @@ function saveforweb( doc, usedirectory, dir )
       }
     }
     saveDocumentCopyAndSubDocs(doc2, dir1, dir);
+    if (!usedirectory)
+    {
+      zipUpDir(dir,"zip");
+      dir.remove(true);
+      return true;
+    }
     return true;
   }
   catch(e) {
@@ -96,6 +102,35 @@ function saveforweb( doc, usedirectory, dir )
     return false;
   }
 }  
+
+function zipUpDir(dir, extension)
+{
+  var zipfile = dir.parent.clone();
+  var leafname = dir.leafName;  
+  var compression = 0;
+  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+  try
+  {
+    compression = prefs.getIntPref("swp.webzip.compression");
+  }
+  catch(e) {}
+  
+  zipfile.append(leafname + "." + extension); 
+
+  try {
+    var zw = Components.classes["@mozilla.org/zipwriter;1"]
+                          .createInstance(Components.interfaces.nsIZipWriter);
+    if (zipfile.exists()) zipfile.remove(0);
+    zipfile.create(0,0755);
+    zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
+    zipDirectory(zw, "", dir, compression); 
+    zw.close();
+    return true;
+  }
+  catch(e) {
+    throw Components.results.NS_ERROR_UNEXPECTED;
+  }
+}
 
 
 function appendRelativePath(dir, relPath)
