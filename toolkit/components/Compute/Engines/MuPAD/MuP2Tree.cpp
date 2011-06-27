@@ -41,7 +41,7 @@ MuPAD2Tree::~MuPAD2Tree()
 {
 }
 
-MNODE *MuPAD2Tree::MuPADStr2Tree(const char *src)
+MNODE* MuPAD2Tree::MuPADStr2Tree(const char* src)
 {
   MNODE *rv = NULL;
 
@@ -54,6 +54,7 @@ MNODE *MuPAD2Tree::MuPADStr2Tree(const char *src)
     JBM::DumpTList(rv,0);
     rv = DoPrecedenceBinds(rv);
   }
+  JBM::DumpTList(rv,0);
   return rv;
 }
 
