@@ -2612,6 +2612,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
           destLocalFile = fileHandler.getFileFromURLSpec(urlstring).QueryInterface(Components.interfaces.nsILocalFile);
         }
       }
+      leafname = destLocalFile.leafName;
     }
     catch (e)
     {
@@ -2623,19 +2624,15 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   }  // mustShowDialog
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
-   destLocalFile = currentSciFile.clone(); 
-//   destLocalFile = destLocalFile.parent;
-//   var leaf = destLocalFile.leafName;
-//   leaf=leaf.replace(/_work$/i,"");
-//   destLocalFile = destLocalFile.parent;
-//   destLocalFile.append(leaf);      
+    leafname = tempdir.leafName
+    if (leafname.lastIndexOf(".") > 0)
+    {  
+      leafname = leafname.slice(0, leafname.lastIndexOf(".")); // trim off extension
+    }
+    destLocalFile = tempdir.clone(); 
+    
   }
 
-  leafname = destLocalFile.leafName;
-  if (leafname.lastIndexOf(".") > 0)
-  {  
-    leafname = leafname.slice(0, leafname.lastIndexOf(".")); // trim off extension
-  }
   var tempfile;
   if (isSciFile) 
   {
@@ -2687,6 +2684,13 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       var zipfile = destLocalFile.parent.clone();
       
       zipfile.append(leafname+".tempsci"); 
+      var compression;
+      var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+      try
+      {
+        compression = prefs.getIntPref("swp.sci.compression");
+      }
+      catch(e) {compression = 0;}
 
       // zip D into the zipfile
       try {
@@ -2695,7 +2699,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         if (zipfile.exists()) zipfile.remove(0);
         zipfile.create(0,0755);
         zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
-        zipDirectory(zw, "", workingDir); 
+        zipDirectory(zw, "", workingDir, compression); 
         zw.close();
       }
       catch(e) {
@@ -2787,6 +2791,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         // We need to set new document uri before notifying listeners
         SetDocumentURI(newURI);
         document.getElementById("filename").value = leafname;
+        msiUpdateWindowTitle(null, destLocalFile.leafName);
       }
     }
   }
@@ -2801,7 +2806,6 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 
   }
 
-  msiUpdateWindowTitle(null, destLocalFile.leafName);
 
   if (!aSaveCopy)
   {
