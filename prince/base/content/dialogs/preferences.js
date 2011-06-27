@@ -89,8 +89,10 @@ function initialize()
   setIndex("diffD", data.diffD);
   setIndex("diffd", data.diffd);
   setIndex("expe", data.expe);
-  // This shouldn't be necessary. Why are these dialog buttons hidden?
-  var buttons = new Object();
+  document.getElementById("appPreferences").getButton("accept").hidden=false;
+  document.getElementById("appPreferences").getButton("cancel").hidden=false;
+  document.getElementById("appPreferences").getButton("accept").removeAttribute("disable");
+  document.getElementById("appPreferences").getButton("cancel").removeAttribute("disable");
 }
 //  ComputeUserSettingsStartup();
 
