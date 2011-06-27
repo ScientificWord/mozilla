@@ -2821,7 +2821,22 @@ bool IdIsFuncArg(char* canonical_ID, BUCKET_REC* arg_bucket_list)
 
 bool ExprContainsFuncArg(SEMANTICS_NODE* expr, BUCKET_REC* args)
 {
-  return false;
+  if (SEM_TYP_VARIABLE  ==  expr -> semantic_type ){
+     // Need to look through list of args
+     return true;
+  } else {
+     // Look through bucket list
+     BUCKET_REC* b = expr->bucket_list;
+
+     while (b) {
+        SEMANTICS_NODE* s = b->first_child;
+        if (ExprContainsFuncArg(s, args))
+          return true;
+        
+        b = b -> next;
+     }
+     return false;
+  }
 }
 
 bool CompEngine::DefAllowed(SEMANTICS_NODE * root)
