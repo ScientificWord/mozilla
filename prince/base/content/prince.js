@@ -572,7 +572,7 @@ function exportToWeb()
    {
      var dialogResult = fp.show();
      if (dialogResult != msIFilePicker.returnCancel)
-       if (!saveforweb(editor.document, false, fp.file ))
+       if (!saveforweb(editor.document, (fp.filterIndex == 1), fp.file ))
          AlertWithTitle("Export", "Web file not created.");
    }
    catch (ex) 
