@@ -866,14 +866,14 @@
             </vbox>
           </hbox>
         </tabpanel>
-        <tabpanel>
-          <groupbox style="width:100%">
+        <tabpanel  orient="vertical">
+          <groupbox>
             <caption label="Preferred PDF viewer" />
             <menulist>
               <menupopup>
                 <menulistitem label="Use current PDF plugin" value="default"/>
                 <menulistitem label="Use the default program for viewing PDF files" value="launch"/>
-                <menulistitem label="Enter a full path for the program to use" value=""/>
+                <menulistitem label="Enter a full path for the program to use" value=" "/>
               </menupopup>
             </menulist>
           </groupbox>
