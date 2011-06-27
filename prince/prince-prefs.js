@@ -22,6 +22,8 @@ pref("swp.prefDocumentDir","SWPDocs");
 pref("swp.viewPDF","fixAcrobat.cmd %1");
 pref("swp.prefPDFPath","default");
 pref("swp.fancyreturn",true);
+pref("swp.sci.compression", 0);
+pref("swp.webzip.compression", 9);
 #ifdef XP_WIN32
 pref("swp.tex.bindir","%programfiles%\\texlive\\2010\\bin\\win32");  /* for windows */
 #elifdef XP_MACOSX
