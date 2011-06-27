@@ -22,6 +22,12 @@
       <preference id="selectedSkin" 
                   name="general.skins.selectedSkin" 
                   type="string"/>
+      <preference id="sci.compression"
+                  name="swp.sci.compression"
+                  type="int"/>
+      <preference id="saveforweb.compression"
+                  name="swp.webzip.compression"
+                  type="int"/>
       <preference id="defaultGraphicsHSize" 
                   name="swp.defaultGraphicsHSize" 
                   type="int"/>
@@ -176,6 +182,33 @@
             <hbox>
               <textbox type="number" style="width: 5em;" preference="tapsforrepeat"/>
               <label value="Number of taps for arrow to autorepeat"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption>File compression</caption>
+            <hbox>
+              <vbox>
+                <label value=".sci files"/>
+                <menulist preference="sci.compression">
+                  <menupopup>
+                    <menuitem label="None" value="0"/>
+                    <menuitem label="Fastest" value="1"/>
+                    <menuitem label="Middle" value="6"/>
+                    <menuitem label="Best" value="9"/>
+                  </menupopup>
+                </menulist>                
+              </vbox>
+              <vbox>
+                <label value="web files"/>
+                <menulist preference="saveforweb.compression">
+                  <menupopup>
+                    <menuitem label="None" value="0"/>
+                    <menuitem label="Fastest" value="1"/>
+                    <menuitem label="Middle" value="6"/>
+                    <menuitem label="Best" value="9"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
             </hbox>
           </groupbox>
         </tabpanel>
@@ -833,7 +866,18 @@
             </vbox>
           </hbox>
         </tabpanel>
-        <tabpanel/>
+        <tabpanel>
+          <groupbox style="width:100%">
+            <caption label="Preferred PDF viewer" />
+            <menulist>
+              <menupopup>
+                <menulistitem label="Use current PDF plugin" value="default"/>
+                <menulistitem label="Use the default program for viewing PDF files" value="launch"/>
+                <menulistitem label="Enter a full path for the program to use" value=""/>
+              </menupopup>
+            </menulist>
+          </groupbox>
+        </tabpanel>
       </tabpanels>
     </tabbox>
   </prefpane>
