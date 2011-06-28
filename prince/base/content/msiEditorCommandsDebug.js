@@ -50,6 +50,34 @@ function msiEditorInsertText(textToInsert)
   msiGetCurrentEditor().insertText(textToInsert);
 }
 
+
+function xmlFragToTeX(intermediateString)
+{
+  var str = '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">' + intermediateString + "</html>";
+  var xslFileURL = "chrome://prnc2ltx/content/latex.xsl";
+  var xsltStr = getXSLAsString(xslFileURL);
+  var texStr;
+
+  var xsltProcessor = new XSLTProcessor();
+
+  try{
+    var parser = new DOMParser();
+    var xslDoc = parser.parseFromString(xsltStr, "text/xml");
+    var parser = new DOMParser();
+    var intermediateDoc = parser.parseFromString(str, "text/xml");
+    xsltProcessor.importStylesheet(xslDoc);
+    var newDoc = xsltProcessor.transformToDocument(intermediateDoc);
+    texStr = newDoc.documentElement.textContent || "";
+    while (strResult.search(/\n\s*\n/) >= 0)
+      texStr = texStr.replace(/\n\s*\n/,"\n","g");
+  }
+  catch(e){
+    dump("error: "+e.message+"\n\n");
+  //  dump(resultString);
+  }
+  return texStr;
+}
+
 function msiEditorTestSelection()
 {
   dump("Testing selection\n");
@@ -91,8 +119,19 @@ function msiEditorTestSelection()
   output = editor.outputToString("text/plain", kOutputFormatted | kOutputSelectionOnly);
   dump(output + "\n\n");
 
+  dump("====== Selection as tex ============\n");
+  var intermediateText;
+  intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
+  output = xmlFragToTeX(intermediateText);
+  dump(output + "\n\n");
+  alert(output);
+
   dump("====== Selection as HTML ======================\n");
   output = editor.outputToString("text/html", kOutputSelectionOnly);
+  dump(output + "\n\n");
+
+  dump("====== Selection as XML ======================\n");
+  output = editor.outputToString("text/xml", kOutputSelectionOnly);
   dump(output + "\n\n");
 
   dump("====== Selection as prettyprinted HTML ========\n");
