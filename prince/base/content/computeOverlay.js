@@ -709,10 +709,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,eng.Concatenate,"Concat.fmt", editorElement);
       break;
     case "cmd_MSIComputeConditionNum":  
-      doLabeledComputation(element,eng.Condition_Number,"ConditionNum.fmt", editorElement);
+      doLabeledComputation(element, eng.Condition_Number, "ConditionNum.fmt", editorElement);
       break;
     case "cmd_MSIComputeDefinitenessTests":  
-      doLabeledComputation(element,eng.Definiteness_Tests,"DefTest.fmt", editorElement);
+      doLabeledComputation(element, eng.Definiteness_Tests, "DefTest.fmt", editorElement);
       break;
     case "cmd_MSIComputeDeterminant":  
       doLabeledComputation(element,eng.Determinant,"Determinant.fmt", editorElement);
@@ -755,19 +755,19 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,eng.Nullspace_Basis,"Nullspace.fmt", editorElement);
       break;
     case "cmd_MSIComputeOrthogonalityTest":  
-      doLabeledComputation(element,eng.Orthogonality_Test,"Orthogonality.fmt", editorElement);
+      doLabeledComputation(element, eng.Orthogonality_Test, "Orthogonality.fmt", editorElement);
       break;
     case "cmd_MSIComputePermanent":  
-      doLabeledComputation(element,eng.Permanent,"Permanent.fmt", editorElement);
+      doLabeledComputation(element, eng.Permanent, "Permanent.fmt", editorElement);
       break;
     case "cmd_MSIComputePLU":      
-      doLabeledComputation(element,eng.PLU_Decomposition,"PLU.fmt", editorElement);
+      doLabeledComputation(element, eng.PLU_Decomposition, "PLU.fmt", editorElement);
       break;
     case "cmd_MSIComputeRank":  
-      doLabeledComputation(element,eng.Rank,"Rank.fmt", editorElement);
+      doLabeledComputation(element, eng.Rank, "Rank.fmt", editorElement);
       break;
     case "cmd_MSIComputeRationalCanonical":  
-      doLabeledComputation(element,eng.Rational_Canonical_Form,"Rational.fmt", editorElement);
+      doLabeledComputation(element, eng.Rational_Canonical_Form, "Rational.fmt", editorElement);
       break;
     case "cmd_MSIComputeRREF":
       doLabeledComputation(element,eng.Reduced_Row_Echelon_Form,"RREchelonForm.fmt", editorElement);
