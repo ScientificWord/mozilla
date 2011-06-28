@@ -1100,11 +1100,11 @@ function getCachedXSLTString(xslRootFileURLString)
   // is the leaf of xslPath
   var leafnameRE = /[^\/]*$/;
   var leafname;
-  var resultString;
+  var resultString = "";
   var match;
-  var path;
+  var xslPath = xslRootFileURLString;
   var contents;
-  var matcharray = leafnameRE.exec(xslRootFileURLString);
+  var matcharray = leafnameRE.exec(xslPath);
   leafname = matcharray[0];
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var cachefile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
@@ -1114,7 +1114,7 @@ function getCachedXSLTString(xslRootFileURLString)
     var stylesheetElement=/<xsl:stylesheet[^>]*>/;
     var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
     var myXMLHTTPRequest = new XMLHttpRequest();
-    myXMLHTTPRequest.open("GET", xslRootFileURLString, false);
+    myXMLHTTPRequest.open("GET", xslPath, false);
     myXMLHTTPRequest.send(null);
 
     var str = myXMLHTTPRequest.responseText;
@@ -1129,8 +1129,8 @@ function getCachedXSLTString(xslRootFileURLString)
       if (filesSeen.indexOf(match[1]) < 0)
       {
         try {
-          path = xslRootFileURLString.replace(leafname,match[1]);
-          myXMLHTTPRequest.open("GET", path, false);
+          xslPath = xslPath.replace(leafname,match[1]);
+          myXMLHTTPRequest.open("GET", xslPath, false);
           myXMLHTTPRequest.send(null);
           contents = myXMLHTTPRequest.responseText;
           if (contents)
