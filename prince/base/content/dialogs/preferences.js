@@ -190,5 +190,19 @@ function onAccept(){
 
 }
 
+/* Not implemented for now
+function getFullPath()
+{
+  var item = document.getElementById("fullpath.item");
+  var text = document.getElementById("pdfviewer.path");
+  text.value = item.value;
+  text.hidden = false;
+}
 
-
+function gotFullPath()
+{
+  var item = document.getElementById("fullpath.item");
+  var text = document.getElementById("pdfviewer.path");
+  item.value = text.value;
+}
+*/

@@ -28,6 +28,9 @@
       <preference id="saveforweb.compression"
                   name="swp.webzip.compression"
                   type="int"/>
+      <preference id="pdf.viewer"
+                  name="swp.prefPDFPath"
+                  type="string"/>
       <preference id="defaultGraphicsHSize" 
                   name="swp.defaultGraphicsHSize" 
                   type="int"/>
@@ -869,13 +872,14 @@
         <tabpanel  orient="vertical">
           <groupbox>
             <caption label="Preferred PDF viewer" />
-            <menulist>
+            <menulist preference="pdf.viewer">
               <menupopup>
-                <menulistitem label="Use current PDF plugin" value="default"/>
-                <menulistitem label="Use the default program for viewing PDF files" value="launch"/>
-                <menulistitem label="Enter a full path for the program to use" value=" "/>
+                <menuitem label="Use current PDF plugin" value="default"/>
+                <menuitem label="Use the default program for viewing PDF files" value="launch"/>
+                <!-- not now! menuitem id="fullpath.item" label="Enter a full path for the program to use" oncommand="getFullPath();" value=" "/ -->
               </menupopup>
             </menulist>
+            <!-- not now!  textbox id="pdfviewer.path" label="Full path of the PDF file viewer" hidden="true" onchange="gotFullPath()" value=""/ -->
           </groupbox>
         </tabpanel>
       </tabpanels>
