@@ -1129,7 +1129,7 @@ function getCachedXSLTString(xslRootFileURLString)
       if (filesSeen.indexOf(match[1]) < 0)
       {
         try {
-          xslPath = xslPath.replace(leafname,match[1]);
+          xslPath = xslPath.replace(leafnameRE,match[1]);
           myXMLHTTPRequest.open("GET", xslPath, false);
           myXMLHTTPRequest.send(null);
           contents = myXMLHTTPRequest.responseText;
