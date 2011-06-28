@@ -79,7 +79,13 @@ SEMANTICS_NODE *MuAnalyzer::BuildSemanticsTree(MNODE * eng_tree, U32 cmd_ID,
 
   //Cholesky Decomposition<uID65.0>tcicholesky(%s); returns matrix, matrix
   //  We need matrix &invisibleTimes; matrix
+
+  // jcs Same for PLU , etc
   case CCID_Cholesky_Decomposition:
+  case CCID_PLU_Decomposition:
+  case CCID_QR_Decomposition:
+  case CCID_Singular_Values:
+  case CCID_Rational_Canonical_Form: 
     FixMapleCholesky(rv);
     break;
 
@@ -2031,17 +2037,17 @@ BUCKET_REC *MuAnalyzer::GetCellsFromROW(MNODE * row_container,
 
 // s_list -> matrix , matrix
 
-void MuAnalyzer::FixMapleCholesky(SEMANTICS_NODE * s_list)
+void MuAnalyzer::FixMapleCholesky(SEMANTICS_NODE* s_list)
 {
-  if (s_list && s_list->next) {
-    SEMANTICS_NODE *comma = s_list->next;
-    if (comma->semantic_type == SEM_TYP_INFIX_OP
-        && !strcmp(comma->contents, ",")) {
+  while (s_list && s_list->next) {
+    SEMANTICS_NODE* comma = s_list->next;
+    if (comma->semantic_type == SEM_TYP_INFIX_OP && !strcmp(comma->contents, ",")) {
       delete[] comma->contents;
       char *chdata = new char[9];
       strcpy(chdata, "&#x2062;");
       comma->contents = chdata;
     }
+    s_list = s_list -> next;
   }
 }
 
