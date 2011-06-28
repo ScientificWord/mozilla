@@ -1,6 +1,7 @@
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul" ?>
+##<?xul-overlay href="chrome://prince/content/basemenuOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul" ?>
 ##ifdef SWP

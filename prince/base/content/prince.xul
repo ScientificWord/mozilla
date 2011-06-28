@@ -62,7 +62,7 @@
   <popup id="sidebarPopup"/>
 
   <toolbox class="toolbox-top" id="EditorToolbox">
-# The entire main menubar is placed into browser-menubar.inc, so that it can be shared by 
+# The entire main menubar is placed into prince-menubar.inc, so that it can be shared by 
 # hiddenWindo#w.xul.
 #include prince-menubar.inc 
 #include prince-toolbars.inc
