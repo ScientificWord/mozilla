@@ -639,10 +639,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputeImplicitDiff(element, editorElement, cmdHandler);
       break;
     case "cmd_compute_SolveODEExact":
-      doComputeSolveODE(element,"ODE.fmt",eng.Solve_ODE_Exact,"ODE.title", "", editorElement, cmd, cmdHandler);
+      doComputeSolveODEExact(element, "ODE.fmt", "ODE.title", "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_SolveODELaplace":
-      doComputeSolveODE(element,"ODELaplace.fmt",eng.Solve_ODE_Laplace,"ODELaplace.title", "", editorElement, cmd, cmdHandler);
+      doComputeSolveODELaplace(element, "ODELaplace.fmt", "ODE.title", "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_SolveODENumeric":
       doComputeSolveODENumeric(element, "ODENumeric.fmt", "ODENumeric.title", "", editorElement, cmd, cmdHandler);
@@ -2317,7 +2317,55 @@ function finishComputeImplicitDiff(math, editorElement, o)
   RestoreCursor(editorElement);
 }
 
-function doComputeSolveODE(math, labelID, func, titleID, vars, editorElement, cmd, cmdHandler)
+
+function doComputeSolveODEExact(math, labelID, titleID, vars, editorElement, cmd, cmdHandler)
+{
+  var mathstr = GetFixedMath(math);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  if (!vars)
+    vars = "";
+  msiComputeLogger.Sent4(labelID,mathstr,"specifying",vars);
+  try {
+    ComputeCursor(editorElement);
+	  var eng = GetCurrentEngine();
+	  var out = eng.solveODEExact(mathstr,vars);
+    msiComputeLogger.Received(out);
+    appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
+    RestoreCursor(editorElement);
+  } catch(ex) {
+    RestoreCursor(editorElement);
+    if (ex.result == compsample.nosol) {
+      appendLabel(GetComputeString("NoSolution"),math, editorElement);
+      done = true;
+    } else if (ex.result == compsample.needivars) {
+      var o = new Object();
+      o.title = GetComputeString(titleID);
+      o.label = GetComputeString("ODE.label");
+      o.mParentWin = this;
+      o.theMath = math;
+      o.theLabelID = labelID;
+      o.theTitleID = titleID;
+      o.vars = vars;
+      o.theCommand = cmd;
+      o.theCommandHandler = cmdHandler;
+      o.afterDialog = function(editorElement)
+      { 
+        if (this.Cancel)
+          return;
+        this.mParentWin.doComputeSolveODEExact(this.theMath, this.theLabelID, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+      };
+      try {
+        var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                          editorElement, cmd, cmdHandler, o);
+      } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODEExact: [" + e + "]"); return;}
+
+    } else {
+      msiComputeLogger.Exception(ex);
+} } }
+
+
+function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, cmd, cmdHandler)
 {
   var mathstr = GetFixedMath(math);
   if (!editorElement)
@@ -2329,8 +2377,8 @@ function doComputeSolveODE(math, labelID, func, titleID, vars, editorElement, cm
     ComputeCursor(editorElement);
     //var out = func(mathstr,vars);
 	  var eng = GetCurrentEngine();
-	  //var out = eng.solveODEExact(mathstr,vars);
-    var out = func(mathstr, vars);
+	  var out = eng.solveODEExact(mathstr,vars);
+    //var out = func(mathstr, vars);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
     RestoreCursor(editorElement);
