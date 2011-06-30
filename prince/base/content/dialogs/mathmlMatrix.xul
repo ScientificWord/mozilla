@@ -11,13 +11,15 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/mathmlMatrix.dtd">
-
+<!-- JLF to verify-->
 <dialog id="MatrixDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   onload = "Startup();"
   ondialogaccept="return onOK();"
   ondialogcancel="return onCancel();"
+  screenX="40"
+  screenY="40"
   persist="screenX screenY width height"
 >
 
