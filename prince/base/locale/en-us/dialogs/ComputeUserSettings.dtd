@@ -63,4 +63,15 @@
 <!ENTITY RecognizePlainIasImaginary.label "Recognize plain i as imaginary">
 <!ENTITY  RecognizejAsImaginaryI.label  "Recognize j as imaginary i">
 <!ENTITY  RecognizePlaineasExponential  "Recognize plain e as exponential">
+<!ENTITY DigitsRendered.label "Digits rendered">
+<!ENTITY UpperThreshold.label "Upper threshold">
+<!ENTITY DigitsLeftofDecimal.label  "(digits left of decimal before switching)">
+<!ENTITY Lowerthreshold.label  "Lower threshold">
+<!ENTITY ZerosRightofDecimal.label  "(zeros to right of decimal before switching)">
+<!ENTITY OutputFractionsasMixedNumbers.label  "Output fractions as mixed numbers">
+<!ENTITY UseParenthesesforTrigFunctions.label "Use Parentheses for Trig Functions">
+<!ENTITY UseArcPrefixforInverseTrigFunctions.label "Use "arc" prefix for inverse Trig Functions">
+<!ENTITY DefaultMatrixDelimiter.label "Default matrix delimiter">
+<!ENTITY SwitchfromPrimestoN.label  "switch from primes to (n)">
+<!ENTITY PrimeMeansDerivative.label "Prime means derivative">
 

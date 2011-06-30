@@ -13,7 +13,7 @@
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/thmproperties.dtd">
-
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&windowTitle.label;"
     id="thmpropertiesdlg"
@@ -21,6 +21,8 @@
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->

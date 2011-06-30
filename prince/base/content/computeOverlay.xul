@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
-
+<!--JLF - Localization pass on 6/28/2011-->
 <!DOCTYPE overlay [
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/computeOverlay.dtd" >
 %DTD;

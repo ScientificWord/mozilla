@@ -11,7 +11,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Note.dtd" >
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog id="NoteDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -20,7 +20,9 @@
   onload="startUp();"
   persist="screenX screenY width height"
   screenX="40"
-  screenY="40">
+  screenY="40"
+  width="240"
+  height="185">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>

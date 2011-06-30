@@ -38,8 +38,8 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 # 
 # ***** END LICENSE BLOCK *****
-
-<!DOCTYPE overlay [
+<!--JLF - Localization pass on 6/28/2011-->
+DOCTYPE overlay [
 <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
 %brandDTD;
 <!ENTITY % baseMenuOverlayDTD SYSTEM "chrome://prince/locale/baseMenuOverlay.dtd">

@@ -12,7 +12,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Brackets.dtd">
-
+<!-- JLF to verify-->
 <dialog title="&windowTitle.label;"
     id="BracketsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -21,6 +21,8 @@
     ondialogcancel="return onCancel();"
     height="325"
     width="800"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
@@ -39,7 +41,7 @@
 
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-<!--JLF, 3/4/2011 First pass for Brackets label in tooltiptext.  Needs review. -->
+<!--JLF, 3/4/2011 First pass for Brackets label in tooltiptext.  Needs review and to be moved into DTD. -->
   <vbox>
     <hbox>
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />

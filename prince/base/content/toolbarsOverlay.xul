@@ -8,7 +8,7 @@
 
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd">
-
+<!--JLF to verify-->
 <overlay id="toolbarsOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   
@@ -23,18 +23,18 @@
      mode="icons" iconsize="large">       
     <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
       <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
-        label="Customize Toolbars" />
+        label="&CustomizeToolbars.label;" />
     </popup>
     <popup id="symbol-palettes-context-menu" >
       <menuitem id='symbolssmall' persist="checked" checked = "true" type="checkbox" oncommand="setSymbolSize('small');"
-        label="Small symbols" />
+        label="&SmallSymbols.label;" />
       <menuitem id='symbolsmedium' persist="checked" type="checkbox" oncommand="setSymbolSize('medium');"
-        label="Medium symbols" />
+        label="&MediumSymbols.label;" />
       <menuitem id='symbolslarge' persist="checked" type="checkbox" oncommand="setSymbolSize('large');"
-        label="Large symbols" />
+        label="&LargeSymbols.label;" />
       <menuseparator/>
       <menuitem id="menuCompactSymbolPanels" persist="checked" type="checkbox" oncommand="setCompact(this);"
-        label="Compact" observes="cmd_compactSymbolPanels"/>
+        label="&CompactSymbols.label;" observes="cmd_compactSymbolPanels"/>
     </popup>
     <toolbarpalette id="ToolbarPalette"  >
       <toolbarbutton id="mathtextButton" />
@@ -106,6 +106,7 @@
       <toolbaritem id="ParaTags" title="&paratagselect.label;"><textbox id="ParaTagSelections"/></toolbaritem>
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
       <toolbaritem id="FrontMTags" title="&frontmtagselect.label;"><textbox id="FrontMTagSelections"/></toolbaritem>
+     <!-- JLF, apply correct format for % in entity.  Using the percent symbol in the entity string in DTD file causes parsing error-->
       <toolbaritem id="zoomer" title="Zoom setting" ><textbox id="zoomValue" label="Zoom %" type="number" observes="cmd_textZoomSet"/></toolbaritem>
       
     </toolbarpalette>

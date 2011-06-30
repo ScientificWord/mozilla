@@ -11,7 +11,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetPreamble.dtd">
-
+<!-- JLF to verify-->
 <dialog title="&windowTitle.label;"
     id="typesetPreambleDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

@@ -26,7 +26,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
-
+<!-- JLF to verify-->
 
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
@@ -36,6 +36,8 @@
     ondialogaccept = "OK();"
     ondialogcancel = "Cancel();"
     buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
