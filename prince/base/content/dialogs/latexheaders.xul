@@ -24,7 +24,7 @@
 <!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
 %editorOverlayDTD;
 ]>
-
+<!--JLF - Localization pass on 6/29/2011-->
 
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&latexHeaders.label;"
@@ -34,6 +34,8 @@
     ondialogaccept = "OK()"
     ondialogcancel = "Cancel()"
     buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->

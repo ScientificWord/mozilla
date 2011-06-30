@@ -1,4 +1,9 @@
 
+<!ENTITY CustomizeToolbars.label  "Customize Toolbars">
+<!ENTITY SmallSymbols.label "Small symbols">
+<!ENTITY MediumSymbols.label  "Medium symbols">
+<!ENTITY LargeSymbols.label "Large symbols">
+<!ENTITY CompactSymbols.label "Compact">
 
 <!ENTITY mathtextToolbar.tooltip "Toggle Math/Text">
 
