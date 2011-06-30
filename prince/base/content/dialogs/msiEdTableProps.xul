@@ -8,7 +8,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorTableProperties.dtd">
-
+<!-- JLF to verify-->
 <dialog title="&tableWindow.title;"
     id="msiEdTablePropsDlg"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"

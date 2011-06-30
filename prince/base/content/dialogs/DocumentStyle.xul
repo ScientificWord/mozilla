@@ -13,7 +13,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/documentStyle.dtd" >
 %dialogDTD;
 ]>
-
+<!-- JLF to verify-->
 <dialog title="Document Style Sheets"
     id="DocumentStyleDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
