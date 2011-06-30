@@ -26,7 +26,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
-
+<!-- JLF to verify-->
 <dialog id="SectionTextDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -34,6 +34,8 @@
   ondialogcancel="return onCancel();"
   onunload="ShutdownAllEditors();"
   onload="Startup();"
+  screenX="40"
+  screenY="40"
   persist="screenX screenY width height"
 >
 
