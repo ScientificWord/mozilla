@@ -740,7 +740,8 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,eng.Inverse,"Inverse.fmt", editorElement);
       break;
     case "cmd_MSIComputeJordan":  
-      doLabeledComputation(element,eng.Jordan_Form,"Jordan.fmt", editorElement);
+      //doLabeledComputation(element,eng.Jordan_Form,"Jordan.fmt", editorElement);
+      doEvalComputation(element,eng.Jordan_Form,"<mo>=</mo>", "evaluate jordan", editorElement, inPlace);
       break;
     case "cmd_MSIComputeMap":  
       doComputeMap(element, editorElement, cmd, cmdHandler);
@@ -785,7 +786,8 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,eng.Singular_Values,"Singular.fmt", editorElement);
       break;
     case "cmd_MSIComputeSVD":      
-      doLabeledComputation(element,eng.SVD,"SVD.fmt", editorElement);
+      //doLabeledComputation(element,eng.SVD,"SVD.fmt", editorElement);
+      doEvalComputation(element,eng.SVD,"<mo>=</mo>", "evaluate SVD", editorElement, inPlace);
       break;
     case "cmd_MSIComputeSmith":    
       doLabeledComputation(element,eng.Smith_Normal_Form,"Smith.fmt", editorElement);
