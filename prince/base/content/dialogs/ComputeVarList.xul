@@ -21,7 +21,7 @@
 <!ENTITY % menuDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuDTD;
 ]>
-
+<!--JLF - Localization pass on 6/29/2011-->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
     id="ComputVarListDlg"
@@ -31,6 +31,8 @@
     ondialogaccept = "return OK()"
     ondialogcancel = "return Cancel()"
     buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->

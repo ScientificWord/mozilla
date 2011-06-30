@@ -10,7 +10,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/tagkeyassignments.dtd" >
 %dialogDTD;
 ]>
-
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog title="&windowTitle.label;"
     id="tagkeyassignmentsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -19,6 +19,8 @@
     buttons="accept,cancel"
     buttonlabelaccept="Save changes to file"
     buttonlabelcancel="Done" 
+    screenX="40"
+    screenY="40"
     persist="screenX screenY height width" >
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->

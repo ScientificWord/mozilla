@@ -6,7 +6,7 @@
 <!ENTITY % aboutDialogDTD SYSTEM "chrome://prince/locale/aboutDialog.dtd" >
 %aboutDialogDTD;
 ]>
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog xmlns:html="http://www.w3.org/1999/xhtml"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         id="aboutDialog"
@@ -15,7 +15,8 @@
         title="&aboutDialog.title;"
         screenX="40"
         screenY="40"
-        persist="left top width height">
+        persist="screenX screenY width height"
+        >
 
   <script type="application/x-javascript" src="chrome://prince/content/about.js"/>
   <tabbox>
