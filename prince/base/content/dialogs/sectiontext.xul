@@ -26,7 +26,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
-<!-- JLF to verify-->
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog id="SectionTextDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -85,7 +85,7 @@
     <keyset id="tasksKeys"/>
     <keyset id="MSIKeySet"/>
   </keyset>
-
+<!--JLF - work on height for correct text display.  Also accesskey is not working.-->
 	<vbox>
 	  <groupbox>
 	    <label id="sectionCodeDescription" control="sectiontitle-frame" accesskey="&sectionCodeDescription.accesskey;">
