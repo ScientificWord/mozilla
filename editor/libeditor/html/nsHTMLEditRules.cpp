@@ -66,6 +66,9 @@
 #include "nsIRangeUtils.h"
 #include "nsIDOMCharacterData.h"
 #include "nsIDOMNSHTMLElement.h"
+#include "nsIDOMDocumentTraversal.h"
+#include "nsIDOMNodeFilter.h"
+#include "nsIDOMTreeWalker.h"
 #include "nsIEnumerator.h"
 #include "nsIPresShell.h"
 #include "nsIPrefBranch.h"
@@ -2570,10 +2573,24 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
 
   // examine selection
   nsWSRunObject wsObj(mHTMLEditor, node, offset);
-  if (((wsObj.mStartReason & nsWSRunObject::eBlock) || (wsObj.mStartReason & nsWSRunObject::eBreak))
-      && (wsObj.mEndReason & nsWSRunObject::eBlock))
+  if (((wsObj.mStartReason & nsWSRunObject::eBlock)|| (wsObj.mStartReason & nsWSRunObject::eBreak)) &&
+      (wsObj.mEndReason & nsWSRunObject::eBlock))
   {
     // if we are tucked between block boundaries then insert a br
+    // First check that there isn't already one.
+    nsCOMPtr<nsIDOMElement> el;
+    el = do_QueryInterface(node);
+    if (el) {
+      nsCOMPtr<nsIDOMNodeList> nodeList;
+      res = el->GetElementsByTagName(NS_LITERAL_STRING("br"), getter_AddRefs(nodeList));
+      if (el)
+      {
+        PRUint32 length;
+        nodeList->GetLength(&length);
+        if (length > 0) return res;
+      }
+    }
+
     // first check that we are allowed to
     if (mHTMLEditor->CanContainTag(node, NS_LITERAL_STRING("br")))
     {
@@ -5070,6 +5087,57 @@ nsHTMLEditRules::AlignBlockContents(nsIDOMNode *aNode, const nsAString *alignTyp
   return res;
 }
 
+nsresult 
+nsHTMLEditRules::AdvanceCursorToEditableText(nsIDOMNode *aStartNode,
+                                         PRUint32 aOffset,
+                                         nsIDOMNode **aOutNode,
+                                         PRUint32 *aOutOffset)
+{
+  nsresult res;
+  if (!aStartNode) {
+    *aOutNode = nsnull;
+    return NS_OK; // BBM: fix this
+  }
+  *aOutNode = aStartNode;
+  *aOutOffset = aOffset;
+  if (mHTMLEditor->IsEditable(aStartNode))
+  {
+    if (nsEditor::IsTextNode(aStartNode)) return NS_OK;
+  }
+  nsCOMPtr<nsIDOMDocument> doc;
+  res = aStartNode->GetOwnerDocument(getter_AddRefs(doc));
+  nsCOMPtr<nsIDOMDocumentTraversal> trav = do_QueryInterface(doc, &res);
+  nsCOMPtr<nsIDOMNode> docAsNode = do_QueryInterface(doc);
+  nsCOMPtr<nsIDOMTreeWalker> walker;
+  res = trav->CreateTreeWalker(docAsNode, 
+         nsIDOMNodeFilter::SHOW_ELEMENT | 
+             nsIDOMNodeFilter::SHOW_TEXT,
+         nsnull, PR_TRUE, getter_AddRefs(walker));
+  NS_ENSURE_SUCCESS(res, NS_ERROR_FAILURE);
+
+  nsCOMPtr<nsIDOMNodeList> children;
+  nsCOMPtr<nsIDOMElement> el;
+  el = do_QueryInterface(aStartNode);
+  res = el->GetChildNodes(getter_AddRefs(children));
+
+  nsCOMPtr<nsIDOMNode> currentNode;
+  res = children->Item(aOffset, getter_AddRefs(currentNode));
+
+  walker->SetCurrentNode(currentNode);
+  while (currentNode)
+  {
+    if (mHTMLEditor->IsEditable(currentNode) && nsEditor::IsTextNode(currentNode))
+    {
+      *aOutNode = currentNode;
+      *aOutOffset = 0;
+      return NS_OK;
+    }
+    walker->NextNode(getter_AddRefs(currentNode));
+  }
+  return NS_ERROR_FAILURE;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////
 // CheckForEmptyBlock: Called by WillDeleteSelection to detect and handle
 //                     case of deleting from inside an empty block.
@@ -5145,26 +5213,41 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
     }
     res = mHTMLEditor->DeleteNode(emptyBlock);
     // If there is no paragraph left, put in a new one
+    // No, this means the cursor can't get past a paragraph that is a childe of body
     if (blockParent == aBodyNode)
     {
-      nsString defPara;
-      nsIAtom * atomDummy;
-      mHTMLEditor->mtagListManager->GetDefaultParagraphTag(&atomDummy, defPara);
-      if (!mHTMLEditor->CanContainTag(blockParent, defPara))  
-        return NS_ERROR_FAILURE;
-      // else insert the default paragraph
-      mHTMLEditor->SetParagraphFormat(defPara);
-      // We want to move the selection here as well.
-      // blockParent is the parent node
-      nsCOMPtr<nsIDOMNodeList> nodelist;
-      nsCOMPtr<nsIDOMElement> element = do_QueryInterface(blockParent);
-      if (!element) return false;
-      res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
-      res = nodelist->Item(0, getter_AddRefs(blockParent)); // now selNode is the new selection node.
-      aSelection->Collapse(blockParent,0);
+      PRBool bodyIsEmpty;
+      res = mHTMLEditor->IsEmptyNode(aBodyNode, &bodyIsEmpty, PR_TRUE, PR_FALSE);
+      if (bodyIsEmpty)
+      {
+        nsString defPara;
+        nsIAtom * atomDummy;
+        mHTMLEditor->mtagListManager->GetDefaultParagraphTag(&atomDummy, defPara);
+        if (!mHTMLEditor->CanContainTag(blockParent, defPara))  
+          return NS_ERROR_FAILURE;
+        // else insert the default paragraph
+        mHTMLEditor->SetParagraphFormat(defPara);
+        // We want to move the selection here as well.
+        // blockParent is the parent node
+        nsCOMPtr<nsIDOMNodeList> nodelist;
+        nsCOMPtr<nsIDOMElement> element = do_QueryInterface(blockParent);
+        if (!element) return false;
+        res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
+        res = nodelist->Item(0, getter_AddRefs(blockParent)); // now selNode is the new selection node.
+        aSelection->Collapse(blockParent,0);
 #ifdef DEBUG_Barry
-      printf("Just inserted default paragraph (%S) here\n", defPara.BeginReading());
+        printf("Just inserted default paragraph (%S) here\n", defPara.BeginReading());
 #endif
+      }
+      else // advance cursor into next text or block
+      {
+        PRUint32 newOffset;
+        nsCOMPtr<nsIDOMNode> newNode;
+        aSelection->GetAnchorOffset(&offset);
+        AdvanceCursorToEditableText( blockParent, offset, getter_AddRefs(newNode), &newOffset  );
+        if (newNode)
+          aSelection->Collapse(newNode, newOffset);
+      }
     }
     *aHandled = PR_TRUE;
   }
@@ -6251,7 +6334,6 @@ nsHTMLEditRules::GetListActionNodes(nsCOMArray<nsIDOMNode> &outArrayOfNodes,
       if (NS_FAILED(res)) return res;
     }
   }
-
   // if there is only one node in the array, and it is a list, div, or blockquote,
   // then look inside of it until we find inner list or content.
   res = LookInsideDivBQandList(outArrayOfNodes);
@@ -7729,7 +7811,6 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
   nsCOMPtr<nsIDOMNode> destNode;
   nsAutoString tagName;
   PRBool done = PR_FALSE;
-  PRBool destIsParent = PR_FALSE;
   PRBool isStruct;
   PRUint16 nodeType;
   PRInt32 offset;
@@ -7966,7 +8047,6 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   PRInt32 destOffset;
   PRInt32 offset;
   PRBool fCanContain = PR_FALSE;
-  PRBool fReplaceContainer = PR_FALSE;
 
   RemoveStructure(inNode, aStructureType);
  
@@ -8847,16 +8927,24 @@ nsHTMLEditRules::RemoveEmptyNodes()
       PRBool bIsCandidate = PR_FALSE;
       PRBool bIsEmptyNode = PR_FALSE;
       PRBool bIsMailCite = PR_FALSE;
-
+      nsIAtom * nsAtom;
       // don't delete the body
       if (!nsTextEditUtils::IsBody(node))
       {
         // only consider certain nodes to be empty for purposes of removal
+        nsAutoString className;
+        nsAutoString nodeName;
+        res = mtagListManager->GetTagOfNode(node, &nsAtom, nodeName);
+        res = mtagListManager->GetClassOfTag(nodeName, nsAtom, className);
         if (  (bIsMailCite = nsHTMLEditUtils::IsMailCite(node, mtagListManager))  ||
               nsEditor::NodeIsType(node, nsEditProperty::a)      ||
               nsHTMLEditUtils::IsInlineStyle(node, mtagListManager)               ||
               nsHTMLEditUtils::IsList(node, mtagListManager)                      ||
-              nsHTMLEditUtils::IsDiv(node, mtagListManager)  )
+              nsHTMLEditUtils::IsDiv(node, mtagListManager) ||
+              className.EqualsLiteral("paratag") ||
+              className.EqualsLiteral("envtag") ||
+              className.EqualsLiteral("structtag") )
+
         {
           bIsCandidate = PR_TRUE;
         }
