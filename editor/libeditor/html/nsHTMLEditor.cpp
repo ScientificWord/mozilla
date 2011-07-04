@@ -5736,7 +5736,7 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
     res = IsVisTextNode(aNode, outIsEmptyNode, aSafeToAskFrames);
     return res;
   }
-  *outIsEmptyNode = PR_TRUE;
+  *outIsEmptyNode = PR_TRUE;/
 
   // if it's not a text node (handled above) and it's not a container,
   // then we don't call it empty (it's an <hr>, or <br>, etc).
@@ -5749,7 +5749,7 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
        (aListOrCellNotEmpty && nsHTMLEditUtils::IsListItem(aNode, mtagListManager)) ||
        (aListOrCellNotEmpty && nsHTMLEditUtils::IsTableCell(aNode, mtagListManager)) ) 
   {
-    *outIsEmptyNode = PR_FALSE;
+    *outIsEmptyNod/e = PR_FALSE;
     return NS_OK;
   }
   
