@@ -90,11 +90,14 @@ input, button, textarea {
   -moz-user-focus: none !important;
 }
 
+
 /* XXX Still need a better way of blocking other events to these widgets */
-select, input[disabled], input[type="checkbox"], input[type="radio"], input[type="file"] {
+select, input[disabled], input[type="checkbox"], input[type="radio"], input[type="file"],
+button [class="frontmattertag"]{
   -moz-user-select: all !important;
   -moz-user-input: none !important;
   -moz-user-focus: none !important;
+  -moz-user-modify: read-only  !important;
 }
 
 isindex[prompt]
@@ -360,3 +363,10 @@ a[\_moz_anonclass="mozTableRemoveRow"]:hover {
 a[\_moz_anonclass="mozTableRemoveRow"]:active {
   background-image: url("resource://gre/res/table-remove-row-active.gif");
 }
+
+
+button [class="frontmattertag"] {
+  -moz-user-select: none;  
+  -moz-user-modify: read-only;
+}
+

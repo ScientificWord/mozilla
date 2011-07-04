@@ -103,7 +103,7 @@ breakobj {
 span {
   display: inline;
 }
-					  
+
 button.expander {
   position: absolute;
   background-image: url("chrome://global/skin/tree/twisty-open.png");
