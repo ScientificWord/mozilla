@@ -503,8 +503,9 @@ button[class="subeqnnum"]:after{
 button[class="frontmattertag"]{
   position: absolute;
   left: 5px;
+  -moz-user-select: none;  
+  -moz-user-modify: read-only;
 }
-
 
 [hideindexentries="true"] indexitem {
   display: none;
