@@ -125,6 +125,8 @@ public:
   NS_IMETHOD DidDeleteRange(nsIDOMRange *aRange);
   NS_IMETHOD WillDeleteSelection(nsISelection *aSelection);
   NS_IMETHOD DidDeleteSelection(nsISelection *aSelection);
+  NS_IMETHOD AdvanceCursorToEditableText(nsIDOMNode *aStartNode, PRUint32 aOffset,
+                                         nsIDOMNode **aOutNode, PRUint32 *aOutOffset);
 
 protected:
 
