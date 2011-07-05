@@ -110,7 +110,7 @@
     </tabpanel>
     <tabpanel orient="vertical" align="center">
       <groupbox>
-        <caption label="Border"/>
+        <caption label="&tab.borders;"/>
         <description label="Units: pt"/>
         <hbox align="center">
           <label value="&width.label;" accesskey="&width.accesskey;" control="borderwidth" />
