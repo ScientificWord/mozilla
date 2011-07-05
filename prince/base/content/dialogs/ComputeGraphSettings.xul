@@ -81,7 +81,7 @@
     <tabpanels>
       <tabpanel id="Layout" orient="vertical">
         <groupbox>
-          <caption label="Default size for new plots"/>
+          <caption label="&defaultsizenewplot.label;"/>
           <grid>
             <columns>
               <column flex="0"/>
@@ -99,7 +99,7 @@
           </grid>
         </groupbox>
         <groupbox>
-          <caption label="Default placement for new plots"/>
+          <caption label="&defaultplacementnewplot.label;"/>
           <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
