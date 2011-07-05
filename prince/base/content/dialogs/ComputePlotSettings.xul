@@ -167,7 +167,7 @@
         </groupbox>
 
  	    <groupbox id="approxIntegral" collapsed="true">
-            <caption label="Approximate Integral"/>
+            <caption label="&approxintegral.label;"/>
    	        <grid flex = "1">
               <columns>
                 <column flex="2"/>
@@ -192,45 +192,45 @@
                   <description>Area Fill Style</description>
                   <menulist id="FillPattern">
                     <menupopup> 
-                      <menuitem label="Solid"                   value="Solid"/>
-                      <menuitem label="Crossed Lines"           value="CrossedLines"/>
-   	                  <menuitem label="Diagonal Lines"          value="DiagonalLines"/>
-   	                  <menuitem label="Forward Diagonal Lines"  value="ForwardDiagonalLines"/>
-                      <menuitem label="Horizontal Lines"        value="HorizontalLines"/>
-                      <menuitem label="Vertical Lines"          value="VerticalLines"/>
-   	                  <menuitem label="Crossed Diagonal Lines"  value="CrossedDiagonalLines"/>
+                      <menuitem label="&FillPatternSolid.label;"                   value="Solid"/>
+                      <menuitem label="&FillPatternCrossedLines.label;"           value="CrossedLines"/>
+   	                  <menuitem label="&FillPatternDiaglLines.label;"          value="DiagonalLines"/>
+   	                  <menuitem label="&FillPatternForwardDiagLines.label;"  value="ForwardDiagonalLines"/>
+                      <menuitem label="&FillPatternHorizLines.label;"        value="HorizontalLines"/>
+                      <menuitem label="&FillPatternVertLines.label;"          value="VerticalLines"/>
+   	                  <menuitem label="FillPatternCrossedDiagLines.label"  value="CrossedDiagonalLines"/>
                     </menupopup>
                    </menulist>
    	            </row>
    	            <row>
-                  <description>Number of Intervals</description>
+                  <description>&NumberofIntervals.desc;</description>
                   <spacer flex="1"/>
                   <textbox id="AISubIntervals" style="width: 3em"/>
    	            </row>
    	            <row>
-                  <description>Approximation Method</description>
+                  <description>&ApproxMethod.desc;</description>
                   <menulist id="AIMethod">
                     <menupopup> 
-                      <menuitem label="Left"                       value="Left"/>
-                      <menuitem label="Right"                      value="Right"/>
-                      <menuitem label="Middle"                     value="Middle"/>
-                      <menuitem label="Lower"                      value="Lower"/>
-   	                  <menuitem label="Upper"                      value="Upper"/>
-                      <menuitem label="Lower Absolute"             value="LowerAbsolute"/>
-   	                  <menuitem label="Upper Absolute"             value="UpperAbsolute"/>
-                      <menuitem label="Trapezoidal"                value="Trapezoidal"/>
-   	                  <menuitem label="Simpson"                    value="Simpson"/>
+                      <menuitem label="&AIMethodLeft.label;"                       value="Left"/>
+                      <menuitem label="&AIMethodRight.label;"                      value="Right"/>
+                      <menuitem label="&AIMethodMiddle.label;"                     value="Middle"/>
+                      <menuitem label="&AIMethodLower.label;"                      value="Lower"/>
+   	                  <menuitem label="&AIMethodUpper.label;"                      value="Upper"/>
+                      <menuitem label="&AIMethodLowerAbs.label;"             value="LowerAbsolute"/>
+   	                  <menuitem label="&AIMethodUpperAbs.label;"             value="UpperAbsolute"/>
+                      <menuitem label="&AIMethodTrapezoidal.label;"                value="Trapezoidal"/>
+   	                  <menuitem label="&AIMethodSimpson.label;"                    value="Simpson"/>
                     </menupopup>
                    </menulist>
    	            </row>
    	            <row>
-                  <description>Show Info</description>
+                  <description>&ShowInfo.desc;</description>
                   <menulist id="AIInfo">
                     <menupopup> 
-                      <menuitem label="No Info"                       value="NoInfo"/>
-                      <menuitem label="Approximated Value"            value="ApproximatedValue"/>
-   	                  <menuitem label="Approximated and Exact Value"  value="ApproximatedandExactValue"/>
-                      <menuitem label="Both Values and Error"         value="BothValuesandError"/>
+                      <menuitem label="&AIInfoNone.label;"                       value="NoInfo"/>
+                      <menuitem label="&AIInfoApproxValue.label;"            value="ApproximatedValue"/>
+   	                  <menuitem label="&AIInfoApproxandExactValue.label;"  value="ApproximatedandExactValue"/>
+                      <menuitem label="&AIInfoBothValuesandError.label;"         value="BothValuesandError"/>
                     </menupopup>
                    </menulist>
    	            </row>
@@ -241,7 +241,7 @@
 
       <tabpanel id="animparams" height="300">
  	    <groupbox id="animation" collapsed="false">
-            <caption label="Animation Parameters"/>
+            <caption label="&animationparams.label;"/>
    	        <grid flex = "1">
               <columns>
                 <column flex="2"/>
@@ -249,17 +249,17 @@
    	          </columns>
               <rows>
                 <row>
-				  <description>Start time (seconds)</description>
+				  <description>&starttime.desc;</description>
                   <spacer flex="1"/>
                   <textbox id="AnimateStart" style="width: 3em"/>
                 </row>
                 <row>
-				  <description>End time (seconds)</description>
+				  <description>&endtime.desc;</description>
                   <spacer flex="1"/>
                   <textbox id="AnimateEnd" style="width: 3em"/>
                 </row>
    	            <row>
-                  <description>Frames per second</description>
+                  <description>&framespersec.desc;</description>
                   <spacer flex="1"/>
                   <textbox id="AnimateFPS" style="width: 3em"/>
    	            </row>
