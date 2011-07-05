@@ -144,6 +144,16 @@ static char hrefText[] = "href";
 static char anchorTxt[] = "anchor";
 static char namedanchorText[] = "namedanchor";
 
+#ifdef DEBUG
+const PRUnichar *
+DumpNodeTag( nsIDOMNode * aNode)
+{
+  nsAutoString tagName;
+  aNode->GetNodeName(tagName);
+  return tagName.get();
+}
+#endif
+
 nsIRangeUtils* nsHTMLEditor::sRangeHelper;
 
 // some prototypes for rules creation shortcuts
@@ -2049,7 +2059,7 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString, nsAStrin
     res = docEncoder->Init(domdoc, NS_LITERAL_STRING("text/plain"), 0);
     NS_ENSURE_SUCCESS(res, res);
     docEncoder->EncodeToString(errMsg);
-    printf("Result:\n%S\n",errMsg);
+//    printf("Result:\n%S\n",errMsg);
     _retval.Assign(errMsg);
     return NS_OK;
   }
