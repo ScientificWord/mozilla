@@ -23,7 +23,7 @@
 <!ENTITY sizeSmallRadio.accesskey "S">
 
 <!ENTITY operatorsButtonGroup.label "Operators">
-operatorsButtonGroup.accesskey "O">
+<!ENTITY operatorsButtonGroup.accesskey "O">
 
 <!-- <!ENTITY .tooltip "">  -->
 <!ENTITY Integral.tooltiptext "Integral">
