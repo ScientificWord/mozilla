@@ -506,7 +506,7 @@ void msiKeyMap::keyArrayToString( nsTArray<PRUint32>& ka, nsString& sFile, nsCla
     else
     {
       if (keyCode == 0x26) s2 = NS_LITERAL_STRING("&amp;");    
-      else if (keyCode == 0x3c) s2 = NS_LITERAL_STRING("lt;");
+      else if (keyCode == 0x3c) s2 = NS_LITERAL_STRING("&lt;");
       else s2 = nsString((nsString::char_type*)&keyCode,1);
       thisLine.Append(s2);
     }
@@ -550,9 +550,10 @@ NS_IMETHODIMP msiKeyMap::SaveKeyMaps(PRBool *_retval)
   nsAutoString str;
  
   nameHashPair * p = m_pnhp;
-  nsTArray<PRUint32> keyArray;
+  
   while (p)
   {
+    nsTArray<PRUint32> keyArray;
     str = p->m_name;
     sFile += NS_LITERAL_STRING("  <keytable id=\"");
     sFile += str;
