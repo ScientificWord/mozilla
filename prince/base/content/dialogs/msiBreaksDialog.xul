@@ -18,6 +18,8 @@
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
+    width="350"
+    height="300"
     screenX="40"
     screenY="40"
     persist="screenX screenY width height">
