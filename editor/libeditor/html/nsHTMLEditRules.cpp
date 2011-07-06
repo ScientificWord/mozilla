@@ -2022,6 +2022,8 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     else
       res = wsObj.PriorVisibleNode(startNode, startOffset, address_of(visNode), &visOffset, &wsType);
     if (NS_FAILED(res)) return res;
+  
+  //BBM: is this where we can intercept for math objects?
     
     if (!visNode) // can't find anything to delete!
     {
