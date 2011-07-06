@@ -268,8 +268,8 @@
                 <column flex="0"/>
               </columns>
               <rows>
-                <row><label value="&DefaultSizetNewGraphicsWidth.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
-                <row><label value="&DefaultSizeNewGraphics\Height.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+                <row><label value="&DefaultSizeNewGraphicsWidth.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
+                <row><label value="&DefaultSizeNewGraphicsHeight.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
               </rows>
             </grid>
           </groupbox>
