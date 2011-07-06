@@ -191,7 +191,7 @@
 
 <!ENTITY FillPatternSolid.label "Solid">
 <!ENTITY FillPatternCrossedLines.label  "Crossed Lines">
-<!ENTITY FillPatternDiaglLines.label  Diagonal Lines">
+<!ENTITY FillPatternDiaglLines.label  "Diagonal Lines">
 <!ENTITY FillPatternForwardDiagLines.label  "Forward Diagonal Lines">
 <!ENTITY FillPatternHorizLines.label  "Horizontal Lines">
 <!ENTITY FillPatternVertLines.label "Vertical Lines">
