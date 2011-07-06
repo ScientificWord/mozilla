@@ -46,7 +46,7 @@
 <?xul-overlay href="chrome://prince/content/EdDialogOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/EditorLinkProperties.dtd">
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog id="linkDlg" title="&windowTitle.label;"
    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
    buttons="accept,cancel,help"

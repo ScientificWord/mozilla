@@ -45,6 +45,7 @@
 
 <!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorPublishProgress.dtd">
 <!-- dialog containing a control requiring initial setup -->
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog title=""
     id="msiEditorPublishProgressDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -53,6 +54,8 @@
     onload="Startup()"
     ondialogaccept="return onEnterKey();"
     ondialogcancel="return onClose();"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
