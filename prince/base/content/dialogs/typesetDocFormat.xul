@@ -20,7 +20,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;                        
 ]>
-
+<!-- JLF to verify-->
 <dialog title="&windowTitle.label;"
     id="docformat.dialog"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -634,9 +634,9 @@
                         <hbox id="headersep" style="height:.2cm;" onclick="document.getElementById('tbheadersep').focus();"/>
 
                         <hbox id="bodyheight" >
-                          <hbox id="bodyleft" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="Body text area" flex="1"/>
+                          <hbox id="bodyleft" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="&bodytextarea.tooltip;" flex="1"/>
                           <hbox id="colsep" observes="multicolumn" role="columnwidth" onclick="document.getElementById('tbcolsep').focus();" />
-                          <hbox id="bodyright" observes="multicolumn" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="Body text area" flex="1" />
+                          <hbox id="bodyright" observes="multicolumn" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="&bodytextarea.tooltip;" flex="1" />
                         </hbox>
 
                         <hbox id="footersep" onclick="document.getElementById('tbfootersep').focus();"/>
@@ -841,7 +841,7 @@
                      <textbox id="tbbodywidth" type="number" style="width: 5em" onkeypress="geomHandleChar(event,'bodywidth', 'tbbodywidth');"
                        onchange="layoutPage('bodywidth');"
                        onfocus="activate('bodyleft');activate('bodyright');" onblur="deactivate('bodyleft');deactivate('bodyright');"
-                       tooltip="The width of the main text">
+                       tooltip="&maintextwidth.tooltip;">
                        <observes element="pagelayoutok" attribute="disabled"/>
                      </textbox>
                      <label observes="pagelayoutok" value="&docformatTextBodyHeight;"/>
@@ -954,7 +954,7 @@
                  <label observes="pagelayoutok" value="&docformatMNPush;"/>
                  <textbox observes="pagelayoutok" id="tbmnpush" type="number" style="width: 5em" value="1"  oninput="layoutPage('mnpush');" onkeypress="geomHandleChar(event,'mnpush','tbmnpush');"
                    onchange="layoutPage('mnpush');" onfocus="activate('mnpush');" onblur="deactivate('mnpush');"  
-                   tooltip="The minimum separation between margin notes" >
+                   tooltip="&minseparationmarginnotes.tooltip;" >
                    <observes element="disablemarginnotes" attribute="disabled"  />
                  </textbox>  
                  <broadcaster id="disablemarginnotes" hidden="true" disabled="true" />

@@ -12,10 +12,12 @@
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/NoteOptionsDialog.dtd">
-
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog id="noteOptionsDlg" title="&noteOptionsDialog.title;"
    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
    persist="screenX screenY width height"
+   screenX="40"
+   screenY="40"
    defaultbutton="accept"
    buttons="accept,cancel"
    onload = "startup()"
