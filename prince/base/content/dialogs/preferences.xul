@@ -18,7 +18,7 @@
     <preferences>
       <preference id="defaultshell" 
                   name="swp.defaultShell" 
-                  type="file"/>
+                  type="string"/>
       <preference id="selectedSkin" 
                   name="general.skins.selectedSkin" 
                   type="string"/>
@@ -254,7 +254,7 @@
             </vbox> 
             <vbox style="width:2in" >
               <label value="Shell Files"/>
-              <listbox preference="defaultshell" flex = "1" id="dircontents" oncommand="return onAccept();" ondblclick="acceptDialog();" />
+              <listbox preference="defaultshell" flex = "1" onselect="onShellSelect();" id="dircontents"/>
             </vbox>
           </hbox>
         </tabpanel>
