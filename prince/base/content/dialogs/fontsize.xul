@@ -11,7 +11,8 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/otfont.dtd" >
 %dialogDTD;
 ]>
-
+<!--JLF - Localization pass on 6/28/2011-->
+<!-- JLF - verify use with BBM-->
 <dialog id="fontsize" title="&fontsizetitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     ondialogaccept="return onAccept();"

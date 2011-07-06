@@ -8,7 +8,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/ComputeSwitchEngines.dtd">
-
+<!--JLF - Localization pass on 6/28/2011-->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
     id="ComputeSwitchEnginesDlg"
@@ -17,6 +17,8 @@
     ondialogaccept = "OK()"
     ondialogcancel = "Cancel()"
     buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->

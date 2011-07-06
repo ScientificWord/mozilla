@@ -12,13 +12,15 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/fractionProperties.dtd">
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog title="&windowTitle.label;"
     id="fractionPropertiesDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
