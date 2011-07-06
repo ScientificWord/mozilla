@@ -9,7 +9,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/sourceparseerror.dtd" >
 %dialogDTD;
 ]>
-
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog title="&windowTitle.label;"
     id="SourceParseErrorDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -22,6 +22,8 @@
     buttonlabelcancel="&cancel.label;" 
     persist="screenX screenY width height sizemode"
     width="600px" height="200px">
+    screenX="40"
+    screenY="40"
   <script type="application/x-javascript" src="chrome://prince/content/sourceparseerror.js"/>
   <html:style type="text/css">
    .console-error-source { display: none }

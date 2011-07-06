@@ -7,7 +7,7 @@
 <?xml-stylesheet href="chrome://prince/skin/typesetDocFormat.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
-
+<!-- JLF to verify-->
 <overlay id="docformatsectionsoverlay.dialog"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:html="http://www.w3.org/1999/xhtml"
@@ -201,7 +201,7 @@
           <observes element="leftalignment"	attribute="msicollapsed"/>
         </label>
         <textbox id="tbsectleftheadingmargin" type="number" style="width:5em" min="-300" increment="1"
-          tooltip="The left indent for the heading" value="0" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
+          tooltip="&leftindentheading.tooltip;" value="0" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
           <observes element="secredefok" attribute="disabled"/>
           <observes element="leftalignment" attribute="hidden"/>
         </textbox>
@@ -219,7 +219,7 @@
           <observes element="rightalignment"	attribute="msicollapsed"/>
         </label>
         <textbox id="tbsectrightheadingmargin" type="number" style="width:5em" min="-300" increment="1" 
-          tooltip="The right indent for the heading" value="30" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));">
+          tooltip="&rightindentheading.tooltip;" value="30" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));">
           <observes element="secredefok" attribute="disabled"/>
           <observes element="rightalignment" attribute="hidden"/>
         </textbox>
