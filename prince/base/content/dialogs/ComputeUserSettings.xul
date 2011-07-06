@@ -46,7 +46,7 @@
 	   <tab label="&tabbar.entities;"    selected="0" />
 	  </tabs>
 
-    <tabpanels>
+   <tabpanels>
       <tabpanel id="compusersettings.inputpage">
        <vbox>
         <groupbox>
