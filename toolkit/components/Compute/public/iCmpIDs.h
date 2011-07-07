@@ -329,7 +329,11 @@
 #define PID_PlotAnimateVisAfter    133
 #define PID_PlotConfHorizontalPts  134
 #define PID_PlotConfVerticalPts    135
-#define PID_last                   136
+
+#define PID_approxintlowerbound    136
+#define PID_approxintupperbound    137
+
+#define PID_last                   138
 #define PID_first_badparam        9000
 
 // Data types for strings passed into ComputeDLL
