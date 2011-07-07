@@ -2177,10 +2177,14 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
 
 function insertmathunit(unitName, editorElement) 
 {
+  dump("In insertmathunit. Unitname is [" + unitName + "]\n");
+
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
   var nameData = msiBaseMathUnitsList.getUnitNameData(unitName);
+  dump("In insertmathunit, nameData is [" + nameData + "]\n");
+
 
   try 
   {
