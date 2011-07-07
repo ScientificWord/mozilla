@@ -77,7 +77,7 @@ Calculus Integrate by Parts...<UID(CCID_Calculus_Integrate_by_Parts,0)>tcibypart
 Calculus Change Variable...<UID(CCID_Calculus_Change_Variable,0)>tcichangevar(%change%,%integral%);
 Calculus Partial Fractions<UID(CCID_Calculus_Partial_Fractions,0)>tciparfrac(%expr%);
 Calculus Partial Fractions<UID(CCID_Calculus_Partial_Fractions,1)>tciparfrac(%expr%,%which_var%);
-Calculus Approximate Integral...<UID(CCID_Calculus_Approximate_Integral,0)>tciaprxarea(%integral%,%subintervals%,%formula%);
+Calculus Approximate Integral...<UID(CCID_Calculus_Approximate_Integral,0)>tciaprxarea(%integral%,%variable%,%lower%..%upper%,%subintervals%,%formula%);
 Calculus Plot Approximate Integral<UID(CCID_Calculus_Plot_Approximate_Integral,0)>
 Calculus Find Extrema<UID(CCID_Calculus_Find_Extrema,0)>tciextrema(%expr%);
 Calculus Find Extrema<UID(CCID_Calculus_Find_Extrema,1)>tciextrema(%expr%,{},{%which_var%});
