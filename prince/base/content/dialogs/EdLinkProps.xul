@@ -56,8 +56,8 @@
    ondialoghelp="return onAccept();"
    screenX="40"
    screenY="40"
-   width="525"
-   height="375"
+   width="535"
+   height="500"
    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
