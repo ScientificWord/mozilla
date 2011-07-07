@@ -32,7 +32,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog id="equationArrayDlg" title="&eqnArrayDialog.title;"
    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
    persist="screenX screenY width height"
@@ -40,8 +40,11 @@
    buttons="accept,cancel"
    onload = "Startup()"
    ondialogaccept="return onAccept();"
+   screenX="40"
+   screenY="40"
    height="270"
-   width="500">
+   width="500"
+   persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
