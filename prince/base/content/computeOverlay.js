@@ -1782,7 +1782,9 @@ function finishVarsComputation(editorElement, o)
     var eng = GetCurrentEngine();
     if (o.theFunc == eng.Rewrite_Equations_as_Matrix){
 	    out = eng.equationsAsMatrix(mathstr, vars);
-    } else {
+    } else if (o.theFunc == eng.Rewrite_Matrix_as_Equations){
+	    out = eng.matrixAsEquations(mathstr, vars);
+	  } else {
 	    out = eng.perform(mathstr, o.theFunc);
     }
     msiComputeLogger.Received(out);
