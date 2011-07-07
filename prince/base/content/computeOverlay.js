@@ -2218,6 +2218,9 @@ function doComputeApproxIntegral(math, editorElement)
   var o = new Object();
   o.intervals = 10;
   o.form = 1;
+  o.lowerBound = 0;
+  o.upperBound = 5;
+
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "approxint", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) {
@@ -2229,7 +2232,7 @@ function doComputeApproxIntegral(math, editorElement)
 
   ComputeCursor(editorElement);
   try {
-    var out = GetCurrentEngine().approxIntegral(mathstr,o.form,intervals);
+    var out = GetCurrentEngine().approxIntegral(mathstr, o.form, intervals, o.lowerBound, o.upperBound);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString("ApproximateInt.fmt"),math, editorElement);  // SWP labels with type
   } catch(ex) {

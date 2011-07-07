@@ -10,6 +10,12 @@ function Startup(){
 
   var form = document.getElementById("form");
   form.selectedIndex = data.form - 1;
+
+  //var lowerBound = document.getElementById("lowerBound");
+  //lowerBound.value = data.lowerBound;
+
+  //var upperBound = document.getElementById("upperBound");
+  //upperBound.value = data.upperBound;
 }
 
 function OK(){
