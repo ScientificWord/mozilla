@@ -26,7 +26,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
-
+<!-- JLF to verify-->
 
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
@@ -36,6 +36,8 @@
     ondialogaccept = "OK();"
     ondialogcancel = "Cancel();"
     buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
@@ -79,7 +81,7 @@
     <tabpanels>
       <tabpanel id="Layout" orient="vertical">
         <groupbox>
-          <caption label="Default size for new plots"/>
+          <caption label="&defaultsizenewplot.label;"/>
           <grid>
             <columns>
               <column flex="0"/>
@@ -97,7 +99,7 @@
           </grid>
         </groupbox>
         <groupbox>
-          <caption label="Default placement for new plots"/>
+          <caption label="&defaultplacementnewplot.label;"/>
           <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>

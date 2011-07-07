@@ -9,7 +9,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/useWorkInProgress.dtd" >
 %dialogDTD;
 ]>
-
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog id="workinprogress" 
     title="&useWIP.title;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -19,6 +19,8 @@
     buttonlabelaccept="&useWIP.accept;"
     ondialogaccept="window.arguments[0].value=true; return;"
     ondialogcancel="close(); return;"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/useWorkInProgress.js"/>

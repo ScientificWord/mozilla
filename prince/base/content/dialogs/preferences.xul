@@ -5,7 +5,7 @@
 <?xml-stylesheet href="chrome://prince/skin/preferences.css" type="text/css"?>
 
 <!DOCTYPE prefwindow SYSTEM "chrome://prince/locale/preferences.dtd">
-
+<!-- JLF to verify-->
 <prefwindow id="appPreferences"
             title="Preferences"
             onload="initialize();"
@@ -18,7 +18,7 @@
     <preferences>
       <preference id="defaultshell" 
                   name="swp.defaultShell" 
-                  type="file"/>
+                  type="string"/>
       <preference id="selectedSkin" 
                   name="general.skins.selectedSkin" 
                   type="string"/>
@@ -157,7 +157,7 @@
       <tabpanels>
         <tabpanel orient="vertical">
           <groupbox>
-            <caption label="Automatic Saving"/>
+            <caption label="&AutomaticSavling.label;"/>
             <checkbox id="prefautosave" label="Enable silent automatic saving"
                       accesskey=""
                       oncommand=""/>
@@ -177,7 +177,7 @@
             </vbox>
           </groupbox>
           <groupbox>
-            <caption label="Cursor Advance to Character"/>
+            <caption label="&CursorAdvanceChar.label;"/>
             <checkbox id="preffastcursor" label="Enable character find with arrow keys"
                       accesskey=""
                       oncommand=""
@@ -254,13 +254,13 @@
             </vbox> 
             <vbox style="width:2in" >
               <label value="Shell Files"/>
-              <listbox preference="defaultshell" flex = "1" id="dircontents" oncommand="return onAccept();" ondblclick="acceptDialog();" />
+              <listbox preference="defaultshell" flex = "1" onselect="onShellSelect();" id="dircontents"/>
             </vbox>
           </hbox>
         </tabpanel>
         <tabpanel orient="vertical">
           <groupbox>
-            <caption label="Default Size for New Graphics"/>
+            <caption label="&DefaultSizeNewGraphics.label;"/>
             <grid>
               <columns>
                 <column flex="0"/>
@@ -268,38 +268,38 @@
                 <column flex="0"/>
               </columns>
               <rows>
-                <row><label value="Width:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
-                <row><label value="Height:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+                <row><label value="&DefaultSizeNewGraphicsWidth.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
+                <row><label value="&DefaultSizeNewGraphicsHeight.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
               </rows>
             </grid>
           </groupbox>
           <groupbox>
-            <caption label="Default Placement for New Graphics"/>
+            <caption label="&DefaultPlacementNewGraphics.label;"/>
             <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
             <hbox flex="1">
               <vbox>
-                <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+                <radio id="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
               </vbox>
               <vbox>
-                <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+                <radio id="display" label="&DefaultPlacementNewGraphicsDisplayed.label;" radioGroup="placementRadioGroup"/>
               </vbox>
               <vbox>
-                <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+                <radio id="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
                 <vbox>
-                  <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
-                  <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
-                  <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
-                  <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
-                  <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+                  <checkbox id="placeForceHereCheck" label="placeForceHereCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeHereCheck" label="placeHereCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeFloatsCheck" label="placeFloatsCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeTopCheck" label="placeTopCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeBottomCheck" label="placeBottomCheck.label" observes="floatingPlacement"/>
                 </vbox>
               </vbox>
               <vbox>
                 <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
-                  <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
-                  <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
-                  <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
-                  <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
-                  <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+                  <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="left" observes="herePlacement" />
+                  <radio id="hereRightRadio" label="&hereRightRadio.label;" value="right" observes="herePlacement"/>
+                  <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="inside" observes="herePlacement" />
+                  <radio id="hereOutsideRadio" label="&hereOutsideradio.label;" value="outside" observes="herePlacement" />
+                  <radio id="hereFullWidthRadio" label="&hereFullWidthRadio.label;" value="full" observes="herePlacement" />
                 </radiogroup>
               </vbox>
             </hbox>
@@ -433,31 +433,31 @@
           <groupbox>
             <caption label="&scinotation.label;"/>
             <hbox>
-              <description>Digits rendered</description>
+              <description>&DigitsRendered.label;</description>
               <spacer flex="1"/>
               <textbox type="number" id="digitsRendered" class="medwidth"/>
             </hbox>
             <vbox>
               <hbox>
-                <description>Upper threshold</description>
+                <description>&UpperThreshold.label;</description>
                 <spacer flex="1"/>
                 <textbox type="number" id="upper" style="width: 3em"/>
               </hbox>
-              <description>(digits left of decimal before switching)</description>
+              <description>&DigitsLeftofDecimal.label;</description>
             </vbox>
             <vbox>
               <hbox>
-                <description>Lower threshold</description>
+                <description>&Lowerthreshold.label;</description>
                 <spacer flex="1"/>
                 <textbox type="number" id="lower" style="width: 3em"/>
               </hbox>
-              <description>(zeros to right of decimal before switching)</description>
+              <description>&ZerosRightofDecimal.label;</description>
             </vbox>
           </groupbox>
           <groupbox>
             <caption label="&mixednum.label;"/>
             <hbox>
-              <description>Output fractions as mixed numbers</description>
+              <description>&OutputMixedNum.label;</description>
               <spacer flex="1"/>
               <checkbox id="mixednum"/>
             </hbox>
@@ -465,12 +465,12 @@
           <groupbox>
             <caption label="&trigargs.label;"/>
             <hbox>
-              <description>Use Parentheses for Trig Functions</description>
+              <description>&ParenthesesforTrig.label;</description>
               <spacer flex="1"/>
               <checkbox id="trigargs"/>
             </hbox>
             <hbox>
-              <description>Use "arc" prefix for inverse Trig Functions</description>
+              <description>&UseArc.label;</description>
               <spacer flex="1"/>
               <checkbox id="usearc"/>
             </hbox>
@@ -483,7 +483,7 @@
           <groupbox>
             <caption label="&matrices.label;"/>
             <hbox>
-              <description>Default matrix delimiter</description>
+              <description>&DefaultMatrixDelimiter.label;</description>
               <spacer flex="1"/>
               <radiogroup id="matrix_delim">
                  <radio label="&matrix_none.label;"     id="matrix_none"      selected="true"/>
@@ -510,7 +510,7 @@
           <groupbox>
             <caption label="&primeasn.label;"/>
             <hbox>
-              <description>switch from primes to (n)</description>
+              <description>&SwitchfromPrimestoN.label;</description>
               <spacer flex="1"/>
               <textbox id="primesasn" style="width: 3em"/>
             </hbox>
@@ -518,7 +518,7 @@
           <groupbox>
             <caption label="&primederiv.label;"/>
             <hbox>
-              <description>Prime means derivative</description>
+              <description>&PrimeMeansDerivative.label;</description>
               <spacer flex="1"/>
               <checkbox id="primederiv"/>
             </hbox>
@@ -717,7 +717,7 @@
 
       <tabpanel id="Layout" orient="vertical">
         <groupbox>
-          <caption label="Default Size for New Plots"/>
+          <caption label="&DefaultSizeNewPlots.label;"/>
           <grid>
             <columns>
               <column flex="0"/>
@@ -725,29 +725,29 @@
               <column flex="0"/>
             </columns>
             <rows>
-              <row><label value="Width:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
-              <row><label value="Height:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+              <row><label value="&DefaultSizeNewPlotsWidth.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
+              <row><label value="&DefaultSizeNewPlotsHeight.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
             </rows>
           </grid>
         </groupbox>
         <groupbox>
-          <caption label="Default Placement for New Plots"/>
+          <caption label="&DefaultPlacementNewPlots.label;"/>
           <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
-              <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+              <radio id="inline" label="&DefaultPlacementNewPlotsInline.label;" radioGroup="placementRadioGroup"/>
             </vbox>
             <vbox>
-              <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+              <radio id="display" label="&DefaultPlacementNewPlotsDisplayed.label;" radioGroup="placementRadioGroup"/>
             </vbox>
             <vbox>
-              <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+              <radio id="float" label="&DefaultPlacementNewPlotsFloating.label;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
               <vbox>
-                <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
-                <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
-                <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
-                <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
-                <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+                <checkbox id="placeForceHereCheck" label="&placeForceHereCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="placeHereCheck" label="&placeHereCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="placeFloatsCheck" label="placeFloatsCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="placeTopCheck" label="placeTopCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="placeBottomCheck" label="placeBottomCheck.label;" observes="floatingPlacement"/>
               </vbox>
             </vbox>
             <vbox>
@@ -871,11 +871,11 @@
         </tabpanel>
         <tabpanel  orient="vertical">
           <groupbox>
-            <caption label="Preferred PDF viewer" />
+            <caption label="&PreferredPDFViewer.label;" />
             <menulist preference="pdf.viewer">
               <menupopup>
-                <menuitem label="Use current PDF plugin" value="default"/>
-                <menuitem label="Use the default program for viewing PDF files" value="launch"/>
+                <menuitem label="&pdf.viewerUseCurrentPDFPlugin.label;" value="default"/>
+                <menuitem label="&pdf.viewerUseDefaultProgramViewPDFFiles.label;" value="launch"/>
                 <!-- not now! menuitem id="fullpath.item" label="Enter a full path for the program to use" oncommand="getFullPath();" value=" "/ -->
               </menupopup>
             </menulist>
@@ -885,22 +885,22 @@
       </tabpanels>
     </tabbox>
   </prefpane>
-  <prefpane id="prefAdvanced" label="Advanced">
+  <prefpane id="prefAdvanced" label="&prefAdvanced.label;">
     <tabbox>
       <tabs>
-        <tab id="prefAdvancedPrefs" label="Advanced preferences"/>
-        <tab id="prefAdvancedPlugins" label="Plugins"/>
+        <tab id="prefAdvancedPrefs" label="&prefAdvancedPrefs.label;"/>
+        <tab id="prefAdvancedPlugins" label="&prefAdvancedPlugins.label;"/>
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical" flex="1">
           <groupbox flex="1" height="320px" style="margin-top:10px">
-            <caption label="Advanced preferences" />
+            <caption label="&AdvancedPreferences.label;" />
             <iframe id="prefsAdvPane" src="chrome://global/content/config.xul"  height="300px" flex="1"/>
           </groupbox>
         </tabpanel>
         <tabpanel orient="vertical" flex="1">
           <groupbox  height="320px" style="margin-top:10px">
-            <caption label="Installed plugins" />
+            <caption label="&InstalledPlugins.label;" />
             <iframe id="pluginsPane" src="about:plugins" height="300px" flex="1"/>
           </groupbox>
         </tabpanel>

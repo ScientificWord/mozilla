@@ -10,13 +10,14 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetOutputChoice.dtd">
-
+<!-- JLF to verify-->
 <dialog title="&windowTitle.label;"
     id="typesetOutputChoiceDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
+    screenX="40"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
