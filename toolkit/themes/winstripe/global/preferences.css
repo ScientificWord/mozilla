@@ -90,11 +90,6 @@ radio[pane] {
   color: -moz-FieldText;
 }
 
-.paneButtonIcon {
-  width: 32px;
-  height: 32px;
-}
-
 radio[pane]:hover {
   background-color: #E0E8F6;
   color: black;
