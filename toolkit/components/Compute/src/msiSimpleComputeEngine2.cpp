@@ -215,7 +215,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::ChangeVar(const PRUnichar *expr, const PR
 }
 
 /* void approxIntegral (in wstring expr, in wstring form, in wstring numintervals, [retval] out wstring result); */
-NS_IMETHODIMP msiSimpleComputeEngine2::ApproxIntegral(const PRUnichar *expr, const PRUnichar *form, const PRUnichar *numintervals, PRUnichar **result)
+NS_IMETHODIMP msiSimpleComputeEngine2::ApproxIntegral(const PRUnichar* expr, const PRUnichar* form, const PRUnichar* numintervals, const PRUnichar* lowerBound, const PRUnichar* upperBound, PRUnichar **result)
 {
   // this one is special because form is an enum
   int cmdCode = CCID_Calculus_Approximate_Integral;
@@ -229,6 +229,8 @@ NS_IMETHODIMP msiSimpleComputeEngine2::ApproxIntegral(const PRUnichar *expr, con
   U32 trans_ID  =  ComputeDLL::CreateTransaction( client_handle,expr,MuPAD_eng_ID,cmdCode );
   ComputeDLL::AddWideParam( trans_ID, PID_approxintform,  zPT_WIDE_natural,   form );
   ComputeDLL::AddWideParam( trans_ID, PID_approxintnsubs, zPT_WIDE_mmlmarkup, numintervals );
+  ComputeDLL::AddWideParam( trans_ID, PID_approxintlowerbound, zPT_WIDE_mmlmarkup, lowerBound );
+  ComputeDLL::AddWideParam( trans_ID, PID_approxintupperbound, zPT_WIDE_mmlmarkup, upperBound );
   
   rv =  DoTransaction( trans_ID, result );
   
