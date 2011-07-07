@@ -793,7 +793,7 @@ OpMatrixIntervalType GetOpType(MNODE * mo)
       size_t zln = strlen(mo->p_chdata);
       if (zln == 1) {
         char ch = mo->p_chdata[0];
-        if (ch == '+')
+        if ( (ch == '+') || (ch == '-') )
           rv = OMI_matrix;
       }
     }
