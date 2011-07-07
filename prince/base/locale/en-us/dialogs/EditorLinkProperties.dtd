@@ -56,9 +56,9 @@
 <!ENTITY topRadio.label "in same window, getting rid of all framesets">
 <!ENTITY topRadio.accesskey "S">
 <!ENTITY blankRadio.label "in a new window">
-<!ENTITY blankRadio.accesskey "N">
+<!ENTITY blankRadio.accesskey "W">
 <!ENTITY parentRadio.label "in the parent frameset">
-<!ENTITY parentRadio.accesskey  "P">
+<!ENTITY parentRadio.accesskey  "N">
 <!ENTITY selfRadio.label "in the current frame">
 <!ENTITY selfRadio.accesskey  "C">
 <!ENTITY userDefinedRadio.label "in this frame:">
