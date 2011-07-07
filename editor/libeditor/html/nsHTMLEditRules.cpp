@@ -5154,7 +5154,7 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
   // Note: do NOT delete table elements this way.
   nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> block, emptyBlock;
-  if (IsBlockNode(aStartNode)) 
+  if (IsBlockNode(aStartNode) || nsHTMLEditUtils::IsMath(aStartNode)) 
     block = aStartNode;
   else
     block = mHTMLEditor->GetBlockNodeParent(aStartNode);
