@@ -746,7 +746,7 @@
 <!ENTITY SourceMode.label "XML Source">
 <!-- Toolbar has an image with "HTML" text, so don't include it in the string -->
 <!ENTITY SourceMode.label "Source">
-<!ENTITY SourceMode.accesskey "s">
+<!ENTITY SourceMode.accesskey "m">
 <!ENTITY SourceMode.tooltip "Edit XML source">
 <!ENTITY PreviewMode.label "Preview">
 <!ENTITY PreviewMode.accesskey "p">
