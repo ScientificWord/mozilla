@@ -89,10 +89,13 @@ function initialize()
   setIndex("diffD", data.diffD);
   setIndex("diffd", data.diffd);
   setIndex("expe", data.expe);
-  document.getElementById("appPreferences").getButton("accept").hidden=false;
-  document.getElementById("appPreferences").getButton("cancel").hidden=false;
-  document.getElementById("appPreferences").getButton("accept").removeAttribute("disable");
-  document.getElementById("appPreferences").getButton("cancel").removeAttribute("disable");
+  
+  var skinpref = document.getElementById("selectSkin");
+  setChecked(skinpref.value, true);
+//  document.getElementById("appPreferences").getButton("accept").hidden=false;
+//  document.getElementById("appPreferences").getButton("cancel").hidden=false;
+//  document.getElementById("appPreferences").getButton("accept").removeAttribute("disable");
+//  document.getElementById("appPreferences").getButton("cancel").removeAttribute("disable");
 }
 //  ComputeUserSettingsStartup();
 
@@ -152,6 +155,13 @@ function onShellSelect()
   var relpath = filepathdirs.slice(shelldirs.length).join("/");
   var pref = document.getElementById("defaultshell");
   pref.value = relpath;
+}
+
+function selectSkin(radiobutton)
+{
+  var pref = document.getElementById("selectedSkin");
+  pref.value = "";
+  pref.value = radiobutton.value;
 }
 
 
