@@ -9,7 +9,7 @@
   <!ENTITY % consoleDTD SYSTEM "chrome://prince/locale/msiconsole.dtd">
    %consoleDTD;
 ]>
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog id="msiConsole"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         title="Scientific WorkPlace Console"

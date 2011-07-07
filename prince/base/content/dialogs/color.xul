@@ -41,12 +41,15 @@
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/edcolorpicker.dtd">
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancelColor();">
+    ondialogcancel="return onCancelColor();"
+    screenX="40"
+    screenY="40"
+    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
