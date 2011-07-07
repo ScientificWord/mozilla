@@ -11,13 +11,15 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/MatrixInsertRowsCols.dtd">
-
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog id="MatrixInsertRowsColsDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   onload = "Startup();"
   ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
+  screenX="40"
+  screenY="40"
   persist="screenX screenY width height"
 >
 

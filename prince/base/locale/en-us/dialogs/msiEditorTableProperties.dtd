@@ -181,3 +181,14 @@
 <!ENTITY AlignCenter.accesskey            "C">
 <!ENTITY AlignRight.label                 "Right">
 <!ENTITY AlignRight.accesskey             "R">
+
+<!ENTITY CellContentAlign.label "Cell content alignment">
+<!ENTITY Horizontal.label "Horizontal">
+<!ENTITY hAlignLeft.label  "Left">
+<!ENTITY hAlignCenter.label "Center">
+<!ENTITY hAlignRight.label  "Right">
+
+<!ENTITY Vertical.label "Vertical">
+<!ENTITY vAlignTop.label  "Top>">
+<!ENTITY vAlignCenter.label "Center">
+<!ENTITY vAlignBottom.label "Bottom">

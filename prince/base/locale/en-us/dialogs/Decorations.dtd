@@ -12,3 +12,14 @@
 <!ENTITY decorationsAroundButtonGroup.accesskey "d">
 
 <!-- <!ENTITY .tooltip "">  -->
+<!ENTITY Macron.tooltip "Macron">
+<!ENTITY LeftwardsArrow.tooltip  "Leftwards Arrow">
+<!ENTITY RightwardsArrow.tooltip "Rightwards Arrow">
+<!ENTITY LeftRightArrow.tooltip "Left Right Arrow">
+<!ENTITY VerticalLeftCurlyBracket.tooltip  "Vertical Left Curly Bracket">
+<!ENTITY CombiningCircumflexAccent.tooltip  "Combining Circumflex Accent">
+<!ENTITY SmallTilde.tooltip  "Small Tilde">
+<!ENTITY LeftwardsArrow.tooltip  "Leftwards Arrow">
+<!ENTITY RightwardsArrow.tooltip "Rightwards Arrow">
+<!ENTITY LeftRightArrow.tooltip "Left Right Arrow">
+<!ENTITY VerticalRightCurlyBracket.tooltip "Vertical Right Curly Bracket">
