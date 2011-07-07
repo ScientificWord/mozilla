@@ -114,7 +114,7 @@
 <!ENTITY MSICalculusMenu.accesskey "a">
 <!ENTITY MSIComputeByPartsCmd.label                 "Integrate by Parts...">
 <!ENTITY MSIComputeByPartsCmd.accesskey             "I">
-<!ENTITY MSIComputeChangeVariableCmd.label          "Change Variables...">
+<!ENTITY MSIComputeChangeVariableCmd.label          "Change Variable...">
 <!ENTITY MSIComputeChangeVariableCmd.accesskey      "C">
 <!ENTITY MSIComputeApproximateIntegralCmd.label     "Approximate Integral...">
 <!ENTITY MSIComputeApproximateIntegralCmd.accesskey "A">
