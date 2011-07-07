@@ -89,6 +89,17 @@
 <!ENTITY RecognizePlainIasImaginary.label "Recognize plain i as imaginary">
 <!ENTITY  RecognizejAsImaginaryI.label  "Recognize j as imaginary i">
 <!ENTITY  RecognizePlaineasExponential  "Recognize plain e as exponential">
+<!ENTITY DigitsRendered.label "Digits rendered">
+<!ENTITY UpperThreshold.label "Upper threshold">
+<!ENTITY DigitsLeftofDecimal.label  "(digits left of decimal before switching)">
+<!ENTITY Lowerthreshold.label  "Lower threshold">
+<!ENTITY ZerosRightofDecimal.label  "(zeros to right of decimal before switching)">
+<!ENTITY OutputMixedNum.label  "Output fractions as mixed numbers">
+<!ENTITY ParenthesesforTrig.label "Use Parentheses for Trig Functions">
+<!ENTITY UseArc.label "Use 'arc' prefix for inverse Trig Functions">
+<!ENTITY DefaultMatrixDelimiter.label "Default matrix delimiter">
+<!ENTITY SwitchfromPrimestoN.label  "switch from primes to (n)">
+<!ENTITY PrimeMeansDerivative.label "Prime means derivative">
 
 <!ENTITY solve.label "Solve Options">
 <!ENTITY debug.label "Debugging">
@@ -282,3 +293,40 @@
 <!ENTITY high.label                 "High">
 
 <!ENTITY unspecified.label          "Not Specified">
+<!ENTITY AutomaticSavling.label  "Automatic Saving">
+<!ENTITY CursorAdvanceChar.label  "Cursor Advance to Character">
+<!ENTITY DefaultSizeNewGraphics.label "Default Size for New Graphics">
+<!ENTITY DefaultSizeNewGraphicsWidth.label "Width:">
+<!ENTITY DefaultSizeNewGraphicsHeight.label "Height:">
+<!ENTITY DefaultPlacementNewGraphics.label "Default Placement for New Graphics">
+<!ENTITY DefaultPlacementNewGraphicsInline.label  "In line">
+<!ENTITY DefaultPlacementNewGraphicsDisplayed.label "Displayed">
+<!ENTITY DefaultPlacementNewGraphicsFloating.label  "Floating">
+<!ENTITY placeForceHereCheck.label "Force here">
+<!ENTITY placeHereCheck.label "Here">
+<!ENTITY placeFloatsCheck.label "On a page of floats">
+<!ENTITY placeTopCheck.label "Top of page">
+<!ENTITY placeBottomCheck.label "Bottom of page">
+
+<!ENTITY  hereLeftRadio.label "Left">
+<!ENTITY  hereRightRadio.label "Right">
+<!ENTITY  hereInsideRadio.label "Inside">
+<!ENTITY  hereOutsideradio.label  "Outside">
+<!ENTITY  hereFullWidthRadio.label  "Full width">
+
+<!ENTITY DefaultSizeNewPlots.label "Default Size for New Plots">
+<!ENTITY DefaultSizeNewPlotsWidth.label "Width">
+<!ENTITY DefaultSizeNewPlotsHeight.label  "Height:">
+<!ENTITY DefaultPlacementNewPlots.label "Default Placement for New Plots">
+<!ENTITY DefaultPlacementNewPlotsInline.label  "In line">
+<!ENTITY DefaultPlacementNewPlotsDisplayed.label "Displayed">
+<!ENTITY DefaultPlacementNewPlotsFloating.label  "Floating">
+
+<!ENTITY PreferredPDFViewer.label  "Preferred PDF viewer">
+<!ENTITY pdf.viewerUseCurrentPDFPlugin.label  "Use current PDF Plugin">
+<!ENTITY pdf.viewerUseDefaultProgramViewPDFFiles.label  "Use the default program for viewing PDF files">
+<!ENTITY AdvancedPreferences.label "Advanced preferences">
+<!ENTITY prefAdvanced.label "Advanced">
+<!ENTITY prefAdvancedPrefs.label  "Advanced preferences">
+<!ENTITY prefAdvancedPlugins.label  "Plugins">
+<!ENTITY InstalledPlugins.label "Installed plugins">

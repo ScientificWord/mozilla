@@ -11,7 +11,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEdReviseChars.dtd">
-
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog id="insertCharsDlg" title="&windowTitle.label;"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         onload = "Startup()"
@@ -21,6 +21,8 @@
         ondialogextra1="return Apply();"
         buttonlabelextra1="&extra1Apply.label;"
         ondialogcancel = "return onClose();"
+        screenX-"40"
+        screenY="40"
         persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->

@@ -113,7 +113,8 @@ function showShellsInDir(tree)
     directory = msiFileFromFileURL(dirurl);
     directory.append(leafname);
     var items = directory.directoryEntries;
-    var name;  
+    var name; 
+    var listItem; 
     var listbox = document.getElementById("dircontents");
     while (listbox.itemCount > 0) listbox.removeItemAt(0);
     while (items.hasMoreElements()) {
@@ -121,7 +122,7 @@ function showShellsInDir(tree)
       if (item.isFile() && regexp.test(item.leafName))
       {
         name = item.leafName.replace(regexp,'');
-        listbox.appendItem(name, item.path);
+        listItem = listbox.appendItem(name, item.path);
       }
     }
     listbox.selectedIndex =0; 
@@ -130,6 +131,30 @@ function showShellsInDir(tree)
     dump(e.toString());
   }
 }
+
+function onShellSelect()
+{
+  var i;
+  var filename;
+  filename = document.getElementById("dircontents").value;
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  var shelldir = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  shelldir.append("shells");
+  var shelldirs = shelldir.path.split(/\//);
+  var filepathdirs = filename.split(/\//);
+  for (i = 0; i < shelldirs.length; i++)
+  {
+    if (shelldirs[i] != filepathdirs[i])
+    {
+      throw("Non-shell path");
+    } 
+  }
+  var relpath = filepathdirs.slice(shelldirs.length).join("/");
+  var pref = document.getElementById("defaultshell");
+  pref.value = relpath;
+}
+
+
 function UserSettingsStartup(){
 }
 

@@ -9,4 +9,5 @@
 <!ENTITY reftypePageNumber.accesskey "p">
 <!ENTITY reftypeObjectCounter.label "Object counter">
 <!ENTITY reftypeObjectCounter.accesskey "o">
+<!ENTITY keyList.tooltip  "Enter a key name">
 
