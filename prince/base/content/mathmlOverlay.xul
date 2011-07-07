@@ -4,7 +4,7 @@
 <?xul-stylesheet href="chrome://prince/skin/MathmlOverlay.css" type="text/css"?>
 <?xul-stylesheet href="chrome://prince/skin/toolbarsoverlay.css" type="text/css"?>
 <?xml-stylesheet href="data:text/css,math[display='inline']{display:-moz-inline-box}" type="text/css"?>
-
+<!--JLF - localization check 6/28/2011-->
 <!DOCTYPE overlay [
 <!ENTITY % mathmloverlaydtd SYSTEM "chrome://prince/locale/mathmlOverlay.dtd">
 %mathmloverlaydtd;
@@ -104,7 +104,7 @@
 
 
 
-  <menu id="insertMenu" label="Insert" accesskey="&insertmenu.accesskey;">
+  <menu id="insertMenu" label="&insertmenu.label;" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup" onpopupshowing="msiInitFontStyleMenu(this)">
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
       <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    command="cmd_MSItextModeCmd"/>  

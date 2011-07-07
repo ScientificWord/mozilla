@@ -2,7 +2,6 @@
 
 <!ENTITY windowTitle.label "Document Format">
 
-
 <!ENTITY docformatGeneraltab "General">
 <!ENTITY docformatPageLayouttab "Page Layout">
 <!ENTITY docformatFontstab "Fonts">
@@ -82,3 +81,10 @@
 
 <!ENTITY warning.label1 "The options in this dialog let you override choices made in the typesetting specifications of your document. If you are writing a paper or book to submit to a publisher, do not use this dialog. The publisher or editor will have to undo the changes you make.">
 <!ENTITY warning.label2 "On the other hand, if you are not planning to submit your manuscript to a publisher you may use this dialog to change the page layout, the fonts, and many other features of your document.">
+
+<!ENTITY bodytextarea.tooltip "Body text area">
+<!ENTITY maintextwidth.tooltip  "The width of the main text">
+<!ENTITY minseparationmarginnotes.tooltip "The minimum separation between margin notes">
+
+<!ENTITY leftindentheading.tooltip  "The left indent for the heading">
+<!ENTITY rightindentheading.tooltip  "The right indent for the heading">

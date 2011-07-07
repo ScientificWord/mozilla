@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!-- JLF to verify.  Need to create DTD and update related files.-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   title="Index Entry"
   buttons="accept,cancel"
   buttonlabelcancel="Cancel" buttonlabelaccept="OK" 
-  width="300"
+  width="350"
   height="450"
-  screenX="400"
-  screenY="400"
+  screenX="40"
+  screenY="40"
   onload = "startup();"
   persist="screenX screenY width height"
   ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"

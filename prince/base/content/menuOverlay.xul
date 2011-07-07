@@ -9,7 +9,7 @@
 <!ENTITY % toolbarDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
  %toolbarDTD;
 ]>
-
+<!--JLF - Localization pass on 6/28/2011-->
 <overlay id="menuOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript"  src="chrome://prince/content/toolbarsOverlay.js"/>
