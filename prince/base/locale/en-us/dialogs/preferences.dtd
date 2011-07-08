@@ -293,7 +293,7 @@
 <!ENTITY high.label                 "High">
 
 <!ENTITY unspecified.label          "Not Specified">
-<!ENTITY AutomaticSavling.label  "Automatic Saving">
+<!ENTITY AutomaticSaving.label  "Automatic Saving">
 <!ENTITY CursorAdvanceChar.label  "Cursor Advance to Character">
 <!ENTITY DefaultSizeNewGraphics.label "Default Size for New Graphics">
 <!ENTITY DefaultSizeNewGraphicsWidth.label "Width:">
