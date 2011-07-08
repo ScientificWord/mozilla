@@ -21,7 +21,7 @@
         ondialogextra1="return Apply();"
         buttonlabelextra1="&extra1Apply.label;"
         ondialogcancel = "return onClose();"
-        screenX-"40"
+        screenX="40"
         screenY="40"
         persist="screenX screenY width height">
 
