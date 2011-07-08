@@ -5207,15 +5207,32 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
         // else just let selection percolate up.  We'll adjust it in AfterEdit()
       }
     }
-    else
+    else if ( nsHTMLEditUtils::IsMath(emptyBlock))
+    {
+      nsAutoString name;
+      nsCOMPtr<nsIDOMNode> parent;
+      res = emptyBlock->GetParentNode(getter_AddRefs(parent));
+      nsCOMPtr<nsIDOMElement> element;
+      element = do_QueryInterface(parent);
+      element ->GetLocalName(name);
+      if (name.EqualsLiteral("mfrac") || name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") ||
+        name.EqualsLiteral("mtable") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtd") || name.EqualsLiteral("mroot") || 
+        name.EqualsLiteral("msubsup"))
+      {
+        // BBM: this keeps us from deleting children of math structures that require a fixed number of children.
+        // BBM: We should really replace the emptyBlock with an input box.
+        *aHandled = PR_TRUE;
+        return res;        
+      }
+    }
+    else 
     {
       // adjust selection to be right after it
       res = aSelection->Collapse(blockParent, offset+1);
       if (NS_FAILED(res)) return res;
     }
     res = mHTMLEditor->DeleteNode(emptyBlock);
-    // If there is no paragraph left, put in a new one
-    // No, this means the cursor can't get past a paragraph that is a childe of body
+    // If there is no paragraph left and we are in the body, put in a new default paragraph
     if (blockParent == aBodyNode)
     {
       PRBool bodyIsEmpty;
