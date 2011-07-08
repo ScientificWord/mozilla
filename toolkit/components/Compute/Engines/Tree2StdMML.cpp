@@ -43,6 +43,7 @@
 */
 
 #include "Tree2StdMML.h"
+#include "analyzer.h" // bad dependency
 #include "Grammar.h"
 #include "AnalyzerData.h"
 #include "attriblist.h"
@@ -483,7 +484,7 @@ void Tree2StdMML::InsertApplyFunction(MNODE* dMML_list)
     bool is_delimited = false;
     int n_arg_nodes;
 
-    if (NodeIsFunction(rover)) {
+    if (NodeIsFunction(rover, mml_entities, my_analyzer_data)) {
       if (FunctionHasArg(rover,n_arg_nodes,is_delimited)) {
         do_insert = true;
       } else {
@@ -1627,31 +1628,6 @@ bool Tree2StdMML::NodeIsRationalFraction(MNODE* mml_node)
 
 
 
-bool Tree2StdMML::NodeIsFunction(MNODE* mml_node)
-{
-  // might be f^-1 or something, in which case the whole expr is the function
-  if (HasScriptChildren(mml_node))
-    return NodeIsFunction(mml_node->first_kid);
-  else if (ElementNameIs(mml_node, "mi")) {
-    if (IsTrigArgFuncName(mml_entities, mml_node->p_chdata) ||
-        IsReservedFuncName(mml_entities, mml_node->p_chdata) ||
-        my_analyzer_data->IsDefinedFunction(mml_node))
-      return true;
-  } else if (ElementNameIs(mml_node, "mo") && mml_node->attrib_list) {
-    const char* isMathname = GetATTRIBvalue(mml_node ->attrib_list, "msimathname");
-    if ( isMathname  && strcmp(isMathname, "true") == 0 ){
-      if (IsTrigArgFuncName(mml_entities, mml_node->p_chdata) ||
-          IsReservedFuncName(mml_entities, mml_node->p_chdata) ||
-          my_analyzer_data->IsDefinedFunction(mml_node))
-        return true;
-    }
-    return false;
-  }
-
-
-  return false;
-}
-
 
 
 //assuming NodeIsFunction() true, find the actual function name node
@@ -1678,7 +1654,7 @@ bool Tree2StdMML::FuncTakesTrigArgs(MNODE* mml_node)
 bool Tree2StdMML::NodeIsOperator(MNODE* mml_node)
 {
   
-  if (ElementNameIs(mml_node, "mo") ||  NodeIsFunction(mml_node)) {
+  if (ElementNameIs(mml_node, "mo") ||  NodeIsFunction(mml_node, mml_entities, my_analyzer_data)) {
 
         return true;
 
@@ -1940,7 +1916,7 @@ bool Tree2StdMML::NodeIsVariableList(MNODE* mml_node)
 bool Tree2StdMML::NodeIsFactor(MNODE* mml_node)
 {
   //NOTE assuming fences are all mfenced
-  if (NodeIsOperator(mml_node) || NodeIsFunction(mml_node))
+  if (NodeIsOperator(mml_node) || NodeIsFunction(mml_node, mml_entities, my_analyzer_data))
     return false;
   if (ElementNameIs(mml_node, "mtr") || ElementNameIs(mml_node, "mtd"))
     return false;

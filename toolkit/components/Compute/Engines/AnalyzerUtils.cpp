@@ -26,7 +26,7 @@ void SetSnodeOwner(SEMANTICS_NODE* snode, AnalyzerData* pData)
   }
 }
 
-BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* pData)
+BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* pData, const Grammar* mml_entities)
 {
   BaseType rv = BT_UNKNOWN;
 
@@ -44,18 +44,22 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
 
       if (rv == BT_UNKNOWN && !isLHSofDef) {
 
-          char* mi_canonical_str = GetCanonicalIDforMathNode(base, pData -> GetGrammar());
+          if (NodeIsFunction(base, mml_entities, pData)) {
+            
+             char* mi_canonical_str = GetCanonicalIDforMathNode(base, pData -> GetGrammar());
 
-          DefInfo* di = pData ->GetDI (mi_canonical_str);
-          if (di && di->def_type == DT_FUNCTION) {
-            if (di->n_subscripted_args)
-              rv = BT_SUBARG_FUNCTION;
-            else
-              rv = BT_FUNCTION;
-          } else {
-            rv = BT_VARIABLE; 
-          }
-          delete[] mi_canonical_str;
+             DefInfo* di = pData ->GetDI (mi_canonical_str);
+             if (di && di->def_type == DT_FUNCTION) {
+               if (di->n_subscripted_args)
+                  rv = BT_SUBARG_FUNCTION;
+               else
+                  rv = BT_FUNCTION;
+             } else {
+                  rv = BT_FUNCTION; 
+             }
+             delete[] mi_canonical_str;
+          } else 
+             rv = BT_VARIABLE;
       }
   }
 
@@ -668,7 +672,7 @@ char* GetFuncNameFromSubSup(MNODE* msubsup, const char** src_name, AnalyzerData*
   MNODE* base = msubsup->first_kid;
   MNODE* sub = base->next;
   MNODE* exp = sub->next;
-  BaseType bt = GetBaseType(msubsup, false, pData);
+  BaseType bt = GetBaseType(msubsup, false, pData, pData -> GetGrammar());
   ExpType et = GetExpType(bt, exp, pData -> GetGrammar());
 
   if (et == ET_PRIMES) {
@@ -740,7 +744,7 @@ char* GetFuncNameFromSup(MNODE* msup, const char** src_name, AnalyzerData* pData
   char* rv = NULL;
 
   MNODE* base = msup->first_kid;
-  BaseType bt = GetBaseType(msup, false, pData);
+  BaseType bt = GetBaseType(msup, false, pData, pData -> GetGrammar());
   ExpType et = GetExpType(bt, base->next, pData -> GetGrammar());
 
   if (et == ET_PRIMES) {
