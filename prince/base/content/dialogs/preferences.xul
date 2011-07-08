@@ -157,7 +157,7 @@
       <tabpanels>
         <tabpanel orient="vertical">
           <groupbox>
-            <caption label="&AutomaticSavling.label;"/>
+            <caption label="&AutomaticSaving.label;"/>
             <checkbox id="prefautosave" label="Enable silent automatic saving"
                       accesskey=""
                       oncommand=""/>

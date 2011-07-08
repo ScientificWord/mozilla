@@ -17,6 +17,8 @@
   persist="width height screenX screenY"
   title="&windowTitle.label;"
   id="paragraphPropertiesDlg"
+  width="340"
+  height="355"
   screenX="40"
   screenY="40">
 

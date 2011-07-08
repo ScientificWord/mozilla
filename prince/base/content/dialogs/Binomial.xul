@@ -21,6 +21,8 @@
     ondialogcancel="return onCancel();"
     screenX="40"
     screenY="40"
+    height="350"
+    width="790"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
