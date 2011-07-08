@@ -1249,7 +1249,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
 
   MNODE *base = mml_msup_node->first_kid;
   if (base) {
-    BaseType bt = GetBaseType(mml_msup_node, isLHSofDef, pAnalyzer-> GetAnalyzerData());
+    BaseType bt = GetBaseType(mml_msup_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
     ExpType et = GetExpType(bt, base->next, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
     bool done = false;
 
@@ -1525,7 +1525,7 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
   }
 
   if (base) {
-    BaseType bt = GetBaseType(mml_msub_node, isLHSofDef, pAnalyzer-> GetAnalyzerData());
+    BaseType bt = GetBaseType(mml_msub_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
     ExpType sub_type = GetSubScriptType(mml_msub_node, bt, base->next);
 
     switch (bt) {
@@ -1660,7 +1660,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
   }
 
   if (base) {
-    BaseType bt = GetBaseType(mml_msubsup_node, isLHSofDef, pAnalyzer-> GetAnalyzerData());
+    BaseType bt = GetBaseType(mml_msubsup_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
     ExpType sub_type = GetSubScriptType(mml_msubsup_node, bt, base->next);
     ExpType et = GetExpType(bt, base->next->next, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
 
@@ -1854,7 +1854,7 @@ void AnalyzeMOVER(MNODE* mml_mover_node,
 
   MNODE* base = mml_mover_node->first_kid;
   if (base) {
-    BaseType bt = GetBaseType(mml_mover_node, isLHSofDef, pAnalyzer-> GetAnalyzerData());
+    BaseType bt = GetBaseType(mml_mover_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
     AccentType top_type = GetAboveType(bt, base->next, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
 
     if (top_type == OT_BAR && base->p_chdata && !strcmp(base->p_chdata, "lim")) {
@@ -1969,7 +1969,7 @@ void AnalyzeMUNDER(MNODE * mml_munder_node, SEMANTICS_NODE * snode,
 
   MNODE *base = mml_munder_node->first_kid;
   if (base) {
-    BaseType bt = GetBaseType(mml_munder_node, isLHSofDef, pAnalyzer-> GetAnalyzerData());
+    BaseType bt = GetBaseType(mml_munder_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
     bool done = false;
 
     // First look for an under decoration that dictates semantics
@@ -2048,7 +2048,7 @@ void AnalyzeMUNDEROVER(MNODE * mml_munderover_node,
 
   MNODE *base = mml_munderover_node->first_kid;
   if (base) {
-    BaseType bt = GetBaseType(mml_munderover_node, isLHSofDef, pAnalyzer-> GetAnalyzerData());
+    BaseType bt = GetBaseType(mml_munderover_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
     switch (bt) {
 
     case BT_OPERATOR:
@@ -4348,4 +4348,29 @@ SEMANTICS_NODE* GetDefSList(MNODE* dMML_list,
   return head;
 }
 
+
+bool NodeIsFunction(MNODE* mml_node, const Grammar* mml_entities, AnalyzerData* my_analyzer_data)
+{
+  // might be f^-1 or something, in which case the whole expr is the function
+  if (HasScriptChildren(mml_node))
+    return NodeIsFunction(mml_node->first_kid, mml_entities, my_analyzer_data);
+  else if (ElementNameIs(mml_node, "mi")) {
+    if (IsTrigArgFuncName(mml_entities, mml_node->p_chdata) ||
+        IsReservedFuncName(mml_entities, mml_node->p_chdata) ||
+        my_analyzer_data->IsDefinedFunction(mml_node))
+      return true;
+  } else if (ElementNameIs(mml_node, "mo") && mml_node->attrib_list) {
+    const char* isMathname = GetATTRIBvalue(mml_node ->attrib_list, "msimathname");
+    if ( isMathname  && strcmp(isMathname, "true") == 0 ){
+      if (IsTrigArgFuncName(mml_entities, mml_node->p_chdata) ||
+          IsReservedFuncName(mml_entities, mml_node->p_chdata) ||
+          my_analyzer_data->IsDefinedFunction(mml_node))
+        return true;
+    }
+    return false;
+  }
+
+
+  return false;
+}
 
