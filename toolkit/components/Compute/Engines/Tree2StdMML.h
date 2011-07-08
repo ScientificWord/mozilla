@@ -108,7 +108,7 @@ protected:
   bool NodeIsNumber(MNODE * mml_node);
   bool NodeIsTrueNumber(MNODE * mml_node);
   bool NodeIsRationalFraction(MNODE * mml_node);
-  bool NodeIsFunction(MNODE * mml_node);
+  
   MNODE *GetBaseFunction(MNODE * mml_node);
   bool NodeIsOperator(MNODE * mml_node);
   bool NodeIsIntegral(MNODE * mml_node);
@@ -152,5 +152,9 @@ private:
 
   bool mDisDerivative;
 };
+
+
+
+
 
 #endif
