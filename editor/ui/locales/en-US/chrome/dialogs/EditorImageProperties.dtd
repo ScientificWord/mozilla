@@ -131,4 +131,6 @@
 <!ENTITY Below.label  "Below">
 <!ENTITY CaptionText.label  "Caption Text">
 <!ENTITY AltText.label  "Alt Text">
-<!ENTITY NewKeyorDocName  "Enter a new key name or a document name">
+<!ENTITY NewKeyorDocName.tooltip  "Enter a new key name or a document name">
+<!ENTITY MakeRelativeCheckbox.label  "Make reference relative">
+<!ENTITY EnterDocorMarker.label "Enter a document location, a local document, or select a marker">
