@@ -127,20 +127,20 @@
           <label value="Key"/>
           <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
             completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-            tooltiptext="Enter a new key name"
+            tooltiptext="&EnterNewName.tooltip;"
             onfocus=""
             ontextentered="" />
         </hbox>
         <groupbox>
           <caption id="captionPlacementLabel" label="Caption Placement"/>
           <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
-            <radio id="captionAboveRadio" label="Above"/>
-            <radio id="captionBelowRadio" label="Below"/>
+            <radio id="captionAboveRadio" label="&Above.label;"/>
+            <radio id="captionBelowRadio" label="&Below.label;"/>
           </radiogroup>
         </groupbox>
-        <label value="Caption Text"/>
+        <label value="&CaptionText.label;"/>
         <editor id="captionTextInput" height="2in" flex="1"/>
-        <label value="Alt Text"/>
+        <label value="&AltText.label;"/>
         <textbox id="altTextInput"/>
       </vbox>
       <vbox>
@@ -149,7 +149,7 @@
         <label value="or heading from the popup list:"/>
         <textbox id="linkKeyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
-          tooltiptext="Enter a new key name or a document name"
+          tooltiptext="&NewKeyorDocName;"
           onfocus=""
           ontextentered="" />
         <spacer class="spacer"/>
