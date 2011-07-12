@@ -27,20 +27,20 @@
 
 <!-- <!ENTITY .tooltip "">  -->
 <!ENTITY Integral.tooltiptext "Integral">
-<!ENTITY DoubleIntegral.tooltiptext "Double Integral">
-<!ENTITY TripleIntegral.tooltiptext "Triple Integral">
-<!ENTITY QuadrupleIntegral.tooltiptext  "Quadruple Integral">
-<!ENTITY MultipleIntegral.tooltiptext "Multiple Integral">
-<!ENTITY ContourIntegral.tooltiptext "Contour Integral">
+<!ENTITY DoubleIntegral.tooltiptext "Double integral">
+<!ENTITY TripleIntegral.tooltiptext "Triple integral">
+<!ENTITY QuadrupleIntegral.tooltiptext  "Quadruple integral">
+<!ENTITY MultipleIntegral.tooltiptext "Multiple integral">
+<!ENTITY ContourIntegral.tooltiptext "Contour integral">
 <!ENTITY NArySum.tooltiptext "N-Ary Summation">
 <!ENTITY NAryProd.tooltiptext "N-Ary Product">
 <!ENTITY NAryIntersect.tooltiptext "N-Ary Intersection">
 <!ENTITY NAryLogicalAnd.tooltiptext "N-Ary Logical And">
-<!ENTITY CircledPlus.tooltiptext "Circled Plus">
-<!ENTITY CircledDot.tooltiptext "Circled Dot">
+<!ENTITY CircledPlus.tooltiptext "Circled plus">
+<!ENTITY CircledDot.tooltiptext "Circled dot">
 <!ENTITY SquareCup.tooltiptext "Square Cup">
 <!ENTITY NAryCoProd.tooltiptext "N-Ary Coproduct">
 <!ENTITY NAryUnion.tooltiptext "N-Ary Union">
 <!ENTITY NAryLogicalOr.tooltiptext "N-Ary Logical Or">
-<!ENTITY CircledTimes.tooltiptext "Circled Times">
-<!ENTITY MultisetUnion.tooltiptext "Multiset Union">
+<!ENTITY CircledTimes.tooltiptext "Circled times">
+<!ENTITY MultisetUnion.tooltiptext "Multiset union">
