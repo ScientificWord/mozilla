@@ -145,7 +145,7 @@
 <!ENTITY MSISymbolTabMisc        "Miscellaneous symbols">
 <!ENTITY MSISymbolTabDelimiters  "Delimiters">
 <!ENTITY MSISymbolTabLatin1      "Latin-1">
-<!ENTITY MSISymbolTabLatinE      "Latin Extended-A">
+<!ENTITY MSISymbolTabLatinE      "Latin extended-A">
 <!ENTITY MSISymbolTabPunctuation  "General punctuation">
 
 

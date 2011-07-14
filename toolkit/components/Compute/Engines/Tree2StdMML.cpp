@@ -43,7 +43,7 @@
 */
 
 #include "Tree2StdMML.h"
-#include "analyzer.h" // bad dependency
+#include "Analyzer.h" // bad dependency
 #include "Grammar.h"
 #include "AnalyzerData.h"
 #include "attriblist.h"
