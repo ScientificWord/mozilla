@@ -1,4 +1,6 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
+// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+Components.utils.import("resource://app/modules/computelogger.jsm");
 
 //-----------------------------------------------------------------------------------
 var msiEvaluateCommand =
@@ -80,103 +82,6 @@ var msiDefineCommand =
   }
 };
 
-function jsdump(str)
-{
-  Components.classes['@mozilla.org/consoleservice;1']
-            .getService(Components.interfaces.nsIConsoleService)
-            .logEngineStringMessage(str);
-}
-/////////////////////////
-
-var msiComputeLogger = 
-{
-  Sent: function(name,expr)
-  {
-    if (this.logMMLSent)
-      jsdump("To engine: " + name + ": ======================================\n" + expr + "\n");
-  },
-  Sent4: function(name,expr,arg1,arg2)
-  {
-    if (this.logMMLSent)
-      jsdump("To engine: " + name + ": ======================================\n" + expr + "\n" + arg1 + "\n" + arg2 + "\n");
-  },
-  LogEngineStrs: function()
-  {
-    if (this.logEngSent)
-      jsdump("To engine: sent:  ===> " + GetCurrentEngine().getEngineSent() + "\n");
-    if (this.logEngReceived)
-      jsdump("From engine: rcvd: <===  " + GetCurrentEngine().getEngineReceived() + "\n");
-  },
-  Received: function(expr)
-  {
-    this.LogEngineStrs();
-    if (this.logMMLReceived)
-      jsdump("Engine result: ======================================\n" + expr + "\n");
-  },
-  Exception: function(e)
-  {
-    this.LogEngineStrs();
-    if (this.logMMLReceived) {
-      jsdump("Compute exception: !!!!!!!!!!!!\n");
-    }
-    jsdump(e);
-    // separate pref for errors?
-    jsdump("\Compute engine:  " + GetCurrentEngine());
-    jsdump("\n           errors:  " + GetCurrentEngine().getEngineErrors() + "\n");
-  },
-  Init: function()
-  {
-    try {
-      this.logMMLSent = GetPrefs().getBoolPref("swp.MuPAD.log_mathml_sent");
-    }
-    catch(ex) {
-      jsdump("\nfailed to get MuPAD.log_mathml_sent pref!\n");
-    }
-    try {
-      this.logMMLReceived = GetPrefs().getBoolPref("swp.MuPAD.log_mathml_received");
-    }
-    catch(ex) {
-      jsdump("\nfailed to get MuPAD.log_mathml_received pref!\n");
-    }
-    try {
-      this.engMMLSent = GetPrefs().getBoolPref("swp.MuPAD.log_engine_sent");
-    }
-    catch(ex) {
-      jsdump("\nfailed to get MuPAD.log_engine_sent pref!\n");
-    }
-    try {
-      this.engMMLReceived = GetPrefs().getBoolPref("swp.MuPAD.log_engine_received");
-    }
-    catch(ex) {
-      jsdump("\nfailed to get MuPAD.log_engine_received pref!\n");
-    }
-  },
-  LogMMLSent: function(log)
-  {
-    this.logMMLSent = log;
-    GetPrefs().setBoolPref("swp.MuPAD.log_mathml_sent",log);
-  },
-  LogMMLReceived: function(log)
-  {
-    this.logMMLReceived = log;
-    GetPrefs().setBoolPref("swp.MuPAD.log_mathml_received",log);
-  },
-  LogEngSent: function(log)
-  {
-    this.logEngSent = log;
-    GetPrefs().setBoolPref("swp.MuPAD.log_engine_sent",log);
-  },
-  LogEngReceived: function(log)
-  {
-    this.logEngReceived = log;
-    GetPrefs().setBoolPref("swp.MuPAD.log_engine_received",log);
-  },
-
-  logMMLSent:      true,
-  logMMLReceived:  true,
-  logEngSent:      true,
-  logEngReceived:  true
-};
 
 function SetupMSIComputeMenuCommands()
 {
@@ -1217,7 +1122,7 @@ var setAnimSpeed;
 var setLoopMode;
 
 
-function doVCamInitialize(obj)  // event is no longer used
+function doVCamInitialize(obj)
 {
   dump("doVCamInitialize");
   document.getElementById("VCamToolbar").setAttribute("hidden",false);
@@ -1286,7 +1191,36 @@ function dontSetAnimationTime()
   return;
 }
 
-
+function initComputeLogger(engine)
+{
+  var prefs = GetPrefs();
+  var logMMLSent, logMMLReceived, logEngSent, logEngReceived;
+  try {
+    logMMLSent = prefs.getBoolPref("swp.user.logSent");
+  }
+  catch(ex) {
+    jsdump("\nfailed to get swp.user.logSent pref!\n");
+  }
+  try {
+    logMMLReceived = prefs.getBoolPref("swp.user.logReceived");
+  }
+  catch(ex) {
+    jsdump("\nfailed to get swp.user.logReceived pref!\n");
+  }
+  try {
+    logEngSent = prefs.getBoolPref("swp.user.engSent");
+  }
+  catch(ex) {
+    jsdump("\nfailed to get swp.user.engSent pref!\n");
+  }
+  try {
+    logEngReceived = prefs.getBoolPref("swp.user.engReceived");
+  }
+  catch(ex) {
+    jsdump("\nfailed to get swp.user.engReceived pref!\n");
+  }
+  msiComputeLogger.Init(engine, logMMLSent, logMMLReceived, logEngSent, logEngReceived);
+}
 
 // our connection to the computation code
 var compsample;
@@ -1304,7 +1238,7 @@ function GetCurrentEngine()
       inifile.append("mupInstall.gmr");
       compsample.startup(inifile);
       compengine = 2;
-      msiComputeLogger.Init();
+      initComputeLogger(compsample);
     } catch(e) {
       var msg_key;
       if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE)
@@ -1452,21 +1386,6 @@ function GetASide(mathElement, editorElement)
   return mathOut;
 }
 
-
-
-//Moved to msiEditorUtilities.js
-//function insertXML(editor, text, node, offset)
-//{
-//  var parser = new DOMParser();
-//  var doc = parser.parseFromString(text,"application/xhtml+xml");
-//  var nodeList = doc.documentElement.childNodes;
-//  var nodeListLength = nodeList.length;
-//  var i;
-//  for (i = nodeListLength-1; i >= 0; --i)
-//  {
-//    editor.insertNode( nodeList[i], node, offset );
-//  }
-//}
 
 //SLS for unknown reasons, get parsing error if text is at outer level
 function insertLabeledXML(editor, text, node, offset)
@@ -3091,97 +3010,6 @@ function finishComputeSetBasisVars(vars, compsample)
   compsample.setVectorBasis(vars);
   msiComputeLogger.Sent("new vector basis",vars);
 }
-
-
-// Moved to msiPrefs in applicationoverlay
-// function doComputeUserSettings()
-// {
-//   var compsample = GetCurrentEngine();
-// 
-//   msiComputeLogger.Sent("user settings","");
-// 
-//   var o = new Object();
-// 
-//   o.mfenced      = compsample.getUserPref(compsample.use_mfenced);
-//   o.digits       = compsample.getUserPref(compsample.Sig_digits_rendered);
-//   o.lower        = compsample.getUserPref(compsample.SciNote_lower_thresh);
-//   o.upper        = compsample.getUserPref(compsample.SciNote_upper_thresh);
-//   o.trigargs     = compsample.getUserPref(compsample.Parens_on_trigargs);
-//   o.imaginaryi   = compsample.getUserPref(compsample.Output_imaginaryi);
-//   o.diffD        = compsample.getUserPref(compsample.Output_diffD_uppercase);
-//   o.diffd        = compsample.getUserPref(compsample.Output_diffd_lowercase);
-//   o.expe         = compsample.getUserPref(compsample.Output_Euler_e);
-//   o.matrix_delim = compsample.getUserPref(compsample.Default_matrix_delims);
-//   o.usearc       = compsample.getUserPref(compsample.Output_InvTrigFuncs_1);
-//   o.mixednum     = compsample.getUserPref(compsample.Output_Mixed_Numbers);
-//   o.derivformat  = compsample.getUserPref(compsample.Default_derivative_format);
-//   o.primesasn    = compsample.getUserPref(compsample.Primes_as_n_thresh);
-//   o.primederiv   = compsample.getUserPref(compsample.Prime_means_derivative);
-// 
-//   o.loge         = compsample.getUserPref(compsample.log_is_base_e);
-//   o.dotderiv     = compsample.getUserPref(compsample.Dot_derivative);
-//   o.barconj      = compsample.getUserPref(compsample.Overbar_conjugate);
-//   o.i_imaginary  = compsample.getUserPref(compsample.Input_i_Imaginary);
-//   o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
-//   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
-//   
-//   window.openDialog("chrome://prince/content/ComputeUserSettings.xul", 
-//     "computeusersettings", "chrome,close,titlebar,resizable, modal", o);
-//   if (o.Cancel)
-//     return;
-// 
-//   compsample.setUserPref(compsample.use_mfenced,               o.mfenced);
-//   compsample.setUserPref(compsample.Sig_digits_rendered,       o.digits);
-//   compsample.setUserPref(compsample.SciNote_lower_thresh,      o.lower);
-//   compsample.setUserPref(compsample.SciNote_upper_thresh,      o.upper);
-//   compsample.setUserPref(compsample.Parens_on_trigargs,        o.trigargs);
-//   compsample.setUserPref(compsample.Output_imaginaryi,         o.imaginaryi);
-//   compsample.setUserPref(compsample.Output_diffD_uppercase,    o.diffD);
-//   compsample.setUserPref(compsample.Output_diffd_lowercase,    o.diffd);
-//   compsample.setUserPref(compsample.Output_Euler_e,            o.expe);
-//   compsample.setUserPref(compsample.Default_matrix_delims,     o.matrix_delim);
-//   compsample.setUserPref(compsample.Output_InvTrigFuncs_1,     o.usearc);
-//   compsample.setUserPref(compsample.Output_Mixed_Numbers,      o.mixednum);
-//   compsample.setUserPref(compsample.Default_derivative_format, o.derivformat);
-//   compsample.setUserPref(compsample.Primes_as_n_thresh,        o.primesasn);
-//   compsample.setUserPref(compsample.Prime_means_derivative,    o.primederiv);
-// 
-//   compsample.setUserPref(compsample.log_is_base_e,             o.loge);
-//   compsample.setUserPref(compsample.Dot_derivative,            o.dotderiv);
-//   compsample.setUserPref(compsample.Overbar_conjugate,         o.barconj);
-//   compsample.setUserPref(compsample.Input_i_Imaginary,         o.i_imaginary);
-//   compsample.setUserPref(compsample.Input_j_Imaginary,         o.j_imaginary);
-//   compsample.setUserPref(compsample.Input_e_Euler,             o.e_exp);
-// }
-
-// function doComputeSettings()
-// {
-//   var compsample = GetCurrentEngine();
-// 
-//   msiComputeLogger.Sent("settings","");
-// 
-//   var o = new Object();
-//   o.digitsUsed  = compsample.getEngineAttr(compsample.Digits);
-//   o.degree      = compsample.getEngineAttr(compsample.MaxDegree);
-//   o.principal   = compsample.getEngineAttr(compsample.PvalOnly) == 0 ? false : true;
-//   o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
-//   o.logSent     = msiComputeLogger.logMMLSent;
-//   o.logReceived = msiComputeLogger.logMMLReceived;
-//   o.engSent     = msiComputeLogger.logEngSent;
-//   o.engReceived = msiComputeLogger.logEngReceived;
-//   window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,resizable,modal", o);
-//   if (o.Cancel)
-//     return;
-// 
-//   compsample.setEngineAttr(compsample.Digits, o.digitsUsed);
-//   compsample.setEngineAttr(compsample.MaxDegree, o.degree);
-//   compsample.setEngineAttr(compsample.PvalOnly, o.principal ? 1 : 0);
-//   compsample.setEngineAttr(compsample.IgnoreSCases, o.special ? 1 : 0);
-//   msiComputeLogger.LogMMLSent(o.logSent);
-//   msiComputeLogger.LogMMLReceived(o.logReceived);
-//   msiComputeLogger.LogEngSent(o.engSent);
-//   msiComputeLogger.LogEngReceived(o.engReceived);
-// }
 // 
 // function doComputeSwitchEngines()
 // {
