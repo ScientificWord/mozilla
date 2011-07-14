@@ -203,6 +203,7 @@
         <groupbox>
           <caption label="&imagi_output.label;"/>
           <radiogroup id="imagi">
+            
             <radio label="&imagi_i.label;"        id="imagi_i"        selected="true"/>
             <radio label="&imagi_j.label;"        id="imagi_j"        selected="false"/>
             <radio label="&imagi_imagi.label;"    id="imagi_imagi"    selected="false"/>
