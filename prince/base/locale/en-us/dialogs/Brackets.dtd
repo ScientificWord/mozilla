@@ -10,4 +10,33 @@
 
 <!ENTITY leftBracketGroup.accesskey "L">
 <!ENTITY rightBracketGroup.accesskey "R">
+
 <!-- <!ENTITY .tooltip "">  -->
+<!-- Note that many of these are used for left and right bracket tooltips-->
+
+<!ENTITY LeftParenthesis.tooltip  "Left parenthesis">
+<!ENTITY LeftSquareBracket.tooltip  "Left square bracket">
+<!ENTITY LeftCurlyBrace.tooltip  "Left curly brace">
+<!ENTITY LeftPointingAngleBracket.tooltip  "Left-pointing angle bracket">
+<!ENTITY LeftFloor.tooltip  "Left floor">
+<!ENTITY LeftCeiling.tooltip  "Left ceiling">
+<!ENTITY LeftAbsValue.tooltip  "Left absolute value">
+<!ENTITY DoubleVertLine.tooltip  "Double vertical line">
+<!ENTITY ForwardSlash.tooltip  "Forward slash">
+<!ENTITY BackwardSlash.tooltip  "Backward slash">
+<!ENTITY UpDownArrow.tooltip  "Up down arrow">
+<!ENTITY BoxDrawingLtQuadDashVert.tooltip  "Box drawings light quadrple dash vertical">
+<!ENTITY UpDownDblArrow.tooltip  "Up down double arrow">
+<!ENTITY UpwardsArrow.tooltip  "Upwards arrow">
+<!ENTITY UpwardsDblArrow.tooltip  "Upwards double arrow">
+<!ENTITY DownwardsArrow.tooltip  "Downwards arrow">
+<!ENTITY DownwardsDblArrow.tooltip  "Downwards double arrow">
+<!ENTITY RightCeiling.tooltip  "Right ceiling">
+<!ENTITY RightFloor.tooltip  "Right floor">
+<!ENTITY RightPointingAngleBracket.tooltip  "Right-pointing angle bracket">
+<!ENTITY RightCurlyBrace.tooltip  "Right curly brace">
+<!ENTITY RightSquareBracket.tooltip  "Right square bracket">
+<!ENTITY RightParenthesis.tooltip  "Right parenthesis">
+<!ENTITY RightAbsValue.tooltip  "Right absolute value">
+
+ 

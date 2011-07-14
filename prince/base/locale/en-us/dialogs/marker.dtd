@@ -1,0 +1,11 @@
+
+
+
+
+
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Insert Marker">
+<!ENTITY Key.label "Key">
+<!ENTITY KeyNameConflict.tooltip  "Enter a key name which does not conflict with the current keys">
+<!ENTITY KeyNameConflict.label  "This key conflicts with an existing <br/>key. Choose a different one.">
