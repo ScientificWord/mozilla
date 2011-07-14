@@ -73,51 +73,51 @@
         onfocus="radioGroupSetFocus(this,event.target);"
         lastval="0" persist="lastval">
         
-        <button type="radio" label="(" group="leftBracketGroup" tooltiptext="Left Parenthesis"/>
+        <button type="radio" label="(" group="leftBracketGroup" tooltiptext="&LeftParenthesis.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="[" group="leftBracketGroup" tooltiptext="Left Square Bracket"/>
+        <button type="radio" label="[" group="leftBracketGroup" tooltiptext="&LeftSquareBracket.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="{" group="leftBracketGroup" tooltiptext="Left Curly Bracket"/>
+        <button type="radio" label="{" group="leftBracketGroup" tooltiptext="&LeftCurlyBrace.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2329;" group="leftBracketGroup" tooltiptext="Left-pointing Angle Bracket"/>
+        <button type="radio" label="&#x2329;" group="leftBracketGroup" tooltiptext="&LeftPointingAngleBracket.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x230A;" group="leftBracketGroup" tooltiptext="Left Floor"/>
+        <button type="radio" label="&#x230A;" group="leftBracketGroup" tooltiptext="&LeftFloor.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2308;" group="leftBracketGroup" tooltiptext="Left Ceiling"/>
+        <button type="radio" label="&#x2308;" group="leftBracketGroup" tooltiptext="&LeftCeiling.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="|" group="leftBracketGroup" tooltiptext="Left Absolute Value"/>
+        <button type="radio" label="|" group="leftBracketGroup" tooltiptext="&LeftAbsValue.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2016;" group="leftBracketGroup" tooltiptext="Double Vertical Line"/>
+        <button type="radio" label="&#x2016;" group="leftBracketGroup" tooltiptext="&DoubleVertLine.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="/" group="leftBracketGroup" tooltiptext=""/>
+        <button type="radio" label="/" group="leftBracketGroup" tooltiptext="&ForwardSlash.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="\" group="leftBracketGroup" tooltiptext=""/>
+        <button type="radio" label="\" group="leftBracketGroup" tooltiptext="&BackwardSlash.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2195;" group="leftBracketGroup" tooltiptext="Up Down Arrow"/>
+        <button type="radio" label="&#x2195;" group="leftBracketGroup" tooltiptext="&UpDownArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x250A;" group="leftBracketGroup" tooltiptext="Box Drawings Light Quadrple Dash Vertical"/>
+        <button type="radio" label="&#x250A;" group="leftBracketGroup" tooltiptext="&BoxDrawingLtQuadDashVert.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x21D5;" group="leftBracketGroup" tooltiptext="Up Down Double Arrow"/>
+        <button type="radio" label="&#x21D5;" group="leftBracketGroup" tooltiptext="&UpDownDblArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2191;" group="leftBracketGroup" tooltiptext="Upwards Arrow"/>
+        <button type="radio" label="&#x2191;" group="leftBracketGroup" tooltiptext="&UpwardsArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x21D1;" group="leftBracketGroup" tooltiptext="Upwards Double Arrow"/>
+        <button type="radio" label="&#x21D1;" group="leftBracketGroup" tooltiptext="&UpwardsDblArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2193;" group="leftBracketGroup" tooltiptext="Downwards Arrow"/>
+        <button type="radio" label="&#x2193;" group="leftBracketGroup" tooltiptext="&DownwardsArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x21D3;" group="leftBracketGroup" tooltiptext="Downwards Double Arrow"/>
+        <button type="radio" label="&#x21D3;" group="leftBracketGroup" tooltiptext="&DownwardsDblArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2309;" group="leftBracketGroup" tooltiptext="Right Ceiling"/>
+        <button type="radio" label="&#x2309;" group="leftBracketGroup" tooltiptext="&RightCeiling.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x230B;" group="leftBracketGroup" tooltiptext="Right Floor"/>
+        <button type="radio" label="&#x230B;" group="leftBracketGroup" tooltiptext="&RightFloor.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x232A;" group="leftBracketGroup" tooltiptext="Right-pointing Angle Bracket"/>
+        <button type="radio" label="&#x232A;" group="leftBracketGroup" tooltiptext="&RightPointingAngleBracket.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="}" group="leftBracketGroup" tooltiptext="Right Curly Brace"/>
+        <button type="radio" label="}" group="leftBracketGroup" tooltiptext="&RightCurlyBrace.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="]" group="leftBracketGroup" tooltiptext="Right Square Bracket"/>
+        <button type="radio" label="]" group="leftBracketGroup" tooltiptext="&RightSquareBracket.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label=")" group="leftBracketGroup" tooltiptext="Right Parenthesis"/>
+        <button type="radio" label=")" group="leftBracketGroup" tooltiptext="&RightParenthesis.tooltip;"/>
         <spacer flex="1"/> 
   	  </hbox>
       <hbox>
@@ -128,51 +128,51 @@
         onfocus="radioGroupSetFocus(this,event.target);"
         lastval="0" persist="lastval">
         
-        <button type="radio" checked= "true" label=")" group="rightBracketGroup" tooltiptext="Right Parenthesis"/>
+        <button type="radio" checked= "true" label=")" group="rightBracketGroup" tooltiptext="&RightParenthesis.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="]" group="rightBracketGroup" tooltiptext="Right Square Bracket"/>
+        <button type="radio" label="]" group="rightBracketGroup" tooltiptext="&RightSquareBracket.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="}" group="rightBracketGroup" tooltiptext="Right Curly Brace"/>
+        <button type="radio" label="}" group="rightBracketGroup" tooltiptext="&RightCurlyBrace.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x232A;" group="rightBracketGroup" tooltiptext="Right-pointing Angle Bracket"/>
+        <button type="radio" label="&#x232A;" group="rightBracketGroup" tooltiptext="&RightPointingAngleBracket.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x230B;" group="rightBracketGroup" tooltiptext="Right Floor"/>
+        <button type="radio" label="&#x230B;" group="rightBracketGroup" tooltiptext="&RightFloor.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2309;" group="rightBracketGroup" tooltiptext="Right Ceiling"/>
+        <button type="radio" label="&#x2309;" group="rightBracketGroup" tooltiptext="&RightCeiling.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="|" group="rightBracketGroup" tooltiptext="Right Absolute Value"/>
+        <button type="radio" label="|" group="rightBracketGroup" tooltiptext="&RightAbsValue.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2016;" group="rightBracketGroup" tooltiptext="Double Vertical Line"/>
+        <button type="radio" label="&#x2016;" group="rightBracketGroup" tooltiptext="&DoubleVertLine.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="/" group="rightBracketGroup" tooltiptext=""/>
+        <button type="radio" label="/" group="rightBracketGroup" tooltiptext="&ForwardSlash.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="\" group="rightBracketGroup" tooltiptext=""/>
+        <button type="radio" label="\" group="rightBracketGroup" tooltiptext="&BackwardSlash.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2195;" group="rightBracketGroup" tooltiptext="Up Down Arrow"/>
+        <button type="radio" label="&#x2195;" group="rightBracketGroup" tooltiptext="&UpDownArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x250A;" group="rightBracketGroup" tooltiptext="Box Drawings Light Quadrple Dash Vertical"/>
+        <button type="radio" label="&#x250A;" group="rightBracketGroup" tooltiptext="&BoxDrawingLtQuadDashVert.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x21D5;" group="rightBracketGroup" tooltiptext="Up Down Double Arrow"/>
+        <button type="radio" label="&#x21D5;" group="rightBracketGroup" tooltiptext="&UpDownDblArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2191;" group="rightBracketGroup" tooltiptext="Upwards Arrow"/>
+        <button type="radio" label="&#x2191;" group="rightBracketGroup" tooltiptext="&UpwardsArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x21D1;" group="rightBracketGroup" tooltiptext="Upwards Double Arrow"/>
+        <button type="radio" label="&#x21D1;" group="rightBracketGroup" tooltiptext="&UpwardsDblArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2193;" group="rightBracketGroup" tooltiptext="Downwards Arrow"/>
+        <button type="radio" label="&#x2193;" group="rightBracketGroup" tooltiptext="&DownwardsArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x21D3;" group="rightBracketGroup" tooltiptext="Downwards Double Arrow"/>
+        <button type="radio" label="&#x21D3;" group="rightBracketGroup" tooltiptext="&DownwardsDblArrow.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2308;" group="rightBracketGroup" tooltiptext="Left Ceiling"/>
+        <button type="radio" label="&#x2308;" group="rightBracketGroup" tooltiptext="&LeftCeiling.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x230A;" group="rightBracketGroup" tooltiptext="Left Floor"/>
+        <button type="radio" label="&#x230A;" group="rightBracketGroup" tooltiptext="&LeftFloor.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x2329;" group="rightBracketGroup" tooltiptext="Left-pointing Angle Bracket"/>
+        <button type="radio" label="&#x2329;" group="rightBracketGroup" tooltiptext="&LeftPointingAngleBracket.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="{" group="rightBracketGroup" tooltiptext="Left Curly Brace"/>
+        <button type="radio" label="{" group="rightBracketGroup" tooltiptext="&LeftCurlyBrace.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="[" group="rightBracketGroup" tooltiptext="Left Square Bracket"/>
+        <button type="radio" label="[" group="rightBracketGroup" tooltiptext="&LeftSquareBracket.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="(" group="rightBracketGroup" tooltiptext="Left Parenthesis"/>
+        <button type="radio" label="(" group="rightBracketGroup" tooltiptext="&LeftParenthesis.tooltip;"/>
         <spacer flex="1"/> 
   	  </hbox>
     </groupbox>
