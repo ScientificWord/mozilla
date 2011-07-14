@@ -1402,7 +1402,7 @@
      <toolbarbutton id ="symbolvarsupsetneq" label="&#x228B;&#xFE00;" tooltiptext="&symbolvarsupsetneq.tooltip;"              msivalue="&#x228B;&#xFE00;"
            observes="cmd_MSIsymbolCmd"/> 
            -->
-            <toolbarbutton id ="symbolvarsupsetneq" label="&#x228B;;" tooltiptext="&symbolvarsupsetneq.tooltip;"              msivalue="&#x228B;"
+            <toolbarbutton id ="symbolvarsupsetneq" label="&#x228B;" tooltiptext="&symbolvarsupsetneq.tooltip;"              msivalue="&#x228B;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolnsubseteqq" label="&#x0338;&#x2AC6;" tooltiptext="&symbolnsubseteqq.tooltip;"              msivalue="&#x0338;&#x2AC6;"
            observes="cmd_MSIsymbolCmd"/> 
@@ -1647,7 +1647,8 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolbackprime" label="&#x2035;" tooltiptext="&symbolbackprime.tooltip;"       msivalue="&#x2035;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolemptyset" label="&#xEEFB;" tooltiptext="&symbolemptyset.tooltip;"       msivalue="&#xEEFB;"
+           <!--JLF -> BBM, emptyset and varnothing resolve to the same character.  See Unicode Standard chart.-->
+        <toolbarbutton id ="symbolemptyset" label="&#x2205;" tooltiptext="&symbolemptyset.tooltip;"       msivalue="&#x2205;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolvarnothing" label="&#x2205;" tooltiptext="&symbolvarnothing.tooltip;"       msivalue="&#x2205;"
            observes="cmd_MSIsymbolCmd"/>
