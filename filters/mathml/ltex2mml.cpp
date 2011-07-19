@@ -2681,32 +2681,30 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
         TNODE* bucket =  FindObject( obj_node->parts,
   						              (U8*)"5.400.2",INVALID_LIST_POS );
         if ( bucket && bucket->contents ) {
-	// Note that QTR in MATH contains MATH!!!
-	      TNODE* TeX_cont =  bucket->contents;
-		  if ( usub_ID == TR_group ) {
-		    U8 switch_nom[64];
-            U16 switch_tag  =  GetMathRunTagFromTeXSwitch( 
-            							TeX_cont,switch_nom );
-			if ( switch_tag )
-			  mml_rv =  TaggedMath2MML( obj_node,TeX_cont,switch_tag,
-			  						    switch_nom,out_of_flow_list );
-			else {
-			  TCI_BOOL do_bindings  =  FALSE;
+          // Note that QTR in MATH contains MATH!!!
+	        TNODE* TeX_cont =  bucket->contents;
+		      if ( usub_ID == TR_group ) {
+		        U8 switch_nom[64];
+            U16 switch_tag  =  GetMathRunTagFromTeXSwitch( TeX_cont, switch_nom );
+			      if ( switch_tag )
+			        mml_rv =  TaggedMath2MML( obj_node, TeX_cont, switch_tag, switch_nom, out_of_flow_list );
+			      else {
+			        TCI_BOOL do_bindings  =  FALSE;
               U16 tex_nodes_done,error_code;
-			  TNODE* local_oof_list =  NULL;
+			        TNODE* local_oof_list =  NULL;
               TNODE* mml_cont =  TranslateMathList( TeX_cont,
-			  		                  do_bindings,NULL,tex_nodes_done,
-			  		                  error_code,&local_oof_list );
-	          if ( !mml_cont ) {		// <mtext>
+			  		                       do_bindings,NULL,tex_nodes_done,
+			  		                       error_code,&local_oof_list );
+	            if ( !mml_cont ) {		// <mtext>
                 mml_cont  =  MakeTNode( 0L,0L,0L,(U8*)zmtext );
                 SetChData( mml_cont,(U8*)"???",NULL );
-	          }
+	            }
               mml_cont  =  HandleOutOfFlowObjects( mml_cont,
            	  				      &local_oof_list,out_of_flow_list,3 );
               mml_rv =  mml_cont;
-			}
+			      }
 
-		  } else	// not a {\bb group}
+		      } else	// not a {\bb group}
             mml_rv  =  TaggedMath2MML( obj_node,TeX_cont,usub_ID,
            							    NULL,out_of_flow_list );
 
@@ -2817,6 +2815,10 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
         TCI_ASSERT(0);	// Should never get here
       break;
 
+
+      case 476  :       // \msipassthru<uID5.476.0>!\msipassthru!REQPARAM(5.476.1,NONLATEX)
+        mml_rv  =  PassThru2MML( obj_node, out_of_flow_list );
+        break;
       case 480  :	      // \tiny<uID5.480.0>
       case 481  :	      // \scriptsize<uID5.481.0>
       case 482  :	      // \footnotesize<uID5.482.0>
@@ -14513,6 +14515,27 @@ void LaTeX2MMLTree::StyleIDtoStr( U16 ID,U8* style_nom ) {
 
   if ( nom )
     strcpy( (char*)style_nom,nom );
+}
+
+
+
+TNODE* LaTeX2MMLTree::PassThru2MML( TNODE* TeX_node, TNODE** out_of_flow_list ) 
+{
+
+  TNODE* node =  FindObject(TeX_node->parts, (U8*)"5.476.1",INVALID_LIST_POS);
+  const char* theText =  (const char*)(node->contents->var_value);
+
+  char* buf = new char[strlen(theText) + strlen("<![CDATA[]]>")];
+  strcpy(buf, "<![CDATA[");
+  strcpy(buf + strlen("<![CDATA["), theText);
+  strcpy(buf +  strlen("<![CDATA[") + strlen(theText), "]]>");
+  
+  TNODE* mml  =  MakeTNode( 0L,0L,0L,(U8*)"888.8.0"); 
+  SetChData( mml, (U8*)buf, NULL );
+
+  TNODE* rv  =  CreateElemWithBucketAndContents( 5,476,0,1,mml );
+
+  return rv;
 }
 
 
