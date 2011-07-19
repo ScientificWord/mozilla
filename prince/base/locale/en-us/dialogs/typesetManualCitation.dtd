@@ -6,5 +6,7 @@
 <!ENTITY keyCaption.accesskey "K">
 <!ENTITY remarkCaption.label "Remark">
 <!ENTITY remarkCaption.accesskey "R">
+<!ENTITY keyCaption.tooltip "Enter the key name for the bibliography item to reference">
+
 
 <!-- <!ENTITY .tooltip "">  -->
