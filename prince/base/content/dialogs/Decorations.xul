@@ -169,7 +169,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="label">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="label" tooltiptext="&LabelAbove.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -200,7 +200,7 @@
         align="baseline" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsBelowButtonGroup.label;" accesskey="&decorationsBelowButtonGroup.accesskey;"/>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;" tooltiptext="&Underline.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -280,7 +280,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="label">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="label" tooltiptext="&LabelBelow.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>

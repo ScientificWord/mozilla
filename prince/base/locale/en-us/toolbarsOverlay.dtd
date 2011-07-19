@@ -77,8 +77,8 @@
 <!ENTITY displayButton.tooltip "Display" >
 <!ENTITY displayButton.label "Display" >
 
-<!ENTITY bigopButton.tooltip "Big operator" >
-<!ENTITY bigopButton.label "Big operator" >
+<!ENTITY bigopButton.tooltip "Operators" >
+<!ENTITY bigopButton.label "Operators" >
 
 <!ENTITY bracketsButton.tooltip "Brackets" >
 <!ENTITY bracketsButton.label "Brackets" >
@@ -191,10 +191,10 @@
 <!ENTITY MSIComputeSolveInteger.tooltip "Solve integer">
 <!ENTITY MSIComputeSolveInteger.label "Solve">
 
-<!ENTITY MSIComputePlot2D.tooltip "Plot 2D Rectangular">
+<!ENTITY MSIComputePlot2D.tooltip "Plot 2D rectangular">
 <!ENTITY MSIComputePlot2D.label "Plot 2D">
 
-<!ENTITY MSIComputePlot3D.tooltip "Plot 3D Rectangular">
+<!ENTITY MSIComputePlot3D.tooltip "Plot 3D rectangular">
 <!ENTITY MSIComputePlot3D.label "Plot 3D">
 
 <!ENTITY MSIComputeDefine.tooltip "New definition">      
@@ -248,7 +248,7 @@
 <!ENTITY undoCmd.label "Undo">
 <!ENTITY redoCmd.tooltip "Redo">
 <!ENTITY redoCmd.label "Redo">
-<!ENTITY findToolbarCmd.tooltip "Find">
-<!ENTITY findToolbarCmd.label "Find">
+<!ENTITY findToolbarCmd.tooltip "Find and Replace">
+<!ENTITY findToolbarCmd.label "Find and Replace">
 <!ENTITY spellToolbarCmd.tooltip "Check spelling">
 <!ENTITY spellToolbarCmd.label "Spell">
