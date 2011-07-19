@@ -303,7 +303,7 @@
 <!ENTITY symbolgtrapprox.tooltip   "gtrapprox">
 <!ENTITY symboltherefore.tooltip   "therefore">
 <!ENTITY symbolbecause.tooltip   "because">
-<!ENTITY symbolDoteq.tooltip  "Doteq">
+<!ENTITY symbolDoteq.tooltip  "doteq">
 <!ENTITY symboltriangleq.tooltip   "triangleq">
 <!ENTITY symbolprecsim.tooltip  "precsim">
 <!ENTITY symbollesssim.tooltip  "lesssim">
@@ -454,8 +454,8 @@
 <!ENTITY symbolsearrow.tooltip   "searrow">
 <!ENTITY symbolswarrow.tooltip   "swarrow">
 <!ENTITY symbolnwarrow.tooltip   "nwarrow">
-<!ENTITY symbolcwopencirclearrow.tooltip     "cwopencirclearrow">
-<!ENTITY symbolacwopencirclearrow.tooltip    "acwopencirclearrow">
+<!ENTITY symbolcwopencirclearrow.tooltip     "circlearrowright">
+<!ENTITY symbolacwopencirclearrow.tooltip    "circlearrowleft">
 <!ENTITY symbolrightleftharpoons.tooltip   "rightleftharpoons">
 <!ENTITY symbolleftrightharpoons.tooltip   "leftrightharpoons">
 <!ENTITY symboltwoheadrightarrow.tooltip   "twoheadrightarrow">
@@ -483,8 +483,8 @@
 <!ENTITY symbolLleftarrow.tooltip    "Lleftarrow">
 <!ENTITY symbolcurvearrowleft.tooltip   "curvearrowleft">
 <!ENTITY symbolcurvearrowright.tooltip   "curvearrowright">
-<!ENTITY symboldbkarrow.tooltip   "dbkarrow">
-<!ENTITY symbolleftdbkarrow.tooltip   "leftdbkarrow">
+<!ENTITY symboldbkarrow.tooltip   "dashrightarrow">
+<!ENTITY symbolleftdbkarrow.tooltip   "dashleftarrow">
 <!ENTITY symbolimplies.tooltip     "implies">
 <!ENTITY symbolimpliedby.tooltip    "impliedby">
 <!ENTITY symboliff.tooltip      "iff">
