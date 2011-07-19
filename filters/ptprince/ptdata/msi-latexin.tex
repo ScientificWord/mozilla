@@ -3229,9 +3229,7 @@
   \else
    \expandafter#2#1\null
   \fi}
-\def\ref#1{\expandafter\@setref\csname r@#1\endcsname\@firstoftwo{#1}}
-\def\pageref#1{\expandafter\@setref\csname r@#1\endcsname
-                                   \@secondoftwo{#1}}
+
 \def\@newl@bel#1#2#3{{%
   \@ifundefined{#1@#2}%
     \relax
