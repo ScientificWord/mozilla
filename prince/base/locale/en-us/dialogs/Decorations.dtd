@@ -4,22 +4,22 @@
 <!ENTITY windowPropertiesTitle.label "Decorations Properties">
 <!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
 
-<!ENTITY decorationsAboveButtonGroup.label "Decorations Above">
+<!ENTITY decorationsAboveButtonGroup.label "Decorations above">
 <!ENTITY decorationsAboveButtonGroup.accesskey "v">
-<!ENTITY decorationsBelowButtonGroup.label "Decorations Below">
+<!ENTITY decorationsBelowButtonGroup.label "Decorations below">
 <!ENTITY decorationsBelowButtonGroup.accesskey "b">
-<!ENTITY decorationsAroundButtonGroup.label "Decorations Around">
+<!ENTITY decorationsAroundButtonGroup.label "Decorations around">
 <!ENTITY decorationsAroundButtonGroup.accesskey "d">
 
 <!-- <!ENTITY .tooltip "">  -->
 <!ENTITY Macron.tooltip "Macron">
-<!ENTITY LeftwardsArrow.tooltip  "Leftwards Arrow">
-<!ENTITY RightwardsArrow.tooltip "Rightwards Arrow">
-<!ENTITY LeftRightArrow.tooltip "Left Right Arrow">
-<!ENTITY VerticalLeftCurlyBracket.tooltip  "Vertical Left Curly Bracket">
-<!ENTITY CombiningCircumflexAccent.tooltip  "Combining Circumflex Accent">
-<!ENTITY SmallTilde.tooltip  "Small Tilde">
-<!ENTITY LeftwardsArrow.tooltip  "Leftwards Arrow">
-<!ENTITY RightwardsArrow.tooltip "Rightwards Arrow">
-<!ENTITY LeftRightArrow.tooltip "Left Right Arrow">
-<!ENTITY VerticalRightCurlyBracket.tooltip "Vertical Right Curly Bracket">
+<!ENTITY LeftwardsArrow.tooltip  "Leftwards arrow">
+<!ENTITY RightwardsArrow.tooltip "Rightwards arrow">
+<!ENTITY LeftRightArrow.tooltip "Left right arrow">
+<!ENTITY VerticalLeftCurlyBracket.tooltip  "Vertical left curly bracket">
+<!ENTITY CombiningCircumflexAccent.tooltip  "Combining circumflex accent">
+<!ENTITY SmallTilde.tooltip  "Small tilde">
+<!ENTITY LabelAbove.tooltip "Label above">
+<!ENTITY Underline.tooltip  "Underline">
+<!ENTITY LabelBelow.tooltip "Label below">
+<!ENTITY VerticalRightCurlyBracket.tooltip "Vertical right curly bracket">
