@@ -14525,12 +14525,15 @@ TNODE* LaTeX2MMLTree::PassThru2MML( TNODE* TeX_node, TNODE** out_of_flow_list )
   TNODE* node =  FindObject(TeX_node->parts, (U8*)"5.476.1",INVALID_LIST_POS);
   const char* theText =  (const char*)(node->contents->var_value);
 
-  char* buf = new char[strlen(theText) + strlen("<![CDATA[]]>")];
-  strcpy(buf, "<![CDATA[");
-  strcpy(buf + strlen("<![CDATA["), theText);
-  strcpy(buf +  strlen("<![CDATA[") + strlen(theText), "]]>");
+  char* buf = new char[strlen(theText)];
+  strcpy(buf, theText);
+  // jcs May want this in cdata?
+  //char* buf = new char[strlen(theText) + strlen("<![CDATA[]]>")];
+  //strcpy(buf, "<![CDATA[");
+  //strcpy(buf + strlen("<![CDATA["), theText);
+  //strcpy(buf +  strlen("<![CDATA[") + strlen(theText), "]]>");
   
-  TNODE* mml  =  MakeTNode( 0L,0L,0L,(U8*)"888.8.0"); 
+  TNODE* mml  =  MakeTNode( 0L,0L,0L,(U8*)"0.0.0"); 
   SetChData( mml, (U8*)buf, NULL );
 
   TNODE* rv  =  CreateElemWithBucketAndContents( 5,476,0,1,mml );
