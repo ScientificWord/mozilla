@@ -132,11 +132,11 @@
      <tabpanel id="symbol_ucGreek" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -164,12 +164,12 @@
 <!-- BINARY OPERATIONS -->
     	<tabpanel id="symbol_binOp"  mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+           <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -269,12 +269,12 @@
         <!-- BINARY RELATIONS -->
       <tabpanel id="symbol_binRel" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+        <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -429,12 +429,12 @@
 <!-- NEGATED RELATIONS -->
       <tabpanel id="symbol_negRel" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+        <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -535,12 +535,12 @@
 <!-- ARROWS -->
       <tabpanel id="symbol_arrow" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+         <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -643,11 +643,11 @@
       <tabpanel id="symbol_misc" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -760,12 +760,12 @@
       <!-- DELIMITERS -->
       <tabpanel id="symbol_delims" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+         <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -790,11 +790,11 @@
       <tabpanel id="symbol_latin1" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -935,12 +935,12 @@
 <!-- LATIN EXTENDED -->
       <tabpanel id="symbol_latinextended" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+         <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -1128,12 +1128,12 @@
 <!-- PUNCTUATION -->
       <tabpanel id="symbol_punctuation" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+         <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
