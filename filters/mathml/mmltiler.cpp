@@ -1,11 +1,11 @@
 
 /*
-#define TT_S_ELEM_HEADER	  16
-#define TT_S_ELEM_ENDER		  17
-#define TT_A_ELEM_HEADER	  18
-#define TT_A_ELEM_ENDER		  19
-#define TT_ATOM_BODY		  20
-#define TT_REQ_ELEM		      21
+#define TT_S_ELEM_HEADER    16
+#define TT_S_ELEM_ENDER     17
+#define TT_A_ELEM_HEADER    18
+#define TT_A_ELEM_ENDER     19
+#define TT_ATOM_BODY      20
+#define TT_REQ_ELEM         21
 */
 
 /*
@@ -41,19 +41,19 @@ MMLTiler::MMLTiler( Grammar* dest_mml_grammar ) {
 
   d_mml_grammar =  dest_mml_grammar;
 
-  use_unicodes 	=  FALSE;
+  use_unicodes  =  FALSE;
 
 //;; output entities as unicodes
 //<uID12.1.13>0  OR  1  OR  2
 
-  U8* dest_zname;			// pointers returned by lookups
-  U8* d_template;			// in d_mml_grammar
+  U8* dest_zname;     // pointers returned by lookups
+  U8* d_template;     // in d_mml_grammar
   if ( d_mml_grammar->GetGrammarDataFromUID( (U8*)"12.1.13",
                 (U8*)"MMLCONTEXT",&dest_zname,&d_template ) ) {
     if ( d_template && *d_template ) {
       if ( *d_template != '0' )
         use_unicodes  =  TRUE;
-	}
+  }
   }
 
   n_space[0]  =  0; 
@@ -88,8 +88,8 @@ void MMLTiler::SetNameSpace( U8* name_space ) {
     else
       TCI_ASSERT(0);
   } else {
-    U8* dest_zname;			// pointers returned by lookups
-    U8* d_template;			// in d_mml_grammar
+    U8* dest_zname;     // pointers returned by lookups
+    U8* d_template;     // in d_mml_grammar
     if ( d_mml_grammar->GetGrammarDataFromUID( (U8*)"12.1.2",
                 (U8*)"MMLCONTEXT",&dest_zname,&d_template ) ) {
 
@@ -124,10 +124,10 @@ TILE* MMLTiler::MMLtreeToTiles( TNODE* parse_tree,U16 lim ) {
   TCI_BOOL omit =  FALSE;
   if ( parse_tree ) {
     if ( !parse_tree->next
-	&&   !parse_tree->var_value
-	&&   !parse_tree->var_value2
-	&&   !parse_tree->parts
-	&&   !parse_tree->contents )
+  &&   !parse_tree->var_value
+  &&   !parse_tree->var_value2
+  &&   !parse_tree->parts
+  &&   !parse_tree->contents )
     omit  =  TRUE;
   } else
     omit  =  TRUE;
@@ -141,7 +141,7 @@ TILE* MMLTiler::MMLtreeToTiles( TNODE* parse_tree,U16 lim ) {
     d_mml_grammar->GetDefaultContext( zcontext );
 
     if ( zcontext[0] )  PushContext( zcontext );
-	    U16 error_code;
+      U16 error_code;
       rv  =  ListToTiles( parse_tree,lim,error_code );
     if ( zcontext[0] )  PopContext();
   }
@@ -158,18 +158,18 @@ TILE* MMLTiler::MMLtreeToTiles( TNODE* parse_tree,U16 lim ) {
 */
 
 TILE* MMLTiler::ListToTiles( TNODE* mml_obj_list,U16 lim,
-										                      U16& error_code ) {
+                                          U16& error_code ) {
 
 //DumpTList( mml_obj_list,NULL,0,0,TOKENIZER_MML );
 
-  TILE* rv  =  NULL;		// variables used to build returned list
+  TILE* rv  =  NULL;    // variables used to build returned list
   TILE* tail;
   TILE* new_frag;
 
   U8* context =  context_sp ? context_stack[context_sp-1] : (U8*)NULL;
 
-  U8* dest_zname;			// pointers returned by lookups
-  U8* d_template;			// in d_mml_grammar
+  U8* dest_zname;     // pointers returned by lookups
+  U8* d_template;     // in d_mml_grammar
 
   error_code    =  0;
   TNODE* rover  =  mml_obj_list;
@@ -185,14 +185,14 @@ TILE* MMLTiler::ListToTiles( TNODE* mml_obj_list,U16 lim,
       switch ( uobjtype ) {
 
         case 1  : {   //Context Start
-		      TCI_ASSERT(0);
+          TCI_ASSERT(0);
 /*
           U8* tc  =  d_mml_grammar->GetContextName( rover->zuID );
           if ( tc ) {
             PushContext( tc );
             context =  context_stack[ context_sp-1 ];
             if ( dest_zname && *dest_zname )
-			        new_frag  =  TokenToTile( rover,dest_zname,TT_CONTEXT_START );
+              new_frag  =  TokenToTile( rover,dest_zname,TT_CONTEXT_START );
           } else {
             // no such context in d_mml_grammar?  
           }
@@ -201,14 +201,14 @@ TILE* MMLTiler::ListToTiles( TNODE* mml_obj_list,U16 lim,
         break;
 
         case 2  : {   //Context End
-		      TCI_ASSERT(0);
+          TCI_ASSERT(0);
 /*
           U8* tc  =  d_mml_grammar->GetContextName( rover->zuID );
           if ( tc ) {
             PopContext();
             context =  ( context_sp > 0 ) ? context_stack[ context_sp-1 ] : (U8*)NULL;
             if ( dest_zname && *dest_zname )
-		          new_frag  =  TokenToTile( rover,dest_zname,TT_CONTEXT_END );
+              new_frag  =  TokenToTile( rover,dest_zname,TT_CONTEXT_END );
           } else {
             // no such context in d_mml_grammar?  
           }
@@ -232,23 +232,23 @@ or an entity
                               context,&dest_zname,&d_template ) ) {
 
             if ( usubtype>=201 && usubtype<=206 ) {
-			        new_frag  =  AtomicElementToTiles( rover,dest_zname,
-			  										                      error_code );
-			      } else {
-			        TCI_ASSERT(0);
-			        new_frag  =  EntityToTiles( rover,dest_zname,
-			  										                error_code );
-			      }
+              new_frag  =  AtomicElementToTiles( rover,dest_zname,
+                                                  error_code );
+            } else {
+              TCI_ASSERT(0);
+              new_frag  =  EntityToTiles( rover,dest_zname,
+                                            error_code );
+            }
 
           } else {
-		        TCI_ASSERT(0);
-		    // TeX symbol not defined in MathML
-		      }
+            TCI_ASSERT(0);
+        // TeX symbol not defined in MathML
+          }
 
-	      }
+        }
         break;
 
-		    case  9 : {
+        case  9 : {
           if ( d_mml_grammar->GetGrammarDataFromUID( rover->zuID,
                               context,&dest_zname,&d_template ) ) {
             U8 zender[32];
@@ -257,15 +257,15 @@ or an entity
             strcat( (char*)zender,(char*)dest_zname );
             strcat( (char*)zender," />" );
             new_frag  =  MakeTILE( TT_ALIGNGROUP,zender );
-	        } else {
-		        TCI_ASSERT(0);
-		      }
-	      }
+          } else {
+            TCI_ASSERT(0);
+          }
+        }
         break;
 
-		    case 70 : {
-		      TCI_ASSERT(0);
-	      }
+        case 70 : {
+          TCI_ASSERT(0);
+        }
         break;
 
         default : {
@@ -275,19 +275,19 @@ or an entity
             if ( d_template && *d_template ) {
               U16 zt_len  =  strlen( (char*)d_template );
               new_frag  =  StructuredObjectToTiles( d_template,zt_len,
-              										rover,error_code );
+                                  rover,error_code );
 
             } else if ( dest_zname && *dest_zname ) {
 
-			        TCI_ASSERT(0);
-			        new_frag  =  TokenToTile( rover,dest_zname,TT_GENERIC );
+              TCI_ASSERT(0);
+              new_frag  =  TokenToTile( rover,dest_zname,TT_GENERIC );
 
             } else {      // this symbol not available in d_mml_grammar
-			        TCI_ASSERT(0);
+              TCI_ASSERT(0);
             }
 
           } else
-		        TCI_ASSERT(0);
+            TCI_ASSERT(0);
 
         }
         break;
@@ -296,27 +296,28 @@ or an entity
 
     } else {    // node uID is "0.0.0"
 
-    //UNCLASSIFIED bytes from the original source
+      //UNCLASSIFIED bytes from the original source
       //dest_ba +=  rover->var_value;
+      new_frag  =  MakeTILE( TT_ALIGNGROUP, rover->var_value );
 
-	  TCI_ASSERT(0);
+
     }
 
     if ( new_frag ) {
-	  if ( rv ) {		// append to end of existing list
-	    tail->next      =  new_frag;
-		new_frag->prev  =  tail;
-	  } else
-	    rv  =  new_frag;
+      if ( rv ) {   // append to end of existing list
+        tail->next      =  new_frag;
+        new_frag->prev  =  tail;
+      } else
+        rv  =  new_frag;
 
-	  tail  =  new_frag;
-	  while ( tail->next )
-	    tail  =  tail->next;
+      tail  =  new_frag;
+      while ( tail->next )
+        tail  =  tail->next;
     }
 
     if ( lim == 1 )
-	  break;
-	else
+      break;
+    else
       rover =  rover->next;
 
   }     // while loop thru first level objects in "mml_obj_list"
@@ -456,11 +457,11 @@ optoptpreqp
 */
 
 TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
-											U16 tmpl_len,
+                      U16 tmpl_len,
                                               TNODE* obj_node,
                                                 U16& error_code ) {
 
-  TILE* rv  =  NULL;		// variables used to build returned list
+  TILE* rv  =  NULL;    // variables used to build returned list
   TILE* tail;
   TILE* new_frag;
 
@@ -469,7 +470,7 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
 
   TNODE* parts_list   =  obj_node->parts;
   TmplIterater* tmpl  =  TCI_NEW( TmplIterater(d_mml_grammar,
-  									ztemplate,tmpl_len,logfiler) );
+                    ztemplate,tmpl_len,logfiler) );
 
   U16 error_flag;
   U16 tmpl_elm_type;
@@ -500,34 +501,34 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
 
         TNODE* p_list =  FindObject( parts_list,pID,INVALID_LIST_POS );
         if ( *pENV ) PushContext( pENV );
-		    if ( p_list ) {
+        if ( p_list ) {
           U16 t_len;
           U8* tok   =  tmpl->GetField( TFIELD_start,t_len );
           if ( t_len ) {
-			      new_frag  =  BytesToTile( tok,t_len,TT_BUCKET_START );
-			      TCI_ASSERT(0);
-		      }
+            new_frag  =  BytesToTile( tok,t_len,TT_BUCKET_START );
+            TCI_ASSERT(0);
+          }
           TILE* ct  =  ListToTiles( p_list->contents,0,error_code );
-		      new_frag  =  AppendTILEs( new_frag,ct );
+          new_frag  =  AppendTILEs( new_frag,ct );
 
           tok   =  tmpl->GetField( TFIELD_end,t_len );
           if ( t_len ) {
-			      TILE* tbe =  BytesToTile( tok,t_len,TT_BUCKET_END );
-  		      new_frag  =  AppendTILEs( new_frag,tbe );
-			      TCI_ASSERT(0);
-		      }
-		  }
+            TILE* tbe =  BytesToTile( tok,t_len,TT_BUCKET_END );
+            new_frag  =  AppendTILEs( new_frag,tbe );
+            TCI_ASSERT(0);
+          }
+      }
       if ( *pENV ) PopContext();
       }
       break;
 
       case TMPL_ELEMENT_LITERAL   : {       // copy it to literal
-		if ( lit[0] == 0 ) {
-	      U16 t_len;
+    if ( lit[0] == 0 ) {
+        U16 t_len;
           U8* tok   =  tmpl->GetField( TFIELD_lit,t_len );
-		  strncpy( (char*)lit,(char*)tok+1,t_len-2 );
-		  lit[ t_len-2 ]  =  0;
-		}
+      strncpy( (char*)lit,(char*)tok+1,t_len-2 );
+      lit[ t_len-2 ]  =  0;
+    }
       }
       break;
 
@@ -543,11 +544,11 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
 
           if ( alter_elm_type == TMPL_ELEMENT_ELSE ) {
 
-			U16 tmpl_len;
+      U16 tmpl_len;
             U8* ztemplate =  tmpl->GetField( TFIELD_else,tmpl_len );
             new_frag  =  StructuredObjectToTiles( ztemplate,tmpl_len,
                                               obj_node,error_code );
-			done  =  TRUE;
+      done  =  TRUE;
 
           } else {
 
@@ -567,7 +568,7 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
 
               done  =  TRUE;
             }
-		  }
+      }
 
           alter_elm_type  =  tmpl->GetNextElement();
 
@@ -590,13 +591,13 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
         new_frag  =  ListToTiles( p_list->contents,0,error_code );
 
 /*
-		U16 elem_count  =  CountElements( new_frag );
-		if ( elem_count>1 ) {
-		  TILE* tbs =  BytesToTile( (U8*)"<mrow>",6,TT_S_ELEM_HEADER );
-  		  new_frag  =  AppendTILEs( tbs,new_frag );
+    U16 elem_count  =  CountElements( new_frag );
+    if ( elem_count>1 ) {
+      TILE* tbs =  BytesToTile( (U8*)"<mrow>",6,TT_S_ELEM_HEADER );
+        new_frag  =  AppendTILEs( tbs,new_frag );
 
-		  TILE* tbe =  BytesToTile( (U8*)"</mrow>",7,TT_S_ELEM_ENDER );
-  		  new_frag  =  AppendTILEs( new_frag,tbe );
+      TILE* tbe =  BytesToTile( (U8*)"</mrow>",7,TT_S_ELEM_ENDER );
+        new_frag  =  AppendTILEs( new_frag,tbe );
         }
 */
 
@@ -627,16 +628,16 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
 
             if ( list ) {         // we have another item
               if ( start_len ) {
-			    TCI_ASSERT(0);
+          TCI_ASSERT(0);
                 //d_mml_grammar->OutputBytes( pstart,start_len,dest_ba );
                 new_frag  =  AppendTILEs( new_frag,
-                	BytesToTile(pstart,start_len,TT_LIST_ITEM_START) );
+                  BytesToTile(pstart,start_len,TT_LIST_ITEM_START) );
               } else if ( list_pos > 0 && cont_len ) {
-			    TCI_ASSERT(0);
+          TCI_ASSERT(0);
                 //d_mml_grammar->OutputBytes( pcont,cont_len,dest_ba );
                 new_frag  =  AppendTILEs( new_frag,
-                	BytesToTile(pcont,cont_len,TT_LIST_CONTINUE) );
-			  }
+                  BytesToTile(pcont,cont_len,TT_LIST_CONTINUE) );
+        }
             } else {              // end the list
               break;
             }
@@ -644,19 +645,19 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
             U16 nest_len;
             U8* pnest   =  tmpl->GetField( TFIELD_nest,nest_len );
             new_frag  =  AppendTILEs( new_frag,
-            	StructuredObjectToTiles(pnest,nest_len,list,error_code) );
+              StructuredObjectToTiles(pnest,nest_len,list,error_code) );
 
             list_pos++;
 
           }       // while loop thru list items
 
-        }	// if ( list_node->parts )
+        } // if ( list_node->parts )
 
       }
       break;
 
       case TMPL_ELEMENT_VARIABLE  : {       // 
-		TCI_ASSERT(0);
+    TCI_ASSERT(0);
 
 /*
 TNODE* shit =  parts_list;
@@ -702,7 +703,7 @@ char zzz[80];
 sprintf( zzz,"Transltr::UNKNOWN VAR type, %d\n",var_type );
 JBMLine( zzz );
 */
-	        TCI_ASSERT(0);
+          TCI_ASSERT(0);
           }
 
         } else {
@@ -711,7 +712,7 @@ char zzz[80];
 sprintf( zzz,"Transltr::VAR not found, %s\n",pID );
 JBMLine( zzz );
 */
-	      TCI_ASSERT(0);
+        TCI_ASSERT(0);
         }
 
       }
@@ -727,15 +728,15 @@ JBMLine( zzz );
       break;  
 
     if ( new_frag ) {
-	  if ( rv ) {		// append to end of existing list
-	    tail->next      =  new_frag;
-		new_frag->prev  =  tail;
-	  } else
-	    rv  =  new_frag;
+    if ( rv ) {   // append to end of existing list
+      tail->next      =  new_frag;
+    new_frag->prev  =  tail;
+    } else
+      rv  =  new_frag;
 
-	  tail  =  new_frag;
-	  while ( tail->next )
-	    tail  =  tail->next;
+    tail  =  new_frag;
+    while ( tail->next )
+      tail  =  tail->next;
     }
 
   }     // while loop thru template elements
@@ -751,8 +752,8 @@ JBMLine( zzz );
 
 
 TILE* MMLTiler::TokenToTile( TNODE* src_node,
-								U8* grammar_info,
-									U16 token_type ) {
+                U8* grammar_info,
+                  U16 token_type ) {
   TILE* rv  =  NULL;
 
   //d_mml_grammar->OutputToken( rover,dest_zname,dest_ba );
@@ -766,8 +767,8 @@ TILE* MMLTiler::TokenToTile( TNODE* src_node,
 
 
 TILE* MMLTiler::AtomToTile( TNODE* src_node,
-									U8* grammar_info,
-										U16 token_type ) {
+                  U8* grammar_info,
+                    U16 token_type ) {
   TILE* rv  =  NULL;
 
   //d_mml_grammar->OutputAtom( rover,dest_zname,dest_ba );
@@ -781,7 +782,7 @@ TILE* MMLTiler::AtomToTile( TNODE* src_node,
 
 
 TILE* MMLTiler::BytesToTile( U8* zbytes,U16 zln,
-										U16 token_type ) {
+                    U16 token_type ) {
 
   TILE* rv  =  NULL;
 
@@ -803,8 +804,8 @@ TILE* MMLTiler::BytesToTile( U8* zbytes,U16 zln,
 
 
 TILE* MMLTiler::AtomicElementToTiles( TNODE* mml_atom_elem_node,
-										    U8* dest_zname,
-										    U16& error_code ) {
+                        U8* dest_zname,
+                        U16& error_code ) {
 
   TILE* rv  =  NULL;
 
@@ -820,7 +821,7 @@ TILE* MMLTiler::AtomicElementToTiles( TNODE* mml_atom_elem_node,
 
     U8* chdata  =  mml_atom_elem_node->var_value;
     if ( use_unicodes && mml_atom_elem_node->var_value2 )
-	  chdata  =  mml_atom_elem_node->var_value2;
+    chdata  =  mml_atom_elem_node->var_value2;
 
     TILE* body  =  MakeTILE( TT_ATOM_BODY,chdata );
 
@@ -833,12 +834,12 @@ TILE* MMLTiler::AtomicElementToTiles( TNODE* mml_atom_elem_node,
 
     if ( body ) {
       rv->next    =  body;
-	  body->prev  =  rv;
-	  body->next  =  ender;
-	  ender->prev =  body;
+    body->prev  =  rv;
+    body->next  =  ender;
+    ender->prev =  body;
     } else {
       rv->next    =  ender;
-	  ender->prev =  rv;
+    ender->prev =  rv;
     }
 
   } else {
@@ -855,8 +856,8 @@ TILE* MMLTiler::AtomicElementToTiles( TNODE* mml_atom_elem_node,
 
 
 TILE* MMLTiler::EntityToTiles( TNODE* mml_entity_node,
-									U8* dest_zname,
-										U16& error_code ) {
+                  U8* dest_zname,
+                    U16& error_code ) {
 
   TILE* rv  =  NULL;
 
@@ -865,7 +866,7 @@ TILE* MMLTiler::EntityToTiles( TNODE* mml_entity_node,
 
 
 void MMLTiler::AttrsToHeader( ATTRIB_REC* attrib_list,
-											U8* zheader ) {
+                      U8* zheader ) {
 
   while ( attrib_list ) {
     strcat( (char*)zheader," " );
@@ -880,8 +881,8 @@ void MMLTiler::AttrsToHeader( ATTRIB_REC* attrib_list,
 
 
 TILE* MMLTiler::StartEndStructuredElement( TILE* body,
-										  U8* elem_name,
-										TNODE* mml_src_node ) {
+                      U8* elem_name,
+                    TNODE* mml_src_node ) {
 
   TILE* rv  =  NULL;
 
@@ -904,13 +905,13 @@ TILE* MMLTiler::StartEndStructuredElement( TILE* body,
 
   if ( body ) {
     rv->next    =  body;
-	body->prev  =  rv;
-	while ( body->next ) body =  body->next;
-	body->next  =  ender;
-	ender->prev =  body;
+  body->prev  =  rv;
+  while ( body->next ) body =  body->next;
+  body->next  =  ender;
+  ender->prev =  body;
   } else {
     rv->next    =  ender;
-	ender->prev =  rv;
+  ender->prev =  rv;
   }
 
   return rv;

@@ -241,7 +241,7 @@ maction<uID5.604.0>!maction!reqELEMENT(5.604.1)reqELEMENT(5.604.2)!/maction!
 texb<uID5.418.1>!texb!BUCKET(5.418.4,MATH,,,/texb,)!/texb!
 
 /msipassthru<uID5.476.3>
-msipassthru<uID5.476.0>!msipassthru!reqELEMENT(5.476.1)!/msipassthru
+msipassthru<uID5.476.0>!!reqELEMENT(5.476.1)!!
 
 <uID4.418.5>X
 
