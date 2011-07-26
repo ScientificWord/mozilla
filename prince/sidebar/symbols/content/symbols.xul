@@ -768,14 +768,14 @@
             <column width="29px"/>
           </columns>
           <rows>
-            <row>
+            <row height="35px">
               <toolbarbutton id="symbollfloor" />
               <toolbarbutton id="symbolrfloor" />
               <toolbarbutton id="symbollceil" />
               <toolbarbutton id="symbolrceil" />
               <toolbarbutton id="symbollangle" />
             </row>
-            <row>
+            <row height="35px">
               <toolbarbutton id="symbolrangle" />
               <toolbarbutton id="symbolulcorner" />
               <toolbarbutton id="symbolurcorner" />
