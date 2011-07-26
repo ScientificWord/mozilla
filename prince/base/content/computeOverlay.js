@@ -1193,32 +1193,34 @@ function dontSetAnimationTime()
 
 function initComputeLogger(engine)
 {
+  dump("initComputeLogger with " + engine + "\n");
   var prefs = GetPrefs();
   var logMMLSent, logMMLReceived, logEngSent, logEngReceived;
   try {
     logMMLSent = prefs.getBoolPref("swp.user.logSent");
   }
   catch(ex) {
-    jsdump("\nfailed to get swp.user.logSent pref!\n");
+    dump("\nfailed to get swp.user.logSent pref!\n");
   }
   try {
     logMMLReceived = prefs.getBoolPref("swp.user.logReceived");
   }
   catch(ex) {
-    jsdump("\nfailed to get swp.user.logReceived pref!\n");
+    dump("\nfailed to get swp.user.logReceived pref!\n");
   }
   try {
     logEngSent = prefs.getBoolPref("swp.user.engSent");
   }
   catch(ex) {
-    jsdump("\nfailed to get swp.user.engSent pref!\n");
+    dump("\nfailed to get swp.user.engSent pref!\n");
   }
   try {
     logEngReceived = prefs.getBoolPref("swp.user.engReceived");
   }
   catch(ex) {
-    jsdump("\nfailed to get swp.user.engReceived pref!\n");
+    dump("\nfailed to get swp.user.engReceived pref!\n");
   }
+  dump("call msiComputeLogger.Init\n");
   msiComputeLogger.Init(engine, logMMLSent, logMMLReceived, logEngSent, logEngReceived);
 }
 
