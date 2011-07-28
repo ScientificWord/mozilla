@@ -239,10 +239,10 @@
         <toolbarbutton id ="symbolXi" />
         <toolbarbutton id ="symbolPi" />
         <toolbarbutton id ="symbolSigma" />
+        <toolbarbutton id ="symbolUpsilon" />
         <toolbarbutton id ="symbolPhi" />
         <toolbarbutton id ="symbolPsi" />
         <toolbarbutton id ="symbolOmega" />
-        <toolbarbutton id ="symbolUpsilon" />
         <toolbarbutton id ="symboldigamma" />
 
       </tabpanel>
@@ -941,7 +941,7 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolupsilon" label="&#x03C5;" tooltiptext="&symbolupsilon.tooltip;" msivalue="&#x03C5;"
             observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolvarphi" label="&#x03C6;" tooltiptext="&symbolvarphi.tooltip;"   msivalue="&#x03C6;"
+        <toolbarbutton id ="symbolvarphi" label="&#x03D5;" tooltiptext="&symbolvarphi.tooltip;"   msivalue="&#x03D5;"
              observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symboltextchi" label="&#x03C7;" tooltiptext="&symboltextchi.tooltip;"    msivalue="&#x03C7;"
              observes="cmd_MSIsymbolCmd"/>
@@ -951,7 +951,8 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolvartheta" label="&#x03D1;" tooltiptext="&symbolvartheta.tooltip;" msivalue="&#x03D1;"
              observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolphi" label="&#x03D5;" tooltiptext="&symbolphi.tooltip;" msivalue="&#x03D5;"
+             <!-- JLF, per JM, this should use vertical slash here -->
+        <toolbarbutton id ="symbolphi" label="&#x03C6;" tooltiptext="&symbolphi.tooltip;" msivalue="&#x03C6;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolvarpi" label="&#x03D6;" tooltiptext="&symbolvarpi.tooltip;"    msivalue="&#x03D6;"
              observes="cmd_MSIsymbolCmd"/>
@@ -981,14 +982,14 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolSigma" label="&#x03A3;" tooltiptext="&symbolSigma.tooltip;"  msivalue="&#x03A3;"
             observes="cmd_MSIsymbolCmd"/>
+        <toolbarbutton id ="symbolUpsilon" label="&#x03D2;" tooltiptext="&symbolUpsilon.tooltip;" msivalue="&#x03D2;"
+           observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolPhi" label="&#x03A6;" tooltiptext="&symbolPhi.tooltip;"    msivalue="&#x03A6;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolPsi" label="&#x03A8;" tooltiptext="&symbolPsi.tooltip;"    msivalue="&#x03A8;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolOmega" label="&#x03A9;" tooltiptext="&symbolOmega.tooltip;"  msivalue="&#x03A9;"
             observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolUpsilon" label="&#x03D2;" tooltiptext="&symbolUpsilon.tooltip;" msivalue="&#x03D2;"
-           observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symboldigamma" label="&#x03DC;" tooltiptext="&symboldigamma.tooltip;" msivalue="&#x03DC;"
            observes="cmd_MSIsymbolCmd"/>
 
@@ -1354,14 +1355,14 @@
         <toolbarbutton id ="symbolnleqslant" label="&nleqslant;" tooltiptext="&symbolnleqslant.tooltip;"              msivalue="&nleqslant;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolngeqslant" label="&ngeqslant;" tooltiptext="&symbolngeqslant.tooltip;"              msivalue="&ngeqslant;"
-           observes="cmd_MSIsymbolCmd"/> 
+           observes="cmd_MSIsymbolCmd"/>     
         <toolbarbutton id ="symbollneq" label="&#x2A87;" tooltiptext="&symbollneq.tooltip;"              msivalue="&#x2A87;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgneq" label="&#x2A88;" tooltiptext="&symbolgneq.tooltip;"              msivalue="&#x2A88;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolnpreceq" label="&#x0338;&#x2AAF;" tooltiptext="&symbolnpreceq.tooltip;"              msivalue="&#x0338;&#x2AAF;"
+        <toolbarbutton id ="symbolnpreceq" label="&#x2AAF;&#x0338;" tooltiptext="&symbolnpreceq.tooltip;"              msivalue="&#x2AAF;&#x0338;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolnsucceq" label="&#x0338;&#x2AB0;" tooltiptext="&symbolnsucceq.tooltip;"              msivalue="&#x0338;&#x2AB0;"
+        <toolbarbutton id ="symbolnsucceq" label="&#x2AB0;&#x0338;" tooltiptext="&symbolnsucceq.tooltip;"              msivalue="&#x2AB0;&#x0338;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolprecnsim" label="&#x22E8;" tooltiptext="&symbolprecnsim.tooltip;"              msivalue="&#x22E8;"
            observes="cmd_MSIsymbolCmd"/>
