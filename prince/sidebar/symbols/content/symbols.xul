@@ -149,12 +149,12 @@
             <row>
               <toolbarbutton id="symbolPi" />
               <toolbarbutton id="symbolSigma" />
+              <toolbarbutton id="symbolUpsilon" />
               <toolbarbutton id="symbolPhi" />
               <toolbarbutton id="symbolPsi" />
-              <toolbarbutton id="symbolOmega" />
             </row>
             <row>
-              <toolbarbutton id="symbolUpsilon" />
+              <toolbarbutton id="symbolOmega" />
               <toolbarbutton id="symboldigamma" />
             </row>
           </rows>
