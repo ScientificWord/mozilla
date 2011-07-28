@@ -78,51 +78,51 @@
           </columns>
           <rows>
             <row>
-              <toolbarbutton id = "symbolalpha"/>
+              <toolbarbutton id ="symbolalpha"/>
               <toolbarbutton id="symbolbeta" />
               <toolbarbutton id="symbolgamma" />
               <toolbarbutton id="symboldelta" />
-              <toolbarbutton id="symbolvarepsilon" />
+              <toolbarbutton id="symbolepsilon" />
             </row>
             <row>
+              <toolbarbutton id="symbolvarepsilon" />
               <toolbarbutton id="symbolzeta" />
               <toolbarbutton id="symboleta" />
               <toolbarbutton id="symboltheta" />
-              <toolbarbutton id="symboliota" />
-              <toolbarbutton id="symbolkappa" />
+              <toolbarbutton id="symbolvartheta" />
             </row>
             <row>
+              <toolbarbutton id="symboliota" />
+              <toolbarbutton id="symbolkappa" />
               <toolbarbutton id="symbollambda" />
               <toolbarbutton id="symbolmu" />
               <toolbarbutton id="symbolnu" />
+            </row>
+            <row>
               <toolbarbutton id="symbolxi" />
-              <toolbarbutton id="symbolomicron" />
-            </row>
-            <row>
               <toolbarbutton id="symbolpi" />
+              <toolbarbutton id="symbolvarpi" />
               <toolbarbutton id="symbolrho" />
-              <toolbarbutton id="symbolvarsigma" />
               <toolbarbutton id="symbolsigma" />
-              <toolbarbutton id="symboltau" />
             </row>
             <row>
+              <toolbarbutton id="symbolvarsigma" />
+              <toolbarbutton id="symboltau" />
               <toolbarbutton id="symbolupsilon" />
+              <toolbarbutton id="symbolphi" />
               <toolbarbutton id="symbolvarphi" />
+            </row>
+            <row>
               <toolbarbutton id="symboltextchi" />
               <toolbarbutton id="symbolpsi" />
               <toolbarbutton id="symbolomega" />
-            </row>
-            <row>
-              <toolbarbutton id="symbolvartheta" />
-              <toolbarbutton id="symbolphi" />
-              <toolbarbutton id="symbolvarpi" />
-              <toolbarbutton id="symbolstigma" />
               <toolbarbutton id="symbolvarkappa" />
+              <toolbarbutton id="symbolvarrho" />
             </row>
             <row>
-              <toolbarbutton id="symbolvarrho" />
-              <toolbarbutton id="symbolepsilon" />
               <toolbarbutton id="symbolbackepsilon" />
+              <toolbarbutton id="symbolomicron" />
+              <toolbarbutton id="symbolstigma" />
             </row>
           </rows>
         </grid>
