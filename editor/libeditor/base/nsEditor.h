@@ -578,6 +578,7 @@ public:
                          PRBool  aNoEmptyContainers = PR_FALSE,
                          nsCOMPtr<nsIDOMNode> *outLeftNode = 0,
                          nsCOMPtr<nsIDOMNode> *outRightNode = 0);
+                         
   nsresult JoinNodeDeep(nsIDOMNode *aLeftNode, nsIDOMNode *aRightNode, nsCOMPtr<nsIDOMNode> *aOutJoinNode, PRInt32 *outOffset); 
 
   nsresult GetString(const nsAString& name, nsAString& value);

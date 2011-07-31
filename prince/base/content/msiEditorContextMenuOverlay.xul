@@ -39,6 +39,7 @@
    - ***** END LICENSE BLOCK ***** -->
 
 <!-- !DOCTYPE overlay SYSTEM "chrome://editor/locale/editorOverlay.dtd" -->
+<!--JLF - Localization pass on 6/28/2011-->
 <!DOCTYPE overlay SYSTEM "chrome://prince/locale/menuOverlay.dtd">
 
 <overlay id="ComposerContextMenuOverlay"

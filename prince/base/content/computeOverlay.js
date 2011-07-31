@@ -1,4 +1,6 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
+// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+Components.utils.import("resource://app/modules/computelogger.jsm");
 
 //-----------------------------------------------------------------------------------
 var msiEvaluateCommand =
@@ -80,103 +82,6 @@ var msiDefineCommand =
   }
 };
 
-function jsdump(str)
-{
-  Components.classes['@mozilla.org/consoleservice;1']
-            .getService(Components.interfaces.nsIConsoleService)
-            .logEngineStringMessage(str);
-}
-/////////////////////////
-
-var msiComputeLogger = 
-{
-  Sent: function(name,expr)
-  {
-    if (this.logMMLSent)
-      jsdump("To engine: " + name + ": ======================================\n" + expr + "\n");
-  },
-  Sent4: function(name,expr,arg1,arg2)
-  {
-    if (this.logMMLSent)
-      jsdump("To engine: " + name + ": ======================================\n" + expr + "\n" + arg1 + "\n" + arg2 + "\n");
-  },
-  LogEngineStrs: function()
-  {
-    if (this.logEngSent)
-      jsdump("To engine: sent:  ===> " + GetCurrentEngine().getEngineSent() + "\n");
-    if (this.logEngReceived)
-      jsdump("From engine: rcvd: <===  " + GetCurrentEngine().getEngineReceived() + "\n");
-  },
-  Received: function(expr)
-  {
-    this.LogEngineStrs();
-    if (this.logMMLReceived)
-      jsdump("Engine result: ======================================\n" + expr + "\n");
-  },
-  Exception: function(e)
-  {
-    this.LogEngineStrs();
-    if (this.logMMLReceived) {
-      jsdump("Compute exception: !!!!!!!!!!!!\n");
-    }
-    jsdump(e);
-    // separate pref for errors?
-    jsdump("\Compute engine:  " + GetCurrentEngine());
-    jsdump("\n           errors:  " + GetCurrentEngine().getEngineErrors() + "\n");
-  },
-  Init: function()
-  {
-    try {
-      this.logMMLSent = GetPrefs().getBoolPref("swp.MuPAD.log_mathml_sent");
-    }
-    catch(ex) {
-      jsdump("\nfailed to get MuPAD.log_mathml_sent pref!\n");
-    }
-    try {
-      this.logMMLReceived = GetPrefs().getBoolPref("swp.MuPAD.log_mathml_received");
-    }
-    catch(ex) {
-      jsdump("\nfailed to get MuPAD.log_mathml_received pref!\n");
-    }
-    try {
-      this.engMMLSent = GetPrefs().getBoolPref("swp.MuPAD.log_engine_sent");
-    }
-    catch(ex) {
-      jsdump("\nfailed to get MuPAD.log_engine_sent pref!\n");
-    }
-    try {
-      this.engMMLReceived = GetPrefs().getBoolPref("swp.MuPAD.log_engine_received");
-    }
-    catch(ex) {
-      jsdump("\nfailed to get MuPAD.log_engine_received pref!\n");
-    }
-  },
-  LogMMLSent: function(log)
-  {
-    this.logMMLSent = log;
-    GetPrefs().setBoolPref("swp.MuPAD.log_mathml_sent",log);
-  },
-  LogMMLReceived: function(log)
-  {
-    this.logMMLReceived = log;
-    GetPrefs().setBoolPref("swp.MuPAD.log_mathml_received",log);
-  },
-  LogEngSent: function(log)
-  {
-    this.logEngSent = log;
-    GetPrefs().setBoolPref("swp.MuPAD.log_engine_sent",log);
-  },
-  LogEngReceived: function(log)
-  {
-    this.logEngReceived = log;
-    GetPrefs().setBoolPref("swp.MuPAD.log_engine_received",log);
-  },
-
-  logMMLSent:      true,
-  logMMLReceived:  true,
-  logEngSent:      true,
-  logEngReceived:  true
-};
 
 function SetupMSIComputeMenuCommands()
 {
@@ -639,10 +544,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputeImplicitDiff(element, editorElement, cmdHandler);
       break;
     case "cmd_compute_SolveODEExact":
-      doComputeSolveODE(element,"ODE.fmt",eng.Solve_ODE_Exact,"ODE.title", "", editorElement, cmd, cmdHandler);
+      doComputeSolveODEExact(element, "ODE.fmt", "ODE.title", "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_SolveODELaplace":
-      doComputeSolveODE(element,"ODELaplace.fmt",eng.Solve_ODE_Laplace,"ODELaplace.title", "", editorElement, cmd, cmdHandler);
+      doComputeSolveODELaplace(element, "ODELaplace.fmt", "ODE.title", "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_SolveODENumeric":
       doComputeSolveODENumeric(element, "ODENumeric.fmt", "ODENumeric.title", "", editorElement, cmd, cmdHandler);
@@ -709,10 +614,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,eng.Concatenate,"Concat.fmt", editorElement);
       break;
     case "cmd_MSIComputeConditionNum":  
-      doLabeledComputation(element,eng.Condition_Number,"ConditionNum.fmt", editorElement);
+      doLabeledComputation(element, eng.Condition_Number, "ConditionNum.fmt", editorElement);
       break;
     case "cmd_MSIComputeDefinitenessTests":  
-      doLabeledComputation(element,eng.Definiteness_Tests,"DefTest.fmt", editorElement);
+      doLabeledComputation(element, eng.Definiteness_Tests, "DefTest.fmt", editorElement);
       break;
     case "cmd_MSIComputeDeterminant":  
       doLabeledComputation(element,eng.Determinant,"Determinant.fmt", editorElement);
@@ -740,7 +645,8 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,eng.Inverse,"Inverse.fmt", editorElement);
       break;
     case "cmd_MSIComputeJordan":  
-      doLabeledComputation(element,eng.Jordan_Form,"Jordan.fmt", editorElement);
+      //doLabeledComputation(element,eng.Jordan_Form,"Jordan.fmt", editorElement);
+      doEvalComputation(element,eng.Jordan_Form,"<mo>=</mo>", "evaluate jordan", editorElement, inPlace);
       break;
     case "cmd_MSIComputeMap":  
       doComputeMap(element, editorElement, cmd, cmdHandler);
@@ -755,19 +661,19 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,eng.Nullspace_Basis,"Nullspace.fmt", editorElement);
       break;
     case "cmd_MSIComputeOrthogonalityTest":  
-      doLabeledComputation(element,eng.Orthogonality_Test,"Orthogonality.fmt", editorElement);
+      doLabeledComputation(element, eng.Orthogonality_Test, "Orthogonality.fmt", editorElement);
       break;
     case "cmd_MSIComputePermanent":  
-      doLabeledComputation(element,eng.Permanent,"Permanent.fmt", editorElement);
+      doLabeledComputation(element, eng.Permanent, "Permanent.fmt", editorElement);
       break;
     case "cmd_MSIComputePLU":      
-      doLabeledComputation(element,eng.PLU_Decomposition,"PLU.fmt", editorElement);
+      doLabeledComputation(element, eng.PLU_Decomposition, "PLU.fmt", editorElement);
       break;
     case "cmd_MSIComputeRank":  
-      doLabeledComputation(element,eng.Rank,"Rank.fmt", editorElement);
+      doLabeledComputation(element, eng.Rank, "Rank.fmt", editorElement);
       break;
     case "cmd_MSIComputeRationalCanonical":  
-      doLabeledComputation(element,eng.Rational_Canonical_Form,"Rational.fmt", editorElement);
+      doLabeledComputation(element, eng.Rational_Canonical_Form, "Rational.fmt", editorElement);
       break;
     case "cmd_MSIComputeRREF":
       doLabeledComputation(element,eng.Reduced_Row_Echelon_Form,"RREchelonForm.fmt", editorElement);
@@ -785,7 +691,8 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,eng.Singular_Values,"Singular.fmt", editorElement);
       break;
     case "cmd_MSIComputeSVD":      
-      doLabeledComputation(element,eng.SVD,"SVD.fmt", editorElement);
+      //doLabeledComputation(element,eng.SVD,"SVD.fmt", editorElement);
+      doEvalComputation(element,eng.SVD,"<mo>=</mo>", "evaluate SVD", editorElement, inPlace);
       break;
     case "cmd_MSIComputeSmith":    
       doLabeledComputation(element,eng.Smith_Normal_Form,"Smith.fmt", editorElement);
@@ -1215,7 +1122,7 @@ var setAnimSpeed;
 var setLoopMode;
 
 
-function doVCamInitialize(obj)  // event is no longer used
+function doVCamInitialize(obj)
 {
   dump("doVCamInitialize");
   document.getElementById("VCamToolbar").setAttribute("hidden",false);
@@ -1284,7 +1191,38 @@ function dontSetAnimationTime()
   return;
 }
 
-
+function initComputeLogger(engine)
+{
+  dump("initComputeLogger with " + engine + "\n");
+  var prefs = GetPrefs();
+  var logMMLSent, logMMLReceived, logEngSent, logEngReceived;
+  try {
+    logMMLSent = prefs.getBoolPref("swp.user.logSent");
+  }
+  catch(ex) {
+    dump("\nfailed to get swp.user.logSent pref!\n");
+  }
+  try {
+    logMMLReceived = prefs.getBoolPref("swp.user.logReceived");
+  }
+  catch(ex) {
+    dump("\nfailed to get swp.user.logReceived pref!\n");
+  }
+  try {
+    logEngSent = prefs.getBoolPref("swp.user.engSent");
+  }
+  catch(ex) {
+    dump("\nfailed to get swp.user.engSent pref!\n");
+  }
+  try {
+    logEngReceived = prefs.getBoolPref("swp.user.engReceived");
+  }
+  catch(ex) {
+    dump("\nfailed to get swp.user.engReceived pref!\n");
+  }
+  dump("call msiComputeLogger.Init\n");
+  msiComputeLogger.Init(engine, logMMLSent, logMMLReceived, logEngSent, logEngReceived);
+}
 
 // our connection to the computation code
 var compsample;
@@ -1302,7 +1240,7 @@ function GetCurrentEngine()
       inifile.append("mupInstall.gmr");
       compsample.startup(inifile);
       compengine = 2;
-      msiComputeLogger.Init();
+      initComputeLogger(compsample);
     } catch(e) {
       var msg_key;
       if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE)
@@ -1450,21 +1388,6 @@ function GetASide(mathElement, editorElement)
   return mathOut;
 }
 
-
-
-//Moved to msiEditorUtilities.js
-//function insertXML(editor, text, node, offset)
-//{
-//  var parser = new DOMParser();
-//  var doc = parser.parseFromString(text,"application/xhtml+xml");
-//  var nodeList = doc.documentElement.childNodes;
-//  var nodeListLength = nodeList.length;
-//  var i;
-//  for (i = nodeListLength-1; i >= 0; --i)
-//  {
-//    editor.insertNode( nodeList[i], node, offset );
-//  }
-//}
 
 //SLS for unknown reasons, get parsing error if text is at outer level
 function insertLabeledXML(editor, text, node, offset)
@@ -1755,13 +1678,14 @@ function doVarsComputation(math, label, func, title, editorElement, cmd, cmdHand
     { 
       this.mParentWin.finishVarsComputation(editorElement, this);
     };
-//  var parentWin = msiGetParentWindowForNewDialog(editorElement);
   var theDialog = null;
   try {
     theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                       editorElement, cmd, cmdHandler, o);
-  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsComputation: [" + e + "]"); return;}
-//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
+  } catch(e) {
+   AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsComputation: [" + e + "]"); 
+   return;
+  }
 }
 
 function finishVarsComputation(editorElement, o)
@@ -1772,13 +1696,18 @@ function finishVarsComputation(editorElement, o)
   dump("\n*** Cancel was false");
   var vars = o.vars;
   var mathstr = GetFixedMath(o.theMath);
-//  vars = runFixup(vars);
   msiComputeLogger.Sent4(o.theLabel + " after fixup", mathstr, "specifying", vars);
 
   ComputeCursor(editorElement);
   try {
-    //var out = o.theFunc(mathstr,vars);
-	  var out = GetCurrentEngine().perform(mathstr,o.theFunc);
+    var eng = GetCurrentEngine();
+    if (o.theFunc == eng.Rewrite_Equations_as_Matrix){
+	    out = eng.equationsAsMatrix(mathstr, vars);
+    } else if (o.theFunc == eng.Rewrite_Matrix_as_Equations){
+	    out = eng.matrixAsEquations(mathstr, vars);
+	  } else {
+	    out = eng.perform(mathstr, o.theFunc);
+    }
     msiComputeLogger.Received(out);
     appendLabeledResult(out, o.theLabel, o.theMath, editorElement);
   } catch(e) {
@@ -2212,6 +2141,9 @@ function doComputeApproxIntegral(math, editorElement)
   var o = new Object();
   o.intervals = 10;
   o.form = 1;
+  o.lowerBound = 0;
+  o.upperBound = 5;
+
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "approxint", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) {
@@ -2223,7 +2155,7 @@ function doComputeApproxIntegral(math, editorElement)
 
   ComputeCursor(editorElement);
   try {
-    var out = GetCurrentEngine().approxIntegral(mathstr,o.form,intervals);
+    var out = GetCurrentEngine().approxIntegral(mathstr, o.form, intervals, o.lowerBound, o.upperBound);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString("ApproximateInt.fmt"),math, editorElement);  // SWP labels with type
   } catch(ex) {
@@ -2313,7 +2245,55 @@ function finishComputeImplicitDiff(math, editorElement, o)
   RestoreCursor(editorElement);
 }
 
-function doComputeSolveODE(math, labelID, func, titleID, vars, editorElement, cmd, cmdHandler)
+
+function doComputeSolveODEExact(math, labelID, titleID, vars, editorElement, cmd, cmdHandler)
+{
+  var mathstr = GetFixedMath(math);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  if (!vars)
+    vars = "";
+  msiComputeLogger.Sent4(labelID,mathstr,"specifying",vars);
+  try {
+    ComputeCursor(editorElement);
+	  var eng = GetCurrentEngine();
+	  var out = eng.solveODEExact(mathstr,vars);
+    msiComputeLogger.Received(out);
+    appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
+    RestoreCursor(editorElement);
+  } catch(ex) {
+    RestoreCursor(editorElement);
+    if (ex.result == compsample.nosol) {
+      appendLabel(GetComputeString("NoSolution"),math, editorElement);
+      done = true;
+    } else if (ex.result == compsample.needivars) {
+      var o = new Object();
+      o.title = GetComputeString(titleID);
+      o.label = GetComputeString("ODE.label");
+      o.mParentWin = this;
+      o.theMath = math;
+      o.theLabelID = labelID;
+      o.theTitleID = titleID;
+      o.vars = vars;
+      o.theCommand = cmd;
+      o.theCommandHandler = cmdHandler;
+      o.afterDialog = function(editorElement)
+      { 
+        if (this.Cancel)
+          return;
+        this.mParentWin.doComputeSolveODEExact(this.theMath, this.theLabelID, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+      };
+      try {
+        var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                          editorElement, cmd, cmdHandler, o);
+      } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODEExact: [" + e + "]"); return;}
+
+    } else {
+      msiComputeLogger.Exception(ex);
+} } }
+
+
+function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, cmd, cmdHandler)
 {
   var mathstr = GetFixedMath(math);
   if (!editorElement)
@@ -2325,8 +2305,8 @@ function doComputeSolveODE(math, labelID, func, titleID, vars, editorElement, cm
     ComputeCursor(editorElement);
     //var out = func(mathstr,vars);
 	  var eng = GetCurrentEngine();
-	  //var out = eng.solveODEExact(mathstr,vars);
-    var out = func(mathstr, vars);
+	  var out = eng.solveODEExact(mathstr,vars);
+    //var out = func(mathstr, vars);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
     RestoreCursor(editorElement);
@@ -3032,97 +3012,6 @@ function finishComputeSetBasisVars(vars, compsample)
   compsample.setVectorBasis(vars);
   msiComputeLogger.Sent("new vector basis",vars);
 }
-
-
-// Moved to msiPrefs in applicationoverlay
-// function doComputeUserSettings()
-// {
-//   var compsample = GetCurrentEngine();
-// 
-//   msiComputeLogger.Sent("user settings","");
-// 
-//   var o = new Object();
-// 
-//   o.mfenced      = compsample.getUserPref(compsample.use_mfenced);
-//   o.digits       = compsample.getUserPref(compsample.Sig_digits_rendered);
-//   o.lower        = compsample.getUserPref(compsample.SciNote_lower_thresh);
-//   o.upper        = compsample.getUserPref(compsample.SciNote_upper_thresh);
-//   o.trigargs     = compsample.getUserPref(compsample.Parens_on_trigargs);
-//   o.imaginaryi   = compsample.getUserPref(compsample.Output_imaginaryi);
-//   o.diffD        = compsample.getUserPref(compsample.Output_diffD_uppercase);
-//   o.diffd        = compsample.getUserPref(compsample.Output_diffd_lowercase);
-//   o.expe         = compsample.getUserPref(compsample.Output_Euler_e);
-//   o.matrix_delim = compsample.getUserPref(compsample.Default_matrix_delims);
-//   o.usearc       = compsample.getUserPref(compsample.Output_InvTrigFuncs_1);
-//   o.mixednum     = compsample.getUserPref(compsample.Output_Mixed_Numbers);
-//   o.derivformat  = compsample.getUserPref(compsample.Default_derivative_format);
-//   o.primesasn    = compsample.getUserPref(compsample.Primes_as_n_thresh);
-//   o.primederiv   = compsample.getUserPref(compsample.Prime_means_derivative);
-// 
-//   o.loge         = compsample.getUserPref(compsample.log_is_base_e);
-//   o.dotderiv     = compsample.getUserPref(compsample.Dot_derivative);
-//   o.barconj      = compsample.getUserPref(compsample.Overbar_conjugate);
-//   o.i_imaginary  = compsample.getUserPref(compsample.Input_i_Imaginary);
-//   o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
-//   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
-//   
-//   window.openDialog("chrome://prince/content/ComputeUserSettings.xul", 
-//     "computeusersettings", "chrome,close,titlebar,resizable, modal", o);
-//   if (o.Cancel)
-//     return;
-// 
-//   compsample.setUserPref(compsample.use_mfenced,               o.mfenced);
-//   compsample.setUserPref(compsample.Sig_digits_rendered,       o.digits);
-//   compsample.setUserPref(compsample.SciNote_lower_thresh,      o.lower);
-//   compsample.setUserPref(compsample.SciNote_upper_thresh,      o.upper);
-//   compsample.setUserPref(compsample.Parens_on_trigargs,        o.trigargs);
-//   compsample.setUserPref(compsample.Output_imaginaryi,         o.imaginaryi);
-//   compsample.setUserPref(compsample.Output_diffD_uppercase,    o.diffD);
-//   compsample.setUserPref(compsample.Output_diffd_lowercase,    o.diffd);
-//   compsample.setUserPref(compsample.Output_Euler_e,            o.expe);
-//   compsample.setUserPref(compsample.Default_matrix_delims,     o.matrix_delim);
-//   compsample.setUserPref(compsample.Output_InvTrigFuncs_1,     o.usearc);
-//   compsample.setUserPref(compsample.Output_Mixed_Numbers,      o.mixednum);
-//   compsample.setUserPref(compsample.Default_derivative_format, o.derivformat);
-//   compsample.setUserPref(compsample.Primes_as_n_thresh,        o.primesasn);
-//   compsample.setUserPref(compsample.Prime_means_derivative,    o.primederiv);
-// 
-//   compsample.setUserPref(compsample.log_is_base_e,             o.loge);
-//   compsample.setUserPref(compsample.Dot_derivative,            o.dotderiv);
-//   compsample.setUserPref(compsample.Overbar_conjugate,         o.barconj);
-//   compsample.setUserPref(compsample.Input_i_Imaginary,         o.i_imaginary);
-//   compsample.setUserPref(compsample.Input_j_Imaginary,         o.j_imaginary);
-//   compsample.setUserPref(compsample.Input_e_Euler,             o.e_exp);
-// }
-
-// function doComputeSettings()
-// {
-//   var compsample = GetCurrentEngine();
-// 
-//   msiComputeLogger.Sent("settings","");
-// 
-//   var o = new Object();
-//   o.digitsUsed  = compsample.getEngineAttr(compsample.Digits);
-//   o.degree      = compsample.getEngineAttr(compsample.MaxDegree);
-//   o.principal   = compsample.getEngineAttr(compsample.PvalOnly) == 0 ? false : true;
-//   o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
-//   o.logSent     = msiComputeLogger.logMMLSent;
-//   o.logReceived = msiComputeLogger.logMMLReceived;
-//   o.engSent     = msiComputeLogger.logEngSent;
-//   o.engReceived = msiComputeLogger.logEngReceived;
-//   window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,resizable,modal", o);
-//   if (o.Cancel)
-//     return;
-// 
-//   compsample.setEngineAttr(compsample.Digits, o.digitsUsed);
-//   compsample.setEngineAttr(compsample.MaxDegree, o.degree);
-//   compsample.setEngineAttr(compsample.PvalOnly, o.principal ? 1 : 0);
-//   compsample.setEngineAttr(compsample.IgnoreSCases, o.special ? 1 : 0);
-//   msiComputeLogger.LogMMLSent(o.logSent);
-//   msiComputeLogger.LogMMLReceived(o.logReceived);
-//   msiComputeLogger.LogEngSent(o.engSent);
-//   msiComputeLogger.LogEngReceived(o.engReceived);
-// }
 // 
 // function doComputeSwitchEngines()
 // {

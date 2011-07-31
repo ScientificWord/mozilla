@@ -46,7 +46,8 @@
   <!ENTITY % openDialogDTD SYSTEM "chrome://prince/locale/openLocation.dtd" >
   %openDialogDTD;
 ]>            
- 
+<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - width/height values -->
 <dialog id="openLocation"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         title="&caption.label;"
@@ -54,8 +55,9 @@
         ondialogaccept="open()"
         buttonlabelaccept="&open.label;"
         style="width: 40em;"
-        persist="left top width height"
-        left="24" top="24">
+        persist="screenX screenY width height"
+        screenX="40"
+        screenY="40">
               
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>  
   <script type="application/x-javascript" src="chrome://prince/content/openLocation.js"/>

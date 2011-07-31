@@ -82,11 +82,6 @@ radio[pane] {
   padding: 0;
 }
 
-.paneButtonIcon {
-  width: 32px;
-  height: 32px;
-}
-
 radio[pane][selected="true"] {
   background-color: Highlight;
   color: HighlightText;
