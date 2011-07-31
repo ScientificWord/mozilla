@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  title="Index Entry"
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/indexentry.dtd">
+<!-- JLF to verify.  Need to create DTD and update related files.-->
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+  title="&windowTitle.label;"
   buttons="accept,cancel"
   buttonlabelcancel="Cancel" buttonlabelaccept="OK" 
-  width="300"
+  width="350"
   height="450"
-  screenX="400"
-  screenY="400"
+  screenX="40"
+  screenY="40"
   onload = "startup();"
   persist="screenX screenY width height"
   ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
@@ -16,39 +18,39 @@
   <script type="application/x-javascript" src="chrome://prince/content/indexentry.js"/>
 
 
-  <label control="primary" accesskey="P" value="Primary Index Entry"/>
+  <label control="primary" accesskey="&primary.accesskey;" value="&primary.label;"/>
   <textbox id="primary" value="" oninput="keypress(event, this,'prispec');"/>
-  <checkbox id="prispec" disabled="true" label="Use special appearance for primary entry" checked="false"
+  <checkbox id="prispec" disabled="true" label="&prispeccheckbox.label;" checked="false"
     oncommand="checkboxchanged(event, this,'prispecapp');"/>
   <textbox id="prispecapp" value="" hidden="true"/>
   <spacer flex="1"/>
-  <label control="secondary" accesskey="S" value="Secondary Index Entry"/>
+  <label control="secondary" accesskey="&secondary.accesskey;" value="&secondary.label;"/>
   <textbox id="secondary" value="" oninput="keypress(event, this,'secspec');"/>
-  <checkbox id="secspec" disabled="true" label="Use special appearance for secondary entry" checked="false"
+  <checkbox id="secspec" disabled="true" label="&secspeccheckbox.label;" checked="false"
     oncommand="checkboxchanged(event, this,'secspecapp');"/>
   <textbox id="secspecapp" value="" hidden="true"/>
   <spacer flex="1"/>
-  <label control="tertiary" accesskey="T" value="Tertiary Index Entry"/>
+  <label control="tertiary" accesskey="&tertiary.accesskey;" value="&tertiary.label;"/>
   <textbox id="tertiary" value="" oninput="keypress(event, this,'terspec');"/>
-  <checkbox id="terspec" disabled="true" label="Use special appearance for tertiary entry" checked="false"
+  <checkbox id="terspec" disabled="true" label="&tertspeccheckbox.label;" checked="false"
     oncommand="checkboxchanged(event, this,'terspecapp');"/>
   <textbox id="terspecapp" value="" hidden="true"/>
   <spacer flex="1"/>
 
   <groupbox>
-    <caption label="Locator"/>
+    <caption label="&locatorCaption.label;"/>
     <radiogroup id="locator" align="center" orient="horizontal" oncommand="locatorchange(event,this);">
-      <radio id="pn" label="Page number" selected="true"/>
-      <radio id="xr" label="Index cross-reference" selected="false"/>
+      <radio id="pn" label="&pagenumberRadio.label;" accesskey="&pagenumberRadio.accesskey;" selected="true"/>
+      <radio id="xr" label="&indexcrossreferenceRadio.label;" accesskey="&indexcrossreferenceRadio.accesskey;" selected="false"/>
     </radiogroup>
     <deck id="thedeck">
       <radiogroup id="format" align="center" orient="horizontal">
-        <radio id="normal" label="Normal" accesskey="N" selected="true"/>
-        <radio id="bold" label="Bold" accesskey="B" selected="false"/>
-        <radio id="it" label="Italics" accesskey="I" selected="false"/>
+        <radio id="normal" label="&normalRadio.label;" accesskey="&normalRadio.accesskey;" selected="true"/>
+        <radio id="bold" label="&boldRadio.label;" accesskey="&boldRadio.accesskey;" selected="false"/>
+        <radio id="it" label="&italicsRadio.label;" accesskey="&italicsRadio.accesskey;" selected="false"/>
       </radiogroup>
       <vbox id="xreftext">
-        <label control="xref" accesskey="C" value="Cross-references(s)"/>
+        <label control="xref" accesskey="&crossreference.accesskey;" value="&crossreference.label;"/>
         <textbox id="xref" value=""/>
       </vbox>
     </deck>

@@ -126,3 +126,11 @@
 <!ENTITY imageLinkTab.label "Link">
 
 <!ENTITY placement.label "Placement">
+<!ENTITY EnterNewName.tooltip "Enter a new key name">
+<!ENTITY Above.label  "Above">
+<!ENTITY Below.label  "Below">
+<!ENTITY CaptionText.label  "Caption Text">
+<!ENTITY AltText.label  "Alt Text">
+<!ENTITY NewKeyorDocName.tooltip  "Enter a new key name or a document name">
+<!ENTITY MakeRelativeCheckbox.label  "Make reference relative">
+<!ENTITY EnterDocorMarker.label "Enter a document location, a local document, or select a marker">

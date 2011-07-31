@@ -5,7 +5,7 @@
 <?xml-stylesheet href="chrome://prince/skin/preferences.css" type="text/css"?>
 
 <!DOCTYPE prefwindow SYSTEM "chrome://prince/locale/preferences.dtd">
-
+<!-- JLF to verify-->
 <prefwindow id="appPreferences"
             title="Preferences"
             onload="initialize();"
@@ -18,9 +18,18 @@
     <preferences>
       <preference id="defaultshell" 
                   name="swp.defaultShell" 
-                  type="file"/>
+                  type="string"/>
       <preference id="selectedSkin" 
                   name="general.skins.selectedSkin" 
+                  type="string"/>
+      <preference id="sci.compression"
+                  name="swp.sci.compression"
+                  type="int"/>
+      <preference id="saveforweb.compression"
+                  name="swp.webzip.compression"
+                  type="int"/>
+      <preference id="pdf.viewer"
+                  name="swp.prefPDFPath"
                   type="string"/>
       <preference id="defaultGraphicsHSize" 
                   name="swp.defaultGraphicsHSize" 
@@ -103,7 +112,6 @@
       <preference id="YPts"
                   name="swp.plot.YPts"
                   type="string" />
-
       <preference id="ZPts"
                   name="swp.plot.ZPts"
                   type="string" />
@@ -137,6 +145,118 @@
       <preference id="enablerealtimespell"
                   name="swp.spellchecker.enablerealtimespell"
                   type="bool"/>
+      <preference id="digitsRenderedpref"
+                  name="swp.user.digitsrendered"
+                  type="int"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="lowerthresholdpref"
+                  name="swp.user.lowerthreshold"
+                  type="int"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="upperthresholdpref"
+                  name="swp.user.upperthreshold"
+                  type="int"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="primesasnpref"
+                  name="swp.user.primesasn"
+                  type="int"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="mixednumpref"
+                  name="swp.user.mixednum"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="trigargspref"
+                  name="swp.user.trigargs"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="usearcpref"
+                  name="swp.user.usearc"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="logepref"
+                  name="swp.user.loge"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="dotderivativepref"
+                  name="swp.user.dotderivative"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="barconjpref"
+                  name="swp.user.barconj"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="i_imaginarypref"
+                  name="swp.user.i_imaginary"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="j_imaginarypref"
+                  name="swp.user.j_imaginary"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="e_exppref"
+                  name="swp.user.e_exp"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="primederivpref"
+                  name="swp.user.primederiv"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="matrix_delimpref"
+                  name="swp.user.matrix_delim"
+                  type="string"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="derivformatpref"
+                  name="swp.user.derivformat"
+                  type="string"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="imagipref"
+                  name="swp.user.imagi"
+                  type="string"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="diffDpref"
+                  name="swp.user.diffD"
+                  type="string"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="diffdpref"
+                  name="swp.user.diffd"
+                  type="string"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id="expepref"
+                  name="swp.user.expe"
+                  type="string"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id ="digitsusedpref"
+                  name="swp.user.digitsused"
+                  type="int"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id ="degreepref"
+                  name="swp.user.degree"
+                  type="int"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id ="principalpref"
+                  name="swp.user.principal"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id ="specialpref"
+                  name="swp.user.special"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id ="logSentpref"
+                  name="swp.user.logSent"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id ="engSentpref"
+                  name="swp.user.engSent"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id ="engReceivedpref"
+                  name="swp.user.engReceived"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
+      <preference id ="logReceivedpref"
+                  name="swp.user.logReceived"
+                  type="bool"
+                  onchange = "onComputeSettingChange(this)"/>                  
     </preferences>
 
     <tabbox>
@@ -148,7 +268,7 @@
       <tabpanels>
         <tabpanel orient="vertical">
           <groupbox>
-            <caption label="Automatic Saving"/>
+            <caption label="&AutomaticSaving.label;"/>
             <checkbox id="prefautosave" label="Enable silent automatic saving"
                       accesskey=""
                       oncommand=""/>
@@ -168,7 +288,7 @@
             </vbox>
           </groupbox>
           <groupbox>
-            <caption label="Cursor Advance to Character"/>
+            <caption label="&CursorAdvanceChar.label;"/>
             <checkbox id="preffastcursor" label="Enable character find with arrow keys"
                       accesskey=""
                       oncommand=""
@@ -176,6 +296,33 @@
             <hbox>
               <textbox type="number" style="width: 5em;" preference="tapsforrepeat"/>
               <label value="Number of taps for arrow to autorepeat"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption>File compression</caption>
+            <hbox>
+              <vbox>
+                <label value=".sci files"/>
+                <menulist preference="sci.compression">
+                  <menupopup>
+                    <menuitem label="None" value="0"/>
+                    <menuitem label="Fastest" value="1"/>
+                    <menuitem label="Middle" value="6"/>
+                    <menuitem label="Best" value="9"/>
+                  </menupopup>
+                </menulist>                
+              </vbox>
+              <vbox>
+                <label value="web files"/>
+                <menulist preference="saveforweb.compression">
+                  <menupopup>
+                    <menuitem label="None" value="0"/>
+                    <menuitem label="Fastest" value="1"/>
+                    <menuitem label="Middle" value="6"/>
+                    <menuitem label="Best" value="9"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
             </hbox>
           </groupbox>
         </tabpanel>
@@ -218,13 +365,13 @@
             </vbox> 
             <vbox style="width:2in" >
               <label value="Shell Files"/>
-              <listbox preference="defaultshell" flex = "1" id="dircontents" oncommand="return onAccept();" ondblclick="acceptDialog();" />
+              <listbox preference="defaultshell" flex = "1" onselect="onShellSelect();" id="dircontents"/>
             </vbox>
           </hbox>
         </tabpanel>
         <tabpanel orient="vertical">
           <groupbox>
-            <caption label="Default Size for New Graphics"/>
+            <caption label="&DefaultSizeNewGraphics.label;"/>
             <grid>
               <columns>
                 <column flex="0"/>
@@ -232,38 +379,38 @@
                 <column flex="0"/>
               </columns>
               <rows>
-                <row><label value="Width:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
-                <row><label value="Height:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+                <row><label value="&DefaultSizeNewGraphicsWidth.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
+                <row><label value="&DefaultSizeNewGraphicsHeight.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
               </rows>
             </grid>
           </groupbox>
           <groupbox>
-            <caption label="Default Placement for New Graphics"/>
+            <caption label="&DefaultPlacementNewGraphics.label;"/>
             <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
             <hbox flex="1">
               <vbox>
-                <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+                <radio id="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
               </vbox>
               <vbox>
-                <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+                <radio id="display" label="&DefaultPlacementNewGraphicsDisplayed.label;" radioGroup="placementRadioGroup"/>
               </vbox>
               <vbox>
-                <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+                <radio id="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
                 <vbox>
-                  <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
-                  <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
-                  <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
-                  <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
-                  <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+                  <checkbox id="placeForceHereCheck" label="placeForceHereCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeHereCheck" label="placeHereCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeFloatsCheck" label="placeFloatsCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeTopCheck" label="placeTopCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeBottomCheck" label="placeBottomCheck.label" observes="floatingPlacement"/>
                 </vbox>
               </vbox>
               <vbox>
                 <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
-                  <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
-                  <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
-                  <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
-                  <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
-                  <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+                  <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="left" observes="herePlacement" />
+                  <radio id="hereRightRadio" label="&hereRightRadio.label;" value="right" observes="herePlacement"/>
+                  <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="inside" observes="herePlacement" />
+                  <radio id="hereOutsideRadio" label="&hereOutsideradio.label;" value="outside" observes="herePlacement" />
+                  <radio id="hereFullWidthRadio" label="&hereFullWidthRadio.label;" value="full" observes="herePlacement" />
                 </radiogroup>
               </vbox>
             </hbox>
@@ -346,7 +493,7 @@
             <hbox>
               <description>&BaseLoge;</description>
               <spacer flex="1"/>
-              <checkbox id="logs"/>
+              <checkbox id ="loge" preference="logepref" />
             </hbox>
           </groupbox>
           <groupbox>
@@ -354,7 +501,7 @@
             <hbox>
               <description>&DotAccentMeansDerivative.label;</description>
               <spacer flex="1"/>
-              <checkbox id="dots"/>
+              <checkbox id ="dots" preference="dotderivativepref" />
             </hbox>
           </groupbox>
           <groupbox>
@@ -362,7 +509,7 @@
             <hbox>
               <description>&OverbarMeansConjugate.label;</description>
               <spacer flex="1"/>
-              <checkbox id="bar"/>
+              <checkbox id ="bar" preference="barconjpref" />
             </hbox>
           </groupbox>
           <groupbox>
@@ -370,7 +517,7 @@
             <hbox>
               <description>&RecognizePlainIasImaginary.label;</description>
               <spacer flex="1"/>
-              <checkbox id="i_imaginary"/>
+              <checkbox id ="i_imaginary" preference="i_imaginarypref" />
             </hbox>
           </groupbox>
           <groupbox>
@@ -378,7 +525,8 @@
             <hbox>
               <description>&RecognizejAsImaginaryI.label;</description>
               <spacer flex="1"/>
-              <checkbox id="j_imaginary"/>
+              <checkbox id ="j_imaginary" preference="j_imaginarypref"
+                 />
             </hbox>
           </groupbox>
           <groupbox>
@@ -386,7 +534,7 @@
             <hbox>
               <description>&RecognizePlaineasExponential;</description>
               <spacer flex="1"/>
-              <checkbox id="e_exp"/>
+              <checkbox id ="e_exp" preference="e_exppref"  />
             </hbox>
           </groupbox>
          </vbox>
@@ -397,46 +545,46 @@
           <groupbox>
             <caption label="&scinotation.label;"/>
             <hbox>
-              <description>Digits rendered</description>
+              <description>&DigitsRendered.label;</description>
               <spacer flex="1"/>
-              <textbox type="number" id="digitsRendered" class="medwidth"/>
+              <textbox type="number" id ="digitsRendered" preference="digitsRenderedpref"   class="medwidth"/>
             </hbox>
             <vbox>
               <hbox>
-                <description>Upper threshold</description>
+                <description>&UpperThreshold.label;</description>
                 <spacer flex="1"/>
-                <textbox type="number" id="upper" style="width: 3em"/>
+                <textbox type="number" id ="upper" preference="upperthresholdpref"  style="width: 3em"/>
               </hbox>
-              <description>(digits left of decimal before switching)</description>
+              <description>&DigitsLeftofDecimal.label;</description>
             </vbox>
             <vbox>
               <hbox>
-                <description>Lower threshold</description>
+                <description>&Lowerthreshold.label;</description>
                 <spacer flex="1"/>
-                <textbox type="number" id="lower" style="width: 3em"/>
+                <textbox type="number" id ="lower" preference="lowerthresholdpref"  sstyle="width: 3em"/>
               </hbox>
-              <description>(zeros to right of decimal before switching)</description>
+              <description>&ZerosRightofDecimal.label;</description>
             </vbox>
           </groupbox>
           <groupbox>
             <caption label="&mixednum.label;"/>
             <hbox>
-              <description>Output fractions as mixed numbers</description>
+              <description>&OutputMixedNum.label;</description>
               <spacer flex="1"/>
-              <checkbox id="mixednum"/>
+              <checkbox id ="mixednum" preference="mixednumpref"  />
             </hbox>
           </groupbox>
           <groupbox>
             <caption label="&trigargs.label;"/>
             <hbox>
-              <description>Use Parentheses for Trig Functions</description>
+              <description>&ParenthesesforTrig.label;</description>
               <spacer flex="1"/>
-              <checkbox id="trigargs"/>
+              <checkbox id ="trigargs" preference="trigargspref"  />
             </hbox>
             <hbox>
-              <description>Use "arc" prefix for inverse Trig Functions</description>
+              <description>&UseArc.label;</description>
               <spacer flex="1"/>
-              <checkbox id="usearc"/>
+              <checkbox id ="usearc" preference="usearcpref" />
             </hbox>
           </groupbox>
          </vbox>
@@ -447,12 +595,12 @@
           <groupbox>
             <caption label="&matrices.label;"/>
             <hbox>
-              <description>Default matrix delimiter</description>
+              <description>&DefaultMatrixDelimiter.label;</description>
               <spacer flex="1"/>
-              <radiogroup id="matrix_delim">
-                 <radio label="&matrix_none.label;"     id="matrix_none"      selected="true"/>
-                 <radio label="&matrix_brackets.label;" id="matrix_brackets"  selected="false"/>
-                 <radio label="&matrix_parens.label;"   id="matrix_parens"    selected="false"/>
+              <radiogroup id ="matrix_delim" preference="matrix_delimpref" value="matrix_none" >
+                 <radio label="&matrix_none.label;"     id="matrix_none" value="matrix_none"      selected="true"/>
+                 <radio label="&matrix_brackets.label;" id="matrix_brackets" value="matrix_brackets"  selected="false"/>
+                 <radio label="&matrix_parens.label;"   id="matrix_parens" value="matrix_parens"    selected="false"/>
               </radiogroup>
             </hbox>
           </groupbox>
@@ -463,28 +611,28 @@
          <vbox>
           <groupbox>
             <caption label="&deriv.label;"/>
-            <radiogroup id="derivformat">
-              <radio label="&derivformat_input.label;"        id="derivformat_input"         selected="true"/>
-              <radio label="&derivformat_d.label;"            id="derivformat_d"             selected="false"/>
-              <radio label="&derivformat_D.label;"            id="derivformat_D"             selected="false"/>
-              <radio label="&derivformat_primes.label;"       id="derivformat_primes"        selected="false"/>
-              <radio label="&derivformat_dots.label;"         id="derivformat_dots"          selected="false"/>
+            <radiogroup id ="derivformat" preference="derivformatpref" >
+              <radio label="&derivformat_input.label;"        id="derivformat_input" value="derivformat_input"         selected="true"/>
+              <radio label="&derivformat_d.label;"            id="derivformat_d" value="derivformat_d"             selected="false"/>
+              <radio label="&derivformat_D.label;"            id="derivformat_D" value="derivformat_D"             selected="false"/>
+              <radio label="&derivformat_primes.label;"       id="derivformat_primes" value="derivformat_primes"        selected="false"/>
+              <radio label="&derivformat_dots.label;"         id="derivformat_dots" value="derivformat_dots"          selected="false"/>
             </radiogroup>
           </groupbox>
           <groupbox>
             <caption label="&primeasn.label;"/>
             <hbox>
-              <description>switch from primes to (n)</description>
+              <description>&SwitchfromPrimestoN.label;</description>
               <spacer flex="1"/>
-              <textbox id="primesasn" style="width: 3em"/>
+              <textbox id ="primesasn" preference="primesasnpref"  style="width: 3em"/>
             </hbox>
           </groupbox>
           <groupbox>
             <caption label="&primederiv.label;"/>
             <hbox>
-              <description>Prime means derivative</description>
+              <description>&PrimeMeansDerivative.label;</description>
               <spacer flex="1"/>
-              <checkbox id="primederiv"/>
+              <checkbox id ="primederiv" preference="primederivpref"/>
             </hbox>
           </groupbox>
          </vbox>
@@ -494,31 +642,31 @@
          <vbox>
           <groupbox>
             <caption label="&imagi_output.label;"/>
-            <radiogroup id="imagi">
-              <radio label="&imagi_i.label;"        id="imagi_i"        selected="true"/>
-              <radio label="&imagi_j.label;"        id="imagi_j"        selected="false"/>
-              <radio label="&imagi_imagi.label;"    id="imagi_imagi"    selected="false"/>
+            <radiogroup id ="imagi" preference="imagipref">
+              <radio label="&imagi_i.label;"        id="imagi_i" value="imagi_i"        selected="true"/>
+              <radio label="&imagi_j.label;"        id="imagi_j" value="imagi_j"        selected="false"/>
+              <radio label="&imagi_imagi.label;"    id="imagi_imagi" value="imagi_imagi"    selected="false"/>
             </radiogroup>
           </groupbox>
           <groupbox>
             <caption label="&diffD_output.label;"/>
-            <radiogroup id="diffD">
-              <radio label="&diffD_D.label;"        id="diffD_D"        selected="true"/>
-              <radio label="&diffD_diffD.label;"    id="diffD_diffD"    selected="false"/>
+            <radiogroup id ="diffD" preference="diffDpref">
+              <radio label="&diffD_D.label;"        id="diffD_D" value="diffD_D"        selected="true"/>
+              <radio label="&diffD_diffD.label;"    id="diffD_diffD" value="diffD_diffD"    selected="false"/>
             </radiogroup>
           </groupbox>
           <groupbox>
             <caption label="&diffd_output.label;"/>
-            <radiogroup id="diffd">
-              <radio label="&diffd_d.label;"        id="diffd_d"        selected="true"/>
-              <radio label="&diffd_diffd.label;"    id="diffd_diffd"    selected="false"/>
+            <radiogroup id ="diffd" preference="diffdpref">
+              <radio label="&diffd_d.label;"        id="diffd_d" value="diffd_d"        selected="true"/>
+              <radio label="&diffd_diffd.label;"    id="diffd_diffd" value="diffd_diffd"    selected="false"/>
             </radiogroup>
           </groupbox>
           <groupbox>
             <caption label="&expe_output.label;"/>
-            <radiogroup id="expe">
-              <radio label="&expe_e.label;"         id="expe_d"         selected="true"/>
-              <radio label="&expe_expe.label;"      id="expe_expe"      selected="false"/>
+            <radiogroup id ="expe" preference="expepref">
+              <radio label="&expe_e.label;"         id="expe_d" value="expe_d"         selected="true"/>
+              <radio label="&expe_expe.label;"      id="expe_expe" value="expe_expe"      selected="false"/>
             </radiogroup>
           </groupbox>
          </vbox>
@@ -527,7 +675,7 @@
           <vbox>
             <groupbox>
               <caption label="&Scope.label;"/>
-              <radiogroup id="scope">
+              <radiogroup id ="scope" preference="scopepref">
                 <radio label="&Default.label;" id="default_scope" selected="true"/>
                 <radio label="&ThisDocOnly.label;" id="this_scope" selected="false"/>
               </radiogroup>
@@ -535,30 +683,30 @@
             <separator/>
             <hbox>
               <description>&EngineOn.label;</description>
-              <checkbox id="engine_on" checked="true"/>
+              <checkbox id ="engine_on" preference="engine_onpref" checked="true"/>
             </hbox>
             <hbox>
               <description>&desc.Digits;</description>
               <spacer flex="1"/>
-              <textbox type="number" id="digitsUsed" style="width: 3em"/>
+              <textbox type="number" id ="digitsUsed" preference="digitsUsedpref" style="width: 3em"/>
             </hbox>
             <groupbox>
               <caption label="&solve.label;"/>
               <hbox>
                 <description>&desc.Max;</description>
                 <spacer flex="1"/>
-                <textbox id="degree" type="number" decimalplaces="0" min="0" increment="1" 
+                <textbox id ="degree" preference="degreepref" type="number" decimalplaces="0" min="0" increment="1" 
                   style="width: 3em" value="2"/>
               </hbox>
               <hbox>
                 <description>&desc.Principal;</description>
                 <spacer flex="1"/>
-                <checkbox id="principal"/>
+                <checkbox id ="principal" preference="principalpref"/>
               </hbox>
               <hbox>
                 <description>&desc.Ignore;</description>
                 <spacer flex="1"/>
-                <checkbox id="special"/>
+                <checkbox id ="special" preference="specialpref"/>
               </hbox>
             </groupbox>
             <groupbox>
@@ -566,22 +714,22 @@
               <hbox>
                 <description>&desc.MMLSent;</description>
               <spacer flex="1"/>
-                <checkbox id="logSent"/>
+                <checkbox id ="logSent" preference="logSentpref"/>
               </hbox>
               <hbox>
                 <description>&desc.MMLRec;</description>
               <spacer flex="1"/>
-                <checkbox id="logReceived"/>
+                <checkbox id ="logReceived" preference="logReceivedpref"/>
               </hbox>
               <hbox>
                 <description>&desc.EngSent;</description>
               <spacer flex="1"/>
-                <checkbox id="engSent"/>
+                <checkbox id ="engSent" preference="engSentpref"/>
               </hbox>
               <hbox>
                 <description>&desc.EngRec;</description>
               <spacer flex="1"/>
-                <checkbox id="engReceived"/>
+                <checkbox id ="engReceived" preference="engReceivedpref"/>
               </hbox>
             </groupbox>
           </vbox>
@@ -681,7 +829,7 @@
 
       <tabpanel id="Layout" orient="vertical">
         <groupbox>
-          <caption label="Default Size for New Plots"/>
+          <caption label="&DefaultSizeNewPlots.label;"/>
           <grid>
             <columns>
               <column flex="0"/>
@@ -689,29 +837,29 @@
               <column flex="0"/>
             </columns>
             <rows>
-              <row><label value="Width:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
-              <row><label value="Height:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+              <row><label value="&DefaultSizeNewPlotsWidth.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
+              <row><label value="&DefaultSizeNewPlotsHeight.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
             </rows>
           </grid>
         </groupbox>
         <groupbox>
-          <caption label="Default Placement for New Plots"/>
+          <caption label="&DefaultPlacementNewPlots.label;"/>
           <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
-              <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+              <radio id="inline" label="&DefaultPlacementNewPlotsInline.label;" radioGroup="placementRadioGroup"/>
             </vbox>
             <vbox>
-              <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+              <radio id="display" label="&DefaultPlacementNewPlotsDisplayed.label;" radioGroup="placementRadioGroup"/>
             </vbox>
             <vbox>
-              <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+              <radio id="float" label="&DefaultPlacementNewPlotsFloating.label;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
               <vbox>
-                <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
-                <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
-                <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
-                <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
-                <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+                <checkbox id="placeForceHereCheck" label="&placeForceHereCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="placeHereCheck" label="&placeHereCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="placeFloatsCheck" label="placeFloatsCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="placeTopCheck" label="placeTopCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="placeBottomCheck" label="placeBottomCheck.label;" observes="floatingPlacement"/>
               </vbox>
             </vbox>
             <vbox>
@@ -833,26 +981,38 @@
             </vbox>
           </hbox>
         </tabpanel>
-        <tabpanel/>
+        <tabpanel  orient="vertical">
+          <groupbox>
+            <caption label="&PreferredPDFViewer.label;" />
+            <menulist preference="pdf.viewer">
+              <menupopup>
+                <menuitem label="&pdf.viewerUseCurrentPDFPlugin.label;" value="default"/>
+                <menuitem label="&pdf.viewerUseDefaultProgramViewPDFFiles.label;" value="launch"/>
+                <!-- not now! menuitem id="fullpath.item" label="Enter a full path for the program to use" oncommand="getFullPath();" value=" "/ -->
+              </menupopup>
+            </menulist>
+            <!-- not now!  textbox id="pdfviewer.path" label="Full path of the PDF file viewer" hidden="true" onchange="gotFullPath()" value=""/ -->
+          </groupbox>
+        </tabpanel>
       </tabpanels>
     </tabbox>
   </prefpane>
-  <prefpane id="prefAdvanced" label="Advanced">
+  <prefpane id="prefAdvanced" label="&prefAdvanced.label;">
     <tabbox>
       <tabs>
-        <tab id="prefAdvancedPrefs" label="Advanced preferences"/>
-        <tab id="prefAdvancedPlugins" label="Plugins"/>
+        <tab id="prefAdvancedPrefs" label="&prefAdvancedPrefs.label;"/>
+        <tab id="prefAdvancedPlugins" label="&prefAdvancedPlugins.label;"/>
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical" flex="1">
           <groupbox flex="1" height="320px" style="margin-top:10px">
-            <caption label="Advanced preferences" />
+            <caption label="&AdvancedPreferences.label;" />
             <iframe id="prefsAdvPane" src="chrome://global/content/config.xul"  height="300px" flex="1"/>
           </groupbox>
         </tabpanel>
         <tabpanel orient="vertical" flex="1">
           <groupbox  height="320px" style="margin-top:10px">
-            <caption label="Installed plugins" />
+            <caption label="&InstalledPlugins.label;" />
             <iframe id="pluginsPane" src="about:plugins" height="300px" flex="1"/>
           </groupbox>
         </tabpanel>
