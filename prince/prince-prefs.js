@@ -22,6 +22,8 @@ pref("swp.prefDocumentDir","SWPDocs");
 pref("swp.viewPDF","fixAcrobat.cmd %1");
 pref("swp.prefPDFPath","default");
 pref("swp.fancyreturn",true);
+pref("swp.sci.compression", 0);
+pref("swp.webzip.compression", 9);
 #ifdef XP_WIN32
 pref("swp.tex.bindir","%programfiles%\\texlive\\2010\\bin\\win32");  /* for windows */
 #elifdef XP_MACOSX
@@ -31,6 +33,7 @@ pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");  /* for linux *
 #endif
 
 pref("browser.hiddenWindowChromeURL", "chrome://prince/content/hiddenwindow.xul");
+pref("browser.cache.disk.enable",           false);
 pref("swp.sourceview.maxlinelength",        100);
 pref("swp.sourceview.minlinelength",         40);
 pref("swp.sourceview.indentincrement",       2);
@@ -187,3 +190,30 @@ pref("ui.caretWidth", 1);
 pref("swp.matrix.rows", 3);
 pref("swp.matrix.cols", 3);
 pref("extensions.dss.switchPending",false);
+user_pref("swp.user.barconj", true);
+user_pref("swp.user.degree", 2);
+user_pref("swp.user.derivformat", "derivformat_input");
+user_pref("swp.user.diffD", "diffD_D");
+user_pref("swp.user.diffd", "diffd_d");
+user_pref("swp.user.digitsrendered", 80);
+user_pref("swp.user.dotderivative", false);
+user_pref("swp.user.e_exp", true);
+user_pref("swp.user.engReceived", true);
+user_pref("swp.user.engSent", true);
+user_pref("swp.user.expe", "expe_d");
+user_pref("swp.user.i_imaginary", true);
+user_pref("swp.user.imagi", "imagi_i");
+user_pref("swp.user.j_imaginary", false);
+user_pref("swp.user.logReceived", true);
+user_pref("swp.user.logSent", true);
+user_pref("swp.user.loge", true);
+user_pref("swp.user.lowerthreshold", 5);
+user_pref("swp.user.matrix_delim", "matrix_none");
+user_pref("swp.user.mixednum", false);
+user_pref("swp.user.primederiv", true);
+user_pref("swp.user.primesasn", 3);
+user_pref("swp.user.principal", true);
+user_pref("swp.user.special", true);
+user_pref("swp.user.trigargs", false);
+user_pref("swp.user.upperthreshold", 5);
+user_pref("swp.user.usearc", true);

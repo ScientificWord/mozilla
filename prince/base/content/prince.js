@@ -572,7 +572,7 @@ function exportToWeb()
    {
      var dialogResult = fp.show();
      if (dialogResult != msIFilePicker.returnCancel)
-       if (!saveforweb(editor.document, false, fp.file ))
+       if (!saveforweb(editor.document, (fp.filterIndex == 1), fp.file ))
          AlertWithTitle("Export", "Web file not created.");
    }
    catch (ex) 
@@ -1094,39 +1094,30 @@ function toOpenWindowByType( inType, uri )
   }
 }
 
-
-function documentToTeXString(document, xslPath)
+function getCachedXSLTString(xslRootFileURLString)
 {
-  var str = "";
+  // we cache the xsl file as comp-???.xsl in the user's profile where ???
+  // is the leaf of xslPath
+  var leafnameRE = /[^\/]*$/;
+  var leafname;
   var resultString = "";
-  if (xslPath.length == 0) return resultString;
-  var contents = "";
-  var leafname = /[^\/]*$/;
   var match;
-  var xsltProcessor = new XSLTProcessor();
+  var xslPath = xslRootFileURLString;
+  var contents;
+  var matcharray = leafnameRE.exec(xslPath);
+  leafname = matcharray[0];
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
-  var matcharray = leafname.exec(xslPath);
-  outputfile.append("comp-"+matcharray[0]);
-  // we cache the xsl file as comp-???.xsl in the user's profile
-  
-  if (outputfile.exists())
+  var cachefile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
+  cachefile.append("comp-" + leafname);
+  if (!cachefile.exists())
   {
-    path=msiFileURLFromFile( outputfile );
-    var myXMLHTTPRequest = new XMLHttpRequest();
-    myXMLHTTPRequest.open("GET", path.spec, false);
-    myXMLHTTPRequest.send(null);
-    resultString = myXMLHTTPRequest.responseText;
-  }
-  else {
-    var path = xslPath;
     var stylesheetElement=/<xsl:stylesheet[^>]*>/;
     var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
     var myXMLHTTPRequest = new XMLHttpRequest();
-    myXMLHTTPRequest.open("GET", path, false);
+    myXMLHTTPRequest.open("GET", xslPath, false);
     myXMLHTTPRequest.send(null);
 
-    str = myXMLHTTPRequest.responseText;
+    var str = myXMLHTTPRequest.responseText;
   // a bug in the Mozilla XSLT processor causes problems with included stylesheets, so
   // we do the inclusions ourselves 
     var filesSeen= []; 
@@ -1135,13 +1126,11 @@ function documentToTeXString(document, xslPath)
       resultString += str.slice(0, match.index);
       str = str.slice(match.index);
       str = str.replace(match[0],""); // get rid of the matched pattern. Why does lastIndex not work?
-      dump("File "+match[1]+"found at index = "+match.index+ "\n");
-      // match[1] should have the file name of the incusion 
       if (filesSeen.indexOf(match[1]) < 0)
       {
         try {
-          path = path.replace(leafname,match[1]);
-          myXMLHTTPRequest.open("GET", path, false);
+          xslPath = xslPath.replace(leafnameRE,match[1]);
+          myXMLHTTPRequest.open("GET", xslPath, false);
           myXMLHTTPRequest.send(null);
           contents = myXMLHTTPRequest.responseText;
           if (contents)
@@ -1159,42 +1148,46 @@ function documentToTeXString(document, xslPath)
         }
       }
       else {
-        dump("\n\n\n" + str+"\n\n\n");
-        dump("Already saw " + match[1] +"\n");
         contents="";
         break;
       }                         
-      // now replace the include command with the contents of the file
-  //    includeFileRegEx.lastIndex = includeFileRegEx.index;
       str = contents + str;
-      // and continue  
     }
     resultString += str;
+    writeStringAsFile( resultString, cachefile); 
   }
-  // BBM: for debugging purposes, let's write the string out
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
-  outputfile.append("comp-"+matcharray[0]);
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(outputfile, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(resultString);
-  os.close();
- // end of debugging code 
-  dump("Creating new parser for xslt file\n");
-  var parser = new DOMParser();
-  var doc = parser.parseFromString(resultString, "text/xml");
-  if (doc) dump("XSLT file parsed as XML\n");
-  else dump("Failed to parse XSLT file as XML\n");  
+  else {
+    path = msiFileURLFromFile( cachefile );
+    var myXMLHTTPRequest = new XMLHttpRequest();
+    myXMLHTTPRequest.open("GET", path.spec, false);
+    myXMLHTTPRequest.send(null);
+    resultString = myXMLHTTPRequest.responseText;
+  }
+  return resultString;
+}
+
+function getXSLAsString(xslPath)
+{
+  var resultString = "";
+  if (xslPath.length == 0) return resultString;
+  return getCachedXSLTString(xslPath);
+}
+
+
+function documentToTeXString(document, xslPath)
+{
+  var resultString = "";
+  var strResult = "";
+  resultString = getXSLAsString(xslPath);
+
+  var xsltProcessor = new XSLTProcessor();
+
   try{
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(resultString, "text/xml");
     xsltProcessor.importStylesheet(doc);
-    if (xsltProcessor) dump("Imported stylesheet\n");
-    else dump("Failed to import stylesheet\n");
     var newDoc = xsltProcessor.transformToDocument(document);
-    var strResult = newDoc.documentElement.textContent || "";
-//    dump(strResult+"\n");
+    strResult = newDoc.documentElement.textContent || "";
     while (strResult.search(/\n\s*\n/) >= 0)
       strResult = strResult.replace(/\n\s*\n/,"\n","g");
   }
@@ -1203,4 +1196,12 @@ function documentToTeXString(document, xslPath)
   //  dump(resultString);
   }
   return strResult;
+}
+
+
+function dumpDocument()
+{
+  var ed= GetCurrentEditor();
+  var root = ed.document.documentElement;
+  ed.debugDumpContent(root);
 }

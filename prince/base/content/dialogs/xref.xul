@@ -4,14 +4,19 @@
 <?xml-stylesheet href="chrome://global/skin/toolbarsOverlay.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/xrefDialog.dtd">
-
+<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - complete persist feature for location -->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&xrefDialog.title;" 
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     onload = "Startup();"
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
-    persist="left top width height"
+    width="330"
+    height="196"
+    screenX="40"
+    screenY="40"
+    persist="screenX screenY width height"
     >
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -24,7 +29,7 @@
   <textbox id="keylist" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
     forcecomplete="true"
     completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
-    tooltiptext="Enter a key name"
+    tooltiptext="&keyList.tooltip;"
     maxrows="3"
     onfocus="this.select()"
     ontextentered=""/>

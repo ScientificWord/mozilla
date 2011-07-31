@@ -25,7 +25,7 @@
                 <rdf:li>
                     <rdf:Description nc:panelid="search"
                         nc:datasources=""
-                        nc:emptysearchtext="[No matching items found.]"
+                        nc:emptysearchtext="Sorry, that term is not in any of the section titles"
                         nc:emptysearchlink="chrome://prince/locale/helpfiles/welcome.xhtml#search_tips"/>
                 </rdf:li>
                 <rdf:li>

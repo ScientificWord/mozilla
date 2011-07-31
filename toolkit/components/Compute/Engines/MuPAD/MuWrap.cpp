@@ -1993,7 +1993,8 @@ char *MuPADWrapper::PRIMEStoEstr(SEMANTICS_NODE * diff_info, int& error_code)
           } else {
             var_str = GetEngNameForVar(frame_ID, user_name, canonical_ID);
           }
-        } else {                // fake it
+        } else {                // fake it    
+          var_str = DuplicateString("t");
         }
       } else
         TCI_ASSERT(0);
@@ -4436,7 +4437,7 @@ char *MuPADWrapper::CreateSIntegraleStr(MathServiceRequest & msr, U32 cmd_ID,
   return zh_rv;
 }
 
-char *MuPADWrapper::CreateAPPROXINTeStr(MathServiceRequest & msr,
+char* MuPADWrapper::CreateAPPROXINTeStr(MathServiceRequest & msr,
                                         const char *eng_zstr,
                                         const char *cmd_template,
                                         int& error_code)
@@ -4445,21 +4446,30 @@ char *MuPADWrapper::CreateAPPROXINTeStr(MathServiceRequest & msr,
   error_code = 0;
 
   if (cmd_template && eng_zstr) {
-    //Calculus Approximate Integral...<uID39.0>tciaprxarea(%integral%,%subintervals%,%formula%);
-    char *n_intervals =
-      CreateVParameStr(msr, PID_approxintnsubs, zPT_ASCII_natural,
-                       error_code);
-    if (error_code)
-      return NULL;
+    //Calculus Approximate Integral...<uID39.0>tciaprxarea(%integral%,%variable%,%lower%..%upper%,%subintervals%,%formula%);
+
+    char* n_intervals =  CreateVParameStr(msr, PID_approxintnsubs, zPT_ASCII_natural, error_code);
+    if (error_code) return NULL;
+    
 
     U32 p_type;
-    const char *z_formula = msr.GetParam(PID_approxintform, p_type);  // 1..5
+
+    const char* lowerBound = msr.GetParam(PID_approxintlowerbound, p_type);
+    if (lowerBound == NULL)
+      return NULL;
+
+    const char* upperBound = msr.GetParam(PID_approxintupperbound, p_type);
+    if (upperBound == NULL)
+      return NULL;
+          
+    const char* z_formula = msr.GetParam(PID_approxintform, p_type);  // 1..5
 
     if (z_formula) {
-      size_t zln =
-        strlen(cmd_template) + strlen(eng_zstr) + strlen(z_formula);
+      size_t zln = strlen(cmd_template) + strlen(eng_zstr) + strlen(z_formula) + strlen(lowerBound) + strlen(upperBound);
+      
       if (n_intervals)
         zln += strlen(n_intervals);
+
 
       zh_rv = new char[zln];
       strcpy(zh_rv, cmd_template);
@@ -4469,6 +4479,11 @@ char *MuPADWrapper::CreateAPPROXINTeStr(MathServiceRequest & msr,
         delete[] n_intervals;
       }
       StrReplace(zh_rv, zln, "%formula%", z_formula);
+      StrReplace(zh_rv, zln, "%lower%", lowerBound);
+      StrReplace(zh_rv, zln, "%upper%", upperBound);
+
+      StrReplace(zh_rv, zln, "%variable%", "0");  // ? jcs -- I don't understand this value
+
     } else {
       TCI_ASSERT(0);
       delete[] n_intervals;

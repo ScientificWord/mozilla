@@ -3521,12 +3521,14 @@ function installZipEntry(aZipReader, aZipEntry, aDestination)
 
 // Write a file to the zip file represented by aZipWriter. RelPath is the path relative to the
 // directory we are zipping and sourceFile is the particular file being written.
+// BBM - doesn't seem to be used??
  
-function writeZipEntry(aZipWriter, relPath, sourceFile) 
+function writeZipEntry(aZipWriter, relPath, sourceFile, compression) 
 {
   var path = "";
   var dirs = relPath.split(/\//);
   var isDirectory = /\/$/.test(aZipEntry);
+  if (compression == null) compression = 0;
 
   var end = dirs.length;
   if (!isDirectory)
@@ -3541,18 +3543,20 @@ function writeZipEntry(aZipWriter, relPath, sourceFile)
 
   if (!isDirectory) {
     path = path+"/"+dirs[end];
-    aZipWriter.addEntryFile(path, 0, sourceFile, false); // should get compression preference here
+    aZipWriter.addEntryFile(path, compression, sourceFile, false); // should get compression preference here
   }
 }
 
 // zipDirectory is called recursively. The first call has currentpath="". sourceDirectory is the directory
 // we are zipping, and currentpath is the path of sourceDirectory relative to the root directory.
 
-function zipDirectory(aZipWriter, currentpath, sourceDirectory)
+function zipDirectory(aZipWriter, currentpath, sourceDirectory, compression)
 {
   var e;
   var f;
   e = sourceDirectory.directoryEntries;
+  if (compression == null) compression = 0;
+  
   while (e.hasMoreElements())
   {
     f = e.getNext().QueryInterface(Components.interfaces.nsIFile);
@@ -3563,13 +3567,13 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory)
     if (f.isDirectory())
     {
       aZipWriter.addEntryDirectory(path, f.lastModifiedTime, false);
-      zipDirectory(aZipWriter, path, f);
+      zipDirectory(aZipWriter, path, f, compression);
     }
     else
     {
       if (aZipWriter.hasEntry(path))
         aZipWriter.removeEntry(path,true);
-      aZipWriter.addEntryFile(path, 0, f, false);
+      aZipWriter.addEntryFile(path, compression, f, false);
     }
   }
 }
@@ -3978,12 +3982,19 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
 
     // zip D into the zipfile
       try {
+        var compression = 0;
+        var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+        try
+        {
+          compression = prefs.getIntPref("swp.webzip.compression");
+        }
+        catch(e) {}
         var zw = Components.classes["@mozilla.org/zipwriter;1"]
                               .createInstance(Components.interfaces.nsIZipWriter);
         if (zipfile.exists()) zipfile.remove(0);
         zipfile.create(0,0755);
         zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
-        zipDirectory(zw, "", dir); 
+        zipDirectory(zw, "", dir, compression); 
         zw.close();
       }
       catch(e) {
@@ -11362,3 +11373,30 @@ function getSelectionParentByTag( editor, tagname)
   if (ancestor && ancestor.tagName == tagname) return ancestor;
   return null;
 }
+
+
+
+function writeStringAsFile( str, file )
+{
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(file, -1, -1, false);
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(str);
+  os.close();
+  fos.close();
+}
+
+function getFileAsString( url )
+{
+  var req = new XMLHttpRequest();
+  req.overrideMimeType("text/plain");
+  req.open('GET', url, false);   
+  req.send(null);  
+  if (req.status == 0)
+    return req.responseText;
+  else
+    return null;
+}
+
