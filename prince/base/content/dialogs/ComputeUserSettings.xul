@@ -8,7 +8,8 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/ComputeUserSettings.dtd">
-
+<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - check with BBM re:use -->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
     id="ComputeUserSettingsDlg"
@@ -17,6 +18,8 @@
     ondialogaccept = "OK()"
     ondialogcancel = "Cancel()"
     buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
@@ -43,7 +46,7 @@
 	   <tab label="&tabbar.entities;"    selected="0" />
 	  </tabs>
 
-    <tabpanels>
+   <tabpanels>
       <tabpanel id="compusersettings.inputpage">
        <vbox>
         <groupbox>
@@ -102,31 +105,31 @@
         <groupbox>
           <caption label="&scinotation.label;"/>
           <hbox>
-            <description>Digits rendered</description>
+            <description>&DigitsRendered.label;</description>
             <spacer flex="1"/>
             <textbox id="digits" style="width: 3em"/>
           </hbox>
           <vbox>
             <hbox>
-              <description>Upper threshold</description>
+              <description>&UpperThreshold.label;</description>
               <spacer flex="1"/>
               <textbox id="upper" style="width: 3em"/>
             </hbox>
-            <description>(digits left of decimal before switching)</description>
+            <description>&DigitsLeftofDecimal.label;</description>
           </vbox>
           <vbox>
             <hbox>
-              <description>Lower threshold</description>
+              <description>&Lowerthreshold.label;</description>
               <spacer flex="1"/>
               <textbox id="lower" style="width: 3em"/>
             </hbox>
-            <description>(zeros to right of decimal before switching)</description>
+            <description>&ZerosRightofDecimal.label;</description>
           </vbox>
         </groupbox>
         <groupbox>
           <caption label="&mixednum.label;"/>
           <hbox>
-            <description>Output fractions as mixed numbers</description>
+            <description>&OutputFractionsasMixedNumbers.label;</description>
             <spacer flex="1"/>
             <checkbox id="mixednum"/>
           </hbox>
@@ -134,12 +137,12 @@
         <groupbox>
           <caption label="&trigargs.label;"/>
           <hbox>
-            <description>Use Parentheses for Trig Functions</description>
+            <description>&UseParenthesesforTrigFunctions.label;</description>
             <spacer flex="1"/>
             <checkbox id="trigargs"/>
           </hbox>
           <hbox>
-            <description>Use "arc" prefix for inverse Trig Functions</description>
+            <description>&UseArcPrefixforInverseTrigFunctions.label;</description>
             <spacer flex="1"/>
             <checkbox id="usearc"/>
           </hbox>
@@ -152,7 +155,7 @@
         <groupbox>
           <caption label="&matrices.label;"/>
           <hbox>
-            <description>Default matrix delimiter</description>
+            <description>&DefaultMatrixDelimiter.label;</description>
             <spacer flex="1"/>
             <radiogroup id="matrix_delim">
                <radio label="&matrix_none.label;"     id="matrix_none"      selected="true"/>
@@ -179,7 +182,7 @@
         <groupbox>
           <caption label="&primeasn.label;"/>
           <hbox>
-            <description>switch from primes to (n)</description>
+            <description>&SwitchfromPrimestoN.label;</description>
             <spacer flex="1"/>
             <textbox id="primesasn" style="width: 3em"/>
           </hbox>
@@ -187,7 +190,7 @@
         <groupbox>
           <caption label="&primederiv.label;"/>
           <hbox>
-            <description>Prime means derivative</description>
+            <description>&PrimeMeansDerivative.label;</description>
             <spacer flex="1"/>
             <checkbox id="primederiv"/>
           </hbox>
@@ -200,6 +203,7 @@
         <groupbox>
           <caption label="&imagi_output.label;"/>
           <radiogroup id="imagi">
+            
             <radio label="&imagi_i.label;"        id="imagi_i"        selected="true"/>
             <radio label="&imagi_j.label;"        id="imagi_j"        selected="false"/>
             <radio label="&imagi_imagi.label;"    id="imagi_imagi"    selected="false"/>

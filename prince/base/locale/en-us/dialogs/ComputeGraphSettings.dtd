@@ -176,3 +176,38 @@
 <!ENTITY high.label                 "High">
 
 <!ENTITY unspecified.label          "Not Specified">
+
+<!ENTITY defaultsizenewplot.label "Default size for new plots">
+<!ENTITY defaultsizenewplot.label "Default placement for new plots">
+<!ENTITY approxintegral.label "Approximate Integral">
+<!ENTITY animationparams.label "Animation Parameters">
+<!ENTITY starttime.desc  "Start time (seconds)">
+<!ENTITY endtime.desc  "End time (seconds)">
+<!ENTITY framespersec.desc "Frames per second">
+<!ENTITY NumberofIntervals.desc "Number of Intervals">
+<!ENTITY ApproxMethod.desc  "Approximation Method">
+<!ENTITY ShowInfo.desc  "Show Info">
+
+
+<!ENTITY FillPatternSolid.label "Solid">
+<!ENTITY FillPatternCrossedLines.label  "Crossed Lines">
+<!ENTITY FillPatternDiaglLines.label  "Diagonal Lines">
+<!ENTITY FillPatternForwardDiagLines.label  "Forward Diagonal Lines">
+<!ENTITY FillPatternHorizLines.label  "Horizontal Lines">
+<!ENTITY FillPatternVertLines.label "Vertical Lines">
+<!ENTITY FillPatternCrossedDiagLines.label  "Crossed Diagonal Lines">
+
+<!ENTITY AIMethodLeft.label "Left">
+<!ENTITY AIMethodRight.label "Right">
+<!ENTITY AIMethodMiddle.label "Middle">
+<!ENTITY AIMethodLower.label "Lower">
+<!ENTITY AIMethodUpper.label "Upper">
+<!ENTITY AIMethodLowerAbs.label "Lower Absolute">
+<!ENTITY AIMethodUpperAbs.label "Upper Absolute">
+<!ENTITY AIMethodTrapezoidal.label "Trapezoidal">
+<!ENTITY AIMethodSimpson.label "Simpson">
+
+<!ENTITY AIInfoNone.label "No Info">
+<!ENTITY AIInfoApproxValue.label "Approximated Value">
+<!ENTITY AIInfoApproxandExactValue.label "Approximated and Exact Value">
+<!ENTITY AIInfoBothValuesandError.label "Both Values and Error">

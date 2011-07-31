@@ -2,7 +2,7 @@
 <!ENTITY  windowTitle.label         "Frame">
 <!ENTITY  position.label            "Frame position">
 
-
+<!--JLF Confirm use with BBM -->
 <!ENTITY  inner						"Inner margin">
 <!ENTITY  inline					"In line">
 <!ENTITY  display					"Displayed">
@@ -44,3 +44,6 @@
 <!ENTITY unitLabel.accesskey "U">
 <!ENTITY unitLabel.label "Units">
 <!ENTITY  SizePlacement.label  "Size &amp; Placement">
+
+<!ENTITY Frametab.label "Frame">
+<!ENTITY  Placementtab.label  "Placement">

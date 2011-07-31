@@ -641,7 +641,23 @@ toolbar[iconsize="small"] #bracketsButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_brackets-active.png");
 }
 
-/* need to put in small genBrackets stuff */
+toolbar[iconsize="small"] #genBracketsButton {
+  list-style-image: url("chrome://prince/skin/icons/math_brackets-sm.png");
+}
+
+toolbar[iconsize="small"] #genBracketsButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/math_brackets-hover-sm.png");
+}
+
+
+toolbar[iconsize="small"] #genBracketsButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/math_brackets-disabled-sm.png");
+}
+
+toolbar[iconsize="small"] #genBracketsButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/math_brackets-active-sm.png");
+}
+
 
 #sumButton {
   list-style-image: url("chrome://prince/skin/icons/math_sum.png");
@@ -1385,6 +1401,38 @@ toolbar[iconsize="small"] #hspaceButton:hover:active {
 
 toolbar[iconsize="small"] #hspaceButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-disabled-sm.png");
+}
+
+#vspaceButton {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical.png");
+}
+
+toolbar[iconsize="small"] #vspaceButton {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-sm.png");
+}
+
+#vspaceButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-hover.png");
+}
+
+toolbar[iconsize="small"] #vspaceButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-hover-sm.png");
+}
+
+#vspaceButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-active.png");
+}
+
+toolbar[iconsize="small"] #vspaceButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-active-sm.png");
+}
+
+#vspaceButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-disabled.png");
+}
+
+toolbar[iconsize="small"] #vspaceButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/spacevertical-disabled-sm.png");
 }
 
 

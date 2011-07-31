@@ -89,6 +89,12 @@ class nsIURL;
 class nsIRangeUtils;
 class nsILinkHandler;
 
+#ifdef DEBUG
+const PRUnichar *
+  DumpNodeTag( nsIDOMNode * aNode);
+#endif
+
+
 /**
  * The HTML editor implementation.<br>
  * Use to edit HTML document represented as a DOM tree. 
@@ -1026,7 +1032,6 @@ protected:
 
 public:
   void     FixMathematics( nsIDOMNode * fragNode, PRBool fLeftOnly, PRBool fRightOnly);
-
 // friends
 friend class nsHTMLEditRules;
 friend class nsTextEditRules;

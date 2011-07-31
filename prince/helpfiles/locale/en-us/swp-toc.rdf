@@ -7,7 +7,9 @@
     <nc:subheadings>
       <rdf:Seq>
         <rdf:li> <rdf:Description ID="swp-doc"	nc:name="Introducing Scientific WorkPlace"
-                                  nc:link="composer_help.xhtml"/> </rdf:li>
+                                  nc:link="swp_help.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="doing-math" nc:name="Doing Mathematics"
+                                  nc:link=""/> </rdf:li>
 	</rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -15,11 +17,19 @@
   <rdf:Description about="#swp-doc">
     <nc:subheadings>
       <rdf:Seq>
-        <rdf:li> <rdf:Description ID="comp-doc-create" nc:name="Creating a New Page"  nc:link="composer_help.xhtml#creating_a_new_page"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="comp-doc-save" nc:name="Saving and Browsing Your Page"  nc:link="composer_help.xhtml#saving_and_browsing_your_new_page"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="swp-doc-create" nc:name="Creating a New Page"  nc:link="composer_help.xhtml#creating_a_new_page"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="swp-doc-save" nc:name="Saving and Browsing Your Page"  nc:link="composer_help.xhtml#saving_and_browsing_your_new_page"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+  <rdf:Description about="#doing-math">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="factoringpolynomials" nc:name="Factoring Polynomials"  nc:link="dm0301-factoringpolynomials.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+  
 
 </rdf:RDF>
 
