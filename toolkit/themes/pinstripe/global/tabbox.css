@@ -11,31 +11,62 @@
 
 tab {
   -moz-appearance: tab;
-  -moz-box-align: stretch;
-  color				: #000000;
-  background-image: url("chrome://prince/skin/icons/background.png");
+  margin-top: 2px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+  border-left: 2px solid;
+  border-bottom: 1px solid ThreeDHighlight;
+  -moz-border-top-colors: ThreeDHighlight ThreeDLightShadow;
+  -moz-border-right-colors: ThreeDDarkShadow ThreeDShadow;
+  -moz-border-left-colors: ThreeDHighlight ThreeDLightShadow;
+  -moz-border-radius-topleft: 2px;
+  -moz-border-radius-topright: 2px;
+  -moz-border-radius-bottomright: 1px;
+  padding: 1px 4px 2px 4px;
+  background-image: url("chrome://prince/skin/icons/symbol-tab-background.png");
   background-repeat: repeat-x;
-  padding: 3px;
+  background-position: bottom;
+  color: -moz-DialogText;
+}
+
+tab[chromedir="rtl"] {
+  -moz-border-radius-bottomleft: 1px;
+  -moz-border-radius-bottomright: 0px;
 }
 
 .tab-text {
-  font				: menu;
-  font-weight: normal !important;
+  margin: 0 !important;
 }
 
-tabs {
-  padding			: 0px;
-  margin-bottom: -2px;
+tab[selected="true"] {
+  -moz-user-focus: normal;
+  margin-top: 0;
+  border-bottom-color: transparent;
+  padding: 1px 6px 4px 6px;
 }
 
-
-tabs.tabs-bottom {
-  padding-left: 6px;
-  padding-right: 6px;
+tab:focus > .tab-middle {
+  /* Don't specify the outline-color, we should always use initial value. */
+  outline: 1px dotted;
 }
 
-.tabs-left, .tabs-right  {
-	-moz-box-flex: 1 !important;
+tab[beforeselected="true"],
+tab[afterselected="true"][chromedir="rtl"] {
+  -moz-appearance: tab-left-edge;
+  border-right: none;
+  -moz-border-radius-topright: 0;
+}
+
+tab[afterselected="true"],
+tab[beforeselected="true"][chromedir="rtl"] {
+  -moz-appearance: tab-right-edge;
+  border-left: none;
+  -moz-border-radius-topleft: 0;
+}
+
+tab[first-tab="true"][selected="true"] {
+  padding-right: 5px;
+  padding-left: 5px;
 }
 /*** TAB: BOTTOM <tab class="tab-bottom"> ***/
 /* Found in editor.xul & editorOverlay.xul 

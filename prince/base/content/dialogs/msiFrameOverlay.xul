@@ -4,7 +4,7 @@
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/content/Frame.css" type="text/css"?>
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd">
- 
+ <!-- JLF to verify-->
 <overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       xmlns:html="http://www.w3.org/1999/xhtml">
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
@@ -13,8 +13,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
 
-  <tab id="msiFrameTab" label="Frame"/>
-  <tab id="msiPlacementTab" label="Placement"/>
+  <tab id="msiFrameTab" label="&Frametab.label;"/>
+  <tab id="msiPlacementTab" label="&Placementtab.label;"/>
   <vbox id="units" >
     <label id   = "frameUnitLabel"
       control   = "frameUnitMenulist"

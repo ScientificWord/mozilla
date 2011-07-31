@@ -14,7 +14,8 @@
 <!ENTITY % docformatdialogDTD SYSTEM "chrome://prince/locale/typesetDocFormat.dtd" >
 %docformatdialogDTD;
 ]>
-
+<!--JLF - Localization pass on 6/28/2011-->
+<!-- JLF - verify initial size -->
 <dialog id="SectionRuleDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

@@ -5,8 +5,8 @@
    ========================================================================== */
 
 @import url("chrome://global/skin/");
-@import url("chrome://communicator/content/communicator.css");
-@import url("chrome://communicator/skin/formatting.css");
+/* @import url("chrome://communicator/content/communicator.css");
+@import url("chrome://communicator/skin/formatting.css"); */
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 

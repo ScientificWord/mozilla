@@ -3,7 +3,7 @@
 <?xml-stylesheet href="chrome://communicator/skin/box.css"?>
 <?xml-stylesheet href="chrome://communicator/skin/brand.css"?>
 <?xml-stylesheet href="chrome://communicator/skin/button.css"?>
-<?xml-stylesheet href="chrome://communicator/skin/communicator.css"?>
+<!--?xml-stylesheet href="chrome://communicator/skin/communicator.css"? -->
 <?xml-stylesheet href="chrome://communicator/skin/dialogOverlay.css"?>
 <?xml-stylesheet href="chrome://communicator/skin/menubutton.css"?>
 <?xml-stylesheet href="chrome://communicator/skin/prefpanels.css"?>

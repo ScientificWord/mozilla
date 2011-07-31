@@ -1,83 +1,99 @@
 Components.utils.import("resource://app/modules/pathutils.jsm");
+
+function getDocumentDirectoryFor(doc)
+{
+  var dir = msiFileFromFileURL(doc.documentURIObject);
+  return dir.parent;
+}
+
+function createCopyOfDocument(doc)
+{
+  var doc2 = doc.implementation.createDocument("","",null);
+  var newDocElement = doc2.importNode(doc.documentElement,true);
+  doc2.appendChild(newDocElement);
+  return doc2;
+}
+
+function createSubDirFromDocDir(dir, name)
+{
+  var subdir = dir.clone();
+  subdir.append(name);
+  if (!subdir.exists())
+  {
+    subdir.create(1, 0755);
+  }
+}
+
+function rebaseStyleSheetHRef( sshref, documentDirectory )
+{
+  var reRes = new RegExp("resource://app/res/","i");
+  var reDoc = new RegExp(msiFileURLStringFromFile(documentDirectory),"i");
+  if (reRes.test(sshref))
+    return sshref.replace(reRes,"");
+  if (reDoc.test(sshref))
+    return sshref.replace(reDoc,"");
+  return sshref;  
+}
+
+
+function saveDocumentCopyAndSubDocs(docCopy, srcDir, destinationDir)
+{
+  var serializer = new XMLSerializer();
+  var prettyString = serializer.serializeToString(docCopy);
+// the source directory name is based on the document filename, so...
+  var name = srcDir.leafName.replace("_work","");
+  var destfile = destinationDir.clone();
+  destfile.append(name+".xhtml");
+  writeStringAsFile(prettyString, destfile);
+// Now copy subdocuments -- all of these have an xml extension
+  var entries = srcDir.directoryEntries;
+  var isXml = /\.xml$/i;
+  while(entries.hasMoreElements())
+  {
+    var entry = entries.getNext();
+    entry.QueryInterface(Components.interfaces.nsIFile);
+    if (entry.isFile && isXml.test(entry.path))
+    {
+      entry.copyTo(destinationDir,"");
+    }
+    else
+    {
+      if (entry.isDirectory && (entry.leafName == "graphics" || false /* BBM */))
+      {
+        entry.copyTo(destinationDir,"");
+      }
+    }
+  }
+}
+
 function saveforweb( doc, usedirectory, dir )
 {
   try {
-    var doc2 = document.implementation.createDocument ("", "", null);
-    var node;
-    node = doc2.importNode(doc.documentElement,true);
-    doc2.appendChild(node);
-    var dir1 = msiFileFromFileURL(doc.documentURIObject);
-    dir1 = dir1.parent;
-    var cssdir = dir.clone();
-    var xbldir = dir.clone();
-    cssdir.append('css');
-    xbldir.append('xbl');
-    if (!cssdir.exists()) cssdir.create(1, 0755);
-    if (!xbldir.exists()) xbldir.create(1, 0755);
+    var dir1 = getDocumentDirectoryFor(doc);
+    var doc2 = createCopyOfDocument(doc);
+    var cssdir = createSubDirFromDocDir(dir1, "css");
+    var xbldir = createSubDirFromDocDir(dir1, "xbl");
+    var graphicsidr = createSubDirFromDocDir(dir1, "graphics");
     var SSs = doc.styleSheets; 
-    var i;
-    var pi;
-    var href;
-    var hrefModified, newHRef, oldHRef;
+    var newHRef, oldHRef;
     var root = doc2.getElementsByTagName('html')[0];
-    var reRes = new RegExp("resource://app/res/","");
-    var reDoc = new RegExp(msiFileURLStringFromFile(dir1),"");
-    for (i = 0; i <SSs.length; i++)
+    for (var i = 0; i <SSs.length; i++)
     {
       oldHRef = SSs[i].href;
-      if (reRes.test(oldHRef)) 
-      {
-        hrefModified = true;
-        newHRef = oldHRef.replace(reRes,"");
-      }
-      else if (reDoc.test(oldHRef))
-      {
-        hrefModified = true;
-        newHRef = oldHRef.replace(reDoc,"");
-      }
-      else
-      {
-        hrefModified = false;
-        newHRef = oldHRef;
-      }
+      newHRef = rebaseStyleSheetHRef(oldHRef, dir1);
       var pi = doc2.createProcessingInstruction("xml-stylesheet", "href='"+newHRef+"'", "type='text/css'");
       root.parentNode.insertBefore(pi,root);
-      if (hrefModified) 
+      if (oldHRef != newHRef) 
       {
         handleStyleSheet(oldHRef, newHRef, dir, 0 );  
       }
     }
-    // now save doc2. Use the current base of the .sci name for the xhtml file generated.
-    // Subdocuments are copied over with changes.  
-    var serializer = new XMLSerializer();
-    var prettyString = serializer.serializeToString(doc2);
-    // find the name of the starting .sci file. Start with the working directory.
-    var docurlstring = doc.URL;
-    var url = msiURIFromString(docurlstring);
-    var srcfile = msiFileFromFileURL(url);
-    var srcdir = srcfile.parent.clone();
-    var name = srcdir.leafName.replace("_work","");
-    var destfile = dir.clone();
-    destfile.append(name+".xhtml");
-    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-    fos.init(destfile,0x02 | 0x08 | 0x20, 0666, false);
-// write, create, truncate
-    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-      .createInstance(Components.interfaces.nsIConverterOutputStream);
-    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-    os.writeString(prettyString);
-    os.close();
-    // Now copy subdocuments
-    var entries = srcdir.directoryEntries;
-    var isXml = /\.xml$/i;
-    while(entries.hasMoreElements())
+    saveDocumentCopyAndSubDocs(doc2, dir1, dir);
+    if (!usedirectory)
     {
-      var entry = entries.getNext();
-      entry.QueryInterface(Components.interfaces.nsIFile);
-      if (entry.isFile && isXml.test(entry.path))
-      {
-        entry.copyTo(dir,"");
-      }
+      zipUpDir(dir,"zip");
+      dir.remove(true);
+      return true;
     }
     return true;
   }
@@ -87,40 +103,101 @@ function saveforweb( doc, usedirectory, dir )
   }
 }  
 
+function zipUpDir(dir, extension)
+{
+  var zipfile = dir.parent.clone();
+  var leafname = dir.leafName;  
+  var compression = 0;
+  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+  try
+  {
+    compression = prefs.getIntPref("swp.webzip.compression");
+  }
+  catch(e) {}
+  
+  zipfile.append(leafname + "." + extension); 
+
+  try {
+    var zw = Components.classes["@mozilla.org/zipwriter;1"]
+                          .createInstance(Components.interfaces.nsIZipWriter);
+    if (zipfile.exists()) zipfile.remove(0);
+    zipfile.create(0,0755);
+    zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
+    zipDirectory(zw, "", dir, compression); 
+    zw.close();
+    return true;
+  }
+  catch(e) {
+    throw Components.results.NS_ERROR_UNEXPECTED;
+  }
+}
+
+
+function appendRelativePath(dir, relPath)
+// like nsifile append but the relPath can contain many directories
+{
+   var f = dir.clone();
+   var arr = relPath.split("/");
+   for  (var i = 0; i < arr.length; i++)
+   {
+     f.append(arr[i]);
+     if (!f.exists())
+     {
+       if (i < arr.length - 1)
+         f.create(1, 0755);
+     }
+   }
+   return f;
+}
+
+function writeStringAsFile( str, file )
+{
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(file, -1, -1, false);
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(str);
+  os.close();
+  fos.close();
+}
+
+function getFileAsString( url )
+{
+  var req = new XMLHttpRequest();
+  req.overrideMimeType("text/css");
+  req.open('GET', url, false);   
+  req.send(null);  
+  if (req.status == 0)
+    return req.responseText;
+  else
+    return null;
+}
+
 function handleStyleSheet (oldHRef, newHRef, dir, depth)  // modify and copy style sheets and xbl files
 {
+  dump("handleStyleSheet:  "+ oldHRef +", "+newHRef + "\n");
   // if the parameters are different, copy the style sheet to newHRef (relative to dir)
   // while it is open, look for @import and -moz-binding commands that may need to be changed.
   try {
-    var f = dir.clone();
-    var arr = newHRef.split("/");
-    var i;
-    var re = /resource:\/\/app\/res\/([a-zA-Z0-9_\/\.]+)/ig;
-    var re2= /^(.*-moz-binding.*)$/mgi;
-    for (i = 0; i < arr.length; i++) f.append(arr[i]);
-    if (f.exists()) return;
-    var req = new XMLHttpRequest();
-    var contents;
+    var f = appendRelativePath(dir, newHRef);
+//    if (f.exists()) return;
+    var re = /resource:\/\/app\/res\/([a-zA-Z0-9_\/\.]+)/i;
+//    var re2= /^(.*-moz-binding.*)$/mgi;
+
     var match;  
-    req.open('GET', oldHRef, false);   
-    req.send(null);  
-    if(req.status == 0)
+    var contents = getFileAsString( oldHRef );
+
+    if (contents != null)
     {  
-      while ((match = re.exec(req.responseText))!= null)
+      while ((match = re.exec(contents))!= null)
       {
         handleStyleSheet(match[0],match[1],dir, ++depth);
+        contents = contents.replace(match[0],match[1].replace(/^css\//i,""));
       }
-      contents = req.responseText.replace("resource://app/res/css/","","g");
-      contents = contents.replace(re2,"/*$1*/","gm");
-    }  
-    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-    fos.init(f, -1, -1, false);
-    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-      .createInstance(Components.interfaces.nsIConverterOutputStream);
-    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-    os.writeString(contents);
-    os.close();
-    fos.close();
+      //contents = contents.replace(re2,"/*$1*/","gm");
+    } 
+    writeStringAsFile(contents, f);
   }
   catch(e)
   {

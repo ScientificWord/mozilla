@@ -215,7 +215,7 @@ class DE_FUNC_REC
 
 
 void SetSnodeOwner(SEMANTICS_NODE* snode, AnalyzerData* pData);
-BaseType GetBaseType(MNODE* base, bool isLHSofDef, AnalyzerData* pData);
+BaseType GetBaseType(MNODE* base, bool isLHSofDef, AnalyzerData* pData, const Grammar* mml_entities);
 char* GetCanonicalIDforMathNode(const MNODE* mml_node, const Grammar* mml_entities);
 
 bool  LocateFuncRec(const DE_FUNC_REC* f_list,
@@ -272,6 +272,9 @@ MIC2MMLNODE_REC* AppendIDRec(MIC2MMLNODE_REC* node_IDs_list,
                              char *obj_name,
                              MNODE* mml_node, 
                              const char *zsrc);
+
+bool NodeIsFunction(MNODE* mml_node, const Grammar* mml_entities, AnalyzerData* my_analyzer_data);
+
 
 
 

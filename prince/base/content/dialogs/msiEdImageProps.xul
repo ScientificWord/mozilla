@@ -48,7 +48,7 @@
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
  
 <!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
- 
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog id="imgDialog" 
     title="&windowTitle.label;"
     xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -56,7 +56,9 @@
     persist="screenX screenY width height sizemode"
     buttons="accept,cancel"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();">
+    ondialogcancel="return onCancel();"
+    screenX="40"
+    screenY="40">
  
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>

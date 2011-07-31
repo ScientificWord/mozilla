@@ -144,6 +144,16 @@ static char hrefText[] = "href";
 static char anchorTxt[] = "anchor";
 static char namedanchorText[] = "namedanchor";
 
+#ifdef DEBUG
+const PRUnichar *
+DumpNodeTag( nsIDOMNode * aNode)
+{
+  nsAutoString tagName;
+  aNode->GetNodeName(tagName);
+  return tagName.get();
+}
+#endif
+
 nsIRangeUtils* nsHTMLEditor::sRangeHelper;
 
 // some prototypes for rules creation shortcuts
@@ -1266,9 +1276,9 @@ PRBool nsHTMLEditor::IsVisBreak(nsIDOMNode *aNode)
   GetPriorHTMLNode(aNode, address_of(priorNode), PR_TRUE); 
   GetNextHTMLNode(aNode, address_of(nextNode), PR_TRUE); 
   // if we are next to another break, we are visible
-  if (priorNode && nsTextEditUtils::IsBreak(priorNode))
+  if (priorNode && nsTextEditUtils::IsBreak(priorNode) && !(nsTextEditUtils::IsMozBR(priorNode)))
     return PR_TRUE;
-  if (nextNode && nsTextEditUtils::IsBreak(nextNode))
+  if (nextNode && nsTextEditUtils::IsBreak(nextNode) && !(nsTextEditUtils::IsMozBR(nextNode)))
     return PR_TRUE;
   
   // if we are right before block boundary, then br not visible
@@ -2049,7 +2059,7 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString, nsAStrin
     res = docEncoder->Init(domdoc, NS_LITERAL_STRING("text/plain"), 0);
     NS_ENSURE_SUCCESS(res, res);
     docEncoder->EncodeToString(errMsg);
-    printf("Result:\n%S\n",errMsg);
+//    printf("Result:\n%S\n",errMsg);
     _retval.Assign(errMsg);
     return NS_OK;
   }
@@ -5736,6 +5746,7 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
     res = IsVisTextNode(aNode, outIsEmptyNode, aSafeToAskFrames);
     return res;
   }
+  *outIsEmptyNode = PR_TRUE;
 
   // if it's not a text node (handled above) and it's not a container,
   // then we don't call it empty (it's an <hr>, or <br>, etc).
@@ -5743,7 +5754,7 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
   // anchors are containers, named anchors are "empty" but we don't
   // want to treat them as such.  Also, don't call ListItems or table
   // cells empty if caller desires.  Form Widgets not empty.
-    if (!IsContainer(aNode) || nsHTMLEditUtils::IsNamedAnchor(aNode, mtagListManager) ||
+    if (nsHTMLEditUtils::IsNamedAnchor(aNode, mtagListManager) ||
        nsHTMLEditUtils::IsFormWidget(aNode, mtagListManager)                       ||
        (aListOrCellNotEmpty && nsHTMLEditUtils::IsListItem(aNode, mtagListManager)) ||
        (aListOrCellNotEmpty && nsHTMLEditUtils::IsTableCell(aNode, mtagListManager)) ) 
@@ -5751,6 +5762,21 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
     *outIsEmptyNode = PR_FALSE;
     return NS_OK;
   }
+  
+  if (!IsContainer(aNode))
+  {
+    if (nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("br")))
+    {
+      if (!aSingleBRDoesntCount)    
+        *outIsEmptyNode = PR_FALSE;
+    }
+    else
+    {
+      *outIsEmptyNode = PR_FALSE;
+    }
+    if (!*outIsEmptyNode) 
+      return NS_OK;
+  } 
     
   // need this for later
   PRBool isListItemOrCell = 
@@ -5778,7 +5804,7 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
       {
         // is it the node we are iterating over?
         if (node == aNode) break;
-        else if (aSingleBRDoesntCount && !*aSeenBR && nsTextEditUtils::IsBreak(node))
+        else if (aSingleBRDoesntCount && !*aSeenBR && nsTextEditUtils::IsBreak(node) && !(nsTextEditUtils::IsMozBR(node)))
         {
           // the first br in a block doesn't count if the caller so indicated
           *aSeenBR = PR_TRUE;

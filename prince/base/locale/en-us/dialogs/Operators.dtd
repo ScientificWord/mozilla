@@ -26,3 +26,21 @@
 <!ENTITY operatorsButtonGroup.accesskey "O">
 
 <!-- <!ENTITY .tooltip "">  -->
+<!ENTITY Integral.tooltiptext "Integral">
+<!ENTITY DoubleIntegral.tooltiptext "Double integral">
+<!ENTITY TripleIntegral.tooltiptext "Triple integral">
+<!ENTITY QuadrupleIntegral.tooltiptext  "Quadruple integral">
+<!ENTITY MultipleIntegral.tooltiptext "Multiple integral">
+<!ENTITY ContourIntegral.tooltiptext "Contour integral">
+<!ENTITY NArySum.tooltiptext "N-ary Summation">
+<!ENTITY NAryProd.tooltiptext "N-ary Product">
+<!ENTITY NAryIntersect.tooltiptext "N-ary Intersection">
+<!ENTITY NAryLogicalAnd.tooltiptext "N-ary Logical And">
+<!ENTITY CircledPlus.tooltiptext "Circled plus">
+<!ENTITY CircledDot.tooltiptext "Circled dot">
+<!ENTITY SquareCup.tooltiptext "Square Cup">
+<!ENTITY NAryCoProd.tooltiptext "N-ary Coproduct">
+<!ENTITY NAryUnion.tooltiptext "N-ary Union">
+<!ENTITY NAryLogicalOr.tooltiptext "N-ary Logical Or">
+<!ENTITY CircledTimes.tooltiptext "Circled times">
+<!ENTITY MultisetUnion.tooltiptext "Multiset union">
