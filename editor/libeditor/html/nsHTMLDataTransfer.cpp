@@ -1167,7 +1167,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   else
   {
     res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
-      &outOffset, PR_FALSE, &outLeftNode, &outRightNode); 
+      &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
     FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
     FixMathematics(outRightNode, PR_FALSE, PR_FALSE);
     if (outRightNode) mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);

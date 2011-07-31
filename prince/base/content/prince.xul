@@ -20,7 +20,7 @@
 # All DTD information is stored in a separate file so that it can be shared by
 # hiddenWindow.xul.
 #include prince-doctype.inc
-
+<!--JLF - Localization pass on 6/28/2011-->
 <window
   id    = "prince"
   title = "&prince.title;"
@@ -62,14 +62,15 @@
   <popup id="sidebarPopup"/>
 
   <toolbox class="toolbox-top" id="EditorToolbox">
-# The entire main menubar is placed into browser-menubar.inc, so that it can be shared by 
+# The entire main menubar is placed into prince-menubar.inc, so that it can be shared by 
 # hiddenWindo#w.xul.
 #include prince-menubar.inc 
 #include prince-toolbars.inc
   </toolbox>
   
 <sidebaritems id="sidebaritems">
-  <!--sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/whatsnew/whatsnew_sidebar.html" title="MSI What's new"/ -->
+<!--JLF with BBM-->
+  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/beta/What%27s%20new%20sidebar.xhtml" title="MSI What's new"/>
   <!--sidebaritem id="sidebaritem-ajarfile"   name="jarfile" src="jar:file:///C:/Documents and Settings/Barry/My Documents/SWPDocs/guided tour of prince.sci!/main.xhtml" title="Guide"/-->
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="&FragmentsSidebar.title;"/>
   <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="&BookmarksSidebar.title;"/>                              
@@ -112,7 +113,7 @@
   <splitter id="splitter2" collapse="after" resizeafter="closest" persist="state">
     <grippy/>
   </splitter>
-  <sidebar id="sidebar2" sidebaritems="" collapsed="true" persist="sidebaritems collapsed"/>
+  <sidebar id="sidebar2" sidebaritems="MSI" collapsed="false" persist="sidebaritems collapsed"/>
 </hbox><!-- sidebar-parent -->
 
   <statusbar class="chromeclass-status" id="status-bar" hidden="false">

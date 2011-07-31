@@ -73,7 +73,7 @@
 
 <!-- layout of the Symbol keyboard -->
 
-  <keytable id="symbol" name="symbol" keycount="50" keytype="script">
+  <keytable id="symbol" name="symbol" keycount="70" keytype="script">
     <key name="1">insertMathSymbol("&rarr;");</key>
     <key name="!">insertMathSymbol("&rArr;");</key>
     <key name="2">insertMathSymbol("&uarr;");</key>
@@ -112,7 +112,7 @@
     <key name="[">msiGoDoCommand("cmd_MSIbracketCmd");</key>
     <key name="{">msiGoDoCommand("cmd_MSIbraceCmd");</key> 
     <key name="]">msiGoDoCommand("cmd_MSIbracketCmd");</key>
-    <key name="}">msiGoDoCommand("cmd_MSIbraceCmd");</key>-->
+    <key name="}">msiGoDoCommand("cmd_MSIbraceCmd");</key>
     <key name="a">insertMathSymbol("&angle;");</key>
     <key name="A">insertMathSymbol("&ForAll;");</key>
     <key name="s">insertMathSymbol("&sum;");</key>

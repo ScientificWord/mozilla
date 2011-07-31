@@ -14,7 +14,8 @@
 <!ENTITY % docformatdialogDTD SYSTEM "chrome://prince/locale/typesetDocFormat.dtd" >
 %docformatdialogDTD;
 ]>
-
+<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - need to set correct initial width/height-->
 <dialog id="SectionVspaceDlg"
   title="&vspaceWindowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -22,7 +23,9 @@
   ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
   onload="startUp();"
-  persist="left top width height"
+  screenX="40"
+  screenY="40"
+  persist="screenX screenY width height"
   >
 
   <!-- Scripts specific to this dialog -->

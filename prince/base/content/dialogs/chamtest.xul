@@ -10,7 +10,7 @@
 <!ENTITY % customizeToolbarDTD SYSTEM "chrome://global/locale/customizeToolbar.dtd">
   %customizeToolbarDTD;
 ]>
-
+<!-- JLF to verify if this is used-->
 <dialog id="ChamTestWindow"
         title="ChamTestWindow" modal="false"
         onload = "Startup()" onclick="offButtonClick();"

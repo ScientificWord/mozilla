@@ -9,6 +9,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/passes.dtd" >
 %dialogDTD;
 ]>
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&LaTeXPasses;" 
     id="passesDlg"
@@ -20,6 +21,8 @@
     onload="Init();"
     width="400px"
     height="200px"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height"
     >
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
@@ -29,7 +32,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/passes.js"/>
   
   <label hidden="true" id="doneMessage" value="&doneMessage.label;"/>
-  <label hidden="true" id="passStatusTemplate" value="Making pass #n of #m."/>
+  <label hidden="true" id="passStatusTemplate" value="&makingpassnumber.label;"/>
   <label id="passStatus" value = ""/>
   <separator/>
   <hbox>
@@ -37,7 +40,7 @@
       <label control="numpasses" accesskey="&passes.accesskey;" value="&newnumpass;"/>
       <textbox id="numpasses" type="number" persist="width" style="width:25px;" value="3" onchange="newPasses();"/>
       <separator/>
-      <description id="oktocontinue" value="Press the OK button to continue" hidden="true"/>
+      <description id="oktocontinue" value="&oktocontinue.label;" hidden="true"/>
     </vbox>
     <vbox flex="1"/>
   </hbox>

@@ -1,0 +1,25 @@
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label  "Index Entry">
+<!ENTITY primary.label "Primary Index Entry">
+<!ENTITY primary.accesskey  "P">
+<!ENTITY prispeccheckbox.label "Use special appearance for primary entry">
+<!ENTITY secondary.label  "Secondary Index Entry">
+<!ENTITY secondary.accesskey  "S">
+<!ENTITY secspeccheckbox.label "Use special appearance for secondary entry">
+<!ENTITY tertiary.label "Tertiary Index Entry">
+<!ENTITY tertiary.accesskey "T">
+<!ENTITY tertspeccheckbox.label "Use special appearance for tertiary entry">
+<!ENTITY locatorCaption.label "Locator">
+<!ENTITY pagenumberRadio.label "Page number">
+<!ENTITY pagenumberRadio.accesskey "A">
+<!ENTITY indexcrossreferenceRadio.label  "Index cross-reference">
+<!ENTITY indexcrossreferenceRadio.accesskey  "R">
+<!ENTITY normalRadio.label  "Normal">
+<!ENTITY normalRadio.accesskey  "N">
+<!ENTITY boldRadio.label  "Bold">
+<!ENTITY boldRadio.accesskey  "B">
+<!ENTITY italicsRadio.label "Italics">
+<!ENTITY italicsRadio.accesskey "I">
+<!ENTITY crossreference.label "Cross-references(n)">
+<!ENTITY crossreference.accesskey "C">

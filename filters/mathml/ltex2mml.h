@@ -152,6 +152,8 @@ private :
                             U16& tex_nodes_done,
                             TNODE** out_of_flow_list );
 
+  TNODE*    PassThru2MML(TNODE* node, TNODE** out_of_flow_list);
+
   TNODE*    TextInMath2MML( TNODE* text_node,
 								TNODE** ppVS_list,
   								TCI_BOOL no_line_breaks,

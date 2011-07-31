@@ -14,13 +14,17 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Decorations.dtd">
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog title="&windowTitle.label;"
     id="DecorationsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
+    width="470"
+    height="290"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -53,7 +57,7 @@
         align="baseline" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsAboveButtonGroup.label;" accesskey="&decorationsAboveButtonGroup.accesskey;"/>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x00AF;" tooltiptext="Macron">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x00AF;" tooltiptext="&Macron.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -69,7 +73,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2190;" tooltiptext="Leftwards Arrow">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2190;" tooltiptext="&LeftwardsArrow.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -85,7 +89,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2192;" tooltiptext="Rightwards Arrow">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2192;" tooltiptext="&RightwardsArrow.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -101,7 +105,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2194;" tooltiptext="Left Right Arrow">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2194;" tooltiptext="&LeftRightArrow.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -117,7 +121,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#xFE37;" tooltiptext="Vertical Left Curly Bracket">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#xFE37;" tooltiptext="&VerticalLeftCurlyBracket.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -133,7 +137,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x0302;" tooltiptext="Combining Circumflex Accent">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x0302;" tooltiptext="&CombiningCircumflexAccent.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -149,7 +153,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x02DC;" tooltiptext="Small Tilde">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x02DC;" tooltiptext="&SmallTilde.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -165,7 +169,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="label">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="label" tooltiptext="&LabelAbove.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -196,7 +200,7 @@
         align="baseline" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsBelowButtonGroup.label;" accesskey="&decorationsBelowButtonGroup.accesskey;"/>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;" tooltiptext="&Underline.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -212,7 +216,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2190;" tooltiptext="Leftwards Arrow">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2190;" tooltiptext="&LeftwardsArrow.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -228,7 +232,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2192;" tooltiptext="Rightwards Arrow">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2192;" tooltiptext="&RightwardsArrow.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -244,7 +248,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2194;" tooltiptext="Left Right Arrow">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2194;" tooltiptext="&LeftRightArrow.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -260,7 +264,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#xFE38;" tooltiptext="Vertical Right Curly Bracket">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#xFE38;" tooltiptext="&VerticalRightCurlyBracket.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -276,7 +280,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="label">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="label" tooltiptext="&LabelBelow.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>

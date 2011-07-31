@@ -310,7 +310,8 @@
   <sub ctx="math" tp="sc"><pattern>uV</pattern><data>insertMathunit('V','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uWa</pattern><data>insertMathunit('W','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uWb</pattern><data>insertMathunit('Wb','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('°','true');</data></sub>
+  <!-- <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('°','true');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('deg','true');</data></sub>
   
 
   <sub ctx="math" tp="sc"><pattern>assume</pattern><data>insertMathname('assume', 'true');</data></sub>

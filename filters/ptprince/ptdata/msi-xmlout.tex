@@ -291,9 +291,6 @@
 
 
 
-%\def\ref#1{\msiopentag{ref}{<a>}#1\msiclosetag{ref}{</a>}}
-%\def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
-
 \def\pagenumbering#1{%
    \msiopentag{latexstyleb}{<latexstyleb>}%
       \msiopentag{styleprop}{<styleprop>}%
@@ -606,11 +603,11 @@
      \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
      \msiclosetag[mml][</mml:math>]
   ]
-  \gdef\msi@mtabular#1#2\end{tabular}[%
-     \egroup
-     \@make@braces@normal
-     \msitag[\begin{tabular}{#1}#2\end{tabular}]
-  ]
+  %\gdef\msi@mtabular#1#2\end{tabular}[%
+  %   \egroup
+  %   \@make@braces@normal
+  %   \msitag[\begin{tabular}{#1}#2\end{tabular}]
+  %]
   \gdef\@scan@array#1\end{array}[%
      \egroup
      \@make@braces@normal
@@ -682,6 +679,8 @@
 \def\msi@end@array{\string\end{array}}
 
 
+
+
 \def\MSIEqnarrayLikeEnvironment#1{%
   \@namedef{msi@begin@#1}{\bgroup\msi@dollar=0\relax$$\string\begin{#1}}%
   \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}
@@ -733,10 +732,10 @@
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
 
-
 \def\msi@begin@tabularA[#1]#2{%
    \ifmmode
-      \def\donext{\@make@braces@other\relax\msi@mtabular{#2}}%
+      %\def\donext{\@make@braces@other\relax\msi@mtabular{#2}}%
+      \string\begin{tabular}{#1}%
    \else
       \def\donext{%
          \begingroup
@@ -752,12 +751,18 @@
    \donext
 }
 
+
 \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
 
-\def\msi@end@tabular{\crcr
-     \egroup %halign
-   \egroup   %hbox
- \endgroup   %donext
+\def\msi@end@tabular{%
+  \ifmmode
+    \string\end{tabular}
+  \else
+        \crcr
+       \egroup %halign
+     \egroup   %hbox
+   \endgroup   %donext
+  \fi
 }
 
 \def\cline#1{}
@@ -1149,7 +1154,15 @@
 
 \def\text#1{\msitag{\text{#1}}}
 
-\def\vspace#1{%
+\def\vspace{%
+  \@ifnextchar*{\vspaceStar}{\vspaceB}}
+
+\def\vspaceStar#1#2{%
+  \@starredtrue
+  \vspaceB{#2}}
+
+
+\def\vspaceB#1{%
    \ifmmode
      \string\vspace\@brace{#1}%
    \else
@@ -1327,7 +1340,10 @@
 
 %\MSIMathQuote{\\} %% may need to hard-code this one:
 
-\def\\{\ifmmode\string\\\else\msitag{<br/>}\fi}
+\def\\{\@ifnextchar[{\@linebrk}{\@linebrk[0pt]}}
+
+
+\def\@linebrk[#1]{\ifmmode\string\\\else\msitag{<br/>}\fi}
 
 %% Temporary until prince can read xml
 

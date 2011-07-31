@@ -42,6 +42,7 @@ table {
   border-width: 1px;
 }
 */
+
 hspace {
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
   display: inline-block;
@@ -430,6 +431,23 @@ section[open="false"]>button.expander {
   display: inline;
 }
 
+subsection>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+subsection[open="false"]>sectiontitle {
+  display: block;
+}
+
+subsection>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+
+subsection>sectiontitle {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
 subsection[nonum="true"] {
   counter-increment: none;
 }
@@ -455,6 +473,23 @@ subsubsection[nonum="true"]>*:first-child:before {
 
 subsubsection[nonum="true"]>sectiontitle:before {
   content: "";
+}
+
+
+subsubsection[open="false"]>* {
+  display: none;
+}
+
+subsubsection[open="false"]>*:first-child {
+  display: block;
+}
+
+subsubsection[open="false"]>sectiontitle {
+  display: block;
+}
+
+subsubsection[open="false"]>button.expander {
+  display: inline;
 }
 
 
@@ -549,7 +584,6 @@ preface {
   -moz-border-radius: 20px;
 }
 
-
 *[showinvis="true"] preface:before {
   content: "Preface";
   display: block;
@@ -558,38 +592,23 @@ preface {
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] msibr[hard]:before {
+
+/* ordinary breaks -- emulate behavior of <br/>*/
+
+msibr:before {
+  content: "\A";
+  white-space: pre;
+  -moz-user-select: -moz-none;
+} 
+
+*[showinvis="true"] msibr:before {
   content: "\AC\A";
   white-space: pre;
   color: green;
   -moz-user-select: -moz-none;
 }
 
-msibr[hard]:before {
-  content: "\A";
-  white-space: pre;
-}
-
-msibr:before {
-  content: "\A0";
-}
-
-
-
-*[showinvis="true"] msibr:before {
-  content: "\A0";
-}
-
-
-/* ordinary breaks -- emulate behavior of <br/>*/
-
-msibr[hard]:before {
-  content: "\A";
-  white-space: pre;
-  -moz-user-select: -moz-none;
-} 
-
-
+mak
 /* Selection rules */
 
 body {

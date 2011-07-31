@@ -7,7 +7,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/texbuttoncontents.dtd">
-
+<!--JLF - Localization pass on 6/29/2011-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&windowTitle.label;"
     buttons="accept,cancel"

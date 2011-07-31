@@ -8,7 +8,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorTableProperties.dtd">
-
+<!-- JLF to verify-->
 <dialog title="&tableWindow.title;"
     id="msiEdTablePropsDlg"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -165,28 +165,28 @@
               </rows>
             </grid>
           </groupbox>
-          <groupbox><caption label="Cell content alignment"/>
+          <groupbox><caption label="&CellContentAlign.label;"/>
             <grid>                  
               <columns><column/><column/></columns>
               <rows>
                 <row align="center">
-                  <label value="Horizontal"/>
+                  <label value="&Horizontal.label;"/>
                   <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
                     <menupopup>
-                      <menuitem label="left"  value="left"/>
-                      <menuitem label="center" value="center"/>
-                      <menuitem label="right" value="right"/>
+                      <menuitem label=h"AlignLeft.label;"  value="left"/>
+                      <menuitem label="hAlignCenter.label;" value="center"/>
+                      <menuitem label="hAlignRight.label;" value="right"/>
                     </menupopup>
                   </menulist>
 
                 </row>
                 <row align="center">
-                  <label value="Vertical"/>
+                  <label value="&Vertical.label;"/>
                   <menulist id="vAlignChoices"  oncommand="AlignmentChanged('RowAlignRadioGroup');">
                     <menupopup>
-                      <menuitem label="top"  value="top"/>
-                      <menuitem label="center" value="center"/>
-                      <menuitem label="bottom" value="bottom"/>
+                      <menuitem label="&vAlignTop.label;"  value="top"/>
+                      <menuitem label="&vAlignCenter.label;" value="center"/>
+                      <menuitem label="&vAlignBottom.label;" value="bottom"/>
                     </menupopup>
                   </menulist>
                 </row>

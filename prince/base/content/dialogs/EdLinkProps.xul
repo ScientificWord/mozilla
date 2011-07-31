@@ -46,7 +46,7 @@
 <!-- ?xul-overlay href="chrome://prince/content/EdDialogOverlay.xul"? --> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/EditorLinkProperties.dtd">
-
+<!--JLF - Localization pass on 6/28/2011-->
 <dialog id="linkDlg" title="&windowTitle.label;"
    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
    buttons="accept,cancel,help"
@@ -56,8 +56,8 @@
    ondialoghelp="return onAccept();"
    screenX="40"
    screenY="40"
-   width="525"
-   height="375"
+   width="535"
+   height="500"
    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>

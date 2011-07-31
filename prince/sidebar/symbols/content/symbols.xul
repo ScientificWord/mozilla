@@ -78,51 +78,51 @@
           </columns>
           <rows>
             <row>
-              <toolbarbutton id = "symbolalpha"/>
+              <toolbarbutton id ="symbolalpha"/>
               <toolbarbutton id="symbolbeta" />
               <toolbarbutton id="symbolgamma" />
               <toolbarbutton id="symboldelta" />
-              <toolbarbutton id="symbolvarepsilon" />
+              <toolbarbutton id="symbolepsilon" />
             </row>
             <row>
+              <toolbarbutton id="symbolvarepsilon" />
               <toolbarbutton id="symbolzeta" />
               <toolbarbutton id="symboleta" />
               <toolbarbutton id="symboltheta" />
-              <toolbarbutton id="symboliota" />
-              <toolbarbutton id="symbolkappa" />
+              <toolbarbutton id="symbolvartheta" />
             </row>
             <row>
+              <toolbarbutton id="symboliota" />
+              <toolbarbutton id="symbolkappa" />
               <toolbarbutton id="symbollambda" />
               <toolbarbutton id="symbolmu" />
               <toolbarbutton id="symbolnu" />
+            </row>
+            <row>
               <toolbarbutton id="symbolxi" />
-              <toolbarbutton id="symbolomicron" />
-            </row>
-            <row>
               <toolbarbutton id="symbolpi" />
+              <toolbarbutton id="symbolvarpi" />
               <toolbarbutton id="symbolrho" />
-              <toolbarbutton id="symbolvarsigma" />
               <toolbarbutton id="symbolsigma" />
-              <toolbarbutton id="symboltau" />
             </row>
             <row>
+              <toolbarbutton id="symbolvarsigma" />
+              <toolbarbutton id="symboltau" />
               <toolbarbutton id="symbolupsilon" />
+              <toolbarbutton id="symbolphi" />
               <toolbarbutton id="symbolvarphi" />
+            </row>
+            <row>
               <toolbarbutton id="symboltextchi" />
               <toolbarbutton id="symbolpsi" />
               <toolbarbutton id="symbolomega" />
-            </row>
-            <row>
-              <toolbarbutton id="symbolvartheta" />
-              <toolbarbutton id="symbolphi" />
-              <toolbarbutton id="symbolvarpi" />
-              <toolbarbutton id="symbolstigma" />
               <toolbarbutton id="symbolvarkappa" />
+              <toolbarbutton id="symbolvarrho" />
             </row>
             <row>
-              <toolbarbutton id="symbolvarrho" />
-              <toolbarbutton id="symbolepsilon" />
               <toolbarbutton id="symbolbackepsilon" />
+              <toolbarbutton id="symbolomicron" />
+              <toolbarbutton id="symbolstigma" />
             </row>
           </rows>
         </grid>
@@ -132,11 +132,11 @@
      <tabpanel id="symbol_ucGreek" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -149,12 +149,12 @@
             <row>
               <toolbarbutton id="symbolPi" />
               <toolbarbutton id="symbolSigma" />
+              <toolbarbutton id="symbolUpsilon" />
               <toolbarbutton id="symbolPhi" />
               <toolbarbutton id="symbolPsi" />
-              <toolbarbutton id="symbolOmega" />
             </row>
             <row>
-              <toolbarbutton id="symbolUpsilon" />
+              <toolbarbutton id="symbolOmega" />
               <toolbarbutton id="symboldigamma" />
             </row>
           </rows>
@@ -164,12 +164,12 @@
 <!-- BINARY OPERATIONS -->
     	<tabpanel id="symbol_binOp"  mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+           <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -269,12 +269,12 @@
         <!-- BINARY RELATIONS -->
       <tabpanel id="symbol_binRel" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+        <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -429,12 +429,12 @@
 <!-- NEGATED RELATIONS -->
       <tabpanel id="symbol_negRel" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+        <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -454,7 +454,7 @@
             <row>
               <toolbarbutton id="symbollneqq" />
               <toolbarbutton id="symbolgneqq" />
-              <toolbarbutton id="symbolgnsim" />
+            <!--  <toolbarbutton id="symbolgnsim" />-->
               <toolbarbutton id="symbolnleqslant" /> 
               <toolbarbutton id="symbolngeqslant" /> 
             </row>
@@ -535,12 +535,12 @@
 <!-- ARROWS -->
       <tabpanel id="symbol_arrow" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+         <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -643,11 +643,11 @@
       <tabpanel id="symbol_misc" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -760,22 +760,22 @@
       <!-- DELIMITERS -->
       <tabpanel id="symbol_delims" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+         <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
-            <row>
+            <row height="35px">
               <toolbarbutton id="symbollfloor" />
               <toolbarbutton id="symbolrfloor" />
               <toolbarbutton id="symbollceil" />
               <toolbarbutton id="symbolrceil" />
               <toolbarbutton id="symbollangle" />
             </row>
-            <row>
+            <row height="35px">
               <toolbarbutton id="symbolrangle" />
               <toolbarbutton id="symbolulcorner" />
               <toolbarbutton id="symbolurcorner" />
@@ -790,11 +790,11 @@
       <tabpanel id="symbol_latin1" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -935,12 +935,12 @@
 <!-- LATIN EXTENDED -->
       <tabpanel id="symbol_latinextended" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+         <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
@@ -1128,12 +1128,12 @@
 <!-- PUNCTUATION -->
       <tabpanel id="symbol_punctuation" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
-          <columns>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
+         <columns>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
+            <column width="29px"/>
           </columns>
           <rows>
             <row>
