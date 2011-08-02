@@ -173,9 +173,9 @@
                   <label value="&Horizontal.label;"/>
                   <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
                     <menupopup>
-                      <menuitem label=h"AlignLeft.label;"  value="left"/>
-                      <menuitem label="hAlignCenter.label;" value="center"/>
-                      <menuitem label="hAlignRight.label;" value="right"/>
+                      <menuitem label="&hAlignLeft.label;"  value="left"/>
+                      <menuitem label="&hAlignCenter.label;" value="center"/>
+                      <menuitem label="&hAlignRight.label;" value="right"/>
                     </menupopup>
                   </menulist>
 
