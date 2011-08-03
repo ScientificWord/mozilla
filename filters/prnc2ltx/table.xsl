@@ -457,6 +457,7 @@
   <xsl:attribute name="col"><xsl:value-of select="@col" /></xsl:attribute>
   <xsl:attribute name="cellID"><xsl:value-of select="@cellID" /></xsl:attribute>
   <xsl:attribute name="alignment"><xsl:value-of select="@alignment" /></xsl:attribute>
+  <xsl:attribute name="continuation"><xsl:value-of select="@continuation" /></xsl:attribute>
 </xsl:attribute-set>
 
 <!--The point of this is to resolve linestyle conflicts at shared edges and to translate line style specifiers from HTML form
@@ -814,15 +815,21 @@
   <xsl:param name="numCols" select="1" />
   <xsl:param name="cellId" />
   <xsl:param name="alignment" />
+  <xsl:param name="continuation" />
   <xsl:text>(</xsl:text>
   <xsl:value-of select="$startRow" />
   <xsl:text>,</xsl:text>
   <xsl:value-of select="$startCol" />
   <xsl:text>)(</xsl:text>
-  <xsl:if test="$cellId">
-    <xsl:text>#</xsl:text>
-    <xsl:value-of select="$cellId" />
-  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="$cellId and string-length($cellId)">
+      <xsl:text>#</xsl:text>
+      <xsl:value-of select="$cellId" />
+    </xsl:when>
+    <xsl:when test="$continuation and string-length($continuation)">
+      <xsl:value-of select="$continuation" /><xsl:text>cont</xsl:text>
+    </xsl:when>
+  <xsl:choose>
   <xsl:text>)(</xsl:text>
   <xsl:if test="$alignment">
     <xsl:value-of select="$alignment" />
@@ -861,6 +868,7 @@
       <xsl:with-param name="startCol" select="$startCol" />
       <xsl:with-param name="numRows" select="number($numRows) - 1" />
       <xsl:with-param name="numCols" select="1" />
+      <xsl:with-param name="continuation" select="row" />
     </xsl:call-template>
   </xsl:if>
   <xsl:if test="number($numCols) &gt; 1">
@@ -873,6 +881,7 @@
       <xsl:with-param name="startCol" select="number($startCol) + 1" />
       <xsl:with-param name="numRows" select="$numRows" />
       <xsl:with-param name="numCols" select="number($numCols) - 1" />
+      <xsl:with-param name="continuation" select="col" />
     </xsl:call-template>
   </xsl:if>
 </xsl:template>
@@ -894,9 +903,17 @@
     <xsl:element name="cellData">
       <xsl:attribute name="row"><xsl:value-of select="substring-before($rowStr, ',')" /></xsl:attribute>
       <xsl:attribute name="col"><xsl:value-of select="substring-before($colStr, ')')" /></xsl:attribute>
-      <xsl:if test="starts-with($idStr, '#')">
-        <xsl:attribute name="cellID"><xsl:value-of select="substring-after(substring-before($idStr, ')'), '#')" /></xsl:attribute>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="starts-with($idStr, '#')">
+          <xsl:attribute name="cellID"><xsl:value-of select="substring-after(substring-before($idStr, ')'), '#')" /></xsl:attribute>
+        </xsl:when>
+        <xsl:when test="starts-with($idStr, 'rowcont)')">
+          <xsl:attribute name="continuation"><xsl:text>row</xsl:text></xsl:attribute>
+        </xsl:when>
+        <xsl:when test="starts-with($idStr, 'colcont)')">
+          <xsl:attribute name="continuation"><xsl:text>col</xsl:text></xsl:attribute>
+        </xsl:when>
+      </xsl:choose>
       <xsl:if test="not(starts-with($alignStr, ')'))">
         <xsl:attribute name="alignment"><xsl:value-of select="substring-before($alignStr, ')')" /></xsl:attribute>
       </xsl:if>
