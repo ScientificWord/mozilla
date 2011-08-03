@@ -13,8 +13,7 @@
     <xsl:call-template name="collectCellData" />
   </xsl:variable>
   <xsl:variable name="cellData" select="exsl:node-set($cellData.tf)"/>
-\begin{tabulary}
-  <xsl:choose>
+\begin{tabulary}<xsl:choose>
     <xsl:when test="@width &gt; 0">{<xsl:value-of select="@width"/>pt}</xsl:when>
     <xsl:otherwise>{500pt}</xsl:otherwise>
   </xsl:choose>
@@ -35,12 +34,14 @@
   </xsl:variable>
   <xsl:variable name="preambleData" select="exsl:node-set($preambleData.tf)" />
 
+  <xsl:text>{</xsl:text>
   <xsl:for-each select="$preambleData/columnData">
     <xsl:call-template name="outputPreamble">
       <xsl:with-param name="columnData" select="." />
       <xsl:with-param name="whichCol" select="position() - 1" />
     </xsl:call-template>
   </xsl:for-each>
+  <xsl:text>}</xsl:text>
 
   <xsl:text xml:space="preserve">
 </xsl:text>
@@ -51,7 +52,7 @@
   <xsl:text xml:space="preserve">
 </xsl:text>
   <xsl:for-each select="$cellData/rowData">
-    <xsl:for-each select="./cellData[@cellID]">
+    <xsl:for-each select="./cellData[@cellID and string-length(normalize-space(@cellID))]">
       <xsl:call-template name="outputCell">
         <!-- with-param name="theCell" select="key('cellKey',@cellID)" / -->
         <xsl:with-param name="theCell" select="$theTable//*[(local-name()='td') or (local-name()='th')][generate-id(.)=current()/@cellID]" />
