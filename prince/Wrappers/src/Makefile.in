@@ -8,21 +8,23 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+
 MODULE		      = wrappers
 MODULE_NAME     = wrappers
 LIBRARY_NAME	  = wrappers
 EXPORT_LIBRARY  = 1
 SHORT_LIBNAME	  = wrappers
 IS_COMPONENT    = 1
-LD_LIBRARY_PATH="../xulrunner:../MuPAD/platform/bin:$$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH += "../xulrunner:../MuPAD/platform/bin:$$LD_LIBRARY_PATH"
+
 
 
 REQUIRES = \
-  compute \
-  string \
-  xpcom \
-  editor \
-  $(NULL)
+	compute \
+	string \
+	xpcom \
+	editor \
+	$(NULL)
 
 CPPSRCS = \
   msiMuPADEngineWrapper.cpp \
@@ -30,12 +32,6 @@ CPPSRCS = \
 #  msiMuPADEngineWrapperModule.cpp \
  
 
-
-#TESTCPPSRCS	= msiTestSample2.cpp
-#
-#CPPSRCS += $(TESTCPPSRCS)
-#
-#SIMPLE_PROGRAMS	= $(TESTCPPSRCS:.cpp=$(BIN_SUFFIX))
 
 include $(topsrcdir)/config/config.mk
 
@@ -45,7 +41,7 @@ SHARED_LIBRARY_LIBS += \
 	$(DIST)/../../xulrunner/toolkit/components/Compute/Engines/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
 	$(DIST)/../../xulrunner/toolkit/components/Compute/libtci/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
 	$(DIST)/../../xulrunner/toolkit/components/Compute/Engines/MuPAD/$(LIB_PREFIX)mupwrapperlib_s.$(LIB_SUFFIX) \
-  $(DIST)/../../xulrunner/xpcom/string/src/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
+	$(DIST)/../../xulrunner/xpcom/string/src/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
 	$(NULL)
 
 ifeq ($(OS_ARCH),WINNT)
@@ -61,8 +57,10 @@ SHARED_LIBRARY_LIBS += \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)z.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)xmlparser.$(LIB_SUFFIX) \
 	$(NULL)
 endif
+
 ifeq ($(OS_ARCH),Darwin)
 SHARED_LIBRARY_LIBS += \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
@@ -70,6 +68,7 @@ SHARED_LIBRARY_LIBS += \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)z.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)xmlparser.$(LIB_SUFFIX) \
 	$(NULL)
 endif
 
