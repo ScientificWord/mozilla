@@ -304,7 +304,8 @@ function UseCSSForCellProp(propName)
   switch(propName)
   {
     case "border-style":
-      return (!gIsMatrix);
+//      return (!gIsMatrix);
+      return false;
     break;
 
     case "width":
@@ -1752,7 +1753,7 @@ function ApplyTableAttributes()
     }
     else 
     {
-      if (pos == "inline") doSetStyleAttr("display", "inline");
+      if (pos == "inline") doSetStyleAttr("display", "inline-table");
       else 
       {
         doSetStyleAttr("display", "block");
@@ -1760,7 +1761,7 @@ function ApplyTableAttributes()
       }
     }
   }
-  else doSetStyleAttr("display", "inline");
+  else doSetStyleAttr("display", "inline-table");
   if (!bEmptyStyle)
     theStyleString = globalTableElement.getAttribute("style");
   if (theStyleString && theStyleString.length)
@@ -2430,6 +2431,20 @@ function ApplyAttributesToOneCell(destElement, nRow, nCol)
     SetAnAttribute(destElement, "width", theVal);
   }
 
+  var theSide;
+  for (var ix = 0; ix < gCellChangeData.border.style.length; ++ix)
+  {
+    theSide = gCellChangeData.border.style[ix];
+    if (theSide == "all")
+      SetAnAttribute(destElement, "lines", gCollatedCellData.border.style[theSide]);
+    else
+      SetAnAttribute(destElement, "line-" + theSide, gCollatedCellData.border.style[theSide]);
+  }
+
+  if (gCellChangeData.align.halign)
+    SetAnAttribute(destElement, "align", gCollatedCellData.align.halign);
+  if (gCellChangeData.align.valign)
+    SetAnAttribute(destElement, "valign", gCollatedCellData.align.valign);
 
   DoStyleChangesForACell(destElement);
 
@@ -3111,12 +3126,24 @@ function getCellDataForCell(aCell, nRow, nCol)
   else
   {
     cellData.align = { halign : "", valign : ""};
-    aValue = computedStyle.getPropertyCSSValue("vertical-align");
+    aValue = aCell.getAttribute("valign");
     if (aValue)
-      cellData.align.valign = aValue.getStringValue();
-    aValue = computedStyle.getPropertyCSSValue("text-align");
+      cellData.align.valign = aValue;
+    else
+    {
+      aValue = computedStyle.getPropertyCSSValue("vertical-align");
+      if (aValue)
+        cellData.align.valign = aValue.getStringValue();
+    }
+    aValue = aCell.getAttribute("align");
     if (aValue)
-      cellData.align.halign = interpretCSSHAlignValue(aValue.getStringValue());
+      cellData.align.halign = aValue;
+    else
+    {
+      aValue = computedStyle.getPropertyCSSValue("text-align");
+      if (aValue)
+        cellData.align.halign = interpretCSSHAlignValue(aValue.getStringValue());
+    }
   }
   
   aValue = computedStyle.getPropertyCSSValue("white-space");
@@ -3145,9 +3172,13 @@ function getBorderDataForCell(aCell, nRow, nCol, elementUnitsList, computedStyle
     for (var ix = 0; ix < gBorderSides.length; ++ix)
     {
       attrName = gBorderSides[ix];
-      aValue = computedStyle.getPropertyCSSValue("border-" + attrName + "-style");
-      if (aValue)
-        borderData.style[attrName] = aValue.getStringValue();
+      aValue = aCell.getAttribute("line-" + attrName);
+      if (!aValue)
+      {
+        aValue = computedStyle.getPropertyCSSValue("border-" + attrName + "-style");
+        if (aValue)
+          borderData.style[attrName] = aValue.getStringValue();
+      }
     }
   }
   for (ix = 0; ix < gBorderSides.length; ++ix)
