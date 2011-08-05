@@ -13,8 +13,7 @@
     <xsl:call-template name="collectCellData" />
   </xsl:variable>
   <xsl:variable name="cellData" select="exsl:node-set($cellData.tf)"/>
-\begin{tabulary}
-  <xsl:choose>
+\begin{tabulary}<xsl:choose>
     <xsl:when test="@width &gt; 0">{<xsl:value-of select="@width"/>pt}</xsl:when>
     <xsl:otherwise>{500pt}</xsl:otherwise>
   </xsl:choose>
@@ -35,12 +34,14 @@
   </xsl:variable>
   <xsl:variable name="preambleData" select="exsl:node-set($preambleData.tf)" />
 
+  <xsl:text>{</xsl:text>
   <xsl:for-each select="$preambleData/columnData">
     <xsl:call-template name="outputPreamble">
       <xsl:with-param name="columnData" select="." />
       <xsl:with-param name="whichCol" select="position() - 1" />
     </xsl:call-template>
   </xsl:for-each>
+  <xsl:text>}</xsl:text>
 
   <xsl:text xml:space="preserve">
 </xsl:text>
@@ -51,10 +52,10 @@
   <xsl:text xml:space="preserve">
 </xsl:text>
   <xsl:for-each select="$cellData/rowData">
-    <xsl:for-each select="./cellData[@cellID]">
+    <xsl:for-each select="./cellData[(@cellID and string-length(normalize-space(@cellID))) or (@continuation='row')]">
       <xsl:call-template name="outputCell">
-        <!-- with-param name="theCell" select="key('cellKey',@cellID)" / -->
         <xsl:with-param name="theCell" select="$theTable//*[(local-name()='td') or (local-name()='th')][generate-id(.)=current()/@cellID]" />
+        <xsl:with-param name="continuation" select="@continuation" />
         <xsl:with-param name="theCellData" select="." />
         <xsl:with-param name="colData" select="$preambleData" />
         <xsl:with-param name="positionInRow" select="position()" />
@@ -380,73 +381,84 @@
 
 <xsl:template name="outputCell">
   <xsl:param name="theCell" />
+  <xsl:param name="continuation" />
   <xsl:param name="theCellData" />
   <xsl:param name="colData" />
   <xsl:param name="positionInRow" select="1" />
-  <xsl:variable name="columnspan">
-    <xsl:choose>
-      <xsl:when test="$theCell/@colspan" ><xsl:number value="$theCell/@colspan"/></xsl:when>
-      <xsl:otherwise>1</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:variable name="needMultiCol">
-    <xsl:choose>
-      <xsl:when test="$columnspan &gt; 1" >1</xsl:when>
-      <xsl:when test="$theCell/@rowspan and (number($theCell/@rowspan) &gt; 1)" >0</xsl:when>
-      <xsl:otherwise>
-        <xsl:variable name="colLeftLine" select="normalize-space($colData/columnData[number($theCellData/@col)]/@lineSpec)" />
-        <xsl:variable name="colRightLine" select="normalize-space($colData/columnData[number($theCellData/@col) + 1]/@lineSpec)" />
-        <xsl:variable name="colAlign" select="normalize-space($colData/columnData[number($theCellData/@col) + 1]/@alignment)" />
-        <xsl:choose>
-          <xsl:when test="not($theCellData/@borderLeft = $colLeftLine)">1</xsl:when>
-          <xsl:when test="not($theCellData/@borderRight = $colRightLine)">1</xsl:when>
-          <xsl:when test="not($theCellData/@alignment = $colAlign)">1</xsl:when>
-          <xsl:otherwise>0</xsl:otherwise>
-        </xsl:choose>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
   <xsl:if test="$positionInRow &gt; 1">
     <xsl:text xml:space="preserve"> &amp; </xsl:text>
   </xsl:if>
-  <xsl:choose>
-    <xsl:when test="number($theCellData/@rowspan) &gt; 1">
-    </xsl:when>
-    <xsl:when test="number($needMultiCol)">
-      <xsl:text>\multicolumn{</xsl:text><xsl:number value="$columnspan" /><xsl:text>}{</xsl:text>
-      <xsl:if test="($theCellData/@borderLeft = 'double') or ($theCellData/@borderLeft = 'single')">
-          <xsl:text>|</xsl:text>
-        <xsl:if test="$theCellData/@borderLeft = 'double'">
-          <xsl:text>|</xsl:text>
-        </xsl:if>
-      </xsl:if>
+  <xsl:if test="$theCell">
+    <xsl:variable name="columnspan">
       <xsl:choose>
-        <xsl:when test="$theCellData/@alignment">
-          <xsl:value-of select="translate(substring(normalize-space($theCellData/@alignment),1,1),'lcrj', 'LCRJ')" />
-        </xsl:when>
+        <xsl:when test="$theCell/@colspan" ><xsl:number value="$theCell/@colspan"/></xsl:when>
+        <xsl:otherwise>1</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="needMultiCol">
+      <xsl:choose>
+        <xsl:when test="$columnspan &gt; 1" >1</xsl:when>
+        <xsl:when test="$theCell/@rowspan and (number($theCell/@rowspan) &gt; 1)" >0</xsl:when>
         <xsl:otherwise>
-          <xsl:text>L</xsl:text>
+          <xsl:variable name="colLeftLine" select="normalize-space($colData/columnData[number($theCellData/@col)]/@lineSpec)" />
+          <xsl:variable name="colRightLine" select="normalize-space($colData/columnData[number($theCellData/@col) + 1]/@lineSpec)" />
+          <xsl:variable name="colAlign" select="normalize-space($colData/columnData[number($theCellData/@col) + 1]/@alignment)" />
+          <xsl:choose>
+            <xsl:when test="not($theCellData/@borderLeft = $colLeftLine)">1</xsl:when>
+            <xsl:when test="not($theCellData/@borderRight = $colRightLine)">1</xsl:when>
+            <xsl:when test="not($theCellData/@alignment = $colAlign)">1</xsl:when>
+            <xsl:otherwise>0</xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="($theCellData/@borderRight = 'double') or ($theCellData/@borderRight = 'single')">
-          <xsl:text>|</xsl:text>
-        <xsl:if test="$theCellData/@borderRight = 'double'">
-          <xsl:text>|</xsl:text>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="number($theCellData/@rowspan) &gt; 1">
+      </xsl:when>
+      <xsl:when test="number($needMultiCol)">
+        <xsl:text>\multicolumn{</xsl:text><xsl:number value="$columnspan" /><xsl:text>}{</xsl:text>
+        <xsl:if test="($theCellData/@borderLeft = 'double') or ($theCellData/@borderLeft = 'single')">
+            <xsl:text>|</xsl:text>
+          <xsl:if test="$theCellData/@borderLeft = 'double'">
+            <xsl:text>|</xsl:text>
+          </xsl:if>
         </xsl:if>
-      </xsl:if>
-      <xsl:text>}{</xsl:text>
-    </xsl:when>
-    <xsl:otherwise></xsl:otherwise>
-  </xsl:choose>
-  <xsl:apply-templates select="$theCell" mode="doOutput" />
-  <xsl:choose>
-    <xsl:when test="number($theCellData/@rowspan) &gt; 1">
-    </xsl:when>
-    <xsl:when test="number($needMultiCol)">
-      <xsl:text>}</xsl:text>
-    </xsl:when>
-    <xsl:otherwise></xsl:otherwise>
-  </xsl:choose>
+        <xsl:choose>
+          <xsl:when test="$theCellData/@alignment">
+            <xsl:value-of select="translate(substring(normalize-space($theCellData/@alignment),1,1),'lcrj', 'LCRJ')" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>L</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:variable name="rightBorder">
+          <xsl:choose>
+            <xsl:when test="$columnspan &gt; 1">
+              <xsl:value-of select="$theCellData/following-sibling::cellData[$columnspan - 1]/@borderRight" />
+            </xsl:when>
+            <xsl:otherwise><xsl:value-of select="$theCellData/@borderRight" /></xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:if test="($rightBorder = 'double') or ($rightBorder = 'single')">
+            <xsl:text>|</xsl:text>
+          <xsl:if test="$rightBorder = 'double'">
+            <xsl:text>|</xsl:text>
+          </xsl:if>
+        </xsl:if>
+        <xsl:text>}{</xsl:text>
+      </xsl:when>
+      <xsl:otherwise></xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates select="$theCell" mode="doOutput" />
+    <xsl:choose>
+      <xsl:when test="number($theCellData/@rowspan) &gt; 1">
+      </xsl:when>
+      <xsl:when test="number($needMultiCol)">
+        <xsl:text>}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise></xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
 </xsl:template>
 
 <xsl:variable name="rowContainersStr" select="'--thead--tfoot--tbody--'" />
@@ -456,6 +468,7 @@
   <xsl:attribute name="col"><xsl:value-of select="@col" /></xsl:attribute>
   <xsl:attribute name="cellID"><xsl:value-of select="@cellID" /></xsl:attribute>
   <xsl:attribute name="alignment"><xsl:value-of select="@alignment" /></xsl:attribute>
+  <xsl:attribute name="continuation"><xsl:value-of select="@continuation" /></xsl:attribute>
 </xsl:attribute-set>
 
 <!--The point of this is to resolve linestyle conflicts at shared edges and to translate line style specifiers from HTML form
@@ -813,15 +826,22 @@
   <xsl:param name="numCols" select="1" />
   <xsl:param name="cellId" />
   <xsl:param name="alignment" />
+  <xsl:param name="continuation" />
   <xsl:text>(</xsl:text>
   <xsl:value-of select="$startRow" />
   <xsl:text>,</xsl:text>
   <xsl:value-of select="$startCol" />
   <xsl:text>)(</xsl:text>
-  <xsl:if test="$cellId">
-    <xsl:text>#</xsl:text>
-    <xsl:value-of select="$cellId" />
-  </xsl:if>
+  <xsl:choose>
+    <xsl:when test="$cellId and string-length($cellId)">
+      <xsl:text>#</xsl:text>
+      <xsl:value-of select="$cellId" />
+    </xsl:when>
+    <xsl:when test="$continuation and string-length($continuation)">
+      <xsl:value-of select="$continuation" /><xsl:text>cont</xsl:text>
+    </xsl:when>
+    <xsl:otherwise></xsl:otherwise>
+  </xsl:choose>
   <xsl:text>)(</xsl:text>
   <xsl:if test="$alignment">
     <xsl:value-of select="$alignment" />
@@ -860,6 +880,7 @@
       <xsl:with-param name="startCol" select="$startCol" />
       <xsl:with-param name="numRows" select="number($numRows) - 1" />
       <xsl:with-param name="numCols" select="1" />
+      <xsl:with-param name="continuation" select="row" />
     </xsl:call-template>
   </xsl:if>
   <xsl:if test="number($numCols) &gt; 1">
@@ -872,6 +893,7 @@
       <xsl:with-param name="startCol" select="number($startCol) + 1" />
       <xsl:with-param name="numRows" select="$numRows" />
       <xsl:with-param name="numCols" select="number($numCols) - 1" />
+      <xsl:with-param name="continuation" select="col" />
     </xsl:call-template>
   </xsl:if>
 </xsl:template>
@@ -893,9 +915,17 @@
     <xsl:element name="cellData">
       <xsl:attribute name="row"><xsl:value-of select="substring-before($rowStr, ',')" /></xsl:attribute>
       <xsl:attribute name="col"><xsl:value-of select="substring-before($colStr, ')')" /></xsl:attribute>
-      <xsl:if test="starts-with($idStr, '#')">
-        <xsl:attribute name="cellID"><xsl:value-of select="substring-after(substring-before($idStr, ')'), '#')" /></xsl:attribute>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="starts-with($idStr, '#')">
+          <xsl:attribute name="cellID"><xsl:value-of select="substring-after(substring-before($idStr, ')'), '#')" /></xsl:attribute>
+        </xsl:when>
+        <xsl:when test="starts-with($idStr, 'rowcont)')">
+          <xsl:attribute name="continuation"><xsl:text>row</xsl:text></xsl:attribute>
+        </xsl:when>
+        <xsl:when test="starts-with($idStr, 'colcont)')">
+          <xsl:attribute name="continuation"><xsl:text>col</xsl:text></xsl:attribute>
+        </xsl:when>
+      </xsl:choose>
       <xsl:if test="not(starts-with($alignStr, ')'))">
         <xsl:attribute name="alignment"><xsl:value-of select="substring-before($alignStr, ')')" /></xsl:attribute>
       </xsl:if>
