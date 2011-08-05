@@ -14,6 +14,7 @@ LIBRARY_NAME	  = wrappers
 EXPORT_LIBRARY  = 1
 SHORT_LIBNAME	  = wrappers
 IS_COMPONENT    = 1
+LD_LIBRARY_PATH="../xulrunner:../MuPAD/platform/bin:$$LD_LIBRARY_PATH"
 
 
 REQUIRES = \
@@ -49,7 +50,7 @@ SHARED_LIBRARY_LIBS += \
 
 ifeq ($(OS_ARCH),WINNT)
 SHARED_LIBRARY_LIBS += \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/win32/$(LIB_PREFIX)mupcomkernel.$(LIB_SUFFIX) \
 	$(NULL)
 endif
 

@@ -133,6 +133,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
   nsresult res;
   nsCOMPtr<nsIFile> bd;
   nsCOMPtr<nsILocalFile> libFile;
+  nsCOMPtr<nsILocalFile> modFile;
   nsCOMPtr<nsILocalFile> vcamFile;
   nsCOMPtr<nsILocalFile> engFile;
   
@@ -160,7 +161,6 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
       AppendSubPath(engFile,eRecord);
     } else {
       TCI_ASSERT(!"Failed to lookup ENGINFO/engpath");
-      //engpath = "C:\\swp50\\mapleoem.dll";
     }
 
     if (install_dbase->
@@ -169,13 +169,16 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
       res = baseDir->Clone(getter_AddRefs(bd));
       libFile = do_QueryInterface(bd);
       AppendSubPath(libFile,eRecord);
+      res = baseDir->Clone(getter_AddRefs(bd));
+      modFile = do_QueryInterface(bd);
+      AppendSubPath(modFile,"MuPAD/platform/modules");
     } else {
       TCI_ASSERT(!"Failed to lookup ENGINFO/libp");
       //libpath = "C:\\swp50\\Maple";
     }
    
     int inner_rv;
-    res = wrapper->LoadStrsAndDLL(engFile, libFile, (void *)id_dBase, (void *)nom_dBase, &inner_rv);
+    res = wrapper->LoadStrsAndDLL(engFile, libFile, modFile, (void *)id_dBase, (void *)nom_dBase, &inner_rv);
    
     if (NS_SUCCEEDED(res) && inner_rv) {
       if (install_dbase->

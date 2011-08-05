@@ -45,43 +45,35 @@ LOCAL_INCLUDES = -I$(srcdir)/../libtci	\
 
 SupportFiles	:= \
 			$(srcdir)/swfcns.mu \
+#      $(srcdir)/tcifns.mu \
 			$(NULL)
 
-#ifeq ($(OS_ARCH),WINNT)
-MuPADlib	:= \
-			$(srcdir)/../MuPAD/lib/lib.tar \
-			$(srcdir)/../MuPAD/lib/lib.toc \
-			$(srcdir)/../MuPAD/lib/sysinit.mu \
-			$(wildcard $(srcdir)/../MuPAD/lib/xmlprint.*) \
-			$(NULL)
-
+MuPADlib	:= $(wildcard $(srcdir)/../MuPAD/lib/*) 
 
 ifeq ($(OS_ARCH),WINNT)
-MuPADlicense	:= \
-			$(srcdir)/../MuPAD/license/license \
-			$(NULL)
-SupportFiles	+= \
-			$(srcdir)/../MuPAD/win32/mupkernel.dll \
-			$(srcdir)/tcifcns.m \
-			$(NULL)
+MuPADlicense	:= $(srcdir)/../MuPAD/license/license
+MuPADbin	:= $(wildcard $(srcdir)/../MuPAD/win32/bin/*) 
+MuPADmod	:= $(wildcard $(srcdir)/../MuPAD/win32/modules/*) 
+
 endif
+
 ifeq ($(OS_ARCH),Darwin)
 MuPADlicense	:= \
 			$(srcdir)/../MuPAD/Darwin/com.sciface.www.MuPADPro402.plist \
 			$(NULL)
-MuPADMacbin	:= $(wildcard $(srcdir)/../MuPAD/Darwin/bin/*) 
-MuPADMaclib	:= $(wildcard $(srcdir)/../MuPAD/Darwin/lib/*) 
-MuPADMacmod	:= $(wildcard $(srcdir)/../MuPAD/Darwin/modules/*) 
+MuPADbin	:= $(wildcard $(srcdir)/../MuPAD/Darwin/bin/*) 
+MuPADmod	:= $(wildcard $(srcdir)/../MuPAD/Darwin/modules/*) 
 MuPADFrameworks := $(wildcard $(srcdir)/../MuPAD/Darwin/Frameworks/*)
 
 endif
+
 ifeq ($(OS_ARCH),Linux)
 MuPADlicense	:= \
 			$(srcdir)/../MuPAD/license/license \
 			$(NULL)
-MuPADlinuxbin	:= $(wildcard $(srcdir)/../MuPAD/linux/bin/*) 
+MuPADbin	:= $(wildcard $(srcdir)/../MuPAD/linux/bin/*) 
 MuPADlinuxlib	:= $(wildcard $(srcdir)/../MuPAD/linux/lib/*) 
-MuPADlinuxmod	:= $(wildcard $(srcdir)/../MuPAD/linux/modules/*) 
+MuPADmod	:= $(wildcard $(srcdir)/../MuPAD/linux/modules/*) 
 
 endif
 
@@ -89,31 +81,32 @@ endif
 
 include $(topsrcdir)/config/rules.mk
 
-ifeq ($(OS_ARCH),WINNT)
-export:: $(MuPADlib)
-	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/lib
-
 export:: $(SupportFiles) 
 	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
-endif
-ifeq ($(OS_ARCH),Darwin)
+
 export:: $(MuPADlib)
-	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/lib
 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
-	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
-	$(INSTALL) $(MuPADMacbin) $(FINAL_TARGET)/MuPAD/Mac/bin
-	$(INSTALL) $(MuPADMaclib) $(FINAL_TARGET)/MuPAD/Mac/lib
-	$(INSTALL) $(MuPADMacmod) $(FINAL_TARGET)/MuPAD/Mac/modules
-	$(INSTALL) $(MuPADFrameworks) $(FINAL_TARGET)/MuPAD/Frameworks
+	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/share/lib
+	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/platform/bin
+	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/platform/modules
+
+ifeq ($(OS_ARCH),Linux)
+export:: $(MuPADlinuxlib)
+ 	$(INSTALL) $(MuPADlinuxlib) $(FINAL_TARGET)/MuPAD/platform/bin 
 
 endif
-ifeq ($(OS_ARCH),Linux)
-export:: $(MuPADlib)
-	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/lib
-	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
-	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
-	$(INSTALL) $(MuPADlinuxbin) $(FINAL_TARGET)/MuPAD/linux/bin
-	$(INSTALL) $(MuPADlinuxlib) $(FINAL_TARGET)/MuPAD/linux/lib
-	$(INSTALL) $(MuPADlinuxmod) $(FINAL_TARGET)/MuPAD/linux/modules
+
+ifeq ($(OS_ARCH),Darwin)
+export:: $(MuPADFrameworks)
+ 	$(INSTALL) $(MuPADFrameworks) $(FINAL_TARGET)/MuPAD/platform/bin 
+
 endif
+
+
+# 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
+# 	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
+# 	$(INSTALL) $(MuPADlinuxbin) $(FINAL_TARGET)/MuPAD/linux/bin
+# 	$(INSTALL) $(MuPADlinuxlib) $(FINAL_TARGET)/MuPAD/linux/lib
+# 	$(INSTALL) $(MuPADlinuxmod) $(FINAL_TARGET)/MuPAD/linux/modules
+# endif
 
