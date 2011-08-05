@@ -2851,8 +2851,11 @@ function EditorClick(event)
   {
     if (event.target.tagName == "plotwrapper") 
     {
-      doVCamInitialize(event);
-      vcamActive = true;
+      var obj = event.target.getElementsByTagName("obj")[0];
+      if (obj != null) {
+        doVCamInitialize(obj);
+        vcamActive = true;
+      }
     }
     else if (document.getElementById("vcamactive").getAttribute("hidden") !==true) 
     {
