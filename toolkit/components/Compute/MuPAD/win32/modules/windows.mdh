@@ -1,0 +1,313 @@
+MODULE
+  windows - Message and Dialog Boxes on Windows
+
+INTRODUCTION
+  This module provides functions  for using  message and dialog
+  boxes as well as to access the clipboard from within MuPAD on
+  Windows operating systems.
+
+INTERFACE
+  windows::alert,      windows::beep,    windows::box,
+  windows::clipboard,  windows::doc,     windows::error,
+  windows::message,    windows::pause,   windows::question,
+  windows::selectFile, windows::warning, windows::winHelp
+<!-- BEGIN-FUNC alert -->
+NAME
+  windows::alert - Plays an alert sound
+
+SYNOPSIS
+  windows::alert()
+  windows::alert( style )
+
+PARAMETERS
+  style - Identifier, one of: Message, Error, Warning, Question
+          or an integer which specifies a registered sound
+
+DESCRIPTION
+  The function plays the specified waveform sound  using the PC
+  soundcard. If no soundcard is installed a simple message beep
+  is played using the computer speaker.
+
+EXAMPLES
+  >> windows::alert()
+  >> windows::alert( Message  )
+  >> windows::alert( Error    )
+  >> windows::alert( Warning  )
+  >> windows::alert( Question )
+
+SEE ALSO
+  windows::error, windows::message, windows::question,
+  windows::selectFile, windows::warning
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC beep -->
+NAME
+  windows::beep - Plays a tone of a given frequnce
+
+SYNOPSIS
+  windows::beep( frequence, duration )
+
+PARAMETERS
+  frequence - typically between 100 an 10.000 Hertz
+  duration  - specified in milli seconds
+
+DESCRIPTION
+  The function plays the specified frequence for the specified
+  duration using the computer speaker.
+
+EXAMPLES
+  >> windows::beep(500+k*100,100) $ k=1..10 
+  ...
+  
+  >>(windows::beep(500+k*100,100),windows::pause(100)) $ k=1..10
+  ...
+
+SEE ALSO
+  windows::alert, windows::pause
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC box -->
+NAME
+  windows::box - Displays a windows free style message box
+
+SYNOPSIS
+  windows::box( title, text, flags )
+
+PARAMETERS
+  title - String, the title of the message box
+  text  - String, the message to be displayed
+  flags - Integer, MessageBox style option (Win32)
+
+DESCRIPTION
+  The function displays a message box with the headline 'title'
+  and the message 'text'. The icon as well as the buttons which
+  are displayed  can be specified via the integer 'flags'.  The
+  corresponding  integer codes  are described in the  Win32 SDK
+  documentation of the Microsoft Visual C++ Compiler. The func-
+  tion returns an integer  which indicates the button  that was
+  pressed.
+
+EXAMPLES
+  >> MB_ABORTRETRYIGNORE := 2:
+     MB_ICONERROR  := 16:
+     MB_DEFBUTTON2 := 256:
+     windows::box( "User-defined Free-style Box",
+                   "Wizards can create free-style boxes",
+                   MB_ABORTRETRYIGNORE+MB_ICONERROR+
+                   MB_DEFBUTTON2
+     );
+
+SEE ALSO
+  windows::alert, windows::clipboard, windows::error,
+  windows::message, windows::selectFile, windows::warning
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC clipboard -->
+NAME
+  windows::clipboard - Returns the text of the clipboard
+
+SYNOPSIS
+  windows::clipboard()
+
+DESCRIPTION
+  The function returns a text which was previously selected and
+  copied into the clipboard, e.g. via Ctrl-V.
+
+EXAMPLES
+  >> print( Unquoted, windows::clipboard() )
+
+     Message and Dialog Boxes on Windows 95/98/NT
+
+SEE ALSO
+  windows::error, windows::message, windows::question,
+  windows::selectFile, windows::warning
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC doc -->
+NAME
+  windows::doc - Module online documentation
+
+SYNOPSIS
+  windows::doc()
+  windows::doc( func )
+
+PARAMETERS
+  func - String, name without prefix 'windows::'
+
+DESCRIPTION
+  The function displays a description  of the module  'windows'
+  respectively the module function windows::'func'.
+
+EXAMPLES
+  >> windows::doc("doc");
+  [...]
+
+SEE ALSO
+  module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC error -->
+NAME
+  windows::error - Displays an error message
+
+SYNOPSIS
+  windows::error( title, text )
+
+PARAMETERS
+  title - String, the title of the message box
+  text  - String, the message to be displayed
+
+DESCRIPTION
+  The function displays a message box with the headline 'title'
+  and the error message 'text'  with an error icon.  It returns
+  the object of type DOM_NULL.
+
+EXAMPLES
+  >> windows::error( "It큦 an Error", "Scotch it out!" )
+
+SEE ALSO
+  windows::alert, windows::message, windows::question,
+  windows::selectFile, windows::warning
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC message -->
+NAME
+  windows::message - Displays an information message
+
+SYNOPSIS
+  windows::message( title, text )
+
+PARAMETERS
+  title - String, the title of the message box
+  text  - String, the message to be displayed
+
+DESCRIPTION
+  The function displays a message box with the headline 'title'
+  and the information 'text' with an info icon. It returns the
+  object of type DOM_NULL.
+
+EXAMPLES
+  >> windows::message( "It큦 an Info", "Nice feature!" )
+
+SEE ALSO
+  windows::alert, windows::error, windows::question,
+  windows::selectFile, windows::warning
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC pause -->
+NAME
+  windows::pause - Waits for a specified duration
+
+SYNOPSIS
+  windows::pause( duration )
+
+PARAMETERS
+  duration  - specified in milli seconds
+
+DESCRIPTION
+  The function waits for the specified number of milli seconds.
+
+EXAMPLES
+  >>(windows::beep(500+k*100,100),windows::pause(100)) $ k=1..10
+  ...
+
+SEE ALSO
+  windows::alert, windows::beep
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC question -->
+NAME
+  windows::question - Displays a question message box
+
+SYNOPSIS
+  windows::question( title, text )
+
+PARAMETERS
+  title - String, the title of the message box
+  text  - String, the message to be displayed
+
+DESCRIPTION
+  The function displays a message box with the headline 'title'
+  and the question 'text' with a question mark icon. It returns
+  TRUE if the user clicks on the 'YES' button  and FALSE if the
+  user clicks on the 'NO' button.   If the box is destroyed and
+  neither 'YES' nor 'NO' was clicked,  the function returns the
+  the boolean value UNKNOWN.
+
+EXAMPLES
+  >> windows::question( "It큦 a Question", "Do you like it?" )
+
+SEE ALSO
+  windows::alert, windows::box, windows::clipboard,
+  windows::error, windows::message, windows::selectFile,
+  windows::warning
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC selectFile -->
+NAME
+  selectFile - Displays a windows file dialog
+
+SYNOPSIS
+  windows::selectFile()
+
+DESCRIPTION
+  The function displays  a common file dialog box  which allows
+  the user to browse directories and to select a file. The full
+  pathname of the selected file is returned.  If the dialog box
+  is destroyed or the dialog is canceled and no file was selec-
+  ted then the empty string is returned.
+
+EXAMPLES
+  >> windows::selectFile()
+
+     "MuPAD.hlp"
+
+SEE ALSO
+  warning,::alert, windows::clipboard, windows::error,
+  windows::message, windows::question, windows::warning
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC warning -->
+NAME
+  windows::warning - Displays a warning message
+
+SYNOPSIS
+  windows::warning( title, text )
+
+PARAMETERS
+  title - String, the title of the message box
+  text  - String, the message to be displayed
+
+DESCRIPTION
+  The function displays a message box with the headline 'title'
+  and the warning  'text'  with a warning icon.  It returns the
+  object of type DOM_NULL.
+
+EXAMPLES
+  >> windows::warning( "It큦 a Warning", "Keep cool!" )
+
+SEE ALSO
+  windows::alert, windows::error, widnows::message,
+  windows::question, windows::selectFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC winHelp -->
+NAME
+  windows::winHelp - Opens the Windows help file browser
+
+SYNOPSIS
+  windows::winHelp( helpfile, command, data )
+
+PARAMETERS
+  helpfile - String, pathname of a Windows help file
+  command  - Identifier, one of: Index, Key, PartialKey, Quit,
+             Contents, Finder
+  data     - String, a keyword, depends on 'command'
+
+DESCRIPTION
+  The function opens  the Windows help browser  with the  given
+  help file  and displays the information specified via the pa-
+  rameters 'command' and 'data'. If the command 'Quit' is used,
+  the help browser is closed. Details can be found in the Win32
+  SDK documentation of the Microsoft Visual C++ Compiler.   The
+  function returns TRUE if it was successful.  It returns FALSE
+  otherwise.
+
+EXAMPLES
+  >> windows::winHelp( windows::selectFile(), Index, "" )
+
+  >> windows::winHelp( windows::selectFile(), Key, "" )
+
+SEE ALSO
+  windows::error, windows::message, windows::question,
+  windows::selectFile, windows::warning
+<!-- END-FUNC -->

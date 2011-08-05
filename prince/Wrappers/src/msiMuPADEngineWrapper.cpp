@@ -46,10 +46,10 @@ msiMuPADEngineWrapper::~msiMuPADEngineWrapper()
 }
 
 /* long loadStrsAndDLL (in string engpath, in string libpath, in voidPtr ID_dbase, in voidPtr NOM_dbase); */
-NS_IMETHODIMP msiMuPADEngineWrapper::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, void * ID_dbase, void * NOM_dbase, PRInt32 *_retval)
+NS_IMETHODIMP msiMuPADEngineWrapper::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, nsILocalFile *modpath, void * ID_dbase, void * NOM_dbase, PRInt32 *_retval)
 {
   MuPAD_wrapper = new MuPADWrapper(ID_dbase, NOM_dbase);
-  *_retval = MuPAD_wrapper->iLoadStrsAndDLL(engpath, libpath);
+  *_retval = MuPAD_wrapper->iLoadStrsAndDLL(engpath, libpath, modpath);
   return NS_OK;
 }
 
