@@ -1,0 +1,213 @@
+MODULE
+  stdmod - Extended Module Management
+
+INTRODUCTION
+  This module provides functions  for an extended module management and
+  also includes a function  for reading plain text online documentation
+  files of dynamic modules.
+
+INTERFACE
+  age, doc, help, max, stat, which
+<!-- BEGIN-FUNC age -->
+NAME
+  stdmod::age - Controls the module aging algorithm
+
+SYNOPSIS
+  stdmod::age()
+  stdmod::age( maxage )
+  stdmod::age( maxage, interval )
+
+PARAMETER
+  maxage   - integer of range 0..3600
+  interval - integer of range 1..60
+
+DESCRIPTION
+  This function sets the maximum age of dynamic modules to ´maxage´. If
+  ´maxage´ is set to zero ('0'), module aging deactivated. The value of
+  ´interval' specifies the minimum time that passes between two checks
+  for unused module. All times are measured in seconds.The function re-
+  turns the current value of ´maxage´.
+
+  MuPAD uses a so-called ´module aging´ strategy.  The current age of a
+  module is defined as the number of seconds that are passed since this
+  module was accessed  (the module was loaded  or a module function was
+  called) last.  If the module is older than the specified ´maxage´, it
+  is unloaded as soon as possible.
+
+EXAMPLES
+  >> stdmod::age();
+     30
+
+  >> stdmod::age( 30 );
+     30
+
+  >> stdmod::age( 30, 10 );
+     30
+
+SEE ALSO
+  ::max, ::stat, ::which
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC doc -->
+NAME
+  stdmod::doc - Display online documentation
+
+SYNOPSIS
+  stdmod::doc()
+  stdmod::doc( func )
+
+PARAMETER
+  func - string, function name without the prefix "stdmod::"
+
+DESCRIPTION
+  Displays a brief description of the module 'stdmod', respectively the
+  function stdmod::'func'.
+
+EXAMPLES
+  >> stdmod::doc( "doc" );
+     NAME
+       stdmod::doc - Display online documentation
+     [...]
+
+SEE ALSO
+  info, module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC help -->
+NAME
+  stdmod::help - Returns online documents of dynamic modules
+
+SYNOPSIS
+  stdmod::help( mod )
+  stdmod::help( mod, fun )
+
+PARAMETER
+  mod - string, module name 
+  fun - string, function name without domain prefix
+
+DESCRIPTION
+  This function reads the introduction page, respectively the help page
+  of the module function ´mod::fun´,from the plain text online documen-
+  tation file of the dynamic module ´mod´ and returns it as a character
+  string. The file is searched in the directories specified in function
+  ´::which´.  If the specified documentation cannot be found/read,  the
+  function returns the value FAIL.
+
+EXAMPLES
+  >> stdmod::help( "stdmod", "doc" );
+     "\nNAME\n  stdmod::help - Reads online documents of..."
+
+SEE ALSO
+  module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC max -->
+NAME
+  stdmod::max - Limits the number of simultaneously loaded modules
+
+SYNOPSIS
+  stdmod::max( )
+  stdmod::max( maxnum )
+
+PARAMETER
+  maxnum - integer of range max{0,loaded-modules}..256
+
+DESCRIPTION
+  This function sets the maximum number of simultaneously loaded modules
+  to ´maxnum´. The function returns the current value of ´maxnum´.
+
+  Note:  If ´maxnum´ modules are loaded  then the machine code of a new
+  loaded module  replaces the machine code  of the  least recently used 
+  module.  This is transparent  to the user.  The corresponding machine
+  code is reloaded automatically  if it is needed later.  Virtually, an
+  an arbitrary number of modules can be loaded by the user.
+
+EXAMPLES
+  >> stdmod::max();
+     256
+
+  >> stdmod::max( 42 );
+     42
+
+SEE ALSO
+  ::age, ::stat, ::which
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC stat -->
+NAME
+  stdmod::stat - Returns the current status of the module manager
+
+SYNOPSIS
+  stdmod::stat( )
+
+PARAMETER
+  -
+
+DESCRIPTION
+  This function returns the current state of the module manager in form
+  of a table. This function is only useful for wizards.
+
+    table( "mupad" = [ 'number of kernel objects used by MAPI',   
+                       'length of kernel object table', 
+                       'dynamic modules can be unloaded?' ]
+           "mpath" = 'default directory of dynamic modules',
+           "psmod" = 'set of installed pseudo modules',
+           "aging" = [ 'maximum age of dynamic modules',
+                       'aging interval',
+                       'name of the oldest module (LRU)' ]
+           "modul" = [ 'number of active modules (running)',
+                       'number of loaded modules',
+                       'maximum number of loaded modules' ]
+           "entry" = table( 'module name' = [
+                              'age',
+                              'number of active functions',
+                              'number of module functions',
+                              'set of module attributes'
+                            ], ...
+                     )
+    )
+
+EXAMPLES
+>> stdmod::stat();
+   table(
+     "entry" = table( "stdmod" = [1157, 1, 6, {}] ),
+     "psmod" = {},
+     "modul" = [1, 1, 16],
+     "aging" = [0, 10, "stdmod"],
+     "mpath" = "/home/andi/MuPAD/linux/modules",
+     "mupad" = [189, 190, TRUE]         
+   )
+
+SEE ALSO
+  ::age, ::max, ::which
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC which -->
+NAME
+  stdmod::which - Returns the installation path of a module
+
+SYNOPSIS
+  stdmod::which( mod )
+
+PARAMETER
+  mod - string, module name
+
+DESCRIPTION
+  This function searches for the dynamic module  ´mod´  and returns its
+  full pathname  as a character string.  The module  is searched in the 
+  directories specified in the MuPAD Variable READ_PATH, in the current
+  working directory and last in the MuPAD default directory for dynamic
+  modules.
+
+  If ´mod´ is a pseudo module, this functions returns the MuPAD default
+  directory for dynamic modules.
+
+EXAMPLES
+  >> stdmod::which( "stdmod" );
+     "/home/andi/MuPAD/linux/modules/stdmod.mdm"  
+
+  >> stdmod::which( "demo" );
+     "demo"
+
+  >> stdmod::which( "unknown" );
+     FAIL
+
+SEE ALSO
+  ::age, ::max, ::stat
+<!-- END-FUNC -->
+

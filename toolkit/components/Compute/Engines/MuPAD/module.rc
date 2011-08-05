@@ -34,7 +34,7 @@ BEGIN
 
             VALUE "PrivateBuild",     ""
 
-            VALUE "ProductName",      "Prince"
+            VALUE "ProductName",      "Scientific WorkPlace and related"
         END
     END
     BLOCK "VarFileInfo"
