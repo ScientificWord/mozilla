@@ -26,3 +26,10 @@
 #sidebar-symbol-tabbox  tabpanel[mathsym="false"] toolbarbutton { color: black; }
 #sidebar-symbol-tabbox  tab[mathsym="true"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="false"] { color: black; }
+
+#sidebar-symbol-tabbox row label { max-height: 24px; 
+  overflow-y: hidden;
+  text-align: center;
+}
+  
+#sidebar-symbol-tabbox row label math{ font-size: medium; }
