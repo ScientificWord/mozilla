@@ -509,9 +509,12 @@
    \ifmmode
       \string\rule[#1]\char123#2\char125\char123#3\char125
    \else
-      \msitag{<rule width="#2" height="#3" depth="#1"/>}%
+      \msitag{<msirule width="#2" height="#3" color="black" %
+                 style="vertical-align:0pt; width: #2; height: #3; background-color: black"/>}%
    \fi
 }
+
+
 
 
 \def\hspace{%
