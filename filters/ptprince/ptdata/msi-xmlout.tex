@@ -732,10 +732,17 @@
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
 
+\newif\ifmathtabular
+\mathtabularfalse
+
 \def\msi@begin@tabularA[#1]#2{%
    \ifmmode
       %\def\donext{\@make@braces@other\relax\msi@mtabular{#2}}%
-      \string\begin{tabular}{#1}%
+      %\string\begin{tabular}{#1}%
+      \def\donext{%
+            \mathtabulartrue
+            \string\msipassthru\char`\{%
+            \msihmode}
    \else
       \def\donext{%
          \begingroup
@@ -743,6 +750,7 @@
             \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
             \msiopentag{tbody}{<tbody>}
             \aftergroup\msi@closetabular
+            \mathtabularfalse
             \hbox\bgroup
               \let\\=\@cr
               \halign\bgroup&####\cr
@@ -755,8 +763,10 @@
 \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
 
 \def\msi@end@tabular{%
-  \ifmmode
-    \string\end{tabular}
+  \endgroup
+  \ifmathtabular
+    %\string\end{tabular}
+    \char`\}%
   \else
         \crcr
        \egroup %halign
