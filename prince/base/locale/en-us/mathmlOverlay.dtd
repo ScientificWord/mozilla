@@ -360,7 +360,7 @@
 <!ENTITY symbolprecapprox.tooltip    "precapprox">
 <!ENTITY symbolvartriangle.tooltip  "vartriangle">
 
-<!ENTITY symbolne.tooltip          "neq">
+<!ENTITY symbolne.tooltip          "ne">
 <!ENTITY symbolnotin.tooltip  "notin">
 <!ENTITY symbollvertneqq.tooltip  "lvertneqq">	
 <!ENTITY symbolgvertneqq.tooltip	 "gvertneqq"> 
