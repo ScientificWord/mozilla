@@ -454,77 +454,76 @@
             <row>
               <toolbarbutton id="symbollneqq" />
               <toolbarbutton id="symbolgneqq" />
-            <!--  <toolbarbutton id="symbolgnsim" />-->
               <toolbarbutton id="symbolnleqslant" /> 
               <toolbarbutton id="symbolngeqslant" /> 
+              <toolbarbutton id="symbollneq" />
             </row>
             <row>
-              <toolbarbutton id="symbollneq" />
               <toolbarbutton id="symbolgneq" />
               <toolbarbutton id="symbolnpreceq" /> 
               <toolbarbutton id="symbolnsucceq" /> 
               <toolbarbutton id="symbolprecnsim" />
+              <toolbarbutton id="symbolsuccnsim" />
             </row>
             <row>
-              <toolbarbutton id="symbolsuccnsim" />
               <toolbarbutton id="symbollnsim" />
               <toolbarbutton id="symbolgnsim" />
               <toolbarbutton id="symbolnleqq" /> 
-              <toolbarbutton id="symbolngeqq" /> 
+              <toolbarbutton id="symbolngeqq" />
+               <toolbarbutton id="symbolprecneqq" /> 
             </row>
             <row>
-              <toolbarbutton id="symbolprecneqq" />
               <toolbarbutton id="symbolsuccneqq" />
               <toolbarbutton id="symbolprecnapprox" />
               <toolbarbutton id="symbolsuccnapprox" />
               <toolbarbutton id="symbollnapprox" />
+              <toolbarbutton id="symbolgnapprox" />
             </row>
             <row>
-              <toolbarbutton id="symbolgnapprox" />
               <toolbarbutton id="symbolnsim" />
               <toolbarbutton id="symbolncong" />
               <toolbarbutton id="symbolvarsubsetneq" /> 
               <toolbarbutton id="symbolvarsupsetneq" /> 
+              <toolbarbutton id="symbolnsubseteqq" /> 
             </row>
             <row>
-              <toolbarbutton id="symbolnsubseteqq" /> 
               <toolbarbutton id="symbolnsupseteqq" /> 
               <toolbarbutton id="symbolsubsetneqq" /> 
               <toolbarbutton id="symbolsupsetneqq" /> 
               <toolbarbutton id="symbolvarsubsetneqq" /> 
+              <toolbarbutton id="symbolvarsupsetneqq" /> 
             </row>
             <row>
-              <toolbarbutton id="symbolvarsupsetneqq" /> 
               <toolbarbutton id="symbolsubsetneq" />
               <toolbarbutton id="symbolsupsetneq" />
               <toolbarbutton id="symbolnsubseteq" />
               <toolbarbutton id="symbolnsupseteq" />
+              <toolbarbutton id="symbolnparallel" />
             </row>
             <row>
-              <toolbarbutton id="symbolnparallel" />
               <toolbarbutton id="symbolnmid" />
               <!--<toolbarbutton label="&#xE2AA;" tooltiptext="&symbolnshortmid.tooltip;"              msivalue="&#xE2AA;"
               observes="cmd_MSIsymbolCmd2"/> 
               <toolbarbutton label="&#xE2AB;" tooltiptext="&symbolnshortparallel.tooltip;"              msivalue="&#xE2AB;"
               observes="cmd_MSIsymbolCmd2"/> -->
               <toolbarbutton id="symbolnvdash" />
+              <toolbarbutton id="symbolnVdash" />
             </row>
             <row>
-              <toolbarbutton id="symbolnVdash" />
               <toolbarbutton id="symbolnvDash" />
               <toolbarbutton id="symbolnVDash" />
               <toolbarbutton id="symbolntrianglerighteq" />
               <toolbarbutton id="symbolntrianglelefteq" />
+              <toolbarbutton id="symbolntriangleright" />
             </row>
             <row>
-              <toolbarbutton id="symbolntriangleright" />
               <toolbarbutton id="symbolntriangleleft" />
               <toolbarbutton id="symbolnleftarrow" />
               <toolbarbutton id="symbolnrightarrow" />
               <toolbarbutton id="symbolnLeftarrow" />
+              <toolbarbutton id="symbolnRightarrow" />
             </row>
             <row>
-              <toolbarbutton id="symbolnRightarrow" />
               <toolbarbutton id="symbolnLeftrightarrow" />
               <toolbarbutton id="symbolnleftrightarrow" />
             </row>
