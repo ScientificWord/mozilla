@@ -455,7 +455,9 @@
               <toolbarbutton id="symbollneqq" />
               <toolbarbutton id="symbolgneqq" />
             <!--  <toolbarbutton id="symbolgnsim" />-->
-              <toolbarbutton id="symbolnleqslant" /> 
+              <!--toolbarbutton id="symbolnleqslant" /> -->
+	        <toolbarbutton id ="symbolnleqslant2"  tooltiptext="&symbolnleqslant.tooltip;" msivalue="&nleqslant;" observes="cmd_MSIsymbolCmd"> 
+				<label> <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x27AD;&#x0338;</mi></math> </label> </toolbarbutton>
               <toolbarbutton id="symbolngeqslant" /> 
             </row>
             <row>

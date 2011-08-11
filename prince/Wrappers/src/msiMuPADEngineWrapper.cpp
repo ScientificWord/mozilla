@@ -9,6 +9,13 @@
 #include "MResult.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <locale.h>
+#include <time.h>
+#include "mupkernel.h"
+
 #include "xpcom-config.h"
 #include "nsCOMPtr.h"
 #include "nsILocalFile.h"
