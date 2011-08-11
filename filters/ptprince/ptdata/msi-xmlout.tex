@@ -1203,7 +1203,8 @@
 \def\msi@font@switchA[#1]#2{%
    \expandafter\def\csname#2\endcsname{%
       \ifmmode
-        \char`\\\msitag{#2}%
+        \expandafter\string\csname #2\endcsname\char`\  %
+        %%\char`\\\msitag{#2}%
       \else
         \msihmode
         \if@in@texttag
