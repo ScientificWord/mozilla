@@ -207,6 +207,7 @@
 
 
 \def\theoremstyle#1{\def\msi@currentthmstyle{#1}}
+\theoremstyle{plain}
 
 
 
@@ -251,21 +252,18 @@
 
    
 %% %% Newcommand and renewcommand
-%% 
-%% \def\newcommand{%
-%%   \@ifnextchar*{\@newcommand{*}}{\@newcommand{}}}
-%% 
-%% \def\@newcommand#1{%
-%%   \@ifnextchar[{\@newcommandA#1}{\@newcommandA#1[]}}
-%% 
-%% \def\@newcommandA#1[#2]{%
-%%   \@ifnextchar[{\@newcommandB#1[#2]}{\@newcommandB#1[#2][]}}
-%% 
-%% \def\@newcommandB#1[#2][#3]#4{%
-%%   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand{#1}[#2][#3]{#4}}%
-%%   % Define command
-%%   \def#1{\string#1}%
-%% }
+ 
+ \def\newcommand{\@ifnextchar*{\@newcommand}{\@newcommand{}}}
+ \let\renewcommand\newcommand
+ 
+ %%% #1 = optional star, #2 = command name
+ \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[]}}
+ 
+ \def\@newcommandA#1#2[#3]{\@ifnextchar[{\@newcommandB{#1}{#2}[#3]}{\@newcommandB{#1}{#2}[#3][]}}
+
+ \def\@newcommandB#1#2[#3][#4]#5{%
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}[#3][#4]{#5}}%
+   \MSILocalDef{#2}}
 
 
 
@@ -509,9 +507,12 @@
    \ifmmode
       \string\rule[#1]\char123#2\char125\char123#3\char125
    \else
-      \msitag{<rule width="#2" height="#3" depth="#1"/>}%
+      \msitag{<msirule width="#2" height="#3" color="black" %
+                 style="vertical-align:0pt; width: #2; height: #3; background-color: black"/>}%
    \fi
 }
+
+
 
 
 \def\hspace{%
@@ -732,38 +733,36 @@
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
 
+\newif\ifmathtabular
+\mathtabulartrue
+
 \def\msi@begin@tabularA[#1]#2{%
-   \ifmmode
-      %\def\donext{\@make@braces@other\relax\msi@mtabular{#2}}%
-      \string\begin{tabular}{#1}%
-   \else
-      \def\donext{%
-         \begingroup
-            \msihmode   
-            \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
-            \msiopentag{tbody}{<tbody>}
-            \aftergroup\msi@closetabular
-            \hbox\bgroup
-              \let\\=\@cr
-              \halign\bgroup&####\cr
-      }%
-   \fi
-   \donext
+   \begingroup
+      \ifmmode
+        \string\msipassthru\char`\{%
+        \mathtabulartrue
+        \msihmode
+        \catcode`\&=4%
+      \else
+        \mathtabularfalse
+      \fi   
+      \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+      \msiopentag{tbody}{<tbody>}%
+      \begingroup
+        \aftergroup\msi@closetabular
+        \let\\=\@cr
+        \halign\bgroup&##\cr}%
 }
 
 
 \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
 
-\def\msi@end@tabular{%
-  \ifmmode
-    \string\end{tabular}
-  \else
+\def\msi@end@tabular{%  
         \crcr
-       \egroup %halign
-     \egroup   %hbox
-   \endgroup   %donext
-  \fi
-}
+        \egroup % the \halign
+     \endgroup % to do the closetabular
+     \ifmathtabular\char`\}\fi
+  \endgroup}
 
 \def\cline#1{}
 \def\hline{}
@@ -1204,7 +1203,8 @@
 \def\msi@font@switchA[#1]#2{%
    \expandafter\def\csname#2\endcsname{%
       \ifmmode
-        \char`\\\msitag{#2}%
+        \expandafter\string\csname #2\endcsname\char`\  %
+        %%\char`\\\msitag{#2}%
       \else
         \msihmode
         \if@in@texttag
@@ -1253,6 +1253,11 @@
        \msitag{<texb enc="1" name="#1">}%
           <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
        \msitag{</texb>}}}
+
+\def\msi@cdr#1#2xxxx{#2}
+
+\def\MSILocalDef#1{\def#1{\string #1}}
+
 
 \bgroup
      \@make@braces@other
