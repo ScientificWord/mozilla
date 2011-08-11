@@ -734,47 +734,35 @@
 }
 
 \newif\ifmathtabular
-\mathtabularfalse
+\mathtabulartrue
 
 \def\msi@begin@tabularA[#1]#2{%
-   \ifmmode
-      %\def\donext{\@make@braces@other\relax\msi@mtabular{#2}}%
-      %\string\begin{tabular}{#1}%
-      \def\donext{%
-            \mathtabulartrue
-            \string\msipassthru\char`\{%
-            \msihmode}
-   \else
-      \def\donext{%
-         \begingroup
-            \msihmode   
-            \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
-            \msiopentag{tbody}{<tbody>}
-            \aftergroup\msi@closetabular
-            \mathtabularfalse
-            \hbox\bgroup
-              \let\\=\@cr
-              \halign\bgroup&####\cr
-      }%
-   \fi
-   \donext
+   \begingroup
+      \ifmmode
+        \string\msipassthru\char`\{%
+        \mathtabulartrue
+        \msihmode
+        \catcode`\&=4%
+      \else
+        \mathtabularfalse
+      \fi   
+      \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+      \msiopentag{tbody}{<tbody>}%
+      \begingroup
+        \aftergroup\msi@closetabular
+        \let\\=\@cr
+        \halign\bgroup&##\cr}%
 }
 
 
 \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
 
-\def\msi@end@tabular{%
-  \endgroup
-  \ifmathtabular
-    %\string\end{tabular}
-    \char`\}%
-  \else
+\def\msi@end@tabular{%  
         \crcr
-       \egroup %halign
-     \egroup   %hbox
-   \endgroup   %donext
-  \fi
-}
+        \egroup % the \halign
+     \endgroup % to do the closetabular
+     \ifmathtabular\char`\}\fi
+  \endgroup}
 
 \def\cline#1{}
 \def\hline{}
