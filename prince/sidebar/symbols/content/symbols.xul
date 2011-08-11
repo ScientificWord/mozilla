@@ -502,10 +502,8 @@
             </row>
             <row>
               <toolbarbutton id="symbolnmid" />
-              <!--<toolbarbutton label="&#xE2AA;" tooltiptext="&symbolnshortmid.tooltip;"              msivalue="&#xE2AA;"
-              observes="cmd_MSIsymbolCmd2"/> 
-              <toolbarbutton label="&#xE2AB;" tooltiptext="&symbolnshortparallel.tooltip;"              msivalue="&#xE2AB;"
-              observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolnshortmid" /> 
+              <toolbarbutton id="symbolnshortparallel" />
               <toolbarbutton id="symbolnvdash" />
               <toolbarbutton id="symbolnVdash" />
             </row>
