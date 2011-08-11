@@ -207,6 +207,7 @@
 
 
 \def\theoremstyle#1{\def\msi@currentthmstyle{#1}}
+\theoremstyle{plain}
 
 
 
@@ -251,21 +252,18 @@
 
    
 %% %% Newcommand and renewcommand
-%% 
-%% \def\newcommand{%
-%%   \@ifnextchar*{\@newcommand{*}}{\@newcommand{}}}
-%% 
-%% \def\@newcommand#1{%
-%%   \@ifnextchar[{\@newcommandA#1}{\@newcommandA#1[]}}
-%% 
-%% \def\@newcommandA#1[#2]{%
-%%   \@ifnextchar[{\@newcommandB#1[#2]}{\@newcommandB#1[#2][]}}
-%% 
-%% \def\@newcommandB#1[#2][#3]#4{%
-%%   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand{#1}[#2][#3]{#4}}%
-%%   % Define command
-%%   \def#1{\string#1}%
-%% }
+ 
+ \def\newcommand{\@ifnextchar*{\@newcommand}{\@newcommand{}}}
+ \let\renewcommand\newcommand
+ 
+ %%% #1 = optional star, #2 = command name
+ \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[]}}
+ 
+ \def\@newcommandA#1#2[#3]{\@ifnextchar[{\@newcommandB{#1}{#2}[#3]}{\@newcommandB{#1}{#2}[#3][]}}
+
+ \def\@newcommandB#1#2[#3][#4]#5{%
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}[#3][#4]{#5}}%
+   \MSILocalDef{#2}}
 
 
 
@@ -1266,6 +1264,11 @@
        \msitag{<texb enc="1" name="#1">}%
           <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
        \msitag{</texb>}}}
+
+\def\msi@cdr#1#2xxxx{#2}
+
+\def\MSILocalDef#1{\def#1{\string #1}}
+
 
 \bgroup
      \@make@braces@other
