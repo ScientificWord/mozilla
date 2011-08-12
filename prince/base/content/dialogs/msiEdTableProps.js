@@ -667,11 +667,6 @@ function onChangeTableUnits()
   tableUnitsHandler.setCurrentUnit(gDialog.tableUnitsList.value);
 }
 
-function onChangeCellUnits()
-{
-  cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
-}
-
 
 function setCurrSide(newSide)
 {
@@ -689,6 +684,12 @@ function setCurrSide(newSide)
 
 
 var cellUnitsHandler;
+
+function onChangeCellUnits()
+{
+  cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
+}
+
 function initCellsPanel()
 {
 //  var previousValue = gDialog.CellWidthInput.value;
@@ -1523,19 +1524,20 @@ function EnableDisableControls()
 //  } catch(e) {}
 //}
 
-function SetAnAttribute(destElement, attr, attrValue)
+function SetAnAttribute(destElement, theAttr, theAttrValue)
 {
   // Use editor methods since we are always
   //  modifying a table in the document and
   //  we need transaction system for undo
   try {
-    if (!attrValue || attrValue.length == 0)
-      gActiveEditor.removeAttributeOrEquivalent(destElement, attr, false);
+    if (!theAttrValue || theAttrValue.length == 0)
+      gActiveEditor.removeAttributeOrEquivalent(destElement, theAttr, false);
     else
-      gActiveEditor.setAttributeOrEquivalent(destElement, attr, attrValue, false);
-    var logStr = "In msiEdTableProps.js, SetAnAttribute(); set attribute [" + attr + "] on [" + destElement.nodeName + "] element to [";
-    if (attrValue && attrValue.length)
-      logStr += attrValue;
+      msiEditorEnsureElementAttribute(destElement, theAttr, theAttrValue, gActiveEditor);
+//      gActiveEditor.setAttributeOrEquivalent(destElement, attr, attrValue, false);
+    var logStr = "In msiEdTableProps.js, SetAnAttribute(); set attribute [" + theAttr + "] on [" + destElement.nodeName + "] element to [";
+    if (theAttrValue && theAttrValue.length)
+      logStr += theAttrValue;
     logStr += "]\n";
     msiKludgeLogString(logStr, ["tableEdit"]);
   } catch(e) {}
@@ -2417,18 +2419,18 @@ function ApplyCellAttributes()
 
 function ApplyAttributesToOneCell(destElement, nRow, nCol)
 {
-  var theVal = null;
-  var theValStr = "";
-  if (gCellChangeData.size.height && (gCellChangeData.size.height == "true"))
+  var aVal = null;
+  var aValStr = "";
+  if (gCellChangeData.size.height && (gCellChangeData.size.height == true))
   {
-    theVal = cellUnitsHandler.getValueStringAs(gDialog.CellHeightInput.value, "px");
-    SetAnAttribute(destElement, "height", theVal);
+    aVal = cellUnitsHandler.getValueStringAs(gDialog.CellHeightInput.value, "mm");
+    SetAnAttribute(destElement, "height", aVal);
   }
 
-  if (gCellChangeData.size.width && (gCellChangeData.size.width == "true") )
+  if (gCellChangeData.size.width && (gCellChangeData.size.width == true) )
   {
-    theVal = cellUnitsHandler.getValueStringAs(gDialog.CellWidthInput.value, "px");
-    SetAnAttribute(destElement, "width", theVal);
+    aVal = cellUnitsHandler.getValueStringAs(gDialog.CellWidthInput.value, "mm");
+    SetAnAttribute(destElement, "width", aVal);
   }
 
   var theSide;
