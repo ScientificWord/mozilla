@@ -49,7 +49,7 @@ function UnitHandler()
     //returns same as this.getValueOf together with the unit
   {
     var theVal = this.getValueAs(value, unit);
-    return String(theVal) + unit;
+    return (String(theVal) + unit);
   };
 
   this.getValueString = function( value )
