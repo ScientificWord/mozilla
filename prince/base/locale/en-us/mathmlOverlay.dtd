@@ -491,7 +491,7 @@
 
 <!ENTITY symbolinfty.tooltip       "infty">
 <!ENTITY symbolpartial.tooltip        "partial">
-<!ENTITY symboldots.tooltip          "dots">
+<!ENTITY symboldots.tooltip          "ldots">
 <!ENTITY symbolcdots.tooltip    "cdots">
 <!ENTITY symbolvdots.tooltip    "vdots">
 <!ENTITY symbolddots.tooltip    "ddots">
