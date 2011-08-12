@@ -1,8 +1,8 @@
 /* proc.css (copied from article.css) */
 
-math {
-  direction: ltr;
-}
+/************************/
+/* Division header tags */
+/************************/
 
 part {
   display: block;
@@ -36,7 +36,6 @@ chapter>sectiontitle{
   line-height: 24pt;
   text-align: center;
 }
-
  
 chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
   content: "Chapter " counter(chapter,upper-roman) " ";
@@ -68,7 +67,6 @@ section {
   left: 0;
 }  
 
-
 section>*:first-child{
   display: block;
   margin: 10pt 10pt 0pt 0pt;
@@ -85,12 +83,10 @@ section>*:first-child[open="false"]{
   font-weight: bold;
 }
 
- 
 section>*:first-child:before, section[open="true"]>*:first-child:before  {
   content: counter(section) ".  ";
-  -moz-user-select: -moz-none;
+  -moz-user-modify: read-only;
 }
-
 
 section>*:first-child{
   display: block;
@@ -107,13 +103,11 @@ section>*:first-child[open="false"]{
   font-size: large;
   font-weight: bold;
 }
-
  
 section>*:first-child:before, section[open="true"]>*:first-child:before  {
   content: counter(section) ".  ";
   -moz-user-select: -moz-none;
 }
-
 
 section>sectiontitle{
   display: block;
@@ -130,11 +124,15 @@ section>sectiontitle[open="false"]{
   font-size: large;
   font-weight: bold;
 }
-
  
 section>sectiontitle:before, section[open="true"]>sectiontitle:before  {
   content: counter(section) ".  ";
   -moz-user-select: -moz-none;
+}
+
+section defaulttitletag:after {
+  content: "Replace this section title"; 
+  color: gray;
 }
 
 subsection {
@@ -153,6 +151,11 @@ subsection>*:first-child {
 subsection>*:first-child:before {
   content: counter(section) "." counter(subsection) ".  ";
   -moz-user-select: -moz-none;
+}
+
+subsection defaulttitletag:after {
+  content: "Replace this subsection title"; 
+  color: gray;
 }
 
 subsubsection {
@@ -174,6 +177,11 @@ subsubsection>*:first-child:before {
   -moz-user-select: -moz-none;
 }
 
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title"; 
+  color: gray;
+}
+
 paragraph {
   display:block;
   counter-increment: paragraph;
@@ -188,6 +196,47 @@ paragraph>*:first-child {
 paragraph>*:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
   -moz-user-select: -moz-none;
+}
+
+paragraph defaulttitletag:after {
+  content: "Replace this subsubsubsection title"; 
+  color: gray;
+}
+
+subparagraph defaulttitletag:after {
+  content: "Replace this subsubsubsubsection title"; 
+  color: gray;
+}
+
+/*************************/
+/* Front matter elements */
+/*************************/
+
+title {
+  font-size: x-large;
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+}
+
+author {
+  font-weight: normal;
+  display: block;
+  padding-top: 10pt;
+  text-align: center;
+}
+
+address {
+  display: block;
+  text-align: center;
+}
+
+date {
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+  text-align: center;
 }
 
 abstract {
@@ -211,9 +260,22 @@ abstract:before {
   -moz-user-select: -moz-none;
 }
 
+button[class="frontmattertag"]{
+  position: absolute;
+  left: 5px;
+}
+
+/**********************/
+/* Main text elements */
+/**********************/
+
 p {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
+}
+
+math {
+  direction: ltr;
 }
 
 bodyText {
@@ -234,32 +296,6 @@ bodyMath {
   color: rgb(0,128,64);
 }
 
-author {
-  font-weight: normal;
-  display: block;
-  padding-top: 10pt;
-  text-align: center;
-}
-
-date {
-  font-weight: normal;
-  display: block;
-  padding-top: 2pt;
-  text-align: center;
-}
-
-address {
-  display: block;
-  text-align: center;
-}
-
-title {
-  font-size: x-large;
-  display: block;
-  margin-top: 12pt;
-  text-align: center;
-}
-
 shortQuote {
   display: block; 
   margin-left: 20pt;
@@ -267,14 +303,6 @@ shortQuote {
 }
 longQuotation {
   display: block; 
-  margin-left: 20pt;
-  margin-right: 20pt;
-}
-
-epigraph {
-  display: block;
-  color: white;
-  background-color: black;
   margin-left: 20pt;
   margin-right: 20pt;
 }
@@ -287,6 +315,16 @@ epigraph {
   font-weight: bold;
   -moz-user-select: -moz-none;
 }
+
+/* Non-standard element (gp)
+epigraph {
+  display: block;
+  color: white;
+  background-color: black;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+*/
 
 centered {
   display: block;
@@ -305,6 +343,14 @@ flushleft {
   margin: 10pt 10pt 5pt 5pt;
   text-align: left;
 }
+
+pre, verbatim {
+  font-family: Courier; white-space: pre
+}
+
+/***********************/
+/* Tagged run elements */
+/***********************/
 
 emphasized {
   font-style: italic;
@@ -426,36 +472,9 @@ theorem:before {
 }
 */
 
-section defaulttitletag:after {
-  content: "Replace this section title"; 
-  color: gray;
-}
-
-subsection defaulttitletag:after {
-  content: "Replace this subsection title"; 
-  color: gray;
-}
-
-subsubsection defaulttitletag:after {
-  content: "Replace this subsubsection title"; 
-  color: gray;
-}
-
-paragraph defaulttitletag:after {
-  content: "Replace this subsubsubsection title"; 
-  color: gray;
-}
-
-subparagraph defaulttitletag:after {
-  content: "Replace this subsubsubsubsection title"; 
-  color: gray;
-}
-
-
-pre, verbatim {
-  font-family: Courier; white-space: pre
-}
-
+/***************/
+/* Lists, etc. */
+/***************/
 
 enumerate { counter-reset: item-number }
  
@@ -465,10 +484,8 @@ enumerate>item { display: block ;
 
 enumerate>item:before { content: counter(item-number) ". "; counter-increment: item-number }
 
-   
-
 description {
-  counter-reset: itm;
+  counter-reset: item;
 }
 
 itemize {
@@ -476,23 +493,20 @@ itemize {
   counter-reset: item;
 }
 
+/***************/
+/* Other stuff */
+/***************/
+
 img {
   display: inline; 
   margin: 2em
 } 
-
-
-button[class="eqnnum"]{
-  font-style: normal; 
-  color: red;
-}
 
 button[class="subeqnnum"]{
   right: 20px;
   font-style: normal; 
   color: blue;
 }
-
 
 /*  Following moved to latex.css
 button[class="eqnnum"]:after{
@@ -503,12 +517,6 @@ button[class="subeqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
 }
 */
-
-button[class="frontmattertag"]{
-  position: absolute;
-  left: 5px;
-}
-
 
 [hideindexentries="true"] indexitem {
   display: none;
