@@ -424,10 +424,9 @@
 \@ifundefined{HTML}{\def\HTML#1{\relax}}{}
 \@ifundefined{TCIIcon}{\def\TCIIcon#1#2#3#4{\relax}}{}
 
-
-\providecommand{\UNICODE}[2][]{\protect\rule{.1in}{.1in}}
-\providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
-\providecommand{\CustomNote}[3][]{\marginpar{#3}}
+\newcommand{\UNICODE}[2][]{\protect\rule{.1in}{.1in}}
+\newcommand{\U}[1]{\protect\rule{.1in}{.1in}}
+\newcommand{\CustomNote}[3][]{\marginpar{#3}}
 
 
 \@ifundefined{lambdabar}{
