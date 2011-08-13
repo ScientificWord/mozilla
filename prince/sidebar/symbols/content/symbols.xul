@@ -70,11 +70,11 @@
 	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline" observes="tabpanelstyle"> 
         <grid>
           <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -132,11 +132,11 @@
      <tabpanel id="symbol_ucGreek" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -165,11 +165,11 @@
     	<tabpanel id="symbol_binOp"  mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
            <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -270,11 +270,11 @@
       <tabpanel id="symbol_binRel" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
         <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -430,11 +430,11 @@
       <tabpanel id="symbol_negRel" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
         <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -454,79 +454,74 @@
             <row>
               <toolbarbutton id="symbollneqq" />
               <toolbarbutton id="symbolgneqq" />
-            <!--  <toolbarbutton id="symbolgnsim" />-->
-              <!--toolbarbutton id="symbolnleqslant" /> -->
-	        <toolbarbutton id ="symbolnleqslant2"  tooltiptext="&symbolnleqslant.tooltip;" msivalue="&nleqslant;" observes="cmd_MSIsymbolCmd"> 
-				<label> <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&#x27AD;&#x0338;</mi></math> </label> </toolbarbutton>
+              <toolbarbutton id="symbolnleqslant" /> 
               <toolbarbutton id="symbolngeqslant" /> 
+              <toolbarbutton id="symbollneq" />
             </row>
             <row>
-              <toolbarbutton id="symbollneq" />
               <toolbarbutton id="symbolgneq" />
               <toolbarbutton id="symbolnpreceq" /> 
               <toolbarbutton id="symbolnsucceq" /> 
               <toolbarbutton id="symbolprecnsim" />
+              <toolbarbutton id="symbolsuccnsim" />
             </row>
             <row>
-              <toolbarbutton id="symbolsuccnsim" />
               <toolbarbutton id="symbollnsim" />
               <toolbarbutton id="symbolgnsim" />
               <toolbarbutton id="symbolnleqq" /> 
-              <toolbarbutton id="symbolngeqq" /> 
+              <toolbarbutton id="symbolngeqq" />
+               <toolbarbutton id="symbolprecneqq" /> 
             </row>
             <row>
-              <toolbarbutton id="symbolprecneqq" />
               <toolbarbutton id="symbolsuccneqq" />
               <toolbarbutton id="symbolprecnapprox" />
               <toolbarbutton id="symbolsuccnapprox" />
               <toolbarbutton id="symbollnapprox" />
+              <toolbarbutton id="symbolgnapprox" />
             </row>
             <row>
-              <toolbarbutton id="symbolgnapprox" />
               <toolbarbutton id="symbolnsim" />
               <toolbarbutton id="symbolncong" />
               <toolbarbutton id="symbolvarsubsetneq" /> 
               <toolbarbutton id="symbolvarsupsetneq" /> 
+              <toolbarbutton id="symbolnsubseteqq" /> 
             </row>
             <row>
-              <toolbarbutton id="symbolnsubseteqq" /> 
               <toolbarbutton id="symbolnsupseteqq" /> 
               <toolbarbutton id="symbolsubsetneqq" /> 
               <toolbarbutton id="symbolsupsetneqq" /> 
               <toolbarbutton id="symbolvarsubsetneqq" /> 
+              <toolbarbutton id="symbolvarsupsetneqq" /> 
             </row>
             <row>
-              <toolbarbutton id="symbolvarsupsetneqq" /> 
               <toolbarbutton id="symbolsubsetneq" />
               <toolbarbutton id="symbolsupsetneq" />
               <toolbarbutton id="symbolnsubseteq" />
               <toolbarbutton id="symbolnsupseteq" />
-            </row>
-            <row>
               <toolbarbutton id="symbolnparallel" />
-              <toolbarbutton id="symbolnmid" />
-              <!--<toolbarbutton label="&#xE2AA;" tooltiptext="&symbolnshortmid.tooltip;"              msivalue="&#xE2AA;"
-              observes="cmd_MSIsymbolCmd2"/> 
-              <toolbarbutton label="&#xE2AB;" tooltiptext="&symbolnshortparallel.tooltip;"              msivalue="&#xE2AB;"
-              observes="cmd_MSIsymbolCmd2"/> -->
-              <toolbarbutton id="symbolnvdash" />
             </row>
             <row>
+              <toolbarbutton id="symbolnmid" />
+              <toolbarbutton id="symbolnshortmid" /> 
+              <toolbarbutton id="symbolnshortparallel" />
+              <toolbarbutton id="symbolnvdash" />
               <toolbarbutton id="symbolnVdash" />
+            </row>
+            <row>
               <toolbarbutton id="symbolnvDash" />
               <toolbarbutton id="symbolnVDash" />
               <toolbarbutton id="symbolntrianglerighteq" />
               <toolbarbutton id="symbolntrianglelefteq" />
+              <toolbarbutton id="symbolntriangleright" />
             </row>
             <row>
-              <toolbarbutton id="symbolntriangleright" />
               <toolbarbutton id="symbolntriangleleft" />
               <toolbarbutton id="symbolnleftarrow" />
               <toolbarbutton id="symbolnrightarrow" />
               <toolbarbutton id="symbolnLeftarrow" />
+              <toolbarbutton id="symbolnRightarrow" />
             </row>
             <row>
-              <toolbarbutton id="symbolnRightarrow" />
               <toolbarbutton id="symbolnLeftrightarrow" />
               <toolbarbutton id="symbolnleftrightarrow" />
             </row>
@@ -538,11 +533,11 @@
       <tabpanel id="symbol_arrow" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
          <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -645,11 +640,11 @@
       <tabpanel id="symbol_misc" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -763,11 +758,11 @@
       <tabpanel id="symbol_delims" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
          <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row height="35px">
@@ -792,11 +787,11 @@
       <tabpanel id="symbol_latin1" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -938,11 +933,11 @@
       <tabpanel id="symbol_latinextended" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
          <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
@@ -1131,11 +1126,11 @@
       <tabpanel id="symbol_punctuation" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
          <columns>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
-            <column width="29px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
           </columns>
           <rows>
             <row>
