@@ -4564,19 +4564,28 @@ function ConvertRGBColorIntoHEXColor(color)
 
 /************* CSS ***************/
 
-function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPropertyName)
+function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPropertyName, bPreferAttr)
 {
   if (!theElement)
   {
     dump("In msiEditorUtilities.js, msiGetHTMLOrCSSStyleValue() called with null element!\n");
     return "";
   }  
+
+  var element = theElement;
+  var value;
+  if (bPreferAttr)
+  {
+    value = element.getAttribute(attrName);
+    if (value && value.length)
+      return value;
+  }
+
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var prefs = GetPrefs();
   var IsCSSPrefChecked = prefs.getBoolPref("editor.use_css");
-  var styleVal, value, match;
-  var element = theElement;
+  var styleVal, match;
   var elemStyle = element.style;
   var regExp = new RegExp(cssPropertyName + ":\\s*([^;]+)(;|$)");
   if (IsCSSPrefChecked && msiIsHTMLEditor(editorElement))
@@ -4592,14 +4601,14 @@ function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPrope
         value = match[1];
     }
   }
-  if (!value)
+  if (!value && !bPreferAttr)
     value = element.getAttribute(attrName);
 
   if (!value)
   {
     element = msiNavigationUtils.findWrappingNode(element);
     if (element && (element != theElement))
-      value = msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssPropertyName);
+      value = msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssPropertyName, bPreferAttr);
   }
   
   if (!value)
