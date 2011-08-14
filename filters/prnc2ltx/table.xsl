@@ -777,7 +777,7 @@
       <xsl:with-param name="cellId" select="generate-id($thisCell)" />
       <xsl:with-param name="alignment">
         <xsl:choose>
-          <xsl:when test="string-length($thisCell/@width)">
+          <xsl:when test="string-length($thisCell/@cellwidth)">
             <xsl:choose>
               <xsl:when test="$thisCell/@valign='center'">middle</xsl:when>
               <xsl:when test="$thisCell/@valign='bottom'">bottom</xsl:when>
@@ -789,9 +789,9 @@
         </xsl:choose>
       </xsl:with-param>
       <xsl:with-param name="widthSpec">
-        <xsl:if test="($colSpan = 1) and string-length($thisCell/@width)">
+        <xsl:if test="($colSpan = 1) and string-length($thisCell/@cellwidth)">
           <xsl:call-template name="convertSizeSpecsToMM">
-            <xsl:with-param name="theSpec" select="$thisCell/@width" />
+            <xsl:with-param name="theSpec" select="$thisCell/@cellwidth" />
           </xsl:call-template>
         </xsl:if>
       </xsl:with-param>
@@ -878,7 +878,7 @@
   <xsl:variable name="unitStr" select="translate($theSpec,'0123456789.','')" />
   <xsl:variable name="numberStr">
     <xsl:choose>
-      <xsl:when test="string-length($unitStr)"><xsl:value-of select="string-before($theSpec, $unitStr)" /></xsl:when>
+      <xsl:when test="string-length($unitStr)"><xsl:value-of select="substring-before($theSpec, $unitStr)" /></xsl:when>
       <xsl:otherwise><xsl:value-of select="$theSpec" /></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
