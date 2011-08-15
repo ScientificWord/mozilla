@@ -391,7 +391,8 @@ void Typesetter::EndProcess()
          LOG("\nSending to mathmldll: " << theCStr);
          SetupMathML();
          std::string s_mathml;
-         ProcessMathML(theCStr, s_mathml);
+         std::string s_anom;
+         ProcessMathML(theCStr, s_mathml, s_anom);
 
          LOG("\nGot back " << s_mathml.c_str());
          AppendTag(s_mathml.c_str());
@@ -571,7 +572,8 @@ void Typesetter::EndInline()
          LOG("\nSending to jbm processor : " << theCStr);
          SetupMathML();
          std::string s_mathml;
-         ProcessMathML(theCStr, s_mathml);
+         std::string s_anom;
+         ProcessMathML(theCStr, s_mathml, s_anom);
          LOG("\nGot back " << s_mathml.c_str());
          std::string str;
          str +=  "<mml:math>";
@@ -641,7 +643,8 @@ void Typesetter::EndDisplay()
          LOG("\nSending to jbm processor : " << theCStr);
          SetupMathML();
          std::string s_mathml;
-         ProcessMathML(theCStr, s_mathml);
+         std::string s_anom;
+         ProcessMathML(theCStr, s_mathml, s_anom);
          LOG("\nGot back " << s_mathml.c_str());
          std::string str;
          str += "<msidisplay>";

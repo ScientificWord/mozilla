@@ -309,8 +309,10 @@ function UseCSSForCellProp(propName)
     break;
 
     case "width":
+    case "cellwidth":
       return (!gIsMatrix && !ShouldSetWidthOnCols());
     break;
+    case "cellheight":
     case "height":
       return (gIsMatrix || !ShouldSetHeightOnRows());
 //      return (!gIsMatrix && !ShouldSetHeightOnRows());
@@ -667,11 +669,6 @@ function onChangeTableUnits()
   tableUnitsHandler.setCurrentUnit(gDialog.tableUnitsList.value);
 }
 
-function onChangeCellUnits()
-{
-  cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
-}
-
 
 function setCurrSide(newSide)
 {
@@ -689,6 +686,12 @@ function setCurrSide(newSide)
 
 
 var cellUnitsHandler;
+
+function onChangeCellUnits()
+{
+  cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
+}
+
 function initCellsPanel()
 {
 //  var previousValue = gDialog.CellWidthInput.value;
@@ -1523,19 +1526,20 @@ function EnableDisableControls()
 //  } catch(e) {}
 //}
 
-function SetAnAttribute(destElement, attr, attrValue)
+function SetAnAttribute(destElement, theAttr, theAttrValue)
 {
   // Use editor methods since we are always
   //  modifying a table in the document and
   //  we need transaction system for undo
   try {
-    if (!attrValue || attrValue.length == 0)
-      gActiveEditor.removeAttributeOrEquivalent(destElement, attr, false);
+    if (!theAttrValue || theAttrValue.length == 0)
+      gActiveEditor.removeAttributeOrEquivalent(destElement, theAttr, false);
     else
-      gActiveEditor.setAttributeOrEquivalent(destElement, attr, attrValue, false);
-    var logStr = "In msiEdTableProps.js, SetAnAttribute(); set attribute [" + attr + "] on [" + destElement.nodeName + "] element to [";
-    if (attrValue && attrValue.length)
-      logStr += attrValue;
+      msiEditorEnsureElementAttribute(destElement, theAttr, theAttrValue, gActiveEditor);
+//      gActiveEditor.setAttributeOrEquivalent(destElement, attr, attrValue, false);
+    var logStr = "In msiEdTableProps.js, SetAnAttribute(); set attribute [" + theAttr + "] on [" + destElement.nodeName + "] element to [";
+    if (theAttrValue && theAttrValue.length)
+      logStr += theAttrValue;
     logStr += "]\n";
     msiKludgeLogString(logStr, ["tableEdit"]);
   } catch(e) {}
@@ -2417,18 +2421,18 @@ function ApplyCellAttributes()
 
 function ApplyAttributesToOneCell(destElement, nRow, nCol)
 {
-  var theVal = null;
-  var theValStr = "";
-  if (gCellChangeData.size.height && (gCellChangeData.size.height == "true"))
+  var aVal = null;
+  var aValStr = "";
+  if (gCellChangeData.size.height && (gCellChangeData.size.height == true))
   {
-    theVal = cellUnitsHandler.getValueStringAs(gDialog.CellHeightInput.value, "px");
-    SetAnAttribute(destElement, "height", theVal);
+    aVal = cellUnitsHandler.getValueString(gDialog.CellHeightInput.value);
+    SetAnAttribute(destElement, "cellheight", aVal);
   }
 
-  if (gCellChangeData.size.width && (gCellChangeData.size.width == "true") )
+  if (gCellChangeData.size.width && (gCellChangeData.size.width == true) )
   {
-    theVal = cellUnitsHandler.getValueStringAs(gDialog.CellWidthInput.value, "px");
-    SetAnAttribute(destElement, "width", theVal);
+    aVal = cellUnitsHandler.getValueString(gDialog.CellWidthInput.value);
+    SetAnAttribute(destElement, "cellwidth", aVal);
   }
 
   var theSide;
@@ -2851,12 +2855,12 @@ function collateCellBorderData(ourCellData, reviseData)
 //Need to adjust the following to deal with multi-row or multi-col cells!
 function collateCellSizeData(ourCellData, reviseData)
 {
-  var rowHeights = new Array(ourCellData.length);
-  for (var ix = 0; ix < rowHeights.length; ++ix)
-    rowHeights[ix] = 0.0;
-  var colWidths = new Array(ourCellData[0].length);
-  for (var jx = 0; jx < colWidths.length; ++jx)
-    colWidths[jx] = 0.0;
+  var cellHeights = [];
+//  for (var ix = 0; ix < rowHeights.length; ++ix)
+//    rowHeights[ix] = 0.0;
+  var cellWidths = [];
+//  for (var jx = 0; jx < colWidths.length; ++jx)
+//    colWidths[jx] = 0.0;
   var nRow = 0;
   var nCol = 0;
   var theWidth = 0;
@@ -2888,6 +2892,7 @@ function collateCellSizeData(ourCellData, reviseData)
       if (theCellData.size.width.unit in widthUnitsCount)
         ++widthUnitsCount[theCellData.size.width.unit];
       theWidth = interpretCSSSizeValue(theCellData.size.width.number, theCellData.size.width.unit, widthUnitFound, theCellData);
+      cellWidths.push( theWidth );
     }
     else
       ++widthAutoCount;
@@ -2898,13 +2903,14 @@ function collateCellSizeData(ourCellData, reviseData)
       if (theCellData.size.height.unit in heightUnitsCount)
         ++heightUnitsCount[theCellData.size.height.unit];
       theHeight = interpretCSSSizeValue(theCellData.size.height.number, theCellData.size.height.unit, heightUnitFound, theCellData);
+      cellHeights.push( theHeight );
     }
     else
       ++heightAutoCount;
-    if (rowHeights[nRow] < theHeight)
-      rowHeights[nRow] = theHeight;
-    if (colWidths[nCol] < theWidth)
-      colWidths[nCol] = theWidth;
+//    if (rowHeights[nRow] < theHeight)
+//      rowHeights[nRow] = theHeight;
+//    if (colWidths[nCol] < theWidth)
+//      colWidths[nCol] = theWidth;
     theFontSize = getCellDataFontHeight(theCellData);
     if (theFontSize)
     {
@@ -2916,8 +2922,8 @@ function collateCellSizeData(ourCellData, reviseData)
     }
     currCell = reviseData.getNextSelectedCell(cellIter);
   }
-  theWidth = findMedian(colWidths, 0.0);
-  theHeight = findMedian(rowHeights, 0.0);
+  theWidth = findMedian(cellWidths, 0.0);
+  theHeight = findMedian(cellHeights, 0.0);
   var newUnit = findPlurality(widthUnitsCount);
   if (newUnit != null)
     gCellWidthUnit = newUnit;
@@ -3257,10 +3263,10 @@ function getSizeDataForCell(aCell, nRow, nCol, elementUnitsList)
     if (anotherValue && anotherValue.length)
       theValue = anotherValue;
   }
-  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "width", "width");
+  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "cellwidth", "width", true);
   if (anotherValue && anotherValue.length)
     theValue = anotherValue;
-  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "width", "min-width");
+  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "cellwidth", "min-width", true);
   if (anotherValue && anotherValue.length)
     theValue = anotherValue;
   if (theValue)
@@ -3272,7 +3278,7 @@ function getSizeDataForCell(aCell, nRow, nCol, elementUnitsList)
   var theRow = getRowNodeForRow(nRow);
   if (theRow)
     theValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, theRow, "height", "height");
-  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "height", "height");
+  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "cellheight", "height", true);
   if (anotherValue && anotherValue.length)
     theValue = anotherValue;
   if (theValue)
