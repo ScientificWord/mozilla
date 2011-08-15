@@ -288,6 +288,24 @@
   \msiclosetag{citation}{</citation>}}
 
 
+%\MSITextElement[a]{ref}
+%%<xref key="mykey" reftype="page" req="varioref"/>
+%\MSITextElement{pageref}
+
+\def\ref#1{%
+  \ifmmode
+    \msitag{\msipassthru{<xref key="#1" reftype="obj" req="varioref"/>}}%
+  \else
+    \msitag{<xref key="#1" reftype="obj" req="varioref"/>}
+  \fi}
+
+\def\pageref#1{%
+  \ifmmode
+    \msitag{\msipassthru{<xref key="#1" reftype="page" req="varioref"/>}}%
+  \else
+    \msitag{<xref key="#1" reftype="page" req="varioref"/>}
+  \fi}
+
 
 \def\pagenumbering#1{%
    \msiopentag{latexstyleb}{<latexstyleb>}%
@@ -412,12 +430,11 @@
 \def\msi@begin@equation{$$}
 \def\msi@end@endequation{$$}
 
-%% jcs \def\[#1\]{%
-%% jcs   \ %
-%% jcs   %%\temptoksa={\[#1\]}%
-%% jcs   %%\msiextproc{jbm}{\the\temptoksa}%
-%% jcs   \msiextproc{jbm}{\[#1\]}%
-%% jcs }
+\def\[#1\]{%
+  \msitag{<mml:math>}
+  \msiextproc{jbm}{$#1$}%
+  \msitag{</mml:math>}
+}
 
 
 
