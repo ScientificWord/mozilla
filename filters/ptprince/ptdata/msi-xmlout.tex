@@ -288,6 +288,24 @@
   \msiclosetag{citation}{</citation>}}
 
 
+%\MSITextElement[a]{ref}
+%%<xref key="mykey" reftype="page" req="varioref"/>
+%\MSITextElement{pageref}
+
+\def\ref#1{%
+  \ifmmode
+    \msitag{\msipassthru{<xref key="#1" reftype="obj" req="varioref"/>}}%
+  \else
+    \msitag{<xref key="#1" reftype="obj" req="varioref"/>}
+  \fi}
+
+\def\pageref#1{%
+  \ifmmode
+    \msitag{\msipassthru{<xref key="#1" reftype="page" req="varioref"/>}}%
+  \else
+    \msitag{<xref key="#1" reftype="page" req="varioref"/>}
+  \fi}
+
 
 \def\pagenumbering#1{%
    \msiopentag{latexstyleb}{<latexstyleb>}%
