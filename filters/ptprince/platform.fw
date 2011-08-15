@@ -1111,15 +1111,15 @@ void SearchEnv(const char *file, const char *env, char *buf)
 
   *buf = '\0';
 
-  if (file[0] == '/' || file[0] == '\\'){   
+  if (file[0] == '/' || file[0] == '\\'){
     // Absolute path
     if (FileExists(file)){
       strcpy(buf, file);
     }
     return;
   }
- 
-  
+
+
 
   if ( FileExists( file ) )
   {
@@ -1144,7 +1144,7 @@ void SearchEnv(const char *file, const char *env, char *buf)
     #else
       while(*end && *end != ':') end++; /* Find end of next path */
     #endif
-    
+
     if (penv == end || !*penv)
     {
       return;
@@ -1159,9 +1159,9 @@ void SearchEnv(const char *file, const char *env, char *buf)
       #endif
     }
     curPath[end - penv + 1] = '\0';
-    
+
     strcat(curPath, file);
-    
+
     if (FileExists( curPath ))
     {
       strcpy(buf, curPath);
@@ -1211,7 +1211,7 @@ bool InputByteFile::Open(const Filename& fullpath){
    std::string filepath = CatFilename(area, name, ext, true);
    std::cout << "\nsearch for filepath = " << filepath << "\n";
    const char* path = SearchFor(filepath.c_str());
-   
+
    if (path == 0){
       std::cout << "\nNot found";
       filepath = CatFilename(area, name, ext, false);
@@ -1405,7 +1405,7 @@ bool OutputByteFile::Open(const Filename& fullpath)
         filepath = envpath;
         #ifdef _WINDOWS
           filepath += "\\";
-        #else 
+        #else
           filepath += "/";
         #endif
         filepath += CatFilename(area, name, ext, false);
