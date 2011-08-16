@@ -8063,7 +8063,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       if (!element)
         element = editor.selection.getRangeAt(0).commonAncestorContainer;
       if (element)
-        propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
+        propsData = msiCreatePropertiesObjectDataFromNode(element, editorElement, true);
     }
     if (propsData)
     {
