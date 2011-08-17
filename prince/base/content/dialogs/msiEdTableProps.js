@@ -1727,6 +1727,7 @@ function ApplyTableAttributes()
   if (gTableChangeData.baseline)
   {
     doSetStyleAttr("vertical-align", gTableBaseline);
+    SetAnAttribute(gTableElement, "valign", gTableBaseline);
 //    logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [vertical-align] on table element style to [" + gTableBaseline + "]\n";
   }
   if (gTableChangeData.background)
@@ -3104,13 +3105,13 @@ function removeMissingSideInfo(ourCellData, nRow, nCol, bNoTop, bNoRight, bNoBot
   for (var aDatum in ourCellData[nRow][nCol].border)
   {
     if (bNoTop)
-      ourCellData[nRow][nCol][aDatum].top = null;
+      ourCellData[nRow][nCol].border[aDatum].top = null;
     if (bNoRight)
-      ourCellData[nRow][nCol][aDatum].right = null;
+      ourCellData[nRow][nCol].border[aDatum].right = null;
     if (bNoBottom)
-      ourCellData[nRow][nCol][aDatum].bottom = null;
+      ourCellData[nRow][nCol].border[aDatum].bottom = null;
     if (bNoLeft)
-      ourCellData[nRow][nCol][aDatum].left = null;
+      ourCellData[nRow][nCol].border[aDatum].left = null;
   }
 }
 
