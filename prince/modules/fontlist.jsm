@@ -1,6 +1,7 @@
 var EXPORTED_SYMBOLS = ["initializeFontFamilyList", "gSystemFonts", 
   "addOTFontsToMenu", "getOTFontlist" ];
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/os.jsm");
 
 // font section
 var gSystemFonts = { init: false, list: [], count: 0};
@@ -10,19 +11,49 @@ const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
 function initializeFontFamilyList(force)
 {
+  dump ("==== initializeFontFamilyList\n");
   var prefs = GetPrefs();
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var dir = dsprops.get("ProfD", Components.interfaces.nsIFile);
   var texbindir;
   var outfile;
+  var os = OS.type;
+  dump("==== OS is "+os+"\n");
   outfile = dir.clone();
   outfile.append("fontfamilies.txt");
+  dump("==== Outfile: "+outfile.path+"\n");
   try { texbindir= prefs.getCharPref("swp.tex.bindir"); }
   catch(exc) {dump("texbindir not set in preferences\n");}
   if (!force)
   { 
     if (outfile.exists()) return;
   }
+  // Mac and Linux don't need the bigfontlist.txt intermediate file
+  var os = OS.type;
+  if ( os != "Win")
+  {
+    dump("==== BuildFonFamilyList on Mac or Linux\n");
+    var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);;
+    exefile.append("BuildFontFamilyList.bash");
+    dump("==== Exe file is "+exefile.path+"\n");
+    if (!exefile.exists()) return;
+    try
+    {
+      var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+      theProcess.init(exefile);
+      var outpath=outfile.path;
+      var args=[outpath];
+      dump("==== BuildFontFamilyList args = "+args+"\n");
+      theProcess.run(true, args, args.length);
+    }
+    catch (ex)
+    {
+       dump("\nUnable to run BuildFontFamilyList.bash\n");
+       dump(ex+"\n");
+    }         
+    return;
+  }
+  dump("BuildFontFamilyList on Windows\n");
   var listfile = dir.clone(); 
   listfile.append("bigfontlist.txt");
   if (listfile.exists()) listfile.remove(false);
@@ -106,6 +137,7 @@ function  getOTFontlist()
       var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
       var fontlistfile=dsprops.get("ProfD", Components.interfaces.nsIFile);
       fontlistfile.append("fontfamilies.txt");
+      dump("Fontlistfile: "+fontlistfile.path+"\n");
       var stream;
       stream = Components.classes["@mozilla.org/network/file-input-stream;1"];
       stream = stream.createInstance(Components.interfaces.nsIFileInputStream);

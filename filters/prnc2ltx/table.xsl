@@ -17,6 +17,11 @@
     <xsl:when test="@width &gt; 0">{<xsl:value-of select="@width"/>pt}</xsl:when>
     <xsl:otherwise>{500pt}</xsl:otherwise>
   </xsl:choose>
+  <xsl:choose>
+    <xsl:when test="@valign = 'bottom'"><xsl:text>[b]</xsl:text></xsl:when>
+    <xsl:when test="@valign = 'top'"><xsl:text>[t]</xsl:text></xsl:when>
+    <xsl:otherwise><xsl:text>[c]</xsl:text></xsl:otherwise>
+  </xsl:choose>
   <xsl:variable name="lastCol">
     <xsl:for-each select="$cellData//cellData">
       <xsl:sort select="number(@col)" data-type="number" order="descending" />
@@ -397,7 +402,7 @@
         <xsl:text>\cline{</xsl:text><xsl:number value="$currPos" /><xsl:text>-</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:number value="$currPos" /><xsl:text>}</xsl:text>
+        <xsl:number value="$currPos - 1" /><xsl:text>}</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
