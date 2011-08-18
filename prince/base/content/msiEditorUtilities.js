@@ -8449,6 +8449,61 @@ function getSiblingEquationsContainer(theNode)
   return document.documentElement; //should NOT happen
 }
 
+function checkForMultiRowInTable(aTable, editor)
+{
+  function checkForMultiRowCell(aNode)
+  {
+    var nodeName = msiGetBaseNodeName(aNode);
+    switch(nodeName)
+    {
+      case "table":
+      case "mtable":
+        if (aNode != aTable)
+          return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+      break;
+      case "td":
+      case "th":
+      case "mtd":
+        return NodeFilter.FILTER_ACCEPT;
+      break;
+      case "tbody":
+      case "thead":
+      case "tfoot":
+      case "tr":
+      case "mtr":
+      case "mlabeledtr":
+        return NodeFilter.FILTER_SKIP;
+      break;
+      default:
+        return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+      break;
+    }
+  }
+
+  var walker = editor.document.createTreeWalker(aTable, NodeFilter.SHOW_ELEMENT,
+                                                checkForMultiRowCell, true);
+  var nextNode;
+  var multiRowCells = [];
+  var singleRowCells = [];
+  while (nextNode = walker.nextNode())
+  {
+    if (nextNode.hasAttribute("rowspan") && (Number(nextNode.getAttribute("rowspan")) > 1) )
+      multiRowCells.push(nextNode);
+    else if (nextNode.hasAttribute("req") && (nextNode.getAttribute("req") == "multirow") )
+      singleRowCells.push(nextNode);
+  }
+  if (!multiRowCells.length && !singleRowCells.length)
+    return;
+
+  editor.beginTransaction();
+  var ii;
+  for (ii = 0; ii < multiRowCells.length; ++ii)
+    msiEditorEnsureElementAttribute(multiRowCells[ii], "req", "multirow", editor);
+  for (ii = 0; ii < singleRowCells.length; ++ii)
+    msiEditorEnsureElementAttribute(singleRowCells[ii], "req", null, editor);
+  editor.endTransaction();
+}
+
 /**************************msiNavigationUtils**********************/
 var msiNavigationUtils = 
 {
