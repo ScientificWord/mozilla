@@ -27,7 +27,6 @@
 
 
 \def\msitexb#1{[SHOULD NOT OCCUR]}
-\def\msidefault#1{\msitag{[Defaulting: \string#1]}}
 
 
 \msi@pass@newline{\@settodim}
@@ -287,6 +286,24 @@
                             hasRemark="false">>}
   \msiclosetag{citation}{</citation>}}
 
+
+%\MSITextElement[a]{ref}
+%%<xref key="mykey" reftype="page" req="varioref"/>
+%\MSITextElement{pageref}
+
+\def\ref#1{%
+  \ifmmode
+    \msitag{\msipassthru{<xref key="#1" reftype="obj" req="varioref"/>}}%
+  \else
+    \msitag{<xref key="#1" reftype="obj" req="varioref"/>}
+  \fi}
+
+\def\pageref#1{%
+  \ifmmode
+    \msitag{\msipassthru{<xref key="#1" reftype="page" req="varioref"/>}}%
+  \else
+    \msitag{<xref key="#1" reftype="page" req="varioref"/>}
+  \fi}
 
 
 \def\pagenumbering#1{%
@@ -1363,6 +1380,61 @@
    \br\msitag{<head>}
    \br\msiopentag{preamble}{<preamble>}
 }
+
+\def\@gobbleit{\let\@temptok}
+
+\futurelet\@bracetok\@gobbleit{
+\futurelet\@brackettok\@gobbleit[
+\futurelet\@startok\@gobbleit*
+
+\def\@inbrace#1{\{#1\}\@gobbleargs}
+\def\@inbracket[#1]{[#1]\@gobbleargs}
+\def\@astar*{*\@gobbleargs}
+
+\def\@gobbleargs{\futurelet\atok\@gobblemore}
+
+\def\@endgobble{\@endtexb\relax}
+
+\def\@gobblemore{%
+   \ifx\atok\@bracetok
+     \let\@donext\@inbrace
+   \else
+     \ifx\atok\@brackettok
+       \let\@donext\@inbracket
+     \else
+       \ifx\atok\@startok
+         \let\@donext\@astar
+       \else 
+         \let\@donext\@endgobble
+       \fi
+     \fi
+   \fi
+   \@donext}
+
+
+
+
+% Here #1 = some unknown control sequence 
+
+\def\msidefault#1{%
+  \expandafter\msidefaulta\expandafter{\string #1}}
+
+\def\msidefaulta#1{%
+  \expandafter\msidefaultb\expandafter{\msi@cdr#1xxxx}}
+
+\def\msidefaultb#1{
+    \msihmode
+    \msiopentag{texb}{<texb enc="1" name="#1">}%
+       \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname\@gobbleargs}
+
+
+\def\@endtexb{        
+       \msitag{]]>}%
+    \msiclosetag{texb}{</texb>}}
+
+
+
+
 
 % A hack to fool the jbm filter into handling \dots gracefully
 \def\dots{\msitag{\U{2026}}}
