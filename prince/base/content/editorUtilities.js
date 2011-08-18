@@ -62,10 +62,13 @@ var gPrefsService;
 var gPrefsBranch;
 var gFilePickerDirectory;
 
+Components.utils.import("resource://app/modules/os.jsm");
+
 var gOS = "";
 const gWin = "Win";
 const gUNIX = "UNIX";
 const gMac = "Mac";
+dump(Current OS, OS.type: "+currentos+", "+OS.type+"\n");
 
 const kWebComposerWindowID = "editorWindow";
 const kMailComposerWindowID = "msgcomposeWindow";
@@ -1052,7 +1055,7 @@ function GetOS()
   else
     gOS = "";
   // Add other tests?
-
+ 
   return gOS;
 }
 
