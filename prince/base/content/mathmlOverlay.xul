@@ -1,4 +1,4 @@
-<?xml version="1.0"?>             <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+<?xml version="1.0" encoding="UTF-8"?>             <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xul-stylesheet href="chrome://prince/skin/MathmlOverlay.css" type="text/css"?>
@@ -989,7 +989,7 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolOmega" label="&#x03A9;" tooltiptext="&symbolOmega.tooltip;"  msivalue="&#x03A9;"
             observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symboldigamma" label="&#x03DD;" tooltiptext="&symboldigamma.tooltip;" msivalue="&#x03DD;"
+        <toolbarbutton id ="symboldigamma" label="&#x03DC;" tooltiptext="&symboldigamma.tooltip;" msivalue="&#x03DC;"
            observes="cmd_MSIsymbolCmd"/>
 
 <!-- BINARY OPERATIONS -->
@@ -1413,16 +1413,19 @@
            observes="cmd_MSIsymbolCmd"/> 
     		<toolbarbutton id ="symbolsupsetneqq" label="&#x2ACC;" tooltiptext="&symbolsupsetneqq.tooltip;"              msivalue="&#x2ACC;"
            observes="cmd_MSIsymbolCmd"/> 
-      <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
-   <toolbarbutton id ="symbolvarsubsetneqq" label="&#xE2B8;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xE2B8;"
+ 
+<!--   <toolbarbutton id ="symbolvarsubsetneqq" label="&varsubsetneqq;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&varsubsetneqq;"
            observes="cmd_MSIsymbolCmd"/> 
            -->
-           <toolbarbutton id ="symbolvarsubsetneqq" label="&#xFE00;&#x2ACB;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xFE00;&#x2ACB;"
+
+          <toolbarbutton id ="symbolvarsubsetneqq" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xFE00;&#x2ACB;"
            observes="cmd_MSIsymbolCmd"/> 
-    <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
-    <toolbarbutton id ="symbolvarsupsetneqq" label="&#xE2BB;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#xE2BB;"
-           observes="cmd_MSIsymbolCmd"/> 
-           -->
+          <label>
+          xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           xmlns:mml="http://www.w3.org/1998/Math/MathML">
+          <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&varsubsetneqq;</mi></math>
+          </label> 
+   
             <toolbarbutton id ="symbolvarsupsetneqq" label="&#x02ACC;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#x02ACC;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolsubsetneq" label="&#x228A;" tooltiptext="&symbolsubsetneq.tooltip;"              msivalue="&#x228A;"
@@ -1437,9 +1440,9 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolnmid" label="&#x2224;" tooltiptext="&symbolnmid.tooltip;"              msivalue="&#x2224;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolnshortmid" label="&#x2224;" tooltiptext="&symbolnshortmid.tooltip;"              msivalue="&#x2224;"
+        <toolbarbutton id ="symbolnshortmid" label="&#xE2AA;" tooltiptext="&symbolnshortmid.tooltip;"              msivalue="&#xE2AA;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolnshortparallel" label="&#x2226;" tooltiptext="&symbolnshortparallel.tooltip;"              msivalue="&#x2226;"
+        <toolbarbutton id ="symbolnshortparallel" label="&#xE2AB;" tooltiptext="&symbolnshortparallel.tooltip;"              msivalue="&#xE2AB;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolnvdash" label="&#x22AC;" tooltiptext="&symbolnvdash.tooltip;"              msivalue="&#x22AC;"
            observes="cmd_MSIsymbolCmd"/>
