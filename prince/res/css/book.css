@@ -1,3 +1,9 @@
+/* book.css */
+
+/************************/
+/* Division header tags */
+/************************/
+
 part {
   display: block;
   counter-increment: part;
@@ -52,6 +58,11 @@ section>sectiontitle:before {
 }
 */
 
+section defaulttitletag:after {
+  content: "Replace this section title"; 
+  color: red;
+}
+
 subsection{
   display: block;
 /*    counter-increment: subsection;
@@ -70,6 +81,11 @@ subsection>sectiontitle:before {
   content: counter(section) "." counter(subsection) ".  ";
 }
 */
+
+subsection defaulttitletag:after {
+  content: "Replace this subsection title"; 
+  color: red;
+}
 
 subsubsection {
   display:block;
@@ -91,6 +107,11 @@ subsubsection>sectiontitle:before {
 }
 */
 
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title"; 
+  color: red;
+}
+
 paragraph {
   display:block;
 /*    counter-increment: paragraph;  */
@@ -108,6 +129,60 @@ paragraph>sectiontitle:before {
 }
 */
 
+paragraph defaulttitletag:after {
+  content: "Replace this subsubsubsection title"; 
+  color: red;
+}
+
+subparagraph defaulttitletag:after {
+  content: "Replace this subsubsubsubsection title"; 
+  color: red;
+}
+
+/*************************/
+/* Front matter elements */
+/*************************/
+
+title {
+  font-size: x-large;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+}
+
+author {
+  font-weight: normal;
+  display: block;
+  padding-top: 10pt;
+}
+
+address {
+  font-weight: normal;
+  display: block;
+  text-align: center;
+}
+
+date {
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+  text-align: center;
+}
+
+frontmatter {
+  display: block;
+  position: relative;
+  margin-left: 100px;
+  padding: 10px 0px;
+  border: thin solid black; 
+  background-color: #EEE8E0;
+  -moz-border-radius: 10px;
+}
+
+/**********************/
+/* Main text elements */
+/**********************/
+
 p {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
@@ -118,78 +193,6 @@ bodyMath {
   margin: 10pt 10pt 5pt 5pt;
   color: rgb(0,128,64);
 }
-
-author {
-  text-align: center;
-  font-weight: normal;
-  display: block;
-  padding-top: 10pt;
-}
-
-date {
-  text-align: center;
-  font-weight: normal;
-  display: block;
-  padding-top: 2pt;
-}
-
-address {
-  display: block;
-}
-
-title {
-  font-size: x-large;
-  display: block;
-  margin-top: 12pt;
-  text-align: center;
-}
-
-/* Not in article.css (gp)
-pre, verbatim {
-  font-family: Courier; white-space: pre
-}
-*/
-  
-/* Not in article.css (gp)
-item {
-  margin: 0pt 0pt 0pt 0pt; 
-  padding: 10pt 0pt 0pt 20pt; 
-  display: list-item
-}
-*/
-
-/* Not in article.css (gp)
-item:before {
-  content: counters(item, ".") ":  ";
-  counter-increment: item;
-}
-*/
-   
-/* Not in article.css (gp)
-enumerate {
-  counter-reset: item;
-}
-*/
-
-/* Not in article.css (gp)
-description {
-  counter-reset: item;
-}
-*/
-
-/* Not in article.css (gp)
-itemize {
-  list-style: disc; 
-  counter-reset: item;
-}
-*/
-
-/* Not in article.css (gp)
-img {
-  display: inline; 
-  margin: 2em
-} 
-*/
 
 shortQuote {
   display: block; 
@@ -210,6 +213,7 @@ epigraph {
   margin-left: 20pt;
   margin-right: 20pt;
 }
+*/
 
 centered {
   display: block;
@@ -229,6 +233,16 @@ flushleft {
   text-align: left;
 }
 
+/* Not in article.css (gp)
+pre, verbatim {
+  font-family: Courier; white-space: pre
+}
+*/
+  
+/***********************/
+/* Tagged run elements */
+/***********************/
+
 emphasized {
   font-style: italic;
   color: rgb(9,62,125)
@@ -239,7 +253,7 @@ emphasized span.inlineMath {
 }
 
 roman {
-  font-family: Times New Roman;
+  font-family: Times New Roman, serif;
   color: rgb(0,0,255)
 }
 
@@ -351,28 +365,50 @@ td {
 }
 */
 
-section defaulttitletag:after {
-  content: "Replace this section title"; 
-  color: red;
-}
+/***************/
+/* Lists, etc. */
+/***************/
 
-subsection defaulttitletag:after {
-  content: "Replace this subsection title"; 
-  color: red;
+/* Not in article.css (gp)
+item {
+  margin: 0pt 0pt 0pt 0pt; 
+  padding: 10pt 0pt 0pt 20pt; 
+  display: list-item
 }
+*/
 
-subsubsection defaulttitletag:after {
-  content: "Replace this subsubsection title"; 
-  color: red;
+/* Not in article.css (gp)
+item:before {
+  content: counters(item, ".") ":  ";
+  counter-increment: item;
 }
+*/
+   
+/* Not in article.css (gp)
+enumerate {
+  counter-reset: item;
+}
+*/
 
-paragraph defaulttitletag:after {
-  content: "Replace this subsubsubsection title"; 
-  color: red;
+/* Not in article.css (gp)
+description {
+  counter-reset: item;
 }
+*/
 
-subparagraph defaulttitletag:after {
-  content: "Replace this subsubsubsubsection title"; 
-  color: red;
+/* Not in article.css (gp)
+itemize {
+  list-style: disc; 
+  counter-reset: item;
 }
+*/
+
+/***************/
+/* Other stuff */
+/***************/
+
+img {
+  display: inline; 
+  margin: 2em
+} 
 

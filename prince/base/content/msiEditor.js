@@ -562,13 +562,14 @@ function addDOMEventListenerForEditor(editorElement)
     editorElement.contentWindow.addEventListener("DOMNodeRemoved", msiEditorDOMChangeListener, false);
     editorElement.contentWindow.addEventListener("DOMSubtreeModified", msiEditorDOMChangeListener, true);
   }
-  catch(ex) {dump("Unable to register keydown event listener; error [" + ex + "].\n");}
+  catch(ex) {dump("Unable to register DOM change event listener; error [" + ex + "].\n");}
 }
 
 function msiEditorDOMChangeListener(event)
 {
   var targ = event.originalTarget;
-  var displayNode;
+  var displayNode, tableNode;
+  var editor, editorElement;
   if (!targ)
     targ = event.target;
   switch(msiGetBaseNodeName(targ))
@@ -5540,16 +5541,15 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
   retTableData.colsData = new Array(tableDims.nCols);
   retTableData.m_nRows = tableDims.nRows;
   retTableData.m_nCols = tableDims.nCols;
-  var nCurrRow = 1;
+  var rowCol = {m_nRow : 1, m_nCol : 1};
 
-  function addRowsToList(aTableData, aParent, currRow)
+  function addRowsToList(aTableData, aParent, currPos)
   {
     var childNode = null;
-    var currCol = 1;
 //    var currRow = 1;
     for (var ix = 0; ix < aParent.childNodes.length; ++ix)
     {
-      currCol = 1;
+      currPos.m_nCol = 1;
       childNode = aParent.childNodes[ix];
       switch(msiGetBaseNodeName(childNode))
       {
@@ -5558,7 +5558,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
         case "thead":
         case "tfoot":
         case "tbody":
-          addRowsToList(aTableData, childNode, currRow);
+          addRowsToList(aTableData, childNode, currPos);
         break;
 
         case "tr":
@@ -5566,17 +5566,18 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
         case "mlabeledtr":
           for (var jx = 0; jx < childNode.childNodes.length; ++jx)
           {
-            if (childNode.childNodes[jx].nodeType == 1) addCellToList(aTableData, childNode.childNodes[jx], currRow, currCol);
+            if (childNode.childNodes[jx].nodeType == 1)
+              addCellToList(aTableData, childNode.childNodes[jx], currPos);
           }
         break;
 
         case "th":
         case "td":
         default:
-          addCellToList(aTableData, childNode, currRow, currCol);
+          addCellToList(aTableData, childNode, currPos);
         break;
       }
-      ++currRow;
+      ++currPos.m_nRow;
     }
   }
 
@@ -5638,7 +5639,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
       colData[datumName] = datumValue;
   }
 
-  function addCellToList(aTableData, cellNode, nRow, nCol)
+  function addCellToList(aTableData, cellNode, currPos)
   {
     var numCols = aTableData.cellInfoArray[0].length;
     var numRows = aTableData.cellInfoArray.length;
@@ -5650,41 +5651,41 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
       case "th":
       case "td":
       case "mtd":
-        while ( (nRow <= numRows) && (nCol <= numCols) && (aTableData.cellInfoArray[nRow-1][nCol-1] != null) )
+        while ( (currPos.m_nRow <= numRows) && (currPos.m_nCol <= numCols) && (aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1] != null) )
         {
-          ++nCol;
+          ++currPos.m_nCol;
         }
-        if (nCol > numCols)  //There's no empty spot in this row for the cell data.
+        if (currPos.m_nCol > numCols)  //There's no empty spot in this row for the cell data.
         {
-          dump("In msiEditor.js, msiGetRowAndColumnData(), problem with too many cells in row [" + nRow + "].\n");
+          dump("In msiEditor.js, msiGetRowAndColumnData(), problem with too many cells in row [" + currPos.m_nRow + "].\n");
           return;
         }
-        aTableData.cellInfoArray[nRow-1][nCol-1] = {mNode : cellNode, mRowContinuation : 0, mColContinuation : 0};
+        aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1] = {mNode : cellNode, mRowContinuation : 0, mColContinuation : 0};
         if (cellNode.hasAttribute("colspan"))
           colspan = Number(cellNode.getAttribute("colspan"));
         if (colspan == 0)
-          colspan = numCols - nCol + 1;
-        else if (colspan > numCols - nCol + 1)
-          colspan = numCols - nCol + 1;
+          colspan = numCols - currPos.m_nCol + 1;
+        else if (colspan > numCols - currPos.m_nCol + 1)
+          colspan = numCols - currPos.m_nCol + 1;
         if (cellNode.hasAttribute("rowspan"))
-          colspan = Number(cellNode.getAttribute("rowspan"));
+          rowspan = Number(cellNode.getAttribute("rowspan"));
         if (rowspan == 0)
-          rowspan = numRows - nRow + 1;
-        else if (rowspan > numRows - nRow + 1)
-          rowspan = numRows - nRow + 1;
-        setRowData(aTableData, nRow-1, "lastNonemptyCell", nCol - 2 + colspan);
-        setColData(aTableData, nCol-1, "lastNonemptyCell", nRow - 2 + rowspan);
+          rowspan = numRows - currPos.m_nRow + 1;
+        else if (rowspan > numRows - currPos.m_nRow + 1)
+          rowspan = numRows - currPos.m_nRow + 1;
+        setRowData(aTableData, currPos.m_nRow-1, "lastNonemptyCell", currPos.m_nCol - 2 + colspan);
+        setColData(aTableData, currPos.m_nCol-1, "lastNonemptyCell", currPos.m_nRow - 2 + rowspan);
         if (colspan != 1)
         {
-          aTableData.cellInfoArray[nRow-1][nCol-1].mColContinuation = colspan - 1;
-          setColData(aTableData, nCol-1, "firstCol", nCol - 1);
-          setColData(aTableData, nCol-1, "lastCol", nCol - 2 + colspan); //lastCol calculation is (nCol-1) + (colspan-1)
+          aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1].mColContinuation = colspan - 1;
+          setColData(aTableData, currPos.m_nCol-1, "firstCol", currPos.m_nCol - 1);
+          setColData(aTableData, currPos.m_nCol-1, "lastCol", currPos.m_nCol - 2 + colspan); //lastCol calculation is (nCol-1) + (colspan-1)
         }
         if (rowspan != 1)
         {
-          aTableData.cellInfoArray[nRow-1][nCol-1].mRowContinuation = rowspan - 1;
-          setRowData(aTableData, nRow-1, "firstRow", nRow - 1);
-          setRowData(aTableData, nRow-1, "lastRow", nRow - 2 + rowspan);   //lastRow calculation is (nRow-1) + (rowspan-1)
+          aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1].mRowContinuation = rowspan - 1;
+          setRowData(aTableData, currPos.m_nRow-1, "firstRow", currPos.m_nRow - 1);
+          setRowData(aTableData, currPos.m_nRow-1, "lastRow", currPos.m_nRow - 2 + rowspan);   //lastRow calculation is (nRow-1) + (rowspan-1)
         }
         for (var ii = 0; ii < rowspan; ++ii)
         {
@@ -5692,24 +5693,24 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
           {
             if (!ii && !jj)
               continue;
-            if (!aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj])
-              aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj] = {mNode : cellNode, mRowContinuation : -ii, mColContinuation : -jj};
+            if (!aTableData.cellInfoArray[currPos.m_nRow-1+ii][currPos.m_nCol-1+jj])
+              aTableData.cellInfoArray[currPos.m_nRow-1+ii][currPos.m_nCol-1+jj] = {mNode : cellNode, mRowContinuation : -ii, mColContinuation : -jj};
 //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mNode = cellNode;
 //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mRowContinuation = -ii-1;
 //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mColContinuation = -jj-1;
             if (ii > 0)
             {
-              setRowData(aTableData, nRow-1+ii, "firstRow", nRow - 1);
-              setRowData(aTableData, nRow-1+ii, "lastRow", nRow - 2 + rowspan);
+              setRowData(aTableData, currPos.m_nRow-1+ii, "firstRow", currPos.m_nRow - 1);
+              setRowData(aTableData, currPos.m_nRow-1+ii, "lastRow", currPos.m_nRow - 2 + rowspan);
             }
             if (jj > 0)
             {
-              setColData(aTableData, nCol-1+jj, "firstCol", nCol - 1);
-              setColData(aTableData, nCol-1+jj, "lastCol", nCol - 2 + colspan);
+              setColData(aTableData, currPos.m_nCol-1+jj, "firstCol", currPos.m_nCol - 1);
+              setColData(aTableData, currPos.m_nCol-1+jj, "lastCol", currPos.m_nCol - 2 + colspan);
             }
           }
         }
-        nCol += colspan;  //we don't change nRow here, incidentally - it can only change at the outer level of the loop (in the calling function).
+        currPos.m_nCol += colspan;  //we don't change nRow here, incidentally - it can only change at the outer level of the loop (in the calling function).
       break;
       
       default:
@@ -5721,7 +5722,8 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
 
 //  for (var ix = 0; ix < tableElement.childNodes.length; ++ix)
 //  {
-  addRowsToList(retTableData, tableElement, nCurrRow);
+
+  addRowsToList(retTableData, tableElement, rowCol);
 //  }
 
   return retTableData;
@@ -8063,7 +8065,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       if (!element)
         element = editor.selection.getRangeAt(0).commonAncestorContainer;
       if (element)
-        propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
+        propsData = msiCreatePropertiesObjectDataFromNode(element, editorElement, true);
     }
     if (propsData)
     {
