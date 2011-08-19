@@ -184,8 +184,14 @@
 \def\MSIEmptyElement{%
   \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
+
 \def\msi@empty@elmA[#1]#2{%
-  \expandafter\def\csname #2\endcsname{\msihmode\br\msitag{<#1/>}}}
+     \expandafter\def\csname #2\endcsname{%
+        \ifmmode
+           \msitag{\msipassthru{<#1/>}}%
+        \else
+           \msihmode\br\msitag{<#1/>}%
+        \fi}}
 
 \def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
    
