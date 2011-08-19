@@ -139,12 +139,13 @@ void ScanMath()
         MacroDef* pMacroDef = new MacroDef(pTokenList);
 
         Symbols::SetDef(CurTok().Symbol(), pMacroDef, false);
+        inp.Putback(CurTok());
 
-        // Let's just append the token to the
-        // output stream
-        TokenList* pTL = new TokenList;
-        pTL->push_back(CurTok());
-        Typesetter::AppendTag(pTL);
+        //  // Let's just append the token to the
+        //  // output stream
+        //  TokenList* pTL = new TokenList;
+        //  pTL->push_back(CurTok());
+        //  Typesetter::AppendTag(pTL);
 
         break;
       }
