@@ -25,6 +25,10 @@ A plain C API for communicating with the MuPAD kernel.
 #    define MUP_CALLBACK __stdcall
 #  endif  /* not MUP_STATIC */
 
+#else
+
+#include <stdint.h>
+
 #endif /* WIN32 */
 
 #ifndef MUP_EXTERN
@@ -106,8 +110,8 @@ typedef struct MUP_KernelImpl * MUP_Kernel;
 /** A byte. */
 typedef unsigned char MUP_Byte;
 
-/** A signed 32bit integer. */
-typedef int MUP_Int;
+/** Used to store a pointer, therefore a signed long integer. */
+typedef intptr_t MUP_Int;
 
 /** A boolean encoded as signed 32bit integer. */
 typedef int MUP_Bool;
@@ -232,6 +236,11 @@ const char * const MUP_fn_mcode_tree = "_tre";
  * MuPAD trees. These are serialized into MCode data. */
 const char * const MUP_fn_mcode_content = "_con";
 
+/** Layout tree serialized as a XML data.
+ * Output for 2-dimensional TeX-like expression layout is encoded in special
+ * MuPAD trees. These are serialized into MCode data. */
+const char * const MUP_fn_xml_content = "_xco";
+
 
 /** Binary data transferred between client and kernel.
  * Currently MCode is the only form of binary data supported.
@@ -295,6 +304,8 @@ const MUP_ClientFeatures MUP_cf_can_quit = 0x010000;
 const MUP_ClientFeatures MUP_cf_can_callback = 0x020000;
 /** Client can print expressions in typesetting mode. */
 const MUP_ClientFeatures MUP_cf_can_typeset = 0x040000;
+/** Client can protocol a session. */
+const MUP_ClientFeatures MUP_cf_can_protocol = 0x080000;
 
 /* @} */
 
@@ -326,6 +337,7 @@ const MUP_Byte MUP_dc_stop_at         = 'S';
 const MUP_Byte MUP_dc_quit            = 'q';
 const MUP_Byte MUP_dc_print           = 'p';
 const MUP_Byte MUP_dc_pretty_print    = 'P';
+const MUP_Byte MUP_dc_tooltip         = '#';
 const MUP_Byte MUP_dc_goto_proc       = 'g';
 const MUP_Byte MUP_dc_execute         = 'e';
 const MUP_Byte MUP_dc_tty_help        = '?';
@@ -501,6 +513,14 @@ typedef void (MUP_CALLBACK * MUP_on_textwidth_changed_handler)(
 typedef void (MUP_CALLBACK * MUP_on_pretty_print_changed_handler)(
                                     MUP_Kernel kernel,
                                     MUP_Bool pretty);
+
+/** Abbreviate-output changed message handler.
+ * The default handler does nothing.
+ * @param kernel kernel which sent the message
+ * @param abbreviate new value of \c Pref::abbreviateOutput() */
+typedef void (MUP_CALLBACK * MUP_on_abbreviate_output_changed_handler)(
+                                    MUP_Kernel kernel,
+                                    MUP_Bool abbreviate);
 
 /** Format changed message handler.
  * The default handler does nothing.
@@ -714,6 +734,17 @@ typedef void (MUP_CALLBACK * MUP_event_handler)(MUP_Cookie user_data);
 /** Fatal exit callback for kernel. */
 typedef void (MUP_CALLBACK * MUP_fatal_exit_handler)();
 
+/** Get the internal state of the in-process kernel
+ *
+ * If an unexpected fatal errors occurs inside the in-process kernel, a 
+ * global flag is set. It is not safe to do further computations if this 
+ * happens.
+ *
+ * @return \c 0 means the internal state is OK and a value
+ *         not equal 0 means that  a fatal error happened 
+ */
+MUP_EXTERN long MUP_API MUP_get_internal_state();
+
 /** Set event handler for kernel library.
  * This installs a callback which is called quite often by the kernel
  * during longer calculations. It may be used to keep a user interface
@@ -751,139 +782,6 @@ MUP_EXTERN MUP_fatal_exit_handler MUP_API MUP_set_fatal_exit_handler(
 MUP_EXTERN void MUP_API MUP_exit_lib();
 
 /* @} */
-
-#ifdef WIN32
-#  ifdef MUP_COM_KERNEL
-
-/** @defgroup com_krnl Creating a COM Kernel
- *
- * Creating kernel handles connecting to a COM server kernel under Windows.
- *
- * A kernel handle created with this functions represents a client connection
- * to a kernel which is implemented as a COM out-of-process server. The 
- * communication to a COM kernel uses the COM-based protocol introduced with
- * MuPAD 3.0. Kernels may be started on remote servers using DCOM.
- *
- * For each client process there may exist several handles of this type,
- * connected to one or more kernel processes. One may identify the kernels
- * by name and enumerate them. Note that the kernel names are visible only
- * in the current process, one may \em not enumerate kernel processes
- * which are not connected to the current process.
- *
- * This handles are single-appartment thread safe (ie. can be used in 
- * single-appartment COM objects).
- *
- * If an error occures in a COM call the \c HRESULT of the call is either
- * returned or can be obtained via MUP_get_com_hresult().
- *
- * \b Note: One must define the macro \c MUP_COM_KERNEL before including
- * \c mupkernel.h in order to be able to use the COM-related functions.
- *
- * \b Note: The calling application must initialize the COM library by
- * calling \c CoInitialize or \c CoInitializeEx before calling any of the
- * COM-related functions.
- */
-
-/* @{ */
-
-/** Start and connect to new COM kernel.
- *
- * The kernel name may be NULL, in this case a new unique default name is choosen.
- *
- * If \a server is NULL or \c L"" the kernel will be started on a default server,
- * which may be a remote server depending on the \c RemoteServerName
- * registry setting for the kernel. If the server name is \c L"." a local
- * server will be started in any case.
- *
- * \c NULL is returned if a kernel with the name given already existed.
- *
- * @param clsid_kernel the CLSID of the COM kernel server
- * @param name name of the kernel, may be NULL
- * @param server name of server where to launch the kernel (may be NULL)
- * @return handle to kernel, \c NULL in case of an error
- */
-MUP_EXTERN MUP_Kernel MUP_API MUP_new_com_kernel(
-                                const CLSID & clsid_kernel,
-                                const MUP_Char * name,
-                                const wchar_t * server);
-
-/** Get a new client connection to the named COM kernel.
- *
- * If a kernel with the given name already exists a connection to that kernel is
- * established. A new kernel is started if the named one does not exist and \a start
- * is true. The kernel is started on the server \a server.
- *
- * If \a server is NULL or \c L"" the kernel will be started on a default server,
- * which may be a remote server depending on the \c RemoteServerName
- * registry setting for the kernel. If the server name is \c L"." a local
- * server will be started in any case.
- *
- * \c NULL is returned if no kernel with the name exists.
- *
- * @param clsid_kernel the CLSID of the COM kernel server
- * @param name name of the kernel to connect to
- * @param start start new kernel if named one does not exist
- * @param server name of server where to launch the kernel (may be NULL)
- * @return handle to kernel, \c NULL in case of an error
- */
-MUP_EXTERN MUP_Kernel MUP_API MUP_get_com_kernel(
-                                const CLSID & clsid_kernel,
-                                const MUP_Char * name,
-                                MUP_Bool start,
-                                const wchar_t * server);
-
-/** Get a new client connection to a COM kernel given by interface.
- *
- * A new client connection to a running kernel given by a COM 
- * interface pointer is established. One may obtain an appropriate interface
- * pointer via MUP_get_com_interface().
- *
- * @param interf COM interface of a running kernel
- * @param name name of the kernel, may be NULL
- * @return handle to kernel, \c NULL in case of an error
- */
-MUP_EXTERN MUP_Kernel MUP_API MUP_get_com_kernel_from_interface(
-                                IUnknown * interf,
-                                const MUP_Char * name);
-
-/** Get the names of the COM kernels which are currently connected to the
- * clients process. 
- * Returns an array of C-strings where the last entry is \c NULL.
- * Both the strings and the array must be freed by the caller using MUP_free() !
- * @return array of strings, last entry is \c NULL, 
- *         or \c NULL in case of an error
- */
-MUP_EXTERN MUP_Char ** MUP_API MUP_get_com_kernel_names();
-
-
-/** Returns true if this machine has DCOM installed.
- * If DCOM is installed one may access or start a kernel on a remote
- * server.
- * @return true if DCOM is available */
-MUP_EXTERN MUP_Bool MUP_API MUP_has_dcom();
-
-/** Get \c HRESULT of last COM call.
- * May be used directly after a failed function call to obtain the \c HRESULT
- * of the last COM call.
- * @param kernel kernel
- * @return HRESULT of the last COM call */
-MUP_EXTERN HRESULT MUP_API MUP_get_com_hresult(
-                                MUP_Kernel kernel);
-
-/** Query \c IUnknown COM interface from kernel.
- * @param kernel kernel
- * @param interf returns \c IUnknown COM interface of kernel
- * @return \c S_OK in case of success, \c HRESULT of failing COM call otherwise
- */
-MUP_EXTERN HRESULT MUP_API MUP_get_com_interface(
-                                MUP_Kernel kernel,
-                                IUnknown** interf);
-
-/* @} */
-
-#  endif /* MUP_COM_KERNEL */
-
-#endif /* WIN32 */
 
 /** @defgroup wmsg_krnl Creating a Windows Messages Kernel
  *
@@ -1337,6 +1235,14 @@ MUP_EXTERN MUP_Bool MUP_API MUP_send_pretty_print(
                                 MUP_Kernel kernel,
                                 MUP_Bool pretty);
 
+/** Send a new abbreviate-output value.
+ * @param kernel kernel handle
+ * @param abbreviate new value of \c Pref::abbreviate()
+ * @return true if message was sent successfully */
+MUP_EXTERN MUP_Bool MUP_API MUP_send_abbreviate_output(
+                                MUP_Kernel kernel,
+                                MUP_Bool abbreviate);
+
 /** Send a format wanted for an output type.
  * @param kernel kernel handle
  * @param output_type output type (one of the \c MUP_ot_... constants)
@@ -1457,6 +1363,11 @@ MUP_EXTERN void MUP_API MUP_set_on_textwidth_changed_handler(
 MUP_EXTERN void MUP_API MUP_set_on_pretty_print_changed_handler(
                                 MUP_Kernel kernel,
                                 MUP_on_pretty_print_changed_handler handler);
+
+/** Set abbreviate-output changed message handler. */
+MUP_EXTERN void MUP_API MUP_set_on_abbreviate_output_changed_handler(
+                                MUP_Kernel kernel,
+                                MUP_on_abbreviate_output_changed_handler handler);
 
 /** Set format changed message handler. */
 MUP_EXTERN void MUP_API MUP_set_on_format_changed_handler(

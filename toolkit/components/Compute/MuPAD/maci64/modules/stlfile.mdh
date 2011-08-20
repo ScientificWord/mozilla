@@ -1,0 +1,100 @@
+MODULE
+  stlfile - import STL graphics files
+
+INTRODUCTION
+  This module provides a function 'read' for importing an STL graphics
+  file and a function 'boundingBox' for computing its bounding box.
+
+INTERFACE
+  boundingBox, doc, read
+<!-- BEGIN-FUNC boundingBox -->
+NAME
+  stlfile::boundingBox - compute the bounding box of an STL object
+
+SYNOPSIS
+  stlfile::boundingBox( filename )
+
+PARAMETER
+  filename - name of STL file
+
+DESCRIPTION
+  The STL file is read completely to compute the bounding box of the
+  STL object. This function does not react on READPATH.
+
+EXAMPLES
+  >> stlfile::boundingBox("sphere.stl");
+
+     [0.0..3.0, 0.0..3.0, 0.0..3.0]
+
+SEE ALSO
+  ::read
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC doc -->
+NAME
+  stlfile::doc - Displays online documentation
+
+SYNOPSIS
+  stlfile::doc()
+  stlfile::doc( func )
+
+PARAMETER
+  func - string, function name without the prefix "stlfile::"
+
+DESCRIPTION
+  Displays a brief description of the module 'stlfile', respectively the
+  function stlfile::'func'.
+
+EXAMPLES
+  >> stlfile::doc( "doc" );
+
+     NAME
+       stlfile::doc - Display online documentation
+     [...]
+
+SEE ALSO
+  info, module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC read -->
+NAME
+  stlfile::read - import an STL file
+
+SYNOPSIS
+  stlfile::read( filename )
+
+PARAMETER
+  filename - name of STL file
+
+DESCRIPTION
+  The reads the STL file and computes the bounding box of the STL
+  object. This function does not react on READPATH.
+
+  The function returns a list of three expressions [name,list,bbox]:
+
+  name: name of the STL object or the empty string ""
+  list: triangle set, consists of tuples ( nx,ny,nz, px,py,pz,... ),
+        where (nx,ny,nz) is a unit normal of the following triangle
+        and px,py,pz,... represents the three points (12 coordinates)
+        of the triangle. All values are floats, given in a flat list.
+  bbox: bounding box of the STL object
+
+  To plot this point list 'list', use function plot::SurfaceSet with
+  the options MeshListType=Triangles and MeshListNormals=BeforeFacet.
+
+EXAMPLES
+  >> R:= stlfile::read(NOTEBOOKPATH."sphere.stl"):
+     type(R);
+     object = R[1];
+     facets = nops(R[2]);
+     boundingBox = R[3]
+
+  DOM_LIST
+  object = "testsphere"
+  facets = 3456
+  boundingBox = [0.0..3.0, 0.0..3.0, 0.0..3.0]
+
+  >> plot( plot::SurfaceSet(R[2], MeshListNormals=BeforeFacets) );
+  ...
+
+SEE ALSO
+  ::read, plot::SurfaceSet, plot::SurfaceSTL
+<!-- END-FUNC -->
