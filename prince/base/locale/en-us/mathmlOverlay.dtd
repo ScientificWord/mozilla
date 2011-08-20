@@ -360,7 +360,7 @@
 <!ENTITY symbolprecapprox.tooltip    "precapprox">
 <!ENTITY symbolvartriangle.tooltip  "vartriangle">
 
-<!ENTITY symbolne.tooltip          "neq">
+<!ENTITY symbolne.tooltip          "ne">
 <!ENTITY symbolnotin.tooltip  "notin">
 <!ENTITY symbollvertneqq.tooltip  "lvertneqq">	
 <!ENTITY symbolgvertneqq.tooltip	 "gvertneqq"> 
@@ -491,7 +491,7 @@
 
 <!ENTITY symbolinfty.tooltip       "infty">
 <!ENTITY symbolpartial.tooltip        "partial">
-<!ENTITY symboldots.tooltip          "dots">
+<!ENTITY symboldots.tooltip          "ldots">
 <!ENTITY symbolcdots.tooltip    "cdots">
 <!ENTITY symbolvdots.tooltip    "vdots">
 <!ENTITY symbolddots.tooltip    "ddots">
