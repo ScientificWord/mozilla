@@ -123,20 +123,17 @@ that is listed in the enumerated type @{CommandCode@}.
         MacroDef* pMacroDef = new MacroDef(pTokenList);
 
         Symbols::SetDef(CurTok().Symbol(), pMacroDef, false);
-
-        // Let's just append the token to the
-        // output stream, and assume we go to hmode
-        if (Typesetter::GetMode() == MODE_VERTICAL){
-           inp.Putback(CurTok());
-           Typesetter::GotoHMode();
-           Typesetter::SetInner(false);
-           inp.Putback(Global::msieverypar);
-           inp.Putback(Global::everypar);
-        } else {
-           TokenList* pTL = new TokenList;
-           pTL->push_back(CurTok());
-           Typesetter::AppendTag(pTL);
-        }
+        // Now rescan the newly defined token
+        inp.Putback(CurTok());
+        
+        //  // Let's just append the token to the
+        //  // output stream, and assume we go to hmode
+        //  if (Typesetter::GetMode() == MODE_VERTICAL){
+        //     Typesetter::GotoHMode();
+        //     Typesetter::SetInner(false);
+        //     inp.Putback(Global::msieverypar);
+        //     inp.Putback(Global::everypar);
+        //  }
         break;
       }
       default:
