@@ -1,0 +1,115 @@
+#!/bin/sh -f
+
+# If you need huge values of MAXDEPTH or MAXLEVEL, remove the comment
+#ulimit -s unlimited
+
+
+# Special settings to run MuPAD without any local modifications
+
+# needed on Zaurus PDA
+if test ! \( -x /bin/dirname -o -x /usr/bin/dirname \) ; then
+  dirname()
+  {
+    echo ${1%/`basename $1`}
+  }
+fi
+
+SHARE_BIN=`dirname "$0"`
+
+if test `basename "$SHARE_BIN"` = bin  ; then
+  SHARE=`dirname "$SHARE_BIN"`
+  if test `basename "$SHARE"` = share ; then
+    MuPAD_ROOT_PATH=`dirname "$SHARE"`
+  else
+    MuPAD_ROOT_PATH=..
+  fi
+else
+  MuPAD_ROOT_PATH=../..
+fi
+export MuPAD_ROOT_PATH
+ 
+SYSINFO=`"$MuPAD_ROOT_PATH"/share/bin/muparch`
+MuPAD_BIN="$MuPAD_ROOT_PATH/$SYSINFO/bin"
+
+if test -d ${MuPAD_ROOT_PATH}/../../../bin/${SYSINFO} ; then
+  LD_LIBRARY_PATH="${MuPAD_ROOT_PATH}/${SYSINFO}/lib:${MuPAD_ROOT_PATH}/../../../bin/${SYSINFO}/:${MuPAD_ROOT_PATH}/../../../sys/os/${SYSINFO}/:${LD_LIBRARY_PATH}"
+else
+  LD_LIBRARY_PATH="${MuPAD_ROOT_PATH}/${SYSINFO}/lib:${LD_LIBRARY_PATH}" 
+fi
+export LD_LIBRARY_PATH
+
+# for Macs
+export DYLD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${DYLD_LIBRARY_PATH}
+if [ "${SYSINFO}" = "maci64" ] ; then 
+  export DYLD_FRAMEWORK_PATH=${LD_LIBRARY_PATH}:${DYLD_FRAMEWORK_PATH}
+fi
+
+# Path for Qt plugins
+if test -d ${MuPAD_ROOT_PATH}/../../../bin/${SYSINFO} ; then
+  export QT_PLUGIN_PATH="${MuPAD_ROOT_PATH}/../../../bin/${SYSINFO}/:${QT_PLUGIN_PATH}"
+fi
+
+if test -n "$PATH" ; then
+   PATH="$MuPAD_ROOT_PATH/share/bin:${MuPAD_BIN}:$PATH"
+else
+   PATH="$MuPAD_ROOT_PATH/share/bin:${MuPAD_BIN}"
+fi
+export PATH
+
+# This Bourne or Korn Shell script runs MuPAD with a TTY interface.
+
+# These are the directories in which you installed MuPAD
+
+# MuPAD_ROOT_PATH is the root directory of the MuPAD-System
+# MuPAD_MOD       is the directory of MuPAD dynamic modules
+# MuPAD_BIN       is the directory of the MuPAD programms
+# MuPAD_MOD       is the directory of MuPAD modules
+# MuPAD_LIB       is the root directory of the MuPAD-Library
+# MuPAD_HELP	  is the directory of the Help dependent stuff
+
+MuPAD_MOD="$MuPAD_ROOT_PATH/$SYSINFO/modules"
+MuPAD_LIB="$MuPAD_ROOT_PATH/share/lib"
+
+SHORT_LANG=`echo ${LANG}|tr 'A-Z' 'a-z'|cut -b -2`
+test -z "$SHORT_LANG" && SHORT_LANG=`echo ${LC_MESSAGES}|tr 'A-Z' 'a-z'|cut -b -2`
+test -z "$SHORT_LANG" && SHORT_LANG=`echo ${LC_ALL}|tr 'A-Z' 'a-z'|cut -b -2`
+test -z "$SHORT_LANG" && SHORT_LANG=`echo ${LANGUAGE}|tr 'A-Z' 'a-z'|cut -b -2`
+export SHORT_LANG
+
+#  use TAR file if it exists
+if test -f "$MuPAD_ROOT_PATH/share/doc/$SHORT_LANG/ascii.tar" ; then
+  MuPAD_HELP="$MuPAD_ROOT_PATH/share/doc/$SHORT_LANG/ascii.tar#ascii"
+elif test -d "$MuPAD_ROOT_PATH/share/doc/$SHORT_LANG/ascii" ; then
+  MuPAD_HELP="$MuPAD_ROOT_PATH/share/doc/$SHORT_LANG/ascii"
+elif test -f "$MuPAD_ROOT_PATH/share/doc/en/ascii.tar" ; then
+  MuPAD_HELP="$MuPAD_ROOT_PATH/share/doc/en/ascii.tar#ascii"
+else
+  MuPAD_HELP="$MuPAD_ROOT_PATH/share/doc/en/ascii"
+fi
+
+
+# If pager is less, make sure the option '-r' is used
+LESS="${LESS} -rfq"
+export LESS
+LESSSECURE=1
+export LESSSECURE
+
+# If pager is more, we need -f to stop linebreaks.
+MORE="${MORE} -f"
+export MORE
+
+# if no other pager is set, we use less
+if [ -z "${PAGER}" ] ; then
+    export PAGER=less
+fi
+
+# on windows, the kernel needs windows style pathnames, not cygwin ones
+if [ "${SYSINFO}" = "win32" -o "${SYSINFO}" = "x64" ] ; then
+  MuPAD_LIB=`cygpath -m ${MuPAD_LIB}`
+  MuPAD_MOD=`cygpath -m ${MuPAD_MOD}`
+  MuPAD_HELP=`cygpath -m ${MuPAD_HELP}`
+fi
+
+# This ensures that MuPAD will find all of its modules.
+
+exec "$MuPAD_BIN/mupkern" -l "$MuPAD_LIB" -m "$MuPAD_MOD" -h "$MuPAD_HELP" "$@"
