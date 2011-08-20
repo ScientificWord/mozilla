@@ -27,7 +27,6 @@
 
 
 \def\msitexb#1{[SHOULD NOT OCCUR]}
-\def\msidefault#1{\msitag{[Defaulting: \string#1]}}
 
 
 \msi@pass@newline{\@settodim}
@@ -592,6 +591,16 @@
 %    \catcode`\^^M=5\relax
 %  }
 
+
+\def\linebreak{\msitag{<msibreak type="lineBreak" invisDisplay="&##x21b5;"><br/></msibreak>}}
+
+\def\newline{%
+  \@ifnextchar[{\newlinea}{\newlineb}}
+
+\def\newlinea[#1]{\msitag{<msibreak type="newLine" invisDisplay="&##x21b5;"><br/></msibreak>}}
+
+\def\newlineb{\msitag{<msibreak type="newLine" invisDisplay="&##x21b5;"><br/></msibreak>}}
+
 \newtoks\temptoksa
 
 \bgroup
@@ -869,14 +878,10 @@
     \temptoksa={\TEXTsymbol{#1}}%
     \the\temptoksa
   \else
-    #1%
+    $#1$%
   \fi
 }
 
-%\def\backslash{\@hex{5c}}
-
-%\def\textendash{\@hex{e28093}}
-%\def\textemdash{\@hex{e28094}}
 \msi@pass{\backslash}
 
 \def\textemdash{\@hex{2014}}
@@ -1370,17 +1375,74 @@
 %% Temporary until prince can read xml
 
 \def\msi@opendocument{%
-   \msitag{<?xml version="1.0"?>}\br
+   \msitag{<?xml version="1.0" encoding="UTF-8"?>}\br
    \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br
-   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}
+   \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>}\br
+   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\br
    
-  \br\msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
-      xmlns:mml="http://www.w3.org/1998/Math/MathML"
-      xmlns:sw="http://www.sciword.com/namespaces/sciword">}
+   \msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
+             xmlns:mml="http://www.w3.org/1998/Math/MathML"
+             xmlns:sw="http://www.sciword.com/namespaces/sciword">}
    
    \br\msitag{<head>}
    \br\msiopentag{preamble}{<preamble>}
 }
+
+
+\def\@gobbleit{\let\@temptok}
+
+\futurelet\@bracetok\@gobbleit{
+\futurelet\@brackettok\@gobbleit[
+\futurelet\@startok\@gobbleit*
+
+\def\@inbrace#1{\{#1\}\@gobbleargs}
+\def\@inbracket[#1]{[#1]\@gobbleargs}
+\def\@astar*{*\@gobbleargs}
+
+\def\@gobbleargs{\futurelet\atok\@gobblemore}
+
+\def\@endgobble{\@endtexb\relax}
+
+\def\@gobblemore{%
+   \ifx\atok\@bracetok
+     \let\@donext\@inbrace
+   \else
+     \ifx\atok\@brackettok
+       \let\@donext\@inbracket
+     \else
+       \ifx\atok\@startok
+         \let\@donext\@astar
+       \else 
+         \let\@donext\@endgobble
+       \fi
+     \fi
+   \fi
+   \@donext}
+
+
+
+
+% Here #1 = some unknown control sequence 
+
+\def\msidefault#1{%
+  \expandafter\msidefaulta\expandafter{\string #1}}
+
+\def\msidefaulta#1{%
+  \expandafter\msidefaultb\expandafter{\msi@cdr#1xxxx}}
+
+\def\msidefaultb#1{
+    \msihmode
+    \msiopentag{texb}{<texb enc="1" name="#1">}%
+       \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname\@gobbleargs}
+
+
+\def\@endtexb{        
+       \msitag{]]>}%
+    \msiclosetag{texb}{</texb>}}
+
+
+
+
 
 % A hack to fool the jbm filter into handling \dots gracefully
 \def\dots{\msitag{\U{2026}}}
