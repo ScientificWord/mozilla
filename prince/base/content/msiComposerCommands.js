@@ -8652,7 +8652,16 @@ var msiJoinTableCellsCommand =
     // Param: Don't merge non-contiguous cells
     try
     {
-      msiGetTableEditor(editorElement).joinTableCells(false);
+      var editor = msiGetTableEditor(editorElement);
+      editor.joinTableCells(false);
+      var tableNode;
+      var element = editor.selection.anchorNode;
+      if (element)
+      {
+        tableNode = GetParentTable(element);
+        if (tableNode)
+          checkForMultiRowInTable(tableNode, editor);
+      }
     }
     catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiJoinTableCellsCommand.doCommand: " + exc);}
     if (editorElement)
@@ -8702,7 +8711,17 @@ var msiSplitTableCellCommand =
     var editorElement = msiGetActiveEditorElement();
     try
     {
-      msiGetTableEditor(editorElement).splitTableCell();
+
+      var editor = msiGetTableEditor(editorElement);
+      editor.splitTableCell();
+      var tableNode;
+      var element = editor.selection.anchorNode;
+      if (element)
+      {
+        tableNode = GetParentTable(element);
+        if (tableNode)
+          checkForMultiRowInTable(tableNode, editor);
+      }
     }
     catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSplitTableCellCommand.doCommand: " + exc);}
     if (editorElement)
