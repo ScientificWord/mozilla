@@ -223,23 +223,6 @@
                 accesskey="&inserttable.accesskey;"      
                 observes="cmd_InsertTable" 
                 label="&insertTableCmd.label;"/>
-      <!--menu     accesskey="&insertformmenu.accesskey;"   id="insertFormMenu"        label="&insertFormMenu.label;">
-        <menupopup>
-          <menuitem accesskey="&insertform.accesskey;"        command="cmd_form"        label="&insertFormCmd.label;"/>
-          <menuseparator/>
-          <menuitem accesskey="&insertinputtag.accesskey;"    command="cmd_inputtag"    label="&insertInputTagCmd.label;"/>
-          <menuitem accesskey="&insertinputimage.accesskey;"  command="cmd_inputimage"  label="&insertInputImageCmd.label;"/>
-          <menuitem accesskey="&inserttextarea.accesskey;"    command="cmd_textarea"    label="&insertTextAreaCmd.label;"/>
-          <menuitem accesskey="&insertselect.accesskey;"      command="cmd_select"      label="&insertSelectCmd.label;"/>
-          <menuitem accesskey="&insertbutton.accesskey;"      command="cmd_button"      label="&insertButtonCmd.label;"/>
-          <menuitem accesskey="&insertlabel.accesskey;"       command="cmd_label"       label="&insertLabelCmd.label;"/>
-          <menuitem accesskey="&insertfieldset.accesskey;"    command="cmd_fieldset"    label="&insertFieldSetCmd.label;"/>
-          <menuseparator/>
-          <menuitem accesskey="&insertisindex.accesskey;"     command="cmd_isindex"     label="&insertIsIndexCmd.label;"/>
-        </menupopup>
-      </menu>
-      <menuitem id="insertLink" accesskey="&insertlink.accesskey;"       observes="cmd_link"        label="&insertLinkCmd.label;"   key="insertlinkkb"/>
-      <menuitem id="insertAnchor" accesskey="&insertanchor.accesskey;"     observes="cmd_anchor"      label="&insertAnchorCmd.label;"/ -->
       <menuitem id="insertLine" 
                 accesskey="&insertline.accesskey;"      
                 observes="cmd_msiInsertRules"       
@@ -251,30 +234,6 @@
       <menuitem accesskey="&insertBreaks.accesskey;"               
                 observes="cmd_msiInsertBreaks"                
                 label="&insertBreaks.label;"/>
-      <!-- menuitem id="insertHTMLSource" accesskey="&insertHTMLCmd.accesskey;"   observes="cmd_insertHTMLWithDialog"  key="inserthtmlkb"/>
-      <menuitem accesskey="&insertchars.accesskey;"      observes="cmd_insertChars" id="insertChars"/>
-      <menu id="insertTOC" label="&tocMenu.label;" accesskey="&tocMenu.accesskey;">
-        <menupopup onpopupshowing="InitTOCMenu()">
-          <menuitem id="insertTOCMenuitem"
-                    label="&insertTOC.label;"
-                    accesskey="&insertTOC.accesskey;"
-                    oncommand="UpdateTOC()"/>
-          <menuitem id="updateTOCMenuitem"
-                    label="&updateTOC.label;"
-                    accesskey="&updateTOC.accesskey;"
-                    oncommand="UpdateTOC()"/>
-          <menuitem id="removeTOCMenuitem"
-                    label="&removeTOC.label;"
-                    accesskey="&removeTOC.accesskey;"
-                    oncommand="RemoveTOC()"/>
-        </menupopup>
-      </menu>
-      <menu id="insertSmartWidgetsMenu" label="&insertSmartWidgetsMenu.label;">
-        <menupopup id="insertSmartWidgetsMenuPopup">
-          <menuitem label="&insertCalendarSW.label;"
-                    oncommand="addCalendarSmartWidget();"/>
-        </menupopup>
-      </menu-->
       <menu accesskey="&insertSpacingObjects.accesskey;"   id="insertSpacesMenu"        label="&insertSpacingObjects.label;">
         <menupopup>
           <menuitem accesskey="&insertHorizontalSpaces.accesskey;"      
@@ -285,11 +244,6 @@
                     label="&insertVerticalSpaces.label;"/>
         </menupopup>
       </menu>
-<!--  <menuseparator id="insertMenuSeparator"/>
-     Activate this after Enter key inserts P tag and not BR
-      <menuitem accesskey="&insertbreak.accesskey;"      observes="cmd_insertBreak"      label="&insertBreakCmd.label;"/>
-      <menuitem id="insertBreakAll" accesskey="&insertbreakall.accesskey;"   observes="cmd_insertBreakAll"   label="&insertBreakAllCmd.label;"/>
--->
     </menupopup>
   </menu>
   <menu id="goMenu" label="&gomenu.label;" accesskey="&gomenu.accesskey;">
@@ -346,7 +300,7 @@
         observes="cmd_otfont" />
     </menupopup>
   </menu>
-  <menu id="tableMenu"/>  
+  <!--menu id="tableMenu"/>  -->  
   <menu id="MSITypesetMenu"/>
   <menu id="toolsMenu" label="&toolsmenu.label;" accesskey="&toolsmenu.accesskey;">
     <menupopup id="menu_ToolsPopup">
