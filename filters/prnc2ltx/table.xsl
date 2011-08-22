@@ -17,6 +17,11 @@
     <xsl:when test="@width &gt; 0">{<xsl:value-of select="@width"/>pt}</xsl:when>
     <xsl:otherwise>{500pt}</xsl:otherwise>
   </xsl:choose>
+  <xsl:choose>
+    <xsl:when test="@valign = 'bottom'"><xsl:text>[b]</xsl:text></xsl:when>
+    <xsl:when test="@valign = 'top'"><xsl:text>[t]</xsl:text></xsl:when>
+    <xsl:otherwise><xsl:text>[c]</xsl:text></xsl:otherwise>
+  </xsl:choose>
   <xsl:variable name="lastCol">
     <xsl:for-each select="$cellData//cellData">
       <xsl:sort select="number(@col)" data-type="number" order="descending" />
@@ -62,19 +67,33 @@
       </xsl:call-template>
     </xsl:for-each>
     <xsl:choose>
-      <xsl:when test="not(position() = last())">
-        <xsl:text xml:space="preserve"> \\
+      <xsl:when test="position() = last()">
+        <xsl:variable name="lastHLine">
+          <xsl:call-template name="getHLineString">
+            <xsl:with-param name="theRowData" select="." />
+            <xsl:with-param name="whichLine" select="'bottom'" />
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="string-length(normalize-space($lastHLine))">
+            <xsl:text xml:space="preserve"> \\
+</xsl:text><xsl:value-of select="$lastHLine" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text xml:space="preserve">
 </xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text xml:space="preserve">
+        <xsl:text xml:space="preserve"> \\
 </xsl:text>
+        <xsl:call-template name="getHLineString">
+          <xsl:with-param name="theRowData" select="." />
+          <xsl:with-param name="whichLine" select="'bottom'" />
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:call-template name="getHLineString">
-      <xsl:with-param name="theRowData" select="." />
-      <xsl:with-param name="whichLine" select="'bottom'" />
-    </xsl:call-template>
   </xsl:for-each>
 \end{tabulary}
 </xsl:template>    
@@ -215,13 +234,36 @@
 
     <xsl:if test="not($whichCol = 0)">
       <xsl:attribute name="alignment">
-        <xsl:for-each select="$theCellData//cellData[number(@col) = number($whichCol)]" >
-          <xsl:sort select="count($theCellData//cellData[number(@col) = number($whichCol)][@alignment = current()/@alignment])" data-type="number" order="descending" />
-          <xsl:sort select="translate(@alignment, 'lcrj', '1234')" />
-          <xsl:if test="position() = 1">
-            <xsl:value-of select="@alignment" />
-          </xsl:if>
-        </xsl:for-each>
+        <xsl:choose>
+          <xsl:when test="$theCellData//cellData[number(@col) = number($whichCol)][string-length(@width) &gt; 0]">
+            <xsl:for-each select="$theCellData//cellData[number(@col) = number($whichCol)][string-length(@width) &gt; 0]" >
+              <xsl:sort select="count($theCellData//cellData[number(@col) = number($whichCol)][string-length(@width) &gt; 0][@alignment=current()/@alignment])" data-type="number" order="descending" />
+              <xsl:sort select="translate(@alignment, 'pmb', '123')" />
+              <xsl:if test="position() = 1">
+                <xsl:value-of select="@alignment" />
+              </xsl:if>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:for-each select="$theCellData//cellData[number(@col) = number($whichCol)]" >
+              <xsl:sort select="count($theCellData//cellData[number(@col) = number($whichCol)][@alignment = current()/@alignment])" data-type="number" order="descending" />
+              <xsl:sort select="translate(@alignment, 'lcrj', '1234')" />
+              <xsl:if test="position() = 1">
+                <xsl:value-of select="@alignment" />
+              </xsl:if>
+            </xsl:for-each>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:attribute name="width">
+        <xsl:if test="$theCellData//cellData[number(@col) = number($whichCol)][string-length(@width) &gt; 0]">
+          <xsl:for-each select="$theCellData//cellData[number(@col) = number($whichCol)][string-length(@width) &gt; 0]" >
+            <xsl:sort select="@width" data-type="number" order="descending" />
+            <xsl:if test="position() = 1">
+              <xsl:value-of select="@width" />
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:if>
       </xsl:attribute>
     </xsl:if>
   </xsl:element>
@@ -240,6 +282,9 @@
   <xsl:param name="whichCol" select="0" />
   <xsl:if test="$columnData/@alignment">
     <xsl:value-of select="translate(substring(normalize-space($columnData/@alignment),1,1),'lcrj','LCRJ')" />
+  </xsl:if>
+  <xsl:if test="string-length($columnData/@width)">
+    <xsl:text>{</xsl:text><xsl:value-of select="$columnData/@width" /><xsl:text>mm}</xsl:text>
   </xsl:if>
   <xsl:if test="(normalize-space($columnData/@lineSpec) = 'single') or (normalize-space($columnData/@lineSpec) = 'double')">
     <xsl:text>|</xsl:text>
@@ -357,7 +402,7 @@
         <xsl:text>\cline{</xsl:text><xsl:number value="$currPos" /><xsl:text>-</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:number value="$currPos" /><xsl:text>}</xsl:text>
+        <xsl:number value="$currPos - 1" /><xsl:text>}</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
@@ -431,6 +476,9 @@
             <xsl:text>L</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
+        <xsl:if test="string-length($theCellData/@width)">
+          <xsl:text>{</xsl:text><xsl:value-of select="$theCellData/@width" /><xsl:text>mm}</xsl:text>
+        </xsl:if>
         <xsl:variable name="rightBorder">
           <xsl:choose>
             <xsl:when test="$columnspan &gt; 1">
@@ -469,6 +517,7 @@
   <xsl:attribute name="cellID"><xsl:value-of select="@cellID" /></xsl:attribute>
   <xsl:attribute name="alignment"><xsl:value-of select="@alignment" /></xsl:attribute>
   <xsl:attribute name="continuation"><xsl:value-of select="@continuation" /></xsl:attribute>
+  <xsl:attribute name="width"><xsl:value-of select="@width" /></xsl:attribute>
 </xsl:attribute-set>
 
 <!--The point of this is to resolve linestyle conflicts at shared edges and to translate line style specifiers from HTML form
@@ -553,7 +602,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
                 </xsl:with-param>
-                <xsl:with-param name="spec2"><xsl:value-of select="@borderRight" /></xsl:with-param>
+                <xsl:with-param name="spec2"><xsl:value-of select="@borderLeft" /></xsl:with-param>
               </xsl:call-template>
             </xsl:with-param>
           </xsl:call-template>
@@ -733,9 +782,23 @@
       <xsl:with-param name="cellId" select="generate-id($thisCell)" />
       <xsl:with-param name="alignment">
         <xsl:choose>
+          <xsl:when test="string-length($thisCell/@cellwidth)">
+            <xsl:choose>
+              <xsl:when test="$thisCell/@valign='center'">middle</xsl:when>
+              <xsl:when test="$thisCell/@valign='bottom'">bottom</xsl:when>
+              <xsl:otherwise>para</xsl:otherwise>
+            </xsl:choose>
+          </xsl:when>
           <xsl:when test="$thisCell/@align"><xsl:value-of select="$thisCell/@align" /></xsl:when>
           <xsl:otherwise><xsl:text>left</xsl:text></xsl:otherwise>
         </xsl:choose>
+      </xsl:with-param>
+      <xsl:with-param name="widthSpec">
+        <xsl:if test="($colSpan = 1) and string-length($thisCell/@cellwidth)">
+          <xsl:call-template name="convertSizeSpecsToMM">
+            <xsl:with-param name="theSpec" select="$thisCell/@cellwidth" />
+          </xsl:call-template>
+        </xsl:if>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:variable>
@@ -815,6 +878,27 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="convertSizeSpecsToMM">
+  <xsl:param name="theSpec" />
+  <xsl:variable name="unitStr" select="translate($theSpec,'0123456789.','')" />
+  <xsl:variable name="numberStr">
+    <xsl:choose>
+      <xsl:when test="string-length($unitStr)"><xsl:value-of select="substring-before($theSpec, $unitStr)" /></xsl:when>
+      <xsl:otherwise><xsl:value-of select="$theSpec" /></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="$unitStr = 'mm'"><xsl:value-of select="$numberStr" /></xsl:when>
+    <xsl:when test="$unitStr = 'cm'"><xsl:value-of select="$numberStr * 10.0" /></xsl:when>
+    <xsl:when test="$unitStr = 'in'"><xsl:value-of select="$numberStr * 25.4" /></xsl:when>
+    <xsl:when test="$unitStr = 'pt'"><xsl:value-of select="$numberStr * 0.3514598" /></xsl:when>
+    <xsl:when test="$unitStr = 'bp'"><xsl:value-of select="$numberStr * 0.3514598" /></xsl:when>
+    <xsl:when test="$unitStr = 'pc'"><xsl:value-of select="$numberStr * 2.54" /></xsl:when>
+    <xsl:when test="$unitStr = 'px'"><xsl:value-of select="$numberStr * 0.2645833" /></xsl:when>
+    <xsl:otherwise><xsl:value-of select="$numberStr" /></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="outputCellData">
   <xsl:param name="borderTop" select="'none'" />
   <xsl:param name="borderRight" select="'none'" />
@@ -827,6 +911,7 @@
   <xsl:param name="cellId" />
   <xsl:param name="alignment" />
   <xsl:param name="continuation" />
+  <xsl:param name="widthSpec" select="''" />
   <xsl:text>(</xsl:text>
   <xsl:value-of select="$startRow" />
   <xsl:text>,</xsl:text>
@@ -846,6 +931,8 @@
   <xsl:if test="$alignment">
     <xsl:value-of select="$alignment" />
   </xsl:if>
+  <xsl:text>,</xsl:text>
+  <xsl:if test="string-length($widthSpec)"><xsl:value-of select="$widthSpec" /></xsl:if>
   <xsl:text>)(</xsl:text>
   <!-- Now put the border attributes -->
   <xsl:value-of select="$borderTop" />
@@ -881,6 +968,7 @@
       <xsl:with-param name="numRows" select="number($numRows) - 1" />
       <xsl:with-param name="numCols" select="1" />
       <xsl:with-param name="continuation" select="row" />
+      <xsl:with-param name="widthSpec" select="$widthSpec" />
     </xsl:call-template>
   </xsl:if>
   <xsl:if test="number($numCols) &gt; 1">
@@ -907,7 +995,8 @@
 
     <xsl:variable name="idStr" select="substring-after($colStr, '(')" />
     <xsl:variable name="alignStr" select="substring-after($idStr, '(')" />
-    <xsl:variable name="borderTopStr" select="substring-after($alignStr, '(')" />
+    <xsl:variable name="widthStr" select="substring-after($alignStr, ',')" />
+    <xsl:variable name="borderTopStr" select="substring-after($widthStr, '(')" />
     <xsl:variable name="borderRightStr" select="substring-after($borderTopStr, ',')" />
     <xsl:variable name="borderBottomStr" select="substring-after($borderRightStr, ',')" />
     <xsl:variable name="borderLeftStr" select="substring-after($borderBottomStr, ',')" />
@@ -926,8 +1015,11 @@
           <xsl:attribute name="continuation"><xsl:text>col</xsl:text></xsl:attribute>
         </xsl:when>
       </xsl:choose>
-      <xsl:if test="not(starts-with($alignStr, ')'))">
-        <xsl:attribute name="alignment"><xsl:value-of select="substring-before($alignStr, ')')" /></xsl:attribute>
+      <xsl:if test="not(starts-with($alignStr, ','))">
+        <xsl:attribute name="alignment"><xsl:value-of select="substring-before($alignStr, ',')" /></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="not(starts-with($widthStr, ')'))">
+        <xsl:attribute name="width"><xsl:value-of select="substring-before($widthStr, ')')" /></xsl:attribute>
       </xsl:if>
       <xsl:attribute name="borderTop"><xsl:value-of select="substring-before($borderTopStr, ',')" /></xsl:attribute>
       <xsl:attribute name="borderRight"><xsl:value-of select="substring-before($borderRightStr, ',')" /></xsl:attribute>

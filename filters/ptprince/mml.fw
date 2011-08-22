@@ -7,7 +7,7 @@
 #include <string>
 bool SetupMathML();
 void TakeDownMathML();
-void ProcessMathML(const char* inp, std::string& outp);
+void ProcessMathML(const char* inp, std::string& outp, std::string& anom);
 #endif
 @}
 
@@ -58,6 +58,7 @@ bool fix_IE_space_bug =  true;
 //HINSTANCE s_hDLL;
 
 std::string s_mathml;
+std::string s_anomaly;
 extern char* s_mmldirname;
 
 bool mathmlHandler(U32 type, const char* data)
@@ -65,6 +66,8 @@ bool mathmlHandler(U32 type, const char* data)
   if ( type < 1000 ) {
     s_mathml += "\n";
     s_mathml += data;
+  } else if ( type == 1001 ) {
+    s_anomaly = data;
   }
   return true;
 }
@@ -94,12 +97,14 @@ void TakeDownMathML()
    TerminateMML();
 }
 
-void ProcessMathML(const char* str, std::string& outp){
+void ProcessMathML(const char* str, std::string& outp, std::string& anom){
   //LPCONVERT convertfunc;
   //convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
   ConvertInline( str, mathmlHandler, 2 );
   outp = s_mathml;
   s_mathml = "";
+  anom = s_anomaly;
+  s_anomaly = "";
 }
 
 

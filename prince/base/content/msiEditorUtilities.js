@@ -4564,19 +4564,28 @@ function ConvertRGBColorIntoHEXColor(color)
 
 /************* CSS ***************/
 
-function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPropertyName)
+function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPropertyName, bPreferAttr)
 {
   if (!theElement)
   {
     dump("In msiEditorUtilities.js, msiGetHTMLOrCSSStyleValue() called with null element!\n");
     return "";
   }  
+
+  var element = theElement;
+  var value;
+  if (bPreferAttr)
+  {
+    value = element.getAttribute(attrName);
+    if (value && value.length)
+      return value;
+  }
+
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var prefs = GetPrefs();
   var IsCSSPrefChecked = prefs.getBoolPref("editor.use_css");
-  var styleVal, value, match;
-  var element = theElement;
+  var styleVal, match;
   var elemStyle = element.style;
   var regExp = new RegExp(cssPropertyName + ":\\s*([^;]+)(;|$)");
   if (IsCSSPrefChecked && msiIsHTMLEditor(editorElement))
@@ -4592,14 +4601,14 @@ function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPrope
         value = match[1];
     }
   }
-  if (!value)
+  if (!value && !bPreferAttr)
     value = element.getAttribute(attrName);
 
   if (!value)
   {
     element = msiNavigationUtils.findWrappingNode(element);
     if (element && (element != theElement))
-      value = msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssPropertyName);
+      value = msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssPropertyName, bPreferAttr);
   }
   
   if (!value)
@@ -8438,6 +8447,61 @@ function getSiblingEquationsContainer(theNode)
       return aNode;
   }
   return document.documentElement; //should NOT happen
+}
+
+function checkForMultiRowInTable(aTable, editor)
+{
+  function checkForMultiRowCell(aNode)
+  {
+    var nodeName = msiGetBaseNodeName(aNode);
+    switch(nodeName)
+    {
+      case "table":
+      case "mtable":
+        if (aNode != aTable)
+          return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+      break;
+      case "td":
+      case "th":
+      case "mtd":
+        return NodeFilter.FILTER_ACCEPT;
+      break;
+      case "tbody":
+      case "thead":
+      case "tfoot":
+      case "tr":
+      case "mtr":
+      case "mlabeledtr":
+        return NodeFilter.FILTER_SKIP;
+      break;
+      default:
+        return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+      break;
+    }
+  }
+
+  var walker = editor.document.createTreeWalker(aTable, NodeFilter.SHOW_ELEMENT,
+                                                checkForMultiRowCell, true);
+  var nextNode;
+  var multiRowCells = [];
+  var singleRowCells = [];
+  while (nextNode = walker.nextNode())
+  {
+    if (nextNode.hasAttribute("rowspan") && (Number(nextNode.getAttribute("rowspan")) > 1) )
+      multiRowCells.push(nextNode);
+    else if (nextNode.hasAttribute("req") && (nextNode.getAttribute("req") == "multirow") )
+      singleRowCells.push(nextNode);
+  }
+  if (!multiRowCells.length && !singleRowCells.length)
+    return;
+
+  editor.beginTransaction();
+  var ii;
+  for (ii = 0; ii < multiRowCells.length; ++ii)
+    msiEditorEnsureElementAttribute(multiRowCells[ii], "req", "multirow", editor);
+  for (ii = 0; ii < singleRowCells.length; ++ii)
+    msiEditorEnsureElementAttribute(singleRowCells[ii], "req", null, editor);
+  editor.endTransaction();
 }
 
 /**************************msiNavigationUtils**********************/
