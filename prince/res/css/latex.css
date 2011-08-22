@@ -246,7 +246,7 @@ graph {
 }
 
 plotwrapper {
-  display: -moz-stack;
+  display: block;
   -moz-user-select: all;
   -moz-user-focus: normal;
   padding: 10px;

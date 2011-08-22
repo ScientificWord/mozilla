@@ -290,12 +290,12 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
 	img.setAttribute("height","400");
 
   DOMPw.appendChild(img);
-  var propButton;
-  propButton=document.createElementNS(htmlns,"button");
-  propButton.setAttribute('class','msi');
-  propButton.value = 'Properties';
-  DOMPw.appendChild(propButton);
-  DOMGraph.appendChild(DOMPw);
+//  var propButton;
+//  propButton=document.createElementNS(htmlns,"button");
+//  propButton.setAttribute('class','msi');
+//  propButton.value = 'Properties';
+//  DOMPw.appendChild(propButton);
+	DOMGraph.appendChild(DOMPw);
   return(DOMGraph);
 }
 
