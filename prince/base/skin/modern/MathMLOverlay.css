@@ -8,9 +8,9 @@
 #Symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; }
 #symbol_lcGreek toolbarbutton{font-style: italic; }
 #symbol_lcGreekTab {font-style: italic; }
-#sidebar-symbol-tabbox[textsize="large"] tab { font-size: large; }
-#sidebar-symbol-tabbox { font-family: "STIXGeneral"; }
-/* #sidebar-symbol-tabbox[textsize="large"] toolbarbutton { font-size: large; } */
+#sidebar-symbol-tabbox { font-family: STIXGeneral; }
+/* #sidebar-symbol-tabbox[textsize="large"] tab { font-size: large; }
+#sidebar-symbol-tabbox[textsize="large"] toolbarbutton { font-size: large; } */
 #sidebar-symbol-tabbox tab { 
   font-size: medium;
   background-image: url("chrome://prince/skin/icons/symbol-tab-background.png");
@@ -19,10 +19,17 @@
 }
 #sidebar-symbol-tabbox toolbarbutton { font-size: medium; }
 /* #sidebar-symbol-tabbox[textsize="small"] tab { font-size: small; }
-#sidebar-symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; } */
+#sidebar-symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; }*/
 #sidebar-symbol_lcGreek toolbarbutton{font-style: italic; }
 #sidebar-symbol_lcGreekTab {font-style: italic; }
 #sidebar-symbol-tabbox toolbarbutton { color: red; }
 #sidebar-symbol-tabbox  tabpanel[mathsym="false"] toolbarbutton { color: black; }
 #sidebar-symbol-tabbox  tab[mathsym="true"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="false"] { color: black; }
+
+#sidebar-symbol-tabbox row label { max-height: 24px; 
+  overflow-y: hidden;
+  text-align: center;
+}
+  
+#sidebar-symbol-tabbox row label math{ font-size: medium; }
