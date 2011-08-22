@@ -5,11 +5,14 @@ const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
 Components.utils.import("resource://app/modules/macroArrays.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
 
 function princeStartUp()
 {
   // take out parts of the UI not needed on the Mac
+  var os = GetOS();
+  OS.type = os;
   if ('Mac'==GetOS())
   {
     document.getElementById("printPreviewButton").hidden=true;

@@ -128,11 +128,24 @@ void ScanMath()
           }
         }
 
-        // Let's just append the token to the
-        // output stream
-        TokenList* pTL = new TokenList;
-        pTL->push_back(CurTok());
-        Typesetter::AppendTag(pTL);
+        // Give it a default definition and put back the token
+        TokenList* pTokenList = new TokenList;
+        pTokenList -> push_back(TeXToken(TT_END_MATCH,0,0));
+
+        pTokenList -> AppendSymbol("msidefault");
+        pTokenList -> push_back(TeXToken(TT_LEFT_BRACE,'{',0));
+        pTokenList -> push_back(TeXToken(CurTok()));
+        pTokenList -> push_back(TeXToken(TT_RIGHT_BRACE,'}',0));
+        MacroDef* pMacroDef = new MacroDef(pTokenList);
+
+        Symbols::SetDef(CurTok().Symbol(), pMacroDef, false);
+        inp.Putback(CurTok());
+
+        //  // Let's just append the token to the
+        //  // output stream
+        //  TokenList* pTL = new TokenList;
+        //  pTL->push_back(CurTok());
+        //  Typesetter::AppendTag(pTL);
 
         break;
       }
