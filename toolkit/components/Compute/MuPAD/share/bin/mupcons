@@ -1,0 +1,44 @@
+#!/bin/sh -f
+
+# This script starts the example client application 'mupcons' for
+# Linux and MacOS, which uses the UDS communication library to 
+# use an external MuPAD kernel
+
+SHARE_BIN=`dirname "$0"`
+cd $SHARE_BIN
+
+export MuPAD_ROOT_PATH=../..
+ 
+if [ "${_USE_MUPCOM_ARCH_}" = "maci" ] ; then
+SYSINFO=maci
+else
+SYSINFO=`"$MuPAD_ROOT_PATH"/share/bin/muparch`
+fi
+
+MuPAD_BIN="$MuPAD_ROOT_PATH/$SYSINFO/bin"
+
+LD_LIBRARY_PATH="${MuPAD_ROOT_PATH}/${SYSINFO}/lib:${LD_LIBRARY_PATH}" 
+export LD_LIBRARY_PATH
+
+# for Macs
+export DYLD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${DYLD_LIBRARY_PATH}
+if [ "${SYSINFO}" = "maci64" ] ; then 
+  export DYLD_FRAMEWORK_PATH=${LD_LIBRARY_PATH}:${DYLD_FRAMEWORK_PATH}
+fi
+
+if test -n "$PATH" ; then
+   PATH="$MuPAD_ROOT_PATH/share/bin:${MuPAD_BIN}:$PATH"
+else
+   PATH="$MuPAD_ROOT_PATH/share/bin:${MuPAD_BIN}"
+fi
+export PATH
+
+# These are the directories in which you installed mupcons and the
+# MuPAD kernel
+
+# MuPAD_ROOT_PATH is the root directory of the MuPAD-System
+# MuPAD_BIN       is the directory of the MuPAD programms
+
+# This ensures that MuPAD will find all of its modules.
+
+exec "$MuPAD_BIN/mupcons" "$@"
