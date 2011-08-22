@@ -1,0 +1,366 @@
+Module:
+  xmlprint -- Printing data to XML files
+
+Introduction:
+  This module allows to write MuPAD data to XML files. The data
+  is written in UNICODE UTF-8 encoding.
+  
+  Please note that the XML file descriptors used by the module
+  are special descriptors which must be created via xmlprint::fopen
+  and *not* via MuPAD's standard fopen function.
+
+Interface:
+  xmlprint::declaration, xmlprint::beginElement,
+  xmlprint::endElement,  xmlprint::data,
+  xmlprint::prP2,        xmlprint::prP3,
+  xmlprint::raw,         xmlprint::fopen,
+  xmlprint::fname,       xmlprint::fclose
+<!-- BEGIN-FUNC declaration -->
+Name:
+  xmlprint::declaration -- write XML 1.0 declaration to file
+
+Synopsis:
+  xmlprint::declaration( fd )
+
+Arguments:
+  fd  - XML file descriptor (an integer)
+
+Returns: void.
+
+Description:
+  Writes the XML 1.0 declaration to the XML file given by 'fd'.
+  
+<!-- END-FUNC -->
+
+<!-- BEGIN-FUNC beginElement -->
+Name:
+  xmlprint::beginElement -- write element begin tag and attributes
+
+Synopsis:
+  xmlprint::beginElement( fd, tag, <attribute...> <option> )
+
+Arguments:
+  fd        - XML file descriptor (an integer)
+  tag       - tag name of element (a string or identifier)
+  attribute - an element attribute (an equation)
+  option    - the option 'NoClose' or 'Empty'
+  
+Returns: void.
+
+Description:
+  This function writes a beginning element tag and element attributes
+  to the XML file 'fd'. The tag name may be given as string or 
+  identifier.
+  
+  Attributes are given in the form 'name=value' :
+  - 'name' may be a string or identifier.
+  - 'value' may be:
+    + a string,
+    + an identifier,
+    + an integer number between -2^31 and 2^31-1,
+    + an floating point number,
+    + the values TRUE or FALSE,
+    + a list of 3 or 4 floating point numbers representing
+      a RGB(A) color,
+    + an expression sequence of the value types above.
+ 
+  A value string or identifier is converted to an UTF-8 string, XML 
+  special characters are quoted.
+  
+  An integer number is converted to a machine long word and written 
+  in signed '%d' format.
+  
+  A floating point number is converted to a machine C double and 
+  written in '%g' format.
+  
+  'TRUE and FALSE' are written as '1' and '0' resp.
+ 
+  A RGB(A) color is written in the HTML-like syntax #rrggbbaa.
+  
+  Operands of an expression sequence are separated by blanks.
+  
+  With 'NoClose' the tag is not closed, i.e. the trailing '>' is not
+  written.
+  
+  With 'Empty' the elements content is assumed to be empty and the tag
+  is ended by writing '/>' instead of '>'. One must not write the 
+  ending tag in this case.
+ 
+  Important: Please note that element and attribute names are written
+  'raw', i.e. they are not converted to UTF-8 and XML special 
+  characters like '&' and '<' are not quoted.
+
+Examples:
+  >> xmlprint::beginElement(fd, "a", "href"="http://www.mupad.de/")
+
+  >> xmlprint::beginElement(fd, "a", "vector"=(1, 2, 3))
+
+See Also:
+  xmlprint::endElement, xmlprint::data
+
+<!-- END-FUNC -->
+
+<!-- BEGIN-FUNC endElement -->
+Name:
+  xmlprint::endElement -- write element end tag to file
+
+Synopsis:
+  xmlprint::endElement( fd, tag )
+
+Arguments:
+  fd  - XML file descriptor (an integer)
+  tag - tag name of element (a string or identifier)
+
+Returns: null.
+
+Description:
+  This function writes an ending element tag to the XML file 'fd'. 
+  The tag name may be given as string or identifier.
+   
+  Important: Please note that the element name is written 'raw', i.e. 
+  it is not converted to UTF-8 and XML special characters like '&' 
+  and '<' are not quoted.
+
+Example:
+  >> xmlprint::endElement(fd, "a")
+
+See Also:
+  xmlprint::beginElement
+
+<!-- END-FUNC -->
+
+<!-- BEGIN-FUNC data -->
+Name:
+  xmlprint::data -- write XML character data to file
+
+Synopsis:
+  xmlprint::data( fd, data... )
+
+Arguments:
+  fd   - XML file descriptor (an integer)
+  data - object written as character data
+  
+Returns: Null.
+
+Description:
+  This function writes MuPAD objects as XML character data to the XML 
+  file 'fd'. 
+  
+  'data' may be:
+    + a string,
+    + an identifier,
+    + an integer number between -2^31 and 2^31-1,
+    + an floating point number,
+    + the values TRUE or FALSE,
+    + a list of 3 or 4 floating point numbers representing
+      a RGB(A) color.
+ 
+  A string or identifier is converted to an UTF-8 string, XML special
+  characters are quoted.
+  
+  An integer number is converted to a machine long word and written 
+  in signed '%d' format.
+  
+  A floating point number is converted to a machine C double and 
+  written in '%g' format.
+  
+  'TRUE and FALSE' are written as '1' and '0' resp.
+ 
+  A RGB(A) color is written in the HTML-like syntax #rrggbbaa.
+
+Example:
+  >> xmlprint::data(fd, "the value is ", 1.0)
+
+See Also:
+  xmlprint::raw
+
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC raw -->
+Name:
+  xmlprint::raw -- write raw strings to file
+
+Synopsis:
+  xmlprint::raw( fd, string... )
+
+Arguments:
+  fd     - XML file descriptor (an integer)
+  string - character string written
+
+Returns: Null.
+
+Description:
+  Writes a raw character strings to the XML file 'fd'. The strings are 
+  not converted to UTF-8 and XML special characters like '&' and '<' are 
+  not quoted.
+
+Example:
+  >> xmlprint::raw(fd, "&")
+
+See Also:
+  xmlprint::data
+  
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC prP2 -->
+Name:
+  xmlprint::prP2 -- write a 2D point (<P2>) to file
+
+Synopsis:
+  xmlprint::prP2( fd, value... )
+
+Arguments:
+  fd     - XML file descriptor (an integer)
+  value  - integer, float or list encoding a RGB(A) color
+
+Returns: Null.
+
+Description:
+  Writes a 2D point (<P2>) to the XML file 'fd'.  The values are 
+  separated by blanks.
+
+  A RGB(A) color is written in the HTML-like syntax #rrggbbaa.
+
+Example:
+  >> xmlprint::prP2(fd, 1.0, 2)
+
+See Also:
+  xmlprint::prP3
+  
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC prP3 -->
+Name:
+  xmlprint::prP3 -- write a 3D point (<P3>) to file
+
+Synopsis:
+  xmlprint::prP3( fd, value... )
+
+Arguments:
+  fd     - XML file descriptor (an integer)
+  value  - integer, float or list encoding a RGB(A) color
+
+Returns: Null.
+
+Description:
+  Writes a 3D point (<P3>) to the XML file 'fd'.  The values are 
+  separated by blanks.
+
+  A RGB(A) color is written in the HTML-like syntax #rrggbbaa.
+
+Example:
+  >> xmlprint::prP2(fd, 1.0, 2)
+
+See Also:
+  xmlprint::prP2
+  
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC prColorArray2d -->
+Name:
+  xmlprint::prColorArray2d -- write a 2D color array
+
+Synopsis:
+  xmlprint::prColorArray2d(fd, value)
+
+Arguments:
+  fd     - XML file descriptor (an integer)
+  value  - DOM_HFARRAY of dimension m*n*3
+
+Returns: Null.
+
+Description:
+  Writes a sequence of RGB color data to the xml file.
+
+  An RGB color is written in the HTML-like syntax #rrggbb,
+  entries are separated by spaces.
+
+  This routine does *not* write an enclosing element.
+
+Example:
+  >> xmlprint::prColorArray2d(fd, hfarray(1..2, 1..2, 1..3,
+              [(abs(sin(x)), 1/y, 0.2) $ x=1..2 $ y=1..2]))
+
+<!-- END-FUNC -->
+
+<!-- BEGIN-FUNC fopen -->
+Name:
+  xmlprint::fopen -- opens a XML output file
+
+Synopsis:
+  xmlprint::fopen( < [name | String] > )
+
+Arguments:
+  name   - file name (a string)
+  String - the identifier String
+
+Returns: A XML file descriptor (a small integer).
+
+Description:
+  Opens a XML file for printing output into it. If no name is given
+  a temporary file name is used instead.
+  
+  If the option String is given the output is buffered in an internal 
+  string stream and the return value of xmlprint::fclose is the buffered
+  string.  In this case xmlprint::fname returns the empty string.
+
+  A XML file descriptor (a small integer) is returned. Please note that
+  this descriptor is *not* a valid MuPAD file descriptor as returned by
+  the standard fopen function.
+  
+  The file *must* be closed with xmlprint::fclose.
+  
+  An error is raised if the file cannot be opened.
+
+Example:
+  >> fd := xmlprint::fopen()
+
+See Also:
+  xmlprint::fclose, xmlprint::fname
+  
+<!-- END-FUNC -->
+
+<!-- BEGIN-FUNC fname -->
+Name:
+  xmlprint::fname -- returns the name of a XML file
+
+Synopsis:
+  xmlprint::fname( fd )
+
+Arguments:
+  fd     - XML file descriptor (an integer)
+
+Returns: The XML files name (a string).
+
+Description:
+  Returns the name of the XML file given by 'fd'.
+  
+Example:
+  >> xmlprint::fname(fd)
+
+See Also:
+  xmlprint::fopen, xmlprint::fclose
+  
+<!-- END-FUNC -->
+
+<!-- BEGIN-FUNC fclose -->
+Name:
+  xmlprint::fclose -- close a XML file
+
+Synopsis:
+  xmlprint::fclose( fd )
+
+Arguments:
+  fd     - XML file descriptor (an integer)
+
+Returns: null() or a string.
+
+Description:
+  Closes the the XML file given by 'fd'.  If 'fd' was open with the 
+  option String in xmlprint::fopen, the buffered string is returned by
+  xmlprint::fclose.
+
+Example:
+  >> xmlprint::fclose(fd)
+
+See Also:
+  xmlprint::fopen, xmlprint::fname
+  
+<!-- END-FUNC -->
+

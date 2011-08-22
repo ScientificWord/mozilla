@@ -1,0 +1,40 @@
+#!/bin/sh
+ 
+
+# If the arch is explicitly set we echo it and leave
+
+if ! test -z "$_MUPAD_EXPLICIT_ARCH_" ; then
+    echo "$_MUPAD_EXPLICIT_ARCH_"
+    exit 0
+fi
+if ! test -z "$MWE_ARCH" ; then
+    echo "$MWE_ARCH"
+    exit 0
+fi
+
+
+MUPARCH="Unknown or unsupported architecture!"
+
+case "`uname -s`" in
+
+   Linux)
+    case "`uname -m`" in
+      i*86)      MUPARCH=glnx86 ;;
+      x86_64)    MUPARCH=glnxa64 ;;
+    esac ;;
+  
+  Darwin)
+    case "`uname -m`" in
+      x86_64)     MUPARCH=maci64 ;;
+      i386)    MUPARCH=maci64 ;;
+      # ppc and ppc64 are unsupported
+    esac ;;
+  
+  CYGWIN_NT*) 
+    MUPARCH=win32
+    # additional allowed explicit values: win64
+    
+esac
+
+echo "$MUPARCH"
+

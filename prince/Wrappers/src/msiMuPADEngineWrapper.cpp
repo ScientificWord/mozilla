@@ -9,12 +9,21 @@
 #include "MResult.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <locale.h>
+#include <time.h>
+#include "mupkernel.h"
+
 #include "xpcom-config.h"
 #include "nsCOMPtr.h"
 #include "nsILocalFile.h"
 
 
 NS_IMPL_ISUPPORTS1(msiMuPADEngineWrapper, msiIEngineWrapper)
+
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
 
 
 msiMuPADEngineWrapper* s_wrapper;
@@ -111,7 +120,6 @@ NS_IMETHODIMP msiMuPADEngineWrapper::ReleaseClient(PRInt32 client_ID, const char
 }
 
 
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
 
 static const nsModuleComponentInfo gComponents[] =
 {
