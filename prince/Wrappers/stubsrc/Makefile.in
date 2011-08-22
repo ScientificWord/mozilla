@@ -1,0 +1,30 @@
+# Copyright (c) 2005 Benjamin Smedberg <benjamin@smedbergs.us>
+
+DEPTH = ../../..
+srcdir = @srcdir@
+topsrcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE = wrapperstub
+LIBRARY_NAME = wrapperstub
+IS_COMPONENT = 1
+FORCE_SHARED_LIB = 1
+
+REQUIRES = \
+	xpcom \
+	string \
+	$(NULL)
+
+CPPSRCS = wrapperStub.cpp
+
+EXTRA_DSO_LDOPTS += \
+	$(LIBXUL_DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+	$(XPCOM_FROZEN_LDOPTS) \
+        $(NSPR_LIBS) \
+	$(NULL)
+
+include $(topsrcdir)/config/rules.mk
+
+DEFINES += -DMOZ_DLL_PREFIX=\"$(DLL_PREFIX)\"

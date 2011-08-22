@@ -947,54 +947,54 @@ function vcamToolbarFromPlugin(obj)
   // Call for initialization and after each button action.
   // Cursor tool section
   var ct = obj.cursorTool;
-  document.getElementById("SelObj").checked = (ct === 'select');
-  document.getElementById("RotateScene").checked = (ct === 'rotate');
-  document.getElementById("Move").checked = (ct === 'move');
-  document.getElementById("Query").checked = (ct === 'query');
-  document.getElementById("Zoom").checked = (ct === 'zoom');
-  document.getElementById("AutoZoomIn").checked = (ct === 'zoomIn');
-  document.getElementById("AutoZoomOut").checked = (ct === 'zoomOut');
+  document.getElementById("vc-SelObj").checked = (ct === 'select');
+  document.getElementById("vc-RotateScene").checked = (ct === 'rotate');
+  document.getElementById("vc-Move").checked = (ct === 'move');
+  document.getElementById("vc-Query").checked = (ct === 'query');
+  document.getElementById("vc-Zoom").checked = (ct === 'zoom');
+  document.getElementById("vc-AutoZoomIn").checked = (ct === 'zoomIn');
+  document.getElementById("vc-AutoZoomOut").checked = (ct === 'zoomOut');
   // Rotation section
   var va = obj.rotateVerticalAction;
-  document.getElementById("RotateRight").checked = (va === 1);
-  document.getElementById("RotateLeft").checked = (va === 2);
+  document.getElementById("vc-RotateRight").checked = (va === 1);
+  document.getElementById("vc-RotateLeft").checked = (va === 2);
   var ha = obj.rotateHorizontalAction;
-  document.getElementById("RotateUp").checked = (ha === 1);
-  document.getElementById("RotateDown").checked = (va === 2);
+  document.getElementById("vc-RotateUp").checked = (ha === 1);
+  document.getElementById("vc-RotateDown").checked = (va === 2);
   // Zoom section
   var za = obj.zoomAction;
 //  document.getElementById("AutoZoomIn").checked = (za === 1);
 //  document.getElementById("AutoZoomOut").checked = (za === 2);
-  // Speed control
+  // Speed controlf
   var spd = obj.actionSpeed;
-  if (spd <= 0.125) document.getElementId("actionspeed8s").selected = true;
+  if (spd <= 0.125) document.getElementById("actionspeed8s").checked = true;
   else if (spd > 0.125 && spd <= 0.25) 
-    document.getElementId("actionspeed4s").selected = true;
+    document.getElementById("actionspeed4s").checked = true;
   else if (spd > 0.25 && spd <= 0.5) 
-    document.getElementId("actionspeed2s").selected = true;
+    document.getElementById("actionspeed2s").checked = true;
   else if (spd > 0.5 && spd <= 1.0) 
-    document.getElementId("actionspeedN").selected = true;
+    document.getElementById("actionspeedN").checked = true;
   else if (spd > 1.0 && spd <= 2.0) 
-    document.getElementId("actionspeed2f").selected = true;
+    document.getElementById("actionspeed2f").checked = true;
   else if (spd > 2.0 && spd <= 4.0) 
-    document.getElementId("actionspeed4f").selected = true;
+    document.getElementById("actionspeed4f").checked = true;
   else if (spd > 4.0) 
-    document.getElementId("actionspeed8f").selected = true;
+    document.getElementById("actionspeed8f").checked = true;
   // animation section, including animation speed control
   var aspd = obj.animationSpeed;
-  if (aspd <= 0.125) document.getElementId("animspeed8s").selected = true;
+  if (aspd <= 0.125) document.getElementById("animspeed8s").checked = true;
   else if (aspd > 0.125 && aspd <= 0.25) 
-    document.getElementId("animspeed4s").selected = true;
+    document.getElementById("animspeed4s").checked = true;
   else if (aspd > 0.25 && aspd <= 0.5) 
-    document.getElementId("animspeed2s").selected = true;
+    document.getElementById("animspeed2s").checked = true;
   else if (aspd > 0.5 && aspd <= 1.0) 
-    document.getElementId("animspeedN").selected = true;
+    document.getElementById("animspeedN").checked = true;
   else if (aspd > 1.0 && aspd <= 2.0) 
-    document.getElementId("animspeed2f").selected = true;
+    document.getElementById("animspeed2f").checked = true;
   else if (aspd > 2.0 && aspd <= 4.0) 
-    document.getElementId("animspeed4f").selected = true;
+    document.getElementById("animspeed4f").checked = true;
   else if (aspd > 4.0) 
-    document.getElementId("animspeed8f").selected = true;
+    document.getElementById("animspeed8f").checked = true;
 }
 
 function doVCamCommandOnObject(obj, cmd, editorElement)
@@ -1116,17 +1116,23 @@ function onVCamMouseUp()
 }
 
 var setAnimationTime;
-var doVCamCommand;
+var VCamCommand;
 var setActionSpeed;
 var setAnimSpeed;
 var setLoopMode;
+
+
+function doVCamCommand(cmd)
+{
+	VCamCommand(cmd);
+}
 
 
 function doVCamInitialize(obj)
 {
   dump("doVCamInitialize");
   document.getElementById("VCamToolbar").setAttribute("hidden",false);
-  doVCamCommand = (function () {
+  VCamCommand = (function () {
     var thisobj = obj;
     return function(_cmd, _editorElement) {
       return doVCamCommandOnObject(thisobj, _cmd, _editorElement);

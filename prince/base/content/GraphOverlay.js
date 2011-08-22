@@ -276,31 +276,26 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
     img    = document.createElementNS(htmlns,"object");
     img.setAttribute("type","application/x-mupad-graphics+gzip"); 
     img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-    img.setAttribute("alt", "Generated Plot");
-    img.setAttribute("msigraph","true");
-    img.setAttribute("width","300");
-    img.setAttribute("height","400");
-  } else if (filetype == "xvc") {
+	} else if (filetype == "xvc") {
     img    = document.createElementNS(htmlns,"object");
     img.setAttribute("type","application/x-mupad-graphics+xml"); 
     img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-    img.setAttribute("alt", "Generated Plot");
-    img.setAttribute("msigraph","true");
-    img.setAttribute("width","300");
-    img.setAttribute("height","400");
-  } else {
-    img    = document.createElementNS(htmlns,"img");
-    img.setAttribute("src", this.getGraphAttribute("ImageFile"));
-    img.setAttribute("alt", "Generated Plot");
-    img.setAttribute("msigraph","true");
-  }  
+	} else {
+	  img    = document.createElementNS(htmlns,"img");
+	  img.setAttribute("src", this.getGraphAttribute("ImageFile"));
+	}    
+	img.setAttribute("alt", "Generated Plot");
+	img.setAttribute("msigraph","true");
+	img.setAttribute("width","300");
+	img.setAttribute("height","400");
+
   DOMPw.appendChild(img);
-  var propButton;
-  propButton=document.createElementNS(htmlns,"button");
-  propButton.setAttribute('class','msi');
-  propButton.value = 'Properties';
-  DOMPw.appendChild(propButton);
-  DOMGraph.appendChild(DOMPw);
+//  var propButton;
+//  propButton=document.createElementNS(htmlns,"button");
+//  propButton.setAttribute('class','msi');
+//  propButton.value = 'Properties';
+//  DOMPw.appendChild(propButton);
+	DOMGraph.appendChild(DOMPw);
   return(DOMGraph);
 }
 
