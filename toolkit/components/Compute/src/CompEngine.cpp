@@ -132,7 +132,11 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
   path[0] = 0;
   nsresult res;
   nsCOMPtr<nsIFile> bd;
+<<<<<<< local
   nsCOMPtr<nsILocalFile> libFile;
+=======
+  nsCOMPtr<nsILocalFile> libFile;
+>>>>>>> other
   nsCOMPtr<nsILocalFile> modFile;
   nsCOMPtr<nsILocalFile> vcamFile;
   nsCOMPtr<nsILocalFile> engFile;
@@ -171,6 +175,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
       AppendSubPath(libFile,eRecord);
       res = baseDir->Clone(getter_AddRefs(bd));
       modFile = do_QueryInterface(bd);
+<<<<<<< local
 #ifdef XP_WIN
       AppendSubPath(modFile,"MuPAD/win32/modules");
 #endif
@@ -182,6 +187,9 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
 #endif
 #endif
 
+=======
+      AppendSubPath(modFile,"MuPAD/platform/modules");
+>>>>>>> other
     } else {
       TCI_ASSERT(!"Failed to lookup ENGINFO/libp");
       //libpath = "C:\\swp50\\Maple";
