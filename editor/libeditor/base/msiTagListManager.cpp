@@ -1330,7 +1330,8 @@ msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *at
   if (!(NS_SUCCEEDED(rv) && tw)) return rv;
   // Now find the last text node so we know when to stop
 
-  nsCOMPtr<nsIDOMNode> currentNode;
+	nsCOMPtr<nsIDOMNode> currentNode;
+	if (!lastNode) return NS_OK;
   if (!lastTextNode)
   {
     tw->SetCurrentNode(lastNode);
