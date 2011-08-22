@@ -2855,7 +2855,7 @@ function EditorClick(event)
       var obj = event.target.getElementsByTagName("obj")[0];
       if (obj != null) {
         doVCamInitialize(obj);
-        vcamActive = true;
+//        vcamActive = true;
       }
     }
     else if (document.getElementById("vcamactive").getAttribute("hidden") !==true) 
