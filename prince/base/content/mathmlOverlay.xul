@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>             <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xul-stylesheet href="chrome://prince/skin/MathmlOverlay.css" type="text/css"?>
@@ -25,8 +26,8 @@
       <key id="MSIdisplayKey"    modifiers="accel" key="&MSIdisplayCmd.keybinding;"    command="cmd_MSIdisplayMathCmd"/>
       <key id="MSIfractionKey"   modifiers="accel" key="&MSIfractionCmd.keybinding;"   command="cmd_MSIfractionCmd"/>   
       <key id="MSIradicalKey"    modifiers="accel" key="&MSIradicalCmd.keybinding;"    command="cmd_MSIradicalCmd"/>    
-      <key id="MSIsupKey"        modifiers="accel" key="&MSIsupCmd.keybinding;"        command="cmd_MSIsupCmd"/>        
-      <key id="MSIAltSupKey"     modifiers="accel" keycode="VK_UP"                     command="cmd_MSIsupCmd"/>        
+      <key id="MSIsupKey"        modifiers="accel" key="&MSIsupCmd.keybinding;"        command="cmd_MSIsupCmd"/>   
+      <key id="MSIAltSupKey"     modifiers="accel" keycode="VK_UP"                     command="cmd_MSIsupCmd"/>             
       <key id="MSIsubKey"        modifiers="accel" key="&MSIsubCmd.keybinding;"        command="cmd_MSIsubCmd"/>
       <key id="MSIAltSubKey"     modifiers="accel" keycode="VK_DOWN"                   command="cmd_MSIsubCmd"/>
       <key id="MSIparenKey"      modifiers="accel" key="&MSIparenCmd.keybinding;"      command="cmd_MSIparenCmd"/>
@@ -1396,7 +1397,7 @@
        <toolbarbutton id ="symbolvarsubsetneq" label="&#xFE00;&#x0228A;" tooltiptext="&symbolvarsubsetneq.tooltip;"              msivalue="&#x228A;&#xFE00;"
            observes="cmd_MSIsymbolCmd"/> 
            -->
-            <toolbarbutton id ="symbolvarsubsetneq" label="&#x0228A;" tooltiptext="&symbolvarsubsetneq.tooltip;"              msivalue="&#x228A;"
+            <toolbarbutton id ="symbolvarsubsetneq" label="&#x0228A;" tooltiptext="&symbolvarsubsetneq.tooltip;"              msivalue="&#x0228A;"
            observes="cmd_MSIsymbolCmd"/> 
      <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
      <toolbarbutton id ="symbolvarsupsetneq" label="&#x228B;&#xFE00;" tooltiptext="&symbolvarsupsetneq.tooltip;"              msivalue="&#x228B;&#xFE00;"
@@ -1418,15 +1419,18 @@
            observes="cmd_MSIsymbolCmd"/> 
            -->
 
-          <toolbarbutton id ="symbolvarsubsetneqq" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xFE00;&#x2ACB;"
-           observes="cmd_MSIsymbolCmd"/> 
-          <label>
-          xmlns:xhtml="http://www.w3.org/1999/xhtml"
-           xmlns:mml="http://www.w3.org/1998/Math/MathML">
-          <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&varsubsetneqq;</mi></math>
-          </label> 
+          <toolbarbutton id ="symbolvarsubsetneqq"  label="&#xE016;"  tooltiptext="&symbolvarsubsetneqq.tooltip;"      msivalue="&#xE016;"
+           observes="cmd_MSIsymbolCmd"/>
+           <!--<label>
+           <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"
+            xmlns:xsi="http://www.w3.org//2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.w3.org/1998/Math/MathML
+            http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"><mi>&#x0228A;&#x0FE00;</mi></mml:math></label>
+           </toolbarbutton>
+        
+         -->
    
-            <toolbarbutton id ="symbolvarsupsetneqq" label="&#x02ACC;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#x02ACC;"
+        <toolbarbutton id ="symbolvarsupsetneqq" label="&#x2ACC;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#x2ACC;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolsubsetneq" label="&#x228A;" tooltiptext="&symbolsubsetneq.tooltip;"              msivalue="&#x228A;"
            observes="cmd_MSIsymbolCmd"/>
