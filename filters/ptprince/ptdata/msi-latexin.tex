@@ -944,7 +944,6 @@
 \message{spacing,}
 \expandafter\let\expandafter\@normalcr
      \csname\expandafter\@gobble\string\\ \endcsname
-\DeclareRobustCommand\newline{\@normalcr\relax}
 \def\@xnewline{\@ifnextchar[% ] bracket matching
                   \@newline
                  {\@gnewline\relax}}
@@ -1383,14 +1382,13 @@
 
 
 \def\newcounter#1{%
-  \expandafter\@ifdefinable \csname c@#1\endcsname
-    {\@definecounter{#1}}%
-  \@ifnextchar[{\@newctrA{#1}}{\out@newcounterA{#1}}%
+  \@definecounter{#1}%
+  \@ifnextchar[{\@newctrA{#1}}{\relax}%
 }
 
 \def\@newctrA#1[#2]{%
   \@ifundefined{c@#2}{\@nocounterr{#2}}{\@addtoreset{#1}{#2}}%
-  \out@newcounterB{#1}[#2]%
+  %\out@newcounterB{#1}[#2]%
 }
 
 
@@ -1403,14 +1401,18 @@
   \endgroup}
 \def\@stpelt#1{\global\csname c@#1\endcsname \z@}
 \def\cl@@ckpt{\@elt{page}}
-\def\@definecounter#1{\expandafter\newcount\csname c@#1\endcsname
-     \setcounter{#1}\z@
-     \global\expandafter\let\csname cl@#1\endcsname\@empty
-     \@addtoreset{#1}{@ckpt}%
-     \global\expandafter\let\csname p@#1\endcsname\@empty
-     \expandafter
+
+\def\@definecounter#1{%
+  \expandafter\newcount\csname c@#1\endcsname
+  \csname c@#1\endcsname\z@
+  \global\expandafter\let\csname cl@#1\endcsname\@empty
+  \@addtoreset{#1}{@ckpt}%
+  \global\expandafter\let\csname p@#1\endcsname\@empty
+  \expandafter
      \gdef\csname the#1\expandafter\endcsname\expandafter
           {\expandafter\@arabic\csname c@#1\endcsname}}
+
+
 \def\@addtoreset#1#2{\expandafter\@cons\csname cl@#2\endcsname {{#1}}}
 \def\arabic#1{\expandafter\@arabic\csname c@#1\endcsname}
 \def\roman#1{\expandafter\@roman\csname c@#1\endcsname}
