@@ -8,7 +8,7 @@
 #Symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; }
 #symbol_lcGreek toolbarbutton{font-style: italic; }
 #symbol_lcGreekTab {font-style: italic; }
-#sidebar-symbol-tabbox { font-family: STIXGeneral; }
+#sidebar-symbol-tabbox { font-family: STIXGeneral, STIXNonUnicode; }
 /* #sidebar-symbol-tabbox[textsize="large"] tab { font-size: large; }
 #sidebar-symbol-tabbox[textsize="large"] toolbarbutton { font-size: large; } */
 #sidebar-symbol-tabbox tab { 
