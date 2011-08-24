@@ -286,8 +286,8 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
 	}    
 	img.setAttribute("alt", "Generated Plot");
 	img.setAttribute("msigraph","true");
-	img.setAttribute("width","300");
-	img.setAttribute("height","400");
+	img.setAttribute("width","250");
+	img.setAttribute("height","250");
 
   DOMPw.appendChild(img);
 //  var propButton;
