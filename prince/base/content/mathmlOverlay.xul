@@ -105,7 +105,7 @@
 
 
   <menu id="insertMenu">
-    <menupopup id="insertMenuPopup" onpopupshowing="msiInitFontStyleMenu(this)">
+    <menupopup id="insertMenuPopup">
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
       <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    command="cmd_MSItextModeCmd"/>  
       <menu id="mathobjectsmenu" label="&MSImathObjectsMenu.label;" accesskey="&MSImathObjectsMenu.accesskey;" >
@@ -1419,15 +1419,9 @@
            observes="cmd_MSIsymbolCmd"/> 
       <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
    <toolbarbutton id ="symbolvarsubsetneqq" label="&#xE2B8;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xE2B8;"
-<<<<<<< local
-           observes="cmd_MSIsymbolCmd"/> 
-           -->
-           <toolbarbutton id ="symbolvarsubsetneqq" label="&#x02ACB;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#x02ACB;"
-=======
            observes="cmd_MSIsymbolCmd"/> 
            -->
            <toolbarbutton id ="symbolvarsubsetneqq" label="&#xFE00;&#x2ACB;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xFE00;&#x2ACB;"
->>>>>>> other
            observes="cmd_MSIsymbolCmd"/> 
     <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
     <toolbarbutton id ="symbolvarsupsetneqq" label="&#xE2BB;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#xE2BB;"
@@ -1630,15 +1624,9 @@
            observes="cmd_MSIsymbolCmd"/>
       <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
        <toolbarbutton id ="symboljmath" label="&#xEEF0;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#xEEF0;"
-<<<<<<< local
-           observes="cmd_MSIsymbolCmd"/>
-           -->
-            <toolbarbutton id ="symboljmath" label="&#x0237;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#x0237;"
-=======
            observes="cmd_MSIsymbolCmd"/>
            -->
             <toolbarbutton id ="symboljmath" label="&#x1D6A5;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#x1D6A5;"
->>>>>>> other
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolell" label="&#x2113;" tooltiptext="&symbolell.tooltip;"       msivalue="&#x2113;"
            observes="cmd_MSIsymbolCmd"/>
