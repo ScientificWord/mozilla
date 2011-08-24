@@ -37,24 +37,17 @@ REQUIRES = \
   $(NULL)
 
 
-<<<<<<< local
+
 LOCAL_INCLUDES = -I$(srcdir)/../libtci	\
 	-I$(srcdir)/../Engines	\
 	-I$(srcdir)/../src \
-=======
-LOCAL_INCLUDES = -I$(srcdir)/../libtci -I$(srcdir)/../Engines -I$(srcdir)/../src \
->>>>>>> other
 	-I$(srcdir)/../public \
 	$(NULL)
 
 SupportFiles	:= \
 	$(srcdir)/swfcns.mu \
-<<<<<<< local
-# $(srcdir)/tcifns.mu \
-=======
->>>>>>> other
 	$(NULL)
-<<<<<<< local
+
 
 MuPADlib	:= \
 	$(srcdir)/../MuPAD/lib/lib.tar \
@@ -75,24 +68,16 @@ ifeq ($(OS_ARCH),Linux)
   PLATFORM = linux
 endif
 
-=======
->>>>>>> other
-
 ifeq ($(OS_ARCH),WINNT)
-<<<<<<< local
+
 MuPADlicense	:= $(srcdir)/../MuPAD/license/license
 MuPADbin	:= $(wildcard $(srcdir)/../MuPAD/win32/bin/*) 
 MuPADmod	:= $(wildcard $(srcdir)/../MuPAD/win32/modules/*) 
-
-=======
-Platform = win32	
 SupportFiles	+= \
 	$(srcdir)/../MuPAD/win32/mupkernel.dll \
 	$(NULL)
->>>>>>> other
 endif
 
-<<<<<<< local
 ifeq ($(OS_ARCH),Darwin)
 MuPADlicense:=  $(srcdir)/../MuPAD/maci64/com.sciface.www.MuPADPro402.plist
 MuPADbin	:= $(srcdir)/../MuPAD/maci/libQtCore.4.dylib
@@ -101,12 +86,7 @@ MuPADcodelib := $(wildcard $(srcdir)/../MuPAD/maci64/lib/*)
 MuPADmod	:= $(wildcard $(srcdir)/../MuPAD/maci64/modules/*) 
 MuPADshare := $(wildcard) $(srcdir)/../MuPAD/share/*
 
-=======
-ifeq ($(OS_ARCH),Linux)
-	Platform := linux
->>>>>>> other
 endif
-<<<<<<< local
 
 ifeq ($(OS_ARCH),Linux)
 MuPADlicense	:= $(srcdir)/../MuPAD/license/license 
@@ -115,9 +95,6 @@ MuPADcodelib := $(wildcard $(srcdir)/../MuPAD/linux/lib/*)
 MuPADmod := $(wildcard $(srcdir)/../MuPAD/linux/modules/*) 
 
 endif
-
-=======
->>>>>>> other
 
 ifeq ($(OS_ARCH),Darwin)
 	Platform := maci64
@@ -131,23 +108,12 @@ MuPADlibraries 	:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/lib/*)
 
 include $(topsrcdir)/config/rules.mk
 
-<<<<<<< local
-=======
 
 export:: $(MuPADlib)
 	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/share/lib
 
->>>>>>> other
-export:: $(SupportFiles) 
-	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
-
-<<<<<<< local
-export:: $(MuPADshare)
-=======
 export:: $(MuPADmod)
->>>>>>> other
 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
-<<<<<<< local
 	$(INSTALL) $(MuPADshare) $(FINAL_TARGET)/MuPAD/share
 	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(PLATFORM)64/modules
 
@@ -158,14 +124,10 @@ export:: $(MuPADbin)
 else
 export:: $(MuPADbin)	
 	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/bin
-=======
 	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(Platform)/modules
-	
+
 export:: $(MuPADlibraries)
 	$(INSTALL) $(MuPADlibraries) $(FINAL_TARGET)/MuPAD/$(Platform)/lib
->>>>>>> other
-
-<<<<<<< local
 endif
 
 ifeq ($(OS_ARCH),Darwin)
@@ -184,10 +146,9 @@ endif
 # 	$(INSTALL) $(MuPADlinuxmod) $(FINAL_TARGET)/MuPAD/linux/modules
 # endif
 
-=======
 export:: $(MuPADbin)
 	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(Platform)/bin
-	
+
 dump::
 	echo $(MuPADlicense), $(MuPADbin), $(MuPADlib), $(MuPADmod), $(MuPADlibraries)
->>>>>>> other
+

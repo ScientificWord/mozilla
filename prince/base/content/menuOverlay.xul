@@ -213,8 +213,8 @@
   </menu>
 
   <!-- Insert menu -->
-  <menu id="insertMenu" >
-    <menupopup id="insertMenuPopup">
+  <menu id="insertMenu" label="&insertMenu.label;" accesskey="&insertmenu.accesskey;">
+    <menupopup id="insertMenuPopup"  onpopupshowing="msiInitFontStyleMenu(this)">
       <menuitem id="insertImage" 
                 accesskey="&insertimage.accesskey;"      
                 observes="cmd_image"       
