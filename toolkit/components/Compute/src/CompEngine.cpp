@@ -133,7 +133,6 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
   nsresult res;
   nsCOMPtr<nsIFile> bd;
   nsCOMPtr<nsILocalFile> libFile;
-
   nsCOMPtr<nsILocalFile> modFile;
   nsCOMPtr<nsILocalFile> vcamFile;
   nsCOMPtr<nsILocalFile> engFile;
