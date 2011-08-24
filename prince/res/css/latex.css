@@ -240,19 +240,24 @@ graph {
 }
 
 graph {
-  display: -moz-box;  
+  display:block;  
   cursor: pointer;
-  -moz-box-orient: vertical;
+  border: thin solid blue;
+padding: 2px;
+ /*  -moz-box-orient: vertical; */
 }
 
 plotwrapper {
   display: block;
+	position: static;
   -moz-user-select: all;
   -moz-user-focus: normal;
   padding: 10px;
+	border: thin solid red;
   cursor: pointer;
-  -moz-box-orient: vertical;
+/*  -moz-box-orient: vertical; */
   background-color: rgb(245,245,255);
+
 }
 
 plotcaption {
@@ -260,6 +265,12 @@ plotcaption {
   text-align: center;
   -moz-box-flex: 1;
   min-height: 20px;
+}
+
+object {
+		display: block;
+		position: static;
+		border: thin solid black;
 }
 
 
