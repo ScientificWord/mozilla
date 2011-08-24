@@ -7,20 +7,11 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-<<<<<<< local
 MODULE		   = wrappers
 LIBRARY_NAME   = wrappers
 #IS_COMPONENT   = 1
 FORCE_SHARED_LIB = 1
-=======
->>>>>>> other
 
-MODULE		   = wrappers
-MODULE_NAME    = wrappers
-LIBRARY_NAME   = wrappers
-EXPORT_LIBRARY = 1
-SHORT_LIBNAME  = wrappers
-IS_COMPONENT   = 1
 
 REQUIRES = \
 	compute \
@@ -28,12 +19,10 @@ REQUIRES = \
 	xpcom \
 	editor \
 	$(NULL)
-<<<<<<< local
 
 CPPSRCS = \
 	msiMuPADEngineWrapper.cpp \
 	$(NULL) 
-	#	wrapperStub.cpp \
 
 
 include $(topsrcdir)/config/config.mk
@@ -41,19 +30,9 @@ include $(topsrcdir)/config/config.mk
 EXPORTS = \
   msiMuPADEngineWrapper.h \
   $(NULL)
-=======
->>>>>>> other
 
-<<<<<<< local
 QT_LIB := $(LIBXUL_DIST)/lib/libQtCore.4.dylib
-=======
-CPPSRCS = \
-  msiMuPADEngineWrapper.cpp \
-  $(NULL) 
 
-
-include $(topsrcdir)/config/config.mk
->>>>>>> other
 
 # separate libraries linked in.
 SHARED_LIBRARY_LIBS += \
@@ -72,11 +51,7 @@ endif
 
 ifeq ($(OS_ARCH),Linux)
 SHARED_LIBRARY_LIBS += \
-<<<<<<< local
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
-=======
-    $(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
->>>>>>> other
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
@@ -87,21 +62,12 @@ endif
 
 ifeq ($(OS_ARCH),Darwin)
 SHARED_LIBRARY_LIBS += \
-<<<<<<< local
-=======
-    $(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)xmlparser.$(LIB_SUFFIX) \
->>>>>>> other
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
-<<<<<<< local
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)xmlparser.$(LIB_SUFFIX) \
-=======
->>>>>>> other
 	$(NULL)
-	
+
 endif
 
 include $(topsrcdir)/config/rules.mk
@@ -114,31 +80,12 @@ LOCAL_INCLUDES =	-I$(topsrcdir)/toolkit/components/Compute/Engines \
   $(NULL)
 
 
-ifeq ($(OS_ARCH),Darwin)
-	EXTRA_DSO_LDOPTS +=  $(topsrcdir)/toolkit/components/Compute/MuPAD/maci/libQtCore.dylib \
-	-lz -lexpat  \
-	$(NULL)
-
-	LDFLAGS += -flat_namespace
-	
-endif
-
 EXTRA_DSO_LDOPTS += \
 	$(MOZ_COMPONENT_LIBS) \
 	-lQtCore.4 -lz -lexpat -lxpcomglue_s \
 	$(MOZ_UNICHARUTIL_LIBS) \
-<<<<<<< local
-=======
-	$(MOZ_COMPONENT_LIBS) \
-    $(DIST)/../../xulrunner/dist/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
->>>>>>> other
 	$(NULL)
 
-#ifeq ($(OS_ARCH),Darwin)
-#EXTRA_DSO_LDOPTS +=  $(LIBXUL_DIST)/bin/libQtCore.dylib	\
-#$(NULL)
-
-#endif
 
 DEFINES += -DMOZ_DLL_PREFIX=\"$(DLL_PREFIX)\"
 
@@ -148,7 +95,6 @@ export:: $(QT_LIB)
 
 endif
                  
-<<<<<<< local
 dump::
 	echo MOZ_COMPONENT_LIBS
 	echo $(MOZ_COMPONENT_LIBS)
@@ -168,8 +114,4 @@ dump::
 	echo $(XPCOM_LDOPTS)
 	echo NSPR_LIBS
 	echo $(NSPR_LIBS)
-=======
 
-
-
->>>>>>> other
