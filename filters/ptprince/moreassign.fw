@@ -135,6 +135,7 @@ case CMD_LET:{
 
 @$@<Assignments@>+=@{@-
 case CMD_LET:{
+   
    TeXToken defining;
    @<Scan definable symbol@>
    GetRawToken();
@@ -159,6 +160,7 @@ case CMD_LET:{
                     defining.Symbol(),
                     pDef,
                     false /*non-global*/);
+         
       } else if (defining.Type() == TT_ACTIVE){
          Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
          DefRestoration* restore =
@@ -168,6 +170,7 @@ case CMD_LET:{
                     defining.ChrCode(),
                     pDef,
                     false /*non-global*/);
+         
       } else {
          ASSERT(false);
       }
@@ -187,6 +190,7 @@ case CMD_LET:{
                     defining.Symbol(),
                     pDef,
                     false /*non-global*/);
+         
       } else if (defining.Type() == TT_ACTIVE){
          Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
          DefRestoration* restore =
@@ -196,11 +200,11 @@ case CMD_LET:{
                     defining.ChrCode(),
                     pDef,
                     false /*non-global*/);
+          
       } else {
          ASSERT(false);
       }
    }
-
 
    break;
 }

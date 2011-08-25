@@ -209,6 +209,7 @@ case CMD_COUNTDEF:{
    ScanShorthand(&defining, &n);
    void* addr = &Global::CountReg[n];
    Primitive* cmd = new Primitive(CMD_ASSIGN_INTEGER, true, (int)addr);
+   cmd -> AddRef();
    Symbols::SetDef(defining.Symbol(), cmd, bGlobal);
    LOG("\n----Set " << defining << " = shorthand for \\count" << n);
    break;
