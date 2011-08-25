@@ -1084,6 +1084,7 @@ InputByteFile::~InputByteFile()
 {
    ASSERT(m_byteFileData != 0);
    m_byteFileData -> m_file.close();
+   delete m_byteFileData;
 }
 @}
 
@@ -1476,6 +1477,11 @@ computations.  The necessary routines are described here.
 @o@<platform.h@>==@{@-
 #ifndef PLATFORM_H
 #define PLATFORM_H
+
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+
 
 #pragma warning(disable : 4786)
 #include <cwchar>

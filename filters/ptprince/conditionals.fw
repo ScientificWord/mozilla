@@ -552,6 +552,7 @@ bool tfcnIfVbox()
 @}
 
 @o@<conditionals.cpp@>==@{@-
+#include "platform.h"
 #include "conditionals.h"
 #include "macros.h"
 #include "symbols.h"

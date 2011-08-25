@@ -17,10 +17,42 @@ presumably know what they stored in the table and can cast the data to
 the appropriate type.
 
 
+
+@$@<class SymbolData@>==@{@-
+class SymbolData;
+
+extern SymbolData* frozen_relax;
+
+class SymbolData{
+public:
+   int m_ref;
+public:
+   SymbolData() : m_ref(0) {}
+
+   virtual ~SymbolData();
+
+   void AddRef() { m_ref++; }
+   void RemRef() {
+      if (this != frozen_relax){
+        --m_ref; 
+        if (m_ref <= 0){ 
+          delete this; 
+        }
+      }
+   }
+
+};
+@}
+
+
+@$@<SymbolData implementation@>==@{@-
+SymbolData::~SymbolData()
+{
+}
+@}
+
 Here is the interface
 @$@<Symbols interface@>==@{@-
-
-class SymbolData;
 
 struct Symbols {
    @<enum CreateStatus@>
@@ -183,7 +215,11 @@ void Symbols::GetDefLoc(SymId id, void** pLoc)
 @$@<SetDef imp@>==@{@-
 void Symbols::SetDef(SymId id, SymbolData* pData, bool bGlobal)
 {
-   //delete hash_table[id].m_data;
+   if (pData) pData -> AddRef();
+
+   if (hash_table[id].m_data && (hash_table[id].m_data -> m_ref > 0)){
+      hash_table[id].m_data -> RemRef();
+   }
    hash_table[id].m_data = pData;
 }
 @}
@@ -191,15 +227,17 @@ void Symbols::SetDef(SymId id, SymbolData* pData, bool bGlobal)
 
 @C@<Active character definitions@>
 
+
 @$@<Symbols implementation@>+=@{@-
+
 static SymbolData* s_activeDef[NUM_TEX_CHARS];
-@}
 
-
-
-@$@<Symbols implementation@>+=@{@-
 void Symbols::SetActiveDef(TeXChar c, SymbolData* pData, bool bGlobal)
 {
+   if (pData) pData -> AddRef();
+   if (s_activeDef[c]){
+     s_activeDef[c] -> RemRef();
+   }
    s_activeDef[c] = pData;
 }
 
@@ -245,9 +283,18 @@ void Symbols::CreateSymbol(const char* name, SymbolData* data)
 @$@<DeleteAll imp@>==@{@-
 void Symbols::DeleteAll()
 {
- //   for (int i = 0; i < hash_size; ++i){
- //      delete hash_table[i].m_data;
- //   }
+    for (int i = 0; i < NUM_TEX_CHARS; ++i){
+      if (s_activeDef[i]) { 
+        s_activeDef[i] -> RemRef();
+      }
+    }
+
+    for (int i = 0; i < hash_size; ++i){
+       SymbolData* theData = hash_table[i].m_data;
+       if ((0 != theData) && (0 <= (theData -> m_ref) ) ){
+         theData -> RemRef();
+       }
+    }
 }
 @}
 
@@ -295,14 +342,16 @@ This component consists of two files: @{symbols.h@} and
 #define SYMBOLS_H
 
 #include "platform.h"
+@<class SymbolData@>
 @<Symbols interface@>
-
 #endif
 @}
 
 @o@<symbols.cpp@>==@{@-
 #include "symbols.h"
 #include <cstring> // for strlen
+@<SymbolData implementation@>
+
 @<HashTable implementation@>
 @<GetId imp@>
 @<GetDef imp@>
@@ -311,8 +360,9 @@ This component consists of two files: @{symbols.h@} and
 @<GetName imp@>
 @<CreateSymbol imp@>
 @<NullCS imp@>
-@<DeleteAll imp@>
 @<Symbols implementation@>
+@<DeleteAll imp@>
+
 @}
 
 @o@<symbols.t.cpp@>==@{@-

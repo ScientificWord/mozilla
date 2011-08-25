@@ -121,6 +121,8 @@ void SaveRestoration(Restoration* restoration, bool bGlobal)
          if (!found)
             level -> push_back(restoration);
       }
+   } else {
+      delete restoration;
    }
 }
 @}
@@ -260,6 +262,7 @@ public:
 #ifndef RESTORE_H
 #define RESTORE_H
 #include "basicdata.h"
+#include "platform.h"
 @<class Restoration@>
 @<class IntRestoration@>
 @<class ToksRestoration@>
