@@ -1,4 +1,9 @@
 \makeatletter
+
+
+\newcounter{MaxMatrixCols}
+
+
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
 
@@ -46,23 +51,38 @@
 
 \newtoks\preambleToks
 
-\def\out@newcounterA#1{%
-  \br\msitag{<texb>\newcounter{#1}</texb>}%   
-}
-
-\def\out@newcounterB#1[#2]{%                                                              
-  \br\msitag{<texb>\newcounter{#1}[#2]</texb>}%
-}
+%%\def\out@newcounterA#1{%
+%%  \br\msitag{<texb>\newcounter{#1}</texb>}%   
+%%}
+%%
+%%\def\out@newcounterB#1[#2]{%                                                              
+%%  \br\msitag{<texb>\newcounter{#1}[#2]</texb>}%
+%%}
 
 
 %% redefine these to produce output
+
+\def\newcounter#1{%
+  \msihmode
+  \msiopentag{texb}{<texb enc="1" name="newcounter">}
+       \msitag{<![CDATA[\newcounter{#1}]]>}%
+  \msiclosetag{texb}{</texb>}}
+}
+
 \def\setcounter#1#2{%
     \expandafter\global\csname c@#1\endcsname#2\relax
-    \br\msitag{<texb>\string\setcounter{#1}{#2}</texb>}}
+    \msihmode
+    \msiopentag{texb}{<texb enc="1" name="setcounter">}
+       \msitag{<![CDATA[\setcounter{#1}{#2}]]>}%
+    \msiclosetag{texb}{</texb>}}
 
 \def\addtocounter#1#2{%
     \expandafter\global\advance\csname c@#1\endcsname #2\relax
-    \out@addtocounter{#1}{#2}}
+    \msihmode
+    \msiopentag{texb}{<texb enc="1" name="addtocounter">}
+       \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
+    \msiclosetag{texb}{</texb>}}
+    
 
 
 \msi@inline@proc={jbm}
@@ -184,8 +204,14 @@
 \def\MSIEmptyElement{%
   \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
+
 \def\msi@empty@elmA[#1]#2{%
-  \expandafter\def\csname #2\endcsname{\msihmode\br\msitag{<#1/>}}}
+     \expandafter\def\csname #2\endcsname{%
+        \ifmmode
+           \msitag{\msipassthru{<#1/>}}%
+        \else
+           \msihmode\br\msitag{<#1/>}%
+        \fi}}
 
 \def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
    
@@ -418,9 +444,6 @@
 
 
 \def\msi@thm@like#1{}
-
-
-
 
 
 %\input msiframe.tex
@@ -962,21 +985,21 @@
 %% Spacing
 
 
-\def\qquad{%
-   \ifmmode
-      \msitag{\qquad}%
-   \else
-      \msihmode\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}%
-   \fi
-}
-
-\def\quad{%
-   \ifmmode
-     \msitag{\quad}%
-   \else
-     \msihmode\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}%
-   \fi
-}
+%%\def\qquad{%
+%%   \ifmmode
+%%      \msitag{\qquad}%
+%%   \else
+%%      \msihmode\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}%
+%%   \fi
+%%}
+%%
+%%\def\quad{%
+%%   \ifmmode
+%%     \msitag{\quad}%
+%%   \else
+%%     \msihmode\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}%
+%%   \fi
+%%}
 
 \def\ {\msihmode{ }}
 
@@ -1271,9 +1294,10 @@
 
 \def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{%
+       \@temptokena={\msitag{##1}}%
        \msihmode
        \msitag{<texb enc="1" name="#1">}%
-          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
+          <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
        \msitag{</texb>}}}
 
 \def\msi@cdr#1#2xxxx{#2}
@@ -1395,7 +1419,7 @@
 \futurelet\@brackettok\@gobbleit[
 \futurelet\@startok\@gobbleit*
 
-\def\@inbrace#1{\{#1\}\@gobbleargs}
+\def\@inbrace#1{\@temptokena={\msitag{#1}}\{\the\@temptokena\}\@gobbleargs}
 \def\@inbracket[#1]{[#1]\@gobbleargs}
 \def\@astar*{*\@gobbleargs}
 
@@ -1449,5 +1473,6 @@
 
 \input latex-default.tex
 \input tcilatex.tex
+
 
 \catcode`\<=\active
