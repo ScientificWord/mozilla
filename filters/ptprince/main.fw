@@ -25,6 +25,7 @@
 // #include <crtdbg.h>
 //#endif
 
+
 extern void SetupExpandables();
 std::string s_tapfilename;
 std::ofstream s_tapfile;
@@ -156,30 +157,39 @@ int main(int argc, char* argv[])
       std::cout << "\nFailed to open format file: " << format<<"\n";
       usage();
    }
-   Latin_1_in*  platin1filt0 = new Latin_1_in(*pbf0);
-   LineSource* plineSource0 = new LineSource(*platin1filt0);
+   Latin_1_in*  platin1filt0 = new Latin_1_in(pbf0);
+   LineSource* plineSource0 = new LineSource(platin1filt0);
 
    Tokenizer* toks0 = new Tokenizer(plineSource0);
    InputStack::Push(toks0);
 
+   char* test = new char[5];
+   test[0]='M';test[1]='A';test[2]='R';test[3]='K';test[4]='0';
+
    Interpretter::MainLoop();
 
-   delete plineSource0;
-   delete platin1filt0;
-   delete pbf0;
+   //delete plineSource0;
+   //delete platin1filt0;
+   //delete pbf0;
 
    try{
       s_inputfilename = argv[argc-2];
       LOG("\nReading input file " << s_inputfilename);
-      Filename fn(s_inputfilename, true);
+          
       InputByteFile* pbf = new InputByteFile;
-      pbf -> Open(fn);
+     
+           
+      Filename* pFn = new Filename(s_inputfilename, true); 
 
-
+   
+      pbf -> Open(*pFn);
+     
+      
       // Adjust input environment to include this file's directory
 
-      const char* dir = fn.GetAreaString();
+      const char* dir = pFn -> GetAreaString();
       s_inputdir = strdup(dir);
+      
 
       #ifdef _WINDOWS
         strcat(envInput, ";");
@@ -206,6 +216,8 @@ int main(int argc, char* argv[])
             }
          }
       }
+      
+
       LineSource* plineSource;
       CharStream*  charstream;
       if (strcmp(filter, "p932")==0){
@@ -217,18 +229,19 @@ int main(int argc, char* argv[])
       }else if (strcmp(filter, "p950")==0){
          charstream = new Codepage950_in(*pbf);
       }else{
-         charstream = new Latin_1_in(*pbf);
+         charstream = new Latin_1_in(pbf);
       }
-      plineSource = new LineSource(*charstream);
-
+      
+      plineSource = new LineSource(charstream);
+      
       Tokenizer* toks = new Tokenizer(plineSource);
+      
       InputStack::Push(toks);
       Interpretter::MainLoop();
-
-      //delete toks;
-      delete charstream;
-      delete plineSource;
-      delete pbf;
+      //delete charstream;
+      //delete plineSource;
+      //delete pbf;
+      delete pFn;
    }
    catch(...){
       LOG("\n!!! FILTER CRASHED !!! -- will attempt output");
@@ -242,10 +255,15 @@ int main(int argc, char* argv[])
    DeleteAllRestorations();
    Symbols::DeleteAll();
    delete s_inputdir;
+   delete s_mmldirname;
+   delete s_outputdir;
+   InputStack::ClearInputStack();
+   #ifdef LOGGING
+      LogFile::Close();
+   #endif
+   
+   //_CrtDumpMemoryLeaks();
 
-   //#ifdef DEBUG
-   //  _CrtDumpMemoryLeaks();
-   //#endif
    return 0;
 }
 

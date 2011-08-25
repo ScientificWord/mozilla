@@ -384,9 +384,10 @@ directions. Then we'd write lines like@+
 @$@<class Latin_1_in@>==@{@-
 class Latin_1_in : public CharStream{
 private:
-   InputByteStream& m_InputByteStream;
+   InputByteStream* m_pInputByteStream;
 public:
-   Latin_1_in(InputByteStream&);
+   Latin_1_in(InputByteStream*);
+   ~Latin_1_in();
    TeXChar Get();
    bool bEOS();
    void Putback(TeXChar);
@@ -399,24 +400,30 @@ private:
 
 
 @$@<Latin_1_in implementation@>==@{@-
-Latin_1_in::Latin_1_in(InputByteStream& bs)
-   : m_InputByteStream(bs)
+Latin_1_in::Latin_1_in(InputByteStream* bs)
+   : m_pInputByteStream(bs)
 {
+}
+
+
+Latin_1_in::~Latin_1_in()
+{
+  delete m_pInputByteStream;
 }
 
 
 bool Latin_1_in::bEOS()
 {
-   return m_InputByteStream.bEOS();
+   return m_pInputByteStream -> bEOS();
 }
 
 TeXChar Latin_1_in::Get()
 {
    ASSERT(!bEOS());
-   Byte b = m_InputByteStream.Get();
+   Byte b = m_pInputByteStream -> Get();
    // We'll ignore 0D characters
    if (b == 0x0d){
-     b = m_InputByteStream.Get();
+     b = m_pInputByteStream -> Get();
    }
    return b;
 }
@@ -727,12 +734,12 @@ public:
    enum TCIMState {TCIM_OUTSIDE, TCIM_INHEAD, TCIM_INEXP};
 
 private:
-   CharStream& m_charStream;
+   CharStream* m_pCharStream;
    TCIMState m_tcimState;
    LineOfText* m_held;
 
 public:
-   LineSource(CharStream&);
+   LineSource(CharStream*);
    ~LineSource();
    bool bEmpty() const;
    bool GetLine(LineOfText* line);
@@ -748,8 +755,8 @@ private:
 
 
 @$@<LineSource implementation@>+=@{@-
-LineSource::LineSource(CharStream& cs)
-   : m_charStream(cs), m_tcimState(TCIM_OUTSIDE), m_held(0)
+LineSource::LineSource(CharStream* cs)
+   : m_pCharStream(cs), m_tcimState(TCIM_OUTSIDE), m_held(0)
 {
 }
 @}
@@ -759,13 +766,14 @@ LineSource::LineSource(CharStream& cs)
 LineSource::~LineSource()
 {
   if (m_held) delete m_held;
+  delete m_pCharStream;
 }
 @}
 
 @$@<LineSource implementation@>+=@{@-
 bool LineSource::bEmpty() const
 {
-   return m_charStream.bEOS();
+   return m_pCharStream -> bEOS();
 }
 @}
 
@@ -782,14 +790,14 @@ const TeXChar LINE_END = 0x000A;
 bool LineSource::ScanALine(LineOfText* pLine)
 {
    while (true){
-      TeXChar ch = m_charStream.Get();
+      TeXChar ch = m_pCharStream -> Get();
       if (ch == LINE_END){
          pLine -> Append('\x0d');
          break;
       } else
          pLine -> Append(ch);
 
-      if (m_charStream.bEOS())
+      if (m_pCharStream -> bEOS())
          break;
 
    }
@@ -803,7 +811,7 @@ bool LineSource::ScanALine(LineOfText* pLine)
 bool LineSource::GetRawLine(LineOfText* pLine)
 {
    ASSERT(pLine != 0);
-   if (m_charStream.bEOS()){
+   if (m_pCharStream -> bEOS()){
       return false;
    }
    pLine -> Clear();

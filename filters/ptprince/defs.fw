@@ -26,13 +26,13 @@ gracefully.
 @$@<class MacroExpansion@>==@{@-
 class MacroExpansion : public TokenSource {
 private:
-   const TokenList*  m_pList;         // The body
+   TokenList*  m_pList;         // The body
    TokenList::const_iterator m_iter;  // The current position
    int m_nParamCount;   // number of parameters
    int m_paramStart;    // location of first param on s_paramStack:
 
 public:
-   MacroExpansion(const TokenList* ptr, TokenList::const_iterator);
+   MacroExpansion(TokenList* ptr, TokenList::const_iterator);
    ~MacroExpansion();
    bool bEmpty() const;
    void GetToken(TeXToken*);
@@ -50,7 +50,7 @@ public:
 
 @$@<MacroExpansion::MacroExpansion@>==@{@-
 MacroExpansion::MacroExpansion(
-                   const TokenList* ptr,
+                   TokenList* ptr,
                    TokenList::const_iterator bodystart
                 )
   : m_pList(ptr),
@@ -765,6 +765,7 @@ void PrintDefn(TokenList& tl)
 
 
 void DefAssignment(CommandCode curcmd, int prefixes){
+
    TeXToken defining;
    CommandCode thecmd = curcmd;
    bool bGlobal = prefixes & PREFIX_GLOBAL;
@@ -1078,6 +1079,7 @@ bool TestDefs2()
 @o@<macros.h@>==@{@-
 #ifndef MACROS_H
 #define MACROS_H
+#include "platform.h"
 #include "tokens.h"
 #include "scanutils.h"
 #include "typesetter.h"
