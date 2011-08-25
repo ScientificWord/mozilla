@@ -6,7 +6,6 @@ const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
-
 var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
 
 function princeStartUp()
@@ -447,7 +446,7 @@ function openTeX()
   }                       
 }
 
-//@line 447 "/Users/edward/Prince2/mozilla/prince/base/content/prince.js"
+#define INTERNAL_XSLT
 
 // documentAsTeXFile writes the document out as TeX.
 // Returns true if the TeX file was created.
@@ -617,18 +616,22 @@ function setBibTeXRunArgs(passData)
   {
     bibtexData.push("-b");
     dbaseDirStr = bibTeXDBaseDir.path;
-//@line 619 "/Users/edward/Prince2/mozilla/prince/base/content/prince.js"
+#ifdef XP_WIN32
+    dbaseDirStr += "\\\\";
+#else
     dbaseDirStr += "//";
-//@line 621 "/Users/edward/Prince2/mozilla/prince/base/content/prince.js"
+#endif
     bibtexData.push(dbaseDirStr);
   }
   if (bibTeXStyleDir && bibTeXStyleDir.path.length)
   {
     bibtexData.push("-s");
     styleDirStr = bibTeXStyleDir.path;
-//@line 630 "/Users/edward/Prince2/mozilla/prince/base/content/prince.js"
+#ifdef XP_WIN32
+    styleDirStr += "\\\\";
+#else
     styleDirStr += "//";
-//@line 632 "/Users/edward/Prince2/mozilla/prince/base/content/prince.js"
+#endif
     bibtexData.push(styleDirStr);
   }
   bibtexData.push(passData.args[3]);  //put the target file leafname last in the args list
@@ -753,7 +756,9 @@ function compileDocument()
     var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
     var outputfile;
       // for Windows
-//@line 759 "/Users/edward/Prince2/mozilla/prince/base/content/prince.js"
+#ifdef XP_WIN32
+      docPath = docPath.replace("/","\\","g");
+#endif
     workingDir.initWithPath( docPath ); // workingDir now points to our document file
     workingDir = workingDir.parent; // and now it points to the working directory
     outputfile = workingDir.clone();
@@ -890,7 +895,9 @@ function compileTeX(compiler)
     var docPath = GetFilepath(docUrl);
     var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   // for Windows
-//@line 898 "/Users/edward/Prince2/mozilla/prince/base/content/prince.js"
+#ifdef XP_WIN32
+    docPath = docPath.replace("/","\\","g");
+#endif
     outputfile.initWithPath( docPath ); // outputfile now points to our document file
     var outleaf = outputfile.leafName;
     outleaf = outleaf.substr(0, outleaf.lastIndexOf("."));
