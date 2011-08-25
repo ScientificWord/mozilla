@@ -1,4 +1,4 @@
-\chardef\active=13 
+\chardef\active=13
 
 \catcode`\{=1 % left brace is begin-group character
 \catcode`\}=2 % right brace is end-group character
@@ -19,15 +19,13 @@
 \catcode`\%=12
 \def\@percentchar{%}
 \catcode`\%=14
-
-
-
 \countdef\count@=255
+
 \let\bgroup={ \let\egroup=}
+
+
 \def\makeatletter{\catcode`\@=11}
 \def\makeatother{\catcode`\@=12}
-
-
 
 \def\scantospace#1 {\def\@temp{#1}\@gobbletoend}%
 \def\@gobbletoend#1>{}
@@ -165,6 +163,7 @@
 \chardef\sixt@@n=16
 \newlinechar`\^^J
 
+
 %\def\typeout{\immediate\write17}
 \def\typeout#1{\relax}
 
@@ -196,6 +195,7 @@
     \@makeother\/%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
 
+
 \def\@providesfile#1[#2]{%
     \wlog{File: #1 #2}%
     \@addtofilelist{ #2}%
@@ -211,15 +211,17 @@
 
 \begingroup
     \count@\time
-
     \divide\count@ 60
     \count2=-\count@
     \multiply\count2 60
     \advance\count2 \time
+    %%\msitraceon\relax
+    %%\two@digits{\the\month}
+    %%\endinput
     \edef\today{%
       \the\year/\two@digits{\the\month}/\two@digits{\the\day}:%
         \two@digits{\the\count@}:\two@digits{\the\count2}}
-
+    
     \def\IfFileExists#1#2#3{%
       \openin\@inputcheck#1 %
       \ifeof\@inputcheck
@@ -694,7 +696,7 @@
 \def\@unexpandable@protect{\noexpand\protect\noexpand}
 \def\DeclareRobustCommand{\@star@or@long\declare@robustcommand}
 \def\declare@robustcommand#1{%
-   \msitraceon\relax
+   
    \ifx#1\@undefined\else\ifx#1\relax\else
       \@latex@info{Redefining \string#1}%
    \fi\fi
@@ -5088,10 +5090,10 @@
 \@definecounter{mpfootnote}
 \def\thempfootnote{\itshape\@alph\c@mpfootnote}
 \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
-\msitraceon\relax
+
 \DeclareRobustCommand*\textsuperscript[1]{%
   \@textsuperscript{\selectfont#1}}
-\msitraceon\relax
+
 
 \def\@textsuperscript#1{%
   {\m@th\ensuremath{^{\mbox{\fontsize\sf@size\z@#1}}}}}
