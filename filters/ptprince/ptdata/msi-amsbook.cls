@@ -3,7 +3,6 @@
 
 \def\AmS{<ams>AmS</ams>}
 
-\newcount\c@MaxMatrixCols
 
 
 %% Frontmatter commands
