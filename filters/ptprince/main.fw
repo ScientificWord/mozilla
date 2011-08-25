@@ -20,10 +20,6 @@
 #include <cstring>
 #include <stdlib.h>
 
-//#ifdef DEBUG
-// #define _CRTDBG_MAP_ALLOC
-// #include <crtdbg.h>
-//#endif
 
 
 extern void SetupExpandables();
