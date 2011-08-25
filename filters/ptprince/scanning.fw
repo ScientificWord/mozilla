@@ -131,18 +131,20 @@ private:
    CommandCode m_curcmd;
    bool        m_bInternalQuantity;
    int         m_data;
+   TeXToken*   m_pTok;
 public:
    Primitive(CommandCode cmd)
-     : m_curcmd(cmd), m_bInternalQuantity(false), m_data(0)
+     : m_curcmd(cmd), m_bInternalQuantity(false), m_data(0), m_pTok(0)
    {}
 
-   Primitive(CommandCode cmd, bool bInternal, int data)
-     : m_curcmd(cmd), m_bInternalQuantity(bInternal), m_data(data)
+   Primitive(CommandCode cmd, bool bInternal, int data, TeXToken* ptt = 0)
+     : m_curcmd(cmd), m_bInternalQuantity(bInternal), m_data(data), m_pTok(ptt)
    {}
 
    ~Primitive()
    {
-      int i = 67;
+      delete m_pTok;
+      //int i = 67;
    };
 
    CommandCode curcmd() const
@@ -153,6 +155,11 @@ public:
    int Data() const
    {
       return m_data;
+   }
+
+   const TeXToken* TheToken() const
+   {
+     return m_pTok;
    }
 
    bool bInternalQuantity() const
@@ -424,7 +431,7 @@ if (prim != 0){
     CommandCode cc = prim -> curcmd();
     SetCmdCode(cc);
     if (CurCmdCode() == CMD_LET_TOK){
-       TeXToken* pTok = (TeXToken*) prim -> Data();
+       const TeXToken* pTok = prim -> TheToken();
        LOG("\nReplacing " << CurTok()
                           << " with " << *pTok);
        s_curtok = *pTok;
@@ -844,6 +851,7 @@ bool ScanKeyword(String str, TokenList* pList)
             if (tl -> size() != 0){
                InputStack::Putback(*tl);
             }
+            delete tl;
             return false;
          }
          // If we get here CurCmdCode() ==

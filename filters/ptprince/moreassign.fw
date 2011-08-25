@@ -178,7 +178,7 @@ case CMD_LET:{
       LOG("\n----Set " << defining
                        << " = the defn of " << CurTok());
       TeXToken* pTok = new TeXToken(CurTok());
-      pDef = new Primitive(CMD_LET_TOK, false, (int) pTok);
+      pDef = new Primitive(CMD_LET_TOK, false, 0, pTok);
       LOG("\n----WARNING: fix memory leak here");
       void* pDefLoc;
       if (defining.Type() == TT_SYMBOL){
@@ -235,7 +235,7 @@ case CMD_FUTURE_LET:{
       LOG("\n----Set " << defining
                        << " = the defn of " << CurTok());
       TeXToken* pTok = new TeXToken(CurTok());
-      pDef = new Primitive(CMD_LET_TOK, false, (int) pTok);
+      pDef = new Primitive(CMD_LET_TOK, false, 0, pTok);
       LOG("\n----WARNING: fix memory leak here");
    }
 

@@ -99,7 +99,6 @@ bool xfcnNumber(int /* ignored */, TeXToken*, SymbolData**)
    StringUtils::AppendInt(n);
    String str = StringBuilder::Create();
    TokenList* tl = new TokenList;
-   tl ->AddReference();
    StrToToks(str, tl);
    StringBuilder::Discard(str);
    TokenListTokenSource* ts = new TokenListTokenSource(*tl);
@@ -222,7 +221,6 @@ TokenListTokenSource* xfcnThe_nopush(int /* ignored */, TeXToken*, SymbolData**)
    }
    String str = StringBuilder::Create();
    TokenList* tl = new TokenList;
-   tl -> AddReference();
    StrToToks(str, tl);
    StringBuilder::Discard(str);
    TokenListTokenSource* ts = new TokenListTokenSource(*tl);

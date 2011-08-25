@@ -120,6 +120,8 @@ void SaveRestoration(Restoration* restoration, bool bGlobal)
          }
          if (!found)
             level -> push_back(restoration);
+         else
+            delete restoration;
       }
    } else {
       delete restoration;
