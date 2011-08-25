@@ -124,18 +124,6 @@ void SetCurData(SymbolData* pd)
 @B@<Expandable and Primitive symbol data@>
 
 
-@$@<class SymbolData@>==@{@-
-class SymbolData{
-public:
-   virtual ~SymbolData();
-};
-@}
-
-
-@$@<SymbolData implementation@>==@{@-
-SymbolData::~SymbolData()
-{}
-@}
 
 @$@<class Primitive@>==@{@-
 class Primitive : public SymbolData{
@@ -151,6 +139,11 @@ public:
    Primitive(CommandCode cmd, bool bInternal, int data)
      : m_curcmd(cmd), m_bInternalQuantity(bInternal), m_data(data)
    {}
+
+   ~Primitive()
+   {
+      int i = 67;
+   };
 
    CommandCode curcmd() const
    {
@@ -491,9 +484,9 @@ void ScanOptionalEquals(TokenList* pList)
 void IgnoreCurrentSpace(TokenList* pList = 0)
 {
     DetermineCommandCode();
-    if (CurCmdCode() != CMD_SPACER)
+    if (CurCmdCode() != CMD_SPACER){
        InputStack::Putback(CurTok());
-    else
+    } else
        if (pList)
           pList -> push_back(CurTok());
 }
@@ -501,7 +494,7 @@ void IgnoreCurrentSpace(TokenList* pList = 0)
 
 @$@<Parsing helpers@>+=@{@-
 void ScanOptionalSpace(TokenList* pList = 0)
-{
+{    
     GetToken();
     IgnoreCurrentSpace();
 }
@@ -660,13 +653,14 @@ bool ScanInt(int* n, TokenList* pList)
    bool bOK = true;
    int sign = ScanSign(pList);
    DetermineCommandCode();
+
    if (CurData() != 0 &&
        ((Primitive*)CurData()) -> bInternalQuantity()){
       @<Scan internal integer@>
    } else {
       @<Scan numeral@>
    }
-
+   
    iVal = sign * iVal;
 
    *n = iVal;
@@ -692,7 +686,7 @@ bool ScanInt(int* n, TokenList* pList)
       GetRawToken();
       if (pList)
          pList -> push_back(CurTok());
-
+   
       if (CurTok().Type() == TT_SYMBOL){
          // We should have something like '\$
          Symbols::SymId symId = CurTok().Symbol();
@@ -704,7 +698,9 @@ bool ScanInt(int* n, TokenList* pList)
          // We should have something like `a or `& ...
          iVal = CurTok().ChrCode();
       }
+      
       ScanOptionalSpace();
+      
    } else {
        bool bVacuous = false;
        if (CurTok() == octal_token) {
@@ -1267,6 +1263,8 @@ RuleSpec* ScanRuleSpec()
 #include "basicdata.h"
 #include "tokens.h"
 
+class SymbolData;
+
 enum CommandCode{
    @<Command Codes@>
    CMD_NONE
@@ -1275,7 +1273,6 @@ enum CommandCode{
 @<Command subcodes@>
 
 @<Scanning declarations@>
-@<class SymbolData@>
 @<class Primitive@>
 @<typedef EXPFUNC@>
 @<class Expandable@>
@@ -1288,7 +1285,6 @@ enum CommandCode{
 #include "scanutils.h"
 #include "tokens.h"
 @<Some static scanning data@>
-@<SymbolData implementation@>
 @<Define keywords@>
 @<InitializeKeywords@>
 @<function bExpandable@>

@@ -38,8 +38,11 @@ if (braced){
 @}
 
 @$@<Misc functions@>+=@{@-
+
+
 bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
 {
+
    Filename fn;
    @<Scan filename@>
    const char* name = fn.GetNameString();
@@ -47,13 +50,18 @@ bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
    if (ext == 0)
      ext = "tex";
 
+  
    InputByteFile* pbf = new InputByteFile;
    pbf -> Open(fn);
-   Latin_1_in*  platin1filt = new Latin_1_in(*pbf);
-   LineSource* plineSource = new LineSource(*platin1filt);
+   Latin_1_in*  platin1filt = new Latin_1_in(pbf);
+   
+   LineSource* plineSource = new LineSource(platin1filt);
    Tokenizer* ts = new Tokenizer(plineSource);
+   
    InputStack::Push(ts);
    LOG("\n----\\input " << name);
+   
+
    return false;
 }
 @}
@@ -245,9 +253,12 @@ NewExpandable("noexpand", xfcnNoexpand, 0);
 
 
 @$@<Misc functions@>+=@{@-
+
+
+
 bool xfcnNoexpand(int /* ignored*/, TeXToken* tt, SymbolData** ppDef)
 {
-   static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
+   //static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
    TeXToken next;
    GetRawToken();
    next = CurTok();
@@ -380,7 +391,7 @@ bool xfcnCsname(int /* ignored */, TeXToken*, SymbolData**)
    SymbolData* pData;
    Symbols::GetDef(id, &pData);
    if (pData == 0){
-      static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
+      //static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
       LOG("\n\\csname will define the new symbol as \\relax.");
       Symbols::SetDef(id, frozen_relax, true);
    }
@@ -465,6 +476,8 @@ level repository of mark data. That everyone knows about.
 #ifndef EXPANDABLES_H
 #define EXPANDABLES_H
 
+#include "platform.h"
+
 @<Expandable declarations@>
 
 #endif
@@ -477,6 +490,7 @@ level repository of mark data. That everyone knows about.
 #include "tokens.h"
 #include "scanutils.h"
 #include "macros.h"
+extern SymbolData* frozen_relax;
 @<Expansion functions@>
 @<Misc functions@>
 @<Add predefined symbols@>
