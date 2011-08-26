@@ -243,13 +243,15 @@ graph {
   display:block;  
   cursor: pointer;
   border: thin solid blue;
-padding: 2px;
+  padding: 10px;
  /*  -moz-box-orient: vertical; */
 }
 
 plotwrapper {
   display: block;
-	position: static;
+	position: relative;
+	top: 0px;
+	left: 0px;
   -moz-user-select: all;
   -moz-user-focus: normal;
   padding: 10px;
@@ -271,6 +273,10 @@ object {
 		display: block;
 		position: static;
 		border: thin solid black;
+		padding: 10px;
+		position: absolute;
+		top: 20px;
+		left: 20px;
 }
 
 
