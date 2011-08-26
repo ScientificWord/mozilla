@@ -5,20 +5,27 @@
  */
 
 //Include the stuff from Mozilla Glue that we need
+#ifndef XP_MAC
+#include "nscore.h"
+#include "nsModule.h"
+#include "prlink.h"
+#endif
 #include "nsILocalFile.h"
 #include "nsStringAPI.h"
 #include "nsCOMPtr.h"
+#ifdef XP_MAC
+
 
 //Include things from the mach-o libraries that we need for loading the libraries.
 #include <mach-o/loader.h>
 #include <mach-o/dyld.h>
+#endif
 
 static char const *const kDependentLibraries[] =
 {
 	// dependent1.dll on windows, libdependent1.so on linux, libdependent1.dylib on Mac
 
   MOZ_DLL_PREFIX "QtCore.4" MOZ_DLL_SUFFIX,
-//  MOZ_DLL_PREFIX "dependent2" MOZ_DLL_SUFFIX,
   nsnull
 	
 	// NOTE: if the dependent libs themselves depend on other libs, the subdependencies
@@ -28,8 +35,10 @@ static char const *const kDependentLibraries[] =
 // component.dll on windows, libcomponent.so on linux, libcomponent.dylib on Mac
 static char kRealComponent[] = MOZ_DLL_PREFIX "wrappers" MOZ_DLL_SUFFIX;
 
+#ifdef XP_MAC
 // Forward declaration of a convienience method to look up a function symbol.
 static void* LookupSymbol(const mach_header* aLib, const char* aSymbolName);
+#endif 
 
 extern "C" NS_EXPORT nsresult 
 NSGetModule(nsIComponentManager* aCompMgr, nsIFile* aLocation, nsIModule* *aResult)
@@ -52,9 +61,6 @@ NSGetModule(nsIComponentManager* aCompMgr, nsIFile* aLocation, nsIModule* *aResu
 	if (!library)
 		return NS_ERROR_UNEXPECTED;
 	
-//	library->SetNativeLeafName(NS_LITERAL_CSTRING("libraries"));
-//	library->AppendNative(NS_LITERAL_CSTRING("dummy"));
-	
 	nsCString path;
 	// loop through and load dependent libraries
 	for (char const *const *dependent = kDependentLibraries;
@@ -62,10 +68,13 @@ NSGetModule(nsIComponentManager* aCompMgr, nsIFile* aLocation, nsIModule* *aResu
 		 ++dependent) 
 	{
 		library->SetNativeLeafName(nsDependentCString(*dependent));
-		
+#ifndef XP_MAC
+    PRLibrary *lib;
+    library->Load(&lib);
+    // 1) We don't care if this failed!
+#else
 		rv = library->GetNativePath(path);
 		if (NS_FAILED(rv)) return rv;
-		
 		//At this point, we would have used PRLibrary *lib;  library->Load(&lib);  
 		//But we can't use that in OS X.  Instead, we use NSAddImage.
 		
@@ -79,9 +88,17 @@ NSGetModule(nsIComponentManager* aCompMgr, nsIFile* aLocation, nsIModule* *aResu
 		// 2) We are going to leak this library.  We don't care about that either.  
 		//    NSAddImage adds the image to the process.  When the process terminates, the library
 		//    will be properly unloaded.
+#endif
 	}
 	
 	library->SetNativeLeafName(NS_LITERAL_CSTRING(kRealComponent));
+
+#ifndef XP_MAC
+  PRLibrary *lib;
+  rv = library->Load(&lib);
+  if (NS_FAILED(rv))
+    return rv;
+#else
 	rv = library->GetNativePath(path);
 	if (NS_FAILED(rv)) return rv;
 	
@@ -96,13 +113,25 @@ NSGetModule(nsIComponentManager* aCompMgr, nsIFile* aLocation, nsIModule* *aResu
 		errorNum++;
 	}
 	if (componentlib == NULL) return NS_ERROR_UNEXPECTED;
+#endif
 	
+#ifdef XP_MAC
 	//Find the NSGetModule procedure of the real component and “pass the buck”.
 	nsGetModuleProc getmoduleproc = (nsGetModuleProc)LookupSymbol(componentlib, "_NSGetModule");
 	if (!getmoduleproc) return NS_ERROR_FAILURE;
 	return getmoduleproc(aCompMgr, aLocation, aResult);
+#else
+  nsGetModuleProc getmoduleproc = (nsGetModuleProc)
+    PR_FindFunctionSymbol(lib, NS_GET_MODULE_SYMBOL);
+
+  if (!getmoduleproc)
+    return NS_ERROR_FAILURE;
+
+  return getmoduleproc(aCompMgr, aLocation, aResult);
+#endif
 }
 
+#ifdef XP_MAC
 // Convienience method grabbed from 
 // http://mxr.mozilla.org/mozilla-central/source/xpcom/glue/standalone/nsGlueLinkingOSX.cpp .
 // Deprecated API calls have been removed.
@@ -118,3 +147,5 @@ static void* LookupSymbol(const mach_header* aLib, const char* aSymbolName)
 	
 	return NSAddressOfSymbol(sym);
 }
+
+#endif
