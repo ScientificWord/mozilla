@@ -105,6 +105,7 @@ void SaveRestoration(Restoration* restoration, bool bGlobal)
    if (s_restoreStack.size() != 0){
       if (bGlobal){
          @<Kill all restorations of the same location@>
+         delete restoration;
       } else {
          LOG("\nSaving restoration for " << restoration -> Id());
          RestoreLevel* level = s_restoreStack.back();

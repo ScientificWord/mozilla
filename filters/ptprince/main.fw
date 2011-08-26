@@ -23,6 +23,7 @@
 
 
 extern void SetupExpandables();
+extern void ClearParamStack();
 std::string s_tapfilename;
 std::ofstream s_tapfile;
 bool s_bTapped;
@@ -254,6 +255,7 @@ int main(int argc, char* argv[])
    delete s_mmldirname;
    delete s_outputdir;
    InputStack::ClearInputStack();
+   ClearParamStack();
    #ifdef LOGGING
       LogFile::Close();
    #endif
