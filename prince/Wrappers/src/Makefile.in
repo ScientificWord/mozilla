@@ -82,10 +82,22 @@ LOCAL_INCLUDES =	-I$(topsrcdir)/toolkit/components/Compute/Engines \
 
 EXTRA_DSO_LDOPTS += \
 	$(MOZ_COMPONENT_LIBS) \
-	-lQtCore.4 -lz -lexpat -lxpcomglue_s \
 	$(MOZ_UNICHARUTIL_LIBS) \
 	$(NULL)
 
+ifeq ($(OS_ARCH),Darwin)
+EXTRA_DSO_LDOPTS += \
+	-lQtCore.4 -lz -lexpat -lxpcomglue_s \
+	$(NULL)
+endif
+
+#what should it be for Linux?
+
+ifeq ($(OS_ARCH),WINNT)
+EXTRA_DSO_LDOPTS += \
+  $(DIST)/../../xulrunner/dist/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+	$(NULL)
+endif
 
 DEFINES += -DMOZ_DLL_PREFIX=\"$(DLL_PREFIX)\"
 
