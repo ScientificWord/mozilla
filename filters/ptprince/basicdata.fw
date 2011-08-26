@@ -570,15 +570,17 @@ class TokenList : public std::list<TeXToken>{
 private:
    mutable long m_refCount;
 public:
-   TokenList() : m_refCount(0) {}
+   TokenList();
    long GetCount() const {return m_refCount; }
    void AddReference() const { ++m_refCount; }
-   void RemoveReference() const {
+   void RemoveReference() {
        --m_refCount;
        if (m_refCount < 0)
           throw;
-       if (m_refCount == 0)
+       if (m_refCount == 0){
+          clear();
           delete this;
+       }
    }
 
    void AppendSymbol(const char* str);
@@ -651,6 +653,12 @@ TokenList Global::ToksReg[256];
 
 
 @$@<TokenList implementation@>==@{@-
+TokenList::TokenList() 
+  : m_refCount(0) 
+{
+  //int break_here = 12;
+}
+
 void TokenList::AppendSymbol(const char* cstr)
 {
   String str = StringBuilder::Create(cstr);

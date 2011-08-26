@@ -31,20 +31,19 @@ public:
 
 @$@<TokenSource implementation@>==@{@-
 TokenSource::~TokenSource()
-{
-}
+{}
 @}
 
 
 
 
 @$@<class TokenListTokenSource@>==@{@-
-class TokenListTokenSource : public TokenSource {
+class  TokenListTokenSource: public TokenSource {
 private:
-   TokenList& m_list;
+   TokenList* m_pList;
    TokenList::const_iterator m_iter;
 public:
-   TokenListTokenSource(TokenList& pList);
+   TokenListTokenSource(TokenList& lis);
    ~TokenListTokenSource();
    bool bEmpty() const;
    void GetToken(TeXToken*);
@@ -60,26 +59,26 @@ private:
 @$@<TokenListTokenSource imp@>==@{@-
 
 TokenListTokenSource::TokenListTokenSource(TokenList& lis)
-   : m_list(lis),
-     m_iter(lis.begin())
+   : m_pList(&lis),
+     m_iter(m_pList -> begin())
 {
-  if (m_list.GetCount() <=0) throw;
-  m_list.AddReference();
+  if (m_pList -> GetCount() < 0) throw;
+  m_pList -> AddReference();
 }
 
 TokenListTokenSource::~TokenListTokenSource()
 {
-   m_list.RemoveReference();
+   m_pList -> RemoveReference();
 }
 
 bool TokenListTokenSource::bEmpty() const
 {
-   return m_iter == m_list.end();
+   return m_iter == m_pList -> end();
 }
 
 void TokenListTokenSource::GetToken(TeXToken* tt)
 {
-   if (m_list.GetCount() <=0) throw;
+   if (m_pList -> GetCount() <=0) throw;
    *tt = *m_iter;
    ++m_iter;
 }
@@ -220,6 +219,7 @@ TokenizerImp::TokenizerImp(LineSource* pLineSource)
 @$@<TokenizerImp implementation@>+=@{@-
 TokenizerImp::~TokenizerImp()
 {
+  delete m_pLineSource;
 }
 @}
 
@@ -586,6 +586,7 @@ public:
    static void Clean();
    static bool StartTap(TokenList*);
    static void StopTap();
+   static void ClearInputStack();
 };
 @}
 
@@ -608,9 +609,10 @@ inline bool bActive(const TeXToken* tt)
 
 
 @$@<Clean Stack@>@M==@{@-
-while (!s_stack.empty() && s_stack.back() -> bEmpty()){
-   delete s_stack.back();
-   s_stack.pop_back();
+while (!(s_stack -> empty()) && ((s_stack->back()) -> bEmpty())){
+   TokenSource* b = s_stack -> back();
+   s_stack -> pop_back();
+   delete b;
 }
 @}
 
@@ -618,7 +620,16 @@ while (!s_stack.empty() && s_stack.back() -> bEmpty()){
 @$@<InputStack implementation@>+=@{@-
 
 namespace{
-   std::vector<TokenSource*> s_stack;
+   std::vector<TokenSource*>* s_stack = new std::vector<TokenSource*>;
+}
+@}
+
+
+@$@<InputStack implementation@>+=@{@-
+void InputStack::ClearInputStack()
+{
+   s_stack -> clear();
+   delete s_stack;
 }
 @}
 
@@ -650,7 +661,7 @@ InputStack::~InputStack()
 
 bool InputStack::bEmpty()
 {
-   return s_stack.empty();
+   return s_stack -> empty();
 }
 
 void InputStack::Clean()
@@ -668,14 +679,14 @@ void InputStack::Push(TokenSource* pSource)
    } else if (pSource -> bEmpty()){
      LOG("\nIgnoring empty source");
    } else {
-      s_stack.push_back(pSource);
+      s_stack -> push_back(pSource);
    }
 }
 
 void InputStack::GetRawToken()
 {
    @<Clean Stack@>
-   s_stack.back() -> GetToken(&s_curtok);
+   (s_stack -> back()) -> GetToken(&s_curtok);
    LOG("\nInput: " << s_curtok);
 }
 @}
@@ -690,10 +701,12 @@ void InputStack::Putback(TeXToken tt)
    LOG("\nPutback: " << tt);
    TokenList* tl = new TokenList;
    tl -> push_back(tt);
-   tl -> AddReference();
+   //tl -> AddReference();
 
    TokenListTokenSource* ts = new TokenListTokenSource(*tl);
-   s_stack.push_back(ts);
+
+   s_stack -> push_back(ts);
+  
 }
 @}
 
@@ -704,8 +717,7 @@ void InputStack::Putback(TeXToken tt)
 void InputStack::Putback(TokenList& tl)
 {
    if (tl.size() > 0){
-
-      tl.AddReference();
+      //tl.AddReference();
       Push(new TokenListTokenSource( tl ));
    }
 }
@@ -716,8 +728,8 @@ void InputStack::Putback(TokenList& tl)
 void InputStack::EndInput()
 {
   while(true){
-   TokenSource* pTS = s_stack.back();
-   s_stack.pop_back();
+   TokenSource* pTS = s_stack -> back();
+   s_stack -> pop_back();
    Tokenizer* pT = dynamic_cast<Tokenizer*>(pTS);
    delete pTS;
    if (pT != 0){
@@ -731,7 +743,7 @@ void InputStack::EndInput()
 @$@<InputStack implementation@>+=@{@-
 bool InputStack::StartTap(TokenList* pTL)
 {
-   TokenSource* pTS = s_stack.back();
+   TokenSource* pTS = s_stack -> back();
    Tokenizer* pT = dynamic_cast<Tokenizer*>(pTS);
    if (pT == 0){
       return false;
@@ -742,7 +754,7 @@ bool InputStack::StartTap(TokenList* pTL)
 }
 void InputStack::StopTap()
 {
-   TokenSource* pTS = s_stack.back();
+   TokenSource* pTS = s_stack -> back();
    Tokenizer* pT = dynamic_cast<Tokenizer*>(pTS);
    if (pT == 0){
       ASSERT(pT == 0);

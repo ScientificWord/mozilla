@@ -66,11 +66,14 @@ for the command.
 @$@<Main Loop@>==@{@-
 void Interpretter::MainLoop()
 {
+ frozen_relax->AddRef();
+ 
  bool running = true;
  while (running && !inp.bEmpty()) {
    LOG("\n----Start cycle");
    GetToken();
    DetermineCommandCode();
+   
    @<Execute the command@>
  }
 }
@@ -1775,6 +1778,7 @@ case CMD_AFTERGROUP:{
 
 @o@<interpretter.cpp@>==@{@-
 #include "interpretter.h"
+#include "platform.h"
 #include "symbols.h"
 #include "restore.h"
 #include "typesetter.h"
@@ -1793,7 +1797,7 @@ static InputStack inp;
 static TeXToken s_illegal(TT_PARAM, 11, 0); // an illegal token
 static TeXToken s_afterAssignment(s_illegal);
 Typesetter ts;
-SymbolData* frozen_relax;
+SymbolData* frozen_relax = new Primitive(CMD_RELAX);
 
 @<GroupStack@>
 @<TagStack@>
