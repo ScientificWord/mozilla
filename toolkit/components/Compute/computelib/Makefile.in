@@ -50,9 +50,9 @@ SupportFiles	:= \
 
 
 MuPADlib	:= \
-	$(srcdir)/../MuPAD/lib/lib.tar \
-	$(srcdir)/../MuPAD/lib/lib.toc \
-	$(srcdir)/../MuPAD/lib/sysinit.mu \
+	$(srcdir)/../MuPAD/share/lib/lib.tar \
+	$(srcdir)/../MuPAD/share/lib/lib.toc \
+	$(srcdir)/../MuPAD/share/lib/sysinit.mu \
 	$(NULL)
 
 #Set platform
@@ -60,13 +60,15 @@ ifeq ($(OS_ARCH),WINNT)
   PLATFORM = win32
 endif
 
+ifeq ($(OS_ARCH),Linux)
+  PLATFORM = linux
+endif
+
 ifeq ($(OS_ARCH),Darwin)
   PLATFORM = maci
 endif
 
-ifeq ($(OS_ARCH),Linux)
-  PLATFORM = linux
-endif
+
 
 ifeq ($(OS_ARCH),WINNT)
 
@@ -85,6 +87,7 @@ MuPADbin64 := $(wildcard $(srcdir)/../MuPAD/maci64/bin/*)
 MuPADcodelib := $(wildcard $(srcdir)/../MuPAD/maci64/lib/*)
 MuPADmod	:= $(wildcard $(srcdir)/../MuPAD/maci64/modules/*) 
 MuPADshare := $(wildcard) $(srcdir)/../MuPAD/share/*
+MuPADlibraries 	:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/lib/*)
 
 endif
 
@@ -93,6 +96,7 @@ MuPADlicense	:= $(srcdir)/../MuPAD/license/license
 MuPADbin := $(wildcard $(srcdir)/../MuPAD/linux/bin/*) 
 MuPADcodelib := $(wildcard $(srcdir)/../MuPAD/linux/lib/*) 
 MuPADmod := $(wildcard $(srcdir)/../MuPAD/linux/modules/*) 
+MuPADlibraries 	:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/lib/*)
 
 endif
 
@@ -101,10 +105,9 @@ ifeq ($(OS_ARCH),Darwin)
 endif
 
 MuPADlicense	:= $(srcdir)/../MuPAD/license/license
-MuPADbin		:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/bin/*) 
-MuPADlib		:= $(wildcard $(srcdir)/../MuPAD/lib/*) 
-MuPADmod		:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/modules/*) 
-MuPADlibraries 	:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/lib/*)
+MuPADbin		:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/bin/*) 
+MuPADlib		:= $(wildcard $(srcdir)/../MuPAD/share/lib/*) 
+MuPADmod		:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/modules/*) 
 
 include $(topsrcdir)/config/rules.mk
 
@@ -114,21 +117,21 @@ export:: $(MuPADlib)
 
 export:: $(MuPADmod)
 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
-	$(INSTALL) $(MuPADshare) $(FINAL_TARGET)/MuPAD/share
-	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(PLATFORM)64/modules
+	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/share/lib
 
 ifeq ($(OS_ARCH),Darwin)
 export:: $(MuPADbin)	
 	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/../lib
-
-else
-export:: $(MuPADbin)	
-	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/bin
-	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(Platform)/modules
+	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(PLATFORM)64/modules
 
 export:: $(MuPADlibraries)
-	$(INSTALL) $(MuPADlibraries) $(FINAL_TARGET)/MuPAD/$(Platform)/lib
+	$(INSTALL) $(MuPADlibraries) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/lib
 endif
+
+
+export:: $(MuPADbin)	
+	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/bin
+	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/modules
 
 ifeq ($(OS_ARCH),Darwin)
 export:: $(MuPADbin64)

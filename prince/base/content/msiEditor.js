@@ -2857,7 +2857,6 @@ function EditorClick(event)
         doVCamInitialize(obj);
 //        vcamActive = true;
       }
-      }
     }
     else if (document.getElementById("vcamactive").getAttribute("hidden") !==true) 
     {
