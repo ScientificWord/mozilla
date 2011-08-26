@@ -717,8 +717,7 @@ void InputStack::Putback(TeXToken tt)
 void InputStack::Putback(TokenList& tl)
 {
    if (tl.size() > 0){
-
-      tl.AddReference();
+      //tl.AddReference();
       Push(new TokenListTokenSource( tl ));
    }
 }

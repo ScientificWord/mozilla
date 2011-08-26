@@ -44,11 +44,28 @@ public:
 
 
 @$@<The parameter stack@>==@{@-
-    std::vector<TokenList*> s_paramStack;
+    class ParamStack : public std::vector<TokenList*>
+    {};
+
+    ParamStack s_paramStack;
     int s_paramTop;
+
 @}
 
 @$@<MacroExpansion::MacroExpansion@>==@{@-
+
+    void ClearParamStack()
+    {
+       s_paramStack.~ParamStack();
+       // s_paramStack.clear();
+       // int n = s_paramStack.size();
+       // for (int i = 0; i < n; ++i){
+       //   TokenList* tl = s_paramStack.back();
+       //   s_paramStack.pop_back();
+       //   delete tl;
+       // }
+    }
+
 MacroExpansion::MacroExpansion(
                    TokenList* ptr,
                    TokenList::const_iterator bodystart
@@ -859,7 +876,7 @@ void EdefAssignment(CommandCode curcmd, int prefixes)
 
    @<Scan definable symbol@>
    pTL = new TokenList();
-   pTL->AddReference();
+   //pTL->AddReference();
    @<Scan parameter specification@>
    bool bExpand = true;
    @<Scan body@>

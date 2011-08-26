@@ -215,13 +215,10 @@
     \count2=-\count@
     \multiply\count2 60
     \advance\count2 \time
-    %%\msitraceon\relax
-    %%\two@digits{\the\month}
-    %%\endinput
+
     \edef\today{%
       \the\year/\two@digits{\the\month}/\two@digits{\the\day}:%
         \two@digits{\the\count@}:\two@digits{\the\count2}}
-    
     \def\IfFileExists#1#2#3{%
       \openin\@inputcheck#1 %
       \ifeof\@inputcheck
@@ -236,11 +233,16 @@
         \fi
       \fi
       \closein\@inputcheck}
-
+    
     \endlinechar=-1
     \gdef\@currdir{./}
+ 
     \immediate\closeout15 %
+    %\msitraceon\relax
 \endgroup
+%\endinput
+
+
 
 \ifx\filename@parse\@undefined
   \def\reserved@a{./}
