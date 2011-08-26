@@ -49,12 +49,6 @@ SupportFiles	:= \
 	$(NULL)
 
 
-MuPADlib	:= \
-	$(srcdir)/../MuPAD/lib/lib.tar \
-	$(srcdir)/../MuPAD/lib/lib.toc \
-	$(srcdir)/../MuPAD/lib/sysinit.mu \
-	$(NULL)
-
 #Set platform
 ifeq ($(OS_ARCH),WINNT)
   PLATFORM = win32
@@ -67,6 +61,8 @@ endif
 ifeq ($(OS_ARCH),Linux)
   PLATFORM = linux
 endif
+
+MupInstall := $(srcdir)/../MuPAD/$(PLATFORM)/mupInstall.gmr
 
 ifeq ($(OS_ARCH),WINNT)
 
@@ -101,16 +97,14 @@ ifeq ($(OS_ARCH),Darwin)
 endif
 
 MuPADlicense	:= $(srcdir)/../MuPAD/license/license
-MuPADbin		:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/bin/*) 
-MuPADlib		:= $(wildcard $(srcdir)/../MuPAD/lib/*) 
 MuPADmod		:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/modules/*) 
 MuPADlibraries 	:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/lib/*)
 
 include $(topsrcdir)/config/rules.mk
 
 
-export:: $(MuPADlib)
-	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/share/lib
+export::$(MupInstall)
+	$(INSTALL) $(MupInstall) $(FINAL_TARGET)
 
 export:: $(MuPADmod)
 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
@@ -138,7 +132,10 @@ export:: $(MuPADcodelib)
 	$(INSTALL) $(MuPADcodelib) $(FINAL_TARGET)/MuPAD/$(PLATFORM)64/lib
 endif
 
-
+export:: 
+	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
+	
+	
 # 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
 # 	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
 # 	$(INSTALL) $(MuPADlinuxbin) $(FINAL_TARGET)/MuPAD/linux/bin
@@ -150,5 +147,5 @@ export:: $(MuPADbin)
 	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(Platform)/bin
 
 dump::
-	echo $(MuPADlicense), $(MuPADbin), $(MuPADlib), $(MuPADmod), $(MuPADlibraries)
+	echo $(MuPADlicense), $(MuPADbin), $(MuPADshare), $(MuPADmod), $(MuPADlibraries)
 
