@@ -10,12 +10,6 @@ MODULE		= compute
 MODULE_NAME = computeModule
 # MOZILLA_INTERNAL_API = 1
 
-
-
-
-
-
-
 DIRS		= \
   public \
 	computelib \
@@ -24,7 +18,4 @@ DIRS		= \
 	src \
 	$(NULL)
 
-
 include $(topsrcdir)/config/rules.mk
-
-#INCLUDES += $(srcdir)/public

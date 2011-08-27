@@ -8,7 +8,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		    = compute
-MODULE_NAME		    = computeModule
+MODULE_NAME		= computeModule
 XPIDL_MODULE	= compute
 
 XPIDLSRCS	= msiISimpleComputeEngine.idl \

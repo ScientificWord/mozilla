@@ -44,10 +44,6 @@ LOCAL_INCLUDES = -I$(srcdir)/../libtci	\
 	-I$(srcdir)/../public \
 	$(NULL)
 
-SupportFiles	:= \
-	$(srcdir)/swfcns.mu \
-	$(NULL)
-
 
 #Set platform
 ifeq ($(OS_ARCH),WINNT)
@@ -55,33 +51,30 @@ ifeq ($(OS_ARCH),WINNT)
 endif
 
 ifeq ($(OS_ARCH),Darwin)
-  PLATFORM = maci
+  PLATFORM = maci64
 endif
 
 ifeq ($(OS_ARCH),Linux)
   PLATFORM = linux
 endif
 
+SupportFiles	:= $(srcdir)/swfcns.mu 
 MupInstall := $(srcdir)/../MuPAD/$(PLATFORM)/mupInstall.gmr
+MuPADlib := $(wildcard $(srcdir)/../MuPAD/share/lib/*) 
+MuPADmod		:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/modules/*) 
+MuPADlibraries 	:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/lib/*)
+MuPADbin	:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/bin/*) 
 
 ifeq ($(OS_ARCH),WINNT)
-
 MuPADlicense	:= $(srcdir)/../MuPAD/license/license
-MuPADbin	:= $(wildcard $(srcdir)/../MuPAD/win32/bin/*) 
-MuPADmod	:= $(wildcard $(srcdir)/../MuPAD/win32/modules/*) 
-SupportFiles	+= \
-	$(srcdir)/../MuPAD/win32/mupkernel.dll \
-	$(NULL)
+SupportFiles	+= $(srcdir)/../MuPAD/$(PLATFORM)/mupkernel.dll
 endif
 
 ifeq ($(OS_ARCH),Darwin)
-MuPADlicense:=  $(srcdir)/../MuPAD/maci64/com.sciface.www.MuPADPro402.plist
-MuPADbin	:= $(srcdir)/../MuPAD/maci/libQtCore.4.dylib
-MuPADbin64 := $(wildcard $(srcdir)/../MuPAD/maci64/bin/*)
-MuPADcodelib := $(wildcard $(srcdir)/../MuPAD/maci64/lib/*)
-MuPADmod	:= $(wildcard $(srcdir)/../MuPAD/maci64/modules/*) 
-MuPADshare := $(wildcard) $(srcdir)/../MuPAD/share/*
-
+MuPADlicense:=  $(srcdir)/../MuPAD/$(PLATFORM)/com.sciface.www.MuPADPro402.plist
+QtLib	:= $(srcdir)/../MuPAD/maci/libQtCore.4.dylib
+MuPADcodelib := $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/lib/*)
+MuPADscript := $(wildcard) $(srcdir)/../MuPAD/share/bin/*
 endif
 
 ifeq ($(OS_ARCH),Linux)
@@ -89,16 +82,8 @@ MuPADlicense	:= $(srcdir)/../MuPAD/license/license
 MuPADbin := $(wildcard $(srcdir)/../MuPAD/linux/bin/*) 
 MuPADcodelib := $(wildcard $(srcdir)/../MuPAD/linux/lib/*) 
 MuPADmod := $(wildcard $(srcdir)/../MuPAD/linux/modules/*) 
-
 endif
 
-ifeq ($(OS_ARCH),Darwin)
-	Platform := maci64
-endif
-
-MuPADlicense	:= $(srcdir)/../MuPAD/license/license
-MuPADmod		:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/modules/*) 
-MuPADlibraries 	:= $(wildcard $(srcdir)/../MuPAD/$(Platform)/lib/*)
 
 include $(topsrcdir)/config/rules.mk
 
@@ -108,43 +93,22 @@ export::$(MupInstall)
 
 export:: $(MuPADmod)
 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
-	$(INSTALL) $(MuPADshare) $(FINAL_TARGET)/MuPAD/share
-	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(PLATFORM)64/modules
-
-ifeq ($(OS_ARCH),Darwin)
-export:: $(MuPADbin)	
-	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/../lib
-
-else
-export:: $(MuPADbin)	
-	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/bin
-	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(Platform)/modules
-
-export:: $(MuPADlibraries)
-	$(INSTALL) $(MuPADlibraries) $(FINAL_TARGET)/MuPAD/$(Platform)/lib
-endif
-
-ifeq ($(OS_ARCH),Darwin)
-export:: $(MuPADbin64)
-	$(INSTALL)  $(MuPADbin64) $(FINAL_TARGET)/MuPAD/$(PLATFORM)64/bin
+	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/share/lib
+	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/modules
+	$(INSTALL)  $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/bin
+	$(INSTALL)  $(SupportFiles) $(FINAL_TARGET)
 
 export:: $(MuPADcodelib)
-	$(INSTALL) $(MuPADcodelib) $(FINAL_TARGET)/MuPAD/$(PLATFORM)64/lib
+	$(INSTALL) $(MuPADcodelib) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/lib
+
+export:: $(MuPADscript)
+	$(INSTALL) $(MuPADscript) $(FINAL_TARGET)/MuPAD/share/bin
+
+ifeq ($(OS_ARCH),Darwin)
+export:: $(QtLib)
+	$(INSTALL) $(QtLib) $(FINAL_TARGET)/../lib
+
 endif
-
-export:: 
-	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
-	
-	
-# 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
-# 	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
-# 	$(INSTALL) $(MuPADlinuxbin) $(FINAL_TARGET)/MuPAD/linux/bin
-# 	$(INSTALL) $(MuPADlinuxlib) $(FINAL_TARGET)/MuPAD/linux/lib
-# 	$(INSTALL) $(MuPADlinuxmod) $(FINAL_TARGET)/MuPAD/linux/modules
-# endif
-
-export:: $(MuPADbin)
-	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(Platform)/bin
 
 dump::
 	echo $(MuPADlicense), $(MuPADbin), $(MuPADshare), $(MuPADmod), $(MuPADlibraries)
