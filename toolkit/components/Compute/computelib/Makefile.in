@@ -44,19 +44,31 @@ LOCAL_INCLUDES = -I$(srcdir)/../libtci	\
 	-I$(srcdir)/../public \
 	$(NULL)
 
+SupportFiles	:= \
+	$(srcdir)/swfcns.mu \
+	$(NULL)
+
+
+MuPADlib	:= \
+	$(srcdir)/../MuPAD/share/lib/lib.tar \
+	$(srcdir)/../MuPAD/share/lib/lib.toc \
+	$(srcdir)/../MuPAD/share/lib/sysinit.mu \
+	$(NULL)
 
 #Set platform
 ifeq ($(OS_ARCH),WINNT)
   PLATFORM = win32
 endif
 
+ifeq ($(OS_ARCH),Linux)
+  PLATFORM = linux
+endif
+
 ifeq ($(OS_ARCH),Darwin)
   PLATFORM = maci64
 endif
 
-ifeq ($(OS_ARCH),Linux)
-  PLATFORM = linux
-endif
+
 
 SupportFiles	:= $(srcdir)/swfcns.mu 
 MupInstall := $(srcdir)/../MuPAD/$(PLATFORM)/mupInstall.gmr
@@ -82,34 +94,39 @@ MuPADlicense	:= $(srcdir)/../MuPAD/license/license
 MuPADbin := $(wildcard $(srcdir)/../MuPAD/linux/bin/*) 
 MuPADcodelib := $(wildcard $(srcdir)/../MuPAD/linux/lib/*) 
 MuPADmod := $(wildcard $(srcdir)/../MuPAD/linux/modules/*) 
-endif
-
-
-include $(topsrcdir)/config/rules.mk
-
-
-export::$(MupInstall)
-	$(INSTALL) $(MupInstall) $(FINAL_TARGET)
-
-export:: $(MuPADmod)
-	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
-	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/share/lib
-	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/modules
-	$(INSTALL)  $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/bin
-	$(INSTALL)  $(SupportFiles) $(FINAL_TARGET)
-
-export:: $(MuPADcodelib)
-	$(INSTALL) $(MuPADcodelib) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/lib
-
-export:: $(MuPADscript)
-	$(INSTALL) $(MuPADscript) $(FINAL_TARGET)/MuPAD/share/bin
-
-ifeq ($(OS_ARCH),Darwin)
-export:: $(QtLib)
-	$(INSTALL) $(QtLib) $(FINAL_TARGET)/../lib
+MuPADlibraries 	:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/lib/*)
 
 endif
 
 dump::
 	echo $(MuPADlicense), $(MuPADbin), $(MuPADshare), $(MuPADmod), $(MuPADlibraries)
+
+MuPADlicense	:= $(srcdir)/../MuPAD/license/license
+MuPADbin		:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/bin/*) 
+MuPADlib		:= $(wildcard $(srcdir)/../MuPAD/share/lib/*) 
+MuPADmod		:= $(wildcard $(srcdir)/../MuPAD/$(PLATFORM)/modules/*) 
+
+include $(topsrcdir)/config/rules.mk
+
+
+export:: $(MuPADlib)
+	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/share/lib
+
+export:: $(MuPADmod)
+	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
+	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/share/lib
+
+ifeq ($(OS_ARCH),Darwin)
+export:: $(MuPADlibraries)
+	$(INSTALL) $(MuPADlibraries) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/lib
+endif
+
+
+export:: $(MuPADbin)	
+	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/bin
+	$(INSTALL) $(MuPADmod) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/modules
+
+dump::
+	echo $(MuPADlicense), $(MuPADbin), $(MuPADlib), $(MuPADmod), $(MuPADlibraries)
+
 
