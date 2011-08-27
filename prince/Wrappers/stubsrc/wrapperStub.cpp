@@ -15,7 +15,6 @@
 #include "nsCOMPtr.h"
 #ifdef XP_MACOSX
 
-
 //Include things from the mach-o libraries that we need for loading the libraries.
 #include <mach-o/loader.h>
 #include <mach-o/dyld.h>
