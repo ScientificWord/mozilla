@@ -245,9 +245,9 @@
             </xsl:for-each>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:for-each select="$theCellData//cellData[number(@col) = number($whichCol)]" >
+            <xsl:for-each select="$theCellData//cellData[number(@col) = number($whichCol)][string-length(@alignment) &gt; 0]" >
               <xsl:sort select="count($theCellData//cellData[number(@col) = number($whichCol)][@alignment = current()/@alignment])" data-type="number" order="descending" />
-              <xsl:sort select="translate(@alignment, 'lcrj', '1234')" />
+              <xsl:sort select="translate(@alignment, 'lcrjpmb', '1234567')" />
               <xsl:if test="position() = 1">
                 <xsl:value-of select="@alignment" />
               </xsl:if>
