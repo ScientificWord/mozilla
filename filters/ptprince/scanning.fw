@@ -124,18 +124,6 @@ void SetCurData(SymbolData* pd)
 @B@<Expandable and Primitive symbol data@>
 
 
-@$@<class SymbolData@>==@{@-
-class SymbolData{
-public:
-   virtual ~SymbolData();
-};
-@}
-
-
-@$@<SymbolData implementation@>==@{@-
-SymbolData::~SymbolData()
-{}
-@}
 
 @$@<class Primitive@>==@{@-
 class Primitive : public SymbolData{
@@ -143,14 +131,21 @@ private:
    CommandCode m_curcmd;
    bool        m_bInternalQuantity;
    int         m_data;
+   TeXToken*   m_pTok;
 public:
    Primitive(CommandCode cmd)
-     : m_curcmd(cmd), m_bInternalQuantity(false), m_data(0)
+     : m_curcmd(cmd), m_bInternalQuantity(false), m_data(0), m_pTok(0)
    {}
 
-   Primitive(CommandCode cmd, bool bInternal, int data)
-     : m_curcmd(cmd), m_bInternalQuantity(bInternal), m_data(data)
+   Primitive(CommandCode cmd, bool bInternal, int data, TeXToken* ptt = 0)
+     : m_curcmd(cmd), m_bInternalQuantity(bInternal), m_data(data), m_pTok(ptt)
    {}
+
+   ~Primitive()
+   {
+      delete m_pTok;
+      //int i = 67;
+   };
 
    CommandCode curcmd() const
    {
@@ -160,6 +155,11 @@ public:
    int Data() const
    {
       return m_data;
+   }
+
+   const TeXToken* TheToken() const
+   {
+     return m_pTok;
    }
 
    bool bInternalQuantity() const
@@ -431,7 +431,7 @@ if (prim != 0){
     CommandCode cc = prim -> curcmd();
     SetCmdCode(cc);
     if (CurCmdCode() == CMD_LET_TOK){
-       TeXToken* pTok = (TeXToken*) prim -> Data();
+       const TeXToken* pTok = prim -> TheToken();
        LOG("\nReplacing " << CurTok()
                           << " with " << *pTok);
        s_curtok = *pTok;
@@ -491,9 +491,9 @@ void ScanOptionalEquals(TokenList* pList)
 void IgnoreCurrentSpace(TokenList* pList = 0)
 {
     DetermineCommandCode();
-    if (CurCmdCode() != CMD_SPACER)
+    if (CurCmdCode() != CMD_SPACER){
        InputStack::Putback(CurTok());
-    else
+    } else
        if (pList)
           pList -> push_back(CurTok());
 }
@@ -501,7 +501,7 @@ void IgnoreCurrentSpace(TokenList* pList = 0)
 
 @$@<Parsing helpers@>+=@{@-
 void ScanOptionalSpace(TokenList* pList = 0)
-{
+{    
     GetToken();
     IgnoreCurrentSpace();
 }
@@ -660,13 +660,14 @@ bool ScanInt(int* n, TokenList* pList)
    bool bOK = true;
    int sign = ScanSign(pList);
    DetermineCommandCode();
+
    if (CurData() != 0 &&
        ((Primitive*)CurData()) -> bInternalQuantity()){
       @<Scan internal integer@>
    } else {
       @<Scan numeral@>
    }
-
+   
    iVal = sign * iVal;
 
    *n = iVal;
@@ -692,7 +693,7 @@ bool ScanInt(int* n, TokenList* pList)
       GetRawToken();
       if (pList)
          pList -> push_back(CurTok());
-
+   
       if (CurTok().Type() == TT_SYMBOL){
          // We should have something like '\$
          Symbols::SymId symId = CurTok().Symbol();
@@ -704,7 +705,9 @@ bool ScanInt(int* n, TokenList* pList)
          // We should have something like `a or `& ...
          iVal = CurTok().ChrCode();
       }
+      
       ScanOptionalSpace();
+      
    } else {
        bool bVacuous = false;
        if (CurTok() == octal_token) {
@@ -848,6 +851,7 @@ bool ScanKeyword(String str, TokenList* pList)
             if (tl -> size() != 0){
                InputStack::Putback(*tl);
             }
+            delete tl;
             return false;
          }
          // If we get here CurCmdCode() ==
@@ -1267,6 +1271,8 @@ RuleSpec* ScanRuleSpec()
 #include "basicdata.h"
 #include "tokens.h"
 
+class SymbolData;
+
 enum CommandCode{
    @<Command Codes@>
    CMD_NONE
@@ -1275,7 +1281,6 @@ enum CommandCode{
 @<Command subcodes@>
 
 @<Scanning declarations@>
-@<class SymbolData@>
 @<class Primitive@>
 @<typedef EXPFUNC@>
 @<class Expandable@>
@@ -1288,7 +1293,6 @@ enum CommandCode{
 #include "scanutils.h"
 #include "tokens.h"
 @<Some static scanning data@>
-@<SymbolData implementation@>
 @<Define keywords@>
 @<InitializeKeywords@>
 @<function bExpandable@>
