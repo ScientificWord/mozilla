@@ -26,13 +26,13 @@ gracefully.
 @$@<class MacroExpansion@>==@{@-
 class MacroExpansion : public TokenSource {
 private:
-   const TokenList*  m_pList;         // The body
+   TokenList*  m_pList;         // The body
    TokenList::const_iterator m_iter;  // The current position
    int m_nParamCount;   // number of parameters
    int m_paramStart;    // location of first param on s_paramStack:
 
 public:
-   MacroExpansion(const TokenList* ptr, TokenList::const_iterator);
+   MacroExpansion(TokenList* ptr, TokenList::const_iterator);
    ~MacroExpansion();
    bool bEmpty() const;
    void GetToken(TeXToken*);
@@ -44,13 +44,30 @@ public:
 
 
 @$@<The parameter stack@>==@{@-
-    std::vector<TokenList*> s_paramStack;
+    class ParamStack : public std::vector<TokenList*>
+    {};
+
+    ParamStack s_paramStack;
     int s_paramTop;
+
 @}
 
 @$@<MacroExpansion::MacroExpansion@>==@{@-
+
+    void ClearParamStack()
+    {
+       s_paramStack.~ParamStack();
+       // s_paramStack.clear();
+       // int n = s_paramStack.size();
+       // for (int i = 0; i < n; ++i){
+       //   TokenList* tl = s_paramStack.back();
+       //   s_paramStack.pop_back();
+       //   delete tl;
+       // }
+    }
+
 MacroExpansion::MacroExpansion(
-                   const TokenList* ptr,
+                   TokenList* ptr,
                    TokenList::const_iterator bodystart
                 )
   : m_pList(ptr),
@@ -66,6 +83,11 @@ MacroExpansion::MacroExpansion(
 MacroExpansion::~MacroExpansion()
 {
    m_pList -> RemoveReference();
+   for (int i = 0; i < m_nParamCount; ++i){
+      TokenList* tl = s_paramStack.back();
+      s_paramStack.pop_back();
+      tl -> RemoveReference();
+   }
 }
 @}
 
@@ -301,7 +323,7 @@ if @<r doesn't point to a TT_MATCH or a TT_END_MATCH@> {
 }
 while @<r points to a TT_MATCH@> {
    s_pstack[s_ptop] = new TokenList;
-   s_pstack[s_ptop]->AddReference();
+   s_pstack[s_ptop] -> AddReference();
    ++s_ptop;
    ++r;
    if @<r points to a TT_MATCH or a TT_END_MATCH@> {
@@ -765,6 +787,7 @@ void PrintDefn(TokenList& tl)
 
 
 void DefAssignment(CommandCode curcmd, int prefixes){
+
    TeXToken defining;
    CommandCode thecmd = curcmd;
    bool bGlobal = prefixes & PREFIX_GLOBAL;
@@ -853,7 +876,7 @@ void EdefAssignment(CommandCode curcmd, int prefixes)
 
    @<Scan definable symbol@>
    pTL = new TokenList();
-   pTL->AddReference();
+   //pTL->AddReference();
    @<Scan parameter specification@>
    bool bExpand = true;
    @<Scan body@>
@@ -1078,6 +1101,7 @@ bool TestDefs2()
 @o@<macros.h@>==@{@-
 #ifndef MACROS_H
 #define MACROS_H
+#include "platform.h"
 #include "tokens.h"
 #include "scanutils.h"
 #include "typesetter.h"

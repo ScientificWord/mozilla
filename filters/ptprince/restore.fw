@@ -105,6 +105,7 @@ void SaveRestoration(Restoration* restoration, bool bGlobal)
    if (s_restoreStack.size() != 0){
       if (bGlobal){
          @<Kill all restorations of the same location@>
+         delete restoration;
       } else {
          LOG("\nSaving restoration for " << restoration -> Id());
          RestoreLevel* level = s_restoreStack.back();
@@ -120,7 +121,11 @@ void SaveRestoration(Restoration* restoration, bool bGlobal)
          }
          if (!found)
             level -> push_back(restoration);
+         else
+            delete restoration;
       }
+   } else {
+      delete restoration;
    }
 }
 @}
@@ -260,6 +265,7 @@ public:
 #ifndef RESTORE_H
 #define RESTORE_H
 #include "basicdata.h"
+#include "platform.h"
 @<class Restoration@>
 @<class IntRestoration@>
 @<class ToksRestoration@>
