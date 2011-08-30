@@ -242,20 +242,16 @@ graph {
 graph {
   display:block;  
   cursor: pointer;
-  border: thin solid blue;
-  padding: 10px;
  /*  -moz-box-orient: vertical; */
 }
 
 plotwrapper {
   display: block;
-	position: relative;
 	top: 0px;
 	left: 0px;
   -moz-user-select: all;
   -moz-user-focus: normal;
   padding: 10px;
-	border: thin solid red;
   cursor: pointer;
 /*  -moz-box-orient: vertical; */
   background-color: rgb(245,245,255);
@@ -270,13 +266,6 @@ plotcaption {
 }
 
 object {
-		display: block;
-		position: static;
-		border: thin solid black;
-		padding: 10px;
-		position: absolute;
-		top: 20px;
-		left: 20px;
 }
 
 
