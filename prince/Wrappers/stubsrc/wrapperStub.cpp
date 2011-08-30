@@ -23,10 +23,17 @@
 static char const *const kDependentLibraries[] =
 {
 	// dependent1.dll on windows, libdependent1.so on linux, libdependent1.dylib on Mac
-
-  MOZ_DLL_PREFIX "QtCore.4" MOZ_DLL_SUFFIX,
-  nsnull
-	
+#ifdef WIN32
+       MOZ_DLL_PREFIX "icudt42" MOZ_DLL_SUFFIX,
+       MOZ_DLL_PREFIX "icuuc42" MOZ_DLL_SUFFIX,
+       MOZ_DLL_PREFIX "zlib1" MOZ_DLL_SUFFIX,
+       MOZ_DLL_PREFIX "libexpat" MOZ_DLL_SUFFIX,
+       MOZ_DLL_PREFIX "mupcomkernel" MOZ_DLL_SUFFIX,
+       nsnull
+#else
+       MOZ_DLL_PREFIX "QtCore.4" MOZ_DLL_SUFFIX,
+       nsnull
+#endif	
 	// NOTE: if the dependent libs themselves depend on other libs, the subdependencies
 	// should be listed first.
 };
@@ -48,18 +55,26 @@ NSGetModule(nsIComponentManager* aCompMgr, nsIFile* aLocation, nsIModule* *aResu
 	// of the real component, then the component itself, and call NSGetModule on
 	// the component.
 	
-	// Assume that we're in <extensiondir>/components, and we want to find
-	// <extensiondir>/libraries
+	// Assume that we're in components, and we want to find
+	// MuPAD/win32/bin (Windows) or . (MacOSX)
 	
 	nsCOMPtr<nsIFile> libraries;
 	rv = aLocation->GetParent(getter_AddRefs(libraries));
 	if (NS_FAILED(rv))
 		return rv;
-	
-	nsCOMPtr<nsILocalFile> library(do_QueryInterface(libraries));
+	nsCOMPtr<nsIFile> librariesClone;
+
+
+#ifdef WIN32
+  rv = libraries->GetParent(getter_AddRefs(librariesClone));
+  rv = librariesClone->Append(NS_LITERAL_STRING("MuPAD"));
+  rv = librariesClone->Append(NS_LITERAL_STRING("win32"));
+  rv = librariesClone->Append(NS_LITERAL_STRING("bin"));
+  rv = librariesClone->Append(NS_LITERAL_STRING("dummy"));
+#endif	
+	nsCOMPtr<nsILocalFile> library(do_QueryInterface(librariesClone));
 	if (!library)
 		return NS_ERROR_UNEXPECTED;
-	
 	nsCString path;
 	// loop through and load dependent libraries
 	for (char const *const *dependent = kDependentLibraries;
@@ -89,16 +104,16 @@ NSGetModule(nsIComponentManager* aCompMgr, nsIFile* aLocation, nsIModule* *aResu
 		//    will be properly unloaded.
 #endif
 	}
-	
-	library->SetNativeLeafName(NS_LITERAL_CSTRING(kRealComponent));
+	nsCOMPtr<nsILocalFile> library2(do_QueryInterface(libraries));
+	library2->SetNativeLeafName(NS_LITERAL_CSTRING(kRealComponent));
 
 #ifndef XP_MACOSX
   PRLibrary *lib;
-  rv = library->Load(&lib);
+  rv = library2->Load(&lib);
   if (NS_FAILED(rv))
     return rv;
 #else
-	rv = library->GetNativePath(path);
+	rv = library2->GetNativePath(path);
 	if (NS_FAILED(rv)) return rv;
 	
 	const mach_header * componentlib = NSAddImage(path.get(), NSADDIMAGE_OPTION_RETURN_ON_ERROR |
