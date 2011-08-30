@@ -63,7 +63,7 @@ NSGetModule(nsIComponentManager* aCompMgr, nsIFile* aLocation, nsIModule* *aResu
 	if (NS_FAILED(rv))
 		return rv;
 	nsCOMPtr<nsIFile> librariesClone;
-
+	libraries->Clone(getter_AddRefs(librariesClone));
 
 #ifdef WIN32
   rv = libraries->GetParent(getter_AddRefs(librariesClone));
