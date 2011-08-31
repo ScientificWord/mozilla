@@ -1,8 +1,6 @@
 File ${srcdir}\*.cmd
 File ${srcdir}\*.gmr
 File ${srcdir}\*.mu
-File ${srcdir}\xulrunner\mupkernel.dll
-;File ${srcdir}\*.m
 File ${srcdir}\pretex.exe
 File ${srcdir}\application.ini
 File ${srctree}\prince\install\license.txt
