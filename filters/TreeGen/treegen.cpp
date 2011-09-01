@@ -85,11 +85,13 @@ TreeGenerator::~TreeGenerator() {
   if ( s_tex_grammar )      delete s_tex_grammar;
   if ( tokizer )            delete tokizer;
   if ( theorem_store )      delete theorem_store;
-  if ( TeXparser )			delete TeXparser;
+  if ( TeXparser )			    delete TeXparser;
   if ( srcfile ) {
     fclose( srcfile );
 	  srcfile =  NULL;
   }
+
+  delete d_xml_grammar;
 
   if ( s_math_grammar )     delete s_math_grammar;
   if ( d_math_grammar )     delete d_math_grammar;

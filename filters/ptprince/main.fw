@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 {
    std::cout << "\nARGC = " << argc << "\n";
    //#ifdef DEBUG
-   //  _CrtSetBreakAlloc(512533);
+   //_CrtSetBreakAlloc(443);
    //#endif
 
    // Check for -h, /h
@@ -251,11 +251,13 @@ int main(int argc, char* argv[])
    Typesetter::DeleteAll();
    DeleteAllRestorations();
    Symbols::DeleteAll();
+   Global::everymath.clear();
    delete s_inputdir;
    delete s_mmldirname;
    delete s_outputdir;
    InputStack::ClearInputStack();
    ClearParamStack();
+   CleanRegs();
    #ifdef LOGGING
       LogFile::Close();
    #endif
