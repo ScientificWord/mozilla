@@ -155,7 +155,13 @@ case CMD_LET:{
          Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
          DefRestoration* restore =
               new DefRestoration((SymbolData**)pDefLoc, "a def");
-         SaveRestoration(restore, bGlobal);
+
+         if ( SaveRestoration(restore, bGlobal) )
+         {
+           if (*((SymbolData**)pDefLoc)) 
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+         }
+
          Symbols::SetDef(
                     defining.Symbol(),
                     pDef,
@@ -165,7 +171,12 @@ case CMD_LET:{
          Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
          DefRestoration* restore =
               new DefRestoration((SymbolData**)pDefLoc, "a def");
-         SaveRestoration(restore, bGlobal);
+         //SaveRestoration(restore, bGlobal);
+         if ( SaveRestoration(restore, bGlobal) )
+         {
+           if (*((SymbolData**)pDefLoc)) 
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+         }
          Symbols::SetActiveDef(
                     defining.ChrCode(),
                     pDef,
@@ -185,7 +196,12 @@ case CMD_LET:{
          Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
          DefRestoration* restore =
               new DefRestoration((SymbolData**)pDefLoc, "a def");
-         SaveRestoration(restore, bGlobal);
+         //SaveRestoration(restore, bGlobal);
+         if ( SaveRestoration(restore, bGlobal) )
+         {
+           if (*((SymbolData**)pDefLoc)) 
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+         }
          Symbols::SetDef(
                     defining.Symbol(),
                     pDef,
@@ -195,7 +211,12 @@ case CMD_LET:{
          Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
          DefRestoration* restore =
               new DefRestoration((SymbolData**)pDefLoc, "a def");
-         SaveRestoration(restore, bGlobal);
+         //SaveRestoration(restore, bGlobal);
+         if ( SaveRestoration(restore, bGlobal) )
+         {
+           if (*((SymbolData**)pDefLoc)) 
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+         }
          Symbols::SetActiveDef(
                     defining.ChrCode(),
                     pDef,
@@ -243,7 +264,12 @@ case CMD_FUTURE_LET:{
    Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
    DefRestoration* restore =
         new DefRestoration((SymbolData**)pDefLoc, "a def");
-   SaveRestoration(restore, bGlobal);
+   //SaveRestoration(restore, bGlobal);
+   if ( SaveRestoration(restore, bGlobal) )
+   {
+           if (*((SymbolData**)pDefLoc)) 
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+   }
 
    Symbols::SetDef(
               defining.Symbol(),

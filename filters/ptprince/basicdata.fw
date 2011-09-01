@@ -572,14 +572,15 @@ private:
 public:
    TokenList();
    long GetCount() const {return m_refCount; }
-   void AddReference() const { ++m_refCount; }
+   void SetCount(int n) { m_refCount = n; }
+   void AddReference() const {if (m_refCount != -1)  ++m_refCount; }
    void RemoveReference() {
-       --m_refCount;
-       if (m_refCount < 0)
-          throw;
-       if (m_refCount == 0){
-          clear();
-          delete this;
+       if (m_refCount > 0 ) {
+         --m_refCount;
+         if (m_refCount == 0){
+           clear();
+           delete this;
+         }
        }
    }
 
@@ -650,7 +651,41 @@ static TokenList ToksReg[256];
 TokenList Global::ToksReg[256];
 @}
 
+@$@<InitRegs@>==@{@-
+void InitRegs()
+{
+  for (int i = 0; i < 256; ++i){
+     Global::ToksReg[i].SetCount(-1);
+  }
+}
 
+void CleanRegs()
+{
+  for (int i = 0; i < 256; ++i){
+     Global::ToksReg[i].clear();
+  }
+  Global::output.clear();
+Global::everypar.clear();
+Global::everymath.clear();
+Global::everydisplay.clear();
+Global::everyhbox.clear();
+Global::everyvbox.clear();
+Global::everyjob.clear();
+Global::everycr.clear();
+Global::errhelp.clear();
+Global::msieverycellstart.clear();
+Global::msieverycellend.clear();
+
+Global::msieveryrowstart.clear();
+Global::msieveryrowend.clear();
+
+Global::msiinlinemathproc.clear();
+Global::msidisplaymathproc.clear();
+Global::msieverypar.clear();
+Global::msieveryhbox.clear();
+
+}
+@}
 
 @$@<TokenList implementation@>==@{@-
 TokenList::TokenList() 
@@ -984,11 +1019,11 @@ void InitData();
 @$@<InitData@>==@{@-
 void InitData()
 {
-   Global::everydisplay.AddReference();
-   Global::everymath.AddReference();
-   Global::everypar.AddReference();
-   Global::msieverypar.AddReference();
-
+   //Global::everydisplay.AddReference();
+   //Global::everymath.AddReference();
+   //Global::everypar.AddReference();
+   //Global::msieverypar.AddReference();
+   InitRegs();
    InitCatcodes();
    InitUccodes();
    InitLccodes();
@@ -1203,6 +1238,7 @@ InputByteFile* Global::g_readFile[15];
 @<TokenList logging@>
 @<TeXToken logging@>
 @<Conversion to strings@>
+void CleanRegs();
 
 
 #endif
@@ -1213,6 +1249,7 @@ InputByteFile* Global::g_readFile[15];
 #include "platform.h"
 #include <cstring>
 @<Parameter definitions@>
+@<InitRegs@>
 @<Implement catcode functions@>
 @<Uccode table@>
 @<Lccode table@>
