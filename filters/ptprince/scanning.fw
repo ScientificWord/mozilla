@@ -123,8 +123,6 @@ void SetCurData(SymbolData* pd)
 
 @B@<Expandable and Primitive symbol data@>
 
-
-
 @$@<class Primitive@>==@{@-
 class Primitive : public SymbolData{
 private:
@@ -143,8 +141,14 @@ public:
 
    ~Primitive()
    {
-      delete m_pTok;
-      //int i = 67;
+      if (m_curcmd == CMD_ASSIGN_TOKS){
+        TokenList* p = (TokenList*) m_data;
+        if (p -> GetCount() != -1){
+           p  -> RemoveReference();
+        }
+      } else {
+        delete m_pTok;
+      }
    };
 
    CommandCode curcmd() const
