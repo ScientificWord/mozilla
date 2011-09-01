@@ -8030,7 +8030,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
         item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
       else if (scriptString)
         item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
-      item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+//      item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
       item.setAttribute("label", menuString);
       item.refElement = propData.getReferenceNode();
       item.refEditor = editorElement;
