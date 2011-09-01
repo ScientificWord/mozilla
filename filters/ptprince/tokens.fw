@@ -62,7 +62,7 @@ TokenListTokenSource::TokenListTokenSource(TokenList& lis)
    : m_pList(&lis),
      m_iter(m_pList -> begin())
 {
-  if (m_pList -> GetCount() < 0) throw;
+  //if (m_pList -> GetCount() == 0) throw;
   m_pList -> AddReference();
 }
 
@@ -78,7 +78,6 @@ bool TokenListTokenSource::bEmpty() const
 
 void TokenListTokenSource::GetToken(TeXToken* tt)
 {
-   if (m_pList -> GetCount() <=0) throw;
    *tt = *m_iter;
    ++m_iter;
 }
@@ -677,7 +676,9 @@ void InputStack::Push(TokenSource* pSource)
      LOG("\nNULL source!");
      ASSERT(false);
    } else if (pSource -> bEmpty()){
-     LOG("\nIgnoring empty source");
+     //LOG("\nDeleting empty source");
+     //delete pSource;
+     s_stack -> push_back(pSource);
    } else {
       s_stack -> push_back(pSource);
    }
