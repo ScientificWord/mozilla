@@ -898,6 +898,7 @@ case CMD_TAG : {
    ScanTokenList(pTL, false);
    LOG("\n----Create tag " << *pTL);
    Typesetter::AppendTag(pTL);
+   delete pTL;
    break;
 }
 @}
@@ -1216,6 +1217,7 @@ case CMD_MESSAGE: {
        LOG("\n\\errmessage: ");
    }
    LOG(*pTL);
+   delete pTL;
    break;
 }
 @}
