@@ -54,8 +54,6 @@ char *upref_zstrs[] = {
 
 bool fix_IE_space_bug =  true;
 
-//HINSTANCE s_hApp;
-//HINSTANCE s_hDLL;
 
 std::string s_mathml;
 std::string s_anomaly;
@@ -117,9 +115,6 @@ void CloseMathML()
        delete[] str;
     i++;
   }
-  //if (s_hDLL != 0){
-  //   FreeLibrary(s_hDLL);
-  //}
 }
 
 

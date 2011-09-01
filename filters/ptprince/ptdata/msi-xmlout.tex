@@ -1,8 +1,7 @@
+
 \makeatletter
 
-
 \newcounter{MaxMatrixCols}
-
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
@@ -227,7 +226,6 @@
 
 
 %% newtheorem
-
 
 
 \def\theoremstyle#1{\def\msi@currentthmstyle{#1}}
@@ -711,6 +709,7 @@
 %\@namedef{msi@begin@multline*}{\ \@make@braces@other\relax\@scan@multline@star}
 
 
+
 \@namedef{msi@begin@flalign}{\bgroup\msi@dollar=0\relax$$\string\begin{flalign}}
 \@namedef{msi@end@flalign}{\string\end{flalign}$$\egroup}
 
@@ -729,10 +728,8 @@
 \def\msi@end@array{\string\end{array}}
 
 
-
-
 \def\MSIEqnarrayLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\msi@dollar=0\relax$$\string\begin{#1}}%
+  \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\}\catcode`\&=11\msi@dollar=0\relax$$\string\begin{#1}}%
   \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}
 }
 
@@ -1465,8 +1462,46 @@
     \msiclosetag{texb}{</texb>}}
 
 
+%-------
+% Experiment
+%% 
+%% \def\msi@begin@tabular{%
+%%    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
+%% }
+%% 
+%% \newif\ifmathtabular
+%% \mathtabulartrue
+%% 
+%% \def\msi@begin@tabularA[#1]#2{%
+%%    \begingroup
+%%       \ifmmode
+%%         \string\msipassthru\char`\{%
+%%         \mathtabulartrue
+%%         \msihmode
+%%         \catcode`\&=4%
+%%       \else
+%%         \mathtabularfalse
+%%       \fi   
+%%       \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+%%       \msiopentag{tbody}{<tbody>}%
+%%       \begingroup
+%%         \aftergroup\msi@closetabular
+%%         \let\\=\@cr
+%%         \halign\bgroup&##\cr}%
+%% }
+%% 
+%% 
+%% \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
+%% 
+%% \def\msi@end@tabular{%  
+%%         \crcr
+%%         \egroup % the \halign
+%%      \endgroup % to do the closetabular
+%%      \ifmathtabular\char`\}\fi
+%%   \endgroup}
+%% 
 
-
+%------------
 
 % A hack to fool the jbm filter into handling \dots gracefully
 \def\dots{\msitag{\U{2026}}}
