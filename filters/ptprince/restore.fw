@@ -9,7 +9,7 @@ when the group ends.
 #include "symbols.h"
 
 void NewSaveLevel();
-void SaveRestoration(Restoration*, bool bGlobal);
+bool SaveRestoration(Restoration*, bool bGlobal);
 void EndSaveLevel();
 
 void DeleteAllRestorations();
@@ -100,7 +100,7 @@ void DeleteAllRestorations()
 
 
 @$@<Restore implementation@>+=@{@-
-void SaveRestoration(Restoration* restoration, bool bGlobal)
+bool SaveRestoration(Restoration* restoration, bool bGlobal)
 {
    if (s_restoreStack.size() != 0){
       if (bGlobal){
@@ -119,14 +119,16 @@ void SaveRestoration(Restoration* restoration, bool bGlobal)
             }
             ++it;
          }
-         if (!found)
+         if (!found) {
             level -> push_back(restoration);
-         else
+            return true;
+         } else
             delete restoration;
       }
    } else {
       delete restoration;
    }
+   return false;
 }
 @}
 
@@ -222,6 +224,7 @@ public:
    {
       LOG("\nRestoring " << Id() << " to " << m_oldValue);
       TokenList& loc = * (TokenList*) Loc();
+      loc.RemoveReference();
       loc = m_oldValue;
    }
 
@@ -253,6 +256,7 @@ public:
    {
       LOG("\nRestoring " << Id());
       SymbolData*& loc = * (SymbolData**) Loc();
+      if (loc) loc -> RemRef();
       loc = m_oldValue;
    }
 
