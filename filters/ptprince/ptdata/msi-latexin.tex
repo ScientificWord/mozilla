@@ -14,7 +14,6 @@
 \catcode`@=11
 
 
-
 %\def~{\nobreakspace{}}
 
 \def\@makeother#1{\catcode`#112\relax}
@@ -40,7 +39,6 @@
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
 \def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
-
 
 %% \documentclass
 
@@ -892,6 +890,7 @@
 \def\@spaces{\space\space\space\space}
 \gdef\@eha{%
 }
+
 \gdef\@ehb{%
   You've lost some text. \space \@ehc}
 \gdef\@ehc{%
@@ -950,6 +949,7 @@
       \protect\item}\@ehc}
 \gdef\@notprerr{%
   \@latex@error{Can be used only in preamble}\@eha}
+
 \gdef\@inmatherr#1{%
    \relax
    \ifmmode
@@ -960,9 +960,13 @@
 \message{par,}
 \def\@setpar#1{\def\par{#1}\def\@par{#1}}
 \def\@par{\let\par\@@par\par}
+
 \def\@restorepar{\def\par{\@par}}
 %%% From File: ltspace.dtx
+
+
 \message{spacing,}
+
 \expandafter\let\expandafter\@normalcr
      \csname\expandafter\@gobble\string\\ \endcsname
 \def\@xnewline{\@ifnextchar[% ] bracket matching
@@ -976,6 +980,7 @@
   \else
     \unskip \reserved@e {\reserved@f#1}\nobreak \hfil \break
   \fi}
+
 \def\@getpen#1{\ifcase #1 \z@ \or \@lowpenalty\or
          \@medpenalty \or \@highpenalty
          \else \@M \fi}
@@ -984,6 +989,7 @@
 \@nobreakfalse
 \newdimen\@savsk
 \newcount\@savsf
+
 
 \def\@bsphack{%
   \relax
@@ -1008,6 +1014,7 @@
       \ignorespaces
     \fi
    \fi}
+
 
 
 \def\@xaddvskip{%
@@ -1037,6 +1044,8 @@
   \else
     \@noitemerr
   \fi}
+
+
 \def\addpenalty#1{%
   \ifvmode
     \if@minipage
@@ -1225,6 +1234,7 @@
 \long\def \InputIfFileExists#1#2{%
   \IfFileExists{#1}%
     {#2\@addtofilelist{#1}\@@input \@filef@und}}
+
 
 \def\@obsoletefile#1#2{%
    \@latex@warning@no@line{inputting `#1' instead of obsolete `#2'}}
@@ -3581,7 +3591,6 @@
 \let\@seqncr=\@eqncr
 %\@namedef{eqnarray*}{\def\@eqncr{\nonumber\@seqncr}\eqnarray}
 %\@namedef{endeqnarray*}{\nonumber\endeqnarray}
-
 
 
 \DeclareRobustCommand{\ensuremath}{%
@@ -6942,6 +6951,5 @@
 \def\CustomNote{%
    \@ifnextchar[{\out@CustomNoteA}{\out@CustomNoteB}}%
    
-
 \makeatother\relax
 \endinput
