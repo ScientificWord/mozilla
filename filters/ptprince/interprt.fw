@@ -300,6 +300,17 @@ void EndLevel()
 }
 @}
 
+
+@$@<GroupStack@>+=@{@-
+void ClearLevels()
+{
+  while (s_groupStackTop >= 0){
+    EndLevel();
+  }
+}
+@}
+
+
 @B@<Some debugging aids@>
 
 \noseealso
@@ -938,6 +949,7 @@ NewPrimitive("endinput",  CMD_ENDINPUT, 0, 1);
 case CMD_ENDINPUT : {
    LOG("\n--- \\endinput");
    InputStack::EndInput();
+   ClearLevels();
    break;
 }
 @}
