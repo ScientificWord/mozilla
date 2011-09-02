@@ -560,7 +560,10 @@ void Typesetter::EndInline()
       if (Global::msidollar != 0){
          out << (char) Global::msidollar;
       }
-      plist -> Print(out);
+      if (plist){
+        plist -> Print(out);
+        delete plist;
+      }
       if (Global::msidollar != 0){
          out << (char) Global::msidollar;
       }
@@ -602,6 +605,8 @@ void Typesetter::StartDisplay()
    }
    dllname[str.Size()] = '\0';
    StringBuilder::Discard(str);
+   
+   delete s_processor;
    s_processor = dllname;
 }
 @}
