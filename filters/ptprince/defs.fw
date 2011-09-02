@@ -1022,7 +1022,7 @@ if (CurTok().Type() != TT_LEFT_BRACE){
             // Watch for \msitag
             DetermineCommandCode();
             if (CurCmdCode() == CMD_TAG){
-               std::cout << "\n\\msitag in body of \\edef";
+               //std::cout << "\n\\msitag in body of \\edef";
                LOG("\n\\msitag in body of \\edef");
                pTL -> push_back(CurTok());
                GetRawToken();
