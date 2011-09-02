@@ -176,8 +176,6 @@
 
 
 
-
-
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
 
@@ -624,6 +622,7 @@
 
 \newtoks\temptoksa
 
+
 \bgroup
   \@make@braces@other
   \catcode`\[=1
@@ -724,12 +723,12 @@
 
 %\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
 
-\def\msi@begin@array{\string\begin{array}}
-\def\msi@end@array{\string\end{array}}
+\def\msi@begin@array{\begingroup\def\\{\char`\\\char`\\}\catcode`\&=11\string\begin{array}}
+\def\msi@end@array{\string\end{array}\endgroup}
 
 
 \def\MSIEqnarrayLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\}\catcode`\&=11\msi@dollar=0\relax$$\string\begin{#1}}%
+  \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\\char`\\}\catcode`\&=11\msi@dollar=0\relax$$\string\begin{#1}}%
   \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}
 }
 
@@ -779,6 +778,11 @@
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
 
+\expandafter\def\csname msi@begin@tabular*\endcsname{%
+   \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
+}
+
+
 \newif\ifmathtabular
 \mathtabulartrue
 
@@ -809,6 +813,14 @@
      \endgroup % to do the closetabular
      \ifmathtabular\char`\}\fi
   \endgroup}
+
+\expandafter\def\csname msi@end@tabular*\endcsname{%  
+        \crcr
+        \egroup % the \halign
+     \endgroup % to do the closetabular
+     \ifmathtabular\char`\}\fi
+  \endgroup}
+
 
 \def\cline#1{}
 \def\hline{}
@@ -1507,7 +1519,7 @@
 \def\dots{\msitag{\U{2026}}}
 
 \input latex-default.tex
-\input tcilatex.tex
 
+\input tcilatex.tex
 
 \catcode`\<=\active
