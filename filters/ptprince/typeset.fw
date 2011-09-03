@@ -628,7 +628,10 @@ void Typesetter::EndDisplay()
       if (Global::msidollar != 0){
          out << (char) Global::msidollar  << (char) Global::msidollar;
       }
-      plist -> Print(out);
+      if (plist){
+         plist -> Print(out);
+         delete plist;
+      }
       if (Global::msidollar != 0){
          out << (char) Global::msidollar  << (char) Global::msidollar;
       }
@@ -641,7 +644,10 @@ void Typesetter::EndDisplay()
       if (Global::msidollar != 0){
          out << (char) Global::msidollar  << (char) Global::msidollar;
       }
-      plist -> Print(out);
+      if (plist){
+        plist -> Print(out);
+        delete plist;
+      }
       if (Global::msidollar != 0){
          out << (char) Global::msidollar  << (char) Global::msidollar;
       }
