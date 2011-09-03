@@ -1429,7 +1429,7 @@
 \futurelet\@startok\@gobbleit*
 
 \def\@inbrace#1{\@temptokena={\msitag{#1}}\{\the\@temptokena\}\@gobbleargs}
-\def\@inbracket[#1]{[#1]\@gobbleargs}
+\def\@inbracket[#1]{\@temptokena={\msitag{[#1]}}\the\@temptokena\@gobbleargs}
 \def\@astar*{*\@gobbleargs}
 
 \def\@gobbleargs{\futurelet\atok\@gobblemore}
