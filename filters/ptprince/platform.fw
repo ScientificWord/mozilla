@@ -1478,9 +1478,10 @@ computations.  The necessary routines are described here.
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-//#define _CRTDBG_MAP_ALLOC
-//#include <stdlib.h>
-//#include <crtdbg.h>
+
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 
 #pragma warning(disable : 4786)
