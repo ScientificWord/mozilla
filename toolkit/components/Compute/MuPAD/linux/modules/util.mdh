@@ -84,11 +84,11 @@ DESCRIPTION
 EXAMPLES
   >> util::kernelPath()
 
-     "C:\\PROGRA~1\\SCIFACE\\MUPADP~1.5\\BIN\\MUPKERN.EXE"
+     "C:\\Program Files\\...\\bin\\mupkern.exe"
 
   >> util::kernelPath()
 
-     "/usr/local/mupad/linux/bin/mupad"
+     "/opt/.../linux/bin/mupad"
 
 SEE ALSO
   util::kernelPid, util::userName
