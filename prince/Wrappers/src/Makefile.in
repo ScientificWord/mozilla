@@ -54,8 +54,6 @@ SHARED_LIBRARY_LIBS += \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)z.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)xmlparser.$(LIB_SUFFIX) \
 	$(NULL)
 endif
