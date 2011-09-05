@@ -93,6 +93,13 @@ export:: $(MuPADlibraries)
 	$(INSTALL) $(MuPADscript) $(FINAL_TARGET)/MuPAD/share/bin
 endif
 
+ifeq ($(OS_ARCH),Linux)
+export:: $(MuPADlibraries)
+	$(INSTALL) $(MuPADlibraries) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/lib
+	$(INSTALL) $(QtLib) $(FINAL_TARGET)/../lib
+	$(INSTALL) $(MuPADscript) $(FINAL_TARGET)/MuPAD/share/bin
+endif
+
 
 export:: $(MupInstall)	
 	$(INSTALL) $(MuPADbin) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/bin
