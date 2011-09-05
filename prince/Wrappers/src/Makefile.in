@@ -92,7 +92,7 @@ endif
 
 ifeq ($(OS_ARCH),Linux)
 EXTRA_DSO_LDOPTS += \
-	-lQtCore.4 -lz -lexpat -lxpcomglue_s \
+	-lQtCore -lz -lexpat -lxpcomglue_s \
 	$(NULL)
 endif
 
