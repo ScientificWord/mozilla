@@ -39,7 +39,7 @@ EXAMPLES
      8192
 
 SEE ALSO
-  ::parse, ::libCallBack, ::stripCharData
+  ::parse, ::parseString, ::libCallBack, ::stripCharData
 <!-- END-FUNC -->
 <!-- BEGIN-FUNC col -->
 NAME
@@ -61,7 +61,7 @@ EXAMPLES
      0
 
 SEE ALSO
-  ::line, ::parse
+  ::line, ::parse, ::parseString
 <!-- END-FUNC -->
 <!-- BEGIN-FUNC doc -->
 NAME
@@ -121,7 +121,7 @@ EXAMPLES
      FALSE
 
 SEE ALSO
-  ::bufLen, ::parse, ::stripCharData
+  ::bufLen, ::parse, ::parseString, ::stripCharData
 <!-- END-FUNC -->
 <!-- BEGIN-FUNC line -->
 NAME
@@ -139,11 +139,11 @@ EXAMPLES
      0
 
 SEE ALSO
-  ::col, ::parse
+  ::col, ::parse, ::parseString
 <!-- END-FUNC -->
 <!-- BEGIN-FUNC parse -->
 NAME
-  expat::parse - Parsesa an XML file
+  expat::parse - Parses a an XML file
 
 SYNOPSIS
   expat::parse( name, "startElement"=proc, "endElement"=proc, "characterData"=proc,... )
@@ -161,11 +161,11 @@ DESCRIPTION
   startElement          := proc( depth, name, tableOfAttributes )
   endElement            := proc( depth, name )
   characterData         := proc( depth, data )
+  comment               := proc( depth, data )
+  processingInstruction := proc( depth, target, data )
+  default               := proc( depth, data )
 
   Currently not supported are:
-  processingInstruction := proc( depth, target, data )
-  comment               := proc( depth, data )
-  default               := proc( depth, data )
   defaultExpand         := proc( depth, data )
   startNamespaceDecl    := proc( depth, prefix, uri )
   endNamespaceDecl      := proc( depth, prefix )
@@ -178,12 +178,59 @@ EXAMPLES
   >> expat::parse( NOTEBOOKPATH."test.xml",
              "startElement"  = ((n,tag,attr)->print(n,tag,attr)),
              "endElement"    = ((n,tag)->print(n,tag)),
-             "characterData" = ((n,data)->print(n,data))
+             "characterData" = ((n,data)->print(n,data)),
+             "comment"       = ((n,data)->print(n,data))
      )
      ...
 
 SEE ALSO
-  ::bufLen, ::col, ::line, ::libCallBack, ::stripCharData
+  ::parseString, ::bufLen, ::col, ::line, ::libCallBack, ::stripCharData
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC parseString -->
+NAME
+  expat::parseString - Parses a an XML string
+
+SYNOPSIS
+  expat::parse( xmlcode, "startElement"=proc, "endElement"=proc, "characterData"=proc,... )
+
+PARAMETER
+  xmlcode  - xml charcater string
+  proc     - procedure, will be called on a specific event
+
+DESCRIPTION
+  Parses an XML string using the specified library callback functions.
+  The following handlers can be specified (refer to the signatures be-
+  low and read the header file expat.h of the expat distribution for
+  details):
+
+  startElement          := proc( depth, name, tableOfAttributes )
+  endElement            := proc( depth, name )
+  characterData         := proc( depth, data )
+  comment               := proc( depth, data )
+  processingInstruction := proc( depth, target, data )
+  default               := proc( depth, data )
+
+  Currently not supported are:
+  defaultExpand         := proc( depth, data )
+  startNamespaceDecl    := proc( depth, prefix, uri )
+  endNamespaceDecl      := proc( depth, prefix )
+  notStandalone         := proc( depth )
+
+  This function returns FALSE if an error occured or if 'libCallBack'
+  was set to 'FALSE'. Otherwise it returns TRUE.
+
+EXAMPLES
+  >> text:= shell::readFile("test.xml"):
+  >> expat::parseString( text,
+             "startElement"  = ((n,tag,attr)->print(n,tag,attr)),
+             "endElement"    = ((n,tag)->print(n,tag)),
+             "characterData" = ((n,data)->print(n,data)),
+             "comment"       = ((n,data)->print(n,data))
+     )
+     ...
+
+SEE ALSO
+  ::parse, ::bufLen, ::col, ::line, ::libCallBack, ::stripCharData
 <!-- END-FUNC -->
 <!-- BEGIN-FUNC stripCharData -->
 NAME
@@ -219,5 +266,5 @@ EXAMPLES
      FALSE
 
 SEE ALSO
-  ::bufLen, ::parse, ::libCallBack
+  ::bufLen, ::parse, ::parseString, ::libCallBack
 <!-- END-FUNC -->
