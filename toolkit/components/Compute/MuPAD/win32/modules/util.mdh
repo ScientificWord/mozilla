@@ -1,0 +1,179 @@
+MODULE
+  util - A collection of utility functions
+
+INTRODUCTION
+  The module provides a collection of useful utility functions.
+
+INTERFACE
+  util::busyWaiting, util::date,      util::doc, 
+  util::kernelPath,  util::kernelPid, util::sleep, 
+  util::time,        util::userName                
+<!-- BEGIN-FUNC date -->
+NAME
+  util::date - Returns the current date and time
+
+SYNOPSIS
+  util::date()
+
+DESCRIPTION
+  This function returns the current date and time  as character
+  string. Internally, the C/C++ routines ´time´ and ´ctime´ are
+  used.
+
+EXAMPLES
+  >> util::date()
+
+     "Wed Dec 08 15:07:17 1999"
+
+SEE ALSO
+  util::busyWaiting, util::sleep, util::time
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC busyWaiting -->
+NAME
+  util::busyWaiting - Busy waiting
+
+SYNOPSIS
+  util::busyWaiting ( sec )
+
+PARAMETER
+  sec - Integer, seconds of range 0..86400
+
+DESCRIPTION
+  This function goes into a busy waiting loop for 'sec' seconds
+  and returns the object of type DOM_NULL afterwards.Internally
+  the C/C++ routine ´time´ it used.
+
+EXAMPLES
+  >> util::busyWaiting ( 2 );
+
+SEE ALSO
+  util::date, util::sleep, util::time
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC doc -->
+NAME
+  util::doc - Displays online documentation
+
+SYNOPSIS
+  util::doc()
+  util::doc( func )
+
+PARAMETER
+  func - String, function name without the prefix "util::"
+
+DESCRIPTION
+  Displays a description of the module 'util', respectively the
+  function util::'func'.
+
+EXAMPLES
+  >> util::doc( "doc" )
+  [...]
+
+SEE ALSO
+  module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC kernelPath -->
+NAME
+  util::kernelPath - Returns the pathname of the MuPAD kernel
+
+SYNOPSIS
+  util::kernelPath()
+
+DESCRIPTION
+  This function returns the pathname of the MuPAD kernel.
+
+EXAMPLES
+  >> util::kernelPath()
+
+     "C:\\Program Files\\...\\bin\\mupkern.exe"
+
+  >> util::kernelPath()
+
+     "/opt/.../linux/bin/mupad"
+
+SEE ALSO
+  util::kernelPid, util::userName
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC kernelPid -->
+NAME
+  util::kernelPid - Returns the process id of the MuPAD kernel
+
+SYNOPSIS
+  util::kernelPid()
+
+DESCRIPTION
+  This function returns  the process id  of the MuPAD kernel if
+  this is supported  by the operating system.  Otherwise it re-
+  turns 0.
+
+EXAMPLES
+  >> util::kernelPid()
+
+     221
+
+SEE ALSO
+  util::kernelPath, util::userName
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC sleep -->
+NAME
+  util::sleep - Suspends the process for a given time
+
+SYNOPSIS
+  util::sleep( sec )
+
+PARAMETER
+  sec - integer, seconds of range 0..3600
+
+DESCRIPTION
+  This function suspends the MuPAD process  for 'sec'  seconds.
+  Internally, the C/C++ routine ´sleep´ respectively ´Sleep´ is
+  used.  ATTENTION:  This function may affect alarm handlers or
+  routines operating with time events.
+
+EXAMPLES
+  >> util::sleep( 2 )
+
+SEE ALSO
+  util::date, util::busyWaiting , util::time
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC time -->
+NAME
+  util::time - Returns the time in form of elapsed seconds
+
+SYNOPSIS
+  util::time()
+
+DESCRIPTION
+  The function returns the number of seconds elapsed since mid-
+  night, January 1, 1970, coordinated universal time, according
+  to the system clock.  Internally, the C/C++ routine ´time´ is
+  used.
+
+EXAMPLES
+  >> util::time()
+
+     944661991
+
+SEE ALSO
+  util::date, util::busyWaiting , util::sleep
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC userName -->
+NAME
+  util::userName - Returns the user´s login name
+
+SYNOPSIS
+  util::userName( )
+
+DESCRIPTION
+  The function returns the user´s login name if this is suppor-
+  ted by the operating system. Otherwise it returns the charac-
+  ter string "user". 
+
+EXAMPLES
+  >> util::userName()
+
+     "andi"
+
+SEE ALSO
+  util::date, util::kerneLPath, util::kernelPid, util::time
+<!-- END-FUNC -->
+

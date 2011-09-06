@@ -1,0 +1,398 @@
+
+MODULE
+  cmath - Using hardware floating point number arithmetic
+
+INTRODUCTION
+  In addition to  symbolic and algebraic-exact computations and numerical
+  calculations with arbitrary precision arithmetic, it is often necessary
+  to carry out numerical calculations on hardware floats for efficiency.
+
+  This module provides some fast but basic arithmetic functions operating
+  on hardware floating point numbers and demonstrates how users can inte-
+  grate their own number crunching routines into MuPAD easily. 
+
+INTERFACE
+  doc, cacos, casin, catan, catan2, ccos, ccosh, cexp, clog, clog10, csin,
+  csinh, csqrt, ctan, ctanh
+<!-- BEGIN-FUNC doc -->
+NAME
+  cmath::doc - Online documentation
+
+SYNOPSIS
+  cmath::doc()
+  cmath::doc( func )
+
+ARGUMENTS
+  func - String, function name without the prefix "cmath::"
+
+DESCRIPTION
+  Displays a brief description of the module 'cmath', respectively the
+  function cmath::'func'.
+
+EXAMPLE:
+  >> cmath::doc("new");
+  [...]
+
+SEE ALSO
+  module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC cacos -->
+NAME
+  cmath::cacos - acos function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::cacos( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'acos'.
+
+EXAMPLE:
+  >> cmath::cacos( 0.5 )
+  1.047197551
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC casin -->
+NAME
+  cmath::casin - asin function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::casin( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'asin'.
+
+EXAMPLE:
+  >> cmath::casin( 0.5 )
+  0.5235987756
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC catan -->
+NAME
+  cmath::catan - atan function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::catan( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'atan'.
+
+EXAMPLE:
+  >> cmath::catan( 0.5 )
+  0.463647609
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC ccos -->
+NAME
+  cmath::ccos - cos function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::ccos( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'cos'.
+
+EXAMPLE:
+  >> cmath::ccos( 0.5 )
+  0.8775825619
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC ccosh -->
+NAME
+  cmath::ccosh - cosh function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::ccosh( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'cosh'.
+
+EXAMPLE:
+  >> cmath::ccosh( 0.5 )
+  1.127625965
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC cexp -->
+NAME
+  cmath::cexp - exp function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::cexp( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'exp'.
+
+EXAMPLE:
+  >> cmath::cexp( 0.5 )
+  1.64872127
+
+SEE ALSO
+  cmath::cexp, cmath::clog, cmath::clog10, cmath::csqrt, cmath::csin
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC clog -->
+NAME
+  cmath::clog - log function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::clog( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'log'.
+
+EXAMPLE:
+  >> cmath::clog( 0.5 )
+  -0.6931471806
+
+SEE ALSO
+  cmath::cexp, cmath::clog, cmath::clog10, cmath::csqrt, cmath::csin
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC clog10 -->
+NAME
+  cmath::clog10 - log10 function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::clog10( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'log10'.
+
+EXAMPLE:
+  >> cmath::clog10( 0.5 )
+  -0.3010299957
+
+SEE ALSO
+  cmath::cexp, cmath::clog, cmath::clog10, cmath::csqrt, cmath::csin
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC csin -->
+NAME
+  cmath::csin - sin function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::csin( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'sin'.
+
+EXAMPLE:
+  >> cmath::csin( 0.5 )
+  0.4794255386
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC csinh -->
+NAME
+  cmath::csinh - sinh function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::csinh( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'sinh'.
+
+EXAMPLE:
+  >> cmath::csinh( 0.5 )
+  0.5210953055
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC csqrt -->
+NAME
+  cmath::csqrt - sqrt function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::csqrt( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'sqrt'.
+
+EXAMPLE:
+  >> cmath::csqrt( 0.5 )
+  0.7071067812
+
+SEE ALSO
+  cmath::cexp, cmath::clog, cmath::clog10, cmath::csqrt, cmath::csin
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC ctan -->
+NAME
+  cmath::ctan - tan function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::ctan( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'tan'.
+
+EXAMPLE:
+  >> cmath::ctan( 0.5 )
+  0.5463024899
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC ctanh -->
+NAME
+  cmath::ctanh - tanh function operating on a C/C++ double
+
+SYNOPSIS
+  cmath::ctanh( value )
+
+ARGUMENTS
+  value - A number which can be converted into a C/C++ double or the
+          mathematical constant PI or E
+
+DESCRIPTION
+  The function computes its result  using hardware floating point number
+  arithmetic operating on the C/C++ data type double. It accepts integer
+  numbers, rational numbers and floating point numbers which can be con-
+  verted into a C/C++ double or the mathematical constant PI and E.  For
+  all other arguments the function call is returned unevaluated.
+
+  Also refer to the C/C++ reference manual page of the routine 'tanh'.
+
+EXAMPLE:
+  >> cmath::ctanh( 0.5 )
+  0.4621171573
+
+SEE ALSO
+  cmath::cacos, cmath::casin, cmath::catan, cmath::ccos, cmath::ccosh,
+  cmath::csin, cmath::csinh, cmath::ctan, cmath::ctanh
+<!-- END-FUNC -->

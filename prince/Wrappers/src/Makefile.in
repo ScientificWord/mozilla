@@ -1,4 +1,3 @@
-
 # Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
 DEPTH		= ../../..
@@ -8,35 +7,32 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE		      = wrappers
-MODULE_NAME     = wrappers
-LIBRARY_NAME	  = wrappers
-EXPORT_LIBRARY  = 1
-SHORT_LIBNAME	  = wrappers
-IS_COMPONENT    = 1
+MODULE		   = wrappers
+LIBRARY_NAME   = wrappers
+#IS_COMPONENT   = 1
+FORCE_SHARED_LIB = 1
 
 
 REQUIRES = \
-  compute \
-  string \
-  xpcom \
-  editor \
-  $(NULL)
+	compute \
+	string \
+	xpcom \
+	editor \
+	$(NULL)
 
 CPPSRCS = \
-  msiMuPADEngineWrapper.cpp \
-  $(NULL)
-#  msiMuPADEngineWrapperModule.cpp \
- 
+	msiMuPADEngineWrapper.cpp \
+	$(NULL) 
 
-
-#TESTCPPSRCS	= msiTestSample2.cpp
-#
-#CPPSRCS += $(TESTCPPSRCS)
-#
-#SIMPLE_PROGRAMS	= $(TESTCPPSRCS:.cpp=$(BIN_SUFFIX))
 
 include $(topsrcdir)/config/config.mk
+
+EXPORTS = \
+  msiMuPADEngineWrapper.h \
+  $(NULL)
+
+QT_LIB := $(LIBXUL_DIST)/lib/libQtCore.4.dylib
+
 
 # separate libraries linked in.
 SHARED_LIBRARY_LIBS += \
@@ -44,36 +40,35 @@ SHARED_LIBRARY_LIBS += \
 	$(DIST)/../../xulrunner/toolkit/components/Compute/Engines/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
 	$(DIST)/../../xulrunner/toolkit/components/Compute/libtci/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
 	$(DIST)/../../xulrunner/toolkit/components/Compute/Engines/MuPAD/$(LIB_PREFIX)mupwrapperlib_s.$(LIB_SUFFIX) \
-  $(DIST)/../../xulrunner/xpcom/string/src/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
+	$(DIST)/../../xulrunner/xpcom/string/src/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
 	$(NULL)
 
 ifeq ($(OS_ARCH),WINNT)
 SHARED_LIBRARY_LIBS += \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/win32/$(LIB_PREFIX)mupcomkernel.$(LIB_SUFFIX) \
 	$(NULL)
 endif
 
 ifeq ($(OS_ARCH),Linux)
 SHARED_LIBRARY_LIBS += \
-        $(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
 	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)z.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)xmlparser.$(LIB_SUFFIX) \
 	$(NULL)
 endif
+
 ifeq ($(OS_ARCH),Darwin)
 SHARED_LIBRARY_LIBS += \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
-	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)z.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/maci/$(LIB_PREFIX)xmlparser.$(LIB_SUFFIX) \
 	$(NULL)
+
 endif
 
 include $(topsrcdir)/config/rules.mk
-
 LOCAL_INCLUDES =	-I$(topsrcdir)/toolkit/components/Compute/Engines \
 	-I$(topsrcdir)/toolkit/components/Compute/Engines/MuPAD \
 	-I$(topsrcdir)/toolkit/components/Compute/public \
@@ -84,11 +79,54 @@ LOCAL_INCLUDES =	-I$(topsrcdir)/toolkit/components/Compute/Engines \
 
 
 EXTRA_DSO_LDOPTS += \
-	$(MOZ_UNICHARUTIL_LIBS) \
 	$(MOZ_COMPONENT_LIBS) \
+	$(MOZ_UNICHARUTIL_LIBS) \
+	$(NULL)
+
+ifeq ($(OS_ARCH),Darwin)
+EXTRA_DSO_LDOPTS += \
+	-lQtCore.4 -lz -lexpat -lxpcomglue_s \
+	$(NULL)
+endif
+
+
+ifeq ($(OS_ARCH),Linux)
+EXTRA_DSO_LDOPTS += \
+	-lQtCore -lz -lexpat -lxpcomglue_s \
+	$(NULL)
+endif
+
+ifeq ($(OS_ARCH),WINNT)
+EXTRA_DSO_LDOPTS += \
   $(DIST)/../../xulrunner/dist/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
 	$(NULL)
-                 
+endif
 
-#	$(XPCOM_FROZEN_LDOPTS) \
-# $(NSPR_LIBS) \
+DEFINES += -DMOZ_DLL_PREFIX=\"$(DLL_PREFIX)\"
+
+ifeq ($(OS_ARCH),Darwin)
+export:: $(QT_LIB)
+	$(INSTALL)  $(QT_LIB) $(FINAL_TARGET)
+
+endif
+                 
+dump::
+	echo MOZ_COMPONENT_LIBS
+	echo $(MOZ_COMPONENT_LIBS)
+	echo DIST
+	echo $(DIST)
+	echo LIBXUL_DIST
+	echo $(LIBXUL_DIST)
+	echo EXTRA_DSO_LDOPTS
+	echo $(EXTRA_DSO_LDOPTS)
+	echo DSO_LDOPTS
+	echo $(DSO_LDOPTS)
+	echo srcdir
+	echo $(srcdir)
+	echo XPCOM_FROZEN_LDOPTS
+	echo $(XPCOM_FROZEN_LDOPTS)
+	echo XPCOM_LDOPTS
+	echo $(XPCOM_LDOPTS)
+	echo NSPR_LIBS
+	echo $(NSPR_LIBS)
+

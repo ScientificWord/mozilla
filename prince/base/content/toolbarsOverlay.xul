@@ -62,7 +62,7 @@
       <toolbarbutton id="simplifyButton" />
       <toolbarbutton id="expandButton" />
       <toolbarbutton id="plotButton" />
-      <toolbarbutton id="plotButton3D" />
+      <toolbarbutton id="plot3DButton" />
       <toolbarbutton id="defineButton" />
       <toolbarbutton id="showdefsButton" />
       <toolbarbutton id="radicalButton"/>
@@ -142,7 +142,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
+      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
       mode="icons" 
       customizable="true"
       iconsize="large" />
@@ -249,7 +249,7 @@
     label="&MSIComputePlot2D.label;" observes="cmd_MSIComputePlot2DRectangular">
   </toolbarbutton>
 
-  <toolbarbutton id="plotButton3D" class="toolbarbutton-1" tooltiptext="&MSIComputePlot3D.tooltip;"
+  <toolbarbutton id="plot3DButton" class="toolbarbutton-1" tooltiptext="&MSIComputePlot3D.tooltip;"
     label="&MSIComputePlot3D.label;" observes="cmd_MSIComputePlot3DRectangular">
   </toolbarbutton>
 

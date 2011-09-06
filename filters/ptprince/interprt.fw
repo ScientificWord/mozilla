@@ -66,6 +66,7 @@ for the command.
 @$@<Main Loop@>==@{@-
 void Interpretter::MainLoop()
 {
+ frozen_relax->AddRef();
  bool running = true;
  while (running && !inp.bEmpty()) {
    LOG("\n----Start cycle");
@@ -125,7 +126,7 @@ that is listed in the enumerated type @{CommandCode@}.
         Symbols::SetDef(CurTok().Symbol(), pMacroDef, false);
         // Now rescan the newly defined token
         inp.Putback(CurTok());
-        
+
         //  // Let's just append the token to the
         //  // output stream, and assume we go to hmode
         //  if (Typesetter::GetMode() == MODE_VERTICAL){
@@ -296,6 +297,17 @@ void EndLevel()
    }
 }
 @}
+
+
+@$@<GroupStack@>+=@{@-
+void ClearLevels()
+{
+  while (s_groupStackTop >= 0){
+    EndLevel();
+  }
+}
+@}
+
 
 @B@<Some debugging aids@>
 
@@ -895,6 +907,7 @@ case CMD_TAG : {
    ScanTokenList(pTL, false);
    LOG("\n----Create tag " << *pTL);
    Typesetter::AppendTag(pTL);
+   delete pTL;
    break;
 }
 @}
@@ -934,6 +947,7 @@ NewPrimitive("endinput",  CMD_ENDINPUT, 0, 1);
 case CMD_ENDINPUT : {
    LOG("\n--- \\endinput");
    InputStack::EndInput();
+   ClearLevels();
    break;
 }
 @}
@@ -1213,6 +1227,7 @@ case CMD_MESSAGE: {
        LOG("\n\\errmessage: ");
    }
    LOG(*pTL);
+   delete pTL;
    break;
 }
 @}
@@ -1775,6 +1790,7 @@ case CMD_AFTERGROUP:{
 
 @o@<interpretter.cpp@>==@{@-
 #include "interpretter.h"
+#include "platform.h"
 #include "symbols.h"
 #include "restore.h"
 #include "typesetter.h"
@@ -1793,7 +1809,7 @@ static InputStack inp;
 static TeXToken s_illegal(TT_PARAM, 11, 0); // an illegal token
 static TeXToken s_afterAssignment(s_illegal);
 Typesetter ts;
-SymbolData* frozen_relax;
+SymbolData* frozen_relax = new Primitive(CMD_RELAX);
 
 @<GroupStack@>
 @<TagStack@>

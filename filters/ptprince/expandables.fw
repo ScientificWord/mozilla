@@ -38,8 +38,11 @@ if (braced){
 @}
 
 @$@<Misc functions@>+=@{@-
+
+
 bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
 {
+
    Filename fn;
    @<Scan filename@>
    const char* name = fn.GetNameString();
@@ -49,11 +52,14 @@ bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
 
    InputByteFile* pbf = new InputByteFile;
    pbf -> Open(fn);
-   Latin_1_in*  platin1filt = new Latin_1_in(*pbf);
-   LineSource* plineSource = new LineSource(*platin1filt);
+   Latin_1_in*  platin1filt = new Latin_1_in(pbf);
+
+   LineSource* plineSource = new LineSource(platin1filt);
    Tokenizer* ts = new Tokenizer(plineSource);
+
    InputStack::Push(ts);
    LOG("\n----\\input " << name);
+
    return false;
 }
 @}
@@ -91,7 +97,6 @@ bool xfcnNumber(int /* ignored */, TeXToken*, SymbolData**)
    StringUtils::AppendInt(n);
    String str = StringBuilder::Create();
    TokenList* tl = new TokenList;
-   tl ->AddReference();
    StrToToks(str, tl);
    StringBuilder::Discard(str);
    TokenListTokenSource* ts = new TokenListTokenSource(*tl);
@@ -127,7 +132,7 @@ bool xfcnMeaning(int /* ignored */, TeXToken*, SymbolData**)
       StringUtils::AppendToks(pMacDef -> Toks());
       String str = StringBuilder::Create();
       TokenList* tl = new TokenList;
-      tl -> AddReference();
+      //tl -> AddReference();
       StrToToks(str, tl);
       StringBuilder::Discard(str);
       InputStack::Putback(*tl);
@@ -157,7 +162,7 @@ bool xfcnJobname(int /* ignored */, TeXToken*, SymbolData**)
    StringUtils::AppendCStr(fn.GetNameString());
    String str = StringBuilder::Create();
    TokenList* toks = new TokenList;
-   toks -> AddReference();
+   //toks -> AddReference();
    StrToToks(str, toks);
    InputStack::Putback(*toks);
    return false;
@@ -193,7 +198,7 @@ TokenListTokenSource* xfcnThe_nopush(int /* ignored */, TeXToken*, SymbolData**)
    ScanSomethingInternal(+1, res);
    if (res.m_type == SCAN_TOKS){
       TokenList* pList = res.m_toks;
-      pList -> AddReference();
+      //pList -> AddReference();
       //StringUtils::AppendToks(*pList);
       TokenListTokenSource* ts = new TokenListTokenSource(*pList);
       return ts;
@@ -214,7 +219,6 @@ TokenListTokenSource* xfcnThe_nopush(int /* ignored */, TeXToken*, SymbolData**)
    }
    String str = StringBuilder::Create();
    TokenList* tl = new TokenList;
-   tl -> AddReference();
    StrToToks(str, tl);
    StringBuilder::Discard(str);
    TokenListTokenSource* ts = new TokenListTokenSource(*tl);
@@ -245,9 +249,12 @@ NewExpandable("noexpand", xfcnNoexpand, 0);
 
 
 @$@<Misc functions@>+=@{@-
+
+
+
 bool xfcnNoexpand(int /* ignored*/, TeXToken* tt, SymbolData** ppDef)
 {
-   static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
+   //static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
    TeXToken next;
    GetRawToken();
    next = CurTok();
@@ -278,7 +285,7 @@ bool xfcnCaseshift(int dir, TeXToken*, SymbolData**);
 bool xfcnCaseshift(int dir, TeXToken*, SymbolData**)
 {
    TokenList* tl = new TokenList;
-   tl -> AddReference();
+   //tl -> AddReference();
    ScanTokenList(tl, false);
    LOG("\nCase shift.");
    LOG("\n...I read " << *tl);
@@ -380,7 +387,7 @@ bool xfcnCsname(int /* ignored */, TeXToken*, SymbolData**)
    SymbolData* pData;
    Symbols::GetDef(id, &pData);
    if (pData == 0){
-      static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
+      //static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
       LOG("\n\\csname will define the new symbol as \\relax.");
       Symbols::SetDef(id, frozen_relax, true);
    }
@@ -400,7 +407,7 @@ bool xfcnString(int /* ignored */, TeXToken*, SymbolData**)
    TeXToken next = CurTok();
    if (next.Type() == TT_SYMBOL){
       TokenList* pTL = new TokenList;
-      pTL -> AddReference();
+      //pTL -> AddReference();
       if (Global::escapechar != -1){
          pTL -> push_back(escape);
       }
@@ -413,10 +420,10 @@ bool xfcnString(int /* ignored */, TeXToken*, SymbolData**)
       InputStack::Putback(*pTL);
    } else {
       TokenList* pTL = new TokenList;
-      pTL -> AddReference();
+      //pTL -> AddReference();
       pTL ->  push_back(TeXToken(TT_LETTER, next.ChrCode(), 0));
       InputStack::Putback(*pTL);
-      pTL -> AddReference();
+      //pTL -> AddReference();
    }
    return false;
 }
@@ -465,6 +472,8 @@ level repository of mark data. That everyone knows about.
 #ifndef EXPANDABLES_H
 #define EXPANDABLES_H
 
+#include "platform.h"
+
 @<Expandable declarations@>
 
 #endif
@@ -477,6 +486,7 @@ level repository of mark data. That everyone knows about.
 #include "tokens.h"
 #include "scanutils.h"
 #include "macros.h"
+extern SymbolData* frozen_relax;
 @<Expansion functions@>
 @<Misc functions@>
 @<Add predefined symbols@>

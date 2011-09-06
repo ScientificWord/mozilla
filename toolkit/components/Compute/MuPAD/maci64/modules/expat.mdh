@@ -1,0 +1,270 @@
+MODULE
+  expat - XML parser toolkit
+
+INTRODUCTION
+  This module provides a function for parsing XML files. It is based on
+  'expat - XML Parser Toolkit' developed by James Clark.
+
+INTERFACE
+  bufLen, col, doc, libCallBack, line, parse, stripCharData
+<!-- BEGIN-FUNC bufLen -->
+NAME
+  expat::stripCharData - Strip character data status flag
+
+SYNOPSIS
+  expat::bufLen()
+  expat::bufLen( length )
+
+PARAMETER
+  length - positive integer
+
+DESCRIPTION
+  If no argument is given to this function then it returns the current
+  setting. If a valid number is passed to the function then it returns
+  the previous setting.
+
+  If 'length' is a positve number less than 2^31 then the size of the
+  file read buffer is set to this number.
+
+  Default value: bufLen = 8*1024.
+
+EXAMPLES
+  >> expat::bufLen();
+     524277
+
+  >> expat::bufLen(8192);
+     524277
+
+  >> expat::bufLen(8192);
+     8192
+
+SEE ALSO
+  ::parse, ::parseString, ::libCallBack, ::stripCharData
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC col -->
+NAME
+  expat::col - Current column number
+
+SYNOPSIS
+  expat::col()
+
+PARAMETER
+  maxage   - integer of range 0..3600
+  interval - integer of range 1..60
+
+DESCRIPTION
+  Returns the current column number that is read or '0' if no XML file
+  is currently read.
+
+EXAMPLES
+  >> expa::col();
+     0
+
+SEE ALSO
+  ::line, ::parse, ::parseString
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC doc -->
+NAME
+  expat::doc - Displays online documentation
+
+SYNOPSIS
+  expat::doc()
+  expat::doc( func )
+
+PARAMETER
+  func - string, function name without the prefix "expat::"
+
+DESCRIPTION
+  Displays a brief description of the module 'expat', respectively the
+  function expat::'func'.
+
+EXAMPLES
+  >> expat::doc( "doc" );
+     NAME
+       expat::doc - Display online documentation
+     [...]
+
+SEE ALSO
+  info, module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC libCallBack -->
+NAME
+  expat::libCallBack - Library callback status flag
+
+SYNOPSIS
+  expat::libCallBack()
+  expat::libCallBack( yesno )
+
+PARAMETER
+  yesno - boolean
+
+DESCRIPTION
+  If no argument is given to this function then it returns the current
+  setting. If TRUE or FALSE is passed to this function then it returns
+  the previous setting.
+
+  If 'yesno' is TRUE then the library callback procedures given to the
+  module function 'expat::parse' are called each time when a start tag
+  or an end tag or any character data was read. If it is set to FALSE,
+  the library callback procedures are ignored.
+
+  Default value: libCallBack = TRUE.
+
+EXAMPLES
+  >> expat::libCallBack();
+     TRUE
+
+  >> expat::libCallBack(FALSE);
+     TRUE
+
+  >> expat::libCallBack(FALSE);
+     FALSE
+
+SEE ALSO
+  ::bufLen, ::parse, ::parseString, ::stripCharData
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC line -->
+NAME
+  expat::line - Current line number
+
+SYNOPSIS
+  expat::line()
+
+DESCRIPTION
+  Returns the current line number that is read or '0' if no XML file is
+  currently read.
+
+EXAMPLES
+  >> expa::line();
+     0
+
+SEE ALSO
+  ::col, ::parse, ::parseString
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC parse -->
+NAME
+  expat::parse - Parses a an XML file
+
+SYNOPSIS
+  expat::parse( name, "startElement"=proc, "endElement"=proc, "characterData"=proc,... )
+
+PARAMETER
+  name  - string, full qualified file name
+  proc  - procedure, will be called on a specific event
+
+DESCRIPTION
+  Parses an XML 'file' using the specified library callback functions.
+  The following handlers can be specified (refer to the signatures be-
+  low and read the header file expat.h of the expat distribution for
+  details):
+
+  startElement          := proc( depth, name, tableOfAttributes )
+  endElement            := proc( depth, name )
+  characterData         := proc( depth, data )
+  comment               := proc( depth, data )
+  processingInstruction := proc( depth, target, data )
+  default               := proc( depth, data )
+
+  Currently not supported are:
+  defaultExpand         := proc( depth, data )
+  startNamespaceDecl    := proc( depth, prefix, uri )
+  endNamespaceDecl      := proc( depth, prefix )
+  notStandalone         := proc( depth )
+
+  This function returns FALSE if an error occured or if 'libCallBack'
+  was set to 'FALSE'. Otherwise it returns TRUE.
+
+EXAMPLES
+  >> expat::parse( NOTEBOOKPATH."test.xml",
+             "startElement"  = ((n,tag,attr)->print(n,tag,attr)),
+             "endElement"    = ((n,tag)->print(n,tag)),
+             "characterData" = ((n,data)->print(n,data)),
+             "comment"       = ((n,data)->print(n,data))
+     )
+     ...
+
+SEE ALSO
+  ::parseString, ::bufLen, ::col, ::line, ::libCallBack, ::stripCharData
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC parseString -->
+NAME
+  expat::parseString - Parses a an XML string
+
+SYNOPSIS
+  expat::parse( xmlcode, "startElement"=proc, "endElement"=proc, "characterData"=proc,... )
+
+PARAMETER
+  xmlcode  - xml charcater string
+  proc     - procedure, will be called on a specific event
+
+DESCRIPTION
+  Parses an XML string using the specified library callback functions.
+  The following handlers can be specified (refer to the signatures be-
+  low and read the header file expat.h of the expat distribution for
+  details):
+
+  startElement          := proc( depth, name, tableOfAttributes )
+  endElement            := proc( depth, name )
+  characterData         := proc( depth, data )
+  comment               := proc( depth, data )
+  processingInstruction := proc( depth, target, data )
+  default               := proc( depth, data )
+
+  Currently not supported are:
+  defaultExpand         := proc( depth, data )
+  startNamespaceDecl    := proc( depth, prefix, uri )
+  endNamespaceDecl      := proc( depth, prefix )
+  notStandalone         := proc( depth )
+
+  This function returns FALSE if an error occured or if 'libCallBack'
+  was set to 'FALSE'. Otherwise it returns TRUE.
+
+EXAMPLES
+  >> text:= shell::readFile("test.xml"):
+  >> expat::parseString( text,
+             "startElement"  = ((n,tag,attr)->print(n,tag,attr)),
+             "endElement"    = ((n,tag)->print(n,tag)),
+             "characterData" = ((n,data)->print(n,data)),
+             "comment"       = ((n,data)->print(n,data))
+     )
+     ...
+
+SEE ALSO
+  ::parse, ::bufLen, ::col, ::line, ::libCallBack, ::stripCharData
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC stripCharData -->
+NAME
+  expat::stripCharData - Strip character data status flag
+
+SYNOPSIS
+  expat::stripCharData()
+  expat::stripCharData( yesno )
+
+PARAMETER
+  yesno - boolean
+
+DESCRIPTION
+  If no argument is given to this function then it returns the current
+  setting. If TRUE or FALSE is passed to this function then it returns
+  the previous setting.
+
+  If 'yesno' is TRUE then leading as well as trailing white spaces are
+  stripped from the character data string before this is passed to the
+  libarary callback function. If it is set to FALSE then the character
+  data is not changed.
+
+  Default value: stripCharData = TRUE.
+
+EXAMPLES
+  >> expat::stripCharData();
+     TRUE
+
+  >> expat::stripCharData(FALSE);
+     TRUE
+
+  >> expat::stripCharData(FALSE);
+     FALSE
+
+SEE ALSO
+  ::bufLen, ::parse, ::parseString, ::libCallBack
+<!-- END-FUNC -->

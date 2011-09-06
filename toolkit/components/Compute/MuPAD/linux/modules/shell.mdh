@@ -156,9 +156,9 @@ EXAMPLE:
   >> shell::getEnv( "unknownVar" )
 
      ""
-  >> shell::getEnv( "PATH" )
+  >> shell::getEnv( "HOME" )
 
-     "C:\\PROGRA~1\\SciFace\\MUPADP~1.5\\bin;C:\\WINNT\\system32"
+     "C:\\Documents and Settings\\username"
 
 SEE ALSO
   shell::putEnv, shell::readFile, shell::sizeofFile
@@ -227,11 +227,8 @@ DESCRIPTION
   The function returns the contents of the directory 'path'  as
   a set of character strings. 
 
-  On Windows 95/98/NT operating systems, 'path' must end with a
-  filename specification which which contains wildcards.
-
 EXAMPLE:
-  >> shell::listDir("*.*")
+  >> shell::listDir(".")
 
    {"..", ".", "modules", "lib", "bin"}
 
