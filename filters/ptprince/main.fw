@@ -263,7 +263,7 @@ int main(int argc, char* argv[])
       LogFile::Close();
    #endif
    
-   //_CrtDumpMemoryLeaks();
+   _CrtDumpMemoryLeaks();
 
    return 0;
 }
