@@ -610,7 +610,7 @@ void Typesetter::StartDisplay()
    }
    dllname[str.Size()] = '\0';
    StringBuilder::Discard(str);
-   
+
    delete s_processor;
    s_processor = dllname;
 }
