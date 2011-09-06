@@ -1415,12 +1415,13 @@
     		<toolbarbutton id ="symbolsupsetneqq" label="&#x2ACC;" tooltiptext="&symbolsupsetneqq.tooltip;"              msivalue="&#x2ACC;"
            observes="cmd_MSIsymbolCmd"/> 
  
-<!--   <toolbarbutton id ="symbolvarsubsetneqq" label="&varsubsetneqq;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&varsubsetneqq;"
+<toolbarbutton id ="symbolvarsubsetneqq" label="&varsubsetneqq;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&varsubsetneqq;"
            observes="cmd_MSIsymbolCmd"/> 
-           -->
+           
 
-          <toolbarbutton id ="symbolvarsubsetneqq"  label="&#xE016;"  tooltiptext="&symbolvarsubsetneqq.tooltip;"      msivalue="&#xE016;"
-           observes="cmd_MSIsymbolCmd"/>
+    <!--      <toolbarbutton id ="symbolvarsubsetneqq"  label="&#x228A;&#xFE00;"  tooltiptext="&symbolvarsubsetneqq.tooltip;"      msivalue="&#x228A;&#xFE00;"
+           observes="cmd_MSIsymbolCmd"/>-->
+
            <!--<label>
            <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"
             xmlns:xsi="http://www.w3.org//2001/XMLSchema-instance"
