@@ -380,7 +380,10 @@ void Typesetter::EndProcess()
 
    std::strstream strout;
    OutputStream out(strout);
-   plist -> Print(out);
+   if (plist){
+     plist -> Print(out);
+     delete plist;
+   }
    out.Flush();
    strout.put(0);
    const char* theCStr = strout.str();
@@ -403,6 +406,7 @@ void Typesetter::EndProcess()
       // Put code for handling \FRAME here
       LOG("\nSending to frame function: " << theCStr);
    }
+   delete proc;
 }
 @}
 
@@ -560,7 +564,10 @@ void Typesetter::EndInline()
       if (Global::msidollar != 0){
          out << (char) Global::msidollar;
       }
-      plist -> Print(out);
+      if (plist){
+        plist -> Print(out);
+        delete plist;
+      }
       if (Global::msidollar != 0){
          out << (char) Global::msidollar;
       }
@@ -584,6 +591,7 @@ void Typesetter::EndInline()
          TakeDownMathML();
       }
    }
+   delete proc;
 
 }
 @}
@@ -602,6 +610,8 @@ void Typesetter::StartDisplay()
    }
    dllname[str.Size()] = '\0';
    StringBuilder::Discard(str);
+
+   delete s_processor;
    s_processor = dllname;
 }
 @}
@@ -618,7 +628,10 @@ void Typesetter::EndDisplay()
       if (Global::msidollar != 0){
          out << (char) Global::msidollar  << (char) Global::msidollar;
       }
-      plist -> Print(out);
+      if (plist){
+         plist -> Print(out);
+         delete plist;
+      }
       if (Global::msidollar != 0){
          out << (char) Global::msidollar  << (char) Global::msidollar;
       }
@@ -631,7 +644,10 @@ void Typesetter::EndDisplay()
       if (Global::msidollar != 0){
          out << (char) Global::msidollar  << (char) Global::msidollar;
       }
-      plist -> Print(out);
+      if (plist){
+        plist -> Print(out);
+        delete plist;
+      }
       if (Global::msidollar != 0){
          out << (char) Global::msidollar  << (char) Global::msidollar;
       }
@@ -695,12 +711,15 @@ void Typesetter::EndSubformula()
    if (noad != 0){
       switch (s_target){
          case TARG_NUCLEUS :
+            delete noad -> m_nucleus;
             noad -> m_nucleus = subform;
             break;
          case TARG_SUBSCRIPT:
+            delete noad -> m_subscript;
             noad -> m_subscript = subform;
             break;
          case TARG_SUPERSCRIPT:
+            delete noad -> m_superscript;
             noad -> m_superscript = subform;
             break;
       }

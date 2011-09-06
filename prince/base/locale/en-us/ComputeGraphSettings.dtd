@@ -145,6 +145,8 @@
 <!ENTITY axisframed.label           "Frame">
 <!ENTITY axisauto.label             "Automatic">
 
+<!ENTITY defaultplacementnewplot.label "Default placement for new plots">
+
 <!ENTITY plotxrangehigh.label       "X High Range">
 <!ENTITY plotxrangelow.label        "X Low Range">
 <!ENTITY plotyrangehigh.label       "Y High Range">

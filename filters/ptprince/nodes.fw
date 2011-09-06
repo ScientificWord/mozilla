@@ -229,13 +229,20 @@ public:
    HListNode(TeXNodeList* list)
       : m_pList(list)
    {}
-
+   ~HListNode();
    void Print(OutputStream&);
 
 };
 @}
 
 @$@<Typesetter implementation@>+=@{@-
+
+HListNode::~HListNode()
+{
+  delete m_pList;
+}
+
+
 void HListNode::Print(OutputStream& out)
 {
    m_pList -> Print(out);
@@ -262,6 +269,9 @@ public:
       : m_pList(list)
    {}
 
+   ~VListNode()
+   { delete m_pList; }
+
    void Print(OutputStream&);
 };
 @}
@@ -287,6 +297,7 @@ private:
 class AlignCellNode : public TeXNode {
 private:
 public:
+   ~AlignCellNode() { delete m_pList; }
    TeXNodeList* m_pList;
    void Print(OutputStream&);
 };
@@ -304,6 +315,7 @@ void AlignCellNode::Print(OutputStream& out)
 class AlignRowNode : public TeXNode {
 private:
 public:
+   ~AlignRowNode(){ delete m_pList;}
    void Print(OutputStream&);
    TeXNodeList* m_pList;
 };
@@ -327,12 +339,19 @@ void AlignRowNode::Print(OutputStream& out)
 class AlignmentNode : public TeXNode {
 private:
 public:
+   ~AlignmentNode();
    void Print(OutputStream&);
    TeXNodeList* m_pList;
 };
 @}
 
 @$@<Typesetter implementation@>+=@{@-
+
+AlignmentNode::~AlignmentNode()
+{
+   delete m_pList;
+}
+
 void AlignmentNode::Print(OutputStream& out)
 {
    //out << "<table>";
@@ -354,6 +373,8 @@ private:
    // Glue    m_splitTopSkip; // see TTP140
    int     m_floatPenalty;
    TeXNodeList m_list;
+public:
+   //~InsertNode() { delete m_pList; }
 };
 @}
 
@@ -372,6 +393,8 @@ private:
 class AdjustNode : public TeXNode {
 private:
    TeXNodeList m_list;
+public:
+   //~AdjustNode(){delete m_list;}
 };
 @}
 
@@ -402,6 +425,7 @@ class WhatsitNode : public TeXNode {
 @$@<Node declarations@>+=@{@-
 class MListNode : public TeXNode {
 public:
+   ~MListNode() { delete m_pList;}
    void Print(OutputStream& out);
    TeXNodeList* m_pList;
 };
@@ -474,14 +498,21 @@ public:
 };
 
 class SubBox : public NoadField{
+
    TeXNode* m_listNode; // An hlist node or a vlist node
 };
 
 class SubMList : public NoadField{
 public:
+   ~SubMList();
    void Print(OutputStream&);
    TeXNodeList* m_pList;
 };
+
+SubMList::~SubMList()
+{
+  delete m_pList;
+}
 
 void SubMList::Print(OutputStream& out)
 {
@@ -499,6 +530,7 @@ void SubMList::Print(OutputStream& out)
 class Noad : public TeXNode{
 public:
    Noad() : m_nucleus(0), m_subscript(0), m_superscript(0){}
+   ~Noad();
    void Print(OutputStream&);
    virtual bool ScriptsAllowed(){ return true;}
    NoadField* m_nucleus;
@@ -508,6 +540,14 @@ public:
 @}
 
 @$@<Typesetter implementation@>+=@{@-
+
+Noad::~Noad()
+{
+  delete m_nucleus;
+  delete m_subscript;
+  delete m_superscript;
+}
+
 void Noad::Print(OutputStream& out){
    if (m_subscript == 0 && m_superscript == 0){
       m_nucleus -> Print(out);

@@ -66,8 +66,6 @@ GMR_FILES := \
       commands.gmr \
       MuPAD.gmr \
       MAPLE.gmr \
-      $(srcdir)/mplInstall.gmr \
-      $(srcdir)/mupInstall.gmr \
       $(srcdir)/MMLents.gmr \
       $(NULL)
 

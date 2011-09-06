@@ -90,7 +90,7 @@ TreeGenerator::~TreeGenerator() {
     fclose( srcfile );
 	  srcfile =  NULL;
   }
-
+  delete d_xml_grammar;
   if ( s_math_grammar )     delete s_math_grammar;
   if ( d_math_grammar )     delete d_math_grammar;
   if ( pLaTeX2MATH )        delete pLaTeX2MATH;
