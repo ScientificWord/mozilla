@@ -18,8 +18,6 @@ GRE_MODULE	= 1
 MOZILLA_INTERNAL_API = 1
 FORCE_STATIC_LIB = 1
 
-MOZILLA_INTERNAL_API = 1
-
 include $(topsrcdir)/config/config.mk
 
 CPPSRCS =				\
@@ -78,6 +76,7 @@ endif
 
 ifeq ($(OS_ARCH),Linux)
 MuPADlicense	:= $(srcdir)/../MuPAD/license/license 
+QtLib	:= $(srcdir)/../MuPAD/$(PLATFORM)/libQtCore.so.4
 
 endif
 
@@ -89,6 +88,13 @@ export:: $(MuPADlib)
 	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
 
 ifeq ($(OS_ARCH),Darwin)
+export:: $(MuPADlibraries)
+	$(INSTALL) $(MuPADlibraries) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/lib
+	$(INSTALL) $(QtLib) $(FINAL_TARGET)/../lib
+	$(INSTALL) $(MuPADscript) $(FINAL_TARGET)/MuPAD/share/bin
+endif
+
+ifeq ($(OS_ARCH),Linux)
 export:: $(MuPADlibraries)
 	$(INSTALL) $(MuPADlibraries) $(FINAL_TARGET)/MuPAD/$(PLATFORM)/lib
 	$(INSTALL) $(QtLib) $(FINAL_TARGET)/../lib
