@@ -245,9 +245,9 @@
             </xsl:for-each>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:for-each select="$theCellData//cellData[number(@col) = number($whichCol)]" >
+            <xsl:for-each select="$theCellData//cellData[number(@col) = number($whichCol)][string-length(@alignment) &gt; 0]" >
               <xsl:sort select="count($theCellData//cellData[number(@col) = number($whichCol)][@alignment = current()/@alignment])" data-type="number" order="descending" />
-              <xsl:sort select="translate(@alignment, 'lcrj', '1234')" />
+              <xsl:sort select="translate(@alignment, 'lcrjpmb', '1234567')" />
               <xsl:if test="position() = 1">
                 <xsl:value-of select="@alignment" />
               </xsl:if>
@@ -440,10 +440,15 @@
         <xsl:otherwise>1</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    <xsl:variable name="needMultiRow">
+      <xsl:choose>
+        <xsl:when test="$theCell/@rowspan and (number($theCell/@rowspan) &gt; 1)" >1</xsl:when>
+        <xsl:otherwise>0</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:variable name="needMultiCol">
       <xsl:choose>
         <xsl:when test="$columnspan &gt; 1" >1</xsl:when>
-        <xsl:when test="$theCell/@rowspan and (number($theCell/@rowspan) &gt; 1)" >0</xsl:when>
         <xsl:otherwise>
           <xsl:variable name="colLeftLine" select="normalize-space($colData/columnData[number($theCellData/@col)]/@lineSpec)" />
           <xsl:variable name="colRightLine" select="normalize-space($colData/columnData[number($theCellData/@col) + 1]/@lineSpec)" />
@@ -458,8 +463,6 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="number($theCellData/@rowspan) &gt; 1">
-      </xsl:when>
       <xsl:when test="number($needMultiCol)">
         <xsl:text>\multicolumn{</xsl:text><xsl:number value="$columnspan" /><xsl:text>}{</xsl:text>
         <xsl:if test="($theCellData/@borderLeft = 'double') or ($theCellData/@borderLeft = 'single')">
@@ -497,15 +500,24 @@
       </xsl:when>
       <xsl:otherwise></xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="$needMultiRow != 0">
+      <xsl:text>\multirow{</xsl:text>
+      <xsl:number value="$theCell/@rowspan" />
+      <xsl:text>}{</xsl:text>
+      <xsl:choose>
+        <xsl:when test="string-length($theCellData/@width)">
+          <xsl:value-of select="$theCellData/@width" /><xsl:text>mm}{</xsl:text>
+        </xsl:when>
+        <xsl:otherwise><xsl:text>*}{</xsl:text></xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
     <xsl:apply-templates select="$theCell" mode="doOutput" />
-    <xsl:choose>
-      <xsl:when test="number($theCellData/@rowspan) &gt; 1">
-      </xsl:when>
-      <xsl:when test="number($needMultiCol)">
-        <xsl:text>}</xsl:text>
-      </xsl:when>
-      <xsl:otherwise></xsl:otherwise>
-    </xsl:choose>
+    <xsl:if test="$needMultiRow != 0">
+      <xsl:text>}</xsl:text>
+    </xsl:if>
+    <xsl:if test="number($needMultiCol)">
+      <xsl:text>}</xsl:text>
+    </xsl:if>
   </xsl:if>
 </xsl:template>
 
@@ -967,7 +979,7 @@
       <xsl:with-param name="startCol" select="$startCol" />
       <xsl:with-param name="numRows" select="number($numRows) - 1" />
       <xsl:with-param name="numCols" select="1" />
-      <xsl:with-param name="continuation" select="row" />
+      <xsl:with-param name="continuation" select="'row'" />
       <xsl:with-param name="widthSpec" select="$widthSpec" />
     </xsl:call-template>
   </xsl:if>
@@ -981,7 +993,7 @@
       <xsl:with-param name="startCol" select="number($startCol) + 1" />
       <xsl:with-param name="numRows" select="$numRows" />
       <xsl:with-param name="numCols" select="number($numCols) - 1" />
-      <xsl:with-param name="continuation" select="col" />
+      <xsl:with-param name="continuation" select="'col'" />
     </xsl:call-template>
   </xsl:if>
 </xsl:template>

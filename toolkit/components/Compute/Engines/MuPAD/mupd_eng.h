@@ -16,7 +16,7 @@ public:
   MuPADEngine();
   ~MuPADEngine();
 
-  bool LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath);
+  bool LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, nsILocalFile *modulePath);
   int Initialize(nsILocalFile *libpath, nsILocalFile *champath);
   bool SendToProcessor(TCIString &cmd);
   bool SendPlotToProcessor(TCIString &cmd);

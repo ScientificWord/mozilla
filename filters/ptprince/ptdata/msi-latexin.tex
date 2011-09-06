@@ -1,6 +1,5 @@
 
-\chardef\active=13 
-
+\chardef\active=13
 
 \catcode`\{=1 % left brace is begin-group character
 \catcode`\}=2 % right brace is end-group character
@@ -14,6 +13,7 @@
 \catcode`\^^L=\active \outer\def^^L{\par}% ascii form-feed is \outer\par
 \catcode`@=11
 
+
 %\def~{\nobreakspace{}}
 
 \def\@makeother#1{\catcode`#112\relax}
@@ -21,15 +21,13 @@
 \catcode`\%=12
 \def\@percentchar{%}
 \catcode`\%=14
-
-
-
 \countdef\count@=255
+
 \let\bgroup={ \let\egroup=}
+
+
 \def\makeatletter{\catcode`\@=11}
 \def\makeatother{\catcode`\@=12}
-
-
 
 \def\scantospace#1 {\def\@temp{#1}\@gobbletoend}%
 \def\@gobbletoend#1>{}
@@ -41,7 +39,6 @@
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
 \def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
-
 
 %% \documentclass
 
@@ -167,6 +164,7 @@
 \chardef\sixt@@n=16
 \newlinechar`\^^J
 
+
 %\def\typeout{\immediate\write17}
 \def\typeout#1{\relax}
 
@@ -182,9 +180,9 @@
   \iterate \let\iterate\relax}
 \let\repeat\fi
 \def\two@digits#1{\ifnum#1<10 0\fi\number#1}
-
 \long\def\@firstoftwo#1#2{#1}
 \long\def\@secondoftwo#1#2{#2}
+
 
 \def\ProvidesFile#1{%
   \begingroup
@@ -197,11 +195,11 @@
     \@makeother\/%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
 
+
 \def\@providesfile#1[#2]{%
     \wlog{File: #1 #2}%
     \@addtofilelist{ #2}%
     \endgroup}
-
 \long\def\@addtofilelist#1{}
 \def\@empty{}
 \let\@currdir\@undefined
@@ -212,15 +210,14 @@
 
 \begingroup
     \count@\time
-
     \divide\count@ 60
     \count2=-\count@
     \multiply\count2 60
     \advance\count2 \time
+
     \edef\today{%
       \the\year/\two@digits{\the\month}/\two@digits{\the\day}:%
         \two@digits{\the\count@}:\two@digits{\the\count2}}
-
     \def\IfFileExists#1#2#3{%
       \openin\@inputcheck#1 %
       \ifeof\@inputcheck
@@ -235,10 +232,12 @@
         \fi
       \fi
       \closein\@inputcheck}
-
+    
     \endlinechar=-1
     \gdef\@currdir{./}
+ 
     \immediate\closeout15 %
+
 \endgroup
 
 \ifx\filename@parse\@undefined
@@ -314,7 +313,6 @@
 \fi
 
 
-
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
   \do\#\do\^\do\_\do\%\do\~}
 
@@ -327,7 +325,7 @@
 \mathchardef\@m=1000
 \mathchardef\@M=10000
 \mathchardef\@MM=20000
-\message{registers,}
+
 \count10=22 % allocates \count registers 23, 24, ...
 \count11=9 % allocates \dimen registers 10, 11, ...
 \count12=9 % allocates \skip registers 10, 11, ...
@@ -340,6 +338,7 @@
 \count19=0 % allocates \language codes 1, 2, ...
 \count20=255 % allocates insertions 254, 253, ...
 \countdef\insc@unt=20
+
 \countdef\allocationnumber=21
 \countdef\m@ne=22 \m@ne=-1
 \def\wlog{\immediate\write\m@ne}
@@ -349,6 +348,7 @@
 \dimendef\dimen@ii=2
 \skipdef\skip@=0
 \toksdef\toks@=0
+
 \def\newcount{\alloc@0\count\countdef\insc@unt}
 \def\newdimen{\alloc@1\dimen\dimendef\insc@unt}
 \def\newskip{\alloc@2\skip\skipdef\insc@unt}
@@ -372,17 +372,20 @@
   \allocationnumber\insc@unt
   \global\chardef#1\allocationnumber
   \wlog{\string#1=\string\insert\the\allocationnumber}}
+
 \gdef\ch@ck#1#2#3{%
   \ifnum\count1#1<#2\else
    \errmessage{No room for a new #3}%
   \fi}
 \newdimen\maxdimen \maxdimen=16383.99999pt % the largest legal <dimen>
+
 \newskip\hideskip \hideskip=-1000pt plus 1fill % negative but can grow
 \newdimen\p@ \p@=1pt % this saves macro space and time
 \newdimen\z@ \z@=0pt % can be used both for 0pt and 0
 \newskip\z@skip \z@skip=0pt plus0pt minus0pt
 \newbox\voidb@x % permanently void box register
-\message{compatibility for TeX 2, }
+
+
 \ifx\@undefined\inputlineno
   \newcount\inputlineno
   \inputlineno-1
@@ -398,7 +401,6 @@
   \let\noboundary\relax
   \newcount\setlanguage
 \fi
-
 \pretolerance=100
 \tolerance=200 % INITEX sets this to 10000
 \hbadness=1000
@@ -442,6 +444,7 @@
 \topskip=10pt
 \splittopskip=10pt
 \parfillskip=0pt plus 1fil
+
 \newskip\normalbaselineskip \normalbaselineskip=12pt
 \newskip\normallineskip \normallineskip=1pt
 \newdimen\normallineskiplimit \normallineskiplimit=0pt
@@ -460,6 +463,7 @@
 \let\endgraf=\par
 \let\endline=\cr
 \def\space{ }
+
 \let\empty\@empty
 \def\null{\hbox{}}
 \let\bgroup={
@@ -467,6 +471,8 @@
 {\catcode`\^^M=\active % these lines must end with %
   \gdef\obeylines{\catcode`\^^M\active \let^^M\par}%
   \global\let^^M\par} % this is in case ^^M appears in a \write
+
+
 \def\obeyspaces{\catcode`\ \active}
 {\obeyspaces\global\let =\space}
 \long\def \loop #1\repeat{%
@@ -476,6 +482,7 @@
   \iterate
   \let\iterate\relax
 }
+
 \let\repeat=\fi
 \chardef\%=`\%
 \chardef\&=`\&
@@ -497,6 +504,7 @@
 \def\sh@ft#1{\dimen@.00#1ex\multiply\dimen@\fontdimen1\font
   \kern-.0156\dimen@} % compensate for slant in lowered accents
 %%\def\hrulefill{\leavevmode\leaders\hrule\hfill\kern\z@}
+
 \sfcode`\)=0 \sfcode`\'=0 \sfcode`\]=0
 \def\showoverfull{\tracingonline\@ne}
 \gdef\showoutput{\tracingoutput\@ne
@@ -525,6 +533,7 @@
 \def\@plus{plus}
 \def\hb@xt@{\hbox to}
 \message{hacks,}
+
 \def\typein{%
   \let\@typein\relax
   \@testopt\@xtypein\@typein}
@@ -581,12 +590,14 @@
 \long\def\@testopt#1#2{%
   \@ifnextchar[{#1}{#1[{#2}]}}
 
+
 \def\@protected@testopt#1{%%
   \ifx\protect\@typeset@protect
     \expandafter\@testopt
   \else
     \@x@protect#1%
   \fi}
+
 \long \def \@yargdef #1#2#3{%
   \ifx#2\tw@
     \def\reserved@b##11{[####1]}%
@@ -639,6 +650,7 @@
   \expandafter\new@command
      \csname #1\endcsname#2{#3}%
      \l@ngrel@x\expandafter\def\csname end#1\endcsname{#4}}
+
 \def\newif#1{%
   \count@\escapechar \escapechar\m@ne
     \let#1\iffalse
@@ -678,6 +690,7 @@
                 changed.\MessageBreak
                 Check if current package is valid}%
   \fi}
+
 \@onlypreamble\@check@eq
 \long\def \@gobble #1{}
 \long\def \@gobbletwo #1#2{}
@@ -691,6 +704,7 @@
 \def\@unexpandable@protect{\noexpand\protect\noexpand}
 \def\DeclareRobustCommand{\@star@or@long\declare@robustcommand}
 \def\declare@robustcommand#1{%
+   
    \ifx#1\@undefined\else\ifx#1\relax\else
       \@latex@info{Redefining \string#1}%
    \fi\fi
@@ -797,7 +811,7 @@
 \newtoks\@temptokenb
 \newskip\@flushglue \@flushglue = 0pt plus 1fil
 %%% From File: ltcntrl.dtx
-\message{control,}
+
 \long\def\@whilenum#1\do #2{\ifnum #1\relax #2\relax\@iwhilenum{#1\relax
      #2\relax}\fi}
 \long\def\@iwhilenum#1{\ifnum #1\expandafter\@iwhilenum
@@ -808,6 +822,7 @@
 \long\def\@whilesw#1\fi#2{#1#2\@iwhilesw{#1#2}\fi\fi}
 \long\def\@iwhilesw#1\fi{#1\expandafter\@iwhilesw
          \else\@gobbletwo\fi{#1}\fi}
+
 \def\@nnil{\@nil}
 \def\@empty{}
 \def\@fornoop#1\@@#2#3{}
@@ -836,9 +851,9 @@
 %%% From File: lterror.dtx
 \expandafter\let\csname ver@autoerr.sty\endcsname\fmtversion
 \let\MessageBreak\relax
+
 \def\GenericInfo#1#2{\relax}
 \def\GenericError#1#2#3#4{\relax}
-
 \gdef\PackageError#1#2#3{%
    \GenericError{%
       (#1)\@spaces\@spaces\@spaces\@spaces
@@ -848,6 +863,8 @@
       See the #1 package documentation for explanation.%
    }{#3}%
 }
+
+
 \def\PackageWarning#1#2{}
 \def\PackageWarningNoLine#1#2{}
 \def\PackageInfo#1#2{}
@@ -873,6 +890,7 @@
 \def\@spaces{\space\space\space\space}
 \gdef\@eha{%
 }
+
 \gdef\@ehb{%
   You've lost some text. \space \@ehc}
 \gdef\@ehc{%
@@ -919,6 +937,7 @@
   \@latex@error{%
        Bad \protect\line\space or \protect\vector
        \space argument}\@ehb}
+
 \gdef\@parmoderr{%
   \@latex@error{Not in outer par mode}\@ehb}
 \gdef\@fltovf{%
@@ -930,18 +949,24 @@
       \protect\item}\@ehc}
 \gdef\@notprerr{%
   \@latex@error{Can be used only in preamble}\@eha}
+
 \gdef\@inmatherr#1{%
    \relax
    \ifmmode
  \@latex@error{Command \protect#1 invalid in math mode}\@ehc
    \fi}
 %%% From File: ltpar.dtx
+
 \message{par,}
 \def\@setpar#1{\def\par{#1}\def\@par{#1}}
 \def\@par{\let\par\@@par\par}
+
 \def\@restorepar{\def\par{\@par}}
 %%% From File: ltspace.dtx
+
+
 \message{spacing,}
+
 \expandafter\let\expandafter\@normalcr
      \csname\expandafter\@gobble\string\\ \endcsname
 \def\@xnewline{\@ifnextchar[% ] bracket matching
@@ -955,6 +980,7 @@
   \else
     \unskip \reserved@e {\reserved@f#1}\nobreak \hfil \break
   \fi}
+
 \def\@getpen#1{\ifcase #1 \z@ \or \@lowpenalty\or
          \@medpenalty \or \@highpenalty
          \else \@M \fi}
@@ -963,6 +989,8 @@
 \@nobreakfalse
 \newdimen\@savsk
 \newcount\@savsf
+
+
 \def\@bsphack{%
   \relax
   \ifhmode
@@ -986,6 +1014,9 @@
       \ignorespaces
     \fi
    \fi}
+
+
+
 \def\@xaddvskip{%
   \ifdim\lastskip<\@tempskipb
     \vskip-\lastskip
@@ -1013,6 +1044,8 @@
   \else
     \@noitemerr
   \fi}
+
+
 \def\addpenalty#1{%
   \ifvmode
     \if@minipage
@@ -1060,18 +1093,23 @@
 \newskip\medskipamount   \medskipamount  =6pt plus 2pt minus 2pt
 \newskip\bigskipamount   \bigskipamount =12pt plus 4pt minus 4pt
 
-\DeclareRobustCommand{\nobreakspace}{%
-   \leavevmode\nobreak\ }
+
+
+%\DeclareRobustCommand{\nobreakspace}{%
+%   \leavevmode\nobreak\ }
 
 \expandafter\let\expandafter\@xobeysp\csname nobreakspace \endcsname
-\DeclareRobustCommand{\,}{%
-   \relax\ifmmode\mskip\thinmuskip\else\thinspace\fi
-}
+
+%\DeclareRobustCommand{\,}{%
+%   \relax\ifmmode\mskip\thinmuskip\else\thinspace\fi
+%}
+
 \def\@{\spacefactor\@m}
-\DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
-\def\@hspace#1{\hskip #1\relax}
-\def\@hspacer#1{\vrule \@width\z@\nobreak
-                \hskip #1\hskip \z@skip}
+%\DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
+%\def\@hspace#1{\hskip #1\relax}
+%\def\@hspacer#1{\vrule \@width\z@\nobreak
+%                \hskip #1\hskip \z@skip}
+
 \newskip\fill
 \fill = 0pt plus 1fill
 \def\stretch#1{\z@ \@plus #1fill\relax}
@@ -1082,17 +1120,18 @@
 \gdef\restorecr{\catcode`\^^M5 }}
 
 
-
 \newread\@inputcheck
 \newwrite\@unused
 \newwrite\@mainaux
 \newwrite\@partaux
 \newif\if@filesw \@fileswtrue
 \newif\if@partsw \@partswfalse
+
 \newcount\@clubpenalty
 \@clubpenalty \clubpenalty
 \def\document{}%
 \let\normalsfcodes\@empty
+
 \def\nofiles{%
   \@fileswfalse
   \typeout{No auxiliary output files.^^J}%
@@ -1101,6 +1140,7 @@
   \let\makeindex\relax
   \let\makeglossary\relax}
 \@onlypreamble\nofiles
+
 \long\def \protected@write#1#2#3{%
       \begingroup
        \let\thepage\relax
@@ -1155,6 +1195,7 @@
     {\let\@elt\@wckptelt \cl@@ckpt}%
     \immediate\write\@partaux{\@charrb}%
   \fi}
+
 \def\@wckptelt#1{%
   \immediate\write\@partaux{%
     \string\setcounter{#1}{\the\@nameuse{c@#1}}}}
@@ -1193,6 +1234,7 @@
 \long\def \InputIfFileExists#1#2{%
   \IfFileExists{#1}%
     {#2\@addtofilelist{#1}\@@input \@filef@und}}
+
 
 \def\@obsoletefile#1#2{%
    \@latex@warning@no@line{inputting `#1' instead of obsolete `#2'}}
@@ -1248,6 +1290,7 @@
    \else
       \noexpand#1\expandafter\@gobble
    \fi}
+
 \def\@changed@cmd#1#2{%
    \ifx\protect\@typeset@protect
       \@inmathwarn#1%
@@ -1274,6 +1317,7 @@
    \ifmmode
       \@latex@warning{Command \protect#1 invalid in math mode}%
    \fi}
+
 \def\DeclareTextCommandDefault#1{%
    \DeclareTextCommand#1?}
 \def\ProvideTextCommandDefault#1{%
@@ -1476,6 +1520,7 @@
    \nfss@catcodes
    \expandafter\endgroup
    \DeclareFontShape@}
+
 \def\DeclareFontShape@#1#2#3#4#5#6{%
    \expandafter\ifx\csname #1+#2\endcsname\relax
      \@latex@error{Font family `#1+#2' unknown}\@eha
@@ -1594,6 +1639,7 @@
     \gdef\default@M{#2}%
   \fi
 }
+
 \@onlypreamble\DeclareFontEncodingDefaults
 \let\default@T\@empty
 \let\default@M\@empty
@@ -1615,6 +1661,7 @@
    \endgroup
    }%
 }
+
 \@onlypreamble\DeclarePreloadSizes
 \newif\ifmath@fonts \math@fontstrue
 \def\DeclareMathSizes{%
@@ -1636,18 +1683,20 @@
                              }%
     \fi}
 \@onlypreamble\@DeclareMathSizes
-\DeclareRobustCommand\fontencoding[1]{%
-    \expandafter\ifx\csname T@#1\endcsname\relax
-      \@latex@error{Encoding scheme `#1' unknown}\@eha
-    \else
-      \edef\f@encoding{#1}%
-      \ifx\cf@encoding\f@encoding
-        \let\enc@update\relax
-      \else
-        \let\enc@update\@@enc@update
-      \fi
-    \fi
-}
+
+%%\DeclareRobustCommand\fontencoding[1]{%
+%%    \expandafter\ifx\csname T@#1\endcsname\relax
+%%      \@latex@error{Encoding scheme `#1' unknown}\@eha
+%%    \else
+%%      \edef\f@encoding{#1}%
+%%      \ifx\cf@encoding\f@encoding
+%%        \let\enc@update\relax
+%%      \else
+%%        \let\enc@update\@@enc@update
+%%      \fi
+%%    \fi
+%%}
+
 \def\@@enc@update{%
           \expandafter
           \let
@@ -1664,14 +1713,14 @@
         \let\cf@encoding\f@encoding
 }
 \let\enc@update\relax
-\DeclareRobustCommand\fontfamily[1]{\edef\f@family{#1}}
-\DeclareRobustCommand\fontseries[1]{\edef\f@series{#1}}
-\DeclareRobustCommand\fontshape [1]{\edef\f@shape{#1}}
+%\DeclareRobustCommand\fontfamily[1]{\edef\f@family{#1}}
+%\DeclareRobustCommand\fontseries[1]{\edef\f@series{#1}}
+%\DeclareRobustCommand\fontshape [1]{\edef\f@shape{#1}}
 \def\usefont#1#2#3#4{\fontencoding{#1}\fontfamily{#2}%
              \fontseries{#3}\fontshape{#4}\selectfont
              \ignorespaces}
-\DeclareRobustCommand\linespread[1]
-   {\set@fontsize{#1}\f@size\f@baselineskip}
+%\DeclareRobustCommand\linespread[1]
+%   {\set@fontsize{#1}\f@size\f@baselineskip}
 %\DeclareRobustCommand\fontsize[2]
 %   {\set@fontsize\baselinestretch{#1}{#2}}
 \let\f@family\@empty
@@ -1683,6 +1732,7 @@
 \let\f@encoding\@empty
 \let\cf@encoding\@empty
 \def\@defaultunits{\afterassignment\remove@to@nnil}
+
 \begingroup
   \catcode`P=12
   \catcode`T=12
@@ -1690,21 +1740,24 @@
     \def\x{\def\rem@pt##1.##2PT{##1\ifnum##2>\z@.##2\fi}}}
   \expandafter\endgroup\x
 \def\strip@pt{\expandafter\rem@pt\the}
-\DeclareRobustCommand\mathversion[1]
-         {\@nomath\mathversion
-          \expandafter\ifx\csname mv@#1\endcsname\relax
-          \@latex@error{Math version `#1' is not defined}\@eha\else
-          \edef\math@version{#1}%
-          \gdef\glb@currsize{}%
-          \aftergroup\glb@settings
-          \fi}
-\let\frozen@everymath\everymath
-\let\frozen@everydisplay\everydisplay
+%%\DeclareRobustCommand\mathversion[1]
+%%         {\@nomath\mathversion
+%%          \expandafter\ifx\csname mv@#1\endcsname\relax
+%%          \@latex@error{Math version `#1' is not defined}\@eha\else
+%%          \edef\math@version{#1}%
+%%          \gdef\glb@currsize{}%
+%%          \aftergroup\glb@settings
+%%          \fi}
+
 \newtoks\everymath
 \newtoks\everydisplay
+
+\let\frozen@everymath\everymath
+\let\frozen@everydisplay\everydisplay
 \frozen@everymath = {\the\everymath}
 \frozen@everydisplay = {\the\everydisplay}
 \let\curr@math@size\@empty
+
 \def\pickup@font{%
     \expandafter \ifx \font@name \relax
        \define@newfont
@@ -1730,6 +1783,7 @@
   \endgroup}
 \def\try@load@fontshape{%
 }
+
 \def\nfss@catcodes{%
      \makeatletter
      \catcode`\ 9%
@@ -1784,6 +1838,7 @@
     \xdef\font@name{%
       \csname\curr@fontshape/\f@size\endcsname}%
     \pickup@font}
+
 \let\@wrong@font@char\@empty
 \let\@defaultsubs\relax
 \def\strip@prefix#1>{}
@@ -1955,6 +2010,7 @@
   \else\expandafter\set@size@funct@args\remove@star#2\@nil
        \def\sizefn@info{#1}\fi
   }
+
 \def\try@simple@size{%
     \def\reserved@a{\def\extract@fontinfo####1}%
     \expandafter\reserved@a\expandafter<\f@size>##2<##3\@nnil{%
@@ -1966,6 +2022,7 @@
     \expandafter\extract@fontinfo\expandafter\font@info
     \expandafter<\f@size>\@nil<\@nnil
 }
+
 \def\set@simple@size@args#1<{%
           \if<#1<%
             \expandafter\remove@angles
@@ -1996,6 +2053,8 @@
        \fi
      \fi
      \reserved@f}}
+
+
 \newdimen\lower@bound
 \newdimen\upper@bound
 \def\check@single#1>#2<#3\@nnil{%
@@ -2071,6 +2130,7 @@
     \fi
   \fi
   \reserved@f}
+
 \DeclareSizeFunction{}{\empty@sfcnt\@font@warning}
 \DeclareSizeFunction{s}{\empty@sfcnt\@font@info}
 \def\empty@sfcnt#1{%
@@ -2215,6 +2275,7 @@
      \warn@rel@i\preload@sizes\DeclarePreloadSizes
      \DeclarePreloadSizes U%
 }
+
 \@onlypreamble\preload@sizes
 \gdef\err@rel@i#1#2{%
   \@latex@error{***  NFSS release 1 command \noexpand#1found%
@@ -2301,6 +2362,7 @@
  }%
 }
 \@onlypreamble\restore@mathversion
+
 \def\init@restore@version{%
         \global\let\init@restore@version\relax
         \xdef\restore@mathversion
@@ -2442,6 +2504,7 @@
                      {#2}{#3}{#4}{#5}%
 }
 
+
 \@onlypreamble\DeclareSymbolFont
 \let\group@list\@empty
 \@onlypreamble\group@list
@@ -2556,6 +2619,7 @@
  \fi
   }
 \@onlypreamble\DeclareMathAlphabet
+
 \def\new@mathalphabet#1#2#3#4#5{%
     \toks@\expandafter{\alpha@list}%
     \edef#1{\expandafter\noexpand\csname @\expandafter
@@ -2594,6 +2658,7 @@
             \expandafter\noexpand\csname @\expandafter
             \@gobble\string#1\endcsname}%
 }
+
 \@onlypreamble\new@mathalphabet
 \def\SetMathAlphabet#1#2#3#4#5#6{%
  \@tempswafalse
@@ -2771,6 +2836,7 @@
   \fi
 }
 \@onlypreamble\DeclareMathSymbol
+
 \def\set@mathchar#1#2#3#4{%
   \global\mathcode`#2="\mathchar@type#3\hexnumber@#1#4\relax}
 \@onlypreamble\set@mathchar
@@ -2887,6 +2953,7 @@
   \fi
 }
 \@onlypreamble\@xDeclareMathDelimiter
+
 \def\set@mathdelimiter#1#2#3#4#5#6{%
   \xdef#3{\delimiter"\mathchar@type#4\hexnumber@#1#5%
                                      \hexnumber@#2#6 }}
@@ -2943,6 +3010,7 @@
   \fi
 }
 \@onlypreamble\DeclareMathRadical
+
 \let\mathalpha\relax
 \def\mathchar@type#1{%
   \ifodd 2#11 #1\else             % is this non-negative number?
@@ -3031,44 +3099,44 @@
    \fi
 }
 \@onlypreamble\DeclareSymbolFontAlphabet@
+%\DeclareMathVersion{normal}
+%\DeclareMathVersion{bold}
+%\DeclareRobustCommand\rmfamily
+%        {\not@math@alphabet\rmfamily\mathrm
+%         \fontfamily\rmdefault\selectfont}
+%\DeclareRobustCommand\sffamily
+%        {\not@math@alphabet\sffamily\mathsf
+%         \fontfamily\sfdefault\selectfont}
+%\DeclareRobustCommand\ttfamily
+%        {\not@math@alphabet\ttfamily\mathtt
+%         \fontfamily\ttdefault\selectfont}
+%\DeclareRobustCommand\bfseries
+%        {\not@math@alphabet\bfseries\mathbf
+%         \fontseries\bfdefault\selectfont}
+%\DeclareRobustCommand\mdseries
+%        {\not@math@alphabet\mdseries\relax
+%         \fontseries\mddefault\selectfont}
+%\DeclareRobustCommand\upshape
+%        {\not@math@alphabet\upshape\relax
+%         \fontshape\updefault\selectfont}
+%\DeclareRobustCommand\slshape
+%        {\not@math@alphabet\slshape\relax
+%         \fontshape\sldefault\selectfont}
+%\DeclareRobustCommand\scshape
+%        {\not@math@alphabet\scshape\relax
+%         \fontshape\scdefault\selectfont}
+%\DeclareRobustCommand\itshape
+%        {\not@math@alphabet\itshape\mathit
+%         \fontshape\itdefault\selectfont}
+%\DeclareRobustCommand\em
+%        {\@nomath\em \ifdim \fontdimen\@ne\font >\z@
+%                       \upshape \else \itshape \fi}
 
-\DeclareMathVersion{normal}
-\DeclareMathVersion{bold}
-\DeclareRobustCommand\rmfamily
-        {\not@math@alphabet\rmfamily\mathrm
-         \fontfamily\rmdefault\selectfont}
-\DeclareRobustCommand\sffamily
-        {\not@math@alphabet\sffamily\mathsf
-         \fontfamily\sfdefault\selectfont}
-\DeclareRobustCommand\ttfamily
-        {\not@math@alphabet\ttfamily\mathtt
-         \fontfamily\ttdefault\selectfont}
-\DeclareRobustCommand\bfseries
-        {\not@math@alphabet\bfseries\mathbf
-         \fontseries\bfdefault\selectfont}
-\DeclareRobustCommand\mdseries
-        {\not@math@alphabet\mdseries\relax
-         \fontseries\mddefault\selectfont}
-\DeclareRobustCommand\upshape
-        {\not@math@alphabet\upshape\relax
-         \fontshape\updefault\selectfont}
-\DeclareRobustCommand\slshape
-        {\not@math@alphabet\slshape\relax
-         \fontshape\sldefault\selectfont}
-\DeclareRobustCommand\scshape
-        {\not@math@alphabet\scshape\relax
-         \fontshape\scdefault\selectfont}
-\DeclareRobustCommand\itshape
-        {\not@math@alphabet\itshape\mathit
-         \fontshape\itdefault\selectfont}
-\DeclareRobustCommand\em
-        {\@nomath\em \ifdim \fontdimen\@ne\font >\z@
-                       \upshape \else \itshape \fi}
 \def\not@math@alphabet#1#2{%
    \relax
    \ifmmode
      \@latex@error{Command \noexpand#1invalid in math mode}%
-        {%
+         {%
          Please
          \ifx#2\relax
             define a new math alphabet^^J%
@@ -3104,16 +3172,16 @@
  0\or 1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or
  9\or A\or B\or C\or D\or E\or F\fi}
 \def\nfss@text#1{{\mbox{#1}}}
-\DeclareRobustCommand\normalfont
-                 {\usefont\encodingdefault
-                          \familydefault
-                          \seriesdefault
-                          \shapedefault
-                  \relax}
-\let\reset@font\normalfont
+%%  \DeclareRobustCommand\normalfont
+%%                   {\usefont\encodingdefault
+%%                            \familydefault
+%%                            \seriesdefault
+%%                            \shapedefault
+%%                    \relax}
 
-\let\@addtofilelist\@gobble
-\let\@addtofilelist\@gobble
+\let\reset@font\normalfont
+\let\@addtofilelist\relax
+
 \let\@acci\' \let\@accii\` \let\@acciii\=
 
 \def \DeclareTextFontCommand #1#2{%
@@ -3185,6 +3253,8 @@
     \@break@tfor
   \fi
 }
+
+
 \def \sw@slant {%
   \ifdim \lastskip=\z@
     \fix@penalty
@@ -3302,7 +3372,6 @@
 \def\stop{\clearpage\deadcycles\z@\let\par\@@par\@@end}
 
 %% Verbatim
-
 \def\@make@braces@other{%
   \catcode`\{=12%
   \catcode`\}=12%
@@ -3358,39 +3427,15 @@
 
 \@namedef{verbatim*}{\@verbatim\@sxverbatim}
 \expandafter\let\csname endverbatim*\endcsname =\endverbatim
-
 \let\verb@balance@group\@empty
 \def\verb@egroup{\global\let\verb@balance@group\@empty\egroup}
+
 \begingroup
   \obeylines%
   \gdef\verb@eol@error{\obeylines%
     \def^^M{\verb@egroup\@latex@error{%
             \noexpand\verb ended by end of line}\@ehc}}%
 \endgroup
-%% \def\verb{\relax\ifmmode\hbox\else\leavevmode\null\fi
-%%   \bgroup
-%%     \verb@eol@error \let\do\@makeother \dospecials
-%%     \verbatim@font\@noligs
-%%     \@ifstar\@sverb\@verb}
-%% \def\@sverb#1{%
-%%   \catcode`#1\active
-%%   \lccode`\~`#1%
-%%   \gdef\verb@balance@group{\verb@egroup
-%%      \@latex@error{\noexpand\verb illegal in command argument}\@ehc}%
-%%   \aftergroup\verb@balance@group
-%%   \lowercase{\let~\verb@egroup}}%
-%% \def\@verb{\@vobeyspaces \frenchspacing \@sverb}
-%% \def\verbatim@nolig@list{\do\`\do\<\do\>\do\,\do\'\do\-}
-%% \def\do@noligs#1{%
-%%   \catcode`#1\active
-%%   \begingroup
-%%      \lccode`\~`#1\relax
-%%      \lowercase{\endgroup\def~{\leavevmode\kern\z@\char`#1}}}
-%% \def\@noligs{\let\do\do@noligs \verbatim@nolig@list}
-
-
-
-
 \def\pmod#1{\allowbreak\,({\rm mod})\,\,#1)}
 \def\bmod{\mod}
 
@@ -3420,6 +3465,7 @@
     {#1\scriptstyle{#2}}%
     {#1\scriptscriptstyle{#2}}}
 \newbox\rootbox
+
 \def\root#1\of{%
   \setbox\rootbox\hbox{$\m@th\scriptscriptstyle{#1}$}%
   \mathpalette\r@@t}
@@ -3465,12 +3511,14 @@
 \def\>{\mskip\medmuskip}
 \def\;{\mskip\thickmuskip}
 \def\!{\mskip-\thinmuskip}
+
 \def\*{\discretionary{\thinspace\the\textfont2\char2}{}{}}
 \let\:=\>
 \def\active@math@prime{^\bgroup\prim@s}
 {\catcode`\'=\active \global\let'\active@math@prime}
 \def\prim@s{%
   \prime\futurelet\@let@token\pr@m@s}
+
 \def\pr@m@s{%
   \ifx'\@let@token
     \expandafter\pr@@@s
@@ -3482,6 +3530,7 @@
     \fi
   \fi}
 \def\pr@@@s#1{\prim@s}
+
 \def\pr@@@t#1#2{#2\egroup}
 {\catcode`\_=\active \gdef_{\_}} % _ in math is
                                  % either subscript or \_
@@ -3492,15 +3541,19 @@
 
 \let\math=\(
 \let\endmath=\)
+
 \def\displaymath{\[}
 \def\enddisplaymath{\]\@ignoretrue}
+
 \@definecounter{equation}
+
 %\def\equation{$$\refstepcounter{equation}}
 %\def\endequation{\eqno \hbox{\@eqnnum}$$\@ignoretrue}
 \def\@eqnnum{{\normalfont \normalcolor (\theequation)}}
 
 \def\frac#1#2{{\begingroup#1\endgroup\over#2}}
 \DeclareRobustCommand\sqrt{\@ifnextchar[\@sqrt\sqrtsign}
+
 \def\@sqrt[#1]{\root #1\of}
 \newcount\@eqcnt
 \newcount\@eqpen
@@ -3520,12 +3573,14 @@
       \global\@eqpen\interdisplaylinepenalty \@yeqncr
    }%
 }
+
 \def\@yeqncr{\@testopt\@xeqncr\z@skip}
 \def\@xeqncr[#1]{%
    \ifnum0=`{\fi}%
    \@@eqncr
    \noalign{\penalty\@eqpen\vskip\jot\vskip #1\relax}%
 }
+
 \def\@@eqncr{\let\reserved@a\relax
     \ifcase\@eqcnt \def\reserved@a{& & &}\or \def\reserved@a{& &}%
      \or \def\reserved@a{&}\else
@@ -3534,8 +3589,9 @@
      \reserved@a \if@eqnsw\@eqnnum\stepcounter{equation}\fi
      \global\@eqnswtrue\global\@eqcnt\z@\cr}
 \let\@seqncr=\@eqncr
-\@namedef{eqnarray*}{\def\@eqncr{\nonumber\@seqncr}\eqnarray}
-\@namedef{endeqnarray*}{\nonumber\endeqnarray}
+%\@namedef{eqnarray*}{\def\@eqncr{\nonumber\@seqncr}\eqnarray}
+%\@namedef{endeqnarray*}{\nonumber\endeqnarray}
+
 
 \DeclareRobustCommand{\ensuremath}{%
   \ifmmode
@@ -3543,8 +3599,10 @@
   \else
     \expandafter\@ensuredmath
   \fi}
+
 \long\def\@ensuredmath#1{$\relax#1$}
 %%% From File: ltlists.dtx
+
 \newskip\topsep
 \newskip\partopsep
 \newskip\itemsep
@@ -3577,6 +3635,7 @@
 \newif\if@noparlist \@noparlistfalse
 \newif\if@noitemarg \@noitemargfalse
 \newif\if@nmbrlist  \@nmbrlistfalse
+
 \def\list#1#2{%
   \ifnum \@listdepth >5\relax
     \@toodeep
@@ -3632,6 +3691,7 @@
            \fi}%
   \global \@newlisttrue
   \@outerparskip \parskip}
+
 \def\trivlist{%
   \parsep\parskip
   \@nmbrlistfalse
@@ -3663,6 +3723,7 @@
     \@endparenv
   \fi
 }
+
 \def\@endparenv{%
   \addpenalty\@endparpenalty\addvspace\@topsepadd\@endpetrue}
 
@@ -4032,6 +4093,7 @@
 \newbox\@curfield
 \newbox\@tabfbox
 \newif\if@rjfield
+
 \gdef\@startline{%
      \ifnum \@nxttabmar >\@hightab
        \@badtab
@@ -4229,6 +4291,7 @@
       \or
         \hfil\hskip1sp\ignorespaces\@sharp\unskip
       \fi}}}
+
 \def\@classi{%
   \ifcase\@lastchclass
     \@acol\@arrayrule
@@ -4257,6 +4320,7 @@
 \def\@classv{\@addtopreamble{\@startpbox{\@nextchar}\ignorespaces
 \@sharp\@endpbox}}
 \def\@addtopreamble#1{\edef\@preamble{\@preamble #1}}
+
 \newcount\@chclass
 \newcount\@lastchclass
 \newcount\@chnum
@@ -4532,6 +4596,7 @@
   \advance\@ovdy\@ovro \ht\@tempboxa\z@ \dp\@tempboxa\z@
   \@put{-\@ovdx}{-\@ovdy}{\box\@tempboxa}%
   \endgroup}
+
 \gdef\@ovvert#1#2{\vbox to\@ovyy{%
     \if@ovb \@tempcntb \@tempcnta \advance \@tempcntb #1\relax
       \kern -\@ovro \hbox{\char \@tempcntb}\nointerlineskip
@@ -4553,7 +4618,6 @@
 
 \gdef\@circle@star*{\msitag{*}\@circle}
 \def\@circle#1{\msitag{{#1}}}%
-
 
 
 \newcount\@xarg
@@ -4769,6 +4833,8 @@
     \def\@svsechd{#4{\hskip #1\relax #5}}%
   \fi
   \@xsect{#3}}
+
+
 \newif\if@afterindent \@afterindenttrue
 \def\@afterheading{%
   \@nobreaktrue
@@ -4859,6 +4925,7 @@
     {\@xfloat{#1}}%
     {\edef\reserved@a{\noexpand\@xfloat{#1}[\csname fps@#1\endcsname]}%
      \reserved@a}}
+
 \def\@dblfloat{%
   \if@twocolumn\let\reserved@a\@dbflt\else\let\reserved@a\@float\fi
   \reserved@a}
@@ -4971,6 +5038,7 @@
   \end@float
 \fi
 }
+
 \def \@endfloatbox{%
       \par\vskip\z@skip      %% \par\vskip\z@ added 15 Dec 87
       \@minipagefalse
@@ -4990,6 +5058,7 @@
 \def\@dbflt#1{\@ifnextchar[{\@xdblfloat{#1}}{\@xdblfloat{#1}[tp]}}
 \def\@xdblfloat#1[#2]{%
   \@xfloat{#1}[#2]\hsize\textwidth\linewidth\textwidth}
+
 \def\@floatplacement{\global\@topnum\c@topnumber
     % Textpage bit, global:
    \global\@toproom \topfraction\@colht
@@ -5044,6 +5113,7 @@
   \@savemarbox\@marbox{#1}%
   \global\setbox\@currbox\copy\@marbox
   \@xympar}
+
 \long\def \@savemarbox #1#2{%
   \global\setbox #1%
     \color@vbox
@@ -5086,8 +5156,11 @@
 \@definecounter{mpfootnote}
 \def\thempfootnote{\itshape\@alph\c@mpfootnote}
 \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
+
 \DeclareRobustCommand*\textsuperscript[1]{%
   \@textsuperscript{\selectfont#1}}
+
+
 \def\@textsuperscript#1{%
   {\m@th\ensuremath{^{\mbox{\fontsize\sf@size\z@#1}}}}}
 \newdimen\footnotesep
@@ -5311,6 +5384,7 @@
 \newbox\@outputbox
 \newbox\@leftcolumn
 \newbox\@holdpg
+
 \def\@thehead{\@oddhead} % initialization
 \def\@thefoot{\@oddfoot}
 \def\clearpage{%
@@ -5349,6 +5423,8 @@
   \col@number \tw@
   \@ifnextchar [\@topnewpage\@floatplacement
 }
+
+
 \long\def \@topnewpage [#1]{%
   \@nodocument
   \@next\@currbox\@freelist{}{}%
@@ -5391,6 +5467,8 @@
     \@floatplacement
   \fi
 }
+
+
 \output {%
   \let \par \@@par
   \ifnum \outputpenalty<-\@M
@@ -5419,6 +5497,7 @@
     \global \vsize \maxdimen
   \fi
 }
+
 \gdef\@specialoutput{%
    \ifnum \outputpenalty>-\@Mii
      \@doclearpage
@@ -5583,6 +5662,7 @@
                             This may be a bug in a package file
                             you are using}%
 }
+
 \begingroup
 \obeylines\obeyspaces%
 \catcode`\'\active%
@@ -5591,6 +5671,7 @@
 \def {\@activechar@info{space}\space}%
 \let'\active@math@prime}%
 \endgroup
+
 \def\@outputpage{%
 \begingroup           % the \endgroup is put in by \aftergroup
   \let \protect \noexpand
@@ -5710,6 +5791,7 @@
        }%
   \fi
 }
+
 \def \@startcolumn {%
   \global \@colroom \@colht
   \@tryfcolumn \@deferlist
@@ -5989,6 +6071,7 @@
    \fi
   \endgroup
 }
+
 \def\@addmarginpar{\@next\@marbox\@currlist{\@cons\@freelist\@marbox
     \@cons\@freelist\@currbox}\@latexbug\@tempcnta\@ne
     \if@twocolumn
@@ -6226,6 +6309,7 @@
       \let\@normalsize\normalsize
    \fi
 }
+
 \let\@declaredoptions\@empty
 \let\@classoptionslist\relax
 \@onlypreamble\@classoptionslist
@@ -6731,6 +6815,8 @@
    \lccode#1=\count@
    \sfcode#1=999
 }
+
+
 \reserved@a{`\A}{`\Z}
 \ifnum\inputlineno=\m@ne\else
   \reserved@a{"80}{"9C}
@@ -6747,6 +6833,7 @@
   \uccode`\^^9e=`\^^d0 % d-bar
 \fi
 \lccode`\^^[=`\^^[   % oe in OT1
+
 \DeclareRobustCommand{\MakeUppercase}[1]{{%
       \def\i{I}\def\j{J}%
       \def\reserved@a##1##2{\let##1##2\reserved@a}%
@@ -6754,6 +6841,7 @@
       \protected@edef\reserved@a{\uppercase{#1}}%
       \reserved@a
    }}
+
 \DeclareRobustCommand{\MakeLowercase}[1]{{%
       \def\reserved@a##1##2{\let##2##1\reserved@a}%
       \expandafter\reserved@a\@uclclist\reserved@b{\reserved@b\@gobble}%
@@ -6765,12 +6853,15 @@
 \protected@edef\MakeUppercase#1{\MakeUppercase{#1}}
 \protected@edef\MakeLowercase#1{\MakeLowercase{#1}}
 
+
 \let\reserved@a\@filelist
+
 \let\reserved@b=\@undefined
 \let\reserved@c=\@undefined
 \let\reserved@d=\@undefined
 \let\reserved@e=\@undefined
 \let\reserved@f=\@undefined
+%----
 \toks0{}
 \toks2{}
 \toks4{}
@@ -6783,7 +6874,6 @@
   \endgroup}
 \let\@filelist\@gobble
 \def\@addtofilelist#1{\xdef\@filelist{\@filelist,#1}}%
-
 
 %
 %    \FRAME{ framedata f|i tbph x F|T }              %#1
@@ -6807,7 +6897,6 @@
 %
 %
 \newcount\dispkind%
-
 \def\makeactives{
   \catcode`\"=\active
   \catcode`\;=\active
@@ -6815,6 +6904,7 @@
   \catcode`\'=\active
   \catcode`\~=\active
 }
+
 \bgroup
    \makeactives
    \gdef\activesoff{%
@@ -6829,10 +6919,6 @@
       %\bbl@deactivate{'}%
     }
 \egroup
-
-
-
-
 
 
 \def\U#1{\ifmmode\string\U{#1}\else\char`\&\char`\#x#1;\fi}
@@ -6865,6 +6951,5 @@
 \def\CustomNote{%
    \@ifnextchar[{\out@CustomNoteA}{\out@CustomNoteB}}%
    
-
 \makeatother\relax
 \endinput

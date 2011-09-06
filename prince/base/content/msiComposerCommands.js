@@ -1771,6 +1771,7 @@ function msiEditorOutputProgressListener(editorElement)
   this.onStateChange = function(aWebProgress, aRequest, aStateFlags, aStatus)
   {
     var editor = msiGetEditor(this.msiEditorElement);
+		if (aRequest == null) return;
 
     // Use this to access onStateChange flags
     var requestSpec;
@@ -2625,14 +2626,14 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
     leafname = tempdir.leafName
-    if (leafname.lastIndexOf(".") > 0)
-    {  
-      leafname = leafname.slice(0, leafname.lastIndexOf(".")); // trim off extension
-    }
     destLocalFile = tempdir.clone(); 
     
   }
-
+  if (/\.sci$/i.test(leafname))
+  {  
+    leafname = leafname.slice(0, leafname.lastIndexOf(".")); // trim off extension
+  }
+  
   var tempfile;
   if (isSciFile) 
   {

@@ -17,7 +17,7 @@ interface msiIEngineWrapper : nsISupports
   /**
    * get all the engine data ready. Returns 1 if OK.
    */
-  long loadStrsAndDLL(in nsILocalFile engpath, in nsILocalFile libpath, in voidPtr ID_dbase, in voidPtr NOM_dbase);
+  long loadStrsAndDLL(in nsILocalFile engpath, in nsILocalFile libpath, in nsILocalFile modpath, in voidPtr ID_dbase, in voidPtr NOM_dbase);
   /**
    * start up the engine
    */

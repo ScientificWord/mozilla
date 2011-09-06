@@ -240,19 +240,22 @@ graph {
 }
 
 graph {
-  display: -moz-box;  
+  display:block;  
   cursor: pointer;
-  -moz-box-orient: vertical;
+ /*  -moz-box-orient: vertical; */
 }
 
 plotwrapper {
-  display: -moz-stack;
+  display: block;
+	top: 0px;
+	left: 0px;
   -moz-user-select: all;
   -moz-user-focus: normal;
   padding: 10px;
   cursor: pointer;
-  -moz-box-orient: vertical;
+/*  -moz-box-orient: vertical; */
   background-color: rgb(245,245,255);
+
 }
 
 plotcaption {
@@ -260,6 +263,9 @@ plotcaption {
   text-align: center;
   -moz-box-flex: 1;
   min-height: 20px;
+}
+
+object {
 }
 
 
@@ -1350,4 +1356,8 @@ texnote[leadInType="custom"], solution[leadInType="custom"] {
 
 rawTeX {
  color: #6600cc;
+}
+
+*[hilite] {
+	background-color: rgb(255,255,186);
 }

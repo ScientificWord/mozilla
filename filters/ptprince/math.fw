@@ -158,7 +158,7 @@ void ScanMath()
          TokenList* pTL = new TokenList;
          pTL->push_back(lbrace);
          Typesetter::AppendTag(pTL);
-
+         delete pTL;
          return;
          break;
       }

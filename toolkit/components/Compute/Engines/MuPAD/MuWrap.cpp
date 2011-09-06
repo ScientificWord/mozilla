@@ -371,11 +371,11 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   return s_tree;
 }
 
-bool MuPADWrapper::iLoadStrsAndDLL(nsILocalFile *engp, nsILocalFile *libp)
+bool MuPADWrapper::iLoadStrsAndDLL(nsILocalFile *engp, nsILocalFile *libp, nsILocalFile *modulep)
 {
 //  TCIString engpath = engp;
 //  TCIString libpath = libp;
-  return mupd_eng->LoadStrsAndDLL(engp, libp);
+  return mupd_eng->LoadStrsAndDLL(engp, libp, modulep);
 }
 
 int MuPADWrapper::iInitialize(nsILocalFile *libp, nsILocalFile *champ,
