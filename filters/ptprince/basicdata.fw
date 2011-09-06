@@ -688,8 +688,8 @@ Global::msieveryhbox.clear();
 @}
 
 @$@<TokenList implementation@>==@{@-
-TokenList::TokenList() 
-  : m_refCount(0) 
+TokenList::TokenList()
+  : m_refCount(0)
 {
   //int break_here = 12;
 }
