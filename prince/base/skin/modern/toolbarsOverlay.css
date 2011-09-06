@@ -199,35 +199,35 @@ toolbar[iconsize="small"] #plotButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_plot-disabled-sm.png");
 }
 
-#plotButton3D {
+#plot3DButton {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d.png");
 }
 
-toolbar[iconsize="small"] #plotButton3D {
+toolbar[iconsize="small"] #plot3DButton {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-sm.png");
 }
 
-#plotButton3D:hover {
+#plot3DButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-hover.png");
 }
 
-toolbar[iconsize="small"] #plotButton3D:hover {
+toolbar[iconsize="small"] #plot3DButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-hover-sm.png");
 }
 
-#plotButton3D:hover:active {
+#plot3DButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-active.png");
 }
 
-toolbar[iconsize="small"] #plotButton3D:hover:active {
+toolbar[iconsize="small"] #plot3DButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-active-sm.png");
 }
 
-#plotButton3D[disabled="true"] {
+#plot3DButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-disabled.png");
 }
 
-toolbar[iconsize="small"] #plotButton3D[disabled="true"] {
+toolbar[iconsize="small"] #plot3DButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-disabled-sm.png");
 }
 
