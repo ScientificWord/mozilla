@@ -8029,8 +8029,18 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       if (commandString)
         item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
       else if (scriptString)
-        item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
-//      item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+			{
+			  item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
+			}
+			if (propData.mNode && propData.mNode.setAttribute)
+			{		
+				item.addEventListener("DOMMenuItemActive", function (event) {
+					event.target.propertiesData.mNode.setAttribute("hilite","1");
+				}, false);
+				item.addEventListener("DOMMenuItemInactive", function (event) {
+					event.target.propertiesData.mNode.removeAttribute("hilite");
+				}, false);
+			}
       item.setAttribute("label", menuString);
       item.refElement = propData.getReferenceNode();
       item.refEditor = editorElement;
