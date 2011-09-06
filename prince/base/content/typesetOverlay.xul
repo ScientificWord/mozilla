@@ -75,7 +75,7 @@
     </menupopup>
   </menu>
 
-  <!---menu id="insertMenu">
+  <menu id="insertMenu">
     <menupopup id="insertMenuPopup" >
       <menu id="insertTypesetObjectMenu">
         <menupopup oonpopupshowing="InitTypesetObjectMenu()">
@@ -106,6 +106,6 @@
         </menupopup>
       </menu>
     </menupopup>
-  </menu -->
+  </menu>
 
 </overlay>

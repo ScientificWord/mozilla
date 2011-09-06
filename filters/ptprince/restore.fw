@@ -9,7 +9,7 @@ when the group ends.
 #include "symbols.h"
 
 void NewSaveLevel();
-void SaveRestoration(Restoration*, bool bGlobal);
+bool SaveRestoration(Restoration*, bool bGlobal);
 void EndSaveLevel();
 
 void DeleteAllRestorations();
@@ -100,11 +100,12 @@ void DeleteAllRestorations()
 
 
 @$@<Restore implementation@>+=@{@-
-void SaveRestoration(Restoration* restoration, bool bGlobal)
+bool SaveRestoration(Restoration* restoration, bool bGlobal)
 {
    if (s_restoreStack.size() != 0){
       if (bGlobal){
          @<Kill all restorations of the same location@>
+         delete restoration;
       } else {
          LOG("\nSaving restoration for " << restoration -> Id());
          RestoreLevel* level = s_restoreStack.back();
@@ -118,10 +119,16 @@ void SaveRestoration(Restoration* restoration, bool bGlobal)
             }
             ++it;
          }
-         if (!found)
+         if (!found) {
             level -> push_back(restoration);
+            return true;
+         } else
+            delete restoration;
       }
+   } else {
+      delete restoration;
    }
+   return false;
 }
 @}
 
@@ -217,6 +224,7 @@ public:
    {
       LOG("\nRestoring " << Id() << " to " << m_oldValue);
       TokenList& loc = * (TokenList*) Loc();
+      loc.RemoveReference();
       loc = m_oldValue;
    }
 
@@ -248,6 +256,7 @@ public:
    {
       LOG("\nRestoring " << Id());
       SymbolData*& loc = * (SymbolData**) Loc();
+      if (loc) loc -> RemRef();
       loc = m_oldValue;
    }
 
@@ -260,6 +269,7 @@ public:
 #ifndef RESTORE_H
 #define RESTORE_H
 #include "basicdata.h"
+#include "platform.h"
 @<class Restoration@>
 @<class IntRestoration@>
 @<class ToksRestoration@>

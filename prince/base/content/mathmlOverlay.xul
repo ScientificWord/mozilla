@@ -105,29 +105,29 @@
 
 
 
-  <menu id="insertMenu" label="&insertmenu.label;" accesskey="&insertmenu.accesskey;">
-    <menupopup id="insertMenuPopup" onpopupshowing="msiInitFontStyleMenu(this)">
+  <menu id="insertMenu">
+    <menupopup id="insertMenuPopup">
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
       <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    command="cmd_MSItextModeCmd"/>  
       <menu id="mathobjectsmenu" label="&MSImathObjectsMenu.label;" accesskey="&MSImathObjectsMenu.accesskey;" >
-	    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
-	      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>
-	      <menuitem label="&MSIradicalCmd.label;"  accesskey="&MSIradicalCmd.accesskey;"  key="MSIradicalKey"        command="cmd_MSIradicalCmd"/>
-	      <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIsupKey"            command="cmd_MSIsupCmd"/>      
-	      <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIsubKey"            command="cmd_MSIsubCmd"/>          
-	      <menuitem label="&MSIdisplayCmd.label;"    accesskey="&MSIdisplayCmd.accesskey;"    key="MSIdisplayKey"    command="cmd_MSIdisplayMathCmd"/>
-	      <!--menuitem label="&MSIrootCmd.label;"     accesskey="&MSIrootCmd.accesskey;"                                command="cmd_MSIrootCmd"/ -->
-	      <menuitem label="&MSIoperatorsCmd.label;"       accesskey="&MSIoperatorsCmd.accesskey;"       command="cmd_MSIoperatorsCmd"/>
-	      <menuitem label="&MSIgenBracketsCmd.label;"     accesskey="&MSIgenBracketsCmd.accesskey;"     command="cmd_MSIgenBracketsCmd"/>
-	      <menuitem label="&MSIMatrixCmd.label;"   accesskey="&MSIMatrixCmd.accesskey;"                              command="cmd_MSIMatrixCmd"/>
-	      <menuitem label="&MSImathnameCmd.label;" accesskey="&MSImathnameCmd.accesskey;" command="cmd_MSImathnameCmd"/>
-	      <menuitem label="&MSIbinomialsCmd.label;"       accesskey="&MSIbinomialsCmd.accesskey;"       command="cmd_MSIbinomialsCmd"/>
-	      <menuitem label="&MSIdecorationsCmd.label;"     accesskey="&MSIdecorationsCmd.accesskey;"     command="cmd_MSIdecorationsCmd"/>
-	      <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
-	        accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
-	      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
-	        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" />
-	    </menupopup>
+		    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
+		      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>
+		      <menuitem label="&MSIradicalCmd.label;"  accesskey="&MSIradicalCmd.accesskey;"  key="MSIradicalKey"        command="cmd_MSIradicalCmd"/>
+		      <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIsupKey"            command="cmd_MSIsupCmd"/>      
+		      <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIsubKey"            command="cmd_MSIsubCmd"/>          
+		      <menuitem label="&MSIdisplayCmd.label;"    accesskey="&MSIdisplayCmd.accesskey;"    key="MSIdisplayKey"    command="cmd_MSIdisplayMathCmd"/>
+		      <!--menuitem label="&MSIrootCmd.label;"     accesskey="&MSIrootCmd.accesskey;"                                command="cmd_MSIrootCmd"/ -->
+		      <menuitem label="&MSIoperatorsCmd.label;"       accesskey="&MSIoperatorsCmd.accesskey;"       command="cmd_MSIoperatorsCmd"/>
+		      <menuitem label="&MSIgenBracketsCmd.label;"     accesskey="&MSIgenBracketsCmd.accesskey;"     command="cmd_MSIgenBracketsCmd"/>
+		      <menuitem label="&MSIMatrixCmd.label;"   accesskey="&MSIMatrixCmd.accesskey;"                              command="cmd_MSIMatrixCmd"/>
+		      <menuitem label="&MSImathnameCmd.label;" accesskey="&MSImathnameCmd.accesskey;" command="cmd_MSImathnameCmd"/>
+		      <menuitem label="&MSIbinomialsCmd.label;"       accesskey="&MSIbinomialsCmd.accesskey;"       command="cmd_MSIbinomialsCmd"/>
+		      <menuitem label="&MSIdecorationsCmd.label;"     accesskey="&MSIdecorationsCmd.accesskey;"     command="cmd_MSIdecorationsCmd"/>
+		      <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
+		        accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
+		      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
+		        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" />
+		    </menupopup>
       </menu>
       <menuitem id="insertmenuMarker" label="&insertmenuMarker.label;"
         accesskey="&insertmenuMarker.accesskey;" observes="cmd_marker" />
@@ -136,7 +136,7 @@
       <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
         accesskey="&insertmenuNote.accesskey;" observes="cmd_note" />
       <menu id="insertmenuTypesetObject" label="&insertmenuTSO.label;" accesskey="&insertmenuTSO.accesskey;" >
-          <menupopup>
+				<menupopup>
           <menuitem id="MSIinsertIndexEntry"         
             label="&MSIinsertIndexEntry.label;"         
             accesskey="&MSIinsertIndexEntry.accesskey;"         
@@ -934,7 +934,7 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolvarpi" label="&#x03D6;" tooltiptext="&symbolvarpi.tooltip;"    msivalue="&#x03D6;"
              observes="cmd_MSIsymbolCmd"/>
-                <toolbarbutton id ="symbolrho" label="&#x03C1;" tooltiptext="&symbolrho.tooltip;"     msivalue="&#x03C1;"
+        <toolbarbutton id ="symbolrho" label="&#x03C1;" tooltiptext="&symbolrho.tooltip;"     msivalue="&#x03C1;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolsigma" label="&#x03C3;" tooltiptext="&symbolsigma.tooltip;"  msivalue="&#x03C3;"
             observes="cmd_MSIsymbolCmd"/>
@@ -1354,8 +1354,12 @@
                       <!-- JLF, July 15, 2011 test -->
         <toolbarbutton id ="symbolnleqslant" label="&nleqslant;" tooltiptext="&symbolnleqslant.tooltip;"              msivalue="&nleqslant;"
            observes="cmd_MSIsymbolCmd"/>  
-        <toolbarbutton id ="symbolngeqslant" label="&ngeqslant;" tooltiptext="&symbolngeqslant.tooltip;"              msivalue="&ngeqslant;"
-           observes="cmd_MSIsymbolCmd"/>   
+        <toolbarbutton id ="symbolngeqslant" tooltiptext="&symbolngeqslant.tooltip;"              msivalue="&ngeqslant;"
+           observes="cmd_MSIsymbolCmd">   
+          <label>
+            <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&ngeqslant;</mi></math>
+          </label>
+        </toolbarbutton>
         <toolbarbutton id ="symbollneq" label="&#x2A87;" tooltiptext="&symbollneq.tooltip;"              msivalue="&#x2A87;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgneq" label="&#x2A88;" tooltiptext="&symbolgneq.tooltip;"              msivalue="&#x2A88;"

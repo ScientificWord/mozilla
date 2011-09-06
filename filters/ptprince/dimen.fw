@@ -80,6 +80,7 @@ case CMD_ASSIGN_DIM:{
                     << n << "  ((" << *pList << "))");
    SaveRestoration(new IntRestoration(loc, "a dimension"), bGlobal);
    *loc = n;
+   delete pList;
    break;
 };
 @}
