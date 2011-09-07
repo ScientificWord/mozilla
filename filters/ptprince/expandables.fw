@@ -50,17 +50,15 @@ bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
    if (ext == 0)
      ext = "tex";
 
-  
    InputByteFile* pbf = new InputByteFile;
    pbf -> Open(fn);
    Latin_1_in*  platin1filt = new Latin_1_in(pbf);
-   
+
    LineSource* plineSource = new LineSource(platin1filt);
    Tokenizer* ts = new Tokenizer(plineSource);
-   
+
    InputStack::Push(ts);
    LOG("\n----\\input " << name);
-   
 
    return false;
 }

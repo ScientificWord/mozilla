@@ -505,7 +505,7 @@ void IgnoreCurrentSpace(TokenList* pList = 0)
 
 @$@<Parsing helpers@>+=@{@-
 void ScanOptionalSpace(TokenList* pList = 0)
-{    
+{
     GetToken();
     IgnoreCurrentSpace();
 }
@@ -671,7 +671,7 @@ bool ScanInt(int* n, TokenList* pList)
    } else {
       @<Scan numeral@>
    }
-   
+
    iVal = sign * iVal;
 
    *n = iVal;
@@ -697,7 +697,7 @@ bool ScanInt(int* n, TokenList* pList)
       GetRawToken();
       if (pList)
          pList -> push_back(CurTok());
-   
+
       if (CurTok().Type() == TT_SYMBOL){
          // We should have something like '\$
          Symbols::SymId symId = CurTok().Symbol();
@@ -709,9 +709,9 @@ bool ScanInt(int* n, TokenList* pList)
          // We should have something like `a or `& ...
          iVal = CurTok().ChrCode();
       }
-      
+
       ScanOptionalSpace();
-      
+
    } else {
        bool bVacuous = false;
        if (CurTok() == octal_token) {

@@ -92,11 +92,11 @@ int main(int argc, char* argv[])
    #endif
    char envInput[_MAX_PATH+12];
    char envOutput[_MAX_PATH+12];
-   
+
    #ifdef _WINDOWS
      strcpy(envInput, "MSITEXINPUT=.;");
    #else
-     strcpy(envInput, "MSITEXINPUT=.:");     
+     strcpy(envInput, "MSITEXINPUT=.:");
    #endif
 
    strcpy(envOutput, "MSIOUTPUT=");
@@ -114,7 +114,6 @@ int main(int argc, char* argv[])
          strcat(envInput, inputdir);
          putenv(envInput);
          //std::cout << "Set input environment " << envInput << "\n";
-         
          s_outputdir =inputdir;   // A default -- gets set in next else clause
         }
         else if (argv[j][1]=='o')
@@ -173,21 +172,14 @@ int main(int argc, char* argv[])
    try{
       s_inputfilename = argv[argc-2];
       LOG("\nReading input file " << s_inputfilename);
-          
       InputByteFile* pbf = new InputByteFile;
-     
-           
-      Filename* pFn = new Filename(s_inputfilename, true); 
-
-   
+      Filename* pFn = new Filename(s_inputfilename, true);
       pbf -> Open(*pFn);
-     
-      
+
       // Adjust input environment to include this file's directory
 
       const char* dir = pFn -> GetAreaString();
       s_inputdir = strdup(dir);
-      
 
       #ifdef _WINDOWS
         strcat(envInput, ";");
@@ -214,7 +206,6 @@ int main(int argc, char* argv[])
             }
          }
       }
-      
 
       LineSource* plineSource;
       CharStream*  charstream;
@@ -229,11 +220,11 @@ int main(int argc, char* argv[])
       }else{
          charstream = new Latin_1_in(pbf);
       }
-      
+
       plineSource = new LineSource(charstream);
-      
+
       Tokenizer* toks = new Tokenizer(plineSource);
-      
+
       InputStack::Push(toks);
       Interpretter::MainLoop();
       //delete charstream;
@@ -262,7 +253,7 @@ int main(int argc, char* argv[])
    #ifdef LOGGING
       LogFile::Close();
    #endif
-   
+
    //_CrtDumpMemoryLeaks();
 
    return 0;

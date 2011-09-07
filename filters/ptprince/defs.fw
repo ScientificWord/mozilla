@@ -837,7 +837,7 @@ void DefAssignment(CommandCode curcmd, int prefixes){
    //SaveRestoration(restore, bGlobal);
    if ( SaveRestoration(restore, bGlobal) )
    {
-      if (*((SymbolData**)pDefLoc)) 
+      if (*((SymbolData**)pDefLoc))
         { (*((SymbolData**)pDefLoc)) -> AddRef(); }
    }
 
@@ -907,7 +907,7 @@ void EdefAssignment(CommandCode curcmd, int prefixes)
 
    if ( SaveRestoration(restore, bGlobal) )
    {
-           if (*((SymbolData**)pDefLoc)) 
+           if (*((SymbolData**)pDefLoc))
              { (*((SymbolData**)pDefLoc)) -> AddRef(); }
    }
 
