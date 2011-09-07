@@ -1419,7 +1419,7 @@
     		<toolbarbutton id ="symbolsupsetneqq" label="&#x2ACC;" tooltiptext="&symbolsupsetneqq.tooltip;"              msivalue="&#x2ACC;"
            observes="cmd_MSIsymbolCmd"/> 
  
-<toolbarbutton id ="symbolvarsubsetneqq" label="&varsubsetneqq;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&varsubsetneqq;"
+<toolbarbutton id ="symbolvarsubsetneqq" label="&#xE016;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xE016;"
            observes="cmd_MSIsymbolCmd"/> 
            
 
