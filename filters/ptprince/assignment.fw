@@ -122,7 +122,7 @@ case CMD_SHORTHANDDEF: {
 
 @$@<Assignments@>+=@{@-
 case CMD_SHORTHANDDEF: {
-   
+
    Primitive* prim = dynamic_cast<Primitive*>(CurData());
    ShorthandType subtype = (ShorthandType) prim -> Data();
    TeXToken defining;
@@ -178,23 +178,21 @@ case CMD_DEFCODE:{
 
 @$@<Assignments@>+=@{@-
 case CMD_DEFCODE: {
-   
-   
+
    Primitive* prim = dynamic_cast<Primitive*>(CurData());
    DefCode subtype = (DefCode) prim -> Data();
    int n;
    int m;
 
-   ScanInt(&n);   
+   ScanInt(&n);
    ScanOptionalEquals();
    ScanInt(&m);
-  
+
    TeXChar ch = n;
-   if (subtype == CATCODE){   
+   if (subtype == CATCODE){
       LOG("\n----Set catcode[" << ch << "] = " << m);
       SaveRestoration(
          new IntRestoration(CatcodeLoc(ch), "a catcode"), bGlobal);
-      
 
       SetCatcode(n, m);
    } else if (subtype == MATHCODE){
