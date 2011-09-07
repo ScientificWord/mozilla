@@ -707,7 +707,7 @@ void InputStack::Putback(TeXToken tt)
    TokenListTokenSource* ts = new TokenListTokenSource(*tl);
 
    s_stack -> push_back(ts);
-  
+
 }
 @}
 

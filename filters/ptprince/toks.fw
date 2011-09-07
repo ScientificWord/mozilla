@@ -14,7 +14,7 @@ holds a token list.
 @$@<Declare MakeToksParameter@>==@{@-
 void MakeToksParameter(const char* name, TokenList* addr)
 {
-   // addr is a pointer to static data. 
+   // addr is a pointer to static data.
    addr -> SetCount(-1);
 
    Primitive* pc = new Primitive(CMD_ASSIGN_TOKS, true, (int)addr);
@@ -129,7 +129,6 @@ case CMD_TOKS: {
    }
    loc->AddReference();
    delete pTL;
-   
    break;
 }
 @}
