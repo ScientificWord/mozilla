@@ -76,7 +76,7 @@ endif
 
 ifeq ($(OS_ARCH),Linux)
 MuPADlicense	:= $(srcdir)/../MuPAD/license/license 
-QtLib	:= $(srcdir)/../MuPAD/$(PLATFORM)/libQtCore.so.4
+QtLib	:= $(srcdir)/../MuPAD/$(PLATFORM)/libQtCore.so
 
 endif
 
