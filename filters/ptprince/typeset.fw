@@ -610,7 +610,7 @@ void Typesetter::StartDisplay()
    }
    dllname[str.Size()] = '\0';
    StringBuilder::Discard(str);
-   
+
    delete s_processor;
    s_processor = dllname;
 }
@@ -711,12 +711,15 @@ void Typesetter::EndSubformula()
    if (noad != 0){
       switch (s_target){
          case TARG_NUCLEUS :
+            delete noad -> m_nucleus;
             noad -> m_nucleus = subform;
             break;
          case TARG_SUBSCRIPT:
+            delete noad -> m_subscript;
             noad -> m_subscript = subform;
             break;
          case TARG_SUPERSCRIPT:
+            delete noad -> m_superscript;
             noad -> m_superscript = subform;
             break;
       }
