@@ -19,8 +19,8 @@ case "`uname -s`" in
 
    Linux)
     case "`uname -m`" in
-      i*86)      MUPARCH=glnx86 ;;
-      x86_64)    MUPARCH=glnxa64 ;;
+      i*86)      MUPARCH=linux ;;
+      x86_64)    MUPARCH=linux ;;
     esac ;;
   
   Darwin)
