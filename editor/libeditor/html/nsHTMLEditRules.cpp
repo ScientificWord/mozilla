@@ -714,6 +714,8 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
       return WillMakeStructure(aSelection, info->blockType, aCancel, aHandled);
     case kRemoveStructure:
       return WillRemoveStructure(aSelection, aCancel, aHandled);
+	    case kRemoveEnv:
+	      return WillRemoveEnv(aSelection, aCancel, aHandled);
   }
   return nsTextEditRules::WillDoAction(aSelection, aInfo, aCancel, aHandled);
 }
@@ -7921,12 +7923,53 @@ nsHTMLEditRules::RemoveStructureAboveSelection(nsISelection *selection)
   return NS_OK; //BBM should be some error
 }
 
+
+nsresult 
+nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
+{
+  printf("RemoveEnvAboveSelection\n");
+  nsCOMPtr<nsIDOMRange> domRange;
+  nsresult rv = selection->GetRangeAt(0, getter_AddRefs(domRange));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIRange> range = do_QueryInterface(domRange);
+  nsCOMPtr<nsIDOMNode> ancestor =
+    do_QueryInterface(range->GetCommonAncestor());
+  // Now go up the tree until we get to a structure tag
+  nsCOMPtr<msiITagListManager> tagListManager;
+  mHTMLEditor->GetTagListManager(getter_AddRefs(tagListManager));
+  nsAutoString tagName;
+  nsAutoString nullString;
+  PRBool isEnv;
+  ancestor->GetLocalName(tagName);
+  rv = tagListManager->GetTagInClass(NS_LITERAL_STRING("envtag"), tagName, nsnull, &isEnv);
+  while (!isEnv && !tagName.EqualsLiteral("body") && !tagName.EqualsLiteral("html"))
+  {
+    ancestor->GetParentNode(getter_AddRefs(ancestor));
+    ancestor->GetLocalName(tagName);
+    rv = tagListManager->GetTagInClass(NS_LITERAL_STRING("envtag"), tagName, nsnull, &isEnv);
+  }
+  if (isEnv)
+  {
+    return mHTMLEditor->RemoveContainer(ancestor);
+  }
+  return NS_OK; //BBM should be some error
+}
+
 nsresult 
 nsHTMLEditRules::WillRemoveStructure(nsISelection *aSelection, PRBool *aCancel, PRBool *aHandled)
 {
   *aCancel = PR_FALSE;
   *aHandled = PR_TRUE;
   return RemoveStructureAboveSelection(aSelection);
+}
+
+nsresult 
+nsHTMLEditRules::WillRemoveEnv(nsISelection *aSelection, PRBool *aCancel, PRBool *aHandled)
+{
+  *aCancel = PR_FALSE;
+  *aHandled = PR_TRUE;
+  return RemoveEnvAboveSelection(aSelection);
 }
 
 ///////////////////////////////////////////////////////////////////////////
