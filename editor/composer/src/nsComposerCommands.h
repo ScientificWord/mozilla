@@ -492,6 +492,7 @@ NS_DECL_COMPOSER_COMMAND(nsOutdentCommand)
 NS_DECL_COMPOSER_COMMAND(nsRemoveListCommand)
 NS_DECL_COMPOSER_COMMAND(nsRemoveStylesCommand)
 NS_DECL_COMPOSER_COMMAND(nsRemoveStructCommand)
+NS_DECL_COMPOSER_COMMAND(nsRemoveEnvCommand)
 NS_DECL_COMPOSER_COMMAND(nsIncreaseFontSizeCommand)
 NS_DECL_COMPOSER_COMMAND(nsDecreaseFontSizeCommand)
 
