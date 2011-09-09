@@ -551,7 +551,11 @@ void AnalyzeMI(MNODE* mml_mi_node,
   zmsi_class[0] = 0;
   GetCurrAttribValue(mml_mi_node, false, "msiclass", zmsi_class, 256);
 
-  if (StringEqual(zclass, "msi_unit")) {
+  char zmsi_unit[256];
+  zmsi_unit[0] = 0;
+  GetCurrAttribValue(mml_mi_node, false, "msiunit", zmsi_unit, 256);
+
+  if (StringEqual(zmsi_unit, "true")) {
 
     SEMANTICS_NODE* s_target = snode;
     // Semantically, I'm treating units as "factors" joined to the expression
