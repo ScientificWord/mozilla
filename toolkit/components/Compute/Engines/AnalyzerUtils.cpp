@@ -89,10 +89,10 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
       } else if (ElementNameIs(base, "mover")) {
           rv = BT_MOVER;
       } else if (ElementNameIs(base, "mi")) {
-          char zclass[256];
-          zclass[0] = 0;
-          GetCurrAttribValue(base, false, "class", zclass, 256);
-          if (StringEqual(zclass, "msi_unit")) {
+          char zunit[256];
+          zunit[0] = 0;
+          GetCurrAttribValue(base, false, "msiunit", zunit, 256);
+          if (StringEqual(zunit, "true")) {
             rv = BT_UNIT;
           } else {
               //int entity_count;
