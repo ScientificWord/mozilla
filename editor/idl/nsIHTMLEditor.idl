@@ -173,6 +173,7 @@ interface nsIHTMLEditor : nsISupports
   void removeAllInlineProperties();
 
   void removeStructureAboveSelection(in nsISelection selection);
+  void removeEnvAboveSelection(in nsISelection selection);
 
 
   /**
