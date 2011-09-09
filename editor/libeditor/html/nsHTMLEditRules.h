@@ -186,7 +186,9 @@ protected:
   nsresult WillMakeBasicBlock(nsISelection *aSelection, const nsAString *aBlockType, PRBool *aCancel, PRBool *aHandled);
   nsresult WillMakeStructure(nsISelection *aSelection, const nsAString *aStructureType, PRBool *aCancel, PRBool *aHandled);
   nsresult WillRemoveStructure(nsISelection *aSelection, PRBool *aCancel, PRBool *aHandled);
+  nsresult WillRemoveEnv(nsISelection *aSelection, PRBool *aCancel, PRBool *aHandled);
   nsresult RemoveStructureAboveSelection(nsISelection *selection);
+  nsresult RemoveEnvAboveSelection(nsISelection *selection);
   nsresult DidMakeBasicBlock(nsISelection *aSelection, nsRulesInfo *aInfo, nsresult aResult);
   nsresult DidAbsolutePosition();
   nsresult AlignInnerBlocks(nsIDOMNode *aNode, const nsAString *alignType);

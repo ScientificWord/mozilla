@@ -683,6 +683,10 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     {
       msiGoDoCommand('cmd_removestruct');
     }
+    else if (commandID=="cmd_envtag" && editor && editor.tagListManager && editor.tagListManager.getClearEnvTag(ns) == newState)
+    {
+      msiGoDoCommand('cmd_removeenv');
+    }
     else
       msiGoDoCommandParams(commandID, cmdParams, editorElement);
     // BBM: temporary hack!

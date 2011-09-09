@@ -82,6 +82,7 @@ protected:
   TagKey mdefaultParagraph;
   TagKey mclearTextTag;
   TagKey mclearStructTag;
+  TagKey mclearEnvTag;
   TagKeyListHead * pContainsList;
 };
 
