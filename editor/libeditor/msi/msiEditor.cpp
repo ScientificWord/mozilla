@@ -55,7 +55,6 @@ nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
 
 
 
-
 msiEditor::msiEditor()
 {
   nsresult res(NS_OK);
@@ -2719,13 +2718,22 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     if (offset > theText.Length()) offset = theText.Length();
     while ((PRInt32)(--offset) >= 0)
     {
-      while (prevChar == ' ' && theText[offset] == ' ') --offset;
+//      while (prevChar == ' ' && theText[offset] == ' ') --offset;
       nodeIn->GetParentNode(getter_AddRefs(pnode));
       rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
         pnode = nsnull;
       fCanEndHere = PR_TRUE;
       if (tag.EqualsLiteral("mi")) fCanEndHere = (offset==0);
-      prevChar = theText[offset];
+      // check for double spaces in text mode; possible to convert to math
+			if (!inMath && (prevChar == ' ') && (theText[offset] == 160))
+			{
+				*nodeOut = nodeIn;
+				offsetOut = offset;
+				_result = msiIAutosub::STATE_SPECIAL; 
+				return NS_OK;
+			}
+			
+			prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
       {
@@ -2856,7 +2864,16 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
-    m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
+    if (lookupResult == msiIAutosub::STATE_SPECIAL)
+		{
+			ctx =	msiIAutosub::CONTEXT_TEXTONLY; 
+			action = msiIAutosub::ACTION_EXECUTE;
+			data = NS_LITERAL_STRING("inserttext(' '); msiGoDoCommand('cmd_MSImathtext')"); 
+			pasteContext = NS_LITERAL_STRING(""); 
+			pasteInfo = NS_LITERAL_STRING("");
+		}
+		else
+			m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
     if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
