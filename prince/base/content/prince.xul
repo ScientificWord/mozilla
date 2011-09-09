@@ -160,7 +160,6 @@
     </statusbarpanel>
 
 
-    <!-- what is this for??? statusbarpanel id="component-bar"/  -->
     <spacer flex="1"/>
     <statusbarpanel id="structToolbar" flex="100" pack="end">
     <label id="structSpacer" value="" flex="100"/>
