@@ -660,18 +660,18 @@ bool IsUnitsFraction(MNODE* mml_frac)
     MNODE *rover = mml_frac->first_kid;
     if (rover) {
       if (!strcmp(rover->src_tok, "mi")) {
-        char zclass[256];
-        zclass[0] = 0;
-        GetCurrAttribValue(rover, false, "class", zclass, 256);
-        if (!strcmp(zclass, "msi_unit"))
+        char zunit[256];
+        zunit[0] = 0;
+        GetCurrAttribValue(rover, false, "msiunit", zunit, 256);
+        if (!strcmp(zunit, "true"))
           num_OK = true;
       }
       rover = rover->next;
       if (rover && !strcmp(rover->src_tok, "mi")) {
-        char zclass[256];
-        zclass[0] = 0;
-        GetCurrAttribValue(rover, false, "class", zclass, 256);
-        if (!strcmp(zclass, "msi_unit"))
+        char zunit[256];
+        zunit[0] = 0;
+        GetCurrAttribValue(rover, false, "msiunit", zunit, 256);
+        if (!strcmp(zunit, "true"))
           den_OK = true;
       }
     }
