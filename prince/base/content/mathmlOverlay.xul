@@ -22,6 +22,7 @@
   <keyset id="editorKeys">  
     <keyset id="MSIKeySet">
       <key id="MSIinlineMathKey" modifiers="accel" key="&MSIinlineMathCmd.keybinding;" command="cmd_MSImathtext"/>    
+      <key id="MSIinlineMathKey2" modifiers="accel" key="&MSIinlineTextCmd.keybinding;" command="cmd_MSImathtext"/>    
       <key id="MSIdisplayKey"    modifiers="accel" key="&MSIdisplayCmd.keybinding;"    command="cmd_MSIdisplayMathCmd"/>
       <key id="MSIfractionKey"   modifiers="accel" key="&MSIfractionCmd.keybinding;"   command="cmd_MSIfractionCmd"/>   
       <key id="MSIradicalKey"    modifiers="accel" key="&MSIradicalCmd.keybinding;"    command="cmd_MSIradicalCmd"/>    
@@ -34,6 +35,8 @@
       <key id="MSIbraceKey"      modifiers="accel shift" key="&MSIbraceCmd.keybinding;" command="cmd_MSIbraceCmd"/>      
       <key id="MSIabsvalueKey"   modifiers="accel" key="&MSIabsvalueCmd.keybinding;"   command="cmd_MSIabsvalueCmd"/>          
       <key id="MSInormKey"       modifiers="accel shift" key="&MSInormCmd.keybinding;"   command="cmd_MSInormCmd"/>
+			<key id="MSIanglebracketsKey" modifiers="accel shift" key="&lt;" 
+				 oncommand="insertfence('&#x2329;','&#x232A;',null)"/>
     </keyset>                                                                                                         
   </keyset>                                                                                                         
 
