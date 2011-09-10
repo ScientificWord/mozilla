@@ -22,7 +22,7 @@
   <keyset id="editorKeys">  
     <keyset id="MSIKeySet">
       <key id="MSIinlineMathKey" modifiers="accel" key="&MSIinlineMathCmd.keybinding;" command="cmd_MSImathtext"/>    
-      <key id="MSIinlineMathKey2" modifiers="accel" key="&MSIinlineTextCmd.keybinding;" command="cmd_MSImathtext"/>    
+      <key id="MSIinlineTextKey" modifiers="accel" key="&MSIinlineTextCmd.keybinding;" command="cmd_MSItextmath"/>    
       <key id="MSIdisplayKey"    modifiers="accel" key="&MSIdisplayCmd.keybinding;"    command="cmd_MSIdisplayMathCmd"/>
       <key id="MSIfractionKey"   modifiers="accel" key="&MSIfractionCmd.keybinding;"   command="cmd_MSIfractionCmd"/>   
       <key id="MSIradicalKey"    modifiers="accel" key="&MSIradicalCmd.keybinding;"    command="cmd_MSIradicalCmd"/>    
@@ -49,6 +49,8 @@
     <command id="cmd_MSIdisplayMathCmd" oncommand="msiGoDoCommand('cmd_MSIdisplayMathCmd')"/>
     <command id="cmd_MSItextModeCmd"        oncommand="msiGoDoCommand('cmd_MSItextModeCmd')"/>
     <command id="cmd_MSImathtext"       oncommand="msiGoDoCommand('cmd_MSImathtext')"/>
+    <command id="cmd_MSItextmath"       oncommand="msiGoDoCommand('cmd_MSItextmath')"/>
+    <command id="cmd_MSImathtextButton"       oncommand="msiGoDoCommand('cmd_MSImathtextButton')"/>
     <command id="cmd_MSIfractionCmd"    oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
     <command id="cmd_MSIradicalCmd"     oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
     <command id="cmd_MSIrootCmd"        oncommand="msiGoDoCommand('cmd_MSIrootCmd')"/>

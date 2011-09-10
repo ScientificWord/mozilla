@@ -3,79 +3,7 @@
 const mathmlOverlayJS_duplicateTest = "Bad";
 var gProcessor;
 
-function SetupMSIMathMenuCommands()
-{
-  var commandTable = GetComposerCommandTable();
-  alert("Should not be calling SetupMSIMathMenuCommands()!");
-  //dump("Registering msi math menu commands\n");
-  commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
-  commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
-  commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
-  commandTable.registerCommand("cmd_MSItextModeCmd",    msiToTextMode);
-  commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
-  commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
-  commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
-  commandTable.registerCommand("cmd_MSIsupCmd",         msiSuperscript);
-  commandTable.registerCommand("cmd_MSIsubCmd",         msiSubscript);
-  commandTable.registerCommand("cmd_MSItensorCmd",      msiDoSomething);
-  commandTable.registerCommand("cmd_MSIsinCmd",         msiSin);
-  commandTable.registerCommand("cmd_MSIcosCmd",         msiCos);
-  commandTable.registerCommand("cmd_MSItanCmd",         msiTan);
-  commandTable.registerCommand("cmd_MSIlnCmd",          msiLn);
-  commandTable.registerCommand("cmd_MSIlogCmd",         msiLog);
-  commandTable.registerCommand("cmd_MSIexpCmd",         msiExp);
-  commandTable.registerCommand("cmd_MSImathnameCmd",    msiMathname);
-  commandTable.registerCommand("cmd_MSIMatrixCmd",      msiMatrix);
-  commandTable.registerCommand("cmd_MSIMatrix22Cmd",    msiMatrix22);
-  commandTable.registerCommand("cmd_MSIMatrixLastCmd",  msiMatrixLast);
-  commandTable.registerCommand("cmd_MSIparenCmd",       msiParen);
-  commandTable.registerCommand("cmd_MSIbracketCmd",     msiBracket);
-  commandTable.registerCommand("cmd_MSIbraceCmd",       msiBrace);
-  commandTable.registerCommand("cmd_MSIabsvalueCmd",    msiAbsValue);
-  commandTable.registerCommand("cmd_MSInormCmd",        msiNorm);
-  commandTable.registerCommand("cmd_MSIsymbolCmd",       msiSymbol);
-  commandTable.registerCommand("cmd_MSIColorsCmd",       msiColors);
-  commandTable.registerCommand("cmd_MSIgenBracketsCmd",  msiGenBrackets);
-  commandTable.registerCommand("cmd_MSIbinomialsCmd",    msiBinomials);
-  commandTable.registerCommand("cmd_MSIoperatorsCmd",    msiOperators);
-  commandTable.registerCommand("cmd_MSIdecorationsCmd",  msiDecorations);
-  commandTable.registerCommand("cmd_MSIunitsCommand",    msiUnitsDialog);
-
-  commandTable.registerCommand("cmd_MSIreviseFractionCmd",     msiReviseFractionCmd);
-  commandTable.registerCommand("cmd_MSIreviseRadicalCmd",      msiReviseRadicalCmd);
-//  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
-  commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);  //Need to implement!
-  commandTable.registerCommand("cmd_MSIreviseMatrixCellCmd",   msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseMatrixCellGroupCmd", msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseMatrixRowsCmd",   msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseMatrixColsCmd",   msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
-  commandTable.registerCommand("cmd_MSIreviseMathnameCmd",     msiReviseMathnameCmd);
-//    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
-  commandTable.registerCommand("cmd_MSIreviseGenBracketsCmd",  msiReviseGenBracketsCmd);
-	commandTable.registerCommand("cmd_MSIreviseBinomialsCmd",    msiReviseBinomialsCmd);
-	commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
-	commandTable.registerCommand("cmd_MSIreviseDecorationsCmd",  msiReviseDecorationsCmd);
-  commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
-  commandTable.registerCommand("cmd_MSIaddMatrixRowsCmd",       msiInsertMatrixRowsCommand);
-  commandTable.registerCommand("cmd_MSIaddMatrixColumnsCmd",    msiInsertMatrixColumnsCommand);
-  commandTable.registerCommand("cmd_MSIreviseEqnArrayCommand",    msiReviseEqnArrayCommand);
-
-  try {
-    gMathStyleSheet = msiColorObj.Format();
-  } catch(e) { dump("Error setting up msiColorObj\n");  }
-
-// too slow for debugging.  Turn back on if you want style-correct toolbars
-//  // build symbol panels, since overlays don't seem to fire onload handlers
-//  doPanelLoad(document.getElementById("symbol.lcGreek"),"mi");
-//  doPanelLoad(document.getElementById("symbol.ucGreek"),"mi");
-//  doPanelLoad(document.getElementById("symbol.binOp"),"mo");
-//  doPanelLoad(document.getElementById("symbol.binRel"),"mo");
-//  doPanelLoad(document.getElementById("symbol.negRel"),"mo");
-//  doPanelLoad(document.getElementById("symbol.arrow"),"mo");
-//  doPanelLoad(document.getElementById("symbol.misc"),"mi");
-//  doPanelLoad(document.getElementById("symbol.delims"),"mo");
-}  
+  
 
 function msiSetupMSIMathMenuCommands(editorElement)
 {
@@ -85,6 +13,8 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
   commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
+  commandTable.registerCommand("cmd_MSItextmath",       msiToggleMathText);
+  commandTable.registerCommand("cmd_MSImathtextButton",       msiToggleMathText);
   commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
   commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
   commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
@@ -213,11 +143,43 @@ var msiToggleMathText =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var editor = msiGetEditor(editorElement);
-    insertinlinemath();
-    toggleMathText(editor);
-    dump("called msiToggleMathText\n");
+		var togglekey;
+		if (aCommand === "cmd_MSImathtext")
+		  togglekey = "m";
+		else
+			togglekey = "t";
+		if (aCommand == "cmd_MSImathtextButton" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
+		{
+	    if (this.currentState() == "t")
+				insertinlinemath();
+	    toggleMathText(editor);
+	    dump("called msiToggleMathText\n");
+		}
     return;
-  }
+  },
+	
+	keyIsToggle: function( key )
+	{
+		var prefkey;
+		if (key==="m")
+			prefkey = "swp.ctrl.m";
+		else
+			prefkey = "swp.ctrl.t";
+ 	  var prefs = GetPrefs();
+	  return prefs.getCharPref(prefkey)==="toggle";	
+	},
+	
+	currentState: function()
+	{
+    var editorElement = msiGetActiveEditorElement(window);
+    var editor = msiGetEditor(editorElement);
+	 	var state;
+		if (editor.tagListManager.selectionContainedInTag("math",null))
+		  state = "m";
+		else
+			state = "t";
+		return state;
+	}
 };
 
 var msiTextMode =
