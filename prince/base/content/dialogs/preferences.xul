@@ -257,6 +257,15 @@
                   name="swp.user.logReceived"
                   type="bool"
                   onchange = "onComputeSettingChange(this, true)"/>                  
+      <preference id ="doublespacepref"
+                  name="swp.space.after.space"
+                  type="bool"/>                  
+      <preference id ="ctrlTpref"
+                  name="swp.ctrl.t"
+                  type="string"/>                  
+      <preference id ="ctrlMpref"
+                  name="swp.ctrl.m"
+                  type="string"/>                  
     </preferences>
 
     <tabbox>
@@ -439,7 +448,8 @@
     </preferences>
     <tabbox flex="1">
 	    <tabs class="tabs-top">
-	     <tab label="Editing parameters"       selected="1" />
+	      <tab label="Editing parameters"       selected="1" />
+	      <tab label="Math"/>
 	    </tabs>
 
       <tabpanels>
@@ -450,6 +460,7 @@
             <hbox>
               <label value="Enable realtime spell checking"/><checkbox preference="enablerealtimespell"/>
             </hbox>
+	
           </groupbox>
           <groupbox>
             <caption>Source ediing</caption>
@@ -471,6 +482,29 @@
             </grid>
           </groupbox>
         </tabpanel>
+				<tabpanel id="prefMathEdit" orient="vertical">
+					<separator flex="1"/>
+					<groupbox orient="vertical">
+            <caption>Spacebar</caption>
+            <checkbox id="doublespace" preference="doublespacepref" label="After space switches to math"/>
+          </groupbox>
+					<hbox>
+						<groupbox>
+							<caption>Ctrl + T</caption>
+							<radiogroup preference="ctrlTpref">
+								<radio label="Toggle math/text" value="toggle"/>
+								<radio label="Force text" value="text"/>
+							</radiogroup>
+						</groupbox> 
+						<groupbox>
+							<caption>Ctrl + M</caption>
+							<radiogroup preference="ctrlMpref">
+								<radio label="Toggle math/text" value="toggle"/>
+								<radio label="Force math" value="math"/>
+							</radiogroup>
+						</groupbox>
+					</hbox>
+				</tabpanel>          
       </tabpanels>
     </tabbox>
   </prefpane>
