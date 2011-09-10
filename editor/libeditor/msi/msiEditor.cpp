@@ -1,5 +1,6 @@
 // Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
 #include "nsCOMPtr.h"
+#include "nsISupportsPrimitives.h"
 #include "msiEditor.h"
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLCaret.h"
@@ -2695,6 +2696,19 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //
 //  If we return STATE_SUCCESS, the node and offset of the last checked character have to be returned.
 
+PRBool TwoSpacesSwitchesToMath()
+{
+	nsresult rv;
+	PRBool thePref;
+	nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+
+  if (NS_SUCCEEDED(rv) && prefBranch) {
+		rv = prefBranch->GetBoolPref("swp.space.after.space", &thePref);
+		return thePref;
+  }
+	return PR_FALSE;
+}
 
 nsresult 
 msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, 
@@ -2727,10 +2741,13 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       // check for double spaces in text mode; possible to convert to math
 			if (!inMath && (prevChar == ' ') && (theText[offset] == 160))
 			{
-				*nodeOut = nodeIn;
-				offsetOut = offset;
-				_result = msiIAutosub::STATE_SPECIAL; 
-				return NS_OK;
+				if (TwoSpacesSwitchesToMath())
+				{		
+					*nodeOut = nodeIn;
+					offsetOut = offset;
+					_result = msiIAutosub::STATE_SPECIAL; 
+					return NS_OK;
+				}
 			}
 			
 			prevChar = theText[offset];
