@@ -220,7 +220,7 @@
 
 
 <!-- Button section -->
-  <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtext" tooltiptext="&mathtextButton.tooltip;"
+  <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtextButton" tooltiptext="&mathtextButton.tooltip;"
     label="&mathtextButton.label;">
     <observes element="cmd_MSImathtext" type="checkbox" attribute="isMath" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSImathtext')"/>
   </toolbarbutton>
