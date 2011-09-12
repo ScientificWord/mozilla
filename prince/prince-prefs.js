@@ -146,6 +146,10 @@ pref("swp.MuPAD.log_mathml_received", true);
 pref("swp.MuPAD.log_engine_sent", true);
 pref("swp.MuPAD.log_engine_received", true);
 
+pref("swp.ctrl.t","text"); // other value is'toggle'
+pref("swp.ctrl.m","math"); // other value is 'toggle'
+pref("swp.space.after.space",true); // means space space -> math
+
 pref("swp.zoom_factor",            "1.0");
 pref("swp.graph.XTickCount", "0");
 pref("swp.graph.YTickCount", "0");

@@ -1,5 +1,6 @@
 // Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
 #include "nsCOMPtr.h"
+#include "nsISupportsPrimitives.h"
 #include "msiEditor.h"
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLCaret.h"
@@ -52,7 +53,6 @@
 static PRInt32 instanceCounter = 0;
 nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
 nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
-
 
 
 
@@ -2696,6 +2696,19 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //
 //  If we return STATE_SUCCESS, the node and offset of the last checked character have to be returned.
 
+PRBool TwoSpacesSwitchesToMath()
+{
+	nsresult rv;
+	PRBool thePref;
+	nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+
+  if (NS_SUCCEEDED(rv) && prefBranch) {
+		rv = prefBranch->GetBoolPref("swp.space.after.space", &thePref);
+		return thePref;
+  }
+	return PR_FALSE;
+}
 
 nsresult 
 msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, 
@@ -2719,13 +2732,25 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     if (offset > theText.Length()) offset = theText.Length();
     while ((PRInt32)(--offset) >= 0)
     {
-      while (prevChar == ' ' && theText[offset] == ' ') --offset;
+//      while (prevChar == ' ' && theText[offset] == ' ') --offset;
       nodeIn->GetParentNode(getter_AddRefs(pnode));
       rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
         pnode = nsnull;
       fCanEndHere = PR_TRUE;
       if (tag.EqualsLiteral("mi")) fCanEndHere = (offset==0);
-      prevChar = theText[offset];
+      // check for double spaces in text mode; possible to convert to math
+			if (!inMath && (prevChar == ' ') && (theText[offset] == 160))
+			{
+				if (TwoSpacesSwitchesToMath())
+				{		
+					*nodeOut = nodeIn;
+					offsetOut = offset;
+					_result = msiIAutosub::STATE_SPECIAL; 
+					return NS_OK;
+				}
+			}
+			
+			prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
       {
@@ -2856,7 +2881,16 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
-    m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
+    if (lookupResult == msiIAutosub::STATE_SPECIAL)
+		{
+			ctx =	msiIAutosub::CONTEXT_TEXTONLY; 
+			action = msiIAutosub::ACTION_EXECUTE;
+			data = NS_LITERAL_STRING("inserttext(' '); msiGoDoCommand('cmd_MSImathtext')"); 
+			pasteContext = NS_LITERAL_STRING(""); 
+			pasteInfo = NS_LITERAL_STRING("");
+		}
+		else
+			m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
     if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
