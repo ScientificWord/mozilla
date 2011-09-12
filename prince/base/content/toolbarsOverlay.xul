@@ -287,10 +287,10 @@
     label="&sumButton.label;" onclick="insertOperator('&#x2211;', 'auto', 'auto');"/>
 
   <toolbarbutton id="integralButton" class="toolbarbutton-1" tooltiptext="&integralButton.tooltip;"
-    label="&integralButton.label;" onclick="insertOperator('&#x222B;', 'auto', 'auto');"/>
+    label="&integralButton.label;" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
 
   <toolbarbutton id="unitnameButton" class="toolbarbutton-1" tooltiptext="&unitnameButton.tooltip;"
-    label="&unitnameButton.label;" onclick="msiGoDoCommand('cmd_MSIunitsCommand')"/>
+    label="&unitnameButton.label;" oncommand="msiGoDoCommand('cmd_MSIunitsCommand')"/>
 
   <toolbarbutton id="displayButton" class="toolbarbutton-1" tooltiptext="&displayButton.tooltip;"
     label="&displayButton.label;" observes="cmd_MSIdisplayMathCmd"/>
