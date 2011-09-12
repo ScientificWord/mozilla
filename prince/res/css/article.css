@@ -461,6 +461,10 @@ Huge {
   font-size: 183%
 }
 
+underline {
+  text-decoration: underline;
+}
+
 /*
 theorem {
   display: block;
