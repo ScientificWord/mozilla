@@ -6,7 +6,6 @@
  
   <binding id="inputFields">
     <handlers>
-#include ../input-fields-base.inc
       <handler event="keypress" key="a" modifiers="accel" command="cmd_selectAll"/>
       <handler event="keypress" key="a" modifiers="control" command="cmd_beginLine"/>
       <handler event="keypress" key="b" modifiers="control" command="cmd_charPrevious"/>
@@ -54,7 +53,6 @@
 
   <binding id="textAreas">
     <handlers>
-#include ../textareas-base.inc
       <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_deleteWordBackward"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="alt" command="cmd_deleteWordForward" /> 
       <handler event="keypress" keycode="VK_DOWN" modifiers="accel" command="cmd_moveBottom"/>
@@ -96,7 +94,6 @@
 
   <binding id="browser">
     <handlers>
-#include ../browser-base.inc
       <handler event="keypress" keycode="VK_DOWN" modifiers="accel" command="cmd_scrollBottom"/>      
       <handler event="keypress" keycode="VK_DOWN" modifiers="shift" command="cmd_selectLineNext" />
       <handler event="keypress" keycode="VK_END"  command="cmd_scrollBottom" /> 
@@ -116,7 +113,6 @@
 
   <binding id="editor">
     <handlers>
-#include ../editor-base.inc
       <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_deleteWordBackward"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="alt" command="cmd_deleteWordForward" /> 
       <handler event="keypress" keycode="VK_DELETE" modifiers="shift" command="cmd_deleteCharForward" /> 

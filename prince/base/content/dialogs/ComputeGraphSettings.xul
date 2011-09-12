@@ -215,9 +215,8 @@
             <commandset id="composerTableMenuItems"/>
           </commandset>
           <commandset id="MSImathMenuCommands"/>
-          <keyset id="editorKeys">
-            <keyset id="MSIKeySet"/>
-          </keyset>
+          
+#include ../keysfordialogs.inc
 
           <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
             <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="menutooltip">
