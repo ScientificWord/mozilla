@@ -62,10 +62,8 @@
   </commandset>
 
   <commandset id="MSImathMenuCommands"/>
-  <keyset id="editorKeys">
-    <keyset id="MSIKeySet"/>
-    <keyset id="MSIEditorKeys"/>
-  </keyset>
+
+#include ../keysfordialogs.inc
 
   <groupbox>
     <caption label="&leadIn.label;" id="nameTypeLabel"/>
