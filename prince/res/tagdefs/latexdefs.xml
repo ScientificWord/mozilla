@@ -73,6 +73,7 @@
 				<tag nm="sup"><description>Text superscript</description></tag>
 				<tag nm="tiny"><description>Tiny</description></tag>
 				<tag nm="typewriter"><description>Typewriter font</description></tag>
+				<tag nm="underline"><description>Underline</description></tag>
 				<tag nm="upper"><description>Upper case</description></tag>
 			</tags>
 		</tagclass>
