@@ -77,11 +77,7 @@
   </commandset>
   <commandset id="MSImathMenuCommands"/>
   
-  <keyset id="editorKeys">
-    <keyset id="tasksKeys"/>
-    <keyset id="MSIKeySet"/>
-    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
-  </keyset>
+#include ../keysfordialogs.inc
 
   <keyset>
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
