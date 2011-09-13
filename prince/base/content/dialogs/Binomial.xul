@@ -37,7 +37,7 @@
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
     <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
     <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
-    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+    <key id="sw.alt.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
   </keyset>
 
 
