@@ -19,7 +19,8 @@
   <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
   <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
 
-	
+#include editorkeys.inc
+
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
       <menuitem id="menu_newDocument" label="&newDocument.label;" 
@@ -775,18 +776,7 @@
     <command id="cmd_tagkeyassignments" oncommand="callFunctionKeyDialog();"/>
   </commandset>
 
-  <keyset id="tasksKeys">
-    <key id="key_inspectPage" key="i" modifiers="accel,shift" command="Tasks:InspectPage"/>
-  </keyset>
-  <keyset id="MSIEditorKeys">
-	  <key id="MSIBoldKey" modifiers="accel" key="b" command="msiDoStatefulCommand('cmd_texttag','bold);"/>    
-	  <key id="MSIUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand('cmd_texttag','underline);"/>    
-		<key id="MSIIntegralKey" modifiers="accel" key="i" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>    
-		<key id="MSIReplaceKey" modifiers="accel" key="w" /> <!-- replace again /-->    
-		<key id="MSIThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>    
-	  <key id="MSICloseFileKey" modifiers="accel" key="VK_F4" observes="cmd_close"/>    
-	</keyset>
-  
+    
 #ifdef DEBUG
   <menu id="debugMenu" label="&debugMenu.label;" accesskey="&debugMenu.accesskey;">
   <menupopup id="menu_debugPopup">
