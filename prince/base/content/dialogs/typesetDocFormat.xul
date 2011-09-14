@@ -4,9 +4,9 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/typesetDocFormat.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 
+<?xml-stylesheet href="chrome://prince/skin/typesetDocFormat.css" type="text/css"?>
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
@@ -119,7 +119,8 @@
                   <label observes="reformatok" value="Page Orientation"/>
                   <menulist observes="reformatok" id="pgorient" minwidth="6em">
                     <menupopup style="width: 9em" >
-                      <menuitem value="port" label="*Portrait" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="port" label="Portrait"/>
                       <menuitem value="landscape" label="Landscape"/>
                     </menupopup>
                   </menulist>
@@ -128,7 +129,8 @@
                   <label observes="reformatok" value="Paper Size"/>
                   <menulist observes="reformatok" id="papersize">
                     <menupopup style="width: 9em" >
-                      <menuitem value="letter" label="*8.5x11 in." def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="letter" label="8.5x11 in."/>
                       <menuitem value="a4paper" label="A4"/>
                       <menuitem value="a5paper" label="A5"/>
                       <menuitem value="b5paper" label="B5"/>
@@ -141,7 +143,8 @@
                   <label observes="reformatok" value="Sides"/>
                   <menulist observes="reformatok" id="sides">
                     <menupopup style="width: 9em" >
-                      <menuitem value="oneside" label="*One" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="oneside" label="One"/>
                       <menuitem value="twoside" label="Two"/>
                     </menupopup>
                   </menulist>
@@ -150,7 +153,8 @@
                   <label observes="reformatok" value="Quality"/>
                   <menulist observes="reformatok" id="qual" style="width: 9em" >
                     <menupopup>
-                      <menuitem value="final" label="*Final" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="final" label="Final"/>
                       <menuitem value="draft" label="Draft"/>
                     </menupopup>
                   </menulist>
@@ -161,7 +165,8 @@
                   <label observes="reformatok" value="Columns"/>
                   <menulist observes="reformatok" id="columns">
                     <menupopup style="width: 9em" oncommand="broadcastColCount();" >
-                      <menuitem value="onecolumn" label="*One" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="onecolumn" label="One"/>
                       <menuitem value="twocolumn" label="Two"/>
                     </menupopup>
                   </menulist>
@@ -170,7 +175,8 @@
                   <label observes="reformatok" value="Body Text Font Size"/>
                   <menulist observes="reformatok" id="textsize" >
                     <menupopup style="width: 9em" >
-                      <menuitem value="10pt" label="*10 pt" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="10pt" label="10 pt"/>
                       <menuitem value="11pt" label="11 pt"/>
                       <menuitem value="12pt" label="12 pt"/>
                     </menupopup>
@@ -194,7 +200,8 @@
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" id="babelOrPolygloss">
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
-                      <menuitem value="USenglish" label="*US English" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="USenglish" label="US English"/>
                       <menuitem value="UKenglish" label="UK English"/>
                       <menuitem value="acadian" label="Acadian"/>
                       <menuitem value="albanian" label="Albanian"/>
@@ -274,7 +281,7 @@
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" id="secondLanguage">
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
-                      <menuitem value="none" label="*None" def="1"/>
+                      <menuitem value="none" label="None" def="1"/>
                       <menuitem value="USenglish" label="US English"/>
                       <menuitem value="UKenglish" label="UK English"/>
                       <menuitem value="acadian" label="Acadian"/>
@@ -370,7 +377,8 @@
                   <label observes="reformatok" value="Eqn Number Position"/>
                   <menulist observes="reformatok" id="eqnnopos">
                     <menupopup style="width: 9em" >
-                      <menuitem value="reqno" label="*On the right" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="reqno" label="On the right"/>
                       <menuitem value="leqno" label="On the left"/>
                     </menupopup>
                   </menulist>
@@ -379,7 +387,8 @@
                   <label observes="reformatok" value="Displayed Eqn Position"/>
                   <menulist observes="reformatok" id="eqnpos">
                     <menupopup style="width: 9em" >
-                      <menuitem value="ceqn" label="*Centered" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="ceqn" label="Centered"/>
                       <menuitem value="fleqn" label="Flush left"/>
                     </menupopup>
                   </menulist>
@@ -407,7 +416,8 @@
                   <label observes="reformatok" value="Title Page"/>
                   <menulist observes="reformatok" id="titlepage">
                     <menupopup style="width: 9em" >
-                      <menuitem value="notitlepage" label="No" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="notitlepage" label="No"/>
                       <menuitem value="titlepage" label="Yes"/>
                     </menupopup>
                   </menulist>
@@ -416,6 +426,7 @@
                   <label observes="reformatok" value="Table of Contents"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
+                      <menuitem value="def" label="-default-" def="1"/>
                       <menuitem value="document" label="For document"/>
                       <menuitem value="chapter" label="For chapter"/>
                       <menuitem value="none" label="None"/>
@@ -426,6 +437,7 @@
                   <label observes="reformatok" value="List of Figures"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
+                      <menuitem value="def" label="-default-" def="1"/>
                       <menuitem value="document" label="For document"/>
                       <menuitem value="chapter" label="For chapter"/>
                       <menuitem value="none" label="None"/>
@@ -436,6 +448,7 @@
                   <label observes="reformatok" value="List of Tables"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
+                      <menuitem value="def" label="-default-" def="1"/>
                       <menuitem value="document" label="For document"/>
                       <menuitem value="chapter" label="For chapter"/>
                       <menuitem value="none" label="None"/>
@@ -448,6 +461,7 @@
                   <label observes="reformatok" value="Footnotes"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
+                      <menuitem value="def" label="-default-" def="1"/>
                       <menuitem value="foot" label="Footnotes"/>
                       <menuitem value="end" label="Endnotes"/>
                     </menupopup>
@@ -457,7 +471,8 @@
                   <label observes="reformatok" value="Bibliography Style"/>
                   <menulist observes="reformatok" id="bibstyle">
                     <menupopup style="width: 9em" >
-                      <menuitem value="compbib" label="*Compressed" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="compbib" label="Compressed"/>
                       <menuitem value="openbib" label="Open"/>
                     </menupopup>
                   </menulist>
@@ -484,7 +499,8 @@
                   <label observes="reformatok" value="Show Keys"/>
                   <menulist observes="reformatok" id="showkeys" >
                     <menupopup style="width: 9em" >
-                      <menuitem value="no" label="*No" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="no" label="No"/>
                       <menuitem value="yes" label="Yes"/>
                     </menupopup>
                   </menulist>
@@ -493,6 +509,7 @@
                   <label observes="reformatok" value="Show Labels"/>
                   <menulist  observes="reformatok" id="showlabels">
                     <menupopup style="width: 9em" >
+                      <menuitem value="def" label="-default-" def="1"/>
                       <menuitem value="yes" label="Yes"/>
                       <menuitem value="no" label="No"/>
                     </menupopup>
@@ -502,7 +519,8 @@
                   <label observes="reformatok" value="Show Index Entries"/>
                   <menulist observes="reformatok" id="showidx">
                     <menupopup style="width: 9em" >
-                      <menuitem value="no" label="*No" def="1"/>
+                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem value="no" label="No"/>
                       <menuitem value="yes" label="Yes"/>
                     </menupopup>
                   </menulist>
@@ -511,6 +529,7 @@
                   <label value="Line Spacing"  observes="reformatok"/>
                   <menulist  observes="reformatok">
                     <menupopup style="width: 9em" id="linespacing">
+                      <menuitem value="def" label="-default-" def="1"/>
                       <menuitem value="one" label="One"/>
                       <menuitem value="sesqui" label="One and a half"/>
                       <menuitem value="two" label="Two"/>
