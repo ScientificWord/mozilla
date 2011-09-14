@@ -26,6 +26,7 @@ interface msiIAutosub : nsISupports
   const unsigned short STATE_MATCHESSOFAR = 2;
   const unsigned short STATE_SUCCESS = 3;
   const unsigned short STATE_FAIL = 4;
+  const unsigned short STATE_SPECIAL = 5;
 
   /*
    * Initialize the lookup table by reading an XML file

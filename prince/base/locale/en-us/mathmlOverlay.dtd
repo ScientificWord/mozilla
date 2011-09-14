@@ -6,6 +6,7 @@
 <!ENTITY MSIinlineMathCmd.label "Math">
 <!ENTITY MSIinlineMathCmd.accesskey "m">
 <!ENTITY MSIinlineMathCmd.keybinding "m">      
+<!ENTITY MSIinlineTextCmd.keybinding "t">      
 <!ENTITY MSIdisplayCmd.label "Display">
 <!ENTITY MSIdisplayCmd.accesskey "d">
 <!ENTITY MSIdisplayCmd.keybinding "d">

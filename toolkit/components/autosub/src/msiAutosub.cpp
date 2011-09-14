@@ -104,6 +104,7 @@ void reverse( nsString& str )
 static NS_DEFINE_CID( kXMLDocumentCID, NS_XMLDOCUMENT_CID );
 static NS_DEFINE_CID( kXMLHttpRequestCID, NS_XMLHTTPREQUEST_CID );
 
+
 /* void initialize (in string fileURI); */
 NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
 {
