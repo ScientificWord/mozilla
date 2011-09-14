@@ -193,42 +193,27 @@
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 
-<!-- LOWERCASE GREEK -->
-	  <tabpanel id="symbol_lcGreek" autostretch="never" align="baseline"> 
-        <toolbarbutton id="symbolalpha" label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
-            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "symbolbeta" />
-        <toolbarbutton id ="symbolgamma" />
-        <toolbarbutton id ="symboldelta" />
-        <toolbarbutton id ="symbolepsilon" />
-        <toolbarbutton id ="symbolvarepsilon" />
-        <toolbarbutton id ="symbolzeta" />
-        <toolbarbutton id ="symboleta" />
-        <toolbarbutton id ="symboltheta" />
-        <toolbarbutton id ="symbolvartheta" />
-        <toolbarbutton id ="symboliota" />
-        <toolbarbutton id ="symbolkappa" />
-        <toolbarbutton id ="symbollambda" />
-        <toolbarbutton id ="symbolmu" />
-        <toolbarbutton id ="symbolnu" />
-        <toolbarbutton id ="symbolxi" />
-        <toolbarbutton id ="symbolpi" />
-        <toolbarbutton id ="symbolvarpi" />
-        <toolbarbutton id ="symbolrho" />
-        <toolbarbutton id ="symbolsigma" />
-        <toolbarbutton id ="symbolvarsigma" />
-        <toolbarbutton id ="symboltau" />
-        <toolbarbutton id ="symbolupsilon" />
-        <toolbarbutton id ="symbolphi" />
-        <toolbarbutton id ="symbolvarphi" />
-        <toolbarbutton id ="symboltextchi" />
-        <toolbarbutton id ="symbolpsi" />
-        <toolbarbutton id ="symbolomega" />
-        <toolbarbutton id ="symbolvarkappa" />
-        <toolbarbutton id ="symbolvarrho" />
-        <toolbarbutton id ="symbolbackepsilon" />
-        <toolbarbutton id ="symbolomicron" />
-        <toolbarbutton id ="symbolstigma" />
+<!-- LOWERCASE GREEK --> <tabpanel id="symbol_lcGreek"
+autostretch="never" align="baseline">  <toolbarbutton id="symbolalpha"
+label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
+observes="cmd_MSIsymbolCmd"/> <toolbarbutton id = "symbolbeta" />
+<toolbarbutton id ="symbolgamma" /> <toolbarbutton id ="symboldelta" />
+<toolbarbutton id ="symbolepsilon" /> <toolbarbutton id
+="symbolvarepsilon" /> <toolbarbutton id ="symbolzeta" /> <toolbarbutton
+id ="symboleta" /> <toolbarbutton id ="symboltheta" /> <toolbarbutton id
+="symbolvartheta" /> <toolbarbutton id ="symboliota" /> <toolbarbutton
+id ="symbolkappa" /> <toolbarbutton id ="symbollambda" /> <toolbarbutton
+id ="symbolmu" /> <toolbarbutton id ="symbolnu" /> <toolbarbutton id
+="symbolxi" /> <toolbarbutton id ="symbolpi" /> <toolbarbutton id
+="symbolvarpi" /> <toolbarbutton id ="symbolrho" /> <toolbarbutton id
+="symbolsigma" /> <toolbarbutton id ="symbolvarsigma" /> <toolbarbutton
+id ="symboltau" /> <toolbarbutton id ="symbolupsilon" /> <toolbarbutton
+id ="symbolphi" /> <toolbarbutton id ="symbolvarphi" /> <toolbarbutton
+id ="symboltextchi" /> <toolbarbutton id ="symbolpsi" /> <toolbarbutton
+id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
+<toolbarbutton id ="symbolvarrho" /> <toolbarbutton id
+="symbolbackepsilon" /> <toolbarbutton id ="symbolomicron" />
+<toolbarbutton id ="symbolstigma" />
 
      </tabpanel>
      
@@ -1419,22 +1404,18 @@
     		<toolbarbutton id ="symbolsupsetneqq" label="&#x2ACC;" tooltiptext="&symbolsupsetneqq.tooltip;"              msivalue="&#x2ACC;"
            observes="cmd_MSIsymbolCmd"/> 
  
-<toolbarbutton id ="symbolvarsubsetneqq" label="&#xE016;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xE016;"
-           observes="cmd_MSIsymbolCmd"/> 
-           
+          
 
-    <!--      <toolbarbutton id ="symbolvarsubsetneqq"  label="&#x228A;&#xFE00;"  tooltiptext="&symbolvarsubsetneqq.tooltip;"      msivalue="&#x228A;&#xFE00;"
-           observes="cmd_MSIsymbolCmd"/>-->
-
-           <!--<label>
+      <toolbarbutton id ="symbolvarsubsetneqq" label="&varsubsetneqq;"  tooltiptext="&symbolvarsubsetneqq.tooltip;"  msivalue="&varsubsetneqq;"
+           observes="cmd_MSIsymbolCmd"/>
+   <!--        <label>
            <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"
             xmlns:xsi="http://www.w3.org//2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.w3.org/1998/Math/MathML
             http://www.w3.org/Math/XMLSchema/mathml3/mathml3.xsd"><mi>&#x0228A;&#x0FE00;</mi></mml:math></label>
-           </toolbarbutton>
+           </toolbarbutton>-->
         
-         -->
-   
+        
         <toolbarbutton id ="symbolvarsupsetneqq" label="&#x2ACC;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#x2ACC;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolsubsetneq" label="&#x228A;" tooltiptext="&symbolsubsetneq.tooltip;"              msivalue="&#x228A;"
