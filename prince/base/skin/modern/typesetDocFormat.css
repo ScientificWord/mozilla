@@ -107,3 +107,8 @@ menulist[value="def"] > hbox > label {
 msibutton[disabled="true"] label {
   color: gray;
 }
+
+
+textbox [disabled] {
+	color: gray;
+}

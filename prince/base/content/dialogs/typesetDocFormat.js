@@ -28,7 +28,29 @@ var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
                      useUni: false,//currently same as useOTF
                      fontsOK: false };// OK to choose fonts
 
-
+function enable(checkbox)
+{
+	var control = document.getElementById(checkbox.getAttribute("control"));
+	if (!control) return;
+	if (checkbox.checked)
+	{
+	  control.removeAttribute("disabled");
+	  if (control.id != "reformatok")
+		{
+	    control.setAttribute("type", "number");
+	    control.setAttribute("value", control.getAttribute("default"));
+		}
+	}
+	else
+	{
+	  control.setAttribute("disabled", "true");
+	  if (control.id != "reformatok")
+		{
+	    control.removeAttribute("type");
+			control.setAttribute("value", "-default-");
+		}
+	}
+}
 
 function InitializeUnits()
 {
