@@ -10072,7 +10072,10 @@ var msiCommandUpdater = {
 //  }  
 };
 // Shim for compatibility with existing code. 
-function msiGoDoCommand(command, editorElement) { msiCommandUpdater.doCommand(command, editorElement); }
+function msiGoDoCommand(command, editorElement) 
+{ 
+	msiCommandUpdater.doCommand(command, editorElement); 
+}
 function msiGoUpdateCommand(command, editorElement) { msiCommandUpdater.updateCommand(command, editorElement); }
 function msiGoSetCommandEnabled(command, enabled, editorElement) { msiCommandUpdater.enableCommand(command, enabled, editorElement); }
 function msiGoSetMenuValue(command, labelAttribute, editorElement) { msiCommandUpdater.setMenuValue(command, labelAttribute, editorElement); }

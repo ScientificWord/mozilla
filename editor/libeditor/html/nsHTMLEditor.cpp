@@ -6552,6 +6552,15 @@ NS_IMETHODIMP nsHTMLEditor::RemoveStructureAboveSelection(nsISelection * selecti
   return res;
 }
 
+NS_IMETHODIMP nsHTMLEditor::RemoveEnvAboveSelection(nsISelection * selection)
+{
+  PRBool cancel, handled;
+  nsTextRulesInfo ruleInfo(nsTextEditRules::kRemoveEnv);
+//  ruleInfo.namespaceAtom = namespaceAtom;
+  nsresult res = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
+  return res;
+}
+
 /* nsIDOMNodeList NodesFromSelection (in nsISelection selection); */
 NS_IMETHODIMP nsHTMLEditor::MathToText(nsISelection *selection)
 {

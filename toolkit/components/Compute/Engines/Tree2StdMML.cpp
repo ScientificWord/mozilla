@@ -334,7 +334,7 @@ void Tree2StdMML::LookupMOInfo(MNODE* mml_node)
   U32 ID, subID;
   const char* p_data;
 
-  if (mml_entities->GetRecordFromName("MATH", entity, strlen(entity), ID, subID, &p_data)) {
+  if (mml_entities && entity && mml_entities->GetRecordFromName("MATH", entity, strlen(entity), ID, subID, &p_data)) {
     if (p_data && *p_data) {
       if (strstr(p_data,"multiform,")) {
         set_form = true;
@@ -1579,13 +1579,13 @@ bool Tree2StdMML::IsEmptyMO(MNODE* mml_node)
   if (mml_node->p_chdata && *mml_node->p_chdata)
     return false;
 
-  ATTRIB_REC* arover = mml_node->attrib_list;
-  while (arover) {
-    if (StringEqual(arover->zattr_nom, "fence"))
-      if (StringEqual("true", arover->zattr_val))
-        return false;
-    arover = arover->GetNext();
-  }
+  //ATTRIB_REC* arover = mml_node->attrib_list;
+  //while (arover) {
+  //  if (StringEqual(arover->zattr_nom, "fence"))
+  //    if (StringEqual("true", arover->zattr_val))
+  //      return false;
+  //  arover = arover->GetNext();
+  //}
   return true;
 }
 
@@ -1709,6 +1709,9 @@ int Tree2StdMML::GetIntegralCount(MNODE* mml_node)
     return 0;
 
   //TODO study Unicode list (this list from SWP)
+  if (! (mml_node->p_chdata)) 
+    return 0;
+
   const char *ptr = strstr(mml_node->p_chdata, "&#x");
   if (ptr) {
     U32 unicode = ASCII2U32(ptr + 3, 16);
