@@ -47,7 +47,8 @@ static NS_DEFINE_CID(kAutoCompleteStringCID, NS_IAUTOCOMPLETESEARCHSTRINGARRAY_I
 
 msiTagListManager::msiTagListManager()
 :  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull), pContainsList(nsnull),
-    mdefaultParagraph(NS_LITERAL_STRING("")), mclearTextTag(NS_LITERAL_STRING("")), mclearStructTag(NS_LITERAL_STRING("")) 
+    mdefaultParagraph(NS_LITERAL_STRING("")), mclearTextTag(NS_LITERAL_STRING("")),
+    mclearStructTag(NS_LITERAL_STRING("")), mclearEnvTag(NS_LITERAL_STRING("")) 
 {
   nsresult rv;
   printf("creating tag list manager\n");
@@ -248,6 +249,7 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   nsString strDefPara;
   nsString strClearTextTag;
   nsString strClearSectionTag;
+  nsString strClearEnvTag;
   rv = docTagInfo->GetElementById(NS_LITERAL_STRING("defaultparagraph"), getter_AddRefs(nodeElement));
   if (rv == NS_OK && nodeElement)
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strDefPara);
@@ -260,6 +262,10 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   if (rv == NS_OK && nodeElement)
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearSectionTag);
   if (rv==NS_OK) mclearStructTag.key.Assign(strClearSectionTag);
+  rv = docTagInfo->GetElementById(NS_LITERAL_STRING("clearenvironmenttag"), getter_AddRefs(nodeElement));
+  if (rv == NS_OK && nodeElement)
+    rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearEnvTag);
+  if (rv==NS_OK) mclearEnvTag.key.Assign(strClearEnvTag);
   // build the name space list
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsString strNameSpace;
@@ -1159,6 +1165,13 @@ NS_IMETHODIMP msiTagListManager::GetClearStructTag(nsIAtom **atomNamespace, nsAS
 {
   _retval = mclearStructTag.localName();
   *atomNamespace = NS_NewAtom(mclearStructTag.prefix());
+  return NS_OK;
+}
+
+NS_IMETHODIMP msiTagListManager::GetClearEnvTag(nsIAtom **atomNamespace, nsAString & _retval)
+{
+  _retval = mclearEnvTag.localName();
+  *atomNamespace = NS_NewAtom(mclearEnvTag.prefix());
   return NS_OK;
 }
 
