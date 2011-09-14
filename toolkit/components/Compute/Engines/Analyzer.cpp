@@ -551,7 +551,11 @@ void AnalyzeMI(MNODE* mml_mi_node,
   zmsi_class[0] = 0;
   GetCurrAttribValue(mml_mi_node, false, "msiclass", zmsi_class, 256);
 
-  if (StringEqual(zclass, "msi_unit")) {
+  char zmsi_unit[256];
+  zmsi_unit[0] = 0;
+  GetCurrAttribValue(mml_mi_node, false, "msiunit", zmsi_unit, 256);
+
+  if (StringEqual(zmsi_unit, "true")) {
 
     SEMANTICS_NODE* s_target = snode;
     // Semantically, I'm treating units as "factors" joined to the expression
@@ -3139,7 +3143,7 @@ void OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
             }
 
             integrand_starter = integrand_ender;
-            while (integrand_starter->prev) {
+            while (integrand_starter && integrand_starter->prev) {
               integrand_starter = integrand_starter->prev;
               if (!nested_operand) {
                 if (integrand_starter == big_op_node) {
@@ -3152,20 +3156,26 @@ void OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
           }
 
           // isolate the integrand
-          MNODE *save = integrand_ender->next;
-          integrand_ender->next = NULL;
-
           BUCKET_REC *a_rec = MakeBucketRec(MB_OPERAND, NULL);
           AppendBucketRecord(bigop_snode->bucket_list, a_rec);
-          SEMANTICS_NODE* contents = GetSemanticsList(integrand_starter, a_rec, pAnalyzer);
-          a_rec->first_child = contents;
-          contents->parent = a_rec;
+          SEMANTICS_NODE* node;
 
+          if (integrand_ender){
+            MNODE *save = integrand_ender->next;
+            integrand_ender->next = NULL;            
+            node = GetSemanticsList(integrand_starter, a_rec, pAnalyzer);
+            integrand_ender->next = save;
+         } else {
+            // Have no integrand: \int dx
+            node = CreateSemanticsNode(SEM_TYP_NUMBER);
+            node -> contents = DuplicateString("1");
+         }
+         a_rec->first_child = node;
+         node->parent = a_rec;
 
+         if (frac_operand)
+            Patchdx(node);
 
-          integrand_ender->next = save;
-          if (frac_operand)
-            Patchdx(contents);
         } else {
           // Here, we don't have an integand ender - there's no "dx"
           // We still generate the operand - engine will do something without MB_INTEG_VAR
