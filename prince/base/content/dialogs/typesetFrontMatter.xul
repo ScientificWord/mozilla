@@ -87,14 +87,7 @@
 	<!-- commandset id="MSItypesetMenuCommands"/ -->
 	<commandset id="MSItypesetInsertMenuCommands"/>
   
-  <keyset id="editorKeys">
-    <keyset id="tasksKeys"/>
-    <keyset id="MSIKeySet"/>
-    <!-- key keycode="VK_TAB" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/ -->
-  </keyset>
+#include ../keysfordialogs.inc
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
     
