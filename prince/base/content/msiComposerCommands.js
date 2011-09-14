@@ -683,6 +683,10 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     {
       msiGoDoCommand('cmd_removestruct');
     }
+    else if (commandID=="cmd_envtag" && editor && editor.tagListManager && editor.tagListManager.getClearEnvTag(ns) == newState)
+    {
+      msiGoDoCommand('cmd_removeenv');
+    }
     else
       msiGoDoCommandParams(commandID, cmdParams, editorElement);
     // BBM: temporary hack!
@@ -4776,8 +4780,7 @@ var msiInsertCharsCommand =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement();
-    var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent",
-                                                                                                     editorElement, "cmd_insertChars", this);
+    var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent", editorElement, "cmd_insertChars", this);
 //    msiEditorFindOrCreateInsertCharWindow(editorElement);
   }
 };
@@ -4795,8 +4798,7 @@ var msiReviseCharsCommand =
     if (charReviseData != null && editorElement != null)
     {
 //      AlertWithTitle("msiComposerCommands.js", "In msiReviseCharsCommand, trying to revise a character, dialog not yet implemented.");
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent",
-                                                     editorElement, "cmd_reviseChars", this, charData);
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent", editorElement, "cmd_reviseChars", this, charData);
     }
     editorElement.focus();
   },
@@ -5078,12 +5080,36 @@ var msiReviseHorizontalSpacesCommand =
   doCommand: function(aCommand, dummy)  {}
 };
 
+function msiInsertStockSpace(spacename)
+{
+	var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  if (spacename === "normalSpace") 
+	{
+		editor.insertText(" ");
+		return;
+  }
+  var node;
+  try {
+    node = editor.document.createElement('hspace');
+  }
+  catch (e) {
+    dump("Unable to create node in msiInsertHorizontalSpace: "+e.message+"\n");
+  }
+  node.setAttribute('type',spacename);
+  var dimsStr = msiSpaceUtils.getHSpaceDims(spacename);
+  if (dimsStr)
+    node.setAttribute('dim',dimsStr);	
+  contentStr = msiSpaceUtils.getHSpaceDisplayableContent(spacename);
+  if (contentStr)
+    node.textContent=contentStr;
+  editor.insertElementAtSelection(node,true);
+}
+
 function msiInsertHorizontalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
-  var parentNode = editor.selection.anchorNode;
   var dimsStr, contentStr;
-  var insertPos = editor.selection.anchorOffset;
   if (dialogData.spaceType == "normalSpace") editor.insertText(" ");
 //  var dimensionsFromSpaceType = 
 //  {
@@ -5117,7 +5143,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 //  };
   
  // editor.deleteSelection(1);
-  var parent = editor.selection.focusNode;  //this repeats code just above the comment -- BBM
+  var parent = editor.selection.focusNode;  
   var offset = editor.selection.focusOffset;
   try {
     var node = editor.document.createElement('hspace');

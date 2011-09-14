@@ -937,7 +937,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
   nsCOMPtr<nsIDOMNode> mathnode;
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
-  if (!inMath) return NS_OK;
+//  if (!inMath) return NS_OK;
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFence");
   if (editor && selection && node)
   {
