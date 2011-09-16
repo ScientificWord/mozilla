@@ -193,8 +193,15 @@ NS_IMETHODIMP msiSimpleComputeEngine2::PartialFractions(const PRUnichar *expr, c
 /* void sort (in wstring expr, in wstring var, [retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::Sort(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
 { 
-  return CommandWithArgs( expr,result,CCID_Polynomial_Sort, PID_needvarresult, var, PID_last );
+  return CommandWithArgs( expr, result, CCID_Polynomial_Sort, PID_needvarresult, var, PID_last );
 }
+
+/* void roots(in wstring expr, in wstring vars, [retval] out wstring result); */
+NS_IMETHODIMP msiSimpleComputeEngine2::Roots(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
+{
+  return CommandWithArgs( expr, result, CCID_Polynomial_Roots, PID_needvarresult, var, PID_last );
+}
+
 
 /* void companionMatrix (in wstring expr, in wstring var, [retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::CompanionMatrix(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
