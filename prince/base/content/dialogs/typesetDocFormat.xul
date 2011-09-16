@@ -482,7 +482,13 @@
                 </vbox>
                 <vbox align="center">
                   <label value="Line Spacing"  observes="reformatok"/>
-                  <checkbox observes="reformatok" align="center" checked="false"/>
+                  <menulist  observes="reformatok">
+                    <menupopup style="width: 9em" id="linespacing">
+                      <menuitem value="one" label="One"/>
+                      <menuitem value="sesqui" label="One and a half"/>
+                      <menuitem value="two" label="Two"/>
+                    </menupopup>
+                  </menulist>
                 </vbox>
               </row>
               <row align="end" style="height: 3em">
