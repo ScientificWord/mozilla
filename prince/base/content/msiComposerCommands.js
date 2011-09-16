@@ -156,6 +156,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_oneshotGreek", msiOneShotGreek);
   commandTable.registerCommand("cmd_oneshotSymbol", msiOneShotSymbol);
   commandTable.registerCommand("cmd_fontcolor", msiFontColor);
+  commandTable.registerCommand("cmd_copytex", msiCopyTeX);
 }
 
 function msiSetupComposerWindowCommands(editorElement)
@@ -3780,6 +3781,41 @@ var msiOneShotSymbol =
 
 
 //-----------------------------------------------------------------------------------
+
+var msiCopyTeX =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+	  var editorElement = msiGetActiveEditorElement();
+	  var editor = msiGetEditor(editorElement);
+	  if (!editor) {
+			throw("No editor in msiCopyTeX");
+		}
+	  var selection = editor.selection;
+	  if (!selection)
+	  {
+	    throw("No selection in msiCopyTeX!");
+	  }
+	  var intermediateText;
+	  intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
+	  var output = xmlFragToTeX(intermediateText);
+		const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].  
+		getService(Components.interfaces.nsIClipboardHelper);  
+		gClipboardHelper.copyString(output);
+  }
+};
+//--------
 var msiFontColor =
 {
   isCommandEnabled: function(aCommand, dummy)
