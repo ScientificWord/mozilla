@@ -1446,7 +1446,7 @@ char *MuPADWrapper::LIMFUNCtoEstr(SEMANTICS_NODE * limfunc_info,
       // limfunc type operator takes an operand
       BUCKET_REC *arg_bucket =
         FindBucketRec(limfunc_info->bucket_list, MB_UNNAMED);
-      if (arg_bucket->first_child) {
+      if (arg_bucket && arg_bucket->first_child) {
         arg_str = ProcessSemList(arg_bucket->first_child, NULL, error_code);
       }
       if (error_code)
