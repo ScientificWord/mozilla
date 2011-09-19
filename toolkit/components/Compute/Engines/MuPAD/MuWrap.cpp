@@ -335,7 +335,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
               BUCKET_REC* b = children -> bucket_list;
               while (b) {
                  if (b->bucket_ID == MB_ODEFUNC) {
-                    if (b -> first_child && b -> first_child -> canonical_id) {
+                    if (b -> first_child && b -> first_child -> canonical_ID) {
                       defstore->PushDefInfo(engine_ID, b -> first_child -> canonical_ID, 2, NULL, NULL, 0, NULL, NULL);
                     }
                  }
