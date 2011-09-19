@@ -15,5 +15,7 @@
 		<key id="MSIabsvalueKey"   modifiers="accel" key="&MSIabsvalueCmd.keybinding;"   command="cmd_MSIabsvalueCmd"/>          
 		<key id="MSInormKey"       modifiers="accel shift" key="&MSInormCmd.keybinding;"   command="cmd_MSInormCmd"/>
 		<key id="MSIanglebracketsKey" modifiers="accel shift" key="&lt;" oncommand="insertfence('&#x2329;','&#x232A;',null)"/>
+		<key id="MSIGreekKey"      modifiers="accel" key="g"                             command="cmd_oneshotGreek"/>
+		<key id="MSISymbolKey"     modifiers="accel" key="k"                             command="cmd_oneshotSymbol"/>
 	</keyset>                                                                                                         
 
