@@ -59,6 +59,8 @@
     <command id="cmd_MSIunitsCommand"     oncommand="msiGoDoCommand('cmd_MSIunitsCommand')"/>
     <command id="cmd_insertHTMLField" oncommand="msiGoDoCommand('cmd_insertHTMLField')"/>
     <command id="cmd_marker" oncommand="msiGoDoCommand('cmd_marker')"/>
+    <command id="cmd_oneshotGreek" oncommand="msiGoDoCommand('cmd_oneshotGreek')"/>
+    <command id="cmd_oneshotSymbol" oncommand="msiGoDoCommand('cmd_oneshotSymbol')"/>
 </commandset>
 
   <commandset id="MSImathReviseCommands"
