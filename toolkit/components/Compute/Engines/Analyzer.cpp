@@ -764,7 +764,41 @@ void AnalyzeMI(MNODE* mml_mi_node,
       else
         AppendBucketRecord(snode->bucket_list, bucket);
     } else {
-      snode->semantic_type = SEM_TYP_VARIABLE;
+     
+       char isMathname[256];
+       isMathname[0] = 0;
+       GetCurrAttribValue(mml_mi_node, false, "msimathname", isMathname, 256);
+       if (StringEqual(isMathname, "true") ) {
+         if (StringEqual(mml_mi_node->p_chdata, "real") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Real");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+
+         } else if (StringEqual(mml_mi_node->p_chdata, "complex") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Complex");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else if (StringEqual(mml_mi_node->p_chdata, "integer") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Integer");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else if (StringEqual(mml_mi_node->p_chdata, "positive") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Positive");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else if (StringEqual(mml_mi_node->p_chdata, "negative") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Negative");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else if (StringEqual(mml_mi_node->p_chdata, "nonzero") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Nonzero");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else {
+           snode->semantic_type = SEM_TYP_VARIABLE;
+         }
+       } else
+         snode->semantic_type = SEM_TYP_VARIABLE;
     }
   }
 }
