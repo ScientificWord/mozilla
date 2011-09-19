@@ -159,8 +159,14 @@
       <menuitem id="menu_copy"
                 label="&copyCmd.label;"
                 key="key_copy"
-                accesskey="&copyCmd.accesskey;"
+                accesskey="&copy.accesskey;"
                 observes="cmd_copy"/>
+      <menuitem id="menu_copytex"
+                label="&copytexCmd.label;"
+                observes="cmd_copytex"/>
+      <!--menuitem id="menu_copypicture"
+                label="&copypictureCmd.label;"
+                observes="cmd_copypicture"/ -->
       <menuitem id="menu_paste"
                 label="&pasteCmd.label;"
                 key="key_paste"
@@ -655,9 +661,19 @@
              acceltext="&cutCmd.acceltext;"
              />
     <command id="cmd_copy" 
-             oncommand="msiGoDoCommand('cmd_copy')"
-             acceltext="&copyCmd.acceltext;"
-             disabled="true"/>
+            oncommand="msiGoDoCommand('cmd_copy')"
+            acceltext="&copyCmd.acceltext;"
+            disabled="true"/>
+    <command id="cmd_copytex" 
+             oncommand="msiGoDoCommand('cmd_copytex')"
+             disabled="true">      
+      <observes element="cmd_copy" attribute="disabled" /> 
+    </command>
+    <command id="cmd_copypicture" 
+            oncommand="msiGoDoCommand('cmd_copypicture')"
+            disabled="true">
+      <observes element="cmd_copy" attribute="disabled" /> 
+    </command>
     <command id="cmd_paste" 
              oncommand="msiGoDoCommand('cmd_paste')"
              acceltext="&pasteCmd.acceltext;"
