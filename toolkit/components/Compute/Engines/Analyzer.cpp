@@ -2606,17 +2606,18 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node,
             AnalyzeMO(mml_node, rv, local_nodes_done, pAnalyzer);
 
         } else if (StringEqual(mml_element, "mn")) {
+             // Seems that mixed numbers should have been removed back in TreeToFixupForm()
 
-             bool do_mixed = false;
+             //bool do_mixed = false;
 
-             if (IsWholeNumber(mml_node) && IsWholeFrac(mml_node->next)) {
-               do_mixed = !IsPositionalChild(mml_node);
-             }
+             //if (IsWholeNumber(mml_node) && IsWholeFrac(mml_node->next)) {
+             //  do_mixed = !IsPositionalChild(mml_node);
+             //}
 
-             if (do_mixed) {
-               AnalyzeMixedNum(mml_node, rv, pAnalyzer);
-               local_nodes_done++;
-             } else
+             //if (do_mixed) {
+             //  AnalyzeMixedNum(mml_node, rv, pAnalyzer);
+             //  local_nodes_done++;
+             //} else
                AnalyzeMN(mml_node, rv, pAnalyzer);
 
         } else {
