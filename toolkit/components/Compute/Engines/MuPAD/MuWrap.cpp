@@ -6172,8 +6172,8 @@ char *MuPADWrapper::PROBFUNCtoEstr(SEMANTICS_NODE * sem_func_node,
     BUCKET_REC *bucket = sem_func_node->bucket_list;
     if (bucket && bucket->first_child) {
       //  INFIX OPERATOR contents = ";"
-      SEMANTICS_NODE *s_semi = bucket->first_child;
-      if (s_semi->bucket_list) {
+      SEMANTICS_NODE* s_semi = bucket->first_child;
+      if (s_semi->bucket_list && StringEqual(s_semi->contents, ";")) {
         BUCKET_REC *op_rover = s_semi->bucket_list;
 
         SEMANTICS_NODE *s_var = op_rover->first_child;
