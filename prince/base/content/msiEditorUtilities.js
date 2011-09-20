@@ -11464,3 +11464,46 @@ function getFileAsString( url )
     return null;
 }
 
+function addLanguagesToTagDefs(lang1, lang2)	
+{
+	var babelTags = editor.tagListManager.getBabelTags();
+	var tagArray = babelTags.split(",");
+	var i;
+	var lang;
+	for (i = 0; i < tagArray.length; i++)
+	{
+		var index = i+1;
+		tag = tagArray[i];
+		hidden = editor.tagListManager.getStringPropertyForTag( tag, null, "hidden");
+		if (index%2 === 1) lang = lang1;
+		else lang = lang2;
+		if (lang)	
+		{
+			needsResetting = true;
+			editor.tagListManager.setTagVisibility(tag, null, false);
+			if (index < 3)
+			{
+				editor.tagListManager.setTagName(tag, null, "text"+ lang);
+			}
+			else
+			{
+				editor.tagListManager.setTagName(tag, null, (lang==="arabic" ? "Arabic" : lang) )
+			}
+		}
+		else
+		{
+			lang = "##lang" + (1 + index%2).toString();
+			editor.tagListManager.setTagVisibility(tag, null, true);
+			if (index < 3)
+			{
+				editor.tagListManager.setTagName(tag, null, "text"+ lang);
+			}
+			else
+			{
+				editor.tagListManager.setTagName(tag, null, lang);
+			}			
+		}
+	}
+	//if (needsResetting)
+	editor.tagListManager.rebuildHash();	
+}
