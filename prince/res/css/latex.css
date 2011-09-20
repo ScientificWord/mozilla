@@ -1361,3 +1361,9 @@ rawTeX {
 *[hilite] {
 	background-color: rgb(255,255,186);
 }
+
+/* These are the tags that polyglossia introduces for right-to-left languages */
+Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, hebrew, texthebrew, syriac, textsyriac, urdu, texturdu
+{ 
+	direction: rtl; 
+	text-align: right; }
