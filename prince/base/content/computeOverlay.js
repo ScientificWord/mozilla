@@ -397,35 +397,35 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
     var eng = GetCurrentEngine();
     switch (cmd) {
     case "cmd_compute_Evaluate":
-      doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate", editorElement, inPlace);
+      doEvalComputation(element, eng.Evaluate, "<mo>=</mo>","evaluate", editorElement, inPlace);
       break;
     case "cmd_compute_EvaluateNumeric":
-      doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric", editorElement, inPlace);
+      doEvalComputation(element, eng.Evaluate_Numerically, "<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric", editorElement, inPlace);
       break;
     case "cmd_compute_Simplify":
-      doEvalComputation(element,eng.Simplify,"<mo>=</mo>","simplify", editorElement, inPlace);
+      doEvalComputation(element, eng.Simplify,"<mo>=</mo>","simplify", editorElement, inPlace);
       break;
     case "cmd_compute_CombineExponentials":
-      doEvalComputation(element,eng.Combine_Exponentials,"<mo>=</mo>","combine exp", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Exponentials,"<mo>=</mo>","combine exp", editorElement, inPlace);
       break;
     case "cmd_compute_CombineLogs":
-      doEvalComputation(element,eng.Combine_Logs,"<mo>=</mo>","combine log", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Logs,"<mo>=</mo>","combine log", editorElement, inPlace);
       break;
     case "cmd_compute_CombinePowers":
-      doEvalComputation(element,eng.Combine_Powers,"<mo>=</mo>","combine pow", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Powers,"<mo>=</mo>","combine pow", editorElement, inPlace);
       break;
     case "cmd_compute_CombineTrig":
-      doEvalComputation(element,eng.Combine_Trig_Functions,"<mo>=</mo>","combine trig", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Trig_Functions,"<mo>=</mo>","combine trig", editorElement, inPlace);
       break;
     case "cmd_compute_CombineArctan":
-      doEvalComputation(element,eng.Combine_Arctan,"<mo>=</mo>","combine arctan", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Arctan,"<mo>=</mo>","combine arctan", editorElement, inPlace);
       break;
     case "cmd_compute_CombineHyperbolics":
-      doEvalComputation(element,eng.Combine_Hyperbolic_Functions,"<mo>=</mo>","combine hyperbolic", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Hyperbolic_Functions,"<mo>=</mo>","combine hyperbolic", editorElement, inPlace);
       break;
     case "cmd_compute_Expand":
-      doEvalComputation(element,eng.Expand,"<mo>=</mo>","expand", editorElement, inPlace);
-      break;
+      doEvalComputation(element, eng.Expand,"<mo>=</mo>","expand", editorElement, inPlace);
+      break;                     
     case "cmd_compute_Factor":
       doEvalComputation(element,eng.Factor,"<mo>=</mo>","factor", editorElement, inPlace);
       break;
@@ -510,7 +510,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputeSolveInteger(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_Collect":
-      doVarsEvalComputation(element, eng.Polynomial_Collect, "<mo>=</mo>",GetComputeString("Collect.title"), "", editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element, eng.Polynomial_Collect, "<mo>=</mo>", GetComputeString("Collect.title"), "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_Divide":
       doComputeDivide(element, "", editorElement, cmd, cmdHandler);
@@ -519,7 +519,8 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputePartialFractions(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_Roots":
-      doLabeledComputation(element,eng.Polynomial_Roots,"Roots.fmt", editorElement);
+      //doLabeledComputation(element,"", eng.Polynomial_Roots,"Roots.fmt", editorElement);
+      doComputeRoots(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_Sort":
       doComputeSort(element, "", editorElement, cmd, cmdHandler);
@@ -528,14 +529,14 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputeCompanionMatrix(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ByParts":
-      doVarsEvalComputation(element,eng.Calculus_Integrate_by_Parts,"<mo>=</mo>",GetComputeString("ByParts.title"),GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element, eng.Calculus_Integrate_by_Parts, "<mo>=</mo>", GetComputeString("ByParts.title"), GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_FindExtrema":
       doEvalComputation(element, eng.Calculus_Find_Extrema, "<mo>=</mo>","find extrema", editorElement, inPlace, inPlace);
       //doVarsEvalComputation(element,eng.Calculus_Find_Extrema,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ChangeVariable":
-      doVarsEvalComputation(element,eng.Calculus_Change_Variable,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element, eng.Calculus_Change_Variable, "<mo>=</mo>", GetComputeString("ChangeVar.title"), GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ApproxIntegral":
       doComputeApproxIntegral(element, editorElement);
@@ -559,34 +560,34 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputePowerSeries(element, editorElement, null);
       break;
     case "cmd_compute_Fourier":
-      doLabeledComputation(element,eng.Fourier_Transform,"Fourier.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Fourier_Transform,"Fourier.fmt", editorElement);
       break;
     case "cmd_compute_InverseFourier":
-      doLabeledComputation(element,eng.Inverse_Fourier_Transform,"InvFourier.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Inverse_Fourier_Transform,"InvFourier.fmt", editorElement);
       break;
     case "cmd_compute_Laplace":
-      doLabeledComputation(element,eng.Laplace_Transform,"Laplace.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Laplace_Transform,"Laplace.fmt", editorElement);
       break;
     case "cmd_compute_InverseLaplace":
-      doLabeledComputation(element,eng.Inverse_Laplace_Transform,"InvLaplace.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Inverse_Laplace_Transform, "InvLaplace.fmt", editorElement);
       break;
     case "cmd_compute_Gradient":
-      doLabeledComputation(element,eng.Gradient,"Gradient.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Gradient,"Gradient.fmt", editorElement);
       break;
     case "cmd_compute_Divergence":
-      doLabeledComputation(element,eng.Divergence,"Divergence.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Divergence,"Divergence.fmt", editorElement);
       break;
     case "cmd_compute_Curl":
-      doLabeledComputation(element,eng.Curl,"Curl.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Curl,"Curl.fmt", editorElement);
       break;
     case "cmd_compute_Laplacian":
-      doLabeledComputation(element,eng.Laplacian,"Laplacian.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Laplacian,"Laplacian.fmt", editorElement);
       break;
     case "cmd_compute_Jacobian":
-      doLabeledComputation(element,eng.Jacobian,"Jacobian.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Jacobian,"Jacobian.fmt", editorElement);
       break;
     case "cmd_compute_Hessian":
-      doLabeledComputation(element,eng.Hessian,"Hessian.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Hessian,"Hessian.fmt", editorElement);
       break;
     case "cmd_compute_Wronskian":
       doComputeWronskian(element, "", editorElement, cmd, cmdHandler);
@@ -595,58 +596,57 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doScalarPotential(element,eng.Scalar_Potential,"ScalarPot.fmt", editorElement);
       break;
     case "cmd_compute_VectorPot":
-      doLabeledComputation(element, eng.Vector_Potential, "VectorPot.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Vector_Potential, "VectorPot.fmt", editorElement);
       break;
-
     case "cmd_MSIComputeAdjugate":  
-      doLabeledComputation(element,eng.Adjugate,"Adjugate.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Adjugate,"Adjugate.fmt", editorElement);
       break;
     case "cmd_MSIComputeCharPoly":
       doComputeCharPoly(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_MSIComputeCholesky":      
-      doLabeledComputation(element,eng.Cholesky_Decomposition,"Cholesky.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Cholesky_Decomposition,"Cholesky.fmt", editorElement);
       break;
     case "cmd_MSIComputeColBasis":   
-      doLabeledComputation(element,eng.Column_Basis,"ColBasis.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Column_Basis,"ColBasis.fmt", editorElement);
       break;
     case "cmd_MSIComputeConcat":   
-      doLabeledComputation(element,eng.Concatenate,"Concat.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Concatenate,"Concat.fmt", editorElement);
       break;
     case "cmd_MSIComputeConditionNum":  
-      doLabeledComputation(element, eng.Condition_Number, "ConditionNum.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Condition_Number, "ConditionNum.fmt", editorElement);
       break;
     case "cmd_MSIComputeDefinitenessTests":  
-      doLabeledComputation(element, eng.Definiteness_Tests, "DefTest.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Definiteness_Tests, "DefTest.fmt", editorElement);
       break;
     case "cmd_MSIComputeDeterminant":  
-      doLabeledComputation(element,eng.Determinant,"Determinant.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Determinant,"Determinant.fmt", editorElement);
       break;
     case "cmd_MSIComputeEigenvalues":
-      doLabeledComputation(element,eng.Eigenvalues,"Eigenvalues.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Eigenvalues,"Eigenvalues.fmt", editorElement);
       break;
     case "cmd_MSIComputeEigenvectors":
       // formatting needs to be fixed
-      doLabeledComputation(element,eng.Eigenvectors,"Eigenvectors.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Eigenvectors,"Eigenvectors.fmt", editorElement);
       break;
     case "cmd_MSIComputeFFGE":
-      doLabeledComputation(element,eng.Fraction_Free_Gaussian_Elimination,"FFGaussElim.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Fraction_Free_Gaussian_Elimination,"FFGaussElim.fmt", editorElement);
       break;
     case "cmd_MSIComputeGaussElim":
-      doLabeledComputation(element,eng.Gaussian_Elimination,"GaussElim.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Gaussian_Elimination,"GaussElim.fmt", editorElement);
       break;
     case "cmd_MSIComputeHermite":  
-      doLabeledComputation(element,eng.Hermite_Normal_Form,"Hermite.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Hermite_Normal_Form,"Hermite.fmt", editorElement);
       break;
     case "cmd_MSIComputeHermitianTranspose":  
-      doLabeledComputation(element,eng.Hermitian_Transpose,"HermitianTr.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Hermitian_Transpose,"HermitianTr.fmt", editorElement);
       break;
     case "cmd_MSIComputeInverse":  
-      doLabeledComputation(element,eng.Inverse,"Inverse.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Inverse,"Inverse.fmt", editorElement);
       break;
     case "cmd_MSIComputeJordan":  
       //doLabeledComputation(element,eng.Jordan_Form,"Jordan.fmt", editorElement);
-      doEvalComputation(element,eng.Jordan_Form,"<mo>=</mo>", "evaluate jordan", editorElement, inPlace);
+      doEvalComputation(element, "", eng.Jordan_Form, "<mo>=</mo>", "evaluate jordan", editorElement, inPlace);
       break;
     case "cmd_MSIComputeMap":  
       doComputeMap(element, editorElement, cmd, cmdHandler);
@@ -655,103 +655,103 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputeMinPoly(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_MSIComputeNorm":     
-      doLabeledComputation(element,eng.Norm,"Norm.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Norm,"Norm.fmt", editorElement);
       break;
     case "cmd_MSIComputeNullspaceBasis":   
-      doLabeledComputation(element,eng.Nullspace_Basis,"Nullspace.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Nullspace_Basis,"Nullspace.fmt", editorElement);
       break;
     case "cmd_MSIComputeOrthogonalityTest":  
-      doLabeledComputation(element, eng.Orthogonality_Test, "Orthogonality.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Orthogonality_Test, "Orthogonality.fmt", editorElement);
       break;
     case "cmd_MSIComputePermanent":  
-      doLabeledComputation(element, eng.Permanent, "Permanent.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Permanent, "Permanent.fmt", editorElement);
       break;
     case "cmd_MSIComputePLU":      
-      doLabeledComputation(element, eng.PLU_Decomposition, "PLU.fmt", editorElement);
+      doLabeledComputation(element, "",eng.PLU_Decomposition, "PLU.fmt", editorElement);
       break;
     case "cmd_MSIComputeRank":  
-      doLabeledComputation(element, eng.Rank, "Rank.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Rank, "Rank.fmt", editorElement);
       break;
     case "cmd_MSIComputeRationalCanonical":  
-      doLabeledComputation(element, eng.Rational_Canonical_Form, "Rational.fmt", editorElement);
+      doLabeledComputation(element, "",eng.Rational_Canonical_Form, "Rational.fmt", editorElement);
       break;
     case "cmd_MSIComputeRREF":
-      doLabeledComputation(element,eng.Reduced_Row_Echelon_Form,"RREchelonForm.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Reduced_Row_Echelon_Form,"RREchelonForm.fmt", editorElement);
       break;
     case "cmd_MSIComputeReshape":       
       doComputeReshape(element, editorElement);
       break;
     case "cmd_MSIComputeRowBasis":   
-      doLabeledComputation(element,eng.Row_Basis,"RowBasis.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Row_Basis,"RowBasis.fmt", editorElement);
       break;
     case "cmd_MSIComputeQR":       
-      doLabeledComputation(element,eng.QR_Decomposition,"QR.fmt", editorElement);
+      doLabeledComputation(element,"",eng.QR_Decomposition,"QR.fmt", editorElement);
       break;
     case "cmd_MSIComputeSingularValues":      
-      doLabeledComputation(element,eng.Singular_Values,"Singular.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Singular_Values,"Singular.fmt", editorElement);
       break;
     case "cmd_MSIComputeSVD":      
       //doLabeledComputation(element,eng.SVD,"SVD.fmt", editorElement);
-      doEvalComputation(element,eng.SVD,"<mo>=</mo>", "evaluate SVD", editorElement, inPlace);
+      doEvalComputation(element,"",eng.SVD,"<mo>=</mo>", "evaluate SVD", editorElement, inPlace);
       break;
     case "cmd_MSIComputeSmith":    
-      doLabeledComputation(element,eng.Smith_Normal_Form,"Smith.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Smith_Normal_Form,"Smith.fmt", editorElement);
       break;
     case "cmd_MSIComputeSpectralRadius":    
-      doLabeledComputation(element,eng.Spectral_Radius,"SpectralRadius.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Spectral_Radius,"SpectralRadius.fmt", editorElement);
       break;
     case "cmd_MSIComputeStack":    
-      doLabeledComputation(element,eng.Stack,"Stack.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Stack,"Stack.fmt", editorElement);
       break;
     case "cmd_MSIComputeTrace":
-      doLabeledComputation(element,eng.Trace,"Trace.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Trace,"Trace.fmt", editorElement);
       break;
     case "cmd_MSIComputeTranspose":
-      doLabeledComputation(element,eng.Transpose,"Transpose.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Transpose,"Transpose.fmt", editorElement);
       break;
 
     case "cmd_compute_SimplexDual":
-      doLabeledComputation(element,eng.Simplex_Dual,"Dual.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Simplex_Dual,"Dual.fmt", editorElement);
       break;
     case "cmd_compute_SimplexFeasible":
-      doLabeledComputation(element,eng.Simplex_Feasible,"Feasible.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Simplex_Feasible,"Feasible.fmt", editorElement);
       break;
     case "cmd_compute_SimplexMaximize":
-      doLabeledComputation(element,eng.Simplex_Maximize,"Maximize.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Simplex_Maximize,"Maximize.fmt", editorElement);
       break;
     case "cmd_compute_SimplexMinimize":
-      doLabeledComputation(element,eng.Simplex_Minimize,"Minimize.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Simplex_Minimize,"Minimize.fmt", editorElement);
       break;
     case "cmd_compute_SimplexStandardize":
-      doLabeledComputation(element,eng.Simplex_Standardize,"Standardize.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Simplex_Standardize,"Standardize.fmt", editorElement);
       break;
 
     case "cmd_compute_FitCurve":
       doComputeFitCurve(element, editorElement);
       break;
     case "cmd_compute_Mean":
-      doLabeledComputation(element,eng.Mean,"Mean.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Mean,"Mean.fmt", editorElement);
       break;
     case "cmd_compute_Median":
-      doLabeledComputation(element,eng.Median,"Median.fmt", editorElement);
+      doLabeledComputation(element,"", eng.Median,"Median.fmt", editorElement);
       break;
     case "cmd_compute_Mode":
-      doLabeledComputation(element,eng.Mode,"Mode.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Mode,"Mode.fmt", editorElement);
       break;
     case "cmd_compute_Correlation":
-      doLabeledComputation(element,eng.Correlation,"Correlation.fmt", editorElement);
+      doLabeledComputation(element,"",eng.Correlation,"Correlation.fmt", editorElement);
       break;
     case "cmd_compute_Covariance":
-      doLabeledComputation(element,eng.Covariance,"Covariance.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Covariance,"Covariance.fmt", editorElement);
       break;
     case "cmd_compute_GeometricMean":
-      doLabeledComputation(element,eng.Geometric_Mean,"GeometricMean.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Geometric_Mean,"GeometricMean.fmt", editorElement);
       break;
     case "cmd_compute_HarmonicMean":
-      doLabeledComputation(element,eng.Harmonic_Mean,"HarmonicMean.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Harmonic_Mean,"HarmonicMean.fmt", editorElement);
       break;
     case "cmd_compute_MeanDeviation":
-      doLabeledComputation(element,eng.Mean_Deviation,"MeanDeviation.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Mean_Deviation,"MeanDeviation.fmt", editorElement);
       break;
     case "cmd_compute_Moment":
       doComputeMoment(element, editorElement, null);
@@ -760,10 +760,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputeQuantile(element, editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_StandardDeviation":
-      doLabeledComputation(element,eng.Standard_Deviation,"StdDeviation.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Standard_Deviation,"StdDeviation.fmt", editorElement);
       break;
     case "cmd_compute_Variance":
-      doLabeledComputation(element,eng.Variance,"Variance.fmt", editorElement);
+      doLabeledComputation(element, "", eng.Variance,"Variance.fmt", editorElement);
       break;
 
     case "cmd_compute_Plot2DRectangular":
@@ -1530,16 +1530,44 @@ function GetFixedMath(math)
 }
 
 
-function doLabeledComputation(math,op,labelID, editorElement)
+function doLabeledComputation(math, vars, op, labelID, editorElement)
 {
   var mathstr = GetFixedMath(GetRHS(math));
+  if (!vars) 
+     vars = "";
+
   msiComputeLogger.Sent("doing " + labelID + " after fixup", mathstr);
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString(labelID), math, editorElement);
-  } catch (e) {
+  } catch (ex) {
+    if (ex.result == compsample.needvars) {
+        var o = new Object();
+        o.mParentWin = this;
+        o.theMath = math;
+        o.vars = vars;
+        o.theCommand = cmd;
+        o.theCommandHandler = cmdHandler;
+        o.afterDialog = function(editorElement)
+        { 
+          if (this.Cancel)
+            return;
+          this.mParentWin.doComputeSolveExact(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+        };
+        try {
+          theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                            editorElement, cmd, cmdHandler, o);
+        } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doLabeledComputation: [" + e + "]"); return;}
+//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
+//        if (o.Cancel)
+//          return;
+//        vars = runFixup(o.vars);
+      } else {
+        msiComputeLogger.Exception(ex);
+//        done = true;
+      } 
     msiComputeLogger.Exception(e);
   }
   RestoreCursor(editorElement);
@@ -1811,14 +1839,8 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler)
   var mathstr = GetFixedMath(math);
   if (!vars)
     vars = "";
-//  else if (vars.length > 0)
-//    vars = runFixup(vars);
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-
-//  var vars = "";
-//  var done = false;
-//  while (!done) {
     msiComputeLogger.Sent4("solve exact",mathstr,"specifying",vars);
     try {
       ComputeCursor(editorElement);
@@ -1826,7 +1848,6 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler)
       msiComputeLogger.Received(out);
       appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
       RestoreCursor(editorElement);
-//      done = true;
     } catch(ex) {
       RestoreCursor(editorElement);
       if (ex.result == compsample.nosol) {
@@ -2038,8 +2059,6 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler)
                                             editorElement, cmd, cmdHandler, o);
         } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeDivide: [" + e + "]"); return;}
 
-//        var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -2049,6 +2068,52 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler)
     }
 //  }
 }
+
+function doComputeRoots(math, vars, editorElement, cmd, cmdHandler)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  var mathstr = GetFixedMath(math);
+  if (!vars)
+    vars = "";
+
+  msiComputeLogger.Sent4("roots", mathstr, "specifying", vars);
+  try {
+    ComputeCursor(editorElement);
+    var out = GetCurrentEngine().roots(mathstr,vars);
+    msiComputeLogger.Received(out);
+    appendLabeledResult(out, GetComputeString("Roots.fmt"), math, editorElement);  
+    RestoreCursor(editorElement);
+    done = true;
+  } catch(ex) {
+    RestoreCursor(editorElement);
+    if (ex.result == compsample.needvars) {
+      var o = new Object();
+      o.title = GetComputeString("Companion.title");
+      o.mParentWin = this;
+      o.theMath = math;
+      o.vars = vars;
+      o.theCommand = cmd;
+      o.theCommandHandler = cmdHandler;
+      o.afterDialog = function(editorElement)
+      { 
+        if (this.Cancel)
+          return;
+        this.mParentWin.doComputeRoots(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+      };
+      try {
+        var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                          editorElement, cmd, cmdHandler, o);
+      } catch(e) {
+         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeRoots: [" + e + "]");
+         return;
+      }
+
+    } else {
+      msiComputeLogger.Exception(ex);
+} } }
+
 
 function doComputeSort(math, vars, editorElement, cmd, cmdHandler)
 {
