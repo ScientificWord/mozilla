@@ -74,7 +74,8 @@ MNODE* Tree2StdMML::TreeToCanonicalForm(MNODE* dMML_tree,
   TCI_ASSERT(CheckLinks(dMML_tree));
 
   MNODE* rv = ChDataToCanonicalForm(dMML_tree);
-  RemoveMixedNumbers(rv, in_notation);
+  // This is too late for removing mixed numbers. We've already removed commas, so 4,1/2 is now a mixed number.
+  // RemoveMixedNumbers(rv, NULL);
   rv = FixMFENCEDs(rv);
   rv = InfixDivideToMFRAC(rv);
   rv = RemoveMatrixDelims(rv, in_notation);
@@ -120,6 +121,7 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   RemoveHSPACEs(rv);
   RemoveEmptyTags(dMML_tree);
   FixAdjacentMNs(dMML_tree);
+  RemoveMixedNumbers(rv, NULL);
 
   rv = ChDataToCanonicalForm(rv);
   BindDelimitedGroups(rv);
@@ -211,7 +213,8 @@ void Tree2StdMML::RemoveMixedNumbers(MNODE* dMML_tree,
                 do_it = false;
               if (do_it) {
                 PermuteMixedNumber(rover);
-                in_notation -> nmixed_numbers++;
+                if (in_notation) 
+                  in_notation -> nmixed_numbers++;
               }
             }
           } else {
@@ -961,7 +964,7 @@ MNODE* Tree2StdMML::FinishFixup(MNODE* dMML_tree)
   if (rv->parent && HasPositionalChildren(rv->parent))
     return rv;
 
-  rv = BindMixedNumbers(rv);
+  //rv = BindMixedNumbers(rv);
   //TODO: BindUnits
   //TODO: BindDegMinSec
   rv = BindDelimitedIntegrals(rv);
