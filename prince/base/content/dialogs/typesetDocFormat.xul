@@ -88,7 +88,7 @@
           <label>&warning.label2;</label>
         </vbox> 
         <checkbox id="enablereformat" label="Enable overriding the document style" checked="false" control="reformatok"
-          oncommand="enable(this);"/>                 
+          oncommand="enableDisableReformat(this.checked);enable(this);"/>                 
         <broadcaster id="reformatok" disabled="true"/>
         <groupbox>
           <caption>
@@ -119,7 +119,7 @@
                   <label observes="reformatok" value="Page Orientation"/>
                   <menulist observes="reformatok" id="pgorient" minwidth="6em">
                     <menupopup style="width: 9em" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="port" label="Portrait"/>
                       <menuitem value="landscape" label="Landscape"/>
                     </menupopup>
@@ -129,7 +129,7 @@
                   <label observes="reformatok" value="Paper Size"/>
                   <menulist observes="reformatok" id="papersize">
                     <menupopup style="width: 9em" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="letter" label="8.5x11 in."/>
                       <menuitem value="a4paper" label="A4"/>
                       <menuitem value="a5paper" label="A5"/>
@@ -143,7 +143,7 @@
                   <label observes="reformatok" value="Sides"/>
                   <menulist observes="reformatok" id="sides">
                     <menupopup style="width: 9em" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="oneside" label="One"/>
                       <menuitem value="twoside" label="Two"/>
                     </menupopup>
@@ -153,7 +153,7 @@
                   <label observes="reformatok" value="Quality"/>
                   <menulist observes="reformatok" id="qual" style="width: 9em" >
                     <menupopup>
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="final" label="Final"/>
                       <menuitem value="draft" label="Draft"/>
                     </menupopup>
@@ -165,7 +165,7 @@
                   <label observes="reformatok" value="Columns"/>
                   <menulist observes="reformatok" id="columns">
                     <menupopup style="width: 9em" oncommand="broadcastColCount();" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="onecolumn" label="One"/>
                       <menuitem value="twocolumn" label="Two"/>
                     </menupopup>
@@ -175,7 +175,7 @@
                   <label observes="reformatok" value="Body Text Font Size"/>
                   <menulist observes="reformatok" id="textsize" >
                     <menupopup style="width: 9em" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="10pt" label="10 pt"/>
                       <menuitem value="11pt" label="11 pt"/>
                       <menuitem value="12pt" label="12 pt"/>
@@ -184,7 +184,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Leading in Points"/>
-                  <hbox><checkbox control="leading" checked="false" observes="reformatok" oncommand="enable(this);"/><textbox id="leading" disabled="true" default="12.0" value="-default-" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
+                  <hbox><checkbox id="leadingcontrol" control="leading" checked="false" observes="reformatok" oncommand="enable(this);"/><textbox id="leading" disabled="true" default="12.0" value="-default-" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
                 </vbox>
                 <vbox>
                   <deck id="babelpoly">
@@ -192,56 +192,65 @@
                       <observes element="pdflatex" attribute="hidden"/>
                       <observes element="reformatok" attribute="disabled"/>
                     </label>
-                    <label>Polyglossia Language
+                    <label style="width:9em">Polyglossia Language
                       <observes element="xelatex" attribute="hidden"/>
                       <observes element="reformatok" attribute="disabled"/>
                     </label>
                   </deck>      
-                  <menulist observes="reformatok" >
-                    <menupopup style="width: 9em" id="babelOrPolygloss">
-                      <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
-                      <menuitem value="def" label="-default-" def="1"/>
-                      <menuitem value="USenglish" label="US English"/>
-                      <menuitem value="UKenglish" label="UK English"/>
-                      <menuitem value="acadian" label="Acadian"/>
+                  <menulist id="babelLang1" observes="reformatok" >
+                    <menupopup style="width: 12em"  >
+                      <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
+                      <menuitem label="-default-" value="def" def="1"/>
+                      <menuseparator/>
+                        <menuitem value="USenglish" label="US English"/>
+                        <menuitem value="UKenglish" label="UK English"/>
+                        <menuitem value="australian" label="Australian English"/>
+                        <menuitem value="canadian" label="Canadian English"/>
+                        <menuitem value="newzealand" label="New Zealand English"/>
+                      <menuseparator />    
+                        <menuitem value="austrian" label="Austrian"/>
+                        <menuitem value="naustrian" label="NAustrian"/>
+                        <menuitem value="german" label="German"/>
+                        <menuitem value="germanb" label="Germanb"/>
+                        <menuitem value="ngerman" label="NGerman"/>                       
+                      <menuseparator />
+                        <menuitem value="monogreek" label="Monotonic Greek"></menuitem>
+                        <menuitem value="polygreek" observes="xelatex" label="Polytonic Greek"></menuitem>
+                        <menuitem value="polutonikogreek" observes="pdflatex" label="Polytonic Greek"></menuitem>
+                        <menuitem value="ancientgreek" observes="xelatex" label="Ancient Greek"></menuitem>
+                      <menuseparator />
+                        <menuitem value="francais" label="Francais"/>
+                        <menuitem value="frenchb" label="Frenchb"/>
+                        <menuitem value="french" label="French"/>
+                        <menuitem value="acadian" label="Acadian"/>
+                      <menuseparator />
                       <menuitem value="albanian" label="Albanian"/>
                       <menuitem value="afrikaans" label="Afrikaans"/>
-                      <menuitem value="american" label="American"/>
-                      <menuitem value="australian" label="Australian"/>
-                      <menuitem value="austrian" label="Austrian"/>
+                      <menuitem value="arabic" observes="xelatex" label="Arabic"/>
                       <menuitem value="bahasa" label="Bahasa"/>
                       <menuitem value="indonesian" label="Indonesian"/>
                       <menuitem value="indon" label="indon"/>
                       <menuitem value="bahasai" label="Bahasa Indonesian"/>
-                      <menuitem value="malay" label="Malay"/>
-                      <menuitem value="meyalu" label="Meyalu"/>
                       <menuitem value="bahasam" label="Bahasa Malaysia"/>
                       <menuitem value="basque" label="Basque"/>
                       <menuitem value="brazil" label="Brazil"/>
                       <menuitem value="brazilian" label="Brazilian"/>
                       <menuitem value="breton" label="Breton"/>
-                      <menuitem value="british" label="British"/>
                       <menuitem value="bulgarian" label="Bulgarian"/>
-                      <menuitem value="canadian" label="Canadian"/>
                       <menuitem value="canadien" label="Canadien"/>
                       <menuitem value="catalan" label="Catalan"/>
+                      <menuitem value="coptic" observes="xelatex" label="Coptic" />
                       <menuitem value="croatian" label="Croatian"/>
                       <menuitem value="czech" label="Czech"/>
                       <menuitem value="danish" label="Danish"/>
+                      <menuitem value="divehi" observes="xelatex" label="Divehi" />
                       <menuitem value="dutch" label="Dutch"/>
-                      <menuitem value="english" label="English"/>
                       <menuitem value="esperanto" label="Esperanto"/>
                       <menuitem value="estonian" label="Estonian"/>
+                      <menuitem value="farsi" observes="xelatex" label="Farsi" />
                       <menuitem value="finnish" label="Finnish"/>
-                      <menuitem value="francais" label="Francais"/>
-                      <menuitem value="frenchb" label="Frenchb"/>
-                      <menuitem value="french" label="French"/>
                       <menuitem value="galician" label="Galician"/>
-                      <menuitem value="german" label="German"/>
-                      <menuitem value="germanb" label="Germanb"/>
-                      <menuitem value="greek" label="Greek"/>
-                      <menuitem value="polutonikogreek" label="Polutoniko Greek"/>
-                      <menuitem value="hebrew" label="Hebrew"/>
+                      <menuitem value="hebrew" observes="xelatex" label="Hebrew"/>
                       <menuitem value="hungarian" label="Hungarian"/>
                       <menuitem value="icelandic" label="Icelandic"/>
                       <menuitem value="interlingua" label="Interlingua"/>
@@ -250,9 +259,8 @@
                       <menuitem value="latin" label="Latin"/>
                       <menuitem value="lowersorbian" label="Lower Sorbian"/>
                       <menuitem value="magyar" label="Magyar"/>
-                      <menuitem value="naustrian" label="NAustrian"/>
-                      <menuitem value="newzealand" label="New Zealand"/>
-                      <menuitem value="ngerman" label="NGerman"/>
+                      <menuitem value="malay" label="Malay"/>
+                      <menuitem value="meyalu" label="Meyalu"/>
                       <menuitem value="norsk" label="Norsk"/>
                       <menuitem value="samin" label="Samin"/>
                       <menuitem value="nynorsk" label="Nynorsk"/>
@@ -267,9 +275,11 @@
                       <menuitem value="slovene" label="Slovene"/>
                       <menuitem value="spanish" label="Spanish"/>
                       <menuitem value="swedish" label="Swedish"/>
+                      <menuitem value="syriac" observes="xelatex" label="Syriac" />
                       <menuitem value="turkish" label="Turkish"/>
                       <menuitem value="ukrainian" label="Ukrainian"/>
                       <menuitem value="uppersorbian" label="Upper Sorbian"/>
+                      <menuitem value="urdu" label="Urdu" observes="xelatex" />
                       <menuitem value="welsh" label="Welsh"/>
                     </menupopup>
                   </menulist>
@@ -278,51 +288,60 @@
               <row>
                 <vbox>
                   <label observes="reformatok">Second Language</label>
-                  <menulist observes="reformatok" >
-                    <menupopup style="width: 9em" id="secondLanguage">
-                      <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
-                      <menuitem value="none" label="None" def="1"/>
-                      <menuitem value="USenglish" label="US English"/>
-                      <menuitem value="UKenglish" label="UK English"/>
-                      <menuitem value="acadian" label="Acadian"/>
+                  <menulist id="babelLang2" observes="reformatok" >
+                    <menupopup style="width: 12em">
+                      <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
+                      <menuitem label="-default-" value="def" def="1"/>
+                      <menuseparator/>
+                        <menuitem value="USenglish" label="US English"/>
+                        <menuitem value="UKenglish" label="UK English"/>
+                        <menuitem value="australian" label="Australian English"/>
+                        <menuitem value="canadian" label="Canadian English"/>
+                        <menuitem value="newzealand" label="New Zealand English"/>
+                      <menuseparator />    
+                        <menuitem value="austrian" label="Austrian"/>
+                        <menuitem value="naustrian" label="NAustrian"/>
+                        <menuitem value="german" label="German"/>
+                        <menuitem value="germanb" label="Germanb"/>
+                        <menuitem value="ngerman" label="NGerman"/>                       
+                      <menuseparator />
+                        <menuitem value="monogreek" label="Monotonic Greek"></menuitem>
+                        <menuitem value="polygreek" observes="xelatex" label="Polytonic Greek"></menuitem>
+                        <menuitem value="polutonikogreek" observes="pdflatex" label="Polytonic Greek"></menuitem>
+                        <menuitem value="ancientgreek" observes="xelatex" label="Ancient Greek"></menuitem>
+                      <menuseparator />
+                        <menuitem value="francais" label="Francais"/>
+                        <menuitem value="frenchb" label="Frenchb"/>
+                        <menuitem value="french" label="French"/>
+                        <menuitem value="acadian" label="Acadian"/>
+                      <menuseparator />
                       <menuitem value="albanian" label="Albanian"/>
                       <menuitem value="afrikaans" label="Afrikaans"/>
-                      <menuitem value="american" label="American"/>
-                      <menuitem value="australian" label="Australian"/>
-                      <menuitem value="austrian" label="Austrian"/>
+                      <menuitem value="arabic" observes="xelatex" label="Arabic"/>
                       <menuitem value="bahasa" label="Bahasa"/>
                       <menuitem value="indonesian" label="Indonesian"/>
                       <menuitem value="indon" label="indon"/>
                       <menuitem value="bahasai" label="Bahasa Indonesian"/>
-                      <menuitem value="malay" label="Malay"/>
-                      <menuitem value="meyalu" label="Meyalu"/>
                       <menuitem value="bahasam" label="Bahasa Malaysia"/>
                       <menuitem value="basque" label="Basque"/>
                       <menuitem value="brazil" label="Brazil"/>
                       <menuitem value="brazilian" label="Brazilian"/>
                       <menuitem value="breton" label="Breton"/>
-                      <menuitem value="british" label="British"/>
                       <menuitem value="bulgarian" label="Bulgarian"/>
-                      <menuitem value="canadian" label="Canadian"/>
                       <menuitem value="canadien" label="Canadien"/>
                       <menuitem value="catalan" label="Catalan"/>
+                      <menuitem value="coptic" observes="xelatex" label="Coptic" />
                       <menuitem value="croatian" label="Croatian"/>
                       <menuitem value="czech" label="Czech"/>
                       <menuitem value="danish" label="Danish"/>
+                      <menuitem value="divehi" observes="xelatex" label="Divehi" />
                       <menuitem value="dutch" label="Dutch"/>
-                      <menuitem value="english" label="English"/>
                       <menuitem value="esperanto" label="Esperanto"/>
                       <menuitem value="estonian" label="Estonian"/>
+                      <menuitem value="farsi" observes="xelatex" label="Farsi" />
                       <menuitem value="finnish" label="Finnish"/>
-                      <menuitem value="francais" label="Francais"/>
-                      <menuitem value="frenchb" label="Frenchb"/>
-                      <menuitem value="french" label="French"/>
                       <menuitem value="galician" label="Galician"/>
-                      <menuitem value="german" label="German"/>
-                      <menuitem value="germanb" label="Germanb"/>
-                      <menuitem value="greek" label="Greek"/>
-                      <menuitem value="polutonikogreek" label="Polutoniko Greek"/>
-                      <menuitem value="hebrew" label="Hebrew"/>
+                      <menuitem value="hebrew" observes="xelatex" label="Hebrew"/>
                       <menuitem value="hungarian" label="Hungarian"/>
                       <menuitem value="icelandic" label="Icelandic"/>
                       <menuitem value="interlingua" label="Interlingua"/>
@@ -331,9 +350,8 @@
                       <menuitem value="latin" label="Latin"/>
                       <menuitem value="lowersorbian" label="Lower Sorbian"/>
                       <menuitem value="magyar" label="Magyar"/>
-                      <menuitem value="naustrian" label="NAustrian"/>
-                      <menuitem value="newzealand" label="New Zealand"/>
-                      <menuitem value="ngerman" label="NGerman"/>
+                      <menuitem value="malay" label="Malay"/>
+                      <menuitem value="meyalu" label="Meyalu"/>
                       <menuitem value="norsk" label="Norsk"/>
                       <menuitem value="samin" label="Samin"/>
                       <menuitem value="nynorsk" label="Nynorsk"/>
@@ -348,12 +366,14 @@
                       <menuitem value="slovene" label="Slovene"/>
                       <menuitem value="spanish" label="Spanish"/>
                       <menuitem value="swedish" label="Swedish"/>
+                      <menuitem value="syriac" observes="xelatex" label="Syriac" />
                       <menuitem value="turkish" label="Turkish"/>
                       <menuitem value="ukrainian" label="Ukrainian"/>
                       <menuitem value="uppersorbian" label="Upper Sorbian"/>
+                      <menuitem value="urdu" label="Urdu" observes="xelatex" />
                       <menuitem value="welsh" label="Welsh"/>
                     </menupopup>
-                  </menulist>
+                 </menulist>
                 </vbox>
               </row>
             </rows>
@@ -377,7 +397,7 @@
                   <label observes="reformatok" value="Eqn Number Position"/>
                   <menulist observes="reformatok" id="eqnnopos">
                     <menupopup style="width: 9em" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="reqno" label="On the right"/>
                       <menuitem value="leqno" label="On the left"/>
                     </menupopup>
@@ -387,7 +407,7 @@
                   <label observes="reformatok" value="Displayed Eqn Position"/>
                   <menulist observes="reformatok" id="eqnpos">
                     <menupopup style="width: 9em" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="ceqn" label="Centered"/>
                       <menuitem value="fleqn" label="Flush left"/>
                     </menupopup>
@@ -414,19 +434,19 @@
               <row align="end" style="height: 3em">
                 <vbox align="center">
                   <label observes="reformatok" value="Title Page"/>
-                  <checkbox observes="reformatok" align="center" checked="false"/>
+                  <checkbox id="title" observes="reformatok" align="center" checked="false"/>
                 </vbox>
                 <vbox align="center">
                   <label observes="reformatok" value="Table of Contents"/>
-                  <hbox ><checkbox observes="reformatok" align="center" checked="false"/></hbox>
+                  <hbox ><checkbox id="toc" observes="reformatok" align="center" checked="false"/></hbox>
                 </vbox>
                 <vbox align="center">
                   <label observes="reformatok" value="List of Figures"/>
-                  <checkbox observes="reformatok" align="center" checked="false"/>
+                  <checkbox id="lof" observes="reformatok" align="center" checked="false"/>
                 </vbox>
                 <vbox align="center">
                   <label observes="reformatok" value="List of Tables"/>
-                  <hbox><checkbox observes="reformatok" align="center" checked="false"/></hbox>
+                  <hbox><checkbox id="lot" observes="reformatok" align="center" checked="false"/></hbox>
                 </vbox>
               </row>
               <row align="end" style="height: 3em">
@@ -434,7 +454,7 @@
                   <label observes="reformatok" value="Footnotes"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="foot" label="Footnotes"/>
                       <menuitem value="end" label="Endnotes"/>
                     </menupopup>
@@ -444,7 +464,7 @@
                   <label observes="reformatok" value="Bibliography Style"/>
                   <menulist observes="reformatok" id="bibstyle">
                     <menupopup style="width: 9em" >
-                      <menuitem value="def" label="-default-" def="1"/>
+                      <menuitem label="-default-" def="1"/>
                       <menuitem value="compbib" label="Compressed"/>
                       <menuitem value="openbib" label="Open"/>
                     </menupopup>
@@ -470,19 +490,19 @@
               <row align="end" style="height: 3em">
                 <vbox align="center">
                   <label observes="reformatok" value="Show Keys"/>
-                  <checkbox observes="reformatok" align="center" checked="false"/>
+                  <checkbox id="showkeys" observes="reformatok" align="center" checked="false"/>
                  </vbox>
-                 <vbox align="center">
+                 <!--vbox align="center">
                   <label observes="reformatok" value="Show Labels"/>
                   <checkbox observes="reformatok" align="center" checked="false"/>
-                </vbox>
+                </vbox -->
                 <vbox align="center">
                   <label observes="reformatok" value="Show Index Entries"/>
-                  <checkbox observes="reformatok" align="center" checked="false"/>
+                  <checkbox id="showidx" observes="reformatok" align="center" checked="false"/>
                 </vbox>
                 <vbox align="center">
                   <label value="Line Spacing"  observes="reformatok"/>
-                  <menulist  observes="reformatok">
+                  <menulist  id="linespacing" observes="reformatok">
                     <menupopup style="width: 9em" id="linespacing">
                       <menuitem value="one" label="One"/>
                       <menuitem value="sesqui" label="One and a half"/>
@@ -490,11 +510,11 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-              </row>
-              <row align="end" style="height: 3em">
+              <!--/row>
+              <row align="end" style="height: 3em" -->
                 <vbox>
                   <label observes="reformatok" value="Magnification"  />
-                  <hbox><checkbox control="magnification" observes="reformatok" oncommand="enable(this);" checked="false"/><textbox id="magnification" disabled="true" value="-default-" default="1.0" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
+                  <hbox><checkbox id="magnificationcontrol" control="magnification" observes="reformatok" oncommand="enable(this);" checked="false"/><textbox id="magnification" disabled="true" value="-default-" default="1.0" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
                 </vbox>
                 <vbox style="width: 9em;" />
               </row>
@@ -952,7 +972,7 @@
               <vbox>
                 <label observes="fontdefok" align="right" value="&docformatMath;"/>
                 <menulist observes="fontdefok" id="mathfontlist" oncommand="" >
-                  <menupopup>
+                  <menupopup maxwidth="15em">
                     <menuitem id="mathfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
                   </menupopup>
@@ -963,7 +983,7 @@
               <vbox>
                 <label observes="fontdefok" align="right" value="&docformatRoman;"/>
                 <menulist id="mainfontlist" observes="fontdefok" oncommand="" >
-                  <menupopup>
+                  <menupopup maxwidth="15em">
                     <menuitem id="mainfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
                   </menupopup>
@@ -990,7 +1010,7 @@
                 <label observes="fontdefok" value="&docformatSans;"/>
                 <menulist observes="fontdefok" id="sansfontlist" 
                   oncommand="" >
-                  <menupopup>
+                  <menupopup maxwidth="15em">
                     <menuitem id="sansfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
                   </menupopup>
@@ -1016,7 +1036,7 @@
               <vbox>
                 <label observes="fontdefok" value="&docformatFixed;"/>
                 <menulist observes="fontdefok" id="fixedfontlist" label="&docformatFixed;" >
-                  <menupopup>
+                  <menupopup maxwidth="15em">
                     <menuitem id="fixedfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
                   </menupopup>
@@ -1048,7 +1068,7 @@
               <vbox>
                 <label observes="fontdefok" align="right" value="Extra font 1"/>
                 <menulist observes="fontdefok" id="x1fontlist" oncommand=""  >
-                  <menupopup>
+                  <menupopup maxwidth="15em">
                     <menuitem id="x1fontdefault" label="&docformatDefault;" />
                     <menuseparator/>
                   </menupopup>
@@ -1075,7 +1095,7 @@
               <vbox>
                 <label observes="fontdefok" align="right" value="Extra font 2"/>
                 <menulist observes="fontdefok" id="x2fontlist" oncommand=""  >
-                  <menupopup>
+                  <menupopup maxwidth="15em">
                     <menuitem id="x2fontdefault" label="&docformatDefault;" />
                     <menuseparator/>                                               
                   </menupopup>
@@ -1102,7 +1122,7 @@
               <vbox>
                 <label observes="fontdefok" align="right" value="Extra font 3"/>
                 <menulist observes="fontdefok" id="x3fontlist" oncommand=""  >
-                  <menupopup>
+                  <menupopup maxwidth="15em">
                     <menuitem id="x3fontdefault" label="&docformatDefault;" />
                     <menuseparator/>
                   </menupopup>

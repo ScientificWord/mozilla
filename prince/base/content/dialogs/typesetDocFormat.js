@@ -107,12 +107,14 @@ function Startup()
   }
   getEnableFlags(doc);
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
+  var docformatnode = docFormatNodeList[0];
   var node;
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
     node=null;
   else 
     node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
 
+  getMisc(docformatnode);
   getPageLayout(node, doc);
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
     node=null;
@@ -159,7 +161,6 @@ function getEnableFlags(doc)
     compilerInfo.useOTF = value == "xelatex"; 
     document.getElementById("texprogram").value = value;
     var canSetFormat = progNode.getAttribute("formatOK") == "true";
-    enableDisableReformat(canSetFormat);
     document.getElementById("enablereformat").checked = canSetFormat;
     var fontsOK = progNode.getAttribute("fontsOK") == "true";
     enableDisableFonts(fontsOK);
@@ -591,6 +592,59 @@ function getPageLayout(node, document)
   }
 }
 
+function saveMisc(newNode)
+{
+  var packagecheckboxes = ["showkeys","showidx"];
+	var len;
+	for (i = 0, len = packagecheckboxes.length; i < len; i++)
+	{
+		var name = packagecheckboxes[i];
+	  if (document.getElementById(name).checked)
+	  {
+		  lineend(newNode, 1);
+	    var node = editor.createNode(name, newNode, 0);
+	    node.setAttribute("req", name);
+		}
+  }
+	var contentlistings = ["title","toc","lof","lot"];
+	for (i = 0, len = contentlistings.length; i < len; i++)
+	{
+		var name = contentlistings[i];
+	  if (document.getElementById(name).checked)
+	  {
+		  lineend(newNode, 1);
+	    var node = editor.createNode(name, newNode, 0);
+		}
+  }
+
+	
+}
+
+function getMisc(docformat)
+{
+  if (docformat == null) return;
+  var packagecheckboxes = ["showkeys","showidx"];
+	var pos;
+	var len;
+	var list;
+	var node;
+	for (i = 0, len = packagecheckboxes.length; i < len; i++)
+	{
+		var name = packagecheckboxes[i];
+		list = docformat.getElementsByTagName(name);
+		if (list == null || list.length === 0) break;
+		document.getElementById(name).checked = true;
+  }	
+	var contentlistings = ["title","toc","lof","lot"];
+	for (i = 0, len = contentlistings.length; i < len; i++)
+	{
+		var name = contentlistings[i];
+		list = docformat.getElementsByTagName(name);
+		if (list == null || list.length === 0) break;
+		document.getElementById(name).checked = true;
+  }
+}
+
       
 function onAccept()
 {
@@ -608,17 +662,24 @@ function onAccept()
   if (docFormatNodeList)
     for (i = docFormatNodeList.length - 1; i >= 0; i--)
       editor.deleteNode(docFormatNodeList[i])
-  var newNode = editor.createNode('docformat',preamble,0);
+  var newNode = editor.createNode('docformat', preamble, 0);
 // should check that the user wants to use geometry package.
   if (newNode) 
   {
+	  try {
+		saveMisc(newNode);
+    saveEnableFlags(doc, newNode);
     saveCropMarks(newNode);
     savePageLayout(newNode);
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
-    saveEnableFlags(doc, newNode);
     saveClassOptionsEtc(newNode);
-    saveNumStyles(preamble);
+    saveLanguageSettings(true);
+//    saveNumStyles(preamble);
+	}
+	catch(e) { 
+		dump("Help! "+e.message+"\n");
+		}
   }
   return true;
 }  
@@ -628,13 +689,7 @@ function saveEnableFlags(doc, docformatnode)
 {
   var nodelist = doc.getElementsByTagName("texprogram");
   var progNode;
-  var newProgNode = false;
-  if (nodelist.length == 0) 
-  {
-    newProgNode = true;
-    progNode = editor.createNode("texprogram", docformatnode, 0);
-  }
-  else progNode = nodelist[0];
+  progNode = editor.createNode("texprogram", docformatnode, 0);
   // handle compiler choice, whether to allow formatting changes, etc.
   progNode.setAttribute("prog", compilerInfo.prog);
   progNode.setAttribute("formatOK", compilerInfo.formatOK);
@@ -644,6 +699,7 @@ function saveEnableFlags(doc, docformatnode)
   progNode.setAttribute("fontsOK", compilerInfo.fontsOK);
   progNode.setAttribute("pageFormatOK", compilerInfo.pageFormatOK); 
 }
+
 function onCancel()
 {
  return true;
@@ -757,87 +813,24 @@ function changePageDim(textbox)
 //this gets the page dimensions for page type obj.pagename and returns them as obj.width 
 // and obj.height. If the pagename is 'other', it does not set the heightand width and returns
 // false. Otherwise it returns true.
+
+var stdPageDimensions = {   letter: {w: 215.9, h: 279.4},	a4: {w: 210, h: 297},   screen: {w: 225, h: 180},  a0: {w: 841, h: 1189}, 
+	a1: {w: 594, h: 841},     a2: {w: 420, h: 594},         a3: {w: 297, h: 420}, 	a5: {w: 148, h: 210},      a6: {w: 105, h: 148}, 
+	b0: {w: 1000, h: 1414},   b1: {w: 707, h: 1000},     	  b2: {w: 500, h: 707},   b3: {w: 353, h: 500},      b4: {w: 250, h: 353}, 
+	b5: {w: 176, h: 250},     b6: {w: 125, h: 176},         executive: {w: 184, h: 267},                       legal: {w: 216, h: 356} };
+	
 function getPageDimensions( obj)
 {
-  switch (obj.pagename) {
-    case "letter":   // these dimensions are in millimeters
-      obj.width = 215.9;
-      obj.height = 279.4;
-      break;
-		case "a4":
-      obj.width = 210;
-      obj.height = 297;
-      break;
-		case "other":
-      return false;
-    case "screen":
-      obj.width = 225;
-      obj.height = 180;
-      break;
-		case "a0":
-      obj.width = 841;
-      obj.height = 1189;
-      break;
-		case "a1":
-      obj.width = 594;
-      obj.height = 841;
-      break;
-		case "a2":
-      obj.width = 420;
-      obj.height = 594;
-      break;
-		case "a3":
-      obj.width = 297;
-      obj.height = 420;
-      break;
-		case "a5":
-      obj.width = 148;
-      obj.height = 210;
-      break;
-		case "a6":
-      obj.width = 105;
-      obj.height = 148;
-      break;
-		case "b0":
-      obj.width = 1000;
-      obj.height = 1414;
-      break;
-		case "b1":
-      obj.width = 707;
-      obj.height = 1000;
-      break;
-		case "b2":
-      obj.width = 500;
-      obj.height = 707;
-      break;
-		case "b3":
-      obj.width = 353;
-      obj.height = 500;
-      break;
-		case "b4":
-      obj.width = 250;
-      obj.height = 353;
-      break;
-		case "b5":
-      obj.width = 176;
-      obj.height = 250;
-      break;
-		case "b6":
-      obj.width = 125;
-      obj.height = 176;
-      break;
-		case "executive":
-      obj.width = 184;
-      obj.height = 267;
-      break;
-		case "legal":
-      obj.width = 216;
-      obj.height = 356;
-      break;
-    default:  // default to letter
-      obj.width = 215.9;
-      obj.height = 279.4;
-      break;
+  if (obj.pagename in stdPageDimensions)
+	{
+		var o = stdPageDimensions[obj.pagename];
+		obj.width = o.w;
+		obj.height = o.h;
+	}
+	else // default to letter
+	{
+	  obj.width = 215.9;
+	  obj.height = 279.4;
   }
   return true;
 }
@@ -2631,148 +2624,107 @@ function deleteOTFontsFromMenu(menuID)
   if (ch && ch.id ==="startOpenType") menuPopup.removeChild(ch);
 }                                           
 
+	
 function saveClassOptionsEtc(docformatnode)
 {
-  var doc = editor.document;
+	var optionNode;
+  var i;
+	var doc = editor.document;
   var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
   if (!documentclass) {
-    dump("No documentclass in document\n");
-    return;
+    throw("No document class in document");
   }
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   if (!preamble) {
-    dump("No preamble in document\n");
-    return;
+    throw("No preamble in document");
   }
   var nodelist = doc.getElementsByTagName("colist");
+	while (nodelist.length > 0) deleteNode(nodelist[nodelist.length - 1]);
   var optionNode;
-  var newOptionNode = false;
-  if (nodelist.length == 0) 
-  {
-    newOptionNode = true;
-    optionNode = editor.createNode("colist", docformatnode, 0);
-  }
-  else 
-    optionNode = nodelist[0];
-  // convention: default values are starred at the end.
+  // convention: default menuitems have a def attribute
+  var optionnames = ["pgorient", "papersize", "sides", "qual", "columns", "textsize", "eqnnopos", "eqnpos", "bibstyle"]
   var widget;
-  widget = document.getElementById("pgorient").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("pgorient");
-  else 
-    optionNode.setAttribute("pgorient", widget.value);
-  
-  widget = document.getElementById("papersize").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("papersize")
-  else 
-    optionNode.setAttribute("papersize", widget.value);
+	var name;
+  for (var i = 0, len = optionnames.length; i < len; i++)
+	{
+	  name = optionnames[i];
+	  widget = document.getElementById(name).selectedItem;
+	  if (!widget.hasAttribute("def")) 
+		{
+			if (optionNode == null)
+			  optionNode = editor.createNode("colist", docformatnode, 0);
+	    optionNode.setAttribute(name, widget.value);
+		}
+  }
 
-  widget = document.getElementById("sides").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("sides")
-  else 
-    optionNode.setAttribute("sides", widget.value);
-
-  widget = document.getElementById("qual").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("qual")
-  else 
-    optionNode.setAttribute("qual", widget.value);
-
-  widget = document.getElementById("columns").selectedItem;
-  if (!widget || widget.hasAttribute("def")) 
-    optionNode.removeAttribute("columns");
-  else 
-    optionNode.setAttribute("columns", widget.value);
-
-  widget = document.getElementById("textsize").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("textsize");
-  else 
-    optionNode.setAttribute("textsize", widget.value);
-
-  widget = document.getElementById("eqnnopos").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("eqnnopos");
-  else 
-    optionNode.setAttribute("eqnnopos", widget.value);
-
-  widget = document.getElementById("eqnpos").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("eqnpos");
-  else 
-    optionNode.setAttribute("eqnpos", widget.value);
-
-  widget = document.getElementById("titlepage").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("titlepage");
-  else 
-    optionNode.setAttribute("titlepage", widget.value);
-
-  widget = document.getElementById("bibstyle").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("bibstyle");
-  else 
-    optionNode.setAttribute("bibstyle", widget.value);
-
-  if (newOptionNode) documentclass.appendChild(optionNode);
-
-  widget = document.getElementById("leading").value;
-  nodelist = preamble.getElementsByTagName("leading");
   var leading;
-  var i;
-  if (widget > 0)
-  {
-    if (nodelist.length == 0)
-      leading = editor.createNode("leading",preamble,1000);
-    else leading = nodelist[0];
+  nodelist = doc.getElementsByTagName("leading");
+	while (nodelist.length > 0) deleteNode(nodelist[nodelist.length - 1]);
+  if (document.getElementById("leadingcontrol").checked)
+	{  
+		widget = document.getElementById("leading").value;
+	  leading = editor.createNode("leading",preamble,1000);
     leading.setAttribute("val", widget+"pt")
     leading.setAttribute("req","leading")
-  }
-  else for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
-    
-  widget = document.getElementById("showkeys").selectedItem;
-  nodelist = preamble.getElementsByTagName("showkeys");
-  var showkeys;
-  var i;
-  if (widget.hasAttribute("def")) 
-   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
-  else
-  {
-    if (nodelist.length == 0)
-      showkeys = editor.createNode("showkeys", preamble, 1000);
-    else showkeys = nodelist[0];
-    showkeys.setAttribute("req", "showkeys")
-  }
+	}  
+}
 
-  widget = document.getElementById("showlabels").selectedItem;
-  nodelist = preamble.getElementsByTagName("showlabels");
-  var showkeys;
-  var i;
-  if (widget.hasAttribute("def")) 
-   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
-  else
-  {
-    if (nodelist.length == 0)
-      showkeys = editor.createNode("showlabels", preamble, 1000);
-    else showkeys = nodelist[0];
-    showkeys.setAttribute("req", "showlabels")
-  }
-    
-  widget = document.getElementById("showidx").selectedItem;
-  nodelist = preamble.getElementsByTagName("showidx");
-  var showidx;
-  var i;
-  if (widget.hasAttribute("def")) 
-   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
-  else
-  {
-    if (nodelist.length == 0)
-      showidx = editor.createNode("showidx", preamble, 1000);
-    else showidx = nodelist[0];
-    showidx.setAttribute("req", "showidx")
-  }
+function saveLanguageSettings(isPolyglossia)
+{
+	// clear any old settings if there are any
+	var babelTags = editor.tagListManager.getBabelTags();
+	var tagArray = babelTags.split(",");
+	var i;
+	var tag;
+	var babelIndex;
+	var tagclass;
+	var hidden;
+	var lang1;
+	var lang2;
+	var lang;
+	var langIndex;
+	var needsResetting = false;
+	lang1 = document.getElementById("babelLang1").value;
+	if (lang1 === "def") lang1=null;
+	lang2 = document.getElementById("babelLang2").value;
+	if (lang2 === "def") lang2=null;
+	
+	for (i = 0; i < tagArray.length; i++)
+	{
+		var index = i+1;
+		tag = tagArray[i];
+		hidden = editor.tagListManager.getStringPropertyForTag( tag, null, "hidden");
+		if (index%2 === 1) lang = lang1;
+		else lang = lang2;
+		if (lang)	
+		{
+			needsResetting = true;
+			editor.tagListManager.setTagVisibility(tag, null, false);
+			if (index < 3)
+			{
+				editor.tagListManager.setTagName(tag, null, "text"+ lang);
+			}
+			else
+			{
+				editor.tagListManager.setTagName(tag, null, (lang==="arabic" ? "Arabic" : lang) )
+			}
+		}
+		else
+		{
+			lang = "##lang" + (1 + index%2).toString();
+			editor.tagListManager.setTagVisibility(tag, null, true);
+			if (index < 3)
+			{
+				editor.tagListManager.setTagName(tag, null, "text"+ lang);
+			}
+			else
+			{
+				editor.tagListManager.setTagName(tag, null, lang);
+			}			
+		}
+	}
+  //if (needsResetting)
+	editor.tagListManager.rebuildHash();	
 }
 
 function setMenulistSelection(menulist, value)
@@ -2912,3 +2864,4 @@ function enableDisableFonts(enabled)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
+
