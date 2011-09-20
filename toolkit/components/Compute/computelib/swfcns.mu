@@ -8,15 +8,15 @@
 Pref::mackichan(TRUE);
 
 //Assign non-zero assumptions to units
-property::assume(mQU,Type::Positive):
-property::assume(kgQU,Type::Positive):
-property::assume(sQU,Type::Positive):
-property::assume(AQU,Type::Positive):
-property::assume(tmpKQU,Type::Positive):
-property::assume(radQU,Type::Positive):
-property::assume(srQU,Type::Positive):
-property::assume(cdQU,Type::Positive):
-property::assume(molQU,Type::Positive):
+assume(mQU,Type::Positive):
+assume(kgQU,Type::Positive):
+assume(sQU,Type::Positive):
+assume(AQU,Type::Positive):
+assume(tmpKQU,Type::Positive):
+assume(radQU,Type::Positive):
+assume(srQU,Type::Positive):
+assume(cdQU,Type::Positive):
+assume(molQU,Type::Positive):
 
 tcipwr := proc(xx,nn)
 begin
