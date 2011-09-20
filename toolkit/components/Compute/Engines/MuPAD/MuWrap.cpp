@@ -325,8 +325,23 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
                                                          name_map);
 
 
-            if (cmd_ID >= CCID_Solve_PDE && cmd_ID <= CCID_Solve_ODE_Series)
+            if (cmd_ID >= CCID_Solve_PDE && cmd_ID <= CCID_Solve_ODE_Series) {
               PurgeDEFuncNames();
+              // The names in eng_tree have been defined in the engine. We have to 
+              // announce to defstore
+              
+              DefStore* defstore = curr_msr->GetDefStore();
+              U32 engine_ID = curr_msr->GetEngineID();
+              BUCKET_REC* b = children -> bucket_list;
+              while (b) {
+                 if (b->bucket_ID == MB_ODEFUNC) {
+                    if (b -> first_child && b -> first_child -> canonical_ID) {
+                      defstore->PushDefInfo(engine_ID, b -> first_child -> canonical_ID, 2, NULL, NULL, 0, NULL, NULL);
+                    }
+                 }
+                 b = b -> next;
+              }
+            }
 
             // s_tree is our return value - it may not contain math
             // ie. it may be an engine message like "needvars"
@@ -1446,7 +1461,7 @@ char *MuPADWrapper::LIMFUNCtoEstr(SEMANTICS_NODE * limfunc_info,
       // limfunc type operator takes an operand
       BUCKET_REC *arg_bucket =
         FindBucketRec(limfunc_info->bucket_list, MB_UNNAMED);
-      if (arg_bucket->first_child) {
+      if (arg_bucket && arg_bucket->first_child) {
         arg_str = ProcessSemList(arg_bucket->first_child, NULL, error_code);
       }
       if (error_code)
