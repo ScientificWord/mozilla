@@ -65,6 +65,8 @@
 <xsl:variable name="formattingok" select="//html:texprogram[@formatOK='true']"/>
 <xsl:variable name="pagelayoutok" select="//html:texprogram[@pageFormatOK='true']"/>
 <xsl:variable name="fontchoiceok" select="//html:texprogram[@fontsOK='true']"/>
+<xsl:variable name="lang1" select="//html:babel/@lang1"/>
+<xsl:variable name="lang2" select="//html:babel/@lang2"/>
 
 <xsl:template match="html:preamble">
 <xsl:text>%% preamble
@@ -107,6 +109,15 @@
 
 <xsl:template match="html:preambleTeX">
   <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template match="html:babel">
+  <xsl:if test="@lang1">
+    \setdefaultlanguage{<xsl:value-of select="@lang1"/>}
+  </xsl:if>
+  <xsl:if test="@lang2">
+    \setotherlanguage{<xsl:value-of select="@lang2"/>}
+  </xsl:if>
 </xsl:template>
 
 <!-- use docformat information to call the crop package -->
