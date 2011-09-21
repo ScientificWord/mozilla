@@ -95,8 +95,8 @@
             <label  observes="reformatok">TeX Implementation</label>
           </caption>   
           <radiogroup id="texprogram" selectedIndex="0" value="pdflatex">
-            <radio observes="reformatok" label="pdfLaTeX -- the classic" value="pdflatex" oncommand="setCompiler('pdflatex');"/>
-            <radio observes="reformatok" value="xelatex" label="XeLaTeX-- a unicode ehancement of LaTeX for non-western languages, uses opentype fonts" oncommand="setCompiler('xelatex');"/>
+            <radio label="pdfLaTeX -- the classic" value="pdflatex" oncommand="setCompiler('pdflatex');"/>
+            <radio value="xelatex" label="XeLaTeX-- a unicode ehancement of LaTeX for non-western languages, uses opentype fonts" oncommand="setCompiler('xelatex');"/>
           </radiogroup>
           <broadcaster id="xelatex" hidden="true" onbroadcast="compileInfoChanged(this);"/>
           <broadcaster id="pdflatex" hidden="false" onbroadcast="compileInfoChanged(this);"/>

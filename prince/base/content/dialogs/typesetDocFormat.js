@@ -150,6 +150,7 @@ function getEnableFlags(doc)
     value = progNode.getAttribute("prog");
     setCompiler(value);
     compilerInfo.useOTF = value == "xelatex"; 
+		compilerInfo.useUni = compilerInfo.useOTF;
     document.getElementById("texprogram").value = value;
     var canSetFormat = progNode.getAttribute("formatOK") == "true";
     document.getElementById("enablereformat").checked = canSetFormat;
@@ -2641,7 +2642,7 @@ function saveLanguageSettings(preambleNode)
 	var hidden;
 	var lang1;
 	var lang2;
-	var isPolyglossia = compilerInfo.useOTF;
+	var isPolyglossia = !(document.getElementById("xelatex").hidden);
 	var needsResetting = true;
 	lang1 = document.getElementById("babelLang1").value;
 	if (lang1 === "def") lang1=null;
@@ -2739,22 +2740,22 @@ function getClassOptionsEtc()
 
 function setCompiler(compilername)
 {
-//  if (compilerInfo.prog != compilername)
-//  {
     compilerInfo.prog = compilername;
     if (compilername=="xelatex")
     {
       document.getElementById("xelatex").hidden=false;
       document.getElementById("pdflatex").hidden=true;
       changeOpenType(true);
+			compiler.useOTF = compiler.useUni = true;
     }
     else
     { 
       document.getElementById("xelatex").hidden=true;
       document.getElementById("pdflatex").hidden=false;
       changeOpenType(false);
+			compiler.useOTF = compiler.useUni = false;
     } 
-//  }   
+   
 }
 
 function enableDisableReformat(enable)
@@ -2801,12 +2802,12 @@ function compileInfoChanged(widget)
 	var useXelatex;
 	if (widget.id ==="xelatex")
 	{
-		useXelatex = !(this.hidden);
+		useXelatex = !(widget.hidden);
 		compilerInfo.prog = "xelatex";
 	}
 	if (widget.id==="pdflatex")
 	{
-		useXelatex = (this.hidden);
+		useXelatex = (widget.hidden);
 		compilerInfo.prog = "pdflatex";
 	}
 	compilerInfo.useOTF = useXelatex;
