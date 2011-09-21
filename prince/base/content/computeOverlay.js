@@ -2401,21 +2401,18 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
       { 
         if (this.Cancel)
           return;
-        this.mParentWin.doComputeSolveODE(this.theMath, this.theLabelID, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+        this.mParentWin.doComputeSolveODELaplace(this.theMath, this.theLabelID, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
       try {
         var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                           editorElement, cmd, cmdHandler, o);
-      } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODE: [" + e + "]"); return;}
+      } catch(e) {
+        AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODE: [" + e + "]"); 
+        return;
+      }
 
-//      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
-//      if (o.Cancel)
-//        return;
-//      vars = runFixup(o.vars);
     } else {
       msiComputeLogger.Exception(ex);
-//      return;
 } } }
 
 
