@@ -65,6 +65,8 @@ var msiDefineCommand =
             msiIsEditingRenderedHTML(editorElement) &&
             ( isInMath(editorElement) || 
               aCommand == "cmd_MSIComputeShowDefs" ||
+              aCommand == "cmd_MSIComputeMapMuPADName" ||
+
               //aCommand == "cmd_MSI/ComputeUserSettings" ||
               aCommand == "cmd_MSIComputeClearDefs" ||
               //aCommand == "cmd_MSIComputeSettings" ||
@@ -269,6 +271,7 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputeUndefine",      msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeShowDefs",      msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeClearDefs",     msiDefineCommand);    
+  commandTable.registerCommand("cmd_MSIComputeMapMuPADName",     msiDefineCommand);
   //commandTable.registerCommand("cmd_MSIComputeUserSettings",  msiDefineCommand);     
   //commandTable.registerCommand("cmd_MSIComputeSettings",      msiDefineCommand);     
   //commandTable.registerCommand("cmd_MSIComputeSwitchEngines", msiDefineCommand);     
@@ -922,6 +925,10 @@ function doGlobalComputeCommand(cmd, editorElement)
   case "cmd_compute_ClearDefs":
     doComputeClearDefs();
     break;
+  case "cmd_compute_MapMuPADName":
+    doComputeMapMuPADName(editorElement);
+    break;
+
 //   case "cmd_compute_UserSettings":
 //     doComputeUserSettings();
 //     break;
@@ -3041,6 +3048,21 @@ function doComputeClearDefs()
 {
   msiComputeLogger.Sent("clear definitions","");
   GetCurrentEngine().clearDefinitions();
+}
+
+function doComputeMapMuPADName(editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  msiComputeLogger.Sent("Map MuPAD Name","");
+
+  var o = new Object();
+
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
+   
+  
 }
 
 function doComputeSetBasisVars(editorElement, cmd)
