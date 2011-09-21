@@ -137,6 +137,7 @@ function Startup()
 //  getNumStyles(preamble);
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
+	getLanguageSettings(preamble);
 }
 
 function getEnableFlags(doc)
@@ -2611,6 +2612,25 @@ function saveClassOptionsEtc(docformatnode)
 	}  
 }
 
+function getLanguageSettings(preambleNode)
+{
+	var babelnodes = preambleNode.getElementsByTagName("babel");
+	var babelnode;
+	var lang1;
+	var lang2;
+	if (babelnodes && babelnodes.length > 0)
+	{
+		babelnode = babelnodes[0];
+		if (babelnode)
+		{
+			lang1 = babelnode.getAttribute("lang1");
+			lang2 = babelnode.getAttribute("lang2");
+			if (lang1) document.getElementById("babelLang1").value = lang1;
+			if (lang2) document.getElementById("babelLang2").value = lang2;
+		}
+	}
+}
+
 function saveLanguageSettings(preambleNode)
 {
 	// clear any old settings if there are any
@@ -2621,7 +2641,7 @@ function saveLanguageSettings(preambleNode)
 	var hidden;
 	var lang1;
 	var lang2;
-	var isPolyglossia = true; //compilerInfo.useOTF;
+	var isPolyglossia = compilerInfo.useOTF;
 	var needsResetting = true;
 	lang1 = document.getElementById("babelLang1").value;
 	if (lang1 === "def") lang1=null;
@@ -2775,4 +2795,34 @@ function enableDisableFonts(enabled)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
+
+function compileInfoChanged(widget)
+{
+	var useXelatex;
+	if (widget.id ==="xelatex")
+	{
+		useXelatex = !(this.hidden);
+		compilerInfo.prog = "xelatex";
+	}
+	if (widget.id==="pdflatex")
+	{
+		useXelatex = (this.hidden);
+		compilerInfo.prog = "pdflatex";
+	}
+	compilerInfo.useOTF = useXelatex;
+	compilerInfo.useUni = useXelatex;	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
