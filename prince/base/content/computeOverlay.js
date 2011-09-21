@@ -65,6 +65,8 @@ var msiDefineCommand =
             msiIsEditingRenderedHTML(editorElement) &&
             ( isInMath(editorElement) || 
               aCommand == "cmd_MSIComputeShowDefs" ||
+              aCommand == "cmd_MSIComputeMapMuPADName" ||
+
               //aCommand == "cmd_MSI/ComputeUserSettings" ||
               aCommand == "cmd_MSIComputeClearDefs" ||
               //aCommand == "cmd_MSIComputeSettings" ||
@@ -269,6 +271,7 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputeUndefine",      msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeShowDefs",      msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeClearDefs",     msiDefineCommand);    
+  commandTable.registerCommand("cmd_MSIComputeMapMuPADName",     msiDefineCommand);
   //commandTable.registerCommand("cmd_MSIComputeUserSettings",  msiDefineCommand);     
   //commandTable.registerCommand("cmd_MSIComputeSettings",      msiDefineCommand);     
   //commandTable.registerCommand("cmd_MSIComputeSwitchEngines", msiDefineCommand);     
@@ -922,6 +925,10 @@ function doGlobalComputeCommand(cmd, editorElement)
   case "cmd_compute_ClearDefs":
     doComputeClearDefs();
     break;
+  case "cmd_compute_MapMuPADName":
+    doComputeMapMuPADName(editorElement);
+    break;
+
 //   case "cmd_compute_UserSettings":
 //     doComputeUserSettings();
 //     break;
@@ -2376,7 +2383,7 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
     ComputeCursor(editorElement);
     //var out = func(mathstr,vars);
 	  var eng = GetCurrentEngine();
-	  var out = eng.solveODEExact(mathstr,vars);
+	  var out = eng.solveODELaplace(mathstr,vars);
     //var out = func(mathstr, vars);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
@@ -2393,7 +2400,6 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
       o.mParentWin = this;
       o.theMath = math;
       o.theLabelID = labelID;
-      o.theFunc = func;
       o.theTitleID = titleID;
       o.vars = vars;
       o.theCommand = cmd;
@@ -2402,21 +2408,18 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
       { 
         if (this.Cancel)
           return;
-        this.mParentWin.doComputeSolveODE(this.theMath, this.theLabelID, this.theFunc, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+        this.mParentWin.doComputeSolveODELaplace(this.theMath, this.theLabelID, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
       try {
         var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                           editorElement, cmd, cmdHandler, o);
-      } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODE: [" + e + "]"); return;}
+      } catch(e) {
+        AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODE: [" + e + "]"); 
+        return;
+      }
 
-//      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
-//      if (o.Cancel)
-//        return;
-//      vars = runFixup(o.vars);
     } else {
       msiComputeLogger.Exception(ex);
-//      return;
 } } }
 
 
@@ -3045,6 +3048,21 @@ function doComputeClearDefs()
 {
   msiComputeLogger.Sent("clear definitions","");
   GetCurrentEngine().clearDefinitions();
+}
+
+function doComputeMapMuPADName(editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  msiComputeLogger.Sent("Map MuPAD Name","");
+
+  var o = new Object();
+
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
+   
+  
 }
 
 function doComputeSetBasisVars(editorElement, cmd)
