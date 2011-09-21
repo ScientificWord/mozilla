@@ -98,8 +98,8 @@
             <radio observes="reformatok" label="pdfLaTeX -- the classic" value="pdflatex" oncommand="setCompiler('pdflatex');"/>
             <radio observes="reformatok" value="xelatex" label="XeLaTeX-- a unicode ehancement of LaTeX for non-western languages, uses opentype fonts" oncommand="setCompiler('xelatex');"/>
           </radiogroup>
-          <broadcaster id="xelatex" hidden="true"/>
-          <broadcaster id="pdflatex" hidden="false" />
+          <broadcaster id="xelatex" hidden="true" onbroadcast="compileInfoChanged(this);"/>
+          <broadcaster id="pdflatex" hidden="false" onbroadcast="compileInfoChanged(this);"/>
         </groupbox>
         <groupbox>
           <caption>
@@ -194,10 +194,10 @@
                     </label>
                     <label style="width:9em">Polyglossia Language
                       <observes element="xelatex" attribute="hidden"/>
-                      <observes element="reformatok" attribute="disabled"/>
+                      <!--observes element="reformatok" attribute="disabled"/ -->
                     </label>
                   </deck>      
-                  <menulist id="babelLang1" observes="reformatok" >
+                  <menulist id="babelLang1" ><!--observes="reformatok" -->
                     <menupopup style="width: 12em"  >
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
                       <menuitem label="-default-" value="def" def="1"/>
@@ -287,8 +287,8 @@
               </row>
               <row>
                 <vbox>
-                  <label observes="reformatok">Second Language</label>
-                  <menulist id="babelLang2" observes="reformatok" >
+                  <label ><!--observes="reformatok" -->Second Language</label>
+                  <menulist id="babelLang2" ><!--observes="reformatok" -->
                     <menupopup style="width: 12em">
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
                       <menuitem label="-default-" value="def" def="1"/>
