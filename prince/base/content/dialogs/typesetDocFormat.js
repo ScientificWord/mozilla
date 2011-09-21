@@ -23,7 +23,6 @@ var sectScale = 1;
 var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
                      useOTF: false,  //currently same as xelatex (lualatex in future)
                      formatOK: false,//master control. If false, can't change anything
-//                     sectHeaderOK: {},
                      pageFormatOK: false,//geometry package not called if false
                      useUni: false,//currently same as useOTF
                      fontsOK: false };// OK to choose fonts
@@ -76,15 +75,6 @@ function stripPath(element, index, array)
   array[index] = re.exec(element)[1];
 }
 
-//function initializeCompilerInfo()
-//{
-//  // most was done statically above
-//  var l = sectionlist.length;
-//  var i;
-//  for (i = 0; i < l; i++)
-//    compilerInfo.sectHeaderOK[sectionlist[i]] = false;
-//}
- 
 function Startup()
 {
   initializeFontFamilyList(false);
@@ -255,9 +245,6 @@ function setNumStyle(menulist)
   }
 }
 
-
-//var serializer;
-
 function lineend(node, spacecount)
 {
 //  if (!serializer) 
@@ -367,7 +354,6 @@ function getNumberValue(numberwithunit)
   }
   return 0;
 }
-
 
 function getPageLayout(node, document)
 {
@@ -645,7 +631,6 @@ function getMisc(docformat)
   }
 }
 
-      
 function onAccept()
 {
 // first check that something is set
@@ -674,7 +659,7 @@ function onAccept()
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
     saveClassOptionsEtc(newNode);
-    saveLanguageSettings(true);
+    saveLanguageSettings(preamble);
 //    saveNumStyles(preamble);
 	}
 	catch(e) { 
@@ -684,7 +669,6 @@ function onAccept()
   return true;
 }  
 
-    
 function saveEnableFlags(doc, docformatnode)
 {
   var nodelist = doc.getElementsByTagName("texprogram");
@@ -721,8 +705,8 @@ function disableMarginNotes()
   updateComputedMargins();
 }
 
-
-function convert(invalue, inunit, outunit) // Converts invalue inunits into x outunits
+function convert(invalue, inunit, outunit) 
+// Converts invalue inunits into x outunits
 {
   if (inunit == outunit) return invalue;
   var outvalue = invalue*unitConversions[inunit];
@@ -730,7 +714,6 @@ function convert(invalue, inunit, outunit) // Converts invalue inunits into x ou
   dump(invalue+inunit+" = "+outvalue+outunit+"\n");
   return outvalue;
 }
-
 
 // * Callback for spinbuttons. Increments of |increment| the length value of
 //   the XUL element of ID |id|.
@@ -800,7 +783,6 @@ function changefinishpageSize(menu)
   }
   setPageDimensions();
 }
-
 
 // Page layout stuff  
 function changePageDim(textbox)
@@ -929,7 +911,6 @@ function getCropInfo(node)
   setPaperDimensions();
 }
 
-
 function setPaperDimensions()
 {
   var obj = new Object();
@@ -980,7 +961,6 @@ function unitRound( size )
   return Math.round(size*places)/places;
 }
 
-
 function OnWindowSizeReset(initial)
 {
   var twomargins = 60; //20 pixels per margin for the layout page
@@ -1024,7 +1004,8 @@ function setHeight(id, units)
   }
 }
 
-function setDecimalPlaces() // and increments
+function setDecimalPlaces()
+// and increments
 {
   var places;
   var increment;
@@ -1103,7 +1084,6 @@ function updateComputedMargins()
   document.getElementById("page").setAttribute("danger", overflow);
 }
 
-
 function layoutPage(which)
 {
   var s;
@@ -1173,7 +1153,6 @@ function activate(id)
       elt.setAttribute("active","1");
 }     
 
-
 function deactivate(id)
 {
     var elt = document.getElementById(id);
@@ -1235,7 +1214,6 @@ function handleBodyMouseClick(event)
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and returns sets
 // the value of the text box
-
 function updateTextNumber(textelement, event)
 {
   var val = textelement.value;
@@ -1278,7 +1256,6 @@ function updateTextNumber(textelement, event)
   }
 }           
  
-
 function handleChar(event, id, tbid)
 {
   var element = event.originalTarget;
@@ -1401,8 +1378,6 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
     }
   }
 }
-
-
 
 function saveFontSpecs(docFormatNode)
 {
@@ -1581,14 +1556,15 @@ function getFontSpecs(node)
   } 
 }
 
-
-function trimBlanks( astring)    // this assumes blanks will appear only at the ends of the string, and it will
-                                 // remove any blanks in the interior of the string
+function trimBlanks( astring)    
+// this assumes blanks will appear only at the ends of the string, and it will
+// remove any blanks in the interior of the string
 {
   return astring.replace(/\s/gm,"");
 }
 
-function parseOneOption( astring ) // the string is of the form XXXX=yyyy or XXXX={yyyy,zzzz}
+function parseOneOption( astring ) 
+// the string is of the form XXXX=yyyy or XXXX={yyyy,zzzz}
 {
   var dataObj = new Object;
   var arr = astring.split("=");
@@ -1599,7 +1575,6 @@ function parseOneOption( astring ) // the string is of the form XXXX=yyyy or XXX
   dataObj.options = options.split(",");
   return dataObj;
 }
-
 
 // parse the contents of a textbox. The menulist and checkbox to update are gotten by varying 
 // the id of the textbox in predetermined ways. Returns an array of objects with members name (a string)
@@ -1671,7 +1646,8 @@ function onOptionTextChanged( textbox )
   }
 }     
     
-function addOptionObject ( objarray, obj ) // objarray is an array of objects
+function addOptionObject ( objarray, obj ) 
+                                      // objarray is an array of objects
                                       // with a name (string) and options (array of strings)
                                       // This adds the new object (with only one option in its array),
                                       // consolidating if necessary
@@ -1746,9 +1722,9 @@ function stringFrom (objectArray)
   }
   return returnValue;
 }
-         
-   
-function onCheck( checkbox ) // the checkbox is for old style nums or swashes
+            
+function onCheck( checkbox ) 
+// the checkbox is for old style nums or swashes
 {
   var id = checkbox.id;
   var optionObj = new Object;
@@ -1770,8 +1746,7 @@ function onCheck( checkbox ) // the checkbox is for old style nums or swashes
   else removeOptionObject(objarray,optionObj);
   document.getElementById(base+"native").value = stringFrom(objarray);
 }
-  
-  
+    
 //function onMenulistFocus(menulist)
 //{
 //  var tempnodes = menulist.getElementsByTagName("menupopup");
@@ -2239,7 +2214,6 @@ function sectSetDecimalPlaces() // and increments
   elt.setAttribute("decimalplaces", places);
 }    
 
-
 function displayTextForSectionHeader(name)
 {
   try {
@@ -2279,8 +2253,8 @@ function displayTextForSectionHeader(name)
   }
 }
 
-
-function refresh() // a version of displayTextForSectionHeader designed to be used as a callback
+function refresh() 
+// a version of displayTextForSectionHeader designed to be used as a callback
 {
 //  var strContents = sectitleformat[sectitleformat.currentLevel];
 //  var parser = new DOMParser();
@@ -2363,7 +2337,6 @@ function setalign(which)
   //otherelement.setAttribute("role", "spacer");
 }
     
-
 function clearselection(element)
 {
  if (element.nodeType != element.ELEMENT_NODE) return;
@@ -2375,7 +2348,9 @@ function clearselection(element)
     clearselection(element.childNodes[i]);
   }
 } 
+
 var lastselected = null;   
+
 function toggleselection( element )
 {
   lastselected = element;
@@ -2478,7 +2453,6 @@ function addrule()
   boxlist[i] = nextbox;
 }
 
-
 function addspace()
 {
   // find which is selected
@@ -2578,37 +2552,6 @@ function addOldFontsToMenu(menuPopupId)
 }
 
 function changeOpenType(useOTF)
-{
-  if (compilerInfo.useOTF != useOTF)
-  {
-    compilerInfo.useOTF = useOTF;
-    var menuObject = { menulist: []};
-    if (compilerInfo.useOTF) {
-      // add opentype families to the menus 
-      menuObject.menulist = document.getElementById("mainfontlist");
-      addOTFontsToMenu(menuObject);
-      menuObject.menulist = document.getElementById("sansfontlist");
-      addOTFontsToMenu(menuObject);
-      menuObject.menulist = document.getElementById("fixedfontlist");
-      addOTFontsToMenu(menuObject);
-      menuObject.menulist = document.getElementById("x1fontlist");
-      addOTFontsToMenu(menuObject);
-      menuObject.menulist = document.getElementById("x2fontlist");
-      addOTFontsToMenu(menuObject);
-      menuObject.menulist = document.getElementById("x3fontlist");
-      addOTFontsToMenu(menuObject);
-    }
-    else {
-      deleteOTFontsFromMenu("mainfontlist");
-      deleteOTFontsFromMenu("sansfontlist");
-      deleteOTFontsFromMenu("fixedfontlist");
-      deleteOTFontsFromMenu("x1fontlist");
-      deleteOTFontsFromMenu("x2fontlist");
-      deleteOTFontsFromMenu("x3fontlist");
-    } 
-  }
-}  
-
     
 function deleteOTFontsFromMenu(menuID)
 {
@@ -2623,7 +2566,6 @@ function deleteOTFontsFromMenu(menuID)
   }
   if (ch && ch.id ==="startOpenType") menuPopup.removeChild(ch);
 }                                           
-
 	
 function saveClassOptionsEtc(docformatnode)
 {
@@ -2669,62 +2611,32 @@ function saveClassOptionsEtc(docformatnode)
 	}  
 }
 
-function saveLanguageSettings(isPolyglossia)
+function saveLanguageSettings(preambleNode)
 {
 	// clear any old settings if there are any
-	var babelTags = editor.tagListManager.getBabelTags();
-	var tagArray = babelTags.split(",");
+  var doc = editor.document;
 	var i;
 	var tag;
-	var babelIndex;
 	var tagclass;
 	var hidden;
 	var lang1;
 	var lang2;
-	var lang;
-	var langIndex;
-	var needsResetting = false;
+	var isPolyglossia = true; //compilerInfo.useOTF;
+	var needsResetting = true;
 	lang1 = document.getElementById("babelLang1").value;
 	if (lang1 === "def") lang1=null;
 	lang2 = document.getElementById("babelLang2").value;
 	if (lang2 === "def") lang2=null;
-	
-	for (i = 0; i < tagArray.length; i++)
+	if (lang1 || lang2)
 	{
-		var index = i+1;
-		tag = tagArray[i];
-		hidden = editor.tagListManager.getStringPropertyForTag( tag, null, "hidden");
-		if (index%2 === 1) lang = lang1;
-		else lang = lang2;
-		if (lang)	
-		{
-			needsResetting = true;
-			editor.tagListManager.setTagVisibility(tag, null, false);
-			if (index < 3)
-			{
-				editor.tagListManager.setTagName(tag, null, "text"+ lang);
-			}
-			else
-			{
-				editor.tagListManager.setTagName(tag, null, (lang==="arabic" ? "Arabic" : lang) )
-			}
-		}
-		else
-		{
-			lang = "##lang" + (1 + index%2).toString();
-			editor.tagListManager.setTagVisibility(tag, null, true);
-			if (index < 3)
-			{
-				editor.tagListManager.setTagName(tag, null, "text"+ lang);
-			}
-			else
-			{
-				editor.tagListManager.setTagName(tag, null, lang);
-			}			
-		}
+    var node = editor.createNode("babel",preambleNode,0);
+		node.setAttribute("req", isPolyglossia ? "polyglossia" : "babel");
+    if (lang1)
+    	node.setAttribute("lang1", lang1);
+    if (lang2)
+    	node.setAttribute("lang2", lang2);
 	}
-  //if (needsResetting)
-	editor.tagListManager.rebuildHash();	
+  addLanguagesToTagDefs(lang1, lang2)	
 }
 
 function setMenulistSelection(menulist, value)
@@ -2844,8 +2756,7 @@ function enableDisablePageLayout(enable)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
-
-     
+    
 function enableDisableSectFormat(checkbox)    
 {
   var bcaster = document.getElementById("secredefok");

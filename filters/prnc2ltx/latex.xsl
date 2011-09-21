@@ -29,6 +29,7 @@
 <xsl:include href="spaces.xsl"/>
 <xsl:include href="frame.xsl"/>
 <xsl:include href="texescape.xsl"/>
+<xsl:include href="babel.xsl"/>
 
 <xsl:template match="/">
   <xsl:apply-templates/>
