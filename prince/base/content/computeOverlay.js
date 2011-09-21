@@ -2376,7 +2376,7 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
     ComputeCursor(editorElement);
     //var out = func(mathstr,vars);
 	  var eng = GetCurrentEngine();
-	  var out = eng.solveODEExact(mathstr,vars);
+	  var out = eng.solveODELaplace(mathstr,vars);
     //var out = func(mathstr, vars);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
@@ -2393,7 +2393,6 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
       o.mParentWin = this;
       o.theMath = math;
       o.theLabelID = labelID;
-      o.theFunc = func;
       o.theTitleID = titleID;
       o.vars = vars;
       o.theCommand = cmd;
@@ -2402,7 +2401,7 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
       { 
         if (this.Cancel)
           return;
-        this.mParentWin.doComputeSolveODE(this.theMath, this.theLabelID, this.theFunc, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+        this.mParentWin.doComputeSolveODE(this.theMath, this.theLabelID, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
       try {
         var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
