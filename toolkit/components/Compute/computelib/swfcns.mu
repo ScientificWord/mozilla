@@ -685,9 +685,9 @@ end_proc:
 tciadditionally := proc(v,p)
 begin
   if args(0) >= 2 then
-    property::assume( v, p, _and );
+    assume( v, p, _and );
   else
-    property::assume( v, _and );
+    assume( v, _and );
   end_if;
 end_proc:
 
