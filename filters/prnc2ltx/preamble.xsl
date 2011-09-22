@@ -74,6 +74,7 @@
 \usepackage{amssymb}
 <xsl:if test="$compiler='xelatex'">
 \usepackage{xltxtra}
+\usepackage{xkeyval}
 \TeXXeTstate=1 
 \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
 </xsl:if>
