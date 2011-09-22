@@ -4285,6 +4285,10 @@ function msiSetEditMode(mode, editorElement)
     msiClearSource(editorElement);
     editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
+//		catch(e)
+//		{
+//			dump(e.message+"\n");
+//		}
   }
   else editorElement.contentWindow.focus();
 }
