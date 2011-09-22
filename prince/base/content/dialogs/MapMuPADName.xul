@@ -47,16 +47,14 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
 
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
+
+  <script type="application/x-javascript" src="chrome://prince/content/MapMuPADName.js" />
 
   <popupset id="msiEditorContentContextSet"/>
 
@@ -79,32 +77,25 @@
  
 #include ../keysfordialogs.inc
  
-  <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
-  <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="&menuBar.tooltip;">
-    <menu id="editMenu"/>
-
-    <menu id="MSIMathMenu"/>
-    
-    <menu id="formatMenu" label="&formatMenu.label;" accesskey="&formatmenu.accesskey;">
-      <menupopup id="formatMenuPopup">
-        <menuitem id="snapToGrid"/>
-        <menuseparator/>
-        <menuitem id="objectProperties"/>
-        <menuitem id="colorsAndBackground"/>
-        <menuitem id="pageProperties"/>
-      </menupopup>
-    </menu>
-
-    <menu id="tableMenu"/>
-    <spacer flex="1"/>
-  </menubar>
-  </toolbox -->
 
   <hbox>
     <vbox>
       <groupbox>
-        <caption label="&vars.label;"/>
-        <editor editortype="html" type="content-primary" context="msiEditorContentContext" height="60" width="200" id="varList-frame"/>
+        <caption label="&swpname.label;"/>
+        <editor id="swpname.input" editortype="html" type="content-primary" context="msiEditorContentContext" height="60" width="200"/>
+      </groupbox>
+      <groupbox>
+        <caption label="&mupadname.label;"/>
+        <textbox id="mupadname.input"/>
+      </groupbox>
+
+      <groupbox>
+        <caption id="label" label="&procedure.label;"/>
+        <radiogroup id="builtingroup" orient="vertical">
+           <radio id="builtin" label="&builtin.label;" value="false" selected="true" oncommand=""/>
+           <radio id="builtin" label="&infile.label;" value="wide" selected="false" oncommand=""/>
+           <textbox id="infile.input"/>
+        </radiogroup>
       </groupbox>
     </vbox>
   </hbox>
