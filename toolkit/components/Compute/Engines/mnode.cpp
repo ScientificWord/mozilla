@@ -966,6 +966,11 @@ MNODE* LocateOperator(MNODE* mml_list, OpIlk &op_ilk, int& advance)
     switch (ln) {
     case 2:
       if (StringEqual(mml_element, "mi")) {
+        if (ContentIs(rover, "mod")) {
+           mml_element = "mo"; 
+           key = rover;
+           embellished = false;
+        }
 
       } else if (StringEqual(mml_element, "mo")) {
         key = rover;
