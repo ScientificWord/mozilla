@@ -15,7 +15,8 @@
     xmlns:msi="http://www.sciword.com/namespaces/sciword"
     xmlns:exsl="http://exslt.org/common">
 
-<xsl:param name="endnotes" select="count(//html:endnotes)"/>
+<xsl:param name="endnotes" select="count(//html:endnotes[@val='end'])"/>
+<xsl:param name="footnotecount" select="count(//html:note[@type='footnote'])"/>
 <xsl:param name="indexitems" select="count(//html:indexitem)"/>
 
 <xsl:output method="text" encoding="UTF-8"/>
@@ -43,8 +44,8 @@
 </xsl:template>
 
 <xsl:template match="html:head">
-\documentclass<xsl:if test="//html:documentclass/html:colist/@*">[<xsl:for-each select="//html:documentclass/html:colist/@*"><xsl:value-of select="."/>,</xsl:for-each>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}
-
+\documentclass<xsl:if test="//html:colist/@*">[<xsl:for-each select="//html:colist/@*"
+    ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if test="(position()>1) and (position()!=last())">, </xsl:if></xsl:if></xsl:for-each>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -254,7 +255,7 @@ should not be done under some conditions -->
   >\makeindex</xsl:if>
 \begin{document}
 <xsl:apply-templates/>
-<xsl:if test="$endnotes &gt; 0">
+<xsl:if test="($endnotes &gt; 0) and ($footnotecount &gt; 0)">
 \theendnotes
 </xsl:if>
 <xsl:if test="$indexitems &gt; 0"
