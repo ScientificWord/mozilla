@@ -584,28 +584,68 @@ function saveMisc(newNode)
 {
   var packagecheckboxes = ["showkeys","showidx"];
 	var len;
+	var node;
+	var name;
 	for (i = 0, len = packagecheckboxes.length; i < len; i++)
 	{
-		var name = packagecheckboxes[i];
+		name = packagecheckboxes[i];
 	  if (document.getElementById(name).checked)
 	  {
 		  lineend(newNode, 1);
-	    var node = editor.createNode(name, newNode, 0);
+	    node = editor.createNode(name, newNode, 0);
 	    node.setAttribute("req", name);
 		}
   }
 	var contentlistings = ["title","toc","lof","lot"];
 	for (i = 0, len = contentlistings.length; i < len; i++)
 	{
-		var name = contentlistings[i];
+		name = contentlistings[i];
 	  if (document.getElementById(name).checked)
 	  {
 		  lineend(newNode, 1);
-	    var node = editor.createNode(name, newNode, 0);
+	    node = editor.createNode(name, newNode, 0);
 		}
   }
-
-	
+	// footnotes or endnotes?
+	var fnvalue;
+	fnvalue = document.getElementById("footnoteorendnote").value;
+	if (fnvalue == "end" || fnvalue == "foot")
+	{
+	  lineend(newNode, 1);
+    node = editor.createNode("endnotes", newNode, 0);
+		node.setAttribute("req","endnotes");
+		node.setAttribute("val", fnvalue);
+	}
+	// leading
+	if (document.getElementById("leadingcontrol").checked)
+	{
+		var leading = document.getElementById("leading").value;
+		if (leading)
+		{
+			var val = parseInt(leading);
+			if (!isNaN(val))
+			{
+			  lineend(newNode, 1);
+		    node = editor.createNode("leading", newNode, 0);
+				node.setAttribute("req","leading");
+			  node.setAttribute("val",val.toString()+"pt");
+			}			
+		}
+	}
+	if (document.getElementById("magnificationcontrol").checked)
+	{
+		var mag = document.getElementById("magnification").value;
+		if (mag)
+		{
+			var val = parseInt(mag);
+			if (!isNaN(val))
+			{
+			  lineend(newNode, 1);
+		    node = editor.createNode("mag", newNode, 0);
+			  node.setAttribute("mag",val.toString());
+			}			
+		}
+	}
 }
 
 function getMisc(docformat)
@@ -616,6 +656,7 @@ function getMisc(docformat)
 	var len;
 	var list;
 	var node;
+	var val;
 	for (i = 0, len = packagecheckboxes.length; i < len; i++)
 	{
 		var name = packagecheckboxes[i];
@@ -631,6 +672,33 @@ function getMisc(docformat)
 		if (list == null || list.length === 0) break;
 		document.getElementById(name).checked = true;
   }
+// endnotes
+	list = docformat.getElementsByTagName("endnotes");
+	if (list != null && list.length > 0)
+	{
+		node = list[0];
+		val = node.getAttribute("val");
+		if (val == "foot" || val == "end")
+			document.getElementById("footnoteorendnote").value = val;
+	}
+	// leading
+	list = docformat.getElementsByTagName("leading");
+	if (list != null && list.length > 0)
+	{
+		node  = list[0];
+		val = node.getAttribute("val");
+		document.getElementById("leadingcontrol").checked = true;
+		document.getElementById("leading").value = parseInt(val);
+	}
+	// magnification
+	list = docformat.getElementsByTagName("mag");
+	if (list != null && list.length > 0)
+	{
+		node  = list[0];
+		val = node.getAttribute("mag");
+		document.getElementById("magnificationcontrol").checked = true;
+		document.getElementById("mag").value = parseInt(val);
+	}
 }
 
 function onAccept()
@@ -1393,7 +1461,7 @@ function saveFontSpecs(docFormatNode)
     for (i = fontspecList.length - 1; i >= 0; i--)
       editor.deleteNode(fontspecList[i])
   }
-  var fontids = ["mathfontlist","mainfontlist","sansfontlist","fixedfontlist","f1name","f2name","f3name"];
+  var fontids = ["mathfontlist","mainfontlist","sansfontlist","fixedfontlist","x1fontlist","x2fontlist","x3fontlist"];
   var fontchoices = ["","","","","","",""];
   var goahead = false;
   for (i = 0; i < fontids.length; i++)
@@ -2554,6 +2622,36 @@ function addOldFontsToMenu(menuPopupId)
 }
 
 function changeOpenType(useOTF)
+{
+  if (compilerInfo.useOTF != useOTF)
+  {
+    compilerInfo.useOTF = useOTF;
+    var menuObject = { menulist: []};
+    if (compilerInfo.useOTF) {
+      // add opentype families to the menus 
+      menuObject.menulist = document.getElementById("mainfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("sansfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("fixedfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x1fontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x2fontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x3fontlist");
+      addOTFontsToMenu(menuObject);
+    }
+    else {
+      deleteOTFontsFromMenu("mainfontlist");
+      deleteOTFontsFromMenu("sansfontlist");
+      deleteOTFontsFromMenu("fixedfontlist");
+      deleteOTFontsFromMenu("x1fontlist");
+      deleteOTFontsFromMenu("x2fontlist");
+      deleteOTFontsFromMenu("x3fontlist");
+    } 
+  }
+}  
     
 function deleteOTFontsFromMenu(menuID)
 {
@@ -2583,7 +2681,7 @@ function saveClassOptionsEtc(docformatnode)
     throw("No preamble in document");
   }
   var nodelist = doc.getElementsByTagName("colist");
-	while (nodelist.length > 0) deleteNode(nodelist[nodelist.length - 1]);
+	while (nodelist.length > 0) editor.deleteNode(nodelist[nodelist.length - 1]);
   var optionNode;
   // convention: default menuitems have a def attribute
   var optionnames = ["pgorient", "papersize", "sides", "qual", "columns", "textsize", "eqnnopos", "eqnpos", "bibstyle"]
@@ -2603,7 +2701,7 @@ function saveClassOptionsEtc(docformatnode)
 
   var leading;
   nodelist = doc.getElementsByTagName("leading");
-	while (nodelist.length > 0) deleteNode(nodelist[nodelist.length - 1]);
+	while (nodelist.length > 0) editor.deleteNode(nodelist[nodelist.length - 1]);
   if (document.getElementById("leadingcontrol").checked)
 	{  
 		widget = document.getElementById("leading").value;
@@ -2642,7 +2740,7 @@ function saveLanguageSettings(preambleNode)
 	var hidden;
 	var lang1;
 	var lang2;
-	var isPolyglossia = !(document.getElementById("xelatex").hidden);
+	var isPolyglossia = (document.getElementById("xelatex"))
 	var needsResetting = true;
 	lang1 = document.getElementById("babelLang1").value;
 	if (lang1 === "def") lang1=null;
@@ -2650,6 +2748,16 @@ function saveLanguageSettings(preambleNode)
 	if (lang2 === "def") lang2=null;
 	if (lang1 || lang2)
 	{
+		var babelnodes = preambleNode.getElementsByTagName("babel");
+		var babelnode;
+		var lang2;
+		if (babelnodes && babelnodes.length > 0)
+		{
+			while (babelnodes.length > 0)
+			{
+				editor.deleteNode(babelnodes[0]);
+			}
+		}
     var node = editor.createNode("babel",preambleNode,0);
 		node.setAttribute("req", isPolyglossia ? "polyglossia" : "babel");
     if (lang1)
@@ -2740,22 +2848,21 @@ function getClassOptionsEtc()
 
 function setCompiler(compilername)
 {
-    compilerInfo.prog = compilername;
-    if (compilername=="xelatex")
-    {
-      document.getElementById("xelatex").hidden=false;
-      document.getElementById("pdflatex").hidden=true;
-      changeOpenType(true);
-			compilerInfo.useOTF = compilerInfo.useUni = true;
-    }
-    else
-    { 
-      document.getElementById("xelatex").hidden=true;
-      document.getElementById("pdflatex").hidden=false;
-      changeOpenType(false);
-			compilerInfo.useOTF = compilerInfo.useUni = false;
-    } 
-   
+	compilerInfo.prog = compilername;
+	if (compilername=="xelatex")
+	{
+	  document.getElementById("xelatex").hidden=false;
+	  document.getElementById("pdflatex").hidden=true;
+	  changeOpenType(true);
+		compilerInfo.useUni = true;
+	}
+	else
+	{ 
+	  document.getElementById("xelatex").hidden=true;
+	  document.getElementById("pdflatex").hidden=false;
+	  changeOpenType(false);
+	  compilerInfo.useUni = false;
+	} 
 }
 
 function enableDisableReformat(enable)
@@ -2793,7 +2900,7 @@ function enableDisableFonts(enabled)
   var bcaster = document.getElementById("fontdefok");
   compilerInfo.fontsOK = enabled;
   if (enabled)
-    bcaster.setAttribute("disabled","false");
+    bcaster.removeAttribute("disabled");
   else bcaster.setAttribute("disabled","true");
 }
 

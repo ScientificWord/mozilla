@@ -452,10 +452,9 @@
               <row align="end" style="height: 3em">
                 <vbox>
                   <label observes="reformatok" value="Footnotes"/>
-                  <menulist observes="reformatok" >
+                  <menulist id="footnoteorendnote" observes="reformatok" >
                     <menupopup style="width: 9em" >
-                      <menuitem label="-default-" def="1"/>
-                      <menuitem value="foot" label="Footnotes"/>
+                      <menuitem value="foot" label="Footnotes" def="1"/>
                       <menuitem value="end" label="Endnotes"/>
                     </menupopup>
                   </menulist>
@@ -1063,7 +1062,8 @@
             <caption>
               <label observes="fontdefok" value="Additional fonts"/>
             </caption>
-            <hbox><label observes="fontdefok" value="Internal font name"/><textbox observes="fontdefok" id="f1name"/></hbox>
+            <hbox><label observes="fontdefok" value="Internal font name"/>
+              <textbox observes="fontdefok" id="f1name"/></hbox>
             <hbox>
               <vbox>
                 <label observes="fontdefok" align="right" value="Extra font 1"/>
