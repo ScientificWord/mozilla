@@ -287,16 +287,14 @@
 </xsl:template>
 <!-- end of section headings -->
 
-<!-- class options   -->
-<xsl:template match="html:colist"
-  ><xsl:if test="$formattingok"><xsl:for-each select="@*"
-    ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if test="position()!=last()">, </xsl:if></xsl:if></xsl:for-each
-  ></xsl:if></xsl:template>
-
 <!-- leading -->
 <xsl:template match="html:leading"
     ><xsl:if test="$formattingok">\leading{<xsl:value-of select="@val"
   />}</xsl:if></xsl:template>
+  
+<!-- magnification?? -->
+
+
 
 <!-- section numbering style -->
 <xsl:template match="html:numberstyles">
