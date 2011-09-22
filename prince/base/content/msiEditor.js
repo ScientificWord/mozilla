@@ -4286,6 +4286,7 @@ function msiSetEditMode(mode, editorElement)
     editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
   }
+  else editorElement.contentWindow.focus();
 }
 
 function InsertColoredSourceView(editor, source)
