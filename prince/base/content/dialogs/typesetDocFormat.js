@@ -2746,14 +2746,14 @@ function setCompiler(compilername)
       document.getElementById("xelatex").hidden=false;
       document.getElementById("pdflatex").hidden=true;
       changeOpenType(true);
-			compiler.useOTF = compiler.useUni = true;
+			compilerInfo.useOTF = compilerInfo.useUni = true;
     }
     else
     { 
       document.getElementById("xelatex").hidden=true;
       document.getElementById("pdflatex").hidden=false;
       changeOpenType(false);
-			compiler.useOTF = compiler.useUni = false;
+			compilerInfo.useOTF = compilerInfo.useUni = false;
     } 
    
 }
