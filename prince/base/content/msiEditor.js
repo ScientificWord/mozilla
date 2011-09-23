@@ -812,10 +812,13 @@ function msiEditorDocumentObserver(editorElement)
 				  var htmlurlstring = editor.document.documentURI;;
 				  var htmlurl = msiURIFromString(htmlurlstring);
 				  var htmlFile = msiFileFromFileURL(htmlurl);
-				  var cssFile = htmlFile.parent;
-				  cssFile.append("css");
-				  cssFile.append("msi_Tags.css")
-				  dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+				  if (htmlFile)
+				  {
+						var cssFile = htmlFile.parent;
+					  cssFile.append("css");
+					  cssFile.append("msi_Tags.css")
+					  dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+					}
 
           try{
              var elemList = editor.document.getElementsByTagName("definitionlist");

@@ -160,7 +160,6 @@ function getEnableFlags(doc)
     var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
     document.getElementById("enablepagelayout").checked = formatPageOK;
 
-    // document.getElementById('reformatok').setAttribute('disabled', canSetFormat?'false':'true');
     var e = document.getElementById('reformatok');
     if (canSetFormat){ // checked. enable.
        e.removeAttribute('disabled'); 
@@ -168,8 +167,6 @@ function getEnableFlags(doc)
        e.setAttribute('disabled', "true");
     }
 
-    
-    //document.getElementById('pagelayoutok').setAttribute('disabled',formatPageOK?'false':'true');
     var e = document.getElementById('pagelayoutok');
     if (formatPageOK){ // checked. enable.
        e.removeAttribute('disabled'); 
@@ -883,8 +880,8 @@ function changefinishpageSize(menu)
 // Page layout stuff  
 function changePageDim(textbox)
 {
-  if (textbox.id == "tbpageheight") pageheight = unitHander.GetValueAs(Number(textbox.value),"mm");
-  else pagewidth = unitHander.GetValueAs(Number(textbox.value),"mm");
+  if (textbox.id == "tbpageheight") pageheight = unitHandler.GetValueAs(Number(textbox.value),"mm");
+  else pagewidth = unitHandler.GetValueAs(Number(textbox.value),"mm");
   setPageDimensions();
 }
 
@@ -923,8 +920,8 @@ function setPageDimensions()
   
   if (!getPageDimensions(obj))
   { 
-    pagewidth = unitHander.getValueAs(Number(document.getElementById("tbpagewidth").value), "mm");
-    pageheight = unitHander.getValueAs(Number(document.getElementById("tbpageheight").value), "mm");
+    pagewidth = unitHandler.getValueAs(Number(document.getElementById("tbpagewidth").value), "mm");
+    pageheight = unitHandler.getValueAs(Number(document.getElementById("tbpageheight").value), "mm");
   } else
   {
     pagewidth = obj.width;
@@ -1014,8 +1011,8 @@ function setPaperDimensions()
   
   if (!getPageDimensions(obj))
   { 
-    paperwidth = unitHander.getValueAs(Number(document.getElementById("tbpaperwidth").value), "mm");
-    paperheight = unitHander.getValueAs(Number(document.getElementById("tbpaperheight").value),"mm");
+    paperwidth = unitHandler.getValueAs(Number(document.getElementById("tbpaperwidth").value), "mm");
+    paperheight = unitHandler.getValueAs(Number(document.getElementById("tbpaperheight").value),"mm");
   } else
   {
     paperwidth = obj.width;
@@ -1259,13 +1256,16 @@ function deactivate(id)
 function switchUnits()
 {
   var newUnit = document.getElementById("docformat.units").selectedItem.value;
-  if (newUnit !== unitHandler.currentUnit) unitHandler.setCurrentUnit(newUnit);
-  return;
-  var factor = 0; //convert(1, currentUnit, newUnit);
-   pagewidth *= factor;
+  var currentUnit = unitHandler.currentUnit;
+  if (newUnit !== unitHandler.currentUnit) 
+	{
+		unitHandler.setCurrentUnit(newUnit);
+	}
+	else return;  
+  var factor = convert(1, currentUnit, newUnit);
+  pagewidth *= factor;
   pageheight *= factor;
   scale = scale/factor;
-  currentUnit = newUnit; // this has to be set before unitRound and setDecimalPlaces are called
   setDecimalPlaces();
   document.getElementById("tbbodyheight").value = unitRound(factor*document.getElementById("tbbodyheight").value);
   document.getElementById("tbbodywidth").value = unitRound(factor*document.getElementById("tbbodywidth").value); 
@@ -2001,7 +2001,14 @@ function switchSectionTypeImp(from, to, settingSecRedefOk)
       if (!sectitleformat[from]) sectitleformat[from] = new Object();
       sec = sectitleformat[from];
       sec.enabled = enabled;
-      document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
+      if (sec,enabled)
+			{
+			  document.getElementById("secredefok").removeAttribute("disabled");
+			}
+			else 
+			{
+				document.getElementById("secredefok").setAttribute("disabled", "true");
+			}
       sec.newPage = document.getElementById("sectionstartnewpage").checked;
       sec.sectStyle = document.getElementById("sections.style").value;
       sec.align = document.getElementById("sections.align").value; 
@@ -2449,17 +2456,17 @@ function toggleselection( element )
   element.setAttribute('sectionselected','true');
   if (element.id == "sectleftheadingmargin" || element.id=="sectrightheadingmargin")
   {
-    NCAbroadcaster.setAttribute("disabled","false");
+    NCAbroadcaster.removeAttribute("disabled");
     TOBbroadcaster.setAttribute("disabled", "true");
     NMbroadcaster.setAttribute("disabled", "true");
   }
   else
   {
     NCAbroadcaster.setAttribute("disabled","true");
-    NMbroadcaster.setAttribute("disabled", "false");
+    NMbroadcaster.removeAttribute("disabled");
     if (element.id == "topmargin" || element.id == "bottommargin")
     {
-      TOBbroadcaster.setAttribute("disabled", "false");
+      TOBbroadcaster.removeAttribute("disabled");
     }
     else 
       TOBbroadcaster.setAttribute("disabled", "true");
@@ -2857,7 +2864,6 @@ function enableDisableReformat(enable)
   var bcaster = document.getElementById("reformatok");
   compilerInfo.formatOK = enable;
   if (enable)
-    //bcaster.setAttribute("disabled","false");
     bcaster.removeAttribute("disabled");
   else 
     bcaster.setAttribute("disabled","true");
@@ -2868,7 +2874,7 @@ function enableDisablePageLayout(enable)
   var bcaster = document.getElementById("pagelayoutok");
   compilerInfo.pageFormatOK = enable;
   if (enable)
-    bcaster.setAttribute("disabled","false");
+    bcaster.removeAttribute("disabled");
   else bcaster.setAttribute("disabled","true");
 }
     
