@@ -51,7 +51,7 @@ function enable(checkbox)
 	}
 }
 
-function InitializeUnits()
+function initializeunits()
 {
   var currentUnit = document.getElementById("docformat.units").selectedItem.value;
   unitHandler.initCurrentUnit(currentUnit);
@@ -75,7 +75,7 @@ function stripPath(element, index, array)
   array[index] = re.exec(element)[1];
 }
 
-function Startup()
+function startup()
 {
   initializeFontFamilyList(false);
   var editorElement = msiGetParentEditorElementForDialog(window);
@@ -88,7 +88,7 @@ function Startup()
     "sectrightheadingmargin", "sectleftheadingmargin", "pagewidth", "paperwidth");
   heightElements=new Array("tmargin","header","headersep",
     "bodyheight","footer","footersep", "mnpush", "computedbmargin", "pageheight", "paperheight");
-  InitializeUnits();
+  initializeunits();
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   if (!preamble) {
@@ -115,7 +115,7 @@ function Startup()
   
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
-  OnWindowSizeReset(true);
+  onWindowSizeReset(true);
   buildFontMenus(compilerInfo.useOTF);
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
     node=null;
@@ -207,6 +207,14 @@ function getNumStyles(preambleNode)
   }
 }
 
+function removeExistingPreambleNodes(nodeTag, parentNode)
+{
+  var nodeList = parentNode.getElementsByTagName(nodeTag);
+  if (nodeList.length > 0)
+    for (var i = nodeList.length -1; i >=0; i--) editor.deleteNode(nodeList[i]);
+	
+}
+
 function saveNumStyles(preambleNode)
 {
   var sect;
@@ -224,9 +232,7 @@ function saveNumStyles(preambleNode)
     }
   }
   if (bHasStyle) {
-    var nodeList = preambleNode.getElementsByTagName("numberstyles");
-    if (nodeList.length > 0)
-      for (var i = nodeList.length -1; i >=0; i--) editor.deleteNode(nodeList[i]);
+    removeExistingPreambleNodes("numberstyles", preambleNode);
     node = editor.createNode("numberstyles",preambleNode,0);
     dump("adding attribute for "+sect+"\n");
     for (i=0; i< sectionlist.length; i++) {
@@ -264,6 +270,7 @@ function lineend(node, spacecount)
 function savePageLayout(docFormatNode)
 {
   lineend(docFormatNode, 1);
+	removeExistingPreambleNodes('pagelayout', docFormatNode);
   var pfNode = editor.createNode('pagelayout', docFormatNode,0);
   var nodecounter = 0;
   var units;
@@ -380,7 +387,7 @@ function getPageLayout(node, document)
     }
     
     value = node.getAttribute("enabled");
-    value = (value ? true : false);
+    value = (value == "true"? true : false);
 
     var e = document.getElementById('enablepagelayout');
     if (e){
@@ -592,6 +599,7 @@ function saveMisc(newNode)
 	  if (document.getElementById(name).checked)
 	  {
 		  lineend(newNode, 1);
+			removeExistingPreambleNodes(name, newNode);
 	    node = editor.createNode(name, newNode, 0);
 	    node.setAttribute("req", name);
 		}
@@ -603,6 +611,7 @@ function saveMisc(newNode)
 	  if (document.getElementById(name).checked)
 	  {
 		  lineend(newNode, 1);
+			removeExistingPreambleNodes(name, newNode);
 	    node = editor.createNode(name, newNode, 0);
 		}
   }
@@ -612,6 +621,7 @@ function saveMisc(newNode)
 	if (fnvalue == "end" || fnvalue == "foot")
 	{
 	  lineend(newNode, 1);
+		removeExistingPreambleNodes('endnotes', newNode);
     node = editor.createNode("endnotes", newNode, 0);
 		node.setAttribute("req","endnotes");
 		node.setAttribute("val", fnvalue);
@@ -622,10 +632,11 @@ function saveMisc(newNode)
 		var leading = document.getElementById("leading").value;
 		if (leading)
 		{
-			var val = parseInt(leading);
+			var val = parseFloat(leading);
 			if (!isNaN(val))
 			{
 			  lineend(newNode, 1);
+				removeExistingPreambleNodes('leading', newNode);
 		    node = editor.createNode("leading", newNode, 0);
 				node.setAttribute("req","leading");
 			  node.setAttribute("val",val.toString()+"pt");
@@ -637,10 +648,11 @@ function saveMisc(newNode)
 		var mag = document.getElementById("magnification").value;
 		if (mag)
 		{
-			var val = parseInt(mag);
+			var val = parseFloat(mag);
 			if (!isNaN(val))
 			{
 			  lineend(newNode, 1);
+				removeExistingPreambleNodes('mag', newNode);
 		    node = editor.createNode("mag", newNode, 0);
 			  node.setAttribute("mag",val.toString());
 			}			
@@ -651,6 +663,7 @@ function saveMisc(newNode)
 	if (linespacing != "def")
 	{
 	  lineend(newNode, 1);
+		removeExistingPreambleNodes('setspacing', newNode);
     node = editor.createNode("setspacing", newNode, 0);
 		node.setAttribute("req","setspace");
 		node.setAttribute("opt", linespacing)
@@ -697,7 +710,8 @@ function getMisc(docformat)
 		node  = list[0];
 		val = node.getAttribute("val");
 		document.getElementById("leadingcontrol").checked = true;
-		document.getElementById("leading").value = parseInt(val);
+		document.getElementById("leading").removeAttribute("disabled");
+		document.getElementById("leading").value = parseFloat(val);
 	}
 	// magnification
 	list = docformat.getElementsByTagName("mag");
@@ -706,7 +720,7 @@ function getMisc(docformat)
 		node  = list[0];
 		val = node.getAttribute("mag");
 		document.getElementById("magnificationcontrol").checked = true;
-		document.getElementById("mag").value = parseInt(val);
+		document.getElementById("mag").value = parseFloat(val);
 	}
 	list = docformat.getElementsByTagName("setspacing");
 	{
@@ -727,11 +741,7 @@ function onAccept()
     preamble = editor.createNode('preamble',head,head.childNodes.length);
   }
 // delete any current docformat nodes -- we are replacing them
-  var docFormatNodeList = preamble.getElementsByTagName('docformat');
-  var i;
-  if (docFormatNodeList)
-    for (i = docFormatNodeList.length - 1; i >= 0; i--)
-      editor.deleteNode(docFormatNodeList[i])
+  removeExistingPreambleNodes("docformat", preamble);
   var newNode = editor.createNode('docformat', preamble, 0);
 // should check that the user wants to use geometry package.
   if (newNode) 
@@ -756,8 +766,8 @@ function onAccept()
 
 function saveEnableFlags(doc, docformatnode)
 {
-  var nodelist = doc.getElementsByTagName("texprogram");
   var progNode;
+	removeExistingPreambleNodes('texprogram', docformatnode);
   progNode = editor.createNode("texprogram", docformatnode, 0);
   // handle compiler choice, whether to allow formatting changes, etc.
   progNode.setAttribute("prog", compilerInfo.prog);
@@ -804,7 +814,7 @@ function convert(invalue, inunit, outunit)
 //   the XUL element of ID |id|.
 //   param integer increment
 //   param String id
-function Spinbutton(increment, id)
+function spinbutton(increment, id)
 {
   var elt = document.getElementById(id);
   if (elt) {
@@ -1046,7 +1056,7 @@ function unitRound( size )
   return Math.round(size*places)/places;
 }
 
-function OnWindowSizeReset(initial)
+function onWindowSizeReset(initial)
 {
   var twomargins = 60; //20 pixels per margin for the layout page
   //var oldscale = scale;
@@ -1424,6 +1434,7 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
 {
   if (fontname && fontname.length>0) {
     var options;
+		removeExistingPreambleNodes(menuId, fontNode);
     var node = editor.createNode(menuId, fontNode, nodecounter++);
     if (/{/.test(fontname))
     { // fontname in this case is something like "[options]{packagename} [options2]{package2}
@@ -1467,15 +1478,10 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
 function saveFontSpecs(docFormatNode)
 {
   // we don't want to generate anything unless at least one font was defined.
-  var fontspecList = docFormatNode.getElementsByTagName('fontchoices');
+  removeExistingPreambleNodes('fontchoices', docFormatNode);
   var i;
   var node;
   var options;
-  if (fontspecList) 
-  {
-    for (i = fontspecList.length - 1; i >= 0; i--)
-      editor.deleteNode(fontspecList[i])
-  }
   var fontids = ["mathfontlist","mainfontlist","sansfontlist","fixedfontlist","x1fontlist","x2fontlist","x3fontlist"];
   var fontchoices = ["","","","","","",""];
   var goahead = false;
@@ -2134,9 +2140,9 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
   var menulist = document.getElementById("sections.name");
   var itemlist = menulist.getElementsByTagName("menuitem");
   var sectiondata;
-  // should actually look to see if the titlesec package is already in the document
   var bRequiresPackage = true;
   var reqpackageNode;
+	removeExistingPreambleNodes('sectitleformat', docFormatNode);
   switchSectionTypeImp(currentSectionType,null);
   for (var i = 0; i < itemlist.length; i++)
   {
@@ -2176,12 +2182,7 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       stNode.setAttribute('rhindent', sectiondata.rhindent);
       lineend(stNode, 2);
       var i;
-      var nodeList = stNode.getElementsByTagName("titleprototype");
-      while (nodeList.length > 0) 
-      {
-        editor.deleteNode(nodeList[nodeList.length - 1]);
-        nodeList = stNode.getElementsByTagName("titleprototype");
-      }
+			removeExistingPreambleNodes("titleprototype", stNode);
       var proto = editor.createNode('titleprototype', stNode, 0);
       var fragment = sectiondata.proto;
       if (fragment)
@@ -2695,8 +2696,7 @@ function saveClassOptionsEtc(docformatnode)
   if (!preamble) {
     throw("No preamble in document");
   }
-  var nodelist = doc.getElementsByTagName("colist");
-	while (nodelist.length > 0) editor.deleteNode(nodelist[nodelist.length - 1]);
+	removeExistingPreambleNodes("colist", doc);
   var optionNode;
   // convention: default menuitems have a def attribute
   var optionnames = ["pgorient", "papersize", "sides", "qual", "columns", "titlepage", "textsize", "eqnnopos", "eqnpos", "bibstyle"];
@@ -2752,16 +2752,9 @@ function saveLanguageSettings(preambleNode)
 	if (lang2 === "def") lang2=null;
 	if (lang1 || lang2)
 	{
-		var babelnodes = preambleNode.getElementsByTagName("babel");
 		var babelnode;
 		var lang2;
-		if (babelnodes && babelnodes.length > 0)
-		{
-			while (babelnodes.length > 0)
-			{
-				editor.deleteNode(babelnodes[0]);
-			}
-		}
+		removeExistingPreambleNodes("babel", preambleNode);
     var node = editor.createNode("babel",preambleNode,0);
 		node.setAttribute("req", isPolyglossia ? "polyglossia" : "babel");
     if (lang1)
