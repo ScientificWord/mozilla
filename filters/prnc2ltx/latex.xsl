@@ -18,6 +18,15 @@
 <xsl:param name="endnotes" select="count(//html:endnotes[@val='end'])"/>
 <xsl:param name="footnotecount" select="count(//html:note[@type='footnote'])"/>
 <xsl:param name="indexitems" select="count(//html:indexitem)"/>
+<xsl:param name="toclocation">
+  <xsl:choose>
+    <xsl:when test="//html:maketoc">none</xsl:when>
+    <xsl:when test="//html:part">tocpart</xsl:when>
+    <xsl:when test="//html:chapter">tocchap</xsl:when>
+    <xsl:when test="//html:section">tocsect</xsl:when>
+    <xsl:otherwise> none </xsl:otherwise>
+  </xsl:choose>
+</xsl:param>
 
 <xsl:output method="text" encoding="UTF-8"/>
 <xsl:strip-space elements="*"/>
@@ -300,6 +309,12 @@ should not be done under some conditions -->
 \maketitle
 </xsl:template>
 
+<xsl:template name="maketables">
+  \tableofcontents <xsl:text/>
+  <xsl:if test="//html:lof">\listoffigures</xsl:if>
+  <xsl:if test="//html:lot">\listoftables</xsl:if>
+</xsl:template>
+
 <xsl:template match="html:maketoc">
 \tableofcontents <xsl:text/>
 </xsl:template>
@@ -308,12 +323,20 @@ should not be done under some conditions -->
 \listoffigures <xsl:text/>
 </xsl:template>
 
-<xsl:template match="html:makelot">
+<!--xsl:template match="html:makelot">
 \listoftables <xsl:text/>
-</xsl:template>
+</xsl:template -->
 
 <xsl:template match="html:date">
 \date{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="//html:part[1]">
+  <xsl:if test="starts-with($toclocation,'tocpart')">
+    <xsl:call-template name="maketables" />
+  </xsl:if>
+  <xsl:apply-templates/>
+  <xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
 <xsl:template match="html:part">
@@ -321,9 +344,25 @@ should not be done under some conditions -->
 <xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
+<xsl:template match="//html:chapter[1]">
+  <xsl:if test="starts-with($toclocation,'tocchap')">
+    <xsl:call-template name="maketables" />
+  </xsl:if>
+  <xsl:apply-templates/>
+  <xsl:call-template name="checkEndSubEquationsScope"/>
+</xsl:template>
+
 <xsl:template match="html:chapter">
-<xsl:apply-templates/>
-<xsl:call-template name="checkEndSubEquationsScope"/>
+  <xsl:apply-templates/>
+  <xsl:call-template name="checkEndSubEquationsScope"/>
+</xsl:template>
+
+<xsl:template match="//html:section[1]">
+  <xsl:if test="starts-with($toclocation,'tocsect')">
+    <xsl:call-template name="maketables" />
+  </xsl:if>
+  <xsl:apply-templates/>
+  <xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
 <xsl:template match="html:section">
@@ -349,6 +388,9 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:bodyText">
+  <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
+    <xsl:call-template name="maketables" />
+  </xsl:if>
 <xsl:apply-templates/>\par 
 </xsl:template>
 
