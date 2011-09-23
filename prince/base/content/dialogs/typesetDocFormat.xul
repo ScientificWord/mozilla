@@ -511,10 +511,11 @@
                 <vbox align="center">
                   <label value="Line Spacing"  observes="reformatok"/>
                   <menulist  id="linespacing" observes="reformatok">
-                    <menupopup style="width: 9em" id="linespacing">
-                      <menuitem value="one" label="One"/>
-                      <menuitem value="sesqui" label="One and a half"/>
-                      <menuitem value="two" label="Two"/>
+                    <menupopup style="width: 9em" >
+                      <menuitem def="1" value="def" label="-default-"/>
+                      <menuitem value="singlespacing" label="One"/>
+                      <menuitem value="onehalfspacing" label="One and a half"/>
+                      <menuitem value="doublespacing" label="Two"/>
                     </menupopup>
                   </menulist>
                 </vbox>
