@@ -596,7 +596,7 @@ function saveMisc(newNode)
 	    node.setAttribute("req", name);
 		}
   }
-	var contentlistings = ["title","toc","lof","lot"];
+	var contentlistings = ["toc","lof","lot"];
 	for (i = 0, len = contentlistings.length; i < len; i++)
 	{
 		name = contentlistings[i];
@@ -2698,6 +2698,15 @@ function saveClassOptionsEtc(docformatnode)
 	    optionNode.setAttribute(name, widget.value);
 		}
   }
+  name = "title";
+  widget = document.getElementsByTagName(name);
+  if (widget.checked)
+	{
+		if (optionNode == null)
+		  optionNode = editor.createNode("colist", docformatnode, 0);
+	  optionNode.setAttribute(name, widget.value);
+	
+	}
 
   var leading;
   nodelist = doc.getElementsByTagName("leading");
