@@ -564,7 +564,7 @@
                   </vbox>
                   <vbox>
                     <label observes="pagelayoutok">&docformatUnits;</label>
-                    <menulist observes="pagelayoutok" id="docformat.units" style="width: 5em"  
+                    <menulist observes="pagelayoutok" id="docformat.units" style="width: 8em"  
                           oncommand="switchUnits();"  >
                      <menupopup>
                        <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
