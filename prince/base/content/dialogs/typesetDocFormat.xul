@@ -26,7 +26,7 @@
 <dialog title="&windowTitle.label;"
     id="docformat.dialog"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    onload="Startup()"
+    onload="startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
     persist="screenX screenY width height"
@@ -686,7 +686,7 @@
                         </caption>   
                         <label observes="pagelayoutok">&docformatfinishpageSize;</label>
                         <menulist observes="pagelayoutok" id="docformat.finishpagesize"
-                          oncommand="changefinishpageSize(this);OnWindowSizeReset(false);">
+                          oncommand="changefinishpageSize(this);onWindowSizeReset(false);">
                           <menupopup style="width: 7em;">
                            <menuitem id="docformat.letter" label="&docformatLetter;" value="letter"/>
                            <menuitem id="docformat.a4" label="A4" value="a4"/>
@@ -715,8 +715,8 @@
                           <vbox>
                             <label observes="pagelayoutok" value="Page height"/>
                             <hbox><textbox type="number" style="width: 5em" id="tbpageheight" observes="bc.finishpagesize" 
-                              onkeypress="geomHandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);OnWindowSizeReset(false);" 
-                              onchange="changePageDim(this);OnWindowSizeReset(false);">
+                              onkeypress="geomHandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);onWindowSizeReset(false);" 
+                              onchange="changePageDim(this);onWindowSizeReset(false);">
                               <observes element="pagelayoutok" attribute="disabled"/>
                               </textbox>
                             </hbox>
@@ -725,8 +725,8 @@
                           <vbox>
                             <label observes="pagelayoutok" value="Page width"/>
                             <textbox id="tbpagewidth" type="number" style="width: 5em" observes="bc.finishpagesize" 
-                              onkeypress="geomHandleChar(event,'pagewidth', 'tbpagewidth');changePageDim(this);OnWindowSizeReset(false);" 
-                              onchange="changePageDim(this);OnWindowSizeReset(false);">
+                              onkeypress="geomHandleChar(event,'pagewidth', 'tbpagewidth');changePageDim(this);onWindowSizeReset(false);" 
+                              onchange="changePageDim(this);onWindowSizeReset(false);">
                               <observes element="pagelayoutok" attribute="disabled"/>
                             </textbox>
                             <spacer/>
