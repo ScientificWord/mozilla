@@ -228,7 +228,7 @@ function saveNumStyles(preambleNode)
     {
       dump("checking "+sect+"\n");
       bHasStyle = gNumStyles[sect].length > 0;
-      break;
+      if (bHasStyle) break;
     }
   }
   if (bHasStyle) {
@@ -683,7 +683,7 @@ function getMisc(docformat)
 	{
 		var name = packagecheckboxes[i];
 		list = docformat.getElementsByTagName(name);
-		if (list == null || list.length === 0) break;
+		if (list == null || list.length === 0) continue;
 		document.getElementById(name).checked = true;
   }	
 	var contentlistings = ["title","toc","lof","lot"];
@@ -691,7 +691,7 @@ function getMisc(docformat)
 	{
 		var name = contentlistings[i];
 		list = docformat.getElementsByTagName(name);
-		if (list == null || list.length === 0) break;
+		if (list == null || list.length === 0) continue;
 		document.getElementById(name).checked = true;
   }
 // endnotes
@@ -723,6 +723,7 @@ function getMisc(docformat)
 		document.getElementById("mag").value = parseFloat(val);
 	}
 	list = docformat.getElementsByTagName("setspacing");
+	if (list != null && list.length > 0)
 	{
 		node  = list[0];
 		val = node.getAttribute("opt");
@@ -2906,17 +2907,3 @@ function compileInfoChanged(widget)
 	compilerInfo.useOTF = useXelatex;
 	compilerInfo.useUni = useXelatex;	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
