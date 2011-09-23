@@ -193,7 +193,8 @@
 <xsl:apply-templates/></xsl:if></xsl:if></xsl:template> 
    
 
-<xsl:template match="html:mainfont[@ot='1']">\setmainfont[<xsl:value-of select="@options"
+<xsl:template match="html:mainfont[@ot='1']">
+  \setmainfont[<xsl:value-of select="@options"
   />]{<xsl:value-of select="@name"
 />}</xsl:template>
 
