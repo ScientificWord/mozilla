@@ -646,6 +646,15 @@ function saveMisc(newNode)
 			}			
 		}
 	}
+	var linespacing;
+	linespacing = document.getElementById("linespacing").value;
+	if (linespacing != "def")
+	{
+	  lineend(newNode, 1);
+    node = editor.createNode("setspacing", newNode, 0);
+		node.setAttribute("req","setspace");
+		node.setAttribute("opt", linespacing)
+	}
 }
 
 function getMisc(docformat)
@@ -699,6 +708,12 @@ function getMisc(docformat)
 		document.getElementById("magnificationcontrol").checked = true;
 		document.getElementById("mag").value = parseInt(val);
 	}
+	list = docformat.getElementsByTagName("setspacing");
+	{
+		node  = list[0];
+		val = node.getAttribute("opt");
+		document.getElementById("linespacing").value = val;
+	}	
 }
 
 function onAccept()
