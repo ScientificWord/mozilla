@@ -86,7 +86,7 @@ function startup()
   }
   widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
     "sectrightheadingmargin", "sectleftheadingmargin", "pagewidth", "paperwidth");
-  heightElements=new Array("tmargin","header","headersep",
+  heightElements=new Array("tmargin","hedd","heddsep",
     "bodyheight","footer","footersep", "mnpush", "computedbmargin", "pageheight", "paperheight");
   initializeunits();
   var doc = editor.document;
@@ -282,7 +282,8 @@ function savePageLayout(docFormatNode)
   node.setAttribute('paper',document.getElementById('docformat.finishpagesize').value);
   node.setAttribute('width',pagewidth+units);
   node.setAttribute('height',pageheight+units);
-  node.setAttribute('landscape',document.getElementById('landscape').checked);
+  if(document.getElementById('landscape').checked)
+    node.setAttribute('landscape',true);
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('textregion',pfNode,nodecounter++);
@@ -295,9 +296,12 @@ function savePageLayout(docFormatNode)
   node.setAttribute('top', document.getElementById('tbtmargin').value+units);
   lineend(pfNode, 2);
   nodecounter++;
-  node = editor.createNode('columns',pfNode,nodecounter++);
-  node.setAttribute('count',(document.getElementById('columns').value));
-  node.setAttribute('sep',document.getElementById('tbfootersep').value+units);
+  if (document.getElementById('columncount').value && document.getElementById('columncount').value ==2)
+  {
+		node = editor.createNode('columns',pfNode,nodecounter++);
+	  node.setAttribute('count',(document.getElementById('columncount').value));
+	  node.setAttribute('sep',document.getElementById('tbcolsep').value+units);
+	}
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('marginnote',pfNode,nodecounter++);
@@ -308,9 +312,9 @@ function savePageLayout(docFormatNode)
   node.setAttribute('hidden', document.getElementById('disablemn').checked);
   lineend(pfNode, 2);
   nodecounter++;
-  node = editor.createNode('header',pfNode,nodecounter++);
-  node.setAttribute('height',document.getElementById('tbheader').value+units);
-  node.setAttribute('sep',document.getElementById('tbheadersep').value+units);
+  node = editor.createNode('hedd',pfNode,nodecounter++);
+  node.setAttribute('height',document.getElementById('tbhedd').value+units);
+  node.setAttribute('sep',document.getElementById('tbheddsep').value+units);
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('footer',pfNode,nodecounter++);
@@ -545,19 +549,19 @@ function getPageLayout(node, document)
         }
       }
     }
-    subnode = node.getElementsByTagName('header')[0];
+    subnode = node.getElementsByTagName('hedd')[0];
     if (subnode)
     {
       value = subnode.getAttribute('height');
       if (value) {
-        e = document.getElementById('tbheader');
+        e = document.getElementById('tbhedd');
         if (e) {
           e.value=getNumberValue(value);
         }
       }
       value = subnode.getAttribute('sep');
       if (value) {
-        e = document.getElementById('tbheadersep');
+        e = document.getElementById('tbheddsep');
         if (e) {
           e.value=getNumberValue(value);
         }
@@ -798,12 +802,17 @@ function disableMarginNotes()
   updateComputedMargins();
 }
 
+function unitConversions(unitName)
+{
+	return unitHandler.units[unitName].size;
+}
+
 function convert(invalue, inunit, outunit) 
 // Converts invalue inunits into x outunits
 {
   if (inunit == outunit) return invalue;
-  var outvalue = invalue*unitConversions[inunit];
-  outvalue /= unitConversions[outunit];
+  var outvalue = invalue*unitConversions(inunit);
+  outvalue /= unitConversions(outunit);
   dump(invalue+inunit+" = "+outvalue+outunit+"\n");
   return outvalue;
 }
@@ -840,9 +849,9 @@ function setDefaults()
   document.getElementById("tbtmargin").value = unitRound(.4*bigvmargin-2*oneline);
   var roundedOneline = unitRound(oneline);
   document.getElementById("tbfooter").value = roundedOneline;
-  document.getElementById("tbheader").value = roundedOneline;
+  document.getElementById("tbhedd").value = roundedOneline;
   document.getElementById("tbfootersep").value = roundedOneline;
-  document.getElementById("tbheadersep").value = roundedOneline;
+  document.getElementById("tbheddsep").value = roundedOneline;
   // if twosided, divide horizontal margins 3:2, otherwise 1:1
   if (twosided)
   {
@@ -880,8 +889,9 @@ function changefinishpageSize(menu)
 // Page layout stuff  
 function changePageDim(textbox)
 {
-  if (textbox.id == "tbpageheight") pageheight = unitHandler.GetValueAs(Number(textbox.value),"mm");
-  else pagewidth = unitHandler.GetValueAs(Number(textbox.value),"mm");
+  var value = unitHandler.getValueAs(Number(textbox.value),"mm");
+  if (textbox.id == "tbpageheight") pageheight = value;
+  else pagewidth = value;
   setPageDimensions();
 }
 
@@ -1148,11 +1158,11 @@ function updateComputedMargins()
     wtotal += tbmnsep + tbmnwidth;
   var tbtopmargin = Number(document.getElementById("tbtmargin").value);
   var tbbody = Number(document.getElementById("tbbodyheight").value);
-  var tbheader = Number(document.getElementById("tbheader").value);
-  var tbheadersep = Number(document.getElementById("tbheadersep").value);
+  var tbhedd = Number(document.getElementById("tbhedd").value);
+  var tbheddsep = Number(document.getElementById("tbheddsep").value);
   var tbfootersep = Number(document.getElementById("tbfootersep").value);
   var tbfooter = Number(document.getElementById("tbfooter").value);
-  var htotal = tbtopmargin + tbheader + tbheadersep + tbbody + tbfooter + tbfootersep;
+  var htotal = tbtopmargin + tbhedd + tbheddsep + tbbody + tbfooter + tbfootersep;
   document.getElementById("tbcomputedrmargin").value = unitRound(pagewidth - wtotal);                
   document.getElementById("tbcomputedbmargin").value = unitRound(pageheight - htotal);
   // now check for overflow conditions
@@ -1163,7 +1173,7 @@ function updateComputedMargins()
   if (vcenter)
   {
     var bigvmargin = (pageheight - tbbody)/2; // the margin including headers and footers
-    if (tbheader + tbheadersep > bigvmargin) overflow = true;
+    if (tbhedd + tbheddsep > bigvmargin) overflow = true;
     if (tbfooter + tbfootersep > bigvmargin) overflow = true;
   }
   if (hcenter && !(document.getElementById("disablemn").checked))
@@ -1195,7 +1205,7 @@ function layoutPage(which)
   if (vcenter)
   {
     var tmargin = (pageheight - document.getElementById("tbbodyheight").value)/2;
-    tmargin -= (Number(document.getElementById("tbheader").value) + Number(document.getElementById("tbheadersep").value));
+    tmargin -= (Number(document.getElementById("tbhedd").value) + Number(document.getElementById("tbheddsep").value));
     document.getElementById("tbtmargin").value = tmargin;
   }
   if (which == "all")
@@ -1271,15 +1281,15 @@ function switchUnits()
   document.getElementById("tbbodywidth").value = unitRound(factor*document.getElementById("tbbodywidth").value); 
   document.getElementById("tblmargin").value = unitRound(factor*document.getElementById("tblmargin").value);
   document.getElementById("tbtmargin").value = unitRound(factor*document.getElementById("tbtmargin").value);
-  document.getElementById("tbheader").value = unitRound(factor*document.getElementById("tbheader").value);
-  document.getElementById("tbheadersep").value = unitRound(factor*document.getElementById("tbheadersep").value);
+  document.getElementById("tbhedd").value = unitRound(factor*document.getElementById("tbhedd").value);
+  document.getElementById("tbheddsep").value = unitRound(factor*document.getElementById("tbheddsep").value);
   document.getElementById("tbfooter").value = unitRound(factor*document.getElementById("tbfooter").value);
   document.getElementById("tbfootersep").value = unitRound(factor*document.getElementById("tbfootersep").value);
+  document.getElementById("tbcolsep").value = unitRound(factor*document.getElementById("tbcolsep").value);
   document.getElementById("tbmnwidth").value = unitRound(factor*document.getElementById("tbmnwidth").value);
   document.getElementById("tbmnsep").value = unitRound(factor*document.getElementById("tbmnsep").value);
   document.getElementById("tbmnpush").value = unitRound(factor*document.getElementById("tbmnpush").value);
   document.getElementById("tbcomputedrmargin").value = unitRound(factor*document.getElementById("tbmnpush").value);
-  document.getElementById("tbcomputedbmargin").value = unitRound(factor*document.getElementById("tbmnpush").value);
   document.getElementById("tbpagewidth").value = unitRound(pagewidth);
   document.getElementById("tbpageheight").value = unitRound(pageheight);
   updateComputedMargins();

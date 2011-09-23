@@ -165,7 +165,7 @@
   left=<xsl:value-of select="@left"/>, top=<xsl:value-of select="@top"
 />, </xsl:if></xsl:template>
 
-<xsl:template match="html:header"><xsl:if test="$pagelayoutok">
+<xsl:template match="html:hedd"><xsl:if test="$pagelayoutok">
   headheight=<xsl:value-of select="@height"
   />, headsep=<xsl:value-of select="@sep"
 />, </xsl:if></xsl:template>
