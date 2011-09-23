@@ -166,8 +166,8 @@
                   <menulist observes="reformatok" id="columns">
                     <menupopup style="width: 9em" oncommand="broadcastColCount();" >
                       <menuitem label="-default-" def="1"/>
-                      <menuitem value="onecolumn" label="One"/>
-                      <menuitem value="twocolumn" label="Two"/>
+                      <menuitem value="1" label="One"/>
+                      <menuitem value="2" label="Two"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -564,7 +564,7 @@
                   </vbox>
                   <vbox>
                     <label observes="pagelayoutok">&docformatUnits;</label>
-                    <menulist observes="pagelayoutok" id="docformat.units" style="width: 8em"  
+                    <menulist observes="pagelayoutok" id="docformat.units" style="width: 5em"  
                           oncommand="switchUnits();"  >
                      <menupopup>
                        <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
@@ -581,8 +581,6 @@
                         <menupopup style="width: 6em" oncommand="broadcastColCount();">
                           <menuitem value="1" label="One"/>
                           <menuitem value="2" label="Two"/>
-                          <menuitem value="3" label="Three"/>
-                          <menuitem value="4" label="Four"/>
                         </menupopup>
                       </menulist>
                     </vbox>
@@ -615,10 +613,10 @@
                           <observes element="tmargin" attribute="style" />
                         </hbox>
                         <hbox >
-                          <observes element="header" attribute="style" />
+                          <observes element="hedd" attribute="style" />
                         </hbox>
                         <hbox>
-                          <observes element="headersep" attribute="style" />
+                          <observes element="heddsep" attribute="style" />
                         </hbox>
                         <hbox id="lmarginbody" onclick="document.getElementById('tblmargin').focus();">
                           <observes element="bodyheight" attribute="style" />
@@ -626,8 +624,8 @@
                       </vbox>
                       <vbox id="bodywidth">
                         <hbox id="tmargin" onclick="document.getElementById('tbtmargin').focus();"/>
-                        <hbox id="header" role="textarea" style="height:.2cm;" onclick="document.getElementById('tbheader').focus();"/>
-                        <hbox id="headersep" style="height:.2cm;" onclick="document.getElementById('tbheadersep').focus();"/>
+                        <hbox id="hedd" role="textarea" style="height:.2cm;" onclick="document.getElementById('tbhedd').focus();" />
+                        <hbox id="heddsep" style="height:.2cm;" onclick="document.getElementById('tbheddsep').focus();"/>
 
                         <hbox id="bodyheight" >
                           <hbox id="bodyleft" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="&bodytextarea.tooltip;" flex="1"/>
@@ -643,10 +641,10 @@
                          <observes element="tmargin" attribute="style" />
                         </hbox>
                         <hbox >
-                         <observes element="header" attribute="style" />
+                         <observes element="hedd" attribute="style" />
                         </hbox>
                         <hbox>
-                         <observes element="headersep" attribute="style" />
+                         <observes element="heddsep" attribute="style" />
                         </hbox>
                         <hbox id="mnsepbody" onclick="document.getElementById('tbmnsep').focus();">
                          <observes element="bodyheight" attribute="style" />
@@ -657,10 +655,10 @@
                           <observes element="tmargin" attribute="style" />
                         </hbox>
                         <hbox >
-                          <observes element="header" attribute="style" />
+                          <observes element="hedd" attribute="style" />
                         </hbox>
                         <hbox>
-                          <observes element="headersep" attribute="style" />
+                          <observes element="heddsep" attribute="style" />
                         </hbox>
                         <vbox id="mnbody" role="marginnotes">
                           <observes element="bodyheight" attribute="style" />
@@ -888,13 +886,13 @@
                      <label observes="pagelayoutok" value="&docformatHeader;"/>
                    </caption>
                    <label observes="pagelayoutok" value="&docformatHeaderSeparation;"/>
-                   <textbox id="tbheadersep" type="number" style="width: 5em" oninput="layoutPage('headersep');" onkeypress="geomHandleChar(event,'headersep','tbheadersep');"
-                     onchange="layoutPage('headersep');" onfocus="activate('headersep');" onblur="deactivate('headersep');">
+                   <textbox id="tbheddsep" type="number" style="width: 5em" oninput="layoutPage('heddsep');" onkeypress="geomHandleChar(event,'heddsep','tbheddsep');"
+                     onchange="layoutPage('heddsep');" onfocus="activate('heddsep');" onblur="deactivate('heddsep');">
                      <observes element="pagelayoutok" attribute="disabled"/>
                    </textbox>
                    <label observes="pagelayoutok" value="&docformatHeaderHeight;"/>
-                   <textbox id="tbheader" type="number" style="width: 5em" oninput="layoutPage('header');" onkeypress="geomHandleChar(event,'header','tbheader');"
-                     onchange="layoutPage('header');" onfocus="activate('header');" onblur="deactivate('header');">
+                   <textbox id="tbhedd" type="number" style="width: 5em" oninput="layoutPage('hedd');" onkeypress="geomHandleChar(event,'hedd','tbhedd');"
+                     onchange="layoutPage('hedd');" onfocus="activate('hedd');" onblur="deactivate('hedd');">
                      <observes element="pagelayoutok" attribute="disabled"/>
                    </textbox>
                  </groupbox>
