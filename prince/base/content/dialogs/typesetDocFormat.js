@@ -2684,7 +2684,7 @@ function saveClassOptionsEtc(docformatnode)
 	while (nodelist.length > 0) editor.deleteNode(nodelist[nodelist.length - 1]);
   var optionNode;
   // convention: default menuitems have a def attribute
-  var optionnames = ["pgorient", "papersize", "sides", "qual", "columns", "textsize", "eqnnopos", "eqnpos", "bibstyle"]
+  var optionnames = ["pgorient", "papersize", "sides", "qual", "columns", "titlepage", "textsize", "eqnnopos", "eqnpos", "bibstyle"];
   var widget;
 	var name;
   for (var i = 0, len = optionnames.length; i < len; i++)
@@ -2698,26 +2698,6 @@ function saveClassOptionsEtc(docformatnode)
 	    optionNode.setAttribute(name, widget.value);
 		}
   }
-  name = "title";
-  widget = document.getElementsByTagName(name);
-  if (widget.checked)
-	{
-		if (optionNode == null)
-		  optionNode = editor.createNode("colist", docformatnode, 0);
-	  optionNode.setAttribute(name, widget.value);
-	
-	}
-
-  var leading;
-  nodelist = doc.getElementsByTagName("leading");
-	while (nodelist.length > 0) editor.deleteNode(nodelist[nodelist.length - 1]);
-  if (document.getElementById("leadingcontrol").checked)
-	{  
-		widget = document.getElementById("leading").value;
-	  leading = editor.createNode("leading",preamble,1000);
-    leading.setAttribute("val", widget+"pt")
-    leading.setAttribute("req","leading")
-	}  
 }
 
 function getLanguageSettings(preambleNode)
@@ -2832,17 +2812,6 @@ function getClassOptionsEtc()
   var value;
   var node;
 
-  nodelist = preamble.getElementsByTagName("leading");
-  if (nodelist.length > 0)
-  {
-    node = nodelist[0];
-    if (node.hasAttribute("val"))
-    {
-      var val = node.getAttribute("val"); 
-      var elem = document.getElementById("leading");
-      elem.value = val.replace(/pt/,"");
-    }
-  }
   nodelist = preamble.getElementsByTagName("showkeys");
   if (nodelist.length > 0)
   {
