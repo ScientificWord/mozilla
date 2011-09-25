@@ -135,7 +135,7 @@ case CMD_LET:{
 
 @$@<Assignments@>+=@{@-
 case CMD_LET:{
-   
+
    TeXToken defining;
    @<Scan definable symbol@>
    GetRawToken();
@@ -155,22 +155,33 @@ case CMD_LET:{
          Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
          DefRestoration* restore =
               new DefRestoration((SymbolData**)pDefLoc, "a def");
-         SaveRestoration(restore, bGlobal);
+
+         if ( SaveRestoration(restore, bGlobal) )
+         {
+           if (*((SymbolData**)pDefLoc))
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+         }
+
          Symbols::SetDef(
                     defining.Symbol(),
                     pDef,
                     false /*non-global*/);
-         
+
       } else if (defining.Type() == TT_ACTIVE){
          Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
          DefRestoration* restore =
               new DefRestoration((SymbolData**)pDefLoc, "a def");
-         SaveRestoration(restore, bGlobal);
+         //SaveRestoration(restore, bGlobal);
+         if ( SaveRestoration(restore, bGlobal) )
+         {
+           if (*((SymbolData**)pDefLoc))
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+         }
          Symbols::SetActiveDef(
                     defining.ChrCode(),
                     pDef,
                     false /*non-global*/);
-         
+
       } else {
          ASSERT(false);
       }
@@ -185,22 +196,32 @@ case CMD_LET:{
          Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
          DefRestoration* restore =
               new DefRestoration((SymbolData**)pDefLoc, "a def");
-         SaveRestoration(restore, bGlobal);
+         //SaveRestoration(restore, bGlobal);
+         if ( SaveRestoration(restore, bGlobal) )
+         {
+           if (*((SymbolData**)pDefLoc))
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+         }
          Symbols::SetDef(
                     defining.Symbol(),
                     pDef,
                     false /*non-global*/);
-         
+
       } else if (defining.Type() == TT_ACTIVE){
          Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
          DefRestoration* restore =
               new DefRestoration((SymbolData**)pDefLoc, "a def");
-         SaveRestoration(restore, bGlobal);
+         //SaveRestoration(restore, bGlobal);
+         if ( SaveRestoration(restore, bGlobal) )
+         {
+           if (*((SymbolData**)pDefLoc))
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+         }
          Symbols::SetActiveDef(
                     defining.ChrCode(),
                     pDef,
                     false /*non-global*/);
-          
+
       } else {
          ASSERT(false);
       }
@@ -243,7 +264,12 @@ case CMD_FUTURE_LET:{
    Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
    DefRestoration* restore =
         new DefRestoration((SymbolData**)pDefLoc, "a def");
-   SaveRestoration(restore, bGlobal);
+   //SaveRestoration(restore, bGlobal);
+   if ( SaveRestoration(restore, bGlobal) )
+   {
+           if (*((SymbolData**)pDefLoc))
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+   }
 
    Symbols::SetDef(
               defining.Symbol(),

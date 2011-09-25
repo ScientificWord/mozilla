@@ -65,6 +65,8 @@
 <xsl:variable name="formattingok" select="//html:texprogram[@formatOK='true']"/>
 <xsl:variable name="pagelayoutok" select="//html:texprogram[@pageFormatOK='true']"/>
 <xsl:variable name="fontchoiceok" select="//html:texprogram[@fontsOK='true']"/>
+<xsl:variable name="lang1" select="//html:babel/@lang1"/>
+<xsl:variable name="lang2" select="//html:babel/@lang2"/>
 
 <xsl:template match="html:preamble">
 <xsl:text>%% preamble
@@ -72,6 +74,7 @@
 \usepackage{amssymb}
 <xsl:if test="$compiler='xelatex'">
 \usepackage{xltxtra}
+\usepackage{xkeyval}
 \TeXXeTstate=1 
 \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
 </xsl:if>
@@ -107,6 +110,15 @@
 
 <xsl:template match="html:preambleTeX">
   <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template match="html:babel">
+  <xsl:if test="@lang1">
+    \setdefaultlanguage{<xsl:value-of select="@lang1"/>}
+  </xsl:if>
+  <xsl:if test="@lang2">
+    \setotherlanguage{<xsl:value-of select="@lang2"/>}
+  </xsl:if>
 </xsl:template>
 
 <!-- use docformat information to call the crop package -->
@@ -153,7 +165,7 @@
   left=<xsl:value-of select="@left"/>, top=<xsl:value-of select="@top"
 />, </xsl:if></xsl:template>
 
-<xsl:template match="html:header"><xsl:if test="$pagelayoutok">
+<xsl:template match="html:hedd"><xsl:if test="$pagelayoutok">
   headheight=<xsl:value-of select="@height"
   />, headsep=<xsl:value-of select="@sep"
 />, </xsl:if></xsl:template>
@@ -181,7 +193,8 @@
 <xsl:apply-templates/></xsl:if></xsl:if></xsl:template> 
    
 
-<xsl:template match="html:mainfont[@ot='1']">\setmainfont[<xsl:value-of select="@options"
+<xsl:template match="html:mainfont[@ot='1']">
+  \setmainfont[<xsl:value-of select="@options"
   />]{<xsl:value-of select="@name"
 />}</xsl:template>
 
@@ -275,16 +288,14 @@
 </xsl:template>
 <!-- end of section headings -->
 
-<!-- class options   -->
-<xsl:template match="html:colist"
-  ><xsl:if test="$formattingok"><xsl:for-each select="@*"
-    ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if test="position()!=last()">, </xsl:if></xsl:if></xsl:for-each
-  ></xsl:if></xsl:template>
-
 <!-- leading -->
 <xsl:template match="html:leading"
     ><xsl:if test="$formattingok">\leading{<xsl:value-of select="@val"
   />}</xsl:if></xsl:template>
+  
+<!-- magnification?? -->
+
+
 
 <!-- section numbering style -->
 <xsl:template match="html:numberstyles">

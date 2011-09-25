@@ -156,6 +156,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_oneshotGreek", msiOneShotGreek);
   commandTable.registerCommand("cmd_oneshotSymbol", msiOneShotSymbol);
   commandTable.registerCommand("cmd_fontcolor", msiFontColor);
+  commandTable.registerCommand("cmd_copytex", msiCopyTeX);
 }
 
 function msiSetupComposerWindowCommands(editorElement)
@@ -682,6 +683,10 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     else if (commandID=="cmd_structtag" && editor && editor.tagListManager && editor.tagListManager.getClearStructTag(ns) == newState)
     {
       msiGoDoCommand('cmd_removestruct');
+    }
+    else if (commandID=="cmd_envtag" && editor && editor.tagListManager && editor.tagListManager.getClearEnvTag(ns) == newState)
+    {
+      msiGoDoCommand('cmd_removeenv');
     }
     else
       msiGoDoCommandParams(commandID, cmdParams, editorElement);
@@ -1771,6 +1776,7 @@ function msiEditorOutputProgressListener(editorElement)
   this.onStateChange = function(aWebProgress, aRequest, aStateFlags, aStatus)
   {
     var editor = msiGetEditor(this.msiEditorElement);
+		if (aRequest == null) return;
 
     // Use this to access onStateChange flags
     var requestSpec;
@@ -2625,14 +2631,14 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
     leafname = tempdir.leafName
-    if (leafname.lastIndexOf(".") > 0)
-    {  
-      leafname = leafname.slice(0, leafname.lastIndexOf(".")); // trim off extension
-    }
     destLocalFile = tempdir.clone(); 
     
   }
-
+  if (/\.sci$/i.test(leafname))
+  {  
+    leafname = leafname.slice(0, leafname.lastIndexOf(".")); // trim off extension
+  }
+  
   var tempfile;
   if (isSciFile) 
   {
@@ -3775,6 +3781,41 @@ var msiOneShotSymbol =
 
 
 //-----------------------------------------------------------------------------------
+
+var msiCopyTeX =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+	  var editorElement = msiGetActiveEditorElement();
+	  var editor = msiGetEditor(editorElement);
+	  if (!editor) {
+			throw("No editor in msiCopyTeX");
+		}
+	  var selection = editor.selection;
+	  if (!selection)
+	  {
+	    throw("No selection in msiCopyTeX!");
+	  }
+	  var intermediateText;
+	  intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
+	  var output = xmlFragToTeX(intermediateText);
+		const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].  
+		getService(Components.interfaces.nsIClipboardHelper);  
+		gClipboardHelper.copyString(output);
+  }
+};
+//--------
 var msiFontColor =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -4775,8 +4816,7 @@ var msiInsertCharsCommand =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement();
-    var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent",
-                                                                                                     editorElement, "cmd_insertChars", this);
+    var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent", editorElement, "cmd_insertChars", this);
 //    msiEditorFindOrCreateInsertCharWindow(editorElement);
   }
 };
@@ -4794,8 +4834,7 @@ var msiReviseCharsCommand =
     if (charReviseData != null && editorElement != null)
     {
 //      AlertWithTitle("msiComposerCommands.js", "In msiReviseCharsCommand, trying to revise a character, dialog not yet implemented.");
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent",
-                                                     editorElement, "cmd_reviseChars", this, charData);
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent", editorElement, "cmd_reviseChars", this, charData);
     }
     editorElement.focus();
   },
@@ -5077,12 +5116,36 @@ var msiReviseHorizontalSpacesCommand =
   doCommand: function(aCommand, dummy)  {}
 };
 
+function msiInsertStockSpace(spacename)
+{
+	var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  if (spacename === "normalSpace") 
+	{
+		editor.insertText(" ");
+		return;
+  }
+  var node;
+  try {
+    node = editor.document.createElement('hspace');
+  }
+  catch (e) {
+    dump("Unable to create node in msiInsertHorizontalSpace: "+e.message+"\n");
+  }
+  node.setAttribute('type',spacename);
+  var dimsStr = msiSpaceUtils.getHSpaceDims(spacename);
+  if (dimsStr)
+    node.setAttribute('dim',dimsStr);	
+  contentStr = msiSpaceUtils.getHSpaceDisplayableContent(spacename);
+  if (contentStr)
+    node.textContent=contentStr;
+  editor.insertElementAtSelection(node,true);
+}
+
 function msiInsertHorizontalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
-  var parentNode = editor.selection.anchorNode;
   var dimsStr, contentStr;
-  var insertPos = editor.selection.anchorOffset;
   if (dialogData.spaceType == "normalSpace") editor.insertText(" ");
 //  var dimensionsFromSpaceType = 
 //  {
@@ -5116,7 +5179,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 //  };
   
  // editor.deleteSelection(1);
-  var parent = editor.selection.focusNode;  //this repeats code just above the comment -- BBM
+  var parent = editor.selection.focusNode;  
   var offset = editor.selection.focusOffset;
   try {
     var node = editor.document.createElement('hspace');

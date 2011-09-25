@@ -33,7 +33,6 @@
 
   <binding id="browser">
     <handlers>
-#include ../browser-base.inc
       <handler event="keypress" keycode="VK_PAGE_UP" command="cmd_movePageUp"/>
       <handler event="keypress" keycode="VK_PAGE_DOWN" command="cmd_movePageDown"/>
       <handler event="keypress" keycode="VK_PAGE_UP" modifiers="shift" command="cmd_selectPageUp"/>
