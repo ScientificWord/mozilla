@@ -48,6 +48,7 @@ private:
   nsCString mFileURI;  // the file the list was loaded from
   PRUint32 arraylength;
   PRBool   isInitialized;
+  PRUint32 disabledInContext;  //one of the msiIAutosub:: context flags; default is msiIAutosub::CONTEXT_NONE.
   ~msiAutosub();
 
 protected:
