@@ -78,7 +78,7 @@ compare( const void * a, const void * b, void * notused)
   return 0;
 }
 
-msiAutosub::msiAutosub(): isInitialized(PR_FALSE)
+msiAutosub::msiAutosub(): isInitialized(PR_FALSE), disabledInContext(msiIAutosub::CONTEXT_NONE)
 {
   /* member initializers and constructor code */
 }
@@ -302,10 +302,30 @@ NS_IMETHODIMP msiAutosub::GetCurrentData(PRInt32 *ctx, PRInt32 *action, nsAStrin
 
 PRBool CtxMatches(PRInt32 ctx, PRBool inMath)
 {
+  if (ctx == msiIAutosub::CONTEXT_NONE)
+    return PR_FALSE;
   if (inMath) return (ctx != msiIAutosub::CONTEXT_TEXTONLY);
   else return (ctx != msiIAutosub::CONTEXT_MATHONLY);
 }
 
+
+NS_IMETHODIMP msiAutosub::EnableAutoSubstitution( PRBool bEnable, PRInt32 ctx )
+{
+    if (bEnable)
+      disabledInContext &= ~ctx;
+    else
+      disabledInContext |= ctx;
+    return NS_OK;
+}
+
+NS_IMETHODIMP msiAutosub::IsAutoSubstitutionEnabled( PRBool bMath, PRBool * _retval)
+{
+    if (bMath)
+      *_retval = ((disabledInContext & msiIAutosub::CONTEXT_MATHONLY) == 0);
+    else
+      *_retval = ((disabledInContext & msiIAutosub::CONTEXT_TEXTONLY) == 0);
+    return NS_OK;
+}
 
 /* long nextChar (in wchar ch); */
 NS_IMETHODIMP msiAutosub::NextChar(PRBool inMath, PRUnichar ch, PRInt32 *_retval)
@@ -315,6 +335,14 @@ NS_IMETHODIMP msiAutosub::NextChar(PRBool inMath, PRUnichar ch, PRInt32 *_retval
     *_retval = msiIAutosub::STATE_FAIL;
     return NS_OK;
   }
+  PRBool isEnabled;
+  IsAutoSubstitutionEnabled( inMath, &isEnabled);
+  if (!isEnabled)
+  {
+    *_retval = msiIAutosub::STATE_FAIL;
+    return NS_OK;
+  }
+
   nsAutoString s;
   s.SetLength(1);
   nsString::iterator start;
