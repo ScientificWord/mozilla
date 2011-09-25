@@ -1,25 +1,44 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 
 var data;
+//var bOriginEditorReady = false;
 
-var computeMomentEditorDocumentObserver =
+function computeMomentEditorDocumentObserver(editorElement)
 { 
-//  this.msiEditorElement = editorElement;
-//  this.observe = function(aSubject, aTopic, aData)
-  observe: function(aSubject, aTopic, aData)
+  this.mEditorElement = editorElement;
+  this.bEditorReady = false;
+  this.observe = function(aSubject, aTopic, aData)
   {
 //    dump("ComputeMoment origin editor observer hit!\n");
 //    var editor = msiGetEditor(editorElement);
+    var bIsRealDocument, currentURL, fileName;
     switch(aTopic)
     {
       case "obs_documentCreated":
-        checkEnableControls();
+        if (this.bEditorReady)
+          return;
+        
+        bIsRealDocument = false;
+        currentURL = msiGetEditorURL(this.mEditorElement);
+//        msiDumpWithID("In computeMomentEditorDocumentObserver documentCreated observer for editor element [@], currentURL is " + currentURL + "].\n", this.mEditorElement);
+        if (currentURL != null)
+        {
+          fileName = GetFilename(currentURL);
+          bIsRealDocument = (fileName != null && fileName.length > 0);
+        }
+        if (bIsRealDocument)
+        {
+          this.bEditorReady = true;
+          checkEnableControls();
+        }
       break;
+      case "cmd_bold":
       case "cmd_setDocumentModified":
-        checkEnableControls();
+        if (this.bEditorReady)
+          checkEnableControls();
       break;
     }
-  }
+  };
 }
 
 function Startup(){
@@ -45,20 +64,18 @@ function Startup(){
 //    msiInitializeEditorForElement(degreeEditorControl, theStringSource, true);
 //  }
 //  catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor degree-frame: [" + exc + "].\n");}
-
-  var theStringSource2 = GetComputeString("Moment.defaultOrigin");
+  var degreeObserver = new computeMomentEditorDocumentObserver(degreeEditorControl);
+  degreeEditorControl.mInitialDocObserver = [ {mCommand: "obs_documentCreated", mObserver : degreeObserver},
+                                              {mCommand : "cmd_setDocumentModified", mObserver : degreeObserver} ];
 //  try
 //  {
+  var theStringSource2 = GetComputeString("Moment.defaultOrigin");
   var originEditorControl = document.getElementById("origin-frame");
-//rwa    originEditorControl.mInitialDocObserver = new Array(1);
-//rwa//    originEditorControl.mInitialDocObserver = new Array(2);
-//rwa    originEditorControl.mInitialDocObserver[0] = new Object();
-//rwa    originEditorControl.mInitialDocObserver[0].mObserver = computeMomentEditorDocumentObserver;
-//rwa    originEditorControl.mInitialDocObserver[0].mCommand = "obs_documentCreated";
-//rwa//    originEditorControl.mInitialDocObserver[1] = new Object();
-//rwa//    originEditorControl.mInitialDocObserver[1].mObserver = computeMomentEditorDocumentObserver;
-//rwa//    originEditorControl.mInitialDocObserver[1].mCommand = "cmd_setDocumentModified";
-//    msiInitializeEditorForElement(originEditorControl, theStringSource, true);
+  var originObserver = new computeMomentEditorDocumentObserver(originEditorControl);
+  originEditorControl.mInitialDocObserver = [ {mCommand : "cmd_setDocumentModified", mObserver : originObserver},
+                                              {mCommand : "obs_documentCreated", mObserver : originObserver},
+                                              {mCommand : "cmd_bold", mObserver : originObserver} ];
+
 //  }
 //  catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor origin-frame: [" + exc + "].\n");}
 
@@ -104,13 +121,20 @@ function checkEnableControls()
 {
   var origin = document.getElementById("origin");
   var bExplicitOrigin = (origin.selectedIndex != 0);
+  var degreeEditor = document.getElementById("degree-frame");
   var originEditor = document.getElementById("origin-frame");
   msiEnableEditorControl(originEditor, bExplicitOrigin);
   var bIsOK = true;
-  if (bExplicitOrigin)
+
+  var doc = degreeEditor.contentDocument;
+  var mathnodes = doc.getElementsByTagName("math");
+  if (mathnodes.length == 0 || HasEmptyMath(mathnodes[0]))
+    bIsOK = false;
+
+  if (bIsOK && bExplicitOrigin)
   {
-    var doc = originEditor.contentDocument;
-    var mathnodes = doc.getElementsByTagName("math");
+    doc = originEditor.contentDocument;
+    mathnodes = doc.getElementsByTagName("math");
     if (mathnodes.length == 0 || HasEmptyMath(mathnodes[0]))
       bIsOK = false;
   }
