@@ -429,7 +429,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::GetGlobalSearchStringArray(nsI
     {
       NS_ADDREF(nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray);
       nsIAutoCompleteSearchStringArray * p_imp;
-      GetNewImplementation(&p_imp);
+      nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray->GetNewImplementation(&p_imp);
       nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray->SetImplementation(p_imp);
     }
   }
