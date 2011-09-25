@@ -78,9 +78,14 @@
   min-width: 300px;
 }
 
-#docformat [
+#docformat {
   overflow; scroll;
-]
+}
+
+menulist[value="def"] > hbox > label {
+	color: gray;
+}
+
 
 #sectiontextarea {
   min-height:20px; 
@@ -101,4 +106,9 @@
 
 msibutton[disabled="true"] label {
   color: gray;
+}
+
+
+textbox [disabled] {
+	color: gray;
 }

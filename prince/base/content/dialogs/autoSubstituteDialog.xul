@@ -17,6 +17,7 @@
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
@@ -70,6 +71,8 @@
 
   <popupset id="msiEditorContentContextSet"/>
 
+#include ../keysfordialogs.inc
+
   <hbox>  
     <vbox>
       <label control="keystrokesBox" value="&keystrokesBox.label;" accesskey="&keystrokesBox.accesskey;"/>
@@ -121,11 +124,6 @@
             <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
           </commandset>
           <commandset id="MSImathMenuCommands"/>
-  
-          <keyset id="editorKeys">
-            <keyset id="tasksKeys"/>
-            <keyset id="MSIKeySet"/>
-          </keyset>
         </editor>
         </vbox>
         <vbox><label id="scriptLabel" control="scriptTextbox" value="&script.label;"	accesskey="&script.accesskey;"/>

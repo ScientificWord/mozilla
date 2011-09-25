@@ -74,7 +74,8 @@ MNODE* Tree2StdMML::TreeToCanonicalForm(MNODE* dMML_tree,
   TCI_ASSERT(CheckLinks(dMML_tree));
 
   MNODE* rv = ChDataToCanonicalForm(dMML_tree);
-  RemoveMixedNumbers(rv, in_notation);
+  // This is too late for removing mixed numbers. We've already removed commas, so 4,1/2 is now a mixed number.
+  // RemoveMixedNumbers(rv, NULL);
   rv = FixMFENCEDs(rv);
   rv = InfixDivideToMFRAC(rv);
   rv = RemoveMatrixDelims(rv, in_notation);
@@ -120,6 +121,7 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   RemoveHSPACEs(rv);
   RemoveEmptyTags(dMML_tree);
   FixAdjacentMNs(dMML_tree);
+  RemoveMixedNumbers(rv, NULL);
 
   rv = ChDataToCanonicalForm(rv);
   BindDelimitedGroups(rv);
@@ -211,7 +213,8 @@ void Tree2StdMML::RemoveMixedNumbers(MNODE* dMML_tree,
                 do_it = false;
               if (do_it) {
                 PermuteMixedNumber(rover);
-                in_notation -> nmixed_numbers++;
+                if (in_notation) 
+                  in_notation -> nmixed_numbers++;
               }
             }
           } else {
@@ -334,7 +337,7 @@ void Tree2StdMML::LookupMOInfo(MNODE* mml_node)
   U32 ID, subID;
   const char* p_data;
 
-  if (mml_entities->GetRecordFromName("MATH", entity, strlen(entity), ID, subID, &p_data)) {
+  if (mml_entities && entity && mml_entities->GetRecordFromName("MATH", entity, strlen(entity), ID, subID, &p_data)) {
     if (p_data && *p_data) {
       if (strstr(p_data,"multiform,")) {
         set_form = true;
@@ -961,7 +964,7 @@ MNODE* Tree2StdMML::FinishFixup(MNODE* dMML_tree)
   if (rv->parent && HasPositionalChildren(rv->parent))
     return rv;
 
-  rv = BindMixedNumbers(rv);
+  //rv = BindMixedNumbers(rv);
   //TODO: BindUnits
   //TODO: BindDegMinSec
   rv = BindDelimitedIntegrals(rv);
@@ -1579,13 +1582,13 @@ bool Tree2StdMML::IsEmptyMO(MNODE* mml_node)
   if (mml_node->p_chdata && *mml_node->p_chdata)
     return false;
 
-  ATTRIB_REC* arover = mml_node->attrib_list;
-  while (arover) {
-    if (StringEqual(arover->zattr_nom, "fence"))
-      if (StringEqual("true", arover->zattr_val))
-        return false;
-    arover = arover->GetNext();
-  }
+  //ATTRIB_REC* arover = mml_node->attrib_list;
+  //while (arover) {
+  //  if (StringEqual(arover->zattr_nom, "fence"))
+  //    if (StringEqual("true", arover->zattr_val))
+  //      return false;
+  //  arover = arover->GetNext();
+  //}
   return true;
 }
 
@@ -1709,6 +1712,9 @@ int Tree2StdMML::GetIntegralCount(MNODE* mml_node)
     return 0;
 
   //TODO study Unicode list (this list from SWP)
+  if (! (mml_node->p_chdata)) 
+    return 0;
+
   const char *ptr = strstr(mml_node->p_chdata, "&#x");
   if (ptr) {
     U32 unicode = ASCII2U32(ptr + 3, 16);

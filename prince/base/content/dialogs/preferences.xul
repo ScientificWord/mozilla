@@ -148,115 +148,124 @@
       <preference id="digitsRenderedpref"
                   name="swp.user.digitsrendered"
                   type="int"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="lowerthresholdpref"
                   name="swp.user.lowerthreshold"
                   type="int"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="upperthresholdpref"
                   name="swp.user.upperthreshold"
                   type="int"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="primesasnpref"
                   name="swp.user.primesasn"
                   type="int"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="mixednumpref"
                   name="swp.user.mixednum"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="trigargspref"
                   name="swp.user.trigargs"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="usearcpref"
                   name="swp.user.usearc"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="logepref"
                   name="swp.user.loge"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="dotderivativepref"
                   name="swp.user.dotderivative"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="barconjpref"
                   name="swp.user.barconj"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="i_imaginarypref"
                   name="swp.user.i_imaginary"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="j_imaginarypref"
                   name="swp.user.j_imaginary"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="e_exppref"
                   name="swp.user.e_exp"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="primederivpref"
                   name="swp.user.primederiv"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="matrix_delimpref"
                   name="swp.user.matrix_delim"
                   type="string"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="derivformatpref"
                   name="swp.user.derivformat"
                   type="string"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="imagipref"
                   name="swp.user.imagi"
                   type="string"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="diffDpref"
                   name="swp.user.diffD"
                   type="string"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="diffdpref"
                   name="swp.user.diffd"
                   type="string"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="expepref"
                   name="swp.user.expe"
                   type="string"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="digitsusedpref"
                   name="swp.user.digitsused"
                   type="int"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="degreepref"
                   name="swp.user.degree"
                   type="int"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="principalpref"
                   name="swp.user.principal"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="specialpref"
                   name="swp.user.special"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="logSentpref"
                   name="swp.user.logSent"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="engSentpref"
                   name="swp.user.engSent"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="engReceivedpref"
                   name="swp.user.engReceived"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="logReceivedpref"
                   name="swp.user.logReceived"
                   type="bool"
-                  onchange = "onComputeSettingChange(this)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>                  
+      <preference id ="doublespacepref"
+                  name="swp.space.after.space"
+                  type="bool"/>                  
+      <preference id ="ctrlTpref"
+                  name="swp.ctrl.t"
+                  type="string"/>                  
+      <preference id ="ctrlMpref"
+                  name="swp.ctrl.m"
+                  type="string"/>                  
     </preferences>
 
     <tabbox>
@@ -439,7 +448,8 @@
     </preferences>
     <tabbox flex="1">
 	    <tabs class="tabs-top">
-	     <tab label="Editing parameters"       selected="1" />
+	      <tab label="Editing parameters"       selected="1" />
+	      <tab label="Math"/>
 	    </tabs>
 
       <tabpanels>
@@ -450,6 +460,7 @@
             <hbox>
               <label value="Enable realtime spell checking"/><checkbox preference="enablerealtimespell"/>
             </hbox>
+	
           </groupbox>
           <groupbox>
             <caption>Source ediing</caption>
@@ -471,6 +482,29 @@
             </grid>
           </groupbox>
         </tabpanel>
+				<tabpanel id="prefMathEdit" orient="vertical">
+					<separator flex="1"/>
+					<groupbox orient="vertical">
+            <caption>Spacebar</caption>
+            <checkbox id="doublespace" preference="doublespacepref" label="After space switches to math"/>
+          </groupbox>
+					<hbox>
+						<groupbox>
+							<caption>Ctrl + T</caption>
+							<radiogroup preference="ctrlTpref">
+								<radio label="Toggle math/text" value="toggle"/>
+								<radio label="Force text" value="text"/>
+							</radiogroup>
+						</groupbox> 
+						<groupbox>
+							<caption>Ctrl + M</caption>
+							<radiogroup preference="ctrlMpref">
+								<radio label="Toggle math/text" value="toggle"/>
+								<radio label="Force math" value="math"/>
+							</radiogroup>
+						</groupbox>
+					</hbox>
+				</tabpanel>          
       </tabpanels>
     </tabbox>
   </prefpane>

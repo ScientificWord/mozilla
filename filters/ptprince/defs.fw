@@ -834,7 +834,12 @@ void DefAssignment(CommandCode curcmd, int prefixes){
    }
    DefRestoration* restore =
         new DefRestoration((SymbolData**)pDefLoc, "a def");
-   SaveRestoration(restore, bGlobal);
+   //SaveRestoration(restore, bGlobal);
+   if ( SaveRestoration(restore, bGlobal) )
+   {
+      if (*((SymbolData**)pDefLoc))
+        { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+   }
 
    if (defining.Type() == TT_SYMBOL){
       Symbols::SetDef(defining.Symbol(), pMD,
@@ -898,7 +903,13 @@ void EdefAssignment(CommandCode curcmd, int prefixes)
    Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
    DefRestoration* restore =
         new DefRestoration((SymbolData**)pDefLoc, "a def");
-   SaveRestoration(restore, bGlobal);
+   //SaveRestoration(restore, bGlobal);
+
+   if ( SaveRestoration(restore, bGlobal) )
+   {
+           if (*((SymbolData**)pDefLoc))
+             { (*((SymbolData**)pDefLoc)) -> AddRef(); }
+   }
 
    Symbols::SetDef(defining.Symbol(), pMD, bGlobal || thecmd == CMD_XDEF);
 }
@@ -1011,7 +1022,7 @@ if (CurTok().Type() != TT_LEFT_BRACE){
             // Watch for \msitag
             DetermineCommandCode();
             if (CurCmdCode() == CMD_TAG){
-               std::cout << "\n\\msitag in body of \\edef";
+               //std::cout << "\n\\msitag in body of \\edef";
                LOG("\n\\msitag in body of \\edef");
                pTL -> push_back(CurTok());
                GetRawToken();
