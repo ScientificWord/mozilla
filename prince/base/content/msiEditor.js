@@ -807,88 +807,18 @@ function msiEditorDocumentObserver(editorElement)
               editor.addTagInfo(tagdeflist[i]);
             
           }
-// Now build the style sheet for the AllTagsView
-          var templatefile = msiFileFromFileURL(msiURIFromString("resource://app/res/css/tagtemplate.css"));
-          var data = "";  
-          var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].  
-                                  createInstance(Components.interfaces.nsIFileInputStream);  
-          var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].  
-                                  createInstance(Components.interfaces.nsIConverterInputStream);  
-          fstream.init(templatefile, -1, 0, 0);  
-          cstream.init(fstream, "UTF-8", 0, 0);  
-  
-          let (templatestr = {}) {  
-            cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
-            data = templatestr.value;  
-          }  
-          cstream.close(); // this closes fstream  
-          var classtemplates = data.split(/\-{4,}/);
-          var j;
-          for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
-
-
-          var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
-          var taglist;
-          var i;
-          var k;
-          var str = "";
-          var ok;
-          var classname;
-          var classtemplate;
-          for (j = 0; j < tagclasses.length; j++)
-          {
-            ok = false;
-            classname= tagclasses[j];
-            for (k = 0; k < classtemplates.length; k++)
-            {
-              if (classtemplates[k].indexOf(classname)==0) 
-              {
-                classtemplate = classtemplates[k];
-                ok = true;
-                break;
-              }
-            }
-
-            taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
-            for (i = 0; i < taglist.length; i++)
-            {
-              if (taglist[i].length && taglist[i][0] != "(")
-                str += classtemplate.replace(classname,taglist[i],"g")+"\n";
-            }
-          }
-
-          try {
-            var htmlurlstring = msiGetEditorURL(this.mEditorElement);
-               // currently htmlusrstring = "chrome://prince/content/StdDialogShell.xhtml" 
-            var htmlurl = msiURIFromString(htmlurlstring);
-               // ... seems ok
-            var htmlFile = msiFileFromFileURL(htmlurl);
-             // Throws exception. htmlurl doesn't have nsIFileURL interface.
-             // Can fix by setting the dialog shell in the prefs to something like
-             // ...   "resource://app/res/StdDialogShell.xhtml"
-             // and moving the file there in the build/install.
-
-            var cssFile = htmlFile.parent;
-           
-            cssFile.append("css");
-            if (!cssFile.exists()) cssFile.create(1, 0755);
-             
-            cssFile.append("msi_Tags.css");
-
-            dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
-
-            var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-            fos.init(cssFile, -1, -1, false);
-            var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-              .createInstance(Components.interfaces.nsIConverterOutputStream);
-            os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-            os.writeString(str);
-            os.close();
-            fos.close();
-          }
-          catch (e) {
-            dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
-          }
+// Add language tags if there is a <babel> tag
+					addLanguageTagsFromBabelTag(editor.document)
+				  var htmlurlstring = editor.document.documentURI;;
+				  var htmlurl = msiURIFromString(htmlurlstring);
+				  var htmlFile = msiFileFromFileURL(htmlurl);
+				  if (htmlFile)
+				  {
+						var cssFile = htmlFile.parent;
+					  cssFile.append("css");
+					  cssFile.append("msi_Tags.css")
+					  dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+					}
 
           try{
              var elemList = editor.document.getElementsByTagName("definitionlist");
@@ -4358,7 +4288,12 @@ function msiSetEditMode(mode, editorElement)
     msiClearSource(editorElement);
     editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
+//		catch(e)
+//		{
+//			dump(e.message+"\n");
+//		}
   }
+  else editorElement.contentWindow.focus();
 }
 
 function InsertColoredSourceView(editor, source)
@@ -8029,8 +7964,18 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       if (commandString)
         item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
       else if (scriptString)
-        item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
-      item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+			{
+			  item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
+			}
+			if (propData.mNode && propData.mNode.setAttribute)
+			{		
+				item.addEventListener("DOMMenuItemActive", function (event) {
+					event.target.propertiesData.mNode.setAttribute("hilite","1");
+				}, false);
+				item.addEventListener("DOMMenuItemInactive", function (event) {
+					event.target.propertiesData.mNode.removeAttribute("hilite");
+				}, false);
+			}
       item.setAttribute("label", menuString);
       item.refElement = propData.getReferenceNode();
       item.refEditor = editorElement;
@@ -10062,7 +10007,10 @@ var msiCommandUpdater = {
 //  }  
 };
 // Shim for compatibility with existing code. 
-function msiGoDoCommand(command, editorElement) { msiCommandUpdater.doCommand(command, editorElement); }
+function msiGoDoCommand(command, editorElement) 
+{ 
+	msiCommandUpdater.doCommand(command, editorElement); 
+}
 function msiGoUpdateCommand(command, editorElement) { msiCommandUpdater.updateCommand(command, editorElement); }
 function msiGoSetCommandEnabled(command, enabled, editorElement) { msiCommandUpdater.enableCommand(command, enabled, editorElement); }
 function msiGoSetMenuValue(command, labelAttribute, editorElement) { msiCommandUpdater.setMenuValue(command, labelAttribute, editorElement); }

@@ -34,9 +34,11 @@ public:
    void AddRef() { m_ref++; }
    void RemRef() {
       if (this != frozen_relax){
-        --m_ref; 
-        if (m_ref <= 0){ 
-          delete this; 
+        if (m_ref > 0){
+          --m_ref;
+          if (m_ref == 0){
+            delete this;
+          }
         }
       }
    }
@@ -215,9 +217,11 @@ void Symbols::GetDefLoc(SymId id, void** pLoc)
 @$@<SetDef imp@>==@{@-
 void Symbols::SetDef(SymId id, SymbolData* pData, bool bGlobal)
 {
-   if (pData) pData -> AddRef();
-
-   if (hash_table[id].m_data && (hash_table[id].m_data -> m_ref > 0)){
+   SymbolData* oldData = hash_table[id].m_data;
+   if (pData && (oldData != pData)){
+      pData -> AddRef();
+   }
+   if (oldData && (oldData -> m_ref > 0) && (oldData != pData)){
       hash_table[id].m_data -> RemRef();
    }
    hash_table[id].m_data = pData;
@@ -284,7 +288,7 @@ void Symbols::CreateSymbol(const char* name, SymbolData* data)
 void Symbols::DeleteAll()
 {
     for (int i = 0; i < NUM_TEX_CHARS; ++i){
-      if (s_activeDef[i]) { 
+      if (s_activeDef[i]) {
         s_activeDef[i] -> RemRef();
       }
     }

@@ -14,6 +14,9 @@ holds a token list.
 @$@<Declare MakeToksParameter@>==@{@-
 void MakeToksParameter(const char* name, TokenList* addr)
 {
+   // addr is a pointer to static data.
+   addr -> SetCount(-1);
+
    Primitive* pc = new Primitive(CMD_ASSIGN_TOKS, true, (int)addr);
    Symbols::CreateSymbol(name, pc);
 }
@@ -54,12 +57,19 @@ case CMD_ASSIGN_TOKS: {
    TokenList* loc = (TokenList*) prim -> Data();
    TeXToken defining = CurTok();
    TokenList* pTL = new TokenList;
-   pTL->AddReference();
    ScanOptionalEquals();
    ScanTokenList(pTL, false);
    LOG("\n----Set " << defining << " = " << *pTL);
    SaveRestoration(new ToksRestoration(loc, "a token list"), bGlobal);
-   *loc = *pTL;
+   if (loc->GetCount() == -1) {
+     *loc = *pTL;
+     loc -> SetCount(-1);
+   } else {
+     *loc = *pTL;
+
+   }
+   loc->AddReference();
+   delete pTL;
    break;
 };
 @}
@@ -106,12 +116,19 @@ case CMD_TOKS: {
    ScanOptionalEquals();
    ScanTokenList(pTL, false);
    TokenList* loc = &Global::ToksReg[n];
+   LOG("\n----Set \\toks" << n << " = " << *pTL);
    // SaveRestoration(
    //          new IntRestoration(loc, "a token register"),
    //          false
    //        );
-   *loc = *pTL;
-   LOG("\n----Set \\toks" << n << " = " << *pTL);
+   if (loc->GetCount() == -1) {
+     *loc = *pTL;
+     loc -> SetCount(-1);
+   } else {
+     *loc = *pTL;
+   }
+   loc->AddReference();
+   delete pTL;
    break;
 }
 @}

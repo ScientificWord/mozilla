@@ -31,7 +31,7 @@ char *upref_zstrs[] = {
   "<mml:math class=\"displayedmathml\" mode=\"display\" display=\"block\">",
   "<mml:math class=\"inlinemathml\" display=\"inline\">",
   "mml:",                         //  U8* namespace_prefix;
-  "fontfamily=\"Times New Roman\" fontsize=\"100%\"",   //  U8* mstyle_attrs;
+  "",
   "mathcolor=\"gray\"",           //  U8* mathname_attrs;
   "mathcolor=\"green\"",          //  U8* unitname_attrs;
   "mathcolor=\"black\"",          //  U8* text_in_math_attrs;
@@ -54,8 +54,6 @@ char *upref_zstrs[] = {
 
 bool fix_IE_space_bug =  true;
 
-//HINSTANCE s_hApp;
-//HINSTANCE s_hDLL;
 
 std::string s_mathml;
 std::string s_anomaly;
@@ -117,9 +115,6 @@ void CloseMathML()
        delete[] str;
     i++;
   }
-  //if (s_hDLL != 0){
-  //   FreeLibrary(s_hDLL);
-  //}
 }
 
 
