@@ -21,13 +21,13 @@
 <!ENTITY substitution.accesskey "S">
 <!ENTITY script.label "Javascript to execute">
 <!ENTITY script.accesskey "J">
-<!ENTITY enableDisableAutosubs.label "Enable or Disable Auto Substitution">
-<!ENTITY enableSubsInMath.label "In Math">
-<!ENTITY enableSubsInMath.accesskey "h">
-<!ENTITY enableSubsInText.label "In Text">
-<!ENTITY enableSubsInText.accesskey "e">
-<!ENTITY enableUnitSubs.label "Units">
-<!ENTITY enableUnitSubs.accesskey "i">
+<!ENTITY disableAutosubs.label "Disable Auto Substitution">
+<!ENTITY disableSubsInMath.label "In Math">
+<!ENTITY disableSubsInMath.accesskey "h">
+<!ENTITY disableSubsInText.label "In Text">
+<!ENTITY disableSubsInText.accesskey "e">
+<!ENTITY disableUnitSubs.label "Units">
+<!ENTITY disableUnitSubs.accesskey "i">
 <!ENTITY enableMathNameSubs.label "Math Names">
 <!ENTITY enableMathNameSubs.accesskey "M">
 <!ENTITY saveButton.label "Save">
