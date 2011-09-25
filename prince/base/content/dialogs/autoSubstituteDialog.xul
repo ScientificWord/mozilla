@@ -134,9 +134,9 @@
       </deck>
       <spacer flex="1"/>
       <groupbox>
-        <caption label="&enableDisableAutosubs.label;"/>
-        <checkbox id="enableSubsInMath" label="&enableSubsInMath.label;" accesskey="&enableSubsInMath.accesskey;"/>
-        <checkbox id="enableSubsInText" label="&enableSubsInText.label;" accesskey="&enableSubsInText.accesskey;"/>
+        <caption label="&disableAutosubs.label;"/>
+        <checkbox id="disableSubsInMath" label="&disableSubsInMath.label;" accesskey="&disableSubsInMath.accesskey;" oncommand="changeGlobalEnabling(true);" />
+        <checkbox id="disableSubsInText" label="&disableSubsInText.label;" accesskey="&disableSubsInText.accesskey;" oncommand="changeGlobalEnabling(false);" />
         <!-- checkbox id="enableUnitSubs" label="&enableUnitSubs.label;" accesskey="&enableUnitSubs.accesskey;"/>
         <checkbox id="enableMathNameSubs" label="&enableMathNameSubs.label;" accesskey="&enableMathNameSubs.accesskey;"/ -->
         <!-- description id="enableAutoSubDescription" control="enableAutoSub">&enableAutoSub.description;</description -->
