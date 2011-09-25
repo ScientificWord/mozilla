@@ -88,6 +88,7 @@ interface msiISimpleComputeEngine : nsISupports
   void divide(in wstring expr, in wstring vars, [retval] out wstring result);
   void partialFractions(in wstring expr, in wstring vars, [retval] out wstring result);
   void sort(in wstring expr, in wstring vars, [retval] out wstring result);
+  void roots(in wstring expr, in wstring vars, [retval] out wstring result);
   void companionMatrix(in wstring expr, in wstring vars, [retval] out wstring result);
   const unsigned long Polynomial_Collect   			   = CCID_Polynomial_Collect;   			 
   const unsigned long Polynomial_Divide					   = CCID_Polynomial_Divide;					 
