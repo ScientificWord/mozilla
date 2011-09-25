@@ -102,6 +102,19 @@ function dlgAutoSubsList()
     var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
     autosub.Save();
   };
+
+  this.enableAutoSubstitution = function(bEnable, context)
+  {
+    var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+    autosub.enableAutoSubstitution( bEnable, context );
+  };
+
+  this.isAutoSubstitutionEnabled = function(bMath)
+  {
+    var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+    return autosub.isAutoSubstitutionEnabled( bMath );
+  };
+
 }
 
 function msiEditorChangeObserver(editorElement)
@@ -182,6 +195,7 @@ function Startup() {
   gDialog.bTypeModified = false;
   gDialog.bContextModified = false;
   gDialog.bEditorReady = false;
+  gDialog.bGlobalEnablingChanged = false;
 
   var substitutionStr = "";
   var currPattern = "";
@@ -210,6 +224,11 @@ function Startup() {
   document.getElementById("autosubTypeRadioGroup").value = theType;
   document.getElementById("autosubContextRadioGroup").value = theContext;
 
+  var enableText = gDialog.subsList.isAutoSubstitutionEnabled( false );
+  document.getElementById("disableSubsInText").checked = !enableText;
+  var enableMath = gDialog.subsList.isAutoSubstitutionEnabled( true );
+  document.getElementById("disableSubsInMath").checked = !enableMath;
+  
   var editElement = document.getElementById("subst-frame");
   var substitutionControlObserver = new msiEditorChangeObserver(editElement);
   var commandBoldObserverData = new Object();
@@ -358,6 +377,9 @@ function enableControls()
   {
     bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK && bCurrentItemModified;
   }
+  if (!bActionEnabled)
+    bActionEnabled = gDialog.bGlobalEnablingChanged;
+
   enableControlsByID(["deleteButton"], (gDialog.bNameOK && !gDialog.bIsNew));
 
   dumpStr += " canAdd returned [" + gDialog.bIsNew + "]; while gDialog.bDataNonEmpty is [" + gDialog.bDataNonEmpty + "] ";
@@ -422,6 +444,28 @@ function changeContext(theContext)
   var currName = document.getElementById("keystrokesBox").value;
   if ((currName != null) && (currName in gDialog.subsList.names))
     gDialog.bContextModified = (theContext != gDialog.subsList.names[currName].mathContext);
+  enableControls();
+}
+
+function changeGlobalEnabling(bMath)
+{
+  bDisabled = false;
+  if (bMath)
+  {
+    disabled = document.getElementById("disableSubsInMath").checked;
+    if (disabled && gDialog.subsList.isAutoSubstitutionEnabled( true ))
+      gDialog.bGlobalEnablingChanged = true;
+    else if (!disabled && !gDialog.subsList.isAutoSubstitutionEnabled( true ))
+      gDialog.bGlobalEnablingChanged = true;
+  }
+  else
+  {
+    disabled = document.getElementById("disableSubsInText").checked;
+    if (disabled && gDialog.subsList.isAutoSubstitutionEnabled( false ))
+      gDialog.bGlobalEnablingChanged = true;
+    else if (!disabled && !gDialog.subsList.isAutoSubstitutionEnabled( false ))
+      gDialog.bGlobalEnablingChanged = true;
+  }
   enableControls();
 }
 
@@ -712,6 +756,7 @@ function checkKeyPressEvent(control, theEvent)
 function changePattern(currPattern)
 {
 //  var currName = document.getElementById("mathNamesBox").value;
+  dump("autoSubstituteDialog.js 2\n");
   var theType = document.getElementById("autosubTypeRadioGroup").value;
   var newType = theType;
   if (currPattern.length > 0)
@@ -733,6 +778,7 @@ function changePattern(currPattern)
   if (gDialog.bIsNew && !bWasNew)
     newType = "substitution";
   dump("In autoSubstituteDialog.js, changePattern(); new key pattern is [" + currPattern + "], gDialog.bIsNew is [" + gDialog.bIsNew + "], sub type is [" + newType + "], and context is [" + theContext + "].\n");
+  dump("autoSubstituteDialog.js 3\n");
   document.getElementById("autosubTypeRadioGroup").value = newType;
   document.getElementById("autosubContextRadioGroup").value = theContext;
 
@@ -750,12 +796,14 @@ function changePattern(currPattern)
     else
       setScriptControlFromSub(currPattern);
   }
+  dump("autoSubstituteDialog.js 4\n");
 }
 
 //This function will add the current name to the listbox, and to the local gDialog.subsList.
 //Writing to the XML file, and updating the prototype mathNameList, occurs onOK?? Or is this wrong?
 function saveCurrentSub()
 {
+  dump("autoSubstituteDialog.js 0\n");
   var currSub = document.getElementById("keystrokesBox").value;
   var theType = document.getElementById("autosubTypeRadioGroup").value;
   var appearanceListFrag = null;
@@ -773,10 +821,11 @@ function saveCurrentSub()
   var appearanceList = null;
   if ( (appearanceListFrag != null) && (appearanceListFrag.childNodes.length > 0) )
     appearanceList = appearanceListFrag.childNodes;
-    gDialog.subsList.saveSub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
+  gDialog.subsList.saveSub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
 //  else
 //    gDialog.subsList.modifySub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
 
+  dump("autoSubstituteDialog.js 1\n");
   changePattern(currSub);
 }
 
@@ -835,7 +884,27 @@ function onOK() {
     bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK && gDialog.bCurrentItemModified;
   if (bActionEnabled)
     saveCurrentSub();
-  gDialog.subsList.saveToFile();
+  try
+  {
+    gDialog.subsList.saveToFile();
+    var disableFlags = 0;
+    var enableFlags = 0;
+    var disableMath = document.getElementById("disableSubsInMath").checked;
+    if (disableMath && gDialog.subsList.isAutoSubstitutionEnabled( true ))
+      disableFlags = Components.interfaces.msiIAutosub.CONTEXT_MATHONLY;
+    else if ((!disableMath) && !gDialog.subsList.isAutoSubstitutionEnabled( true ))
+      enableFlags = Components.interfaces.msiIAutosub.CONTEXT_MATHONLY;
+    var disableText = document.getElementById("disableSubsInText").checked;
+    if (disableText && gDialog.subsList.isAutoSubstitutionEnabled( false ))
+      disableFlags |= Components.interfaces.msiIAutosub.CONTEXT_TEXTONLY;
+    else if ((!disableText) && !gDialog.subsList.isAutoSubstitutionEnabled( false ))
+      enableFlags |= Components.interfaces.msiIAutosub.CONTEXT_TEXTONLY;
+    if (disableFlags != 0)
+      gDialog.subsList.enableAutoSubstitution(false, disableFlags);
+    if (enableFlags != 0)
+      gDialog.subsList.enableAutoSubstitution(true, enableFlags);
+  } catch(ex) {dump("Exception in autoSubstituteDialog.js OnOK(); exception is [" + ex + "].\n");}
+
   SaveWindowLocation();
   return true;
 }
