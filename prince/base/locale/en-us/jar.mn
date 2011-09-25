@@ -111,3 +111,4 @@ en-US.jar:
   locale/envproperties.dtd                (dialogs/envproperties.dtd)
   locale/thmproperties.dtd                (dialogs/thmproperties.dtd)
   locale/NoteOptionsDialog.dtd            (dialogs/NoteOptionsDialog.dtd)
+  locale/msiEditorImageProperties.dtd     (dialogs/msiEditorImageProperties.dtd)
