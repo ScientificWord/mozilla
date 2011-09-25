@@ -56,8 +56,8 @@ function initializeunits()
   var currentUnit = document.getElementById("docformat.units").selectedItem.value;
   unitHandler.initCurrentUnit(currentUnit);
   secUnitHandler.initCurrentUnit(currentUnit);
-  unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
-  secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit)
+//  unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
+//  secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit)
 //  setDecimalPlaces();
 }
 
@@ -88,7 +88,6 @@ function startup()
     "sectrightheadingmargin", "sectleftheadingmargin", "pagewidth", "paperwidth");
   heightElements=new Array("tmargin","hedd","heddsep",
     "bodyheight","footer","footersep", "mnpush", "computedbmargin", "pageheight", "paperheight");
-  initializeunits();
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   if (!preamble) {
@@ -96,6 +95,7 @@ function startup()
     return;
   }
   getEnableFlags(doc);
+  initializeunits();
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
   var docformatnode = docFormatNodeList[0];
   var node;
@@ -105,7 +105,7 @@ function startup()
     node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
 
   getMisc(docformatnode);
-  getPageLayout(node, doc);
+  getPageLayout(node);
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
     node=null;
   else 
@@ -138,6 +138,30 @@ function startup()
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
 	getLanguageSettings(preamble);
+  enableDisableReformat(document.getElementById("enablereformat").checked);
+  enableDisableFonts(document.getElementById("allowfontchoice").checked);
+  var formatPageOK = document.getElementById("enablepagelayout").checked;
+  var e = document.getElementById('pagelayoutok');
+  if (formatPageOK)
+	{
+     e.removeAttribute('disabled'); 
+  }
+	else
+	{
+     e.setAttribute('disabled', "true");
+  }	
+  var prog = document.getElementById("texprogram").value;
+  setCompiler(prog);
+  e  = document.getElementById('columncount');
+  var savedval;
+  if (e && (e.value > 1))
+  { 
+		savedval = e.value;
+		e.value = 1;
+  	broadcastColCount();
+		e.value = savedval;
+		broadcastColCount();
+	}
 }
 
 function getEnableFlags(doc)
@@ -349,7 +373,14 @@ function saveCropMarks(docFormatNode)
 function centerCropmarks(value)
 {
   var broadcaster = document.getElementById("pageonpapercentered");
-  broadcaster.hidden=(value=="center"?"false":"true");
+  if (value="center")
+	{
+		broadcaster.removeAttribute("hidden");
+	}
+	else
+	{
+	  broadcaster.setAttribute("hidden", "true");
+	}
 }
 
 function getNumberValue(numberwithunit)
@@ -365,7 +396,7 @@ function getNumberValue(numberwithunit)
   return 0;
 }
 
-function getPageLayout(node, document)
+function getPageLayout(node)
 {
   //node is the pageformat node, or null
   var subnode;
@@ -499,7 +530,7 @@ function getPageLayout(node, document)
     if (subnode)
     {
       value = subnode.getAttribute('count');
-      e  = document.getElementById('columns');
+      e  = document.getElementById('columncount');
       if (e) {
         e.value = value;
       }
@@ -778,7 +809,7 @@ function saveEnableFlags(doc, docformatnode)
   progNode.setAttribute("useUni", compilerInfo.useUni);
   progNode.setAttribute("useOTF", compilerInfo.useOTF);
   progNode.setAttribute("fontsOK", compilerInfo.fontsOK);
-  progNode.setAttribute("pageFormatOK", compilerInfo.pageFormatOK); 
+  progNode.setAttribute("pageFormatOK", document.getElementById("enablepagelayout").checked); 
 }
 
 function onCancel()
@@ -1110,18 +1141,12 @@ function setHeight(id, units)
 function setDecimalPlaces()
 // and increments
 {
-  var places;
-  var increment;
   var elt;
   var i;
   var s;
-  switch (unitHandler.currentUnit) {
-    case "in" : increment = .1; places = 2; break;
-    case "cm" : increment = .1; places = 2; break;
-    case "mm" : increment = 1; places = 1; break;
-    case "pt" : increment = 1; places = 1; break;
-    default : increment = 1; places = 1; break;
-  }
+  var u = unitHandler.units[unitHandler.getCurrentUnit()];
+  var increment = u.increment;
+	var places = u.places;
   for (i=0; i<widthElements.length; i++)
   {
     s=widthElements[i];
