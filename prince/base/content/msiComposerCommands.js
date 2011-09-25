@@ -4552,7 +4552,7 @@ var msiReviseImageCommand =
     if (imageNode != null && editorElement != null)
     {
       var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
-                                                     editorElement, "cmd_reviseImage", imageNode);
+                                                     editorElement, "cmd_reviseImage", imageNode, imageNode);
     }
     editorElement.focus();
   },
