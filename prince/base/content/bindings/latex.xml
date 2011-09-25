@@ -1450,4 +1450,30 @@
     </xbl:content>
   </xbl:binding>
 
+  <xbl:binding id="imageCaptionBelow">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:div class="imagewrapper" xbl-inherits="key">
+        <html:p><html:object xbl-inherits="src,data,title,alt,width,height" /></html:p>
+        <xbl:children includes="imagecaption" />
+      </html:div>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="imageCaptionAbove">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:div class="imagewrapper" xbl-inherits="key">
+        <xbl:children includes="imagecaption" />
+        <html:p><html:object xbl-inherits="src,data,title,alt,width,height" /></html:p>
+      </html:div>
+    </xbl:content>
+  </xbl:binding>
+
 </xbl:bindings>
