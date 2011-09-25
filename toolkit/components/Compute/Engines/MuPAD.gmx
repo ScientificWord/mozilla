@@ -430,10 +430,10 @@ csgn<uID8065.0>tcicsgn%arg_list%
 ;SLS does this work?
 signIm<uID8065.1>signIm%arg_list%
 hypergeom<uID8066.0>hypergeom
-about<uID8067.0>property::getprop%arg_list%
+about<uID8067.0>getprop%arg_list%
 additionally<uID8068.0>tciadditionally%arg_list%
-assume<uID8069.0>property::assume%arg_list%
-unassume<uID8070.0>property::unassume%arg_list%
+assume<uID8069.0>assume%arg_list%
+unassume<uID8070.0>unassume%arg_list%
 AndProp<uID8071.0>AndProp
 Re<uID8072.0>Re%arg_list%
 Im<uID8073.0>Im%arg_list%

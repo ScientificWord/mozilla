@@ -47,7 +47,7 @@ void DefStore::PushDefInfo(U32 engine_ID,
     new_definfo->canonical_name = DuplicateString(def_name);
     new_definfo->src_markup = DuplicateString(markup);
     new_definfo->arg_list = DuplicateString(arg_list);
-	new_definfo->ASCII_src = DuplicateString(ASCII_src);
+	  new_definfo->ASCII_src = DuplicateString(ASCII_src);
 
     if (WIDE_src && *WIDE_src) {
       size_t zln = 0;

@@ -17,25 +17,8 @@
 
 <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
 
-<!-- Perhaps the list of keys should be moved to content/xbl/builtin/xxxx/editor-base.inc -->
 
-  <keyset id="editorKeys">  
-    <keyset id="MSIKeySet">
-      <key id="MSIinlineMathKey" modifiers="accel" key="&MSIinlineMathCmd.keybinding;" command="cmd_MSImathtext"/>    
-      <key id="MSIdisplayKey"    modifiers="accel" key="&MSIdisplayCmd.keybinding;"    command="cmd_MSIdisplayMathCmd"/>
-      <key id="MSIfractionKey"   modifiers="accel" key="&MSIfractionCmd.keybinding;"   command="cmd_MSIfractionCmd"/>   
-      <key id="MSIradicalKey"    modifiers="accel" key="&MSIradicalCmd.keybinding;"    command="cmd_MSIradicalCmd"/>    
-      <key id="MSIsupKey"        modifiers="accel" key="&MSIsupCmd.keybinding;"        command="cmd_MSIsupCmd"/>        
-      <key id="MSIAltSupKey"     modifiers="accel" keycode="VK_UP"                     command="cmd_MSIsupCmd"/>        
-      <key id="MSIsubKey"        modifiers="accel" key="&MSIsubCmd.keybinding;"        command="cmd_MSIsubCmd"/>
-      <key id="MSIAltSubKey"     modifiers="accel" keycode="VK_DOWN"                   command="cmd_MSIsubCmd"/>
-      <key id="MSIparenKey"      modifiers="accel" key="&MSIparenCmd.keybinding;"      command="cmd_MSIparenCmd"/>
-      <key id="MSIbracketKey"    modifiers="accel" key="&MSIbracketCmd.keybinding;"    command="cmd_MSIbracketCmd"/>
-      <key id="MSIbraceKey"      modifiers="accel shift" key="&MSIbraceCmd.keybinding;" command="cmd_MSIbraceCmd"/>      
-      <key id="MSIabsvalueKey"   modifiers="accel" key="&MSIabsvalueCmd.keybinding;"   command="cmd_MSIabsvalueCmd"/>          
-      <key id="MSInormKey"       modifiers="accel shift" key="&MSInormCmd.keybinding;"   command="cmd_MSInormCmd"/>
-    </keyset>                                                                                                         
-  </keyset>                                                                                                         
+#include mathmlkeys.inc
 
   <commandset id="MSImathMenuCommands"
                   commandupdater="true"
@@ -46,6 +29,8 @@
     <command id="cmd_MSIdisplayMathCmd" oncommand="msiGoDoCommand('cmd_MSIdisplayMathCmd')"/>
     <command id="cmd_MSItextModeCmd"        oncommand="msiGoDoCommand('cmd_MSItextModeCmd')"/>
     <command id="cmd_MSImathtext"       oncommand="msiGoDoCommand('cmd_MSImathtext')"/>
+    <command id="cmd_MSItextmath"       oncommand="msiGoDoCommand('cmd_MSItextmath')"/>
+    <command id="cmd_MSImathtextButton"       oncommand="msiGoDoCommand('cmd_MSImathtextButton')"/>
     <command id="cmd_MSIfractionCmd"    oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
     <command id="cmd_MSIradicalCmd"     oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
     <command id="cmd_MSIrootCmd"        oncommand="msiGoDoCommand('cmd_MSIrootCmd')"/>
@@ -74,6 +59,8 @@
     <command id="cmd_MSIunitsCommand"     oncommand="msiGoDoCommand('cmd_MSIunitsCommand')"/>
     <command id="cmd_insertHTMLField" oncommand="msiGoDoCommand('cmd_insertHTMLField')"/>
     <command id="cmd_marker" oncommand="msiGoDoCommand('cmd_marker')"/>
+    <command id="cmd_oneshotGreek" oncommand="msiGoDoCommand('cmd_oneshotGreek')"/>
+    <command id="cmd_oneshotSymbol" oncommand="msiGoDoCommand('cmd_oneshotSymbol')"/>
 </commandset>
 
   <commandset id="MSImathReviseCommands"

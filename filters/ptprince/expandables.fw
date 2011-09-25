@@ -50,17 +50,15 @@ bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
    if (ext == 0)
      ext = "tex";
 
-  
    InputByteFile* pbf = new InputByteFile;
    pbf -> Open(fn);
    Latin_1_in*  platin1filt = new Latin_1_in(pbf);
-   
+
    LineSource* plineSource = new LineSource(platin1filt);
    Tokenizer* ts = new Tokenizer(plineSource);
-   
+
    InputStack::Push(ts);
    LOG("\n----\\input " << name);
-   
 
    return false;
 }
@@ -134,7 +132,7 @@ bool xfcnMeaning(int /* ignored */, TeXToken*, SymbolData**)
       StringUtils::AppendToks(pMacDef -> Toks());
       String str = StringBuilder::Create();
       TokenList* tl = new TokenList;
-      tl -> AddReference();
+      //tl -> AddReference();
       StrToToks(str, tl);
       StringBuilder::Discard(str);
       InputStack::Putback(*tl);
@@ -164,7 +162,7 @@ bool xfcnJobname(int /* ignored */, TeXToken*, SymbolData**)
    StringUtils::AppendCStr(fn.GetNameString());
    String str = StringBuilder::Create();
    TokenList* toks = new TokenList;
-   toks -> AddReference();
+   //toks -> AddReference();
    StrToToks(str, toks);
    InputStack::Putback(*toks);
    return false;
@@ -200,7 +198,7 @@ TokenListTokenSource* xfcnThe_nopush(int /* ignored */, TeXToken*, SymbolData**)
    ScanSomethingInternal(+1, res);
    if (res.m_type == SCAN_TOKS){
       TokenList* pList = res.m_toks;
-      pList -> AddReference();
+      //pList -> AddReference();
       //StringUtils::AppendToks(*pList);
       TokenListTokenSource* ts = new TokenListTokenSource(*pList);
       return ts;
@@ -287,7 +285,7 @@ bool xfcnCaseshift(int dir, TeXToken*, SymbolData**);
 bool xfcnCaseshift(int dir, TeXToken*, SymbolData**)
 {
    TokenList* tl = new TokenList;
-   tl -> AddReference();
+   //tl -> AddReference();
    ScanTokenList(tl, false);
    LOG("\nCase shift.");
    LOG("\n...I read " << *tl);
@@ -409,7 +407,7 @@ bool xfcnString(int /* ignored */, TeXToken*, SymbolData**)
    TeXToken next = CurTok();
    if (next.Type() == TT_SYMBOL){
       TokenList* pTL = new TokenList;
-      pTL -> AddReference();
+      //pTL -> AddReference();
       if (Global::escapechar != -1){
          pTL -> push_back(escape);
       }
@@ -422,10 +420,10 @@ bool xfcnString(int /* ignored */, TeXToken*, SymbolData**)
       InputStack::Putback(*pTL);
    } else {
       TokenList* pTL = new TokenList;
-      pTL -> AddReference();
+      //pTL -> AddReference();
       pTL ->  push_back(TeXToken(TT_LETTER, next.ChrCode(), 0));
       InputStack::Putback(*pTL);
-      pTL -> AddReference();
+      //pTL -> AddReference();
    }
    return false;
 }
