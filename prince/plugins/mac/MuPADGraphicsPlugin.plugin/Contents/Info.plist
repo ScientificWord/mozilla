@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>MuPAD Graphics Plugin</string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>com.sciface.MuPADPlugin</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>BRPL</string>
+	<key>CFBundleSignature</key>
+	<string>MOSS</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>WebPluginDescription</key>
+	<string>Plugin for MuPAD graphics</string>
+	<key>WebPluginMIMETypes</key>
+	<dict>
+		<key>application/x-mupad-graphics+gzip</key>
+		<dict>
+			<key>WebPluginExtensions</key>
+			<array>
+				<string>xvz</string>
+			</array>
+			<key>WebPluginTypeDescription</key>
+			<string>MuPAD Graphics</string>
+		</dict>
+		<key>application/x-mupad-graphics+xml</key>
+		<dict>
+			<key>WebPluginExtensions</key>
+			<array>
+				<string>xvc</string>
+			</array>
+			<key>WebPluginTypeDescription</key>
+			<string>MuPAD Graphics uncompressed</string>
+		</dict>
+	</dict>
+	<key>WebPluginName</key>
+	<string>MuPAD Graphics Plugin 1.1.0.4</string>
+</dict>
+</plist>

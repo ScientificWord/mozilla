@@ -29,3 +29,4 @@ prnc2ltx.jar:
 *  texescape.xsl				(texescape.xsl)							
 *  packages.xml				(packages.xml)	
 *  beamer.xsl         (beamer.xsl)						
+*  babel.xsl          (babel.xsl)

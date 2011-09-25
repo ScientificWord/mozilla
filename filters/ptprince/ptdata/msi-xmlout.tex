@@ -1,8 +1,7 @@
+
 \makeatletter
 
-
 \newcounter{MaxMatrixCols}
-
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
@@ -177,8 +176,6 @@
 
 
 
-
-
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
 
@@ -227,7 +224,6 @@
 
 
 %% newtheorem
-
 
 
 \def\theoremstyle#1{\def\msi@currentthmstyle{#1}}
@@ -626,6 +622,7 @@
 
 \newtoks\temptoksa
 
+
 \bgroup
   \@make@braces@other
   \catcode`\[=1
@@ -711,6 +708,7 @@
 %\@namedef{msi@begin@multline*}{\ \@make@braces@other\relax\@scan@multline@star}
 
 
+
 \@namedef{msi@begin@flalign}{\bgroup\msi@dollar=0\relax$$\string\begin{flalign}}
 \@namedef{msi@end@flalign}{\string\end{flalign}$$\egroup}
 
@@ -725,14 +723,12 @@
 
 %\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
 
-\def\msi@begin@array{\string\begin{array}}
-\def\msi@end@array{\string\end{array}}
-
-
+\def\msi@begin@array{\begingroup\def\\{\char`\\\char`\\}\catcode`\&=11\string\begin{array}}
+\def\msi@end@array{\string\end{array}\endgroup}
 
 
 \def\MSIEqnarrayLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\msi@dollar=0\relax$$\string\begin{#1}}%
+  \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\\char`\\}\catcode`\&=11\msi@dollar=0\relax$$\string\begin{#1}}%
   \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}
 }
 
@@ -782,6 +778,11 @@
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
 
+\expandafter\def\csname msi@begin@tabular*\endcsname{%
+   \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
+}
+
+
 \newif\ifmathtabular
 \mathtabulartrue
 
@@ -812,6 +813,14 @@
      \endgroup % to do the closetabular
      \ifmathtabular\char`\}\fi
   \endgroup}
+
+\expandafter\def\csname msi@end@tabular*\endcsname{%  
+        \crcr
+        \egroup % the \halign
+     \endgroup % to do the closetabular
+     \ifmathtabular\char`\}\fi
+  \endgroup}
+
 
 \def\cline#1{}
 \def\hline{}
@@ -1420,7 +1429,7 @@
 \futurelet\@startok\@gobbleit*
 
 \def\@inbrace#1{\@temptokena={\msitag{#1}}\{\the\@temptokena\}\@gobbleargs}
-\def\@inbracket[#1]{[#1]\@gobbleargs}
+\def\@inbracket[#1]{\@temptokena={\msitag{[#1]}}\the\@temptokena\@gobbleargs}
 \def\@astar*{*\@gobbleargs}
 
 \def\@gobbleargs{\futurelet\atok\@gobblemore}
@@ -1465,14 +1474,52 @@
     \msiclosetag{texb}{</texb>}}
 
 
+%-------
+% Experiment
+%% 
+%% \def\msi@begin@tabular{%
+%%    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
+%% }
+%% 
+%% \newif\ifmathtabular
+%% \mathtabulartrue
+%% 
+%% \def\msi@begin@tabularA[#1]#2{%
+%%    \begingroup
+%%       \ifmmode
+%%         \string\msipassthru\char`\{%
+%%         \mathtabulartrue
+%%         \msihmode
+%%         \catcode`\&=4%
+%%       \else
+%%         \mathtabularfalse
+%%       \fi   
+%%       \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+%%       \msiopentag{tbody}{<tbody>}%
+%%       \begingroup
+%%         \aftergroup\msi@closetabular
+%%         \let\\=\@cr
+%%         \halign\bgroup&##\cr}%
+%% }
+%% 
+%% 
+%% \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
+%% 
+%% \def\msi@end@tabular{%  
+%%         \crcr
+%%         \egroup % the \halign
+%%      \endgroup % to do the closetabular
+%%      \ifmathtabular\char`\}\fi
+%%   \endgroup}
+%% 
 
-
+%------------
 
 % A hack to fool the jbm filter into handling \dots gracefully
 \def\dots{\msitag{\U{2026}}}
 
 \input latex-default.tex
-\input tcilatex.tex
 
+\input tcilatex.tex
 
 \catcode`\<=\active
