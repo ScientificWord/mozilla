@@ -2788,7 +2788,7 @@ function EditorClick(event)
 //        vcamActive = true;
       }
     }
-    else if (document.getElementById("vcamactive").getAttribute("hidden") !==true) 
+    else if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden") !==true) 
     {
       document.getElementById("vcamactive").setAttribute("hidden",true);
     }
@@ -4916,11 +4916,11 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         //  (use "href" to not be fooled by named anchor)
         try
         {
-          if (msiGetEditor(editorElement).getElementOrParentByTagName("href", element))
+          if (editor.getElementOrParentByTagName("href", element))
             objStr = GetString("ImageAndLink");
         } catch(e) {}
         
-        if (objStr == "")
+        if (!objStr || !objStr.length)
         {
           objStr = GetString("Image");
           commandStr = "cmd_reviseImage";
