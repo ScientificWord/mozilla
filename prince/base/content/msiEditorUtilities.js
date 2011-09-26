@@ -317,7 +317,12 @@ function clearPrevActiveEditor(timerData)
         theWindow.msiPrevEditorElement = null;
         if (theWindow.msiSingleDialogList)
           theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
-        msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
+        if (theWindow.msiActiveEditorElement != null)
+        {
+          msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
+          var editor = msiGetEditor(theWindow.msiActiveEditorElement);
+          editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
+        }
       }
       else
         logStr += "but timer list still contains [" + theWindow.msiClearEditorTimerList.toString() + "], so not deleting prev editor.\n";
@@ -1626,6 +1631,23 @@ function msiCopyElementAttributes(newElement, oldElement, editor, bSuppressID)
         }
       break;
     }
+  }
+}
+
+function msiCopySpecifiedElementAttributes(newElement, oldElement, editor, attrList)
+{
+  var attrName, attrVal;
+  for (var jx = 0; jx < attrList.length; ++jx)
+  {
+    attrName = attrList[jx];
+    if (oldElement.hasAttribute(attrName))
+      attrVal = oldElement.getAttribute(attrName);
+    else
+      attrVal = null;
+    if (editor != null)
+      msiEditorEnsureElementAttribute(newElement, attrName, attrVal, editor);
+    else
+      msiEnsureElementAttribute(newElement, attrName, attrVal);
   }
 }
 
@@ -6507,8 +6529,9 @@ var msiBaseMathNameList =
       dump("In msiBaseMathNameList, initAutoCompleteList being called without bInitialized being set!?\n");
       this.initialize();
     }
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
     var nameNodesList = this.namesDoc.getElementsByTagName("mathname");
     // BBM: should we initialize this list??
     for (var ix = 0; ix < nameNodesList.length; ++ix)
@@ -6577,8 +6600,9 @@ var msiBaseMathNameList =
         if (this.nameHasAutoSubstitution(aName))
           this.removeAutoSubstitution(aName);
         nameNode.parentNode.removeChild(nameNode);
-        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+        var ACSA = msiSearchStringManager.setACSAImpGetService();
         ACSA.deleteString("mathnames", aName);
         this.bModified = true;
         return true;
@@ -6615,8 +6639,9 @@ var msiBaseMathNameList =
     if ("limitPlacement" in aNameData)
       newNode.setAttribute("limitPlacement", aNameData.limitPlacement);
     parentNode.appendChild(newNode);
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
     ACSA.addString("mathnames", aName);
     ACSA.sortArrays();
     if (aNameData.autoSubstitute == true)
@@ -7190,9 +7215,10 @@ var msiAutosubstitutionList =
     var retVal = false;  //until we get something in the list
     // We need to prebuild these so that the keyboard shortcut works
     // ACSA = autocomplete string array
-    var ACSAService = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSAService.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-    var ACSA = ACSAService.getGlobalSearchStringArray();
+//    var ACSAService = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSAService.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = ACSAService.getGlobalSearchStringArray();
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
   
     var rootElementList = subsDoc.getElementsByTagName("subs");
     dump("In msiAutoSubstitutionList.initialize(), subsDoc loaded, rootElementList has length [" + rootElementList.length + "].\n");
@@ -7297,11 +7323,48 @@ var msiSearchStringManager =
     return aRecord.mKey;
   },
 
+  setACSAImpGetService : function()
+  {
+    var ACSAService = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSAService.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSAImp = this.getGlobalACSAImp();
+    if (!ACSAImp)
+    {
+      ACSAImp = ACSAService.getNewImplementation();
+      this.setGlobalACSAImp(ACSAImp);
+    }
+    ACSAService.setImplementation(ACSAImp);
+    return ACSAService;
+  },
+
+  setACSAImp : function()
+  {
+    this.setACSAImpGetService();
+  },
+
+  getGlobalACSAImp : function()
+  {
+    var theWindow = msiGetTopLevelWindow();
+    if (theWindow && ("mGeneralACSAImp" in theWindow))
+      return theWindow.mGeneralACSAImp;
+    return null;
+  },
+
+  setGlobalACSAImp : function(ACSAImp)
+  {
+    var theWindow = msiGetTopLevelWindow();
+    if (!theWindow)
+      theWindow = window;
+    theWindow.mGeneralACSAImp = ACSAImp;
+  },
+
   removeSearchStringArrayRecord : function(aRecord)
   {
     var theDocRecord = this.getRecordForDocument(aRecord.mDocument);
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    this.setACSAImp();
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = this.setACSAImpGetService();
     ACSA.resetArray(aRecord.mKey);
     var jx = theDocRecord.mStringArrays.indexOf(aRecord);
     if (jx >= 0)
@@ -7341,8 +7404,9 @@ var msiSearchStringManager =
     var theBaseString = this.baseString.concat("-", aDocRecord.mKey);
     var subIdentStr = this.getSubIdentBaseString(aSubIdent);
     theBaseString = theBaseString.concat("-", subIdentStr);
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = this.setACSAImpGetService();
     var theString = theBaseString;
     var nSize = ACSA.sizeofArray(theString);
     for (var jj=0; (jj < 100) && (nSize >= 0); ++jj)
@@ -7475,8 +7539,9 @@ var msiKeyListManager =
     var retVal = false;
     try
     {
-      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+      var ACSA = this.setACSAImpGetService();
       var currDocKeys = this.getMarkerStringList(aControlRecord.mDocument, bForce);
       for (var ix = 0; ix < currDocKeys.length; ++ix)
       {
@@ -7501,8 +7566,9 @@ var msiKeyListManager =
     {
       if (aControlRecord)
       {
-        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+        var ACSA = this.setACSAImpGetService();
         ACSA.resetArray(aControlRecord.mKey);
         return this.initMarkerList(aControlRecord, bForce);
       }
@@ -7617,8 +7683,9 @@ var msiMarkerListPrototype =
 
   addString : function(aString)
   {
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
     var retVal = ACSA.addString( this.getIndexString(), aString);
     if (retVal)
     {
@@ -7633,8 +7700,9 @@ var msiMarkerListPrototype =
 
   deleteString : function(aString)
   {
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
     var retVal = ACSA.deleteString( this.getIndexString(), aString);
     if (retVal)
     {
@@ -7662,7 +7730,20 @@ var msiMarkerListPrototype =
     this.mKeyListManager.removeSearchStringArrayRecord(this.mKeyListManagerRecord);
     this.mbInitialized = false;
     this.mKeyListManagerRecord = null;
+  },
+
+  setACSAImp : function()
+  {
+    msiSearchStringManager.setACSAImpGetService();
+  },
+
+  setUpTextBoxControl : function(theControl)
+  {
+    theControl.markerList = this;
+    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();");
+    theControl.setAttribute("autocompletesearchparam", this.getIndexString());
   }
+
 };
 
 function msiKeyMarkerList(aControl) 
@@ -11464,3 +11545,152 @@ function getFileAsString( url )
     return null;
 }
 
+function addLanguagesToTagDefs(lang1, lang2)	
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+	var babelTags = editor.tagListManager.getBabelTags();
+	var tagArray = babelTags.split(",");
+	var i;
+	var lang;
+	for (i = 0; i < tagArray.length; i++)
+	{
+		var index = i+1;
+		tag = tagArray[i];
+		hidden = editor.tagListManager.getStringPropertyForTag( tag, null, "hidden");
+		if (index%2 === 1) lang = lang1;
+		else lang = lang2;
+		if (lang)	
+		{
+			needsResetting = true;
+			editor.tagListManager.setTagVisibility(tag, null, false);
+			if (index < 3)
+			{
+				editor.tagListManager.setTagName(tag, null, "text"+ lang);
+			}
+			else
+			{
+				editor.tagListManager.setTagName(tag, null, (lang==="arabic" ? "Arabic" : lang) )
+			}
+		}
+		else
+		{
+			lang = "##lang" + (1 + index%2).toString();
+			editor.tagListManager.setTagVisibility(tag, null, true);
+			if (index < 3)
+			{
+				editor.tagListManager.setTagName(tag, null, "text"+ lang);
+			}
+			else
+			{
+				editor.tagListManager.setTagName(tag, null, lang);
+			}			
+		}
+	}
+	//if (needsResetting)
+	editor.tagListManager.rebuildHash();
+	buildAllTagsViewStylesheet(editor);	
+}
+
+function addLanguageTagsFromBabelTag(doc)
+{
+	var babeltags = doc.getElementsByTagName("babel");
+	var babeltag;
+	if (babeltags && babeltags.length > 0)
+	{
+		var lang1;
+		var lang2;
+		babeltag = babeltags[0];
+		lang1 = babeltag.getAttribute("lang1");
+		lang2 = babeltag.getAttribute("lang2");
+		if (lang1 || lang2)
+		{
+			addLanguagesToTagDefs(lang1, lang2);
+		}
+	}
+}
+
+function buildAllTagsViewStylesheet(editor)
+{
+	var templatefile = msiFileFromFileURL(msiURIFromString("resource://app/res/css/tagtemplate.css"));
+	var data = "";  
+	var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].  
+	                        createInstance(Components.interfaces.nsIFileInputStream);  
+	var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].  
+	                        createInstance(Components.interfaces.nsIConverterInputStream);  
+	fstream.init(templatefile, -1, 0, 0);  
+	cstream.init(fstream, "UTF-8", 0, 0);  
+
+	let (templatestr = {}) {  
+	  cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
+	  data = templatestr.value;  
+	}  
+	cstream.close(); // this closes fstream  
+	var classtemplates = data.split(/\-{4,}/);
+	var j;
+	for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
+
+
+	var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
+	var taglist;
+	var i;
+	var k;
+	var str = "";
+	var ok;
+	var classname;
+	var classtemplate;
+	for (j = 0; j < tagclasses.length; j++)
+	{
+	  ok = false;
+	  classname= tagclasses[j];
+	  for (k = 0; k < classtemplates.length; k++)
+	  {
+	    if (classtemplates[k].indexOf(classname)==0) 
+	    {
+	      classtemplate = classtemplates[k];
+	      ok = true;
+	      break;
+	    }
+	  }
+
+	  taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
+	  for (i = 0; i < taglist.length; i++)
+	  {
+	    if (taglist[i].length && taglist[i][0] != "(")
+	      str += classtemplate.replace(classname,taglist[i],"g")+"\n";
+	  }
+	}
+
+	try {
+	  var htmlurlstring = editor.document.documentURI;;
+	  var htmlurl = msiURIFromString(htmlurlstring);
+	     // ... seems ok
+	  var htmlFile = msiFileFromFileURL(htmlurl);
+	   // Throws exception. htmlurl doesn't have nsIFileURL interface.
+	   // Can fix by setting the dialog shell in the prefs to something like
+	   // ...   "resource://app/res/StdDialogShell.xhtml"
+	   // and moving the file there in the build/install.
+
+	  var cssFile = htmlFile.parent;
+ 
+	  cssFile.append("css");
+	  if (!cssFile.exists()) cssFile.create(1, 0755);
+   
+	  cssFile.append("msi_Tags.css");
+		if (cssFile.exists()) cssFile.remove(0);
+		cssFile.create(0, 0755);
+
+
+	  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+	  fos.init(cssFile, -1, -1, false);
+	  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+	    .createInstance(Components.interfaces.nsIConverterOutputStream);
+	  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+	  os.writeString(str);
+	  os.close();
+	  fos.close();
+	}
+	catch (e) {
+	  dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
+	}
+}
