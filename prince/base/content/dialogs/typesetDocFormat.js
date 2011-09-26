@@ -23,20 +23,41 @@ var sectScale = 1;
 var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
                      useOTF: false,  //currently same as xelatex (lualatex in future)
                      formatOK: false,//master control. If false, can't change anything
-//                     sectHeaderOK: {},
                      pageFormatOK: false,//geometry package not called if false
                      useUni: false,//currently same as useOTF
                      fontsOK: false };// OK to choose fonts
 
+function enable(checkbox)
+{
+	var control = document.getElementById(checkbox.getAttribute("control"));
+	if (!control) return;
+	if (checkbox.checked)
+	{
+	  control.removeAttribute("disabled");
+	  if (control.id != "reformatok")
+		{
+	    control.setAttribute("type", "number");
+	    control.setAttribute("value", control.getAttribute("default"));
+		}
+	}
+	else
+	{
+	  control.setAttribute("disabled", "true");
+	  if (control.id != "reformatok")
+		{
+	    control.removeAttribute("type");
+			control.setAttribute("value", "-default-");
+		}
+	}
+}
 
-
-function InitializeUnits()
+function initializeunits()
 {
   var currentUnit = document.getElementById("docformat.units").selectedItem.value;
   unitHandler.initCurrentUnit(currentUnit);
   secUnitHandler.initCurrentUnit(currentUnit);
-  unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
-  secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit)
+//  unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
+//  secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit)
 //  setDecimalPlaces();
 }
 
@@ -54,16 +75,7 @@ function stripPath(element, index, array)
   array[index] = re.exec(element)[1];
 }
 
-//function initializeCompilerInfo()
-//{
-//  // most was done statically above
-//  var l = sectionlist.length;
-//  var i;
-//  for (i = 0; i < l; i++)
-//    compilerInfo.sectHeaderOK[sectionlist[i]] = false;
-//}
- 
-function Startup()
+function startup()
 {
   initializeFontFamilyList(false);
   var editorElement = msiGetParentEditorElementForDialog(window);
@@ -74,9 +86,8 @@ function Startup()
   }
   widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
     "sectrightheadingmargin", "sectleftheadingmargin", "pagewidth", "paperwidth");
-  heightElements=new Array("tmargin","header","headersep",
+  heightElements=new Array("tmargin","hedd","heddsep",
     "bodyheight","footer","footersep", "mnpush", "computedbmargin", "pageheight", "paperheight");
-  InitializeUnits();
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   if (!preamble) {
@@ -84,14 +95,17 @@ function Startup()
     return;
   }
   getEnableFlags(doc);
+  initializeunits();
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
+  var docformatnode = docFormatNodeList[0];
   var node;
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
     node=null;
   else 
     node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
 
-  getPageLayout(node, doc);
+  getMisc(docformatnode);
+  getPageLayout(node);
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
     node=null;
   else 
@@ -101,7 +115,7 @@ function Startup()
   
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
-  OnWindowSizeReset(true);
+  onWindowSizeReset(true);
   buildFontMenus(compilerInfo.useOTF);
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
     node=null;
@@ -123,6 +137,31 @@ function Startup()
 //  getNumStyles(preamble);
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
+	getLanguageSettings(preamble);
+  enableDisableReformat(document.getElementById("enablereformat").checked);
+  enableDisableFonts(document.getElementById("allowfontchoice").checked);
+  var formatPageOK = document.getElementById("enablepagelayout").checked;
+  var e = document.getElementById('pagelayoutok');
+  if (formatPageOK)
+	{
+     e.removeAttribute('disabled'); 
+  }
+	else
+	{
+     e.setAttribute('disabled', "true");
+  }	
+  var prog = document.getElementById("texprogram").value;
+  setCompiler(prog);
+  e  = document.getElementById('columncount');
+  var savedval;
+  if (e && (e.value > 1))
+  { 
+		savedval = e.value;
+		e.value = 1;
+  	broadcastColCount();
+		e.value = savedval;
+		broadcastColCount();
+	}
 }
 
 function getEnableFlags(doc)
@@ -135,9 +174,9 @@ function getEnableFlags(doc)
     value = progNode.getAttribute("prog");
     setCompiler(value);
     compilerInfo.useOTF = value == "xelatex"; 
+		compilerInfo.useUni = compilerInfo.useOTF;
     document.getElementById("texprogram").value = value;
     var canSetFormat = progNode.getAttribute("formatOK") == "true";
-    enableDisableReformat(canSetFormat);
     document.getElementById("enablereformat").checked = canSetFormat;
     var fontsOK = progNode.getAttribute("fontsOK") == "true";
     enableDisableFonts(fontsOK);
@@ -145,7 +184,6 @@ function getEnableFlags(doc)
     var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
     document.getElementById("enablepagelayout").checked = formatPageOK;
 
-    // document.getElementById('reformatok').setAttribute('disabled', canSetFormat?'false':'true');
     var e = document.getElementById('reformatok');
     if (canSetFormat){ // checked. enable.
        e.removeAttribute('disabled'); 
@@ -153,8 +191,6 @@ function getEnableFlags(doc)
        e.setAttribute('disabled', "true");
     }
 
-    
-    //document.getElementById('pagelayoutok').setAttribute('disabled',formatPageOK?'false':'true');
     var e = document.getElementById('pagelayoutok');
     if (formatPageOK){ // checked. enable.
        e.removeAttribute('disabled'); 
@@ -192,6 +228,14 @@ function getNumStyles(preambleNode)
   }
 }
 
+function removeExistingPreambleNodes(nodeTag, parentNode)
+{
+  var nodeList = parentNode.getElementsByTagName(nodeTag);
+  if (nodeList.length > 0)
+    for (var i = nodeList.length -1; i >=0; i--) editor.deleteNode(nodeList[i]);
+	
+}
+
 function saveNumStyles(preambleNode)
 {
   var sect;
@@ -205,13 +249,11 @@ function saveNumStyles(preambleNode)
     {
       dump("checking "+sect+"\n");
       bHasStyle = gNumStyles[sect].length > 0;
-      break;
+      if (bHasStyle) break;
     }
   }
   if (bHasStyle) {
-    var nodeList = preambleNode.getElementsByTagName("numberstyles");
-    if (nodeList.length > 0)
-      for (var i = nodeList.length -1; i >=0; i--) editor.deleteNode(nodeList[i]);
+    removeExistingPreambleNodes("numberstyles", preambleNode);
     node = editor.createNode("numberstyles",preambleNode,0);
     dump("adding attribute for "+sect+"\n");
     for (i=0; i< sectionlist.length; i++) {
@@ -232,9 +274,6 @@ function setNumStyle(menulist)
   }
 }
 
-
-//var serializer;
-
 function lineend(node, spacecount)
 {
 //  if (!serializer) 
@@ -252,6 +291,7 @@ function lineend(node, spacecount)
 function savePageLayout(docFormatNode)
 {
   lineend(docFormatNode, 1);
+	removeExistingPreambleNodes('pagelayout', docFormatNode);
   var pfNode = editor.createNode('pagelayout', docFormatNode,0);
   var nodecounter = 0;
   var units;
@@ -266,7 +306,8 @@ function savePageLayout(docFormatNode)
   node.setAttribute('paper',document.getElementById('docformat.finishpagesize').value);
   node.setAttribute('width',pagewidth+units);
   node.setAttribute('height',pageheight+units);
-  node.setAttribute('landscape',document.getElementById('landscape').checked);
+  if(document.getElementById('landscape').checked)
+    node.setAttribute('landscape',true);
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('textregion',pfNode,nodecounter++);
@@ -279,9 +320,12 @@ function savePageLayout(docFormatNode)
   node.setAttribute('top', document.getElementById('tbtmargin').value+units);
   lineend(pfNode, 2);
   nodecounter++;
-  node = editor.createNode('columns',pfNode,nodecounter++);
-  node.setAttribute('count',(document.getElementById('columns').value));
-  node.setAttribute('sep',document.getElementById('tbfootersep').value+units);
+  if (document.getElementById('columncount').value && document.getElementById('columncount').value ==2)
+  {
+		node = editor.createNode('columns',pfNode,nodecounter++);
+	  node.setAttribute('count',(document.getElementById('columncount').value));
+	  node.setAttribute('sep',document.getElementById('tbcolsep').value+units);
+	}
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('marginnote',pfNode,nodecounter++);
@@ -292,9 +336,9 @@ function savePageLayout(docFormatNode)
   node.setAttribute('hidden', document.getElementById('disablemn').checked);
   lineend(pfNode, 2);
   nodecounter++;
-  node = editor.createNode('header',pfNode,nodecounter++);
-  node.setAttribute('height',document.getElementById('tbheader').value+units);
-  node.setAttribute('sep',document.getElementById('tbheadersep').value+units);
+  node = editor.createNode('hedd',pfNode,nodecounter++);
+  node.setAttribute('height',document.getElementById('tbhedd').value+units);
+  node.setAttribute('sep',document.getElementById('tbheddsep').value+units);
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('footer',pfNode,nodecounter++);
@@ -329,7 +373,14 @@ function saveCropMarks(docFormatNode)
 function centerCropmarks(value)
 {
   var broadcaster = document.getElementById("pageonpapercentered");
-  broadcaster.hidden=(value=="center"?"false":"true");
+  if (value="center")
+	{
+		broadcaster.removeAttribute("hidden");
+	}
+	else
+	{
+	  broadcaster.setAttribute("hidden", "true");
+	}
 }
 
 function getNumberValue(numberwithunit)
@@ -345,8 +396,7 @@ function getNumberValue(numberwithunit)
   return 0;
 }
 
-
-function getPageLayout(node, document)
+function getPageLayout(node)
 {
   //node is the pageformat node, or null
   var subnode;
@@ -369,7 +419,7 @@ function getPageLayout(node, document)
     }
     
     value = node.getAttribute("enabled");
-    value = (value ? true : false);
+    value = (value == "true"? true : false);
 
     var e = document.getElementById('enablepagelayout');
     if (e){
@@ -480,7 +530,7 @@ function getPageLayout(node, document)
     if (subnode)
     {
       value = subnode.getAttribute('count');
-      e  = document.getElementById('columns');
+      e  = document.getElementById('columncount');
       if (e) {
         e.value = value;
       }
@@ -530,19 +580,19 @@ function getPageLayout(node, document)
         }
       }
     }
-    subnode = node.getElementsByTagName('header')[0];
+    subnode = node.getElementsByTagName('hedd')[0];
     if (subnode)
     {
       value = subnode.getAttribute('height');
       if (value) {
-        e = document.getElementById('tbheader');
+        e = document.getElementById('tbhedd');
         if (e) {
           e.value=getNumberValue(value);
         }
       }
       value = subnode.getAttribute('sep');
       if (value) {
-        e = document.getElementById('tbheadersep');
+        e = document.getElementById('tbheddsep');
         if (e) {
           e.value=getNumberValue(value);
         }
@@ -569,7 +619,150 @@ function getPageLayout(node, document)
   }
 }
 
-      
+function saveMisc(newNode)
+{
+  var packagecheckboxes = ["showkeys","showidx"];
+	var len;
+	var node;
+	var name;
+	for (i = 0, len = packagecheckboxes.length; i < len; i++)
+	{
+		name = packagecheckboxes[i];
+	  if (document.getElementById(name).checked)
+	  {
+		  lineend(newNode, 1);
+			removeExistingPreambleNodes(name, newNode);
+	    node = editor.createNode(name, newNode, 0);
+	    node.setAttribute("req", name);
+		}
+  }
+	var contentlistings = ["toc","lof","lot"];
+	for (i = 0, len = contentlistings.length; i < len; i++)
+	{
+		name = contentlistings[i];
+	  if (document.getElementById(name).checked)
+	  {
+		  lineend(newNode, 1);
+			removeExistingPreambleNodes(name, newNode);
+	    node = editor.createNode(name, newNode, 0);
+		}
+  }
+	// footnotes or endnotes?
+	var fnvalue;
+	fnvalue = document.getElementById("footnoteorendnote").value;
+	if (fnvalue == "end" || fnvalue == "foot")
+	{
+	  lineend(newNode, 1);
+		removeExistingPreambleNodes('endnotes', newNode);
+    node = editor.createNode("endnotes", newNode, 0);
+		node.setAttribute("req","endnotes");
+		node.setAttribute("val", fnvalue);
+	}
+	// leading
+	if (document.getElementById("leadingcontrol").checked)
+	{
+		var leading = document.getElementById("leading").value;
+		if (leading)
+		{
+			var val = parseFloat(leading);
+			if (!isNaN(val))
+			{
+			  lineend(newNode, 1);
+				removeExistingPreambleNodes('leading', newNode);
+		    node = editor.createNode("leading", newNode, 0);
+				node.setAttribute("req","leading");
+			  node.setAttribute("val",val.toString()+"pt");
+			}			
+		}
+	}
+	if (document.getElementById("magnificationcontrol").checked)
+	{
+		var mag = document.getElementById("magnification").value;
+		if (mag)
+		{
+			var val = parseFloat(mag);
+			if (!isNaN(val))
+			{
+			  lineend(newNode, 1);
+				removeExistingPreambleNodes('mag', newNode);
+		    node = editor.createNode("mag", newNode, 0);
+			  node.setAttribute("mag",val.toString());
+			}			
+		}
+	}
+	var linespacing;
+	linespacing = document.getElementById("linespacing").value;
+	if (linespacing != "def")
+	{
+	  lineend(newNode, 1);
+		removeExistingPreambleNodes('setspacing', newNode);
+    node = editor.createNode("setspacing", newNode, 0);
+		node.setAttribute("req","setspace");
+		node.setAttribute("opt", linespacing)
+	}
+}
+
+function getMisc(docformat)
+{
+  if (docformat == null) return;
+  var packagecheckboxes = ["showkeys","showidx"];
+	var pos;
+	var len;
+	var list;
+	var node;
+	var val;
+	for (i = 0, len = packagecheckboxes.length; i < len; i++)
+	{
+		var name = packagecheckboxes[i];
+		list = docformat.getElementsByTagName(name);
+		if (list == null || list.length === 0) continue;
+		document.getElementById(name).checked = true;
+  }	
+	var contentlistings = ["title","toc","lof","lot"];
+	for (i = 0, len = contentlistings.length; i < len; i++)
+	{
+		var name = contentlistings[i];
+		list = docformat.getElementsByTagName(name);
+		if (list == null || list.length === 0) continue;
+		document.getElementById(name).checked = true;
+  }
+// endnotes
+	list = docformat.getElementsByTagName("endnotes");
+	if (list != null && list.length > 0)
+	{
+		node = list[0];
+		val = node.getAttribute("val");
+		if (val == "foot" || val == "end")
+			document.getElementById("footnoteorendnote").value = val;
+	}
+	// leading
+	list = docformat.getElementsByTagName("leading");
+	if (list != null && list.length > 0)
+	{
+		node  = list[0];
+		val = node.getAttribute("val");
+		document.getElementById("leadingcontrol").checked = true;
+		document.getElementById("leading").removeAttribute("disabled");
+		document.getElementById("leading").value = parseFloat(val);
+	}
+	// magnification
+	list = docformat.getElementsByTagName("mag");
+	if (list != null && list.length > 0)
+	{
+		node  = list[0];
+		val = node.getAttribute("mag");
+		document.getElementById("magnificationcontrol").checked = true;
+		document.getElementById("mag").value = parseFloat(val);
+	}
+	list = docformat.getElementsByTagName("setspacing");
+	if (list != null && list.length > 0)
+	{
+		node  = list[0];
+		val = node.getAttribute("opt");
+		document.getElementById("linespacing").value = val;
+	}	
+}
+
 function onAccept()
 {
 // first check that something is set
@@ -581,38 +774,34 @@ function onAccept()
     preamble = editor.createNode('preamble',head,head.childNodes.length);
   }
 // delete any current docformat nodes -- we are replacing them
-  var docFormatNodeList = preamble.getElementsByTagName('docformat');
-  var i;
-  if (docFormatNodeList)
-    for (i = docFormatNodeList.length - 1; i >= 0; i--)
-      editor.deleteNode(docFormatNodeList[i])
-  var newNode = editor.createNode('docformat',preamble,0);
+  removeExistingPreambleNodes("docformat", preamble);
+  var newNode = editor.createNode('docformat', preamble, 0);
 // should check that the user wants to use geometry package.
   if (newNode) 
   {
+	  try {
+		saveMisc(newNode);
+    saveEnableFlags(doc, newNode);
     saveCropMarks(newNode);
     savePageLayout(newNode);
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
-    saveEnableFlags(doc, newNode);
     saveClassOptionsEtc(newNode);
-    saveNumStyles(preamble);
+    saveLanguageSettings(preamble);
+//    saveNumStyles(preamble);
+	}
+	catch(e) { 
+		dump("Help! "+e.message+"\n");
+		}
   }
   return true;
 }  
 
-    
 function saveEnableFlags(doc, docformatnode)
 {
-  var nodelist = doc.getElementsByTagName("texprogram");
   var progNode;
-  var newProgNode = false;
-  if (nodelist.length == 0) 
-  {
-    newProgNode = true;
-    progNode = editor.createNode("texprogram", docformatnode, 0);
-  }
-  else progNode = nodelist[0];
+	removeExistingPreambleNodes('texprogram', docformatnode);
+  progNode = editor.createNode("texprogram", docformatnode, 0);
   // handle compiler choice, whether to allow formatting changes, etc.
   progNode.setAttribute("prog", compilerInfo.prog);
   progNode.setAttribute("formatOK", compilerInfo.formatOK);
@@ -620,8 +809,9 @@ function saveEnableFlags(doc, docformatnode)
   progNode.setAttribute("useUni", compilerInfo.useUni);
   progNode.setAttribute("useOTF", compilerInfo.useOTF);
   progNode.setAttribute("fontsOK", compilerInfo.fontsOK);
-  progNode.setAttribute("pageFormatOK", compilerInfo.pageFormatOK); 
+  progNode.setAttribute("pageFormatOK", document.getElementById("enablepagelayout").checked); 
 }
+
 function onCancel()
 {
  return true;
@@ -643,22 +833,26 @@ function disableMarginNotes()
   updateComputedMargins();
 }
 
+function unitConversions(unitName)
+{
+	return unitHandler.units[unitName].size;
+}
 
-function convert(invalue, inunit, outunit) // Converts invalue inunits into x outunits
+function convert(invalue, inunit, outunit) 
+// Converts invalue inunits into x outunits
 {
   if (inunit == outunit) return invalue;
-  var outvalue = invalue*unitConversions[inunit];
-  outvalue /= unitConversions[outunit];
+  var outvalue = invalue*unitConversions(inunit);
+  outvalue /= unitConversions(outunit);
   dump(invalue+inunit+" = "+outvalue+outunit+"\n");
   return outvalue;
 }
-
 
 // * Callback for spinbuttons. Increments of |increment| the length value of
 //   the XUL element of ID |id|.
 //   param integer increment
 //   param String id
-function Spinbutton(increment, id)
+function spinbutton(increment, id)
 {
   var elt = document.getElementById(id);
   if (elt) {
@@ -686,9 +880,9 @@ function setDefaults()
   document.getElementById("tbtmargin").value = unitRound(.4*bigvmargin-2*oneline);
   var roundedOneline = unitRound(oneline);
   document.getElementById("tbfooter").value = roundedOneline;
-  document.getElementById("tbheader").value = roundedOneline;
+  document.getElementById("tbhedd").value = roundedOneline;
   document.getElementById("tbfootersep").value = roundedOneline;
-  document.getElementById("tbheadersep").value = roundedOneline;
+  document.getElementById("tbheddsep").value = roundedOneline;
   // if twosided, divide horizontal margins 3:2, otherwise 1:1
   if (twosided)
   {
@@ -723,99 +917,36 @@ function changefinishpageSize(menu)
   setPageDimensions();
 }
 
-
 // Page layout stuff  
 function changePageDim(textbox)
 {
-  if (textbox.id == "tbpageheight") pageheight = unitHander.GetValueAs(Number(textbox.value),"mm");
-  else pagewidth = unitHander.GetValueAs(Number(textbox.value),"mm");
+  var value = unitHandler.getValueAs(Number(textbox.value),"mm");
+  if (textbox.id == "tbpageheight") pageheight = value;
+  else pagewidth = value;
   setPageDimensions();
 }
 
 //this gets the page dimensions for page type obj.pagename and returns them as obj.width 
 // and obj.height. If the pagename is 'other', it does not set the heightand width and returns
 // false. Otherwise it returns true.
+
+var stdPageDimensions = {   letter: {w: 215.9, h: 279.4},	a4: {w: 210, h: 297},   screen: {w: 225, h: 180},  a0: {w: 841, h: 1189}, 
+	a1: {w: 594, h: 841},     a2: {w: 420, h: 594},         a3: {w: 297, h: 420}, 	a5: {w: 148, h: 210},      a6: {w: 105, h: 148}, 
+	b0: {w: 1000, h: 1414},   b1: {w: 707, h: 1000},     	  b2: {w: 500, h: 707},   b3: {w: 353, h: 500},      b4: {w: 250, h: 353}, 
+	b5: {w: 176, h: 250},     b6: {w: 125, h: 176},         executive: {w: 184, h: 267},                       legal: {w: 216, h: 356} };
+	
 function getPageDimensions( obj)
 {
-  switch (obj.pagename) {
-    case "letter":   // these dimensions are in millimeters
-      obj.width = 215.9;
-      obj.height = 279.4;
-      break;
-		case "a4":
-      obj.width = 210;
-      obj.height = 297;
-      break;
-		case "other":
-      return false;
-    case "screen":
-      obj.width = 225;
-      obj.height = 180;
-      break;
-		case "a0":
-      obj.width = 841;
-      obj.height = 1189;
-      break;
-		case "a1":
-      obj.width = 594;
-      obj.height = 841;
-      break;
-		case "a2":
-      obj.width = 420;
-      obj.height = 594;
-      break;
-		case "a3":
-      obj.width = 297;
-      obj.height = 420;
-      break;
-		case "a5":
-      obj.width = 148;
-      obj.height = 210;
-      break;
-		case "a6":
-      obj.width = 105;
-      obj.height = 148;
-      break;
-		case "b0":
-      obj.width = 1000;
-      obj.height = 1414;
-      break;
-		case "b1":
-      obj.width = 707;
-      obj.height = 1000;
-      break;
-		case "b2":
-      obj.width = 500;
-      obj.height = 707;
-      break;
-		case "b3":
-      obj.width = 353;
-      obj.height = 500;
-      break;
-		case "b4":
-      obj.width = 250;
-      obj.height = 353;
-      break;
-		case "b5":
-      obj.width = 176;
-      obj.height = 250;
-      break;
-		case "b6":
-      obj.width = 125;
-      obj.height = 176;
-      break;
-		case "executive":
-      obj.width = 184;
-      obj.height = 267;
-      break;
-		case "legal":
-      obj.width = 216;
-      obj.height = 356;
-      break;
-    default:  // default to letter
-      obj.width = 215.9;
-      obj.height = 279.4;
-      break;
+  if (obj.pagename in stdPageDimensions)
+	{
+		var o = stdPageDimensions[obj.pagename];
+		obj.width = o.w;
+		obj.height = o.h;
+	}
+	else // default to letter
+	{
+	  obj.width = 215.9;
+	  obj.height = 279.4;
   }
   return true;
 }
@@ -830,8 +961,8 @@ function setPageDimensions()
   
   if (!getPageDimensions(obj))
   { 
-    pagewidth = unitHander.getValueAs(Number(document.getElementById("tbpagewidth").value), "mm");
-    pageheight = unitHander.getValueAs(Number(document.getElementById("tbpageheight").value), "mm");
+    pagewidth = unitHandler.getValueAs(Number(document.getElementById("tbpagewidth").value), "mm");
+    pageheight = unitHandler.getValueAs(Number(document.getElementById("tbpageheight").value), "mm");
   } else
   {
     pagewidth = obj.width;
@@ -914,7 +1045,6 @@ function getCropInfo(node)
   setPaperDimensions();
 }
 
-
 function setPaperDimensions()
 {
   var obj = new Object();
@@ -922,8 +1052,8 @@ function setPaperDimensions()
   
   if (!getPageDimensions(obj))
   { 
-    paperwidth = unitHander.getValueAs(Number(document.getElementById("tbpaperwidth").value), "mm");
-    paperheight = unitHander.getValueAs(Number(document.getElementById("tbpaperheight").value),"mm");
+    paperwidth = unitHandler.getValueAs(Number(document.getElementById("tbpaperwidth").value), "mm");
+    paperheight = unitHandler.getValueAs(Number(document.getElementById("tbpaperheight").value),"mm");
   } else
   {
     paperwidth = obj.width;
@@ -965,8 +1095,7 @@ function unitRound( size )
   return Math.round(size*places)/places;
 }
 
-
-function OnWindowSizeReset(initial)
+function onWindowSizeReset(initial)
 {
   var twomargins = 60; //20 pixels per margin for the layout page
   //var oldscale = scale;
@@ -1009,20 +1138,15 @@ function setHeight(id, units)
   }
 }
 
-function setDecimalPlaces() // and increments
+function setDecimalPlaces()
+// and increments
 {
-  var places;
-  var increment;
   var elt;
   var i;
   var s;
-  switch (unitHandler.currentUnit) {
-    case "in" : increment = .1; places = 2; break;
-    case "cm" : increment = .1; places = 2; break;
-    case "mm" : increment = 1; places = 1; break;
-    case "pt" : increment = 1; places = 1; break;
-    default : increment = 1; places = 1; break;
-  }
+  var u = unitHandler.units[unitHandler.getCurrentUnit()];
+  var increment = u.increment;
+	var places = u.places;
   for (i=0; i<widthElements.length; i++)
   {
     s=widthElements[i];
@@ -1059,11 +1183,11 @@ function updateComputedMargins()
     wtotal += tbmnsep + tbmnwidth;
   var tbtopmargin = Number(document.getElementById("tbtmargin").value);
   var tbbody = Number(document.getElementById("tbbodyheight").value);
-  var tbheader = Number(document.getElementById("tbheader").value);
-  var tbheadersep = Number(document.getElementById("tbheadersep").value);
+  var tbhedd = Number(document.getElementById("tbhedd").value);
+  var tbheddsep = Number(document.getElementById("tbheddsep").value);
   var tbfootersep = Number(document.getElementById("tbfootersep").value);
   var tbfooter = Number(document.getElementById("tbfooter").value);
-  var htotal = tbtopmargin + tbheader + tbheadersep + tbbody + tbfooter + tbfootersep;
+  var htotal = tbtopmargin + tbhedd + tbheddsep + tbbody + tbfooter + tbfootersep;
   document.getElementById("tbcomputedrmargin").value = unitRound(pagewidth - wtotal);                
   document.getElementById("tbcomputedbmargin").value = unitRound(pageheight - htotal);
   // now check for overflow conditions
@@ -1074,7 +1198,7 @@ function updateComputedMargins()
   if (vcenter)
   {
     var bigvmargin = (pageheight - tbbody)/2; // the margin including headers and footers
-    if (tbheader + tbheadersep > bigvmargin) overflow = true;
+    if (tbhedd + tbheddsep > bigvmargin) overflow = true;
     if (tbfooter + tbfootersep > bigvmargin) overflow = true;
   }
   if (hcenter && !(document.getElementById("disablemn").checked))
@@ -1087,7 +1211,6 @@ function updateComputedMargins()
     overflow = true;
   document.getElementById("page").setAttribute("danger", overflow);
 }
-
 
 function layoutPage(which)
 {
@@ -1107,7 +1230,7 @@ function layoutPage(which)
   if (vcenter)
   {
     var tmargin = (pageheight - document.getElementById("tbbodyheight").value)/2;
-    tmargin -= (Number(document.getElementById("tbheader").value) + Number(document.getElementById("tbheadersep").value));
+    tmargin -= (Number(document.getElementById("tbhedd").value) + Number(document.getElementById("tbheddsep").value));
     document.getElementById("tbtmargin").value = tmargin;
   }
   if (which == "all")
@@ -1158,7 +1281,6 @@ function activate(id)
       elt.setAttribute("active","1");
 }     
 
-
 function deactivate(id)
 {
     var elt = document.getElementById(id);
@@ -1169,27 +1291,30 @@ function deactivate(id)
 function switchUnits()
 {
   var newUnit = document.getElementById("docformat.units").selectedItem.value;
-  if (newUnit !== unitHandler.currentUnit) unitHandler.setCurrentUnit(newUnit);
-  return;
-  var factor = 0; //convert(1, currentUnit, newUnit);
-   pagewidth *= factor;
+  var currentUnit = unitHandler.currentUnit;
+  if (newUnit !== unitHandler.currentUnit) 
+	{
+		unitHandler.setCurrentUnit(newUnit);
+	}
+	else return;  
+  var factor = convert(1, currentUnit, newUnit);
+  pagewidth *= factor;
   pageheight *= factor;
   scale = scale/factor;
-  currentUnit = newUnit; // this has to be set before unitRound and setDecimalPlaces are called
   setDecimalPlaces();
   document.getElementById("tbbodyheight").value = unitRound(factor*document.getElementById("tbbodyheight").value);
   document.getElementById("tbbodywidth").value = unitRound(factor*document.getElementById("tbbodywidth").value); 
   document.getElementById("tblmargin").value = unitRound(factor*document.getElementById("tblmargin").value);
   document.getElementById("tbtmargin").value = unitRound(factor*document.getElementById("tbtmargin").value);
-  document.getElementById("tbheader").value = unitRound(factor*document.getElementById("tbheader").value);
-  document.getElementById("tbheadersep").value = unitRound(factor*document.getElementById("tbheadersep").value);
+  document.getElementById("tbhedd").value = unitRound(factor*document.getElementById("tbhedd").value);
+  document.getElementById("tbheddsep").value = unitRound(factor*document.getElementById("tbheddsep").value);
   document.getElementById("tbfooter").value = unitRound(factor*document.getElementById("tbfooter").value);
   document.getElementById("tbfootersep").value = unitRound(factor*document.getElementById("tbfootersep").value);
+  document.getElementById("tbcolsep").value = unitRound(factor*document.getElementById("tbcolsep").value);
   document.getElementById("tbmnwidth").value = unitRound(factor*document.getElementById("tbmnwidth").value);
   document.getElementById("tbmnsep").value = unitRound(factor*document.getElementById("tbmnsep").value);
   document.getElementById("tbmnpush").value = unitRound(factor*document.getElementById("tbmnpush").value);
   document.getElementById("tbcomputedrmargin").value = unitRound(factor*document.getElementById("tbmnpush").value);
-  document.getElementById("tbcomputedbmargin").value = unitRound(factor*document.getElementById("tbmnpush").value);
   document.getElementById("tbpagewidth").value = unitRound(pagewidth);
   document.getElementById("tbpageheight").value = unitRound(pageheight);
   updateComputedMargins();
@@ -1220,7 +1345,6 @@ function handleBodyMouseClick(event)
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and returns sets
 // the value of the text box
-
 function updateTextNumber(textelement, event)
 {
   var val = textelement.value;
@@ -1263,7 +1387,6 @@ function updateTextNumber(textelement, event)
   }
 }           
  
-
 function handleChar(event, id, tbid)
 {
   var element = event.originalTarget;
@@ -1347,6 +1470,7 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
 {
   if (fontname && fontname.length>0) {
     var options;
+		removeExistingPreambleNodes(menuId, fontNode);
     var node = editor.createNode(menuId, fontNode, nodecounter++);
     if (/{/.test(fontname))
     { // fontname in this case is something like "[options]{packagename} [options2]{package2}
@@ -1387,21 +1511,14 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
   }
 }
 
-
-
 function saveFontSpecs(docFormatNode)
 {
   // we don't want to generate anything unless at least one font was defined.
-  var fontspecList = docFormatNode.getElementsByTagName('fontchoices');
+  removeExistingPreambleNodes('fontchoices', docFormatNode);
   var i;
   var node;
   var options;
-  if (fontspecList) 
-  {
-    for (i = fontspecList.length - 1; i >= 0; i--)
-      editor.deleteNode(fontspecList[i])
-  }
-  var fontids = ["mathfontlist","mainfontlist","sansfontlist","fixedfontlist","f1name","f2name","f3name"];
+  var fontids = ["mathfontlist","mainfontlist","sansfontlist","fixedfontlist","x1fontlist","x2fontlist","x3fontlist"];
   var fontchoices = ["","","","","","",""];
   var goahead = false;
   for (i = 0; i < fontids.length; i++)
@@ -1566,14 +1683,15 @@ function getFontSpecs(node)
   } 
 }
 
-
-function trimBlanks( astring)    // this assumes blanks will appear only at the ends of the string, and it will
-                                 // remove any blanks in the interior of the string
+function trimBlanks( astring)    
+// this assumes blanks will appear only at the ends of the string, and it will
+// remove any blanks in the interior of the string
 {
   return astring.replace(/\s/gm,"");
 }
 
-function parseOneOption( astring ) // the string is of the form XXXX=yyyy or XXXX={yyyy,zzzz}
+function parseOneOption( astring ) 
+// the string is of the form XXXX=yyyy or XXXX={yyyy,zzzz}
 {
   var dataObj = new Object;
   var arr = astring.split("=");
@@ -1584,7 +1702,6 @@ function parseOneOption( astring ) // the string is of the form XXXX=yyyy or XXX
   dataObj.options = options.split(",");
   return dataObj;
 }
-
 
 // parse the contents of a textbox. The menulist and checkbox to update are gotten by varying 
 // the id of the textbox in predetermined ways. Returns an array of objects with members name (a string)
@@ -1656,7 +1773,8 @@ function onOptionTextChanged( textbox )
   }
 }     
     
-function addOptionObject ( objarray, obj ) // objarray is an array of objects
+function addOptionObject ( objarray, obj ) 
+                                      // objarray is an array of objects
                                       // with a name (string) and options (array of strings)
                                       // This adds the new object (with only one option in its array),
                                       // consolidating if necessary
@@ -1731,9 +1849,9 @@ function stringFrom (objectArray)
   }
   return returnValue;
 }
-         
-   
-function onCheck( checkbox ) // the checkbox is for old style nums or swashes
+            
+function onCheck( checkbox ) 
+// the checkbox is for old style nums or swashes
 {
   var id = checkbox.id;
   var optionObj = new Object;
@@ -1755,8 +1873,7 @@ function onCheck( checkbox ) // the checkbox is for old style nums or swashes
   else removeOptionObject(objarray,optionObj);
   document.getElementById(base+"native").value = stringFrom(objarray);
 }
-  
-  
+    
 //function onMenulistFocus(menulist)
 //{
 //  var tempnodes = menulist.getElementsByTagName("menupopup");
@@ -1919,7 +2036,14 @@ function switchSectionTypeImp(from, to, settingSecRedefOk)
       if (!sectitleformat[from]) sectitleformat[from] = new Object();
       sec = sectitleformat[from];
       sec.enabled = enabled;
-      document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
+      if (sec,enabled)
+			{
+			  document.getElementById("secredefok").removeAttribute("disabled");
+			}
+			else 
+			{
+				document.getElementById("secredefok").setAttribute("disabled", "true");
+			}
       sec.newPage = document.getElementById("sectionstartnewpage").checked;
       sec.sectStyle = document.getElementById("sections.style").value;
       sec.align = document.getElementById("sections.align").value; 
@@ -2059,9 +2183,9 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
   var menulist = document.getElementById("sections.name");
   var itemlist = menulist.getElementsByTagName("menuitem");
   var sectiondata;
-  // should actually look to see if the titlesec package is already in the document
   var bRequiresPackage = true;
   var reqpackageNode;
+	removeExistingPreambleNodes('sectitleformat', docFormatNode);
   switchSectionTypeImp(currentSectionType,null);
   for (var i = 0; i < itemlist.length; i++)
   {
@@ -2101,12 +2225,7 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       stNode.setAttribute('rhindent', sectiondata.rhindent);
       lineend(stNode, 2);
       var i;
-      var nodeList = stNode.getElementsByTagName("titleprototype");
-      while (nodeList.length > 0) 
-      {
-        editor.deleteNode(nodeList[nodeList.length - 1]);
-        nodeList = stNode.getElementsByTagName("titleprototype");
-      }
+			removeExistingPreambleNodes("titleprototype", stNode);
       var proto = editor.createNode('titleprototype', stNode, 0);
       var fragment = sectiondata.proto;
       if (fragment)
@@ -2224,7 +2343,6 @@ function sectSetDecimalPlaces() // and increments
   elt.setAttribute("decimalplaces", places);
 }    
 
-
 function displayTextForSectionHeader(name)
 {
   try {
@@ -2264,8 +2382,8 @@ function displayTextForSectionHeader(name)
   }
 }
 
-
-function refresh() // a version of displayTextForSectionHeader designed to be used as a callback
+function refresh() 
+// a version of displayTextForSectionHeader designed to be used as a callback
 {
 //  var strContents = sectitleformat[sectitleformat.currentLevel];
 //  var parser = new DOMParser();
@@ -2348,7 +2466,6 @@ function setalign(which)
   //otherelement.setAttribute("role", "spacer");
 }
     
-
 function clearselection(element)
 {
  if (element.nodeType != element.ELEMENT_NODE) return;
@@ -2360,7 +2477,9 @@ function clearselection(element)
     clearselection(element.childNodes[i]);
   }
 } 
+
 var lastselected = null;   
+
 function toggleselection( element )
 {
   lastselected = element;
@@ -2372,17 +2491,17 @@ function toggleselection( element )
   element.setAttribute('sectionselected','true');
   if (element.id == "sectleftheadingmargin" || element.id=="sectrightheadingmargin")
   {
-    NCAbroadcaster.setAttribute("disabled","false");
+    NCAbroadcaster.removeAttribute("disabled");
     TOBbroadcaster.setAttribute("disabled", "true");
     NMbroadcaster.setAttribute("disabled", "true");
   }
   else
   {
     NCAbroadcaster.setAttribute("disabled","true");
-    NMbroadcaster.setAttribute("disabled", "false");
+    NMbroadcaster.removeAttribute("disabled");
     if (element.id == "topmargin" || element.id == "bottommargin")
     {
-      TOBbroadcaster.setAttribute("disabled", "false");
+      TOBbroadcaster.removeAttribute("disabled");
     }
     else 
       TOBbroadcaster.setAttribute("disabled", "true");
@@ -2462,7 +2581,6 @@ function addrule()
     "resizable=yes,chrome,close,titlebar,resizable=true,alwaysRaised", nextbox, secUnitHandler.currentUnit);
   boxlist[i] = nextbox;
 }
-
 
 function addspace()
 {
@@ -2593,7 +2711,6 @@ function changeOpenType(useOTF)
     } 
   }
 }  
-
     
 function deleteOTFontsFromMenu(menuID)
 {
@@ -2608,149 +2725,87 @@ function deleteOTFontsFromMenu(menuID)
   }
   if (ch && ch.id ==="startOpenType") menuPopup.removeChild(ch);
 }                                           
-
+	
 function saveClassOptionsEtc(docformatnode)
 {
-  var doc = editor.document;
+	var optionNode;
+  var i;
+	var doc = editor.document;
   var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
   if (!documentclass) {
-    dump("No documentclass in document\n");
-    return;
+    throw("No document class in document");
   }
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   if (!preamble) {
-    dump("No preamble in document\n");
-    return;
+    throw("No preamble in document");
   }
-  var nodelist = doc.getElementsByTagName("colist");
+	removeExistingPreambleNodes("colist", doc);
   var optionNode;
-  var newOptionNode = false;
-  if (nodelist.length == 0) 
-  {
-    newOptionNode = true;
-    optionNode = editor.createNode("colist", docformatnode, 0);
-  }
-  else 
-    optionNode = nodelist[0];
-  // convention: default values are starred at the end.
+  // convention: default menuitems have a def attribute
+  var optionnames = ["pgorient", "papersize", "sides", "qual", "columns", "titlepage", "textsize", "eqnnopos", "eqnpos", "bibstyle"];
   var widget;
-  widget = document.getElementById("pgorient").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("pgorient");
-  else 
-    optionNode.setAttribute("pgorient", widget.value);
-  
-  widget = document.getElementById("papersize").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("papersize")
-  else 
-    optionNode.setAttribute("papersize", widget.value);
-
-  widget = document.getElementById("sides").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("sides")
-  else 
-    optionNode.setAttribute("sides", widget.value);
-
-  widget = document.getElementById("qual").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("qual")
-  else 
-    optionNode.setAttribute("qual", widget.value);
-
-  widget = document.getElementById("columns").selectedItem;
-  if (!widget || widget.hasAttribute("def")) 
-    optionNode.removeAttribute("columns");
-  else 
-    optionNode.setAttribute("columns", widget.value);
-
-  widget = document.getElementById("textsize").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("textsize");
-  else 
-    optionNode.setAttribute("textsize", widget.value);
-
-  widget = document.getElementById("eqnnopos").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("eqnnopos");
-  else 
-    optionNode.setAttribute("eqnnopos", widget.value);
-
-  widget = document.getElementById("eqnpos").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("eqnpos");
-  else 
-    optionNode.setAttribute("eqnpos", widget.value);
-
-  widget = document.getElementById("titlepage").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("titlepage");
-  else 
-    optionNode.setAttribute("titlepage", widget.value);
-
-  widget = document.getElementById("bibstyle").selectedItem;
-  if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("bibstyle");
-  else 
-    optionNode.setAttribute("bibstyle", widget.value);
-
-  if (newOptionNode) documentclass.appendChild(optionNode);
-
-  widget = document.getElementById("leading").value;
-  nodelist = preamble.getElementsByTagName("leading");
-  var leading;
-  var i;
-  if (widget > 0)
-  {
-    if (nodelist.length == 0)
-      leading = editor.createNode("leading",preamble,1000);
-    else leading = nodelist[0];
-    leading.setAttribute("val", widget+"pt")
-    leading.setAttribute("req","leading")
+	var name;
+  for (var i = 0, len = optionnames.length; i < len; i++)
+	{
+	  name = optionnames[i];
+	  widget = document.getElementById(name).selectedItem;
+	  if (!widget.hasAttribute("def")) 
+		{
+			if (optionNode == null)
+			  optionNode = editor.createNode("colist", docformatnode, 0);
+	    optionNode.setAttribute(name, widget.value);
+		}
   }
-  else for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
-    
-  widget = document.getElementById("showkeys").selectedItem;
-  nodelist = preamble.getElementsByTagName("showkeys");
-  var showkeys;
-  var i;
-  if (widget.hasAttribute("def")) 
-   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
-  else
-  {
-    if (nodelist.length == 0)
-      showkeys = editor.createNode("showkeys", preamble, 1000);
-    else showkeys = nodelist[0];
-    showkeys.setAttribute("req", "showkeys")
-  }
+}
 
-  widget = document.getElementById("showlabels").selectedItem;
-  nodelist = preamble.getElementsByTagName("showlabels");
-  var showkeys;
-  var i;
-  if (widget.hasAttribute("def")) 
-   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
-  else
-  {
-    if (nodelist.length == 0)
-      showkeys = editor.createNode("showlabels", preamble, 1000);
-    else showkeys = nodelist[0];
-    showkeys.setAttribute("req", "showlabels")
-  }
-    
-  widget = document.getElementById("showidx").selectedItem;
-  nodelist = preamble.getElementsByTagName("showidx");
-  var showidx;
-  var i;
-  if (widget.hasAttribute("def")) 
-   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
-  else
-  {
-    if (nodelist.length == 0)
-      showidx = editor.createNode("showidx", preamble, 1000);
-    else showidx = nodelist[0];
-    showidx.setAttribute("req", "showidx")
-  }
+function getLanguageSettings(preambleNode)
+{
+	var babelnodes = preambleNode.getElementsByTagName("babel");
+	var babelnode;
+	var lang1;
+	var lang2;
+	if (babelnodes && babelnodes.length > 0)
+	{
+		babelnode = babelnodes[0];
+		if (babelnode)
+		{
+			lang1 = babelnode.getAttribute("lang1");
+			lang2 = babelnode.getAttribute("lang2");
+			if (lang1) document.getElementById("babelLang1").value = lang1;
+			if (lang2) document.getElementById("babelLang2").value = lang2;
+		}
+	}
+}
+
+function saveLanguageSettings(preambleNode)
+{
+	// clear any old settings if there are any
+  var doc = editor.document;
+	var i;
+	var tag;
+	var tagclass;
+	var hidden;
+	var lang1;
+	var lang2;
+	var isPolyglossia = (document.getElementById("xelatex"))
+	var needsResetting = true;
+	lang1 = document.getElementById("babelLang1").value;
+	if (lang1 === "def") lang1=null;
+	lang2 = document.getElementById("babelLang2").value;
+	if (lang2 === "def") lang2=null;
+	if (lang1 || lang2)
+	{
+		var babelnode;
+		var lang2;
+		removeExistingPreambleNodes("babel", preambleNode);
+    var node = editor.createNode("babel",preambleNode,0);
+		node.setAttribute("req", isPolyglossia ? "polyglossia" : "babel");
+    if (lang1)
+    	node.setAttribute("lang1", lang1);
+    if (lang2)
+    	node.setAttribute("lang2", lang2);
+	}
+  addLanguagesToTagDefs(lang1, lang2)	
 }
 
 function setMenulistSelection(menulist, value)
@@ -2808,17 +2863,6 @@ function getClassOptionsEtc()
   var value;
   var node;
 
-  nodelist = preamble.getElementsByTagName("leading");
-  if (nodelist.length > 0)
-  {
-    node = nodelist[0];
-    if (node.hasAttribute("val"))
-    {
-      var val = node.getAttribute("val"); 
-      var elem = document.getElementById("leading");
-      elem.value = val.replace(/pt/,"");
-    }
-  }
   nodelist = preamble.getElementsByTagName("showkeys");
   if (nodelist.length > 0)
   {
@@ -2833,22 +2877,21 @@ function getClassOptionsEtc()
 
 function setCompiler(compilername)
 {
-//  if (compilerInfo.prog != compilername)
-//  {
-    compilerInfo.prog = compilername;
-    if (compilername=="xelatex")
-    {
-      document.getElementById("xelatex").hidden=false;
-      document.getElementById("pdflatex").hidden=true;
-      changeOpenType(true);
-    }
-    else
-    { 
-      document.getElementById("xelatex").hidden=true;
-      document.getElementById("pdflatex").hidden=false;
-      changeOpenType(false);
-    } 
-//  }   
+	compilerInfo.prog = compilername;
+	if (compilername=="xelatex")
+	{
+	  document.getElementById("xelatex").hidden=false;
+	  document.getElementById("pdflatex").hidden=true;
+	  changeOpenType(true);
+		compilerInfo.useUni = true;
+	}
+	else
+	{ 
+	  document.getElementById("xelatex").hidden=true;
+	  document.getElementById("pdflatex").hidden=false;
+	  changeOpenType(false);
+	  compilerInfo.useUni = false;
+	} 
 }
 
 function enableDisableReformat(enable)
@@ -2856,7 +2899,6 @@ function enableDisableReformat(enable)
   var bcaster = document.getElementById("reformatok");
   compilerInfo.formatOK = enable;
   if (enable)
-    //bcaster.setAttribute("disabled","false");
     bcaster.removeAttribute("disabled");
   else 
     bcaster.setAttribute("disabled","true");
@@ -2867,11 +2909,10 @@ function enableDisablePageLayout(enable)
   var bcaster = document.getElementById("pagelayoutok");
   compilerInfo.pageFormatOK = enable;
   if (enable)
-    bcaster.setAttribute("disabled","false");
+    bcaster.removeAttribute("disabled");
   else bcaster.setAttribute("disabled","true");
 }
-
-     
+    
 function enableDisableSectFormat(checkbox)    
 {
   var bcaster = document.getElementById("secredefok");
@@ -2887,6 +2928,23 @@ function enableDisableFonts(enabled)
   var bcaster = document.getElementById("fontdefok");
   compilerInfo.fontsOK = enabled;
   if (enabled)
-    bcaster.setAttribute("disabled","false");
+    bcaster.removeAttribute("disabled");
   else bcaster.setAttribute("disabled","true");
+}
+
+function compileInfoChanged(widget)
+{
+	var useXelatex;
+	if (widget.id ==="xelatex")
+	{
+		useXelatex = !(widget.hidden);
+		compilerInfo.prog = "xelatex";
+	}
+	if (widget.id==="pdflatex")
+	{
+		useXelatex = (widget.hidden);
+		compilerInfo.prog = "pdflatex";
+	}
+	compilerInfo.useOTF = useXelatex;
+	compilerInfo.useUni = useXelatex;	
 }

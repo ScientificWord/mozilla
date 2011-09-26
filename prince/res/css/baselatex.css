@@ -488,3 +488,18 @@ shortTitle {
 @media print {
 *[nopr] {display: none;}
 }
+
+/* object[captionloc="below"]
+{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
+}
+
+object[captionloc="above"]
+{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionAbove");
+}
+
+object[captionloc="abovebelow"]
+{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
+} */

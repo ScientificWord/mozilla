@@ -116,7 +116,7 @@ function UnitHandler()
       try
       {
         return this.mStringBundle.GetStringFromName(unitsPrefix + theUnit);
-      } catch (e) {dump("Problem in msiUnitsList.getDisplayString for unit [" + theUnit + "]: exception is [" + e + "].\n");}
+      } catch (e) {throw("Problem in msiUnitHandler.getDisplayString for unit [" + theUnit + "]: exception is [" + e + "].\n");}
     }
     return null;
   };
@@ -142,8 +142,7 @@ function UnitHandler()
     var secondValue = this.getNumberAndUnitFromString(value2);
     if ((firstValue === null) || (secondValue === null))
     {
-      dump("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");
-      return NaN;
+      throw("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");      return NaN;
     }
     // convert both to mm
     var firstMm = value1.number *  this.units[value1.unit].size;
@@ -159,17 +158,13 @@ function UnitHandler()
   this.buildUnitMenu = function(menulist, initialValue)
   {
     var x;
-    var unit;
-    var index;
+    var unit;    var index;
     for (x=0; x < this.supportedUnits.length; x++)
     {
       unit = this.supportedUnits[x];
-      menulist.appendItem(this.getDisplayString(unit), unit, "");
-      if (unit==initialValue) index=x;
+      menulist.appendItem(this.getDisplayString(unit), unit, "");      if (unit==initialValue) index=x;
     }
-    menulist.selectedIndex = index;
-
+    menulist.value = initialValue;
   }
-
 }
 
