@@ -32,3 +32,15 @@
   <key id="msiZoomOutKey" key="1" action="ZoomManager.reduce();" modifiers="accel"/>
   <key id="msiZoomReset" key="0" action="ZoomManager.reset();" modifiers="accel"/>
 </keyset>
+
+<!--commands needed for some of these key bindings-->
+<commandset>
+  <command id="cmd_charPrevious" oncommand="msiGoDoCommand('cmd_charPrevious')"/>
+  <command id="cmd_charNext" oncommand="msiGoDoCommand('cmd_charNext')"/>
+  <command id="cmd_selectCharPrevious" oncommand="msiGoDoCommand('cmd_selectCharPrevious')" />
+  <command id="cmd_selectCharNext" oncommand="msiGoDoCommand('cmd_selectCharNext')" />
+  <command id="cmd_linePrevious" oncommand="msiGoDoCommand('cmd_linePrevious')"/>
+  <command id="cmd_lineNext" oncommand="msiGoDoCommand('cmd_lineNext')"/>
+  <command id="cmd_selectLinePrevious" oncommand="msiGoDoCommand('cmd_selectLinePrevious')"/>
+  <command id="cmd_selectLineNext" oncommand="msiGoDoCommand('cmd_selectLineNext')" />
+</commandset>

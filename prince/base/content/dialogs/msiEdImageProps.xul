@@ -46,8 +46,14 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> <!--DO NOT DELETE -->
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
+
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
  
-<!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorImageProperties.dtd">
 <!--JLF - Localization pass on 6/29/2011-->
 <dialog id="imgDialog" 
     title="&windowTitle.label;"
@@ -64,11 +70,39 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <!--script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
  
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
+
+  <popupset id="msiEditorContentContextSet"/>
+
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+  <commandset id="MSImathMenuCommands"/>
+  
+  <keyset id="editorKeys">
+    <keyset id="tasksKeys"/>
+    <keyset id="MSIKeySet"/>
+  </keyset>
+
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
   <broadcasterset id="bcasters">
@@ -111,7 +145,7 @@
           <checkbox
             id  = "makeRelativeCheckbox"
             for = "srcInput"
-            label = "Make reference relative"
+            label = "&MakeRelativeCheckbox.label;"
             tabindex="2"/>
           <!-- from EdDialogOverlay.xul -->
           <msibutton id="ChooseFile"  tabindex="3"/>
@@ -124,32 +158,33 @@
       <vbox id="imageLabeling">
         <spacer flex="1"/>
         <hbox>
-          <label value="Key"/>
+          <label value="&imageKey.label;"/>
           <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
             completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-            tooltiptext="Enter a new key name"
-            onfocus=""
-            ontextentered="" />
+            tooltiptext="&EnterNewName.tooltip;"
+            onfocus="setACSAToGlobal();" />
+            <!-- ontextentered="" / -->
         </hbox>
         <groupbox>
-          <caption id="captionPlacementLabel" label="Caption Placement"/>
-          <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
-            <radio id="captionAboveRadio" label="Above"/>
-            <radio id="captionBelowRadio" label="Below"/>
+          <caption id="captionPlacementLabel" label="&captionPlacement.label;"/>
+          <radiogroup id="captionPlacementRadioGroup" orient="horizontal" oncommand="onChangeCaptionPlacement();">
+            <radio id="captionAboveRadio" label="&Above.label;" value="above"/>
+            <radio id="captionBelowRadio" label="&Below.label;" value="below"/>
           </radiogroup>
         </groupbox>
-        <label value="Caption Text"/>
-        <editor id="captionTextInput" height="2in" flex="1"/>
-        <label value="Alt Text"/>
+        <label value="&CaptionText.label;"/>
+        <editor id="captionTextInput" editortype="html" type="content" context="msiEditorContentContext" height="2in" flex="1"/>
+        <label value="&AltText.label;"/>
         <textbox id="altTextInput"/>
       </vbox>
       <vbox>
         <spacer class="spacer"/>
-        <label wrap="true" value="Enter a document location, a local document, or select a marker"/>
-        <label value="or heading from the popup list:"/>
+        <!-- label wrap="true" value="Enter a document location, a local document, or select a marker"/>
+        <label value="or heading from the popup list:"/ -->
+        <label wrap="true" value="&EnterDocOrMarker.label;" />
         <textbox id="linkKeyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
-          tooltiptext="Enter a new key name or a document name"
+          tooltiptext="&NewKeyOrDocName.tooltip;"
           onfocus=""
           ontextentered="" />
         <spacer class="spacer"/>
