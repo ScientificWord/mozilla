@@ -1657,7 +1657,7 @@ bool Tree2StdMML::FuncTakesTrigArgs(MNODE* mml_node)
 bool Tree2StdMML::NodeIsOperator(MNODE* mml_node)
 {
   
-  if (ElementNameIs(mml_node, "mo") ||  NodeIsFunction(mml_node, mml_entities, my_analyzer_data)) {
+  if (ElementNameIs(mml_node, "mo")) {
 
         return true;
 
@@ -1922,12 +1922,14 @@ bool Tree2StdMML::NodeIsVariableList(MNODE* mml_node)
 bool Tree2StdMML::NodeIsFactor(MNODE* mml_node)
 {
   //NOTE assuming fences are all mfenced
-  if (NodeIsOperator(mml_node) || NodeIsFunction(mml_node, mml_entities, my_analyzer_data))
+  //if (NodeIsOperator(mml_node) || NodeIsFunction(mml_node, mml_entities, my_analyzer_data))
+  if (NodeIsOperator(mml_node))
     return false;
+
   if (ElementNameIs(mml_node, "mtr") || ElementNameIs(mml_node, "mtd"))
     return false;
-  else
-    return true;
+ 
+  return true;
 }
 
 
