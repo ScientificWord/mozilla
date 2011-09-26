@@ -24,7 +24,7 @@
 <!--JLF - Localization pass on 6/29/2011-->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
-    id="ComputVarListDlg"
+    id="MapMuPADNameDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
     onunload="doPostDialogFunction()"
@@ -39,8 +39,6 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeVarList.js" />
 
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
