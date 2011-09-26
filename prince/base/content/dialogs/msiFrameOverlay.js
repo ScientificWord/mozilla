@@ -157,6 +157,8 @@ function initFrameTab(dg, element, newElement)
     for (i = 0; i<4; i++)
       { dg.cropInput[sides[i].toLowerCase()].value = values[i];}
     var placeLocation = element.getAttribute("placeLocation");
+    if (!placeLocation)
+      placeLocation = "";
     dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
     dg.placeHereCheck.checked = (placeLocation.search("h") != -1);
     dg.placeFloatsCheck.checked = (placeLocation.search("p") != -1);
@@ -164,6 +166,8 @@ function initFrameTab(dg, element, newElement)
     dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
 
     dg.herePlacementRadioGroup.value = element.getAttribute("placement");
+    if (!dg.herePlacementRadioGroup.value)
+      dg.herePlacementRadioGroupValue = "full";  //as in the default below
     switch (dg.herePlacementRadioGroup.value) {
       case "l":
       case "L": dg.herePlacementRadioGroup.selectedIndex = 0;
