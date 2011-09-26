@@ -31,6 +31,7 @@ public:
   nsString htmllistparent;
   nsString htmllist;
   nsString prefsub;
+	nsString babel; 
   PRBool   discardEmptyBlock;
   PRBool   inclusion;
   PRBool   hidden;
@@ -65,6 +66,7 @@ public:
   nsString GetStringProperty( const nsAString & str, nsIDOMElement * element);
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
   void BuildContainsListForElement(nsIDOMElement * element, const nsAString & name);
+	void BuildBabelList(nsIDOMXMLDocument * docTagInfo, TagKeyListHead ** ppBabelList);
   
   
   nsCOMPtr<nsIAutoCompleteSearchStringArray> pACSSA;
@@ -83,6 +85,8 @@ protected:
   TagKey mclearTextTag;
   TagKey mclearStructTag;
   TagKey mclearEnvTag;
+	TagKey mclearListTag;
+	TagKeyListHead * pBabelList; // tags that Babel or Polyglossia need to change at run time.
   TagKeyListHead * pContainsList;
 };
 
