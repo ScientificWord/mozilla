@@ -3320,17 +3320,84 @@ function postProcessMathML(frag)
   }
 }
 
+function mathNodeSplittable(node)
+{
+	return (msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathTemplate(node));
+}
+
+function offsetOfChild(parent, child)
+{
+	var offset = 0;
+	if (child.parentNode != parent)
+	{
+		throw ("offsetOfChild: 'parent' must by parent of 'child'");
+	}
+	var node = parent.firstChild;
+	while (node && node != child)
+	{
+		node = node.nextSibling;
+		offset++;
+	}	
+	return offset;
+}
+
+function splitMathDeep(editor, node, offset, text)
+/* This will  split the  math expression at  the point node,  offset; if  offset == -1,  then the
+expression will  be split  by node, which  will then be  deleted. The  text in 'text'  will be
+inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   appropriate. */  
+{
+	var newNode= {};
+	var parent;
+	var newParent;
+  var removeNode = offset < 0;
+	if (removeNode)
+	{
+		parent = node.parentNode;
+		// isn't there a simple getChildOffset visible to JavaScript?
+		offset = offsetOfChild(parent, node);
+	}
+	else
+	{
+		parent = node;
+	}
+	while ((parent.nodeType == Node.TEXT_NODE) || mathNodeSplittable(parent))
+	{
+		editor.splitNode(parent, offset, newNode);
+		newParent = parent.parentNode;
+		offset = offsetOfChild(newParent, parent);
+		if (!(parent.firstChild) && parent.textContent.length == 0)
+		  editor.deleteNode(parent);
+		if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
+		{
+		  editor.deleteNode(newNode.value);		
+			offset--;
+		}
+		parent = newParent;
+	}
+	// can't go any higher. If the reason is that parent is not math, we just insert node.
+	// if parent is math, then we put in an mtext node.
+	if (msiNavigationUtils.isMathNode(parent))
+	{
+		var mtextNode = editor.createElement("mtext", parent, offset);
+		mtextNode.textContent = text;
+		editor.selection.collapse(mtextNode,1);
+	}
+	else 
+	{
+		var textNode = editor.document.createTextNode(text);
+		editor.insertNode(textNode, parent, offset);
+		editor.selection.collapse(textNode,text.length);
+	}
+	if (removeNode) editor.deleteNode(node);
+//	window.focus();
+}
 
 function mathNodeToText(editor, node)
 {
-  var frag = gProcessor.transformToFragment(node,editor.document);   
-  postProcessMathML(frag);
-  var nPos = 0;
   if (node)
-    nPos = msiNavigationUtils.offsetInParent(node);
-  editor.insertNode(frag, node.parentNode, npos);
-  editor.deleteNode(node);
-//  editor.replaceNode(frag,node,node.parentNode);
+	{
+		splitMathDeep(editor, node, -1, node.textContent);
+	}
 }
 
 // returns start (-1), mid (0), or end (1)
@@ -3401,64 +3468,72 @@ function mathToText(editor)
   var pos;
   var node;
   var offset;
-  if (editor.selection.isCollapsed)   // jcs ?? changed from collapsed
-  {
-    node = editor.selection.anchorNode;
-    offset = editor.selection.anchorOffset;
-    var p = { node: node, offset: offset};
-    pos = positionInMath(p);
-    if (pos != 0)
-    {
-      if (pos == 1) 
-      {
-        msiGoDoCommand('cmd_charNext');
-        if (msiNavigationUtils.isMathNode(editor.selection.anchorNode))
-        {
-          editor.insertText(" ");
-          msiGoDoCommand('cmd_charNext'); 
-        }
-        msiGoDoCommand('cmd_charPrevious');
-      }
-      else
-      {
-        msiGoDoCommand('cmd_charPrevious');
-        msiGoDoCommand('cmd_charNext');
-      }
-      return;
-    }
-  }
+//  if (editor.selection.isCollapsed)
+//  {
+//    node = editor.selection.anchorNode;
+//    offset = editor.selection.anchorOffset;
+//    var p = { node: node, offset: offset};
+//    pos = positionInMath(p);
+//    if (pos != 0)
+//    {
+//      if (pos == 1) 
+//      {
+//        msiGoDoCommand('cmd_charNext');
+//        if (msiNavigationUtils.isMathNode(editor.selection.anchorNode))
+//        {
+//          editor.insertText(" ");
+//          msiGoDoCommand('cmd_charNext'); 
+//        }
+//        msiGoDoCommand('cmd_charPrevious');
+//      }
+//      else
+//      {
+//        msiGoDoCommand('cmd_charPrevious');
+//        msiGoDoCommand('cmd_charNext');
+//      }
+//      return;
+//    }
+//  }
   editor.beginTransaction();
   try
   {
-    if (!gProcessor) gProcessor = new XSLTProcessor();
-    else gProcessor.reset();
-    var req = new XMLHttpRequest();
-
-    req.open("GET", "chrome://prince/content/math2text.xsl", false); 
-    req.send(null);
-    // print the name of the root element or error message
-    var xsldom = req.responseXML;
-    gProcessor.importStylesheet(xsldom);
+//    if (!gProcessor) gProcessor = new XSLTProcessor();
+//    else gProcessor.reset();
+//    var req = new XMLHttpRequest();
+//
+//    req.open("GET", "chrome://prince/content/math2text.xsl", false); 
+//    req.send(null);
+//    // print the name of the root element or error message
+//    var xsldom = req.responseXML;
+//    gProcessor.importStylesheet(xsldom);
   
-    for (i=0; i< editor.selection.rangeCount; i++)
-    {
-      //BBM: we have to work to make this undoable
-      range = editor.selection.getRangeAt(i);
-      nodeArray = editor.nodesInRange(range);
-      dump(nodeArray.length+" nodes\n");
-      enumerator = nodeArray.enumerate();
-      while (enumerator.hasMoreElements())
-      {
-        node = enumerator.getNext();
-        mathNodeToText(editor,node);
-      }
-    }
-  }
+		if (editor.selection.isCollapsed)
+		{
+			var node = editor.selection.anchorNode;
+			var offset = editor.selection.anchorOffset;
+			splitMathDeep(editor, node, offset, "");
+		}
+		else
+		{
+	    for (i=0; i< editor.selection.rangeCount; i++)
+	    {
+	      range = editor.selection.getRangeAt(i);
+	      nodeArray = editor.nodesInRange(range);
+	      dump(nodeArray.length+" nodes\n");
+	      enumerator = nodeArray.enumerate();
+	      while (enumerator.hasMoreElements())
+	      {
+	        node = enumerator.getNext();
+	        mathNodeToText(editor,node);
+	      }
+	    }
+	  }
+	}
   catch(e) {
     dump("error in MathNodeToText: "+e.message+"\n");
   }
-  if (gProcessor)
-    gProcessor.reset();
+//  if (gProcessor)
+//    gProcessor.reset();
   editor.endTransaction();
 }
 
