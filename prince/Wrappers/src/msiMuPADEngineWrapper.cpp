@@ -128,4 +128,11 @@ static const nsModuleComponentInfo gComponents[] =
     msiMuPADEngineWrapperConstructor }
 };
 
-NS_IMPL_NSGETMODULE(wrappers, gComponents)
+PR_STATIC_CALLBACK(void)
+Shutdown(nsIModule* aSelf)
+{
+  s_wrapper->Cleanup();
+  s_wrapper = nsnull;
+}
+
+NS_IMPL_NSGETMODULE_WITH_DTOR(wrappers, gComponents, Shutdown)

@@ -159,6 +159,7 @@ function startup()
 		savedval = e.value;
 		e.value = 1;
   	broadcastColCount();
+// hack to get the diagram to show columns
 		e.value = savedval;
 		broadcastColCount();
 	}
