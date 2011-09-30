@@ -153,7 +153,7 @@ var msiToggleMathText =
 	    if (this.currentState() == "t")
 				insertinlinemath();
 	    toggleMathText(editor);
-	    dump("called msiToggleMathText\n");
+			editorElement.contentWindow.focus();
 		}
     return;
   },
@@ -3322,7 +3322,8 @@ function postProcessMathML(frag)
 
 function mathNodeSplittable(node)
 {
-	return (msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathTemplate(node));
+	parent = node.parentNode;
+	return (msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathTemplate(parent));
 }
 
 function offsetOfChild(parent, child)
@@ -3378,9 +3379,10 @@ inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   ap
 	// if parent is math, then we put in an mtext node.
 	if (msiNavigationUtils.isMathNode(parent))
 	{
-		var mtextNode = editor.createElement("mtext", parent, offset);
+		mtextNode = editor.document.createElementNS(mmlns, "mtext");
+	  editor.insertNode(mtextNode, parent, offset);  
 		mtextNode.textContent = text;
-		editor.selection.collapse(mtextNode,1);
+		editor.selection.collapse(mtextNode,text.length);
 	}
 	else 
 	{

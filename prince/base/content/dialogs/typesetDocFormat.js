@@ -719,7 +719,7 @@ function getMisc(docformat)
 		if (list == null || list.length === 0) continue;
 		document.getElementById(name).checked = true;
   }	
-	var contentlistings = ["title","toc","lof","lot"];
+	var contentlistings = ["toc","lof","lot"];
 	for (i = 0, len = contentlistings.length; i < len; i++)
 	{
 		var name = contentlistings[i];
