@@ -442,6 +442,7 @@
             </columns>
          
             <rows>
+              <row>
                 <vbox align="center">
                   <label observes="reformatok" value="Table of Contents"/>
                   <hbox ><checkbox id="toc" observes="reformatok" align="center" checked="false"  persist="checked" /></hbox>
