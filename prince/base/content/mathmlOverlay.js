@@ -3235,7 +3235,7 @@ inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   ap
 	{
 		parent = node;
 	}
-	while ((parent.nodeType == Node.TEXT_NODE) || mathNodeSplittable(parent))
+	while ((parent.nodeType == Node.TEXT_NODE) || mathNodeSplittable(parent) && mathNodeSplittable(node))
 	{
 		editor.splitNode(parent, offset, newNode);
 		newParent = parent.parentNode;
