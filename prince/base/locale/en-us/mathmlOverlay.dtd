@@ -209,7 +209,7 @@
 <!ENTITY symboldiv.tooltip     "div">
 <!ENTITY symbolsqcup.tooltip      "sqcup">
 <!ENTITY symbolsqcap.tooltip      "sqcap">
-<!-- AMS <!ENTITY symbolbigcirc.tooltip    "bigcirc"> -->
+<!ENTITY symbolbigcirc.tooltip    "bigcirc"> 
 <!ENTITY symbolsetminus.tooltip   "setminus"> 
 <!ENTITY symbolsmallsetminus.tooltip   "smallsetminus"> 
 <!ENTITY symboloplus.tooltip      "oplus">
@@ -220,18 +220,18 @@
 <!ENTITY symbolvee.tooltip        "vee">
 <!ENTITY symbolwedge.tooltip      "wedge">
 <!ENTITY symbolcircledcirc.tooltip   "circledcirc">
-<!-- LATEX 2.09 <!ENTITY symbollhd.tooltip        "lhd"> -->
-<!-- Latex 2.09 <!ENTITY symbolrhd.tooltip    "rhd"> -->
+<!ENTITY symbollhd.tooltip        "lhd">
+<!ENTITY symbolrhd.tooltip    "rhd">
 <!ENTITY symbolveebar.tooltip     "veebar">
 <!ENTITY symbolbarwedge.tooltip   "barwedge">
 <!ENTITY symbolwr.tooltip     "wr">
-<!ENTITY symbolsmalltriangleleft.tooltip   "smalltriangleleft">
-<!ENTITY symbolsmalltriangleright.tooltip   "smalltriangleright">
+<!ENTITY symbolsmalltriangleleft.tooltip   "triangleleft">
+<!ENTITY symbolsmalltriangleright.tooltip   "triangleright">
 <!ENTITY symboluplus.tooltip      "uplus">
 <!ENTITY symboldoublebarwedge.tooltip   "doublebarwedge">
 <!ENTITY symbolamalg.tooltip      "amalg">
-<!-- Latex 2.09 <!ENTITY symbolunlhd.tooltip      "unlhd"> -->
-<!-- Latex 2.09 <!ENTITY symbolunrhd.tooltip      "unrhd"> -->
+<!ENTITY symbolunlhd.tooltip      "unlhd">
+ <!ENTITY symbolunrhd.tooltip      "unrhd">
 <!ENTITY symbolbigtriangledown.tooltip    "bigtriangledown">
 <!ENTITY symbolbigtriangleup.tooltip      "bigtriangleup">
 <!ENTITY symbolsmalldiamond.tooltip     "smalldiamond">
