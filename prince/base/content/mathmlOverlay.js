@@ -3194,132 +3194,6 @@ function inputboxselected(node)
     return false;
 } 
 
-
-
-function postProcessMathML(frag)
-{
-  frag.normalize();
-  var j;
-  var mathnodes=[];
-  for (j=0; j<frag.childNodes.length; j++)
-  {
-    if (frag.childNodes[j].nodeType == Node.TEXT_NODE) break;
-    else if (frag.childNodes.item(j).localName!="math") {
-      mathnodes = frag.childNodes.item(j).getElementsByTagName("mml:math");
-    }
-    var i;
-    var mnode;
-    var p;
-    var textNode;
-    var savedNode;
-    var isFirst;
-    var text;
-    for (i=0; i<Math.max(1,mathnodes.length); i++)
-    {
-      if (mathnodes.length > 0) mnode = mathnodes.item(i);
-      else mnode = frag.childNodes.item(j);
-      // find all textnodes that are not whitespace only
-      // if it is not in mi, mn, mo, or mtext, 
-      // then if it is the first or last real text, pull it out of <math>
-      // otherwise wrap it in an mtext.
-      var n;
-      var highwaterLeft = null;
-      var highwaterRight = null;
-      var tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
-        null, true);
-      tw.nextNode();
-      isFirst = true;
-      n = tw.currentNode;
-      while (n && isFirst)
-      {
-        tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
-            null, true);        
-        tw.nextNode();
-        n = tw.currentNode;
-        text = n.textContent;
-        if (/\S/.test(text))
-        {
-          //non-whitespace
-          parentName = n.parentNode.localName;
-          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName))
-          {
-            isFirst = false;
-            highwaterLeft = n;
-          }
-          else {
-            p = n;
-            while (!msiNavigationUtils.isMathNode(p.parentNode)) p = p.parentNode;
-            textNode = mnode.parentNode.insertBefore(p.cloneNode(true),mnode);
-            savedNode = p;
-            n = tw.nextNode();
-            savedNode.parentNode.removeChild(savedNode);
-          }
-        }
-        else n = tw.nextNode();
-      }
-      if (!n) 
-      {  //we came to the end while peeling stuff out of mnode. Check to see if mNode is now empty
-        if (mnode.textContent.length == 0) mnode.parentNode.removeChild(mnode);
-        break;
-      }
-      tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
-        null, true);      
-      n = tw.lastChild();
-      var isLast = true;
-      while (n && isLast)
-      {
-        tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
-          null, true);      
-        n = tw.lastChild();
-        text = n.textContent;
-        if (/\S/.test(text))
-        {
-          //non-whitespace
-          parentName = n.parentNode.localName;
-          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName))
-          {
-            isLast = false;
-            highwaterRight = n;
-          }
-          else {
-            p = n;
-            while (!msiNavigationUtils.isMathNode(p.parentNode)) p = p.parentNode;
-            textNode = mnode.parentNode.insertBefore(p.cloneNode(true),mnode);
-            savedNode = p;
-            n = tw.previousNode();
-            savedNode.parentNode.removeChild(savedNode);
-          }
-        }
-        else n = tw.nextNode();
-      }
-      if (!highwaterLeft) break;
-      tw.currentNode = highwaterLeft;
-      var limit = null;
-      if (highwaterRight) limit = highwaterRight.nextSibling;
-      n = highwaterLeft;
-      while (n && n != limit)
-      {
-        text = n.textContent;
-        if (/\S/.test(text))
-        {
-          //non-whitespace
-          parentName = n.parentNode.localName;
-          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName)) break;
-          else {
-            textNode = frag.ownerDocument.createElement("mtext");
-            textNode = n.parentNode.insertBefore(textNode, n);
-            textNode.appendChild(n.cloneNode(true));
-            savedNode = n;
-            n = tw.nextNode();
-            savedNode.parentNode.removeChild(savedNode);
-          }
-        }
-        else n = tw.nextNode();
-      }
-    }
-  }
-}
-
 function mathNodeSplittable(node)
 {
 	parent = node.parentNode;
@@ -3361,7 +3235,7 @@ inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   ap
 	{
 		parent = node;
 	}
-	while ((parent.nodeType == Node.TEXT_NODE) || mathNodeSplittable(parent))
+	while ((parent.nodeType == Node.TEXT_NODE) || mathNodeSplittable(parent) && mathNodeSplittable(node))
 	{
 		editor.splitNode(parent, offset, newNode);
 		newParent = parent.parentNode;
@@ -3402,60 +3276,37 @@ function mathNodeToText(editor, node)
 	}
 }
 
-// returns start (-1), mid (0), or end (1)
-// p is a parameter object with p.node and p.offset
-function positionInMath(p)
+function nodeToMath(editor, node, startOffset, endOffset)
 {
-  var atEnd=(p.offset > 0);
-  var atStart=!atEnd;
-  var parent;
-  var tempNode;
-  var children;
-  if (p.node.nodeType == p.node.TEXT_NODE)
-  {
-    if (atEnd && p.offset < p.node.length) return 0;
-    parent = p.node.parentNode;
-    p.offset = 0;
-    tempNode = parent.firstChild;
-    while (tempNode && tempNode != p.node)
-    {
-      p.offset++;
-      tempNode = tempNode.nextSibling;
-    }
-    p.node = parent;
-    if (atEnd) p.offset++;
-  }
-  while (msiNavigationUtils.isMathNode(p.node))
-  {
-    children = p.node.childNodes;
-    if ((children.length) > p.offset)
-    {
-      for (var i = p.offset; i<children.length; i++)
-      {
-        if (!isAllWS(children[i])) return 0;
-      } 
-    }
-    if (atStart && p.offset > 0) return 0;
-    parent = p.node.parentNode;
-    p.offset = 0;
-    tempNode = parent.firstChild;
-    while (tempNode && tempNode != p.node)
-    {
-      p.offset++;
-      tempNode = tempNode.nextSibling;
-    }
-    p.node = parent;
-    if (atEnd) p.offset++;
-  }
-  if (atEnd) return 1;
-  return -1;
+	var newNode = {};
+	if (node.nodeType == Node.TEXT_NODE)
+	{
+		if (startOffset >0)
+		{
+		  editor.splitNode(node, startOffset, newNode);
+		}
+		if (endOffset >= 0)
+		{
+			editor.splitNode(node, endOffset - startOffset, newNode);
+			node = newNode.value;
+		}
+	}
+	var parent = node.parentNode;
+	var offset = offsetOfChild(parent, node);
+	var text = node.textContent;
+	for (var i = 0; i < text.length; i++)
+	{
+		editor.selection.collapse(parent, offset+i);
+    insertsymbol(text[i]);
+	}
+	editor.deleteNode(node);
 }
+
 
 function isAllWS(node)
 {
   return !(/[^\t\n\r ]/.test(node.data));
 }
-
 
 function mathToText(editor)
 {
@@ -3470,45 +3321,9 @@ function mathToText(editor)
   var pos;
   var node;
   var offset;
-//  if (editor.selection.isCollapsed)
-//  {
-//    node = editor.selection.anchorNode;
-//    offset = editor.selection.anchorOffset;
-//    var p = { node: node, offset: offset};
-//    pos = positionInMath(p);
-//    if (pos != 0)
-//    {
-//      if (pos == 1) 
-//      {
-//        msiGoDoCommand('cmd_charNext');
-//        if (msiNavigationUtils.isMathNode(editor.selection.anchorNode))
-//        {
-//          editor.insertText(" ");
-//          msiGoDoCommand('cmd_charNext'); 
-//        }
-//        msiGoDoCommand('cmd_charPrevious');
-//      }
-//      else
-//      {
-//        msiGoDoCommand('cmd_charPrevious');
-//        msiGoDoCommand('cmd_charNext');
-//      }
-//      return;
-//    }
-//  }
   editor.beginTransaction();
   try
   {
-//    if (!gProcessor) gProcessor = new XSLTProcessor();
-//    else gProcessor.reset();
-//    var req = new XMLHttpRequest();
-//
-//    req.open("GET", "chrome://prince/content/math2text.xsl", false); 
-//    req.send(null);
-//    // print the name of the root element or error message
-//    var xsldom = req.responseXML;
-//    gProcessor.importStylesheet(xsldom);
-  
 		if (editor.selection.isCollapsed)
 		{
 			var node = editor.selection.anchorNode;
@@ -3521,7 +3336,6 @@ function mathToText(editor)
 	    {
 	      range = editor.selection.getRangeAt(i);
 	      nodeArray = editor.nodesInRange(range);
-	      dump(nodeArray.length+" nodes\n");
 	      enumerator = nodeArray.enumerate();
 	      while (enumerator.hasMoreElements())
 	      {
@@ -3539,6 +3353,33 @@ function mathToText(editor)
   editor.endTransaction();
 }
 
+function textToMath(editor)
+{
+	var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset;
+	if (editor.selection.isCollapsed)
+	{
+		insertinlinemath();
+	}
+	else
+	{
+    for (i=0; i< editor.selection.rangeCount; i++)
+    {
+      range = editor.selection.getRangeAt(i);
+      startNode = range.startContainer;
+      startOffset = range.startOffset;
+			endNode = range.endContainer;
+			endOffset = range.endOffset;
+      nodeArray = editor.nodesInRange(range);
+      dump(nodeArray.length+" nodes\n");
+      enumerator = nodeArray.enumerate();
+      while (enumerator.hasMoreElements())
+      {
+        node = enumerator.getNext();
+        nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1);
+      }
+    }
+	}
+}
 
 function toggleMathText(editor)
 {
@@ -3554,7 +3395,7 @@ function toggleMathText(editor)
   else
   {
     try {
-      textToMath("foo");
+      textToMath(editor);
     }
     catch(e) {
       dump("Exception in toggleMathText: "+e.message+"\n");
