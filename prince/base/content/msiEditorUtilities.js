@@ -9237,7 +9237,10 @@ var msiNavigationUtils =
       case 'mover':
       case 'munderover':
       case 'mroot':
-//      case 'msqrt':   shouldn't include this one!
+		  case 'msqrt':  
+		  case 'mtr':
+			case 'mtd':
+		  case 'mtable': 
         return true;
       break;
       case 'mrow':
@@ -9247,9 +9250,14 @@ var msiNavigationUtils =
         var singleChild = this.getSingleWrappedChild(node);
         if (this.isMathTemplate(singleChild))
           return true;
+ 				break;
+			case "math":
+				if (node.hasAttribute("display") && node.getAttribute("display")==="block")
+				{
+					return true;
+				}
       break;
     }
-
     return false;
   },
 
