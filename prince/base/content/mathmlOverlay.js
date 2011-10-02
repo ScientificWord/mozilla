@@ -3235,13 +3235,17 @@ inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   ap
 	{
 		parent = node;
 	}
-	while ((parent.nodeType == Node.TEXT_NODE) || mathNodeSplittable(parent) && mathNodeSplittable(node))
+	while (((parent.nodeType == Node.TEXT_NODE) || mathNodeSplittable(parent)) && ((node.nodeType == Node.TEXT_NODE) || mathNodeSplittable(node)))
 	{
 		editor.splitNode(parent, offset, newNode);
 		newParent = parent.parentNode;
+		node = parent;
 		offset = offsetOfChild(newParent, parent);
 		if (!(parent.firstChild) && parent.textContent.length == 0)
+		{
 		  editor.deleteNode(parent);
+		  node = newNode.value;
+		}
 		if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
 		{
 		  editor.deleteNode(newNode.value);		
