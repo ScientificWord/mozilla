@@ -309,7 +309,7 @@ function msiEditorArrayInitializer()
 }
 
 
-function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML)
+function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML, topwindow)
 {
 //  // See if argument was passed.
 //  if ( window.arguments && window.arguments[0] )
@@ -357,7 +357,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
       startText = initialText;
     editorElement.initialEditorContents = startText;
   }
-  EditorStartupForEditorElement(editorElement);
+  EditorStartupForEditorElement(editorElement, topwindow);
   msiDumpWithID("In msiInitializeEditorForElement for element [@], back from EditorStartupForEditorElement call.\n", editorElement);
 
   // Initialize our source text <editor>
@@ -1090,12 +1090,13 @@ function isShell (filename)
   return foundit;
 }
 
-function EditorStartupForEditorElement(editorElement)
+function EditorStartupForEditorElement(editorElement, topwindow)
 {
 
 //  msiDumpWithID("Entering EditorStartupForEditorElement for element [@].\n", editorElement);
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
-  var is_topLevel = msiIsTopLevelEditor(editorElement);
+  var is_topLevel = topwindow;
+	if (topwindow == null) is_topLevel = msiIsTopLevelEditor(editorElement);
   var prefs = GetPrefs();
   var filename = "untitled";
 
