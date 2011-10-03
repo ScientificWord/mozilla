@@ -9237,7 +9237,7 @@ var msiNavigationUtils =
       case 'mover':
       case 'munderover':
       case 'mroot':
-		  case 'msqrt':  
+//		  case 'msqrt':  
 		  case 'mtr':
 			case 'mtd':
 		  case 'mtable': 
@@ -9261,6 +9261,64 @@ var msiNavigationUtils =
     return false;
   },
 
+// the next two functions give more precise information than isMathTemplate
+  isUnsplittableMath : function(node)
+	{
+	  if (node == null)
+      return false;
+
+    switch(node.localName)
+		{
+			case 'mfrac':
+			case 'msub':
+			case 'msubsup':
+			case 'msup':
+			case 'munder':
+			case 'mover':
+			case 'munderover':
+			case 'mroot':
+			case 'msqrt':  
+			case 'mtr':
+			case 'mtd':
+			case 'mtable': 
+			  return true;
+			break;
+			case 'mrow':
+			case 'mstyle':
+			  if (this.isFence(node))
+			    return true;
+			break;
+			case "math":
+			if (node.hasAttribute("display") && node.getAttribute("display")==="block")
+			{
+				return true;
+			}
+			break;	
+		}
+		return false;
+	},
+	
+	hasFixedNumberOfChildren : function(node)
+	{
+	  if (node == null)
+      return false;
+    switch(node.localName)
+		{
+			case 'mfrac':
+			case 'msub':
+			case 'msubsup':
+			case 'msup':
+			case 'munder':
+			case 'mover':
+			case 'munderover':
+			case 'mroot':
+			case 'mtr':
+			case 'mtable': 
+			  return true;
+		}
+	  return false;	
+	},
+	
   isUnit : function(node)
   {
     if ( node != null && node.hasAttribute("msiunit") && (node.getAttribute("msiunit") == "true") )
