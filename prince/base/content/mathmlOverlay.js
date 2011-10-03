@@ -3235,7 +3235,7 @@ inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   ap
 	{
 		parent = node;
 	}
-	while (((parent.nodeType == Node.TEXT_NODE) || mathNodeSplittable(parent)) && ((node.nodeType == Node.TEXT_NODE) || mathNodeSplittable(node)))
+	while (!(msiNavigationUtils.isUnsplittableMath(parent))&& !(msiNavigationUtils.hasFixedNumberOfChildren(parent.parentNode)))
 	{
 		editor.splitNode(parent, offset, newNode);
 		newParent = parent.parentNode;
@@ -3277,6 +3277,7 @@ function mathNodeToText(editor, node)
   if (node)
 	{
 		splitMathDeep(editor, node, -1, node.textContent);
+		coalescemath();
 	}
 }
 
@@ -3304,6 +3305,7 @@ function nodeToMath(editor, node, startOffset, endOffset)
     insertsymbol(text[i]);
 	}
 	editor.deleteNode(node);
+	coalescemath();
 }
 
 
@@ -3354,6 +3356,7 @@ function mathToText(editor)
   }
 //  if (gProcessor)
 //    gProcessor.reset();
+  coalescemath();
   editor.endTransaction();
 }
 
