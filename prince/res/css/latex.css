@@ -771,7 +771,7 @@ button[class="eqnnum"]{
   top: 0px;
   font-style: normal; 
   color: red;
-  -moz-user-select: -moz-none;
+  -moz-user-select: -moz-none ! important;
 }
 
 button[class="subeqnnum"]{
@@ -781,7 +781,7 @@ button[class="subeqnnum"]{
   right: 20px;
   font-style: normal; 
   color: blue;
-  -moz-user-select: -moz-none;
+  -moz-user-select: -moz-none ! important;
 }
 
 button[class="eqnmarker"]{
@@ -789,7 +789,7 @@ button[class="eqnmarker"]{
   right: 0px;
   font-style: normal; 
   color: red;
-  -moz-user-select: -moz-none;
+  -moz-user-select: -moz-none ! important;
 }
 
 mtd button[class="eqnnum"], mtd button[class="subeqnnum"], mtd button[class="eqnmarker"] {
@@ -799,22 +799,22 @@ mtd button[class="eqnnum"], mtd button[class="subeqnnum"], mtd button[class="eqn
 
 button[class="eqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber);
-  -moz-user-modify: read-only;
+  -moz-user-modify: read-only ! important;
 }
 
 button[class="eqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
-  -moz-user-modify: read-only;
+  -moz-user-modify: read-only ! important;
 }
 
 button[class="subeqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
-  -moz-user-modify: read-only;
+  -moz-user-modify: read-only ! important;
 }
 
 button[class="subeqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
-  -moz-user-modify: read-only;
+  -moz-user-modify: read-only ! important;
 }
 
 title {
