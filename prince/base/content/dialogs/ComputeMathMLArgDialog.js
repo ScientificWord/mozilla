@@ -15,8 +15,6 @@
 var data;
   
 // This part pastes data into the editor after the editor has started. 
-//const math = '<math>';
-//const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 function createContentString()
 {
