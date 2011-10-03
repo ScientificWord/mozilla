@@ -310,9 +310,9 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement)
     } 
   } 
 }
+ 
 
-
-const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+// const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 var gComputeStringBundle;
 

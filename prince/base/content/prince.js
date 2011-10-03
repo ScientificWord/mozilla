@@ -4,6 +4,8 @@ const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
 const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
+const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
@@ -44,7 +46,9 @@ function GetCurrentEditor() {
 
     editor instanceof Components.interfaces.nsIPlaintextEditor;
     editor instanceof Components.interfaces.nsIHTMLEditor;
-  } catch (e) { dump (e)+"\n"; }
+  } catch (e) { 
+		throw ("Failure in GetCurrentEditor: \n" + e.message); 
+	}
   return editor;
 }
 
@@ -118,7 +122,6 @@ function doQuit() {
 //  return compsample;
 //}
 
-//const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 // jcs // return node on RHS of =, if structure is that simple
 // jcs function GetRHS(math)
@@ -150,42 +153,17 @@ function runFixup(math)
   try {
     var out = GetCurrentEngine().perform(math,GetCurrentEngine().Fixup);
     return out;
-  } catch(e) {
-    dump("runFixup(): "+e+"\n");
-    return math;
-} }
+  } 
+	catch(e) {
+		throw("Failure in RunFixup():\n"+ e.message);
+  }
+  return math;
+}
 
 function GetFixedMath(math)
 {
   return runFixup(GetMathAsString(math));
 }
-
-//function doEvalComputation(math,op,joiner,remark) {
-//  var mathstr = GetFixedMath(GetRHS(math));
-//  try {
-//    var out = GetCurrentEngine().perform(mathstr,op);
-//    appendResult(out,joiner,math);
-//  } catch (e) {
-//    dump("doEvalComputation(): " + e+"\n");
-//} }
-//
-// jcs function doComputeCommand(cmd) {
-// jcs   var selection = GetCurrentEditor().selection;
-// jcs   if (selection) {
-// jcs     var element = findmathparent(selection.focusNode);
-// jcs     if (!element) {
-// jcs 	    dump("not in math!\n");
-// jcs       return;
-// jcs     }
-// jcs     var eng = GetCurrentEngine();
-// jcs     switch (cmd) {
-// jcs     case "cmd_compute_Evaluate":
-// jcs       doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
-// jcs       break;
-// jcs     case "cmd_compute_EvaluateNumeric":
-// jcs       doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
-// jcs       break;
-// jcs } } }
 
 // form a single run of math and put caret on end
 function coalescemath() {
