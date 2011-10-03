@@ -3235,7 +3235,8 @@ inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   ap
 	{
 		parent = node;
 	}
-	while (!(msiNavigationUtils.isUnsplittableMath(parent))&& !(msiNavigationUtils.hasFixedNumberOfChildren(parent.parentNode)))
+	while (!(msiNavigationUtils.isUnsplittableMath(parent))&& !(msiNavigationUtils.hasFixedNumberOfChildren(parent.parentNode))
+	 && (msiNavigationUtils.isMathNode(parent) || parent.nodeType === Node.TEXT_NODE))
 	{
 		editor.splitNode(parent, offset, newNode);
 		newParent = parent.parentNode;
