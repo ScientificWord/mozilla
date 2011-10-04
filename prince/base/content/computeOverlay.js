@@ -3055,12 +3055,20 @@ function doComputeMapMuPADName(editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
 
-  msiComputeLogger.Sent("Map MuPAD Name","");
+  msiComputeLogger.Sent("Define MuPAD Name","");
 
   var o = new Object();
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
+  
+  if (data.Cancel)
+    return;
+
+  var swpname = data.swpname;
+  var mupname = data.mupname;
+  var infile = data.infile;
+  
    
   
 }
