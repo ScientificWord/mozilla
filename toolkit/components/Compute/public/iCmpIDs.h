@@ -144,11 +144,12 @@
 #define CCID_Define								  150
 #define CCID_Undefine							  151
 #define CCID_Cleanup							  152
-#define CCID_Fixup  							  153
-#define CCID_Interpret							  154
-#define CCID_PlotFuncCmd                          155
-#define CCID_PlotFuncQuery                        156
-#define CCID_Last    							  157
+#define CCID_DefineMupadName        153
+#define CCID_Fixup  							  154
+#define CCID_Interpret							155
+#define CCID_PlotFuncCmd            156
+#define CCID_PlotFuncQuery          157
+#define CCID_Last    							  158
 
 // Result codes carried by a "MathResult" object.
 // Make into a type at some point?
