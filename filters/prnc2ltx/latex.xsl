@@ -628,6 +628,20 @@ should not be done under some conditions -->
 \end{center}
 </xsl:template>
 
+<xsl:template match="html:hebrew">
+  
+\begin{hebrew}
+<xsl:apply-templates/>
+\end{hebrew}
+</xsl:template>
+
+<xsl:template match="html:arabic">
+  
+\begin{arabic}
+<xsl:apply-templates/>
+\end{arabic}
+</xsl:template>
+
 <xsl:template match="html:centered">
   
 \begin{center}
@@ -667,8 +681,8 @@ should not be done under some conditions -->
   />}</xsl:template>
 <xsl:template match="html:lower">\lowercase{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates
-  /> \endR} </xsl:template>
+<xsl:template match="html:texthebrew">\texthebrew{<xsl:apply-templates
+  />} </xsl:template>
 <xsl:template match="html:tiny">{\tiny <xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:scriptsize">{\scriptsize <xsl:apply-templates
