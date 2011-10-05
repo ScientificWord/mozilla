@@ -31,7 +31,12 @@ function OK(){
   data.swpname = runFixup(GetMathAsString(mathnodes[0]));
 
   var mupname = document.getElementById("mupadname.input");
-  data.mupadname = mupname.value; 
+  data.mupadname = mupname.value;
+
+  var infile = document.getElementById("infile.input");
+  data.infile = mupname.infile;
+    
+   
   return true;
 }
 
