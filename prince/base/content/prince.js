@@ -645,7 +645,7 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   passData.indexexe = indexexe;
   passData.bibtexexe = bibtexexe;
   passData.outputDir = outputDir;
-  passData.args = ["-output-directory", outputDir, infileLeaf, compiledFileLeaf];
+  passData.args = [outputDir, infileLeaf, compiledFileLeaf, "x"];
   passData.passCount = compileInfo.passCount;
   passData.runMakeIndex = compileInfo.runMakeIndex;
   passData.runBibTeX = compileInfo.runBibTeX;
