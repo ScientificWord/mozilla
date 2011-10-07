@@ -1,0 +1,3 @@
+content pdfplugin chrome/content/
+skin pdfplugin classic/1.0 chrome/skin/
+overlay chrome://browser/content/browser.xul chrome://pdfplugin/content/pdfplugin.xul

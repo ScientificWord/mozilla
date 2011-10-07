@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>pdfplugin</string>
+	<key>CFBundleIdentifier</key>
+	<string>edu.mit.sgross.fx-quartz-pdf</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>pdfplugin</string>
+	<key>CFBundlePackageType</key>
+	<string>NSPL</string>
+	<key>CFBundleVersion</key>
+	<string>1.1</string>
+	<key>WebPluginDescription</key>
+	<string>Displays PDF documents in the browser.</string>
+	<key>WebPluginMIMETypes</key>
+	<dict>
+		<key>application/pdf</key>
+		<dict>
+			<key>WebPluginExtensions</key>
+			<array>
+				<string>pdf</string>
+			</array>
+			<key>WebPluginTypeDescription</key>
+			<string>PDF document</string>
+		</dict>
+		<key>application/postscript</key>
+		<dict>
+			<key>WebPluginExtensions</key>
+			<array>
+				<string>ps</string>
+			</array>
+			<key>WebPluginTypeDescription</key>
+			<string>PostScript document</string>
+		</dict>
+	</dict>
+	<key>WebPluginName</key>
+	<string>Firefox PDF Plugin for Mac OS X</string>
+</dict>
+</plist>
