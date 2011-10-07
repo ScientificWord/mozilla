@@ -1655,6 +1655,16 @@ nsEditor::SplitNode(nsIDOMNode * aNode,
                     nsIDOMNode **aNewLeftNode)
 {
   PRInt32 i;
+// Temporary checking
+	nsAutoString name;
+	nsresult res;
+  res = aNode->GetNodeName(name);
+  if (res && name.EqualsLiteral("body"))
+	{
+		// put breakpoint here:
+		i = 3;
+	}
+//
   nsAutoRules beginRulesSniffing(this, kOpSplitNode, nsIEditor::eNext);
 
   for (i = 0; i < mActionListeners.Count(); i++)
