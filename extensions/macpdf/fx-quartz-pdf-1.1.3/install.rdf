@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <!--
+     Copyright (c) 2009 Sam Gross. Licensed under the MIT License; see 
+     http://www.opensource.org/licenses/mit-license.php for details.
+    
+     Full source code at http://code.google.com/p/firefox-mac-pdf/
+    -->
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>colesbury@gmail.com</em:id>
+    <em:name>Firefox PDF Plugin for Mac OS X</em:name>
+    <em:version>1.1.3</em:version>
+    <em:type>2</em:type>
+
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>3.5</em:minVersion>
+        <em:maxVersion>3.6.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <em:targetApplication>
+      <Description>
+        <em:id>ScientificWorkPlace@mackichan.com</em:id>
+        <em:minVersion>SWP6.0.0</em:minVersion>
+        <em:maxVersion>SWP6.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <!-- Front End MetaData -->
+    <em:description>Displays PDF documents in the browser.</em:description>
+    <em:creator>Sam Gross</em:creator>
+    <em:homepageURL>http://code.google.com/p/firefox-mac-pdf</em:homepageURL>
+    <em:iconURL>chrome://pdfplugin/skin/icon.png</em:iconURL>
+
+    <em:targetPlatform>Darwin_x86-gcc3</em:targetPlatform>
+    <em:targetPlatform>Darwin_ppc-gcc3</em:targetPlatform>
+      </Description>
+</RDF>

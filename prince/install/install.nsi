@@ -34,9 +34,9 @@
 !define company "MacKichan Software"
  
 !define prodname "Scientific WorkPlace 6.0"
-!define exec "swppro.exe"
+!define exec "swp.exe"
 !define filetype "SciWordDocument"
-!define INSTDIR "$PROGRAMFILES\SwpPro60" 
+!define INSTDIR "$PROGRAMFILES\Swp60" 
 ; optional stuff
  
 ; text file to open in notepad after installation
@@ -87,7 +87,7 @@ SetDatablockOptimize on
 CRCCheck on
 SilentInstall normal
  
-InstallDir "$PROGRAMFILES\SwpPro60"
+InstallDir "$PROGRAMFILES\Swp60"
 InstallDirRegKey HKLM "${regkey}" ""
  
 !ifdef licensefile
