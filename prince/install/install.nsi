@@ -25,7 +25,7 @@
 ; !define setup "SWPSetup.exe"
 
 !addplugindir "C:\mozilla-build\nsis-2.33u\Plugins"
-!define princedir "${PRINCEBASE}\${BUILD}\SWP"
+!define princedir "${PRINCEBASE}\${BUILD}\SWP6"
  
 ; change this to wherever the files to be packaged reside
 !define srcdir ${princedir}
@@ -34,7 +34,7 @@
 !define company "MacKichan Software"
  
 !define prodname "Scientific WorkPlace 6.0"
-!define exec "swp.exe"
+!define exec "swp6.exe"
 !define filetype "SciWordDocument"
 !define INSTDIR "$PROGRAMFILES\Swp60" 
 ; optional stuff
@@ -63,7 +63,7 @@
 !define uninstkey "Software\Microsoft\Windows\CurrentVersion\Uninstall\${prodname}"
  
 !define startmenu "$SMPROGRAMS\${prodname}"
-!define uninstaller "SWPUninstall.exe"
+!define uninstaller "SWP6Uninstall.exe"
  
 ;--------------------------------
 !include "MUI2.nsh"
