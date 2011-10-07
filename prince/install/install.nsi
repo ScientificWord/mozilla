@@ -25,7 +25,7 @@
 ; !define setup "SWPSetup.exe"
 
 !addplugindir "C:\mozilla-build\nsis-2.33u\Plugins"
-!define princedir "${PRINCEBASE}\${BUILD}\SWPPro"
+!define princedir "${PRINCEBASE}\${BUILD}\SWP"
  
 ; change this to wherever the files to be packaged reside
 !define srcdir ${princedir}
