@@ -25,7 +25,7 @@
 ; !define setup "SWPSetup.exe"
 
 !addplugindir "C:\mozilla-build\nsis-2.33u\Plugins"
-!define princedir "${PRINCEBASE}\${BUILD}\SWP6"
+!define princedir "${PRINCEBASE}\${BUILD}\SWP"
  
 ; change this to wherever the files to be packaged reside
 !define srcdir ${princedir}
@@ -34,9 +34,9 @@
 !define company "MacKichan Software"
  
 !define prodname "Scientific WorkPlace 6.0"
-!define exec "swp6.exe"
+!define exec "SWP.exe"
 !define filetype "SciWordDocument"
-!define INSTDIR "$PROGRAMFILES\Swp60" 
+!define INSTDIR "$PROGRAMFILES\SWP0" 
 ; optional stuff
  
 ; text file to open in notepad after installation
@@ -49,7 +49,7 @@
 !define icon "prince.ico"
  
 ; installer background screen
-!define screenimage "${srctree}\prince\base\content\swp6.png"
+!define screenimage "${srctree}\prince\base\content\SWP.png"
  
 ; file containing list of file-installation commands
 !define files "${srctree}\prince\install\files.nsi"
@@ -63,7 +63,7 @@
 !define uninstkey "Software\Microsoft\Windows\CurrentVersion\Uninstall\${prodname}"
  
 !define startmenu "$SMPROGRAMS\${prodname}"
-!define uninstaller "SWP6Uninstall.exe"
+!define uninstaller "SWPUninstall.exe"
  
 ;--------------------------------
 !include "MUI2.nsh"
@@ -87,7 +87,7 @@ SetDatablockOptimize on
 CRCCheck on
 SilentInstall normal
  
-InstallDir "$PROGRAMFILES\Swp60"
+InstallDir "$PROGRAMFILES\SWP0"
 InstallDirRegKey HKLM "${regkey}" ""
  
 !ifdef licensefile
