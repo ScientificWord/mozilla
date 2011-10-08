@@ -14,11 +14,31 @@ var position;
 
 var metrics;
 
+function setHasNaturalSize(istrue)
+// images frequently have a natural size
+{
+  var bcaster = document.getElementById("hasNaturalSize"); 
+	if (istrue) 
+	{
+		bcaster.removeAttribute("hidden");
+	}
+	else
+	{
+		bcaster.setAttribute("hidden", "true");
+	}
+}
+
+marginAtt = "margin";
+paddingAtt = "padding";
+borderAtt = "border";
+cropAtt = "crop";
+widthAtt = "width";
+heightAtt = "height";
+
 function initFrameTab(dg, element, newElement)
 {
   Dg = dg;
   frameUnitHandler = new UnitHandler();
-  frameUnitHandler.initCurrentUnit("pt");
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
   gFrameTab={};
   scale = 0.25;
@@ -30,13 +50,25 @@ function initFrameTab(dg, element, newElement)
   //var unit;
 
   metrics = { // the metrics of the frame as currently represented by the dialog
-    margin:   { top: 0, right: 0, bottom: 0, left: 0 },
-    padding:  { top: 0, right: 0, bottom: 0, left: 0 },
-    border:   { top: 0, right: 0, bottom: 0, left: 0 },
-    crop:     { top: 0, right: 0, bottom: 0, left: 0 },
+    margin:   { top: 		document.getElementById("marginTopInput").value, 
+								right: 	document.getElementById("marginRightInput").value, 
+								bottom: document.getElementById("marginBottomInput").value, 
+								left: 	document.getElementById("marginLeftInput").value },
+    padding:  { top: 		document.getElementById("paddingTopInput").value, 
+								right: 	document.getElementById("paddingRightInput").value, 
+								bottom: document.getElementById("paddingBottomInput").value, 
+								left: 	document.getElementById("paddingLeftInput").value },
+    border:   { top: 		document.getElementById("borderTopInput").value, 
+								right: 	document.getElementById("borderRightInput").value, 
+								bottom: document.getElementById("borderBottomInput").value, 
+								left: 	document.getElementById("borderLeftInput").value },
+    crop:     { top: 		document.getElementById("cropTopInput").value, 
+								right: 	document.getElementById("cropRightInput").value, 
+								bottom: document.getElementById("cropBottomInput").value, 
+								left: 	document.getElementById("cropLeftInput").value },
     innermargin: 0,  // temporary, assigned to left or right margin, depending on placement
     outermargin: 0,  // negative for an overhang
-    unit: "pt",
+    unit: frameUnitHandler.currentUnit,
     setUnit: function(newUnit) {
       if (frameUnitHandler.currentUnit)
       {
@@ -70,21 +102,21 @@ function initFrameTab(dg, element, newElement)
   dg.custom               = document.getElementById( "custom" );
   dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
   dg.marginInput          = {left:   document.getElementById("marginLeftInput"),
-                                    right: document.getElementById("marginRightInput"),
-                                    top:   document.getElementById("marginTopInput"),
-                                    bottom:document.getElementById("marginBottomInput")};
-  dg.borderInput          = {left:   document.getElementById("borderLeftInput"),
-                                    right: document.getElementById("borderRightInput"),
-                                    top:   document.getElementById("borderTopInput"),
-                                    bottom:document.getElementById("borderBottomInput")};
-  dg.paddingInput         = {left:   document.getElementById("paddingLeftInput"),
-                                    right: document.getElementById("paddingRightInput"),
-                                    top:   document.getElementById("paddingTopInput"),
-                                    bottom:document.getElementById("paddingBottomInput")};
-  dg.cropInput            = {left:   document.getElementById("cropLeftInput"),
-                                    right: document.getElementById("cropRightInput"),
-                                    top:   document.getElementById("cropTopInput"),
-                                    bottom:document.getElementById("cropBottomInput")};
+                             right: document.getElementById("marginRightInput"),
+                             top:   document.getElementById("marginTopInput"),
+                             bottom:document.getElementById("marginBottomInput")};
+  dg.borderInput          = {left:  document.getElementById("borderLeftInput"),
+                             right: document.getElementById("borderRightInput"),
+                             top:   document.getElementById("borderTopInput"),
+                             bottom:document.getElementById("borderBottomInput")};
+  dg.paddingInput         = {left:  document.getElementById("paddingLeftInput"),
+                             right: document.getElementById("paddingRightInput"),
+                             top:   document.getElementById("paddingTopInput"),
+                             bottom:document.getElementById("paddingBottomInput")};
+  dg.cropInput            = {left:  document.getElementById("cropLeftInput"),
+                             right: document.getElementById("cropRightInput"),
+                             top:   document.getElementById("cropTopInput"),
+                             bottom:document.getElementById("cropBottomInput")};
   dg.colorWell            = document.getElementById("colorWell");
   dg.placementRadioGroup  = document.getElementById("placementRadioGroup");
   dg.placeForceHereCheck  = document.getElementById("placeForceHereCheck");
@@ -105,9 +137,9 @@ function initFrameTab(dg, element, newElement)
   }
   fieldList.push(dg.heightInput);
   fieldList.push(dg.widthInput);
-  frameUnitHandler.setEditFieldList(fieldList);
-//  var unit;
+  frameUnitHandler.setEditFieldList(fieldList);//  var unit;
   initUnitList(dg.unitList);
+  frameUnitHandler.initCurrentUnit(document.getElementById("unitList").getAttribute("value"));
 // The defaults for the document are set by the XUL document, modified by persist attributes. If there is
 // no pre-existing frame object, the dg is set to go.
   if (!newElement)
@@ -122,7 +154,7 @@ function initFrameTab(dg, element, newElement)
         break;
       }
     var width = 0;
-    if (element.hasAttribute("width")) width = element.getAttribute("width");
+    if (element.hasAttribute(widthAtt)) width = element.getAttribute(widthAtt);
     if (Number(width) > 0)
     {
       dg.widthInput.value = width;
@@ -130,7 +162,7 @@ function initFrameTab(dg, element, newElement)
     }
     else dg.autoWidthCheck.checked = true;
     var height = 0;
-    if (element.hasAttribute("height")) height = element.getAttribute("height");
+    if (element.hasAttribute(heightAtt)) height = element.getAttribute(heightAtt);
     if (height > 0)
     {
       dg.heightInput.value = height;
@@ -138,22 +170,22 @@ function initFrameTab(dg, element, newElement)
     }
     else dg.autoHeightCheck.checked = true;
 
-    if (element.hasAttribute("margin"))
-      { values = parseLengths(element.getAttribute("margin"));}
+    if (element.hasAttribute(marginAtt))
+      { values = parseLengths(element.getAttribute(marginAtt));}
     for (i = 0; i<4; i++)
       { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
     values = [0,0,0,0];
-    if (element.hasAttribute("border"))
-      { values = parseLengths(element.getAttribute("border"));}
+    if (element.hasAttribute(borderAtt))
+      { values = parseLengths(element.getAttribute(borderAtt));}
     for (i = 0; i<4; i++)
       { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
     values = [0,0,0,0];
-    if (element.hasAttribute("padding"))
-      { values = parseLengths(element.getAttribute("padding"));}
+    if (element.hasAttribute(paddingAtt))
+      { values = parseLengths(element.getAttribute(paddingAtt));}
     for (i = 0; i<4; i++)
       { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
-    if (element.hasAttribute("crop"))
-      { values = parseLengths(element.getAttribute("crop"));}
+    if (element.hasAttribute(cropAtt))
+      { values = parseLengths(element.getAttribute(cropAtt));}
     for (i = 0; i<4; i++)
       { dg.cropInput[sides[i].toLowerCase()].value = values[i];}
     var placeLocation = element.getAttribute("placeLocation");
@@ -189,9 +221,6 @@ function initFrameTab(dg, element, newElement)
 
     // TODO: color
   }
-// Now initialize the UI, including the diagram
-// metrics.unit = dg.unitList.selectedItem.value;
-  frameUnitHandler.initCurrentUnit(metrics.unit);
   var placement = 0;
   var placementLetter = document.getElementById("herePlacementRadioGroup").value;
   if (/l|i/i.test(placementLetter)) placement=1;
@@ -200,9 +229,9 @@ function initFrameTab(dg, element, newElement)
   setAlignment(placement);
   enableHere(dg.herePlacementRadioGroup);
   enableFloating();
-  updateDiagram("margin");
-  updateDiagram("border");
-  updateDiagram("padding");
+  updateDiagram(marginAtt);
+  updateDiagram(borderAtt);
+  updateDiagram(paddingAtt);
   return dg;
   
 }
@@ -310,27 +339,18 @@ function getCompositeMeasurement(attribute, unit, showUnit)
   var values = [];
   dump("attribute = "+attribute+", unit = "+unit+"\n");
   for (i = 0; i<4; i++)
-    { dump(i + "\n");
-      values.push( Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit)));
-    }
+  { dump(i + "\n");
+    values.push( Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit)));
+  }
   if (values[1] == values[3])
   {
-    for (i = 0; i<4; i++)
-      { values.push( Math.max(0,toPixels(document.getElementById(attribute + sides[i] + "Input").value )));}
-    if (values[1] == values[3])
-    {
-      values.splice(2,1);
-      if (values[0] == values[1]) {values.splice(1,1);}
-    }
-  }
-//  if (unit == "px")
-//  {
-//    for (i=0; i<values.length; i++)
-//    {
-//      dump(i + "\n");
-//      values[i] = Math.round(values[i]);
-//    }
-//  }
+		values.splice(3,1);
+		if (values[0] == values[2])
+		{
+			values.splice(2,1);
+			if (values[0] == values[1]) values.splice(1,1);			
+		}
+	}
   var val;
   if (showUnit) {val = values.join(unit+" ")+unit;}
   else { val = values.join(" ");}
@@ -363,7 +383,7 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
   var values = [];
   if (gFrameModeImage)
   {
-    if (attribute=="margin")
+    if (attribute==marginAtt)
     {  // left and right are re-purposed as inner and overhang
       metrics.innermargin = Math.max(0,toPixels(document.getElementById("marginLeftInput").value ));
       metrics.outermargin = -Math.max(0,toPixels(document.getElementById("marginRightInput").value ));
@@ -387,7 +407,7 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
       metrics.margin.top = metrics.margin.bottom = Math.max(0,toPixels(document.getElementById("marginTopInput").value ));
     }
     var x = metrics[attribute];
-    if (attribute=="border" || attribute=="padding")
+    if (attribute==borderAtt || attribute==paddingAtt)
     {
       x.left = x.top = x.bottom = x.right =  Math.max(0,toPixels(document.getElementById(attribute + "LeftInput").value ));
     }
