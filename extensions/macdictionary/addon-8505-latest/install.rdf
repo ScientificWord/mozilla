@@ -23,8 +23,8 @@
     <em:targetApplication>
       <Description>
         <em:id>ScientificWorkPlace@mackichan.com</em:id>
-        <em:minVersion>SWP6.0.0</em:minVersion>
-        <em:maxVersion>SWP6.*</em:maxVersion>
+        <em:minVersion>SWP.6.0.0</em:minVersion>
+        <em:maxVersion>SWP.6.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
