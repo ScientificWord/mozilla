@@ -4,6 +4,7 @@ var gd;
 var editor;
 var msiframe;
 var isNewNode;
+var gFrameModeImage = false;
 
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
@@ -22,25 +23,38 @@ function startUp()
   }
   msiframe = getSelectionParentByTag(editor, "msiframe");
   isNewNode = !(msiframe);
-  if (isNewNode)
-  {
-    msiframe = editor.createElementWithDefaults("msiframe");
-    var para = editor.createNode("para", msiframe, 0);
-    var br = editor.createNode("br", para, 0);
-  }   
+//  if (isNewNode)
+//  {
+//    msiframe = editor.createElementWithDefaults("msiframe");
+//    var para = editor.createNode("para", msiframe, 0);
+//    var br = editor.createNode("br", para, 0);
+//  }   
   gd = new Object();
+  setHasNaturalSize(false);
   gd = initFrameTab(gd, msiframe, isNewNode);
-  initFrameSizePanel(); // needed when the user can set the size
+//  initFrameSizePanel(); // needed when the user can set the size
 }
 
 
 function onOK() {
+  editor.beginTransaction();
+	if (isNewNode) 
+	{
+		try 
+		{
+			msiframe = editor.createElementWithDefaults("msiframe");
+			editor.insertElementAtSelection(msiframe, true);
+			var para = editor.createNode("bodyText", msiframe, 0);
+			editor.createNode("br", para, 0);		
+		}
+		catch(e)
+		{
+			dump(e.message+"\n");
+		}
+	}
   setFrameAttributes(msiframe);
-  // BBM This is a stub
-  var namespace = new Object();                      
-  
-  if (isNewNode) editor.insertElementAtSelection(msiframe, true);
-  // BBM This new node should go AROUND the selection.
+//  var namespace = new Object();                      
+	editor.endTransaction();
   return(true);
 }
 
