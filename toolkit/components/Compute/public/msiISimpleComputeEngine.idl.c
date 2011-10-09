@@ -247,7 +247,7 @@ interface msiISimpleComputeEngine : nsISupports
   /**
    * Define a mupad name
    */
-  void DefineMupadName(in wstring swpname, in wstring mupname, in wstring loc, [retval] out wstring result);
+  void defineMupadName(in wstring swpname, in wstring mupname, in wstring loc, [retval] out wstring result);
   
 
   /*
