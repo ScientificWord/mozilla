@@ -1157,20 +1157,26 @@ function getXSLAsString(xslPath)
 
 function documentToTeXString(document, xslPath)
 {
-  var resultString = "";
+  var xsltString = "";
   var strResult = "";
-  resultString = getXSLAsString(xslPath);
+  xsltString = getXSLAsString(xslPath);
 
   var xsltProcessor = new XSLTProcessor();
 
   try{
     var parser = new DOMParser();
-    var doc = parser.parseFromString(resultString, "text/xml");
+    var doc = parser.parseFromString(xsltString, "text/xml");
     xsltProcessor.importStylesheet(doc);
     var newDoc = xsltProcessor.transformToDocument(document);
     strResult = newDoc.documentElement.textContent || "";
-    while (strResult.search(/\n\s*\n/) >= 0)
-      strResult = strResult.replace(/\n\s*\n/,"\n","g");
+    while (strResult.search(/\n[ \t]+/) >= 0)
+		  strResult = strResult.replace(/\n[ \t]+/,"\n","g");
+    while (strResult.search(/\n\n/) >= 0)
+      strResult = strResult.replace(/\n\n/,"\n","g");
+	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
+		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
+		while (strResult.search(/\\par/) >= 0)
+		  strResult = strResult.replace(/\\par/,"\n\n", "g");
   }
   catch(e){
     dump("error: "+e.message+"\n\n");
