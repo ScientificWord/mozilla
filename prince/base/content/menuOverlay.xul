@@ -258,11 +258,11 @@
     <menupopup id="goPopup">
       <menuitem label="&gomenuPrevSection.label;" 
                 id="gomenuPrevSection" 
-                observes="cmd_unimp" 
+                observes="cmd_prevSection" 
                 accesskey="&gomenuPrevSection.accesskey;"/>
       <menuitem label="&gomenuNextSection.label;" 
                 id="gomenuNextSection" 
-                observes="cmd_unimp" 
+                observes="cmd_nextSection" 
                 accesskey="&gomenuNextSection.accesskey;"/>
       <menuitem label="&gomenuLinks.label;" 
                 id="gomenuLinks" 
@@ -271,25 +271,12 @@
       <menuseparator id="goMenuSeparator1"/>
       <menuitem label="&gomenuMarker.label;" 
                 id="gomenuMarker" 
-                observes="cmd_unimp" 
+                observes="cmd_gotoMarker" 
                 accesskey="&gomenuMarker.accesskey;"/>
       <menuitem label="&gomenuParagraph.label;" 
                 id="gomenuParagraph" 
                 observes="cmd_gotoparagraph" 
                 accesskey="&gomenuParagraph.accesskey;"/>
-      <menuseparator id="goMenuSeparator2"/>
-      <menuitem label="&gomenuViewHistory.label;" 
-                id="gomenuViewHistory" 
-                observes="cmd_unimp" 
-                accesskey="&gomenuViewHistory.accesskey;"/>
-      <menuitem label="&gomenuHistoryBack.label;" 
-                id="gomenuHistoryBack" 
-                observes="cmd_unimp" 
-                accesskey="&gomenuHistoryBack.accesskey;"/>
-      <menuitem label="&gomenuHistoryForward.label;" 
-                id="gomenuHistoryForward" 
-                observes="cmd_unimp" 
-                accesskey="&gomenuHistoryForward.accesskey;"/>
     </menupopup>
   </menu>
   
@@ -618,7 +605,10 @@
     <command id="cmd_msiReviseBreaks"          oncommand="msiGoDoCommand('cmd_msiReviseBreaks')"/>
 
     <!-- dummy command used just to disable things in non-HTML modes -->
-    <command id="cmd_renderedHTMLEnabler"/>
+    <command id="cmd_prevSection"              oncommand="msiGoDoCommand('cmd_prevSection')"/>
+    <command id="cmd_nextSection"              oncommand="msiGoDoCommand('cmd_nextSection')"/>
+    <command id="cmd_gotoMarker"               oncommand="msiGoDoCommand('cmd_gotoMarker')"/>
+    
   </commandset>
   
   <commandset id="composerSaveMenuItems"
