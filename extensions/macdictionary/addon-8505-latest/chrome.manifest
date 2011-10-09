@@ -1,0 +1,10 @@
+content askDictionary jar:chrome/askDictionary.jar!/content/
+locale	askDictionary	en-US		jar:chrome/askDictionary.jar!/locale/en-US/
+locale	askDictionary	de-DE		jar:chrome/askDictionary.jar!/locale/de-DE/
+locale	askDictionary	ru-RU		jar:chrome/askDictionary.jar!/locale/ru-RU/
+
+overlay chrome://browser/content/browser.xul chrome://askDictionary/content/askDictionary.xul
+
+overlay chrome://prince/content/prince.xul chrome://askDictionary/content/askDictionary.xul
+
+skin	askDictionary	classic/1.0	jar:chrome/askDictionary.jar!/skin/
