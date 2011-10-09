@@ -20,14 +20,12 @@
       control   = "frameUnitMenulist"
       accesskey = "&unitLabel.accesskey;"
       value     = "&unitLabel.label;" />
-    <hbox> <menulist id = "frameUnitMenulist"
-      width=".75in"
+    <hbox> <menulist id = "frameUnitMenulist" style="width: 8em"
       oncommand  = "setNewUnit(this);" >
-      <menupopup id = "unitList" selectedIndex="2" persist="selectedIndex">
-        <menuitem value="in" label="&inch;"/>
-        <!--menuitem value="pct" label="percent"/  -->
+      <menupopup id = "unitList" persist="value selectedIndex" value="pt" selectedIndex="2">
+        <menuitem value="in" label="&inch;"/>        <!--menuitem value="pct" label="percent"/  -->
         <menuitem value="cm" label="&centimeter;"/>
-        <menuitem value="pt" label="&point;" selected="true" />
+        <menuitem value="pt" label="&point;"/>
         <menuitem value="mm" label="&millimeter;"/>
         <menuitem value="pc" label="&pica;"/>
         <menuitem value="px" label="&pixel;"/>
@@ -106,6 +104,7 @@
             <textbox
               id        = "marginLeftInput"
               min       = "-1000"
+              value     = "0"
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
               onchange  = "update(this.id);"/>
@@ -115,17 +114,20 @@
           <textbox
             id        = "marginRightInput"
             min       = "-1000"
+            value     = "0"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
           <textbox
             id        = "marginTopInput"
+            value     = "0"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
           <hbox  observes="role-textframe">
           <textbox
             id        = "marginBottomInput"
+            value     = "0"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/></hbox>
@@ -249,8 +251,8 @@
     <groupbox>
       <caption label="Size"/>
       <!-- vbox observes="hasNaturalSize" -->
-        <radiogroup id="sizeRadio" observes="role-image">
-          <hbox flex="1">
+        <radiogroup id="sizeRadio">
+          <hbox flex="1" observes="hasNaturalSize" hidden="true">
             <vbox>
               <radio id="actual" label="Actual size" radioGroup="sizeRadio"/>
             </vbox>
@@ -282,16 +284,19 @@
                   type      = "number"
                   onkeypress= ""
                   onchange  = "frameWidthChanged(this);"
-                  onload    = "frameWidthChanged(this);"/>
-                <checkbox id="autoWidth" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
+                  onload    = "frameWidthChanged(this);"
+                  persist   = "value"/>
+                <checkbox id="autoWidth" persist = "checked" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
                 <textbox
                   id        = "frameHeightInput"
                   type      = "number"
                   onkeypress= ""
                   onchange  = "frameHeightChanged(this);"
-                  onload    = "frameHeightChanged(this);"/>
-                <checkbox id="autoHeight" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
-                <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"/>
+                  onload    = "frameHeightChanged(this);"
+                  persist   =  "value"/>
+                <checkbox id="autoHeight" persist = "checked" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
+                <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"
+                  persist = "checked"/>
               </row>
             </rows>
           </grid>
@@ -299,7 +304,7 @@
         <hbox align="center">
           <label value="Rotate contents"/>
           <menulist id = "rotationList">
-            <menupopup id = "rotationsList">
+            <menupopup id = "rotationsList" persist = "value">
               <menuitem value="rot0" label="None"/>
               <menuitem value="rot90" label="90 degrees CW" />
               <menuitem value="rot270" label="90 degrees CCW"/>
