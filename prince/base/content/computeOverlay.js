@@ -3062,14 +3062,16 @@ function doComputeMapMuPADName(editorElement)
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
   
-  if (data.Cancel)
+  if (o.Cancel)
     return;
 
-  var swpname = data.swpname;
-  var mupname = data.mupname;
-  var infile = data.infile;
+  var swpname = o.swpname;
+  var mupname = o.mupname;
+  var infile = o.infile;
   
-   
+  var eng = GetCurrentEngine();
+  var res = eng.defineMupadName(swpname, mupname, infile);
+ 
   
 }
 
