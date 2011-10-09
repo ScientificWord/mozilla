@@ -53,7 +53,6 @@ function onOK() {
 		}
 	}
   setFrameAttributes(msiframe);
-//  var namespace = new Object();                      
 	editor.endTransaction();
   return(true);
 }
