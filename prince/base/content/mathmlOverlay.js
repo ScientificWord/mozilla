@@ -2332,6 +2332,16 @@ function insertMathnameObject(mathNameObj, editorElement)
   }
 }
 
+function doInsertMathOperator(aName, limitPlacement, size, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+  if (mathmlEditor){
+    insertOperator(aName, limitPlacement, size, editorElement);
+
+  }
+}
+
 function doInsertMathName(aName, editorElement)
 {
   var editor = msiGetEditor(editorElement);
