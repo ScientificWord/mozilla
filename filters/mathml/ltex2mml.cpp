@@ -2882,8 +2882,8 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       case 701  : 		// \tag
       case 702  : 		// \tag*
       case 703  : {     // \notag
-//      RecordAnomaly( 1001,NULL,obj_node->src_offset1,
-//     						            obj_node->src_offset2 );
+      RecordAnomaly( 1001,NULL,obj_node->src_offset1,
+     						            obj_node->src_offset2 );
         tex_nodes_done  =  1;
       } 
       break;
