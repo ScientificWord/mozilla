@@ -28,12 +28,12 @@ function setHasNaturalSize(istrue)
 	}
 }
 
-marginAtt = "margin";
-paddingAtt = "padding";
-borderAtt = "border";
-cropAtt = "crop";
-widthAtt = "width";
-heightAtt = "height";
+var marginAtt = "margin";
+var paddingAtt = "padding";
+var borderAtt = "border";
+var cropAtt = "crop";
+var widthAtt = "width";
+var heightAtt = "height";
 
 function initFrameTab(dg, element, newElement)
 {
@@ -49,40 +49,6 @@ function initFrameTab(dg, element, newElement)
   position = 0;  // left = 1, right = 2, neither = 0
   //var unit;
 
-  metrics = { // the metrics of the frame as currently represented by the dialog
-    margin:   { top: 		document.getElementById("marginTopInput").value, 
-								right: 	document.getElementById("marginRightInput").value, 
-								bottom: document.getElementById("marginBottomInput").value, 
-								left: 	document.getElementById("marginLeftInput").value },
-    padding:  { top: 		document.getElementById("paddingTopInput").value, 
-								right: 	document.getElementById("paddingRightInput").value, 
-								bottom: document.getElementById("paddingBottomInput").value, 
-								left: 	document.getElementById("paddingLeftInput").value },
-    border:   { top: 		document.getElementById("borderTopInput").value, 
-								right: 	document.getElementById("borderRightInput").value, 
-								bottom: document.getElementById("borderBottomInput").value, 
-								left: 	document.getElementById("borderLeftInput").value },
-    crop:     { top: 		document.getElementById("cropTopInput").value, 
-								right: 	document.getElementById("cropRightInput").value, 
-								bottom: document.getElementById("cropBottomInput").value, 
-								left: 	document.getElementById("cropLeftInput").value },
-    innermargin: 0,  // temporary, assigned to left or right margin, depending on placement
-    outermargin: 0,  // negative for an overhang
-    unit: frameUnitHandler.currentUnit,
-    setUnit: function(newUnit) {
-      if (frameUnitHandler.currentUnit)
-      {
-        for (i in this)
-        {
-          for (j in this[i])
-          {
-            this[i][j] = frameUnitHandler.getValueAs(this[i][j],newUnit);
-          }
-        }
-      }
-      unit = newUnit;
-    }
-  }
   dg.editorElement = msiGetParentEditorElementForDialog(window);
   dg.editor = msiGetEditor(dg.editorElement);
   if (!dg.editor) {
@@ -126,6 +92,40 @@ function initFrameTab(dg, element, newElement)
   dg.placeBottomCheck     = document.getElementById("placeBottomCheck");
   dg.herePlacementRadioGroup  = document.getElementById("herePlacementRadioGroup");
   dg.OkButton             = document.documentElement.getButton("accept");
+  metrics = { // the metrics of the frame as currently represented by the dialog
+    margin:   { top: 		dg.marginInput.top.value,
+								right: 	dg.marginInput.right.value, 
+								bottom: dg.marginInput.bottom.value, 
+								left: 	dg.marginInput.left.value },
+    padding:  { top: 		dg.paddingInput.top.value, 
+								right: 	dg.paddingInput.right.value, 
+								bottom: dg.paddingInput.bottom.value, 
+								left: 	dg.paddingInput.left.value },
+    border:   { top: 		dg.borderInput.top.value, 
+								right: 	dg.borderInput.right.value, 
+								bottom: dg.borderInput.bottom.value, 
+								left: 	dg.borderInput.left.value },
+    crop:     { top: 		dg.cropInput.top.value, 
+								right: 	dg.cropInput.right.value, 
+								bottom: dg.cropInput.bottom.value, 
+								left: 	dg.cropInput.left.value },
+    innermargin: 0,  // temporary, assigned to left or right margin, depending on placement
+    outermargin: 0,  // negative for an overhang
+    unit: frameUnitHandler.currentUnit,
+    setUnit: function(newUnit) {
+      if (frameUnitHandler.currentUnit)
+      {
+        for (i in this)
+        {
+          for (j in this[i])
+          {
+            this[i][j] = frameUnitHandler.getValueAs(this[i][j],newUnit);
+          }
+        }
+      }
+      unit = newUnit;
+    }
+  }
   var fieldList = [];
   var attrs = ["margin","border","padding","crop"];
   for (var side in sides)
@@ -135,11 +135,12 @@ function initFrameTab(dg, element, newElement)
       fieldList.push(dg[attrs[attr]+"Input"][sides[side].toLowerCase()]);
     }
   }
+  frameUnitHandler.initCurrentUnit(dg.unitList.getAttribute("value"));
+//  initUnitList(dg.unitList); ours is defined in the XUL
+	setNewUnit(dg.frameUnitMenulist);
   fieldList.push(dg.heightInput);
   fieldList.push(dg.widthInput);
   frameUnitHandler.setEditFieldList(fieldList);//  var unit;
-  initUnitList(dg.unitList);
-  frameUnitHandler.initCurrentUnit(document.getElementById("unitList").getAttribute("value"));
 // The defaults for the document are set by the XUL document, modified by persist attributes. If there is
 // no pre-existing frame object, the dg is set to go.
   if (!newElement)
@@ -625,6 +626,7 @@ function setFrameAttributes(frameNode)
   }
   frameNode.setAttribute("units",metrics.unit);
   frameNode.setAttribute("msi_resize","true");
+  frameNode.seqAttribute("req", "boxedminipage");
   if (gFrameModeImage) {
     var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
     frameNode.setAttribute("sidemargin", sidemargin);
