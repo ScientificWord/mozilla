@@ -662,8 +662,22 @@ void Typesetter::EndDisplay()
          std::string s_anom;
          ProcessMathML(theCStr, s_mathml, s_anom);
          LOG("\nGot back " << s_mathml.c_str());
+
+         std::string customLabel = "";
+         if (s_anom != ""){
+            if (s_anom.substr(0,5) == "\\tag{"){
+               int end = s_anom.find_first_of("}", 5);
+               customLabel = s_anom.substr(5, end-5);
+            }
+         }
          std::string str;
-         str += "<msidisplay>";
+         str += "<msidisplay";
+         if (customLabel != ""){
+           str += " customLabel=\"";
+           str += customLabel;
+           str +="\"";
+         }
+         str += ">";
          str +=  "<mml:math class=\"displayedmathml\" "
                  "mode=\"display\" display=\"block\">";
          str +=  s_mathml;
