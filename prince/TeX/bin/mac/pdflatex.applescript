@@ -7,7 +7,7 @@
 on run argv
 	tell application "Terminal"
 		do script "cd " & item 1 of argv
-		do script "pdflatex -jobname=" & item 3 of argv & " " & item 2 of argv in window 1
+		do script "pdflatex -interaction=nonstopmode -jobname=" & item 3 of argv & " " & item 2 of argv in window 1
 		do script "touch sentinel" in window 1
 		do script "exit" in window 1
 	end tell
