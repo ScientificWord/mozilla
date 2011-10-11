@@ -11291,10 +11291,10 @@ function openAllSubdocs()
 
 var indentIncrement = "  ";  // should eventually come from a user 
 var maxLengthDefault = 100; // should come from prefs; if a line is longer than this, we must break it
-var minLengthDefault = 40; // if a line is shorter than this, we at least try to consolidate it
+var minLengthDefault = 60; // if a line is shorter than this, we at least try to consolidate it
 var maxLength; 
 var minLength; 
-var reallyMinLength = 10; 
+var reallyMinLength = 50; 
 
 function replacer(str, p1, p2, offset, s)
 {
@@ -11339,9 +11339,10 @@ function writeLineInPieces( output, currentline )
 {
   var lastLength = 10000000;
   var L;
-  while ((L=currentline.s.length) > 0)
+  while (currentline.s.length > 0)
   {
-    if (L < maxLength || L >= lastLength) // this assures us we get out of the while loop
+    L = currentline.s.length;
+		if (L < maxLength || L >= lastLength) // this assures us we get out of the while loop
     {
       output.s += currentline.s.replace("\n"," ", "g") + "\n";
       currentline.s = "";
@@ -11364,7 +11365,7 @@ function writeLineInPieces( output, currentline )
       }    
       else // no convenient linebreaks, look for spaces
       {
-        index = currentline.s.indexOf(" ", minLength);
+        index = currentline.s.lastIndexOf(" ", maxLength);
         var forced = false;
         if (index <0 || index > maxLength) // no spaces? Japanese? force a linebreak at maxLength -5
         {
@@ -11402,7 +11403,7 @@ function isInlineElement(editor, element)
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
   if (msiNavigationUtils.isMathNode(element)) return false;
   var class = editor.tagListManager.getClassOfTag(element.localName, null);
-  if (class == "texttag" || class.length == 0) return true;
+  if (class == "texttag" || class == "othertag" || class.length == 0) return true;
   return false;
 }
   
