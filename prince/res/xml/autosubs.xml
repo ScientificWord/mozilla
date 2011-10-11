@@ -111,7 +111,7 @@
   <sub ctx="math" tp="sc"><pattern>log</pattern><data>insertMathname('log','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>max</pattern><data>insertMathname('max','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>min</pattern><data>insertMathname('min','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>mod</pattern><data>insertOperator('mod','atRight', 'small','false');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>mod</pattern><data>insertMathOperator('mod','atRight', 'small', 'true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>negative</pattern><data>insertMathname('negative','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>NormalDen</pattern><data>insertMathname('NormalDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>NormalDist</pattern><data>insertMathname('NormalDist','true');</data></sub>
