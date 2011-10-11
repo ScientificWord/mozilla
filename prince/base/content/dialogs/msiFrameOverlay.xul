@@ -417,7 +417,7 @@
       <broadcaster id="sidemargin" width="8"/>         
       <broadcaster id="topmargin" height="8"/>
       <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
-      <broadcaster id="hasNaturalSize" hidden="true"/>        
+      <broadcaster id="hasNaturalSize" hidden=""/>        
     </broadcasterset>
   </vbox>
 
