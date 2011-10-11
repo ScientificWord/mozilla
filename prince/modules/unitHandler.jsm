@@ -57,7 +57,7 @@ function UnitHandler()
   {
     return this.getValueStringAs( value, this.currentUnit );
   };
-
+  var len;
   this.setCurrentUnit = function( unit ) // returns the previous value
   {
     var prev = this.currentUnit;
@@ -79,10 +79,11 @@ function UnitHandler()
   this.initCurrentUnit = function(unit) // this is for setting the initial value -- no conversions
   {
     if (!unit) return;
-    for (var i in this.editFieldList)
+    for (var i = 0, len = this.editFieldList.length; i < len; i++)
     {
       this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
       this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places); 
+			this.editFieldList[i].value *= 1; // force a redisplay
     }
     this.currentUnit = unit;
   }
