@@ -6308,6 +6308,10 @@ char *MuPADWrapper::TRANSFORMtoEstr(SEMANTICS_NODE * s_transform,
       delete[] tvar_str;
       return NULL;
     }
+
+    if (!expr_str) 
+      return NULL;
+
     bool is_mapped = false;
     if (!strncmp(expr_str, "SWPmatrix", 9))
       is_mapped = true;
