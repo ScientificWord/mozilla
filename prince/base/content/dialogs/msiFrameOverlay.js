@@ -592,6 +592,19 @@ function setAlignment(alignment )
   }
 }
 
+function hexcolor(rgbcolor)
+{
+	var regexp = /\s*rgb\s*\(\s*(\d+)[^\d]*(\d+)[^\d]*(\d+)/ ;
+	var arr = regexp.exec(rgbcolor);
+	var r = parseFloat(arr[1]).toString(16);
+	if (r.length<2) r = "0"+r;
+	var g = parseFloat(arr[2]).toString(16);
+	if (g.length<2) g = "0"+g;
+	var b = parseFloat(arr[3]).toString(16);
+	if (b.length<2) b = "0"+b;
+	return "#"+ r + g + b;
+}
+
 function setFrameAttributes(frameNode)
 {
   metrics.unit = frameUnitHandler.currentUnit;
@@ -639,13 +652,13 @@ function setFrameAttributes(frameNode)
   var bgcolor = gFrameTab.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
-  frameNode.setAttribute("border-color", arr[1]);  
+  frameNode.setAttribute("border-color", hexcolor(arr[1]));  
   bgcolor = gFrameTab.bgcolorWell.getAttribute("style");
   arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setStyleAttributeOnNode(frameNode, "background-color", arr[1]);
-  frameNode.setAttribute("backgroundcolor", arr[1]);  
+  frameNode.setAttribute("background-color", hexcolor(arr[1]));  
 	msiRequirePackage(gFrameTab.editorElement, "xcolor", "");
-	frameNode.setAttribute("textAlignment", gFrameTab.textAlignment.value );
+	frameNode.setAttribute("textalignment", gFrameTab.textAlignment.value );
   if (document.getElementById("inline").selected)
     setStyleAttributeOnNode(frameNode, "display", "inline");
   else setStyleAttributeOnNode(frameNode, "display", "block");
@@ -653,16 +666,6 @@ function setFrameAttributes(frameNode)
 
   if (posid == "float")
   {
-    if (gFrameModeImage) {
-      var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
-      frameNode.setAttribute("overhang", overhang
-      );
-    }
-    else 
-    {
-      side = "Right";
-      frameNode.setAttribute("overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false));
-    }
     var placeLocation="";
     var isHere = false;
     if (gFrameTab.placeForceHereCheck.checked)
@@ -699,6 +702,20 @@ function setFrameAttributes(frameNode)
       setStyleAttributeOnNode(frameNode, "float", floatparam);
       var style = getCompositeMeasurement("margin","px", true);
       setStyleAttributeOnNode(frameNode, "margin", style);
+	    if (floatparam == "right") side = "Right";
+	    else if (floatparam == "left") side = "Left";
+			else side = null;
+	    if (gFrameModeImage) {
+				if (side)
+				{
+		      var overhang = getSingleMeasurement("margin", side, metrics.unit, false);
+		      frameNode.setAttribute("overhang", overhang);
+				}
+	    }
+	    else 
+	    {
+	      if (side) frameNode.setAttribute("overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false));
+	    }
     }
   }
   else 
