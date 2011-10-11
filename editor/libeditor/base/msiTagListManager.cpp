@@ -517,10 +517,10 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
 					tagNameElement->HasAttribute(NS_LITERAL_STRING("babel"), &hasBabelAttribute);
 					if (hasBabelAttribute)
 					  pdata->babel = GetStringProperty(NS_LITERAL_STRING("babel"), tagNameElement);					
+          pdata->level =
+            GetStringProperty(NS_LITERAL_STRING("level"), tagNameElement);
           if (strClassName.EqualsLiteral("structtag"))
           {
-            pdata->level =
-              GetStringProperty(NS_LITERAL_STRING("level"), tagNameElement);
             pdata->prefsub =
               GetStringProperty(NS_LITERAL_STRING("prefsub"), tagNameElement);
           }
