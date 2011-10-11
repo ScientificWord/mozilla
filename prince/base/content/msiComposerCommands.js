@@ -7499,7 +7499,7 @@ var msiFrameCommand =
     var editorElement = msiGetActiveEditorElement();
     //temporary
     // need to get current note if it exists -- if none, initialize as follows 
-    msiFrame(editorElement);
+    msiFrame(editorElement, null, null);
   }
 };
 
@@ -9134,11 +9134,11 @@ function msiTable(element,editorElement)
 }
 
 
-function msiFrame(editorElement)
+function msiFrame(editorElement, editor, node)
 {
-  var editor = msiGetEditor(editorElement);
+  if (editor==null) editor = msiGetEditor(editorElement);
   editor.beginTransaction();
-  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,dependent, resizable=yes");
+  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,dependent, resizable=yes", node);
   editor.endTransaction();
 }
 
