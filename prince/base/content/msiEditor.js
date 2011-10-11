@@ -9583,7 +9583,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     }
     else if (elementName == "msiframe")
     {
-      msiFrame(element,editorElement);
+      msiFrame(editorElement, null, element);
     }
     else if (elementName == "otfont")
     {
