@@ -95,10 +95,12 @@
           <hbox align="center">
             <menulist id = "textAlignment" value = "L" style="width: 10em" persist="value">
               <menupopup id = "alignments" >
-                <menuitem value="L" label="left"/>
-                <menuitem value="R" label="right"/>
                 <menuitem value="C" label="centered"/>
                 <menuitem value="J" label="justified"/>
+                <menuitem value="L" label="left"/>
+                <menuitem value="R" label="right"/>
+                <menuitem value="I" label="inside"/>
+                <menuitem value="O" label="outside"/>
               </menupopup>
             </menulist>         
           </hbox>
