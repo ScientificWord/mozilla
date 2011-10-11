@@ -120,7 +120,7 @@ pref("swp.saveintervalseconds",10);
 pref("swp.sci.compression", 0);
 pref("swp.sourceview.indentincrement",       2);
 pref("swp.sourceview.maxlinelength",        100);
-pref("swp.sourceview.minlinelength",         40);
+pref("swp.sourceview.minlinelength",         60);
 pref("swp.space.after.space", false); // true means space space -> math
 pref("swp.spellchecker.enablerealtimespell", true);
 pref("swp.viewPDF","fixAcrobat.cmd %1");
