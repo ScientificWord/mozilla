@@ -2338,7 +2338,12 @@ function doInsertMathOperator(aName, limitPlacement, size, editorElement)
   var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
   if (mathmlEditor){
     insertOperator(aName, limitPlacement, size, editorElement);
-
+    var sel = editor.selection;
+    if (sel != null) {
+      var node = editor.getElementOrParentByTagName("mo", sel.focusNode);
+      if (node != null)
+          opNode.setAttribute("msimathname", "true");
+    }
   }
 }
 
