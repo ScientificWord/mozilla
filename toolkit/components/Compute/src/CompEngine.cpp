@@ -639,6 +639,12 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
           if (NS_SUCCEEDED(res))
             res_tree = (SEMANTICS_NODE *) tmp;
           RetrieveEngineStrs(mr);
+        } else {
+          // A generic def. Delete the def and procede 
+          void * tmp;
+
+          msr.PutOpID( CCID_Undefine );
+          res = wrapper->ProcessRequest((void *)&msr, (void *)&mr, &tmp);
         }
         int result_code = mr.GetResultCode();
         if (result_code >= CR_success) {
