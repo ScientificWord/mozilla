@@ -6920,7 +6920,7 @@ char *MuPADWrapper::POWERMODtoEstr(SEMANTICS_NODE * s_powerform,
 
     bucket = FindBucketRec(s_powerform->bucket_list, MB_SCRIPT_UPPER);
     if (bucket && bucket->first_child) {
-      sup_str = ProcessSemList(bucket->first_child, modulus, error_code);
+      sup_str = ProcessSemList(bucket->first_child, NULL, error_code);
       if (error_code) {
         delete[] base_str;
         delete[] sup_str;
