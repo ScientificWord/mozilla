@@ -222,22 +222,22 @@
   <sub ctx="math" tp="sc"><pattern>ulx</pattern><data>insertMathunit('lx','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umA</pattern><data>insertMathunit('mA','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umbar</pattern><data>insertMathunit('mbar','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>umcA</pattern><data>insertMathunit('');</data></sub> -->
-<!--  <sub ctx="math" tp="sc"><pattern>umcF</pattern><data>insertMathunit('');</data></sub>	-->
-<!--  <sub ctx="math" tp="sc"><pattern>umcg</pattern><data>insertMathunit('');</data></sub> -->
-<!--  <sub ctx="math" tp="sc"><pattern>umcH</pattern><data>insertMathunit('');</data></sub>	-->
-<!--  <sub ctx="math" tp="sc"><pattern>umcJ</pattern><data>insertMathunit('');</data></sub> -->
-<!--  <sub ctx="math" tp="sc"><pattern>umcme</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcmol</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcN</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcPa</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcrad</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcs</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcS</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcT</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcV</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcWa</pattern><data>insertMathunit('');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcWb</pattern><data>insertMathunit('');</data></sub>   -->
+  <sub ctx="math" tp="sc"><pattern>umcA</pattern><data>insertMathunit('microA','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcF</pattern><data>insertMathunit('microF','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcme</pattern><data>insertMathunit('microm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcg</pattern><data>insertMathunit('microg','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcs</pattern><data>insertMathunit('micros','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcJ</pattern><data>insertMathunit('microJ','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcWa</pattern><data>insertMathunit('microW','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcS</pattern><data>insertMathunit('microS','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcT</pattern><data>insertMathunit('microT','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcH</pattern><data>insertMathunit('microH','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcWb</pattern><data>insertMathunit('microWb','true');</data></sub> 	
+  <sub ctx="math" tp="sc"><pattern>umcV</pattern><data>insertMathunit('microV','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcPa</pattern><data>insertMathunit('microPa','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcmol</pattern><data>insertMathunit('micromol','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcN</pattern><data>insertMathunit('microN','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcrad</pattern><data>insertMathunit('microrad','true');</data></sub>  
   <sub ctx="math" tp="sc"><pattern>ume</pattern><data>insertMathunit('m','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uMeV</pattern><data>insertMathunit('MeV','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umF</pattern><data>insertMathunit('mF','true');</data></sub>
