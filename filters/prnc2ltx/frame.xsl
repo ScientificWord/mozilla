@@ -8,7 +8,11 @@
 
 <xsl:template match="html:msiframe">
 	<!--xsl:if test="@position='inner' || @position='outer'" -->				
-\begin{wrapfigure}
+  <xsl:if test="@topmargin">\setlength \intextsep {<xsl:value-of select="@topmargin"/><xsl:value-of select="@units"/>}</xsl:if>
+  <xsl:if test="@sidemargin">\setlength \columnsep {<xsl:value-of select="@sidemargin"/><xsl:value-of select="@units"/>}</xsl:if>
+  <xsl:if test="@border">\setlength \fboxrule {<xsl:value-of select="@border"/><xsl:value-of select="@units"/>}</xsl:if>
+  <xsl:if test="@padding">\setlength \fboxsep {<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>}</xsl:if>
+\begin{wrapfigure} <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
 <xsl:choose>
   <xsl:when test="@placement='I'">{i}</xsl:when>
   <xsl:when test="@placement='O'">{o}</xsl:when>
@@ -25,15 +29,11 @@
     </xsl:choose>
   </xsl:otherwise>
 </xsl:choose>}
-<xsl:if test="@topmargin">\setlength \intextsep {<xsl:value-of select="@topmargin"/><xsl:value-of select="@units"/>}</xsl:if>
-<xsl:if test="@sidemargin">\setlength \columnsep {<xsl:value-of select="@sidemargin"/><xsl:value-of select="@units"/>}</xsl:if>
-<xsl:if test="@border">\setlength \fboxrule {<xsl:value-of select="@border"/><xsl:value-of select="@units"/>}</xsl:if>
-<xsl:if test="@padding">\setlength \fboxsep {<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>}</xsl:if>
 <xsl:if test="@rotation='rot90'">\begin{turn}{90}</xsl:if>
 <xsl:if test="@rotation='rot270'">\begin{turn}{-90}</xsl:if>
 <xsl:choose>
-  <xsl:when test="@border-color and @background-color">\fcolorbox</xsl:when>
-  <xsl:when test="@border-color and not(@background-color)">{\color</xsl:when>
+  <xsl:when test="@border-color and @background-color">\fcolorbox </xsl:when>
+  <xsl:when test="@border-color and not(@background-color)">{\color </xsl:when>
   <xsl:when test="not(@border-color) and @background-color">\colorbox</xsl:when>
   <xsl:otherwise></xsl:otherwise></xsl:choose>
 <xsl:if test="@border-color"><xsl:choose
@@ -48,20 +48,19 @@
 	><xsl:otherwise><xsl:value-of select="./@background-color"/></xsl:otherwise
   ></xsl:choose
   >}</xsl:if>
-<xsl:if test="@background-color">{</xsl:if>
-\begin{<xsl:if test="not(@border-color and @background-color)">boxed</xsl:if>minipage}[t]<xsl:if test="@height">[<xsl:value-of select="@height"/><xsl:value-of select="@units"/>]</xsl:if>
-  {<xsl:choose><xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="@width"/></xsl:when><xsl:otherwise><xsl:value-of select="@width"/></xsl:otherwise></xsl:choose><xsl:value-of select="@units"/>}
-<xsl:choose><xsl:when test="@textalignment='inner'">\filouter </xsl:when>
-  <xsl:when test="@textalignment='center'">\centering </xsl:when>
-  <xsl:when test="@textalignment='justify'">\justifying </xsl:when>
-  <xsl:when test="@textalignment='left'">\filright </xsl:when>
-  <xsl:when test="@textalignment='right'">\filleft </xsl:when>
-  <xsl:when test="@textalignment='outer'">\filinner </xsl:when></xsl:choose>
+<xsl:if test="@background-color">{</xsl:if
+>\begin{<xsl:if test="not(@border-color and @background-color)">boxed</xsl:if>minipage}[t]<xsl:if test="@height">[<xsl:value-of select="@height"/><xsl:value-of select="@units"/>]</xsl:if
+>{<xsl:choose><xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="@width - 2*@padding"/></xsl:when><xsl:otherwise><xsl:value-of select="@width - 2*@padding"/></xsl:otherwise></xsl:choose><xsl:value-of select="@units"/>} %
+<xsl:choose><xsl:when test="@textalignment='center'">\begin{Centering}</xsl:when>
+  <xsl:when test="@textalignment='justify'">\begin{justifying}</xsl:when>
+  <xsl:when test="@textalignment='left'">\begin{FlushLeft}</xsl:when>
+  <xsl:when test="@textalignment='right'">\begin{FlushRight}</xsl:when></xsl:choose>
 <xsl:apply-templates/>
-\end{<xsl:if test="not(@border-color and @background-color)">boxed</xsl:if>minipage} 
-<xsl:if test="@border-color or @background-color">}</xsl:if>
-<xsl:if test="@rotation!='rot0'">\end{turn}</xsl:if> 
-\end{wrapfigure}
+<xsl:choose><xsl:when test="@textalignment='center'">\end{Centering} </xsl:when>
+  <xsl:when test="@textalignment='justify'">\end{justifying} </xsl:when>
+  <xsl:when test="@textalignment='left'">\end{FlushLeft} </xsl:when>
+  <xsl:when test="@textalignment='right'">\end{FlushRight} </xsl:when></xsl:choose>
+\end{<xsl:if test="not(@border-color and @background-color)">boxed</xsl:if>minipage}<xsl:if test="@border-color or @background-color">}</xsl:if><xsl:if test="@rotation!='rot0'">\end{turn}</xsl:if>\end{wrapfigure}
 </xsl:template>
 		  
 </xsl:stylesheet>
