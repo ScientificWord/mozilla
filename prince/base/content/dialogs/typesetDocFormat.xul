@@ -442,11 +442,7 @@
             </columns>
          
             <rows>
-              <row align="end" style="height: 3em">
-                <vbox align="center">
-                  <label observes="reformatok" value="Title Page"/>
-                  <checkbox id="title" observes="reformatok" align="center" checked="false"  persist="checked" />
-                </vbox>
+              <row>
                 <vbox align="center">
                   <label observes="reformatok" value="Table of Contents"/>
                   <hbox ><checkbox id="toc" observes="reformatok" align="center" checked="false"  persist="checked" /></hbox>
@@ -521,13 +517,6 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-              <!--/row>
-              <row align="end" style="height: 3em" -->
-                <vbox>
-                  <label observes="reformatok" value="Magnification"  />
-                  <hbox><checkbox id="magnificationcontrol" control="magnification" observes="reformatok" oncommand="enable(this);" checked="false"/><textbox id="magnification" disabled="true" value="-default-" default="1.0" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
-                </vbox>
-                <vbox style="width: 9em;" />
               </row>
             </rows>
           </grid>

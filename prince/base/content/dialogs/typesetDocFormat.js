@@ -676,21 +676,6 @@ function saveMisc(newNode)
 			}			
 		}
 	}
-	if (document.getElementById("magnificationcontrol").checked)
-	{
-		var mag = document.getElementById("magnification").value;
-		if (mag)
-		{
-			var val = parseFloat(mag);
-			if (!isNaN(val))
-			{
-			  lineend(newNode, 1);
-				removeExistingPreambleNodes('mag', newNode);
-		    node = editor.createNode("mag", newNode, 0);
-			  node.setAttribute("mag",val.toString());
-			}			
-		}
-	}
 	var linespacing;
 	linespacing = document.getElementById("linespacing").value;
 	if (linespacing != "def")
@@ -719,7 +704,7 @@ function getMisc(docformat)
 		if (list == null || list.length === 0) continue;
 		document.getElementById(name).checked = true;
   }	
-	var contentlistings = ["title","toc","lof","lot"];
+	var contentlistings = ["toc","lof","lot"];
 	for (i = 0, len = contentlistings.length; i < len; i++)
 	{
 		var name = contentlistings[i];
@@ -745,15 +730,6 @@ function getMisc(docformat)
 		document.getElementById("leadingcontrol").checked = true;
 		document.getElementById("leading").removeAttribute("disabled");
 		document.getElementById("leading").value = parseFloat(val);
-	}
-	// magnification
-	list = docformat.getElementsByTagName("mag");
-	if (list != null && list.length > 0)
-	{
-		node  = list[0];
-		val = node.getAttribute("mag");
-		document.getElementById("magnificationcontrol").checked = true;
-		document.getElementById("mag").value = parseFloat(val);
 	}
 	list = docformat.getElementsByTagName("setspacing");
 	if (list != null && list.length > 0)

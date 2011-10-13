@@ -316,7 +316,7 @@
 <!ENTITY MSIComputeShowDefsCmd.accesskey "S">
 <!ENTITY MSIComputeClearDefsCmd.label "Clear Definitions">
 <!ENTITY MSIComputeClearDefsCmd.accesskey "c">
-<!ENTITY MSIComputeMuPADNameCmd.label "Map MuPAD Name...">
+<!ENTITY MSIComputeMuPADNameCmd.label "Define MuPAD Name...">
 <!ENTITY MSIComputeMuPADNameCmd.accesskey "m">
 
 

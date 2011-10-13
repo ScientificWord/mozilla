@@ -87,7 +87,6 @@
 			<contains>othertag</contains>
 			<contains>mml:math</contains>
 			<contains>br</contains>
-			<contains>br</contains>
 			<contains>shortQuote</contains>
 			<contains>cursor</contains>
 			<contains>defaulttitletag</contains>
@@ -97,6 +96,7 @@
       <contains>a</contains>
       <contains>note</contains>
       <contains>notewrapper</contains>
+      <contains>msiframe</contains>
 			<tags>
 				<tag id="defaultparagraph" nm="bodyText">
 					<description>Default body text paragraph</description>
@@ -449,17 +449,6 @@
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
-  		  <tag nm="msiframe">
-          <level>*</level>
-          <description>Frame</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
-					<nexttag/>
-	  		  <inclusion>true</inclusion>
-        </tag>
 				<tag nm="assertion">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -747,6 +736,20 @@
               ]]>
           </initialcontents>
         </tag>
+  		  <tag nm="msiframe">
+          <contains>paratag</contains>
+          <contains>envtag</contains>         
+          <level>*</level>
+          <description>Frame</description>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br/></bodyText>
+              ]]>
+          </initialcontents>
+					<nexttag>bodyText</nexttag>
+	  		  <!--inclusion>true</inclusion-->
+        </tag>
 				<tag nm="##lang1##" hidden="1" babel="3">
           <level>*</level>
           <description>First language environment</description>
@@ -852,7 +855,6 @@
 			<tagclassname>othertag</tagclassname>
 			<tags>
 				<tag nm="object"><description>Object</description></tag>
-        <tag nm="msiframe"><description>Frame</description></tag>
         <tag nm="citation">
           <description>Citation</description>
           <contains>biblabel</contains>
@@ -876,7 +878,7 @@
 			      <contains>texttag</contains>
 			      <contains>othertag</contains>
             <contains>table</contains>
-			      <contains>mml:math</contains>
+			      <contains>mml:math</contains>Yammer
 			      <contains>img</contains>
             <contains>a</contains>
             <contains>note</contains>
