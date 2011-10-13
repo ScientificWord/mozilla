@@ -5,4 +5,5 @@
 <!ENTITY cancel.label "Cancel">
 <!ENTITY close.label "Close">
 <!ENTITY makingpassnumber.label "Making pass #n of #m.">
-<!ENTITY oktocontinue.label "Press the OK button to continue.">
+<!ENTITY oktocontinue.label "Press the Continue button to continue.">
+<!ENTITY continue.label "Continue">
