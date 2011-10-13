@@ -1456,7 +1456,9 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
       case BT_MATRIX:
       case BT_UNIT:
       case BT_FENCED:
-      case BT_NUMBER:{
+      case BT_NUMBER:
+      case BT_SUB:
+      case BT_SUP: {
           if (et == ET_POWER || et == ET_DIRECTION) {
             CreatePowerForm(base, base->next, snode, pAnalyzer);
           } else
