@@ -365,10 +365,8 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symbollesseqqgtr" />
         <toolbarbutton id ="symbolgtreqqless" />
         <toolbarbutton id ="symbolvarpropto" />
-<!-- AMS <id ="symbolsmallsmile" toolbarbutton label="&#x2323;" tooltiptext="&symbolsmallsmile.tooltip;"              msivalue="&#x2323;"
-           observes="cmd_MSIsymbolCmd"/> -->
-<!-- AMS <id ="symbolsmallfrown" toolbarbutton label="&#x2322;" tooltiptext="&symbolsmallfrown.tooltip;"              msivalue="&#x2322;"
-           observes="cmd_MSIsymbolCmd"/> -->
+        <toolbarbutton id ="symbolsmallsmile" />
+        <toolbarbutton id ="symbolsmallfrown" />
         <toolbarbutton id ="symbolSubset" />
         <toolbarbutton id ="symbolSupset" />
         <toolbarbutton id ="symbolsubseteqq" />
@@ -383,10 +381,8 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symboleqsim" />
         <toolbarbutton id ="symbollessdot" />
         <toolbarbutton id ="symbolgtrdot" />
-   <!-- <toolbarbutton id ="symbolshortmid" label="&#2223;" tooltiptext="&symbolshortmid.tooltip;"              msivalue="&#02223;"
-           observes="cmd_MSIsymbolCmd"/>  
-        <toolbarbutton id ="symbolshortparallel" label="&#x2225;" tooltiptext="&symbolshortparallel.tooltip;"              msivalue="&#x2225;"
-           observes="cmd_MSIsymbolCmd"/> -->
+        <toolbarbutton id ="symbolshortmid" />  
+        <toolbarbutton id ="symbolshortparallel" />
          <toolbarbutton id ="symbolthicksim" /> 
         <toolbarbutton id ="symbolthickapprox" /> 
         <toolbarbutton id ="symbolapproxeq" />
@@ -1249,10 +1245,14 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolvarpropto" label="&#x221D;" tooltiptext="&symbolvarpropto.tooltip;"              msivalue="&#x221D;"
            observes="cmd_MSIsymbolCmd"/>
-<!-- AMS <id ="symbolsmallsmile" toolbarbutton label="&#x2323;" tooltiptext="&symbolsmallsmile.tooltip;"              msivalue="&#x2323;"
-           observes="cmd_MSIsymbolCmd"/> -->
-<!-- AMS <id ="symbolsmallfrown" toolbarbutton label="&#x2322;" tooltiptext="&symbolsmallfrown.tooltip;"              msivalue="&#x2322;"
-           observes="cmd_MSIsymbolCmd"/> -->
+   <toolbarbutton id ="symbolsmallsmile"  tooltiptext="&symbolsmallsmile.tooltip;"              msivalue="&#x2323;"
+           observes="cmd_MSIsymbolCmd">
+           <label>
+              <math xmlns="http://www.w3.org/1998/Math/MathML"><mo style="font-size: smaller">&#x2323;</mo></math>
+           </label>
+           </toolbarbutton> 
+        <toolbarbutton id ="symbolsmallfrown" label="&#x2322;" tooltiptext="&symbolsmallfrown.tooltip;"              msivalue="&#x2322;"
+           observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolSubset" label="&#x22D0;" tooltiptext="&symbolSubset.tooltip;"              msivalue="&#x22D0;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolSupset" label="&#x22D1;" tooltiptext="&symbolSupset.tooltip;"              msivalue="&#x22D1;"
@@ -1281,10 +1281,10 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgtrdot" label="&#x22D7;" tooltiptext="&symbolgtrdot.tooltip;"              msivalue="&#x22D7;"
            observes="cmd_MSIsymbolCmd"/>
-   <!-- <toolbarbutton id ="symbolshortmid" label="&#2223;" tooltiptext="&symbolshortmid.tooltip;"              msivalue="&#02223;"
+       <toolbarbutton id ="symbolshortmid" label="&#2223;" tooltiptext="&symbolshortmid.tooltip;"              msivalue="&#02223;"
            observes="cmd_MSIsymbolCmd"/>  
         <toolbarbutton id ="symbolshortparallel" label="&#x2225;" tooltiptext="&symbolshortparallel.tooltip;"              msivalue="&#x2225;"
-           observes="cmd_MSIsymbolCmd"/> -->
+           observes="cmd_MSIsymbolCmd"/>
          <toolbarbutton id ="symbolthicksim" label="&#x223C;" tooltiptext="&symbolthicksim.tooltip;"              msivalue="&#x223C;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolthickapprox" label="&#x2248;" tooltiptext="&symbolthickapprox.tooltip;"              msivalue="&#x2248;"
@@ -1629,8 +1629,12 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symbolbackprime" label="&#x2035;" tooltiptext="&symbolbackprime.tooltip;"       msivalue="&#x2035;"
            observes="cmd_MSIsymbolCmd"/>
            <!--JLF -> BBM, emptyset and varnothing resolve to the same character.  See Unicode Standard chart.-->
-        <toolbarbutton id ="symbolemptyset" label="&#x2205;" tooltiptext="&symbolemptyset.tooltip;"       msivalue="&#x2205;"
-           observes="cmd_MSIsymbolCmd"/>
+        <toolbarbutton id ="symbolemptyset" tooltiptext="&symbolemptyset.tooltip;"       msivalue="&#x2205;"
+           observes="cmd_MSIsymbolCmd">
+                      <label>
+              <math xmlns="http://www.w3.org/1998/Math/MathML"><m style="font-family: STIXVariants">&#x2205;</m></math>
+           </label>
+        </toolbarbutton>
         <toolbarbutton id ="symbolvarnothing" label="&#x2205;" tooltiptext="&symbolvarnothing.tooltip;"       msivalue="&#x2205;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolnabla" label="&#x2207;" tooltiptext="&symbolnabla.tooltip;"           msivalue="&#x2207;"
@@ -1769,7 +1773,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolpmtxt" label="&#x00B1;" tooltiptext="&symbolpm.tooltip;"       msivalue="&#x00B1;"
            observes="cmd_MSItextCmd"/>
-        <toolbarbutton id ="symboldiv" label="&#x00F7;" tooltiptext="&symboldiv.tooltip;"       msivalue="&#x00F7;"
+         <toolbarbutton id ="symboldiv" label="&#x00F7;" tooltiptext="&symboldiv.tooltip;"          msivalue="&#x00F7;"
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboltextonesuperior" label="&#x00B9;" tooltiptext="&symboltextonesuperior.tooltip;"       msivalue="&#x00B9;"
            observes="cmd_MSItextCmd"/>
