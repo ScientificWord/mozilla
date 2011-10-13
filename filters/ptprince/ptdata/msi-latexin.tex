@@ -5164,59 +5164,9 @@
 \def\@textsuperscript#1{%
   {\m@th\ensuremath{^{\mbox{\fontsize\sf@size\z@#1}}}}}
 \newdimen\footnotesep
-%%%\def\footnote{\@ifnextchar[\@xfootnote{\stepcounter\@mpfn
-%%%     \protected@xdef\@thefnmark{\thempfn}%
-%%%     \@footnotemark\@footnotetext}}
-%%%\def\@xfootnote[#1]{%
-%%%   \begingroup
-%%%     \csname c@\@mpfn\endcsname #1\relax
-%%%     \unrestored@protected@xdef\@thefnmark{\thempfn}%
-%%%   \endgroup
-%%%   \@footnotemark\@footnotetext}
-%%%\long\def\@footnotetext#1{\insert\footins{%
-%%%    \reset@font\footnotesize
-%%%    \interlinepenalty\interfootnotelinepenalty
-%%%    \splittopskip\footnotesep
-%%%    \splitmaxdepth \dp\strutbox \floatingpenalty \@MM
-%%%    \hsize\columnwidth \@parboxrestore
-%%%    \protected@edef\@currentlabel{%
-%%%       \csname p@footnote\endcsname\@thefnmark
-%%%    }%
-%%%    \color@begingroup
-%%%      \@makefntext{%
-%%%        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
-%%%    \color@endgroup}}%
-%%%\def\footnotemark{%
-%%%   \@ifnextchar[\@xfootnotemark
-%%%     {\stepcounter{footnote}%
-%%%      \protected@xdef\@thefnmark{\thefootnote}%
-%%%      \@footnotemark}}
-%%%\def\@xfootnotemark[#1]{%
-%%%   \begingroup
-%%%      \c@footnote #1\relax
-%%%      \unrestored@protected@xdef\@thefnmark{\thefootnote}%
-%%%   \endgroup
-%%%   \@footnotemark}
-%%%\def\@footnotemark{%
-%%%  \leavevmode
-%%%  \ifhmode\edef\@x@sf{\the\spacefactor}\nobreak\fi
-%%%  \@makefnmark
-%%%  \ifhmode\spacefactor\@x@sf\fi
-%%%  \relax}
-%%%\def\footnotetext{%
-%%%     \@ifnextchar [\@xfootnotenext
-%%%       {\protected@xdef\@thefnmark{\thempfn}%
-%%%    \@footnotetext}}
-%%%\def\@xfootnotenext[#1]{%
-%%%  \begingroup
-%%%     \csname c@\@mpfn\endcsname #1\relax
-%%%     \unrestored@protected@xdef\@thefnmark{\thempfn}%
-%%%  \endgroup
-%%%  \@footnotetext}
 \def\@mpfn{footnote}
 \def\thempfn{\thefootnote}
-%%% From File: ltidxglo.dtx
-\message{index,}
+
 \def\makeindex{%
   \newwrite\@indexfile
   \immediate\openout\@indexfile=\jobname.idx
@@ -5236,10 +5186,12 @@
 
 %<indexitem req="varioref" pri="asdf" sec="fff"/>
 
-\def\index#1{\msihmode\msitag{<indexitem req="varioref" pri="#1"/>}}
+\def\index#1{%
+  \msihmode
+  \msitag{<indexitem req="varioref"><prisec>#1</prisec></indexitem>}%
+}
 
 
-%%\def\@index#1{\endgroup\@esphack}
 \def\makeglossary{%
   \newwrite\@glossaryfile
   \immediate\openout\@glossaryfile=\jobname.glo

@@ -310,9 +310,9 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement)
     } 
   } 
 }
+ 
 
-
-const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+// const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 var gComputeStringBundle;
 
@@ -3055,13 +3055,23 @@ function doComputeMapMuPADName(editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
 
-  msiComputeLogger.Sent("Map MuPAD Name","");
+  msiComputeLogger.Sent("Define MuPAD Name","");
 
   var o = new Object();
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
-   
+  
+  if (o.Cancel)
+    return;
+
+  var swpname = o.swpname;
+  var mupname = o.mupname;
+  var infile = o.infile;
+  
+  var eng = GetCurrentEngine();
+  var res = eng.defineMupadName(swpname, mupname, infile);
+ 
   
 }
 
