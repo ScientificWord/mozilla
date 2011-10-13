@@ -88,6 +88,10 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
           rv = BT_MATRIX;
       } else if (ElementNameIs(base, "mover")) {
           rv = BT_MOVER;
+      } else if (ElementNameIs(base, "msub")) {
+          rv = BT_SUB;
+      } else if (ElementNameIs(base, "msup")) {
+          rv = BT_SUP;
       } else if (ElementNameIs(base, "mi")) {
           char zunit[256];
           zunit[0] = 0;
