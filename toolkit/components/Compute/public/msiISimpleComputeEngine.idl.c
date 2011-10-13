@@ -244,6 +244,12 @@ interface msiISimpleComputeEngine : nsISupports
   */
   void clearDefinitions();
 
+  /**
+   * Define a mupad name
+   */
+  void defineMupadName(in wstring swpname, in wstring mupname, in wstring loc, [retval] out wstring result);
+  
+
   /*
    * Vector Basis. Kind of a define, kind of a user preference.
   */

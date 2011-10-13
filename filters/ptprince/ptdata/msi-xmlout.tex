@@ -723,20 +723,20 @@
 
 %\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
 
-\def\msi@begin@array{\begingroup\def\\{\char`\\\char`\\}\catcode`\&=11\string\begin{array}}
+\def\msi@begin@array{\begingroup\def\\{\char`\\\char`\\}\catcode`\&=12\string\begin{array}}
 \def\msi@end@array{\string\end{array}\endgroup}
 
 
 \def\MSIEqnarrayLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\\char`\\}\catcode`\&=11\msi@dollar=0\relax$$\string\begin{#1}}%
+  \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\\char`\\}\catcode`\&=12\msi@dollar=0\relax$$\string\begin{#1}}%
   \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}
 }
 
 
 
 \def\MSISplitLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\ifmmode\else\bgroup\msi@dollar=0\relax$$\fi\string\begin{#1}}%
-  \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\egroup\fi}
+  \@namedef{msi@begin@#1}{\bgroup\ifmmode\else\msi@dollar=0\relax$$\fi\string\begin{#1}\catcode`\&=11}%
+  \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\fi\egroup}
 }
 
 

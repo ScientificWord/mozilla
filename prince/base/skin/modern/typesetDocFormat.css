@@ -62,7 +62,7 @@
 }
 
 
-*[hidden="true"] {display:none;}
+*[hidden="true"] { fplay:none;}
 
 *[role="mn"] {border-style:solid;
   border-top-width:1px;

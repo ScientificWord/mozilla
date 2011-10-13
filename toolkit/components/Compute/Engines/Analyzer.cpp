@@ -194,8 +194,8 @@ SEMANTICS_NODE* AppendNewBucketRecord(U32 which_bucket, SEMANTICS_NODE* sem_chil
       SEMANTICS_NODE* contents = NULL;
       if (fromNode)
          contents = GetSemanticsFromNode(base, bucket, pAnalyzer);
-	  else
-	     contents = GetSemanticsList(base, bucket, pAnalyzer);
+	    else
+	       contents = GetSemanticsList(base, bucket, pAnalyzer);
 
 
       bucket->first_child = contents;
@@ -1456,7 +1456,9 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
       case BT_MATRIX:
       case BT_UNIT:
       case BT_FENCED:
-      case BT_NUMBER:{
+      case BT_NUMBER:
+      case BT_SUB:
+      case BT_SUP: {
           if (et == ET_POWER || et == ET_DIRECTION) {
             CreatePowerForm(base, base->next, snode, pAnalyzer);
           } else
@@ -3855,7 +3857,7 @@ void CreatePowerForm(MNODE* mml_base, MNODE* mml_power, SEMANTICS_NODE* snode, A
   // s_power->parent = power_bucket;
 
   snode->semantic_type = SEM_TYP_POWERFORM;
-  
+  mml_base -> next = NULL;
   AppendNewBucketRecord(MB_SCRIPT_BASE, NULL, snode, mml_base, true, pAnalyzer);
   AppendNewBucketRecord(MB_SCRIPT_UPPER, NULL, snode, mml_power, true, pAnalyzer);
 
