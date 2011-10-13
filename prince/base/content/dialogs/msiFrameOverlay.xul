@@ -51,7 +51,7 @@
           <hbox class="page" height="30px" style="background-color:rgb(90,90,90);width:150px;"/>
         </hbox>
         <hbox>
-          <hbox id="leftspacer" height="1px" width="60px"/> <!-- width is 60 + min(0, left margin) -->
+          <hbox id="leftspacer" height="1px" width="60px"/> <!-- width is 60 + left margin -->
           <hbox id="leftpage" height="1px" class="page" style="background-color:rgb(90,90,90); width: 0px"/> 
             <!-- width is max(0,leftmargin) (scaled, of course)
             or, when on the right, it is 100 - contentwidth - mx -px -bx -->
@@ -95,12 +95,12 @@
           <hbox align="center">
             <menulist id = "textAlignment" value = "L" style="width: 10em" persist="value">
               <menupopup id = "alignments" >
-                <menuitem value="C" label="centered"/>
-                <menuitem value="J" label="justified"/>
-                <menuitem value="L" label="left"/>
-                <menuitem value="R" label="right"/>
-                <menuitem value="I" label="inside"/>
-                <menuitem value="O" label="outside"/>
+                <menuitem value="center" label="centered"/>
+                <menuitem value="justify" label="justified"/>
+                <menuitem value="left" label="left"/>
+                <menuitem value="right" label="right"/>
+                <menuitem value="inner" label="inside"/>
+                <menuitem value="outer" label="outside"/>
               </menupopup>
             </menulist>         
           </hbox>
@@ -254,7 +254,7 @@
             persist   = "value"/>
           </hbox>
         </row>
-        <row>
+        <!-- row>
           <hbox/>
           <hbox>
             <description value="Left" align="center" observes="role-image"/>
@@ -302,7 +302,7 @@
             onchange  = "update(this.id);"
             value     = "0"
             persist   = "value"/>
-        </row>
+        </row -->
       </rows>
     </grid>    
   </vbox>
