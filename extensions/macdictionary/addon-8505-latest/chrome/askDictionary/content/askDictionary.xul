@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<?xml-stylesheet href="chrome://askDictionary/skin/askDictionary.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://askDictionary/locale/askDictionary.dtd">
+
+<overlay id="askDictionary" 
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="askDictionary.js" />
+	<script type="application/x-javascript">
+		<![CDATA[
+	    	window.addEventListener("load", eu.sevendiamonds.askDictionary.load, false);
+		]]>
+	</script>
+	<menubar id="msiEditorContentContext">
+			<menuitem id="ask-dictionary" 
+				class="menuitem-iconic"
+				label="&askdictionary.contextmenu.label;" 
+				oncommand="eu.sevendiamonds.askDictionary.ask()" />
+	</menubar>
+</overlay>
