@@ -2179,7 +2179,8 @@ function doComputeCompanionMatrix(math, vars, editorElement, cmd, cmdHandler)
     ComputeCursor(editorElement);
     var out = GetCurrentEngine().companionMatrix(mathstr,vars);
     msiComputeLogger.Received(out);
-    appendResult(out,"<mo>=</mo>",math, editorElement);
+    appendLabeledResult(out, GetComputeString("Companion.fmt"), math, editorElement);
+    //appendResult(out,"<mo>=</mo>",math, editorElement);
     RestoreCursor(editorElement);
     done = true;
   } catch(ex) {
