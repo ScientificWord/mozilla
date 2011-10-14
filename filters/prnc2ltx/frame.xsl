@@ -13,7 +13,7 @@
   <xsl:if test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="@units"/>} </xsl:if>
   <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>} </xsl:if>
 <xsl:choose>
-  <xsl:when test="@pos='float' and (@placelocation='h' or @placelocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\begin{wrapfigure}             
+  <xsl:when test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\begin{wrapfigure}             
     <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
     <xsl:choose>
       <xsl:when test="@placement='I'">{i}</xsl:when>
@@ -31,8 +31,8 @@
         </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>}</xsl:when>
-    <xsl:when test="@pos='float' and (@placement='full' or (@placelocation!='h' and @placelocation!='H'))"></xsl:when>
-    <xsl:when test="@pos='display'"></xsl:when></xsl:choose>
+  <xsl:when test="@pos='float' and ((@placement='full') or ((@placeLocation !='h') and (@placeLocation !='H')))">\begin{figure}[<xsl:value-of select="@placeLocation"></xsl:value-of>]<xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\begin{center}</xsl:if></xsl:when>
+  <xsl:when test="@pos='display'">\begin{center}</xsl:when></xsl:choose>
 <xsl:if test="@rotation='rot90'">\begin{turn}{-90}</xsl:if>
 <xsl:if test="@rotation='rot270'">\begin{turn}{90}</xsl:if>
 \fcolorbox<xsl:if test="@border-color"><xsl:choose
@@ -58,7 +58,11 @@
   <xsl:when test="@textalignment='justify'"></xsl:when>
   <xsl:when test="@textalignment='left'">\end{FlushLeft}</xsl:when>
   <xsl:when test="@textalignment='right'">\end{FlushRight}</xsl:when></xsl:choose
->\end{minipage}}<xsl:if test="@rotation!='rot0'">\end{turn}</xsl:if>\end{wrapfigure}
+>\end{minipage}}<xsl:if test="@rotation!='rot0'">\end{turn}</xsl:if
+><xsl:if test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\end{wrapfigure}</xsl:if
+><xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\end{center}</xsl:if
+><xsl:if test="@pos='float' and (@placement='full' or (@placeLocation!='h' and @placeLocation!='H'))">\end{figure}</xsl:if
+><xsl:if test="@pos='display'">\end{center}</xsl:if>
 </xsl:template>
 		  
 </xsl:stylesheet>
