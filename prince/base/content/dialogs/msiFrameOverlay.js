@@ -659,7 +659,11 @@ function setFrameAttributes(frameNode)
   frameNode.setAttribute("units",metrics.unit);
   frameNode.setAttribute("msi_resize","true");
   rot = gFrameTab.rotationList.value;
-	if (rot !=="rot0")
+	if (rot ==="rot0")
+	{
+		frameNode.removeAttribute("rotation");
+	}
+	else
 	{
 		frameNode.setAttribute("rotation", rot);
 	}
