@@ -43,6 +43,8 @@ function Startup(){
 //  }                                                                         
   graph.setGraphAttribute("plotnumber", firstActivePlot.toString());
 
+  initKeyList();
+  
   var editorControl = document.getElementById("plotDlg-content-frame");
 //  var docObserver = new Object();
 //  docObserver.mObserver = msiEditorDocumentObserverG;
@@ -860,4 +862,10 @@ function GetGraphColor (attributeName)
 
   var color = colorObj.TextColor;
   graph.setGraphAttribute (attributeName, color);
+}
+
+function initKeyList()
+{
+  gDialog.markerList = new msiKeyMarkerList(window);
+  gDialog.markerList.setUpTextBoxControl(document.getElementById("key"));
 }

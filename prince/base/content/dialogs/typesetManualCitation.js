@@ -43,8 +43,9 @@ function InitDialog()
 //  fillKeysListbox();
   
   gDialog.markerList = new msiBibItemKeyMarkerList(window);
-  var keyString = gDialog.markerList.getIndexString();
-  document.getElementById("keysAutoCompleteBox").setAttribute("autocompletesearchparam", keyString);
+  gDialog.markerList.setUpTextBoxControl(document.getElementById("keysAutoCompleteBox"));
+//  var keyString = gDialog.markerList.getIndexString();
+//  document.getElementById("keysAutoCompleteBox").setAttribute("autocompletesearchparam", keyString);
   document.getElementById("keysAutoCompleteBox").value = gDialog.key;
   
 //  var theStringSource = "<bold>" + gDialog.remark + "</bold>";
