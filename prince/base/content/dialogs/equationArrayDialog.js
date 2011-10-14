@@ -35,9 +35,11 @@ function Startup()
   // Fill dialog.
 //  dump("In equationArrayDialog.Startup, before new msiMarkerList\n");
   gDialog.markerList = new msiKeyMarkerList(window);
-  var keyString = gDialog.markerList.getIndexString();
-  gDialog.wholeDisplayKeyList.setAttribute("autocompletesearchparam", keyString);
-  gDialog.lineKeyList.setAttribute("autocompletesearchparam", keyString);
+  gDialog.markerList.setUpTextBoxControl(gDialog.wholeDisplayKeyList);
+  gDialog.markerList.setUpTextBoxControl(gDialog.lineKeyList);
+//  var keyString = gDialog.markerList.getIndexString();
+//  gDialog.wholeDisplayKeyList.setAttribute("autocompletesearchparam", keyString);
+//  gDialog.lineKeyList.setAttribute("autocompletesearchparam", keyString);
 
   gDialog.lineNumberBox.setAttribute("min", 1);
   gDialog.lineNumberBox.setAttribute("max", data.numLines);
