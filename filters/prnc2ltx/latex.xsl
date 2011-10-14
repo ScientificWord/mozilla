@@ -888,11 +888,18 @@ should not be done under some conditions -->
         <xsl:value-of select="@customLabel" />
         <xsl:text>}</xsl:text>
       </xsl:if>
-      <xsl:if test="@marker and string-length(@marker)">
-        <xsl:text xml:space="preserve"> \label{</xsl:text>
-        <xsl:value-of select="@marker"/>
-        <xsl:text>}</xsl:text>
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="@key and string-length(@key)">
+          <xsl:text xml:space="preserve"> \label{</xsl:text>
+          <xsl:value-of select="@key"/>
+          <xsl:text>}</xsl:text>
+        </xsl:when>
+        <xsl:when test="@marker and string-length(@marker)">
+          <xsl:text xml:space="preserve"> \label{</xsl:text>
+          <xsl:value-of select="@marker"/>
+          <xsl:text>}</xsl:text>
+        </xsl:when>
+      </xsl:choose>
       <xsl:text xml:space="preserve">
 \end{equation</xsl:text>
       <xsl:if test="@numbering='none'">

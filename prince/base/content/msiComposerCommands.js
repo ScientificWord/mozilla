@@ -133,6 +133,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_showTeXFile", msiShowTeXFileCommand);
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
   commandTable.registerCommand("cmd_gotoparagraph", msiGoToParagraphCommand);
+  commandTable.registerCommand("cmd_gotomarker", msiGoToMarkerCommand);
   commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
   commandTable.registerCommand("cmd_reviseCrossRef", msiReviseCrossRefCommand);
 }
@@ -9363,6 +9364,32 @@ var msiGoToParagraphCommand =
   }
 };
 
+
+var msiGoToMarkerCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    result = true;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      window.openDialog('chrome://prince/content/gotomarker.xul','gotomarker', 'chrome,resizable,close,modal,titlebar',editorElement, this);
+      window.content.focus();
+    }
+  }
+};
 
 
 var msiWordCountCommand =
