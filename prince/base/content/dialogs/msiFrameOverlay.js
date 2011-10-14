@@ -15,7 +15,7 @@ var paddingAtt = "padding";
 var borderAtt = "border";
 var widthAtt = "width";
 var heightAtt = "height";
-var metrics;
+var metrics = {margin:{}, border: {}, padding: {}};
 var role;
 
 function setHasNaturalSize(istrue)
@@ -35,7 +35,8 @@ function setHasNaturalSize(istrue)
 function updateMetrics()
 {
 	// this function takes care of the mapping in the cases where there are constraints on margins, padding, etc.
-  if (gFrameModeImage)
+  var sub;
+	if (gFrameModeImage)
 	{
 	  var overhangDirection;
 	  if (position = 1) 
@@ -46,47 +47,47 @@ function updateMetrics()
 		{
 			overhangDirection = "right";
 		}
-		metrics = {
-		 	margin: { top: Dg.marginInput.top.value,
-								bottom : Dg.marginInput.top.value,
-								right: (overhangDirection == "right"? -Number(Dg.marginInput.right.value):Number(Dg.marginInput.left.value)),
-								left:  (overhangDirection == "left" ? -Number(Dg.marginInput.right.value):Number(Dg.marginInput.left.value))	},
-	    padding:{ top: 		Dg.paddingInput.left.value, 
-								right: 	Dg.paddingInput.left.value, 
-								bottom: Dg.paddingInput.left.value,   
-								left: 	Dg.paddingInput.left.value },
-	    border: { top: 		Dg.borderInput.left.value, 
-								right: 	Dg.borderInput.left.value, 
-								bottom: Dg.borderInput.left.value, 
-								left: 	Dg.borderInput.left.value },
-	    innermargin: 0,  // temporary, assigned to left or right margin, depending on placement
-	    outermargin: 0,  // negative for an overhang
-	    unit: frameUnitHandler.currentUnit		            
-		}
+		sub = metrics.margin;
+		sub.top    = sub.bottom = Dg.marginInput.top.value;
+		sub.right  = (overhangDirection == "right"? -Number(Dg.marginInput.right.value):Number(Dg.marginInput.left.value));
+		sub.left   = (overhangDirection == "left" ? -Number(Dg.marginInput.right.value):Number(Dg.marginInput.left.value));
+	  sub = metrics.padding;
+		sub.top    = sub.right  = sub.bottom = sub.left   = Dg.paddingInput.left.value;
+	  sub = metrics.border;
+	  sub.top    = sub.right  = sub.bottom = sub.left   = Dg.borderInput.left.value;
+	  metrics.innermargin = metrics.outermargin = 0;  
+	  metrics.unit = frameUnitHandler.currentUnit;		            
 	}
 	else
-		metrics = { // the metrics of the frame as currently represented by the dialog
-	    margin:   { top: 		Dg.marginInput.top.value,
-									right: 	Dg.marginInput.right.value, 
-									bottom: Dg.marginInput.bottom.value, 
-									left: 	Dg.marginInput.left.value },
-	    padding:  { top: 		Dg.paddingInput.top.value, 
-									right: 	Dg.paddingInput.right.value, 
-									bottom: Dg.paddingInput.bottom.value, 
-									left: 	Dg.paddingInput.left.value },
-	    border:   { top: 		Dg.borderInput.top.value, 
-									right: 	Dg.borderInput.right.value, 
-									bottom: Dg.borderInput.bottom.value, 
-									left: 	Dg.borderInput.left.value },
-	    innermargin: 0,  // temporary, assigned to left or right margin, depending on placement
-	    outermargin: 0,  // negative for an overhang
-	    unit: frameUnitHandler.currentUnit
-	  }
-	
+	{
+		sub = metrics.margin;		
+	  sub.top =    Dg.marginInput.top.value;
+		sub.right =  Dg.marginInput.right.value; 
+		sub.bottom = Dg.marginInput.bottom.value; 
+		sub.left =   Dg.marginInput.left.value;
+		sub = metrics.padding;
+	  sub.top =    Dg.paddingInput.top.value; 
+		sub.right =  Dg.paddingInput.right.value; 
+		sub.bottom = Dg.paddingInput.bottom.value; 
+		sub.left =   Dg.paddingInput.left.value;
+		sub = metrics.border;
+	  sub.top =    Dg.borderInput.top.value; 
+		sub.right =  Dg.borderInput.right.value; 
+		sub.bottom = Dg.borderInput.bottom.value; 
+		sub.left =   Dg.borderInput.left.value;
+	  metrics.innermargin = metrics.outermargin = 0;  
+	  metrics.unit = frameUnitHandler.currentUnit;		            
+	}
 }
 
 function initFrameTab(dg, element, newElement)
 {
+  var i;
+  var len;
+  var j;
+  var len2;
+  var values;
+  var width = 0;
   Dg = dg;
   frameUnitHandler = new UnitHandler();
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
@@ -132,6 +133,7 @@ function initFrameTab(dg, element, newElement)
   dg.colorWell            = document.getElementById("colorWell");
   dg.bgcolorWell          = document.getElementById("bgcolorWell");
   dg.textAlignment				= document.getElementById("textAlignment");
+  dg.rotationList					= document.getElementById("rotationList");
   dg.placementRadioGroup  = document.getElementById("placementRadioGroup");
   dg.placeForceHereCheck  = document.getElementById("placeForceHereCheck");
   dg.placeHereCheck       = document.getElementById("placeHereCheck");
@@ -142,11 +144,11 @@ function initFrameTab(dg, element, newElement)
   dg.OkButton             = document.documentElement.getButton("accept");
   var fieldList = [];
   var attrs = ["margin","border","padding"];
-  for (var side in sides)
+  for (i=0, len = sides.length; i<len; i++)
   {
-    for (var attr in attrs)
+    for (j = 0, len2 = attrs.length; j < len2; j++)
     {
-      fieldList.push(dg[attrs[attr]+"Input"][sides[side].toLowerCase()]);
+      fieldList.push(dg[attrs[j]+"Input"][sides[i].toLowerCase()]);
     }
   }
   fieldList.push(dg.heightInput);
@@ -158,15 +160,6 @@ function initFrameTab(dg, element, newElement)
   if (!newElement)
   {   // we need to initialize the dg from the frame element
     frameUnitHandler.setCurrentUnit(element.getAttribute("units"));
-    var i;
-    var values = [0,0,0,0];
-    for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
-      if (dg.frameUnitMenulist.getItemAtIndex(i).value === frameUnitHandler.currentUnit)
-      {
-        dg.frameUnitMenulist.selectedIndex = i;
-        break;
-      }
-    var width = 0;
     if (element.hasAttribute(widthAtt)) width = element.getAttribute(widthAtt);
     if (Number(width) > 0)
     {
@@ -182,22 +175,60 @@ function initFrameTab(dg, element, newElement)
       dg.autoHeightCheck.checked = false;
     }
     else dg.autoHeightCheck.checked = true;
-
-    if (element.hasAttribute(marginAtt))
-      { values = parseLengths(element.getAttribute(marginAtt));}
-    for (i = 0; i<4; i++)
-      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
-    values = [0,0,0,0];
-    if (element.hasAttribute(borderAtt))
-      { values = parseLengths(element.getAttribute(borderAtt));}
-    for (i = 0; i<4; i++)
-      { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
-    values = [0,0,0,0];
-    if (element.hasAttribute(paddingAtt))
-      { values = parseLengths(element.getAttribute(paddingAtt));}
-    for (i = 0; i<4; i++)
-      { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
-    var placeLocation = element.getAttribute("placeLocation");
+    for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
+		{
+      if (dg.frameUnitMenulist.getItemAtIndex(i).value === frameUnitHandler.currentUnit)
+      {
+        dg.frameUnitMenulist.selectedIndex = i;
+        break;
+      }
+		}	
+		if (gFrameModeImage) 
+		{
+		  placement = element.getAttribute("placment");
+			if (placement == "L")
+			{
+				position = 1;  // left = 1, right = 2, neither = 0
+			}
+			else if (placement == "R")
+			{
+				position = 2;
+			}
+			var overhang = element.getAttribute("overhang");
+			if (overhang == null) overhang = 0;
+			dg.marginInput.right.value = overhang;
+			var sidemargin = element.getAttribute("sidemargin");
+			if (sidemargin == null) sidemargin = 0;
+			dg.marginInput.left.value = sidemargin;
+			var topmargin = element.getAttribute("topmargin");
+			if (topmargin == null) topmargin = 0;
+			dg.marginInput.top.value = topmargin;
+			var borderwidth = element.getAttribute("border-width");
+			if (borderwidth == null) borderwidth = 0;
+			dg.borderInput.left.value = borderwidth;
+			var padding = element.getAttribute("padding");
+			if (padding == null) padding = 0;
+			dg.paddingInput.left.value = padding;
+		}  
+		else
+		{
+	    values = [0,0,0,0];
+	    if (element.hasAttribute(marginAtt))
+	      { values = parseLengths(element.getAttribute(marginAtt));}
+	    for (i = 0; i<4; i++)
+	      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
+	    values = [0,0,0,0];
+	    if (element.hasAttribute(borderAtt))
+	      { values = parseLengths(element.getAttribute(borderAtt));}
+	    for (i = 0; i<4; i++)
+	      { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
+	    values = [0,0,0,0];
+	    if (element.hasAttribute(paddingAtt))
+	      { values = parseLengths(element.getAttribute(paddingAtt));}
+	    for (i = 0; i<4; i++)
+	      { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
+    }
+		var placeLocation = element.getAttribute("placeLocation");
     if (!placeLocation)
       placeLocation = "";
     dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
@@ -210,16 +241,12 @@ function initFrameTab(dg, element, newElement)
     if (!dg.herePlacementRadioGroup.value)
       dg.herePlacementRadioGroupValue = "full";  //as in the default below
     switch (dg.herePlacementRadioGroup.value) {
-//      case "l":
       case "L": dg.herePlacementRadioGroup.selectedIndex = 0;
                 break;
-//      case "r":
       case "R": dg.herePlacementRadioGroup.selectedIndex = 1;
                 break;
-//      case "i":
       case "I": dg.herePlacementRadioGroup.selectedIndex = 2;
                 break;
-//      case "o":
       case "O": dg.herePlacementRadioGroup.selectedIndex = 3;
                 break;
       default:  dg.herePlacementRadioGroup.selectedIndex = 4;
@@ -621,7 +648,8 @@ function hexcolor(rgbcolor)
 
 function setFrameAttributes(frameNode)
 {
-  metrics.unit = frameUnitHandler.currentUnit;
+  var rot;
+	metrics.unit = frameUnitHandler.currentUnit;
   if (metrics.unit == "px") // switch to pts
   {
     var el = {value: "pt"};
@@ -630,7 +658,12 @@ function setFrameAttributes(frameNode)
   }
   frameNode.setAttribute("units",metrics.unit);
   frameNode.setAttribute("msi_resize","true");
-  frameNode.setAttribute("req", "boxedminipage");
+  rot = gFrameTab.rotationList.value;
+	if (rot !=="rot0")
+	{
+		frameNode.setAttribute("rotation", rot);
+	}
+  frameNode.setAttribute("req", "ragged2e");
   if (gFrameModeImage) {
     var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
     frameNode.setAttribute("sidemargin", sidemargin);
@@ -638,8 +671,39 @@ function setFrameAttributes(frameNode)
     frameNode.setAttribute("topmargin", topmargin);
     var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
 		frameNode.setAttribute("overhang", overhang);
+		var marginArray = [];
+		marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
+		marginArray[2] = marginArray[0];
+		if (position == 1) //left
+		{
+			if (overhang < 0) marginArray[3] = -frameUnitHandler.getValueAs(overhang,"px");
+			else
+			{
+				marginArray[3] = 0;
+			}
+			marginArray[1] = frameUnitHandler.getValueAs(sidemargin,"px");
+		}
+		else if (position == 2) // right
+		{
+			if (overhang < 0) marginArray[1] = -frameUnitHandler.getValueAs(overhang,"px");
+			else
+			{
+				marginArray[1] = 0;
+			}
+			marginArray[3] = frameUnitHandler.getValueAs(sidemargin,"px");
+		}
+		else
+		{
+			marginArray[1] = marginArray[3] = 0;
+		}
+		setStyleAttributeOnNode(frameNode, "margin", marginArray.join("px ")+"px");
   }
-  else frameNode.setAttribute("margin", getCompositeMeasurement("margin", metrics.unit, false));  
+  else 
+	{
+    var style = getCompositeMeasurement("margin","px", true);
+    setStyleAttributeOnNode(frameNode, "margin", style);
+		frameNode.setAttribute("margin", getCompositeMeasurement("margin", metrics.unit, false));
+	}  
   if (gFrameModeImage) {
     var borderwidth = getSingleMeasurement("border", "Left", metrics.unit, false);
     frameNode.setAttribute("border-width", borderwidth);
@@ -673,6 +737,7 @@ function setFrameAttributes(frameNode)
   frameNode.setAttribute("background-color", hexcolor(arr[1]));  
 	msiRequirePackage(gFrameTab.editorElement, "xcolor", "");
 	frameNode.setAttribute("textalignment", gFrameTab.textAlignment.value );
+	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value)
   if (document.getElementById("inline").selected)
     setStyleAttributeOnNode(frameNode, "display", "inline");
   else setStyleAttributeOnNode(frameNode, "display", "block");
@@ -714,8 +779,6 @@ function setFrameAttributes(frameNode)
       else if (floatparam == "O" || floatparam=="R") floatparam = "right";
 			else floatparam = "none";
       setStyleAttributeOnNode(frameNode, "float", floatparam);
-      var style = getCompositeMeasurement("margin","px", true);
-      setStyleAttributeOnNode(frameNode, "margin", style);
 	    if (floatparam == "right") side = "Right";
 	    else if (floatparam == "left") side = "Left";
 			else side = null;
