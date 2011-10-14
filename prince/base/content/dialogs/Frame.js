@@ -51,6 +51,10 @@ function onOK() {
 	}
   setFrameAttributes(msiframe);
 	editor.endTransaction();
+	if (isNewNode)
+	{
+		editor.selection.collapse(para,0);
+	}
   return(true);
 }
 

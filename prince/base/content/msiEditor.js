@@ -2786,13 +2786,15 @@ function EditorClick(event)
       var obj = event.target.getElementsByTagName("obj")[0];
       if (obj != null) {
         doVCamInitialize(obj);
-//        vcamActive = true;
       }
     }
-    else if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden") !==true) 
-    {
-      document.getElementById("vcamactive").setAttribute("hidden",true);
-    }
+    else
+		{
+			if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false") 
+	    {
+	      document.getElementById("vcamactive").setAttribute("hidden",true);
+	    }
+		}
   }
 
 //  event.currentTarget should be "body" or something...
