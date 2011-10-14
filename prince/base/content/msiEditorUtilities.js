@@ -1102,11 +1102,13 @@ function insertXMLNodes(editor, nodeList, node, offset)
       node = node.parentNode;
     }
   }
+  
   var nodeListLength = nodeList.length;
   for (i = nodeListLength-1; i >= 0; --i)
   {
-    editor.insertNode( nodeList[i], node, offset );
+    editor.insertNode(nodeList[i], node, offset);
   }
+  editor.selection.collapse(node, offset+nodeListLength);   
 }
 
 function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
