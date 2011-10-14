@@ -2400,6 +2400,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
     infoStr += "disabled. The equation array is aligned ";
 
   msiEditorEnsureElementAttribute(displayNode, "marker", markerStr, editor);
+  msiEditorEnsureElementAttribute(displayNode, "id", markerStr, editor);
   msiEditorEnsureElementAttribute(displayNode, "subEquationNumbers", subEqAttrStr, editor);
   if (msiEditorEnsureElementAttribute(displayNode, "subEquationContinuation", subContAttrStr, editor))  //return of "true" means it changed
     checkSubEqnContinuation(displayNode);
@@ -2518,6 +2519,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
     msiEditorEnsureElementAttribute(rowNode, "customLabel", customLabelStr, editor);
     msiEditorEnsureElementAttribute(rowNode, "suppressAnnotation", suppAnnotationStr, editor);
     msiEditorEnsureElementAttribute(rowNode, "marker", markerStr, editor);
+    msiEditorEnsureElementAttribute(rowNode, "id", markerStr, editor);
     msiEditorEnsureElementAttribute(rowNode, "numbering", numberingStr, editor);
   }
 

@@ -131,15 +131,25 @@ function msiEditorOnLoad()
   }
 
   // get default character set if provided
-  if ("arguments" in window && window.arguments.length > 1 && window.arguments[1])
+  if ("arguments" in window && window.arguments.length > 1)
   {
-    if (window.arguments[1].indexOf("charset=") != -1)
+    var arrayArgComponents;
+    if (window.arguments[1] && window.arguments[1].indexOf("charset=") != -1)
     {
-      var arrayArgComponents = window.arguments[1].split("=");
+      arrayArgComponents = window.arguments[1].split("=");
       if (arrayArgComponents)
       {
         // Put argument where EditorStartup expects it.
         document.getElementById( "args" ).setAttribute("charset", arrayArgComponents[1]);
+      }
+    }
+    if ((window.arguments.length > 2) && window.arguments[2] && window.arguments[2].indexOf("initialMarker=") != -1)
+    {
+      arrayArgComponents = window.arguments[2].split("=");
+      if (arrayArgComponents)
+      {
+        // Put argument where EditorStartup expects it.
+        document.getElementById( "args" ).setAttribute("initialMarker", arrayArgComponents[1]);
       }
     }
   }
