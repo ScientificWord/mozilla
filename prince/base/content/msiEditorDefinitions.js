@@ -41,6 +41,7 @@ const kOutputWrap = Components.interfaces.nsIDocumentEncoder.OutputWrap;
 
 const msIWebNavigation = Components.interfaces.nsIWebNavigation;
 const msIFilePicker = Components.interfaces.nsIFilePicker;
+const nsIAutoCompleteController = Components.interfaces.nsIAutoCompleteController;
 //
 //var gPreviousNonSourceDisplayMode = 1;
 var gEditorDisplayMode = -1;

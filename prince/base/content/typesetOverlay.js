@@ -1067,6 +1067,7 @@ function doReviseCrossReference(editorElement, xrefNode, dlgData)
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
   msiEditorEnsureElementAttribute(xrefNode, "key", dlgData.key, editor);
+  msiEditorEnsureElementAttribute(xrefNode, "id", dlgData.key, editor);
   msiEditorEnsureElementAttribute(xrefNode, "reftype", dlgData.refType, editor);
   msiEditorEnsureElementAttribute(xrefNode, "req", "varioref", editor);
   editor.endTransaction();
