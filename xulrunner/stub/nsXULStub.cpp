@@ -169,8 +169,8 @@ main(int argc, char **argv)
                      kCFStringEncodingUTF8);
   CFRelease(iniPathStr);
   
-  // iniPath = .../SWPPro.app/Contents/Resources/application.ini
-  // make greDIR = .../SWPPro.app/Contents/Frameworks/XUL.framework/libxpcom.dylib
+  // iniPath = .../SWP6.app/Contents/Resources/application.ini
+  // make greDIR = .../SWP6.app/Contents/Frameworks/XUL.framework/libxpcom.dylib
   // First move back 2 levels in the path
   strncpy( contentsPath, iniPath, sizeof(iniPath));
   lslash = strrchr( contentsPath, PATH_SEPARATOR_CHAR);

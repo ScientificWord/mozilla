@@ -127,7 +127,9 @@ enum BaseType {
     BT_TRANSFORM,
     BT_MOVER,
     BT_SUBARG_FUNCTION,
-    BT_ROW
+    BT_ROW,
+    BT_SUB,
+    BT_SUP
 };
 
 enum ExpType {

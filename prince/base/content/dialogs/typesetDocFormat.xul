@@ -32,6 +32,8 @@
     persist="screenX screenY width height"
     screenX="40"
     screenY="40"
+    width="520"
+    height="740"
     style="overflow:scroll;">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -87,19 +89,19 @@
           <separator/>
           <label>&warning.label2;</label>
         </vbox> 
-        <checkbox id="enablereformat" label="Enable overriding the document style" checked="false" control="reformatok"
+        <checkbox id="enablereformat" label="Enable overriding the document style" checked="false" control="reformatok" persist="checked"
           oncommand="enableDisableReformat(this.checked);enable(this);"/>                 
-        <broadcaster id="reformatok" disabled="true"/>
+        <broadcaster id="reformatok" disabled="true" persist="disabled"/>
         <groupbox>
           <caption>
             <label  observes="reformatok">TeX Implementation</label>
           </caption>   
-          <radiogroup id="texprogram" selectedIndex="0" value="pdflatex">
+          <radiogroup id="texprogram" selectedIndex="0" value="pdflatex" persist="value">
             <radio label="pdfLaTeX -- the classic" value="pdflatex" oncommand="setCompiler('pdflatex');"/>
             <radio value="xelatex" label="XeLaTeX-- a unicode ehancement of LaTeX for non-western languages, uses opentype fonts" oncommand="setCompiler('xelatex');"/>
           </radiogroup>
-          <broadcaster id="xelatex" hidden="true" onbroadcast="compileInfoChanged(this);"/>
-          <broadcaster id="pdflatex" hidden="false" onbroadcast="compileInfoChanged(this);"/>
+          <broadcaster id="xelatex" hidden="true" persist="hidden" onbroadcast="compileInfoChanged(this);"/>
+          <broadcaster id="pdflatex" hidden="false" persist="hidden" onbroadcast="compileInfoChanged(this);"/>
         </groupbox>
         <groupbox>
           <caption>
@@ -117,7 +119,7 @@
               <row align="end" style="height: 3em">
                 <vbox>
                   <label observes="reformatok" value="Page Orientation"/>
-                  <menulist observes="reformatok" id="pgorient" minwidth="6em">
+                  <menulist observes="reformatok" id="pgorient" persist="value" minwidth="6em">
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="port" label="Portrait"/>
@@ -127,7 +129,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Paper Size"/>
-                  <menulist observes="reformatok" id="papersize">
+                  <menulist observes="reformatok" id="papersize" persist="value">
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="letter" label="8.5x11 in."/>
@@ -141,7 +143,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Sides"/>
-                  <menulist observes="reformatok" id="sides">
+                  <menulist observes="reformatok" id="sides" persist="value">
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="oneside" label="One"/>
@@ -151,7 +153,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Quality"/>
-                  <menulist observes="reformatok" id="qual" style="width: 9em" >
+                  <menulist observes="reformatok" id="qual" style="width: 9em" persist="value" >
                     <menupopup>
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="final" label="Final"/>
@@ -163,7 +165,7 @@
               <row align="end" style="height: 3em">
                 <vbox>
                   <label observes="reformatok" value="Columns"/>
-                  <menulist observes="reformatok" id="columns">
+                  <menulist observes="reformatok" id="columns"  persist="value" >
                     <menupopup style="width: 9em" oncommand="broadcastColCount();" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="1" label="One"/>
@@ -173,7 +175,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Title Page"/>
-                  <menulist observes="reformatok" id="titlepage">
+                  <menulist observes="reformatok" id="titlepage"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="titlepage" label="Title Page"/>
@@ -182,7 +184,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Body Text Font Size"/>
-                  <menulist observes="reformatok" id="textsize" >
+                  <menulist observes="reformatok" id="textsize"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="10pt" label="10 pt"/>
@@ -193,7 +195,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Leading in Points"/>
-                  <hbox><checkbox id="leadingcontrol" control="leading" checked="false" observes="reformatok" oncommand="enable(this);"/><textbox id="leading" disabled="true" default="12.0" value="-default-" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
+                  <hbox><checkbox id="leadingcontrol" control="leading" checked="false" observes="reformatok" oncommand="enable(this);"  persist="checked" /><textbox id="leading" disabled="true" default="12.0" value="-default-" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
                 </vbox>
               </row>
               <row>                
@@ -208,7 +210,7 @@
                       <!--observes element="reformatok" attribute="disabled"/ -->
                     </label>
                   </deck>      
-                  <menulist id="babelLang1" ><!--observes="reformatok" -->
+                  <menulist id="babelLang1"  persist="value" ><!--observes="reformatok" -->
                     <menupopup style="width: 12em"  >
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
                       <menuitem label="-default-" value="def" def="1"/>
@@ -297,7 +299,7 @@
                 </vbox>
                 <vbox>
                   <label ><!--observes="reformatok" -->Second Language</label>
-                  <menulist id="babelLang2" ><!--observes="reformatok" -->
+                  <menulist id="babelLang2"  persist="value" ><!--observes="reformatok" -->
                     <menupopup style="width: 12em">
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
                       <menuitem label="-default-" value="def" def="1"/>
@@ -404,7 +406,7 @@
               <row align="end" style="height: 3em">
                 <vbox>
                   <label observes="reformatok" value="Eqn Number Position"/>
-                  <menulist observes="reformatok" id="eqnnopos">
+                  <menulist observes="reformatok" id="eqnnopos"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="reqno" label="On the right"/>
@@ -414,7 +416,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Displayed Eqn Position"/>
-                  <menulist observes="reformatok" id="eqnpos">
+                  <menulist observes="reformatok" id="eqnpos"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="ceqn" label="Centered"/>
@@ -440,28 +442,24 @@
             </columns>
          
             <rows>
-              <row align="end" style="height: 3em">
-                <vbox align="center">
-                  <label observes="reformatok" value="Title Page"/>
-                  <checkbox id="title" observes="reformatok" align="center" checked="false"/>
-                </vbox>
+              <row>
                 <vbox align="center">
                   <label observes="reformatok" value="Table of Contents"/>
-                  <hbox ><checkbox id="toc" observes="reformatok" align="center" checked="false"/></hbox>
+                  <hbox ><checkbox id="toc" observes="reformatok" align="center" checked="false"  persist="checked" /></hbox>
                 </vbox>
                 <vbox align="center">
                   <label observes="reformatok" value="List of Figures"/>
-                  <checkbox id="lof" observes="reformatok" align="center" checked="false"/>
+                  <checkbox id="lof" observes="reformatok" align="center" checked="false"  persist="checked" />
                 </vbox>
                 <vbox align="center">
                   <label observes="reformatok" value="List of Tables"/>
-                  <hbox><checkbox id="lot" observes="reformatok" align="center" checked="false"/></hbox>
+                  <hbox><checkbox id="lot" observes="reformatok" align="center" checked="false"  persist="checked" /></hbox>
                 </vbox>
               </row>
               <row align="end" style="height: 3em">
                 <vbox>
                   <label observes="reformatok" value="Footnotes"/>
-                  <menulist id="footnoteorendnote" observes="reformatok" >
+                  <menulist id="footnoteorendnote" observes="reformatok"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem value="foot" label="Footnotes" def="1"/>
                       <menuitem value="end" label="Endnotes"/>
@@ -470,7 +468,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Bibliography Style"/>
-                  <menulist observes="reformatok" id="bibstyle">
+                  <menulist observes="reformatok" id="bibstyle"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="compbib" label="Compressed"/>
@@ -498,7 +496,7 @@
               <row align="end" style="height: 3em">
                 <vbox align="center">
                   <label observes="reformatok" value="Show Keys"/>
-                  <checkbox id="showkeys" observes="reformatok" align="center" checked="false"/>
+                  <checkbox id="showkeys" observes="reformatok" align="center" checked="false"  persist="checked" />
                  </vbox>
                  <!--vbox align="center">
                   <label observes="reformatok" value="Show Labels"/>
@@ -506,11 +504,11 @@
                 </vbox -->
                 <vbox align="center">
                   <label observes="reformatok" value="Show Index Entries"/>
-                  <checkbox id="showidx" observes="reformatok" align="center" checked="false"/>
+                  <checkbox id="showidx" observes="reformatok" align="center" checked="false"  persist="checked" />
                 </vbox>
                 <vbox align="center">
                   <label value="Line Spacing"  observes="reformatok"/>
-                  <menulist  id="linespacing" observes="reformatok">
+                  <menulist  id="linespacing" observes="reformatok"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem def="1" value="def" label="-default-"/>
                       <menuitem value="singlespacing" label="One"/>
@@ -519,13 +517,6 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-              <!--/row>
-              <row align="end" style="height: 3em" -->
-                <vbox>
-                  <label observes="reformatok" value="Magnification"  />
-                  <hbox><checkbox id="magnificationcontrol" control="magnification" observes="reformatok" oncommand="enable(this);" checked="false"/><textbox id="magnification" disabled="true" value="-default-" default="1.0" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
-                </vbox>
-                <vbox style="width: 9em;" />
               </row>
             </rows>
           </grid>
@@ -533,20 +524,19 @@
       </tabpanel>   
         <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
           <vbox>
-            <checkbox id="enablepagelayout" label="Enable overriding page layout"
-              oncommand="enableDisablePageLayout(this.checked);"/>                 
-            <broadcaster id="pagelayoutok" disabled="true"/>
+            <checkbox id="enablepagelayout" label="Enable overriding page layout" persist="checked" oncommand="enableDisablePageLayout(this.checked);"/>                 
+            <broadcaster id="pagelayoutok" disabled="true" persist="disabled"/>
             <hbox>
               <vbox flex="1">
                 <hbox maxheight="5em" minheight="3em" flex="1">
                   <vbox>
-                    <checkbox observes="pagelayoutok" id="twosides" checked="false" label="&docformatTwosided;" oncommand="setTwosidedState(this);"/>
-                    <broadcaster id="oneside" hidden="false" />
-                    <broadcaster id="twoside" hidden="true" />
+                    <checkbox observes="pagelayoutok" id="twosides" checked="false" label="&docformatTwosided;" oncommand="setTwosidedState(this);" persist="checked"/>
+                    <broadcaster id="oneside" hidden="false" persist="hidden"/>
+                    <broadcaster id="twoside" hidden="true"  persist="hidden"/>
                   </vbox>
                   <vbox>
                     <label observes="pagelayoutok">Orientation</label>
-                    <menulist observes="pagelayoutok" id="landscape" minwidth="5em">
+                    <menulist observes="pagelayoutok" id="landscape" minwidth="5em" persist="value">
                       <menupopup style="width: 9em" >
                         <menuitem value="port" label="Portrait"/>
                         <menuitem value="land" label="Landscape"/>
@@ -556,29 +546,28 @@
                   <vbox align="start">
                     <label observes="pagelayoutok">&docformatCentered;</label>
                     <checkbox  observes="pagelayoutok" id="vcenter" label="&docformatVert;"  
-                     oncommand="if (checked) document.getElementById('bc.vcenter').setAttribute('disabled',true);else document.getElementById('bc.vcenter').removeAttribute('disabled');layoutPage('all');"/>
-                    <broadcaster id="bc.vcenter" />
-                    <checkbox observes="pagelayoutok" id="hcenter" checked="false" label="&docformatHoriz;"  
-                     oncommand="if (checked) document.getElementById('bc.hcenter').setAttribute('disabled',true);else document.getElementById('bc.hcenter').removeAttribute('disabled');layoutPage('all');"/>
+                      persist="checked" oncommand="if (checked) document.getElementById('bc.vcenter').setAttribute('disabled',true);else document.getElementById('bc.vcenter').removeAttribute('disabled');layoutPage('all');"/>
+                    <broadcaster id="bc.vcenter"/>
+                    <checkbox observes="pagelayoutok" id="hcenter" checked="false" label="&docformatHoriz;"   persist="checked" oncommand="if (checked) document.getElementById('bc.hcenter').setAttribute('disabled',true);else document.getElementById('bc.hcenter').removeAttribute('disabled');layoutPage('all');"/>
                     <broadcaster id="bc.hcenter" />
                   </vbox>
                   <vbox>
                     <label observes="pagelayoutok">&docformatUnits;</label>
-                    <menulist observes="pagelayoutok" id="docformat.units" style="width: 5em"  
-                          oncommand="switchUnits();"  >
+                    <menulist observes="pagelayoutok" id="docformat.units" style="width: 8em"  
+                          oncommand="switchUnits();"  value="in" persist="value">
                      <menupopup>
                        <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
                        <menuitem id="docformat.cm" label="&docformatCentimeter;" value="cm"/>
-                       <menuitem id="docformat.pt" label="&docformatPoints;" value="pt"/>
                        <menuitem id="docformat.mm" label="&docformatMillimeter;" value="mm"/>
+                       <menuitem id="docformat.pt" label="&docformatPoints;" value="pt"/>
                      </menupopup>
                     </menulist>
                   </vbox>
                   <vbox>
                     <vbox>
                       <label observes="pagelayoutok" value="Columns"/>
-                      <menulist observes="pagelayoutok" id="columncount">
-                        <menupopup style="width: 6em" oncommand="broadcastColCount();">
+                      <menulist observes="pagelayoutok" id="columncount" persist="value">
+                        <menupopup style="width: 8em" oncommand="broadcastColCount();">
                           <menuitem value="1" label="One"/>
                           <menuitem value="2" label="Two"/>
                         </menupopup>
@@ -593,10 +582,10 @@
                       <observes element="multicolumn" attribute="hidden"/>
                       &docformatColSeparation;
                     </label>
-                    <textbox id="tbcolsep" type="number" style="width: 5em"
+                    <textbox id="tbcolsep" type="number" min="0" increment="0.1" decimalplaces="2" style="width: 5em"
                        onkeypress="geomHandleChar(event,'colsep', 'tbcolsep');layoutPage('colsep');" 
                        onchange="layoutPage('colsep');" onfocus="activate('colsep');" 
-                       onblur="deactivate('colsep');">
+                       onblur="deactivate('colsep');"  persist="value">
                       <observes element="pagelayoutok" attribute="disabled"/>
                       <observes element="multicolumn" attribute="hidden"/>
                     </textbox>
@@ -685,8 +674,8 @@
                         <label observes="pagelayoutok">&docformatfinishpageSize;</label>
                         <menulist observes="pagelayoutok" id="docformat.finishpagesize"
                           oncommand="changefinishpageSize(this);onWindowSizeReset(false);">
-                          <menupopup style="width: 7em;">
-                           <menuitem id="docformat.letter" label="&docformatLetter;" value="letter"/>
+                          <menupopup style="width: 7em;" persist="value">
+                           <menuitem id="docformat.letter" label="&docformatLetter;" value="letter" selected="true"/>
                            <menuitem id="docformat.a4" label="A4" value="a4"/>
                            <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
                            <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
@@ -712,7 +701,7 @@
                           <spacer flex="1"/>
                           <vbox>
                             <label observes="pagelayoutok" value="Page height"/>
-                            <hbox><textbox type="number" style="width: 5em" id="tbpageheight" observes="bc.finishpagesize" 
+                            <hbox><textbox type="number"  increment="0.1" decimalplaces="2" style="width: 5em" id="tbpageheight" observes="bc.finishpagesize"  persist="value"
                               onkeypress="geomHandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);onWindowSizeReset(false);" 
                               onchange="changePageDim(this);onWindowSizeReset(false);">
                               <observes element="pagelayoutok" attribute="disabled"/>
@@ -722,7 +711,7 @@
                           </vbox>
                           <vbox>
                             <label observes="pagelayoutok" value="Page width"/>
-                            <textbox id="tbpagewidth" type="number" style="width: 5em" observes="bc.finishpagesize" 
+                            <textbox id="tbpagewidth" type="number" increment="0.1" decimalplaces="2" style="width: 5em" observes="bc.finishpagesize"  persist="value" 
                               onkeypress="geomHandleChar(event,'pagewidth', 'tbpagewidth');changePageDim(this);onWindowSizeReset(false);" 
                               onchange="changePageDim(this);onWindowSizeReset(false);">
                               <observes element="pagelayoutok" attribute="disabled"/>
@@ -735,7 +724,7 @@
                         <checkbox observes="pagelayoutok" id="useCropmarks" label="Crop marks" oncommand="cropmarkRequest(this);"/>
                         <broadcaster id="cropmarks" hidden="true"/>
                         <broadcaster id="pageonpapercentered" hidden="true"/>
-                        <radiogroup id="cropGroup" orient="horizontal"  observes="cropmarks">
+                        <radiogroup id="cropGroup" orient="horizontal"  observes="cropmarks" persist="value">
                           <vbox>                        
                             <label observes="pagelayoutok" value="&camera.label;" control="camera"/> 
                             <radio observes="pagelayoutok" id="camera" value="cam" accesskey="&camera.accesskey;" selected="true"/>
@@ -754,7 +743,7 @@
                         <caption>
                           <label observes="pagelayoutok" value="&pageonpaper.label;"/>
                         </caption>
-                        <radiogroup id="pageonpaperlayout" orient="horizontal" observes="cropmarks" oncommand="centerCropmarks(this.value);">
+                        <radiogroup id="pageonpaperlayout" orient="horizontal" observes="cropmarks" oncommand="centerCropmarks(this.value);" persist="value">
                           <vbox>                        
                             <label observes="pagelayoutok" value="&pageonpaperupperleft.label;" control="popupperleft"/> 
                             <radio observes="pagelayoutok" id="popupperleft" value="upperleft" accesskey="popupperleft.accesskey;" selected="true"/>
@@ -771,9 +760,9 @@
                             &docformatpaperSize;
                           </label>
                         </caption>
-                        <menulist observes="pagelayoutok" id="docformat.papersize" oncommand="changepaperSize(this);">
+                        <menulist observes="pagelayoutok" id="docformat.papersize" oncommand="changepaperSize(this);" persist="value">
                           <menupopup style="width: 7em;">
-                           <menuitem label="&docformatLetter;" value="letter"/>
+                           <menuitem label="&docformatLetter;" value="letter" selected="true"/>
                            <menuitem label="A4" value="a4"/>
                            <menuitem label="&docformatOther;" value="other"/>
                            <menuitem label="A0" value="a0"/>
@@ -798,7 +787,7 @@
                           <spacer flex="1"/>
                           <vbox>
                             <label observes="pagelayoutok" value="Height"/>
-                            <textbox id="tbpaperheight" type="number" style="width: 5em" observes="bc.papersize" 
+                            <textbox id="tbpaperheight" type="number"  decimalplaces="2" increment="0.1" style="width: 5em" observes="bc.papersize"  persist="value" 
                               onkeypress="geomHandleChar(event,'paperheight', 'tbpaperheight');"> 
                                 <observes element="pagelayoutok" attribute="disabled"/>
                             </textbox>
@@ -807,7 +796,7 @@
                           <spacer flex="1"/>
                           <vbox>
                             <label observes="pagelayoutok" value="Width"/>
-                            <textbox id="tbpaperwidth" type="number" style="width: 5em" observes="bc.papersize"
+                            <textbox id="tbpaperwidth" type="number" increment="0.1" decimalplaces="2" style="width: 5em" observes="bc.papersize" persist="value"
                               onkeypress="geomHandleChar(event,'paperwidth', 'tbpaperwidth');">
                                 <observes element="pagelayoutok" attribute="disabled"/>
                             </textbox>
@@ -832,18 +821,18 @@
                        </label>
                      </caption>
                      <label observes="pagelayoutok" value="&docformatTextBodyWidth;"/>
-                     <textbox id="tbbodywidth" type="number" style="width: 5em" onkeypress="geomHandleChar(event,'bodywidth', 'tbbodywidth');"
+                     <textbox id="tbbodywidth" type="number" increment="0.1" decimalplaces="2" style="width: 5em" persist="value" onkeypress="geomHandleChar(event,'bodywidth', 'tbbodywidth');" value="8.5"
                        onchange="layoutPage('bodywidth');"
                        onfocus="activate('bodyleft');activate('bodyright');" onblur="deactivate('bodyleft');deactivate('bodyright');"
                        tooltip="&maintextwidth.tooltip;">
                        <observes element="pagelayoutok" attribute="disabled"/>
                      </textbox>
                      <label observes="pagelayoutok" value="&docformatTextBodyHeight;"/>
-                     <textbox id="tbbodyheight" type="number" style="width: 5em" oninput="layoutPage('bodyheight');" 
-                       onchange="layoutPage('bodyheight');" 
+                     <textbox id="tbbodyheight" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('bodyheight');" 
+                       onchange="layoutPage('bodyheight');" value="11.0"
                        onfocus="activate('bodyleft');activate('bodyright');" 
                        onblur="deactivate('bodyleft');deactivate('bodyright');"
-                       tooltip="&tbbodyheight.tooltip;" onkeypress="geomHandleChar(event,'bodyheight', 'tbbodyheight');">
+                       tooltip="&tbbodyheight.tooltip;" onkeypress="geomHandleChar(event,'bodyheight', 'tbbodyheight');" persist="value">
                        <observes element="pagelayoutok" attribute="disabled"/>
                      </textbox>
                    </groupbox>
@@ -865,13 +854,13 @@
                        &docformatInsideMargin; 
                      </label>
                      </hbox>
-                     <textbox id="tblmargin" type="number" style="width: 5em" oninput="layoutPage('lmargin');" onkeypress="geomHandleChar(event,'lmargin', 'tblmargin');" 
-                       onchange="layoutPage('lmargin');" onfocus="activate('lmarginbody');" onblur="deactivate('lmarginbody');" observes="bc.hcenter">
+                     <textbox id="tblmargin" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('lmargin');" onkeypress="geomHandleChar(event,'lmargin', 'tblmargin');" 
+                       onchange="layoutPage('lmargin');" onfocus="activate('lmarginbody');" onblur="deactivate('lmarginbody');" observes="bc.hcenter"  persist="value" value="1.0">
                        <observes element="pagelayoutok" attribute="disabled"/>
                      </textbox>
                      <label observes="pagelayoutok" value="&docformatTopMargin;"/>
-                     <textbox id="tbtmargin" type="number" style="width: 5em" oninput="layoutPage('tmargin');"  onkeypress="geomHandleChar(event,'tmargin', 'tbtmargin');"
-                       onchange="layoutPage('tmargin');" onfocus="activate('tmargin');" onblur="deactivate('tmargin');" observes="bc.vcenter">
+                     <textbox id="tbtmargin" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('tmargin');"  onkeypress="geomHandleChar(event,'tmargin', 'tbtmargin');"
+                       onchange="layoutPage('tmargin');" onfocus="activate('tmargin');" onblur="deactivate('tmargin');" observes="bc.vcenter"  persist="value" value="1.0">
                        <observes element="pagelayoutok" attribute="disabled"/>
                      </textbox>
                    </groupbox>
@@ -886,13 +875,13 @@
                      <label observes="pagelayoutok" value="&docformatHeader;"/>
                    </caption>
                    <label observes="pagelayoutok" value="&docformatHeaderSeparation;"/>
-                   <textbox id="tbheddsep" type="number" style="width: 5em" oninput="layoutPage('heddsep');" onkeypress="geomHandleChar(event,'heddsep','tbheddsep');"
-                     onchange="layoutPage('heddsep');" onfocus="activate('heddsep');" onblur="deactivate('heddsep');">
+                   <textbox id="tbheddsep" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('heddsep');" onkeypress="geomHandleChar(event,'heddsep','tbheddsep');"
+                     onchange="layoutPage('heddsep');" onfocus="activate('heddsep');" onblur="deactivate('heddsep');" persist="value" value="0.2">
                      <observes element="pagelayoutok" attribute="disabled"/>
                    </textbox>
                    <label observes="pagelayoutok" value="&docformatHeaderHeight;"/>
-                   <textbox id="tbhedd" type="number" style="width: 5em" oninput="layoutPage('hedd');" onkeypress="geomHandleChar(event,'hedd','tbhedd');"
-                     onchange="layoutPage('hedd');" onfocus="activate('hedd');" onblur="deactivate('hedd');">
+                   <textbox id="tbhedd" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('hedd');" onkeypress="geomHandleChar(event,'hedd','tbhedd');"
+                     onchange="layoutPage('hedd');" onfocus="activate('hedd');" onblur="deactivate('hedd');" persist="value" value="0.2">
                      <observes element="pagelayoutok" attribute="disabled"/>
                    </textbox>
                  </groupbox>
@@ -917,13 +906,13 @@
                      <label observes="pagelayoutok" value="&docformatFooter;"/>
                    </caption>
                    <label observes="pagelayoutok" value="&docformatFooterSeparation;"/>
-                   <textbox id="tbfootersep" type="number" style="width: 5em" oninput="layoutPage('footersep');" onkeypress="geomHandleChar(event,'footersep','tbfootersep');"
-                    onchange="layoutPage('footersep');" onfocus="activate('footersep');" onblur="deactivate('footersep');">
+                   <textbox id="tbfootersep" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('footersep');" onkeypress="geomHandleChar(event,'footersep','tbfootersep');"
+                    onchange="layoutPage('footersep');" onfocus="activate('footersep');" onblur="deactivate('footersep');" persist="value" value="0.2">
                       <observes element="pagelayoutok" attribute="disabled"/> 
                    </textbox> 
                    <label observes="pagelayoutok" value="&docformatFooterHeight;"/>
-                   <textbox id="tbfooter" type="number" style="width: 5em" oninput="layoutPage('footer');" onkeypress="geomHandleChar(event,'footer','tbfooter');"
-                     onchange="layoutPage('footer');" onfocus="activate('footer');" onblur="deactivate('footer');">
+                   <textbox id="tbfooter" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('footer');" onkeypress="geomHandleChar(event,'footer','tbfooter');"
+                     onchange="layoutPage('footer');" onfocus="activate('footer');" onblur="deactivate('footer');" persist="value" value="0.2">
                      <observes element="pagelayoutok" attribute="disabled"/>
                     </textbox>
                  </groupbox>
@@ -936,19 +925,19 @@
                    <label observes="pagelayoutok" value="&docformatMarginNotes;"/>
                  </caption>
                  <label observes="pagelayoutok" value="&docformatMNWidth;"/>
-                 <textbox id="tbmnwidth" type="number" style="width: 5em" value="1"  oninput="layoutPage('mnwidth');" onkeypress="geomHandleChar(event,'mnwidth','tbmnwidth');"
-                   onchange="layoutPage('mnwidth');" onfocus="activate('mnbody');" onblur="deactivate('mnbody');" >
+                 <textbox id="tbmnwidth" type="number" increment="0.1" decimalplaces="2" style="width: 5em" value="1"  oninput="layoutPage('mnwidth');" onkeypress="geomHandleChar(event,'mnwidth','tbmnwidth');"
+                   onchange="layoutPage('mnwidth');" onfocus="activate('mnbody');" onblur="deactivate('mnbody');" persist="value">
                    <observes element="disablemarginnotes" attribute="disabled"  />
                  </textbox>  
                  <label observes="pagelayoutok" value="&docformatMNSeparation;"/>
-                 <textbox observes="pagelayoutok" id="tbmnsep" type="number" style="width: 5em" value="1"  oninput="layoutPage('mnsep');"  onkeypress="geomHandleChar(event,'mnsep','tbmnsep');"
-                   onchange="layoutPage('mnsep');" onfocus="activate('mnsepbody');" onblur="deactivate('mnsepbody');">
+                 <textbox observes="pagelayoutok" id="tbmnsep" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('mnsep');"  onkeypress="geomHandleChar(event,'mnsep','tbmnsep');"
+                   onchange="layoutPage('mnsep');" onfocus="activate('mnsepbody');" onblur="deactivate('mnsepbody');" persist="value" value="0.2">
                    <observes element="disablemarginnotes" attribute="disabled"  />
                  </textbox>  
                  <label observes="pagelayoutok" value="&docformatMNPush;"/>
-                 <textbox observes="pagelayoutok" id="tbmnpush" type="number" style="width: 5em" value="1"  oninput="layoutPage('mnpush');" onkeypress="geomHandleChar(event,'mnpush','tbmnpush');"
+                 <textbox observes="pagelayoutok" id="tbmnpush" type="number" increment="0.1" decimalplaces="2" style="width: 5em" oninput="layoutPage('mnpush');" onkeypress="geomHandleChar(event,'mnpush','tbmnpush');"
                    onchange="layoutPage('mnpush');" onfocus="activate('mnpush');" onblur="deactivate('mnpush');"  
-                   tooltip="&minseparationmarginnotes.tooltip;" >
+                   tooltip="&minseparationmarginnotes.tooltip;" persist="value" value="0.2" >
                    <observes element="disablemarginnotes" attribute="disabled"  />
                  </textbox>  
                  <broadcaster id="disablemarginnotes" hidden="true" disabled="true" />

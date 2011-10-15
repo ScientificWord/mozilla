@@ -40,6 +40,15 @@ function insertMathname( name, delSelection )
   doInsertMathName(name, editorElement);
 }
 
+function insertMathOperator( name, limitPlacement, size, delSelection)
+{
+  dump("\ninsertMathOperator(j);\n");
+  if (delSelection) deleteSelection();
+  var editorElement = getCurrentEditorElement();
+  doInsertMathOperator(name, limitPlacement, size, editorElement);
+}
+
+
 function insertTag( name, delSelection )
 {
   var editorElement = getCurrentEditorElement();

@@ -309,7 +309,7 @@ function msiEditorArrayInitializer()
 }
 
 
-function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML)
+function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML, topwindow)
 {
 //  // See if argument was passed.
 //  if ( window.arguments && window.arguments[0] )
@@ -357,7 +357,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
       startText = initialText;
     editorElement.initialEditorContents = startText;
   }
-  EditorStartupForEditorElement(editorElement);
+  EditorStartupForEditorElement(editorElement, topwindow);
   msiDumpWithID("In msiInitializeEditorForElement for element [@], back from EditorStartupForEditorElement call.\n", editorElement);
 
   // Initialize our source text <editor>
@@ -1097,12 +1097,13 @@ function isShell (filename)
   return foundit;
 }
 
-function EditorStartupForEditorElement(editorElement)
+function EditorStartupForEditorElement(editorElement, topwindow)
 {
 
 //  msiDumpWithID("Entering EditorStartupForEditorElement for element [@].\n", editorElement);
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
-  var is_topLevel = msiIsTopLevelEditor(editorElement);
+  var is_topLevel = topwindow;
+	if (topwindow == null) is_topLevel = msiIsTopLevelEditor(editorElement);
   var prefs = GetPrefs();
   var filename = "untitled";
 
@@ -1246,9 +1247,18 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     if (!docurl.schemeIs("chrome"))
     {
       doc = msiFileFromFileURL(docurl);
-      dir = doc.parent;
+      if (!doc)
+      {
+        docpath = docurl.path;
+        doc = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        try
+        { doc.initWithPath(docpath); }
+        catch(ex) {doc = null;}
+      }
+      if (doc)
+        dir = doc.parent;
     }
-    if (!editorElement.isShellFile) editorElement.fileLeafName = doc.leafName;
+    if (!editorElement.isShellFile && doc) editorElement.fileLeafName = doc.leafName;
     // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
     // has already been created and the document name changed. When starting up, or starting with a file on the
     // command line we still need to call "createWorkingDirectory."
@@ -5255,6 +5265,13 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("IndexEntry"));
         scriptStr = "doInsertIndexEntry(event.target.refEditor, event.target.refElement);";
+      break;
+
+      case "msiframe":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("msiFrame"));
+        scriptStr = "msiFrame(event.target.refEditor, null, event.target.refElement);";
       break;
 
       default:
@@ -9603,7 +9620,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     }
     else if (elementName == "msiframe")
     {
-      msiFrame(element,editorElement);
+      msiFrame(editorElement, null, element);
     }
     else if (elementName == "otfont")
     {
@@ -10641,7 +10658,10 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
   if (!targEditor)
     targEditor = msiEditPage(fullTargURI, theWindow, false, winNameToUse);
   else if (targURI)
+  {
+    msiCheckAndSaveDocument(targEditor, "cmd_close", true);
     msiEditorLoadUrl(targEditor, targURI, targMarker);
+  }
   else if (targMarker && targMarker.length)
     msiGoToMarker(targEditor, targMarker);
 }
