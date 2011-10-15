@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0"?>                                   
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
@@ -10,24 +10,22 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
 
-  <tab id="msiFrameTab" label="&Frametab.label;"/>
+  <tab id="msiFrameTab" label="&Frametab.label;" oncommand="redrawDiagram();"/>
   <tab id="msiPlacementTab" label="&Placementtab.label;"/>
   <vbox id="units" >
     <label id   = "frameUnitLabel"
       control   = "frameUnitMenulist"
       accesskey = "&unitLabel.accesskey;"
       value     = "&unitLabel.label;" />
-    <hbox> <menulist id = "frameUnitMenulist"
-      width=".75in"
+    <hbox> <menulist id = "frameUnitMenulist" style="width: 8em"
       oncommand  = "setNewUnit(this);" >
-      <menupopup id = "unitList" selectedIndex="2" persist="selectedIndex">
-        <menuitem value="in" label="&inch;"/>
-        <!--menuitem value="pct" label="percent"/  -->
+      <menupopup id = "unitList" persist="value selectedIndex" value="pt" selectedIndex="2">
+        <menuitem value="in" label="&inch;"/>        <!--menuitem value="pct" label="percent"/  -->
         <menuitem value="cm" label="&centimeter;"/>
-        <menuitem value="pt" label="&point;" selected="true" />
+        <menuitem value="pt" label="&point;"/>
         <menuitem value="mm" label="&millimeter;"/>
         <menuitem value="pc" label="&pica;"/>
         <menuitem value="px" label="&pixel;"/>
@@ -35,7 +33,7 @@
     </menulist><spacer flex = "1"/></hbox>
     <spacer flex="1"/>
   </vbox>
-  <vbox id="msiFrame" align="start">
+  <vbox id="msiFrame" align="start" onfocus="redrawDiagram();">
     <spacer flex="1"/>
     <broadcaster id="lengthwithunits"
       class     = "medwidth"
@@ -53,13 +51,13 @@
           <hbox class="page" height="30px" style="background-color:rgb(90,90,90);width:150px;"/>
         </hbox>
         <hbox>
-          <hbox id="leftspacer" height="1px" width="60px"/> <!-- width is 60 + min(0, left margin) -->
+          <hbox id="leftspacer" height="1px" width="60px"/> <!-- width is 60 + left margin -->
           <hbox id="leftpage" height="1px" class="page" style="background-color:rgb(90,90,90); width: 0px"/> 
             <!-- width is max(0,leftmargin) (scaled, of course)
             or, when on the right, it is 100 - contentwidth - mx -px -bx -->
           <box id="leftspace" class="page" style="background-color:transparent;" width="0px"/>
-          <vbox id="frame" style="border-style:solid; border-width:0" ><!-- border and padding are those of the frame-->
-            <vbox id="content" style="background-color:rgb(150,150,150); "/><!-- height and width are those of the content of the frame --> 
+          <vbox id="frame" style="border-style:solid; border-width:0"><!-- border and padding are those of the frame-->
+            <vbox id="content" style="" /><!-- height and width are those of the content of the frame --> 
           </vbox>
           <box id="rightspace" class="page" style="background-color:transparent;" width="0px"/>
           <box id="rightpage" class="page" style="background-color:rgb(90,90,90);" width="150px"/><!-- width is 150 - contentwidth - mx - px - bx,
@@ -70,6 +68,43 @@
           <hbox class = "page" style="background-color:rgb(90,90,90);width:150px; height:34px"/><!-- height is 90 - contentheight - my -py -by -->
         </hbox>
         <vbox flex="1"/>
+      </vbox>
+      <vbox align="center">
+        <groupbox>
+          <caption>Colors</caption>
+          <hbox>
+            <vbox align="center">
+              <label value="Border"/>
+              <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate('colorWell');">
+                <spacer persist="style" id="colorWell" class="color-well"  
+                  style="background-color: black"/>
+              </msibutton>
+            </vbox>
+            <vbox align="center">
+              <label value="Background" align="center"/>
+               <msibutton id="bgcolorButton" class="color-button"
+                    oncommand="getColorAndUpdate('bgcolorWell');">
+                <spacer persist="style" id="bgcolorWell" class="color-well"    
+                  style="background-color: black"/>
+              </msibutton>          
+            </vbox>
+          </hbox>
+        </groupbox>
+        <groupbox>
+          <caption>Text alignment</caption>      
+          <hbox align="center">
+            <menulist id = "textAlignment" value = "L" style="width: 10em" persist="value">
+              <menupopup id = "alignments" >
+                <menuitem value="center" label="centered"/>
+                <menuitem value="justify" label="justified"/>
+                <menuitem value="left" label="left"/>
+                <menuitem value="right" label="right"/>
+                <menuitem value="inner" label="inside"/>
+                <menuitem value="outer" label="outside"/>
+              </menupopup>
+            </menulist>         
+          </hbox>
+        </groupbox>       
       </vbox>
     </hbox>
     <spacer flex="1"/>
@@ -106,31 +141,39 @@
             <textbox
               id        = "marginLeftInput"
               min       = "-1000"
+              value     = "0"
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
-              onchange  = "update(this.id);"/>
+              onchange  = "update(this.id);"
+              persist   = "value"/>
             <button class="extend" oncommand="extendInput('margin')"
                 observes="role-textframe"/>
           </hbox>
           <textbox
             id        = "marginRightInput"
             min       = "-1000"
+            value     = "0"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"
+            persist   = "value"/>
           <textbox
             id        = "marginTopInput"
+            value     = "0"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"
+            persist   = "value"/>
           <hbox  observes="role-textframe">
           <textbox
             id        = "marginBottomInput"
+            value     = "0"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/></hbox>
+            onchange  = "update(this.id);"
+            persist   = "value"/>
+          </hbox>
         </row>
-        <separator/>
         <row>
           <label value="Border"/>
           <hbox>
@@ -138,7 +181,9 @@
               id        = "borderLeftInput"
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
-              onchange  = "update(this.id);"/>
+              onchange  = "update(this.id);"
+              value     = "0"
+              persist   = "value"/>              
             <button class="extend" observes="role-textframe" oncommand="extendInput('border')"/>
           </hbox>
           <hbox observes="role-textframe">
@@ -146,21 +191,27 @@
             id        = "borderRightInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"
+            value     = "0"
+            persist   = "value"/>
           </hbox>
           <hbox observes="role-textframe">
           <textbox
             id        = "borderTopInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"
+            value     = "0"
+            persist   = "value"/>
           </hbox>
           <hbox observes="role-textframe">
           <textbox
             id        = "borderBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"
+            value     = "0"
+            persist   = "value"/>
           </hbox>
         </row>
         <row>
@@ -170,7 +221,9 @@
               id        = "paddingLeftInput"
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
-              onchange  = "update(this.id);"/>
+              onchange  = "update(this.id);"
+              value     = "0"
+              persist   = "value"/>
             <button class="extend" observes="role-textframe" oncommand="extendInput('padding')"/>
           </hbox>
           <hbox  observes="role-textframe">
@@ -178,69 +231,28 @@
             id        = "paddingRightInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"
+            value     = "0"
+            persist   = "value"/>
           </hbox>
           <hbox observes="role-textframe">
           <textbox
             id        = "paddingTopInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"
+            value     = "0"
+            persist   = "value"/>
           </hbox>
           <hbox observes="role-textframe">
           <textbox
             id        = "paddingBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/></hbox>
-        </row>
-        <separator/>
-        <row>
-          <hbox/>
-          <hbox>
-            <description value="Left" observes="role-image"/>
+            onchange  = "update(this.id);"
+            value     = "0"
+            persist   = "value"/>
           </hbox>
-          <hbox>
-            <description value="Right" observes="role-image"/>
-          </hbox>
-          <hbox>
-            <description value="Top" observes="role-image"/>
-          </hbox>
-          <hbox>
-            <description value="Bottom" observes="role-image"/>
-          </hbox>
-        </row>
-        <row>
-          <label value="Crop"/>
-          <hbox>
-            <textbox
-              id        = "cropLeftInput"
-              observes  = "lengthwithunits"
-              onkeypress= "handleChar(event, this.id);"
-              onchange  = "update(this.id);"/>
-            <button class="extend" oncommand="extendInput('crop')"/>
-          </hbox>
-          <textbox
-            id        = "cropRightInput"
-            observes  = "lengthwithunits"
-            onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
-          <textbox
-            id        = "cropTopInput"
-            observes  = "lengthwithunits"
-            onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
-          <textbox
-            id        = "cropBottomInput"
-            observes  = "lengthwithunits"
-            onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
-        </row>
-        <row>
-          <label value="Border color"/>
-          <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
-            <spacer persist="style" id="colorWell" class="color-well" style="background-color: black"/>
-          </msibutton>
         </row>
       </rows>
     </grid>    
@@ -249,8 +261,8 @@
     <groupbox>
       <caption label="Size"/>
       <!-- vbox observes="hasNaturalSize" -->
-        <radiogroup id="sizeRadio" observes="role-image">
-          <hbox flex="1">
+        <radiogroup id="sizeRadio">
+          <hbox flex="1" observes="hasNaturalSize" hidden="true">
             <vbox>
               <radio id="actual" label="Actual size" radioGroup="sizeRadio"/>
             </vbox>
@@ -282,23 +294,28 @@
                   type      = "number"
                   onkeypress= ""
                   onchange  = "frameWidthChanged(this);"
-                  onload    = "frameWidthChanged(this);"/>
-                <checkbox id="autoWidth" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
+                  onload    = "frameWidthChanged(this);"
+                  value     = "0"
+                  persist   = "value"/>
+                <checkbox id="autoWidth" persist = "checked" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
                 <textbox
                   id        = "frameHeightInput"
                   type      = "number"
                   onkeypress= ""
                   onchange  = "frameHeightChanged(this);"
-                  onload    = "frameHeightChanged(this);"/>
-                <checkbox id="autoHeight" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
-                <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"/>
+                  onload    = "frameHeightChanged(this);"
+                  value     = "0"
+                  persist   =  "value"/>
+                <checkbox id="autoHeight" persist = "checked" checked="false" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
+                <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"
+                  checked="false" persist = "checked"/>
               </row>
             </rows>
           </grid>
         </hbox>
         <hbox align="center">
           <label value="Rotate contents"/>
-          <menulist id = "rotationList">
+          <menulist id = "rotationList" value="rot0" persist="value">
             <menupopup id = "rotationsList">
               <menuitem value="rot0" label="None"/>
               <menuitem value="rot90" label="90 degrees CW" />
@@ -325,15 +342,15 @@
         <vbox>
           <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
           <vbox>
-            <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
-            <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
-            <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
-            <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
-            <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+            <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement" persist="checked"/>
           </vbox>
         </vbox>
         <vbox>
-          <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableHere(this);">
+          <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableHere(this);" persist="value">
             <radio id="hereLeftRadio" label="Left" value="L" observes="herePlacement" />
             <radio id="hereRightRadio" label="Right" value="R" observes="herePlacement"/>
             <radio id="hereInsideRadio" label="Inside" value="I" observes="herePlacement" />
@@ -353,7 +370,7 @@
       <broadcaster id="sidemargin" width="8"/>         
       <broadcaster id="topmargin" height="8"/>
       <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
-      <broadcaster id="hasNaturalSize" hidden="true"/>        
+      <broadcaster id="hasNaturalSize" hidden=""/>        
     </broadcasterset>
   </vbox>
 
