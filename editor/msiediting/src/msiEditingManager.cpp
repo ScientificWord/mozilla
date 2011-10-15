@@ -1250,7 +1250,8 @@ msiEditingManager::GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 r
         {
           parent->GetLocalName(localName);
           length = localName.Length();
-          mathmlNode = parent;
+					if (!localName.EqualsLiteral("mtext"))
+          	mathmlNode = parent;
         }
       }
       else

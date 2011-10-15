@@ -11,7 +11,7 @@
 # WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
 # for the specific language governing rights and limitations under the
 # License.
-#
+#Ï
 # The Original Code is Mozilla Build System
 #
 # The Initial Developer of the Original Code is
@@ -36,9 +36,9 @@
 #
 # ***** END LICENSE BLOCK *****
 
-MOZ_APP_NAME=prince
+MOZ_APP_NAME=SWP
 MOZ_APP_DISPLAYNAME="Scientific WorkPlace"
 MOZ_UPDATER=1
 MOZ_MSI_PRINCE=1
 MOZ_COMPOSER=1
-MOZ_APP_VERSION=0.5
+MOZ_APP_VERSION=6.0
