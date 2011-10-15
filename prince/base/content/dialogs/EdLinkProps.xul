@@ -108,7 +108,7 @@
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
           tooltiptext="Enter an existing key name" ontextentered="doEnabling();" />
       </hbox>
-      <msibutton id="MoreFewerButton" oncommand="onMoreFewer();" persist="more"/>
+      <!-- msibutton id="MoreFewerButton" oncommand="onMoreFewer();" persist="more"/ -->
     </vbox>  
 
     </groupbox>
@@ -116,10 +116,10 @@
   </vbox>
 
 
-  <vbox id="MoreSection">
-    <groupbox><caption label="&targetBox.label;"/>
+  <!-- vbox id="MoreSection">
+    <groupbox><caption label="&targetBox.label;"/ -->
       <!-- checkbox id="userDefinedTargetCheckbox" label="&userDefinedTarget.label;" accesskey="&userDefinedTarget.accesskey;" oncommand="TargetToggled();"/ -->
-      <radiogroup orient="vertical" class="indent" id="targetRadiogroup">
+      <!-- radiogroup orient="vertical" class="indent" id="targetRadiogroup">
         <radio id="topRadio"
                label="&topRadio.label;"
                accesskey="&topRadio.accesskey;"
@@ -150,7 +150,7 @@
       </radiogroup>
     </groupbox>
 
-  </vbox>
+  </vbox -->
   <!-- from EdDialogOverlay -->
   <vbox id="AdvancedEdit"/>
 </dialog>
