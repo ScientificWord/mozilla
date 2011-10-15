@@ -1042,8 +1042,20 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       if (NS_SUCCEEDED(res))  
       {
         nsCOMPtr<nsIDOMNode> currFocusNode;
+				nsCOMPtr<nsIDOMElement> currFocusElement;
         res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
-        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+				nsAutoString name;
+				nsCOMPtr<nsIDOMNode> tempNode = currFocusNode;
+				PRUint16 type;
+				res = tempNode->GetNodeType(& type);
+				if (type == 3)
+					currFocusNode->GetParentNode(getter_AddRefs(tempNode));
+				currFocusElement = do_QueryInterface(tempNode);
+				res = currFocusElement->GetTagName(name);
+				if (!name.EqualsLiteral("mtext"))
+				{
+	        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+				}
         if (NS_SUCCEEDED(res) && currFocusNode && mathnode)
         {
           PRBool preventDefault(PR_FALSE);
@@ -1445,6 +1457,11 @@ NS_IMETHODIMP msiEditor::NodeInMath(nsIDOMNode *node, nsIDOMNode **_retval)
     res = checkNode->GetLocalName(name);
     while (checkNode && !name.EqualsLiteral("math"))
     {
+	    if (name.EqualsLiteral("mtext"))
+			{
+				*_retval = nsnull;
+				return NS_OK;
+			}
       res = checkNode->GetParentNode(getter_AddRefs(checkNode));
       if (checkNode) res = checkNode->GetLocalName(name);
     }

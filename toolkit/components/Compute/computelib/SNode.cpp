@@ -954,17 +954,19 @@ void CreatePrefixForm(SEMANTICS_NODE * s_operator,
     if (s_operator){
        s_operator->bucket_list = AppendBucketRec(s_operator->bucket_list, arg1_bucket);
     }
-    
-    l_operand->prev = NULL;
-    l_operand->next = NULL;
+    if (l_operand){
+      l_operand->prev = NULL;
+      l_operand->next = NULL;
+    }
   }
   if (r_operand) {
     r_operand = RemoveParens(r_operand);
     if (s_operator)
        AppendBucketRecord(s_operator->bucket_list, MakeParentBucketRec(MB_UNNAMED, r_operand));
-    
-    r_operand->prev = NULL;
-    r_operand->next = NULL;
+    if (r_operand){
+      r_operand->prev = NULL;
+      r_operand->next = NULL;
+    }
   }
 }
 
