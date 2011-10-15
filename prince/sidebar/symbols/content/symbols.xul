@@ -189,40 +189,37 @@
             <row>
               <toolbarbutton id="symbolsqcup" />
               <toolbarbutton id="symbolsqcap" />
-      <!-- AMS   <toolbarbutton label="&#x2BEF;" tooltiptext="&symbolbigcirc.tooltip;"         msivalue="&#x2BEF;"
-                 observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolbigcirc"/>
               <toolbarbutton id="symbolsetminus" /> 
               <toolbarbutton id="symbolsmallsetminus" /> 
-              <toolbarbutton id="symboloplus" />
             </row>
             <row>
+              <toolbarbutton id="symboloplus" />
               <toolbarbutton id="symbolominus" />
               <toolbarbutton id="symbolotimes" />
               <toolbarbutton id="symbolodot" />
               <toolbarbutton id="symbolcircledast" />
-              <toolbarbutton id="symbolvee" />
             </row>
             <row>
+              <toolbarbutton id="symbolvee" />
               <toolbarbutton id="symbolwedge" />
               <toolbarbutton id="symbolcircledcirc" />
-<!-- Latex 2.09  <toolbarbutton label="&#x22B2;" tooltiptext="&symbollhd.tooltip;"      msivalue="&#x22B2;"
-           observes="cmd_MSIsymbolCmd2"/> -->
-<!-- Latex 2.09  <toolbarbutton label="&#x22B3;" tooltiptext="&symbolrhd.tooltip;"      msivalue="&#x22B3;"
-           observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbollhd" />
+              <toolbarbutton id="symbolrhd" />
+             </row>
+            <row>
               <toolbarbutton id="symbolveebar" />
               <toolbarbutton id="symbolbarwedge" />
               <toolbarbutton id="symbolwr" />
-            </row>
-            <row>
               <toolbarbutton id="symbolsmalltriangleleft" />
               <toolbarbutton id="symbolsmalltriangleright" />
+            </row>
+            <row>
               <toolbarbutton id="symboluplus" />
               <toolbarbutton id="symboldoublebarwedge" />
               <toolbarbutton id="symbolamalg" /> 
-<!-- Latex 2.09 <toolbarbutton label="&#x22B4;" tooltiptext="&symbolunlhd.tooltip;"         msivalue="&#x22B4;"
-           observes="cmd_MSIsymbolCmd2"/> -->
-<!-- Latex 2.09 <toolbarbutton label="&#x22B5;" tooltiptext="&symbolunrhd.tooltip;"         msivalue="&#x22B5;"
-           observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolunlhd" />
+              <toolbarbutton id="symbolunrhd" />
             </row>
             <row>
               <toolbarbutton id="symbolbigtriangledown" />
@@ -798,7 +795,7 @@
               <toolbarbutton id="symboltextdegree" />
               <toolbarbutton id="symboltextexclamdown" />
               <toolbarbutton id="symboltextquestiondown" />
-              <toolbarbutton id="symbolpm" />
+              <toolbarbutton id="symbolpmtxt" />
               <toolbarbutton id="symboldiv" />
             </row>
             <row>

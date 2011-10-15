@@ -18,3 +18,33 @@ function Startup(){
 
 }
 
+function OK(){
+  data.Cancel = false;
+
+  var doc = document.getElementById("swpname.input").contentDocument;
+  var mathnodes = doc.getElementsByTagName("math");
+
+  if (mathnodes.length == 0) {
+    return false;  // should leave dialog up but doesn't seem to work
+  }
+
+  data.swpname = runFixup(GetMathAsString(mathnodes[0]));
+
+  var mupname = document.getElementById("mupadname.input");
+  data.mupadname = mupname.value;
+
+  var infile = document.getElementById("infile.input");
+  data.infile = mupname.infile;
+    
+   
+  return true;
+}
+
+function Cancel(){
+  data.Cancel = true;
+  return true;
+}
+
+
+
+
