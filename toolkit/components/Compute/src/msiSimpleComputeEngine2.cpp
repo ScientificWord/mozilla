@@ -509,6 +509,12 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Undefine(const PRUnichar *expr, PRUnichar
   return BasicCommand(expr,result,CCID_Undefine);
 }
 
+/* void defineMupadName(in wstring swpname, in wstring mupname, in wstring loc, [retval] out wstring result); */
+NS_IMETHODIMP msiSimpleComputeEngine2::DefineMupadName(const PRUnichar* swpname, const PRUnichar* mupname, const PRUnichar* loc, PRUnichar** result)
+{
+  return NS_ERROR_FAILURE;
+}
+
 /* void getDefinitions ([retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::GetDefinitions(PRUnichar **result)
 {

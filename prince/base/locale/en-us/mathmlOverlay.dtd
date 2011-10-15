@@ -209,7 +209,7 @@
 <!ENTITY symboldiv.tooltip     "div">
 <!ENTITY symbolsqcup.tooltip      "sqcup">
 <!ENTITY symbolsqcap.tooltip      "sqcap">
-<!-- AMS <!ENTITY symbolbigcirc.tooltip    "bigcirc"> -->
+<!ENTITY symbolbigcirc.tooltip    "bigcirc"> 
 <!ENTITY symbolsetminus.tooltip   "setminus"> 
 <!ENTITY symbolsmallsetminus.tooltip   "smallsetminus"> 
 <!ENTITY symboloplus.tooltip      "oplus">
@@ -220,18 +220,18 @@
 <!ENTITY symbolvee.tooltip        "vee">
 <!ENTITY symbolwedge.tooltip      "wedge">
 <!ENTITY symbolcircledcirc.tooltip   "circledcirc">
-<!-- LATEX 2.09 <!ENTITY symbollhd.tooltip        "lhd"> -->
-<!-- Latex 2.09 <!ENTITY symbolrhd.tooltip    "rhd"> -->
+<!ENTITY symbollhd.tooltip        "lhd">
+<!ENTITY symbolrhd.tooltip    "rhd">
 <!ENTITY symbolveebar.tooltip     "veebar">
 <!ENTITY symbolbarwedge.tooltip   "barwedge">
 <!ENTITY symbolwr.tooltip     "wr">
-<!ENTITY symbolsmalltriangleleft.tooltip   "smalltriangleleft">
-<!ENTITY symbolsmalltriangleright.tooltip   "smalltriangleright">
+<!ENTITY symbolsmalltriangleleft.tooltip   "triangleleft">
+<!ENTITY symbolsmalltriangleright.tooltip   "triangleright">
 <!ENTITY symboluplus.tooltip      "uplus">
 <!ENTITY symboldoublebarwedge.tooltip   "doublebarwedge">
 <!ENTITY symbolamalg.tooltip      "amalg">
-<!-- Latex 2.09 <!ENTITY symbolunlhd.tooltip      "unlhd"> -->
-<!-- Latex 2.09 <!ENTITY symbolunrhd.tooltip      "unrhd"> -->
+<!ENTITY symbolunlhd.tooltip      "unlhd">
+ <!ENTITY symbolunrhd.tooltip      "unrhd">
 <!ENTITY symbolbigtriangledown.tooltip    "bigtriangledown">
 <!ENTITY symbolbigtriangleup.tooltip      "bigtriangleup">
 <!ENTITY symbolsmalldiamond.tooltip     "smalldiamond">
@@ -361,7 +361,7 @@
 <!ENTITY symbolprecapprox.tooltip    "precapprox">
 <!ENTITY symbolvartriangle.tooltip  "vartriangle">
 
-<!ENTITY symbolne.tooltip          "ne">
+<!ENTITY symbolne.tooltip          "neq">
 <!ENTITY symbolnotin.tooltip  "notin">
 <!ENTITY symbollvertneqq.tooltip  "lvertneqq">	
 <!ENTITY symbolgvertneqq.tooltip	 "gvertneqq"> 
@@ -530,11 +530,11 @@
 <!ENTITY symbolGame.tooltip           "Game">
 <!ENTITY symbolbigstar.tooltip        "bigstar">
 <!ENTITY symbolVert.tooltip           "Vert">
-<!ENTITY symbolmdlgwhtsquare.tooltip    "mdlgwhtsquare">
-<!ENTITY symbolsmblksquare.tooltip   "smblksquare">
+<!ENTITY symbolmdlgwhtsquare.tooltip    "square">
+<!ENTITY symbolsmblksquare.tooltip   "blacksquare">
 <!ENTITY symbolmdlgwhtdiamond.tooltip "Diamond">
 <!ENTITY symbollozenge.tooltip		  "lozenge">
-<!ENTITY symbolmdlgblklozenge.tooltip   "mdlgblkblacklozenge">
+<!ENTITY symbolmdlgblklozenge.tooltip   "blacklozenge">
 <!ENTITY symbolbackslash.tooltip      "backslash">
 <!ENTITY symboltriangle.tooltip       "triangle">
 <!ENTITY symbolblacktriangle.tooltip  "blacktriangle">
@@ -586,7 +586,7 @@
 <!ENTITY symbolNtilde.tooltip    "Ntilde">
 <!ENTITY symbolaacute.tooltip    "aacute">
 <!ENTITY symbolntilde.tooltip    "ntilde">
-<!ENTITY symboltextcent.tooltip    "textcent">
+<!ENTITY symboltextcent.tooltip    "cents">
 <!ENTITY symboltexttwosuperior.tooltip     "texttwosuperior">
 <!ENTITY symbolAcircumflex.tooltip       "Acircumflex">  
 <!ENTITY symbolOgrave.tooltip    "Ograve">
@@ -622,7 +622,7 @@
 <!ENTITY symbolccedilla.tooltip    "ccedilla">
 <!ENTITY symboldiv.tooltip      "div">
 <!ENTITY symboltextasciidieresis.tooltip   "textasciidieresis">
-<!ENTITY symbolcedilla.tooltip    "Cedilla">
+<!ENTITY symbolcedilla.tooltip    "cedilla">
 <!ENTITY symbolEgrave.tooltip    "Egrave">
 <!ENTITY symbolO.tooltip    "O">
 <!ENTITY symbolegrave.tooltip    "egrave">
@@ -633,7 +633,7 @@
 <!ENTITY symbolUgrave.tooltip    "Ugrave">
 <!ENTITY symboleacute.tooltip    "eacute">
 <!ENTITY symbolugrave.tooltip    "ugrave">
-<!ENTITY symboltextordfeminine.tooltip     "textordfeminenine">
+<!ENTITY symboltextordfeminine.tooltip     "textordfeminine">
 <!ENTITY symboltextordmasculine.tooltip        "textordmasculine">
 <!ENTITY symbolEcircumflex.tooltip       "Ecircumflex">
 <!ENTITY symbolUacute.tooltip    "Uacute">
@@ -662,7 +662,7 @@
 <!ENTITY symbolTH.tooltip     "TH">
 <!ENTITY symbolicircumflex.tooltip       "icircumflex">
 <!ENTITY symbolth.tooltip          "th">
-<!ENTITY symboltextasciimacron.tooltip    "textasciimacros">
+<!ENTITY symboltextasciimacron.tooltip    "textasciimacrons">
 <!ENTITY symboltextquestiondown.tooltip   "textquestiondown">
 <!ENTITY symbolIdieresis.tooltip        "Idieresis">
 <!ENTITY symbolss.tooltip     "ss">
