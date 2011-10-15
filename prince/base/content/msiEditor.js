@@ -2809,7 +2809,6 @@ function EditorClick(event)
       var obj = event.target.getElementsByTagName("obj")[0];
       if (obj != null) {
         doVCamInitialize(obj);
-//        vcamActive = true;
       }
     }
     else if (event.target.tagName == "a")
@@ -2820,10 +2819,13 @@ function EditorClick(event)
         targWin = event.target.getAttribute("target");
       msiClickLink(event, theURI, targWin, editorElement);
     }
-    else if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden") !==true) 
-    {
-      document.getElementById("vcamactive").setAttribute("hidden",true);
-    }
+    else
+		{
+			if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false") 
+	    {
+	      document.getElementById("vcamactive").setAttribute("hidden",true);
+	    }
+		}
   }
 
 //  event.currentTarget should be "body" or something...
@@ -10623,7 +10625,7 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
   var targURI = msiCreateURI(msiMakeAbsoluteUrl(targURIStr, editorElement));
   var fullTargURI = msiCreateURI(msiMakeAbsoluteUrl(theURI, editorElement));
 
-  if (!targWinStr || (targWinStr == "_blank"))
+//  if (!targWinStr || (targWinStr == "_blank"))  //RWA Commenting this out for now! Don't try to re-use editors until we know how...
     targWinStr = "";
 
   var targEditor, targWin, winWatcher;
@@ -10631,35 +10633,43 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
     targEditor = editorElement;
 
   var winNameToUse = "";
-  if (targWinStr.length)
-  {
-    switch(targWinStr)
-    {
-      case "_top":
-        targEditor = msiGetTopLevelEditorElement(window);
-      break;
-      case "_parent":
-        targEditor = msiGetParentOrTopLevelEditor(editorElement);
-      break;
-      case "_self":
-        targEditor = editorElement;
-      break;
-      default:  //using a window identifier string - find the window?
-        winWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
-        targWin = winWatcher.getWindowByName(targWinStr, null);
-        if (targWin)
-          targEditor =  msiGetPrimaryEditorElementForWindow(targWin);
-        else
-          winNameToUse = targWinStr;
-      break;
-    }
-  }
+//  if (targWinStr.length)
+//  {
+//    switch(targWinStr)
+//    {
+//      case "_top":
+//        targEditor = msiGetTopLevelEditorElement(window);
+//      break;
+//      case "_parent":
+//        targEditor = msiGetParentOrTopLevelEditor(editorElement);
+//      break;
+//      case "_self":
+//        targEditor = editorElement;
+//      break;
+//      default:  //using a window identifier string - find the window?
+//        winWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
+//        targWin = winWatcher.getWindowByName(targWinStr, null);
+//        if (targWin)
+//          targEditor =  msiGetPrimaryEditorElementForWindow(targWin);
+//        else
+//          winNameToUse = targWinStr;
+//      break;
+//    }
+//  }
 
   if (!targEditor)
     targEditor = msiEditPage(fullTargURI, theWindow, false, winNameToUse);
   else if (targURI)
   {
     msiCheckAndSaveDocument(targEditor, "cmd_close", true);
+    var isSciRegEx = /\.sci$/i;
+    var isSci = isSciRegEx.test(targURI.spec);
+    if (isSci)
+    {
+      var doc = msiFileFromFileURL(targURI);
+      var newdoc = createWorkingDirectory(doc);
+      targURI = msiFileURLFromFile(newdoc);
+    }
     msiEditorLoadUrl(targEditor, targURI, targMarker);
   }
   else if (targMarker && targMarker.length)
