@@ -39,6 +39,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 var gActiveEditor;
+var gActiveEditorElement;
 var anchorElement = null;
 var imageElement = null;
 var insertNew = false;
@@ -63,8 +64,8 @@ var tagName = "href";
 // dialog initialization code
 function Startup()
 {
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  gActiveEditor = msiGetEditor(editorElement);
+  gActiveEditorElement = msiGetParentEditorElementForDialog(window);
+  gActiveEditor = msiGetEditor(gActiveEditorElement);
   if (!gActiveEditor)
   {
     dump("Failed to get active editor!\n");
@@ -83,9 +84,10 @@ function Startup()
   gDialog.MoreSection         = document.getElementById("MoreSection");
   gDialog.MoreFewerButton     = document.getElementById("MoreFewerButton");
 
-  gDialog.userDefinedTargetCheckbox = document.getElementById("userDefinedTargetCheckbox");
-  gDialog.targetRadiogroup        = document.getElementById("targetRadiogroup");
+//  gDialog.userDefinedTargetCheckbox = document.getElementById("userDefinedTargetCheckbox");
+//  gDialog.targetRadiogroup        = document.getElementById("targetRadiogroup");
   gDialog.userDefinedTarget       = document.getElementById("userDefinedTarget");
+  gDialog.keyList                 = document.getElementById("key");
 
   // See if we have a single selected image
   imageElement = gActiveEditor.getSelectedElement("img");
@@ -230,7 +232,8 @@ function Startup()
   //  as candidate href
   selectedText = TrimString(selectedText); 
   if (!gDialog.hrefInput.value && TextIsURI(selectedText))
-      gDialog.hrefInput.value = selectedText;
+    setHRefToDialog(selectedText);
+//      gDialog.hrefInput.value = selectedText;
 
   // Set initial focus
   if (insertLinkAtCaret) {
@@ -259,63 +262,85 @@ function InitDialog()
 {
   // Must use getAttribute, not "globalElement.href", 
   //  or foreign chars aren't coverted correctly!
+  var e;
   var value = globalElement.getAttribute("href");
-  gDialog.hrefInput.value = value;
+  setHRefToDialog(value);
+//  gDialog.hrefInput.value = value;
 
   // Set "Relativize" checkbox according to current URL state
-  msiSetRelativeCheckbox(gDialog.makeRelativeLink);
+  msiSetRelativeCheckbox(gDialog.makeRelativeLink, gActiveEditorElement);
 
   var relAttr = globalElement.getAttribute("rel");
 
   // init the target groupbox
   var targetValue = globalElement.getAttribute("target");
+  if (!targetValue)
+    targetValue = "_blank";
   if (targetValue)
   {
-    gDialog.userDefinedTargetCheckbox.checked = true;
-    switch (targetValue) {
-      case "_top":
-      case "_blank":
-      case "_parent":
-      case "_self":
-        e = document.getElementById(targetValue.substr(1) + "Radio");
-        gDialog.targetRadiogroup.selectedItem = e;
-        break;
-      default:
-        e = document.getElementById("userdefRadio");
-        gDialog.targetRadiogroup.selectedItem = e;
-        gDialog.userDefinedTarget.value = targetValue;
-        break;
-    }
+//    gDialog.userDefinedTargetCheckbox.checked = true;
+    ToggleTargetValue(targetValue);
+    if (!gDialog.userDefinedTarget.disabled)
+      gDialog.userDefinedTarget.value = targetValue;
   }
 }
 
 function doEnabling()
 {
   // We disable Ok button when there's no href text only if inserting a new link
-  var href = TrimString(gDialog.hrefInput.value);
-  var enable = insertNew ? (TrimString(gDialog.hrefInput.value).length > 0) : true;
+//  var href = TrimString(gDialog.hrefInput.value);
+  getHRefFromDialog();
+  var enable = insertNew ? (href.length > 0) : true;
+//  var enable = insertNew ? (TrimString(gDialog.hrefInput.value).length > 0) : true;
+//  if (!enable)
+//    enable = TrimString(gDialog.keyList.value).length > 0;
+
   
   // anon. content, so can't use SetElementEnabledById here
   var dialogNode = document.getElementById("linkDlg");
   dialogNode.getButton("accept").disabled = !enable;
 
   SetElementEnabledById( "AdvancedEditButton1", enable);
-  gDialog.targetRadiogroup.disabled = false;
+//  gDialog.targetRadiogroup.disabled = false;
 }
 
 
 function ChangeLinkLocation()
 {
-  msiSetRelativeCheckbox();
+  getHRefFromDialog();
+  msiSetRelativeCheckbox(gDialog.makeRelativeLink, gActiveEditorElement);
   // Set OK button enable state
   doEnabling();
+}
+
+function setHRefToDialog(valueStr)
+{
+  if (!valueStr)
+    valueStr = "";
+  var sharpPos = valueStr.indexOf("#");
+  if (sharpPos < 0)
+    gDialog.hrefInput.value = valueStr;
+  else
+  {
+    if (sharpPos > 0)
+      gDialog.hrefInput.value = valueStr.substr(0, sharpPos);
+    gDialog.keyList.value = valueStr.substr(sharpPos + 1);
+  }
+}
+
+function getHRefFromDialog()
+{
+  href = TrimString(gDialog.hrefInput.value);
+  var markerStr = TrimString(gDialog.keyList.value);
+  if (markerStr.length)
+    href += "#" + markerStr;
 }
 
 // Get and validate data from widgets.
 // Set attributes on globalElement so they can be accessed by AdvancedEdit()
 function ValidateData()
 {
-  href = TrimString(gDialog.hrefInput.value);
+  getHRefFromDialog();
   if (href)
   {
     // Set the HREF directly on the editor document's anchor node
@@ -339,7 +364,7 @@ function ValidateData()
     if (!newLinkText)
     {
       if (href)
-        newLinkText = href
+        newLinkText = href;
       else
       {
         ShowInputErrorMessage(GetString("EmptyLinkTextError"));
@@ -357,6 +382,27 @@ function doHelpButton()
   return true;
 }
 
+function ToggleTargetValue(newVal)
+{
+  var e;
+  switch (newVal) {
+    case "_top":
+    case "_blank":
+    case "_parent":
+    case "_self":
+      e = document.getElementById(newVal.substr(1) + "Radio");
+//      gDialog.targetRadiogroup.selectedItem = e;
+//      gDialog.userDefinedTarget.disabled = true;
+      break;
+    default:
+    case "user-defined":
+      e = document.getElementById("userdefRadio");
+//      gDialog.targetRadiogroup.selectedItem = e;
+//      gDialog.userDefinedTarget.disabled = false;
+    break;
+  }
+}
+
 function dumpln(s) { dump(s+"\n"); }
 
 function onAccept()
@@ -366,10 +412,16 @@ function onAccept()
   if (ValidateData())
   {
     dumpln("2");
+//    if (gDialog.keyList.value.length)
+//      href += "#" + gDialog.keyList.value;
     if (href.length > 0)
     {
       // Copy attributes to element we are changing or inserting
       dumpln(3);
+
+//      var attrList = ["href,target"];
+//      msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
+
       gActiveEditor.cloneAttributes(anchorElement, globalElement);
 
       // Coalesce into one undo transaction
@@ -399,6 +451,7 @@ function onAccept()
         //  (may be text, image, or other inline content)
         try {
           gActiveEditor.insertLinkAroundSelection(anchorElement);
+          anchorElement = msiEditorFindJustInsertedElement("a", gActiveEditor);
         } catch (e) {
           dump("Exception occured in InsertElementAtSelection\n");
           return true;
@@ -420,12 +473,19 @@ function onAccept()
           gActiveEditor.setShouldTxnSetSelection(true);
         }
       }
+
+//      var targWin = gDialog.targetRadiogroup.value;
+//      if (targWin == "user-defined")
+//        targWin = gDialog.userDefinedTarget.value;
+      msiEditorEnsureElementAttribute(anchorElement, "href", href, gActiveEditor);
+//      msiEditorEnsureElementAttribute(anchorElement, "target", targWin, gActiveEditor);
+      
       gActiveEditor.endTransaction();
     } 
     else if (!insertNew)
     {
       // We already had a link, but empty HREF means remove it
-      EditorRemoveTextProperty("href", "");
+      msiEditorRemoveTextProperty(gActiveEditorElement, "href", "");
     }
       dumpln(7);
     SaveWindowLocation();
@@ -435,39 +495,43 @@ function onAccept()
 }
 
 
-var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
+//var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
 
 function initKeyList()
 {
-  var editorElement = msiGetActiveEditorElement();
-  var editor;
-  if (editorElement) editor = msiGetEditor(editorElement);
-  var parser = new DOMParser();
-  var dom = parser.parseFromString(xsltSheet, "text/xml");
-  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
-  var processor = new XSLTProcessor();
-  processor.importStylesheet(dom.documentElement);
-  var newDoc;
-  if (editor) newDoc = processor.transformToDocument(editor.document, document);
-  dump(newDoc.documentElement.localName+"\n");
-  var keyString = newDoc.documentElement.textContent;
-  var keys = keyString.split(/\s+/);
-  var i;
-  var len;
-  keys.sort();
-  var lastkey = "";
-  for (i=keys.length-1; i >= 0; i--)
-  {
-    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
-    else lastkey = keys[i];
-  }  
-  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  ACSA.resetArray("keys");
-  for (i=0, len=keys.length; i<len; i++)
-  {
-    if (keys[i].length > 0) 
-      ACSA.addString("keys",keys[i]);
-  }
-  dump("Keys are : "+keys.join()+"\n");    
+  gDialog.markerList = new msiKeyMarkerList(window);
+  gDialog.markerList.setUpTextBoxControl(gDialog.keyList);
+//  gDialog.markerList.setUpTextBoxControl(gDialog.keyList);
+  
+//  var editorElement = msiGetActiveEditorElement();
+//  var editor;
+//  if (editorElement) editor = msiGetEditor(editorElement);
+//  var parser = new DOMParser();
+//  var dom = parser.parseFromString(xsltSheet, "text/xml");
+//  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
+//  var processor = new XSLTProcessor();
+//  processor.importStylesheet(dom.documentElement);
+//  var newDoc;
+//  if (editor) newDoc = processor.transformToDocument(editor.document, document);
+//  dump(newDoc.documentElement.localName+"\n");
+//  var keyString = newDoc.documentElement.textContent;
+//  var keys = keyString.split(/\s+/);
+//  var i;
+//  var len;
+//  keys.sort();
+//  var lastkey = "";
+//  for (i=keys.length-1; i >= 0; i--)
+//  {
+//    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
+//    else lastkey = keys[i];
+//  }  
+//  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//  ACSA.resetArray("keys");
+//  for (i=0, len=keys.length; i<len; i++)
+//  {
+//    if (keys[i].length > 0) 
+//      ACSA.addString("keys",keys[i]);
+//  }
+//  dump("Keys are : "+keys.join()+"\n");    
 }
