@@ -55,7 +55,7 @@
         <textbox id="otfont.fontsize" type="number" decimalplaces="1" min="0" style="width: 6em" 
           max="200" increment="1" tooltip="&fontsize.tooltip;"/>
         <label value="&units.label;" accesskey="&units.label;"/>
-        <menulist id="otfont.units" sizetopopup="always">
+        <menulist id="otfont.units" sizetopopup="always" oncommand="setNewUnit(this)">
           <menupopup>
             <menuitem id="otfont.pt" label="&pt.menuitem;" value="pt"/>
             <menuitem id="otfont.cm" label="&cm.menuitem;" value="cm"/>
