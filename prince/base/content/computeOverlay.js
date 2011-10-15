@@ -1138,7 +1138,7 @@ function doVCamCommand(cmd)
 function doVCamInitialize(obj)
 {
   dump("doVCamInitialize");
-  document.getElementById("VCamToolbar").setAttribute("hidden",false);
+  document.getElementById("vcamactive").setAttribute("hidden","false");
   VCamCommand = (function () {
     var thisobj = obj;
     return function(_cmd, _editorElement) {
