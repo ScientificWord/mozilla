@@ -85,7 +85,7 @@ function Startup()
   gDialog.MoreFewerButton     = document.getElementById("MoreFewerButton");
 
 //  gDialog.userDefinedTargetCheckbox = document.getElementById("userDefinedTargetCheckbox");
-  gDialog.targetRadiogroup        = document.getElementById("targetRadiogroup");
+//  gDialog.targetRadiogroup        = document.getElementById("targetRadiogroup");
   gDialog.userDefinedTarget       = document.getElementById("userDefinedTarget");
   gDialog.keyList                 = document.getElementById("key");
 
@@ -301,7 +301,7 @@ function doEnabling()
   dialogNode.getButton("accept").disabled = !enable;
 
   SetElementEnabledById( "AdvancedEditButton1", enable);
-  gDialog.targetRadiogroup.disabled = false;
+//  gDialog.targetRadiogroup.disabled = false;
 }
 
 
@@ -391,14 +391,14 @@ function ToggleTargetValue(newVal)
     case "_parent":
     case "_self":
       e = document.getElementById(newVal.substr(1) + "Radio");
-      gDialog.targetRadiogroup.selectedItem = e;
-      gDialog.userDefinedTarget.disabled = true;
+//      gDialog.targetRadiogroup.selectedItem = e;
+//      gDialog.userDefinedTarget.disabled = true;
       break;
     default:
     case "user-defined":
       e = document.getElementById("userdefRadio");
-      gDialog.targetRadiogroup.selectedItem = e;
-      gDialog.userDefinedTarget.disabled = false;
+//      gDialog.targetRadiogroup.selectedItem = e;
+//      gDialog.userDefinedTarget.disabled = false;
     break;
   }
 }
@@ -474,19 +474,11 @@ function onAccept()
         }
       }
 
-      var targWin = gDialog.targetRadiogroup.value;
-      if (targWin == "user-defined")
-        targWin = gDialog.userDefinedTarget.value;
-//      var onClickStr = "window.msiClickLink(event, this.getAttribute('href'), ";
-//      if (targWin && targWin.length && (targWin != "_blank"))
-//      {
-//        onClickStr += "this.getAttribute('target'));";
-//      }
-//      else
-//        onClickStr += "' ')";
+//      var targWin = gDialog.targetRadiogroup.value;
+//      if (targWin == "user-defined")
+//        targWin = gDialog.userDefinedTarget.value;
       msiEditorEnsureElementAttribute(anchorElement, "href", href, gActiveEditor);
-//      msiEditorEnsureElementAttribute(anchorElement, "onclick", onClickStr, gActiveEditor);
-      msiEditorEnsureElementAttribute(anchorElement, "target", targWin, gActiveEditor);
+//      msiEditorEnsureElementAttribute(anchorElement, "target", targWin, gActiveEditor);
       
       gActiveEditor.endTransaction();
     } 
