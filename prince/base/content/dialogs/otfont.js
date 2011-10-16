@@ -2,39 +2,27 @@ Components.utils.import("resource://app/modules/fontlist.jsm");
 //Components.utils.import("resource://app/modules/pathutils.jsm"); 
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
-var fontnode;
-var fontsize;
-var fontcolor;
-var leadingnode;
+var texnode;
 var data = { ruleColor: "#000000" };
 var unitHandler;
 
 function startup()
 {
-//  var editorElement = msiGetParentEditorElementForDialog(window);
-//  if (!editorElement)
-//  {
-//    throw("No editor in otfont.OnAccept!");
-//  }
-//  var editor = msiGetEditor(editorElement);  
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  if (!editorElement)
+  {
+    throw("No editor in otfont.OnAccept!");
+  }
+  var editor = msiGetEditor(editorElement);  
 	unitHandler = new UnitHandler();
-  try{
 	initializeUnitHandler(unitHandler);
   var menuObject = { menulist: []};
   menuObject.menulist = document.getElementById("otfontlist");
   addOTFontsToMenu(menuObject);
-}
-catch(e) {
-	dump(e.message);
-}
-//	fontnode = getSelectionParentByTag(editor, "otfont");
-//  initializeFontName(fontnode);
-//	fontsize = getSelectionParentByTag(editor, "fontsize"); // always in pts
-//  initializeFontSize(fontsize);
-//	fontcolor = getSelectionParentByTag(editor, "fontcolor");
-//  initializeColorData(fontcolor);
-//	leadingnode = getSelectionParentByTag(editor, "leading");
-//  initializeLeading(leadingnode);
+  texnode = getSelectionParentByTag(editor, "rawTeX");
+  if (texnode) {
+		document.getElementById("rawtex").value = texnode.getAttribute("tex");
+	}
 }
 
 function initializeUnitHandler(unithandler)
@@ -45,60 +33,6 @@ function initializeUnitHandler(unithandler)
 	unithandler.setEditFieldList(fieldlist);
 	unithandler.initCurrentUnit("pt")
 }
-
-//function initializeFontName(node)
-//{
-//  var menuObject = { };
-//	var initial;
-//  initializeFontFamilyList(false);
-//  if (node)
-//  {
-//    initial = node.getAttribute("fontname");
-//    if (initial) 
-//		{
-//			document.getElementById("otfontlist").value = initial;
-//		}
-//  }	
-//}
-//
-//function initializeFontSize(node)
-//{
-//	var size;
-//	if (node)
-//	{
-//		size = node.getAttribute("size");
-//		if (leading)
-//		{
-//			document.getElementById("size").value = size;
-//		}		
-//	}
-//}
-//
-//function initializeColorData(node)
-//{
-//	var color;
-//	if (node)
-//	{
-//		color = node.getAttribute("color");
-//		if (color)
-//		{
-//			setColorWell("colorWell", color);
-//		}		
-//	}
-//}
-//
-//function initializeLeading(node)
-//{
-//	var leading;
-//	if (node)
-//	{
-//		leading = node.getAttribute("val");
-//		if (leading)
-//		{
-//			document.getElementById("leading").value = leading;
-//		}		
-//	}
-//}
 
 function getColorAndUpdate()
 {
@@ -129,6 +63,7 @@ function onAccept()
 	var leading = unitHandler.getValueAs(getLeading(), "pt");
 	var color = getColorFromColorPicker();
 	var fontsize = unitHandler.getValueAs(getFontSize(), "pt");
+	var rawtex = getRawTeX();
 	
   var theWindow = window.opener;
   if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
@@ -136,7 +71,7 @@ function onAccept()
     theWindow = msiGetTopLevelWindow();
   }
 //  theWindow.msiRequirePackage(editorElement, "xltxtra", null);
-  var hasRealData = (!!fontname || !!color || !!fontsize || !!leading);
+  var hasRealData = (!!fontname || !!color || !!fontsize || !!leading || rawtex);
   if (hasRealData){
 		editor.beginTransaction();
 		if (fontname) theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
@@ -149,6 +84,10 @@ function onAccept()
 			theWindow.msiEditorSetTextProperty(editorElement, "fontsize", "size", fontsizedata);
 		}
 		else if (leading) theWindow.msiEditorSetTextProperty(editorElement, "leading", "val", leading+"pt");
+		if (rawtex) {
+			if (texnode) texnode.setAttribute("tex", rawtex);
+			else theWindow.msiEditorSetTextProperty(editorElement, "rawTeX", "tex", rawtex);
+		}
 		editor.endTransaction();
 	}
   editorElement.contentWindow.focus();
@@ -199,6 +138,13 @@ function getColorFromColorPicker()
 	var color = getColor("colorWell");
   if (!color || color=="") color = null;	
 	return color;
+}
+
+function getRawTeX()
+{
+	var tex = document.getElementById("rawtex").value;
+	if (!tex || tex.length == 0) tex = null;
+	return tex;
 }
 
 function onCancel()
