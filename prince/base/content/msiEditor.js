@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorJS_duplicateTest = "Bad";
 
@@ -1575,7 +1576,7 @@ function SharedStartupForEditor(editorElement)
     }
   } catch (e) { dump("In SharedStartupForEditor, exception: [" + e + "].\n"); }
 
-  var isMac = (GetOS() == msigMac);
+  var isMac = (getOS(window) == "osx");
 
   // Set platform-specific hints for how to select cells
   // Mac uses "Cmd", all others use "Ctrl"
@@ -2804,7 +2805,9 @@ function EditorClick(event)
   }
   else if (event.detail == 1)
   {
-    if (event.target.tagName == "plotwrapper") 
+	  var editor = msiGetEditor(editorElement);  
+	  var graphnode = getEventParentByTag(event, "plotwrapper");
+    if (graphnode) 
     {
       var obj = event.target.getElementsByTagName("obj")[0];
       if (obj != null) {
@@ -9100,6 +9103,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
 //                                         command, commandHandler, "")
 
   window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
+	msiGetEditor(editorElement).incrementModificationCount(1);
   editorElement.focus();
 }
 
@@ -9119,6 +9123,7 @@ function msiEditorTableCellProperties(editorElement)
       // Start Table Properties dialog on the "Cell" panel
       //HERE USE MODELESS DIALOG FUNCTIONALITY!
       window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal,resizable", "", "CellPanel");
+			msiGetEditor(editorElement).incrementModificationCount(1);
       editorElement.focus();
     }
   } catch (e) {}
@@ -9624,7 +9629,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiFrame(editorElement, null, element);
     }
-    else if (elementName == "otfont")
+    else if (elementName == "rawTeX")
     {
       openOTFontDialog(elementName,element);
     }
@@ -10535,27 +10540,31 @@ function openTeXButtonDialog(tagname, node)
 {
   openDialog('chrome://prince/content/texbuttoncontents.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 function openOTFontDialog(tagname, node)
 {
   openDialog('chrome://prince/content/otfont.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
-function openFontColorDialog(tagname, node)
-{
-  var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
-  openDialog('chrome://prince/content/color.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    "",colorObj,node);
-}
-
-function openFontSizeDialog(tagname, node)
-{
-  openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    node, editor);
-}
-
+//function openFontColorDialog(tagname, node)
+//{
+//  var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+//  openDialog('chrome://prince/content/color.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+//    "",colorObj,node);
+//}
+//
+//function openFontSizeDialog(tagname, node)
+//{
+//  openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+//    node, editor);
+//}
+//
 
 function openGraphDialog(tagname, node, editorElement)
 {
@@ -10568,6 +10577,9 @@ function openGraphDialog(tagname, node, editorElement)
   // non-modal dialog, the return is immediate
   var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
      editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
+
 }
 
 function getMSIDocumentInfo(editorElement)

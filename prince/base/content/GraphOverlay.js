@@ -499,7 +499,7 @@ function graphObjectClickEvent(cmdstr,element, editorElement)
       graph.extractGraphAttributes (graphelement);
       // non-modal dialog, the return is immediate
       window.openDialog ("chrome://prince/content/ComputeVcamSettings.xul",
-                         "vcamsettings", "chrome,close,titlebar,resizable, dependent", graph, graphelement, currentDOMGs);
+                         "vcamsettings", "chrome,close,titlebar,resizable, dependent", graph, graphelement, currentDOMGs, element);
     }
   }
   catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphObjectClickEvent: " + exc);}
