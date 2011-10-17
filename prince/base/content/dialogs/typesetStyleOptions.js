@@ -115,6 +115,10 @@ function doGoNative()
   {
     gDialog.selectedOptionsArray = optionsData.options;
   }
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
+
 }
 
 function itemIsDefaultChoice(anItem)

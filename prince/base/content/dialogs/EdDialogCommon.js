@@ -345,6 +345,7 @@ function onAdvancedEdit()
     {
       // Copy edited attributes to the dialog widgets:
       InitDialog();
+
     }
   }
 }

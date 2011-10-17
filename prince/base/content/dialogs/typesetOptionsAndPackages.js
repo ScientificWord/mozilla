@@ -136,6 +136,9 @@ function goNative()
   {
     gDialog.packages = packagesData.packages;
   }
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
 }
 
 function doModifyDialog()
@@ -153,6 +156,10 @@ function doModifyDialog()
     gDialog.docClassOptions = classOptionData.options;
     document.getElementById("optionsDescriptionBox").value=gDialog.docClassOptions.join(",");
   }
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
+
 }
 
 function movePackage(bUp)
@@ -210,6 +217,10 @@ function addPackage()
       checkDisabledControls();
     }
   }
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
+
 }
 
 function removeCurrentlySelectedPackage()
@@ -256,6 +267,10 @@ function modifyPackage(packageName)
     gDialog.packages[whichPackage].setOptions( packageData.options );
     setPackageDescriptionLine(gDialog.packages[whichPackage]);
   }
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
+
 }
 
 //Function moved to typesetDialogUtils.js, as it can be generally used in the child dialogs.
