@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/pathutils.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
@@ -3878,7 +3879,7 @@ function msiDefaultNewDocDirectory()
   }  
   var dirkey;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var os = msiGetOS();
+  var os = getOS(window);
   if (os==="win")
     dirkey = "Pers";
   else if (os=="osx")
@@ -4137,7 +4138,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
 
   // We only return "urlPath", so we can convert
   //  the entire basePath for case-insensitive comparisons
-  var os = msiGetOS();
+  var os = getOS(window);
   var doCaseInsensitive = (os != "win");
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
@@ -4204,7 +4205,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
         //   relativize to different drives/volumes.
         // UNIX doesn't have volumes, so we must not do this else
         //  the first directory will be misinterpreted as a volume name
-        if (firstDirTest && baseScheme == "file" && os != msigUNIX)
+        if (firstDirTest && baseScheme == "file" && os != "osx")
           return inputUrl;
       }
     }
@@ -4399,7 +4400,7 @@ function GetFilepath(urlspec) // BBM: I believe this can be simplified
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
       {
-        if (msiGetOS()=="win")
+        if (getOS(window)=="win")
           filepath = decodeURIComponent(url.path.substr(1));
         else
            filepath = decodeURIComponent(url.path);
@@ -4555,25 +4556,6 @@ function InsertUsernameIntoUrl(urlspec, username)
   return urlspec;
 }
 
-function GetOS()
-{
-  if (gOS)
-    return gOS;
-
-  var platform = navigator.platform.toLowerCase();
-
-  if (platform.indexOf("win") != -1)
-    gOS = msigWin;
-  else if (platform.indexOf("mac") != -1)
-    gOS = msigMac;
-  else if (platform.indexOf("unix") != -1 || platform.indexOf("linux") != -1 || platform.indexOf("sun") != -1)
-    gOS = msigUNIX;
-  else
-    gOS = "";
-  // Add other tests?
-
-  return gOS;
-}
 
 function ConvertRGBColorIntoHEXColor(color)
 {
@@ -11109,30 +11091,6 @@ function gotoFirstNonspaceInElement( editor, node )
 }
 
 
-function msiGetOS()
-{
-  var os;
-
-  switch(navigator.platform)
-  {
-  case 'Win32':
-   os = 'win';
-   break;
-  case 'MacPPC':
-  case 'MacIntel':
-   os = 'osx';
-   break;
-  case 'Linux i686':
-  case 'Linux i686 (x86_64)':
-   os = 'linux';
-   break;
-  default:
-   dump('Error: Unknown OS ' + navigator.platform);
-   os = "??";
-  }
-  return os;
-}
-
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and sets
 // the value of the text box
@@ -11686,6 +11644,13 @@ function getSelectionParentByTag( editor, tagname)
   return null;
 }
 
+function getEventParentByTag( event, tagname)
+{
+	var node = event.target;
+	while (node && node.tagName != tagname) node = node.parentNode;
+	if (node && node.tagName == tagname) return node;
+}
+
 
 
 function writeStringAsFile( str, file )
@@ -11907,3 +11872,12 @@ function msiEditorFindJustInsertedElement(tagName, editor)
   }
   return currNode;
 }
+
+// a tracing utility
+function msidump(str)
+{
+  Components.classes['@mozilla.org/consoleservice;1']
+            .getService(Components.interfaces.nsIConsoleService)
+            .logEngineStringMessage(str);
+}
+

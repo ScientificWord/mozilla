@@ -140,7 +140,9 @@ function GetPlotColor (attributeName)
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
-
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
   var color = colorObj.TextColor;
 //  dump ("SMR in GetPlotColor setting the color to " + color + "\n");
   window.arguments[0].setPlotAttribute (PlotAttrName(attributeName, plotno), color);
