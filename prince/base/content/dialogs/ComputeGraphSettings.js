@@ -43,6 +43,8 @@ function Startup(){
 //  }                                                                         
   graph.setGraphAttribute("plotnumber", firstActivePlot.toString());
 
+  initKeyList();
+  
   var editorControl = document.getElementById("plotDlg-content-frame");
 //  var docObserver = new Object();
 //  docObserver.mObserver = msiEditorDocumentObserverG;
@@ -857,7 +859,16 @@ function GetGraphColor (attributeName)
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
 
   var color = colorObj.TextColor;
   graph.setGraphAttribute (attributeName, color);
+}
+
+function initKeyList()
+{
+  gDialog.markerList = new msiKeyMarkerList(window);
+  gDialog.markerList.setUpTextBoxControl(document.getElementById("key"));
 }

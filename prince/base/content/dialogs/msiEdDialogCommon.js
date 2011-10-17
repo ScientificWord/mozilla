@@ -661,7 +661,7 @@ function onCancel()
 
 //Two functions following are presumably not needed for editors except the top-level one. Though I've rewritten them,
 //I'll leave them commented out. rwa
-function msiSetRelativeCheckbox(checkbox)
+function msiSetRelativeCheckbox(checkbox, editorElement)
 {
   if (!checkbox) {
     checkbox = document.getElementById("MakeRelativeCheckbox");
@@ -669,7 +669,8 @@ function msiSetRelativeCheckbox(checkbox)
       return;
   }
 
-  var editorElement = msiGetActiveEditorElement();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   // Mail never allows relative URLs, so hide the checkbox
   if (editor && (editor.flags & Components.interfaces.nsIPlaintextEditor.eEditorMailMask))

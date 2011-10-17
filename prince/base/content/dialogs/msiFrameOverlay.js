@@ -38,19 +38,19 @@ function updateMetrics()
   var sub;
 	if (gFrameModeImage)
 	{
-	  var overhangDirection;
-	  if (position = 1) 
-		{
-			overhangDirection = "left";
-		}
-		else
-		{
-			overhangDirection = "right";
-		}
 		sub = metrics.margin;
 		sub.top    = sub.bottom = Dg.marginInput.top.value;
-		sub.right  = (overhangDirection == "right"? -Number(Dg.marginInput.right.value):Number(Dg.marginInput.left.value));
-		sub.left   = (overhangDirection == "left" ? -Number(Dg.marginInput.right.value):Number(Dg.marginInput.left.value));
+		switch(position)
+		{
+			case 0: sub.left = sub.right = 0; // centered
+				break;
+			case 1: sub.right = Number(Dg.marginInput.left.value); 	// on the left
+							sub.left  = -Number(Dg.marginInput.right.value);
+			  break;
+			case 2: sub.right = -Number(Dg.marginInput.right.value);
+							sub.left  = Number(Dg.marginInput.left.value);
+				break;
+		}
 	  sub = metrics.padding;
 		sub.top    = sub.right  = sub.bottom = sub.left   = Dg.paddingInput.left.value;
 	  sub = metrics.border;
@@ -65,6 +65,10 @@ function updateMetrics()
 		sub.right =  Dg.marginInput.right.value; 
 		sub.bottom = Dg.marginInput.bottom.value; 
 		sub.left =   Dg.marginInput.left.value;
+		if (position == 0)
+		{
+			sub.right = sub.left = 0;
+		}
 		sub = metrics.padding;
 	  sub.top =    Dg.paddingInput.top.value; 
 		sub.right =  Dg.paddingInput.right.value; 
@@ -795,17 +799,28 @@ function setFrameAttributes(frameNode)
   else 
   {
     removeStyleAttributeFamilyOnNode(frameNode, "float");
-    if (posid == "display")
+		var fp = document.getElementById("herePlacementRadioGroup").value;
+    if (posid == "display" || (posid == "float" && (float==null || float=="full")))
     {
       setStyleAttributeOnNode(frameNode, "margin-left","auto");
       setStyleAttributeOnNode(frameNode, "margin-right","auto");
     }
   }
   // now set measurements in the style for frameNode
-  style = getCompositeMeasurement("padding","px", true);
-  setStyleAttributeOnNode(frameNode, "padding", style);
-  style = getCompositeMeasurement("border","px", true);
-  setStyleAttributeOnNode(frameNode, "border-width", style);
+  if (gFrameModeImage)
+	{
+		style = getSingleMeasurement("padding","Left", "px", true);
+	  setStyleAttributeOnNode(frameNode, "padding", style);
+	  style = getSingleMeasurement("border","Left","px", true);
+	  setStyleAttributeOnNode(frameNode, "border-width", style);
+	}
+	else
+	{
+		style = getCompositeMeasurement("padding","px", true);
+	  setStyleAttributeOnNode(frameNode, "padding", style);
+	  style = getCompositeMeasurement("border","px", true);
+	  setStyleAttributeOnNode(frameNode, "border-width", style);
+	}
   if (frameNode.hasAttribute("height") && Number(frameNode.getAttribute("height"))!= 0 )
     setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(frameNode.getAttribute("height"),"px") + "px");
   else removeStyleAttributeFamilyOnNode(frameNode, "height");
