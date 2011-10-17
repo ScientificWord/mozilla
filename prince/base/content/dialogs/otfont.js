@@ -1,74 +1,150 @@
 Components.utils.import("resource://app/modules/fontlist.jsm"); 
-Components.utils.import("resource://app/modules/pathutils.jsm"); 
+//Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
-var node;
-var initial;
+var texnode;
 var data = { ruleColor: "#000000" };
+var unitHandler;
 
 function startup()
 {
-  if (window.arguments && window.arguments.length > 0)
-    node = window.arguments[0];
-  var menuObject = { };
-  initializeFontFamilyList(false);
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  if (!editorElement)
+  {
+    throw("No editor in otfont.OnAccept!");
+  }
+  var editor = msiGetEditor(editorElement);  
+	unitHandler = new UnitHandler();
+	initializeUnitHandler(unitHandler);
+  var menuObject = { menulist: []};
   menuObject.menulist = document.getElementById("otfontlist");
   addOTFontsToMenu(menuObject);
-  if (node)
-  {
-    initial = node.getAttribute("fontname");
-    document.getElementById("otfontlist").value = initial;
-  }
+  texnode = getSelectionParentByTag(editor, "rawTeX");
+  if (texnode) {
+		document.getElementById("rawtex").value = texnode.getAttribute("tex");
+	}
+}
+
+function initializeUnitHandler(unithandler)
+{
+	var fieldlist = [];
+	fieldlist.push(document.getElementById("otfont.fontsize"));
+	fieldlist.push(document.getElementById("leading"));
+	unithandler.setEditFieldList(fieldlist);
+	unithandler.initCurrentUnit("pt")
 }
 
 function getColorAndUpdate()
 {
   var colorWell = document.getElementById("colorWell");
   if (!colorWell) return;
+  var color;
 
-  var colorObj = { NoDefault: false, Type: "Rule", TextColor: data.ruleColor, PageColor: 0, Cancel: false };
-
+  var colorObj = { NoDefault: false, Type: "Rule", TextColor: color, PageColor: 0, Cancel: false };
   window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
-
-  // User canceled the dialog
   if (colorObj.Cancel)
     return;
-
-  data.ruleColor = colorObj.TextColor;
-  setColorWell("colorWell", data.ruleColor); 
+  color = colorObj.TextColor;
+  setColorWell("colorWell", color); 
+  colorWell.setAttribute("color",color);
 }
-
-
-
 
 function onAccept()
 {
-  var list = document.getElementById("otfontlist");
-  var fontname;
-  if (list.selectedIndex  > 0)
+  try{
+	var editorElement = msiGetParentEditorElementForDialog(window);
+   if (!editorElement)
+   {
+     throw("No editor in otfont.OnAccept!");
+   }
+	var editor = msiGetEditor(editorElement);
+  
+  var fontname = getFontName();
+	var leading = unitHandler.getValueAs(getLeading(), "pt");
+	var color = getColorFromColorPicker();
+	var fontsize = unitHandler.getValueAs(getFontSize(), "pt");
+	var rawtex = getRawTeX();
+	
+  var theWindow = window.opener;
+  if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
   {
-    fontname = list.value;
-    var editorElement = msiGetParentEditorElementForDialog(window);
-    if (!editorElement)
-    {
-      AlertWithTitle("Error", "No editor in otfont.OnAccept!");
-    }
+    theWindow = msiGetTopLevelWindow();
   }
-  if (node)
-  {
-    node.setAttribute("fontname", fontname);
-    node.setAttribute("style","font-family: "+fontname+";");
-  }
-  else
-  {
-	  var theWindow = window.opener;
-	  if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
-    {
-	    theWindow = msiGetTopLevelWindow();
-    }
-    theWindow.msiRequirePackage(editorElement, "xltxtra", null);
-    theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
-  }
+//  theWindow.msiRequirePackage(editorElement, "xltxtra", null);
+  var hasRealData = (!!fontname || !!color || !!fontsize || !!leading || rawtex);
+  if (hasRealData){
+		editor.beginTransaction();
+		if (fontname) theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
+		if (color) theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", color);
+		if (fontsize) 
+		{
+			var fontsizedata;
+			if (leading) fontsizedata = fontsize+"/"+leading+" pt";
+			else fontsizedata = fontsize+"/"+fontsize;
+			theWindow.msiEditorSetTextProperty(editorElement, "fontsize", "size", fontsizedata);
+		}
+		else if (leading) theWindow.msiEditorSetTextProperty(editorElement, "leading", "val", leading+"pt");
+		if (rawtex) {
+			if (texnode) texnode.setAttribute("tex", rawtex);
+			else theWindow.msiEditorSetTextProperty(editorElement, "rawTeX", "tex", rawtex);
+		}
+		editor.endTransaction();
+	}
   editorElement.contentWindow.focus();
+}
+catch(e){
+	dump(e.message);
+}
+}
+
+function getFontName()
+{
+  var list = document.getElementById("otfontlist");
+	if (list.selectedIndex  > 0)
+  {
+    return list.value;
+  }
+  return null;
+}
+
+function getFontSize() 
+{
+	var size = document.getElementById("otfont.fontsize").value;
+	if (Number(size) == 0)
+	{
+		size = null;
+	}
+	return size;
+}
+
+function getLeading() 
+{
+	var leading = document.getElementById("leading").value;
+	if (Number(leading) == 0)
+	{
+		leading = null;
+	}
+	return leading;
+}
+
+function getUnits() 
+{
+	var units = document.getElementById("otfont.units").value;
+	return units;
+}
+
+function getColorFromColorPicker()
+{
+	var color = getColor("colorWell");
+  if (!color || color=="") color = null;	
+	return color;
+}
+
+function getRawTeX()
+{
+	var tex = document.getElementById("rawtex").value;
+	if (!tex || tex.length == 0) tex = null;
+	return tex;
 }
 
 function onCancel()

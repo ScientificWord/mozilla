@@ -42,6 +42,7 @@
 
 var gDialog;
 var globalElement;
+var gEditorElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 var frameTabDlg = new Object();
 
@@ -70,8 +71,8 @@ var gCaptionData;
 // dialog initialization code
 function Startup()
 {
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
+  gEditorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(gEditorElement);
   if (!editor)
   {
     window.close();
@@ -253,6 +254,8 @@ function InitImage()
   var imageKey;
   if (globalElement.hasAttribute("key"))
     imageKey = globalElement.getAttribute("key");
+  else if (globalElement.hasAttribute("id"))
+    imageKey = globalElement.getAttribute("id");
   gDialog.keyInput.value = imageKey;
 
   var hasAltText = globalElement.hasAttribute("alt");
@@ -990,8 +993,8 @@ function constrainProportions( srcID, destID, event )
 function ValidateImage()
 {
   dump("in ValidateImage()\n");
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
+//  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(gEditorElement);
 //  var editor = GetCurrentEditor();
   if (!editor)
     return false;
@@ -1167,8 +1170,8 @@ function onAccept()
   dump("in onAccept\n");
   if (ValidateData())
   {
-    var editorElement = msiGetParentEditorElementForDialog(window);
-    var editor = msiGetEditor(editorElement);
+//    var editorElement = msiGetParentEditorElementForDialog(window);
+    var editor = msiGetEditor(gEditorElement);
 
     editor.beginTransaction();
     try
@@ -1223,6 +1226,7 @@ function onAccept()
       if (!theKey.length)
         theKey = null;
       msiEditorEnsureElementAttribute(imageElement, "key", theKey, editor);
+      msiEditorEnsureElementAttribute(imageElement, "id", theKey, editor);
     }
     catch (e)
     {
