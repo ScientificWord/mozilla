@@ -37,8 +37,9 @@ function Startup()
 //  initKeyList();
 //  msiSetInitialDialogFocus(gKey);
   gDialog.markerList = new msiKeyMarkerList(window);
-  var autocompleteKeyString = gDialog.markerList.getIndexString();
-  gKey.setAttribute("autocompletesearchparam", autocompleteKeyString);
+  gDialog.markerList.setUpTextBoxControl(gKey);
+//  var autocompleteKeyString = gDialog.markerList.getIndexString();
+//  gKey.setAttribute("autocompletesearchparam", autocompleteKeyString);
 
   gKey.value = gDialog.key;
   gReftype.value = gDialog.refType;
@@ -53,6 +54,8 @@ function setDataFromReviseData(reviseData)
   {
     if (refnode.hasAttribute("key")) 
       gDialog.key = refnode.getAttribute("key");
+    else if (refnode.hasAttribute("id"))
+      gDialog.key = refnode.getAttribute("id");
     if (refnode.hasAttribute("reftype")) 
       gDialog.refType = refnode.getAttribute("reftype");
     bIsRevise = true;
