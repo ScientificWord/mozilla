@@ -855,6 +855,8 @@
 		<tagclass>
 			<tagclassname>othertag</tagclassname>
 			<tags>
+        <tag nm="mi"><description>mi</description></tag>
+        <tag nm="hspace"><description>hspace</description></tag>
 				<tag nm="object"><description>Object</description></tag>
         <tag nm="citation">
           <description>Citation</description>
@@ -879,7 +881,7 @@
 			      <contains>texttag</contains>
 			      <contains>othertag</contains>
             <contains>table</contains>
-			      <contains>mml:math</contains>Yammer
+			      <contains>mml:math</contains>
 			      <contains>img</contains>
             <contains>a</contains>
             <contains>note</contains>
