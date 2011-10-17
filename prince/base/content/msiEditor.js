@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorJS_duplicateTest = "Bad";
 
@@ -1018,7 +1019,14 @@ function msiEditorDocumentObserver(editorElement)
         {
           this.mEditorElement.mEditorSeqInitializer.finishedEditor(this.mEditorElement);
         }
-        break;
+
+        if (bIsRealDocument && ("initialMarker" in this.mEditorElement) && (this.mEditorElement.initialMarker.length))
+        {
+          var markerStr = decodeURIComponent(this.mEditorElement.initialMarker);
+          delete this.mEditorElement.initialMarker;  //don't want to leave this around for later reloads or anything
+          msiGoToMarker(this.mEditorElement, markerStr);
+        }
+      break;
 
       case "cmd_setDocumentModified":
 //        msiDumpWithID("Hit setDocumentModified observer in base msiEditorDocumentObserver, for editor [@].\n", this.mEditorElement);
@@ -1175,9 +1183,13 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     var doc;
     var dir;
     var charset = "";
+    var initMarker = "";
     if (theArgs)
     {
-      charset = theArgs.getAttribute("charset")
+      charset = theArgs.getAttribute("charset");
+      initMarker = theArgs.getAttribute("initialMarker");
+      if (initMarker && initMarker.length)
+        editorElement.initialMarker = initMarker;
       docurlstring = theArgs.getAttribute("value");
       if (docurlstring.length > 0)
         docurl = msiURIFromString(docurlstring);
@@ -1236,9 +1248,18 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     if (!docurl.schemeIs("chrome"))
     {
       doc = msiFileFromFileURL(docurl);
-      dir = doc.parent;
+      if (!doc)
+      {
+        docpath = docurl.path;
+        doc = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        try
+        { doc.initWithPath(docpath); }
+        catch(ex) {doc = null;}
+      }
+      if (doc)
+        dir = doc.parent;
     }
-    if (!editorElement.isShellFile) editorElement.fileLeafName = doc.leafName;
+    if (!editorElement.isShellFile && doc) editorElement.fileLeafName = doc.leafName;
     // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
     // has already been created and the document name changed. When starting up, or starting with a file on the
     // command line we still need to call "createWorkingDirectory."
@@ -1483,10 +1504,12 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
     editorElement.contentWindow.focus();
 }
 
-function msiEditorLoadUrl(editorElement, url)
+function msiEditorLoadUrl(editorElement, url, markerStr)
 {
   dump("msiEditorLoadUrl: url.spec= "+url.spec+"\n");
   try {
+    if (markerStr)
+      editorElement.initialMarker = markerStr;
     if (url)
       editorElement.webNavigation.loadURI(url.spec, // uri string
              msIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,     // load flags
@@ -1553,7 +1576,7 @@ function SharedStartupForEditor(editorElement)
     }
   } catch (e) { dump("In SharedStartupForEditor, exception: [" + e + "].\n"); }
 
-  var isMac = (GetOS() == msigMac);
+  var isMac = (getOS(window) == "osx");
 
   // Set platform-specific hints for how to select cells
   // Mac uses "Cmd", all others use "Ctrl"
@@ -2774,6 +2797,7 @@ function EditorClick(event)
   if (!event)
     return;
 //  if (event.target.onclick) return;
+  var editorElement = msiGetEditorElementFromEvent(event);
   if (event.detail == 2)
   {
     EditorDblClick(event);
@@ -2781,18 +2805,30 @@ function EditorClick(event)
   }
   else if (event.detail == 1)
   {
-    if (event.target.tagName == "plotwrapper") 
+	  var editor = msiGetEditor(editorElement);  
+	  var graphnode = getEventParentByTag(event, "plotwrapper");
+    if (graphnode) 
     {
       var obj = event.target.getElementsByTagName("obj")[0];
       if (obj != null) {
         doVCamInitialize(obj);
-//        vcamActive = true;
       }
     }
-    else if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden") !==true) 
+    else if (event.target.tagName == "a")
     {
-      document.getElementById("vcamactive").setAttribute("hidden",true);
+      var theURI, targWin;
+      theURI = event.target.getAttribute("href");
+      if (event.target.hasAttribute("target"))
+        targWin = event.target.getAttribute("target");
+      msiClickLink(event, theURI, targWin, editorElement);
     }
+    else
+		{
+			if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false") 
+	    {
+	      document.getElementById("vcamactive").setAttribute("hidden",true);
+	    }
+		}
   }
 
 //  event.currentTarget should be "body" or something...
@@ -2800,7 +2836,6 @@ function EditorClick(event)
   // For Web Composer: In Show All Tags Mode,
   // single click selects entire element,
   //  except for body and table elements
-  var editorElement = msiGetEditorElementFromEvent(event);
 //  if (IsWebComposer() && event.explicitOriginalTarget && msiIsHTMLEditor(editorElement) &&
 //      msiGetEditorDisplayMode(editorElement) == kDisplayModeAllTags)
   msiSetActiveEditor(editorElement, false);
@@ -5235,6 +5270,13 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("IndexEntry"));
         scriptStr = "doInsertIndexEntry(event.target.refEditor, event.target.refElement);";
+      break;
+
+      case "msiframe":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("msiFrame"));
+        scriptStr = "msiFrame(event.target.refEditor, null, event.target.refElement);";
       break;
 
       default:
@@ -9061,6 +9103,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
 //                                         command, commandHandler, "")
 
   window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
+	msiGetEditor(editorElement).incrementModificationCount(1);
   editorElement.focus();
 }
 
@@ -9080,6 +9123,7 @@ function msiEditorTableCellProperties(editorElement)
       // Start Table Properties dialog on the "Cell" panel
       //HERE USE MODELESS DIALOG FUNCTIONALITY!
       window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal,resizable", "", "CellPanel");
+			msiGetEditor(editorElement).incrementModificationCount(1);
       editorElement.focus();
     }
   } catch (e) {}
@@ -9585,7 +9629,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiFrame(editorElement, null, element);
     }
-    else if (elementName == "otfont")
+    else if (elementName == "rawTeX")
     {
       openOTFontDialog(elementName,element);
     }
@@ -10496,27 +10540,31 @@ function openTeXButtonDialog(tagname, node)
 {
   openDialog('chrome://prince/content/texbuttoncontents.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 function openOTFontDialog(tagname, node)
 {
   openDialog('chrome://prince/content/otfont.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
-function openFontColorDialog(tagname, node)
-{
-  var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
-  openDialog('chrome://prince/content/color.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    "",colorObj,node);
-}
-
-function openFontSizeDialog(tagname, node)
-{
-  openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    node, editor);
-}
-
+//function openFontColorDialog(tagname, node)
+//{
+//  var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+//  openDialog('chrome://prince/content/color.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+//    "",colorObj,node);
+//}
+//
+//function openFontSizeDialog(tagname, node)
+//{
+//  openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+//    node, editor);
+//}
+//
 
 function openGraphDialog(tagname, node, editorElement)
 {
@@ -10529,6 +10577,9 @@ function openGraphDialog(tagname, node, editorElement)
   // non-modal dialog, the return is immediate
   var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
      editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
+
 }
 
 function getMSIDocumentInfo(editorElement)
@@ -10556,3 +10607,283 @@ function setBibliographyScheme(editorElement, whichScheme)
   docInfo.putDocInfoToDocument();
 }
 
+function msiClickLink(event, theURI, targWinStr, editorElement)
+{
+  var doFollowLink = false;
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var theWindow = window;
+  if (editorElement)
+    theWindow = editorElement.contentWindow;
+  var editor = msiGetEditor(editorElement);
+  var flags = editor.flags;
+  if (flags & nsIPlaintextEditor.eEditorReadonlyMask)
+    doFollowLink = true;
+  else if (event.ctrlKey)
+    doFollowLink = true;
+  if (!doFollowLink)
+    return;
+
+  var targURIStr, targMarker;
+  var newWindow;
+  var sharpPos = theURI.indexOf("#");
+  if (sharpPos < 0)
+    targURIStr = theURI;
+  else
+  {
+    targMarker = theURI.substr(sharpPos+1);
+    targURIStr = theURI.substr(0, sharpPos);
+  }
+  var targURI = msiCreateURI(msiMakeAbsoluteUrl(targURIStr, editorElement));
+  var fullTargURI = msiCreateURI(msiMakeAbsoluteUrl(theURI, editorElement));
+
+//  if (!targWinStr || (targWinStr == "_blank"))  //RWA Commenting this out for now! Don't try to re-use editors until we know how...
+    targWinStr = "";
+
+  var targEditor, targWin, winWatcher;
+  if (!targURIStr.length)
+    targEditor = editorElement;
+
+  var winNameToUse = "";
+//  if (targWinStr.length)
+//  {
+//    switch(targWinStr)
+//    {
+//      case "_top":
+//        targEditor = msiGetTopLevelEditorElement(window);
+//      break;
+//      case "_parent":
+//        targEditor = msiGetParentOrTopLevelEditor(editorElement);
+//      break;
+//      case "_self":
+//        targEditor = editorElement;
+//      break;
+//      default:  //using a window identifier string - find the window?
+//        winWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
+//        targWin = winWatcher.getWindowByName(targWinStr, null);
+//        if (targWin)
+//          targEditor =  msiGetPrimaryEditorElementForWindow(targWin);
+//        else
+//          winNameToUse = targWinStr;
+//      break;
+//    }
+//  }
+
+  if (!targEditor)
+    targEditor = msiEditPage(fullTargURI, theWindow, false, winNameToUse);
+  else if (targURI)
+  {
+    msiCheckAndSaveDocument(targEditor, "cmd_close", true);
+    var isSciRegEx = /\.sci$/i;
+    var isSci = isSciRegEx.test(targURI.spec);
+    if (isSci)
+    {
+      var doc = msiFileFromFileURL(targURI);
+      var newdoc = createWorkingDirectory(doc);
+      targURI = msiFileURLFromFile(newdoc);
+    }
+    msiEditorLoadUrl(targEditor, targURI, targMarker);
+  }
+  else if (targMarker && targMarker.length)
+    msiGoToMarker(targEditor, targMarker);
+}
+
+
+function msiGoToMarker(editorElement, markerStr, bPreferKey)
+{
+  var editor = msiGetEditor(editorElement);
+//  var targNode = editor.document.getElementById(markerStr);
+  var targNode;
+  var ourExpr = ".//*[(@key='" + markerStr + "') or (@id='" + markerStr + "') or (@marker='" + markerStr + "') or (@customLabel='" + markerStr + "')]";
+  var xPathEval = new XPathEvaluator();
+  var nsResolver = xPathEval.createNSResolver(editor.document.documentElement);
+
+  var resultNodes = xPathEval.evaluate(ourExpr, editor.document.documentElement, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+  if (resultNodes.snapshotLength==1)
+    targNode = resultNodes.snapshotItem(0);
+  else if (resultNodes.snapshotLength > 1)
+  {
+    for (var ix = 0; !targNode && (ix < resultNodes.snapshotLength); ++ix)
+    {
+      currNode = resultNodes.snapshotItem(ix);
+      if (bPreferKey)
+      {
+        if (currNode.hasAttribute("key") && (currNode.getAttribute("key") == markerStr))
+          targNode = currNode;
+        else if (currNode.hasAttribute("marker") && (currNode.getAttribute("marker") == markerStr))
+          targNode = currNode;
+      }
+      else if (currNode.hasAttribute("id") && (currNode.getAttribute("id") == markerStr))
+        targNode = currNode;
+
+    }
+    if (!targNode)
+      targNode = resultNodes.snapshotItem(0);
+  }
+  else  //No results found! Alert:
+  {
+    var missingMarkerTitleStr = GetString("MissingMarkerErrorTitle");
+    var missingMarkerStr = GetString("MissingMarkerError");
+    missingMarkerStr = missingMarkerStr.replace("%name%", markerStr);
+    AlertWithTitle(missingMarkerTitleStr, missingMarkerStr);
+  }
+
+//    if (treeWalker)
+//    {
+//      for (var currNode = treeWalker.nextNode(); currNode != null; currNode = treeWalker.nextNode())
+//      {
+//        if ( (currNode.getAttribute("marker") == markerStr) || (currNode.getAttribute("key") == markerStr) )
+//        {
+//          targNode = currNode;
+//          break;
+//        }
+//      }
+//    }
+//  }
+  if (targNode)
+    editor.selection.collapse(targNode,0);
+}
+
+function msiCreateURI(urlstring)
+{
+  try {
+    var ioserv = Components.classes["@mozilla.org/network/io-service;1"]
+               .getService(Components.interfaces.nsIIOService);
+    return ioserv.newURI(urlstring, null, null);
+  } catch (e) {}
+
+  return null;
+}
+
+function msiCheckOpenWindowForURIMatch(uri, win)
+{
+  var editorList = win.document.getElementsByTagName("editor");
+  for (var i = 0; i < editorList.length; ++i)
+  {
+    try {
+      var contentDoc = editorList[i].contentDocument;
+//      var contentWindow = win.content;  // need to QI win to nsIDOMWindowInternal?
+//      var contentDoc = contentWindow.document;
+      var htmlDoc = contentDoc.QueryInterface(Components.interfaces.nsIDOMHTMLDocument);
+      var winuri = msiCreateURI(htmlDoc.URL);
+      if (winuri.equals(uri))
+        return editorList[i];
+    } catch (e) {}
+  }
+  return null;
+}
+
+// Any non-editor window wanting to create an editor with a URL
+//   should use this instead of "window.openDialog..."
+//  We must always find an existing window with requested URL
+// (When calling from a dialog, "launchWindow" is dialog's "opener"
+//   and we need a delay to let dialog close)
+function msiEditPage(url, launchWindow, delay, windowName)
+{
+  // Always strip off "view-source:" and #anchors; kludge: accept string url or nsIURI url.
+  var urlstring, fullUrlstring;
+  try {
+    fullUrlstring = url.spec.replace(/^view-source:/, "");
+  }
+  catch(e) {
+    fullUrlstring = url.replace(/^view-source:/, "");
+  }
+  urlstring = fullUrlstring.replace(/#.*/, "");
+
+  var markerArg, marker;
+  var sharpPos = fullUrlstring.indexOf("#");
+  if (sharpPos >= 0)
+  {
+    marker = fullUrlstring.substr(sharpPos + 1);
+    markerArg = "initialMarker=" + marker;
+  }
+
+  // User may not have supplied a window
+  if (!launchWindow)
+  {
+    if (window)
+    {
+      launchWindow = window;
+    }
+    else
+    {
+      dump("No window to launch an editor from!\n");
+      return null;
+    }
+  }
+
+  // if the current window is a browser window, then extract the current charset menu setting from the current 
+  // document and use it to initialize the new composer window...
+
+  var wintype = document.documentElement.getAttribute('windowtype');
+  var charsetArg, win;
+
+  if (launchWindow && (wintype == "navigator:browser") && launchWindow.content.document)
+    charsetArg = "charset=" + launchWindow.content.document.characterSet;
+
+  try {
+    var uri = msiCreateURI(urlstring, null, null);
+
+    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
+    var windowManagerInterface = windowManager.QueryInterface( Components.interfaces.nsIWindowMediator);
+    var enumerator = windowManagerInterface.getEnumerator( "swp:xhtml_mathml" );
+    var emptyWindow;
+    var useEditorElement = null;
+    while ( enumerator.hasMoreElements() )
+    {
+      win = enumerator.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+      if ( win && msiIsWebComposer(win))
+      {
+        useEditorElement = msiCheckOpenWindowForURIMatch(uri, win);
+        if (useEditorElement != null)
+        {
+          // We found an editor with our url
+          useEditorElement.focus();
+          if (marker && marker.length)
+            msiGoToMarker(useEditorElement, marker);
+          return useEditorElement;
+        }
+//        else if (!emptyWindow && msiPageIsEmptyAndUntouched(editorElement)
+//        else if (!emptyWindow)
+//        else if (!useEditorElement)
+//        {
+//          var editorElement = msiGetPrimaryEditorElementForWindow(win);
+//          if (msiPageIsEmptyAndUntouched(editorElement))
+//            useEditorElement = editorElement;
+////            emptyWindow = win;
+//        }
+      }
+    }
+
+//    if (emptyWindow)
+    if (useEditorElement != null)
+    {
+      // we have an empty editor we can use
+      if (msiIsInHTMLSourceMode(useEditorElement))
+        msiSetEditMode(msiGetPreviousNonSourceDisplayMode(useEditorElement), useEditorElement);
+      msiEditorLoadUrl(useEditorElement, uri, marker);
+      useEditorElement.focus();
+      msiSetSaveAndPublishUI(uri.spec, useEditorElement);
+
+//      if (emptyWindow.IsInHTMLSourceMode())
+//        emptyWindow.SetEditMode(emptyWindow.PreviousNonSourceDisplayMode);
+//      emptyWindow.EditorLoadUrl(url);
+//      emptyWindow.focus();
+//      emptyWindow.SetSaveAndPublishUI(url);
+      return useEditorElement;
+    }
+
+    // Create new Composer window
+    if (!windowName || !windowName.length)
+      windowName = "_blank";
+    if (delay)
+    {
+      win = launchWindow.delayedOpenWindow("chrome://prince/content", "chrome,all,dialog=no", url);
+    }
+    else
+      win = launchWindow.openDialog("chrome://prince/content", windowName, "chrome,all,dialog=no", uri.spec, charsetArg, markerArg);
+
+    return useEditorElement;
+  } catch(e) {}
+  return null;
+}

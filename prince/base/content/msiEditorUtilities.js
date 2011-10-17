@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/pathutils.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
@@ -139,8 +140,10 @@ function ConvertToCDATAString(string)
 
 function msiGetSelectionAsText(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   try {
-    return msiGetEditor(mEditorElement).outputToString("text/plain", 1); // OutputSelectionOnly
+    return msiGetEditor(editorElement).outputToString("text/plain", 1); // OutputSelectionOnly
   } catch (e) {}
 
   return "";
@@ -321,7 +324,8 @@ function clearPrevActiveEditor(timerData)
         {
           msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
           var editor = msiGetEditor(theWindow.msiActiveEditorElement);
-          editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
+          if (editor && editor.tagListManager)
+            editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
         }
       }
       else
@@ -428,6 +432,9 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //    prevEdId = theWindow.msiPrevEditorElement.id;
 //End logging stuff
 
+  var editor = msiGetEditor(theWindow.msiActiveEditorElement);
+  if (editor && bIsFocusEvent && editor.tagListManager)
+    editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
   var bIsDifferent = (!theWindow.msiActiveEditorElement || (theWindow.msiActiveEditorElement != editorElement));
   if (bIsDifferent)
   {
@@ -3872,7 +3879,7 @@ function msiDefaultNewDocDirectory()
   }  
   var dirkey;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var os = msiGetOS();
+  var os = getOS(window);
   if (os==="win")
     dirkey = "Pers";
   else if (os=="osx")
@@ -4131,7 +4138,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
 
   // We only return "urlPath", so we can convert
   //  the entire basePath for case-insensitive comparisons
-  var os = msiGetOS();
+  var os = getOS(window);
   var doCaseInsensitive = (os != "win");
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
@@ -4198,7 +4205,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
         //   relativize to different drives/volumes.
         // UNIX doesn't have volumes, so we must not do this else
         //  the first directory will be misinterpreted as a volume name
-        if (firstDirTest && baseScheme == "file" && os != msigUNIX)
+        if (firstDirTest && baseScheme == "file" && os != "osx")
           return inputUrl;
       }
     }
@@ -4393,7 +4400,7 @@ function GetFilepath(urlspec) // BBM: I believe this can be simplified
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
       {
-        if (msiGetOS()=="win")
+        if (getOS(window)=="win")
           filepath = decodeURIComponent(url.path.substr(1));
         else
            filepath = decodeURIComponent(url.path);
@@ -4549,25 +4556,6 @@ function InsertUsernameIntoUrl(urlspec, username)
   return urlspec;
 }
 
-function GetOS()
-{
-  if (gOS)
-    return gOS;
-
-  var platform = navigator.platform.toLowerCase();
-
-  if (platform.indexOf("win") != -1)
-    gOS = msigWin;
-  else if (platform.indexOf("mac") != -1)
-    gOS = msigMac;
-  else if (platform.indexOf("unix") != -1 || platform.indexOf("linux") != -1 || platform.indexOf("sun") != -1)
-    gOS = msigUNIX;
-  else
-    gOS = "";
-  // Add other tests?
-
-  return gOS;
-}
 
 function ConvertRGBColorIntoHEXColor(color)
 {
@@ -7533,10 +7521,19 @@ var msiKeyListManager =
   initMarkerListForControl : function(aControl, bForce)
   {
     var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+    var docRecord = this.getRecordForDocument(aControlRecord.mDocument);
+    var editorElement = msiGetTopLevelEditorElement(aControl);
+    if (editorElement)
+      docRecord.mEditor = msiGetEditor(editorElement);
     return this.initMarkerList(aControlRecord, bForce);
   },
 
   initMarkerList : function(aControlRecord, bForce)
+  {
+    return this.initMarkerListForDocument(aControlRecord, aControlRecord.mDocument, bForce);
+  },
+
+  initMarkerListForDocument : function(aControlRecord, aDocument, bForce)
   {
     var retVal = false;
     try
@@ -7544,7 +7541,7 @@ var msiKeyListManager =
 //      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
 //      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
       var ACSA = this.setACSAImpGetService();
-      var currDocKeys = this.getMarkerStringList(aControlRecord.mDocument, bForce);
+      var currDocKeys = this.getMarkerStringList(aDocument, bForce);
       for (var ix = 0; ix < currDocKeys.length; ++ix)
       {
         if (currDocKeys[ix].length > 0)
@@ -7579,6 +7576,23 @@ var msiKeyListManager =
     return false;
   },
 
+  clearMarkerList : function(aControlRecord)
+  {
+    try
+    {
+      if (aControlRecord)
+      {
+//        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+        var ACSA = this.setACSAImpGetService();
+        ACSA.resetArray(aControlRecord.mKey);
+        return true;
+      }
+    }
+    catch(exc) {dump("Exception in msiKeyListManager.clearMarkerList! Error is [" + exc + "]\n");}
+    return false;
+  },
+
   getMarkerStringList : function(aDocument, bForce)
   {
     
@@ -7590,7 +7604,13 @@ var msiKeyListManager =
   {
     if (bForce || this.needsMarkerListRefresh(aDocRecord))
     {
-      aDocRecord.markerList = msiGetKeyListForDocument(aDocRecord.mDocument);
+      if (!("mEditor" in aDocRecord))
+      {
+        var editorElement = msiGetTopLevelEditorElement(window);
+        if (editorElement)
+          aDocRecord.mEditor = msiGetEditor(editorElement);
+      }
+      aDocRecord.markerList = msiGetKeyListForDocument(aDocRecord.mDocument, aDocRecord.mEditor);
       aDocRecord.bDocModified = false;
     }
     return aDocRecord.markerList;
@@ -7656,6 +7676,20 @@ var msiMarkerListPrototype =
 //      this.setForDocument(aDocument);
 //  },
 
+  clearList : function()
+  {
+    return this.mKeyListManager.clearMarkerList(this.mKeyListManagerRecord);
+  },
+
+  changeSourceDocument : function(aDocument)
+  {
+    this.clearList();
+    this.mDeletedItems = [];
+    this.mAddedItems = [];
+    this.mTargetDocument = aDocument;
+    return this.mKeyListManager.initMarkerListForDocument(this.mKeyListManagerRecord, aDocument, true);
+  },
+
   getIndexString : function()
   {
     if (this.mKeyListManagerRecord)
@@ -7665,6 +7699,8 @@ var msiMarkerListPrototype =
 
   getDocument : function()
   {
+    if ("mTargetDocument" in this)
+      return this.mTargetDocument;
     if (this.mKeyListManagerRecord)
       return this.mKeyListManagerRecord.mDocument;
     return null;
@@ -7792,7 +7828,7 @@ function msiBibItemKeyMarkerList(aControl)
 
 msiBibItemKeyMarkerList.prototype = msiMarkerListPrototype;
 
-function msiGetKeyListForDocument(aDocument)
+function msiGetKeyListForDocument(aDocument, editor)
 {
 //  var parser = new DOMParser();
 //  var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
@@ -7816,7 +7852,19 @@ function msiGetKeyListForDocument(aDocument)
 //  }  
 //  dump("Keys are : "+keys.join()+"\n");    
 //  return keys;
-  var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:template> </xsl:stylesheet>";
+	var ignoreIdsList = "section--subsection--subsubsection--part--chapter";
+  if (editor)
+    ignoreIdsList = editor.tagListManager.getTagsInClass("structtag","--", false);
+	ignoreIdsList = "--" + ignoreIdsList + "--";
+  var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' xmlns:mathml='http://www.w3.org/1998/Math/MathML' ><xsl:output method='text' encoding='UTF-8'/><xsl:variable name='hyphen'>--</xsl:variable>";
+  xsltSheetForKeyAttrib += "<xsl:variable name='ignoreIDs'>" + ignoreIdsList + "</xsl:variable>";
+  xsltSheetForKeyAttrib += "<xsl:template match='/'>  <xsl:apply-templates select='//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'/></xsl:template>\
+                               <xsl:template match='//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'>\
+                                 <xsl:choose><xsl:when test='@key'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:when>\
+                                             <xsl:when test='@marker and not(@key and @key=@marker)'><xsl:value-of select='@marker'/><xsl:text>\n</xsl:text></xsl:when>\
+                                             <xsl:when test='@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)'><xsl:value-of select='@id'/><xsl:text>\n</xsl:text></xsl:when>\
+                                             <xsl:when test='@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)'><xsl:value-of select='@customLabel'/><xsl:text>\n</xsl:text></xsl:when>\
+                               </xsl:choose></xsl:template> </xsl:stylesheet>";
   var sepRE = /\n+/;
   return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForKeyAttrib, sepRE, true);
 }
@@ -9175,6 +9223,38 @@ var msiNavigationUtils =
   nodeIsInMath : function(aNode)
   {
     return (this.getParentOfType(aNode, "math") != null);
+  },
+
+  isMathTag : function(tagName)
+  {
+    switch(tagName)
+    {
+      case "mrow":
+      case "math":
+      case "mtable":
+      case "mtd":
+      case "mtr":
+      case "mi":
+      case "mo":
+      case "mn":
+      case 'mfrac':
+      case 'msub':
+      case 'msubsup':
+      case 'msup':
+      case 'munder':
+      case 'mover':
+      case 'munderover':
+      case 'mroot':
+      case 'msqrt':
+      case 'mrow':
+      case 'mstyle':
+        return true;
+      break;
+      default:
+        return false;
+      break;
+    }
+    return false;
   },
 
   isMathNode : function(aNode)
@@ -11011,30 +11091,6 @@ function gotoFirstNonspaceInElement( editor, node )
 }
 
 
-function msiGetOS()
-{
-  var os;
-
-  switch(navigator.platform)
-  {
-  case 'Win32':
-   os = 'win';
-   break;
-  case 'MacPPC':
-  case 'MacIntel':
-   os = 'osx';
-   break;
-  case 'Linux i686':
-  case 'Linux i686 (x86_64)':
-   os = 'linux';
-   break;
-  default:
-   dump('Error: Unknown OS ' + navigator.platform);
-   os = "??";
-  }
-  return os;
-}
-
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and sets
 // the value of the text box
@@ -11588,6 +11644,13 @@ function getSelectionParentByTag( editor, tagname)
   return null;
 }
 
+function getEventParentByTag( event, tagname)
+{
+	var node = event.target;
+	while (node && node.tagName != tagname) node = node.parentNode;
+	if (node && node.tagName == tagname) return node;
+}
+
 
 
 function writeStringAsFile( str, file )
@@ -11763,3 +11826,58 @@ function buildAllTagsViewStylesheet(editor)
 	  dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
 	}
 }
+
+function msiEditorFindJustInsertedElement(tagName, editor)
+{
+  var currNode = editor.selection.focusNode;
+  var currOffset = editor.selection.focusOffset;
+  var currName;
+  var childList;
+  if (msiNavigationUtils.isMathTag(tagName) && currNode && msiNavigationUtils.isMathNode(currNode))
+  {
+    while (currNode && (msiGetBaseNodeName(currNode) != tagName))
+    {
+      if (msiNavigationUtils.isEmptyInputBox(currNode))
+        currNode = currNode.parentNode;
+      else
+      {
+        childList = msiNavigationUtils.getSignificantContents(currNode);
+        if (childList.length <= 1)
+          currNode = currNode.parentNode;
+        else if (msiGetBaseNodeName(currNode) == "mtr")
+          currNode = currNode.parentNode;
+        else
+          currNode = null;  //stop looking
+      }
+    }
+    if (currNode)
+      return currNode;
+    currNode = editor.selection.focusNode;  //otherwise reset it and try the usual approach below
+  }
+
+  while (currNode && (msiGetBaseNodeName(currNode) != tagName))
+  {
+    if (currOffset < currNode.childNodes.length)
+    {
+      currNode = currNode.childNodes[currOffset];
+      currOffset = 0;
+    }
+    else if (currOffset > 0)
+    {
+      currNode = currNode.childNodes[currOffset-1];
+      currOffset = currNode.childNodes.length - 1;
+    }
+    else
+      currNode = null;
+  }
+  return currNode;
+}
+
+// a tracing utility
+function msidump(str)
+{
+  Components.classes['@mozilla.org/consoleservice;1']
+            .getService(Components.interfaces.nsIConsoleService)
+            .logEngineStringMessage(str);
+}
+

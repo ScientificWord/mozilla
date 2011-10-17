@@ -489,6 +489,7 @@ shortTitle {
 *[nopr] {display: none;}
 }
 
+
 /* object[captionloc="below"]
 {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
@@ -503,3 +504,7 @@ object[captionloc="abovebelow"]
 {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
 } */
+
+a[href] {
+  cursor: pointer;
+}

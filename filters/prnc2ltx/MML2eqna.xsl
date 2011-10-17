@@ -322,6 +322,11 @@
             <xsl:value-of select="child::mml:mrow/@id"/>
             <xsl:text>}</xsl:text>
           </xsl:when>
+          <xsl:when test="@key and string-length(normalize-space(@key))">
+            <xsl:text xml:space="preserve"> \label{</xsl:text>
+            <xsl:value-of select="@key"/>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
           <xsl:when test="@marker and string-length(normalize-space(@marker))">
             <xsl:text xml:space="preserve"> \label{</xsl:text>
             <xsl:value-of select="@marker"/>

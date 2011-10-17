@@ -1,6 +1,7 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/computelogger.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 
 //-----------------------------------------------------------------------------------
 var msiEvaluateCommand =
@@ -354,7 +355,7 @@ var buttonPressed = -1;
 
 function doComputeCommand2(event, cmd, editorElement, cmdHandler)
 {
-  var inPlace =( GetOS() == msigMac)?(event.metaKey):(event.ctrlKey);
+  var inPlace =( getOS(window) == "osx")?(event.metaKey):(event.ctrlKey);
   doComputeCommand(cmd, editorElement, cmdHandler, inPlace);
 }
 
@@ -1138,7 +1139,7 @@ function doVCamCommand(cmd)
 function doVCamInitialize(obj)
 {
   dump("doVCamInitialize");
-  document.getElementById("VCamToolbar").setAttribute("hidden",false);
+  document.getElementById("vcamactive").setAttribute("hidden","false");
   VCamCommand = (function () {
     var thisobj = obj;
     return function(_cmd, _editorElement) {
@@ -1566,11 +1567,15 @@ function doLabeledComputation(math, vars, op, labelID, editorElement)
         try {
           theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                             editorElement, cmd, cmdHandler, o);
-        } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doLabeledComputation: [" + e + "]"); return;}
+        } 
+				catch(e) {
+					AlertWithTitle("Error in computeOverlay.js", "Exception in doLabeledComputation: [" + e + "]"); return;
+        }
 //        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 //        if (o.Cancel)
 //          return;
 //        vars = runFixup(o.vars);
+				if (!o.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
       } else {
         msiComputeLogger.Exception(ex);
 //        done = true;
@@ -1876,11 +1881,15 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler)
         try {
           theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                             editorElement, cmd, cmdHandler, o);
-        } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveExact: [" + e + "]"); return;}
+        } 
+				catch(e) {
+					AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveExact: [" + e + "]"); return;
+				}
 //        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 //        if (o.Cancel)
 //          return;
 //        vars = runFixup(o.vars);
+				if (!o.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
       } else {
         msiComputeLogger.Exception(ex);
 //        done = true;
@@ -2228,6 +2237,10 @@ function doComputeApproxIntegral(math, editorElement)
   if (o.Cancel) {
     return;
   }
+	else
+	{
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
   var intervals = GetNumAsMathML(o.intervals);
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("approximate integral",mathstr,o.form,intervals);
@@ -2504,6 +2517,9 @@ function doComputeSolveODESeries(math, editorElement)
   parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
   var mathstr = GetFixedMath(math);
 
   var variable = runFixup(o.mathresult[0]);
@@ -2550,6 +2566,9 @@ function doComputePowerSeries(math, editorElement, cmdHandler)
 
     if (o.Cancel)
       return;
+		else {
+			msiGetEditor(editorElement).incrementModificationCount(1);
+		}
 
     finishComputePowerSeries(editorElement, o);
     
@@ -2798,6 +2817,9 @@ function doComputeRandomMatrix(editorElement)
   parentWin.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "randommatrix", "chrome,close,titlebar,resizable,modal", o);
   if (o.Cancel)
     return;
+	else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
   var mRows = GetNumAsMathML(o.rows);
   var mCols = GetNumAsMathML(o.cols);
   var mMin  = GetNumAsMathML(o.min);
@@ -2825,6 +2847,9 @@ function doComputeReshape(math, editorElement)
   parentWin.openDialog("chrome://prince/content/ComputeReshape.xul", "reshape", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
   var mCols = GetNumAsMathML(o.ncols);
   var mathstr = GetFixedMath(GetRHS(math));
   msiComputeLogger.Sent4("reshape",mathstr,"with cols",mCols);
@@ -2852,6 +2877,9 @@ function doComputeFitCurve(math, editorElement)
   parentWin.openDialog("chrome://prince/content/ComputeFitCurve.xul", "fitcurve", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("Fit Curve @ ",mathstr,o.code,o.column+"/"+o.degree);
   var label;
@@ -2884,6 +2912,9 @@ function doComputeRandomNumbers(editorElement)
   parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
   var mTally    = GetNumAsMathML(o.tally);
   var mParam1   = GetNumAsMathML(o.param1);
   var mParam2   = GetNumAsMathML(o.param2);
@@ -3007,6 +3038,9 @@ function doComputeDefine(math, editorElement)
         if (o.Cancel) {
           return;
         }
+			  else {
+					msiGetEditor(editorElement).incrementModificationCount(1);
+				}
         subscript = o.subscript;
       } else {
         msiComputeLogger.Exception(ex);
@@ -3065,6 +3099,9 @@ function doComputeMapMuPADName(editorElement)
   
   if (o.Cancel)
     return;
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
 
   var swpname = o.swpname;
   var mupname = o.mupname;
