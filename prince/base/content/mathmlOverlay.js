@@ -2375,6 +2375,11 @@ function doMatrixDlg(editorElement)
   window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal,resizable", o);
   if (o.rows > 0 && o.cols > 0)
     insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
+  if (!o.Cancel)
+  {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
+
 }
 
 function reviseEqnArray(reviseData, dialogData, editorElement)
