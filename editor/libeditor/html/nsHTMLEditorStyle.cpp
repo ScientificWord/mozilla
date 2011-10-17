@@ -158,9 +158,8 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
   
   nsAutoEditBatch batchIt(this);
   nsAutoRules beginRulesSniffing(this, kOpInsertElement, nsIEditor::eNext);
-  nsEditor::SetShouldTxnSetSelection(PR_FALSE);
-//  nsAutoSelectionReset selectionResetter(selection, this);
-//  nsAutoTxnsConserveSelection dontSpazMySelection(this);
+  nsAutoSelectionReset selectionResetter(selection, this);
+  nsAutoTxnsConserveSelection dontSpazMySelection(this);
   
   PRBool cancel, handled;
   nsTextRulesInfo ruleInfo(nsTextEditRules::kSetTextProperty);
@@ -204,11 +203,11 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
         if (fNotHTML)
         {
           nsString localname = tagkey.localName();
-          nsCOMPtr<nsIAtom> nsAtom;
+//          nsCOMPtr<nsIAtom> nsAtom;
           mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
-          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, nsAtom,  &aAttribute, &aValue);
+//          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, nsAtom,  &aAttribute, &aValue);
         }
-        else
+//        else
         res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, endOffset, aProperty, &aAttribute, &aValue);
         if (NS_FAILED(res)) return res;
       }
@@ -268,11 +267,11 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           if (fNotHTML)
           {
             nsString localname = tagkey.localName();
-            nsCOMPtr<nsIAtom> nsAtom;
+//            nsCOMPtr<nsIAtom> nsAtom;
             mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
-            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, nsAtom, &aAttribute, &aValue);
+//            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, nsAtom, &aAttribute, &aValue);
           }
-          else
+//          else
             res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, textLen, aProperty, &aAttribute, &aValue);
           if (NS_FAILED(res)) return res;
         }
@@ -300,11 +299,11 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           if (fNotHTML)
           {
             nsString localname = tagkey.localName();
-            nsCOMPtr<nsIAtom> nsAtom;
+//            nsCOMPtr<nsIAtom> nsAtom;
             mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
-            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, nsAtom, &aAttribute, &aValue);
+//            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, nsAtom, &aAttribute, &aValue);
           }
-          else
+//          else
             res = SetInlinePropertyOnTextNode(nodeAsText, 0, endOffset, aProperty, &aAttribute, &aValue);
           if (NS_FAILED(res)) return res;
         }
@@ -1180,7 +1179,8 @@ nsresult nsHTMLEditor::PromoteInlineRange(nsIDOMRange *inRange)
   if (NS_FAILED(res)) return res;
   
   while ( startNode && 
-          !nsTextEditUtils::IsBody(startNode) && 
+          !nsTextEditUtils::IsBody(startNode) &&  
+					IsEditable(startNode) &&
           IsAtFrontOfNode(startNode, startOffset) )
   {
     res = GetNodeLocation(startNode, address_of(parent), &startOffset);
@@ -1191,6 +1191,7 @@ nsresult nsHTMLEditor::PromoteInlineRange(nsIDOMRange *inRange)
   
   while ( endNode && 
           !nsTextEditUtils::IsBody(endNode) && 
+					IsEditable(endNode) &&
           IsAtEndOfNode(endNode, endOffset) )
   {
     res = GetNodeLocation(endNode, address_of(parent), &endOffset);
