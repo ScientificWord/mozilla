@@ -859,6 +859,9 @@ function GetColorAndUpdate(ColorWellID)
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
 
   var changeArray = createPreviewChangeArray();
   var borderSideAttrStr = "";

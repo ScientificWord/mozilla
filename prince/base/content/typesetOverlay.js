@@ -453,7 +453,8 @@ var msiInsertBibTeXBibliography =
     window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal,resizable", bibliographyData);
     if (!bibliographyData.Cancel)
     {
-      doInsertBibTeXBibliography(editorElement, bibliographyData);
+      doInsertBibTeXBibliography(editorElement, bibliographyData);		  var editorElement = msiGetActiveEditorElement();
+			msiGetEditor(editorElement).incrementModificationCount(1);
     }
   }
 };
@@ -541,10 +542,10 @@ function doDocFormatDlg()
   var editorElement = document.getElementById("content-frame");
   window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat", 
     "chrome,close,resizable,titlebar,dependent", editorElement);
-//  if (!doDocFormatData.Cancel)
-//  {
-//    alert("Document Format Dialog returned.\nNeeds to be hooked up to do something!");
-//  }
+  if (!doDocFormatData.Cancel)
+  {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+  }
 }
 
 
@@ -560,7 +561,7 @@ function doFrontMatterDlg(editorElement, commandHandler)
     frontMatterData.frontMatterText = "<p>Just a paragraph.</p>";
   var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetFrontMatter.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                                               editorElement, "cmd_MSIfrontMatterCmd", commandHandler, frontMatterData);
-//  alert("Front Matter Dialog not implemented!");
+  msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 function doPreambleDlg()
@@ -581,6 +582,7 @@ function doPreambleDlg()
   
 
   window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,modal", preambleTeXNode);
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 function doBibChoiceDlg(editorElement)
@@ -601,6 +603,7 @@ function doBibChoiceDlg(editorElement)
     else
       choiceStr = "manual";
     setBibliographyScheme(editorElement, choiceStr);
+		msiGetEditor(editorElement).incrementModificationCount(1);
   }
 }
 
@@ -616,6 +619,10 @@ function doOptionsAndPackagesDlg(editorElement)
   var document = editor.document;
   var options = msiGetPackagesAndOptionsDataForDocument(document);
   window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal,resizable", options);
+  if (!options.Cancel)
+	{
+		msiGetEditor(editorElement).incrementModificationCount(1); 
+	}
 //  if (!options.Cancel)
 //  {
 //    var packagesOptionsStr = options.docClassName;
@@ -769,20 +776,20 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
 
 }
 
-function doPDFPreviewDlg()
-{
-  alert("PDF Preview Dialog not implemented!");
-}
-
-function doPDFPrintDlg()
-{
-  alert("PDF Print Dialog not implemented!");
-}
-
-function doPDFCompileDlg()
-{
-  alert("PDF Compile Dialog not implemented!");
-}
+//function doPDFPreviewDlg()
+//{
+//  alert("PDF Preview Dialog not implemented!");
+//}
+//
+//function doPDFPrintDlg()
+//{
+//  alert("PDF Print Dialog not implemented!");
+//}
+//
+//function doPDFCompileDlg()
+//{
+//  alert("PDF Compile Dialog not implemented!");
+//}
 
 function doGenSettingsDlg()
 {
@@ -790,6 +797,8 @@ function doGenSettingsDlg()
 
   window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal,resizable", 
                        genSettingsData);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 function getTypesetGenSettingsFromPrefs()
@@ -1042,14 +1051,15 @@ function doInsertTeXField()
   var tbutton = gActiveEditor.getSelectedElement("texb");
   if (!tbutton) tbutton = gActiveEditor.getSelectedElement("texbutton");
   window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar,dependent", tbutton);
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 
-function doInsertSubdocument()
-{
-  alert("Insert subdocument not implemented!");
-}
-
+//function doInsertSubdocument()
+//{
+//  alert("Insert subdocument not implemented!");
+//}
+//
 
 function doInsertCrossReference(editorElement, dlgData)
 {

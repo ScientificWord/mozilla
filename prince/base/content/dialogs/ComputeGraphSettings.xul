@@ -99,7 +99,7 @@
           </grid>
         </groupbox>
         <groupbox>
-          <caption label="&defaultplacementnewplot.label;"/>
+          <caption label="amp-defaultplacementnewplot.label;"/>
           <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
