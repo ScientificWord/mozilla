@@ -44,6 +44,7 @@ const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 // Each editor window must include this file
 // Variables  shared by all dialogs:
 
+Components.utils.import("resource://app/modules/os.jsm");
 // Object to attach commonly-used widgets (all dialogs should use this)
 var gDialog = {};
 
@@ -62,13 +63,8 @@ var gPrefsService;
 var gPrefsBranch;
 var gFilePickerDirectory;
 
-Components.utils.import("resource://app/modules/os.jsm");
 
-var gOS = "";
-const gWin = "Win";
-const gUNIX = "UNIX";
-const gMac = "Mac";
-dump(Current OS, OS.type: "+currentos+", "+OS.type+"\n");
+
 
 const kWebComposerWindowID = "editorWindow";
 const kMailComposerWindowID = "msgcomposeWindow";
@@ -689,8 +685,8 @@ function MakeRelativeUrl(url)
 
   // We only return "urlPath", so we can convert
   //  the entire docPath for case-insensitive comparisons
-  var os = GetOS();
-  var doCaseInsensitive = (docScheme == "file" && os == gWin);
+  var os = getOS(window);
+  var doCaseInsensitive = (docScheme == "file" && os == "win");
   if (doCaseInsensitive)
     docPath = docPath.toLowerCase();
 
@@ -1037,26 +1033,6 @@ function InsertUsernameIntoUrl(urlspec, username)
   } catch (e) {}
 
   return urlspec;
-}
-
-function GetOS()
-{
-  if (gOS)
-    return gOS;
-
-  var platform = navigator.platform.toLowerCase();
-
-  if (platform.indexOf("win") != -1)
-    gOS = gWin;
-  else if (platform.indexOf("mac") != -1)
-    gOS = gMac;
-  else if (platform.indexOf("unix") != -1 || platform.indexOf("linux") != -1 || platform.indexOf("sun") != -1)
-    gOS = gUNIX;
-  else
-    gOS = "";
-  // Add other tests?
- 
-  return gOS;
 }
 
 function ConvertRGBColorIntoHEXColor(color)
