@@ -4,7 +4,7 @@ var gd;
 var editor;
 var msiframe;
 var isNewNode;
-var gFrameModeImage = false;
+var gFrameModeImage = true;
 
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
@@ -51,6 +51,10 @@ function onOK() {
 	}
   setFrameAttributes(msiframe);
 	editor.endTransaction();
+	if (isNewNode)
+	{
+		editor.selection.collapse(para,0);
+	}
   return(true);
 }
 

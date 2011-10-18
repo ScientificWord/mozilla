@@ -1,5 +1,6 @@
 var node;
-var keys;
+//var keys;
+var dialogMarkerList;
 
 function dumpln(s)
 {
@@ -21,6 +22,10 @@ function startup()
   {
     if (node.hasAttribute("name")) 
       document.getElementById("keylist").value = node.getAttribute("name");
+    else if (node.hasAttribute("key"))
+      document.getElementById("keylist").value = node.getAttribute("key");
+    else if (node.hasAttribute("id"))
+      document.getElementById("keylist").value = node.getAttribute("id");
   }
   initKeyList();
 }
@@ -28,16 +33,25 @@ function startup()
 
 function tagConflicts()
 {
-  var val = document.getElementById("keylist").value;
-  var i;
-  for (i = 0; i<keys.length; i++)
+  var keyList = document.getElementById("keylist");
+  if (keyList.controller && (keyList.controller.searchStatus == nsIAutoCompleteController.STATUS_COMPLETE_MATCH))  //"new" entry matches an existing key
   {
-    if (val==keys[i])
-    { 
-      document.getElementById("uniquekeywarning").hidden = false;
-      return true;
-    }
+    document.getElementById("uniquekeywarning").hidden = false;
+//      msiPostDialogMessage("dlgErrors.markerInUse", {markerString : gDialog.keyInput.value});
+    keyList.focus();
+    return true;
   }
+
+//  var val = document.getElementById("keylist").value;
+//  var i;
+//  for (i = 0; i < keys.length; i++)
+//  {
+//    if (val==keys[i])
+//    { 
+//      document.getElementById("uniquekeywarning").hidden = false;
+//      return true;
+//    }
+//  }
   document.getElementById("uniquekeywarning").hidden = true;
   return false;
 }
@@ -56,6 +70,7 @@ function onAccept()
   }
   node.setAttribute("name", val);
   node.setAttribute("key", val);
+  node.setAttribute("id", val);
   if (newnode) editor.insertElementAtSelection(node, true);
   return true;
 }
@@ -72,35 +87,38 @@ var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='htt
 
 function initKeyList()
 {
-  var editorElement = msiGetActiveEditorElement();
-  var editor;
-  if (editorElement) editor = msiGetEditor(editorElement);
-  var parser = new DOMParser();
-  var dom = parser.parseFromString(xsltSheet, "text/xml");
-  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
-  var processor = new XSLTProcessor();
-  processor.importStylesheet(dom.documentElement);
-  var newDoc;
-  if (editor) newDoc = processor.transformToDocument(editor.document, document);
-  dump(newDoc.documentElement.localName+"\n");
-  var keyString = newDoc.documentElement.textContent;
-  keys = keyString.split(/\s+/);
-  var i;
-  var len;
-  keys.sort();
-  var lastkey = "";
-  for (i=keys.length-1; i >= 0; i--)
-  {
-    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
-    else lastkey = keys[i];
-  }  
-  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  ACSA.resetArray("key");
-  for (i=0, len=keys.length; i<len; i++)
-  {
-    if (keys[i].length > 0) 
-      ACSA.addString("key",keys[i]);
-  }
-  dump("Keys are : "+keys.join()+"\n");    
+  dialogMarkerList = new msiKeyMarkerList(window);
+  dialogMarkerList.setUpTextBoxControl(document.getElementById("keylist"));
+
+//  var editorElement = msiGetActiveEditorElement();
+//  var editor;
+//  if (editorElement) editor = msiGetEditor(editorElement);
+//  var parser = new DOMParser();
+//  var dom = parser.parseFromString(xsltSheet, "text/xml");
+//  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
+//  var processor = new XSLTProcessor();
+//  processor.importStylesheet(dom.documentElement);
+//  var newDoc;
+//  if (editor) newDoc = processor.transformToDocument(editor.document, document);
+//  dump(newDoc.documentElement.localName+"\n");
+//  var keyString = newDoc.documentElement.textContent;
+//  keys = keyString.split(/\s+/);
+//  var i;
+//  var len;
+//  keys.sort();
+//  var lastkey = "";
+//  for (i=keys.length-1; i >= 0; i--)
+//  {
+//    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
+//    else lastkey = keys[i];
+//  }  
+//  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//  ACSA.resetArray("key");
+//  for (i=0, len=keys.length; i<len; i++)
+//  {
+//    if (keys[i].length > 0) 
+//      ACSA.addString("key",keys[i]);
+//  }
+//  dump("Keys are : "+keys.join()+"\n");    
 }

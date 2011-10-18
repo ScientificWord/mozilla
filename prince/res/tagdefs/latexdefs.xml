@@ -72,6 +72,7 @@
 				<tag nm="typewriter"><description>Typewriter font</description></tag>
 				<tag nm="underline"><description>Underline</description></tag>
 				<tag nm="upper"><description>Upper case</description></tag>
+				<tag nm="rawTeX" hidden="1"><description>Raw TeX tag</description></tag>
 				<tag nm="text##lang1##" hidden="1" babel="1"><description>##lang## language</description></tag>
 				<tag nm="text##lang2##" hidden="1" babel="2"><description>##lang## language</description></tag>
 			</tags>
@@ -854,6 +855,8 @@
 		<tagclass>
 			<tagclassname>othertag</tagclassname>
 			<tags>
+        <tag nm="mi"><description>mi</description></tag>
+        <tag nm="hspace"><description>hspace</description></tag>
 				<tag nm="object"><description>Object</description></tag>
         <tag nm="citation">
           <description>Citation</description>
@@ -878,7 +881,7 @@
 			      <contains>texttag</contains>
 			      <contains>othertag</contains>
             <contains>table</contains>
-			      <contains>mml:math</contains>Yammer
+			      <contains>mml:math</contains>
 			      <contains>img</contains>
             <contains>a</contains>
             <contains>note</contains>
