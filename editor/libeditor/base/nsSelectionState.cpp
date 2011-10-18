@@ -425,7 +425,7 @@ nsRangeUpdater::SelAdjDeleteNode(nsIDOMNode *aNode, PRBool deep)
 nsresult
 nsRangeUpdater::SelAdjSplitNode(nsIDOMNode *aOldRightNode, PRInt32 aOffset, nsIDOMNode *aNewLeftNode)
 {
-    return NS_OK;  // lock set by Will/DidReplaceParent, etc...
+  if (mLock) return NS_OK;  // lock set by Will/DidReplaceParent, etc...
   if (!aOldRightNode || !aNewLeftNode) 
     return NS_ERROR_NULL_POINTER;
   PRInt32 i, count = mRangeItemArray.Count();
