@@ -1445,7 +1445,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
             //                             mml_canonical_name, mml_msup_node,
             //                             pAnalyzer -> ScrStr()) );
 
-			pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
+			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
             snode->semantic_type = SEM_TYP_VARIABLE;
           } else
             TCI_ASSERT(0);
@@ -1764,7 +1764,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
             // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
             //                             mml_canonical_name, mml_msubsup_node,
             //                             pAnalyzer -> ScrStr()) );
-			pAnalyzer -> AppendIDList(mml_canonical_name, mml_msubsup_node);
+			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msubsup_node);
             AnalyzeSubscriptedFunc(mml_msubsup_node, s_func, nodes_done, pAnalyzer);
             
             BUCKET_REC* base_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
@@ -1799,19 +1799,35 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
         break;
 
       case BT_VARIABLE:{
-          MNODE *mml_base = mml_msubsup_node->first_kid;
-          MNODE *mml_power = mml_base->next->next;
-          CreatePowerForm(mml_base, mml_power, snode, pAnalyzer);
-          BUCKET_REC *bucket =
-            FindBucketRec(snode->bucket_list, MB_SCRIPT_BASE);
-          if (bucket) {
-            DisposeSList(bucket->first_child);
-            SEMANTICS_NODE *s_var = CreateSemanticsNode();
-            CreateSubscriptedVar(mml_msubsup_node, true, s_var, pAnalyzer);
-            bucket->first_child = s_var;
-            s_var->parent = bucket;
-          } else
-            TCI_ASSERT(0);
+          MNODE* mml_base = mml_msubsup_node->first_kid;
+          MNODE* mml_sub = mml_msubsup_node->first_kid->next;
+          MNODE* mml_power = mml_base->next->next;
+          
+          //BUCKET_REC* bucket = FindBucketRec(snode->bucket_list, MB_SCRIPT_BASE);
+
+
+          //if (bucket) {
+          //  DisposeSList(bucket->first_child);
+          SEMANTICS_NODE* s_var = CreateSemanticsNode();
+          CreateSubscriptedVar(mml_msubsup_node, true, s_var, pAnalyzer);
+
+            //bucket->first_child = s_var;
+            //s_var->parent = bucket;
+          //} else
+          //  TCI_ASSERT(0);
+          //CreatePowerForm(mml_base, mml_power, snode, pAnalyzer);
+          snode->semantic_type = SEM_TYP_POWERFORM;
+          mml_base -> next = NULL;
+
+          BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
+          AppendBucketRecord(snode->bucket_list, base_bucket);
+          base_bucket->first_child = s_var;
+          s_var->parent = base_bucket;
+
+         // AppendNewBucketRecord(MB_SCRIPT_BASE, NULL, snode, mml_base, true, pAnalyzer);
+          AppendNewBucketRecord(MB_SCRIPT_UPPER, NULL, snode, mml_power, true, pAnalyzer);
+
+
         }
         break;
 
