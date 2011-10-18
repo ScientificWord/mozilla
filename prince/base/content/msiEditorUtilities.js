@@ -12,6 +12,158 @@ var gOS = "";
 
 ///************* Message dialogs ***************/
 //
+
+// a tracing utility
+function msidump(str1, indent1, str2)
+// at some point I envision a dialog with a short message and a "More info" button that
+// will display str2
+{
+	var pref = GetStringPref("swp.messagelogger");
+	var indentstring="";
+	var spaces="                 ";
+	if (pref == null) pref = "dump";
+	if (indent1 && indent1 > 0)
+	  indentstring = spaces.substring(1,indent1+indent1);
+	switch (pref)
+	{
+		case "dump":
+			dump(indentstring+str1+"\n");
+			if (str2) dump(indentstring+str2+"\n");
+			break;
+		case "jsconsole":
+			var cons;
+		  cons = Components.classes['@mozilla.org/consoleservice;1']
+	            .getService(Components.interfaces.nsIConsoleService);
+			cons.logStringMessage(indentstring+str1);
+			if (str2) cons.logStringMessage(str2);
+			break;
+		case "alert":
+			AlertWithTitle(str1, str2, null);
+			break;
+	}
+}
+
+// The following was added by BBM for diagnostic purposes. It should not be in the release version
+// If the selection is collapsed and in a math object, this will dump the math object and show
+// the location of the selection point.
+
+function dumpMath()
+{
+  var editorElement = getCurrentEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+  var rootnode = HTMLEditor.getSelectionContainer();
+  var i = 1;
+  while (rootnode && rootnode.parentNode && i-- >0) rootnode= rootnode.parentNode;
+//  while (rootnode && rootnode.localName != "math" && editor.tagListManager.getTagInClass("paratags",rootnode.localName,null)) rootnode = rootnode.parentNode;
+//  if (!rootnode)
+//  { 
+//    msidump("Failed to find math or paragraph node\n");
+//    return;
+//  }
+  var sel = HTMLEditor.selection;
+  var selNode = sel.anchorNode;
+  var selOffset = sel.anchorOffset;
+  var focNode = sel.focusNode;
+  var focOffset = sel.focusOffset;
+  var indent = 0;
+  msidump(selNode.nodeName + " to " + focNode.nodeName+"\n",0);
+  msidump("Selection:  selNode="+(selNode.nodeType == Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
+  msidump("focusNode="+(focNode.nodeType == Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
+  msidump("rootnode="+rootnode.nodeName+"\n",6);
+  dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
+}
+
+
+function doIndent( k )
+{
+  for (j = 0; j < k; j++) msidump("  ");
+}
+
+
+function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent)
+{
+try{
+	
+//  msidump("dumpNodeMarkingSel, indent = "+indent+", node = "+node.nodeName+"\n");
+  var len = node.childNodes.length;
+  if (node.nodeType == Node.ELEMENT_NODE)
+  {
+//    doIndent(indent);
+    msidump("<"+node.nodeName+"> \n",indent);
+    for (var i = 0; i < len; i++)
+    {    
+      if (node==selnode && i==seloffset)
+      {
+//        for (var j = 0; j<= indent; j++) msidump("**"); 
+        msidump("<selection anchor>",indent);
+      }
+      if (node==focnode && i==focoffset)
+      {
+//        for (var j = 0; j<= indent; j++) msidump("**"); 
+        msidump("<selection focus>\n", indent);
+      }
+      dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
+    }
+    if (node==selnode && seloffset==len) 
+    {
+//      for (var j = 0; j<= indent; j++) msidump("**"); 
+      msidump("<selection anchor>\n", indent);
+    }
+    if (node==focnode && focoffset==len) 
+    {
+//      for (var j = 0; j<= indent; j++) msidump("**"); 
+      msidump("<selection focus>\n", indent);
+    }
+//    doIndent(indent);
+    msidump("</"+node.nodeName+">\n", indent);
+  }
+  else if (node.nodeType == Node.TEXT_NODE)
+  {
+    var offset1;
+		var offset2;
+		if (node == selnode && selnode === focnode)
+		{
+			offset1 = Math.min(seloffset, focoffset);
+			offset2 = Math.max(seloffset, focoffset);
+			msidump(node.nodeValue.slice(0, offset1)+"<selection " + (offset1==seloffset?"anchor":"focus")+">"+
+			  node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1==seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2,-1))
+		}
+		else
+		{
+			if (node==selnode)
+	    {
+	//      doIndent(indent);
+	      msidump(node.nodeValue.slice(0,seloffset)+"<selection anchor>"+node.nodeValue.slice(seloffset)+"\n",indent);
+	    }
+	    else {
+	      if (node==focnode)
+	      {
+	//        doIndent(indent);
+	        msidump(node.nodeValue.slice(0,focoffset)+"<selection focus>"+node.nodeValue.slice(focoffset)+"\n",indent);
+	      }
+	      else {
+	        var s = node.nodeValue;
+	        var t = s.replace(/^\s*/,'');
+	        var r = t.replace(/\s*$/,'');
+	        if (r.length>0)
+	        {
+	//          doIndent(indent);
+	          msidump(r+'\n', indent);
+	        }
+	        else msidump("whitespace node\n");
+	      }
+			}
+    }  
+  }
+}
+catch(e)
+{
+	msidump(e.message+"\n");
+}
+}   
+  
+
 function AlertWithTitle(title, message, parentWindow)
 {
   if (!parentWindow)
@@ -11872,12 +12024,3 @@ function msiEditorFindJustInsertedElement(tagName, editor)
   }
   return currNode;
 }
-
-// a tracing utility
-function msidump(str)
-{
-  Components.classes['@mozilla.org/consoleservice;1']
-            .getService(Components.interfaces.nsIConsoleService)
-            .logEngineStringMessage(str);
-}
-

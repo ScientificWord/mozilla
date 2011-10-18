@@ -1358,6 +1358,10 @@ rawTeX {
  color: #6600cc;
 }
 
+smallbox {
+	border: 1px solid black;
+}
+
 *[hilite] {
 	background-color: rgb(255,255,186);
 }
