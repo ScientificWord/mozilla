@@ -10303,9 +10303,10 @@ var msiSpaceUtils =
 //  them in <sw:invis> nodes.
 
   hSpaceInfo : {
-//    requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
-    requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
-//    nonBreakingSpace :      {charContent: "&#x00a0;"},
+    //requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    //requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    requiredSpace :         {dimensions: "1em", charContent: "&#x205f;"},
+    //nonBreakingSpace :      {charContent: "&#x00a0;"},
     nonBreakingSpace :      {charContent: " "},
     emSpace :               {dimensions: "1em", charContent: "&#x2003;"},
     twoEmSpace :            {dimensions: "2em", charContent: "&#x2001;"}, //EM QUAD
