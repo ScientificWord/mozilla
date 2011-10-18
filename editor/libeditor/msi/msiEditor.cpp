@@ -244,7 +244,7 @@ msiEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
                                 PRInt32 *ioOffset, 
                                 PRBool aNoEmptyNodes)
 {
-     return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, aNoEmptyNodes);
+     return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, PR_TRUE/*aNoEmptyNodes*/);
 }
 
 
