@@ -79,7 +79,8 @@ hspace[type="italicCorrectionSpace"] {
 }
 
 hspace[type="requiredSpace"] {
-  display: inline;
+  min-width: 0.5em;
+  /*display: inline;*/
 }
 
 hspace[type="nonBreakingSpace"] {
