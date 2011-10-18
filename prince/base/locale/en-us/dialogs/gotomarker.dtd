@@ -1,0 +1,5 @@
+<!ENTITY windowTitle.label "Go to Marker">
+
+<!ENTITY markerList.label "Choose an existing marker in the document:">
+<!ENTITY markerList.accesskey "m">
+<!ENTITY markerList.tooltip "Enter an existing key name">
