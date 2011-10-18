@@ -353,12 +353,31 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
   nsCOMPtr<nsIDOM3Node> tagCanContainNode3;
   nsCOMPtr<nsIDOMNode> tagCanContain;
   nsAutoString strCanContain;
-  TagKeyListHead * pTagKeyListHead;
-  TagKeyList * pTagKeyList;
+  TagKeyListHead* pTagKeyListHead;
+  TagKeyList* pTagKeyList;
   TagKey key;
 
 
-  rv = element->GetElementsByTagName(NS_LITERAL_STRING("contains"), getter_AddRefs(tagContains));
+
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  PRUint32 nodeCount = 0; 
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMElement> classcontainsElement;
+ 
+  element->GetElementsByTagName(NS_LITERAL_STRING("classcontains"), getter_AddRefs(nodeList));
+  
+  if (nodeList) 
+    nodeList->GetLength(&nodeCount);
+  
+  if (nodeCount > 0)
+  {
+    nodeList->Item(0, getter_AddRefs(node));
+    classcontainsElement = do_QueryInterface(node);
+  } else {
+    return;
+  }
+  
+  rv = classcontainsElement->GetElementsByTagName(NS_LITERAL_STRING("contains"), getter_AddRefs(tagContains));
   if (tagContains) 
   {
     rv = tagContains->GetLength(&tagContainsCount);
@@ -545,6 +564,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   BuildStringArray(NS_LITERAL_STRING("structtag"));
   BuildStringArray(NS_LITERAL_STRING("envtag"));
   BuildStringArray(NS_LITERAL_STRING("frontmtag"));
+  BuildStringArray(NS_LITERAL_STRING("othertag"));
   pACSSA->SortArrays();
 	BuildBabelList(docTagInfo, &pBabelList);
   return PR_TRUE;
