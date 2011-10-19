@@ -72,6 +72,7 @@
 <xsl:text>%% preamble
 </xsl:text>
 \usepackage{amssymb}
+\usepackage{amsmath}
 <xsl:if test="$compiler='xelatex'">
 \usepackage{xltxtra}
 \usepackage{xkeyval}
