@@ -132,9 +132,25 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
   if (pTempFrame)
   {
     pMCM = do_QueryInterface(pTempFrame);
+		if (!pMCM) 
+		{
+			// maybe pTempFrame is a text frame. If not, it could be a wrapper such as 
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
     if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-    else // child frame is not a math frame. Probably a text frame. We'll assume this for not
-    // BBM come back and fix this!
+    else 
     {
       *aOutOffset = count;
       *aOutFrame = pTempFrame; 
@@ -184,14 +200,32 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   {
     pMCM = do_QueryInterface(pTempFrame);
     if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-    else // child frame is not a math frame. Probably a text frame. We'll assume this for not
-    // BBM come back and fix this!
-    {
-      *aOutFrame = pTempFrame; 
-      PRInt32 start, end;
-      pTempFrame->GetOffsets(start,end);
-      (*aOutOffset) = (end - start - count);
-      *_retval = 0;
+    else 
+     {
+			nsIAtom * type = pTempFrame->GetType();
+			if (nsGkAtoms::textFrame == type) 
+			{
+				*aOutFrame = pTempFrame; 
+	      PRInt32 start, end;
+	      pTempFrame->GetOffsets(start,end);
+	      (*aOutOffset) = (end - start - count);
+	      *_retval = 0;
+			}
+			else
+			{
+				// we may be in a wrapper like nsTableFrame
+				while (pTempFrame && (!(pMCM = do_QueryInterface(pTempFrame))))
+				{
+				  pTempFrame = pTempFrame->GetFirstChild(nsnull);
+					nsIAtom * type = pTempFrame->GetType();
+				  while (pTempFrame && (pTempFrame->GetNextSibling())) pTempFrame = pTempFrame->GetNextSibling();
+					if (pTempFrame)
+					{
+						pMCM = do_QueryInterface(pTempFrame);
+						if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+					}
+			  }
+			}
     }
     return NS_OK;
   }
