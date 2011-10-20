@@ -45,6 +45,7 @@
 #include "nsEditorEventListeners.h"
 
 #include "nsIDOMText.h"
+#include "nsIDOMNode.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMAttr.h"
@@ -56,6 +57,7 @@
 #include "nsIDOMMouseListener.h"
 #include "nsIDOMMouseEvent.h"
 #include "nsIDOMComment.h"
+#include "nsIDOMNamedNodeMap.h"
 #include "nsISelection.h"
 #include "nsISelectionPrivate.h"
 #include "nsIDOMHTMLHtmlElement.h"
@@ -114,7 +116,6 @@
 #include "nsIDOMDocumentTraversal.h"
 #include "nsIDOMTreeWalker.h"
 #include "nsIDOMNodeFilter.h"
-#include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMHTMLLinkElement.h"
 #include "nsIDOMHTMLObjectElement.h"
 #include "nsIDOMHTMLFrameElement.h"
@@ -1135,7 +1136,6 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     }
     else 
     {
-      nsAutoString strTagName;
       nsAutoString s2;
       nsIAtom * nsAtom;
 	    mtagListManager->GetTagOfNode(newsplitpointNode, &nsAtom, strTagName ); 
@@ -1171,6 +1171,32 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
     FixMathematics(outRightNode, PR_FALSE, PR_FALSE);
     if (outRightNode) mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);
+  
+		nsAutoString leftName;
+		nsAutoString rightName;
+		res = GetTagString(outLeftNode, leftName);
+		res = GetTagString(outRightNode, rightName);
+		if (!(leftName.Equals(rightName)))
+		{
+			// strip attributes off of the right node
+			nsCOMPtr<nsIDOMNamedNodeMap> attributemap;
+			nsCOMPtr<nsIDOMNode> rightNode = do_QueryInterface(outRightNode);
+			nsCOMPtr<nsIDOMElement> rightElem = do_QueryInterface(outRightNode);
+			
+			rightNode->GetAttributes(getter_AddRefs(attributemap));
+			PRUint32 length;
+			nsCOMPtr<nsIDOMNode> node;
+			nsCOMPtr<nsIDOMAttr> attrNode;
+			nsCOMPtr<nsIDOMAttr> dummyattrNode;
+			attributemap->GetLength(&length);
+			for (PRInt32 i = length-1; i >= 0; i--)
+			{
+				attributemap->Item(i, getter_AddRefs(node));
+				attrNode = do_QueryInterface(node);
+				rightElem->RemoveAttributeNode(attrNode, getter_AddRefs(dummyattrNode));
+			}
+			
+		}
   }
   return res;
 }
