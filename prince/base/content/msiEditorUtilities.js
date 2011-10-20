@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/pathutils.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
@@ -11,6 +12,158 @@ var gOS = "";
 
 ///************* Message dialogs ***************/
 //
+
+// a tracing utility
+function msidump(str1, indent1, str2)
+// at some point I envision a dialog with a short message and a "More info" button that
+// will display str2
+{
+	var pref = GetStringPref("swp.messagelogger");
+	var indentstring="";
+	var spaces="                 ";
+	if (pref == null) pref = "dump";
+	if (indent1 && indent1 > 0)
+	  indentstring = spaces.substring(1,indent1+indent1);
+	switch (pref)
+	{
+		case "dump":
+			dump(indentstring+str1+"\n");
+			if (str2) dump(indentstring+str2+"\n");
+			break;
+		case "jsconsole":
+			var cons;
+		  cons = Components.classes['@mozilla.org/consoleservice;1']
+	            .getService(Components.interfaces.nsIConsoleService);
+			cons.logStringMessage(indentstring+str1);
+			if (str2) cons.logStringMessage(str2);
+			break;
+		case "alert":
+			AlertWithTitle(str1, str2, null);
+			break;
+	}
+}
+
+// The following was added by BBM for diagnostic purposes. It should not be in the release version
+// If the selection is collapsed and in a math object, this will dump the math object and show
+// the location of the selection point.
+
+function dumpMath()
+{
+  var editorElement = getCurrentEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+  var rootnode = HTMLEditor.getSelectionContainer();
+  var i = 1;
+  while (rootnode && rootnode.parentNode && i-- >0) rootnode= rootnode.parentNode;
+//  while (rootnode && rootnode.localName != "math" && editor.tagListManager.getTagInClass("paratags",rootnode.localName,null)) rootnode = rootnode.parentNode;
+//  if (!rootnode)
+//  { 
+//    msidump("Failed to find math or paragraph node\n");
+//    return;
+//  }
+  var sel = HTMLEditor.selection;
+  var selNode = sel.anchorNode;
+  var selOffset = sel.anchorOffset;
+  var focNode = sel.focusNode;
+  var focOffset = sel.focusOffset;
+  var indent = 0;
+  msidump(selNode.nodeName + " to " + focNode.nodeName+"\n",0);
+  msidump("Selection:  selNode="+(selNode.nodeType == Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
+  msidump("focusNode="+(focNode.nodeType == Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
+  msidump("rootnode="+rootnode.nodeName+"\n",6);
+  dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
+}
+
+
+function doIndent( k )
+{
+  for (j = 0; j < k; j++) msidump("  ");
+}
+
+
+function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent)
+{
+try{
+	
+//  msidump("dumpNodeMarkingSel, indent = "+indent+", node = "+node.nodeName+"\n");
+  var len = node.childNodes.length;
+  if (node.nodeType == Node.ELEMENT_NODE)
+  {
+//    doIndent(indent);
+    msidump("<"+node.nodeName+"> \n",indent);
+    for (var i = 0; i < len; i++)
+    {    
+      if (node==selnode && i==seloffset)
+      {
+//        for (var j = 0; j<= indent; j++) msidump("**"); 
+        msidump("<selection anchor>",indent);
+      }
+      if (node==focnode && i==focoffset)
+      {
+//        for (var j = 0; j<= indent; j++) msidump("**"); 
+        msidump("<selection focus>\n", indent);
+      }
+      dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
+    }
+    if (node==selnode && seloffset==len) 
+    {
+//      for (var j = 0; j<= indent; j++) msidump("**"); 
+      msidump("<selection anchor>\n", indent);
+    }
+    if (node==focnode && focoffset==len) 
+    {
+//      for (var j = 0; j<= indent; j++) msidump("**"); 
+      msidump("<selection focus>\n", indent);
+    }
+//    doIndent(indent);
+    msidump("</"+node.nodeName+">\n", indent);
+  }
+  else if (node.nodeType == Node.TEXT_NODE)
+  {
+    var offset1;
+		var offset2;
+		if (node == selnode && selnode === focnode)
+		{
+			offset1 = Math.min(seloffset, focoffset);
+			offset2 = Math.max(seloffset, focoffset);
+			msidump(node.nodeValue.slice(0, offset1)+"<selection " + (offset1==seloffset?"anchor":"focus")+">"+
+			  node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1==seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2,-1))
+		}
+		else
+		{
+			if (node==selnode)
+	    {
+	//      doIndent(indent);
+	      msidump(node.nodeValue.slice(0,seloffset)+"<selection anchor>"+node.nodeValue.slice(seloffset)+"\n",indent);
+	    }
+	    else {
+	      if (node==focnode)
+	      {
+	//        doIndent(indent);
+	        msidump(node.nodeValue.slice(0,focoffset)+"<selection focus>"+node.nodeValue.slice(focoffset)+"\n",indent);
+	      }
+	      else {
+	        var s = node.nodeValue;
+	        var t = s.replace(/^\s*/,'');
+	        var r = t.replace(/\s*$/,'');
+	        if (r.length>0)
+	        {
+	//          doIndent(indent);
+	          msidump(r+'\n', indent);
+	        }
+	        else msidump("whitespace node\n");
+	      }
+			}
+    }  
+  }
+}
+catch(e)
+{
+	msidump(e.message+"\n");
+}
+}   
+  
+
 function AlertWithTitle(title, message, parentWindow)
 {
   if (!parentWindow)
@@ -3878,7 +4031,7 @@ function msiDefaultNewDocDirectory()
   }  
   var dirkey;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var os = msiGetOS();
+  var os = getOS(window);
   if (os==="win")
     dirkey = "Pers";
   else if (os=="osx")
@@ -4137,7 +4290,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
 
   // We only return "urlPath", so we can convert
   //  the entire basePath for case-insensitive comparisons
-  var os = msiGetOS();
+  var os = getOS(window);
   var doCaseInsensitive = (os != "win");
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
@@ -4204,7 +4357,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
         //   relativize to different drives/volumes.
         // UNIX doesn't have volumes, so we must not do this else
         //  the first directory will be misinterpreted as a volume name
-        if (firstDirTest && baseScheme == "file" && os != msigUNIX)
+        if (firstDirTest && baseScheme == "file" && os != "osx")
           return inputUrl;
       }
     }
@@ -4399,7 +4552,7 @@ function GetFilepath(urlspec) // BBM: I believe this can be simplified
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
       {
-        if (msiGetOS()=="win")
+        if (getOS(window)=="win")
           filepath = decodeURIComponent(url.path.substr(1));
         else
            filepath = decodeURIComponent(url.path);
@@ -4555,25 +4708,6 @@ function InsertUsernameIntoUrl(urlspec, username)
   return urlspec;
 }
 
-function GetOS()
-{
-  if (gOS)
-    return gOS;
-
-  var platform = navigator.platform.toLowerCase();
-
-  if (platform.indexOf("win") != -1)
-    gOS = msigWin;
-  else if (platform.indexOf("mac") != -1)
-    gOS = msigMac;
-  else if (platform.indexOf("unix") != -1 || platform.indexOf("linux") != -1 || platform.indexOf("sun") != -1)
-    gOS = msigUNIX;
-  else
-    gOS = "";
-  // Add other tests?
-
-  return gOS;
-}
 
 function ConvertRGBColorIntoHEXColor(color)
 {
@@ -10321,9 +10455,10 @@ var msiSpaceUtils =
 //  them in <sw:invis> nodes.
 
   hSpaceInfo : {
-//    requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
-    requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
-//    nonBreakingSpace :      {charContent: "&#x00a0;"},
+    //requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    //requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    requiredSpace :         {dimensions: "1em", charContent: "&#x205f;"},
+    //nonBreakingSpace :      {charContent: "&#x00a0;"},
     nonBreakingSpace :      {charContent: " "},
     emSpace :               {dimensions: "1em", charContent: "&#x2003;"},
     twoEmSpace :            {dimensions: "2em", charContent: "&#x2001;"}, //EM QUAD
@@ -11109,30 +11244,6 @@ function gotoFirstNonspaceInElement( editor, node )
 }
 
 
-function msiGetOS()
-{
-  var os;
-
-  switch(navigator.platform)
-  {
-  case 'Win32':
-   os = 'win';
-   break;
-  case 'MacPPC':
-  case 'MacIntel':
-   os = 'osx';
-   break;
-  case 'Linux i686':
-  case 'Linux i686 (x86_64)':
-   os = 'linux';
-   break;
-  default:
-   dump('Error: Unknown OS ' + navigator.platform);
-   os = "??";
-  }
-  return os;
-}
-
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and sets
 // the value of the text box
@@ -11684,6 +11795,13 @@ function getSelectionParentByTag( editor, tagname)
   while (ancestor && ancestor.tagName != tagname) ancestor = ancestor.parentNode;
   if (ancestor && ancestor.tagName == tagname) return ancestor;
   return null;
+}
+
+function getEventParentByTag( event, tagname)
+{
+	var node = event.target;
+	while (node && node.tagName != tagname) node = node.parentNode;
+	if (node && node.tagName == tagname) return node;
 }
 
 

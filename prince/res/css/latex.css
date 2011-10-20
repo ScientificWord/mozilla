@@ -79,7 +79,8 @@ hspace[type="italicCorrectionSpace"] {
 }
 
 hspace[type="requiredSpace"] {
-  display: inline;
+  min-width: 0.5em;
+  /*display: inline;*/
 }
 
 hspace[type="nonBreakingSpace"] {
@@ -1356,6 +1357,10 @@ texnote[leadInType="custom"], solution[leadInType="custom"] {
 
 rawTeX {
  color: #6600cc;
+}
+
+smallbox {
+	border: 1px solid black;
 }
 
 *[hilite] {

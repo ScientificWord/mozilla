@@ -5,6 +5,7 @@
 #define nsMathMLContainerCursorMover_h__
 
 #include "nsCOMPtr.h"
+#include "nsIAtom.h"
 #include "nsIFrame.h"
 #include "nsMathMLCursorMover.h"
 #include "nsIMathMLCursorMover.h"

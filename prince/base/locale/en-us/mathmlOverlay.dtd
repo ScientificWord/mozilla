@@ -336,8 +336,8 @@
 <!ENTITY symbollesseqqgtr.tooltip    "lesseqqgtr">
 <!ENTITY symbolgtreqqless.tooltip	 "gtreqqless">
 <!ENTITY symbolvarpropto.tooltip     "varpropto">
-<!-- AMS <!ENTITY symbolsmallsmile.tooltip    "smallsmile"> -->
-<!-- AMS <!ENTITY symbolsmallfrown.tooltip    "smallfrown">	-->
+<!ENTITY symbolsmallsmile.tooltip    "smallsmile">
+<!ENTITY symbolsmallfrown.tooltip    "smallfrown">
 <!ENTITY symbolSubset.tooltip   "Subset">
 <!ENTITY symbolSupset.tooltip   "Supset">
 <!ENTITY symbolsubseteqq.tooltip     "subseteqq">
@@ -352,8 +352,8 @@
 <!ENTITY symboleqsim.tooltip   "eqsim">
 <!ENTITY symbollessdot.tooltip   "lessdot">
 <!ENTITY symbolgtrdot.tooltip   "gtrdot">
-<!-- AMS <!ENTITY symbolshortmid.tooltip   "shortmid"> --> 
-<!-- AMS <!ENTITY symbolshortparallel.tooltip   "shortparallel"> --> 
+<!ENTITY symbolshortmid.tooltip   "shortmid"> 
+<!ENTITY symbolshortparallel.tooltip   "shortparallel"> 
 <!ENTITY symbolthicksim.tooltip   "thicksim">  
 <!ENTITY symbolthickapprox.tooltip   "thickapprox"> 
 <!ENTITY symbolapproxeq.tooltip   "approxeq">

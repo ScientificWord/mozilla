@@ -122,26 +122,34 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
 #ifdef debug_barry
   printf("nsMathMLContainerCursorMover EnterFromLeft, count = %d\n", count);
 #endif
-  NS_ASSERTION(leavingFrame==nsnull, "Non-null leavingFrame passed to nsMathMLContainerCursorMover::EnterFromLeft!");
-  nsIFrame* pFrame;
-  nsCOMPtr<nsIContent> pContent;
-  pFrame = m_pMyFrame;
-  nsIFrame* pTempFrame;
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  pTempFrame = pFrame->GetFirstChild(nsnull);
-  if (pTempFrame)
-  {
-    pMCM = do_QueryInterface(pTempFrame);
-    if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-    else // child frame is not a math frame. Probably a text frame. We'll assume this for not
-    // BBM come back and fix this!
-    {
-      *aOutOffset = count;
-      *aOutFrame = pTempFrame; 
-      *_retval = count;
-    }
-    return NS_OK;
-  }
+	NS_ASSERTION(leavingFrame==nsnull, "Non-null leavingFrame passed to nsMathMLContainerCursorMover::EnterFromLeft!");
+	nsIFrame* pFrame;
+	nsCOMPtr<nsIContent> pContent;
+	pFrame = m_pMyFrame;
+	nsIFrame* pTempFrame;
+	nsIAtom * frametype;
+	nsCOMPtr<nsIMathMLCursorMover> pMCM;
+	pTempFrame = pFrame->GetFirstChild(nsnull);
+	if (pTempFrame) frametype = pTempFrame->GetType();
+	while (pTempFrame && (!(pMCM = do_QueryInterface(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
+	{
+		pTempFrame = pTempFrame->GetFirstChild(nsnull);
+		if (pTempFrame) frametype = pTempFrame->GetType();
+	}
+	if (pTempFrame)
+	{ // either pMCM is not null, of frametype == textframe
+		if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+		else 
+		{
+			if (nsGkAtoms::textFrame == frametype) 
+			{
+			*aOutOffset = count;
+			*aOutFrame = pTempFrame; 
+			*_retval = count;
+			}
+		}
+		return NS_OK;
+	}
   else // this frame has no children
   {
     pMCM = do_QueryInterface(pFrame->GetParent());
@@ -176,22 +184,30 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   nsCOMPtr<nsIContent> pContent;
   pFrame = m_pMyFrame;
   nsIFrame* pTempFrame;
+	nsIAtom * frametype;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   // get last child
   pTempFrame = pFrame->GetFirstChild(nsnull);
   while (pTempFrame && (pTempFrame->GetNextSibling())) pTempFrame = pTempFrame->GetNextSibling();
+	while (pTempFrame && (!(pMCM = do_QueryInterface(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
+	{
+		pTempFrame = pTempFrame->GetFirstChild(nsnull);
+	  while (pTempFrame && (pTempFrame->GetNextSibling())) pTempFrame = pTempFrame->GetNextSibling();
+		if (pTempFrame) frametype = pTempFrame->GetType();
+	}
   if (pTempFrame)
   {
-    pMCM = do_QueryInterface(pTempFrame);
     if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-    else // child frame is not a math frame. Probably a text frame. We'll assume this for not
-    // BBM come back and fix this!
-    {
-      *aOutFrame = pTempFrame; 
-      PRInt32 start, end;
-      pTempFrame->GetOffsets(start,end);
-      (*aOutOffset) = (end - start - count);
-      *_retval = 0;
+    else 
+		{
+			if (nsGkAtoms::textFrame == frametype) 
+			{
+				*aOutFrame = pTempFrame; 
+	      PRInt32 start, end;
+	      pTempFrame->GetOffsets(start,end);
+	      (*aOutOffset) = (end - start - count);
+	      *_retval = 0;
+			}
     }
     return NS_OK;
   }
