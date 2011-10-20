@@ -7875,10 +7875,10 @@ function msiGetKeyListForDocument(aDocument, editor)
     ignoreIdsList = editor.tagListManager.getTagsInClass("structtag","--", false);
 	ignoreIdsList = "--" + ignoreIdsList + "--";
   var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' xmlns:mathml='http://www.w3.org/1998/Math/MathML' ><xsl:output method='text' encoding='UTF-8'/><xsl:variable name='hyphen'>--</xsl:variable>";
-  xsltSheetForKeyAttrib += "<xsl:variable name='ignoreIDs'>" + ignoreIdsList + "</xsl:variable>";
-  xsltSheetForKeyAttrib += "<xsl:template match='/'>  <xsl:apply-templates select='//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'/></xsl:template>\
+  xsltSheetForKeyAttrib += "<xsl:variable name='ignoreIDs'>" + ignoreIdsList + "</xsl:variable><xsl:variable name='xrefName'>xref</xsl:variable>";
+  xsltSheetForKeyAttrib += "<xsl:template match='/'>  <xsl:apply-templates select='//*[@key][not(local-name()=$xrefName)]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'/></xsl:template>\
                                <xsl:template match='//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'>\
-                                 <xsl:choose><xsl:when test='@key'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:when>\
+                                 <xsl:choose><xsl:when test='@key and not(local-name()=$xrefName)'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:when>\
                                              <xsl:when test='@marker and not(@key and @key=@marker)'><xsl:value-of select='@marker'/><xsl:text>\n</xsl:text></xsl:when>\
                                              <xsl:when test='@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)'><xsl:value-of select='@id'/><xsl:text>\n</xsl:text></xsl:when>\
                                              <xsl:when test='@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)'><xsl:value-of select='@customLabel'/><xsl:text>\n</xsl:text></xsl:when>\
