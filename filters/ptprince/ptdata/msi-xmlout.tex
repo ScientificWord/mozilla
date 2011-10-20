@@ -1010,10 +1010,16 @@
 %%   \fi
 %%}
 
-\def\ {\msihmode{ }}
+\def\ {%
+  \ifmmode
+    \char`\\\char`\ %
+  \else
+    \msihmode{ }%
+  \fi}
 
 \def~{%
   \ifmmode
+    \char`\~
   \else
     \msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}%
   \fi}
