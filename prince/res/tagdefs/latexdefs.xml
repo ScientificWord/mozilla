@@ -69,6 +69,7 @@
 				<tag nm="scriptsize"><description>Scriptsize</description></tag>
 				<tag nm="slanted"><description>Slanted</description></tag>
 				<tag nm="small"><description>Small</description></tag>
+				<tag nm="smallbox"><description>Small frame</description></tag>
 				<tag nm="smallCaps"><description>Small Caps</description></tag>
 				<tag nm="sub"><description>Text subscript</description></tag>
 				<tag nm="sup"><description>Text superscript</description></tag>

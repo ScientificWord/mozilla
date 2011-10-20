@@ -309,7 +309,7 @@ msiTypedSelection::SyncMSIwithNS()
 PRBool msiTypedSelection::IsVoidOfContent(nsIDOMNode* start, PRUint32 startOff, nsIDOMNode * end, PRUint32 endOff)
 {
   PRBool rv(PR_FALSE);
-  return rv; //quick check to see if this is the problem BBM
+  //return rv; //quick check to see if this is the problem BBM
   if (start == end && startOff == endOff)
     rv = PR_TRUE;
   else

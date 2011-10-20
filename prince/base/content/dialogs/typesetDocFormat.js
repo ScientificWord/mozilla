@@ -77,7 +77,7 @@ function stripPath(element, index, array)
 
 function startup()
 {
-  initializeFontFamilyList(false);
+  initializeFontFamilyList(false, window);
   var editorElement = msiGetParentEditorElementForDialog(window);
   editor = msiGetEditor(editorElement);
   if (!editor) {
