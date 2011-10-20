@@ -813,6 +813,7 @@
     <menuitem label="dump document" oncommand="dumpDocument();"/>
     <menuitem label="&testSelectionCmd.label;" accesskey="&testSelectionCmd.accesskey;"
            oncommand="msiEditorTestSelection()"/>
+    <menuitem label="Selection location" oncommand="dumpMath();"/>
     <!--menuitem label="&testTableLayoutCmd.label;"
            oncommand="msiEditorTestTableLayout()"/>
     <menuitem label="&showEmbeddedCmd.label;"

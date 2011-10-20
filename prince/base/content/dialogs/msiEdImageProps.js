@@ -1032,10 +1032,10 @@ function ValidateImage()
     var oldKey = globalElement.getAttribute("key");
     var bUnchanged = false;
     if (!oldKey || !oldKey.length)
-      bUnchanged = !gDialog.keyInput.value.length;
+      bUnchanged = (!gDialog.keyInput.value || !gDialog.keyInput.value.length);
     else if (gDialog.keyInput.value.length)
       bUnchanged = (gDialog.keyInput.value == oldKey);
-    if (!bUnchanged && (gDialog.keyInput.controller.searchStatus == 4))  //found a match!
+    if (!bUnchanged && gDialog.keyInput.value && gDialog.keyInput.value.length && (gDialog.keyInput.controller.searchStatus == 4))  //found a match!
     {
       msiPostDialogMessage("dlgErrors.markerInUse", {markerString : gDialog.keyInput.value});
       gDialog.keyInput.focus();
