@@ -662,6 +662,8 @@ should not be done under some conditions -->
   />\end{bfseries}</xsl:template>
 <xsl:template match="html:italics">\begin{itshape}<xsl:apply-templates
   />\end{itshape}</xsl:template>
+<xsl:template match="html:smallbox">\fbox{<xsl:apply-templates
+  />}</xsl:template>
 <xsl:template match="html:roman">\textrm{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:sansSerif">\textsf{<xsl:apply-templates
@@ -927,8 +929,7 @@ should not be done under some conditions -->
 <xsl:template match="html:rawTeX">
   <xsl:value-of select="@tex"/>
     <xsl:if test="not(string-length(translate(@tex,'}','')) &gt; string-length(translate(@tex,'{','')))">{</xsl:if>
-    <xsl:apply-templates/>}
-</xsl:template>
+    <xsl:apply-templates/>}</xsl:template>
 
 
 
