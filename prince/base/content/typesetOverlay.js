@@ -1056,7 +1056,10 @@ function doInsertCrossReference(editorElement, dlgData)
   var editor = msiGetEditor(editorElement);
   var xrefNode = editor.document.createElementNS(xhtmlns, "xref");
   if (dlgData.key && dlgData.key.length > 0)
+  {
     xrefNode.setAttribute("key", dlgData.key);
+    xrefNode.setAttribute("href", dlgData.key);
+  }
   xrefNode.setAttribute("reftype", dlgData.refType);
   xrefNode.setAttribute("req", "varioref");
   editor.insertElementAtSelection(xrefNode, true);
@@ -1067,7 +1070,7 @@ function doReviseCrossReference(editorElement, xrefNode, dlgData)
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
   msiEditorEnsureElementAttribute(xrefNode, "key", dlgData.key, editor);
-  msiEditorEnsureElementAttribute(xrefNode, "id", dlgData.key, editor);
+  msiEditorEnsureElementAttribute(xrefNode, "href", dlgData.key, editor);
   msiEditorEnsureElementAttribute(xrefNode, "reftype", dlgData.refType, editor);
   msiEditorEnsureElementAttribute(xrefNode, "req", "varioref", editor);
   editor.endTransaction();
