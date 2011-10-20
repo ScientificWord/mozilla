@@ -3843,6 +3843,9 @@ var msiFontColor =
     // User canceled the dialog
     if (colorObj.Cancel)
       return;
+	  else {
+			msiGetEditor(editorElement).incrementModificationCount(1);
+		}
     
     msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
     var theWindow = msiGetTopLevelWindow();
@@ -4032,6 +4035,7 @@ var msiSpellingCommand =
               "chrome,close,titlebar,modal,resizable", false, false, true, editorElement);
     }
     catch(ex) {}
+		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
   }
 };
@@ -4634,6 +4638,7 @@ var msiHLineCommand =
     {
       // We only open the dialog for an existing HRule
       window.openDialog("chrome://editor/content/EdHLineProps.xul", "hlineprops", "chrome,close,titlebar,modal,resizable");
+			msiGetEditor(editorElement).incrementModificationCount(1);
       editorElement.focus();
     } 
     else
@@ -4698,6 +4703,7 @@ var msiLinkCommand =
       window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable=true,chrome,close,titlebar,dependent", null, true);
     else
       window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar,dependent");
+		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
   }
 };
@@ -4714,6 +4720,7 @@ var msiReviseHyperlinkCommand =
     {
       window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar,dependent");
     }
+		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
   },
 
@@ -4738,6 +4745,7 @@ var msiAnchorCommand =
   {
     var editorElement = msiGetActiveEditorElement();
     window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "namedanchorprops", "chrome,close,titlebar,modal,resizable", "", editorElement);
+		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
   }
 };
@@ -4755,6 +4763,7 @@ var msiReviseAnchorCommand =
       AlertWithTitle("msiComposerCommands.js", "In msiReviseAnchorCommand, trying to revise hyperlink anchor, dialog not implemented.");
 //      window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "namedanchorprops", "chrome,close,titlebar,modal", "", editorElement);
     }
+		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
   },
 
@@ -4778,6 +4787,7 @@ var msiInsertHTMLWithDialogCommand =
   {
     var editorElement = msiGetActiveEditorElement();
     window.openDialog("chrome://editor/content/EdInsSrc.xul","insertsource", "chrome,close,titlebar,modal,resizable", "", editorElement);
+		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
   }
 };
@@ -5959,7 +5969,7 @@ var msiMarkerCommand =
     try {
       // more goes here
       window.openDialog("chrome://prince/content/marker.xul", "Insert marker", "resizable=yes,dependent=yes,chrome,close,titlebar");
-
+			msiGetEditor(editorElement).incrementModificationCount(1);
     } catch (e) {}
   }
 };
@@ -5981,7 +5991,7 @@ var msiInsertHTMLFieldCommand =
     try {
       // more goes here
       window.openDialog("chrome://prince/content/htmlfield.xul", "HTML field", "resizable=yes,chrome,close,titlebar,dependent");
-
+			msiGetEditor(editorElement).incrementModificationCount(1);
     } catch (e) {}
   }
 };
@@ -7898,6 +7908,7 @@ function msiDoAdvancedProperties(element, editorElement)
         // could play this role as well. 
           try {
             dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,dependent");
+						msiGetEditor(editorElement).incrementModificationCount(1);
             editorElement.contentWindow.focus();
           }
           catch (e)
@@ -7915,6 +7926,7 @@ function msiDoAdvancedProperties(element, editorElement)
               if (!data.Cancel)
               {
                 element.value = data.numstyle;
+								msiGetEditor(editorElement).incrementModificationCount(1);
               }
             }
             catch (e)
@@ -7931,6 +7943,7 @@ function msiDoAdvancedProperties(element, editorElement)
               {
                 element.value = data.lheader;
                 element.value2 = data.rheader;
+								msiGetEditor(editorElement).incrementModificationCount(1);
               }
             }
             catch (e)
@@ -7992,6 +8005,7 @@ var msiColorPropertiesCommand =
       var theWindow = msiGetWindowContainingEditor(editorElement);
       theWindow.openDialog("chrome://editor/content/EdColorProps.xul","colorprops", "chrome,close,titlebar,modal", ""); 
 //      UpdateDefaultColors(); 
+			msiGetEditor(editorElement).incrementModificationCount(1);
       msiUpdateDefaultColors(editorElement);
       editorElement.contentWindow.focus();
     }
@@ -8921,6 +8935,7 @@ var msiConvertToTable =
       {
         var theWindow = msiGetWindowContainingEditor(editorElement);
         window.openDialog("chrome://editor/content/EdConvertToTable.xul","converttotable", "chrome,close,titlebar,modal");
+				msiGetEditor(editorElement).incrementModificationCount(1);
       }
       catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiConvertToTable.doCommand: " + exc);}
     }
@@ -8976,7 +8991,8 @@ function msiNote(currNode, editorElement, type, hidden)
   if (!type) {
     window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,dependent", data);
     // data comes back altered
-//    if (data.Cancel)
+		if (!data.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
+		
 //      return;
   }
 
@@ -9140,6 +9156,7 @@ function msiFrame(editorElement, editor, node)
   if (editor==null) editor = msiGetEditor(editorElement);
   editor.beginTransaction();
   window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,dependent, resizable=yes", node);
+	msiGetEditor(editorElement).incrementModificationCount(1);
   editor.endTransaction();
 }
 

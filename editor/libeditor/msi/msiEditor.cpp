@@ -244,7 +244,7 @@ msiEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
                                 PRInt32 *ioOffset, 
                                 PRBool aNoEmptyNodes)
 {
-     return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, aNoEmptyNodes);
+     return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, PR_TRUE/*aNoEmptyNodes*/);
 }
 
 
@@ -3064,7 +3064,7 @@ NS_IMETHODIMP
 msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
 {
   nsresult res = NS_OK;
-  PRInt32 rangeCount;
+//  PRInt32 rangeCount;
   PRUint32 i;
   nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsIDOMRange> range;
@@ -3074,11 +3074,11 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
   PRInt32 offsetStart;
   PRInt32 offsetEnd;
   res = GetSelection(getter_AddRefs(sel));
-  res = sel->GetRangeCount(&rangeCount);
-  rangeCount = 1;
-  for (i = 0; i < rangeCount; i++)
-  {
-    sel->GetRangeAt(i, getter_AddRefs(range));
+//  res = sel->GetRangeCount(&rangeCount);
+//  rangeCount = 1;
+//  for (i = 0; i < rangeCount; i++)
+ // {
+    sel->GetRangeAt(/*i*/0, getter_AddRefs(range));
     range->CloneRange(getter_AddRefs(modrange));
     AdjustRange(modrange, isForDeletion, direction);
     modrange->GetStartContainer(getter_AddRefs(nodeContainerStart));
@@ -3087,7 +3087,7 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
     modrange->GetEndOffset(&offsetEnd);
     sel->Collapse(nodeContainerStart, offsetStart);
     sel->Extend(nodeContainerEnd, offsetEnd);
-  }
+ // }
   return res;
 }
 
