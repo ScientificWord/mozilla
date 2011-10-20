@@ -1024,7 +1024,38 @@
     \msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}%
   \fi}
 
-\def\/{\msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}}
+\def\/{%
+  \ifmmode
+    \char`\\\char`\/%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+
+\def\,{%
+  \ifmmode
+    \char`\\\char`\,%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="thinspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+\def\;{%
+  \ifmmode
+    \char`\\\char`\;%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="thickspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+\def\!{%
+  \ifmmode
+    \char`\\\char`\!%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="negativethinspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+
+
+
 
 \bgroup
   \catcode`\%=12
