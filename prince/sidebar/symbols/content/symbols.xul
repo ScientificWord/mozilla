@@ -86,42 +86,42 @@
             </row>
             <row>
               <toolbarbutton id="symbolvarepsilon" />
+              <toolbarbutton id="symbolbackepsilon" />
               <toolbarbutton id="symbolzeta" />
               <toolbarbutton id="symboleta" />
-              <toolbarbutton id="symboltheta" />
-              <toolbarbutton id="symbolvartheta" />
+              <toolbarbutton id="symboltheta" />             
             </row>
             <row>
+              <toolbarbutton id="symbolvartheta" />
               <toolbarbutton id="symboliota" />
               <toolbarbutton id="symbolkappa" />
+              <toolbarbutton id="symbolvarkappa" />
               <toolbarbutton id="symbollambda" />
+            </row>
+            <row>
               <toolbarbutton id="symbolmu" />
               <toolbarbutton id="symbolnu" />
+              <toolbarbutton id="symbolxi" />
+              <toolbarbutton id="symbolomicron" />
+              <toolbarbutton id="symbolpi" />
             </row>
             <row>
-              <toolbarbutton id="symbolxi" />
-              <toolbarbutton id="symbolpi" />
               <toolbarbutton id="symbolvarpi" />
               <toolbarbutton id="symbolrho" />
+              <toolbarbutton id="symbolvarrho" />
               <toolbarbutton id="symbolsigma" />
-            </row>
-            <row>
               <toolbarbutton id="symbolvarsigma" />
+           </row>
+            <row>
               <toolbarbutton id="symboltau" />
               <toolbarbutton id="symbolupsilon" />
               <toolbarbutton id="symbolphi" />
               <toolbarbutton id="symbolvarphi" />
+              <toolbarbutton id="symboltextchi" />
             </row>
             <row>
-              <toolbarbutton id="symboltextchi" />
               <toolbarbutton id="symbolpsi" />
               <toolbarbutton id="symbolomega" />
-              <toolbarbutton id="symbolvarkappa" />
-              <toolbarbutton id="symbolvarrho" />
-            </row>
-            <row>
-              <toolbarbutton id="symbolbackepsilon" />
-              <toolbarbutton id="symbolomicron" />
               <toolbarbutton id="symbolstigma" />
             </row>
           </rows>
