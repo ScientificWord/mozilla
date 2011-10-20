@@ -68,6 +68,7 @@ pref("mousewheel.withcontrolkey.action", 3); //enable ctrl+mousewheel to change 
 pref("security.xpconnect.plugin.unrestricted", true);
 pref("spellchecker.enablerealtimespell",      true);
 pref("spellchecker.realtimespell.warning_color", "red");
+pref("swp.messagelogger","dump");
 pref("swp.bibtex.dir", "/swp55/TCITeX/BibTeX/bib");
 pref("swp.ctrl.m","math"); // other value is 'toggle'
 pref("swp.ctrl.t","text"); // other value is'toggle'

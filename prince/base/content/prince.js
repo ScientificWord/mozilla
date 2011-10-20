@@ -1,3 +1,6 @@
+Components.utils.import("resource://app/modules/os.jsm");
+
+
 const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
 const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
 const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
@@ -13,9 +16,8 @@ var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file g
 function princeStartUp()
 {
   // take out parts of the UI not needed on the Mac
-  var os = GetOS();
-  OS.type = os;
-  if ('Mac'==GetOS())
+  var os = getOS(window);
+  if ('osx' == os)
   {
     document.getElementById("printPreviewButton").hidden=true;
     document.getElementById("printPreviewMenuItem").hidden=true;
@@ -350,10 +352,10 @@ function openTeX()
     catch (e)
     {
       var dirkey;
-      if (msiGetOS() == "win")
+      if (getOS(window) == "win")
         dirkey = "Pers";
       else
-      if (msiGetOS() =="osx")
+      if (getOS(window) =="osx")
         dirkey = "UsrDocs";
       else
         dirkey = "Home";
@@ -385,8 +387,8 @@ function openTeX()
     if (outfile.exists()) outfile.remove(false);
     var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
-    var os = GetOS();
-    if (os == "Win") {
+    var os = getOS(window);
+    if (os == "win") {
       exefile.append("pretex.exe");
     } else {
       exefile.append("pretex");
@@ -635,8 +637,8 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   //
   var compiledFileLeaf = "SWP";
   passData = new Object;
-  var os = GetOS();
-  if (os == "Win") extension = "cmd";
+  var os = getOS(window);
+  if (os == "win") extension = "cmd";
   else extension = "bash";
   exefile.append(compiler+"."+extension);
   indexexe.append("makeindex."+extension);
@@ -813,7 +815,7 @@ function printTeX(preview )
           var arr = new Array();
           if (pdfAction == "launch")
           {
-            var os = msiGetOS();
+            var os = getOS(window);
             if (os == "linux") 
             {
               extension = "bash";

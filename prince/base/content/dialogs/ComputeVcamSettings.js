@@ -3,17 +3,15 @@
 // window.arguments[0]: the graph object 
 // window.arguments[1]: DOMGraph, the DOM element that should be replaced
 // window.arguments[2]: the list of DOMGraphs currently being edited:
+// window.arguments[3]: the plot object
 //    it only makes sense to have one dialog per <graph> element. Don't 
 //    allow any others. 
 
 var graph;
 
 function VCAMEditorOnLoad() {
-  dump("SMR VCAMEditorOnLoad\n");
   graph = window.arguments[0];
-  var plotFileName = graph.getValue ("ImageFile");
-  dump("SMR VCAMEditorOnLoad plot file name is " + plotFileName + "\n");
-  
+  var plotFileName = graph.getValue ("ImageFile"); 
   var plot = document.getElementById('plot');
   var cam = plot.camera;
       

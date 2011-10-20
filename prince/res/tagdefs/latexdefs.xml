@@ -12,11 +12,13 @@
 	<tagclasses>
 		<tagclass>
 			<tagclassname>hidden</tagclassname>
-			<contains>paratag</contains>
-			<contains>structtag</contains>
-      <contains>listtag</contains>
-			<contains>othertag</contains>
-      <contains>envtag</contains>
+      <classcontains>
+			  <contains>paratag</contains>
+			  <contains>structtag</contains>
+        <contains>listtag</contains>
+			  <contains>othertag</contains>
+        <contains>envtag</contains>
+      </classcontains>
 			<tags>
 				<tag nm="body"><description>Body</description></tag>
 				<tag nm="docbody"><description>DocBody</description></tag>
@@ -25,19 +27,21 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>texttag</tagclassname>
-      <contains>#text</contains>
-			<contains>texttag</contains>
-			<contains>listparenttag</contains>
-			<contains>listtag</contains>
-			<contains>othertag</contains>
-      <contains>table</contains>
-			<contains>mml:math</contains>
-			<contains>img</contains>
-      <contains>line</contains>
-      <contains>a</contains>
-      <contains>note</contains>
-      <contains>object</contains>
-      <contains>notewrapper</contains>
+      <classcontains>
+        <contains>#text</contains>
+			  <contains>texttag</contains>
+			  <contains>listparenttag</contains>
+			  <contains>listtag</contains>
+			  <contains>othertag</contains>
+        <contains>table</contains>
+			  <contains>mml:math</contains>
+			  <contains>img</contains>
+        <contains>line</contains>
+        <contains>a</contains>
+        <contains>note</contains>
+        <contains>object</contains>
+        <contains>notewrapper</contains>
+      </classcontains>
 			<tags>
 				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
 				<tag nm="alt"><description>Stylistic alternate</description></tag>
@@ -65,6 +69,7 @@
 				<tag nm="scriptsize"><description>Scriptsize</description></tag>
 				<tag nm="slanted"><description>Slanted</description></tag>
 				<tag nm="small"><description>Small</description></tag>
+				<tag nm="smallbox"><description>Small frame</description></tag>
 				<tag nm="smallCaps"><description>Small Caps</description></tag>
 				<tag nm="sub"><description>Text subscript</description></tag>
 				<tag nm="sup"><description>Text superscript</description></tag>
@@ -72,31 +77,34 @@
 				<tag nm="typewriter"><description>Typewriter font</description></tag>
 				<tag nm="underline"><description>Underline</description></tag>
 				<tag nm="upper"><description>Upper case</description></tag>
+				<tag nm="rawTeX" hidden="1"><description>Raw TeX tag</description></tag>
 				<tag nm="text##lang1##" hidden="1" babel="1"><description>##lang## language</description></tag>
 				<tag nm="text##lang2##" hidden="1" babel="2"><description>##lang## language</description></tag>
 			</tags>
 		</tagclass>
 		<tagclass>
 			<tagclassname>paratag</tagclassname>
-      <contains>#text</contains>
-			<contains>texttag</contains>
-      <contains>table</contains>
-			<contains>listparenttag</contains>
-			<contains>listtag</contains>
-			<contains>shortQuote</contains>
-			<contains>othertag</contains>
-			<contains>mml:math</contains>
-			<contains>br</contains>
-			<contains>shortQuote</contains>
-			<contains>cursor</contains>
-			<contains>defaulttitletag</contains>
-			<contains>img</contains>
-			<contains>object</contains>
-      <contains>line</contains>
-      <contains>a</contains>
-      <contains>note</contains>
-      <contains>notewrapper</contains>
-      <contains>msiframe</contains>
+      <classcontains>
+        <contains>#text</contains>
+			  <contains>texttag</contains>
+        <contains>table</contains>
+			  <contains>listparenttag</contains>
+			  <contains>listtag</contains>
+			  <contains>shortQuote</contains>
+			  <contains>othertag</contains>
+			  <contains>mml:math</contains>
+			  <contains>br</contains>
+			  <contains>shortQuote</contains>
+			  <contains>cursor</contains>
+			  <contains>defaulttitletag</contains>
+			  <contains>img</contains>
+			  <contains>object</contains>
+        <contains>line</contains>
+        <contains>a</contains>
+        <contains>note</contains>
+        <contains>notewrapper</contains>
+        <contains>msiframe</contains>
+      </classcontains>
 			<tags>
 				<tag id="defaultparagraph" nm="bodyText">
 					<description>Default body text paragraph</description>
@@ -178,6 +186,7 @@
 		</tagclass>
     <tagclass>
 			<tagclassname>listparenttag</tagclassname>
+      <classcontains></classcontains>
 			<tags>
 				<tag nm="bulletlist" hidden="1">
           <nexttag/>
@@ -261,10 +270,12 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>structtag</tagclassname>
-			<contains>paratag</contains>
-			<contains>structtag</contains>
-			<contains>br</contains>
-      <contains>shortTitle</contains>
+      <classcontains>
+			  <contains>paratag</contains>
+			  <contains>structtag</contains>
+			  <contains>br</contains>
+        <contains>shortTitle</contains>
+      </classcontains>
 			<tags>
 				<tag nm="(removesection)" id="clearsectiontag" ><description>Remove innermost section-like tag</description></tag>
 				<tag nm="set">
@@ -358,8 +369,10 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>envtag</tagclassname>
-			<contains>paratag</contains>
-			<contains>structtag</contains>
+      <classcontains>
+			  <contains>paratag</contains>
+			  <contains>structtag</contains>
+      </classcontains>
 			<tags>
 				<tag nm="(remove environment)" id="clearenvironmenttag" ><description>Remove innermost environment tag</description></tag>
 				<tag nm="frontmatter">
@@ -741,6 +754,7 @@
           <contains>envtag</contains>         
           <level>*</level>
           <description>Frame</description>
+	  		  <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -853,6 +867,9 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>othertag</tagclassname>
+      <classcontains><contains>#text</contains></classcontains>
+      <tag nm="mi"><description>mi</description></tag>
+      <tag nm="hspace"><description>hspace</description></tag>
 			<tags>
 				<tag nm="object"><description>Object</description></tag>
         <tag nm="citation">
@@ -878,7 +895,7 @@
 			      <contains>texttag</contains>
 			      <contains>othertag</contains>
             <contains>table</contains>
-			      <contains>mml:math</contains>Yammer
+			      <contains>mml:math</contains>
 			      <contains>img</contains>
             <contains>a</contains>
             <contains>note</contains>
