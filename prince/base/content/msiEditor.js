@@ -2805,8 +2805,17 @@ function EditorClick(event)
   }
   else if (event.detail == 1)
   {
+    var obj, theURI, targWin;
+    var objName = msiGetBaseNodeName(event.target);
 	  var editor = msiGetEditor(editorElement);  
 	  var graphnode = getEventParentByTag(event, "plotwrapper");
+    var linkNode;
+    if (!graphnode)
+    {
+	    linkNode = getEventParentByTag(event, "xref");
+      if (!linkNode)
+	      linkNode = getEventParentByTag(event, "a");
+    }
     if (graphnode) 
     {
       var obj = event.target.getElementsByTagName("obj")[0];
@@ -2814,21 +2823,29 @@ function EditorClick(event)
         doVCamInitialize(obj);
       }
     }
-    else if (event.target.tagName == "a")
+    else if (linkNode && (objName=="xref"))
     {
-      var theURI, targWin;
+      theURI = event.target.getAttribute("href");
+      if (!theURI)
+        theURI = event.target.getAttribute("key");
+      if (theURI && theURI.length)
+        theURI = "#" + theURI;
+      msiClickLink(event, theURI, targWin, editorElement);
+    }
+    else if (linkNode)
+    {
       theURI = event.target.getAttribute("href");
       if (event.target.hasAttribute("target"))
         targWin = event.target.getAttribute("target");
       msiClickLink(event, theURI, targWin, editorElement);
     }
     else
-		{
-			if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false") 
+    {
+		  if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false") 
 	    {
 	      document.getElementById("vcamactive").setAttribute("hidden",true);
 	    }
-		}
+    }
   }
 
 //  event.currentTarget should be "body" or something...
@@ -10624,6 +10641,8 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
   if (!doFollowLink)
     return;
 
+  var objName = msiGetBaseNodeName(event.target);
+  var preferMarker = (objName == "xref");
   var targURIStr, targMarker;
   var newWindow;
   var sharpPos = theURI.indexOf("#");
@@ -10685,7 +10704,7 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
     msiEditorLoadUrl(targEditor, targURI, targMarker);
   }
   else if (targMarker && targMarker.length)
-    msiGoToMarker(targEditor, targMarker);
+    msiGoToMarker(targEditor, targMarker, preferMarker);
 }
 
 
@@ -10708,7 +10727,7 @@ function msiGoToMarker(editorElement, markerStr, bPreferKey)
       currNode = resultNodes.snapshotItem(ix);
       if (bPreferKey)
       {
-        if (currNode.hasAttribute("key") && (currNode.getAttribute("key") == markerStr))
+        if (currNode.hasAttribute("key") && (msiGetBaseNodeName(currNode) != "xref") && (currNode.getAttribute("key") == markerStr))
           targNode = currNode;
         else if (currNode.hasAttribute("marker") && (currNode.getAttribute("marker") == markerStr))
           targNode = currNode;
@@ -10741,7 +10760,13 @@ function msiGoToMarker(editorElement, markerStr, bPreferKey)
 //    }
 //  }
   if (targNode)
+  {
+    var currNode = editor.selection.focusNode;
+    var currOffset = editor.selection.focusOffset;
+    var bAlignWithTop = (msiNavigationUtils.comparePositions(targNode, 0, currNode, currOffset) < 0);
     editor.selection.collapse(targNode,0);
+    targNode.scrollIntoView(bAlignWithTop);
+  }
 }
 
 function msiCreateURI(urlstring)
