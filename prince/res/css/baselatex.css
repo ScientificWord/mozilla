@@ -505,6 +505,6 @@ object[captionloc="abovebelow"]
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
 } */
 
-a[href] {
-  cursor: pointer;
+a:link, xref, xref button {
+  cursor: pointer !important;
 }

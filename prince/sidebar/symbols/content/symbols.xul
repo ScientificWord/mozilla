@@ -382,41 +382,39 @@
             <row>
               <toolbarbutton id="symbolgtreqqless" />
               <toolbarbutton id="symbolvarpropto" />
-              <!-- AMS <toolbarbutton label="&#x2323;" tooltiptext="&symbolsmallsmile.tooltip;"              msivalue="&#x2323;"
-              observes="cmd_MSIsymbolCmd2"/> -->
-              <!-- AMS <toolbarbutton label="&#x2322;" tooltiptext="&symbolsmallfrown.tooltip;"              msivalue="&#x2322;"
-              observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolsmallsmile" />
+              <toolbarbutton id="symbolsmallfrown" />
               <toolbarbutton id="symbolSubset" />
-              <toolbarbutton id="symbolSupset" />
-              <toolbarbutton id="symbolsubseteqq" />
             </row>
             <row>
+              <toolbarbutton id="symbolSupset" />
+              <toolbarbutton id="symbolsubseteqq" />
               <toolbarbutton id="symbolsupseteqq" />
               <toolbarbutton id="symbolbumpeq" />
               <toolbarbutton id="symbolBumpeq" />
-              <toolbarbutton id="symbollll" />
-              <toolbarbutton id="symbolggg" />
             </row>
             <row>
+              <toolbarbutton id="symbollll" />
+              <toolbarbutton id="symbolggg" />
               <toolbarbutton id="symbolpitchfork" />
               <toolbarbutton id="symbolbacksim" />
               <toolbarbutton id="symbolbacksimeq" />
-              <toolbarbutton id="symboleqsim" />
-              <toolbarbutton id="symbollessdot" />
             </row>
             <row>
+              <toolbarbutton id="symboleqsim" />
+              <toolbarbutton id="symbollessdot" />
               <toolbarbutton id="symbolgtrdot" />
-              <!-- AMS <toolbarbutton label="&#xEEFF;" tooltiptext="&symbolshortmid.tooltip;"              msivalue="&#xEEFF;"
-              observes="cmd_MSIsymbolCmd2"/> -->
-              <!-- AMS <toolbarbutton label="&#xEF01;" tooltiptext="&symbolshortparallel.tooltip;"              msivalue="&#xEF01;"
-              observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolshortmid"  />
+              <toolbarbutton id="symbolshortparallel" /> 
+            </row>
+            <row>
               <toolbarbutton id="symbolthicksim" /> 
               <toolbarbutton id="symbolthickapprox" /> 
               <toolbarbutton id="symbolapproxeq" />
               <toolbarbutton id="symbolsuccapprox" />
+              <toolbarbutton id="symbolprecapprox" />
             </row>
             <row>
-              <toolbarbutton id="symbolprecapprox" />
               <toolbarbutton id="symbolvartriangle" />
             </row>
           </rows>
