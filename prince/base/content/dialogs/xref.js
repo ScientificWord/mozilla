@@ -54,8 +54,8 @@ function setDataFromReviseData(reviseData)
   {
     if (refnode.hasAttribute("key")) 
       gDialog.key = refnode.getAttribute("key");
-    else if (refnode.hasAttribute("id"))
-      gDialog.key = refnode.getAttribute("id");
+    else if (refnode.hasAttribute("href"))
+      gDialog.key = refnode.getAttribute("href");
     if (refnode.hasAttribute("reftype")) 
       gDialog.refType = refnode.getAttribute("reftype");
     bIsRevise = true;

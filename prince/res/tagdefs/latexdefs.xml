@@ -754,6 +754,7 @@
           <contains>envtag</contains>         
           <level>*</level>
           <description>Frame</description>
+	  		  <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
