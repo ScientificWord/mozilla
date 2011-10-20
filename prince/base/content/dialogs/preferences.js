@@ -19,6 +19,7 @@ function initialize()
   tree.setAttribute("ref", url.spec);
   tree.currentIndex = 0;
   showShellsInDir(tree);
+  setTypesetFilePrefTestboxes();
 }
 
 
@@ -92,6 +93,7 @@ function onAccept(){
     document.getElementById("prefEdit").writePreferences(true);
     writeComputePreferences();
     document.getElementById("prefPlots").writePreferences(true);
+    getTypesetFilePrefs();
     document.getElementById("prefTypesetting").writePreferences(true);
   }
   catch(e) {
@@ -215,4 +217,118 @@ function onComputeSettingChange(pref, force)
   {
     myDump(e.message+"\n");
   } 
+}
+
+function onBrowseBibTeXExecutable()
+{
+  var filePicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+  filePicker.init(window, msiGetDialogString("filePicker.selectBibStyleDir"), Components.interfaces.nsIFilePicker.modeOpen);
+  filePicker.appendFilters(Components.interfaces.nsIFilePicker.filterApps);
+  var thePref = document.getElementById("bibTeXExecutable");
+  setFilePrefFromTextbox(thePref);
+  if (thePref.value && thePref.value.path && thePref.value.path.length)
+  {
+    filePicker.defaultString = thePref.value.leafName;
+    filePicker.displayDirectory = thePref.value.parent;
+  }
+  var res = filePicker.show();
+  if (res == Components.interfaces.nsIFilePicker.returnOK)
+  {
+    thePref.value = filePicker.file;
+//    thePref.updateElements();
+//    document.getElementById("bibTeXExecutableTextbox").value = gDialog.bibTeXExe.path;
+  }
+}
+
+function onBrowseBibTeXDatabaseDir()
+{
+  var dirPicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+  dirPicker.init(window, msiGetDialogString("filePicker.selectBibDBDir"), Components.interfaces.nsIFilePicker.modeGetFolder);
+  var thePref = document.getElementById("bibTeXDatabaseDir");
+  setFilePrefFromTextbox(thePref);
+  if (thePref.value && thePref.value.path && thePref.value.path.length)
+    dirPicker.displayDirectory = thePref.value;
+  var res = dirPicker.show();
+  if (res == Components.interfaces.nsIFilePicker.returnOK)
+  {
+    thePref.value = dirPicker.file;
+//    thePref.updateElements();
+//    document.getElementById("bibTeXDatabaseDirTextbox").value = gDialog.bibTeXDBDir.path;
+  }
+}
+
+function onBrowseBibTeXStyleDir()
+{
+  var dirPicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+  dirPicker.init(window, msiGetDialogString("filePicker.selectBibDBDir"), Components.interfaces.nsIFilePicker.modeGetFolder);
+  var thePref = document.getElementById("bibTeXStyleDir");
+  setFilePrefFromTextbox(thePref);
+  if (thePref.value && thePref.value.path && thePref.value.path.length)
+    dirPicker.displayDirectory = thePref.value;
+  var res = dirPicker.show();
+  if (res == Components.interfaces.nsIFilePicker.returnOK)
+  {
+    thePref.value = dirPicker.file;
+//    thePref.updateElements();
+//    document.getElementById("bibTeXDatabaseDirTextbox").value = gDialog.bibTeXDBDir.path;
+  }
+}
+
+function setTextboxValue(aPref)
+{
+  var theTextbox;
+  switch(aPref.id)
+  {
+    case "bibTeXExecutable":
+      theTextbox = document.getElementById("bibTeXExecutableTextbox");
+    break;
+    case "bibTeXDatabaseDir":
+      theTextbox = document.getElementById("bibTeXDatabaseDirTextbox");
+    break;
+    case "bibTeXStyleDir":
+      theTextbox = document.getElementById("bibTeXStyleDirTextbox");
+    break;
+    default:
+    break;
+  }
+  if (theTextbox)
+    theTextbox.value = (aPref.value && ("path" in aPref.value)) ? aPref.value.path : "";
+}
+
+function setFilePrefFromTextbox(aPref)
+{
+  var theTextbox;
+  switch(aPref.id)
+  {
+    case "bibTeXExecutable":
+      theTextbox = document.getElementById("bibTeXExecutableTextbox");
+    break;
+    case "bibTeXDatabaseDir":
+      theTextbox = document.getElementById("bibTeXDatabaseDirTextbox");
+    break;
+    case "bibTeXStyleDir":
+      theTextbox = document.getElementById("bibTeXStyleDirTextbox");
+    break;
+    default:
+    break;
+  }
+  if (theTextbox && theTextbox.value)
+  {
+    try { thePref.value.initWithPath(theTextbox.value); }
+    catch(exc) {dump("Error in preferences.js setFilePrefFromTextbox for pref [" + aPref.id + "]: [" + exc + "].\n");} 
+  }
+}
+
+function setTypesetFilePrefTestboxes()
+{
+  setTextboxValue(document.getElementById("bibTeXExecutable"));
+  setTextboxValue(document.getElementById("bibTeXDatabaseDir"));
+  setTextboxValue(document.getElementById("bibTeXStyleDir"));
+}
+
+function getTypesetFilePrefs()
+{
+  setFilePrefFromTextbox(document.getElementById("bibTeXExecutable"));
+  setFilePrefFromTextbox(document.getElementById("bibTeXDatabaseDir"));
+  setFilePrefFromTextbox(document.getElementById("bibTeXStyleDir"));
 }
