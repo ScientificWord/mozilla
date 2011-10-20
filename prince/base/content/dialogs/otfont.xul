@@ -4,6 +4,8 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="resource://app/res/css/latex.css" type="text/css"?>
+
 
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 
@@ -55,7 +57,7 @@
         <textbox id="otfont.fontsize" type="number" decimalplaces="1" min="0" style="width: 6em" 
           max="200" increment="1" tooltip="&fontsize.tooltip;"/>
         <label value="&units.label;" accesskey="&units.label;"/>
-        <menulist id="otfont.units" sizetopopup="always">
+        <menulist id="otfont.units" sizetopopup="always" oncommand="setNewUnit(this)">
           <menupopup>
             <menuitem id="otfont.pt" label="&pt.menuitem;" value="pt"/>
             <menuitem id="otfont.cm" label="&cm.menuitem;" value="cm"/>
@@ -73,9 +75,11 @@
           <spacer id="colorWell" class="color-well"/>
         </msibutton>
       </row>  
-      <row align="center">
-        <description value="Raw TeX insertion will go here" />
-      </row>
     </rows>
   </grid>
+  <vbox>
+    <label>Raw <texlogo>T<sub>E</sub>X</texlogo></label>
+    <description>Enter <texlogo>T<sub>E</sub>X</texlogo> code here. In the <texlogo>T<sub>E</sub>X</texlogo> file it will by followed by your selected text, and enough right braces to balance the braces.</description>
+    <textbox id="rawtex" multiline="true" newlines="pasteintact" rows="4" width="80%"/>
+  </vbox>
 </dialog>

@@ -68,7 +68,9 @@ function getColorAndUpdate()
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
-
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
   color = colorObj.TextColor;
   setColorWell("colorWell", color); 
 }

@@ -859,6 +859,9 @@ function GetGraphColor (attributeName)
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
+  else {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
 
   var color = colorObj.TextColor;
   graph.setGraphAttribute (attributeName, color);
