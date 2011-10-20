@@ -5196,7 +5196,8 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 
   try {
     if (isInMath(editorElement)) {
-       node = editor.document.createElement('mspace');
+       node = editor.document.createElementNS(mmlns, 'mspace');
+       node.setAttribute('width', "thickmathspace");
     } else {
        node = editor.document.createElement('hspace');
     }
