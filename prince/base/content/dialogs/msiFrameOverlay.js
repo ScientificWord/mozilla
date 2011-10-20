@@ -542,17 +542,17 @@ function enableHere(radiogroup )
   var theValue = "true";
   var position;
   if (!radiogroup) radiogroup = document.getElementById("herePlacementRadioGroup");
-  if (document.getElementById('placeHereCheck').checked)
-  {
+//  if (document.getElementById('placeHereCheck').checked)
+//  {
     theValue = "false";
     position = radiogroup.selectedItem.value;
     setAlignment((position==="L" || position==="I")?1:((position==="R"||position=="O")?2:0));
-  }
-  else
-  {
-    setAlignment(0);
-  }
-  broadcaster.setAttribute("disabled",theValue);
+//  }
+//  else
+//  {
+//    setAlignment(0);
+//  }
+//  broadcaster.setAttribute("disabled",theValue);
 //  document.getElementById('herePlacementRadioGroup').value;
   updateDiagram("margin");
 }
@@ -561,10 +561,21 @@ function enableFloating( )
 {
   var broadcaster = document.getElementById("floatingPlacement");
   var theValue = "true";
-  if (document.getElementById('float').selected) theValue = "false";
-  broadcaster.setAttribute("disabled",theValue);
-  if (theValue=="true") document.getElementById("herePlacement").setAttribute("disabled","true");
-  else enableHere();
+  if (document.getElementById('float').selected)
+ 	{
+		theValue = "false";
+	  broadcaster.setAttribute("disabled",theValue);
+	//  if (theValue=="true") document.getElementById("herePlacement").setAttribute("disabled","true");
+	//  else 
+	  enableHere();
+	}
+	else if (document.getElementById('display').selected)
+	{
+		setAlignment(0);
+	  updateDiagram("margin");
+	} 
+	else if (document.getElementById('inline').selected)
+		updateDiagram("margin");
 }
 
 /************************************/
@@ -747,7 +758,7 @@ function setFrameAttributes(frameNode)
 	frameNode.setAttribute("textalignment", gFrameTab.textAlignment.value );
 	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value)
   if (document.getElementById("inline").selected)
-    setStyleAttributeOnNode(frameNode, "display", "inline");
+    setStyleAttributeOnNode(frameNode, "display", "inline-block");
   else setStyleAttributeOnNode(frameNode, "display", "block");
   // some experimentation here.
 
