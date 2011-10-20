@@ -9,7 +9,7 @@ const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
 
 
-function initializeFontFamilyList(force)
+function initializeFontFamilyList(force, window)
 {
   dump ("==== initializeFontFamilyList\n");
   var prefs = GetPrefs();
@@ -17,8 +17,8 @@ function initializeFontFamilyList(force)
   var dir = dsprops.get("ProfD", Components.interfaces.nsIFile);
   var texbindir;
   var outfile;
-  var os = OS.type;
-  dump("==== OS is "+os+"\n");
+  var platform = getOS(window);
+  dump("==== OS is "+platform+"\n");
   outfile = dir.clone();
   outfile.append("fontfamilies.txt");
   dump("==== Outfile: "+outfile.path+"\n");
@@ -29,8 +29,7 @@ function initializeFontFamilyList(force)
     if (outfile.exists()) return;
   }
   // Mac and Linux don't need the bigfontlist.txt intermediate file
-  var os = OS.type;
-  if ( os != "Win")
+  if ( platform != "win")
   {
     dump("==== BuildFonFamilyList on Mac or Linux\n");
     var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);;
