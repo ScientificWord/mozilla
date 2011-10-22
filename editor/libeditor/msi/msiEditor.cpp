@@ -516,18 +516,16 @@ msiEditor::InsertMathname(const nsAString & mathname)
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
+        res = DeleteSelection(nsIEditor::eNone); 
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
+      
       if (NS_SUCCEEDED(res))
         res = InsertMathnameEx(selection, theNode, theOffset, mathname);
     }
@@ -585,7 +583,7 @@ msiEditor::InsertEngineFunction(const nsAString & mathname)
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
+        res = DeleteSelection(nsIEditor::eNone); 
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
@@ -651,7 +649,8 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
+        //res = NS_ERROR_FAILURE;
+        res = DeleteSelection(nsIEditor::eNone); 
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
@@ -695,7 +694,8 @@ msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
+        //res = NS_ERROR_FAILURE;
+        res = DeleteSelection(nsIEditor::eNone); 
         // TODO add stuff to delete and replace the selection?
         // current SWP behavoir is to replace selection by the operator, but since we may want to allow
         // arbitrary math to be the content of an <mo> at some time, this should be considered.
@@ -703,11 +703,9 @@ msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
+      
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
@@ -738,6 +736,10 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below)
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
+      if (!bCollapsed)
+      {
+        res = DeleteSelection(nsIEditor::eNone); 
+      }
       theNode = startNode;
       theOffset = startOffset;
       if (NS_SUCCEEDED(res))
