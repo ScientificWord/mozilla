@@ -224,7 +224,7 @@
   <sub ctx="math" tp="sc"><pattern>umbar</pattern><data>insertMathunit('mbar','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umcA</pattern><data>insertMathunit('microA','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umcF</pattern><data>insertMathunit('microF','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>umcme</pattern><data>insertMathunit('microm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcme</pattern><data>insertMathunit('microm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umcg</pattern><data>insertMathunit('microg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umcs</pattern><data>insertMathunit('micros','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umcJ</pattern><data>insertMathunit('microJ','true');</data></sub>
