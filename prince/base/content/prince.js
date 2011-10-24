@@ -43,9 +43,8 @@ function getBrowser()
 function GetCurrentEditor() {
   var editor;
   try {
-    var editorElement = GetCurrentEditorElement();
-    editor = editorElement.getEditor(editorElement.contentWindow);
-
+	  var editorElement = msiGetActiveEditorElement();
+	  editor = msiGetEditor(editorElement);
     editor instanceof Components.interfaces.nsIPlaintextEditor;
     editor instanceof Components.interfaces.nsIHTMLEditor;
   } catch (e) { 
@@ -57,18 +56,8 @@ function GetCurrentEditor() {
 
 
 function GetCurrentEditorElement() {
-  var tmpWindow = window;
-  
-  do {
-    var editorList = tmpWindow.document.getElementsByTagName("editor");
-    // Doesn't this assume one editor per window?? --BBM
-    if (editorList.item(0))
-      return editorList.item(0);
-
-    tmpWindow = tmpWindow.opener;
-  } while (tmpWindow);
-
-  return null;
+  var editorElement = msiGetActiveEditorElement();
+  return editorElementƒ;
 }
 
 function doQuit() {
@@ -294,7 +283,7 @@ function count_children( par )
 
 function openTeX()
 {
-  dump("Open TeX \n");
+//  dump("Open TeX \n");
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
   fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);     
