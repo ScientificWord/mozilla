@@ -3,7 +3,7 @@ pushd $1
 if [ "`uname -s`" = "Darwin" ]; then
 	export PATH=/usr/texbin:$PATH
 fi
-xelatex -interaction=nonstopmode -jobname=$3 $2 $4
+xelatex -jobname=$3 $2 $4
 echo done > sentinel
 popd
 
