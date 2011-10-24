@@ -299,7 +299,7 @@
                   onload    = "frameWidthChanged(this);"
                   value     = "0"
                   persist   = "value"/>
-                <checkbox id="autoWidth" persist = "checked" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
+                <checkbox id="autoWidth" persist = "checked" oncommand = "setDisabled(this, 'frameWidthInput');"/>
                 <textbox
                   id        = "frameHeightInput"
                   type      = "number"
@@ -308,7 +308,8 @@
                   onload    = "frameHeightChanged(this);"
                   value     = "0"
                   persist   =  "value"/>
-                <checkbox id="autoHeight" persist = "checked" checked="false" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
+                <checkbox id="autoHeight" persist = "checked" checked="false"
+                   oncommand="setDisabled(this, 'frameHeightIput');"/>
                 <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"
                   checked="false" persist = "checked"/>
               </row>
