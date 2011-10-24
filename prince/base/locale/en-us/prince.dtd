@@ -1,6 +1,6 @@
 <!ENTITY prince.title       "Scientific WorkPlace">
 <!ENTITY editorWindow.titlemodifier	"Scientific WorkPlace">
-<!ENTITY editorWindow.titlemodifiermenuseparator	" - ">
+<!ENTITY editorWindow.titlemodifierseparator	" - ">
 
 
 <!ENTITY fileMenu.label    "File">

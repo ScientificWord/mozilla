@@ -808,6 +808,7 @@ function msiEditorDocumentObserver(editorElement)
               editor.addTagInfo(tagdeflist[i]);
             
           }
+					UpdateWindowTitle();
 // Add language tags if there is a <babel> tag
 					addLanguageTagsFromBabelTag(editor.document)
 				  var htmlurlstring = editor.document.documentURI;;
