@@ -5,8 +5,10 @@ of items. The user can override these colors using a dialog.
 In that case in internal style sheet will rewrite these rules. */
 
 mml|math { color: red;}
-[msimathname="true"] { color: gray; }
-mml|*[class="msi_unit"] { color: green; font-style: normal;}
+[msimathname="true"] { color: gray; 
+	font-style: normal;}
+mml|* [msiunit="true"] {color: green; 
+	font-style: normal;}
 mml|mtd {border-color: green; }
 mml|mtext { color: black; }  
 [msiclass="msi_passthrough"] {color: orange; }
