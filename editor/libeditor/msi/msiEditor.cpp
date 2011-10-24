@@ -590,11 +590,9 @@ msiEditor::InsertEngineFunction(const nsAString & mathname)
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
+
       if (NS_SUCCEEDED(res))
         res = InsertEngineFunctionEx(selection, theNode, theOffset, mathname);
     }
@@ -657,11 +655,9 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
+      
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
@@ -1419,15 +1415,13 @@ NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
       if (!bCollapsed)
       {
         res = DeleteSelection(nsIEditor::eNone);
-        NS_ASSERTION(theNode,"need to set theNode");
-        if (NS_FAILED(res)) 
-          return res;  // TODO -- is it not clear what to do here -- pass along to nsHTMLEditor
+        //NS_ASSERTION(theNode,"need to set theNode");
+        //if (NS_FAILED(res)) 
+        //  return res;  // TODO -- is it not clear what to do here -- pass along to nsHTMLEditor
       }
-      else
-      {
-        theNode = startNode;  
-        theOffset = startOffset;
-      }
+      theNode = startNode;  
+      theOffset = startOffset;
+
       if (aStringToInsert.Length() > 1)
         res = InsertMathnameEx(selection, theNode, theOffset, aStringToInsert);
       else  
