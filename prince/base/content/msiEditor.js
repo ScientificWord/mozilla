@@ -1723,20 +1723,28 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     document = editor.document;
     if (!document)
       return true;
-    if (!editor.documentModified && !msiIsHTMLSourceChanged(editorElement))
+		var htmlurlstring = msiGetEditorURL(editorElement); 
+	  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
+	  var fileURL = msiURIFromString(sciurlstring);
+	  var file = msiFileFromFileURL(fileURL);
+		var scifileExists = file.exists();
+//    var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    if ((!editor.documentModified) && (!msiIsHTMLSourceChanged(editorElement)) && scifileExists)
     {
       if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
       // if the document is a shell and has never been saved, it will be deleted by Revert
         doRevert(false, editorElement, true);
       return true;
     }
-  } catch (e) { return true; }
+  } 
+	catch (e) {
+		return false; 
+	}
 
   // call window.focus, since we need to pop up a dialog
   // and therefore need to be visible (to prevent user confusion)
   top.document.commandDispatcher.focusedWindow.focus();  
 
-  var htmlurlstring = msiGetEditorURL(editorElement); 
   var scheme = GetScheme(htmlurlstring);
   var doPublish = (scheme && scheme != "file");
 
@@ -1759,7 +1767,6 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     
   var reasonToSave = strID ? GetString(strID) : "";
 
-  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
   if (/_work/.test(sciurlstring))
   {
     sciurlstring = sciurlstring.replace((/_work\/[^\/]*\.[a-z0-9]+$/i),"")+".sci";
