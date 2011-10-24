@@ -859,3 +859,16 @@ function frameWidthChanged(input)
   setStyleAttributeByID("content", "width", scaledWidth + "px");
   redrawDiagram();
 }
+
+function setDisabled(checkbox,id)
+{
+	var textbox = document.getElementById(id);
+	if (checkbox.checked)
+	{
+		textbox.setAttribute("disabled","true");
+	}
+	else
+	{
+		textbox.removeAttribute("disabled");
+	}
+}
