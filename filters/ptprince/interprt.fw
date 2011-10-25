@@ -1458,7 +1458,13 @@ case CMD_EXTENSION: {
          std::string targetdir;
          if (s_outputdir != 0)
            targetdir = s_outputdir;
-         targetdir += "/graphics/";
+
+         std::string extn = fn.GetExtString();
+         if (extn == "xvz") {
+            targetdir += "/plots/";
+         } else {
+            targetdir += "/graphics/";
+         }
 
          std::string target = targetdir;
          target += fn.GetNameString();
@@ -1486,7 +1492,12 @@ case CMD_EXTENSION: {
 
 
          std::string reltarget;
-         reltarget += "graphics/";
+         if (extn == "xvz") {
+            reltarget += "plots/";
+         } else {
+            reltarget += "graphics/";
+         }
+
          reltarget += fn.GetNameString();
          reltarget += ".";
          reltarget += fn.GetExtString();
