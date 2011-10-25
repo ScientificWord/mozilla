@@ -9,6 +9,8 @@ function startUp()
     document.getElementById("hidenote").checked = data.hide;
   }
   else data.type = document.getElementById("note.names").value;
+  if (data.noteNode == null)
+		document.getElementById("hidenote").disabled = true;
   checkEnable();
 }
 
