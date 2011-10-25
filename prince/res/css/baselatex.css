@@ -269,28 +269,36 @@ note[hide="false"] {
 }
 */
 
-*[hideFootnotes="true"] note[type="footnote"] {
-  display: none;
-}
-
-
-*[hideOtherNotes="true"] note {
-  display: none !important;
+*[hideOtherNotes="true"] note[type="footnote"] {
+  display: block !important;
 }
 
 *[hideOtherNotes="true"] note[type="footnote"] {
   display: block !important;
 }
 
+*[hideFootnotes="true"] note[type="footnote"] {
+  display: none;
+}
+
+*[hideOtherNotes="true"] note {
+  display: none !important;
+}
+
 *[hideOtherNotes="true"][hideFootnotes="true"] note[type="footnote"] {
   display: none !important;
 }
 
-*[hide="false"] note {
-  display: inline;
-  float: left;
-  width: 100%;
-  clear: right;
+*[hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block;
+}
+
+*[hideOtherNotes="true"] note[hide="false"] {
+  display: block !important;
+}
+
+*[hideOtherNotes="true"][hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block !important;
 }
 
 note[type="footnote"] {
