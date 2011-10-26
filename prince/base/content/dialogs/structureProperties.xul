@@ -50,7 +50,6 @@
     <commandset id="selectEditMenuItems"/>
     <commandset id="undoEditMenuItems"/>
     <commandset id="clipboardEditMenuItems"/>
-    
     <commandset id="commonEditorMenuItems"/>
     <commandset id="composerMenuItems"/>
     <commandset id="composerEditMenuItems"/>
@@ -60,40 +59,41 @@
     <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
-
   <commandset id="MSImathMenuCommands"/>
 
 #include ../keysfordialogs.inc
 
-   <tabbox id="tabboxid" flex="1">
-    <tabs>
-      <tab label="&format.label;"/>
-      <tab label="&advanced.label;"/>    
-    </tabs>
+  <tabbox id="tabboxid" flex="1">
+      <tabs>
+        <tab label="&format.label;"/>
+        <tab label="&advanced.label;"/>    
+      </tabs>
     <tabpanels flex="1">
       <tabpanel>
         <vbox>
           <hbox flex="1"/>
-          <checkbox id="subdocCheckbox" checked="true" label="&subdocCheckBox.label;" accesskey="&subdocCheckBox.accesskey;" tooltip="&subdocCheckBox.tooltip;" 
+          <checkbox id="subdocCheckbox" checked="true" label="&subdocCheckBox.label;" persist="checked"
+             accesskey="&subdocCheckBox.accesskey;" tooltip="&subdocCheckBox.tooltip;"             
             oncommand="subdocCheckChanged(this);"/>
-          <label id="textboxlabel" disabled="true" control="subdocFileName" value="&subdocFileName.label;" accesskey="&subdocFileName.accesskey;"/>
+          <label id="textboxlabel" disabled="true" control="subdocFileName" value="&subdocFileName.label;"
+             accesskey="&subdocFileName.accesskey;"/>
           <textbox id="subdocFileName" disabled="true" onchange="filenameChanged(this);"/>
           <!-- JLF for RA.  The Accesskey below works, but does not display as intended. I suspect this may be due to how the strings are added here.  See bug 1031. -->
-          <checkbox id="numberedCheckbox" label="&numberedCheckbox.label;" accesskey="&numberedCheckbox.accesskey;" checked="true" /> 
+          <checkbox id="numberedCheckbox" label="&numberedCheckbox.label;" accesskey="&numberedCheckbox.accesskey;"
+             checked="true" oncommand="numbering(this);" persist="checked"/> 
           <hbox flex="4"/>         
         </vbox>        
       </tabpanel>        
       <tabpanel>
-	      <groupbox>
-<!--JLF for RA Original line. Ron please look at the change I made here to make certain they do not break your intended functionality for this dialog. The goal here is to use Short Title as a groupbox label.  The <caption label="&sectionShortHeader.label achieves 
-the goal.  
-	        <label id="sectionShortHeader" control="sectionShortEdit" accesskey="&sectionShortHeader.accesskey;" value="&sectionShortHeader.label;"/> 
--->
-     <caption> 
-      <label value="&sectionShortHeader.label;" />
-      </caption>
-	        <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext" id="sectionShortEdit" />
-	      </groupbox>
+        <groupbox id="editorgroup" hidden="false">
+          <caption> 
+            <label value="&sectionShortHeader.label;" />
+          </caption>
+          <label id="showwhendisabled" value="You can't set a short title for an unnumbered ##."
+             persist="hidden" hidden="true"/>
+          <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext"
+             id="sectionShortEdit" />
+        </groupbox>
       </tabpanel>    
     </tabpanels>
   </tabbox>
