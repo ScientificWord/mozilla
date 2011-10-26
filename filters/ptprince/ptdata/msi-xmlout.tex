@@ -1,4 +1,3 @@
-
 \makeatletter
 
 \newcounter{MaxMatrixCols}
@@ -774,6 +773,9 @@
 \def\@cra[#1]{\cr}%
 \def\@crb{\cr}%
 
+
+\def\tabularnewline{\cr}
+
 \def\msi@begin@tabular{%
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
@@ -1338,6 +1340,7 @@
        \msitag{</texb>}}}
 
 
+
 \def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{%
        \@temptokena={\msitag{##1}}%
@@ -1349,6 +1352,22 @@
 \def\msi@cdr#1#2xxxx{#2}
 
 \def\MSILocalDef#1{\def#1{\string #1}}
+
+
+\def\makeatother{%
+   \msihmode
+   \msitag{<texb enc="1" name="makeatother">}%
+       <![CDATA[\string\makeatother]]>%
+   \msitag{</texb>}
+   \catcode`\@=12}
+
+\def\makeatletter{%
+   \msihmode
+   \msitag{<texb enc="1" name="makeatletter">}%
+       <![CDATA[\string\makeatletter]]>%
+   \msitag{</texb>}
+   \catcode`\@=11}
+
 
 
 \bgroup
