@@ -1495,7 +1495,11 @@
 % Here #1 = some unknown control sequence 
 
 \def\msidefault#1{%
-  \expandafter\msidefaulta\expandafter{\string #1}}
+  \ifmmode
+    \string#1%
+  \else
+    \expandafter\msidefaulta\expandafter{\string #1}%
+  \fi}
 
 \def\msidefaulta#1{%
   \expandafter\msidefaultb\expandafter{\msi@cdr#1xxxx}}
