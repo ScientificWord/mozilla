@@ -28,8 +28,15 @@ function startup()
   document.getElementById("textboxlabel").setAttribute("value", capitalize(str.replace("##", tagName)));
   str = document.getElementById("numberedCheckbox").getAttribute("label");
   document.getElementById("numberedCheckbox").setAttribute("label", capitalize(str.replace("##", tagName)));
+  str = document.getElementById("showwhendisabled").getAttribute("value");
+  document.getElementById("showwhendisabled").setAttribute("value", capitalize(str.replace("##", tagName)));
 
   var shortFormEditor = document.getElementById("sectionShortEdit");
+  if (!(document.getElementById("numberedCheckbox").checked))
+	{
+//		document.getElementById("editorgroup").hidden = true;
+		document.getElementById("showwhendisabled").hidden = false;
+	}
   try {
 //  var editorElement = msiGetParentEditorElementForDialog(window);  
 //  var mixed = msiGetSelectionContainer(editorElement);
@@ -77,7 +84,11 @@ function startup()
     else
       document.getElementById("subdocCheckbox").checked = false;
     if (structureData.structNode.hasAttribute("nonum"))
-      document.getElementById("numberedCheckbox").checked = false;
+		{
+      var cb = document.getElementById("numberedCheckbox");
+			cb.checked = false;
+			numbering(cb);
+		}
   }
   catch(e) {
     dump("Error in structureproperties.js, startup: "+e.message+"\n");
@@ -145,6 +156,19 @@ function filenameChanged(tb)
     tb.value = fn;
 }
 
+function numbering(checkbox )
+{
+	if (checkbox.checked)
+	{
+		document.getElementById("showwhendisabled").hidden = true;
+//		document.getElementById("editorgroup").hidden = false;
+	}
+	else
+	{
+		document.getElementById("showwhendisabled").hidden = false;
+//		document.getElementById("editorgroup").hidden = true;
+	}
+}
 
 function onCancel() {
   return true;   
