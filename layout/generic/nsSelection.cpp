@@ -2942,9 +2942,9 @@ nsFrameSelection::NotifySelectionListeners(SelectionType aType)
 
 static PRBool IsCell(nsIContent *aContent)
 {
-  return ((aContent->Tag() == nsGkAtoms::td ||
+  return (((aContent->Tag() == nsGkAtoms::td ||
            aContent->Tag() == nsGkAtoms::th) &&
-          aContent->IsNodeOfType(nsINode::eHTML));
+          aContent->IsNodeOfType(nsINode::eHTML)) || aContent->Tag() == nsGkAtoms::mtd_);
 }
 
 nsITableCellLayout* 
@@ -3723,8 +3723,11 @@ nsFrameSelection::GetParentTable(nsIContent *aCell, nsIContent **aTable) const
 
   for (nsIContent* parent = aCell->GetParent(); parent;
        parent = parent->GetParent()) {
-    if (parent->Tag() == nsGkAtoms::table &&
-        parent->IsNodeOfType(nsINode::eHTML)) {
+    if (parent->Tag() == nsGkAtoms::table || parent->Tag() == nsGkAtoms::mtable_)
+
+// 				&&
+//        parent->IsNodeOfType(nsINode::eHTML)) 
+    {
       *aTable = parent;
       NS_ADDREF(*aTable);
 
