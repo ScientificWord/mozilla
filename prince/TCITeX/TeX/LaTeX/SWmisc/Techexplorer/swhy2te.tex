@@ -1,0 +1,161 @@
+% File: swhy2te.tex
+% Author: Melissa Harrison 
+% Correspondence to: styles@mackichan.com
+% last rev: 6 November 2001 mlh
+
+% This file translates SW + hyperref package syntax to techexplorer syntax. 
+% It should be kept with techexpl.sty. For additional documentation and 
+% updates related to using SW to produce Techexplorer documents, check the 
+% MacKichan Software website: http://www.mackichan.com/techtalk/techexplorer/
+
+%--------------
+% Load Packages
+%--------------
+
+% The package techexpl.sty provides typesetting definitions for the special 
+% environments introduced by techexplorer, such as links, etc. 
+\usepackage{techexpl}
+
+% -------------
+% Define Colors
+%--------------
+
+% some colors are also defined in techexpl.sty and color.sty
+\definecolor{paleGray}{rgb}{0.90,0.90,0.90}
+\definecolor{paleBlue}{rgb}{0.90,0.90,1.0}
+\definecolor{palePink}{rgb}{1.0,0.90,0.90}
+\definecolor{paleGreen}{rgb}{0.90,1.0,0.90}
+\definecolor{lilac}{rgb}{1.0,0.90,1.0}
+\definecolor{paleYellow}{rgb}{1.0,1.0,0.90}
+\definecolor{paleAqua}{rgb}{0.90,1.0,1.0}
+
+%******************
+\iftechexplorer
+%******************
+%---------------------------------------------------
+% Syntax Morphing for Techexplorer On-Screen Display
+%---------------------------------------------------
+% The syntax translation in this branch is used only for onscreen display
+% in the techexplorer plugin. See the other branch of this conditional for 
+% the syntax translation used for typesetting.
+
+   % lb sign
+   \def\lb{\char'043}
+
+   % msihyperref --> labelLink 
+   % sw syntax: \msihyperref{screen}{left}{right}{target}
+   % te syntax: \labelLink{label}{screen}
+   \def\msihyperref#1#2#3#4{\labelLink{#4}{#1}}
+
+   % hyperref --> docLink syntax change 
+   % NB: \docLink{target#label}{screen} will not work in te.
+   % sw syntax: \hyperref{URL}{category}{label}{screen}
+   % te syntax: \docLink[framename]{URL}[label]{screen}
+   \ifshowurl
+      \def\hyperref#1#2#3#4{\docLink{#1}[#2.#3]{#4} (#1\lb#2.#3)}     
+   \else
+      \def\hyperref#1#2#3#4{\docLink{#1}[#2.#3]{#4}}
+   \fi
+
+   % \href is also mapped to \appLink for external program calls
+   % sw syntax: \href{URL}{text}
+   % te syntax: \appLink{URL}{onscreen text}
+   \def\app{}
+   \def\href#1#2{\appLink{\app{} #1}{#2}}
+   
+   % \hyperlink is mapped to \labelLink for internal links
+   % sw syntax: \hyperlink{label}{text}
+   % te syntax: \labelLink{label}{text}
+   \def\hyperlink#1#2{\labelLink{#1}{#2}}
+   
+   % \hypertarget and \hyperdef map to screen text & \label
+   % sw syntax: \hypertarget{label}{text}
+   % sw syntax: \hyperdef{category){label}{text}
+   % te syntax: \label{label}
+   \def\hypertarget#1#2{#2\label{#1}}
+   \def\hyperdef#1#2#3{#3\label{#1.#2}} 
+
+   % Obsolete syntax for SW3.x
+   % External Program Call --> \appLink syntax change 
+   % SW Syntax: \qExtProgCall{1}{2}{3}{4}{5}{6}
+   %            1: program name/path
+   %            2: onscreen text
+   %            3: (document directory - don't use this ...)
+   %            4: file name and/or command line parameters
+   %            5: ??
+   %            6: ??
+   % TE Syntax: \appLink{command line}{onscreen text}
+   \def\qExtProgCall#1#2#3#4#5#6{\appLink{#1 #4}{#2}}
+   % uncomment the following line to use hyperrefs from SW3.x
+   %\def\hyperref#1#2#3#4{\labelLink{#4}{#1}}
+
+
+   % figures
+   \def\Qcb#1{#1}       % Remove markup for bottom caption.
+   \def\Qct#1{#1}       % Remove markup for top caption.
+   % translate SW graphics FRAME macro to TE \includegraphics command.
+   \def\FRAME#1#2#3#4#5#6#7#8{\begin{center} \includegraphics[#2][#3]{#7} \\ {#5} \end{center}}
+
+   % text symbols
+   \def\TEXTsymbol#1{\text{#1}}
+   \def\textquotedblleft{``}
+   \def\textquotedblright{''}
+
+   % newtheorems
+   \def\begintheorem{{\bf Theorem }\it}
+   \def\endtheorem{\rm}
+   \def\beginacknowledgement{{\bf Acknowledgement }\it}
+   \def\endacknowledgement{\rm}
+   \def\beginalgorithm{{\bf Algorithm }\it}
+   \def\endalgorithm{\rm}
+   \def\beginaxiom{{\bf Axiom }\it}
+   \def\endaxiom{\rm}
+   \def\begincase{{\bf Case }\it}
+   \def\endcase{\rm}
+   \def\beginclaim{{\bf Claim }\it}
+   \def\endclaim{\rm}
+   \def\beginconclusion{{\bf Conclusion }\it}
+   \def\endconclusion{\rm}
+   \def\begincondition{{\bf Condition }\it}
+   \def\endcondition{\rm}
+   \def\beginconjecture{{\bf Conjecture }\it}
+   \def\endconjecture{\rm}
+   \def\begincorollary{{\bf Corollary }\it}
+   \def\endcorollary{\rm}
+   \def\begincriterion{{\bf Criterion }\it}
+   \def\endcriterion{\rm}
+   \def\begindefinition{{\bf Definition }\it}
+   \def\enddefinition{\rm}
+   \def\beginexample{{\bf Example }\it}
+   \def\endexample{\rm}
+   \def\beginexercise{{\bf Exercise }\it}
+   \def\endexercise{\rm}
+   \def\beginlemma{{\bf Lemma }\it}
+   \def\endlemma{\rm}
+   \def\beginnotation{{\bf Notation }\it}
+   \def\endnotation{\rm}
+   \def\beginproblem{{\bf Problem }\it}
+   \def\endproblem{\rm}
+   \def\beginproposition{{\bf Proposition }\it}
+   \def\endproposition{\rm}
+   \def\beginremark{{\bf Remark }\it}
+   \def\endremark{\rm}
+   \def\beginsolution{{\bf Solution }\it}
+   \def\endsolution{\rm}
+   \def\beginsummary{{\bf Summary }\it}
+   \def\endsummary{\rm}
+
+%******************
+\else           %**
+%******************
+%---------------------------------------------------
+% Syntax Morphing for Typesetting (TeX compiler)
+%---------------------------------------------------
+   % remove \app information which SW does not need
+   \gdef\app#1{}
+
+%******************
+\fi             %**
+%******************
+
+% end of swhy2te.tex

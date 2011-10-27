@@ -1,0 +1,51 @@
+%%
+%% This is file `achicago.pit',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pittetd.dtx  (with options: `achicago')
+%% The `pittetd' project: Electronic Theses and Dissertations
+%%                        at the University of Pittsburgh.
+%% 
+%% Copyright 2003 Federico Garcia and Pitt ETD Working Group
+%% 
+\makeatletter
+\@ifundefined{achicago@patch}\relax\endinput
+\renewcommand{\emph}[1]{{\itswitch #1}}%
+\renewenvironment{quotation}
+    {\list{}{\topsep\medskipamount
+        \listparindent 1.5em\relax
+        \itemindent \listparindent
+        \rightmargin \leftmargin
+        \parsep \z@ \@plus\p@}
+    \item\small\relax}
+    {\endlist}
+\renewenvironment{quote}
+    {\list{}{\topsep\medskipamount
+        \rightmargin\leftmargin}%
+        \item\relax\small}
+    {\endlist}
+\renewenvironment*{thebibliography}{%
+    \@safebibliography
+    \begin{list}{}{%
+        \leftmargin\z@
+        \advance\leftmargin\labelsep
+        \advance\leftmargin\bibindent
+        \itemindent -\bibindent
+        \listparindent \itemindent
+        \parsep \z@
+        \itemsep .5\@singleline \@plus 4\p@}
+    \sfcode`\.=\@m
+    \let\@biblabel\Gobble
+    \sloppy
+    \clubpenalty4000 \widowpenalty4000
+    }{%
+    \def\@noitemerr{\@latex@warning{Empty
+        `thebibliography' environment}}%
+    \relax\end{list}}
+\let\achicago@patch\@empty
+\makeatother
+\endinput
+%%
+%% End of file `achicago.pit'.
