@@ -1,0 +1,410 @@
+% bu_ece_thesis.sty  --  March 2004
+%
+% For Boston University Graduate theses in the Department of Electrical
+% and Computer Engineering based on "Guide for writers of theses and
+% dissertations", a publication of Mugar Library.
+%
+% This style option is designed to work with the report document
+% style of LaTeX.  Use
+% \documentstyle[bu_ece_thesis]{report}
+%
+% Prepared by Janusz Konrad <jkonrad@bu.edu> March 2004
+% based on earlier versions by Stephen Gildea, Paolo Gaudiano, and
+% Jonathan Polimeni
+
+% some heavy mods enacted by the CV/CNS lab, so don't trust all comments
+% jonathan polimeni <jonnyreb@athlete-2.bu.edu>, 03/09/2003
+% $Id: buthesis.sty,v 1.3 2003/09/24 18:50:22 jonnyreb Exp $
+%**************************************************************************%
+%%
+%% DISCLAIMER: This software is only meant to assist Boston University
+%% students in following the guidelines for dissertation format
+%% established by the Graduate School. The format is based on the
+%% ``Guide for writers of theses and dissertations'', a Mugar Library
+%% publications. Each student is responsible for obtaining a copy of
+%% this publication to insure that the format is still valid. For
+%% information you can call Sister Mary Virginia, Thesis/dissertation
+%% coordinator, Mugar Library, Bibliographic Services, 353-3713,
+%% 353-9387. You should always contact the graduate school and your
+%% department to insure that your format meets al their requirements.
+
+% Adapted to Boston University standards by Paolo Gaudiano, based on
+% Stephen Gildea's mitthesis.sty (1989). Original Copyright notice follows
+
+%%% Copyright (c) 1987 by Stephen Gildea
+%%% Permission to copy all or part of this work is granted, provided
+%%% that the copies are not made or distributed for resale, and that
+%%% the copyright notice and this notice are retained.
+%%% 
+%%% THIS WORK IS PROVIDED ON AN "AS IS" BASIS.  THE AUTHOR PROVIDES NO
+%%% WARRANTY WHATSOEVER, EITHER EXPRESS OR IMPLIED, REGARDING THE WORK,
+%%% INCLUDING WARRANTIES WITH RESPECT TO ITS MERCHANTABILITY OR FITNESS
+%%% FOR ANY PARTICULAR PURPOSE.
+
+%%% If you make any improvements, I'd like to hear about them.
+
+%%% Stephen Gildea
+%%% MIT Earth Resources Lab
+%%% Cambridge, Massachusetts 02139
+%%% mit-erl!gildea
+%%% gildea@erl.mit.edu
+
+%%% 29 Jun 87 original version
+%%% 12 Sep 89 <prange> \supervisor optional arg added
+
+% A few words of caution, which were imparted upon me by Martha
+% Wellman, the person that will probably pick your thesis format
+% apart, no matter how good you think it looks:
+% (1) Use a single font type/face throughout the preliminary pages. In
+% other words, everything on the preliminary pages should be
+% identical.
+% (2) ``Elite type'' means no more than 12 characters in one inch.
+% Some 12-point formats don't even make it in this category!
+% (3) YOUR NAME AND THE TITLE SHOULD ALWAYS BE IN ALL CAPS!
+
+% Now set up the parameters for the size and location of text on the page.
+
+% ``The top and left margins should be 1-1/2", and the bottom and right
+% margins, 1"'' The measures below are always added to 1"
+
+\oddsidemargin 0.375in         % Left margin = 1.5"
+\evensidemargin -0.1in         % Right margin = 1.5" for double-sided printing
+\textwidth 6.1875in            % Leaves 1.0" right margin
+
+\topmargin 0in                 % Top margin is distance from top of
+                               % page to top of ``head''. This will
+                               % be 1", and the text will be 1/2"
+                               % below that.
+
+\headheight 12pt               % Numbering in head for text
+\headsep 24pt                  % Total top margin: 1.5in
+
+\textheight 8.4in
+\footskip 0.4in  % Distance from bottom of text to bottom of foot,
+                 % which is where page number goes for preliminary
+                 % pages. Hence number will be 0.6" from bottom.
+
+% "Double-space all textual material and all preliminary pages.
+% Footnotes and long quotations may be single-spaced"
+%\input doublespace.sty          % available from Clarkson LaTeX-style collection
+\usepackage{setspace}
+
+\def\baselinestretch{1.6}       % double spacing
+
+\renewcommand{\arraystretch}{.625} % to fix a problem with arrays
+
+%% End of formatting parameters %%
+
+%% DEFINE ALL THE PIECES THAT GO ON THE TITLE PAGE AND THE ABSTRACT.
+
+% \title and \author already exist
+
+% Type of degree as a counter:
+%   1 - Master of Science Thesis,
+%   2 - Doctoral Dissertation,
+%   3 - Master of Science Thesis and Doctoral Dissertation
+\newcount\degree
+
+% Your previous degree(s). If more than one degree, use single spacing
+\def\prevdegrees#1{\gdef\@prevdegrees{#1}}
+\def\@prevdegrees{}
+
+\def\department#1{\gdef\@department{#1}}
+
+% If you are getting two degrees, use \and between the names.
+\def\thisdegree#1{\setbox0\hbox{#1}  %for side effect of setting \@degreeword
+  \gdef\@thisdegree{#1}}
+
+% \and is used inside the \thisdegree argument to separate two degrees
+\def\and{\gdef\@degreeword{degrees} \par and \par}
+\def\@degreeword{degree}
+
+\def\thesisdate#1{\gdef\@thesisdate{#1}}
+
+% Only the year for BU. Month is used by MIT
+\def\degreeyear#1{\gdef\@degreeyear{#1}}
+\def\defenseyear#1{\gdef\@defenseyear{#1}}
+
+% Since there are multiple readers (at least two), we build
+% appropriate boxes for the approval page as the user makes multiple
+% calls to \reader
+\newbox\@approvalreader
+
+% The \reader command is based on the original MIT \supervisor command. It
+% takes three arguments: An argument indicating whether it is first, second,
+% third etc., then the name, then the title. For example,
+% \reader{First}{John Doe}{Professor of Mathematics}
+% For some reason, the name and title must be SINGLE SPACED
+
+\def\reader{\@reader}
+\def\@reader#1#2#3{\setbox\@approvalreader\vbox
+  {\unvbox\@approvalreader \vskip 2\baselineskip % NO stretchy stuff
+  \hspace{-0.22in}\parbox[t]{0.2\textwidth}{#1 Reader}\parbox[t]{0.75\textwidth}{
+        \singlespace
+        \rule{0.75\textwidth}{0.1mm}\\#2\\#3}}}
+
+% Major professor, should be same as first reader. Goes in abstract page
+\def\majorprof#1#2{\gdef\@majorprofname{#1}\gdef\@majorproftitle{#2}}
+
+
+%               TITLE BOX PAGE
+%
+% BU-ECE title box page - first page to fit the cut-out in the front cover
+\def\buecethesistitleboxpage{%
+  \thispagestyle{empty}
+  \vglue -1.0cm\hglue 4.5cm\includegraphics[width=4.0cm]{BUseal_color.eps}\\
+  \vglue 1.6cm
+  \fboxsep=10pt\fboxrule=1pt\hglue 1.25cm
+  \Ovalbox{\vbox to 6.2cm{\vfill\hbox{\vtop{\hsize=9.7cm\parindent=0pt
+        \renewcommand{\baselinestretch}{1.5}
+        \bf\sffamily\begin{center}\@title\end{center}
+        \sl\sffamily\begin{center}\@author\end{center}
+        \rm\sffamily
+        \ifcase\degree\or\thisdegree{Master of Science}\or
+                         \thisdegree{Doctor of Philosophy}\or
+                         \thisdegree{\gdef\@degreeword{degrees}
+                           Master of Science \and Doctor of Philosophy}
+                         \fi
+        \centerline{\ifcase\degree\or Thesis \or Dissertation \or Dissertation\fi
+                    submitted in partial fulfillment}
+        \centerline{of the requirements for the \@degreeword\ of}
+        \centerline{\@thisdegree}}}\vfill}}
+    \vglue 4.0cm\hglue 1.6cm
+    \vbox{\hbox{\vtop{\hsize=10.0cm\rmfamily\bfseries\Huge
+    \begin{center}
+      BOSTON\\
+      UNIVERSITY
+    \end{center}}}}
+    \clearpage\mbox{}\thispagestyle{empty}\clearpage
+  \setcounter{page}{1}}
+
+
+%               PRELIMINARY PAGES
+%
+% ``The preliminary pages -- title page, copyright page, reader's
+% approval page, etc. -- are numbered with lower-case Roman numerals
+% (i, ii, iii,).'' No page number on the title page, although it
+% counts as page #i. This command is undone at the beginning of the
+% text with the command \endofprelim (see below)
+%
+% According to the BU guide the correct order for preliminary pages is:
+% title, copyright (optional), approval,  acknowledgments (opt.),
+% abstract, preface (opt.), Table of contents, List of tables (if
+% any), List of illustrations (if any).
+
+% TITLE PAGE
+% You can use the titlepage environment to do it all yourself if you
+% don't want to use \maketitle.
+\def\titlepage{\newpage \thispagestyle{empty}
+\parindent 0pt
+\def\baselinestretch{1.8}
+\parskip 8pt plus 1fill
+\@normalsize
+\begin{center}
+}
+\def\endtitlepage{\end{center}\newpage}
+
+% Got tired of screwing around with \parskips that refuse to stretch,
+% so I manually put a \vfill after each \par.
+\def\maketitle{\begin{titlepage}
+\pagenumbering{roman}
+\large
+\BU\\\COE\par\vfill
+\ifcase\degree\or Thesis \or Dissertation \or Dissertation \fi\par\vfill
+{\bf \@title}\par\vfill
+by\par\vfill
+{\bf \@author}\\
+\begin{singlespace}
+\@prevdegrees
+\end{singlespace}
+\ifcase\degree\or\thisdegree{Master of Science}\or
+                 \thisdegree{Doctor of Philosophy}\or
+                 \thisdegree{Master of Science \and Doctor of Philosophy}
+                 \fi
+\par\vfill
+Submitted in partial fulfillment of the\\
+requirements for the \@degreeword\ of\\
+\@thisdegree\\
+\@degreeyear
+\end{titlepage}}
+
+%               COPYRIGHT PAGE
+% Separate Copyright page. If it exists, it gets roman numeral ii but
+% the page number is not printed. The name must be in allcaps
+% \def\copyrightpage{\newpage\thispagestyle{empty}
+% \null\vfill\par
+% \begin{center}\large
+% \copyright Copyright by\par
+% \@author
+% \par
+% \@degreeyear
+% \end{center}}
+\def\copyrightpage{\newpage\thispagestyle{empty}
+\null\vfill\par
+\begin{singlespace}
+
+\hspace{2in}
+\large \copyright \hspace{1ex} 
+\begin{minipage}[t]{3in}
+Copyright by \\
+\@author\\
+\@defenseyear
+\end{minipage}
+\end{singlespace}}
+
+%               APPROVAL PAGE
+% Separate approval page for BU style.
+% NO NUMBER on approval page, even if it is page #3. This differs from
+% the handbook, but Martha Wellman tells us it is the way to do it,
+% and the handbook will be updated.
+\def\approvalpage{\newpage\thispagestyle{empty}
+\def\baselinestretch{1.2}
+\begin{center}\large
+Approved by\\[2em]
+\unvbox\@approvalreader
+\end{center}\newpage}
+
+
+%               ABSTRACT PAGE
+
+\def\abstractpage{\newpage
+\begin{center}
+\begin{doublespace}
+{\large
+{\bf \@title}\par
+\ifcase\degree\or\or
+  (Order No. \hspace{1.0in})\\[1em] \or
+  (Order No. \hspace{1.0in})\\[1em] \fi
+{\bf \@author}\\[1em]
+\ifcase\degree\or\or
+\Bu,\ \Coe, \@degreeyear
+\par
+% Major Professor: \@majorprofname, \@majorproftitle
+\mbox{Major Professor: \begin{minipage}[t]{4in}
+    \vspace*{-0.7\baselineskip} \begin{singlespace} \@majorprofname, 
+    \@majorproftitle \end{singlespace} \end{minipage}}
+\par
+\vspace{\baselineskip}
+\or
+\Bu,\ \Coe, \@degreeyear
+\par
+% Major Professor: \@majorprofname, \@majorproftitle
+\mbox{Major Professor: \begin{minipage}[t]{4in}
+    \vspace*{-0.79\baselineskip} \begin{singlespace} \@majorprofname, 
+    \@majorproftitle \end{singlespace} \end{minipage}}
+\par
+\vspace{\baselineskip}
+\fi
+}
+\end{doublespace}
+ABSTRACT
+\end{center}
+}
+
+\def\endabstractpage{\newpage}
+
+%               END OF PRELIMINARY PAGES
+
+
+
+% Here is the peachy part: It is STRONGLY recommended that the page
+% number for the text be located in the top-center of the page.
+% IN the report style, LaTeX refuses to remove the page number in the
+% \pagestyle{myheadings}, so we have to hack the actual ps@myheadings
+% definition, then do a \markboth{}{} etc., which is done in the
+% \endofprelim command.
+
+% Definition of 'myheadings' page style.
+%
+\def\ps@myheadings{\let\@mkboth\@gobbletwo
+\def\@oddhead{\hfil \rm\thepage \hfil}%
+\def\@oddfoot{}\def\@evenhead{\hfil\rm \thepage\hfil}%
+\def\@evenfoot{}\def\chaptermark##1{}\def\sectionmark##1{}%
+\def\subsectionmark##1{}}
+
+% The \endofprelim command is used after all the preliminary pages.
+% The command changes the page numbering to arabic numerals.
+% In order to suppress printing of the number on the first page, you
+% should manually add the command \thispagestyle{empty} to the text,
+% and if you use chapter you have to put the \thispagestyle command
+% AFTER the first \chapter command, while \endofprelim can be before.
+\def\endofprelim{
+\pagenumbering{arabic}
+\markboth{}{}
+\pagestyle{myheadings}
+}
+
+% The chapter-making command is toned down a bit.
+% Compare this to the one in rep12.doc
+% \@makechapterhead {TEXT} : Makes the heading for the \chapter
+% command.
+%
+
+\def\@makechapterhead#1{             % Heading for \chapter command
+  \vspace*{32pt}                     % Space at top of text page.
+  { \parindent 0pt \raggedright
+    \ifnum \c@secnumdepth >\m@ne     % IF secnumdepth > -1 THEN
+    %\LARGE\bf \@chapapp{} \thechapter % Print 'Chapter' and number.
+    \Large\bf \@chapapp{} \thechapter % Print 'Chapter' and number.
+    \par
+    \vskip 12pt \fi                  % Space between number and
+                                % title.
+    %\Large \bf                         % Title.
+    \LARGE \bf                         % Title.
+    #1\par
+    \nobreak                         % TeX penalty to prevent page
+                                % break.
+    \vskip 24pt                      % Space between title and text.
+  } }
+
+% Must also do the \chapter* command which gets used for table of
+% contents, list of figures, and such.
+\def\@makeschapterhead#1{             % Heading for \chapter* command
+  \vspace*{32pt}                     % Space at top of page.
+  { \parindent 0pt \raggedright
+    %\Large\bf                        % Title.
+    \LARGE\bf                        % Title.
+    #1\par
+    \nobreak                         % TeX penalty to prevent page
+                                     % break.
+    \vskip 24pt                      % Space between title and text.
+  } }
+
+
+% Also tone down the section headings a bit.
+\def\section{\@startsection {section}{1}{\z@}{-3.5ex plus -1ex minus
+    -.2ex}{2.3ex plus .2ex}{\large\bf}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-3.25ex plus -1ex
+minus
+   -.2ex}{1.5ex plus .2ex}{\normalsize\bf}}
+
+% If using the report style, use \cdotinstead of . in the figure number.
+\@ifundefined{thechapter}{}{\def\thefigure{\thechapter$\cdot$\arabic{figure}}}
+
+
+%       BIBLIOGRAPHY
+% Scientific-style bibliography: no number, first line indented backwards
+% Note that for proper citations apalike.bst BiBTeX style file and apalike.sty
+% Latex style file need to be used.
+\def\thebibliography#1{\def\baselinestretch{1.2}
+%\section*{\centerline{References}}
+\chapter*{\centerline{References}}
+%\addcontentsline{toc}{section}{References}
+\addcontentsline{toc}{chapter}{References}
+\list
+{}{
+  \setlength{\itemindent}{-1em}
+%  \setlength{\leftmargin}{1em} 
+  \setlength{\leftmargin}{0.6in} % Change suggested by Saikat Ray
+  \setlength{\rightmargin}{0.1in} % Change suggested by Saikat Ray
+  \usecounter{enumi}}
+\def\newblock{\hskip .11em plus .33em minus -.07em}
+}
+\def\endthebibliography{\endlist}
+
+
+%               USEFUL MACROS
+\def\BU{BOSTON UNIVERSITY}
+\def\Bu{Boston University}
+\def\COE{COLLEGE OF ENGINEERING}
+\def\Coe{College of Engineering}
