@@ -1,0 +1,255 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                   File: OEtemp2.tex                 %
+%                   VERSION: 1.08                     %
+%                   Date: April 3, 1998               %
+% LaTeX template file for use with OSA OPTICS EXPRESS %
+%                                                     %
+% This file requires a substyle file under the LaTeX  %
+% Article style, opex.sty .                           %
+%               FOR LATEX 2E USE                      %
+%         \documentclass[10pt]{article}               %
+%         \usepackage{opex}                           %
+%                                                     %
+%              FOR LATEX 2.09 USE                     %
+%         \documentstyle[opex]{article}               %
+%                                                     %
+%              FOR REVTeX 3.0 or 3.1 USE              %
+%         \documentstyle[osa,opex]{revtex}            %
+%                                                     %
+% Copyright 1997, The Optical Society of America      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           FOR COLORED WWW LINKS USE                 %
+%     \documentclass[10pt]{article}                   %
+%     \usepackage{opex}                               %
+%     \usepackage{color}%             (LATEX 2E)      %
+%                                                     %
+%           FOR COLOR WITH LATEX 2.09 BE              %
+%           CERTAIN YOU HAVE color.sty AND USE        %
+%     \documentstyle[opex,color]{article}             %
+%                                                     %
+%           FOR COLOR WITH REVTeX 3.0 or 3.1 BE       %
+%           CERTAIN YOU HAVE color.sty AND USE        %
+%     \documentstyle[osa,opex,color]{revtex}          %
+%                                                     %
+% Copyright 1997, The Optical Society of America      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentstyle[opex]{article}
+%\documentstyle[osa,opex]{revtex}
+%\documentclass[10pt]{article}
+%\usepackage{opex}
+\begin{document}
+
+\title{Short template for preparation of \\
+Optics Express manuscripts}
+
+\author{Frank E. Harris}
+\address{Optical Society of America, Washington, DC 20036-1023 USA}
+\email{fharri@osa.org}
+
+\begin{abstract}%
+This short template outlines the basic LaTeX macros 
+needed for preparing a compuscript 
+(i.e., manuscript in electronic form) for the journal 
+Optics Express, using the opex.sty style file.  
+Specific guidelines are given for essential 
+compuscript elements (such as title, author, address, 
+abstract, OCIS codes, references, equations, 
+figures, and  tables) to achieve 
+optimal typographic quality with LaTeX.
+\end{abstract}
+\ocis{(020.0020) Atomic and molecular physics; (140.3320) Laser cooling}
+
+% The commands, \begin{OEReferences} and \end{OEReferences}
+% format the References section according to OpEx standard
+% style, showing the title "References".
+%
+% The commands, \begin{OERefLinks} and \end{OERefLinks}
+% format the References section according to OpEx standard
+% style, if the references also include URLs or other
+% unreviewed links.  In this case the title of the section
+% is "References and unreviewed links".
+%
+\begin{OEReferences}
+\item  Frank E. Harris, ``Instructions 
+for the preparation of a manuscript for Optics Express''
+{\it in press} (1998)
+\item  P. J. Harshman,  T. K. Gustafson, P. Kelley,
+ ``Strong field theory of low loss optical switching and
+  wave mixing in a semiconductor quantum well,''  \opex 
+  {\bf 3}, 166-168  (1999).
+\item  C. van Trigt,  \josaa
+ {\bf 14}, 741-755 (1997).
+\end{OEReferences}
+%\end{OERefLinks}
+
+\noindent
+As describe in a previous article,$^1$
+{\it Optics Express} takes advantage of 
+some of the unique opportunities the electronic 
+medium offers to allow authors to include 
+3-D scenes and QuickTime movies 
+as illustrations within their papers.  
+However, this template will address
+only the essential commands needed to produce a 
+short letter to  {\it Optics Express}.
+This template is intended to provide the macros 
+unique to opex.sty, so that a person familiar
+with LaTeX can copy and paste text, equations, 
+and figure file names into this template to
+produce an acceptable manuscript. Print out the
+accompanying style guide for more detailed  
+explanations.
+
+The Instructions to 
+Authors for Optics Express that can be found at the 
+Web site itself (http://www.osa.org/admin/OpEx/). 
+
+Authors should use the command 
+\verb+\title{}+  to achieve the correct 
+title format.  Authors should
+place their names within the curly brackets of the 
+\verb+\author{}+ command.  Authors should place 
+their affiliation within the curly brackets of \\ 
+\verb+\address{}+.
+
+
+Enter the e-mail address of the corresponding author 
+directly below the corresponding author's affiliation.  
+Authors should place the 
+e-mail address within the curly brackets of the 
+\verb+\email{}+ command.
+Multiple use of the \verb+\author{}+, 
+\verb+\address{}+, and \verb+\email{}+ commands 
+are permitted and produce clear association of authors
+with their institutions.
+
+Abstracts should be one paragraph, and limited to 100 
+words. Authors should place the abstract between the 
+\verb+\begin{abstract}+ and \verb+\end{abstract}+ 
+commands to achieve the correct format.  The abstract 
+commands adds the word {\bf Abstract:} to the front and the 
+words, {\bf \copyright 1998 Optical Society of America}  
+at the end of the abstract.
+
+Optics Classification and Indexing Scheme (OCIS) codes 
+should be included at the end of the abstract, on a 
+separate line that begins with the words {\bf OCIS codes:} 
+in bold. OCIS codes should be plain text.  Use 8pt type 
+for this line.  Authors should
+place the OCIS codes within the curly brackets of the 
+\verb+\ocis{}+ command to achieve the correct 
+format.
+
+References should appear at the top of the article and 
+below the abstract, in the order in which they are 
+referenced in the body text. The standard LaTeX and REVTeX
+commands for formatting references can be made to produce 
+acceptable references for Optics Express articles, and 
+may be used in place of the commands listed below.
+
+The commands, \verb+\begin{OEReferences}+ 
+and \verb+\end{OEReferences}+ format the {\bf References} 
+section according to OpEx standard style, showing the
+title {\bf References}.  Each reference will
+be numbered consecutively.  Use the \verb+\item+ command
+to start each reference. 
+
+Optics Express uses numerals in brackets[2] or 
+superscripts for bibliographic citations.  When using the 
+\verb+\ref{}+ command, labels must be placed in the references:
+\begin{verbatim}
+   \item\label{paper2}  C. van Trigt, \josaa {\bf 14}, 741-755 (1997).
+\end{verbatim}
+Then the citation command should be of the form: 
+\verb+[\ref{paper2}}]+.
+
+
+To assist authors with journal abbreviations in references, 
+standard abbreviations for 31 commonly cited journals 
+have been included as macros within opex.sty.  The abbreviations 
+for a few OSA, APS, and AIP journals are shown in Table 1.
+
+
+\begin{table}
+\center{Table 1. Standard abbreviations for 14 commonly cited journals}
+\begin{center}
+\begin{tabular}{lp{1.7in}|lp{1.7in}}\hline 
+Macro & Abbreviation & Macro & Abbreviation \\ \hline 
+\verb+\ao+ & Appl.\  Opt.\  &
+   \verb+\prl+ & Phys.\ Rev.\ Lett.\ \\
+\verb+\josa+ & J.\ Opt.\ Soc.\ Am.\  &
+   \verb+\pra+ & Phys.\ Rev.\ A   \\
+\verb+\josaa+ & J.\ Opt.\ Soc.\ Am.\ A  &
+   \verb+\prb+ & Phys.\ Rev.\ B   \\
+\verb+\josab+ & J.\ Opt.\ Soc.\ Am.\ B &
+   \verb+\prc+ & Phys.\ Rev.\ C   \\
+\verb+\ol+ & Opt.\ Lett.\   &
+   \verb+\prd+ & Phys.\ Rev.\ D   \\
+\verb+\opex+ & Opt.\ Express   &
+    \verb+\pre+ & Phys.\ Rev.\ E     \\   
+\verb+\apl+ & Appl.\ Phys.\ Lett.\  &
+    \verb+\rmp+ & Rev.\ Mod.\ Phys.\  \\
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+Author names, affiliations, e-mail addresses, and 
+references may be made into active World Wide Web (WWW)
+links. Use of the LaTeX packages HyperRef and 
+color.sty is encouraged, but not required.  See each
+package's documentation.  Linked text should be colored
+blue, if possible.  Underlined text to indicate links
+may be used in place of color.  Links in the References
+section should show the URL after the reference. 
+Include any special instructions concerning links in the 
+cover message accompanying submission.
+
+Equation numbers should 
+appear at the right hand margin, in parentheses. 
+Summations and integrals that appear 
+within text such as  $\frac{1}{2}{\Sigma } 
+ _{n=1}^{n=\infty} (n^2 - 2n)^{-1}$ 
+should have limits placed to the 
+right of the symbol to reduce white space.
+\begin{equation}
+H = \frac{1}{2m}(p_x^2 + p_y^2) + \frac{1}{2} M{\Omega}^2
+     (x^2 + y^2) + \omega (xp_y - yp_x)
+\end{equation}
+
+Place figures as close as 
+possible to where they are mentioned in the text. 
+Authors should use PostScript or EPS figures. Place 
+the file name of the figure within the 
+curly brackets of the 
+\verb+\epsfbox{}+ command. To resize figures, 
+\verb+\epsfxsize=+  may be used before \verb+\epsfbox{}+.
+Short figure captions should be centered.
+Use the caption command with long figure captions.
+
+\begin{figure}
+%  \pagebreak \epsfbox{filename.ps}
+\epsfxsize=4.2in \epsfbox{OpExF1.EPS}
+\begin{center} 
+{\footnotesize Fig. 1. Sample figure.}
+\end{center}
+%\caption{Use the caption command with figure captions 
+%longer than 1 line.}
+\end{figure}
+
+After proofreading the compuscript, authors may print  
+PostScript to a file using BaKoMa fonts and submit the 
+PostScript file to the journal.  Authors who prefer to
+submit LaTeX files must use tar and gzip compression
+to combine the manuscript and figures.  Video should
+always be submitted as separate files. Bibtex may not 
+be used, except as described in the OSA bibtex 
+instructions accompanying REVTeX 3.1.
+
+
+Enter the requested 
+information into the OpEx online submission system at 
+http://www.osa.org, and upload the file.  For 
+instructions, please see the OpEx system Help.
+\end{document}

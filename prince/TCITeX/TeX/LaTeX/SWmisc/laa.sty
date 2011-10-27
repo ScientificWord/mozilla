@@ -12,6 +12,7 @@
 %%%%%%%%%%%%%% U.S.A.
 %%%%%%%%%%%%%% Ver. 1.0 Sept. 24, 1993
 \typeout{LAA Version 1.0 <Sept. 24, 1993>}
+%(gp)% \makeatletter and \makeatother commented out (broke, for example, \TeX)
 \def\bull{\rule{6pt}{6pt}}
 \def\ell{l}
 \def\m#1{\mbox{\rm #1}}
@@ -956,10 +957,10 @@ Dedicated to #1}}
 % TABLE AND THEIR \hlines
 \newdimen\arrayruleHwidth
 \setlength{\arrayruleHwidth}{0.50pt}
-\makeatletter
+%(gp)%\makeatletter
 \def\Hline{\noalign{\ifnum0=`}\fi\hrule \@height \arrayruleHwidth
    \futurelet \@tempa\@xhline}
-\makeatother
+%(gp)%\makeatother
 
 % CORRECT SPACING FOR TABLES AND ARRAYS
 \newcommand\T{\rule{0pt}{2.6ex}}         % Top strut
