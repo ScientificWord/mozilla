@@ -1,0 +1,37 @@
+%%
+%% This is file `pitthesis.pit',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pittetd.dtx  (with options: `pitthesis')
+%% The `pittetd' project: Electronic Theses and Dissertations
+%%                        at the University of Pittsburgh.
+%% 
+%% Copyright 2003 Federico Garcia and Pitt ETD Working Group
+%% 
+\makeatletter
+\@ifundefined{pittthesis@patch}{\relax}{\endinput}
+\let\degrees\degree
+\def\degree#1{\renewcommand\degreesought{#1}}
+\let\university\@gobble
+\let\proposal\@gobble
+\let\advisor\committeemember
+\let\coadvisor\committeemember
+\newenvironment{acknowledgements}{%
+    \preliminarychapter{ACKNOWLEDGEMENTS}%
+    \@linemessage{Acknowledgments should be included in the
+    preface}{I'm complaining because this comes from the
+    `pittthesis' class. You haven't been reading my
+    warnings.}}{\relax}
+\newenvironment{committeesignature}[1][5]{\relax}{\makecommittee}
+\let\advisorname\@gobble
+\let\chairpersonname\@gobble
+\let\authortitle\@gobble
+\newenvironment{appendices}{\appendix}{\relax}
+\newenvironment{singleappendix}{\appendix}{\relax}
+\let\pittthesis@patch\@empty
+\makeatother
+\endinput
+%%
+%% End of file `pitthesis.pit'.

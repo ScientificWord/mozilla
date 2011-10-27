@@ -1,0 +1,38 @@
+%Support file for jjss-2e.sty
+
+%Avoid conflict with amsmath package
+\let\iint\undefined
+
+%Modify thebibliography so it does what \references and the extra
+%commands in the sample document do
+\renewenvironment{thebibliography}[1]
+     {\@startsection {section}{1}{1em}{2.5ex plus 1ex minus 
+      .2ex}{2.5ex plus .2ex}{\centering\normalsize\sc}*{\refname}
+      \small 
+      \leftskip 16pt\parindent -16pt
+%     
+%     
+%     \section*{\refname}%
+%      \@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}%
+      \list{\@biblabel{\@arabic\c@enumiv}%
+            \renewcommand{\labelenumi}{[\arabic{enumi}]} 
+            \renewcommand{\makelabel}{\rm} 
+            \setcounter{enumi}{0}
+           }%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+
+\endinput
