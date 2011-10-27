@@ -1,0 +1,76 @@
+% This file (sw2cjour.tex) contains commands for adapting SW3.x syntax to the
+% syntax in the Academic Press Journal Style C (cjour.cls) Document Class
+
+% Filename: sw2cjour.tex
+% Usage:    \input{sw2cjour.tex} BEFORE \input{tcilatex} in document preamble
+%           For use with documents using cjour.cls; store with *.cls files.
+% Author:   Melissa Harrison
+% Correspondence to: styles@mackichan.com
+% Last Rev: 15 May 2000 mlh
+% Correspondence to: styles@mackichan.com
+% Updates:  See the Free Updates section of the Technical Support area at 
+%           www.mackichan.com for updates of this and other files. 
+
+
+% Command Synonyms
+% ----------------
+
+% author and address are renamed to override SW standard usage for these 
+% environments which is inconsistent with Academic Press usage.
+
+\let\APauthor=\author
+\let\xemail=\email
+
+% \keywords, \draft, \and, and \qed are renamed to avoid conflicts 
+% and/or bugs with SW.
+\let\xkeywords=\keywords
+\let\xdraft=\draft
+\let\xand=\and
+\let\QED=\qed
+
+% Syntax Changes
+% --------------
+
+% SW uses \QTR{tagname}{text} for tagged runs. This line changes that syntax
+% to more standard tex syntax, namely: \tagname{text}. Similarly for the \QTP 
+% syntax used for structure tags.
+
+\def\QTP#1{\csname #1\endcsname}
+\def\QTSN#1{\csname #1\endcsname}
+
+
+% unnumbered section definitions
+% ------------------------------
+
+\def\unsection#1\par{\section*{#1}}
+\def\unsubsection#1\par{\subsection*{#1}}
+\def\unsubsubsection#1\par{\subsubsection*{#1}}
+
+
+% zero section definition
+% -----------------------
+
+\def\zerosect#1\par{\zerosection{#1}}
+
+
+% change mathbf to boldmath
+% -------------------------
+
+%\renewcommand{\mathbf}[1]{\mbox{\boldmath$#1$\unboldmath}}
+
+
+% demo environment
+% ----------------
+
+\def\xdemo{\futurelet\next\lookfortype}
+\def\lookfortype{\ifx\next[\long\def\go[##1]##2\end##3{\endgroup\demo{##1}{##2}}
+\else\long\def\go##1\end##2{\endgroup\demo{demo}{##1}}\fi\go}
+
+% hyperlinks
+% ----------
+
+% remove the \ref{#4} to prevent ?? in typeset hyperlinks.
+\def\hyperref#1#2#3#4{#2#3}
+
+
+
