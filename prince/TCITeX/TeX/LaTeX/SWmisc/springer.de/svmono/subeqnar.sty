@@ -1,0 +1,106 @@
+% subeqnary.sty - Copyright (C) 1996 by Frank Holzwarth to
+% establish a new environment "subeqnarray" that locally numbers
+% the lines of an equation array with the same number (default
+% chapter.equation) and a running alphabetic suffix.
+% \label-ing works ok. There is no "subeqnarray*" but \nonumber
+% can be used.
+%
+% This is a hacked again version of:
+% modeqary.sty - Copyright (C) 1991 by James Darrell McCauley
+% modify freely - but this is just a hack, so you'd be better
+% off going back to the original source (see below)
+
+% parts taken from latex.tex
+% LATEX VERSION 2.09 <4 Aug 1988>
+% Copyright (C) 1988 by Leslie Lamport
+
+% In response to:
+%Hi netters,
+%       In book style I want to number the equations within the eqnarray
+%environment differently.  All I want to do is to number the equations
+%some thing like 1.8a, 1.8b....etc instead of 1.8, 1.9 ...etc.
+%Is there a way to this ?
+%The result I am getting now with eqnarray;
+%a= c + d               (1.1)
+%e= f - d               (1.2)
+%Instead I want to get;
+%a= c + d               (1.1a)
+%e= f - d               (1.1b)
+
+% SEE EOF FOR THE TEST PROGRAM THAT I USED.
+
+\newcounter{eqsubcnt}
+\def\thesubequation{\thechapter.\arabic{equation}\alph{eqsubcnt}}
+
+\def\@eqnsubnum{{\rm (\thesubequation)}}
+
+% Here's the eqnarray environment:
+%  Default is for left-hand side of equations to be flushleft.
+%  To make them flushright, \let\@eqnsel = \hfil
+
+\newcount\@eqcnt
+\newcount\@eqpen
+\newif\if@eqnsw\@eqnswtrue
+
+\@centering = 0pt plus 1000pt % Changed 11/4/85 to produce warning message
+                              % if line extends into margin.  Doesn't warn
+                              % about formula overprinting equation number.
+
+\def\subeqnarray{\stepcounter{equation}\let\@currentlabel=\thesubequation
+\def\@eqncr{{\ifnum0=`}\fi\@ifstar{\global\@eqpen\@M
+    \@yeqncr}{\global\@eqpen\interdisplaylinepenalty \@yeqncr}}
+%
+\def\@yeqncr{\@ifnextchar [{\@xeqncr}{\@xeqncr[\z@]}}
+%
+\def\@xeqncr[##1]{\ifnum0=`{\fi}\@@eqncr
+   \noalign{\penalty\@eqpen\vskip\jot\vskip ##1\relax}}
+%
+\def\@@eqncr{\let\@tempa\relax
+    \ifcase\@eqcnt \def\@tempa{& & &}\or \def\@tempa{& &}
+      \else \def\@tempa{&}\fi
+     \@tempa \if@eqnsw\@eqnsubnum\stepcounter{eqsubcnt}\fi
+     \global\@eqnswtrue\global\@eqcnt\z@\cr}
+\setcounter{eqsubcnt}{1}
+\global\@eqnswtrue\m@th
+\global\@eqcnt\z@
+\let\\\@eqncr
+\@ifundefined{mathindent}{\tabskip\@centering
+$$\halign to\displaywidth}{\tabskip\mathindent
+ \abovedisplayskip\topsep\ifvmode\advance\abovedisplayskip\partopsep\fi
+ \belowdisplayskip\abovedisplayskip
+ \belowdisplayshortskip\abovedisplayskip
+ \abovedisplayshortskip\abovedisplayskip
+ $$\halign to\linewidth}\bgroup\@eqnsel\hskip\@centering
+  $\displaystyle\tabskip\z@
+  {##}$&\global\@eqcnt\@ne \hskip 2\arraycolsep \hfil${##}$\hfil
+  &\global\@eqcnt\tw@ \hskip 2\arraycolsep $\displaystyle{##}$\hfil
+   \tabskip\@centering&\llap{##}\tabskip\z@\cr}
+
+\def\endsubeqnarray{\@@eqncr\egroup
+      \global\advance\c@equation\m@ne$$\global\@ignoretrue
+      \stepcounter{equation}}
+
+\let\@eqnsel=\relax
+
+\def\nonumber{\global\@eqnswfalse}
+
+
+\endinput
+
+\documentstyle[modeqnarray]{book}
+\begin{document}
+\chapter{Introduction}
+\begin{eqnarray}
+a & = & c + d \\
+e & = & f - d
+\end{eqnarray}
+
+\begin{equation}
+O_i = \sum_{j=1}^N I_j W_{ij}
+\end{equation}
+\end{document}
+
+--
+James Darrell McCauley, Grad Res Asst, Spatial Analysis Lab
+Dept of Ag Engr, Texas A&M Univ, College Station, TX 77843-2117, USA
+(jdm5548@diamond.tamu.edu, jdm5548@tamagen.bitnet)
