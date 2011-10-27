@@ -195,24 +195,27 @@ nsresult msiScriptCoalesce::CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, 
 nsresult msiScriptCoalesce::CoalesceRight(nsIEditor* editor, nsIDOMNode* node, nsIArray** coalesced)
 {
   //ljh m_offset == m_maxOffset
-//   printf("\njcs -- msiScriptCoalesce::CoalesceRight\n");
-// 
-//   printf("\nm_mathmlNode\n");
-//   DumpNode(m_mathmlNode, 0, true);
-// 
-//   printf("\nnode:\n");
-//   DumpNode(node, 0, true);
+   printf("\njcs -- msiScriptCoalesce::CoalesceRight\n");
+ 
+   printf("\nm_mathmlNode\n");
+   DumpNode(m_mathmlNode, 0, true);
+ 
+   printf("\nnode:\n");
+   DumpNode(node, 0, true);
 
   nsresult res(NS_ERROR_FAILURE);
-  nsCOMPtr<nsIDOMNode> currSup, currSub, inSup, inSub, newSup, newSub, base;
+  nsCOMPtr<nsIDOMNode> currSup, currSub, inSup, inSub, newSup, newSub, base, inBase;
   PRUint32 mmltype(MATHML_UNKNOWN);
   res = msiUtils::GetMathmlNodeType(editor, node, mmltype);
   if (NS_SUCCEEDED(res) && (mmltype == MATHML_MSUB || mmltype == MATHML_MSUP || mmltype == MATHML_MSUBSUP))
   {
-    if (!msiUtils::IsInputbox(editor, base)){
+    res = msiUtils::GetChildNode(m_mathmlNode, 0, base);
+    res = msiUtils::GetChildNode(node, 0, inBase);
+    // Used to fix bug 1395:
+    if (!msiUtils::IsInputbox(editor, inBase)){
        return NS_OK;
     }
-    res = msiUtils::GetChildNode(m_mathmlNode, 0, base);
+    
     if (NS_SUCCEEDED(res) && (mmltype == MATHML_MSUB || mmltype == MATHML_MSUBSUP))
       res = msiUtils::GetChildNode(node, 1, inSub);
     else if (mmltype == MATHML_MSUP)

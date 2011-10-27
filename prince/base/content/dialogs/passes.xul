@@ -18,6 +18,7 @@
     ondialogaccept="onAccept();"
     buttonlabelcancel="&cancel.label;"
     buttonlabelclose="&close.label;"
+    buttonlabelaccept="&continue.label;"
     onload="Init();"
     width="400px"
     height="200px"

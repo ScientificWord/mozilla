@@ -937,7 +937,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
   nsCOMPtr<nsIDOMNode> mathnode;
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
-  if (!inMath) return NS_OK;
+//  if (!inMath) return NS_OK;
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFence");
   if (editor && selection && node)
   {
@@ -1135,8 +1135,8 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
       MoveRangeTo(editor, range, base, 0);
     } 
     if (NS_SUCCEEDED(res) && mathmlElement)
-//      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
-        editor->InsertNode(mathmlElement, node, offset);
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+        //editor->InsertNode(mathmlElement, node, offset);
     selection->Collapse(node,offset+1);
     editor->EndTransaction();
   }
@@ -1250,7 +1250,8 @@ msiEditingManager::GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 r
         {
           parent->GetLocalName(localName);
           length = localName.Length();
-          mathmlNode = parent;
+					if (!localName.EqualsLiteral("mtext"))
+          	mathmlNode = parent;
         }
       }
       else

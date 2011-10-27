@@ -62,7 +62,7 @@
       <toolbarbutton id="simplifyButton" />
       <toolbarbutton id="expandButton" />
       <toolbarbutton id="plotButton" />
-      <toolbarbutton id="plotButton3D" />
+      <toolbarbutton id="plot3DButton" />
       <toolbarbutton id="defineButton" />
       <toolbarbutton id="showdefsButton" />
       <toolbarbutton id="radicalButton"/>
@@ -142,7 +142,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
+      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
       mode="icons" 
       customizable="true"
       iconsize="large" />
@@ -220,7 +220,7 @@
 
 
 <!-- Button section -->
-  <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtext" tooltiptext="&mathtextButton.tooltip;"
+  <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtextButton" tooltiptext="&mathtextButton.tooltip;"
     label="&mathtextButton.label;">
     <observes element="cmd_MSImathtext" type="checkbox" attribute="isMath" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSImathtext')"/>
   </toolbarbutton>
@@ -249,7 +249,7 @@
     label="&MSIComputePlot2D.label;" observes="cmd_MSIComputePlot2DRectangular">
   </toolbarbutton>
 
-  <toolbarbutton id="plotButton3D" class="toolbarbutton-1" tooltiptext="&MSIComputePlot3D.tooltip;"
+  <toolbarbutton id="plot3DButton" class="toolbarbutton-1" tooltiptext="&MSIComputePlot3D.tooltip;"
     label="&MSIComputePlot3D.label;" observes="cmd_MSIComputePlot3DRectangular">
   </toolbarbutton>
 
@@ -287,10 +287,10 @@
     label="&sumButton.label;" onclick="insertOperator('&#x2211;', 'auto', 'auto');"/>
 
   <toolbarbutton id="integralButton" class="toolbarbutton-1" tooltiptext="&integralButton.tooltip;"
-    label="&integralButton.label;" onclick="insertOperator('&#x222B;', 'auto', 'auto');"/>
+    label="&integralButton.label;" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
 
   <toolbarbutton id="unitnameButton" class="toolbarbutton-1" tooltiptext="&unitnameButton.tooltip;"
-    label="&unitnameButton.label;" onclick="msiGoDoCommand('cmd_MSIunitsCommand')"/>
+    label="&unitnameButton.label;" oncommand="msiGoDoCommand('cmd_MSIunitsCommand')"/>
 
   <toolbarbutton id="displayButton" class="toolbarbutton-1" tooltiptext="&displayButton.tooltip;"
     label="&displayButton.label;" observes="cmd_MSIdisplayMathCmd"/>

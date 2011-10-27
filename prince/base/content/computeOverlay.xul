@@ -20,6 +20,8 @@
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js"/>
 
+#include computekeys.inc
+
   <commandset id="MSIcomputeMenuCommands"
                   commandupdater="true"
                   events="create, mode_switch, focus, select, undo"
@@ -196,6 +198,7 @@
     <command id="cmd_MSIComputeSetBasisVariables"        oncommand="doGlobalComputeCommand('cmd_compute_SetBasisVariables')"/>
     <command id="cmd_MSIComputeShowDefs"                 oncommand="doGlobalComputeCommand('cmd_compute_ShowDefs')"/>
     <command id="cmd_MSIComputeClearDefs"                oncommand="doGlobalComputeCommand('cmd_compute_ClearDefs')"/>
+    <command id="cmd_MSIComputeMapMuPADName"             oncommand="doGlobalComputeCommand('cmd_compute_MapMuPADName')"/>
     <!-- command id="cmd_MSIComputeUserSettings"             oncommand="doGlobalComputeCommand('cmd_compute_UserSettings')"/>
     <command id="cmd_MSIComputeSettings"                 oncommand="doGlobalComputeCommand('cmd_compute_Settings')"/>
     <command id="cmd_MSIComputeSwitchEngines"            oncommand="doGlobalComputeCommand('cmd_compute_SwitchEngines')"/ -->
@@ -242,14 +245,6 @@
   <broadcasterset id="broadcasterset">
     <command id="cmd_viewComputeToolbar"  oncommand="goToggleToolbar('ComputeToolbar','cmd_viewComputeToolbar');"   checked="true"/>
   </broadcasterset>
-
-  <keyset id="editorKeys">                                                                                                
-    <keyset id="MSIKeySet">
-      <key id="MSIevalKey"   modifiers="accel" key="&MSIComputeEvalCmd.keybinding;"  oncommand="doComputeCommand('cmd_compute_Evaluate')"   /> 
-      <key id="MSIdefineKey" modifiers="accel" key="&MSIComputeDefineCmd.keybinding;" observes="cmd_MSIComputeDefine" />        
-      <key id="MSIinterpretKey" modifiers="accel,shift" key="&MSIComputeInterpretCmd.keybinding;" observes="cmd_MSIComputeInterpret" />        
-    </keyset>                                                                                                         
-  </keyset>                                                                                                         
 
 
   <menu id="MSIComputeMenu" label="&MSIComputeMenu.label;" accesskey="&MSIComputeMenu.accesskey;">
@@ -506,8 +501,9 @@
           <menuitem label="&MSIComputeDefineCmd.label;"    accesskey="&MSIComputeDefineCmd.accesskey;"     key="MSIdefineKey" observes="cmd_MSIComputeDefine"/>
           <menuitem label="&MSIComputeUndefineCmd.label;"  accesskey="&MSIComputeUndefineCmd.accesskey;"                      observes="cmd_MSIComputeUndefine"/>
           <menuseparator/>                                                                                                                                        
-          <menuitem label="&MSIComputeShowDefsCmd.label;"   accesskey="&MSIComputeShowDefsCmd.accesskey;"                   observes="cmd_MSIComputeShowDefs"/>
-          <menuitem label="&MSIComputeClearDefsCmd.label;"  accesskey="&MSIComputeClearDefsCmd.accesskey;"                  observes="cmd_MSIComputeClearDefs"/>
+          <menuitem label="&MSIComputeShowDefsCmd.label;"   accesskey="&MSIComputeShowDefsCmd.accesskey;"       observes="cmd_MSIComputeShowDefs"/>
+          <menuitem label="&MSIComputeClearDefsCmd.label;"  accesskey="&MSIComputeClearDefsCmd.accesskey;"      observes="cmd_MSIComputeClearDefs"/>
+          <menuitem label="&MSIComputeMuPADNameCmd.label;"   accesskey="&MSIComputeMuPADNameCmd.accesskey;"     observes="cmd_MSIComputeMapMuPADName"/>
         </menupopup>
       </menu>
       <menuseparator/>                                                                                                                                        

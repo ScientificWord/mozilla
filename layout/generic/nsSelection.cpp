@@ -1207,7 +1207,7 @@ GetCellParent(nsIDOMNode *aDomNode)
     while(current)
     {
       tag = GetTag(current);
-      if (tag == nsGkAtoms::td || tag == nsGkAtoms::th)
+      if (tag == nsGkAtoms::td || tag == nsGkAtoms::mtd_ || tag == nsGkAtoms::th)
         return current;
       if (NS_FAILED(ParentOffset(current,getter_AddRefs(parent),&childOffset)) || !parent)
         return 0;
@@ -1405,9 +1405,6 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   default :return NS_ERROR_FAILURE;
   }
   PostReason(nsISelectionListener::KEYPRESS_REASON);
-  // BBM Since this is calling frame code, and there are special frames for all math objects, we should probably override
-  // PeekOffset in these frames. I think this handles the cases when the cursor is in math at the start of the command. We also
-  // have to handle the transitions to and from math.
   if (NS_SUCCEEDED(result = frame->PeekOffset(&pos)) && pos.mResultContent)
   {
     nsIFrame *theFrame;
@@ -1422,6 +1419,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
       theFrame = pos.mResultFrame;
       theFrame->GetOffsets(frameStart, frameEnd);
       currentOffset = pos.mContentOffset;
+			if (currentOffset == -1) currentOffset = frameEnd;
       if (frameEnd == currentOffset && !(frameStart == 0 && frameEnd == 0))
         tHint = HINTLEFT;
       else
@@ -2944,9 +2942,9 @@ nsFrameSelection::NotifySelectionListeners(SelectionType aType)
 
 static PRBool IsCell(nsIContent *aContent)
 {
-  return ((aContent->Tag() == nsGkAtoms::td ||
+  return (((aContent->Tag() == nsGkAtoms::td ||
            aContent->Tag() == nsGkAtoms::th) &&
-          aContent->IsNodeOfType(nsINode::eHTML));
+          aContent->IsNodeOfType(nsINode::eHTML)) || aContent->Tag() == nsGkAtoms::mtd_);
 }
 
 nsITableCellLayout* 
@@ -2986,6 +2984,7 @@ nsFrameSelection::ClearNormalSelection()
   return mDomSelections[index]->RemoveAllRanges();
 }
 
+#define DEBUG_TABLE_SELECTION 1
 // Table selection support.
 // TODO: Separate table methods into a separate nsITableSelection interface
 nsresult
@@ -3033,7 +3032,7 @@ nsFrameSelection::HandleTableSelection(nsIContent *aParentContent, PRInt32 aCont
         return NS_OK;
 
 #ifdef DEBUG_TABLE_SELECTION
-printf(" mStartSelectedCell = %x, mEndSelectedCell = %x, childContent = %x \n", mStartSelectedCell, mEndSelectedCell, childContent);
+//printf(" mStartSelectedCell = %x, mEndSelectedCell = %x, childContent = %x \n", mStartSelectedCell, mEndSelectedCell, childContent);
 #endif
       // aTarget can be any "cell mode",
       //  so we can easily drag-select rows and columns 
@@ -3053,7 +3052,7 @@ printf(" mStartSelectedCell = %x, mEndSelectedCell = %x, childContent = %x \n", 
           if (NS_FAILED(result)) return result;
         
 #ifdef DEBUG_TABLE_SELECTION
-printf(" curRowIndex = %d, startRowIndex = %d, curColIndex = %d, startColIndex = %d\n", curRowIndex, startRowIndex, curColIndex, startColIndex);
+//printf(" curRowIndex = %d, startRowIndex = %d, curColIndex = %d, startColIndex = %d\n", curRowIndex, startRowIndex, curColIndex, startColIndex);
 #endif
           if ((mSelectingTableCellMode == nsISelectionPrivate::TABLESELECTION_ROW && startRowIndex == curRowIndex) ||
               (mSelectingTableCellMode == nsISelectionPrivate::TABLESELECTION_COLUMN && startColIndex == curColIndex)) 
@@ -3206,7 +3205,7 @@ printf("aTarget == %d\n", aTarget);
     else
     {
 #ifdef DEBUG_TABLE_SELECTION
-printf("HandleTableSelection: Mouse UP event. mDragSelectingCells=%d, mStartSelectedCell=%d\n", mDragSelectingCells, mStartSelectedCell);
+//printf("HandleTableSelection: Mouse UP event. mDragSelectingCells=%d, mStartSelectedCell=%d\n", mDragSelectingCells, mStartSelectedCell);
 #endif
       // First check if we are extending a block selection
       PRInt32 rangeCount;
@@ -3240,7 +3239,7 @@ printf("HandleTableSelection: Mouse UP event. mDragSelectingCells=%d, mStartSele
       if (!doMouseUpAction)
       {
 #ifdef DEBUG_TABLE_SELECTION
-printf("HandleTableSelection: Ending cell selection on mouseup: mAppendStartSelectedCell=%d\n", mAppendStartSelectedCell);
+//printf("HandleTableSelection: Ending cell selection on mouseup: mAppendStartSelectedCell=%d\n", mAppendStartSelectedCell);
 #endif
         return NS_OK;
       }
@@ -3724,8 +3723,11 @@ nsFrameSelection::GetParentTable(nsIContent *aCell, nsIContent **aTable) const
 
   for (nsIContent* parent = aCell->GetParent(); parent;
        parent = parent->GetParent()) {
-    if (parent->Tag() == nsGkAtoms::table &&
-        parent->IsNodeOfType(nsINode::eHTML)) {
+    if (parent->Tag() == nsGkAtoms::table || parent->Tag() == nsGkAtoms::mtable_)
+
+// 				&&
+//        parent->IsNodeOfType(nsINode::eHTML)) 
+    {
       *aTable = parent;
       NS_ADDREF(*aTable);
 
@@ -3892,13 +3894,13 @@ nsTypedSelection::GetTableSelectionType(nsIDOMRange* aRange, PRInt32* aTableSele
   if ((endOffset - startOffset) != 1)
     return NS_OK;
 
-  if (!content->IsNodeOfType(nsINode::eHTML)) {
-    return NS_OK;
-  }
+//  if (!content->IsNodeOfType(nsINode::eHTML)) {
+//    return NS_OK;
+//  }
 
   nsIAtom *tag = content->Tag();
 
-  if (tag == nsGkAtoms::tr)
+  if (tag == nsGkAtoms::tr || tag == nsGkAtoms::mtr_)
   {
     *aTableSelectionType = nsISelectionPrivate::TABLESELECTION_CELL;
   }
@@ -3910,9 +3912,9 @@ nsTypedSelection::GetTableSelectionType(nsIDOMRange* aRange, PRInt32* aTableSele
 
     tag = child->Tag();
 
-    if (tag == nsGkAtoms::table)
+    if (tag == nsGkAtoms::table || tag == nsGkAtoms::mtable_)
       *aTableSelectionType = nsISelectionPrivate::TABLESELECTION_TABLE;
-    else if (tag == nsGkAtoms::tr)
+    else if (tag == nsGkAtoms::tr || tag == nsGkAtoms::mtr_)
       *aTableSelectionType = nsISelectionPrivate::TABLESELECTION_ROW;
   }
 

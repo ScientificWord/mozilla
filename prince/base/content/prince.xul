@@ -12,9 +12,9 @@
 
 # All overlay information is stored in a separate file so that it can be shared by
 # hiddenWindow.xul.
+<?xul-overlay href="chrome://prince/content/baseMenuOverlay.xul"?>
 #include prince-overlays.inc
 <!--?xul-overlay href="chrome://global/content/charsetOverlay.xul"? -->
-<?xul-overlay href="chrome://prince/content/baseMenuOverlay.xul"?>
 
 
 # All DTD information is stored in a separate file so that it can be shared by
@@ -30,7 +30,7 @@
   onfocus="msiEditorWindowOnFocus(event)"
   contenttitlesetting="true"
   titlemodifier="&editorWindow.titlemodifier;"
-        titlemenuseparator="&editorWindow.titlemodifiermenuseparator;"
+  titlemodifierseparator="&editorWindow.titlemodifierseparator;"
   windowtype="swp:xhtml_mathml"        
   screenX="10" screenY="10" width="1000" height="600"
   persist="screenX screenY width height sizemode"
@@ -67,7 +67,12 @@
 #include prince-menubar.inc 
 #include prince-toolbars.inc
   </toolbox>
-  
+
+<keyset id="msiEditorKeys"/>
+<keyset id="msiMathMLKeySet"/>
+<keyset id="msiComputeKeySet"/>
+
+
 <sidebaritems id="sidebaritems">
 <!--JLF with BBM-->
   <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/beta/What%27s%20new%20sidebar.xhtml" title="MSI What's new"/>
@@ -160,7 +165,6 @@
     </statusbarpanel>
 
 
-    <!-- what is this for??? statusbarpanel id="component-bar"/  -->
     <spacer flex="1"/>
     <statusbarpanel id="structToolbar" flex="100" pack="end">
     <label id="structSpacer" value="" flex="100"/>
@@ -177,12 +181,13 @@
   <commandset id="composerListMenuItems" />
   <commandset id="composerTableMenuItems" />
   <commandset id="MSIcomputeMenuCommands" />
-  <commandset id="MSIVCamCommands" />
+  <commandset id="MSItooltCommands" />
   <commandset id="MSItypesetMenuCommands"/>
   <commandset id="MSItypesetInsertMenuCommands"/>
   <commandset id="MSImathMenuCommands"/>
   <commandset id="tagsMenuCommands"/>
   <commandset id="princegotoitems"/>
+	<commandset id="MSIVCamCommands" />
   <commandset id="mainCommandSet"/> <!-- from MozRepl-->
 </window>
 

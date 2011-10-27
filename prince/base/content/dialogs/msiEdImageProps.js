@@ -42,6 +42,7 @@
 
 var gDialog;
 var globalElement;
+var gEditorElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 var frameTabDlg = new Object();
 
@@ -65,19 +66,19 @@ var gFrameModeImage = true;
 var gFrameModeTextFrame = false;
 
 var gInsertNewImage;
+var gCaptionData;
 
 // dialog initialization code
 function Startup()
 {
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
+  gEditorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(gEditorElement);
   if (!editor)
   {
     window.close();
     return;
   }
 
-  initKeyList();
   gDialog = new Object();
   gDialog.import            = document.getElementById( "importRefRadioGroup").selectedIndex == 0;
   gDialog.tabBox            = document.getElementById( "TabBox" );
@@ -94,8 +95,12 @@ function Startup()
   gDialog.PreviewHeight     = document.getElementById( "PreviewHeight" );
   gDialog.PreviewSize       = document.getElementById( "PreviewSize" );
   gDialog.PreviewImage      = null;
+  gDialog.captionEdit       = document.getElementById( "captionTextInput" );
+  gDialog.captionPlacementGroup = document.getElementById("captionPlacementRadioGroup");
   gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
   gDialog.OkButton          = document.documentElement.getButton("accept");
+  gDialog.keyInput          = document.getElementById( "keyInput" );
+  gDialog.linkKeyInput      = document.getElementById( "linkKeyInput" );
   
   // Get a single selected image element
   var tagName = "object";
@@ -149,8 +154,10 @@ function Startup()
     }
   }
 
+  initKeyList();
+
   // Make a copy to use for AdvancedEdit
-  globalElement = imageElement.cloneNode(false);
+  globalElement = imageElement.cloneNode(true);
 
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
@@ -223,8 +230,33 @@ function InitImage()
   // Force loading of image from its source and show preview image
   LoadPreviewImage();
 
-  if (globalElement.hasAttribute("title"))
-    gDialog.titleInput.value = globalElement.getAttribute("title");
+//  if (globalElement.hasAttribute("title"))
+//    gDialog.titleInput.value = globalElement.getAttribute("title");
+
+  if (!gCaptionData)
+    gCaptionData = {m_position : "below", m_captionStr : {below: "", above : ""}};
+  var position = "below";
+  var capData = findCaptionNodes(globalElement);
+  if (capData.aboveCaption)
+  {
+    gCaptiondata.m_captionStr.above = getNodeChildrenAsString(capData.aboveCaption);
+    position = "above";
+  }
+  if (capData.belowCaption)
+  {
+    gCaptionData.m_captionStr.below = getNodeChildrenAsString(capData.belowCaption);
+    position = "below";  //we check this one last - if both as present, the dialog should start with the edit window containing the below caption
+  }
+  gCaptionData.m_position = position;
+  msiInitializeEditorForElement(gDialog.captionEdit, gCaptionData.m_captionStr[gCaptionData.m_position]);
+  gDialog.captionPlacementGroup.value = gCaptionData.m_position;
+  
+  var imageKey;
+  if (globalElement.hasAttribute("key"))
+    imageKey = globalElement.getAttribute("key");
+  else if (globalElement.hasAttribute("id"))
+    imageKey = globalElement.getAttribute("id");
+  gDialog.keyInput.value = imageKey;
 
   var hasAltText = globalElement.hasAttribute("alt");
   var altText;
@@ -426,6 +458,86 @@ function ToggleShowLinkBorder()
   }
 }
 
+function onChangeCaptionPlacement()
+{
+  var newPosition = gDialog.captionPlacementGroup.value;
+  if (newPosition != gCaptionData.m_position)
+  {
+    gCaptionData.m_captionStr[gCaptionData.m_position] = getCaptionEditContents();
+    var editor = msiGetEditor(gDialog.captionEdit);
+    msiDeleteBodyContents(editor);
+    editor.insertHTMLWithContext(gCaptionData.m_captionStr[newPosition], "", "", "", null, null, 0, true);
+  }
+}
+
+function getCaptionEditContents()
+{
+  if (gCaptionData.contentFilter == null)
+    gCaptionData.contentFilter = new msiDialogEditorContentFilter(gDialog.captionEdit);
+  return gCaptionData.contentFilter.getDocumentFragmentString();
+}
+
+function findCaptionNodes(parentNode)
+{
+  var retData = {belowCaption : null, aboveCaption : null};
+  var theChildren = msiNavigationUtils.getSignificantContents(parentNode);
+  var position;
+  for (var ii = 0; ii < theChildren.length; ++ii)
+  {
+    if (msiGetBaseNodeName(theChildren[ii]) == "imagecaption")
+    {
+      position = theChildren[ii].getAttribute("position");
+      if (!position || (position != "above"))
+        position = "below";
+      position += "Caption";
+      retData[position] = theChildren[ii];
+    }
+  }
+  return retData;
+}
+
+function getNodeChildrenAsString(aNode)
+{
+  var retStr = "";
+  var serializer = new XMLSerializer();
+  var nodeKids = msiNavigationUtils.getSignificantContents(aNode);
+  for (var jx = 0; jx < nodeKids.length; ++jx)
+    retStr += serializer.serializeToString(nodeKids[jx]);
+  return retStr;
+}
+
+function syncCaptionAndExisting(dlgCaptionStr, currCaptionNode, editor, imageObj, positionStr)
+{
+  var bChange = false;
+  var existingStr = "";
+  if (currCaptionNode)
+    existingStr = getNodeChildrenAsString(currCaptionNode);
+  bChange = (existingStr != dlgCaptionStr);
+  if (!bChange)
+  {
+    if (currCaptionNode)
+      msiEditorEnsureElementAttribute(currCaptionNode, "position", positionStr, editor);
+    return;
+  }
+  if (dlgCaptionStr.length)
+  {
+    if (!currCaptionNode)
+    {
+      currCaptionNode = editor.document.createElementNS(xhtmlns, "imagecaption");
+      currCaptionNode.setAttribute("position", positionStr);
+      editor.insertNode(currCaptionNode, imageObj, imageObj.childNodes.length);
+    }
+    else if (existingStr.length)
+    {
+      for (var jx = currCaptionNode.childNodes.length - 1; jx >= 0; --jx)
+        editor.deleteNode(currCaptionNode.childNodes[jx]);
+    }
+    editor.insertHTMLWithContext(dlgCaptionStr, "", "", "", null, currCaptionNode, 0, false);
+  }
+  else if (currCaptionNode)
+    editor.deleteNode(currCaptionNode);
+}
+
 // Get data from widgets, validate, and set for the global element
 //   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
 function ValidateData()
@@ -433,118 +545,129 @@ function ValidateData()
   return ValidateImage();
 }
 
-// Get data from widgets, validate, and set for the global element
-//   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
-function ValidateImage()
-{
-  dump("in ValidateImage\n");
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
-//  var editor = GetCurrentEditor();
-  if (!editor)
-    return false;
-
-//  gValidateTab = gDialog.tabLocation;
-  if (!gDialog.srcInput.value)
-  {
-    AlertWithTitle(null, GetString("MissingImageError"));
-//    SwitchToValidatePanel();
-    gDialog.srcInput.focus();
-    return false;
-  }
-
-  //TODO: WE NEED TO DO SOME URL VALIDATION HERE, E.G.:
-  // We must convert to "file:///" or "http://" format else image doesn't load!
-  var src = TrimString(gDialog.srcInput.value);
-  globalElement.setAttribute("src", src);
-
-  var title = TrimString(gDialog.titleInput.value);
-  if (title)
-    globalElement.setAttribute("title", title);
-  else
-    globalElement.removeAttribute("title");
-
-  alt = TrimString(gDialog.altTextInput.value);
-
-  globalElement.setAttribute("alt", alt);
-
-  var width = "";
-  var height = "";
-
-//  gValidateTab = gDialog.tabDimensions;
-  if (!frameTabDlg.actual.selected)
-  {
-    // Get user values for width and height
-    width = msiValidateNumber(frameTabDlg.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
-                           globalElement, "width", false, true);
-    if (gValidationError)
-      return false;
-
-    height = msiValidateNumber(frameTabDlg.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
-                            globalElement, "height", false, true);
-    if (gValidationError)
-      return false;
-  }
-
-  // We always set the width and height attributes, even if same as actual.
-  //  This speeds up layout of pages since sizes are known before image is loaded
-  if (!width)
-    width = gActualWidth;
-  if (!height)
-    height = gActualHeight;
-
-  // Remove existing width and height only if source changed
-  //  and we couldn't obtain actual dimensions
-  var srcChanged = (src != gOriginalSrc);
-  if (width)
-    globalElement.setAttribute("width", width);
-  else if (srcChanged)
-    editor.removeAttributeOrEquivalent(globalElement, "width", true);
-
-  if (height)
-    globalElement.setAttribute("height", height);
-  else if (srcChanged) 
-    editor.removeAttributeOrEquivalent(globalElement, "height", true);
-
-  // spacing attributes
-//  gValidateTab = gDialog.tabBorder;
-//  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
-//                 globalElement, "hspace", false, true, true);
-//  if (gValidationError)
+//// Get data from widgets, validate, and set for the global element
+////   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
+//function ValidateImage()
+//{
+//  dump("in ValidateImage\n");
+//  var editorElement = msiGetParentEditorElementForDialog(window);
+//  var editor = msiGetEditor(editorElement);
+////  var editor = GetCurrentEditor();
+//  if (!editor)
 //    return false;
 //
-//  msiValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
-//                 globalElement, "vspace", false, true);
-//  if (gValidationError)
-//    return false;
-
-  // note this is deprecated and should be converted to stylesheets
-//  msiValidateNumber(gDialog.border, null, 0, gMaxPixels, 
-//                 globalElement, "border", false, true);
-//  if (gValidationError)
-//    return false;
-
-  // Default or setting "bottom" means don't set the attribute
-  // Note that the attributes "left" and "right" are opposite
-  //  of what we use in the UI, which describes where the TEXT wraps,
-  //  not the image location (which is what the HTML describes)
-//  switch ( gDialog.alignTypeSelect.value )
+////  gValidateTab = gDialog.tabLocation;
+//  if (!gDialog.srcInput.value)
 //  {
-//    case "top":
-//    case "middle":
-//    case "right":
-//    case "left":
-//      globalElement.setAttribute( "align", gDialog.alignTypeSelect.value );
-//      break;
-//    default:
-//      try {
-//        editor.removeAttributeOrEquivalent(globalElement, "align", true);
-//      } catch (e) {}
+//    AlertWithTitle(null, GetString("MissingImageError"));
+////    SwitchToValidatePanel();
+//    gDialog.srcInput.focus();
+//    return false;
 //  }
+//
+//  //TODO: WE NEED TO DO SOME URL VALIDATION HERE, E.G.:
+//  // We must convert to "file:///" or "http://" format else image doesn't load!
+//  var src = TrimString(gDialog.srcInput.value);
+//  globalElement.setAttribute("src", src);
+//
+//  var title = TrimString(gDialog.titleInput.value);
+//  if (title)
+//    globalElement.setAttribute("title", title);
+//  else
+//    globalElement.removeAttribute("title");
+//
+//  alt = TrimString(gDialog.altTextInput.value);
+//
+//  globalElement.setAttribute("alt", alt);
+//
+//  var width = "";
+//  var height = "";
+//
+////  gValidateTab = gDialog.tabDimensions;
+//  if (!frameTabDlg.actual.selected)
+//  {
+//    // Get user values for width and height
+//    width = msiValidateNumber(frameTabDlg.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
+//                           globalElement, "width", false, true);
+//    if (gValidationError)
+//      return false;
+//
+//    height = msiValidateNumber(frameTabDlg.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
+//                            globalElement, "height", false, true);
+//    if (gValidationError)
+//      return false;
+//  }
+//
+//  // We always set the width and height attributes, even if same as actual.
+//  //  This speeds up layout of pages since sizes are known before image is loaded
+//  if (!width)
+//    width = gActualWidth;
+//  if (!height)
+//    height = gActualHeight;
+//
+//  // Remove existing width and height only if source changed
+//  //  and we couldn't obtain actual dimensions
+//  var srcChanged = (src != gOriginalSrc);
+//  if (width)
+//    globalElement.setAttribute("width", width);
+//  else if (srcChanged)
+//    editor.removeAttributeOrEquivalent(globalElement, "width", true);
+//
+//  if (height)
+//    globalElement.setAttribute("height", height);
+//  else if (srcChanged) 
+//    editor.removeAttributeOrEquivalent(globalElement, "height", true);
+//
+//
+//  // spacing attributes
+////  gValidateTab = gDialog.tabBorder;
+////  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
+////                 globalElement, "hspace", false, true, true);
+////  if (gValidationError)
+////    return false;
+////
+////  msiValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
+////                 globalElement, "vspace", false, true);
+////  if (gValidationError)
+////    return false;
+//
+//  // note this is deprecated and should be converted to stylesheets
+////  msiValidateNumber(gDialog.border, null, 0, gMaxPixels, 
+////                 globalElement, "border", false, true);
+////  if (gValidationError)
+////    return false;
+//
+//  // Default or setting "bottom" means don't set the attribute
+//  // Note that the attributes "left" and "right" are opposite
+//  //  of what we use in the UI, which describes where the TEXT wraps,
+//  //  not the image location (which is what the HTML describes)
+////  switch ( gDialog.alignTypeSelect.value )
+////  {
+////    case "top":
+////    case "middle":
+////    case "right":
+////    case "left":
+////      globalElement.setAttribute( "align", gDialog.alignTypeSelect.value );
+////      break;
+////    default:
+////      try {
+////        editor.removeAttributeOrEquivalent(globalElement, "align", true);
+////      } catch (e) {}
+////  }
+//
+//  return true;
+//}
+//
 
-  return true;
+function getDocumentGraphicsDir()
+{
+  var docUrlString = msiGetDocumentBaseUrl();
+  var docurl = msiURIFromString(docUrlString);
+  var dir = msiFileFromFileURL(docurl);
+  dir = dir.parent;
+  dir.append("graphics");
+  return dir;
 }
-
 
 var isSVGFile = false;
 function chooseFile()
@@ -561,11 +684,7 @@ function chooseFile()
       try {
         var file = msiFileFromFileURL(url);
         isSVGFile = /\.svg$/.test(file.leafName);
-        var docUrlString = msiGetDocumentBaseUrl();
-        var docurl = msiURIFromString(docUrlString);
-        var dir = msiFileFromFileURL(docurl);
-        dir = dir.parent;
-        dir.append("graphics");
+        var dir = getDocumentGraphicsDir()
         if (!dir.exists()) dir.create(1, 0755);
         file.permissions = 0755;
         fileName = "graphics/"+file.leafName;
@@ -595,6 +714,11 @@ function chooseFile()
   // copy to the graphics directory
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
+}
+
+function SetImport(bSet)
+{
+  gDialog.import = bSet;
 }
 
 function PreviewImageLoaded()
@@ -869,8 +993,8 @@ function constrainProportions( srcID, destID, event )
 function ValidateImage()
 {
   dump("in ValidateImage()\n");
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
+//  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(gEditorElement);
 //  var editor = GetCurrentEditor();
   if (!editor)
     return false;
@@ -891,16 +1015,33 @@ function ValidateImage()
   var src = TrimString(gDialog.srcInput.value);
   globalElement.setAttribute("src", src);
 
-  var title = ""; //TrimString(gDialog.titleInput.value);
-  if (title)
-    globalElement.setAttribute("title", title);
-  else
-    globalElement.removeAttribute("title");
+//  var title = TrimString(gDialog.titleInput.value);
+//  if (title)
+//    globalElement.setAttribute("title", title);
+//  else
+//    globalElement.removeAttribute("title");
 
-  alt = ""; //TrimString(gDialog.altTextInput.value);
+  var alt = TrimString(gDialog.altTextInput.value);
 
   dump("3\n");
   globalElement.setAttribute("alt", alt);
+
+  if (gDialog.keyInput.controller)
+  {
+    dump("In msiEdImageProps.js, keyInput autosearch controller's status is[" + gDialog.keyInput.controller.searchStatus + "]\n");
+    var oldKey = globalElement.getAttribute("key");
+    var bUnchanged = false;
+    if (!oldKey || !oldKey.length)
+      bUnchanged = (!gDialog.keyInput.value || !gDialog.keyInput.value.length);
+    else if (gDialog.keyInput.value.length)
+      bUnchanged = (gDialog.keyInput.value == oldKey);
+    if (!bUnchanged && gDialog.keyInput.value && gDialog.keyInput.value.length && (gDialog.keyInput.controller.searchStatus == 4))  //found a match!
+    {
+      msiPostDialogMessage("dlgErrors.markerInUse", {markerString : gDialog.keyInput.value});
+      gDialog.keyInput.focus();
+      return false;
+    }
+  }
 
   var width = "";
   var height = "";
@@ -914,7 +1055,7 @@ function ValidateImage()
     if (gValidationError)
       return false;
 
-    height = msiValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
+    height = msiValidateNumber(frameTabDlg.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
                             globalElement, "height", false, true);
     if (gValidationError)
       return false;
@@ -1029,8 +1170,8 @@ function onAccept()
   dump("in onAccept\n");
   if (ValidateData())
   {
-    var editorElement = msiGetParentEditorElementForDialog(window);
-    var editor = msiGetEditor(editorElement);
+//    var editorElement = msiGetParentEditorElementForDialog(window);
+    var editor = msiGetEditor(gEditorElement);
 
     editor.beginTransaction();
     try
@@ -1057,13 +1198,35 @@ function onAccept()
 //        frameElement = editor.createElementWithDefaults("msiframe");
 //        frameElement.appendChild(imageElement);
       }
+          // 'true' means delete the selection before inserting
+      if (gInsertNewImage)
+        editor.insertElementAtSelection(imageElement, true);
+    
+      var attrList = ["src,data,title,alt"];
+      msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
       imageElement.setAttribute("data",gDialog.srcInput.value);
       imageElement.setAttribute("req","graphicx");
       
       setFrameAttributes(imageElement);
-          // 'true' means delete the selection before inserting
-      if (gInsertNewImage)
-        editor.insertElementAtSelection(imageElement, true);
+
+      var capData = findCaptionNodes(imageElement);
+      gCaptionData.m_captionStr[gCaptionData.m_position] = getCaptionEditContents();
+      syncCaptionAndExisting(gCaptionData.m_captionStr.above, capData.aboveCaption, editor, imageElement, "above");
+      syncCaptionAndExisting(gCaptionData.m_captionStr.below, capData.belowCaption, editor, imageElement, "below");
+      var capAttrStr = "";
+      if (capData.aboveCaption && capData.aboveCaption.length)
+        capAttrStr = "above";
+      if (capData.belowCaption && capData.belowCaption.length)
+        capAttrStr += "below";
+      if (!capAttrStr.length)
+        capAttrStr = null;  //since EnsureElementAttribute will remove the attribute if a null is passed in.
+      msiEditorEnsureElementAttribute(imageElement, "captionLoc", capAttrStr, editor);
+
+      var theKey = gDialog.keyInput.value;
+      if (!theKey.length)
+        theKey = null;
+      msiEditorEnsureElementAttribute(imageElement, "key", theKey, editor);
+      msiEditorEnsureElementAttribute(imageElement, "id", theKey, editor);
     }
     catch (e)
     {
@@ -1088,39 +1251,48 @@ var gFrameModeTextFrame = false;
 
 var gInsertNewImage;
 
-var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
+//var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
 
 function initKeyList()
 {
-  var editorElement = msiGetActiveEditorElement();
-  var editor;
-  if (editorElement) editor = msiGetEditor(editorElement);
-  var parser = new DOMParser();
-  var dom = parser.parseFromString(xsltSheet, "text/xml");
-  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
-  var processor = new XSLTProcessor();
-  processor.importStylesheet(dom.documentElement);
-  var newDoc;
-  if (editor) newDoc = processor.transformToDocument(editor.document, document);
-  dump(newDoc.documentElement.localName+"\n");
-  var keyString = newDoc.documentElement.textContent;
-  var keys = keyString.split(/\s+/);
-  var i;
-  var len;
-  keys.sort();
-  var lastkey = "";
-  for (i=keys.length-1; i >= 0; i--)
-  {
-    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
-    else lastkey = keys[i];
-  }  
-  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  ACSA.resetArray("keys");
-  for (i=0, len=keys.length; i<len; i++)
-  {
-    if (keys[i].length > 0) 
-      ACSA.addString("keys",keys[i]);
-  }
-  dump("Keys are : "+keys.join()+"\n");    
+
+  gDialog.markerList = new msiKeyMarkerList(window);
+  gDialog.markerList.setUpTextBoxControl(gDialog.keyInput);
+  gDialog.markerList.setUpTextBoxControl(gDialog.linkKeyInput);
+
+//  var keyString = gDialog.markerList.getIndexString();
+//  gDialog.keyInput.setAttribute("autocompletesearchparam", keyString);
+//  gDialog.linkKeyInput.setAttribute("autocompletesearchparam", keyString);
+
+//  var editorElement = msiGetActiveEditorElement();
+//  var editor;
+//  if (editorElement) editor = msiGetEditor(editorElement);
+//  var parser = new DOMParser();
+//  var dom = parser.parseFromString(xsltSheet, "text/xml");
+//  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
+//  var processor = new XSLTProcessor();
+//  processor.importStylesheet(dom.documentElement);
+//  var newDoc;
+//  if (editor) newDoc = processor.transformToDocument(editor.document, document);
+//  dump(newDoc.documentElement.localName+"\n");
+//  var keyString = newDoc.documentElement.textContent;
+//  var keys = keyString.split(/\s+/);
+//  var i;
+//  var len;
+//  keys.sort();
+//  var lastkey = "";
+//  for (i=keys.length-1; i >= 0; i--)
+//  {
+//    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
+//    else lastkey = keys[i];
+//  }  
+//  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//  ACSA.resetArray("keys");
+//  for (i=0, len=keys.length; i<len; i++)
+//  {
+//    if (keys[i].length > 0) 
+//      ACSA.addString("keys",keys[i]);
+//  }
+//  dump("Keys are : "+keys.join()+"\n");    
 }

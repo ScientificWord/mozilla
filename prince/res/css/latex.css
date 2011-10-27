@@ -79,7 +79,8 @@ hspace[type="italicCorrectionSpace"] {
 }
 
 hspace[type="requiredSpace"] {
-  display: inline;
+  min-width: 0.5em;
+  /*display: inline;*/
 }
 
 hspace[type="nonBreakingSpace"] {
@@ -240,19 +241,22 @@ graph {
 }
 
 graph {
-  display: -moz-box;  
+  display:block;  
   cursor: pointer;
-  -moz-box-orient: vertical;
+ /*  -moz-box-orient: vertical; */
 }
 
 plotwrapper {
-  display: -moz-stack;
+  display: block;
+	top: 0px;
+	left: 0px;
   -moz-user-select: all;
   -moz-user-focus: normal;
   padding: 10px;
   cursor: pointer;
-  -moz-box-orient: vertical;
+/*  -moz-box-orient: vertical; */
   background-color: rgb(245,245,255);
+
 }
 
 plotcaption {
@@ -262,8 +266,11 @@ plotcaption {
   min-height: 20px;
 }
 
+object {
+}
 
-* [msiunit="true"] { color: green; }
+
+
 * [msimathname="true"] {color: gray; }
 
 
@@ -765,7 +772,7 @@ button[class="eqnnum"]{
   top: 0px;
   font-style: normal; 
   color: red;
-  -moz-user-select: -moz-none;
+  -moz-user-select: -moz-none ! important;
 }
 
 button[class="subeqnnum"]{
@@ -775,7 +782,7 @@ button[class="subeqnnum"]{
   right: 20px;
   font-style: normal; 
   color: blue;
-  -moz-user-select: -moz-none;
+  -moz-user-select: -moz-none ! important;
 }
 
 button[class="eqnmarker"]{
@@ -783,7 +790,7 @@ button[class="eqnmarker"]{
   right: 0px;
   font-style: normal; 
   color: red;
-  -moz-user-select: -moz-none;
+  -moz-user-select: -moz-none ! important;
 }
 
 mtd button[class="eqnnum"], mtd button[class="subeqnnum"], mtd button[class="eqnmarker"] {
@@ -793,22 +800,22 @@ mtd button[class="eqnnum"], mtd button[class="subeqnnum"], mtd button[class="eqn
 
 button[class="eqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber);
-  -moz-user-modify: read-only;
+  -moz-user-modify: read-only ! important;
 }
 
 button[class="eqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
-  -moz-user-modify: read-only;
+  -moz-user-modify: read-only ! important;
 }
 
 button[class="subeqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
-  -moz-user-modify: read-only;
+  -moz-user-modify: read-only ! important;
 }
 
 button[class="subeqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
-  -moz-user-modify: read-only;
+  -moz-user-modify: read-only ! important;
 }
 
 title {
@@ -1351,3 +1358,17 @@ texnote[leadInType="custom"], solution[leadInType="custom"] {
 rawTeX {
  color: #6600cc;
 }
+
+smallbox {
+	border: 1px solid black;
+}
+
+*[hilite] {
+	background-color: rgb(255,255,186);
+}
+
+/* These are the tags that polyglossia introduces for right-to-left languages */
+Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, hebrew, texthebrew, syriac, textsyriac, urdu, texturdu
+{ 
+	direction: rtl; 
+	text-align: right; }

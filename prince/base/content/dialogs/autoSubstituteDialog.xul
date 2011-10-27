@@ -17,6 +17,7 @@
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
@@ -70,6 +71,8 @@
 
   <popupset id="msiEditorContentContextSet"/>
 
+#include ../keysfordialogs.inc
+
   <hbox>  
     <vbox>
       <label control="keystrokesBox" value="&keystrokesBox.label;" accesskey="&keystrokesBox.accesskey;"/>
@@ -121,11 +124,6 @@
             <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
           </commandset>
           <commandset id="MSImathMenuCommands"/>
-  
-          <keyset id="editorKeys">
-            <keyset id="tasksKeys"/>
-            <keyset id="MSIKeySet"/>
-          </keyset>
         </editor>
         </vbox>
         <vbox><label id="scriptLabel" control="scriptTextbox" value="&script.label;"	accesskey="&script.accesskey;"/>
@@ -134,9 +132,9 @@
       </deck>
       <spacer flex="1"/>
       <groupbox>
-        <caption label="&enableDisableAutosubs.label;"/>
-        <checkbox id="enableSubsInMath" label="&enableSubsInMath.label;" accesskey="&enableSubsInMath.accesskey;"/>
-        <checkbox id="enableSubsInText" label="&enableSubsInText.label;" accesskey="&enableSubsInText.accesskey;"/>
+        <caption label="&disableAutosubs.label;"/>
+        <checkbox id="disableSubsInMath" label="&disableSubsInMath.label;" accesskey="&disableSubsInMath.accesskey;" oncommand="changeGlobalEnabling(true);" />
+        <checkbox id="disableSubsInText" label="&disableSubsInText.label;" accesskey="&disableSubsInText.accesskey;" oncommand="changeGlobalEnabling(false);" />
         <!-- checkbox id="enableUnitSubs" label="&enableUnitSubs.label;" accesskey="&enableUnitSubs.accesskey;"/>
         <checkbox id="enableMathNameSubs" label="&enableMathNameSubs.label;" accesskey="&enableMathNameSubs.accesskey;"/ -->
         <!-- description id="enableAutoSubDescription" control="enableAutoSub">&enableAutoSub.description;</description -->

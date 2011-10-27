@@ -93,3 +93,7 @@
 *[hidden="true"] {
   display: none;
 }
+
+textbox [disabled] {
+	color: gray;
+}
