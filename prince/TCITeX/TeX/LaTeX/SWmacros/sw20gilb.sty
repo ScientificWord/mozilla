@@ -1,4 +1,4 @@
-\typeout{MSI Document Style `sw20gilb' <17 June 2006>.}
+\typeout{MSI Document Style `sw20gilb' <20 Apr 2007>.}
 \typeout{NOTICE:  This macro file is NOT proprietary and may be 
 freely copied and distributed.}
 \RequirePackage{ifthen}
@@ -6,6 +6,7 @@ freely copied and distributed.}
 \setlength{\arraycolsep}{1mm}
 \def\gilbTOCstartpage{5} %hooks so predefined start pages can 
 \def\gilbPstartpage{9}	 %be changed (gp) 16 June 2006
+\newcommand\prefacename{Preface}%(gp) 20 Apr 2007
 %
 %
 % JCS - modified macro to clear a double page but place no page number 
@@ -57,13 +58,13 @@ freely copied and distributed.}
 \thispagestyle{plain}% page style added by chris
 % counter added by chris, don't set if hook set to -99 (gp)
 \ifthenelse{\equal{\gilbPstartpage}{-99}}{}{\setcounter{page}{\gilbPstartpage}}
-  \addcontentsline{toc}{chapter}{Preface} % added by chris
-\markboth{Preface}{Preface} % changed markboth for both pages chris
+  \addcontentsline{toc}{chapter}{\prefacename} % added by chris
+\markboth{\prefacename}{\prefacename} % changed markboth for both pages chris
 \if@twocolumn
-\chapter*{Preface}%
+\chapter*{\prefacename}%
 \else
 \begin{center}%
-     {\bf Preface\vspace{-.5em}\vspace{\z@}}%
+     {\bf\prefacename\vspace{-.5em}\vspace{\z@}}%
 \end{center}%
 %\quotation  
 \fi}
@@ -145,3 +146,4 @@ freely copied and distributed.}
   \renewcommand\@chapapp{\appendixname}
   \renewcommand\thechapter{}}%
 
+\endinput

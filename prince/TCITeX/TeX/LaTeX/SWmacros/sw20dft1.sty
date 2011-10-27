@@ -1,10 +1,7 @@
-% sw20dft1.sty {Article: Annals of Statistics - Draft}{12pt}{article}{sw20dft1}
-\typeout{TCI Document Style `sw20dft1' <23 Aug 1994>.}
+% sw20dft1.sty -- Article: Annals of Statistics - Draft
+\typeout{SW Document Style `sw20dft1' <20 Mar 2008>.}
 \typeout{NOTICE:  This macro file is NOT proprietary and may be 
 freely copied and distributed.}
-%
-% Uses: sw20dft1.cst
-%       sw20dft1.shl
 %
 % A draft submission style, based on article.sty for use by:
 %      Annals of Statistics
@@ -50,26 +47,35 @@ freely copied and distributed.}
 \pagestyle{plain}
 \pagenumbering{arabic}
 
+\def\KeyWordsPhrases{\textbf{Key Words and Phrases:\ }}
+\def\AMSyr{2000}
+\def\AMSsubject{\textbf{AMS \AMSyr\ Subject Classifications.}}
+\def\AMSprim{Primary--}
+\def\AMSsecond{Secondary--}
+
 
 \def\@maketitle{%
 	\null
 	\thispagestyle{empty}
+	\let\thefootnote@original=\thefootnote
 	\def\thefootnote{}
 	\ifx\keys\@empty
 	\else
-	   \footnote{{\bf Key Words and Phrases:} \keys}
+	   \footnote{\KeyWordsPhrases\keys}
+	   \addtocounter{footnote}{-1}
 	\fi
 	\ifx\primcl\@empty
 	\else
-	   \footnote{{\bf AMS 1991 Subject Classifications. Primary:} \primcl
+	   \footnote{\AMSsubject\ \AMSprim\primcl
            \ifx\secondcl\@empty
-		     {\bf .}
+		     {}
 			\else
-			  {\bf ; Secondary:} \secondcl .
+			  ;\ \AMSsecond\secondcl
 			\fi}
+	   \addtocounter{footnote}{-1}
 	\fi
 	
-	\def\thefootnote{*}
+	\let\thefootnote=\thefootnote@original
 			   
     \begin{center}
          {\large\bf\@title}\\[4mm]
@@ -112,6 +118,5 @@ freely copied and distributed.}
        \sloppy\clubpenalty4000\widowpenalty4000
        \sfcode`\.=1000\relax}
 
-
-
+\endinput
 
