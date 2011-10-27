@@ -1,6 +1,6 @@
 %sw20fra  {Article: Harold O. Fried's}{12pt}{article}
-%Copyright (C) 1994-95 TCI Software Research
-\typeout{TCI Document Style `sw20fra' <10 Jan 2000>.}
+%Copyright (C) 1994-2009 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20fra' <27 Oct 2009>.}
 \typeout{NOTICE:  This macro file is NOT proprietary and may be 
 freely copied and distributed.}
 %
@@ -20,6 +20,7 @@ freely copied and distributed.}
 % The top margin for all pages is 1.5".
 % Side margins are 1", and bottom margins are 1.25".
 % This style call Fancyheadings.sty to do the headings on the text pages
+% 20 May 2009 - Change from fancyheadings to the fancyhdr package (gp)
 %
 \def\baselinestretch{2}
 %
@@ -27,8 +28,6 @@ freely copied and distributed.}
 %
 \def\and{\\  \\}
 %
-%***************************************************************************%
-%***************************************************************************%
 %***************************************************************************%
 %                                                                           %
 %                       This is the Title                                   %
@@ -218,17 +217,16 @@ freely copied and distributed.}
   \protect\footnotetext[\the\c@footnote]{#1}}\endgroup}
 %***************************************************************************%
 %
-\input{fancyheadings.sty}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                           %
 %                      Setting up the page heading                          %
 %                                                                           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\input{fancyheadings.sty}
+\RequirePackage{fancyhdr}
 %
-%\chead{}
-%
-\lhead{}% must be left in to work right.
+\fancyhf{} 
 %
 \rhead{%
    \def\baselinestretch{1}%
@@ -237,29 +235,9 @@ freely copied and distributed.}
        \small\bf\@title}%
    \@ifundefined{Typist}{}{\Typist}}%
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                           %
-%                Taking out the underline in the heading                    %
-%                                                                           %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+% Taking out the underline in the heading
 \def\headrule{}
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                           %
-%                      Def the page style                                   %
-%                                                                           %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-\def\ps@fancy{
-\let\@mkboth\markboth
-\def\@oddhead{\@fancyhead\relax\@olhead\@ochead\@orhead\hss}
-\def\@oddfoot{\@fancyfoot\relax\@olfoot\@ocfoot\@orfoot\hss}
-\def\@evenhead{\@fancyhead\hss\@elhead\@echead\@erhead\relax}
-\def\@evenfoot{\@fancyfoot\hss\@elfoot\@ecfoot\@erfoot\relax}
-\headwidth\textwidth}
-\def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
-\def\ps@plain@fancy{\@fancyplaintrue\ps@fancy}
+\cfoot{\thepage}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                           %
@@ -274,4 +252,5 @@ freely copied and distributed.}
 %                                   END                                     %
 %                                                                           %
 %***************************************************************************%
+\endinput
 
