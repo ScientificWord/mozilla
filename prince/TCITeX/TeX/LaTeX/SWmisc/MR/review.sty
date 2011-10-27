@@ -1,0 +1,31 @@
+% review.sty
+% 2005 May 10
+% This file contains a set of macros for TeXing MR review text files.
+% It is assumed that AMS-TeX has already been loaded.
+\parindent=0pt
+\parskip=4pt
+\hsize=5.5truein
+\raggedbottom
+\def\electrosubmitted{This is a review text file submitted electronically 
+                      to MR.\par}
+\def\beginrev{\begingroup}
+\def\reviewer{\par{\bf Reviewer: }}
+\def\reviewernum{\par{\bf Reviewer number: }}
+\def\address{\par{\bf Address: }\par
+ \begingroup
+ \catcode`\@=12 \catcode`\_=13
+ \catcode`\#=12 \catcode`\$=12 \catcode`\&=12
+ \leftskip=16pt\parskip=0pt\obeylines}
+\def\author{\catcode`\@=13 \catcode`\_=8
+ \catcode`\#=6 \catcode`\$=3 \catcode`\&=4
+ \endgroup\par{\bf Author: }}
+\def\shorttitle{\par{\bf Short title: }}
+\def\mcno{\par{\bf MR Number: }}
+\def\mmrno{}
+\def\rpclass{\par{\bf Primary classification: }}
+\def\rsclass{\par{\bf Secondary classification(s): }}
+\def\revtext{\par{\bf Review text: }\vskip3pt
+  \parindent=8pt\parskip=0pt\global\baselineskip=14pt\noindent}
+\def\remarks#1{\ifx#1\empty\else
+  \vskip3pt\noindent{\bf Comments to the MR Editors: }#1\fi}
+\def\endrev{\endgroup\par\vfill}

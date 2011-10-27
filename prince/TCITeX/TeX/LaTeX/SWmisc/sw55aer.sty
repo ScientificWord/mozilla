@@ -1,0 +1,72 @@
+%sw55aer Article -- American Economic Review (Similar)
+%Copyright (C) 2006 MacKichan Software Inc.
+\typeout{MSI Document Style `sw55aer' <2006-12-04>}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+
+\RequirePackage{indentfirst}
+
+\RequirePackage[doublespacing]{setspace}
+
+\RequirePackage{geometry}
+\geometry{left=1in,right=1in,top=1in,bottom=1in}
+
+
+\setlength{\parindent}{0pt}	
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{2}
+
+\def\@biblabel#1{\hspace*{-\labelsep}}
+\setlength\bibindent{0.5in}
+\renewcommand{\@cite}[1]{#1}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+%Define heading formats for the main text
+
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\normalfont\bfseries\centering}}
+
+
+
+\renewcommand{\thesection}{\Roman{section}.}
+
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\bfseries\itshape\centering}}
+\renewcommand{\thesubsection}{\Alph{subsection}.}
+
+
+\renewcommand{\subsubsection}%
+   {\noindent%\par\vspace{1.25ex plus .25ex minus .05ex}
+    \secdef\SUBsubsection\sSUBsubsection}%
+
+\def\SUBsubsection[#1]#2\par%
+  {\refstepcounter{subsubsection}%
+   \ifnum \value{secnumdepth} > 3%
+      \def\sectionnumber{{\normalsize\bfseries\itshape\hspace{\parindent}\thesubsubsection\relax}}%
+   \else
+      \def\sectionnumber{\relax}%
+   \fi%
+   {\sectionnumber\normalsize\bfseries\itshape\hspace{\parindent}#2\unskip.---}%
+   }%
+\def\sSUBsubsection#1\par%
+   {%
+   {\normalsize\bfseries\itshape\hspace{\parindent}#1\unskip.---}}%                                      
+
+
+\renewcommand\appendix{\par
+  \setcounter{section}{0}%
+  \setcounter{subsection}{0}%
+  \gdef\thesection{\@Alph\c@section}%
+  \setcounter{equation}{0}%
+  \renewcommand{\theequation}{\Alph{section}\arabic{equation}}%
+  \@addtoreset{equation}{section}
+  }
+
+
+
+\endinput
