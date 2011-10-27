@@ -194,8 +194,8 @@ SEMANTICS_NODE* AppendNewBucketRecord(U32 which_bucket, SEMANTICS_NODE* sem_chil
       SEMANTICS_NODE* contents = NULL;
       if (fromNode)
          contents = GetSemanticsFromNode(base, bucket, pAnalyzer);
-	  else
-	     contents = GetSemanticsList(base, bucket, pAnalyzer);
+	    else
+	       contents = GetSemanticsList(base, bucket, pAnalyzer);
 
 
       bucket->first_child = contents;
@@ -551,7 +551,11 @@ void AnalyzeMI(MNODE* mml_mi_node,
   zmsi_class[0] = 0;
   GetCurrAttribValue(mml_mi_node, false, "msiclass", zmsi_class, 256);
 
-  if (StringEqual(zclass, "msi_unit")) {
+  char zmsi_unit[256];
+  zmsi_unit[0] = 0;
+  GetCurrAttribValue(mml_mi_node, false, "msiunit", zmsi_unit, 256);
+
+  if (StringEqual(zmsi_unit, "true")) {
 
     SEMANTICS_NODE* s_target = snode;
     // Semantically, I'm treating units as "factors" joined to the expression
@@ -760,7 +764,41 @@ void AnalyzeMI(MNODE* mml_mi_node,
       else
         AppendBucketRecord(snode->bucket_list, bucket);
     } else {
-      snode->semantic_type = SEM_TYP_VARIABLE;
+     
+       char isMathname[256];
+       isMathname[0] = 0;
+       GetCurrAttribValue(mml_mi_node, false, "msimathname", isMathname, 256);
+       if (StringEqual(isMathname, "true") ) {
+         if (StringEqual(mml_mi_node->p_chdata, "real") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Real");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+
+         } else if (StringEqual(mml_mi_node->p_chdata, "complex") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Complex");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else if (StringEqual(mml_mi_node->p_chdata, "integer") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Integer");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else if (StringEqual(mml_mi_node->p_chdata, "positive") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Positive");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else if (StringEqual(mml_mi_node->p_chdata, "negative") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Negative");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else if (StringEqual(mml_mi_node->p_chdata, "nonzero") ){
+           delete snode->contents;
+           snode->contents = DuplicateString("Type::Nonzero");
+           snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
+         } else {
+           snode->semantic_type = SEM_TYP_VARIABLE;
+         }
+       } else
+         snode->semantic_type = SEM_TYP_VARIABLE;
     }
   }
 }
@@ -1407,7 +1445,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
             //                             mml_canonical_name, mml_msup_node,
             //                             pAnalyzer -> ScrStr()) );
 
-			pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
+			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
             snode->semantic_type = SEM_TYP_VARIABLE;
           } else
             TCI_ASSERT(0);
@@ -1418,7 +1456,9 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
       case BT_MATRIX:
       case BT_UNIT:
       case BT_FENCED:
-      case BT_NUMBER:{
+      case BT_NUMBER:
+      case BT_SUB:
+      case BT_SUP: {
           if (et == ET_POWER || et == ET_DIRECTION) {
             CreatePowerForm(base, base->next, snode, pAnalyzer);
           } else
@@ -1724,7 +1764,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
             // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
             //                             mml_canonical_name, mml_msubsup_node,
             //                             pAnalyzer -> ScrStr()) );
-			pAnalyzer -> AppendIDList(mml_canonical_name, mml_msubsup_node);
+			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msubsup_node);
             AnalyzeSubscriptedFunc(mml_msubsup_node, s_func, nodes_done, pAnalyzer);
             
             BUCKET_REC* base_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
@@ -1759,19 +1799,35 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
         break;
 
       case BT_VARIABLE:{
-          MNODE *mml_base = mml_msubsup_node->first_kid;
-          MNODE *mml_power = mml_base->next->next;
-          CreatePowerForm(mml_base, mml_power, snode, pAnalyzer);
-          BUCKET_REC *bucket =
-            FindBucketRec(snode->bucket_list, MB_SCRIPT_BASE);
-          if (bucket) {
-            DisposeSList(bucket->first_child);
-            SEMANTICS_NODE *s_var = CreateSemanticsNode();
-            CreateSubscriptedVar(mml_msubsup_node, true, s_var, pAnalyzer);
-            bucket->first_child = s_var;
-            s_var->parent = bucket;
-          } else
-            TCI_ASSERT(0);
+          MNODE* mml_base = mml_msubsup_node->first_kid;
+          MNODE* mml_sub = mml_msubsup_node->first_kid->next;
+          MNODE* mml_power = mml_base->next->next;
+          
+          //BUCKET_REC* bucket = FindBucketRec(snode->bucket_list, MB_SCRIPT_BASE);
+
+
+          //if (bucket) {
+          //  DisposeSList(bucket->first_child);
+          SEMANTICS_NODE* s_var = CreateSemanticsNode();
+          CreateSubscriptedVar(mml_msubsup_node, true, s_var, pAnalyzer);
+
+            //bucket->first_child = s_var;
+            //s_var->parent = bucket;
+          //} else
+          //  TCI_ASSERT(0);
+          //CreatePowerForm(mml_base, mml_power, snode, pAnalyzer);
+          snode->semantic_type = SEM_TYP_POWERFORM;
+          mml_base -> next = NULL;
+
+          BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
+          AppendBucketRecord(snode->bucket_list, base_bucket);
+          base_bucket->first_child = s_var;
+          s_var->parent = base_bucket;
+
+         // AppendNewBucketRecord(MB_SCRIPT_BASE, NULL, snode, mml_base, true, pAnalyzer);
+          AppendNewBucketRecord(MB_SCRIPT_UPPER, NULL, snode, mml_power, true, pAnalyzer);
+
+
         }
         break;
 
@@ -2568,17 +2624,18 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node,
             AnalyzeMO(mml_node, rv, local_nodes_done, pAnalyzer);
 
         } else if (StringEqual(mml_element, "mn")) {
+             // Seems that mixed numbers should have been removed back in TreeToFixupForm()
 
-             bool do_mixed = false;
+             //bool do_mixed = false;
 
-             if (IsWholeNumber(mml_node) && IsWholeFrac(mml_node->next)) {
-               do_mixed = !IsPositionalChild(mml_node);
-             }
+             //if (IsWholeNumber(mml_node) && IsWholeFrac(mml_node->next)) {
+             //  do_mixed = !IsPositionalChild(mml_node);
+             //}
 
-             if (do_mixed) {
-               AnalyzeMixedNum(mml_node, rv, pAnalyzer);
-               local_nodes_done++;
-             } else
+             //if (do_mixed) {
+             //  AnalyzeMixedNum(mml_node, rv, pAnalyzer);
+             //  local_nodes_done++;
+             //} else
                AnalyzeMN(mml_node, rv, pAnalyzer);
 
         } else {
@@ -3139,7 +3196,7 @@ void OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
             }
 
             integrand_starter = integrand_ender;
-            while (integrand_starter->prev) {
+            while (integrand_starter && integrand_starter->prev) {
               integrand_starter = integrand_starter->prev;
               if (!nested_operand) {
                 if (integrand_starter == big_op_node) {
@@ -3152,20 +3209,26 @@ void OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
           }
 
           // isolate the integrand
-          MNODE *save = integrand_ender->next;
-          integrand_ender->next = NULL;
-
           BUCKET_REC *a_rec = MakeBucketRec(MB_OPERAND, NULL);
           AppendBucketRecord(bigop_snode->bucket_list, a_rec);
-          SEMANTICS_NODE* contents = GetSemanticsList(integrand_starter, a_rec, pAnalyzer);
-          a_rec->first_child = contents;
-          contents->parent = a_rec;
+          SEMANTICS_NODE* node;
 
+          if (integrand_ender){
+            MNODE *save = integrand_ender->next;
+            integrand_ender->next = NULL;            
+            node = GetSemanticsList(integrand_starter, a_rec, pAnalyzer);
+            integrand_ender->next = save;
+         } else {
+            // Have no integrand: \int dx
+            node = CreateSemanticsNode(SEM_TYP_NUMBER);
+            node -> contents = DuplicateString("1");
+         }
+         a_rec->first_child = node;
+         node->parent = a_rec;
 
+         if (frac_operand)
+            Patchdx(node);
 
-          integrand_ender->next = save;
-          if (frac_operand)
-            Patchdx(contents);
         } else {
           // Here, we don't have an integand ender - there's no "dx"
           // We still generate the operand - engine will do something without MB_INTEG_VAR
@@ -3810,7 +3873,7 @@ void CreatePowerForm(MNODE* mml_base, MNODE* mml_power, SEMANTICS_NODE* snode, A
   // s_power->parent = power_bucket;
 
   snode->semantic_type = SEM_TYP_POWERFORM;
-  
+  mml_base -> next = NULL;
   AppendNewBucketRecord(MB_SCRIPT_BASE, NULL, snode, mml_base, true, pAnalyzer);
   AppendNewBucketRecord(MB_SCRIPT_UPPER, NULL, snode, mml_power, true, pAnalyzer);
 

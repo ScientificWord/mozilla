@@ -92,7 +92,7 @@ void GetCodes(TokenType& cc, TeXChar& tc)
       // need to check whther \let to a character token
       if (CurCmdCode() == CMD_LET_TOK){
          Primitive* prim = dynamic_cast<Primitive*>(CurData());
-         TeXToken* pTok = (TeXToken*) prim -> Data();
+         const TeXToken* pTok = prim -> TheToken();
          tc = pTok -> ChrCode();
          cc = pTok -> Type(); //GetCatcode(tc);
       } else {
@@ -552,6 +552,7 @@ bool tfcnIfVbox()
 @}
 
 @o@<conditionals.cpp@>==@{@-
+#include "platform.h"
 #include "conditionals.h"
 #include "macros.h"
 #include "symbols.h"

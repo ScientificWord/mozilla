@@ -193,8 +193,15 @@ NS_IMETHODIMP msiSimpleComputeEngine2::PartialFractions(const PRUnichar *expr, c
 /* void sort (in wstring expr, in wstring var, [retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::Sort(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
 { 
-  return CommandWithArgs( expr,result,CCID_Polynomial_Sort, PID_needvarresult, var, PID_last );
+  return CommandWithArgs( expr, result, CCID_Polynomial_Sort, PID_needvarresult, var, PID_last );
 }
+
+/* void roots(in wstring expr, in wstring vars, [retval] out wstring result); */
+NS_IMETHODIMP msiSimpleComputeEngine2::Roots(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
+{
+  return CommandWithArgs( expr, result, CCID_Polynomial_Roots, PID_needvarresult, var, PID_last );
+}
+
 
 /* void companionMatrix (in wstring expr, in wstring var, [retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::CompanionMatrix(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
@@ -502,6 +509,12 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Undefine(const PRUnichar *expr, PRUnichar
   return BasicCommand(expr,result,CCID_Undefine);
 }
 
+/* void defineMupadName(in wstring swpname, in wstring mupname, in wstring loc, [retval] out wstring result); */
+NS_IMETHODIMP msiSimpleComputeEngine2::DefineMupadName(const PRUnichar* swpname, const PRUnichar* mupname, const PRUnichar* loc, PRUnichar** result)
+{
+  return NS_ERROR_FAILURE;
+}
+
 /* void getDefinitions ([retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::GetDefinitions(PRUnichar **result)
 {
@@ -695,7 +708,7 @@ void SetupNodeAttrs()
   int res;
   res = ComputeDLL::SetUserPref( 0/*client_handle*/, CLPF_clr_func_attr, "msimathname=\"true\"");
   res = ComputeDLL::SetUserPref( 0/*client_handle*/, CLPF_clr_text_attr, "");
-  res = ComputeDLL::SetUserPref( 0/*client_handle*/, CLPF_clr_unit_attr, "class=\"msi_unit\"");
+  res = ComputeDLL::SetUserPref( 0/*client_handle*/, CLPF_clr_unit_attr, "msiunit=\"true\"");
 }
 
 /* void setUserPref (in unsigned long attrID, in long value); */

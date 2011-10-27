@@ -49,6 +49,7 @@ function buildTOC()
   doLOF = (document.getElementById("LOF").getAttribute('checked')=='true');
   doLOT = (document.getElementById("LOT").getAttribute('checked')=='true');
   doTag = (document.getElementById("Tag").getAttribute('checked')=='true');
+	if (!(doTOC || doLOF || doLOT || doTag)) return;
   if (doLOF)
     otherTagArray.concat("object");
   if (doLOT)

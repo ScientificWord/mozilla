@@ -1,16 +1,23 @@
+Components.utils.import("resource://app/modules/os.jsm");
+
+
 const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
 const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
 const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
 const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
+const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+
 Components.utils.import("resource://app/modules/macroArrays.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
 
 function princeStartUp()
 {
   // take out parts of the UI not needed on the Mac
-  if ('Mac'==GetOS())
+  var os = getOS(window);
+  if ('osx' == os)
   {
     document.getElementById("printPreviewButton").hidden=true;
     document.getElementById("printPreviewMenuItem").hidden=true;
@@ -36,30 +43,21 @@ function getBrowser()
 function GetCurrentEditor() {
   var editor;
   try {
-    var editorElement = GetCurrentEditorElement();
-    editor = editorElement.getEditor(editorElement.contentWindow);
-
+	  var editorElement = msiGetActiveEditorElement();
+	  editor = msiGetEditor(editorElement);
     editor instanceof Components.interfaces.nsIPlaintextEditor;
     editor instanceof Components.interfaces.nsIHTMLEditor;
-  } catch (e) { dump (e)+"\n"; }
+  } catch (e) { 
+		throw ("Failure in GetCurrentEditor: \n" + e.message); 
+	}
   return editor;
 }
 
 
 
 function GetCurrentEditorElement() {
-  var tmpWindow = window;
-  
-  do {
-    var editorList = tmpWindow.document.getElementsByTagName("editor");
-    // Doesn't this assume one editor per window?? --BBM
-    if (editorList.item(0))
-      return editorList.item(0);
-
-    tmpWindow = tmpWindow.opener;
-  } while (tmpWindow);
-
-  return null;
+  var editorElement = msiGetActiveEditorElement();
+  return editorElementƒ;
 }
 
 function doQuit() {
@@ -115,7 +113,6 @@ function doQuit() {
 //  return compsample;
 //}
 
-//const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 // jcs // return node on RHS of =, if structure is that simple
 // jcs function GetRHS(math)
@@ -147,42 +144,17 @@ function runFixup(math)
   try {
     var out = GetCurrentEngine().perform(math,GetCurrentEngine().Fixup);
     return out;
-  } catch(e) {
-    dump("runFixup(): "+e+"\n");
-    return math;
-} }
+  } 
+	catch(e) {
+		throw("Failure in RunFixup():\n"+ e.message);
+  }
+  return math;
+}
 
 function GetFixedMath(math)
 {
   return runFixup(GetMathAsString(math));
 }
-
-//function doEvalComputation(math,op,joiner,remark) {
-//  var mathstr = GetFixedMath(GetRHS(math));
-//  try {
-//    var out = GetCurrentEngine().perform(mathstr,op);
-//    appendResult(out,joiner,math);
-//  } catch (e) {
-//    dump("doEvalComputation(): " + e+"\n");
-//} }
-//
-// jcs function doComputeCommand(cmd) {
-// jcs   var selection = GetCurrentEditor().selection;
-// jcs   if (selection) {
-// jcs     var element = findmathparent(selection.focusNode);
-// jcs     if (!element) {
-// jcs 	    dump("not in math!\n");
-// jcs       return;
-// jcs     }
-// jcs     var eng = GetCurrentEngine();
-// jcs     switch (cmd) {
-// jcs     case "cmd_compute_Evaluate":
-// jcs       doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
-// jcs       break;
-// jcs     case "cmd_compute_EvaluateNumeric":
-// jcs       doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
-// jcs       break;
-// jcs } } }
 
 // form a single run of math and put caret on end
 function coalescemath() {
@@ -311,7 +283,7 @@ function count_children( par )
 
 function openTeX()
 {
-  dump("Open TeX \n");
+//  dump("Open TeX \n");
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
   fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);     
@@ -369,10 +341,10 @@ function openTeX()
     catch (e)
     {
       var dirkey;
-      if (msiGetOS() == "win")
+      if (getOS(window) == "win")
         dirkey = "Pers";
       else
-      if (msiGetOS() =="osx")
+      if (getOS(window) =="osx")
         dirkey = "UsrDocs";
       else
         dirkey = "Home";
@@ -404,8 +376,8 @@ function openTeX()
     if (outfile.exists()) outfile.remove(false);
     var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
-    var os = GetOS();
-    if (os == "Win") {
+    var os = getOS(window);
+    if (os == "win") {
       exefile.append("pretex.exe");
     } else {
       exefile.append("pretex");
@@ -654,8 +626,8 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   //
   var compiledFileLeaf = "SWP";
   passData = new Object;
-  var os = GetOS();
-  if (os == "Win") extension = "cmd";
+  var os = getOS(window);
+  if (os == "win") extension = "cmd";
   else extension = "bash";
   exefile.append(compiler+"."+extension);
   indexexe.append("makeindex."+extension);
@@ -664,7 +636,7 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   passData.indexexe = indexexe;
   passData.bibtexexe = bibtexexe;
   passData.outputDir = outputDir;
-  passData.args = ["-output-directory", outputDir, infileLeaf, compiledFileLeaf];
+  passData.args = [outputDir, infileLeaf, compiledFileLeaf, "x"];
   passData.passCount = compileInfo.passCount;
   passData.runMakeIndex = compileInfo.runMakeIndex;
   passData.runBibTeX = compileInfo.runBibTeX;
@@ -832,7 +804,7 @@ function printTeX(preview )
           var arr = new Array();
           if (pdfAction == "launch")
           {
-            var os = msiGetOS();
+            var os = getOS(window);
             if (os == "linux") 
             {
               extension = "bash";
@@ -1176,20 +1148,26 @@ function getXSLAsString(xslPath)
 
 function documentToTeXString(document, xslPath)
 {
-  var resultString = "";
+  var xsltString = "";
   var strResult = "";
-  resultString = getXSLAsString(xslPath);
+  xsltString = getXSLAsString(xslPath);
 
   var xsltProcessor = new XSLTProcessor();
 
   try{
     var parser = new DOMParser();
-    var doc = parser.parseFromString(resultString, "text/xml");
+    var doc = parser.parseFromString(xsltString, "text/xml");
     xsltProcessor.importStylesheet(doc);
     var newDoc = xsltProcessor.transformToDocument(document);
     strResult = newDoc.documentElement.textContent || "";
-    while (strResult.search(/\n\s*\n/) >= 0)
-      strResult = strResult.replace(/\n\s*\n/,"\n","g");
+    while (strResult.search(/\n[ \t]+/) >= 0)
+		  strResult = strResult.replace(/\n[ \t]+/,"\n","g");
+    while (strResult.search(/\n\n/) >= 0)
+      strResult = strResult.replace(/\n\n/,"\n","g");
+	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
+		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
+		while (strResult.search(/\\par/) >= 0)
+		  strResult = strResult.replace(/\\par/,"\n\n", "g");
   }
   catch(e){
     dump("error: "+e.message+"\n\n");

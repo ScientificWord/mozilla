@@ -1,5 +1,6 @@
 // Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
 #include "nsCOMPtr.h"
+#include "nsISupportsPrimitives.h"
 #include "msiEditor.h"
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLCaret.h"
@@ -52,7 +53,6 @@
 static PRInt32 instanceCounter = 0;
 nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
 nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
-
 
 
 
@@ -244,7 +244,7 @@ msiEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
                                 PRInt32 *ioOffset, 
                                 PRBool aNoEmptyNodes)
 {
-     return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, aNoEmptyNodes);
+     return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, PR_TRUE/*aNoEmptyNodes*/);
 }
 
 
@@ -516,18 +516,16 @@ msiEditor::InsertMathname(const nsAString & mathname)
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
+        res = DeleteSelection(nsIEditor::eNone); 
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
+      
       if (NS_SUCCEEDED(res))
         res = InsertMathnameEx(selection, theNode, theOffset, mathname);
     }
@@ -585,18 +583,16 @@ msiEditor::InsertEngineFunction(const nsAString & mathname)
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
+        res = DeleteSelection(nsIEditor::eNone); 
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
+
       if (NS_SUCCEEDED(res))
         res = InsertEngineFunctionEx(selection, theNode, theOffset, mathname);
     }
@@ -651,18 +647,17 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
+        //res = NS_ERROR_FAILURE;
+        res = DeleteSelection(nsIEditor::eNone); 
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
+      
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
@@ -695,7 +690,8 @@ msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
+        //res = NS_ERROR_FAILURE;
+        res = DeleteSelection(nsIEditor::eNone); 
         // TODO add stuff to delete and replace the selection?
         // current SWP behavoir is to replace selection by the operator, but since we may want to allow
         // arbitrary math to be the content of an <mo> at some time, this should be considered.
@@ -703,11 +699,9 @@ msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
+      
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
@@ -738,6 +732,10 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below)
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
+      if (!bCollapsed)
+      {
+        res = DeleteSelection(nsIEditor::eNone); 
+      }
       theNode = startNode;
       theOffset = startOffset;
       if (NS_SUCCEEDED(res))
@@ -1042,8 +1040,20 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       if (NS_SUCCEEDED(res))  
       {
         nsCOMPtr<nsIDOMNode> currFocusNode;
+				nsCOMPtr<nsIDOMElement> currFocusElement;
         res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
-        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+				nsAutoString name;
+				nsCOMPtr<nsIDOMNode> tempNode = currFocusNode;
+				PRUint16 type;
+				res = tempNode->GetNodeType(& type);
+				if (type == 3)
+					currFocusNode->GetParentNode(getter_AddRefs(tempNode));
+				currFocusElement = do_QueryInterface(tempNode);
+				res = currFocusElement->GetTagName(name);
+				if (!name.EqualsLiteral("mtext"))
+				{
+	        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+				}
         if (NS_SUCCEEDED(res) && currFocusNode && mathnode)
         {
           PRBool preventDefault(PR_FALSE);
@@ -1405,15 +1415,13 @@ NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
       if (!bCollapsed)
       {
         res = DeleteSelection(nsIEditor::eNone);
-        NS_ASSERTION(theNode,"need to set theNode");
-        if (NS_FAILED(res)) 
-          return res;  // TODO -- is it not clear what to do here -- pass along to nsHTMLEditor
+        //NS_ASSERTION(theNode,"need to set theNode");
+        //if (NS_FAILED(res)) 
+        //  return res;  // TODO -- is it not clear what to do here -- pass along to nsHTMLEditor
       }
-      else
-      {
-        theNode = startNode;  
-        theOffset = startOffset;
-      }
+      theNode = startNode;  
+      theOffset = startOffset;
+
       if (aStringToInsert.Length() > 1)
         res = InsertMathnameEx(selection, theNode, theOffset, aStringToInsert);
       else  
@@ -1445,6 +1453,11 @@ NS_IMETHODIMP msiEditor::NodeInMath(nsIDOMNode *node, nsIDOMNode **_retval)
     res = checkNode->GetLocalName(name);
     while (checkNode && !name.EqualsLiteral("math"))
     {
+	    if (name.EqualsLiteral("mtext"))
+			{
+				*_retval = nsnull;
+				return NS_OK;
+			}
       res = checkNode->GetParentNode(getter_AddRefs(checkNode));
       if (checkNode) res = checkNode->GetLocalName(name);
     }
@@ -2696,6 +2709,19 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //
 //  If we return STATE_SUCCESS, the node and offset of the last checked character have to be returned.
 
+PRBool TwoSpacesSwitchesToMath()
+{
+	nsresult rv;
+	PRBool thePref;
+	nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+
+  if (NS_SUCCEEDED(rv) && prefBranch) {
+		rv = prefBranch->GetBoolPref("swp.space.after.space", &thePref);
+		return thePref;
+  }
+	return PR_FALSE;
+}
 
 nsresult 
 msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, 
@@ -2719,13 +2745,25 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     if (offset > theText.Length()) offset = theText.Length();
     while ((PRInt32)(--offset) >= 0)
     {
-      while (prevChar == ' ' && theText[offset] == ' ') --offset;
+//      while (prevChar == ' ' && theText[offset] == ' ') --offset;
       nodeIn->GetParentNode(getter_AddRefs(pnode));
       rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
         pnode = nsnull;
       fCanEndHere = PR_TRUE;
       if (tag.EqualsLiteral("mi")) fCanEndHere = (offset==0);
-      prevChar = theText[offset];
+      // check for double spaces in text mode; possible to convert to math
+			if (!inMath && (prevChar == ' ') && (theText[offset] == 160))
+			{
+				if (TwoSpacesSwitchesToMath())
+				{		
+					*nodeOut = nodeIn;
+					offsetOut = offset;
+					_result = msiIAutosub::STATE_SPECIAL; 
+					return NS_OK;
+				}
+			}
+			
+			prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
       {
@@ -2856,7 +2894,16 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
-    m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
+    if (lookupResult == msiIAutosub::STATE_SPECIAL)
+		{
+			ctx =	msiIAutosub::CONTEXT_TEXTONLY; 
+			action = msiIAutosub::ACTION_EXECUTE;
+			data = NS_LITERAL_STRING("inserttext(' '); msiGoDoCommand('cmd_MSImathtext')"); 
+			pasteContext = NS_LITERAL_STRING(""); 
+			pasteInfo = NS_LITERAL_STRING("");
+		}
+		else
+			m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
     if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
@@ -3013,7 +3060,7 @@ NS_IMETHODIMP
 msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
 {
   nsresult res = NS_OK;
-  PRInt32 rangeCount;
+//  PRInt32 rangeCount;
   PRUint32 i;
   nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsIDOMRange> range;
@@ -3023,11 +3070,11 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
   PRInt32 offsetStart;
   PRInt32 offsetEnd;
   res = GetSelection(getter_AddRefs(sel));
-  res = sel->GetRangeCount(&rangeCount);
-  rangeCount = 1;
-  for (i = 0; i < rangeCount; i++)
-  {
-    sel->GetRangeAt(i, getter_AddRefs(range));
+//  res = sel->GetRangeCount(&rangeCount);
+//  rangeCount = 1;
+//  for (i = 0; i < rangeCount; i++)
+ // {
+    sel->GetRangeAt(/*i*/0, getter_AddRefs(range));
     range->CloneRange(getter_AddRefs(modrange));
     AdjustRange(modrange, isForDeletion, direction);
     modrange->GetStartContainer(getter_AddRefs(nodeContainerStart));
@@ -3036,7 +3083,7 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
     modrange->GetEndOffset(&offsetEnd);
     sel->Collapse(nodeContainerStart, offsetStart);
     sel->Extend(nodeContainerEnd, offsetEnd);
-  }
+ // }
   return res;
 }
 

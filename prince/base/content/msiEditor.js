@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorJS_duplicateTest = "Bad";
 
@@ -309,7 +310,7 @@ function msiEditorArrayInitializer()
 }
 
 
-function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML)
+function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML, topwindow)
 {
 //  // See if argument was passed.
 //  if ( window.arguments && window.arguments[0] )
@@ -357,7 +358,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
       startText = initialText;
     editorElement.initialEditorContents = startText;
   }
-  EditorStartupForEditorElement(editorElement);
+  EditorStartupForEditorElement(editorElement, topwindow);
   msiDumpWithID("In msiInitializeEditorForElement for element [@], back from EditorStartupForEditorElement call.\n", editorElement);
 
   // Initialize our source text <editor>
@@ -562,13 +563,14 @@ function addDOMEventListenerForEditor(editorElement)
     editorElement.contentWindow.addEventListener("DOMNodeRemoved", msiEditorDOMChangeListener, false);
     editorElement.contentWindow.addEventListener("DOMSubtreeModified", msiEditorDOMChangeListener, true);
   }
-  catch(ex) {dump("Unable to register keydown event listener; error [" + ex + "].\n");}
+  catch(ex) {dump("Unable to register DOM change event listener; error [" + ex + "].\n");}
 }
 
 function msiEditorDOMChangeListener(event)
 {
   var targ = event.originalTarget;
-  var displayNode;
+  var displayNode, tableNode;
+  var editor, editorElement;
   if (!targ)
     targ = event.target;
   switch(msiGetBaseNodeName(targ))
@@ -806,88 +808,19 @@ function msiEditorDocumentObserver(editorElement)
               editor.addTagInfo(tagdeflist[i]);
             
           }
-// Now build the style sheet for the AllTagsView
-          var templatefile = msiFileFromFileURL(msiURIFromString("resource://app/res/css/tagtemplate.css"));
-          var data = "";  
-          var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].  
-                                  createInstance(Components.interfaces.nsIFileInputStream);  
-          var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].  
-                                  createInstance(Components.interfaces.nsIConverterInputStream);  
-          fstream.init(templatefile, -1, 0, 0);  
-          cstream.init(fstream, "UTF-8", 0, 0);  
-  
-          let (templatestr = {}) {  
-            cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
-            data = templatestr.value;  
-          }  
-          cstream.close(); // this closes fstream  
-          var classtemplates = data.split(/\-{4,}/);
-          var j;
-          for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
-
-
-          var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
-          var taglist;
-          var i;
-          var k;
-          var str = "";
-          var ok;
-          var classname;
-          var classtemplate;
-          for (j = 0; j < tagclasses.length; j++)
-          {
-            ok = false;
-            classname= tagclasses[j];
-            for (k = 0; k < classtemplates.length; k++)
-            {
-              if (classtemplates[k].indexOf(classname)==0) 
-              {
-                classtemplate = classtemplates[k];
-                ok = true;
-                break;
-              }
-            }
-
-            taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
-            for (i = 0; i < taglist.length; i++)
-            {
-              if (taglist[i].length && taglist[i][0] != "(")
-                str += classtemplate.replace(classname,taglist[i],"g")+"\n";
-            }
-          }
-
-          try {
-            var htmlurlstring = msiGetEditorURL(this.mEditorElement);
-               // currently htmlusrstring = "chrome://prince/content/StdDialogShell.xhtml" 
-            var htmlurl = msiURIFromString(htmlurlstring);
-               // ... seems ok
-            var htmlFile = msiFileFromFileURL(htmlurl);
-             // Throws exception. htmlurl doesn't have nsIFileURL interface.
-             // Can fix by setting the dialog shell in the prefs to something like
-             // ...   "resource://app/res/StdDialogShell.xhtml"
-             // and moving the file there in the build/install.
-
-            var cssFile = htmlFile.parent;
-           
-            cssFile.append("css");
-            if (!cssFile.exists()) cssFile.create(1, 0755);
-             
-            cssFile.append("msi_Tags.css");
-
-            dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
-
-            var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-            fos.init(cssFile, -1, -1, false);
-            var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-              .createInstance(Components.interfaces.nsIConverterOutputStream);
-            os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-            os.writeString(str);
-            os.close();
-            fos.close();
-          }
-          catch (e) {
-            dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
-          }
+					UpdateWindowTitle();
+// Add language tags if there is a <babel> tag
+					addLanguageTagsFromBabelTag(editor.document)
+				  var htmlurlstring = editor.document.documentURI;;
+				  var htmlurl = msiURIFromString(htmlurlstring);
+				  var htmlFile = msiFileFromFileURL(htmlurl);
+				  if (htmlFile)
+				  {
+						var cssFile = htmlFile.parent;
+					  cssFile.append("css");
+					  cssFile.append("msi_Tags.css")
+					  dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+					}
 
           try{
              var elemList = editor.document.getElementsByTagName("definitionlist");
@@ -1087,7 +1020,14 @@ function msiEditorDocumentObserver(editorElement)
         {
           this.mEditorElement.mEditorSeqInitializer.finishedEditor(this.mEditorElement);
         }
-        break;
+
+        if (bIsRealDocument && ("initialMarker" in this.mEditorElement) && (this.mEditorElement.initialMarker.length))
+        {
+          var markerStr = decodeURIComponent(this.mEditorElement.initialMarker);
+          delete this.mEditorElement.initialMarker;  //don't want to leave this around for later reloads or anything
+          msiGoToMarker(this.mEditorElement, markerStr);
+        }
+      break;
 
       case "cmd_setDocumentModified":
 //        msiDumpWithID("Hit setDocumentModified observer in base msiEditorDocumentObserver, for editor [@].\n", this.mEditorElement);
@@ -1159,12 +1099,13 @@ function isShell (filename)
   return foundit;
 }
 
-function EditorStartupForEditorElement(editorElement)
+function EditorStartupForEditorElement(editorElement, topwindow)
 {
 
 //  msiDumpWithID("Entering EditorStartupForEditorElement for element [@].\n", editorElement);
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
-  var is_topLevel = msiIsTopLevelEditor(editorElement);
+  var is_topLevel = topwindow;
+	if (topwindow == null) is_topLevel = msiIsTopLevelEditor(editorElement);
   var prefs = GetPrefs();
   var filename = "untitled";
 
@@ -1243,9 +1184,13 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     var doc;
     var dir;
     var charset = "";
+    var initMarker = "";
     if (theArgs)
     {
-      charset = theArgs.getAttribute("charset")
+      charset = theArgs.getAttribute("charset");
+      initMarker = theArgs.getAttribute("initialMarker");
+      if (initMarker && initMarker.length)
+        editorElement.initialMarker = initMarker;
       docurlstring = theArgs.getAttribute("value");
       if (docurlstring.length > 0)
         docurl = msiURIFromString(docurlstring);
@@ -1304,9 +1249,18 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     if (!docurl.schemeIs("chrome"))
     {
       doc = msiFileFromFileURL(docurl);
-      dir = doc.parent;
+      if (!doc)
+      {
+        docpath = docurl.path;
+        doc = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        try
+        { doc.initWithPath(docpath); }
+        catch(ex) {doc = null;}
+      }
+      if (doc)
+        dir = doc.parent;
     }
-    if (!editorElement.isShellFile) editorElement.fileLeafName = doc.leafName;
+    if (!editorElement.isShellFile && doc) editorElement.fileLeafName = doc.leafName;
     // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
     // has already been created and the document name changed. When starting up, or starting with a file on the
     // command line we still need to call "createWorkingDirectory."
@@ -1551,10 +1505,12 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
     editorElement.contentWindow.focus();
 }
 
-function msiEditorLoadUrl(editorElement, url)
+function msiEditorLoadUrl(editorElement, url, markerStr)
 {
   dump("msiEditorLoadUrl: url.spec= "+url.spec+"\n");
   try {
+    if (markerStr)
+      editorElement.initialMarker = markerStr;
     if (url)
       editorElement.webNavigation.loadURI(url.spec, // uri string
              msIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,     // load flags
@@ -1621,7 +1577,7 @@ function SharedStartupForEditor(editorElement)
     }
   } catch (e) { dump("In SharedStartupForEditor, exception: [" + e + "].\n"); }
 
-  var isMac = (GetOS() == msigMac);
+  var isMac = (getOS(window) == "osx");
 
   // Set platform-specific hints for how to select cells
   // Mac uses "Cmd", all others use "Ctrl"
@@ -1768,20 +1724,28 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     document = editor.document;
     if (!document)
       return true;
-    if (!editor.documentModified && !msiIsHTMLSourceChanged(editorElement))
+		var htmlurlstring = msiGetEditorURL(editorElement); 
+	  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
+	  var fileURL = msiURIFromString(sciurlstring);
+	  var file = msiFileFromFileURL(fileURL);
+		var scifileExists = file.exists();
+//    var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    if ((!editor.documentModified) && (!msiIsHTMLSourceChanged(editorElement)) && scifileExists)
     {
       if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
       // if the document is a shell and has never been saved, it will be deleted by Revert
         doRevert(false, editorElement, true);
       return true;
     }
-  } catch (e) { return true; }
+  } 
+	catch (e) {
+		return false; 
+	}
 
   // call window.focus, since we need to pop up a dialog
   // and therefore need to be visible (to prevent user confusion)
   top.document.commandDispatcher.focusedWindow.focus();  
 
-  var htmlurlstring = msiGetEditorURL(editorElement); 
   var scheme = GetScheme(htmlurlstring);
   var doPublish = (scheme && scheme != "file");
 
@@ -1804,7 +1768,6 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     
   var reasonToSave = strID ? GetString(strID) : "";
 
-  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
   if (/_work/.test(sciurlstring))
   {
     sciurlstring = sciurlstring.replace((/_work\/[^\/]*\.[a-z0-9]+$/i),"")+".sci";
@@ -2842,6 +2805,7 @@ function EditorClick(event)
   if (!event)
     return;
 //  if (event.target.onclick) return;
+  var editorElement = msiGetEditorElementFromEvent(event);
   if (event.detail == 2)
   {
     EditorDblClick(event);
@@ -2849,14 +2813,46 @@ function EditorClick(event)
   }
   else if (event.detail == 1)
   {
-    if (event.target.tagName == "plotwrapper") 
+    var obj, theURI, targWin;
+    var objName = msiGetBaseNodeName(event.target);
+	  var editor = msiGetEditor(editorElement);  
+	  var graphnode = getEventParentByTag(event, "plotwrapper");
+    var linkNode;
+    if (!graphnode)
     {
-      doVCamInitialize(event);
-      vcamActive = true;
+	    linkNode = getEventParentByTag(event, "xref");
+      if (!linkNode)
+	      linkNode = getEventParentByTag(event, "a");
     }
-    else if (document.getElementById("vcamactive").getAttribute("hidden") !==true) 
+    if (graphnode) 
     {
-      document.getElementById("vcamactive").setAttribute("hidden",true);
+      var obj = event.target.getElementsByTagName("obj")[0];
+      if (obj != null) {
+        doVCamInitialize(obj);
+      }
+    }
+    else if (linkNode && (objName=="xref"))
+    {
+      theURI = event.target.getAttribute("href");
+      if (!theURI)
+        theURI = event.target.getAttribute("key");
+      if (theURI && theURI.length)
+        theURI = "#" + theURI;
+      msiClickLink(event, theURI, targWin, editorElement);
+    }
+    else if (linkNode)
+    {
+      theURI = event.target.getAttribute("href");
+      if (event.target.hasAttribute("target"))
+        targWin = event.target.getAttribute("target");
+      msiClickLink(event, theURI, targWin, editorElement);
+    }
+    else
+    {
+		  if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false") 
+	    {
+	      document.getElementById("vcamactive").setAttribute("hidden",true);
+	    }
     }
   }
 
@@ -2865,7 +2861,6 @@ function EditorClick(event)
   // For Web Composer: In Show All Tags Mode,
   // single click selects entire element,
   //  except for body and table elements
-  var editorElement = msiGetEditorElementFromEvent(event);
 //  if (IsWebComposer() && event.explicitOriginalTarget && msiIsHTMLEditor(editorElement) &&
 //      msiGetEditorDisplayMode(editorElement) == kDisplayModeAllTags)
   msiSetActiveEditor(editorElement, false);
@@ -4354,7 +4349,12 @@ function msiSetEditMode(mode, editorElement)
     msiClearSource(editorElement);
     editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
+//		catch(e)
+//		{
+//			dump(e.message+"\n");
+//		}
   }
+  else editorElement.contentWindow.focus();
 }
 
 function InsertColoredSourceView(editor, source)
@@ -4977,11 +4977,11 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         //  (use "href" to not be fooled by named anchor)
         try
         {
-          if (msiGetEditor(editorElement).getElementOrParentByTagName("href", element))
+          if (editor.getElementOrParentByTagName("href", element))
             objStr = GetString("ImageAndLink");
         } catch(e) {}
         
-        if (objStr == "")
+        if (!objStr || !objStr.length)
         {
           objStr = GetString("Image");
           commandStr = "cmd_reviseImage";
@@ -5297,6 +5297,13 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         scriptStr = "doInsertIndexEntry(event.target.refEditor, event.target.refElement);";
       break;
 
+      case "msiframe":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("msiFrame"));
+        scriptStr = "msiFrame(event.target.refEditor, null, event.target.refElement);";
+      break;
+
       default:
         tagclass = editor.tagListManager.getClassOfTag(name, null);
         switch (tagclass)
@@ -5540,16 +5547,15 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
   retTableData.colsData = new Array(tableDims.nCols);
   retTableData.m_nRows = tableDims.nRows;
   retTableData.m_nCols = tableDims.nCols;
-  var nCurrRow = 1;
+  var rowCol = {m_nRow : 1, m_nCol : 1};
 
-  function addRowsToList(aTableData, aParent, currRow)
+  function addRowsToList(aTableData, aParent, currPos)
   {
     var childNode = null;
-    var currCol = 1;
 //    var currRow = 1;
     for (var ix = 0; ix < aParent.childNodes.length; ++ix)
     {
-      currCol = 1;
+      currPos.m_nCol = 1;
       childNode = aParent.childNodes[ix];
       switch(msiGetBaseNodeName(childNode))
       {
@@ -5558,7 +5564,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
         case "thead":
         case "tfoot":
         case "tbody":
-          addRowsToList(aTableData, childNode, currRow);
+          addRowsToList(aTableData, childNode, currPos);
         break;
 
         case "tr":
@@ -5566,17 +5572,18 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
         case "mlabeledtr":
           for (var jx = 0; jx < childNode.childNodes.length; ++jx)
           {
-            if (childNode.childNodes[jx].nodeType == 1) addCellToList(aTableData, childNode.childNodes[jx], currRow, currCol);
+            if (childNode.childNodes[jx].nodeType == 1)
+              addCellToList(aTableData, childNode.childNodes[jx], currPos);
           }
         break;
 
         case "th":
         case "td":
         default:
-          addCellToList(aTableData, childNode, currRow, currCol);
+          addCellToList(aTableData, childNode, currPos);
         break;
       }
-      ++currRow;
+      ++currPos.m_nRow;
     }
   }
 
@@ -5638,7 +5645,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
       colData[datumName] = datumValue;
   }
 
-  function addCellToList(aTableData, cellNode, nRow, nCol)
+  function addCellToList(aTableData, cellNode, currPos)
   {
     var numCols = aTableData.cellInfoArray[0].length;
     var numRows = aTableData.cellInfoArray.length;
@@ -5650,41 +5657,41 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
       case "th":
       case "td":
       case "mtd":
-        while ( (nRow <= numRows) && (nCol <= numCols) && (aTableData.cellInfoArray[nRow-1][nCol-1] != null) )
+        while ( (currPos.m_nRow <= numRows) && (currPos.m_nCol <= numCols) && (aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1] != null) )
         {
-          ++nCol;
+          ++currPos.m_nCol;
         }
-        if (nCol > numCols)  //There's no empty spot in this row for the cell data.
+        if (currPos.m_nCol > numCols)  //There's no empty spot in this row for the cell data.
         {
-          dump("In msiEditor.js, msiGetRowAndColumnData(), problem with too many cells in row [" + nRow + "].\n");
+          dump("In msiEditor.js, msiGetRowAndColumnData(), problem with too many cells in row [" + currPos.m_nRow + "].\n");
           return;
         }
-        aTableData.cellInfoArray[nRow-1][nCol-1] = {mNode : cellNode, mRowContinuation : 0, mColContinuation : 0};
+        aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1] = {mNode : cellNode, mRowContinuation : 0, mColContinuation : 0};
         if (cellNode.hasAttribute("colspan"))
           colspan = Number(cellNode.getAttribute("colspan"));
         if (colspan == 0)
-          colspan = numCols - nCol + 1;
-        else if (colspan > numCols - nCol + 1)
-          colspan = numCols - nCol + 1;
+          colspan = numCols - currPos.m_nCol + 1;
+        else if (colspan > numCols - currPos.m_nCol + 1)
+          colspan = numCols - currPos.m_nCol + 1;
         if (cellNode.hasAttribute("rowspan"))
-          colspan = Number(cellNode.getAttribute("rowspan"));
+          rowspan = Number(cellNode.getAttribute("rowspan"));
         if (rowspan == 0)
-          rowspan = numRows - nRow + 1;
-        else if (rowspan > numRows - nRow + 1)
-          rowspan = numRows - nRow + 1;
-        setRowData(aTableData, nRow-1, "lastNonemptyCell", nCol - 2 + colspan);
-        setColData(aTableData, nCol-1, "lastNonemptyCell", nRow - 2 + rowspan);
+          rowspan = numRows - currPos.m_nRow + 1;
+        else if (rowspan > numRows - currPos.m_nRow + 1)
+          rowspan = numRows - currPos.m_nRow + 1;
+        setRowData(aTableData, currPos.m_nRow-1, "lastNonemptyCell", currPos.m_nCol - 2 + colspan);
+        setColData(aTableData, currPos.m_nCol-1, "lastNonemptyCell", currPos.m_nRow - 2 + rowspan);
         if (colspan != 1)
         {
-          aTableData.cellInfoArray[nRow-1][nCol-1].mColContinuation = colspan - 1;
-          setColData(aTableData, nCol-1, "firstCol", nCol - 1);
-          setColData(aTableData, nCol-1, "lastCol", nCol - 2 + colspan); //lastCol calculation is (nCol-1) + (colspan-1)
+          aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1].mColContinuation = colspan - 1;
+          setColData(aTableData, currPos.m_nCol-1, "firstCol", currPos.m_nCol - 1);
+          setColData(aTableData, currPos.m_nCol-1, "lastCol", currPos.m_nCol - 2 + colspan); //lastCol calculation is (nCol-1) + (colspan-1)
         }
         if (rowspan != 1)
         {
-          aTableData.cellInfoArray[nRow-1][nCol-1].mRowContinuation = rowspan - 1;
-          setRowData(aTableData, nRow-1, "firstRow", nRow - 1);
-          setRowData(aTableData, nRow-1, "lastRow", nRow - 2 + rowspan);   //lastRow calculation is (nRow-1) + (rowspan-1)
+          aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1].mRowContinuation = rowspan - 1;
+          setRowData(aTableData, currPos.m_nRow-1, "firstRow", currPos.m_nRow - 1);
+          setRowData(aTableData, currPos.m_nRow-1, "lastRow", currPos.m_nRow - 2 + rowspan);   //lastRow calculation is (nRow-1) + (rowspan-1)
         }
         for (var ii = 0; ii < rowspan; ++ii)
         {
@@ -5692,24 +5699,24 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
           {
             if (!ii && !jj)
               continue;
-            if (!aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj])
-              aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj] = {mNode : cellNode, mRowContinuation : -ii, mColContinuation : -jj};
+            if (!aTableData.cellInfoArray[currPos.m_nRow-1+ii][currPos.m_nCol-1+jj])
+              aTableData.cellInfoArray[currPos.m_nRow-1+ii][currPos.m_nCol-1+jj] = {mNode : cellNode, mRowContinuation : -ii, mColContinuation : -jj};
 //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mNode = cellNode;
 //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mRowContinuation = -ii-1;
 //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mColContinuation = -jj-1;
             if (ii > 0)
             {
-              setRowData(aTableData, nRow-1+ii, "firstRow", nRow - 1);
-              setRowData(aTableData, nRow-1+ii, "lastRow", nRow - 2 + rowspan);
+              setRowData(aTableData, currPos.m_nRow-1+ii, "firstRow", currPos.m_nRow - 1);
+              setRowData(aTableData, currPos.m_nRow-1+ii, "lastRow", currPos.m_nRow - 2 + rowspan);
             }
             if (jj > 0)
             {
-              setColData(aTableData, nCol-1+jj, "firstCol", nCol - 1);
-              setColData(aTableData, nCol-1+jj, "lastCol", nCol - 2 + colspan);
+              setColData(aTableData, currPos.m_nCol-1+jj, "firstCol", currPos.m_nCol - 1);
+              setColData(aTableData, currPos.m_nCol-1+jj, "lastCol", currPos.m_nCol - 2 + colspan);
             }
           }
         }
-        nCol += colspan;  //we don't change nRow here, incidentally - it can only change at the outer level of the loop (in the calling function).
+        currPos.m_nCol += colspan;  //we don't change nRow here, incidentally - it can only change at the outer level of the loop (in the calling function).
       break;
       
       default:
@@ -5721,7 +5728,8 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
 
 //  for (var ix = 0; ix < tableElement.childNodes.length; ++ix)
 //  {
-  addRowsToList(retTableData, tableElement, nCurrRow);
+
+  addRowsToList(retTableData, tableElement, rowCol);
 //  }
 
   return retTableData;
@@ -8024,8 +8032,18 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       if (commandString)
         item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
       else if (scriptString)
-        item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
-      item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+			{
+			  item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
+			}
+			if (propData.mNode && propData.mNode.setAttribute)
+			{		
+				item.addEventListener("DOMMenuItemActive", function (event) {
+					event.target.propertiesData.mNode.setAttribute("hilite","1");
+				}, false);
+				item.addEventListener("DOMMenuItemInactive", function (event) {
+					event.target.propertiesData.mNode.removeAttribute("hilite");
+				}, false);
+			}
       item.setAttribute("label", menuString);
       item.refElement = propData.getReferenceNode();
       item.refEditor = editorElement;
@@ -8063,7 +8081,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       if (!element)
         element = editor.selection.getRangeAt(0).commonAncestorContainer;
       if (element)
-        propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
+        propsData = msiCreatePropertiesObjectDataFromNode(element, editorElement, true);
     }
     if (propsData)
     {
@@ -9110,6 +9128,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
 //                                         command, commandHandler, "")
 
   window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
+	msiGetEditor(editorElement).incrementModificationCount(1);
   editorElement.focus();
 }
 
@@ -9129,6 +9148,7 @@ function msiEditorTableCellProperties(editorElement)
       // Start Table Properties dialog on the "Cell" panel
       //HERE USE MODELESS DIALOG FUNCTIONALITY!
       window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal,resizable", "", "CellPanel");
+			msiGetEditor(editorElement).incrementModificationCount(1);
       editorElement.focus();
     }
   } catch (e) {}
@@ -9632,9 +9652,9 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     }
     else if (elementName == "msiframe")
     {
-      msiFrame(element,editorElement);
+      msiFrame(editorElement, null, element);
     }
-    else if (elementName == "otfont")
+    else if (elementName == "rawTeX")
     {
       openOTFontDialog(elementName,element);
     }
@@ -10057,7 +10077,10 @@ var msiCommandUpdater = {
 //  }  
 };
 // Shim for compatibility with existing code. 
-function msiGoDoCommand(command, editorElement) { msiCommandUpdater.doCommand(command, editorElement); }
+function msiGoDoCommand(command, editorElement) 
+{ 
+	msiCommandUpdater.doCommand(command, editorElement); 
+}
 function msiGoUpdateCommand(command, editorElement) { msiCommandUpdater.updateCommand(command, editorElement); }
 function msiGoSetCommandEnabled(command, enabled, editorElement) { msiCommandUpdater.enableCommand(command, enabled, editorElement); }
 function msiGoSetMenuValue(command, labelAttribute, editorElement) { msiCommandUpdater.setMenuValue(command, labelAttribute, editorElement); }
@@ -10542,27 +10565,31 @@ function openTeXButtonDialog(tagname, node)
 {
   openDialog('chrome://prince/content/texbuttoncontents.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 function openOTFontDialog(tagname, node)
 {
   openDialog('chrome://prince/content/otfont.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
-function openFontColorDialog(tagname, node)
-{
-  var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
-  openDialog('chrome://prince/content/color.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    "",colorObj,node);
-}
-
-function openFontSizeDialog(tagname, node)
-{
-  openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    node, editor);
-}
-
+//function openFontColorDialog(tagname, node)
+//{
+//  var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+//  openDialog('chrome://prince/content/color.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+//    "",colorObj,node);
+//}
+//
+//function openFontSizeDialog(tagname, node)
+//{
+//  openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+//    node, editor);
+//}
+//
 
 function openGraphDialog(tagname, node, editorElement)
 {
@@ -10575,6 +10602,9 @@ function openGraphDialog(tagname, node, editorElement)
   // non-modal dialog, the return is immediate
   var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
      editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
+  var editorElement = msiGetActiveEditorElement();
+	msiGetEditor(editorElement).incrementModificationCount(1);
+
 }
 
 function getMSIDocumentInfo(editorElement)
@@ -10602,3 +10632,291 @@ function setBibliographyScheme(editorElement, whichScheme)
   docInfo.putDocInfoToDocument();
 }
 
+function msiClickLink(event, theURI, targWinStr, editorElement)
+{
+  var doFollowLink = false;
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var theWindow = window;
+  if (editorElement)
+    theWindow = editorElement.contentWindow;
+  var editor = msiGetEditor(editorElement);
+  var flags = editor.flags;
+  if (flags & nsIPlaintextEditor.eEditorReadonlyMask)
+    doFollowLink = true;
+  else if (event.ctrlKey)
+    doFollowLink = true;
+  if (!doFollowLink)
+    return;
+
+  var objName = msiGetBaseNodeName(event.target);
+  var preferMarker = (objName == "xref");
+  var targURIStr, targMarker;
+  var newWindow;
+  var sharpPos = theURI.indexOf("#");
+  if (sharpPos < 0)
+    targURIStr = theURI;
+  else
+  {
+    targMarker = theURI.substr(sharpPos+1);
+    targURIStr = theURI.substr(0, sharpPos);
+  }
+  var targURI = msiCreateURI(msiMakeAbsoluteUrl(targURIStr, editorElement));
+  var fullTargURI = msiCreateURI(msiMakeAbsoluteUrl(theURI, editorElement));
+
+//  if (!targWinStr || (targWinStr == "_blank"))  //RWA Commenting this out for now! Don't try to re-use editors until we know how...
+    targWinStr = "";
+
+  var targEditor, targWin, winWatcher;
+  if (!targURIStr.length)
+    targEditor = editorElement;
+
+  var winNameToUse = "";
+//  if (targWinStr.length)
+//  {
+//    switch(targWinStr)
+//    {
+//      case "_top":
+//        targEditor = msiGetTopLevelEditorElement(window);
+//      break;
+//      case "_parent":
+//        targEditor = msiGetParentOrTopLevelEditor(editorElement);
+//      break;
+//      case "_self":
+//        targEditor = editorElement;
+//      break;
+//      default:  //using a window identifier string - find the window?
+//        winWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
+//        targWin = winWatcher.getWindowByName(targWinStr, null);
+//        if (targWin)
+//          targEditor =  msiGetPrimaryEditorElementForWindow(targWin);
+//        else
+//          winNameToUse = targWinStr;
+//      break;
+//    }
+//  }
+
+  if (!targEditor)
+    targEditor = msiEditPage(fullTargURI, theWindow, false, winNameToUse);
+  else if (targURI)
+  {
+    msiCheckAndSaveDocument(targEditor, "cmd_close", true);
+    var isSciRegEx = /\.sci$/i;
+    var isSci = isSciRegEx.test(targURI.spec);
+    if (isSci)
+    {
+      var doc = msiFileFromFileURL(targURI);
+      var newdoc = createWorkingDirectory(doc);
+      targURI = msiFileURLFromFile(newdoc);
+    }
+    msiEditorLoadUrl(targEditor, targURI, targMarker);
+  }
+  else if (targMarker && targMarker.length)
+    msiGoToMarker(targEditor, targMarker, preferMarker);
+}
+
+
+function msiGoToMarker(editorElement, markerStr, bPreferKey)
+{
+  var editor = msiGetEditor(editorElement);
+//  var targNode = editor.document.getElementById(markerStr);
+  var targNode;
+  var ourExpr = ".//*[(@key='" + markerStr + "') or (@id='" + markerStr + "') or (@marker='" + markerStr + "') or (@customLabel='" + markerStr + "')]";
+  var xPathEval = new XPathEvaluator();
+  var nsResolver = xPathEval.createNSResolver(editor.document.documentElement);
+
+  var resultNodes = xPathEval.evaluate(ourExpr, editor.document.documentElement, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+  if (resultNodes.snapshotLength==1)
+    targNode = resultNodes.snapshotItem(0);
+  else if (resultNodes.snapshotLength > 1)
+  {
+    for (var ix = 0; !targNode && (ix < resultNodes.snapshotLength); ++ix)
+    {
+      currNode = resultNodes.snapshotItem(ix);
+      if (bPreferKey)
+      {
+        if (currNode.hasAttribute("key") && (msiGetBaseNodeName(currNode) != "xref") && (currNode.getAttribute("key") == markerStr))
+          targNode = currNode;
+        else if (currNode.hasAttribute("marker") && (currNode.getAttribute("marker") == markerStr))
+          targNode = currNode;
+      }
+      else if (currNode.hasAttribute("id") && (currNode.getAttribute("id") == markerStr))
+        targNode = currNode;
+
+    }
+    if (!targNode)
+      targNode = resultNodes.snapshotItem(0);
+  }
+  else  //No results found! Alert:
+  {
+    var missingMarkerTitleStr = GetString("MissingMarkerErrorTitle");
+    var missingMarkerStr = GetString("MissingMarkerError");
+    missingMarkerStr = missingMarkerStr.replace("%name%", markerStr);
+    AlertWithTitle(missingMarkerTitleStr, missingMarkerStr);
+  }
+
+//    if (treeWalker)
+//    {
+//      for (var currNode = treeWalker.nextNode(); currNode != null; currNode = treeWalker.nextNode())
+//      {
+//        if ( (currNode.getAttribute("marker") == markerStr) || (currNode.getAttribute("key") == markerStr) )
+//        {
+//          targNode = currNode;
+//          break;
+//        }
+//      }
+//    }
+//  }
+  if (targNode)
+  {
+    var currNode = editor.selection.focusNode;
+    var currOffset = editor.selection.focusOffset;
+    var bAlignWithTop = (msiNavigationUtils.comparePositions(targNode, 0, currNode, currOffset) < 0);
+    editor.selection.collapse(targNode,0);
+    targNode.scrollIntoView(bAlignWithTop);
+  }
+}
+
+function msiCreateURI(urlstring)
+{
+  try {
+    var ioserv = Components.classes["@mozilla.org/network/io-service;1"]
+               .getService(Components.interfaces.nsIIOService);
+    return ioserv.newURI(urlstring, null, null);
+  } catch (e) {}
+
+  return null;
+}
+
+function msiCheckOpenWindowForURIMatch(uri, win)
+{
+  var editorList = win.document.getElementsByTagName("editor");
+  for (var i = 0; i < editorList.length; ++i)
+  {
+    try {
+      var contentDoc = editorList[i].contentDocument;
+//      var contentWindow = win.content;  // need to QI win to nsIDOMWindowInternal?
+//      var contentDoc = contentWindow.document;
+      var htmlDoc = contentDoc.QueryInterface(Components.interfaces.nsIDOMHTMLDocument);
+      var winuri = msiCreateURI(htmlDoc.URL);
+      if (winuri.equals(uri))
+        return editorList[i];
+    } catch (e) {}
+  }
+  return null;
+}
+
+// Any non-editor window wanting to create an editor with a URL
+//   should use this instead of "window.openDialog..."
+//  We must always find an existing window with requested URL
+// (When calling from a dialog, "launchWindow" is dialog's "opener"
+//   and we need a delay to let dialog close)
+function msiEditPage(url, launchWindow, delay, windowName)
+{
+  // Always strip off "view-source:" and #anchors; kludge: accept string url or nsIURI url.
+  var urlstring, fullUrlstring;
+  try {
+    fullUrlstring = url.spec.replace(/^view-source:/, "");
+  }
+  catch(e) {
+    fullUrlstring = url.replace(/^view-source:/, "");
+  }
+  urlstring = fullUrlstring.replace(/#.*/, "");
+
+  var markerArg, marker;
+  var sharpPos = fullUrlstring.indexOf("#");
+  if (sharpPos >= 0)
+  {
+    marker = fullUrlstring.substr(sharpPos + 1);
+    markerArg = "initialMarker=" + marker;
+  }
+
+  // User may not have supplied a window
+  if (!launchWindow)
+  {
+    if (window)
+    {
+      launchWindow = window;
+    }
+    else
+    {
+      dump("No window to launch an editor from!\n");
+      return null;
+    }
+  }
+
+  // if the current window is a browser window, then extract the current charset menu setting from the current 
+  // document and use it to initialize the new composer window...
+
+  var wintype = document.documentElement.getAttribute('windowtype');
+  var charsetArg, win;
+
+  if (launchWindow && (wintype == "navigator:browser") && launchWindow.content.document)
+    charsetArg = "charset=" + launchWindow.content.document.characterSet;
+
+  try {
+    var uri = msiCreateURI(urlstring, null, null);
+
+    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
+    var windowManagerInterface = windowManager.QueryInterface( Components.interfaces.nsIWindowMediator);
+    var enumerator = windowManagerInterface.getEnumerator( "swp:xhtml_mathml" );
+    var emptyWindow;
+    var useEditorElement = null;
+    while ( enumerator.hasMoreElements() )
+    {
+      win = enumerator.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+      if ( win && msiIsWebComposer(win))
+      {
+        useEditorElement = msiCheckOpenWindowForURIMatch(uri, win);
+        if (useEditorElement != null)
+        {
+          // We found an editor with our url
+          useEditorElement.focus();
+          if (marker && marker.length)
+            msiGoToMarker(useEditorElement, marker);
+          return useEditorElement;
+        }
+//        else if (!emptyWindow && msiPageIsEmptyAndUntouched(editorElement)
+//        else if (!emptyWindow)
+//        else if (!useEditorElement)
+//        {
+//          var editorElement = msiGetPrimaryEditorElementForWindow(win);
+//          if (msiPageIsEmptyAndUntouched(editorElement))
+//            useEditorElement = editorElement;
+////            emptyWindow = win;
+//        }
+      }
+    }
+
+//    if (emptyWindow)
+    if (useEditorElement != null)
+    {
+      // we have an empty editor we can use
+      if (msiIsInHTMLSourceMode(useEditorElement))
+        msiSetEditMode(msiGetPreviousNonSourceDisplayMode(useEditorElement), useEditorElement);
+      msiEditorLoadUrl(useEditorElement, uri, marker);
+      useEditorElement.focus();
+      msiSetSaveAndPublishUI(uri.spec, useEditorElement);
+
+//      if (emptyWindow.IsInHTMLSourceMode())
+//        emptyWindow.SetEditMode(emptyWindow.PreviousNonSourceDisplayMode);
+//      emptyWindow.EditorLoadUrl(url);
+//      emptyWindow.focus();
+//      emptyWindow.SetSaveAndPublishUI(url);
+      return useEditorElement;
+    }
+
+    // Create new Composer window
+    if (!windowName || !windowName.length)
+      windowName = "_blank";
+    if (delay)
+    {
+      win = launchWindow.delayedOpenWindow("chrome://prince/content", "chrome,all,dialog=no", url);
+    }
+    else
+      win = launchWindow.openDialog("chrome://prince/content", windowName, "chrome,all,dialog=no", uri.spec, charsetArg, markerArg);
+
+    return useEditorElement;
+  } catch(e) {}
+  return null;
+}
