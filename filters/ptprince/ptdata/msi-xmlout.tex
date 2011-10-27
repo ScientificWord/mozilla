@@ -1154,12 +1154,6 @@
 
 
 
-
-
-
-
-
-
 \def\func#1{\string\func\@brace{#1}}
 \def\limfunc#1{\string\limfunc\@brace{#1}}
 
@@ -1330,6 +1324,7 @@
 
 
 
+
 %% Create TeX Buttons
 
 \def\MSITeXButton#1{%
@@ -1348,6 +1343,9 @@
        \msitag{<texb enc="1" name="#1">}%
           <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
        \msitag{</texb>}}}
+
+
+
 
 \def\msi@cdr#1#2xxxx{#2}
 
