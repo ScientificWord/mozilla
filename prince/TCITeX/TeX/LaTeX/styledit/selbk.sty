@@ -301,7 +301,7 @@
 \Counter{
    \Name{paragraphCount}
    \Mode{0}
-   \ResetOn{LevelFourDiv}
+   \ResetOn{Document}
    \Appearance{arabic}
    \RefPrefix{\paragraphCount }
    \RefFont{BodyTextFont}
@@ -3549,6 +3549,22 @@
    \Size{normalsize}
 }
 \FontNFSS{
+   \Name{@BAX}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@BAY}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
    \Name{AbstLeadInFont}
    \Mode{0}
    \Family{Serif}
@@ -6197,6 +6213,52 @@
    \Mark{}
 }
 \Division{
+   \Name{paragraph}
+   \Mode{0}
+   \Level{6}
+   \SetRightMark{false}
+   \SetLeftMark{false}
+   \HeadType{Inline}
+   \OverrideTitle{false}
+   \SETitlePage{DefaultPageSetup}
+   \RevertTitle{false}
+   \OverrideRest{false}
+   \RestPages{DefaultPageSetup}
+   \RevertRest{false}
+   \TOCLabelComponents{}
+   \IndentFirstPar{false}
+   \Position{CurrentPage}
+   \TextAfterHead{true}
+   \SkipBefore{20 pt}
+   \SkipAfter{10 pt}
+   \HeadComponents{\CurrentHeading }
+   \HeadParagraph{@ABQ}
+   \HeadFont{@BAX}
+   \HeadColor{R:0 G:0 B:0}
+   \UseCounter{paragraphCount}
+   \OverrideEqnLabel{false}
+   \ResetEqnCnt{false}
+   \EqnAppearance{arabic}
+   \EqnLabelComponents{(\equationCount )}
+   \EqnXRefComponents{}
+   \OverrideFigLabel{false}
+   \ResetFigCnt{false}
+   \FigAppearance{arabic}
+   \FigLabelComponents{\figureCount }
+   \FigXRefComponents{}
+   \OverrideTabLabel{false}
+   \ResetTabCnt{false}
+   \TabAppearance{arabic}
+   \TabLabelComponents{\tableCount }
+   \TabXRefComponents{}
+   \OverridePageNo{false}
+   \PageNoApp{arabic}
+   \PageNoReset{false}
+   \GenLeftMark{false}
+   \GenRightMark{false}
+   \Mark{\CurrentShortHeading }
+}
+\Division{
    \Name{part}
    \Mode{0}
    \Level{1}
@@ -6335,6 +6397,52 @@
    \Mark{}
 }
 \Division{
+   \Name{subparagraph}
+   \Mode{0}
+   \Level{7}
+   \SetRightMark{false}
+   \SetLeftMark{false}
+   \HeadType{Inline}
+   \OverrideTitle{false}
+   \SETitlePage{DefaultPageSetup}
+   \RevertTitle{false}
+   \OverrideRest{false}
+   \RestPages{DefaultPageSetup}
+   \RevertRest{false}
+   \TOCLabelComponents{}
+   \IndentFirstPar{true}
+   \Position{CurrentPage}
+   \TextAfterHead{true}
+   \SkipBefore{20 pt}
+   \SkipAfter{10 pt}
+   \HeadComponents{\CurrentHeading }
+   \HeadParagraph{@ABQ}
+   \HeadFont{@BAY}
+   \HeadColor{R:0 G:0 B:0}
+   \UseCounter{subparagraphCount}
+   \OverrideEqnLabel{false}
+   \ResetEqnCnt{false}
+   \EqnAppearance{arabic}
+   \EqnLabelComponents{(\equationCount )}
+   \EqnXRefComponents{}
+   \OverrideFigLabel{false}
+   \ResetFigCnt{false}
+   \FigAppearance{arabic}
+   \FigLabelComponents{\figureCount }
+   \FigXRefComponents{}
+   \OverrideTabLabel{false}
+   \ResetTabCnt{false}
+   \TabAppearance{arabic}
+   \TabLabelComponents{\tableCount }
+   \TabXRefComponents{}
+   \OverridePageNo{false}
+   \PageNoApp{arabic}
+   \PageNoReset{false}
+   \GenLeftMark{false}
+   \GenRightMark{false}
+   \Mark{\CurrentShortHeading }
+}
+\Division{
    \Name{subsection}
    \Mode{0}
    \Level{4}
@@ -6386,7 +6494,7 @@
    \Level{5}
    \SetRightMark{false}
    \SetLeftMark{false}
-   \HeadType{Inline}
+   \HeadType{Display}
    \OverrideTitle{false}
    \SETitlePage{DefaultPageSetup}
    \RevertTitle{false}
