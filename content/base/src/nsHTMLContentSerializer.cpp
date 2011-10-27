@@ -1140,6 +1140,7 @@ nsHTMLContentSerializer::LineBreakAfterOpen(nsIAtom* aName,
       (aName == nsGkAtoms::table) ||
       (aName == nsGkAtoms::tbody) ||
       (aName == nsGkAtoms::tr) ||
+      (aName == nsGkAtoms::mtr_) ||
       (aName == nsGkAtoms::br) ||
       (aName == nsGkAtoms::meta) ||
       (aName == nsGkAtoms::link) ||
@@ -1193,6 +1194,8 @@ nsHTMLContentSerializer::LineBreakAfterClose(nsIAtom* aName,
       (aName == nsGkAtoms::tr) ||
       (aName == nsGkAtoms::th) ||
       (aName == nsGkAtoms::td) ||
+      (aName == nsGkAtoms::mtr_) ||
+      (aName == nsGkAtoms::mtd_) ||
       (aName == nsGkAtoms::pre) ||
       (aName == nsGkAtoms::title) ||
       (aName == nsGkAtoms::li) ||
@@ -1233,6 +1236,7 @@ nsHTMLContentSerializer::StartIndentation(nsIAtom* aName,
   if ((aName == nsGkAtoms::head) ||
       (aName == nsGkAtoms::table) ||
       (aName == nsGkAtoms::tr) ||
+      (aName == nsGkAtoms::mtr_) ||
       (aName == nsGkAtoms::ul) ||
       (aName == nsGkAtoms::ol) ||
       (aName == nsGkAtoms::dl) ||
@@ -1255,6 +1259,7 @@ nsHTMLContentSerializer::EndIndentation(nsIAtom* aName,
   if ((aName == nsGkAtoms::head) ||
       (aName == nsGkAtoms::table) ||
       (aName == nsGkAtoms::tr) ||
+      (aName == nsGkAtoms::mtr_) ||
       (aName == nsGkAtoms::ul) ||
       (aName == nsGkAtoms::ol) ||
       (aName == nsGkAtoms::dl) ||
