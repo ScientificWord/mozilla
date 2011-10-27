@@ -60,6 +60,8 @@
    height="500"
    persist="screenX screenY width height">
 
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/EdLinkProps.js"/>
@@ -79,6 +81,9 @@
     <groupbox><caption label="&LinkURLBox.label;"/>
       <vbox id="LinkLocationBox">
         <label control="hrefInput" accesskey="&LinkURLEditField.accessKey;" width="1">&LinkURLEditField.label;</label>
+        <!-- textbox id="hrefInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys" / -->
+          <!-- tooltiptext="Enter a new key name" / -->
         <textbox id="hrefInput" timeout="50" maxrows="6"
                  class="uri-element"
                  oninput="ChangeLinkLocation();">
@@ -97,27 +102,24 @@
           <spacer flex="1"/>
           <msibutton label="&chooseButton.label;" accesskey="&chooseFileLink.accessKey;" oncommand="chooseLinkFile();"/>
         </hbox>
-      </vbox>  
-
-    </groupbox>
-    <groupbox><caption label="&MarkerorAnchor;"/>
+      <label control="key">&MarkerorAnchor;</label>
       <hbox>
-        <textbox id="hrefInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+        <textbox id="key" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-          tooltiptext="Enter a new key name"
-          onfocus=""
-          ontextentered="" />
-          <msibutton id="MoreFewerButton" oncommand="onMoreFewer();" persist="more"/>
+          tooltiptext="Enter an existing key name" ontextentered="doEnabling();" />
       </hbox>
+      <!-- msibutton id="MoreFewerButton" oncommand="onMoreFewer();" persist="more"/ -->
+    </vbox>  
+
     </groupbox>
 
   </vbox>
 
 
-  <vbox id="MoreSection">
-    <groupbox><caption label="&targetBox.label;"/>
-      <checkbox id="userDefinedTargetCheckbox" label="&userDefinedTarget.label;" accesskey="&userDefinedTarget.accesskey;" oncommand="TargetToggled();"/>
-      <radiogroup orient="vertical" class="indent" id="targetRadiogroup">
+  <!-- vbox id="MoreSection">
+    <groupbox><caption label="&targetBox.label;"/ -->
+      <!-- checkbox id="userDefinedTargetCheckbox" label="&userDefinedTarget.label;" accesskey="&userDefinedTarget.accesskey;" oncommand="TargetToggled();"/ -->
+      <!-- radiogroup orient="vertical" class="indent" id="targetRadiogroup">
         <radio id="topRadio"
                label="&topRadio.label;"
                accesskey="&topRadio.accesskey;"
@@ -148,7 +150,7 @@
       </radiogroup>
     </groupbox>
 
-  </vbox>
+  </vbox -->
   <!-- from EdDialogOverlay -->
   <vbox id="AdvancedEdit"/>
 </dialog>

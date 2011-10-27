@@ -18,7 +18,9 @@
   <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
   <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
   <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
-  
+
+#include editorkeys.inc
+
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
       <menuitem id="menu_newDocument" label="&newDocument.label;" 
@@ -38,7 +40,7 @@
       </menu>
       <menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"
           label="&cleanupCmd.label;"/>
-      <menuitem accesskey="&fileclose.accesskey;" key="closekb" observes="cmd_close"/>
+      <menuitem accesskey="&fileclose.accesskey;" observes="cmd_close"/>
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
         label="&saveCmd.label;" />
@@ -157,8 +159,14 @@
       <menuitem id="menu_copy"
                 label="&copyCmd.label;"
                 key="key_copy"
-                accesskey="&copyCmd.accesskey;"
+                accesskey="&copy.accesskey;"
                 observes="cmd_copy"/>
+      <menuitem id="menu_copytex"
+                label="&copytexCmd.label;"
+                observes="cmd_copytex"/>
+      <!--menuitem id="menu_copypicture"
+                label="&copypictureCmd.label;"
+                observes="cmd_copypicture"/ -->
       <menuitem id="menu_paste"
                 label="&pasteCmd.label;"
                 key="key_paste"
@@ -213,8 +221,8 @@
   </menu>
 
   <!-- Insert menu -->
-  <menu id="insertMenu" >
-    <menupopup id="insertMenuPopup">
+  <menu id="insertMenu" label="&insertMenu.label;" accesskey="&insertmenu.accesskey;">
+    <menupopup id="insertMenuPopup"  onpopupshowing="msiInitFontStyleMenu(this)">
       <menuitem id="insertImage" 
                 accesskey="&insertimage.accesskey;"      
                 observes="cmd_image"       
@@ -223,23 +231,6 @@
                 accesskey="&inserttable.accesskey;"      
                 observes="cmd_InsertTable" 
                 label="&insertTableCmd.label;"/>
-      <!--menu     accesskey="&insertformmenu.accesskey;"   id="insertFormMenu"        label="&insertFormMenu.label;">
-        <menupopup>
-          <menuitem accesskey="&insertform.accesskey;"        command="cmd_form"        label="&insertFormCmd.label;"/>
-          <menuseparator/>
-          <menuitem accesskey="&insertinputtag.accesskey;"    command="cmd_inputtag"    label="&insertInputTagCmd.label;"/>
-          <menuitem accesskey="&insertinputimage.accesskey;"  command="cmd_inputimage"  label="&insertInputImageCmd.label;"/>
-          <menuitem accesskey="&inserttextarea.accesskey;"    command="cmd_textarea"    label="&insertTextAreaCmd.label;"/>
-          <menuitem accesskey="&insertselect.accesskey;"      command="cmd_select"      label="&insertSelectCmd.label;"/>
-          <menuitem accesskey="&insertbutton.accesskey;"      command="cmd_button"      label="&insertButtonCmd.label;"/>
-          <menuitem accesskey="&insertlabel.accesskey;"       command="cmd_label"       label="&insertLabelCmd.label;"/>
-          <menuitem accesskey="&insertfieldset.accesskey;"    command="cmd_fieldset"    label="&insertFieldSetCmd.label;"/>
-          <menuseparator/>
-          <menuitem accesskey="&insertisindex.accesskey;"     command="cmd_isindex"     label="&insertIsIndexCmd.label;"/>
-        </menupopup>
-      </menu>
-      <menuitem id="insertLink" accesskey="&insertlink.accesskey;"       observes="cmd_link"        label="&insertLinkCmd.label;"   key="insertlinkkb"/>
-      <menuitem id="insertAnchor" accesskey="&insertanchor.accesskey;"     observes="cmd_anchor"      label="&insertAnchorCmd.label;"/ -->
       <menuitem id="insertLine" 
                 accesskey="&insertline.accesskey;"      
                 observes="cmd_msiInsertRules"       
@@ -251,30 +242,6 @@
       <menuitem accesskey="&insertBreaks.accesskey;"               
                 observes="cmd_msiInsertBreaks"                
                 label="&insertBreaks.label;"/>
-      <!-- menuitem id="insertHTMLSource" accesskey="&insertHTMLCmd.accesskey;"   observes="cmd_insertHTMLWithDialog"  key="inserthtmlkb"/>
-      <menuitem accesskey="&insertchars.accesskey;"      observes="cmd_insertChars" id="insertChars"/>
-      <menu id="insertTOC" label="&tocMenu.label;" accesskey="&tocMenu.accesskey;">
-        <menupopup onpopupshowing="InitTOCMenu()">
-          <menuitem id="insertTOCMenuitem"
-                    label="&insertTOC.label;"
-                    accesskey="&insertTOC.accesskey;"
-                    oncommand="UpdateTOC()"/>
-          <menuitem id="updateTOCMenuitem"
-                    label="&updateTOC.label;"
-                    accesskey="&updateTOC.accesskey;"
-                    oncommand="UpdateTOC()"/>
-          <menuitem id="removeTOCMenuitem"
-                    label="&removeTOC.label;"
-                    accesskey="&removeTOC.accesskey;"
-                    oncommand="RemoveTOC()"/>
-        </menupopup>
-      </menu>
-      <menu id="insertSmartWidgetsMenu" label="&insertSmartWidgetsMenu.label;">
-        <menupopup id="insertSmartWidgetsMenuPopup">
-          <menuitem label="&insertCalendarSW.label;"
-                    oncommand="addCalendarSmartWidget();"/>
-        </menupopup>
-      </menu-->
       <menu accesskey="&insertSpacingObjects.accesskey;"   id="insertSpacesMenu"        label="&insertSpacingObjects.label;">
         <menupopup>
           <menuitem accesskey="&insertHorizontalSpaces.accesskey;"      
@@ -285,22 +252,17 @@
                     label="&insertVerticalSpaces.label;"/>
         </menupopup>
       </menu>
-<!--  <menuseparator id="insertMenuSeparator"/>
-     Activate this after Enter key inserts P tag and not BR
-      <menuitem accesskey="&insertbreak.accesskey;"      observes="cmd_insertBreak"      label="&insertBreakCmd.label;"/>
-      <menuitem id="insertBreakAll" accesskey="&insertbreakall.accesskey;"   observes="cmd_insertBreakAll"   label="&insertBreakAllCmd.label;"/>
--->
     </menupopup>
   </menu>
   <menu id="goMenu" label="&gomenu.label;" accesskey="&gomenu.accesskey;">
     <menupopup id="goPopup">
       <menuitem label="&gomenuPrevSection.label;" 
                 id="gomenuPrevSection" 
-                observes="cmd_unimp" 
+                observes="cmd_prevSection" 
                 accesskey="&gomenuPrevSection.accesskey;"/>
       <menuitem label="&gomenuNextSection.label;" 
                 id="gomenuNextSection" 
-                observes="cmd_unimp" 
+                observes="cmd_nextSection" 
                 accesskey="&gomenuNextSection.accesskey;"/>
       <menuitem label="&gomenuLinks.label;" 
                 id="gomenuLinks" 
@@ -309,25 +271,12 @@
       <menuseparator id="goMenuSeparator1"/>
       <menuitem label="&gomenuMarker.label;" 
                 id="gomenuMarker" 
-                observes="cmd_unimp" 
+                observes="cmd_gotoMarker" 
                 accesskey="&gomenuMarker.accesskey;"/>
       <menuitem label="&gomenuParagraph.label;" 
                 id="gomenuParagraph" 
                 observes="cmd_gotoparagraph" 
                 accesskey="&gomenuParagraph.accesskey;"/>
-      <menuseparator id="goMenuSeparator2"/>
-      <menuitem label="&gomenuViewHistory.label;" 
-                id="gomenuViewHistory" 
-                observes="cmd_unimp" 
-                accesskey="&gomenuViewHistory.accesskey;"/>
-      <menuitem label="&gomenuHistoryBack.label;" 
-                id="gomenuHistoryBack" 
-                observes="cmd_unimp" 
-                accesskey="&gomenuHistoryBack.accesskey;"/>
-      <menuitem label="&gomenuHistoryForward.label;" 
-                id="gomenuHistoryForward" 
-                observes="cmd_unimp" 
-                accesskey="&gomenuHistoryForward.accesskey;"/>
     </menupopup>
   </menu>
   
@@ -346,7 +295,7 @@
         observes="cmd_otfont" />
     </menupopup>
   </menu>
-  <menu id="tableMenu"/>  
+  <!--menu id="tableMenu"/>  -->  
   <menu id="MSITypesetMenu"/>
   <menu id="toolsMenu" label="&toolsmenu.label;" accesskey="&toolsmenu.accesskey;">
     <menupopup id="menu_ToolsPopup">
@@ -656,7 +605,10 @@
     <command id="cmd_msiReviseBreaks"          oncommand="msiGoDoCommand('cmd_msiReviseBreaks')"/>
 
     <!-- dummy command used just to disable things in non-HTML modes -->
-    <command id="cmd_renderedHTMLEnabler"/>
+    <command id="cmd_prevSection"              oncommand="msiGoDoCommand('cmd_prevSection')"/>
+    <command id="cmd_nextSection"              oncommand="msiGoDoCommand('cmd_nextSection')"/>
+    <command id="cmd_gotoMarker"               oncommand="msiGoDoCommand('cmd_gotoMarker')"/>
+    
   </commandset>
   
   <commandset id="composerSaveMenuItems"
@@ -699,9 +651,19 @@
              acceltext="&cutCmd.acceltext;"
              />
     <command id="cmd_copy" 
-             oncommand="msiGoDoCommand('cmd_copy')"
-             acceltext="&copyCmd.acceltext;"
-             disabled="true"/>
+            oncommand="msiGoDoCommand('cmd_copy')"
+            acceltext="&copyCmd.acceltext;"
+            disabled="true"/>
+    <command id="cmd_copytex" 
+             oncommand="msiGoDoCommand('cmd_copytex')"
+             disabled="true">      
+      <observes element="cmd_copy" attribute="disabled" /> 
+    </command>
+    <command id="cmd_copypicture" 
+            oncommand="msiGoDoCommand('cmd_copypicture')"
+            disabled="true">
+      <observes element="cmd_copy" attribute="disabled" /> 
+    </command>
     <command id="cmd_paste" 
              oncommand="msiGoDoCommand('cmd_paste')"
              acceltext="&pasteCmd.acceltext;"
@@ -820,14 +782,7 @@
     <command id="cmd_tagkeyassignments" oncommand="callFunctionKeyDialog();"/>
   </commandset>
 
-  <keyset id="tasksKeys">
-    <key id="key_inspectPage" key="i" modifiers="accel,shift" command="Tasks:InspectPage"/>
-  </keyset>
-  <keyset id="MSIEditorKeys">
-    <!-- key keycode="VK_TAB" oncommand="return msiEditorDoTab(event, false);"/>
-    <key keycode="VK_TAB" modifiers="shift" oncommand="return msiEditorDoTab(event, true);"/ -->
-  </keyset>
-  
+    
 #ifdef DEBUG
   <menu id="debugMenu" label="&debugMenu.label;" accesskey="&debugMenu.accesskey;">
   <menupopup id="menu_debugPopup">
@@ -858,6 +813,7 @@
     <menuitem label="dump document" oncommand="dumpDocument();"/>
     <menuitem label="&testSelectionCmd.label;" accesskey="&testSelectionCmd.accesskey;"
            oncommand="msiEditorTestSelection()"/>
+    <menuitem label="Selection location" oncommand="dumpMath();"/>
     <!--menuitem label="&testTableLayoutCmd.label;"
            oncommand="msiEditorTestTableLayout()"/>
     <menuitem label="&showEmbeddedCmd.label;"

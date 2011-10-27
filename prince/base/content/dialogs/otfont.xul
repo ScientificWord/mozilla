@@ -4,6 +4,8 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="resource://app/res/css/latex.css" type="text/css"?>
+
 
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 
@@ -22,15 +24,13 @@
     onload = "return startup();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
-    buttons="apply,accept,cancel" 
+    buttons="accept,cancel" 
     width="300px" 
     height="390px"
     screenX="40"
     screenY="40"
-    persist="screenX screenY width height"
-    >
+    persist="screenX screenY width height">
 
-  <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/otfont.js"/>
@@ -44,41 +44,42 @@
     </menupopup>
   </menulist>
   <separator/>
-  <hbox>
-    <vbox>
-    <hbox>
-      <label value="&fontsize.label;" control="otfont.fontsize" 	accesskey="&fontsize.accesskey;"/>
-      <textbox id="otfont.fontsize" type="number" decimalplaces="1" min="0" style="width: 3.5em" 
-       max="200" increment="1" tooltip="&fontsize.tooltip;"/>
-      <label value="&units.label;" accesskey="&units.label;"/>
-     <menulist id="otfont.units" sizetopopup="always">
-       <menupopup>
-         <menuitem id="otfont.pt" label="&pt.menuitem;" value="pt"/>
-         <menuitem id="otfont.cm" label="&cm.menuitem;" value="cm"/>
-         <menuitem id="otfont.mm" label="&mm.menuitem;" value="mm"/>
-         <menuitem id="otfont.inch" label="&in.menuitem;" value="in"/>
-       </menupopup>
-     </menulist>
-     </hbox>
-     </vbox>
-     </hbox>
-   <!-- flex="1"-->
-  <separator/>
-     <hbox>
-  
-      <label value="&leading.label;" control="leading" 	accesskey="&leading.accesskey;"/>
-      <textbox id="leading" type="number" decimalplaces="1" min="0" style="width: 3.5em" 
-       max="200" increment="1" tooltip="&leading.tooltip;"/> 
-      
-  </hbox>
-
-  <separator/>
-  <hbox>
-    <label control="colorButton" value="&colorButton.label;"	accesskey="&colorButton.accesskey;"/>
-    <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
-      <spacer id="colorWell" class="color-well"/>
-    </msibutton>
-    <spacer flex="1"/>
-  </hbox>
-    
+  <grid>
+    <columns>
+      <column />
+      <column />
+      <column />
+      <column />
+    </columns>
+    <rows>
+      <row align="center">
+        <label value="&fontsize.label;" control="otfont.fontsize" 	accesskey="&fontsize.accesskey;"/>
+        <textbox id="otfont.fontsize" type="number" decimalplaces="1" min="0" style="width: 6em" 
+          max="200" increment="1" tooltip="&fontsize.tooltip;"/>
+        <label value="&units.label;" accesskey="&units.label;"/>
+        <menulist id="otfont.units" sizetopopup="always" oncommand="setNewUnit(this)">
+          <menupopup>
+            <menuitem id="otfont.pt" label="&pt.menuitem;" value="pt"/>
+            <menuitem id="otfont.cm" label="&cm.menuitem;" value="cm"/>
+            <menuitem id="otfont.mm" label="&mm.menuitem;" value="mm"/>
+            <menuitem id="otfont.inch" label="&in.menuitem;" value="in"/>
+          </menupopup>
+        </menulist>
+      </row>
+      <row align="center">
+        <label value="&leading.label;" control="leading" 	accesskey="&leading.accesskey;"/>
+        <textbox id="leading" type="number" decimalplaces="1" min="0" style="width: 3.5em" 
+          max="200" increment="1" tooltip="&leading.tooltip;"/> 
+        <label control="colorButton" value="&colorButton.label;"	accesskey="&colorButton.accesskey;"/>
+        <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
+          <spacer id="colorWell" class="color-well"/>
+        </msibutton>
+      </row>  
+    </rows>
+  </grid>
+  <vbox>
+    <label>Raw <texlogo>T<sub>E</sub>X</texlogo></label>
+    <description>Enter <texlogo>T<sub>E</sub>X</texlogo> code here. In the <texlogo>T<sub>E</sub>X</texlogo> file it will by followed by your selected text, and enough right braces to balance the braces.</description>
+    <textbox id="rawtex" multiline="true" newlines="pasteintact" rows="4" width="80%"/>
+  </vbox>
 </dialog>
