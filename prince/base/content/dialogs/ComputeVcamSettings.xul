@@ -48,10 +48,9 @@
 
 
   <!-- keys are appended from the overlay -->
-  <keyset id="editorKeys">
-    <keyset id="MSIKeySet"/>
-    <keyset id="viewZoomKeys"/>
-    <keyset id="tasksKeys"/>
+
+#include ../keysfordialogs.inc
+  <keyset>
     <key id="showHideSidebar"/>
     <!-- eat these tab events here to stop focus from moving -->
     <key keycode="VK_TAB" oncommand="return true;"/>

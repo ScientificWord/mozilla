@@ -79,12 +79,12 @@
 -->
   <spacer class="spacer"/>
   <vbox flex="1">
-    <button id="LastPickedButton" crop="right" oncommand="SelectLastPickedColor();">
+    <msibutton id="LastPickedButton" crop="right" oncommand="SelectLastPickedColor();">
       <spacer id="LastPickedColor"
                   LastTextColor="" LastBackgroundColor=""
                   persist="LastTextColor LastBackgroundColor"/>
       <label value="&lastPickedColor.label;" accesskey="&lastPickedColor.accesskey;" flex="1" style="text-align: center;"/>
-    </button>
+    </msibutton>
     <label value="&setColor1.label;"/>
     <label value="&setColor2.label;" accesskey="&setColor2.accesskey;" control="ColorInput"/>
     <label value="&setColorExample.label;"/>

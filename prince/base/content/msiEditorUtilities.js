@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/pathutils.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
@@ -11,6 +12,158 @@ var gOS = "";
 
 ///************* Message dialogs ***************/
 //
+
+// a tracing utility
+function msidump(str1, indent1, str2)
+// at some point I envision a dialog with a short message and a "More info" button that
+// will display str2
+{
+	var pref = GetStringPref("swp.messagelogger");
+	var indentstring="";
+	var spaces="                 ";
+	if (pref == null) pref = "dump";
+	if (indent1 && indent1 > 0)
+	  indentstring = spaces.substring(1,indent1+indent1);
+	switch (pref)
+	{
+		case "dump":
+			dump(indentstring+str1+"\n");
+			if (str2) dump(indentstring+str2+"\n");
+			break;
+		case "jsconsole":
+			var cons;
+		  cons = Components.classes['@mozilla.org/consoleservice;1']
+	            .getService(Components.interfaces.nsIConsoleService);
+			cons.logStringMessage(indentstring+str1);
+			if (str2) cons.logStringMessage(str2);
+			break;
+		case "alert":
+			AlertWithTitle(str1, str2, null);
+			break;
+	}
+}
+
+// The following was added by BBM for diagnostic purposes. It should not be in the release version
+// If the selection is collapsed and in a math object, this will dump the math object and show
+// the location of the selection point.
+
+function dumpMath()
+{
+  var editorElement = getCurrentEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+  var rootnode = HTMLEditor.getSelectionContainer();
+  var i = 1;
+  while (rootnode && rootnode.parentNode && i-- >0) rootnode= rootnode.parentNode;
+//  while (rootnode && rootnode.localName != "math" && editor.tagListManager.getTagInClass("paratags",rootnode.localName,null)) rootnode = rootnode.parentNode;
+//  if (!rootnode)
+//  { 
+//    msidump("Failed to find math or paragraph node\n");
+//    return;
+//  }
+  var sel = HTMLEditor.selection;
+  var selNode = sel.anchorNode;
+  var selOffset = sel.anchorOffset;
+  var focNode = sel.focusNode;
+  var focOffset = sel.focusOffset;
+  var indent = 0;
+  msidump(selNode.nodeName + " to " + focNode.nodeName+"\n",0);
+  msidump("Selection:  selNode="+(selNode.nodeType == Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
+  msidump("focusNode="+(focNode.nodeType == Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
+  msidump("rootnode="+rootnode.nodeName+"\n",6);
+  dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
+}
+
+
+function doIndent( k )
+{
+  for (j = 0; j < k; j++) msidump("  ");
+}
+
+
+function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent)
+{
+try{
+	
+//  msidump("dumpNodeMarkingSel, indent = "+indent+", node = "+node.nodeName+"\n");
+  var len = node.childNodes.length;
+  if (node.nodeType == Node.ELEMENT_NODE)
+  {
+//    doIndent(indent);
+    msidump("<"+node.nodeName+"> \n",indent);
+    for (var i = 0; i < len; i++)
+    {    
+      if (node==selnode && i==seloffset)
+      {
+//        for (var j = 0; j<= indent; j++) msidump("**"); 
+        msidump("<selection anchor>",indent);
+      }
+      if (node==focnode && i==focoffset)
+      {
+//        for (var j = 0; j<= indent; j++) msidump("**"); 
+        msidump("<selection focus>\n", indent);
+      }
+      dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
+    }
+    if (node==selnode && seloffset==len) 
+    {
+//      for (var j = 0; j<= indent; j++) msidump("**"); 
+      msidump("<selection anchor>\n", indent);
+    }
+    if (node==focnode && focoffset==len) 
+    {
+//      for (var j = 0; j<= indent; j++) msidump("**"); 
+      msidump("<selection focus>\n", indent);
+    }
+//    doIndent(indent);
+    msidump("</"+node.nodeName+">\n", indent);
+  }
+  else if (node.nodeType == Node.TEXT_NODE)
+  {
+    var offset1;
+		var offset2;
+		if (node == selnode && selnode === focnode)
+		{
+			offset1 = Math.min(seloffset, focoffset);
+			offset2 = Math.max(seloffset, focoffset);
+			msidump(node.nodeValue.slice(0, offset1)+"<selection " + (offset1==seloffset?"anchor":"focus")+">"+
+			  node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1==seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2,-1))
+		}
+		else
+		{
+			if (node==selnode)
+	    {
+	//      doIndent(indent);
+	      msidump(node.nodeValue.slice(0,seloffset)+"<selection anchor>"+node.nodeValue.slice(seloffset)+"\n",indent);
+	    }
+	    else {
+	      if (node==focnode)
+	      {
+	//        doIndent(indent);
+	        msidump(node.nodeValue.slice(0,focoffset)+"<selection focus>"+node.nodeValue.slice(focoffset)+"\n",indent);
+	      }
+	      else {
+	        var s = node.nodeValue;
+	        var t = s.replace(/^\s*/,'');
+	        var r = t.replace(/\s*$/,'');
+	        if (r.length>0)
+	        {
+	//          doIndent(indent);
+	          msidump(r+'\n', indent);
+	        }
+	        else msidump("whitespace node\n");
+	      }
+			}
+    }  
+  }
+}
+catch(e)
+{
+	msidump(e.message+"\n");
+}
+}   
+  
+
 function AlertWithTitle(title, message, parentWindow)
 {
   if (!parentWindow)
@@ -139,8 +292,10 @@ function ConvertToCDATAString(string)
 
 function msiGetSelectionAsText(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   try {
-    return msiGetEditor(mEditorElement).outputToString("text/plain", 1); // OutputSelectionOnly
+    return msiGetEditor(editorElement).outputToString("text/plain", 1); // OutputSelectionOnly
   } catch (e) {}
 
   return "";
@@ -317,7 +472,13 @@ function clearPrevActiveEditor(timerData)
         theWindow.msiPrevEditorElement = null;
         if (theWindow.msiSingleDialogList)
           theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
-        msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
+        if (theWindow.msiActiveEditorElement != null)
+        {
+          msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
+          var editor = msiGetEditor(theWindow.msiActiveEditorElement);
+          if (editor && editor.tagListManager)
+            editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
+        }
       }
       else
         logStr += "but timer list still contains [" + theWindow.msiClearEditorTimerList.toString() + "], so not deleting prev editor.\n";
@@ -423,6 +584,9 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //    prevEdId = theWindow.msiPrevEditorElement.id;
 //End logging stuff
 
+  var editor = msiGetEditor(theWindow.msiActiveEditorElement);
+  if (editor && bIsFocusEvent && editor.tagListManager)
+    editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
   var bIsDifferent = (!theWindow.msiActiveEditorElement || (theWindow.msiActiveEditorElement != editorElement));
   if (bIsDifferent)
   {
@@ -1097,11 +1261,13 @@ function insertXMLNodes(editor, nodeList, node, offset)
       node = node.parentNode;
     }
   }
+  
   var nodeListLength = nodeList.length;
   for (i = nodeListLength-1; i >= 0; --i)
   {
-    editor.insertNode( nodeList[i], node, offset );
+    editor.insertNode(nodeList[i], node, offset);
   }
+  editor.selection.collapse(node, offset+nodeListLength);   
 }
 
 function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
@@ -1626,6 +1792,23 @@ function msiCopyElementAttributes(newElement, oldElement, editor, bSuppressID)
         }
       break;
     }
+  }
+}
+
+function msiCopySpecifiedElementAttributes(newElement, oldElement, editor, attrList)
+{
+  var attrName, attrVal;
+  for (var jx = 0; jx < attrList.length; ++jx)
+  {
+    attrName = attrList[jx];
+    if (oldElement.hasAttribute(attrName))
+      attrVal = oldElement.getAttribute(attrName);
+    else
+      attrVal = null;
+    if (editor != null)
+      msiEditorEnsureElementAttribute(newElement, attrName, attrVal, editor);
+    else
+      msiEnsureElementAttribute(newElement, attrName, attrVal);
   }
 }
 
@@ -3848,7 +4031,7 @@ function msiDefaultNewDocDirectory()
   }  
   var dirkey;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var os = msiGetOS();
+  var os = getOS(window);
   if (os==="win")
     dirkey = "Pers";
   else if (os=="osx")
@@ -4107,7 +4290,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
 
   // We only return "urlPath", so we can convert
   //  the entire basePath for case-insensitive comparisons
-  var os = msiGetOS();
+  var os = getOS(window);
   var doCaseInsensitive = (os != "win");
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
@@ -4174,7 +4357,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
         //   relativize to different drives/volumes.
         // UNIX doesn't have volumes, so we must not do this else
         //  the first directory will be misinterpreted as a volume name
-        if (firstDirTest && baseScheme == "file" && os != msigUNIX)
+        if (firstDirTest && baseScheme == "file" && os != "osx")
           return inputUrl;
       }
     }
@@ -4369,7 +4552,7 @@ function GetFilepath(urlspec) // BBM: I believe this can be simplified
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
       {
-        if (msiGetOS()=="win")
+        if (getOS(window)=="win")
           filepath = decodeURIComponent(url.path.substr(1));
         else
            filepath = decodeURIComponent(url.path);
@@ -4525,25 +4708,6 @@ function InsertUsernameIntoUrl(urlspec, username)
   return urlspec;
 }
 
-function GetOS()
-{
-  if (gOS)
-    return gOS;
-
-  var platform = navigator.platform.toLowerCase();
-
-  if (platform.indexOf("win") != -1)
-    gOS = msigWin;
-  else if (platform.indexOf("mac") != -1)
-    gOS = msigMac;
-  else if (platform.indexOf("unix") != -1 || platform.indexOf("linux") != -1 || platform.indexOf("sun") != -1)
-    gOS = msigUNIX;
-  else
-    gOS = "";
-  // Add other tests?
-
-  return gOS;
-}
 
 function ConvertRGBColorIntoHEXColor(color)
 {
@@ -6507,8 +6671,9 @@ var msiBaseMathNameList =
       dump("In msiBaseMathNameList, initAutoCompleteList being called without bInitialized being set!?\n");
       this.initialize();
     }
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
     var nameNodesList = this.namesDoc.getElementsByTagName("mathname");
     // BBM: should we initialize this list??
     for (var ix = 0; ix < nameNodesList.length; ++ix)
@@ -6577,8 +6742,9 @@ var msiBaseMathNameList =
         if (this.nameHasAutoSubstitution(aName))
           this.removeAutoSubstitution(aName);
         nameNode.parentNode.removeChild(nameNode);
-        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+        var ACSA = msiSearchStringManager.setACSAImpGetService();
         ACSA.deleteString("mathnames", aName);
         this.bModified = true;
         return true;
@@ -6615,8 +6781,9 @@ var msiBaseMathNameList =
     if ("limitPlacement" in aNameData)
       newNode.setAttribute("limitPlacement", aNameData.limitPlacement);
     parentNode.appendChild(newNode);
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
     ACSA.addString("mathnames", aName);
     ACSA.sortArrays();
     if (aNameData.autoSubstitute == true)
@@ -7190,9 +7357,10 @@ var msiAutosubstitutionList =
     var retVal = false;  //until we get something in the list
     // We need to prebuild these so that the keyboard shortcut works
     // ACSA = autocomplete string array
-    var ACSAService = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSAService.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-    var ACSA = ACSAService.getGlobalSearchStringArray();
+//    var ACSAService = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSAService.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = ACSAService.getGlobalSearchStringArray();
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
   
     var rootElementList = subsDoc.getElementsByTagName("subs");
     dump("In msiAutoSubstitutionList.initialize(), subsDoc loaded, rootElementList has length [" + rootElementList.length + "].\n");
@@ -7297,11 +7465,48 @@ var msiSearchStringManager =
     return aRecord.mKey;
   },
 
+  setACSAImpGetService : function()
+  {
+    var ACSAService = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSAService.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSAImp = this.getGlobalACSAImp();
+    if (!ACSAImp)
+    {
+      ACSAImp = ACSAService.getNewImplementation();
+      this.setGlobalACSAImp(ACSAImp);
+    }
+    ACSAService.setImplementation(ACSAImp);
+    return ACSAService;
+  },
+
+  setACSAImp : function()
+  {
+    this.setACSAImpGetService();
+  },
+
+  getGlobalACSAImp : function()
+  {
+    var theWindow = msiGetTopLevelWindow();
+    if (theWindow && ("mGeneralACSAImp" in theWindow))
+      return theWindow.mGeneralACSAImp;
+    return null;
+  },
+
+  setGlobalACSAImp : function(ACSAImp)
+  {
+    var theWindow = msiGetTopLevelWindow();
+    if (!theWindow)
+      theWindow = window;
+    theWindow.mGeneralACSAImp = ACSAImp;
+  },
+
   removeSearchStringArrayRecord : function(aRecord)
   {
     var theDocRecord = this.getRecordForDocument(aRecord.mDocument);
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    this.setACSAImp();
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = this.setACSAImpGetService();
     ACSA.resetArray(aRecord.mKey);
     var jx = theDocRecord.mStringArrays.indexOf(aRecord);
     if (jx >= 0)
@@ -7341,8 +7546,9 @@ var msiSearchStringManager =
     var theBaseString = this.baseString.concat("-", aDocRecord.mKey);
     var subIdentStr = this.getSubIdentBaseString(aSubIdent);
     theBaseString = theBaseString.concat("-", subIdentStr);
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = this.setACSAImpGetService();
     var theString = theBaseString;
     var nSize = ACSA.sizeofArray(theString);
     for (var jj=0; (jj < 100) && (nSize >= 0); ++jj)
@@ -7467,17 +7673,27 @@ var msiKeyListManager =
   initMarkerListForControl : function(aControl, bForce)
   {
     var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+    var docRecord = this.getRecordForDocument(aControlRecord.mDocument);
+    var editorElement = msiGetTopLevelEditorElement(aControl);
+    if (editorElement)
+      docRecord.mEditor = msiGetEditor(editorElement);
     return this.initMarkerList(aControlRecord, bForce);
   },
 
   initMarkerList : function(aControlRecord, bForce)
   {
+    return this.initMarkerListForDocument(aControlRecord, aControlRecord.mDocument, bForce);
+  },
+
+  initMarkerListForDocument : function(aControlRecord, aDocument, bForce)
+  {
     var retVal = false;
     try
     {
-      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-      var currDocKeys = this.getMarkerStringList(aControlRecord.mDocument, bForce);
+//      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+      var ACSA = this.setACSAImpGetService();
+      var currDocKeys = this.getMarkerStringList(aDocument, bForce);
       for (var ix = 0; ix < currDocKeys.length; ++ix)
       {
         if (currDocKeys[ix].length > 0)
@@ -7501,13 +7717,31 @@ var msiKeyListManager =
     {
       if (aControlRecord)
       {
-        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+        var ACSA = this.setACSAImpGetService();
         ACSA.resetArray(aControlRecord.mKey);
         return this.initMarkerList(aControlRecord, bForce);
       }
     }
     catch(exc) {dump("Exception in msiKeyListManager.resetMarkerList! Error is [" + exc + "]\n");}
+    return false;
+  },
+
+  clearMarkerList : function(aControlRecord)
+  {
+    try
+    {
+      if (aControlRecord)
+      {
+//        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+        var ACSA = this.setACSAImpGetService();
+        ACSA.resetArray(aControlRecord.mKey);
+        return true;
+      }
+    }
+    catch(exc) {dump("Exception in msiKeyListManager.clearMarkerList! Error is [" + exc + "]\n");}
     return false;
   },
 
@@ -7522,7 +7756,13 @@ var msiKeyListManager =
   {
     if (bForce || this.needsMarkerListRefresh(aDocRecord))
     {
-      aDocRecord.markerList = msiGetKeyListForDocument(aDocRecord.mDocument);
+      if (!("mEditor" in aDocRecord))
+      {
+        var editorElement = msiGetTopLevelEditorElement(window);
+        if (editorElement)
+          aDocRecord.mEditor = msiGetEditor(editorElement);
+      }
+      aDocRecord.markerList = msiGetKeyListForDocument(aDocRecord.mDocument, aDocRecord.mEditor);
       aDocRecord.bDocModified = false;
     }
     return aDocRecord.markerList;
@@ -7588,6 +7828,20 @@ var msiMarkerListPrototype =
 //      this.setForDocument(aDocument);
 //  },
 
+  clearList : function()
+  {
+    return this.mKeyListManager.clearMarkerList(this.mKeyListManagerRecord);
+  },
+
+  changeSourceDocument : function(aDocument)
+  {
+    this.clearList();
+    this.mDeletedItems = [];
+    this.mAddedItems = [];
+    this.mTargetDocument = aDocument;
+    return this.mKeyListManager.initMarkerListForDocument(this.mKeyListManagerRecord, aDocument, true);
+  },
+
   getIndexString : function()
   {
     if (this.mKeyListManagerRecord)
@@ -7597,6 +7851,8 @@ var msiMarkerListPrototype =
 
   getDocument : function()
   {
+    if ("mTargetDocument" in this)
+      return this.mTargetDocument;
     if (this.mKeyListManagerRecord)
       return this.mKeyListManagerRecord.mDocument;
     return null;
@@ -7617,8 +7873,9 @@ var msiMarkerListPrototype =
 
   addString : function(aString)
   {
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
     var retVal = ACSA.addString( this.getIndexString(), aString);
     if (retVal)
     {
@@ -7633,8 +7890,9 @@ var msiMarkerListPrototype =
 
   deleteString : function(aString)
   {
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
     var retVal = ACSA.deleteString( this.getIndexString(), aString);
     if (retVal)
     {
@@ -7662,7 +7920,20 @@ var msiMarkerListPrototype =
     this.mKeyListManager.removeSearchStringArrayRecord(this.mKeyListManagerRecord);
     this.mbInitialized = false;
     this.mKeyListManagerRecord = null;
+  },
+
+  setACSAImp : function()
+  {
+    msiSearchStringManager.setACSAImpGetService();
+  },
+
+  setUpTextBoxControl : function(theControl)
+  {
+    theControl.markerList = this;
+    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();");
+    theControl.setAttribute("autocompletesearchparam", this.getIndexString());
   }
+
 };
 
 function msiKeyMarkerList(aControl) 
@@ -7709,7 +7980,7 @@ function msiBibItemKeyMarkerList(aControl)
 
 msiBibItemKeyMarkerList.prototype = msiMarkerListPrototype;
 
-function msiGetKeyListForDocument(aDocument)
+function msiGetKeyListForDocument(aDocument, editor)
 {
 //  var parser = new DOMParser();
 //  var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
@@ -7733,7 +8004,19 @@ function msiGetKeyListForDocument(aDocument)
 //  }  
 //  dump("Keys are : "+keys.join()+"\n");    
 //  return keys;
-  var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:template> </xsl:stylesheet>";
+	var ignoreIdsList = "section--subsection--subsubsection--part--chapter";
+  if (editor)
+    ignoreIdsList = editor.tagListManager.getTagsInClass("structtag","--", false);
+	ignoreIdsList = "--" + ignoreIdsList + "--";
+  var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' xmlns:mathml='http://www.w3.org/1998/Math/MathML' ><xsl:output method='text' encoding='UTF-8'/><xsl:variable name='hyphen'>--</xsl:variable>";
+  xsltSheetForKeyAttrib += "<xsl:variable name='ignoreIDs'>" + ignoreIdsList + "</xsl:variable><xsl:variable name='xrefName'>xref</xsl:variable>";
+  xsltSheetForKeyAttrib += "<xsl:template match='/'>  <xsl:apply-templates select='//*[@key][not(local-name()=$xrefName)]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'/></xsl:template>\
+                               <xsl:template match='//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'>\
+                                 <xsl:choose><xsl:when test='@key and not(local-name()=$xrefName)'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:when>\
+                                             <xsl:when test='@marker and not(@key and @key=@marker)'><xsl:value-of select='@marker'/><xsl:text>\n</xsl:text></xsl:when>\
+                                             <xsl:when test='@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)'><xsl:value-of select='@id'/><xsl:text>\n</xsl:text></xsl:when>\
+                                             <xsl:when test='@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)'><xsl:value-of select='@customLabel'/><xsl:text>\n</xsl:text></xsl:when>\
+                               </xsl:choose></xsl:template> </xsl:stylesheet>";
   var sepRE = /\n+/;
   return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForKeyAttrib, sepRE, true);
 }
@@ -8449,6 +8732,61 @@ function getSiblingEquationsContainer(theNode)
   return document.documentElement; //should NOT happen
 }
 
+function checkForMultiRowInTable(aTable, editor)
+{
+  function checkForMultiRowCell(aNode)
+  {
+    var nodeName = msiGetBaseNodeName(aNode);
+    switch(nodeName)
+    {
+      case "table":
+      case "mtable":
+        if (aNode != aTable)
+          return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+      break;
+      case "td":
+      case "th":
+      case "mtd":
+        return NodeFilter.FILTER_ACCEPT;
+      break;
+      case "tbody":
+      case "thead":
+      case "tfoot":
+      case "tr":
+      case "mtr":
+      case "mlabeledtr":
+        return NodeFilter.FILTER_SKIP;
+      break;
+      default:
+        return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+      break;
+    }
+  }
+
+  var walker = editor.document.createTreeWalker(aTable, NodeFilter.SHOW_ELEMENT,
+                                                checkForMultiRowCell, true);
+  var nextNode;
+  var multiRowCells = [];
+  var singleRowCells = [];
+  while (nextNode = walker.nextNode())
+  {
+    if (nextNode.hasAttribute("rowspan") && (Number(nextNode.getAttribute("rowspan")) > 1) )
+      multiRowCells.push(nextNode);
+    else if (nextNode.hasAttribute("req") && (nextNode.getAttribute("req") == "multirow") )
+      singleRowCells.push(nextNode);
+  }
+  if (!multiRowCells.length && !singleRowCells.length)
+    return;
+
+  editor.beginTransaction();
+  var ii;
+  for (ii = 0; ii < multiRowCells.length; ++ii)
+    msiEditorEnsureElementAttribute(multiRowCells[ii], "req", "multirow", editor);
+  for (ii = 0; ii < singleRowCells.length; ++ii)
+    msiEditorEnsureElementAttribute(singleRowCells[ii], "req", null, editor);
+  editor.endTransaction();
+}
+
 /**************************msiNavigationUtils**********************/
 var msiNavigationUtils = 
 {
@@ -9039,6 +9377,38 @@ var msiNavigationUtils =
     return (this.getParentOfType(aNode, "math") != null);
   },
 
+  isMathTag : function(tagName)
+  {
+    switch(tagName)
+    {
+      case "mrow":
+      case "math":
+      case "mtable":
+      case "mtd":
+      case "mtr":
+      case "mi":
+      case "mo":
+      case "mn":
+      case 'mfrac':
+      case 'msub':
+      case 'msubsup':
+      case 'msup':
+      case 'munder':
+      case 'mover':
+      case 'munderover':
+      case 'mroot':
+      case 'msqrt':
+      case 'mrow':
+      case 'mstyle':
+        return true;
+      break;
+      default:
+        return false;
+      break;
+    }
+    return false;
+  },
+
   isMathNode : function(aNode)
   {
     var mathNS = this.mAtomService.getAtom(mmlns);
@@ -9101,7 +9471,10 @@ var msiNavigationUtils =
       case 'mover':
       case 'munderover':
       case 'mroot':
-//      case 'msqrt':   shouldn't include this one!
+//		  case 'msqrt':  
+		  case 'mtr':
+			case 'mtd':
+		  case 'mtable': 
         return true;
       break;
       case 'mrow':
@@ -9111,12 +9484,75 @@ var msiNavigationUtils =
         var singleChild = this.getSingleWrappedChild(node);
         if (this.isMathTemplate(singleChild))
           return true;
+ 				break;
+			case "math":
+				if (node.hasAttribute("display") && node.getAttribute("display")==="block")
+				{
+					return true;
+				}
       break;
     }
-
     return false;
   },
 
+// the next two functions give more precise information than isMathTemplate
+  isUnsplittableMath : function(node)
+	{
+	  if (node == null)
+      return false;
+
+    switch(node.localName)
+		{
+			case 'mfrac':
+			case 'msub':
+			case 'msubsup':
+			case 'msup':
+			case 'munder':
+			case 'mover':
+			case 'munderover':
+			case 'mroot':
+			case 'msqrt':  
+			case 'mtr':
+			case 'mtd':
+			case 'mtable': 
+			  return true;
+			break;
+			case 'mrow':
+			case 'mstyle':
+			  if (this.isFence(node))
+			    return true;
+			break;
+			case "math":
+			if (node.hasAttribute("display") && node.getAttribute("display")==="block")
+			{
+				return true;
+			}
+			break;	
+		}
+		return false;
+	},
+	
+	hasFixedNumberOfChildren : function(node)
+	{
+	  if (node == null)
+      return false;
+    switch(node.localName)
+		{
+			case 'mfrac':
+			case 'msub':
+			case 'msubsup':
+			case 'msup':
+			case 'munder':
+			case 'mover':
+			case 'munderover':
+			case 'mroot':
+			case 'mtr':
+			case 'mtable': 
+			  return true;
+		}
+	  return false;	
+	},
+	
   isUnit : function(node)
   {
     if ( node != null && node.hasAttribute("msiunit") && (node.getAttribute("msiunit") == "true") )
@@ -10019,9 +10455,10 @@ var msiSpaceUtils =
 //  them in <sw:invis> nodes.
 
   hSpaceInfo : {
-//    requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
-    requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
-//    nonBreakingSpace :      {charContent: "&#x00a0;"},
+    //requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    //requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    requiredSpace :         {dimensions: "1em", charContent: "&#x205f;"},
+    //nonBreakingSpace :      {charContent: "&#x00a0;"},
     nonBreakingSpace :      {charContent: " "},
     emSpace :               {dimensions: "1em", charContent: "&#x2003;"},
     twoEmSpace :            {dimensions: "2em", charContent: "&#x2001;"}, //EM QUAD
@@ -10807,30 +11244,6 @@ function gotoFirstNonspaceInElement( editor, node )
 }
 
 
-function msiGetOS()
-{
-  var os;
-
-  switch(navigator.platform)
-  {
-  case 'Win32':
-   os = 'win';
-   break;
-  case 'MacPPC':
-  case 'MacIntel':
-   os = 'osx';
-   break;
-  case 'Linux i686':
-  case 'Linux i686 (x86_64)':
-   os = 'linux';
-   break;
-  default:
-   dump('Error: Unknown OS ' + navigator.platform);
-   os = "??";
-  }
-  return os;
-}
-
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and sets
 // the value of the text box
@@ -11089,10 +11502,10 @@ function openAllSubdocs()
 
 var indentIncrement = "  ";  // should eventually come from a user 
 var maxLengthDefault = 100; // should come from prefs; if a line is longer than this, we must break it
-var minLengthDefault = 40; // if a line is shorter than this, we at least try to consolidate it
+var minLengthDefault = 60; // if a line is shorter than this, we at least try to consolidate it
 var maxLength; 
 var minLength; 
-var reallyMinLength = 10; 
+var reallyMinLength = 50; 
 
 function replacer(str, p1, p2, offset, s)
 {
@@ -11137,9 +11550,10 @@ function writeLineInPieces( output, currentline )
 {
   var lastLength = 10000000;
   var L;
-  while ((L=currentline.s.length) > 0)
+  while (currentline.s.length > 0)
   {
-    if (L < maxLength || L >= lastLength) // this assures us we get out of the while loop
+    L = currentline.s.length;
+		if (L < maxLength || L >= lastLength) // this assures us we get out of the while loop
     {
       output.s += currentline.s.replace("\n"," ", "g") + "\n";
       currentline.s = "";
@@ -11162,7 +11576,7 @@ function writeLineInPieces( output, currentline )
       }    
       else // no convenient linebreaks, look for spaces
       {
-        index = currentline.s.indexOf(" ", minLength);
+        index = currentline.s.lastIndexOf(" ", maxLength);
         var forced = false;
         if (index <0 || index > maxLength) // no spaces? Japanese? force a linebreak at maxLength -5
         {
@@ -11200,7 +11614,7 @@ function isInlineElement(editor, element)
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
   if (msiNavigationUtils.isMathNode(element)) return false;
   var class = editor.tagListManager.getClassOfTag(element.localName, null);
-  if (class == "texttag" || class.length == 0) return true;
+  if (class == "texttag" || class == "othertag" || class.length == 0) return true;
   return false;
 }
   
@@ -11383,6 +11797,13 @@ function getSelectionParentByTag( editor, tagname)
   return null;
 }
 
+function getEventParentByTag( event, tagname)
+{
+	var node = event.target;
+	while (node && node.tagName != tagname) node = node.parentNode;
+	if (node && node.tagName == tagname) return node;
+}
+
 
 
 function writeStringAsFile( str, file )
@@ -11409,3 +11830,198 @@ function getFileAsString( url )
     return null;
 }
 
+function addLanguagesToTagDefs(lang1, lang2)	
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+	var babelTags = editor.tagListManager.getBabelTags();
+	var tagArray = babelTags.split(",");
+	var i;
+	var lang;
+	for (i = 0; i < tagArray.length; i++)
+	{
+		var index = i+1;
+		tag = tagArray[i];
+		hidden = editor.tagListManager.getStringPropertyForTag( tag, null, "hidden");
+		if (index%2 === 1) lang = lang1;
+		else lang = lang2;
+		if (lang)	
+		{
+			needsResetting = true;
+			editor.tagListManager.setTagVisibility(tag, null, false);
+			if (index < 3)
+			{
+				editor.tagListManager.setTagName(tag, null, "text"+ lang);
+			}
+			else
+			{
+				editor.tagListManager.setTagName(tag, null, (lang==="arabic" ? "Arabic" : lang) )
+			}
+		}
+		else
+		{
+			lang = "##lang" + (1 + index%2).toString();
+			editor.tagListManager.setTagVisibility(tag, null, true);
+			if (index < 3)
+			{
+				editor.tagListManager.setTagName(tag, null, "text"+ lang);
+			}
+			else
+			{
+				editor.tagListManager.setTagName(tag, null, lang);
+			}			
+		}
+	}
+	//if (needsResetting)
+	editor.tagListManager.rebuildHash();
+	buildAllTagsViewStylesheet(editor);	
+}
+
+function addLanguageTagsFromBabelTag(doc)
+{
+	var babeltags = doc.getElementsByTagName("babel");
+	var babeltag;
+	if (babeltags && babeltags.length > 0)
+	{
+		var lang1;
+		var lang2;
+		babeltag = babeltags[0];
+		lang1 = babeltag.getAttribute("lang1");
+		lang2 = babeltag.getAttribute("lang2");
+		if (lang1 || lang2)
+		{
+			addLanguagesToTagDefs(lang1, lang2);
+		}
+	}
+}
+
+function buildAllTagsViewStylesheet(editor)
+{
+	var templatefile = msiFileFromFileURL(msiURIFromString("resource://app/res/css/tagtemplate.css"));
+	var data = "";  
+	var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].  
+	                        createInstance(Components.interfaces.nsIFileInputStream);  
+	var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].  
+	                        createInstance(Components.interfaces.nsIConverterInputStream);  
+	fstream.init(templatefile, -1, 0, 0);  
+	cstream.init(fstream, "UTF-8", 0, 0);  
+
+	let (templatestr = {}) {  
+	  cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
+	  data = templatestr.value;  
+	}  
+	cstream.close(); // this closes fstream  
+	var classtemplates = data.split(/\-{4,}/);
+	var j;
+	for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
+
+
+	var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
+	var taglist;
+	var i;
+	var k;
+	var str = "";
+	var ok;
+	var classname;
+	var classtemplate;
+	for (j = 0; j < tagclasses.length; j++)
+	{
+	  ok = false;
+	  classname= tagclasses[j];
+	  for (k = 0; k < classtemplates.length; k++)
+	  {
+	    if (classtemplates[k].indexOf(classname)==0) 
+	    {
+	      classtemplate = classtemplates[k];
+	      ok = true;
+	      break;
+	    }
+	  }
+
+	  taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
+	  for (i = 0; i < taglist.length; i++)
+	  {
+	    if (taglist[i].length && taglist[i][0] != "(")
+	      str += classtemplate.replace(classname,taglist[i],"g")+"\n";
+	  }
+	}
+
+	try {
+	  var htmlurlstring = editor.document.documentURI;;
+	  var htmlurl = msiURIFromString(htmlurlstring);
+	     // ... seems ok
+	  var htmlFile = msiFileFromFileURL(htmlurl);
+	   // Throws exception. htmlurl doesn't have nsIFileURL interface.
+	   // Can fix by setting the dialog shell in the prefs to something like
+	   // ...   "resource://app/res/StdDialogShell.xhtml"
+	   // and moving the file there in the build/install.
+
+	  var cssFile = htmlFile.parent;
+ 
+	  cssFile.append("css");
+	  if (!cssFile.exists()) cssFile.create(1, 0755);
+   
+	  cssFile.append("msi_Tags.css");
+		if (cssFile.exists()) cssFile.remove(0);
+		cssFile.create(0, 0755);
+
+
+	  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+	  fos.init(cssFile, -1, -1, false);
+	  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+	    .createInstance(Components.interfaces.nsIConverterOutputStream);
+	  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+	  os.writeString(str);
+	  os.close();
+	  fos.close();
+	}
+	catch (e) {
+	  dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
+	}
+}
+
+function msiEditorFindJustInsertedElement(tagName, editor)
+{
+  var currNode = editor.selection.focusNode;
+  var currOffset = editor.selection.focusOffset;
+  var currName;
+  var childList;
+  if (msiNavigationUtils.isMathTag(tagName) && currNode && msiNavigationUtils.isMathNode(currNode))
+  {
+    while (currNode && (msiGetBaseNodeName(currNode) != tagName))
+    {
+      if (msiNavigationUtils.isEmptyInputBox(currNode))
+        currNode = currNode.parentNode;
+      else
+      {
+        childList = msiNavigationUtils.getSignificantContents(currNode);
+        if (childList.length <= 1)
+          currNode = currNode.parentNode;
+        else if (msiGetBaseNodeName(currNode) == "mtr")
+          currNode = currNode.parentNode;
+        else
+          currNode = null;  //stop looking
+      }
+    }
+    if (currNode)
+      return currNode;
+    currNode = editor.selection.focusNode;  //otherwise reset it and try the usual approach below
+  }
+
+  while (currNode && (msiGetBaseNodeName(currNode) != tagName))
+  {
+    if (currOffset < currNode.childNodes.length)
+    {
+      currNode = currNode.childNodes[currOffset];
+      currOffset = 0;
+    }
+    else if (currOffset > 0)
+    {
+      currNode = currNode.childNodes[currOffset-1];
+      currOffset = currNode.childNodes.length - 1;
+    }
+    else
+      currNode = null;
+  }
+  return currNode;
+}
