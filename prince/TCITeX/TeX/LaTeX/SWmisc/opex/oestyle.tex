@@ -1,0 +1,607 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                   File: OEstyle.tex                 %
+%                   VERSION: 1.08                     %
+%                   Date: April 3, 1998               %
+% LaTeX template file for use with OSA OPTICS EXPRESS %
+% THIS FILE IS SHORTER, WITH FEWER DESCRIPTIONS OF    %
+% TYPOGRAPHY (BOLD, ITALICS, POINT SIZES, ETC.)       %
+%                                                     %
+% This file requires a substyle file under the LaTeX  %
+% Article style, opex.sty .                           %
+%                   FOR LATEX 2E USE                  %
+%         \documentclass[10pt]{article}               %
+%         \usepackage{opex}                           %
+%                                                     %
+%                   FOR LATEX 2.09 USE                %
+%         \documentstyle[opex]{article}               %
+%                                                     %
+%                   FOR REVTeX 3.0 or 3.1 USE         %
+%         \documentstyle[osa,opex]{revtex}            %
+%                                                     %
+% Copyright 1997, The Optical Society of America      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           FOR COLORED WWW LINKS USE                 %
+%     \documentclass[10pt]{article}                   %
+%     \usepackage{opex}                               %
+%     \usepackage{color}%             (LATEX 2E)      %
+%                                                     %
+%           FOR COLOR WITH LATEX 2.09 BE              %
+%           CERTAIN YOU HAVE color.sty AND USE        %
+%     \documentstyle[opex,color]{article}             %
+%                                                     %
+%           FOR COLOR WITH REVTeX 3.0 or 3.1 BE       %
+%           CERTAIN YOU HAVE color.sty AND USE        %
+%     \documentstyle[osa,opex,color]{revtex}          %
+%                                                     %
+% Copyright 1997, The Optical Society of America      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\documentstyle[opex,color]{article}
+%\documentstyle[osa,opex,color]{revtex}
+\documentclass[10pt]{article}
+\usepackage{opex}
+%\usepackage{color}% DELETE THIS LINE IF YOU DO NOT HAVE color.sty
+\begin{document}
+
+\title{Instructions for the preparation of a LaTeX or 
+REVTeX manuscript for Optics Express}
+
+\author{Frank E. Harris}
+\address{Optical Society of America, Washington, DC 20036-1023 USA}
+\email{fharri@osa.org}
+
+\begin{abstract}%
+Explicit and detailed rules are given 
+for preparing a compuscript 
+(i.e., manuscript in electronic form) for 
+Optics Express.  Specific commands 
+are given for all major compuscript elements 
+(such as abstract, headings, figures, 
+tables, and references) to achieve optimal 
+typographic quality.  Electronic submission
+of a PostScript file, or of a tarred, gzipped archive 
+containing a LaTeX file and PostScript or EPS 
+figures, is described. 
+\end{abstract}
+\ocis{(000.0000) General}
+
+% The commands, \begin{OEReferences} and \end{OEReferences}
+% format the References section according to OpEx standard
+% style, showing the title ``References''.
+%
+% The commands, \begin{OERefLinks} and \end{OERefLinks}
+% format the References section according to OpEx standard
+% style, if the references also include URLs or other
+% unreviewed links.  In this case the title of the section
+% is ``References and links''.
+%
+
+\begin{OERefLinks}
+\item  P. J. Harshman,  T. K. Gustafson, and P. Kelley,
+ ``Strong field theory of low loss optical switching and
+  wave mixing in a semiconductor quantum well,''  \opex 
+  {\bf 3}, 166-168  (1999).
+  
+\item  C. van Trigt, ``Visual system-response
+ functions and estimating  reflectance,'' \josaa
+ {\bf 14}, 741-755 (1997).
+ 
+% DELETE THE FOLLOWING REFERENCE IF YOU DO NOT HAVE
+% color.sty ON YOUR TeX SYSTEM.
+ 
+\item  N. Gallagher, ``\underline{Chopper},'' 
+OpticsNet, 4/23/97, %{\color{blue}
+\underline{http://www.osa.org/video/qtime/chopper.mov}%}.
+
+%\end{OEReferences}
+\end{OERefLinks}
+
+% The commands \color{blue} and \underline{} may be used 
+% to indicate WWW links in the text.  For those who do not
+% have the file color.sty on their systems, \underline{}
+% alone may be used. color.sty may be downloaded from the
+% CTAN archives at ftp://ftp.dante.de , ftp://ftp.SHSU.edu 
+% , or ftp://ftp.cdrom.com .
+%
+% The set of style files released under the name, "hyperref,"
+% also available from the CTAN ftp sites, may
+% be used to create WWW links that will carry through to
+% the PDF file generated from a .tex file.  This method of
+% establishing links may be used to create links to online
+% databases, cited articles, or software that cannot be
+% served from OSA.  Hyperref is not part of the  
+% standard LaTeX 2e package at this time.
+
+\section{ Introduction}
+Adherence to the style produced by the file 
+opex.sty is essential for efficient 
+review and publication of submissions. 
+Optics Express takes advantage of 
+some of the unique opportunities the electronic 
+medium offers to allow authors to include 
+3-D scenes and QuickTime sequences 
+as illustrations within their papers.  
+Instructions for submitting 3-D and video are 
+included in Section 3. To take advantage 
+of this new medium of publishing, compuscripts 
+will be treated as camera-ready copy.  
+{\it Authors should print out this style 
+guide for use as a checklist for format.} 
+
+Note that the Optics Express rules as to style 
+and layout are followed. This has been designed to 
+be used in conjunction with the Instructions to 
+Authors for Optics Express that can be found at 
+(http://epubs.osa.org/opticsexpress/submission/). 
+
+\section{Software}
+\subsection{TeX and LaTeX}
+The current version of TeX software is 3.14159.  Virtually
+all versions of TeX now available as freeware, shareware,
+or commercially, are acceptable.  Opex.sty has been tested
+extensively with LaTeX 2e and LaTeX 2.09.  Authors who
+place WWW links in references are encouraged to 
+underline the link. 
+
+Authors who wish to submit LaTeX files are encouraged to
+create a tarred, gzipped archive of their LaTeX file and
+all figures, in PostScript or EPS format.  Tar and gzip
+archiving and compression software is available as 
+shareware or freeware for Windows and Mac OS, and is part
+of the Unix operating system.  Authors who submit a 
+LaTeX file with no figures may submit an ASCII text file
+without compression or archiving.
+
+\subsection{Postscript drivers}
+Authors who submit a PostScript file to {\it Optics Express} 
+should use an appropriate PostScript printer 
+driver to generate the compuscript file for submission.  
+Almost all versions of dvips will generate 
+proper output. The BaKoMa PostScript versions of the 
+Computer Modern fonts must be used for submissions
+of PostScript files.
+
+
+\subsection{REVTeX and LaTeX support}
+REVTeX and LaTeX commands for title, author, 
+address, e-mail, and PACS are supported as aliases
+of the OpEx commands listed below.  In limited testing,
+REVTeX and LaTeX article style compuscripts have been
+found to process with none to two LaTeX errors per
+manuscript.  With very little effort a compuscript 
+prepared in LaTeX or REVTeX can be converted to OpEx
+style.
+
+The OpEx style file, opex.sty, has been tested
+under LaTeX 2e (both in native and 2.09 compatability 
+mode) and under LaTeX 2.09.  Document styles 
+\begin{verbatim}
+  \documentclass[10pt]{article}
+  \usepackage{opex}
+\end{verbatim}
+for LaTeX 2e and 
+\begin{verbatim}
+  \documentstyle[opex]{article}
+\end{verbatim}
+for LaTeX 2.09 have produced more consistent results in testing, than
+\begin{verbatim}
+  \documentstyle[osa,opex]{revtex},
+\end{verbatim}
+the appropriate style option for REVTeX.
+
+Authors who want to place blue text indicating 
+WWW links in an article may use the style file 
+color.sty, with one of the following: 
+\begin{verbatim}
+  \documentclass[10pt]{article}% LaTeX 2e
+  \usepackage{opex}
+  \usepackage{color}
+\end{verbatim}
+\begin{verbatim}
+  \documentstyle[opex,color]{article}% LaTeX 2.09
+\end{verbatim}
+\begin{verbatim}
+  \documentstyle[osa,opex,color]{revtex}% REVTeX.
+\end{verbatim}
+
+%\pagebreak
+
+\subsection{Title}
+Authors should
+place the title within the curly brackets of the 
+\verb+\title{}+ command to achieve the correct 
+format.
+
+\subsection{Author name}
+Author names should appear 
+as used for conventional publication, 
+with first and middle names or initials followed by 
+surname.  Every effort should be made to keep 
+author names consistent  from one paper to the next 
+as they appear within OSA publications.  Authors should
+place their names within the curly brackets of the 
+\verb+\author{}+ command to achieve the correct 
+format.
+
+\subsection{Author affiliation}
+Authors should place their affiliation 
+within the curly brackets of the 
+\verb+\address{}+ command to achieve the correct 
+format. If several 
+authors have the same affiliation, one listing of 
+the affiliation should be used, preceded by the full 
+list of those authors on the line above.  
+
+\subsection{E-Mail address}
+Enter the e-mail address of the corresponding author 
+directly below the corresponding author’s affiliation.  
+Authors should place  
+e-mail addresses within the curly brackets of the 
+\verb+\email{}+ command to achieve the correct 
+format.
+
+Multiple use of the \verb+\author{}+, 
+\verb+\address{}+, and \verb+\email{}+ commands 
+are permitted and produce clear association of authors
+with their institutions, as shown below. 
+
+\author{A. Gatti and L.A. Lugiato}
+\address{Instituto Nazional di Fisica per la Materia, 
+Dipartmento Di Fisica, Via  Celoria
+ 16, 20133 Milano, Italy}
+
+\email{lugiato@mi.infi.it}
+\author{S. K. Nash-Stevenson}
+\address{NASA-Marshall Space Flight Center, EB22,
+Huntsville, Alabama 35726}
+
+\author{G-L. Oppo and R. Martin}
+\address{Department of Physics, University, of Strathclyde, 
+Rottenrow 107, Glasgow G4 ONG, Scotland}
+
+\email{gianluca@phys.strath.ac.uk}
+
+
+\subsection{Abstract}
+Authors should place their abstract between 
+\verb+\begin{abstract}+ and \verb+\end{abstract}+ 
+commands to achieve the correct format.  The 
+\verb+\begin{abstract}+ command will add the word 
+{\bf Abstract:} to the front of the abstract.
+The abstract should be limited to approximately 100 words. 
+It should be an explicit summary of the paper that states 
+the problem, the methods used, and the major results and 
+conclusions.   A copyright statement will be added 
+automatically, after the abstract.
+
+
+\subsection{OCIS subject classification}
+Optics Classification and Indexing Scheme (OCIS) subject classifications 
+should be included after the abstract, on a 
+separate line that begins with the words {\bf OCIS codes:} 
+in bold.  Authors should
+place their OCIS codes within the curly brackets of the 
+\verb+\ocis{}+ command to achieve the correct 
+format.  The OCIS codes should be placed after the abstract,
+\verb+\end{abstract}+ command.  The REVTeX
+command \verb+\pacs{}+ may be used in place of \verb+\ocis{}+.
+
+\subsection{Main text}
+The first line of the first paragraph of a section or 
+subsection should start flush left.  The first line of 
+subsequent paragraphs within the section or subsection 
+should be indented.
+
+\subsection{Equations}
+Equations should be centered.  For long equations, the 
+right side of the equation should be broken into 
+approximately equal parts and aligned to the right of 
+the equal sign.  The equation number should appear only 
+at the righthand margin of the last line of the equation.
+
+\begin{equation}
+H = \frac{1}{2m}(p_x^2 + p_y^2) + \frac{1}{2} M{\Omega}^2
+     (x^2 + y^2) + \omega (xp_y - yp_x)
+\end{equation}
+All equations should be numbered in the order in which 
+they appear and should be referenced  from within the 
+main text as Eq. (1), the Hamiltonian, Eq. (2), intensity 
+distribution, etc. 
+
+%\newpage
+
+
+\begin{eqnarray}
+I_{(x,y,z,t)} & = & \frac{|E_{(x,y,z,t)}|^2}{2} \nonumber \\
+     & = & \frac{1}{2}|A(t - \tau_+ z)|^2 \psi_+^2(x,y)
+         + \frac{1}{2}|A(t - \tau_- z)|^2 \psi_-^2(x,y) \nonumber \\
+     & &  + A(t - \tau_+ z) A(t - \tau_- z)
+         \times \cos\left( \pi \frac{z}{L_c}\right) \psi_+(x,y) \psi_-(x,y)
+\end{eqnarray}
+where
+
+\begin{eqnarray}
+I_{(z, \tau)} & = & \frac{1}{2} \left[ \left| 
+             A \left(\tau - \frac{\delta \tau}{2}z \right) \right|^2 
+           + \frac{1}{2} \left| A \left( \tau + \frac{\delta \tau}{2}z \right) \right|^2 
+           + 2A \left( \tau - \frac{\delta \tau}{2}z \right) 
+             A \left( \tau + \frac{\delta \tau}{2}z \right) \right. \nonumber \\
+     & & \left. \times \cos \left( \pi \frac{z}{L_c} \right) \right] 
+             \int _{-\infty}^{+\infty}\int _{-\infty}^{+\infty}
+             {\psi_1}^2(x,y){\rm d}x{\rm d}y  \nonumber \\
+     & & + \frac{1}{2} \left[ \left| A \left( 
+           \tau - \frac{\delta \tau}{2}z \right) \right| ^2 
+           + \frac{1}{2} \left| A \left( \tau + \frac{\delta \tau}{2}z \right) \right| ^2 
+           - 2A \left( \tau - \frac{\delta \tau}{2}z \right) 
+              A \left( \tau + \frac{\delta \tau}{2}z \right) \right. \nonumber \\
+     & & \left.  \times \cos \left( \pi \frac{z}{L_c} \right) \right] 
+           \int _{-\infty}^{+\infty}\int _{-\infty}^{+\infty}
+           {\psi_2}^2(x,y){\rm d}x{\rm d}y  
+\end{eqnarray}
+
+In-line math of simple fractions should use parentheses 
+when necessary to avoid ambiguity, for example, to 
+distinguish between $1/(n-1)$ and $1/n-1$.  Exceptions to 
+this are the proper fractions such as $\frac{1}{2}$  
+which are better left in this form.  
+Summations and integrals that appear 
+within text such as  $\frac{1}{2}{\Sigma }  _{n=1}^{n=\infty}
+(n^2 - 2n)^{-1}$ 
+should have limits placed to the 
+right of the symbol to reduce white space.
+
+\subsection{References and links}
+References should appear at the top of the article, 
+below the abstract, in the order in which they are 
+referenced in the body text. 
+Authors who use REVTeX may use the standard REVTeX 
+commands for references and citations in place of the 
+commands listed below. Bibtex may not be used, except as 
+described in the OSA bibtex instruction accompanying 
+REVTeX 3.1.  The {\bf References}
+section must be delimited by horizontal rules above 
+and below the section, which may be added manually
+if the {\it Optics Express} commands are not used.
+
+ The commands, \verb+\begin{OEReferences}+ 
+ and \verb+\end{OEReferences}+ format the {\bf References} 
+ section according to OpEx standard style, showing the
+ title {\bf References}.  Use the \verb+\item+ command
+ to start each reference.  If the references include 
+ URLs or other WWW (World Wide Web) links, 
+the commands, then \verb+\begin{OERefLinks}+ and 
+ \verb+\end{OERefLinks}+ should be used.  If 
+ \verb+\begin{OERefLinks}+ is used, the title of 
+ the section will be {\bf References and links}.
+
+Optics Express uses numerical notations in brackets 
+for bibliographic citations, within square brackets[1] 
+or as numerical superscripts.$^2$  When using the 
+\verb+\ref{}+ command, labels must be placed in the references:
+\begin{verbatim}
+   \item\label{paper2}  C. van Trigt, ``Visual system-response 
+   functions and estimating 
+   reflectance,'' \josaa {\bf 14}, 741-755 (1997).
+\end{verbatim}
+Then the citation command should be of the form: 
+\verb+[\ref{paper2}]+.
+
+Optics Express follows the following citation style: For 
+journal articles, authors are listed first, followed by 
+the journal’s title abbreviation, the volume number in 
+bold, inclusive page numbers and the year in parenthesis.  
+This may be followed by a URL if one is available.
+The number of a grant or contract should be omitted 
+unless its inclusion is required by the agency supporting 
+the research.
+
+\vskip1pc
+
+\noindent {\footnotesize
+\begin{tabular}{lll}
+ \hskip0.2in &2. &C. van Trigt, \josaa {\bf 14},
+  741-755 (1997).
+\end{tabular}}
+
+\vskip1pc
+
+For monographs in books, authors are listed first, followed 
+by article’s full title in quotes, the word “in,” followed 
+by the book title in italics, the editors of the book in 
+parenthesis, the publisher, city, year.  
+
+\vskip1pc
+
+\noindent {\footnotesize
+\begin{tabular}{lll} 
+ &3. &David F. Edwards, “Silicon (Si)” in 
+  {\it Handbook of optical constants of solids}, E.D. Palik, 
+   ed.  \\ & &(Academic, Orlando, Fla. 1985) \\
+\end{tabular}}
+
+\vskip1pc
+
+For citation of a book as a whole or book chapter, authors or 
+editors are listed first, followed by title in italics, and 
+publisher, city, and year in parenthesis.  Chapter number may 
+be added if applicable.
+
+\vskip1pc
+
+\noindent{\footnotesize 
+\begin{tabular}{lll} 
+ &4. &F. Ladouceur and J. D. Love,
+   {\it Silica-based buried channel waveguides and devices}
+    \\ & & (Chapman \& Hall, 1995), Chap.8. \\
+\end{tabular}}
+
+\vskip1pc
+
+WWW links may be represented by a line in the references 
+section of the compuscript. The URL of the referred item 
+should be underlined.  WWW links should list the author, 
+title (substitute file name, if needed), and the full URL 
+(universal resource locator).
+
+\vskip1pc
+
+\noindent{\footnotesize
+\begin{tabular}{lll} 
+ &5. &QuickTime movie viewer plugins for web
+ browsers, {\it Welcome to QuickTime}, \\ & & (Apple Computer, 
+ 1997),    \underline{http://quicktime.apple.com} \\
+\end{tabular}}
+
+\vskip1pc
+
+To assist authors with journal abbreviations in references, 
+standard abbreviations for 31 commonly cited journals 
+have been included as macros within opex.sty.  These abbreviations 
+are shown in Table 1.
+
+
+
+\section{Tables, Figures, 3-D, and video}
+
+\subsection{Figures}
+Figures should be included directly in the document.  
+All photographs must be in digital form and placed 
+appropriately in the electronic document.  All  
+illustrations must be numbered consecutively (i.e., 
+not by section), with Arabic numbers. The size of a 
+figure should be commensurate with the amount and 
+value of the information conveyed by the figure.
+Enclose figures within the \verb+\begin{figure}+
+and \verb+\end{figure}+ commands.
+
+All illustrations should be centered, except for 
+small figures no wider than 6.6 cm (2.6 in), which may 
+be placed side by side. Use the \verb+\centerline{}+
+command. Place figures as close as possible to 
+where they are mentioned in the text. No 
+part of a figure should go beyond the typing area.
+Authors should use PostScript or EPS figures. Place 
+the file name of the figure within the 
+curly brackets of the 
+\verb+\epsfbox{}+ command. To resize figures, the 
+\verb+\epsfxsize=+ command may be used, before 
+the \verb+\epsfbox{}+ command, e.g.,
+\verb+\epsfxsize=5in \epsfbox{OpExF1.EPS}+.  Figures 
+created in the picture environment may be used if 
+the submission system processes the figures with 
+no errors. In general if a LaTeX file with PostScript 
+(PS) or (EPS) figures is sent, the figures must also 
+be included in the tarred, gzipped archive. 
+
+Short figure captions should be 
+\verb+\footnotesize+ and centered beneath the figure.  
+The abbreviation Fig. for figure should appear first 
+followed by the figure number and a period.  Longer 
+figure captions should be indented 1.27cm (0.5in) 
+on both margins.  The \verb+\caption{}+ command
+sets type size, margins, and numbers figures
+automatically.   The text of captions
+should follow normal full-sentence structure.  
+
+
+
+\subsection{Tables}
+Tables should be centered and numbered consecutively. 
+Short table headings should be centered above the 
+table.  Longer headings should have margins that 
+match the table width.  Tables should use horizontal 
+lines to delimit the top and bottom of the table and 
+column headings.  Detailed explanations or table 
+footnotes should be typed directly beneath the table.  
+Position tables as close as possible to where they 
+are mentioned in the main text.  
+
+\begin{center}{\footnotesize Table 1. Standard abbreviations
+ for 31 commonly cited journals}
+\end{center}
+\begin{table}
+\begin{center}
+\begin{tabular}{lp{1.7in}|lp{1.7in}}\hline 
+Macro & Abbreviation & Macro & Abbreviation \\ \hline
+\verb+\ao+ & Appl.\  Opt.\  & \verb+\nat+ & Nature (London)   \\
+\verb+\ap+ & Appl.\  Phys.\  & \verb+\oc+ & Opt.\ Commun.\   \\
+\verb+\apl+ & Appl.\ Phys.\ Lett.\
+  & \verb+\opex+ & Opt.\ Express   \\
+\verb+\apj+ & Astrophys.\ J.\  & \verb+\ol+ & Opt.\ Lett.\   \\
+\verb+\bell+ & Bell Syst.\ Tech.\ J.\
+  & \verb+\pl+ & Phys.\ Lett.\   \\
+\verb+\jqe+ & IEEE J.\ Quantum Electron.\
+  & \verb+\pra+ & Phys.\ Rev.\ A   \\
+\verb+\assp+ & IEEE Trans.\ Acoust.\ Speech Signal Process.\
+  & \verb+\prb+ & Phys.\ Rev.\ B   \\
+\verb+\aprop+ & IEEE Trans.\  Antennas Propag.\ 
+  & \verb+\prc+ & Phys.\ Rev.\ C   \\
+\verb+\mtt+ & IEEE Trans.\ Microwave Theory Tech.\
+  & \verb+\prd+ & Phys.\ Rev.\ D   \\
+\verb+\iovs+ & Invest.\ Ophthalmol.\ Vis.\ Sci.\
+  & \verb+\pre+ & Phys.\ Rev.\ E   \\
+\verb+\jcp+ & J.\ Chem.\ Phys.\
+  & \verb+\prl+ & Phys.\ Rev.\ Lett.\   \\
+\verb+\jmo+ & J.\ Mod.\ Opt.\
+  & \verb+\rmp+ & Rev.\ Mod.\ Phys.\   \\
+\verb+\josa+ & J.\ Opt.\ Soc.\ Am.\  & 
+  \verb+\pspie+ & Proc.\ Soc.\ Photo-Opt.\ Instrum.\ Eng.\   \\
+\verb+\josaa+ & J.\ Opt.\ Soc.\ Am.\ A 
+  & \verb+\sjqe+ & Sov.\ J.\ Quantum Electron.\   \\
+\verb+\josab+ & J.\ Opt.\ Soc.\ Am.\ B
+  & \verb+\vr+ & Vision Res.\   \\
+\verb+\jpp+ & J.\ Phys.\ (Paris)  & &  \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+\subsection{3-D and video}
+Figures may be linked to video or 3-D multimedia.
+The figure should be a representative frame of the 
+animation.  QuickTime video and 3-D animation 
+may be uploaded to OSA by following the instructions 
+on the {\it Optics Express} submissions pages.
+Include any special instructions concerning links 
+in the cover message accompanying submission.
+ 
+
+%  \pagebreak \epsfbox{filename.ps}
+\noindent
+\begin{figure}
+\centerline{\epsfxsize=5in \epsfbox{OpExF1.EPS}}
+\caption{Sample EPS figure showing Bose-Einstein 
+condensate data. Use the caption command for longer 
+figure captions. REVTeX or LaTeX will automatically 
+number the figures.}
+%\begin{center} 
+%{\footnotesize Fig. 1. Short figure caption.}
+%\end{center}
+\end{figure}
+
+Authors may submit the resulting PS 
+file. Other authors who use LaTeX or REVTeX must make
+a tarred, gzipped archive of their .TeX file and 
+PS or EPS figures. 
+
+
+\section{Conclusion}
+Conforming to the {\it Optics Express} style is of 
+critical importance to the speedy publication of a 
+compuscript. After proofreading the compuscript, 
+authors who have the capability to make PS files 
+with BaKoMa fonts, may print  
+PostScript to a file using BaKoMa fonts and submit the 
+PostScript file to the journal.  Authors who prefer to
+submit LaTeX files must use tar and gzip compression
+to archive the manuscript and figures.  If there is 
+video or other multimedia, the associated 
+files must be uploaded separately.
+
+
+Enter the requested information into the OpEx online 
+submission system at 
+http://epubs.osa.org/opticsexpress/submission, and 
+upload the file.  For instructions, please see the 
+{\it Optics Express} help files.
+\end{document}
