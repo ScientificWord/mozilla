@@ -1,0 +1,56 @@
+% multind style originally written by F.W. Long, 1991.
+% ws-multind style modified by Rajesh, WSPC, 2004
+% indexes document style option for producing multiple indexes
+% for use with wspc book styles.
+
+% Modified \makeindex and \index commands to allow multiple indexes
+% in both cases the first parameter is the index name.
+% They now work more like \@starttoc and \addcontentsline.
+% \index is no longer defined inside \makeindex but determines
+% whether the appropriate file is defined before writing to it.
+
+\def\makeindex#1{\begingroup
+  \makeatletter
+  \if@filesw \expandafter\newwrite\csname #1@idxfile\endcsname
+  \expandafter\immediate\openout \csname #1@idxfile\endcsname #1.idx\relax
+  \typeout{Writing index file #1.idx }\fi \endgroup}
+
+\def\index#1{\@bsphack\begingroup
+               \def\protect##1{\string##1\space}\@sanitize
+               \@wrindex{#1}}
+
+% \@wrindex now checks that the appropriate file is defined.
+
+\def\@wrindex#1#2{\let\thepage\relax
+   \xdef\@gtempa{\@ifundefined{#1@idxfile}{}{\expandafter
+      \write\csname #1@idxfile\endcsname{\string
+      \indexentry{#2}{\thepage}}}}\endgroup\@gtempa
+   \if@nobreak \ifvmode\nobreak\fi\fi\@esphack}
+
+% Modified \printindex command to allow multiple indexes.
+% The first parameter is the index name.
+% The second parameter is the index title (as printed).
+
+\newif\if@restonecol
+\def\printindex#1#2{\@restonecoltrue\if@twocolumn\@restonecolfalse\fi
+  \columnseprule \z@ \columnsep 35pt
+  %\newpage\thispagestyle{plain} \twocolumn[\chapter*{#2}]
+  %\cleardoublepage\thispagestyle{plain} \twocolumn[\title{#2}]
+   \cleardoublepage\thispagestyle{plain}
+   \twocolumn[\vskip 13pt\chapter*{#2} \vskip 6pt]
+  \markright{{#2}}
+ \@input{#1.ind}}
+
+\def\theindex{\small             %9pt
+ \parindent\z@
+ \parskip\z@ plus .3pt\relax\let\item\@idxitem}
+\def\@idxitem{\par\hangindent 1em}
+\def\subitem{\par\hangindent 3em \hspace*{18pt}}
+\def\subsubitem{\par\hangindent 3.5em \hspace*{24pt}}
+\def\endtheindex{\if@restonecol\onecolumn\else\clearpage\fi}
+\def\indexspace{\par \vskip\baselineskip}
+\def\see#1#2{{\em see\/} #1}
+
+\def\aindx#1{\index{authors}{#1}}   %For Author index
+\def\sindx#1{\index{subject}{#1}}   %For Subject index
+\def\gindx#1{\index{general}{#1}}   %For General index

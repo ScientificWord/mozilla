@@ -1,0 +1,40 @@
+\ProvidesPackage{klucite}
+% based on code contributed by
+% VTeX Ltd, Vilnius, Lithuania (vtex@omnitel.net)
+
+% collapses citations [3,4,5] to [3--5]
+\newcount\@tempcntc
+\def\@citex[#1]#2{%                        
+  \@tempcnta\z@\@tempcntb\m@ne\let\@citea\@empty
+  \@cite{\@for\@citeb:=#2\do
+    {\if@filesw\immediate\write\@auxout{\string\citation{\@citeb}}\fi
+     \edef\gl@citeb{\expandafter\@firstofone\@citeb}%
+     \edef\@citeb{\thearticle\expandafter\@firstofone\@citeb}%
+     \@ifundefined{b@\@citeb}{%
+        \@ifundefined{b@\gl@citeb}{%
+            \mbox{\reset@font\bfseries ?}%
+            \G@refundefinedtrue
+            \@latex@warning
+            {Citation `\@citeb' on page \thepage \space undefined}}%
+      {\setbox\z@\hbox{\global\@tempcntc0\csname b@\gl@citeb\endcsname\relax}%
+       \ifnum\@tempcntc=\z@ \@citeo\@tempcntb\m@ne
+       \@citea\def\@citea{,\penalty\@m\ }\hbox{\csname b@\gl@citeb\endcsname}%
+       \else 
+       \advance\@tempcntb\@ne
+       \ifnum\@tempcntb=\@tempcntc
+       \else\advance\@tempcntb\m@ne\@citeo
+       \@tempcnta\@tempcntc\@tempcntb\@tempcntc\fi\fi}}%
+     {\setbox\z@\hbox{\global\@tempcntc0\csname b@\@citeb\endcsname\relax}%
+      \ifnum\@tempcntc=\z@ \@citeo\@tempcntb\m@ne
+      \@citea\def\@citea{,\penalty\@m\ }\hbox{\csname b@\@citeb\endcsname}%
+      \else 
+      \advance\@tempcntb\@ne
+      \ifnum\@tempcntb=\@tempcntc
+      \else\advance\@tempcntb\m@ne\@citeo
+      \@tempcnta\@tempcntc\@tempcntb\@tempcntc\fi\fi}}\@citeo}{#1}}%
+\def\@citeo{\ifnum\@tempcnta>\@tempcntb\else\@citea\def\@citea{,\penalty\@m\ }%
+ \ifnum\@tempcnta=\@tempcntb\the\@tempcnta\else
+%  {\advance\@tempcnta\@ne\ifnum\@tempcnta=\@tempcntb \else \def\@citea{\,--\,}\fi
+  {\advance\@tempcnta\@ne\ifnum\@tempcnta=\@tempcntb \else \def\@citea{--}\fi
+   \advance\@tempcnta\m@ne\the\@tempcnta\@citea\the\@tempcntb}\fi\fi}%
+\endinput
