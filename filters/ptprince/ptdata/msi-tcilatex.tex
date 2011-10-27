@@ -377,8 +377,8 @@
 \def\@vcamspecial#1{%
    \msihmode
    \msitag{<graph>}%
-      \msitag{<graphSpec ImageFile=} "\expandafter{\expandafter\msigraphicname\msi@getVCamFile#1XXXXX}" \msitag{>}
-      \msitag{<plot xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" PlotStatus="Inited" PlotType="rectangular">}
+      \msitag{<graphSpec ImageFile=} "\expandafter{\expandafter\msigraphicname\msi@getVCamFile#1XXXXX}" \msitag{>}%
+      \msitag{<plot xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" PlotStatus="Inited" PlotType="rectangular">}%
       \msitag{<Expression>
          <math xmlns="http://www.w3.org/1998/Math/MathML">
             <mrow><mi>x</mi><mo form="infix">−</mo><mn>1</mn></mrow>
@@ -386,16 +386,15 @@
        </Expression>
        <XVar>
          <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>
-       </XVar>}
-         
-      \msitag{</plot>}
-      \msitag{</graphSpec>}
-      \msitag{<plotwrapper msi_resize="true">}
-         \msitag{<object height="250" width="250" type="application/x-mupad-graphics+xml" data=}
+       </XVar>}%
+      \msitag{</plot>}%
+      \msitag{</graphSpec>}%
+      \msitag{<plotwrapper msi_resize="true">} %
+         \msitag{<object height="250" width="250" type="application/x-mupad-graphics+xml" data=}%
            "\expandafter{\expandafter\msigraphicname\msi@getVCamFile#1XXXXX}"
-         \msitag{ alt="Generated Plot" msigraph="true"/>}
-      \msitag{</plotwrapper>}
-   \msitag{</graph>}
+         \msitag{ alt="Generated Plot" msigraph="true"/>}%
+      \msitag{</plotwrapper>}%
+   \msitag{</graph>}%
 }
 
 \def\msi@plot@template{
