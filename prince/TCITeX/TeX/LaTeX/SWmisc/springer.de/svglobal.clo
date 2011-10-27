@@ -1,0 +1,79 @@
+% SVJour DOCUMENT CLASS OPTION GLOBAL -- for unspecific journals
+%
+% This is an enhancement for the
+% LaTeX document class for Springer journals (one or two column version)
+%
+%%
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\ProvidesFile{svglobal.clo}
+              [1998/04/23 v1.0
+      style option for unspecific journals]
+\typeout{SVJour Class option: svglobal.clo for unspecific journals}
+\ExecuteOptions{final,10pt,runningheads}
+% No size changing allowed, hence a copy of size10.clo is included
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize\@xpt{12pt}%
+   \abovedisplayskip=3 mm plus6pt minus 4pt
+   \belowdisplayskip=3 mm plus6pt minus 4pt
+   \abovedisplayshortskip=0.0 mm plus6pt
+   \belowdisplayshortskip=2 mm plus4pt minus 4pt
+   \let\@listi\@listI}
+\normalsize
+\newcommand\small{%
+   \@setfontsize\small\@ixpt{11pt}%
+   \abovedisplayskip 8.5\p@ \@plus3\p@ \@minus4\p@
+   \abovedisplayshortskip \z@ \@plus2\p@
+   \belowdisplayshortskip 4\p@ \@plus2\p@ \@minus2\p@
+   \def\@listi{\leftmargin\leftmargini
+               \parsep 0\p@ \@plus1\p@ \@minus\p@
+               \topsep 4\p@ \@plus2\p@ \@minus4\p@
+               \itemsep0\p@}%
+   \belowdisplayskip \abovedisplayskip
+}
+\let\footnotesize\small
+\newcommand\scriptsize{\@setfontsize\scriptsize\@viipt\@viiipt}
+\newcommand\tiny{\@setfontsize\tiny\@vpt\@vipt}
+\newcommand\large{\@setfontsize\large\@xiipt{14pt}}
+\newcommand\Large{\@setfontsize\Large\@xivpt{16dd}}
+\newcommand\LARGE{\@setfontsize\LARGE\@xviipt{17dd}}
+\newcommand\huge{\@setfontsize\huge\@xxpt{25}}
+\newcommand\Huge{\@setfontsize\Huge\@xxvpt{30}}
+%
+\if@twocolumn
+\setlength{\textwidth}{17.8cm}
+\setlength{\textheight}{640dd}
+\else
+\setlength{\textwidth}{25.5cc}
+\setlength{\textheight}{517.5dd}
+\fi
+%
+\def\subclassname{{\it Mathematics Subject Classification (1991):\/} }
+\def\subclass#1{\par\addvspace\medskipamount\noindent\subclassname\
+\ignorespaces#1}
+%
+\def\hindent{\space\space\space\space\space\space\space\space\space\space
+\space\space\space\space\space\space\space\space\space\space\space\space}
+\AtBeginDocument{%
+\@ifundefined{@journalname}
+ {\typeout{Option global - hint: specify
+\string\journalname\string{%
+<name of your journal>\string}^^J\hindent in the preambel^^J}}{}}
+%
+\endinput
+%%
+%% End of file `svglobal.clo'.

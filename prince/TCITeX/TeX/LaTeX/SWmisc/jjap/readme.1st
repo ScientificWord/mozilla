@@ -1,0 +1,60 @@
+README.1ST of JJAP LaTeX Package ver. 1.0.1
+June 29, 1998
+
+0. Revision history
+
+1998/06/29 ver. 1.0.1
+	Defintion of \parindent has been changed.  
+	Some numerals have also been reconsidered.
+	
+	We have rewritten the attached test files based on 
+	the LaTeX 2e standard and the ams package.
+	
+1997/10/16 ver. 1.0
+
+
+1. List of contents (based on LaTeX 2e)
+
+jjap.cls: JJAP class file
+jjapprn.clo: JJAP optional class file for preparing
+		a manuscript for submission.
+overcite.sty: A package file for citation written 
+		by Donald Arseneau.
+test1.tex: Test file from a JJAP article.
+test2.tex: Test file for a manuscript for submission 
+		from a JJAP article.
+doc980626.pdf: PDF file of the usage guide.
+
+Please note that the amsmath package will automatically
+be installed to our class file.
+
+2. Installation
+
+First, put the first three files above in the newly created 
+directory/folder named e.g., "jjap" under  /texmf/tex/latex
+directory/folder. 
+
+	/texmf/tex/jjap---jjap.cls
+	                |
+	                |-jjapprn.clo
+	                |
+	                |-overcite.sty
+
+Then, define the path.
+
+The other files can be placed in any directory/folder.
+
+3. Notes
+
+Please refer to applicable document for further usage of "amsmath.sty".
+
+The command names used in our previous style files are fully compatible
+with this version.
+
+4. Correspondence
+
+For inquiries, bug reports or comments,
+please contact us at the following e-mail address:
+tex@jjap.or.jp
+
+

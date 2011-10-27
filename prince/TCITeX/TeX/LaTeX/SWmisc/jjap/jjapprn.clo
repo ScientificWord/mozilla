@@ -1,0 +1,305 @@
+%
+% jjapprn.clo October 1997
+% minor revision on June 1998
+% JJAP auxiliary style file for manuscript for submission
+%
+% Release 1.0.1
+%
+\ProvidesFile{jjapprn.clo}[1998/06/29 v1.0.1
+              JJAP LaTeX file (auxiliary)]
+%
+%
+\def\@typeset{\sffamily Typeset using jjap.cls $<$ver.1.0.1$>$}
+
+\newcount\halfflag
+\halfflag=0
+%
+\def\halftext{%
+\halfflag=1
+\global\hsize=160truemm\global\textwidth%
+  \hsize\global\linewidth\textwidth}
+\def\halftextwidth{160truemm}
+
+\def\fulltext{%
+\halfflag=0
+\global\hsize=160truemm\global\textwidth%
+  \hsize\global\linewidth\textwidth}
+\def\fulltextwidth{160truemm}
+
+\setlength\lineskip {\z@}
+\setlength\normallineskip {\z@}
+\renewcommand\baselinestretch{1}
+
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize\@xiipt{24}%
+   \abovedisplayskip 12\p@ \@plus3\p@ \@minus7\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\normalsize
+\renewcommand\small{%
+   \@setfontsize\small\@xiipt{18}%
+   \abovedisplayskip 11\p@ \@plus3\p@ \@minus6\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 9\p@ \@plus3\p@ \@minus5\p@
+               \parsep 4.5\p@ \@plus2\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\renewcommand\footnotesize{%
+   \@setfontsize\footnotesize\@xiipt{16}
+   \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 6\p@ \@plus2\p@ \@minus2\p@
+               \parsep 3\p@ \@plus2\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\renewcommand\scriptsize{\@setfontsize\scriptsize\@xpt{12}}
+\renewcommand\tiny{\@setfontsize\tiny\@vipt\@viipt}
+\renewcommand\large{\@setfontsize\large\@xivpt{18}}
+\renewcommand\Large{\@setfontsize\Large\@xviipt{22}}
+\renewcommand\LARGE{\@setfontsize\LARGE\@xxpt{25}}
+\renewcommand\huge{\@setfontsize\huge\@xxvpt{30}}
+\let\Huge=\huge
+
+\setlength\oddsidemargin {\z@}  
+\setlength\evensidemargin {\z@}
+\setlength\topmargin {\z@}
+\setlength\footskip {24\p@}
+
+\setlength\textheight {250truemm}
+\setlength\textwidth {160truemm} 
+\setlength\columnsep {.5cm} 
+\setlength\columnseprule {\z@}
+\setlength\parindent {12\p@}
+
+\def\thebibliography#1{%
+\newpage\section*{References}\list%
+{\normalsize\arabic{enumi})}{\normalsize\settowidth\labelwidth{[#1]}%
+ \leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus -.07em}
+ \sloppy
+ \sfcode`\.=500\relax}
+\let\endthebibliography=\endlist
+
+
+\long\def\@makefntext#1{\vskip2pt \hsize=160truemm 
+\@ifundefined{manyfootnote@2}%
+  {\par\hangindent6pt}{\par\hangindent10pt}
+\noindent
+\scriptsize \hskip6pt $^{\@thefnmark}$\hskip1pt#1}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% definition of maketitle  by T. Inoue
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\def\maketitle{\par
+ \begingroup
+ \@ifundefined{manyfootnote@2}{\def\thefootnote{\fnsymbol{footnote}}}
+                              {\def\thefootnote{\fnsymbols{footnote}}}
+
+\def\@makefnmark{\hskip-1pt{$^{\@thefnmark}$}}
+ \if@twocolumn
+ \twocolumn[\@maketitle]
+ \else 
+ \global\@topnum\z@ \@maketitle \fi
+ \thispagestyle{plain}\@thanks
+ \endgroup
+ \setcounter{footnote}{0}
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@inst{}\gdef\@title{}\let\thanks\relax}
+\def\@maketitle{%
+%\null
+\def\hang{\par\hangindent=0pt\hangafter=1\noindent}
+\vspace*{-.5cm}
+\hbox to \textwidth{\hfill{\@typeset}}\par
+\vskip6pt
+{\large\bfseries\hang\@title \par} 
+\vskip 6pt
+{\small\hang\@author \par}
+\vskip 6pt
+{\small\itshape\hang\@inst \par}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     Date insertion,
+%     desigend by Y. Yamamoto
+%
+%     A binary program extracts the strings ``(Received ...'' in the dvi
+%     file is suported by Y. Yamamoto
+%
+\vskip6pt
+\hang
+{\footnotesize 
+(Received \hfill)}
+ \par
+ \vskip.5\baselineskip
+ \@ifundefined{@abst}{}{%
+\begingroup
+{\indent 
+  \@abst \par} 
+  \gdef\@abst{}
+\endgroup}
+\vskip.5\baselineskip %%%%%%%%%%%%%%%%%
+\@ifundefined{@kword}{}{%
+\hang
+\begingroup
+{\footnotesize\sffamily KEYWORDS: \ 
+\parbox[t]{133mm}{\@kword}}
+  \vskip 12pt
+  \gdef\@kword{}}\par
+\endgroup
+\newpage}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Table environment by S. Suzuki
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\renewcommand\arraystretch{1}
+
+\def\figure{\@float{figure}}
+\let\endfigure\end@float
+\@namedef{figure*}{\@dblfloat{figure}}
+\@namedef{endfigure*}{\end@dblfloat}
+\def\fullfigure{\normalsize\halftext\figure}
+\def\endfullfigure{\endfigure\halftext}
+\def\halffigure{\normalsize\halftext\figure}
+\def\endhalffigure{\endfigure\halftext}
+
+\def\table{\scriptsize\@float{table}}
+\let\endtable\end@float
+\@namedef{table*}{\@dblfloat{table}}
+\@namedef{endtable*}{\end@dblfloat}
+
+\def\fulltable{\scriptsize\halftext\@float{table}[p]}
+\def\endfulltable{\end@float\halftext}
+
+\def\halftable{\scriptsize\halftext\@float{table}[p]}
+\let\endhalftable\end@float
+
+\def\halftabular{%
+  \vspace{10pt}\halftext\scriptsize\def\@halignto{to \halftextwidth}\@tabular}
+\def\fulltabular{%
+  \vspace{10pt}\fulltext\scriptsize\def\@halignto{to \fulltextwidth}\@tabular}
+
+\def\endhalftabular{\crcr\egroup\egroup $\egroup}
+\def\endfulltabular{\crcr\egroup\egroup $\egroup}
+
+\def\hline{%
+\noalign{\ifnum0=`}\fi \hrule \@height
+\arrayrulewidth \futurelet \@tempa\@xhline
+} 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% ------------ Modification of @makecaption --------------- 
+%              by S. Suzuki
+%
+%	   Figure captions are just stored in named box.
+%	   Table caption are written.
+%	   The position of captions depend on \halftext value.
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+
+\newcount\@figureindex
+\@figureindex=1
+
+\newcount\@tmpfigureindex
+\@tmpfigureindex=1
+
+\newcount\@boxcreated
+\@boxcreated=1
+
+\def\setfigurecaptionbox#1{%
+\ifnum \@figureindex=1
+\newbox{#1}
+\global\advance\@boxcreated by 1
+\fi
+}
+
+\def\makefigurecaptions{%
+%
+\ifnum \@figureindex>\@boxcreated
+  \typeout{MAKEFIGURECAPTIONS: Number of Figures has changed.}
+
+\else
+  \newpage
+  \ifnum\@figureindex>2 \section*{Figure captions}
+  \else \section*{Figure caption}
+  \fi
+  \vskip1\baselineskip
+  \halftext
+  \parindent=0pt \par
+  \@whilenum\@figureindex>\@tmpfigureindex \do{%
+     \usebox{\csname @figcapbox\@roman\@tmpfigureindex \endcsname}
+     \vskip 12pt
+     \advance\@tmpfigureindex by 1 }
+\fi
+}
+
+\def\localsbox#1#2{%
+\ifnum \@figureindex<\@boxcreated
+      \global\setbox#1=\hbox{\begin{minipage}{\hsize}
+      \par\hangindent=20\p@\hangafter=1\noindent #2 \end{minipage}}\relax
+\else
+      \typeout{Number of Figures has chagned, one more LaTeX needed.}
+\fi
+}
+
+\global\def\captionfigure{figure}%
+
+\long\def\@makecaption#1#2#3{\normalsize
+\ifx#1\captionfigure% 	%%%%%%%%%% caption of figures %%%%%%%%
+%
+  \def\tempcapstring{\string\@figcapbox\@roman{\@figureindex}}
+  \if@filesw \immediate\write\@auxout
+       {\string\setfigurecaptionbox{\tempcapstring}}
+  \fi
+    \ifnum \@boxcreated>1
+    \vskip .5\baselineskip \hsize=160truemm
+      \global\setbox\@tempboxa\hbox{#2.\hskip10\p@#3}
+      \ifdim \wd\@tempboxa >\hsize
+         \par\hangindent=20\p@\hangafter=1\noindent
+         \localsbox{\csname @figcapbox\@roman\@figureindex\endcsname}
+          {\unhbox\@tempboxa}
+      \else
+         \localsbox{\csname @figcapbox\@roman\@figureindex\endcsname}
+	      {\hbox to\hsize{#2.\hskip10\p@#3\hfill}}
+      \fi 
+  \fi
+  \global\advance\@figureindex by 1
+\else	%%%%%%%% caption for tables  %%%%%%%%%%%
+  \scriptsize
+    \vskip 1\baselineskip \hsize=160truemm
+      \setbox\@tempboxa\hbox{#2.\hskip10\p@#3}
+      \ifdim \wd\@tempboxa >\hsize
+         \par\hangindent=20\p@\hangafter=1\noindent
+         \unhbox\@tempboxa
+      \else
+	 \hbox to\hsize{\hfil\box\@tempboxa\hfil}\par
+    \fi 
+\fi
+} 
+
+\long\def\@caption#1[#2]#3{\par
+  \begingroup
+    \@parboxrestore
+    \normalsize
+    \@makecaption{#1}{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
+  \endgroup}
+
+
+\endinput
+%%
+%% End of file `jjapprn.clo'.

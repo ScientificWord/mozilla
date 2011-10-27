@@ -1,0 +1,124 @@
+%% This is "Physmono.sty" a supplementary LaTeX style
+%% containing additional layout parameter
+%% set up for monographs to be published in the
+%% Springer physics editorials C. Ascheron, H.J. Kölsch
+
+
+\makeatletter
+%%configuration for (sub-)eqnarrays
+\setlength{\arraycolsep}{1.5\p@}
+%             %
+\makeatother
+%
+%%Modification of the vertical space between figure and caption
+\figcapgap=5pt
+\figgap=14.2pt
+%
+%%Modification of automatic positioning of floating objects
+\makeatletter
+\setlength\@fptop{0\p@ }
+\setlength\@fpsep{12\p@ }
+\setlength\@fpbot{0\p@ plus 1fil }
+% puts "stand-alone" figures at the top of the page
+%
+%the following parameter fill the space in 'floating object'-pages
+%with text
+%\setcounter{topnumber}{4}
+%\def\topfraction{.99}
+%\setcounter{bottomnumber}{2}
+%\def\bottomfraction{.99}
+%\setcounter{totalnumber}{6}
+\def\textfraction{.01}
+\def\floatpagefraction{.8}
+%
+\intextsep 20pt plus 2pt minus 2pt
+%vert. Abstand zw. dem umgebenden Text und gleit. Objekten, die ueb. die
+%h-positionierung im laufenden Text angeordnet sind.
+\setcounter{topnumber}{4}
+%max. Anzahl v. gleit. Objekten, die auf einer Seite OBEN angeordnet
+%werden koennen
+\def\topfraction{.9}
+%gibt den Bruchteil der Seite an, der fuer gleit. Objekte OBEN auf der
+%Seite zur Verfuegung steht
+\setcounter{bottomnumber}{2}
+%max. Anzahl v. gleit. Objekten, die auf einer Seite UNTEN angeordnet
+%werden koennen
+\def\bottomfraction{.7}
+%gibt den Bruchteil der Seite an, der fuer gleit. Objekte UNTEN auf der
+%Seite zur Verfuegung steht
+\setcounter{totalnumber}{6}
+%max. Anzahl v. gleit. Objekten, die auf einer Seite INSGESAMT angeordnet
+%werden koennen
+%%\def\textfraction{.2}
+%gibt den Bruchteil der Seite an, der fuer TEXT MINDESTENS zur
+%Verfuegung stehen muss: Damit steht fuer gleit. Obje. pro Seite
+%max. ein Anteil von 1- \textfraction zur Verfuegung.
+%\def\floatpagefraction{.5}
+%gibt den MINIMALEN BRUCHTEIL einer Seite an, der von gleit. Obje.
+%ausgefuellt sein muss, bevor ggf. ein weitere Seite bereitgestellt
+%wird.
+%
+%%Modification for cropmarks
+%\def\@makechapterhead#1{{\parindent0pt\raggedright
+%  \hyphenpenalty \@M
+%  \Large\bf\boldmath
+%  \sec@hangfrom{\thechapter.\hskip\betweenumberspace}%
+%  \ignorespaces#1\par
+%  \thispagecropped
+%  \ifdim\pagetotal>118pt
+%     \vskip 24pt
+%  \else
+%     \@tempdima=118pt\advance\@tempdima by-\pagetotal
+%     \vskip\@tempdima
+%  \fi}}
+%\def\@makeschapterhead#1{{\parindent0pt\raggedright
+%  \hyphenpenalty \@M
+%  \Large\bf\boldmath
+%  \ignorespaces#1\par
+%  \thispagecropped
+%  \ifdim\pagetotal>118pt
+%     \vskip 24pt
+%  \else
+%     \@tempdima=118pt\advance\@tempdima by-\pagetotal
+%     \vskip\@tempdima
+%  \fi}}
+%%puts cropmarks automatically at the beginning of each chapter
+%
+%the following environment gives an even "two-column" end of
+%the last index page
+\renewenvironment{theindex}
+               {\if@twocolumn
+                  \@restonecolfalse
+                \else
+                  \@restonecoltrue
+                \fi
+                \columnseprule \z@
+                \columnsep 1cc
+                \@nobreaktrue
+                   \begin{multicols}{2}[\chapter*{\indexname}]%
+                \@mkboth{\indexname}{\indexname}%
+                \thispagestyle{empty}\parindent\z@
+                \rightskip0\p@ plus 40\p@
+                \parskip\z@ \@plus .3\p@\relax
+                \let\item\@idxitem
+                \def\,{\relax\ifmmode\mskip\thinmuskip
+                             \else\hskip0.2em\ignorespaces\fi}%
+                \normalfont\small}
+               {\end{multicols}
+                \if@restonecol\onecolumn\else\clearpage\fi}
+\makeatother
+%
+%%New Definition of contentsname
+\def\contentsname{Contents}
+%% Contents is the preferred style not Table of Contents
+
+\renewcommand{\labelitemi}{$\bullet$}
+
+\let\firstmark=\botmark
+%
+% Modifications for centering of divers elements
+%\makeatletter
+%\let\@eqnsel = \hfil
+%\def\leftlegendglue{\hfil}
+%\makeatother
+
