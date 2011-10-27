@@ -146,14 +146,14 @@ subparagraph defaulttitletag:after {
 title {
   font-size: x-large;
   display: block;
-  margin-top: 12pt;
+/*  margin-top: 12pt;*/
   text-align: center;
 }
 
 author {
   font-weight: normal;
   display: block;
-  padding-top: 10pt;
+/*  padding-top: 10pt;*/
 }
 
 address {
@@ -165,18 +165,23 @@ address {
 date {
   font-weight: normal;
   display: block;
-  padding-top: 2pt;
+/*  padding-top: 2pt;*/
   text-align: center;
 }
 
 frontmatter {
   display: block;
-  position: relative;
+/*  position: relative;
   margin-left: 100px;
   padding: 10px 0px;
-  border: thin solid black; 
+  border: thin solid black; */
   background-color: #EEE8E0;
-  -moz-border-radius: 10px;
+/*  -moz-border-radius: 10px;*/
+}
+
+button[class="frontmattertag"]{
+  position: absolute;
+  left: 5px;
 }
 
 /**********************/
