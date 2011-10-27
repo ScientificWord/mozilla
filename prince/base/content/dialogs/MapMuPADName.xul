@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % DTD SYSTEM "chrome://prince/locale/MapMuPADName.dtd" >
+%DTD;
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
+%editorDTD;
+<!ENTITY % menuDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuDTD;
+]>
+<!--JLF - Localization pass on 6/29/2011-->
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    id="MapMuPADNameDlg"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    onunload="doPostDialogFunction()"
+    ondialogaccept = "return OK()"
+    ondialogcancel = "return Cancel()"
+    buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
+    persist="screenX screenY width height">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+
+  <script type="application/x-javascript" src="chrome://prince/content/MapMuPADName.js" />
+
+  <popupset id="msiEditorContentContextSet"/>
+
+  <!-- broadcaster id="args" value="about:blank"/ -->
+
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    
+    <commandset id="commonEditorMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+  </commandset>
+
+  <commandset id="MSImathMenuCommands"/>
+ 
+#include ../keysfordialogs.inc
+ 
+
+  <hbox>
+    <vbox>
+      <groupbox>
+        <caption label="&swpname.label;"/>
+        <editor id="swpname.input" editortype="html" type="content-primary" context="msiEditorContentContext" height="60" width="200"/>
+      </groupbox>
+      <groupbox>
+        <caption label="&mupadname.label;"/>
+        <textbox id="mupadname.input"/>
+      </groupbox>
+
+      <groupbox>
+        <caption id="label" label="&procedure.label;"/>
+        <radiogroup id="builtingroup" orient="vertical">
+           <radio id="builtin" label="&builtin.label;" value="false" selected="true" oncommand=""/>
+           <radio id="builtin" label="&infile.label;" value="wide" selected="false" oncommand=""/>
+           <textbox id="infile.input"/>
+        </radiogroup>
+      </groupbox>
+    </vbox>
+  </hbox>
+
+</dialog>

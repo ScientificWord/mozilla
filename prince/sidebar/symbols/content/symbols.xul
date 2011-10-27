@@ -86,42 +86,42 @@
             </row>
             <row>
               <toolbarbutton id="symbolvarepsilon" />
+              <toolbarbutton id="symbolbackepsilon" />
               <toolbarbutton id="symbolzeta" />
               <toolbarbutton id="symboleta" />
-              <toolbarbutton id="symboltheta" />
-              <toolbarbutton id="symbolvartheta" />
+              <toolbarbutton id="symboltheta" />             
             </row>
             <row>
+              <toolbarbutton id="symbolvartheta" />
               <toolbarbutton id="symboliota" />
               <toolbarbutton id="symbolkappa" />
+              <toolbarbutton id="symbolvarkappa" />
               <toolbarbutton id="symbollambda" />
+            </row>
+            <row>
               <toolbarbutton id="symbolmu" />
               <toolbarbutton id="symbolnu" />
+              <toolbarbutton id="symbolxi" />
+              <toolbarbutton id="symbolomicron" />
+              <toolbarbutton id="symbolpi" />
             </row>
             <row>
-              <toolbarbutton id="symbolxi" />
-              <toolbarbutton id="symbolpi" />
               <toolbarbutton id="symbolvarpi" />
               <toolbarbutton id="symbolrho" />
+              <toolbarbutton id="symbolvarrho" />
               <toolbarbutton id="symbolsigma" />
-            </row>
-            <row>
               <toolbarbutton id="symbolvarsigma" />
+           </row>
+            <row>
               <toolbarbutton id="symboltau" />
               <toolbarbutton id="symbolupsilon" />
               <toolbarbutton id="symbolphi" />
               <toolbarbutton id="symbolvarphi" />
+              <toolbarbutton id="symboltextchi" />
             </row>
             <row>
-              <toolbarbutton id="symboltextchi" />
               <toolbarbutton id="symbolpsi" />
               <toolbarbutton id="symbolomega" />
-              <toolbarbutton id="symbolvarkappa" />
-              <toolbarbutton id="symbolvarrho" />
-            </row>
-            <row>
-              <toolbarbutton id="symbolbackepsilon" />
-              <toolbarbutton id="symbolomicron" />
               <toolbarbutton id="symbolstigma" />
             </row>
           </rows>
@@ -189,40 +189,37 @@
             <row>
               <toolbarbutton id="symbolsqcup" />
               <toolbarbutton id="symbolsqcap" />
-      <!-- AMS   <toolbarbutton label="&#x2BEF;" tooltiptext="&symbolbigcirc.tooltip;"         msivalue="&#x2BEF;"
-                 observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolbigcirc"/>
               <toolbarbutton id="symbolsetminus" /> 
               <toolbarbutton id="symbolsmallsetminus" /> 
-              <toolbarbutton id="symboloplus" />
             </row>
             <row>
+              <toolbarbutton id="symboloplus" />
               <toolbarbutton id="symbolominus" />
               <toolbarbutton id="symbolotimes" />
               <toolbarbutton id="symbolodot" />
               <toolbarbutton id="symbolcircledast" />
-              <toolbarbutton id="symbolvee" />
             </row>
             <row>
+              <toolbarbutton id="symbolvee" />
               <toolbarbutton id="symbolwedge" />
               <toolbarbutton id="symbolcircledcirc" />
-<!-- Latex 2.09  <toolbarbutton label="&#x22B2;" tooltiptext="&symbollhd.tooltip;"      msivalue="&#x22B2;"
-           observes="cmd_MSIsymbolCmd2"/> -->
-<!-- Latex 2.09  <toolbarbutton label="&#x22B3;" tooltiptext="&symbolrhd.tooltip;"      msivalue="&#x22B3;"
-           observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbollhd" />
+              <toolbarbutton id="symbolrhd" />
+             </row>
+            <row>
               <toolbarbutton id="symbolveebar" />
               <toolbarbutton id="symbolbarwedge" />
               <toolbarbutton id="symbolwr" />
-            </row>
-            <row>
               <toolbarbutton id="symbolsmalltriangleleft" />
               <toolbarbutton id="symbolsmalltriangleright" />
+            </row>
+            <row>
               <toolbarbutton id="symboluplus" />
               <toolbarbutton id="symboldoublebarwedge" />
               <toolbarbutton id="symbolamalg" /> 
-<!-- Latex 2.09 <toolbarbutton label="&#x22B4;" tooltiptext="&symbolunlhd.tooltip;"         msivalue="&#x22B4;"
-           observes="cmd_MSIsymbolCmd2"/> -->
-<!-- Latex 2.09 <toolbarbutton label="&#x22B5;" tooltiptext="&symbolunrhd.tooltip;"         msivalue="&#x22B5;"
-           observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolunlhd" />
+              <toolbarbutton id="symbolunrhd" />
             </row>
             <row>
               <toolbarbutton id="symbolbigtriangledown" />
@@ -385,41 +382,39 @@
             <row>
               <toolbarbutton id="symbolgtreqqless" />
               <toolbarbutton id="symbolvarpropto" />
-              <!-- AMS <toolbarbutton label="&#x2323;" tooltiptext="&symbolsmallsmile.tooltip;"              msivalue="&#x2323;"
-              observes="cmd_MSIsymbolCmd2"/> -->
-              <!-- AMS <toolbarbutton label="&#x2322;" tooltiptext="&symbolsmallfrown.tooltip;"              msivalue="&#x2322;"
-              observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolsmallsmile" />
+              <toolbarbutton id="symbolsmallfrown" />
               <toolbarbutton id="symbolSubset" />
-              <toolbarbutton id="symbolSupset" />
-              <toolbarbutton id="symbolsubseteqq" />
             </row>
             <row>
+              <toolbarbutton id="symbolSupset" />
+              <toolbarbutton id="symbolsubseteqq" />
               <toolbarbutton id="symbolsupseteqq" />
               <toolbarbutton id="symbolbumpeq" />
               <toolbarbutton id="symbolBumpeq" />
-              <toolbarbutton id="symbollll" />
-              <toolbarbutton id="symbolggg" />
             </row>
             <row>
+              <toolbarbutton id="symbollll" />
+              <toolbarbutton id="symbolggg" />
               <toolbarbutton id="symbolpitchfork" />
               <toolbarbutton id="symbolbacksim" />
               <toolbarbutton id="symbolbacksimeq" />
-              <toolbarbutton id="symboleqsim" />
-              <toolbarbutton id="symbollessdot" />
             </row>
             <row>
+              <toolbarbutton id="symboleqsim" />
+              <toolbarbutton id="symbollessdot" />
               <toolbarbutton id="symbolgtrdot" />
-              <!-- AMS <toolbarbutton label="&#xEEFF;" tooltiptext="&symbolshortmid.tooltip;"              msivalue="&#xEEFF;"
-              observes="cmd_MSIsymbolCmd2"/> -->
-              <!-- AMS <toolbarbutton label="&#xEF01;" tooltiptext="&symbolshortparallel.tooltip;"              msivalue="&#xEF01;"
-              observes="cmd_MSIsymbolCmd2"/> -->
+              <toolbarbutton id="symbolshortmid"  />
+              <toolbarbutton id="symbolshortparallel" /> 
+            </row>
+            <row>
               <toolbarbutton id="symbolthicksim" /> 
               <toolbarbutton id="symbolthickapprox" /> 
               <toolbarbutton id="symbolapproxeq" />
               <toolbarbutton id="symbolsuccapprox" />
+              <toolbarbutton id="symbolprecapprox" />
             </row>
             <row>
-              <toolbarbutton id="symbolprecapprox" />
               <toolbarbutton id="symbolvartriangle" />
             </row>
           </rows>
@@ -798,7 +793,7 @@
               <toolbarbutton id="symboltextdegree" />
               <toolbarbutton id="symboltextexclamdown" />
               <toolbarbutton id="symboltextquestiondown" />
-              <toolbarbutton id="symbolpm" />
+              <toolbarbutton id="symbolpmtxt" />
               <toolbarbutton id="symboldiv" />
             </row>
             <row>

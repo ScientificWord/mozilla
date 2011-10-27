@@ -1,0 +1,568 @@
+
+MODULE
+  shell - Shell system, directory and file utilities
+
+INTRODUCTION
+  This module supports users in executing shell commands and to
+  operate on files and directories from within MuPAD. 
+
+INTERFACE
+  shell::changeDir,  shell::currentDir,   shell::doc, 
+  shell::exist,      shell::find,         shell::getEnv, 
+  shell::isDir,      shell::isFile,       shell::listDir, 
+  shell::makeDir,    shell::modified,     shell::pathname, 
+  shell::putEnv,     shell::readFile,     shell::removeDir, 
+  shell::removeFile, shell::rename,       shell::sizeofFile, 
+  shell::system,     shell::tempFilename, shell::writeFile  
+<!-- BEGIN-FUNC changeDir -->
+NAME
+  shell::changeDir - Changes the current working directory
+
+SYNOPSIS
+  shell::changeDir( path )
+
+ARGUMENTS
+  path - String, name of the new working directory
+
+DESCRIPTION
+  The function changes the current working directory to  'path'
+  and returns TRUE. It returns FALSE if the operation fails.
+
+EXAMPLE:
+  >> shell::changeDir( "modules" )
+
+     TRUE
+
+SEE ALSO
+  shell::currentDir, shell::isDir, shell::listDir, 
+  shell::makeDir, shell::pathname, shell::removeDir
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC currentDir -->
+NAME
+  shell::currentDir - Returns the current working directory
+
+SYNOPSIS
+  shell::currentDir()
+
+DESCRIPTION
+  The function returns the current working directory of the Mu-
+  PAD kernel as character string.
+
+EXAMPLE:
+  >> shell::currentDir()
+
+     "F:\\USER\\ANDI\\DMUPAD"
+
+  >> shell::currentDir()
+
+     "/home/andi/SHELL"         
+
+SEE ALSO
+  shell::isDir, shell::listDir, shell::makeDir, 
+  shell::pathname, shell::removeDir
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC doc -->
+NAME
+  shell::doc - Online documentation
+
+SYNOPSIS
+  shell::doc()
+  shell::doc( func )
+
+ARGUMENTS
+  func - String, function name without the prefix "shell::"
+
+DESCRIPTION
+  Displays a description of the module 'shell' respectively the
+  function shell::'func'. 
+
+EXAMPLE:
+  >> shell::doc("system")
+  [...]
+
+SEE ALSO
+  module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC exist -->
+NAME
+  shell::exist - Checks if a file or directory exists
+
+SYNOPSIS
+  shell::exist( path )
+
+ARGUMENTS
+  path - String, name of a file or directory
+
+DESCRIPTION
+  The function returns TRUE if 'path' exists  and returns FALSE
+  otherwise.
+
+EXAMPLE:
+  >> shell::exist("TestFile")
+
+     FALSE
+
+  >> shell::exist("modules")
+
+     TRUE
+
+SEE ALSO
+  shell::find, shell::isDir, shell::isFile, shell::modified, 
+  shell::readFile, shell::removeDir, shell::removeFile, 
+  shell::renameFile, shell::sizeofFile, shell::tempFilename
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC find -->
+NAME
+  shell::find - Looks for a path in a given path list
+
+SYNOPSIS
+  shell::find( path, dirList)
+
+ARGUMENTS
+  path    - String, name of a file or directory
+  dirList - List, list of directories
+
+DESCRIPTION
+  The function searches for 'path' in the directories 'dirList'
+  and returns its full pathname if it was found.  Otherwise the
+  function returns FAIL.
+
+EXAMPLE:
+  >> shell::find( "mmg.exe", ["modules\\bin"] )
+
+     "modules\\bin\\mmg.exe"
+
+SEE ALSO
+  shell::exist, shell::modified, shell::readFile,
+  shell::removeFile, shell::renameFile, shell::sizeofFile,
+  shell::tempFilename
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC getEnv -->
+NAME
+  shell::getEnv - Returns the value of an environment variable
+
+SYNOPSIS
+  shell::getEnv( varname )
+
+ARGUMENTS
+  varname - String, name of an environment variable
+
+DESCRIPTION
+  The function returns the value of the shell environment vari-
+  able 'varname' as a character string. If the variable is un-
+  defined, the empty string "" is returned.
+
+EXAMPLE:
+  >> shell::getEnv( "unknownVar" )
+
+     ""
+  >> shell::getEnv( "HOME" )
+
+     "C:\\Documents and Settings\\username"
+
+SEE ALSO
+  shell::putEnv, shell::readFile, shell::sizeofFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC isDir -->
+NAME
+  shell::isDir - Checks if a given path is a directory
+
+SYNOPSIS
+  shell::isDir( path )
+
+ARGUMENTS
+  path    - String, name of a file or directory
+
+DESCRIPTION
+  The function returns TRUE if the given ´path´ exists and is a
+  directory and  it returns FALSE if it is not a directory.  If 
+  'path' does not exist the functions returns FAIL.
+
+EXAMPLE:
+  >> shell::isDir("linux")
+
+     TRUE
+
+SEE ALSO
+  shell::exist, shell::isFile, shell::modified, shell::readFile,
+  shell::removeFile, shell::renameFile, shell::sizeofFile,
+  shell::tempFilename
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC isFile -->
+NAME
+  shell::isDir - Checks if a given path is a regular file
+
+SYNOPSIS
+  shell::isFile( path )
+
+ARGUMENTS
+  path    - String, name of a file or directory
+
+DESCRIPTION
+  The function returns TRUE if the given ´path´ exists and is a
+  file and it returns FALSE if it is not a file. If 'path' does
+  not exist the functions returns FAIL.
+
+EXAMPLE:
+  >> shell::isFile("shell.mdh")
+
+     TRUE
+
+SEE ALSO
+  shell::exist, shell::isDir, shell::modified, shell::readFile,
+  shell::removeFile, shell::renameFile, shell::sizeofFile,
+  shell::tempFilename, shell::writeFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC listDir -->
+NAME
+  shell::listDir - Lists the contents of a directory
+
+SYNOPSIS
+  shell::listDir( path )
+
+ARGUMENTS
+  path - String, name of the directory
+
+DESCRIPTION
+  The function returns the contents of the directory 'path'  as
+  a set of character strings. 
+
+EXAMPLE:
+  >> shell::listDir(".")
+
+   {"..", ".", "modules", "lib", "bin"}
+
+SEE ALSO
+  shell::currentDir, shell::isDir, shell::isFile, 
+  shell::makeDir, shell::pathname, shell::readFile,
+  shell::removeDir, shell::writeFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC makeDir -->
+NAME
+  shell::makeDir - Creates a mew directory
+
+SYNOPSIS
+  shell::makeDir( path )
+
+ARGUMENTS
+  path - String, name of the new directory
+
+DESCRIPTION
+  The function creates a new directory named 'path' and returns
+  TRUE if it was successful. It returns FALSE otherwise.
+
+EXAMPLE:
+  >> shell::makeDir( "TestDir" )
+     shell::modified( "TestDir" )
+     shell::removeDir("TestDir")
+
+     TRUE
+     "Mon Dec  6 10:30:57 1999"
+     TRUE
+
+SEE ALSO
+   shell::changeDir, shell::currentDir, shell::listDir, 
+   shell::modified, shell::pathname, shell::removeDir,
+   shell::writeFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC modified -->
+NAME
+  shell::modified - Returns the date of the last change
+
+SYNOPSIS
+  shell::modified( file )
+
+ARGUMENTS
+  file - String, name of afile
+
+DESCRIPTION
+  The function returns the date of the last change of 'file' as
+  character string. It returns FAIL if the file does not exist.
+
+EXAMPLE:
+  >> shell::modified("TestFile")
+
+     "Mon Dec  6 09:49:51 1999"
+
+SEE ALSO
+  shell::exist, shell::find, shell::readFile, shell::removeFile,
+  shell::renameFile, shell::sizeofFile, shell::tempFilename
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC pathname -->
+NAME
+  shell::pathname - Creates a directory name
+
+SYNOPSIS
+  shell::pathname( path [, path...] )
+
+ARGUMENTS
+  path - String, name of directories and/or a file name
+
+DESCRIPTION
+  The function creates a full pathname by concatenating all its
+  arguments using the operating system specific path delimiter.
+
+EXAMPLE:
+  >> shell::pathname( "TestDir", "TestFile" );
+
+     "TestDir\\TestFile"
+
+  >> shell::pathname( "", "TestFile" );
+
+     "\\TestFile"
+
+  >> shell::pathname( "TestDir", "TestFile" );
+
+     "TestDir/TestFile"
+
+  >> shell::pathname( "", "TestFile" );
+
+     "/TestFile"
+
+SEE ALSO
+  shell::changeDir, shell::currentDir, shell::listDir,
+  shell::makeDir, shell::modified, shell::readFile,
+  shell::removeDir, shell::writeFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC putEnv -->
+NAME
+  shell::putEnv - Assigns an environment variable a value
+
+SYNOPSIS
+  shell::putEnv( varname )
+
+ARGUMENTS
+  varname - String, name and value of an environment variable
+
+DESCRIPTION
+  The function assigns a shell environment variable a value and
+  returns TRUE  if it was successful and FALSE  otherwise.  The
+  parameter 'varname' must be of the format "var=value". 
+
+EXAMPLE:
+  >> shell::putEnv( "NEW_VAR=42" )
+
+     TRUE
+
+  >> shell::getEnv( "NEW_VAR" )
+
+     "42"
+
+SEE ALSO
+  shell::getEnv, shell::readFile, shell::sizeofFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC readFile -->
+NAME
+  shell::readFile - Returns the contents of a file
+
+SYNOPSIS
+  shell::readFile( file )
+  shell::readFile( file, type )
+
+ARGUMENTS
+  file - String, name of the file
+  type - Identifier, option Binary or Text
+
+DESCRIPTION
+  The function returns the contents of the specified 'file' ei-
+  ther as a  character string (Option='Text')  or as a  list of
+  bytes (Option='Binary').  If no option is specified as second
+  parameter, this is set to 'Text'.   Note that internally, the
+  file is always opened in binary format.
+  
+EXAMPLE:
+  >> shell::readFile("TestFile");
+
+     "Hello World"
+
+  >> shell::readFile("TestFile", Binary);
+
+     [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100]
+
+SEE ALSO
+  shell::exist, shell::find, shell::isFile, shell::modified, 
+  shell::removeFile, shell::renameFile, shell::sizeofFile, 
+  shell::tempFilename, shell::writeFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC removeDir -->
+NAME
+  shell::removeDir - Removes a directory
+
+SYNOPSIS
+  shell::removeDir( path )
+
+ARGUMENTS
+  path - String, name of the directory
+
+DESCRIPTION
+  The function removes the directory 'path' and returns TRUE if
+  it was successful. It returns FALSE otherwise.
+
+EXAMPLE:
+  >> shell::makeDir  ("TestDir")
+     shell::removeDir("TestDir")
+
+     TRUE
+     TRUE
+
+SEE ALSO
+  shell::currentDir, shell::listDir, shell::makeDir, 
+  shell::pathname
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC removeFile -->
+NAME
+  shell::removeFile - Removes a file
+
+SYNOPSIS
+  shell::removeFile( file )
+
+ARGUMENTS
+  file - String, name of a file
+
+DESCRIPTION
+  The function removes the specified 'file' and returns TRUE if
+  it was successful. It returns FALSE otherwise.
+
+EXAMPLE:
+  >> shell::removeFile("TestFile");
+
+     TRUE
+
+SEE ALSO
+  shell::exist, shell::find, shell::isDir, shell::isFile, 
+  shell::modified, shell::readFile, shell::renameFile, 
+  shell::sizeofFile, shell::tempFilename
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC renameFile -->
+NAME
+  shell::renameFile - Renames a file
+
+SYNOPSIS
+  shell::renameFile( oldname, newname )
+
+ARGUMENTS
+  oldname - String, name of a file
+  newname - String, name of a file
+
+DESCRIPTION
+  The function renames  the file 'oldname' to 'newname' and re-
+  turns TRUE if it was successful. It returns False otherwise.
+
+EXAMPLE:
+  >> shell::renameFile("TestFile","Test");
+
+     TRUE
+
+SEE ALSO
+   shell::exist, shell::find, shell::isDir, shell::isFile, 
+   shell::modified, shell::readFile, shell::removeFile, 
+   shell::sizeofFile, shell::tempFilename
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC sizeofFile -->
+NAME
+  shell::sizeofFile - Returns the size a file
+
+SYNOPSIS
+  shell::sizeofFile( file )
+
+ARGUMENTS
+  file - String, name of the file
+
+DESCRIPTION
+  The function returns the size of the given 'file' in bytes or
+  returns FAIL if the file does not exist. 
+
+EXAMPLE:
+
+  >> shell::sizeofFile("TestFile")
+
+     16292
+
+SEE ALSO
+  shell::exist, shell::find, shell::isFile, shell::modified, 
+  shell::readFile, shell::removeFile, shell::renameFile, 
+  shell::tempFilename
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC system -->
+NAME
+  shell::system - Executes a shell command or a program
+
+SYNOPSIS
+  shell::system( program )
+  shell::system( program, input )
+
+ARGUMENTS
+  program - String, name of a shell command or grogram
+  input   - String, input string sent to the program
+
+DESCRIPTION
+  The function executes the specified shell command/program and
+  returns its output (stdout) as a character string. If 'input'
+  is specified, this character string is passed to 'program' as
+  input (stdin).
+
+  On Windows 95/98/NT system, as a side-effect, a command shell 
+  window may be opend.
+
+EXAMPLE:
+  >> shell::system("sort", "444\n333\n222\n111\n")
+
+     "111\n222\n333\n444\n"
+
+SEE ALSO
+  -
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC tempFilename -->
+NAME
+  shell::tempFilename - Creates a new temporary filename
+
+SYNOPSIS
+  shell::tempFilename()
+
+DESCRIPTION
+  The function returns a new temporary filename  which does not
+  exist yet. 
+
+EXAMPLE:
+  >> shell::tempFilename()
+
+     "\\s55."
+
+SEE ALSO
+  shell::exist, shell::find, shell::modified, shell::readFile,
+  shell::removeFile, shell::renameFile, shell::sizeofFile,
+  shell::writeFile
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC writeFile -->
+NAME
+  shell::writeFile - Write a string or list of bytes to a file
+
+SYNOPSIS
+  shell::writeFile( file, contents )
+
+ARGUMENTS
+  contents - String or list of bytes, contents of the file
+
+DESCRIPTION
+  The function writes  the value of 'contents' to the specified
+  'file'. The value of the parameter 'contents' may either be a
+  character string or list of bytes.  Note that internally, the
+  file is always opened in binary format.
+  
+EXAMPLE:
+  >> shell::writeFile("TestFile", "Hello World"):
+     shell::readFile ("TestFile");
+
+     "Hello World"
+
+  >> shell::writeFile("TestFile", 
+            [72,101,108,108,111,32,87,111,114,108,100]):
+     shell::readFile ("TestFile");
+
+     "Hello World"
+
+SEE ALSO
+  shell::exist, shell::find, shell::isFile, shell::modified, 
+  shell::readFile, shell::removeFile, shell::renameFile, 
+  shell::sizeofFile, shell::tempFilename
+<!-- END-FUNC -->

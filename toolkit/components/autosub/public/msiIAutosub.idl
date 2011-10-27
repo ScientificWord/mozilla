@@ -8,6 +8,7 @@ interface msiIAutosub : nsISupports
   /*
    * Possible values for the context attribute
    */
+  const unsigned short CONTEXT_NONE = 0;
   const unsigned short CONTEXT_MATHONLY = 1;
   const unsigned short CONTEXT_TEXTONLY = 2;
   const unsigned short CONTEXT_MATHANDTEXT = 3;
@@ -26,6 +27,7 @@ interface msiIAutosub : nsISupports
   const unsigned short STATE_MATCHESSOFAR = 2;
   const unsigned short STATE_SUCCESS = 3;
   const unsigned short STATE_FAIL = 4;
+  const unsigned short STATE_SPECIAL = 5;
 
   /*
    * Initialize the lookup table by reading an XML file
@@ -73,4 +75,16 @@ interface msiIAutosub : nsISupports
    */ 
    
   boolean Save();
+
+  void enableAutoSubstitution( in boolean bEnable, in long ctx );
+   
+  /*
+   * Turns autosubstitution on or off in context (which may be CONTEXT_MATHANDTEXT).
+   */ 
+
+  boolean isAutoSubstitutionEnabled( in boolean bMath );
+
+  /*
+   * Returns whether autosubstitution is on or off in context MATH or TEXT, depending on value of bMath parameter.
+   */ 
 };
