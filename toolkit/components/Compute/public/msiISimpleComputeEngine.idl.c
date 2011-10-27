@@ -88,6 +88,7 @@ interface msiISimpleComputeEngine : nsISupports
   void divide(in wstring expr, in wstring vars, [retval] out wstring result);
   void partialFractions(in wstring expr, in wstring vars, [retval] out wstring result);
   void sort(in wstring expr, in wstring vars, [retval] out wstring result);
+  void roots(in wstring expr, in wstring vars, [retval] out wstring result);
   void companionMatrix(in wstring expr, in wstring vars, [retval] out wstring result);
   const unsigned long Polynomial_Collect   			   = CCID_Polynomial_Collect;   			 
   const unsigned long Polynomial_Divide					   = CCID_Polynomial_Divide;					 
@@ -242,6 +243,12 @@ interface msiISimpleComputeEngine : nsISupports
    * Clear definitions
   */
   void clearDefinitions();
+
+  /**
+   * Define a mupad name
+   */
+  void defineMupadName(in wstring swpname, in wstring mupname, in wstring loc, [retval] out wstring result);
+  
 
   /*
    * Vector Basis. Kind of a define, kind of a user preference.

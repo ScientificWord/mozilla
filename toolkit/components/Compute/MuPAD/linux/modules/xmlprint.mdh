@@ -252,16 +252,43 @@ See Also:
   xmlprint::prP2
   
 <!-- END-FUNC -->
+<!-- BEGIN-FUNC prColorArray2d -->
+Name:
+  xmlprint::prColorArray2d -- write a 2D color array
+
+Synopsis:
+  xmlprint::prColorArray2d(fd, value)
+
+Arguments:
+  fd     - XML file descriptor (an integer)
+  value  - DOM_HFARRAY of dimension m*n*3
+
+Returns: Null.
+
+Description:
+  Writes a sequence of RGB color data to the xml file.
+
+  An RGB color is written in the HTML-like syntax #rrggbb,
+  entries are separated by spaces.
+
+  This routine does *not* write an enclosing element.
+
+Example:
+  >> xmlprint::prColorArray2d(fd, hfarray(1..2, 1..2, 1..3,
+              [(abs(sin(x)), 1/y, 0.2) $ x=1..2 $ y=1..2]))
+
+<!-- END-FUNC -->
 
 <!-- BEGIN-FUNC fopen -->
 Name:
   xmlprint::fopen -- opens a XML output file
 
 Synopsis:
-  xmlprint::fopen( <name> )
+  xmlprint::fopen( < [name | String] > )
 
 Arguments:
-  name - file name (a string)
+  name   - file name (a string)
+  String - the identifier String
 
 Returns: A XML file descriptor (a small integer).
 
@@ -269,6 +296,10 @@ Description:
   Opens a XML file for printing output into it. If no name is given
   a temporary file name is used instead.
   
+  If the option String is given the output is buffered in an internal 
+  string stream and the return value of xmlprint::fclose is the buffered
+  string.  In this case xmlprint::fname returns the empty string.
+
   A XML file descriptor (a small integer) is returned. Please note that
   this descriptor is *not* a valid MuPAD file descriptor as returned by
   the standard fopen function.
@@ -318,10 +349,12 @@ Synopsis:
 Arguments:
   fd     - XML file descriptor (an integer)
 
-Returns: null().
+Returns: null() or a string.
 
 Description:
-  Closes the the XML file given by 'fd'.
+  Closes the the XML file given by 'fd'.  If 'fd' was open with the 
+  option String in xmlprint::fopen, the buffered string is returned by
+  xmlprint::fclose.
 
 Example:
   >> xmlprint::fclose(fd)

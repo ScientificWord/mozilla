@@ -3,79 +3,7 @@
 const mathmlOverlayJS_duplicateTest = "Bad";
 var gProcessor;
 
-function SetupMSIMathMenuCommands()
-{
-  var commandTable = GetComposerCommandTable();
-  alert("Should not be calling SetupMSIMathMenuCommands()!");
-  //dump("Registering msi math menu commands\n");
-  commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
-  commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
-  commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
-  commandTable.registerCommand("cmd_MSItextModeCmd",    msiToTextMode);
-  commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
-  commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
-  commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
-  commandTable.registerCommand("cmd_MSIsupCmd",         msiSuperscript);
-  commandTable.registerCommand("cmd_MSIsubCmd",         msiSubscript);
-  commandTable.registerCommand("cmd_MSItensorCmd",      msiDoSomething);
-  commandTable.registerCommand("cmd_MSIsinCmd",         msiSin);
-  commandTable.registerCommand("cmd_MSIcosCmd",         msiCos);
-  commandTable.registerCommand("cmd_MSItanCmd",         msiTan);
-  commandTable.registerCommand("cmd_MSIlnCmd",          msiLn);
-  commandTable.registerCommand("cmd_MSIlogCmd",         msiLog);
-  commandTable.registerCommand("cmd_MSIexpCmd",         msiExp);
-  commandTable.registerCommand("cmd_MSImathnameCmd",    msiMathname);
-  commandTable.registerCommand("cmd_MSIMatrixCmd",      msiMatrix);
-  commandTable.registerCommand("cmd_MSIMatrix22Cmd",    msiMatrix22);
-  commandTable.registerCommand("cmd_MSIMatrixLastCmd",  msiMatrixLast);
-  commandTable.registerCommand("cmd_MSIparenCmd",       msiParen);
-  commandTable.registerCommand("cmd_MSIbracketCmd",     msiBracket);
-  commandTable.registerCommand("cmd_MSIbraceCmd",       msiBrace);
-  commandTable.registerCommand("cmd_MSIabsvalueCmd",    msiAbsValue);
-  commandTable.registerCommand("cmd_MSInormCmd",        msiNorm);
-  commandTable.registerCommand("cmd_MSIsymbolCmd",       msiSymbol);
-  commandTable.registerCommand("cmd_MSIColorsCmd",       msiColors);
-  commandTable.registerCommand("cmd_MSIgenBracketsCmd",  msiGenBrackets);
-  commandTable.registerCommand("cmd_MSIbinomialsCmd",    msiBinomials);
-  commandTable.registerCommand("cmd_MSIoperatorsCmd",    msiOperators);
-  commandTable.registerCommand("cmd_MSIdecorationsCmd",  msiDecorations);
-  commandTable.registerCommand("cmd_MSIunitsCommand",    msiUnitsDialog);
-
-  commandTable.registerCommand("cmd_MSIreviseFractionCmd",     msiReviseFractionCmd);
-  commandTable.registerCommand("cmd_MSIreviseRadicalCmd",      msiReviseRadicalCmd);
-//  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
-  commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);  //Need to implement!
-  commandTable.registerCommand("cmd_MSIreviseMatrixCellCmd",   msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseMatrixCellGroupCmd", msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseMatrixRowsCmd",   msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseMatrixColsCmd",   msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
-  commandTable.registerCommand("cmd_MSIreviseMathnameCmd",     msiReviseMathnameCmd);
-//    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
-  commandTable.registerCommand("cmd_MSIreviseGenBracketsCmd",  msiReviseGenBracketsCmd);
-	commandTable.registerCommand("cmd_MSIreviseBinomialsCmd",    msiReviseBinomialsCmd);
-	commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
-	commandTable.registerCommand("cmd_MSIreviseDecorationsCmd",  msiReviseDecorationsCmd);
-  commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
-  commandTable.registerCommand("cmd_MSIaddMatrixRowsCmd",       msiInsertMatrixRowsCommand);
-  commandTable.registerCommand("cmd_MSIaddMatrixColumnsCmd",    msiInsertMatrixColumnsCommand);
-  commandTable.registerCommand("cmd_MSIreviseEqnArrayCommand",    msiReviseEqnArrayCommand);
-
-  try {
-    gMathStyleSheet = msiColorObj.Format();
-  } catch(e) { dump("Error setting up msiColorObj\n");  }
-
-// too slow for debugging.  Turn back on if you want style-correct toolbars
-//  // build symbol panels, since overlays don't seem to fire onload handlers
-//  doPanelLoad(document.getElementById("symbol.lcGreek"),"mi");
-//  doPanelLoad(document.getElementById("symbol.ucGreek"),"mi");
-//  doPanelLoad(document.getElementById("symbol.binOp"),"mo");
-//  doPanelLoad(document.getElementById("symbol.binRel"),"mo");
-//  doPanelLoad(document.getElementById("symbol.negRel"),"mo");
-//  doPanelLoad(document.getElementById("symbol.arrow"),"mo");
-//  doPanelLoad(document.getElementById("symbol.misc"),"mi");
-//  doPanelLoad(document.getElementById("symbol.delims"),"mo");
-}  
+  
 
 function msiSetupMSIMathMenuCommands(editorElement)
 {
@@ -85,6 +13,8 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
   commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
+  commandTable.registerCommand("cmd_MSItextmath",       msiToggleMathText);
+  commandTable.registerCommand("cmd_MSImathtextButton",       msiToggleMathText);
   commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
   commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
   commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
@@ -213,11 +143,43 @@ var msiToggleMathText =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var editor = msiGetEditor(editorElement);
-    insertinlinemath();
-    toggleMathText(editor);
-    dump("called msiToggleMathText\n");
+		var togglekey;
+		if (aCommand === "cmd_MSImathtext")
+		  togglekey = "m";
+		else
+			togglekey = "t";
+		if (aCommand == "cmd_MSImathtextButton" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
+		{
+	    if (this.currentState() == "t")
+				insertinlinemath();
+	    toggleMathText(editor);
+			editorElement.contentWindow.focus();
+		}
     return;
-  }
+  },
+	
+	keyIsToggle: function( key )
+	{
+		var prefkey;
+		if (key==="m")
+			prefkey = "swp.ctrl.m";
+		else
+			prefkey = "swp.ctrl.t";
+ 	  var prefs = GetPrefs();
+	  return prefs.getCharPref(prefkey)==="toggle";	
+	},
+	
+	currentState: function()
+	{
+    var editorElement = msiGetActiveEditorElement(window);
+    var editor = msiGetEditor(editorElement);
+	 	var state;
+		if (editor.tagListManager.selectionContainedInTag("math",null))
+		  state = "m";
+		else
+			state = "t";
+		return state;
+	}
 };
 
 var msiTextMode =
@@ -2370,6 +2332,21 @@ function insertMathnameObject(mathNameObj, editorElement)
   }
 }
 
+function doInsertMathOperator(aName, limitPlacement, size, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+  if (mathmlEditor){
+    insertOperator(aName, limitPlacement, size, editorElement);
+    var sel = editor.selection;
+    if (sel != null) {
+      var node = editor.getElementOrParentByTagName("mo", sel.focusNode);
+      if (node != null)
+          opNode.setAttribute("msimathname", "true");
+    }
+  }
+}
+
 function doInsertMathName(aName, editorElement)
 {
   var editor = msiGetEditor(editorElement);
@@ -2398,6 +2375,11 @@ function doMatrixDlg(editorElement)
   window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal,resizable", o);
   if (o.rows > 0 && o.cols > 0)
     insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
+  if (!o.Cancel)
+  {
+		msiGetEditor(editorElement).incrementModificationCount(1);
+	}
+
 }
 
 function reviseEqnArray(reviseData, dialogData, editorElement)
@@ -2438,6 +2420,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
     infoStr += "disabled. The equation array is aligned ";
 
   msiEditorEnsureElementAttribute(displayNode, "marker", markerStr, editor);
+  msiEditorEnsureElementAttribute(displayNode, "id", markerStr, editor);
   msiEditorEnsureElementAttribute(displayNode, "subEquationNumbers", subEqAttrStr, editor);
   if (msiEditorEnsureElementAttribute(displayNode, "subEquationContinuation", subContAttrStr, editor))  //return of "true" means it changed
     checkSubEqnContinuation(displayNode);
@@ -2556,6 +2539,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
     msiEditorEnsureElementAttribute(rowNode, "customLabel", customLabelStr, editor);
     msiEditorEnsureElementAttribute(rowNode, "suppressAnnotation", suppAnnotationStr, editor);
     msiEditorEnsureElementAttribute(rowNode, "marker", markerStr, editor);
+    msiEditorEnsureElementAttribute(rowNode, "id", markerStr, editor);
     msiEditorEnsureElementAttribute(rowNode, "numbering", numberingStr, editor);
   }
 
@@ -3232,199 +3216,126 @@ function inputboxselected(node)
     return false;
 } 
 
-
-
-function postProcessMathML(frag)
+function mathNodeSplittable(node)
 {
-  frag.normalize();
-  var j;
-  var mathnodes=[];
-  for (j=0; j<frag.childNodes.length; j++)
-  {
-    if (frag.childNodes[j].nodeType == Node.TEXT_NODE) break;
-    else if (frag.childNodes.item(j).localName!="math") {
-      mathnodes = frag.childNodes.item(j).getElementsByTagName("mml:math");
-    }
-    var i;
-    var mnode;
-    var p;
-    var textNode;
-    var savedNode;
-    var isFirst;
-    var text;
-    for (i=0; i<Math.max(1,mathnodes.length); i++)
-    {
-      if (mathnodes.length > 0) mnode = mathnodes.item(i);
-      else mnode = frag.childNodes.item(j);
-      // find all textnodes that are not whitespace only
-      // if it is not in mi, mn, mo, or mtext, 
-      // then if it is the first or last real text, pull it out of <math>
-      // otherwise wrap it in an mtext.
-      var n;
-      var highwaterLeft = null;
-      var highwaterRight = null;
-      var tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
-        null, true);
-      tw.nextNode();
-      isFirst = true;
-      n = tw.currentNode;
-      while (n && isFirst)
-      {
-        tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
-            null, true);        
-        tw.nextNode();
-        n = tw.currentNode;
-        text = n.textContent;
-        if (/\S/.test(text))
-        {
-          //non-whitespace
-          parentName = n.parentNode.localName;
-          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName))
-          {
-            isFirst = false;
-            highwaterLeft = n;
-          }
-          else {
-            p = n;
-            while (!msiNavigationUtils.isMathNode(p.parentNode)) p = p.parentNode;
-            textNode = mnode.parentNode.insertBefore(p.cloneNode(true),mnode);
-            savedNode = p;
-            n = tw.nextNode();
-            savedNode.parentNode.removeChild(savedNode);
-          }
-        }
-        else n = tw.nextNode();
-      }
-      if (!n) 
-      {  //we came to the end while peeling stuff out of mnode. Check to see if mNode is now empty
-        if (mnode.textContent.length == 0) mnode.parentNode.removeChild(mnode);
-        break;
-      }
-      tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
-        null, true);      
-      n = tw.lastChild();
-      var isLast = true;
-      while (n && isLast)
-      {
-        tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
-          null, true);      
-        n = tw.lastChild();
-        text = n.textContent;
-        if (/\S/.test(text))
-        {
-          //non-whitespace
-          parentName = n.parentNode.localName;
-          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName))
-          {
-            isLast = false;
-            highwaterRight = n;
-          }
-          else {
-            p = n;
-            while (!msiNavigationUtils.isMathNode(p.parentNode)) p = p.parentNode;
-            textNode = mnode.parentNode.insertBefore(p.cloneNode(true),mnode);
-            savedNode = p;
-            n = tw.previousNode();
-            savedNode.parentNode.removeChild(savedNode);
-          }
-        }
-        else n = tw.nextNode();
-      }
-      if (!highwaterLeft) break;
-      tw.currentNode = highwaterLeft;
-      var limit = null;
-      if (highwaterRight) limit = highwaterRight.nextSibling;
-      n = highwaterLeft;
-      while (n && n != limit)
-      {
-        text = n.textContent;
-        if (/\S/.test(text))
-        {
-          //non-whitespace
-          parentName = n.parentNode.localName;
-          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName)) break;
-          else {
-            textNode = frag.ownerDocument.createElement("mtext");
-            textNode = n.parentNode.insertBefore(textNode, n);
-            textNode.appendChild(n.cloneNode(true));
-            savedNode = n;
-            n = tw.nextNode();
-            savedNode.parentNode.removeChild(savedNode);
-          }
-        }
-        else n = tw.nextNode();
-      }
-    }
-  }
+	parent = node.parentNode;
+	return (msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathTemplate(parent));
 }
 
+function offsetOfChild(parent, child)
+{
+	var offset = 0;
+	if (child.parentNode != parent)
+	{
+		throw ("offsetOfChild: 'parent' must by parent of 'child'");
+	}
+	var node = parent.firstChild;
+	while (node && node != child)
+	{
+		node = node.nextSibling;
+		offset++;
+	}	
+	return offset;
+}
+
+function splitMathDeep(editor, node, offset, text)
+/* This will  split the  math expression at  the point node,  offset; if  offset == -1,  then the
+expression will  be split  by node, which  will then be  deleted. The  text in 'text'  will be
+inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   appropriate. */  
+{
+	var newNode= {};
+	var parent;
+	var newParent;
+  var removeNode = offset < 0;
+	if (removeNode)
+	{
+		parent = node.parentNode;
+		// isn't there a simple getChildOffset visible to JavaScript?
+		offset = offsetOfChild(parent, node);
+	}
+	else
+	{
+		parent = node;
+	}
+	while (!(msiNavigationUtils.isUnsplittableMath(parent))&& !(msiNavigationUtils.hasFixedNumberOfChildren(parent.parentNode))
+	 && (msiNavigationUtils.isMathNode(parent) || parent.nodeType === Node.TEXT_NODE))
+	{
+		editor.splitNode(parent, offset, newNode);
+		newParent = parent.parentNode;
+		node = parent;
+		offset = offsetOfChild(newParent, parent);
+		if (!(parent.firstChild) && parent.textContent.length == 0)
+		{
+		  editor.deleteNode(parent);
+		  node = newNode.value;
+		}
+		if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
+		{
+		  editor.deleteNode(newNode.value);		
+			offset--;
+		}
+		parent = newParent;
+	}
+	// can't go any higher. If the reason is that parent is not math, we just insert node.
+	// if parent is math, then we put in an mtext node.
+	if (msiNavigationUtils.isMathNode(parent))
+	{
+		mtextNode = editor.document.createElementNS(mmlns, "mtext");
+	  editor.insertNode(mtextNode, parent, offset);  
+		mtextNode.textContent = text;
+		editor.selection.collapse(mtextNode,text.length);
+	}
+	else 
+	{
+		var textNode = editor.document.createTextNode(text);
+		editor.insertNode(textNode, parent, offset);
+		editor.selection.collapse(textNode,text.length);
+	}
+	if (removeNode) editor.deleteNode(node);
+//	window.focus();
+}
 
 function mathNodeToText(editor, node)
 {
-  var frag = gProcessor.transformToFragment(node,editor.document);   
-  postProcessMathML(frag);
-  var nPos = 0;
   if (node)
-    nPos = msiNavigationUtils.offsetInParent(node);
-  editor.insertNode(frag, node.parentNode, npos);
-  editor.deleteNode(node);
-//  editor.replaceNode(frag,node,node.parentNode);
+	{
+		splitMathDeep(editor, node, -1, node.textContent);
+		coalescemath();
+	}
 }
 
-// returns start (-1), mid (0), or end (1)
-// p is a parameter object with p.node and p.offset
-function positionInMath(p)
+function nodeToMath(editor, node, startOffset, endOffset)
 {
-  var atEnd=(p.offset > 0);
-  var atStart=!atEnd;
-  var parent;
-  var tempNode;
-  var children;
-  if (p.node.nodeType == p.node.TEXT_NODE)
-  {
-    if (atEnd && p.offset < p.node.length) return 0;
-    parent = p.node.parentNode;
-    p.offset = 0;
-    tempNode = parent.firstChild;
-    while (tempNode && tempNode != p.node)
-    {
-      p.offset++;
-      tempNode = tempNode.nextSibling;
-    }
-    p.node = parent;
-    if (atEnd) p.offset++;
-  }
-  while (msiNavigationUtils.isMathNode(p.node))
-  {
-    children = p.node.childNodes;
-    if ((children.length) > p.offset)
-    {
-      for (var i = p.offset; i<children.length; i++)
-      {
-        if (!isAllWS(children[i])) return 0;
-      } 
-    }
-    if (atStart && p.offset > 0) return 0;
-    parent = p.node.parentNode;
-    p.offset = 0;
-    tempNode = parent.firstChild;
-    while (tempNode && tempNode != p.node)
-    {
-      p.offset++;
-      tempNode = tempNode.nextSibling;
-    }
-    p.node = parent;
-    if (atEnd) p.offset++;
-  }
-  if (atEnd) return 1;
-  return -1;
+	var newNode = {};
+	if (node.nodeType == Node.TEXT_NODE)
+	{
+		if (startOffset >0)
+		{
+		  editor.splitNode(node, startOffset, newNode);
+		}
+		if (endOffset >= 0)
+		{
+			editor.splitNode(node, endOffset - startOffset, newNode);
+			node = newNode.value;
+		}
+	}
+	var parent = node.parentNode;
+	var offset = offsetOfChild(parent, node);
+	var text = node.textContent;
+	for (var i = 0; i < text.length; i++)
+	{
+		editor.selection.collapse(parent, offset+i);
+    insertsymbol(text[i]);
+	}
+	editor.deleteNode(node);
+	coalescemath();
 }
+
 
 function isAllWS(node)
 {
   return !(/[^\t\n\r ]/.test(node.data));
 }
-
 
 function mathToText(editor)
 {
@@ -3439,67 +3350,66 @@ function mathToText(editor)
   var pos;
   var node;
   var offset;
-  if (editor.selection.isCollapsed)   // jcs ?? changed from collapsed
-  {
-    node = editor.selection.anchorNode;
-    offset = editor.selection.anchorOffset;
-    var p = { node: node, offset: offset};
-    pos = positionInMath(p);
-    if (pos != 0)
-    {
-      if (pos == 1) 
-      {
-        msiGoDoCommand('cmd_charNext');
-        if (msiNavigationUtils.isMathNode(editor.selection.anchorNode))
-        {
-          editor.insertText(" ");
-          msiGoDoCommand('cmd_charNext'); 
-        }
-        msiGoDoCommand('cmd_charPrevious');
-      }
-      else
-      {
-        msiGoDoCommand('cmd_charPrevious');
-        msiGoDoCommand('cmd_charNext');
-      }
-      return;
-    }
-  }
   editor.beginTransaction();
   try
   {
-    if (!gProcessor) gProcessor = new XSLTProcessor();
-    else gProcessor.reset();
-    var req = new XMLHttpRequest();
+		if (editor.selection.isCollapsed)
+		{
+			var node = editor.selection.anchorNode;
+			var offset = editor.selection.anchorOffset;
+			splitMathDeep(editor, node, offset, "");
+		}
+		else
+		{
+	    for (i=0; i< editor.selection.rangeCount; i++)
+	    {
+	      range = editor.selection.getRangeAt(i);
+	      nodeArray = editor.nodesInRange(range);
+	      enumerator = nodeArray.enumerate();
+	      while (enumerator.hasMoreElements())
+	      {
+	        node = enumerator.getNext();
+	        mathNodeToText(editor,node);
+	      }
+	    }
+	  }
+	}
+  catch(e) {
+    dump("error in MathNodeToText: "+e.message+"\n");
+  }
+//  if (gProcessor)
+//    gProcessor.reset();
+  coalescemath();
+  editor.endTransaction();
+}
 
-    req.open("GET", "chrome://prince/content/math2text.xsl", false); 
-    req.send(null);
-    // print the name of the root element or error message
-    var xsldom = req.responseXML;
-    gProcessor.importStylesheet(xsldom);
-  
+function textToMath(editor)
+{
+	var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset;
+	if (editor.selection.isCollapsed)
+	{
+		insertinlinemath();
+	}
+	else
+	{
     for (i=0; i< editor.selection.rangeCount; i++)
     {
-      //BBM: we have to work to make this undoable
       range = editor.selection.getRangeAt(i);
+      startNode = range.startContainer;
+      startOffset = range.startOffset;
+			endNode = range.endContainer;
+			endOffset = range.endOffset;
       nodeArray = editor.nodesInRange(range);
       dump(nodeArray.length+" nodes\n");
       enumerator = nodeArray.enumerate();
       while (enumerator.hasMoreElements())
       {
         node = enumerator.getNext();
-        mathNodeToText(editor,node);
+        nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1);
       }
     }
-  }
-  catch(e) {
-    dump("error in MathNodeToText: "+e.message+"\n");
-  }
-  if (gProcessor)
-    gProcessor.reset();
-  editor.endTransaction();
+	}
 }
-
 
 function toggleMathText(editor)
 {
@@ -3515,7 +3425,7 @@ function toggleMathText(editor)
   else
   {
     try {
-      textToMath("foo");
+      textToMath(editor);
     }
     catch(e) {
       dump("Exception in toggleMathText: "+e.message+"\n");

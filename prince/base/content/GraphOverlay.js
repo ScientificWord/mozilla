@@ -276,31 +276,26 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
     img    = document.createElementNS(htmlns,"object");
     img.setAttribute("type","application/x-mupad-graphics+gzip"); 
     img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-    img.setAttribute("alt", "Generated Plot");
-    img.setAttribute("msigraph","true");
-    img.setAttribute("width","300");
-    img.setAttribute("height","400");
-  } else if (filetype == "xvc") {
+	} else if (filetype == "xvc") {
     img    = document.createElementNS(htmlns,"object");
     img.setAttribute("type","application/x-mupad-graphics+xml"); 
     img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-    img.setAttribute("alt", "Generated Plot");
-    img.setAttribute("msigraph","true");
-    img.setAttribute("width","300");
-    img.setAttribute("height","400");
-  } else {
-    img    = document.createElementNS(htmlns,"img");
-    img.setAttribute("src", this.getGraphAttribute("ImageFile"));
-    img.setAttribute("alt", "Generated Plot");
-    img.setAttribute("msigraph","true");
-  }  
+	} else {
+	  img    = document.createElementNS(htmlns,"img");
+	  img.setAttribute("src", this.getGraphAttribute("ImageFile"));
+	}    
+	img.setAttribute("alt", "Generated Plot");
+	img.setAttribute("msigraph","true");
+	img.setAttribute("width","250");
+	img.setAttribute("height","250");
+
   DOMPw.appendChild(img);
-  var propButton;
-  propButton=document.createElementNS(htmlns,"button");
-  propButton.setAttribute('class','msi');
-  propButton.value = 'Properties';
-  DOMPw.appendChild(propButton);
-  DOMGraph.appendChild(DOMPw);
+//  var propButton;
+//  propButton=document.createElementNS(htmlns,"button");
+//  propButton.setAttribute('class','msi');
+//  propButton.value = 'Properties';
+//  DOMPw.appendChild(propButton);
+	DOMGraph.appendChild(DOMPw);
   return(DOMGraph);
 }
 
@@ -504,7 +499,7 @@ function graphObjectClickEvent(cmdstr,element, editorElement)
       graph.extractGraphAttributes (graphelement);
       // non-modal dialog, the return is immediate
       window.openDialog ("chrome://prince/content/ComputeVcamSettings.xul",
-                         "vcamsettings", "chrome,close,titlebar,resizable, dependent", graph, graphelement, currentDOMGs);
+                         "vcamsettings", "chrome,close,titlebar,resizable, dependent", graph, graphelement, currentDOMGs, element);
     }
   }
   catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphObjectClickEvent: " + exc);}

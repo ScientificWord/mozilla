@@ -9,12 +9,20 @@
 #include "MResult.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <locale.h>
+#include <time.h>
+#include "mupkernel.h"
+
 #include "xpcom-config.h"
 #include "nsCOMPtr.h"
 #include "nsILocalFile.h"
 
 
 NS_IMPL_ISUPPORTS1(msiMuPADEngineWrapper, msiIEngineWrapper)
+
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
 
 
 msiMuPADEngineWrapper* s_wrapper;
@@ -46,10 +54,10 @@ msiMuPADEngineWrapper::~msiMuPADEngineWrapper()
 }
 
 /* long loadStrsAndDLL (in string engpath, in string libpath, in voidPtr ID_dbase, in voidPtr NOM_dbase); */
-NS_IMETHODIMP msiMuPADEngineWrapper::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, void * ID_dbase, void * NOM_dbase, PRInt32 *_retval)
+NS_IMETHODIMP msiMuPADEngineWrapper::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, nsILocalFile *modpath, void * ID_dbase, void * NOM_dbase, PRInt32 *_retval)
 {
   MuPAD_wrapper = new MuPADWrapper(ID_dbase, NOM_dbase);
-  *_retval = MuPAD_wrapper->iLoadStrsAndDLL(engpath, libpath);
+  *_retval = MuPAD_wrapper->iLoadStrsAndDLL(engpath, libpath, modpath);
   return NS_OK;
 }
 
@@ -111,7 +119,6 @@ NS_IMETHODIMP msiMuPADEngineWrapper::ReleaseClient(PRInt32 client_ID, const char
 }
 
 
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
 
 static const nsModuleComponentInfo gComponents[] =
 {
@@ -121,4 +128,11 @@ static const nsModuleComponentInfo gComponents[] =
     msiMuPADEngineWrapperConstructor }
 };
 
-NS_IMPL_NSGETMODULE(wrappers, gComponents)
+PR_STATIC_CALLBACK(void)
+Shutdown(nsIModule* aSelf)
+{
+  s_wrapper->Cleanup();
+  s_wrapper = nsnull;
+}
+
+NS_IMPL_NSGETMODULE_WITH_DTOR(wrappers, gComponents, Shutdown)

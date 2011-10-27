@@ -26,30 +26,27 @@ function startUp()
   }
 }
 
+function setNewUnit(element)
+{
+  unitHandler.setCurrentUnit(element.value);
+}
 
 function onAccept()
 {
   var size=Number(document.getElementById("otfont.fontsize").value);
   if (isNaN(size)) return;
-  var units = document.getElementById("otfont.units").value;
   var leading = Number(document.getElementById("leading").value);
   var sizewithunits = size + "/" + leading + " " + units;
   var editorElement = msiGetParentEditorElementForDialog(window);
   if (!editorElement)
   {
-    AlertWithTitle("Error", "No editor in fontsize.OnAccept!");
-  }
-  if (node) 
-  {
-    node.setAttribute("size", sizewithunits);
-  }
-  else
-  {
-	  var theWindow = window.opener;
-	  if (!theWindow || !("msiEditorSetFontSize" in theWindow))
-	    theWindow = msiGetTopLevelWindow();
-    theWindow.msiEditorSetFontSize(sizewithunits, editorElement);
-  }
+    throw(	  var theWindow = window.opener;
+	}
+  if (!theWindow || !("msiEditorSetFontSize" in theWindow))
+    theWindow = msiGetTopLevelWindow();
+  theWindow.msiEditorSetFontSize(sizewithunits, editorElement);
+  
+
 }
 
 

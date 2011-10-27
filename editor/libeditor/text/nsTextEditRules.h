@@ -104,7 +104,8 @@ public:
     kDecreaseZIndex      = 3017,
     kIncreaseZIndex      = 3018,
     kMakeStructure       = 3019,
-    kRemoveStructure     = 3020
+    kRemoveStructure     = 3020,
+    kRemoveEnv     = 3021
   };
   
 public:

@@ -325,8 +325,23 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
                                                          name_map);
 
 
-            if (cmd_ID >= CCID_Solve_PDE && cmd_ID <= CCID_Solve_ODE_Series)
+            if (cmd_ID >= CCID_Solve_PDE && cmd_ID <= CCID_Solve_ODE_Series) {
               PurgeDEFuncNames();
+              // The names in eng_tree have been defined in the engine. We have to 
+              // announce to defstore
+              
+              DefStore* defstore = curr_msr->GetDefStore();
+              U32 engine_ID = curr_msr->GetEngineID();
+              BUCKET_REC* b = children -> bucket_list;
+              while (b) {
+                 if (b->bucket_ID == MB_ODEFUNC) {
+                    if (b -> first_child && b -> first_child -> canonical_ID) {
+                      defstore->PushDefInfo(engine_ID, b -> first_child -> canonical_ID, 2, NULL, NULL, 0, NULL, NULL);
+                    }
+                 }
+                 b = b -> next;
+              }
+            }
 
             // s_tree is our return value - it may not contain math
             // ie. it may be an engine message like "needvars"
@@ -371,11 +386,11 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   return s_tree;
 }
 
-bool MuPADWrapper::iLoadStrsAndDLL(nsILocalFile *engp, nsILocalFile *libp)
+bool MuPADWrapper::iLoadStrsAndDLL(nsILocalFile *engp, nsILocalFile *libp, nsILocalFile *modulep)
 {
 //  TCIString engpath = engp;
 //  TCIString libpath = libp;
-  return mupd_eng->LoadStrsAndDLL(engp, libp);
+  return mupd_eng->LoadStrsAndDLL(engp, libp, modulep);
 }
 
 int MuPADWrapper::iInitialize(nsILocalFile *libp, nsILocalFile *champ,
@@ -1446,7 +1461,7 @@ char *MuPADWrapper::LIMFUNCtoEstr(SEMANTICS_NODE * limfunc_info,
       // limfunc type operator takes an operand
       BUCKET_REC *arg_bucket =
         FindBucketRec(limfunc_info->bucket_list, MB_UNNAMED);
-      if (arg_bucket->first_child) {
+      if (arg_bucket && arg_bucket->first_child) {
         arg_str = ProcessSemList(arg_bucket->first_child, NULL, error_code);
       }
       if (error_code)
@@ -6157,8 +6172,8 @@ char *MuPADWrapper::PROBFUNCtoEstr(SEMANTICS_NODE * sem_func_node,
     BUCKET_REC *bucket = sem_func_node->bucket_list;
     if (bucket && bucket->first_child) {
       //  INFIX OPERATOR contents = ";"
-      SEMANTICS_NODE *s_semi = bucket->first_child;
-      if (s_semi->bucket_list) {
+      SEMANTICS_NODE* s_semi = bucket->first_child;
+      if (s_semi->bucket_list && StringEqual(s_semi->contents, ";")) {
         BUCKET_REC *op_rover = s_semi->bucket_list;
 
         SEMANTICS_NODE *s_var = op_rover->first_child;
@@ -6293,6 +6308,10 @@ char *MuPADWrapper::TRANSFORMtoEstr(SEMANTICS_NODE * s_transform,
       delete[] tvar_str;
       return NULL;
     }
+
+    if (!expr_str) 
+      return NULL;
+
     bool is_mapped = false;
     if (!strncmp(expr_str, "SWPmatrix", 9))
       is_mapped = true;
@@ -6901,7 +6920,7 @@ char *MuPADWrapper::POWERMODtoEstr(SEMANTICS_NODE * s_powerform,
 
     bucket = FindBucketRec(s_powerform->bucket_list, MB_SCRIPT_UPPER);
     if (bucket && bucket->first_child) {
-      sup_str = ProcessSemList(bucket->first_child, modulus, error_code);
+      sup_str = ProcessSemList(bucket->first_child, NULL, error_code);
       if (error_code) {
         delete[] base_str;
         delete[] sup_str;

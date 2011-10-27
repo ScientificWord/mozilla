@@ -106,6 +106,11 @@ public:
     libStr = path;
   }
 
+  void SetModulePath(const char * mpath)
+  {
+    moduleStr = mpath;
+  }
+
 public:
   bool ready;
   TCIString returnStr;
@@ -115,6 +120,7 @@ public:
   U32 cmd_cookie;
 
   TCIString libStr;
+  TCIString moduleStr;
 };
 
 
@@ -133,10 +139,12 @@ static void MUP_CALLBACK on_init_wanted(MUP_Kernel kernel)
   
   char path[MAX_PATH];
   strcpy(path, static_cast<const TCICHAR *>(client->libStr));
+  char modpath[MAX_PATH];
+  strcpy(modpath, static_cast<const TCICHAR *>(client->moduleStr));
 
   const char *argv[4] = {
-    "/l", path,
-    "/m", path
+    "-l", path,
+    "-m", modpath
   };
   MUP_send_init(kernel, 4, argv); 
 #else
@@ -224,10 +232,6 @@ static void MUP_CALLBACK Cleanup_MuPAD()
 MuPADEngine::MuPADEngine() :
   m_kernel(0), m_client(0), fcnsloaded(false), plot_status(false), m_useDLL(false)
 {
-#ifdef XP_WIN
-  m_useDLL = true;
-#endif
-
   instr_sent = false;
   outstr_sent = false;
   errorstr_sent = false;
@@ -279,7 +283,7 @@ int MuPADEngine::GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
   return rv;
 }
 
-bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath)
+bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, nsILocalFile *modulePath)
 {
   //printf("\n\n  jcs mupd_eng.cpp LoadStrsAndDLL\n");
   bool rv = false;
@@ -288,6 +292,7 @@ bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath)
   //TCIString pathEng;
   const char* pathLib;
   const char* pathEng;
+  const char* pathModules;
 
   {
   	  nsAutoString temp1;
@@ -306,18 +311,29 @@ bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath)
   	  strcpy(cpy, pathLib);
   	  pathLib = cpy;
   }
+  {
+  	  nsAutoString temp3;
+  	  modulePath->GetPath(temp3);
+  	  pathModules = NS_LossyConvertUTF16toASCII(temp3).get();
+  	  char* cpy = new char[strlen(pathModules)+1];
+  	  strcpy(cpy, pathModules);
+  	  pathModules = cpy;
+  }
   //printf("\n\n  jcs pathLib = %s\n", pathLib);
   //fflush(NULL);
   m_client = new MuPADMssgHandler();
   if (!m_client)
     return rv;
   m_client->SetLibPath(pathLib);
+  m_client->SetModulePath(pathModules);
   MUP_set_event_handler(Stop_MuPAD, 0);
   
   TCI_ASSERT(m_kernel == 0);
   
 #ifdef XP_WIN
-  m_kernel = MUP_get_lib_kernel(pathLib);
+  printf("\n\n  jcs Check 1\n");
+  m_kernel = MUP_new_wmsg_kernel(pathEng, NULL);
+  printf("\n\n  jcs Check 2\n");
 #else
   printf("\n\n  jcs Check 1\n");
   m_kernel = MUP_get_uds_kernel(pathEng,NULL,1);

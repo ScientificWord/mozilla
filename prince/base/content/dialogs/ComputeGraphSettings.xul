@@ -99,7 +99,7 @@
           </grid>
         </groupbox>
         <groupbox>
-          <caption label="&defaultplacementnewplot.label;"/>
+          <caption label="amp-defaultplacementnewplot.label;"/>
           <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
@@ -215,9 +215,8 @@
             <commandset id="composerTableMenuItems"/>
           </commandset>
           <commandset id="MSImathMenuCommands"/>
-          <keyset id="editorKeys">
-            <keyset id="MSIKeySet"/>
-          </keyset>
+          
+#include ../keysfordialogs.inc
 
           <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
             <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="menutooltip">

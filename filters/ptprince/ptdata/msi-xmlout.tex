@@ -1,4 +1,7 @@
 \makeatletter
+
+\newcounter{MaxMatrixCols}
+
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
 
@@ -27,7 +30,6 @@
 
 
 \def\msitexb#1{[SHOULD NOT OCCUR]}
-\def\msidefault#1{\msitag{[Defaulting: \string#1]}}
 
 
 \msi@pass@newline{\@settodim}
@@ -47,24 +49,38 @@
 
 \newtoks\preambleToks
 
-\def\out@newcounterA#1{%
-  \br\msitag{<texb>\newcounter{#1}</texb>}%   
-}
-
-\def\out@newcounterB#1[#2]{%                                                              
-  \br\msitag{<texb>\newcounter{#1}[#2]</texb>}%
-}
+%%\def\out@newcounterA#1{%
+%%  \br\msitag{<texb>\newcounter{#1}</texb>}%   
+%%}
+%%
+%%\def\out@newcounterB#1[#2]{%                                                              
+%%  \br\msitag{<texb>\newcounter{#1}[#2]</texb>}%
+%%}
 
 
 %% redefine these to produce output
+
+\def\newcounter#1{%
+  \msihmode
+  \msiopentag{texb}{<texb enc="1" name="newcounter">}
+       \msitag{<![CDATA[\newcounter{#1}]]>}%
+  \msiclosetag{texb}{</texb>}}
+}
+
 \def\setcounter#1#2{%
     \expandafter\global\csname c@#1\endcsname#2\relax
-    \br\msitag{<texb>\string\setcounter{#1}{#2}</texb>}}
+    \msihmode
+    \msiopentag{texb}{<texb enc="1" name="setcounter">}
+       \msitag{<![CDATA[\setcounter{#1}{#2}]]>}%
+    \msiclosetag{texb}{</texb>}}
 
 \def\addtocounter#1#2{%
     \expandafter\global\advance\csname c@#1\endcsname #2\relax
-    \out@addtocounter{#1}{#2}}
-
+    \msihmode
+    \msiopentag{texb}{<texb enc="1" name="addtocounter">}
+       \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
+    \msiclosetag{texb}{</texb>}}
+    
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
@@ -159,8 +175,6 @@
 
 
 
-
-
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
 
@@ -185,8 +199,14 @@
 \def\MSIEmptyElement{%
   \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
+
 \def\msi@empty@elmA[#1]#2{%
-  \expandafter\def\csname #2\endcsname{\msihmode\br\msitag{<#1/>}}}
+     \expandafter\def\csname #2\endcsname{%
+        \ifmmode
+           \msitag{\msipassthru{<#1/>}}%
+        \else
+           \msihmode\br\msitag{<#1/>}%
+        \fi}}
 
 \def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
    
@@ -203,7 +223,6 @@
 
 
 %% newtheorem
-
 
 
 \def\theoremstyle#1{\def\msi@currentthmstyle{#1}}
@@ -422,8 +441,6 @@
 
 
 
-
-
 %\input msiframe.tex
 
 
@@ -592,7 +609,18 @@
 %    \catcode`\^^M=5\relax
 %  }
 
+
+\def\linebreak{\msitag{<msibreak type="lineBreak" invisDisplay="&##x21b5;"><br/></msibreak>}}
+
+\def\newline{%
+  \@ifnextchar[{\newlinea}{\newlineb}}
+
+\def\newlinea[#1]{\msitag{<msibreak type="newLine" invisDisplay="&##x21b5;"><br/></msibreak>}}
+
+\def\newlineb{\msitag{<msibreak type="newLine" invisDisplay="&##x21b5;"><br/></msibreak>}}
+
 \newtoks\temptoksa
+
 
 \bgroup
   \@make@braces@other
@@ -679,6 +707,7 @@
 %\@namedef{msi@begin@multline*}{\ \@make@braces@other\relax\@scan@multline@star}
 
 
+
 \@namedef{msi@begin@flalign}{\bgroup\msi@dollar=0\relax$$\string\begin{flalign}}
 \@namedef{msi@end@flalign}{\string\end{flalign}$$\egroup}
 
@@ -693,22 +722,20 @@
 
 %\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
 
-\def\msi@begin@array{\string\begin{array}}
-\def\msi@end@array{\string\end{array}}
-
-
+\def\msi@begin@array{\begingroup\def\\{\char`\\\char`\\}\catcode`\&=12\string\begin{array}}
+\def\msi@end@array{\string\end{array}\endgroup}
 
 
 \def\MSIEqnarrayLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\msi@dollar=0\relax$$\string\begin{#1}}%
+  \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\\char`\\}\catcode`\&=12\msi@dollar=0\relax$$\string\begin{#1}}%
   \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}
 }
 
 
 
 \def\MSISplitLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\ifmmode\else\bgroup\msi@dollar=0\relax$$\fi\string\begin{#1}}%
-  \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\egroup\fi}
+  \@namedef{msi@begin@#1}{\bgroup\ifmmode\else\msi@dollar=0\relax$$\fi\string\begin{#1}\catcode`\&=11}%
+  \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\fi\egroup}
 }
 
 
@@ -746,9 +773,17 @@
 \def\@cra[#1]{\cr}%
 \def\@crb{\cr}%
 
+
+\def\tabularnewline{\cr}
+
 \def\msi@begin@tabular{%
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
+
+\expandafter\def\csname msi@begin@tabular*\endcsname{%
+   \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
+}
+
 
 \newif\ifmathtabular
 \mathtabulartrue
@@ -780,6 +815,14 @@
      \endgroup % to do the closetabular
      \ifmathtabular\char`\}\fi
   \endgroup}
+
+\expandafter\def\csname msi@end@tabular*\endcsname{%  
+        \crcr
+        \egroup % the \halign
+     \endgroup % to do the closetabular
+     \ifmathtabular\char`\}\fi
+  \endgroup}
+
 
 \def\cline#1{}
 \def\hline{}
@@ -869,14 +912,10 @@
     \temptoksa={\TEXTsymbol{#1}}%
     \the\temptoksa
   \else
-    #1%
+    $#1$%
   \fi
 }
 
-%\def\backslash{\@hex{5c}}
-
-%\def\textendash{\@hex{e28093}}
-%\def\textemdash{\@hex{e28094}}
 \msi@pass{\backslash}
 
 \def\textemdash{\@hex{2014}}
@@ -957,31 +996,68 @@
 %% Spacing
 
 
-\def\qquad{%
-   \ifmmode
-      \msitag{\qquad}%
-   \else
-      \msihmode\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}%
-   \fi
-}
+%%\def\qquad{%
+%%   \ifmmode
+%%      \msitag{\qquad}%
+%%   \else
+%%      \msihmode\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}%
+%%   \fi
+%%}
+%%
+%%\def\quad{%
+%%   \ifmmode
+%%     \msitag{\quad}%
+%%   \else
+%%     \msihmode\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}%
+%%   \fi
+%%}
 
-\def\quad{%
-   \ifmmode
-     \msitag{\quad}%
-   \else
-     \msihmode\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}%
-   \fi
-}
-
-\def\ {\msihmode{ }}
+\def\ {%
+  \ifmmode
+    \char`\\\char`\ %
+  \else
+    \msihmode{ }%
+  \fi}
 
 \def~{%
   \ifmmode
+    \char`\~
   \else
     \msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}%
   \fi}
 
-\def\/{\msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}}
+\def\/{%
+  \ifmmode
+    \char`\\\char`\/%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+
+\def\,{%
+  \ifmmode
+    \char`\\\char`\,%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="thinspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+\def\;{%
+  \ifmmode
+    \char`\\\char`\;%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="thickspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+\def\!{%
+  \ifmmode
+    \char`\\\char`\!%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="negativethinspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+
+
+
 
 \bgroup
   \catcode`\%=12
@@ -1264,16 +1340,34 @@
        \msitag{</texb>}}}
 
 
+
 \def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{%
+       \@temptokena={\msitag{##1}}%
        \msihmode
        \msitag{<texb enc="1" name="#1">}%
-          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
+          <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
        \msitag{</texb>}}}
 
 \def\msi@cdr#1#2xxxx{#2}
 
 \def\MSILocalDef#1{\def#1{\string #1}}
+
+
+\def\makeatother{%
+   \msihmode
+   \msitag{<texb enc="1" name="makeatother">}%
+       <![CDATA[\string\makeatother]]>%
+   \msitag{</texb>}
+   \catcode`\@=12}
+
+\def\makeatletter{%
+   \msihmode
+   \msitag{<texb enc="1" name="makeatletter">}%
+       <![CDATA[\string\makeatletter]]>%
+   \msitag{</texb>}
+   \catcode`\@=11}
+
 
 
 \bgroup
@@ -1370,17 +1464,116 @@
 %% Temporary until prince can read xml
 
 \def\msi@opendocument{%
-   \msitag{<?xml version="1.0"?>}\br
+   \msitag{<?xml version="1.0" encoding="UTF-8"?>}\br
    \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br
-   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}
+   \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>}\br
+   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\br
    
-  \br\msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
-      xmlns:mml="http://www.w3.org/1998/Math/MathML"
-      xmlns:sw="http://www.sciword.com/namespaces/sciword">}
+   \msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
+             xmlns:mml="http://www.w3.org/1998/Math/MathML"
+             xmlns:sw="http://www.sciword.com/namespaces/sciword">}
    
    \br\msitag{<head>}
    \br\msiopentag{preamble}{<preamble>}
 }
+
+
+\def\@gobbleit{\let\@temptok}
+
+\futurelet\@bracetok\@gobbleit{
+\futurelet\@brackettok\@gobbleit[
+\futurelet\@startok\@gobbleit*
+
+\def\@inbrace#1{\@temptokena={\msitag{#1}}\{\the\@temptokena\}\@gobbleargs}
+\def\@inbracket[#1]{\@temptokena={\msitag{[#1]}}\the\@temptokena\@gobbleargs}
+\def\@astar*{*\@gobbleargs}
+
+\def\@gobbleargs{\futurelet\atok\@gobblemore}
+
+\def\@endgobble{\@endtexb\relax}
+
+\def\@gobblemore{%
+   \ifx\atok\@bracetok
+     \let\@donext\@inbrace
+   \else
+     \ifx\atok\@brackettok
+       \let\@donext\@inbracket
+     \else
+       \ifx\atok\@startok
+         \let\@donext\@astar
+       \else 
+         \let\@donext\@endgobble
+       \fi
+     \fi
+   \fi
+   \@donext}
+
+
+
+
+% Here #1 = some unknown control sequence 
+
+\def\msidefault#1{%
+  \ifmmode
+    \string#1%
+  \else
+    \expandafter\msidefaulta\expandafter{\string #1}%
+  \fi}
+
+\def\msidefaulta#1{%
+  \expandafter\msidefaultb\expandafter{\msi@cdr#1xxxx}}
+
+\def\msidefaultb#1{
+    \msihmode
+    \msiopentag{texb}{<texb enc="1" name="#1">}%
+       \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname\@gobbleargs}
+
+
+\def\@endtexb{        
+       \msitag{]]>}%
+    \msiclosetag{texb}{</texb>}}
+
+
+%-------
+% Experiment
+%% 
+%% \def\msi@begin@tabular{%
+%%    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
+%% }
+%% 
+%% \newif\ifmathtabular
+%% \mathtabulartrue
+%% 
+%% \def\msi@begin@tabularA[#1]#2{%
+%%    \begingroup
+%%       \ifmmode
+%%         \string\msipassthru\char`\{%
+%%         \mathtabulartrue
+%%         \msihmode
+%%         \catcode`\&=4%
+%%       \else
+%%         \mathtabularfalse
+%%       \fi   
+%%       \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+%%       \msiopentag{tbody}{<tbody>}%
+%%       \begingroup
+%%         \aftergroup\msi@closetabular
+%%         \let\\=\@cr
+%%         \halign\bgroup&##\cr}%
+%% }
+%% 
+%% 
+%% \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
+%% 
+%% \def\msi@end@tabular{%  
+%%         \crcr
+%%         \egroup % the \halign
+%%      \endgroup % to do the closetabular
+%%      \ifmathtabular\char`\}\fi
+%%   \endgroup}
+%% 
+
+%------------
 
 % A hack to fool the jbm filter into handling \dots gracefully
 \def\dots{\msitag{\U{2026}}}
