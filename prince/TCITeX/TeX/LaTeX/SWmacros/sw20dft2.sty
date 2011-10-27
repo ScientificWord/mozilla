@@ -1,9 +1,7 @@
-% sw20dft2.sty {Article: Intl J. of Forecasting - Draft}{12pt}{article}
-\typeout{TCI Document Style `sw20dft2' <25 Jan 1999>.}
+% sw20dft2.sty -- International Journal of Forecasting - Draft
+\typeout{SW Document Style `sw20dft2' <20 Dec 2006>.}
 \typeout{NOTICE:  This macro file is NOT proprietary and may be 
 freely copied and distributed.}
-%
-% Uses: sw20dft2.cst
 %
 % A draft submission style, based on article.sty for use by:
 %      International J. of Forecasting
@@ -94,6 +92,12 @@ freely copied and distributed.}
   \fi
 }
 
+\def\KeyWordsPhrases{\textbf{Key Words and Phrases:\ }}
+\def\AMSyr{2000}
+\def\AMSsubject{\textbf{AMS \AMSyr\ Subject Classifications.}}
+\def\AMSprim{Primary:\ }
+\def\AMSsecond{Secondary:\ }
+
 \def\abstract{%
   \newpage
   \null\vfil
@@ -103,16 +107,16 @@ freely copied and distributed.}
    \def\thefootnote{}
    \ifx\keys\@empty
    \else
-     \footnote{{\bf Key Words and Phrases:} \keys}
+     \footnote{\KeyWordsPhrases\keys}
    \fi
    \ifx\primcl\@empty
    \else
-     \footnote{{\bf AMS 1991 Subject Classifications. Primary:} \primcl
-     \ifx\secondcl\@empty
-       {\bf .}
-     \else
-       {\bf ; Secondary:} \secondcl .
-     \fi}
+     \footnote{\AMSsubject\ \AMSprim\primcl
+               \ifx\secondcl\@empty
+                 {}
+			   \else
+			     ;\ \AMSsecond\secondcl
+			   \fi}
    \fi}
 
 \def\endabstract{\newpage}
