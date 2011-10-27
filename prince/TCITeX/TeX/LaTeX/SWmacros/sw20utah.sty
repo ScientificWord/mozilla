@@ -1,4 +1,4 @@
-\typeout{TCI Document Style `sw20utah' <28 Dec 2001>.}
+\typeout{SW Document Style `sw20utah' <16 Sep 2009>.}
 \typeout{NOTICE:  This macro file is NOT proprietary and may be 
 freely copied and distributed.}
 \input tcilcomm.tex
@@ -107,16 +107,16 @@ freely copied and distributed.}
        \newpage\null
        \begin{center} LIST OF FIGURES \end{center}
 	   \vskip 24pt
-       \@starttoc{lof}       
        \addcontentsline{toc}{chapter}{LIST OF FIGURES}
+       \@starttoc{lof}       
 }
 %
 \def\@do@thelistoftables{%
        \newpage\null
        \begin{center} LIST OF TABLES \end{center}
 	   \vskip 24pt
-       \@starttoc{lot}%
        \addcontentsline{toc}{chapter}{LIST OF TABLES}  
+       \@starttoc{lot}%
 }
 %                 
 \def\acknowledgments{%
@@ -137,8 +137,8 @@ freely copied and distributed.}
       \newpage\null
 	  \begin{center} CONTENTS \end{center}
 	  \vskip 24pt
-      \@starttoc{toc}
       \addtocontents{toc}{\protect\singlespace}%
+      \@starttoc{toc}
 }
 %
 % 

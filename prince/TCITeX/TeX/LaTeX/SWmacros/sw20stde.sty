@@ -1,6 +1,5 @@
-%sw20stde {Article: Statistics and Decisions}{12pt}{book}
-%Copyright (C) 1994-95 TCI Software Research
-\typeout{TCI Document Style `sw20stde' <1 July 1994>.}
+%sw20stde -- Article: Statistics and Decisions
+\typeout{SW Document Style `sw20stde' <20 Dec 2006>.}
 \typeout{NOTICE:  This macro file is NOT proprietary and may be 
 freely copied and distributed.}
 %
@@ -37,13 +36,17 @@ freely copied and distributed.}
 \def\tableofcontents{\section*{Contents\@mkboth{CONTENTS}{CONTENTS}}
  \par \ \@starttoc{toc}}
 
+\def\KeyWordsPhrases{\textit{Keywords and Phrases:\ }}
+\def\AMSyr{1991}
+\def\AMSsubject{\textit{\AMSyr\ AMS Subject Classification:\ }}
+
 \def\classif{}
 \def\keyw{}
 
 \def\classification#1{%
-      \def\classif{{\noindent\it 1980 AMS Subject Classification: #1}}}
+      \def\classif{{\noindent\AMSsubject#1}}}
 \def\keyphrases#1{%
-      \def\keyw{{\noindent\it Keywords and Phrases: #1}}}
+      \def\keyw{{\noindent\KeyWordsPhrases#1}}}
 
 \def\maketitle{\par
  \begingroup
