@@ -17,6 +17,8 @@ var widthAtt = "width";
 var heightAtt = "height";
 var metrics = {margin:{}, border: {}, padding: {}};
 var role;
+var gConstrainWidth;
+var gConstrainHeight;
 
 function setHasNaturalSize(istrue)
 // images frequently have a natural size
@@ -84,7 +86,7 @@ function updateMetrics()
 	}
 }
 
-function initFrameTab(dg, element, newElement)
+function initFrameTab(dg, element, contentsElement, newElement)
 {
   var i;
   var len;
@@ -99,8 +101,8 @@ function initFrameTab(dg, element, newElement)
   scale = 0.25;
   scaledWidthDefault = 50; 
   scaledHeightDefault = 60;
-  scaledHeight = scaledHeightDefault;
-  scaledWidth = scaledWidthDefault; 
+  gConstrainHeight = scaledHeight = scaledHeightDefault;
+  gConstrainWidth = scaledWidth = scaledWidthDefault; 
   position = 0;  // left = 1, right = 2, neither = 0
   //var unit;
 
@@ -163,8 +165,11 @@ function initFrameTab(dg, element, newElement)
 // no pre-existing frame object, the dg is set to go.
   if (!newElement)
   {   // we need to initialize the dg from the frame element
-    frameUnitHandler.setCurrentUnit(element.getAttribute("units"));
-    if (element.hasAttribute(widthAtt)) width = element.getAttribute(widthAtt);
+    if (!contentsElement)
+      contentsElement = element;
+
+    frameUnitHandler.setCurrentUnit(contentsElement.getAttribute("units"));
+    if (contentsElement.hasAttribute(widthAtt)) width = contentsElement.getAttribute(widthAtt);
     if (Number(width) > 0)
     {
       dg.widthInput.value = width;
@@ -172,7 +177,7 @@ function initFrameTab(dg, element, newElement)
     }
     else dg.autoWidthCheck.checked = true;
     var height = 0;
-    if (element.hasAttribute(heightAtt)) height = element.getAttribute(heightAtt);
+    if (contentsElement.hasAttribute(heightAtt)) height = contentsElement.getAttribute(heightAtt);
     if (height > 0)
     {
       dg.heightInput.value = height;
@@ -207,10 +212,10 @@ function initFrameTab(dg, element, newElement)
 			var topmargin = element.getAttribute("topmargin");
 			if (topmargin == null) topmargin = 0;
 			dg.marginInput.top.value = topmargin;
-			var borderwidth = element.getAttribute("border-width");
+			var borderwidth = contentsElement.getAttribute("border-width");
 			if (borderwidth == null) borderwidth = 0;
 			dg.borderInput.left.value = borderwidth;
-			var padding = element.getAttribute("padding");
+			var padding = contentsElement.getAttribute("padding");
 			if (padding == null) padding = 0;
 			dg.paddingInput.left.value = padding;
 		}  
@@ -222,13 +227,13 @@ function initFrameTab(dg, element, newElement)
 	    for (i = 0; i<4; i++)
 	      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
 	    values = [0,0,0,0];
-	    if (element.hasAttribute(borderAtt))
-	      { values = parseLengths(element.getAttribute(borderAtt));}
+	    if (contentsElement.hasAttribute(borderAtt))
+	      { values = parseLengths(contentsElement.getAttribute(borderAtt));}
 	    for (i = 0; i<4; i++)
 	      { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
 	    values = [0,0,0,0];
-	    if (element.hasAttribute(paddingAtt))
-	      { values = parseLengths(element.getAttribute(paddingAtt));}
+	    if (contentsElement.hasAttribute(paddingAtt))
+	      { values = parseLengths(contentsElement.getAttribute(paddingAtt));}
 	    for (i = 0; i<4; i++)
 	      { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
     }
@@ -618,8 +623,10 @@ function setContentSize(width, height)
 {
   scaledWidth = Math.round(scale*width);
   if (scaledWidth == 0) scaledWidth = 40;
+  gConstrainWidth = scaledWidth;
   scaledHeight = Math.round(scale*height);
   if (scaledHeight == 0) scaledHeight = 60;
+  gConstrainHeight = scaledHeight;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
   setStyleAttributeByID("content", "height", scaledHeight + "px");
   updateDiagram("margin");
@@ -652,6 +659,14 @@ function hexcolor(rgbcolor)
 {
 	var regexp = /\s*rgb\s*\(\s*(\d+)[^\d]*(\d+)[^\d]*(\d+)/ ;
 	var arr = regexp.exec(rgbcolor);
+  if (!arr || (arr.length < 4))
+  {
+    var retStr = msiHTMLNamedColors.colorStringToHexRGBString(rgbcolor);
+    if (!retStr || !retStr.length)
+      retStr = rgbcolor;
+    return retStr;
+  }
+
 	var r = parseFloat(arr[1]).toString(16);
 	if (r.length<2) r = "0"+r;
 	var g = parseFloat(arr[2]).toString(16);
@@ -661,7 +676,7 @@ function hexcolor(rgbcolor)
 	return "#"+ r + g + b;
 }
 
-function setFrameAttributes(frameNode)
+function setFrameAttributes(frameNode, contentsNode)
 {
   var rot;
 	metrics.unit = frameUnitHandler.currentUnit;
@@ -672,15 +687,21 @@ function setFrameAttributes(frameNode)
     metrics.unit = "pt";
   }
   frameNode.setAttribute("units",metrics.unit);
-  frameNode.setAttribute("msi_resize","true");
+  if (contentsNode)
+    contentsNode.setAttribute("units",metrics.unit);
+  
+  if (!contentsNode)
+    contentsNode = frameNode;
+
+  contentsNode.setAttribute("msi_resize","true");
   rot = gFrameTab.rotationList.value;
 	if (rot ==="rot0")
 	{
-		frameNode.removeAttribute("rotation");
+		contentsNode.removeAttribute("rotation");
 	}
 	else
 	{
-		frameNode.setAttribute("rotation", rot);
+		contentsNode.setAttribute("rotation", rot);
 	}
   frameNode.setAttribute("req", "ragged2e");
   if (gFrameModeImage) {
@@ -725,41 +746,45 @@ function setFrameAttributes(frameNode)
 	}  
   if (gFrameModeImage) {
     var borderwidth = getSingleMeasurement("border", "Left", metrics.unit, false);
-    frameNode.setAttribute("border-width", borderwidth);
+    contentsNode.setAttribute("border-width", borderwidth);
   }
-  else frameNode.setAttribute("border", getCompositeMeasurement("border",metrics.unit, false));  
+  else contentsNode.setAttribute("border", getCompositeMeasurement("border",metrics.unit, false));  
   if (gFrameModeImage) {
     var padding = getSingleMeasurement("padding", "Left", metrics.unit, false);
-    frameNode.setAttribute("padding", padding);
+    contentsNode.setAttribute("padding", padding);
   }
-  else frameNode.setAttribute("padding", getCompositeMeasurement("padding",metrics.unit, false));  
+  else contentsNode.setAttribute("padding", getCompositeMeasurement("padding",metrics.unit, false));  
   if (gFrameTab.autoHeightCheck.checked)
   {
-    if (frameNode.hasAttribute("height")) frameNode.removeAttribute("height");
+    if (contentsNode.hasAttribute("height")) contentsNode.removeAttribute("height");
   }
-  else frameNode.setAttribute("height", gFrameTab.heightInput.value);
+  else contentsNode.setAttribute("height", gFrameTab.heightInput.value);
   if (gFrameTab.autoWidthCheck.checked)
   {
-    if (frameNode.hasAttribute("width")) frameNode.removeAttribute("width");
+    if (contentsNode.hasAttribute("width")) contentsNode.removeAttribute("width");
   }
-  else frameNode.setAttribute("width", gFrameTab.widthInput.value);
+  else contentsNode.setAttribute("width", gFrameTab.widthInput.value);
   var pos = document.getElementById("placementRadioGroup").selectedItem;
   var posid = pos.getAttribute("id") || "";
   frameNode.setAttribute("pos", posid);
   var bgcolor = gFrameTab.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
-  setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
-  frameNode.setAttribute("border-color", hexcolor(arr[1]));  
+  var theColor = (arr && arr.length > 1) ? arr[1] : "";
+  setStyleAttributeOnNode(contentsNode, "border-color", theColor);
+  contentsNode.setAttribute("border-color", hexcolor(theColor));  
   bgcolor = gFrameTab.bgcolorWell.getAttribute("style");
   arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
-  setStyleAttributeOnNode(frameNode, "background-color", arr[1]);
-  frameNode.setAttribute("background-color", hexcolor(arr[1]));  
+  theColor = (arr && arr.length > 1) ? arr[1] : "";
+  setStyleAttributeOnNode(contentsNode, "background-color", theColor);
+  contentsNode.setAttribute("background-color", hexcolor(theColor));  
 	msiRequirePackage(gFrameTab.editorElement, "xcolor", "");
 	frameNode.setAttribute("textalignment", gFrameTab.textAlignment.value );
 	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value)
-  if (document.getElementById("inline").selected)
-    setStyleAttributeOnNode(frameNode, "display", "inline-block");
-  else setStyleAttributeOnNode(frameNode, "display", "block");
+//RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
+//      the override for graphics with captions will take effect. See baselatex.css.)
+//  if (document.getElementById("inline").selected)
+//    setStyleAttributeOnNode(frameNode, "display", "inline-block");
+//  else setStyleAttributeOnNode(frameNode, "display", "block");
   // some experimentation here.
 
   if (posid == "float")
@@ -823,7 +848,7 @@ function setFrameAttributes(frameNode)
 		style = getSingleMeasurement("padding","Left", "px", true);
 	  setStyleAttributeOnNode(frameNode, "padding", style);
 	  style = getSingleMeasurement("border","Left","px", true);
-	  setStyleAttributeOnNode(frameNode, "border-width", style);
+	  setStyleAttributeOnNode(contentsNode, "border-width", style);
 	}
 	else
 	{
@@ -832,16 +857,16 @@ function setFrameAttributes(frameNode)
 	  style = getCompositeMeasurement("border","px", true);
 	  setStyleAttributeOnNode(frameNode, "border-width", style);
 	}
-  if (frameNode.hasAttribute("height") && Number(frameNode.getAttribute("height"))!= 0 )
-    setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(frameNode.getAttribute("height"),"px") + "px");
-  else removeStyleAttributeFamilyOnNode(frameNode, "height");
-  if (frameNode.hasAttribute("width") && Number(frameNode.getAttribute("width"))!= 0)
-    setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(frameNode.getAttribute("width"),"px") + "px");
-  else removeStyleAttributeFamilyOnNode(frameNode, "width");
-  if (style != "0px") { setStyleAttributeOnNode( frameNode, "border-style", "solid");}
+  if (contentsNode.hasAttribute("height") && Number(contentsNode.getAttribute("height"))!= 0 )
+    setStyleAttributeOnNode(contentsNode, "height", frameUnitHandler.getValueAs(contentsNode.getAttribute("height"),"px") + "px");
+  else removeStyleAttributeFamilyOnNode(contentsNode, "height");
+  if (contentsNode.hasAttribute("width") && Number(contentsNode.getAttribute("width"))!= 0)
+    setStyleAttributeOnNode(contentsNode, "width", frameUnitHandler.getValueAs(contentsNode.getAttribute("width"),"px") + "px");
+  else removeStyleAttributeFamilyOnNode(contentsNode, "width");
+  if (style != "0px") { setStyleAttributeOnNode( contentsNodeNode, "border-style", "solid");}
 }
 
-function frameHeightChanged(input)
+function frameHeightChanged(input, event)
 {
   if (input.value > 0)
   {
@@ -849,13 +874,97 @@ function frameHeightChanged(input)
   }
   else scaledHeight = scaledHeightDefault;
   setStyleAttributeByID("content", "height", scaledHeight + "px");
+  constrainProportions( "frameHeightInput", "frameWidthInput", event );
   redrawDiagram();
 }
 
-function frameWidthChanged(input)
+function frameWidthChanged(input, event)
 {
   if (input.value > 0) scaledWidth = toPixels(input.value);
     else scaledWidth = scaledWidthDefault;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
+  constrainProportions( "frameWidthInput", "frameHeightInput", event );
   redrawDiagram();
+}
+
+function ToggleConstrain()
+{
+  // If just turned on, save the current width and height as basis for constrain ratio
+  // Thus clicking on/off lets user say "Use these values as aspect ration"
+  if (Dg.constrainCheckbox.checked && !dg.constrainCheckbox.disabled) ;
+//     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
+//     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
+  {
+    gConstrainWidth = Number(TrimString(Dg.widthInput.value));
+    gConstrainHeight = Number(TrimString(Dg.heightInput.value));
+  }
+}
+
+function constrainProportions( srcID, destID, event )
+{
+  var srcElement = document.getElementById(srcID);
+  if (!srcElement)
+    return;
+  updateTextNumber(srcElement, srcID, event);
+  var destElement = document.getElementById(destID);
+  if (!destElement)
+    return;
+
+  // always force an integer (whether we are constraining or not)
+//  forceInteger(srcID);
+
+  if (gFrameModeImage)
+  {
+    if (gActualWidth && gActualHeight &&
+        (Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled))
+    {
+  //  // double-check that neither width nor height is in percent mode; bail if so!
+  //  if ( (gDialog.widthUnitsMenulist.selectedIndex != 0)
+  //     || (gDialog.heightUnitsMenulist.selectedIndex != 0) )
+  //    return;
+
+    // This always uses the actual width and height ratios
+    // which is kind of funky if you change one number without the constrain
+    // and then turn constrain on and change a number
+    // I prefer the old strategy (below) but I can see some merit to this solution
+      if (srcID == "frameWidthInput")
+        destElement.value = unitRound( srcElement.value * gActualHeight / gActualWidth );
+      else
+        destElement.value = unitRound( srcElement.value * gActualWidth / gActualHeight );
+    }
+  }
+  else  //not a graphic - use the other strategy, as there's no natural width
+  {
+    // With this strategy, the width and height ratio
+    //   can be reset to whatever the user entered.
+    if (srcID == "frameWidthInput")
+      destElement.value = unitRound( srcElement.value * gConstrainHeight / gConstrainWidth );
+    else
+      destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
+  }
+  setContentSize(frameUnitHandler.getValueAs(Dg.widthInput.value,"px"), frameUnitHandler.getValueAs(Dg.heightInput.value,"px"));
+}
+
+function doDimensionEnabling()
+{
+  // Enabled only if "Custom" is selected
+  var enable = (Dg.custom.selected);
+
+  // BUG 74145: After input field is disabled,
+  //   setting it enabled causes blinking caret to appear
+  //   even though focus isn't set to it.
+  SetElementEnabledById( "frameHeightInput", enable );
+  SetElementEnabledById( "frameHeightLabel", enable );
+
+  SetElementEnabledById( "frameWidthInput", enable );
+  SetElementEnabledById( "frameWidthLabel", enable);
+
+  SetElementEnabledById( "unitList", enable );
+
+  var constrainEnable = enable ;
+//         && ( gDialog.widthUnitsMenulist.selectedIndex == 0 )
+//         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
+
+  SetElementEnabledById( "constrainCheckbox", constrainEnable );
+
 }

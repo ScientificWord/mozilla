@@ -263,7 +263,7 @@
     <groupbox>
       <caption label="Size"/>
       <!-- vbox observes="hasNaturalSize" -->
-        <radiogroup id="sizeRadio">
+        <radiogroup id="sizeRadio" oncommand="doDimensionEnabling();">
           <hbox flex="1" observes="hasNaturalSize" hidden="true">
             <vbox>
               <radio id="actual" label="Actual size" radioGroup="sizeRadio"/>
@@ -284,19 +284,19 @@
             </columns>
             <rows>
               <row>
-                <label value="Width"/>
+                <label value="Width" id="frameWidthLabel"/>
                 <label value="Auto" control="autoWidth"/>
-                <label value="Height"/>
+                <label value="Height" id="frameHeightLabel"/>
                 <label value="Auto" control="autoHeight"/>
-                <label observes="hasNaturalSize" value="Constrain" control="constrainCheck"/>
+                <label observes="hasNaturalSize" value="constrainCheckbox" control="constrainCheck"/>
               </row>
               <row>
                 <textbox
                   id        = "frameWidthInput"
                   type      = "number"
                   onkeypress= ""
-                  onchange  = "frameWidthChanged(this);"
-                  onload    = "frameWidthChanged(this);"
+                  onchange  = "frameWidthChanged(this, event);"
+                  onload    = "frameWidthChanged(this, event);"
                   value     = "0"
                   persist   = "value"/>
                 <checkbox id="autoWidth" persist = "checked" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
@@ -304,12 +304,12 @@
                   id        = "frameHeightInput"
                   type      = "number"
                   onkeypress= ""
-                  onchange  = "frameHeightChanged(this);"
-                  onload    = "frameHeightChanged(this);"
+                  onchange  = "frameHeightChanged(this, event);"
+                  onload    = "frameHeightChanged(this, event);"
                   value     = "0"
                   persist   =  "value"/>
                 <checkbox id="autoHeight" persist = "checked" checked="false" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
-                <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"
+                <checkbox observes="hasNaturalSize" id="constrainCheckbox" oncommand ="ToggleConstrain();"
                   checked="false" persist = "checked"/>
               </row>
             </rows>

@@ -13,7 +13,7 @@
   <xsl:if test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="@units"/>} </xsl:if>
   <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>} </xsl:if>
 <xsl:choose>
-  <xsl:when test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\begin{wrapfigure}             
+  <xsl:when test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\begin{wrapfigure}
     <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
     <xsl:choose>
       <xsl:when test="@placement='I'">{i}</xsl:when>
