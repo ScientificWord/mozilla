@@ -490,20 +490,36 @@ shortTitle {
 }
 
 
-/* object[captionloc="below"]
-{
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
+msiframe {
+  display: inline-block;
 }
 
-object[captionloc="above"]
-{
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionAbove");
+msiframe[pos="inline"] {
+  display: inline;
 }
 
-object[captionloc="abovebelow"]
+msiframe[captionloc]
 {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
-} */
+  display: table;
+}
+
+msiframe[captionloc][pos="inline"] {
+  display: inline-table;
+}
+
+msiframe[captionloc] > object {
+  display: table-row;
+}
+
+msiframe[captionloc="above"] > imagecaption {
+  display: table-caption;
+  caption-side: top;
+}
+
+msiframe[captionloc="below"] > imagecaption {
+  display: table-caption;
+  caption-side: bottom;
+}
 
 a:link, xref, xref button {
   cursor: pointer !important;
