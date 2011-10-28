@@ -4954,6 +4954,16 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case "#text":
       break;
 
+      case "msiframe":
+        if (!element.hasAttribute("frametype") || (element.getAttribute("frametype") != "image"))
+        {
+          objStr = name;
+          theMenuStr = GetString("TagPropertiesMenuLabel");
+          theMenuStr = theMenuStr.replace(/%tagname%/, GetString("msiFrame"));
+          scriptStr = "msiFrame(event.target.refEditor, null, event.target.refElement);";
+          break;
+        } 
+        //otherwise fallthrough
       case "object":
         if (element.getAttribute("msigraph") == "true")
         {
@@ -4967,17 +4977,19 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case "img":
         // Check if img is enclosed in link
         //  (use "href" to not be fooled by named anchor)
-        try
-        {
-          if (editor.getElementOrParentByTagName("href", element))
-            objStr = GetString("ImageAndLink");
-        } catch(e) {}
+//        try
+//        {
+//          if (editor.getElementOrParentByTagName("href", element))
+//            objStr = GetString("ImageAndLink");
+//        } catch(e) {}
         
         if (!objStr || !objStr.length)
         {
           objStr = GetString("Image");
           commandStr = "cmd_reviseImage";
         }
+        if ((msiGetBaseNodeName(element.parentNode) == "msiframe") && (element.parentNode.getAttribute("frametype") == "image"))
+          coreElement = element.parentNode;
         break;
       case "hr":
         objStr = GetString("HLine");
@@ -5287,13 +5299,6 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("IndexEntry"));
         scriptStr = "doInsertIndexEntry(event.target.refEditor, event.target.refElement);";
-      break;
-
-      case "msiframe":
-        objStr = name;
-        theMenuStr = GetString("TagPropertiesMenuLabel");
-        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("msiFrame"));
-        scriptStr = "msiFrame(event.target.refEditor, null, event.target.refElement);";
       break;
 
       default:

@@ -9344,6 +9344,17 @@ var msiNavigationUtils =
     return retList;
   },
 
+  getChildrenByTagName : function(aNode, nodeName)
+  {
+    var tagList = [];
+    for (var ix = 0; ix < aNode.childNodes.length; ++ix)
+    {
+      if (msiGetBaseNodeName(aNode.childNodes[ix]) == nodeName)
+        tagList.push(aNode.childNodes[ix]);
+    }
+    return tagList;
+  },
+
   getParentOfType : function(aNode, nodeName)
   {
     if (!aNode || (msiGetBaseNodeName(aNode) == nodeName))
