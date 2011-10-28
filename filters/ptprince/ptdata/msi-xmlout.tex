@@ -1515,12 +1515,12 @@
 \def\msidefaulta#1{%
   \expandafter\msidefaultb\expandafter{\msi@cdr#1xxxx}}
 
-\def\msidefaultb#1{
+\def\msidefaultb#1{%
     \msihmode
     \msiopentag{texb}{<texb enc="1" name="#1">}%
        \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname\@gobbleargs}
 
-\def\@endtexb{        
+\def\@endtexb{%        
        \msitag{]]>}%
     \msiclosetag{texb}{</texb>}}
 
