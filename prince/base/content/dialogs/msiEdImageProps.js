@@ -42,13 +42,15 @@
 
 var gDialog;
 var globalElement;
+var globalImage;
 var gEditorElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 var frameTabDlg = new Object();
 
-var gConstrainWidth  = 0;
-var gConstrainHeight = 0;
+//var gConstrainWidth  = 0;
+//var gConstrainHeight = 0;
 var imageElement;
+var wrapperElement;
 var gActualWidth = "";
 var gActualHeight = "";
 var gDefaultWidth = 200;
@@ -105,8 +107,15 @@ function Startup()
   // Get a single selected image element
   var tagName = "object";
   imageElement = null;
+  wrapperElement = null;
   if (window.arguments && window.arguments.length >0)
-    imageElement = window.arguments[0];
+  {
+    wrapperElement = window.arguments[0];
+    if (wrapperElement && (msiGetBaseNodeName(wrapperElement) == "msiframe"))
+      imageElement = wrapperElement.getElementsByTagName("object")[0];
+    else
+      imageElement = wrapperElement;
+  }
   if (!imageElement)
   {
     // Does this ever get run?
@@ -144,6 +153,7 @@ function Startup()
     //  so create one with default attributes
     try {
       imageElement = editor.createElementWithDefaults(tagName);
+      wrapperElement = imageElement;
     } catch(e) {}
 
     if (!imageElement)
@@ -157,12 +167,15 @@ function Startup()
   initKeyList();
 
   // Make a copy to use for AdvancedEdit
-  globalElement = imageElement.cloneNode(true);
+  globalElement = wrapperElement.cloneNode(true);
+  globalImage = globalElement;
+  if (msiGetBaseNodeName(globalElement) == "msiframe")
+    globalImage = globalElement.getElementsByTagName("object")[0];
 
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
-  initFrameTab(frameTabDlg, imageElement, gInsertNewImage);
+  initFrameTab(frameTabDlg, wrapperElement, gInsertNewImage, imageElement);
   InitDialog();
   ChangeLinkLocation();
 
@@ -209,7 +222,7 @@ var gBorderdesc = ["border-top-width","border-right-width","border-bottom-width"
 function fillInValue(element, index, array)
 {
   if (!element || element.length == 0)
-    element= msiGetHTMLOrCSSStyleValue(null, globalElement, gBorderdesc[index], null);
+    element= msiGetHTMLOrCSSStyleValue(null, globalImage, gBorderdesc[index], null);
 }
 
 
@@ -219,10 +232,10 @@ function fillInValue(element, index, array)
 function InitImage()
 {
   // Set the controls to the image's attributes
-  if (globalElement.hasAttribute("src"))
-    gDialog.srcInput.value = globalElement.getAttribute("src");
+  if (imageElement.hasAttribute("src"))
+    gDialog.srcInput.value = imageElement.getAttribute("src");
   else if (imageElement.hasAttribute("data"))
-    gDialog.srcInput.value = globalElement.getAttribute("data");
+    gDialog.srcInput.value = imageElement.getAttribute("data");
 
   // Set "Relativize" checkbox according to current URL state
   msiSetRelativeCheckbox();
@@ -234,35 +247,39 @@ function InitImage()
 //    gDialog.titleInput.value = globalElement.getAttribute("title");
 
   if (!gCaptionData)
-    gCaptionData = {m_position : "below", m_captionStr : {below: "", above : ""}};
+    gCaptionData = {m_position : "below", m_captionStr : ""};
   var position = "below";
-  var capData = findCaptionNodes(globalElement);
-  if (capData.aboveCaption)
-  {
-    gCaptiondata.m_captionStr.above = getNodeChildrenAsString(capData.aboveCaption);
-    position = "above";
-  }
+  var capData = findCaptionNodes(wrapperElement);
   if (capData.belowCaption)
   {
-    gCaptionData.m_captionStr.below = getNodeChildrenAsString(capData.belowCaption);
-    position = "below";  //we check this one last - if both as present, the dialog should start with the edit window containing the below caption
+    gCaptionData.m_captionStr = getNodeChildrenAsString(capData.belowCaption);
+    position = "below";
+  }
+  else if (capData.aboveCaption)
+  {
+    gCaptiondata.m_captionStr = getNodeChildrenAsString(capData.aboveCaption);
+    position = "above";
   }
   gCaptionData.m_position = position;
-  msiInitializeEditorForElement(gDialog.captionEdit, gCaptionData.m_captionStr[gCaptionData.m_position]);
+  msiInitializeEditorForElement(gDialog.captionEdit, gCaptionData.m_captionStr);
   gDialog.captionPlacementGroup.value = gCaptionData.m_position;
   
-  var imageKey;
-  if (globalElement.hasAttribute("key"))
-    imageKey = globalElement.getAttribute("key");
-  else if (globalElement.hasAttribute("id"))
-    imageKey = globalElement.getAttribute("id");
+  var imageKey = "";
+//  if (globalElement.hasAttribute("key"))
+//    imageKey = globalElement.getAttribute("key");
+  if (imageElement.hasAttribute("key"))
+    imageKey = imageElement.getAttribute("key");
+  else if (imageElement.hasAttribute("id"))
+    imageKey = imageElement.getAttribute("id");
+//  else if (globalElement.hasAttribute("id"))
+//    imageKey = globalElement.getAttribute("id");
   gDialog.keyInput.value = imageKey;
 
-  var hasAltText = globalElement.hasAttribute("alt");
+  var hasAltText = imageElement.hasAttribute("alt");
   var altText;
   if (hasAltText)
   {
-    altText = globalElement.getAttribute("alt");
+    altText = imageElement.getAttribute("alt");
     gDialog.altTextInput.value = altText;
   }
 
@@ -284,10 +301,10 @@ function InitImage()
 //  }
 
   // setup the height and width widgets
-  var width = msiInitPixelOrPercentMenulist(globalElement,
+  var width = msiInitPixelOrPercentMenulist(globalImage,
                     gInsertNewImage ? null : imageElement,
                     "width", "widthUnitsMenulist", gPixel);
-  var height = msiInitPixelOrPercentMenulist(globalElement,
+  var height = msiInitPixelOrPercentMenulist(globalImage,
                     gInsertNewImage ? null : imageElement,
                     "height", "heightUnitsMenulist", gPixel);
 
@@ -303,8 +320,8 @@ function InitImage()
   gConstrainHeight = height;
   if ((width > 0) || (height > 0))
   {
-    frameTabDlg.widthInput.value  = width;
-    frameTabDlg.heightInput.value = height;
+    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(width,"px");
+    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(height,"px");
   }
   else if ((gActualHeight > 0)||(gActualWidth > 0)) 
   {
@@ -324,7 +341,7 @@ function InitImage()
 
   // dialog.border.value       = globalElement.getAttribute("border");
   var bordervalues;
-  var bv = msiGetHTMLOrCSSStyleValue(null, globalElement, "border", null);
+  var bv = msiGetHTMLOrCSSStyleValue(null, globalImage, "border", null);
   var i;
   if (bv.length > 0)
   {
@@ -413,18 +430,18 @@ function  SetSizeWidgets(width, height)
     if (gActualWidth && gActualHeight)
     {
       if (gActualWidth > gActualHeight)
-        frameTabDlg.constrainCheckbox.checked = (Math.round(gActualHeight * width / gActualWidth) == height);
+        frameTabDlg.constrainCheckbox.checked = (unitRound(gActualHeight * width / gActualWidth) == height);
       else
-        frameTabDlg.constrainCheckbox.checked = (Math.round(gActualWidth * height / gActualHeight) == width);
+        frameTabDlg.constrainCheckbox.checked = (unitRound(gActualWidth * height / gActualHeight) == width);
     }
   }
 }
 
 // These mode variables control the msiFrameOverlay code
-var gFrameModeImage = true;
-var gFrameModeTextFrame = false;
+//var gFrameModeImage = true;
+//var gFrameModeTextFrame = false;
 
-var gInsertNewImage;
+//var gInsertNewImage;
 
 function initImageUnitList(unitPopUp)
 {
@@ -458,21 +475,21 @@ function ToggleShowLinkBorder()
   }
 }
 
-function onChangeCaptionPlacement()
-{
-  var newPosition = gDialog.captionPlacementGroup.value;
-  if (newPosition != gCaptionData.m_position)
-  {
-    gCaptionData.m_captionStr[gCaptionData.m_position] = getCaptionEditContents();
-    var editor = msiGetEditor(gDialog.captionEdit);
-    msiDeleteBodyContents(editor);
-    editor.insertHTMLWithContext(gCaptionData.m_captionStr[newPosition], "", "", "", null, null, 0, true);
-  }
-}
+//function onChangeCaptionPlacement()
+//{
+//  var newPosition = gDialog.captionPlacementGroup.value;
+//  if (newPosition != gCaptionData.m_position)
+//  {
+//    gCaptionData.m_captionStr[gCaptionData.m_position] = getCaptionEditContents();
+//    var editor = msiGetEditor(gDialog.captionEdit);
+//    msiDeleteBodyContents(editor);
+//    editor.insertHTMLWithContext(gCaptionData.m_captionStr[newPosition], "", "", "", null, null, 0, true);
+//  }
+//}
 
 function getCaptionEditContents()
 {
-  if (gCaptionData.contentFilter == null)
+  if (!gCaptionData.contentFilter)
     gCaptionData.contentFilter = new msiDialogEditorContentFilter(gDialog.captionEdit);
   return gCaptionData.contentFilter.getDocumentFragmentString();
 }
@@ -482,13 +499,19 @@ function findCaptionNodes(parentNode)
   var retData = {belowCaption : null, aboveCaption : null};
   var theChildren = msiNavigationUtils.getSignificantContents(parentNode);
   var position;
+  var parentPos = "below";
+  if (parentNode.hasAttribute("captionloc"))
+    parentPos = parentNode.getAttribute("captionloc");
   for (var ii = 0; ii < theChildren.length; ++ii)
   {
     if (msiGetBaseNodeName(theChildren[ii]) == "imagecaption")
     {
-      position = theChildren[ii].getAttribute("position");
+      if (theChildren[ii].hasAttribute("position"))
+        position = theChildren[ii].getAttribute("position");
+      else
+        position = parentPos;
       if (!position || (position != "above"))
-        position = "below";
+        position = parentPos;
       position += "Caption";
       retData[position] = theChildren[ii];
     }
@@ -506,17 +529,27 @@ function getNodeChildrenAsString(aNode)
   return retStr;
 }
 
-function syncCaptionAndExisting(dlgCaptionStr, currCaptionNode, editor, imageObj, positionStr)
+function syncCaptionAndExisting(dlgCaptionStr, editor, imageObj, positionStr)
 {
   var bChange = false;
   var existingStr = "";
+  var currCaptionNode;
+  var currLoc = imageObj.getAttribute("captionloc");
+  if (!currLoc || !currLoc.length)
+    currLoc = "below";
+  var captionNodes = imageObj.getElementsByTagName("imagecaption");
+  if (captionNodes && captionNodes.length)
+    currCaptionNode = captionNodes[0];
   if (currCaptionNode)
     existingStr = getNodeChildrenAsString(currCaptionNode);
+  if (dlgCaptionStr.length)
+    msiEditorEnsureElementAttribute(imageObj, "captionloc", positionStr, editor);
+  else
+    msiEditorEnsureElementAttribute(imageObj, "captionloc", null, editor);  //This will remove the captionLoc attribute
+
   bChange = (existingStr != dlgCaptionStr);
   if (!bChange)
   {
-    if (currCaptionNode)
-      msiEditorEnsureElementAttribute(currCaptionNode, "position", positionStr, editor);
     return;
   }
   if (dlgCaptionStr.length)
@@ -524,7 +557,7 @@ function syncCaptionAndExisting(dlgCaptionStr, currCaptionNode, editor, imageObj
     if (!currCaptionNode)
     {
       currCaptionNode = editor.document.createElementNS(xhtmlns, "imagecaption");
-      currCaptionNode.setAttribute("position", positionStr);
+//      currCaptionNode.setAttribute("position", positionStr);
       editor.insertNode(currCaptionNode, imageObj, imageObj.childNodes.length);
     }
     else if (existingStr.length)
@@ -533,6 +566,7 @@ function syncCaptionAndExisting(dlgCaptionStr, currCaptionNode, editor, imageObj
         editor.deleteNode(currCaptionNode.childNodes[jx]);
     }
     editor.insertHTMLWithContext(dlgCaptionStr, "", "", "", null, currCaptionNode, 0, false);
+    msiEditorEnsureElementAttribute(imageObj, "captionloc", positionStr, editor);
   }
   else if (currCaptionNode)
     editor.deleteNode(currCaptionNode);
@@ -844,9 +878,9 @@ function LoadPreviewImage()
 
 function SetActualSize()
 {
-  frameTabDlg.widthInput.value = gActualWidth ? gActualWidth : "";
-  frameTabDlg.heightInput.value = gActualHeight ? gActualHeight : "";
-  frameTabDlg.unitList.selectedIndex = 0;
+  frameTabDlg.widthInput.value = gActualWidth ? frameUnitHandler.getValueOf(gActualWidth,"px") : "";
+  frameTabDlg.heightInput.value = gActualHeight ? frameUnitHandler.getValueOf(gActualHeight,"px") : "";
+//  frameTabDlg.unitList.selectedIndex = 0;
   doDimensionEnabling();
 }
 
@@ -873,90 +907,37 @@ function setContentSize(width, height)  // width and height are the size of the 
 //  doOverallEnabling();
 //}
 
-function doDimensionEnabling()
-{
-  // Enabled only if "Custom" is selected
-  var enable = (frameTabDlg.custom.selected);
-
-  // BUG 74145: After input field is disabled,
-  //   setting it enabled causes blinking caret to appear
-  //   even though focus isn't set to it.
-  SetElementEnabledById( "heightInput", enable );
-  SetElementEnabledById( "heightLabel", enable );
-
-  SetElementEnabledById( "widthInput", enable );
-  SetElementEnabledById( "widthLabel", enable);
-
-  SetElementEnabledById( "unitList", enable );
-
-  var constrainEnable = enable ;
-//         && ( gDialog.widthUnitsMenulist.selectedIndex == 0 )
-//         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
-
-  SetElementEnabledById( "constrainCheckbox", constrainEnable );
-
-}
-
+//function doDimensionEnabling()
+//{
+//  // Enabled only if "Custom" is selected
+//  var enable = (frameTabDlg.custom.selected);
+//
+//  // BUG 74145: After input field is disabled,
+//  //   setting it enabled causes blinking caret to appear
+//  //   even though focus isn't set to it.
+//  SetElementEnabledById( "heightInput", enable );
+//  SetElementEnabledById( "heightLabel", enable );
+//
+//  SetElementEnabledById( "widthInput", enable );
+//  SetElementEnabledById( "widthLabel", enable);
+//
+//  SetElementEnabledById( "unitList", enable );
+//
+//  var constrainEnable = enable ;
+////         && ( gDialog.widthUnitsMenulist.selectedIndex == 0 )
+////         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
+//
+//  SetElementEnabledById( "constrainCheckbox", constrainEnable );
+//
+//}
+//
 function doOverallEnabling()
 {
   var enabled = TrimString(gDialog.srcInput.value) != "";
 
   SetElementEnabled(gDialog.OkButton, enabled);
   SetElementEnabledById("AdvancedEditButton1", enabled);
-}
-
-function ToggleConstrain()
-{
-  // If just turned on, save the current width and height as basis for constrain ratio
-  // Thus clicking on/off lets user say "Use these values as aspect ration"
-  if (frameTabDlg.constrainCheckbox.checked && !frameTabDlg.constrainCheckbox.disabled) ;
-//     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
-//     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
-  {
-    gConstrainWidth = Number(TrimString(frameTabDlg.widthInput.value));
-    gConstrainHeight = Number(TrimString(frameTabDlg.heightInput.value));
-  }
-}
-
-function constrainProportions( srcID, destID, event )
-{
-  var srcElement = document.getElementById(srcID);
-  if (!srcElement)
-    return;
-  updateTextNumber(srcElement, srcID, event);
-  var destElement = document.getElementById(destID);
-  if (!destElement)
-    return;
-
-  // always force an integer (whether we are constraining or not)
-  forceInteger(srcID);
-
-  if (gActualWidth && gActualHeight &&
-      (frameTabDlg.constrainCheckbox.checked && !frameTabDlg.constrainCheckbox.disabled))
-  {
-//  // double-check that neither width nor height is in percent mode; bail if so!
-//  if ( (gDialog.widthUnitsMenulist.selectedIndex != 0)
-//     || (gDialog.heightUnitsMenulist.selectedIndex != 0) )
-//    return;
-
-  // This always uses the actual width and height ratios
-  // which is kind of funky if you change one number without the constrain
-  // and then turn constrain on and change a number
-  // I prefer the old strategy (below) but I can see some merit to this solution
-    if (srcID == "widthInput")
-      destElement.value = Math.round( srcElement.value * gActualHeight / gActualWidth );
-    else
-      destElement.value = Math.round( srcElement.value * gActualWidth / gActualHeight );
-  }
-/*
-  // With this strategy, the width and height ratio
-  //   can be reset to whatever the user entered.
-  if (srcID == "widthInput")
-    destElement.value = Math.round( srcElement.value * gConstrainHeight / gConstrainWidth );
-  else
-    destElement.value = Math.round( srcElement.value * gConstrainWidth / gConstrainHeight );
-*/
-  setContentSize(frameUnitHandler.getValueAs(frameTabDlg.widthInput.value,"px"), frameUnitHandler.getValueAs(gDialog.heightInput.value,"px"));
+  doDimensionEnabling();
 }
 
 //function editImageMap()
@@ -1013,7 +994,7 @@ function ValidateImage()
   // We must convert to "file:///" or "http://" format else image doesn't load!
   dump("2\n");
   var src = TrimString(gDialog.srcInput.value);
-  globalElement.setAttribute("src", src);
+  globalImage.setAttribute("src", src);
 
 //  var title = TrimString(gDialog.titleInput.value);
 //  if (title)
@@ -1024,12 +1005,12 @@ function ValidateImage()
   var alt = TrimString(gDialog.altTextInput.value);
 
   dump("3\n");
-  globalElement.setAttribute("alt", alt);
+  globalImage.setAttribute("alt", alt);
 
   if (gDialog.keyInput.controller)
   {
-    dump("In msiEdImageProps.js, keyInput autosearch controller's status is[" + gDialog.keyInput.controller.searchStatus + "]\n");
-    var oldKey = globalElement.getAttribute("key");
+    dump("In msiEdImageProps.js, keyInput autosearch controller's status is [" + gDialog.keyInput.controller.searchStatus + "]\n");
+    var oldKey = imageElement.getAttribute("key");
     var bUnchanged = false;
     if (!oldKey || !oldKey.length)
       bUnchanged = (!gDialog.keyInput.value || !gDialog.keyInput.value.length);
@@ -1051,12 +1032,12 @@ function ValidateImage()
   {
     // Get user values for width and height
     width = msiValidateNumber(frameTabDlg.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
-                           globalElement, "width", false, true);
+                           globalImage, "width", false, true);
     if (gValidationError)
       return false;
 
     height = msiValidateNumber(frameTabDlg.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
-                            globalElement, "height", false, true);
+                            globalImage, "height", false, true);
     if (gValidationError)
       return false;
   }
@@ -1073,14 +1054,14 @@ function ValidateImage()
   //  and we couldn't obtain actual dimensions
   var srcChanged = (src != gOriginalSrc);
   if (width)
-    globalElement.setAttribute("width", width);
+    globalImage.setAttribute("width", width);
   else if (srcChanged)
-    editor.removeAttributeOrEquivalent(globalElement, "width", true);
+    editor.removeAttributeOrEquivalent(globalImage, "width", true);
 
   if (height)
-    globalElement.setAttribute("height", height);
+    globalImage.setAttribute("height", height);
   else if (srcChanged) 
-    editor.removeAttributeOrEquivalent(globalElement, "height", true);
+    editor.removeAttributeOrEquivalent(globalImage, "height", true);
 
   // spacing attributes
 //  gValidateTab = gDialog.tabBorder;
@@ -1178,6 +1159,9 @@ function onAccept()
     {
       var tagname="object";
 //      var frameElement = null;
+      gCaptionData.m_captionStr = getCaptionEditContents();
+      var bHasCaption = (gCaptionData.m_captionStr && gCaptionData.m_captionStr.length);
+      var posInParent;
       if (imageElement)
       {
         imgExists = true;
@@ -1195,32 +1179,63 @@ function onAccept()
       {      
         imageElement = editor.createElementWithDefaults(tagname);
         imageElement.addEventListener("load", imageLoaded, true);
+        wrapperElement = imageElement;
+      }
+
+      if (bHasCaption)
+      {
+        if (wrapperElement == imageElement)
+        {
+          wrapperElement = editor.createElementWithDefaults("msiframe");
+          wrapperElement.setAttribute("frametype", "image");
+          if (gInsertNewImage)
+            wrapperElement.appendChild(imageElement);
+          else
+          {
+            posInParent = msiNavigationUtils.offsetInParent(imageElement);
+            var imageParent = imageElement.parentNode;
+            editor.deleteNode(imageElement);
+            wrapperElement.appendChild(imageElement);
+//            editor.insertNode(imageElement, wrapperElement, 0);
+            editor.insertNode(wrapperElement, imageParent, posInParent);
+          }
+        }
+      }
+      else if (wrapperElement != imageElement)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
+      {
+        posInParent = msiNavigationUtils.offsetInParent(wrapperElement);
+        editor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
+        editor.deleteNode(wrapperElement);
+        wrapperElement = imageElement;
 //        frameElement = editor.createElementWithDefaults("msiframe");
 //        frameElement.appendChild(imageElement);
       }
+
+      var capData = findCaptionNodes(wrapperElement);
+      var capPosition = gDialog.captionPlacementGroup.value;
+      if (!capPosition || !capPosition.length)
+        capPosition = "below";
+      syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
+//      syncCaptionAndExisting(gCaptionData.m_captionStr.below, capData.belowCaption, editor, wrapperElement, "below");
+//      var capAttrStr = "";
+//      if (capData.aboveCaption && capData.aboveCaption.length)
+//        capAttrStr = "above";
+//      if (capData.belowCaption && capData.belowCaption.length)
+//        capAttrStr += "below";
+//      if (!capAttrStr.length)
+//        capAttrStr = null;  //since EnsureElementAttribute will remove the attribute if a null is passed in.
+      
           // 'true' means delete the selection before inserting
       if (gInsertNewImage)
-        editor.insertElementAtSelection(imageElement, true);
+        editor.insertElementAtSelection(wrapperElement, true);
     
       var attrList = ["src,data,title,alt"];
       msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
       imageElement.setAttribute("data",gDialog.srcInput.value);
       imageElement.setAttribute("req","graphicx");
       
-      setFrameAttributes(imageElement);
-
-      var capData = findCaptionNodes(imageElement);
-      gCaptionData.m_captionStr[gCaptionData.m_position] = getCaptionEditContents();
-      syncCaptionAndExisting(gCaptionData.m_captionStr.above, capData.aboveCaption, editor, imageElement, "above");
-      syncCaptionAndExisting(gCaptionData.m_captionStr.below, capData.belowCaption, editor, imageElement, "below");
-      var capAttrStr = "";
-      if (capData.aboveCaption && capData.aboveCaption.length)
-        capAttrStr = "above";
-      if (capData.belowCaption && capData.belowCaption.length)
-        capAttrStr += "below";
-      if (!capAttrStr.length)
-        capAttrStr = null;  //since EnsureElementAttribute will remove the attribute if a null is passed in.
-      msiEditorEnsureElementAttribute(imageElement, "captionLoc", capAttrStr, editor);
+      setFrameAttributes(wrapperElement, imageElement);
+//      msiEditorEnsureElementAttribute(wrapperElement, "captionLoc", capAttrStr, editor);  //Now taken care of above
 
       var theKey = gDialog.keyInput.value;
       if (!theKey.length)
@@ -1245,12 +1260,12 @@ function onAccept()
   return true;
 }
 
-// These mode variables control the msiFrameOverlay code
-var gFrameModeImage = true;
-var gFrameModeTextFrame = false;
-
-var gInsertNewImage;
-
+//// These mode variables control the msiFrameOverlay code
+//var gFrameModeImage = true;
+//var gFrameModeTextFrame = false;
+//
+//var gInsertNewImage;
+//
 //var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
 
 function initKeyList()
