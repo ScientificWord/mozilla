@@ -375,6 +375,10 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     else {
       if (focusTagName.EqualsLiteral("plotwrapper"))
         res = SetFocusedPlot(focusElement);
+			if (mResizedObject)
+			{ 
+				res = HideResizers();
+			}
       res = ShowResizers(focusElement);
       nsCOMPtr<nsIDOMDocument> domdoc2;
       nsCOMPtr<nsIDOMElement> broadcaster;
