@@ -658,10 +658,10 @@ should not be done under some conditions -->
 
 <xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:bold">\begin{bfseries}<xsl:apply-templates
-  />\end{bfseries}</xsl:template>
-<xsl:template match="html:italics">\begin{itshape}<xsl:apply-templates
-  />\end{itshape}</xsl:template>
+<xsl:template match="html:bold">\textbf{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:italics">\textit{<xsl:apply-templates
+  />}</xsl:template>
 <xsl:template match="html:smallbox">\fbox{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:roman">\textrm{<xsl:apply-templates
@@ -807,7 +807,7 @@ should not be done under some conditions -->
   <xsl:if test="not(@pre)" >
     <xsl:if test="@enc='1'">
 %TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates/>}}%
-%Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>}
+<!-- %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>} -->
 %BeginExpansion
     </xsl:if>
     <xsl:apply-templates mode="tex"/>
