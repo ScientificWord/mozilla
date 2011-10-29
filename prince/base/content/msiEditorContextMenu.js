@@ -28,6 +28,7 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem_cm", "removeLinksMenuitem_cm", "removeNamedAnchorsMenuitem_cm");
 
   var inCell = msiIsInTableCell(editorElement);
+  var inMatrixCell = msiIsInMatrixCell(editorElement);
   // Set appropriate text for join cells command
   msiInitJoinCellMenuitem("joinTableCells_cm", editorElement);
 
@@ -90,6 +91,11 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   msiShowMenuItem("tableInsertMenu_cm",  inCell);
   msiShowMenuItem("tableSelectMenu_cm",  inCell);
   msiShowMenuItem("tableDeleteMenu_cm",  inCell);
+	// Same for matrices
+  msiShowMenuItem("matrixInsertMenu_cm",  inMatrixCell);
+  msiShowMenuItem("matrixSelectMenu_cm",  inMatrixCell);
+  msiShowMenuItem("matrixDeleteMenu_cm",  inMatrixCell);
+
 //  addSectionProperties(editorElement, contextMenuNode);
 }
 

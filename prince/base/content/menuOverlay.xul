@@ -762,6 +762,22 @@
     <command id="cmd_DeleteColumn"        oncommand="msiGoDoCommand('cmd_DeleteColumn')"/>
     <command id="cmd_DeleteCell"          oncommand="msiGoDoCommand('cmd_DeleteCell')"/>
     <command id="cmd_DeleteCellContents"  oncommand="msiGoDoCommand('cmd_DeleteCellContents')"/>
+
+    <command id="cmd_SelectMatrix"              oncommand="msiGoDoCommand('cmd_SelectMatrix')"/>
+    <command id="cmd_SelectMatrixRow"           oncommand="msiGoDoCommand('cmd_SelectMatrixRow')"/>
+    <command id="cmd_SelectMatrixColumn"        oncommand="msiGoDoCommand('cmd_SelectMatrixColumn')"/>
+    <command id="cmd_SelectMatrixCell"          oncommand="msiGoDoCommand('cmd_SelectMatrixCell')"/>
+    <command id="cmd_SelectAllMatrixCells"      oncommand="msiGoDoCommand('cmd_SelectAllMatrixCells')"/>
+    <command id="cmd_InsertMatrix"              oncommand="msiGoDoCommand('cmd_InsertMatrix')"/>
+    <command id="cmd_InsertMatrixRowAbove"      oncommand="msiGoDoCommand('cmd_InsertMatrixRowAbove')"/>
+    <command id="cmd_InsertMatrixRowBelow"      oncommand="msiGoDoCommand('cmd_InsertMatrixRowBelow')"/>
+    <command id="cmd_InsertMatrixColumnBefore"  oncommand="msiGoDoCommand('cmd_InsertMatrixColumnBefore')"/>
+    <command id="cmd_InsertMatrixColumnAfter"   oncommand="msiGoDoCommand('cmd_InsertMatrixColumnAfter')"/>
+    <command id="cmd_DeleteMatrix"              oncommand="msiGoDoCommand('cmd_DeleteMatrix')"/>
+    <command id="cmd_DeleteMatrixRow"           oncommand="msiGoDoCommand('cmd_DeleteMatrixRow')"/>
+    <command id="cmd_DeleteMatrixColumn"        oncommand="msiGoDoCommand('cmd_DeleteMatrixColumn')"/>
+    <command id="cmd_DeleteMatrixCellContents"  oncommand="msiGoDoCommand('cmd_DeleteMatrixCellContents')"/>
+
     <command id="cmd_NormalizeTable"      oncommand="msiGoDoCommand('cmd_NormalizeTable')"/>
     <command id="cmd_JoinTableCells"      oncommand="msiGoDoCommand('cmd_JoinTableCells')"/>
     <command id="cmd_SplitTableCell"      oncommand="msiGoDoCommand('cmd_SplitTableCell')"/>
