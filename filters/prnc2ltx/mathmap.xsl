@@ -292,7 +292,7 @@
             <xsl:text xml:space="preserve">\P </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x00B7;'">
-            <xsl:text>\text{\textperiodcentered }</xsl:text>
+            <xsl:text>\centerdot</xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x00B8;'">
             <xsl:if test="$output-mode='SW-LaTeX'">
@@ -848,7 +848,10 @@
           <xsl:when test="$first-char='&#x2021;'">
             <xsl:text xml:space="preserve">\ddagger </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2022;'">
+          <xsl:when test="$first-char='&#x2022;'">    <!-- bullet symbol -->
+            <xsl:text xml:space="preserve">\bullet </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2219;'">    <!-- bullet operator -->
             <xsl:text xml:space="preserve">\bullet </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2026;'">
