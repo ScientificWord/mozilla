@@ -1789,10 +1789,13 @@
           <xsl:when test="$first-char='&#x22DB;'">
             <xsl:text xml:space="preserve">\gtreqless </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22DC;'">
+          <xsl:when test="$first-char='&#x2A95;'">
             <xsl:text xml:space="preserve">\eqslantless </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22DD;'">
+          <xsl:when test="$first-char='&#x2A1D;'">
+            <xsl:text xml:space="preserve">\Join </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A96;'">
             <xsl:text xml:space="preserve">\eqslantgtr </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22DE;'">
@@ -2119,10 +2122,10 @@
             <xsl:text xml:space="preserve">\gtreqqless </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AAF;'">
-            <xsl:text xml:space="preserve">\npreceq </xsl:text>
+            <xsl:text xml:space="preserve">\preceq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AB0;'">
-            <xsl:text xml:space="preserve">\nsucceq </xsl:text>
+            <xsl:text xml:space="preserve">\succeq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AB5;'">
             <xsl:text xml:space="preserve">\precneqq </xsl:text>
