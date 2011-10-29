@@ -135,6 +135,46 @@
         <menuitem id="menu_DeleteCellContents"  label="&tableCellContents.label;" accesskey="&tablecellcontents.accesskey;"   observes="cmd_DeleteCellContents"/>
       </menupopup>
     </menu>
+
+    <menu id="matrixInsertMenu_cm" label="&matrixInsertMenu2.label;" accesskey="&matrixinsertmenu.accesskey;">
+      <menupopup>
+        <menuitem label="&matrixRowAbove.label;"     accesskey="&matrixrow.accesskey;"
+          observes="cmd_InsertMatrixRowAbove"/>
+        <menuitem label="&matrixRowBelow.label;"     accesskey="&matrixrowbelow.accesskey;"
+          observes="cmd_InsertMatrixRowBelow"/>
+        <menuseparator />
+        <menuitem label="&matrixColumnBefore.label;" accesskey="&matrixcolumn.accesskey;"
+          observes="cmd_InsertMatrixColumnBefore"/>
+        <menuitem label="&matrixColumnAfter.label;"  accesskey="&matrixcolumnafter.accesskey;"
+          observes="cmd_InsertMatrixColumnAfter"/>
+      </menupopup>
+    </menu>
+    <menu id="matrixSelectMenu_cm" label="&matrixSelectMenu2.label;" accesskey="&matrixselectmenu.accesskey;">
+      <menupopup>
+        <menuitem id="menu_SelectMatrix"    label="&matrixMatrix.label;"    accesskey="&matrixmatrix.accesskey;"
+          observes="cmd_SelectMatrix"    />
+        <menuitem id="menu_matrixSelectRow"      label="&matrixRow.label;"      accesskey="&matrixrow.accesskey;"
+          observes="cmd_SelectMatrixRow"      />
+        <menuitem id="menu_matrixSelectColumn"   label="&matrixColumn.label;"   accesskey="&matrixcolumn.accesskey;" 
+          observes="cmd_SelectMatrixColumn"   />
+        <menuitem id="menu_matrixSelectCell"     label="&matrixCell.label;"     accesskey="&matrixcell.accesskey;"
+          observes="cmd_SelectMatrixCell"     />
+        <menuitem id="menu_matrixSelectAllCells" label="&matrixAllCells.label;" accesskey="&matrixallcells.accesskey;"
+          observes="cmd_SelectAllMatrixCells" />
+      </menupopup>
+    </menu>
+    <menu id="matrixDeleteMenu_cm" label="&matrixDeleteMenu2.label;" accesskey="&matrixdeletemenu.accesskey;">
+      <menupopup>
+        <menuitem id="menu_DeleteMatrix"         label="&matrixMatrix.label;"
+          accesskey="&matrixmatrix.accesskey;"          observes="cmd_DeleteMatrix"/>
+        <menuitem id="menu_matrixDeleteRow"           label="&matrixRows.label;"         accesskey="&matrixrow.accesskey;"
+          observes="cmd_DeleteMatrixRow"/>
+        <menuitem id="menu_DeleteColumn"        label="&matrixColumns.label;" accesskey="&matrixcolumn.accesskey;" 
+          observes="cmd_DeleteMatrixColumn"/>
+        <menuitem id="menu_matrixDeleteCellContents"  label="&matrixCellContents.label;"
+          accesskey="&matrixcellcontents.accesskey;"   observes="cmd_DeleteMatrixCellContents"/>
+      </menupopup>
+    </menu>
     <!-- menu label is set in InitTableMenu -->
     <menuitem id="joinTableCells_cm"   label="&tableJoinCells.label;" accesskey="&tablejoincells.accesskey;" observes="cmd_JoinTableCells"/>
     <menuitem id="splitTableCell_cm"   label="&tableSplitCell.label;" accesskey="&tablesplitcell.accesskey;" observes="cmd_SplitTableCell"/>
