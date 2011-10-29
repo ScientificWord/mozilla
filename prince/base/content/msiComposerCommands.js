@@ -94,6 +94,21 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_SplitTableCell",     msiSplitTableCellCommand);
   commandTable.registerCommand("cmd_TableOrCellColor",   msiTableOrCellColorCommand);
   commandTable.registerCommand("cmd_NormalizeTable",     msiNormalizeTableCommand);
+  commandTable.registerCommand("cmd_SelectMatrix",						msiSelectMatrixCommand);
+  commandTable.registerCommand("cmd_SelectMatrixRow",					msiSelectMatrixRow);
+  commandTable.registerCommand("cmd_SelectMatrixColumn",			msiSelectMatrixColumn);
+  commandTable.registerCommand("cmd_SelectMatrixCell",				msiSelectMatrixCell);
+  commandTable.registerCommand("cmd_SelectAllMatrixCells",		msiSelectAllMatrixCells);
+  commandTable.registerCommand("cmd_InsertMatrix",						msiInsertMatrix);
+  commandTable.registerCommand("cmd_InsertMatrixRowAbove",		msiInsertMatrixRowAbove);
+  commandTable.registerCommand("cmd_InsertMatrixRowBelow",		msiInsertMatrixRowBelow);
+  commandTable.registerCommand("cmd_InsertMatrixColumnBefore",msiInsertMatrixColumnBefore);
+  commandTable.registerCommand("cmd_InsertMatrixColumnAfter",	msiInsertMatrixColumnAfter);
+  commandTable.registerCommand("cmd_DeleteMatrix",						msiDeleteMatrix);
+  commandTable.registerCommand("cmd_DeleteMatrixRow",					msiDeleteMatrixRow);
+  commandTable.registerCommand("cmd_DeleteMatrixColumn",			msiDeleteMatrixColumn);
+  commandTable.registerCommand("cmd_DeleteMatrixCellContents",msiDeleteMatrixCellContents);
+
   commandTable.registerCommand("cmd_ConvertToTable",     msiConvertToTable);
   commandTable.registerCommand("cmd_MSIAnimateGifsOn",   msiGIFAnimation);
   commandTable.registerCommand("cmd_MSIAnimateGifsOff",  msiGIFAnimation);
@@ -8143,6 +8158,247 @@ var msiPreviewModeCommand =
   {
     var editorElement = msiGetTopLevelEditorElement();
     msiSetEditMode(kDisplayModePreview, editorElement);
+  }
+};
+
+////-----Matrix commands
+var msiSelectMatrixCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+
+var msiSelectMatrixRow = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiSelectMatrixColumn = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiSelectMatrixCell = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiSelectAllMatrixCells = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiInsertMatrix = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiInsertMatrixRowAbove = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiInsertMatrixRowBelow = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiInsertMatrixColumnBefore = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiInsertMatrixColumnAfter = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiDeleteMatrix = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiDeleteMatrixRow = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiDeleteMatrixColumn = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
+  }
+};
+var msiDeleteMatrixCellContents = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (msiIsInMatrixCell(editorElement))
+      alert("Implement me!");
   }
 };
 

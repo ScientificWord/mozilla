@@ -8234,13 +8234,17 @@ function AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData)
   if (editPopup.id.substr(-3) == "_cm")
     bIsContextMenu = true;
   var sepID = "InsertMatrixRowColSeparator";
-  var rowID = "InsertMatrixRows";
-  var colID = "InsertMatrixColumns";
+	var insertMatrixID = "matrixInsert";
+	var selectMatrixID = "matrixSelect";
+	var deleteMatrixID = "matrixDelete";
+	
+//  var rowID = "InsertMatrixRows";
+//  var colID = "InsertMatrixColumns";
   if (bIsContextMenu)
   {
-    sepID += "_cm";
-    rowID += "_cm";
-    colID += "_cm";
+		insertMatrixID += "_cm";
+		selectMatrixID += "_cm";
+		deleteMatrixID += "_cm";
   }
   var menuItems = editPopup.getElementsByAttribute("id", rowID);
   if (menuItems && (menuItems.length > 0))
@@ -8250,25 +8254,28 @@ function AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData)
 //    dump("In AddInsertMatrixRowsColumnsMenuItems, item with rowID [" + rowID + "] not; adding!\n");
 //    dump( msiKludgeLogNodeContentsAndAttributes(editPopup, ["tableEdit"], "  Looked inside node", true, ["id", "label"], false) );
 //  }
-
-  var sepItem = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuseparator");
-  var rowItem = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuitem");
-  var colItem = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuitem");
+  var xulNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+  var sepItem = document.createElementNS(xulNS, "menuseparator");
+	var insertMatrixItem = document.createElementNS(xulNS, "menuitem");
+	var selectMatrixItem = document.createElementNS(xulNS, "menuitem");
+	var deleteMatrixItem = document.createElementNS(xulNS, "menuitem");
+//  var rowItem = document.createElementNS(xulNS, "menuitem");
+//  var colItem = document.createElementNS(xulNS, "menuitem");
 
   sepItem.setAttribute("id", sepID);
-  rowItem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('cmd_MSIaddMatrixRowsCmd', this);");
+  insertMatrixItem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('cmd_MSIaddMatrixRowsCmd', this);");
 //  rowItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
-  rowItem.setAttribute("id", rowID);
-  rowItem.setAttribute("label", GetString("InsertMatrixRows"));
-  rowItem.setAttribute("accesskey", GetString("InsertMatrixRowsAccessKey"));
-  colItem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('cmd_MSIaddMatrixColumnsCmd', this);");
+  insertMatrixItem.setAttribute("id", rowID);
+  insertMatrixItem.setAttribute("label", GetString("InsertMatrixRows"));
+  insertMatrixItem.setAttribute("accesskey", GetString("InsertMatrixRowsAccessKey"));
+  selectMatrixItem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('cmd_MSIaddMatrixColumnsCmd', this);");
 //  colItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
-  colItem.setAttribute("id", colID);
-  colItem.setAttribute("label", GetString("InsertMatrixColumns"));
-  colItem.setAttribute("accesskey", GetString("InsertMatrixColumnsAccessKey"));
+  selectMatrixItem.setAttribute("id", colID);
+  selectMatrixItem.setAttribute("label", GetString("InsertMatrixColumns"));
+  selectMatrixItem.setAttribute("accesskey", GetString("InsertMatrixColumnsAccessKey"));
 
-  colItem.refElement = rowItem.refElement = propsData.getReferenceNode();
-  colItem.refEditor = rowItem.refEditor = propsData.mEditorElement;
+  selectMatrixItem.refElement = rowItem.refElement = propsData.getReferenceNode();
+  selectMatrixItem.refEditor = rowItem.refEditor = propsData.mEditorElement;
   colItem.propertiesData = rowItem.propertiesData = propsData;
 
   editPopup.appendChild(sepItem);
@@ -9047,6 +9054,22 @@ function msiIsInTableCell(editorElement)
             !(flags & nsIPlaintextEditor.eEditorReadonlyMask) && 
             msiIsEditingRenderedHTML(editorElement) &&
             null != editor.getElementOrParentByTagName("td", null));
+  } catch (e) {}
+  return false;
+
+}
+
+function msiIsInMatrixCell(editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  try {
+    var editor = msiGetEditor(editorElement);
+    var flags = editor.flags;
+    return (msiIsHTMLEditor(editorElement) &&
+            !(flags & nsIPlaintextEditor.eEditorReadonlyMask) && 
+            msiIsEditingRenderedHTML(editorElement) &&
+            null != editor.getElementOrParentByTagName("mtd", null));
   } catch (e) {}
   return false;
 

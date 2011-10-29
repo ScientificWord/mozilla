@@ -3386,6 +3386,7 @@ function mathToText(editor)
 function textToMath(editor)
 {
 	var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset;
+	editor.beginTransaction();
 	if (editor.selection.isCollapsed)
 	{
 		insertinlinemath();
@@ -3409,6 +3410,7 @@ function textToMath(editor)
       }
     }
 	}
+	editor.endTransaction();
 }
 
 function toggleMathText(editor)
