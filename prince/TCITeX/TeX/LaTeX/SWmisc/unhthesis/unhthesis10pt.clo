@@ -1,0 +1,18 @@
+%% 
+%% This is file `umth10pt.clo'.
+\ProvidesFile{umth10pt.clo}
+              [1997/08/22 17:32:43 1.2
+      University of Massachusetts Thesis Class (size option)]
+
+\newcommand\doublespacenormalsize{
+   \@setfontsize\doublespacenormalsize\@xpt{20}%
+   \abovedisplayskip 20\p@ \@plus2\p@ \@minus5\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\newcommand\doublespacelarge{\@setfontsize\doublespacelarge\@xiipt{24}}
+
+\endinput
+%% 
+%% End of file `umth10pt.clo'.

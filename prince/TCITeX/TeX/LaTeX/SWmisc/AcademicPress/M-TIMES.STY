@@ -1,0 +1,800 @@
+%% May 17, 1999
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This file is `m-times.sty',
+%%
+%% A variation written by Amy Hendrickson, TeXnology Inc., May 1999,
+%% on mathtime.sty, written by Frank Mittelbach and David Carlisle, 1996 1997 
+%%
+%% This file is used to access the MathTimes and MathTimesPlus font set 
+%% which may be obtained commercially from the TeX support company, Y and Y,
+%% web address: www.YandY.com, 
+%% email: sales-help@yandy.com
+%% phone, in US: 800 742-4059, or, 
+%%        outside US: 978 371-3286
+%%
+%% For final production, the MathTimesPlus set necessary, and in
+%% all cases, it is advisable since it allows bold math to print correctly.
+%%
+%% Y and Y will supply a .sty file, called mathtime.sty. You are welcome
+%% to use mathtime.sty instead of this one, if you prefer.
+%%
+%% The variations on mathtime.sty in this file include:
+%%
+%% 1) the inclusion in this file of the .fd files
+%% that would otherwise be called in, making the style more easily
+%% transportable.
+%%
+%% 2) changing the definitions in the .fd files so 
+%% that we can customize the font names easily
+%% from the top of the file. 
+%%
+%% ==>> See  `*** Change Font Names Here If Necessary:', below 
+%%                             for place to change font names. ==>>
+%%
+%% 3) When the noTS1 option is used without LY1 or T1 encoding
+%% this .sty file will redefine \dagger and a number of other
+%% characters so that they use the cmfonts, as they would without
+%% the mathtime fonts. 
+%%
+%% 4) A description of the other optional arguments (taken from the
+%% file mtoptions.txt) is found at the end of this file, after \endinput. 
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% *** Change Font Names Here If Necessary:
+%% Times-Roman
+%---------------------
+% (Berry font names)
+\def\timesroman{ptmr}
+\def\timesbold{ptmb}
+\def\timesitalic{ptmri}
+\def\timesbolditalic{ptmbi}
+
+% (Y & Y font names)
+%\def\timesroman{tir}
+%\def\timesbold{tib}
+%\def\timesitalic{tii}
+%\def\timesbolditalic{tibi}
+
+%% Courier
+%---------------------
+% (Berry font names)
+\def\courier{pcrr}
+\def\courierbold{pcrb}
+\def\courieroblique{pcroo}
+\def\courierboldoblique{pcrbo}
+
+% (Y & Y font names)
+%\def\courier{com}
+%\def\courierbold{cob}
+%\def\courieroblique{coo}
+%\def\courierboldoblique{cobo}
+
+% Computer Modern TT font
+\def\courier{cmtt10}
+
+%% Make these = to courier
+\let\courieroblique\courier
+\let\courierbold\courier
+\let\courierboldoblique\courier
+
+%% Slanted Font	(Times-Oblique)
+%---------------------
+% (Berry font names)
+%\def\slantedfont{ptmro8t}
+
+% (Y and Y name)
+%\def\slantedfont{tio}
+
+%% (CM name)
+\def\slantedfont{cmsl10}
+
+%% Small Caps
+%---------------------
+%% 
+% (Y and Y names)
+% \def\smallcaps{tirsc}
+% \def\boldsmallcaps{tibsc}
+
+%% (Computer Modern names)
+\def\smallcaps{cmcsc10}
+\def\boldsmallcaps{cmcsc10}
+
+%% <==== End of changes needed. Please do not make changes below this point.
+%% !!!!!!!!!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The original source files were:
+%%
+%% mathtime.dtx  (with options: `package,mathtime')
+%% 
+%% Copyright 1996 1997 Frank Mittelbach and David Carlisle.
+%%
+%% Development of this package was commissioned by Y&Y Inc.
+%% http://www.yandy.com
+\typeout{^^J^^J^^J
+=====>>>>>>
+^^J}
+\NeedsTeXFormat{LaTeX2e}[1995/01/01]
+\ProvidesPackage{m-times}
+ [1997/02/24 v1.0b %
+(originally mathtime.sty)^^J
+MathTime font support (FMi/DPC),^^J with additions by Amy Hendrickson, 
+TeXnology Inc., May, 1999.]
+\typeout{^^J^^J
+!!! IMPORTANT !!!^^J
+You may need to edit the m-times.sty file to change the font names^^J
+to match those on your system.^^J
+See instructions at the top of m-times.sty.
+^^J^^J
+You are advised to use the MathTimesPlus fonts and the mtbold option:^^J 
+\string\usepackage[mtbold]{m-times}^^J
+This is the only way that Boldmath commands will work correctly.
+^^J 
+You may also use the noTS1 option if you get an error message^^J indicating
+that there are missing TS1 fonts:^^J
+\string\usepackage[mtbold,noTS1]{m-times}^^J
+^^J
+<<<<<<=====
+^^J^^J^^J^^J
+}
+
+
+%% Times-Roman
+\xdef\timesroman{\timesroman\space}
+\xdef\timesbold{\timesbold\space}
+\xdef\timesitalic{\timesitalic\space}
+\xdef\timesbolditalic{\timesbolditalic\space}
+
+%% Courier
+\xdef\courier{\courier\space}
+\xdef\courieroblique{\courieroblique\space}
+\xdef\courierbold{\courierbold\space}
+\xdef\courierboldoblique{\courierboldoblique\space}
+
+%% Slanted Font
+\xdef\slantedfont{\slantedfont\space}
+
+%% Small Caps
+\xdef\smallcaps{\smallcaps\space}
+\xdef\boldsmallcaps{\boldsmallcaps\space}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% These definitions are are used only if the noTS1 option is called 
+%% and if neither the LY1 or T1 font encoding is used:
+
+\newbox\Sbox
+\setbox\Sbox=\hbox{$\scriptstyle\S$}
+\gdef\xS{{\leavevmode\copy\Sbox}}
+
+\newbox\Pbox
+\setbox\Pbox=\hbox{$\scriptstyle\P$}
+\gdef\xP{{\leavevmode\copy\Pbox}}
+
+\newbox\daggerbox
+\setbox\daggerbox=\hbox{$\scriptstyle\dagger$}
+\gdef\xdagger{{\leavevmode\copy\daggerbox}}
+
+\newbox\ddaggerbox
+\setbox\ddaggerbox=\hbox{$\scriptstyle\ddagger$}
+\gdef\xddagger{{\leavevmode\copy\ddaggerbox}}
+
+\newbox\mparagraph
+\setbox\mparagraph=\hbox{$\scriptstyle\mathparagraph$}
+\gdef\xmathparagraph{{\leavevmode\copy\mparagraph}}
+
+\newbox\msterling
+\setbox\msterling=\hbox{$\scriptstyle\mathsterling$}
+\gdef\xmathsterling{{\leavevmode\copy\msterling}}
+
+\gdef\x@fnsymbol#1{%
+\ensuremath {\ifcase #1\or *\or \xdagger \or \xddagger \or
+\xS \or \xP \or \|\or **\or \xdagger \xdagger \or \xddagger \xddagger \else 
+\@ctrerr \fi}} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\greekshape{}
+\DeclareOption{slantedgreek}{\renewcommand\greekshape{it}}
+\DeclareOption{uprightgreek}{\renewcommand\greekshape{n}}
+\DeclareOption{nobold}{\let\boldmath=u}
+\DeclareOption{cmbold}{\let\boldmath=c}
+\DeclareOption{mtbold}{\let\boldmath=m}
+\DeclareOption{heavybold}{\let\boldmath=h}
+\newcommand\enablesubscriptcorrection {\catcode`\_=12\relax}
+\newcommand\disablesubscriptcorrection{\catcode`\_=8\relax}
+\DeclareOption{nosubscriptcorrection}{\disablesubscriptcorrection}
+\DeclareOption{subscriptcorrection}  {\enablesubscriptcorrection}
+\DeclareOption{cmcal}    {\let\mathcal=c}
+\DeclareOption{lucidacal}{\let\mathcal=l}
+\DeclareOption{mtplusscr}{\let\mathscr=s}
+\DeclareOption{mtpluscal}{\let\mathcal=s}
+\DeclareOption{lucidascr}{\let\mathscr=l}
+\DeclareOption{noTS1}    {\let\symtextcomp\relax}
+\let\operator@encoding\encodingdefault
+\DeclareOption{OT1}{\def\operator@encoding{OT1}}
+\DeclareOption{T1}{\def\operator@encoding{T1}}
+\DeclareOption{LY1}{\def\operator@encoding{LY1}\ExecuteOptions{noTS1}}
+\DeclareOption{errorshow}{%
+   \def\@font@info#1{%
+         \GenericInfo{(Font)\@spaces\@spaces\@spaces\space\space}%
+                     {LaTeX Font Info: \space\space\space#1}}%
+    \def\@font@warning#1{%
+         \GenericInfo{(Font)\@spaces\@spaces\@spaces\space\space}%
+                        {LaTeX Font Warning: #1}}}
+\DeclareOption{warningshow}{%
+   \def\@font@info#1{%
+         \GenericInfo{(Font)\@spaces\@spaces\@spaces\space\space}%
+                     {LaTeX Font Info: \space\space\space#1}}%
+    \def\@font@warning#1{%
+         \GenericWarning{(Font)\@spaces\@spaces\@spaces\space\space}%
+                        {LaTeX Font Warning: #1}}}
+\DeclareOption{nofontinfo}{%
+   \let\@font@info\@gobble
+   \let\@font@warning\@gobble}
+\ExecuteOptions{%
+  slantedgreek,nobold,nosubscriptcorrection,cmcal,errorshow}
+\ProcessOptions
+\edef\@tempa{\rmdefault}
+\def\@tempb {cmr}
+\ifx\@tempa\@tempb
+  \renewcommand*\sfdefault{phv}
+  \renewcommand*\rmdefault{ptm}
+  \renewcommand*\ttdefault{pcr}
+  \renewcommand*\bfdefault{b}
+\fi
+\DeclareFontEncoding{MY1}{}{}
+\DeclareFontEncoding{MY2}{}{}
+\DeclareFontEncoding{MY3}{}{}
+\DeclareFontSubstitution{MY1}{mtt}{m}{it}
+\DeclareFontSubstitution{MY2}{mtt}{m}{n}
+\DeclareFontSubstitution{MY3}{mtt}{m}{n}
+\SetSymbolFont{operators}   {normal}{\operator@encoding}{ptm}{m}{n}
+\SetSymbolFont{letters}     {normal}{MY1}{mtt}{m}{it}
+\SetSymbolFont{symbols}     {normal}{MY2}{mtt}{m}{n}
+\SetSymbolFont{largesymbols}{normal}{MY3}{mtt}{m}{n}
+\ifx\boldmath c
+  \SetSymbolFont{operators}   {bold}{\operator@encoding}{cmr}{bx}{n}
+  \SetSymbolFont{letters}     {bold}{OML}{cmm}{b}{it}
+  \SetSymbolFont{symbols}     {bold}{OMS}{cmsy}{b}{n}
+  \SetSymbolFont{largesymbols}{bold}{MY3}{mtt}{m}{n}
+\PackageWarningNoLine{m-times}
+  {The use of the `cmbold' option will result\MessageBreak
+   in incorrect characters in some circumstances\MessageBreak
+   without any warning as the Math Time fonts and the\MessageBreak
+   Computer Modern fonts have incompatible encodings.\MessageBreak
+   Please use this option with care!\@gobble}
+  \renewcommand\boldmath{\@nomath\boldmath\mathversion{bold}}
+  \let\heavymath\boldmath
+\fi
+\ifx\boldmath u
+  \let\@tempa\version@elt
+    \def\version@elt#1{%
+      \ifx\mv@bold#1\else\noexpand\version@elt\noexpand#1\fi}
+    \edef\version@list{\version@list}
+  \let\version@elt\@tempa
+  \let\mv@bold\@undefined
+  \renewcommand\boldmath{\PackageError{m-times}%
+               {Bold math is not supported}%
+               {Use cmbold or mtbold options}}
+  \let\heavymath\boldmath
+\fi
+\ifx\boldmath m
+  \SetSymbolFont{operators}{bold}{\operator@encoding}{\rmdefault}{b}{n}
+  \SetSymbolFont{letters}     {bold}{MY1}{mtt}{b}{\greekshape}
+  \SetSymbolFont{symbols}     {bold}{MY2}{mtt}{b}{n}
+  \SetSymbolFont{largesymbols}{bold}{MY3}{mtt}{b}{n}
+  \DeclareMathVersion{heavy}
+  \SetSymbolFont{operators}{heavy}{\operator@encoding}{\rmdefault}{b}{n}
+  \SetSymbolFont{letters}     {heavy}{MY1}{mtt}{ub}{\greekshape}
+  \SetSymbolFont{symbols}     {heavy}{MY2}{mtt}{ub}{n}
+  \SetSymbolFont{largesymbols}{heavy}{MY3}{mtt}{ub}{n}
+  \DeclareMathSymbol{:}{\mathrel}{symbols}{"56}
+  \DeclareMathSymbol{!}{\mathclose}{symbols}{"57}
+  \DeclareMathSymbol{[}{\mathopen}{symbols}{"54}
+  \DeclareMathSymbol{]}{\mathclose}{symbols}{"55}
+  \renewcommand\boldmath{\@nomath\boldmath\mathversion{bold}}
+  \newcommand\heavymath{\@nomath\heavymath\mathversion{heavy}}
+\fi
+\ifx\boldmath h
+  \SetSymbolFont{operators}{bold}{\operator@encoding}{\rmdefault}{b}{n}
+  \SetSymbolFont{letters}     {bold}{MY1}{mtt}{ub}{\greekshape}
+  \SetSymbolFont{symbols}     {bold}{MY2}{mtt}{ub}{n}
+  \SetSymbolFont{largesymbols}{bold}{MY3}{mtt}{ub}{n}
+  \DeclareMathSymbol{:}{\mathrel}{symbols}{"56}
+  \DeclareMathSymbol{!}{\mathclose}{symbols}{"57}
+  \DeclareMathSymbol{[}{\mathopen}{symbols}{"54}
+  \DeclareMathSymbol{]}{\mathclose}{symbols}{"55}
+  \renewcommand\boldmath{\@nomath\boldmath\mathversion{bold}}
+  \let\heavymath\boldmath
+\fi
+\SetMathAlphabet{\mathrm}{normal}{\encodingdefault}{\rmdefault}{m}{n}
+\SetMathAlphabet{\mathbf}{normal}{\encodingdefault}{\rmdefault}{b}{n}
+\SetMathAlphabet{\mathit}{normal}{\encodingdefault}{\rmdefault}{m}{it}
+\SetMathAlphabet{\mathsf}{normal}{\encodingdefault}{\sfdefault}{m}{n}
+\SetMathAlphabet{\mathtt}{normal}{\encodingdefault}{\ttdefault}{m}{n}
+\ifx\mv@bold\@undefined
+\else
+  \SetMathAlphabet{\mathrm}{bold} {\encodingdefault}{\rmdefault}{b}{n}
+  \SetMathAlphabet{\mathbf}{bold} {\encodingdefault}{\rmdefault}{b}{n}
+  \SetMathAlphabet{\mathit}{bold} {\encodingdefault}{\rmdefault}{b}{it}
+  \SetMathAlphabet{\mathsf}{bold} {\encodingdefault}{\sfdefault}{b}{n}
+  \SetMathAlphabet{\mathtt}{bold} {\encodingdefault}{\ttdefault}{b}{n}
+\fi
+\ifx\mv@heavy\@undefined
+\else
+  \SetMathAlphabet{\mathrm}{heavy}{\encodingdefault}{\rmdefault}{b}{n}
+  \SetMathAlphabet{\mathbf}{heavy}{\encodingdefault}{\rmdefault}{b}{n}
+  \SetMathAlphabet{\mathit}{heavy}{\encodingdefault}{\rmdefault}{b}{it}
+  \SetMathAlphabet{\mathsf}{heavy}{\encodingdefault}{\sfdefault}{b}{n}
+  \SetMathAlphabet{\mathtt}{heavy}{\encodingdefault}{\ttdefault}{b}{n}
+\fi
+\ifx\mathscr s
+  \let\mathscr\relax
+  \DeclareMathAlphabet\mathscr{U}        {mtms}{b}{n}
+  \SetMathAlphabet    \mathscr{normal}{U}{mtms}{m}{n}
+  \DeclareMathAlphabet\mathbscr{U}{mtms}{b}{n}
+\fi
+\ifx\mathscr l
+  \let\mathscr\relax
+  \DeclareMathAlphabet{\mathscr}          {OMS}{lby}{b}{n}
+  \SetMathAlphabet    {\mathscr}{normal}  {OMS}{lby}{m}{n}
+  \DeclareMathAlphabet{\mathbscr}         {OMS}{lby}{b}{n}
+\fi
+\ifx\mathcal l
+  \let\mathcal\relax
+  \DeclareMathAlphabet{\mathcal}          {OMS}{lby}{b}{n}
+  \SetMathAlphabet    {\mathcal}{normal}  {OMS}{lby}{m}{n}
+  \DeclareMathAlphabet{\mathbcal}         {OMS}{lby}{b}{n}
+\fi
+\ifx\mathcal s
+  \let\mathcal\relax
+  \DeclareMathAlphabet\mathcal{U}        {mtms}{b}{n}
+  \SetMathAlphabet    \mathcal{normal}{U}{mtms}{m}{n}
+  \DeclareMathAlphabet\mathbcal{U}{mtms}{b}{n}
+\fi
+\ifx\mathcal c
+  \let\mathcal\relax
+  \DeclareMathAlphabet\mathcal{OMS}        {cmsy}{b}{n}
+  \SetMathAlphabet    \mathcal{normal}{OMS}{cmsy}{m}{n}
+  \DeclareMathAlphabet\mathbcal{OMS}       {cmsy}{b}{n}
+
+\fi
+\DeclareMathSymbol\Gamma  {\mathord}{letters}{"30}
+\DeclareMathSymbol\Delta  {\mathord}{letters}{"31}
+\DeclareMathSymbol\Theta  {\mathord}{letters}{"32}
+\DeclareMathSymbol\Lambda {\mathord}{letters}{"33}
+\DeclareMathSymbol\Xi     {\mathord}{letters}{"34}
+\DeclareMathSymbol\Pi     {\mathord}{letters}{"35}
+\DeclareMathSymbol\Sigma  {\mathord}{letters}{"36}
+\DeclareMathSymbol\Upsilon{\mathord}{letters}{"37}
+\DeclareMathSymbol\Phi    {\mathord}{letters}{"38}
+\DeclareMathSymbol\Psi    {\mathord}{letters}{"39}
+\DeclareMathSymbol\Omega  {\mathord}{letters}{"7F}
+\DeclareMathSymbol\varGamma    {\mathord}{letters}{0}
+\DeclareMathSymbol\varDelta    {\mathord}{letters}{1}
+\DeclareMathSymbol\varTheta    {\mathord}{letters}{2}
+\DeclareMathSymbol\varLambda   {\mathord}{letters}{3}
+\DeclareMathSymbol\varXi       {\mathord}{letters}{4}
+\DeclareMathSymbol\varPi       {\mathord}{letters}{5}
+\DeclareMathSymbol\varSigma    {\mathord}{letters}{6}
+\DeclareMathSymbol\varUpsilon  {\mathord}{letters}{7}
+\DeclareMathSymbol\varPhi      {\mathord}{letters}{8}
+\DeclareMathSymbol\varPsi      {\mathord}{letters}{9}
+\DeclareMathSymbol\varOmega    {\mathord}{letters}{10}
+\DeclareMathSymbol{(}{\mathopen}{letters}{"2E} % was 028
+\DeclareMathSymbol{)}{\mathclose}{letters}{"2F} % was 029
+\DeclareMathDelimiter{(}{letters}{"2E}{largesymbols}{"00}
+\DeclareMathDelimiter{)}{letters}{"2F}{largesymbols}{"01}
+\DeclareMathSymbol{\triangleleft}{\mathbin}{symbols}{"47}  % was 12F
+\DeclareMathSymbol{\triangleright}{\mathbin}{symbols}{"46} % was 12E
+\DeclareMathSymbol{\comp}{\mathbin}{symbols}{"42}       % new?
+\DeclareMathSymbol{\setdif}{\mathbin}{symbols}{"58}     % new
+\DeclareMathSymbol{\cupprod}{\mathbin}{symbols}{"59}    % new
+\DeclareMathSymbol{\capprod}{\mathbin}{symbols}{"5A}    % new
+\DeclareMathSymbol{+}{\mathbin}{symbols}{"43}           % was 02B
+\DeclareMathSymbol{=}{\mathrel}{symbols}{"44}           % was 03D
+\let\Relbar\@undefined
+\DeclareMathSymbol{\Relbar}{\mathrel}{symbols}{"48}     % was a macro
+\DeclareMathSymbol{;}{\mathpunct}{symbols}{"49}         % was 13B
+\DeclareMathSymbol{\varkappa}{\mathord}{letters}{"7E}   % new (AMS)
+\DeclareMathAccent{\vec}{\mathord}{symbols}{"45}
+\DeclareMathAccent{\grave}{\mathord}{symbols}{"4A}
+\DeclareMathAccent{\acute}{\mathord}{symbols}{"4B}
+\DeclareMathAccent{\check}{\mathord}{symbols}{"4C}
+\DeclareMathAccent{\breve}{\mathord}{symbols}{"4D}
+\DeclareMathAccent{\bar}{\mathord}{symbols}{"4E}
+\DeclareMathAccent{\hat}{\mathord}{symbols}{"4F}
+\DeclareMathAccent{\dot}{\mathord}{symbols}{"50}
+\DeclareMathAccent{\tilde}{\mathord}{symbols}{"51}
+\DeclareMathAccent{\ddot}{\mathord}{symbols}{"52}
+\DeclareMathAccent{\widebar}{\mathord}{symbols}{"53} % new
+\def\defaultscriptratio{.76}
+\def\defaultscriptscriptratio{.6}
+\DeclareMathSizes{5}     {6}   {6}  {6}
+\DeclareMathSizes{6}     {6}   {6}  {6}
+\DeclareMathSizes{7}     {6.8} {6}  {6}
+\DeclareMathSizes{8}     {8}   {6.8}{6}
+\DeclareMathSizes{9}     {9}   {7.6}{6}
+\DeclareMathSizes{10}   {10}   {7.6}{6}
+\DeclareMathSizes{10.95}{10.95}{7.6}{6}
+\DeclareMathSizes{12}   {12}   {9}  {7}
+\DeclareMathSizes{14.4} {14.4} {10} {8}
+\DeclareMathSizes{17.28}{17.28}{12} {9}
+\DeclareMathSizes{20.74}{20.74}{14.4}{10}
+\DeclareMathSizes{24.88}{24.88}{17.28}{12}
+\newcommand\hb@xmdot{\hbox{$\m@th.$}}
+\def\vdots{\vbox{\baselineskip4\p@ \lineskiplimit\z@
+  \kern6\p@\hb@xmdot\hb@xmdot\hb@xmdot}}
+\def\ddots{\mathinner{\mkern1mu\raise7\p@\vbox{\kern7\p@
+  \hb@xmdot}\mkern2mu
+  \raise4\p@\hb@xmdot\mkern2mu\raise\p@\hb@xmdot\mkern1mu}}
+\def\angle{{\vbox{\ialign{$\m@th\scriptstyle##$\crcr
+      \not\mathrel{\mkern14mu}\crcr
+      \noalign{\nointerlineskip}%
+      \mkern2.5mu%
+      \leaders\hrule\@height.48\p@\hfill\mkern2.5mu\crcr}}}}
+\def\hbar{{%
+ \dimen@.12em%
+ \dimen@ii.1em%
+ \def\@tempa##1##2{{%
+   \lower##1\dimen@\rlap{\kern##1\dimen@ii\the##2\tw@\char78}}}%
+ \mathchoice\@tempa\@ne\textfont
+            \@tempa\@ne\textfont
+            \@tempa\defaultscriptratio\scriptfont
+            \@tempa\defaultscriptscriptratio\scriptscriptfont
+  h}}
+\newif\ifoperatorlisted
+\ifx\symtextcomp\relax
+  \def\@tempa{LY1}
+  \ifx\operator@encoding\@tempa
+\global\operatorlistedtrue
+    \DeclareMathSymbol\dagger {\mathbin}{operators}{134}
+    \DeclareMathSymbol\ddagger{\mathbin}{operators}{135}
+    \DeclareMathSymbol\mathsection{\mathord}{operators}{'247}
+    \DeclareMathSymbol\mathparagraph{\mathord}{operators}{'266}
+    \DeclareMathSymbol\mathsterling{\mathord}{operators}{163}
+    \let\mathunderscore\@undefined
+    \DeclareMathSymbol\mathunderscore{\mathord}{operators}{95}
+  \fi
+  \def\@tempa{T1}
+  \ifx\operator@encoding\@tempa
+\global\operatorlistedtrue
+    \DeclareMathSymbol\mathsterling{\mathord}{operators}{191}
+    \let\mathunderscore\@undefined
+    \DeclareMathSymbol\mathunderscore{\mathord}{operators}{95}
+  \fi
+\ifoperatorlisted\else
+%% neither T1 nor LY1 encoding, then use the original CM definitions
+%% for these characters. Only problem is that they will not change
+%% sizes, since they are preserved by putting them in a box.
+%% They are set to be scriptstyle size, 7pt, since that is the
+%% size where they would normally be used, as subscripts.
+\let\S\xS
+\let\P\xP
+\let\dagger\xdagger
+\let\ddagger\xddagger
+\let\mathsection\xS
+\let\mathparagraph\xP
+\let\@fnsymbol\x@fnsymbol
+  \fi
+\else
+  \DeclareFontEncoding{TS1}{}{}
+  \DeclareSymbolFont{textcomp}{TS1}{ptm}{m}{n}
+  \ifx\mv@bold\@undefined
+  \else
+    \SetSymbolFont    {textcomp}{bold}{TS1}{ptm}{b}{n}
+  \fi
+  \ifx\mv@heavy\@undefined
+  \else
+    \SetSymbolFont    {textcomp}{heavy}{TS1}{ptm}{b}{n}
+  \fi
+  \DeclareMathSymbol\dagger {\mathbin}{textcomp}{'204}
+  \DeclareMathSymbol\ddagger{\mathbin}{textcomp}{'205}
+  \DeclareMathSymbol\mathsection{\mathord}{textcomp}{'247}
+  \DeclareMathSymbol\mathparagraph{\mathord}{textcomp}{'266}
+\fi
+\DeclareTextSymbolDefault{\textless}{MY1}
+\DeclareTextSymbolDefault{\textgreater}{MY1}
+\DeclareTextAccentDefault{\t}{MY2}
+\DeclareTextSymbol{\textless}{MY1}{`\<}
+\DeclareTextSymbol{\textgreater}{MY1}{`\>}
+\DeclareTextAccent{\t}{MY2}{65}
+\DeclareTextSymbolDefault{\textasteriskcentered}{MY2}
+\DeclareTextSymbolDefault{\textbackslash}{MY2}
+\DeclareTextSymbolDefault{\textbar}{MY2}
+\DeclareTextSymbolDefault{\textbraceleft}{MY2}
+\DeclareTextSymbolDefault{\textbraceright}{MY2}
+\DeclareTextSymbolDefault{\textbullet}{MY2}
+\DeclareTextSymbolDefault{\textperiodcentered}{MY2}
+\DeclareTextAccentDefault{\textcircled}{MY2}
+\DeclareTextSymbol{\textasteriskcentered}{MY2}{"03}
+\DeclareTextSymbol{\textbackslash}{MY2}{"6E}
+\DeclareTextSymbol{\textbar}{MY2}{"6A}
+\DeclareTextSymbol{\textbraceleft}{MY2}{"66}
+\DeclareTextSymbol{\textbraceright}{MY2}{"67}
+\DeclareTextSymbol{\textbullet}{MY2}{"0F}
+\DeclareTextSymbol{\textperiodcentered}{MY2}{"01}
+\DeclareTextCommand{\textcircled}{MY2}[1]{{%
+   \ooalign{%
+      \hfil \raise .07ex\hbox {\upshape#1}\hfil \crcr
+      \char"0D}}}
+\ifx\symtextcomp\relax
+\else
+  \DeclareTextSymbolDefault{\textsection}{TS1}
+  \DeclareTextSymbolDefault{\textparagraph}{TS1}
+  \DeclareTextSymbol{\textsection}{TS1}{'247}
+  \DeclareTextSymbol{\textparagraph}{TS1}{'266}
+\fi
+\begingroup
+ \catcode`\_=13
+ \gdef_#1{\sb{\test@sb#1}}
+\endgroup
+\def\test@sb{%
+  \@ifnextchar p%
+    {\mkern\m@ne mu}%
+    {\ifx\@let@token j%
+       \mkern-\tw@ mu%
+     \else
+       \ifx\@let@token f%
+         \mkern-\tw@ mu%
+       \fi
+     \fi}}
+\mathcode`\_="8000
+%%
+%% This is file `my1mtt.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mtfonts.fdd  (with options: `MY1mtt,mtplus')
+%% 
+%% Copyright 1996 1997 Frank Mittelbach and David Carlisle.
+%%
+%% Development of this package was commissioned by Y&Y Inc.
+%% http://www.yandy.com
+\ProvidesFile{my1mtt.fd}
+ [1997/02/14 v1.0a
+ Mathtime Encoding 1
+  (FMi)]
+\DeclareFontFamily{MY1}{mtt}{\skewchar\font45}
+\DeclareFontShape{MY1}{mtt}{m}{it}{<->MTMI}{}
+\DeclareFontShape{MY1}{mtt}{b}{it}{<->MTMIB}{}
+\DeclareFontShape{MY1}{mtt}{ub}{it}{<->MTMIH}{}
+\DeclareFontShape{MY1}{mtt}{b}{n} {<->MTMUB}{}
+\DeclareFontShape{MY1}{mtt}{ub}{n}{<->MTMUH}{}
+%%
+%% End of file `my1mtt.fd'.
+%%
+%% This is file `my2mtt.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mtfonts.fdd  (with options: `MY2mtt,mtplus')
+%% 
+%% Copyright 1996 1997 Frank Mittelbach and David Carlisle.
+%%
+%% Development of this package was commissioned by Y&Y Inc.
+%% http://www.yandy.com
+\ProvidesFile{my2mtt.fd}
+ [1997/02/14 v1.0a
+ Mathtime Encoding 2
+  (FMi)]
+\DeclareFontFamily{MY2}{mtt}{\skewchar\font48}
+\DeclareFontShape{MY2}{mtt}{m}{n}{<->MTSYN}{}
+\DeclareFontShape{MY2}{mtt}{b}{n}{<->MTSYB}{}
+\DeclareFontShape{MY2}{mtt}{ub}{n}{<->MTSYH}{}
+%%
+%% End of file `my2mtt.fd'.
+%%
+%% This is file `my3mtt.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mtfonts.fdd  (with options: `MY3mtt,mtplus')
+%% 
+%% Copyright 1996 1997 Frank Mittelbach and David Carlisle.
+%%
+%% Development of this package was commissioned by Y&Y Inc.
+%% http://www.yandy.com
+\ProvidesFile{my3mtt.fd}
+ [1997/02/14 v1.0a
+ Mathtime Encoding 3
+  (FMi)]
+\DeclareFontFamily{MY3}{mtt}{}
+\DeclareFontShape{MY3}{mtt}{m}{n}{<->MTEX}{}
+\DeclareFontShape{MY3}{mtt}{b}{n}{<->MTEXB}{}
+\DeclareFontShape{MY3}{mtt}{ub}{n}{<->MTEXH}{}
+%%
+%% End of file `my3mtt.fd'.
+
+%%%%%%%% ot1ptm.fd
+%% 
+%% This is file `OT1ptm.fd',
+%% generated with the docstrip utility.
+%% 
+%% The original source files were:
+%% 
+%% yandytex.dtx  (with options: `fd,OT1Times')
+%% 
+%% Copyright (C) 1995 Sebastian Rahtz 
+%% All rights reserved. 
+%% 
+%% This file is part of the PSNFSS2e package. 
+%% ----------------------------------------- 
+%% 
+%% This is a generated file. Permission is granted to to customize the 
+%% declarations in this file to serve the needs of your installation. 
+%% However, no permission is granted to distribute a modified version of 
+%% this file under its original name. 
+\def\fileversion{1.0}
+\def\filedate{95/02/01}
+\def\docdate {95/02/01}
+%% File: yandytex.dtx Copyright (C) 1995 Sebastian Rahtz
+\wlog{Fontdef\space file\space produced\space from:\space
+ \string`yandytex.dtx'\space \fileversion\space(\filedate)\space(SPQR)}
+\typeout{File \space OT1ptm.fd\space loading \space Adobe\space Times Roman}%
+\DeclareFontFamily{OT1}{ptm}{}%
+\DeclareFontShape{OT1}{ptm}{m}{n}{<->\timesroman}{}%
+\DeclareFontShape{OT1}{ptm}{m}{it}{<->\timesitalic}{}%
+\DeclareFontShape{OT1}{ptm}{b}{n}{<->\timesbold}{}%
+\DeclareFontShape{OT1}{ptm}{b}{it}{<->\timesbolditalic}{}%
+\DeclareFontShape{OT1}{ptm}{m}{sl}{<->\slantedfont}{}% 
+\DeclareFontShape{OT1}{ptm}{m}{sc}{<->\smallcaps}{}% 
+\DeclareFontShape{OT1}{ptm}{b}{sc}{<->\boldsmallcaps}{}% 
+%% 
+%% End of file `OT1ptm.fd'.
+%% 
+%% This is file `OT1pcr.fd',
+%% generated with the docstrip utility.
+%% 
+%% The original source files were:
+%% 
+%% yandytex.dtx  (with options: `fd,OT1Courier')
+%% 
+%% Copyright (C) 1995 Sebastian Rahtz 
+%% All rights reserved. 
+%% 
+%% This file is part of the PSNFSS2e package. 
+%% ----------------------------------------- 
+%% 
+%% This is a generated file. Permission is granted to to customize the 
+%% declarations in this file to serve the needs of your installation. 
+%% However, no permission is granted to distribute a modified version of 
+%% this file under its original name. 
+\def\fileversion{1.0}
+\def\filedate{95/02/01}
+\def\docdate {95/02/01}
+%% File: yandytex.dtx Copyright (C) 1995 Sebastian Rahtz
+\wlog{Fontdef\space file\space produced\space from:\space
+ \string`yandytex.dtx'\space \fileversion\space(\filedate)\space(SPQR)}
+\typeout{File \space OT1pcr.fd\space loading \space Adobe\space Courier}%
+\DeclareFontFamily{OT1}{pcr}{\hyphenchar \font\m@ne}%
+\DeclareFontShape{OT1}{pcr}{m}{n}{<->\courier}{}%
+\DeclareFontShape{OT1}{pcr}{m}{sl}{<->\courieroblique}{}%
+\DeclareFontShape{OT1}{pcr}{b}{n}{<->\courierbold}{}%
+\DeclareFontShape{OT1}{pcr}{b}{sl}{<->\courierboldoblique}{}%
+\DeclareFontShape{OT1}{pcr}{m}{it}{<->ssub * pcr/m/sl}{}%
+\DeclareFontShape{OT1}{pcr}{b}{it}{<->ssub * pcr/b/sl}{}%
+%% 
+%% End of file `OT1pcr.fd'.
+%%
+%% End of file `m-times.sty'.
+\endinput
+
+(Originally mtoptions.txt from CTAN)
+-----------------------------------------------------------------
+Options for the mathtime package (paraphrased from mathtime.dtx):
+-----------------------------------------------------------------
+
+To get the documentation for the mathtime package, run TeX or LaTeX 
+on the file mathtime.dtx and print the result.  See also mathtime.txt.
+
+The mathtime package contains the code to support the Math Time 
+fonts. It does not switch the text fonts.  You invoke it using
+
+	\usepackage[...]{mathtime}
+
+where the ... indicated optional arguments.  This package supports 
+several options. The defaults are:
+
+	[nobold,slantedgreek,nosubscriptcorrection,cmcal,errorshow]
+
+(*)	[nobold] (assumes MathTime Plus is not available)  default.
+
+(*)	[cmbold] use cm bold fonts (not recommended, the bold fonts
+    will then be encoded differently to the normal weight ones, 
+    and no account of this will be taken).
+
+(*)	[mtbold] This provides bold and heavy math versions coming
+    with the Math Time Plus fonts.  Use if you have MathTime Plus.
+
+(*)	[heavybold] Also requires the Math Time Plus font set, just
+    define bold math version (not heavy) but use the heavy fonts 
+    where available.
+
+In all cases the user level command \heavymath is defined to be
+\boldmath if the heavy math version is not defined.
+
+(*)	[slantedgreek] Make the lowercase greek letters slanted (default).
+
+(Note that the uppercase greek letters are always upright.)
+
+(*)	[uprightgreek] Make the lowercase greek letters upright.
+
+(*)	[subscriptcorrection]
+    Redefine _ so that it automatically adds negative kerns in
+    subscripts if they start with either f, j, or p.
+    This option might generate problems if other packages are
+    loaded as well.
+
+The subscript correction also be be turned on and off within the
+document using the commands:
+
+	\enablesubscriptcorrection and \disablesubscriptcorrection.
+
+(*)	[nosubscriptcorrection]
+    Disable the the subscript correction (default).
+
+(*)	[cmcal] (default).
+    This option uses the Computer Modern calligraphic alphabet
+    for \mathcal --- a bad choice, but what do you do if nothing 
+	else is at your disposal.
+
+(*)	[lucidacal] This options sets up \mathcal to load the Lucida
+    calligraphic font as a math alphabet. It also defines \mathbcal
+	to always refer to the bold series of this alphabet.
+
+(*)	[lucidascr] Like [lucidacal] but puts the font into
+    \mathscr. This might be useful if for some reason \mathcal
+    already contains some special calligraphic alphabet.
+
+(*)	[mtplusscr] This options sets up \mathscr to load the Math Time
+    Plus script font as a math alphabet. It also defines \mathbscr 
+	to always refer to the bold series of this alphabet.
+
+(*)	[mtpluscal] Like [mtplusscr] but puts the font into the
+    \mathcal alphabet.
+
+
+(*)	[noTS1]
+    The use of the mathtime fonts with text fonts encoded in the
+    standard OT1 or T1 encodings leaves a few symbols (section and
+    paragraph marks, and dagger symbols) undefined.
+    By default the TS1 `text companion encoding' will be used to 
+    access these symbols, but this option suppresses that.
+    If the LY1 option (below) is used this option will be implied
+    since dagger etc. can then be drawn from the operators font.
+
+(*)	[OT1] Use OT1 encoing for the operators font. This is the
+    normal behaviour in LaTeX 2e, but in this package the default 
+    behaviour is instead to use the default text encoding for the 
+    operators font.
+
+(*)	[T1] Use T1 encoding for the operators font.
+
+(*)	[LY1] Use LY1 (TeX 'n ANSI encoding)
+    in the operators font. This option implies the [noTS1] option.
+    Dagger etc. will be drawn from the operators font in this case.
+
+Not all options can be used together, e.g., one can at most select 
+one of the options setting up \mathcal, if both options are given
+mtpluscal will win over lucidacal.  
+In case of \mathscr, lucidascr will be the winner over mtplusscr.
+
+This package makes a lot of font re-assignments. Normally these
+generate warning messages on the terminal, however getting so many
+messages would be distracting, so a further three options control the
+font tracing. Even more control may be obtained by loading the
+tracefnt package.
+
+(*)	[errorshow] Only show font *errors* on the terminal.
+    Warnings are just sent to the log file. This is the default
+    for this package.
+
+(*)	[warningshow] Show font warnings on the terminal. This
+    corresponds to the usual LaTeX 2e behaviour.
+
+(*)	[nofontinfo] Suppress all font warnings, even from the log file.

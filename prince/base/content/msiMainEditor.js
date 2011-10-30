@@ -248,20 +248,17 @@ function msiUpdateWindowTitle(documentTitle, fileName)
 {
   try 
   {
-    var editorElement = msiGetTopLevelEditorElement();
-    if (!documentTitle)
-    {
-      var windowTitle;
-       windowTitle = msiGetDocumentTitle(editorElement);
-       windowTitle = unescape(windowTitle);
-       if (!windowTitle)
-         windowTitle = GetString("untitled");
-    } else windowTitle = documentTitle;
-    // Append just the 'leaf' filename to the Doc. Title for the window caption
+   var editorElement = msiGetTopLevelEditorElement();
     if (editorElement.isShellFile) fileName = "not saved";
-    else if (!fileName)
+    else //if (!fileName)
     {
-      filename = editorElement.fileLeafName;
+//      filename = editorElement.fileLeafName;
+			var htmlurlstring = msiGetEditorURL(editorElement); 
+		  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
+		  var fileURL = msiURIFromString(sciurlstring);
+			var file = msiFileFromFileURL(fileURL);
+			filename = file.leafName;
+		  
 //       var docUrl = msiGetEditorURL(editorElement); //docUrl is a string
 //       if (docUrl) // && !IsUrlAboutBlank(docUrl))
 //       {
@@ -288,13 +285,13 @@ function msiUpdateWindowTitle(documentTitle, fileName)
 //         // Save changed title in the recent pages data in prefs
 //      }
     }
-    else filename = fileName;
+//    else filename = fileName;
 //    SaveRecentFilesPrefs();
     // Set window title with " - Scientific WorkPlace/Word/Notebook" appended
-    var xulWin = document.documentElement;
-    if (!filename) filename="";
-    document.title = windowTitle + " ["+filename+"] " + xulWin.getAttribute("titlemenuseparator") + 
-                   xulWin.getAttribute("titlemodifier");
+    var xulWin = document.getElementById('prince');
+    if (!filename) filename="untitled";
+    document.title = filename + xulWin.getAttribute("titlemodifierseparator") + 
+                   xulWin.getAttribute("title");
   } catch (e) 
   {
     dump(e+"\n"); 
@@ -415,14 +412,14 @@ function AppendRecentMenuitem(menupopup, title, url, menuIndex)
       var itemString = accessKey+" ";
 
       // Show "title [url]" or just the URL
-      if (title)
-      {
-       itemString += title;
-       itemString += " [";
-      }
+//      if (title)
+//      {
+//       itemString += title;
+//       itemString += " [";
+//      }
       itemString += url;
-      if (title)
-        itemString += "]";
+//      if (title)
+//        itemString += "]";
 
       menuItem.setAttribute("label", itemString);
       menuItem.setAttribute("crop", "center");

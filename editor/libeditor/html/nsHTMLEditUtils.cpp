@@ -256,6 +256,7 @@ nsHTMLEditUtils::IsTableElement(nsIDOMNode *node, msiITagListManager * manager)
       || (nodeAtom == nsEditProperty::tfoot)
       || (nodeAtom == nsEditProperty::tbody)
       || (nodeAtom == nsEditProperty::caption);
+// BBM: do we want to add the mtable elements?
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -282,7 +283,7 @@ nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node, msiITagListManager 
 PRBool 
 nsHTMLEditUtils::IsTable(nsIDOMNode *node, msiITagListManager * manager)
 {
-  return nsEditor::NodeIsType(node, nsEditProperty::table);
+  return nsEditor::NodeIsType(node, nsEditProperty::table, manager);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -291,7 +292,7 @@ nsHTMLEditUtils::IsTable(nsIDOMNode *node, msiITagListManager * manager)
 PRBool 
 nsHTMLEditUtils::IsTableRow(nsIDOMNode *node, msiITagListManager * manager)
 {
-  return nsEditor::NodeIsType(node, nsEditProperty::tr);
+  return nsEditor::NodeIsType(node, nsEditProperty::tr, manager);
 }
 
 
