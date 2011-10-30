@@ -43,6 +43,8 @@
       </xsl:call-template>
 	</xsl:if>
 
+    <xsl:if test="@largeop='true'">
+  
     <xsl:choose>
 
 <!-- Start of Big op's -->
@@ -99,7 +101,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(string())='&#x2295;'">
         <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigoplus'"/>
+          <xsl:with-param name="LaTeX-nom" select="'oplus'"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="normalize-space(string())='&#x2299;'">
@@ -137,7 +139,11 @@
           <xsl:with-param name="LaTeX-nom" select="'biguplus'"/>
         </xsl:call-template>
       </xsl:when>
+    </xsl:choose>
+    </xsl:if>
 
+    <xsl:if test="not(@largeop='true')">
+    <xsl:choose>
 <!-- Start of fencing <mo>'s -->
 
       <xsl:when test="normalize-space(string())='('">
@@ -373,6 +379,7 @@
       </xsl:otherwise>
 
     </xsl:choose>
+    </xsl:if>
 
     <xsl:if test="string-length(@rspace)&gt;0">
 

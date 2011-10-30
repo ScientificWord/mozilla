@@ -74,9 +74,9 @@
   \@ifnextchar[{\@usepackagea}{\@usepackageb}}
 
 \def\@usepackagea[#1]#2{%
-   \out@usepackageA[#1]{#2}
+   \out@usepackageA[#1]{#2}%
    \advance\msi@output by 1\relax
-   \@@usepackage[#1]{#2}
+   \@@usepackage[#1]{#2}%
    \advance\msi@output by -1\relax
 }
 
@@ -661,9 +661,8 @@
                     \expandafter\@gobbletwo\string#2\endcsname
                        {\let#1#2}}
 
-\def\providecommand{
-   \@star@or@long\provide@command}
-
+\def\providecommand{\@star@or@long\provide@command}
+                              
 \def\provide@command#1{%
   \begingroup
     \escapechar\m@ne\xdef\@gtempa{{\string#1}}%
