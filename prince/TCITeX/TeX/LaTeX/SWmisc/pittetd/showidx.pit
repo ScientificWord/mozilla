@@ -1,0 +1,8 @@
+\makeatletter
+\@ifundefined{showidx@patch}{\relax}{\endinput}
+\setlength\marginparwidth{2in}
+\setlength\marginparsep{3pt}
+\let\showidx@patch\@empty
+\makeatother
+\endinput
+

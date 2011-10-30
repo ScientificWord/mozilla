@@ -30,7 +30,7 @@
   onfocus="msiEditorWindowOnFocus(event)"
   contenttitlesetting="true"
   titlemodifier="&editorWindow.titlemodifier;"
-        titlemenuseparator="&editorWindow.titlemodifiermenuseparator;"
+  titlemodifierseparator="&editorWindow.titlemodifierseparator;"
   windowtype="swp:xhtml_mathml"        
   screenX="10" screenY="10" width="1000" height="600"
   persist="screenX screenY width height sizemode"

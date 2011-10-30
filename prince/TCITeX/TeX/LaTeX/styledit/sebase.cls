@@ -5,7 +5,7 @@
 % Base macros for MacKichan Software Style Editor
 
 \NeedsTeXFormat{LaTeX2e}[1997/12/01]
-\ProvidesPackage{sebase}[2004/10/21]
+\ProvidesPackage{sebase}[2006/06/05]
 
 
 \newif\ifse@usehyper
@@ -3228,6 +3228,7 @@
                \noexpand\twocolumn[\SpaceVertically\null\theVerticalMaterial]%
             \else
                \SpaceVertically
+			   \null
                \theVerticalMaterial
             \fi
        \endgroup

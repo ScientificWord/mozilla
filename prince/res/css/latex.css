@@ -32,8 +32,7 @@ caption {
 }
 
 table {
-  margin-left: 5px;
-  margin-right: 5px;
+  margin: 0px;
 }
 /*table {
   border-collapse: collapse;
@@ -270,7 +269,7 @@ object {
 }
 
 
-* [msiunit="true"] { color: green; }
+
 * [msimathname="true"] {color: gray; }
 
 
@@ -615,17 +614,15 @@ msibr:before {
   -moz-user-select: -moz-none;
 }
 
-mak
+
 /* Selection rules */
 
 body {
   -moz-user-select: -moz-none; /* -moz-none can be overridden */
   counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
-  margin-left: 10pt;
   display: block;
   position: relative;
   font-family: Georgia;
-  margin-left: 20pt;
   font-size: 12pt;
   line-height: 14pt;
 }

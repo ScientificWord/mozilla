@@ -1,0 +1,34 @@
+% This file (sw2cjour2.tex) contains commands for adapting SW3.x syntax to the
+% syntax in the Academic Press Journal Style C (cjour.cls) Document Class
+
+% Filename: sw2cjour2.tex
+% Usage:    \input{sw2cjour2} AFTER \input{tcilatex} in document preamble
+%           For use with documents using cjour.cls; store with *.cls files.
+% Author:   Melissa Harrison
+% Correspondence to: styles@mackichan.com
+% Last Rev: 15 May 2000 mlh
+% Updates:  See the Free Updates section of the Technical Support area at www.mackichan.com
+%           for updates of this and other files. 
+
+\def\xappendix#1 #2\par{\appendix{#2}}
+\def\xappendixtitle#1 #2\par{\appendixtitle{#2}}
+
+\let\qed=\QED
+
+\def\QTR#1{\csname #1\endcsname}
+
+\def\eatone#1{}
+
+\long\def\xtablenote#1\end{\endgroup\tablenotes{#1}\eatone}
+
+\def\lettercaption{\futurelet\next\lookforletter}
+\def\lookforletter{\ifx\next[\long\def\go[##1]##2\end##3{\endgroup\letteredcaption{##1}{##2}}
+\else\long\def\go##1\end##2{\endgroup\letteredcaption{you should put a letter here}{##1}}\fi\go}
+
+\def\lettercontinuedcaption{\futurelet\next\lookforcletter}
+\def\lookforcletter{\ifx\next[\long\def\go[##1]##2\end##3{\endgroup\letteredcontinuedcaption{##1}{##2}}
+\else\long\def\go##1\end##2{\endgroup\letteredcontinuedcaption{you should put a letter here}{##1}}\fi\go}
+
+\renewenvironment{tabular}[1]{\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}#1}}{\end{tabular*}}
+
+

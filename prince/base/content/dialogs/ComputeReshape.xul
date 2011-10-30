@@ -19,6 +19,8 @@
     buttons="accept,cancel"
     screenX="40"
     screenY="40"
+    height="120"
+    width="200"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->

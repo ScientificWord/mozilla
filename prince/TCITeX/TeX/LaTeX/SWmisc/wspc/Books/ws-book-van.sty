@@ -1,0 +1,101 @@
+\makeatletter
+\newif\if@wssuper
+\DeclareOption{super}{\@wssupertrue}
+\ProcessOptions
+\newif\if@cghi
+\def\cite{\@cghitrue\@ifnextchar [{\@tempswatrue
+    \@citex}{\@tempswafalse\@citex[]}}
+\def\citelow{\@cghifalse\@ifnextchar [{\@tempswatrue
+    \@citex}{\@tempswafalse\@citex[]}}
+\def\@cite#1#2{{$\null {[#1]}$\if@tempswa\typeout
+    {WSPC warning: optional citation argument
+    ignored: `#2'} \fi}}
+\def\vanspace{\ }
+\if@wssuper
+\def\vanspace{\relax}
+\def\@cite#1#2{{$^{#1}$\if@tempswa\typeout
+    {WSPC warning: optional citation argument
+    ignored: `#2'} \fi}}
+\fi
+
+\newcommand{\citeup}{\cite}
+%
+\newcount\@tempcntc
+\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+ \@tempcnta\z@\@tempcntb\m@ne\def\@citea{}\@cite{\@for\@citeb:=#2\do
+  {\@ifundefined
+   {b@\@citeb}{\@citeo\@tempcntb\m@ne\@citea\def\@citea{,}%
+     {\mbox{\bfseries ?}}\@warning
+   {Citation `\@citeb' on page \thepage \space undefined}}%
+  {\setbox\z@\hbox{\global\@tempcntc0\csname b@\@citeb\endcsname\relax}%
+   \ifnum\@tempcntc=\z@ \@citeo\@tempcntb\m@ne
+    \@citea\def\@citea{;\ }\hbox{\csname b@\@citeb\endcsname}%
+   \else
+    \advance\@tempcntb\@ne
+    \ifnum\@tempcntb=\@tempcntc
+    \else\advance\@tempcntb\m@ne\@citeo
+    \@tempcnta\@tempcntc\@tempcntb\@tempcntc\fi\fi}}\@citeo}{#1}}
+\def\@citeo{\ifnum\@tempcnta>\@tempcntb\else\@citea\def\@citea{,\vanspace}%
+ \ifnum\@tempcnta=\@tempcntb\the\@tempcnta\else
+  {\advance\@tempcnta\@ne\ifnum\@tempcnta=\@tempcntb \else \def\@citea{\mbox{--\/}}\fi
+   \advance\@tempcnta\m@ne\the\@tempcnta\@citea\the\@tempcntb}\fi\fi}
+\def\@refcitex[#1]#2{\if@filesw\immediate\write\@auxout
+    {\string\citation{#2}}\fi
+\def\@citea{}\@refcite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{,}\@ifundefined
+    {b@\@citeb}{{\bf ?}\@warning
+    {Citation `\@citeb' on page \thepage \space undefined}}
+    \hbox{\csname b@\@citeb\endcsname}}}{#1}}
+ \def\@refcite#1#2{{#1\if@tempswa\typeout
+        {WSPC warning: optional citation argument
+    ignored: `#2'} \fi}}
+ \def\refcite{\@ifnextchar[{\@tempswatrue
+    \@refcitex}{\@tempswafalse\@refcitex[]}}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newdimen\bibindent
+\bibindent=2em
+\def\@biblabel#1{[#1]}
+\renewenvironment{thebibliography}[1]
+     {\chapter*{Bibliography}
+      \markboth{Book Title}{Bibliography}
+      \bibfont%
+      \list{\@biblabel{\arabic{enumiv}}}
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+        \labelsep6pt%.33em
+            \advance\leftmargin\labelsep
+        \itemsep0pt\parsep0pt
+            \usecounter{enumiv}%
+            \renewcommand\theenumiv{\arabic{enumiv}}}%
+      \sloppy\clubpenalty4000\widowpenalty4000%
+      \sfcode`\.=\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+\if@wssuper
+\def\@biblabel#1{#1.}
+\renewenvironment{thebibliography}[1]
+     {\chapter*{Bibliography}\bibfont%
+      \list{\@biblabel{\arabic{enumiv}}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+        \labelsep6pt%.33em
+            \advance\leftmargin\labelsep
+        \itemsep0pt\parsep0pt
+            \usecounter{enumiv}%
+            \renewcommand\theenumiv{\arabic{enumiv}}}%
+      \sloppy\clubpenalty4000\widowpenalty4000%
+      \sfcode`\.=\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+\fi
+
+\renewcommand\newblock{}
+
+\let\citep\cite
+\let\citet\cite
+
+\makeatother

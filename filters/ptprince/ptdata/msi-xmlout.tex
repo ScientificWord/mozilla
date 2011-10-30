@@ -1,4 +1,3 @@
-
 \makeatletter
 
 \newcounter{MaxMatrixCols}
@@ -774,6 +773,9 @@
 \def\@cra[#1]{\cr}%
 \def\@crb{\cr}%
 
+
+\def\tabularnewline{\cr}
+
 \def\msi@begin@tabular{%
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
@@ -1010,15 +1012,52 @@
 %%   \fi
 %%}
 
-\def\ {\msihmode{ }}
+\def\ {%
+  \ifmmode
+    \char`\\\char`\ %
+  \else
+    \msihmode{ }%
+  \fi}
 
 \def~{%
   \ifmmode
+    \char`\~
   \else
     \msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}%
   \fi}
 
-\def\/{\msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}}
+\def\/{%
+  \ifmmode
+    \char`\\\char`\/%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+
+\def\,{%
+  \ifmmode
+    \char`\\\char`\,%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="thinspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+\def\;{%
+  \ifmmode
+    \char`\\\char`\;%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="thickspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+\def\!{%
+  \ifmmode
+    \char`\\\char`\!%
+  \else
+    \msihmode\msitag{<hspace dim="0.083en" type="negativethinspace">}\@hex{200a}\msitag{</hspace>}%
+  \fi}
+
+
+
+
 
 \bgroup
   \catcode`\%=12
@@ -1112,12 +1151,6 @@
 \def\biggm#1{\ifmmode\string\big#1\fi}
 \def\Biggr#1{\ifmmode\string\big#1\fi}
 \def\biggr#1{\ifmmode\string\big#1\fi}
-
-
-
-
-
-
 
 
 
@@ -1291,6 +1324,7 @@
 
 
 
+
 %% Create TeX Buttons
 
 \def\MSITeXButton#1{%
@@ -1301,6 +1335,7 @@
        \msitag{</texb>}}}
 
 
+
 \def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{%
        \@temptokena={\msitag{##1}}%
@@ -1309,9 +1344,28 @@
           <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
        \msitag{</texb>}}}
 
+
+
+
 \def\msi@cdr#1#2xxxx{#2}
 
 \def\MSILocalDef#1{\def#1{\string #1}}
+
+
+\def\makeatother{%
+   \msihmode
+   \msitag{<texb enc="1" name="makeatother">}%
+       <![CDATA[\string\makeatother]]>%
+   \msitag{</texb>}
+   \catcode`\@=12}
+
+\def\makeatletter{%
+   \msihmode
+   \msitag{<texb enc="1" name="makeatletter">}%
+       <![CDATA[\string\makeatletter]]>%
+   \msitag{</texb>}
+   \catcode`\@=11}
+
 
 
 \bgroup
@@ -1458,7 +1512,11 @@
 % Here #1 = some unknown control sequence 
 
 \def\msidefault#1{%
-  \expandafter\msidefaulta\expandafter{\string #1}}
+  \ifmmode
+    \string#1%
+  \else
+    \expandafter\msidefaulta\expandafter{\string #1}%
+  \fi}
 
 \def\msidefaulta#1{%
   \expandafter\msidefaultb\expandafter{\msi@cdr#1xxxx}}
@@ -1519,7 +1577,6 @@
 \def\dots{\msitag{\U{2026}}}
 
 \input latex-default.tex
-
 \input tcilatex.tex
 
 \catcode`\<=\active
