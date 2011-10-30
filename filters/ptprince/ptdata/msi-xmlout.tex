@@ -108,6 +108,9 @@
 %% \document and \enddocument
 
 \def\out@begin@document{%
+   \@ifundefined{@TCILATEX}
+     {\relax}
+     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\input{tcilatex}}}
    \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msiclosetag{preamble}{</preamble>}%
    \br\msitag{</head>}
