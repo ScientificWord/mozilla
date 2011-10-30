@@ -51,6 +51,7 @@
 #include "nsIContent.h"
 #include "nsIContentIterator.h"
 #include "nsIAtom.h"
+#include "nsGkAtoms.h"
 #include "nsIDOMHTMLTableElement.h"
 #include "nsIDOMHTMLTableCellElement.h"
 #include "nsITableCellLayout.h" // For efficient access to table cell
@@ -62,6 +63,7 @@
 #include "nsEditorUtils.h"
 #include "nsTextEditUtils.h"
 #include "nsHTMLEditUtils.h"
+#include "msiUtils.h"
 #include "nsLayoutErrors.h"
 
 
@@ -130,17 +132,33 @@ nsHTMLEditor::InsertCell(nsIDOMElement *aCell, PRInt32 aRowSpan, PRInt32 aColSpa
   nsresult res = aCell->GetParentNode(getter_AddRefs(cellParent));
   if (NS_FAILED(res)) return res;
   if (!cellParent) return NS_ERROR_NULL_POINTER;
+	PRBool isMath = PR_FALSE;
+	nsAutoString rowTag;
+	nsCOMPtr<nsIDOMElement> parentElement = do_QueryInterface(cellParent);
+  
+	parentElement->GetTagName(rowTag);
+	if (rowTag.EqualsLiteral("mtr"))
+		isMath = PR_TRUE;
 
 
   PRInt32 cellOffset;
   res = GetChildOffset(aCell, cellParent, cellOffset);
   if (NS_FAILED(res)) return res;
 
-  nsCOMPtr<nsIDOMElement> newCell;
+  nsCOMPtr<nsIDOMElement> newCell;  nsCOMPtr<nsIDOMElement> inputBox;
+	PRUint32 dummy = 0;
   if (aIsHeader)
     res = CreateElementWithDefaults(NS_LITERAL_STRING("th"), getter_AddRefs(newCell));
   else
-    res = CreateElementWithDefaults(NS_LITERAL_STRING("td"), getter_AddRefs(newCell));
+	{
+    if (isMath)
+		{
+			res = msiUtils::CreateMtd(this, PR_FALSE, dummy, newCell);
+      if (NS_FAILED(res) || !newCell) return res;      if (NS_FAILED(res)) return res;
+		}
+		else
+			res = CreateElementWithDefaults(NS_LITERAL_STRING("td"), getter_AddRefs(newCell));
+	}
     
   if(NS_FAILED(res)) return res;
   if(!newCell) return NS_ERROR_FAILURE;
@@ -223,12 +241,27 @@ nsHTMLEditor::InsertTableCell(PRInt32 aNumber, PRBool aAfter)
   nsSetSelectionAfterTableEdit setCaret(this, table, startRowIndex, newCellIndex, ePreviousColumn, PR_FALSE);
   //...so suppress Rules System selection munging
   nsAutoTxnsConserveSelection dontChangeSelection(this);
+	PRBool isMath = PR_FALSE;
+	nsAutoString rowTag;
+	nsCOMPtr<nsIDOMElement> parentElement = do_QueryInterface(cellParent);
+	parentElement->GetTagName(rowTag);
+	if (rowTag.EqualsLiteral("mtr"))
+		isMath = PR_TRUE;
 
   PRInt32 i;
+	PRUint32 dummy = 0;
   for (i = 0; i < aNumber; i++)
   {
     nsCOMPtr<nsIDOMElement> newCell;
-    res = CreateElementWithDefaults(NS_LITERAL_STRING("td"), getter_AddRefs(newCell));
+    nsCOMPtr<nsIDOMElement> inputBox;
+		if (isMath)
+		{
+			res = msiUtils::CreateMtd(this, PR_FALSE, dummy, newCell);
+		}
+		else
+		{
+	    res = CreateElementWithDefaults(NS_LITERAL_STRING("td"), getter_AddRefs(newCell));
+		}
     if (NS_SUCCEEDED(res) && newCell)
     {
       if (aAfter) cellOffset++;
@@ -252,6 +285,11 @@ nsHTMLEditor::GetFirstRow(nsIDOMElement* aTableElement, nsIDOMNode** aRowNode)
   nsCOMPtr<nsIDOMElement> tableElement;
   nsresult res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), aTableElement, getter_AddRefs(tableElement));
   if (NS_FAILED(res)) return res;
+	if (!tableElement)
+	{
+	  nsresult res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), aTableElement, getter_AddRefs(tableElement));
+	  if (NS_FAILED(res)) return res;
+	}
   if (!tableElement) return NS_ERROR_NULL_POINTER;
 
   nsCOMPtr<nsIDOMNode> tableChild;
@@ -265,7 +303,7 @@ nsHTMLEditor::GetFirstRow(nsIDOMElement* aTableElement, nsIDOMNode** aRowNode)
     {
       nsIAtom *atom = content->Tag();
 
-      if (atom == nsEditProperty::tr)
+      if (atom == nsEditProperty::tr || atom == nsGkAtoms::mtr_)
       {
         // Found a row directly under <table>
         *aRowNode = tableChild;
@@ -623,6 +661,7 @@ nsHTMLEditor::InsertTableRow(PRInt32 aNumber, PRBool aAfter)
   nsCOMPtr<nsISelection> selection;
   nsCOMPtr<nsIDOMElement> table;
   nsCOMPtr<nsIDOMElement> curCell;
+	PRUint32 dummy = 0;
   
   PRInt32 startRowIndex, startColIndex;
   nsresult res = GetCellContext(nsnull,
@@ -746,13 +785,21 @@ nsHTMLEditor::InsertTableRow(PRInt32 aNumber, PRBool aAfter)
     // The row parent and offset where we will insert new row
     nsCOMPtr<nsIDOMNode> parentOfRow;
     PRInt32 newRowOffset;
+		PRBool isMathTable = PR_FALSE;
 
     NS_NAMED_LITERAL_STRING(trStr, "tr");
+    NS_NAMED_LITERAL_STRING(mtrStr, "mtr");
     if (cellForRowParent)
     {
       nsCOMPtr<nsIDOMElement> parentRow;
       res = GetElementOrParentByTagName(trStr, cellForRowParent, getter_AddRefs(parentRow));
       if (NS_FAILED(res)) return res;
+			if (!parentRow)
+			{
+	      res = GetElementOrParentByTagName(mtrStr, cellForRowParent, getter_AddRefs(parentRow));
+	      if (NS_FAILED(res)) return res;
+				isMathTable = PR_TRUE;
+			} 
       if (!parentRow) return NS_ERROR_NULL_POINTER;
 
       parentRow->GetParentNode(getter_AddRefs(parentOfRow));
@@ -771,29 +818,43 @@ nsHTMLEditor::InsertTableRow(PRInt32 aNumber, PRBool aAfter)
     for (PRInt32 row = 0; row < aNumber; row++)
     {
       // Create a new row
-      nsCOMPtr<nsIDOMElement> newRow;
-      res = CreateElementWithDefaults(trStr, getter_AddRefs(newRow));
-      if (NS_SUCCEEDED(res))
-      {
-        if (!newRow) return NS_ERROR_FAILURE;
+      nsCOMPtr<nsIDOMElement> newRow;			
+      if (isMathTable)
+			{
+				res = msiUtils::CreateMtr(this, cellsInRow, PR_FALSE, PR_FALSE, dummy, newRow);
+			}
+			else
+			{
+				res = CreateElementWithDefaults(trStr, getter_AddRefs(newRow));
+	      if (NS_SUCCEEDED(res))
+	      {
+	        if (!newRow) return NS_ERROR_FAILURE;
       
-        for (PRInt32 i = 0; i < cellsInRow; i++)
-        {
-          nsCOMPtr<nsIDOMElement> newCell;
-          res = CreateElementWithDefaults(NS_LITERAL_STRING("td"), getter_AddRefs(newCell));
-          if (NS_FAILED(res)) return res;
-          if (!newCell) return NS_ERROR_FAILURE;
+	        for (PRInt32 i = 0; i < cellsInRow; i++)
+	        {
+	          nsCOMPtr<nsIDOMElement> newCell;
+						if (isMathTable)
+						{
+							res = msiUtils::CreateMtd(this, PR_FALSE, dummy, newCell);
+						}
+						else
+						{
+		          res = CreateElementWithDefaults(NS_LITERAL_STRING("td"), getter_AddRefs(newCell));
+						}
+	          if (NS_FAILED(res)) return res;
+	          if (!newCell) return NS_ERROR_FAILURE;
 
-          // Don't use transaction system yet! (not until entire row is inserted)
-          nsCOMPtr<nsIDOMNode>resultNode;
-          res = newRow->AppendChild(newCell, getter_AddRefs(resultNode));
-          if (NS_FAILED(res)) return res;
-        }
-        // Use transaction system to insert the entire row+cells
-        // (Note that rows are inserted at same childoffset each time)
-        res = InsertNode(newRow, parentOfRow, newRowOffset);
-        if (NS_FAILED(res)) return res;
-      }
+	          // Don't use transaction system yet! (not until entire row is inserted)
+	          nsCOMPtr<nsIDOMNode>resultNode;
+	          res = newRow->AppendChild(newCell, getter_AddRefs(resultNode));
+	          if (NS_FAILED(res)) return res;
+	        }
+				}
+			}
+      // Use transaction system to insert the entire row+cells
+      // (Note that rows are inserted at same childoffset each time)
+      res = InsertNode(newRow, parentOfRow, newRowOffset);
+      if (NS_FAILED(res)) return res;
     }
   }
   return res;
@@ -1090,15 +1151,28 @@ nsHTMLEditor::DeleteCellContents(nsIDOMElement *aCell)
 
   nsCOMPtr<nsIDOMNode> child;
   PRBool hasChild;
+	nsresult res;
+	PRUint32 dummy = 0;
   aCell->HasChildNodes(&hasChild);
 
   while (hasChild)
   {
     aCell->GetLastChild(getter_AddRefs(child));
-    nsresult res = DeleteNode(child);
+    res = DeleteNode(child);
     if (NS_FAILED(res)) return res;
     aCell->HasChildNodes(&hasChild);
   }
+// restore an input mi if we are in a matrix.
+	nsAutoString cellTag;  
+	nsCOMPtr<nsIDOMElement> inputbox;
+	nsCOMPtr<nsIDOMNode> resultNode;
+	aCell->GetTagName(cellTag);
+	if (cellTag.EqualsLiteral("mtd"))
+	{
+		res = msiUtils::CreateInputbox(this, PR_FALSE, PR_FALSE, dummy, inputbox);
+		if (NS_FAILED(res) || !inputbox) return res;
+		res = aCell->AppendChild(inputbox, getter_AddRefs(resultNode));
+	}
   return NS_OK;
 }
 
@@ -1457,6 +1531,11 @@ nsHTMLEditor::DeleteRow(nsIDOMElement *aTable, PRInt32 aRowIndex)
   nsCOMPtr<nsIDOMElement> parentRow;
   res = GetElementOrParentByTagName(NS_LITERAL_STRING("tr"), cellInDeleteRow, getter_AddRefs(parentRow));
   if (NS_FAILED(res)) return res;
+	if (!parentRow)
+	{
+		res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtr"), cellInDeleteRow, getter_AddRefs(parentRow));
+	  if (NS_FAILED(res)) return res;
+	}
 
   if (parentRow)
   {
@@ -1492,6 +1571,8 @@ nsHTMLEditor::SelectTable()
   nsCOMPtr<nsIDOMElement> table;
   nsresult res = NS_ERROR_FAILURE;
   res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), nsnull, getter_AddRefs(table));
+  if (NS_FAILED(res)) return res;
+  res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), nsnull, getter_AddRefs(table));
   if (NS_FAILED(res)) return res;
   // Don't fail if we didn't find a table
   if (!table) return NS_OK;
@@ -2620,6 +2701,11 @@ nsHTMLEditor::NormalizeTable(nsIDOMElement *aTable)
   nsCOMPtr<nsIDOMElement> table;
   res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), aTable, getter_AddRefs(table));
   if (NS_FAILED(res)) return res;
+	if (!table)
+	{
+	  res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), aTable, getter_AddRefs(table));
+	  if (NS_FAILED(res)) return res;
+	}
   // Don't fail if we didn't find a table
   if (!table)         return NS_OK;
 
@@ -2715,7 +2801,13 @@ nsHTMLEditor::GetCellIndexes(nsIDOMElement *aCell,
     if (NS_SUCCEEDED(res) && cell)
       aCell = cell;
     else
-      return NS_ERROR_FAILURE;
+		{
+	    res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtd"), nsnull, getter_AddRefs(cell));
+	    if (NS_SUCCEEDED(res) && cell)
+	      aCell = cell;
+			else
+      	return NS_ERROR_FAILURE;
+		}
   }
 
   nsISupports *layoutObject=nsnull; // frames are not ref counted, so don't use an nsCOMPtr
@@ -2793,7 +2885,12 @@ nsHTMLEditor::GetTableSize(nsIDOMElement *aTable,
   // Get the selected talbe or the table enclosing the selection anchor
   res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), aTable, getter_AddRefs(table));
   if (NS_FAILED(res)) return res;
-  if (!table)         return NS_ERROR_FAILURE;
+  if (!table) 
+	{
+	  res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), aTable, getter_AddRefs(table));
+	  if (NS_FAILED(res)) return res;
+	}
+  if (!table)      return NS_ERROR_FAILURE;
   
   // frames are not ref counted, so don't use an nsCOMPtr
   nsITableLayout *tableLayoutObject;
@@ -2939,7 +3036,7 @@ nsHTMLEditor::GetCellContext(nsISelection **aSelection,
     res = GetSelectedOrParentTableElement(tagName, &selectedCount,
                                           getter_AddRefs(cellOrTableElement));
     if (NS_FAILED(res)) return res;
-    if (tagName.EqualsLiteral("table"))
+    if (tagName.EqualsLiteral("table") || tagName.EqualsLiteral("mtable"))
     {
       // We have a selected table, not a cell
       if (aTable)
@@ -2949,7 +3046,7 @@ nsHTMLEditor::GetCellContext(nsISelection **aSelection,
       }
       return NS_OK;
     }
-    if (!tagName.EqualsLiteral("td"))
+    if (!(tagName.EqualsLiteral("td") || (tagName.EqualsLiteral("mtd"))))
       return NS_EDITOR_ELEMENT_NOT_FOUND;
 
     // We found a cell
@@ -2964,6 +3061,11 @@ nsHTMLEditor::GetCellContext(nsISelection **aSelection,
   // Get containing table
   res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), cell, getter_AddRefs(table));
   if (NS_FAILED(res)) return res;
+	if (!table)
+	{
+		res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), cell, getter_AddRefs(table));
+	  if (NS_FAILED(res)) return res;
+	}
   // Cell must be in a table, so fail if not found
   if (!table) return NS_ERROR_FAILURE;
   if (aTable)
@@ -3291,6 +3393,8 @@ nsHTMLEditor::GetSelectedOrParentTableElement(nsAString& aTagName,
   if (NS_FAILED(res)) return res;
 
   NS_NAMED_LITERAL_STRING(tdName, "td");
+  NS_NAMED_LITERAL_STRING(mtdName, "mtd");
+
 
   if (tableOrCellElement)
   {
@@ -3298,7 +3402,7 @@ nsHTMLEditor::GetSelectedOrParentTableElement(nsAString& aTagName,
       //  so count signals multiple-cell selection
       res = selection->GetRangeCount(aSelectedCount);
       if (NS_FAILED(res)) return res;
-      aTagName = tdName;
+      res = nsEditor::GetTag(tableOrCellElement)->ToString(aTagName);
   }
   else
   {
@@ -3329,25 +3433,25 @@ nsHTMLEditor::GetSelectedOrParentTableElement(nsAString& aTagName,
       {
         nsCOMPtr<nsIAtom> atom = nsEditor::GetTag(selectedNode);
 
-        if (atom == nsEditProperty::td)
+        if (atom == nsEditProperty::td || atom == nsGkAtoms::mtd_)
         {
           tableOrCellElement = do_QueryInterface(selectedNode);
-          aTagName = tdName;
+          res = atom->ToString(aTagName);
           // Each cell is in its own selection range,
           //  so count signals multiple-cell selection
           res = selection->GetRangeCount(aSelectedCount);
           if (NS_FAILED(res)) return res;
         }
-        else if (atom == nsEditProperty::table)
+        else if (atom == nsEditProperty::table || atom == nsGkAtoms::mtable_)
         {
           tableOrCellElement = do_QueryInterface(selectedNode);
-          aTagName.AssignLiteral("table");
+          res = atom->ToString(aTagName);
           *aSelectedCount = 1;
         }
-        else if (atom == nsEditProperty::tr)
+        else if (atom == nsEditProperty::tr || atom == nsGkAtoms::mtr_)
         {
           tableOrCellElement = do_QueryInterface(selectedNode);
-          aTagName.AssignLiteral("tr");
+          res = atom->ToString(aTagName);
           *aSelectedCount = 1;
         }
       }
@@ -3359,6 +3463,13 @@ nsHTMLEditor::GetSelectedOrParentTableElement(nsAString& aTagName,
       if(NS_FAILED(res)) return res;
       if (tableOrCellElement)
         aTagName = tdName;
+			else
+			{
+	      res = GetElementOrParentByTagName(mtdName, anchorNode, getter_AddRefs(tableOrCellElement));
+	      if(NS_FAILED(res)) return res;
+	      if (tableOrCellElement)
+					aTagName = mtdName;
+			}
     }
   }
   if (tableOrCellElement)
