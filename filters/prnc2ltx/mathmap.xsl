@@ -292,7 +292,7 @@
             <xsl:text xml:space="preserve">\P </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x00B7;'">
-            <xsl:text>\text{\textperiodcentered }</xsl:text>
+            <xsl:text>\centerdot</xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x00B8;'">
             <xsl:if test="$output-mode='SW-LaTeX'">
@@ -848,7 +848,10 @@
           <xsl:when test="$first-char='&#x2021;'">
             <xsl:text xml:space="preserve">\ddagger </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2022;'">
+          <xsl:when test="$first-char='&#x2022;'">    <!-- bullet symbol -->
+            <xsl:text xml:space="preserve">\bullet </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2219;'">    <!-- bullet operator -->
             <xsl:text xml:space="preserve">\bullet </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2026;'">
@@ -1786,10 +1789,13 @@
           <xsl:when test="$first-char='&#x22DB;'">
             <xsl:text xml:space="preserve">\gtreqless </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22DC;'">
+          <xsl:when test="$first-char='&#x2A95;'">
             <xsl:text xml:space="preserve">\eqslantless </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22DD;'">
+          <xsl:when test="$first-char='&#x2A1D;'">
+            <xsl:text xml:space="preserve">\Join </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A96;'">
             <xsl:text xml:space="preserve">\eqslantgtr </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22DE;'">
@@ -2116,10 +2122,10 @@
             <xsl:text xml:space="preserve">\gtreqqless </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AAF;'">
-            <xsl:text xml:space="preserve">\npreceq </xsl:text>
+            <xsl:text xml:space="preserve">\preceq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AB0;'">
-            <xsl:text xml:space="preserve">\nsucceq </xsl:text>
+            <xsl:text xml:space="preserve">\succeq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AB5;'">
             <xsl:text xml:space="preserve">\precneqq </xsl:text>
