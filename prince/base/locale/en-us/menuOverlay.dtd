@@ -573,6 +573,67 @@
 <!ENTITY tableProperties.label "Table Properties...">
 <!ENTITY tableProperties.accesskey "o">
 
+<!-- Matrix Menu -->
+<!ENTITY matrixMenu.label "Matrix">
+<!ENTITY matrixmenu.accesskey "b">
+<!-- Select Submenu -->
+<!ENTITY matrixSelectMenu.label "Select">
+<!ENTITY matrixselectmenu.accesskey "s">
+
+<!ENTITY matrixSelectMenu2.label "Matrix Select">
+<!ENTITY matrixInsertMenu2.label "Matrix Insert">
+<!ENTITY matrixDeleteMenu2.label "Matrix Delete">
+
+<!-- Insert SubMenu -->
+<!ENTITY matrixInsertMenu.label "Insert">
+<!ENTITY matrixinsertmenu.accesskey "i">
+<!ENTITY matrixMatrix.label "Matrix">
+<!ENTITY matrixmatrix.accesskey "t">
+<!ENTITY matrixRow.label "Row">
+<!ENTITY matrixRows.label "Row(s)">
+<!ENTITY matrixrow.accesskey "r">
+<!ENTITY matrixRowAbove.label "Row Above">
+<!-- uses matrixrow.accesskey -->
+<!ENTITY matrixRowBelow.label "Row Below">
+<!ENTITY matrixrowbelow.accesskey "b">
+<!ENTITY matrixColumn.label "Column">
+<!ENTITY matrixColumns.label "Column(s)">
+<!ENTITY matrixcolumn.accesskey "o">
+<!ENTITY matrixColumnBefore.label "Column Before">
+<!-- uses matrixcolumn.accesskey -->
+<!ENTITY matrixColumnAfter.label "Column After">
+<!ENTITY matrixcolumnafter.accesskey "a">
+<!ENTITY matrixCell.label "Cell">
+<!ENTITY matrixCells.label "Cell(s)">
+<!ENTITY matrixcell.accesskey "c">
+<!ENTITY matrixCellContents.label "Cell Contents">
+<!ENTITY matrixcellcontents.accesskey "n">
+<!ENTITY matrixAllCells.label "All Cells">
+<!ENTITY matrixCellBefore.label "Cell Before">
+<!ENTITY matrixallcells.accesskey "a">
+<!-- uses matrixcell.accesskey -->
+<!ENTITY matrixCellAfter.label "Cell After">
+<!ENTITY matrixcellafter.accesskey "f">
+<!-- Delete SubMenu -->
+<!ENTITY matrixDeleteMenu.label "Delete">
+<!ENTITY matrixdeletemenu.accesskey "D">
+
+<!ENTITY matrixFix.label "Fix Matrix Layout">
+<!ENTITY matrixfix.accesskey "f">
+<!-- text for "Join Cells" is in editor.properties 
+     ("JoinSelectedCells" and "JoinCellToRight")
+     the access key must exist in both of those strings
+     But value must be set here for accesskey to draw properly
+-->
+<!ENTITY matrixJoinCells.label "j">
+<!ENTITY matrixjoincells.accesskey "j">
+<!ENTITY matrixSplitCell.label "Split Cell">
+<!ENTITY matrixsplitcell.accesskey "c">
+<!ENTITY convertToMatrix.label "Create Matrix from Selection">
+<!ENTITY converttomatrix.accesskey "r">
+<!ENTITY matrixProperties.label "Matrix Properties...">
+<!ENTITY matrixProperties.accesskey "o">
+
 <!-- Tools menu -->
 <!ENTITY toolsmenu.label "Tools">
 <!ENTITY toolsmenu.accesskey "s">
@@ -647,7 +708,7 @@
 <!ENTITY insertTextCmd.label "Insert Text">
 <!ENTITY testSelectionCmd.label "Dump Selection">
 <!ENTITY testSelectionCmd.accesskey "D">
-<!ENTITY testTableLayoutCmd.label "Test Table Layout">
+<!ENTITY testMatrixLayoutCmd.label "Test Matrix Layout">
 <!ENTITY testDocumentCmd.label "Dump Document">
 <!ENTITY showEmbeddedCmd.label "Show Embedded Objects">
 <!ENTITY dumpContentCmd.label "Dump Content Tree">
