@@ -1,0 +1,950 @@
+% File 'uga.sty' -- Michael A. Covington 1994-2007
+% Edited by Zachary Hunter 1997
+% Edited by Robert Savickas 1999
+% Edited by Isidor Ruderfer 2003
+% Contribution by Hajime Uchiyama 2007
+% Version 3.5
+
+% This file should reside in your current directory or in
+% the directory where LaTeX '.sty' files are kept.
+% If it is in both places, the one in your current directory takes
+% precedence.
+%
+% It NO LONGER works with LaTeX versions prior to 2e.
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesClass{uga}[2007/04/11 University of Georgia thesis style sheet]
+
+\def\ugastyversion{3.5}
+
+\typeout{* --------------------------------------------------------------------------}
+\typeout{* UGa style sheet, version 3.5, April 2007.                                 }
+\typeout{* For instructions read the file ``ugasample.tex'' distributed herewith.    }
+\typeout{* Be sure to read the important note there about the A4 paper size problem. }
+\typeout{* --------------------------------------------------------------------------}
+
+
+%
+%  ATTENTION, DEGREE CANDIDATE: DO NOT MODIFY THIS FILE.
+%
+%  Occasionally, Graduate School format-checkers may erroneously ask you to
+%  change aspects of the format that are not intended to be under your control.  
+%  In case of difficulty, contact the electronic publishing office of the
+%  Graduate School, and in case of further difficulty, ask them to contact
+%  the person who maintains uga.sty (currently Michael Covington, mc@uga.edu).
+%
+%  HOWEVER, PLEASE NOTE that uga.sty may not produce the correct format if you
+%  combine it with other LaTeX extensions that also redefine the format, or with
+%  LyX or similar typing aids.  When in doubt, drop back to plain LaTeX (as in
+%  ugasample.tex) and see if you are getting correct results.  At minimum, put
+%  \usepackage{uga.sty} after all the other \usepackage commands.
+%
+
+
+% This is a LaTeX style sheet for University of Georgia theses,
+% intended to be used with 12pt report style only.
+
+% Caution!  If you do not also have the file UGASAMPLE.TEX
+%     you must get it.  It contains essential documentation for this style sheet.
+
+% Caution!  Your output may be generated for the WRONG PAPER SIZE
+%     unless you follow the instructions given under "The A4 Paper Size Problem"
+%     in ugasample.tex.
+
+% To be done in later versions of uga.sty:
+% * Handling of \sc command in the table of contents needs to be made more elegant.
+%     Right now \sc is executed in several superfluous places.
+%     Note also the problem with a footnote on a chapter title - user must provide \rm.
+% * Generate an error message if the graduation month is not May, August, or December?
+
+% New in version 3.5:
+% * Compatibility with the 'color' and 'xcolor' packages.  Physical placement of
+%   figures and tables may be slightly different, but still within specifications.
+
+% New in version 3.4:
+% * Greater prominence given to the A4 paper size problem.
+
+% New in version 3.3:
+% * Corrected behavior of \appendix command (for theses that have only 1 appendix).
+
+% New in version 3.2:
+% * Ability to have joint major professors (\secondprofessor command).
+% * Footnotes to chapter titles are better behaved.
+
+% New in version 3.1:
+% * Improved documentation.  No change to the printed format.
+
+% New in version 3.0:
+% * Changed to 1-inch margins, with adjustments to title pages and page numbers.
+% * Abstract is double-spaced.
+% * No extra space in list of figs and list of tables between items in diff. chapters.
+%     (Two "addvspace" directives commented out in defn. of chapter.)
+% * In ugasample.tex, use ps2pdf package in order to generate hyperlinks in the eventual PDF output.
+%     That actually does not affect uga.sty itself.
+% * In ugasample.tex, changed Dean's name, example graduation month, etc.
+
+% This style sheet is considerably closer to Turabian format than the
+% style sheets used at other institutions.
+
+% Developed by:   Michael A. Covington
+%                 Artificial Intelligence Center
+%                 The University of Georgia
+%                 Athens, Georgia 30602
+
+% Incorporating code by Leslie Lamport (from the LaTeX distribution)
+% and by Joseph Pallas et al. (from SUTHESIS.STY, Stanford University).
+
+
+
+% PAGINATION:
+%   The abstract pages are not numbered.
+%   The title page, signature page, and copyright page are pages i-iii
+%     but do not have numbers printed on them.
+%   Roman numbering continues until explicitly changed to Arabic
+%     at the beginning of the text.
+
+
+%%%%%%%%%%%%%%%%%%
+% INITIALIZATION %
+%%%%%%%%%%%%%%%%%%
+
+% Make sure that the user specified \documentstyle[12pt]{report}
+% \usepackage{uga2e}.
+% A common error is to say \documentstyle{uga}  (wrong!).
+%
+\@ifundefined{chapter}
+   {\@latexerr{-- WRONG DOCUMENTSTYLE; SHOULD BE:
+\noexpand\documentclass[12pt]{report}}
+              {-- Documentstyle should be:
+\noexpand\documentstyle[12pt]{report}}}
+   {}
+
+
+
+%%%%%%%%%%%%%%%%
+% DECLARATIONS %
+%%%%%%%%%%%%%%%%
+
+% Allow the author to declare degree, year, professor, etc.,
+% and provide suitable defaults.
+
+\gdef\ugapreviousdegrees{(*Previous Degrees Go Here*)}
+\def\previousdegrees#1{\gdef\ugapreviousdegrees{#1}}
+
+\gdef\ugathisdegree{(*UGa Degree Goes Here*)}
+\def\thisdegree#1{\gdef\ugathisdegree{#1}}
+
+\gdef\ugathesistype{(*Thesis Type Goes Here*)}
+\def\thesistype#1{\gdef\ugathesistype{#1}}
+
+\gdef\ugathesisyear{\number\year}
+\def\thesisyear#1{\gdef\ugathesisyear{#1}}
+
+% IFRuderfer 20030916
+% Should generate an error message if month is not May, August, or December?
+
+\edef\thismonth{\ifcase\month\or
+  January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi}
+
+\gdef\ugathesismonth{\thismonth}
+\def\thesismonth#1{\gdef\ugathesismonth{#1}}
+
+\gdef\ugaprofessor{(*Major professor's name*)}
+\def\professor#1{\gdef\ugaprofessor{#1}}
+
+
+% M. Covington 2005 Feb 3
+\gdef\ugasecondprofessor{}
+\def\secondprofessor#1{\gdef\ugasecondprofessor{#1}}
+
+
+\gdef\ugaindexwords{(*Index words go here*)}
+\def\indexwords#1{\gdef\ugaindexwords{#1}}
+
+\gdef\ugafulltitle{(*Full title, not broken by backslashes, goes here*)}
+\def\fulltitle#1{\gdef\ugafulltitle{#1}}
+
+% For electronic approval page
+
+\gdef\ugaci{*Committee member I*}
+\def\memberi#1{\gdef\ugaci{#1}}
+
+\gdef\ugacii{*Committee member II*}
+\def\memberii#1{\gdef\ugacii{#1}}
+
+\gdef\ugaciii{~}
+\def\memberiii#1{\gdef\ugaciii{#1}}
+
+\gdef\ugaciv{~}
+\def\memberiv#1{\gdef\ugaciv{#1}}
+
+\gdef\ugacv{~}
+\def\memberv#1{\gdef\ugacv{#1}}
+
+\gdef\ugadean{*Dean's Name*}
+\def\dean#1{\gdef\ugadean{#1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OPTIONS -- These are obsolete. %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\nocopyright}{\typeout{Copyright page is no longer optional.}}
+
+\newcommand{\electronic}{\gdef\ugaelectronic{1}}
+
+\electronic      % new in v2.0, no longer optional
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MARGINS AND PAGE LAYOUT %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Pages are numbered at the upper right,
+% except that the first page of each chapter
+% is numbered at the bottom.
+
+\pagestyle{myheadings}
+\markboth{}{}
+
+\raggedbottom
+
+%\textfloatsep 1.5in   % new 2001 April 19
+\textfloatsep 1in      % 2001 Dec 21
+\floatsep 0.75in       % 2003 Dec 7
+
+\frenchspacing        % new 2001 Dec 21
+
+% (Following copied from SUTHESIS.STY, Stanford University.)
+
+% We need 1" margins except on the binding edge, where it is 1 1/2"
+% Theses are single-sided, so we don't care about \evensidemargin
+% \oddsidemargin 0.4in      % left margin 1.4 in   % adjusted 2000 April 19
+% IFRuderfer 20030916
+% above command commented out to reflect change to
+% 1 inch left margin in new style manual
+
+\oddsidemargin 0in      % left margin 1.4 in   % adjusted 2000 April 19
+\evensidemargin 0in
+\marginparwidth 40pt
+\marginparsep 10pt
+
+% IFRuderfer 200310231026
+% \topmargin -0.15in
+\topmargin -0.6in
+
+% IFRuderfer 200310231330
+% \headsep .18in
+\headsep .4in
+
+% IFRuderfer 200310231020
+% \textheight 8.79in
+\textheight 9.00in
+
+% IFRuderfer 20031015
+% textwidth was 5.92
+\textwidth 6.5in
+
+\footskip 0.37in    % default is 0.5 in and page numbers come out too low
+
+% Reduce the overall amount of hyphenation
+% These aren't usable with TeX versions lower than 3.0.
+% If you are using a lower version of TeX, delete the next 3 lines.
+\emergencystretch=0.2in
+\lefthyphenmin=3
+\righthyphenmin=4
+
+% Disallow page breaks at hyphens, except where the only alternative
+% is a widow or orphan (club)
+\brokenpenalty=9900
+
+% Disallow all widows and orphans (clubs)
+\widowpenalty=10000
+\clubpenalty=10000
+
+% Use 1.65 times the normal baseline-to-baseline skip
+% for the appearance of double spacing
+\renewcommand{\baselinestretch}{1.65}
+
+% Print footnotes in small (not tiny) type
+\let\footnotesize\small
+
+% Redefine the macro used for floats (including figures and tables)
+% so that single spacing is used.
+
+% --- The following did not work with the color and xcolor packages.
+% (Note \def\figure{\@float{figure}set single spacing} doesn't work
+%  because figure has an optional argument)
+%\def\@xfloat#1[#2]{\ifhmode \@bsphack\@floatpenalty -\@Mii\else
+%   \@floatpenalty-\@Miii\fi\def\@captype{#1}\ifinner
+%      \@parmoderr\@floatpenalty\z@
+%    \else\@next\@currbox\@freelist{\@tempcnta\csname ftype@#1\endcsname
+%       \multiply\@tempcnta\@xxxii\advance\@tempcnta\sixt@@n
+%       \@tfor \@tempa :=#2\do
+%                        {\if\@tempa h\advance\@tempcnta \@ne\fi
+%                         \if\@tempa t\advance\@tempcnta \tw@\fi
+%                         \if\@tempa b\advance\@tempcnta 4\relax\fi
+%                         \if\@tempa p\advance\@tempcnta 8\relax\fi
+%         }\global\count\@currbox\@tempcnta}\@fltovf\fi
+%    \global\setbox\@currbox\vbox\bgroup
+%    \def\baselinestretch{1}\@normalsize
+%    \boxmaxdepth\z@
+%    \hsize\columnwidth \@parboxrestore}
+
+% Here is a much simpler redefinition suggested by Hajime Uchiyama
+% that is compatible with the 'color' and 'xcolor' packages.    
+% He found it in http://www.math.ncsu.edu/grad/ncsuthesiseaw.cls,
+% which we gratefully acknowledge.
+\let\latex@xfloat=\@xfloat
+\def\@xfloat #1[#2]{\latex@xfloat #1[#2]
+\def\baselinestretch{1}\@normalsize \normalsize}
+    
+    
+% Redefine the macro used for footnotes to use single spacing
+% and always start in roman type (M. Covington 2005 Feb 3)
+\long\def\@footnotetext#1{\insert\footins{\def\baselinestretch{1}\footnotesize\rm
+    \interlinepenalty\interfootnotelinepenalty
+    \splittopskip\footnotesep
+    \splitmaxdepth \dp\strutbox \floatingpenalty \@MM
+    \hsize\columnwidth \@parboxrestore
+   \edef\@currentlabel{\csname p@footnote\endcsname\@thefnmark}\@makefntext
+    {\rule{\z@}{\footnotesep}\ignorespaces
+      #1\strut}}}
+
+% Define environment 'singlespace', which can be used within other
+% environments such as 'quote' (but not 'verbatim') to force single
+% spacing.  From doublespace.sty; originally credited to MIT.
+
+\def\singlespace{%
+\vskip\parskip%
+\vskip\baselineskip%
+\def\baselinestretch{1}%
+\ifx\@currsize\normalsize\@normalsize\else\@currsize\fi%
+%\tiny\normalsize%
+\vskip-\parskip%
+\vskip-\baselineskip%
+}
+
+\def\endsinglespace{\par}
+
+% Redefine 'verbatim' so that it always single-spaces.
+% Michael A. Covington 1992
+
+% If you want 'verbatim' to double-space, simply make your own
+% copy of uga.sty in which this code is commented out.
+
+\def\@verbatim{%
+\trivlist%
+\vskip\topskip%
+%\vskip\parskip%
+%\setlength{\partopsep}{0pt}%
+\def\baselinestretch{1}%
+\ifx\@currsize\normalsize\@normalsize\else\@currsize\fi%
+%\tiny\normalsize%
+\vskip-\topskip%
+%\vskip-\parskip%
+\item[]\if@minipage\else\vskip\parskip\fi
+\leftskip\@totalleftmargin\rightskip\z@
+\parindent\z@\parfillskip\@flushglue\parskip\z@
+\@tempswafalse \def\par{\if@tempswa\hbox{}\fi\@tempswatrue\@@par}
+\obeylines \tt \catcode``=13 \@noligs \let\do\@makeother \dospecials}
+
+\def\verbatim{\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+\let\endverbatim=\endtrivlist
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX AND APPENDICES %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \appendix sets the chapter heading to say Appendix and sets Appendixflag.
+
+\renewcommand\appendix{\par
+  \setcounter{chapter}{\m@ne}%  % The appendix is unnumbered and is internally number 0.
+  \setcounter{section}{0}%
+  \newcommand\appendixflag{Appendix}
+  \renewcommand\@chapapp{Appendix}%
+  \renewcommand\thechapter{\@Alph\c@chapter}}
+
+% \appendices does the same but does not set Appendixflag.  
+  
+\newcommand\appendices{\par
+  \setcounter{chapter}{0}%
+  \setcounter{section}{0}%
+  \renewcommand\@chapapp{Appendix}%
+  \renewcommand\thechapter{\@Alph\c@chapter}}
+  %\addtocontents{toc}{\noindent Appendix}}    % Changed from Appendices, ver 1.7, then moved elsewhere
+
+
+%%%%%%%%%%%%%%%%%%%%
+% CHAPTER HEADINGS %
+%%%%%%%%%%%%%%%%%%%%
+
+% Centered at top of page, in imitation of Turabian et al.
+% This code is from rep12.sty and report.cls, somewhat modified.
+
+% The following was modified to add "Chapter" or "Appendix" in the
+% table of contents, just above the column of chapter numbers
+% before Chapter 1 and Appendix A, if the user chose \appendices.
+% If the user chose \appendix then the appendix gets just 1 contents line.
+
+% Modified further in version 1.8 to correct error that printed "Page Chapter".
+% Modified in version 3.0 to eliminate extra vertical space between chapters
+%   in the list of figures and list of tables.
+
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+                         \refstepcounter{chapter}%
+                         \typeout{\@chapapp\space\thechapter.}%
+						 % Note that if user chose Appendix (just 1 appendix), which will be unnumbered,
+						 % then the chapter number will not be 1 here because \appendix reset it.
+                         \ifnum \c@chapter=\@ne%        % if chapter number = 1:  NEW IN V 1.7
+                             \addtocontents{toc}{\par\vspace{6\p@}}%              % changed in v1.8
+                             \addtocontents{toc}{\noindent{\sc\@chapapp}}%        % changed in v1.8
+                             \addtocontents{toc}{\vspace{-3\p@}}%
+                         \fi%
+                         %\addcontentsline{toc}{chapter}%
+                         %          {\protect\numberline{\thechapter}#1}%
+                         \@ifundefined{appendixflag}% tells whether there is exactly 1 appendix
+                         {\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}#1}}% for chapter or 1 appendix of many
+                         {\addcontentsline{toc}{pseudochapter}{\@chapapp: #1}}% for lone appendix
+                    \else
+                         \@ifundefined{appendixflag}% tells whether there is exactly 1 appendix
+                         {\addcontentsline{toc}{chapter}{#1}}% for chapter or 1 appendix of many
+                         {\addcontentsline{toc}{pseudochapter}{\@chapapp: #1}}% for lone appendix
+                    \fi
+                    \chaptermark{#1}%
+                    %\addtocontents{lof}{\protect\addvspace{10\p@}}%  % eliminated in v 3.0
+                    %\addtocontents{lot}{\protect\addvspace{10\p@}}%  % eliminated in v 3.0
+                    \if@twocolumn
+                      \@topnewpage[\@makechapterhead{#2}]%
+                    \else
+                      \@makechapterhead{#2}%
+                      \@afterheading
+                    \fi}
+
+% \@makechapterhead {TEXT} : Makes the heading for the \chapter command.
+%
+
+\def\@makechapterhead#1{             % Heading for \chapter command
+  \vspace*{37pt}                     % Space at top of text page.
+
+  % IFRuderfer 200310231307
+  % \vskip copied from title page etc of frontmatter
+   \vskip -5pt
+  { \parindent 0pt \raggedright
+    \ifnum \c@secnumdepth >\m@ne     % IF secnumdepth > -1 THEN
+      \sc
+      \@ifundefined{appendixflag}
+        {\centerline{\@chapapp{} \thechapter}} % Print 'Chapter' and number.
+        {\centerline{\@chapapp{}}}     % Print only 'Appendix' with no number.
+         %\addcontentsline{toc}{pseudochapter}{Appendix}} %add appendix to toc.
+      \par
+      \vskip 10pt
+    \fi                              % Space between number and title.
+    \sc                              % Title.
+%    {\centering #1} \par
+    \center #1 \endcenter \par             % CHANGED April 1994.
+    \nobreak                         % TeX penalty to prevent page break.
+    \vskip 25pt                      % Space between title and text.
+  } }
+
+% \@makeschapterhead {TEXT} : Makes the heading for the \chapter* command.
+%
+
+\def\@makeschapterhead#1{            % Heading for \chapter* command
+  % IFRuderfer 200310231307
+  % \vspace reduced from 25pt
+  \vspace*{18pt}                     % Space at top of page.
+
+  { \parindent 0pt \raggedright
+    \sc                              % Title
+
+        \@ifundefined{appendixflag}
+        {}
+        {\centerline{\@chapapp{}}     % Print only 'Appendix' with no number.
+         %\addcontentsline{toc}{pseudochapter}{Appendix} %add appendix to toc. 
+         \par
+         \vskip 10pt}                  % Space between 'Appendix' and Title.
+         \center #1 \endcenter \par   % Print title.
+    \nobreak                         % TeX penalty to prevent page break.
+    \vskip 25pt                      % Space between title and text.
+  } }
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SECTION AND SUBSECTION HEADINGS %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% As in rep12.sty, but without any enlarged or bold type.  Small caps are used...
+
+% (Change, 24 May 1992: Small caps for subsubsections too.)
+
+\def\section{\@startsection {section}{1}{\z@}{-3.5ex plus -1ex minus
+ -.2ex}{2.3ex plus .2ex}{\normalsize \sc}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-3.25ex plus -1ex minus
+ -.2ex}{1.5ex plus .2ex}{\normalsize \sc}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex plus
+ -1ex minus -.2ex}{1.5ex plus .2ex}{\normalsize \sc}}
+\def\paragraph{\@startsection
+ {paragraph}{4}{\z@}{3.25ex plus 1ex minus .2ex}{-1em}{\normalsize}}
+\def\subparagraph{\@startsection
+ {subparagraph}{4}{\parindent}{3.25ex plus 1ex minus
+ .2ex}{-1em}{\normalsize}}
+
+
+
+%%%%%%%%%%%%%%%%%%
+% PSEUDOCHAPTERS %
+%%%%%%%%%%%%%%%%%%
+
+% The preface, acknowledgements, etc. are marked as \pseudochapter{Title}
+% rather than \chapter*{Title}.  This puts them into the table of contents.
+
+% Adapted from suthesis.sty.
+
+\def\pseudochapter#1{%
+        \chapter*{#1}
+        \addcontentsline{toc}{pseudochapter}{#1}}
+
+% Redefine 'thebibliography' to do this too.
+
+\def\thebibliography#1{\pseudochapter{Bibliography\@mkboth
+ {BIBLIOGRAPHY}{BIBLIOGRAPHY}}\list
+ {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+
+% New in 2000: 'chapterbibliography' for a bibliography at the end of
+% a chapter.
+
+\def\refname{References}
+
+\newenvironment{chapterbibliography}[1]
+     {\section{\refname}
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `chapterbibliography' environment}}%
+      \endlist}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LISTS OF FIGURES AND TABLES %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% New in version 1.9: This is more automated than before.
+
+% To avoid conflict, these names are constructed in honor of Ogden Nash's "3-L lllama".
+
+\let\lllistoffigures\listoffigures
+\let\lllistoftables\listoftables
+
+% Changed in 1.9a
+\def\listoffigures{\newpage\addcontentsline{toc}{pseudochapter}{List of Figures}\lllistoffigures}
+\def\listoftables{\newpage\addcontentsline{toc}{pseudochapter}{List of Tables}\lllistoftables}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%
+% TABLE OF CONTENTS %
+%%%%%%%%%%%%%%%%%%%%%
+
+\def\contentsname{Table of Contents}
+
+% Entries do not use boldface. Copied with modifications from report.sty.
+
+\renewcommand\tableofcontents{%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \chapter*{\contentsname
+        \@mkboth{%
+           \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
+    \hfill Page\vspace{-6pt}%                      % New in v 1.7
+    \@starttoc{toc}%
+    \if@restonecol\twocolumn\fi
+    }
+
+% IFRuderfer 200310151243
+% Something needs to be changed in here so that there isn't extra space
+% between the last table/figure in chapter x and the first table/figure
+% in chapter x+2 when there are no tables/figures in chapter x+1.
+
+\def\l@part#1#2{\addpenalty{-\@highpenalty}
+ \addvspace{2.25em plus 1pt} \begingroup
+ \@tempdima 3em \parindent \z@ \rightskip \@pnumwidth \parfillskip
+-\@pnumwidth
+ {%\large \bf
+  \sc \leavevmode #1\hfil \hbox to\@pnumwidth{\hss #2}}\par
+ \nobreak \global\@nobreaktrue \everypar{\global\@nobreakfalse\everypar{}}
+\endgroup}
+
+%\def\l@chapter{\vskip 6pt \sc \@dottedtocline{0}{0em}{1.5em}}
+%\def\l@section{\@dottedtocline{1}{1.5em}{2.3em}}
+%\def\l@subsection{\@dottedtocline{2}{3.8em}{3.2em}}
+%\def\l@subsubsection{\@dottedtocline{3}{7.0em}{4.1em}}
+
+
+% Version 1.7: Indent deeper, except for pseudochapters
+% Version 1.8: All are explicitly \sc to avoid problems.
+
+\def\l@pseudochapter{\vskip 6pt \sc \@dottedtocline{0}{0em}{1.5em}}
+\def\l@chapter{\vskip 6pt \sc \@dottedtocline{0}{1.5em}{1.5em}}
+\def\l@section{\sc\@dottedtocline{1}{3.8em}{2.3em}}
+\def\l@subsection{\sc\@dottedtocline{2}{7.0em}{3.2em}}
+\def\l@subsubsection{\sc\@dottedtocline{3}{10.0em}{4.1em}}
+
+%The args of \@dottedtocline are:
+%  1. depth (0 for chapter)
+%  2. left skip
+%  3. right indent (?)
+%  4. (supplied externally) title of the chapter, section, etc.
+%  5. (supplied externally) page number
+
+% List sections in the table of contents.  Do not list subsections...
+\setcounter{tocdepth}{1}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TITLE, COPYRIGHT, AND SIGNATURE PAGES %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Code taken from titlepage.sty and modified extensively.
+% \maketitle generates title page, copyright page, and signature page.
+
+\def\maketitle{
+ %
+ % Title page
+ %
+ \newpage
+ \setcounter{page}{1}
+ \thispagestyle{empty}
+% \let\footnotesize\small      % Local definitions to make \thanks produce
+% \let\footnoterule\relax      % \normalsize footnotes with no separating rule.
+ \null
+ %\vfil
+ % IFRuderfer 200310231546
+ % \vspace*{37pt}
+ \vspace*{48pt}                     % Space at top of text page.
+% \vskip 1pt                   % To adjust centering.  (?)
+ \begin{center}
+   \vskip -30pt
+   {\sc \@title \par}         % Set title in small caps.
+   \vskip 18pt                % Vertical space after title.
+   by
+   \vskip 18pt
+   {\sc                 % Set author in small caps.
+     \lineskip 1.0em
+     \begin{tabular}[t]{c}\@author
+     \end{tabular}\par}
+    \vskip 12pt
+    {\begin{tabular}[t]{c}\ugapreviousdegrees    % Candidate's degrees.
+    \end{tabular}\par}
+    \vfill                     % Vertical space after degrees.
+    A \ugathesistype\ Submitted to the Graduate Faculty \par
+    of The University of Georgia in Partial Fulfillment \par
+    of the \par
+    Requirements for the Degree \par
+    \vskip 10pt
+    {\sc \ugathisdegree} \par
+    \vskip 36pt
+    {\sc Athens, Georgia} \par
+    \vskip 18pt
+    \ugathesisyear \par
+\end{center} \par
+%
+% Copyright page, included in ordinary numbering sequence
+%
+\@ifundefined{uganocopyright}
+  {
+  \newpage
+  \thispagestyle{empty}
+    \vspace*{5.5in} % IFRuderfer 20031015, changed from 3.5in
+    \begin{center}
+      \copyright ~ \ugathesisyear \par
+      \@author \par
+      All Rights Reserved \par
+    \end{center}
+  }
+  {
+  \typeout{* (No copyright page.)}
+  }
+%
+% Signature page, counts in numbering, no number printed
+%
+\newpage
+\thispagestyle{empty}
+ \null
+ % IFRuderfer 200310231600
+ %  \vspace*{37pt}
+ \vspace*{48pt}                     % Space at top of text page.
+%\vskip 1pt                    % To adjust centering.  (?)
+ \begin{center}
+   \vskip -30pt
+   {\sc \@title \par}          % Set title in small caps
+   \vskip 18pt                 % Vertical space after title.
+   by
+   \vskip 18pt
+   {\sc                        % Set author in large size.
+     \lineskip 1.0em
+     \begin{tabular}[t]{c}\@author
+     \end{tabular}\par}
+    \vfill                     % Vertical space in middle of page
+ \end{center} \par
+%
+% Rest of signature page is different depending on whether electronic!
+% ... And nowadays they are always electronic.
+%
+\@ifundefined{ugaelectronic}{
+ \typeout{You have requested a CONVENTIONAL signature page.}
+ \vfill
+ {
+ \parindent 0pt
+ ~ \hfill
+   \makebox[200pt][l]{Approved:}
+   \par
+ \vskip 18pt
+ ~ \hfill
+   \underline{\makebox[200pt]{~}}
+   \par
+ \vskip -4pt
+ ~ \hfill
+   \makebox[200pt][l]{Major Professor}
+   \par
+ \vskip 12pt  % new in version 1.4
+ ~ \hfill
+   \underline{\makebox[200pt]{~}}
+   \par
+ \vskip -4pt
+ ~ \hfill
+ \makebox[200pt][l]{Date}
+   \par
+\vskip 48pt
+Approved: \par
+\vskip 18pt
+\underline{\makebox[200pt]{~}} \par
+\vskip -4pt
+Graduate Dean \par
+\vskip 12pt
+\underline{\makebox[200pt]{~}} \par
+\vskip -4pt
+Date \par
+}
+} % else (electronic version)
+{
+ \typeout{You have requested an approval page for ELECTRONIC submission.}
+ \vfill
+{
+ \parindent 0pt
+ ~ \hfill
+   \makebox[250pt][l]{Approved:}
+   \par
+ \vskip 12pt
+% Added 2005 Feb 3.  Provision for second major professor.
+  \ifx\ugasecondprofessor\@empty
+ ~ \hfill
+   \makebox[100pt][l]{Major Professor:}\makebox[150pt][l]{\ugaprofessor}
+   \par
+ \else
+ ~ \hfill
+   \makebox[100pt][l]{Major Professors:}\makebox[150pt][l]{\ugaprofessor}
+   \par
+   \vskip -8pt
+ ~ \hfill
+   \makebox[100pt][l]{\hfill}\makebox[150pt][l]{\ugasecondprofessor}
+   \par
+ \fi
+ \vskip 12pt
+ ~ \hfill
+   \makebox[100pt][l]{Committee:}\makebox[150pt][l]{\ugaci}
+   \par
+ \vskip -8pt
+ ~ \hfill
+   \makebox[100pt][l]{\hfill}\makebox[150pt][l]{\ugacii}
+   \par
+ \vskip -8pt
+ ~ \hfill
+   \makebox[100pt][l]{\hfill}\makebox[150pt][l]{\ugaciii}
+   \par
+ \vskip -8pt
+ ~ \hfill
+   \makebox[100pt][l]{\hfill}\makebox[150pt][l]{\ugaciv}
+   \par
+ \vskip -8pt
+ ~ \hfill
+   \makebox[100pt][l]{\hfill}\makebox[150pt][l]{\ugacv}
+   \par
+\vfill
+Electronic Version Approved: \par
+\vskip 12pt
+\ugadean \par
+\vskip -8pt
+Dean of the Graduate School \par
+\vskip -8pt
+The University of Georgia \par
+\vskip -8pt
+\ugathesismonth~\ugathesisyear
+}
+} % end if
+%
+%
+%
+\setcounter{footnote}{0}       % Footnotes start at zero again.
+\gdef\@thanks{}
+\gdef\@author{}
+\gdef\@title{}
+\let\maketitle\relax}
+
+
+%%%%%%%%%%%%%%%%%%%%
+% ABSTRACT PAGE(S) %
+%%%%%%%%%%%%%%%%%%%%
+
+% Delimited by \begin{abstract} and \end{abstract}, which
+% should enclose only the text of the abstract.
+
+% The heading, and the closing with index words, are generated
+% in the format desired by University Microfilms, using
+% the user's \professor and \indexwords declarations.
+
+% Possible pitfall: Page numbers are suppressed only on the
+% _first_ and _last_ abstract pages. If an abstract is more than
+% two pages long, tough luck -- University Microfilms won't
+% like it either.
+
+% Old (pre-2002) code:
+%\def\abstract{
+%   %\titlepage
+%   \thispagestyle{empty}
+%   \setlength{\baselineskip}{14.5pt}   % for ersatz single spacing
+%   %\null
+%   %\vfil
+%     \begin{list}{}{
+%       \setlength{\labelwidth}{0pt}
+%       \setlength{\labelsep}{0pt}
+%       \setlength{\itemindent}{-12pt}
+%       \setlength{\leftmargin}{12pt}
+%       \setlength{\listparindent}{-12pt}
+%       \setlength{\parsep}{0pt}
+%       \setlength{\itemsep}{0pt}
+%                   }
+%       \item {\sc \@author}
+%       \item \ugafulltitle
+%       \item (Under the direction of {\sc \ugaprofessor})
+%     \end{list}
+%   \large \normalsize                  % force return to normal line spacing
+%}
+
+% Modified 2003 to suppress page numbering on *all* the abstract pages
+% (there are usually two).
+
+\def\abstract{
+   \titlepage % suppress page numbering and counting
+   \pagestyle{empty}
+   \vspace*{48pt}                 % Space at top of text page.
+
+   %\vskip 1pt                    % To adjust centering.  (?)
+   \begin{center}
+     \vskip -30pt
+     {\sc \@title \par}          % Set title in small caps
+     \vskip 12pt                 % Vertical space after title.
+     by
+     \vskip 12pt
+     {\sc                        % Set author in large size.
+     \lineskip 1.0em
+     \begin{tabular}[t]{c}\@author
+     \end{tabular}\par}
+     \vskip 12pt
+     % 2005 Feb 3: Provision for second major professor
+     \ifx\ugasecondprofessor\@empty
+     (Under the direction of \ugaprofessor)
+     \else
+     (Under the direction of \ugaprofessor\ and \ugasecondprofessor)
+     \fi
+     \vskip 14pt
+     {\sc Abstract}
+   \end{center}
+   \par\indent\ignorespaces%   % final % is critical here!
+}
+
+% Old pre-2002 code:
+%\def\endabstract{
+%    \thispagestyle{empty}
+%    \begin{list}{\sc Index words: \hfill}
+%                {
+%                 \setlength{\partopsep}{0pt}       % Minor changes here in v2.0
+%                 \setlength{\leftmargin}{1.4in}
+%                 \setlength{\labelwidth}{1.2in}
+%                 \setlength{\labelsep}{0.2in}
+%                }
+%    \item \begin{flushleft} \ugaindexwords \end{flushleft}
+%    \end{list}
+%  \par
+%  \vfil\null
+%  %\endtitlepage
+%}
+
+\def\endabstract{
+    \begin{list}{\sc Index words: \hfill}
+                {
+                 \setlength{\partopsep}{0pt}       % Minor changes here in v2.0
+                 \setlength{\leftmargin}{1.4in}
+                 \setlength{\labelwidth}{1.2in}
+                 \setlength{\labelsep}{0.2in}
+                }
+   % IFRuderfer 200310241425
+   % single spacing needed here now that abstract has changed to double spacing
+   \setlength{\baselineskip}{14.5pt}   % for ersatz single spacing
+   \item \begin{flushleft} \ugaindexwords \end{flushleft}
+    \end{list}
+  \par
+  \vfil\null
+  \endtitlepage % allow page numbering to resume
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REFLIST (REFERENCE LIST) ENVIRONMENT %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% For cowards who don't want to let LaTeX/BibTeX generate the
+% bibliography, but who want to simply type it instead.
+% Within a reflist, each 'paragraph' is a hanging-indented
+% bibliography entry, and extra space is skipped between entries.
+%
+\newenvironment{reflist}{\begin{list}{}%
+{\setlength{\labelwidth}{0pt}
+ \setlength{\labelsep}{0pt}
+ \setlength{\leftmargin}{3em}
+ \setlength{\itemindent}{-3em}
+ \setlength{\listparindent}{-3em}
+ \setlength{\itemsep}{12pt}}\item}{\end{list}}
+    % change 24 May 1992: was 6pt in previous line.
+
+%%%%%%%%%%%%%%%%%%%%%%
+% THAT'S ALL, FOLKS! %
+%%%%%%%%%%%%%%%%%%%%%%
+
+\typeout{* UGa style sheet loaded.}
+

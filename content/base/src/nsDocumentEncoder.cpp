@@ -917,7 +917,7 @@ nsDocumentEncoder::EncodeToString(nsAString& aOutputString)
           prevNode = nsnull;
         }
         nsCOMPtr<nsIContent> content = do_QueryInterface(node);
-        if (content && content->Tag() == nsGkAtoms::tr) {
+        if (content && (content->Tag() == nsGkAtoms::tr || content->Tag() == nsGkAtoms::mtr_)) {
           rv = SerializeNodeStart(node, 0, -1, aOutputString);
           NS_ENSURE_SUCCESS(rv, rv);
           prevNode = node;
@@ -1238,7 +1238,7 @@ nsHTMLCopyEncoder::EncodeToStringWithContext(nsAString& aContextString,
   if (count > 0)
     node = static_cast<nsIDOMNode *>(mCommonAncestors.ElementAt(0));
     nsCOMPtr<nsIContent> content = do_QueryInterface(node);
-  if (node && (IsTextNode(node)||(content && content->Tag() == nsGkAtoms::tr))) 
+  if (node && (IsTextNode(node)||(content && (content->Tag() == nsGkAtoms::tr || content->Tag() == nsGkAtoms::mtr_)))) 
   {
     mCommonAncestors.RemoveElementAt(0);
     // don't forget to adjust range depth info

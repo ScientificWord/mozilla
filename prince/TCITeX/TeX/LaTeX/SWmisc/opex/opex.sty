@@ -1,0 +1,377 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                File: opex.sty                  %
+%                VERSION: 1.08                   %
+%              Date: April 1, 1998               %
+%      (Copyright changed to 1998, 12/22/97      %
+% This file is needed as a substyle of the LaTeX %
+% Article style, to use the OSA OPTICS EXPRESS   %
+% template file, OpEx.tex .                      %
+%                                                %
+%              FOR LATEX 2E USE                  %
+%      \documentclass[10pt]{article}             %
+%      \usepackage{opex}                         %
+%              FOR LATEX 2.09 USE                %
+%      \documentstyle[opex]{article}             %
+%                                                %
+%              FOR REVTeX 3.0 or 3.1 USE         %
+%      \documentstyle[osa,opex]{revtex}          %
+%                                                %
+% Copyright 1997, The Optical Society of America %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              Changes from V1.04       8/11/97  %
+% 1. Centered title, authors, inst, and abstract %
+% 2. copyright moved out of \abstract, to \ocis  %
+% 3. Style guide update                          %
+%              Changes from V1.05      12/18/97  %
+% 1. Journal abbreviation macros are in italics  %
+% 2. final (footers) command in development      %
+%              Changes from V1.06        2/2/98  %
+% 1. Figure \caption{} definition conforms to    %
+%    style: \footnotesize and double indented    %
+% 2. \apa, \apb, \cleo, \assl, and \tops  added  %
+%              Changes from V1.06        4/2/98  %
+% 1. Journal abbreviation italics removed        %
+% 2. Style guide update                          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textwidth5.25in
+\textheight8.5in
+
+\oddsidemargin.625in
+\evensidemargin.625in
+\topmargin0in
+
+\pagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPMENT OF FOOTERS IS IN THIS SECTION
+%
+% THE PLAN:
+%   DEFAULT TO \pagestyle{empty}
+%     IF \draft command is used, then print footers
+%         saying Optics Express DRAFT, date, and page numbers
+%     IF \draft[1234] print MS number
+%     IF \draft[1234][56] print MS number and starting page number
+%     IF \draft[1234][56][4] print MS#, starting page#, vol.1, no
+%     IF \draft[1234][56][4][June 25, 1997; Revised July 25, 1997][7 July 1997]
+%         print MS#, starting page#, vol.1, no, and
+%           Received June 25, 1997; Revised July 25, 1997
+%
+%  PII NOT YET IMPLEMENTED
+%
+\pagestyle{empty}
+
+\def\final#1#2#3#4#5{%
+\makeatletter
+\global\@specialpagefalse
+\def\@oddfoot{\reset@font\rm \footnotesize
+\ifnum\c@page=1
+  %\llap
+  \setcounter{page}{#2}
+  {\protect $\vcenter
+    {\baselineskip10pt
+    \hbox{\# #1 - \$10.00 US}
+    \hbox{\copyright{}~1999~~ OSA}}$%
+\hfill $\vcenter{\baselineskip10pt
+    \hbox{Received #4}
+    \hbox{#5/ Vol. 1, No. #3/OPTICS EXPRESS \,\, \@arabic\c@page}
+  }$ }%\thepage}%
+ \else{\hfill #5/Vol.1,No. #3/ OPTICS EXPRESS \thepage}
+\fi
+} \let\@evenfoot\@oddfoot
+\makeatother
+}
+
+
+\def\thesection{\normalsize  \bf\arabic{section}.}
+\def\thesubsection{\normalsize \it \arabic{section}.\arabic{subsection} }
+\def\sect#1{\thesection{\normalsize \bf #1}}
+\def\subsect#1{\thesubsection{\normalsize \bf #1}}
+\renewcommand{\section}{\@startsection {section}{1}{\z@}%
+                     {-1.7ex}%
+                     {1.5ex}%
+                     {\normalsize\bf }}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+                     {-1.5ex}%
+                     {1.5ex}%
+                     {\normalsize\it }}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{\z@}%
+                     {-1.5ex}%
+                     {1.5ex}%
+                     {\small\it }}
+\def\OEtitle#1{\LARGE \bf \noindent \begin{center} #1 \end{center}\rm \normalsize \vskip.1in }% {\centering #1} added, \\ removed
+\def\OEauthor#1{\indent \parbox{4.25in}{ \noindent% \indent removed, \centering added
+   \normalsize \bf \begin{center} #1 \end{center}\rm } \hfil \vskip-.2cm }
+\def\OEaddress#1{\parskip0pc\indent  \parbox{4.25in}{% \parskip0pc \indent removed
+   \noindent \footnotesize \it \begin{center} #1 \end{center} }\parbox{5.25in} \normalsize
+   \hfil \vskip-.3cm }
+\def\ocis#1{ \vskip.1cm \indent
+   \parbox{4.25in}{\footnotesize \copyright 1999
+   Optical Society of America \\ \bf  OCIS codes: \rm #1 \hfil } \\ \normalsize \vskip.01cm}
+\def\OEemail#1{\parskip0pc \indent \footnotesize% \indent removed
+   \parbox{4.25in}{\begin{center}\it #1 \rm \end{center} } \normalsize  \vskip.01cm}
+
+\newenvironment{OEabstract}%
+{\indent  \begin{minipage}{4.25in} \parindent.25in% \indent removed
+   \noindent \normalsize \bf Abstract: \rm}{\hfil \end{minipage}}
+
+\renewenvironment{abstract}%% \indent removed
+{\indent  \begin{minipage}{4.25in} \parindent.25in%
+   \noindent \normalsize \bf Abstract: \rm}{\hfil \end{minipage}}
+%\renewcommand\endabstract{\copyright 1997
+%   Optical Society of America \hfil \end{minipage}}
+
+% This was the style file distributed as of 4/10/97
+%\newenvironment{OEabstract}%
+%{\indent \indent \begin{minipage}{4.25in} \parindent.25in
+%   \noindent \normalsize {\bf Abstract: }}{\copyright 1997
+%   Optical Society of America \hfil \end{minipage}}
+
+%\renewenvironment{abstract}%
+%{\indent \indent \begin{minipage}{4.25in} \parindent.25in
+%   \noindent \normalsize {\bf Abstract: }}{\copyright 1997
+%   Optical Society of America \hfil \end{minipage}}
+%\renewcommand\endabstract{\copyright 1997
+%   Optical Society of America \hfil \end{minipage}}
+
+\newenvironment{OEReferences}%
+{\hrule \section*{References}
+\newcounter{oeref}
+\begin{list}{\arabic{oeref}.}{\usecounter{oeref}}
+  \setlength{\parsep}{0in}
+  \setlength{\labelwidth}{.25in}
+  \setlength{\labelsep}{.5em}
+  \setlength{\itemsep}{0in}
+  \setlength{\listparindent}{0in}
+  \setlength{\itemindent}{0in}
+  \setlength{\leftmargin}{.2in}
+  \setlength{\rightmargin}{0in}
+  \footnotesize }%
+{\normalsize
+\end{list}
+  \hrule
+  \vskip1pc \par
+}
+\newenvironment{OERefLinks}%
+{\hrule
+\section*{References and links}
+\newcounter{oeref}
+\begin{list}{\arabic{oeref}.}{\usecounter{oeref}}
+  \setlength{\parsep}{0in}
+  \setlength{\labelwidth}{.25in}
+  \setlength{\labelsep}{.5em}
+  \setlength{\itemsep}{0in}
+  \setlength{\listparindent}{0in}
+  \setlength{\itemindent}{0in}
+  \setlength{\leftmargin}{.2in}
+  \setlength{\rightmargin}{0in}
+  \footnotesize }%
+{\normalsize
+\end{list}
+  \hrule
+  \vskip1pc \par
+}
+
+\def\zzyzx{ \\ }
+\let\title\OEtitle
+\let\author\OEauthor
+\let\address\OEaddress
+\let\pacs\ocis
+\let\email\OEemail
+\let\maketitle\zzyzx
+
+\baselineskip11pt
+\renewcommand{\baselinestretch}{1}
+\parskip0mm
+\parindent.5in
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Figure caption mods started 9/19/97
+%
+\newbox\@testboxa
+\newbox\@testboxb
+\newlength\@capwidth
+%\let\@capwidth{4.25in}
+\newif\iffigureon
+
+\long\def\@makecaption#1#2{%
+ \iffigureon{%
+  \hspace{.5in}}%
+ \fi
+  \setbox\@testboxa\hbox{%\outertabfalse %
+    \reset@font\footnotesize\rm#1\penalty10000\hskip4pt plus2pt\ignorespaces#2%
+  }% eo hbox
+  \setbox\@testboxb\vbox{\hsize\@capwidth
+    \ifdim\wd\@testboxa<\hsize  %
+      \hbox to\hsize{\box\@testboxa\hfil}%
+    \else % reset as a paragraph
+      \footnotesize
+      \parindent 0pt  %
+      \unhbox\@testboxa\par
+    \fi
+  }%
+  \box\@testboxb
+} %
+
+%\newcounter{figure}
+%\def\thefigure{\@arabic\c@figure}
+
+\def\fps@figure{tbp}
+\def\ftype@figure{1}
+\def\ext@figure{lof}
+\def\fnum@figure{\figurename\penalty10000\
+    \thefigure.\hskip1em}
+
+\def\figure{%\let\@capwidth\columnwidth
+  \global\figureontrue
+   \setlength{\@capwidth}{4.25in}
+    \vskip1pc
+    \def\@captype{figure}%
+    \interlinepenalty10000 %
+    \@ifnextchar[{\@chuckoptarg}{}%
+  }%
+  \def\endfigure{\goodbreak\vskip1pc\global\figureonfalse}%
+  \@namedef{figure*}{\figure}%
+  \@namedef{endfigure*}{\endfigure}%
+
+\def\fps@table{tbp}
+\def\ftype@table{2}
+\def\ext@table{lot}
+\def\fnum@table{\tablename\kern.33em\thetable.}
+%\if@floats
+%\else %
+  \def\table{%\let\@capwidth\textwidth
+    \let\@capwidth\columnwidth
+    %\settowidth{\@capwidth}{}
+    %\setlength{\@capwidth}{4.25in}
+%    \iffirsttab
+ %     \global\firsttabfalse
+ %     \ifpreprintsty{\newpage\centerline{TABLES}}\fi
+%    \fi
+    \vskip1pc
+%    \global\tableontrue
+    \bgroup\parindent=0pt
+%    \outertabtrue
+    \setcounter{tablenote}{0}%
+    \def\@captype{table}%
+    \@ifnextchar[{\@chuckoptarg}{}%
+  }%
+  \def\endtable{%
+%    \global\tableonfalse\global\outertabfalse
+    {\let\protect\relax\small\vskip2pt\leftskip = 1em\@tablenotes%
+    \par}\xdef\@tablenotes{}%
+    \egroup
+    \vskip1pc plus 1filll \penalty-200 \vskip0pt plus -1filll
+  }%
+\@namedef{table*}{\table}
+\@namedef{endtable*}{\endtable}
+%\fi
+
+\@definecounter{tablenote}
+\def\thetablenote{\it\alph{tablenote}}   %
+\def\@tablenotes{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frenchspacing
+
+\hyphenation {ac-cord-ing
+           allow
+           back-scat-ter
+           back-scat-te-ring
+           back-scat-tered
+           scat-te-ring
+           Based based
+           cases
+           cen-tered
+           changed
+           co-incide
+           con-cerning
+           con-ven-tional
+           de-creased
+           de-po-lar-iz-ation
+           de-tector de-tectors
+           de-vi-ation
+           dis-cussion
+           dis-tribu-tion
+           dis-tribu-tions
+           dis-trib-ute
+           dis-trib-uted
+           Ehhalt
+           extinc-tion
+           found
+           Geest-hacht
+           ground
+           Hink-ley
+           il-lus-trated
+           il-lus-trate
+           Intro-ducing
+           Klap-heck
+           lati-tude
+           measure-ment
+           measure-ments
+           meas-ured
+           measuring
+           mixing
+           north-east
+           orig-inated
+           op-er-ating
+           out-flow
+           pres-ence
+           primary
+           rather
+           rela-tive
+           sig-nal
+           sig-nals
+           solid
+           tem-pera-ture
+           Tem-pera-ture
+           trans-ported
+           tropo-pause
+           Tropo-pause
+           tropo-sphere
+           Tropo-sphere
+           tube
+           tubes
+           Values
+           varies
+           Weather}
+
+\def\opex{ Opt.\ Express }
+\def\ao{ Appl.\  Opt.\ }
+\def\ap{ Appl.\  Phys.\ }
+\def\apa{ Appl.\  Phys.\ A }
+\def\apb{ Appl.\  Phys.\ B }
+\def\apl{ Appl.\ Phys.\ Lett.\ }
+\def\apj{ Astrophys.\ J.\ }
+\def\bell{ Bell Syst.\ Tech.\ J.\ }
+\def\jqe{ IEEE J.\ Quantum Electron.\ }
+\def\assp{ IEEE Trans.\ Acoust.\ Speech Signal Process.\ }
+\def\aprop{ IEEE Trans.\ Antennas Propag.\ }
+\def\mtt{ IEEE Trans.\ Microwave Theory Tech.\ }
+\def\iovs{ Invest.\ Ophthalmol.\ Vis.\ Sci.\ }
+\def\jcp{ J.\ Chem.\ Phys.\ }
+\def\jmo{ J.\ Mod.\ Opt.\ }
+\def\josa{ J.\ Opt.\ Soc.\ Am.\ }
+\def\josaa{ J.\ Opt.\ Soc.\ Am.\ A }
+\def\josab{ J.\ Opt.\ Soc.\ Am.\ B }
+\def\jpp{ J.\ Phys.\ (Paris) }
+\def\nat{ Nature (London) }
+\def\oc{ Opt.\ Commun.\ }
+\def\ol{ Opt.\ Lett.\ }
+\def\pl{ Phys.\ Lett.\ }
+\def\pra{ Phys.\ Rev.\ A }
+\def\prb{ Phys.\ Rev.\ B }
+\def\prc{ Phys.\ Rev.\ C }
+\def\prd{ Phys.\ Rev.\ D }
+\def\pre{ Phys.\ Rev.\ E }
+\def\prl{ Phys.\ Rev.\ Lett.\ }
+\def\rmp{ Rev.\ Mod.\ Phys.\ }
+\def\pspie{ Proc.\ SPIE\ }
+\def\sjqe{ Sov.\ J.\ Quantum Electron.\ }
+\def\vr{ Vision Res.\ }
+
+\def\cleo{ {\it Conference on Lasers and Electro-Optics }}
+\def\assl{ {\it Advanced Solid State Lasers }}
+\def\tops{ Trends in Optics and Photonics }
+
+\input epsf.tex

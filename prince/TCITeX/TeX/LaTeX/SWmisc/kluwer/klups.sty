@@ -1,0 +1,488 @@
+
+%
+% This input file (c) Kluwer Academic Publishers.
+% You are free to use this file as you see fit, provided 
+% that you do not make changes. 
+% If you DO make changes, you are required to rename the files.
+%        
+% \changes{1998/02/04}{Removed oldstyle numerals}
+%
+\def\fileversion{1.15}
+\def\filedate{2000/04/29}
+\NeedsTeXFormat{LaTeX2e}
+%
+%
+% Options: mathtime's options
+% exported commands: \rmgreek (decl) \greekrm (#1)                           
+%
+%
+\ProvidesPackage{klups}[\filedate\space\fileversion\space
+ Kluwer PSfonts package]
+                                                               
+\DeclareOption{uprightgreek}{%
+    \AtEndOfPackage{\rmgreek@redefs}}
+\DeclareOption*{\PassOptionsToPackage\CurrentOption{mathtime}}
+\ProcessOptions\relax
+
+% Sans Serifs in 90% Helvetica
+% Running text Times-Roman
+% Typewriter Courier narrowed
+%                                                        
+                  
+\def\spaces{\space\space\space\space\space} 
+\def\@fontwarnings{}
+\def\@addtofontwarning#1{\g@addto@macro
+        \@fontwarnings{.\MessageBreak #1}}
+                                        
+\renewcommand{\sfdefault}{phv}                         
+\renewcommand{\rmdefault}{ptm}
+\renewcommand{\ttdefault}{pcr}
+\newif\if@couriernarrow \@couriernarrowtrue
+\normalfont
+% Try loading T1 font-encoding (only if psnfss installed)
+% 
+\IfFileExists{T1ptm.fd}{\RequirePackage[T1]{fontenc}}{%
+    \IfFileExists{t1ptm.fd}{\RequirePackage[T1]{fontenc}
+        \let\@acci\`
+        \let\@accii\'
+        \let\@acciii\=
+        }{%
+     \PackageError{klups}{%
+     No encoding for T1 PostScript fonts found}{%
+     Please check your distribution of LaTeX thoroughly!\MessageBreak%
+     There seem to be some files missing the implement the\MessageBreak%
+     new 256 character font encodings
+     }}}%                   
+
+% Try loading text companion fonts (only if psnfss installed)
+% 
+
+\IfFileExists{TS1ptm.fd}{\RequirePackage{textcomp}}{%
+    \IfFileExists{ts1ptm.fd}{\RequirePackage{textcomp}}{%
+            \PassOptionsToPackage{noTS1}{mathtime}%    
+            \@addtofontwarning{%
+            No text companion fonts for Times found,\MessageBreak%
+            \spaces not loading textcomp style}}}
+
+          
+% fontdim5=ex-height
+\def\klutest@font#1#2{\def\klu@font@error{n}%
+    \batchmode \font\klutch=#1 \errorstopmode
+    \ifdim \the\fontdimen5\klutch < 1pt   
+        \def\klu@font@error{y}%
+        \@addtofontwarning{%
+        Font #2 is not available}%                                            
+    \fi \let\klutch\relax
+    }                 
+                         
+\def\eightt{8t}
+\batchmode \font\klutch=ptmr8t \errorstopmode
+\ifdim \the\fontdimen5\klutch < 1pt   
+    \batchmode \font\klutch=ptmrq \errorstopmode
+    \ifdim \the\fontdimen5\klutch < 1pt    %%EEKS
+    \else
+    \gdef\eightt{q}%
+    \@addtofontwarning{%
+    Using old PostScript metrics,\MessageBreak 
+    \spaces consider updating your LaTeX fonts}%
+    \fi                                                             
+\fi 
+\let\klutch\relax
+
+\def\hvtmpl{7tn}
+\def\hvtmph{\eightt n}
+{\def\@tempa{OT1}
+\ifx \@tempa\encodingdefault
+    \batchmode \font\klutch=phvr7tn \errorstopmode
+    \ifdim \the\fontdimen5\klutch < 1pt   
+        \batchmode \font\klutch=phvrn7t \errorstopmode
+        \ifdim \the\fontdimen5\klutch < 1pt   
+            \@addtofontwarning{%
+            Font Helvetica Narrow is not available}% 
+        \else
+            \gdef\hvtmpl{n7t}
+            \gdef\hvtmph{n\eightt}
+        \fi
+    \fi 
+    \let\klutch\relax
+    \klutest@font{phvl7t}{Helvetica Light}
+    \klutest@font{pcrr7tn}{Courier Narrow}
+    \if y\klu@font@error
+     \global\@couriernarrowfalse
+    \fi
+\else
+    \batchmode \font\klutch=phvr\eightt n \errorstopmode
+    \ifdim \the\fontdimen5\klutch < 1pt   
+        \batchmode \font\klutch=phvrn\eightt \errorstopmode
+        \ifdim \the\fontdimen5\klutch < 1pt   
+            \@addtofontwarning{%
+            Font Helvetica Narrow is not available}% 
+        \else
+            \gdef\hvtmpl{n7t}
+            \gdef\hvtmph{n\eightt}
+        \fi
+    \fi 
+    \klutest@font{phvl\eightt}{Helvetica Light}
+    \klutest@font{pcrr8tn}{Courier Narrow}
+    \if y\klu@font@error
+      \global\@couriernarrowfalse
+    \fi
+\fi 
+}
+
+\newif\if@OSF \@OSFfalse
+%\klutest@font{ptmr8dc}{Times SmallCaps and OSF}
+%\if y\klu@font@error
+%    \global\@OSFfalse
+%\fi
+                                           
+\if@OSF       
+    \DeclareTextFontCommand{\textbo}{\boseries}
+    \DeclareTextFontCommand{\textmo}{\moseries}
+    \DeclareRobustCommand\boseries
+        {\not@math@alphabet\boseries\relax
+         \fontseries{bo}\selectfont}
+    \DeclareRobustCommand\moseries
+        {\not@math@alphabet\moseries\relax
+         \fontseries{mo}\selectfont}
+    \def\oldstyle#1{{\fontseries{\f@series o}\selectfont #1}} 
+    \def\oldseries{\fontseries{\f@series o}\selectfont} 
+    \let\i@oldseries\oldseries
+\fi                                                           
+% start .fd files
+
+                                         
+\begingroup \nfss@catcodes
+
+%% Times
+\if@OSF
+
+\DeclareFontFamily{T1}{ptm}{}
+
+\DeclareFontShape{T1}{ptm}{b}{n}{<-> ptmb8t}{}
+\DeclareFontShape{T1}{ptm}{b}{sc}{<-> ptmb8dc}{}
+\DeclareFontShape{T1}{ptm}{b}{sl}{<-> ptmbo8t}{}
+\DeclareFontShape{T1}{ptm}{b}{it}{<-> ptmbi8t}{}
+                             
+\DeclareFontShape{T1}{ptm}{bo}{n}{<-> ptmb8d}{}
+\DeclareFontShape{T1}{ptm}{bo}{sc}{<-> ptmb8dc}{}
+\DeclareFontShape{T1}{ptm}{bo}{sl}{<-> ptmbi8d}{}
+\DeclareFontShape{T1}{ptm}{bo}{it}{<-> ptmbi8d}{}
+
+\DeclareFontShape{T1}{ptm}{m}{n}{<-> ptmr8t}{}
+\DeclareFontShape{T1}{ptm}{m}{sc}{<-> ptmr8dc}{}
+\DeclareFontShape{T1}{ptm}{m}{sl}{<-> ptmro8t}{}
+\DeclareFontShape{T1}{ptm}{m}{it}{<-> ptmri8t}{}
+                             
+\DeclareFontShape{T1}{ptm}{mo}{n}{<-> ptmr8d}{}
+\DeclareFontShape{T1}{ptm}{mo}{sc}{<-> ptmr8dc}{}
+\DeclareFontShape{T1}{ptm}{mo}{sl}{<-> ptmri8d}{}
+\DeclareFontShape{T1}{ptm}{mo}{it}{<-> ptmri8d}{}
+
+\DeclareFontShape{T1}{ptm}{bx}{n}{<->ssub * ptm/b/n}{}
+\DeclareFontShape{T1}{ptm}{bx}{sc}{<->ssub * ptm/b/sc}{}
+\DeclareFontShape{T1}{ptm}{bx}{sl}{<->ssub * ptm/b/sl}{}
+\DeclareFontShape{T1}{ptm}{bx}{it}{<->ssub * ptm/b/it}{}
+          
+\DeclareFontShape{T1}{ptm}{bxo}{n}{<->ssub * ptm/bo/n}{}
+\DeclareFontShape{T1}{ptm}{bxo}{sc}{<->ssub * ptm/bo/sc}{}
+\DeclareFontShape{T1}{ptm}{bxo}{sl}{<->ssub * ptm/bo/sl}{}
+\DeclareFontShape{T1}{ptm}{bxo}{it}{<->ssub * ptm/bo/it}{}
+
+\DeclareFontShape{T1}{ptm}{l}{n}{<->ssub * ptm/m/n}{}
+\DeclareFontShape{T1}{ptm}{l}{sc}{<->ssub * ptm/m/sc}{}
+\DeclareFontShape{T1}{ptm}{l}{sl}{<->ssub * ptm/m/sl}{}
+\DeclareFontShape{T1}{ptm}{l}{it}{<->ssub * ptm/m/it}{}
+
+\DeclareFontShape{T1}{ptm}{lo}{n}{<->ssub * ptm/mo/n}{}
+\DeclareFontShape{T1}{ptm}{lo}{sc}{<->ssub * ptm/mo/sc}{}
+\DeclareFontShape{T1}{ptm}{lo}{sl}{<->ssub * ptm/mo/sl}{}
+\DeclareFontShape{T1}{ptm}{lo}{it}{<->ssub * ptm/mo/it}{}
+
+\fi
+                       
+%% OT1 Courier
+
+\DeclareFontFamily{OT1}{pcr}{\hyphenchar \font =-1}%
+
+\DeclareFontShape{OT1}{pcr}{b}{sc}{<-> pcrbc7t}{}%
+\DeclareFontShape{OT1}{pcr}{m}{sc}{<-> pcrrc7t}{}%
+%%%% condensed courier
+\if@couriernarrow
+\DeclareFontShape{OT1}{pcr}{m}{n}{<-> pcrr7tn}{}%
+\DeclareFontShape{OT1}{pcr}{b}{n}{<-> pcrb7tn}{}%
+\DeclareFontShape{OT1}{pcr}{b}{sl}{<-> pcrbo7tn}{}%
+\DeclareFontShape{OT1}{pcr}{m}{sl}{<-> pcrro7tn}{}%
+\else                                         
+\DeclareFontShape{OT1}{pcr}{m}{n}{<-> pcrr7t}{}%
+\DeclareFontShape{OT1}{pcr}{b}{n}{<-> pcrb7t}{}%
+\DeclareFontShape{OT1}{pcr}{b}{sl}{<-> pcrbo7t}{}%
+\DeclareFontShape{OT1}{pcr}{m}{sl}{<-> pcrro7t}{}%
+\fi
+%%%% substitutions
+\DeclareFontShape{OT1}{pcr}{bx}{it}{<->ssub * pcr/b/it}{}%
+\DeclareFontShape{OT1}{pcr}{bx}{n}{<->ssub * pcr/b/n}{}%
+\DeclareFontShape{OT1}{pcr}{bx}{sc}{<->ssub * pcr/b/sc}{}%
+\DeclareFontShape{OT1}{pcr}{bx}{sl}{<->ssub * pcr/b/sl}{}%
+\DeclareFontShape{OT1}{pcr}{b}{it}{<->ssub * pcr/b/sl}{}%
+\DeclareFontShape{OT1}{pcr}{b}{ui}{<->ssub * pcr/b/it}{}
+\DeclareFontShape{OT1}{pcr}{l}{it}{<->ssub * pcr/m/it}{}
+\DeclareFontShape{OT1}{pcr}{l}{n}{<->ssub * pcr/m/n}{}
+\DeclareFontShape{OT1}{pcr}{l}{sc}{<->ssub * pcr/m/sc}{}
+\DeclareFontShape{OT1}{pcr}{l}{sl}{<->ssub * pcr/m/sl}{}
+\DeclareFontShape{OT1}{pcr}{m}{it}{<->ssub * pcr/m/sl}{}
+\DeclareFontShape{OT1}{pcr}{m}{ui}{<->ssub * pcr/m/it}{}
+
+%%%% T1 courier
+
+\DeclareFontFamily{T1}{pcr}{\hyphenchar \font =-1}%
+
+\DeclareFontShape{T1}{pcr}{b}{sc}{<-> pcrbc\eightt}{}%
+\DeclareFontShape{T1}{pcr}{m}{sc}{<-> pcrrc\eightt}{}%
+%%%% condensed courier
+\if@couriernarrow
+\DeclareFontShape{T1}{pcr}{m}{n}{<-> pcrr8tn}{}%
+\DeclareFontShape{T1}{pcr}{b}{n}{<-> pcrb8tn}{}%
+\DeclareFontShape{T1}{pcr}{b}{sl}{<-> pcrbo8tn}{}%
+\DeclareFontShape{T1}{pcr}{m}{sl}{<-> pcrro8tn}{}%
+\else                                              
+\DeclareFontShape{T1}{pcr}{b}{n}{<-> pcrb\eightt}{}%
+\DeclareFontShape{T1}{pcr}{b}{sl}{<-> pcrbo\eightt}{}%
+\DeclareFontShape{T1}{pcr}{m}{sl}{<-> pcrro\eightt}{}%
+\DeclareFontShape{T1}{pcr}{m}{n}{<-> pcrr\eightt}{}%
+\fi                                                  
+%%%% substitutions
+\DeclareFontShape{T1}{pcr}{bx}{n}{<->ssub * pcr/b/n}{}
+\DeclareFontShape{T1}{pcr}{bx}{sc}{<->ssub * pcr/b/sc}{}
+\DeclareFontShape{T1}{pcr}{bx}{sl}{<->ssub * pcr/b/sl}{}
+\DeclareFontShape{T1}{pcr}{b}{it}{<->ssub * pcr/b/sl}{}
+\DeclareFontShape{T1}{pcr}{bx}{it}{<->ssub * pcr/b/it}{}
+\DeclareFontShape{T1}{pcr}{l}{n}{<->ssub * pcr/m/n}{}
+\DeclareFontShape{T1}{pcr}{l}{sc}{<->ssub * pcr/m/sc}{}
+\DeclareFontShape{T1}{pcr}{l}{sl}{<->ssub * pcr/m/sl}{}
+\DeclareFontShape{T1}{pcr}{m}{it}{<->ssub * pcr/m/sl}{}
+\DeclareFontShape{T1}{pcr}{l}{it}{<->ssub * pcr/m/it}{}
+
+% OT1 Helvetica
+
+\DeclareFontFamily{OT1}{phv}{}
+\DeclareFontShape{OT1}{phv}{b}{n}{<-> s * [.9] phvb7t}{}
+\DeclareFontShape{OT1}{phv}{b}{sc}{<-> s * [.9] phvbc7t}{}
+\DeclareFontShape{OT1}{phv}{b}{sl}{<-> s * [.9] phvbo7t}{}
+\DeclareFontShape{OT1}{phv}{bc}{n}{<-> s * [.9] phvb\hvtmpl}{}
+\DeclareFontShape{OT1}{phv}{bc}{sc}{<-> s * [.9] phvbc\hvtmpl}{}
+\DeclareFontShape{OT1}{phv}{bc}{sl}{<-> s * [.9] phvbo\hvtmpl}{}
+\DeclareFontShape{OT1}{phv}{l}{n}{<-> s * [.9] phvl7t}{}
+\DeclareFontShape{OT1}{phv}{l}{sc}{<-> s * [.9] phvlc7t}{}
+\DeclareFontShape{OT1}{phv}{l}{sl}{<-> s * [.9] phvlo7t}{}
+\DeclareFontShape{OT1}{phv}{m}{n}{<-> s * [.9] phvr7t}{}
+\DeclareFontShape{OT1}{phv}{m}{sc}{<-> s * [.9] phvrc7t}{}
+\DeclareFontShape{OT1}{phv}{m}{sl}{<-> s * [.9] phvro7t}{}
+\DeclareFontShape{OT1}{phv}{mc}{n}{<-> s * [.9] phvr\hvtmpl}{}
+\DeclareFontShape{OT1}{phv}{mc}{sc}{<-> s * [.9] phvrc\hvtmpl}{}
+\DeclareFontShape{OT1}{phv}{mc}{sl}{<-> s * [.9] phvro\hvtmpl}{}
+
+\DeclareFontShape{OT1}{phv}{bx}{n}{<->ssub * phv/b/n}{}
+\DeclareFontShape{OT1}{phv}{bx}{sc}{<->ssub * phv/b/sc}{}
+\DeclareFontShape{OT1}{phv}{bx}{sl}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{OT1}{phv}{b}{it}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{OT1}{phv}{bx}{it}{<->ssub * phv/b/it}{}
+\DeclareFontShape{OT1}{phv}{bc}{it}{<->ssub * phv/bc/sl}{}
+\DeclareFontShape{OT1}{phv}{l}{it}{<->ssub * phv/l/sl}{}
+\DeclareFontShape{OT1}{phv}{m}{it}{<->ssub * phv/m/sl}{}
+\DeclareFontShape{OT1}{phv}{mc}{it}{<->ssub * phv/mc/sl}{}
+\DeclareFontShape{OT1}{phv}{m}{ui}{<->ssub * phv/m/it}{}
+\DeclareFontShape{OT1}{phv}{b}{ui}{<->ssub * phv/b/it}{}
+                                      
+%%%% T1 Helvetica
+
+
+\DeclareFontFamily{T1}{phv}{}
+
+\DeclareFontShape{T1}{phv}{b}{n}{<-> s * [.9] phvb\eightt}{}
+\DeclareFontShape{T1}{phv}{b}{sc}{<-> s * [.9] phvbc\eightt}{}
+\DeclareFontShape{T1}{phv}{b}{sl}{<-> s * [.9] phvbo\eightt}{}
+\DeclareFontShape{T1}{phv}{bc}{n}{<-> s * [.9] phvb\hvtmph}{}
+\DeclareFontShape{T1}{phv}{bc}{sc}{<-> s * [.9] phvbc\hvtmph}{}
+\DeclareFontShape{T1}{phv}{bc}{sl}{<-> s * [.9] phvbo\hvtmph}{}
+\DeclareFontShape{T1}{phv}{l}{n}{<-> s * [.9] phvl\eightt}{}
+\DeclareFontShape{T1}{phv}{l}{sc}{<-> s * [.9] phvlc\eightt}{}
+\DeclareFontShape{T1}{phv}{l}{sl}{<-> s * [.9] phvlo\eightt}{}
+\DeclareFontShape{T1}{phv}{m}{n}{<-> s * [.9] phvr\eightt}{}
+\DeclareFontShape{T1}{phv}{m}{sc}{<-> s * [.9] phvrc\eightt}{}
+\DeclareFontShape{T1}{phv}{m}{sl}{<-> s * [.9] phvro\eightt}{}
+\DeclareFontShape{T1}{phv}{mc}{n}{<-> s * [.9] phvr\hvtmph}{}
+\DeclareFontShape{T1}{phv}{mc}{sc}{<-> s * [.9] phvrc\hvtmph}{}
+\DeclareFontShape{T1}{phv}{mc}{sl}{<-> s * [.9] phvro\hvtmph}{}
+                                                
+\DeclareFontShape{T1}{phv}{bx}{n}{<->ssub * phv/b/n}{}
+\DeclareFontShape{T1}{phv}{bx}{sc}{<->ssub * phv/b/sc}{}
+\DeclareFontShape{T1}{phv}{bx}{sl}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{T1}{phv}{b}{it}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{T1}{phv}{bx}{it}{<->ssub * phv/b/it}{}
+\DeclareFontShape{T1}{phv}{bc}{it}{<->ssub * phv/bc/sl}{}
+\DeclareFontShape{T1}{phv}{l}{it}{<->ssub * phv/l/sl}{}
+\DeclareFontShape{T1}{phv}{m}{it}{<->ssub * phv/m/sl}{}
+\DeclareFontShape{T1}{phv}{mc}{it}{<->ssub * phv/mc/sl}{}
+
+\endgroup
+
+
+\klutest@font{MTSY}{Mathtime}
+\if y\klu@font@error
+    \IfFileExists{mathptm.sty}{%
+    \PackageWarningNoLine{klups}{%
+    Using mathptm, possibly incorrect output for math fonts}%
+    \RequirePackage{mathptm}}{%
+    \PackageError{klups}{%
+    Incorrect output for all math fonts}{%
+    Because I could not find the MathTime package, I am reverting\MessageBreak
+    to Computer Modern for Calligraphics and all math.\MessageBreak 
+    Sorry, but you don't even have mathptm.sty installed!
+    }} 
+\else 
+\klutest@font{MTSYB}{Mathtime Plus}
+\if y\klu@font@error
+    \PackageError{klups}{%
+    Unstable output encoding for \string\boldmath}{%
+    Because I could not find the MathTime plus fonts, I am reverting\MessageBreak
+    to Computer Modern for Calligraphics and bold math. This looks\MessageBreak 
+    bad and may even give incorrect characters if you use \string\boldmath
+    }%
+    \RequirePackage{mathtime}
+\else 
+    \RequirePackage[mtbold,mtpluscal]{mathtime}
+\fi
+\fi   
+\klutest@font{MTGU}{Mathtime Plus upright greek}
+\if y\klu@font@error 
+    \@addtofontwarning{%
+        \spaces disabling \string\psgreek\space and \string\greekps}
+    \AtEndOfPackage{\let\rmgreek@redefs\relax }%
+\else
+
+
+\begingroup \nfss@catcodes
+\DeclareFontFamily{U}{mtgu}{}
+\DeclareFontShape{U}{mtgu}{m}{n}{<-> MTGU}{}
+\DeclareFontShape{U}{mtgu}{b}{n}{<-> MTGUB}{}
+\endgroup
+
+\DeclareSymbolFont{uprightlcgreek}{U}{mtgu}{m}{n}
+%                   
+%  This is not clean. bold lowercase greek should come
+%  from the 'letters' font (MTMIB) to avoid confusion. 
+%  However, there are the same glyphs in both fonts.
+%
+\SetSymbolFont{uprightlcgreek}{bold}{U}{mtgu}{b}{n} 
+         
+
+\DeclareMathSymbol{\upr@alpha    }{\mathord}{uprightlcgreek}{`a}
+\DeclareMathSymbol{\upr@beta     }{\mathord}{uprightlcgreek}{`b}
+\DeclareMathSymbol{\upr@gamma    }{\mathord}{uprightlcgreek}{`g}
+\DeclareMathSymbol{\upr@delta    }{\mathord}{uprightlcgreek}{`d}
+\DeclareMathSymbol{\upr@epsilon  }{\mathord}{uprightlcgreek}{`e}
+\DeclareMathSymbol{\upr@zeta     }{\mathord}{uprightlcgreek}{`z}
+\DeclareMathSymbol{\upr@eta      }{\mathord}{uprightlcgreek}{'041}
+\DeclareMathSymbol{\upr@theta    }{\mathord}{uprightlcgreek}{'042}
+\DeclareMathSymbol{\upr@iota     }{\mathord}{uprightlcgreek}{`i}
+\DeclareMathSymbol{\upr@kappa    }{\mathord}{uprightlcgreek}{`k}
+\DeclareMathSymbol{\upr@lambda   }{\mathord}{uprightlcgreek}{`l}
+\DeclareMathSymbol{\upr@mu       }{\mathord}{uprightlcgreek}{`m}
+\DeclareMathSymbol{\upr@nu       }{\mathord}{uprightlcgreek}{`n}
+\DeclareMathSymbol{\upr@xi       }{\mathord}{uprightlcgreek}{`x}
+\DeclareMathSymbol{\upr@pi       }{\mathord}{uprightlcgreek}{`p}
+\DeclareMathSymbol{\upr@rho      }{\mathord}{uprightlcgreek}{`r}
+\DeclareMathSymbol{\upr@sigma    }{\mathord}{uprightlcgreek}{`s}
+\DeclareMathSymbol{\upr@tau      }{\mathord}{uprightlcgreek}{`t}
+\DeclareMathSymbol{\upr@upsilon  }{\mathord}{uprightlcgreek}{`u}
+\DeclareMathSymbol{\upr@phi      }{\mathord}{uprightlcgreek}{'043}
+\DeclareMathSymbol{\upr@chi      }{\mathord}{uprightlcgreek}{'044}
+\DeclareMathSymbol{\upr@psi      }{\mathord}{uprightlcgreek}{'045}
+\DeclareMathSymbol{\upr@omega    }{\mathord}{uprightlcgreek}{'046}
+\DeclareMathSymbol{\upr@varepsilon}{\mathord}{uprightlcgreek}{'053}
+\DeclareMathSymbol{\upr@vartheta }{\mathord}{uprightlcgreek}{'054}
+\DeclareMathSymbol{\upr@varpi    }{\mathord}{uprightlcgreek}{'055}
+\DeclareMathSymbol{\upr@varrho   }{\mathord}{uprightlcgreek}{'056}
+\DeclareMathSymbol{\upr@varsigma }{\mathord}{uprightlcgreek}{'057}
+\DeclareMathSymbol{\upr@varphi   }{\mathord}{uprightlcgreek}{'060}
+\DeclareMathSymbol{\upr@varkappa }{\mathord}{uprightlcgreek}{'061}
+              
+                               
+\let\italicalpha      \alpha        
+\let\italicbeta       \beta         
+\let\italicgamma      \gamma        
+\let\italicdelta      \delta        
+\let\italicepsilon    \epsilon      
+\let\italiczeta       \zeta         
+\let\italiceta        \eta          
+\let\italictheta      \theta        
+\let\italiciota       \iota         
+\let\italickappa      \kappa        
+\let\italiclambda     \lambda       
+\let\italicmu         \mu           
+\let\italicnu         \nu           
+\let\italicxi         \xi           
+\let\italicpi         \pi           
+\let\italicrho        \rho          
+\let\italicsigma      \sigma        
+\let\italictau        \tau          
+\let\italicupsilon    \upsilon      
+\let\italicphi        \phi          
+\let\italicchi        \chi          
+\let\italicpsi        \psi          
+\let\italicomega      \omega        
+\let\italicvarepsilon \varepsilon   
+\let\italicvartheta   \vartheta     
+\let\italicvarpi      \varpi        
+\let\italicvarrho     \varrho       
+\let\italicvarsigma   \varsigma     
+\let\italicvarphi     \varphi       
+\let\italicvarkappa   \varkappa     
+
+\def\rmgreek@redefs{%
+\def\alpha       {\upr@alpha      }%
+\def\beta        {\upr@beta       }%
+\def\gamma       {\upr@gamma      }%
+\def\delta       {\upr@delta      }%
+\def\epsilon     {\upr@epsilon    }%
+\def\zeta        {\upr@zeta       }%
+\def\eta         {\upr@eta        }%
+\def\theta       {\upr@theta      }%
+\def\iota        {\upr@iota       }%
+\def\kappa       {\upr@kappa      }%
+\def\lambda      {\upr@lambda     }%
+\def\mu          {\upr@mu         }%
+\def\nu          {\upr@nu         }%
+\def\xi          {\upr@xi         }%
+\def\pi          {\upr@pi         }%
+\def\rho         {\upr@rho        }%
+\def\sigma       {\upr@sigma      }%
+\def\tau         {\upr@tau        }%
+\def\upsilon     {\upr@upsilon    }%
+\def\phi         {\upr@phi        }%
+\def\chi         {\upr@chi        }%
+\def\psi         {\upr@psi        }%
+\def\omega       {\upr@omega      }%
+\def\varepsilon  {\upr@varepsilon }%
+\def\vartheta    {\upr@vartheta   }%
+\def\varpi       {\upr@varpi      }%
+\def\varrho      {\upr@varrho     }%
+\def\varsigma    {\upr@varsigma   }%
+\def\varphi      {\upr@varphi     }%
+\def\varkappa    {\upr@varkappa   }%
+    }                       
+
+\def\rmgreek{\rmgreek@redefs }
+\def\greekrm#1{{\rmgreek #1}}
+\fi
+    
+\ifx\@fontwarnings\empty \else
+    \PackageWarningNoLine{klups}{\@fontwarnings}
+\fi                             
+\normalfont                          
+\endinput                   
+
+%%                          
+%% End of file `klups.sty'. 
+
