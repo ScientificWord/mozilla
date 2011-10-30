@@ -1,0 +1,106 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                   File: OEtemp.tex                  %
+%                   VERSION: 1.08                     %
+%                   Date:  April 3, 1998              %
+% LaTeX template file for use with OSA OPTICS EXPRESS %
+%                                                     %
+% This file requires a substyle file under the LaTeX  %
+% Article style, opex.sty .                           %
+%               FOR LATEX 2E USE                      %
+%         \documentclass[10pt]{article}               %
+%         \usepackage{opex}                           %
+%                                                     %
+%              FOR LATEX 2.09 USE                     %
+%         \documentstyle[opex]{article}               %
+%                                                     %
+%              FOR REVTeX 3.0 or 3.1 USE              %
+%         \documentstyle[osa,opex]{revtex}            %
+%                                                     %
+% Copyright 1997, The Optical Society of America      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           FOR COLORED WWW LINKS USE                 %
+%     \documentclass[10pt]{article}                   %
+%     \usepackage{opex}                               %
+%     \usepackage{color}%             (LATEX 2E)      %
+%                                                     %
+%           FOR COLOR WITH LATEX 2.09 BE              %
+%           CERTAIN YOU HAVE color.sty AND USE        %
+%     \documentstyle[opex,color]{article}             %
+%                                                     %
+%           FOR COLOR WITH REVTeX 3.0 or 3.1 BE       %
+%           CERTAIN YOU HAVE color.sty AND USE        %
+%     \documentstyle[osa,opex,color]{revtex}          %
+%                                                     %
+% Copyright 1997, The Optical Society of America      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentstyle[opex]{article}
+%\documentstyle[osa,opex]{revtex}
+%\documentclass[10pt]{article}
+%\usepackage{opex}
+\begin{document}
+\title{Replace this text with your title}
+
+\author{Frank E. Harris}
+\address{Optical Society of America, Washington, DC, USA}
+\email{fharri@osa.org}
+
+\begin{abstract}Replace this text with your abstract.
+This short template demonstrates the basic LaTeX macros 
+needed for preparing a compuscript (i.e., manuscript in 
+electronic form) for the journal Optics Express , using 
+the opex.sty style file.  
+\end{abstract}
+\ocis{(999.9999) Fill in OCIS codes and descriptors here}
+
+% The commands, \begin{OEReferences} and \end{OEReferences}
+% format the References section according to OpEx standard
+% style, showing the title "References".
+%
+% The commands, \begin{OERefLinks} and \end{OERefLinks}
+% format the References section according to OpEx standard
+% style, if the references also include URLs or other
+% unreviewed links.  In this case the title of the section
+% is "References and links".
+%
+
+\begin{OEReferences}
+\item  Author names here,  
+Journal {\bf volume}, inclusive pages (year)
+\item  C. van Trigt, ``Visual system-response
+ functions and estimating  reflectance,'' \josaa
+ {\bf 14}, 741-755 (1997).
+\end{OEReferences}
+%\end{OERefLinks}
+
+\noindent
+Insert the text of your article here.  Equations may be 
+entered as shown below.
+\begin{equation}
+H = \frac{1}{2m}(p_x^2 + p_y^2) + \frac{1}{2} M{\Omega}^2
+     (x^2 + y^2) + \omega (xp_y - yp_x)
+\end{equation}
+Equation numbers will appear at the right hand margin, 
+in parenthesis. Summations and integrals that appear 
+within text such as  $\frac{1}{2}{\Sigma } 
+ _{n=1}^{n=\infty} (n^2 - 2n)^{-1}$ 
+should have limits placed to the 
+right of the symbol to reduce white space.
+
+ 
+
+\begin{figure} 
+\centerline{ \epsfxsize=3in \epsfbox{OpExF1.EPS}}
+\caption{Place figures as close as 
+possible to where they are mentioned in the text. 
+Authors should use PostScript or EPS figures.}
+\end{figure}
+
+
+
+After proofreading the compuscript, authors may print  
+PostScript to a file using BaKoMa fonts and submit the 
+PostScript file to the journal.  Authors who prefer to
+submit LaTeX files must use tar and gzip compression
+to combine the manuscript and figures.  Video should
+always be submitted as separate files.
+\end{document}

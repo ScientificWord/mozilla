@@ -5192,12 +5192,20 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
  // editor.deleteSelection(1);
   var parent = editor.selection.focusNode;  
   var offset = editor.selection.focusOffset;
+  var node = null;
+
   try {
-    var node = editor.document.createElement('hspace');
+    if (isInMath(editorElement)) {
+       node = editor.document.createElementNS(mmlns, 'mspace');
+       node.setAttribute('width', "thickmathspace");
+    } else {
+       node = editor.document.createElement('hspace');
+    }
   }
   catch (e) {
     dump("Unable to create node in msiInsertHorizontalSpace: "+e.message+"\n");
   }
+
   var invisContent = null;
   if (dialogData.spaceType != "customSpace")
   {

@@ -158,6 +158,8 @@ msiMrow::InsertNodes(nsIEditor * editor,
             if (msiEditing)
               res = msiEditing->InsertNodes(editor, selection, nodeArray, PR_TRUE, flags);
           }
+        } else {
+          res = msiMContainer::InsertNodes(editor, selection, nodeList, deleteExisting, flags);
         }      
       }    
     }

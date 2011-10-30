@@ -5,8 +5,10 @@ of items. The user can override these colors using a dialog.
 In that case in internal style sheet will rewrite these rules. */
 
 mml|math { color: red;}
-[msimathname="true"] { color: gray; }
-mml|*[class="msi_unit"] { color: green; font-style: normal;}
+[msimathname="true"] { color: gray; 
+	font-style: normal;}
+mml|* [msiunit="true"] {color: green; 
+	font-style: normal;}
 mml|mtd {border-color: green; }
 mml|mtext { color: black; }  
 [msiclass="msi_passthrough"] {color: orange; }
@@ -267,28 +269,36 @@ note[hide="false"] {
 }
 */
 
-*[hideFootnotes="true"] note[type="footnote"] {
-  display: none;
-}
-
-
-*[hideOtherNotes="true"] note {
-  display: none !important;
+*[hideOtherNotes="true"] note[type="footnote"] {
+  display: block !important;
 }
 
 *[hideOtherNotes="true"] note[type="footnote"] {
   display: block !important;
 }
 
+*[hideFootnotes="true"] note[type="footnote"] {
+  display: none;
+}
+
+*[hideOtherNotes="true"] note {
+  display: none !important;
+}
+
 *[hideOtherNotes="true"][hideFootnotes="true"] note[type="footnote"] {
   display: none !important;
 }
 
-*[hide="false"] note {
-  display: inline;
-  float: left;
-  width: 100%;
-  clear: right;
+*[hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block;
+}
+
+*[hideOtherNotes="true"] note[hide="false"] {
+  display: block !important;
+}
+
+*[hideOtherNotes="true"][hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block !important;
 }
 
 note[type="footnote"] {
@@ -488,7 +498,6 @@ shortTitle {
 @media print {
 *[nopr] {display: none;}
 }
-
 
 msiframe {
   display: inline-block;
