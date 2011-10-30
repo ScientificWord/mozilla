@@ -21,29 +21,19 @@
 \def\classcss{}
 \def\newtheorems{}
 
-
-
 \msi@dollar=`\$
 
 \def\msi@pass#1{\def#1{\msitag{<texb>#1</texb>}}}
 \def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
-
-
-\def\msitexb#1{[SHOULD NOT OCCUR]}
-
 
 \msi@pass@newline{\@settodim}
 \msi@pass@newline{\settoheight}
 \msi@pass@newline{\settodepth}
 \msi@pass@newline{\settowidth}
 
-
-
 \def\MSIMathQuote#1{%
    %\expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
    \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\char32\relax}}
-
-
 
 % \newcounter{#1}[#2]
 
@@ -138,10 +128,10 @@
 
 %% \usepackage
 \def\out@usepackageA[#1]#2{%
-   \br\msitag{<usepackage package="#2" options="#1"/>}%
+   \br\msitag{<usepackage req="#2" options="#1"/>}%
 }
 \def\out@usepackageB#1{%
-   \br\msitag{<usepackage package="#1"/>}%
+   \br\msitag{<usepackage req="#1"/>}%
 }
 
 
@@ -274,6 +264,8 @@
  
  \def\newcommand{\@ifnextchar*{\@newcommand}{\@newcommand{}}}
  \let\renewcommand\newcommand
+ \let\providecommand\newcommand
+ 
  
  %%% #1 = optional star, #2 = command name
  \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[]}}
@@ -1514,20 +1506,21 @@
 \def\msidefault#1{%
   \ifmmode
     \string#1%
+    \def\@next{\relax}%
   \else
-    \expandafter\msidefaulta\expandafter{\string #1}%
-  \fi}
+    \def\@next{\expandafter\msidefaulta\expandafter{\string #1}}%
+  \fi
+  \@next}
 
 \def\msidefaulta#1{%
   \expandafter\msidefaultb\expandafter{\msi@cdr#1xxxx}}
 
-\def\msidefaultb#1{
+\def\msidefaultb#1{%
     \msihmode
     \msiopentag{texb}{<texb enc="1" name="#1">}%
        \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname\@gobbleargs}
 
-
-\def\@endtexb{        
+\def\@endtexb{%        
        \msitag{]]>}%
     \msiclosetag{texb}{</texb>}}
 
