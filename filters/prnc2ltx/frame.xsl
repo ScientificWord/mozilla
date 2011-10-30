@@ -7,8 +7,9 @@
 >
 
 <xsl:template match="html:msiframe">
-	<!--xsl:if test="@position='inner' || @position='outer'" -->				
-  <xsl:if test="@topmargin">\setlength\intextsep{<xsl:value-of select="@topmargin"/><xsl:value-of select="@units"/>} </xsl:if>
+	<xsl:if test="@topmargin or @sidemargin or @border or @padding">{</xsl:if>				
+  <xsl:if test="@topmargin">\setlength\intextsep{<xsl:value-of select="@topmargin"/><xsl:value-of select="@units"/>}      
+  </xsl:if>
   <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/><xsl:value-of select="@units"/>} </xsl:if>
   <xsl:if test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="@units"/>} </xsl:if>
   <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>} </xsl:if>
@@ -63,6 +64,7 @@
 ><xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\end{center}</xsl:if
 ><xsl:if test="@pos='float' and (@placement='full' or (@placeLocation!='h' and @placeLocation!='H'))">\end{figure}</xsl:if
 ><xsl:if test="@pos='display'">\end{center}</xsl:if>
+<xsl:if test="@topmargin or @sidemargin or @border or @padding">}</xsl:if>				
 </xsl:template>
 		  
 </xsl:stylesheet>

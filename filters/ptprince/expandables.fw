@@ -34,6 +34,10 @@ if (braced){
    if (CurTok().Type() != TT_RIGHT_BRACE){
       LOG("\nERROR missing right brace in filename.");
    }
+} else {
+   if (CurTok().Type() == TT_RIGHT_BRACE){
+      InputStack::Putback(CurTok());
+   }
 }
 @}
 

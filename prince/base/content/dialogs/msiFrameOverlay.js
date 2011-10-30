@@ -265,6 +265,17 @@ function initFrameTab(dg, element, contentsElement, newElement)
     dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
 
     // TODO: color
+    var theColor;
+    if (contentsElement.hasAttribute("border-color"))
+    {
+      theColor = hexcolor(contentsElement.getAttribute("border-color"));
+      setColorInDialog("colorWell", theColor);
+    }
+    if (contentsElement.hasAttribute("background-color"))
+    {
+      theColor = hexcolor(contentsElement.getAttribute("background-color"));
+      setColorInDialog("bgcolorWell", theColor);
+    }
   }
   var placement = 0;
   var placementLetter = document.getElementById("herePlacementRadioGroup").value;
@@ -381,12 +392,16 @@ function getColorAndUpdate(id)
   if (colorObj.Cancel)
     return;
 
-  color = colorObj.TextColor;
+  setColorInDialog(id, colorObj.TextColor);
+}
+
+function setColorInDialog(id, color)
+{
   setColorWell(id, color); 
   if (id == "colorWell") 
-  	setStyleAttributeByID("frame","border-color",color);
-	else
-		setContentBGColor(color);
+	  setStyleAttributeByID("frame","border-color",color);
+  else
+	  setContentBGColor(color);
 }
 
 // come up with a four part attribute giving the four parts of the margin or padding or border, etc. using the same rules as CSS
@@ -756,14 +771,14 @@ function setFrameAttributes(frameNode, contentsNode)
   else contentsNode.setAttribute("padding", getCompositeMeasurement("padding",metrics.unit, false));  
   if (gFrameTab.autoHeightCheck.checked)
   {
-    if (contentsNode.hasAttribute("height")) contentsNode.removeAttribute("height");
+    if (contentsNode.hasAttribute(heightAtt)) contentsNode.removeAttribute(heightAtt);
   }
-  else contentsNode.setAttribute("height", gFrameTab.heightInput.value);
+  else contentsNode.setAttribute(heightAtt, gFrameTab.heightInput.value);
   if (gFrameTab.autoWidthCheck.checked)
   {
-    if (contentsNode.hasAttribute("width")) contentsNode.removeAttribute("width");
+    if (contentsNode.hasAttribute(widthAtt)) contentsNode.removeAttribute(widthAtt);
   }
-  else contentsNode.setAttribute("width", gFrameTab.widthInput.value);
+  else contentsNode.setAttribute(widthAtt, gFrameTab.widthInput.value);
   var pos = document.getElementById("placementRadioGroup").selectedItem;
   var posid = pos.getAttribute("id") || "";
   frameNode.setAttribute("pos", posid);
@@ -846,16 +861,16 @@ function setFrameAttributes(frameNode, contentsNode)
   if (gFrameModeImage)
 	{
 		style = getSingleMeasurement("padding","Left", "px", true);
-	  setStyleAttributeOnNode(frameNode, "padding", style);
+	  setStyleAttributeOnNode(contentsNode, "padding", style);
 	  style = getSingleMeasurement("border","Left","px", true);
 	  setStyleAttributeOnNode(contentsNode, "border-width", style);
 	}
 	else
 	{
 		style = getCompositeMeasurement("padding","px", true);
-	  setStyleAttributeOnNode(frameNode, "padding", style);
+	  setStyleAttributeOnNode(contentsNode, "padding", style);
 	  style = getCompositeMeasurement("border","px", true);
-	  setStyleAttributeOnNode(frameNode, "border-width", style);
+	  setStyleAttributeOnNode(contentsNode, "border-width", style);
 	}
   if (contentsNode.hasAttribute("height") && Number(contentsNode.getAttribute("height"))!= 0 )
     setStyleAttributeOnNode(contentsNode, "height", frameUnitHandler.getValueAs(contentsNode.getAttribute("height"),"px") + "px");
@@ -885,6 +900,19 @@ function frameWidthChanged(input, event)
   setStyleAttributeByID("content", "width", scaledWidth + "px");
   constrainProportions( "frameWidthInput", "frameHeightInput", event );
   redrawDiagram();
+}
+
+function setDisabled(checkbox,id)
+{
+	var textbox = document.getElementById(id);
+	if (checkbox.checked)
+	{
+		textbox.setAttribute("disabled","true");
+	}
+	else
+	{
+		textbox.removeAttribute("disabled");
+	}
 }
 
 function ToggleConstrain()

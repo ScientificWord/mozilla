@@ -219,7 +219,7 @@ prince.jar:
   content/useWorkInProgress.xul      (dialogs/useWorkInProgress.xul)
   content/paragraphproperties.xul      (dialogs/paragraphProperties.xul)
   content/paragraphproperties.js     (dialogs/paragraphProperties.js)
-  content/structureproperties.xul      (dialogs/structureProperties.xul)
+* content/structureproperties.xul      (dialogs/structureProperties.xul)
   content/structureproperties.js      (dialogs/structureproperties.js)
   content/wordcount.xul              (dialogs/wordcount.xul) 
   content/bindings/sidebar.css     (bindings/sidebar.css)
