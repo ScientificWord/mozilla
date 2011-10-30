@@ -1,0 +1,383 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%           This is file `biometrics.sty'                 %%  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{theorem}
+\RequirePackage{rotating}
+\newcount\auth@cnt
+\auth@cnt=1
+\newcount\addr@cnt
+\addr@cnt=1
+\renewcommand{\author}[1]{%
+  \expandafter\gdef\csname author@\romannumeral\auth@cnt\endcsname{#1}%
+  \advance\auth@cnt by 1}
+\newcommand{\email}[1]{%
+  \expandafter\gdef\csname email@\romannumeral\auth@cnt\endcsname{#1}}%
+\newcommand{\address}[1]{\newif\ifexists\newif\ifnotdone\notdonetrue\existsfalse
+  \def\newaddress{#1}
+  \newcount\n
+  \n=1
+  % loop over all previously defined addresses.
+  \loop \ifnum\n=\addr@cnt\notdonefalse\fi
+  \expandafter\ifx\csname address@\romannumeral\n\endcsname\newaddress%
+  \existstrue\notdonefalse\fi%
+  \ifnotdone \advance\n by 1\repeat%
+  \ifexists
+  \expandafter\gdef\csname a\romannumeral\auth@cnt @a%
+  \romannumeral\n\endcsname{A}%
+  \else
+  \expandafter\gdef\csname address@\romannumeral\addr@cnt\endcsname{#1}%
+    \expandafter\gdef\csname a\romannumeral\auth@cnt @a%
+    \romannumeral\addr@cnt\endcsname{A}\advance\addr@cnt by 1%
+  \fi}
+%\newcommand{\keywords}{\def\@keywords}
+
+\renewcommand{\footnoterule}{\vskip 0.3 ex%
+\hskip -3.25ex plus -0ex minus -0.ex\hrulefill\vskip 1ex}
+
+\renewcommand{\footnotesize}{\normalsize}
+
+\renewcommand{\@makefntext}{\bcsmakefntext}
+\renewcommand{\@makefnmark}{\bcsmakefnmark}
+
+\newcommand{\bcsmakefntext}[1]%
+{\hskip -3ex\makebox[1.8em][r]{\@makefnmark}#1}
+
+\newcommand{\bcsmakefnmark}
+{\rlap{\@textsuperscript{\hskip -1ex \normalfont\@thefnmark}}}%
+
+\renewcommand\maketitle{\par
+  \begingroup
+    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+    \if@twocolumn
+      \ifnum \col@number=\@ne
+        \@maketitle
+      \else
+        \twocolumn[\@maketitle]%
+      \fi
+    \else
+      \newpage
+      \global\@topnum\z@   % Prevents figures from going at top of page.
+      \@maketitle
+    \fi
+    \thispagestyle{plain} %\keywordsfn% Add in the Key Words here.
+  \endgroup
+  \setcounter{footnote}{0}%
+  \global\let\thanks\relax
+%  \global\let\keywords\relax
+  \global\let\maketitle\relax
+  \global\let\@maketitle\relax
+  \global\let\@thanks\@empty
+  \global\let\@author\@empty
+  \global\let\@date\@empty
+  \global\let\@title\@empty
+  \global\let\title\relax
+  \global\let\author\relax
+  \global\let\date\relax
+  \global\let\and\relax
+}
+
+%\newcommand{\keywordsfn}{%
+%  \renewcommand{\@makefntext}{}
+%  \footnotetext{\begin{description}
+%   \item\vskip -2.5\footnotesep \hskip -0.5em {\sc Key words:} \@keywords
+%    \end{description}}
+%}
+
+\renewcommand{\@maketitle}{%
+  \begin{center}%
+%    \let \footnote \keywords
+    {\Large \bf \@title\par}%
+    \vskip 1.5em%
+    {
+      \ifnum\auth@cnt>3
+      \compactmode
+      \else
+      \expandedmode
+      \fi
+      }
+    \vskip 1em%
+    {\@date}%
+  \end{center}%
+  \par
+  \vskip 1.5em}
+\newcommand{\ifundefined}[1]{\expandafter\ifx\csname#1\endcsname\relax}
+
+\newcommand{\expandedmode}{%
+  \newcount\n%
+  \newcount\o%
+  \n=1%
+  \o=\n%
+  \advance\o by 1%
+  \loop \textbf{\csname author@\romannumeral\n\endcsname}%
+  \ifundefined{email@\romannumeral\o}\else\expandemail{\o}%
+  \fi%
+  \par \vskip 4pt%
+  \csname address@\romannumeral\n\endcsname%
+  \advance \n by 1%
+  \advance \o by 1%
+  \ifnum\n<\auth@cnt%
+  \par \vskip 8pt \textbf{and} \vskip 8pt \par \repeat%
+  }
+
+\newcommand{\expandemail}[1]{%
+  \ifnum\auth@cnt<3 \footnotetext{\hskip -1ex \textit{email:}\ %
+    \csname email@\romannumeral#1\endcsname}
+  \else
+  \hskip1ex\footnotemark{}\footnotetext{\textit{email:}\ %
+      \csname email@\romannumeral#1\endcsname}\fi}
+\newcommand{\compactmode}{
+  \bf
+  \newcount\n
+  \newcount\m
+  \m=\auth@cnt
+  \advance \m by-1
+  \n=1
+  \loop
+      \csname author@\romannumeral\n\endcsname%
+      \advance \n by 1
+      \ifnum\n=\m\authaddrs{\n} and
+      \else\ifnum\n<\m,\authaddrs{\n}
+      \else\authaddrs{\n}\fi\fi
+  \ifnum\n<\auth@cnt
+  \repeat
+
+  \rm
+  \n=1
+  \loop $^\number\n$\csname address@\romannumeral\n\endcsname \advance \n by 1
+  \ifnum\n<\addr@cnt \\ \repeat
+  }
+
+\newcommand{\authaddrs}[1]{%
+  \def\testthing{A}%
+  \newcount\o%
+  \newif\ifdoneone%
+  \doneonefalse%
+  \o=1%
+  {\loop
+    \expandafter\ifx\csname a\romannumeral#1@a\romannumeral\o\endcsname\testthing
+    \ifdoneone$^,$\fi\doneonetrue$^\number\o$\fi
+    \advance \o by 1
+    \ifnum\o<\addr@cnt%
+    \repeat}%
+  \compactemail{#1}%
+  }
+
+\newcommand{\compactemail}[1]{%
+  \ifundefined{email@\romannumeral#1}\else$^,$%
+  \hskip1ex\footnotemark{}\footnotetext
+   {\textit{email:}\ %
+      \csname email@\romannumeral#1\endcsname}
+  \fi}
+%\newenvironment{summary}{\biosub{Summary \vskip 0.5 em}}{}
+\newenvironment{summary}{\par \noindent{\sc Summary.\/}}{}{\vskip 0.5 em}
+\newenvironment{acknowledgements}{\biosub{Acknowledgements \vskip 0.5 em}}{}
+\newenvironment{resume}{\biosub{R\'{e}sum\'{e} \vskip 0.5 em}}{}
+
+\newcommand{\keywords}[1]{\vskip 0.5 em \par \noindent{\sc Key
+words:\,\,\,\,}{#1}{\vskip 0.5 em}}
+
+\newenvironment{custom}[1]{\biosub{#1} \vskip 0.5 em}{}
+
+\renewcommand\abstract{\biosub{Summary}}
+\renewcommand{\abstractname}{Summary}
+
+\newcommand{\biosub}{\@startsection
+  {paragraph}{99}{\z@}{-3.25ex plus -0ex minus -0.ex }
+  {0.3ex plus .2ex}
+  {\sc\center}}
+
+\renewcommand\thesubsection {\thesection{.}\arabic{subsection}}
+\renewcommand\thesubsubsection {\thesubsection{.}\arabic{subsubsection}}
+\renewcommand{\thesection}{\arabic{section}}
+
+\renewcommand{\section}{\@startsection {section}{1}{\z@}{-2.3ex plus -.2ex}
+  {0.3ex plus .0ex}{\normalsize\bfseries}}
+
+\renewcommand{\@seccntformat}[1]{\csname the#1\endcsname.\quad}
+
+\newcommand{\@startsubsection}[6]{\if@noskipsec \leavevmode \fi
+  \par \@tempskipa #4\relax
+  \@afterindenttrue
+  \ifdim \@tempskipa <\z@ \@tempskipa -\@tempskipa \@afterindentfalse\fi
+  \if@nobreak \everypar{}\else
+  \addpenalty{\@secpenalty}\addvspace{\@tempskipa}\fi \@ifstar
+  {\@ssect{#3}{#4}{#5}{#6}}{\@dblarg{\@subsect{#1}{#2}{#3}{#4}{#5}{#6}}}}
+
+\newcommand{\@startsubsubsection}[6]{\if@noskipsec \leavevmode \fi
+  \par \@tempskipa #4\relax
+  \@afterindenttrue
+  \ifdim \@tempskipa <\z@ \@tempskipa -\@tempskipa \@afterindentfalse\fi
+  \if@nobreak \everypar{}\else
+  \addpenalty{\@secpenalty}\addvspace{\@tempskipa}\fi \@ifstar
+  {\@ssect{#3}{#4}{#5}{#6}{#6}}{\@dblarg{\@subsect{#1}{#2}{#3}{#4}{#5}{#6}}}}
+
+\def\@subsect#1#2#3#4#5#6[#7]#8{\ifnum #2>\c@secnumdepth
+  \def\@svsec{}\else
+  \refstepcounter{#1}\edef\@svsec{\csname the#1\endcsname\hskip 1em }\fi
+  \@tempskipa #5\relax
+  \ifdim \@tempskipa>\z@
+  \begingroup #6\relax
+  \@hangfrom{\hskip #3\relax{\rm \@svsec}}{\interlinepenalty \@M #8\par}%
+  \endgroup
+  \csname #1mark\endcsname{#7}\addcontentsline
+  {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+    \protect\numberline{\csname the#1\endcsname}\fi
+    #7}\else
+  \def\@svsechd{#6\hskip #3\@svsec #8\csname #1mark\endcsname
+    {#7}\addcontentsline
+    {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+      \protect\numberline{\csname the#1\endcsname}\fi
+      #7}}\fi
+  \@xsect{#5}}
+
+\renewcommand{\subsection}{\@startsubsection{subsection}{2}{\z@}{1.3ex plus .0ex}
+  {0.3ex plus .0ex}{\normalsize\itshape}}
+\renewcommand{\subsubsection}{\@startsubsubsection{subsubsection}{3}{\z@}{\baselineskip}
+  {-\baselineskip}{\normalsize\itshape}}
+\renewcommand{\figure}{\@float{figure} \let\@makecaption\@makefigurecaption \small
+  \let\footnoterule\relax
+  \let\contcaption\conttablecaption}
+
+\let\endfigure\end@float
+
+\long\def\@makefigurecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{\textbf{#1.} #2}%
+  \ifdim \wd\@tempboxa >\hsize
+  \textbf{#1.} #2\par
+  \else
+  \global \@minipagefalse
+  \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+\renewcommand{\table}{\@float{table} \let\@makecaption\@maketablecaption \small
+  \let\footnoterule\relax
+  \let\contcaption\conttablecaption}
+
+\let\endtable\end@float
+
+\long\def\@maketablecaption#1#2{%
+  \vskip\abovecaptionskip
+  \centering \textbf{#1} \par \it #2 \vskip 1 ex\hrule\vskip 0.2 ex\hrule
+  \vskip\belowcaptionskip}
+\renewcommand{\sidewaystable}{\@rotfloat{table} \let\@makecaption\@maketablecaption}
+\renewcommand{\sidewaysfigure}{\@rotfloat{figure} \let\@makecaption\@makefigurecaption}
+\newcommand{\th@bkathm}{\normalfont\itshape
+  \newcommand{\@begintheorem}[2]{%
+  \item[\hskip\labelsep \scshape ##1\ ##2.]}%
+  \newcommand{\@opargbegintheorem}[3]{%
+  \item[\hskip\labelsep \scshape ##1\ ##2.\ (##3)]}}
+
+\newcommand{\th@proof}{\normalfont\upshape
+  \newcommand{\@begintheorem}[2]{%
+    \item[\hskip\labelsep \itshape ##1.]}%
+ \newcommand{\@opargbegintheorem}[3]{%
+ \item[\hskip\labelsep \itshape ##1.\ (##3)]}}
+
+\newcommand{\th@bkaexa}{\normalfont\upshape
+  \newcommand{\@begintheorem}[2]{%
+  \item[\hskip\labelsep \itshape ##1\ ##2.]}%
+  \newcommand{\@opargbegintheorem}[3]{%
+  \item[\hskip\labelsep \itshape ##1\ ##2.\ (##3)]}}
+
+\theoremstyle{bkaexa} \newtheorem{Exa}{Example}
+\theoremstyle{bkaexa} \newtheorem{Rem}{Remark}
+\theoremstyle{bkathm} \newtheorem{Thm}{Theorem}
+\theoremstyle{bkathm} \newtheorem{Lem}{Lemma}
+\theoremstyle{proof}  \newtheorem{proof}{Proof}
+\newcommand{\@intcite}{\@ifnextchar
+  [{\@tempswatrue\@citex}{\@tempswafalse\@citex[]}}
+\newcommand{\@intcitep}{\@ifnextchar
+  [{\@tempswatrue\@citexp}{\@tempswafalse\@citexp[]}}
+\renewcommand{\cite}{\@ifstar{\shortcitefullp}{\shortcitefull}}
+\newcommand{\fullcite}{\@ifstar{\citefullp}{\citefull}}
+\newcommand{\citefull}{\def\bsccite##1##2##3{##1 (##3}\@intcite}
+\newcommand{\citefullp}{\def\bsccite##1##2##3{##1, ##3}\@intcitep}
+\newcommand{\shortcitefull}{\def\bsccite##1##2##3{##2 (##3}\@intcite}
+\newcommand{\shortcitefullp}{\def\bsccite##1##2##3{##2, ##3}\@intcitep}
+\newcommand{\citeyear}{\def\bsccite##1##2##3{##3}\@intcitep}
+
+\newcommand{\citeA}{\def\bsccite##1##2##3{##2}\@intcitep}
+\newcommand{\fullciteA}{\def\bsccite##1##2##3{##1}\@intcitep}
+\renewcommand{\@citex}[2][default]{%
+  \if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{), }\@ifundefined
+      {b@\@citeb}{{\bf ?}\@warning
+        {Citation `\@citeb' on page \thepage \space undefined}}%
+      {\csname b@\@citeb\endcsname}}}{#1}}
+
+\newcommand{\@citexp}[2][default]{%
+  \if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@citep{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{; }\@ifundefined
+      {b@\@citeb}{{\bf ?}\@warning
+        {Citation `\@citeb' on page \thepage \space undefined}}%
+      {\csname b@\@citeb\endcsname}}}{#1}}
+
+\renewcommand{\@cite}[2]{#1\if@tempswa , #2\fi)}
+\newcommand{\@citep}[2]{#1\if@tempswa , #2\fi}
+\renewcommand{\thebibliography}[1]{\section*{\sc\center%
+    References\vskip 0.5 em \@mkboth{REFERENCES}{REFERENCES}}
+  \list {\relax}{\setlength{\labelsep}{0em}
+    \setlength{\itemindent}{-\bibhang}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\leftmargin}{\bibhang}}
+  \renewcommand{\newblock}{\hskip .11em plus .33em minus .07em}
+  \sloppy\clubpenalty4000\widowpenalty4000
+  \sfcode`\.=1000\relax}
+\newlength{\bibhang}
+\setlength{\bibhang}{1.4em}
+\renewcommand{\@biblabel}[1]{}
+\newcounter{appendix}
+\@addtoreset{section}{appendix}
+
+\newcommand{\startappendix}{%
+  \@addtoreset{equation}{section}
+  \setcounter{section}{0}
+  \setcounter{subsection}{0}
+  \setcounter{equation}{0}
+  \renewcommand{\appendix}{\par
+    \addvspace{4ex}%
+    \@afterindentfalse
+    \secdef\bio@ppendix\bio@sppendix}
+
+  \newcommand{\bio@ppendix}[2][default]{
+    \ifnum \c@secnumdepth >\m@ne
+    \refstepcounter{appendix}%
+    \addcontentsline{toc}{appendix}{\theappendix\hspace{1em}##1}%
+    \else
+    \addcontentsline{toc}{appendix}{##1}%
+    \fi
+    {\parindent \z@ \raggedright
+      \interlinepenalty \@M
+      \normalfont
+      \ifnum \c@secnumdepth >\m@ne
+      \centering\scshape Appendix~\theappendix
+      \par\nobreak
+      \fi
+      \centering\itshape ##2%
+      \markboth{}{}\par}%
+    \nobreak
+    \vspace{2.3ex \@plus.2ex}%\vskip 3ex
+    \@afterheading}
+
+\newcommand{\bio@sppendix}[1]{%
+  \refstepcounter{appendix}%
+  { \centering\scshape Appendix\par
+    \parindent \z@ \raggedright
+    \interlinepenalty \@M
+    \normalfont
+    \centering\itshape ##1\par}%
+  \nobreak
+  \vspace{1.5ex \@plus .2ex}\par%
+  \@afterheading}
+
+  \renewcommand\theequation{\Alph{appendix}.\arabic{equation}}
+  \renewcommand\theappendix{\Alph{appendix}}
+  \renewcommand\thesection{\Alph{appendix}\arabic{section}}}
+\endinput
+%%
+%% End of file `biometrics.cls'.

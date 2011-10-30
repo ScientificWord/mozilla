@@ -408,9 +408,8 @@ unknown_op<uID3.5.7>infix,25
 &deg;C<uID11.0.8451>3.17.162
 &deg;F<uID11.0.8457>3.17.163
 
-
-;; jcs  Unicode a6 "brokenbar" not sure what's going on with this
-&0xa6;<uID11.0.166>3.17.167
+; brokenbar
+&#x00A6;<uID11.0.166>
 
 
 
@@ -1096,7 +1095,7 @@ superscript2<uID3.17.165>
 superscript3<uID3.17.166>
 
 
-brokenbar<uID3.17.167>
+;brokenbar<uID3.17.167>
 section<uID3.17.168>
 diaeresis<uID3.17.169>
 copyright<uID3.17.170>

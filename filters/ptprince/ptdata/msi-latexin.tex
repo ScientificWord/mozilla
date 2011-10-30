@@ -25,7 +25,6 @@
 
 \let\bgroup={ \let\egroup=}
 
-
 \def\makeatletter{\catcode`\@=11}
 \def\makeatother{\catcode`\@=12}
 
@@ -77,7 +76,7 @@
 \def\@usepackagea[#1]#2{%
    \out@usepackageA[#1]{#2}
    \advance\msi@output by 1\relax
-   \@@usepackage[#1]{#2}%
+   \@@usepackage[#1]{#2}
    \advance\msi@output by -1\relax
 }
 
@@ -661,7 +660,10 @@
   \expandafter\def\csname\expandafter\@gobbletwo\string#1%
                     \expandafter\@gobbletwo\string#2\endcsname
                        {\let#1#2}}
-\def\providecommand{\@star@or@long\provide@command}
+
+\def\providecommand{
+   \@star@or@long\provide@command}
+
 \def\provide@command#1{%
   \begingroup
     \escapechar\m@ne\xdef\@gtempa{{\string#1}}%
@@ -670,6 +672,7 @@
     {\def\reserved@a{\new@command#1}}%
     {\def\reserved@a{\renew@command\reserved@a}}%
    \reserved@a}%
+
 \def\CheckCommand{\@star@or@long\check@command}
 \@onlypreamble\CheckCommand
 \def\check@command#1#2#{\@check@c#1{#2}}
@@ -784,6 +787,7 @@
 \def\:{\@xifnch} \expandafter\def\: {\futurelet\@let@token\@ifnch}
 
 \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
+
 \long\def\@dblarg#1{\@ifnextchar[{#1}{\@xdblarg{#1}}}
 \long\def\@xdblarg#1#2{#1[{#2}]{#2}}
 \def\@sanitize{\@makeother\ \@makeother\\\@makeother\$\@makeother\&%

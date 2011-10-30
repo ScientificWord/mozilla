@@ -175,7 +175,7 @@ function Startup()
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
-  initFrameTab(frameTabDlg, wrapperElement, gInsertNewImage, imageElement);
+  initFrameTab(frameTabDlg, wrapperElement, imageElement, gInsertNewImage);
   InitDialog();
   ChangeLinkLocation();
 
@@ -257,7 +257,7 @@ function InitImage()
   }
   else if (capData.aboveCaption)
   {
-    gCaptiondata.m_captionStr = getNodeChildrenAsString(capData.aboveCaption);
+    gCaptionData.m_captionStr = getNodeChildrenAsString(capData.aboveCaption);
     position = "above";
   }
   gCaptionData.m_position = position;
