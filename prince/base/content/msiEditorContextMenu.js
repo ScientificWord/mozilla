@@ -29,6 +29,11 @@ function msiEditorFillContextMenu(event, contextMenuNode)
 
   var inCell = msiIsInTableCell(editorElement);
   var inMatrixCell = msiIsInMatrixCell(editorElement);
+// HACK alert
+  if (inMatrixCell)
+	{
+	  inCell = false;
+	}
   // Set appropriate text for join cells command
   msiInitJoinCellMenuitem("joinTableCells_cm", editorElement);
 

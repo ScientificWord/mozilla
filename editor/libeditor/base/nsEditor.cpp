@@ -322,6 +322,7 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
 PRBool nsEditor::NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag, msiITagListManager * manager)
 {
   nsIAtom * nodeAtom = nsEditor::GetTag(aNode);
+	if (!nodeAtom) return PR_FALSE;
   if (nodeAtom == aTag) return PR_TRUE;
   PRBool fIsInTagClass;
   if (manager)
