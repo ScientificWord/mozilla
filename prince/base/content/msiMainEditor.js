@@ -332,7 +332,8 @@ function BuildRecentFilesMenu()
     {
       // Build the menu
       var title = GetUnicharPref("editor.history_title_"+i);
-      AppendRecentMenuitem(popup, title, url, menuIndex);
+			var path = msiPathFromFileURL(msiURIFromString(url));
+      AppendRecentMenuitem(popup, title, path, menuIndex);
       menuIndex++;
     }
   }
