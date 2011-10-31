@@ -8991,7 +8991,7 @@ function msiGoUpdateTableMenuItems(commandset, editorElement)
       enabledIfTable = true;
 
       // All others require being inside a cell or selected cell
-      enabled = (tagNameObj.value == "td");
+      enabled = (tagNameObj.value == "td" || tagNameObj.value == "mtd");
     }
   }
 
