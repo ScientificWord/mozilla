@@ -315,6 +315,8 @@ nsTableCellFrame::DecorateForSelection(nsIRenderingContext& aRenderingContext,
         //compare bordercolor to ((nsStyleColor *)myColor)->mBackgroundColor)
         bordercolor = EnsureDifferentColors(bordercolor,
                                             GetStyleBackground()->mBackgroundColor);
+				// BBM
+				bordercolor = NS_RGB(0x33, 0x33, 0xff);
         nsIRenderingContext::AutoPushTranslation
             translate(&aRenderingContext, aPt.x, aPt.y);
         nscoord onePixel = nsPresContext::CSSPixelsToAppUnits(1);
@@ -325,10 +327,10 @@ nsTableCellFrame::DecorateForSelection(nsIRenderingContext& aRenderingContext,
         aRenderingContext.DrawLine(onePixel, mRect.height, mRect.width, mRect.height);
         aRenderingContext.DrawLine(mRect.width, onePixel, mRect.width, mRect.height);
         //middle
-//        aRenderingContext.DrawRect(onePixel, onePixel, mRect.width-onePixel,
-//                                   mRect.height-onePixel);
-        aRenderingContext.FillRect(onePixel, onePixel, mRect.width-onePixel,
+        aRenderingContext.DrawRect(onePixel, onePixel, mRect.width-onePixel,
                                    mRect.height-onePixel);
+//        aRenderingContext.FillRect(onePixel, onePixel, mRect.width-onePixel,
+//                                   mRect.height-onePixel);
         //shading
         aRenderingContext.DrawLine(2*onePixel, mRect.height-2*onePixel,
                                    mRect.width-onePixel, mRect.height- (2*onePixel));
