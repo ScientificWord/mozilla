@@ -35,7 +35,7 @@
       <hbox>
         <description>&many.label;</description>
         <spacer flex="1"/>
-        <textbox id="tally" style="width: 3em"/>
+        <textbox id="tally" style="width: 3em" value="10" persist="value"/>
       </hbox>
       <listbox id="dist" seltype="single" onselect="doSelect(); return false;">
      <listitem label="&Beta.label;"/>
