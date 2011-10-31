@@ -1166,8 +1166,11 @@ function documentToTeXString(document, xslPath)
       strResult = strResult.replace(/\n\n/,"\n","g");
 	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
 		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
-		while (strResult.search(/\\par/) >= 0)
-		  strResult = strResult.replace(/\\par/,"\n\n", "g");
+
+    while (strResult.search(/\\par[ \t\n]+/) >= 0)
+		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
+		//while (strResult.search(/\\par/) >= 0)
+		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
   }
   catch(e){
     dump("error: "+e.message+"\n\n");
