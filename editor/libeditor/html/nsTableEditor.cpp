@@ -1054,6 +1054,11 @@ nsHTMLEditor::DeleteTableCell(PRInt32 aNumber)
       nsCOMPtr<nsIDOMElement> parentRow;
       res = GetElementOrParentByTagName(NS_LITERAL_STRING("tr"), cell, getter_AddRefs(parentRow));
       if (NS_FAILED(res)) return res;
+			if (!parentRow)
+			{
+			  res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtr"), cell, getter_AddRefs(parentRow));
+			  if (NS_FAILED(res)) return res;
+			}
       if (!parentRow) return NS_ERROR_NULL_POINTER;
 
       // We should delete the row instead,
