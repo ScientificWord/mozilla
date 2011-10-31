@@ -309,7 +309,7 @@ mtd[rowalign="axis"] {
    desirable if the style data could be changed on the fly to pick
    the values that users may set with the attributes of <mtable> */
 mtd {
-  padding-right: 0.4em;  /* half of columnspacing[colindex] */
+  padding-right: 1.2em;  /* half of columnspacing[colindex] */
   padding-left: 0.4em;   /* half of columnspacing[colindex-1] */
   padding-bottom: 0.5ex; /* half of rowspacing[rowindex] */
   padding-top: 0.5ex;    /* half of rowspacing[rowindex-1] */
