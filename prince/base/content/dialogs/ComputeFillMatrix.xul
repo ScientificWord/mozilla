@@ -124,12 +124,12 @@
       <groupbox>
         <caption label="&types.label;"/>
         <radiogroup id="type" oncommand="Switch(event.target.getAttribute('id'))">
-          <radio label="&zero.label;"    accesskey="&zero.accesskey;"  id="zero"      selected="true"/>
-          <radio label="&Identity.label;" accesskey="&Identity.accesskey;"  id="Identity"  selected="false"/>
-          <radio label="&random.label;" accesskey="&random.accesskey;"    id="random"    selected="false"/>
-          <radio label="&Jordan.label;" accesskey="&Jordan.accesskey;"    id="Jordan"    selected="false"/>
-          <radio label="&function.label;" accesskey="&function.accesskey;"  id="function"  selected="false"/>
-          <radio label="&band.label;" accesskey="&band.accesskey;"      id="band"      selected="false"/>
+          <radio label="&zero.label;"    accesskey="&zero.accesskey;"  id="zero"  persist="selected"    selected="true"/>
+          <radio label="&Identity.label;" accesskey="&Identity.accesskey;"  id="Identity"  persist="selected"  selected="false"/>
+          <radio label="&random.label;" accesskey="&random.accesskey;"    id="random"  persist="selected"    selected="false"/>
+          <radio label="&Jordan.label;" accesskey="&Jordan.accesskey;"    id="Jordan"  persist="selected"    selected="false"/>
+          <radio label="&function.label;" accesskey="&function.accesskey;"  id="function"  persist="selected"  selected="false"/>
+          <radio label="&band.label;" accesskey="&band.accesskey;"      id="band"  persist="selected"      selected="false"/>
         </radiogroup>
       </groupbox>
       <groupbox id="editorGroupbox">
