@@ -1587,12 +1587,12 @@ function SharedStartupForEditor(editorElement)
 
   var delStr = GetString(isMac ? "Clear" : "Del");
 
-  SafeSetAttribute(theDocument, "menu_SelectCell", "acceltext", clickStr);
-  SafeSetAttribute(theDocument, "menu_SelectRow", "acceltext", dragStr);
-  SafeSetAttribute(theDocument, "menu_SelectColumn", "acceltext", dragStr);
-  SafeSetAttribute(theDocument, "menu_SelectAllCells", "acceltext", dragStr);
+  SafeSetAttribute(theDocument, "menu_SelectCell", "acceltext", '');
+  SafeSetAttribute(theDocument, "menu_SelectRow", "acceltext", '');
+  SafeSetAttribute(theDocument, "menu_SelectColumn", "acceltext", '');
+  SafeSetAttribute(theDocument, "menu_SelectAllCells", "acceltext", '');
   // And add "Del" or "Clear"
-  SafeSetAttribute(theDocument, "menu_DeleteCellContents", "acceltext", delStr);
+  SafeSetAttribute(theDocument, "menu_DeleteCellContents", "acceltext", '');
 
   // Set text for indent, outdent keybinding
 
