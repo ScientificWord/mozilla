@@ -869,6 +869,7 @@
 			<tagclassname>othertag</tagclassname>
       <classcontains><contains>#text</contains></classcontains>
       <tag nm="mi"><description>mi</description></tag>
+      <tag nm="mo"><description>mi</description></tag>
       <tag nm="hspace"><description>hspace</description></tag>
 			<tags>
 				<tag nm="object"><description>Object</description></tag>
