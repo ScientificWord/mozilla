@@ -5,6 +5,6 @@
 <!ENTITY swpname.label "Scientific Workplace Name:">
 <!ENTITY mupadname.label "MuPAD Name:">
 <!ENTITY procedure.label "The MuPAD Name is a procedure">
-<!ENTITY builtin.label "That is built in to mupad or is automatically loaded">
+<!ENTITY builtin.label "That is built in to MuPAD or is automatically loaded">
 <!ENTITY infile.label  "That is in a MuPAD format file (.mu)">
 
