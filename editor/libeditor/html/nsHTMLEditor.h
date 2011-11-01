@@ -218,6 +218,7 @@ public:
   NS_IMETHOD DeleteTableCellContents();
   NS_IMETHOD DeleteTableColumn(PRInt32 aNumber);
   NS_IMETHOD DeleteTableRow(PRInt32 aNumber);
+	NS_IMETHOD DeleteTableCellsForDeleteKey();
   NS_IMETHOD SelectTableCell();
   NS_IMETHOD SelectBlockOfCells(nsIDOMElement *aStartCell, nsIDOMElement *aEndCell);
   NS_IMETHOD SelectTableRow();
