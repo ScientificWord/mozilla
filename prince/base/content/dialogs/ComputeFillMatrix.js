@@ -94,9 +94,12 @@ function OK(){
 
   var rows = document.getElementById("rows");
   data.rows  = parseInt(rows.value,10);
+  // rows.value is not the same as the value attribute, so we make it so in order to get persistence to work.
+  rows.setAttribute("value", rows.value);
 
   var cols = document.getElementById("cols");
   data.cols = parseInt(cols.value,10);
+  cols.setAttribute("value", cols.value);
 
   var type = document.getElementById("type");
   data.type = type.selectedIndex + 1;
