@@ -758,12 +758,12 @@ function setFrameAttributes(frameNode)
   else frameNode.setAttribute("padding", getCompositeMeasurement("padding",metrics.unit, false));  
   if (gFrameTab.autoHeightCheck.checked)
   {
-    if (frameNode.hasAttribute("height")) frameNode.removeAttribute("height");
+    frameNode.setAttribute("height", "0");
   }
   else frameNode.setAttribute("height", gFrameTab.heightInput.value);
   if (gFrameTab.autoWidthCheck.checked)
   {
-    if (frameNode.hasAttribute("width")) frameNode.removeAttribute("width");
+    frameNode.setAttribute("width", "0");
   }
   else frameNode.setAttribute("width", gFrameTab.widthInput.value);
   var pos = document.getElementById("placementRadioGroup").selectedItem;
