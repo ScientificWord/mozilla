@@ -638,7 +638,9 @@ bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epi
 makelof, makelot, maketitle, maketoc {
   -moz-user-select: none;
   display:block;
-  text-align: left;
+	height: 1.3em;
+	width: 100%;
+  text-align: center;
 }  
 
 
@@ -658,30 +660,6 @@ date {
   text-align: center;
 }
 
-title {
-  display:block;
-  text-align: center;
-}
-
-maketoc {
-  display:block;
-  text-align: left;
-}
-
-makelof {
-  display:block;
-  text-align: left;
-}
-
-makelot {
-  display:block;
-  text-align: left;
-}
-
-maketitle {
-  display:block;
-  text-align: center;
-}
 
 
 /* Key to the entries below for msidisplay:
