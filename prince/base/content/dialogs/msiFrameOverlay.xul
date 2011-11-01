@@ -334,7 +334,7 @@
     <spacer flex="1"/>
     <groupbox >
       <caption label="Placement"/>
-      <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
+      <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="selectedIndex value">
       <hbox flex="1">
         <vbox>
           <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
@@ -353,7 +353,7 @@
           </vbox>
         </vbox>
         <vbox>
-          <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableHere(this);" persist="value">
+          <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableHere(this);" persist="selectedIndex value">
             <radio id="hereLeftRadio" label="Left" value="L" observes="herePlacement" />
             <radio id="hereRightRadio" label="Right" value="R" observes="herePlacement"/>
             <radio id="hereInsideRadio" label="Inside" value="I" observes="herePlacement" />
