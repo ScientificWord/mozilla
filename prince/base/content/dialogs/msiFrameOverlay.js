@@ -661,9 +661,32 @@ function hexcolor(rgbcolor)
 	return "#"+ r + g + b;
 }
 
+function setTextValueAttributes()
+{
+	// copies textbox.value to the value attribute so that persist works.
+	var arr1 = ["margin","border","padding"];
+	var arr2 = ["Left","Right","Top","Bottom"];
+	var arr3 = ["frameWidth","frameHeight"];
+	var i,j,k, textbox;
+	for (i=0; i< arr1.length; i++)
+	{
+		for (j=0; j < arr2.length; j++)
+		{
+			textbox = document.getElementById(arr1[i]+arr2[j]+"Input");
+			if (textbox.value != null) textbox.setAttribute("value",textbox.value);
+		}
+	}
+	for (k=0; k < arr3.length; k++)
+	{
+		textbox = document.getElementById(arr3[k]+"Input");
+		if (textbox.value != null) textbox.setAttribute("value",textbox.value);
+	}
+}
+
 function setFrameAttributes(frameNode)
 {
   var rot;
+	setTextValueAttributes();
 	metrics.unit = frameUnitHandler.currentUnit;
   if (metrics.unit == "px") // switch to pts
   {
