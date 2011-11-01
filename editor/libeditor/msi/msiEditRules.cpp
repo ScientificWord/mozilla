@@ -136,7 +136,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 	res = mHTMLEditor->GetFirstSelectedCell(nsnull, getter_AddRefs(cell));
 	if (NS_SUCCEEDED(res) && cell)
 	{
-	  res = mHTMLEditor->DeleteTableCellContents();
+	  res = mHTMLEditor->DeleteTableCellsForDeleteKey();
 	  *aHandled = PR_TRUE;
 	  return res;
 	}
