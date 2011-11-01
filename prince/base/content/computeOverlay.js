@@ -2691,8 +2691,6 @@ function doComputeFillMatrix(editorElement, cmdHandler)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var o = new Object();
-  o.rows = "3";  // sticky?
-  o.cols = "3";
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
     msiOpenModelessDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
