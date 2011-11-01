@@ -132,14 +132,16 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
       res = WillDeleteMathSelection(aSelection, aAction, aCancel, aHandled);
   }
   if (!(startMathNode && endMathNode && (startMathNode == endMathNode))) */
-  { 
-     //printf("In msiEditRules::WillDeleteSelection(2)\n");
-     //DumpSelection(aSelection);
-     mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-     //printf("In msiEditRules::WillDeleteSelection(3)\n");
-     //DumpSelection(aSelection);
-     res = nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
-  }
+	nsCOMPtr<nsIDOMElement> cell;
+	res = mHTMLEditor->GetFirstSelectedCell(nsnull, getter_AddRefs(cell));
+	if (NS_SUCCEEDED(res) && cell)
+	{
+	  res = mHTMLEditor->DeleteTableCellContents();
+	  *aHandled = PR_TRUE;
+	  return res;
+	}
+	mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+	res = nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
   return res;
 }
 
