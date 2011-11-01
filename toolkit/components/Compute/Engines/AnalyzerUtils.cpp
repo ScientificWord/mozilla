@@ -215,6 +215,8 @@ ExpType GetExpType(BaseType base_type, MNODE* exp, const Grammar* mml_entities)
           rv = ET_PRIMES;
         else if (unicode == 0x2212) // &minus;
           rv = ET_DIRECTION;
+        else if (unicode == 0x2218) // &minus;
+          rv = ET_DEGREE;
         else
           TCI_ASSERT(!"Operator not in list.");
       } else if (exp_contents[0] == '*' && exp_contents[1] == 0) {
