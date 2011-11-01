@@ -764,3 +764,5 @@
 <xsl:template match="html:textwelsh">
   \textwelsh{<xsl:apply-templates />}
 </xsl:template>
+
+</xsl:stylesheet>

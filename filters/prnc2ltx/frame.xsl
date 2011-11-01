@@ -48,7 +48,7 @@
 	><xsl:otherwise><xsl:value-of select="./@background-color"/></xsl:otherwise
   ></xsl:choose
   >}</xsl:if><xsl:if test="not(@background-color)">{white}</xsl:if
->{\begin{minipage}[t]<xsl:if test="@height">[<xsl:value-of select="@height"/><xsl:value-of select="@units"/>]</xsl:if
+>{\begin{minipage}[t]<xsl:if test="@height and not(@height='0')">[<xsl:value-of select="@height"/><xsl:value-of select="@units"/>]</xsl:if
 >{<xsl:choose><xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="@width - 2*@padding"/></xsl:when><xsl:otherwise><xsl:value-of select="@width - 2*@padding"/></xsl:otherwise></xsl:choose><xsl:value-of select="@units"/>} %
 <xsl:choose><xsl:when test="@textalignment='center'">\begin{Centering}</xsl:when>
   <xsl:when test="@textalignment='justify'"></xsl:when>
