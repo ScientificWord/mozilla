@@ -1293,23 +1293,29 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
 
     // First look for a superscript that dictates semantics
     switch (et) {
+    case ET_DEGREE: {
+
+    }
+    break;
+
     case ET_CONJUGATE_INDICATOR:{
 	    snode->semantic_type = SEM_TYP_CONJUGATE;
-		SEMANTICS_NODE* new_content = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+		  SEMANTICS_NODE* new_content = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
         
-        if (new_content->semantic_type == SEM_TYP_GENERIC_FENCE)
+      if (new_content->semantic_type == SEM_TYP_GENERIC_FENCE)
           new_content->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
 
-        done = true;
-      }
-      break;
-    case ET_TRANSPOSE_INDICATOR:{
-		AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+      done = true;
+    }
+    break;
 
-        snode->semantic_type = SEM_TYP_MTRANSPOSE;
-        done = true;
-      }
-      break;
+    case ET_TRANSPOSE_INDICATOR:{
+		   AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+       snode->semantic_type = SEM_TYP_MTRANSPOSE;
+       done = true;
+    }
+    break;
+
     case ET_HTRANSPOSE_INDICATOR:{
 		AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
 
