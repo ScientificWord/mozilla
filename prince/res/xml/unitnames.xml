@@ -86,7 +86,7 @@
   <unitname id="secarc" name="arcSecond" type="planeAngle" builtIn="true"><data>&Prime;</data><appearance/></unitname>
   <unitname id="sr" name="steradian" type="solidAngle" builtIn="true"><data>sr</data><appearance/></unitname>
   <unitname id="Bq" name="becquerel" type="activity" builtIn="true"><data>Bq</data><appearance/></unitname>
-  <unitname id="curie" name="curie" type="activity" builtIn="true"><data>curie</data><appearance/></unitname>
+  <unitname id="curie" name="curie" type="activity" builtIn="true"><data>Ci</data><appearance/></unitname>
   <unitname id="Hz" name="hertz" type="frequency" builtIn="true"><data>Hz</data><appearance/></unitname>
   <unitname id="kHz" name="kilohertz" type="frequency" builtIn="true"><data>kHz</data><appearance/></unitname>
   <unitname id="MHz" name="megahertz" type="frequency" builtIn="true"><data>MHz</data><appearance/></unitname>
