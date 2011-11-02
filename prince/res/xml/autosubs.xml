@@ -170,7 +170,6 @@
   <sub ctx="math" tp="sc"><pattern>uCo</pattern><data>insertMathunit('C','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uda</pattern><data>insertMathunit('d','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('deg','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('deg','true');</data></sub>
 <!--  <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('°','true');</data></sub> -->
   <sub ctx="math" tp="sc"><pattern>udg</pattern><data>insertMathunit('dg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>udme</pattern><data>insertMathunit('dm','true');</data></sub>
