@@ -661,9 +661,32 @@ function hexcolor(rgbcolor)
 	return "#"+ r + g + b;
 }
 
+function setTextValueAttributes()
+{
+	// copies textbox.value to the value attribute so that persist works.
+	var arr1 = ["margin","border","padding"];
+	var arr2 = ["Left","Right","Top","Bottom"];
+	var arr3 = ["frameWidth","frameHeight"];
+	var i,j,k, textbox;
+	for (i=0; i< arr1.length; i++)
+	{
+		for (j=0; j < arr2.length; j++)
+		{
+			textbox = document.getElementById(arr1[i]+arr2[j]+"Input");
+			if (textbox.value != null) textbox.setAttribute("value",textbox.value);
+		}
+	}
+	for (k=0; k < arr3.length; k++)
+	{
+		textbox = document.getElementById(arr3[k]+"Input");
+		if (textbox.value != null) textbox.setAttribute("value",textbox.value);
+	}
+}
+
 function setFrameAttributes(frameNode)
 {
   var rot;
+	setTextValueAttributes();
 	metrics.unit = frameUnitHandler.currentUnit;
   if (metrics.unit == "px") // switch to pts
   {
@@ -682,7 +705,8 @@ function setFrameAttributes(frameNode)
 	{
 		frameNode.setAttribute("rotation", rot);
 	}
-  frameNode.setAttribute("req", "ragged2e");
+  //frameNode.setAttribute("req", "ragged2e");
+  theWindow.msiRequirePackage(frameNode, "ragged2e", null);
   if (gFrameModeImage) {
     var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
     frameNode.setAttribute("sidemargin", sidemargin);
@@ -735,12 +759,12 @@ function setFrameAttributes(frameNode)
   else frameNode.setAttribute("padding", getCompositeMeasurement("padding",metrics.unit, false));  
   if (gFrameTab.autoHeightCheck.checked)
   {
-    if (frameNode.hasAttribute("height")) frameNode.removeAttribute("height");
+    frameNode.setAttribute("height", "0");
   }
   else frameNode.setAttribute("height", gFrameTab.heightInput.value);
   if (gFrameTab.autoWidthCheck.checked)
   {
-    if (frameNode.hasAttribute("width")) frameNode.removeAttribute("width");
+    frameNode.setAttribute("width", "0");
   }
   else frameNode.setAttribute("width", gFrameTab.widthInput.value);
   var pos = document.getElementById("placementRadioGroup").selectedItem;

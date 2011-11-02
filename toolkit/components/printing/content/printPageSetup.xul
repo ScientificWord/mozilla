@@ -53,7 +53,9 @@
   ondialogaccept="return onAccept();"
   oncancel="return onCancel();"
   title="&printSetup.title;"
-  persist="screenX screenY"
+  persist="screenX screenY width height"
+  width="340px"
+  height="430px"
   screenX="24" screenY="24">
 
   <script type="application/javascript" src="chrome://global/content/printPageSetup.js"/>
