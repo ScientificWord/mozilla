@@ -1166,7 +1166,19 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   } 
   else
   {
-    if (nsHTMLEditUtils::IsMath(splitpointNode)) {
+    bool inMath = false;
+    if (splitpointNode){
+       if (nsHTMLEditUtils::IsMath(splitpointNode))
+         inMath = true;
+       else {
+         nsCOMPtr<nsIDOMNode> parent;
+         splitpointNode->GetParentNode(getter_AddRefs(parent));
+         if (parent &&  nsHTMLEditUtils::IsMath(parent))
+           inMath = true;
+       }
+    }
+
+    if (inMath) {
        res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
          &outOffset, PR_TRUE, address_of(outLeftNode), address_of(outRightNode)); 
     } else {
