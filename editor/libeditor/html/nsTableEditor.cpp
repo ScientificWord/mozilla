@@ -1092,6 +1092,157 @@ nsHTMLEditor::DeleteTableCell(PRInt32 aNumber)
 }
 
 NS_IMETHODIMP
+nsHTMLEditor::DeleteTableCellsForDeleteKey()
+{
+	// This implements the way we want delete and backspace to work when a table selection is made.
+	// Cells are not deleted (but their contents are) unless they are part of a column or row that is completely selected;
+	// these *are* deleted. Since cell selections in a table or matrix are rectangular, if one selected cell is in a row, then all
+	// are, and if one selected cell is in a column, then all are.
+  nsCOMPtr<nsISelection> selection;
+  nsCOMPtr<nsIDOMElement> table;
+  nsCOMPtr<nsIDOMElement> cell;
+  PRInt32 startRowIndex, startColIndex;
+
+
+  nsresult res = GetCellContext(getter_AddRefs(selection),
+                         getter_AddRefs(table), 
+                         getter_AddRefs(cell), 
+                         nsnull, nsnull,
+                         &startRowIndex, &startColIndex);
+
+  if (NS_FAILED(res)) return res;
+  // Don't fail if we didn't find a table or cell
+  if (!table || !cell) return NS_EDITOR_ELEMENT_NOT_FOUND;
+
+  nsAutoEditBatch beginBatching(this);
+  // Prevent rules testing until we're done
+  nsAutoRules beginRulesSniffing(this, kOpDeleteNode, nsIEditor::eNext);
+
+  nsCOMPtr<nsIDOMElement> firstCell;
+  nsCOMPtr<nsIDOMRange> range;
+  res = GetFirstSelectedCell(getter_AddRefs(range), getter_AddRefs(firstCell));
+  if (NS_FAILED(res)) return res;
+
+  PRInt32 rangeCount;
+  res = selection->GetRangeCount(&rangeCount);
+  if (NS_FAILED(res)) return res;
+
+  if (firstCell)
+  {
+    cell = firstCell;
+
+    PRInt32 rowCount, colCount;
+    res = GetTableSize(table, &rowCount, &colCount);
+    if (NS_FAILED(res)) return res;
+
+    // Get indexes -- may be different than original cell
+    res = GetCellIndexes(cell, &startRowIndex, &startColIndex);
+    if (NS_FAILED(res)) return res;
+
+    // The setCaret object will call SetSelectionAfterTableEdit in it's destructor
+    nsSetSelectionAfterTableEdit setCaret(this, table, startRowIndex, startColIndex, ePreviousColumn, PR_FALSE);
+    nsAutoTxnsConserveSelection dontChangeSelection(this);
+
+    PRBool  checkToDeleteRow = PR_TRUE;
+    PRBool  checkToDeleteColumn = PR_TRUE;
+    while (cell)
+    {
+      PRBool deleteRow = PR_FALSE;
+      PRBool deleteCol = PR_FALSE;
+
+      if (checkToDeleteRow)
+      {
+        // Optimize to delete an entire row
+        // Clear so we don't repeat AllCellsInRowSelected within the same row
+        checkToDeleteRow = PR_FALSE;
+
+        deleteRow = AllCellsInRowSelected(table, startRowIndex, colCount);
+        if (deleteRow)
+        {
+          // First, find the next cell in a different row
+          //   to continue after we delete this row
+          PRInt32 nextRow = startRowIndex;
+          while (nextRow == startRowIndex)
+          {
+            res = GetNextSelectedCell(nsnull, getter_AddRefs(cell));
+            if (NS_FAILED(res)) return res;
+            if (!cell) break;
+            res = GetCellIndexes(cell, &nextRow, &startColIndex);
+            if (NS_FAILED(res)) return res;
+          }
+          // Delete entire row
+          res = DeleteRow(table, startRowIndex);          
+          if (NS_FAILED(res)) return res;
+
+          if (cell)
+          {
+            // For the next cell: Subtract 1 for row we deleted
+            startRowIndex = nextRow - 1;
+            // Set true since we know we will look at a new row next
+            checkToDeleteRow = PR_TRUE;
+          }
+        }
+      }
+      if (!deleteRow)
+      {
+        if (checkToDeleteColumn)
+        {
+          // Optimize to delete an entire column
+          // Clear this so we don't repeat AllCellsInColSelected within the same Col
+          checkToDeleteColumn = PR_FALSE;
+
+          deleteCol = AllCellsInColumnSelected(table, startColIndex, colCount);
+          if (deleteCol)
+          {
+            // First, find the next cell in a different column
+            //   to continue after we delete this column
+            PRInt32 nextCol = startColIndex;
+            while (nextCol == startColIndex)
+            {
+              res = GetNextSelectedCell(nsnull, getter_AddRefs(cell));
+              if (NS_FAILED(res)) return res;
+              if (!cell) break;
+              res = GetCellIndexes(cell, &startRowIndex, &nextCol);
+              if (NS_FAILED(res)) return res;
+            }
+            // Delete entire Col
+            res = DeleteColumn(table, startColIndex);          
+            if (NS_FAILED(res)) return res;
+            if (cell) 
+            {
+              // For the next cell, subtract 1 for col. deleted
+              startColIndex = nextCol - 1;
+              // Set true since we know we will look at a new column next
+              checkToDeleteColumn = PR_TRUE;
+            }
+          }
+        }
+        if (!deleteCol)
+        {
+          // First get the next cell to delete
+          nsCOMPtr<nsIDOMElement> nextCell;
+          res = GetNextSelectedCell(getter_AddRefs(range), getter_AddRefs(nextCell));
+          if (NS_FAILED(res)) return res;
+
+          // Then delete the contents of the cell
+          res = DeleteCellContents(cell);
+          if (NS_FAILED(res)) return res;
+          
+          // The next cell to delete
+          cell = nextCell;
+          if (cell)
+          {
+            res = GetCellIndexes(cell, &startRowIndex, &startColIndex);
+            if (NS_FAILED(res)) return res;
+          }
+        }
+      }
+    }
+  }
+  return NS_OK;	
+}
+
+NS_IMETHODIMP
 nsHTMLEditor::DeleteTableCellContents()
 {
   nsCOMPtr<nsISelection> selection;
