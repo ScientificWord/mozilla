@@ -49,7 +49,6 @@
   <sub ctx="math" tp="sc"><pattern>arctan</pattern><data>insertMathname('arctan','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arg</pattern><data>insertMathname('arg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>assume</pattern><data>insertMathname('assume','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>assume</pattern><data>insertMathname('assume', 'true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>BetaDen</pattern><data>insertMathname('BetaDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>BetaDist</pattern><data>insertMathname('BetaDist','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>BetaInv</pattern><data>insertMathname('BetaInv','true');</data></sub>
@@ -64,7 +63,6 @@
   <sub ctx="math" tp="sc"><pattern>Ci</pattern><data>insertMathname('Ci','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>col</pattern><data>insertMathname('col','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>complex</pattern><data>insertMathname('complex','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>complex</pattern><data>insertMathname('complex', 'true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>cos</pattern><data>insertMathname('cos','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>cosh</pattern><data>insertMathname('cosh','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>cot</pattern><data>insertMathname('cot','true');</data></sub>
@@ -75,7 +73,7 @@
   <sub ctx="math" tp="sc"><pattern>dim</pattern><data>insertMathname('dim','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Ei</pattern><data>insertMathname('Ei','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>erf</pattern><data>insertMathname('erf','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>even</pattern><data>insertMathname('even', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>even</pattern><data>insertMathname('even','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>exp</pattern><data>insertMathname('exp','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>expand</pattern><data>insertMathname('expand','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ExponentialDen</pattern><data>insertMathname('ExponentialDen','true');</data></sub>
@@ -94,10 +92,10 @@
   <sub ctx="math" tp="sc"><pattern>HypergeomDen</pattern><data>insertMathname('HypergeomDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>HypergeomDist</pattern><data>insertMathname('HypergeomDist','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Im</pattern><data>insertMathname('Im','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>imaginary</pattern><data>insertMathname('imaginary', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>imaginary</pattern><data>insertMathname('imaginary','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>inf</pattern><data>insertMathname('inf','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>injlim</pattern><data>insertMathname('injlim','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>integer</pattern><data>insertMathname('integer', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>integer</pattern><data>insertMathname('integer','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>istrue</pattern><data>insertMathname('istrue','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ker</pattern><data>insertMathname('ker','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>LambertW</pattern><data>insertMathname('LambertW','true');</data></sub>
@@ -110,32 +108,30 @@
   <sub ctx="math" tp="sc"><pattern>log</pattern><data>insertMathname('log','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>max</pattern><data>insertMathname('max','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>min</pattern><data>insertMathname('min','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>mod</pattern><data>insertMathOperator('mod','atRight', 'small', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>mod</pattern><data>insertMathOperator('mod','atRight','small','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>negative</pattern><data>insertMathname('negative','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>negative</pattern><data>insertMathname('negative', 'true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>negint</pattern><data>insertMathname('negint', 'true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>negrat</pattern><data>insertMathname('negrat', 'true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>nonzero</pattern><data>insertMathname('nonzero', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>negint</pattern><data>insertMathname('negint','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>negrat</pattern><data>insertMathname('negrat','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>nonzero</pattern><data>insertMathname('nonzero','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>NormalDen</pattern><data>insertMathname('NormalDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>NormalDist</pattern><data>insertMathname('NormalDist','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>NormalInv</pattern><data>insertMathname('NormalInv','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>odd</pattern><data>insertMathname('odd', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>odd</pattern><data>insertMathname('odd','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>PoissonDen</pattern><data>insertMathname('PoissonDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>PoissonDist</pattern><data>insertMathname('PoissonDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>PoissonInv</pattern><data>insertMathname('PoissonInv','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>polylog</pattern><data>insertMathname('polylog','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>posint</pattern><data>insertMathname('posint', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>posint</pattern><data>insertMathname('posint','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>positive</pattern><data>insertMathname('positive','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>positive</pattern><data>insertMathname('positive', 'true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>posrat</pattern><data>insertMathname('posrat', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>posrat</pattern><data>insertMathname('posrat','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Pr</pattern><data>insertMathname('Pr','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>prime</pattern><data>insertMathname('prime', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>prime</pattern><data>insertMathname('prime','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>projlim</pattern><data>insertMathname('projlim','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Psi</pattern><data>insertMathname('Psi','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>rank</pattern><data>insertMathname('rank','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>rational</pattern><data>insertMathname('rational', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>rational</pattern><data>insertMathname('rational','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Re</pattern><data>insertMathname('Re','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>real</pattern><data>insertMathname('real','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>real</pattern><data>insertMathname('real', 'true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>row</pattern><data>insertMathname('row','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sec</pattern><data>insertMathname('sec','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>seq</pattern><data>insertMathname('seq','true');</data></sub>
@@ -162,8 +158,8 @@
   <sub ctx="math" tp="sc"><pattern>uBq</pattern><data>insertMathunit('Bq','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uBtu</pattern><data>insertMathunit('Btu','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ucal</pattern><data>insertMathunit('cal','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>ucel</pattern><data>insertMathunit('');</data></sub>	 -->
   <sub ctx="math" tp="sc"><pattern>ucd</pattern><data>insertMathunit('cd','true');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>ucel</pattern><data>insertMathunit('');</data></sub>	 -->
   <sub ctx="math" tp="sc"><pattern>ucg</pattern><data>insertMathunit('cg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uCi</pattern><data>insertMathunit('curie','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ucm</pattern><data>insertMathunit('cm','true');</data></sub>
@@ -173,8 +169,8 @@
 <!--  <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('°','true');</data></sub> -->
   <sub ctx="math" tp="sc"><pattern>udg</pattern><data>insertMathunit('dg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>udme</pattern><data>insertMathunit('dm','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>udmn</pattern><data>insertMathunit('minarc', 'true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>uds</pattern><data>insertMathunit('secarc', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>udmn</pattern><data>insertMathunit('minarc','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uds</pattern><data>insertMathunit('secarc','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>udyn</pattern><data>insertMathunit('dyn','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uEHz</pattern><data>insertMathunit('EHz','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uEmol</pattern><data>insertMathunit('Emol','true');</data></sub>
@@ -195,7 +191,7 @@
   <sub ctx="math" tp="sc"><pattern>uGmol</pattern><data>insertMathunit('Gmol','true');</data></sub>
 <!--  <sub ctx="math" tp="sc"><pattern>uGohm</pattern><data>insertMathunit('');</data></sub> -->
   <sub ctx="math" tp="sc"><pattern>ugr</pattern><data>insertMathunit('g','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>uGWa</pattern><data>insertMathunit('GW','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uGW</pattern><data>insertMathunit('GW','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uHe</pattern><data>insertMathunit('H','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uhectare</pattern><data>insertMathunit('hectare','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uhp</pattern><data>insertMathunit('hp','true');</data></sub>
@@ -288,7 +284,7 @@
   <sub ctx="math" tp="sc"><pattern>unV</pattern><data>insertMathunit('nV','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>unWa</pattern><data>insertMathunit('nW','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>unWb</pattern><data>insertMathunit('nWb','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>uohm</pattern><data>insertMathunit('ohm', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uohm</pattern><data>insertMathunit('ohm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uozf</pattern><data>insertMathunit('ozf','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uPa</pattern><data>insertMathunit('Pa','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>upF</pattern><data>insertMathunit('pF','true');</data></sub>
@@ -324,6 +320,6 @@
   <sub ctx="math" tp="sc"><pattern>WeibullDist</pattern><data>insertMathname('WeibullDist','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>WeibullInv</pattern><data>insertMathname('WeibullInv','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>xpnd</pattern><data>insertMathname('expand','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>zero</pattern><data>insertMathname('zero', 'true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>zero</pattern><data>insertMathname('zero','true');</data></sub>
 
 </subs>
