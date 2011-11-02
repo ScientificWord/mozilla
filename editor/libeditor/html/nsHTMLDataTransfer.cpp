@@ -1166,37 +1166,44 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   } 
   else
   {
-    res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
-      &outOffset, PR_TRUE, address_of(outLeftNode), address_of(outRightNode)); 
+    if (nsHTMLEditUtils::IsMath(splitpointNode)) {
+       res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
+         &outOffset, PR_TRUE, address_of(outLeftNode), address_of(outRightNode)); 
+    } else {
+       res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
+         &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
+    }
     FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
     FixMathematics(outRightNode, PR_FALSE, PR_FALSE);
-    if (outRightNode) mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);
+    if (outRightNode)  
+      mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);
   
-		nsAutoString leftName;
-		nsAutoString rightName;
-		res = GetTagString(outLeftNode, leftName);
-		res = GetTagString(outRightNode, rightName);
-		if (!(leftName.Equals(rightName)))
-		{
-			// strip attributes off of the right node
-			nsCOMPtr<nsIDOMNamedNodeMap> attributemap;
-			nsCOMPtr<nsIDOMNode> rightNode = do_QueryInterface(outRightNode);
-			nsCOMPtr<nsIDOMElement> rightElem = do_QueryInterface(outRightNode);
+		    nsAutoString leftName;
+		    nsAutoString rightName;
+		    res = GetTagString(outLeftNode, leftName);
+		    res = GetTagString(outRightNode, rightName);
+		    if (!(leftName.Equals(rightName)))
+		    {
+			    // strip attributes off of the right node
+			    nsCOMPtr<nsIDOMNamedNodeMap> attributemap;
+			    nsCOMPtr<nsIDOMNode> rightNode = do_QueryInterface(outRightNode);
+			    nsCOMPtr<nsIDOMElement> rightElem = do_QueryInterface(outRightNode);
 			
-			rightNode->GetAttributes(getter_AddRefs(attributemap));
-			PRUint32 length;
-			nsCOMPtr<nsIDOMNode> node;
-			nsCOMPtr<nsIDOMAttr> attrNode;
-			nsCOMPtr<nsIDOMAttr> dummyattrNode;
-			attributemap->GetLength(&length);
-			for (PRInt32 i = length-1; i >= 0; i--)
-			{
-				attributemap->Item(i, getter_AddRefs(node));
-				attrNode = do_QueryInterface(node);
-				rightElem->RemoveAttributeNode(attrNode, getter_AddRefs(dummyattrNode));
-			}
+			    rightNode->GetAttributes(getter_AddRefs(attributemap));
+			    PRUint32 length;
+			    nsCOMPtr<nsIDOMNode> node;
+			    nsCOMPtr<nsIDOMAttr> attrNode;
+			    nsCOMPtr<nsIDOMAttr> dummyattrNode;
+			    attributemap->GetLength(&length);
+			    for (PRInt32 i = length-1; i >= 0; i--)
+			    {
+				    attributemap->Item(i, getter_AddRefs(node));
+				    attrNode = do_QueryInterface(node);
+				    rightElem->RemoveAttributeNode(attrNode, getter_AddRefs(dummyattrNode));
+			    }
 			
-		}
+		    }
+    
   }
   return res;
 }
