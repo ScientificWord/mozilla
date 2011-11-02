@@ -705,7 +705,8 @@ function setFrameAttributes(frameNode)
 	{
 		frameNode.setAttribute("rotation", rot);
 	}
-  frameNode.setAttribute("req", "ragged2e");
+  //frameNode.setAttribute("req", "ragged2e");
+  theWindow.msiRequirePackage(frameNode, "ragged2e", null);
   if (gFrameModeImage) {
     var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
     frameNode.setAttribute("sidemargin", sidemargin);
