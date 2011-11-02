@@ -1736,23 +1736,23 @@ NS_IMETHODIMP nsEditor::DeleteNode(nsIDOMNode * aElement)
   PRInt32 i, offset;
   nsCOMPtr<nsIDOMNode> parent;
   nsAutoRules beginRulesSniffing(this, kOpCreateNode, nsIEditor::ePrevious);
-  nsCOMPtr<nsISelection>selection;
+//  nsCOMPtr<nsISelection>selection;
 
   // save node location for selection updating code.
   nsresult result = GetNodeLocation(aElement, address_of(parent), &offset);
-//  if (NS_FAILED(result)) return result;
-  result = GetSelection(getter_AddRefs(selection));
-  nsCOMPtr<nsIDOMRange> range;
-  selection->GetRangeAt(0, getter_AddRefs(range));
+  if (NS_FAILED(result)) return result;
+//  result = GetSelection(getter_AddRefs(selection));
+//  nsCOMPtr<nsIDOMRange> range;
+//  selection->GetRangeAt(0, getter_AddRefs(range));
   for (i = 0; i < mActionListeners.Count(); i++)
     mActionListeners[i]->WillDeleteNode(aElement);
 
   nsRefPtr<DeleteElementTxn> txn;
   result = CreateTxnForDeleteElement(aElement, getter_AddRefs(txn));
   if (NS_SUCCEEDED(result))  {
-    nsAutoTrackDOMPoint tracker(mRangeUpdater, address_of(parent), &offset);
+//    nsAutoTrackDOMPoint tracker(mRangeUpdater, address_of(parent), &offset);
     result = DoTransaction(txn); 
-    selection->Collapse(parent, offset); 
+//    selection->Collapse(parent, offset); 
   }
 
   for (i = 0; i < mActionListeners.Count(); i++)

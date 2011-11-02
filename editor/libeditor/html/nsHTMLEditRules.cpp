@@ -1955,7 +1955,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   *aCancel = PR_FALSE;
   *aHandled = PR_FALSE;
 
-  // remember that we did a selection deletion.  Used by CreateStyleForInsertText()
+  // remember that we did a selection deletion.  Used by CreateStyleForInsertText() --BBM check this out
   mDidDeleteSelection = PR_TRUE;
   
   // if there is only bogus content, cancel the operation

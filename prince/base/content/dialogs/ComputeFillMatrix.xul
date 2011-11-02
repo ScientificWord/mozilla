@@ -113,12 +113,12 @@
         <hbox>
           <description>&Rows.label;</description>
           <spacer flex="1"/>
-          <textbox id="rows" style="width: 3em"/>
+          <textbox id="rows" style="width: 3em" value="3" persist="value"/>
         </hbox>
         <hbox>
           <description>&Columns.label;</description>
           <spacer flex="1"/>
-          <textbox id="cols" style="width: 3em"/>
+          <textbox id="cols" style="width: 3em" value="3" persist="value"/>
         </hbox>
       </groupbox>
       <groupbox>
