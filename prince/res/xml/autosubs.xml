@@ -165,7 +165,7 @@
 <!--  <sub ctx="math" tp="sc"><pattern>ucel</pattern><data>insertMathunit('');</data></sub>	 -->
   <sub ctx="math" tp="sc"><pattern>ucd</pattern><data>insertMathunit('cd','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ucg</pattern><data>insertMathunit('cg','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>uCi</pattern><data>insertMathunit('Ci','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uCi</pattern><data>insertMathunit('curie','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ucm</pattern><data>insertMathunit('cm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uCo</pattern><data>insertMathunit('C','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uda</pattern><data>insertMathunit('d','true');</data></sub>
