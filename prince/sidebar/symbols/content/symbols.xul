@@ -794,7 +794,7 @@
               <toolbarbutton id="symboltextexclamdown" />
               <toolbarbutton id="symboltextquestiondown" />
               <toolbarbutton id="symbolpmtxt" />
-              <toolbarbutton id="symboldiv" />
+              <toolbarbutton id="symboldivsign" />
             </row>
             <row>
               <toolbarbutton id="symboltextonesuperior" />
@@ -885,7 +885,7 @@
               <toolbarbutton id="symbolaa" />
               <toolbarbutton id="symbolae" />
               <toolbarbutton id="symbolccedilla" />
-              <toolbarbutton id="symboldh" />
+              <toolbarbutton id="symboldhlatin" />
             </row>
             <row>
               <toolbarbutton id="symboleacute" />
