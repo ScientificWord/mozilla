@@ -579,7 +579,7 @@
 <!ENTITY symbolAgrave.tooltip    "Agrave">
 <!ENTITY symbolDH.tooltip          "DH">
 <!ENTITY symbolagrave.tooltip      "agrave">
-<!ENTITY symboldh.tooltip         "dh">
+
 <!ENTITY symboltextexclamdown.tooltip   "textexclamdown">
 <!ENTITY symbolpm.tooltip          "pm">
 <!ENTITY symbolAacute.tooltip    "Aacute">
@@ -620,7 +620,7 @@
 <!ENTITY symbolcdotp.tooltip   "cdotp">
 <!ENTITY symbolCcedilla.tooltip    "Ccedilla">
 <!ENTITY symbolccedilla.tooltip    "ccedilla">
-<!ENTITY symboldiv.tooltip      "div">
+<!ENTITY symboldivsign.tooltip      "div">
 <!ENTITY symboltextasciidieresis.tooltip   "textasciidieresis">
 <!ENTITY symbolcedilla.tooltip    "cedilla">
 <!ENTITY symbolEgrave.tooltip    "Egrave">
