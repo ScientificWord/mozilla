@@ -119,7 +119,8 @@
 %% \document and \enddocument
 
 \def\out@begin@document{%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{tabulary}}
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{bm}}%
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{tabulary}}%
    \@ifundefined{@TCILATEX}
      {\relax}
      {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\input{tcilatex}}}
