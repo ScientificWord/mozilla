@@ -3662,7 +3662,11 @@ nsHTMLEditor::GetSelectedCellsType(nsIDOMElement *aElement, PRUint32 *aSelection
 
   nsresult res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), aElement, getter_AddRefs(table));
   if (NS_FAILED(res)) return res;
-
+  if (!table)
+	{
+	  nsresult res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), aElement, getter_AddRefs(table));
+	  if (NS_FAILED(res)) return res;
+	}
   PRInt32 rowCount, colCount;
   res = GetTableSize(table, &rowCount, &colCount);
   if (NS_FAILED(res)) return res;
@@ -3788,6 +3792,44 @@ nsHTMLEditor::AllCellsInColumnSelected(nsIDOMElement *aTable, PRInt32 aColIndex,
       return PR_FALSE;
   }
   return PR_TRUE;
+}
+
+NS_IMETHODIMP 
+nsHTMLEditor::GetAllCellsSelected(nsIDOMElement ** mtable, PRBool * _result)
+{
+	nsresult res;
+  PRInt32 startRowIndex, startColIndex;
+  nsCOMPtr<nsIDOMElement> cell;
+	nsCOMPtr<nsIDOMElement> table;
+  nsCOMPtr<nsISelection> selection;
+	*_result = PR_FALSE;
+  res = GetSelection(getter_AddRefs(selection));
+  res = GetFirstSelectedCell(nsnull, getter_AddRefs(cell));
+  if(NS_FAILED(res)) return res;
+
+  if (cell)
+  {
+	 	res = GetCellIndexes(cell, &startRowIndex, &startColIndex);
+		res = GetCellContext(getter_AddRefs(selection),
+		                         getter_AddRefs(table), 
+		                         getter_AddRefs(cell), 
+		                         nsnull, nsnull,
+		                         &startRowIndex, &startColIndex);
+
+  	if (NS_FAILED(res)) return res;
+    PRInt32 rowCount, colCount;
+    res = GetTableSize(table, &rowCount, &colCount);
+    if (NS_FAILED(res)) return res;
+
+    // Get indexes -- may be different than original cell
+    res = GetCellIndexes(cell, &startRowIndex, &startColIndex);
+    if (NS_FAILED(res)) return res;
+
+    *_result = (AllCellsInRowSelected(table, startRowIndex, colCount) && 
+			AllCellsInColumnSelected(table, startColIndex, colCount));
+		*mtable = table;
+	}
+	return NS_OK;
 }
 
 PRBool 
