@@ -2570,12 +2570,13 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
   
   // get selection  
   nsCOMPtr<nsIDOMNode> node;
+	nsCOMPtr<nsIDOMNode> mathnode;
   PRInt32 offset;
   nsresult res = mEditor->GetStartNodeAndOffset(aSelection, address_of(node), &offset);
   if (NS_FAILED(res)) return res;
   if (!node) return NS_ERROR_FAILURE;
 
-  // examine selection
+	  // examine selection
   nsWSRunObject wsObj(mHTMLEditor, node, offset);
   if (((wsObj.mStartReason & nsWSRunObject::eBlock)|| (wsObj.mStartReason & nsWSRunObject::eBreak)) &&
       (wsObj.mEndReason & nsWSRunObject::eBlock))
@@ -2601,7 +2602,7 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
       nsCOMPtr<nsIDOMNode> brNode;
       res = mHTMLEditor->CreateBR(node, offset, address_of(brNode), nsIEditor::ePrevious);
     }
-  }
+	}
   return res;
 }
 
