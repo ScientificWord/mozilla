@@ -30,17 +30,6 @@
       <classcontains>
         <contains>#text</contains>
 			  <contains>texttag</contains>
-			  <contains>listparenttag</contains>
-			  <contains>listtag</contains>
-			  <contains>othertag</contains>
-        <contains>table</contains>
-			  <contains>mml:math</contains>
-			  <contains>img</contains>
-        <contains>line</contains>
-        <contains>a</contains>
-        <contains>note</contains>
-        <contains>object</contains>
-        <contains>notewrapper</contains>
       </classcontains>
 			<tags>
 				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
