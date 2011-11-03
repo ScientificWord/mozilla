@@ -268,6 +268,7 @@ public:
 
   // Upper-left-most selected cell in table
   NS_IMETHOD GetFirstSelectedCellInTable(PRInt32 *aRowIndex, PRInt32 *aColIndex, nsIDOMElement **aCell);
+	NS_IMETHOD GetAllCellsSelected(nsIDOMElement **, PRBool * _retval);
     
   /* miscellaneous */
   // This sets background on the appropriate container element (table, cell,)
