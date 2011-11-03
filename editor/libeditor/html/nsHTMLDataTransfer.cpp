@@ -981,6 +981,37 @@ nsHTMLEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpoin
   return NS_OK;
 }
 
+//utility function
+PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
+{
+	// run through the subnodes of node. We know there is no non-whitespace text, so text nodes can be ignored. Text tags can be ignored. 
+	// We say everything else is significant. Also, text tag nodes cannot have significant subnodes
+
+	nsCOMPtr<nsIDOMNode> child, tmp;
+	nsCOMPtr<nsIDOMElement> el;
+	node->GetFirstChild(getter_AddRefs(child));
+	nsAutoString tagname;
+	nsAutoString classname;
+  
+	while (child)
+	{
+		el = do_QueryInterface(child);
+		if (el)
+		{
+			el->GetTagName(tagname);
+			if (!(tagname.EqualsLiteral("#text") || tagname.EqualsLiteral("br"))) 
+			{
+				tlm->GetClassOfTag(tagname, nsnull, classname);
+				if (!classname.EqualsLiteral("texttag")) return PR_FALSE;
+			}
+		}
+	  child->GetNextSibling(getter_AddRefs(tmp));
+	  child = tmp;
+	}
+	return PR_TRUE;
+}
+
+
 // InsertReturnAt -- usually splits a paragraph; may call itself recursively
 nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy)
@@ -1027,6 +1058,8 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     nsAutoString strContents;
     dom3node->GetTextContent(strContents);
     isEmpty = IsWhiteSpaceOnly(strContents);
+		// check that there aren't significant tags in it, such as empty tables, etc.
+		if (isEmpty) isEmpty = HasNoSignificantTags(splitNode, mtagListManager);
     fDiscardNode = PR_FALSE;                       
     if (isEmpty) mtagListManager->GetDiscardEmptyBlockNode(splitNode, &fDiscardNode);
   }
