@@ -1280,21 +1280,30 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
 
 // Lot's more to do in the following
 
-void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
+void AnalyzeMSUP(MNODE* mml_msup_node, SEMANTICS_NODE* snode,
                            int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
-  MNODE *base = mml_msup_node->first_kid;
+  MNODE* base = mml_msup_node->first_kid;
+  MNODE* exp = base -> next;
   if (base) {
     BaseType bt = GetBaseType(mml_msup_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
-    ExpType et = GetExpType(bt, base->next, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
+    ExpType et = GetExpType(bt, exp, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
+
     bool done = false;
 
     // First look for a superscript that dictates semantics
     switch (et) {
     case ET_DEGREE: {
-
+      snode->semantic_type = SEM_TYP_INFIX_OP;
+      snode->contents = DuplicateString("&#x2062;");
+      SEMANTICS_NODE* new_contentA = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+      
+      SEMANTICS_NODE* new_contentB = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, exp, true, pAnalyzer);
+      new_contentB -> semantic_type = SEM_TYP_SIUNIT;
+      new_contentB -> contents = DuplicateString("&#xb0;");
+      done = true;
     }
     break;
 
@@ -1369,7 +1378,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
             // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
             //                             mml_canonical_name, mml_msup_node,
             //                             pAnalyzer -> ScrStr()) );
-			pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
+			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
             int local_nodes_done;
             BUCKET_REC* br = ArgsToBucket(mml_msup_node, local_nodes_done, pAnalyzer);
             nodes_done += local_nodes_done;
