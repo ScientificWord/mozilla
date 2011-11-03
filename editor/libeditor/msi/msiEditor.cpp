@@ -1049,7 +1049,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 				if (type == 3)
 					currFocusNode->GetParentNode(getter_AddRefs(tempNode));
 				currFocusElement = do_QueryInterface(tempNode);
-				res = currFocusElement->GetTagName(name);
+				if (currFocusElement) res = currFocusElement->GetTagName(name);
 				if (!name.EqualsLiteral("mtext"))
 				{
 	        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));

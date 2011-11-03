@@ -650,6 +650,10 @@ nsHTMLEditor::NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock)
       tagAtom==nsEditProperty::tr         ||
       tagAtom==nsEditProperty::th         ||
       tagAtom==nsEditProperty::td         ||
+      tagAtom==nsGkAtoms::mtr_            ||
+      tagAtom==nsGkAtoms::mtd_            ||
+      tagAtom==nsGkAtoms::mi_             ||
+      tagAtom==nsGkAtoms::mn_             ||
       tagAtom==nsEditProperty::li         ||
       tagAtom==nsEditProperty::dt         ||
       tagAtom==nsEditProperty::dd         ||
