@@ -1023,8 +1023,7 @@ case CMD_CLOSETAG : {
           break;
         } else {
           LOG("\n----IMPLICIT CLOSING " << s_tagStack.back().c_str());
-          std::string closetag =
-               "\n<!-- WARNING: tag implicitly closed -->\n</";
+          std::string closetag ="\n</";
           closetag += s_tagStack.back();
           closetag += ">\n";
           Typesetter::AppendTag(closetag.c_str());
