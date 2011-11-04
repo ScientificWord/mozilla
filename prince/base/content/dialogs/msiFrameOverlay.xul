@@ -263,13 +263,13 @@
     <groupbox>
       <caption label="Size"/>
       <!-- vbox observes="hasNaturalSize" -->
-        <radiogroup id="sizeRadio" oncommand="doDimensionEnabling();">
+        <radiogroup id="sizeRadio">
           <hbox flex="1" observes="hasNaturalSize" hidden="true">
             <vbox>
-              <radio id="actual" label="Actual size" radioGroup="sizeRadio"/>
+              <radio id="actual" value="actual" label="Actual size" oncommand="setActualSize();" radioGroup="sizeRadio"/>
             </vbox>
             <vbox>
-              <radio id="custom" label="Custom" radioGroup="sizeRadio"/>
+              <radio id="custom" value="custom" label="Custom" oncommand="doDimensionEnabling();" radioGroup="sizeRadio"/>
             </vbox>
           </hbox>
         </radiogroup>
@@ -309,7 +309,7 @@
                   value     = "0"
                   persist   =  "value"/>
                 <checkbox id="autoHeight" persist = "checked" checked="false"
-                   oncommand="setDisabled(this, 'frameHeightIput');"/>
+                   oncommand="setDisabled(this, 'frameHeightInput');"/>
                 <checkbox observes="hasNaturalSize" id="constrainCheckbox" oncommand ="ToggleConstrain();"
                   checked="false" persist = "checked"/>
               </row>
