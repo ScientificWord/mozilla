@@ -4,6 +4,13 @@
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
+\def\href#1#2{%
+   \ifmmode
+      \msitag{\msipassthru{<a href=="#1">#2</a>}}%
+   \else
+       \msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
+   \fi}
+
 
 % This writes the css file my.css. 
 % Do this at the end because it happens that we don't know what css are required. 
@@ -455,12 +462,12 @@
 \def\msi@begin@equation{$$}
 \def\msi@end@endequation{$$}
 
-\def\[#1\]{%
-  \msitag{<mml:math>}
-  \msiextproc{jbm}{$#1$}%
-  \msitag{</mml:math>}
-}
-
+%% \def\[#1\]{%
+%%   \msitag{<mml:math>}
+%%   \msiextproc{jbm}{$#1$}%
+%%   \msitag{</mml:math>}
+%% }
+%% 
 
 
 \newcount\seclevel
@@ -657,11 +664,6 @@
      \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
      \msiclosetag[mml][</mml:math>]
   ]
-  %\gdef\msi@mtabular#1#2\end{tabular}[%
-  %   \egroup
-  %   \@make@braces@normal
-  %   \msitag[\begin{tabular}{#1}#2\end{tabular}]
-  %]
   \gdef\@scan@array#1\end{array}[%
      \egroup
      \@make@braces@normal
