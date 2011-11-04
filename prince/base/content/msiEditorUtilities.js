@@ -4751,7 +4751,7 @@ function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPrope
   var IsCSSPrefChecked = prefs.getBoolPref("editor.use_css");
   var styleVal, match;
   var elemStyle = element.style;
-  var regExp = new RegExp(cssPropertyName + ":\\s*([^;]+)(;|$)");
+  var regExp = new RegExp("^(?:.*;\\s*)*" + cssPropertyName + ":\\s*([^;]+)(;|$)");
   if (IsCSSPrefChecked && msiIsHTMLEditor(editorElement))
   {
     if (elemStyle)
@@ -11262,7 +11262,7 @@ function gotoFirstNonspaceInElement( editor, node )
 
 function updateTextNumber(textelement, id, event)
 {
-  if (event.type == "keypress")
+  if (event && (event.type == "keypress"))
   {
     var val = textelement.value;
     var textbox = document.getElementById(id);
