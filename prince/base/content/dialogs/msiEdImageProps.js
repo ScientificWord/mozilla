@@ -47,8 +47,8 @@ var gEditorElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 var frameTabDlg = new Object();
 
-//var gConstrainWidth  = 0;
-//var gConstrainHeight = 0;
+//var gConstrainWidth  = 0;  //Moved to msiFrameOverlay
+//var gConstrainHeight = 0;  //Moved to msiFrameOverlay
 var imageElement;
 var wrapperElement;
 var gActualWidth = "";
@@ -133,17 +133,8 @@ function Startup()
   if (imageElement)
   {
     // We found an element and don't need to insert one
-    if (imageElement.hasAttribute("src"))
-    {
+    if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
       gInsertNewImage = false;
-      gActualWidth  = imageElement.naturalWidth;
-      gActualHeight = imageElement.naturalHeight;
-    } else if (imageElement.hasAttribute("data"))
-    {
-      gInsertNewImage = false;
-      gActualWidth  = imageElement.offsetWidth;
-      gActualHeight = imageElement.offsetHeight;
-     }
   }
   else
   {
@@ -240,6 +231,79 @@ function InitImage()
   // Set "Relativize" checkbox according to current URL state
   msiSetRelativeCheckbox();
 
+  // setup the height and width values
+  var width = 0;
+  var height = 0;
+  var pixelWidth = 0;
+  var pixelHeight = 0;
+//  var width = msiInitPixelOrPercentMenulist(globalImage,
+//                    gInsertNewImage ? null : imageElement,
+//                    widthAtt, "widthUnitsMenulist", gPixel);
+//  var height = msiInitPixelOrPercentMenulist(globalImage,
+//                    gInsertNewImage ? null : imageElement,
+//                    heightAtt, "heightUnitsMenulist", gPixel);
+  if (!gInsertNewImage)
+  {
+    // We found an element and don't need to insert one
+  //trim off units at end
+    var re = /[a-z]*/gi;
+    var widthStr = "";
+    var heightStr = "";
+    if (imageElement.hasAttribute(widthAtt))
+    {
+      widthStr = imageElement.getAttribute(widthAtt);
+      width = frameUnitHandler.getValueFromString(widthStr);
+      pixelWidth = Math.round(frameUnitHandler.getValueAs(width,"px"));
+      width = unitRound(width);
+    }
+    if (!width)
+    {
+      widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
+      width = unitRound(frameUnitHandler.getValueFromString(widthStr, "px"));
+      widthStr = widthStr.replace(re,"");
+      pixelWidth = Math.round(Number(widthStr));
+    }
+    if (imageElement.hasAttribute(heightAtt))
+    {
+      heightStr = imageElement.getAttribute(heightAtt);
+      height = frameUnitHandler.getValueFromString(heightStr);
+      pixelHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
+      height = unitRound(height);
+    }
+    if (!height)
+    {
+      heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
+      height = unitRound(frameUnitHandler.getValueFromString(heightStr, "px"));
+      heightStr = heightStr.replace(re,"");
+      pixelHeight = Math.round(Number(heightStr));
+    }
+    if (imageElement.hasAttribute("src"))
+    {
+      gActualWidth  = gConstrainWidth = imageElement.naturalWidth;
+      gActualHeight = gConstrainHeight = imageElement.naturalHeight;
+    } else if (imageElement.hasAttribute("data"))
+    {
+      var natWidth = imageElement.getAttribute("naturalWidth");
+      var natHeight = imageElement.getAttribute("naturalHeight");
+      if (natWidth)
+        gActualWidth = gConstrainWidth = Math.round(frameUnitHandler.getValueAs(frameUnitHandler.getValueFromString(natWidth), "px"));
+      if (!gActualWidth)
+        gActualWidth  = gConstrainWidth = imageElement.offsetWidth - Math.round(readTotalExtraWidth("px"));
+      if (natHeight)
+        gActualHeight = gConstrainHeight = Math.round(frameUnitHandler.getValueAs(frameUnitHandler.getValueFromString(natHeight), "px"));
+      if (!gActualHeight)
+        gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
+    }
+  }
+  if ((width > 0) || (height > 0))
+    setWidthAndHeight(width, height, null);
+  else if ((gActualHeight > 0)||(gActualWidth > 0)) 
+    setWidthAndHeight(unitRound(frameUnitHandler.getValueOf(gActualWidth,"px")), 
+                      unitRound(frameUnitHandler.getValueOf(gActualHeight,"px")), null);
+  else
+    setWidthAndHeight(unitRound(frameUnitHandler.getValueOf(gDefaultWidth,"pt")),
+                      unitRound(frameUnitHandler.getValueOf(gDefaultHeight,"pt")), null);
+
   // Force loading of image from its source and show preview image
   LoadPreviewImage();
 
@@ -300,39 +364,29 @@ function InitImage()
 //    }
 //  }
 
-  // setup the height and width widgets
-  var width = msiInitPixelOrPercentMenulist(globalImage,
-                    gInsertNewImage ? null : imageElement,
-                    "width", "widthUnitsMenulist", gPixel);
-  var height = msiInitPixelOrPercentMenulist(globalImage,
-                    gInsertNewImage ? null : imageElement,
-                    "height", "heightUnitsMenulist", gPixel);
-
   // Set actual radio button if both set values are the same as actual
-  SetSizeWidgets(width, height);
+  SetSizeWidgets(pixelWidth, pixelHeight);
   frameTabDlg.unitList.value = "pt";
 
-  //trim off units at end
-  var re = /[a-z]*/gi;
-  width = width.replace(re,"");
-  height = height.replace(re,"");
-  gConstrainWidth = width;
-  gConstrainHeight = height;
-  if ((width > 0) || (height > 0))
-  {
-    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(width,"px");
-    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(height,"px");
-  }
-  else if ((gActualHeight > 0)||(gActualWidth > 0)) 
-  {
-    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(gActualWidth,"px");
-    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
-  }
-  else
-  {
-    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(gDefaultWidth,"pt");
-    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gDefaultHeight,"pt");
-  }
+//  if ((width > 0) || (height > 0))
+//  {
+//    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(width,"px");
+//    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(height,"px");
+//  }
+//  else if ((gActualHeight > 0)||(gActualWidth > 0)) 
+//  {
+//    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(gActualWidth,"px");
+//    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
+//  }
+//  else
+//  {
+//    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(gDefaultWidth,"pt");
+//    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gDefaultHeight,"pt");
+//  }
+  if (!Number(frameTabDlg.widthInput.value))
+    constrainProportions( "frameHeightInput", "frameWidthInput", null );
+  else if (!Number(frameTabDlg.heightInput.value))
+    constrainProportions( "frameWidthInput", "frameHeightInput", null );
   // set spacing editfields
   var herePlacement;
   var placement = globalElement.getAttribute("placement");
@@ -416,11 +470,13 @@ function LoadPreviewImage()
 }
 
 
-
+//This function assumes "width" and "height" are in pixels
 function  SetSizeWidgets(width, height)
 {
   if (!(width || height) || (gActualWidth && gActualHeight && width == gActualWidth && height == gActualHeight))
-    frameTabDlg.actual.radioGroup.selectedItem = frameTabDlg.actual;
+    frameTabDlg.sizeRadioGroup.value = "actual";
+  else
+    frameTabDlg.sizeRadioGroup.value = "custom";
 
   if (!frameTabDlg.actual.selected)
   {
@@ -759,9 +815,16 @@ function PreviewImageLoaded()
 {
   if (gDialog.PreviewImage)
   {
+    dump("In PreviewImageLoaded! New offset size is [" + gDialog.PreviewImage.offsetWidth + "," + gDialog.PreviewImage.offsetHeight + "]\n");
+    dump("  Existing actual size is [" + gActualWidth + "," + gActualHeight + "]\n");
+    dump("  Current contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
     // Image loading has completed -- we can get actual width
-    gActualWidth  = gDialog.PreviewImage.offsetWidth;
-    gActualHeight = gDialog.PreviewImage.offsetHeight;
+    if (gDialog.PreviewImage.offsetWidth && (gActualWidth != gDialog.PreviewImage.offsetWidth))
+    {
+      gConstrainWidth = gActualWidth  = gDialog.PreviewImage.offsetWidth;
+    }
+    if (gDialog.PreviewImage.offsetHeight && (gActualHeight != gDialog.PreviewImage.offsetHeight))
+      gConstrainHeight = gActualHeight = gDialog.PreviewImage.offsetHeight;
 
     if (gActualWidth && gActualHeight)
     {
@@ -788,9 +851,11 @@ function PreviewImageLoaded()
       gDialog.ImageHolder.collapsed = false;
       setContentSize(gActualWidth, gActualHeight);
 
-      SetSizeWidgets(frameTabDlg.widthInput.value, frameTabDlg.heightInput.value);
+      SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(frameTabDlg.widthInput.value,"px")), 
+                      Math.round(frameUnitHandler.getValueAs(frameTabDlg.heightInput.value,"px")) );
     }
 
+    dump("Before SetActualSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
     if (frameTabDlg.actual.selected)
       SetActualSize();
 
@@ -876,12 +941,22 @@ function LoadPreviewImage()
   }
 }
 
-function SetActualSize()
+function readTotalExtraWidth(unit)
 {
-  frameTabDlg.widthInput.value = gActualWidth ? frameUnitHandler.getValueOf(gActualWidth,"px") : "";
-  frameTabDlg.heightInput.value = gActualHeight ? frameUnitHandler.getValueOf(gActualHeight,"px") : "";
-//  frameTabDlg.unitList.selectedIndex = 0;
-  doDimensionEnabling();
+  var totWidth = 0;
+//  totWidth += 2* frameUnitHandler.getValueAs(Number(frameTabDlg.marginInput.left.value), "px");
+  totWidth += 2 * frameUnitHandler.getValueAs(Number(frameTabDlg.borderInput.left.value), "px");
+  totWidth += 2 * frameUnitHandler.getValueAs(Number(frameTabDlg.paddingInput.left.value), "px");
+  return totWidth;
+}
+
+function readTotalExtraHeight(unit)
+{
+  var totHeight = 0;
+//  totHeight += 2 * frameUnitHandler.getValueAs(Number(frameTabDlg.marginInput.top.value), "px");
+  totHeight += 2 * frameUnitHandler.getValueAs(Number(frameTabDlg.borderInput.left.value), "px");
+  totHeight += 2 * frameUnitHandler.getValueAs(Number(frameTabDlg.paddingInput.left.value), "px");
+  return totHeight;
 }
 
 function setContentSize(width, height)  // width and height are the size of the image in pixels
@@ -1233,6 +1308,8 @@ function onAccept()
       msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
       imageElement.setAttribute("data",gDialog.srcInput.value);
       imageElement.setAttribute("req","graphicx");
+      imageElement.setAttribute("naturalWidth", frameUnitHandler.getValueOf(gConstrainWidth, "px"));
+      imageElement.setAttribute("naturalHeight", frameUnitHandler.getValueOf(gConstrainHeight, "px"));
       
       setFrameAttributes(wrapperElement, imageElement);
 //      msiEditorEnsureElementAttribute(wrapperElement, "captionLoc", capAttrStr, editor);  //Now taken care of above
