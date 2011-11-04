@@ -97,6 +97,12 @@ function insertListItem( tagname, delSelection )
   msiDoStatefulCommand('cmd_paratag', tagname );
 }
 
+function insertFrontMatterItem( tagname, delSelection)
+{
+  if (delSelection) deleteSelection();
+  msiDoStatefulCommand('cmd_frontmtag', tagname );
+}
+
 function yell ( textString, delSelection )
 {
   if (delSelection) deleteSelection();
