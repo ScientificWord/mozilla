@@ -970,40 +970,44 @@ var msiOpenCommand =
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand)
-  {
-    var fp = Components.classes["@mozilla.org/filepicker;1"].
-               createInstance(Components.interfaces.nsIFilePicker);
-    fp.init(window, GetString("OpenAppFile"), Components.interfaces.nsIFilePicker.modeOpen);
-    msiSetFilePickerDirectory(fp, MSI_EXTENSION);
-    fp.appendFilter(GetString("AppDocs"),"*."+MSI_EXTENSION);
-    fp.appendFilter(GetString("XHTMLFiles"),"*.xhtml; *.xht");
-    fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
-
-    try {
-      fp.show();
-    }
-    catch (ex) {
-      dump("filePicker.show() threw an exception: "+ex.toString()+"\n");
-    }
-
-    try 
-    {
-      if ((fp.file) && (fp.file.path.length > 0)) 
-      {
-        dump("Ready to edit page: " + fp.fileURL.spec +"\n");
-        var newdocumentfile;
-        newdocumentfile = createWorkingDirectory(fp.file);
-        msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
-        msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
-      }
-    } 
-    catch (e) 
-    { 
-      dump(" open:doCommand failed: "+e+"\n"); 
-    }
-  }
+	{
+	  openDocument();
+	}
 };
 
+function openDocument()
+{
+  var fp = Components.classes["@mozilla.org/filepicker;1"].
+             createInstance(Components.interfaces.nsIFilePicker);
+  fp.init(window, GetString("OpenAppFile"), Components.interfaces.nsIFilePicker.modeOpen);
+  msiSetFilePickerDirectory(fp, MSI_EXTENSION);
+  fp.appendFilter(GetString("AppDocs"),"*."+MSI_EXTENSION);
+  fp.appendFilter(GetString("XHTMLFiles"),"*.xhtml; *.xht");
+  fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
+
+  try {
+    fp.show();
+  }
+  catch (ex) {
+    dump("filePicker.show() threw an exception: "+ex.toString()+"\n");
+  }
+
+  try 
+  {
+    if ((fp.file) && (fp.file.path.length > 0)) 
+    {
+      dump("Ready to edit page: " + fp.fileURL.spec +"\n");
+      var newdocumentfile;
+      newdocumentfile = createWorkingDirectory(fp.file);
+      msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
+      msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
+    }
+  } 
+  catch (e) 
+  { 
+    finalThrow("Open document command failed", e.message); 
+  }
+}
 
 
 //-----------------------------------------------------------------------------------
@@ -1019,29 +1023,34 @@ var msiNewCommand =
 
   doCommand: function(aCommand)
   {
-    var newdocumentfile;
-    var dir;
-    var data={file: "not yet"};
-    // jlf - should openshell be modal or dependent
-    window.openDialog("chrome://prince/content/openshell.xul","openshell", "chrome,close,titlebar,modal,resizable=yes", data);
-    if (data.filename)
-    {
-      if (data.filename && data.filename.length > 0) {
-        dump("Ready to edit shell: " + data.filename +"\n");
-        try {
-          var thefile = Components.classes["@mozilla.org/file/local;1"].           
-            createInstance(Components.interfaces.nsILocalFile);
-          thefile.initWithPath(data.filename);
-          newdocumentfile = createWorkingDirectory(thefile);
-          var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
-          msiEditPage( url, window, false);
-        } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
-
-      }
-    }
-  }
+	  openNewDocument();
+	}
 } 
 
+function openNewDocument()
+{
+	
+  var newdocumentfile;
+  var dir;
+  var data={file: "not yet"};
+  // jlf - should openshell be modal or dependent
+  window.openDialog("chrome://prince/content/openshell.xul","openshell", "chrome,close,titlebar,modal,resizable=yes", data);
+  if (data.filename)
+  {
+    if (data.filename && data.filename.length > 0) {
+      dump("Ready to edit shell: " + data.filename +"\n");
+      try {
+        var thefile = Components.classes["@mozilla.org/file/local;1"].           
+          createInstance(Components.interfaces.nsILocalFile);
+        thefile.initWithPath(data.filename);
+        newdocumentfile = createWorkingDirectory(thefile);
+        var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
+        msiEditPage( url, window, false);
+      } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
+
+    }
+  }
+}
 
 //// STRUCTURE TOOLBAR
 ////
@@ -8082,7 +8091,10 @@ var msiEditLinkCommand =
       if (element)
         msiEditPage(msiURIFromString(element.href), window, false);
     }
-    catch (exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiEditLinkCommand.doCommand: " + exc);}
+    catch (exc) 
+		{
+			throw("Error in msiEditLinkCommand.doCommand: " + exc.message);
+		}
     editorElement.contentWindow.focus();
   }
 };
