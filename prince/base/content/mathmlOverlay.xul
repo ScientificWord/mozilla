@@ -979,7 +979,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolcirc" label="&#x2218;" tooltiptext="&symbolcirc.tooltip;"         msivalue="&#x2218;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolbull" label="&#x2219;" tooltiptext="&symbolbull.tooltip;"          msivalue="&#x2219;"
+        <toolbarbutton id ="symbolbull" label="&bullet;" tooltiptext="&symbolbull.tooltip;"          msivalue="&bullet;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symboldiv" label="&#x00F7;" tooltiptext="&symboldiv.tooltip;"          msivalue="&#x00F7;"
            observes="cmd_MSIsymbolCmd"/>
