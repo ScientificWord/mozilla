@@ -17,8 +17,8 @@ var widthAtt = "width";
 var heightAtt = "height";
 var metrics = {margin:{}, border: {}, padding: {}};
 var role;
-var gConstrainWidth;
-var gConstrainHeight;
+var gConstrainWidth = 0;
+var gConstrainHeight = 0;
 
 function setHasNaturalSize(istrue)
 // images frequently have a natural size
@@ -95,14 +95,23 @@ function initFrameTab(dg, element, contentsElement, newElement)
   var values;
   var width = 0;
   Dg = dg;
+  if (gFrameModeImage)
+  {
+    widthAtt = "imageWidth";
+    heightAtt = "imageHeight";
+  }
   frameUnitHandler = new UnitHandler();
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
   gFrameTab={};
   scale = 0.25;
   scaledWidthDefault = 50; 
   scaledHeightDefault = 60;
-  gConstrainHeight = scaledHeight = scaledHeightDefault;
-  gConstrainWidth = scaledWidth = scaledWidthDefault; 
+  scaledHeight = scaledHeightDefault;
+  if (!gConstrainHeight)
+    gConstrainHeight = scaledHeightDefault;
+  scaledWidth = scaledWidthDefault; 
+  if (!gConstrainWidth)
+    gConstrainWidth = scaledWidthDefault;
   position = 0;  // left = 1, right = 2, neither = 0
   //var unit;
 
@@ -120,6 +129,7 @@ function initFrameTab(dg, element, contentsElement, newElement)
   dg.autoWidthCheck       = document.getElementById("autoWidth");
   dg.frameUnitMenulist    = document.getElementById("frameUnitMenulist");
   dg.unitList             = document.getElementById("unitList");
+  dg.sizeRadioGroup       = document.getElementById("sizeRadio");
   dg.actual               = document.getElementById( "actual" );
   dg.iconic               = document.getElementById( "iconic" );
   dg.custom               = document.getElementById( "custom" );
@@ -169,21 +179,31 @@ function initFrameTab(dg, element, contentsElement, newElement)
       contentsElement = element;
 
     frameUnitHandler.setCurrentUnit(contentsElement.getAttribute("units"));
-    if (contentsElement.hasAttribute(widthAtt)) width = contentsElement.getAttribute(widthAtt);
-    if (Number(width) > 0)
+    
+    var width = 0;
+    var widthStr = "";
+    if (contentsElement.hasAttribute(widthAtt))
+      width = frameUnitHandler.getValueFromString( contentsElement.getAttribute(widthAtt) );
+    else
     {
-      dg.widthInput.value = width;
-      dg.autoWidthCheck.checked = false;
+      widthStr = msiGetHTMLOrCSSStyleValue(dg.editorElement, contentsElement, widthAtt, "width");
+      if (widthStr)
+        width = frameUnitHandler.getValueFromString( widthStr, "px" );
     }
-    else dg.autoWidthCheck.checked = true;
     var height = 0;
-    if (contentsElement.hasAttribute(heightAtt)) height = contentsElement.getAttribute(heightAtt);
-    if (height > 0)
+    var heightStr = "";
+    if (contentsElement.hasAttribute(heightAtt))
+      height = frameUnitHandler.getValueFromString( contentsElement.getAttribute(heightAtt) );
+    else
     {
-      dg.heightInput.value = height;
-      dg.autoHeightCheck.checked = false;
+      heightStr = msiGetHTMLOrCSSStyleValue(dg.editorElement, contentsElement, heightAtt, "height");
+      if (heightStr)
+        height = frameUnitHandler.getValueFromString( heightStr, "px" );
     }
-    else dg.autoHeightCheck.checked = true;
+    if (!gConstrainWidth || !gConstrainHeight)
+      setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
+    setWidthAndHeight(width, height, null);
+
     for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
 		{
       if (dg.frameUnitMenulist.getItemAtIndex(i).value === frameUnitHandler.currentUnit)
@@ -467,7 +487,7 @@ function updateDiagram( attribute )
   var val = values.join("px ")+"px";
   if (attribute=="border")  // add border color and border width
   {
-    var bgcolor = gFrameTab.colorWell.getAttribute("style");
+    var bgcolor = Dg.colorWell.getAttribute("style");
     var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
     removeStyleAttributeFamilyOnNode(document.getElementById("frame"), "border");
     var style = document.getElementById("frame").getAttribute("style");
@@ -478,7 +498,7 @@ function updateDiagram( attribute )
   { 
 		setStyleAttributeByID("frame", attribute, val );
 	}
-  bgcolor = gFrameTab.bgcolorWell.getAttribute("style");
+  bgcolor = Dg.bgcolorWell.getAttribute("style");
   arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setContentBGColor(arr[1]);
   redrawDiagram();
@@ -633,15 +653,43 @@ function unitRound( size, unit )
   return Math.round(size*places)/places;
 }
 
+function setConstrainDimensions(width, height)
+{
+  gConstrainWidth = width;
+  gConstrainHeight = height;
+}
+
+function setWidthAndHeight(width, height, event)
+{
+  if (Number(width) > 0)
+  {
+    Dg.widthInput.value = width;
+    Dg.autoWidthCheck.checked = false;
+  }
+  else
+    Dg.autoWidthCheck.checked = true;
+  if (Number(height) > 0)
+  {
+    Dg.heightInput.value = height;
+    Dg.autoHeightCheck.checked = false;
+  }
+  else
+    Dg.autoHeightCheck.checked = true;
+  if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
+    constrainProportions( "frameWidthInput", "frameHeightInput", event );
+  else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
+    constrainProportions( "frameHeightInput", "frameWidthInput", event );
+}
+
 function setContentSize(width, height)  
 // width and height are the size of the image in pixels
 {
   scaledWidth = Math.round(scale*width);
   if (scaledWidth == 0) scaledWidth = 40;
-  gConstrainWidth = scaledWidth;
+//  gConstrainWidth = scaledWidth;
   scaledHeight = Math.round(scale*height);
   if (scaledHeight == 0) scaledHeight = 60;
-  gConstrainHeight = scaledHeight;
+//  gConstrainHeight = scaledHeight;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
   setStyleAttributeByID("content", "height", scaledHeight + "px");
   updateDiagram("margin");
@@ -878,7 +926,7 @@ function setFrameAttributes(frameNode, contentsNode)
   if (contentsNode.hasAttribute("width") && Number(contentsNode.getAttribute("width"))!= 0)
     setStyleAttributeOnNode(contentsNode, "width", frameUnitHandler.getValueAs(contentsNode.getAttribute("width"),"px") + "px");
   else removeStyleAttributeFamilyOnNode(contentsNode, "width");
-  if (style != "0px") { setStyleAttributeOnNode( contentsNodeNode, "border-style", "solid");}
+  if (style != "0px") { setStyleAttributeOnNode( contentsNode, "border-style", "solid");}
 }
 
 function frameHeightChanged(input, event)
@@ -919,12 +967,12 @@ function ToggleConstrain()
 {
   // If just turned on, save the current width and height as basis for constrain ratio
   // Thus clicking on/off lets user say "Use these values as aspect ration"
-  if (Dg.constrainCheckbox.checked && !dg.constrainCheckbox.disabled) ;
+  if (!gFrameModeImage && Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled)
 //     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
 //     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
   {
-    gConstrainWidth = Number(TrimString(Dg.widthInput.value));
-    gConstrainHeight = Number(TrimString(Dg.heightInput.value));
+    gConstrainWidth = frameUnitHandler.getValueAs(Number(TrimString(Dg.widthInput.value)), "px");
+    gConstrainHeight = frameUnitHandler.getValueAs(Number(TrimString(Dg.heightInput.value)), "px");
   }
 }
 
@@ -995,4 +1043,20 @@ function doDimensionEnabling()
 
   SetElementEnabledById( "constrainCheckbox", constrainEnable );
 
+}
+
+function SetActualSize()
+{
+  if (gActualWidth && gActualHeight)
+  {
+    frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
+    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
+  }
+  else if (gConstrainWidth && gConstrainHeight)
+  {
+    frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gConstrainWidth,"px");
+    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gConstrainHeight,"px");
+  }
+//  frameTabDlg.unitList.selectedIndex = 0;
+  doDimensionEnabling();
 }
