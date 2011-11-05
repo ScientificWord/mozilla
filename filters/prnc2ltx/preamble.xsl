@@ -99,7 +99,6 @@
 </xsl:if></xsl:for-each>
 
 <!-- back to template match="html:preamble"-->
-  <xsl:apply-templates/>
   <!-- xsl:call-template name="generateMissingNewTheorems" / -->
   <xsl:call-template name="writeNewTheoremList" />
 
@@ -107,6 +106,7 @@
   <xsl:if test="$packagelist//*[@package='graphicx']">
   \graphicspath{{../tcache/}{../gcache/}{../graphics/}}
   </xsl:if>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:preambleTeX">

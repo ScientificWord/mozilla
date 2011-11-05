@@ -138,9 +138,9 @@ char *MML1templates[] = {
   "<mtd>\n%body%</mtd>\n",
   "<mrow>\n%mo_left%%body%%mo_right%</mrow>\n",
   "<mfenced open=\"%open%\" close=\"%close%\">\n%body%</mfenced>\n",
-  "<mo%color_attr%>(</mo>\n%interior%<mo%color_attr2%>)</mo>\n",
-  "<mo%color_attr%>[</mo>\n%interior%<mo%color_attr2%>]</mo>\n",
-  "<mo%color_attr%>{</mo>\n%interior%<mo%color_attr2%>}</mo>\n",
+  "<mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">(</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">)</mo>\n",
+  "<mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">[</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">]</mo>\n",
+  "<mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">{</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">}</mo>\n",
   "<msup>\n%expr%<mo%color_attr%>&#x2217;</mo>\n</msup>\n",
   "<mover>\n%body%<mo%color_attr% stretchy=\"true\" accent=\"true\">&#xaf;</mo>\n</mover>\n",
   "<mfenced class=\"msiEigenVectorSet\" open=\"{\" close=\"}\">\n%eigen_vector_list%</mfenced>\n",
@@ -4720,7 +4720,7 @@ Amount of Substance<K1.1/>	Attomole<K1.2/>   amol
                             Gigamole<K1.5/>   Gmol
                             Kilomole<K1.6/>   kmol
                             Megamole<K1.7/>   Mmol
-                            Micromole<K1.8/>  µmol
+                            Micromole<K1.8/>  Âµmol
                             Millimole<K1.9/>  mmol
                             Mole<K1.10/>      mol
                             Nanomole<K1.11/>  nmol
@@ -4730,18 +4730,18 @@ Amount of Substance<K1.1/>	Attomole<K1.2/>   amol
 
 Area<K1.1/>	Acre<K1.2/>	        acre
             Hectare<K1.3/>	    hectare
-            Square foot<K1.4/>	ft²
-         	Square inch<K1.5/>	in²
-        	Square meter<K1.6/>	m²
+            Square foot<K1.4/>	ftÂ²
+         	Square inch<K1.5/>	inÂ²
+        	Square meter<K1.6/>	mÂ²
 
 Current<K1.1/>	Ampere<K1.2/>	A 	uA
                 Kiloampere<K1.3/>	kA 	ukA
-                Microampere<K1.4/>	µA 	umcA
+                Microampere<K1.4/>	ÂµA 	umcA
             	Milliampere<K1.5/>	mA 	umA
             	Nanoampere<K1.6/>	nA 	unA
 
 Electric capacitance	Farad<K1.2/>	F 	uF
-                        Microfarad<K1.3/>	µF 	umcF
+                        Microfarad<K1.3/>	ÂµF 	umcF
                         Millifarad<K1.4/>	mF 	umF
                         Nanofarad<K1.5/>	nF 	unF
                         Picofarad<K1.6/>	pF 	upF
@@ -4749,13 +4749,13 @@ Electric capacitance	Farad<K1.2/>	F 	uF
 Electric charge	Coulomb<K1.2/>	C 	uCo
 			
 Electric conductance	Kilosiemens<K1.4/>	kS 	ukS
-                        Microsiemens<K1.5/>	µS 	umcS
+                        Microsiemens<K1.5/>	ÂµS 	umcS
                         Millisiemens<K1.6/>	mS 	umS
                         Siemens<K1.7/>	S 	uS
 
 Electrical potential difference	Kilovolt<K1.2/>	kV 	ukV
                                 Megavolt<K1.3/>	MV 	uMV
-                                Microvolt<K1.4/>	µV 	umcV
+                                Microvolt<K1.4/>	ÂµV 	umcV
                                 Millivolt<K1.5/>	mV 	umV
                                 Nanovolt<K1.6/>	nV 	unV
                                 Picovolt<K1.7/>	pV 	upV
@@ -4778,14 +4778,14 @@ Energy	British thermal unit<K1.2/>	Btu 	uBtu
                                     Kilojoule<K1.10/>	kJ 	ukJ
                                     Megaelectronvolt<K1.11/>	MeV 	uMeV
                                     Megajoule<K1.12/>	MJ 	uMJ
-                                    Microjoule<K1.13/>	µJ 	umcJ
+                                    Microjoule<K1.13/>	ÂµJ 	umcJ
                                     Millijoule<K1.14/>	mJ 	umJ
                                     Nanojoule<K1.15/>	nJ 	unJ
 
 Force	Dyne<K1.2/>	dyn 	udyn
 	Kilonewton<K1.3/>	kN 	ukN
 	Meganewton<K1.4/>	MN 	uMN
-	Micronewton<K1.5/>	µN 	umcN
+	Micronewton<K1.5/>	ÂµN 	umcN
 	Millinewton<K1.6/>	mN 	umN
 	Newton<K1.7/>	N 	uN
 	Ounce-force<K1.8/>	ozf 	uozf
@@ -4803,7 +4803,7 @@ Illuminance	Footcandle<K1.2/>	fc 	ufc
 	Lux<K1.3/>	lx 	ulx
 	Phot<K1.4/>	phot 	uphot
 
-Length	Angstrom<K1.2/>	¨A 	uan
+Length	Angstrom<K1.2/>	Â¨A 	uan
 	Attometer<K1.3/>	am 	uame
 	Centimeter<K1.4/>	cm 	ucm
 	Decimeter<K1.5/>	dm 	udme
@@ -4812,27 +4812,27 @@ Length	Angstrom<K1.2/>	¨A 	uan
 	Inch<K1.8/>	in 	uin
 	Kilometer<K1.9/>	km 	ukme
 	Meter<K1.10/>	m 	ume
-	Micrometer<K1.11/>	µm 	umcme
+	Micrometer<K1.11/>	Âµm 	umcme
 	Mile<K1.12/>	mi 	umi
 	Millimeter<K1.13/>	mm 	umme
 	Nanometer<K1.14/>	nm 	unme
 	Picometer<K1.15/>	pm 	upme
 
 Magnetic flux	Maxwell<K1.2/>	Mx 	uMx
-	Microweber<K1.3/>	µWb 	umcWb
+	Microweber<K1.3/>	ÂµWb 	umcWb
 	Milliweber<K1.4/>	mWb 	umWb
 	Nanoweber<K1.5/>	nWb 	unWb
 	Weber<K1.6/>	Wb 	uWb
 
 Magnetic flux density	Gauss<K1.2/>	G 	uGa
-	Microtesla<K1.3/>	µT 	umcT
+	Microtesla<K1.3/>	ÂµT 	umcT
 	Millitesla<K1.4/>	mT 	umT
 	Nanotesla<K1.5/>	nT 	unT
 	Picotesla<K1.6/>	pT 	upT
 	Tesla<K1.7/>	T 	uTe
 
 Magnetic inductance     Henry<K1.2/>	H 	uHe
-                        Microhenry<K1.3/>	µH 	umcH
+                        Microhenry<K1.3/>	ÂµH 	umcH
                         Millihenry<K1.4/>	mH 	umH
 
 Mass	Atomic mass unit<K1.2/>	u 	uu
@@ -4840,13 +4840,13 @@ Mass	Atomic mass unit<K1.2/>	u 	uu
         Decigram<K1.4/>	dg 	udg
         Gram<K1.5/>	g 	ugr
         Kilogram<K1.6/>	kg 	ukg
-        Microgram<K1.7/>	µg 	umcg
+        Microgram<K1.7/>	Âµg 	umcg
         Milligram<K1.8/>	mg 	umg
         Pound-mass<K1.9/>	lb 	ulbm
         Slug<K1.10/>	slug 	uslug
 
-Plane angle     Degree<K1.2/>       °
-                Microradian<K1.3/>  µrad
+Plane angle     Degree<K1.2/>       Â°
+                Microradian<K1.3/>  Âµrad
                 Milliradian<K1.4/>  mrad
                 Minute<K1.5/>       '
                 Radian<K1.6/>       rad
@@ -4856,7 +4856,7 @@ Power       Gigawatt<K1.2/>     GW
             Horsepower<K1.3/>   hp
             Kilowatt<K1.4/>     kW
             Megawatt<K1.5/>     MW
-            Microwatt<K1.6/>    µW
+            Microwatt<K1.6/>    ÂµW
             Milliwatt<K1.7/>    mW
             Nanowatt<K1.8/>     nW
             Watt<K1.9/>         W
@@ -4866,7 +4866,7 @@ Pressure    Atmosphere<K1.2/>       atm
             Kilobar<K1.4/>          kbar
             Kilopascal<K1.5/>       kPa
             Megapascal<K1.6/>       MPa
-            Micropascal<K1.7/>      µPa
+            Micropascal<K1.7/>      ÂµPa
             Millibar<K1.8/>         mbar
             Millimeters of Mercury (0? )<K1.9/>	mmHg
             Pascal<K1.10/>          Pa
@@ -4882,7 +4882,7 @@ Time      Attosecond<K1.2/>     as
           Day<K1.3/>            d
           Femtosecond<K1.4/>    fs
           Hour<K1.5/>           h
-          Microsecond<K1.6/>    µs
+          Microsecond<K1.6/>    Âµs
           Millisecond<K1.7/>    ms
           Minute<K1.8/>         min
           Nanosecond<K1.9/>     ns
@@ -4890,9 +4890,9 @@ Time      Attosecond<K1.2/>     as
           Second<K1.11/>        s
           Year<K1.12/>          y
 
-Volume	Cubic foot<K1.2/>	ft³
-        Cubic inch<K1.3/>	in³
-        Cubic meter<K1.4/>	m³ 
+Volume	Cubic foot<K1.2/>	ftÂ³
+        Cubic inch<K1.3/>	inÂ³
+        Cubic meter<K1.4/>	mÂ³ 
         Gallon (US)<K1.5/>	gal
         Liter<K1.6/>        l
         Milliliter<K1.7/>	ml

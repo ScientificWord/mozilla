@@ -606,12 +606,20 @@ NS_IMETHODIMP
 msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 {
   nsresult res(NS_ERROR_FAILURE);
-  if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
+  if (!(mFlags & eEditorPlaintextMask))
   {
     nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
+		nsCOMPtr<nsIDOMElement> mtable;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+		PRBool allSelected(PR_FALSE);
+		res = GetAllCellsSelected(getter_AddRefs(mtable), &allSelected);
+		if (allSelected && mtable)
+		{
+			SelectTable();
+		}
+
     res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res)) 
@@ -1049,7 +1057,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 				if (type == 3)
 					currFocusNode->GetParentNode(getter_AddRefs(tempNode));
 				currFocusElement = do_QueryInterface(tempNode);
-				res = currFocusElement->GetTagName(name);
+				if (currFocusElement) res = currFocusElement->GetTagName(name);
 				if (!name.EqualsLiteral("mtext"))
 				{
 	        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));

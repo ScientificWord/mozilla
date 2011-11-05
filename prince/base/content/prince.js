@@ -421,7 +421,7 @@ function openTeX()
 // Returns true if the TeX file was created.
 // outTeXfile is an nsILocalFile. If it is null, create main.tex in the document's 'tex' directory.
 
-function documentAsTeXFile( document, outTeXfile, compileInfo )
+function documentAsTeXFile( document, outTeXdir, compileInfo )
 {
   dump("\nDocument as TeXFile\n");
   if (!document) return false;
@@ -433,18 +433,28 @@ function documentAsTeXFile( document, outTeXfile, compileInfo )
   var documentPath = document.documentURI;
   var docurl = msiURIFromString(documentPath);                                      
   var workingDir;
+	var parentDir;
   var outTeX;
+  var outTeXfile;
+  var isDefaultLocation = false;
   workingDir = msiFileFromFileURL(docurl);
   var bareleaf = workingDir.leafName; // This is the leaf of the document.
   workingDir = workingDir.parent;
-  if (outTeXfile == null  || outTeXfile.path.length == 0)
+  if (outTeXdir == null  || outTeXdir.path.length == 0)
   {
-    outTeX = workingDir.clone();
-    outTeX.append("tex");
+    isDefaultLocation = true;
+		outTeXdir = workingDir.clone();
+    outTeXdir.append("tex");
     if (!outTeX.exists()) outTeX.create(1, 0755);
     outTeXfile = outTeX;
-    outTeXfile.append(bareleaf + ".tex");
+    outTeXfile.append(bareleaf.replace(/\.xhtml$/,"") + ".tex");
   }
+	else
+	{
+		outTeXfile = outTeXdir.clone();
+		outTeXfile.append("tex");
+		outTeXfile.append("main.tex");
+	}
   var outfileTeXPath = outTeXfile.path;
   var stylefile;
   var xslPath;
@@ -481,7 +491,35 @@ function documentAsTeXFile( document, outTeXfile, compileInfo )
   os.writeString(str);
   os.close();
   fos.close();
-  return outTeXfile.exists();
+  if (outTeXfile.exists() && !isDefaultLocation)
+	{
+		// save graphics, gcache, tcache and plot directories
+		var parentDir = outTeXfile.parent.parent.clone();
+		var specialDirs = ["plots","graphics","tcache","gcache"];
+		var k;
+		var s,d; // source and destination directories.
+		for (k = 0; k < specialDirs.length; k++)
+		{
+			s = workingDir.clone();
+			s.append(specialDirs[k]);
+			d = parentDir.clone();
+			d.append(specialDirs[k]);
+			if (s.exists())
+			{
+				if (!d.exists())
+					d.create(1,0755);
+				// copy files from s to d
+				var entries = s.directoryEntries;  
+				while(entries.hasMoreElements())  
+				{  
+				  var entry = entries.getNext();  
+				  entry.QueryInterface(Components.interfaces.nsIFile);  
+				  entry.copyTo(d,"");
+				}
+			}
+		}
+	}
+	return outTeXfile.exists();
 }
 
 function currentFileName()
@@ -506,10 +544,7 @@ function exportTeX()
   if (!editor) return;
 
    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-   fp.init(window, "Export TeX File", msIFilePicker.modeSave);
-   fp.appendFilter("TeX files", "*.tex; *.ltx");
-   fp.appendFilters(msIFilePicker.filterText);
-   fp.defaultExtension = ".tex";
+   fp.init(window, "Directory for Exported TeX File", msIFilePicker.modeGetFolder);
    var compileInfo = new Object();
    try 
    {
@@ -746,7 +781,7 @@ function compileDocument()
     dump("TeX file="+outputfile.path + "\n");
 //    dump("PDF file is " + pdffile.path + "\n"); 
     var compileInfo = new Object();  // an object to hold pass counts and whether makeindex needs to run.
-    if (documentAsTeXFile(editor.document, outputfile, compileInfo ))
+    if (documentAsTeXFile(editor.document, null, compileInfo ))
     {
       if (compileTeXFile(compiler, "main", outputfile.path, pdffile.path, compileInfo))
       {
@@ -908,7 +943,7 @@ function compileTeX(compiler)
 //    os.close();
   //   fos.close();
     var compileInfo = new Object();
-    documentAsTeXFile(editor.document, outputfile, compileInfo );
+    documentAsTeXFile(editor.document, null, compileInfo );
     if (!outputfile.exists())
     {
       AlertWithTitle("XSLT Error", "Unable to generate TeX file");
@@ -1166,8 +1201,11 @@ function documentToTeXString(document, xslPath)
       strResult = strResult.replace(/\n\n/,"\n","g");
 	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
 		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
-		while (strResult.search(/\\par/) >= 0)
-		  strResult = strResult.replace(/\\par/,"\n\n", "g");
+
+    while (strResult.search(/\\par[ \t\n]+/) >= 0)
+		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
+		//while (strResult.search(/\\par/) >= 0)
+		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
   }
   catch(e){
     dump("error: "+e.message+"\n\n");

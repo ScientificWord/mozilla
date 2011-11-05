@@ -711,8 +711,10 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
     var delNodes = [];
     while (nextNode = currPreambleWalker.nextNode())
     {
+
       switch(msiGetBaseNodeName(nextNode))
       {
+    
         case "requirespackage":
           if (!insertParent)
             insertParent = nextNode.parentNode;
@@ -751,6 +753,10 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
         break;
       }
     }
+
+    if (!insertParent)
+       insertParent = startNode;       // ?
+
     for (var ix = 0; ix < delNodes.length; ++ix)
       editor.deleteNode(delNodes[ix]);
 
@@ -763,12 +769,14 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
       newNode = aDocument.createElement("requirespackage");
       pkgObject = pkgArray[jx];
       dump("In reviseLaTeXPackagesAndOptions(), inserting requirepackage node for [" + pkgObject.packageName + "].\n");
+      if (!insertParent)
+          insertParent =  nextNode;
       editor.insertNode( newNode, insertParent, insertPos++);
       msiEditorEnsureElementAttribute(newNode, "req", pkgObject.packageName, editor);
       if (pkgObject.packageOptions && pkgObject.packageOptions.length)
-        msiEditorEnsureElementAttribute(newNode, "opt", pkgObject.packageOptions, editor)
+        msiEditorEnsureElementAttribute(newNode, "opt", pkgObject.packageOptions, editor);
       if ("packagePriority" in pkgObject)
-        msiEditorEnsureElementAttribute(newNode, "pri", String(pkgObject.packagePriority), editor)
+        msiEditorEnsureElementAttribute(newNode, "pri", String(pkgObject.packagePriority), editor);
       if (!insertParent)
         insertParent = startNode;  //should be the preamble!
     }
