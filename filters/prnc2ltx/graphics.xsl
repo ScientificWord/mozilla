@@ -76,6 +76,9 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
+    <xsl:otherwise>
+       <xsl:call-template name="buildincludegraphics"/>
+    </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 		  		  

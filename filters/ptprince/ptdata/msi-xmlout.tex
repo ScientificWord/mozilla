@@ -77,6 +77,17 @@
 \msi@everyrowstart{<tr>}
 \msi@everyrowend{</tr>}
 \msi@everycellstart{<td>}
+
+%\msi@everycellstart{\chkmulticol}
+\def\chkmulticol#1{%
+  \ifx#1\multicolumn
+    \let\@next#1
+  \else
+    \let\@next#1
+    \msitag{<td>}%
+  \fi
+  \@next}
+
 \msi@everycellend{</td>}
 
 \def\msi@stylesheets{\msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br}
@@ -108,6 +119,11 @@
 %% \document and \enddocument
 
 \def\out@begin@document{%
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{bm}}%
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{tabulary}}%
+   \@ifundefined{@TCILATEX}
+     {\relax}
+     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\input{tcilatex}}}
    \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msiclosetag{preamble}{</preamble>}%
    \br\msitag{</head>}
@@ -268,7 +284,7 @@
  
  
  %%% #1 = optional star, #2 = command name
- \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[]}}
+ \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[1]}}
  
  \def\@newcommandA#1#2[#3]{\@ifnextchar[{\@newcommandB{#1}{#2}[#3]}{\@newcommandB{#1}{#2}[#3][]}}
 
@@ -766,7 +782,7 @@
 \def\@crb{\cr}%
 
 
-\def\tabularnewline{\cr}
+\def\tabularnewline{\\}
 
 \def\msi@begin@tabular{%
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
@@ -816,14 +832,16 @@
   \endgroup}
 
 
-\def\cline#1{}
-\def\hline{}
+\def\cline#1{\msitag{<cline/>}}
+\def\hline{\msitag{<hline/>}}
+
 \def\multicolumn#1#2#3{%
    \count0=#1\relax
    \ifnum\count0=1
       #3
    \else
       \msitag{ Unimplemented multicol }
+      %\msitag{<td rowspan="1" colspan="#1">#3}%
    \fi
 }
 
