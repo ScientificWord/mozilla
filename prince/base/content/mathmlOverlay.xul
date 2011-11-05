@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0"?> 
+<!--<?xml version="1.0" encoding="UTF-8"?> -->
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
@@ -626,7 +627,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symboltextexclamdown" />
         <toolbarbutton id ="symboltextquestiondown" />
         <toolbarbutton id ="symbolpmtxt" />
-        <toolbarbutton id ="symboldiv" />
+        <toolbarbutton id ="symboldivsign" />
         <toolbarbutton id ="symboltextonesuperior" />
         <toolbarbutton id ="symboltexttwosuperior" />
         <toolbarbutton id ="symboltextthreesuperior" />
@@ -691,7 +692,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symbolaa" />
         <toolbarbutton id ="symbolae" />
         <toolbarbutton id ="symbolccedilla" />
-        <toolbarbutton id ="symboldh" />
+        <toolbarbutton id ="symboldhlatin" />
         <toolbarbutton id ="symboleacute" />
         <toolbarbutton id ="symbolecircumflex" />
         <toolbarbutton id ="symboledieresis" />
@@ -866,7 +867,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
  </tabbox> 
 
 
-        <toolbarbutton id="symbolalpha" label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
+         <toolbarbutton id="symbolalpha" label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "symbolbeta" label="&#x03B2;" tooltiptext="&symbolbeta.tooltip;"   msivalue="&#x03B2;"
             observes="cmd_MSIsymbolCmd"/>
@@ -1281,7 +1282,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgtrdot" label="&#x22D7;" tooltiptext="&symbolgtrdot.tooltip;"              msivalue="&#x22D7;"
            observes="cmd_MSIsymbolCmd"/>
-       <toolbarbutton id ="symbolshortmid" label="&#2223;" tooltiptext="&symbolshortmid.tooltip;"              msivalue="&#02223;"
+       <toolbarbutton id ="symbolshortmid" label="&#x2223;" tooltiptext="&symbolshortmid.tooltip;"              msivalue="&#x2223;"
            observes="cmd_MSIsymbolCmd"/>  
         <toolbarbutton id ="symbolshortparallel" label="&#x2225;" tooltiptext="&symbolshortparallel.tooltip;"              msivalue="&#x2225;"
            observes="cmd_MSIsymbolCmd"/>
@@ -1783,7 +1784,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolpmtxt" label="&#x00B1;" tooltiptext="&symbolpm.tooltip;"       msivalue="&#x00B1;"
            observes="cmd_MSItextCmd"/>
-         <toolbarbutton id ="symboldiv" label="&#x00F7;" tooltiptext="&symboldiv.tooltip;"          msivalue="&#x00F7;"
+         <toolbarbutton id ="symboldivsign" label="&#x00F7;" tooltiptext="&symboldivsign.tooltip;"          msivalue="&#x00F7;"
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboltextonesuperior" label="&#x00B9;" tooltiptext="&symboltextonesuperior.tooltip;"       msivalue="&#x00B9;"
            observes="cmd_MSItextCmd"/>
@@ -1913,7 +1914,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolccedilla" label="&#x00E7;" tooltiptext="&symbolccedilla.tooltip;"       msivalue="&#x00E7;"
            observes="cmd_MSItextCmd"/>
-        <toolbarbutton id ="symboldh" label="&#x00F0;" tooltiptext="&symboldh.tooltip;"       msivalue="&#x00F0;"
+            <toolbarbutton id ="symboldhlatin" label="&#x00F0;" tooltiptext="&symboldh.tooltip;"       msivalue="&#x00F0;"
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboleacute" label="&#x00E9;" tooltiptext="&symboleacute.tooltip;"       msivalue="&#x00E9;"
            observes="cmd_MSItextCmd"/>
@@ -2215,6 +2216,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolzdot" label="&#x017C;" tooltiptext="&symbolzdot.tooltip;"       msivalue="&#x017C;"
            observes="cmd_MSItextCmd"/>
+                   
 
 <!-- PUNCTUATION -->
         <toolbarbutton id ="symbolendash" label="&#x2013;" tooltiptext="&symbolendash.tooltip;"       msivalue="&#x2013;"

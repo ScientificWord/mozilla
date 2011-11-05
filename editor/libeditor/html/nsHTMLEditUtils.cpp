@@ -43,6 +43,7 @@
 #include "nsEditor.h"
 #include "nsEditProperty.h"
 #include "nsIAtom.h"
+#include "nsGkAtoms.h"
 #include "nsIDOMNode.h"
 #include "nsIContent.h"
 #include "nsIDOMNodeList.h"
@@ -249,9 +250,12 @@ nsHTMLEditUtils::IsTableElement(nsIDOMNode *node, msiITagListManager * manager)
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
   NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsTableElement");
   return (nodeAtom == nsEditProperty::table)
-      || (nodeAtom == nsEditProperty::tr)
-      || (nodeAtom == nsEditProperty::td)
-      || (nodeAtom == nsEditProperty::th)
+    || (nodeAtom == nsEditProperty::tr)
+    || (nodeAtom == nsEditProperty::td)
+    || (nodeAtom == nsEditProperty::th)
+    || (nodeAtom == nsGkAtoms::mtr_)
+    || (nodeAtom == nsGkAtoms::mtable_)
+    || (nodeAtom == nsGkAtoms::mtd_)
       || (nodeAtom == nsEditProperty::thead)
       || (nodeAtom == nsEditProperty::tfoot)
       || (nodeAtom == nsEditProperty::tbody)
@@ -271,6 +275,8 @@ nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node, msiITagListManager 
   return (nodeAtom == nsEditProperty::tr)
       || (nodeAtom == nsEditProperty::td)
       || (nodeAtom == nsEditProperty::th)
+	    || (nodeAtom == nsGkAtoms::mtr_)
+	    || (nodeAtom == nsGkAtoms::mtd_)
       || (nodeAtom == nsEditProperty::thead)
       || (nodeAtom == nsEditProperty::tfoot)
       || (nodeAtom == nsEditProperty::tbody)
@@ -283,7 +289,13 @@ nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node, msiITagListManager 
 PRBool 
 nsHTMLEditUtils::IsTable(nsIDOMNode *node, msiITagListManager * manager)
 {
-  return nsEditor::NodeIsType(node, nsEditProperty::table, manager);
+	PRBool retVal;
+	retVal =  nsEditor::NodeIsType(node, nsEditProperty::table, manager);
+	if (!retVal)
+	{
+		retVal =  nsEditor::NodeIsType(node, nsGkAtoms::mtable_, manager);
+	}
+	return retVal;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -292,7 +304,13 @@ nsHTMLEditUtils::IsTable(nsIDOMNode *node, msiITagListManager * manager)
 PRBool 
 nsHTMLEditUtils::IsTableRow(nsIDOMNode *node, msiITagListManager * manager)
 {
-  return nsEditor::NodeIsType(node, nsEditProperty::tr, manager);
+	PRBool retVal;
+	retVal = nsEditor::NodeIsType(node, nsEditProperty::tr, manager);
+	if (!retVal)
+	{
+		retVal = nsEditor::NodeIsType(node, nsGkAtoms::mtr_, manager);
+	}
+	return retVal;
 }
 
 
@@ -305,7 +323,7 @@ nsHTMLEditUtils::IsTableCell(nsIDOMNode *node, msiITagListManager * manager)
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsTableCell");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
   NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsTableCell");
-  return (nodeAtom == nsEditProperty::td)
+  return (nodeAtom == nsEditProperty::td) || (nodeAtom == nsGkAtoms::mtd_)
       || (nodeAtom == nsEditProperty::th);
 }
 
@@ -319,7 +337,7 @@ nsHTMLEditUtils::IsTableCellOrCaption(nsIDOMNode *node, msiITagListManager * man
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsTableCell");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
   NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsTableCell");
-  return (nodeAtom == nsEditProperty::td)
+  return (nodeAtom == nsEditProperty::td) || (nodeAtom == nsGkAtoms::mtd_) 
       || (nodeAtom == nsEditProperty::th)
       || (nodeAtom == nsEditProperty::caption);
 }

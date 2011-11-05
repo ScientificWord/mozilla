@@ -30,17 +30,6 @@
       <classcontains>
         <contains>#text</contains>
 			  <contains>texttag</contains>
-			  <contains>listparenttag</contains>
-			  <contains>listtag</contains>
-			  <contains>othertag</contains>
-        <contains>table</contains>
-			  <contains>mml:math</contains>
-			  <contains>img</contains>
-        <contains>line</contains>
-        <contains>a</contains>
-        <contains>note</contains>
-        <contains>object</contains>
-        <contains>notewrapper</contains>
       </classcontains>
 			<tags>
 				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
@@ -94,7 +83,6 @@
 			  <contains>othertag</contains>
 			  <contains>mml:math</contains>
 			  <contains>br</contains>
-			  <contains>shortQuote</contains>
 			  <contains>cursor</contains>
 			  <contains>defaulttitletag</contains>
 			  <contains>img</contains>
@@ -825,7 +813,7 @@
 	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="makelof"><description>Make list of figures</description>
-          <realtagclass>paratag</realtagclass>
+          <realtagclass>othertag</realtagclass>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
@@ -833,7 +821,7 @@
           </initialcontentsforempty>
         </tag>
         <tag nm="makelot"><description>Make list of tables</description>
-          <realtagclass>paratag</realtagclass>
+          <realtagclass>othertag</realtagclass>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
@@ -842,13 +830,14 @@
         </tag>
         <tag nm="maketitle"><description>Make title</description>
           <discardemptyblock>true</discardemptyblock>
+          <realtagclass>othertag</realtagclass>
           <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
           </initialcontentsforempty>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="maketoc"><description>Make table of contents</description>
-          <realtagclass>paratag</realtagclass>
+          <realtagclass>othertag</realtagclass>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
@@ -869,6 +858,7 @@
 			<tagclassname>othertag</tagclassname>
       <classcontains><contains>#text</contains></classcontains>
       <tag nm="mi"><description>mi</description></tag>
+      <tag nm="mo"><description>mi</description></tag>
       <tag nm="hspace"><description>hspace</description></tag>
 			<tags>
 				<tag nm="object"><description>Object</description></tag>

@@ -2971,24 +2971,18 @@ function insertfence(left, right, editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  var logStr = "";
   try 
   {
-    if (!editorElement)
-      logStr = "In insertfence, editor element is null!\n";
-    else if (!editor)
-      logStr = "In insertfence, editor element [" + editorElement.id + "] has null editor!\n";
+    if (!editorElement) throw("In insertfence, editor element is null!");
+    if (!editor) throw("In insertfence, editor element [" + editorElement.id + "] has null editor!");
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    if (!mathmlEditor)
-      logStr = "In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!\n";
+    if (!mathmlEditor) throw("In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!");
     mathmlEditor.InsertFence(left, right);
     editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
-    AlertWithTitle("Error in insertfence!", e);
-    if (logStr.length > 0)
-      msiKludgeLogString(logStr);
+    throw e;
   }
 }
 
