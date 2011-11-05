@@ -182,25 +182,20 @@ function AlertWithTitle(title, message, parentWindow)
   }
 }
 
-//// Optional: Caller may supply text to substitue for "Ok" and/or "Cancel"
-//function ConfirmWithTitle(title, message, okButtonText, cancelButtonText)
-//{
-//  var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService();
-//  promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
-//
-//  if (promptService)
-//  {
-//    var okFlag = okButtonText ? promptService.BUTTON_TITLE_IS_STRING : promptService.BUTTON_TITLE_OK;
-//    var cancelFlag = cancelButtonText ? promptService.BUTTON_TITLE_IS_STRING : promptService.BUTTON_TITLE_CANCEL;
-//
-//    return promptService.confirmEx(window, title, message,
-//                            (okFlag * promptService.BUTTON_POS_0) +
-//                            (cancelFlag * promptService.BUTTON_POS_1),
-//                            okButtonText, cancelButtonText, null, null, {value:0}) == 0;
-//  }
-//  return false;
-//}
-//
+function finalThrow(message, moremessage)
+{
+	var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]  
+	                        .getService(Components.interfaces.nsIPromptService);  
+
+	var flags = prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING  +  
+	            prompts.BUTTON_POS_2 * prompts.BUTTON_TITLE_CANCEL +
+							BUTTON_POS_2_DEFAULT;
+	var button = prompts.confirmEx(null, GetString("commandfailed"), message,  
+	                               flags, "", GetString("moreinfo"), "", null, null);  
+	if (button===2)
+	  prompts.alert(null, GetString("moredetails"), moremessage);
+}
+
 ///************* String Utilities ***************/
 //
 function GetString(name)
@@ -684,7 +679,8 @@ function msiGetCurrentEditor(theWindow)
 
 function msiGetActiveEditorElement(currWindow)
 {
-  if (!currWindow)
+  var editorElement;
+	if (!currWindow)
     currWindow = window.document.defaultView;
   if ("msiActiveEditorElement" in currWindow && (currWindow.msiActiveEditorElement != null) )
     return currWindow.msiActiveEditorElement;
@@ -693,9 +689,10 @@ function msiGetActiveEditorElement(currWindow)
     return currWindow.msiActiveEditorElement;
 //  if (!editorElement && currWindow.opener && currWindow.opener != currWindow)
 //    editorElement = msiGetActiveEditorElement(currWindow.opener);
-  var editorElement = msiGetCurrentEditorElementForWindow(currWindow);
-  if (!editorElement)
-    editorElement = currWindow.GetCurrentEditorElement();  //Give up?
+  editorElement = msiGetCurrentEditorElementForWindow(currWindow);
+// BBM: stop here! The next line leads to an infinite loop
+//  if (!editorElement)
+//    editorElement = currWindow.GetCurrentEditorElement();  //Give up?
   if (!editorElement)
     dump("\nCan't find active editor element!\n");
   return editorElement;
