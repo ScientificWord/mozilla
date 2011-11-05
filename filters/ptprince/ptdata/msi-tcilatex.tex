@@ -4,7 +4,6 @@
   {\gdef\@TCILATEX{\relax}}
   {\endinput}
 
-\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\input{tcilatex}}
   
 
 \def\QTR#1{%
@@ -344,11 +343,11 @@
 \def\msi@getfilename#1filename#2'#3';#4XXXXX{#3}
 \def\msi@getVCamFile#1VCamFile#2'#3';#4XXXXX{#3}
 
-
+\newif\ifvcamfile
 
 \def\special#1{%
    \msihmode\msitag{<img src=}%
-      "\expandafter{\expandafter\msigraphicname\msi@getfilename#1XXXXX}"%
+   "\expandafter{\expandafter\msigraphicname\msi@getfilename#1XXXXX}"%
    \msitag{/>}
 }
 
@@ -365,7 +364,6 @@
         \let\special\@vcamspecial
         #8
       \endgroup
-      %\msitag{<img src="zfoo.png" style="width: #2; height: #3" alt="plot"/>}
    \else
       \begingroup
         %% #8 will be a special with a graphic file
@@ -378,7 +376,7 @@
 \def\@vcamspecial#1{%
    \msihmode
    \msitag{<graph>}%
-      \msitag{<graphSpec ImageFile=} "\expandafter{\expandafter\msigraphicname\msi@getVCamFile#1XXXXX}" \msitag{>}%
+      \msitag{<graphSpec ImageFile=} "\expandafter{\expandafter\msigraphicname\msi@getfilename#1VCamFile'';XXXXX}" \msitag{>}%
       \msitag{<plot xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" PlotStatus="Inited" PlotType="rectangular">}%
       \msitag{<Expression>
          <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -392,7 +390,7 @@
       \msitag{</graphSpec>}%
       \msitag{<plotwrapper msi_resize="true">} %
          \msitag{<object height="250" width="250" type="application/x-mupad-graphics+xml" data=}%
-           "\expandafter{\expandafter\msigraphicname\msi@getVCamFile#1XXXXX}"
+           "\expandafter{\expandafter\msigraphicname\msi@getfilename#1VCamFile'';XXXXX}"
          \msitag{ alt="Generated Plot" msigraph="true"/>}%
       \msitag{</plotwrapper>}%
    \msitag{</graph>}%
