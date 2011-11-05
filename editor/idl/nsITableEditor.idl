@@ -322,6 +322,8 @@ interface nsITableEditor : nsISupports
     */
   PRUint32 getSelectedCellsType(in nsIDOMElement aElement);
 
+	PRBool getAllCellsSelected(out nsIDOMElement aElement);
+
   /** Get first selected element from first selection range.
     *   (If multiple cells were selected this is the first in the order they were selected)
     * Assumes cell-selection model where each cell

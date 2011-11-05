@@ -35,7 +35,9 @@
       <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
      <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
-        <menupopup id="menupopup_RecentFiles" oncommand="msiEditPage(event.target.getAttribute('value'), window, false);"/>
+        <menupopup id="menupopup_RecentFiles"
+           oncommand="msiEditPage(msiFileURLFromAbsolutePath(event.target.getAttribute('value')).spec, window,
+            false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
       <menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"

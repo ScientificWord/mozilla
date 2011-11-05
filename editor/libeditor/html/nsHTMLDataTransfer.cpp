@@ -981,6 +981,37 @@ nsHTMLEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpoin
   return NS_OK;
 }
 
+//utility function
+PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
+{
+	// run through the subnodes of node. We know there is no non-whitespace text, so text nodes can be ignored. Text tags can be ignored. 
+	// We say everything else is significant. Also, text tag nodes cannot have significant subnodes
+
+	nsCOMPtr<nsIDOMNode> child, tmp;
+	nsCOMPtr<nsIDOMElement> el;
+	node->GetFirstChild(getter_AddRefs(child));
+	nsAutoString tagname;
+	nsAutoString classname;
+  
+	while (child)
+	{
+		el = do_QueryInterface(child);
+		if (el)
+		{
+			el->GetTagName(tagname);
+			if (!(tagname.EqualsLiteral("#text") || tagname.EqualsLiteral("br"))) 
+			{
+				tlm->GetClassOfTag(tagname, nsnull, classname);
+				if (!classname.EqualsLiteral("texttag")) return PR_FALSE;
+			}
+		}
+	  child->GetNextSibling(getter_AddRefs(tmp));
+	  child = tmp;
+	}
+	return PR_TRUE;
+}
+
+
 // InsertReturnAt -- usually splits a paragraph; may call itself recursively
 nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy)
@@ -1027,6 +1058,8 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     nsAutoString strContents;
     dom3node->GetTextContent(strContents);
     isEmpty = IsWhiteSpaceOnly(strContents);
+		// check that there aren't significant tags in it, such as empty tables, etc.
+		if (isEmpty) isEmpty = HasNoSignificantTags(splitNode, mtagListManager);
     fDiscardNode = PR_FALSE;                       
     if (isEmpty) mtagListManager->GetDiscardEmptyBlockNode(splitNode, &fDiscardNode);
   }
@@ -1166,37 +1199,56 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   } 
   else
   {
-    res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
-      &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
+    bool inMath = false;
+    if (splitpointNode){
+       if (nsHTMLEditUtils::IsMath(splitpointNode))
+         inMath = true;
+       else {
+         nsCOMPtr<nsIDOMNode> parent;
+         splitpointNode->GetParentNode(getter_AddRefs(parent));
+         if (parent &&  nsHTMLEditUtils::IsMath(parent))
+           inMath = true;
+       }
+    }
+
+    if (inMath) {
+       res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
+         &outOffset, PR_TRUE, address_of(outLeftNode), address_of(outRightNode)); 
+    } else {
+       res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
+         &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
+    }
     FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
     FixMathematics(outRightNode, PR_FALSE, PR_FALSE);
-    if (outRightNode) mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);
+    if (outRightNode)  
+      mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);
   
-		nsAutoString leftName;
-		nsAutoString rightName;
-		res = GetTagString(outLeftNode, leftName);
-		res = GetTagString(outRightNode, rightName);
-		if (!(leftName.Equals(rightName)))
-		{
-			// strip attributes off of the right node
-			nsCOMPtr<nsIDOMNamedNodeMap> attributemap;
-			nsCOMPtr<nsIDOMNode> rightNode = do_QueryInterface(outRightNode);
-			nsCOMPtr<nsIDOMElement> rightElem = do_QueryInterface(outRightNode);
+		    nsAutoString leftName;
+		    nsAutoString rightName;
+		    res = GetTagString(outLeftNode, leftName);
+		    res = GetTagString(outRightNode, rightName);
+		    if (!(leftName.Equals(rightName)))
+		    {
+			    // strip attributes off of the right node
+			    nsCOMPtr<nsIDOMNamedNodeMap> attributemap;
+			    nsCOMPtr<nsIDOMNode> rightNode = do_QueryInterface(outRightNode);
+			    nsCOMPtr<nsIDOMElement> rightElem = do_QueryInterface(outRightNode);
 			
-			rightNode->GetAttributes(getter_AddRefs(attributemap));
-			PRUint32 length;
-			nsCOMPtr<nsIDOMNode> node;
-			nsCOMPtr<nsIDOMAttr> attrNode;
-			nsCOMPtr<nsIDOMAttr> dummyattrNode;
-			attributemap->GetLength(&length);
-			for (PRInt32 i = length-1; i >= 0; i--)
-			{
-				attributemap->Item(i, getter_AddRefs(node));
-				attrNode = do_QueryInterface(node);
-				rightElem->RemoveAttributeNode(attrNode, getter_AddRefs(dummyattrNode));
-			}
+			    rightNode->GetAttributes(getter_AddRefs(attributemap));
+			    PRUint32 length;
+			    nsCOMPtr<nsIDOMNode> node;
+			    nsCOMPtr<nsIDOMAttr> attrNode;
+			    nsCOMPtr<nsIDOMAttr> dummyattrNode;
+			    attributemap->GetLength(&length);
+			    for (PRInt32 i = length-1; i >= 0; i--)
+			    {
+				    attributemap->Item(i, getter_AddRefs(node));
+				    attrNode = do_QueryInterface(node);
+				    rightElem->RemoveAttributeNode(attrNode, getter_AddRefs(dummyattrNode));
+			    }
 			
-		}
+		    }
+    
   }
   return res;
 }

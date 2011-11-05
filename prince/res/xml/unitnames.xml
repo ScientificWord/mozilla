@@ -86,7 +86,7 @@
   <unitname id="secarc" name="arcSecond" type="planeAngle" builtIn="true"><data>&Prime;</data><appearance/></unitname>
   <unitname id="sr" name="steradian" type="solidAngle" builtIn="true"><data>sr</data><appearance/></unitname>
   <unitname id="Bq" name="becquerel" type="activity" builtIn="true"><data>Bq</data><appearance/></unitname>
-  <unitname id="curie" name="curie" type="activity" builtIn="true"><data>curie</data><appearance/></unitname>
+  <unitname id="curie" name="curie" type="activity" builtIn="true"><data>Ci</data><appearance/></unitname>
   <unitname id="Hz" name="hertz" type="frequency" builtIn="true"><data>Hz</data><appearance/></unitname>
   <unitname id="kHz" name="kilohertz" type="frequency" builtIn="true"><data>kHz</data><appearance/></unitname>
   <unitname id="MHz" name="megahertz" type="frequency" builtIn="true"><data>MHz</data><appearance/></unitname>
@@ -110,7 +110,7 @@
   <unitname id="mS" name="millisiemens" type="electricConductance" builtIn="true"><data>mS</data><appearance/></unitname>
   <unitname id="kS" name="kilosiemens" type="electricConductance" builtIn="true"><data>kS</data><appearance/></unitname>
   <unitname id="S" name="siemens" type="electricConductance" builtIn="true"><data>S</data><appearance/></unitname>
-  <unitname id="mho" name="mho" type="time" builtIn="true"><data>mho</data><appearance/></unitname>
+  <unitname id="mho" name="mho" type="electricConductance" builtIn="true"><data>&#x2127;</data><appearance/></unitname>
   <unitname id="mol" name="mole" type="amountOfSubstance" builtIn="true"><data>mol</data><appearance/></unitname>
   <unitname id="G" name="gauss" type="magneticFluxDensity" builtIn="true"><data>G</data><appearance/></unitname>
   <unitname id="sb" name="stilb" type="luminance" builtIn="true"><data>sb</data><appearance/></unitname>

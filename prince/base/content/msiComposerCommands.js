@@ -94,20 +94,20 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_SplitTableCell",     msiSplitTableCellCommand);
   commandTable.registerCommand("cmd_TableOrCellColor",   msiTableOrCellColorCommand);
   commandTable.registerCommand("cmd_NormalizeTable",     msiNormalizeTableCommand);
-  commandTable.registerCommand("cmd_SelectMatrix",						msiSelectMatrixCommand);
-  commandTable.registerCommand("cmd_SelectMatrixRow",					msiSelectMatrixRow);
-  commandTable.registerCommand("cmd_SelectMatrixColumn",			msiSelectMatrixColumn);
-  commandTable.registerCommand("cmd_SelectMatrixCell",				msiSelectMatrixCell);
-  commandTable.registerCommand("cmd_SelectAllMatrixCells",		msiSelectAllMatrixCells);
+  commandTable.registerCommand("cmd_SelectMatrix",						msiSelectTableCommand);
+  commandTable.registerCommand("cmd_SelectMatrixRow",					msiSelectTableRowCommand);
+  commandTable.registerCommand("cmd_SelectMatrixColumn",			msiSelectTableColumnCommand);
+  commandTable.registerCommand("cmd_SelectMatrixCell",				msiSelectTableCellCommand);
+  commandTable.registerCommand("cmd_SelectAllMatrixCells",		msiSelectAllTableCellsCommand);
   commandTable.registerCommand("cmd_InsertMatrix",						msiInsertMatrix);
-  commandTable.registerCommand("cmd_InsertMatrixRowAbove",		msiInsertMatrixRowAbove);
-  commandTable.registerCommand("cmd_InsertMatrixRowBelow",		msiInsertMatrixRowBelow);
-  commandTable.registerCommand("cmd_InsertMatrixColumnBefore",msiInsertMatrixColumnBefore);
-  commandTable.registerCommand("cmd_InsertMatrixColumnAfter",	msiInsertMatrixColumnAfter);
-  commandTable.registerCommand("cmd_DeleteMatrix",						msiDeleteMatrix);
-  commandTable.registerCommand("cmd_DeleteMatrixRow",					msiDeleteMatrixRow);
-  commandTable.registerCommand("cmd_DeleteMatrixColumn",			msiDeleteMatrixColumn);
-  commandTable.registerCommand("cmd_DeleteMatrixCellContents",msiDeleteMatrixCellContents);
+  commandTable.registerCommand("cmd_InsertMatrixRowAbove",		msiInsertTableRowAboveCommand);
+  commandTable.registerCommand("cmd_InsertMatrixRowBelow",		msiInsertTableRowBelowCommand);
+  commandTable.registerCommand("cmd_InsertMatrixColumnBefore",msiInsertTableColumnBeforeCommand);
+  commandTable.registerCommand("cmd_InsertMatrixColumnAfter",	msiInsertTableColumnAfterCommand);
+  commandTable.registerCommand("cmd_DeleteMatrix",						msiDeleteTableCommand);
+  commandTable.registerCommand("cmd_DeleteMatrixRow",					msiDeleteTableRowCommand);
+  commandTable.registerCommand("cmd_DeleteMatrixColumn",			msiDeleteTableColumnCommand);
+  commandTable.registerCommand("cmd_DeleteMatrixCellContents",msiDeleteTableCellContentsCommand);
 
   commandTable.registerCommand("cmd_ConvertToTable",     msiConvertToTable);
   commandTable.registerCommand("cmd_MSIAnimateGifsOn",   msiGIFAnimation);
@@ -8175,8 +8175,18 @@ var msiSelectMatrixCommand =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement();
-    if (msiIsInMatrixCell(editorElement))
-      alert("Implement me!");
+    try
+    {
+      msiGetTableEditor(editorElement).selectTable();
+    }
+    catch(exc) 
+		{
+			throw("Error in msiSelectTableCommand.doCommand: " + exc.message);
+		}
+    if (editorElement)
+      editorElement.contentWindow.focus();
+    else
+      window.content.focus();
   }
 };
 
@@ -8980,7 +8990,9 @@ var msiJoinTableCellsCommand =
                                               colObj.value + colSpan));
         }
       }
-      catch (exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiJoinTableCellsCommand.isCommandEnabled: " + exc);}
+      catch (exc) {
+				dump(exc.message+"\n");
+			}
     }
     return false;
   },

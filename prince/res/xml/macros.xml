@@ -338,7 +338,7 @@
   <m nm="implies"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Implies;<![CDATA[");]]></data></m>
   <m nm="rightleftarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rlarr;<![CDATA[");]]></data></m>
   <m nm="leadsto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrc;<![CDATA[");]]></data></m>
-  <m nm="rightlefthrpoons"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rlhar;<![CDATA[");]]></data></m>
+  <m nm="rightleftharpoons"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rlhar;<![CDATA[");]]></data></m>
   <m nm="Leftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lArr;<![CDATA[");]]></data></m>
   <m nm="rightrightarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rrarr;<![CDATA[");]]></data></m>
   <m nm="leftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larr;<![CDATA[");]]></data></m>

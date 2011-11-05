@@ -855,9 +855,9 @@ function PreviewImageLoaded()
                       Math.round(frameUnitHandler.getValueAs(frameTabDlg.heightInput.value,"px")) );
     }
 
-    dump("Before SetActualSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
+    dump("Before setActualSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
     if (frameTabDlg.actual.selected)
-      SetActualSize();
+      setActualSize();
 
     // if the image is svg, we need to modify it to make it resizable.
     if (isSVGFile)
