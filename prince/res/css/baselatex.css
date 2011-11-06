@@ -20,7 +20,7 @@ pre, verbatim { font-family: Courier; white-space: pre }
 numberedListItem,
 bulletListItem,
 descriptionListItem { 
-       margin: 0em; 
+       margin-left: 2em; 
        padding-left: 1em; 
        display: list-item;}
 
@@ -30,9 +30,10 @@ numberedlist {
   counter-reset: numberedlist;
 }
 
-bulletlist { list-style-type: disc;}
-bulletlist bulletlist { list-style-type: circle;}
-bulletlist bulletlist bulletlist { list-style-type: square;}
+bulletlist { list-style: disc outside;}
+bulletlist bulletlist { list-style: circle outside;}
+bulletlist bulletlist bulletlist { list-style: disc inside;}
+
 
 descriptionlist {list-style-type: none;}
 

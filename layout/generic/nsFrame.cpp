@@ -4837,13 +4837,14 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
       }
 
       // Set outputs
-//	  if (math)
-//	  {
-//	    aPos->mResultFrame = current;
-//	    aPos->mResultContent = current?current->GetContent():nsnull;
-//	    aPos->mContentOffset = offset < 0 ? range.end : range.start + offset;
-//	  }
-//	  else
+	  if (math)
+	  {
+	    aPos->mResultFrame = current;
+	    aPos->mResultContent = current?current->GetContent():nsnull;
+			if (!current) printf("Got null node for the cursor, nsFrame:4844\n");
+	    aPos->mContentOffset = offset;
+	  }
+	  else
       {
         range = GetRangeForFrame(current);
         aPos->mResultFrame = current;
