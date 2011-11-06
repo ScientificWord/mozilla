@@ -184,16 +184,23 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   nsCOMPtr<nsIContent> pContent;
   pFrame = m_pMyFrame;
   nsIFrame* pTempFrame;
-	nsIAtom * frametype;
+	nsIAtom * frametype = nsnull;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   // get last child
   pTempFrame = pFrame->GetFirstChild(nsnull);
   while (pTempFrame && (pTempFrame->GetNextSibling())) pTempFrame = pTempFrame->GetNextSibling();
+	if (pTempFrame) frametype = pTempFrame->GetType();
 	while (pTempFrame && (!(pMCM = do_QueryInterface(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
 	{
 		pTempFrame = pTempFrame->GetFirstChild(nsnull);
-	  while (pTempFrame && (pTempFrame->GetNextSibling())) pTempFrame = pTempFrame->GetNextSibling();
-		if (pTempFrame) frametype = pTempFrame->GetType();
+		while (pTempFrame && (pTempFrame->GetNextSibling()))
+		{
+ 			pTempFrame = pTempFrame->GetNextSibling();			
+		}
+		if (pTempFrame) 
+		{
+			frametype = pTempFrame->GetType();
+		}
 	}
   if (pTempFrame)
   {
