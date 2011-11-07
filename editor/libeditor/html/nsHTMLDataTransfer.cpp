@@ -1213,7 +1213,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
 
     if (inMath) {
        res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
-         &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
+         &outOffset, PR_TRUE, address_of(outLeftNode), address_of(outRightNode)); 
     } else {
        res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
          &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
