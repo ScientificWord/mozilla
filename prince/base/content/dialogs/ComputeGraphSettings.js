@@ -391,33 +391,58 @@ function GetValuesFromDialog(){
   }
   // View Tab
   // Orientation
-  var camLocX = document.getElementById("CameraLocationX").value;
-  var camLocY = document.getElementById("CameraLocationY").value;
-  var camLocZ = document.getElementById("CameraLocationZ").value;
-  graph.setGraphAttribute ("CameraLocationX", camLocX);
-  graph.setGraphAttribute ("CameraLocationY", camLocY);
-  graph.setGraphAttribute ("CameraLocationZ", camLocZ);
+  if (document.getElementById("CameraLocationX")) {
+    var camLocX = document.getElementById("CameraLocationX").value;
+    graph.setGraphAttribute ("CameraLocationX", camLocX);
+  }
+  if (document.getElementById("CameraLocationY")){
+    var camLocY = document.getElementById("CameraLocationY").value;
+    graph.setGraphAttribute ("CameraLocationY", camLocY);
+  }
 
-  var focalPtX = document.getElementById("FocalPointX").value;
-  var focalPtY = document.getElementById("FocalPointY").value;
-  var focalPtZ = document.getElementById("FocalPointZ").value;
-  graph.setGraphAttribute ("FocalPointX", focalPtX);
-  graph.setGraphAttribute ("FocalPointY", focalPtY);
-  graph.setGraphAttribute ("FocalPointZ", focalPtZ);
+  if ( document.getElementById("CameraLocationZ") ){
+    var camLocZ = document.getElementById("CameraLocationZ").value;
+    graph.setGraphAttribute ("CameraLocationZ", camLocZ);
+  }
 
-  var upVecX = document.getElementById("UpVectorX").value;
-  var upVecY = document.getElementById("UpVectorY").value;
-  var upVecZ = document.getElementById("UpVectorZ").value;
-  graph.setGraphAttribute ("UpVectorX", upVecX);
-  graph.setGraphAttribute ("UpVectorY", upVecY);
-  graph.setGraphAttribute ("UpVectorZ", upVecZ);
+  if ( document.getElementById("FocalPointX") ){
+    var focalPtX = document.getElementById("FocalPointX").value;
+    graph.setGraphAttribute ("FocalPointX", focalPtX);
+  }
+  if ( document.getElementById("FocalPointY") ){
+    var focalPtY = document.getElementById("FocalPointY").value;
+    graph.setGraphAttribute ("FocalPointY", focalPtY);
+  }
 
-  var va = document.getElementById("ViewingAngle").value;
-  var op = document.getElementById("OrthogonalProjection").checked ? "true" : "false";
-  var ku = document.getElementById("KeepUp").checked ? "true" : "false";
-  graph.setGraphAttribute ("ViewingAngle", va);
-  graph.setGraphAttribute ("OrthogonalProjection", op);
-  graph.setGraphAttribute ("KeepUp", ku);
+  if ( document.getElementById("FocalPointZ") ) {
+    var focalPtZ = document.getElementById("FocalPointZ").value;
+    graph.setGraphAttribute ("FocalPointZ", focalPtZ);
+  }
+
+  if (document.getElementById("UpVectorX")){
+    var upVecX = document.getElementById("UpVectorX").value;
+    graph.setGraphAttribute ("UpVectorX", upVecX);
+  }
+  if (document.getElementById("UpVectorY")){
+    var upVecY = document.getElementById("UpVectorY").value;
+    graph.setGraphAttribute ("UpVectorY", upVecY);
+  }
+  if (document.getElementById("UpVectorZ")){
+    var upVecZ = document.getElementById("UpVectorZ").value;
+    graph.setGraphAttribute ("UpVectorZ", upVecZ);
+  }
+  if (document.getElementById("ViewingAngle")){
+     var va = document.getElementById("ViewingAngle").value;
+     graph.setGraphAttribute ("ViewingAngle", va);
+  }
+  if (document.getElementById("OrthogonalProjection")){
+     var op = document.getElementById("OrthogonalProjection").checked ? "true" : "false";
+     graph.setGraphAttribute ("OrthogonalProjection", op);
+  }
+  if (document.getElementById("KeepUp")){
+    var ku = document.getElementById("KeepUp").checked ? "true" : "false";
+    graph.setGraphAttribute ("KeepUp", ku);
+  }
 }                          
 
 
