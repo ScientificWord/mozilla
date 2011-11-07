@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0"?>                                       
 <!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
@@ -99,7 +99,7 @@
           </grid>
         </groupbox>
         <groupbox>
-          <caption label="amp-defaultplacementnewplot.label;"/>
+          <caption label="&defaultplacementnewplot.label;"/>
           <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
