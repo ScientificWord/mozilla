@@ -135,13 +135,6 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
 			  </tag>
-				<tag nm="longQuotation">
-					<description>Long quotation</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/>]]>
-          </initialcontentsforempty>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-				</tag>
 				<!--tag nm="title">
 					<nexttag>bodyText</nexttag>
 					<description>Title</description>
@@ -177,7 +170,6 @@
       <classcontains></classcontains>
 			<tags>
 				<tag nm="bulletlist" hidden="1">
-          <nexttag/>
           <description>Bullet list</description>
 					<nexttag>#text</nexttag>
           <htmllist>ul</htmllist>
@@ -186,8 +178,8 @@
 			    <contains>bulletListItem</contains>
         </tag>
 				<tag nm="numberedlist" hidden="1">
-          <description>Numbered list</description>
-					<nexttag/>
+          <description>Numbered list</description>					<nexttag/>
+					<nexttag>#text</nexttag>
           <htmllist>ol</htmllist>
           <initialcontents> <![CDATA[<cursor/><br/>]]></initialcontents>
           <discardemptyblock>true</discardemptyblock>
@@ -196,6 +188,7 @@
         </tag>
 				<tag nm="descriptionlist" hidden="1">
           <description>Description list</description>
+					<nexttag>#text</nexttag>
           <htmllist>dl</htmllist>
           <discardemptyblock>true</discardemptyblock>
 	  		  <inclusion>true</inclusion>
@@ -206,7 +199,7 @@
           <level>0</level>
           <description>Bibliography</description>
           <discardemptyblock>true</discardemptyblock>
-					<nexttag/>
+					<nexttag>#text</nexttag>
 	  		  <inclusion>true</inclusion>
 			    <contains>bibitem</contains>
         </tag>
@@ -363,6 +356,13 @@
       </classcontains>
 			<tags>
 				<tag nm="(remove environment)" id="clearenvironmenttag" ><description>Remove innermost environment tag</description></tag>
+				<tag nm="longQuotation">
+					<description>Long quotation</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/>]]>
+          </initialcontentsforempty>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+				</tag>
 				<tag nm="frontmatter">
           <contains>frontmtag</contains>
           <level>*</level>

@@ -25,62 +25,7 @@ function aColorObj(editorElement)
   this.CellColor = "";
 };
 
-//var gDefaultTextColor = "";
-//var gDefaultBackgroundColor = "";
-//
-////var gCSSPrefListener;
-//var gPrefs;
-////var gLocalFonts = null;
-//
-////var gLastFocusNode = null;
-////var gLastFocusNodeWasSelected = false;
-//
-////// These must be kept in synch with the XUL <options> lists
-////var gFontSizeNames = ["xx-small","x-small","small","medium","large","x-large","xx-large"];
-////
-//////MSI stuff, see msiColorObj::Format() for more comprehensive value.
-//var gMathStyleSheet = "data:text/css,math { color: #FF0000; }";
-////
-////const nsIFilePicker = Components.interfaces.nsIFilePicker;
-////
-//const kEditorToolbarPrefs = "editor.toolbars.showbutton.";
-
-//function msiShowHideToolbarSeparators(toolbar) {
-//  dump("===> msiShowHideToolbarSeparators\n");
-//
-//  var childNodes = toolbar.childNodes;
-//  var separator = null;
-//  var hideSeparator = true;
-//  for (var i = 0; childNodes[i].localName != "spacer"; i++) {
-//    if (childNodes[i].localName == "toolbarseparator") {
-//      if (separator)
-//        separator.hidden = true;
-//      separator = childNodes[i];
-//    } else if (!childNodes[i].hidden) {
-//      if (separator)
-//        separator.hidden = hideSeparator;
-//      separator = null;
-//      hideSeparator = false;
-//    }
-//  }
-//}
-//
-//function msiShowHideToolbarButtons()
-//{
-//  dump("===> msiShowHideToolbarButtons\n");
-//
-//  var array = GetPrefs().getChildList(kEditorToolbarPrefs, {});
-//  for (var i in array) {
-//    var prefName = array[i];
-//    var id = prefName.substr(kEditorToolbarPrefs.length) + "Button";
-//    var button = document.getElementById(id);
-//    if (button)
-//      button.hidden = !gPrefs.getBoolPref(prefName);
-//  }
-//  msiShowHideToolbarSeparators(document.getElementById("EditToolbar"));
-//  msiShowHideToolbarSeparators(document.getElementById("FormatToolbar"));
-//}
-  
+ 
 function msiAddToolbarPrefListener(editorElement)
 {
   try {
@@ -103,8 +48,6 @@ function msiRemoveToolbarPrefListener(editorElement)
   }
 }
 
-//// Pref listener constants
-//const gEditorToolbarPrefListener =
 function msiEditorToolbarPrefListener(editorElement) 
 {
   this.mEditorElement = editorElement;
@@ -1087,7 +1030,7 @@ function msiSetFocusOnStartup(editorElement)
 
 function isShell (filename)
 {
-  var foundit;
+  var foundit = false;
   var re = /\/shells\//i;
   foundit = re.test(filename);
   if (!foundit)
@@ -1095,7 +1038,6 @@ function isShell (filename)
     re = /\\shells\\/i;
     foundit = re.test(filename);
   }
-  dump("isShell is " + foundit + "\n");
   return foundit;
 }
 
