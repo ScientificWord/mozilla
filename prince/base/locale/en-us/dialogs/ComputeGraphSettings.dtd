@@ -177,6 +177,8 @@
 
 <!ENTITY unspecified.label          "Not Specified">
 
+<!ENTITY defaultplacementnewplot.label "Default placement for new plots">
+
 <!ENTITY defaultsizenewplot.label "Default size for new plots">
 <!ENTITY defaultsizenewplot.label "Default placement for new plots">
 <!ENTITY approxintegral.label "Approximate Integral">
