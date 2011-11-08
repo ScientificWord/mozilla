@@ -805,57 +805,57 @@ string MuPADPlot::OrientationStr (MuPADPlot* T) {
 
 // should turn into "plot::Function2d"
 string MuPADPlot::PlotFuncStr(MuPADPlot* T) {
-  string s = "plot::Function2d";
+  string s = "Function2d";
   if (T->dim[0] == '2') {
     if ((T->ptype == "polar")) {
-      s = "plot::Polar";
+      s = "Polar";
     } else if (T->ptype == "explicitList") {
-      s = "plot::Polygon2d";
+      s = "Polygon2d";
     } else if (T->ptype == "implicit") {
-      s = "plot::Implicit2d";
+      s = "Implicit2d";
     } else if (T->ptype == "approximateIntegral") {
-      s = "plot::Integral";
+      s = "Integral";
     } else if (T->ptype == "inequality") {
-      s = "plot::Inequality";
+      s = "Inequality";
     } else if (T->ptype == "parametric") {
-      s = "plot::Curve2d";
+      s = "Curve2d";
     } else if (T->ptype == "conformal") {
-      s = "plot::Conformal";
+      s = "Conformal";
     } else if (T->ptype == "gradient") {
-      s = "plot::VectorField2d";
+      s = "VectorField2d";
     } else if (T->ptype == "vectorField") {
-      s = "plot::VectorField2d";
+      s = "VectorField2d";
     } else if (T->ptype == "ODE") {
-      s = "plot::Ode2d";
+      s = "Ode2d";
     }
  
   } else if (T->dim[0] == '3') {
     if (T->ptype == "cylindrical") {
-      s = "plot::Cylindrical";
+      s = "Cylindrical";
     } else if (T->ptype == "spherical") {
-      s = "plot::Spherical";
+      s = "Spherical";
     } else if (T->ptype == "rectangular") {
-      s = "plot::Function3d";
+      s = "Function3d";
     } else if (T->ptype == "curve") {
-      s = "plot::Curve3d";
+      s = "Curve3d";
     } else if (T->ptype == "explicitList") {
-      s = "plot::Polygon3d";
+      s = "Polygon3d";
     } else if (T->ptype == "implicit") {
-      s = "plot::Implicit3d";
+      s = "Implicit3d";
     } else if (T->ptype == "inequality") {
-      s = "plot::Inequality";
+      s = "Inequality";
     } else if (T->ptype == "parametric") {
-      s = "plot::Surface";
+      s = "Surface";
     } else if (T->ptype == "conformal") {
-      s = "plot::Conformal";
+      s = "Conformal";
     } else if (T->ptype == "gradient") {
-      s = "plot::VectorField3d";
+      s = "VectorField3d";
     } else if (T->ptype == "vectorField") {
-      s = "plot::VectorField3d";
+      s = "VectorField3d";
     } else if (T->ptype == "ODE") {
-      s = "plot::Ode3d";
+      s = "Ode3d";
     } else if (T->ptype == "tube") {
-      s = "plot::Tube";
+      s = "Tube";
     }
  
   } else {
