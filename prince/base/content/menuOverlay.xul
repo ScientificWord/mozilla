@@ -687,6 +687,7 @@
     <command id="cmd_findNext"      oncommand="msiGoDoCommand('cmd_findNext')"     label="&findAgainCmd.label;" />
     <command id="cmd_findPrev"      oncommand="msiGoDoCommand('cmd_findPrev')"     label="&findPrevCmd.label;"/>
     <command id="cmd_spelling"      oncommand="msiGoDoCommand('cmd_spelling')"/>
+    <command id="cmd_macrofragment" oncommand="msiGoDoCommand('cmd_macrofragment')"/>
     <command id="cmd_validate"      label="&validateCmd.label;" accesskey="&validate.accesskey;" oncommand="msiGoDoCommand('cmd_validate')"/>
     <command id="cmd_checkLinks"    oncommand="msiGoDoCommand('cmd_checkLinks')"/>
     <command id="cmd_pasteQuote"    oncommand="msiGoDoCommand('cmd_pasteQuote')" label="&pasteAsQuotationCmd.label;"/>
