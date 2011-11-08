@@ -90,11 +90,16 @@
               <column flex="0"/>
             </columns>
             <rows>
-              <row><label value="Width:"/> <textbox id="plotwidth" type="number" style="width: 5em;" preference="defaultGraphicsHSize"/>
-                <label value="units"/>
-                <menulist id="plotunits" oncommand="plotUnitsHandler.setCurrentUnit(this.value)"/>
+              <row>
+                <label value="Width:"/> 
+                <textbox id="Width" type="number" style="width: 5em;" preference="defaultGraphicsHSize"/>
+                <label value="pixels"/>
               </row>
-              <row><label value="Height:"/> <textbox id="plotheight" type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label observes="plotunits"/></row>
+              <row>
+                <label value="Height:"/> 
+                <textbox id="Height" type="number" style="width: 5em;" preference="defaultGraphicsVSize"/>
+                <label value="pixels"/>
+              </row>
             </rows>
           </grid>
         </groupbox>
@@ -136,7 +141,7 @@
         <vbox>
           <groupbox>        
             <label value="&labelingkey.label;"/>
-            <textbox id="key" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
+            <textbox id="Key" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
               forcecomplete="true"
               completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
               tooltiptext="Enter a key name which does not conflict with the current keys"

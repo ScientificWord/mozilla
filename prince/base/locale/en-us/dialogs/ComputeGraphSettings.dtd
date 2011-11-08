@@ -179,8 +179,8 @@
 
 <!ENTITY defaultplacementnewplot.label "Default placement for new plots">
 
-<!ENTITY defaultsizenewplot.label "Default size for new plots">
-<!ENTITY defaultsizenewplot.label "Default placement for new plots">
+<!ENTITY defaultsizenewplot.label "Plot size">
+<!ENTITY defaultsizenewplot.label "Plot placement">
 <!ENTITY approxintegral.label "Approximate Integral">
 <!ENTITY animationparams.label "Animation Parameters">
 <!ENTITY starttime.desc  "Start time (seconds)">
