@@ -618,7 +618,7 @@ function nonmodalRecreateGraph (graph, DOMGraph, editorElement) {
 function insertGraph (siblingElement, graph, editorElement) {
   var filetype = graph.getDefaultValue ("DefaultFileType");
   // May want to ensure file type is compatible with animated here
-//  var editorElement = null;
+  //  var editorElement = null;
   if (!editorElement || editorElement == null)
     editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
   var longfilename;
@@ -648,7 +648,7 @@ function insertGraph (siblingElement, graph, editorElement) {
 //  dump("In insertGraph, about to computeGraph.\n");
   graph.computeGraph (editorElement, longfilename);
   graph.setGraphAttribute("ImageFile", "plots/"+leaf);
-  var gDomElement = graph.createGraphDOMElement(false)
+  var gDomElement = graph.createGraphDOMElement(false);
 
   addGraphElementToDocument (gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
@@ -663,6 +663,14 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate, editorEleme
     editorElement = msiGetActiveEditorElement();
   var expr = runFixup(GetFixedMath(math));
   var graph = new Graph();
+  var prefs = GetPrefs();
+
+  var width = prefs.getIntPref("swp.defaultGraphicsHSize");
+  var height = prefs.getIntPref("swp.defaultGraphicsVSize");
+
+  graph.setGraphAttribute("Width", width);
+  graph.setGraphAttribute("Height", height);
+
   graph.addPlot ();
   graph.setPlotAttribute (PlotAttrName ("PlotStatus",1), "New");
   graph.setPlotAttribute (PlotAttrName ("Expression",1), expr);
