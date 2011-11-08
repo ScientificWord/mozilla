@@ -70,9 +70,8 @@
 
 <xsl:template match="html:preamble">
 <xsl:text>%% preamble
+\usepackage{amssymb,amsmath}
 </xsl:text>
-\usepackage{amssymb}
-\usepackage{amsmath}
 <xsl:if test="$compiler='xelatex'">
 \usepackage{xltxtra}
 \usepackage{xkeyval}

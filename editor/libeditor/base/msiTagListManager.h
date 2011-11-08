@@ -67,6 +67,7 @@ public:
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
   void BuildContainsListForElement(nsIDOMElement * element, const nsAString & name);
 	void BuildBabelList(nsIDOMXMLDocument * docTagInfo, TagKeyListHead ** ppBabelList);
+	PRBool ContainsListForOuterIncludesInner( const nsAString & strOuter, const nsAString & strInner );
   
   
   nsCOMPtr<nsIAutoCompleteSearchStringArray> pACSSA;
