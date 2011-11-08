@@ -15,10 +15,10 @@ var graph;
 // if the document has an element matching an attribute name, 
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
-  plotUnitsHandler = new UnitHandler();
-  plotUnitsHandler.setEditFieldList([document.getElementById("plotwidth"), document.getElementById("plotheight")]);
-  plotUnitsHandler.initCurrentUnit("px");
-  plotUnitsHandler.buildUnitMenu(document.getElementById("plotunits"), "px");
+  //plotUnitsHandler = new UnitHandler();
+  //plotUnitsHandler.setEditFieldList([document.getElementById("plotwidth"), document.getElementById("plotheight")]);
+  //plotUnitsHandler.initCurrentUnit("px");
+  //plotUnitsHandler.buildUnitMenu(document.getElementById("plotunits"), "px");
 
   graph = window.arguments[0];
   var alist = graph.graphAttributeList();                    
@@ -34,23 +34,11 @@ function Startup(){
   plotNumControl.max = getNumberOfActivePlots();
   plotNumControl.valueNumber = 1;
   var firstActivePlot = getActivePlotNumber(1);
-//  for(var i=1; i<=numPlots; i++) {                                          
-//    var newElement = document.createElement('menuitem');                    
-//    newElement.setAttribute("label", i.toString());                         
-//    newElement.setAttribute("value", i.toString());                         
-//    popup.appendChild(newElement);                                          
-//    if (i == 1) document.getElementById("plotnumber").selectedItem = newElement;  
-//  }                                                                         
   graph.setGraphAttribute("plotnumber", firstActivePlot.toString());
 
   initKeyList();
   
   var editorControl = document.getElementById("plotDlg-content-frame");
-//  var docObserver = new Object();
-//  docObserver.mObserver = msiEditorDocumentObserverG;
-//  docObserver.mCommand = "obs_documentCreated";
-//  editorControl.mInitialDocObserver = new Array(docObserver);
-////  editorControl.mInitialDocCreatedObserver = msiEditorDocumentObserverG;
   editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
 
   var theStringSource = graph.getPlotValue ("Expression", 1);
@@ -58,30 +46,6 @@ function Startup(){
     theStringSource = GetComputeString("Math.emptyForInput");
   msiInitializeEditorForElement(editorControl, theStringSource, true);
 
-//   //SLS the following copied from editor.js
-//  gSourceContentWindow = document.getElementById("plotDlg-content-frame");
-//  gSourceContentWindow.makeEditable("html", false);
-//  EditorStartup();
-//
-//  // Initialize our source text <editor>
-//  try {
-//    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-//    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-//                               .createInstance(Components.interfaces.nsIControllerContext);
-//    controller.init(null);
-//    controller.setCommandContext(gSourceContentWindow);
-//    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-//    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-//                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
-//    commandTable.registerCommand("cmd_find",        nsFindCommand);
-//    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
-//    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
-//    SetupMSIMathMenuCommands();
-//  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
-//
-//  // see EditorSharedStartup() in editor.js
-//  var commandManager = GetCurrentCommandManager();
-//  commandManager.addCommandObserver(msiEditorDocumentObserverG, "obs_documentCreated");
 }                                                                                            
 
 
@@ -257,6 +221,9 @@ function GetValuesFromDialog(){
       }                                                                
     }                                                                   
   } 
+
+
+  plotUnitsHandler
   var oldpt = graph.getPlotValue ("PlotType", plotno);                        
   var newpt;
   if (dim == "2") {
