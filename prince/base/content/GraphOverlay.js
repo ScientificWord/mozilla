@@ -665,11 +665,12 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate, editorEleme
   var graph = new Graph();
   var prefs = GetPrefs();
 
-  var width = prefs.getIntPref("swp.defaultGraphicsHSize");
-  var height = prefs.getIntPref("swp.defaultGraphicsVSize");
+  var width = prefs.getIntPref("swp.graph.HSize");
+  var height = prefs.getIntPref("swp.graph.VSize");
 
   graph.setGraphAttribute("Width", width);
   graph.setGraphAttribute("Height", height);
+
 
   graph.addPlot ();
   graph.setPlotAttribute (PlotAttrName ("PlotStatus",1), "New");
