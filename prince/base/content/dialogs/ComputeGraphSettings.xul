@@ -92,12 +92,12 @@
             <rows>
               <row>
                 <label value="Width:"/> 
-                <textbox id="Width" type="number" style="width: 5em;" preference="defaultGraphicsHSize"/>
+                <textbox id="Width" type="number" style="width: 5em;" preference="swp.graph.HSize"/>
                 <label value="pixels"/>
               </row>
               <row>
                 <label value="Height:"/> 
-                <textbox id="Height" type="number" style="width: 5em;" preference="defaultGraphicsVSize"/>
+                <textbox id="Height" type="number" style="width: 5em;" preference="swp.graph.VSize"/>
                 <label value="pixels"/>
               </row>
             </rows>
@@ -105,16 +105,16 @@
         </groupbox>
         <groupbox>
           <caption label="&defaultplacementnewplot.label;"/>
-          <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
+          <radiogroup id="Placement" preference="swp.graph.Placement" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
-              <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+              <radio id="inline" value="inlne" label="In line" name="Placement"/>
             </vbox>
             <vbox>
-              <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+              <radio id="display" value="display" label="Displayed" name="Placement"/>
             </vbox>
             <vbox>
-              <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+              <radio id="float" value="float" label="Floating" name="Placement" oncommand="enableHere(this);"/>
               <vbox>
                 <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
                 <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
