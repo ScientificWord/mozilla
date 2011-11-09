@@ -450,7 +450,6 @@
   <m nm="spadesuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&spades;<![CDATA[");]]></data></m>
   <m nm="diamondsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&diams;<![CDATA[");]]></data></m>
   <m nm="sphericalangle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&angsph;<![CDATA[");]]></data></m>
-  <m nm="dots"  tp="sc"><data><![CDATA[insertMathSymbol(]]></data></m>
   <m nm="square"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&square;<![CDATA[");]]></data></m>
   <m nm="mdlgwhtsquare"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&square;<![CDATA[");]]></data></m>
   <m nm="ell" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&ell;<![CDATA[");]]></data></m>
