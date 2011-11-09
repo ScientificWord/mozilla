@@ -955,7 +955,7 @@ end_proc:
 
 SWPmatrix := proc(m,n,lis) 
 begin
-  matrix(m,n,lis);
+  lis;
 end_proc:
 
 // MuPAD doesn't yet have matrix2Expr
