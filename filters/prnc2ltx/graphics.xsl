@@ -27,13 +27,35 @@
 </xsl:template>    
 
 
+<xsl:template match="html:object" mode="contents">
+  <xsl:choose>
+    <xsl:when test="@pos='float'">
+      <xsl:if test="@border-width">
+        \fboxrule=<xsl:value-of select="@border-width"/><xsl:call-template name="unit"/>
+        <xsl:if test="@padding">\fboxsep=<xsl:value-of select="@padding"/><xsl:call-template name="unit"/></xsl:if>
+        <xsl:if test="@border-color">{\color{    
+          <xsl:choose>
+            <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
+            <xsl:otherwise>black} <!--<xsl:value-of select="./@border-color"/>} --></xsl:otherwise>
+          </xsl:choose></xsl:if>
+        \framebox{</xsl:if>
+      <xsl:call-template name="buildincludegraphics"/>
+      <xsl:if test="@border-color">}</xsl:if>
+      <xsl:if test="@border-width">}</xsl:if>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="buildincludegraphics"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="html:object">
   <xsl:choose>
     <xsl:when test="@pos='inline'">
-      <xsl:call-template name="buildincludegraphics"/>
+      <xsl:apply-templates select="." mode="contents"/>
     </xsl:when>
     <xsl:when test="@pos='display'">
-      \begin{center} <xsl:call-template name="buildincludegraphics"/> \end{center}      
+      \begin{center} <xsl:apply-templates select="." mode="contents"/> \end{center}      
     </xsl:when>
     <xsl:when test="@pos='float'">
       <xsl:choose>
@@ -53,20 +75,8 @@
             </xsl:choose>}<xsl:if test="@overhang &gt; 0">[<xsl:value-of select="@overhang"/><xsl:call-template name="unit"/>]</xsl:if>{0pt}
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="@captionabove"><xsl:apply-templates/></xsl:if>
-      <xsl:if test="@border-width">
-        \fboxrule=<xsl:value-of select="@border-width"/><xsl:call-template name="unit"/>
-        <xsl:if test="@padding">\fboxsep=<xsl:value-of select="@padding"/><xsl:call-template name="unit"/></xsl:if>
-        <xsl:if test="@border-color">{\color{    
-          <xsl:choose>
-            <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
-            <xsl:otherwise>black} <!--<xsl:value-of select="./@border-color"/>} --></xsl:otherwise>
-          </xsl:choose></xsl:if>
-        \framebox{</xsl:if>
-      <xsl:call-template name="buildincludegraphics"/>
-      <xsl:if test="@border-color">}</xsl:if>
-      <xsl:if test="@border-width">}</xsl:if>
-      <xsl:if test="not(@captionabove)"><xsl:apply-templates/></xsl:if>
+      <!-- xsl:if test="@captionabove"><xsl:apply-templates/></xsl:if -->
+      <xsl:apply-templates select="." mode="contents"/>
       <xsl:choose>
         <xsl:when test="@placement='full'">
   \end{centerfigure}\begin{figure}
@@ -77,11 +87,42 @@
       </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
-       <xsl:call-template name="buildincludegraphics"/>
+      <xsl:apply-templates select="." mode="contents"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 		  		  
 <xsl:template match="html:caption">\caption{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:imagecaption"><xsl:apply-templates/></xsl:template>
+
+<xsl:template name="getObjectWidth">
+  <xsl:param name="objNode"/>
+  <xsl:variable name="baseWidth">
+    <xsl:choose>
+      <xsl:when test="$objNode/@width"><xsl:value-of select="number($objNode/@width)"/></xsl:when>
+      <xsl:when test="$objNode/@naturalwidth"><xsl:value-of select="number($objNode/@naturalwidth)"/></xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="padding">
+    <xsl:choose>
+      <xsl:when test="$objNode/@padding"><xsl:value-of select="2*number($objNode/@padding)"/></xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="border">
+    <xsl:choose>
+      <xsl:when test="$objNode/@border-width"><xsl:value-of select="2*number($objNode/@border-width)"/></xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:value-of select="number($baseWidth) + number($padding) + number($border)" /><xsl:call-template name="unit"/>
+</xsl:template>
+
+<xsl:template name="getObjectHeight">
+  <xsl:param name="theNodes"/>
+  <xsl:param name="currHeight" select="0"/>
+  <xsl:param name="currPos" select="1"/>
+</xsl:template>
 
 </xsl:stylesheet>
