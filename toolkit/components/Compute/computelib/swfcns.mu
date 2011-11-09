@@ -953,6 +953,11 @@ begin
   linalg::expr2Matrix( l, vars );
 end_proc:
 
+SWPmatrix := proc(m,n,lis) 
+begin
+  matrix(m,n,lis);
+end_proc:
+
 // MuPAD doesn't yet have matrix2Expr
 tcimatrixtoequations := proc(A,v)
   local vars, c, nrows, r, S;
