@@ -853,8 +853,11 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
     // is '*', or if the outer level is strictly less than the inner level.
     return LevelCanContainLevel( strTagOuter, atomNSOuter, strTagInner, atomNSInner, _retval);
   }
+	// implementation of the rule that all unknown tags can go into a paragraph
+	if (classOuter.EqualsLiteral("paratag") && classInner.Length() == 0) foundit = PR_TRUE;
   // check to see if the class of inner is in the class of the outer
-	foundit = ContainsListForOuterIncludesInner( classOuter, classInner );
+	if (!foundit)
+		foundit = ContainsListForOuterIncludesInner( classOuter, classInner );
 	if (!foundit)
 		foundit = ContainsListForOuterIncludesInner( classOuter, strTagInner);
 	if (!foundit)
