@@ -258,7 +258,7 @@
   </menu>
   <menu id="goMenu" label="&gomenu.label;" accesskey="&gomenu.accesskey;">
     <menupopup id="goPopup">
-      <menuitem label="&gomenuPrevSection.label;" 
+      <!-- menuitem label="&gomenuPrevSection.label;" 
                 id="gomenuPrevSection" 
                 observes="cmd_prevSection" 
                 accesskey="&gomenuPrevSection.accesskey;"/>
@@ -270,7 +270,7 @@
                 id="gomenuLinks" 
                 observes="cmd_unimp" 
                 accesskey="&gomenuLinks.accesskey;"/>
-      <menuseparator id="goMenuSeparator1"/>
+      <menuseparator id="goMenuSeparator1"/ -->
       <menuitem label="&gomenuMarker.label;" 
                 id="gomenuMarker" 
                 observes="cmd_gotoMarker" 
