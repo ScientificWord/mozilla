@@ -13,7 +13,7 @@
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-
+#include ../editorkeys.inc
 
   <tab id="msiFrameTab" label="&Frametab.label;" oncommand="redrawDiagram();"/>
   <tab id="msiPlacementTab" label="&Placementtab.label;"/>
