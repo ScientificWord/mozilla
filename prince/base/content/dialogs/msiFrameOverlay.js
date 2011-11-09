@@ -125,15 +125,15 @@ function initFrameTab(dg, element, newElement)
   dg.marginInput          = {left:   document.getElementById("marginLeftInput"),
                              right: document.getElementById("marginRightInput"),
                              top:   document.getElementById("marginTopInput"),
-                             bottom:document.getElementById("marginBottomInput")};
+                             bottom: document.getElementById("marginBottomInput")};
   dg.borderInput          = {left:  document.getElementById("borderLeftInput"),
                              right: document.getElementById("borderRightInput"),
                              top:   document.getElementById("borderTopInput"),
-                             bottom:document.getElementById("borderBottomInput")};
+                             bottom: document.getElementById("borderBottomInput")};
   dg.paddingInput         = {left:  document.getElementById("paddingLeftInput"),
                              right: document.getElementById("paddingRightInput"),
                              top:   document.getElementById("paddingTopInput"),
-                             bottom:document.getElementById("paddingBottomInput")};
+                             bottom: document.getElementById("paddingBottomInput")};
   dg.colorWell            = document.getElementById("colorWell");
   dg.bgcolorWell          = document.getElementById("bgcolorWell");
   dg.textAlignment				= document.getElementById("textAlignment");
