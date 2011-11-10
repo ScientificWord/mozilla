@@ -12,15 +12,14 @@
 	<tagclasses>
 		<tagclass>
 			<tagclassname>hidden</tagclassname>
-      <classcontains>
-			  <contains>paratag</contains>
-			  <contains>structtag</contains>
-        <contains>listtag</contains>
-			  <contains>othertag</contains>
-        <contains>envtag</contains>
-      </classcontains>
 			<tags>
-				<tag nm="body"><description>Body</description></tag>
+				<tag nm="body"><description>Body</description>
+  			  <contains>paratag</contains>
+  			  <contains>structtag</contains>
+          <contains>listtag</contains>
+  			  <contains>othertag</contains>
+          <contains>envtag</contains>
+        </tag>
 				<tag nm="docbody"><description>DocBody</description></tag>
         <tag nm="img"><description>Image</description></tag>
 			</tags>
@@ -91,7 +90,8 @@
         <contains>a</contains>
         <contains>note</contains>
         <contains>notewrapper</contains>
-        <contains>msiframe</contains>
+        <contains>msiframe</contains>       
+        <contains>msibreak</contains>
       </classcontains>
 			<tags>
 				<tag id="defaultparagraph" nm="bodyText">
@@ -135,13 +135,6 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
 			  </tag>
-				<tag nm="longQuotation">
-					<description>Long quotation</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/>]]>
-          </initialcontentsforempty>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-				</tag>
 				<!--tag nm="title">
 					<nexttag>bodyText</nexttag>
 					<description>Title</description>
@@ -177,7 +170,6 @@
       <classcontains></classcontains>
 			<tags>
 				<tag nm="bulletlist" hidden="1">
-          <nexttag/>
           <description>Bullet list</description>
 					<nexttag>#text</nexttag>
           <htmllist>ul</htmllist>
@@ -186,8 +178,8 @@
 			    <contains>bulletListItem</contains>
         </tag>
 				<tag nm="numberedlist" hidden="1">
-          <description>Numbered list</description>
-					<nexttag/>
+          <description>Numbered list</description>					<nexttag/>
+					<nexttag>#text</nexttag>
           <htmllist>ol</htmllist>
           <initialcontents> <![CDATA[<cursor/><br/>]]></initialcontents>
           <discardemptyblock>true</discardemptyblock>
@@ -196,6 +188,7 @@
         </tag>
 				<tag nm="descriptionlist" hidden="1">
           <description>Description list</description>
+					<nexttag>#text</nexttag>
           <htmllist>dl</htmllist>
           <discardemptyblock>true</discardemptyblock>
 	  		  <inclusion>true</inclusion>
@@ -206,7 +199,7 @@
           <level>0</level>
           <description>Bibliography</description>
           <discardemptyblock>true</discardemptyblock>
-					<nexttag/>
+					<nexttag>#text</nexttag>
 	  		  <inclusion>true</inclusion>
 			    <contains>bibitem</contains>
         </tag>
@@ -363,6 +356,13 @@
       </classcontains>
 			<tags>
 				<tag nm="(remove environment)" id="clearenvironmenttag" ><description>Remove innermost environment tag</description></tag>
+				<tag nm="longQuotation">
+					<description>Long quotation</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/>]]>
+          </initialcontentsforempty>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+				</tag>
 				<tag nm="frontmatter">
           <contains>frontmtag</contains>
           <level>*</level>
@@ -857,10 +857,10 @@
 		<tagclass>
 			<tagclassname>othertag</tagclassname>
       <classcontains><contains>#text</contains></classcontains>
-      <tag nm="mi"><description>mi</description></tag>
-      <tag nm="mo"><description>mi</description></tag>
-      <tag nm="hspace"><description>hspace</description></tag>
 			<tags>
+        <tag nm="mi"><description>mi</description></tag>
+        <tag nm="mo"><description>mo</description></tag>
+        <tag nm="hspace"><description>hspace</description></tag>
 				<tag nm="object"><description>Object</description></tag>
         <tag nm="citation">
           <description>Citation</description>
@@ -905,6 +905,15 @@
           <contains>object</contains>
           <contains>notewrapper</contains>
         </tag>
+<!-- most math editing is done outside this framework, but a few math tags are needed here -->
+        <tag nm = "math">
+          <contains>mspace</contains>      
+          <contains>mstyle</contains>
+        </tag>
+        <tag nm="mrow">
+          <contains>mspace</contains>
+          <contains>mstyle</contains>
+        </tag>   
       </tags>
 		</tagclass>
 	</tagclasses>

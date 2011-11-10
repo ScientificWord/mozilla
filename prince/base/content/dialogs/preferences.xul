@@ -40,6 +40,9 @@
       <preference id="defaultGraphicsSizeUnits" 
                   name="swp.defaultGraphicsSizeUnits" 
                   type="string"/>
+      <preference id="defaultGraphicsPlacement" 
+                  name="swp.defaultGraphicsPlacement" 
+                  type="string"/>
       <preference id="saveintervalseconds" 
                   name="swp.saveintervalseconds" 
                   type="int"/>
@@ -55,6 +58,15 @@
       <preference id="millisecondsfortaps" 
                   name="fastcursor.millisecondsfortaps" 
                   type="int"/>
+      <preference id="GraphHSize" 
+                  name="swp.graph.HSize" 
+                  type="int"/>
+      <preference id="GraphVSize" 
+                  name="swp.graph.VSize" 
+                  type="int"/>
+      <preference id="GraphPlacement" 
+                  name="swp.graph.Placement" 
+                  type="string"/>
       <preference id="XTickCount"
                   name="swp.graph.XTickCount"
                   type= "string"/>
@@ -404,7 +416,7 @@
                 <radio id="display" label="&DefaultPlacementNewGraphicsDisplayed.label;" radioGroup="placementRadioGroup"/>
               </vbox>
               <vbox>
-                <radio id="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+                <radio id="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" oncommand="enableFloating();"/>
                 <vbox>
                   <checkbox id="placeForceHereCheck" label="placeForceHereCheck.label" observes="floatingPlacement"/>
                   <checkbox id="placeHereCheck" label="placeHereCheck.label" observes="floatingPlacement"/>
@@ -871,23 +883,31 @@
               <column flex="0"/>
             </columns>
             <rows>
-              <row><label value="&DefaultSizeNewPlotsWidth.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
-              <row><label value="&DefaultSizeNewPlotsHeight.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+              <row>
+                 <label value="&DefaultSizeNewPlotsWidth.label;"/> 
+                 <textbox type="number" style="width: 5em;" preference="GraphHSize"/>
+                 <label value="pixels"/>
+              </row>
+              <row>
+                 <label value="&DefaultSizeNewPlotsHeight.label;"/>
+                 <textbox type="number" style="width: 5em;" preference="GraphVSize"/>
+                 <label value="pixels"/>
+              </row>
             </rows>
           </grid>
         </groupbox>
         <groupbox>
           <caption label="&DefaultPlacementNewPlots.label;"/>
-          <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
+          <radiogroup id="plotPlacementRadioGroup" preference="GraphPlacement" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
-              <radio id="inline" label="&DefaultPlacementNewPlotsInline.label;" radioGroup="placementRadioGroup"/>
+              <radio id="inline" value="inline" label="&DefaultPlacementNewPlotsInline.label;" name="plotPlacementRadioGroup"/>
             </vbox>
             <vbox>
-              <radio id="display" label="&DefaultPlacementNewPlotsDisplayed.label;" radioGroup="placementRadioGroup"/>
+              <radio id="display" value="display" label="&DefaultPlacementNewPlotsDisplayed.label;" name="plotPlacementRadioGroup"/>
             </vbox>
             <vbox>
-              <radio id="float" label="&DefaultPlacementNewPlotsFloating.label;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+              <radio id="float" value="float" label="&DefaultPlacementNewPlotsFloating.label;" name="plotPlacementRadioGroup" oncommand="enableHere(this);"/>
               <vbox>
                 <checkbox id="placeForceHereCheck" label="&placeForceHereCheck.label;" observes="floatingPlacement"/>
                 <checkbox id="placeHereCheck" label="&placeHereCheck.label;" observes="floatingPlacement"/>

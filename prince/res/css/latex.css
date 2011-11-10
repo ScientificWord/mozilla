@@ -147,8 +147,10 @@ msirule {
   display: inline-block;
 }
 
-msibreak {
-/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msibreak"); */
+msibreak[type="customNewLine"]
+{
+	display: block;
+	width: 2px;
 }
 
 msibreak[type="customNewLine"]:after {
@@ -157,31 +159,12 @@ msibreak[type="customNewLine"]:after {
   -moz-user-select: -moz-none;
 }
 
-msibreak[type="customNewLine"] custNL {
-	display: inline-block;
-	width: 1px;
-}
-
 *[showinvis="true"] msibreak {
-	width: 3px;
-	border-right: 1px solid green;
-	border-bottom: 1px solid green;
+	width: 2px;
 }
 
 *[showinvis="true"] msibreak[type="customNewLine"] {
-  width:0px;
-  border-right: none;
-  border-bottom: none;
-}
-
-*[showinvis="true"] msibreak[type="customNewLine"] custNL {
-	width: 3px;
-	border-right: 1px solid green;
-	border-bottom: 1px solid green;
-}
-
-mml|math msibreak {
-/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#mathmsibreak"); */
+	background-color: green;
 }
 
 msibreak[type="newPage"]:after {
