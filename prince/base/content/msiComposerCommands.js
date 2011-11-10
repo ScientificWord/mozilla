@@ -5847,23 +5847,24 @@ function msiInsertBreaks(dialogData, editorElement)
 //    newLine:                "&#x21b5;"
 //  };
 
-  var contentNode;              
+            
   var contentStr;
+	editor.beginTransaction();
+  var node = editor.document.createElement('msibreak',true);
+  editor.insertElementAtSelection(node,true);
   switch(dialogData.breakType) {
     case "lineBreak":
     case "newLine": 
-      contentNode=editor.document.createElement('br',true);
+      editor.createNode('br',node,0);
       break;
     case "newPage":
     case "pageBreak":
-      contentNode = editor.document.createElement('newPageRule');
+      editor.createNode('newPageRule',node,0);
       break;
     default:
       contentStr = msiSpaceUtils.getBreakCharContent(dialogData.breakType);
       break;
   }
-  var node = editor.document.createElement('msibreak',true);
-  var innerNode;
   //  var breakStr = "<xhtml:msibreak xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
   if (dialogData.breakType == "customNewLine")
   {
@@ -5871,9 +5872,7 @@ function msiInsertBreaks(dialogData, editorElement)
     var dimStr=String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
     node.setAttribute('dim', dimStr);
     var vAlignStr = String(-(dialogData.customBreakData.sizeData.size)) + dialogData.customBreakData.sizeData.units;
-    innerNode = editor.document.createElement('custNL',true);   
-    innerNode.setAttribute('style','vertical-align: '+vAlignStr+'; height: '+ dimStr);
-    editor.insertNode(innerNode,node,0);
+    node.setAttribute('style','vertical-align: '+vAlignStr+'; height: '+ dimStr);
     if (!contentStr)                             
       contentStr = "";
     node.textContent = contentStr;
@@ -5887,11 +5886,7 @@ function msiInsertBreaks(dialogData, editorElement)
     node.setAttribute('invisDisplay',invisStr);
   if (contentStr)
     node.textContent = contentStr;
-  editor.insertElementAtSelection(node,true);
-  if (contentNode)
-    editor.insertNode(contentNode,node,0);
-  if (innerNode)
-    editor.insertNode(innerNode,node,0);
+  editor.endTransaction();
 }
 
 function msiReviseBreaks(reviseData, dialogData, editorElement)
