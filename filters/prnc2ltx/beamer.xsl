@@ -49,19 +49,19 @@
 </xsl:template>
 
 <xsl:template match="html:stepnumberedListItem">
-\item <xsl:apply-templates/>
+\item {<xsl:apply-templates/>}
 </xsl:template>
 
 <xsl:template match="html:stepbulletListItem">
-\item <xsl:apply-templates/>
+\item {<xsl:apply-templates/>}
 </xsl:template>
 
 <xsl:template match="html:alertstepnumberedListItem">
-\item <xsl:apply-templates/>
+\item {<xsl:apply-templates/>}
 </xsl:template>
 
 <xsl:template match="html:alertstepbulletListItem">
-\item <xsl:apply-templates/>
+\item {<xsl:apply-templates/>}
 </xsl:template>
 
 
