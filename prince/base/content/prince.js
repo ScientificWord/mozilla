@@ -445,7 +445,7 @@ function documentAsTeXFile( document, outTeXdir, compileInfo )
     isDefaultLocation = true;
 		outTeXdir = workingDir.clone();
     outTeXdir.append("tex");
-    if (!outTeXdir.exists()) outTeX.create(1, 0755);
+    if (!outTeXdir.exists()) outTeXdir.create(1, 0755);
     outTeXfile = outTeXdir;
     outTeXfile.append(bareleaf.replace(/\.xhtml$/,"") + ".tex");
   }

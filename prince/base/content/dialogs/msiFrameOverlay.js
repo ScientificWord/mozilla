@@ -728,13 +728,8 @@ function hexcolor(rgbcolor)
 {
 	var regexp = /\s*rgb\s*\(\s*(\d+)[^\d]*(\d+)[^\d]*(\d+)/ ;
 	var arr = regexp.exec(rgbcolor);
-  if (!arr || (arr.length < 4))
-  {
-    var retStr = msiHTMLNamedColors.colorStringToHexRGBString(rgbcolor);
-    if (!retStr || !retStr.length)
-      retStr = rgbcolor;
-    return retStr;
-  }
+  if (!arr || (arr.length < 4)) // color was given a 'black' or 'blue'
+	  return textColorToHex(rgbcolor);
 
 	var r = parseFloat(arr[1]).toString(16);
 	if (r.length<2) r = "0"+r;
@@ -743,6 +738,40 @@ function hexcolor(rgbcolor)
 	var b = parseFloat(arr[3]).toString(16);
 	if (b.length<2) b = "0"+b;
 	return "#"+ r + g + b;
+}
+
+function textColorToHex(colorname)
+{
+	var name = TrimString(colorname).toLowerCase();
+  var retStr = msiHTMLNamedColors.colorStringToHexRGBString(name);
+  if (!retStr || !retStr.length)
+    retStr = "#ffffff";
+  return retStr;
+
+//RWA - removed this switch, as the functionality is already available as above. Revised that list to contain (and agree with) this one, however.
+//	switch (name)
+//	{
+//		case 'red': 		return "#ff0000";
+//		case 'green': 	return "#00ff00";
+//		case 'blue': 		return "#0000ff";
+//		case 'cyan': 		return "#00ffff";
+//		case 'magenta': return "#ff00ff";
+//		case 'yellow': 	return "#ffff00";
+//		case 'black': 	return "#000000";
+//		case 'gray': 		return "#808080";
+//		case 'white': 	return "#ffffff";
+//		case 'darkgray': return "#404040";
+//		case 'lightgray': return "#c0c0c0";
+//		case 'brown': 	return "#c08040";
+//		case 'lime': 		return "#c0ff00";
+//		case 'olive': 	return "#808000";
+//		case 'orange': 	return "#ff8000";
+//		case 'pink': 		return "#ffc0c0";
+//		case 'purple': 	return "#c00040";
+//		case 'teal': 		return "#008080";
+//		case 'violet':  return "#800080";
+//		default: return "#ffffff";
+//	}
 }
 
 function setTextValueAttributes()
@@ -797,7 +826,7 @@ function setFrameAttributes(frameNode, contentsNode)
     msiEditorEnsureElementAttribute(contentsNode, "rotation", rot, editor);
 	}
   //frameNode.setAttribute("req", "ragged2e");
-  window.msiRequirePackage(gFrameTab.editorElement, "ragged2e", null);
+  msiRequirePackage(gFrameTab.editorElement, "ragged2e", null);
   if (gFrameModeImage) {
     var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
     msiEditorEnsureElementAttribute(frameNode, "sidemargin", sidemargin, editor);

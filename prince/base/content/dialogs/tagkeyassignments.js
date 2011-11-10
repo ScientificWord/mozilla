@@ -58,7 +58,7 @@ function handleChar(event, object)
     }
     else
     {
-      if (!reserved.value) dcoument.getElementById("keyresult").selectedIndex = 1;
+      if (!reserved.value) document.getElementById("keyresult").selectedIndex = 1;
       document.getElementById("alltaglist").disabled=true;
     }
   }  
