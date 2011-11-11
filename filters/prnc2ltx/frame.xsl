@@ -48,8 +48,12 @@
         </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>}</xsl:when>
-  <xsl:when test="@pos='float' and ((@placement='full') or ((@placeLocation !='h') and (@placeLocation !='H')))">\begin{figure}[<xsl:value-of select="@placeLocation"></xsl:value-of>]<xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\begin{center}</xsl:if></xsl:when>
-  <xsl:when test="@pos='display'">\begin{center}</xsl:when></xsl:choose>
+  <xsl:when test="@pos='float' and ((@placement='full') or (@frametype='image') or ((@placeLocation !='h') and (@placeLocation !='H')))">\begin{figure}[<xsl:value-of select="@placeLocation"></xsl:value-of>]<xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\begin{center}</xsl:if></xsl:when>
+  <xsl:when test="@pos='display'">\begin{center}</xsl:when>
+  <xsl:when test="(@pos='inline') and (@frametype='image')">
+    {\parbox[t]{<xsl:value-of select="$width"/>}{ %
+\begin{center}</xsl:when>
+  </xsl:choose>
 <xsl:choose>
   <xsl:when test="@frametype='image'">
     <xsl:if test="(./html:imagecaption) and (@captionloc='above')">
@@ -57,14 +61,16 @@
       <xsl:apply-templates select="html:imagecaption[1]"/>
       <xsl:choose>
         <xsl:when test="@pos='float'">}</xsl:when>
-        <xsl:otherwise>\\</xsl:otherwise>
+        <xsl:otherwise>\\
+</xsl:otherwise>
       </xsl:choose>
     </xsl:if>
     <xsl:apply-templates mode="contents" select="html:object[1]"/>
     <xsl:if test="@captionloc='below'">
       <xsl:choose>
         <xsl:when test="@pos='float'">\caption{</xsl:when>
-        <xsl:otherwise>\\</xsl:otherwise>
+        <xsl:otherwise>\\
+</xsl:otherwise>
       </xsl:choose>
       <xsl:apply-templates select="html:imagecaption[1]"/>
       <xsl:if test="@pos='float'">}</xsl:if>
@@ -101,8 +107,9 @@
 </xsl:choose>
 <xsl:if test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\end{wrapfigure}</xsl:if
 ><xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\end{center}</xsl:if
-><xsl:if test="@pos='float' and (@placement='full' or (@placeLocation!='h' and @placeLocation!='H'))">\end{figure}</xsl:if
-><xsl:if test="@pos='display'">\end{center}</xsl:if>
+><xsl:if test="@pos='float' and (@frametype='image' or @placement='full' or (@placeLocation!='h' and @placeLocation!='H'))">\end{figure}</xsl:if
+><xsl:if test="@pos='display'">\end{center}</xsl:if
+><xsl:if test="@pos='inline' and @frametype='image'">\end{center}}</xsl:if>
 <xsl:if test="@topmargin or @sidemargin or @border or @padding">}</xsl:if>				
 </xsl:template>
 		  
