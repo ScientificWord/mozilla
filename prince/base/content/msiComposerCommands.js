@@ -1,4 +1,5 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 
 /* Implementations of nsIControllerCommand for composer commands */
@@ -5684,6 +5685,8 @@ var msiReviseRulesCommand =
 
 function msiInsertRules(dialogData, editorElement)
 {
+	var unitHandler = new UnitHandler();
+	unitHandler.initCurrentUnit(dialogData.height.units);
   var editor = msiGetEditor(editorElement);
   var node = editor.document.createElement('msirule');
   var styleStr = "";
@@ -5691,11 +5694,11 @@ function msiInsertRules(dialogData, editorElement)
   var widthStr = String(dialogData.width.size) + dialogData.width.units;
   var heightStr = String(dialogData.height.size) + dialogData.height.units;
   node.setAttribute('lift', liftStr);
-  styleStr += "vertical-align: " + liftStr;
+  styleStr += "vertical-align: " + unitHandler.getValueAs(dialogData.lift.size,"px")+"px";
   node.setAttribute("width", widthStr);
-  styleStr += "; width: " + widthStr;
+  styleStr += "; width: " + Math.max(1,unitHandler.getValueAs(dialogData.width.size,"px"))+"px";
   node.setAttribute("height", heightStr);
-  styleStr += "; height: " + heightStr;
+  styleStr += "; height: " + Math.max(1,unitHandler.getValueAs(dialogData.height.size,"px"))+"px";
   node.setAttribute("color", dialogData.ruleColor);
   styleStr += "; background-color: " + dialogData.ruleColor + ";";
   node.setAttribute('style',styleStr);
