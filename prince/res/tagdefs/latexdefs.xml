@@ -92,6 +92,7 @@
         <contains>notewrapper</contains>
         <contains>msiframe</contains>       
         <contains>msibreak</contains>
+        <contains>texb</contains>
       </classcontains>
 			<tags>
 				<tag id="defaultparagraph" nm="bodyText">
