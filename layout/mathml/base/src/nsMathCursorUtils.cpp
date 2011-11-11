@@ -22,8 +22,8 @@ PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
 
 PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
-  nsIFrame * pChild;
   nsIFrame * pParent;
+  nsIFrame * pChild;
   PRBool df = PR_FALSE;
   nsCOMPtr<nsIContent> pContent;
   pParent = pFrame->GetParent();
@@ -61,8 +61,17 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
     }
     else
     {
-      *aOutFrame = GetFirstTextFramePastFrame(pFrame);
-      *aOutOffset = count;
+//      *aOutFrame = GetFirstTextFramePastFrame(pFrame);
+//      *aOutOffset = count;
+	    pParent = pFrame->GetParent();
+	    *aOutFrame = pParent; 
+			(*aOutOffset) = 1;
+			pChild = pParent->GetFirstChild(nsnull);
+			while (pChild && pChild != pFrame)
+			{
+				pChild = pChild->GetNextSibling();
+				(*aOutOffset)++;
+			}
     } 
 //    (*paPos)->mMath = PR_TRUE;
   }
