@@ -819,12 +819,17 @@ function PreviewImageLoaded()
     dump("  Existing actual size is [" + gActualWidth + "," + gActualHeight + "]\n");
     dump("  Current contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
     // Image loading has completed -- we can get actual width
+    var bReset = false;
     if (gDialog.PreviewImage.offsetWidth && (gActualWidth != gDialog.PreviewImage.offsetWidth))
     {
       gConstrainWidth = gActualWidth  = gDialog.PreviewImage.offsetWidth;
+      bReset = true;
     }
     if (gDialog.PreviewImage.offsetHeight && (gActualHeight != gDialog.PreviewImage.offsetHeight))
+    {
       gConstrainHeight = gActualHeight = gDialog.PreviewImage.offsetHeight;
+      bReset = true;
+    }
 
     if (gActualWidth && gActualHeight)
     {
@@ -851,13 +856,13 @@ function PreviewImageLoaded()
       gDialog.ImageHolder.collapsed = false;
       setContentSize(gActualWidth, gActualHeight);
 
+      dump("Before setActualSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
+      if (frameTabDlg.actual.selected || bReset)
+        setActualSize();
+
       SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(frameTabDlg.widthInput.value,"px")), 
                       Math.round(frameUnitHandler.getValueAs(frameTabDlg.heightInput.value,"px")) );
     }
-
-    dump("Before setActualSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
-    if (frameTabDlg.actual.selected)
-      setActualSize();
 
     // if the image is svg, we need to modify it to make it resizable.
     if (isSVGFile)
