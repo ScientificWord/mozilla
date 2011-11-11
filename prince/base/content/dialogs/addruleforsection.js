@@ -80,12 +80,14 @@ function onAccept()
 {
   var n = document.getElementById("ruleHeight").value;
   // should check for validity.
+  var nInPixels = unitHandler.getValueOf(n, "px");
+  if (nInPixels < 1 && n > 0) nInPixels = 1;
   var element = ruleElement;
   while (element && element.localName != "deck") element = element.parentNode;
     // element is now the deck.
     // should check for validity.
   if (n>0) {
-    var style= "background-color:"+color +"; height:"+n+ruleUnits;
+    var style= "background-color:"+color +"; height:"+ nInPixels + "px; ";
     var tlwidth = document.getElementById("rulelength").value;
     switch (tlwidth) {
       case "other": 
