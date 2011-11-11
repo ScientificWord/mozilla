@@ -905,6 +905,19 @@
           <contains>object</contains>
           <contains>notewrapper</contains>
         </tag>
+			  <tag nm="imagecaption">
+          <description>Image caption</description>
+          <description>Frame</description>
+	  		  <inclusion>true</inclusion>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br/></bodyText>
+              ]]>
+          </initialcontents>
+					<nexttag>bodyText</nexttag>
+          <contains>paratag</contains>
+        </tag>
 <!-- most math editing is done outside this framework, but a few math tags are needed here -->
         <tag nm = "math">
           <contains>mspace</contains>      

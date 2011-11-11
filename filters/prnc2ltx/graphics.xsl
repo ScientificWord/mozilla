@@ -13,31 +13,54 @@
 </xsl:template>
   
 <xsl:template name="buildincludegraphics">
+  <xsl:variable name="theUnit"><xsl:call-template name="unit"/></xsl:variable>
+  <xsl:variable name="imageWidth">
+    <xsl:call-template name="getImageWidth">
+      <xsl:with-param name="objNode" select="."/>
+    </xsl:call-template>
+  </xsl:variable>
   \includegraphics[<xsl:if test="@rot">angle=<xsl:value-of select="@rot"/>,</xsl:if>
-  <xsl:if test="@width"> width=<xsl:value-of select="@width"/><xsl:call-template name="unit"/>,</xsl:if>
-  <xsl:if test="@height"> totalheight=<xsl:value-of select="@height"/><xsl:call-template name="unit"/>,</xsl:if>
-  ]{<xsl:choose>
-    <xsl:when test="starts-with(@data,'graphics/')">
-      <xsl:value-of select="substring-after(@data,'graphics/')"/>}
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:value-of select="@data"/>}
-    </xsl:otherwise>
-  </xsl:choose>  
+  <xsl:if test="number($imageWidth) != 0"> width=<xsl:value-of select="$imageWidth"/><xsl:value-of select="$theUnit"/>,</xsl:if>
+  <xsl:if test="@imageHeight and (number(@imageHeight) != 0)"> totalheight=<xsl:value-of select="@imageHeight"/><xsl:value-of select="$theUnit"/>,</xsl:if>
+  <xsl:if test="@naturalWidth and @naturalHeight and (number(@naturalWidth) != 0) and (number(@naturalHeight) != 0)"> natwidth=<xsl:value-of select="@naturalWidth"/><xsl:value-of select="$theUnit"/>, natheight=<xsl:value-of select="@naturalHeight"/><xsl:value-of select="$theUnit"/></xsl:if
+>]{<xsl:call-template name="getSourceName"/>}
 </xsl:template>    
 
+<xsl:template name="getSourceName">
+  <xsl:variable name="rawName">
+    <xsl:choose>
+      <xsl:when test="@typesetSource"><xsl:value-of select="@typesetSource"/></xsl:when>
+      <xsl:when test="@data"><xsl:value-of select="@data"/></xsl:when>
+      <xsl:when test="@src"><xsl:value-of select="@src"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="''"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="modifiedName">
+    <xsl:choose>
+      <xsl:when test="starts-with($rawName,'../')"><xsl:value-of select="substring-after($rawName, '../')"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="$rawName"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="starts-with($modifiedName, 'graphics/')"><xsl:value-of select="substring-after($modifiedName, 'graphics/')"/></xsl:when>
+    <xsl:when test="starts-with($modifiedName, 'tcache/')"><xsl:value-of select="substring-after($modifiedName, 'tcache/')"/></xsl:when>
+    <xsl:when test="starts-with($modifiedName, 'gcache/')"><xsl:value-of select="substring-after($modifiedName, 'gcache/')"/></xsl:when>
+    <xsl:otherwise><xsl:value-of select="$modifiedName"/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template match="html:object" mode="contents">
+  <xsl:variable name="theUnit"><xsl:call-template name="unit"/></xsl:variable>
   <xsl:choose>
     <xsl:when test="@pos='float'">
       <xsl:if test="@border-width">
-        \fboxrule=<xsl:value-of select="@border-width"/><xsl:call-template name="unit"/>
-        <xsl:if test="@padding">\fboxsep=<xsl:value-of select="@padding"/><xsl:call-template name="unit"/></xsl:if>
+        \setlength\fboxrule{<xsl:value-of select="@border-width"/><xsl:value-of select="$theUnit"/>}
+        <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$theUnit"/>}</xsl:if>
         <xsl:if test="@border-color">{\color{    
           <xsl:choose>
-            <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
+            <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
             <xsl:otherwise>black} <!--<xsl:value-of select="./@border-color"/>} --></xsl:otherwise>
-          </xsl:choose></xsl:if>
+          </xsl:choose>}</xsl:if>
         \framebox{</xsl:if>
       <xsl:call-template name="buildincludegraphics"/>
       <xsl:if test="@border-color">}</xsl:if>
@@ -95,14 +118,30 @@
 <xsl:template match="html:caption">\caption{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:imagecaption"><xsl:apply-templates/></xsl:template>
 
+<xsl:template name="getImageWidth">
+  <xsl:param name="objNode"/>
+  <xsl:param name="noZero" select="false"/>
+  <xsl:choose>
+    <xsl:when test="$objNode/@imageWidth and (number($objNode/@imageWidth) != 0)"><xsl:value-of select="number($objNode/@imageWidth)"/></xsl:when>
+    <xsl:when test="$objNode/@imageHeight and (number($objNode/@imageHeight) != 0) and $objNode/@naturalHeight and (number($objNode/@naturalHeight) != 0) and $objNode/@naturalWidth">
+      <xsl:value-of select="(number($objNode/@naturalWidth) * number($objNode/@imageHeight)) div number($objNode/@naturalHeight)"/>
+    </xsl:when>
+    <xsl:when test="$objNode/@width and (number($objNode/@width) != 0)"><xsl:value-of select="number($objNode/@width)"/></xsl:when>
+    <xsl:when test="$objNode/@height and (number($objNode/@height) != 0) and $objNode/@naturalHeight and (number($objNode/@naturalHeight) != 0) and $objNode/@naturalWidth">
+      <xsl:value-of select="(number($objNode/@naturalWidth) * number($objNode/@height)) div number($objNode/@naturalHeight)"/>
+    </xsl:when>
+    <xsl:when test="$noZero and $objNode/@naturalWidth"><xsl:value-of select="number($objNode/@naturalWidth)"/></xsl:when>
+    <xsl:otherwise>0</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="getObjectWidth">
   <xsl:param name="objNode"/>
   <xsl:variable name="baseWidth">
-    <xsl:choose>
-      <xsl:when test="$objNode/@width"><xsl:value-of select="number($objNode/@width)"/></xsl:when>
-      <xsl:when test="$objNode/@naturalwidth"><xsl:value-of select="number($objNode/@naturalwidth)"/></xsl:when>
-      <xsl:otherwise>0</xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="getImageWidth">
+      <xsl:with-param name="objNode" select="$objNode"/>
+      <xsl:with-param name="noZero" select="true"/>
+    </xsl:call-template>
   </xsl:variable>
   <xsl:variable name="padding">
     <xsl:choose>
@@ -117,12 +156,6 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:value-of select="number($baseWidth) + number($padding) + number($border)" /><xsl:call-template name="unit"/>
-</xsl:template>
-
-<xsl:template name="getObjectHeight">
-  <xsl:param name="theNodes"/>
-  <xsl:param name="currHeight" select="0"/>
-  <xsl:param name="currPos" select="1"/>
 </xsl:template>
 
 </xsl:stylesheet>
