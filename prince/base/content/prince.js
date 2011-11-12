@@ -609,7 +609,8 @@ function setBibTeXRunArgs(passData)
   var bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
   var bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
   var bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
-  var bibtexData = ["-d", passData.args[1] ];
+
+  var bibtexData = ["-d", passData.args[0] ];
   var dbaseDirStr, styleDirStr;
   if (bibTeXExePath && bibTeXExePath.path.length)
   {
@@ -638,7 +639,7 @@ function setBibTeXRunArgs(passData)
 #endif
     bibtexData.push(styleDirStr);
   }
-  bibtexData.push(passData.args[3]);  //put the target file leafname last in the args list
+  bibtexData.push(passData.args[2]);  //put the target file leafname last in the args list
   return bibtexData;
 }
 
