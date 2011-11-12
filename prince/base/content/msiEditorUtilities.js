@@ -6844,6 +6844,7 @@ var msiBaseMathNameList =
       }
     }
   }
+
 };
 
 function msiMathNameList()
@@ -6927,6 +6928,15 @@ function msiMathNameList()
   {
     return true;  //need to settle how this should be passed in first - is it guaranteed to be a NodeList?
   };
+  this.setUpTextBoxControl = function(theControl)
+  {
+//    theControl.markerList = this;
+    var currStr = "";
+    if (theControl.hasAttribute("onfocus"))
+      currStr = theControl.getAttribute("onfocus");
+    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();" + currStr);
+//    theControl.setAttribute("autocompletesearchparam", this.getIndexString());
+  }
 }
 
 var msiBaseMathUnitsList = 
@@ -7918,7 +7928,10 @@ var msiMarkerListPrototype =
   setUpTextBoxControl : function(theControl)
   {
     theControl.markerList = this;
-    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();");
+    var currStr = "";
+    if (theControl.hasAttribute("onfocus"))
+      currStr = theControl.getAttribute("onfocus");
+    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();" + currStr);
     theControl.setAttribute("autocompletesearchparam", this.getIndexString());
   }
 
