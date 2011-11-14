@@ -17,6 +17,8 @@ var widthAtt = "width";
 var heightAtt = "height";
 var metrics = {margin:{}, border: {}, padding: {}};
 var role;
+var gConstrainWidth = 0;
+var gConstrainHeight = 0;
 
 function setHasNaturalSize(istrue)
 // images frequently have a natural size
@@ -84,7 +86,7 @@ function updateMetrics()
 	}
 }
 
-function initFrameTab(dg, element, newElement)
+function initFrameTab(dg, element, contentsElement, newElement)
 {
   var i;
   var len;
@@ -93,6 +95,11 @@ function initFrameTab(dg, element, newElement)
   var values;
   var width = 0;
   Dg = dg;
+  if (gFrameModeImage)
+  {
+    widthAtt = "imageWidth";
+    heightAtt = "imageHeight";
+  }
   frameUnitHandler = new UnitHandler();
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
   gFrameTab={};
@@ -100,7 +107,11 @@ function initFrameTab(dg, element, newElement)
   scaledWidthDefault = 50; 
   scaledHeightDefault = 60;
   scaledHeight = scaledHeightDefault;
+  if (!gConstrainHeight)
+    gConstrainHeight = scaledHeightDefault;
   scaledWidth = scaledWidthDefault; 
+  if (!gConstrainWidth)
+    gConstrainWidth = scaledWidthDefault;
   position = 0;  // left = 1, right = 2, neither = 0
   //var unit;
 
@@ -118,6 +129,7 @@ function initFrameTab(dg, element, newElement)
   dg.autoWidthCheck       = document.getElementById("autoWidth");
   dg.frameUnitMenulist    = document.getElementById("frameUnitMenulist");
   dg.unitList             = document.getElementById("unitList");
+  dg.sizeRadioGroup       = document.getElementById("sizeRadio");
   dg.actual               = document.getElementById( "actual" );
   dg.iconic               = document.getElementById( "iconic" );
   dg.custom               = document.getElementById( "custom" );
@@ -125,15 +137,15 @@ function initFrameTab(dg, element, newElement)
   dg.marginInput          = {left:   document.getElementById("marginLeftInput"),
                              right: document.getElementById("marginRightInput"),
                              top:   document.getElementById("marginTopInput"),
-                             bottom:document.getElementById("marginBottomInput")};
+                             bottom: document.getElementById("marginBottomInput")};
   dg.borderInput          = {left:  document.getElementById("borderLeftInput"),
                              right: document.getElementById("borderRightInput"),
                              top:   document.getElementById("borderTopInput"),
-                             bottom:document.getElementById("borderBottomInput")};
+                             bottom: document.getElementById("borderBottomInput")};
   dg.paddingInput         = {left:  document.getElementById("paddingLeftInput"),
                              right: document.getElementById("paddingRightInput"),
                              top:   document.getElementById("paddingTopInput"),
-                             bottom:document.getElementById("paddingBottomInput")};
+                             bottom: document.getElementById("paddingBottomInput")};
   dg.colorWell            = document.getElementById("colorWell");
   dg.bgcolorWell          = document.getElementById("bgcolorWell");
   dg.textAlignment				= document.getElementById("textAlignment");
@@ -163,22 +175,35 @@ function initFrameTab(dg, element, newElement)
 // no pre-existing frame object, the dg is set to go.
   if (!newElement)
   {   // we need to initialize the dg from the frame element
-    frameUnitHandler.setCurrentUnit(element.getAttribute("units"));
-    if (element.hasAttribute(widthAtt)) width = element.getAttribute(widthAtt);
-    if (Number(width) > 0)
+    if (!contentsElement)
+      contentsElement = element;
+
+    frameUnitHandler.setCurrentUnit(contentsElement.getAttribute("units"));
+    
+    var width = 0;
+    var widthStr = "";
+    if (contentsElement.hasAttribute(widthAtt))
+      width = frameUnitHandler.getValueFromString( contentsElement.getAttribute(widthAtt) );
+    else
     {
-      dg.widthInput.value = width;
-      dg.autoWidthCheck.checked = false;
+      widthStr = msiGetHTMLOrCSSStyleValue(dg.editorElement, contentsElement, widthAtt, "width");
+      if (widthStr)
+        width = frameUnitHandler.getValueFromString( widthStr, "px" );
     }
-    else dg.autoWidthCheck.checked = true;
     var height = 0;
-    if (element.hasAttribute(heightAtt)) height = element.getAttribute(heightAtt);
-    if (height > 0)
+    var heightStr = "";
+    if (contentsElement.hasAttribute(heightAtt))
+      height = frameUnitHandler.getValueFromString( contentsElement.getAttribute(heightAtt) );
+    else
     {
-      dg.heightInput.value = height;
-      dg.autoHeightCheck.checked = false;
+      heightStr = msiGetHTMLOrCSSStyleValue(dg.editorElement, contentsElement, heightAtt, "height");
+      if (heightStr)
+        height = frameUnitHandler.getValueFromString( heightStr, "px" );
     }
-    else dg.autoHeightCheck.checked = true;
+    if (!gConstrainWidth || !gConstrainHeight)
+      setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
+    setWidthAndHeight(width, height, null);
+
     for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
 		{
       if (dg.frameUnitMenulist.getItemAtIndex(i).value === frameUnitHandler.currentUnit)
@@ -207,10 +232,10 @@ function initFrameTab(dg, element, newElement)
 			var topmargin = element.getAttribute("topmargin");
 			if (topmargin == null) topmargin = 0;
 			dg.marginInput.top.value = topmargin;
-			var borderwidth = element.getAttribute("border-width");
+			var borderwidth = contentsElement.getAttribute("border-width");
 			if (borderwidth == null) borderwidth = 0;
 			dg.borderInput.left.value = borderwidth;
-			var padding = element.getAttribute("padding");
+			var padding = contentsElement.getAttribute("padding");
 			if (padding == null) padding = 0;
 			dg.paddingInput.left.value = padding;
 		}  
@@ -222,13 +247,13 @@ function initFrameTab(dg, element, newElement)
 	    for (i = 0; i<4; i++)
 	      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
 	    values = [0,0,0,0];
-	    if (element.hasAttribute(borderAtt))
-	      { values = parseLengths(element.getAttribute(borderAtt));}
+	    if (contentsElement.hasAttribute(borderAtt))
+	      { values = parseLengths(contentsElement.getAttribute(borderAtt));}
 	    for (i = 0; i<4; i++)
 	      { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
 	    values = [0,0,0,0];
-	    if (element.hasAttribute(paddingAtt))
-	      { values = parseLengths(element.getAttribute(paddingAtt));}
+	    if (contentsElement.hasAttribute(paddingAtt))
+	      { values = parseLengths(contentsElement.getAttribute(paddingAtt));}
 	    for (i = 0; i<4; i++)
 	      { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
     }
@@ -260,6 +285,17 @@ function initFrameTab(dg, element, newElement)
     dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
 
     // TODO: color
+    var theColor;
+    if (contentsElement.hasAttribute("border-color"))
+    {
+      theColor = hexcolor(contentsElement.getAttribute("border-color"));
+      setColorInDialog("colorWell", theColor);
+    }
+    if (contentsElement.hasAttribute("background-color"))
+    {
+      theColor = hexcolor(contentsElement.getAttribute("background-color"));
+      setColorInDialog("bgcolorWell", theColor);
+    }
   }
   var placement = 0;
   var placementLetter = document.getElementById("herePlacementRadioGroup").value;
@@ -376,12 +412,16 @@ function getColorAndUpdate(id)
   if (colorObj.Cancel)
     return;
 
-  color = colorObj.TextColor;
+  setColorInDialog(id, colorObj.TextColor);
+}
+
+function setColorInDialog(id, color)
+{
   setColorWell(id, color); 
   if (id == "colorWell") 
-  	setStyleAttributeByID("frame","border-color",color);
-	else
-		setContentBGColor(color);
+	  setStyleAttributeByID("frame","border-color",color);
+  else
+	  setContentBGColor(color);
 }
 
 // come up with a four part attribute giving the four parts of the margin or padding or border, etc. using the same rules as CSS
@@ -447,7 +487,7 @@ function updateDiagram( attribute )
   var val = values.join("px ")+"px";
   if (attribute=="border")  // add border color and border width
   {
-    var bgcolor = gFrameTab.colorWell.getAttribute("style");
+    var bgcolor = Dg.colorWell.getAttribute("style");
     var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
     removeStyleAttributeFamilyOnNode(document.getElementById("frame"), "border");
     var style = document.getElementById("frame").getAttribute("style");
@@ -458,7 +498,7 @@ function updateDiagram( attribute )
   { 
 		setStyleAttributeByID("frame", attribute, val );
 	}
-  bgcolor = gFrameTab.bgcolorWell.getAttribute("style");
+  bgcolor = Dg.bgcolorWell.getAttribute("style");
   arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setContentBGColor(arr[1]);
   redrawDiagram();
@@ -508,17 +548,20 @@ function redrawDiagram()
   }  	
 }
 
-function setStyleAttributeOnNode( node, att, value)
+function setStyleAttributeOnNode( node, att, value, editor)
 {
   var style="";
-  removeStyleAttributeFamilyOnNode( node, att);
+  removeStyleAttributeFamilyOnNode( node, att, editor);
   if (node.hasAttribute("style")) style = node.getAttribute("style");
   style.replace("null","");
   style = style + " " + att +": " + value + "; ";
-  node.setAttribute("style",style);
+  if (editor)
+    msiEditorEnsureElementAttribute(node, "style", style, editor);
+  else
+    node.setAttribute("style",style);
 }
 
-function removeStyleAttributeFamilyOnNode( node, att)
+function removeStyleAttributeFamilyOnNode( node, att, editor)
 {
   var style="";
   if (node.hasAttribute("style")) style = node.getAttribute("style");
@@ -527,7 +570,10 @@ function removeStyleAttributeFamilyOnNode( node, att)
   if (re.test(style))
   {
     style = style.replace(re, "");
-    node.setAttribute("style",style);
+    if (editor)
+      msiEditorEnsureElementAttribute(node, "style", style, editor);
+    else
+      node.setAttribute("style",style);
   }
 }
 
@@ -613,13 +659,43 @@ function unitRound( size, unit )
   return Math.round(size*places)/places;
 }
 
+function setConstrainDimensions(width, height)
+{
+  gConstrainWidth = width;
+  gConstrainHeight = height;
+}
+
+function setWidthAndHeight(width, height, event)
+{
+  if (Number(width) > 0)
+  {
+    Dg.widthInput.value = width;
+    Dg.autoWidthCheck.checked = false;
+  }
+  else
+    Dg.autoWidthCheck.checked = true;
+  if (Number(height) > 0)
+  {
+    Dg.heightInput.value = height;
+    Dg.autoHeightCheck.checked = false;
+  }
+  else
+    Dg.autoHeightCheck.checked = true;
+  if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
+    constrainProportions( "frameWidthInput", "frameHeightInput", event );
+  else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
+    constrainProportions( "frameHeightInput", "frameWidthInput", event );
+}
+
 function setContentSize(width, height)  
 // width and height are the size of the image in pixels
 {
   scaledWidth = Math.round(scale*width);
   if (scaledWidth == 0) scaledWidth = 40;
+//  gConstrainWidth = scaledWidth;
   scaledHeight = Math.round(scale*height);
   if (scaledHeight == 0) scaledHeight = 60;
+//  gConstrainHeight = scaledHeight;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
   setStyleAttributeByID("content", "height", scaledHeight + "px");
   updateDiagram("margin");
@@ -652,6 +728,9 @@ function hexcolor(rgbcolor)
 {
 	var regexp = /\s*rgb\s*\(\s*(\d+)[^\d]*(\d+)[^\d]*(\d+)/ ;
 	var arr = regexp.exec(rgbcolor);
+  if (!arr || (arr.length < 4)) // color was given a 'black' or 'blue'
+	  return textColorToHex(rgbcolor);
+
 	var r = parseFloat(arr[1]).toString(16);
 	if (r.length<2) r = "0"+r;
 	var g = parseFloat(arr[2]).toString(16);
@@ -659,6 +738,40 @@ function hexcolor(rgbcolor)
 	var b = parseFloat(arr[3]).toString(16);
 	if (b.length<2) b = "0"+b;
 	return "#"+ r + g + b;
+}
+
+function textColorToHex(colorname)
+{
+	var name = TrimString(colorname).toLowerCase();
+  var retStr = msiHTMLNamedColors.colorStringToHexRGBString(name);
+  if (!retStr || !retStr.length)
+    retStr = "#ffffff";
+  return retStr;
+
+//RWA - removed this switch, as the functionality is already available as above. Revised that list to contain (and agree with) this one, however.
+//	switch (name)
+//	{
+//		case 'red': 		return "#ff0000";
+//		case 'green': 	return "#00ff00";
+//		case 'blue': 		return "#0000ff";
+//		case 'cyan': 		return "#00ffff";
+//		case 'magenta': return "#ff00ff";
+//		case 'yellow': 	return "#ffff00";
+//		case 'black': 	return "#000000";
+//		case 'gray': 		return "#808080";
+//		case 'white': 	return "#ffffff";
+//		case 'darkgray': return "#404040";
+//		case 'lightgray': return "#c0c0c0";
+//		case 'brown': 	return "#c08040";
+//		case 'lime': 		return "#c0ff00";
+//		case 'olive': 	return "#808000";
+//		case 'orange': 	return "#ff8000";
+//		case 'pink': 		return "#ffc0c0";
+//		case 'purple': 	return "#c00040";
+//		case 'teal': 		return "#008080";
+//		case 'violet':  return "#800080";
+//		default: return "#ffffff";
+//	}
 }
 
 function setTextValueAttributes()
@@ -683,9 +796,10 @@ function setTextValueAttributes()
 	}
 }
 
-function setFrameAttributes(frameNode)
+function setFrameAttributes(frameNode, contentsNode)
 {
   var rot;
+  var editor = msiGetEditor(Dg.editorElement);
 	setTextValueAttributes();
 	metrics.unit = frameUnitHandler.currentUnit;
   if (metrics.unit == "px") // switch to pts
@@ -694,26 +808,32 @@ function setFrameAttributes(frameNode)
     setNewUnit(el);
     metrics.unit = "pt";
   }
-  frameNode.setAttribute("units",metrics.unit);
-  frameNode.setAttribute("msi_resize","true");
+  msiEditorEnsureElementAttribute(frameNode, "units",metrics.unit, editor);
+  if (contentsNode)
+    msiEditorEnsureElementAttribute(contentsNode, "units",metrics.unit, editor);
+  
+  if (!contentsNode)
+    contentsNode = frameNode;
+
+  msiEditorEnsureElementAttribute(contentsNode, "msi_resize","true", editor);
   rot = gFrameTab.rotationList.value;
 	if (rot ==="rot0")
 	{
-		frameNode.removeAttribute("rotation");
+    msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);  //this will remove the "rotation" attribute
 	}
 	else
 	{
-		frameNode.setAttribute("rotation", rot);
+    msiEditorEnsureElementAttribute(contentsNode, "rotation", rot, editor);
 	}
   //frameNode.setAttribute("req", "ragged2e");
-  theWindow.msiRequirePackage(frameNode, "ragged2e", null);
+  msiRequirePackage(gFrameTab.editorElement, "ragged2e", null);
   if (gFrameModeImage) {
     var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
-    frameNode.setAttribute("sidemargin", sidemargin);
+    msiEditorEnsureElementAttribute(frameNode, "sidemargin", sidemargin, editor);
     var topmargin = getSingleMeasurement("margin", "Top", metrics.unit, false);
-    frameNode.setAttribute("topmargin", topmargin);
+    msiEditorEnsureElementAttribute(frameNode, "topmargin", topmargin, editor);
     var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
-		frameNode.setAttribute("overhang", overhang);
+    msiEditorEnsureElementAttribute(frameNode, "overhang", overhang, editor);
 		var marginArray = [];
 		marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
 		marginArray[2] = marginArray[0];
@@ -739,51 +859,65 @@ function setFrameAttributes(frameNode)
 		{
 			marginArray[1] = marginArray[3] = 0;
 		}
-		setStyleAttributeOnNode(frameNode, "margin", marginArray.join("px ")+"px");
+		setStyleAttributeOnNode(frameNode, "margin", marginArray.join("px ")+"px", editor);
   }
   else 
 	{
     var style = getCompositeMeasurement("margin","px", true);
-    setStyleAttributeOnNode(frameNode, "margin", style);
-		frameNode.setAttribute("margin", getCompositeMeasurement("margin", metrics.unit, false));
+    setStyleAttributeOnNode(frameNode, "margin", style, editor);
+    msiEditorEnsureElementAttribute(frameNode, "margin", getCompositeMeasurement("margin", metrics.unit, false), editor);
 	}  
   if (gFrameModeImage) {
     var borderwidth = getSingleMeasurement("border", "Left", metrics.unit, false);
-    frameNode.setAttribute("border-width", borderwidth);
+    msiEditorEnsureElementAttribute(contentsNode, "border-width", borderwidth, editor);
   }
-  else frameNode.setAttribute("border", getCompositeMeasurement("border",metrics.unit, false));  
+  else
+    msiEditorEnsureElementAttribute(contentsNode, "border", getCompositeMeasurement("border",metrics.unit, false), editor);
   if (gFrameModeImage) {
     var padding = getSingleMeasurement("padding", "Left", metrics.unit, false);
-    frameNode.setAttribute("padding", padding);
+    msiEditorEnsureElementAttribute(contentsNode, "padding", padding, editor);
   }
-  else frameNode.setAttribute("padding", getCompositeMeasurement("padding",metrics.unit, false));  
+  else
+    msiEditorEnsureElementAttribute(contentsNode, "padding", getCompositeMeasurement("padding",metrics.unit, false), editor);
   if (gFrameTab.autoHeightCheck.checked)
   {
-    frameNode.setAttribute("height", "0");
+    if (gFrameModeImage)
+      msiEditorEnsureElementAttribute(contentsNode, heightAtt, null, editor);
+    else
+      msiEditorEnsureElementAttribute(contentsNode, heightAtt, "0", editor);
   }
-  else frameNode.setAttribute("height", gFrameTab.heightInput.value);
+  else
+    msiEditorEnsureElementAttribute(contentsNode, heightAtt, gFrameTab.heightInput.value, editor);
   if (gFrameTab.autoWidthCheck.checked)
   {
-    frameNode.setAttribute("width", "0");
+    if (gFrameModeImage)
+      msiEditorEnsureElementAttribute(contentsNode, widthAtt, null, editor);
+    else
+      msiEditorEnsureElementAttribute(contentsNode, widthAtt, "0", editor);
   }
-  else frameNode.setAttribute("width", gFrameTab.widthInput.value);
+  else
+    msiEditorEnsureElementAttribute(contentsNode, widthAtt, gFrameTab.widthInput.value, editor);
   var pos = document.getElementById("placementRadioGroup").selectedItem;
   var posid = pos.getAttribute("id") || "";
-  frameNode.setAttribute("pos", posid);
+  msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
   var bgcolor = gFrameTab.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
-  setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
-  frameNode.setAttribute("border-color", hexcolor(arr[1]));  
+  var theColor = (arr && arr.length > 1) ? arr[1] : "";
+  setStyleAttributeOnNode(contentsNode, "border-color", theColor, editor);
+  msiEditorEnsureElementAttribute(contentsNode, "border-color", hexcolor(theColor), editor);
   bgcolor = gFrameTab.bgcolorWell.getAttribute("style");
   arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
-  setStyleAttributeOnNode(frameNode, "background-color", arr[1]);
-  frameNode.setAttribute("background-color", hexcolor(arr[1]));  
+  theColor = (arr && arr.length > 1) ? arr[1] : "";
+  setStyleAttributeOnNode(contentsNode, "background-color", theColor, editor);
+  msiEditorEnsureElementAttribute(contentsNode, "background-color", hexcolor(theColor), editor);
 	msiRequirePackage(gFrameTab.editorElement, "xcolor", "");
-	frameNode.setAttribute("textalignment", gFrameTab.textAlignment.value );
-	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value)
-  if (document.getElementById("inline").selected)
-    setStyleAttributeOnNode(frameNode, "display", "inline-block");
-  else setStyleAttributeOnNode(frameNode, "display", "block");
+  msiEditorEnsureElementAttribute(frameNode, "textalignment", gFrameTab.textAlignment.value, editor);
+	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value, editor)
+//RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
+//      the override for graphics with captions will take effect. See baselatex.css.)
+//  if (document.getElementById("inline").selected)
+//    setStyleAttributeOnNode(frameNode, "display", "inline-block");
+//  else setStyleAttributeOnNode(frameNode, "display", "block");
   // some experimentation here.
 
   if (posid == "float")
@@ -809,7 +943,7 @@ function setFrameAttributes(frameNode)
       if (gFrameTab.placeBottomCheck.checked)
         { placeLocation += "b" }
     }
-    frameNode.setAttribute("placeLocation", placeLocation);
+    msiEditorEnsureElementAttribute(frameNode, "placeLocation", placeLocation, editor);
     if (isHere)
     {
       var floatparam = document.getElementById("herePlacementRadioGroup").value;
@@ -817,55 +951,57 @@ function setFrameAttributes(frameNode)
         msiRequirePackage(gFrameTab.editorElement, "wrapfig","");
       }
       var floatshort = floatparam.slice(0,1);
-      frameNode.setAttribute("placement",floatshort); 
+      msiEditorEnsureElementAttribute(frameNode, "placement",floatshort, editor);
       if (floatparam == "I" || floatparam == "L") floatparam = "left";
       else if (floatparam == "O" || floatparam=="R") floatparam = "right";
 			else floatparam = "none";
-      setStyleAttributeOnNode(frameNode, "float", floatparam);
+      setStyleAttributeOnNode(frameNode, "float", floatparam, editor);
 	    if (floatparam == "right") side = "Right";
 	    else if (floatparam == "left") side = "Left";
 			else side = null;
 	    if (!gFrameModeImage)
 	    {
-	      if (side) frameNode.setAttribute("overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false));
+	      if (side)
+          msiEditorEnsureElementAttribute(frameNode, "overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false), editor);
 	    }
     }
   }
   else 
   {
-    removeStyleAttributeFamilyOnNode(frameNode, "float");
+    removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
 		var fp = document.getElementById("herePlacementRadioGroup").value;
     if (posid == "display" || (posid == "float" && (float==null || float=="full")))
     {
-      setStyleAttributeOnNode(frameNode, "margin-left","auto");
-      setStyleAttributeOnNode(frameNode, "margin-right","auto");
+      setStyleAttributeOnNode(frameNode, "margin-left","auto", editor);
+      setStyleAttributeOnNode(frameNode, "margin-right","auto", editor);
     }
   }
   // now set measurements in the style for frameNode
   if (gFrameModeImage)
 	{
 		style = getSingleMeasurement("padding","Left", "px", true);
-	  setStyleAttributeOnNode(frameNode, "padding", style);
+	  setStyleAttributeOnNode(contentsNode, "padding", style, editor);
 	  style = getSingleMeasurement("border","Left","px", true);
-	  setStyleAttributeOnNode(frameNode, "border-width", style);
+	  setStyleAttributeOnNode(contentsNode, "border-width", style, editor);
 	}
 	else
 	{
 		style = getCompositeMeasurement("padding","px", true);
-	  setStyleAttributeOnNode(frameNode, "padding", style);
+	  setStyleAttributeOnNode(contentsNode, "padding", style, editor);
 	  style = getCompositeMeasurement("border","px", true);
-	  setStyleAttributeOnNode(frameNode, "border-width", style);
+	  setStyleAttributeOnNode(contentsNode, "border-width", style, editor);
 	}
-  if (frameNode.hasAttribute("height") && Number(frameNode.getAttribute("height"))!= 0 )
-    setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(frameNode.getAttribute("height"),"px") + "px");
-  else removeStyleAttributeFamilyOnNode(frameNode, "height");
-  if (frameNode.hasAttribute("width") && Number(frameNode.getAttribute("width"))!= 0)
-    setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(frameNode.getAttribute("width"),"px") + "px");
-  else removeStyleAttributeFamilyOnNode(frameNode, "width");
-  if (style != "0px") { setStyleAttributeOnNode( frameNode, "border-style", "solid");}
+  if (contentsNode.hasAttribute(heightAtt) && Number(contentsNode.getAttribute(heightAtt))!= 0 )
+    setStyleAttributeOnNode(contentsNode, "height", frameUnitHandler.getValueAs(contentsNode.getAttribute(heightAtt),"px") + "px", editor);
+  else removeStyleAttributeFamilyOnNode(contentsNode, "height", editor);
+  if (contentsNode.hasAttribute(widthAtt) && Number(contentsNode.getAttribute(widthAtt))!= 0)
+    setStyleAttributeOnNode(contentsNode, "width", frameUnitHandler.getValueAs(contentsNode.getAttribute(widthAtt),"px") + "px", editor);
+  else removeStyleAttributeFamilyOnNode(contentsNode, "width", editor);
+  if (style != "0px")
+    setStyleAttributeOnNode( contentsNode, "border-style", "solid", editor );
 }
 
-function frameHeightChanged(input)
+function frameHeightChanged(input, event)
 {
   if (input.value > 0)
   {
@@ -873,14 +1009,16 @@ function frameHeightChanged(input)
   }
   else scaledHeight = scaledHeightDefault;
   setStyleAttributeByID("content", "height", scaledHeight + "px");
+  constrainProportions( "frameHeightInput", "frameWidthInput", event );
   redrawDiagram();
 }
 
-function frameWidthChanged(input)
+function frameWidthChanged(input, event)
 {
   if (input.value > 0) scaledWidth = toPixels(input.value);
     else scaledWidth = scaledWidthDefault;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
+  constrainProportions( "frameWidthInput", "frameHeightInput", event );
   redrawDiagram();
 }
 
@@ -895,4 +1033,109 @@ function setDisabled(checkbox,id)
 	{
 		textbox.removeAttribute("disabled");
 	}
+}
+
+function checkAutoDimens(checkBox, textboxId)
+{
+  if (checkBox.checked && !Dg.constrainCheckbox.checked)
+    Dg.constrainCheckbox.checked = true;
+  setDisabled(this, "frameWidthInput");
+}
+
+function ToggleConstrain()
+{
+  // If just turned on, save the current width and height as basis for constrain ratio
+  // Thus clicking on/off lets user say "Use these values as aspect ration"
+  if (!gFrameModeImage && Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled)
+//     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
+//     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
+  {
+    gConstrainWidth = frameUnitHandler.getValueAs(Number(TrimString(Dg.widthInput.value)), "px");
+    gConstrainHeight = frameUnitHandler.getValueAs(Number(TrimString(Dg.heightInput.value)), "px");
+  }
+}
+
+function constrainProportions( srcID, destID, event )
+{
+  var srcElement = document.getElementById(srcID);
+  if (!srcElement)
+    return;
+  updateTextNumber(srcElement, srcID, event);
+  var destElement = document.getElementById(destID);
+  if (!destElement)
+    return;
+
+  // always force an integer (whether we are constraining or not)
+//  forceInteger(srcID);
+
+  if (gFrameModeImage)
+  {
+    if (gActualWidth && gActualHeight &&
+        (Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled))
+    {
+  //  // double-check that neither width nor height is in percent mode; bail if so!
+  //  if ( (gDialog.widthUnitsMenulist.selectedIndex != 0)
+  //     || (gDialog.heightUnitsMenulist.selectedIndex != 0) )
+  //    return;
+
+    // This always uses the actual width and height ratios
+    // which is kind of funky if you change one number without the constrain
+    // and then turn constrain on and change a number
+    // I prefer the old strategy (below) but I can see some merit to this solution
+      if (srcID == "frameWidthInput")
+        destElement.value = unitRound( srcElement.value * gActualHeight / gActualWidth );
+      else
+        destElement.value = unitRound( srcElement.value * gActualWidth / gActualHeight );
+    }
+  }
+  else  //not a graphic - use the other strategy, as there's no natural width
+  {
+    // With this strategy, the width and height ratio
+    //   can be reset to whatever the user entered.
+    if (srcID == "frameWidthInput")
+      destElement.value = unitRound( srcElement.value * gConstrainHeight / gConstrainWidth );
+    else
+      destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
+  }
+  setContentSize(frameUnitHandler.getValueAs(Dg.widthInput.value,"px"), frameUnitHandler.getValueAs(Dg.heightInput.value,"px"));
+}
+
+function doDimensionEnabling()
+{
+  // Enabled only if "Custom" is selected
+  var enable = (Dg.custom.selected);
+
+  // BUG 74145: After input field is disabled,
+  //   setting it enabled causes blinking caret to appear
+  //   even though focus isn't set to it.
+  SetElementEnabledById( "frameHeightInput", enable );
+  SetElementEnabledById( "frameHeightLabel", enable );
+
+  SetElementEnabledById( "frameWidthInput", enable );
+  SetElementEnabledById( "frameWidthLabel", enable);
+
+  SetElementEnabledById( "unitList", enable );
+
+  var constrainEnable = enable ;
+//         && ( gDialog.widthUnitsMenulist.selectedIndex == 0 )
+//         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
+
+  SetElementEnabledById( "constrainCheckbox", constrainEnable );
+
+}
+
+function setActualSize()
+{
+  if (gActualWidth && gActualHeight)
+  {
+    frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
+    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
+  }
+  else if (gConstrainWidth && gConstrainHeight)
+  {
+    frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gConstrainWidth,"px");
+    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gConstrainHeight,"px");
+  }
+//  frameTabDlg.unitList.selectedIndex = 0;
+  doDimensionEnabling();
 }

@@ -25,12 +25,12 @@
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
       <menuitem id="menu_newDocument" label="&newDocument.label;" 
                 accesskey="&newDocument.accesskey;" key="key_newDocument"
-                observes="cmd_newDocument"/>
+                oncommand="openNewDocument();"/>
       <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;"
                   key="openeditorkb"
-                  observes="cmd_open" 
+                  oncommand = "openDocument();" 
                   label="&openFileCmd.label;"/>
-      <menuitem observes="cmd_openTeX" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
+      <menuitem oncommand="openTeX();" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
       <menuitem observes="cmd_exportTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
       <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
      <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
@@ -258,7 +258,7 @@
   </menu>
   <menu id="goMenu" label="&gomenu.label;" accesskey="&gomenu.accesskey;">
     <menupopup id="goPopup">
-      <menuitem label="&gomenuPrevSection.label;" 
+      <!-- menuitem label="&gomenuPrevSection.label;" 
                 id="gomenuPrevSection" 
                 observes="cmd_prevSection" 
                 accesskey="&gomenuPrevSection.accesskey;"/>
@@ -270,7 +270,7 @@
                 id="gomenuLinks" 
                 observes="cmd_unimp" 
                 accesskey="&gomenuLinks.accesskey;"/>
-      <menuseparator id="goMenuSeparator1"/>
+      <menuseparator id="goMenuSeparator1"/ -->
       <menuitem label="&gomenuMarker.label;" 
                 id="gomenuMarker" 
                 observes="cmd_gotoMarker" 
@@ -509,7 +509,7 @@
           oncommandupdate="msiGoUpdateComposerMenuItems(this)"
   >
     <command id="cmd_newDocument"  oncommand="msiGoDoCommand('cmd_new');"/>
-    <command id="cmd_open"         oncommand="msiGoDoCommand('cmd_open')"/>
+    <command id="cmd_open"         oncommand="msiOpenCommand.doCommand('cmd_open');"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
     <command id="cmd_cleanup"        label="&cleanupCmd.label;"         oncommand="msiGoDoCommand('cmd_cleanup')"/>
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>
@@ -687,6 +687,7 @@
     <command id="cmd_findNext"      oncommand="msiGoDoCommand('cmd_findNext')"     label="&findAgainCmd.label;" />
     <command id="cmd_findPrev"      oncommand="msiGoDoCommand('cmd_findPrev')"     label="&findPrevCmd.label;"/>
     <command id="cmd_spelling"      oncommand="msiGoDoCommand('cmd_spelling')"/>
+    <command id="cmd_macrofragment" oncommand="msiGoDoCommand('cmd_macrofragment')"/>
     <command id="cmd_validate"      label="&validateCmd.label;" accesskey="&validate.accesskey;" oncommand="msiGoDoCommand('cmd_validate')"/>
     <command id="cmd_checkLinks"    oncommand="msiGoDoCommand('cmd_checkLinks')"/>
     <command id="cmd_pasteQuote"    oncommand="msiGoDoCommand('cmd_pasteQuote')" label="&pasteAsQuotationCmd.label;"/>

@@ -87,7 +87,9 @@ private:
   char*     CONJUGATEtoEstr(  SEMANTICS_NODE* node_info, int& error_code );
   char*     TRANSPOSEtoEstr(  SEMANTICS_NODE* node_info, const char TorH, int& error_code );
   char*     LISTtoEstr(       SEMANTICS_NODE* func_info, const char* start_str, const char* end_str, const char* join_str,
-								    const char* modulus, int& error_code );
+								    const char* modulus, int& error_code);
+  char*     LISTtoEstr(       SEMANTICS_NODE* func_info, const char* start_str, const char* end_str, const char* join_str,
+								    const char* modulus, int& error_code, int& len);
   char*     VARASSIGNtoEstr(  SEMANTICS_NODE* node_info, int& error_code );
   char*     FUNCDEFtoEstr(    SEMANTICS_NODE* node_info, int& error_code );
   char*     SURDasPOWERtoEstr(SEMANTICS_NODE* surd_info, int& error_code );

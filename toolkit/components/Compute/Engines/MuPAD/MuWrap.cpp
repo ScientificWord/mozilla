@@ -877,13 +877,31 @@ char *MuPADWrapper::ProcessSemNode(SEMANTICS_NODE * s_node,
 
     case SEM_TYP_PARENED_LIST:
     case SEM_TYP_BRACKETED_LIST:
-    case SEM_TYP_GENERIC_FENCE:
-      rv = LISTtoEstr(s_node, NULL, NULL, ",", modulus, error_code);
-      if (s_node->semantic_type == SEM_TYP_BRACKETED_LIST)
-        rv = NestInBrackets(rv);
-      else
-        rv = NestInParens(rv, false);
-      break;
+    case SEM_TYP_GENERIC_FENCE: { 
+       
+       int length = 0;
+       rv = LISTtoEstr(s_node, NULL, NULL, ",", modulus, error_code, length);
+       if (length > 1){
+         char lenStr[10];
+         StrFromInt(length, lenStr);
+         size_t zln = strlen(rv);
+         zln += strlen("SWPmatrix(0,0,[])");
+         char* newrv = new char[zln+10];
+         strcpy(newrv, "SWPmatrix(1,");
+         strcat(newrv, lenStr);
+         strcat(newrv, ",[");
+         strcat(newrv, rv);
+         strcat(newrv, "])");
+         delete rv;
+         rv = newrv;
+       } else {
+         if (s_node->semantic_type == SEM_TYP_BRACKETED_LIST)
+           rv = NestInBrackets(rv);
+         else
+           rv = NestInParens(rv, false);
+       }
+       break;
+    }
 
     case SEM_TYP_LIST:
       rv = LISTtoEstr(s_node, NULL, NULL, ",", modulus, error_code);
@@ -5307,6 +5325,54 @@ char *MuPADWrapper::LISTtoEstr(SEMANTICS_NODE * s_function,
     }
     bucket_rover = bucket_rover->next;
   }
+  if (err_code) {
+    error_code = err_code;
+    return NULL;
+  }
+  if (zh_arglist && end_str)
+    zh_arglist = AppendStr2HeapStr(zh_arglist, aln, end_str);
+
+  return zh_arglist;
+}
+
+
+
+// same as above but sets a length
+
+char *MuPADWrapper::LISTtoEstr(SEMANTICS_NODE * s_function,
+                               const char *start_str, const char *end_str,
+                               const char *join_str, const char *modulus,
+                               int& error_code,
+                               int& length)
+{ 
+  char *zh_arglist = NULL;
+  U32 aln = 0;
+
+  int err_code = 0;
+  int arg_counter = 0;
+  BUCKET_REC *bucket_rover = s_function->bucket_list;
+  while (bucket_rover && err_code != 1) {
+    if (bucket_rover->bucket_ID == MB_UNNAMED) {
+      if (arg_counter == 0) {
+        if (start_str)
+          zh_arglist = AppendStr2HeapStr(zh_arglist, aln, start_str);
+      } else {
+        zh_arglist = AppendStr2HeapStr(zh_arglist, aln, join_str);
+      }
+      if (bucket_rover->first_child) {
+        SEMANTICS_NODE *curr_handle = bucket_rover->first_child;
+        char *obj_str = ProcessSemList(curr_handle, modulus, err_code);
+        if (obj_str) {
+          if (err_code != 1)
+            zh_arglist = AppendStr2HeapStr(zh_arglist, aln, obj_str);
+          delete[] obj_str;
+        }
+      }
+      arg_counter++;
+    }
+    bucket_rover = bucket_rover->next;
+  }
+  length = arg_counter;
   if (err_code) {
     error_code = err_code;
     return NULL;

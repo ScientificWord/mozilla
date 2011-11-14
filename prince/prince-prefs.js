@@ -75,11 +75,15 @@ pref("swp.ctrl.t","text"); // other value is'toggle'
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
 pref("swp.defaultGraphicsVSize", 200);
 pref("swp.defaultGraphicsHSize", 200);
+pref("swp.defaultGraphicsPlacement", "display");
 pref("swp.defaultShell", "articles/Standard_LaTeX_Article.sci");
 pref("swp.fancyreturn",true);
 pref("swp.generateTeXonsave", true);
 pref("swp.graph.DefaultFileType", "xvc");
 pref("swp.graph.Dimension",  "2");
+pref("swp.graph.HSize", 200);
+pref("swp.graph.VSize", 200);
+pref("swp.graph.Placement", "display");
 pref("swp.graph.XAxisLabel", "");
 pref("swp.graph.XTickCount", "0");
 pref("swp.graph.YAxisLabel", "");
