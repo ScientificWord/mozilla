@@ -20,7 +20,7 @@ pre, verbatim { font-family: Courier; white-space: pre }
 numberedListItem,
 bulletListItem,
 descriptionListItem { 
-       margin: 0em; 
+       margin-left: 2em; 
        padding-left: 1em; 
        display: list-item;}
 
@@ -30,9 +30,10 @@ numberedlist {
   counter-reset: numberedlist;
 }
 
-bulletlist { list-style-type: disc;}
-bulletlist bulletlist { list-style-type: circle;}
-bulletlist bulletlist bulletlist { list-style-type: square;}
+bulletlist { list-style: disc outside;}
+bulletlist bulletlist { list-style: circle outside;}
+bulletlist bulletlist bulletlist { list-style: disc inside;}
+
 
 descriptionlist {list-style-type: none;}
 
@@ -499,21 +500,36 @@ shortTitle {
 *[nopr] {display: none;}
 }
 
-
-/* object[captionloc="below"]
-{
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
+msiframe {
+  display: inline-block;
 }
 
-object[captionloc="above"]
-{
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionAbove");
+msiframe[pos="inline"] {
+  display: inline;
 }
 
-object[captionloc="abovebelow"]
+msiframe[captionloc]
 {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#imageCaptionBelow");
-} */
+  display: table;
+}
+
+msiframe[captionloc][pos="inline"] {
+  display: inline-table;
+}
+
+msiframe[captionloc] > object {
+  display: table-row;
+}
+
+msiframe[captionloc="above"] > imagecaption {
+  display: table-caption;
+  caption-side: top;
+}
+
+msiframe[captionloc="below"] > imagecaption {
+  display: table-caption;
+  caption-side: bottom;
+}
 
 a:link, xref, xref button {
   cursor: pointer !important;

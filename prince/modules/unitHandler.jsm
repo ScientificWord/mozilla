@@ -45,6 +45,16 @@ function UnitHandler()
     return value*this.units[unit].size/this.units[this.currentUnit].size;
   };
 
+  this.getValueFromString = function( aString, defaultUnit )
+  {
+    var valuePair = this.getNumberAndUnitFromString(aString);
+    if (!defaultUnit)
+      defaultUnit = this.currentUnit;
+    if (!valuePair)
+      valuePair = {number : Number(aString), unit : defaultUnit};
+    return this.getValueOf( valuePair.number, valuePair.unit );
+  };
+
   this.getValueStringAs = function( value, unit )
     //returns same as this.getValueOf together with the unit
   {
@@ -146,8 +156,8 @@ function UnitHandler()
       throw("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");      return NaN;
     }
     // convert both to mm
-    var firstMm = value1.number *  this.units[value1.unit].size;
-    var secondMm = value1.number * this.units[value2.unit].size;
+    var firstMm = firstValue.number *  this.units[firstValue.unit].size;
+    var secondMm = secondValue.number * this.units[secondValue.unit].size;
     if (firstMm < secondMm)
       { return -1; }
     else if (firstMm > secondMm)

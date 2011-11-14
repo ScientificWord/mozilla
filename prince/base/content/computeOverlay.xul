@@ -494,7 +494,6 @@
           <menuitem label="&plottypevector.label;"      observes="cmd_MSIComputePlot3DAVector"/>
         </menupopup>
       </menu>   
-      <menuitem label="&editplot.label;"                       observes="cmd_MSIComputeEditPlot"/>
       <menuseparator/>                                                                                                                                        
       <menu id="MSIDefinitionsMenu" label="&MSIDefinitionsMenu.label;" accesskey="&MSIDefinitionsMenu.accesskey;">
         <menupopup id="MSIDefinitionsPopup">

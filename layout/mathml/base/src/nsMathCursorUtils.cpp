@@ -4,6 +4,7 @@
 #include "nsFrameSelection.h"
 #include "nsMathCursorUtils.h"
 #include "nsMathMLCursorMover.h"
+#include "nsIDOMNodeList.h"
 
 PRBool IsMathFrame( nsIFrame * aFrame );
 PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
@@ -21,8 +22,8 @@ PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
 
 PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
-  nsIFrame * pChild;
   nsIFrame * pParent;
+  nsIFrame * pChild;
   PRBool df = PR_FALSE;
   nsCOMPtr<nsIContent> pContent;
   pParent = pFrame->GetParent();
@@ -31,11 +32,18 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
     // find the last child
-    pChild = GetLastTextFrame(pFrame);
-    if (pChild) *aOutFrame = pChild;
-    else return PR_FALSE;
-    nsAutoString value;
-    *aOutOffset = (pChild->GetContent())->TextLength();
+//    pChild = GetLastTextFrame(pFrame);
+//    if (pChild) *aOutFrame = pChild;
+//    else return PR_FALSE;
+//    nsAutoString value;
+//    *aOutOffset = (pChild->GetContent())->TextLength();
+		*aOutFrame = pFrame;
+	  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pFrame->GetContent());
+    nsCOMPtr<nsIDOMNodeList> nodelist;
+		nsresult res = element->GetChildNodes(getter_AddRefs(nodelist));
+		PRUint32 countofNodes;
+		res = nodelist->GetLength(&countofNodes);
+		*aOutOffset = countofNodes;
   }
   else // don't put the cursor inside the tag
   {
@@ -53,8 +61,17 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
     }
     else
     {
-      *aOutFrame = GetFirstTextFramePastFrame(pFrame);
-      *aOutOffset = count;
+//      *aOutFrame = GetFirstTextFramePastFrame(pFrame);
+//      *aOutOffset = count;
+	    pParent = pFrame->GetParent();
+	    *aOutFrame = pParent; 
+			(*aOutOffset) = 1;
+			pChild = pParent->GetFirstChild(nsnull);
+			while (pChild && pChild != pFrame)
+			{
+				pChild = pChild->GetNextSibling();
+				(*aOutOffset)++;
+			}
     } 
 //    (*paPos)->mMath = PR_TRUE;
   }

@@ -39,7 +39,9 @@ function Startup() {
       window.mMSIDlgManager.mbIsRevise = true;
     window.mMSIDlgManager.configureDialog();
   
+    var namesBox = document.getElementById("mathNamesBox");
     gDialog.nameList = new msiMathNameList();  //see msiEditorUtilities.js
+    gDialog.nameList.setUpTextBoxControl(namesBox);
     gDialog.bStopNextEnter = false;
 
 
@@ -47,7 +49,6 @@ function Startup() {
 //  for (var aName in gDialog.nameList.names)
 //    nameArray.push(aName);
 //  nameArray.sort(sortNames);
-    var namesBox = document.getElementById("mathNamesBox");
 //  for (var ix = 0; ix < nameArray.length; ++ix)
 //    namesBox.appendItem(nameArray[ix], nameArray[ix]);  //set the value and the label to be the same
     if (target != null && ("val" in target) && (target.val.length > 0))

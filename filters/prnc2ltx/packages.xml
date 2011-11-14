@@ -4,5 +4,7 @@
 	<package name="amsmath" pri="010"/>
 	<package name="xcolor" pri="200"/>
 	<package name="wrapfig" pri="100"/>
-	<package name="boxedminipage" pri="200"/>
+	<package name="minipage" pri="200"/>
+	<package name="hyperref" pri="10000"/>
+	<package name="bidi" pri="10001"/>
 </packages>													 

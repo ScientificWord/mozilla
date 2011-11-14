@@ -1,4 +1,5 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 
 /* Implementations of nsIControllerCommand for composer commands */
@@ -970,40 +971,44 @@ var msiOpenCommand =
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand)
-  {
-    var fp = Components.classes["@mozilla.org/filepicker;1"].
-               createInstance(Components.interfaces.nsIFilePicker);
-    fp.init(window, GetString("OpenAppFile"), Components.interfaces.nsIFilePicker.modeOpen);
-    msiSetFilePickerDirectory(fp, MSI_EXTENSION);
-    fp.appendFilter(GetString("AppDocs"),"*."+MSI_EXTENSION);
-    fp.appendFilter(GetString("XHTMLFiles"),"*.xhtml; *.xht");
-    fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
-
-    try {
-      fp.show();
-    }
-    catch (ex) {
-      dump("filePicker.show() threw an exception: "+ex.toString()+"\n");
-    }
-
-    try 
-    {
-      if ((fp.file) && (fp.file.path.length > 0)) 
-      {
-        dump("Ready to edit page: " + fp.fileURL.spec +"\n");
-        var newdocumentfile;
-        newdocumentfile = createWorkingDirectory(fp.file);
-        msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
-        msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
-      }
-    } 
-    catch (e) 
-    { 
-      dump(" open:doCommand failed: "+e+"\n"); 
-    }
-  }
+	{
+	  openDocument();
+	}
 };
 
+function openDocument()
+{
+  var fp = Components.classes["@mozilla.org/filepicker;1"].
+             createInstance(Components.interfaces.nsIFilePicker);
+  fp.init(window, GetString("OpenAppFile"), Components.interfaces.nsIFilePicker.modeOpen);
+  msiSetFilePickerDirectory(fp, MSI_EXTENSION);
+  fp.appendFilter(GetString("AppDocs"),"*."+MSI_EXTENSION);
+  fp.appendFilter(GetString("XHTMLFiles"),"*.xhtml; *.xht");
+  fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
+
+  try {
+    fp.show();
+  }
+  catch (ex) {
+    dump("filePicker.show() threw an exception: "+ex.toString()+"\n");
+  }
+
+  try 
+  {
+    if ((fp.file) && (fp.file.path.length > 0)) 
+    {
+      dump("Ready to edit page: " + fp.fileURL.spec +"\n");
+      var newdocumentfile;
+      newdocumentfile = createWorkingDirectory(fp.file);
+      msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
+      msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
+    }
+  } 
+  catch (e) 
+  { 
+    finalThrow("Open document command failed", e.message); 
+  }
+}
 
 
 //-----------------------------------------------------------------------------------
@@ -1019,29 +1024,34 @@ var msiNewCommand =
 
   doCommand: function(aCommand)
   {
-    var newdocumentfile;
-    var dir;
-    var data={file: "not yet"};
-    // jlf - should openshell be modal or dependent
-    window.openDialog("chrome://prince/content/openshell.xul","openshell", "chrome,close,titlebar,modal,resizable=yes", data);
-    if (data.filename)
-    {
-      if (data.filename && data.filename.length > 0) {
-        dump("Ready to edit shell: " + data.filename +"\n");
-        try {
-          var thefile = Components.classes["@mozilla.org/file/local;1"].           
-            createInstance(Components.interfaces.nsILocalFile);
-          thefile.initWithPath(data.filename);
-          newdocumentfile = createWorkingDirectory(thefile);
-          var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
-          msiEditPage( url, window, false);
-        } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
-
-      }
-    }
-  }
+	  openNewDocument();
+	}
 } 
 
+function openNewDocument()
+{
+	
+  var newdocumentfile;
+  var dir;
+  var data={file: "not yet"};
+  // jlf - should openshell be modal or dependent
+  window.openDialog("chrome://prince/content/openshell.xul","openshell", "chrome,close,titlebar,modal,resizable=yes", data);
+  if (data.filename)
+  {
+    if (data.filename && data.filename.length > 0) {
+      dump("Ready to edit shell: " + data.filename +"\n");
+      try {
+        var thefile = Components.classes["@mozilla.org/file/local;1"].           
+          createInstance(Components.interfaces.nsILocalFile);
+        thefile.initWithPath(data.filename);
+        newdocumentfile = createWorkingDirectory(thefile);
+        var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
+        msiEditPage( url, window, false);
+      } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
+
+    }
+  }
+}
 
 //// STRUCTURE TOOLBAR
 ////
@@ -5675,6 +5685,8 @@ var msiReviseRulesCommand =
 
 function msiInsertRules(dialogData, editorElement)
 {
+	var unitHandler = new UnitHandler();
+	unitHandler.initCurrentUnit(dialogData.height.units);
   var editor = msiGetEditor(editorElement);
   var node = editor.document.createElement('msirule');
   var styleStr = "";
@@ -5682,11 +5694,11 @@ function msiInsertRules(dialogData, editorElement)
   var widthStr = String(dialogData.width.size) + dialogData.width.units;
   var heightStr = String(dialogData.height.size) + dialogData.height.units;
   node.setAttribute('lift', liftStr);
-  styleStr += "vertical-align: " + liftStr;
+  styleStr += "vertical-align: " + unitHandler.getValueAs(dialogData.lift.size,"px")+"px";
   node.setAttribute("width", widthStr);
-  styleStr += "; width: " + widthStr;
+  styleStr += "; width: " + Math.max(1,unitHandler.getValueAs(dialogData.width.size,"px"))+"px";
   node.setAttribute("height", heightStr);
-  styleStr += "; height: " + heightStr;
+  styleStr += "; height: " + Math.max(1,unitHandler.getValueAs(dialogData.height.size,"px"))+"px";
   node.setAttribute("color", dialogData.ruleColor);
   styleStr += "; background-color: " + dialogData.ruleColor + ";";
   node.setAttribute('style',styleStr);
@@ -5838,23 +5850,24 @@ function msiInsertBreaks(dialogData, editorElement)
 //    newLine:                "&#x21b5;"
 //  };
 
-  var contentNode;              
+            
   var contentStr;
+	editor.beginTransaction();
+  var node = editor.document.createElement('msibreak',true);
+  editor.insertElementAtSelection(node,true);
   switch(dialogData.breakType) {
     case "lineBreak":
     case "newLine": 
-      contentNode=editor.document.createElement('br',true);
+      editor.createNode('br',node,0);
       break;
     case "newPage":
     case "pageBreak":
-      contentNode = editor.document.createElement('newPageRule');
+      editor.createNode('newPageRule',node,0);
       break;
     default:
       contentStr = msiSpaceUtils.getBreakCharContent(dialogData.breakType);
       break;
   }
-  var node = editor.document.createElement('msibreak',true);
-  var innerNode;
   //  var breakStr = "<xhtml:msibreak xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
   if (dialogData.breakType == "customNewLine")
   {
@@ -5862,9 +5875,7 @@ function msiInsertBreaks(dialogData, editorElement)
     var dimStr=String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
     node.setAttribute('dim', dimStr);
     var vAlignStr = String(-(dialogData.customBreakData.sizeData.size)) + dialogData.customBreakData.sizeData.units;
-    innerNode = editor.document.createElement('custNL',true);   
-    innerNode.setAttribute('style','vertical-align: '+vAlignStr+'; height: '+ dimStr);
-    editor.insertNode(innerNode,node,0);
+    node.setAttribute('style','vertical-align: '+vAlignStr+'; height: '+ dimStr);
     if (!contentStr)                             
       contentStr = "";
     node.textContent = contentStr;
@@ -5878,11 +5889,7 @@ function msiInsertBreaks(dialogData, editorElement)
     node.setAttribute('invisDisplay',invisStr);
   if (contentStr)
     node.textContent = contentStr;
-  editor.insertElementAtSelection(node,true);
-  if (contentNode)
-    editor.insertNode(contentNode,node,0);
-  if (innerNode)
-    editor.insertNode(innerNode,node,0);
+  editor.endTransaction();
 }
 
 function msiReviseBreaks(reviseData, dialogData, editorElement)
@@ -8082,7 +8089,10 @@ var msiEditLinkCommand =
       if (element)
         msiEditPage(msiURIFromString(element.href), window, false);
     }
-    catch (exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiEditLinkCommand.doCommand: " + exc);}
+    catch (exc) 
+		{
+			throw("Error in msiEditLinkCommand.doCommand: " + exc.message);
+		}
     editorElement.contentWindow.focus();
   }
 };

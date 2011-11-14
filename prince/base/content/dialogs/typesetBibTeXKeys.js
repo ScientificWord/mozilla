@@ -1060,8 +1060,8 @@ function parsePreambleEntry(inputStream, theEntry)
   while (bFound && !allDone)
   {
     var theField = parseField(inputStream);
-    keyString = stripSurroundingWhitespace(nextField[0]);
-    valueString = stripSurroundingWhitespace(nextField[1]);
+    keyString = stripSurroundingWhitespace(theField[0]);
+    valueString = stripSurroundingWhitespace(theField[1]);
     if (keyString.length > 0)
       alert("Problem in parsePreambleEntry()");
     newEntry.string += valueString;
