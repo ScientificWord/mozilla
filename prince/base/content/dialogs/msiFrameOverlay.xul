@@ -13,7 +13,7 @@
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-
+#include ../editorkeys.inc
 
   <tab id="msiFrameTab" label="&Frametab.label;" oncommand="redrawDiagram();"/>
   <tab id="msiPlacementTab" label="&Placementtab.label;"/>
@@ -76,14 +76,14 @@
           <caption>Colors</caption>
           <hbox>
             <vbox align="center">
-              <label value="Border"/>
+              <label value="&frameTab.borderLabel;"/>
               <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate('colorWell');">
                 <spacer persist="style" id="colorWell" class="color-well"  
                   style="background-color: black"/>
               </msibutton>
             </vbox>
             <vbox align="center">
-              <label value="Background" align="center"/>
+              <label value="&frameTab.backgroundLabel;" align="center"/>
                <msibutton id="bgcolorButton" class="color-button"
                     oncommand="getColorAndUpdate('bgcolorWell');">
                 <spacer persist="style" id="bgcolorWell" class="color-well"    
@@ -93,16 +93,16 @@
           </hbox>
         </groupbox>
         <groupbox>
-          <caption>Text alignment</caption>      
+          <caption label="&frameTab.textAlignmentLabel;"/>      
           <hbox align="center">
             <menulist id = "textAlignment" value = "L" style="width: 10em" persist="value">
               <menupopup id = "alignments" >
-                <menuitem value="center" label="centered"/>
-                <menuitem value="justify" label="justified"/>
-                <menuitem value="left" label="left"/>
-                <menuitem value="right" label="right"/>
-                <menuitem value="inner" label="inside"/>
-                <menuitem value="outer" label="outside"/>
+                <menuitem value="center" label="&frameTab.textCentered;"/>
+                <menuitem value="justify" label="&frameTab.textJustified;"/>
+                <menuitem value="left" label="&frameTab.textLeft;"/>
+                <menuitem value="right" label="&frameTab.textRight;"/>
+                <menuitem value="inner" label="&frameTab.textInside;"/>
+                <menuitem value="outer" label="&frameTab.textOutside;"/>
               </menupopup>
             </menulist>         
           </hbox>
@@ -122,23 +122,23 @@
         <row>
           <hbox/>
           <hbox>
-            <description value="Left" observes="role-textframe"/>
-            <description value="To text" observes="role-image"/>
+            <description value="&frameTab.descLeft;" observes="role-textframe"/>
+            <description value="&frameTab.descToText;" observes="role-image"/>
           </hbox>
           <hbox>
-            <description value="Right" observes="role-textframe"/>
-            <description value="Overhang" observes="role-image"/>
+            <description value="&frameTab.descRight;" observes="role-textframe"/>
+            <description value="&overhang;" observes="role-image"/>
           </hbox>
           <hbox>
-            <description value="Top" observes="role-textframe"/>
-            <description observes="role-image">Top/Bottom</description>
+            <description value="&frameTab.descTop;" observes="role-textframe"/>
+            <description value="&frameTab.descTopBottom;" observes="role-image"/>
           </hbox>
           <hbox>
-            <description value="Bottom" observes="role-textframe"/>
+            <description value="&frameTab.descBottom;" observes="role-textframe"/>
           </hbox>
         </row>
         <row>
-          <label value="Margin"/>
+          <label value="&margin;"/>
           <hbox>
             <textbox
               id        = "marginLeftInput"
@@ -177,7 +177,7 @@
           </hbox>
         </row>
         <row>
-          <label value="Border"/>
+          <label value="&frameTab.borderLabel;"/>
           <hbox>
             <textbox
               id        = "borderLeftInput"
@@ -217,7 +217,7 @@
           </hbox>
         </row>
         <row>
-          <label value="Padding"/>
+          <label value="&padding;"/>
           <hbox>
             <textbox
               id        = "paddingLeftInput"
@@ -261,15 +261,15 @@
   </vbox>
   <vbox id = "msiFrameSize">
     <groupbox>
-      <caption label="Size"/>
+      <caption label="&sizeTab.label;"/>
       <!-- vbox observes="hasNaturalSize" -->
         <radiogroup id="sizeRadio">
           <hbox flex="1" observes="hasNaturalSize" hidden="true">
             <vbox>
-              <radio id="actual" label="Actual size" radioGroup="sizeRadio"/>
+              <radio id="actual" value="actual" label="&sizeTab.actualSize;" oncommand="setActualSize();" radioGroup="sizeRadio"/>
             </vbox>
             <vbox>
-              <radio id="custom" label="Custom" radioGroup="sizeRadio"/>
+              <radio id="custom" value="custom" label="&sizeTab.custom;" oncommand="doDimensionEnabling();" radioGroup="sizeRadio"/>
             </vbox>
           </hbox>
         </radiogroup>
@@ -284,45 +284,45 @@
             </columns>
             <rows>
               <row>
-                <label value="Width"/>
-                <label value="Auto" control="autoWidth"/>
-                <label value="Height"/>
-                <label value="Auto" control="autoHeight"/>
-                <label observes="hasNaturalSize" value="Constrain" control="constrainCheck"/>
+                <label value="&width;" id="frameWidthLabel"/>
+                <label value="&sizeTab.auto;" control="autoWidth"/>
+                <label value="&height;" id="frameHeightLabel"/>
+                <label value="&sizeTab.auto;" control="autoHeight"/>
+                <label observes="hasNaturalSize" value="constrainCheckbox" control="constrainCheck"/>
               </row>
               <row>
                 <textbox
                   id        = "frameWidthInput"
                   type      = "number"
                   onkeypress= ""
-                  onchange  = "frameWidthChanged(this);"
-                  onload    = "frameWidthChanged(this);"
+                  onchange  = "frameWidthChanged(this, event);"
+                  onload    = "frameWidthChanged(this, event);"
                   value     = "0"
                   persist   = "value"/>
-                <checkbox id="autoWidth" persist = "checked" oncommand = "setDisabled(this, 'frameWidthInput');"/>
+                <checkbox id="autoWidth" persist = "checked" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
                 <textbox
                   id        = "frameHeightInput"
                   type      = "number"
                   onkeypress= ""
-                  onchange  = "frameHeightChanged(this);"
-                  onload    = "frameHeightChanged(this);"
+                  onchange  = "frameHeightChanged(this, event);"
+                  onload    = "frameHeightChanged(this, event);"
                   value     = "0"
                   persist   =  "value"/>
                 <checkbox id="autoHeight" persist = "checked" checked="false"
-                   oncommand="setDisabled(this, 'frameHeightIput');"/>
-                <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"
+                   oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
+                <checkbox observes="hasNaturalSize" id="constrainCheckbox" oncommand ="ToggleConstrain();"
                   checked="false" persist = "checked"/>
               </row>
             </rows>
           </grid>
         </hbox>
         <hbox align="center">
-          <label value="Rotate contents"/>
+          <label value="&sizeTab.rotateContents;"/>
           <menulist id = "rotationList" value="rot0" persist="value">
             <menupopup id = "rotationsList">
-              <menuitem value="rot0" label="None"/>
-              <menuitem value="rot90" label="90 degrees CW" />
-              <menuitem value="rot270" label="90 degrees CCW"/>
+              <menuitem value="rot0" label="&sizeTab.rotate0;"/>
+              <menuitem value="rot90" label="&sizeTab.rotate90;" />
+              <menuitem value="rot270" label="&sizeTab.rotate270;"/>
             </menupopup>
           </menulist>
         </hbox>
@@ -333,32 +333,32 @@
   <vbox id="msiPlacement">
     <spacer flex="1"/>
     <groupbox >
-      <caption label="Placement"/>
+      <caption label="^Placementtab.label;"/>
       <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="selectedIndex value">
       <hbox flex="1">
         <vbox>
-          <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+          <radio id="inline" label="&inline;" radioGroup="placementRadioGroup"/>
         </vbox>
         <vbox>
-          <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+          <radio id="display" label="&display;" radioGroup="placementRadioGroup"/>
         </vbox>
         <vbox>
-          <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+          <radio id="float" label="&floating;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
           <vbox>
-            <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement" persist="checked"/>
-            <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement" persist="checked"/>
-            <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement" persist="checked"/>
-            <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement" persist="checked"/>
-            <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeForceHereCheck" label="&placement.forceHere;" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeHereCheck" label="&placement.here;" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeFloatsCheck" label="&placement.pageOfFloats;" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeTopCheck" label="&placement.topPage;" observes="floatingPlacement" persist="checked"/>
+            <checkbox id="placeBottomCheck" label="&placement.bottomPage;" observes="floatingPlacement" persist="checked"/>
           </vbox>
         </vbox>
         <vbox>
           <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableHere(this);" persist="selectedIndex value">
-            <radio id="hereLeftRadio" label="Left" value="L" observes="herePlacement" />
-            <radio id="hereRightRadio" label="Right" value="R" observes="herePlacement"/>
-            <radio id="hereInsideRadio" label="Inside" value="I" observes="herePlacement" />
-            <radio id="hereOutsideRadio" label="Outside" value="O" observes="herePlacement" />
-            <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+            <radio id="hereLeftRadio" label="&frameTab.descLeft;" value="L" observes="herePlacement" />
+            <radio id="hereRightRadio" label="&frameTab.descRight;" value="R" observes="herePlacement"/>
+            <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="herePlacement" />
+            <radio id="hereOutsideRadio" label="&placement.hereOutside;" value="O" observes="herePlacement" />
+            <radio id="hereFullWidthRadio" label="&placement.hereFull;" value="full" observes="herePlacement" />
           </radiogroup>
         </vbox>
       </hbox>
