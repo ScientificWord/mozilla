@@ -120,7 +120,11 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   RemoveMSTYLEs(rv);
   RemoveHSPACEs(rv);
   RemoveEmptyTags(dMML_tree);
-  FixAdjacentMNs(dMML_tree);
+  // jcs This was put in for the case of edited math having two adjacent MNs.
+  // jcs In that case we want them merged. But there are cases when we really 
+  // jcs want a list of MNs. See bug 1753. We'll probably want two versions
+  // jcs of fixup. One for repairing edited text, and one for internals.
+  //FixAdjacentMNs(dMML_tree);
   RemoveMixedNumbers(rv, NULL);
 
   rv = ChDataToCanonicalForm(rv);
