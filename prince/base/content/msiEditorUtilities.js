@@ -14,31 +14,29 @@ var gOS = "";
 //
 
 // a tracing utility
-function msidump(str1, indent1, str2)
-// at some point I envision a dialog with a short message and a "More info" button that
-// will display str2
+function msidump(str, indent, clear)
 {
 	var pref = GetStringPref("swp.messagelogger");
 	var indentstring="";
 	var spaces="                 ";
-	if (pref == null) pref = "dump";
-	if (indent1 && indent1 > 0)
-	  indentstring = spaces.substring(1,indent1+indent1);
+	if (pref == null || pref.length == 0) pref = "dump";
+	if (indent!= null && indent > 0)
+	  indentstring = spaces.substring(1,indent+indent);
 	switch (pref)
 	{
 		case "dump":
-			dump(indentstring+str1+"\n");
-			if (str2) dump(indentstring+str2+"\n");
+			dump(indentstring+str+"\n");
 			break;
 		case "jsconsole":
 			var cons;
 		  cons = Components.classes['@mozilla.org/consoleservice;1']
 	            .getService(Components.interfaces.nsIConsoleService);
-			cons.logStringMessage(indentstring+str1);
-			if (str2) cons.logStringMessage(str2);
+			if (clear)
+				cons.reset();
+			cons.logStringMessage(indentstring+str);
 			break;
 		case "alert":
-			AlertWithTitle(str1, str2, null);
+			AlertWithTitle("Dump", str, null);
 			break;
 	}
 }
@@ -49,11 +47,12 @@ function msidump(str1, indent1, str2)
 
 function dumpMath()
 {
+	msidump('',0,	true);
   var editorElement = getCurrentEditorElement();
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
   var rootnode = HTMLEditor.getSelectionContainer();
-  var i = 1;
+  var i = 2;
   while (rootnode && rootnode.parentNode && i-- >0) rootnode= rootnode.parentNode;
 //  while (rootnode && rootnode.localName != "math" && editor.tagListManager.getTagInClass("paratags",rootnode.localName,null)) rootnode = rootnode.parentNode;
 //  if (!rootnode)
@@ -61,17 +60,24 @@ function dumpMath()
 //    msidump("Failed to find math or paragraph node\n");
 //    return;
 //  }
-  var sel = HTMLEditor.selection;
-  var selNode = sel.anchorNode;
-  var selOffset = sel.anchorOffset;
-  var focNode = sel.focusNode;
-  var focOffset = sel.focusOffset;
-  var indent = 0;
-  msidump(selNode.nodeName + " to " + focNode.nodeName+"\n",0);
-  msidump("Selection:  selNode="+(selNode.nodeType == Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
-  msidump("focusNode="+(focNode.nodeType == Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
-  msidump("rootnode="+rootnode.nodeName+"\n",6);
-  dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
+  try
+  {
+		var sel = HTMLEditor.selection;
+	  var selNode = sel.anchorNode;
+	  var selOffset = sel.anchorOffset;
+	  var focNode = sel.focusNode;
+	  var focOffset = sel.focusOffset;
+	  var indent = 0;
+	  msidump(selNode.nodeName + " to " + focNode.nodeName+"\n",0);
+	  msidump("Selection:  selNode="+(selNode.nodeType == Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
+	  msidump("focusNode="+(focNode.nodeType == Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
+	  msidump("rootnode="+rootnode.nodeName+"\n",6);
+	  dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
+	}
+	catch(e)
+	{
+		finalThrow("dumpMath failed", e.message);
+	}
 }
 
 
@@ -89,33 +95,19 @@ try{
   var len = node.childNodes.length;
   if (node.nodeType == Node.ELEMENT_NODE)
   {
-//    doIndent(indent);
     msidump("<"+node.nodeName+"> \n",indent);
     for (var i = 0; i < len; i++)
     {    
-      if (node==selnode && i==seloffset)
-      {
-//        for (var j = 0; j<= indent; j++) msidump("**"); 
-        msidump("<selection anchor>",indent);
-      }
-      if (node==focnode && i==focoffset)
-      {
-//        for (var j = 0; j<= indent; j++) msidump("**"); 
-        msidump("<selection focus>\n", indent);
-      }
+	    if (node==selnode && seloffset==i) 
+	    {
+	      msidump("<selection anchor>\n", indent);
+	    }
+	    if (node==focnode && focoffset==i) 
+	    {
+	      msidump("<selection focus>\n", indent);
+	    }
       dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
     }
-    if (node==selnode && seloffset==len) 
-    {
-//      for (var j = 0; j<= indent; j++) msidump("**"); 
-      msidump("<selection anchor>\n", indent);
-    }
-    if (node==focnode && focoffset==len) 
-    {
-//      for (var j = 0; j<= indent; j++) msidump("**"); 
-      msidump("<selection focus>\n", indent);
-    }
-//    doIndent(indent);
     msidump("</"+node.nodeName+">\n", indent);
   }
   else if (node.nodeType == Node.TEXT_NODE)
@@ -127,19 +119,17 @@ try{
 			offset1 = Math.min(seloffset, focoffset);
 			offset2 = Math.max(seloffset, focoffset);
 			msidump(node.nodeValue.slice(0, offset1)+"<selection " + (offset1==seloffset?"anchor":"focus")+">"+
-			  node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1==seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2,-1))
+			  node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1==seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2))
 		}
 		else
 		{
 			if (node==selnode)
 	    {
-	//      doIndent(indent);
 	      msidump(node.nodeValue.slice(0,seloffset)+"<selection anchor>"+node.nodeValue.slice(seloffset)+"\n",indent);
 	    }
 	    else {
 	      if (node==focnode)
 	      {
-	//        doIndent(indent);
 	        msidump(node.nodeValue.slice(0,focoffset)+"<selection focus>"+node.nodeValue.slice(focoffset)+"\n",indent);
 	      }
 	      else {
@@ -148,8 +138,7 @@ try{
 	        var r = t.replace(/\s*$/,'');
 	        if (r.length>0)
 	        {
-	//          doIndent(indent);
-	          msidump(r+'\n', indent);
+		          msidump(r+'\n', indent);
 	        }
 	        else msidump("whitespace node\n");
 	      }
@@ -159,7 +148,7 @@ try{
 }
 catch(e)
 {
-	msidump(e.message+"\n");
+	finalThrow("dumpNodeMarkingSel failed", e.message);
 }
 }   
   
@@ -182,25 +171,20 @@ function AlertWithTitle(title, message, parentWindow)
   }
 }
 
-//// Optional: Caller may supply text to substitue for "Ok" and/or "Cancel"
-//function ConfirmWithTitle(title, message, okButtonText, cancelButtonText)
-//{
-//  var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService();
-//  promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
-//
-//  if (promptService)
-//  {
-//    var okFlag = okButtonText ? promptService.BUTTON_TITLE_IS_STRING : promptService.BUTTON_TITLE_OK;
-//    var cancelFlag = cancelButtonText ? promptService.BUTTON_TITLE_IS_STRING : promptService.BUTTON_TITLE_CANCEL;
-//
-//    return promptService.confirmEx(window, title, message,
-//                            (okFlag * promptService.BUTTON_POS_0) +
-//                            (cancelFlag * promptService.BUTTON_POS_1),
-//                            okButtonText, cancelButtonText, null, null, {value:0}) == 0;
-//  }
-//  return false;
-//}
-//
+function finalThrow(message, moremessage)
+{
+	var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]  
+	                        .getService(Components.interfaces.nsIPromptService);  
+
+	var flags = prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING  +  
+	            prompts.BUTTON_POS_2 * prompts.BUTTON_TITLE_CANCEL +
+							33554432;
+	var button = prompts.confirmEx(null, GetString("commandfailed"), message,  
+	                               flags, "", GetString("moreinfo"), "", null, null);  
+	if (button===2)
+	  prompts.alert(null, GetString("moredetails"), moremessage);
+}
+
 ///************* String Utilities ***************/
 //
 function GetString(name)
@@ -684,7 +668,8 @@ function msiGetCurrentEditor(theWindow)
 
 function msiGetActiveEditorElement(currWindow)
 {
-  if (!currWindow)
+  var editorElement;
+	if (!currWindow)
     currWindow = window.document.defaultView;
   if ("msiActiveEditorElement" in currWindow && (currWindow.msiActiveEditorElement != null) )
     return currWindow.msiActiveEditorElement;
@@ -693,9 +678,10 @@ function msiGetActiveEditorElement(currWindow)
     return currWindow.msiActiveEditorElement;
 //  if (!editorElement && currWindow.opener && currWindow.opener != currWindow)
 //    editorElement = msiGetActiveEditorElement(currWindow.opener);
-  var editorElement = msiGetCurrentEditorElementForWindow(currWindow);
-  if (!editorElement)
-    editorElement = currWindow.GetCurrentEditorElement();  //Give up?
+  editorElement = msiGetCurrentEditorElementForWindow(currWindow);
+// BBM: stop here! The next line leads to an infinite loop
+//  if (!editorElement)
+//    editorElement = currWindow.GetCurrentEditorElement();  //Give up?
   if (!editorElement)
     dump("\nCan't find active editor element!\n");
   return editorElement;
@@ -4751,7 +4737,7 @@ function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPrope
   var IsCSSPrefChecked = prefs.getBoolPref("editor.use_css");
   var styleVal, match;
   var elemStyle = element.style;
-  var regExp = new RegExp(cssPropertyName + ":\\s*([^;]+)(;|$)");
+  var regExp = new RegExp("^(?:.*;\\s*)*" + cssPropertyName + ":\\s*([^;]+)(;|$)");
   if (IsCSSPrefChecked && msiIsHTMLEditor(editorElement))
   {
     if (elemStyle)
@@ -4783,9 +4769,11 @@ function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPrope
 //This list (copied here from the Cascades code) represents the base HTML named colors.
 var msiHTMLNamedColorsList = 
 {  aqua : "#00ffff", black : "#000000", blue : "#0000ff", fuchsia : "#ff00ff",
-   gray : "#808080", green : "#008000", lime : "#00ff00", maroon : "#800000",
-   navy : "#000080", olive : "#808000", purple : "#800080", red : "#ff0000",
-   silver : "#c0c0c0", teal : "#008080", white : "#ffffff", yellow : "#ffff00"
+   gray : "#808080", green : "#008000", lime : "#c0ff00", maroon : "#800000",
+   navy : "#000080", olive : "#808000", purple : "#c00040", red : "#ff0000",
+   silver : "#c0c0c0", teal : "#008080", white : "#ffffff", yellow : "#ffff00",
+   cyan : "#00ffff", magenta : "#ff00ff", darkgray : "#404040", lightgray : "#c0c0c0",
+   brown : "#c08040", orange : "#ff8000", pink : "#ffc0c0", violet : "#800080"
 };
 
 function msiNamedColors(aNameSet)
@@ -6856,6 +6844,7 @@ var msiBaseMathNameList =
       }
     }
   }
+
 };
 
 function msiMathNameList()
@@ -6939,6 +6928,15 @@ function msiMathNameList()
   {
     return true;  //need to settle how this should be passed in first - is it guaranteed to be a NodeList?
   };
+  this.setUpTextBoxControl = function(theControl)
+  {
+//    theControl.markerList = this;
+    var currStr = "";
+    if (theControl.hasAttribute("onfocus"))
+      currStr = theControl.getAttribute("onfocus");
+    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();" + currStr);
+//    theControl.setAttribute("autocompletesearchparam", this.getIndexString());
+  }
 }
 
 var msiBaseMathUnitsList = 
@@ -7930,7 +7928,10 @@ var msiMarkerListPrototype =
   setUpTextBoxControl : function(theControl)
   {
     theControl.markerList = this;
-    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();");
+    var currStr = "";
+    if (theControl.hasAttribute("onfocus"))
+      currStr = theControl.getAttribute("onfocus");
+    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();" + currStr);
     theControl.setAttribute("autocompletesearchparam", this.getIndexString());
   }
 
@@ -9342,6 +9343,17 @@ var msiNavigationUtils =
         retList.push(clonedDocFragment.childNodes[ix]);
     }
     return retList;
+  },
+
+  getChildrenByTagName : function(aNode, nodeName)
+  {
+    var tagList = [];
+    for (var ix = 0; ix < aNode.childNodes.length; ++ix)
+    {
+      if (msiGetBaseNodeName(aNode.childNodes[ix]) == nodeName)
+        tagList.push(aNode.childNodes[ix]);
+    }
+    return tagList;
   },
 
   getParentOfType : function(aNode, nodeName)
@@ -11251,7 +11263,7 @@ function gotoFirstNonspaceInElement( editor, node )
 
 function updateTextNumber(textelement, id, event)
 {
-  if (event.type == "keypress")
+  if (event && (event.type == "keypress"))
   {
     var val = textelement.value;
     var textbox = document.getElementById(id);

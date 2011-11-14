@@ -3539,8 +3539,8 @@
                                  % either subscript or \_
 \def\({$}
 \def\){$}
-\def\[{$$}
-\def\]{$$}
+\def\[{\relax$$\relax}
+\def\]{\relax$$\relax}
 
 \let\math=\(
 \let\endmath=\)
@@ -3550,8 +3550,6 @@
 
 \@definecounter{equation}
 
-%\def\equation{$$\refstepcounter{equation}}
-%\def\endequation{\eqno \hbox{\@eqnnum}$$\@ignoretrue}
 \def\@eqnnum{{\normalfont \normalcolor (\theequation)}}
 
 \def\frac#1#2{{\begingroup#1\endgroup\over#2}}

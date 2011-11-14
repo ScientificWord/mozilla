@@ -53,7 +53,7 @@
 </xsl:template>
 
 <xsl:template match="html:head">
-\documentclass<xsl:if test="//html:documentclass/@options">[<xsl:for-each select="//html:documentclass/@options"
+\documentclass<xsl:if test="//html:colist/@*">[<xsl:for-each select="//html:colist/@*"
     ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if test="(position()>1) and (position()!=last())">, </xsl:if></xsl:if></xsl:for-each>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}
   <xsl:apply-templates/>
 </xsl:template>
@@ -505,34 +505,36 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:numberedlist">
+<xsl:template match="html:numberedlist"><xsl:if test="*">
 \begin{enumerate}
 <xsl:apply-templates/>
-\end{enumerate}
+\end{enumerate}</xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bulletlist">
+<xsl:if test="*">
 \begin{itemize}
 <xsl:apply-templates/>
 \end{itemize}
+</xsl:if>
 </xsl:template>
 
-<xsl:template match="html:descriptionlist">
+<xsl:template match="html:descriptionlist"><xsl:if test="*">
 \begin{description}
 <xsl:apply-templates/>
-\end{description}
+\end{description}</xsl:if>
 </xsl:template>
 
 <xsl:template match="html:numberedListItem">
-\item <xsl:apply-templates/>
+\item {<xsl:apply-templates/>}
 </xsl:template>
 
 <xsl:template match="html:bulletListItem">
-\item <xsl:apply-templates/>
+\item {<xsl:apply-templates/>}
 </xsl:template>
 
 <xsl:template match="html:descriptionListItem">
-\item <xsl:apply-templates/>
+\item {<xsl:apply-templates/>}
 </xsl:template>
 
 <xsl:template match="html:citation">
@@ -619,10 +621,9 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:centeredEnv">
-  
 \begin{center}
 <xsl:apply-templates/>
-\end{center}
+\end{center}\par
 </xsl:template>
 
 <xsl:template match="html:hebrew">
@@ -639,13 +640,8 @@ should not be done under some conditions -->
 \end{arabic}
 </xsl:template>
 
-<xsl:template match="html:centered">
-  
-\begin{center}
-\par
-<xsl:apply-templates/>
-\end{center}
-</xsl:template>
+<xsl:template match="html:centered"
+>\begin{center}<xsl:apply-templates/>\end{center}\par</xsl:template>
 
 <xsl:template match="html:pre">
 \begin{verbatim}
@@ -820,9 +816,10 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:bibliography">
+<xsl:if test="*">
 \begin{thebibliography}
 <xsl:apply-templates select="html:bibitem"/>
-\end{thebibliography}
+\end{thebibliography}</xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bibitem">
