@@ -70,9 +70,8 @@
 
 <xsl:template match="html:preamble">
 <xsl:text>%% preamble
+\usepackage{amssymb,amsmath}
 </xsl:text>
-\usepackage{amssymb}
-\usepackage{amsmath}
 <xsl:if test="$compiler='xelatex'">
 \usepackage{xltxtra}
 \usepackage{xkeyval}
@@ -88,11 +87,11 @@
 <xsl:if test="count(//html:indexitem) &gt; 0"
   >\usepackage{makeidx}</xsl:if>
 
-<xsl:for-each select="$requiredpackages/*"
+<xsl:for-each select="$packagelist/*"
   ><xsl:sort select="@pri" data-type="number"/>
 \usepackage<xsl:if test="@options"
     >[<xsl:value-of select="@options"/>]</xsl:if
-    >{<xsl:value-of select="@req"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
+    >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
   <!--xsl:apply-templates/ -->
   <xsl:for-each select="$preambletexbuttons/*"
   ><xsl:if test="@pre='1'"><xsl:apply-templates mode="tex"/>

@@ -374,8 +374,9 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
     nodeList->Item(0, getter_AddRefs(node));
     classcontainsElement = do_QueryInterface(node);
   } else {
-    return;
-  }
+	// it's not a class element; look for children of element
+		classcontainsElement = element;
+	}
   
   rv = classcontainsElement->GetElementsByTagName(NS_LITERAL_STRING("contains"), getter_AddRefs(tagContains));
   if (tagContains) 
@@ -812,6 +813,23 @@ NS_IMETHODIMP msiTagListManager::GetTagInClass(const nsAString & strTagClass, co
   return NS_OK;  
 }
 
+PRBool msiTagListManager::ContainsListForOuterIncludesInner( const nsAString & strOuter, const nsAString & strInner )
+{
+	// Go down the list of Tag list heads until name == strOuter
+	TagKeyListHead * pTKLH = pContainsList;
+	while (pTKLH && !(pTKLH->name.Equals(strOuter))) pTKLH = pTKLH->pNext;
+	if (!pTKLH) return PR_FALSE;
+	// Now go down this list looking for key.key == strInner
+	TagKeyList * pTKL = pTKLH->pListHead;
+	while (pTKL && !(pTKL->key.key.Equals(strInner))) pTKL = pTKL->pNext;
+	if (pTKL) // found a match
+	{
+		return PR_TRUE;
+	}
+	return PR_FALSE;	
+}
+
+
 /* PRBool tagCanContainTag (in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner); */
 NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter, 
   nsIAtom *atomNSOuter, const nsAString & strTagInner, nsIAtom *atomNSInner, PRBool *_retval)
@@ -823,11 +841,11 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
     return NS_OK;
   }
   *_retval = PR_FALSE;
+	PRBool foundit = PR_FALSE;
   nsAutoString classOuter;
   nsresult rv = GetClassOfTag(strTagOuter, atomNSOuter, classOuter);
   nsAutoString classInner;
   rv = GetClassOfTag(strTagInner, atomNSInner, classInner);
-//  if (classInner.Length() == 0) classInner.AssignLiteral("texttag");
   // structtags are different: the level determines what can contain what.
   if (classOuter.Equals(classInner) && classOuter.EqualsLiteral("structtag"))
   {
@@ -835,50 +853,23 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
     // is '*', or if the outer level is strictly less than the inner level.
     return LevelCanContainLevel( strTagOuter, atomNSOuter, strTagInner, atomNSInner, _retval);
   }
-  // Find the contains list for classOuter
-  TagKeyListHead * pTagKeyListHead = pContainsList;
-  while (PR_TRUE)
-  {
-    while (pTagKeyListHead && !(pTagKeyListHead->name.Equals(classOuter))) 
-      pTagKeyListHead = pTagKeyListHead->pNext;
-    if (!pTagKeyListHead) // there is no list for the class name; treat it like a text tag
-    {
-      if (classOuter.EqualsLiteral("texttag")) break;
-        // we already changed the name and *still* didn't find the list header
-      classOuter = NS_LITERAL_STRING("texttag");
-      pTagKeyListHead = pContainsList;
-    }
-    else break;
-  }
-  if (!pTagKeyListHead) return NS_ERROR_FAILURE;
-  // in the list headed by pTagKeyListHead, search for the classInner string, then the 
-  // strTagInner string.
-  TagKeyList * pTKL = pTagKeyListHead->pListHead;
-  while (pTKL && !(classInner.Equals(pTKL->key.key))) pTKL = pTKL->pNext;
-  if (pTKL) // a match was found
-  {
-    *_retval = PR_TRUE;
-    return NS_OK; 
-  }
-  // Broad categories didn't work; now look for a specific tag
-  nsString strTemp;
-  strTemp.Assign(strTagInner);
-#ifdef USE_NAMESPACES
-  TagKey tagkeyLookup(strTemp, PrefixFromNameSpaceAtom(atomNSInner)); 
-#else
-  TagKey tagkeyLookup(strTemp);
-#endif
-//  printf("Looking for tag %S\n", tagkeyLookup.key.BeginReading());
-  pTKL = pTagKeyListHead->pListHead;
-  while (pTKL && !(tagkeyLookup.key.Equals(pTKL->key.key))) pTKL = pTKL->pNext;
-  if (pTKL) // a match was found
-  {
-    *_retval = PR_TRUE;
-    return NS_OK; 
-  }
-  // failed to find anything if we got here.
-  *_retval = PR_FALSE;
-  return NS_OK;
+	// implementation of the rule that all unknown tags can go into a paragraph
+	if (classOuter.EqualsLiteral("paratag") && classInner.Length() == 0) foundit = PR_TRUE;
+  // check to see if the class of inner is in the class of the outer
+	if (!foundit)
+		foundit = ContainsListForOuterIncludesInner( classOuter, classInner );
+	if (!foundit)
+		foundit = ContainsListForOuterIncludesInner( classOuter, strTagInner);
+	if (!foundit)
+		foundit = ContainsListForOuterIncludesInner( strTagOuter, classInner);
+	if (!foundit)
+		foundit = ContainsListForOuterIncludesInner( strTagOuter, strTagInner);
+  if (!foundit)	  
+	{
+		return NS_OK; // *_retval is false;
+	}
+	*_retval = PR_TRUE;
+	return NS_OK;
 }
 
 

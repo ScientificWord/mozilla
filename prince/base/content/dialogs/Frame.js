@@ -39,12 +39,20 @@ function onOK() {
 	{
 		try 
 		{
-			msiframe = editor.document.createElement("msiframe");
-			var para = editor.document.createElement("bodyText");
-			msiframe.appendChild(para);
-			var br = editor.document.createElement("br");
-			para.appendChild(br);
-			editor.insertElementAtSelection(msiframe, true);
+			if (editor.selection.collapsed)
+			{
+				msiframe = editor.document.createElement("msiframe");
+				var para = editor.document.createElement("bodyText");
+				msiframe.appendChild(para);
+				var br = editor.document.createElement("br");
+				para.appendChild(br);
+				editor.insertElementAtSelection(msiframe, true);
+			}
+			else
+			{
+				editor.setStructureTag("msiframe");
+				msiframe = getSelectionParentByTag(editor, "msiframe");
+			}
 		}
 		catch(e)
 		{
@@ -53,10 +61,10 @@ function onOK() {
 	}
   setFrameAttributes(msiframe);
 	editor.endTransaction();
-	if (isNewNode)
-	{
-		editor.selection.collapse(para,0);
-	}
+//	if (isNewNode)
+//	{
+//		editor.selection.collapse(para,0);
+//	}
   return(true);
 }
 
