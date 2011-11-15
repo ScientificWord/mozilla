@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE tagproperties [
 <!ATTLIST tag id ID #IMPLIED> ]>
-<tagproperties> 
+<tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML"> 
 	<namespaces>
     <!-- currently white space in the namespace declarations will be kept, so these declarations
       should be on one line with no white space -->
@@ -98,54 +98,79 @@
 				<tag id="defaultparagraph" nm="bodyText">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<br/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <bodyText>
+              <cursor/>
+              <br/>
+            </bodyText>
+          </initialcontents>
 				</tag>
 				<tag nm="rtlBodyText">
 					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<br/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <rtlBodyText>
+              <cursor/>
+              <br/>
+            </rtlBodyText>
+          </initialcontents>
 				</tag>
 				<tag nm="p">
 					<description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<br/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <p>
+              <cursor/>
+              <br/>
+            </p>
+          </initialcontents>
 				</tag>
 				<tag nm="bodyMath">
 					<description>Body math paragraph</description>
 					<nexttag>bodyMath</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontentsforempty> <![CDATA[<math xmlns="//www.w3.org/1998/Math/MathML"><cursor/></math>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <bodyMath>
+              <mml:math>
+                <mml:mi tempinput='true'>
+                  <cursor/>&#x200B;
+                </mml:mi>
+              </mml:math>
+              <br/>
+            </bodyMath>
+          </initialcontents>
 				</tag>
 				<tag nm="sectiontitle">
 					<nexttag>bodyText</nexttag>
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
+          <initialcontents>
+            <sectiontitle>
+              <cursor/>
+              <br/>
+            </sectiontitle>
           </initialcontents>
 				</tag>
 				<tag nm="shortQuote">
 					<nexttag>shortQuote</nexttag>
 					<description>Quote</description>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <shortQuote>
+              <cursor/>
+              <br/>
+            </shortQuote>
+          </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
 			  </tag>
-				<!--tag nm="title">
-					<nexttag>bodyText</nexttag>
-					<description>Title</description>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br/>]]>
-          </initialcontents>
-				</tag -->
 				<tag nm="line">
 					<nexttag>line</nexttag>
 					<description>Line</description>
-          <initialcontents> <![CDATA[<cursor/><br/>]]>
+          <initialcontents>
+            <line>
+              <cursor/>
+              <br/>
+            </line>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
@@ -153,7 +178,11 @@
 				<tag nm="centered">
 					<nexttag>centered</nexttag>
 					<description>Centered paragraph</description>
-          <initialcontents> <![CDATA[<cursor/><br/>]]>
+          <initialcontents>
+            <centered>
+              <cursor/>
+              <br/>
+            </centered>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
@@ -161,7 +190,11 @@
 				<tag nm="dialogbase" hidden="1">
 					<nexttag>bodyText</nexttag>
 					<description>Hidden dialog base</description>
-          <initialcontents> <![CDATA[<cursor/><br/>]]>
+          <initialcontents>
+            <dialogbase>
+              <cursor/>
+              <br/>
+            </dialogbase>
           </initialcontents>
 				</tag>
 			</tags>
@@ -215,36 +248,52 @@
           <description>Bullet list item</description>
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <bulletListItem>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </bulletListItem>
           </initialcontents>
         </tag>
 				<tag nm="numberedListItem">
           <description>Numbered list item</description>
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <numberedListItem>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </numberedListItem>
           </initialcontents>
         </tag>
 				<tag nm="descriptionListItem">
           <description>Description list item</description>
           <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <descriptionListItem>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </descriptionListItem>
           </initialcontents>
         </tag>
 				<tag nm="bibitem">
           <description>Bibliography entry</description>
           <htmllistparent>bibliography</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <bibitem>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </bibitem>
           </initialcontents>
           <contains>biblabel</contains>
         </tag>
@@ -270,13 +319,15 @@
 				<tag nm="book">
           <level>-2</level>
           <description>Book</description>
-          <discardemptyblock>true</discardemptyblock>
+          <titletag>sectiontitle</titletag>
+          <discardemptyblock>false</discardemptyblock>
           <prefsub>part</prefsub>
         </tag>
 				<tag nm="part">
           <level>-1</level>
           <description>Part of a book</description>
-          <discardemptyblock>true</discardemptyblock>
+          <titletag>sectiontitle</titletag>
+          <discardemptyblock>false</discardemptyblock>
           <prefsub>chapter</prefsub>
         </tag>
 				<tag nm="chapter">
@@ -284,7 +335,13 @@
           <description>Chapter</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
+          <initialcontents>
+            <chapter>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
+            </chapter>
           </initialcontents>
           <prefsub>section</prefsub>
         </tag>
@@ -293,8 +350,14 @@
           <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
-          </initialcontents>
+          <initialcontents>
+             <section>
+               <sectiontitle>
+                 <cursor/>
+                 <br/>
+               </sectiontitle>
+             </section>
+           </initialcontents>
           <nextafteremptyblock>chapter</nextafteremptyblock>
           <prefsub>subsection</prefsub>
         </tag>
@@ -303,8 +366,14 @@
           <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
-          </initialcontents>
+          <initialcontents>
+             <subsection>
+               <sectiontitle>
+                 <cursor/>
+                 <br/>
+               </sectiontitle>
+             </subsection>
+           </initialcontents>
           <nextafteremptyblock>section</nextafteremptyblock>
           <prefsub>subsubsection</prefsub>
         </tag>
@@ -313,8 +382,14 @@
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
-          </initialcontents>
+          <initialcontents>
+             <subsubsection>
+               <sectiontitle>
+                 <cursor/>
+                 <br/>
+               </sectiontitle>
+             </subsubsection>
+           </initialcontents>
           <nextafteremptyblock>subsection</nextafteremptyblock>
           <prefsub>paragraph</prefsub>
         </tag>
@@ -323,7 +398,13 @@
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle> ]]>
+          <initialcontents>
+            <paragraph>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
+            </paragraph>
           </initialcontents>
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
           <prefsub>subparagraph</prefsub>
@@ -333,19 +414,15 @@
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
+          <initialcontents>
+            <subparagraph>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
+            </subparagraph>
           </initialcontents>
           <nextafteremptyblock>paragraph</nextafteremptyblock>
-        </tag>
-				<tag nm="appendix">
-          <level>0</level>
-          <description>Appendix</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText></bodyText>
-              ]]>
-          </initialcontents>
-          <prefsub>section</prefsub>
         </tag>
 			</tags>
 		</tagclass>
@@ -354,14 +431,21 @@
       <classcontains>
 			  <contains>paratag</contains>
 			  <contains>structtag</contains>
+			  <contains>envtag</contains>
       </classcontains>
 			<tags>
 				<tag nm="(remove environment)" id="clearenvironmenttag" ><description>Remove innermost environment tag</description></tag>
 				<tag nm="longQuotation">
 					<description>Long quotation</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <longQuotation>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </longQuotation>
+          </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
 				<tag nm="frontmatter">
@@ -371,7 +455,13 @@
 	  		  <inclusion>true</inclusion>
           <description>Front Matter</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[ <bodyText><cursor/><br/></bodyText>]]>
+          <initialcontents>
+            <frontmatter>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </frontmatter>
           </initialcontents>
         </tag>
 				<tag nm="dedication">
@@ -380,40 +470,42 @@
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <dedication>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </dedication>
           </initialcontents>
         </tag>
 				<tag nm="centeredEnv">
           <level>*</level>
           <description>Centered</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
-					<nexttag/>
 	  		  <inclusion>true</inclusion>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents>
+            <centeredEnv>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </centeredEnv>
+          </initialcontents>
+					<nexttag>bodyText</nexttag>
         </tag>
 				<tag nm="preface">
           <level>0</level>
           <description>Preface</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText></bodyText>
-              ]]>
-          </initialcontents>
-					<nexttag/>
-	  		  <inclusion>true</inclusion>
-        </tag>
-				<tag nm="index">
-          <level>*</level>
-          <description>Index</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText></bodyText>
-              ]]>
+          <initialcontents>
+            <preface>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </preface>
           </initialcontents>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -422,9 +514,13 @@
           <level>0</level>
           <description>Glossary</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText></bodyText>
-              ]]>
+          <initialcontents>
+            <glossary>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </glossary>
           </initialcontents>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -433,10 +529,6 @@
           <level>*</level>
   			  <description>Verbatim text</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
 				  <nexttag>bodyText</nexttag>
   		    <inclusion>true</inclusion>
   		  </tag>
@@ -444,9 +536,13 @@
           <level>*</level>
           <description>Note</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <note style="padding: 10px;">
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </note>
           </initialcontents>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -457,9 +553,13 @@
           <description>Assertion</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <assertion>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </assertion>
           </initialcontents>
         </tag>
 				<tag nm="conjecture">
@@ -468,9 +568,13 @@
           <description>Conjecture</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <conjecture>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </conjecture>
           </initialcontents>
         </tag>
 				<tag nm="corollary">
@@ -479,10 +583,14 @@
           <description>Corollary</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <corollary>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </corollary>
+           </initialcontents>
         </tag>
 				<tag nm="criterion">
           <level>*</level>
@@ -490,10 +598,14 @@
           <description>Criterion</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <criterion>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </criterion>
+           </initialcontents>
         </tag>
 				<tag nm="lemma">
           <level>*</level>
@@ -501,10 +613,14 @@
           <description>Lemma</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <lemma>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </lemma>
+           </initialcontents>
         </tag>
 				<tag nm="proposition">
           <level>*</level>
@@ -512,10 +628,14 @@
           <description>Proposition</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <proposition>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </proposition>
+           </initialcontents>
         </tag>
 				<tag nm="theorem">
           <level>*</level>
@@ -523,10 +643,14 @@
           <description>Theorem</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <theorem>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </theorem>
+           </initialcontents>
         </tag>
 				<tag nm="algorithm">
           <level>*</level>
@@ -534,10 +658,14 @@
           <description>Algorithm</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <algorithm>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </algorithm>
+           </initialcontents>
         </tag>
 				<tag nm="assumption">
           <level>*</level>
@@ -545,10 +673,14 @@
           <description>Assumption</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <assumption>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </assumption>
+           </initialcontents>
         </tag>
 				<tag nm="axiom">
           <level>*</level>
@@ -556,10 +688,14 @@
           <description>Axiom</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <axiom>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </axiom>
+           </initialcontents>
         </tag>
 				<tag nm="condition">
           <level>*</level>
@@ -567,10 +703,14 @@
           <description>Condition</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <condition>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </condition>
+           </initialcontents>
         </tag>
 				<tag nm="definition">
           <level>*</level>
@@ -578,10 +718,14 @@
           <description>Definition</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <definition>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </definition>
+           </initialcontents>
         </tag>
 				<tag nm="example">
           <level>*</level>
@@ -589,10 +733,14 @@
           <description>Example</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <example>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </example>
+           </initialcontents>
         </tag>
 				<tag nm="exercise">
           <level>*</level>
@@ -600,10 +748,14 @@
           <description>Exercise</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <exercise>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </exercise>
+           </initialcontents>
         </tag>
 				<tag nm="hypothesis">
           <level>*</level>
@@ -611,10 +763,14 @@
           <description>Hypothesis</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <hypothesis>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </hypothesis>
+           </initialcontents>
         </tag>
 				<tag nm="problem">
           <level>*</level>
@@ -622,10 +778,14 @@
           <description>Problem</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <problem>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </problem>
+           </initialcontents>
         </tag>
 				<tag nm="property">
           <level>*</level>
@@ -633,10 +793,14 @@
           <description>Property</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <property>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </property>
+           </initialcontents>
         </tag>
 				<tag nm="question">
           <level>*</level>
@@ -644,10 +808,14 @@
           <description>Question</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <question>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </question>
+           </initialcontents>
         </tag>
 				<tag nm="case">
           <level>*</level>
@@ -655,10 +823,14 @@
           <description>Case</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <case>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </case>
+           </initialcontents>
         </tag>
 				<tag nm="claim">
           <level>*</level>
@@ -666,10 +838,14 @@
           <description>Claim</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <claim>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </claim>
+           </initialcontents>
         </tag>
 				<tag nm="conclusion">
           <level>*</level>
@@ -677,10 +853,14 @@
           <description>Conclusion</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
-          </initialcontents>
+          <initialcontents>
+             <conclusion>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </conclusion>
+           </initialcontents>
         </tag>
 				<tag nm="notation">
           <level>*</level>
@@ -688,9 +868,13 @@
           <description>Notation</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <notation>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </notation>
           </initialcontents>
         </tag>
 				<tag nm="remark">
@@ -699,9 +883,13 @@
           <description>Remark</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <remark>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </remark>
           </initialcontents>
         </tag>
 				<tag nm="summary">
@@ -710,9 +898,13 @@
           <description>Summary</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <summary>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </summary>
           </initialcontents>
         </tag>
         <!-- The "acknowledgment" tag isn't intended to be added to the interface, as the non-front-matter version induces only confusion among TeX users. -->
@@ -722,9 +914,13 @@
           <description>Acknowledgment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <acknowledgment>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </acknowledgment>
           </initialcontents>
         </tag>
 				<tag nm="proof">
@@ -733,22 +929,29 @@
           <description>Proof</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <proof>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </proof>
           </initialcontents>
         </tag>
   		  <tag nm="msiframe">
-          <contains>paratag</contains>
           <contains>envtag</contains>         
           <level>*</level>
           <description>Frame</description>
 	  		  <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <msiframe style="border: thin solid black; padding: 10px;">
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </msiframe>
           </initialcontents>
 					<nexttag>bodyText</nexttag>
 	  		  <!--inclusion>true</inclusion-->
@@ -758,9 +961,13 @@
           <description>First language environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <!--initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <!--initialcontents>
+            <##lang1##>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </##lang1##>
           </initialcontents -->
         </tag>
 				<tag nm="##lang2##" hidden="1" babel="4">
@@ -768,9 +975,13 @@
           <description>Second language environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <!--initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <!-- initialcontents>
+            <##lang2##>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </##lang2##>
           </initialcontents -->
         </tag>
    		</tags>
@@ -780,36 +991,54 @@
 			<tags>
 				<tag nm="abstract"><description>Abstract</description>
           <realtagclass>envtag</realtagclass>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents>
+            <abstract>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </abstract>
+          </initialcontents>
 					<nexttag>bodyText</nexttag>
-					<discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
-					<nexttag/>
-	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="address"><description>Address</description>y
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
-					<nexttag/>
 	  		  <inclusion>true</inclusion>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents>
+            <address>
+              <cursor/>
+              <br/>
+            </address>
+          </initialcontents>
+					<nexttag>bodyText</nexttag>
         </tag>
         <tag nm="author"><description>Author</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
-					<nexttag/>
 	  		  <inclusion>true</inclusion>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents>
+            <author>
+              <cursor/>
+              <br/>
+            </author>
+          </initialcontents>
+					<nexttag>bodyText</nexttag>
         </tag>
         <tag nm="date"><description>Date</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <date>
+              <cursor/>
+              <br/>
+            </date>
+          </initialcontents>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
@@ -850,8 +1079,12 @@
 					<nexttag>bodyText</nexttag>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <title>
+              <cursor/>
+              <br/>
+            </title>
+          </initialcontents>
         </tag>
 			</tags>
 		</tagclass>
@@ -912,9 +1145,11 @@
 	  		  <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br/></bodyText>
-              ]]>
+          <initialcontents>
+            <imagecaption>
+              <cursor/>
+              <br/>
+            </imagecaption>
           </initialcontents>
 					<nexttag>bodyText</nexttag>
           <contains>paratag</contains>
