@@ -1022,25 +1022,40 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   nsCOMPtr<nsIDOMNode> outLeftNode;
   nsCOMPtr<nsIDOMNode> outRightNode;
   nsCOMPtr<nsIDOMNode> tempNode;
-  PRInt32 outOffset;
+  nsAutoString leftName;
+  nsAutoString rightName;
+	nsCOMPtr<nsIDOMNode> rightNode;
+	nsCOMPtr<nsIDOMElement> rightElem;
+	PRInt32 outOffset;
   PRInt32 newsplitpointOffset;
   nsCOMPtr<nsIDOMNode> newsplitpointNode;
   PRBool fDiscardNode, isEmpty;
   PRBool isAtEnd;
+  nsCOMPtr<nsIDOMDocument> doc;
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  nsCOMPtr<nsIDOMNode> node;
+  PRUint32 nodeCount;
+	PRBool success;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMNode> currentNode;
+  nsCOMPtr<nsIDOMNode> parentOfNewStructure;
+  PRInt32 offsetOfNewStructure;
+  PRInt32 offset;
+  nsIAtom * atomNS = nsnull;
+  nsString sNewNodeName;
+  nsString strContents;
+  nsCOMPtr<nsIDOMNode> newNode = nsnull;
+  nsCOMPtr<nsIDOMNSHTMLElement> newHTMLElement;
+  nsCOMPtr<nsIDOMElement> newElement;
   if (!splitpointNode) res = NS_ERROR_FAILURE;
   if (NS_FAILED(res)) return res;
   if (IsBlockNode(splitpointNode)) splitNode = splitpointNode;
   else splitNode = GetBlockNodeParent(splitpointNode);
   nsString strTagName;
   if (splitNode) GetTagString(splitNode, strTagName);
-#if DEBUG_barry || DEBUG_Barry
-  DebExamineNode(splitNode);
-#endif
   if (!IsBlockNode(splitNode)||strTagName.Equals(NS_LITERAL_STRING("body"))
-    ||strTagName.Equals(NS_LITERAL_STRING("#document"))) {
-  // there is no paragraph or section node.  We probably should put in the default
-  // paragraph node (defined in the editbehavior file) to enclose as much text as possible.
-  // For the moment, we put in a <br/>  --BBM review this
+    ||strTagName.Equals(NS_LITERAL_STRING("#document"))) 
+	{
     nsCOMPtr<nsIDOMNode> brNode;
     return InsertBR(address_of(brNode));  // only inserts a br node
   }
@@ -1049,15 +1064,9 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   // and go up to the parent, and so on, until we find a tag that is willing to be split.
   nsCOMPtr<nsIDOM3Node> dom3node;
   dom3node = do_QueryInterface(splitNode);
-#if DEBUG_barry || DEBUG_Barry
-  DebExamineNode(splitNode);
-#endif
-  //isEmpty = IsEmptyTextContent(content);
   if (fFancy)
   {
-    nsAutoString strContents;
-    dom3node->GetTextContent(strContents);
-    isEmpty = IsWhiteSpaceOnly(strContents);
+		res = IsEmptyNode( splitNode, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
 		// check that there aren't significant tags in it, such as empty tables, etc.
 		if (isEmpty) isEmpty = HasNoSignificantTags(splitNode, mtagListManager);
     fDiscardNode = PR_FALSE;                       
@@ -1065,136 +1074,106 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   }
   PRUint32 length;
   if (fFancy && isEmpty && fDiscardNode)
-  {  // Check that we are at the end of the structure
+  {  
+		// Check that we are at the end of the structure
     nsEditor::GetNodeLocation(splitNode, address_of(newsplitpointNode), &newsplitpointOffset);
     nsCOMPtr<nsIDOMNodeList> children;
     res = newsplitpointNode->GetChildNodes(getter_AddRefs(children));
     res = children->GetLength(&length);
     isAtEnd = PR_TRUE;
-   nsCOMPtr<nsIDOMNode> tempNode;
-   nsCOMPtr<nsIDOM3Node> dom3tempnode;
-   nsString s;
-#if DEBUG_barry || DEBUG_Barry
-//   printf("\noffset is %d, number of nodes is %d\n", newsplitpointOffset, length);
-#endif
-   for (int i = newsplitpointOffset; i < length; i++)
-   {
-     res = children->Item(i, getter_AddRefs(tempNode));
-     res = tempNode->GetLocalName(s);
-#if DEBUG_barry || DEBUG_Barry
-//     printf("tag #%d: %S\n", i, s.BeginReading());
-#endif
-     dom3tempnode = do_QueryInterface(tempNode);
-		 dom3tempnode->GetTextContent(s);
-		 if (!IsWhiteSpaceOnly(s))
-		 {
-#if DEBUG_barry || DEBUG_Barry
-//			 printf("nonempty node: contents = %S\n", s.BeginReading());
-#endif
-       isAtEnd = PR_FALSE;
-		 }
-   }
-       
-  }                           
-  if (fFancy && isEmpty && fDiscardNode) // && isAtEnd)
-  {  
-    nsIAtom * atomNS = nsnull;
-    PRBool fCanContain;
-    nsString sNewNodeName;
-    nsString strContents;
-    nsCOMPtr<nsIDOMNode> newNode;
-    nsCOMPtr<nsIDOMNSHTMLElement> newHTMLElement;
-    nsCOMPtr<nsIDOMElement> newElement;
-    mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("nextafteremptyblock"), sNewNodeName);
-    if (sNewNodeName.Length() > 0)
-    {
-      res = mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
-      if (strContents.Length() == 0) 
-        res = mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("initialcontents"), strContents);
-  // if the new node is a structure node, we need nsHTMLEditRules::InsertStructure
-  // walk up the tree to find where the new structure tag will fit.
-      nsCOMPtr<nsIDOMNode> parent;
-      nsCOMPtr<nsIDOMNode> currentNode;
-      nsCOMPtr<nsIDOMNode> parentOfNewStructure;
-      PRInt32 offsetOfNewStructure;
-      PRInt32 offset = newsplitpointOffset;
-      parent = newsplitpointNode;
-      while (true)
+		nsCOMPtr<nsIDOMNode> tempNode;
+		nsCOMPtr<nsIDOM3Node> dom3tempnode;
+		nsString s;
+  	for (int i = newsplitpointOffset; i < length; i++)
+  	{
+  	  res = children->Item(i, getter_AddRefs(tempNode));
+  	  res = tempNode->GetLocalName(s);
+  	#if DEBUG_barry || DEBUG_Barry
+  	//     printf("tag #%d: %S\n", i, s.BeginReading());
+  	#endif
+  	  dom3tempnode = do_QueryInterface(tempNode);
+  		dom3tempnode->GetTextContent(s);
+  		if (!IsWhiteSpaceOnly(s))
+  		{
+  		#if DEBUG_barry || DEBUG_Barry
+  		// printf("nonempty node: contents = %S\n", s.BeginReading());
+  		#endif
+  		    isAtEnd = PR_FALSE;
+  		}
+  	}
+    if (fFancy && isEmpty && fDiscardNode) // && isAtEnd)
+    {  
+      nsIAtom * atomNS = nsnull;
+      PRBool fCanContain;
+      mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("nextafteremptyblock"), sNewNodeName);
+      if (sNewNodeName.Length() > 0)
       {
-        res = mtagListManager->NodeCanContainTag(parent, sNewNodeName, nsnull, &fCanContain);
-        if (NS_FAILED(res)) return res;
-        if (fCanContain)
-        { // parent is now the parent of our soon-to-be-created node, and it will go in at offset+1
-          parentOfNewStructure = parent;
-          offsetOfNewStructure = offset + 1;
-          break;
-        } 
-        currentNode = parent;
-        res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
-    //    printf("Parent of target tag: \n");
-    //    mHTMLEditor->DumpNode(parent); 
-    #if DEBUG_barry || DEBUG_Barry
-       DebExamineNode(parent);
-    #endif
-        if (NS_FAILED(res)) return res;
-      }
-     /////////////////////
+        res = splitpointNode->GetOwnerDocument(getter_AddRefs(doc));
+        res = mtagListManager->GetNewInstanceOfNode(sNewNodeName, atomNS, doc, getter_AddRefs(newNode));
+    // if the new node is a structure node, we need nsHTMLEditRules::InsertStructure
+    // walk up the tree to find where the new structure tag will fit.
+        offset = newsplitpointOffset;
+        parent = newsplitpointNode;
+        while (true)
+        {
+          res = mtagListManager->NodeCanContainTag(parent, sNewNodeName, nsnull, &fCanContain);
+          if (NS_FAILED(res)) return res;
+          if (fCanContain)
+          { // parent is now the parent of our soon-to-be-created node, and it will go in at offset+1
+            parentOfNewStructure = parent;
+            offsetOfNewStructure = offset + 1;
+            break;
+          } 
+          currentNode = parent;
+          res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
+      //    printf("Parent of target tag: \n");
+      //    mHTMLEditor->DumpNode(parent); 
+      #if DEBUG_barry || DEBUG_Barry
+         DebExamineNode(parent);
+      #endif
+          if (NS_FAILED(res)) return res;
+        }
+       /////////////////////
 
-      res = CreateNode( sNewNodeName, parentOfNewStructure, offsetOfNewStructure, getter_AddRefs(newNode));
-      newElement = do_QueryInterface(newNode);
-      newHTMLElement = do_QueryInterface(newNode);
-      if (strContents.Length() > 0) newHTMLElement->SetInnerHTML(strContents);
-      newsplitpointNode = newNode;
-      newsplitpointOffset = 0;
-      // TODO: hunt for cursor tag in the new contents
-      nsCOMPtr<nsIDOMNodeList> nodeList;
-      nsCOMPtr<nsIDOMNode> node;
-      PRUint32 nodeCount;
-      res = GetSelection(getter_AddRefs(selection));
-      /// The following should be a procedure
-      res = newElement->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
-      if (nodeList) nodeList->GetLength(&nodeCount);
-
-      if (nodeCount > 0)
-      {
-        nodeList->Item(0, getter_AddRefs(node));
-        nsEditor::GetNodeLocation(node, address_of(newsplitpointNode), &newsplitpointOffset);
-        DeleteNode(node);
-        //selPriv->SetInterlinePosition(PR_TRUE);
-        res = selection->Collapse(newsplitpointNode, newsplitpointOffset);
+        if (!newNode) res = CreateNode( sNewNodeName, parentOfNewStructure, offsetOfNewStructure, getter_AddRefs(newNode));
+        newElement = do_QueryInterface(newNode);
+        newsplitpointNode = newNode;
+        newsplitpointOffset = 0;
+        // Hunt for cursor tag in the new contents
+  			PRBool success;
+  			if (newNode) res = SetCursorInNewHTML(newElement, &success);
+  // ??      nsEditor::DeleteNode(splitNode);
+        return res;
       }
-      nsEditor::DeleteNode(splitNode);
-      //end of procedure
-      return res;
-    }
-    else 
-    {
-      nsAutoString s2;
-      nsIAtom * nsAtom;
-	    mtagListManager->GetTagOfNode(newsplitpointNode, &nsAtom, strTagName ); 
-      res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("level"), s2);
-      if (s2.EqualsLiteral("*"))
-        fCanContain = PR_TRUE;
-      else
+      else 
       {
-        nsAutoString tagClass;
-        mtagListManager->GetClassOfTag(strTagName, nsAtom, tagClass);
-  		  fCanContain = (tagClass.EqualsLiteral("structtag")||
-  		    tagClass.EqualsLiteral("listparenttag")||
-  		    tagClass.EqualsLiteral("envtag")||
-  		    tagClass.EqualsLiteral("listtag"));
+        nsAutoString s2;
+        nsIAtom * nsAtom;
+  	    mtagListManager->GetTagOfNode(newsplitpointNode, &nsAtom, strTagName ); 
+        res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("level"), s2);
+        if (s2.EqualsLiteral("*"))
+          fCanContain = PR_TRUE;
+        else
+        {
+          nsAutoString tagClass;
+          mtagListManager->GetClassOfTag(strTagName, nsAtom, tagClass);
+    		  fCanContain = (tagClass.EqualsLiteral("structtag")||
+    		    tagClass.EqualsLiteral("listparenttag")||
+    		    tagClass.EqualsLiteral("envtag")||
+    		    tagClass.EqualsLiteral("listtag"));
+        }
+  	    if (fCanContain)
+  	    {
+  //        nsCOMPtr<nsIDOMNode> parent;
+  //        PRInt32 offset;
+  //        res = nsEditor::GetNodeLocation(splitNode, address_of(parent), &offset);
+          res = GetTagString(splitNode, strTagName);
+  		    nsEditor::DeleteNode(splitNode);
+          res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
+  	      if (!s2.EqualsLiteral("true"))
+            res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);  
+  	    }
       }
-	    if (fCanContain)
-	    {
-//        nsCOMPtr<nsIDOMNode> parent;
-//        PRInt32 offset;
-//        res = nsEditor::GetNodeLocation(splitNode, address_of(parent), &offset);
-        res = GetTagString(splitNode, strTagName);
-		    nsEditor::DeleteNode(splitNode);
-        res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
-	      if (!s2.EqualsLiteral("true"))
-          res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);  
-	    }
     }
   } 
   else
@@ -1222,42 +1201,80 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     FixMathematics(outRightNode, PR_FALSE, PR_FALSE);
     if (outRightNode) { 
       mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);
+			rightNode = do_QueryInterface(outRightNode);
+			rightElem = do_QueryInterface(outRightNode);
   
-		  nsAutoString leftName;
-		  nsAutoString rightName;
 		  res = GetTagString(outLeftNode, leftName);
 		  res = GetTagString(outRightNode, rightName);
 		  if (!(leftName.Equals(rightName))) {
-			   // strip attributes off of the right node
-			   nsCOMPtr<nsIDOMNamedNodeMap> attributemap;
-			   nsCOMPtr<nsIDOMNode> rightNode = do_QueryInterface(outRightNode);
-			   nsCOMPtr<nsIDOMElement> rightElem = do_QueryInterface(outRightNode);
-			
-			   if (rightNode){
-			      rightNode->GetAttributes(getter_AddRefs(attributemap));
-			    
-			      PRUint32 length;
-			      nsCOMPtr<nsIDOMNode> node;
-			      nsCOMPtr<nsIDOMAttr> attrNode;
-			      nsCOMPtr<nsIDOMAttr> dummyattrNode;
-			      attributemap->GetLength(&length);
-			      for (PRInt32 i = length-1; i >= 0; i--)
-			      {
-				      attributemap->Item(i, getter_AddRefs(node));
-				      attrNode = do_QueryInterface(node);
-				      rightElem->RemoveAttributeNode(attrNode, getter_AddRefs(dummyattrNode));
-			      }
-			
-		      }
-       }
+				// strip attributes off of the right node
+				nsCOMPtr<nsIDOMNamedNodeMap> attributemap;
 
+				if (rightNode){
+					rightNode->GetAttributes(getter_AddRefs(attributemap));
+
+					PRUint32 length;
+					nsCOMPtr<nsIDOMNode> node;
+					nsCOMPtr<nsIDOMAttr> attrNode;
+					nsCOMPtr<nsIDOMAttr> dummyattrNode;
+					attributemap->GetLength(&length);
+					for (PRInt32 i = length-1; i >= 0; i--)
+					{
+					 attributemap->Item(i, getter_AddRefs(node));
+					 attrNode = do_QueryInterface(node);
+					 rightElem->RemoveAttributeNode(attrNode, getter_AddRefs(dummyattrNode));
+					}
+				}
+			}
+				// if rightNode is empty, put in the default content.
+			res = IsEmptyNode( rightNode, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
+			if (isEmpty)
+			{
+        res = rightNode->GetOwnerDocument(getter_AddRefs(doc));
+        res = rightNode->GetLocalName(sNewNodeName);
+        newNode = nsnull;
+        res = mtagListManager->GetNewInstanceOfNode(sNewNodeName, atomNS, doc, getter_AddRefs(newNode));
+        if (newNode)
+        {
+          res = nsEditor::GetNodeLocation(rightNode, address_of(parent), &offset);
+          res = nsEditor::InsertNode(newNode, parent, offset);
+          res = nsEditor::DeleteNode(rightNode);
+          newElement = do_QueryInterface(newNode);
+					SetCursorInNewHTML(newElement, (PRBool*)nsnull);
+				}
+			}
     }
-    
   }
   return res;
 }
 
 
+nsresult
+nsHTMLEditor::SetCursorInNewHTML(nsIDOMElement * newElement, PRBool * success)
+{
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMNode> parentNode;
+	PRInt32 offset;
+  nsCOMPtr<nsISelection>selection;
+	nsresult res = NS_OK;
+	if (success) *success = PR_FALSE;
+  PRUint32 nodeCount = 0;
+  res = newElement->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
+  if (nodeList) nodeList->GetLength(&nodeCount);
+  if (nodeCount > 0)
+  {
+    nodeList->Item(0, getter_AddRefs(node));
+    nsEditor::GetNodeLocation(node, address_of(parentNode), &offset);
+    DeleteNode(node);
+    //selPriv->SetInterlinePosition(PR_TRUE);
+    res = GetSelection(getter_AddRefs(selection));
+    res = selection->Collapse(parentNode, offset);
+		if (success) *success = PR_TRUE;
+  }
+//  cmd_updateStructToolbar
+	return res;
+}
 
 // returns empty string if nothing to modify on node
 nsresult

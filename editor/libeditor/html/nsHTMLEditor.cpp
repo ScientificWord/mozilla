@@ -2927,14 +2927,16 @@ nsHTMLEditor::MakeOrChangeList(const nsAString& aListType, PRBool entireList, co
       if (NS_FAILED(res)) return res;
       // make a list item
       nsCOMPtr<nsIDOMNode> newItem;
-      res = CreateNode(aListType, newList, 0, getter_AddRefs(newItem));
-      res = mtagListManager->GetStringPropertyForTag(aListType, nsnull, NS_LITERAL_STRING("initialcontents"), strContents);
-      if (NS_FAILED(res)) return res;
-      // put in new content
-      if (strContents.Length() > 0)
+      nsCOMPtr<nsIDOMDocument> doc;
+      res = parent->GetOwnerDocument(getter_AddRefs(doc));
+      res = mtagListManager->GetNewInstanceOfNode(aListType, nsnull, doc, getter_AddRefs(newItem));
+      if (newItem)
       {
-         newHTMLElement = do_QueryInterface(newItem);
-         if (newHTMLElement) newHTMLElement->SetInnerHTML(strContents);
+        InsertNode(newItem, newList, 0);
+      }
+      else
+      {
+        res = CreateNode(aListType, newList, 0, getter_AddRefs(newItem));
       }
       res = selection->Collapse(newItem,0);
       if (NS_FAILED(res)) return res;
