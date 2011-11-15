@@ -341,6 +341,37 @@ nsString msiTagListManager::GetStringProperty( const nsAString & str, nsIDOMElem
 }
 
 
+
+nsIDOMElement * GetNodeProperty( const nsAString & str, nsIDOMElement * aElement)
+{
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  PRUint32 nodeCount = 0;
+  nsCOMPtr<nsIDOMNode> node; 
+  nsCOMPtr<nsIDOMNode> child; 
+  nsCOMPtr<nsIDOMNode> element; 
+  nsCOMPtr<nsIDOMElement> elementResult = nsnull;
+  PRUint16 nodeType;
+  
+ 
+  aElement->GetElementsByTagName(str, getter_AddRefs(nodeList));
+  if (nodeList) nodeList->GetLength(&nodeCount);
+  if (nodeCount > 0)
+  {
+    nodeList->Item(0, getter_AddRefs(node));
+    element = do_QueryInterface(node);
+    element->GetFirstChild(getter_AddRefs(child));
+    if (child) child->GetNodeType(&nodeType);
+    while (child && nodeType != nsIDOMNode::ELEMENT_NODE)
+    {
+      child->GetNextSibling(getter_AddRefs(child));
+      if (child) child->GetNodeType(&nodeType);
+    }
+  }
+  elementResult = do_QueryInterface(child);
+  return elementResult;
+}
+
+
 // Build the contains list for an element
 
 void
@@ -521,10 +552,8 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           pdata->tagClass = strClassName;
           pdata->description = GetStringProperty(NS_LITERAL_STRING("description"), tagNameElement);
           pdata->realTagClass = GetStringProperty(NS_LITERAL_STRING("realtagclass"), tagNameElement);
-          pdata->initialContentsForEmpty = 
-            GetStringProperty(NS_LITERAL_STRING("initialcontentsforempty"), tagNameElement);
           pdata->initialContents =
-            GetStringProperty(NS_LITERAL_STRING("initialcontents"), tagNameElement);
+            GetNodeProperty(NS_LITERAL_STRING("initialcontents"), tagNameElement);
           pdata->nextAfterEmptyBlock =
             GetStringProperty(NS_LITERAL_STRING("nextafteremptyblock"), tagNameElement);
           pdata->titleTag =
@@ -1028,10 +1057,8 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
       _retval = data->description;
     else if (propertyName.EqualsLiteral("tagclass"))
       _retval = data->tagClass;
-    else if (propertyName.EqualsLiteral("initialcontentsforempty"))
-      _retval = data->initialContentsForEmpty;
-    else if (propertyName.EqualsLiteral("initialcontents"))
-      _retval = data->initialContents;
+    else if (propertyName.EqualsLiteral("realtagclass"))
+      _retval = data->realTagClass;
     else if (propertyName.EqualsLiteral("nextafteremptyblock"))
       _retval = data->nextAfterEmptyBlock;
     else if (propertyName.EqualsLiteral("titletag"))
@@ -1057,6 +1084,26 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
 		else _retval.Assign(emptyString);
   }
   else _retval.Assign(emptyString);
+  return NS_OK;
+}
+
+// 
+NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, nsIAtom *atomNS, nsIDOMDocument * doc, nsIDOMNode **_retval)
+{
+  nsresult res = NS_OK;
+  nsString strKey;
+  nsString emptyString;
+  strKey = strTag; 
+  TagData * data;    
+  nsCOMPtr<nsIDOMNode> retNode;
+  
+  PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
+  if (fInHash)
+  {
+    retNode = data->initialContents;
+    res = doc->ImportNode(retNode, PR_TRUE, _retval);
+    // Do we need to AddRef?    
+  }
   return NS_OK;
 }
 
@@ -1113,11 +1160,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   rv = GetTagOfNode(*secondNode, &nsAtomSecond, secondNodeName);
   if (isEmpty)
   {
-    rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
-    if (strContents.Length() == 0)
-    {
-      rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontents"), strContents);
-    }
+//    rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontents"), strContents);
     if (strContents.Length() > 0)
     {
       // to make this operation undoable, we create a new node and copy its contents

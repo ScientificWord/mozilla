@@ -22,8 +22,6 @@ public:
   nsString description;
   nsString tagClass;
   nsString realTagClass;
-  nsString initialContentsForEmpty;
-  nsString initialContents;
   nsString nextAfterEmptyBlock;
   nsString titleTag;
   nsString nextTag;
@@ -32,6 +30,7 @@ public:
   nsString htmllist;
   nsString prefsub;
 	nsString babel; 
+  nsCOMPtr<nsIDOMElement> initialContents;
   PRBool   discardEmptyBlock;
   PRBool   inclusion;
   PRBool   hidden;
