@@ -43,11 +43,6 @@
 
 math {
   direction: ltr;
-  color:  red;
-}
-
-sectiontitle{
-  color: rgb(9, 62, 125);
 }
 
 body, td, th, input {
@@ -120,7 +115,7 @@ section {
 section>*:first-child {
   display: block;
   font-size: 140%;
-  font-weight: bold;
+  font-weight: normal;
   margin: 1em 0 0.2em 0;
   border-bottom: 1px solid #ccc;
   font-family: arial, verdana, sans-serif;
@@ -142,9 +137,7 @@ paragraph>*:first-child:before, paragraph[open="true"]>*:first-child:before  {
   content: "";
 }
 
-
-
-h2 { font-size: 150%; font-weight: normal;}
+h2 { font-size: 150%; font-weight: normal; }
 
 
 subsection {
@@ -175,7 +168,7 @@ subsubsection>*:first-child {
   font-weight: bold;
 }
 
-h4 { font-size: 100%; color: rgb(9, 62, 125); }
+h4 { font-size: 100%; }
 
 paragraph {
   display:block;
@@ -206,7 +199,6 @@ h1, h2, h3, h4, h5, h6 {
   margin: 1em 0 0.2em 0;
   border-bottom: 1px solid #ccc;
   font-family: arial, verdana, sans-serif;
-  color: rgb(9, 62, 125);
 }
 
 
@@ -385,11 +377,13 @@ emphasized span.inlineMath {
 }
 
 roman {
-  font-family: Times New Roman, serif
+  font-family: Times New Roman, serif;
+  color: rgb(0,0,255)
 }
 
 calligraphic, *[mathvariant="script"] {
-  font-family: monotype corsiva
+  font-family: monotype corsiva;
+  color: rgb(0,0,255)
 }
 
 alt {
@@ -414,12 +408,14 @@ italics {
 
 slanted {
   font-style: italic;
-  font-weight: 700
+  font-weight: 700;
+  color: rgb(9,62,125)
 }
 
 sansSerif {
   font-family: Arial;
-  font-weight: 400
+  font-weight: 400;
+  color: rgb(9,62,125)
 }
 
 smallCaps {

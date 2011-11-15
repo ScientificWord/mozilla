@@ -5,7 +5,7 @@
 ]>
 <mathnames id="nameBase">
   <mathname id="sin" type="function" builtIn="true"><data>insertMathname('sin');</data></mathname>
-  <mathname id="sinh" type="function" builtIn="true"><data>insertMathname('sinh');</data></mathname>
+<!--  <mathname id="sinh" type="function" builtIn="true"><data>insertMathname('sinh');</data></mathname>
   <mathname id="cos" type="function" builtIn="true"><data>insertMathname('cos');</data></mathname>
   <mathname id="cosh" type="function" builtIn="true"><data>insertMathname('cosh');</data></mathname>
   <mathname id="tan" type="function" builtIn="true"><data>insertMathname('tan');</data></mathname>
