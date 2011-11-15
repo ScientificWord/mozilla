@@ -665,16 +665,20 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var tagmanager = editor.tagListManager;
-  if (commandID == 'cmd_paratag') // both lists and paragraph tags come in as 'paratags'
-  { 
-    if (tagmanager && tagmanager.getTagInClass("listtag", newState, null)) commandID = 'cmd_listtag';
-  } else if (commandID == 'cmd_structtag')
-  { 
-    if (tagmanager && tagmanager.getTagInClass("envtag", newState, null)) commandID = 'cmd_envtag';
-  }
-  if (msiDeferStatefulCommand(commandID, newState, editorElement))
-    return;
-     
+	var tagclass;
+// BBM. I rather late in the game changed this to get the commandID from newState in the case of tag commands
+	if (commandID == 'cmd_paratag' || commandID == 'cmd_texttag' || commandID == 'cmd_listtag' || commandID == 'cmd_structtag' || commandID == 'cmd_envtag')
+	{
+		if (tagmanager) tagclass = tagmanager.getClassOfTag(newState, null);
+		switch (tagclass)
+		{
+			case 'paratag' : commandID = 'cmd_paratag'; break;
+			case 'listtag' : commandID = 'cmd_listtag'; break;
+			case 'structtag' : commandID = 'cmd_structtag'; break;
+			case 'envtag' : commandID = 'cmd_envtag'; break;
+			case 'texttag' : commandID = 'cmd_texttag'; break;
+		}
+	}
   var docList = msiGetUpdatableItemContainers(commandID, editorElement);
   for (var i = 0; i < docList.length; ++i)
   {
