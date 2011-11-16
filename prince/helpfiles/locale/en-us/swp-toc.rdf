@@ -3,14 +3,14 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:nc="http://home.netscape.com/NC-rdf#">
 
-<rdf:Description about="urn:root">
+  <rdf:Description about="urn:root">
     <nc:subheadings>
       <rdf:Seq>
         <rdf:li> <rdf:Description ID="swp-doc"	nc:name="Introducing Scientific WorkPlace"
                                   nc:link="swp_help.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="doing-math" nc:name="Doing Mathematics"
                                   nc:link=""/> </rdf:li>
-	</rdf:Seq>
+	    </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
 
@@ -22,14 +22,27 @@
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+  
   <rdf:Description about="#doing-math">
     <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="factoringpolynomials" nc:name="Factoring Polynomials"  nc:link="dm0301-factoringpolynomials.xhtml"/> </rdf:li>
-      </rdf:Seq>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="factoringpolynomials" nc:name="Factoring Polynomials"  nc:link="dm0301-factoringpolynomials.xhtml"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry" nc:name="Trigonometry"  nc:link="dm04-00-trigonometry.xhtml"/> </rdf:li>
+    </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
   
+  <rdf:Description about="#trigonometry">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="trigonometricfunctions" nc:name="Trigonometric Functions"  nc:link="dm04-01-trigonometry.xhtml"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometricidentities" nc:name="Trigonometric Identities"  nc:link="dm04-02-trigonometry.xhtml"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="inversetrigonometricfunctions" nc:name="Inverse Trigonometric Functions"  nc:link="dm04-03-trigonometry.xhtml"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="hyperbolicfunctions" nc:name="Hyperbolic Functions and Inverse Hyperbolic Functions"  nc:link="dm04-04-trigonometry.xhtml"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="complexnumbers" nc:name="Complex Numbers and Complex Functions"  nc:link="dm04-05-trigonometry.xhtml"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
 
 </rdf:RDF>
 
