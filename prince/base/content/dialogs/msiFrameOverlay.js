@@ -214,7 +214,7 @@ function initFrameTab(dg, element, contentsElement, newElement)
 		}	
 		if (gFrameModeImage) 
 		{
-		  placement = element.getAttribute("placment");
+		  placement = element.getAttribute("placement");
 			if (placement == "L")
 			{
 				position = 1;  // left = 1, right = 2, neither = 0

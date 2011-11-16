@@ -58,8 +58,8 @@
         <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$theUnit"/>}</xsl:if>
         <xsl:if test="@border-color">{\color{    
           <xsl:choose>
-            <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
-            <xsl:otherwise>black} <!--<xsl:value-of select="./@border-color"/>} --></xsl:otherwise>
+ 	          <xsl:when test="substring(./@border-color,1,1)='#'">[rgb]{<xsl:call-template name="HTMLColorToRGB"><xsl:with-param name="colorStr" select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/></xsl:call-template>}</xsl:when
+ 	          ><xsl:otherwise>black} <!--<xsl:value-of select="./@border-color"/>} --></xsl:otherwise>
           </xsl:choose>}</xsl:if>
         \framebox{</xsl:if>
       <xsl:call-template name="buildincludegraphics"/>

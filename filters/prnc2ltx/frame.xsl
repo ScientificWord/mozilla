@@ -6,6 +6,40 @@
     xmlns:exsl="http://exslt.org/common"
 >
 
+<xsl:template name="HTMLColorToRGB">
+  <xsl:param name="colorStr"/>
+  <xsl:variable name="digitsStr" select="'0123456789ABCDEF'"/>
+  <!-- First ensure string has exactly six characters -->
+  <xsl:variable name="fixedStr">
+    <xsl:call-template name="fixHTMLColorString">
+      <xsl:with-param name="theString" select="$colorStr"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:variable name="redVal">
+    <xsl:value-of select="16 * string-length(substring-before($digitsStr,substring($fixedStr,1,1))) + string-length(substring-before($digitsStr,substring($fixedStr,2,1)))"/>
+  </xsl:variable>
+  <xsl:variable name="greenVal">
+    <xsl:value-of select="16 * string-length(substring-before($digitsStr,substring($fixedStr,3,1))) + string-length(substring-before($digitsStr,substring($fixedStr,4,1)))"/>
+  </xsl:variable>
+  <xsl:variable name="blueVal">
+    <xsl:value-of select="16 * string-length(substring-before($digitsStr,substring($fixedStr,5,1))) + string-length(substring-before($digitsStr,substring($fixedStr,6,1)))"/>
+  </xsl:variable>
+  <xsl:value-of select="number($redVal) div 255.0"/><xsl:text>,</xsl:text><xsl:value-of select="number($greenVal) div 255.0"/><xsl:text>,</xsl:text><xsl:value-of select="number($blueVal) div 255.0"/>
+</xsl:template>
+
+<xsl:template name="fixHTMLColorString">
+  <xsl:param name="theString"/>
+  <xsl:choose>
+    <xsl:when test="string-length($theString) &gt; 6"><xsl:value-of select="substring($theString, 1, 6)"/></xsl:when>
+    <xsl:when test="string-length($theString) &lt; 6">
+      <xsl:call-template name="fixHTMLColorString">
+        <xsl:with-param name="theString" select="concat('0',$theString)"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise><xsl:value-of select="$theString"/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="html:msiframe">
   <xsl:variable name="width">
     <xsl:choose>
@@ -80,14 +114,14 @@
 <xsl:if test="@rotation='rot90'">\begin{turn}{-90}</xsl:if>
 <xsl:if test="@rotation='rot270'">\begin{turn}{90}</xsl:if>
 \fcolorbox<xsl:if test="@border-color"><xsl:choose
- 	><xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"
-	/></xsl:when
+ 	><xsl:when test="substring(./@border-color,1,1)='#'">[rgb]{<xsl:call-template name="HTMLColorToRGB"><xsl:with-param name="colorStr" select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/></xsl:call-template
+	>}</xsl:when
 	><xsl:otherwise>{<xsl:value-of select="./@border-color"/></xsl:otherwise
   ></xsl:choose
   >}</xsl:if><xsl:if test="not(@border-color)">{white}</xsl:if>
 <xsl:if test="@background-color">{<xsl:choose
- 	><xsl:when test="substring(./@background-color,1,1)='#'"><xsl:value-of select="translate(substring(./@background-color,2,8),'abcdef','ABCDEF')"
-	/></xsl:when
+ 	><xsl:when test="substring(./@background-color,1,1)='#'">[rgb]{<xsl:call-template name="HTMLColorToRGB"><xsl:with-param name="colorStr" select="translate(substring(./@background-color,2,8),'abcdef','ABCDEF')"/></xsl:call-template
+	>}</xsl:when
 	><xsl:otherwise><xsl:value-of select="./@background-color"/></xsl:otherwise
   ></xsl:choose
   >}</xsl:if><xsl:if test="not(@background-color)">{white}</xsl:if
@@ -109,7 +143,7 @@
 ><xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\end{center}</xsl:if
 ><xsl:if test="@pos='float' and (@frametype='image' or @placement='full' or (@placeLocation!='h' and @placeLocation!='H'))">\end{figure}</xsl:if
 ><xsl:if test="@pos='display'">\end{center}</xsl:if
-><xsl:if test="@pos='inline' and @frametype='image'">\end{center}}</xsl:if>
+><xsl:if test="@pos='inline' and @frametype='image'">\end{center}}}</xsl:if>
 <xsl:if test="@topmargin or @sidemargin or @border or @padding">}</xsl:if>				
 </xsl:template>
 		  
