@@ -544,7 +544,7 @@
               </bodyText>
             </note>
           </initialcontents>
-					<nexttag/>
+					<nexttag>bodyText</nexttag>
 	  		  <inclusion>true</inclusion>
         </tag>
 				<tag nm="assertion">
@@ -1003,7 +1003,7 @@
           </initialcontents>
 					<nexttag>bodyText</nexttag>
         </tag>
-        <tag nm="address"><description>Address</description>y
+        <tag nm="address"><description>Address</description>ymsi
           <realtagclass>paratag</realtagclass>
 	  		  <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
@@ -1080,7 +1080,7 @@
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <title>
+            <title type="ours">
               <cursor/>
               <br/>
             </title>
