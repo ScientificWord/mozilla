@@ -648,5 +648,7 @@ interface nsIHTMLEditor : nsISupports
   AString returnAString( in AString thisone);
   void mathToText(in nsISelection selection);
   nsIArray nodesInRange( in nsIDOMRange aRange);
+	boolean setCursorInNewHTML(in nsIDOMElement newElement);
 };
+
 

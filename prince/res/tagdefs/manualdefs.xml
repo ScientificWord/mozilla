@@ -9,8 +9,14 @@
 				<tag nm="epigraph">
 					<description>Epigraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <epigraph>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </epigraph>
+          </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
 			</tags>

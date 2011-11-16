@@ -3103,35 +3103,24 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
     if (NS_FAILED(res)) return res;
     res = mHTMLEditor->CreateNode(listType, parent, offset, getter_AddRefs(theList));
     if (NS_FAILED(res)) return res;
-    res = mHTMLEditor->CreateNode(itemType, theList, 0, getter_AddRefs(theListItem));
-    if (NS_FAILED(res)) return res;
-    nsAutoString strContents;
-    res = mtagListManager->GetStringPropertyForTag(itemType, nsnull, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
-    if (strContents.Length() == 0) 
-      res = mtagListManager->GetStringPropertyForTag(itemType, nsnull, NS_LITERAL_STRING("initialcontents"), strContents);
-    nsCOMPtr<nsIDOMNSHTMLElement> listElement(do_QueryInterface(theListItem));
-    if (strContents.Length() > 0) listElement->SetInnerHTML(strContents);
-    
-    
+    nsCOMPtr<nsIDOMDocument> doc;
+    res = parent->GetOwnerDocument(getter_AddRefs(doc));
+    res = mtagListManager->GetNewInstanceOfNode(itemType, nsnull, doc, getter_AddRefs(theListItem));
+    if (theListItem)
+    {
+      mHTMLEditor->InsertNode(theListItem, theList, 0);
+    }
+    else
+    {
+      res = mHTMLEditor->CreateNode(itemType, theList, 0, getter_AddRefs(theListItem));
+      if (NS_FAILED(res)) return res;
+    }
     // remember our new block for postprocessing
     mNewBlock = theListItem;
     // put selection in new list item
-    nsCOMPtr<nsIDOMNodeList> nodeList;
-    nsCOMPtr<nsIDOMNode> node, newCursorNode;
-    PRUint32 nodeCount;
-    PRInt32 newCursorOffset;
+		PRBool success;
     nsCOMPtr<nsIDOMElement> listDOMElement(do_QueryInterface(theListItem));
-    res = listDOMElement->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
-    if (nodeList) nodeList->GetLength(&nodeCount);
-
-    if (nodeCount > 0)
-    {
-      nodeList->Item(0, getter_AddRefs(node));
-      mHTMLEditor->GetNodeLocation(node, address_of(newCursorNode), &newCursorOffset);
-      mHTMLEditor->DeleteNode(node);
-      //selPriv->SetInterlinePosition(PR_TRUE);
-      res = aSelection->Collapse(newCursorNode, newCursorOffset);
-    }
+		if (theListItem) res = mHTMLEditor->SetCursorInNewHTML(listDOMElement, &success);
 //    selectionResetter.Abort();  // to prevent selection reseter from overriding us.
     *aHandled = PR_TRUE;
     return res;
@@ -7983,18 +7972,17 @@ nsHTMLEditRules::WillRemoveEnv(nsISelection *aSelection, PRBool *aCancel, PRBool
 nsresult 
 nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aEnvironmentTag)
 {
-  // intent of this routine is to be used for converting to/from
-  // headers, paragraphs, pre, and address.  Those blocks
-  // that pretty much just contain inline things...
-  
   if (!aEnvironmentTag) return NS_ERROR_NULL_POINTER;
   nsresult res = NS_OK;
   
-  nsCOMPtr<nsIDOMNode> curNode, curParent, newParent, curBlock, newBlock, curEnvironment;
+  nsCOMPtr<nsIDOMNode> curNode, curParent, newParent, curBlock, newBlock, curEnvironment, newNode;
   nsCOMPtr<nsIContent> newContent;
   PRInt32 offset, destOffset;
+  nsCOMPtr<msiITagListManager> taglistManager;
+  mHTMLEditor->GetTagListManager( getter_AddRefs(taglistManager));
   PRInt32 listCount = arrayOfNodes.Count();
   nsString tString(*aEnvironmentTag);
+  nsIAtom * atomNS = nsnull;
 
   PRInt32 i;
   for (i=0; i<listCount; i++)
@@ -8009,9 +7997,30 @@ nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const ns
     if (curParent != newParent)
     {
       // generate a new environment tag and insert it above curNode.
-      res = mHTMLEditor->CreateHTMLContent(*aEnvironmentTag, getter_AddRefs(newContent));
-      nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(newContent);
-      if (NS_FAILED(res)) return res;
+      nsCOMPtr<nsIDOMElement> elem;
+      nsCOMPtr<nsIDOMDocument> doc;
+      res = curNode->GetOwnerDocument(getter_AddRefs(doc));
+      res = taglistManager->GetNewInstanceOfNode(*aEnvironmentTag, atomNS, doc, getter_AddRefs(newNode));
+      if (newNode)
+      {
+        // since we are applying this to existing text, take out the contents of newNode
+        nsCOMPtr<nsIDOMNode> child;
+        res = newNode->GetFirstChild(getter_AddRefs(child));
+        while (child && (res==NS_OK)) 
+        {
+          res = mHTMLEditor->DeleteNode(child);
+          if (res != NS_OK) break;
+          res = newNode->GetFirstChild(getter_AddRefs(child));
+        }
+        elem = do_QueryInterface(newNode);
+//        if (NS_FAILED(res)) return res;
+      }
+      else
+      {
+        res = mHTMLEditor->CreateHTMLContent(*aEnvironmentTag, getter_AddRefs(newContent));
+        elem = do_QueryInterface(newContent);
+        if (NS_FAILED(res)) return res;
+      }
       curEnvironment = do_QueryInterface(elem); 
       destOffset = 0;
        
