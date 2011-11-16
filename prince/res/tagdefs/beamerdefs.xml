@@ -9,8 +9,14 @@
 				<tag nm="beamerframe">
 					<description>Beamer slide frame</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/>]]>
-          </initialcontentsforempty>
+          <initialcontents>
+            <beamerframe>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </beamerframe>
+          </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
 			</tags>
@@ -23,7 +29,12 @@
 					<description>Beamer frame title</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>framesubtitle</nextafteremptyblock>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
+          <initialcontents>
+            <bodyText>
+              <defaulttitletag/>
+              <cursor/>
+              <br/>
+            </bodyText>
           </initialcontents>
 				</tag>
 				<tag nm="framesubtitle">
@@ -31,7 +42,12 @@
 					<description>Beamer frame subtitle</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
+          <initialcontents>
+            <framesubtitle>
+              <defaulttitletag/>
+              <cursor/>
+              <br/>
+            </framesubtitle>
           </initialcontents>
 				</tag>
 			</tags>
@@ -76,9 +92,14 @@
           <description>Step bullet list item</description>
           <htmllistparent>stepbulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
+          <initialcontents>
+            <stepbulletListItem>
+              <bodyText>
+                <defaulttitletag/>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </stepbulletListItem>
           </initialcontents>
 			    <contains>paratag</contains>
 			    <contains>br</contains>
@@ -87,9 +108,14 @@
           <description>Step numbered list item</description>
           <htmllistparent>stepnumberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
+          <initialcontents> 
+            <stepnumberedListItem>
+              <bodyText>
+                <defaulttitletag/>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </stepnumberedListItem>
           </initialcontents>
 			    <contains>paratag</contains>
 			    <contains>br</contains>
@@ -98,9 +124,14 @@
           <description>Alert step bullet list item</description>
           <htmllistparent>alertstepbulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
+          <initialcontents> 
+            <alertstepbulletListItem>
+              <bodyText>
+                <defaulttitletag/>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </alertstepbulletListItem>
           </initialcontents>
 			    <contains>paratag</contains>
 			    <contains>br</contains>
@@ -109,9 +140,14 @@
           <description>Alert step number list item</description>
           <htmllistparent>alertstepnumberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
+          <initialcontents> 
+            <alertstepnumberedlistItem>
+              <bodyText>
+                <defaulttitletag/>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </alertstepnumberedlistItem>
           </initialcontents>
 			    <contains>paratag</contains>
 			    <contains>br</contains>
