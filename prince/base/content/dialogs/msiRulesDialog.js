@@ -143,6 +143,7 @@ function getColorAndUpdate()
     return;
 
   data.ruleColor = colorObj.TextColor;
+  
   setColorWell("colorWell", data.ruleColor); 
 }
 
