@@ -2301,7 +2301,7 @@ nsHTMLEditor::SwitchTableCellHeaderType(nsIDOMElement *aSourceCell, nsIDOMElemen
 
   // This creates new node, moves children, copies attributes (PR_TRUE)
   //   and manages the selection!
-  res = ReplaceContainer(aSourceCell, address_of(newNode), newCellType, nsnull, nsnull, PR_TRUE);
+  res = ReplaceContainer(aSourceCell, address_of(newNode), newCellType, mtagListManager, nsnull, nsnull, PR_TRUE);
   if (NS_FAILED(res)) return res;
   if (!newNode) return NS_ERROR_FAILURE;
 
