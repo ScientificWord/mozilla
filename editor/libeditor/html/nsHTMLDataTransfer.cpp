@@ -1136,13 +1136,12 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
        /////////////////////
 
         if (!newNode) res = CreateNode( sNewNodeName, parentOfNewStructure, offsetOfNewStructure, getter_AddRefs(newNode));
-        newElement = do_QueryInterface(newNode);
         newsplitpointNode = newNode;
         newsplitpointOffset = 0;
         // Hunt for cursor tag in the new contents
+        newElement = do_QueryInterface(newNode);
   			PRBool success;
   			if (newNode) res = SetCursorInNewHTML(newElement, &success);
-  // ??      nsEditor::DeleteNode(splitNode);
         return res;
       }
       else 
