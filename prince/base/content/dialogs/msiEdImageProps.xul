@@ -118,7 +118,7 @@
       <tab id="msiPlacementTab"/>
       <tab id="msiFrameTab"/>
       <tab id="imageLabelingTab" label="&imageLabelingTab.label;"/>
-      <tab id="imageLinkTab" label="&imageLinkTab.label;"/>
+      <!-- tab id="imageLinkTab" label="&imageLinkTab.label;"/ -->
     </tabs>
     <tabpanels>
       <vbox id="imagePicture">
@@ -161,8 +161,7 @@
           <label value="&imageKey.label;"/>
           <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
             completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-            tooltiptext="&EnterNewName.tooltip;"
-            onfocus="setACSAToGlobal();" />
+            tooltiptext="&EnterNewName.tooltip;" />
             <!-- ontextentered="" / -->
         </hbox>
         <groupbox>
@@ -177,10 +176,10 @@
         <label value="&AltText.label;"/>
         <textbox id="altTextInput"/>
       </vbox>
-      <vbox>
-        <spacer class="spacer"/>
-        <!-- label wrap="true" value="Enter a document location, a local document, or select a marker"/>
-        <label value="or heading from the popup list:"/ -->
+      <!--vbox>
+        <spacer class="spacer"/ -->
+        <!-- label wrap="true" value="Enter a document location, a local document, or select a marker"/ -->
+        <!-- label value="or heading from the popup list:"/>
         <label wrap="true" value="&EnterDocOrMarker.label;" />
         <textbox id="linkKeyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
@@ -192,8 +191,8 @@
                   label="&showImageLinkBorder.label;"
                   accesskey="&showImageLinkBorder.accesskey;"
                   oncommand="ToggleShowLinkBorder();"/>
-        <spacer class="spacer"/>
-      </vbox>
+        <spacer class="spacer"/ -->
+      <!-- /vbox -->
             
     </tabpanels>
   </tabbox>
