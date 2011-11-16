@@ -7877,7 +7877,7 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 //rwa//          count++;
 //rwa//          break;
 //rwa//        case "texb":
-//rwa//          newitem = propertiesMenu.appendItem(label.replace("%tagname%","TeX button"));
+//rwa//          newitem = propertiesMenu.appendItem(label.replace("%tagname%","TeX field"));
 //rwa//          newitem.setAttribute("oncommand","openTeXButtonDialog('texb', event.target.node);");
 //rwa//          newitem.node = node;
 //rwa//          count++;
