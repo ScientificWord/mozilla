@@ -182,6 +182,7 @@ public:
   nsresult ReplaceContainer(nsIDOMNode *inNode, 
                             nsCOMPtr<nsIDOMNode> *outNode, 
                             const nsAString &aNodeType,
+                            nsCOMPtr<msiITagListManager> manager,
                             const nsAString *aAttribute = nsnull,
                             const nsAString *aValue = nsnull,
                             PRBool aCloneAttributes = PR_FALSE);

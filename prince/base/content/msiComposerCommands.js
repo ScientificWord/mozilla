@@ -9468,15 +9468,6 @@ function msiStartAnimation()
 };
 
 
-
-//function test(firstNode, secondNode) // the nodes come from a split, so the node types should be the same
-//// If the firstNode has a 'nexttag' defined, then we should convert the second node to that type. 
-
-//{
-//  var nodeName = firstNode.nodeName
-//};
-
-
 function callFunctionKeyDialog()
 {
   var editorElement = msiGetActiveEditorElement();
