@@ -12020,20 +12020,56 @@ function msiEditorFindJustInsertedElement(tagName, editor)
     currNode = editor.selection.focusNode;  //otherwise reset it and try the usual approach below
   }
 
-  while (currNode && (msiGetBaseNodeName(currNode) != tagName))
+  var lookWhere = ["current", "right", "left"];  //sequence after inserting a normal container
+  var nOffsetIncrement = 1;
+  var bLookInCurrNode = true;
+  switch(tagName)
   {
-    if (currOffset < currNode.childNodes.length)
-    {
-      currNode = currNode.childNodes[currOffset];
-      currOffset = 0;
-    }
-    else if (currOffset > 0)
-    {
-      currNode = currNode.childNodes[currOffset-1];
-      currOffset = currNode.childNodes.length - 1;
-    }
-    else
-      currNode = null;
+    case "object":
+    case "msiframe":
+      lookWhere = ["left", "right"];
+    break;
+    case "a":
+      lookWhere = ["right","current","left"];
+    break;
   }
-  return currNode;
+
+  var bFound = false;
+  for (var ii = 0; !bFound && (ii < lookWhere.length); ++ii)
+  {
+    switch(lookWhere[ii])
+    {
+      case "current":
+        bFound = (msiGetBaseNodeName(currNode) == tagName);
+      break;
+      case "left":
+        while (!bFound && currNode && (currOffset > 0))
+        {
+          currNode = currNode.childNodes[currOffset - 1];
+          bFound = (msiGetBaseNodeName(currNode) == tagName);
+          if (currNode.childNodes)
+            currOffset = currNode.childNodes.length;
+          else
+            currOffset = 0;  //if we're a text or other atomic node, this'll break the search
+        }
+      break;
+      case "right":
+        while (!bFound && currNode && currNode.childNodes && (currOffset < currNode.childNodes.length))
+        {
+          currNode = currNode.childNodes[currOffset];
+          bFound = (msiGetBaseNodeName(currNode) == tagName);
+          currOffset = 0;
+        }
+      break;
+      default:
+      break;
+    }
+    if (!bFound)  //reset for the next try
+    {
+      currNode = editor.selection.focusNode;
+      currOffset = editor.selection.focusOffset;
+    }
+  }
+
+  return (bFound ? currNode : null);
 }
