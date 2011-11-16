@@ -15,10 +15,6 @@ var graph;
 // if the document has an element matching an attribute name, 
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
-  //plotUnitsHandler = new UnitHandler();
-  //plotUnitsHandler.setEditFieldList([document.getElementById("plotwidth"), document.getElementById("plotheight")]);
-  //plotUnitsHandler.initCurrentUnit("px");
-  //plotUnitsHandler.buildUnitMenu(document.getElementById("plotunits"), "px");
 
   graph = window.arguments[0];
   var alist = graph.graphAttributeList();                    
@@ -46,6 +42,10 @@ function Startup(){
     theStringSource = GetComputeString("Math.emptyForInput");
   msiInitializeEditorForElement(editorControl, theStringSource, true);
 
+  // Caption placement
+  var oldval = graph.getValue ("CaptionPlace");  
+  radioGroupSetCurrent ("captionplacement", oldval);
+  
 }                                                                                            
 
 
@@ -862,5 +862,5 @@ function GetGraphColor (attributeName)
 function initKeyList()
 {
   gDialog.markerList = new msiKeyMarkerList(window);
-  gDialog.markerList.setUpTextBoxControl(document.getElementById("key"));
+  gDialog.markerList.setUpTextBoxControl(document.getElementById("Key"));
 }
