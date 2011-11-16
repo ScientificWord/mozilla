@@ -26,7 +26,7 @@ function startUp()
   isNewNode = !(msiframe);
   gd = new Object();
   setHasNaturalSize(false);
-  gd = initFrameTab(gd, msiframe, isNewNode);
+  gd = initFrameTab(gd, msiframe, null, isNewNode);
 // we don't want heavy-weight frames inline
   document.getElementById('inline').hidden = true;
 //  initFrameSizePanel(); // needed when the user can set the size
@@ -39,7 +39,7 @@ function onOK() {
 	{
 		try 
 		{
-			if (editor.selection.collapsed)
+			if (editor.selection.isCollapsed)
 			{
 				msiframe = editor.document.createElement("msiframe");
 				var para = editor.document.createElement("bodyText");
