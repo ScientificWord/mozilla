@@ -42,9 +42,25 @@ function Startup(){
     theStringSource = GetComputeString("Math.emptyForInput");
   msiInitializeEditorForElement(editorControl, theStringSource, true);
 
+
   // Caption placement
   var oldval = graph.getValue ("CaptionPlace");  
   radioGroupSetCurrent ("captionplacement", oldval);
+
+  // Graphic Placement
+  oldval = graph.getValue ("Placement");
+  var elem = document.getElementById("graphPlacement");
+  if (oldval == "inline"){
+    elem.selectedIndsex = 0;
+  } else if (oldval == "display") {
+    elem.selectedIndex = 1;
+  } else {
+    elem.selectedIndex = 2;
+  }
+  //radioGroupSetCurrent ("graphPlacement", oldval);
+
+  checkEnableFloating();
+
   
 }                                                                                            
 
@@ -64,6 +80,20 @@ var msiEditorDocumentObserverG =
   }
 }
 
+var floatControlIDs = ["placeForceHereCheck", "placeHereCheck", "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"];
+
+function checkEnableFloating()
+{
+  var bEnable = false;
+  var elem = document.getElementById("graphPlacement");
+             
+  var val = elem.selectedItem.value;
+  bEnable = (val == "float");
+
+  enableControlsByID(floatControlIDs, bEnable); 
+
+}
+                  
 
 function tableRow4 (v, min, max, npts,chrome) {
   var str = "<tr>";
@@ -221,6 +251,10 @@ function GetValuesFromDialog(){
       }                                                                
     }                                                                   
   } 
+  var elem = document.getElementById("graphPlacement");
+  var newplace = elem.selectedItem.value;
+  
+  graph.setGraphAttribute("Placement", newplace);
 
 
   plotUnitsHandler
