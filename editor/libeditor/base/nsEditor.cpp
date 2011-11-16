@@ -83,6 +83,7 @@
 #include "nsIKBStateControl.h"
 #include "nsIWidget.h"
 #include "nsIPlaintextEditor.h"
+#include "nsIHTMLEditor.h"
 #include "nsGUIEvent.h"  // nsTextEventReply
 
 #include "nsIFrame.h"  // Needed by IME code
@@ -1770,6 +1771,7 @@ nsresult
 nsEditor::ReplaceContainer(nsIDOMNode *inNode, 
                            nsCOMPtr<nsIDOMNode> *outNode, 
                            const nsAString &aNodeType,
+                           nsCOMPtr<msiITagListManager> manager,
                            const nsAString *aAttribute,
                            const nsAString *aValue,
                            PRBool aCloneAttributes)
@@ -1782,14 +1784,33 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   if (NS_FAILED(res)) return res;
 
   // create new container
-  nsCOMPtr<nsIContent> newContent;
-
-  //new call to use instead to get proper HTML element, bug# 39919
-  res = CreateHTMLContent(aNodeType, getter_AddRefs(newContent));
-  nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(newContent);
+  nsCOMPtr<nsIDOMDocument> doc;
+  res = parent->GetOwnerDocument(getter_AddRefs(doc));
+  res = manager->GetNewInstanceOfNode(aNodeType, nsnull, doc, getter_AddRefs(*outNode));
+  nsCOMPtr<nsIDOMElement> elem(do_QueryInterface(*outNode));
+  if (*outNode)
+  {
+       // since we are applying this to existing text, take out the contents of newNode
+    nsCOMPtr<nsIDOMNode> child;
+    res = elem->GetFirstChild(getter_AddRefs(child));
+    while (child && (res==NS_OK)) 
+    {
+      res = DeleteNode(child);
+      if (res != NS_OK) break;
+      res = elem->GetFirstChild(getter_AddRefs(child));
+    }    
+    res = InsertNode(*outNode, parent, offset);
+  }
+  else
+  {
+    res = CreateNode(aNodeType, parent, offset, (nsIDOMNode **)outNode);
+    elem = do_QueryInterface(*outNode);
+  }
   if (NS_FAILED(res)) return res;
-    *outNode = do_QueryInterface(elem);
-  
+  // reposition selection to inside the block
+//	if (*outNode) res = SetCursorInNewHTML(elem, (PRBool *) nsnull);
+
+
   // set attribute if needed
   if (aAttribute && aValue && !aAttribute->IsEmpty())
   {
@@ -1824,8 +1845,8 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
     }
   }
   // insert new container into tree
-  res = InsertNode( *outNode, parent, offset);
-  if (NS_FAILED(res)) return res;
+//  res = InsertNode( *outNode, parent, offset);
+//  if (NS_FAILED(res)) return res;
   
   // delete old container
   return DeleteNode(inNode);
