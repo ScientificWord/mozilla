@@ -5694,17 +5694,22 @@ function msiInsertRules(dialogData, editorElement)
   var editor = msiGetEditor(editorElement);
   var node = editor.document.createElement('msirule');
   var styleStr = "";
+  var colorStr;
   var liftStr = String(dialogData.lift.size) + dialogData.lift.units;
   var widthStr = String(dialogData.width.size) + dialogData.width.units;
   var heightStr = String(dialogData.height.size) + dialogData.height.units;
   node.setAttribute('lift', liftStr);
+  node.setAttribute("req", "xcolor");
   styleStr += "vertical-align: " + unitHandler.getValueAs(dialogData.lift.size,"px")+"px";
   node.setAttribute("width", widthStr);
   styleStr += "; width: " + Math.max(1,unitHandler.getValueAs(dialogData.width.size,"px"))+"px";
   node.setAttribute("height", heightStr);
   styleStr += "; height: " + Math.max(1,unitHandler.getValueAs(dialogData.height.size,"px"))+"px";
-  node.setAttribute("color", dialogData.ruleColor);
-  styleStr += "; background-color: " + dialogData.ruleColor + ";";
+  colorStr = dialogData.ruleColor;
+  if (colorStr.indexOf("rgb") == 0) colorStr = ConvertRGBColorIntoHEXColor(color);
+  else if (colorStr.indexOf("#") == -1) colorStr = textColorToHex(colorStr);
+  node.setAttribute("color",colorStr);
+  styleStr += "; background-color: " + colorStr + ";";
   node.setAttribute('style',styleStr);
   editor.insertElementAtSelection(node,true);
 }
@@ -5712,70 +5717,81 @@ function msiInsertRules(dialogData, editorElement)
 function msiReviseRules(reviseData, dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
-  editor.beginTransaction();
+  try {
+    editor.beginTransaction();
 //  var parentNode = editor.selection.anchorNode;
 //  var insertPos = editor.selection.anchorOffset;
 
-  var currentNode = reviseData.getReferenceNode();
-  var aParentNode = currentNode.parentNode;;
-  var ourNode = currentNode;
+    var currentNode = reviseData.getReferenceNode();
+    var aParentNode = currentNode.parentNode;;
+    var ourNode = currentNode;
 
-  var vAlignExpr = /vertical-align:\s*[^;]+;?/;
-  var htExpr = /height:\s*[^;]+;?/;
-  var wdthExpr = /width:\s*[^;]+;?/;
-  var bkExpr = /background\-color:\s*[^;]+;?/;
-//      msiKludgeLogString("Inside the custom newline breakType clause; customType is [" + dialogData.customBreakData.customType + "].\n", ["spaces"]);
+    var vAlignExpr = /vertical-align:\s*[^;]+;?/;
+    var htExpr = /height:\s*[^;]+;?/;
+    var wdthExpr = /width:\s*[^;]+;?/;
+    var bkExpr = /background\-color:\s*[^;]+;?/;
+  //      msiKludgeLogString("Inside the custom newline breakType clause; customType is [" + dialogData.customBreakData.customType + "].\n", ["spaces"]);
 
-  var styleStr = ourNode.getAttribute("style");
-  var liftStr = String(dialogData.lift.size) + dialogData.lift.units;
-  var widthStr = String(dialogData.width.size) + dialogData.width.units;
-  var heightStr = String(dialogData.height.size) + dialogData.height.units;
-  var bSetStyle = false;
-//      msiKludgeLogString("Inside the custom NewLine clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
+    var styleStr = ourNode.getAttribute("style");
+    var liftStr = String(dialogData.lift.size) + dialogData.lift.units;
+    var widthStr = String(dialogData.width.size) + dialogData.width.units;
+    var heightStr = String(dialogData.height.size) + dialogData.height.units;
+    var bSetStyle = false;
+    var colorStr;
+  //      msiKludgeLogString("Inside the custom NewLine clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
+  editor.setAttribute(ourNode, "req", "xcolor");
   if (ourNode.getAttribute("lift") != liftStr)
-  {
-    editor.setAttribute(ourNode, "lift", liftStr);
-    if (!styleStr)
-      styleStr = "";
-    if (styleStr.match(vAlignExpr))
-      styleStr = styleStr.replace(vAlignExpr, "vertical-align: " + liftStr + ";");
-    else
-      styleStr += "vertical-align: " + liftStr + ";";
-    bSetStyle = true;
-  }
-  if (ourNode.getAttribute("width") != widthStr)
-  {
-    editor.setAttribute(ourNode, "width", widthStr);
-    if (!styleStr)
-      styleStr = "";
-    if (styleStr.match(wdthExpr))
-      styleStr = styleStr.replace(wdthExpr, "width: " + widthStr + ";");
-    else
-      styleStr += "width: " + widthStr + ";";
-    bSetStyle = true;
-  }
-  if (ourNode.getAttribute("height") != heightStr)
-  {
-    editor.setAttribute(ourNode, "height", heightStr);
-    if (styleStr.match(htExpr))
-      styleStr = styleStr.replace(htExpr, "height: " + heightStr + ";");
-    else
-      styleStr += "height: " + heightStr + ";";
-    bSetStyle = true;
-  }
-  if (ourNode.getAttribute("color") != dialogData.ruleColor)
-  {
-    editor.setAttribute(ourNode, "color", dialogData.ruleColor);
-    if (styleStr.match(bkExpr))
-      styleStr = styleStr.replace(bkExpr, "background-color: " + dialogData.ruleColor + ";");
-    else
-      styleStr += "background-color: " + dialogData.ruleColor + ";";
-    bSetStyle = true;
-  }
-  if (bSetStyle)
-    editor.setAttribute(ourNode, "style", styleStr);
+    {
+      editor.setAttribute(ourNode, "lift", liftStr);
+      if (!styleStr)
+        styleStr = "";
+      if (styleStr.match(vAlignExpr))
+        styleStr = styleStr.replace(vAlignExpr, "vertical-align: " + liftStr + ";");
+      else
+        styleStr += "vertical-align: " + liftStr + ";";
+      bSetStyle = true;
+    }
+    if (ourNode.getAttribute("width") != widthStr)
+    {
+      editor.setAttribute(ourNode, "width", widthStr);
+      if (!styleStr)
+        styleStr = "";
+      if (styleStr.match(wdthExpr))
+        styleStr = styleStr.replace(wdthExpr, "width: " + widthStr + ";");
+      else
+        styleStr += "width: " + widthStr + ";";
+      bSetStyle = true;
+    }
+    if (ourNode.getAttribute("height") != heightStr)
+    {
+      editor.setAttribute(ourNode, "height", heightStr);
+      if (styleStr.match(htExpr))
+        styleStr = styleStr.replace(htExpr, "height: " + heightStr + ";");
+      else
+        styleStr += "height: " + heightStr + ";";
+      bSetStyle = true;
+    }
+    colorStr=dialogData.ruleColor;
+    if (colorStr.indexOf("rgb") == 0) colorStr = ConvertRGBColorIntoHEXColor(color);
+    else if (colorStr.indexOf("#") == -1) colorStr = textColorToHex(colorStr);
+    if (ourNode.getAttribute("color") != colorStr)
+    {
+      editor.setAttribute(ourNode, "color", colorStr);
+      if (styleStr.match(bkExpr))
+        styleStr = styleStr.replace(bkExpr, "background-color: " + colorStr + ";");
+      else
+        styleStr += "background-color: " + colorStr + ";";
+      bSetStyle = true;
+    }
+    if (bSetStyle)
+      editor.setAttribute(ourNode, "style", styleStr);
 
-  editor.endTransaction();
+    editor.endTransaction();
+  }
+  catch(e)
+  {
+    msidump(e.message);
+  }
 }
 
 
