@@ -88,7 +88,7 @@ function Startup()
   gDialog.tabPlacement      = document.getElementById( "msiPlacementTab" );
   gDialog.tabFrame          = document.getElementById( "msiFrameTab" );
   gDialog.tabLabeling       = document.getElementById( "imageLabelingTab" );
-  gDialog.tabLink           = document.getElementById( "imageLinkTab" );
+//  gDialog.tabLink           = document.getElementById( "imageLinkTab" );
   gDialog.srcInput          = document.getElementById( "srcInput" );
   gDialog.relativeURL       = document.getElementById( "makeRelativeCheckbox" ).checked;
   gDialog.altTextInput      = document.getElementById( "altTextInput" );
@@ -102,7 +102,7 @@ function Startup()
   gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
   gDialog.OkButton          = document.documentElement.getButton("accept");
   gDialog.keyInput          = document.getElementById( "keyInput" );
-  gDialog.linkKeyInput      = document.getElementById( "linkKeyInput" );
+//  gDialog.linkKeyInput      = document.getElementById( "linkKeyInput" );
   
   // Get a single selected image element
   var tagName = "object";
@@ -168,7 +168,7 @@ function Startup()
 
   initFrameTab(frameTabDlg, wrapperElement, imageElement, gInsertNewImage);
   InitDialog();
-  ChangeLinkLocation();
+//  ChangeLinkLocation();
 
   // Save initial source URL
   gOriginalSrc = gDialog.srcInput.value;
@@ -180,13 +180,13 @@ function Startup()
   window.mMSIDlgManager.configureDialog();
 
   // Start in "Link" tab if 2nd arguement is true
-  if (gDialog.linkTab && (window.arguments.length > 1) && window.arguments[1])
-  {
-    document.getElementById("TabBox").selectedTab = gDialog.linkTab;
-    SetTextboxFocus(gDialog.hrefInput);
-  }
-  else
-    SetTextboxFocus(gDialog.srcInput);
+//  if (gDialog.linkTab && (window.arguments.length > 1) && window.arguments[1])
+//  {
+//    document.getElementById("TabBox").selectedTab = gDialog.linkTab;
+//    SetTextboxFocus(gDialog.hrefInput);
+//  }
+//  else
+  SetTextboxFocus(gDialog.srcInput);
 
   SetWindowLocation();
 }
@@ -519,16 +519,16 @@ function ChangeLinkLocation()
 
 function ToggleShowLinkBorder()
 {
-  if (gDialog.showLinkBorder.checked)
-  {
-    var border = TrimString(gDialog.border.value);
-    if (!border || border == "0")
-      gDialog.border.value = "2";
-  }
-  else
-  {
-    gDialog.border.value = "0";
-  }
+//  if (gDialog.showLinkBorder.checked)
+//  {
+//    var border = TrimString(gDialog.border.value);
+//    if (!border || border == "0")
+//      gDialog.border.value = "2";
+//  }
+//  else
+//  {
+//    gDialog.border.value = "0";
+//  }
 }
 
 //function onChangeCaptionPlacement()
@@ -1295,7 +1295,6 @@ function onAccept()
       var capPosition = gDialog.captionPlacementGroup.value;
       if (!capPosition || !capPosition.length)
         capPosition = "below";
-      syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
 //      syncCaptionAndExisting(gCaptionData.m_captionStr.below, capData.belowCaption, editor, wrapperElement, "below");
 //      var capAttrStr = "";
 //      if (capData.aboveCaption && capData.aboveCaption.length)
@@ -1306,15 +1305,27 @@ function onAccept()
 //        capAttrStr = null;  //since EnsureElementAttribute will remove the attribute if a null is passed in.
       
           // 'true' means delete the selection before inserting
+//      var oldWrapper = wrapperElement;
+//      var oldImage = imageElement;
       if (gInsertNewImage)
         editor.insertElementAtSelection(wrapperElement, true);
+//      if (msiGetBaseNodeName(wrapperElement) == "msiframe")
+//      {
+//        wrapperElement = msiEditorFindJustInsertedElement("msiframe", editor);
+//        imageElement = msiNavigationUtils.getChildrenByTagName(wrapperElement, "object")[0];
+//      }
+//      else
+//        wrapperElement = imageElement = msiEditorFindJustInsertedElement("object", editor);
+//      dump("In msiEdImageProps.onAccept(), oldWrapper is [" + ((wrapperElement == oldWrapper) ? "same as" : "different from") + "] one in document.\n");
+//      dump("In msiEdImageProps.onAccept(), oldImage is [" + ((imageElement == oldImage) ? "same as" : "different from") + "] one in document.\n");
+      syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
     
       var attrList = ["src,data,title,alt"];
       msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
       imageElement.setAttribute("data",gDialog.srcInput.value);
-      imageElement.setAttribute("req","graphicx");
-      imageElement.setAttribute("naturalWidth", frameUnitHandler.getValueOf(gConstrainWidth, "px"));
-      imageElement.setAttribute("naturalHeight", frameUnitHandler.getValueOf(gConstrainHeight, "px"));
+      msiEditorEnsureElementAttribute(imageElement, "req", "graphicx", editor);
+      msiEditorEnsureElementAttribute(imageElement, "naturalWidth", frameUnitHandler.getValueOf(gConstrainWidth, "px"), editor);
+      msiEditorEnsureElementAttribute(imageElement, "naturalHeight", frameUnitHandler.getValueOf(gConstrainHeight, "px"), editor);
       
       setFrameAttributes(wrapperElement, imageElement);
 //      msiEditorEnsureElementAttribute(wrapperElement, "captionLoc", capAttrStr, editor);  //Now taken care of above
@@ -1355,7 +1366,7 @@ function initKeyList()
 
   gDialog.markerList = new msiKeyMarkerList(window);
   gDialog.markerList.setUpTextBoxControl(gDialog.keyInput);
-  gDialog.markerList.setUpTextBoxControl(gDialog.linkKeyInput);
+//  gDialog.markerList.setUpTextBoxControl(gDialog.linkKeyInput);
 
 //  var keyString = gDialog.markerList.getIndexString();
 //  gDialog.keyInput.setAttribute("autocompletesearchparam", keyString);
