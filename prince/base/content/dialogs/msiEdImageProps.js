@@ -166,7 +166,7 @@ function Startup()
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
-  initFrameTab(frameTabDlg, wrapperElement, imageElement, gInsertNewImage);
+  initFrameTab(frameTabDlg, wrapperElement, gInsertNewImage, imageElement);
   InitDialog();
 //  ChangeLinkLocation();
 
