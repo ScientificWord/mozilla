@@ -1,6 +1,6 @@
-#!/bin/bash# $1 is a legacy argument, no longer used
+#!/bin/bash
 pushd $1 
-export PATH=/usr/texbin/:$PATH
+export PATH=/usr/local/texlive/swTexbin/:$PATH
 pdflatex -jobname=$3 $2 $4
 echo done > sentinel
 popd
