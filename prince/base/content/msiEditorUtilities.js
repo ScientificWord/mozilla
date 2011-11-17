@@ -4776,6 +4776,17 @@ var msiHTMLNamedColorsList =
    brown : "#c08040", orange : "#ff8000", pink : "#ffc0c0", violet : "#800080"
 };
 
+
+function textColorToHex(colorname)
+{
+	var name = TrimString(colorname).toLowerCase();
+  var retStr = msiHTMLNamedColors.colorStringToHexRGBString(name);
+  if (!retStr || !retStr.length)
+    retStr = "#ffffff";
+  return retStr;
+}
+
+
 function msiNamedColors(aNameSet)
 {
   this.mColorNames = aNameSet;

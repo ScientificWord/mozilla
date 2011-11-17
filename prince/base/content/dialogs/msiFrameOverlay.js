@@ -740,40 +740,6 @@ function hexcolor(rgbcolor)
 	return "#"+ r + g + b;
 }
 
-function textColorToHex(colorname)
-{
-	var name = TrimString(colorname).toLowerCase();
-  var retStr = msiHTMLNamedColors.colorStringToHexRGBString(name);
-  if (!retStr || !retStr.length)
-    retStr = "#ffffff";
-  return retStr;
-
-//RWA - removed this switch, as the functionality is already available as above. Revised that list to contain (and agree with) this one, however.
-//	switch (name)
-//	{
-//		case 'red': 		return "#ff0000";
-//		case 'green': 	return "#00ff00";
-//		case 'blue': 		return "#0000ff";
-//		case 'cyan': 		return "#00ffff";
-//		case 'magenta': return "#ff00ff";
-//		case 'yellow': 	return "#ffff00";
-//		case 'black': 	return "#000000";
-//		case 'gray': 		return "#808080";
-//		case 'white': 	return "#ffffff";
-//		case 'darkgray': return "#404040";
-//		case 'lightgray': return "#c0c0c0";
-//		case 'brown': 	return "#c08040";
-//		case 'lime': 		return "#c0ff00";
-//		case 'olive': 	return "#808000";
-//		case 'orange': 	return "#ff8000";
-//		case 'pink': 		return "#ffc0c0";
-//		case 'purple': 	return "#c00040";
-//		case 'teal': 		return "#008080";
-//		case 'violet':  return "#800080";
-//		default: return "#ffffff";
-//	}
-}
-
 function setTextValueAttributes()
 {
 	// copies textbox.value to the value attribute so that persist works.
