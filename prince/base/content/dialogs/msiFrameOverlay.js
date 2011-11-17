@@ -86,7 +86,7 @@ function updateMetrics()
 	}
 }
 
-function initFrameTab(dg, element, contentsElement, newElement)
+function initFrameTab(dg, element, newElement, contentsElement)
 {
   var i;
   var len;
@@ -588,17 +588,17 @@ function enableHere(radiogroup )
   var theValue = "true";
   var position;
   if (!radiogroup) radiogroup = document.getElementById("herePlacementRadioGroup");
-//  if (document.getElementById('placeHereCheck').checked)
-//  {
+  if (document.getElementById('placeHereCheck').checked)
+  {
     theValue = "false";
     position = radiogroup.selectedItem.value;
     setAlignment((position==="L" || position==="I")?1:((position==="R"||position=="O")?2:0));
-//  }
-//  else
-//  {
-//    setAlignment(0);
-//  }
-//  broadcaster.setAttribute("disabled",theValue);
+  }
+  else
+  {
+    setAlignment(0);
+  }
+  broadcaster.setAttribute("disabled",theValue);
 //  document.getElementById('herePlacementRadioGroup').value;
   updateDiagram("margin");
 }
