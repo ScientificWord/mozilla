@@ -26,7 +26,7 @@ function startUp()
   isNewNode = !(msiframe);
   gd = new Object();
   setHasNaturalSize(false);
-  gd = initFrameTab(gd, msiframe, null, isNewNode);
+  gd = initFrameTab(gd, msiframe, isNewNode, null);
 // we don't want heavy-weight frames inline
   document.getElementById('inline').hidden = true;
 //  initFrameSizePanel(); // needed when the user can set the size
