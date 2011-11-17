@@ -24,7 +24,7 @@
 ; !define BUILD release
 ; !define setup "SWPSetup.exe"
 
-!addplugindir "C:\mozilla-build\nsis-2.33u\Plugins"
+!addplugindir "C:\mozilla-build\nsis-2.46u\Plugins"
 !define princedir "${PRINCEBASE}\${BUILD}\SWP"
  
 ; change this to wherever the files to be packaged reside
@@ -36,7 +36,7 @@
 !define prodname "Scientific WorkPlace 6.0"
 !define exec "SWP.exe"
 !define filetype "SciWordDocument"
-!define INSTDIR "$PROGRAMFILES\SWP0" 
+!define INSTDIR "$PROGRAMFILES\SWP" 
 ; optional stuff
  
 ; text file to open in notepad after installation
@@ -87,7 +87,7 @@ SetDatablockOptimize on
 CRCCheck on
 SilentInstall normal
  
-InstallDir "$PROGRAMFILES\SWP0"
+InstallDir "$PROGRAMFILES\SWP"
 InstallDirRegKey HKLM "${regkey}" ""
  
 !ifdef licensefile
