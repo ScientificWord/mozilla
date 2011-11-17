@@ -131,7 +131,7 @@
     <key name="m">msiGoDoCommand("cmd_MSIMatrixCmdLast");</key> 
     <key name="M">msiGoDoCommand("cmd_MSIMatrixCmd22");</key>
     <key name="c">insertMathSymbol("&subset;");</key>
-    <key name="C">insertMathSymbol("&cdot;");</key>
+    <key name="C">insertMathSymbol("&#x22c5;");</key>
     <key name="v">insertMathSymbol("&vee;");</key>
     <key name="V">insertMathSymbol("&and;");</key>
     <key name="b">insertMathSymbol("&bull;");</key>
