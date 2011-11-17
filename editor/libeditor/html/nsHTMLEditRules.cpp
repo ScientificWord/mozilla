@@ -3527,7 +3527,19 @@ nsHTMLEditRules::WillMakeBasicBlock(nsISelection *aSelection,
       // make sure we can put a block here
       res = SplitAsNeeded(aBlockType, address_of(parent), &offset);
       if (NS_FAILED(res)) return res;
-      res = mHTMLEditor->CreateNode(*aBlockType, parent, offset, getter_AddRefs(theBlock));
+      nsCOMPtr<msiITagListManager> tagListManager;
+      mHTMLEditor->GetTagListManager(getter_AddRefs(tagListManager));
+      nsCOMPtr<nsIDOMDocument> doc;
+      res = parent->GetOwnerDocument(getter_AddRefs(doc));
+      res = tagListManager->GetNewInstanceOfNode(*aBlockType, nsnull, doc, getter_AddRefs(theBlock));
+      if (theBlock)
+      {
+        mHTMLEditor->InsertNode(theBlock, parent, offset);
+      }
+      else
+      {
+        res = mHTMLEditor->CreateNode(*aBlockType, parent, offset, getter_AddRefs(theBlock));
+      }
       if (NS_FAILED(res)) return res;
       // remember our new block for postprocessing
       mNewBlock = theBlock;
@@ -3541,7 +3553,10 @@ nsHTMLEditRules::WillMakeBasicBlock(nsISelection *aSelection,
         if (NS_FAILED(res)) return res;
       }
       // put selection in new block
-      res = aSelection->Collapse(theBlock,0);
+      nsCOMPtr<nsIDOMElement> newElement = do_QueryInterface(theBlock);
+			PRBool success;
+			if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(newElement, &success);
+      if (!success) res = aSelection->Collapse(theBlock,0);
       selectionResetter.Abort();  // to prevent selection reseter from overriding us.
       *aHandled = PR_TRUE;
     }
@@ -3663,7 +3678,19 @@ nsHTMLEditRules::WillMakeStructure(nsISelection *aSelection,
       // make sure we can put a block here
       res = SplitAsNeeded(aStructureType, address_of(parent), &offset);
       if (NS_FAILED(res)) return res;
-      res = mHTMLEditor->CreateNode(*aStructureType, parent, offset, getter_AddRefs(theBlock));
+      nsCOMPtr<msiITagListManager> tagListManager;
+      mHTMLEditor->GetTagListManager(getter_AddRefs(tagListManager));
+      nsCOMPtr<nsIDOMDocument> doc;
+      res = parent->GetOwnerDocument(getter_AddRefs(doc));
+      res = tagListManager->GetNewInstanceOfNode(*aStructureType, (nsIAtom *)nsnull, doc, getter_AddRefs(theBlock));
+      if (theBlock)
+      {
+        mHTMLEditor->InsertNode(theBlock, parent, offset);
+      }
+      else
+      {
+        res = mHTMLEditor->CreateNode(*aStructureType, parent, offset, getter_AddRefs(theBlock));
+      }
       if (NS_FAILED(res)) return res;
       // remember our new block for postprocessing
       mNewBlock = theBlock;
@@ -3677,7 +3704,10 @@ nsHTMLEditRules::WillMakeStructure(nsISelection *aSelection,
         if (NS_FAILED(res)) return res;
       }
       // put selection in new block
-      res = aSelection->Collapse(theBlock,0);
+      nsCOMPtr<nsIDOMElement> newElement = do_QueryInterface(theBlock);
+			PRBool success;
+			if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(newElement, &success);
+      if (!success) res = aSelection->Collapse(theBlock,0);
       selectionResetter.Abort();  // to prevent selection reseter from overriding us.
       *aHandled = PR_TRUE;
     }
@@ -4528,12 +4558,14 @@ nsHTMLEditRules::ConvertListType(nsIDOMNode *aList,
   *outList = aList;  // we might not need to change the list
   nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> child, temp;
+  nsCOMPtr<msiITagListManager> manager;
+  res = mHTMLEditor->GetTagListManager(getter_AddRefs(manager));
   aList->GetFirstChild(getter_AddRefs(child));
   while (child)
   {
     if (nsHTMLEditUtils::IsListItem(child, mtagListManager) && !nsEditor::NodeIsTypeString(child, aItemType))
     {
-      res = mHTMLEditor->ReplaceContainer(child, address_of(temp), aItemType);
+      res = mHTMLEditor->ReplaceContainer(child, address_of(temp), aItemType, manager);
       if (NS_FAILED(res)) return res;
       child = temp;
     }
@@ -4548,7 +4580,7 @@ nsHTMLEditRules::ConvertListType(nsIDOMNode *aList,
   }
   if (!nsEditor::NodeIsTypeString(aList, aListType))
   {
-    res = mHTMLEditor->ReplaceContainer(aList, outList, aListType);
+    res = mHTMLEditor->ReplaceContainer(aList, outList, aListType, manager, nsnull, nsnull, PR_TRUE);
   }
   return res;
 }
@@ -7349,6 +7381,8 @@ nsHTMLEditRules::ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsA
   PRInt32 offset;
   PRInt32 listCount = arrayOfNodes.Count();
   nsString tString(*aBlockTag);////MJUDGE SCC NEED HELP
+  nsCOMPtr<msiITagListManager> manager;
+  res = mHTMLEditor->GetTagListManager(getter_AddRefs(manager));
 
   // Remove all non-editable nodes.  Leave them be.
   PRInt32 j;
@@ -7388,7 +7422,7 @@ nsHTMLEditRules::ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsA
        nsHTMLEditUtils::IsFormatNode(curNode, mtagListManager))
     {
       curBlock = 0;  // forget any previous block used for previous inline nodes
-      res = mHTMLEditor->ReplaceContainer(curNode, address_of(newBlock), *aBlockTag,
+      res = mHTMLEditor->ReplaceContainer(curNode, address_of(newBlock), *aBlockTag, manager,
                                           nsnull, nsnull, PR_TRUE);
       if (NS_FAILED(res)) return res;
     }
@@ -7592,8 +7626,23 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
         res = SplitAsNeeded(aStructureTag, address_of(curParent), &offset);
         if (NS_FAILED(res)) return res;
         nsCOMPtr<nsIDOMNode> theBlock;
-        res = mHTMLEditor->CreateNode(*aStructureTag, curParent, offset, getter_AddRefs(theBlock));
+        nsCOMPtr<msiITagListManager> tagListManager;
+        mHTMLEditor->GetTagListManager(getter_AddRefs(tagListManager));
+        nsCOMPtr<nsIDOMDocument> doc;
+        res = curParent->GetOwnerDocument(getter_AddRefs(doc));
+        res = tagListManager->GetNewInstanceOfNode(*aStructureTag, nsnull, doc, getter_AddRefs(theBlock));
+        if (theBlock)
+        {
+          mHTMLEditor->InsertNode(theBlock, curParent, offset);
+        }
+        else
+        {
+          res = mHTMLEditor->CreateNode(*aStructureTag, curParent, offset, getter_AddRefs(theBlock));
+        }
         if (NS_FAILED(res)) return res;
+    		PRBool success;
+        nsCOMPtr<nsIDOMElement> theBlockElement(do_QueryInterface(theBlock));
+    		if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(theBlockElement, &success);
         // remember our new block for postprocessing
         mNewBlock = theBlock;
       }
@@ -8013,7 +8062,14 @@ nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const ns
           res = newNode->GetFirstChild(getter_AddRefs(child));
         }
         elem = do_QueryInterface(newNode);
-//        if (NS_FAILED(res)) return res;
+  			PRBool success;
+  			if (newNode) res = mHTMLEditor->SetCursorInNewHTML(elem, &success);
+        if (!success)
+        {
+          nsCOMPtr<nsISelection>selection;
+          nsresult res = mHTMLEditor->GetSelection(getter_AddRefs(selection));
+          res = selection->Collapse(newNode,0);
+        }
       }
       else
       {
@@ -8131,7 +8187,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     // Skip this if the existing node is the same type as the new node
     nsEditor::GetTagString(inNode, str);
     if (!strTitle.Equals(str))
-      res = mHTMLEditor->ReplaceContainer(inNode, address_of(sourceNode), strTitle);
+      res = mHTMLEditor->ReplaceContainer(inNode, address_of(sourceNode), strTitle, mtagListManager);
   }
    
   // walk up the tree to find where the new structure tag will fit.
