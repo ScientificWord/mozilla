@@ -37,11 +37,6 @@ endif
 
 
 libs::	$(CMD_RESOURCES)
+	chmod 755 $(wildcard     $(srcdir)/bin/linux/*.bash)
+	chmod 755 $(wildcard     $(srcdir)/bin/mac/*.applescript)
 	$(INSTALL)	$(CMD_RESOURCES)	$(FINAL_TARGET)
-
-
-
-
-
-
-	
