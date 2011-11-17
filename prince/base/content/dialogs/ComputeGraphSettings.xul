@@ -105,22 +105,22 @@
         </groupbox>
         <groupbox>
           <caption label="&defaultplacementnewplot.label;"/>
-          <radiogroup id="Placement" preference="swp.graph.Placement" oncommand="enableFloating(this);">
+          <radiogroup id="graphPlacement" preference="swp.graph.Placement">
           <hbox flex="1">
             <vbox>
-              <radio id="inline" value="inlne" label="In line" name="Placement"/>
+              <radio id="inline" value="inlne" label="In line" name="Placement" oncommand="checkEnableFloating();"/>
             </vbox>
             <vbox>
-              <radio id="display" value="display" label="Displayed" name="Placement"/>
+              <radio id="display" value="display" label="Displayed" name="Placement" oncommand="checkEnableFloating();"/>
             </vbox>
             <vbox>
-              <radio id="float" value="float" label="Floating" name="Placement" oncommand="enableHere(this);"/>
+              <radio id="float" value="float" label="Floating" name="Placement" oncommand="checkEnableFloating();"/>
               <vbox>
-                <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
-                <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
-                <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
-                <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
-                <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+                <checkbox id="placeForceHereCheck" label="Force here" />
+                <checkbox id="placeHereCheck" label="Here" />
+                <checkbox id="placeFloatsCheck" label="On a page of floats"/>
+                <checkbox id="placeTopCheck" label="Top of page" />
+                <checkbox id="placeBottomCheck" label="Bottom of page" />
               </vbox>
             </vbox>
             <vbox>
