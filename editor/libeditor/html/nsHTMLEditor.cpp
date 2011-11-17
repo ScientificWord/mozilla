@@ -2938,8 +2938,12 @@ nsHTMLEditor::MakeOrChangeList(const nsAString& aListType, PRBool entireList, co
       {
         res = CreateNode(aListType, newList, 0, getter_AddRefs(newItem));
       }
-      res = selection->Collapse(newItem,0);
+      nsCOMPtr<nsIDOMElement> newElement = do_QueryInterface(newItem);
+			PRBool success;
+			if (newItem) res = SetCursorInNewHTML(newElement, &success);
       if (NS_FAILED(res)) return res;
+      if (!success)
+        selection->Collapse(newItem, 0);
     }
   }
   
@@ -3067,15 +3071,25 @@ nsHTMLEditor::InsertBasicBlock(const nsAString& aBlockType)
 
       // make a block
       nsCOMPtr<nsIDOMNode> newBlock;
-      res = CreateNode(aBlockType, parent, offset, getter_AddRefs(newBlock));
+      nsCOMPtr<nsIDOMDocument> doc;
+      res = parent->GetOwnerDocument(getter_AddRefs(doc));
+      res = mtagListManager->GetNewInstanceOfNode(aBlockType, nsnull, doc, getter_AddRefs(newBlock));
+      if (newBlock)
+      {
+        InsertNode(newBlock, parent, offset);
+      }
+      else
+      {
+        res = CreateNode(aBlockType, parent, offset, getter_AddRefs(newBlock));
+      }
       if (NS_FAILED(res)) return res;
     
       // reposition selection to inside the block
-      res = selection->Collapse(newBlock,0);
+      nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
+  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;  
     }
   }
-
   res = mRules->DidDoAction(selection, &ruleInfo, res);
   return res;
 }
@@ -3153,13 +3167,21 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
 
       // make a block
       nsCOMPtr<nsIDOMNode> newBlock;
-      
-      // TODO: need CreateNodeNS
-      res = CreateNode(aBlockType, parent, offset, getter_AddRefs(newBlock));
+      nsCOMPtr<nsIDOMDocument> doc;
+      res = parent->GetOwnerDocument(getter_AddRefs(doc));
+      res = mtagListManager->GetNewInstanceOfNode(aBlockType, nsnull, doc, getter_AddRefs(newBlock));
+      if (newBlock)
+      {
+        InsertNode(newBlock, parent, offset);
+      }
+      else
+      {
+        res = CreateNode(aBlockType, parent, offset, getter_AddRefs(newBlock));
+      }
       if (NS_FAILED(res)) return res;
-    
       // reposition selection to inside the block
-      res = selection->Collapse(newBlock,0);
+      nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
+  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;  
     }
   }
@@ -3242,13 +3264,21 @@ nsHTMLEditor::InsertStructureNS(const nsAString& aStructType, nsIAtom * namespac
 
       // make a block
       nsCOMPtr<nsIDOMNode> newBlock;
-      
-      // TODO: need CreateNodeNS
-      res = CreateNode(aStructType, parent, offset, getter_AddRefs(newBlock));
+      nsCOMPtr<nsIDOMDocument> doc;
+      res = parent->GetOwnerDocument(getter_AddRefs(doc));
+      res = mtagListManager->GetNewInstanceOfNode(aStructType, nsnull, doc, getter_AddRefs(newBlock));
+      if (newBlock)
+      {
+        InsertNode(newBlock, parent, offset);
+      }
+      else
+      {
+        res = CreateNode(aStructType, parent, offset, getter_AddRefs(newBlock));
+      }
       if (NS_FAILED(res)) return res;
-    
       // reposition selection to inside the block
-      res = selection->Collapse(newBlock,0);
+      nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
+  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;  
     }
   }

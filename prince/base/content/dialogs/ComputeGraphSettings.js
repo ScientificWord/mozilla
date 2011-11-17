@@ -15,10 +15,6 @@ var graph;
 // if the document has an element matching an attribute name, 
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
-  //plotUnitsHandler = new UnitHandler();
-  //plotUnitsHandler.setEditFieldList([document.getElementById("plotwidth"), document.getElementById("plotheight")]);
-  //plotUnitsHandler.initCurrentUnit("px");
-  //plotUnitsHandler.buildUnitMenu(document.getElementById("plotunits"), "px");
 
   graph = window.arguments[0];
   var alist = graph.graphAttributeList();                    
@@ -46,6 +42,26 @@ function Startup(){
     theStringSource = GetComputeString("Math.emptyForInput");
   msiInitializeEditorForElement(editorControl, theStringSource, true);
 
+
+  // Caption placement
+  var oldval = graph.getValue ("CaptionPlace");  
+  radioGroupSetCurrent ("captionplacement", oldval);
+
+  // Graphic Placement
+  oldval = graph.getValue ("Placement");
+  var elem = document.getElementById("graphPlacement");
+  if (oldval == "inline"){
+    elem.selectedIndsex = 0;
+  } else if (oldval == "display") {
+    elem.selectedIndex = 1;
+  } else {
+    elem.selectedIndex = 2;
+  }
+  //radioGroupSetCurrent ("graphPlacement", oldval);
+
+  checkEnableFloating();
+
+  
 }                                                                                            
 
 
@@ -64,6 +80,20 @@ var msiEditorDocumentObserverG =
   }
 }
 
+var floatControlIDs = ["placeForceHereCheck", "placeHereCheck", "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"];
+
+function checkEnableFloating()
+{
+  var bEnable = false;
+  var elem = document.getElementById("graphPlacement");
+             
+  var val = elem.selectedItem.value;
+  bEnable = (val == "float");
+
+  enableControlsByID(floatControlIDs, bEnable); 
+
+}
+                  
 
 function tableRow4 (v, min, max, npts,chrome) {
   var str = "<tr>";
@@ -221,6 +251,10 @@ function GetValuesFromDialog(){
       }                                                                
     }                                                                   
   } 
+  var elem = document.getElementById("graphPlacement");
+  var newplace = elem.selectedItem.value;
+  
+  graph.setGraphAttribute("Placement", newplace);
 
 
   plotUnitsHandler
@@ -862,5 +896,5 @@ function GetGraphColor (attributeName)
 function initKeyList()
 {
   gDialog.markerList = new msiKeyMarkerList(window);
-  gDialog.markerList.setUpTextBoxControl(document.getElementById("key"));
+  gDialog.markerList.setUpTextBoxControl(document.getElementById("Key"));
 }
