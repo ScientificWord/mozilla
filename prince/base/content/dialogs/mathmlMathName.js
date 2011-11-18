@@ -326,7 +326,7 @@ function setControlsFromObject(nameData)
 
 //This function will add the current name to the listbox, and to the local gDialog.nameList.
 //Writing to the XML file, and updating the prototype mathNameList, occurs onOK?? Or is this wrong?
-function addCurrentName()
+function addCurrentName(bNoUpdate)
 {
   var currName = document.getElementById("mathNamesBox").value;
   var theType = document.getElementById("nameTypeRadioGroup").value;
@@ -342,7 +342,8 @@ function addCurrentName()
   gDialog.nameList.addName(currName, theType, bEngineFunction, bAutoSubstitute, aLimitPlacement, appearanceList);
   gDialog.nameList.updateBaseList();  //see msiEditorUtilities.js
 
-  updateControls();
+  if (!bNoUpdate)
+    updateControls();
 }
 
 function deleteCurrentName()
@@ -359,6 +360,8 @@ function onOK() {
   dump("\nMathName onOK(), name = " + currName);
   if (currName in gDialog.nameList.names)
     target = gDialog.nameList.names[currName];
+  else if (document.getElementById("addAutoSubstitution").getAttribute("checked") == "true")
+    addCurrentName(true);
   target.val = currName;
   target.type = document.getElementById("nameTypeRadioGroup").value;
   dump("\nMathName onOK(), type = " + target.type);
