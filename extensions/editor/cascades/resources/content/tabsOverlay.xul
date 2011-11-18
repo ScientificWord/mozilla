@@ -43,7 +43,7 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <!-- FONT AND TEXT PANEL -->
-  <vbox id="textTabPanel">
+  <tabpanel orient="vertical" id="textTabPanel">
     <hbox>
       <vbox>
         <label value="&fontFamily.label;"/>
@@ -156,11 +156,11 @@
                 <textbox id="textColorInput"
                          size="10" 
                          oninput="onColorZoneInput(this, 'color', 'brownFoxLabel', 'textCW');"/>
-                <button id="colorButton"
+                <msibutton id="colorButton"
                         class="color-button"
                         oncommand="GetColorAndUpdate('textCW');">
                   <spacer id="textCW" class="color-well"/>
-                </button>
+                </msibutton>
               </row>
               <row align="center">
                 <label value="&fontWeight.label;"/>
@@ -299,11 +299,11 @@
     
     <!-- we cannot use a xul label here because text-transform does not work on labels *sigh* -->
     <html:p id="brownFoxLabel">&exampleSentence.label;</html:p>
-  </vbox>
+  </tabpanel>
 
 
   <!-- BACKGROUND PANEL -->
-  <vbox id="backgroundTabPanel">
+  <tabpanel orient="vertical" id="backgroundTabPanel">
     <grid>
       <columns><column/><column/></columns>
       <rows>
@@ -314,12 +314,12 @@
                    oninput="onColorZoneInput(this, 'background-color', 'backgroundPreview', 'backgroundCW');
                             onColorZoneInput(this, 'background-color', 'brownFoxLabel', 'backgroundCW');"/>
           <hbox>
-            <button id="backgroundcolorButton"
+            <msibutton id="backgroundcolorButton"
                     class="color-button"
                     oncommand="GetColorAndUpdate('backgroundCW');">
               <spacer id="backgroundCW"
                       class="color-well"/>
-            </button>
+            </msibutton>
           </hbox>
         </row>
         <row align="center">
@@ -339,7 +339,7 @@
                    oninput="ChangeImageSrc();"
                    flex="1"/>
           <hbox>
-            <button label="&chooseFileButton.label;"
+            <msibutton label="&chooseFileButton.label;"
                     oncommand="chooseFile('img', 'backgroundImageInput');"/>
           </hbox>
         </row>
@@ -422,11 +422,11 @@
         </row>
       </rows>
     </grid>
-  </vbox>
+  </tabpanel>
 
 
   <!-- BORDER PANEL -->
-  <vbox id="borderTabPanel">
+  <tabpanel orient="vertical" id="borderTabPanel">
     <checkbox id="allFourBordersSame"
               label="&useBorderShorthand.label;"
               oncommand="ToggleFourBorderSidesSameStyle(this);"/>
@@ -714,12 +714,12 @@
       </groupbox>
       <spacer flex="1"/>
     </hbox>
-  </vbox>
+  </tabpanel>
 
 
 
   <!-- BOX TAB PANEL -->
-  <vbox id="boxTabPanel">
+  <tabpanel orient="vertical" id="boxTabPanel">
     <grid>
       <columns><column/><column/><column flex="1"/><column/><column/></columns>
       <rows>
@@ -1079,119 +1079,6 @@
         </row>
       </rows>
     </grid>
-  </vbox>
-
-
-    <!-- AURAL TAB PANEL-->
-  <vbox id="auralTabPanel">
-    <hbox align="center">
-      <label value="&volume.label;"/>
-      <scrollbar flex="1"
-          id="volumeScrollbar"
-          align="horizontal"
-          curpos="500"
-          maxpos="1000"
-          increment="10"
-          pageincrement="100"/>
-      <menulist editable="true" style="width: 8em"
-                id="volumeMenulist"
-                oninput="ChangeValueOnInput(this, 'volume', null); UpdateScrollbar(this, 'volumeScrollbar');">
-        <menupopup>
-          <menuitem label="&xsoftVolume.label;"/>
-          <menuitem label="&softVolume.label;"/>
-          <menuitem label="&mediumVolume.label;"/>
-          <menuitem label="&loudVolume.label;"/>
-          <menuitem label="&xloudVolume.label;"/>
-        </menupopup>
-      </menulist>
-      <checkbox id="muteVolumeCheckbox"
-                oncommand="MuteVolume(this)"
-                label="&muteVolume.label;"/>
-    </hbox>
-    <separator class="groove"/>
-    <grid flex="1">
-      <columns><column/><column/><column flex="1"/><column/><column/><column/></columns>
-      <rows>
-        <row align="center">
-          <label value="&speak.label;"/>
-          <menulist id="speakMenulist"
-                    oncommand="DoMenulistCommand(this, 'speak', null);">
-            <menupopup>
-              <menuitem label="&unspecifiedValue.label;"
-                        id="unspecifiedSpeakMenu"
-                        value=''/>
-              <menuseparator/>
-              <menuitem label="&noneSpeak.label;"
-                        id="noneSpeakMenu"
-                        value='none'/>
-              <menuitem label="&normalSpeak.label;"
-                        id="normalSpeakMenu"
-                        value='normal'/>
-              <menuitem label="&spelloutSpeak.label;"
-                        id="spelloutSpeakMenu"
-                        value='spell-out'/>
-            </menupopup>
-          </menulist>
-          <spacer flex="1"/>
-          <label value="&speechRate.label;"/>
-          <menulist editable="true"
-                    id="speechRateMenulist"
-                    oncommand="DoMenulistCommand(this, 'speak', null);">
-            <menupopup>
-              <menuitem label="&unspecifiedValue.label;"
-                        id="unspecifiedSpeechRateMenu"
-                        value=''/>
-              <menuseparator/>
-              <menuitem label="&slowerSpeechRate.label;"
-                        id="slowerSpeechRateMenu"
-                        value='slower'/>
-              <menuitem label="&fasterSpeechRate.label;"
-                        id="fasterSpeechRateMenu"
-                        value='faster'/>
-              <menuseparator/>
-              <menuitem label="&xslowSpeechRate.label;"
-                        id="xslowSpeechRateMenu"
-                        value='x-slow'/>
-              <menuitem label="&slowSpeechRate.label;"
-                        id="slowSpeechRateMenu"
-                        value='slow'/>
-              <menuitem label="&mediumSpeechRate.label;"
-                        id="mediumSpeechRateMenu"
-                        value='medium'/>
-              <menuitem label="&fastSpeechRate.label;"
-                        id="fastSpeechRateMenu"
-                        value='fast'/>
-              <menuitem label="&xfastSpeechRate.label;"
-                        id="xfastSpeechRateMenu"
-                        value='x-fast'/>
-            </menupopup>
-          </menulist>
-        </row>
-        <!-- WORK IN PROGRESS UNDER THIS LINE -->
-        <row align="center">
-          <label value="Pause before:"/>
-          <textbox/>
-          <spacer/>
-          <label value="Cue before:"/>
-          <textbox id="cueBeforeInput"
-                   oninput=""
-                   flex="1"/>
-          <!-- from eddialogoverlay.Xul -->
-          <button label="Choose file" oncommand="chooseFile('sound', 'cueBeforeInput')"/>
-        </row>
-        <row align="center">
-          <label value="Pause after:"/>
-          <textbox/>
-          <spacer/>
-          <label value="Cue after:"/>
-          <textbox id="cueAfterInput"
-                   oninput=""
-                   flex="1"/>
-          <!-- from eddialogoverlay.Xul -->
-          <button label="Choose file" oncommand = "chooseFile('sound', 'cueAfterInput')"/>
-        </row>
-      </rows>
-    </grid>
-  </vbox>
+  </tabpanel>
 
 </overlay>

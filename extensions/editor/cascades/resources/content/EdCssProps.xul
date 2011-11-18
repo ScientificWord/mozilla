@@ -91,12 +91,12 @@
             <columns><column flex="1"/><column flex="1"/><column flex="1"/></columns>
             <rows>
               <row>
-                <button label="&importRuleButton.label;"
+                <msibutton label="&importRuleButton.label;"
                         id="atimportButton"
                         disabled="true"
                         oncommand="CreateNewAtimportRule();"/>
-                <button label="&mediaRuleButton.label;"  id="atmediaButton" disabled="true"/>
-                <button label="&ruleButton.label;"
+                <msibutton label="&mediaRuleButton.label;"  id="atmediaButton" disabled="true"/>
+                <msibutton label="&ruleButton.label;"
                         id="ruleButton" disabled="true"
                         oncommand="CreateNewStyleRule();"/>
               </row>
@@ -105,22 +105,23 @@
         </column>
         <column>
           <vbox>
-            <button id="upButton"
+            <msibutton id="upButton"
                     class="up"
                     label="&upButton.label;"
                     oncommand="MoveObjectUp()"/>
-            <button id="downButton"
+            <msibutton id="downButton"
                     class="down"
                     label="&downButton.label;"
                     oncommand="MoveObjectDown()"/>
             <spacer flex="1"/>
-            <button label="&styleSheetButton.label;"
+            <description  style="width: 90px">Note: Rules and files shown in red are read-only. Modify one of the black rules to override current behavior.</description>
+            <msibutton label="&styleSheetButton.label;"
                         id="styleButton"
                         oncommand="CreateNewStyleElement();"/>
-            <button label="&refreshButton.label;"
+            <msibutton label="&refreshButton.label;"
                     oncommand="Refresh();"/>
             <spacer flex="1"/>
-            <button label="&removeButton.label;"
+            <msibutton label="&removeButton.label;"
                     id="removeButton"
                     disabled="true"
                     oncommand="RemoveObject();"/>
@@ -132,28 +133,20 @@
       <tabbox id="sheetTabbox">
         <tabs>
           <tab id="sheetInfoTab"
-               label="&sheetInfoTab.label;"
-               oncommand="onSelectCSSTreeItem('general');"/>
+               label="&sheetInfoTab.label;"/>
           <tab id="textTab"
-               label="&textTab.label;"
-               oncommand="onSelectCSSTreeItem('text');"/>
+               label="&textTab.label;"/>
           <tab id="backgroundTab"
-               label="&backgroundTab.label;"
-               oncommand="onSelectCSSTreeItem('background');"/>
+               label="&backgroundTab.label;"/>
           <tab id="borderTab"
-               label="&borderTab.label;"
-               oncommand="onSelectCSSTreeItem('border');"/>
+               label="&borderTab.label;"/>
           <tab id="boxTab"
-               label="&boxTab.label;"
-               oncommand="onSelectCSSTreeItem('box');"/>
-          <tab id="auralTab"
-               label="&auralTab.label;"
-               oncommand="onSelectCSSTreeItem('aural');"/>
+               label="&boxTab.label;"/>
         </tabs>
         <!-- defined in tabsOverlay -->
         <tabpanels id="TabPanels">
           <!-- STYLESHEET INFORMATION PANEL -->
-          <vbox id="sheetInfoTabPanel"
+          <tabpanel orient="vertical" id="sheetInfoTabPanel"
                 flex="1">
             <label id="sheetInfoTabPanelTitle"
                    value=""/>
@@ -162,17 +155,16 @@
                 <columns><column/><column flex="1"/></columns>
               </grid>
             </vbox>
-          </vbox>
-          <vbox id="textTabPanel" />
-          <vbox id="backgroundTabPanel" />
-          <vbox id="borderTabPanel" />
-          <vbox id="boxTabPanel" />
-          <vbox id="auralTabPanel" />
+          </tabpanel>
+          <tabpanel id="textTabPanel" />
+          <tabpanel id="backgroundTabPanel" />
+          <tabpanel id="borderTabPanel" />
+          <tabpanel id="boxTabPanel" />
         </tabpanels>
       </tabbox>
       <hbox align="center">
         <spacer flex="1"/>
-        <button label="&closeButton.label;"
+        <msibutton label="&closeButton.label;"
                 oncommand="FlushChanges(); window.close();"/>
       </hbox>
     </vbox>
