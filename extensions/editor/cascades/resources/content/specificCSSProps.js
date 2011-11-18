@@ -228,9 +228,6 @@ function InitDialog()
     case "box":
       InitBoxTabPanel();
       break;
-    case "aural":
-      InitAuralTabPanel();
-      break;
     default:
       break;
   }
