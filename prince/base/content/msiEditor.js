@@ -970,6 +970,8 @@ function msiEditorDocumentObserver(editorElement)
           delete this.mEditorElement.initialMarker;  //don't want to leave this around for later reloads or anything
           msiGoToMarker(this.mEditorElement, markerStr);
         }
+        if (bIsRealDocument)
+          this.mEditorElement.mbInitializationCompleted = true;
       break;
 
       case "cmd_setDocumentModified":
@@ -1445,6 +1447,11 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
   }
   if ( ("mbSetFocusOnStartup" in editorElement) && editorElement.mbSetFocusOnStartup)
     editorElement.contentWindow.focus();
+  else if ( ("mResetInitialFocusTo" in editorElement) && (editorElement.mResetInitialFocusTo != null))
+  {
+    editorElement.mResetInitialFocusTo.focus();
+    editorElement.mResetInitialFocusTo = null;
+  }
 }
 
 function msiEditorLoadUrl(editorElement, url, markerStr)
