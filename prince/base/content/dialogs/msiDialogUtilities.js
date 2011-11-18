@@ -773,6 +773,12 @@ function msiSetInitialDialogFocus(focusElement)
 
   if (focusElement.nodeName == "editor")
     focusElement.mbSetFocusOnStartup = true;
+  var edList = document.getElementsByTagName("editor");
+  for (var ii = 0; ii < edList.length; ++ii)
+  {
+    if (!edList[ii].mbInitializationCompleted)
+      edList[ii].mResetInitialFocusTo = focusElement;  //this causes another focus call after the editor has completed initialization
+  }
   focusElement.focus();
 }
 
