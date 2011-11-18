@@ -997,7 +997,7 @@
             <abstract>
               <bodyText>
                 <cursor/>
-                <br/>
+                <br type="_moz"/>
               </bodyText>
             </abstract>
           </initialcontents>
@@ -1011,7 +1011,7 @@
           <initialcontents>
             <address>
               <cursor/>
-              <br/>
+              <br type="_moz"/>
             </address>
           </initialcontents>
 					<nexttag>bodyText</nexttag>
@@ -1019,12 +1019,13 @@
         <tag nm="author"><description>Author</description>
           <realtagclass>paratag</realtagclass>
 	  		  <inclusion>true</inclusion>
+					<nexttag>bodyText</nexttag>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <author>
               <cursor/>
-              <br/>
+              <br type="_moz"/>
             </author>
           </initialcontents>
 					<nexttag>bodyText</nexttag>
@@ -1036,7 +1037,7 @@
           <initialcontents>
             <date>
               <cursor/>
-              <br/>
+              <br type="_moz"/>
             </date>
           </initialcontents>
 					<nexttag/>
@@ -1044,7 +1045,7 @@
         </tag>
         <tag nm="makelof"><description>Make list of figures</description>
           <realtagclass>othertag</realtagclass>
-					<nexttag/>
+					<nexttag>bodyText</nexttag>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
@@ -1063,12 +1064,12 @@
           <realtagclass>othertag</realtagclass>
           <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
           </initialcontentsforempty>
-					<nexttag/>
+					<nexttag>bodyText</nexttag>
 	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="maketoc"><description>Make table of contents</description>
           <realtagclass>othertag</realtagclass>
-					<nexttag/>
+					<nexttag>bodyText</nexttag>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
@@ -1077,12 +1078,13 @@
         <tag nm="title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>bodyText</nexttag>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <title type="ours">
               <cursor/>
-              <br/>
+              <br type="_moz"/>
             </title>
           </initialcontents>
         </tag>
