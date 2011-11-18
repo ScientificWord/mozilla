@@ -15,29 +15,17 @@ radio[pane=prefEdit] {
 list-style-image: url("chrome://prince/skin/icons/editor.png")
 }
 
-/* radio[pane=paneTabs]:active:hover {
-	-moz-image-region: rect(32px, 64px, 64px, 32px);
-}
-*/
 /* ----- TYPESETTING BUTTON ----- */
 
 radio[pane=prefTypesetting] {
 list-style-image: url("chrome://prince/skin/icons/typesetting.png")
 }
 
-/*radio[pane=paneContent]:active:hover {
-	-moz-image-region: rect(32px, 96px, 64px, 64px);
-}*/
-
 /* ----- COMPUTATION BUTTON ----- */
 
 radio[pane=prefComp] {
 list-style-image: url("chrome://prince/skin/icons/computation.png")
 }
-
-/*radio[pane=paneApplications]:active:hover {
-	-moz-image-region: rect(32px, 128px, 64px, 96px);
-}*/
 
 /* ----- PLOTS BUTTON ----- */
 
