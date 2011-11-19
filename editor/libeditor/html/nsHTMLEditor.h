@@ -1041,5 +1041,7 @@ friend class nsWSRunObject;
 friend class msiTagListManager;
 
 };
+
+PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm);
 #endif //nsHTMLEditor_h__
 

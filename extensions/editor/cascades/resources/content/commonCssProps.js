@@ -1161,7 +1161,7 @@ function EnableUI(elt, enabled)
 
 function EnableAllTabsUI(bEnable)
 {
-  var tabList = ["sheetInfoTabPanel", "textTabPanel", "backgroundTabPanel", "borderTabPanel", "boxTabPanel", "auralTabPanel"];
+  var tabList = ["sheetInfoTabPanel", "textTabPanel", "backgroundTabPanel", "borderTabPanel", "boxTabPanel"];
   var exceptionsList = ["predefFontFamilyMenulist", "customFontFamilyInput",  "backgroundRepeatLabel", "backgroundRepeatMenulist", 
                         "backgroundAttachmentCheckbox", "backgroundPositionLabel", "xBackgroundPositionRadiogroup",
                         "leftXBackgroundPositionRadio", "centerXBackgroundPositionRadio", "rightXBackgroundPositionRadio",
