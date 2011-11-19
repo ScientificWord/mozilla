@@ -7,7 +7,7 @@ const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
 const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
-const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+//const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 Components.utils.import("resource://app/modules/os.jsm");

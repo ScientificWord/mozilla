@@ -860,7 +860,7 @@ function GetColorAndUpdate(ColorWellID)
   if (colorObj.Cancel)
     return;
   else {
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		gActiveEditor.incrementModificationCount(1);
 	}
 
   var changeArray = createPreviewChangeArray();
