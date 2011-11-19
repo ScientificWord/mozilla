@@ -84,6 +84,7 @@
 #include "nsIWidget.h"
 #include "nsIPlaintextEditor.h"
 #include "nsIHTMLEditor.h"
+#include "nsTextEditUtils.h"
 #include "nsGUIEvent.h"  // nsTextEventReply
 
 #include "nsIFrame.h"  // Needed by IME code
@@ -1838,9 +1839,12 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
       inNode->GetFirstChild(getter_AddRefs(child));
       res = DeleteNode(child);
       if (NS_FAILED(res)) return res;
-
-      res = InsertNode(child, *outNode, -1);
-      if (NS_FAILED(res)) return res;
+      
+      if (!nsTextEditUtils::IsBreak(child))
+      {
+        res = InsertNode(child, *outNode, -1);
+        if (NS_FAILED(res)) return res;
+      }
       inNode->HasChildNodes(&bHasMoreChildren);
     }
   }
