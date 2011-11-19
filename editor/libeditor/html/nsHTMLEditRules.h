@@ -316,6 +316,9 @@ protected:
   nsresult AlignBlock(nsIDOMElement * aElement, const nsAString * aAlignType, PRBool aContentsOnly);
   nsresult RelativeChangeIndentationOfElementNode(nsIDOMNode *aNode, PRInt8 aRelativeChange);
   nsresult GetStructNodeFromNode(nsIDOMNode *inNode, nsIDOMElement ** structNode, const nsAString& notThisTag);
+
+  /** creates a bogus text node if the document has no editable content */
+   nsresult CreateBogusNodeIfNeeded(nsISelection *aSelection);
   
 
 // data members

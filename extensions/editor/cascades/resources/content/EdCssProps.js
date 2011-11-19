@@ -430,7 +430,9 @@ function AddRulesToTreechildren(treeItem, rules, external, depth)
           break;
         case CSSRule.IMPORT_RULE:
           // this is CSSImportRule for @import
-          subtreeitem  = AddImportRuleToTreeChildren(rules[j], external, depth);
+          var importfrom = rules[j].href;
+          var ext = /resource:\/\//.test(importfrom);
+          subtreeitem  = AddImportRuleToTreeChildren(rules[j], ext, depth);          
           subtreechildren.appendChild(subtreeitem);
           break;
         case CSSRule.MEDIA_RULE:
@@ -515,7 +517,6 @@ function onSelectCSSTreeItem(tab)
   else if (tab == "background")    tab = BACKGROUND_TAB;
   else if (tab == "border")        tab = BORDER_TAB;
   else if (tab == "box")           tab = BOX_TAB;
-  else if (tab == "aural")         tab = AURAL_TAB;
 
   GetSelectedItemData();
 
@@ -747,7 +748,7 @@ function AddSingleButtonToInfobox(rows, label, callback)
   row.setAttribute("align", "center");
   var spacer = document.createElementNS(XUL_NS, "spacer");
   var hbox = document.createElementNS(XUL_NS, "hbox");
-  var button = document.createElementNS(XUL_NS, "button");
+  var button = document.createElementNS(XUL_NS, "msibutton");
   button.setAttribute("label", label);
   button.setAttribute("class", "align-right");
   button.setAttribute("oncommand", callback+"();");
