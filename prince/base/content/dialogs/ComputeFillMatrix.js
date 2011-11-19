@@ -30,12 +30,6 @@ var msiFillMatrixEditorDocumentObserver =
 function Startup(){
   data = window.arguments[0];
 
-  var rows = document.getElementById("rows");
-  rows.value = data.rows.toString();
-
-  var cols = document.getElementById("cols");
-  cols.value = data.cols.toString();
-
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor) {
@@ -43,6 +37,14 @@ function Startup(){
     window.close();
     return;
   }
+
+  var rows = document.getElementById("rows");
+  if (data && ("rows" in data))
+    rows.value = data.rows.toString();
+
+  var cols = document.getElementById("cols");
+  if (data && ("cols" in data))
+    cols.value = data.cols.toString();
 
 //SLS the following copied from editor.js
 //  gSourceContentWindow = document.getElementById("content-frame");
