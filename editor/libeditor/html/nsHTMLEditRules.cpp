@@ -9505,6 +9505,9 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   PRBool isEmpty;
   nsCOMPtr<nsIDOMNode> brNode;
   nsresult res = mHTMLEditor->IsEmptyNode(aNode, &isEmpty);
+  nsCOMPtr<msiITagListManager> taglistManager;
+  mHTMLEditor->GetTagListManager( getter_AddRefs(taglistManager));
+	if (isEmpty) isEmpty = HasNoSignificantTags(aNode, taglistManager);
   if (NS_FAILED(res)) return res;
   if (isEmpty)
   {
@@ -9512,6 +9515,76 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   }
   return res;
 }
+
+
+nsresult
+nsHTMLEditRules::CreateBogusNodeIfNeeded(nsISelection *aSelection)
+{
+  if (!aSelection) { return NS_ERROR_NULL_POINTER; }
+  if (!mEditor) { return NS_ERROR_NULL_POINTER; }
+  if (mBogusNode) return NS_OK;  // let's not create more than one, ok?
+
+  // tell rules system to not do any post-processing
+  nsAutoRules beginRulesSniffing(mEditor, nsEditor::kOpIgnore, nsIEditor::eNone);
+
+  nsIDOMNode* body = mEditor->GetRoot();
+  if (!body)
+  {
+    // we don't even have a body yet, don't insert any bogus nodes at
+    // this point.
+
+    return NS_OK;
+  }
+
+  // now we've got the body tag.
+  // iterate the body tag, looking for editable content
+  // if no editable content is found, insert the bogus node
+  PRBool needsBogusContent=PR_TRUE;
+  nsCOMPtr<nsIDOMNode> bodyChild;
+  nsresult res = body->GetFirstChild(getter_AddRefs(bodyChild));        
+  nsCOMPtr<msiITagListManager> taglistManager;
+  mHTMLEditor->GetTagListManager( getter_AddRefs(taglistManager));
+  while ((NS_SUCCEEDED(res)) && bodyChild)
+  { 
+    if (mEditor->IsMozEditorBogusNode(bodyChild) ||
+        !mEditor->IsEditable(body) ||
+        mEditor->IsEditable(bodyChild)||
+        !HasNoSignificantTags(bodyChild,taglistManager))
+    {
+      needsBogusContent = PR_FALSE;
+      break;
+    }
+    nsCOMPtr<nsIDOMNode>temp;
+    bodyChild->GetNextSibling(getter_AddRefs(temp));
+    bodyChild = do_QueryInterface(temp);
+  }
+  if (needsBogusContent)
+  {
+    // create a br
+    nsCOMPtr<nsIContent> newContent;
+    res = mEditor->CreateHTMLContent(NS_LITERAL_STRING("br"), getter_AddRefs(newContent));
+    if (NS_FAILED(res)) return res;
+    nsCOMPtr<nsIDOMElement>brElement = do_QueryInterface(newContent);
+
+    // set mBogusNode to be the newly created <br>
+    mBogusNode = brElement;
+    if (!mBogusNode) return NS_ERROR_NULL_POINTER;
+
+    // give it a special attribute
+    brElement->SetAttribute( kMOZEditorBogusNodeAttr,
+                             kMOZEditorBogusNodeValue );
+    
+    // put the node in the document
+    res = mEditor->InsertNode(mBogusNode, body, 0);
+    if (NS_FAILED(res)) return res;
+
+    // set selection
+    aSelection->Collapse(body, 0);
+  }
+  return res;
+}
+
+
 
 #ifdef XP_MAC
 #pragma mark -
