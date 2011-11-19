@@ -3201,7 +3201,7 @@ function insertafter(loc,node) {
 function inputboxselected(node) 
 {
   if (node.nodeType == Node.TEXT_NODE
-   && node.data == "\u25A1"
+   && node.data == "\u200B"
    && node.parentNode.localName == "mi")
     return true;
   else if (node.localName == "mi")
