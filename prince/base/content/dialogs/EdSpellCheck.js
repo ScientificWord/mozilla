@@ -477,7 +477,7 @@ function Recheck()
     gMisspelledWord = gSpellChecker.GetNextMisspelledWord();
     SetWidgetsForMisspelledWord();
   } catch(ex) {
-    dump(ex);
+    throw(ex);
   }
 }
 
@@ -579,6 +579,7 @@ function ExitSpellChecker()
 //        if (window.opener.InlineSpellChecker.inlineSpellChecker.enableRealTimeSpell)
 //          window.opener.InlineSpellChecker.checkDocument(window.opener.content.document);
     }
+    catch(e){}
     finally
     {
       gSpellChecker = null;

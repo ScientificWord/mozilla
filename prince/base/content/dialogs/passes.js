@@ -46,6 +46,7 @@ var timerCallback =
          setProgressStatement(true);
          document.getElementById("oktocontinue").hidden = false;
          top.document.commandDispatcher.focusedWindow.focus();  
+         window.opener.cancelSendMessage = true;
          window.close();
        }
      }
