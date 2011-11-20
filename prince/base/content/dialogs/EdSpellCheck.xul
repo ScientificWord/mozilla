@@ -69,22 +69,22 @@
     <columns>
       <column class="spell-check"/>
       <column class="spell-check" flex="1"/>
-      <column class="spell-check"/>
+      <!-- column class="spell-check"/ -->
     </columns>
     <rows>
       <row align="center">
         <label id="MisspelledWordLabel" value="&misspelledWord.label;"/>
         <label class="bold" id="MisspelledWord"/>
-        <msibutton class="spell-check" label="&recheckButton.label;" oncommand="Recheck();"
-                accesskey="&recheckButton.accesskey;"/>
+        <!--msibutton class="spell-check" label="&recheckButton.label;" oncommand="Recheck();"
+                accesskey="&recheckButton.accesskey;"/ -->
       </row>
       <row align="center">
         <label id="ReplaceWordLabel" value="&wordEditField.label;"
                control="ReplaceWordInput"
                accesskey="&wordEditField.accesskey;"/>
         <textbox id="ReplaceWordInput" oninput="ChangeReplaceWord()" flex="1"/>
-        <msibutton id="CheckWord" oncommand="CheckWord()" label="&checkwordButton.label;"
-                accesskey="&checkwordButton.accesskey;"/>
+        <!--msibutton id="CheckWord" oncommand="CheckWord()" label="&checkwordButton.label;"
+                accesskey="&checkwordButton.accesskey;"/ -->
       </row>
     </rows>
   </grid>
