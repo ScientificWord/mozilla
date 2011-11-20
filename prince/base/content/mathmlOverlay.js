@@ -323,7 +323,10 @@ var msiSuperscript =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    insertsup(editorElement);
+    if (isInMath(editorElement))
+      insertsup(editorElement);
+    else
+      msiDoStatefulCommand('cmd_texttag', 'sup' );
   }
 };
 
@@ -340,7 +343,10 @@ var msiSubscript =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    insertsub(editorElement);
+    if (isInMath(editorElement))
+      insertsub(editorElement);
+    else
+      msiDoStatefulCommand('cmd_texttag', 'sub' );
   }
 };
 
