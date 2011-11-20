@@ -56,11 +56,12 @@
       <xsl:if test="@border-width">
         \setlength\fboxrule{<xsl:value-of select="@border-width"/><xsl:value-of select="$theUnit"/>}
         <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$theUnit"/>}</xsl:if>
-        <xsl:if test="@border-color">{\color{    
+        <xsl:if test="@border-color">{\color    
           <xsl:choose>
- 	          <xsl:when test="substring(./@border-color,1,1)='#'">[rgb]{<xsl:call-template name="HTMLColorToRGB"><xsl:with-param name="colorStr" select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/></xsl:call-template>}</xsl:when
- 	          ><xsl:otherwise>black} <!--<xsl:value-of select="./@border-color"/>} --></xsl:otherwise>
-          </xsl:choose>}</xsl:if>
+            <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of 
+               select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
+            <xsl:otherwise>{black}</xsl:otherwise>
+          </xsl:choose></xsl:if>
         \framebox{</xsl:if>
       <xsl:call-template name="buildincludegraphics"/>
       <xsl:if test="@border-color">}</xsl:if>
@@ -86,18 +87,19 @@
           \begin{figure}\begin{center}
         </xsl:when>
         <xsl:otherwise>
-          <xsl:if test="@sidemargin &gt; 0">
-            \columnsep=<xsl:value-of select="@sidemargin"/><xsl:call-template name="unit"/>
-          </xsl:if>
-          <xsl:if test="@topmargin &gt; 0">
-            \intextsep=<xsl:value-of select="@topmargin"/><xsl:call-template name="unit"/><xsl:text> </xsl:text>
-          </xsl:if>
             \begin{wrapfigure}{<xsl:choose>
               <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>
               <xsl:otherwise><xsl:value-of select="substring(@placement,1,1)"/></xsl:otherwise>
             </xsl:choose>}<xsl:if test="@overhang &gt; 0">[<xsl:value-of select="@overhang"/><xsl:call-template name="unit"/>]</xsl:if>{0pt}
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:if test="@sidemargin &gt; 0">
+        \columnsep=<xsl:value-of select="@sidemargin"/><xsl:call-template name="unit"/>
+      </xsl:if>
+      <xsl:if test="@topmargin &gt; 0">
+        \intextsep=<xsl:value-of select="@topmargin"/><xsl:call-template name="unit"/><xsl:text> </xsl:text>
+      </xsl:if>
+      
       <!-- xsl:if test="@captionabove"><xsl:apply-templates/></xsl:if -->
       <xsl:apply-templates select="." mode="contents"/>
       <xsl:choose>
