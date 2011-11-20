@@ -97,7 +97,8 @@
       <textbox id="keysAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
         completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
         tooltiptext="&keyCaption.tooltip;"
-        onchange="checkDisableControls(event);" />
+        onchange="checkDisableControls(event);" 
+        ontextentered="checkDisableControls();" />
 		</hbox>
 		<spacer flex='1'/>
 		<hbox>
