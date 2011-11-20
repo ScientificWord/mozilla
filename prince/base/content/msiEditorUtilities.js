@@ -6535,7 +6535,7 @@ var msiUnitsListBase =
     var retVal = true;
     if (stringVal && stringVal.length)
     {
-      theValue = this.getNumberAndUnitFromString(stringVal);
+      var theValue = this.getNumberAndUnitFromString(stringVal);
       retVal = (theValue.number == 0);
     }
     return retVal;
