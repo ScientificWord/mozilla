@@ -54,7 +54,9 @@
            extends="chrome://global/content/bindings/toolbar.xml#toolbar">
     <resources>
       <stylesheet src="chrome://global/skin/printPreview.css"/>
+      <stylesheet src="chrome://prince/skin/toolbarsOverlay.css"/>
       <stylesheet src="chrome://global/skin/toolbar.css"/>
+      <stylesheet src="chrome://global/skin/menulist.css"/>
       <stylesheet src="chrome://prince/skin/toolbarsOverlay.css"/>
     </resources>
 
@@ -88,7 +90,7 @@
         <xul:label value="&scale.label;" accesskey="&scale.accesskey;" control="scale"/>
       </xul:vbox>
 
-      <xul:hbox align="center" pack="center">
+      <xul:hbox align="center" pack="center" style="height: 19px;">
         <xul:menulist id="scale" crop="none" 
           oncommand="parentNode.parentNode.scale(this.selectedItem.value);">
           <xul:menupopup>
