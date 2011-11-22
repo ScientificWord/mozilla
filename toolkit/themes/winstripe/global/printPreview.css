@@ -1,19 +1,31 @@
 /* ..... page navigation ..... */
 
 .home-arrow, .end-arrow[chromedir="rtl"] {
-  list-style-image: url("chrome://global/skin/arrow/arrow-lft-sharp-end.gif");
+  background-image: url("chrome://global/skin/arrow/arrow-lft-sharp-end.gif");
+  width: 18px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .end-arrow, .home-arrow[chromedir="rtl"] {
-  list-style-image: url("chrome://global/skin/arrow/arrow-rit-sharp-end.gif");
+  background-image: url("chrome://global/skin/arrow/arrow-rit-sharp-end.gif");
+  width: 18px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .left-arrow, .right-arrow[chromedir="rtl"] {
-  list-style-image: url("chrome://global/skin/arrow/arrow-lft-sharp.gif");
+  background-image: url("chrome://global/skin/arrow/arrow-lft-sharp.gif");
+  width: 18px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .right-arrow, .left-arrow[chromedir="rtl"] {
-  list-style-image: url("chrome://global/skin/arrow/arrow-rit-sharp.gif");
+  background-image: url("chrome://global/skin/arrow/arrow-rit-sharp.gif");
+  width: 18px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 /* ...... scale in/decrement ..... */
@@ -37,4 +49,9 @@
 .toolbar-landscape-page {
   list-style-image: url("chrome://global/skin/icons/Print-preview.png");
   -moz-image-region: rect(0px 32px 16px 16px);
+}
+
+
+#scale {
+  height: 19px;
 }
