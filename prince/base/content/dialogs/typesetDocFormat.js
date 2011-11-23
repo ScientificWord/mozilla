@@ -2013,7 +2013,7 @@ function switchSectionTypeImp(from, to, settingSecRedefOk)
       if (!sectitleformat[from]) sectitleformat[from] = new Object();
       sec = sectitleformat[from];
       sec.enabled = enabled;
-      if (sec,enabled)
+      if (sec.enabled)
 			{
 			  document.getElementById("secredefok").removeAttribute("disabled");
 			}
