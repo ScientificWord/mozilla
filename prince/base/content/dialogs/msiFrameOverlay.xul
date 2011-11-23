@@ -333,7 +333,7 @@
   <vbox id="msiPlacement">
     <spacer flex="1"/>
     <groupbox >
-      <caption label="^Placementtab.label;"/>
+      <caption label="&Placementtab.label;"/>
       <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="selectedIndex value">
       <hbox flex="1">
         <vbox>
