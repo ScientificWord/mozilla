@@ -55,16 +55,18 @@ function dlgAutoSubsList()
       newObj.theData = theData;
       newObj.type = theType;
       this.names[theSub] = newObj;
-      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+      var ACSA = msiSearchStringManager.setACSAImpGetService();
+//      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
       ACSA.addString("autosubstitution", theSub);
     }
   };
 
   this.synchronizeACSA = function()
   {
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = msiSearchStringManager.setACSAImpGetService();
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
     for (var aName in this.names)
     {
       ACSA.addString("autosubstitution", aName);
@@ -85,8 +87,9 @@ function dlgAutoSubsList()
     {
       var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
       bRemoved = autosub.removeEntry(theSub);
-      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+      var ACSA = msiSearchStringManager.setACSAImpGetService();
+//      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
       ACSA.deleteString("autosubstitution", theSub);
     }
     catch(exc) {dump("Error in autoSubstituteDialog.js, in dlgAutoSubsList.removeSub; error is [" + exc + "].\n"); bRemoved = false;}
@@ -201,7 +204,9 @@ function Startup() {
   var currPattern = "";
   if (target != null && ("val" in target) && (target.val.length > 0))
     currPattern = target.val;
-  var namesBox = document.getElementById("keystrokesBox").value = currPattern;
+  var namesBox = document.getElementById("keystrokesBox");
+  namesBox.value = currPattern;
+  msiAutosubstitutionList.setUpTextBoxControl(namesBox);
   var theType = "substitution";
   var theContext = "math";
   if ( (currPattern.length > 0) && (currPattern in gDialog.subsList.names) )
