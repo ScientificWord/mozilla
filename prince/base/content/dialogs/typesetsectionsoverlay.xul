@@ -67,9 +67,13 @@
       </vbox>
       <vbox>
        <label observes="secredefok">&docformatUnits;</label>
-       <menulist observes="secredefok" id="secoverlay.units" persist="value" 
-              oncommand="switchSectionUnits();"  >
+       <menulist observes="secredefok" id="secoverlay.units" style="width: 8em" value="in" persist="value" 
+              oncommand="switchSectionUnits();" >
          <menupopup id="secoverlay.unitspopup" style="width: 12em;">
+           <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
+           <menuitem id="docformat.cm" label="&docformatCentimeter;" value="cm"/>
+           <menuitem id="docformat.mm" label="&docformatMillimeter;" value="mm"/>
+           <menuitem id="docformat.pt" label="&docformatPoints;" value="pt"/>
          </menupopup>
        </menulist>
       </vbox>

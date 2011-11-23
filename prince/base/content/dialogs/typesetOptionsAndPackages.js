@@ -27,7 +27,7 @@ function Startup()
   var classOptStr = "";
   if (data.docClassOptions)
     classOptStr = data.docClassOptions;
-  gDialog.docClassOptions = classOptStr.split(',');
+  gDialog.docClassOptions = classOptStr.split(/\,\s*/);
   gDialog.packages = new Array();
   gDialog.packagesAdded = new Array();
   for (var i = 0; i < data.packages.length; ++i)
