@@ -2376,7 +2376,7 @@ function textEditor()
   sectitleformat.refresh = refresh;
   sectitleformat.destNode = getBaseNodeForIFrame();
   sectitleformat.currentLevel = secname.toLowerCase();
-  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,resizable=true,chrome,close,titlebar,alwaysRaised", sectitleformat,
+  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,resizable,chrome,close,titlebar,alwaysRaised", sectitleformat,
       secname, units);																									 
   displayTextForSectionHeader();
 }
