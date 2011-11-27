@@ -34,10 +34,10 @@
                   type="string"/>
       <preference id="defaultGraphicsHSize" 
                   name="swp.defaultGraphicsHSize" 
-                  type="int"/>
+                  type="string"/>
       <preference id="defaultGraphicsVSize" 
                   name="swp.defaultGraphicsVSize" 
-                  type="int"/>
+                  type="string"/>
       <preference id="defaultGraphicsSizeUnits" 
                   name="swp.defaultGraphicsSizeUnits" 
                   type="string"/>
@@ -61,10 +61,13 @@
                   type="int"/>
       <preference id="GraphHSize" 
                   name="swp.graph.HSize" 
-                  type="int"/>
+                  type="string"/>
       <preference id="GraphVSize" 
                   name="swp.graph.VSize" 
-                  type="int"/>
+                  type="string"/>
+      <preference id="defaultGraphSizeUnits" 
+                  name="swp.defaultGraphSizeUnits" 
+                  type="string"/>
       <preference id="GraphPlacement" 
                   name="swp.graph.Placement" 
                   type="string"/>
@@ -394,45 +397,63 @@
         <tabpanel orient="vertical">
           <groupbox>
             <caption label="&DefaultSizeNewGraphics.label;"/>
-            <grid>
-              <columns>
-                <column flex="0"/>
-                <column flex="0"/>
-                <column flex="0"/>
-              </columns>
-              <rows>
-                <row><label value="&DefaultSizeNewGraphicsWidth.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
-                <row><label value="&DefaultSizeNewGraphicsHeight.label;"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
-              </rows>
-            </grid>
+            <hbox>
+              <grid>
+                <columns>
+                  <column flex="0"/>
+                  <column flex="0"/>
+                </columns>
+                <rows>
+                  <row>
+                    <label value="&DefaultSizeNewGraphicsWidth.label;"/>
+                    <textbox id="graphicsWidth" type="number" decimalplaces="2" preference="defaultGraphicsHSize" style="width: 5em;"/>
+                  </row>
+                  <row>
+                    <label value="&DefaultSizeNewGraphicsHeight.label;"/>
+                    <textbox type="number" decimalplaces="2" preference="defaultGraphicsVSize" id="graphicsHeight" style="width: 5em;"/>
+                  </row>
+                </rows>
+              </grid>
+              <vbox align="center">
+                  <label value="&units.label;"/>
+                  <menulist id="graphicsUnitsList" value="pt" selectedIndex="2" preference="defaultGraphicsSizeUnits" oncommand="onChangeUnits(this);">
+                  <menupopup id = "unitList">
+                    <menuitem value="in" label="&unitsinches.label;"/>
+                    <menuitem value="cm" label="&unitscm.label;"/>             
+                    <menuitem value="pt" label="&unitspicas.label;"/>               
+                    <menuitem value="mm" label="&unitspoints.label;"/>         
+                  </menupopup>
+                </menulist>
+              </vbox>
+            </hbox>
           </groupbox>
           <groupbox>
             <caption label="&DefaultPlacementNewGraphics.label;"/>
-            <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
+            <radiogroup id="placementRadioGroup">
             <hbox flex="1">
               <vbox>
-                <radio id="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
+                <radio id="inline" value="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
               </vbox>
               <vbox>
-                <radio id="display" label="&DefaultPlacementNewGraphicsDisplayed.label;" radioGroup="placementRadioGroup"/>
+                <radio id="display" value="display" label="&DefaultPlacementNewGraphicsDisplayed.label;" radioGroup="placementRadioGroup"/>
               </vbox>
               <vbox>
-                <radio id="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" oncommand="enableFloating();"/>
+                <radio id="float" value="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" />
                 <vbox>
-                  <checkbox id="placeForceHereCheck" label="placeForceHereCheck.label" observes="floatingPlacement"/>
-                  <checkbox id="placeHereCheck" label="placeHereCheck.label" observes="floatingPlacement"/>
-                  <checkbox id="placeFloatsCheck" label="placeFloatsCheck.label" observes="floatingPlacement"/>
-                  <checkbox id="placeTopCheck" label="placeTopCheck.label" observes="floatingPlacement"/>
-                  <checkbox id="placeBottomCheck" label="placeBottomCheck.label" observes="floatingPlacement"/>
+                  <checkbox id="placeForceHereCheck" label="&placeForceHereCheck.label;"/>
+                  <checkbox id="placeHereCheck" label="&placeHereCheck.label;"/>
+                  <checkbox id="placeFloatsCheck" label="&placeFloatsCheck.label;"/>
+                  <checkbox id="placeTopCheck" label="&placeTopCheck.label;"/>
+                  <checkbox id="placeBottomCheck" label="&placeBottomCheck.label;"/>
                 </vbox>
               </vbox>
               <vbox>
-                <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
-                  <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="left" observes="herePlacement" />
-                  <radio id="hereRightRadio" label="&hereRightRadio.label;" value="right" observes="herePlacement"/>
-                  <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="inside" observes="herePlacement" />
-                  <radio id="hereOutsideRadio" label="&hereOutsideradio.label;" value="outside" observes="herePlacement" />
-                  <radio id="hereFullWidthRadio" label="&hereFullWidthRadio.label;" value="full" observes="herePlacement" />
+                <radiogroup id="herePlacementRadioGroup" align="vertical" value="full">
+                  <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="L" radioGroup="herePlacementRadioGroup" />
+                  <radio id="hereRightRadio" label="&hereRightRadio.label;" value="R" radioGroup="herePlacementRadioGroup" />
+                  <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="I" radioGroup="herePlacementRadioGroup" />
+                  <radio id="hereOutsideRadio" label="&hereOutsideRadio.label;" value="O" radioGroup="herePlacementRadioGroup" />
+                  <radio id="hereFullWidthRadio" label="&hereFullWidthRadio.label;" value="full" radioGroup="herePlacementRadioGroup" />
                 </radiogroup>
               </vbox>
             </hbox>
@@ -877,53 +898,63 @@
       <tabpanel id="Layout" orient="vertical">
         <groupbox>
           <caption label="&DefaultSizeNewPlots.label;"/>
-          <grid>
-            <columns>
-              <column flex="0"/>
-              <column flex="0"/>
-              <column flex="0"/>
-            </columns>
-            <rows>
-              <row>
-                 <label value="&DefaultSizeNewPlotsWidth.label;"/> 
-                 <textbox type="number" style="width: 5em;" preference="GraphHSize"/>
-                 <label value="pixels"/>
-              </row>
-              <row>
-                 <label value="&DefaultSizeNewPlotsHeight.label;"/>
-                 <textbox type="number" style="width: 5em;" preference="GraphVSize"/>
-                 <label value="pixels"/>
-              </row>
-            </rows>
-          </grid>
+          <hbox>
+            <grid>
+              <columns>
+                <column flex="0"/>
+                <column flex="0"/>
+              </columns>
+              <rows>
+                <row>
+                   <label value="&DefaultSizeNewPlotsWidth.label;"/> 
+                   <textbox type="number" preference="GraphHSize" decimalplaces="2" id="plotWidth" style="width: 5em;"/>
+                </row>
+                <row>
+                   <label value="&DefaultSizeNewPlotsHeight.label;"/>
+                   <textbox type="number" preference="GraphVSize" decimalplaces="2" id="plotHeight" style="width: 5em;"/>
+                </row>
+              </rows>
+            </grid>
+            <vbox align="center">
+              <label value="&units.label;"/>
+              <menulist id="plotUnitsList" preference="defaultGraphSizeUnits" value="pt" selectedIndex="2" oncommand="onChangeUnits(this);">
+                <menupopup id = "unitList">
+                  <menuitem value="in" label="&unitsinches.label;"/>
+                  <menuitem value="cm" label="&unitscm.label;"/>
+                  <menuitem value="pt" label="&unitspicas.label;"/>
+                  <menuitem value="mm" label="&unitspoints.label;"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+          </hbox>
         </groupbox>
         <groupbox>
           <caption label="&DefaultPlacementNewPlots.label;"/>
-          <radiogroup id="plotPlacementRadioGroup" preference="GraphPlacement" oncommand="enableFloating(this);">
+          <radiogroup id="plotPlacementRadioGroup" preference="GraphPlacement">
           <hbox flex="1">
             <vbox>
-              <radio id="inline" value="inline" label="&DefaultPlacementNewPlotsInline.label;" name="plotPlacementRadioGroup"/>
+              <radio id="plotinline" value="inline" label="&DefaultPlacementNewPlotsInline.label;" radioGroup="plotPlacementRadioGroup"/>
             </vbox>
             <vbox>
-              <radio id="display" value="display" label="&DefaultPlacementNewPlotsDisplayed.label;" name="plotPlacementRadioGroup"/>
+              <radio id="plotdisplay" value="display" label="&DefaultPlacementNewPlotsDisplayed.label;" radioGroup="plotPlacementRadioGroup"/>
             </vbox>
             <vbox>
-              <radio id="float" value="float" label="&DefaultPlacementNewPlotsFloating.label;" name="plotPlacementRadioGroup" oncommand="enableHere(this);"/>
+              <radio id="plotfloat" value="float" label="&DefaultPlacementNewPlotsFloating.label;" radioGroup="plotPlacementRadioGroup"/>
               <vbox>
-                <checkbox id="placeForceHereCheck" label="&placeForceHereCheck.label;" observes="floatingPlacement"/>
-                <checkbox id="placeHereCheck" label="&placeHereCheck.label;" observes="floatingPlacement"/>
-                <checkbox id="placeFloatsCheck" label="placeFloatsCheck.label;" observes="floatingPlacement"/>
-                <checkbox id="placeTopCheck" label="placeTopCheck.label;" observes="floatingPlacement"/>
-                <checkbox id="placeBottomCheck" label="placeBottomCheck.label;" observes="floatingPlacement"/>
+                <checkbox id="plotPlaceForceHereCheck" label="&placeForceHereCheck.label;"/>
+                <checkbox id="plotPlaceHereCheck" label="&placeHereCheck.label;"/>
+                <checkbox id="plotPlaceFloatsCheck" label="&placeFloatsCheck.label;"/>
+                <checkbox id="plotPlaceTopCheck" label="&placeTopCheck.label;"/>
+                <checkbox id="plotPlaceBottomCheck" label="&placeBottomCheck.label;"/>
               </vbox>
             </vbox>
             <vbox>
-              <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
-                <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
-                <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
-                <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
-                <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
-                <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+              <radiogroup id="plotHerePlacementRadioGroup" align="vertical" value="full">
+                <radio id="plotHereLeftRadio" label="&hereLeftRadio.label;" radioGroup="plotHerePlacementRadioGroup" value="L" />
+                <radio id="plotHereRightRadio" label="&hereRightRadio.label;" radioGroup="plotHerePlacementRadioGroup" value="R" />
+                <radio id="plotHereInsideRadio" label="&hereInsideRadio.label;" radioGroup="plotHerePlacementRadioGroup" value="I" />
+                <radio id="plotHereOutsideRadio" label="&hereOutsideRadio.label;" radioGroup="plotHerePlacementRadioGroup" value="O" />
+                <radio id="plotHereFullWidthRadio" label="&hereFullWidthRadio.label;" radioGroup="plotHerePlacementRadioGroup" value="full" />
               </radiogroup>
             </vbox>
           </hbox>
@@ -1025,6 +1056,7 @@
                 <checkbox id="warnNonPortableFilenamesCheckbox" preference="warnNonPortableFilename" label="&warnNonPortableFilenamesCheckbox.label;" accesskey="&warnNonPortableFilenamesCheckbox.accesskey;"/>
                 <checkbox id="useOldAuxFilesCheckbox" preference="useExistingAuxFiles" label="&useOldAuxFilesCheckbox.label;" accesskey="&useOldAuxFilesCheckbox.accesskey;"/>
                 <checkbox id="passThroughUnicodeMacro" preference="passThroughUniMacro" label="&passThroughUnicodeMacro.label;" accesskey="&passThroughUnicodeMacro.accesskey;" />
+                <checkbox id="convertTeXLinksToPDF" preference="convertLinksToPDF" label="&convertTeXLinksToPDF.label;" accesskey="&convertTeXLinksToPDF.accesskey;" />
               </groupbox>
               <spacer class="spacer" flex="0"/>
               <groupbox>
@@ -1047,18 +1079,6 @@
   			          <msibutton id="browseBibTeXStyleDir" label="&browseBibTeXStyleDir.label;" accesskey="&browseBibTeXStyleDir.accesskey;" oncommand="onBrowseBibTeXStyleDir();"/>
                 </hbox>
               </groupbox>
-              <!-- hbox -->
-                <groupbox>
-                  <caption label="&PDFOptions.label;" />
-  			          <msibutton id="pdfGraphicsSettings" label="&pdfGraphicsSettings.label;" accesskey="&pdfGraphicsSettings.accesskey;" oncommand="doPDFGraphicsSettings();"/>
-                  <checkbox id="convertTeXLinksToPDF" preference="convertLinksToPDF" label="&convertTeXLinksToPDF.label;" accesskey="&convertTeXLinksToPDF.accesskey;" />
-                </groupbox>
-                <!-- groupbox>
-                  <caption label="&portableLaTeXOptions.label;" />
-  			          <msibutton id="portableLaTeXGraphicsSettings" label="&portableLaTeXGraphicsSettings.label;" accesskey="&portableLaTeXGraphicsSettings.accesskey;" oncommand="doPortableLaTeXGraphicsSettings();"/>
-                  <checkbox id="passThroughUnicodeMacro" label="&passThroughUnicodeMacro.label;" accesskey="&passThroughUnicodeMacro.accesskey;" />
-                </groupbox>
-              </hbox -->
             </vbox>
           </hbox>
         </tabpanel>

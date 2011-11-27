@@ -23,8 +23,9 @@
       accesskey = "&unitLabel.accesskey;"
       value     = "&unitLabel.label;" />
     <hbox> <menulist id = "frameUnitMenulist" style="width: 8em"
+      persist="value selectedIndex" value="pt" selectedIndex="2"
       oncommand  = "setNewUnit(this);" >
-      <menupopup id = "unitList" persist="value selectedIndex" value="pt" selectedIndex="2">
+      <menupopup id = "unitList">
         <menuitem value="in" label="&inch;"/>        <!--menuitem value="pct" label="percent"/  -->
         <menuitem value="cm" label="&centimeter;"/>
         <menuitem value="pt" label="&point;"/>
