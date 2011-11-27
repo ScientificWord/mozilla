@@ -311,7 +311,7 @@
 <!ENTITY  hereLeftRadio.label "Left">
 <!ENTITY  hereRightRadio.label "Right">
 <!ENTITY  hereInsideRadio.label "Inside">
-<!ENTITY  hereOutsideradio.label  "Outside">
+<!ENTITY  hereOutsideRadio.label  "Outside">
 <!ENTITY  hereFullWidthRadio.label  "Full width">
 
 <!ENTITY DefaultSizeNewPlots.label "Default Size for New Plots">

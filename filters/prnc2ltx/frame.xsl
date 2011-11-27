@@ -14,21 +14,30 @@
           <xsl:with-param name="objNode" select="./html:object[1]"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:otherwise><xsl:value-of select="@width"/><xsl:value-of select="@units"/></xsl:otherwise>
+      <xsl:when test="@imageWidth"><xsl:value-of select="@imageWidth"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="@width"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="units">
+    <xsl:choose>
+      <xsl:when test="@frametype='image'"><xsl:call-template name="unit"/></xsl:when>
+      <xsl:when test="@units"><xsl:value-of select="@units"/></xsl:when>
+      <xsl:otherwise><xsl:text>pt</xsl:text></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="height">
     <xsl:choose>
       <xsl:when test="@frametype='image'">0pt</xsl:when>
-      <xsl:otherwise><xsl:value-of select="@height"/><xsl:value-of select="@units"/></xsl:otherwise>
+      <xsl:when test="@imageHeight"><xsl:value-of select="@imageHeight"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="@height"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 	<xsl:if test="@topmargin or @sidemargin or @border or @padding">{</xsl:if>				
-  <xsl:if test="@topmargin">\setlength\intextsep{<xsl:value-of select="@topmargin"/><xsl:value-of select="@units"/>}      
+  <xsl:if test="@topmargin">\setlength\intextsep{<xsl:value-of select="@topmargin"/><xsl:value-of select="$units"/>}      
   </xsl:if>
-  <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/><xsl:value-of select="@units"/>} </xsl:if>
-  <xsl:if test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="@units"/>} </xsl:if>
-  <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>} </xsl:if>
+  <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/><xsl:value-of select="$units"/>} </xsl:if>
+  <xsl:if test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="$units"/>} </xsl:if>
+  <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$units"/>} </xsl:if>
 <xsl:choose>
   <xsl:when test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\begin{wrapfigure}
     <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
@@ -39,8 +48,8 @@
       <xsl:when test="@placement='R'">{r}</xsl:when>
       <xsl:otherwise>{r}</xsl:otherwise>
     </xsl:choose>
-    <xsl:if test="@overhang">[<xsl:value-of select="@overhang"/><xsl:value-of select="@units"/>]</xsl:if>
-    {<xsl:choose><xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="$width"/></xsl:when>
+    <xsl:if test="@overhang">[<xsl:value-of select="@overhang"/><xsl:value-of select="$units"/>]</xsl:if>
+    {<xsl:choose><xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="$width"/><xsl:value-of select="$units"/></xsl:when>
       <xsl:otherwise>
         <xsl:choose>
           <xsl:when test="@overhang"><xsl:value-of select="$height"/></xsl:when>
@@ -51,7 +60,7 @@
   <xsl:when test="@pos='float' and ((@placement='full') or (@frametype='image') or ((@placeLocation !='h') and (@placeLocation !='H')))">\begin{figure}[<xsl:value-of select="@placeLocation"></xsl:value-of>]<xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\begin{center}</xsl:if></xsl:when>
   <xsl:when test="@pos='display'">\begin{center}</xsl:when>
   <xsl:when test="(@pos='inline') and (@frametype='image')">
-    {\parbox[t]{<xsl:value-of select="$width"/>}{ %
+    {\parbox[t]{<xsl:value-of select="$width"/><xsl:value-of select="$units"/>}{ %
 \begin{center}</xsl:when>
   </xsl:choose>
 <xsl:choose>
@@ -91,8 +100,8 @@
 	><xsl:otherwise><xsl:value-of select="./@background-color"/></xsl:otherwise
   ></xsl:choose
   >}</xsl:if><xsl:if test="not(@background-color)">{white}</xsl:if
->{\begin{minipage}[t]<xsl:if test="@height and not(@height='0')">[<xsl:value-of select="@height"/><xsl:value-of select="@units"/>]</xsl:if
->{<xsl:choose><xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="@width - 2*@padding"/></xsl:when><xsl:otherwise><xsl:value-of select="@width - 2*@padding"/></xsl:otherwise></xsl:choose><xsl:value-of select="@units"/>} %
+>{\begin{minipage}[t]<xsl:if test="@height and not(@height='0')">[<xsl:value-of select="@height"/><xsl:value-of select="$units"/>]</xsl:if
+>{<xsl:choose><xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="number($width) - 2*number(@padding)"/></xsl:when><xsl:otherwise><xsl:value-of select="number($width) - 2*number(@padding)"/></xsl:otherwise></xsl:choose><xsl:value-of select="$units"/>} %
 <xsl:choose><xsl:when test="@textalignment='center'">\begin{Centering}</xsl:when>
   <xsl:when test="@textalignment='justify'"></xsl:when>
   <xsl:when test="@textalignment='left'">\begin{FlushLeft}</xsl:when>
