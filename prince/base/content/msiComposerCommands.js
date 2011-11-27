@@ -679,6 +679,9 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
 			case 'texttag' : commandID = 'cmd_texttag'; break;
 		}
 	}
+  if (msiDeferStatefulCommand(commandID, newState, editorElement))
+    return;
+
   var docList = msiGetUpdatableItemContainers(commandID, editorElement);
   for (var i = 0; i < docList.length; ++i)
   {
