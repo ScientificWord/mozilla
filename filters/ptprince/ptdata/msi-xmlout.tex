@@ -105,14 +105,52 @@
 \def\br{\char10}
 
 
-%% \documentclass.  
+%% \documentclass.
+\newif\ifmsi@firstopt
+\msi@firstopttrue
+
+% ["pgorient", "papersize", "sides", "qual", "columns", "titlepage", "textsize", "eqnnopos", "eqnpos", "bibstyle"];
+
+\expandafter\def\csname 10ptAttrib\endcsname{textsize}
+\expandafter\def\csname 11ptAttrib\endcsname{textsize}
+\expandafter\def\csname 12ptAttrib\endcsname{textsize}
+
+\newtoks\temptoksb
+
+\def\msiappend#1MSIXYZZY{%
+   \expandafter\temptoksa\expandafter{\the\temptoksa #1}%
+}
+
+\def\msi@nextopt#1,{%
+   \def\MSIXYZZY{MSIXYZZY}%
+   \def\@Opt{#1}%
+   \ifx\@Opt\MSIXYZZY%
+      \let\@next\relax
+   \else
+      \ifmsi@firstopt
+         \msi@firstoptfalse
+      \else
+         \expandafter\temptoksa\expandafter{\the\temptoksa,}%
+      \fi
+      \edef\attrib{\csname #1Attrib\endcsname="#1"}%
+      \expandafter\temptoksb\expandafter{\attrib}
+      \expandafter\msiappend\the\temptoksb MSIXYZZY
+      \let\@next\msi@nextopt
+   \fi
+   \@next
+}  
   
 \def\out@documentclassA[#1]#2{%
+   \msi@firstopttrue
+   \temptoksa={}%
+   \msi@nextopt#1,MSIXYZZY,%
+   \edef\colist{\the\temptoksa}%
    \msi@opendocument
-   \br\msitag{<documentclass class="#2" options="#1"/>}%
+   \br\msitag{<documentclass class="#2"/>}%
 }
 
 \def\out@documentclassB#1{%
+   \def\colist{}%
    \msi@opendocument
    \br\msitag{<documentclass class="#1"/>}%
 }
@@ -126,6 +164,9 @@
 %% \document and \enddocument
 
 \def\out@begin@document{%
+   \br\msiopentag{docformat}{<docformat>}
+      \msitag{<colist }\colist\msitag{/>}
+   \br\msiclosetag{docformat}{</docformat>}
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{bm}}%
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{tabulary}}%
    \@ifundefined{@TCILATEX}
@@ -1364,21 +1405,6 @@
 \def\MSILocalDef#1{\def#1{\string #1}}
 
 
-\def\makeatother{%
-   \msihmode
-   \msitag{<texb enc="1" name="makeatother">}%
-       <![CDATA[\string\makeatother]]>%
-   \msitag{</texb>}
-   \catcode`\@=12}
-
-\def\makeatletter{%
-   \msihmode
-   \msitag{<texb enc="1" name="makeatletter">}%
-       <![CDATA[\string\makeatletter]]>%
-   \msitag{</texb>}
-   \catcode`\@=11}
-
-
 
 \bgroup
      \@make@braces@other
@@ -1485,6 +1511,21 @@
    
    \br\msitag{<head>}
    \br\msiopentag{preamble}{<preamble>}
+   
+   \def\makeatother{%
+       \msihmode
+       \msitag{<texb enc="1" name="makeatother">}%
+           <![CDATA[\string\makeatother]]>%
+       \msitag{</texb>}
+       \catcode`\@=12}
+
+   \def\makeatletter{%
+       \msihmode
+       \msitag{<texb enc="1" name="makeatletter">}%
+           <![CDATA[\string\makeatletter]]>%
+       \msitag{</texb>}
+       \catcode`\@=11}
+
 }
 
 
