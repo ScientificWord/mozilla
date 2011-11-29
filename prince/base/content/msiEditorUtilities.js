@@ -1,6 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-Components.utils.import("resource://app/modules/pathutils.jsm");
-Components.utils.import("resource://app/modules/os.jsm");
+//Components.utils.import("resource://app/modules/pathutils.jsm");
+//Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
@@ -19,8 +19,8 @@ function msidump(str, indent, clear)
 	var pref = GetStringPref("swp.messagelogger");
 	var indentstring="";
 	var spaces="                 ";
-	if (pref == null || pref.length == 0) pref = "dump";
-	if (indent!= null && indent > 0)
+	if (pref === null || pref.length === 0) pref = "dump";
+	if (indent!== null && indent > 0)
 	  indentstring = spaces.substring(1,indent+indent);
 	switch (pref)
 	{
@@ -54,7 +54,7 @@ function dumpMath()
   var rootnode = HTMLEditor.getSelectionContainer();
   var i = 2;
   while (rootnode && rootnode.parentNode && i-- >0) rootnode= rootnode.parentNode;
-//  while (rootnode && rootnode.localName != "math" && editor.tagListManager.getTagInClass("paratags",rootnode.localName,null)) rootnode = rootnode.parentNode;
+//  while (rootnode && rootnode.localName !== "math" && editor.tagListManager.getTagInClass("paratags",rootnode.localName,null)) rootnode = rootnode.parentNode;
 //  if (!rootnode)
 //  { 
 //    msidump("Failed to find math or paragraph node\n");
@@ -69,8 +69,8 @@ function dumpMath()
 	  var focOffset = sel.focusOffset;
 	  var indent = 0;
 	  msidump(selNode.nodeName + " to " + focNode.nodeName+"\n",0);
-	  msidump("Selection:  selNode="+(selNode.nodeType == Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
-	  msidump("focusNode="+(focNode.nodeType == Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
+	  msidump("Selection:  selNode="+(selNode.nodeType === Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
+	  msidump("focusNode="+(focNode.nodeType === Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
 	  msidump("rootnode="+rootnode.nodeName+"\n",6);
 	  dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
 	}
@@ -93,16 +93,16 @@ try{
 	
 //  msidump("dumpNodeMarkingSel, indent = "+indent+", node = "+node.nodeName+"\n");
   var len = node.childNodes.length;
-  if (node.nodeType == Node.ELEMENT_NODE)
+  if (node.nodeType === Node.ELEMENT_NODE)
   {
     msidump("<"+node.nodeName+"> \n",indent);
     for (var i = 0; i < len; i++)
     {    
-	    if (node==selnode && seloffset==i) 
+	    if (node===selnode && seloffset===i) 
 	    {
 	      msidump("<selection anchor>\n", indent);
 	    }
-	    if (node==focnode && focoffset==i) 
+	    if (node===focnode && focoffset===i) 
 	    {
 	      msidump("<selection focus>\n", indent);
 	    }
@@ -110,25 +110,25 @@ try{
     }
     msidump("</"+node.nodeName+">\n", indent);
   }
-  else if (node.nodeType == Node.TEXT_NODE)
+  else if (node.nodeType === Node.TEXT_NODE)
   {
     var offset1;
 		var offset2;
-		if (node == selnode && selnode === focnode)
+		if (node === selnode && selnode === focnode)
 		{
 			offset1 = Math.min(seloffset, focoffset);
 			offset2 = Math.max(seloffset, focoffset);
-			msidump(node.nodeValue.slice(0, offset1)+"<selection " + (offset1==seloffset?"anchor":"focus")+">"+
-			  node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1==seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2))
+			msidump(node.nodeValue.slice(0, offset1)+"<selection " + (offset1===seloffset?"anchor":"focus")+">"+
+			  node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1===seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2))
 		}
 		else
 		{
-			if (node==selnode)
+			if (node===selnode)
 	    {
 	      msidump(node.nodeValue.slice(0,seloffset)+"<selection anchor>"+node.nodeValue.slice(seloffset)+"\n",indent);
 	    }
 	    else {
-	      if (node==focnode)
+	      if (node===focnode)
 	      {
 	        msidump(node.nodeValue.slice(0,focoffset)+"<selection focus>"+node.nodeValue.slice(focoffset)+"\n",indent);
 	      }
@@ -401,11 +401,11 @@ function msiPageIsEmptyAndUntouched(editorElement)
 
 function msiIsWebComposer(theWindow)
 {
-//  return document.documentElement.id == "editorWindow";
+//  return document.documentElement.id === "editorWindow";
   if (!theWindow)
     theWindow = window;
   if (theWindow.document && theWindow.document.documentElement)
-    return theWindow.document.documentElement.id == "prince";
+    return theWindow.document.documentElement.id === "prince";
   return false;
 }
 
@@ -428,13 +428,13 @@ function clearPrevActiveEditor(timerData)
     } catch(exc) {dump("In clearPrevActiveEditor, unable to retrieve curr focused element, error is [" + exc + "].\n");}
   }
 //End logging stuff
-  if (theWindow.msiClearEditorTimerList != null)
+  if (theWindow.msiClearEditorTimerList !== null)
   {
     logStr += ";\n  clearPrevActiveEditor called, ";
     if (!theWindow.msiActiveEditorElement)
     {
       logStr += "with curr focused element [";
-      if (currFocusedElement != null)
+      if (currFocusedElement !== null)
       {
         logStr += currFocusedElement.nodeName;
         if (currFocusedElement.id)
@@ -450,13 +450,13 @@ function clearPrevActiveEditor(timerData)
     if (nFound >= 0)
     {
       theWindow.msiClearEditorTimerList.splice(nFound, 1);
-      if (theWindow.msiClearEditorTimerList.length == 0)
+      if (theWindow.msiClearEditorTimerList.length === 0)
       {
         logStr += "deleting reference to prev editor.\n";
         theWindow.msiPrevEditorElement = null;
         if (theWindow.msiSingleDialogList)
           theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
-        if (theWindow.msiActiveEditorElement != null)
+        if (theWindow.msiActiveEditorElement !== null)
         {
           msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
           var editor = msiGetEditor(theWindow.msiActiveEditorElement);
@@ -470,7 +470,7 @@ function clearPrevActiveEditor(timerData)
     else
     {
       logStr += "but timer [";
-      if (timerData != null)
+      if (timerData !== null)
         logStr += timerData.nTimerID;
       logStr += "] not found; doing nothing (?).\n";
     }
@@ -489,8 +489,8 @@ function msiResetActiveEditorElement()
 //  logStr += msiEditorStateLogString(topWindow);
 //End logging stuff
 
-//  if (topWindow.msiPrevEditorElement && topWindow.msiActiveEditorElement && topWindow.msiPrevEditorElement != topWindow.msiActiveEditorElement)
-  if (topWindow.msiPrevEditorElement && topWindow.msiPrevEditorElement != topWindow.msiActiveEditorElement)
+//  if (topWindow.msiPrevEditorElement && topWindow.msiActiveEditorElement && topWindow.msiPrevEditorElement !== topWindow.msiActiveEditorElement)
+  if (topWindow.msiPrevEditorElement && topWindow.msiPrevEditorElement !== topWindow.msiActiveEditorElement)
   {
     topWindow.msiActiveEditorElement = topWindow.msiPrevEditorElement;
     topWindow.msiPrevEditorElement = null;
@@ -501,7 +501,7 @@ function msiResetActiveEditorElement()
 //  else
 //    logStr += ";\n  making no change.\n";
 //End logging stuff
-  if (topWindow.msiClearEditorTimerList != null)
+  if (topWindow.msiClearEditorTimerList !== null)
     msiClearAllFocusTimers(topWindow, topWindow.msiClearEditorTimerList);
 //  msiKludgeLogString(logStr);
 }
@@ -513,14 +513,14 @@ function msiEditorStateLogString(theWindow)
   if (!theWindow)
     theWindow = msiGetTopLevelWindow();
   var currEdId = "";
-  if ( ("msiActiveEditorElement" in theWindow) && (theWindow.msiActiveEditorElement != null) )
+  if ( ("msiActiveEditorElement" in theWindow) && (theWindow.msiActiveEditorElement !== null) )
     currEdId = theWindow.msiActiveEditorElement.id;
   var prevEdId = "";
-  if ( ("msiPrevEditorElement" in theWindow) && (theWindow.msiPrevEditorElement != null) )
+  if ( ("msiPrevEditorElement" in theWindow) && (theWindow.msiPrevEditorElement !== null) )
     prevEdId = theWindow.msiPrevEditorElement.id;
   var logStr = "Current msiActiveEditor is [" + currEdId + "], prevEdId is [" + prevEdId + "]";
   logStr += ", clearEditorTimer IDs are [";
-  if ("msiClearEditorTimerList" in theWindow && theWindow.msiClearEditorTimerList != null)
+  if ("msiClearEditorTimerList" in theWindow && theWindow.msiClearEditorTimerList !== null)
     logStr += theWindow.msiClearEditorTimerList.toString();
   logStr += "], for window titled [";
   logStr += theWindow.document.title;
@@ -533,7 +533,7 @@ function msiFindTimerInArray(timerList, timerData)
   var nIndex = -1;
   for (var ix = 0; nIndex < 0 && ix < timerList.length; ++ix)
   {
-    if (timerList[ix] == timerData.nTimerID)
+    if (timerList[ix] === timerData.nTimerID)
       nIndex = ix;
   }
   return nIndex;
@@ -558,20 +558,20 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 
 //Logging stuff only:
 //  var currEdId = "";
-//  if ( ("msiActiveEditorElement" in theWindow) && (theWindow.msiActiveEditorElement != null) )
+//  if ( ("msiActiveEditorElement" in theWindow) && (theWindow.msiActiveEditorElement !== null) )
 //    currEdId = theWindow.msiActiveEditorElement.id;
   var newEdId = "";
   if (editorElement)
     newEdId = editorElement.id;
 //  var prevEdId = "";
-//  if ( ("msiPrevEditorElement" in theWindow) && (theWindow.msiPrevEditorElement != null) )
+//  if ( ("msiPrevEditorElement" in theWindow) && (theWindow.msiPrevEditorElement !== null) )
 //    prevEdId = theWindow.msiPrevEditorElement.id;
 //End logging stuff
 
   var editor = msiGetEditor(theWindow.msiActiveEditorElement);
   if (editor && bIsFocusEvent && editor.tagListManager)
     editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
-  var bIsDifferent = (!theWindow.msiActiveEditorElement || (theWindow.msiActiveEditorElement != editorElement));
+  var bIsDifferent = (!theWindow.msiActiveEditorElement || (theWindow.msiActiveEditorElement !== editorElement));
   if (bIsDifferent)
   {
 //Logging stuff only:
@@ -591,7 +591,7 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //    {
       var newTimerData = new Object();
       var nNewTimer = theWindow.setTimeout(clearPrevActiveEditor, 0, newTimerData);
-      if (theWindow.msiClearEditorTimerList == null)
+      if (theWindow.msiClearEditorTimerList === null)
         theWindow.msiClearEditorTimerList = new Array();
       theWindow.msiClearEditorTimerList.push(nNewTimer);
       newTimerData.nTimerID = nNewTimer;
@@ -604,7 +604,7 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //End logging stuff
     //To Do: re-parent appropriate dialogs at this point? or if there's a timer set, wait for it?
     theWindow.msiActiveEditorElement = editorElement;
-    if ((theWindow.msiClearEditorTimerList==null || theWindow.msiClearEditorTimerList.length == 0) && theWindow.msiSingleDialogList)
+    if ((theWindow.msiClearEditorTimerList===null || theWindow.msiClearEditorTimerList.length === 0) && theWindow.msiSingleDialogList)
     {
       theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
       msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
@@ -671,12 +671,12 @@ function msiGetActiveEditorElement(currWindow)
   var editorElement;
 	if (!currWindow)
     currWindow = window.document.defaultView;
-  if ("msiActiveEditorElement" in currWindow && (currWindow.msiActiveEditorElement != null) )
+  if ("msiActiveEditorElement" in currWindow && (currWindow.msiActiveEditorElement !== null) )
     return currWindow.msiActiveEditorElement;
   currWindow = msiGetTopLevelWindow(currWindow);
-  if ("msiActiveEditorElement" in currWindow  && (currWindow.msiActiveEditorElement != null) )
+  if ("msiActiveEditorElement" in currWindow  && (currWindow.msiActiveEditorElement !== null) )
     return currWindow.msiActiveEditorElement;
-//  if (!editorElement && currWindow.opener && currWindow.opener != currWindow)
+//  if (!editorElement && currWindow.opener && currWindow.opener !== currWindow)
 //    editorElement = msiGetActiveEditorElement(currWindow.opener);
   editorElement = msiGetCurrentEditorElementForWindow(currWindow);
 // BBM: stop here! The next line leads to an infinite loop
@@ -710,17 +710,17 @@ function msiGetCurrentEditorElementForWindow(theWindow)
     theWindow = window.document.defaultView;
   var editorElement = null;
   var currFocus = theWindow.document.commandDispatcher.focusedElement;
-  if (currFocus && currFocus.nodeName == "editor")
+  if (currFocus && currFocus.nodeName === "editor")
     return currFocus;
   var editorList = theWindow.document.getElementsByTagName("editor");
   if (!currFocus)
   {
     var focusWindow = theWindow.document.commandDispatcher.focusedWindow;
-    if (focusWindow && focusWindow != theWindow)
+    if (focusWindow && focusWindow !== theWindow)
     {
       for (var i = 0; i < editorList.length; ++i)
       {
-        if (editorList[i].contentWindow == focusWindow)
+        if (editorList[i].contentWindow === focusWindow)
         {
           editorElement = editorList[i];
           break;
@@ -745,7 +745,7 @@ function msiGetPrimaryEditorElementForWindow(theWindow)
   var editorElements = theWindow.document.getElementsByTagName("editor");
   for (var i = 0; (!theEditor) && (i < editorElements.length); ++i)
   {
-    if (editorElements[i].getAttribute("type") == "content-primary")
+    if (editorElements[i].getAttribute("type") === "content-primary")
       theEditor = editorElements[i];
   }
   if (!theEditor)
@@ -758,7 +758,7 @@ function msiGetPrimaryEditorElementForWindow(theWindow)
 function msiIsTopLevelEditor(editorElement)
 {
   var topEditor = msiGetTopLevelEditorElement();
-  return (topEditor == editorElement);
+  return (topEditor === editorElement);
 }
 
 function msiGetTopLevelWindow(currWindow)  //do we need a different function for this? probably not - there is one, sort of?
@@ -767,11 +767,11 @@ function msiGetTopLevelWindow(currWindow)  //do we need a different function for
     currWindow = window.document.defaultView;
   if ("ownerDocument" in currWindow)
     currWindow = currWindow.ownerDocument.defaultView;
-  if (currWindow.parent && currWindow.parent != currWindow)
+  if (currWindow.parent && currWindow.parent !== currWindow)
     return msiGetTopLevelWindow(currWindow.parent);
   if (msiIsWebComposer(currWindow))
     return currWindow;
-  if (currWindow.opener && currWindow.opener != currWindow)
+  if (currWindow.opener && currWindow.opener !== currWindow)
     return msiGetTopLevelWindow(currWindow.opener);
   return currWindow;
 }
@@ -779,7 +779,7 @@ function msiGetTopLevelWindow(currWindow)  //do we need a different function for
 function msiGetParentOrTopLevelEditor(editorElement)
 {
   var parent = msiGetParentEditor(editorElement);
-  if (parent == null)
+  if (parent === null)
     parent = msiGetTopLevelEditorElement();
   return parent;
 }
@@ -811,16 +811,16 @@ function msiSetParentEditor(parentEditor, theWindow)
     dump("\nmsiSetParentEditor was given null or void SetParentEditor\n");    
   if ("msiParentEditor" in theWindow)
   {
-    if (theWindow.msiParentEditor != parentEditor)
+    if (theWindow.msiParentEditor !== parentEditor)
     {
       theWindow.msiParentEditor = parentEditor;
       retVal = true;
     }
   }
   var parentWindow = theWindow.parent;
-  if (parentWindow != null && parentWindow != theWindow && "msiParentEditor" in parentWindow)
+  if (parentWindow !== null && parentWindow !== theWindow && "msiParentEditor" in parentWindow)
   {
-    if (parentWindow.msiParentEditor != parentEditor)
+    if (parentWindow.msiParentEditor !== parentEditor)
     {
       parentWindow.msiParentEditor = parentEditor;
       retVal = true;
@@ -832,7 +832,7 @@ function msiSetParentEditor(parentEditor, theWindow)
 function msiRemoveActiveEditor(editorElement)
 {
   var currActive = msiGetActiveEditorElement(window);
-  if (currActive == editorElement)
+  if (currActive === editorElement)
   {
     var ourParent = msiGetParentEditor(editorElement);
     msiSetActiveEditor(ourParent);  //want to do this even if null!?
@@ -943,12 +943,12 @@ function msiWindowHasHTMLEditor(theWindow)
   if (!theWindow)
     theWindow = window;
   
-  if (theWindow.document != null)
+  if (theWindow.document !== null)
   {
     var editorList = theWindow.document.getElementsByTagName("editor");
     for (var i = 0; i < editorList.length; ++i)
     {
-      if ( editorList.item(i)!=null && msiIsHTMLEditor(editorList.item(i)) )
+      if ( editorList.item(i)!==null && msiIsHTMLEditor(editorList.item(i)) )
         return true;
     }
   }
@@ -968,14 +968,14 @@ function GetEditorElementForDocument(innerDocument, theWindow)
     var editorList = theWindow.document.getElementsByTagName("editor");
     for (var i = 0; i < editorList.length; ++i)
     {
-      if (editorList.item(i) && editorList.item(i).contentDocument == innerDocument)
+      if (editorList.item(i) && editorList.item(i).contentDocument === innerDocument)
         return editorList.item(i);
     }
-//    if (tmpWindow.frameElement && tmpWindow != tmpWindow.frameElement.ownerDocument.defaultView)
+//    if (tmpWindow.frameElement && tmpWindow !== tmpWindow.frameElement.ownerDocument.defaultView)
 //      tmpWindow = tmpWindow.frameElement.ownerDocument.defaultView;
-//    else if (tmpWindow.top && tmpWindow != tmpWindow.top)
+//    else if (tmpWindow.top && tmpWindow !== tmpWindow.top)
 //      tmpWindow = tmpWindow.top;
-//    else if (tmpWindow.opener && tmpWindow != tmpWindow.opener)
+//    else if (tmpWindow.opener && tmpWindow !== tmpWindow.opener)
 //      tmpWindow = tmpWindow.opener;
 //    else
 //      tmpWindow = null;
@@ -1015,20 +1015,20 @@ function msiGetEditorElementFromEvent(theEvent)
   }
 
   var editorElement = theEvent.currentTarget;
-  if (msiGetBaseNodeName(editorElement) == "key")
+  if (msiGetBaseNodeName(editorElement) === "key")
     editorElement = msiGetCurrentEditorElementForWindow(window);
 
   if (!editorElement || !("editortype" in editorElement))
   {
     var origTarget = theEvent.explicitOriginalTarget;
-    if (origTarget == null)
+    if (origTarget === null)
       origTarget = theEvent.originalTarget;
     var theDocument = null;
     if ("defaultView" in origTarget)
       theDocument = origTarget;
-    if ((theDocument==null) && ("ownerDocument" in origTarget))
+    if ((theDocument===null) && ("ownerDocument" in origTarget))
       theDocument = origTarget.ownerDocument;
-    if ((theDocument==null) && ("top" in origTarget))
+    if ((theDocument===null) && ("top" in origTarget))
     {
       theDocument = origTarget.document;
 //      var logStr = "In msiGetEditorElementFromEvent, original target document is [";
@@ -1037,14 +1037,14 @@ function msiGetEditorElementFromEvent(theEvent)
 //      else
 //        logStr += "null";
 //      logStr += "], but theDocument is [";
-//      if (theDocument == null)
+//      if (theDocument === null)
 //        logStr += "null";
 //      else
 //        logStr += "not null";
 //      logStr += "]\n";
 //      msiKludgeLogString(logStr);
     }
-    if (theDocument==null)
+    if (theDocument===null)
       editorElement = null;
     else
       editorElement = findEditorElementForDocument(theDocument);
@@ -1062,21 +1062,21 @@ function msiGetUpdatableItemContainers(commandID, editorElement)
   try
   {
     var theItem = topWindow.document.getElementById(commandID);
-    if (theItem != null)
+    if (theItem !== null)
       returnList.push(topWindow.document);
   }
   catch(exc) {AlertWithTitle("Error in msiGetUpdatableItemContainers!", exc);}
 
-  if (!msiIsTopLevelEditor(editorElement) && currWindow != null && currWindow != topWindow)
+  if (!msiIsTopLevelEditor(editorElement) && currWindow !== null && currWindow !== topWindow)
   {
     var theItem = currWindow.document.getElementById(commandID);
-    if (theItem != null)
+    if (theItem !== null)
       returnList.push(currWindow.document);
   }
-  if (window != topWindow && window != currWindow)
+  if (window !== topWindow && window !== currWindow)
   {
     var theItem = window.document.getElementById(commandID);
-    if (theItem != null)
+    if (theItem !== null)
       returnList.push(window.document);
   }
   return returnList;
@@ -1179,9 +1179,9 @@ function msiRequirePackage(editorElement, packagename, options)
     for (i = 0; i < currentReq.length; i++)
     {
       req = currentReq[i].getAttribute("requirespackage");
-      if (req == packagename) {
+      if (req === packagename) {
         opt = currentReq[i].getAttribute("opt");
-        if (opt && options && opt == options) return; // already there
+        if (opt && options && opt === options) return; // already there
         if ((!opt) && (!options)) return; // both are void or null
       }
     }
@@ -1228,9 +1228,9 @@ function insertXMLNodes(editor, nodeList, node, offset)
   // we can only insert nodes under an element, not under anything else such as a text node or a
   // processing instruction node. The cursor is likely in a text node
   //
-  if (node.nodeType != node.ELEMENT_NODE)
+  if (node.nodeType !== node.ELEMENT_NODE)
   {
-    if (node.nodeType != node.TEXT_NODE)
+    if (node.nodeType !== node.TEXT_NODE)
     {
       dump("Unexpected node type = "+node.nodeType);
       return;
@@ -1242,7 +1242,7 @@ function insertXMLNodes(editor, nodeList, node, offset)
       editor.splitNode(node, offset, newNode);
       var list = node.parentNode.childNodes;
       for (i = 0; i< list.length; i++) 
-        if (list[i]==node) break;
+        if (list[i]===node) break;
       offset = i;
       node = node.parentNode;
     }
@@ -1284,7 +1284,7 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
     theElement = editor.selection.focusNode;
     theOffset = editor.selection.focusOffset;
     var fixedPos = fixInsertPosition(editor, theElement, theOffset);
-    if (fixedPos != null)
+    if (fixedPos !== null)
     {
       theElement = fixedPos.theElement;
       theOffset = fixedPos.theOffset;
@@ -1298,20 +1298,20 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
     dump("If you see this dump, Barry loses his bet\n");
     dump("In insertXMLAtCursor, couldn't use editor.selection! (Exception: [" + exc + "]\n");
     theElement = editor.document.rootElement;
-    if (theElement != null && theElement.childNodes.length > 0)
+    if (theElement !== null && theElement.childNodes.length > 0)
     {
       var targetTag = "body";
       if (bWithinPara)
         targetTag = "bodyText";
       var theCollection = theElement.getElementsByTagName(targetTag);
-      if (theCollection.length == 0 && bWithinPara)
+      if (theCollection.length === 0 && bWithinPara)
         theCollection = theElement.getElementsByTagName("p");
-      if (theCollection.length == 0)
+      if (theCollection.length === 0)
         theCollection = theElement.childNodes;
       if (theCollection.length > 0)
         theElement = theCollection[theCollection.length - 1];
     }
-    if (theElement != null)
+    if (theElement !== null)
     {
       theLength = theOffset = theElement.childNodes.length;
       try
@@ -1354,25 +1354,25 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
       var caretNodeData = findCaretPositionAfterInsert(editor.document, theElement, theOffset, newElement, newOffset);
 
 //      dump("New contents of editor are: [\n");
-//      if (editor != null)
+//      if (editor !== null)
 //        editor.dumpContentTree();
 //      dump("\n].\n");
-//      if (caretNodeData == null && newElement != null)
+//      if (caretNodeData === null && newElement !== null)
 //      {
 //        caretNodeData = new Object();
 //        caretNodeData.theNode = newElement;
 //        caretNodeData.theOffset = newOffset;
 //      }
-      if (caretNodeData != null)
+      if (caretNodeData !== null)
       {
-        if (caretNodeData.theNode == null)
+        if (caretNodeData.theNode === null)
         {
           dump("In insertXMLAtCursor, got non-null caretNodeData with null caretNodeData.theNode!\n");
         }
         else
         {
           var adjustedCaret = moveCaretToTextChild(caretNodeData.theNode, caretNodeData.theOffset);
-          if (adjustedCaret != null)
+          if (adjustedCaret !== null)
             caretNodeData = adjustedCaret;
           try
           {
@@ -1391,7 +1391,7 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
 
 function msiDeleteBodyContents(editor)
 {
-  if (!editor || (editor==null))
+  if (!editor || (editor===null))
     editor = msiGetCurrentEditor();
   if (!editor)
   {
@@ -1406,8 +1406,8 @@ function msiDeleteBodyContents(editor)
   var DOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
   function useNodeForSelection(aNode)
   {
-    if (aNode.nodeName=="dialogbase")return true;
-    if (aNode.nodeType == Components.interfaces.nsIDOMNode.TEXT_NODE)
+    if (aNode.nodeName==="dialogbase")return true;
+    if (aNode.nodeType === Components.interfaces.nsIDOMNode.TEXT_NODE)
       return !DOMUtils.isIgnorableWhitespace(aNode);
     return true;
   }
@@ -1452,11 +1452,11 @@ function msiDumpDocLocation(node)
 {
   function positionInParent(aNode)
   {
-    if (aNode.parentNode != null)
+    if (aNode.parentNode !== null)
     {
       for (var ix = 0; ix < aNode.parentNode.childNodes.length; ++ix)
       {
-        if (aNode.parentNode.childNodes[ix] == aNode)
+        if (aNode.parentNode.childNodes[ix] === aNode)
           return ix;
       }
     }
@@ -1464,7 +1464,7 @@ function msiDumpDocLocation(node)
   }
   var outString = "";
   var ancestors = new Array();
-  for (var currNode = node; currNode.parentNode != null && currNode.nodeType != node.DOCUMENT_NODE; currNode = currNode.parentNode)
+  for (var currNode = node; currNode.parentNode !== null && currNode.nodeType !== node.DOCUMENT_NODE; currNode = currNode.parentNode)
   {
     var ancestorRef = new Object();
     ancestorRef.nodename = currNode.nodeName;
@@ -1490,7 +1490,7 @@ function msiGetPreamble(theEditor)
   if (preambles.length > 0) docHead = preambles[0];
 //  var childElements = theEditor.document.documentElement.getElementsByTagName("*");
 //  var testFor = ["preamble", "meta", "title", "link"];
-//  for (var ix = 0; (docHead == null) && (ix < childElements.length); ++ix)
+//  for (var ix = 0; (docHead === null) && (ix < childElements.length); ++ix)
 //  {
 //    for (var jx = 0; jx < testFor.length; ++jx)
 //    {
@@ -1502,7 +1502,7 @@ function msiGetPreamble(theEditor)
 //      }
 //    }
 //  }
-//  if (docHead == null)
+//  if (docHead === null)
 //  {
 //    var headList = theEditor.document.getElementsByTagName("head");
 //    if (headList.length > 0)
@@ -1530,7 +1530,7 @@ function msiGetRealBodyElement(theDocument)
   }
   else
   {
-    if (theDocument.rootElement.nodeName == "body")
+    if (theDocument.rootElement.nodeName === "body")
       return theDocument.rootElement;
     theNodes = theDocument.rootElement.getElementsByTagName(targetTag);
   }
@@ -1544,12 +1544,12 @@ function msiGetRealBodyElement(theDocument)
         break;
       }
     }
-    if (theElement == null)
+    if (theElement === null)
       theElement = theNodes[0];
   }
   else
     theElement = theDocument.rootElement;
-  if (theElement == null)
+  if (theElement === null)
     dump("No rootElement for document in msiGetRealBodyElement!\n");
   return theElement;
 }
@@ -1562,10 +1562,10 @@ function fixInsertPosition(editor, theNode, offset)
 
   var theElement = theNode;
   var topNode = msiGetRealBodyElement(editor.document);
-  if (topNode == null)
+  if (topNode === null)
     topNode = editor.document.documentElement;
 
-  if (theElement == topNode)
+  if (theElement === topNode)
   {
     if (offset > 0)
     {
@@ -1581,7 +1581,7 @@ function fixInsertPosition(editor, theNode, offset)
     }
   }
   var theParent = msiGetBlockNodeParent(editor, theElement);
-  if (theParent != null && theParent != topNode)
+  if (theParent !== null && theParent !== topNode)
   {
     retVal.theElement = theElement;
     retVal.theOffset = offset;
@@ -1591,9 +1591,9 @@ function fixInsertPosition(editor, theNode, offset)
   function findBlockParents(aNode)
   {
     var blockParent = msiGetBlockNodeParent(editor, aNode);
-    if (blockParent == topNode)
+    if (blockParent === topNode)
       return NodeFilter.FILTER_SKIP;
-    else if (blockParent != null) 
+    else if (blockParent !== null) 
       return NodeFilter.FILTER_ACCEPT;
     else
       return NodeFilter.FILTER_REJECT;  //rejects whole subtree
@@ -1607,7 +1607,7 @@ function fixInsertPosition(editor, theNode, offset)
   {
     treeWalker.currentNode = theElement;
     var foundNode = treeWalker.previousNode();
-    if (foundNode != null)
+    if (foundNode !== null)
     {
       retVal.theElement = foundNode;
       retVal.theOffset = foundNode.childNodes.length;
@@ -1615,7 +1615,7 @@ function fixInsertPosition(editor, theNode, offset)
     else
     {
       foundNode = treeWalker.nextNode();
-      if (foundNode != null)
+      if (foundNode !== null)
       {
         retVal.theElement = foundNode;
         retVal.theOffset = 0;
@@ -1629,11 +1629,11 @@ function fixInsertPosition(editor, theNode, offset)
 
 function msiGetBlockNodeParent(editor, aNode)
 {
-  for (var theParent = aNode; theParent != null; theParent = theParent.parentNode)
+  for (var theParent = aNode; theParent !== null; theParent = theParent.parentNode)
   {
     if (editor.nodeIsBlock(theParent))
       return theParent;
-    if (theParent.nodeName=="dialogbase")
+    if (theParent.nodeName==="dialogbase")
       return theParent;
   }
   return null;
@@ -1643,13 +1643,13 @@ function msiFindParentOfType(startNode, nodeType, stopAt)
 {
   var retNode = null;
   var theNode = startNode;
-  if (stopAt == null || stopAt.length == 0)
+  if (stopAt === null || stopAt.length === 0)
     stopAt = "#document";
-  while (retNode==null && theNode != null)
+  while (retNode===null && theNode !== null)
   {
-    if (theNode.nodeName == nodeType)
+    if (theNode.nodeName === nodeType)
       retNode = theNode;
-    if (theNode.nodeName == stopAt)
+    if (theNode.nodeName === stopAt)
       break;
     theNode = theNode.parentNode;
   }
@@ -1658,9 +1658,9 @@ function msiFindParentOfType(startNode, nodeType, stopAt)
 
 function msiGetBaseNodeName(node)
 {
-  if (node != null)
+  if (node !== null)
   {
-    if (node.localName != null && node.localName.length > 0)
+    if (node.localName !== null && node.localName.length > 0)
       return node.localName;
     return node.nodeName;
   }
@@ -1671,17 +1671,17 @@ function msiElementCanHaveAttribute(elementNode, attribName)
 {
   var retVal = true;  //by default, prevent nothing
   var elementName = msiGetBaseNodeName(elementNode);
-  if (elementNode.nodeType == nsIDOMNode.TEXT_NODE)
+  if (elementNode.nodeType === nsIDOMNode.TEXT_NODE)
     return false;
 
   switch( attribName.toLowerCase() )  //copy attributes we always need
   {
     case "limitPlacement":
-      if (elementName != "mo")
+      if (elementName !== "mo")
         retVal = false;
     break;
     case "msiclass":
-      if (elementName != "mi")
+      if (elementName !== "mi")
         retVal = false;  //is this right?
     break;
     default:  //don't bother generally? Maybe not a good idea
@@ -1711,7 +1711,7 @@ function msiEnsureElementCSSProperty(elementNode, propName, propValue)
 function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, editor)
 {
   var retVal = false;
-  if ( (attribValue == null) || (attribValue.length == 0) )
+  if ( (attribValue === null) || (attribValue.length === 0) )
   {
     if (elementNode.hasAttribute(attribName))
     {
@@ -1721,7 +1721,7 @@ function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, e
   }
   else
   {
-    if ( !elementNode.hasAttribute(attribName) || (elementNode.getAttribute(attribName) != attribValue) )
+    if ( !elementNode.hasAttribute(attribName) || (elementNode.getAttribute(attribName) !== attribValue) )
     {
       editor.setAttribute(elementNode, attribName, attribValue);
       retVal = true;
@@ -1735,7 +1735,7 @@ function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, e
 function msiEnsureElementAttribute(elementNode, attribName, attribValue)
 {
   var retVal = false;
-  if (attribValue == null)
+  if (attribValue === null)
   {
     if (elementNode.hasAttribute(attribName))
     {
@@ -1745,7 +1745,7 @@ function msiEnsureElementAttribute(elementNode, attribName, attribValue)
   }
   else
   {
-    if ( !elementNode.hasAttribute(attribName) || (elementNode.getAttribute(attribName) != attribValue) )
+    if ( !elementNode.hasAttribute(attribName) || (elementNode.getAttribute(attribName) !== attribValue) )
     {
       elementNode.setAttribute(attribName, attribValue);
       retVal = true;
@@ -1771,7 +1771,7 @@ function msiCopyElementAttributes(newElement, oldElement, editor, bSuppressID)
       default:
         if (msiElementCanHaveAttribute(newElement, attrName))
         {
-          if (editor != null)
+          if (editor !== null)
             msiEditorEnsureElementAttribute(newElement, attrName, theAttrs.item(jx).textContent, editor);
           else
             msiEnsureElementAttribute(newElement, attrName, theAttrs.item(jx).textContent);
@@ -1791,7 +1791,7 @@ function msiCopySpecifiedElementAttributes(newElement, oldElement, editor, attrL
       attrVal = oldElement.getAttribute(attrName);
     else
       attrVal = null;
-    if (editor != null)
+    if (editor !== null)
       msiEditorEnsureElementAttribute(newElement, attrName, attrVal, editor);
     else
       msiEnsureElementAttribute(newElement, attrName, attrVal);
@@ -1850,7 +1850,7 @@ function msiEditorMoveCorrespondingContents(targNode, srcNode, editor)
       return null;
     for (var aChild in childContentTable[aNodeName])
     {
-      if (childContentTable[aNodeName][aChild] == nPos)
+      if (childContentTable[aNodeName][aChild] === nPos)
         return aChild;
     }
     return null;
@@ -1961,7 +1961,7 @@ function msiEditorReplaceTextWithText(editor, textNode, startOffset, endOffset, 
   }
   msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithText, after the first joinNode.\n", ["reviseChars"]);
   msiKludgeLogNodeContents(joinedNode, ["reviseChars"], "  joinedNode", true);
-  if (!joinedNode.parentNode || (joinedNode.parentNode != theParentNode))
+  if (!joinedNode.parentNode || (joinedNode.parentNode !== theParentNode))
     msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
   if (endOffset < nOrigLen)
   {
@@ -2020,14 +2020,14 @@ function msiEditorPrepareForInsertion(editor, nodeToInsert, insertPosition)
       editor.splitNode(oldParentNode, theInsertPos, aLeftNodeObj);
       theInsertPos = msiNavigationUtils.offsetInParent(oldParentNode);  //set up to insert at the split
     }
-    if (oldParent == theParentNode)
+    if (oldParent === theParentNode)
       theParentNode = theParentNode.parentNode;
   }
 //  if (msiNavigationUtils.isMathTemplate(theParentNode.parentNode))  //This surely was wrong
   if (msiNavigationUtils.isMathTemplate(theParentNode))
   {
     var replaceChild = msiNavigationUtils.getIndexedSignificantChild(theParentNode, theInsertPos);
-    if (replaceChild != null)
+    if (replaceChild !== null)
       theParentNode = encloseNode(replaceChild, "mrow", mmlns);
     msiKludgeLogString("Inside msiEditorPrepareForInsertion, isMathTemplate() returned true for theParentNode [" + theParentNode.nodeName + "]\n", ["reviseChars"]);
 //    theParentNode = encloseNode(theParentNode, "mrow", mmlns);  //This surely was wrong
@@ -2035,7 +2035,7 @@ function msiEditorPrepareForInsertion(editor, nodeToInsert, insertPosition)
   insertPosition.mNode = theParentNode;
   insertPosition.mOffset = theInsertPos;
   msiKludgeLogString("Ending msiEditorPrepareForInsertion, returning insertPosition.mNode [" + insertPosition.mNode.nodeName + "] and insertPosition.mOffset [" + insertPosition.mOffset + "]\n", ["reviseChars"]);
-  return (theParentNode != null);
+  return (theParentNode !== null);
 }
 
 function msiEditorReplaceTextWithNode2(editor, textNode, startOffset, endOffset, replaceNode)
@@ -2072,10 +2072,10 @@ function msiEditorReplaceTextWithNode2(editor, textNode, startOffset, endOffset,
   msiKludgeLogString(logStr, ["reviseChars"]);
 
   var insertNode = replaceNode;
-  if (msiNavigationUtils.isMathNode(replaceNode) && !findmathparent(theParentNode) && (msiGetBaseNodeName(replaceNode) != "math"))
+  if (msiNavigationUtils.isMathNode(replaceNode) && !findmathparent(theParentNode) && (msiGetBaseNodeName(replaceNode) !== "math"))
   {
     var mathNode = editor.document.createElementNS(mmlns, "math");
-    if (msiGetBaseNodeName(replaceNode) != "mrow")
+    if (msiGetBaseNodeName(replaceNode) !== "mrow")
     {
       insertNode = editor.document.createElementNS(mmlns, "mrow");
       insertNode.appendChild(replaceNode);
@@ -2098,10 +2098,10 @@ function msiEditorReplaceTextWithNode2(editor, textNode, startOffset, endOffset,
   logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode, after insertNode, parent node has [" + theParentNode.childNodes.length + "] children; \n";
   msiKludgeLogString(logStr, ["reviseChars"]);
   msiKludgeLogNodeContents(replaceNode, ["reviseChars"], "  replaceNode", true);
-  if (replaceNode != insertNode)
+  if (replaceNode !== insertNode)
     msiKludgeLogNodeContents(insertNode, ["reviseChars"], "  insertNode", true);
   msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
-  if (!replaceNode.parentNode || (replaceNode.parentNode != theParentNode))
+  if (!replaceNode.parentNode || (replaceNode.parentNode !== theParentNode))
     msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
 }
 
@@ -2109,12 +2109,12 @@ function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffse
 {
 //  What can we use to split a node when that function (editor.splitNode) doesn't work properly? I'm guessing just replace the nodes, if we can
 //    isolate the case...
-  if (!textNode || (textNode.nodeType != nsIDOMNode.TEXT_NODE))
+  if (!textNode || (textNode.nodeType !== nsIDOMNode.TEXT_NODE))
   {
     dump("Problem in msiEditorUtilities.js, msiEditorReplaceTextWithNode() - null textNode passed in!\n");
     return;
   }
-  if (textNode.nodeType != nsIDOMNode.TEXT_NODE)
+  if (textNode.nodeType !== nsIDOMNode.TEXT_NODE)
   {
     dump("Problem in msiEditorUtilities.js, msiEditorReplaceTextWithNode() - non-text textNode [" + textNode.nodeName + "] passed in!\n");
     return;
@@ -2138,7 +2138,7 @@ function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffse
 //  {
 //    msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); before the first splitNode.\n", ["spaces"]);
 //    theEditor.splitNode(textNode, startOffset, dummyLeftNode);
-//    if (theParentNode.childNodes.length != nParentLen + 1)  //this means the split simply failed! fix it by hand
+//    if (theParentNode.childNodes.length !== nParentLen + 1)  //this means the split simply failed! fix it by hand
 //    {
 //      logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the first splitNode, inside the trouble clause; textNode ";
 //      if (textNode)
@@ -2169,7 +2169,7 @@ function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffse
 ////    msiKludgeLogString(logStr, ["spaces"]);
 //    msiKludgeLogNodeContents(theParentNode, ["spaces"], "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); inside before the second splitNode.\n  theParentNode ");
 //    theEditor.splitNode(textNode, endOffset - startOffset, secondDummy);
-//    if (theParentNode.childNodes.length != nParentLen + 1)  //this means the split simply failed! fix it by hand
+//    if (theParentNode.childNodes.length !== nParentLen + 1)  //this means the split simply failed! fix it by hand
 //    {
 //      msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the second splitNode, inside the trouble clause; theParentNode.childNodes.length is [" + theParentNode.childNodes.length + "] and nParentLen is [" + nParentLen + "].\n", ["spaces"]);
 //      theEditor.deleteNode(textNode);
@@ -2223,15 +2223,15 @@ function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffse
 //  return theElement;
 function msiSetMathTokenText(theElement, newText, editor)
 {
-  if (theElement.textContent == newText)
+  if (theElement.textContent === newText)
     return theElement;
 
   var newElement = theElement.ownerDocument.createElementNS(mmlns, theElement.nodeName);
   msiCopyElementAttributes(newElement, theElement);
   newElement.appendChild(theElement.ownerDocument.createTextNode(newText));
-  if (theElement.parentNode != null)
+  if (theElement.parentNode !== null)
   {
-    if (editor != null)
+    if (editor !== null)
       editor.replaceNode(newElement, theElement, theElement.parentNode);
     else
       theElement.parentNode.replaceChild(newElement, theElement);
@@ -2254,7 +2254,7 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
   var endOffset = postOffset;
   var endNode = postNode;
   var comp = startNode.compareDocumentPosition(postNode);
-  if (comp == Node.DOCUMENT_POSITION_FOLLOWING)
+  if (comp === Node.DOCUMENT_POSITION_FOLLOWING)
   {
     startNode = postNode;
     startOffset = postOffset;
@@ -2286,7 +2286,7 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
   function isCaretPosition(aNode)
   {
 
-    if (aNode.hasAttribute("caretpos") || (aNode.hasAttribute("tempinput") && aNode.getAttribute("tempinput")=="true"))
+    if (aNode.hasAttribute("caretpos") || (aNode.hasAttribute("tempinput") && aNode.getAttribute("tempinput")==="true"))
       return NodeFilter.FILTER_ACCEPT;
     return NodeFilter.FILTER_SKIP;
   }
@@ -2298,7 +2298,7 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
     var nextPos = treeWalker.currentNode = startNode;
     var bFoundInput = false;
     var bFoundCaretPos = false;
-    while (!bFoundCaretPos && nextPos != null && nextPos.compareDocumentPosition(endNode) != Node.DOCUMENT_POSITION_PRECEDING)
+    while (!bFoundCaretPos && nextPos !== null && nextPos.compareDocumentPosition(endNode) !== Node.DOCUMENT_POSITION_PRECEDING)
     {
       if (nextPos.hasAttribute("caretpos"))
       {
@@ -2306,7 +2306,7 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
         retVal.theNode = nextPos;
         retVal.theOffset = nextPos.getAttribute("caretpos");
       }
-      else if (!bFoundInput && nextPos.hasAttribute("tempinput") && nextPos.getAttribute("tempinput")=="true")
+      else if (!bFoundInput && nextPos.hasAttribute("tempinput") && nextPos.getAttribute("tempinput")==="true")
       {
         bFoundInput = true;
         retVal.theNode = nextPos;
@@ -2316,12 +2316,12 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
     }
   }
 
-////  if (retVal != null) //In these cases we attempt to put the caret inside a child text node.
+////  if (retVal !== null) //In these cases we attempt to put the caret inside a child text node.
 ////  {
 //  var nNonEmptyTextChild = -1;
 //  for (var kx = 0; kx < retVal.theNode.childNodes.length; ++kx)
 //  {
-//    if (retVal.theNode.childNodes[kx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE)
+//    if (retVal.theNode.childNodes[kx].nodeType !== Components.interfaces.nsIDOMNode.TEXT_NODE)
 //    {
 //      nNonEmptyTextChild = -1;  //There are non-text children, so we don't want to assume the offset's intended to go inside a text child.
 //      break;
@@ -2345,7 +2345,7 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
 //  var nNonEmptyOtherChild = -1;
 //  for (var kx = 0; kx < theNode.childNodes.length; ++kx)
 //  {
-//    if (theNode.childNodes[kx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE)
+//    if (theNode.childNodes[kx].nodeType !== Components.interfaces.nsIDOMNode.TEXT_NODE)
 //    {
 //      if (nNonEmptyOtherChild >= 0 || nNonEmptyTextChild >= 0)
 //        return null;
@@ -2377,13 +2377,13 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
 //business we have is to go to the position and see whether there's a good text-node position to place the caret at.
 function moveCaretToTextChild(theNode, theOffset)
 {
-  if (theNode.nodeType == Components.interfaces.nsIDOMNode.TEXT_NODE)
+  if (theNode.nodeType === Components.interfaces.nsIDOMNode.TEXT_NODE)
   {
     var posObject = new Object();
     posObject.theNode = theNode;
-    if (theNode.parentNode.hasAttribute("tempinput") && theNode.parentNode.getAttribute("tempinput")=="true")
+    if (theNode.parentNode.hasAttribute("tempinput") && theNode.parentNode.getAttribute("tempinput")==="true")
       posObject.theOffset = msiInputBoxCaretOffset;  //set to 1
-    else if (theOffset == -1 || theOffset > theNode.nodeValue.length)
+    else if (theOffset === -1 || theOffset > theNode.nodeValue.length)
       posObject.theOffset = theNode.nodeValue.length;
     else
       posObject.theOffset = theOffset;
@@ -2395,22 +2395,22 @@ function moveCaretToTextChild(theNode, theOffset)
   if (!nLength)
     return null;
 
-  if (theOffset == -1 || theOffset > nLength)
+  if (theOffset === -1 || theOffset > nLength)
   {
     for (var jx = nLength; jx > 0; --jx)
     {
-      if (theNode.childNodes[jx-1].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE || theNode.childNodes[jx-1].nodeValue.length > 0)
+      if (theNode.childNodes[jx-1].nodeType !== Components.interfaces.nsIDOMNode.TEXT_NODE || theNode.childNodes[jx-1].nodeValue.length > 0)
       {
         theChild = theNode.childNodes[jx-1];
         break;
       }
     }
   }
-  else if (theOffset == 0)
+  else if (theOffset === 0)
   {
     for (var jx = 0; jx < nLength; ++jx)
     {
-      if (theNode.childNodes[jx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE || theNode.childNodes[jx].nodeValue.length > 0)
+      if (theNode.childNodes[jx].nodeType !== Components.interfaces.nsIDOMNode.TEXT_NODE || theNode.childNodes[jx].nodeValue.length > 0)
       {
         theChild = theNode.childNodes[jx];
         break;
@@ -2420,18 +2420,18 @@ function moveCaretToTextChild(theNode, theOffset)
   else
     theChild = theNode.childNodes[theOffset - 1];
 
-  if (theOffset != 0)
+  if (theOffset !== 0)
     theOffset = -1;
   return moveCaretToTextChild(theChild, theOffset);
 }
 
 //function moveCaretToTextChild(theNode, theOffset)
 //{
-//  if (theNode.nodeType == Components.interfaces.nsIDOMNode.TEXT_NODE)
+//  if (theNode.nodeType === Components.interfaces.nsIDOMNode.TEXT_NODE)
 //  {
 //    var posObject = new Object();
 //    posObject.theNode = theNode;
-//    if (theOffset == -1 || theOffset > theNode.nodeValue.length)
+//    if (theOffset === -1 || theOffset > theNode.nodeValue.length)
 //      posObject.theOffset = theNode.nodeValue.length;
 //    else
 //      posObject.theOffset = theOffset;
@@ -2461,14 +2461,14 @@ function findCaretPositionInNode(parentNode)
   var caretOffset = -1;
   var bFoundNew = false;
   var searchNodes = null;
-  if (parentNode.childNodes.length == 0)
+  if (parentNode.childNodes.length === 0)
   {
     searchNodes = new Array(parentNode);
     bDoneMi = true;
   }
   else
     searchNodes = parentNode.getElementsByTagName("mi");
-  if (searchNodes == null)
+  if (searchNodes === null)
     return foundCaret;
   for (var jx = 0; ((jx < searchNodes.length) || (!bDoneMi)) && !bFoundCaretPos; ++jx)
   {
@@ -2477,12 +2477,12 @@ function findCaretPositionInNode(parentNode)
     {
       searchNodes = parentNode.getElementsByTagName("*");
       bDoneMi = true;
-      if (searchNodes.length == 0)
+      if (searchNodes.length === 0)
         break;
       jx = 0;
     }
     //The use of the attribute "caretpos" here is illustrative - need to find out what we may actually use.
-    if ( !bFoundAny && (searchNodes[jx].nodeType == Components.interfaces.nsIDOMNode.TEXT_NODE) && (searchNodes[jx].nodeValue.length > 0) )
+    if ( !bFoundAny && (searchNodes[jx].nodeType === Components.interfaces.nsIDOMNode.TEXT_NODE) && (searchNodes[jx].nodeValue.length > 0) )
     {
       bFoundAny = bFoundNew = true;
       caretNode = searchNodes[jx];
@@ -2494,24 +2494,24 @@ function findCaretPositionInNode(parentNode)
       caretNode = searchNodes[jx];
       caretOffset = caretNode.getAttribute("caretpos");
     }
-    else if (!bFoundInputBox && searchNodes[jx].hasAttribute("tempinput") && searchNodes[jx].getAttribute("tempinput")=="true")
+    else if (!bFoundInputBox && searchNodes[jx].hasAttribute("tempinput") && searchNodes[jx].getAttribute("tempinput")==="true")
     {
       bFoundInputBox = bFoundNew = true;
       caretNode = searchNodes[jx];
       caretOffset = msiInputBoxCaretOffset;  //set to 1
     }
-    else if ( !bFoundInputBox && !bFoundAny && ((searchNodes[jx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE) || (searchNodes[jx].nodeValue.length > 0)) )
+    else if ( !bFoundInputBox && !bFoundAny && ((searchNodes[jx].nodeType !== Components.interfaces.nsIDOMNode.TEXT_NODE) || (searchNodes[jx].nodeValue.length > 0)) )
     {
       //Found a viable cursor position.
       caretNode = searchNodes[jx];
       bFoundAny = bFoundNew = true;
     }
-    if (bFoundNew && caretNode != null) //In these cases we attempt to put the caret inside a child text node.
+    if (bFoundNew && caretNode !== null) //In these cases we attempt to put the caret inside a child text node.
     {
       var nNonEmptyTextChild = -1;
       for (var kx = 0; kx < caretNode.childNodes.length; ++kx)
       {
-        if (caretNode.childNodes[kx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE)
+        if (caretNode.childNodes[kx].nodeType !== Components.interfaces.nsIDOMNode.TEXT_NODE)
         {
           nNonEmptyTextChild = -1;  //There are non-text children, so we don't want to assume the offset's intended to go inside a text child.
           break;
@@ -2525,7 +2525,7 @@ function findCaretPositionInNode(parentNode)
         caretOffset = 0;
     }
   }
-  if (caretNode != null)
+  if (caretNode !== null)
   {
     foundCaret = new Object();
     foundCaret.theNode = caretNode;
@@ -2555,14 +2555,14 @@ function msiEnableEditorControl(editorElement, bEnable)
   {
     editorElement.removeAttribute("disabled");
     editorElement.allowevents = true;
-    if (internalEditor != null)
+    if (internalEditor !== null)
     {
       msiDumpWithID("Got HTML editor for element [@] in msiEnableEditorControl; editor flags are [" + internalEditor.flags + "].\n", editorElement);
       internalEditor.flags &= ~(Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
     }
     else
       msiDumpWithID("Unable to get HTML editor for element [@] in msiEnableEditorControl.\n", editorElement);
-    if (elementStyle != null)
+    if (elementStyle !== null)
     {
 //      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
       elementStyle.setProperty("-moz-user-focus", "normal", "");
@@ -2574,14 +2574,14 @@ function msiEnableEditorControl(editorElement, bEnable)
   {
     editorElement.setAttribute("disabled", "true");
     editorElement.allowevents = false;
-    if (internalEditor != null)
+    if (internalEditor !== null)
     {
       msiDumpWithID("Got HTML editor for element [@] in msiEnableEditorControl; editor flags are [" + internalEditor.flags + "].\n", editorElement);
       internalEditor.flags |= (Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
     }
     else
       msiDumpWithID("Unable to get HTML editor for element [@] in msiEnableEditorControl.\n", editorElement);
-    if (elementStyle != null)
+    if (elementStyle !== null)
     {
 //      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
       elementStyle.setProperty("-moz-user-focus", "ignore", "");
@@ -2634,7 +2634,7 @@ function singleDialogList(theWindow)
       var theDialog = msiGetDialogContaining(theTarget);
       for (var entry in topWin.msiSingleDialogList.ourList)
       {
-        if (topWin.msiSingleDialogList.ourList[entry].theDialog == theDialog)
+        if (topWin.msiSingleDialogList.ourList[entry].theDialog === theDialog)
         {
 //          msiKludgeLogString("Removing dialog entry in closing observer.\n");
           delete topWin.msiSingleDialogList.ourList[entry];
@@ -2677,7 +2677,7 @@ function singleDialogList(theWindow)
   {
     for (var entry in this.ourList)
     {
-      if (this.ourList[entry].theDialog == theDialog)
+      if (this.ourList[entry].theDialog === theDialog)
       {
         return this.ourList[entry].theEditor;
       }
@@ -2692,19 +2692,19 @@ function msiGetDialogContaining(aNode)
   var theDocument = null;
   if ("documentElement" in aNode)
   {
-    if (aNode.documentElement.nodeName == "dialog")
+    if (aNode.documentElement.nodeName === "dialog")
       return aNode.defaultView;
     aNode = aNode.defaultView;
   }
   if ("opener" in aNode)
   {
     parentWindow = aNode;
-    if (aNode.parent != aNode)
+    if (aNode.parent !== aNode)
       parentWindow = aNode.parent;
-    if (parentWindow.document.documentElement.nodeName == "dialog")
+    if (parentWindow.document.documentElement.nodeName === "dialog")
       return parentWindow;
   }
-  if ("ownerDocument" in aNode && aNode.ownerDocument != null && aNode.ownerDocument.documentElement.nodeName == "dialog")
+  if ("ownerDocument" in aNode && aNode.ownerDocument !== null && aNode.ownerDocument.documentElement.nodeName === "dialog")
     return aNode.ownerDocument.defaultView;
   return null;
 };
@@ -2713,24 +2713,24 @@ function msiEditorIsDependentOnWindow(editorElement, theWindow)
 {
   var currParentWin = editorElement.ownerDocument.defaultView;
   var currWindow = editorElement.contentWindow;
-  var bIsDependent = (currWindow == theWindow) || (currParentWin == theWindow);
-  while (!bIsDependent && currParentWin!=null)
+  var bIsDependent = (currWindow === theWindow) || (currParentWin === theWindow);
+  while (!bIsDependent && currParentWin!==null)
   {
-    if (currParentWin.parent && currParentWin.parent != currParentWin)
+    if (currParentWin.parent && currParentWin.parent !== currParentWin)
       currParentWin = currParentWin.parent;
     else
       currParentWin = currParentWin.opener;
-    bIsDependent = (currParentWin == theWindow);
+    bIsDependent = (currParentWin === theWindow);
     if (!bIsDependent && currParentWin)
     {
       var parentEditor = findEditorElementForDocument(currParentWin.document);
-      if (parentEditor != null)
+      if (parentEditor !== null)
       {
         currWindow = currParentWin;
         currParentWin = parentEditor.ownerDocument.defaultView;
         if (currParentWin.top)
           currParentWin = currParentWin.top;
-        bIsDependent = (currParentWin == theWindow);
+        bIsDependent = (currParentWin === theWindow);
       }
     }
   }
@@ -2774,7 +2774,7 @@ function msiEditorIsSinglePara(editorElement)
     return true;
   var editor = msiGetEditor(editorElement);
   if (editor && editor.document)
-    return ((editor.flags & nsIPlaintextEditor.eEditorSingleLineMask) != 0);
+    return ((editor.flags & nsIPlaintextEditor.eEditorSingleLineMask) !== 0);
   return false;
 }
 
@@ -2870,7 +2870,7 @@ function msiOpenModelessDialog(chromeUrl, dlgName, options, targetEditorElement,
   {
     extraArgsArray.push(arguments[i]);
   }
-  if (reviseObject != null)
+  if (reviseObject !== null)
     return msiOpenModelessPropertiesDialog(chromeUrl, dlgName, options, targetEditorElement, commandID, reviseObject, extraArgsArray);
   else
     return msiOpenSingleInstanceModelessDialog(chromeUrl, dlgName, options, targetEditorElement, commandID, extraArgsArray);
@@ -3023,11 +3023,11 @@ function msiGetWindowContainingEditor(editorElement)
     return null;
   var parWindow = editorElement.ownerDocument.defaultView;
   return parWindow;
-//  if (parWindow != theWindow)
+//  if (parWindow !== theWindow)
 //    return parWindow;
 //  //else???? for now, assume this always works?
 //  var theWindow = editorElement.contentWindow;
-//  if (theWindow.parent && theWindow.parent != theWindow)
+//  if (theWindow.parent && theWindow.parent !== theWindow)
 //    return theWindow.parent;
 //  return theWindow;
 }
@@ -3063,7 +3063,7 @@ function propertyDialogList(theWindow)
     {
       for (var i = 0; i < this.ourList[dialogName].length; ++i)
       {
-        if (this.ourList[dialogName][i].theObject == reviseObject)
+        if (this.ourList[dialogName][i].theObject === reviseObject)
         {
           theDialog = this.ourList[dialogName][i].theDialog;
           break;
@@ -3101,13 +3101,13 @@ function propertyDialogList(theWindow)
       {
         for (var i = topWin.msiPropertiesDialogList.ourList[entry].length; i >= 1; --i)
         {
-          if (topWin.msiPropertiesDialogList.ourList[entry][i-1].theDialog == theDialog)
+          if (topWin.msiPropertiesDialogList.ourList[entry][i-1].theDialog === theDialog)
           {
   //          msiKludgeLogString("Removing dialog entry in closing observer.\n");
             topWin.msiPropertiesDialogList.ourList[entry].splice(i-1, 1);
 //            delete topWin.msiPropertiesDialogList.ourList[entry][i-1];
             bFound = true;
-            if (topWin.msiPropertiesDialogList.ourList[entry].length == 0)
+            if (topWin.msiPropertiesDialogList.ourList[entry].length === 0)
               delete topWin.msiPropertiesDialogList.ourList[entry];
             break;
           }
@@ -3142,7 +3142,7 @@ function propertyDialogList(theWindow)
   this.getParentEditorElementByDialog = function(theDialog)
   {
     var theEntry = this.findEntryForDialog(theDialog);
-    if (theEntry != null)
+    if (theEntry !== null)
       return theEntry.theEditor;
     return null;
   }
@@ -3152,7 +3152,7 @@ function propertyDialogList(theWindow)
     {
       for (var i = 0; i < this.ourList[entry].length; ++i)
       {
-        if (this.ourList[entry][i].theDialog == theDialog)
+        if (this.ourList[entry][i].theDialog === theDialog)
         {
 //          msiKludgeLogString("Removing dialog entry in closing observer.\n");
           return this.ourList[entry][i];
@@ -3234,7 +3234,7 @@ function msiGetParentEditorElementForDialog(dialogWindow, bLogEverything)
     if (bLogEverything)
       dump("In msiGetParentEditorElementForDialog, dialogWindow not passed in, 'window' is [" + msiDebugWindowInfo(dialogWindow) + "].\n");
   }
-  if (dialogWindow.top && (dialogWindow != dialogWindow.top))
+  if (dialogWindow.top && (dialogWindow !== dialogWindow.top))
   {
     dialogWindow = dialogWindow.top;
     if (bLogEverything)
@@ -3697,7 +3697,7 @@ function writeZipEntry(aZipWriter, relPath, sourceFile, compression)
   var path = "";
   var dirs = relPath.split(/\//);
   var isDirectory = /\/$/.test(aZipEntry);
-  if (compression == null) compression = 0;
+  if (compression === null) compression = 0;
 
   var end = dirs.length;
   if (!isDirectory)
@@ -3724,7 +3724,7 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory, compression)
   var e;
   var f;
   e = sourceDirectory.directoryEntries;
-  if (compression == null) compression = 0;
+  if (compression === null) compression = 0;
   
   while (e.hasMoreElements())
   {
@@ -3773,7 +3773,7 @@ function copyDirectory(destDirectory, sourceDirectory)
       if (f.isDirectory())
       {
   // skip temp directory
-        if (leaf != 'temp')
+        if (leaf !== 'temp')
         {       
           if (!dest2.exists()) {
             dest2.create(1, 0755);
@@ -3853,7 +3853,7 @@ function createWorkingDirectory(documentfile)
   // this is the name of the new directory, unless documentfile is a shell
   if (documentfile.isFile())
   {
-    if (extension.toLowerCase() == ".sci")
+    if (extension.toLowerCase() === ".sci")
     {
       // .sci document
       theCase = 1;
@@ -3876,16 +3876,16 @@ function createWorkingDirectory(documentfile)
   name = "main"+extension;
   dir = documentfile.parent.clone();
   dir.append(baseLeafName+"_work"); // build the working directory data; we will ignore this if a shell
-  if (theCase == 2)
+  if (theCase === 2)
   {
     // we create a new directory
     dir.create(1 /*directory*/, 0755);
   }
-  else if (theCase == 3)
+  else if (theCase === 3)
   {
     documentfile.copyTo(documentfile.parent, dir.leafName);
   }
-  if (theCase == 2)
+  if (theCase === 2)
   {
     var done = false;
     var index = 0;
@@ -3906,7 +3906,7 @@ function createWorkingDirectory(documentfile)
       }
     }
   }
-  if (theCase == 1)
+  if (theCase === 1)
   // remaining case is the main one, a .sci file
   {  
     var doc = documentfile.clone();
@@ -4020,7 +4020,7 @@ function msiDefaultNewDocDirectory()
   var os = getOS(window);
   if (os==="win")
     dirkey = "Pers";
-  else if (os=="osx")
+  else if (os==="osx")
     dirkey = "UsrDocs";
   else
     dirkey = "Home";
@@ -4101,16 +4101,16 @@ function msiDefaultNewDocDirectory()
 // 
 // The File/Revert calls this function, but also reloads the .sci file. The pre-reverted
 // file is saved.
-// If the file was created from a shell file then del==true, and we delete the file. 
+// If the file was created from a shell file then del===true, and we delete the file. 
 //
 // The algorithm:
 // Our file is currently main.xhtml in a directory we call D. Let A be the leafname of the .sci file
-// If del==false, do a soft save, and save the directory D into a zipfile which we call A.undorevert.
+// If del===false, do a soft save, and save the directory D into a zipfile which we call A.undorevert.
 // Delete D.
-// If del==true, delete A.sci.
+// If del===true, delete A.sci.
 //
 // The final state depends on del:
-// If true, A.sci is gone as is the directory D. We leave A.bak if it exists, but it probably never does when del==true;
+// If true, A.sci is gone as is the directory D. We leave A.bak if it exists, but it probably never does when del===true;
 // If false, A.sci and A.bak are as they were before editing, A.undorevert is the state of the document just before the revert,
 // Reloading the file A.sci will rebuild D
 
@@ -4224,7 +4224,7 @@ function IsUrlUntitled(urlString)
 
 function IsUrlAboutBlank(urlString)
 {
-  return (urlString == "about:blank");
+  return (urlString === "about:blank");
 }
 
 function msiMakeRelativeUrl(url, editorElement)
@@ -4256,7 +4256,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
   var urlScheme = GetScheme(inputUrl);
 
   // Do nothing if not the same scheme or url is already relativized
-  if (baseScheme != urlScheme)
+  if (baseScheme !== urlScheme)
     return inputUrl;
 
   var IOService = msiGetIOService();
@@ -4266,7 +4266,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
   // Host must be the same
   var baseHost = GetHost(baseUrl);
   var urlHost = GetHost(inputUrl);
-  if (baseHost != urlHost)
+  if (baseHost !== urlHost)
     return inputUrl;
 
 
@@ -4277,7 +4277,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
   // We only return "urlPath", so we can convert
   //  the entire basePath for case-insensitive comparisons
   var os = getOS(window);
-  var doCaseInsensitive = (os != "win");
+  var doCaseInsensitive = (os !== "win");
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
 
@@ -4298,21 +4298,21 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
     nextBaseSlash = basePath.indexOf("\/");
     var nextUrlSlash = urlPath.indexOf("\/");
 
-    if (nextUrlSlash == -1)
+    if (nextUrlSlash === -1)
     {
       // We're done matching and all dirs in url
       // what's left is the filename
       done = true;
 
       // Remove filename for named anchors in the same file
-      if (nextBaseSlash == -1 && baseFilename)
+      if (nextBaseSlash === -1 && baseFilename)
       { 
         var anchorIndex = urlPath.indexOf("#");
         if (anchorIndex > 0)
         {
           var urlFilename = doCaseInsensitive ? urlPath.toLowerCase() : urlPath;
         
-          if (urlFilename.indexOf(baseFilename) == 0)
+          if (urlFilename.indexOf(baseFilename) === 0)
             urlPath = urlPath.slice(anchorIndex);
         }
       }
@@ -4325,7 +4325,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
       if (doCaseInsensitive)
         urlDir = urlDir.toLowerCase();
 
-      if (urlDir == baseDir)
+      if (urlDir === baseDir)
       {
 
         // Remove matching dir+"/" from each path
@@ -4343,7 +4343,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
         //   relativize to different drives/volumes.
         // UNIX doesn't have volumes, so we must not do this else
         //  the first directory will be misinterpreted as a volume name
-        if (firstDirTest && baseScheme == "file" && os != "osx")
+        if (firstDirTest && baseScheme === "file" && os !== "osx")
           return inputUrl;
       }
     }
@@ -4538,7 +4538,7 @@ function GetFilepath(urlspec) // BBM: I believe this can be simplified
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
       {
-        if (getOS(window)=="win")
+        if (getOS(window)==="win")
           filepath = decodeURIComponent(url.path.substr(1));
         else
            filepath = decodeURIComponent(url.path);
@@ -4615,7 +4615,7 @@ function StripUsernamePassword(urlspec, usernameObj, passwordObj)
       if (username)
       {
         var usernameStart = urlspec.indexOf(username);
-        if (usernameStart != -1)
+        if (usernameStart !== -1)
           return urlspec.slice(0, usernameStart) + urlspec.slice(atIndex+1);
       }
     } catch (e) {}
@@ -4649,7 +4649,7 @@ function StripPassword(urlspec, passwordObj)
       {
         // Find last ":" before "@"
         var colon = urlspec.lastIndexOf(":", atIndex);
-        if (colon != -1)
+        if (colon !== -1)
         {
           // Include the "@"
           return urlspec.slice(0, colon) + urlspec.slice(atIndex);
@@ -4699,11 +4699,11 @@ function ConvertRGBColorIntoHEXColor(color)
 {
   if ( /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/.test(color) ) {
     var r = Number(RegExp.$1).toString(16);
-    if (r.length == 1) r = "0"+r;
+    if (r.length === 1) r = "0"+r;
     var g = Number(RegExp.$2).toString(16);
-    if (g.length == 1) g = "0"+g;
+    if (g.length === 1) g = "0"+g;
     var b = Number(RegExp.$3).toString(16);
-    if (b.length == 1) b = "0"+b;
+    if (b.length === 1) b = "0"+b;
     return "#"+r+g+b;
   }
   else
@@ -4757,7 +4757,7 @@ function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPrope
   if (!value)
   {
     element = msiNavigationUtils.findWrappingNode(element);
-    if (element && (element != theElement))
+    if (element && (element !== theElement))
       value = msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssPropertyName, bPreferAttr);
   }
   
@@ -4820,7 +4820,7 @@ function msiNamedColors(aNameSet)
       var searchStr = "#" + theMatch[2].toLowerCase();
       for (var aName in this.mColorNames)
       {
-        if (this.mColorNames[aName] == searchStr)
+        if (this.mColorNames[aName] === searchStr)
         {
           colorName = aName;
           break;
@@ -4901,18 +4901,18 @@ var msiCSSUtils =
 //        retStr = String(cssValue.getRGBColorValue());
         var theColor = cssValue.getRGBColorValue();
         var r = theColor.red.getFloatValue(nsICSSPrimitive.CSS_NUMBER).toString(16);
-        if (r.length == 1) r = "0"+r;
+        if (r.length === 1) r = "0"+r;
         var g = theColor.green.getFloatValue(nsICSSPrimitive.CSS_NUMBER).toString(16);
-        if (g.length == 1) g = "0"+g;
+        if (g.length === 1) g = "0"+g;
         var b = theColor.blue.getFloatValue(nsICSSPrimitive.CSS_NUMBER).toString(16);
-        if (b.length == 1) b = "0"+b;
+        if (b.length === 1) b = "0"+b;
         retStr = "#"+r+g+b;
       break;
       case nsICSSPrimitive.CSS_STRING:
       case nsICSSPrimitive.CSS_IDENT:
       case nsICSSPrimitive.CSS_ATTR:
         retStr = cssValue.getStringValue();
-        if ( (retStr != "transparent") && (retStr != "inherit") )
+        if ( (retStr !== "transparent") && (retStr !== "inherit") )
           retStr = msiHTMLNamedColors.colorStringToHexRGBString(retStr);
       break;
       default:
@@ -4997,7 +4997,7 @@ var cssPropertyChangeRecordBase =
       this.valuesTable = new Object();
     if (!(aSelectorObj.m_selString in this.valuesTable))
       this.valuesTable[aSelectorObj.m_selString] = [];
-    var bImportant = (priorityStr && priorityStr == "important");
+    var bImportant = (priorityStr && priorityStr === "important");
     var jj;
     var bInserted = false;
     if (bImportant)
@@ -5032,7 +5032,7 @@ var cssPropertyChangeRecordBase =
 
     function selectorMatchIsExact(aValueRecord)
     {
-//      return (aValueRecord.m_matchedSelector && (aSelectorObj.m_selString == aValueRecord.m_matchedSelector.m_selString));
+//      return (aValueRecord.m_matchedSelector && (aSelectorObj.m_selString === aValueRecord.m_matchedSelector.m_selString));
       return (aValueRecord.m_matchedSelector && aSelectorObj.matchesExact(aValueRecord.m_matchedSelector));
     }
     //Algorithm: we proceed "down the cascade" hitting the "important" rules first and then those in the modifiable sheet.
@@ -5042,7 +5042,7 @@ var cssPropertyChangeRecordBase =
     for (var ii = 0; ii < this.valuesTable[aSelectorObj.m_selString].length; ++ii)
     {
       currRecord = this.valuesTable[aSelectorObj.m_selString][ii];
-      if ((currRecord.m_val == this.m_value) && (!bNeedImportant || currRecord.m_bImportant))
+      if ((currRecord.m_val === this.m_value) && (!bNeedImportant || currRecord.m_bImportant))
         firstMatching = currRecord;
       else if (this.recordIsModifiable(currRecord) && selectorMatchIsExact(currRecord))
       {
@@ -5089,7 +5089,7 @@ var cssPropertyChangeRecordBase =
     var bFound = false;
     for (var ix = 0; ix < aList.length; ++ix)
     {
-      if (aList[ix].theRule == aRecord.theRule)
+      if (aList[ix].theRule === aRecord.theRule)
         bFound = true;
       else if (bFound)
         aList.splice(ix, 0, aRecord);
@@ -5104,9 +5104,9 @@ var cssPropertyChangeRecordBase =
     var nInsertPos = -1;
     for (var ix = 0; (nInsertPos < 0) && (ix < aList.length); ++ix)
     {
-      if (foundSelector && (aList[ix].theSelector != aRecord.theSelector))
+      if (foundSelector && (aList[ix].theSelector !== aRecord.theSelector))
         nInsertPos = ix;
-      else if (aList[ix].theSelector == aRecord.theSelector)
+      else if (aList[ix].theSelector === aRecord.theSelector)
         foundSelector = aList[ix];
     }
     if (nInsertPos < 0)
@@ -5190,7 +5190,7 @@ var cssChangesManagerBase =
     {
       currSelector = changesRequired.addProperties[ix].theSelector;
       ruleText = currSelector.m_selString + " {\n";
-      while ( (ix < changesRequired.addProperties.length) && (changesRequired.addProperties[ix].theSelector == currSelector) )
+      while ( (ix < changesRequired.addProperties.length) && (changesRequired.addProperties[ix].theSelector === currSelector) )
       {
         ruleText += "  " + changesRequired.addProperties[ix].theProperty + ": " + changesRequired.addProperties[ix].theValue;
       if (changesRequired.addProperties[ix].m_bImportant)
@@ -5204,7 +5204,7 @@ var cssChangesManagerBase =
     }
     for (ix = 0; ix < changesRequired.changeProperties.length; ++ix)
     {
-      if (changesRequired.changeProperties[ix].theRule == currRuleSetObj)
+      if (changesRequired.changeProperties[ix].theRule === currRuleSetObj)
         ruleSetChangeArray.push(changesRequired.changeProperties[ix]);
       else
       {
@@ -5235,7 +5235,7 @@ var cssChangesManagerBase =
       for (jx = 0; jx < ruleChanges[ix].m_changes.length; ++jx)
       {
         currRuleChange = ruleChanges[ix].m_changes[jx];
-        if (currRuleChange.m_value == this.m_deletionMarker)
+        if (currRuleChange.m_value === this.m_deletionMarker)
           currRuleSetObj.m_cssRule.style.removeProperty(currRuleChange.m_property);
         else
         {
@@ -5248,7 +5248,7 @@ var cssChangesManagerBase =
     //Check for rule sets which have been emptied
     for (ix = 0; ix < ruleChanges.length; ++ix)
     {
-      if (ruleChanges[ix].m_ruleSet.m_cssRule.style.length == 0)
+      if (ruleChanges[ix].m_ruleSet.m_cssRule.style.length === 0)
       {
         nInsertPos = this.getIndexOfRuleSet(ruleChanges[ix].m_ruleSet.m_cssRule);
         if (nInsertPos >= 0)
@@ -5302,7 +5302,7 @@ var cssChangesManagerBase =
     var testRuleSet = null;
     for (var jx = aStyleSheet.cssRules.length - 1; jx >= 0; --jx)
     {
-      if (aStyleSheet.cssRules[jx].type != CSSRule.STYLE_RULE)
+      if (aStyleSheet.cssRules[jx].type !== CSSRule.STYLE_RULE)
         continue;
       if (testStrRE.test(aStyleSheet.cssRules[jx].selectorText))
       {
@@ -5464,7 +5464,7 @@ var cssChangesManagerBase =
             {
               if (propValueTable[aProperty].values[aValue].indexOf(removeSelectors[ix]) >= 0)
               {
-                if (aValue != this.m_deletionMarker)
+                if (aValue !== this.m_deletionMarker)
                   ruleText += "  " + aProperty + ":  " + aValue + ";\n";
                 break;
               }
@@ -5548,7 +5548,7 @@ var cssChangesManagerBase =
       return -1;
     for (var ix = 0; ix < theStyleSheet.cssRules.length; ++ix)
     {
-      if (theStyleSheet.cssRules.item(ix) == aRuleSet)
+      if (theStyleSheet.cssRules.item(ix) === aRuleSet)
         return ix;
     }
     return -1;
@@ -5565,9 +5565,9 @@ var cssChangesManagerBase =
     }
     catch(exc) {dump("In cssChangesManager.isModifiableStyleSheet, exception: " + exc + ".\n");}
     //This is stupid! Improve it...
-    if (styleNSFile && (styleNSFile.leafName == "my.css"))
+    if (styleNSFile && (styleNSFile.leafName === "my.css"))
       return true;
-    if (aStyleSheet.ownerRule == null)
+    if (aStyleSheet.ownerRule === null)
       return true;  //is this better?
     return false;
   },
@@ -5578,10 +5578,10 @@ var cssChangesManagerBase =
     var impRule;
     for (var ii = aStyleSheet.cssRules.length - 1; ii >= 0 ; --ii)
     {
-      if (aStyleSheet.cssRules[ii].type == CSSRule.IMPORT_RULE)
+      if (aStyleSheet.cssRules[ii].type === CSSRule.IMPORT_RULE)
       {
         impRule = aStyleSheet.cssRules[ii];
-        if ( ("styleSheet" in impRule) && (impRule.styleSheet != null) )
+        if ( ("styleSheet" in impRule) && (impRule.styleSheet !== null) )
         {
           styleSheetArray.push(impRule.styleSheet);
           styleSheetArray = styleSheetArray.concat(this.getIncludedStyleSheets(impRule.styleSheet));
@@ -5609,7 +5609,7 @@ function findCSSChangeManager(aDocument)
 {
   for (var ix = 0; ix < cssEditingManagers.length; ++ix)
   {
-    if (cssEditingManagers[ix].m_document == aDocument)
+    if (cssEditingManagers[ix].m_document === aDocument)
     return cssEditingManagers[ix];
   }
   return null;
@@ -5645,7 +5645,7 @@ var cssRuleSetBase =
     {
       return;
     }
-    if (this.m_cssRule.type != CSSRule.STYLE_RULE)
+    if (this.m_cssRule.type !== CSSRule.STYLE_RULE)
     {
       dump("cssRuleSetBase.initObj() called with a CSSRule of a type other than STYLE_RULE. Aborting...\n");
       return;
@@ -5663,7 +5663,7 @@ function cssRuleSetObj(aRuleSet)
 
 function cssRuleSetToRuleSetObj(aRuleSet)
 {
-  if (aRuleSet.type != CSSRule.STYLE_RULE)
+  if (aRuleSet.type !== CSSRule.STYLE_RULE)
     return null;
   return new cssRuleSetObj(aRuleSet);
 }
@@ -5689,12 +5689,12 @@ function parseCSSSelectorString(selString)
     }
     else if (bInSingleQuotes)
     {
-      bInSingleQuotes = (selectorPieces[jx] != "'");
+      bInSingleQuotes = (selectorPieces[jx] !== "'");
       currSelector += selectorPieces[jx];
     }
     else if (bInDoubleQuotes)
     {
-      bInDoubleQuotes = selectorPieces[jx] != "\"";
+      bInDoubleQuotes = selectorPieces[jx] !== "\"";
       currSelector += selectorPieces[jx];
     }
     else
@@ -5762,12 +5762,12 @@ var cssSelectorObjBase =
       }
       else if (bInSingleQuotes)
       {
-        bInSingleQuotes = (selectorPieces[jx] != "'");
+        bInSingleQuotes = (selectorPieces[jx] !== "'");
         currSimpleSelector += selectorPieces[jx];
       }
       else if (bInDoubleQuotes)
       {
-        bInDoubleQuotes = selectorPieces[jx] != "\"";
+        bInDoubleQuotes = selectorPieces[jx] !== "\"";
         currSimpleSelector += selectorPieces[jx];
       }
       else
@@ -5837,7 +5837,7 @@ var cssSelectorObjBase =
       {
         return false;  //except for when?
       }
-    if ( otherSelectorObj.m_separators[jj] && (!this.m_separators[matchIndex] || (this.m_separators[matchIndex] != otherSelectorObj.m_separators[jj])) )
+    if ( otherSelectorObj.m_separators[jj] && (!this.m_separators[matchIndex] || (this.m_separators[matchIndex] !== otherSelectorObj.m_separators[jj])) )
       return false;
     if (this.m_separators[matchIndex] && !otherSelectorObj.m_separators[jj])
     return false;
@@ -5848,9 +5848,9 @@ var cssSelectorObjBase =
 
   matchesExact : function(otherSelectorObj)
   {
-    if (this.m_simpleSelectors.length != otherSelectorObj.m_simpleSelectors.length)
+    if (this.m_simpleSelectors.length !== otherSelectorObj.m_simpleSelectors.length)
       return false;
-    if (this.m_separators.length != otherSelectorObj.m_separators.length)
+    if (this.m_separators.length !== otherSelectorObj.m_separators.length)
       return false;
     for (var jj = 0; jj < otherSelectorObj.m_simpleSelectors.length; ++jj)
     {
@@ -5858,7 +5858,7 @@ var cssSelectorObjBase =
       {
         return false;  //except for when?
       }
-      if ( otherSelectorObj.m_separators[jj] && (!this.m_separators[jj] || (this.m_separators[jj] != otherSelectorObj.m_separators[jj])) )
+      if ( otherSelectorObj.m_separators[jj] && (!this.m_separators[jj] || (this.m_separators[jj] !== otherSelectorObj.m_separators[jj])) )
         return false;
       if (this.m_separators[jj] && !otherSelectorObj.m_separators[jj])
         return false;
@@ -5922,7 +5922,7 @@ var cssSimpleSelectorBase =
 
   storeAPiece : function(whichType, thePiece)
   {
-    if (thePiece.length == 0)
+    if (thePiece.length === 0)
       return;
     switch(whichType)
     {
@@ -5965,12 +5965,12 @@ var cssSimpleSelectorBase =
       }
       else if (bInSingleQuotes)
       {
-        bInSingleQuotes = (selectorPieces[jx] != "'");
+        bInSingleQuotes = (selectorPieces[jx] !== "'");
         currSelectorPiece += selectorPieces[jx];
       }
       else if (bInDoubleQuotes)
       {
-        bInDoubleQuotes = selectorPieces[jx] != "\"";
+        bInDoubleQuotes = selectorPieces[jx] !== "\"";
         currSelectorPiece += selectorPieces[jx];
       }
       else
@@ -5994,14 +5994,14 @@ var cssSimpleSelectorBase =
             nextPart = this.pseudoClassSelector;
           break;
           case "[":
-            if ((inPart == this.elemSelector) && !currSelectorPiece.length)
+            if ((inPart === this.elemSelector) && !currSelectorPiece.length)
               currSelectorPiece = "*";  //this can be inferred for an id selector
             nextPart = this.attrSelector;
             bFinished = true;
           break;
           //From here down they all fall through if the condition isn't met and just append to the currSelectorPiece
           case "]":
-            if (inPart == this.attrSelector)
+            if (inPart === this.attrSelector)
             {
               nextPart = this.noSelector;
               bFinished = true;
@@ -6009,7 +6009,7 @@ var cssSimpleSelectorBase =
             }
           break;
           case ".":
-            if (inPart == this.elemSelector)
+            if (inPart === this.elemSelector)
             {
               if (!currSelectorPiece.length)
                 currSelectorPiece = "*";  //this can be inferred for an id selector
@@ -6018,7 +6018,7 @@ var cssSimpleSelectorBase =
               break;
             }
           case "|":
-            if (inPart == this.elemSelector)
+            if (inPart === this.elemSelector)
             {
               inPart = this.nsSelector;
               nextPart = this.elemSelector;
@@ -6027,7 +6027,7 @@ var cssSimpleSelectorBase =
             }
 //          break;
           case "#":
-            if (inPart == this.elemSelector)
+            if (inPart === this.elemSelector)
             {
               if (!currSelectorPiece.length)
                 currSelectorPiece = "*";  //this can be inferred for an id selector
@@ -6044,7 +6044,7 @@ var cssSimpleSelectorBase =
       }
       if (bFinished)
       {
-        if ((inPart == this.elemSelector) && !currSelectorPiece.length)
+        if ((inPart === this.elemSelector) && !currSelectorPiece.length)
           currSelectorPiece = "*";
         this.storeAPiece(inPart, currSelectorPiece);
         currSelectorPiece = "";
@@ -6061,11 +6061,11 @@ var cssSimpleSelectorBase =
 
   matches : function(otherSimpleSelectorObj)
   {
-    if ( otherSimpleSelectorObj.m_nsSelector.length && (otherSimpleSelectorObj.m_nsSelector != *) && this.m_nsSelector.length && (this.m_nsSelector != otherSimpleSelectorObj.m_nsSelector) )
+    if ( otherSimpleSelectorObj.m_nsSelector.length && (otherSimpleSelectorObj.m_nsSelector !== "*") && this.m_nsSelector.length && (this.m_nsSelector !== otherSimpleSelectorObj.m_nsSelector) )
       return false;
-    if ( (otherSimpleSelectorObj.m_elemSelector != "*") && (otherSimpleSelectorObj.m_elemSelector != this.m_elemSelector) )
+    if ( (otherSimpleSelectorObj.m_elemSelector !== "*") && (otherSimpleSelectorObj.m_elemSelector !== this.m_elemSelector) )
       return false;
-    if (otherSimpleSelectorObj.m_idSelector && (!this.m_idSelector || (this.m_idSelector != otherSimpleSelectorObj.m_idSelector)) )
+    if (otherSimpleSelectorObj.m_idSelector && (!this.m_idSelector || (this.m_idSelector !== otherSimpleSelectorObj.m_idSelector)) )
       return false;
     var ii, bFound;
     for (ii = 0; ii < otherSimpleSelectorObj.m_classSelectors.length; ++ii)
@@ -6079,9 +6079,9 @@ var cssSimpleSelectorBase =
       bFound = false;
       for (var jj = 0; !bFound && (jj < this.m_attrSelectors.length); ++jj)
       {
-        if (this.m_attrSelectors[jj].attrName == attribName)
+        if (this.m_attrSelectors[jj].attrName === attribName)
         {
-          if (!otherSimpleSelectorObj.m_attrSelectors[ii].attrValue || (otherSimpleSelectorObj.m_attrSelectors[ii].attrValue == this.m_attrSelectors[jj].attrValue))
+          if (!otherSimpleSelectorObj.m_attrSelectors[ii].attrValue || (otherSimpleSelectorObj.m_attrSelectors[ii].attrValue === this.m_attrSelectors[jj].attrValue))
             bFound = true;
         }
       }
@@ -6098,34 +6098,34 @@ var cssSimpleSelectorBase =
 
   matchesExact : function(otherSimpleSelectorObj)
   {
-    if (this.m_nsSelector != otherSimpleSelectorObj.m_nsSelector)
+    if (this.m_nsSelector !== otherSimpleSelectorObj.m_nsSelector)
     {
-      if (this.m_nsSelector.length && (this.m_nsSelector != "*"))
+      if (this.m_nsSelector.length && (this.m_nsSelector !== "*"))
         return false;
-      if (otherSimpleSelectorObj.m_nsSelector.length && (otherSimpleSelectorObj.m_nsSelector != "*"))
+      if (otherSimpleSelectorObj.m_nsSelector.length && (otherSimpleSelectorObj.m_nsSelector !== "*"))
         return false;
     }
-    if (this.m_elemSelector != otherSimpleSelectorObj.m_elemSelector)
+    if (this.m_elemSelector !== otherSimpleSelectorObj.m_elemSelector)
     {
-      if (this.m_elemSelector.length && (this.m_elemSelector != "*"))
+      if (this.m_elemSelector.length && (this.m_elemSelector !== "*"))
         return false;
-      if (otherSimpleSelectorObj.m_elemSelector.length && (otherSimpleSelectorObj.m_elemSelector != "*"))
+      if (otherSimpleSelectorObj.m_elemSelector.length && (otherSimpleSelectorObj.m_elemSelector !== "*"))
         return false;
     }
-    if (this.m_idSelector != otherSimpleSelectorObj.m_idSelector)
+    if (this.m_idSelector !== otherSimpleSelectorObj.m_idSelector)
     {
       if (this.m_idSelector.length || otherSimpleSelectorObj.m_idSelector.length)
         return false;
     }
     var ii, bFound;
-    if (this.m_classSelectors.length != otherSimpleSelectorObj.m_classSelectors.length)
+    if (this.m_classSelectors.length !== otherSimpleSelectorObj.m_classSelectors.length)
       return false;
     for (ii = 0; ii < otherSimpleSelectorObj.m_classSelectors.length; ++ii)
     {
       if (this.m_classSelectors.indexOf( otherSimpleSelectorObj.m_classSelectors[ii] ) < 0)
         return false;
     }
-    if (this.m_attrSelectors.length != otherSimpleSelectorObj.m_attrSelectors.length)
+    if (this.m_attrSelectors.length !== otherSimpleSelectorObj.m_attrSelectors.length)
       return false;
     for (ii = 0; ii < otherSimpleSelectorObj.m_attrSelectors.length; ++ii)
     {
@@ -6133,18 +6133,18 @@ var cssSimpleSelectorBase =
       bFound = false;
       for (var jj = 0; !bFound && (jj < this.m_attrSelectors.length); ++jj)
       {
-        if (this.m_attrSelectors[jj].attrName == attribName)
+        if (this.m_attrSelectors[jj].attrName === attribName)
         {
           if (!otherSimpleSelectorObj.m_attrSelectors[ii].attrValue && !otherSimpleSelectorObj.m_attrSelectors[ii].attrValue)
             bFound = true;
-          else if (otherSimpleSelectorObj.m_attrSelectors[ii].attrValue == this.m_attrSelectors[jj].attrValue)
+          else if (otherSimpleSelectorObj.m_attrSelectors[ii].attrValue === this.m_attrSelectors[jj].attrValue)
             bFound = true;
         }
       }
       if (!bFound)
         return false;
     }
-    if (this.m_pseudoClassSelectors.length != otherSimpleSelectorObj.m_pseudoClassSelectors.length)
+    if (this.m_pseudoClassSelectors.length !== otherSimpleSelectorObj.m_pseudoClassSelectors.length)
       return false;
     for (ii = 0; ii < otherSimpleSelectorObj.m_pseudoClassSelectors.length; ++ii)
     {
@@ -6181,29 +6181,29 @@ cssSimpleSelectorObj.prototype = cssSimpleSelectorBase;
 // Thus showing everything results in ViewSettings = "0".
 function msiViewSettings(viewFlags)
 {
-  this.showInvisibles = ((viewFlags & this.hideInvisiblesFlag) == 0);
-  this.showHelperLines = ((viewFlags & this.hideHelperLinesFlag) == 0);
-  this.showInputBoxes = ((viewFlags & this.hideInputBoxesFlag) == 0);
-  this.showMarkers = ((viewFlags & this.hidemarkersFlag) == 0);
-  this.showFootnotes = ((viewFlags & this.hideFootnotesFlag) == 0);
-  this.showOtherNotes = ((viewFlags & this.hideOtherNotesFlag) == 0);
-  this.showIndexEntries = ((viewFlags & this.hideindexentriesFlag) == 0);
+  this.showInvisibles = ((viewFlags & this.hideInvisiblesFlag) === 0);
+  this.showHelperLines = ((viewFlags & this.hideHelperLinesFlag) === 0);
+  this.showInputBoxes = ((viewFlags & this.hideInputBoxesFlag) === 0);
+  this.showMarkers = ((viewFlags & this.hidemarkersFlag) === 0);
+  this.showFootnotes = ((viewFlags & this.hideFootnotesFlag) === 0);
+  this.showOtherNotes = ((viewFlags & this.hideOtherNotesFlag) === 0);
+  this.showIndexEntries = ((viewFlags & this.hideindexentriesFlag) === 0);
 
   this.match = function(otherSettings)
   {
-    if (this.showInvisibles != otherSettings.showInvisibles)
+    if (this.showInvisibles !== otherSettings.showInvisibles)
       return false;
-    if (this.showHelperLines != otherSettings.showHelperLines)
+    if (this.showHelperLines !== otherSettings.showHelperLines)
       return false;
-    if (this.showInputBoxes != otherSettings.showInputBoxes)
+    if (this.showInputBoxes !== otherSettings.showInputBoxes)
       return false;
-    if (this.showMarkers != otherSettings.showMarkers)
+    if (this.showMarkers !== otherSettings.showMarkers)
       return false;
-    if (this.showMFootnotes != otherSettings.showFootnotes)
+    if (this.showMFootnotes !== otherSettings.showFootnotes)
       return false;
-    if (this.showOtherNotess != otherSettings.showOtherNotes)
+    if (this.showOtherNotess !== otherSettings.showOtherNotes)
       return false;
-    if (this.showIndexEntries != otherSettings.showIndexEntries)
+    if (this.showIndexEntries !== otherSettings.showIndexEntries)
       return false;
     return true;
   };
@@ -6246,7 +6246,7 @@ msiViewSettings.prototype = msiViewSettingsBase;
 function msiGetCurrViewSettings(editorElement)
 {
   var viewSettings = null;
-  if (("viewSettings" in editorElement) && (editorElement.viewSettings != null))
+  if (("viewSettings" in editorElement) && (editorElement.viewSettings !== null))
     viewSettings = editorElement.viewSettings;
   else
     viewSettings = getViewSettingsFromViewMenu();
@@ -6257,7 +6257,7 @@ function msiGetCurrViewSettings(editorElement)
 function msiGetCurrNoteViewSettings(editorElement)
 {
   var viewSettings = null;
-  if (("noteViewSettings" in editorElement) && (editorElement.noteViewSettings != null))
+  if (("noteViewSettings" in editorElement) && (editorElement.noteViewSettings !== null))
     viewSettings = editorElement.noteViewSettings;
   else if (PrefHasValue("noteViewSettings"))
     viewSettings = new msiViewSettings( GetIntPref("noteViewSettings") );
@@ -6281,18 +6281,18 @@ function msiGetCurrViewPerCent(editorElement)
 //  the bits.
 function msiPrintOptions(printFlags)
 {
-  this.useCurrViewSettings = (printFlags & msiDocumentInfoBase.printUseViewSettingsFlag) != 0;
-  this.printInvisibles = (printFlags & msiDocumentInfoBase.printShowInvisiblesFlag) != 0;    
-  this.printHelperLines = (printFlags & msiDocumentInfoBase.printShowMatrixLinesFlag) != 0;
-  this.printInputBoxes = (printFlags & msiDocumentInfoBase.printShowInputBoxesFlag) != 0;
-  this.printMarkers = (printFlags & msiDocumentInfoBase.printShowIndexFieldsFlag) != 0;
-  this.printIndexEntries = (printFlags & msiDocumentInfoBase.printShowMarkerFieldsFlag) != 0;
-  this.allTextInBlack = (printFlags & msiDocumentInfoBase.printBlackTextFlag) != 0;
-  this.allLinesInBlack = (printFlags & msiDocumentInfoBase.printBlackLinesFlag) != 0;
-  this.backgroundsTransparent = (printFlags & msiDocumentInfoBase.printTransparentBackgroundFlag) != 0;
-  this.grayButtonsTransparent = (printFlags & msiDocumentInfoBase.printTransparentGrayButtonsFlag) != 0;
-  this.suppressGrayBoxes = (printFlags & msiDocumentInfoBase.printSuppressGrayButtonsFlag) != 0;
-  this.useCurrViewZoom = (printFlags & msiDocumentInfoBase.printUseViewSettingZoomFlag) != 0;
+  this.useCurrViewSettings = (printFlags & msiDocumentInfoBase.printUseViewSettingsFlag) !== 0;
+  this.printInvisibles = (printFlags & msiDocumentInfoBase.printShowInvisiblesFlag) !== 0;    
+  this.printHelperLines = (printFlags & msiDocumentInfoBase.printShowMatrixLinesFlag) !== 0;
+  this.printInputBoxes = (printFlags & msiDocumentInfoBase.printShowInputBoxesFlag) !== 0;
+  this.printMarkers = (printFlags & msiDocumentInfoBase.printShowIndexFieldsFlag) !== 0;
+  this.printIndexEntries = (printFlags & msiDocumentInfoBase.printShowMarkerFieldsFlag) !== 0;
+  this.allTextInBlack = (printFlags & msiDocumentInfoBase.printBlackTextFlag) !== 0;
+  this.allLinesInBlack = (printFlags & msiDocumentInfoBase.printBlackLinesFlag) !== 0;
+  this.backgroundsTransparent = (printFlags & msiDocumentInfoBase.printTransparentBackgroundFlag) !== 0;
+  this.grayButtonsTransparent = (printFlags & msiDocumentInfoBase.printTransparentGrayButtonsFlag) !== 0;
+  this.suppressGrayBoxes = (printFlags & msiDocumentInfoBase.printSuppressGrayButtonsFlag) !== 0;
+  this.useCurrViewZoom = (printFlags & msiDocumentInfoBase.printUseViewSettingZoomFlag) !== 0;
 
   this.reflectViewSettings = function(editorElement)
   {
@@ -6338,29 +6338,29 @@ function msiPrintOptions(printFlags)
   };
   this.match = function(otherOptions)
   {
-    if (this.useCurrViewSettings != otherOptions.useCurrViewSettings)
+    if (this.useCurrViewSettings !== otherOptions.useCurrViewSettings)
       return false;
-    if (this.printInvisibles != otherOptions.printInvisibles)
+    if (this.printInvisibles !== otherOptions.printInvisibles)
       return false;
-    if (this.printHelperLines != otherOptions.printHelperLines)
+    if (this.printHelperLines !== otherOptions.printHelperLines)
       return false;
-    if (this.printInputBoxes != otherOptions.printInputBoxes)
+    if (this.printInputBoxes !== otherOptions.printInputBoxes)
       return false;
-    if (this.printMarkers != otherOptions.printMarkers)
+    if (this.printMarkers !== otherOptions.printMarkers)
       return false;
-    if (this.printIndexEntries != otherOptions.printIndexEntries)
+    if (this.printIndexEntries !== otherOptions.printIndexEntries)
       return false;
-    if (this.allTextInBlack != otherOptions.allTextInBlack)
+    if (this.allTextInBlack !== otherOptions.allTextInBlack)
       return false;
-    if (this.allLinesInBlack != otherOptions.allLinesInBlack)
+    if (this.allLinesInBlack !== otherOptions.allLinesInBlack)
       return false;
-    if (this.backgroundsTransparent != otherOptions.backgroundsTransparent)
+    if (this.backgroundsTransparent !== otherOptions.backgroundsTransparent)
       return false;
-    if (this.grayButtonsTransparent != otherOptions.grayButtonsTransparent)
+    if (this.grayButtonsTransparent !== otherOptions.grayButtonsTransparent)
       return false;
-    if (this.suppressGrayBoxes != otherOptions.suppressGrayBoxes)
+    if (this.suppressGrayBoxes !== otherOptions.suppressGrayBoxes)
       return false;
-    if (this.useCurrViewZoom != otherOptions.useCurrViewZoom)
+    if (this.useCurrViewZoom !== otherOptions.useCurrViewZoom)
       return false;
 
     return true;
@@ -6395,14 +6395,14 @@ var msiUnitsListBase =
 
   defaultUnit : function()
   {
-    if ((this.mUnitfactors == null) || ("mm" in this.mUnitFactors))
+    if ((this.mUnitfactors === null) || ("mm" in this.mUnitFactors))
       return "mm";
     return this.mUnitFactors[0];
   },
 
   convertUnits : function(invalue, inunit, outunit)
   {
-    if (inunit == outunit) return invalue;
+    if (inunit === outunit) return invalue;
     if (!(inunit in this.mUnitFactors) || !(outunit in this.mUnitFactors))
     {
       var dumpStr = "Bad units in msiUnitsList.convertUnits;";
@@ -6459,7 +6459,7 @@ var msiUnitsListBase =
   getNumberAndUnitFromString : function(valueStr)
   {
     var matchArray = this.getParsingRegExp().exec(valueStr);
-    if (matchArray != null)
+    if (matchArray !== null)
     {
       var retVal = new Object();
       retVal.number = Number(matchArray[1]);
@@ -6473,7 +6473,7 @@ var msiUnitsListBase =
   stringValue : function(aValue, aUnit, outUnit, outPrecision)
   {
     var outValue = aValue;
-    if (outUnit && (outUnit != aUnit))
+    if (outUnit && (outUnit !== aUnit))
       outValue = this.convertUnits(aValue, aUnit, outUnit);
     return (Number(outValue).toPrecision(outPrecision) + outUnit);
   },
@@ -6482,7 +6482,7 @@ var msiUnitsListBase =
   {
     var firstValue = this.getNumberAndUnitFromString(value1);
     var secondValue = this.getNumberAndUnitFromString(value2);
-    if ((first == null) || (second == null))
+    if ((first === null) || (second === null))
     {
       dump("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");
       return Number.NaN;
@@ -6501,7 +6501,7 @@ var msiUnitsListBase =
   {
     var firstValue = this.getNumberAndUnitFromString(value1);
     var secondValue = this.getNumberAndUnitFromString(value2);
-    if ((firstValue == null) || (secondValue == null))
+    if ((firstValue === null) || (secondValue === null))
     {
       dump("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");
       return "";
@@ -6518,7 +6518,7 @@ var msiUnitsListBase =
   {
     var firstValue = this.getNumberAndUnitFromString(value1);
     var secondValue = this.getNumberAndUnitFromString(value2);
-    if ((firstValue == null) || (secondValue == null))
+    if ((firstValue === null) || (secondValue === null))
     {
       dump("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");
       return "";
@@ -6536,7 +6536,7 @@ var msiUnitsListBase =
     if (stringVal && stringVal.length)
     {
       var theValue = this.getNumberAndUnitFromString(stringVal);
-      retVal = (theValue.number == 0);
+      retVal = (theValue.number === 0);
     }
     return retVal;
   }
@@ -6555,7 +6555,7 @@ msiUnitsList.prototype = msiUnitsListBase;
 var msiCSSUnitConversions =
 {
   pt: .3514598,  //mm per pt
-  in: 25.4,  //mm per in
+  "in": 25.4,  //mm per in
   mm: 1, // mm per mm
   cm: 10 // mm per cm
 };
@@ -6606,7 +6606,7 @@ function msiGetNumberAndLengthUnitFromString (valueStr)
   var unitsStr = "pt|in|mm|cm|pc|em|ex|px";
   var ourRegExp = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
   var matchArray = ourRegExp.exec(valueStr);
-  if (matchArray != null)
+  if (matchArray !== null)
   {
     var retVal = new Object();
     retVal.number = Number(matchArray[1]);
@@ -6702,7 +6702,7 @@ var msiBaseMathNameList =
     if (!this.bInitialized)
       this.initialize();
     var theNode = this.namesDoc.getElementById(aName);
-    if (theNode != null)
+    if (theNode !== null)
       return this.copyDataToObject(theNode)
     return null;
   },
@@ -6718,12 +6718,12 @@ var msiBaseMathNameList =
     nameData.val = nameNode.getAttribute("id");
     nameData.type = nameNode.getAttribute("type");
     var theAppearanceList = nameNode.getElementsByTagName("appearance");
-    if (theAppearanceList != null && theAppearanceList.length > 0)
+    if (theAppearanceList !== null && theAppearanceList.length > 0)
       nameData.appearance = theAppearanceList[0].cloneNode(true);
-    nameData.builtIn = (nameNode.hasAttribute("builtIn") && nameNode.getAttribute("builtIn") == "true");
+    nameData.builtIn = (nameNode.hasAttribute("builtIn") && nameNode.getAttribute("builtIn") === "true");
     if (nameNode.hasAttribute("limitPlacement"))
       nameData.limitPlacement = nameNode.getAttribute("limitPlacement");
-    if ( (nameNode.hasAttribute("engineFunction")) && (nameNode.getAttribute("engineFunction") == "true") )
+    if ( (nameNode.hasAttribute("engineFunction")) && (nameNode.getAttribute("engineFunction") === "true") )
       nameData.enginefunction = true;
     if (this.nameHasAutoSubstitution(nameData.val))
       nameData.autoSubstitute = true;
@@ -6733,10 +6733,10 @@ var msiBaseMathNameList =
   deleteName : function(aName)
   {
     var nameNode = this.namesDoc.getElementById(aName);
-    if (nameNode != null)
+    if (nameNode !== null)
     {
       var isBuiltIn = nameNode.getAttribute("builtIn");
-      if ((!isBuiltIn) || (isBuiltIn != "true"))
+      if ((!isBuiltIn) || (isBuiltIn !== "true"))
       {
         if (this.nameHasAutoSubstitution(aName))
           this.removeAutoSubstitution(aName);
@@ -6755,10 +6755,10 @@ var msiBaseMathNameList =
   addName : function(aName, aNameData)
   {
     var nameNode = this.namesDoc.getElementById(aName);
-    if (nameNode != null)
+    if (nameNode !== null)
     {
       var isBuiltIn = nameNode.getAttribute("builtIn");
-      if (isBuiltIn && (isBuiltIn == "true"))
+      if (isBuiltIn && (isBuiltIn === "true"))
         return false;
       nameNode.parentNode.removeChild(nameNode);
     }
@@ -6772,7 +6772,7 @@ var msiBaseMathNameList =
       newNode.appendChild(newAppearance);
     }
     var newData = null;
-    if (("nameData" in aNameData) && (aNameData.nameData != null) && ("nodeType" in aNameData.nameData))
+    if (("nameData" in aNameData) && (aNameData.nameData !== null) && ("nodeType" in aNameData.nameData))
     {
       newData = aNameData.nameData.cloneNode(true);
       newNode.appendChild(newData);
@@ -6785,7 +6785,7 @@ var msiBaseMathNameList =
     var ACSA = msiSearchStringManager.setACSAImpGetService();
     ACSA.addString("mathnames", aName);
     ACSA.sortArrays();
-    if (aNameData.autoSubstitute == true)
+    if (aNameData.autoSubstitute === true)
       this.addAutoSubstitution(aName);
     this.bModified = true;
     return true;
@@ -6804,10 +6804,10 @@ var msiBaseMathNameList =
     for (var ix = aName.length - 1; ix >= 0; --ix)
     {
       result = autosub.nextChar(true,aName.charAt(ix));
-      if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
+      if (result === Components.interfaces.msiIAutosub.STATE_FAIL)
         return false;
     }
-    return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
+    return (result === Components.interfaces.msiIAutosub.STATE_SUCCESS);
   },
 
   addAutoSubstitution : function(aName)
@@ -6833,7 +6833,7 @@ var msiBaseMathNameList =
   updateFile : function()
   {
     dump("msiBaseMathNameList.updateFile being called; this.bModified is " + (this.bModified ? "true" : "false") + ".\n");
-    if (this.bModified && (this.namesDoc != null))
+    if (this.bModified && (this.namesDoc !== null))
     {
       var theFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
       theFile.initWithPath(this.sourceFile);
@@ -6867,11 +6867,11 @@ function msiMathNameList()
 //    {
 //      try
 //      {
-//        if (("bDeleted" in this.names[aName]) && (this.names[aName].bDeleted == true))
+//        if (("bDeleted" in this.names[aName]) && (this.names[aName].bDeleted === true))
 //          msiBaseMathNameList.deleteName(aName);
-//        else if (("added" in this.names[aName]) && (this.names[aName].added == true))
+//        else if (("added" in this.names[aName]) && (this.names[aName].added === true))
 //          msiBaseMathNameList.addName(aName, this.names[aName]);
-//        else if (("changed" in this.names[aName]) && (this.names[aName].changed == true))
+//        else if (("changed" in this.names[aName]) && (this.names[aName].changed === true))
 //          msiBaseMathNameList.updateName(aName, this.names[aName]);
 //      } catch(exc) {dump("Problem checking properties for member [" + aName + "] of msiMathNameList.names: [" + exc + "].\n");}
 //    }
@@ -6879,33 +6879,33 @@ function msiMathNameList()
   };
   this.canDelete = function(aName)
   {
-    if ((aName in this.names) && (this.names[aName] != null) && (!this.names[aName].builtIn))
+    if ((aName in this.names) && (this.names[aName] !== null) && (!this.names[aName].builtIn))
     {
-//      return !("bDeleted" in this.names[aName]) || (this.names[aName].bDeleted != true);
+//      return !("bDeleted" in this.names[aName]) || (this.names[aName].bDeleted !== true);
       return true;
     }
     return false;
   };
   this.canAdd = function(aName)
   {
-    if ((aName in this.names) && (this.names[aName] != null))
+    if ((aName in this.names) && (this.names[aName] !== null))
     {
-      return (!this.names[aName].builtIn) && ("bDeleted" in this.names[aName]) && (this.names[aName].bDeleted == true);
+      return (!this.names[aName].builtIn) && ("bDeleted" in this.names[aName]) && (this.names[aName].bDeleted === true);
 //      return (!this.names[aName].builtIn);
     }
     return true;
   };
   this.hasAutoSubstitution = function(aName)
   {
-    if ((aName in this.names) && ("autoSubstitute" in this.names[aName]) && (this.names[aName].autoSubstitute == true))
+    if ((aName in this.names) && ("autoSubstitute" in this.names[aName]) && (this.names[aName].autoSubstitute === true))
       return true;
     return false;
   };
   this.isBuiltIn = function(aName)
   {
-    if ((aName in this.names) && (this.names[aName] != null))
+    if ((aName in this.names) && (this.names[aName] !== null))
     {
-      if (this.names[aName].builtIn == true)
+      if (this.names[aName].builtIn === true)
         return true;
     }
     return false;
@@ -6916,10 +6916,10 @@ function msiMathNameList()
     nameData.val = aName;
     nameData.type = aType;
 //    nameData.added = true;
-    if (appearanceList != null && !this.appearanceIsUsual(appearanceList, aName, aType, aLimitPlacement))
+    if (appearanceList !== null && !this.appearanceIsUsual(appearanceList, aName, aType, aLimitPlacement))
       nameData.appearance = appearanceList;
     nameData.builtIn = false;
-    if ((aType == "operator") && (aLimitPlacement != null) && (aLimitPlacement.length > 0) && (aLimitPlacement != "auto"))
+    if ((aType === "operator") && (aLimitPlacement !== null) && (aLimitPlacement.length > 0) && (aLimitPlacement !== "auto"))
       nameData.limitPlacement = aLimitPlacement;
     nameData.enginefunction = bEngineFunction;
     nameData.autoSubstitute = bAutoSubstitute;
@@ -7033,7 +7033,7 @@ var msiBaseMathUnitsList =
     if (!this.bInitialized)
       this.initialize();
     var theNode = this.namesDoc.getElementById(aName);
-    if (theNode != null)
+    if (theNode !== null)
       return this.copyDataToObject(theNode);
     return null;
   },
@@ -7050,18 +7050,18 @@ var msiBaseMathUnitsList =
     nameData.name = nameNode.getAttribute("name");
     nameData.data = this.getUnitStrFromNode(nameNode);
     nameData.type = nameNode.getAttribute("type");
-    nameData.builtIn = (nameNode.hasAttribute("builtIn") && nameNode.getAttribute("builtIn") == "true");
+    nameData.builtIn = (nameNode.hasAttribute("builtIn") && nameNode.getAttribute("builtIn") === "true");
     var theConversionList = nameNode.getElementsByTagName("conversion");
-    if (theConversionList != null && theConversionList.length > 0)
+    if (theConversionList !== null && theConversionList.length > 0)
       nameData.conversion = theConversionList[0].cloneNode(true);
     var appearanceList = nameNode.getElementsByTagName("appearance");
-    if (appearanceList != null && appearanceList.length > 0 && appearanceList[0].childNodes.length > 0)
+    if (appearanceList !== null && appearanceList.length > 0 && appearanceList[0].childNodes.length > 0)
     {
       nameData.appearance = appearanceList[0].cloneNode(true);
-      if (appearanceList[0].namespaceURI != null && appearanceList[0].namespaceURI.length > 0)
+      if (appearanceList[0].namespaceURI !== null && appearanceList[0].namespaceURI.length > 0)
         dump("In msiBaseMathUnitsList.copyDataToObject, cloning node with namespace [" + appearanceList[0].namespaceURI + "], got one with namespace [" + nameData.appearance.namespaceURI + "].\n");
     }
-    if (theConversionList != null && theConversionList.length > 0)
+    if (theConversionList !== null && theConversionList.length > 0)
       nameData.conversion = theConversionList[0].cloneNode(true);
     if (this.nameHasAutoSubstitution(nameData.id))
       nameData.autoSubstitute = true;
@@ -7071,7 +7071,7 @@ var msiBaseMathUnitsList =
   getUnitStrFromNode : function(nameNode)
   {
     var theDataList = nameNode.getElementsByTagName("data");
-    if (theDataList != null && theDataList.length > 0)
+    if (theDataList !== null && theDataList.length > 0)
       return theDataList.item(0).textContent;
     return '';
   },
@@ -7079,10 +7079,10 @@ var msiBaseMathUnitsList =
   deleteName : function(aName)
   {
     var nameNode = this.namesDoc.getElementById(aName);
-    if (nameNode != null)
+    if (nameNode !== null)
     {
       var isBuiltIn = nameNode.getAttribute("builtIn");
-      if ((!isBuiltIn) || (isBuiltIn != "true"))
+      if ((!isBuiltIn) || (isBuiltIn !== "true"))
       {
         var unitStr = this.getUnitStrFromNode(nameNode);
         if (this.nameHasAutoSubstitution(unitStr))
@@ -7101,10 +7101,10 @@ var msiBaseMathUnitsList =
   addName : function(aName, aNameData)
   {
     var nameNode = this.namesDoc.getElementById(aName);
-    if (nameNode != null)
+    if (nameNode !== null)
     {
       var isBuiltIn = nameNode.getAttribute("builtIn");
-      if (isBuiltIn && (isBuiltIn == "true"))
+      if (isBuiltIn && (isBuiltIn === "true"))
         return false;
       nameNode.parentNode.removeChild(nameNode);
     }
@@ -7117,7 +7117,7 @@ var msiBaseMathUnitsList =
       var newConversion = aNameData.conversion.cloneNode(true);
       newNode.appendChild(newConversion);
     }
-    if (("data" in aNameData) && (aNameData.data != null) && (aNameData.data.length > 0))
+    if (("data" in aNameData) && (aNameData.data !== null) && (aNameData.data.length > 0))
     {
       var newData = this.namesDoc.createElement("data");
       newData.appendChild(this.namesDoc.createTextNode(aNameData.data));
@@ -7133,7 +7133,7 @@ var msiBaseMathUnitsList =
 //    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
 //    ACSA.addString("unitnames", aName);
 //    ACSA.sortArrays();
-    if (aNameData.autoSubstitute == true)
+    if (aNameData.autoSubstitute === true)
       this.addAutoSubstitution(aNameData.id);
     this.bModified = true;
     return true;
@@ -7158,10 +7158,10 @@ var msiBaseMathUnitsList =
     for (var ix = unitStr.length - 1; ix >= 0; --ix)
     { 
       result = autosub.nextChar(true, unitStr.charAt(ix));
-      if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
+      if (result === Components.interfaces.msiIAutosub.STATE_FAIL)
         return false;
     }
-    return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
+    return (result === Components.interfaces.msiIAutosub.STATE_SUCCESS);
   },
 
   addAutoSubstitution : function(unitStr)
@@ -7186,7 +7186,7 @@ var msiBaseMathUnitsList =
   updateFile : function()
   {
     dump("msiBaseMathUnitsList.updateFile being called; this.bModified is " + (this.bModified ? "true" : "false") + ".\n");
-    if (this.bModified && (this.namesDoc != null))
+    if (this.bModified && (this.namesDoc !== null))
     {
       var theFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
       theFile.initWithPath(this.sourceFile);
@@ -7236,7 +7236,7 @@ function msiMathUnitsList()
 //  };
   this.canDelete = function(aName)
   {
-    if ((aName in this.names) && (this.names[aName] != null) && (!this.names[aName].builtIn))
+    if ((aName in this.names) && (this.names[aName] !== null) && (!this.names[aName].builtIn))
     {
       return true;
     }
@@ -7244,7 +7244,7 @@ function msiMathUnitsList()
   };
   this.canAdd = function(aName)
   {
-    if ((aName in this.names) && (this.names[aName] != null))
+    if ((aName in this.names) && (this.names[aName] !== null))
     {
       return (!this.names[aName].builtIn);
     }
@@ -7254,29 +7254,29 @@ function msiMathUnitsList()
   {
     for (var aName in this.names)
     {
-      if (this.names[aName].data == unitStr)
+      if (this.names[aName].data === unitStr)
         return this.names[aName];
     }
     return null;
   };
   this.hasAutoSubstitution = function(aName)
   {
-    if ((aName in this.names) && ("autoSubstitute" in this.names[aName]) && (this.names[aName].autoSubstitute == true))
+    if ((aName in this.names) && ("autoSubstitute" in this.names[aName]) && (this.names[aName].autoSubstitute === true))
       return true;
     return false;
   };
   this.isBuiltIn = function(aName)
   {
-    if ((aName in this.names) && (this.names[aName] != null))
+    if ((aName in this.names) && (this.names[aName] !== null))
     {
-      if (this.names[aName].builtIn == true)
+      if (this.names[aName].builtIn === true)
         return true;
     }
     return false;
   };
   this.addToTypeList = function(aName, aType)
   {
-    if (!("typeList" in this) || (this.typeList == null))
+    if (!("typeList" in this) || (this.typeList === null))
       this.typeList = this.prepareTypeList();
     if (!(aType in this.typeList))
       this.typeList[aType] = new Array();
@@ -7286,14 +7286,14 @@ function msiMathUnitsList()
   {
     var nameData = new Object();
     nameData.id = aName;
-    if (aLongName == null || aLongName.length == 0)
+    if (aLongName === null || aLongName.length === 0)
       aLongName = aName;
     nameData.name = aLongName;
     nameData.type = aType;
     nameData.data = unitString;
-    if (appearanceNode != null)
+    if (appearanceNode !== null)
       nameData.appearance = appearanceNode.cloneNode(true);
-    if (conversionNode != null)
+    if (conversionNode !== null)
       nameData.conversion = conversionNode.cloneNode(true);
     nameData.builtIn = false;
     nameData.autoSubstitute = bAutoSubstitute;
@@ -7303,9 +7303,9 @@ function msiMathUnitsList()
   };
   this.removeFromTypeList = function(aName, aType)
   {
-    if (!("typeList" in this) || (this.typeList == null))
+    if (!("typeList" in this) || (this.typeList === null))
       return;
-    if (!(aType in this.typeList) || this.typeList[aType] == null)
+    if (!(aType in this.typeList) || this.typeList[aType] === null)
       return;
     var nIndex = this.typeList[aType].indexOf(aName);
     if (nIndex >= 0)
@@ -7359,7 +7359,7 @@ var msiAutosubstitutionList =
   initialize: function()
   {
     var subsDoc = this.loadDocument();
-    if (subsDoc == null)
+    if (subsDoc === null)
       return;
 
     this.mSubsList = new Object();
@@ -7379,7 +7379,7 @@ var msiAutosubstitutionList =
     else
       nameNodesList = subsDoc.getElementsByTagName("sub");
     dump("In autoSubstituteDialog.js, in createSubstitutionList(), subsDoc loaded, nameNodesList has length [" + nameNodesList.length + "].\n");
-    if (nameNodesList.length == 0)
+    if (nameNodesList.length === 0)
       AlertWithTitle("autoSubstituteDialog.js", "Empty nameNodesList returned.");
     var thePattern = "";
     var stringType = "";
@@ -7390,13 +7390,13 @@ var msiAutosubstitutionList =
     for (var ix = 0; ix < nameNodesList.length; ++ix)
     {
       thePattern = nameNodesList[ix].getElementsByTagName("pattern").item(0).textContent;
-      if (thePattern != null && thePattern.length > 0)
+      if (thePattern !== null && thePattern.length > 0)
       {
         newObject = new Object();
         stringType = nameNodesList[ix].getAttribute("tp");
         newObject.mathContext = nameNodesList[ix].getAttribute("ctx");
         newObject.theData = nameNodesList[ix].getElementsByTagName("data").item(0).textContent;
-        if (stringType == "sc")
+        if (stringType === "sc")
         {
           newObject.theContext = "";
           newObject.theInfo = "";
@@ -7406,11 +7406,11 @@ var msiAutosubstitutionList =
           newObject.theContext = nameNodesList[ix].getElementsByTagName("context").item(0).textContent;
           newObject.theInfo = nameNodesList[ix].getElementsByTagName("info").item(0).textContent;
         }
-        if (stringType == "sc")
+        if (stringType === "sc")
         {
           newObject.type = "script";
         }
-        else if (stringType == "subst")
+        else if (stringType === "subst")
           newObject.type = "substitution";
         else
           newObject.type = "";
@@ -7601,7 +7601,7 @@ var msiSearchStringManager =
     if ( ("mString" in firstIdent) && ("mString" in secondIdent) )
       return (!firstIdent.mString.localeCompare(secondIdent.mString));
     else if ( ("mControl" in firstIdent) && ("mControl" in secondIdent) )
-      return firstIdent.mControl == secondIdent.mControl;
+      return firstIdent.mControl === secondIdent.mControl;
     return false;
   },
 
@@ -7623,7 +7623,7 @@ var msiSearchStringManager =
     {
       theString = baseString + String(++ix);
     }
-    if (ix == 1000)
+    if (ix === 1000)
     {
       dump("Problem adding record to msiSearchStringManager for document [" + theTitle + "]\n");
       return null;
@@ -7649,7 +7649,7 @@ var msiSearchStringManager =
     var retVal = null;
     for (var aRec in this.mDocumentArrays)
     {
-      if (this.mDocumentArrays[aRec].mDocument == aDocument)
+      if (this.mDocumentArrays[aRec].mDocument === aDocument)
       {
         retVal = this.mDocumentArrays[aRec];
         break;
@@ -7833,7 +7833,7 @@ var msiMarkerListPrototype =
 
 //  getMarkerList : function(aDocument)
 //  {
-//    if (this.mDocument != aDocument)
+//    if (this.mDocument !== aDocument)
 //      this.setForDocument(aDocument);
 //  },
 
@@ -7996,7 +7996,7 @@ function msiGetKeyListForDocument(aDocument, editor)
 {
 //  var parser = new DOMParser();
 //  var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
-//  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
+//  dump(dom.documentElement.nodeName === "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
 //  var processor = new XSLTProcessor();
 //  processor.importStylesheet(dom.documentElement);
 //  var newDoc;
@@ -8011,7 +8011,7 @@ function msiGetKeyListForDocument(aDocument, editor)
 //  var lastkey = "";
 //  for (i=keys.length-1; i >= 0; i--)
 //  {
-//    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
+//    if (keys[i] === "" || keys[i] === lastkey) keys.splice(i,1);
 //    else lastkey = keys[i];
 //  }  
 //  dump("Keys are : "+keys.join()+"\n");    
@@ -8044,7 +8044,7 @@ function msiGetItemListForDocumentFromXSLTemplate(aDocument, aTemplate, separato
 {
   var parser = new DOMParser();
   var dom = parser.parseFromString(aTemplate, "text/xml");
-  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
+  dump(dom.documentElement.nodeName === "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
   var processor = new XSLTProcessor();
   processor.importStylesheet(dom.documentElement);
   var newDoc;
@@ -8060,7 +8060,7 @@ function msiGetItemListForDocumentFromXSLTemplate(aDocument, aTemplate, separato
   var lastitem = "";
   for (i=items.length-1; i >= 0; i--)
   {
-    if (items[i] == "" || items[i] == lastitem) items.splice(i,1);
+    if (items[i] === "" || items[i] === lastitem) items.splice(i,1);
     else lastitem = items[i];
   }  
   dump("Keys are : "+items.join()+"\n");    
@@ -8249,7 +8249,7 @@ var msiTheoremListPrototype =
     var thmList = this.getTheoremList();
     for (var ix = 0; ix < thmList.theoremArray.length; ++ix)
     {
-      if (thmList.theoremArray[ix].tagName == aTag)
+      if (thmList.theoremArray[ix].tagName === aTag)
         return true;
     }
     return false;
@@ -8260,7 +8260,7 @@ var msiTheoremListPrototype =
     var thmList = this.getTheoremList();
     for (var ix = 0; ix < thmList.theoremArray.length; ++ix)
     {
-      if (thmList.theoremArray[ix].tagName == aTag)
+      if (thmList.theoremArray[ix].tagName === aTag)
         return thmList.theoremArray[ix];
     }
     return null;
@@ -8324,17 +8324,17 @@ var msiTheoremListPrototype =
       {
         envNodes.push(envNode);
       }
-      if ((envNode.getAttribute("name") == envtag))
+      if ((envNode.getAttribute("name") === envtag))
         theLabelStr = envNode.getAttribute("label");
     }
     if (!theLabelStr || !theLabelStr.length)
       theLabelStr = envtag.substr(0,1).toUpperCase() + envtag.substr(1);
-    if (oldNumbering == newNumbering) //the easy case - just change the style attribute for each def node
+    if (oldNumbering === newNumbering) //the easy case - just change the style attribute for each def node
     {
       for (ix = 0; ix < envNodes.length; ++ix)
       {
         envNodes[ix].setAttribute("theoremstyle", newStyle);
-        if (newStyle != "plain")
+        if (newStyle !== "plain")
           envNodes[ix].setAttribute("req", "amsthm");
       }
     }
@@ -8344,7 +8344,7 @@ var msiTheoremListPrototype =
       for (ix = envNodes.length - 1; ix >= 0; --ix) //Go in reverse so theParent will be the first parent when we're done (not that they should be different)
       {
         theParent = envNodes[ix].parentNode;
-        if (ix == 0)
+        if (ix === 0)
           insertBeforeNode = envNodes[ix].nextSibling;
         theParent.removeChild(envNodes[ix]);
       }
@@ -8355,7 +8355,7 @@ var msiTheoremListPrototype =
         newThmNode.setAttribute("theoremstyle", newStyle);
         newThmNode.setAttribute("counter", newNumbering);
         newThmNode.setAttribute("label", theLabelStr);
-        if ((newNumbering == "none") || (newStyle != "plain"))
+        if ((newNumbering === "none") || (newStyle !== "plain"))
           newThmNode.setAttribute("req", "amsthm");
         theParent.insertBefore(newThmNode, insertBeforeNode);
       }
@@ -8376,9 +8376,9 @@ var msiTheoremListPrototype =
     var labelContent = "'" + tagLabelStr + " '";
     var outerCounterStr = "section";
 
-    if (oldNumbering != newNumbering)
+    if (oldNumbering !== newNumbering)
     {
-      if (newNumbering != "none")
+      if (newNumbering !== "none")
       {
         if (outerCounterStr.length)
           labelContent += "counter(" + outerCounterStr + ") '.' counter(" + newNumbering + ") ' '";
@@ -8394,7 +8394,7 @@ var msiTheoremListPrototype =
     var labelFontWeightStr = "bold";
     var envFontStyleStr = "italic";
     var envFontWeightStr = "normal";
-    if (newStyle != oldStyle)
+    if (newStyle !== oldStyle)
     {
       switch(newStyle)
       {
@@ -8425,16 +8425,16 @@ var msiTheoremListPrototype =
   newTheoremNodeRepresentsTag : function(thmenvNode, thmTag)
   {
     var theName = thmenvNode.getAttribute("name");
-    if (theName == thmTag)
+    if (theName === thmTag)
       return true;
     var texName = thmenvNode.getAttribute("texname");
     if (!texName || !texName.length)
       texName = theName;
-    if (texName == thmTag)
+    if (texName === thmTag)
       return true;
-    if (texName == thmTag + "*")
+    if (texName === thmTag + "*")
       return true;
-    if (texName == thmTag + "+")
+    if (texName === thmTag + "+")
       return true;
     return false;
   },
@@ -8478,7 +8478,7 @@ function msiGetNewTheoremListFromDocument(aDocument)
   var xsltSheetForNewTheoremList = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' > <xsl:output method='xml' encoding='UTF-8'/> <xsl:template match='/'> <xsl:element name='resultBase'><xsl:apply-templates select='//*[name()=\"newtheorem\"]'/></xsl:element></xsl:template><xsl:template match='*' /><xsl:template match='*[name()=\"newtheorem\"]'><xsl:element name='newtheoremenv'><xsl:attribute name='tagname'><xsl:value-of select='@name'/></xsl:attribute><xsl:attribute name='numbering'><xsl:choose><xsl:when test='@counter'><xsl:value-of select='@counter'/></xsl:when><xsl:otherwise><xsl:value-of select='@name'/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='TeXTagName'><xsl:choose><xsl:when test='@texname'><xsl:value-of select='@texname'/></xsl:when><xsl:otherwise><xsl:value-of select='@name'/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='theoremStyle'><xsl:choose><xsl:when test='@theoremstyle'><xsl:value-of select='@theoremstyle'/></xsl:when><xsl:otherwise><xsl:text>plain</xsl:text></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='label'><xsl:value-of select='@label'/></xsl:attribute></xsl:element></xsl:template></xsl:stylesheet>";
   var parser = new DOMParser();
   var dom = parser.parseFromString(xsltSheetForNewTheoremList, "text/xml");
-  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
+  dump(dom.documentElement.nodeName === "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
   var processor = new XSLTProcessor();
   processor.importStylesheet(dom.documentElement);
   var newDoc;
@@ -8499,14 +8499,14 @@ function msiGetNewTheoremListFromDocument(aDocument)
     theNumbering = searchNode.getAttribute("numbering");
     if (!theNumbering || !theNumbering.length)
       theNumbering = theTagName;
-    if (theNumbering == theTagName)
+    if (theNumbering === theTagName)
       ++numberingTypeCount.self;
     else if (! (theNumbering in numberingTypeCount) )
       numberingTypeCount[theNumbering] = 1;
     else
       ++numberingTypeCount[theNumbering];
     theTeXName = searchNode.getAttribute("TeXTagName");
-    if (!theTeXName || !theTeXName.length || (theTeXName == theTagName))
+    if (!theTeXName || !theTeXName.length || (theTeXName === theTagName))
       isDefault = true;
     theThmStyle = searchNode.getAttribute("theoremStyle");
     if (!theThmStyle || !theThmStyle.length)
@@ -8582,7 +8582,7 @@ function getEquationArrayCells(displayNode)
   while (aNode = walker.nextNode())
   {
     typeAttr = aNode.getAttribute("type");
-    if (typeAttr && (typeAttr == "eqnarray"))
+    if (typeAttr && (typeAttr === "eqnarray"))
     {
       tableNode = aNode;
       break;
@@ -8611,20 +8611,20 @@ function checkNumberingOfParentEqn(anEqnNode)
     currNumAttr = dispNode.getAttribute("numbering");
     newNumAttr = currNumAttr;
     theCells = getEquationArrayCells(dispNode);
-    if (theCells != null)
+    if (theCells !== null)
     {
       newNumAttr = "none";
       for (ix = 0; ix < theCells.length; ++ix)
       {
         cellAttr = theCells[ix].getAttribute("numbering");
-        if (!cellAttr || !cellAttr.length || cellAttr != "none")
+        if (!cellAttr || !cellAttr.length || cellAttr !== "none")
         {
           newNumAttr = "eqns";
           break;
         }
       }
     }
-    if (newNumAttr && (!currNumAttr || newNumAttr != currNumAttr))
+    if (newNumAttr && (!currNumAttr || newNumAttr !== currNumAttr))
       dispNode.setAttribute("numbering", newNumAttr);
   }
 }
@@ -8660,7 +8660,7 @@ function checkLayoutOfParentEqn(anEqnNode)
       for (var jx = 0; jx < subnode.childNodes.length; ++jx)
       {
         var classAttr = subnode.childNodes[jx].getAttribute("class");
-        if ( (classAttr == "eqnnum") || (classAttr == "subeqnnum") || (classAttr == "eqnmarker") )
+        if ( (classAttr === "eqnnum") || (classAttr === "subeqnnum") || (classAttr === "eqnmarker") )
         {
           button = subnode.childNodes[jx];
           break;
@@ -8691,7 +8691,7 @@ function checkLayoutOfParentEqn(anEqnNode)
 function checkSubEqnContinuation(aChangedEqn)
 {
   var subContAttr = aChangedEqn.getAttribute("subEquationContinuation");
-  var bSubCont = (subContAttr != null) && (subContAttr == "true");
+  var bSubCont = (subContAttr !== null) && (subContAttr === "true");
   var bPrevSubCont, bNextSubCont;
   var bResetSubs = false;
   var prevEqn, nextEqn;
@@ -8699,7 +8699,7 @@ function checkSubEqnContinuation(aChangedEqn)
   var eqnlist = container.getElementsByTagName("msidisplay");
   for (var ix = 0; ix < eqnlist.length; ++ix)
   {
-    if (eqnlist[ix] == anEqnNode)
+    if (eqnlist[ix] === anEqnNode)
     {
       if (ix > 0)
         prevEqn = eqnlist[ix-1];
@@ -8712,7 +8712,7 @@ function checkSubEqnContinuation(aChangedEqn)
   if (bSubCont && prevEqn)
   {
     subContAttr = prevEqn.getAttribute("subEquationContinuation");
-    bPrevSubCont = (subContAttr != null) && (subContAttr == "true");
+    bPrevSubCont = (subContAttr !== null) && (subContAttr === "true");
     if (!bPrevSubCont)
       bResetSubs = true;
   }
@@ -8723,7 +8723,7 @@ function checkSubEqnContinuation(aChangedEqn)
   if (nextEqn)
   {
     subContAttr = nextEqn.getAttribute("subEquationContinuation");
-    bNextSubCont = (subContAttr != null) && (subContAttr == "true");
+    bNextSubCont = (subContAttr !== null) && (subContAttr === "true");
     if (bNextSubCont && !bSubCont)
       nextEqn.setAttribute("subEquationReset", "true");
     else
@@ -8753,7 +8753,7 @@ function checkForMultiRowInTable(aTable, editor)
     {
       case "table":
       case "mtable":
-        if (aNode != aTable)
+        if (aNode !== aTable)
           return NodeFilter.FILTER_REJECT;  //rejects whole subtree
       break;
       case "td":
@@ -8784,7 +8784,7 @@ function checkForMultiRowInTable(aTable, editor)
   {
     if (nextNode.hasAttribute("rowspan") && (Number(nextNode.getAttribute("rowspan")) > 1) )
       multiRowCells.push(nextNode);
-    else if (nextNode.hasAttribute("req") && (nextNode.getAttribute("req") == "multirow") )
+    else if (nextNode.hasAttribute("req") && (nextNode.getAttribute("req") === "multirow") )
       singleRowCells.push(nextNode);
   }
   if (!multiRowCells.length && !singleRowCells.length)
@@ -8826,14 +8826,14 @@ var msiNavigationUtils =
 
   doWhitespaceTest : function(node, testStrict)
   {
-    if (!testStrict && (node.nodeType != nsIDOMNode.TEXT_NODE))
+    if (!testStrict && (node.nodeType !== nsIDOMNode.TEXT_NODE))
     {
       switch(msiGetBaseNodeName(node))
       {
         case "mi":
         case "mo":
           var childNodes = this.getSignificantContents(node);
-          if (childNodes.length == 0)
+          if (childNodes.length === 0)
             return true;
           if (childNodes.length > 1)
             dump("In msiNavigationUtils.isIgnorableWhitespace, found too many children for node of type " + msiGetBaseNodeName(node) + ".\n");
@@ -8856,7 +8856,7 @@ var msiNavigationUtils =
 
   boundaryIsTransparent : function(node, editor, posAndDirection)  //This has to do with whether node's children at right or left are considered adjacent to following or preceding objects, not with cursor movement.
   {
-    if (node.nodeType == nsIDOMNode.TEXT_NODE)
+    if (node.nodeType === nsIDOMNode.TEXT_NODE)
       return true;
 
     if (this.isMathMLLeafNode(node))
@@ -8883,7 +8883,7 @@ var msiNavigationUtils =
       {
         if (this.isFence(node))
           return false;
-        if (node.parentNode != null)
+        if (node.parentNode !== null)
         {
           var parentName = msiGetBaseNodeName(node.parentNode);
 //          var posInParent = this.significantOffsetInParent(node);
@@ -8900,7 +8900,7 @@ var msiNavigationUtils =
             case "munder":
             case "mover":
             case "munderover":
-              return ( (posAndDirection == this.rightEndToLeft) || (posAndDirection == this.leftEndToRight) );
+              return ( (posAndDirection === this.rightEndToLeft) || (posAndDirection === this.leftEndToRight) );
 //              return false;
             break;
           }
@@ -8909,7 +8909,7 @@ var msiNavigationUtils =
       }
       break;
       case "math":
-        if (!node.hasAttribute("display") || (node.getAttribute("display") != "block") )
+        if (!node.hasAttribute("display") || (node.getAttribute("display") !== "block") )
           return true;
       break;
       default:
@@ -8920,9 +8920,9 @@ var msiNavigationUtils =
 
   positionIsAtStart : function(aNode, anOffset)
   {
-    if (anOffset == 0)
+    if (anOffset === 0)
       return true;
-    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+    if (aNode.nodeType === nsIDOMNode.TEXT_NODE)
       return this.isIgnorableWhitespace(aNode);
     else if (anOffset < aNode.childNodes.length)
     {
@@ -8931,7 +8931,7 @@ var msiNavigationUtils =
         if (!this.isIgnorableWhitespace(aNode.childNodes[ix - 1]))
           break;
       }
-      if (ix == 0)
+      if (ix === 0)
         return true;
     }
     return false;
@@ -8940,13 +8940,13 @@ var msiNavigationUtils =
   positionIsAtEnd : function(aNode, anOffset)
   {
     var nLength = 0;
-    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+    if (aNode.nodeType === nsIDOMNode.TEXT_NODE)
       nLength = aNode.data.length;
     else
       nLength = aNode.childNodes.length;
-    if (anOffset == nLength)
+    if (anOffset === nLength)
       return true;
-    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+    if (aNode.nodeType === nsIDOMNode.TEXT_NODE)
       return this.isIgnorableWhitespace(aNode);
     else if (anOffset < nLength)
     {
@@ -8955,7 +8955,7 @@ var msiNavigationUtils =
         if (!this.isIgnorableWhitespace(aNode.childNodes[ix]))
           break;
       }
-      if (ix == nLength)
+      if (ix === nLength)
         return true;
     }
     return false;
@@ -8966,7 +8966,7 @@ var msiNavigationUtils =
     var retVal = -1;
     for (var ix = 0; ix < aNode.parentNode.childNodes.length; ++ix)
     {
-      if (aNode.parentNode.childNodes[ix] == aNode)
+      if (aNode.parentNode.childNodes[ix] === aNode)
       {
         retVal = ix;
         break;
@@ -8977,21 +8977,21 @@ var msiNavigationUtils =
 
   isDescendant : function(aNode, refNode)
   {
-    return (this.findTopChildContaining(refNode, aNode) != null);
+    return (this.findTopChildContaining(refNode, aNode) !== null);
   },
 
   isAncestor : function(aNode, refNode)
   {
-    return (this.findTopChildContaining(aNode, refNode) != null);
+    return (this.findTopChildContaining(aNode, refNode) !== null);
   },
 
-  //Note that this function will return ancestorNode if aNode==ancestorNode, so it isn't necessarily a child
+  //Note that this function will return ancestorNode if aNode===ancestorNode, so it isn't necessarily a child
   findTopChildContaining : function(aNode, ancestorNode)
   {
     var retVal = null;
     for (var targNode = aNode; targNode; targNode = targNode.parentNode)
     {
-      if ( (targNode == ancestorNode) || (targNode.parentNode == ancestorNode) )
+      if ( (targNode === ancestorNode) || (targNode.parentNode === ancestorNode) )
       {
         retVal = targNode;
         break;
@@ -9031,7 +9031,7 @@ var msiNavigationUtils =
     {
       nRefAncestors = refAncestors.push(aRefAncestor);
     }
-    if (aNodeAncestors.pop() != refAncestors.pop())
+    if (aNodeAncestors.pop() !== refAncestors.pop())
     {
       dump("In msiNavigationUtils.comparePositions(), no common ancestor for nodes [" + aNode.nodeName + ",[" + aNode.textContent + "]] and [" + refNode.nodeName + ",[" + refNode.textContent + "]]!\n");
       return 0;
@@ -9041,12 +9041,12 @@ var msiNavigationUtils =
     {
       lastNode = aNodeAncestors.pop();
       lastRefNode = refAncestors.pop();
-      if (lastNode != lastRefNode)
+      if (lastNode !== lastRefNode)
         break;
     }
     try
     {
-    if (lastNode != lastRefNode)  //if they're equal, it should mean that aNode was equal to refNode, and then we want to compare incoming offsets so leave them alone.
+    if (lastNode !== lastRefNode)  //if they're equal, it should mean that aNode was equal to refNode, and then we want to compare incoming offsets so leave them alone.
     {
       if (lastNode)
         nRealOffset = this.offsetInParent(lastNode);
@@ -9100,7 +9100,7 @@ var msiNavigationUtils =
 //      refParent = refNode;
 //      while (refParent)
 //      {
-//        if (refParent.parentNode == aNode)
+//        if (refParent.parentNode === aNode)
 //        {
 //          if (anOffset <= this.offsetInParent(refParent))
 //            return -1;  //refNode is a child of aNode.childNodes[offsetInParent] and so follows the (aNode,anOffset) position
@@ -9115,7 +9115,7 @@ var msiNavigationUtils =
 //      aParent = aNode;
 //      while (aParent)
 //      {
-//        if (aParent.parentNode == refNode)
+//        if (aParent.parentNode === refNode)
 //        {
 //          if (refOffset <= this.offsetInParent(aParent))
 //            return 1;  //aNode is a child of refNode.childNodes[offsetInParent] and so follows the (refNode,refOffset) position
@@ -9137,13 +9137,13 @@ var msiNavigationUtils =
     var retNode = null;
     if (!this.positionIsAtStart(aNode, offset))
     {
-      if ( (aNode.childNodes != null) && (aNode.childNodes.length >= offset) )
+      if ( (aNode.childNodes !== null) && (aNode.childNodes.length >= offset) )
         retNode = aNode.childNodes[offset - 1];
     }
-    if (retNode == null)
+    if (retNode === null)
     {
       retNode = aNode.previousSibling;
-      while ( (retNode == null) && (aNode.parentNode != null) )
+      while ( (retNode === null) && (aNode.parentNode !== null) )
       {
         aNode = aNode.parentNode;
         retNode = aNode.previousSibling;
@@ -9157,13 +9157,13 @@ var msiNavigationUtils =
     var retNode = null;
     if (!this.positionIsAtEnd(aNode, offset))
     {
-      if ( (aNode.childNodes != null) && (aNode.childNodes.length > offset) )
+      if ( (aNode.childNodes !== null) && (aNode.childNodes.length > offset) )
         retNode = aNode.childNodes[offset];
     }
-    if (retNode == null)
+    if (retNode === null)
     {
       retNode = aNode.nextSibling;
-      while ( (retNode == null) && (aNode.parentNode != null) )
+      while ( (retNode === null) && (aNode.parentNode !== null) )
       {
         aNode = aNode.parentNode;
         retNode = aNode.nextSibling;
@@ -9178,7 +9178,7 @@ var msiNavigationUtils =
     var retVal = -1;
     for (var ix = 0; ix < siblings.length; ++ix)
     {
-      if (siblings[ix] == aNode)
+      if (siblings[ix] === aNode)
       {
         retVal = ix;
         break;
@@ -9190,14 +9190,14 @@ var msiNavigationUtils =
   getTagClass : function(node, editor)
   {
     var nsAtom = null;
-    if (node.namespaceURI != null)
+    if (node.namespaceURI !== null)
       nsAtom = this.mAtomService.getAtom(node.namespaceURI);
 
     var retVal = "othertag";
-    if (editor != null)
+    if (editor !== null)
     {
       retVal = editor.tagListManager.getClassOfTag( node.nodeName, nsAtom);
-      if (retVal == null || retVal.length == 0)
+      if (retVal === null || retVal.length === 0)
         retVal = editor.tagListManager.getClassOfTag( node.nodeName, null );
     }
     return retVal;
@@ -9206,14 +9206,14 @@ var msiNavigationUtils =
   isDefaultParaTag : function(node, editor)
   {
     var nsAtom = null;
-    if (node.namespaceURI != null)
+    if (node.namespaceURI !== null)
       nsAtom = this.mAtomService.getAtom(node.namespaceURI);
 
     var namespace = new Object();
     var paraTag = "";
-    if (editor != null)
+    if (editor !== null)
       paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-    if ((paraTag == node.nodeName) && ((nsAtom == null) || (namespace.value && (nsAtom == namespace.value))) )
+    if ((paraTag === node.nodeName) && ((nsAtom === null) || (namespace.value && (nsAtom === namespace.value))) )
         return true;
     return false;
   },
@@ -9221,20 +9221,20 @@ var msiNavigationUtils =
   isFence : function(node)
   {
     var nodeName = msiGetBaseNodeName(node);
-//    if (nodeName == 'mstyle' && node.childNodes.length == 1)
+//    if (nodeName === 'mstyle' && node.childNodes.length === 1)
 //      return this.isFence(node.childNodes[0]);
-    if (nodeName == 'mfenced')
+    if (nodeName === 'mfenced')
       return true;
 
-    if (nodeName == 'mrow' || nodeName == 'mstyle')
+    if (nodeName === 'mrow' || nodeName === 'mstyle')
     {
       var children = this.getSignificantContents(node);
       if (children.length > 1)
       {
-        return ( (msiGetBaseNodeName(children[0]) == 'mo') && (children[0].getAttribute('fence') == 'true') && (children[0].getAttribute('form') == 'prefix')
-            && (msiGetBaseNodeName(children[children.length - 1]) == 'mo')
-            && (children[children.length - 1].getAttribute('fence') == 'true')
-            && (children[children.length - 1].getAttribute('form') == 'postfix') )
+        return ( (msiGetBaseNodeName(children[0]) === 'mo') && (children[0].getAttribute('fence') === 'true') && (children[0].getAttribute('form') === 'prefix')
+            && (msiGetBaseNodeName(children[children.length - 1]) === 'mo')
+            && (children[children.length - 1].getAttribute('fence') === 'true')
+            && (children[children.length - 1].getAttribute('form') === 'postfix') )
       }
     }
     return false;
@@ -9248,7 +9248,7 @@ var msiNavigationUtils =
   getSignificantContents : function(node)
   {
     var retList = new Array();
-    if (node == null)
+    if (node === null)
       return retList;
 
     for (var ix = 0; ix < node.childNodes.length; ++ix)
@@ -9280,7 +9280,7 @@ var msiNavigationUtils =
     var retVal = null;
     var sigChildren = this.getSignificantContents(parentNode);
     var topChild = this.findTopChildContaining(childNode, parentNode);
-    if (topChild && (topChild != parentNode))
+    if (topChild && (topChild !== parentNode))
     {
       retVal = topChild;
       do
@@ -9310,7 +9310,7 @@ var msiNavigationUtils =
     var retVal = null;
     var sigChildren = this.getSignificantContents(parentNode);
     var topChild = this.findTopChildContaining(childNode, parentNode);
-    if (topChild && (topChild != parentNode))
+    if (topChild && (topChild !== parentNode))
     {
       retVal = topChild;
       while (retVal)
@@ -9361,7 +9361,7 @@ var msiNavigationUtils =
     var tagList = [];
     for (var ix = 0; ix < aNode.childNodes.length; ++ix)
     {
-      if (msiGetBaseNodeName(aNode.childNodes[ix]) == nodeName)
+      if (msiGetBaseNodeName(aNode.childNodes[ix]) === nodeName)
         tagList.push(aNode.childNodes[ix]);
     }
     return tagList;
@@ -9369,7 +9369,7 @@ var msiNavigationUtils =
 
   getParentOfType : function(aNode, nodeName)
   {
-    if (!aNode || (msiGetBaseNodeName(aNode) == nodeName))
+    if (!aNode || (msiGetBaseNodeName(aNode) === nodeName))
       return aNode;
     else
       return this.getParentOfType(aNode.parentNode, nodeName);
@@ -9397,7 +9397,7 @@ var msiNavigationUtils =
 
   nodeIsInMath : function(aNode)
   {
-    return (this.getParentOfType(aNode, "math") != null);
+    return (this.getParentOfType(aNode, "math") !== null);
   },
 
   isMathTag : function(tagName)
@@ -9438,17 +9438,17 @@ var msiNavigationUtils =
     var nodeNS = null;
     if (aNode.namespaceURI && aNode.namespaceURI.length)
       nodeNS = this.mAtomService.getAtom(aNode.namespaceURI);
-    if (nodeNS == mathNS)
+    if (nodeNS === mathNS)
       return true;
     return false;
   },
 
   isBoundFence : function(node)
   {
-//    if (msiGetBaseNodeName(node) == 'mstyle' && node.childNodes.length == 1)
+//    if (msiGetBaseNodeName(node) === 'mstyle' && node.childNodes.length === 1)
 //      return this.isBoundFence(node.childNodes[0]);
 //    var singleChild = this.getSingleWrappedChild(node);
-//    if (singleChild != null)
+//    if (singleChild !== null)
 //      return this.isBoundFence(singleChild);
 
     if( this.isFence(node) )
@@ -9456,8 +9456,8 @@ var msiNavigationUtils =
       var children = this.getSignificantContents(node);
       if (children.length > 1)
       {
-        return (children[0].hasAttribute('msiBoundFence') && (children[0].getAttribute('msiBoundFence') == 'true') 
-               && children[children.length - 1].hasAttribute('msiBoundFence') && (children[children.length - 1].getAttribute('msiBoundFence') == 'true') );
+        return (children[0].hasAttribute('msiBoundFence') && (children[0].getAttribute('msiBoundFence') === 'true') 
+               && children[children.length - 1].hasAttribute('msiBoundFence') && (children[children.length - 1].getAttribute('msiBoundFence') === 'true') );
       }
     }
     return false;
@@ -9465,14 +9465,14 @@ var msiNavigationUtils =
 
   isBinomial : function(node)
   {
-    if (msiGetBaseNodeName(node) == 'mstyle' && node.childNodes.length == 1)
+    if (msiGetBaseNodeName(node) === 'mstyle' && node.childNodes.length === 1)
       return this.isBinomial(node.childNodes[0]);
     if (this.isBoundFence(node))
     {
       var children = this.getSignificantContents(node);
-      if (children.length == 3)
+      if (children.length === 3)
       {
-        if (msiGetBaseNodeName(children[1]) == 'mfrac')
+        if (msiGetBaseNodeName(children[1]) === 'mfrac')
           return true;
       }
     }
@@ -9481,7 +9481,7 @@ var msiNavigationUtils =
 
   isMathTemplate : function(node)
   {
-    if (node == null)
+    if (node === null)
       return false;
 
     switch(msiGetBaseNodeName(node))
@@ -9521,7 +9521,7 @@ var msiNavigationUtils =
 // the next two functions give more precise information than isMathTemplate
   isUnsplittableMath : function(node)
 	{
-	  if (node == null)
+	  if (node === null)
       return false;
 
     switch(node.localName)
@@ -9557,7 +9557,7 @@ var msiNavigationUtils =
 	
 	hasFixedNumberOfChildren : function(node)
 	{
-	  if (node == null)
+	  if (node === null)
       return false;
     switch(node.localName)
 		{
@@ -9578,23 +9578,23 @@ var msiNavigationUtils =
 	
   isUnit : function(node)
   {
-    if ( node != null && node.hasAttribute("msiunit") && (node.getAttribute("msiunit") == "true") )
+    if ( node !== null && node.hasAttribute("msiunit") && (node.getAttribute("msiunit") === "true") )
       return true;
-    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+    if (msiGetBaseNodeName(node) === "mstyle" && node.childNodes.length === 1)
       return this.isUnit(node.childNodes[0]);
     return false;
   },
 
   isMathname : function(node)
   {
-    if ( node == null)
+    if ( node === null)
     {
       dump("Bad input to msiNavigationUtils.isMathname - null node!\n");
       return false;
     }
-    if (node.hasAttribute("msimathname") && (node.getAttribute("msimathname") == "true") )
+    if (node.hasAttribute("msimathname") && (node.getAttribute("msimathname") === "true") )
       return true;
-    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+    if (msiGetBaseNodeName(node) === "mstyle" && node.childNodes.length === 1)
       return this.isMathname(node.childNodes[0]);
 
     return false;
@@ -9615,20 +9615,20 @@ var msiNavigationUtils =
 
   isTextNode : function(aNode)
   {
-    return (aNode.nodeType == nsIDOMNode.TEXT_NODE);
+    return (aNode.nodeType === nsIDOMNode.TEXT_NODE);
   },
 
   isBigOperator : function(aNode)
   {
-    if ( (aNode != null) && (msiGetBaseNodeName(aNode) == 'mo') && aNode.hasAttribute("largeop")
-                                  && (aNode.getAttribute("largeop") == "true") )
+    if ( (aNode !== null) && (msiGetBaseNodeName(aNode) === 'mo') && aNode.hasAttribute("largeop")
+                                  && (aNode.getAttribute("largeop") === "true") )
       return true;
     return false;
   },
 
   getEmbellishedOperator : function(node)
   {
-    if ( node != null)
+    if ( node !== null)
     {
       switch(msiGetBaseNodeName(node))
       {
@@ -9642,13 +9642,13 @@ var msiNavigationUtils =
         //According to the MathML 2.1 spec, we should also include 'mfrac" here. I'm not convinced that would give the right thing generally here.
         {
           var opNode = this.getFirstSignificantChild(node);
-          if (opNode != null)
+          if (opNode !== null)
           {
             var opNodeName = msiGetBaseNodeName(opNode);
-            if ( (opNodeName == 'mstyle') || (opNodeName == 'mrow') )
+            if ( (opNodeName === 'mstyle') || (opNodeName === 'mrow') )
               opNode = this.getSingleWrappedChild(opNode);
-            if ( (opNode != null) && (msiGetBaseNodeName(opNode) == 'mo') && opNode.hasAttribute("largeop")
-                                          && (opNode.getAttribute("largeop") == "true") )
+            if ( (opNode !== null) && (msiGetBaseNodeName(opNode) === 'mo') && opNode.hasAttribute("largeop")
+                                          && (opNode.getAttribute("largeop") === "true") )
               return opNode;
           }
         }
@@ -9658,9 +9658,9 @@ var msiNavigationUtils =
       }
     }
     var singleChild = this.getSingleWrappedChild(node);
-    if (singleChild != null)
+    if (singleChild !== null)
       return this.getEmbellishedOperator(singleChild);
-//    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+//    if (msiGetBaseNodeName(node) === "mstyle" && node.childNodes.length === 1)
 //      return this.isEmbellishedOperator(node.childNodes[0]);
 
     return null;
@@ -9673,22 +9673,22 @@ var msiNavigationUtils =
       case 'mstyle':
       case 'mrow':
         var nodeContents = this.getSignificantContents(aNode);
-        if (nodeContents.length == 1)
+        if (nodeContents.length === 1)
           return nodeContents[0];
       break;
 
       case 'notewrapper':
         var nodeContents = this.getSignificantContents(aNode);
-        if ((nodeContents.length > 1) && (msiGetBaseNodeName(nodeContents[0]) == "br"))
+        if ((nodeContents.length > 1) && (msiGetBaseNodeName(nodeContents[0]) === "br"))
           nodeContents.splice(0, 1);
-        if ((nodeContents.length > 1) && (msiGetBaseNodeName(nodeContents[nodeContents.length - 1]) == "br"))
+        if ((nodeContents.length > 1) && (msiGetBaseNodeName(nodeContents[nodeContents.length - 1]) === "br"))
           nodeContents.splice(nodeContents.length - 1, 1);
-        if (nodeContents.length == 1)
+        if (nodeContents.length === 1)
           return nodeContents[0];
         dump("Surprising contents in notewrapper! Has [" + nodeContents.length + "] children!\n");
         for (var ix = 0; ix < nodeContents.length; ++ix)
         {
-          if (msiGetBaseNodeName(nodeContents[ix]) == "note")
+          if (msiGetBaseNodeName(nodeContents[ix]) === "note")
             return nodeContents[ix];
         }  
       break;
@@ -9707,23 +9707,23 @@ var msiNavigationUtils =
     {
       case 'mstyle':
         singleKid = this.getSingleWrappedChild(aNode);
-        if (singleKid != null)
+        if (singleKid !== null)
           return this.getWrappedObject(singleKid, objType);
-        if (objType == 'fence' && this.isFence(aNode))
+        if (objType === 'fence' && this.isFence(aNode))
           return aNode;
-        else if (objType == 'binomial' && this.isBinomial(aNode))
+        else if (objType === 'binomial' && this.isBinomial(aNode))
           return aNode;
       break;
 
       case 'mrow':
-        if (objType == 'fence' && this.isFence(aNode))
+        if (objType === 'fence' && this.isFence(aNode))
           return aNode;
-        else if (objType == 'binomial' && this.isBinomial(aNode))
+        else if (objType === 'binomial' && this.isBinomial(aNode))
           return aNode;
         else
         {
           singleKid = this.getSingleWrappedChild(aNode);
-          if (singleKid != null)
+          if (singleKid !== null)
             return this.getWrappedObject(singleKid, objType);
         }
       break;
@@ -9740,13 +9740,13 @@ var msiNavigationUtils =
               return aNode;
           break;
           case 'operator':
-            if (theName == 'mo')
+            if (theName === 'mo')
               return aNode;
-            if (this.getEmbellishedOperator(aNode) != null)
+            if (this.getEmbellishedOperator(aNode) !== null)
               return aNode;
           break;
           default:
-            if (theName == objType)
+            if (theName === objType)
               return aNode;
           break;
         }
@@ -9759,7 +9759,7 @@ var msiNavigationUtils =
   {
     var retNode = null;
     var nodeContents = this.getSignificantContents(aNode);
-    if (nodeContents.length == 1)
+    if (nodeContents.length === 1)
     {
       if (!bIncludeWrappers)
         retNode = this.getSingleWrappedChild(nodeContents[0]);
@@ -9771,12 +9771,12 @@ var msiNavigationUtils =
 
   findWrappingStyleNode : function(aNode)
   {
-    if (msiGetBaseNodeName(aNode) == 'mstyle')
+    if (msiGetBaseNodeName(aNode) === 'mstyle')
       return aNode;
 
-    if ( (aNode != null) && (aNode.parentNode != null) )
+    if ( (aNode !== null) && (aNode.parentNode !== null) )
     {
-      if ( this.getSingleWrappedChild(aNode.parentNode) == aNode )
+      if ( this.getSingleWrappedChild(aNode.parentNode) === aNode )
       {
         return this.findWrappingStyleNode(aNode.parentNode);
       }
@@ -9786,9 +9786,9 @@ var msiNavigationUtils =
 
   findWrappingNode : function(aNode)
   {
-    if ( (aNode != null) && (aNode.parentNode != null) )
+    if ( (aNode !== null) && (aNode.parentNode !== null) )
     {
-      if ( this.getSingleWrappedChild(aNode.parentNode) == aNode )
+      if ( this.getSingleWrappedChild(aNode.parentNode) === aNode )
       {
         return this.findWrappingNode(aNode.parentNode);
       }
@@ -9798,9 +9798,9 @@ var msiNavigationUtils =
 
   isEmptyInputBox : function(aNode)
   {
-    if (msiGetBaseNodeName(aNode) == "mi")
+    if (msiGetBaseNodeName(aNode) === "mi")
     {
-        if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput") == "true") )
+        if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput") === "true") )
         return true;
     }
     return false;
@@ -9808,7 +9808,7 @@ var msiNavigationUtils =
 
   isOrdinaryMRow : function(aNode)
   {
-    if (msiGetBaseNodeName(aNode) == 'mrow')
+    if (msiGetBaseNodeName(aNode) === 'mrow')
     {
       if (this.isFence(aNode))
         return false;
@@ -9833,15 +9833,15 @@ var msiNavigationUtils =
   isSingleSignificantChild : function(aNode)
   {
     var aParent = aNode.parentNode;
-    return (aNode == this.getSingleSignificantChild(aParent, true));
+    return (aNode === this.getSingleSignificantChild(aParent, true));
   },
 
   isEquationArray : function(editorElement, aTable)
   {
-    if (aTable.getAttribute("type") == "eqnarray")
+    if (aTable.getAttribute("type") === "eqnarray")
       return true;
     var tableDims = msiGetEnclosingTableOrMatrixDimensions(editorElement, aTable);
-    if (tableDims.nCols != 1)
+    if (tableDims.nCols !== 1)
       return false;
     var topNode = this.findWrappingNode(aTable);  //inside displays we often see nested <mstyle> and <mrow>s
     var isOK = true;
@@ -9887,7 +9887,7 @@ var msiNavigationUtils =
   isUnnecessaryMStyle : function(aNode)
   {
     var bUnnecessary = false;
-    if (msiGetBaseNodeName(aNode) == 'mstyle')
+    if (msiGetBaseNodeName(aNode) === 'mstyle')
     {
       if (this.isFence(aNode))
         return false;
@@ -9912,7 +9912,7 @@ var msiNavigationUtils =
 
   getLeafNodeText : function(aNode)
   {
-    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+    if (aNode.nodeType === nsIDOMNode.TEXT_NODE)
       return aNode.data;
     switch(msiGetBaseNodeName(aNode))
     {
@@ -9921,14 +9921,14 @@ var msiNavigationUtils =
       case "mn":
       {
         var childNodes = this.getSignificantContents(aNode);
-        if (childNodes.length != 1)
+        if (childNodes.length !== 1)
           dump("In msiNavigationUtils.getLeafNodeText, found too many children for node of type " + msiGetBaseNodeName(aNode) + ".\n");
         return this.getLeafNodeText(childNodes[0]);
       }
       break;
     }
     var kid = this.getSingleWrappedChild(aNode);
-    if (kid != null)
+    if (kid !== null)
       return this.getLeafNodeText(kid);
     return null;
   },
@@ -9979,7 +9979,7 @@ var msiNavigationUtils =
       case "mrow":
 //      case "mphantom":  ???
         var kid = this.getSingleWrappedChild(aNode);
-        if (kid != null && !bDontCheckKids)
+        if (kid !== null && !bDontCheckKids)
           return this.treatMathNodeAsAccentedCharacter(kid, false);
       break;
 
@@ -10009,21 +10009,21 @@ var msiNavigationUtils =
       ourResult = nextResult;
       nextResult = this.treatMathNodeAsAccentedCharacter(nextTestNode, true);
       nextTestNode = nextTestNode.parentNode;
-    } while ((nextResult != null) && (nextTestNode != null));
+    } while ((nextResult !== null) && (nextTestNode !== null));
     return ourResult;
   },
 
   getSingleTextNodeContent : function(aNode)
   {
-    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+    if (aNode.nodeType === nsIDOMNode.TEXT_NODE)
       return aNode;
     
     var childNodes = this.getSignificantContents(aNode);
-    if ( (childNodes.length == 1) && (childNodes[0].nodeType == nsIDOMNode.TEXT_NODE) )
+    if ( (childNodes.length === 1) && (childNodes[0].nodeType === nsIDOMNode.TEXT_NODE) )
       return childNodes[0];
     
     var kid = this.getSingleWrappedChild(aNode);
-    if (kid != null)
+    if (kid !== null)
       return this.getLeafNodeText(kid);
     return null;
   },
@@ -10032,7 +10032,7 @@ var msiNavigationUtils =
   {
     var retStyleNode = null;
     var nodeName = msiGetBaseNodeName(targNode);
-    if (nodeName == "mstyle")
+    if (nodeName === "mstyle")
     {
       retStyleNode = targNode;
       for (var styleItem in expectedStyle)
@@ -10042,25 +10042,25 @@ var msiNavigationUtils =
       }
     }
     var wrappedChild = this.getSingleWrappedChild(targNode);
-    if (wrappedChild != null)
+    if (wrappedChild !== null)
     {
       var otherStyle = this.findStyleEnclosingObj(wrappedChild, objTypeStr, expectedStyle, foundStyle);
-      if (otherStyle != null)
+      if (otherStyle !== null)
         retStyleNode = otherStyle;
     }
     //Following seems to be unnecessary!
 //    switch(objTypeStr)
 //    {
 //      case "fence":
-//        if (nodeName == "mrow" && msiNavigationUtils.isFence(targNode))
+//        if (nodeName === "mrow" && msiNavigationUtils.isFence(targNode))
 //          return retStyleNode;
 //      break;
 //      case "binomial":
-//        if (nodeName == "mrow" && msiNavigationUtils.isBinomial(targNode))
+//        if (nodeName === "mrow" && msiNavigationUtils.isBinomial(targNode))
 //          return retStyleNode;
 //      break;
 //      default:
-//        if (nodeName == objTypeStr)
+//        if (nodeName === objTypeStr)
 //          return retStyleNode;
 //      break; 
 //    }
@@ -10075,9 +10075,9 @@ var msiNavigationUtils =
       case "mo":
         if (this.isFence(aNode.parentNode))
         {
-          if (this.getFirstSignificantChild(aNode.parentNode) == aNode)
+          if (this.getFirstSignificantChild(aNode.parentNode) === aNode)
             retVal = true;
-          else if (this.getLastSignificantChild(aNode.parentNode) == aNode)
+          else if (this.getLastSignificantChild(aNode.parentNode) === aNode)
             retVal = true;
         }
       break;
@@ -10085,7 +10085,7 @@ var msiNavigationUtils =
         if (this.isBoundFence(aNode.parentNode))
         {
           var theKids = this.getSignificantContents(aNode.parentNode);
-          if ( (theKids.length > 2) && (theKids[1] == aNode) )
+          if ( (theKids.length > 2) && (theKids[1] === aNode) )
             retVal = true;
         }
       break;
@@ -10269,9 +10269,9 @@ var msiNavigationUtils =
 
   isInputBox : function(aNode)
   {
-    if (msiGetBaseNodeName(aNode) == "mi")
+    if (msiGetBaseNodeName(aNode) === "mi")
     {
-      if (aNode.hasAttribute("tempinput") && aNode.getAttribute("tempinput")=="true")
+      if (aNode.hasAttribute("tempinput") && aNode.getAttribute("tempinput")==="true")
         return true;
     }
     return false;
@@ -10279,7 +10279,7 @@ var msiNavigationUtils =
 
   lastOffset : function(aNode)
   {
-    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+    if (aNode.nodeType === nsIDOMNode.TEXT_NODE)
       return aNode.textContent.length;
     if (aNode.childNodes)
       return aNode.childNodes.length;
@@ -10301,7 +10301,7 @@ var msiNavigationUtils =
 //    {
 //      compNode = aRange.startContainer;
 //      compVal = aRange.startContainer.compareDocumentPosition(aNode);
-//      retVal = ( (compVal & Node.DOCUMENT_POSITION_FOLLOWING) != null);
+//      retVal = ( (compVal & Node.DOCUMENT_POSITION_FOLLOWING) !== null);
 //    }
     return retVal;  
   },
@@ -10352,7 +10352,7 @@ var msiNavigationUtils =
 //    else  //No content of aNode is immediately to the right of the range end; now we only want to return true if rangeEnd is altogether before aNode.
 //    {
 //      compVal = aRange.endContainer.compareDocumentPosition(aNode);
-//      retVal = ( (compVal & Node.DOCUMENT_POSITION_PRECEDING) != null);
+//      retVal = ( (compVal & Node.DOCUMENT_POSITION_PRECEDING) !== null);
 //    }
     return retVal;  
   },
@@ -10370,7 +10370,7 @@ var msiNavigationUtils =
   {
     var topNode = null;
     var parentNodes = [];
-    if (aSelection.rangeCount == 1)
+    if (aSelection.rangeCount === 1)
       return aSelection.getRangeAt(0).commonAncestorContainer;
 
     for (var ix = 0; ix < aSelection.rangeCount; ++ix)
@@ -10462,7 +10462,7 @@ var msiNavigationUtils =
 //  var clone = {};
 //  for (var i in obj)
 //  {
-//    if( typeof obj[i] == 'object')
+//    if( typeof obj[i] === 'object')
 //      clone[i] = Clone(obj[i]);
 //    else
 //      clone[i] = obj[i];
@@ -10518,13 +10518,13 @@ var msiSpaceUtils =
     var retData = null;
     var spaceTypes = ["hspace", "vspace", "msibreak"];
     var spaceInfoTypes = ["hSpaceInfo", "vSpaceInfo", "breaksInfo"];
-    if (charStr == " ")
+    if (charStr === " ")
       retData = {theType: "hspace", theSpace: "normalSpace"};
     for (var ix = 0; !retData && (ix < spaceInfoTypes.length); ++ix)
     {
       for (var anInfo in this[spaceInfoTypes[ix]])
       {
-        if ( ("charContent" in this[spaceInfoTypes[ix]][anInfo]) && (this[spaceInfoTypes[ix]][anInfo].charContent == charStr) )
+        if ( ("charContent" in this[spaceInfoTypes[ix]][anInfo]) && (this[spaceInfoTypes[ix]][anInfo].charContent === charStr) )
         {
           retData = {theType: spaceTypes[ix], theSpace : anInfo};
           break;
@@ -10550,13 +10550,13 @@ var msiSpaceUtils =
       case 'vspace':
 //      case 'msibreak':
         retData = {theType : nodeName, theSpace : nodeType};
-        if ((nodeType == "customSpace") || (nodeType == "stretchySpace"))  //second shouldn't be necessary, but heretofore was apparently what we produced
+        if ((nodeType === "customSpace") || (nodeType === "stretchySpace"))  //second shouldn't be necessary, but heretofore was apparently what we produced
         {
           retData.theSpace = "customSpace";  //just in case it came in anomalously
           valStr = aNode.getAttribute("dim");
           if (valStr && valStr.length)
             retData.theDim = valStr;
-          if (aNode.getAttribute("class") == "stretchySpace")
+          if (aNode.getAttribute("class") === "stretchySpace")
           {
             retData.customType = "stretchy";
             valStr = aNode.getAttribute("flex");
@@ -10575,7 +10575,7 @@ var msiSpaceUtils =
       break;
       case 'msibreak':
         retData = {theType : nodeName, theSpace : nodeType};
-        if (nodeType == "customNewLine")
+        if (nodeType === "customNewLine")
         {
           valStr = aNode.getAttribute("dim");
           if (valStr && valStr.length)
@@ -10623,7 +10623,7 @@ var msiSpaceUtils =
   getHSpaceDisplayableContent : function(spaceName)
   {
     var retStr = null;
-    if (this.getHSpaceDims(spaceName) == null)
+    if (this.getHSpaceDims(spaceName) === null)
     {
       retStr = this.getHSpaceCharContent(spaceName);
       var invisContent = this.getHSpaceShowInvis(spaceName);
@@ -10648,7 +10648,7 @@ var msiSpaceUtils =
   getVSpaceDisplayableContent : function(spaceName)
   {
     var retStr = null;
-    if ( (this.getVSpaceDims(spaceName) == null) && (this.getVSpaceLineHeight(spaceName) == null) )
+    if ( (this.getVSpaceDims(spaceName) === null) && (this.getVSpaceLineHeight(spaceName) === null) )
     {
       retStr = this.getVSpaceCharContent(spaceName);
       var invisContent = this.getVSpaceShowInvis(spaceName);
@@ -10752,7 +10752,7 @@ function addDataToFile(aFilePath, aDataStream)
 function msiDumpWithID(str, element)
 {
   var replStr = "";
-  if (element!=null && element.id)
+  if (element!==null && element.id)
     replStr = element.id;
   dump( str.replace("@", replStr) );
 }
@@ -10940,7 +10940,7 @@ function setStyleAttribute(elem, attribute, value )
   }
   for (i=0; i<array.length; i++)
   {
-    if (array[i][0] == attribute)
+    if (array[i][0] === attribute)
       {
         array[i][1] = value;
         found = true;
@@ -10948,7 +10948,7 @@ function setStyleAttribute(elem, attribute, value )
       }
       array[i] = array[i].join(":"); 
   }  
-  if (value==null && found) array.splice(foundindex,1);  
+  if (value===null && found) array.splice(foundindex,1);  
   var outStyleString = array.join(";");
   if (!found)  outStyleString = attribute+": "+value+"; "+outStyleString;
   elem.setAttribute("style", outStyleString);
@@ -10974,7 +10974,7 @@ function SS_Timer(delayMS, editor, editorElement) {
   var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
 
   var interval = prefService.getIntPref("swp.saveintervalseconds");
-  if (!interval || interval == 0) return;
+  if (!interval || interval === 0) return;
   this.timer_ = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
 //  this.observerService_ = new G_ObserverServiceObserver(
 //                                        'xpcom-shutdown',
@@ -10990,7 +10990,7 @@ SS_Timer.prototype.callback_ = function()
 // TODO: re-enable this when it checks the preferences properly
 
 //  var modCt = this.editor.getModificationCount();
-//  if (modCt != this.modCount) doSoftSave(this.editorElement, this.editor);
+//  if (modCt !== this.modCount) doSoftSave(this.editorElement, this.editor);
 //  this.modCount = modCt;
   return true;
 }
@@ -11049,7 +11049,7 @@ function processingInstructionsList( doc, target, fNodes )
     NodeFilter.SHOW_PROCESSING_INSTRUCTION,
     { 
       acceptNode: function(node) { 
-        if (node.target == target)
+        if (node.target === target)
           return NodeFilter.FILTER_ACCEPT;
         else return NodeFilter.FILTER_REJECT; }
     },
@@ -11095,7 +11095,7 @@ function deleteProcessingInstructions( doc, target )
     NodeFilter.SHOW_PROCESSING_INSTRUCTION,
     { 
       acceptNode: function(node) { 
-        if (node.target == target)
+        if (node.target === target)
           return NodeFilter.FILTER_ACCEPT;
         else return NodeFilter.FILTER_REJECT; }
     },
@@ -11252,9 +11252,9 @@ function gotoFirstNonspaceInElement( editor, node )
   else
     editor.selection.collapse(node,0);
   // put the selection at the beginning of the first text node in case there is only white space
-  for ( ; currNode != null; currNode = treeWalker.nextNode())
+  for ( ; currNode !== null; currNode = treeWalker.nextNode())
   {
-    if (arr = re.exec(currNode.textContent) != null)
+    if (arr = re.exec(currNode.textContent) !== null)
     {  // there is a match, and it begins at arr.index
       dump("Node #"+i+"is '" + currNode.textContent + "' and non-whitespace starts at "+arr.index+"\n");
       editor.selection.collapse(currNode,arr.index);
@@ -11274,7 +11274,7 @@ function gotoFirstNonspaceInElement( editor, node )
 
 function updateTextNumber(textelement, id, event)
 {
-  if (event && (event.type == "keypress"))
+  if (event && (event.type === "keypress"))
   {
     var val = textelement.value;
     var textbox = document.getElementById(id);
@@ -11284,19 +11284,19 @@ function updateTextNumber(textelement, id, event)
     var keycode = event.keyCode;
     var charcode = event.charCode;
   
-    if (keycode == event.DOM_VK_BACK_SPACE) {
+    if (keycode === event.DOM_VK_BACK_SPACE) {
       if (selStart > 0) {
         selStart--;
         val = val.slice(0,selStart)+val.slice(selEnd);
       }
     }
     else 
-    if (keycode == event.DOM_VK_DELETE) {
+    if (keycode === event.DOM_VK_DELETE) {
       selEnd++;
       val = val.slice(0,selStart)+val.slice(selEnd);
     }
     else
-    if (charcode == "-".charCodeAt(0) || charcode == "+".charCodeAt(0) || charcode == ".".charCodeAt(0) ||
+    if (charcode === "-".charCodeAt(0) || charcode === "+".charCodeAt(0) || charcode === ".".charCodeAt(0) ||
       (charcode >= 48 && charcode <58))
     {
       if (selEnd >= selStart) val = val.slice(0,selStart)+ String.fromCharCode(charcode)+val.slice(selEnd);
@@ -11326,9 +11326,9 @@ function goUp(id)
 {
   var element = document.getElementById(id);
   var value = Number(element.value);
-  if (value == NaN) return;
+  if (value === NaN) return;
   var max = Number(element.getAttribute("max"));
-  if ((max == 0)||(max == NaN)) max = Number.MAX_VALUE;
+  if ((max === 0)||(max === NaN)) max = Number.MAX_VALUE;
   value += Number(element.getAttribute("increment"));
   value = Math.min(max,value);
   element.value = unitRound(value);
@@ -11338,9 +11338,9 @@ function goDown(id)
 {
   var element = document.getElementById(id);
   var value = Number(element.value);
-  if (value == NaN) return;
+  if (value === NaN) return;
   var min = Number(element.getAttribute("min"));
-  if (min == NaN) min = 0;
+  if (min === NaN) min = 0;
   value -= Number(element.getAttribute("increment"));
   value = Math.max(min,value);
   element.value = unitRound(value);
@@ -11383,7 +11383,7 @@ function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
     pathStr = pathStr.substr(4);  //after the "jar:"
   if (!(/^file:/.test(pathStr)))
     pathStr = "file://" + pathStr;
-  if (pathStr != retPath.spec)
+  if (pathStr !== retPath.spec)
     retPath = msiURIFromString(pathStr);
   retPath = msiFileURLFromAbsolutePath(retPath.path);
 
@@ -11477,7 +11477,7 @@ function openAllSubdocs()
       for (j=0; j<list.length; j++)
       {                          
         if (list[j].hasAttribute("subdoc") && list[j].hasAttribute("open")
-          && list[j].getAttribute("open") == "false")
+          && list[j].getAttribute("open") === "false")
         {
           var node = list[j];
           var fname = node.getAttribute("subdoc");
@@ -11496,12 +11496,12 @@ function openAllSubdocs()
           req.send(null);
           // print the name of the root element or error message
           var dom = req.responseXML;
-          dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
-          if (dom.documentElement.nodeName == "parseerror") break;
+          dump(dom.documentElement.nodeName === "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
+          if (dom.documentElement.nodeName === "parseerror") break;
           var loadedNode = dom.documentElement;
           var children = loadedNode.childNodes;
           var i = 0;
-          while (children[i].nodeType != Node.ELEMENT_NODE) i++;
+          while (children[i].nodeType !== Node.ELEMENT_NODE) i++;
           i++;
           while (i < children.length){
             node.appendChild(doc.adoptNode(children[i]));
@@ -11606,7 +11606,7 @@ function writeLineInPieces( output, currentline )
           forced = true;
           // we can't break text in a tag. Try to find previous '<'
           index = currentline.s.lastIndexOf("<", maxLength);
-          if (index == -1) index = maxLength - 5;
+          if (index === -1) index = maxLength - 5;
         }
         firstLine = currentline.s.substr(0,index);
         output.s += firstLine+"\n";
@@ -11636,8 +11636,8 @@ function isInlineElement(editor, element)
 {
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
   if (msiNavigationUtils.isMathNode(element)) return false;
-  var class = editor.tagListManager.getClassOfTag(element.localName, null);
-  if (class == "texttag" || class == "othertag" || class.length == 0) return true;
+  var tagclass = editor.tagListManager.getClassOfTag(element.localName, null);
+  if (tagclass === "texttag" || tagclass === "othertag" || tagclass.length === 0) return true;
   return false;
 }
   
@@ -11655,9 +11655,9 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
     var len = attrs.length;   
     for (var i = 0; i < len; i++)
     {
-      if ((attrs[i].name.indexOf("-moz-") == -1)
-         &&(attrs[i].name!="_moz_dirty")
-         &&(attrs[i].name!="msiSelectionManagerID"))
+      if ((attrs[i].name.indexOf("-moz-") === -1)
+         &&(attrs[i].name!=="_moz_dirty")
+         &&(attrs[i].name!=="msiSelectionManagerID"))
         currentline.s += ' '+attrs[i].name + '="' +attrs[i].value+'"';
     }
   }   
@@ -11794,11 +11794,11 @@ function prettyprint(editor)
     if (!editor) return;
   }
   maxLength = GetIntPref("swp.sourceview.maxlinelength");
-  if (maxLength == 0) maxLength = maxLengthDefault;
+  if (maxLength === 0) maxLength = maxLengthDefault;
   minLength = GetIntPref("swp.sourceview.minlinelength");
-  if (minLength == 0) minLength = minLengthDefault;
+  if (minLength === 0) minLength = minLengthDefault;
   var intInc = GetIntPref("swp.sourceview.indentincrement");
-  if (intInc != 0) intervalIncrement = "          ".substr(0,intInc);
+  if (intInc !== 0) intervalIncrement = "          ".substr(0,intInc);
   editor.document.normalize();
   var treeWalker = editor.document.createTreeWalker(editor.document,
         1021,     // everything but fragments and attributes
@@ -11815,16 +11815,16 @@ function getSelectionParentByTag( editor, tagname)
   var sel = editor.selection;
   var range = sel.getRangeAt(0);
   var ancestor = range.commonAncestorContainer;
-  while (ancestor && ancestor.tagName != tagname) ancestor = ancestor.parentNode;
-  if (ancestor && ancestor.tagName == tagname) return ancestor;
+  while (ancestor && ancestor.tagName !== tagname) ancestor = ancestor.parentNode;
+  if (ancestor && ancestor.tagName === tagname) return ancestor;
   return null;
 }
 
 function getEventParentByTag( event, tagname)
 {
 	var node = event.target;
-	while (node && node.tagName != tagname) node = node.parentNode;
-	if (node && node.tagName == tagname) return node;
+	while (node && node.tagName !== tagname) node = node.parentNode;
+	if (node && node.tagName === tagname) return node;
 }
 
 
@@ -11847,7 +11847,7 @@ function getFileAsString( url )
   req.overrideMimeType("text/plain");
   req.open('GET', url, false);   
   req.send(null);  
-  if (req.status == 0)
+  if (req.status === 0)
     return req.responseText;
   else
     return null;
@@ -11929,10 +11929,9 @@ function buildAllTagsViewStylesheet(editor)
 	fstream.init(templatefile, -1, 0, 0);  
 	cstream.init(fstream, "UTF-8", 0, 0);  
 
-	let (templatestr = {}) {  
-	  cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
-	  data = templatestr.value;  
-	}  
+	var templatestr = {};
+  cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
+  data = templatestr.value;  
 	cstream.close(); // this closes fstream  
 	var classtemplates = data.split(/\-{4,}/);
 	var j;
@@ -11953,7 +11952,7 @@ function buildAllTagsViewStylesheet(editor)
 	  classname= tagclasses[j];
 	  for (k = 0; k < classtemplates.length; k++)
 	  {
-	    if (classtemplates[k].indexOf(classname)==0) 
+	    if (classtemplates[k].indexOf(classname)===0) 
 	    {
 	      classtemplate = classtemplates[k];
 	      ok = true;
@@ -11964,7 +11963,7 @@ function buildAllTagsViewStylesheet(editor)
 	  taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
 	  for (i = 0; i < taglist.length; i++)
 	  {
-	    if (taglist[i].length && taglist[i][0] != "(")
+	    if (taglist[i].length && taglist[i][0] !== "(")
 	      str += classtemplate.replace(classname,taglist[i],"g")+"\n";
 	  }
 	}
@@ -12011,7 +12010,7 @@ function msiEditorFindJustInsertedElement(tagName, editor)
   var childList;
   if (msiNavigationUtils.isMathTag(tagName) && currNode && msiNavigationUtils.isMathNode(currNode))
   {
-    while (currNode && (msiGetBaseNodeName(currNode) != tagName))
+    while (currNode && (msiGetBaseNodeName(currNode) !== tagName))
     {
       if (msiNavigationUtils.isEmptyInputBox(currNode))
         currNode = currNode.parentNode;
@@ -12020,7 +12019,7 @@ function msiEditorFindJustInsertedElement(tagName, editor)
         childList = msiNavigationUtils.getSignificantContents(currNode);
         if (childList.length <= 1)
           currNode = currNode.parentNode;
-        else if (msiGetBaseNodeName(currNode) == "mtr")
+        else if (msiGetBaseNodeName(currNode) === "mtr")
           currNode = currNode.parentNode;
         else
           currNode = null;  //stop looking
@@ -12051,13 +12050,13 @@ function msiEditorFindJustInsertedElement(tagName, editor)
     switch(lookWhere[ii])
     {
       case "current":
-        bFound = (msiGetBaseNodeName(currNode) == tagName);
+        bFound = (msiGetBaseNodeName(currNode) === tagName);
       break;
       case "left":
         while (!bFound && currNode && (currOffset > 0))
         {
           currNode = currNode.childNodes[currOffset - 1];
-          bFound = (msiGetBaseNodeName(currNode) == tagName);
+          bFound = (msiGetBaseNodeName(currNode) === tagName);
           if (currNode.childNodes)
             currOffset = currNode.childNodes.length;
           else
@@ -12068,7 +12067,7 @@ function msiEditorFindJustInsertedElement(tagName, editor)
         while (!bFound && currNode && currNode.childNodes && (currOffset < currNode.childNodes.length))
         {
           currNode = currNode.childNodes[currOffset];
-          bFound = (msiGetBaseNodeName(currNode) == tagName);
+          bFound = (msiGetBaseNodeName(currNode) === tagName);
           currOffset = 0;
         }
       break;
@@ -12084,3 +12083,22 @@ function msiEditorFindJustInsertedElement(tagName, editor)
 
   return (bFound ? currNode : null);
 }
+
+
+
+function offsetOfChild(parent, child)
+{
+	var offset = 0;
+	if (child.parentNode != parent)
+	{
+		throw ("offsetOfChild: 'parent' must by parent of 'child'");
+	}
+	var node = parent.firstChild;
+	while (node && node != child)
+	{
+		node = node.nextSibling;
+		offset++;
+	}	
+	return offset;
+}
+
