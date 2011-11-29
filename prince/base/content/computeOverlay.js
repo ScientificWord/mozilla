@@ -2902,7 +2902,8 @@ function doComputeRandomNumbers(editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var o = new Object();
-  o.tally      = "10";  // sticky?
+// JLF - tally should have intially setting, then retain user input  
+// o.tally      = "10";  // sticky?
   o.dist       = 0;
   o.param1     = "";
   o.param2     = "";
