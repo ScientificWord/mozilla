@@ -33,14 +33,14 @@
       <groupbox>
         <caption label="&column.label;"/>
         <radiogroup id="column" orient="horizontal">
-          <radio label="&first.label;"  accesskey="&first.accesskey;"  id="first"  selected="true"/>
-          <radio label="&last.label;"   accesskey="&last.accesskey;"   id="last"   selected="false"/>
+          <radio label="&first.label;"  accesskey="&first.accesskey;"  id="first" persist="selected"  selected="true"/>
+          <radio label="&last.label;"   accesskey="&last.accesskey;"   id="last"  persist="selected"  selected="false"/>
         </radiogroup>
       </groupbox>
       <radiogroup id="code" onselect="doSelect(); return false;">
-        <radio label="&noconst.label;"  accesskey="&noconst.accesskey;" id="noconst"  selected="false"/>
-        <radio label="&regress.label;" accesskey="&regress.accesskey;" id="regress"  selected="true"/>
-        <radio label="&poly.label;"    accesskey="&poly.accesskey;" id="poly"     selected="false"/>
+        <radio label="&noconst.label;"  accesskey="&noconst.accesskey;" id="noconst" persist="selected"  selected="false"/>
+        <radio label="&regress.label;" accesskey="&regress.accesskey;" id="regress"  persist="selected" selected="true"/>
+        <radio label="&poly.label;"    accesskey="&poly.accesskey;" id="poly"   persist="selected"   selected="false"/>
       </radiogroup>
       <hbox>
         <spacer flex="1"/>
