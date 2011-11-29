@@ -191,75 +191,73 @@
               <toolbarbutton id="symbolsqcap" />
               <toolbarbutton id="symbolbigcirc"/>
               <toolbarbutton id="symbolsetminus" /> 
-              <toolbarbutton id="symbolsmallsetminus" /> 
+     <!--         <toolbarbutton id="symbolsmallsetminus" /> -->
+              <toolbarbutton id="symboloplus" />
             </row>
             <row>
-              <toolbarbutton id="symboloplus" />
               <toolbarbutton id="symbolominus" />
               <toolbarbutton id="symbolotimes" />
               <toolbarbutton id="symbolodot" />
-              <toolbarbutton id="symbolcircledast" />
+              <toolbarbutton id="symbolcircledast" /> 
+              <toolbarbutton id="symbolvee" />
             </row>
             <row>
-              <toolbarbutton id="symbolvee" />
               <toolbarbutton id="symbolwedge" />
               <toolbarbutton id="symbolcircledcirc" />
               <toolbarbutton id="symbollhd" />
               <toolbarbutton id="symbolrhd" />
-             </row>
-            <row>
               <toolbarbutton id="symbolveebar" />
+            </row>
+            <row>
               <toolbarbutton id="symbolbarwedge" />
               <toolbarbutton id="symbolwr" />
               <toolbarbutton id="symbolsmalltriangleleft" />
               <toolbarbutton id="symbolsmalltriangleright" />
+              <toolbarbutton id="symboluplus" />
             </row>
             <row>
-              <toolbarbutton id="symboluplus" />
               <toolbarbutton id="symboldoublebarwedge" />
               <toolbarbutton id="symbolamalg" /> 
               <toolbarbutton id="symbolunlhd" />
               <toolbarbutton id="symbolunrhd" />
+              <toolbarbutton id="symbolbigtriangledown" />
             </row>
             <row>
-              <toolbarbutton id="symbolbigtriangledown" />
               <toolbarbutton id="symbolbigtriangleup" />
               <toolbarbutton id="symbolsmalldiamond" />
               <toolbarbutton id="symboldagger" />
               <toolbarbutton id="symbolddagger" />
+              <toolbarbutton id="symbolboxplus" />
             </row>
             <row>
-              <toolbarbutton id="symbolboxplus" />
               <toolbarbutton id="symbolboxminus" />
               <toolbarbutton id="symbolboxtimes" />
               <toolbarbutton id="symbolboxdot" />
               <toolbarbutton id="symboloslash" />
+              <toolbarbutton id="symbolCap" />
             </row>
             <row>
-              <toolbarbutton id="symbolCap" />
               <toolbarbutton id="symbolCup" />
               <toolbarbutton id="symbolltimes" />
               <toolbarbutton id="symbolrtimes" />
               <toolbarbutton id="symbolstar" />
+              <toolbarbutton id="symbolcurlyvee" />
             </row>
             <row>
-              <toolbarbutton id="symbolcurlyvee" />
               <toolbarbutton id="symbolcurlywedge" />
               <toolbarbutton id="symbolleftthreetimes" />
               <toolbarbutton id="symbolrightthreetimes" />
               <toolbarbutton id="symbolintercal" />
+              <toolbarbutton id="symboldotplus" />
             </row>
             <row>
-              <toolbarbutton id="symboldotplus" />
               <toolbarbutton id="symbolcircleddash" />
               <toolbarbutton id="symboldivideontimes" />
               <toolbarbutton id="symbolcenterdot" />
               <toolbarbutton id="symbolsmallint" />
+             <toolbarbutton id="symbolampersand" />
             </row>
-            <row>
-              <toolbarbutton id="symbolampersand" />
-            </row>
-          </rows>
+           </rows>
         </grid>
       </tabpanel>
 
@@ -381,35 +379,33 @@
             </row>
             <row>
               <toolbarbutton id="symbolgtreqqless" />
-              <toolbarbutton id="symbolvarpropto" />
+  <!--            <toolbarbutton id="symbolvarpropto" /> -->
               <toolbarbutton id="symbolsmallsmile" />
               <toolbarbutton id="symbolsmallfrown" />
               <toolbarbutton id="symbolSubset" />
+              <toolbarbutton id="symbolSupset" />
             </row>
             <row>
-              <toolbarbutton id="symbolSupset" />
               <toolbarbutton id="symbolsubseteqq" />
               <toolbarbutton id="symbolsupseteqq" />
               <toolbarbutton id="symbolbumpeq" />
               <toolbarbutton id="symbolBumpeq" />
+              <toolbarbutton id="symbollll" />
             </row>
             <row>
-              <toolbarbutton id="symbollll" />
               <toolbarbutton id="symbolggg" />
               <toolbarbutton id="symbolpitchfork" />
               <toolbarbutton id="symbolbacksim" />
               <toolbarbutton id="symbolbacksimeq" />
+              <toolbarbutton id="symboleqsim" />
             </row>
             <row>
-              <toolbarbutton id="symboleqsim" />
               <toolbarbutton id="symbollessdot" />
               <toolbarbutton id="symbolgtrdot" />
-              <toolbarbutton id="symbolshortmid"  />
-              <toolbarbutton id="symbolshortparallel" /> 
-            </row>
-            <row>
-              <toolbarbutton id="symbolthicksim" /> 
-              <toolbarbutton id="symbolthickapprox" /> 
+<!--              <toolbarbutton id="symbolshortmid"  />
+              <toolbarbutton id="symbolshortparallel" /> -->
+  <!--            <toolbarbutton id="symbolthicksim" /> -->
+  <!--              <toolbarbutton id="symbolthickapprox" /> -->
               <toolbarbutton id="symbolapproxeq" />
               <toolbarbutton id="symbolsuccapprox" />
               <toolbarbutton id="symbolprecapprox" />
@@ -497,26 +493,24 @@
             </row>
             <row>
               <toolbarbutton id="symbolnmid" />
-              <toolbarbutton id="symbolnshortmid" /> 
-              <toolbarbutton id="symbolnshortparallel" />
+    <!--          <toolbarbutton id="symbolnshortmid" /> 
+              <toolbarbutton id="symbolnshortparallel" />-->
               <toolbarbutton id="symbolnvdash" />
               <toolbarbutton id="symbolnVdash" />
-            </row>
-            <row>
               <toolbarbutton id="symbolnvDash" />
               <toolbarbutton id="symbolnVDash" />
+            </row>
+            <row>
               <toolbarbutton id="symbolntrianglerighteq" />
               <toolbarbutton id="symbolntrianglelefteq" />
               <toolbarbutton id="symbolntriangleright" />
-            </row>
-            <row>
               <toolbarbutton id="symbolntriangleleft" />
               <toolbarbutton id="symbolnleftarrow" />
+            </row>
+            <row>
               <toolbarbutton id="symbolnrightarrow" />
               <toolbarbutton id="symbolnLeftarrow" />
               <toolbarbutton id="symbolnRightarrow" />
-            </row>
-            <row>
               <toolbarbutton id="symbolnLeftrightarrow" />
               <toolbarbutton id="symbolnleftrightarrow" />
             </row>
@@ -658,91 +652,91 @@
             </row>
             <row>
               <toolbarbutton id="symbolhbar" />
-              <toolbarbutton id="symbolhslash" />
+        <!--      <toolbarbutton id="symbolhslash" />-->
               <toolbarbutton id="symbolforall" />
               <toolbarbutton id="symbolexists" />
               <toolbarbutton id="symbolnexists" />						   
+              <toolbarbutton id="symbolRe" />
             </row>
             <row>
-              <toolbarbutton id="symbolRe" />
               <toolbarbutton id="symbolIm" />
               <toolbarbutton id="symbolaleph" />
               <toolbarbutton id="symbolprime" />
               <toolbarbutton id="symbolbackprime" />
+         <!--     <toolbarbutton id="symbolemptyset" />-->
+              <toolbarbutton id="symbolvarnothing" />
             </row>
             <row>
-              <toolbarbutton id="symbolemptyset" />
-              <toolbarbutton id="symbolvarnothing" />
               <toolbarbutton id="symbolnabla" />
               <toolbarbutton id="symbolsqrt" />
               <toolbarbutton id="symboltop" />
-            </row>
-            <row>
               <toolbarbutton id="symbolbot" />
               <toolbarbutton id="symboldh" />
+            </row>
+            <row>
               <toolbarbutton id="symbollambdabar" />
               <toolbarbutton id="symbolangle" />
               <toolbarbutton id="symbolmeasuredangle" />
-            </row>
-            <row>
               <toolbarbutton id="symbolsphericalangle" />
               <toolbarbutton id="symbolcircledS" />
+            </row>
+            <row>
               <toolbarbutton id="symbolscrL" />
               <toolbarbutton id="symbolscrF" />
               <toolbarbutton id="symbolneg" />
-            </row>
-            <row>
               <toolbarbutton id="symbolcomplement" />
               <toolbarbutton id="symbolFinv" />
+            </row>
+            <row>
               <toolbarbutton id="symbolGame" />
               <toolbarbutton id="symbolbigstar" />
               <toolbarbutton id="symbolVert" />
-            </row>
-            <row>
               <toolbarbutton id="symbolmdlgwhtsquare" />
               <toolbarbutton id="symbolsmblksquare" />
+            </row>
+            <row>
               <toolbarbutton id="symbolmdlgwhtdiamond" />
               <toolbarbutton id="symbollozenge" />
               <toolbarbutton id="symbolmdlgblklozenge" />
-            </row>
-            <row>
               <toolbarbutton id="symbolbackslash" />
               <toolbarbutton id="symboltriangle" />
+            </row>
+            <row>
               <toolbarbutton id="symbolblacktriangle" />
               <toolbarbutton id="symboltriangledown" />
               <toolbarbutton id="symbolblacktriangledown" />
-            </row>
-            <row>
               <toolbarbutton id="symboldag" />
               <toolbarbutton id="symbolddag" />
+            </row>
+            <row>
               <toolbarbutton id="symbolbeth" />
               <toolbarbutton id="symbolgimel" />
               <toolbarbutton id="symboldaleth" />
-            </row>
-            <row>
               <toolbarbutton id="symbolsharp" />
               <toolbarbutton id="symbolflat" />
+            </row>
+            <row>
               <toolbarbutton id="symbolnatural" />
               <toolbarbutton id="symbolclubsuit" />
               <toolbarbutton id="symboldiamondsuit" />
-            </row>
-            <row>
               <toolbarbutton id="symbolheartsuit" />
               <toolbarbutton id="symbolspadesuit" />
+            </row>
+            <row>
               <toolbarbutton id="symbolcheckmark" />
               <toolbarbutton id="symbolmaltese" />
               <toolbarbutton id="symbolBbbk" />
-            </row>
-            <row>
               <toolbarbutton id="symbolBbbC" />
               <toolbarbutton id="symbolBbbN" />
+            </row>
+            <row>
               <toolbarbutton id="symbolBbbQ" />
               <toolbarbutton id="symbolBbbR" />
               <toolbarbutton id="symbolBbbZ" />
-            </row>
-            <row>
               <toolbarbutton id="symboleuro" />
               <toolbarbutton id="symboltexttrademark" />
+            </row>
+            <row>
               <toolbarbutton id="symbolmho" />
             </row>
           </rows>
