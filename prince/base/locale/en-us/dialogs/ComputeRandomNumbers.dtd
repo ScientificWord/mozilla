@@ -4,6 +4,7 @@
 <!ENTITY many.label        "How Many?">
 <!ENTITY parameters.label  "Parameters">
 
+<!ENTITY many.accesskey "m">
 <!ENTITY Beta.label "Beta">
 <!ENTITY Binomial.label "Binomial">
 <!ENTITY Cauchy.label "Cauchy">
