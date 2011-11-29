@@ -36,6 +36,8 @@
   onload="Startup();"
   screenX="40"
   screenY="40"
+  height="245"
+  width="575"
   persist="screenX screenY width height"
 >
 
@@ -86,8 +88,7 @@
 <!--JLF - work on height for correct text display.  Also accesskey is not working.-->
 	<vbox>
 	  <groupbox>
-	    <label id="sectionCodeDescription" control="sectiontitle-frame" accesskey="&sectionCodeDescription.accesskey;">
-        &sectionCodeDescription.label;
+	    <label id="sectionCodeDescription" control="sectiontitle-frame" accesskey="&sectionCodeDescription.accesskey;" value="&sectionCodeDescription.label;">
       </label>
 	    <editor editortype="html" type="content" width="400" height="100" context="msiEditorContentContext" id="sectiontitle-frame"/>
 	  </groupbox>

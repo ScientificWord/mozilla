@@ -501,11 +501,11 @@ shortTitle {
 }
 
 msiframe {
-  display: inline-block;
+  display: block;
 }
 
 msiframe[pos="inline"] {
-  display: inline;
+  display: inline-block;
 }
 
 msiframe[captionloc]

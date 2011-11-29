@@ -2,10 +2,12 @@
 
 .home-arrow {
   list-style-image: url("moz-icon://stock/gtk-goto-first?size=menu");
+  width: 12px;
 }
 
 .end-arrow {
   list-style-image: url("moz-icon://stock/gtk-goto-last?size=menu");
+  width: 12px;
 }
 
 .left-arrow {
