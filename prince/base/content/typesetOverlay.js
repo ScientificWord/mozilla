@@ -1103,6 +1103,7 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
       {
         case "requirespackage":
         case "documentclass":
+        case "colist":
           return NodeFilter.FILTER_ACCEPT;
         break;
         default:
@@ -1124,6 +1125,7 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
   if (currPreambleWalker)
   {
     var nextNode;
+    var ignoreAttrs = /^[_\-]moz/;
     while (nextNode = currPreambleWalker.nextNode())
     {
       switch(msiGetBaseNodeName(nextNode))
@@ -1139,7 +1141,21 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
         break;
         case "documentclass":
           retObj.docClassName = nextNode.getAttribute("class");
-          retObj.docClassOptions = nextNode.getAttribute("options");
+          retObj.docClassOptions = "";
+          var optionstr = nextNode.getAttribute("options");
+          if (optionstr && optionstr.length)
+            retObj.docClassOptions = optionstr;
+        break;
+        case "colist":
+          for (var ix = 0; ix < nextNode.attributes.length; ++ix)
+          {
+            if ((nextNode.attributes[ix].nodeName != "enabled") && (nextNode.attributes[ix].nodeName.search(ignoreAttrs) < 0))
+            {
+              if (retObj.docClassOptions.length > 0)
+                retObj.docClassOptions += ", ";
+              retObj.docClassOptions += nextNode.attributes[ix].textContent;
+            }
+          }
         break;
         default:
         break;

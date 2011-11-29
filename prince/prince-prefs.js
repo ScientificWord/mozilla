@@ -73,16 +73,18 @@ pref("swp.bibtex.dir", "/swp55/TCITeX/BibTeX/bib");
 pref("swp.ctrl.m","math"); // other value is 'toggle'
 pref("swp.ctrl.t","text"); // other value is'toggle'
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
-pref("swp.defaultGraphicsVSize", 200);
-pref("swp.defaultGraphicsHSize", 200);
-pref("swp.defaultGraphicsPlacement", "display");
+pref("swp.defaultGraphicsVSize", "2.0");
+pref("swp.defaultGraphicsHSize", "3.0");
+pref("swp.defaultGraphicsSizeUnits", "in");
+pref("swp.defaultGraphicsPlacement", "display,,");
 pref("swp.defaultShell", "articles/Standard_LaTeX_Article.sci");
 pref("swp.fancyreturn",true);
 pref("swp.generateTeXonsave", true);
 pref("swp.graph.DefaultFileType", "xvc");
 pref("swp.graph.Dimension",  "2");
-pref("swp.graph.HSize", 200);
-pref("swp.graph.VSize", 200);
+pref("swp.graph.HSize", "3.0");
+pref("swp.graph.VSize", "4.5");
+pref("swp.graph.SizeUnits", "in");
 pref("swp.graph.Placement", "display");
 pref("swp.graph.XAxisLabel", "");
 pref("swp.graph.XTickCount", "0");
