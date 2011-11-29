@@ -107,7 +107,7 @@
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
       <toolbaritem id="FrontMTags" title="&frontmtagselect.label;"><textbox id="FrontMTagSelections"/></toolbaritem>
      <!-- JLF, apply correct format for % in entity.  Using the percent symbol in the entity string in DTD file causes parsing error-->
-      <toolbaritem id="zoomer" title="Zoom setting" ><textbox id="zoomValue" label="Zoom %" tooltip="&ZoomSetting.tooltip;" type="number" observes="cmd_textZoomSet"/></toolbaritem>
+      <toolbaritem id="zoomer" title="Zoom setting" ><textbox id="zoomValue" label="Zoom %" tooltiptext="&ZoomSetting.tooltip;" type="number" observes="cmd_textZoomSet"/></toolbaritem>
       
     </toolbarpalette>
     <toolbar 
