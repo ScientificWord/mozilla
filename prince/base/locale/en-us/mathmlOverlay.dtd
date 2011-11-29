@@ -211,7 +211,7 @@
 <!ENTITY symbolsqcap.tooltip      "sqcap">
 <!ENTITY symbolbigcirc.tooltip    "bigcirc"> 
 <!ENTITY symbolsetminus.tooltip   "setminus"> 
-<!ENTITY symbolsmallsetminus.tooltip   "smallsetminus"> 
+<!-- ENTITY symbolsmallsetminus.tooltip   "smallsetminus" --> 
 <!ENTITY symboloplus.tooltip      "oplus">
 <!ENTITY symbolominus.tooltip     "ominus">
 <!ENTITY symbolotimes.tooltip     "otimes">
@@ -231,7 +231,7 @@
 <!ENTITY symboldoublebarwedge.tooltip   "doublebarwedge">
 <!ENTITY symbolamalg.tooltip      "amalg">
 <!ENTITY symbolunlhd.tooltip      "unlhd">
- <!ENTITY symbolunrhd.tooltip      "unrhd">
+<!ENTITY symbolunrhd.tooltip      "unrhd">
 <!ENTITY symbolbigtriangledown.tooltip    "bigtriangledown">
 <!ENTITY symbolbigtriangleup.tooltip      "bigtriangleup">
 <!ENTITY symbolsmalldiamond.tooltip     "smalldiamond">
@@ -335,7 +335,7 @@
 <!ENTITY symbolgtreqless.tooltip  "gtreqless">
 <!ENTITY symbollesseqqgtr.tooltip    "lesseqqgtr">
 <!ENTITY symbolgtreqqless.tooltip	 "gtreqqless">
-<!ENTITY symbolvarpropto.tooltip     "varpropto">
+<!--ENTITY symbolvarpropto.tooltip     "varpropto"-->
 <!ENTITY symbolsmallsmile.tooltip    "smallsmile">
 <!ENTITY symbolsmallfrown.tooltip    "smallfrown">
 <!ENTITY symbolSubset.tooltip   "Subset">
