@@ -33,7 +33,7 @@
   <hbox id="outer-box" flex="1">
     <vbox>
       <hbox>
-        <description>&many.label;</description>
+        <description>&many.label;  accesskey='&many.accesskey;'</description>
         <spacer flex="1"/>
         <textbox id="tally" style="width: 3em" value="10" persist="value"/>
       </hbox>
