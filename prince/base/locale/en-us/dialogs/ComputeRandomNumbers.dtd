@@ -2,9 +2,8 @@
 
 <!ENTITY windowTitle.label "Random Numbers">
 <!ENTITY many.label        "How Many?">
-<!ENTITY parameters.label  "Parameters">
-
 <!ENTITY many.accesskey "m">
+
 <!ENTITY Beta.label "Beta">
 <!ENTITY Binomial.label "Binomial">
 <!ENTITY Cauchy.label "Cauchy">
@@ -18,3 +17,5 @@
 <!ENTITY Uniform.label  "Uniform">
 <!ENTITY Weibull.label  "Weibull">
 
+<!ENTITY parameters.label  "Parameters">
+<!ENTITY parameters.accesskey "p">
