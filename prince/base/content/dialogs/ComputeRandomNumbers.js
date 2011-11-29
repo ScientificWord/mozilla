@@ -17,6 +17,9 @@ function OK(){
 
   var tally = document.getElementById("tally");
   data.tally = parseInt(tally.value,10);
+//JLF - Needed to get persistence to work.
+  tally.setAttribute("value", tally.value);
+
 
   var dist = document.getElementById("dist");
   data.dist = dist.selectedIndex;
