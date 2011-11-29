@@ -1983,6 +1983,7 @@ function reviseRadical(theRadical, objectName, editorElement)
   {
 //    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var newRoot = theRadical.ownerDocument.createElementNS(mmlns, objectName);
+    var nb;
 //    var nextSibling = currRoot.nextSibling;
 //    if (nextSibling == null)
 //      newRoot = currRoot.parentNode.appendChild(newRoot);
@@ -1999,7 +2000,8 @@ function reviseRadical(theRadical, objectName, editorElement)
         msiEditorMoveChildren(newRow, currRoot, editor);
         editor.insertNode(newRow, newRoot, 0);
       }
-      editor.insertNode(newbox(editor), newRoot, 1);
+      nb = newbox(editor);
+      editor.insertNode(nb, newRoot, 1);
     }
     else  //creating a msqrt - any "inferred row" of children is okay, but only want to move children of first child of mroot
     {
@@ -2013,6 +2015,11 @@ function reviseRadical(theRadical, objectName, editorElement)
     editor.replaceNode(newRoot, currRoot, currRoot.parentNode);
     if (currRoot == retVal)  //radical was top level object being modified; new one should be the return value
       retVal = newRoot;          //(otherwise original object should still be returned)
+    if (nb)
+      editor.selection.collapse(nb,0);
+    else
+      editor.selection.collapse(newRoot,0);
+    
 //    currRoot.parentNode.removeChild(currRoot);
 
 //    AlertWithTitle("mathmlOverlay.js", "In reviseFraction, functionality needs to be implemented.");
