@@ -30,22 +30,39 @@
   <xsl:variable name="rawName">
     <xsl:choose>
       <xsl:when test="@typesetSource"><xsl:value-of select="@typesetSource"/></xsl:when>
-      <xsl:when test="@data"><xsl:value-of select="@data"/></xsl:when>
       <xsl:when test="@src"><xsl:value-of select="@src"/></xsl:when>
+      <xsl:when test="@data"><xsl:value-of select="@data"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="''"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="modifiedName">
+  <xsl:variable name="fileName">
     <xsl:choose>
-      <xsl:when test="starts-with($rawName,'../')"><xsl:value-of select="substring-after($rawName, '../')"/></xsl:when>
+      <xsl:when test="starts-with($rawName, 'graphics/')"><xsl:value-of select="substring-after($rawName, 'graphics/')"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="$rawName"/></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  <xsl:variable name="afterLastDot">
+    <xsl:call-template name="charsAfterLastOccurence">
+      <xsl:with-param name="theString" select="$fileName"/>
+      <xsl:with-param name="theSubstring" select="'.'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:value-of select="substring($fileName, 1, string-length($fileName) - number($afterLastDot) - 1)" />
+</xsl:template>
+
+<xsl:template name="charsAfterLastOccurence">
+  <xsl:param name="theString"/>
+  <xsl:param name="theSubstring"/>
   <xsl:choose>
-    <xsl:when test="starts-with($modifiedName, 'graphics/')"><xsl:value-of select="substring-after($modifiedName, 'graphics/')"/></xsl:when>
-    <xsl:when test="starts-with($modifiedName, 'tcache/')"><xsl:value-of select="substring-after($modifiedName, 'tcache/')"/></xsl:when>
-    <xsl:when test="starts-with($modifiedName, 'gcache/')"><xsl:value-of select="substring-after($modifiedName, 'gcache/')"/></xsl:when>
-    <xsl:otherwise><xsl:value-of select="$modifiedName"/></xsl:otherwise>
+    <xsl:when test="contains($theString,$theSubstring)">
+      <xsl:call-template name="charsAfterLastOccurence">
+        <xsl:with-param name="theString" select="substring-after($theString,$theSubstring)"/>
+        <xsl:with-param name="theSubstring" select="$theSubstring"/>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="string-length($theString)" />
+    </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
@@ -157,7 +174,7 @@
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:value-of select="number($baseWidth) + number($padding) + number($border)" /><xsl:call-template name="unit"/>
+  <xsl:value-of select="number($baseWidth) + number($padding) + number($border)" />
 </xsl:template>
 
 </xsl:stylesheet>

@@ -6947,7 +6947,7 @@ function msiMathNameList()
       currStr = theControl.getAttribute("onfocus");
     theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();" + currStr);
 //    theControl.setAttribute("autocompletesearchparam", this.getIndexString());
-  }
+  };
 }
 
 var msiBaseMathUnitsList = 
@@ -7440,8 +7440,15 @@ var msiAutosubstitutionList =
       returnList[aPattern] = this.mSubsList[aPattern];
     }
     return returnList;
-  }
+  },
 
+  setUpTextBoxControl : function(theControl)
+  {
+    var currStr = "";
+    if (theControl.hasAttribute("onfocus"))
+      currStr = theControl.getAttribute("onfocus");
+    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();" + currStr);
+  }
 };
 
 var msiSearchStringManager = 

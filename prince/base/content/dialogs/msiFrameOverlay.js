@@ -19,6 +19,9 @@ var metrics = {margin:{}, border: {}, padding: {}};
 var role;
 var gConstrainWidth = 0;
 var gConstrainHeight = 0;
+var gActualWidth = 0;
+var gActualHeight = 0;
+var gDefaultPlacement = "";
 
 function setHasNaturalSize(istrue)
 // images frequently have a natural size
@@ -173,6 +176,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
 	frameUnitHandler.initCurrentUnit(dg.frameUnitMenulist.value);
 // The defaults for the document are set by the XUL document, modified by persist attributes. If there is
 // no pre-existing frame object, the dg is set to go.
+  var placeLocation, placementStr, pos;
   if (!newElement)
   {   // we need to initialize the dg from the frame element
     if (!contentsElement)
@@ -257,17 +261,53 @@ function initFrameTab(dg, element, newElement, contentsElement)
 	    for (i = 0; i<4; i++)
 	      { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
     }
-		var placeLocation = element.getAttribute("placeLocation");
+		placeLocation = element.getAttribute("placeLocation");
     if (!placeLocation)
       placeLocation = "";
+    placementStr = element.getAttribute("placement");
+    if (!placementStr)
+      placementStr = "";
+    pos = element.getAttribute("pos");
+    if (!pos)
+      pos = "";
+
+    var theColor;
+    if (contentsElement.hasAttribute("border-color"))
+    {
+      theColor = hexcolor(contentsElement.getAttribute("border-color"));
+      setColorInDialog("colorWell", theColor);
+    }
+    if (contentsElement.hasAttribute("background-color"))
+    {
+      theColor = hexcolor(contentsElement.getAttribute("background-color"));
+      setColorInDialog("bgcolorWell", theColor);
+    }
+  }
+  else if (gDefaultPlacement.length)
+  {
+    var defPlacementArray = gDefaultPlacement.split(",");
+    if (defPlacementArray.length)
+    {
+      pos = TrimString(defPlacementArray[0]);
+      if (defPlacementArray.length > 1)
+      {
+        placeLocation = TrimString(defPlacementArray[1]);
+        if (defPlacementArray.length > 2)
+          placementStr = TrimString(defPlacementArray[2]);
+      }
+    }
+  }
+
+  if (!newElement || gDefaultPlacement.length)
+  {
     dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
     dg.placeHereCheck.checked = (placeLocation.search("h") != -1);
     dg.placeFloatsCheck.checked = (placeLocation.search("p") != -1);
     dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
     dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
 
-    dg.herePlacementRadioGroup.value = element.getAttribute("placement");
-    if (!dg.herePlacementRadioGroup.value)
+    dg.herePlacementRadioGroup.value = placementStr;
+    if (!dg.herePlacementRadioGroup.value || !dg.herePlacementRadioGroup.value.length)
       dg.herePlacementRadioGroupValue = "full";  //as in the default below
     switch (dg.herePlacementRadioGroup.value) {
       case "L": dg.herePlacementRadioGroup.selectedIndex = 0;
@@ -281,22 +321,9 @@ function initFrameTab(dg, element, newElement, contentsElement)
       default:  dg.herePlacementRadioGroup.selectedIndex = 4;
     }
       
-    var pos = element.getAttribute("pos");
     dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
-
-    // TODO: color
-    var theColor;
-    if (contentsElement.hasAttribute("border-color"))
-    {
-      theColor = hexcolor(contentsElement.getAttribute("border-color"));
-      setColorInDialog("colorWell", theColor);
-    }
-    if (contentsElement.hasAttribute("background-color"))
-    {
-      theColor = hexcolor(contentsElement.getAttribute("background-color"));
-      setColorInDialog("bgcolorWell", theColor);
-    }
   }
+
   var placement = 0;
   var placementLetter = document.getElementById("herePlacementRadioGroup").value;
   if (/l|i/i.test(placementLetter)) placement=1;
