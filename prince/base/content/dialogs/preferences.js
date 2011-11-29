@@ -1,5 +1,15 @@
 Components.utils.import("resource://app/modules/computelogger.jsm");
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
+
+var placementIdsGraphics = {prefID : "defaultGraphicsPlacement", placementRadio : "placementRadioGroup",
+                            hereRadioGroup : "herePlacementRadioGroup", placeForceHereCheckbox : "placeForceHereCheck",
+                            placeHereCheckbox : "placeHereCheck", placeFloatsCheckbox : "placeFloatsCheck",
+                            placeTopCheckbox : "placeTopCheck", placeBottomCheckbox : "placeBottomCheck"};
+var placementIdsPlot = {prefID : "GraphPlacement", placementRadio : "plotPlacementRadioGroup",
+                        hereRadioGroup : "plotHerePlacementRadioGroup", placeForceHereCheckbox : "plotPlaceForceHereCheck",
+                        placeHereCheckbox : "plotPlaceHereCheck", placeFloatsCheckbox : "plotPlaceFloatsCheck",
+                        placeTopCheckbox : "plotPlaceTopCheck", placeBottomCheckbox : "plotPlaceBottomCheck"};
 
 function myDump(aMessage) {
   var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
@@ -19,6 +29,8 @@ function initialize()
   tree.setAttribute("ref", url.spec);
   tree.currentIndex = 0;
   showShellsInDir(tree);
+  setGraphicLayoutPreferences("graphics");
+  setGraphicLayoutPreferences("plot");
   setTypesetFilePrefTestboxes();
 }
 
@@ -89,6 +101,8 @@ function onCancel () {
 
 function onAccept(){
   try {
+    writeGraphicLayoutPreferences("graphics");
+    writeGraphicLayoutPreferences("plot");
     document.getElementById("prefGeneral").writePreferences(true);
     document.getElementById("prefEdit").writePreferences(true);
     writeComputePreferences();
@@ -123,6 +137,122 @@ function writeComputePreferences()
     pref = document.getElementById(prefId);
     onComputeSettingChange(pref, true);    
   }   
+}
+
+function setGraphicLayoutPreferences(whichPrefs)
+{
+  var pref;
+  switch(whichPrefs)
+  {
+    case "graphics":
+      setGraphicPlacementPreferences(placementIdsGraphics);
+      pref = document.getElementById("defaultGraphicsSizeUnits");
+      initUnitsControl( document.getElementById("graphicsUnitsList"), pref,
+                          [document.getElementById("graphicsWidth"), document.getElementById("graphicsHeight")] );
+//      pref = document.getElementById("defaultGraphicsHSize");
+//      document.getElementById("graphicsWidth").value = (pref.value && pref.value.length) ? pref.value : "0";
+//      pref = document.getElementById("defaultGraphicsVSize");
+//      document.getElementById("graphicsHeight").value = (pref.value && pref.value.length) ? pref.value : "0";
+    break;
+    case "plot":
+      setGraphicPlacementPreferences(placementIdsPlot);
+      pref = document.getElementById("defaultGraphSizeUnits");
+      initUnitsControl( document.getElementById("plotUnitsList"), pref,
+                          [document.getElementById("plotWidth"), document.getElementById("plotHeight")]);
+//      pref = document.getElementById("GraphHSize");
+//      document.getElementById("plotWidth").value = (pref.value && pref.value.length) ? pref.value : "0";
+//      pref = document.getElementById("GraphVSize");
+//      document.getElementById("plotHeight").value = (pref.value && pref.value.length) ? pref.value : "0";
+    break;
+  }
+}
+
+function writeGraphicLayoutPreferences(whichPrefs)
+{
+  var pref;
+  switch(whichPrefs)
+  {
+    case "graphics":
+      writeGraphicPlacementPreferences(placementIdsGraphics);
+      //The following are necessary since when changing the units, the unit handler changes the values, but
+      //this doesn't fire the needed event.
+      pref = document.getElementById("defaultGraphicsHSize");
+      pref.value = document.getElementById("graphicsWidth").value;
+      pref = document.getElementById("defaultGraphicsVSize");
+      pref.value = document.getElementById("graphicsHeight").value;
+//      pref = document.getElementById("defaultGraphicsSizeUnits");
+//      pref.value = document.getElementById("graphicsUnitsList").value;
+    break;
+    case "plot":
+      writeGraphicPlacementPreferences(placementIdsPlot);
+      //The following are necessary since when changing the units, the unit handler changes the values, but
+      //this doesn't fire the needed event.
+      pref = document.getElementById("GraphHSize");
+      pref.value = document.getElementById("plotWidth").value;
+      pref = document.getElementById("GraphVSize");
+      pref.value = document.getElementById("plotHeight").value;
+//      pref = document.getElementById("defaultGraphSizeUnits");
+//      pref.value = document.getElementById("plotUnitsList").value;
+    break;
+  }
+}
+
+function setGraphicPlacementPreferences(whichIDs)
+{
+  if (!whichIDs)
+    whichIDs = placementIdsGraphics;
+  var pref = document.getElementById(whichIDs.prefID);
+  var pos = "inline";
+  var placeLocation = "";
+  var placement = "";
+  if (pref.value && pref.value.length)
+  {
+    var defPlacementArray = pref.value.split(",");
+    if (defPlacementArray.length)
+    {
+      pos = TrimString(defPlacementArray[0]);
+      if (defPlacementArray.length > 1)
+      {
+        placeLocation = TrimString(defPlacementArray[1]);
+        if (defPlacementArray.length > 2)
+          placement = TrimString(defPlacementArray[2]);
+      }
+    }
+  }
+
+  if (pos.length)
+    document.getElementById(whichIDs.placementRadio).value = pos;
+  if (placement.length)
+    document.getElementById(whichIDs.hereRadioGroup).value = placement;
+  for (var ii = 0; ii < placeLocation.length; ++ii)
+  {
+    switch(placeLocation[ii])
+    {
+      case "H":      document.getElementById(whichIDs.placeForceHereCheckbox).checked = true;  break;
+      case "h":      document.getElementById(whichIDs.placeHereCheckbox).checked = true;       break;
+      case "p":      document.getElementById(whichIDs.placeFloatsCheckbox).checked = true;     break;
+      case "t":      document.getElementById(whichIDs.placeTopCheckbox).checked = true;        break;
+      case "b":      document.getElementById(whichIDs.placeBottomCheckbox).checked = true;     break;
+      default:                                                                       break;
+    }
+  }
+}
+
+function writeGraphicPlacementPreferences(whichIDs)
+{
+  if (!whichIDs)
+    whichIDs = placementIdsGraphics;
+  var pos = document.getElementById(whichIDs.placementRadio).value;
+  var placeLocation = "";
+  if (document.getElementById(whichIDs.placeForceHereCheckbox).checked)   placeLocation += "H";
+  if (document.getElementById(whichIDs.placeHereCheckbox).checked)        placeLocation += "h";
+  if (document.getElementById(whichIDs.placeFloatsCheckbox).checked)      placeLocation += "p";
+  if (document.getElementById(whichIDs.placeTopCheckbox).checked)         placeLocation += "t";
+  if (document.getElementById(whichIDs.placeBottomCheckbox).checked)      placeLocation += "b";
+  var placement = document.getElementById(whichIDs.hereRadioGroup).value;
+
+  var pref = document.getElementById(whichIDs.prefID);
+  pref.value = pos + "," + placeLocation + "," + placement;
 }
 
 var prefMapper;
@@ -314,7 +444,7 @@ function setFilePrefFromTextbox(aPref)
   }
   if (theTextbox && theTextbox.value)
   {
-    try { thePref.value.initWithPath(theTextbox.value); }
+    try { aPref.value.initWithPath(theTextbox.value); }
     catch(exc) {dump("Error in preferences.js setFilePrefFromTextbox for pref [" + aPref.id + "]: [" + exc + "].\n");} 
   }
 }
@@ -331,4 +461,23 @@ function getTypesetFilePrefs()
   setFilePrefFromTextbox(document.getElementById("bibTeXExecutable"));
   setFilePrefFromTextbox(document.getElementById("bibTeXDatabaseDir"));
   setFilePrefFromTextbox(document.getElementById("bibTeXStyleDir"));
+}
+
+function initUnitsControl(unitBox, pref, controlArray)
+{
+  unitBox.unitsHandler = new UnitHandler();
+  unitBox.unitsHandler.setEditFieldList(controlArray);
+
+  var currUnit = "pt";
+  if (pref.value && pref.value.length)
+    currUnit = pref.value;
+  else if (unitBox.value)
+    currUnit = unitBox.value;
+  unitBox.unitsHandler.initCurrentUnit(currUnit);
+}
+
+function onChangeUnits(unitBox)
+{
+  if (unitBox.unitsHandler)
+    unitBox.unitsHandler.setCurrentUnit(unitBox.value);
 }

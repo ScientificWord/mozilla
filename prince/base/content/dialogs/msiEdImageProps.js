@@ -51,8 +51,6 @@ var frameTabDlg = new Object();
 //var gConstrainHeight = 0;  //Moved to msiFrameOverlay
 var imageElement;
 var wrapperElement;
-var gActualWidth = "";
-var gActualHeight = "";
 var gDefaultWidth = 200;
 var gDefaultHeight = 100;
 var gOriginalSrc = "";
@@ -165,6 +163,7 @@ function Startup()
 
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
+  gDefaultPlacement = GetStringPref("swp.defaultGraphicsPlacement");
 
   initFrameTab(frameTabDlg, wrapperElement, gInsertNewImage, imageElement);
   InitDialog();
@@ -216,7 +215,6 @@ function fillInValue(element, index, array)
     element= msiGetHTMLOrCSSStyleValue(null, globalImage, gBorderdesc[index], null);
 }
 
-
 // Set dialog widgets with attribute data
 // We get them from globalElement copy so this can be used
 //   by AdvancedEdit(), which is shared by all property dialogs
@@ -249,6 +247,12 @@ function InitImage()
     var re = /[a-z]*/gi;
     var widthStr = "";
     var heightStr = "";
+    if (imageElement.hasAttribute("units"))
+    {
+      var unit = imageElement.getAttribute("units");
+      frameUnitHandler.setCurrentUnit(unit);
+      frameTabDlg.frameUnitMenulist.value = unit;
+    }
     if (imageElement.hasAttribute(widthAtt))
     {
       widthStr = imageElement.getAttribute(widthAtt);
@@ -295,6 +299,18 @@ function InitImage()
         gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
     }
   }
+  else
+  {
+    var unit = GetStringPref("swp.defaultGraphicsSizeUnits");
+    if (unit && unit.length)
+    {
+      frameUnitHandler.setCurrentUnit(unit);
+      frameTabDlg.frameUnitMenulist.value = unit;
+    }
+    width = Number(GetStringPref("swp.defaultGraphicsHSize"));
+    height = Number(GetStringPref("swp.defaultGraphicsVSize"));
+  }
+
   if ((width > 0) || (height > 0))
     setWidthAndHeight(width, height, null);
   else if ((gActualHeight > 0)||(gActualWidth > 0)) 
@@ -366,7 +382,7 @@ function InitImage()
 
   // Set actual radio button if both set values are the same as actual
   SetSizeWidgets(pixelWidth, pixelHeight);
-  frameTabDlg.unitList.value = "pt";
+//  frameTabDlg.unitList.value = "pt";
 
 //  if ((width > 0) || (height > 0))
 //  {
