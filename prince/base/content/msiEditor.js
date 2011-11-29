@@ -447,6 +447,17 @@ function addKeyDownEventListenerForEditor(editorElement)
   catch(ex) {dump("Unable to register keydown event listener; error [" + ex + "].\n");}
 }
 
+function addObjectResizeListenerForEditor(editorElement)
+{
+  try
+  {
+    var editor = msiGetEditor(editorElement);
+    editor instanceof Components.interfaces.nsIHTMLObjectResizer;
+    editor.addObjectResizeEventListener(new msiResizeListenerForEditor(editor));
+  }
+  catch(ex) {dump("Unable to register object resize event listener; error [" + ex + "].\n");}
+}
+
 function addFocusEventListenerForEditor(editorElement)
 {
 //  if (msiIsTopLevelEditor(editorElement))
@@ -497,6 +508,57 @@ function msiEditorKeyListener(event)
     break;
   }
 }
+
+var msiResizeListener =
+{
+  onStartResizing : function(aElement) {},
+
+  onEndResizing : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
+  {
+    switch(msiGetBaseNodeName(anElement))
+    {
+      case "object":
+        this.resizeGraphic(anElement, oldWidth, oldHeight, newWidth, newHeight);
+      break;
+    }
+  },
+
+  resizeGraphic : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
+  {
+    var theUnits = anElement.getAttribute("units");
+    var elemWidth = anElement.getAttribute("imageWidth");
+    var elemHeight = anElement.getAttribute("imageHeight");
+    var bSetWidth = elemWidth && (Number(elemWidth) != 0);
+    var bSetHeight = elemHeight && (Number(elemHeight) != 0);
+    if (bSetWidth && !bSetHeight)  //only set height if no longer preserves aspect ratio
+    {
+      var ratio = Number(anElement.getAttribute("naturalHeight"))/Number(anElement.getAttribute("naturalWidth"));
+      if (!ratio || (ratio == Number.POSITIVE_INFINITY) || (ratio == Number.NEGATIVE_INFINITY) || (ratio == Number.NaN))
+        bSetHeight = true;
+      else
+        bSetHeight = (Math.abs(ratio * newWidth - newHeight) > 2.0);
+    }
+    else if (!bSetWidth)  //Note that this includes case where neither attribute was set - if the ratio is okay we'll set only the width
+    {
+      var ratio = Number(anElement.getAttribute("naturalWidth"))/Number(anElement.getAttribute("naturalHeight"));
+      if (!ratio || (ratio == Number.POSITIVE_INFINITY) || (ratio == Number.NEGATIVE_INFINITY) || (ratio == Number.NaN))
+        bSetWidth = true;
+      else
+        bSetWidth = (Math.abs(ratio * newHeight - newWidth) > 2.0);
+    }
+    if (bSetWidth)
+      msiEditorEnsureElementAttribute(anElement, "imageWidth", msiCSSUnitsList.convertUnits(newWidth, "pt", theUnits), this.mEditor);
+    if (bSetHeight)
+      msiEditorEnsureElementAttribute(anElement, "imageHeight", msiCSSUnitsList.convertUnits(newHeight, "pt", theUnits), this.mEditor);
+  }
+}
+
+function msiResizeListenerForEditor(editor)
+{
+  this.mEditor = editor;
+}
+
+msiResizeListenerForEditor.prototype = msiResizeListener;
 
 function addDOMEventListenerForEditor(editorElement)
 {
@@ -857,6 +919,7 @@ function msiEditorDocumentObserver(editorElement)
           addClickEventListenerForEditor(this.mEditorElement);
           addFocusEventListenerForEditor(this.mEditorElement);
           addKeyDownEventListenerForEditor(this.mEditorElement);
+          addObjectResizeListenerForEditor(this.mEditorElement);
 //          addDOMEventListenerForEditor(editorElement);
 
           this.mEditorElement.pdfModCount = 0;
