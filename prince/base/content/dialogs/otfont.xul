@@ -25,8 +25,8 @@
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
     buttons="accept,cancel" 
-    width="300px" 
-    height="390px"
+    width="400px" 
+    height="440px"
     screenX="40"
     screenY="40"
     persist="screenX screenY width height">
