@@ -111,9 +111,48 @@
 
 % ["pgorient", "papersize", "sides", "qual", "columns", "titlepage", "textsize", "eqnnopos", "eqnpos", "bibstyle"];
 
-\expandafter\def\csname 10ptAttrib\endcsname{textsize}
-\expandafter\def\csname 11ptAttrib\endcsname{textsize}
-\expandafter\def\csname 12ptAttrib\endcsname{textsize}
+\expandafter\def\csname 10ptAttrib\endcsname{textsize="10pt"}
+\expandafter\def\csname 11ptAttrib\endcsname{textsize="11pt"}
+\expandafter\def\csname 12ptAttrib\endcsname{textsize="12pt"}
+
+%\expandafter\def\csname portAttrib\endcsname{pgorient="port"}
+\expandafter\def\csname landscapeAttrib\endcsname{pgorient="landscape"}
+
+\expandafter\def\csname letterpaperAttrib\endcsname{papersize="letter"}
+\expandafter\def\csname a4paperAttrib\endcsname{papersize="a4paper"}
+\expandafter\def\csname a5paperAttrib\endcsname{papersize="a5paper"}
+\expandafter\def\csname b5paperAttrib\endcsname{papersize="b5paper"}
+\expandafter\def\csname legalpaperAttrib\endcsname{papersize="legalpaper"}
+\expandafter\def\csname executivepaperAttrib\endcsname{papersize="executivepaper"}
+
+\expandafter\def\csname twosideAttrib\endcsname{sides="twoside"}
+\expandafter\def\csname onesideAttrib\endcsname{sides="oneside"}
+
+\expandafter\def\csname finalAttrib\endcsname{qual="final"}
+\expandafter\def\csname draftAttrib\endcsname{qual="draft"}
+
+\expandafter\def\csname onecolumnAttrib\endcsname{columns="1"}
+\expandafter\def\csname twocolumnAttrib\endcsname{columns="2"}
+
+\expandafter\def\csname leqnoAttrib\endcsname{eqnnopos="leqno"}
+\expandafter\def\csname reqnoAttrib\endcsname{eqnnopos="reqno"}
+
+\expandafter\def\csname fleqnAttrib\endcsname{eqnpos="fleqn"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \newtoks\temptoksb
 
@@ -132,7 +171,7 @@
       \else
          \expandafter\temptoksa\expandafter{\the\temptoksa,}%
       \fi
-      \edef\attrib{\csname #1Attrib\endcsname="#1"}%
+      \edef\attrib{\csname #1Attrib\endcsname}%
       \expandafter\temptoksb\expandafter{\attrib}
       \expandafter\msiappend\the\temptoksb MSIXYZZY
       \let\@next\msi@nextopt
