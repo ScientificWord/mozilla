@@ -33,7 +33,7 @@
   <hbox id="outer-box" flex="1">
     <vbox>
       <hbox>
-        <description>&many.label;</description>
+        <label control="tally" value="&many.label;"  accesskey='&many.accesskey;' />
         <spacer flex="1"/>
         <textbox id="tally" style="width: 3em" value="10" persist="value"/>
       </hbox>
@@ -52,7 +52,7 @@
         <listitem label="&Weibull.label;"/>
       </listbox>
       <groupbox>
-        <caption label="&parameters.label;"/>
+        <caption label="&parameters.label;" control="param1" accesskey="&parameters.accesskey;"/>
         <hbox align="center" id="p1"><textbox id="param1" width="40px"/><label id="label1" value=""/></hbox>
         <hbox align="center" id="p2"><textbox id="param2" width="40px"/><label id="label2" value=""/></hbox>
       </groupbox>
