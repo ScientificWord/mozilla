@@ -102,10 +102,10 @@
         <caption label="&tab.alignment;" />      
         <hbox align="center">
           <radiogroup id="alignment">
-            <radio id="left" label="&align.left;" accesskey="&align.left.accesskey;"/>
-            <radio id="right" label="&align.right;" accesskey="&align.right.accesskey;"/>
-            <radio id="center" label="&align.centered;" accesskey="&align.centered.accesskey;"/>
-            <radio id="normal" label="&align.justified;" selected="true" accesskey="&align.justified.accesskey;"/>
+            <radio id="left" label="&align.left;" accesskey="&align.left.accesskey;" persist="selected" selected="false" />
+            <radio id="right" label="&align.right;" accesskey="&align.right.accesskey;" persist="selected" selected="false" />
+            <radio id="center" label="&align.centered;" accesskey="&align.centered.accesskey;" persist="selected" selected="false" />
+            <radio id="normal" label="&align.justified;" accesskey="&align.justified.accesskey;" persist="selected" selected="true" />
           </radiogroup>
         </hbox>
       </groupbox>
