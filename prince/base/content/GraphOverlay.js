@@ -663,10 +663,12 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate, editorEleme
     editorElement = msiGetActiveEditorElement();
   var expr = runFixup(GetFixedMath(math));
   var graph = new Graph();
-  var prefs = GetPrefs();
+  //var prefs = GetPrefs();
 
-  var width = prefs.getIntPref("swp.graph.HSize");
-  var height = prefs.getIntPref("swp.graph.VSize");
+  var width = GetStringPref("swp.graph.HSize");
+  var height = GetStringPref("swp.graph.VSize");
+
+
 
   graph.setGraphAttribute("Width", width);
   graph.setGraphAttribute("Height", height);
