@@ -27,7 +27,7 @@
     
   <toolbox >
     <menubar id="toctoolbar" class="chromeclass-menubar">
-    <menuitem label="Refresh" accesskey="r" flex="0" command="cmd_build_toc"/>
+    <menuitem id="refresh" label="Refresh" accesskey="r" flex="0" command="cmd_build_toc"/>
     <menuitem id="TOC" label="TOC" tooltip="Show table of contents" checked="true"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
     <menuitem id="LOF" label="LOF" tooltip="Show list of figures" checked="false" 

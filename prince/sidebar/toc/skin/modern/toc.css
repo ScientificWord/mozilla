@@ -1,13 +1,37 @@
 /* */
 
+#toctoolbar > menuitem {
+  -moz-binding:	url(chrome://global/content/bindings/menu.xml#menuitem);
+/*  -moz-appearance: menuitem; */
+  -moz-box-align: center;
+  padding: 0px  1px;				
+  -moz-padding-end: 1px;
+  -moz-padding-start: 1px;
+  color: MenuText;
+  font-size: 11px;
+  height: 14px;
+  text-align: start;
+  list-style-image: none;
+  -moz-image-region: auto;
+}
 
+#toctoolbar>menuitem[checked="true"]{
+  color: red;
+}
 
+#toctoolbar menuitem .menu-text {
+  padding: 0px !important;	
+  margin: 0px !important;
+  -moz-appearance: none !important;			
+  -moz-padding-end: 0px !important;
+  -moz-padding-start: 0px !important;
+}
 
-
-
-
-
-
-
-
-													  
+#toctoolbar > menuitem[_moz-menuactive="true"][open="true"] {
+  border-width: 1px 1px 1px 1px;
+}
+#toctoolbar > menuitem[_moz-menuactive="true"],
+#toctoolbar > menuitem[_moz-menuactive="true"][open="true"] {
+  /* background-color: -moz-menuhover; */
+  color: black; /* -moz-menubarhovertext;  */
+}
