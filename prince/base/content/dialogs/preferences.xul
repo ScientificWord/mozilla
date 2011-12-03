@@ -15,6 +15,9 @@
             ondialogcancel="return onCancel();"
             persist="height width xpos ypos"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
+
   <prefpane id="prefGeneral" label="General">
     <preferences>
       <preference id="defaultshell" 
@@ -306,9 +309,9 @@
           <groupbox>
             <caption>Skin</caption>
             <vbox>
-              <radiogroup id="skinRadioGroup" align="vertical" value="left" preference="selectedSkin">
-                <radio name="skinRadioGroup" id="modern" label="Modern" value="modern" />
-                <radio name="skinRadioGroup" id="classic" label="Classic" value="classic" />
+              <radiogroup id="skinRadioGroup" align="vertical" preference="selectedSkin" oncommand="skinChanged();">
+                <radio name="skinRadioGroup" id="modern" label="Modern" value="modern"  preference="selectedSkin"/>
+                <radio name="skinRadioGroup" id="classic" label="Classic" value="classic"  preference="selectedSkin"/>
               </radiogroup>
             </vbox>
           </groupbox>

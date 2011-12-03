@@ -35,8 +35,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-@import url("chrome://prince/skin/sidebar.css");
-
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 /* ::::: primary toolbar masthead ::::: */
