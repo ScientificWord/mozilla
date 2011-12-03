@@ -15,4 +15,8 @@ en-US.jar:
 
 classic.jar:
 % skin prince classic %skin/classic/
-  skin/classic/toc.css					(toc/skin/classic/toc.css)
+  skin/classic/toc.css					(toc/skin/modern/toc.css)
+
+modern.jar:
+% skin prince modern %skin/modern/
+  skin/modern/toc.css					(toc/skin/modern/toc.css)

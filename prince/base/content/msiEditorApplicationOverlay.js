@@ -59,7 +59,7 @@ function msiPrefs()
 
   msiComputeLogger.Sent("user settings","");
 
-  var o = new Object();
+  var o = {chromeDoc: document};
   openDialog("chrome://prince/content/preferences.xul", "preferences", "chrome,titlebar,resizable,toolbar,centerscreen,dialog='yes'", o);
 }
 

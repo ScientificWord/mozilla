@@ -17,10 +17,12 @@ function myDump(aMessage) {
   consoleService.logStringMessage(aMessage);
 }
 
+var chromedoc;
 
 function initialize()
 {
   var url;
+//  chromedoc = window.arguments[0]["chromeDoc"];
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var dir =dsprops.get("resource:app", Components.interfaces.nsIFile);
   dir.append("shells");
@@ -481,3 +483,4 @@ function onChangeUnits(unitBox)
   if (unitBox.unitsHandler)
     unitBox.unitsHandler.setCurrentUnit(unitBox.value);
 }
+

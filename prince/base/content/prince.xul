@@ -5,14 +5,12 @@
 <?xml-stylesheet href="chrome://global/skin/toolbar.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/fastcursor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/content/bindings/sidebar.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/content/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/content/EditorContent.css" type="text/css"?>
-<!--<?xml-stylesheet href="chrome://prince/content/bindings/structurebar.css" type="text/css"?>-->
+
 
 
 # All overlay information is stored in a separate file so that it can be shared by
 # hiddenWindow.xul.
-<?xul-overlay href="chrome://prince/content/baseMenuOverlay.xul"?>
 #include prince-overlays.inc
 <!--?xul-overlay href="chrome://global/content/charsetOverlay.xul"? -->
 
@@ -37,20 +35,8 @@
   sizemode="normal"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-# All JS files which are not content (only) dependent that browser.xul
-# wishes to include *must* go into the global-scripts.inc file
-# so that they can be shared by macBrowserOverlay.xul.
-#include global-scripts.inc
 
-  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/fragment.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
-  <script type="application/x-javascript" src="chrome://venkman/content/venkman-overlay.js"/>
-  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/saveforweb.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+   <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
 
 
 # All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the 
@@ -189,5 +175,11 @@
   <commandset id="princegotoitems"/>
 	<commandset id="MSIVCamCommands" />
   <commandset id="mainCommandSet"/> <!-- from MozRepl-->
+
+# All JS files which are not content (only) dependent that prince.xul
+# wishes to include *must* go into the global-scripts.inc file
+# so that they can be shared by macBrowserOverlay.xul.
+#include global-scripts.inc
+
 </window>
 

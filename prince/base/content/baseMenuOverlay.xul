@@ -39,7 +39,7 @@
 # 
 # ***** END LICENSE BLOCK *****
 <!--JLF - Localization pass on 6/28/2011-->
-DOCTYPE overlay [
+<!DOCTYPE overlay [
 <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
 %brandDTD;
 <!ENTITY % baseMenuOverlayDTD SYSTEM "chrome://prince/locale/baseMenuOverlay.dtd">
@@ -57,7 +57,7 @@ DOCTYPE overlay [
      used as they only apply to Cocoa widget builds. All version of Firefox
      through Firefox 2 will use Carbon widgets. -->
     <menupopup id="menu_ToolsPopup">
-        <menuitem id="menu_preferences" label="&preferencesCmdMac.label;" key="key_preferencesCmdMac" oncommand="openPreferences();"/>
+        <menuitem id="menu_preferences" label="&preferencesCmdMac.label;" key="key_preferencesCmdMac" oncommand="msiPrefs();"/>
         <menuitem id="menu_mac_services" label="&servicesMenuMac.label;"/>
         <menuitem id="menu_mac_hide_app" label="&hideThisAppCmdMac.label;" key="key_hideThisAppCmdMac"/>
         <menuitem id="menu_mac_hide_others" label="&hideOtherAppsCmdMac.label;" key="key_hideOtherAppsCmdMac"/>
@@ -87,17 +87,6 @@ DOCTYPE overlay [
                   accesskey="&helpContents.accesskey;"
                   key="key_openHelp"/>
 #endif
-# Show IE Users menu item on Windows only
-#ifdef XP_WIN
-        <menuitem label="&helpForIEUsers.label;"
-                  accesskey="&helpForIEUsers.accesskey;"
-                  oncommand="openHelpLink('ieusers');"/>
-#endif
-        <menuitem id="releaseNotes"
-                  accesskey="&helpReleaseNotes.accesskey;"
-                  label="&helpReleaseNotes.label;"
-                  oncommand="openReleaseNotes(event)"
-                  onclick="checkForMiddleClick(this, event);"/>
          <menuseparator id="updateSeparator"/>
          <menuitem id="checkForUpdates"
                    accesskey="&updateCmd.accesskey;"
