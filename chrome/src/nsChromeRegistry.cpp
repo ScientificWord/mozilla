@@ -898,6 +898,13 @@ NS_IMETHODIMP nsChromeRegistry::RefreshSkins()
       nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(protoWindow);
       if (domWindow)
         RefreshWindow(domWindow, cssLoader);
+        nsCOMPtr<nsIDOMDocument> doc;
+        domWindow->GetDocument(getter_AddRefs(doc));
+        if (doc)
+        {
+           nsCOMPtr<nsIDocument> document = do_QueryInterface(doc);
+           document->FlushPendingNotifications(Flush_Display);
+        }
     }
     windowEnumerator->HasMoreElements(&more);
   }
