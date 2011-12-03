@@ -530,24 +530,30 @@ function msiEditorStateLogString(theWindow)
 
 function msiFindTimerInArray(timerList, timerData)
 {
-  var nIndex = -1;
-  for (var ix = 0; nIndex < 0 && ix < timerList.length; ++ix)
+  if (timerList && timerData)
   {
-    if (timerList[ix] === timerData.nTimerID)
-      nIndex = ix;
+    var nIndex = -1;
+    for (var ix = 0; nIndex < 0 && ix < timerList.length; ++ix)
+    {
+      if (timerList[ix] == timerData.nTimerID)
+        nIndex = ix;
+    }
   }
   return nIndex;
 }
 
 function msiClearAllFocusTimers(theWindow, timerList)
 {
-  for (var ix = timerList.length - 1; ix >= 0; --ix)
+  if (theWindow && timerList)
   {
-    try
+    for (var ix = timerList.length - 1; ix >= 0; --ix)
     {
-      theWindow.clearTimeout(timerList[ix]);
-      timerList.splice(ix, 1);
-    } catch(exc) {dump("In msiClearAllFocusTimers, theWindow couldn't clear timer [" + timerList[ix] + "], exception [" + exc + "].\n");}
+      try
+      {
+        theWindow.clearTimeout(timerList[ix]);
+        timerList.splice(ix, 1);
+      } catch(exc) {dump("In msiClearAllFocusTimers, theWindow couldn't clear timer [" + timerList[ix] + "], exception [" + exc + "].\n");}
+    }
   }
 //  timerList.splice(0, timerList.length);
 }
@@ -604,7 +610,7 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //End logging stuff
     //To Do: re-parent appropriate dialogs at this point? or if there's a timer set, wait for it?
     theWindow.msiActiveEditorElement = editorElement;
-    if ((theWindow.msiClearEditorTimerList===null || theWindow.msiClearEditorTimerList.length === 0) && theWindow.msiSingleDialogList)
+    if ((theWindow.msiClearEditorTimerList==null || theWindow.msiClearEditorTimerList.length === 0) && theWindow.msiSingleDialogList)
     {
       theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
       msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
@@ -1645,7 +1651,7 @@ function msiFindParentOfType(startNode, nodeType, stopAt)
   var theNode = startNode;
   if (stopAt === null || stopAt.length === 0)
     stopAt = "#document";
-  while (retNode===null && theNode !== null)
+  while (retNode==null && theNode != null)
   {
     if (theNode.nodeName === nodeType)
       retNode = theNode;
@@ -1658,13 +1664,7 @@ function msiFindParentOfType(startNode, nodeType, stopAt)
 
 function msiGetBaseNodeName(node)
 {
-  if (node !== null)
-  {
-    if (node.localName !== null && node.localName.length > 0)
-      return node.localName;
-    return node.nodeName;
-  }
-  return null;
+  return (node && ((node.localName)||(node.nodeName))) || null;
 }
 
 function msiElementCanHaveAttribute(elementNode, attribName)

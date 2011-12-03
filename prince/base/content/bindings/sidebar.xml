@@ -50,10 +50,6 @@
 
   <binding id="sidebaritems">
 
-    <resources>
-      <stylesheet src="chrome://prince/skin/sidebar.css"/>
-    </resources>
-
     <implementation>
       <method name="init">
         <body>
@@ -98,10 +94,6 @@
   </binding>
 
   <binding id="sidebar">
-
-    <resources>
-      <stylesheet src="chrome://prince/skin/sidebar.css"/>
-    </resources>
 
     <content>
       <xul:hbox align="center" class="titlebox">

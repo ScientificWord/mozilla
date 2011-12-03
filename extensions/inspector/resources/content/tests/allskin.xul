@@ -3,7 +3,6 @@
 <?xml-stylesheet href="chrome://communicator/skin/box.css"?>
 <?xml-stylesheet href="chrome://communicator/skin/brand.css"?>
 <?xml-stylesheet href="chrome://communicator/skin/button.css"?>
-<!--?xml-stylesheet href="chrome://communicator/skin/communicator.css"? -->
 <?xml-stylesheet href="chrome://communicator/skin/dialogOverlay.css"?>
 <?xml-stylesheet href="chrome://communicator/skin/menubutton.css"?>
 <?xml-stylesheet href="chrome://communicator/skin/prefpanels.css"?>
@@ -29,7 +28,6 @@
 <?xml-stylesheet href="chrome://communicator/skin/xpinstall/xpinstall.css"?>
 <?xml-stylesheet href="chrome://editor/skin/EdImageMap.css"?>
 <?xml-stylesheet href="chrome://editor/skin/EdImageMapPage.css"?>
-<?xml-stylesheet href="chrome://editor/skin/editor.css"?>
 <?xml-stylesheet href="chrome://editor/skin/EditorDialog.css"?>
 <?xml-stylesheet href="chrome://editor/skin/EditorToolbars.css"?>
 <?xml-stylesheet href="chrome://global/skin/box.css"?>
@@ -40,7 +38,6 @@
 <?xml-stylesheet href="chrome://global/skin/console.css"?>
 <?xml-stylesheet href="chrome://global/skin/dialogOverlay.css"?>
 <?xml-stylesheet href="chrome://global/skin/filepicker.css"?>
-<?xml-stylesheet href="chrome://global/skin/formatting.css"?>
 <?xml-stylesheet href="chrome://global/skin/global.css"?>
 <?xml-stylesheet href="chrome://global/skin/menu.css"?>
 <?xml-stylesheet href="chrome://global/skin/menubutton.css"?>
