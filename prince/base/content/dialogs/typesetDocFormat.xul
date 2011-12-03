@@ -36,12 +36,6 @@
     height="740"
     style="overflow:scroll;">
 
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/typesetDocFormat.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/typesetOverlay.js"/>
-
   <popupset id="msiEditorContentContextSet"/>
   <commandset id="viewZoomCommands"/>
 
@@ -66,8 +60,6 @@
 	<!-- commandset id="MSItypesetMenuCommands"/ -->
 	<commandset id="MSItypesetInsertMenuCommands"/>
   
-#include ../keysfordialogs.inc
-
   <tabbox id="docformat">
     <tabs>
       <tab label="&docformatGeneraltab;"/>
@@ -1150,6 +1142,12 @@
       <tabpanel id="docformatAdvancedPanel"></tabpanel  -->
     </tabpanels>
   </tabbox>
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetDocFormat.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetOverlay.js"/>
 
 
 

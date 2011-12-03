@@ -1,6 +1,10 @@
+<!ENTITY servicesMenuMac.label          "Services">
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!-- Attn: Localization - some of the menus in this dialog directly affect mail also. -->
+
+<!-- Temporary -->
+<!ENTITY brandShortName "Scientific WorkPlace">
 
 <!-- File menu items -->
 <!ENTITY fileMenu.label "File">
@@ -855,3 +859,13 @@
 <!ENTITY secttagselect.tooltip	"Apply a section tag">
 <!ENTITY othertagselect.tooltip	"Apply another tag">
 
+<!ENTITY hideThisAppCmdMac.label        "Hide &brandShortName;">
+<!ENTITY hideThisAppCmdMac.commandkey   "H">
+<!ENTITY hideThisAppCmdMac.modifiers    "">
+
+<!ENTITY hideOtherAppsCmdMac.label      "Hide Others">
+<!ENTITY hideOtherAppsCmdMac.commandkey "H">
+<!ENTITY hideOtherAppsCmdMac.modifiers    "">
+
+<!ENTITY showAllAppsCmdMac.label        "Show All">
+<!ENTITY servicesMenuMac.label          "Services">

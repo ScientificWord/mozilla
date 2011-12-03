@@ -9,6 +9,13 @@ classic.jar:
 *  skin/classic/notfound.png			 (skin/notfound.png)
 *  skin/classic/close.png				 (skin/close.png)
   
+modern.jar:
+% skin prince modern %skin/modern/ 
+*  skin/modern/fastcursor.css		 (skin/fastcursor.css)
+*  skin/modern/find.png				 (skin/find.png)
+*  skin/modern/notfound.png			 (skin/notfound.png)
+*  skin/modern/close.png				 (skin/close.png)
+  
 en-US.jar:
 % locale prince en-US %locale/
   locale/fastcursor.dtd  (locale/en-us/fastcursor.dtd)
