@@ -1098,6 +1098,9 @@
         <tag nm="mo"><description>mo</description></tag>
         <tag nm="hspace"><description>hspace</description></tag>
 				<tag nm="object"><description>Object</description></tag>
+				<tag nm="td"><description>Table cell</description>
+				  <contains>paratag</contains>
+				</tag>
         <tag nm="citation">
           <description>Citation</description>
           <contains>biblabel</contains>
