@@ -16,7 +16,7 @@ function CustomizeMainToolbar(id1, id2, id3, id4, id5 )
     customizePopup.setAttribute("disabled", "true");
   dump("Should call CustomizeToolbar"); 
   window.openDialog("chrome://global/content/customizeToolbar.xul", "CustomizeToolbar",
-                    "chrome,all,dependent", document.getElementById(id1), document.getElementById(id2),
+                    "chrome,all,dependent,alwaysRaised", document.getElementById(id1), document.getElementById(id2),
                     document.getElementById(id3), document.getElementById(id4), document.getElementById(id5));
 }
 
