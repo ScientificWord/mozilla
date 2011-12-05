@@ -814,7 +814,7 @@
       <tabs class="tabs-top">
 	    <tab label="&tabbar.axes;"        selected="0" />
 	    <tab label="&tabbar.layout;"      selected="0" />
-	    <tab label="&tabbar.labelling;"   selected="0" />
+	    <tab label="&tabbar.labeling;"   selected="0" />
 	    <tab label="&tabbar.view;"        selected="0" />
 	  </tabs>
     <tabpanels>
