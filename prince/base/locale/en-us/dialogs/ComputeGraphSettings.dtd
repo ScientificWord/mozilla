@@ -7,7 +7,7 @@
 <!ENTITY tabbar.layout            "Layout">
 <!ENTITY tabbar.axes              "Axes">
 <!ENTITY tabbar.items             "Items Plotted">
-<!ENTITY tabbar.labelling         "Labelling">
+<!ENTITY tabbar.labeling         "Labeling">
 <!ENTITY tabbar.view              "View">
 
 <!ENTITY command.delete           "Delete">
