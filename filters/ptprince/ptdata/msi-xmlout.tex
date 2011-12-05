@@ -242,16 +242,17 @@
 \def\@titleb#1{\@titlea[]{#1}}
 
 \def\author#1{\gdef\@author{#1}\out@author{#1}}
-\def\date#1{\gdef\@date{#1}\out@date{#1}}
+
+\def\date{\@ifnextchar[{\dateA}{\dateB}}
+\def\dateA[#1]#2{%
+   \gdef\@date{#2}\out@dateA{#1}{#2}}
+\def\dateB#1{\gdef\@date{#1}\out@date{#1}}
 
 \def\thanks#1{\out@thanks{#1}}
 \def\and{\out@and}
 
-
 %\def\frontmatter{\out@frontmatter}
 %\def\mainmatter{\out@mainmatter}
-
-
 
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
@@ -271,6 +272,16 @@
 
 \def\out@date#1{%
    \msihmode\br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
+
+\def\out@dateA#1#2{%
+   \msihmode\br
+   \msiopentag{date}{<date>}%
+      #2%
+      \msiopentag{option}{<option>}%
+         #1%
+      \msiclosetag{option}{</option>}%
+   \msiclosetag{date}{</date>}}
+
 
 
 
