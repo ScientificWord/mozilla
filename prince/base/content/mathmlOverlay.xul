@@ -159,51 +159,64 @@
      </menupopup>
    </menu>
 	
-  <tabbox id="Symbol-tabbox" textsize="small" iconsize="large" persist="iconsize textsize" 
-    xmlns:xhtml="http://www.w3.org/1999/xhtml"
-    xmlns:mml="http://www.w3.org/1998/Math/MathML"
-    >
+<tabbox id="Symbol-tabbox" textsize="small" iconsize="large" persist="iconsize textsize" 
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:mml="http://www.w3.org/1998/Math/MathML"
+>
     <!--observes element="prince" attribute="width"/ -->
-    <arrowscrollbox orient="horizontal"> 
-    <vbox>
+  <!--arrowscrollbox orient="horizontal"> 
+    <vbox-->
 	  <tabs class="tabs-top" align="start baseline">
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x03B1;&#x03B2;" tooltiptext="&MSISymbolTabLCGreek;" selected="1" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x03A6;&#x03A8;" tooltiptext="&MSISymbolTabCCGreek;" selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00B1;&#x00F7;" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2264;&#x2282;" tooltiptext="&MSISymbolTabBinaryRels;"  selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2260;&#x2209;" tooltiptext="&MSISymbolTabNegatedRels;" selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2194;&#x2191;" tooltiptext="&MSISymbolTabArrows;"        selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x221E;&#x2202;" tooltiptext="&MSISymbolTabMisc;"        selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x232A;&#x2308;" tooltiptext="&MSISymbolTabDelimiters;"        selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00A3;&#x00B9;" tooltiptext="&MSISymbolTabLatin1;"        selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"        selected="0" />
-			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x201C;&#x201D;" tooltiptext="&MSISymbolTabPunctuation;"        selected="0" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x03B1;&#x03B2;" tooltiptext="&MSISymbolTabLCGreek;"/>
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x03A6;&#x03A8;" tooltiptext="&MSISymbolTabCCGreek;"/>
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00B1;&#x00F7;" tooltiptext="&MSISymbolTabBinaryOps;" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2264;&#x2282;" tooltiptext="&MSISymbolTabBinaryRels;"/>
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2260;&#x2209;" tooltiptext="&MSISymbolTabNegatedRels;"/>
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2194;&#x2191;" tooltiptext="&MSISymbolTabArrows;" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x221E;&#x2202;" tooltiptext="&MSISymbolTabMisc;"/>
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x232A;&#x2308;" tooltiptext="&MSISymbolTabDelimiters;"/>
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00A3;&#x00B9;" tooltiptext="&MSISymbolTabLatin1;"/>
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"/>
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x201C;&#x201D;" tooltiptext="&MSISymbolTabPunctuation;"/>
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 
-<!-- LOWERCASE GREEK --> <tabpanel id="symbol_lcGreek"
-autostretch="never" align="baseline">  <toolbarbutton id="symbolalpha"
-label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
-observes="cmd_MSIsymbolCmd"/> <toolbarbutton id = "symbolbeta" />
-<toolbarbutton id ="symbolgamma" /> <toolbarbutton id ="symboldelta" />
-<toolbarbutton id ="symbolepsilon" /> <toolbarbutton id
-="symbolvarepsilon" /> <toolbarbutton id ="symbolzeta" /> <toolbarbutton
-id ="symboleta" /> <toolbarbutton id ="symboltheta" /> <toolbarbutton id
-="symbolvartheta" /> <toolbarbutton id ="symboliota" /> <toolbarbutton
-id ="symbolkappa" /> <toolbarbutton id ="symbollambda" /> <toolbarbutton
-id ="symbolmu" /> <toolbarbutton id ="symbolnu" /> <toolbarbutton id
-="symbolxi" /> <toolbarbutton id ="symbolpi" /> <toolbarbutton id
-="symbolvarpi" /> <toolbarbutton id ="symbolrho" /> <toolbarbutton id
-="symbolsigma" /> <toolbarbutton id ="symbolvarsigma" /> <toolbarbutton
-id ="symboltau" /> <toolbarbutton id ="symbolupsilon" /> <toolbarbutton
-id ="symbolphi" /> <toolbarbutton id ="symbolvarphi" /> <toolbarbutton
-id ="symboltextchi" /> <toolbarbutton id ="symbolpsi" /> <toolbarbutton
-id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
-<toolbarbutton id ="symbolvarrho" /> <toolbarbutton id
-="symbolbackepsilon" /> <toolbarbutton id ="symbolomicron" />
-<toolbarbutton id ="symbolstigma" />
-
-     </tabpanel>
+<!-- LOWERCASE GREEK --> 
+<tabpanel id="symbol_lcGreek" autostretch="never" align="baseline">  
+  <toolbarbutton id="symbolalpha" label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;" observes="cmd_MSIsymbolCmd"/> 
+  <toolbarbutton id = "symbolbeta" />
+  <toolbarbutton id ="symbolgamma" /> 
+  <toolbarbutton id ="symboldelta" />
+  <toolbarbutton id ="symbolepsilon" /> 
+  <toolbarbutton id ="symbolvarepsilon" /> 
+  <toolbarbutton id ="symbolzeta" /> 
+  <toolbarbutton id ="symboleta" /> 
+  <toolbarbutton id ="symboltheta" /> 
+  <toolbarbutton id ="symbolvartheta" /> 
+  <toolbarbutton id ="symboliota" /> 
+  <toolbarbutton id ="symbolkappa" /> 
+  <toolbarbutton id ="symbollambda" /> 
+  <toolbarbutton id ="symbolmu" /> 
+  <toolbarbutton id ="symbolnu" /> 
+  <toolbarbutton id ="symbolxi" /> 
+  <toolbarbutton id ="symbolpi" /> 
+  <toolbarbutton id ="symbolvarpi" /> 
+  <toolbarbutton id ="symbolrho" /> 
+  <toolbarbutton id ="symbolsigma" /> 
+  <toolbarbutton id ="symbolvarsigma" /> 
+  <toolbarbutton id ="symboltau" /> 
+  <toolbarbutton id ="symbolupsilon" /> 
+  <toolbarbutton id ="symbolphi" /> 
+  <toolbarbutton id ="symbolvarphi" /> 
+  <toolbarbutton id ="symboltextchi" /> 
+  <toolbarbutton id ="symbolpsi" /> 
+  <toolbarbutton id ="symbolomega" /> 
+  <toolbarbutton id ="symbolvarkappa" />
+  <toolbarbutton id ="symbolvarrho" /> 
+  <toolbarbutton id ="symbolbackepsilon" /> 
+  <toolbarbutton id ="symbolomicron" />
+  <toolbarbutton id ="symbolstigma" />
+</tabpanel>
      
 <!-- UPPERCASE GREEK -->
      <tabpanel id="symbol_ucGreek" align="baseline">
@@ -644,7 +657,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symboltextasciidieresis" />
         <toolbarbutton id ="symbolcedilla" />
         <toolbarbutton id ="symboltextcopyright" />
-        <toolbarbutton id ="symboltextregistered" />
+        <toolbarbutton id ="e" />
         <toolbarbutton id ="symbolguillemotleft" />
         <toolbarbutton id ="symbolguillemotright" />
         <toolbarbutton id ="symbolshy" />
@@ -862,8 +875,8 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symbolguilsinglright" />
       </tabpanel> 
     </tabpanels>
-    </vbox>
-    </arrowscrollbox>
+    <!--/vbox>
+    </arrowscrollbox -->
  </tabbox> 
 
 
@@ -1040,9 +1053,9 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
          <toolbarbutton id ="symbolsmalldiamond" label="&#x22C4;" tooltiptext="&symbolsmalldiamond.tooltip;"         msivalue="&#x22C4;"
            observes="cmd_MSIsymbolCmd"/>
          <toolbarbutton id ="symboldagger" label="&#x2020;" tooltiptext="&symboldagger.tooltip;"         msivalue="&#x2020;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
          <toolbarbutton id ="symbolddagger" label="&#x2021;" tooltiptext="&symbolddagger.tooltip;"         msivalue="&#x2021;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
          <toolbarbutton id ="symbolboxplus" label="&#x229E;" tooltiptext="&symbolboxplus.tooltip;"         msivalue="&#x229E;"
            observes="cmd_MSIsymbolCmd"/>
          <toolbarbutton id ="symbolboxminus" label="&#x229F;" tooltiptext="&symbolboxminus.tooltip;"         msivalue="&#x229F;"
@@ -1084,7 +1097,7 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
          <toolbarbutton id ="symbolsmallint" label="&#x222B;" tooltiptext="&symbolsmallint.tooltip;"       msivalue="&#x222B;"
            observes="cmd_MSIsymbolCmd"/>
          <toolbarbutton id ="symbolampersand" label="&#x0026;" tooltiptext="&symbolampersand.tooltip;"         msivalue="&#x0026;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
 
 <!-- BINARY RELATIONS -->
         <toolbarbutton id ="symbolleq" label="&#x2264;" tooltiptext="&symbolleq.tooltip;"              msivalue="&#x2264;"
@@ -1703,33 +1716,33 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symbolblacktriangledown" label="&#x25BE;" tooltiptext="&symbolblacktriangledown.tooltip;"       msivalue="&#x25BE;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symboldag" label="&#x2020;" tooltiptext="&symboldag.tooltip;"       msivalue="&#x2020;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolddag" label="&#x2021;" tooltiptext="&symbolddag.tooltip;"       msivalue="&#x2021;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolbeth" label="&#x2136;" tooltiptext="&symbolbeth.tooltip;"       msivalue="&#x2136;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolgimel" label="&#x2137;" tooltiptext="&symbolgimel.tooltip;"       msivalue="&#x2137;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboldaleth" label="&#x2138;" tooltiptext="&symboldaleth.tooltip;"       msivalue="&#x2138;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolsharp" label="&#x266F;" tooltiptext="&symbolsharp.tooltip;"       msivalue="&#x266F;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolflat" label="&#x266D;" tooltiptext="&symbolflat.tooltip;"       msivalue="&#x266D;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolnatural" label="&#x266E;" tooltiptext="&symbolnatural.tooltip;"       msivalue="&#x266E;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolclubsuit" label="&#x2663;" tooltiptext="&symbolclubsuit.tooltip;"       msivalue="&#x2663;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboldiamondsuit" label="&#x2662;" tooltiptext="&symboldiamondsuit.tooltip;"       msivalue="&#x2662;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolheartsuit" label="&#x2661;" tooltiptext="&symbolheartsuit.tooltip;"       msivalue="&#x2661;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolspadesuit" label="&#x2660;" tooltiptext="&symbolspadesuit.tooltip;"       msivalue="&#x2660;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolcheckmark" label="&#x2713;" tooltiptext="&symbolcheckmark.tooltip;"       msivalue="&#x2713;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolmaltese" label="&#x2720;" tooltiptext="&symbolmaltese.tooltip;"       msivalue="&#x2720;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolBbbk" label="&#x1D55C;" tooltiptext="&symbolBbbk.tooltip;"       msivalue="&#x1D55C;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolBbbC" label="&#x2102;" tooltiptext="&symbolBbbC.tooltip;"       msivalue="&#x2102;"
@@ -1743,9 +1756,9 @@ id ="symbolomega" /> <toolbarbutton id ="symbolvarkappa" />
         <toolbarbutton id ="symbolBbbZ" label="&#x2124;" tooltiptext="&symbolBbbZ.tooltip;"        msivalue="&#x2124;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symboleuro" label="&#x20AC;" tooltiptext="&symboleuro.tooltip;"       msivalue="&#x20AC;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboltexttrademark" label="&#x2122;" tooltiptext="&symboltexttrademark.tooltip;"       msivalue="&#x2122;"
-           observes="cmd_MSIsymbolCmd"/>
+           mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolmho" label="&#x2127;" tooltiptext="&symbolmho.tooltip;"       msivalue="&#x2127;"
            observes="cmd_MSIsymbolCmd"/>
 
