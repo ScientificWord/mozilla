@@ -80,8 +80,8 @@
           <label>&warning.label1;</label>
           <separator/>
           <label>&warning.label2;</label>
-        </vbox> 
-        <checkbox id="enablereformat" label="&EnableDocStyleOverride.label;" accesskey="&EnableDocStyleOverride.accesskey;" checked="false" control="reformatok" persist="checked"
+        </vbox>
+        <checkbox id="enablereformat" label="Enable overriding the document style" checked="false" control="reformatok" 
           oncommand="enableDisableReformat(this.checked);enable(this);"/>                 
         <broadcaster id="reformatok" disabled="true" persist="disabled"/>
         <groupbox>
@@ -517,7 +517,7 @@
       </tabpanel>   
         <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
           <vbox>
-            <checkbox id="enablepagelayout" label="&EnableOverridePageLayout.label;" accesskey="&EnableOverridePageLayout.accesskey;" persist="checked" oncommand="enableDisablePageLayout(this.checked);"/>                 
+            <checkbox id="enablepagelayout" label="Enable overriding page layout" oncommand="enableDisablePageLayout(this.checked);"/>                 
             <broadcaster id="pagelayoutok" disabled="true" persist="disabled"/>
             <hbox>
               <vbox flex="1">
