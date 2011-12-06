@@ -15,7 +15,12 @@
 <page id       = "symbol-panels"
       xmlns    = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       onload   = "startup()" 
-      onresize = "windowChanged();">
+      onresize = "windowChanged();"
+      ondraggesture = "nsDragAndDrop.startDrag(event,symObserver);nsDragAndDrop.mDragSession=null;"  
+      ondragover = "nsDragAndDrop.dragOver(event, symObserver);" 
+      ondragdrop = "nsDragAndDrop.drop(event, symObserver);"
+      
+      >
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
@@ -65,6 +70,7 @@
 			    linkedpanel="symbol_latinextended" />
 			  <tab dir="rtl" label="&#x201C;&#x201D;" mathsym="false" tooltiptext="&MSISymbolTabPunctuation;"        selected="0"
 			    linkedpanel="symbol_punctuation" />
+			  <tab label="User" mathsym="true" tooltiptext="Drag frequently-used symbols here" linkedpanel="cachepanel" />
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline" observes="tabpanelstyle"> 
@@ -1135,6 +1141,21 @@
               <toolbarbutton id="symboltextquotedblright" />
               <toolbarbutton id="symbolguilsinglleft" />
               <toolbarbutton id="symbolguilsinglright" />
+            </row>
+          </rows>
+        </grid>
+      </tabpanel> 
+      <tabpanel id="symbol_punctuation" mathsym="false" align="baseline" observes="tabpanelstyle">
+        <grid>
+         <columns>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+            <column width="35px"/>
+          </columns>
+          <rows>
+            <row>
             </row>
           </rows>
         </grid>
