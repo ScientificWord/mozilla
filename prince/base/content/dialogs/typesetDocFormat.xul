@@ -81,7 +81,7 @@
           <separator/>
           <label>&warning.label2;</label>
         </vbox>
-        <checkbox id="enablereformat" label="Enable overriding the document style" checked="false" control="reformatok" 
+        <checkbox id="enablereformat" label="&EnableDocStyleOverride.label;" accesskey="&EnableDocStyleOverride.accesskey;" checked="false" control="reformatok" 
           oncommand="enableDisableReformat(this.checked);enable(this);"/>                 
         <broadcaster id="reformatok" disabled="true" persist="disabled"/>
         <groupbox>
@@ -222,7 +222,7 @@
                         <menuitem value="monogreek" label="&monogreek.label;"></menuitem>
                         <menuitem value="polygreek" observes="xelatex" label="&polygreek.label;"></menuitem>
                         <menuitem value="polutonikogreek" observes="pdflatex" label="&polutonikogreek.label;"></menuitem>
-                        <menuitem value="ancientgreek" observes="xelatex" label="&ancientreek.label;"></menuitem>
+                        <menuitem value="ancientgreek" observes="xelatex" label="&ancientgreek.label;"></menuitem>
                       <menuseparator />
                         <menuitem value="francais" label="&francais.label;"/>
                         <menuitem value="frenchb" label="&frenchb.label;"/>
@@ -236,7 +236,7 @@
                       <menuitem value="bahasa" label="&bahasa.label;"/>
                       <menuitem value="indonesian" label="&indonesian.label;"/>
                       <menuitem value="indon" label="&indon.label;"/>
-                      <menuitem value="bahasai" label="&bahasasai.label;"/>
+                      <menuitem value="bahasai" label="&bahasai.label;"/>
                       <menuitem value="bahasam" label="&bahasam.label;"/>
                       <menuitem value="basque" label="&basque.label;"/>
                       <menuitem value="brazil" label="&brazil.label;"/>
@@ -248,7 +248,7 @@
                       <menuitem value="coptic" observes="xelatex" label="&coptic.label;" />
                       <menuitem value="croatian" label="&croatian.label;"/>
                       <menuitem value="czech" label="&czech.label;"/>
-                      <menuitem value="danish" label="&Danish.label;"/>
+                      <menuitem value="danish" label="&danish.label;"/>
                       <menuitem value="divehi" observes="xelatex" label="&divehi.label;" />
                       <menuitem value="dutch" label="&dutch.label;"/>
                       <menuitem value="esperanto" label="&esperanto.label;"/>
@@ -295,88 +295,89 @@
                   <menulist id="babelLang2"  persist="value" ><!--observes="reformatok" -->
                     <menupopup style="width: 12em">
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
-                      <menuitem label="-default-" value="def" def="1"/>
+                      <menuitem label="&default.label;" value="def" def="1"/>
                       <menuseparator/>
-                        <menuitem value="USenglish" label="US English"/>
-                        <menuitem value="UKenglish" label="UK English"/>
-                        <menuitem value="australian" label="Australian English"/>
-                        <menuitem value="canadian" label="Canadian English"/>
-                        <menuitem value="newzealand" label="New Zealand English"/>
+                        <menuitem value="USenglish" label="&USenglish.label;"/>
+                        <menuitem value="UKenglish" label="&UKenglish.label;"/>
+                        <menuitem value="australian" label="&australian.label;"/>
+                        <menuitem value="canadian" label="&canadian.label;"/>
+                        <menuitem value="newzealand" label="&newzealand.label;"/>
                       <menuseparator />    
-                        <menuitem value="austrian" label="Austrian"/>
-                        <menuitem value="naustrian" label="NAustrian"/>
-                        <menuitem value="german" label="German"/>
-                        <menuitem value="germanb" label="Germanb"/>
-                        <menuitem value="ngerman" label="NGerman"/>                       
+                        <menuitem value="austrian" label="&austrian.label;"/>
+                        <menuitem value="naustrian" label="&naustrian.label;"/>
+                        <menuitem value="german" label="&german.label;"/>
+                        <menuitem value="germanb" label="&germanb.label;"/>
+                        <menuitem value="ngerman" label="&ngerman.label;"/>                       
                       <menuseparator />
-                        <menuitem value="monogreek" label="Monotonic Greek"></menuitem>
-                        <menuitem value="polygreek" observes="xelatex" label="Polytonic Greek"></menuitem>
-                        <menuitem value="polutonikogreek" observes="pdflatex" label="Polytonic Greek"></menuitem>
-                        <menuitem value="ancientgreek" observes="xelatex" label="Ancient Greek"></menuitem>
+                        <menuitem value="monogreek" label="&monogreek.label;"></menuitem>
+                        <menuitem value="polygreek" observes="xelatex" label="&polygreek.label;"></menuitem>
+                        <menuitem value="polutonikogreek" observes="pdflatex" label="&polutonikogreek.label;"></menuitem>
+                        <menuitem value="ancientgreek" observes="xelatex" label="&ancientgreek.label;"></menuitem>
                       <menuseparator />
-                        <menuitem value="francais" label="Francais"/>
-                        <menuitem value="frenchb" label="Frenchb"/>
-                        <menuitem value="french" label="French"/>
-                        <menuitem value="acadian" label="Acadian"/>
+                        <menuitem value="francais" label="&francais.label;"/>
+                        <menuitem value="frenchb" label="&frenchb.label;"/>
+                        <menuitem value="french" label="&french.label;"/>
+                        <menuitem value="acadian" label="&acadian.label;"/>
                       <menuseparator />
-                      <menuitem value="albanian" label="Albanian"/>
-                      <menuitem value="afrikaans" label="Afrikaans"/>
-                      <menuitem value="arabic" observes="xelatex" label="Arabic"/>
-                      <menuitem value="bahasa" label="Bahasa"/>
-                      <menuitem value="indonesian" label="Indonesian"/>
-                      <menuitem value="indon" label="indon"/>
-                      <menuitem value="bahasai" label="Bahasa Indonesian"/>
-                      <menuitem value="bahasam" label="Bahasa Malaysia"/>
-                      <menuitem value="basque" label="Basque"/>
-                      <menuitem value="brazil" label="Brazil"/>
-                      <menuitem value="brazilian" label="Brazilian"/>
-                      <menuitem value="breton" label="Breton"/>
-                      <menuitem value="bulgarian" label="Bulgarian"/>
-                      <menuitem value="canadien" label="Canadien"/>
-                      <menuitem value="catalan" label="Catalan"/>
-                      <menuitem value="coptic" observes="xelatex" label="Coptic" />
-                      <menuitem value="croatian" label="Croatian"/>
-                      <menuitem value="czech" label="Czech"/>
-                      <menuitem value="danish" label="Danish"/>
-                      <menuitem value="divehi" observes="xelatex" label="Divehi" />
-                      <menuitem value="dutch" label="Dutch"/>
-                      <menuitem value="esperanto" label="Esperanto"/>
-                      <menuitem value="estonian" label="Estonian"/>
-                      <menuitem value="farsi" observes="xelatex" label="Farsi" />
-                      <menuitem value="finnish" label="Finnish"/>
-                      <menuitem value="galician" label="Galician"/>
-                      <menuitem value="hebrew" observes="xelatex" label="Hebrew"/>
-                      <menuitem value="hungarian" label="Hungarian"/>
-                      <menuitem value="icelandic" label="Icelandic"/>
-                      <menuitem value="interlingua" label="Interlingua"/>
-                      <menuitem value="irish" label="Irish"/>
-                      <menuitem value="italian" label="Italian"/>
-                      <menuitem value="latin" label="Latin"/>
-                      <menuitem value="lowersorbian" label="Lower Sorbian"/>
-                      <menuitem value="magyar" label="Magyar"/>
-                      <menuitem value="malay" label="Malay"/>
-                      <menuitem value="meyalu" label="Meyalu"/>
-                      <menuitem value="norsk" label="Norsk"/>
-                      <menuitem value="samin" label="Samin"/>
-                      <menuitem value="nynorsk" label="Nynorsk"/>
-                      <menuitem value="polish" label="Polish"/>
-                      <menuitem value="portuges" label="Portuges"/>
-                      <menuitem value="portuguese" label="Portuguese"/>
-                      <menuitem value="romanian" label="Romanian"/>
-                      <menuitem value="russian" label="Russian"/>
-                      <menuitem value="scottish" label="Scottish"/>
-                      <menuitem value="serbian" label="Serbian"/>
-                      <menuitem value="slovak" label="Slovak"/>
-                      <menuitem value="slovene" label="Slovene"/>
-                      <menuitem value="spanish" label="Spanish"/>
-                      <menuitem value="swedish" label="Swedish"/>
-                      <menuitem value="syriac" observes="xelatex" label="Syriac" />
-                      <menuitem value="turkish" label="Turkish"/>
-                      <menuitem value="ukrainian" label="Ukrainian"/>
-                      <menuitem value="uppersorbian" label="Upper Sorbian"/>
-                      <menuitem value="urdu" label="Urdu" observes="xelatex" />
-                      <menuitem value="welsh" label="Welsh"/>
-                    </menupopup>
+                      <menuitem value="albanian" label="&albanian.label;"/>
+                      <menuitem value="afrikaans" label="&afrikaans.label;"/>
+                      <!-- JLF - note that &Arabic.label, used below is reused from SectionType -->
+                      <menuitem value="arabic" observes="xelatex" label="&Arabic.label;"/>
+                      <menuitem value="bahasa" label="&bahasa.label;"/>
+                      <menuitem value="indonesian" label="&indonesian.label;"/>
+                      <menuitem value="indon" label="&indon.label;"/>
+                      <menuitem value="bahasai" label="&bahasai.label;"/>
+                      <menuitem value="bahasam" label="&bahasam.label;"/>
+                      <menuitem value="basque" label="&basque.label;"/>
+                      <menuitem value="brazil" label="&brazil.label;"/>
+                      <menuitem value="brazilian" label="&brazilian.label;"/>
+                      <menuitem value="breton" label="&breton.label;"/>
+                      <menuitem value="bulgarian" label="&bulgarian.label;"/>
+                      <menuitem value="canadien" label="&canadien.label;"/>
+                      <menuitem value="catalan" label="&catalan.label;"/>
+                      <menuitem value="coptic" observes="xelatex" label="&coptic.label;" />
+                      <menuitem value="croatian" label="&croatian.label;"/>
+                      <menuitem value="czech" label="&czech.label;"/>
+                      <menuitem value="danish" label="&danish.label;"/>
+                      <menuitem value="divehi" observes="xelatex" label="&divehi.label;" />
+                      <menuitem value="dutch" label="&dutch.label;"/>
+                      <menuitem value="esperanto" label="&esperanto.label;"/>
+                      <menuitem value="estonian" label="&estonian.label;"/>
+                      <menuitem value="farsi" observes="xelatex" label="&farsi.label;" />
+                      <menuitem value="finnish" label="&finnish.label;"/>
+                      <menuitem value="galician" label="&galician.label;"/>
+                      <menuitem value="hebrew" observes="xelatex" label="&hebrew.label;"/>
+                      <menuitem value="hungarian" label="&hungarian.label;"/>
+                      <menuitem value="icelandic" label="&icelandic.label;"/>
+                      <menuitem value="interlingua" label="&interlingua.label;"/>
+                      <menuitem value="irish" label="&irish.label;"/>
+                      <menuitem value="italian" label="&italian.label;"/>
+                      <menuitem value="latin" label="&latin.label;"/>
+                      <menuitem value="lowersorbian" label="&lowersorbian.label;"/>
+                      <menuitem value="magyar" label="&magyar.label;"/>
+                      <menuitem value="malay" label="&malay.label;"/>
+                      <menuitem value="meyalu" label="&meyalu.label;"/>
+                      <menuitem value="norsk" label="&norsk.label;"/>
+                      <menuitem value="samin" label="&samin.label;"/>
+                      <menuitem value="nynorsk" label="&nynorsk.label;"/>
+                      <menuitem value="polish" label="&polish.label;"/>
+                      <menuitem value="portuges" label="&portuges.label;"/>
+                      <menuitem value="portuguese" label="&portuguese.label;"/>
+                      <menuitem value="romanian" label="&romanian.label;"/>
+                      <menuitem value="russian" label="&russian.label;"/>
+                      <menuitem value="scottish" label="&scottish.label;"/>
+                      <menuitem value="serbian" label="&serbian.label;"/>
+                      <menuitem value="slovak" label="&slovak.label;"/>
+                      <menuitem value="slovene" label="&slovene.label;"/>
+                      <menuitem value="spanish" label="&spanish.label;"/>
+                      <menuitem value="swedish" label="&swedish.label;"/>
+                      <menuitem value="syriac" observes="xelatex" label="&syriac.label;" />
+                      <menuitem value="turkish" label="&turkish.label;"/>
+                      <menuitem value="ukrainian" label="&ukrainian.label;"/>
+                      <menuitem value="uppersorbian" label="&uppersorbian.label;"/>
+                      <menuitem value="urdu" label="&urdu.label;" observes="xelatex" />
+                      <menuitem value="welsh" label="&welsh.label;"/>
+                     </menupopup>
                  </menulist>
                 </vbox>
               </row>
@@ -517,7 +518,7 @@
       </tabpanel>   
         <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
           <vbox>
-            <checkbox id="enablepagelayout" label="Enable overriding page layout" oncommand="enableDisablePageLayout(this.checked);"/>                 
+            <checkbox id="enablepagelayout" label="&EnableOverridePageLayout.label;" accesskey="&EnableOverridePageLayout.accesskey;" oncommand="enableDisablePageLayout(this.checked);"/>                 
             <broadcaster id="pagelayoutok" disabled="true" persist="disabled"/>
             <hbox>
               <vbox flex="1">
