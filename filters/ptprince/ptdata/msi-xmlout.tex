@@ -6,7 +6,7 @@
 
 \def\href#1#2{%
    \ifmmode
-      \msitag{\msipassthru{<a href=="#1">#2</a>}}%
+      \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
        \msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
    \fi}
@@ -139,21 +139,6 @@
 
 \expandafter\def\csname fleqnAttrib\endcsname{eqnpos="fleqn"}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \newtoks\temptoksb
 
 \def\msiappend#1MSIXYZZY{%
@@ -169,7 +154,7 @@
       \ifmsi@firstopt
          \msi@firstoptfalse
       \else
-         \expandafter\temptoksa\expandafter{\the\temptoksa,}%
+         \expandafter\temptoksa\expandafter{\the\temptoksa\ }%
       \fi
       \edef\attrib{\csname #1Attrib\endcsname}%
       \expandafter\temptoksb\expandafter{\attrib}
@@ -257,16 +242,17 @@
 \def\@titleb#1{\@titlea[]{#1}}
 
 \def\author#1{\gdef\@author{#1}\out@author{#1}}
-\def\date#1{\gdef\@date{#1}\out@date{#1}}
+
+\def\date{\@ifnextchar[{\dateA}{\dateB}}
+\def\dateA[#1]#2{%
+   \gdef\@date{#2}\out@dateA{#1}{#2}}
+\def\dateB#1{\gdef\@date{#1}\out@date{#1}}
 
 \def\thanks#1{\out@thanks{#1}}
 \def\and{\out@and}
 
-
 %\def\frontmatter{\out@frontmatter}
 %\def\mainmatter{\out@mainmatter}
-
-
 
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
@@ -286,6 +272,16 @@
 
 \def\out@date#1{%
    \msihmode\br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
+
+\def\out@dateA#1#2{%
+   \msihmode\br
+   \msiopentag{date}{<date>}%
+      #2%
+      \msiopentag{option}{<option>}%
+         #1%
+      \msiclosetag{option}{</option>}%
+   \msiclosetag{date}{</date>}}
+
 
 
 
@@ -1330,7 +1326,14 @@
 \MSIMathQuote{\QABOVED} % special case? Why is this here?
 
 
-\def\text#1{\msitag{\text{#1}}}
+%\def\msi@mtext#1{\msitag{\msipassthru{<mml:mtext>#1</mml:mtext>}}}
+
+\def\text#1{%
+   \msitag{\msipassthru}%
+     \char`\{%
+        \msitag{<mml:mtext>} #1 \msitag{</mml:mtext>}%  
+     \char`\}}
+
 
 \def\vspace{%
   \@ifnextchar*{\vspaceStar}{\vspaceB}}
