@@ -16,17 +16,13 @@
       xmlns    = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       onload   = "startup()" 
       onresize = "windowChanged();"
-      ondraggesture = "nsDragAndDrop.startDrag(event,symObserver);nsDragAndDrop.mDragSession=null;"  
-      ondragover = "nsDragAndDrop.dragOver(event, symObserver);" 
-      ondragdrop = "nsDragAndDrop.drop(event, symObserver);"
-      
-      >
+>
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-<!--  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/ -->
+  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/symbols.js"/>
   
   <menupopup id="toc-context-menu">
@@ -44,10 +40,13 @@
   <tabbox id="sidebar-symbol-tabbox" textsize="small" iconsize="large" persist="iconsize textsize" 
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
-    style="height: 150px;">
+    style="height: 150px;"
+    ondraggesture = "nsDragAndDrop.startDrag(event,symObserver);nsDragAndDrop.mDragSession=null;"  
+    ondragdrop = "nsDragAndDrop.drop(event, symObserver);"
+    >
  	  <tabs class="tabs-top" align="start baseline">
 			  <tab dir="rtl" label="&#x03B1;&#x03B2;" mathsym="true" tooltiptext="&MSISymbolTabLCGreek;" selected="1"
-			    linkedpanel="symbol_lcGreek" />
+			    linkedpanel="symbol_lcGreek" ondragenter="nsDragAndDrop.dragEnter(event, symObserver);"/>
 			  <tab dir="rtl" label="&#x03A6;&#x03A8;" mathsym="true" tooltiptext="&MSISymbolTabCCGreek;" selected="0"
 			    linkedpanel="symbol_ucGreek" />
 			  <tab dir="rtl" label="&#x00B1;&#x00F7;" mathsym="true" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0"
@@ -70,7 +69,7 @@
 			    linkedpanel="symbol_latinextended" />
 			  <tab dir="rtl" label="&#x201C;&#x201D;" mathsym="false" tooltiptext="&MSISymbolTabPunctuation;"        selected="0"
 			    linkedpanel="symbol_punctuation" />
-			  <tab label="User" mathsym="true" tooltiptext="Drag frequently-used symbols here" linkedpanel="cachepanel" />
+			  <tab id="cachebar" label="User" mathsym="true" tooltiptext="Drag frequently-used symbols here" linkedpanel="cachepanel" />
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline" observes="tabpanelstyle"> 
@@ -1145,20 +1144,9 @@
           </rows>
         </grid>
       </tabpanel> 
-      <tabpanel id="symbol_punctuation" mathsym="false" align="baseline" observes="tabpanelstyle">
-        <grid>
-         <columns>
-            <column width="35px"/>
-            <column width="35px"/>
-            <column width="35px"/>
-            <column width="35px"/>
-            <column width="35px"/>
-          </columns>
-          <rows>
-            <row>
-            </row>
-          </rows>
-        </grid>
+      <tabpanel id="cachepanel" mathsym="false" align="baseline" observes="tabpanelstyle">
+        <toolbarbutton id="symbolendash" />
+        <toolbarbutton id="symbolquotdblbase" />
       </tabpanel> 
     </tabpanels>
   </tabbox>
