@@ -76,28 +76,28 @@
        <button onAccept();"  /> 
        -->
         <vbox flex="1">
-          <label class="heading" value="General Document Options"/>
+          <label class="heading" value="&GenDocOptions.label;"/>
           <label>&warning.label1;</label>
-          
+          <separator/>
           <label>&warning.label2;</label>
         </vbox> 
-        <checkbox id="enablereformat" label="Enable overriding the document style" checked="false" control="reformatok" persist="checked"
+        <checkbox id="enablereformat" label="&EnableDocStyleOverride.label;" accesskey="&EnableDocStyleOverride.accesskey;" checked="false" control="reformatok" persist="checked"
           oncommand="enableDisableReformat(this.checked);enable(this);"/>                 
         <broadcaster id="reformatok" disabled="true" persist="disabled"/>
         <groupbox>
           <caption>
-            <label  observes="reformatok">TeX Implementation</label>
+            <label  observes="reformatok">&TeXImplementation.label;</label>
           </caption>   
           <radiogroup id="texprogram" selectedIndex="0" value="pdflatex" persist="value">
-            <radio label="pdfLaTeX -- the classic" value="pdflatex" oncommand="setCompiler('pdflatex');"/>
-            <radio value="xelatex" label="XeLaTeX-- a unicode ehancement of LaTeX for non-western languages, uses opentype fonts" oncommand="setCompiler('xelatex');"/>
+            <radio label="&pdfLaTeXClassic.label;" accesskey="&pdfLaTeXClassic.accesskey;" value="pdflatex" oncommand="setCompiler('pdflatex');"/>
+            <radio value="xelatex" label="&XeLaTeX.label;" accesskey="&XeLaTeX.accesskey;" oncommand="setCompiler('xelatex');"/>
           </radiogroup>
           <broadcaster id="xelatex" hidden="true" persist="hidden" onbroadcast="compileInfoChanged(this);"/>
           <broadcaster id="pdflatex" hidden="false" persist="hidden" onbroadcast="compileInfoChanged(this);"/>
         </groupbox>
         <groupbox>
           <caption>
-            <label  observes="reformatok">Basic Layout</label>
+            <label  observes="reformatok" value="&BasicLayout.label;" accesskey="&BasicLayout.accesskey;" control="pgorient"/>
           </caption>   
           <grid>
             <columns>
@@ -110,83 +110,83 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox>
-                  <label observes="reformatok" value="Page Orientation"/>
+                  <label observes="reformatok" value="&PageOrientation.label;"/>
                   <menulist observes="reformatok" id="pgorient" persist="value" minwidth="6em">
                     <menupopup style="width: 9em" >
-                      <menuitem label="-default-" def="1"/>
-                      <menuitem value="port" label="Portrait"/>
-                      <menuitem value="landscape" label="Landscape"/>
+                      <menuitem label="&default.label;" def="1"/>
+                      <menuitem value="port" label="&Portrait.label;"/>
+                      <menuitem value="landscape" label="&Landscape.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label observes="reformatok" value="Paper Size"/>
+                  <label observes="reformatok" value="&PaperSize.label;"/>
                   <menulist observes="reformatok" id="papersize" persist="value">
                     <menupopup style="width: 9em" >
-                      <menuitem label="-default-" def="1"/>
-                      <menuitem value="letter" label="8.5x11 in."/>
-                      <menuitem value="a4paper" label="A4"/>
-                      <menuitem value="a5paper" label="A5"/>
-                      <menuitem value="b5paper" label="B5"/>
-                      <menuitem value="legalpaper" label="Legal"/>
-                      <menuitem value="executivepaper" label="Executive"/>
+                      <menuitem label="&default.label;" def="1"/>
+                      <menuitem value="letter" label="&LetterSize.label;"/>
+                      <menuitem value="a4paper" label="&A4Size.label;"/>
+                      <menuitem value="a5paper" label="&A5Size.label;"/>
+                      <menuitem value="b5paper" label="&B5Size.label;"/>
+                      <menuitem value="legalpaper" label="&LegalSize.label;"/>
+                      <menuitem value="executivepaper" label="&ExecutiveSize.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label observes="reformatok" value="Sides"/>
+                  <label observes="reformatok" value="&Sides.label;"/>
                   <menulist observes="reformatok" id="sides" persist="value">
                     <menupopup style="width: 9em" >
-                      <menuitem label="-default-" def="1"/>
-                      <menuitem value="oneside" label="One"/>
-                      <menuitem value="twoside" label="Two"/>
+                      <menuitem label="&default.label;" def="1"/>
+                      <menuitem value="oneside" label="&one.label;"/>
+                      <menuitem value="twoside" label="&two.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label observes="reformatok" value="Quality"/>
+                  <label observes="reformatok" value="&Quality.label;"/>
                   <menulist observes="reformatok" id="qual" style="width: 9em" persist="value" >
                     <menupopup>
-                      <menuitem label="-default-" def="1"/>
-                      <menuitem value="final" label="Final"/>
-                      <menuitem value="draft" label="Draft"/>
+                      <menuitem label="&default.label;" def="1"/>
+                      <menuitem value="final" label="&Final.label;"/>
+                      <menuitem value="draft" label="&Draft.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
               </row>
               <row align="end" style="height: 3em">
                 <vbox>
-                  <label observes="reformatok" value="Columns"/>
+                  <label observes="reformatok" value="&Columns.label;"/>
                   <menulist observes="reformatok" id="columns"  persist="value" >
                     <menupopup style="width: 9em" oncommand="broadcastColCount();" >
-                      <menuitem label="-default-" def="1"/>
-                      <menuitem value="1" label="One"/>
-                      <menuitem value="2" label="Two"/>
+                      <menuitem label="&default.label;" def="1"/>
+                      <menuitem value="1" label="&one.label;"/>
+                      <menuitem value="2" label="&two.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label observes="reformatok" value="Title Page"/>
-                  <menulist observes="reformatok" id="titlepage"  persist="value" >
+                  <label observes="reformatok" value="&TitlePage.label;"/>
+                  <menulist observes="reformatok" id="titlepage" persist="value" >
                     <menupopup style="width: 9em" >
-                      <menuitem label="-default-" def="1"/>
-                      <menuitem value="titlepage" label="Title Page"/>
+                      <menuitem label="&default.label;" def="1"/>
+                      <menuitem value="titlepage" label="&TitlePage.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label observes="reformatok" value="Body Text Font Size"/>
+                  <label observes="reformatok" value="&BodyTextFontSize.label;"/>
                   <menulist observes="reformatok" id="textsize"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
-                      <menuitem value="10pt" label="10 pt"/>
-                      <menuitem value="11pt" label="11 pt"/>
-                      <menuitem value="12pt" label="12 pt"/>
+                      <menuitem value="10pt" label="&PtSize10.label;"/>
+                      <menuitem value="11pt" label="&PtSize11.label;"/>
+                      <menuitem value="12pt" label="&PtSize12.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label observes="reformatok" value="Leading in Points"/>
+                  <label observes="reformatok" value="&LeadingInPoints.label;" accesskey="&LeadingInPoints.accesskey;" control="leadingcontrol"/>
                   <hbox><checkbox id="leadingcontrol" control="leading" checked="false" observes="reformatok" oncommand="enable(this);"  persist="checked" /><textbox id="leading" disabled="true" default="12.0" value="-default-" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
                 </vbox>
               </row>
@@ -205,87 +205,88 @@
                   <menulist id="babelLang1"  persist="value" ><!--observes="reformatok" -->
                     <menupopup style="width: 12em"  >
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
-                      <menuitem label="-default-" value="def" def="1"/>
+                      <menuitem label="&default.label;" value="def" def="1"/>
                       <menuseparator/>
-                        <menuitem value="USenglish" label="US English"/>
-                        <menuitem value="UKenglish" label="UK English"/>
-                        <menuitem value="australian" label="Australian English"/>
-                        <menuitem value="canadian" label="Canadian English"/>
-                        <menuitem value="newzealand" label="New Zealand English"/>
+                        <menuitem value="USenglish" label="&USenglish.label;"/>
+                        <menuitem value="UKenglish" label="&UKenglish.label;"/>
+                        <menuitem value="australian" label="&australian.label;"/>
+                        <menuitem value="canadian" label="&canadian.label;"/>
+                        <menuitem value="newzealand" label="&newzealand.label;"/>
                       <menuseparator />    
-                        <menuitem value="austrian" label="Austrian"/>
-                        <menuitem value="naustrian" label="NAustrian"/>
-                        <menuitem value="german" label="German"/>
-                        <menuitem value="germanb" label="Germanb"/>
-                        <menuitem value="ngerman" label="NGerman"/>                       
+                        <menuitem value="austrian" label="&austrian.label;"/>
+                        <menuitem value="naustrian" label="&naustrian.label;"/>
+                        <menuitem value="german" label="&german.label;"/>
+                        <menuitem value="germanb" label="&germanb.label;"/>
+                        <menuitem value="ngerman" label="&ngerman.label;"/>                       
                       <menuseparator />
-                        <menuitem value="monogreek" label="Monotonic Greek"></menuitem>
-                        <menuitem value="polygreek" observes="xelatex" label="Polytonic Greek"></menuitem>
-                        <menuitem value="polutonikogreek" observes="pdflatex" label="Polytonic Greek"></menuitem>
-                        <menuitem value="ancientgreek" observes="xelatex" label="Ancient Greek"></menuitem>
+                        <menuitem value="monogreek" label="&monogreek.label;"></menuitem>
+                        <menuitem value="polygreek" observes="xelatex" label="&polygreek.label;"></menuitem>
+                        <menuitem value="polutonikogreek" observes="pdflatex" label="&polutonikogreek.label;"></menuitem>
+                        <menuitem value="ancientgreek" observes="xelatex" label="&ancientreek.label;"></menuitem>
                       <menuseparator />
-                        <menuitem value="francais" label="Francais"/>
-                        <menuitem value="frenchb" label="Frenchb"/>
-                        <menuitem value="french" label="French"/>
-                        <menuitem value="acadian" label="Acadian"/>
+                        <menuitem value="francais" label="&francais.label;"/>
+                        <menuitem value="frenchb" label="&frenchb.label;"/>
+                        <menuitem value="french" label="&french.label;"/>
+                        <menuitem value="acadian" label="&acadian.label;"/>
                       <menuseparator />
-                      <menuitem value="albanian" label="Albanian"/>
-                      <menuitem value="afrikaans" label="Afrikaans"/>
-                      <menuitem value="arabic" observes="xelatex" label="Arabic"/>
-                      <menuitem value="bahasa" label="Bahasa"/>
-                      <menuitem value="indonesian" label="Indonesian"/>
-                      <menuitem value="indon" label="indon"/>
-                      <menuitem value="bahasai" label="Bahasa Indonesian"/>
-                      <menuitem value="bahasam" label="Bahasa Malaysia"/>
-                      <menuitem value="basque" label="Basque"/>
-                      <menuitem value="brazil" label="Brazil"/>
-                      <menuitem value="brazilian" label="Brazilian"/>
-                      <menuitem value="breton" label="Breton"/>
-                      <menuitem value="bulgarian" label="Bulgarian"/>
-                      <menuitem value="canadien" label="Canadien"/>
-                      <menuitem value="catalan" label="Catalan"/>
-                      <menuitem value="coptic" observes="xelatex" label="Coptic" />
-                      <menuitem value="croatian" label="Croatian"/>
-                      <menuitem value="czech" label="Czech"/>
-                      <menuitem value="danish" label="Danish"/>
-                      <menuitem value="divehi" observes="xelatex" label="Divehi" />
-                      <menuitem value="dutch" label="Dutch"/>
-                      <menuitem value="esperanto" label="Esperanto"/>
-                      <menuitem value="estonian" label="Estonian"/>
-                      <menuitem value="farsi" observes="xelatex" label="Farsi" />
-                      <menuitem value="finnish" label="Finnish"/>
-                      <menuitem value="galician" label="Galician"/>
-                      <menuitem value="hebrew" observes="xelatex" label="Hebrew"/>
-                      <menuitem value="hungarian" label="Hungarian"/>
-                      <menuitem value="icelandic" label="Icelandic"/>
-                      <menuitem value="interlingua" label="Interlingua"/>
-                      <menuitem value="irish" label="Irish"/>
-                      <menuitem value="italian" label="Italian"/>
-                      <menuitem value="latin" label="Latin"/>
-                      <menuitem value="lowersorbian" label="Lower Sorbian"/>
-                      <menuitem value="magyar" label="Magyar"/>
-                      <menuitem value="malay" label="Malay"/>
-                      <menuitem value="meyalu" label="Meyalu"/>
-                      <menuitem value="norsk" label="Norsk"/>
-                      <menuitem value="samin" label="Samin"/>
-                      <menuitem value="nynorsk" label="Nynorsk"/>
-                      <menuitem value="polish" label="Polish"/>
-                      <menuitem value="portuges" label="Portuges"/>
-                      <menuitem value="portuguese" label="Portuguese"/>
-                      <menuitem value="romanian" label="Romanian"/>
-                      <menuitem value="russian" label="Russian"/>
-                      <menuitem value="scottish" label="Scottish"/>
-                      <menuitem value="serbian" label="Serbian"/>
-                      <menuitem value="slovak" label="Slovak"/>
-                      <menuitem value="slovene" label="Slovene"/>
-                      <menuitem value="spanish" label="Spanish"/>
-                      <menuitem value="swedish" label="Swedish"/>
-                      <menuitem value="syriac" observes="xelatex" label="Syriac" />
-                      <menuitem value="turkish" label="Turkish"/>
-                      <menuitem value="ukrainian" label="Ukrainian"/>
-                      <menuitem value="uppersorbian" label="Upper Sorbian"/>
-                      <menuitem value="urdu" label="Urdu" observes="xelatex" />
-                      <menuitem value="welsh" label="Welsh"/>
+                      <menuitem value="albanian" label="&albanian.label;"/>
+                      <menuitem value="afrikaans" label="&afrikaans.label;"/>
+                      <!-- JLF - note that &Arabic.label, used below is reused from SectionType -->
+                      <menuitem value="arabic" observes="xelatex" label="&Arabic.label;"/>
+                      <menuitem value="bahasa" label="&bahasa.label;"/>
+                      <menuitem value="indonesian" label="&indonesian.label;"/>
+                      <menuitem value="indon" label="&indon.label;"/>
+                      <menuitem value="bahasai" label="&bahasasai.label;"/>
+                      <menuitem value="bahasam" label="&bahasam.label;"/>
+                      <menuitem value="basque" label="&basque.label;"/>
+                      <menuitem value="brazil" label="&brazil.label;"/>
+                      <menuitem value="brazilian" label="&brazilian.label;"/>
+                      <menuitem value="breton" label="&breton.label;"/>
+                      <menuitem value="bulgarian" label="&bulgarian.label;"/>
+                      <menuitem value="canadien" label="&canadien.label;"/>
+                      <menuitem value="catalan" label="&catalan.label;"/>
+                      <menuitem value="coptic" observes="xelatex" label="&coptic.label;" />
+                      <menuitem value="croatian" label="&croatian.label;"/>
+                      <menuitem value="czech" label="&czech.label;"/>
+                      <menuitem value="danish" label="&Danish.label;"/>
+                      <menuitem value="divehi" observes="xelatex" label="&divehi.label;" />
+                      <menuitem value="dutch" label="&dutch.label;"/>
+                      <menuitem value="esperanto" label="&esperanto.label;"/>
+                      <menuitem value="estonian" label="&estonian.label;"/>
+                      <menuitem value="farsi" observes="xelatex" label="&farsi.label;" />
+                      <menuitem value="finnish" label="&finnish.label;"/>
+                      <menuitem value="galician" label="&galician.label;"/>
+                      <menuitem value="hebrew" observes="xelatex" label="&hebrew.label;"/>
+                      <menuitem value="hungarian" label="&hungarian.label;"/>
+                      <menuitem value="icelandic" label="&icelandic.label;"/>
+                      <menuitem value="interlingua" label="&interlingua.label;"/>
+                      <menuitem value="irish" label="&irish.label;"/>
+                      <menuitem value="italian" label="&italian.label;"/>
+                      <menuitem value="latin" label="&latin.label;"/>
+                      <menuitem value="lowersorbian" label="&lowersorbian.label;"/>
+                      <menuitem value="magyar" label="&magyar.label;"/>
+                      <menuitem value="malay" label="&malay.label;"/>
+                      <menuitem value="meyalu" label="&meyalu.label;"/>
+                      <menuitem value="norsk" label="&norsk.label;"/>
+                      <menuitem value="samin" label="&samin.label;"/>
+                      <menuitem value="nynorsk" label="&nynorsk.label;"/>
+                      <menuitem value="polish" label="&polish.label;"/>
+                      <menuitem value="portuges" label="&portuges.label;"/>
+                      <menuitem value="portuguese" label="&portuguese.label;"/>
+                      <menuitem value="romanian" label="&romanian.label;"/>
+                      <menuitem value="russian" label="&russian.label;"/>
+                      <menuitem value="scottish" label="&scottish.label;"/>
+                      <menuitem value="serbian" label="&serbian.label;"/>
+                      <menuitem value="slovak" label="&slovak.label;"/>
+                      <menuitem value="slovene" label="&slovene.label;"/>
+                      <menuitem value="spanish" label="&spanish.label;"/>
+                      <menuitem value="swedish" label="&swedish.label;"/>
+                      <menuitem value="syriac" observes="xelatex" label="&syriac.label;" />
+                      <menuitem value="turkish" label="&turkish.label;"/>
+                      <menuitem value="ukrainian" label="&ukrainian.label;"/>
+                      <menuitem value="uppersorbian" label="&uppersorbian.label;"/>
+                      <menuitem value="urdu" label="&urdu.label;" observes="xelatex" />
+                      <menuitem value="welsh" label="&welsh.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -384,7 +385,7 @@
         </groupbox>
         <groupbox  observes="reformatok">  
           <caption>
-            <label  observes="reformatok">Mathematics Display</label>
+            <label  observes="reformatok" value="&MathematicsDisplay.label;" accesskey="&MathematicsDisplay.accesskey;" control="eqnnopos"/>
           </caption>   
           <grid>
             <columns>
@@ -397,22 +398,22 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox>
-                  <label observes="reformatok" value="Eqn Number Position"/>
+                  <label observes="reformatok" value="&EqnNumberPosition.label;"/>
                   <menulist observes="reformatok" id="eqnnopos"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
-                      <menuitem value="reqno" label="On the right"/>
-                      <menuitem value="leqno" label="On the left"/>
+                      <menuitem value="reqno" label="&OnTheRight.label;"/>
+                      <menuitem value="leqno" label="&OnTheLeft.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label observes="reformatok" value="Displayed Eqn Position"/>
+                  <label observes="reformatok" value="&DisplayedEqnPosition.label;"/>
                   <menulist observes="reformatok" id="eqnpos"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
-                      <menuitem value="ceqn" label="Centered"/>
-                      <menuitem value="fleqn" label="Flush left"/>
+                      <menuitem value="ceqn" label="&DisplayedEqnCentered.label;"/>
+                      <menuitem value="fleqn" label="&DisplayedEqnFlushLeft.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -423,7 +424,7 @@
         </groupbox>
         <groupbox observes="reformatok">
           <caption>
-            <label  observes="reformatok">Front and Back Matter</label>
+            <label  observes="reformatok" label="&FrontBackMatter.label;" accesskey="FrontBackMatter.accesskey;" control="toc"/>
           </caption>   
           <grid>
             <columns>
@@ -436,35 +437,35 @@
             <rows>
               <row>
                 <vbox align="center">
-                  <label observes="reformatok" value="Table of Contents"/>
+                  <label observes="reformatok" value="&TableofContents.label;"/>
                   <hbox ><checkbox id="toc" observes="reformatok" align="center" checked="false"  persist="checked" /></hbox>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="List of Figures"/>
+                  <label observes="reformatok" value="&ListofFigures.label;"/>
                   <checkbox id="lof" observes="reformatok" align="center" checked="false"  persist="checked" />
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="List of Tables"/>
+                  <label observes="reformatok" value="&ListofTables.label;"/>
                   <hbox><checkbox id="lot" observes="reformatok" align="center" checked="false"  persist="checked" /></hbox>
                 </vbox>
               </row>
               <row align="end" style="height: 3em">
                 <vbox>
-                  <label observes="reformatok" value="Footnotes"/>
+                  <label observes="reformatok" value="&Footnotes.label;"/>
                   <menulist id="footnoteorendnote" observes="reformatok"  persist="value" >
                     <menupopup style="width: 9em" >
-                      <menuitem value="foot" label="Footnotes" def="1"/>
-                      <menuitem value="end" label="Endnotes"/>
+                      <menuitem value="foot" label="&Footnotes.label;" def="1"/>
+                      <menuitem value="end" label="&Endnotes.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label observes="reformatok" value="Bibliography Style"/>
+                  <label observes="reformatok" value="&BibliographyStyle.label;"/>
                   <menulist observes="reformatok" id="bibstyle"  persist="value" >
                     <menupopup style="width: 9em" >
                       <menuitem label="-default-" def="1"/>
-                      <menuitem value="compbib" label="Compressed"/>
-                      <menuitem value="openbib" label="Open"/>
+                      <menuitem value="compbib" label="&Compressed.label;"/>
+                      <menuitem value="openbib" label="&Open.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -474,7 +475,7 @@
         </groupbox>
         <groupbox  observes="reformatok">
           <caption>
-            <label  observes="reformatok">Draft Tools</label>
+            <label  observes="reformatok" label="&DraftTools.label;" accesskey="&DraftTools.accesskey;" control="showkeys"/>
           </caption>   
           <grid>
             <columns>
@@ -487,7 +488,7 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox align="center">
-                  <label observes="reformatok" value="Show Keys"/>
+                  <label observes="reformatok" value="&ShowKeys.label;"/>
                   <checkbox id="showkeys" observes="reformatok" align="center" checked="false"  persist="checked" />
                  </vbox>
                  <!--vbox align="center">
@@ -495,17 +496,17 @@
                   <checkbox observes="reformatok" align="center" checked="false"/>
                 </vbox -->
                 <vbox align="center">
-                  <label observes="reformatok" value="Show Index Entries"/>
+                  <label observes="reformatok" value="&ShowIndexEntries.label;"/>
                   <checkbox id="showidx" observes="reformatok" align="center" checked="false"  persist="checked" />
                 </vbox>
                 <vbox align="center">
-                  <label value="Line Spacing"  observes="reformatok"/>
+                  <label value="&LineSpacing.label;"  observes="reformatok"/>
                   <menulist  id="linespacing" observes="reformatok"  persist="value" >
                     <menupopup style="width: 9em" >
-                      <menuitem def="1" value="def" label="-default-"/>
-                      <menuitem value="singlespacing" label="One"/>
-                      <menuitem value="onehalfspacing" label="One and a half"/>
-                      <menuitem value="doublespacing" label="Two"/>
+                      <menuitem def="1" value="def" label="&default.label;"/>
+                      <menuitem value="singlespacing" label="&one.label;"/>
+                      <menuitem value="onehalfspacing" label="&OneHalf.label;"/>
+                      <menuitem value="doublespacing" label="&two.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -516,7 +517,7 @@
       </tabpanel>   
         <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
           <vbox>
-            <checkbox id="enablepagelayout" label="Enable overriding page layout" persist="checked" oncommand="enableDisablePageLayout(this.checked);"/>                 
+            <checkbox id="enablepagelayout" label="&EnableOverridePageLayout.label;" accesskey="&EnableOverridePageLayout.accesskey;" persist="checked" oncommand="enableDisablePageLayout(this.checked);"/>                 
             <broadcaster id="pagelayoutok" disabled="true" persist="disabled"/>
             <hbox>
               <vbox flex="1">
@@ -527,24 +528,24 @@
                     <broadcaster id="twoside" hidden="true"  persist="hidden"/>
                   </vbox>
                   <vbox>
-                    <label observes="pagelayoutok">Orientation</label>
+                    <label observes="pagelayoutok" value="&Orientation.label;" accesskey="&Orientation.accesskey;" control="landscape"/>
                     <menulist observes="pagelayoutok" id="landscape" minwidth="5em" persist="value">
                       <menupopup style="width: 9em" >
-                        <menuitem value="port" label="Portrait"/>
-                        <menuitem value="land" label="Landscape"/>
+                        <menuitem value="port" label="&Portrait.label;"/>
+                        <menuitem value="land" label="&Landscape.label;"/>
                       </menupopup>
                     </menulist>
                   </vbox>
                   <vbox align="start">
-                    <label observes="pagelayoutok">&docformatCentered;</label>
+                    <label observes="pagelayoutok" value="&docformatCentered;"/>
                     <checkbox  observes="pagelayoutok" id="vcenter" label="&docformatVert;"  
                       persist="checked" oncommand="if (checked) document.getElementById('bc.vcenter').setAttribute('disabled',true);else document.getElementById('bc.vcenter').removeAttribute('disabled');layoutPage('all');"/>
                     <broadcaster id="bc.vcenter"/>
-                    <checkbox observes="pagelayoutok" id="hcenter" checked="false" label="&docformatHoriz;"   persist="checked" oncommand="if (checked) document.getElementById('bc.hcenter').setAttribute('disabled',true);else document.getElementById('bc.hcenter').removeAttribute('disabled');layoutPage('all');"/>
+                    <checkbox observes="pagelayoutok" id="hcenter" checked="false" label="&docformatHoriz;" persist="checked" oncommand="if (checked) document.getElementById('bc.hcenter').setAttribute('disabled',true);else document.getElementById('bc.hcenter').removeAttribute('disabled');layoutPage('all');"/>
                     <broadcaster id="bc.hcenter" />
                   </vbox>
                   <vbox>
-                    <label observes="pagelayoutok">&docformatUnits;</label>
+                    <label observes="pagelayoutok" value="&docformatUnits;"/>
                     <menulist observes="pagelayoutok" id="docformat.units" style="width: 8em"  
                           oncommand="switchUnits();"  value="in" persist="value">
                      <menupopup>
@@ -557,11 +558,11 @@
                   </vbox>
                   <vbox>
                     <vbox>
-                      <label observes="pagelayoutok" value="Columns"/>
+                      <label observes="pagelayoutok" value="&Columns.label;"/>
                       <menulist observes="pagelayoutok" id="columncount" persist="value">
                         <menupopup style="width: 8em" oncommand="broadcastColCount();">
-                          <menuitem value="1" label="One"/>
-                          <menuitem value="2" label="Two"/>
+                          <menuitem value="1" label="&one.label;"/>
+                          <menuitem value="2" label="&two.label;"/>
                         </menupopup>
                       </menulist>
                     </vbox>
@@ -661,29 +662,29 @@
                     <vbox>
                       <groupbox align="center">
                         <caption>
-                          <label observes="pagelayoutok">Finished Page Size</label>
+                          <label observes="pagelayoutok" label="&docformatfinishpageSize;"/>
                         </caption>   
                         <label observes="pagelayoutok">&docformatfinishpageSize;</label>
                         <menulist observes="pagelayoutok" id="docformat.finishpagesize"
                           oncommand="changefinishpageSize(this);onWindowSizeReset(false);">
                           <menupopup style="width: 7em;" persist="value">
                            <menuitem id="docformat.letter" label="&docformatLetter;" value="letter" selected="true"/>
-                           <menuitem id="docformat.a4" label="A4" value="a4"/>
+                           <menuitem id="docformat.a4" label="A4Size.label;" value="a4"/>
                            <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
                            <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
-                           <menuitem id="docformat.a0" label="A0" value="a0"/>
-                           <menuitem id="docformat.a1" label="A1" value="a1"/>
-                           <menuitem id="docformat.a2" label="A2" value="a2"/>
-                           <menuitem id="docformat.a3" label="A3" value="a3"/>
-                           <menuitem id="docformat.a5" label="A5" value="a5"/>
-                           <menuitem id="docformat.a6" label="A6" value="a6"/>
-                           <menuitem id="docformat.b0" label="B0" value="b0"/>
-                           <menuitem id="docformat.b1" label="B1" value="b1"/>
-                           <menuitem id="docformat.b2" label="B2" value="b2"/>
-                           <menuitem id="docformat.b3" label="B3" value="b3"/>
-                           <menuitem id="docformat.b4" label="B4" value="b4"/>
-                           <menuitem id="docformat.b5" label="B5" value="b5"/>
-                           <menuitem id="docformat.b6" label="B6" value="b6"/>
+                           <menuitem id="docformat.a0" label="&A0Size.label;" value="a0"/>
+                           <menuitem id="docformat.a1" label="&A1Size.label;" value="a1"/>
+                           <menuitem id="docformat.a2" label="&A2Size.label;" value="a2"/>
+                           <menuitem id="docformat.a3" label="&A3Size.label;" value="a3"/>
+                           <menuitem id="docformat.a5" label="&A5Size.label;" value="a5"/>
+                           <menuitem id="docformat.a6" label="&A6Size.label;" value="a6"/>
+                           <menuitem id="docformat.b0" label="&B0Size.label;" value="b0"/>
+                           <menuitem id="docformat.b1" label="&B1Size.label;" value="b1"/>
+                           <menuitem id="docformat.b2" label="&B2Size.label;" value="b2"/>
+                           <menuitem id="docformat.b3" label="&B3Size.label;" value="b3"/>
+                           <menuitem id="docformat.b4" label="&B4Size.label;" value="b4"/>
+                           <menuitem id="docformat.b5" label="&B5Size.label;" value="b5"/>
+                           <menuitem id="docformat.b6" label="&B6Size.label;" value="b6"/>
                            <menuitem id="docformat.executive" label="&docformatExecutive;" value="executive"/>
                            <menuitem id="docformat.legal" label="&docformatLegal;" value="legal"/>
                           </menupopup>
@@ -702,7 +703,7 @@
                             <spacer/>
                           </vbox>
                           <vbox>
-                            <label observes="pagelayoutok" value="Page width"/>
+                            <label observes="pagelayoutok" value="&PageWidth.label;"/>
                             <textbox id="tbpagewidth" type="number" increment="0.1" decimalplaces="2" style="width: 5em" observes="bc.finishpagesize"  persist="value" 
                               onkeypress="geomHandleChar(event,'pagewidth', 'tbpagewidth');changePageDim(this);onWindowSizeReset(false);" 
                               onchange="changePageDim(this);onWindowSizeReset(false);">
@@ -713,21 +714,21 @@
                         </hbox>
                       </groupbox>
                       <groupbox>
-                        <checkbox observes="pagelayoutok" id="useCropmarks" label="Crop marks" oncommand="cropmarkRequest(this);"/>
+                        <checkbox observes="pagelayoutok" id="useCropmarks" label="&CropMarks.label;" oncommand="cropmarkRequest(this);"/>
                         <broadcaster id="cropmarks" hidden="true"/>
                         <broadcaster id="pageonpapercentered" hidden="true"/>
                         <radiogroup id="cropGroup" orient="horizontal"  observes="cropmarks" persist="value">
                           <vbox>                        
-                            <label observes="pagelayoutok" value="&camera.label;" control="camera"/> 
-                            <radio observes="pagelayoutok" id="camera" value="cam" accesskey="&camera.accesskey;" selected="true"/>
+                            <label observes="pagelayoutok" value="&camera.label;"  control="camera"/> 
+                            <radio observes="pagelayoutok" id="camera" value="cam" selected="true"/>
                           </vbox>
                           <vbox>
-                            <label observes="pagelayoutok" value="&cross.label;" conrol="cross"/> 
-                            <radio observes="pagelayoutok" id="cross" value="cross" accesskey="&cross.accesskey;"/>
+                            <label observes="pagelayoutok" value="&cross.label;" control="cross"/> 
+                            <radio observes="pagelayoutok" id="cross" value="cross"/>
                           </vbox>
                           <vbox>
-                            <label observes="pagelayoutok" value="&frame.label;" />
-                            <radio observes="pagelayoutok" id="frame"  value="frame" accesskey="&frame.accesskey;"/>
+                            <label observes="pagelayoutok" value="&frame.label;" control="frame"/>
+                            <radio observes="pagelayoutok" id="frame"  value="frame"/>
                           </vbox>
                         </radiogroup>
                       </groupbox>
@@ -737,12 +738,12 @@
                         </caption>
                         <radiogroup id="pageonpaperlayout" orient="horizontal" observes="cropmarks" oncommand="centerCropmarks(this.value);" persist="value">
                           <vbox>                        
-                            <label observes="pagelayoutok" value="&pageonpaperupperleft.label;" control="popupperleft"/> 
-                            <radio observes="pagelayoutok" id="popupperleft" value="upperleft" accesskey="popupperleft.accesskey;" selected="true"/>
+                            <label observes="pagelayoutok" value="&pageonpaperupperleft.label;" accesskey="popupperleft.accesskey;" control="popupperleft"/> 
+                            <radio observes="pagelayoutok" id="popupperleft" value="upperleft" selected="true"/>
                           </vbox>
                           <vbox>
-                            <label observes="pagelayoutok" value="&pageonpapercenter.label;" control="popcenter"/> 
-                            <radio observes="pagelayoutok" id="popcenter" value="center" accesskey="popcenter.accesskey;" selected="false"/>
+                            <label observes="pagelayoutok" value="&pageonpapercenter.label;" accesskey="popcenter.accesskey;" control="popcenter"/> 
+                            <radio observes="pagelayoutok" id="popcenter" value="center" selected="false"/>
                           </vbox>
                         </radiogroup>      
                       </groupbox>
@@ -755,21 +756,21 @@
                         <menulist observes="pagelayoutok" id="docformat.papersize" oncommand="changepaperSize(this);" persist="value">
                           <menupopup style="width: 7em;">
                            <menuitem label="&docformatLetter;" value="letter" selected="true"/>
-                           <menuitem label="A4" value="a4"/>
+                           <menuitem label="&A4Size.label;" value="a4"/>
                            <menuitem label="&docformatOther;" value="other"/>
-                           <menuitem label="A0" value="a0"/>
-                           <menuitem label="A1" value="a1"/>
-                           <menuitem label="A2" value="a2"/>
-                           <menuitem label="A3" value="a3"/>
-                           <menuitem label="A5" value="a5"/>
-                           <menuitem label="A6" value="a6"/>
-                           <menuitem label="B0" value="b0"/>
-                           <menuitem label="B1" value="b1"/>
-                           <menuitem label="B2" value="b2"/>
-                           <menuitem label="B3" value="b3"/>
-                           <menuitem label="B4" value="b4"/>
-                           <menuitem label="B5" value="b5"/>
-                           <menuitem label="B6" value="b6"/>
+                           <menuitem label="A0Size.label;" value="a0"/>
+                           <menuitem label="A1Size.label;" value="a1"/>
+                           <menuitem label="A2Size.label;" value="a2"/>
+                           <menuitem label="A3Size.label;" value="a3"/>
+                           <menuitem label="A5Size.label;" value="a5"/>
+                           <menuitem label="A6Size.label;" value="a6"/>
+                           <menuitem label="B0Size.label;" value="b0"/>
+                           <menuitem label="B1Size.label;" value="b1"/>
+                           <menuitem label="B2Size.label;" value="b2"/>
+                           <menuitem label="B3Size.label;" value="b3"/>
+                           <menuitem label="B4Size.label;" value="b4"/>
+                           <menuitem label="B5Size.label;" value="b5"/>
+                           <menuitem label="B6Size.label;" value="b6"/>
                            <menuitem label="&docformatExecutive;" value="executive"/>
                            <menuitem label="&docformatLegal;" value="legal"/>
                           </menupopup>
@@ -778,7 +779,7 @@
                           <broadcaster id="bc.papersize" />
                           <spacer flex="1"/>
                           <vbox>
-                            <label observes="pagelayoutok" value="Height"/>
+                            <label observes="pagelayoutok" value="&PageSizeHeight.label;"/>
                             <textbox id="tbpaperheight" type="number"  decimalplaces="2" increment="0.1" style="width: 5em" observes="bc.papersize"  persist="value" 
                               onkeypress="geomHandleChar(event,'paperheight', 'tbpaperheight');"> 
                                 <observes element="pagelayoutok" attribute="disabled"/>
@@ -787,7 +788,7 @@
                           </vbox>
                           <spacer flex="1"/>
                           <vbox>
-                            <label observes="pagelayoutok" value="Width"/>
+                            <label observes="pagelayoutok" value="PageSizeWidth.label;"/>
                             <textbox id="tbpaperwidth" type="number" increment="0.1" decimalplaces="2" style="width: 5em" observes="bc.papersize" persist="value"
                               onkeypress="geomHandleChar(event,'paperwidth', 'tbpaperwidth');">
                                 <observes element="pagelayoutok" attribute="disabled"/>
@@ -947,9 +948,9 @@
         </tabpanel>
      <tabpanel id="docformatFontsPanel">
         <vbox>
-          <checkbox id="allowfontchoice" label="Enable overriding font selection" oncommand="enableDisableFonts(this.checked);"/>
+          <checkbox id="allowfontchoice" label="&EnableOverridingFontSelection.label;" accesskey="&EnableOverridingFontSelection.accesskey;" oncommand="enableDisableFonts(this.checked);"/>
           <broadcaster id="fontdefok" disabled="true"/> 
-          <msibutton label="Refresh Font List" oncommand="initializeFontFamilyList(true, window);" observes="xelatex">
+          <msibutton label="&RefreshFontList.label;" oncommand="initializeFontFamilyList(true, window);" observes="xelatex">
             <observes element="fontdefok" attribute="disabled"/> 
           </msibutton>
           <groupbox>
@@ -978,16 +979,16 @@
                 </menulist>
               </vbox>
               <vbox observes="xelatex">
-                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <label observes="fontdefok" align="center" value="&OldStyleNums.label;"/>
                 <checkbox observes="fontdefok" id="romanoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox observes="xelatex">
-                <label observes="fontdefok" align="center" value="Swash"/>
+                <label observes="fontdefok" align="center" value="&Swash.label;"/>
                 <checkbox observes="fontdefok" id="romanswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox observes="xelatex">
-              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcroman'); elt.hidden=!(elt.hidden);"/>
+              <label observes="fontdefok" value="&GoNative;" onclick="var elt=getElementById('bcroman'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcroman" id="romannative" onchange="onOptionTextChanged(this);">
                 <observes element="fontdefok" attribute="disabled"/>
               </textbox>
@@ -1005,16 +1006,16 @@
                </menulist>
               </vbox>
               <vbox observes="xelatex">
-                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <label observes="fontdefok" align="center" value="&OldStyleNums.label;"/>
                 <checkbox observes="fontdefok" label="" id="sansoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox observes="xelatex">
-                <label observes="fontdefok" align="center" value="Swash"/>
+                <label observes="fontdefok" align="center" value="&Swash.label;"/>
                 <checkbox observes="fontdefok" label="" id="sansswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox observes="xelatex">
-              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcsans'); elt.hidden=!(elt.hidden);"/>
+              <label observes="fontdefok" value="&GoNative;" onclick="var elt=getElementById('bcsans'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcsans" id="sansnative">
                 <observes element="fontdefok" attribute="disabled"/>
               </textbox>
@@ -1031,16 +1032,16 @@
                </menulist>
               </vbox>
               <vbox observes="xelatex">
-                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <label observes="fontdefok" align="center" value="&OldStyleNums.label;"/>
                 <checkbox observes="fontdefok" label="" id="fixedoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox observes="xelatex">
-                <label observes="fontdefok" align="center" value="Swash"/>
+                <label observes="fontdefok" align="center" value="&Swash.label;"/>
                 <checkbox observes="fontdefok" label="" id="fixedswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox observes="xelatex">
-              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcfixed'); elt.hidden=!(elt.hidden);"/>
+              <label observes="fontdefok" value="&GoNative;" onclick="var elt=getElementById('bcfixed'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcfixed" id="fixednative">
                 <observes element="fontdefok" attribute="disabled"/>
               </textbox>
@@ -1049,13 +1050,13 @@
           </groupbox>
           <groupbox observes="xelatex">
             <caption>
-              <label observes="fontdefok" value="Additional fonts"/>
+              <label observes="fontdefok" value="&AdditionalFonts.label;"/>
             </caption>
-            <hbox><label observes="fontdefok" value="Internal font name"/>
+            <hbox><label observes="fontdefok" value="&InternalFontName.label;"/>
               <textbox observes="fontdefok" id="f1name"/></hbox>
             <hbox>
               <vbox>
-                <label observes="fontdefok" align="right" value="Extra font 1"/>
+                <label observes="fontdefok" align="right" value="&ExtraFont1.label;"/>
                 <menulist observes="fontdefok" id="x1fontlist" oncommand=""  >
                   <menupopup maxwidth="15em">
                     <menuitem id="x1fontdefault" label="&docformatDefault;" />
@@ -1064,25 +1065,25 @@
                 </menulist>
               </vbox>
               <vbox >
-                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <label observes="fontdefok" align="center" value="&OldStyleNums.label;"/>
                 <checkbox observes="fontdefok" label="" id="x1oldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox>
-                <label observes="fontdefok" align="center" value="Swash"/>
+                <label observes="fontdefok" align="center" value="&Swash.label;"/>
                 <checkbox observes="fontdefok" label="" id="x1swash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox>
-              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcx1'); elt.hidden=!(elt.hidden);"/>
+              <label observes="fontdefok" value="&GoNative;" onclick="var elt=getElementById('bcx1'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcx1" id="x1native">
                 <observes element="fontdefok" attribute="disabled"/>
               </textbox>
               <broadcaster id="bcx1" hidden="true"/>
             </hbox>
-            <hbox><label observes="fontdefok" value="Internal font name"/><textbox observes="fontdefok" id="f2name"/></hbox>
+            <hbox><label observes="fontdefok" value="&InternalFontName.label;"/><textbox observes="fontdefok" id="f2name"/></hbox>
             <hbox>
               <vbox>
-                <label observes="fontdefok" align="right" value="Extra font 2"/>
+                <label observes="fontdefok" align="right" value="&ExtraFont2.label;"/>
                 <menulist observes="fontdefok" id="x2fontlist" oncommand=""  >
                   <menupopup maxwidth="15em">
                     <menuitem id="x2fontdefault" label="&docformatDefault;" />
@@ -1091,25 +1092,25 @@
                 </menulist>
               </vbox>
               <vbox>
-                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <label observes="fontdefok" align="center" value="&OldStyleNums.label;"/>
                 <checkbox observes="fontdefok" label="" id="x2oldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox>
-                <label observes="fontdefok" align="center" value="Swash"/>
+                <label observes="fontdefok" align="center" value="&Swash.label;"/>
                 <checkbox observes="fontdefok" label="" id="x2swash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox>
-              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcx2'); elt.hidden=!(elt.hidden);"/>
+              <label observes="fontdefok" value="&GoNative;" onclick="var elt=getElementById('bcx2'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcx2" id="x2name">
                 <observes element="fontdefok" attribute="disabled"/>
               </textbox>
               <broadcaster id="bcx2" hidden="true"/>
             </hbox>
-            <hbox><label observes="fontdefok" value="Internal font name"/><textbox observes="fontdefok" id="f3name"/></hbox>
+            <hbox><label observes="fontdefok" value="&InternalFontName.label;"/><textbox observes="fontdefok" id="f3name"/></hbox>
             <hbox>
               <vbox>
-                <label observes="fontdefok" align="right" value="Extra font 3"/>
+                <label observes="fontdefok" align="right" value="&ExtraFont3.label;"/>
                 <menulist observes="fontdefok" id="x3fontlist" oncommand=""  >
                   <menupopup maxwidth="15em">
                     <menuitem id="x3fontdefault" label="&docformatDefault;" />
@@ -1118,16 +1119,16 @@
                 </menulist>
               </vbox>
               <vbox>
-                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <label observes="fontdefok" align="center" value="&OldStyleNums.label;"/>
                 <checkbox observes="fontdefok" label="" id="x3oldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox>
-                <label observes="fontdefok" align="center" value="Swash"/>
+                <label observes="fontdefok" align="center" value="&Swash.label;"/>
                 <checkbox observes="fontdefok" label="" id="x3swash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox>
-              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcx3'); elt.hidden=!(elt.hidden);"/>
+              <label observes="fontdefok" value="&GoNative;" onclick="var elt=getElementById('bcx3'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcx3" id="x3name">
                 <observes element="fontdefok" attribute="disabled"/>
               </textbox>
