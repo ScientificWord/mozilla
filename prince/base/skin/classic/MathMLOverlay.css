@@ -25,6 +25,7 @@
 #sidebar-symbol-tabbox  tabpanel[mathsym="false"] toolbarbutton { color: black; }
 #sidebar-symbol-tabbox  tab[mathsym="true"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="false"] { color: black; }
+#sidebar-symbol-tabbox  #cachebar {font-style: sans-serif; color: black;}
 
 #sidebar-symbol-tabbox row label { max-height: 24px; 
   overflow-y: hidden;
