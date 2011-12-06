@@ -54,3 +54,8 @@ function windowChanged()
   var h = innerHeight;
   onHeightChange(h);
 }
+
+function symObserver()
+{
+  
+}
