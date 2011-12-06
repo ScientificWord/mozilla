@@ -13,3 +13,4 @@ user.jar:
   content/classes.opt				(content/classes.opt)
   content/classes.pkg				(content/classes.pkg)
   content/packgs.opt				(content/packgs.opt)
+  content/gfximport.ini     (content/gfximport.ini)

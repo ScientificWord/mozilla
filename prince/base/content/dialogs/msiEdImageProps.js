@@ -68,6 +68,11 @@ var gFrameModeTextFrame = false;
 var gInsertNewImage;
 var gCaptionData;
 
+var importTimer;
+var texImportTimer;
+var gfxImportProcess;
+var texImportProcess;
+
 // dialog initialization code
 function Startup()
 {
@@ -765,13 +770,16 @@ function ValidateData()
 //}
 //
 
-function getDocumentGraphicsDir()
+function getDocumentGraphicsDir(mode)
 {
   var docUrlString = msiGetDocumentBaseUrl();
   var docurl = msiURIFromString(docUrlString);
   var dir = msiFileFromFileURL(docurl);
   dir = dir.parent;
-  dir.append("graphics");
+  if (mode == "tex")
+    dir.append("tcache");
+  else
+    dir.append("graphics");
   return dir;
 }
 
@@ -780,29 +788,18 @@ function chooseFile()
 {
 //  if (gTimerID)
 //    clearTimeout(gTimerID);
+
   // Get a local file, converted into URL format
-  var fileName = GetLocalFileURL(["img"]); // return a URLString
+//  var fileName = GetLocalFileURL(["img"]); // return a URLString
+  var graphicsFileFilterStr = getGraphicsImportFilterString();
+  var fileName = msiGetLocalFileURLSpecial([{filter : graphicsFileFilterStr, filterTitle : GetString("IMGFiles")}], "image");
   if (fileName)
   {
     var url = msiURIFromString(fileName);
+
     if (gDialog.import) // copy the file into the graphics directory
     {
-      try {
-        var file = msiFileFromFileURL(url);
-        isSVGFile = /\.svg$/.test(file.leafName);
-        var dir = getDocumentGraphicsDir()
-        if (!dir.exists()) dir.create(1, 0755);
-        file.permissions = 0755;
-        fileName = "graphics/"+file.leafName;
-        var newFile = dir.clone();
-        newFile.append(file.leafName);
-        if (newFile.exists()) newFile.remove(false);
-        file.copyTo(dir,"");    
-      }
-      catch(e)
-      {
-        dump("exception: e="+e.msg);
-      }
+      fileName = getLoadableGraphicFile(url);
     }
     else
     {
@@ -816,10 +813,258 @@ function chooseFile()
     msiSetRelativeCheckbox();
     doOverallEnabling();
   }
-  LoadPreviewImage();
+  if (!gfxImportProcess || !gfxImportProcess.isRunning)
+    LoadPreviewImage();
   // copy to the graphics directory
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
+}
+
+function getLoadableGraphicFile(inputURL)
+{
+  var newFile;
+  var fileName = "";
+  var extensionRE = /\.([^\.]+)$/;
+  var file = msiFileFromFileURL(inputURL);
+  var extArray = extensionRE.exec(file.leafName);
+  var extension = "";
+  if (extArray && extArray[1])
+    extension = extArray[1];
+  var dir = getDocumentGraphicsDir();
+  if (!dir.exists())
+    dir.create(1, 0755);
+  if (extension)  //if not, should we just do the copy and hope for the best? Or forget it?
+  {
+    var fileTypeData = getImportDataForGraphicType(extension);
+    if (fileTypeData && fileTypeData.commandLine)
+    {
+      newFile = doGraphicsImport(file, fileTypeData);
+      fileName = "graphics/" + newFile.leafName;
+    }
+    else  //ordinary import
+    {
+      try
+      {
+        isSVGFile = /\.svg$/.test(file.leafName);
+        file.permissions = 0755;
+        fileName = "graphics/"+file.leafName;
+        newFile = dir.clone();
+        newFile.append(file.leafName);
+        if (newFile.exists()) newFile.remove(false);
+        file.copyTo(dir,"");
+      }
+      catch(e)
+      {
+        dump("exception: e="+e.msg);
+      }
+    }
+    if (fileTypeData && fileTypeData.texCommandLine)  //Need file in LaTeX-friendly format
+    {
+      doGraphicsImport(file, fileTypeData, "tex");
+    }
+  }
+  return fileName;
+}
+
+function timerCallback(targFile, mode)
+{  
+//  this.timercopy = timer;
+  this.targetFile = targFile;
+  this.mode = mode;
+  this.timerCount = 0;
+  this.notify = function(timer)
+  { 
+//    if (timer)
+//      this.timercopy = timer;
+    if (!this.targetFile.exists())
+    {
+      ++this.timerCount;
+      dump("In graphics loading timerCallback for [" + this.mode + "] mode, timer count is [" + this.timerCount + "].\n");
+      if (this.timerCount < 8)  //keep waiting
+        return;
+      timer.cancel();
+      if (this.mode == "tex")
+      {
+        texImportProcess.kill();
+        texImportProcess = null;
+      }
+      else
+      {
+        gfxImportProcess.kill();
+        gfxImportProcess = null;
+      }
+      //Post a message!! Or put up a dialog asking if user wants to cancel?
+      return;
+    } 
+    //Otherwise, we're finished
+    timer.cancel();
+    if (this.mode == "tex")
+    {
+      texImportTimer = null;
+//      bTexImportIsDone = true;
+    }
+    else
+    {
+      importTimer = null;
+//      bImportIsDone = true;
+      LoadPreviewImage();
+    }
+  } 
+}
+
+//  inputFile - an nsIFile, the graphic file being converted
+//  fileTypeData - an object in the array returned from readInGraphicsFileData
+//  mode - a string, either "tex" or "import" (defaults to "import")
+//  Returns nsIFile representing the graphic file being created.
+function doGraphicsImport(inputFile, fileTypeData, mode)
+{
+  if (!mode || !mode.length)
+    mode = "import";
+  var templateFileURL = getTemplateFileURI();
+  var nDot = templateFileURL.lastIndexOf(".");
+  var extension = templateFileURL.substring(nDot);
+  var templateFileLines = GetLinesFromFile(templateFileURL);
+  var graphicDir = getDocumentGraphicsDir(mode);
+  if (!graphicDir.exists())
+    graphicDir.create(1, 0755);
+  var commandFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  commandFile.initWithPath(graphicDir.path);
+  commandFile.append(mode + inputFile.leafName + extension);
+  commandFile = commandFile.QueryInterface(Components.interfaces.nsILocalFile);
+  var outputFile = prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode);
+  if (outputFile)
+    runGraphicsFilter(commandFile, inputFile, outputFile, mode);
+  return outputFile;
+}
+
+var replaceableValues = ["targDirectory", "exepath", "inputFile", "outputFile", "commandLine"];
+
+//  aLine - string
+//  substitutions - importLineSubstitutions or texLineSubstitutions object
+function fixCommandFileLine(aLine, substitutions)
+{
+  var retLine = aLine;
+  var theSub = "";
+  var aSub;
+  if (retLine.indexOf("%") >= 0)
+  {
+    for (var ix = 0; ix < replaceableValues.length; ++ix)
+    {
+      aSub = replaceableValues[ix];
+      if (retLine.indexOf("%" + aSub + "%") >= 0)
+      {
+        theSub = "";
+        if (substitutions[aSub] && substitutions[aSub].length)
+          theSub = substitutions[aSub];
+        retLine = retLine.replace("%" + aSub + "%", theSub);
+      }
+    }
+  }
+  return retLine;
+};
+
+//  fileTypeData - an object in the array returned from readInGraphicsFileData
+//  inputNSFile - an nsIFile
+function importLineSubstitutions(fileTypeData, inputNSFile)
+{
+  this.targDirectory = getDocumentGraphicsDir().path;
+  this.exepath = fileTypeData.exepath;
+  this.inputFile = inputNSFile.path;
+  this.outputExtension = fileTypeData.output;
+  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$");
+  this.outputFile = inputNSFile.leafName.replace(extRE, "." + fileTypeData.output);
+  this.commandLine = "";
+  this.commandLine = fixCommandFileLine(fileTypeData.commandLine, this);
+}
+
+//  fileTypeData - an object in the array returned from readInGraphicsFileData
+//  inputNSFile - an nsIFile
+function texLineSubstitutions(fileTypeData, inputNSFile)
+{
+  this.targDirectory = getDocumentGraphicsDir("tex").path;
+  this.exepath = fileTypeData.texexepath;
+  this.inputFile = inputNSFile.path;
+  this.outputExtension = fileTypeData.texoutput;
+  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$");
+  this.outputFile = inputNSFile.leafName.replace(extRE, "." + this.outputExtension);
+  this.commandLine = "";
+  this.commandLine = fixCommandFileLine(fileTypeData.texCommandLine, this);
+}
+
+//  commandFile - an nsILocalFile; the command file being created
+//  templateFileLines - an array of strings, each representing a line from the template command file
+//  fileTypeData - an object in the array returned from readInGraphicsFileData
+//  inputFile - an nsIFile; the graphic file being converted
+//  mode - a string, either "tex" or "import" (defaults to "import")
+//Returns an nsILocalFile giving the graphics file to be created.
+function prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode)
+{
+  var substVarRE = /%([^%]+)%/;
+  var newLine = "";
+  var outStr = "";
+  var theSubs;
+  try
+  {
+    if (mode == "tex")
+      theSubs = new texLineSubstitutions(fileTypeData, inputFile);
+    else
+      theSubs = new importLineSubstitutions(fileTypeData, inputFile);
+    for (var ix = 0; ix < templateFileLines.length; ++ix)
+    {
+      newLine = fixCommandFileLine(templateFileLines[ix], theSubs);
+      //now output newLine to the file we're going to run
+      outStr += "\n" + newLine;
+    }
+  //  var commandFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  //  commandFile.initWithPath(commandFilePath);
+    if (commandFile.exists()) commandFile.remove(false);
+    writeStringAsFile( outStr, commandFile );
+  }
+  catch(exc) {dump("Exception in msiEdImageProps.js, prepareImport: [" + exc + "]\n"); return null;}
+  if (!commandFile.exists())
+    return null;
+
+  var outFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  outFile.initWithPath(theSubs.targDirectory);
+  outFile.append(theSubs.outputFile);
+  return outFile;
+}
+
+//  filterSourceFile - an nsIFile; the command file generated for this import
+//  graphicsInFile - an nsIFile
+//  graphicsOutFile - an nsILocalFile
+//  mode - a string, either "tex" or "import" (defaults to "import")
+//  Returns void
+function runGraphicsFilter(filterSourceFile, graphicsInFile, graphicsOutFile, mode)
+{
+  var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+  if (mode == "tex") 
+    texImportProcess = theProcess;
+  else
+    gfxImportProcess = theProcess;
+  theProcess.init(filterSourceFile);
+  theProcess.run(false, [], 0);
+  var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+  if (mode == "tex")
+    texImportTimer = theTimer;
+  else
+    importTimer = theTimer;
+  var theTimerCallback = new timerCallback(graphicsOutFile, mode);
+  theTimer.initWithCallback( theTimerCallback, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+}
+
+//Returns a string (the .path of a file)
+function getTemplateFileURI()
+{
+  var os = getOS(window);
+  var extension = "";
+  if (os == "win") extension = "cmd";
+  else extension = "bash";
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var templateFile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  templateFile.append("rungfxconv." + extension);
+  var theURL = msiFileURLFromFile( templateFile );
+  return theURL.spec;
 }
 
 function SetImport(bSet)
@@ -1382,41 +1627,116 @@ function initKeyList()
 
   gDialog.markerList = new msiKeyMarkerList(window);
   gDialog.markerList.setUpTextBoxControl(gDialog.keyInput);
-//  gDialog.markerList.setUpTextBoxControl(gDialog.linkKeyInput);
+}
 
-//  var keyString = gDialog.markerList.getIndexString();
-//  gDialog.keyInput.setAttribute("autocompletesearchparam", keyString);
-//  gDialog.linkKeyInput.setAttribute("autocompletesearchparam", keyString);
+function getGraphicsImportFilterString()
+{
+  var convertData = getGraphicsFileTypesData();
+  var typeArray = ["*.png", "*.gif", "*.jpg", "*.jpeg", "*.pdf"];
+  var newType;
+  for (var ix = 0; ix < convertData.length; ++ix)
+  {
+    if ( ("output" in convertData[ix]) && ("commandLine" in convertData[ix]) 
+          && convertData[ix].output.length && convertData[ix].commandLine.length )
+    {
+      newType = "*." + convertData[ix].inFileType;
+      if (typeArray.indexOf(newType) < 0)
+        typeArray.push(newType);
+    }
+  }
+  return typeArray.join("; ");
+}
 
-//  var editorElement = msiGetActiveEditorElement();
-//  var editor;
-//  if (editorElement) editor = msiGetEditor(editorElement);
-//  var parser = new DOMParser();
-//  var dom = parser.parseFromString(xsltSheet, "text/xml");
-//  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
-//  var processor = new XSLTProcessor();
-//  processor.importStylesheet(dom.documentElement);
-//  var newDoc;
-//  if (editor) newDoc = processor.transformToDocument(editor.document, document);
-//  dump(newDoc.documentElement.localName+"\n");
-//  var keyString = newDoc.documentElement.textContent;
-//  var keys = keyString.split(/\s+/);
-//  var i;
-//  var len;
-//  keys.sort();
-//  var lastkey = "";
-//  for (i=keys.length-1; i >= 0; i--)
-//  {
-//    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
-//    else lastkey = keys[i];
-//  }  
-//  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-//  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-//  ACSA.resetArray("keys");
-//  for (i=0, len=keys.length; i<len; i++)
-//  {
-//    if (keys[i].length > 0) 
-//      ACSA.addString("keys",keys[i]);
-//  }
-//  dump("Keys are : "+keys.join()+"\n");    
+function getImportDataForGraphicType(extension)
+{
+  var convertData = getGraphicsFileTypesData();
+  for (var ix = 0; ix < convertData.length; ++ix)
+  {
+    if (convertData[ix].inFileType == extension)
+      return convertData[ix];
+  }
+  return null;
+}
+
+var sectionRE = /^\s*\[([^\]]+)\]/;
+var keyValueRE = /^([^=]+)=(.*)$/;
+
+function getGraphicsFileTypesData(bForceReload)
+{
+  if (!gDialog.graphicsConvertData || bForceReload)
+    gDialog.graphicsConvertData = readInGraphicsFileData("chrome://user/content/gfximport.ini");
+  return gDialog.graphicsConvertData;
+}
+
+function readInGraphicsFileData(fileURI)
+{
+  var theLines = GetLinesFromFile(fileURI);
+  var gfxList = [];
+  var sectionData = {mFileType : "", mStart : 0, mEnd : 0};
+  var found = null;
+  var theKey, theValue;
+  var newData;
+  while (FindNextBracketDelimitedSection(theLines, sectionData))
+  {
+    if (sectionData.mFileType.length)
+    {
+      newData = {inFileType : sectionData.mFileType};
+      for (var ix = sectionData.mStart+1; ix <= sectionData.mEnd; ++ix)
+      {
+        found = keyValueRE.exec(TrimString(theLines[ix]));
+        if (found && found[1] && found[1].length && found[2] && found[2].length)
+        {
+          theKey = TrimString(found[1]);
+          theValue = TrimString(found[2]);
+          newData[theKey] = theValue;
+        }
+      }
+      gfxList.push(newData);
+    }
+    sectionData.mStart = sectionData.mEnd + 1;
+  }
+  return gfxList;
+}
+
+function GetLinesFromFile(aFileUrl)
+{
+  var theText = getFileAsString(aFileUrl);
+  if (!theText)
+    theText = "";
+  // read lines into array
+  var lines = theText.split("\n");
+  return lines;
+}
+
+function FindNextBracketDelimitedSection(lineList, sectionData)
+{
+  var found = null, foundLine = null;
+  var foundStart = false;
+  var foundEnd = false;
+  for (var ix = sectionData.mStart; ix < lineList.length; ++ix)
+  {
+    if (lineList[ix].charAt(0) == ";")  //skip comment lines!
+      continue;
+    foundLine = TrimString(lineList[ix]);
+    if (!foundLine || !foundLine.length)
+      continue;
+    if (found = sectionRE.exec(foundLine))
+    {
+      if (!foundStart)
+      {
+        sectionData.mStart = ix;
+        sectionData.mFileType = found[1];
+        foundStart = true;
+      }
+      else
+      {
+        foundEnd = true;
+        sectionData.mEnd = ix-1;
+        break;
+      }
+    }
+  }
+  if (!foundEnd)
+      sectionData.mEnd = ix-1;
+  return foundStart;
 }

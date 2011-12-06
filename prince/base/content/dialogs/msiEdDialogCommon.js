@@ -412,6 +412,66 @@ function SwitchToValidatePanel()
 
 const nsIFilePicker = Components.interfaces.nsIFilePicker;
 
+function msiGetLocalFileURLSpecial(filterAndTitleArray, fileType)
+{
+  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+  if (!fileType || !fileType.length)
+    fileType = "xhtml";
+  var nStartIndex = 0;
+
+  if (fileType == "image")
+  {
+    fp.init(window, GetString("SelectImageFile"), nsIFilePicker.modeOpen);
+    fileType = "image";
+  }
+  else if (filterAndTitleArray[0].filterTitle.indexOf("xhtml") == 0)
+  {
+      //copied directly from stuff below - don't quite get this part, but...
+    fp.init(window, GetString("OpenHTMLFile"), nsIFilePicker.modeOpen);
+    // When loading into Composer, direct user to prefer HTML files and text files,
+    //   so we call separately to control the order of the filter list
+    nStartIndex = 1;
+  }
+
+  var theFilterTitle="";
+  var theFilter = "";
+  for (var i = nStartIndex; i < filterAndTitleArray.length; ++i)
+  {
+    if ("filter" in filterAndTitleArray[i])
+      theFilter = filterAndTitleArray[i].filter;
+    else
+      continue;  //can't do nothing with that!
+    if ("filterTitle" in filterAndTitleArray[i])
+      theFilterTitle = filterAndTitleArray[i].filterTitle;
+    else
+      theFilterTitle = theFilter.replace("*.","","g");
+    fp.appendFilter(theFilterTitle, theFilter);
+  }
+  // Default or last filter is "All Files"
+  fp.appendFilters(nsIFilePicker.filterAll);
+
+  // set the file picker's current directory to last-opened location saved in prefs
+  if (fileType && fileType.length)
+    msiSetFilePickerDirectory(fp, fileType);
+
+
+  /* doesn't handle *.shtml files */
+  try {
+    var ret = fp.show();
+    if (ret == nsIFilePicker.returnCancel)
+      return null;
+  }
+  catch (ex) {
+    dump("filePicker.chooseInputFile threw an exception\n");
+    return null;
+  }
+  if (fileType && fileType.length)
+    msiSaveFilePickerDirectory(fp, fileType);
+  
+  var fileHandler = msiGetFileProtocolHandler();
+  return fp.file ? fileHandler.getURLSpecFromFile(fp.file) : null;
+}
+
 function GetLocalFileURL(filterArray)
 {
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
