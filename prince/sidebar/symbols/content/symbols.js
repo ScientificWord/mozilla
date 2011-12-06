@@ -45,7 +45,7 @@ function onHeightChange(h)
   var broadcaster = document.getElementById("sidebar-symbol-tabbox");
   broadcaster.setAttribute("style","height: "+adjHeight+"px;");
   broadcaster = document.getElementById("tabpanelstyle");
-  broadcaster.setAttribute("style","height: "+adjHeight+"px; overflow-y: auto;");
+  broadcaster.setAttribute("style","height: "+adjHeight+"px;");
 }
 
 
@@ -81,6 +81,7 @@ var symObserver =
   
   onDrop: function(evt, dropData, session)
   {
+    alert("Ouch!");
   },
   
   onDragOver: function(evt, flavour, session) 
