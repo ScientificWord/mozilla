@@ -55,7 +55,61 @@ function windowChanged()
   onHeightChange(h);
 }
 
-function symObserver()
-{
+
+var symObserver = 
+{ 
+  canHandleMultipleItems: function ()
+  {
+    return true;
+  },
   
-}
+  onDragStart: function (evt, transferData, action)
+  {
+    var button = evt.currentTarget;
+    var buttonData = {label: button.getAttribute("label"),
+                      msivalue: button.getAttribute("msivalue"),
+                      observes: button.getAttribute("observes"),
+                      tooltiptext: button.getAttribute("tooltiptext")};
+    transferData.data = new TransferData();
+    transferData.data.addDataForFlavour("symbolbutton", buttonData);
+  },
+  
+  canDrop: function(evt, session)
+  {
+    return true;
+  },
+  
+  onDrop: function(evt, dropData, session)
+  {
+  },
+  
+  onDragOver: function(evt, flavour, session) 
+  {
+    dump(flavour.contentType+"\n");
+    if (evt.currentTarget.nodeName == "tab")
+    {
+      var supported = session.isDataFlavorSupported("symbolbutton");
+
+      if (supported)
+      {
+        session.canDrop = true;
+        evt.currentTarget.setAttribute("selected","1");
+      }
+    }
+  },
+  
+  onDragEnter: function(evt, flavour, session)
+  {
+    var supported = session.isDataFlavorSupported("symbolbutton");
+
+    if (supported)
+      evt.currentTarget.setAttribute("selected", "1");
+  },
+  
+  getSupportedFlavours: function()
+  {
+    var flavours = new FlavourSet();
+    flavours.appendFlavour("symbolbutton");
+    return flavours;
+  }
+}  
