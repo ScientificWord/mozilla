@@ -26,7 +26,6 @@
 #sidebar-symbol_lcGreek toolbarbutton{font-style: italic; }
 #sidebar-symbol_lcGreekTab {font-style: italic;} 
 #sidebar-symbol-tabbox toolbarbutton { color: black; }
-#sidebar-symbol-tabbox  tabpanel[mathsym="false"] toolbarbutton { color: black; }
 #sidebar-symbol-tabbox  toolbarbutton[observes="cmd_MSIsymbolCmd"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="true"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="false"] { color: black; }

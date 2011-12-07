@@ -42,11 +42,10 @@
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     style="height: 150px;"
     ondraggesture = "nsDragAndDrop.startDrag(event,symObserver);"  
-    ondragdrop = "nsDragAndDrop.drop(event, symObserver);"
-    >
+    ondragdrop = "nsDragAndDrop.drop(event, symObserver);"    >
  	  <tabs class="tabs-top" align="start baseline">
 			  <tab dir="rtl" label="&#x03B1;&#x03B2;" mathsym="true" tooltiptext="&MSISymbolTabLCGreek;" selected="1"
-			    linkedpanel="symbol_lcGreek" ondragover="nsDragAndDrop.dragOver(event, symObserver);"/>
+			    linkedpanel="symbol_lcGreek"/>
 			  <tab dir="rtl" label="&#x03A6;&#x03A8;" mathsym="true" tooltiptext="&MSISymbolTabCCGreek;" selected="0"
 			    linkedpanel="symbol_ucGreek" />
 			  <tab dir="rtl" label="&#x00B1;&#x00F7;" mathsym="true" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0"
@@ -67,7 +66,8 @@
 			    linkedpanel="symbol_latinextended" />
 			  <tab dir="rtl" label="&#x201C;&#x201D;" mathsym="false" tooltiptext="&MSISymbolTabPunctuation;"        selected="0"
 			    linkedpanel="symbol_punctuation" />
-			  <tab id="cachebar" label="User" mathsym="true" tooltiptext="Drag frequently-used symbols here" linkedpanel="cachepanel" />
+			  <tab id="cachebar" label="User" mathsym="true" tooltiptext="Drag frequently-used symbols here" linkedpanel="cachepanel"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, symObserver);"
+        />
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline" observes="tabpanelstyle"> 
@@ -760,9 +760,7 @@
               <toolbarbutton id="symbolguilsinglleft" />
               <toolbarbutton id="symbolguilsinglright" />
       </tabpanel> 
-      <tabpanel id="cachepanel" mathsym="false" align="baseline" observes="tabpanelstyle">
-        <toolbarbutton id="symbolendash" />
-        <toolbarbutton id="symbolquotdblbase" />
+      <tabpanel id="cachepanel" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" observes="tabpanelstyle">
       </tabpanel> 
     </tabpanels>
   </tabbox>
