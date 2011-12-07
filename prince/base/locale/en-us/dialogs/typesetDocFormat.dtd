@@ -194,6 +194,7 @@
 <!ENTITY ExtraFont1.label "Extra font 1">
 <!ENTITY ExtraFont2.label "Extra font 2">
 <!ENTITY ExtraFont3.label "Extra font 3">
+
 <!-- For Sections Tab -->
 <!ENTITY SectionType.label  "Section Type">
 <!ENTITY NumberStyle.label  "Number Style">
