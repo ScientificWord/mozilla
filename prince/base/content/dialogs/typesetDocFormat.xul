@@ -187,7 +187,9 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="&LeadingInPoints.label;" accesskey="&LeadingInPoints.accesskey;" control="leadingcontrol"/>
-                  <hbox><checkbox id="leadingcontrol" control="leading" checked="false" observes="reformatok" oncommand="enable(this);"  persist="checked" /><textbox id="leading" disabled="true" default="12.0" value="-default-" decimalplaces="2" min="0" increment="0.1" style="width: 9em" /></hbox>
+                  <hbox><checkbox id="leadingcontrol" control="leading" checked="false" observes="reformatok" oncommand="enable(this);"  persist="checked" />
+                  <textbox id="leading" disabled="true" default="12.0" value="-default-" decimalplaces="2" min="0" increment="0.1" style="width: 9em" />
+                  </hbox>
                 </vbox>
               </row>
               <row>                
@@ -425,7 +427,7 @@
         </groupbox>
         <groupbox observes="reformatok">
           <caption>
-            <label  observes="reformatok" label="&FrontBackMatter.label;" accesskey="FrontBackMatter.accesskey;" control="toc"/>
+            <label  observes="reformatok" label="&FrontBackMatter.label;" accesskey="&FrontBackMatter.accesskey;" control="toc"/>
           </caption>   
           <grid>
             <columns>
@@ -759,19 +761,19 @@
                            <menuitem label="&docformatLetter;" value="letter" selected="true"/>
                            <menuitem label="&A4Size.label;" value="a4"/>
                            <menuitem label="&docformatOther;" value="other"/>
-                           <menuitem label="A0Size.label;" value="a0"/>
-                           <menuitem label="A1Size.label;" value="a1"/>
-                           <menuitem label="A2Size.label;" value="a2"/>
-                           <menuitem label="A3Size.label;" value="a3"/>
-                           <menuitem label="A5Size.label;" value="a5"/>
-                           <menuitem label="A6Size.label;" value="a6"/>
-                           <menuitem label="B0Size.label;" value="b0"/>
-                           <menuitem label="B1Size.label;" value="b1"/>
-                           <menuitem label="B2Size.label;" value="b2"/>
-                           <menuitem label="B3Size.label;" value="b3"/>
-                           <menuitem label="B4Size.label;" value="b4"/>
-                           <menuitem label="B5Size.label;" value="b5"/>
-                           <menuitem label="B6Size.label;" value="b6"/>
+                           <menuitem label="&A0Size.label;" value="a0"/>
+                           <menuitem label="&A1Size.label;" value="a1"/>
+                           <menuitem label="&A2Size.label;" value="a2"/>
+                           <menuitem label="&A3Size.label;" value="a3"/>
+                           <menuitem label="&A5Size.label;" value="a5"/>
+                           <menuitem label="&A6Size.label;" value="a6"/>
+                           <menuitem label="&B0Size.label;" value="b0"/>
+                           <menuitem label="&B1Size.label;" value="b1"/>
+                           <menuitem label="&B2Size.label;" value="b2"/>
+                           <menuitem label="&B3Size.label;" value="b3"/>
+                           <menuitem label="&B4Size.label;" value="b4"/>
+                           <menuitem label="&B5Size.label;" value="b5"/>
+                           <menuitem label="&B6Size.label;" value="b6"/>
                            <menuitem label="&docformatExecutive;" value="executive"/>
                            <menuitem label="&docformatLegal;" value="legal"/>
                           </menupopup>
@@ -789,7 +791,7 @@
                           </vbox>
                           <spacer flex="1"/>
                           <vbox>
-                            <label observes="pagelayoutok" value="PageSizeWidth.label;"/>
+                            <label observes="pagelayoutok" value="&PageSizeWidth.label;"/>
                             <textbox id="tbpaperwidth" type="number" increment="0.1" decimalplaces="2" style="width: 5em" observes="bc.papersize" persist="value"
                               onkeypress="geomHandleChar(event,'paperwidth', 'tbpaperwidth');">
                                 <observes element="pagelayoutok" attribute="disabled"/>
@@ -1137,7 +1139,7 @@
             </hbox>
           </groupbox>
         </vbox>
-      </tabpanel>
+       </tabpanel>
       <tabpanel id="docformatSectionsPanel"></tabpanel>
       <!--tabpanel id="docformatHeadersPanel"></tabpanel>
       <tabpanel id="docformatNotesPanel"></tabpanel>
