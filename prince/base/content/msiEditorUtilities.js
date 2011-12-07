@@ -501,7 +501,7 @@ function msiResetActiveEditorElement()
 //  else
 //    logStr += ";\n  making no change.\n";
 //End logging stuff
-  if (topWindow.msiClearEditorTimerList !== null)
+  if ("msiClearEditorTimerList" in topWindow && topWindow.msiClearEditorTimerList !== null)
     msiClearAllFocusTimers(topWindow, topWindow.msiClearEditorTimerList);
 //  msiKludgeLogString(logStr);
 }
@@ -597,7 +597,7 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //    {
       var newTimerData = new Object();
       var nNewTimer = theWindow.setTimeout(clearPrevActiveEditor, 0, newTimerData);
-      if (theWindow.msiClearEditorTimerList === null)
+      if (!("msiClearEditorTimerList" in theWindow) || (theWindow.msiClearEditorTimerList === null) )
         theWindow.msiClearEditorTimerList = new Array();
       theWindow.msiClearEditorTimerList.push(nNewTimer);
       newTimerData.nTimerID = nNewTimer;
