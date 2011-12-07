@@ -1,4 +1,4 @@
-#Symbol-tabbox { font-family: STIXGeneral;}
+#Symbol-tabbox tabs { display: table; }
 #Symbol-tabbox[textsize="large"] tab { font-size: large; }
 #Symbol-tabbox[textsize="large"] toolbarbutton { font-size: large; }
 #Symbol-tabbox[textsize="medium"] tab { font-size: medium; }
@@ -7,7 +7,7 @@
 #Symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; }
 #symbol_lcGreek toolbarbutton{font-style: italic; }
 #symbol_lcGreekTab {font-style: italic; }
-#sidebar-symbol-tabbox { font-family: STIXGeneral; }
+#sidebar-symbol-tabbox { font-family: STIXGeneral, STIXNonUnicode; }
 /* #sidebar-symbol-tabbox[textsize="large"] tab { font-size: large; }
 #sidebar-symbol-tabbox[textsize="large"] toolbarbutton { font-size: large; } */
 #sidebar-symbol-tabbox tab { 
@@ -16,23 +16,20 @@
   background-repeat: repeat-x;
   background-position: bottom;
 }
-#sidebar-symbol-tabbox toolbarbutton { font-size: medium; }
+
+#sidebar-symbol-tabbox tabs { display: table; }
+#sidebar-symbol-tabbox tabpanel { display: table; }
+#sidebar-symbol-tabbox toolbarbutton { font-size: medium; width: 28px; height: 18px;
+  padding: 1px; border: thin solid rgb(240,240,240); margin: 1px 1px;}
 /* #sidebar-symbol-tabbox[textsize="small"] tab { font-size: small; }
 #sidebar-symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; }*/
 #sidebar-symbol_lcGreek toolbarbutton{font-style: italic; }
-#sidebar-symbol_lcGreekTab {font-style: italic; }
-#sidebar-symbol-tabbox toolbarbutton { color: red; }
-#sidebar-symbol-tabbox toolbarbutton[mathsym="false"] { color: black; }
+#sidebar-symbol_lcGreekTab {font-style: italic;} 
+#sidebar-symbol-tabbox toolbarbutton { color: black; }
 #sidebar-symbol-tabbox  tabpanel[mathsym="false"] toolbarbutton { color: black; }
+#sidebar-symbol-tabbox  toolbarbutton[observes="cmd_MSIsymbolCmd"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="true"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="false"] { color: black; }
-
-#sidebar-symbol-tabbox row label { max-height: 24px; 
-  overflow-y: hidden;
-  text-align: center;
-}
-tabs {
-  display: table;
-}
+#sidebar-symbol-tabbox  #cachebar {font-style: sans-serif; color: black;}
   
 #sidebar-symbol-tabbox row label math{ font-size: medium; }
