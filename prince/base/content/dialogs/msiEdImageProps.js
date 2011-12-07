@@ -815,7 +815,6 @@ function chooseFile()
   }
   if (!gfxImportProcess || !gfxImportProcess.isRunning)
     LoadPreviewImage();
-  // copy to the graphics directory
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
 }
@@ -824,12 +823,8 @@ function getLoadableGraphicFile(inputURL)
 {
   var newFile;
   var fileName = "";
-  var extensionRE = /\.([^\.]+)$/;
   var file = msiFileFromFileURL(inputURL);
-  var extArray = extensionRE.exec(file.leafName);
-  var extension = "";
-  if (extArray && extArray[1])
-    extension = extArray[1];
+  var extension = getExtension(file.leafName);
   var dir = getDocumentGraphicsDir();
   if (!dir.exists())
     dir.create(1, 0755);
@@ -971,7 +966,7 @@ function importLineSubstitutions(fileTypeData, inputNSFile)
   this.exepath = fileTypeData.exepath;
   this.inputFile = inputNSFile.path;
   this.outputExtension = fileTypeData.output;
-  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$");
+  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i");
   this.outputFile = inputNSFile.leafName.replace(extRE, "." + fileTypeData.output);
   this.commandLine = "";
   this.commandLine = fixCommandFileLine(fileTypeData.commandLine, this);
@@ -985,7 +980,7 @@ function texLineSubstitutions(fileTypeData, inputNSFile)
   this.exepath = fileTypeData.texexepath;
   this.inputFile = inputNSFile.path;
   this.outputExtension = fileTypeData.texoutput;
-  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$");
+  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i");
   this.outputFile = inputNSFile.leafName.replace(extRE, "." + this.outputExtension);
   this.commandLine = "";
   this.commandLine = fixCommandFileLine(fileTypeData.texCommandLine, this);
@@ -1042,8 +1037,11 @@ function runGraphicsFilter(filterSourceFile, graphicsInFile, graphicsOutFile, mo
     texImportProcess = theProcess;
   else
     gfxImportProcess = theProcess;
+  var outLogFile = filterSourceFile.leafName;
+  var nDot = outLogFile.lastIndexOf(".");
+  outLogFile = outLogFile.substr(0,nDot) + ".log";
   theProcess.init(filterSourceFile);
-  theProcess.run(false, [], 0);
+  theProcess.run(false, [">" + outLogFile], 1);
   var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
   if (mode == "tex")
     texImportTimer = theTimer;
@@ -1203,8 +1201,43 @@ function LoadPreviewImage()
     // this is needed.
     gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
     gDialog.PreviewImage.data = imageSrc;
+    var extension = getExtension(imageSrc);
+    adjustObjectForFileType(gDialog.PreviewImage, extension);
     gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
   }
+}
+
+function adjustObjectForFileType(imageNode, extension)
+{
+  switch(extension.toLowerCase())
+  {
+    case "pdf":
+      addParamChild(imageNode, "toolbar", "0");
+      addParamChild(imageNode, "statusbar", "0");
+      addParamChild(imageNode, "messages", "0");
+      addParamChild(imageNode, "navpanes", "0");
+    break;
+  }
+}
+
+function addParamChild(imageNode, name, val)
+{
+  var param = document.createElementNS(xhtmlns, "param");
+  param.setAttribute("name", name);
+  param.setAttribute("value", val);
+  param.setAttribute("valuetype", "data");
+  imageNode.appendChild(param);
+}
+
+var extensionRE = /\.([^\.]+)$/;
+
+function getExtension(aFilename)
+{
+  var extArray = extensionRE.exec(aFilename);
+  var extension = "";
+  if (extArray && extArray[1])
+    extension = extArray[1];
+  return extension;
 }
 
 function readTotalExtraWidth(unit)
@@ -1584,6 +1617,8 @@ function onAccept()
       var attrList = ["src,data,title,alt"];
       msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
       imageElement.setAttribute("data",gDialog.srcInput.value);
+      var extension = getExtension(gDialog.srcInput.value);
+      adjustObjectForFileType(imageElement, extension);
       msiEditorEnsureElementAttribute(imageElement, "req", "graphicx", editor);
       msiEditorEnsureElementAttribute(imageElement, "naturalWidth", frameUnitHandler.getValueOf(gConstrainWidth, "px"), editor);
       msiEditorEnsureElementAttribute(imageElement, "naturalHeight", frameUnitHandler.getValueOf(gConstrainHeight, "px"), editor);
@@ -1652,7 +1687,7 @@ function getImportDataForGraphicType(extension)
   var convertData = getGraphicsFileTypesData();
   for (var ix = 0; ix < convertData.length; ++ix)
   {
-    if (convertData[ix].inFileType == extension)
+    if (convertData[ix].inFileType == extension.toLowerCase())
       return convertData[ix];
   }
   return null;
@@ -1680,7 +1715,7 @@ function readInGraphicsFileData(fileURI)
   {
     if (sectionData.mFileType.length)
     {
-      newData = {inFileType : sectionData.mFileType};
+      newData = {inFileType : sectionData.mFileType.toLowerCase()};
       for (var ix = sectionData.mStart+1; ix <= sectionData.mEnd; ++ix)
       {
         found = keyValueRE.exec(TrimString(theLines[ix]));
