@@ -741,11 +741,11 @@
                         </caption>
                         <radiogroup id="pageonpaperlayout" orient="horizontal" observes="cropmarks" oncommand="centerCropmarks(this.value);" persist="value">
                           <vbox>                        
-                            <label observes="pagelayoutok" value="&pageonpaperupperleft.label;" accesskey="popupperleft.accesskey;" control="popupperleft"/> 
+                            <label observes="pagelayoutok" value="&pageonpaperupperleft.label;" accesskey="&popupperleft.accesskey;" control="popupperleft"/> 
                             <radio observes="pagelayoutok" id="popupperleft" value="upperleft" selected="true"/>
                           </vbox>
                           <vbox>
-                            <label observes="pagelayoutok" value="&pageonpapercenter.label;" accesskey="popcenter.accesskey;" control="popcenter"/> 
+                            <label observes="pagelayoutok" value="&pageonpapercenter.label;" accesskey="&popcenter.accesskey;" control="popcenter"/> 
                             <radio observes="pagelayoutok" id="popcenter" value="center" selected="false"/>
                           </vbox>
                         </radiogroup>      
