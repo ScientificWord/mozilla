@@ -23,6 +23,7 @@
       <broadcaster id="toporbottommargin" disabled="true"/>
       <broadcaster id="notmargin" disabled="true"/>
     </broadcasterset>  
+    <label value="JLF Test Beginning of Section Tab"/>
      <hbox>
        <vbox>
         <label>&SectionType.label;</label>
