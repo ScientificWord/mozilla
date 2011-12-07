@@ -68,6 +68,8 @@
 <!ENTITY plotvarinterval.label    "Variable Intervals and Automation">
 
 <!ENTITY plotcolor.label          "Plot Color">
+<!ENTITY plotcolor2.label         "Plot Color:">
+<!ENTITY fillcolor.label          "Fill Color:">
 
 <!ENTITY layoutsize.label         "Size">
 <!ENTITY width.label              "Width">
@@ -156,11 +158,11 @@
 <!ENTITY orientationtilt.label      "Orientatin: Tilt">
 <!ENTITY viewinterval.label         "Use Default View Intervals">
 
-<!ENTITY surfacestyle.label         "Surface Style">
-<!ENTITY surfacemesh.label          "Surface Mesh">
-<!ENTITY surfacecolorpatch.label    "Color Patch">
-<!ENTITY surfacehidden.label        "Hidden Line">
-<!ENTITY surfacewire.label          "Wire Frame">
+<!ENTITY surfacestyle.label         "Surface style">
+<!ENTITY surfacemesh.label          "Surface mesh">
+<!ENTITY surfacecolorpatch.label    "Color patch">
+<!ENTITY surfacehidden.label        "Hidden line">
+<!ENTITY surfacewire.label          "Wire frame">
 <!ENTITY surfacepoint.label         "Point">
 <!ENTITY surfaceulines.label        "U Lines">
 <!ENTITY surfacevlines.label        "V Lines">
@@ -213,3 +215,56 @@
 <!ENTITY AIInfoApproxValue.label "Approximated Value">
 <!ENTITY AIInfoApproxandExactValue.label "Approximated and Exact Value">
 <!ENTITY AIInfoBothValuesandError.label "Both Values and Error">
+
+<!ENTITY VariablesAndIntervals.label  "Variables and intervals">
+<!ENTITY Width.label  "Width:">
+<!ENTITY Height.label "Height:">
+<!ENTITY Pixels.label "pixels">
+<!ENTITY Inline.label "In line">
+<!ENTITY Displayed.label  "Display">
+<!ENTITY Floating.label "Floating">
+<!ENTITY ForceHere.label  "Force here">
+<!ENTITY Here.label "Here">
+<!ENTITY OnPageOfFloats.label "On a page of floats">
+<!ENTITY TopOfPage.label  "Top of page">
+<!ENTITY BottomOfPage.label "Bottom of page">
+
+<!ENTITY Left.label "Left">
+<!ENTITY Right.label  "Right">
+<!ENTITY Inside.label "Inside">
+<!ENTITY Outside.label  "Outside">
+<!ENTITY FullWidth.label  "Full width">
+
+<!ENTITY labelingkey.tooltip  "Enter a key name which does not conflict with the current keys">
+<!ENTITY ItemColoring.label "Item coloring">
+<!ENTITY DirectionalShading.label "Directional shading">
+<!ENTITY BaseColor.label  "Base color">
+<!ENTITY XYZ.label  "XYZ">
+<!ENTITY XY.label "XY">
+<!ENTITY X.label  "X">
+<!ENTITY ZHue.label "Z[hue]">
+<!ENTITY ZGreyscale.label "Z[greyscale]">
+<!ENTITY Flat.label "Flat">
+
+<!ENTITY SecondaryColor.label "Secondary color">
+<!ENTITY LineStyle.label  "Line style">
+<!ENTITY LineThickness.label  "Line thickness">
+<!ENTITY PointMarker.label  "Point marker">
+<!ENTITY Solid.label  "Solid">
+<!ENTITY Dash.label "Dash">
+<!ENTITY Dots.label "Dots">
+<!ENTITY DotDash.label  "DotDash">
+<!ENTITY DotDotDash.label "DotDotDash">
+
+<!ENTITY Dot.label  "Dot">
+<!ENTITY Circle.label "Circle">
+<!ENTITY Cross.label  "Cross">
+<!ENTITY Box.label  "Box">
+<!ENTITY Diamond.label  "Diamond">
+
+<!ENTITY DefaultBGColor.label "Default background color: ">
+<!ENTITY OrthogonalProjection.label  "Orthogonal projection">
+<!ENTITY KeepUpVector.label "Keep up vector">
+<!ENTITY InitialViewIntervals.label  "Initial View Intervals">
+
+<!ENTITY AreaFillStyle.label  "Area Fill Style">

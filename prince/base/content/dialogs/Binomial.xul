@@ -93,7 +93,7 @@
       <spacer flex="1"/>
     </hbox>
 		<hbox>
-      <checkbox id="DelimitersCheckBox" label="&withDelimitersCheckbox.label;" accesskey="withDelimitersCheckbox.accesskey;" oncommand="turnDelimitersOnOff(event);"/>
+      <checkbox id="DelimitersCheckBox" label="&withDelimitersCheckbox.label;" accesskey="&withDelimitersCheckbox.accesskey;" oncommand="turnDelimitersOnOff(event);"/>
       <spacer flex="1"/>
 		</hbox>
     <groupbox id = "binomialDelimiters" align="start" orient="vertical"> 
