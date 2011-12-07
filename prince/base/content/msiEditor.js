@@ -778,7 +778,6 @@ function msiEditorDocumentObserver(editorElement)
         if (editorStatus)
           return; 
 
-        //BBM get this from prefs
         var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
         var seconds = GetIntPref("swp.saveintervalseconds"); 
         if (!seconds) seconds = 120;
