@@ -65,11 +65,12 @@ var symObserver =
   
   onDragStart: function (evt, transferData, action)
   {
-    var button = evt.currentTarget;
-    var buttonData = {label: button.getAttribute("label"),
-                      msivalue: button.getAttribute("msivalue"),
-                      observes: button.getAttribute("observes"),
-                      tooltiptext: button.getAttribute("tooltiptext")};
+    var button = evt.originalTarget;
+    if (button.nodeName !== "toolbarbutton") return;
+    var buttonData = 
+    "id:"+ button.getAttribute("id") +" label:"+button.getAttribute("label")+" msivalue:"+
+        button.getAttribute("msivalue")+" observes:"+ button.getAttribute("observes")+" tooltiptext:" +
+        button.getAttribute("tooltiptext");
     transferData.data = new TransferData();
     transferData.data.addDataForFlavour("symbolbutton", buttonData);
   },
@@ -81,7 +82,32 @@ var symObserver =
   
   onDrop: function(evt, dropData, session)
   {
-    alert("Ouch!");
+    if (evt.currentTarget.id == "cachebar")
+    {
+      var supported = session.isDataFlavorSupported("symbolbutton");
+      if (supported)
+      {
+        var cachepanel = document.getElementById("cachepanel");
+        var data = dropData.first.first.data;
+        var attArray = data.split(" ");
+        var arr;
+        var s;
+        var button = document.createElement("toolbarbutton");
+        var firstTBButton = cachepanel.firstChild;
+        if (firstTBButton != null) cachepanel.insertBefore(button, firstTBButton);
+        else cachepanel.appendChild(button);
+        for (var i = 0; i < attArray.length; i++)
+        {
+          arr = attArray[i].split(":");
+          if (arr[0].length > 0)
+          {
+            if (arr[0] === "id") 
+              arr[1] = "cache_"+arr[1];
+            button.setAttribute(arr[0],arr[1]);
+          }          
+        }
+      }
+    }
   },
   
   onDragOver: function(evt, flavour, session) 
@@ -111,6 +137,7 @@ var symObserver =
   {
     var flavours = new FlavourSet();
     flavours.appendFlavour("symbolbutton");
+//    flavours.appendFlavour("text/html");
     return flavours;
   }
 }  
