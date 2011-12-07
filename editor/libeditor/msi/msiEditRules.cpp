@@ -115,8 +115,8 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   //printf("In msiEditRules::WillDeleteSelection\n");
   //DumpSelection(aSelection);
   nsresult res;
-/* BBM testing:
-  nsresult res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+
+  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
   res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
@@ -131,7 +131,6 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
       mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
       res = WillDeleteMathSelection(aSelection, aAction, aCancel, aHandled);
   }
-  if (!(startMathNode && endMathNode && (startMathNode == endMathNode))) */
 	nsCOMPtr<nsIDOMElement> cell;
 	res = mHTMLEditor->GetFirstSelectedCell(nsnull, getter_AddRefs(cell));
 	if (NS_SUCCEEDED(res) && cell)
