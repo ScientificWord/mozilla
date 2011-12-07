@@ -78,7 +78,8 @@
     </rows>
   </grid>
   <vbox>
-    <label>Raw <texlogo>T<sub>E</sub>X</texlogo></label>
+  <!-- JLF to BBBM -->
+  <label>Raw <texlogo>T<sub>E</sub>X</texlogo></label>
     <description>Enter <texlogo>T<sub>E</sub>X</texlogo> code here. In the <texlogo>T<sub>E</sub>X</texlogo> file it will by followed by your selected text, and enough right braces to balance the braces.</description>
     <textbox id="rawtex" multiline="true" newlines="pasteintact" rows="4" width="80%"/>
   </vbox>

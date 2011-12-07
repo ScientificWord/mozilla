@@ -175,20 +175,20 @@
               <rows>
                 <row>
 				  <!-- should use css height property, not attribute here !!!! -->
-                  <label id="AIPlotColor" control="TextButton" value="Plot Color: " height="30"/>
+                  <label id="AIPlotColor" control="TextButton" value="&plotcolo2r.label;" height="30"/>
                   <button id="plotcolorbutton" class="color-button" oncommand="GetPlotColor();">
                     <spacer id="plotCW" class="color-well"/>
    	              </button>
                 </row>
                 <row>
 				  <!-- should use css height property, not attribute here !!!! -->
-                  <label id="AIFillColor" control="TextButton" value="Fill Color: " height="30"/>
+                  <label id="AIFillColor" control="TextButton" value="&fillcolor.label;" height="30"/>
                   <button id="plotcolorbutton" class="color-button" oncommand="GetPlotColor();">
                     <spacer id="plotCW" class="color-well"/>
    	              </button>
                 </row>
    	            <row>
-                  <description>Area Fill Style</description>
+                  <description>&AreaFillStyle.label;</description>
                   <menulist id="FillPattern">
                     <menupopup> 
                       <menuitem label="&FillPatternSolid.label;"                   value="Solid"/>

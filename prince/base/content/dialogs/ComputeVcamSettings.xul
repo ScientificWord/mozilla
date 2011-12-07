@@ -13,6 +13,7 @@
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 <!-- JLF to verify-->
+<!-- JLF needs dtd file -->
 <!-- dialog containing a control requiring initial setup -->
 <window
         id="VCAMWindow"

@@ -289,66 +289,66 @@
 
     <tabbox>
       <tabs>
-        <tab id="prefgeneral" label="General"/>
-        <tab id="prefstartup" label="Start-up Shell"/>
-        <tab id="prefgraphics" label="Graphics"/>
+        <tab id="prefgeneral" label="&GeneralTab.label;"/>
+        <tab id="prefstartup" label="&StartUpShellTab.label;"/>
+        <tab id="prefgraphics" label="&GraphicsTab.label;"/>
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical">
           <groupbox>
             <caption label="&AutomaticSaving.label;"/>
-            <checkbox id="prefautosave" label="Enable silent automatic saving"
-                      accesskey=""
+            <checkbox id="prefautosave" label="&EnableSilentAutoSave.label;"
+                      accesskey="&EnableSilentAutoSave.accesskey;"
                       oncommand=""/>
             <hbox>
               <textbox type="number" style="width: 5em;" label="Save interval in seconds" preference="saveintervalseconds"/>
-              <label value="Save interval in seconds"/>
+              <label value="&SaveIntervalSeconds.label;"/>
             </hbox>
-            <checkbox id="generatetex" label="Generate TeX on automatic save (for latexmk)" preference="genTeXonsave"/>
+            <checkbox id="generatetex" label="&GenerateTeXonAutoSave.label;" preference="genTeXonsave"/>
           </groupbox>
           <groupbox>
-            <caption>Skin</caption>
+            <caption>&Skin.label;</caption>
             <vbox>
               <radiogroup id="skinRadioGroup" align="vertical" preference="selectedSkin" oncommand="skinChanged();">
-                <radio name="skinRadioGroup" id="modern" label="Modern" value="modern"  preference="selectedSkin"/>
-                <radio name="skinRadioGroup" id="classic" label="Classic" value="classic"  preference="selectedSkin"/>
+                <radio name="skinRadioGroup" id="modern" label="&Modern.label;" value="modern"  preference="selectedSkin"/>
+                <radio name="skinRadioGroup" id="classic" label="&Classic.label;" value="classic"  preference="selectedSkin"/>
               </radiogroup>
             </vbox>
           </groupbox>
           <groupbox>
             <caption label="&CursorAdvanceChar.label;"/>
-            <checkbox id="preffastcursor" label="Enable character find with arrow keys"
-                      accesskey=""
+            <checkbox id="preffastcursor" label="&EnableCharFindwithArrow.label;"
+                      accesskey="&EnableCharFindwithArrow.accesskey;"
                       oncommand=""
                       preference="fastcursor.enabled"/>
             <hbox>
               <textbox type="number" style="width: 5em;" preference="tapsforrepeat"/>
-              <label value="Number of taps for arrow to autorepeat"/>
+              <label value="&NumTapsforArrowAutorepeat.label;"/>
             </hbox>
           </groupbox>
           <groupbox>
-            <caption>File compression</caption>
+            <caption>&FileCompression.label;</caption>
             <hbox>
               <vbox>
-                <label value=".sci files"/>
+                <label value="&SciCompression.label;"/>
                 <menulist preference="sci.compression">
                   <menupopup>
-                    <menuitem label="None" value="0"/>
-                    <menuitem label="Fastest" value="1"/>
-                    <menuitem label="Middle" value="6"/>
-                    <menuitem label="Best" value="9"/>
+                    <menuitem label="&None.label;" value="0"/>
+                    <menuitem label="&Fastest.label;" value="1"/>
+                    <menuitem label="&Middle.label;" value="6"/>
+                    <menuitem label="&Best.label;" value="9"/>
                   </menupopup>
                 </menulist>                
               </vbox>
               <vbox>
-                <label value="web files"/>
+                <label value="&webfiles.label;"/>
                 <menulist preference="saveforweb.compression">
                   <menupopup>
-                    <menuitem label="None" value="0"/>
-                    <menuitem label="Fastest" value="1"/>
-                    <menuitem label="Middle" value="6"/>
-                    <menuitem label="Best" value="9"/>
-                  </menupopup>
+                    <menuitem label="&None.label;" value="0"/>
+                    <menuitem label="&Fastest.label;" value="1"/>
+                    <menuitem label="&Middle.label;" value="6"/>
+                    <menuitem label="&Best.label;" value="9"/>
+                 </menupopup>
                 </menulist>
               </vbox>
             </hbox>
@@ -357,7 +357,7 @@
         <tabpanel orient="vertical">
           <hbox style="height: 3in">
             <vbox style="width:2in" >
-              <label value="Shell Directories"/>
+              <label value="&ShellDirectories.label;"/>
               <tree id="dir-tree" flex="1" enableColumnDrag="true" seltype="single" 
                      onselect="showShellsInDir(this);"
                      datasources="rdf:files" flags="dont-build-content"
@@ -365,13 +365,13 @@
                      sortResource="http://homefile.netscape.com/NC-rdf#Name"
                      ref="">
                 <treecols>
-                  <treecol id="Name" label="Name" primary="true" flex="1" persist="width ordinal hidden"
+                  <treecol id="Name" label="&Name.label;" primary="true" flex="1" persist="width ordinal hidden"
                     sortactive="true" sortDirection = "ascending" />
                   <splitter/>
-                  <treecol id="Date" label="Date" hidden="true" flex="1"  persist="width ordinal hidden"
+                  <treecol id="Date" label="&Date.label;" hidden="true" flex="1"  persist="width ordinal hidden"
                     sortDirection = "ascending"/>
                   <splitter/>
-                  <treecol id="Size" label="Size" hidden="true" flex="1"  persist="width ordinal hidden"
+                  <treecol id="Size" label="&Size.label;" hidden="true" flex="1"  persist="width ordinal hidden"
                     sortDirection = "ascending"/>
                 </treecols>
 
@@ -392,7 +392,7 @@
               </tree>
             </vbox> 
             <vbox style="width:2in" >
-              <label value="Shell Files"/>
+              <label value="&ShellFiles.label;"/>
               <listbox preference="defaultshell" flex = "1" onselect="onShellSelect();" id="dircontents"/>
             </vbox>
           </hbox>
@@ -485,8 +485,8 @@
     </preferences>
     <tabbox flex="1">
 	    <tabs class="tabs-top">
-	      <tab label="Editing parameters"       selected="1" />
-	      <tab label="Math"/>
+	      <tab label="&EditingParameters.label;"       selected="1" />
+	      <tab label="&Math.label;"/>
 	    </tabs>
 
       <tabpanels>
@@ -495,24 +495,24 @@
           <groupbox>
             <caption>Spell checking</caption>
             <hbox>
-              <label value="Enable realtime spell checking"/><checkbox preference="enablerealtimespell"/>
+              <label value="&EnableRTSpellCheck.label;"/><checkbox preference="enablerealtimespell" label="&EnableRTSpellCheck.label;" accesskey="&EnableRTSpellCheck.accesskey;"/>
             </hbox>
 	
           </groupbox>
           <groupbox>
-            <caption>Source ediing</caption>
+            <caption>&SourceEditing.label;</caption>
             <grid><columns><column/><column/><column flex="1"/></columns>
               <rows>
                 <row>
-                  <description>XML source indent</description>
+                  <description>&XMLSourceIndent.label;</description>
                   <textbox type="number" id="srcindent" class="medwidth" preference="sourceindent"/>
                 </row>
                 <row>
-                  <description>XML source max line length</description>
+                  <description>&XMLSourceMaxLineLength.label;</description>
                   <textbox type="number" id="srcmaxlength" class="medwidth" preference="sourcemaxlength"/>
                 </row>
                 <row>
-                  <description>XML source min line length</description>
+                  <description>&XMLSourceMinLineLength.label;</description>
                   <textbox type="number" id="srcminlength" class="medwidth" preference="sourceminlength"/>
                 </row>
               </rows>
@@ -522,22 +522,22 @@
 				<tabpanel id="prefMathEdit" orient="vertical">
 					<separator flex="1"/>
 					<groupbox orient="vertical">
-            <caption>Spacebar</caption>
-            <checkbox id="doublespace" preference="doublespacepref" label="After space switches to math"/>
+            <caption>&Spacebar.label;</caption>
+            <checkbox id="doublespace" preference="doublespacepref" label="&AfterSpaceSwitchesToMath.label;"/>
           </groupbox>
 					<hbox>
 						<groupbox>
-							<caption>Ctrl + T</caption>
+							<caption>&CtrlT.label;</caption>
 							<radiogroup preference="ctrlTpref">
-								<radio label="Toggle math/text" value="toggle"/>
-								<radio label="Force text" value="text"/>
+								<radio label="&ToggleMathText.label;" value="toggle"/>
+								<radio label="&ForceText.label;" value="text"/>
 							</radiogroup>
 						</groupbox> 
 						<groupbox>
-							<caption>Ctrl + M</caption>
+							<caption>&CtrlM.label;</caption>
 							<radiogroup preference="ctrlMpref">
-								<radio label="Toggle math/text" value="toggle"/>
-								<radio label="Force math" value="math"/>
+								<radio label="&ToggleMathText.label;" value="toggle"/>
+								<radio label="&ForceMath.label;" value="math"/>
 							</radiogroup>
 						</groupbox>
 					</hbox>
@@ -545,7 +545,7 @@
       </tabpanels>
     </tabbox>
   </prefpane>
-  <prefpane id="prefComp" label="Computation">
+  <prefpane id="prefComp" label="&Computation.label;">
     <tabbox id="outer-box" flex="1">
 	    <tabs class="tabs-top">
 	     <tab label="&tabbar.input;"       selected="1" />
@@ -553,7 +553,7 @@
 	     <tab label="&tabbar.matrices;"      selected="0" />
 	     <tab label="&tabbar.derivatives;" selected="0" />
 	     <tab label="&tabbar.entities;"    selected="0" />
-       <tab label="Engine" selected="0" />
+       <tab label="&tabbar.engine;" selected="0" />
 	    </tabs>
 
       <tabpanels>
@@ -981,19 +981,19 @@
         <vbox>
           <separator/>
           <hbox>
-            <label id="bgcolor" control="TextButton" value="Default background color: " />
+            <label id="bgcolor" control="TextButton" value="&DefaultBGColor.label;" />
             <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
                <spacer id="plotCW" class="color-well"/>
             </msibutton>
           </hbox>
           <separator/>
           <vbox>
-            <checkbox id="OrthogonalProjection" label="Orthogonal projection"/>
-            <checkbox id="KeepUp"               label="Keep up vector"/>
+            <checkbox id="OrthogonalProjection" label="&OrthogonalProjection.label;"/>
+            <checkbox id="KeepUp"               label="&KeepUpVector.label;"/>
             <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
           </vbox>
           <groupbox>
-            <caption>Initial View Intervals</caption>        
+            <caption>&InitialViewIntervals.label;</caption>        
             <hbox>
               <label value="&axisxrange.label;"/>
               <textbox id="xrangelow" style="width: 5em;" cols="6" preference="plot.XMin"/>
@@ -1047,8 +1047,8 @@
     </preferences>
     <tabbox>
       <tabs>
-        <tab id="prefgeneralTypesetting" label="General"/>
-        <tab id="prefexpertTypesetting" label="Expert"/>
+        <tab id="prefgeneralTypesetting" label="&General.label;"/>
+        <tab id="prefexpertTypesetting" label="&Expert.label;"/>
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical">

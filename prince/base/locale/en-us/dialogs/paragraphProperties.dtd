@@ -46,3 +46,10 @@
 <!ENTITY backgroundColor.accesskey "g">
 <!ENTITY textColor.label "Text">
 <!ENTITY textColor.accesskey "T">
+
+<!ENTITY pt.label "pt">
+<!ENTITY cm.label "cm">
+<!ENTITY mm.label "mm">
+<!ENTITY in.label "in">
+
+
