@@ -25,10 +25,10 @@
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/symbols.js"/>
   
-  <menupopup id="toc-context-menu">
-    <menuitem label="Jump" oncommand="jump();"/>
+  <menupopup id="symbol-context-menu" onpopupshowing="initPopup(event);">
+    <menuitem label="Remove symbol" oncommand="remove(event);"/>
   </menupopup>
-
+ 
   <commandset id="MSImathMenuCommands">
     <command id="cmd_MSIsymbolCmd" />     
     <command id="cmd_MSIInsertChar" />
@@ -41,6 +41,7 @@
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     style="height: 150px;"
+    context="symbol-context-menu"
     ondraggesture = "nsDragAndDrop.startDrag(event,symObserver);"  
     ondragdrop = "nsDragAndDrop.drop(event, symObserver);"    >
  	  <tabs class="tabs-top" align="start baseline">
@@ -760,7 +761,7 @@
               <toolbarbutton id="symbolguilsinglleft" />
               <toolbarbutton id="symbolguilsinglright" />
       </tabpanel> 
-      <tabpanel id="cachepanel" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" observes="tabpanelstyle">
+      <tabpanel id="cachepanel" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" observes="tabpanelstyle" persist="userlistofsymbols" userlistofsymbols=" symbolendash symbollq symbolzcaron ">
       </tabpanel> 
     </tabpanels>
   </tabbox>
