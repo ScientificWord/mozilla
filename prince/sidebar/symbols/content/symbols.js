@@ -2,6 +2,7 @@ function startup()
 {
 //  var editorElement = msiGetActiveEditorElement(window.parent);
 //  window.msiSetupHTMLEditorCommands(editorElement);
+  initUserSymbols();
 }
 
 function doSymbols(event)
@@ -56,6 +57,7 @@ function windowChanged()
 }
 
 
+
 var symObserver = 
 { 
   canHandleMultipleItems: function ()
@@ -92,6 +94,7 @@ var symObserver =
         var attArray = data.split(" ");
         var arr;
         var s;
+        var id;
         var button = document.createElement("toolbarbutton");
         var firstTBButton = cachepanel.firstChild;
         if (firstTBButton != null) cachepanel.insertBefore(button, firstTBButton);
@@ -102,9 +105,18 @@ var symObserver =
           if (arr[0].length > 0)
           {
             if (arr[0] === "id") 
-              arr[1] = "cache_"+arr[1];
+            {
+              id = arr[1];
+              arr[1] = "cache_"+id;
+            }
             button.setAttribute(arr[0],arr[1]);
           }          
+        }
+        var usersymbols = cachepanel.getAttribute("userlistofsymbols");
+        if (usersymbols.indexOf(" "+id+" ") < 0)
+        {
+          usersymbols = " "+id + usersymbols;
+          cachepanel.setAttribute("userlistofsymbols", usersymbols);
         }
       }
     }
@@ -141,3 +153,51 @@ var symObserver =
     return flavours;
   }
 }  
+
+
+function initUserSymbols()
+{
+  var cachepanel = document.getElementById("cachepanel");
+  var usersymbols = cachepanel.getAttribute("userlistofsymbols");
+  var symbols = usersymbols.split(" ");
+  var symbolbutton;
+  var i;
+  try
+  {
+    for (i=symbols.length - 1; i >= 0; i-- )
+    {
+      if (symbols[i].length > 0)
+      {
+        symbolbutton = document.getElementById(symbols[i]).cloneNode(false);
+        symbolbutton.setAttribute("id", "cache_"+document.getElementById(symbols[i]).getAttribute("id"));
+        var firstTBButton = cachepanel.firstChild;
+        if (firstTBButton != null) cachepanel.insertBefore(symbolbutton, firstTBButton);
+        else cachepanel.appendChild(symbolbutton);
+      }
+    }
+    
+  }
+  catch(e)
+  {}
+}
+
+var button;
+function initPopup(event)
+{
+  button = event.explicitOriginalTarget;
+}
+
+function remove(event)
+{
+  if (!button || button.nodeName != "toolbarbutton") return;
+  var cachepanel = document.getElementById("cachepanel");
+  var usersymbols = cachepanel.getAttribute("userlistofsymbols");
+  var id = button.getAttribute("id");
+  if (id.indexOf("cache_") == 0) id=id.slice(5);
+  cachepanel.removeChild(button);
+  if (usersymbols.indexOf(" "+ id + " ") >= 0)
+  {
+    usersymbols = usersymbols.replace(" "+ id, "");
+    cachepanel.setAttribute("userlistofsymbols", usersymbols);
+  }
+}
