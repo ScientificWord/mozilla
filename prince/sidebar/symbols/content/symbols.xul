@@ -34,17 +34,17 @@
     <command id="cmd_MSIInsertChar" />
   </commandset>
 
-  <broadcaster id="tabpanelstyle" style="height: 180px; overflow-y: scroll;" persist="scrollPos style"/>
+  <broadcaster id="tabpanelstyle" style="max-height: 180px; overflow-y: auto;"/>
   
     
   <tabbox id="sidebar-symbol-tabbox" textsize="small" iconsize="large" persist="iconsize textsize" 
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
-    style="height: 150px;"
-    context="symbol-context-menu"
+    style="overflow-y: auto; "
+    flex="1"
     ondraggesture = "nsDragAndDrop.startDrag(event,symObserver);"  
     ondragdrop = "nsDragAndDrop.drop(event, symObserver);"    >
- 	  <tabs class="tabs-top" align="start baseline">
+ 	  <tabs id="tabs-box" class="tabs-top" align="start baseline">
 			  <tab dir="rtl" label="&#x03B1;&#x03B2;" mathsym="true" tooltiptext="&MSISymbolTabLCGreek;" selected="1"
 			    linkedpanel="symbol_lcGreek"/>
 			  <tab dir="rtl" label="&#x03A6;&#x03A8;" mathsym="true" tooltiptext="&MSISymbolTabCCGreek;" selected="0"
@@ -70,8 +70,8 @@
 			  <tab id="cachebar" label="User" mathsym="true" tooltiptext="Drag frequently-used symbols here" linkedpanel="cachepanel"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, symObserver);"
         />
     </tabs>
-    <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
-	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline" observes="tabpanelstyle"> 
+    <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" hidevscroll="false"> 
+	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline"> 
         
               <toolbarbutton id ="symbolalpha"/>
               <toolbarbutton id="symbolbeta" />
@@ -109,7 +109,7 @@
      </tabpanel>
      
 <!-- UPPERCASE GREEK -->
-     <tabpanel id="symbol_ucGreek" mathsym="true" align="baseline" observes="tabpanelstyle">
+     <tabpanel id="symbol_ucGreek" mathsym="true" align="baseline">
               <toolbarbutton id="symbolGamma" />
               <toolbarbutton id="symbolDelta" />
               <toolbarbutton id="symbolTheta" />
@@ -125,7 +125,7 @@
        </tabpanel>
 
 <!-- BINARY OPERATIONS -->
-    	<tabpanel id="symbol_binOp"  mathsym="true" align="baseline" observes="tabpanelstyle">
+    	<tabpanel id="symbol_binOp"  mathsym="true" align="baseline">
               <toolbarbutton id="symbolpm" />
               <toolbarbutton id="symbolmp" />
               <toolbarbutton id="symboltimes" />
@@ -190,7 +190,7 @@
       </tabpanel>
 
         <!-- BINARY RELATIONS -->
-      <tabpanel id="symbol_binRel" mathsym="true" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_binRel" mathsym="true" align="baseline">
               <toolbarbutton id="symbolleq" />
               <toolbarbutton id="symbolprec" />
               <toolbarbutton id="symbolpreceq" />
@@ -295,7 +295,7 @@
       </tabpanel>
 
 <!-- NEGATED RELATIONS -->
-      <tabpanel id="symbol_negRel" mathsym="true" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_negRel" mathsym="true" align="baseline">
               <toolbarbutton id="symbolne" />
               <toolbarbutton id="symbolnotin" />
               <toolbarbutton id="symbollvertneqq" /> 
@@ -361,7 +361,7 @@
       </tabpanel>
 
 <!-- ARROWS -->
-      <tabpanel id="symbol_arrow" mathsym="true" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_arrow" mathsym="true" align="baseline">
               <toolbarbutton id="symbolleftarrow" />
               <toolbarbutton id="symbolLeftarrow" />
               <toolbarbutton id="symbolrightarrow" />
@@ -431,7 +431,7 @@
       </tabpanel>
 
 <!-- MISCELLANEOUS SYMBOLS -->
-      <tabpanel id="symbol_misc" mathsym="true" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_misc" mathsym="true" align="baseline">
               <toolbarbutton id="symbolinfty" />
               <toolbarbutton id="symbolpartial" />
               <toolbarbutton id="symboldots" />
@@ -508,7 +508,7 @@
       </tabpanel>
 
       <!-- DELIMITERS -->
-      <tabpanel id="symbol_delims" mathsym="true" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_delims" mathsym="true" align="baseline">
               <toolbarbutton id="symbollfloor" />
               <toolbarbutton id="symbolrfloor" />
               <toolbarbutton id="symbollceil" />
@@ -522,7 +522,7 @@
       </tabpanel> 
 
 <!-- LATIN-1 -->
-      <tabpanel id="symbol_latin1" mathsym="false" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_latin1" mathsym="false" align="baseline">
               <toolbarbutton id="symboltextdegree" />
               <toolbarbutton id="symboltextexclamdown" />
               <toolbarbutton id="symboltextquestiondown" />
@@ -619,7 +619,7 @@
       </tabpanel> 
 
 <!-- LATIN EXTENDED -->
-      <tabpanel id="symbol_latinextended" mathsym="false" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_latinextended" mathsym="false" align="baseline">
               <toolbarbutton id="symbolAbreve" />
               <toolbarbutton id="symbolAmacr" />
               <toolbarbutton id="symbolAogon" />
@@ -749,7 +749,7 @@
       </tabpanel> 
 
 <!-- PUNCTUATION -->
-      <tabpanel id="symbol_punctuation" mathsym="false" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_punctuation" mathsym="false" align="baseline">
               <toolbarbutton id="symbolendash" />
               <toolbarbutton id="symbolemdash" />
               <toolbarbutton id="symbollq" />
@@ -761,7 +761,8 @@
               <toolbarbutton id="symbolguilsinglleft" />
               <toolbarbutton id="symbolguilsinglright" />
       </tabpanel> 
-      <tabpanel id="cachepanel" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" observes="tabpanelstyle" persist="userlistofsymbols" userlistofsymbols=" symbolendash symbollq symbolzcaron ">
+      <tabpanel id="cachepanel" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" 
+        persist="userlistofsymbols" context="symbol-context-menu" userlistofsymbols=" ">
       </tabpanel> 
     </tabpanels>
   </tabbox>
