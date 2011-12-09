@@ -42,11 +42,11 @@ function doChar(event)
 function onHeightChange(h)
 {
 //  alert("foo! Height is "+h);
-  var adjHeight = Number(h) - 31 - 31 - 4 - 2;
+  var adjHeight = Number(h) - document.getElementById("tabs-box").boxObject.height;
   var broadcaster = document.getElementById("sidebar-symbol-tabbox");
-  broadcaster.setAttribute("style","height: "+adjHeight+"px;");
+  broadcaster.setAttribute("style","max-height: "+h+"px; overflow-y: auto;");
   broadcaster = document.getElementById("tabpanelstyle");
-  broadcaster.setAttribute("style","height: "+adjHeight+"px;");
+  broadcaster.setAttribute("style","max-height: "+adjHeight+"px; overflow-y: auto;");
 }
 
 
