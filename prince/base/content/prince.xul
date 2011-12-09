@@ -71,7 +71,7 @@
 
 <!-- sidebar/toolbar/content/status -->
 <hbox id="sidebar-parent" flex="1">
-  <sidebar id="sidebar1" sidebaritems="toc,symbols" persist="sidebaritems collapsed"/>
+  <sidebar id="sidebar1" sidebaritems="toc,symbols" persist="sidebaritems collapsed width"/>
   <splitter id="splitter1" collapse="before" resizebefore="closest" persist="state">
     <grippy/>
   </splitter>
@@ -104,7 +104,7 @@
   <splitter id="splitter2" collapse="after" resizeafter="closest" persist="state">
     <grippy/>
   </splitter>
-  <sidebar id="sidebar2" sidebaritems="MSI" collapsed="false" persist="sidebaritems collapsed"/>
+  <sidebar id="sidebar2" sidebaritems="MSI" collapsed="false" persist="sidebaritems collapsed width"/>
 </hbox><!-- sidebar-parent -->
 
   <statusbar class="chromeclass-status" id="status-bar" hidden="false">
