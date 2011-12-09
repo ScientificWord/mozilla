@@ -18,7 +18,8 @@
 }
 
 #sidebar-symbol-tabbox tabs { display: table; }
-#sidebar-symbol-tabbox tabpanel { display: table; }
+#sidebar-symbol-tabbox tabpanel { display:inline-table; border: none; }
+#sidebar-symbol-tabbox tabpanels {border: none; overflow: scroll; }
 #sidebar-symbol-tabbox toolbarbutton { font-size: medium; width: 40px; height: 20px;
   padding: 1px; border: thin solid rgb(240,240,240); margin: 1px 1px;}
 /* #sidebar-symbol-tabbox[textsize="small"] tab { font-size: small; }
