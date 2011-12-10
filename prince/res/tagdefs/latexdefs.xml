@@ -544,8 +544,7 @@
               </bodyText>
             </note>
           </initialcontents>
-					<nexttag>bodyText</nexttag>
-	  		  <inclusion>true</inclusion>
+					<nexttag>#text</nexttag>
         </tag>
 				<tag nm="assertion">
           <level>*</level>
@@ -1101,6 +1100,13 @@
 				<tag nm="td"><description>Table cell</description>
 				  <contains>paratag</contains>
 				</tag>
+				<tag nm="notewrapper" hidden="1">
+          <description>Note wrapper</description>
+					<nexttag>#text</nexttag>
+          <discardemptyblock>true</discardemptyblock>
+	  		  <inclusion>true</inclusion>
+			    <contains>note</contains>
+        </tag>
         <tag nm="citation">
           <description>Citation</description>
           <contains>biblabel</contains>
