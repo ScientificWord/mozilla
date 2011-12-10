@@ -162,9 +162,9 @@ function initUserSymbols()
   var symbols = usersymbols.split(" ");
   var symbolbutton;
   var i;
-  try
+  for (i=symbols.length - 1; i >= 0; i-- )
   {
-    for (i=symbols.length - 1; i >= 0; i-- )
+    try
     {
       if (symbols[i].length > 0)
       {
@@ -175,10 +175,9 @@ function initUserSymbols()
         else cachepanel.appendChild(symbolbutton);
       }
     }
-    
+    catch(e)
+    {}
   }
-  catch(e)
-  {}
 }
 
 var button;
