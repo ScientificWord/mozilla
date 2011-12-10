@@ -762,7 +762,7 @@
               <toolbarbutton id="symbolguilsinglright" />
       </tabpanel> 
       <tabpanel id="cachepanel" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" 
-        persist="userlistofsymbols" context="symbol-context-menu" userlistofsymbols=" ">
+        persist="userlistofsymbols" context="symbol-context-menu" userlistofsymbols=" symbolpi symboltheta symbolinfty symbolin symbolrightarrow symbolell symbolnabla symbolpartial symbolleq symbolgeq symbolsubset symbolcap symbolcup symboltimes symboldiv symbolpm symbolcirc symbolcdot ">
       </tabpanel> 
     </tabpanels>
   </tabbox>
