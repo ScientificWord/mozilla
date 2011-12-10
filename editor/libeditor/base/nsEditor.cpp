@@ -4575,7 +4575,15 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
     
     if (nodeToSplit.get() == aNode)  // we split all the way up to (and including) aNode; we're done
       break;
-      
+    if (aNoEmptyContainers) 
+    {
+      nsAutoString nodeName;
+      res = GetTagString(nodeToSplit, nodeName);
+      if (nodeName.EqualsLiteral("math"))
+      {
+        aNoEmptyContainers = PR_FALSE;
+      }
+    }  
     nodeToSplit = parentNode;
   }
   
