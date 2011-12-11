@@ -31,6 +31,7 @@ public:
   nsString prefsub;
 	nsString babel; 
   nsCOMPtr<nsIDOMElement> initialContents;
+  PRBool   wrapper;
   PRBool   discardEmptyBlock;
   PRBool   inclusion;
   PRBool   hidden;

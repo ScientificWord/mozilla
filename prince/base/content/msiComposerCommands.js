@@ -9415,11 +9415,11 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
   {
     try 
     {
-      var namespace = new Object();                      
+      var namespace = new Object();    
       var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
       var wrapperNode = editor.document.createElement('notewrapper');
       if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
-      var node = editor.document.createElement('note');
+      var node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
       node.setAttribute('type',data.type);
       node.setAttribute('hide','false');
       if (data.type != 'footnote') 
@@ -9434,17 +9434,13 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
         if (data.markOrText != "markAndText")
           wrapperNode.setAttribute("markOrText", data.markOrText);
       }
-      var paraNode = editor.document.createElement(paraTag);
-      var brNode=editor.document.createElement('br');
-      brNode.setAttribute("type","_moz");
       if (node)
+      {  
         wrapperNode.insertBefore(node, null);
-      if (paraNode)
-        node.insertBefore(paraNode, null);
-      if (brNode)
-        paraNode.insertBefore(brNode, null);
-      editor.insertElementAtSelection(wrapperNode, true);
-      editor.selection.collapse(paraNode, 0);
+        editor.insertElementAtSelection(wrapperNode, true);
+        editor.setCursorInNewHTML(node);
+        editorElement.contentWindow.focus();
+      }
     }
     catch(e)
     {

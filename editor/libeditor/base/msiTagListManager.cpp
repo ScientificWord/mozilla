@@ -577,6 +577,8 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
             GetStringProperty(NS_LITERAL_STRING("discardemptyblock"), tagNameElement)==NS_LITERAL_STRING("true");
           pdata->inclusion = 
             GetStringProperty(NS_LITERAL_STRING("inclusion"), tagNameElement)==NS_LITERAL_STRING("true");
+          pdata->wrapper = 
+            GetStringProperty(NS_LITERAL_STRING("wrapper"), tagNameElement)==NS_LITERAL_STRING("true");
           // save the key, data pair
           TagKey nextTagKey(GetStringProperty(NS_LITERAL_STRING("nexttag"), tagNameElement));
           pdata->nextTag = nextTagKey.key;
@@ -1132,91 +1134,98 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   if (firstNodeName.Length()== 0) return NS_OK;
   nsIAtom * dummyatom = NS_NewAtom(NS_LITERAL_STRING(""));
   rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("nexttag"), str);
-  if ((str.Length() > 0) && !(str.Equals(firstNodeName)))
-  {
-    meditor->ReplaceContainer(*secondNode, address_of(aNewNode), str, this, nsnull, nsnull, PR_TRUE);
-    *secondNode = aNewNode;
-	  NS_ADDREF((nsIDOMNode *)aNewNode);
-   	meditor->MarkNodeDirty(*secondNode);
-  }
-  // Gecko does not display empty paragraphs, so we need to put in a BR, maybe with an attribute
-  PRBool isEmpty;
-  nsCOMPtr<nsISelection>selection;
-  rv = meditor->GetSelection(getter_AddRefs(selection));
+  PRBool isEmpty = PR_FALSE;
   nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
-  editor->IsEmptyNode( firstNode, &isEmpty);
-  nsCOMPtr<nsIDOMDocument> doc;
-  editor->GetDocument(getter_AddRefs(doc));  
-  if (isEmpty)
+  if (editor) editor->IsEmptyNode( *secondNode, &isEmpty);
+  if (str.EqualsLiteral("none") && isEmpty)
   {
-    nsCOMPtr<nsIDOMNode> brNode;
-    rv = editor->CreateBR(firstNode, 0, address_of(brNode));
-
+    meditor->DeleteNode(*secondNode);
   }
-  editor->IsEmptyNode( *secondNode, &isEmpty);
-  nsAutoString strContents;
-  nsAutoString secondNodeName;
-  nsIAtom * nsAtomSecond;
-  rv = GetTagOfNode(*secondNode, &nsAtomSecond, secondNodeName);
-  if (isEmpty)
+  else 
   {
-//    rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontents"), strContents);
-    if (strContents.Length() > 0)
+    if ((str.Length() > 0) && !str.EqualsLiteral("none")&&!(str.Equals(firstNodeName)))
     {
-      // to make this operation undoable, we create a new node and copy its contents
-      nsCOMPtr<nsIDOMNode> newNode;
-      nsCOMPtr<nsIDOMNode> parentNode;
-      rv = (*secondNode)->CloneNode(PR_FALSE, getter_AddRefs(newNode));
-      nsCOMPtr<nsIDOMNSHTMLElement> secondElement(do_QueryInterface(newNode));
-      (secondElement)->SetInnerHTML(strContents);
-      nsCOMPtr<nsIDOMNode> child;
-      PRBool bHasMoreChildren;
-      newNode->HasChildNodes(&bHasMoreChildren);
-      while (bHasMoreChildren)
+      meditor->ReplaceContainer(*secondNode, address_of(aNewNode), str, this, nsnull, nsnull, PR_TRUE);
+      *secondNode = aNewNode;
+  	  NS_ADDREF((nsIDOMNode *)aNewNode);
+     	meditor->MarkNodeDirty(*secondNode);
+    }
+    // Gecko does not display empty paragraphs, so we need to put in a BR, maybe with an attribute
+    nsCOMPtr<nsISelection>selection;
+    rv = meditor->GetSelection(getter_AddRefs(selection));
+    editor->IsEmptyNode( firstNode, &isEmpty);
+    nsCOMPtr<nsIDOMDocument> doc;
+    editor->GetDocument(getter_AddRefs(doc));  
+    if (isEmpty)
+    {
+      nsCOMPtr<nsIDOMNode> brNode;
+      rv = editor->CreateBR(firstNode, 0, address_of(brNode));
+
+    }
+    nsAutoString strContents;
+    nsAutoString secondNodeName;
+    nsIAtom * nsAtomSecond;
+    rv = GetTagOfNode(*secondNode, &nsAtomSecond, secondNodeName);
+    if (isEmpty)
+    {
+  //    rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontents"), strContents);
+      if (strContents.Length() > 0)
       {
-        newNode->GetFirstChild(getter_AddRefs(child));
-        rv =meditor->DeleteNode(child);
-//        if (NS_FAILED(rv)) return rv;
-
-        rv = meditor->InsertNode(child, *secondNode, -1);
-        if (NS_FAILED(rv)) return rv;
+        // to make this operation undoable, we create a new node and copy its contents
+        nsCOMPtr<nsIDOMNode> newNode;
+        nsCOMPtr<nsIDOMNode> parentNode;
+        rv = (*secondNode)->CloneNode(PR_FALSE, getter_AddRefs(newNode));
+        nsCOMPtr<nsIDOMNSHTMLElement> secondElement(do_QueryInterface(newNode));
+        (secondElement)->SetInnerHTML(strContents);
+        nsCOMPtr<nsIDOMNode> child;
+        PRBool bHasMoreChildren;
         newNode->HasChildNodes(&bHasMoreChildren);
-      }
-      meditor->MarkNodeDirty(*secondNode);
-    }
-  }
-//  if (!pnode) pnode = *secondNode;
-//#if DEBUG_barry || DEBUG_Barry
-//  editor->DumpNode(pnode,0);
-//#endif        
-  nsCOMPtr<nsIDOMNode> pnode = *secondNode;
-  nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
-  if (pnode)
-  {
-    nsCOMPtr<nsIDOMElement> element;
-    nsCOMPtr<nsIDOMNodeList> nodeList;
-    nsCOMPtr<nsIDOMNode> node, selNode;
-    PRUint32 nodeCount;
-    PRInt32 selOffset; 
-    element = do_QueryInterface(pnode);
-    rv = element->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
-    if (nodeList) nodeList->GetLength(&nodeCount);
-    if (nodeCount > 0)
-    {
-      nodeList->Item(0, getter_AddRefs(node));
-      nsEditor::GetNodeLocation(node, address_of(selNode), &selOffset);
-      editor->DeleteNode(node);
-      selPriv->SetInterlinePosition(PR_TRUE);
-      rv = selection->Collapse(selNode, selOffset);
-//      rv = selection->Extend( selNode, selOffset+1 );
-#if DEBUG_barry || DEBUG_Barry
-      editor->DumpNode(selNode,0);
-#endif
-      return NS_OK;
-    }
-  }
+        while (bHasMoreChildren)
+        {
+          newNode->GetFirstChild(getter_AddRefs(child));
+          rv =meditor->DeleteNode(child);
+  //        if (NS_FAILED(rv)) return rv;
 
-  rv = selection->Collapse(*secondNode, 0);
+          rv = meditor->InsertNode(child, *secondNode, -1);
+          if (NS_FAILED(rv)) return rv;
+          newNode->HasChildNodes(&bHasMoreChildren);
+        }
+        meditor->MarkNodeDirty(*secondNode);
+      }
+    }
+  //  if (!pnode) pnode = *secondNode;
+  //#if DEBUG_barry || DEBUG_Barry
+  //  editor->DumpNode(pnode,0);
+  //#endif        
+    nsCOMPtr<nsIDOMNode> pnode = *secondNode;
+    nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
+    if (pnode)
+    {
+      nsCOMPtr<nsIDOMElement> element;
+      nsCOMPtr<nsIDOMNodeList> nodeList;
+      nsCOMPtr<nsIDOMNode> node, selNode;
+      PRUint32 nodeCount;
+      PRInt32 selOffset; 
+      element = do_QueryInterface(pnode);
+      rv = element->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
+      if (nodeList) nodeList->GetLength(&nodeCount);
+      if (nodeCount > 0)
+      {
+        nodeList->Item(0, getter_AddRefs(node));
+        nsEditor::GetNodeLocation(node, address_of(selNode), &selOffset);
+        editor->DeleteNode(node);
+        selPriv->SetInterlinePosition(PR_TRUE);
+        rv = selection->Collapse(selNode, selOffset);
+  //      rv = selection->Extend( selNode, selOffset+1 );
+  #if DEBUG_barry || DEBUG_Barry
+        editor->DumpNode(selNode,0);
+  #endif
+        return NS_OK;
+      }
+    }
+
+    rv = selection->Collapse(*secondNode, 0);
+  }
 // diagnostics:
 #if DEBUG_barry || DEBUG_Barry
   printf("==Leaving: firstNode: \n");
