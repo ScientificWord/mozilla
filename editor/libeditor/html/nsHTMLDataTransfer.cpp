@@ -1192,8 +1192,10 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     if (inMath) {
        res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
          &outOffset, PR_TRUE, address_of(outLeftNode), address_of(outRightNode)); 
-    } else {
-       res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
+    } else { //is splitNode is wrapped, replace splitNode with its wrapper.
+      nsCOMPtr<nsIDOMNode> wrapperNode;
+      res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));
+       res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
          &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
     }
     FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
@@ -1245,6 +1247,26 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     }
   }
   return res;
+}
+
+nsresult 
+nsHTMLEditor::GetWrapper(nsIDOMNode * node, nsIDOMNode ** wrapperNode)
+{
+  nsresult res;
+  nsString wrapper;
+  nsString elementTag;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMElement> element;
+  nsIAtom * atomNS = nsnull;
+  node->GetParentNode(getter_AddRefs(parent));
+  element = do_QueryInterface(parent);
+  if (element)
+    element->GetTagName(elementTag);
+  res = mtagListManager->GetStringPropertyForTag(elementTag, atomNS, NS_LITERAL_STRING("wrapper"), wrapper);
+  if (wrapper.EqualsLiteral("true"))
+    *wrapperNode = parent;
+  else
+    *wrapperNode = node;
 }
 
 
