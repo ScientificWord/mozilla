@@ -20,7 +20,7 @@
 
          
   <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="iconsize mode" flex="1"
-     mode="icons" iconsize="large">       
+     mode="icons" iconsize="large" >       
     <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
       <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
         label="&CustomizeToolbars.label;" />

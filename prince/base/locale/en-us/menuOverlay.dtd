@@ -69,7 +69,12 @@
 <!ENTITY fileprint.keybinding "p">
 <!ENTITY closeCmd.label "Close">
 <!ENTITY fileclose.accesskey "c">
+#ifdef XP_MACOSX
 <!ENTITY fileclose.keybinding "w">
+#else
+<!ENTITY fileclose.acceltext						"Ctrl+F4">  
+
+#endif
 <!ENTITY exitCmd.label "Quit">
 <!ENTITY fileexit.accesskey "q">
 <!ENTITY fileexit.keybinding "q">

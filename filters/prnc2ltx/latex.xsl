@@ -307,9 +307,9 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template name="maketables">
-  \tableofcontents <xsl:text/>
+<!--  \tableofcontents <xsl:text/>
   <xsl:if test="//html:lof">\listoffigures</xsl:if>
-  <xsl:if test="//html:lot">\listoftables</xsl:if>
+  <xsl:if test="//html:lot">\listoftables</xsl:if> -->
 </xsl:template>
 
 <xsl:template match="html:maketoc">
