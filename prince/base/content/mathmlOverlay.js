@@ -3246,11 +3246,12 @@ function offsetOfChild(parent, child)
 }
 
 function splitMathDeep(editor, node, offset, text)
-/* This will  split the  math expression at  the point node,  offset; if  offset == -1,  then the
+/* This will  split the  math expression at  the point (node,offset); if  offset == -1,  then the
 expression will  be split  by node, which  will then be  deleted. The  text in 'text'  will be
-inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   appropriate. */  
+inserted into an mtext node or an ordinary text  node, as appropriate. */  
 {
 	var newNode= {};
+	var saveNode = node;
 	var parent;
 	var newParent;
   var removeNode = offset < 0;
@@ -3298,7 +3299,7 @@ inserted   into   an   mtext   node   or   an  ordinary   text   node,   as   ap
 		editor.insertNode(textNode, parent, offset);
 		editor.selection.collapse(textNode,text.length);
 	}
-	if (removeNode) editor.deleteNode(node);
+	if (removeNode) editor.deleteNode(saveNode);
 //	window.focus();
 }
 

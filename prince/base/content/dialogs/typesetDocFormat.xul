@@ -438,7 +438,7 @@
             </columns>
          
             <rows>
-              <row>
+              <!--row>
                 <vbox align="center">
                   <label observes="reformatok" value="&TableofContents.label;"/>
                   <hbox ><checkbox id="toc" observes="reformatok" align="center" checked="false"  persist="checked" /></hbox>
@@ -451,7 +451,7 @@
                   <label observes="reformatok" value="&ListofTables.label;"/>
                   <hbox><checkbox id="lot" observes="reformatok" align="center" checked="false"  persist="checked" /></hbox>
                 </vbox>
-              </row>
+              </row -->
               <row align="end" style="height: 3em">
                 <vbox>
                   <label observes="reformatok" value="&Footnotes.label;"/>
