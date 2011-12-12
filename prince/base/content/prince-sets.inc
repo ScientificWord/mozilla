@@ -41,6 +41,6 @@
   <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
   <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
   <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/>
-  <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;" observes="cmd_unimp"/>>
+  <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;" oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"/>>
 </keyset>
 <keyset id="mainKeyset"/> <!-- for extensions-->
