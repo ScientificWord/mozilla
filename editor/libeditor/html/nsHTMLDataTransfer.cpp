@@ -1267,6 +1267,7 @@ nsHTMLEditor::GetWrapper(nsIDOMNode * node, nsIDOMNode ** wrapperNode)
     *wrapperNode = parent;
   else
     *wrapperNode = node;
+  return NS_OK;
 }
 
 
