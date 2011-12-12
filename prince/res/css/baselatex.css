@@ -244,8 +244,8 @@ otfont {
 }
 
 /* show footnotes by default*/
-note[type="footnote"] {
-  display: inline;
+note[type="footnote"], node[type="footnote"][hide="false"] {
+  display: block;
   float: left;
   width: 100%;
   clear: right;
@@ -256,13 +256,6 @@ note[hide="true"] {
   display: none !important;
 } 
 
-/* display footnotes marked 'hide=false'*/
-note[hide="false"] {
-  display: inline;
-  float: left;
-  width: 100%;
-  clear: right;
-}
 
 /* display footnotes marked 'hide=false' even when 'hideFootnotes=true'
 *[hideFootnotes="true"] note[type="footnote"][hide="false"] {
@@ -315,6 +308,7 @@ notewrapper[type="footnote"]:before {
   vertical-align: super;
   font-size: small;
   color: red;
+  display: inline;
   -moz-user-modify: read-only;
   -moz-user-select: text;
 } 
