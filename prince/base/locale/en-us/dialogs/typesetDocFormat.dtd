@@ -10,7 +10,6 @@
 <!ENTITY docformatNotestab "Notes">
 <!ENTITY docformatAdvancedtab "Advanced">
 
-
 <!ENTITY docformatTwosided "Two-sided">
 <!ENTITY docformatTwoColumns "2 Columns">
 <!ENTITY docformatUnits	"Units">
@@ -61,7 +60,7 @@
 <!ENTITY camera.label	"Camera">
 <!ENTITY camera.accesskey	"C">
 <!ENTITY cross.label	"Cross">
-<!ENTITY cross.accesskey	"X">
+<!ENTITY cross.accesskey	"s">
 <!ENTITY frame.label	"Frame">
 <!ENTITY frame.accesskey	"F">
 					
@@ -79,12 +78,242 @@
 <!ENTITY pageonpaperupperleft.label "Upper left">
 <!ENTITY popupperleft.accesskey "U">
 
-<!ENTITY warning.label1 "The options in this dialog let you override choices made in the typesetting specifications of your document. If you are writing a paper or book to submit to a publisher, do not use this dialog. The publisher or editor will have to undo the changes you make.">
-<!ENTITY warning.label2 "On the other hand, if you are not planning to submit your manuscript to a publisher you may use this dialog to change the page layout, the fonts, and many other features of your document.">
-
 <!ENTITY bodytextarea.tooltip "Body text area">
 <!ENTITY maintextwidth.tooltip  "The width of the main text">
 <!ENTITY minseparationmarginnotes.tooltip "The minimum separation between margin notes">
 
 <!ENTITY leftindentheading.tooltip  "The left indent for the heading">
 <!ENTITY rightindentheading.tooltip  "The right indent for the heading">
+
+<!-- For General Tab -->
+
+<!ENTITY warning.label1 "The options in this dialog let you override choices made in the typesetting specifications of your document. If you are writing a paper or book to submit to a publisher, do not use this dialog. The publisher or editor will have to undo the changes you make.">
+<!ENTITY warning.label2 "On the other hand, if you are not planning to submit your manuscript to a publisher you may use this dialog to change the page layout, the fonts, and many other features of your document.">
+
+<!ENTITY GenDocOptions.label  "General Document Options">
+<!ENTITY TeXImplementation.label "TeX Implementation">
+<!ENTITY EnableDocStyleOverride.label  "Enable overriding the document style">
+<!ENTITY EnableDocStyleOverride.accesskey "E">
+<!ENTITY pdfLaTeXClassic.label  "pdfLaTeX -- the classic">
+<!ENTITY pdfLaTeXClassic.accesskey "p">
+<!ENTITY XeLaTeX.label "XeLaTeX -- a unicode ehancement of LaTeX for non-western languages, uses opentype fonts">
+<!ENTITY XeLaTeX.accesskey  "X">
+
+<!ENTITY BasicLayout.label  "Basic Layout">
+<!ENTITY BasicLayout.accesskey  "B">
+<!ENTITY PageOrientation.label  "Page Orientation">
+<!ENTITY Portrait.label "Portrait">
+<!ENTITY Landscape.label  "Landscape">
+<!ENTITY PaperSize.label  "Paper Size">
+<!-- Note that default.label is used in multiple places -->
+<!ENTITY default.label  "-default-">
+<!ENTITY LetterSize.label "8.5x11 in.">
+<!ENTITY A0Size.label "A0">
+<!ENTITY A1Size.label "A1">
+<!ENTITY A2Size.label "A2">
+<!ENTITY A3Size.label "A3">
+<!ENTITY A4Size.label "A4">
+<!ENTITY A5Size.label "A5">
+<!ENTITY A6Size.label "A6">
+<!ENTITY B0Size.label "B0">
+<!ENTITY B1Size.label "B1">
+<!ENTITY B2Size.label "B2">
+<!ENTITY B3Size.label "B3">
+<!ENTITY B4Size.label "B4">
+<!ENTITY B5Size.label "B5">
+<!ENTITY B6Size.label "B6">
+<!ENTITY LegalSize.label  "Legal">
+<!ENTITY ExecutiveSize.label  "Executive">
+<!-- one.label and two.label are used multiple places -->
+<!ENTITY Sides.label  "Sides">
+<!ENTITY one.label "One">
+<!ENTITY two.label  "Two">
+<!ENTITY Quality.label  "Quality">
+<!ENTITY Final.label  "Final">
+<!ENTITY Draft.label  "Draft">
+<!ENTITY Columns.label  "Columns">
+<!ENTITY TitlePage.label  "Title Page">
+<!ENTITY BodyTextFontSize.label "Body Text Font Size">
+<!ENTITY PtSize10.label "10 pt">
+<!ENTITY PtSize11.label "11 pt">
+<!ENTITY PtSize12.label "12 pt">
+<!ENTITY LeadingInPoints.label  "Leading in Points">
+<!ENTITY LeadingInPoints.accesskey  "l">
+<!ENTITY MathematicsDisplay.label  "Mathematics Display">
+<!ENTITY MathematicsDisplay.accesskey  "M">
+<!ENTITY EqnNumberPosition.label "Eqn Number Position">
+<!ENTITY OnTheRight.label  "On the right">
+<!ENTITY OnTheLeft.label "On the left">
+<!ENTITY DisplayedEqnPosition.label "Displayed Eqn Position">
+<!ENTITY DisplayedEqnCentered.label "Centered">
+<!ENTITY DisplayedEqnFlushLeft.label  "Flush left">
+<!ENTITY FrontBackMatter.label  "Front and Back Matter">
+<!ENTITY FrontBackMatter.accesskey  "f">
+<!ENTITY TableofContents.label  "Table of Contents">
+<!ENTITY ListofFigures.label  "List of Figures">
+<!ENTITY ListofTables.label "List of Tables">
+<!ENTITY Footnotes.label   "Footnotes">
+<!ENTITY Endnotes.label "Endnotes">
+<!ENTITY BibliographyStyle.label  "Bibliography Style">
+<!ENTITY Compressed.label "Compressed">
+<!ENTITY Open.label "Open">
+<!ENTITY DraftTools.label  "Draft Tools">
+<!ENTITY DraftTools.accesskey "d">
+<!ENTITY ShowKeys.label "Show Keys">
+<!ENTITY ShowIndexEntries.label "Show Index Entries">
+<!ENTITY LineSpacing.label  "Line Spacing">
+<!ENTITY OneHalf.label  "One and a half">
+
+<!-- For Page Layout Tab -->
+<!ENTITY EnableOverridePageLayout.label "Enable overriding page layout">
+<!ENTITY EnableOverridePageLayout.accesskey "E">
+<!ENTITY Orientation.label  "Orientation">
+<!ENTITY Orientation.accesskey  "O">
+<!ENTITY PageWidth.label  "Page width">
+<!ENTITY CropMarks.label  "Crop marks">
+<!ENTITY PageSizeHeight.label "Height">
+<!ENTITY PageSizeWidth.label  "width">
+<!-- For Font Tab -->
+<!ENTITY EnableOverridingFontSelection.label "Enable overriding font selection">
+<!ENTITY EnableOverridingFontSelection.accesskey  "E">
+<!ENTITY RefreshFontList.label "Refresh Font List">
+<!-- Note GoNative is used in multiple places -->
+<!ENTITY GoNative "Click to go native">
+<!ENTITY GoNativeMainDocMain.accesskey  "g">
+<!ENTITY GoNativeMainDocSansSerif.accesskey  "o">
+<!ENTITY GoNativeMainDocFixedWidth.accesskey  "n">
+<!ENTITY GoNativeAddlFontsExtra1.accesskey  "a">
+<!ENTITY GoNativeAddlFontsExtra2.accesskey  "t">
+<!ENTITY GoNativeAddlFontsExtra3.accesskey  "v">
+<!--  Note: OldStyleNums.label and Swash.label are used in multiple places -->
+<!ENTITY OldStyleNums.label  "Old style nums">
+<!ENTITY Swash.label  "Swash">
+<!ENTITY AdditionalFonts.label  "Additional Fonts">
+<!-- Note: InternalFontName.label is used in multiple places -->
+<!ENTITY InternalFontName.label  "Internal font name">
+<!ENTITY ExtraFont1.label "Extra font 1">
+<!ENTITY ExtraFont2.label "Extra font 2">
+<!ENTITY ExtraFont3.label "Extra font 3">
+
+<!-- For Sections Tab -->
+<!ENTITY SectionType.label  "Section Type">
+<!ENTITY NumberStyle.label  "Number Style">
+<!ENTITY Part.label "Part">
+<!ENTITY Chapter.label  "Chapter">
+<!ENTITY Section.label  "Section">
+<!ENTITY Subsection.label "Subsection">
+<!ENTITY Subsubsection.label  "Subsubsection">
+<!ENTITY Paragraph.label  "Paragraph">
+<!ENTITY Subparagraph.label "Subparagraph">
+<!ENTITY Default.label  "Default">
+<!ENTITY DontShow.label "Don't show">
+<!ENTITY Arabic.label "Arabic">
+<!ENTITY LowercaseRoman.label "Lowercase Roman">
+<!ENTITY UppercaseRoman.label "Uppercase Roman">
+<!ENTITY UppercaseLetters.label "Uppercase letters">
+<!ENTITY LowercaseLetters.label "Lowercase letters">
+<!ENTITY StartNewPage.label "Start New Page">
+<!ENTITY HeaderStyle.label  "Header Style">
+<!ENTITY Hang.label "Hang">
+<!ENTITY Runin.label  "Runin">
+<!ENTITY Display.label  "Display">
+<!ENTITY Block.label  "Block">
+<!ENTITY Wrap.label "Wrap">
+<!ENTITY LeftMargin.label "Left margin">
+<!ENTITY RightMargin.label  "Right margin">
+<!ENTITY Alignment.label  "Alignment">
+<!ENTITY AlignmentLeft.label  "Left">
+<!ENTITY AlignmentRight.label "Right">
+<!ENTITY AlignmentCenter.label  "Center">
+<!ENTITY text.label "text">
+<!ENTITY SetLeftIndentWidth.label "Set left indent to change width">
+<!ENTITY SetRightIndentWidth.label "Set right indent to change width">
+<!ENTITY RulesAboveHeading.label  "Click here to enter rules above the heading">
+<!ENTITY EnterFormatTemplate.label  "Click here to enter a format template">
+<!ENTITY EnterSectionText.tooltip "Click to enter section text">
+<!ENTITY SetTopMarginOrEnterText.tooltip  "Click to set top margin or to enter text">
+<!ENTITY RulesBelowHeading.label  "Click here to enter rules below the heading">
+<!ENTITY LeftHeadingIndent.label  "Left Heading Indent">
+<!ENTITY RightHeadingIndent.label "Right Heading Indent">
+<!ENTITY AddRule.label  "Add Rule">
+<!ENTITY AddVerticalSpace.label "Add Vertical Space">
+<!ENTITY RemoveTopRuleOrSpace.label "Remove Top Rule or Space">
+<!ENTITY InsertText.label "Insert Text">
+
+
+<!-- Language List -->
+<!ENTITY USenglish.label "US English">
+<!ENTITY UKenglish.label "UK English">
+<!ENTITY australian.label "Australian English">
+<!ENTITY canadian.label "Canadian English">
+<!ENTITY newzealand.label "New Zealand English">
+<!ENTITY austrian.label "Austrian">
+<!ENTITY naustrian.label "NAustrian">
+<!ENTITY german.label "German">
+<!ENTITY germanb.label "Germanb">
+<!ENTITY ngerman.label "NGerman"> 
+<!ENTITY monogreek.label "Monotonic Greek">
+<!ENTITY polygreek.label "Polytonic Greeks">
+<!ENTITY polutonikogreek.label "Polytonic Greek">
+<!ENTITY ancientgreek.label "Ancient Greek">
+<!ENTITY francais.label "Francais">
+<!ENTITY frenchb.label "Frenchb">
+<!ENTITY french.label "French">
+<!ENTITY acadian.label "Acadian">
+<!ENTITY albanian.label "Albanian">
+<!ENTITY afrikaans.label "Afrikaans">
+
+<!ENTITY bahasa.label "Bahasa">
+<!ENTITY indonesian.label "Indonesian">
+<!ENTITY indon.label "indon">
+<!ENTITY bahasai.label "Bahasa Indonesian">
+<!ENTITY bahasam.label "Bahasa Malaysia">
+<!ENTITY basque.label "Basque">
+<!ENTITY brazil.label "Brazil">
+<!ENTITY brazilian.label "Brazilian">
+<!ENTITY breton.label "Breton">
+<!ENTITY bulgarian.label "Bulgarian">
+<!ENTITY canadien.label "Canadien">
+<!ENTITY catalan.label "Catalan">
+<!ENTITY coptic.label "Coptic">
+<!ENTITY croatian.label "Croatian">
+<!ENTITY czech.label "Czech">
+<!ENTITY danish.label "Danish">
+<!ENTITY divehi.label "Divehi">
+<!ENTITY dutch.label "Dutch">
+<!ENTITY esperanto.label "Esperanto">
+<!ENTITY estonian.label "Estonian">
+<!ENTITY farsi.label "Farsi">
+<!ENTITY finnish.label "Finnish">
+<!ENTITY galician.label "Galician">
+<!ENTITY hebrew.label "Hebrew">
+<!ENTITY hungarian.label "Hungarian">
+<!ENTITY icelandic.label "Icelandic">
+<!ENTITY interlingua.label "Interlingua">
+<!ENTITY irish.label "Irish">
+<!ENTITY italian.label "Italian">
+<!ENTITY latin.label "Latin">
+<!ENTITY lowersorbian.label "Lower Sorbian">
+<!ENTITY magyar.label "Magyar">
+<!ENTITY malay.label "Malay">
+<!ENTITY meyalu.label "Meyalu">
+<!ENTITY norsk.label "Norsk">
+<!ENTITY samin.label "Samin">
+<!ENTITY nynorsk.label "Nynorsk">
+<!ENTITY polish.label "Polish">
+<!ENTITY portuges.label "Portuges">
+<!ENTITY portuguese.label "Portuguese">
+<!ENTITY romanian.label "Romanian">
+<!ENTITY russian.label "Russian">
+<!ENTITY scottish.label "Scottish">
+<!ENTITY serbian.label "Serbian">
+<!ENTITY slovak.label "Slovak">
+<!ENTITY slovene.label "Slovene">
+<!ENTITY spanish.label "Spanish">
+<!ENTITY swedish.label "Swedish">
+<!ENTITY syriac.label "Syriac">
+<!ENTITY turkish.label "Turkish">
+<!ENTITY ukrainian.label "Ukrainian">
+<!ENTITY uppersorbian.label "Upper Sorbian">
+<!ENTITY urdu.label "Urdu">
+<!ENTITY welsh.label "Welsh">

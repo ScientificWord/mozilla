@@ -1,4 +1,52 @@
 <!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
+<!ENTITY GeneralTab.label "General">
+<!ENTITY StartUpShellTab.label  "Start-up Shell">
+<!ENTITY GraphicsTab.label  "Graphics">
+<!ENTITY SaveIntervalSeconds.label "Save interval in seconds">
+<!ENTITY GenerateTeXonAutoSave.label  "Generate TeX on automatic save (for latexmk)">
+<!ENTITY Skin.label "Skin">
+<!ENTITY Modern.label "Modern">
+<!ENTITY Classic.label  "Classic">
+<!ENTITY EnableCharFindwithArrow.label  "Enable character find with arrow keys">
+<!ENTITY EnableCharFindwithArrow.accesskey  "c">
+<!ENTITY NumTapsforArrowAutorepeat.label  "Number of taps for arrow to autorepeat">
+<!ENTITY FileCompression.label  "File Compression">
+<!ENTITY SciCompression.label ".sci files">
+<!ENTITY None.label "None">
+<!ENTITY Fastest.label  "Fastest">
+<!ENTITY Middle.label "Middle">
+<!ENTITY Best.label "Best">
+<!ENTITY webfiles.label "web files">
+<!ENTITY ShellDirectories.label "Shell Directories">
+<!ENTITY Name.label "Name">
+<!ENTITY Date.label "Date">
+<!ENTITY Size.label "Size">
+<!ENTITY ShellFiles.label "Shell Files">
+<!ENTITY EditingParameters.label  "Editing Parameters">
+<!ENTITY Math.label "Math">
+<!ENTITY SpellChecking.label  "Spell Checking">
+<!ENTITY EnableRTSpellCheck.label "Enable realtime spell checking">
+<!ENTITY EnableRTSpellCheck.accesskey "E">
+<!ENTITY SourceEditing.label "Source Editing">
+<!ENTITY XMLSourceIndent.label  "XML source indent">
+<!ENTITY XMLSourceMaxLineLength.label  "XML source max line length">
+<!ENTITY XMLSourceMinLineLength.label "XML source min line length">
+<!ENTITY Spacebar.label "Spacebar">
+<!ENTITY AfterSpaceSwitchesToMath.label "After space switches to math">
+<!ENTITY CtrlT.label  "Ctrl + T">
+<!ENTITY CtrlM.label  "Ctrl + M">
+<!ENTITY ToggleMathText.label "Toggle math/text">
+<!ENTITY ForceText.label  "Force text">
+<!ENTITY ForceMath.label  "Force math">
+<!ENTITY Computation.label  "Computation">
+<!ENTITY DefaultBGColor.label "Default background color: ">
+<!ENTITY OrthogonalProjection.label  "Orthogonal projection">
+<!ENTITY KeepUpVector.label "Keep up vector">
+<!ENTITY InitialViewIntervals.label  "Initial View Intervals">
+<!ENTITY General.label  "General">
+<!ENTITY Expert.label "Expert">
+
+
 <!ENTITY miscellaneousOptions.label "Miscellaneous Options">
 <!ENTITY warnNonPortableFilenamesCheckbox.label "Warn about non-portable filenames">
 <!ENTITY warnNonPortableFilenamesCheckbox.accesskey "W">
@@ -33,6 +81,7 @@
 <!ENTITY tabbar.matrices     "Matrices">
 <!ENTITY tabbar.derivatives  "Derivatives">
 <!ENTITY tabbar.entities     "Entities">
+<!ENTITY tabbar.engine  "Engine">
 
 
 <!ENTITY scinotation.label        "Scientific Notation Output">
@@ -123,7 +172,7 @@
 <!ENTITY tabbar.layout            "Layout">
 <!ENTITY tabbar.axes              "Axes">
 <!ENTITY tabbar.items             "Items Plotted">
-<!ENTITY tabbar.labelling         "Labelling">
+<!ENTITY tabbar.labeling         "Labeling">
 <!ENTITY tabbar.view              "View">
 
 <!ENTITY command.delete           "Delete">
@@ -212,7 +261,7 @@
 
 <!ENTITY labelingkey.label          "Key">
 <!ENTITY labelingname.label         "Name">
-<!ENTITY labelingcaption.label      "Default caption location">
+<!ENTITY labelingcaption.label      "Default Caption Location">
 
 <!ENTITY labelingabove.label        "Above">
 <!ENTITY labelingbelow.label        "Below">
@@ -294,6 +343,8 @@
 
 <!ENTITY unspecified.label          "Not Specified">
 <!ENTITY AutomaticSaving.label  "Automatic Saving">
+<!ENTITY EnableSilentAutoSave.label "Enable silent automatic saving">
+<!ENTITY EnableSilentAutoSave.accesskey  "E">
 <!ENTITY CursorAdvanceChar.label  "Cursor Advance to Character">
 <!ENTITY DefaultSizeNewGraphics.label "Default Size for New Graphics">
 <!ENTITY DefaultSizeNewGraphicsWidth.label "Width:">
@@ -325,8 +376,8 @@
 <!ENTITY PreferredPDFViewer.label  "Preferred PDF viewer">
 <!ENTITY pdf.viewerUseCurrentPDFPlugin.label  "Use current PDF Plugin">
 <!ENTITY pdf.viewerUseDefaultProgramViewPDFFiles.label  "Use the default program for viewing PDF files">
-<!ENTITY AdvancedPreferences.label "Advanced preferences">
+<!ENTITY AdvancedPreferences.label "Advanced Preferences">
 <!ENTITY prefAdvanced.label "Advanced">
-<!ENTITY prefAdvancedPrefs.label  "Advanced preferences">
+<!ENTITY prefAdvancedPrefs.label  "Advanced Preferences">
 <!ENTITY prefAdvancedPlugins.label  "Plugins">
 <!ENTITY InstalledPlugins.label "Installed plugins">

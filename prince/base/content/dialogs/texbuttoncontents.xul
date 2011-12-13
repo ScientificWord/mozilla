@@ -41,7 +41,7 @@
     <textbox id="ord" type="number" value="100" style="width:5em;" observes="inPreamble" />
   </hbox>
   <vbox>
-    <label control="name" accesskey="N" value="&name.label;"/>
+    <label control="name" accesskey="&name.accesskey;" value="&name.label;"/>
     <textbox id="name" value=""/>
   </vbox>
   <hbox>
@@ -51,12 +51,12 @@
     </vbox>
     <spacer width="30px"/>
     <vbox>
-      <label control="opt" accesskey="O" value="Options"/>
+      <label control="opt" accesskey="&Options.accesskey;" value="&Options.label;"/>
       <textbox id="opt" value=""/>
     </vbox>
   </hbox>
   
-	        <label control="texbuttonTextbox" accesskey="&texbuttonTextbox..accesskey;" value="&texbuttonTextbox.label;"/>
+	        <label control="texbuttonTextbox" accesskey="&texbuttonTextbox.accesskey;" value="&texbuttonTextbox.label;"/>
         
     <textbox id="texbuttonTextbox" multiline="true" flex="1"  value=""/>
   
