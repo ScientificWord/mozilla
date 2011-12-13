@@ -1341,12 +1341,9 @@
                       <!-- JLF, July 15, 2011 test -->
         <toolbarbutton id ="symbolnleqslant" label="&nleqslant;" tooltiptext="&symbolnleqslant.tooltip;"              msivalue="&nleqslant;"
            observes="cmd_MSIsymbolCmd"/>  
-        <toolbarbutton id ="symbolngeqslant" tooltiptext="&symbolngeqslant.tooltip;"              msivalue="&ngeqslant;"
+        <toolbarbutton id ="symbolngeqslant" label="&ngeqslant;" tooltiptext="&symbolngeqslant.tooltip;"              msivalue="&ngeqslant;"
            observes="cmd_MSIsymbolCmd">   
-          <label>
-            <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>&ngeqslant;</mi></math>
-          </label>
-        </toolbarbutton>
+          </toolbarbutton>
         <toolbarbutton id ="symbollneq" label="&#x2A87;" tooltiptext="&symbollneq.tooltip;"              msivalue="&#x2A87;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgneq" label="&#x2A88;" tooltiptext="&symbolgneq.tooltip;"              msivalue="&#x2A88;"
