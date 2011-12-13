@@ -515,7 +515,6 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   nsAutoString strClassName;
   nsCOMPtr<nsIDOMElement> tagNameElement;   
   TagKey key;
-	msiTagHashtable.Clear();
   rv = dti->GetElementsByTagName(NS_LITERAL_STRING("tagclass"), getter_AddRefs(tagClasses));
   if (tagClasses) tagClasses->GetLength(&tagClassCount);
   if (tagClassCount > 0)
