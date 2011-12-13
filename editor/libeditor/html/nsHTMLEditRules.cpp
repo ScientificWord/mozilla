@@ -86,6 +86,12 @@
 
 #include "nsFrameSelection.h"
 #include "msiutils.h"
+#include "nsIDOM3Node.h"
+#include "nsIDOMSerializer.h"
+#include "msiISimpleComputeEngine.h"
+
+
+
 
 //const static char* kMOZEditorBogusNodeAttr="MOZ_EDITOR_BOGUS_NODE";
 //const static char* kMOZEditorBogusNodeValue="TRUE";
@@ -2971,6 +2977,163 @@ nsHTMLEditRules::DeleteNonTableElements(nsIDOMNode *aNode)
   return res;
 }
 
+
+PRInt32 CharLength(nsCOMPtr<nsIDOMNode> node)
+{
+    nsString str;
+    nsCOMPtr<nsIDOM3Node> m;
+    m = do_QueryInterface(node);
+    m->GetTextContent(str);
+    return str.Length();
+}
+
+
+
+
+PRInt32 FindCursorIndex(nsHTMLEditor* editor, 
+                        nsIDOMNode* node, 
+                        nsIDOMNode* caretNode, 
+                        PRInt32 caretOffset, 
+                        bool& done,
+                        PRInt32 level)
+{
+  printf("\nFindCursor\n");
+  editor->DumpNode(node, 2*level, true);
+
+  if (editor->IsTextNode(node)) {
+
+      if (caretNode == node) {
+          done = true;
+          printf("\nReturn caret offset %d", caretOffset);
+          return caretOffset;
+      } else {
+          printf("\nReturn char length %d", CharLength(node));
+          return CharLength(node); 
+      }
+
+  }	else {
+      
+      nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+      PRUint32 dontcare(0);
+      PRUint32 mathmltype;
+
+      msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+      if (editingBC) {
+        mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+      }
+
+      nsCOMPtr<nsIDOMNodeList> children;
+      PRUint32 number;
+      nsCOMPtr<nsIDOMNode> child;
+
+      node->GetChildNodes(getter_AddRefs(children));
+      msiUtils::GetNumberofChildren(node, number);
+    
+      //int lastChildIndex = number;
+
+      if (node == caretNode){
+         number = caretOffset;
+      }
+
+      int count = 0;
+
+      for (int i = 0; i < number; ++i) {
+        msiUtils::GetChildNode(node, i, child);
+        if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
+          count += 1;  // to distinguish numerator from denominator
+        }
+        count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
+        if (done)
+          break;
+      }
+      printf("\nReturn sum %d", count);
+      return count;
+
+  }
+      
+}
+
+
+nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode) {
+  nsCOMPtr<nsIDOMSerializer> ds = do_CreateInstance(NS_XMLSERIALIZER_CONTRACTID);
+  nsString text;
+  nsresult rv = ds->SerializeToString(mathNode, text);
+  return text;
+}
+
+
+void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset)
+{
+     printf("\nFindNodeAndOffset of char %d in node\n", charCount);
+     editor->DumpNode(node, 0, true);
+
+     if (editor->IsTextNode(node)) {
+         PRInt32 len = CharLength(node);
+
+         if (len >= charCount){
+           theNode = node;
+           theOffset = charCount;
+           charCount = 0;
+     	     printf("\nFound\n");
+         } else {
+           charCount -= len;
+         }
+
+     }  else {
+         theNode = node;
+         theOffset = 0;
+
+         nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+         PRUint32 dontcare(0);
+         PRUint32 mathmltype;
+
+         msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+         if (editingBC) {
+           mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+         }
+           
+         nsCOMPtr<nsIDOMNodeList> children;
+         PRUint32 number;
+         nsCOMPtr<nsIDOMNode> child;
+
+         node->GetChildNodes(getter_AddRefs(children));
+         msiUtils::GetNumberofChildren(node, number);
+
+         for (PRUint32 i = 0; i < number; ++i) {
+            printf("\nGet child %d\n", i);
+            msiUtils::GetChildNode(node, i, child);
+
+            //printf("\nCharLength is %d\n", CharLength(child));
+            if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
+              charCount -= 1;  // to distinguish numerator from denominator
+            }
+            if (editor->IsTextNode(child)){
+              charCount -= CharLength(child);
+              theOffset += 1;
+            } else {
+              FindCursorNodeAndOffset(editor, child, charCount, theNode, theOffset);
+            }
+            if (charCount <= 0)
+              break;
+      }
+    }
+}
+
+
+
+nsCOMPtr<msiISimpleComputeEngine> 
+GetEngine() {
+  nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
+  nsCOMPtr<nsILocalFile> iniFile;
+  fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(iniFile));
+  iniFile->Append(NS_LITERAL_STRING("mupInstall.gmr"));
+
+  nsCOMPtr<msiISimpleComputeEngine> engine(do_GetService("@mackichan.com/simplecomputeengine;2"));	
+  engine->Startup(iniFile);
+  return engine;
+}
+
+
 nsresult
 nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection, 
                                     nsIEditor::EDirection aDir, 
@@ -2990,7 +3153,65 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
 
-  if (mathNode){
+  if (mathNode) {
+     bool b = false;
+     int idx = FindCursorIndex(mHTMLEditor, mathNode, startNode, startOffset, b, 0);
+     printf("\nidx is %d\n", idx);
+  
+     nsString text = SerializeMathNode(mathNode);
+     nsCOMPtr<msiISimpleComputeEngine>  pEngine = GetEngine();
+
+     PRUnichar* result;
+     const PRUnichar* inp;
+     text.GetData(&inp);
+
+     printf("\nSending for cleanup: %ls\n" , inp);
+     pEngine->Perform(inp, 152, &result); // Cleanup function
+     printf("\nBack from cleanup: %ls\n", result);
+
+     nsString resString(result);
+     nsCOMPtr<nsIDOMElement> mathElement;
+     mathElement = do_QueryInterface(mathNode);
+     mHTMLEditor->DeleteNode(mathElement);
+
+     nsCOMPtr<nsIDOMNode> parentOfMath;
+     nsCOMPtr<nsIDOMNode> newMath;
+     PRInt32 mathOffset;
+
+     res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(parentOfMath), &mathOffset);
+  
+     mHTMLEditor -> InsertHTML(resString);
+
+     msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
+ 
+     printf("\nThe New Math\n ");
+     mHTMLEditor->DumpNode(newMath, 0, true);
+     printf("\nCursor idx = %d\n", idx);
+
+     if (newMath != NULL){
+ 
+
+        //DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
+  
+        nsCOMPtr<nsIDOMNode> theNode = 0;
+        PRInt32 theOffset = 0;
+        FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset);
+
+        printf("\nThe indicated node\n ");
+        mHTMLEditor->DumpNode(theNode, 0, true);
+        printf("\nOffset = %d\n", theOffset);
+
+        nsIDOMRange* range;
+        aSelection->GetRangeAt(0, &range);
+
+
+        range->SetStart(theNode, theOffset);
+        aSelection->CollapseToStart();
+     
+        //mHTMLEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+
+        //DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
+     }
      return res;
   }
 
