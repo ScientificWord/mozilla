@@ -226,6 +226,8 @@
 <!ENTITY AlignmentRight.label "Right">
 <!ENTITY AlignmentCenter.label  "Center">
 <!ENTITY text.label "text">
+<!ENTITY SetLeftIndentWidth.label "Set left indent to change width">
+<!ENTITY SetRightIndentWidth.label "Set right indent to change width">
 <!ENTITY RulesAboveHeading.label  "Click here to enter rules above the heading">
 <!ENTITY EnterFormatTemplate.label  "Click here to enter a format template">
 <!ENTITY EnterSectionText.tooltip "Click to enter section text">

@@ -22,7 +22,7 @@
       <broadcaster id="notcenteralignment" hidden="false"/>
       <broadcaster id="toporbottommargin" disabled="true"/>
       <broadcaster id="notmargin" disabled="true"/>
-    </broadcasterset>  
+    </broadcasterset>   
 
      <hbox>
        <vbox>
@@ -54,6 +54,7 @@
          </menulist>
        </vbox>
      </hbox>
+ 
     <separator class="groove"/>
     <!-- JLF to Barry -->
       <rawlabel id="rawlabel" label = "Enable overriding ## header formats"/>
@@ -109,7 +110,7 @@
       </vbox>
       <vbox flex="1"/>
     </hbox>
-    <separator class="groove"/>
+     <separator class="groove"/>
     <spacer/>
     <hbox style="height:10px"/>
     <vbox>
@@ -120,7 +121,8 @@
 					  <vbox style="width: 40px"/>
 	          <vbox role="textarea" style="height:60px; width:375px" observes="atpagetop">
 	            <vbox flex="1"/>
-	            <hbox><hbox flex="1"/><label>&text.label;</label><hbox flex="1"/></hbox>
+	            <hbox><hbox flex="1"/><label>&text.label;</label>
+	            <hbox flex="1"/></hbox>
 	            <vbox flex="1"/>
 	          </vbox>
 					  <vbox style="width: 40px"/>
@@ -129,10 +131,10 @@
 	          <hbox id="sectleftmargin" width="40px"/>
 	          <hbox id="sectionparts" pack="start" style="overflow:visible;">
 	            <vbox id="sectleftheadingmargin" role="sectionmargin"  observes="leftalignment"
-	              tooltiptext="Set left indent to change width" width="30px"
+	              tooltiptext="&SetLeftIndentWidth.label;" width="30px"
 	              onclick="toggleselection(this);document.getElementById('tbsectleftheadingmargin').focus();"/>
 	            <vbox style="overflow:visible;">
-	              <vbox id="topmargin" pack="start" dir="rtl" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
+	              <vbox id="topmargin" pack="start" dir="rtl" role="sectionlayer" tooltiptext="&SetTopMarginOrEnterText.tooltip;"
 	                style="height:20px; width:200px;" onclick="toggleselection(this);">   
                 <deck id="tso_toprules" selectedIndex="0">
                   <hbox>
@@ -154,13 +156,13 @@
                     <label class="gray_instruction" value="&EnterFormatTemplate.label;"/>
                   </hbox>
                   <vbox id="sectiontextareacontainer"  style="overflow: hidden; width:200px; min-height:20px"  >
-		                <iframe id="sectiontextarea" tooltiptext="&EnterSectinText.tooltip;"
+		                <iframe id="sectiontextarea" tooltiptext="&EnterSectionText.tooltip;"
 		                  onclick="toggleselection(this);"	
 		                  src="resource://app/shells/StdDialogShell.xhtml"> 
 		                </iframe> 
 		              </vbox>
                 </deck>                                                                                                                         
-	              <!--editor  editortype="html" type="content" width="200" height="40"  id="sectiontitle-frame"  context="msiEditorContentContext"
+              <!--editor  editortype="html" type="content" width="200" height="40"  id="sectiontitle-frame"  context="msiEditorContentContext"
 	                style="min-height:20px; min-width:200px;" /-->
 	              <vbox id="bottommargin" role="sectionlayer" pack="start" tooltiptext="&SetTopMarginOrEnterText.tooltip;"
 	                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">
@@ -181,7 +183,7 @@
 	              </vbox>
 	            </vbox>  
 	            <vbox id="sectrightheadingmargin" width="30px" role="sectionmargin"	 msicollapsed="true"
-	              tooltiptext="Set right indent to change width" onclick="toggleselection(this);document.getElementById('tbsectrightheadingmargin').focus();" observes="rightalignment"/>
+	              tooltiptext="&SetRightIndentWidth.label;" onclick="toggleselection(this);document.getElementById('tbsectrightheadingmargin').focus();" observes="rightalignment"/>
 	          </hbox>
 	          <hbox id="sectrightmargin" width="40px"  />
 					</hbox>
