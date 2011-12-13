@@ -16,11 +16,11 @@
 
 
 void DebExamineNode(nsIDOMNode * aNode);
-PRInt32 FindCursorIndex(nsHTMLEditor* editor, nsIDOMNode* node, nsIDOMNode* caretNode, PRInt32 caretOffset, bool& done, PRInt32 level);
-void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset);
+//PRInt32 FindCursorIndex(nsHTMLEditor* editor, nsIDOMNode* node, nsIDOMNode* caretNode, PRInt32 caretOffset, bool& done, PRInt32 level);
+//void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset);
 
-nsCOMPtr<msiISimpleComputeEngine> GetEngine();
-nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode);
+//nsCOMPtr<msiISimpleComputeEngine> GetEngine();
+//nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode);
 
 PRBool bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection); 
 
@@ -179,7 +179,7 @@ void DebDisplaySelection(const char* str, nsISelection *aSelection, msiEditor* e
 
 }
 
-
+/*
 
 nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection, 
                                  nsIEditor::EDirection aAction, 
@@ -426,7 +426,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   return res;
 }
 
-
+*/
 
 PRBool
 bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection) 
@@ -456,7 +456,7 @@ bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection)
    return PR_FALSE;
 }
 
-
+/*
 nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode) {
   nsCOMPtr<nsIDOMSerializer> ds = do_CreateInstance(NS_XMLSERIALIZER_CONTRACTID);
 //  NS_ENSURE_STATE(ds);
@@ -613,7 +613,7 @@ void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& ch
     }
 }
           
-        
+*/        
 
 
 //ljh TODO -- determine what if any functionality is needed for these two functions.
