@@ -116,21 +116,21 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   //DumpSelection(aSelection);
   nsresult res;
 
-  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
-  if (NS_FAILED(res)) return res;
-  if (!startNode) return NS_ERROR_FAILURE;
-  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
-  if (NS_FAILED(res)) return res;
-  if (!endNode) return NS_ERROR_FAILURE;
+//   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+//   if (NS_FAILED(res)) return res;
+//   if (!startNode) return NS_ERROR_FAILURE;
+//   res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+//   if (NS_FAILED(res)) return res;
+//   if (!endNode) return NS_ERROR_FAILURE;
 
-  mMSIEditor->GetMathParent(startNode, startMathNode);
-  mMSIEditor->GetMathParent(endNode, endMathNode);
-  endsInMath = startMathNode || endMathNode;
+//   mMSIEditor->GetMathParent(startNode, startMathNode);
+//   mMSIEditor->GetMathParent(endNode, endMathNode);
+//   endsInMath = startMathNode || endMathNode;
 
-  if (endsInMath){
-      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-      res = WillDeleteMathSelection(aSelection, aAction, aCancel, aHandled);
-  }
+//   if (endsInMath){
+//       mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+//       res = WillDeleteMathSelection(aSelection, aAction, aCancel, aHandled);
+//   }
 	nsCOMPtr<nsIDOMElement> cell;
 	res = mHTMLEditor->GetFirstSelectedCell(nsnull, getter_AddRefs(cell));
 	if (NS_SUCCEEDED(res) && cell)
