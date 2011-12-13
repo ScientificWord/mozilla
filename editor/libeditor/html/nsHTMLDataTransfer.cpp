@@ -1196,7 +1196,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       nsCOMPtr<nsIDOMNode> wrapperNode;
       res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));
        res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
-         &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
+         &outOffset, PR_FALSE, &outLeftNode, &outRightNode); 
     }
     FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
     FixMathematics(outRightNode, PR_FALSE, PR_FALSE);
@@ -1267,6 +1267,7 @@ nsHTMLEditor::GetWrapper(nsIDOMNode * node, nsIDOMNode ** wrapperNode)
     *wrapperNode = parent;
   else
     *wrapperNode = node;
+  return NS_OK;
 }
 
 
