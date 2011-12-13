@@ -220,8 +220,8 @@ typedef struct tagUSERPREFS {
 typedef struct tagTILE { // Struct to carry translated fragments
   tagTILE*   	next;	    //  from "Translator" to "PageManager".
   tagTILE*   	prev;	    //  Used to facilitate line breaking
-  U16           ilk;	    //  and pagination of output.
-  U8*           zval;
+  U16         ilk;	    //  and pagination of output.
+  U8*         zval;
   LOG_MSG_REC*  msg_list;
 } TILE;
 
@@ -363,7 +363,7 @@ TCI_BOOL  FUOpenDumpFile();
 void	  FUCloseDumpFile();
 void 	  DumpLine( const char* line );
 
-void 	  JBMLine( char* line );
+void 	  JBMLine( const char* line );
 
 #define CONTEXT_NOM_LIM     16
 
