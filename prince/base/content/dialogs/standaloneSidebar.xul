@@ -41,7 +41,7 @@
 <?xml-stylesheet href="chrome://prince/skin/standaloneSidebar.css" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/standaloneSidebar.dtd">
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 11/30/2011-->
 <window
   id     = "standaloneSidebar"
   windowtype = "SWP:standaloneSidebar"
