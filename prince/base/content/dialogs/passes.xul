@@ -20,7 +20,7 @@
     buttonlabelclose="&close.label;"
     buttonlabelaccept="&continue.label;"
     onload="Init();"
-    width="400"
+    width="300"
     height="220"
     screenX="40"
     screenY="40"
