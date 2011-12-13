@@ -85,6 +85,7 @@
 #include "nsUnicharUtils.h"
 
 #include "nsFrameSelection.h"
+#include "msiutils.h"
 
 //const static char* kMOZEditorBogusNodeAttr="MOZ_EDITOR_BOGUS_NODE";
 //const static char* kMOZEditorBogusNodeValue="TRUE";
@@ -2984,6 +2985,15 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
   
+  // See if we're in math
+  nsCOMPtr<nsIDOMNode> mathNode;
+  res = msiUtils::GetMathParent(startNode, mathNode);
+  if (NS_FAILED(res)) return res;
+
+  if (mathNode){
+     return res;
+  }
+
   // find any enclosing mailcite
   nsCOMPtr<nsIDOMNode> citeNode;
   res = GetTopEnclosingMailCite(startNode, address_of(citeNode), 
