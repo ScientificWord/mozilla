@@ -111,6 +111,7 @@ bool InitializeMML( const char* datapath,
                  const char* name_space,
                  const char** upref_zstrs )
 {
+  //JBMLine("InitializeMML=========================\n");
   memset( &userprefs, 0, sizeof(USERPREFS) );
 
   userprefs.output_mode = 4;  // bare MathML
@@ -153,21 +154,21 @@ bool InitializeMML( const char* datapath,
 
   tree_generator   =  new TreeGenerator( 1, NBgmr.c_str(), MMLgmr.c_str(), MMLgmr.c_str() );
 
-  tree_generator->Reset( &userprefs,NULL,NULL );
+  tree_generator->Reset( &userprefs, NULL, NULL );
 
   int do_xml  =  1;
   U16 entity_mode =  1;
   U16 result;
-  tree_generator->OnStartNewFile( do_xml,entity_mode,result,upref_zstrs,0 );
+  tree_generator->OnStartNewFile( do_xml, entity_mode, result, upref_zstrs, 0 );
 
   if ( name_space ) {
     if ( strlen(name_space) < 32 )
-      strcpy( (char*)n_space,name_space );
+      strcpy( (char*)n_space, name_space );
     else
       TCI_ASSERT(0);
   } else
     n_space[0]  =  0;
-  
+  //JBMLine("End InitializeMML\n");
   return true;
 }
 
@@ -217,12 +218,12 @@ bool Version(U16 major, U16 minor)
 bool ConvertInline(const char* latex,
                    LPRENDERTILE renderfunc,
                    int start_indent ) {
-
+  //JBMLine("ConvertInline\n");
   MMLFilter* filter =  TCI_NEW( MMLFilter(tree_generator) );
   filter->FInitialize( &userprefs, log, (char*)n_space, start_indent, NULL );
 
   U16 parse_result  =  filter->TranslateBuffer( latex, renderfunc );
-  
+  //JBMLine("End ConvertInline\n");
   delete filter;
   return true;
 }
@@ -234,11 +235,12 @@ bool ConvertDisplay(const char* latex,
                     LPRENDERTILE renderfunc,
                     int start_indent ) {
 
+  //JBMLine("ConvertDisplay\n");
   MMLFilter* filter =  TCI_NEW( MMLFilter(tree_generator) );
   filter->FInitialize( &userprefs, log, (char*)n_space, start_indent, NULL );
 
   U16 parse_result  =  filter->TranslateBuffer( latex, renderfunc );
-  
+  //JBMLine("End ConvertDisplay\n");
   delete filter;
   return true;
 }
