@@ -88,10 +88,10 @@
         <label value="&label.units;" />
         <menulist id="otfont.units" style="width:5em">
           <menupopup>
-            <menuitem id="otfont.pt" label="pt" value="pt" />
-            <menuitem id="otfont.cm" label="cm" value="cm" />
-            <menuitem id="otfont.mm" label="mm" value="mm" />
-            <menuitem id="otfont.inch" label="in" value="in" />
+            <menuitem id="otfont.pt" label="&pt.label;" value="pt" />
+            <menuitem id="otfont.cm" label="&cm.label;" value="cm" />
+            <menuitem id="otfont.mm" label="&mm.label;" value="mm" />
+            <menuitem id="otfont.inch" label="&in.label;" value="in" />
           </menupopup>
         </menulist>
         <hbox flex="1" />
@@ -113,7 +113,7 @@
     <tabpanel orient="vertical" align="center">
       <groupbox>
         <caption label="&tab.borders;"/>
-        <description label="Units: pt"/>
+        <description label="&label.units;"/>
         <hbox align="center">
           <label value="&width.label;" accesskey="&width.accesskey;" control="borderwidth" />
           <spacer flex="1" />

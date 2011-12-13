@@ -20,5 +20,8 @@
 <!ENTITY Ordinal.label  "Priority">
 <!ENTITY Ordinal.accesskey  "r">
 <!ENTITY texbuttonTextbox.label "Enter LaTeX commands here:">
-<!ENTITY texbuttonTextbox..accesskey  "L">
+<!ENTITY texbuttonTextbox.accesskey  "L">
+<!ENTITY Options.label "Options">
+<!ENTITY Options.accesskey  "O">
+
 
