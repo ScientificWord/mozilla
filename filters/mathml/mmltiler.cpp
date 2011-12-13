@@ -117,8 +117,14 @@ and generates the "output tiles" from this parse tree.
 processing TNODEs in one list may make recursive calls to ListToTiles.
 */
                 
-TILE* MMLTiler::MMLtreeToTiles( TNODE* parse_tree,U16 lim ) {
-
+TILE* MMLTiler::MMLtreeToTiles( TNODE* parse_tree, U16 lim ) {
+  //JBMLine("MMLtreeToTiles\n");
+  //char buf[50];
+  //sprintf(buf, "this = %x\n", this);
+  //JBMLine(buf);
+  //sprintf(buf, "d_mml_grammar = %x\n", d_mml_grammar);
+  //JBMLine(buf);
+  
   TILE* rv  =  NULL;
 
   TCI_BOOL omit =  FALSE;
@@ -135,17 +141,20 @@ TILE* MMLTiler::MMLtreeToTiles( TNODE* parse_tree,U16 lim ) {
 // The initial "context" for translation may be in question
 //  not in this case - always MATH
 
-
+  //JBMLine("\nMid MMLtreeToTiles\n");
   if ( parse_tree && !omit ) {
     U8 zcontext[ CONTEXT_NOM_LIM ];
     d_mml_grammar->GetDefaultContext( zcontext );
 
     if ( zcontext[0] )  PushContext( zcontext );
       U16 error_code;
+      //JBMLine("\nMid 2 MMLtreeToTiles\n");
+
       rv  =  ListToTiles( parse_tree,lim,error_code );
+      //JBMLine("\nMid 3 MMLtreeToTiles\n");
     if ( zcontext[0] )  PopContext();
   }
-
+  //JBMLine("End MMLtreeToTiles\n");
   return rv;
 }
 
@@ -160,8 +169,7 @@ TILE* MMLTiler::MMLtreeToTiles( TNODE* parse_tree,U16 lim ) {
 TILE* MMLTiler::ListToTiles( TNODE* mml_obj_list,U16 lim,
                                           U16& error_code ) {
 
-//DumpTList( mml_obj_list,NULL,0,0,TOKENIZER_MML );
-
+  //DumpTList( mml_obj_list,NULL,0,0,TOKENIZER_MML );
   TILE* rv  =  NULL;    // variables used to build returned list
   TILE* tail;
   TILE* new_frag;
@@ -217,7 +225,7 @@ TILE* MMLTiler::ListToTiles( TNODE* mml_obj_list,U16 lim,
         break;
 
         case 3  : {   //Symbol
-
+          
 /*
 mi<uID3.201.1>
 mn<uID3.202.1>
@@ -239,11 +247,11 @@ or an entity
               new_frag  =  EntityToTiles( rover,dest_zname,
                                             error_code );
             }
-
           } else {
             TCI_ASSERT(0);
         // TeX symbol not defined in MathML
           }
+          //JBMLine("End Case 3\n");
 
         }
         break;
@@ -321,7 +329,6 @@ or an entity
       rover =  rover->next;
 
   }     // while loop thru first level objects in "mml_obj_list"
-
 
   return rv;
 }
@@ -806,7 +813,6 @@ TILE* MMLTiler::BytesToTile( U8* zbytes,U16 zln,
 TILE* MMLTiler::AtomicElementToTiles( TNODE* mml_atom_elem_node,
                         U8* dest_zname,
                         U16& error_code ) {
-
   TILE* rv  =  NULL;
 
   U8 zheader[1024];
@@ -815,22 +821,26 @@ TILE* MMLTiler::AtomicElementToTiles( TNODE* mml_atom_elem_node,
   strcat( (char*)zheader,(char*)dest_zname );
   AttrsToHeader( mml_atom_elem_node->attrib_list,(U8*)zheader );
 
+  
+
   if ( mml_atom_elem_node->var_value ) {
-    strcat( (char*)zheader,">" );
-    rv  =  MakeTILE( TT_A_ELEM_HEADER,zheader );
+    strcat( (char*)zheader, ">" );
+    rv  =  MakeTILE( TT_A_ELEM_HEADER, zheader );
+    //JBMLine("AtomicElementToTiles 2\n");
 
     U8* chdata  =  mml_atom_elem_node->var_value;
     if ( use_unicodes && mml_atom_elem_node->var_value2 )
     chdata  =  mml_atom_elem_node->var_value2;
-
+    
     TILE* body  =  MakeTILE( TT_ATOM_BODY,chdata );
-
+    //JBMLine("AtomicElementToTiles 3\n");
     U8 zender[32];
     strcpy( (char*)zender,"</" );
     strcat( (char*)zender,(char*)n_space );
     strcat( (char*)zender,(char*)dest_zname );
     strcat( (char*)zender,">" );
     TILE* ender =  MakeTILE( TT_A_ELEM_ENDER,zender );
+    
 
     if ( body ) {
       rv->next    =  body;
@@ -850,7 +860,6 @@ TILE* MMLTiler::AtomicElementToTiles( TNODE* mml_atom_elem_node,
 
   rv->msg_list  =  mml_atom_elem_node->msg_list;
   mml_atom_elem_node->msg_list  =  NULL;
-
   return rv;
 }
 

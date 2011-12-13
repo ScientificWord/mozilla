@@ -65,7 +65,7 @@ void FUCloseDumpFile() {
 void DumpLine( const char* line ) {    // DIAGNOSTIC
 
   if ( dumpfile ) {
-    fputs( line,dumpfile );
+    fputs( line, dumpfile );
     fflush( dumpfile );
   }
 }
@@ -73,15 +73,15 @@ void DumpLine( const char* line ) {    // DIAGNOSTIC
 
 // Global utility functions
 
-void JBMLine( char* line ) {   // DIAGNOSTIC
+void JBMLine( const char* line ) {   // DIAGNOSTIC
 
-#ifdef TESTING
+//#ifdef TESTING
   FILE* jbmfile =  fopen( "\\jbm","a" );
   if ( jbmfile ) {
-    fputs( line,jbmfile );
+    fputs( line, jbmfile );
     fclose( jbmfile );
   }
-#endif
+//#endif
 }
 
 
@@ -591,9 +591,14 @@ void DisposeTILEs( TILE* tiles ) {
 
 // Utility to make a tile
 
-TILE* MakeTILE( U16 ilk,U8* zval ) {
+TILE* MakeTILE( U16 ilk, U8* zval ) {
+  //JBMLine("MakeTILE 1\n");
+  //JBMLine((char*)zval);
 
-  TILE* rv   =  (TILE*)TCI_NEW( char[ sizeof(TILE) ] );
+  TILE* rv = new TILE;
+  //JBMLine("\nMakeTILE 2\n");
+
+
   rv->next      =  (TILE*)NULL;
   rv->prev      =  (TILE*)NULL;
   rv->ilk       =  ilk;
@@ -606,7 +611,6 @@ TILE* MakeTILE( U16 ilk,U8* zval ) {
     rv->zval  =  tmp;
   } else
     rv->zval  =  NULL;
-
   return rv;
 }
 
