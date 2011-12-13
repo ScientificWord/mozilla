@@ -18,6 +18,7 @@
             </beamerframe>
           </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <nexttag>bodyText</nexttag>
 				</tag>
 			</tags>
 		</tagclass>
@@ -25,16 +26,18 @@
 			<tagclassname>paratag</tagclassname>
 			<tags>
 				<tag nm="frametitle">
-					<nexttag>bodyText</nexttag>
+					<nexttag>framesubtitle</nexttag>
 					<description>Beamer frame title</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>framesubtitle</nextafteremptyblock>
           <initialcontents>
-            <bodyText>
-              <defaulttitletag/>
-              <cursor/>
-              <br/>
-            </bodyText>
+            <frametitle>
+              <bodyText>
+                <defaulttitletag/>
+                <cursor/>
+                <br/>
+              </bodyText>
+          </frametitle>
           </initialcontents>
 				</tag>
 				<tag nm="framesubtitle">
@@ -44,7 +47,6 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <framesubtitle>
-              <defaulttitletag/>
               <cursor/>
               <br/>
             </framesubtitle>
@@ -57,28 +59,28 @@
 			<tags>
 				<tag nm="stepbulletlist" hidden="1">
           <description>Step bullet list</description>
-					<nexttag>#text</nexttag>
+					<nexttag>none</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
 			    <contains>stepbulletListItem</contains>
         </tag>
 				<tag nm="stepnumberedlist" hidden="1">
           <description>Step numbered list</description>
-					<nexttag>#text</nexttag>
+					<nexttag>none</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
 			    <contains>stepnumberedListItem</contains>
         </tag>
 				<tag nm="alertstepbulletlist" hidden="1">
           <description>Alert step bullet list</description>
-					<nexttag>#text</nexttag>
+					<nexttag>none</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
 			    <contains>alertstepbulletListItem</contains>
         </tag>
 				<tag nm="alertstepnumberedlist" hidden="1">
           <description>Alert step numbered list</description>
-					<nexttag>#text</nexttag>
+					<nexttag>none</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
 			    <contains>alertstepnumberedListItem</contains>
@@ -95,7 +97,6 @@
           <initialcontents>
             <stepbulletListItem>
               <bodyText>
-                <defaulttitletag/>
                 <cursor/>
                 <br/>
               </bodyText>
@@ -111,7 +112,6 @@
           <initialcontents> 
             <stepnumberedListItem>
               <bodyText>
-                <defaulttitletag/>
                 <cursor/>
                 <br/>
               </bodyText>
@@ -127,7 +127,6 @@
           <initialcontents> 
             <alertstepbulletListItem>
               <bodyText>
-                <defaulttitletag/>
                 <cursor/>
                 <br/>
               </bodyText>

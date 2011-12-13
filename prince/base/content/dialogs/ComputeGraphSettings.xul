@@ -72,7 +72,7 @@
   <tabbox id="outer-box" flex="1">
     <tabs class="tabs-top">
 	  <tab label="&tabbar.layout;"      selected="0" />
-	  <tab label="&tabbar.labelling;"   selected="0" />
+	  <tab label="&tabbar.labeling;"   selected="0" />
 	  <tab label="&tabbar.items;"       selected="1" />
 	  <tab label="&tabbar.axes;"        selected="0" />
 	  <tab label="&tabbar.view;"        selected="0" />
@@ -91,14 +91,14 @@
             </columns>
             <rows>
               <row>
-                <label value="Width:"/> 
+                <label value="&Width.label;"/> 
                 <textbox id="Width" type="number" style="width: 5em;" preference="swp.graph.HSize"/>
-                <label value="pixels"/>
+                <label value="&Pixels.label;"/>
               </row>
               <row>
-                <label value="Height:"/> 
+                <label value="&Height.label;"/> 
                 <textbox id="Height" type="number" style="width: 5em;" preference="swp.graph.VSize"/>
-                <label value="pixels"/>
+                <label value="&Pixels.label;"/>
               </row>
             </rows>
           </grid>
@@ -108,28 +108,28 @@
           <radiogroup id="graphPlacement" preference="swp.graph.Placement">
           <hbox flex="1">
             <vbox>
-              <radio id="inline" value="inlne" label="In line" name="Placement" oncommand="checkEnableFloating();"/>
+              <radio id="inline" value="inlne" label="&Inline.label;" name="Placement" oncommand="checkEnableFloating();"/>
             </vbox>
             <vbox>
-              <radio id="display" value="display" label="Displayed" name="Placement" oncommand="checkEnableFloating();"/>
+              <radio id="display" value="display" label="&Displayed.label;" name="Placement" oncommand="checkEnableFloating();"/>
             </vbox>
             <vbox>
-              <radio id="float" value="float" label="Floating" name="Placement" oncommand="checkEnableFloating();"/>
+              <radio id="float" value="float" label="&Floating.label;" name="Placement" oncommand="checkEnableFloating();"/>
               <vbox>
-                <checkbox id="placeForceHereCheck" label="Force here" />
-                <checkbox id="placeHereCheck" label="Here" />
-                <checkbox id="placeFloatsCheck" label="On a page of floats"/>
-                <checkbox id="placeTopCheck" label="Top of page" />
-                <checkbox id="placeBottomCheck" label="Bottom of page" />
+                <checkbox id="placeForceHereCheck" label="&ForceHere.label;" />
+                <checkbox id="placeHereCheck" label="&Here.label;" />
+                <checkbox id="placeFloatsCheck" label="&OnPageOfFloats.label;"/>
+                <checkbox id="placeTopCheck" label="&TopOfPage.label;" />
+                <checkbox id="placeBottomCheck" label="&BottomOfPage.label;" />
               </vbox>
             </vbox>
             <vbox>
               <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
-                <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
-                <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
-                <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
-                <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
-                <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+                <radio id="hereLeftRadio" label="&Left.label;" value="left" observes="herePlacement" />
+                <radio id="hereRightRadio" label="&Right.label;" value="right" observes="herePlacement"/>
+                <radio id="hereInsideRadio" label="&Inside.label;" value="inside" observes="herePlacement" />
+                <radio id="hereOutsideRadio" label="&Outside.label;" value="outside" observes="herePlacement" />
+                <radio id="hereFullWidthRadio" label="&FullWidth.label;" value="full" observes="herePlacement" />
               </radiogroup>
             </vbox>
           </hbox>
@@ -144,7 +144,7 @@
             <textbox id="Key" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
               forcecomplete="true"
               completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
-              tooltiptext="Enter a key name which does not conflict with the current keys"
+              tooltiptext="&labelingkey.tooltip;"
               maxrows="3"
               onfocus="this.select()"
               oninput="tagConflicts();"
@@ -257,27 +257,27 @@
             </vbox>
 		      </hbox>
           <groupbox>
-            <caption>Item coloring</caption>
+            <caption>&ItemColoring.label;</caption>
             <grid>
               <columns><column flex="1" /><column/><column flex="1" /><column/><column flex="1" /></columns>
               <rows>
                 <row>
                   <hbox/>
-                  <label value="Directional shading" control="dirshading" />
+                  <label value="&DirectionalShading.label;" control="dirshading" />
                   <hbox/>
-                  <label value="Base color" control="basecolor" />
+                  <label value="&BaseColor.label;" control="basecolor" />
                   <hbox/>
                 </row>
                 <row>
                   <hbox/>
                   <menulist id="dirshading">
                     <menupopup>
-                      <menuitem label="XYZ"/>
-                      <menuitem label="XY"/>
-                      <menuitem label="X"/>
-                      <menuitem label="Z[hue]"/>
-                      <menuitem label="Z[greyscale]"/>
-                      <menuitem label="Flat"/>
+                      <menuitem label="&XYZ.label;"/>
+                      <menuitem label="&XY.label;"/>
+                      <menuitem label="&X.label;"/>
+                      <menuitem label="&ZHue.label;"/>
+                      <menuitem label="&ZGreyscale.label;"/>
+                      <menuitem label="&Flat.label;"/>
                     </menupopup>
                   </menulist>
                   <hbox/>
@@ -290,7 +290,7 @@
                   <hbox/>
                   <hbox/>
                   <hbox/>
-                  <label value="Secondary color" control="secondcolor"/>
+                  <label value="&SecondaryColor.label;" control="secondcolor"/>
                   <hbox/>
                 </row>
                 <row>
@@ -310,60 +310,60 @@
               <columns><column/><column/><column/></columns>
               <rows>
                 <row>
-                  <label control="linestyle" value="Line style" />
-                  <label control="linethickness" value="Line thickness" />
-                  <label contrl= "pointmarker" value="Point marker"/>
+                  <label control="linestyle" value="&LineStyle.label;" />
+                  <label control="linethickness" value="&LineThickness.label;" />
+                  <label contrl= "pointmarker" value="&PointMarker.label;"/>
                 </row>
                 <row>
                   <menulist id="linestyle">
                     <menupopup>
-                      <menuitem label="Solid"/>
-                      <menuitem label="Dash"/>
-                      <menuitem label="Dots"/>
-                      <menuitem label="DotDash"/>
-                      <menuitem label="DotDotDash"/>
+                      <menuitem label="&Solid.label;"/>
+                      <menuitem label="&Dash.label;"/>
+                      <menuitem label="&Dots.label;"/>
+                      <menuitem label="&DotDash.label;"/>
+                      <menuitem label="&DotDotDash.label;"/>
                     </menupopup>
                   </menulist>
                   <menulist id="linethickness">
                     <menupopup>
-                      <menuitem label="Thin"/>
-                      <menuitem label="Medium"/>
-                      <menuitem label="Thick"/>
+                      <menuitem label="&plotlinethin.label;"/>
+                      <menuitem label="&plotlinemedium.label;"/>
+                      <menuitem label="&plotlinethick.label;"/>
                     </menupopup>
                   </menulist>
                   <menulist id="pointmarker">
                     <menupopup>
-                      <menuitem label="Dot"/>
-                      <menuitem label="Circle"/>
-                      <menuitem label="Cross"/>
-                      <menuitem label="Box"/>
-                      <menuitem label="Diamond"/>
+                      <menuitem label="&Dot.label;"/>
+                      <menuitem label="&Circle.label;"/>
+                      <menuitem label="&Cross.label;"/>
+                      <menuitem label="&Box.label;"/>
+                      <menuitem label="&Diamond.label;"/>
                     </menupopup>
                   </menulist>
                 </row>
                 <row>
-                  <label control="surfacestyle" value="Surface style" />
-                  <label conrol="surfacemesh" value="Surface mesh" />
+                  <label control="surfacestyle" value="&surfacestyle.label;" />
+                  <label conrol="surfacemesh" value="&surfacemesh.label;" />
                 </row>
                 <row>
                   <menulist id="surfacestyle">
                     <menupopup>
-                      <menuitem label="Color patch"/>
-                      <menuitem label="Hidden line"/>
-                      <menuitem label="Wire frame"/>
-                      <menuitem label="Point"/>
+                      <menuitem label="&surfacecolorpatch.label;"/>
+                      <menuitem label="&surfacehidden.label;"/>
+                      <menuitem label="&surfacewire.label;"/>
+                      <menuitem label="&surfacepoint.label;"/>
                     </menupopup>
                   </menulist>
                   <menulist id="surfacemesh">
                     <menupopup>
-                      <menuitem label="None"/>
-                      <menuitem label="Mesh"/>
-                      <menuitem label="ULines"/>
-                      <menuitem label="VLines"/>
-                      <menuitem label="Contour"/>
+                      <menuitem label="&none.label;"/>
+                      <menuitem label="&mesh.label;"/>
+                      <menuitem label="&surfaceulines.label;"/>
+                      <menuitem label="&surfacevlines.label;"/>
+                      <menuitem label="&surfacecontour.label;"/>
                     </menupopup>
                   </menulist>
-                  <msibutton><description>Variables and intervals</description></msibutton>
+                  <msibutton><description>&VariablesAndIntervals.label;</description></msibutton>
                 </row>
               </rows>
             </grid>
@@ -454,15 +454,15 @@
       <tabpanel id="View defaults">
         <vbox>
           <row>
-            <label id="bgcolor" control="TextButton" value="Background Color: " />
+            <label id="bgcolor" control="TextButton" value="&DefaultBGColor.label;" />
             <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
                <spacer id="plotCW" class="color-well"/>
             </msibutton>
           </row>
           <separator/>
           <vbox>
-            <checkbox id="OrthogonalProjection" label="Orthogonal Projection"/>
-            <checkbox id="KeepUp"               label="Keep Up Vector"/>
+            <checkbox id="OrthogonalProjection" label="&OrthogonalProjection.label;"/>
+            <checkbox id="KeepUp"               label="&KeepUpVector.label;"/>
             <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
           </vbox>
           <groupbox>
