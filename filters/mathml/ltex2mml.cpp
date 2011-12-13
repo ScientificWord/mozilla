@@ -14521,11 +14521,13 @@ void LaTeX2MMLTree::StyleIDtoStr( U16 ID,U8* style_nom ) {
 
 TNODE* LaTeX2MMLTree::PassThru2MML( TNODE* TeX_node, TNODE** out_of_flow_list ) 
 {
-
+  //JBMLine("PassThru\n");
   TNODE* node =  FindObject(TeX_node->parts, (U8*)"5.476.1",INVALID_LIST_POS);
   const char* theText =  (const char*)(node->contents->var_value);
+  
+  //JBMLine(theText);
 
-  char* buf = new char[strlen(theText)];
+  char* buf = new char[1+strlen(theText)];
   strcpy(buf, theText);
   // jcs May want this in cdata?
   //char* buf = new char[strlen(theText) + strlen("<![CDATA[]]>")];
@@ -14537,6 +14539,7 @@ TNODE* LaTeX2MMLTree::PassThru2MML( TNODE* TeX_node, TNODE** out_of_flow_list )
   SetChData( mml, (U8*)buf, NULL );
 
   TNODE* rv  =  CreateElemWithBucketAndContents( 5,476,0,1,mml );
+  //JBMLine("\nEnd PassThru\n");
 
   return rv;
 }

@@ -9,7 +9,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern void   JBMLine( char* );
+extern void   JBMLine( const char* );
 
 // WARNING - the following array MUST be kept in ono-to-one
 //  correspondence with ELEM_ATTR_ defines in "attrman.h"

@@ -105,11 +105,14 @@ U16 MMLFilter::TranslateBuffer( const char* srcbuffer,
   anomaly_list->off1   =  0;
   U8 eqn_option;
 
+  //JBMLine("TranslateBuffer\n");
+
   TNODE* XML_tree =  (TNODE*)converter->BufferToDestTree( 
 	  			const_cast<U8*>(reinterpret_cast<const U8*>(srcbuffer)),
    				FALSE,msgcount,anomaly_list,eqn_option );
 
-  
+  //JBMLine("Mid TranslateBuffer\n");
+
   MMLTreeToRenderer( XML_tree,anomaly_list,
 	  			const_cast<U8*>(reinterpret_cast<const U8*>(srcbuffer)),
   					renderfunc );
@@ -126,7 +129,7 @@ U16 MMLFilter::TranslateBuffer( const char* srcbuffer,
 	  delete del->atext;
     delete del;
   }
-
+  //JBMLine("End TranslateBuffer\n");
   return 0;
 }
 
@@ -136,15 +139,17 @@ void MMLFilter::MMLTreeToRenderer( TNODE* mml_tree,
   								ANOMALY_REC* anomaly_list,
 								U8* src_LaTeX,
 								FILTRENDERTILE renderfunc ) {
-
+  //JBMLine("MMLTreeToRenderer\n");
   TILE* tiles  =  mml_tiler->MMLtreeToTiles( mml_tree,0 );
 
+  //JBMLine("End MMLTreeToRenderer\n");
 //char* eoln_seq        =  "\n";
   char* eoln_seq        =  NULL;
   RenderMML( tiles,start_indent,indent_inc,
 				  eoln_seq,anomaly_list,src_LaTeX,renderfunc );
 
   DisposeTILEs( (TILE*)tiles );
+  //JBMLine("MMLTreeToRenderer\n");
 }
 
 
@@ -156,6 +161,7 @@ void MMLFilter::RenderMML( TILE* tiles,U16 start_indent,
 							ANOMALY_REC* anomaly_list,U8* src_LaTeX,
 						    FILTRENDERTILE renderfunc ) {
 
+  //JBMLine("RenderMML\n");
   U32 dest_lineno =  0;
 
   char* line  =  TCI_NEW( char[32768] );
@@ -288,6 +294,7 @@ void MMLFilter::RenderMML( TILE* tiles,U16 start_indent,
     }
 
   }
+  //JBMLine("RenderMML\n");
 
   delete[] line;
 

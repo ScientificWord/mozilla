@@ -13,6 +13,8 @@ LIBRARY_NAME = mathml_s
 DIST_INSTALL = 1
 FORCE_STATIC_LIB = 1
 
+CXXFLAGS= -Od -EHsc
+
 
 CPPSRCS = grammar.cpp \
           treegen.cpp \
