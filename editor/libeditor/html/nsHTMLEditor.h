@@ -820,7 +820,7 @@ protected:
   PRBool CanContainTagNS(nsIDOMNode* aParent, const nsAString &aTag, nsIAtom * nsAtom);
   PRBool TagCanContainNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, nsIDOMNode* aChild);
   virtual PRBool TagCanContainTagNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, const nsAString &aChildTag, nsIAtom * nsAtomChild);
-  nsresult  nsHTMLEditor::GetWrapper(nsIDOMNode * node, nsIDOMNode ** wrapperNode);
+  nsresult GetWrapper(nsIDOMNode * node, nsIDOMNode ** wrapperNode);
 
 
 // Data members
