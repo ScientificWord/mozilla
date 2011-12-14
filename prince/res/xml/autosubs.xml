@@ -32,7 +32,7 @@
   <sub ctx="text" tp="sc"><pattern>.ttl.</pattern><data>insertFrontMatterItem('title',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertFrontMatterItem('maketitle',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertFrontMatterItem('maketitle',false);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.lorem.</pattern><data>insertFragmentOrMacro('lorem');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.latex.</pattern><data>insertFragmentOrMacro('latex');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.tex.</pattern><data>insertFragmentOrMacro('tex');</data></sub>
