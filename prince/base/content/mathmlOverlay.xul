@@ -379,8 +379,9 @@
         <toolbarbutton id ="symbollesseqqgtr" />
         <toolbarbutton id ="symbolgtreqqless" />
   <!--      <toolbarbutton id ="symbolvarpropto" />-->
-        <toolbarbutton id ="symbolsmallsmile" />
+  <!--      <toolbarbutton id ="symbolsmallsmile" />
         <toolbarbutton id ="symbolsmallfrown" />
+        -->
         <toolbarbutton id ="symbolSubset" />
         <toolbarbutton id ="symbolSupset" />
         <toolbarbutton id ="symbolsubseteqq" />
@@ -445,8 +446,9 @@
         <toolbarbutton id ="symbolnsupseteqq" /> 
         <toolbarbutton id ="symbolsubsetneqq" /> 
     		<toolbarbutton id ="symbolsupsetneqq" /> 
-        <toolbarbutton id ="symbolvarsubsetneqq" /> 
+ <!--       <toolbarbutton id ="symbolvarsubsetneqq" /> 
         <toolbarbutton id ="symbolvarsupsetneqq" /> 
+        -->
         <toolbarbutton id ="symbolsubsetneq" />
         <toolbarbutton id ="symbolsupsetneq" />
         <toolbarbutton id ="symbolnsubseteq" />
@@ -1259,7 +1261,7 @@
            observes="cmd_MSIsymbolCmd"/>
  <!--       <toolbarbutton id ="symbolvarpropto" label="&#x221D;" tooltiptext="&symbolvarpropto.tooltip;"              msivalue="&#x221D;"
            observes="cmd_MSIsymbolCmd"/>-->
-   <toolbarbutton id ="symbolsmallsmile"  tooltiptext="&symbolsmallsmile.tooltip;"              msivalue="&#x2323;"
+<!-- At this time the unicode value for smile - smallsmile and frown - smallfrown are the same.   <toolbarbutton id ="symbolsmallsmile"  tooltiptext="&symbolsmallsmile.tooltip;"              msivalue="&#x2323;"
            observes="cmd_MSIsymbolCmd">
            <label>
               <math xmlns="http://www.w3.org/1998/Math/MathML"><mo style="font-size: smaller">&#x2323;</mo></math>
@@ -1267,6 +1269,7 @@
            </toolbarbutton> 
         <toolbarbutton id ="symbolsmallfrown" label="&#x2322;" tooltiptext="&symbolsmallfrown.tooltip;"              msivalue="&#x2322;"
            observes="cmd_MSIsymbolCmd"/>
+           -->
         <toolbarbutton id ="symbolSubset" label="&#x22D0;" tooltiptext="&symbolSubset.tooltip;"              msivalue="&#x22D0;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolSupset" label="&#x22D1;" tooltiptext="&symbolSupset.tooltip;"              msivalue="&#x22D1;"
@@ -1403,6 +1406,8 @@
     		<toolbarbutton id ="symbolsupsetneqq" label="&#x2ACC;" tooltiptext="&symbolsupsetneqq.tooltip;"              msivalue="&#x2ACC;"
            observes="cmd_MSIsymbolCmd"/> 
  
+  <!-- Using STIXVariants works in the symbol panel, but the code handling the value passed from msivalue is not currently designed to support different fonts.
+  Commenting these out for now.
        <toolbarbutton id ="symbolvarsubsetneqq" tooltiptext="&symbolvarsubsetneqq.tooltip;"  msivalue="&varsubsetneqq;"
            observes="cmd_MSIsymbolCmd">
        <label>
@@ -1415,6 +1420,7 @@
               <math xmlns="http://www.w3.org/1998/Math/MathML"><m style="font-family: STIXVariants">&#x2ACC;</m></math>
            </label>
         </toolbarbutton>
+        -->
         <toolbarbutton id ="symbolsubsetneq" label="&#x228A;" tooltiptext="&symbolsubsetneq.tooltip;"              msivalue="&#x228A;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolsupsetneq" label="&#x228B;" tooltiptext="&symbolsupsetneq.tooltip;"              msivalue="&#x228B;"
