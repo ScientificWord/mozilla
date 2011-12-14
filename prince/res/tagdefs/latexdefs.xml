@@ -17,7 +17,7 @@
   			  <contains>paratag</contains>
   			  <contains>structtag</contains>
           <contains>listtag</contains>
-  			  <contains>othertag</contains>
+  			  <!-- contains>othertag</contains -->
           <contains>envtag</contains>
         </tag>
 				<tag nm="docbody"><description>DocBody</description></tag>
@@ -1044,35 +1044,15 @@
         </tag>
         <tag nm="makelof"><description>Make list of figures</description>
           <realtagclass>othertag</realtagclass>
-					<nexttag>bodyText</nexttag>
-	  		  <inclusion>true</inclusion>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
         </tag>
         <tag nm="makelot"><description>Make list of tables</description>
           <realtagclass>othertag</realtagclass>
-					<nexttag/>
-	  		  <inclusion>true</inclusion>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
         </tag>
         <tag nm="maketitle"><description>Make title</description>
-          <discardemptyblock>true</discardemptyblock>
           <realtagclass>othertag</realtagclass>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
-					<nexttag>bodyText</nexttag>
-	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="maketoc"><description>Make table of contents</description>
           <realtagclass>othertag</realtagclass>
-					<nexttag>bodyText</nexttag>
-	  		  <inclusion>true</inclusion>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
         </tag>
         <tag nm="title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
