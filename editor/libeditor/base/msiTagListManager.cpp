@@ -1136,6 +1136,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   PRBool isEmpty = PR_FALSE;
   nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
   if (editor) editor->IsEmptyNode( *secondNode, &isEmpty);
+	if (isEmpty) isEmpty = HasNoSignificantTags( *secondNode, this);
   if (str.EqualsLiteral("none") && isEmpty)
   {
     meditor->DeleteNode(*secondNode);
@@ -1153,6 +1154,9 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
     nsCOMPtr<nsISelection>selection;
     rv = meditor->GetSelection(getter_AddRefs(selection));
     editor->IsEmptyNode( firstNode, &isEmpty);
+    // check that there aren't significant tags in it, such as empty tables, etc.
+		if (isEmpty) isEmpty = HasNoSignificantTags(firstNode, this);
+		
     nsCOMPtr<nsIDOMDocument> doc;
     editor->GetDocument(getter_AddRefs(doc));  
     if (isEmpty)
