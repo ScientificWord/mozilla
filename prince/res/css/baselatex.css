@@ -394,10 +394,14 @@ button [class="msi"] {
   font-style: normal;
 }
 
-texb button {
+button[class="msi"]::-moz-selection {
+  background-color: blue;
+}
+
+/* texb, makelof, makelot, maketitle, maketoc{
   font-family: sans-serif;
   font-style: normal;
-}
+} */
 
 mml|menclose[notation~="box"] {
   border-style : solid;

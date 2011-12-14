@@ -307,8 +307,28 @@ nsFrontMTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
   NS_ASSERTION(aEditor, "Need an editor here");
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
   if (!htmlEditor) return NS_ERROR_FAILURE;
-
-  if (newState.Length() > 0) return htmlEditor->SetParagraphFormat(newState);
+  nsCOMPtr<msiITagListManager> tlmgr;
+  htmlEditor->GetTagListManager( getter_AddRefs(tlmgr));
+  
+  if (newState.Length() > 0) 
+  {
+    nsAutoString  realclass;
+    tlmgr->GetStringPropertyForTag( newState, nsnull, NS_LITERAL_STRING("realtagclass"), realclass);
+    if (realclass.EqualsLiteral("paratag"))
+    {
+      return htmlEditor->SetParagraphFormat(newState);
+    }
+    else if (realclass.EqualsLiteral("othertag"))
+    {
+      nsCOMPtr<nsIDOMElement> element;
+      htmlEditor->CreateElementWithDefaults(newState, getter_AddRefs(element));
+      return htmlEditor->InsertElementAtSelection(element, true);
+    }
+    else // env or structure -- we assume text tags never arise here.
+    {
+      return htmlEditor->SetStructureTag(newState);      
+    }
+  }
   return NS_OK; //BBM should be bad data
 }
 

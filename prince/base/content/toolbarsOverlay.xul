@@ -464,7 +464,7 @@
 		tooltiptext="&frontmtagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_paratag',this.value);"
 		label="&frontmtagselect.label;"
     onfocus="this.select();"
-    ontextentered="msiDoStatefulCommand('cmd_paratag',this.value);" />
+    ontextentered="msiDoStatefulCommand('cmd_frontmtag',this.value);" />
 
   <menu id="viewShowHide">
 <!-- the order here should match the order at the top of the screen -->
