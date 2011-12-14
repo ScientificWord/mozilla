@@ -89,11 +89,11 @@ function onAccept()
     else texnode.removeAttribute("ord");
 
     SaveWindowLocation();
+    if (isNewNode) editor.insertElementAtSelection(texnode, true);
   }
   catch(e) {
     dump("Exception: "+e.message+"\n");
   }
-  if (isNewNode) editor.insertElementAtSelection(texnode, true);
   return true;
 }
 
