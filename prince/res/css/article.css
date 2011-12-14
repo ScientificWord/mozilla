@@ -251,7 +251,7 @@ abstract {
   font-size: small;
   border: thin solid black; 
   background-color: #FFFFEE;
-  -moz-border-radius: 20px;
+  -moz-border-radius: 5px;
 }
 
 abstract:before {
