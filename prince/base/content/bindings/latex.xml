@@ -571,18 +571,26 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Make title</html:button>
+      <html:button type="button" class="msi" nopr="1" oncommand="" style="-moz-user-select:all;">
+        Make title here
+      </html:button>
+      <html:span style="display:none">
       <xbl:children/>
+      </html:span>
     </xbl:content>
   </xbl:binding>
 
   <xbl:binding id="fmtag-maketoc"> /*front matter label*/
 	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	    <xbl:stylesheet src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Make TOC</html:button>
-      <xbl:children/>
+      <html:button type="button" class="msi" nopr="1" oncommand="" >
+Make table of contents here
+    </html:button>
+    <html:span style="display:none">
+    <xbl:children/>
+    </html:span>
     </xbl:content>
   </xbl:binding>
 
@@ -591,8 +599,12 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Make LOT</html:button>
+      <html:button type="button" class="msi" nopr="1" oncommand="">
+Make list of tables here
+      </html:button>
+      <html:span style="display:none">
       <xbl:children/>
+      </html:span>
     </xbl:content>
   </xbl:binding>
 
@@ -601,10 +613,15 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Make LOF</html:button>
-      <xbl:children/>
+      <html:button type="button" class="msi" nopr="1" oncommand="">
+Make list of figures here
+    </html:button>
+    <html:span style="display:none">
+    <xbl:children/>
+    </html:span>
     </xbl:content>
   </xbl:binding>
+
 
 	<xbl:binding id="texb">
 	  <xbl:resources>
@@ -612,7 +629,7 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button type="button" class="frontmatter" nopr="1" oncommand="">
+      <html:button type="button" class="msi" nopr="1" oncommand="">
         <html:texlogo>T<html:sub>E</html:sub>X</html:texlogo>: <html:label xbl:inherits="xbl:text=name"/>
       </html:button>
       <html:span style="display:none">
