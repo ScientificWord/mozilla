@@ -268,8 +268,10 @@
               <toolbarbutton id="symbollesseqqgtr" />
               <toolbarbutton id="symbolgtreqqless" />
   <!--            <toolbarbutton id="symbolvarpropto" /> -->
-              <toolbarbutton id="symbolsmallsmile" />
+   <!-- smallsmile and smallfrown currently map to the same Unicode as smile and frown 
+             <toolbarbutton id="symbolsmallsmile" />
               <toolbarbutton id="symbolsmallfrown" />
+              -->
               <toolbarbutton id="symbolSubset" />
               <toolbarbutton id="symbolSupset" />
               <toolbarbutton id="symbolsubseteqq" />
@@ -334,8 +336,9 @@
               <toolbarbutton id="symbolnsupseteqq" /> 
               <toolbarbutton id="symbolsubsetneqq" /> 
               <toolbarbutton id="symbolsupsetneqq" /> 
-              <toolbarbutton id="symbolvarsubsetneqq" /> 
+<!--            <toolbarbutton id="symbolvarsubsetneqq" /> 
               <toolbarbutton id="symbolvarsupsetneqq" /> 
+              -->
               <toolbarbutton id="symbolsubsetneq" />
               <toolbarbutton id="symbolsupsetneq" />
               <toolbarbutton id="symbolnsubseteq" />
