@@ -811,6 +811,7 @@ line {
   display: block;
 }
 
+/* 
 *[showinvis="true"] numberedlist {
   padding: 10px;
   border: 2px solid rgb(220,220,220); 
@@ -827,7 +828,7 @@ line {
   padding: 10px;
   border: 2px solid rgb(220,220,220); 
   -moz-border-radius: 8px;
-}
+}  */
 
 *[showinvis="true"] numberedListItem {
   border: 2px solid rgb(220,210,220); 
