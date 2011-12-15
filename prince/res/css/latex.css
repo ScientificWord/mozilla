@@ -812,42 +812,36 @@ line {
 }
 
 *[showinvis="true"] numberedlist {
-  display: block;
   padding: 10px;
-  border: 5px solid rgb(220,220,220); 
-  -moz-border-radius: 20px;
+  border: 2px solid rgb(220,220,220); 
+  -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] bulletlist {
-  display: block;
   padding: 10px;
-  border: 5px solid rgb(220,220,220); 
-  -moz-border-radius: 20px;
+  border: 2px solid rgb(220,220,220); 
+  -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] descriptionlist {
-  display: block;
   padding: 10px;
-  border: 5px solid rgb(220,220,220); 
-  -moz-border-radius: 20px;
+  border: 2px solid rgb(220,220,220); 
+  -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] numberedListItem {
-  display: block;
-  border: 5px solid rgb(220,210,220); 
-  -moz-border-radius: 20px;
+  border: 2px solid rgb(220,210,220); 
+  -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] bulletListItem {
-  display: block;
-  border: 5px solid rgb(220,210,220); 
-  -moz-border-radius: 20px;
+  border: 2px solid rgb(220,210,220); 
+  -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] descriptionListItem {
-  display: block;
-  border: 5px solid rgb(220,210,220); 
-  -moz-border-radius: 20px;
+  border: 2px solid rgb(220,210,220); 
+  -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] numberedListItem + numberedListItem {
@@ -1329,3 +1323,4 @@ Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, he
 { 
 	direction: rtl; 
 	text-align: right; }
+	
