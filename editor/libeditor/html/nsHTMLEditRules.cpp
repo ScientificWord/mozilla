@@ -85,7 +85,7 @@
 #include "nsUnicharUtils.h"
 
 #include "nsFrameSelection.h"
-#include "msiutils.h"
+#include "msiUtils.h"
 #include "nsIDOM3Node.h"
 #include "nsIDOMSerializer.h"
 #include "msiISimpleComputeEngine.h"
