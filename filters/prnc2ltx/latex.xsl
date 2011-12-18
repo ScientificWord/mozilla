@@ -703,7 +703,43 @@ should not be done under some conditions -->
   </xsl:choose>
 </xsl:template>
 <xsl:template match="mml:mo[@msimathname='true']">
-\ensuremath{\operatorname*{<xsl:apply-templates/>}}
+	<xsl:choose>
+		<xsl:when test="text(.)='arccos">\arccos</xsl:when>
+    <xsl:when test="text(.)='cos'">\cos</xsl:when>
+    <xsl:when test="text(.)='csc'">\csc</xsl:when>
+    <xsl:when test="text(.)='exp'">\exp</xsl:when>
+    <xsl:when test="text(.)='ker'">\ker</xsl:when>
+    <xsl:when test="text(.)='limsup'">\limsup</xsl:when>
+    <xsl:when test="text(.)='min'">\min</xsl:when>
+    <xsl:when test="text(.)='sinh'">\sinh</xsl:when>
+    <xsl:when test="text(.)='arcsin'">\arcsin</xsl:when>
+    <xsl:when test="text(.)='cosh'">\cosh</xsl:when>
+    <xsl:when test="text(.)='deg'">\deg</xsl:when>
+    <xsl:when test="text(.)='gcd'">\gcd</xsl:when>
+    <xsl:when test="text(.)='lg'">\lg</xsl:when>
+    <xsl:when test="text(.)='ln'">\ln</xsl:when>
+    <xsl:when test="text(.)='Pr'">\Pr</xsl:when>
+    <xsl:when test="text(.)='sup'">\sup</xsl:when>
+    <xsl:when test="text(.)='arctan'">\arctan</xsl:when>
+    <xsl:when test="text(.)='cot'">\cot</xsl:when>
+    <xsl:when test="text(.)='det'">\det</xsl:when>
+    <xsl:when test="text(.)='hom'">\hom</xsl:when>
+    <xsl:when test="text(.)='lim'">\lim</xsl:when>
+    <xsl:when test="text(.)='log'">\log</xsl:when>
+    <xsl:when test="text(.)='sec'">\sec</xsl:when>
+    <xsl:when test="text(.)='tan'">\tan</xsl:when>
+    <xsl:when test="text(.)='arg'">\arg</xsl:when>
+    <xsl:when test="text(.)='coth'">\coth</xsl:when>
+    <xsl:when test="text(.)='dim'">\dim</xsl:when>
+    <xsl:when test="text(.)='inf'">\inf</xsl:when>
+    <xsl:when test="text(.)='liminf'">\liminf</xsl:when>
+    <xsl:when test="text(.)='max'">\max</xsl:when>
+    <xsl:when test="text(.)='sin'">\sin</xsl:when>
+    <xsl:when test="text(.)='tanh'">\tanh</xsl:when>
+    <xsl:when test="text(.)='csc'">\csc</xsl:when>
+    <xsl:when test="text(.)='csc'">\csc</xsl:when>
+    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
+	</xsl:choose>
 </xsl:template>
 <xsl:template match="html:large">{\large <xsl:apply-templates
   />}</xsl:template>
