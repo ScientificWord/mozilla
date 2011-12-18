@@ -2999,6 +2999,8 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 {
   printf("\nFindCursor\n");
   editor->DumpNode(node, 2*level, true);
+  int count = 0;
+
 
   if (editor->IsTextNode(node)) {
 
@@ -3022,22 +3024,27 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
         mathmltype = msiUtils::GetMathmlNodeType(editingBC);
       }
 
-      nsCOMPtr<nsIDOMNodeList> children;
-      PRUint32 number;
-      nsCOMPtr<nsIDOMNode> child;
+      nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
 
-      node->GetChildNodes(getter_AddRefs(children));
-      msiUtils::GetNumberofChildren(node, number);
-    
-      //int lastChildIndex = number;
+      nsCOMPtr<nsIDOMNodeList> childList;
+      node->GetChildNodes(getter_AddRefs(childList));
+      if (!childList) return 0;
+      PRUint32 numChildren;
+      childList->GetLength(&numChildren);
 
-      if (node == caretNode){
-         number = caretOffset;
+      if (numChildren == 0){
+        printf("\nNo children");
+        editor->DumpNode(node, 2*level, true);
       }
 
-      int count = 0;
+      if (node == caretNode){
+    
+         numChildren = caretOffset;
+      }
 
-      for (int i = 0; i < number; ++i) {
+      nsCOMPtr<nsIDOMNode> child;
+
+      for (int i = 0; i < numChildren; ++i) {
         msiUtils::GetChildNode(node, i, child);
         if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
           count += 1;  // to distinguish numerator from denominator
@@ -3149,6 +3156,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   if (!startNode) return NS_ERROR_FAILURE;
   
   // See if we're in math
+  /*
   nsCOMPtr<nsIDOMNode> mathNode;
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
@@ -3214,6 +3222,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
      }
      return res;
   }
+  */
 
   // find any enclosing mailcite
   nsCOMPtr<nsIDOMNode> citeNode;
