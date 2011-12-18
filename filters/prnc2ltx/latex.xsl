@@ -702,9 +702,8 @@ should not be done under some conditions -->
     <xsl:otherwise>{\ensuremath{^{\textrm{<xsl:apply-templates/>}}}}</xsl:otherwise>
   </xsl:choose>
 </xsl:template>
-<xsl:template match="mml:mo[@msimathname='true']">{\ensuremath\limfunc{<xsl:apply-templates/>}}
-</xsl:template>
-<xsl:template match="mml:mi[@msimathname='true']">{\ensuremath\Ïfunc{<xsl:apply-templates/>}}
+<xsl:template match="mml:mo[@msimathname='true']">
+\ensuremath{\operatorname*{<xsl:apply-templates/>}}
 </xsl:template>
 <xsl:template match="html:large">{\large <xsl:apply-templates
   />}</xsl:template>
