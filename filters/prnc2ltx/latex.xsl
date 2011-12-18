@@ -736,8 +736,6 @@ should not be done under some conditions -->
     <xsl:when test="text(.)='max'">\max</xsl:when>
     <xsl:when test="text(.)='sin'">\sin</xsl:when>
     <xsl:when test="text(.)='tanh'">\tanh</xsl:when>
-    <xsl:when test="text(.)='csc'">\csc</xsl:when>
-    <xsl:when test="text(.)='csc'">\csc</xsl:when>
     <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
 	</xsl:choose>
 </xsl:template>
