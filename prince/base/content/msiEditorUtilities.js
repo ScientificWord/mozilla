@@ -11254,10 +11254,14 @@ function gotoFirstNonspaceInElement( editor, node )
   );
 
   firstNode = treeWalker.nextNode();
-  if (firstNode)
+  if (firstNode){
     editor.selection.collapse(firstNode,0);
-  else
+	currNode = firstNode;
+  }
+  else{
     editor.selection.collapse(node,0);
+	currNode = node;
+  }
   // put the selection at the beginning of the first text node in case there is only white space
   for ( ; currNode !== null; currNode = treeWalker.nextNode())
   {
