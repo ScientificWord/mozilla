@@ -167,7 +167,7 @@
       <xsl:for-each select="ancestor::*[2][self::mml:mrow]">
       <xsl:for-each select="preceding-sibling::*[1][self::mml:mo]">
 	    <exists>
-        <xsl:value-of select="normalize-space(.)"/>
+        <xsl:value-of select="normalize-space(string())"/>
 	    </exists>
       </xsl:for-each>
       </xsl:for-each>
@@ -176,7 +176,7 @@
     <xsl:variable name="left-ancestor-mo1-nom-exists">
       <xsl:choose>
         <xsl:when test="string-length($left-ancestor-mo1-nom.tr) &gt; 0">
-          <xsl:value-of select="normalize-space(.)"/>
+          <xsl:value-of select="normalize-space(string())"/>
         </xsl:when>
     		<xsl:otherwise>
     		</xsl:otherwise>
@@ -250,7 +250,7 @@
     <xsl:variable name="right-ancestor-mo1-nom-exists">
       <xsl:choose>
         <xsl:when test="string-length($right-ancestor-mo1-nom.tr) &gt; 0">
-          <xsl:value-of select="$normalize-space(.)"/>
+          <xsl:value-of select="normalize-space(string())"/>
         </xsl:when>
     		<xsl:otherwise>
     		</xsl:otherwise>
