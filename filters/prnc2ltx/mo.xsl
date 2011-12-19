@@ -1,16 +1,16 @@
 <xsl:stylesheet 
-      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-      xmlns:exsl="http://exslt.org/common"
-      xmlns:mml="http://www.w3.org/1998/Math/MathML"
-      version="1.1">
+      xmlns:xsl="http://wwwnormalize-space(string())w3normalize-space(string())org/1999/XSL/Transform"
+      xmlns:exsl="http://exsltnormalize-space(string())org/common"
+      xmlns:mml="http://wwwnormalize-space(string())w3normalize-space(string())org/1998/Math/MathML"
+      version="1normalize-space(string())1">
 
 <!-- Algorithm
   if lspace exists, script LaTeX space as required
 
     Translate operators that have special markup in LaTeX
-      1) Big Ops like \int, \sum, etc.
+      1) Big Ops like \int, \sum, etcnormalize-space(string())
 	  2) Operators that delimit fences
-      3) Named operator like \det, \max, \Pr, etc.
+      3) Named operator like \det, \max, \Pr, etcnormalize-space(string())
     otherwise
     {
       if ( num-chars > 1 
@@ -25,6 +25,46 @@
 -->
 
   <xsl:template match="mml:mo">
+	  <xsl:choose>
+	  	<xsl:when test="@msimathname='true'">
+				<xsl:choose>
+					<xsl:when test="normalize-space(string())='arccos'">\arccos</xsl:when>
+			    <xsl:when test="normalize-space(string())='cos'">\cos</xsl:when>
+			    <xsl:when test="normalize-space(string())='csc'">\csc</xsl:when>
+			    <xsl:when test="normalize-space(string())='exp'">\exp</xsl:when>
+			    <xsl:when test="normalize-space(string())='ker'">\ker</xsl:when>
+			    <xsl:when test="normalize-space(string())='limsup'">\limsup</xsl:when>
+			    <xsl:when test="normalize-space(string())='min'">\min</xsl:when>
+			    <xsl:when test="normalize-space(string())='sinh'">\sinh</xsl:when>
+			    <xsl:when test="normalize-space(string())='arcsin'">\arcsin</xsl:when>
+			    <xsl:when test="normalize-space(string())='cosh'">\cosh</xsl:when>
+			    <xsl:when test="normalize-space(string())='deg'">\deg</xsl:when>
+			    <xsl:when test="normalize-space(string())='gcd'">\gcd</xsl:when>
+			    <xsl:when test="normalize-space(string())='lg'">\lg</xsl:when>
+			    <xsl:when test="normalize-space(string())='ln'">\ln</xsl:when>
+			    <xsl:when test="normalize-space(string())='Pr'">\Pr</xsl:when>
+			    <xsl:when test="normalize-space(string())='sup'">\sup</xsl:when>
+			    <xsl:when test="normalize-space(string())='arctan'">\arctan</xsl:when>
+			    <xsl:when test="normalize-space(string())='cot'">\cot</xsl:when>
+			    <xsl:when test="normalize-space(string())='det'">\det</xsl:when>
+			    <xsl:when test="normalize-space(string())='hom'">\hom</xsl:when>
+			    <xsl:when test="normalize-space(string())='lim'">\lim</xsl:when>
+			    <xsl:when test="normalize-space(string())='log'">\log</xsl:when>
+			    <xsl:when test="normalize-space(string())='sec'">\sec</xsl:when>
+			    <xsl:when test="normalize-space(string())='tan'">\tan</xsl:when>
+			    <xsl:when test="normalize-space(string())='arg'">\arg</xsl:when>
+			    <xsl:when test="normalize-space(string())='coth'">\coth</xsl:when>
+			    <xsl:when test="normalize-space(string())='dim'">\dim</xsl:when>
+			    <xsl:when test="normalize-space(string())='inf'">\inf</xsl:when>
+			    <xsl:when test="normalize-space(string())='liminf'">\liminf</xsl:when>
+			    <xsl:when test="normalize-space(string())='max'">\max</xsl:when>
+			    <xsl:when test="normalize-space(string())='sin'">\sin</xsl:when>
+			    <xsl:when test="normalize-space(string())='tanh'">\tanh</xsl:when>
+			    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
+				</xsl:choose>
+	  	</xsl:when>
+      <xsl:otherwise>
+        
   
     <xsl:if test="string-length(@lspace)&gt;0">
 
@@ -243,11 +283,11 @@
           <xsl:with-param name="LaTeX-fence-token" select="'\updownarrow '"/>
         </xsl:call-template>
       </xsl:when>
-<!-- \left.             \right.  -->
+<!-- \leftnormalize-space(string())             \rightnormalize-space(string())  -->
       <xsl:when test="normalize-space(string())=''
       and            @fence='true'">
         <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
+          <xsl:with-param name="LaTeX-fence-token" select="'normalize-space(string())'"/>
         </xsl:call-template>
       </xsl:when>
 <!-- \left\Updownarrow  \right\Updownarrow -->
@@ -282,11 +322,11 @@
       </xsl:when>
 
 <!-- !ENTITY dd or DifferentialD "d" 
-  At load time, &dd; may be mapped to "d".
-  We don't need a special translation here - default gives same output.
+  At load time, &dd; may be mapped to "d"normalize-space(string())
+  We don't need a special translation here - default gives same outputnormalize-space(string())
 
       <xsl:when test="normalize-space(string())='d'">
-        <xsl:if test="@lspace='0.333333em'">
+        <xsl:if test="@lspace='0normalize-space(string())333333em'">
           <xsl:text>\,</xsl:text>
         </xsl:if>
         <xsl:text>d</xsl:text>
@@ -396,20 +436,23 @@
         <xsl:with-param name="value" select="$rs-value"/>
         <xsl:with-param name="unit"  select="$rs-unit"/>
       </xsl:call-template>
-	</xsl:if>
+	</xsl:if>      
+  </xsl:otherwise>
+	  </xsl:choose>
+
 
   </xsl:template>
 
 
 
 
-<!-- mo's contain math objects. If we encounter them when a LaTeX
-  text bucket is being scripted, the translation must enclosed in $'s.
+<!-- mo's contain math objectsnormalize-space(string()) If we encounter them when a LaTeX
+  text bucket is being scripted, the translation must enclosed in $'snormalize-space(string())
 -->
   
   <xsl:template match="mml:mo" mode="in-text">
       <xsl:text>$</xsl:text>
-    <xsl:apply-templates select="."/>
+    <xsl:apply-templates select="normalize-space(string())"/>
     <xsl:text>$</xsl:text>
   </xsl:template>
 
@@ -442,9 +485,9 @@
 
 
 <!-- Occassionally we need to know if the contents of an element
-     (mo,mi,mn) are all ASCII chars.  LaTeX commands like \operatorname{}
-     can only be scripted for elements containing ASCII. BBM here... This doesn't look right. Test will
-     be true if there are *any* ASCII characters. Under XeTeX I'm not sure Jack's assertion is true,
+     (mo,mi,mn) are all ASCII charsnormalize-space(string())  LaTeX commands like \operatorname{}
+     can only be scripted for elements containing ASCIInormalize-space(string()) BBM herenormalize-space(string())normalize-space(string())normalize-space(string()) This doesn't look rightnormalize-space(string()) Test will
+     be true if there are *any* ASCII charactersnormalize-space(string()) Under XeTeX I'm not sure Jack's assertion is true,
      so I'm making this always return true-->
 
   <xsl:template name="is-ASCII">
