@@ -88,7 +88,7 @@
                <msibutton id="bgcolorButton" class="color-button"
                     oncommand="getColorAndUpdate('bgcolorWell');">
                 <spacer persist="style" id="bgcolorWell" class="color-well"    
-                  style="background-color: black"/>
+                  style="background-color: white"/>
               </msibutton>          
             </vbox>
           </hbox>
@@ -300,7 +300,7 @@
                   onload    = "frameWidthChanged(this, event);"
                   value     = "0"
                   persist   = "value"/>
-                <checkbox id="autoWidth" persist = "checked" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
+                <checkbox id="autoWidth" checked="true" persist = "checked" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
                 <textbox
                   id        = "frameHeightInput"
                   type      = "number"
@@ -309,7 +309,7 @@
                   onload    = "frameHeightChanged(this, event);"
                   value     = "0"
                   persist   =  "value"/>
-                <checkbox id="autoHeight" persist = "checked" checked="false"
+                <checkbox id="autoHeight" checked="true" persist = "checked" checked="false"
                    oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
                 <checkbox observes="hasNaturalSize" id="constrainCheckbox" oncommand ="ToggleConstrain();"
                   checked="false" persist = "checked"/>
@@ -335,7 +335,7 @@
     <spacer flex="1"/>
     <groupbox >
       <caption label="&Placementtab.label;"/>
-      <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="selectedIndex value">
+      <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" selectedIndex="1" persist="selectedIndex value">
       <hbox flex="1">
         <vbox>
           <radio id="inline" label="&inline;" radioGroup="placementRadioGroup"/>

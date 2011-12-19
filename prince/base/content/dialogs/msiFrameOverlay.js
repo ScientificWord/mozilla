@@ -712,6 +712,8 @@ function setWidthAndHeight(width, height, event)
     constrainProportions( "frameWidthInput", "frameHeightInput", event );
   else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
     constrainProportions( "frameHeightInput", "frameWidthInput", event );
+	if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
+	if (Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
 }
 
 function setContentSize(width, height)  

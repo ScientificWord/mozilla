@@ -311,7 +311,7 @@ optgroup[disabled],
 select[disabled] {
   -moz-user-input: disabled;
   -moz-user-focus: ignore;
-  color: gray;
+  color: rgb(180,180,180) ! important;
   background-color: ThreeDFace;
   cursor: inherit;
 }
