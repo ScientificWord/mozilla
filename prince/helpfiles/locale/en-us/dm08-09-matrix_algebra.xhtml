@@ -1,0 +1,2477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Sunday, December 11, 2011 12:22:00" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm08-09-matrix_algebra.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Matrix Decompositions</h2>
+<html:bodyText>
+   There are various ways to decompose a matrix into the product of simpler
+   matrices of special types. These decompositions are frequently useful in
+   numerical matrix calculations.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#singular value" xmlns="http://www.w3.org/1999/xhtml"> Singular
+   Value Decomposition</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#plu" xmlns="http://www.w3.org/1999/xhtml"> PLU
+   Decomposition</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#qr" xmlns="http://www.w3.org/1999/xhtml"> QR
+   Decomposition</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#cholesky" xmlns="http://www.w3.org/1999/xhtml"> Cholesky
+   Decomposition</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="singular value" xmlns="http://www.w3.org/1999/xhtml">
+</a>Singular Value Decomposition</html:sectiontitle></html:section>
+<html:bodyText>
+   There are standard ways to decompose a matrix into the product of simpler
+   matrices of special types. These decompositions are frequently useful in
+   numerical matrix calculations.
+</html:bodyText>
+<html:bodyText>
+   Any
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   real matrix
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>
+   can be factored into a product
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>U</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>D</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>V</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   with
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>U</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>V</mml:mi>
+</mml:mrow>
+</mml:math>
+   real orthogonal
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   matrices, respectively, and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>D</mml:mi>
+</mml:mrow>
+</mml:math>
+   a diagonal matrix with positive numbers in the first
+   rank-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>
+   entries on the main diagonal, and zeroes everywhere else. The entries on the
+   main diagonal of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>D</mml:mi>
+</mml:mrow>
+</mml:math>
+   are called the singular values of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>.
+   This factorization
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>U</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>D</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>V</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is called a singular value decomposition (SVD) of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Singular Values</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1.0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   singular values:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mn>10.&ThinSpace;053</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>4.&ThinSpace;611&ThinSpace;9</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>3.&ThinSpace;558&ThinSpace;8</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   singular values:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mn>8.&ThinSpace;888&ThinSpace;2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>3.&ThinSpace;741&ThinSpace;7</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Singular Value
+   Decomposition</strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.721&ThinSpace;52</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.191&ThinSpace;19</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.665&ThinSpace;47</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.455&ThinSpace;04</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.593&ThinSpace;48</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.663&ThinSpace;87</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.521&ThinSpace;87</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.781&ThinSpace;81</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.341&ThinSpace;21</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>10.&ThinSpace;053</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4.&ThinSpace;611&ThinSpace;9</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3.&ThinSpace;558&ThinSpace;8</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.442&ThinSpace;73</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.618&ThinSpace;41</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.649&ThinSpace;27</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.762&ThinSpace;85</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.640&ThinSpace;32</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>8.&ThinSpace;970&ThinSpace;6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:msup>
+<mml:mn>10</mml:mn>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msup>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.471&ThinSpace;22</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.455&ThinSpace;58</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.755&ThinSpace;25</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   These two outer matrices fail the orthogonality test because they are
+   numerical approximations only. You can check the inner products of the columns
+   to see that they are approximately orthogonal.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Singular Values</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2.0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>,
+   singular values:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mn>5.&ThinSpace;465&ThinSpace;0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0.365&ThinSpace;97</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Singular Value Decomposition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis" columnalign="center">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis" columnalign="center">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.404&ThinSpace;55</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.914&ThinSpace;51</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.914&ThinSpace;51</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.404&ThinSpace;55</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis" columnalign="center">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>5.&ThinSpace;465&ThinSpace;0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.365&ThinSpace;97</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis" columnalign="center">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.576&ThinSpace;05</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.817&ThinSpace;42</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.817&ThinSpace;42</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.576&ThinSpace;05</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="plu" xmlns="http://www.w3.org/1999/xhtml">
+</a>PLU Decomposition</html:sectiontitle></html:section>
+<html:bodyText>
+   Any
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   real or complex matrix
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>
+   can be factored into a product
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>P</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>L</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>U</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   with
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>L</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>U</mml:mi>
+</mml:mrow>
+</mml:math>
+   lower and upper triangular
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   matrices, respectively, with
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>'s
+   on the main diagonal of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>L</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and with
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>P</mml:mi>
+</mml:mrow>
+</mml:math>
+   a permutation matrix. This factorization
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>P</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>L</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>U</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is called the PLU decomposition of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>.
+   The matrices
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>P</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>L</mml:mi>
+</mml:mrow>
+</mml:math>
+   are invertible and the matrix
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>U</mml:mi>
+</mml:mrow>
+</mml:math>
+   is a row echelon form of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; PLU Decomposition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.532</mml:mn>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1.95</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1.5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.001&ThinSpace;3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1.0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.354&ThinSpace;67</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1.0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1.&ThinSpace;5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.001&ThinSpace;3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1.&ThinSpace;949&ThinSpace;5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Note that the upper triangular matrix in the first line of the preceding
+   example is the same as that in the following example. In general, the upper
+   triangular matrix in the PLU decomposition is the echelon form of the original
+   matrix obtained by Gaussian elimination.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Fraction-Free Gaussian Elimination</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   fraction-free Gaussian elimination:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="qr" xmlns="http://www.w3.org/1999/xhtml">
+</a>QR Decomposition</html:sectiontitle></html:section>
+<html:bodyText>
+   A real
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   matrix
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>
+   with
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   can be factored as a product
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>Q</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>R</mml:mi>
+</mml:mrow>
+</mml:math>,
+   where
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>Q</mml:mi>
+</mml:mrow>
+</mml:math>
+   is an orthogonal
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   matrix (the columns of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>Q</mml:mi>
+</mml:mrow>
+</mml:math>
+   are orthonormal---that is,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>Q</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>Q</mml:mi>
+<mml:mi>T</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   is the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   identity matrix) and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>R</mml:mi>
+</mml:mrow>
+</mml:math>
+   is upper-right triangular with the same rank as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>.
+   If the original matrix
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>
+   is square, then so is
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>R</mml:mi>
+</mml:mrow>
+</mml:math>.
+   If
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>
+   has linearly independent columns, then
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>R</mml:mi>
+</mml:mrow>
+</mml:math>
+   is invertible. (See
+   <a href="dm08-07-matrix_algebra.xhtml#orthonormal bases" xmlns="http://www.w3.org/1999/xhtml"> Orthonormal Bases and
+   Gram-Schmidt Orthogonalization</a> for another example.)
+</html:bodyText>
+<html:bodyText>
+   The QR decomposition is often used to solve the linear least squares problem,
+   and is the basis for a particular eigenvalue algorithm, called the QR
+   algorithm.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To obtain the QR factorization</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         With the insert point in a matrix, choose choose Compute &gt; Matrices &gt; QR
+         Decomposition.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; QR Decomposition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>10</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>70</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>28</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>14</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>14</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>14</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>28</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>14</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>10</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>70</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>28</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>14</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>14</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:msqrt>
+<mml:mn>10</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>28</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis" columnalign="right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="negativethinmathspace">
+</mml:mspace>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis" columnalign="center">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>4</mml:mn>
+<mml:mn>17</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>17</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>612</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>17</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>72</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>18</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>18</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>17</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>17</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>153</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>17</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>72</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>9</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>18</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>36</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>17</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>72</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>18</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>18</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis" columnalign="center">
+<mml:mtr>
+<mml:mtd>
+<mml:msqrt>
+<mml:mn>17</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>9</mml:mn>
+<mml:mn>17</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>17</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>17</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>17</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>72</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="cholesky" xmlns="http://www.w3.org/1999/xhtml">
+</a>Cholesky Decomposition</html:sectiontitle></html:section>
+<html:bodyText>
+   For a real square matrix that happens to be symmetric
+   (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mi>A</mml:mi>
+<mml:mi>T</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>)
+   and positive definite (all eigenvalues are positive), there is a particularly
+   efficient triangular decomposition, significantly faster than alternative
+   methods for solving linear equations.
+</html:bodyText>
+<html:bodyText>
+   An
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   real symmetric positive-definite matrix
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>
+   can be factored into a product
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>G</mml:mi>
+<mml:mi>T</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   with
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+</mml:mrow>
+</mml:math>
+   a real positive-definite lower triangular
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   matrix. This factorization
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>G</mml:mi>
+<mml:mi>T</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is called the Cholesky decomposition of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Cholesky Decomposition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+</mml:mrow>
+</mml:math>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2.0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2.0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1.&ThinSpace;414&ThinSpace;2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0.0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.707&ThinSpace;11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1.&ThinSpace;224&ThinSpace;7</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1.&ThinSpace;414&ThinSpace;2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.707&ThinSpace;11</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0.0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1.&ThinSpace;224&ThinSpace;7</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+</mml:mrow>
+</mml:math>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>30</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>30</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm08-09-matrix_algebra__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

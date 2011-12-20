@@ -1,0 +1,1704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Sunday, December 11, 2011 12:17:50" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm08-03-matrix_algebra.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Row Operations and Echelon Forms</h2>
+<html:bodyText>
+   One of the elementary applications of matrix arrays is storing and
+   manipulating coefficients of systems of linear equations. The various steps
+   that you carry out in applying the technique of elimination to a system of
+   linear equations<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+<mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mstyle displaystyle="true">
+<mml:mtable rowspacing="1.0ex 1.0ex 1.0ex 1.500000ex ">
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>&hellip;</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">=</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:msub>
+<mml:mi>b</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>&hellip;</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">=</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:msub>
+<mml:mi>b</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mtext>&vellip;</mml:mtext>
+<mml:mtext>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</mml:mtext>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mtext>&vellip;</mml:mtext>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mspace width="thickmathspace">
+</mml:mspace>
+<mml:mtext>&vellip;</mml:mtext>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>&hellip;</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">=</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:msub>
+<mml:mi>b</mml:mi>
+<mml:mi>m</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>can
+   be applied equally well to the matrix of coefficients:
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mpadded depth="+0.500000ex">
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>&hellip;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>b</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>&hellip;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>b</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mtext>&vellip;</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext>&vellip;</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>&hellip;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext>&vellip;</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext>&vellip;</mml:mtext>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>&hellip;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>b</mml:mi>
+<mml:mi>m</mml:mi>
+</mml:msub>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mpadded>
+</mml:mrow>
+</mml:math>For
+   this and numerous other reasons, you perform elementary row operations on
+   matrices. The goal of elementary row operations is to put the matrix in a
+   special form, such as a row echelon form, in which the number of leading
+   zeroes increases as the row number increases.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#gaussian elimination" xmlns="http://www.w3.org/1999/xhtml"> Gaussian
+   Elimination and Row Echelon Form</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#elementary row operations" xmlns="http://www.w3.org/1999/xhtml"> Elementary
+   Row Operations</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="gaussian elimination" xmlns="http://www.w3.org/1999/xhtml">
+</a>Gaussian
+Elimination and Row Echelon Form</html:sectiontitle></html:section>
+<html:bodyText>
+   The Matrices menu provides the choices Fraction-free Gaussian Elimination,
+   Gaussian Elimination, and Reduced Row Echelon Form for obtaining a row echelon
+   form. The three row echelon forms that can be obtained from the Matrices
+   submenu are illustrated in the following examples.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Fraction-free Gaussian Elimination</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>a</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>b</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>c</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>d</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   fraction-free Gaussian elimination:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>a</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>b</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>d</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>c</mml:mi>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   fraction-free Gaussian elimination:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>44</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>58</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Gaussian Elimination</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>a</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>b</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>c</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>d</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Gaussian elimination:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>a</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>b</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>a</mml:mi>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>d</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>c</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Gaussian elimination:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>11</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>29</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Reduced Row Echelon Form</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>a</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>b</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>c</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>d</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   row echelon form:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   row echelon form:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>31</mml:mn>
+<mml:mn>44</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>29</mml:mn>
+<mml:mn>22</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   The last of these, the <html:italics>reduced row echelon form,
+   </html:italics>produces a matrix satisfying the following conditions:
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         The number of leading zeroes increases as the row number increases.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         The first nonzero entry in each nonzero row is equal to
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Each column that contains the leading nonzero entry for any row contains only
+         zeroes above and below that entry.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="elementary row operations" xmlns="http://www.w3.org/1999/xhtml">
+</a>Elementary
+Row Operations</html:sectiontitle></html:section>
+<html:bodyText>
+   You can perform elementary row operations by multiplying on the left by
+   appropriate elementary matrices---the matrices obtained from an identity
+   matrix by applying an elementary row operation. The technique is illustrated
+   in the following examples.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create an elementary matrix</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+            Choose Compute &gt; Matrices &gt; Fill Matrix &gt; Identity and edit the
+            identity matrix.
+         </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   Choose Compute &gt; Evaluate to get the following products.
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Add
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&lambda;</mml:mi>
+</mml:mrow>
+</mml:math>
+         times row
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+         to row
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>&lambda;</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>&lambda;</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&lambda;</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>&lambda;</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Interchange rows
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+         and
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>50</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>12</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>18</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>31</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>26</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>62</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>47</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>91</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>50</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>12</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>18</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>47</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>91</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>31</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>26</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>62</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Multiply row
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+         by
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&lambda;</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>&lambda;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right right right">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>80</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>18</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>33</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>26</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>82</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>14</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>47</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>91</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="left left left">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>80</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>18</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>33</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&lambda;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>26</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&lambda;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext>&ThickSpace;&ThickSpace;</mml:mtext>
+<mml:mrow>
+<mml:mn>82</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&lambda;</mml:mi>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>14</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>47</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>91</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+   You can perform other row or column operations that are available in the MuPAD
+   library, as in the following example.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To access the MuPAD function swapRow and name it
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>S</mml:mi>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">
+</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Definitions &gt; Define MuPAD Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Respond to the dialog box as follows:
+      </html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+            MuPAD Name: <html:sansSerif><html:bold>linalg::swapRow(x,i,j)</html:bold></html:sansSerif>
+</html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+<html:italics>Scientific WorkPlace/Scientific Notebook</html:italics> Name:
+            <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>S</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+            In the area titled The MuPAD Name is a Procedure, check That is built in to
+            MuPAD or is automatically loaded.
+         </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+      Check OK.
+   </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   This procedure defines a function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>S</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   that interchanges the rows
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+</mml:math>
+   of a matrix
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>.
+   Define
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>85</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>55</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>37</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>35</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>97</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>50</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>79</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>56</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>49</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>63</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>57</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>59</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>and
+   evaluate
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>S</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   to get
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>S</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>97</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>50</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>79</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>56</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>85</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>55</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>37</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>35</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>49</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>63</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>57</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>59</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm08-03-matrix_algebra__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

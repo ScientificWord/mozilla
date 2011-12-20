@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:49:07" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm09-06-vector_calculus.xht</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Plots of Complex Functions</h2>
+<html:bodyText>
+   A complex-valued function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>F</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   of a complex variable is a challenge to graph, because the natural graph would
+   require four dimensions. One of the techniques for visualizing such functions
+   is to make conformal plots.
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#conformal plots" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Conformal
+   Plots</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#animated conformal plots" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Animated
+   Conformal Plots</a>
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="conformal plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Conformal Plots</html:sectiontitle></html:section>
+<html:bodyText>
+   A <html:italics>conformal</html:italics> plot of a complex function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>F</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is the image of a two-dimensional rectangular grid of horizontal and vertical
+   line segments. The default is an
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>11</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>11</mml:mn>
+</mml:mrow>
+</mml:math>
+   grid, with each of the intervals
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">Re</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">Im</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   subdivided into
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>10</mml:mn>
+</mml:mrow>
+</mml:math>
+   equal subintervals. If
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>F</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is analytic, then it preserves angles at every point at which
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>F</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&ne;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>;
+   hence, the image is a grid composed of two families of curves that intersect
+   at right angles.
+</html:bodyText>
+<html:bodyText>
+   To create a conformal plot of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>F</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   put the insert point in the expression, and choose Compute &gt; Plot 2D &gt;
+   Conformal. The number of grid lines and the view can be changed in the Plot
+   Properties tabbed dialogs.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Conformal</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm09-06-vector_calculus__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+   In the following example,
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Re</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         and
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Im</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         both range from
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+         to
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         The View Intervals are set at
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">Re</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:math>
+         and
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">Im</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         The Grid Size has been increased to
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>40</mml:mn>
+</mml:mrow>
+</mml:math>
+         by
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>40</mml:mn>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Samples per Horizontal Grid Line and Samples per Vertical Grid Line have both
+         been increased to
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>60</mml:mn>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Conformal</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm09-06-vector_calculus__2.png" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="animated conformal plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Animated
+Conformal Plots</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create an animated conformal plot of a complex function</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Place the insert point in the expression, and choose Compute &gt; Plot 2D
+         Animated &gt; Conformal.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   The number of grid lines and the view can be changed in the Plot Properties
+   dialogs. Following is an animation of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">/</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+   varies from
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>.
+   In the following example,
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Re</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         and
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Im</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         both range from
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+         to
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+         ranges from
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+         to
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         The View Intervals are set at
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">Re</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:math>
+         , and
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">Im</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>z</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Conformal</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<a href="dm09-06-vector_calculus__note1.xht" xmlns="http://www.w3.org/1999/xhtml">
+<html:object data="graphics/dm09-06-vector_calculus__3.png" units="px" msi_resize="true" />
+</a>
+</html:bodyText>
+<html:bodyText>
+   Click the plot for an active version.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm09-06-vector_calculus__4.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

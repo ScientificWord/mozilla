@@ -1,0 +1,4025 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:44:33" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm07-07-calculus.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Sequences and Series</h2>
+<html:bodyText>
+   A sequence can be thought of as an infinite list, and a series as a sum of the
+   terms of a sequence.
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#sequences" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Sequences</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#series" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Series</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#ratio test" xmlns="http://www.w3.org/1999/xhtml"> Ratio
+   test</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#root test" xmlns="http://www.w3.org/1999/xhtml"> Root
+   test</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#integral test" xmlns="http://www.w3.org/1999/xhtml"> Integral
+   test</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#maclaurin series" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Maclaurin
+   Series</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#taylor series" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Taylor
+   Series</a>
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="sequences" xmlns="http://www.w3.org/1999/xhtml">
+</a>Sequences</html:sectiontitle></html:section>
+<html:bodyText>
+   A <html:italics>sequence</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msubsup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:msubsup>
+</mml:mrow>
+</mml:math>
+   is a function whose domain is the set of positive integers. Calculate limits
+   of sequences by selecting an expression such as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   and choosing Compute &gt; Evaluate, or by defining
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+   writing
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+   and choosing Compute &gt; Evaluate.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi>e</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   The terms of the sequence can be defined as function values, with the
+   <a href="dm05-03-functions.xhtml#subscripts as function arguments" xmlns="http://www.w3.org/1999/xhtml"> subscript as
+   function argument</a>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To define the sequence
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         With the insert point in the equation
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>,
+         choose Compute &gt; Definitions &gt; New Definition.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the Interpret Subscript dialog that appears, check A Function Argument and
+         choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition (check A Function
+   Argument)</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi>e</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To compute several terms of a sequence</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         With the insert point in mathematics, type
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">seq</mml:mi>
+</mml:mrow>
+</mml:math>.
+         (It should turn upright and gray.)
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type the number of terms in the form
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">..</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         as a subscript, to obtain
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi mathcolor="gray">seq</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">..</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type the general expression and choose Evaluate.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi mathcolor="gray">seq</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">..</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mfrac>
+<mml:mn>9</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">,</mml:mo>
+<mml:mfrac>
+<mml:mn>64</mml:mn>
+<mml:mn>27</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">,</mml:mo>
+<mml:mfrac>
+<mml:mn>625</mml:mn>
+<mml:mn>256</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi mathcolor="gray">seq</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">..</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1.0</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2.0</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2.&ThinSpace;25</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2.&ThinSpace;370&ThinSpace;4</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2.&ThinSpace;441&ThinSpace;4</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi mathcolor="gray">seq</mml:mi>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">..</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:msub>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   A sequence such as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msubsup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:msubsup>
+</mml:mrow>
+</mml:math>
+   can be visualized graphically by plotting the expression
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   at integer values of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>.
+   You can generate this figure by plotting
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>,
+   then revising the Items Plotted page so that the Plot Style is Point, the
+   Point Marker is Circle, the Plot Interval is 1 to 50, and the Sample Size is
+   50.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   This plot indicates that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&approx;</mml:mo>
+<mml:mn>2.7</mml:mn>
+</mml:mrow>
+</mml:math>.
+   Indeed, Evaluate yields
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>e</mml:mi>
+</mml:mrow>
+</mml:math>
+   and Evaluate Numeric produces
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>e</mml:mi>
+<mml:mo form="infix">&approx;</mml:mo>
+<mml:mn>2.718281828</mml:mn>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   For further information on finite sequences, see
+   <a href="dm02-04-numbers_functions_units.xhtml#maximum" xmlns="http://www.w3.org/1999/xhtml"> Maximum and
+   Minimum</a>.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="series" xmlns="http://www.w3.org/1999/xhtml">
+</a>Series</html:sectiontitle></html:section>
+<html:bodyText>
+   The <html:italics>partial sums</html:italics> of the series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   are the finite sums
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>s</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   These partial sums form a sequence
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:msub>
+<mml:mi>s</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>.
+   If
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mo mathcolor="gray" form="prefix">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:msub>
+<mml:msub>
+<mml:mi>s</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi>s</mml:mi>
+</mml:mrow>
+</mml:math>
+   exists, then
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>s</mml:mi>
+</mml:mrow>
+</mml:math>
+   is called the <html:italics>sum</html:italics> of the series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+   To sum a series, place the insert point in the series and choose Evaluate.
+   (See <a href="dm03-01-algebra.xhtml#summation notation" xmlns="http://www.w3.org/1999/xhtml"> Summation Notation</a>
+   for details on entering the symbols
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>.)<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>0.99</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>99.0</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msup>
+<mml:mn>20</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mi>e</mml:mi>
+<mml:mn>20</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>&pi;</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>&zeta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>3</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi mathcolor="gray">undefined</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Occasionally, a result is obtained that may be obscure, such as the response
+   to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>.
+   This series and the values of the zeta function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&zeta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   can be estimated numerically.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate Numeric</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&approx;</mml:mo>
+<mml:mn>1.202056903</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>&zeta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>3</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&approx;</mml:mo>
+<mml:mn>1.202056903</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   To sum a series in a form similar to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+   enter an equation such as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+   and choose Compute &gt; Definitions &gt; New Definition. Check Subscript is
+   function argument in the Interpret Subscript box that opens.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition (Subscript is function
+   argument)</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="ratio test" xmlns="http://www.w3.org/1999/xhtml">
+</a>Ratio test</html:sectiontitle></html:subsection>
+<html:bodyText>
+   A series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+<html:italics>converges absolutely</html:italics> if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   converges, in which case the series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   also converges. The <span class="Terminology" xmlns="http://www.w3.org/1999/xhtml">ratio test</span> states that a
+   series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   converges absolutely (and therefore converges) if
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mfrac>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mfrac>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi>L</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   To apply the ratio test to the series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>,
+   define
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+   and compute
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="false">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   to find if it is less than
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="false">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Thus,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>L</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>,
+   which is less than
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   so the series converges absolutely.
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="root test" xmlns="http://www.w3.org/1999/xhtml">
+</a>Root test</html:sectiontitle></html:subsection>
+<html:bodyText>
+   The <html:italics>root test</html:italics> states that a series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   converges absolutely (and therefore converges) if
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:mroot>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mroot>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi>L</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   To apply the root test to the series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>,
+   define
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+   and compute
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="false">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:mroot>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mroot>
+</mml:mrow>
+</mml:math>
+   to find if it is less than
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition (Subscript is function
+   argument)</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:munder>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="false">lim</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&rarr;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:munder>
+<mml:mroot>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mroot>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Thus,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>L</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>,
+   which is less than
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   showing that this series converges absolutely.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="integral test" xmlns="http://www.w3.org/1999/xhtml">
+</a>Integral test</html:sectiontitle></html:subsection>
+<html:bodyText>
+   The <html:italics>integral test</html:italics> states that a series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   converges absolutely if there exists a positive decreasing function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   such that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   for each positive integer
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msubsup>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mi>&infin;</mml:mi>
+</mml:msubsup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   To verify convergence of the series
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>n</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+   using the integral test, define
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>,
+   compute
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msubsup>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mi>&infin;</mml:mi>
+</mml:msubsup>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and determine if it is finite.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate, Compute &gt; Evaluate Numeric</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msubsup>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mi>&infin;</mml:mi>
+</mml:msubsup>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:msup>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:msup>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&approx;</mml:mo>
+<mml:mn>5.805497209</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Thus, this integral is finite. (Although for
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>,
+   it is true that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>3</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   you can verify that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   is decreasing for
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&gt;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>.
+   In fact,
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mfrac>
+<mml:mi>x</mml:mi>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>is
+   positive only on the interval
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2.8854</mml:mn>
+</mml:mrow>
+</mml:math>,
+   so
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   is decreasing on
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+</mml:math>.
+   Since convergence of a series depends on the tail end of the series only, it
+   is sufficient that the sequence of terms be eventually decreasing.)
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="maclaurin series" xmlns="http://www.w3.org/1999/xhtml">
+</a>Maclaurin Series</html:sectiontitle></html:section>
+<html:bodyText>
+   The <html:italics>Maclaurin series</html:italics> of a function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   is the series
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mfrac>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>where
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   indicates the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>th
+   derivative of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   evaluated at 0. It is a power series expanded about
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To expand a function
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml"> in
+   a Maclaurin series</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in the expression
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Power Series.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Specify Variable, Center, and Order.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   With
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>10</mml:mn>
+</mml:mrow>
+</mml:math>
+   terms, the result is as follows.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Power Series </strong>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">(Variable
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">;
+   Center
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">;
+   Order
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>10</mml:mn>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">)</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>
+   Series expansion
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>120</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5040</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>6</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>362880</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>8</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>O</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>10</mml:mn>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   The
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>O</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>10</mml:mn>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   term indicates that all the remaining terms in the series contain at least
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>10</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   as a factor.
+</html:bodyText>
+<html:bodyText>
+   Plot 2D provides an excellent visual comparison between a function and an
+   approximating polynomial.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>120</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   To determine which graph corresponds to which equation, evaluate one of the
+   expressions where the graphs show some separation. For example,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&approx;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.1892006238</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   and hence the graph of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+   is the one that is negative at
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   You can define a generic function and reproduce the general formula for a
+   power series.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Power Series </strong>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">(Variable
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">,
+   Center
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">,
+   Order
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">)</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   Series expansion
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mo form="postfix">&prime;</mml:mo>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>3</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>24</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>4</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>O</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+   The following are additional examples of Maclaurin series
+   expansions.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Power Series </strong>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">(Variable
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">;
+   Center
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">;
+   Order
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>10</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml"> resp.)</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>e</mml:mi>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   Series expansion
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>24</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>120</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>720</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>6</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>O</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>7</mml:mn>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   Series expansion
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>120</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5040</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>7</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>362880</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>9</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>O</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>10</mml:mn>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>e</mml:mi>
+<mml:mi>x</mml:mi>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   Series expansion
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>30</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>90</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>6</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>O</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>7</mml:mn>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Remember that output can be copied and pasted (with ordinary word-processing
+   tools) to create input for further calculations. In particular, select and
+   delete the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">+</mml:mo>
+<mml:mrow>
+<mml:mi>O</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   expression to convert the series into a polynomial. It is reassuring to note
+   that, if the first few terms of the Maclaurin series for
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>e</mml:mi>
+<mml:mi>x</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   are multiplied by the first few terms of the Maclaurin series for
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>,
+   then the result is the same as the first few terms of the Maclaurin series for
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>e</mml:mi>
+<mml:mi>x</mml:mi>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Expand</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>24</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>120</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>6</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>120</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>14&ThinSpace;400</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>10</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2880</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>9</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>360</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>7</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>90</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>6</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>30</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="taylor series" xmlns="http://www.w3.org/1999/xhtml">
+</a>Taylor Series</html:sectiontitle></html:section>
+<html:bodyText>
+   The Maclaurin series is a special case of the more general Taylor series. The
+   <html:italics>Taylor series</html:italics> of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   expanded about
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+   is given by
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mi>&infin;</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mfrac>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>a</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>and
+   hence is expanded in powers of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+   and centered about
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To expand a function
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml"> in
+   a Taylor series in powers of
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in the expression
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Power Series.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Specify Variable
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>,
+         Center
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>,
+         and Order.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   To find the Taylor series of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   expanded about
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   choose Compute &gt; Power Series. In the dialog box, type the variable
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>,
+   type the center
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   and select the desired order of the approximating polynomial.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Power Series </strong>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">(Variable
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">;
+   Center
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">;
+   Order
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml">)</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   Series expansion
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>O</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   A comparison between
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   and the polynomial
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+<mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>is
+   illustrated graphically in the following figure. Note how closely the
+   polynomial fits the graph of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   in the neighborhood of the point
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+<span style="width:1in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:1in">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm07-07-calculus__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>
