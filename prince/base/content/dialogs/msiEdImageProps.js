@@ -69,9 +69,11 @@ var gInsertNewImage;
 var gCaptionData;
 
 var importTimer;
-var texImportTimer;
-var gfxImportProcess;
-var texImportProcess;
+//var texImportTimer;
+//var gfxImportProcess;
+//var texImportProcess;
+//var importTargFile;
+//var texImportTargFile;
 
 // dialog initialization code
 function Startup()
@@ -220,16 +222,31 @@ function fillInValue(element, index, array)
     element= msiGetHTMLOrCSSStyleValue(null, globalImage, gBorderdesc[index], null);
 }
 
+function getSourceLocationFromElement(imageNode)
+{
+  var fileSrc = "";
+  if (imageElement.hasAttribute("src"))
+    fileSrc = imageElement.getAttribute("src");
+  else if (imageElement.hasAttribute("data"))
+    fileSrc = imageElement.getAttribute("data");
+  var lastDot = fileSrc.lastIndexOf(".");
+  if (lastDot < 0)
+    lastDot = 0;
+  var extraStuff = fileSrc.indexOf("#", lastDot);
+  if (extraStuff < 0)
+    extraStuff = fileSrc.indexOf("?", lastDot);
+  if (extraStuff >= 0)
+    return fileSrc.substr(0, extraStuff);
+  return fileSrc;
+}
+
 // Set dialog widgets with attribute data
 // We get them from globalElement copy so this can be used
 //   by AdvancedEdit(), which is shared by all property dialogs
 function InitImage()
 {
   // Set the controls to the image's attributes
-  if (imageElement.hasAttribute("src"))
-    gDialog.srcInput.value = imageElement.getAttribute("src");
-  else if (imageElement.hasAttribute("data"))
-    gDialog.srcInput.value = imageElement.getAttribute("data");
+  gDialog.srcInput.value = getSourceLocationFromElement(imageElement);
 
   // Set "Relativize" checkbox according to current URL state
   msiSetRelativeCheckbox();
@@ -479,7 +496,7 @@ function LoadPreviewImage()
   if (gDialog.ImageHolder.firstChild)
     gDialog.ImageHolder.removeChild(gDialog.ImageHolder.firstChild);
     
-  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "html:object");
+  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "object");
   if (gDialog.PreviewImage)
   {
     // set the src before appending to the document -- see bug 198435 for why
@@ -795,6 +812,7 @@ function chooseFile()
   var fileName = msiGetLocalFileURLSpecial([{filter : graphicsFileFilterStr, filterTitle : GetString("IMGFiles")}], "image");
   if (fileName)
   {
+    importTimerHandler.reset();
     var url = msiURIFromString(fileName);
 
     if (gDialog.import) // copy the file into the graphics directory
@@ -813,7 +831,8 @@ function chooseFile()
     msiSetRelativeCheckbox();
     doOverallEnabling();
   }
-  if (!gfxImportProcess || !gfxImportProcess.isRunning)
+  if (!importTimerHandler.isLoading("import"))
+//  if (!gfxImportProcess || !gfxImportProcess.isRunning)
     LoadPreviewImage();
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
@@ -861,50 +880,213 @@ function getLoadableGraphicFile(inputURL)
   return fileName;
 }
 
-function timerCallback(targFile, mode)
+var importTimerHandler = 
 {  
+  statusNone : 0,
+  statusRunning : 1,
+  statusSuccess : 2,
+  statusFailed : 3,
 //  this.timercopy = timer;
-  this.targetFile = targFile;
-  this.mode = mode;
-  this.timerCount = 0;
-  this.notify = function(timer)
+  sourceFile : null,
+  importTargFile : null,
+  texTargFile : null,
+  importProcess : null,
+  texImportProcess : null,
+  importStatus : this.statusNone,
+  texImportStatus : this.statusNone,
+  timerCount : 0,
+
+  notify : function(timer)
   { 
 //    if (timer)
 //      this.timercopy = timer;
-    if (!this.targetFile.exists())
+    this.checkStatus();
+
+    if (this.importStatus == this.statusRunning || this.texImportStatus == this.statusRunning)
     {
       ++this.timerCount;
-      dump("In graphics loading timerCallback for [" + this.mode + "] mode, timer count is [" + this.timerCount + "].\n");
+//      var exitVal = "[" + (this.importProcess ? this.importProcess.exitValue : "none");
+//      exitVal += "," + (this.texImportProcess ? this.texImportProcess.exitValue : "none") + "]";
+//      dump("In graphics loading timerCallback, timer count is [" + this.timerCount + "], exit vals are " + exitVal + ".\n");
       if (this.timerCount < 8)  //keep waiting
         return;
+
+//      if (gfxImportProcess && !gfxImportProcess.isRunning)
+//      {
+//        stopImportTimer("import");
+//      }
       timer.cancel();
-      if (this.mode == "tex")
-      {
-        texImportProcess.kill();
-        texImportProcess = null;
-      }
-      else
-      {
-        gfxImportProcess.kill();
-        gfxImportProcess = null;
-      }
-      //Post a message!! Or put up a dialog asking if user wants to cancel?
+      var importData = {mSourceFile : this.sourceFile, mImportProcess : this.importProcess, mTexImportTargFile : this.texTargFile,
+                    mTexImportProcess : this.texImportProcess, mImportTargFile : this.importTargFile};
+      launchConvertingDialog(importData);
+      //Put up a dialog asking if user wants to cancel?
       return;
-    } 
+    }
+     
     //Otherwise, we're finished
     timer.cancel();
-    if (this.mode == "tex")
+    this.checkFinalStatus();
+  },
+
+  reset : function()
+  {
+    if (this.importTargFile)
     {
-      texImportTimer = null;
-//      bTexImportIsDone = true;
+      var sentFile = this.getFailureSentinelFile("import");
+      if (sentFile.exists())
+        sentFile.remove(false);
+      this.importTargFile = null;
+    }
+    if (this.texTargFile)
+    {
+      var texSentFile = this.getFailureSentinelFile("tex");
+      if (texSentFile.exists())
+        texSentFile.remove(false);
+      this.texTargFile = null;
+    }
+    this.timerCount = 0;
+    this.sourceFile = null;
+    this.importProcess = null;
+    this.texTargFile = null;
+    this.texImportProcess = null;
+    this.importStatus = this.statusNone;
+    this.texImportStatus = this.statusNone;
+  },
+
+  startLoading : function(srcFile, targFile, process, mode)
+  {
+    this.timerCount = 0;  //always restart timer count with second load if two are converting?
+    this.sourceFile = srcFile;
+    if (mode == "tex")
+    {
+      this.texTargFile = targFile;
+      this.texImportProcess = process;
+      this.texImportStatus = this.statusRunning;
     }
     else
     {
-      importTimer = null;
-//      bImportIsDone = true;
-      LoadPreviewImage();
+      this.importTargFile = targFile;
+      this.importProcess = process;
+      this.importStatus = this.statusRunning;
     }
-  } 
+  },
+
+  //Assumptions about status:
+  //  (i)If no import conversion process is launched, it is assumed that the file is of an importable type as is.
+  // (ii)If no tex import conversion process is launched, either the result of the import process or the native file must be
+  //       typesettable. Which is the case should be noted somewhere here (using this.canTypesetSourceFile()).
+  checkStatus : function()
+  {
+    if (this.texImportStatus == this.statusRunning)
+    {
+      if (this.texTargFile.exists())
+        this.texImportStatus = this.statusSuccess;
+      else if (!this.texImportProcess || this.processFailed("tex"))
+        this.importStatus = this.statusFailed;
+    }
+    if (this.importStatus == this.statusRunning)
+    {
+      if (this.importTargFile.exists())
+        this.importStatus = this.statusSuccess;
+      else if (!this.importProcess || this.processFailed("import"))
+        this.importStatus = this.statusFailed;
+    }
+  },
+
+  checkFinalStatus : function()
+  {
+    this.checkStatus();
+    if (this.importStatus == this.statusFailed || this.texImportStatus == this.statusFailed)
+      this.postFailedImportNotice();
+
+    if (this.importStatus == this.statusSuccess)
+      LoadPreviewImage();
+  },
+
+  isLoading : function(mode)
+  {
+    this.checkStatus();
+    if (mode == "import")
+      return (this.importStatus == this.statusRunning);
+    if (mode == "tex")
+      return (this.texImportStatus == this.statusRunning);
+    return ((this.importStatus == this.statusRunning) || (this.texImportStatus == this.statusRunning));
+  },
+
+  getFailureSentinelFile : function(mode)
+  {
+    var sentinelFile = (mode == "tex") ? this.texTargFile.clone() : this.importTargFile.clone();
+    if (!sentinelFile || !sentinelFile.path)
+      return null;
+    var leaf = sentinelFile.leafName;
+    leaf += ".txt";
+    sentinelFile = sentinelFile.parent;
+    sentinelFile.append(leaf);
+    return sentinelFile;
+  },
+
+  processFailed: function(mode)
+  {
+    var sentFile = this.getFailureSentinelFile(mode);
+    return (sentFile && sentFile.exists());
+  },
+
+  postFailedImportNotice : function()
+  {
+    var theMsg = "";
+    var ext = "";
+    if (this.importStatus == this.statusFailed)
+    {
+      theMsg = "imageProps.couldNotImport";
+      if ((this.texImportStatus == this.statusSuccess) || this.canTypesetSourceFile() )
+      {
+        theMsg = "imageProps.couldNotImportButCanTeX";
+        ext = getExtension(this.importTargFile.leafName);
+      }
+    }
+    else if (this.texImportStatus == this.statusFailed)
+    {
+      theMsg = "imageProps.couldNotImportTeX";
+      ext = getExtension(this.texTargFile.leafName);
+    }
+    var msgParams = {file : this.sourceFile.path};
+    if (ext.length)
+      msgParams.extension = ext;
+    msiPostDialogMessage(theMsg, msgParams, "imageProps.importErrorTitle");
+  },
+
+  canTypesetSourceFile : function()
+  {
+    var ret = false;
+    var ext = "";
+    if (this.sourceFile)
+      ext = getExtension(this.sourceFile.leafName);
+    switch(ext)
+    {
+      case "eps":
+      case "pdf":
+      case "png":
+      case "jpg":
+        ret = true;
+      break;
+    }
+    return ret;
+  }
+
+};
+
+function launchConvertingDialog(importData)
+{
+  window.openDialog("chrome://prince/content/msiGraphicsConversionDlg.xul", "graphicsConversionRunning", "chrome,close,titlebar,modal", importData);
+  //Then collect data the dialog may have changed (notably if the user cancelled the conversion)
+  importTimerHandler.importProcess = importData.mImportProcess;
+  importTimerHandler.texImportProcess = importData.mTexImportProcess;
+  if (importData.importFailed)
+    importTimerHandler.importStatus = importTimerHandler.statusFailed;
+  if (importData.texImportFailed)
+    importTimerHandler.texImportStatus = importTimerHandler.statusFailed;
+
+  importTimerHandler.checkFinalStatus();
 }
 
 //  inputFile - an nsIFile, the graphic file being converted
@@ -951,7 +1133,7 @@ function fixCommandFileLine(aLine, substitutions)
         theSub = "";
         if (substitutions[aSub] && substitutions[aSub].length)
           theSub = substitutions[aSub];
-        retLine = retLine.replace("%" + aSub + "%", theSub);
+        retLine = retLine.replace("%" + aSub + "%", theSub, "g");
       }
     }
   }
@@ -994,7 +1176,7 @@ function texLineSubstitutions(fileTypeData, inputNSFile)
 //Returns an nsILocalFile giving the graphics file to be created.
 function prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode)
 {
-  var substVarRE = /%([^%]+)%/;
+//  var substVarRE = /%([^%]+)%/;
   var newLine = "";
   var outStr = "";
   var theSubs;
@@ -1033,22 +1215,33 @@ function prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, 
 function runGraphicsFilter(filterSourceFile, graphicsInFile, graphicsOutFile, mode)
 {
   var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-  if (mode == "tex") 
-    texImportProcess = theProcess;
-  else
-    gfxImportProcess = theProcess;
-  var outLogFile = filterSourceFile.leafName;
-  var nDot = outLogFile.lastIndexOf(".");
-  outLogFile = outLogFile.substr(0,nDot) + ".log";
+//  if (mode == "tex") 
+//    texImportProcess = theProcess;
+//  else
+//    gfxImportProcess = theProcess;
+//
+//  if (mode == "tex")
+//  {
+//    texImportTargFile = graphicsOutFile;
+//    texImportTimer = theTimer;
+//    theCallback = texImportTimerCallback;
+//  }
+//  else
+//  {
+//    importTargFile = graphicsOutFile;
+//    importTimer = theTimer;
+//    theCallback = importTimerCallback;
+//  }
+  importTimerHandler.startLoading(graphicsInFile, graphicsOutFile, theProcess, mode);
+
+//  var outLogFile = filterSourceFile.leafName;
+//  var nDot = outLogFile.lastIndexOf(".");
+//  outLogFile = outLogFile.substr(0,nDot) + ".log";
   theProcess.init(filterSourceFile);
-  theProcess.run(false, [">" + outLogFile], 1);
+//  theProcess.run(false, [">" + outLogFile], 1);
+  theProcess.run(false, [], 0);
   var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-  if (mode == "tex")
-    texImportTimer = theTimer;
-  else
-    importTimer = theTimer;
-  var theTimerCallback = new timerCallback(graphicsOutFile, mode);
-  theTimer.initWithCallback( theTimerCallback, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+  theTimer.initWithCallback( importTimerHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
 }
 
 //Returns a string (the .path of a file)
@@ -1202,21 +1395,122 @@ function LoadPreviewImage()
     gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
     gDialog.PreviewImage.data = imageSrc;
     var extension = getExtension(imageSrc);
+    if (extension == "pdf")
+      readSizeFromPDFFile(imageSrc);
     adjustObjectForFileType(gDialog.PreviewImage, extension);
     gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
   }
 }
+
+//var pdfSetupStr = "#toolbar=0&statusbar=0&message=0&navpanes=0";
+var pdfSetupStr = "#toolbar=0&statusbar=0&navpanes=0";
 
 function adjustObjectForFileType(imageNode, extension)
 {
   switch(extension.toLowerCase())
   {
     case "pdf":
-      addParamChild(imageNode, "toolbar", "0");
-      addParamChild(imageNode, "statusbar", "0");
-      addParamChild(imageNode, "messages", "0");
-      addParamChild(imageNode, "navpanes", "0");
+      var theSrc = getSourceLocationFromElement(imageNode);
+      if (theSrc.indexOf(pdfSetupStr) < 0)
+        imageNode.setAttribute("data", theSrc + pdfSetupStr);
     break;
+  }
+}
+
+function readSizeFromPDFFile(pdfSrc)
+{
+  var pdfSrcUrl = msiMakeAbsoluteUrl(pdfSrc);
+  var theText = getFileAsString(pdfSrcUrl);
+
+//  var wdthRE = /(\/Width)\s+([0-9]+)/i;
+//  var htRE = /(\/Height\s+([0-9]+)/i;
+  var BBRE = /\/BBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
+  var mediaBoxRE = /\/MediaBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
+
+  function checkBoundingBox( objString )
+  {
+    var res = null;
+    var bbArray = BBRE.exec(objString);
+    if (bbArray && bbArray[1] && bbArray[2])
+    {
+      if (bbArray[3] && bbArray[4])
+      {
+        res = {wdth : Math.round(9.6 * (Number(bbArray[3]) - Number(bbArray[1]))),
+               ht : Math.round(9.6 * (Number(bbArray[4]) - Number(bbArray[2]))) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
+      }
+      else  //this shouldn't happen, though
+      {
+        res = {wdth : Math.round(9.6 * Number(bbArray[1])),
+               ht : Math.round(9.6 * Number(bbArray[2])) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
+      }
+    }
+    return res;
+  }
+
+  function checkMediaBox( objString )
+  {
+    var res = null;
+    var dimsArray = mediaBoxRE.exec(objString);
+    if (dimsArray && dimsArray[1] && dimsArray[2])
+    {
+      if (dimsArray[3] && dimsArray[4])
+      {
+        res = { wdth : Math.round(Number(dimsArray[3]) - Number(dimsArray[1])),
+                ht : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])) };
+      }
+      else  //this shouldn't happen, though
+      {
+        res = { wdth : Math.round(Number(dimsArray[1])),
+                ht : Math.round(Number(dimsArray[2])) };
+      }
+    }
+    return res;
+  }
+
+  var htWdth = null;
+  var pdfStart = theText.indexOf("%PDF");
+  if (pdfStart < 0)
+    return;
+  var xObj = theText.indexOf("/XObject", pdfStart);
+  var objEnd = pdfStart;
+  while (!htWdth && (xObj > 0))  //look for /XObject spec first
+  {
+    objEnd = theText.indexOf("endobj", xObj);
+    htWdth = checkBoundingBox( theText.substring(xObj, objEnd) );
+    if (!htWdth)
+      xObj = theText.indexOf("/XObject", objEnd);
+  }
+  if (!htWdth)
+  {
+    var pageDesc = theText.indexOf("/Page", pdfStart);
+    objEnd = pdfStart;
+    while (!htWdth && (pageDesc > 0))  //look for /XObject spec first
+    {
+      objEnd = theText.indexOf("endobj", pageDesc);
+      htWdth = checkMediaBox( theText.substring(pageDesc, objEnd) );
+      if (!htWdth)
+        pageDesc = theText.indexOf("/Page", objEnd);
+    }
+  }
+
+  if (htWdth)
+  {
+    var bReset = false;
+    if (gActualWidth != htWdth.wdth)
+    {
+      gConstrainWidth = gActualWidth  = htWdth.wdth;
+      bReset = true;
+    }
+    if (gActualHeight != htWdth.ht)
+    {
+      gConstrainHeight = gActualHeight = htWdth.ht;
+      bReset = true;
+    }
+    if (frameTabDlg.actual.selected || bReset)
+      setActualSize();
+
+    SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(frameTabDlg.widthInput.value,"px")), 
+                    Math.round(frameUnitHandler.getValueAs(frameTabDlg.heightInput.value,"px")) );
   }
 }
 
