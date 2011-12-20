@@ -247,6 +247,22 @@ msiEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
      return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, PR_TRUE/*aNoEmptyNodes*/);
 }
 
+nsresult 
+msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
+{
+  nsresult res;
+  nsCOMPtr<nsISelection> selection;
+  nsCOMPtr<nsIDOMNode> startNode, endNode;
+  PRInt32 startOffset(0), endOffset(0);
+  PRBool bCollapsed(PR_FALSE);
+  res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+                         endOffset, bCollapsed);	
+  if (bCollapsed)
+  {
+    return m_msiEditingMan->InsertMathmlElement(this, selection, startNode, startOffset, 0, aElement);
+  }
+  return NS_OK;
+}
 
 nsresult msiEditor::InsertMath(PRBool isDisplay)
 {
@@ -347,7 +363,7 @@ NS_IMETHODIMP
 msiEditor::InsertFraction(const nsAString& lineThickness, PRUint32 attrFlags)
 {
   nsresult res(NS_ERROR_FAILURE);
-  if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
+  if (!(mFlags & eEditorPlaintextMask)) 
   {
     nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
@@ -498,7 +514,7 @@ msiEditor::InsertMathname(const nsAString & mathname)
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(mathname.Length() > 0, "Mathname must be at least a single character.");
-  if (mathname.Length() > 0 && !(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
+  if (mathname.Length() > 0 && !(mFlags & eEditorPlaintextMask))
   {
     nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
