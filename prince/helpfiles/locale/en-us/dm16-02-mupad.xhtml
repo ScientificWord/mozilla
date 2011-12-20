@@ -1,0 +1,1584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:58:11" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm16-02-mupad.xhtml</html:title>
+</html:head>
+<html:body>
+<h1 class="section" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Compute Menu Items and MuPAD Functions and Procedures</h1>
+<html:bodyText>
+   Following is a list of Compute menu items and the equivalent functions or
+   procedures in MuPAD. Items marked with <span class="sl" xmlns="http://www.w3.org/1999/xhtml">MSI</span> are
+   programmed, generally using several MuPAD functions and procedures.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<table class="inlineTable" frame="void" rules="none" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<col align="left">
+</col>
+<tbody>
+<tr>
+<td>
+<a href="#evaluate"> Evaluate</a>
+</td>
+<td>
+<span style="width:1in">
+<span style="padding-left:1in">
+</span>
+</span>
+</td>
+<td>
+<a href="#transforms"> Transforms</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#evaluate numeric"> Evaluate Numeric</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#vector calculus"> Vector Calculus</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#simplify"> Simplify</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#matrices"> Matrices</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#combine"> Combine</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#simplex"> Simplex</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#expand"> Expand</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#statistics"> Statistics</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#factor"> Factor</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#plot 2d"> Plot 2D</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#rewrite"> Rewrite</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#plot 3d"> Plot 3D</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#check equality"> Check Equality</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#plot 2d animated"> Plot 2D Animated</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#solve"> Solve</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#plot 3d animated"> Plot 3D Animated</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#polynomials"> Polynomials</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#edit plot"> Edit Plot</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#calculus"> Calculus</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#definitions"> Definitions</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#solve ode"> Solve ODE</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#interpret"> Interpret</a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#power series"> Power Series</a>
+</td>
+<td>
+</td>
+<td>
+<a href="#passthru code to engine"> Passthru Code to Engine</a>
+</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="compute" xmlns="http://www.w3.org/1999/xhtml">
+</a>Compute</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a id="evaluate">
+</a>Evaluate</td>
+<td>eval</td>
+</tr>
+<tr>
+<td>
+<a id="evaluate numeric">
+</a>Evaluate
+            Numeric<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+</td>
+<td>float</td>
+</tr>
+<tr>
+<td>
+<a id="simplify">
+</a>Simplify</td>
+<td>simplify</td>
+</tr>
+<tr>
+<td>
+<a id="factor">
+</a>Expand</td>
+<td>expand</td>
+</tr>
+<tr>
+<td>Factor</td>
+<td>factor</td>
+</tr>
+<tr>
+<td>
+<a id="expand">
+</a>Factor</td>
+<td>ifactor</td>
+</tr>
+<tr>
+<td>
+<a id="check equality">
+</a>Check Equality</td>
+<td>testeq</td>
+</tr>
+<tr>
+<td>
+<a id="edit plot">
+</a>Edit Plot</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>
+<a id="interpret">
+</a>Interpret</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<a id="passthru code to engine">
+</a>Passthru Code to Engine</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="combine" xmlns="http://www.w3.org/1999/xhtml">
+</a>Combine</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Combine</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exponentials</td>
+<td>combine</td>
+</tr>
+<tr>
+<td>Logs</td>
+<td>combine</td>
+</tr>
+<tr>
+<td>Powers</td>
+<td>simplify</td>
+</tr>
+<tr>
+<td>Trigonometric Functions</td>
+<td>simplify</td>
+</tr>
+<tr>
+<td>Arctan</td>
+<td>combine</td>
+</tr>
+<tr>
+<td>Hyperbolic Trigonometric Functions</td>
+<td>combine</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="rewrite" xmlns="http://www.w3.org/1999/xhtml">
+</a>Rewrite</html:sectiontitle></html:section>
+<html:bodyText>
+   Items marked with <span class="sl" xmlns="http://www.w3.org/1999/xhtml">MSI</span> are programmed, generally using
+   several MuPAD functions and procedures.
+</html:bodyText>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Rewrite</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rational</td>
+<td>numeric::rationalize</td>
+</tr>
+<tr>
+<td>Float</td>
+<td>float</td>
+</tr>
+<tr>
+<td>Mixed</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Exponential</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Factorial</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Gamma</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Logarithm</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Sin and Cos</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Sinh and Cosh</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Sin</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Cos</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Tan</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Arcsin</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Arccos</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Arctan</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Arccot</td>
+<td>rewrite</td>
+</tr>
+<tr>
+<td>Polar</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Rectangular</td>
+<td>rectform</td>
+</tr>
+<tr>
+<td>Normal Form</td>
+<td>normal</td>
+</tr>
+<tr>
+<td>Equations as Matrix</td>
+<td>linalg::expr2Matrix</td>
+</tr>
+<tr>
+<td>Matrix as Equations</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="solve" xmlns="http://www.w3.org/1999/xhtml">
+</a>Solve</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Solve</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact</td>
+<td>solve</td>
+</tr>
+<tr>
+<td>Numeric</td>
+<td>numeric::fsolve</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td>Dom::Integer, solve</td>
+</tr>
+<tr>
+<td>Recursion<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+</td>
+<td>solve, rec</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="polynomials" xmlns="http://www.w3.org/1999/xhtml">
+</a>Polynomials</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Polynomials</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Collect</td>
+<td>collect</td>
+</tr>
+<tr>
+<td>Divide</td>
+<td>div</td>
+</tr>
+<tr>
+<td>Partial Fractions</td>
+<td>parfrac</td>
+</tr>
+<tr>
+<td>Roots</td>
+<td>solve</td>
+</tr>
+<tr>
+<td>Sort</td>
+<td>polylib::sortMonomials</td>
+</tr>
+<tr>
+<td>Companion
+            Matrix<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+</td>
+<td>linalg::companion</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="calculus" xmlns="http://www.w3.org/1999/xhtml">
+</a>Calculus</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Calculus</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integrate by
+            Parts<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+</td>
+<td>intlib::by parts</td>
+</tr>
+<tr>
+<td>Change Variables</td>
+<td>intlib::changevar</td>
+</tr>
+<tr>
+<td>Partial Fractions</td>
+<td>parfrac</td>
+</tr>
+<tr>
+<td>Approximate Integral</td>
+<td>student::trapezoid</td>
+</tr>
+<tr>
+<td>Approximate Integral</td>
+<td>student::simpson</td>
+</tr>
+<tr>
+<td>Approximate Integral</td>
+<td>student::riemann</td>
+</tr>
+<tr>
+<td>Plot Approximate Integral</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Plot Approximate Integral Animated</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Find Extrema</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Iterate</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Implicit Differentiation</td>
+<td>diff</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="solve ode" xmlns="http://www.w3.org/1999/xhtml">
+</a>Solve Ordinary Differential Equation</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Solve ODE</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact</td>
+<td>ode::solve</td>
+</tr>
+<tr>
+<td>Laplace</td>
+<td>ode::laplace</td>
+</tr>
+<tr>
+<td>Numeric<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+</td>
+<td>numeric::odesolve2</td>
+</tr>
+<tr>
+<td>Series</td>
+<td>ode::series</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="power series" xmlns="http://www.w3.org/1999/xhtml">
+</a>Power Series</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Power Series</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Power Series</td>
+<td>series</td>
+</tr>
+<tr>
+<td>Power Series</td>
+<td>taylor</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="transforms" xmlns="http://www.w3.org/1999/xhtml">
+</a>Transforms</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Transforms</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fourier</td>
+<td>transform::fourier</td>
+</tr>
+<tr>
+<td>Inverse Fourier</td>
+<td>transform::invfourier</td>
+</tr>
+<tr>
+<td>Laplace</td>
+<td>transform::laplace</td>
+</tr>
+<tr>
+<td>Inverse Laplace</td>
+<td>transform::invlaplace</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="vector calculus" xmlns="http://www.w3.org/1999/xhtml">
+</a>Vector Calculus</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Vector Calculus</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gradient</td>
+<td>linalg::grad</td>
+</tr>
+<tr>
+<td>Divergence</td>
+<td>linalg::divergence</td>
+</tr>
+<tr>
+<td>Curl</td>
+<td>linalg::curl</td>
+</tr>
+<tr>
+<td>Laplacian</td>
+<td>linalg::laplacian</td>
+</tr>
+<tr>
+<td>Jacobian</td>
+<td>linalg::jacobian</td>
+</tr>
+<tr>
+<td>Hessian</td>
+<td>linalg::hessian</td>
+</tr>
+<tr>
+<td>Wronskian</td>
+<td>ode::wronskianMatrix</td>
+</tr>
+<tr>
+<td>Scalar Potential</td>
+<td>scalarpot</td>
+</tr>
+<tr>
+<td>Vector Potential</td>
+<td>linalg::vectorPotential</td>
+</tr>
+<tr>
+<td>Set Basis Variables</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="matrices" xmlns="http://www.w3.org/1999/xhtml">
+</a>Matrices</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Matrices</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adjugate</td>
+<td>linalg::adjoint</td>
+</tr>
+<tr>
+<td>Characteristic Polynomial</td>
+<td>linalg::charPolynomial</td>
+</tr>
+<tr>
+<td>Cholesky Decomposition</td>
+<td>linalg::cholesky</td>
+</tr>
+<tr>
+<td>Column Basis</td>
+<td>linalg::basis</td>
+</tr>
+<tr>
+<td>Concatenate</td>
+<td>linalg::concatMatrix</td>
+</tr>
+<tr>
+<td>Condition Number</td>
+<td>norm</td>
+</tr>
+<tr>
+<td>Definiteness Tests</td>
+<td>linalg::isPosDef</td>
+</tr>
+<tr>
+<td>Determinant</td>
+<td>linalg::det</td>
+</tr>
+<tr>
+<td>Eigenvalues</td>
+<td>linalg::eigenvalues</td>
+</tr>
+<tr>
+<td>Eigenvectors</td>
+<td>linalg::eigenvectors</td>
+</tr>
+<tr>
+<td>Fill Matrix</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Fraction-free Gaussian Elimination</td>
+<td>linalg::gaussElim</td>
+</tr>
+<tr>
+<td>Gaussian Elimination</td>
+<td>linalg::gaussElim</td>
+</tr>
+<tr>
+<td>Hermite Normal Form</td>
+<td>linalg::hermiteForm</td>
+</tr>
+<tr>
+<td>Hermitian Transpose</td>
+<td>conjugate + linalg::transpose</td>
+</tr>
+<tr>
+<td>Inverse</td>
+<td>numeric::inverse</td>
+</tr>
+<tr>
+<td>Jordan Normal Form</td>
+<td>linalg::jordanForm</td>
+</tr>
+<tr>
+<td>Map Function</td>
+<td>map</td>
+</tr>
+<tr>
+<td>Minimal Polynomial</td>
+<td>linalg::minpoly</td>
+</tr>
+</tbody>
+</table>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Matrices</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Norm</td>
+<td>norm</td>
+</tr>
+<tr>
+<td>Nullspace Basis</td>
+<td>linalg::nullspace</td>
+</tr>
+<tr>
+<td>Orthogonality Test</td>
+<td>linalg::isUnitary</td>
+</tr>
+<tr>
+<td>Permanent</td>
+<td>linalg::permanent</td>
+</tr>
+<tr>
+<td>PLU Decomposition</td>
+<td>numeric::factorLU</td>
+</tr>
+<tr>
+<td>QR Decomposition</td>
+<td>numeric::factorQR</td>
+</tr>
+<tr>
+<td>Random Matrix</td>
+<td>linalg::randomMatrix</td>
+</tr>
+<tr>
+<td>Rank</td>
+<td>linalg::rank</td>
+</tr>
+<tr>
+<td>Rational Canonical Form</td>
+<td>linalg::rationalForm</td>
+</tr>
+<tr>
+<td>Reduced Row Echelon Form</td>
+<td>linalg::GaussJordan</td>
+</tr>
+<tr>
+<td>Reshape</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Row Basis</td>
+<td>linalg::basis</td>
+</tr>
+<tr>
+<td>Singular Value Decomposition</td>
+<td>numeric::singularvalues</td>
+</tr>
+<tr>
+<td>Singular Values</td>
+<td>numeric::singularvectors</td>
+</tr>
+<tr>
+<td>Smith Normal Form</td>
+<td>linalg::HermiteForm</td>
+</tr>
+<tr>
+<td>Spectral Radius</td>
+<td>numeric::spectralradius</td>
+</tr>
+<tr>
+<td>Stack</td>
+<td>linalg::stackMatrix</td>
+</tr>
+<tr>
+<td>Trace</td>
+<td>linalg::tr</td>
+</tr>
+<tr>
+<td>Transpose</td>
+<td>linalg::transpose</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="simplex" xmlns="http://www.w3.org/1999/xhtml">
+</a>Simplex</html:sectiontitle></html:section>
+<html:bodyText>
+   Items marked with <span class="sl" xmlns="http://www.w3.org/1999/xhtml">MSI</span> are programmed, generally using
+   several MuPAD functions and procedures.
+</html:bodyText>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; </strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dual</td>
+<td>linopt::dual</td>
+</tr>
+<tr>
+<td>Feasible</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Maximize</td>
+<td>linopt::maximize</td>
+</tr>
+<tr>
+<td>Minimize</td>
+<td>linopt::minimize</td>
+</tr>
+<tr>
+<td>Standardize</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="statistics" xmlns="http://www.w3.org/1999/xhtml">
+</a>Statistics</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Statistics &gt; Fit Curve to Data</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Multiple Regression</td>
+<td>stats::reg</td>
+</tr>
+<tr>
+<td>Multiple Regression (No Constant)</td>
+<td>stats::linReg</td>
+</tr>
+<tr>
+<td>Polynomial of Degree
+            n<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+</td>
+<td>stats::reg</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Statistics &gt; Random Numbers</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Beta</td>
+<td>stats::betaRandom</td>
+</tr>
+<tr>
+<td>Binomial</td>
+<td>stats::binomialRandom</td>
+</tr>
+<tr>
+<td>Cauchy</td>
+<td>stats::cauchyRandom</td>
+</tr>
+<tr>
+<td>Chi-Square</td>
+<td>stats::chisquareRandom</td>
+</tr>
+<tr>
+<td>Exponential</td>
+<td>stats::exponentialRandom</td>
+</tr>
+<tr>
+<td>F</td>
+<td>stats::fRandom</td>
+</tr>
+<tr>
+<td>Gamma</td>
+<td>stats::gammaRandom</td>
+</tr>
+<tr>
+<td>Normal</td>
+<td>stats::normalRandom</td>
+</tr>
+<tr>
+<td>Poisson</td>
+<td>stats::poissonRandom</td>
+</tr>
+<tr>
+<td>Student's t</td>
+<td>stats::tRandom</td>
+</tr>
+<tr>
+<td>Uniform</td>
+<td>stats::uniformRandom</td>
+</tr>
+<tr>
+<td>Weibull<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+</td>
+<td>stats::weibullRandom</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Statistics</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mean</td>
+<td>stats::mean</td>
+</tr>
+<tr>
+<td>Median</td>
+<td>stats::median</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>stats::modal</td>
+</tr>
+<tr>
+<td>Correlation</td>
+<td>stats::correlation</td>
+</tr>
+<tr>
+<td>Covariance</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Geometric Mean</td>
+<td>stats::geometric</td>
+</tr>
+<tr>
+<td>Harmonic Mean</td>
+<td>stats::harmonic</td>
+</tr>
+<tr>
+<td>Mean Deviation</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Moment</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Quantile</td>
+<td>stats::a_quantil</td>
+</tr>
+<tr>
+<td>Standard Deviation</td>
+<td>stats::stdev</td>
+</tr>
+<tr>
+<td>Variance</td>
+<td>stats::variance</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="plot 2d" xmlns="http://www.w3.org/1999/xhtml">
+</a>Plot 2D</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Plot 2D</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rectangular</td>
+<td>plotfunc2d or plot::Function2d</td>
+</tr>
+<tr>
+<td>Polar</td>
+<td>plot::polar</td>
+</tr>
+<tr>
+<td>Implicit</td>
+<td>plot::Implicit2d</td>
+</tr>
+<tr>
+<td>Parametric</td>
+<td>plot::Curve2d</td>
+</tr>
+<tr>
+<td>Conformal</td>
+<td>plot2d</td>
+</tr>
+<tr>
+<td>Gradient</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Vector Field</td>
+<td>plot::VectorField2d</td>
+</tr>
+<tr>
+<td>ODE</td>
+<td>plot::Ode2d</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="plot 3d" xmlns="http://www.w3.org/1999/xhtml">
+</a>Plot 3D.</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Plot 3D</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rectangular</td>
+<td>plotfunc3d or plot::Function2d</td>
+</tr>
+<tr>
+<td>Cylindrical</td>
+<td>plot::Cylindrical</td>
+</tr>
+<tr>
+<td>Spherical</td>
+<td>plot::Spherical</td>
+</tr>
+<tr>
+<td>Implicit</td>
+<td>plot::Implicit3d</td>
+</tr>
+<tr>
+<td>Tube</td>
+<td>plot::Tube</td>
+</tr>
+<tr>
+<td>Gradient</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Vector Field</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="plot 2d animated" xmlns="http://www.w3.org/1999/xhtml">
+</a>Plot 2D Animated</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Plot 2D Animated</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plot 2D Animated + Rectangular</td>
+<td>plotfunc or plot::Function2d</td>
+</tr>
+<tr>
+<td>Plot 2D Animated + Polar</td>
+<td>plot::polar</td>
+</tr>
+<tr>
+<td>Plot 2D Animated + Implicit</td>
+<td>plot::Implicit2d</td>
+</tr>
+<tr>
+<td>Plot 2D Animated + Parametric</td>
+<td>plot::Curve2d</td>
+</tr>
+<tr>
+<td>Plot 2D Animated + Conformal</td>
+<td>plot::Conformal</td>
+</tr>
+<tr>
+<td>Plot 2D Animated + Gradient</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Plot 2D Animated + Vector Field</td>
+<td>plot::VectorField2d</td>
+</tr>
+<tr>
+<td>Plot 2D Animated + ODE</td>
+<td>plot::Ode2d</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="plot 3d animated" xmlns="http://www.w3.org/1999/xhtml">
+</a>Plot 3D Animated</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Plot 3D Animated</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plot 3D Animated + Rectangular</td>
+<td>plotfunc3d or plot::Function3d</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Cylindrical</td>
+<td>plot::Cylindrical</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Spherical</td>
+<td>plot::Spherical</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Implicit</td>
+<td>plot::Implicit3d</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Tube</td>
+<td>plot::Tube</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Gradient</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Vector Field</td>
+<td>
+<span class="sl">MSI</span>
+</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="definitions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Definitions</html:sectiontitle></html:section>
+<html:bodyText>
+<table class="inlineTable" frame="below" rules="groups" xmlns="http://www.w3.org/1999/xhtml">
+<col align="left">
+</col>
+<col align="left">
+</col>
+<thead>
+<tr>
+<td>
+<strong>Compute &gt; Definitions</strong>
+</td>
+<td>
+<strong>MuPAD</strong>
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plot 3D Animated + New Definition</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Undefine</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Show</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>Plot 3D Animated + Clear</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm16-02-mupad__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>
