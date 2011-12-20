@@ -71,6 +71,14 @@ interface msiIEditingManager : nsISupports
   void getMathMLCoalesceInterface(in nsIDOMNode aNode,
                                  in unsigned long offset,
                                  out msiIMathMLCoalesce mathml);
+
+  void InsertMathmlElement(in nsIEditor editor,
+                           in nsISelection selection, 
+                           in nsIDOMNode node, 
+                           in PRUint32 offset,
+                           in PRUint32 flags,
+                           in nsIDOMElement mathmlElement);
+
  
   /**
    * Call insertMath to create inline or dispaly mathml math tag. In some cases this may just

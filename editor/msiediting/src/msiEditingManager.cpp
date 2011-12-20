@@ -1291,13 +1291,13 @@ nsresult msiEditingManager::EnsureMathWithSelectionCollapsed(nsIDOMNode * node)
   return res;
 }
 
-nsresult
+NS_IMETHODIMP
 msiEditingManager::InsertMathmlElement(nsIEditor * editor,
                                        nsISelection * selection, 
                                        nsIDOMNode* node, 
                                        PRUint32 offset,
                                        PRUint32 flags,
-                                       const nsCOMPtr<nsIDOMElement> & mathmlElement)
+                                       nsIDOMElement* mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");

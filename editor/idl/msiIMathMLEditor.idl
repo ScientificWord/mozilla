@@ -15,6 +15,7 @@ interface msiIMathMLEditor : nsISupports
   nsIDOMNode NodeInMath( in nsIDOMNode node );
   nsIDOMNode RangeInMath( in nsIDOMRange range );
   nsIDOMNode SelectionInMath();
+  void InsertMathNodeAtSelection(in nsIDOMElement aElement);
   void InsertInlineMath();
   void InsertDisplay();
   void InsertSuperscript();
