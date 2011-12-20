@@ -266,3 +266,5 @@ prince.jar:
   content/NoteOptionsDialog.js          (dialogs/NoteOptionsDialog.js)
   content/gotomarker.xul                (dialogs/gotomarker.xul)
   content/gotomarker.js                 (dialogs/gotomarker.js)
+  content/msiGraphicsConversionDlg.xul  (dialogs/msiGraphicsConversionDlg.xul)
+  content/msiGraphicsConversionDlg.js   (dialogs/msiGraphicsConversionDlg.js)
