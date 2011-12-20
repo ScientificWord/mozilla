@@ -28,38 +28,38 @@
 	  <xsl:choose>
 	  	<xsl:when test="@msimathname='true'">
 				<xsl:choose>
-					<xsl:when test="normalize-space(string())='arccos'">\arccos</xsl:when>
-			    <xsl:when test="normalize-space(string())='cos'">\cos</xsl:when>
-			    <xsl:when test="normalize-space(string())='csc'">\csc</xsl:when>
-			    <xsl:when test="normalize-space(string())='exp'">\exp</xsl:when>
-			    <xsl:when test="normalize-space(string())='ker'">\ker</xsl:when>
-			    <xsl:when test="normalize-space(string())='limsup'">\limsup</xsl:when>
-			    <xsl:when test="normalize-space(string())='min'">\min</xsl:when>
-			    <xsl:when test="normalize-space(string())='sinh'">\sinh</xsl:when>
-			    <xsl:when test="normalize-space(string())='arcsin'">\arcsin</xsl:when>
-			    <xsl:when test="normalize-space(string())='cosh'">\cosh</xsl:when>
-			    <xsl:when test="normalize-space(string())='deg'">\deg</xsl:when>
-			    <xsl:when test="normalize-space(string())='gcd'">\gcd</xsl:when>
-			    <xsl:when test="normalize-space(string())='lg'">\lg</xsl:when>
-			    <xsl:when test="normalize-space(string())='ln'">\ln</xsl:when>
-			    <xsl:when test="normalize-space(string())='Pr'">\Pr</xsl:when>
-			    <xsl:when test="normalize-space(string())='sup'">\sup</xsl:when>
-			    <xsl:when test="normalize-space(string())='arctan'">\arctan</xsl:when>
-			    <xsl:when test="normalize-space(string())='cot'">\cot</xsl:when>
-			    <xsl:when test="normalize-space(string())='det'">\det</xsl:when>
-			    <xsl:when test="normalize-space(string())='hom'">\hom</xsl:when>
-			    <xsl:when test="normalize-space(string())='lim'">\lim</xsl:when>
-			    <xsl:when test="normalize-space(string())='log'">\log</xsl:when>
-			    <xsl:when test="normalize-space(string())='sec'">\sec</xsl:when>
-			    <xsl:when test="normalize-space(string())='tan'">\tan</xsl:when>
-			    <xsl:when test="normalize-space(string())='arg'">\arg</xsl:when>
-			    <xsl:when test="normalize-space(string())='coth'">\coth</xsl:when>
-			    <xsl:when test="normalize-space(string())='dim'">\dim</xsl:when>
-			    <xsl:when test="normalize-space(string())='inf'">\inf</xsl:when>
-			    <xsl:when test="normalize-space(string())='liminf'">\liminf</xsl:when>
-			    <xsl:when test="normalize-space(string())='max'">\max</xsl:when>
-			    <xsl:when test="normalize-space(string())='sin'">\sin</xsl:when>
-			    <xsl:when test="normalize-space(string())='tanh'">\tanh</xsl:when>
+					<xsl:when test="normalize-space(string())='arccos'">\arccos </xsl:when>
+			    <xsl:when test="normalize-space(string())='cos'">\cos </xsl:when>
+			    <xsl:when test="normalize-space(string())='csc'">\csc </xsl:when>
+			    <xsl:when test="normalize-space(string())='exp'">\exp </xsl:when>
+			    <xsl:when test="normalize-space(string())='ker'">\ker </xsl:when>
+			    <xsl:when test="normalize-space(string())='limsup'">\limsup </xsl:when>
+			    <xsl:when test="normalize-space(string())='min'">\min </xsl:when>
+			    <xsl:when test="normalize-space(string())='sinh'">\sinh </xsl:when>
+			    <xsl:when test="normalize-space(string())='arcsin'">\arcsin </xsl:when>
+			    <xsl:when test="normalize-space(string())='cosh'">\cosh </xsl:when>
+			    <xsl:when test="normalize-space(string())='deg'">\deg </xsl:when>
+			    <xsl:when test="normalize-space(string())='gcd'">\gcd </xsl:when>
+			    <xsl:when test="normalize-space(string())='lg'">\lg </xsl:when>
+			    <xsl:when test="normalize-space(string())='ln'">\ln </xsl:when>
+			    <xsl:when test="normalize-space(string())='Pr'">\Pr </xsl:when>
+			    <xsl:when test="normalize-space(string())='sup'">\sup </xsl:when>
+			    <xsl:when test="normalize-space(string())='arctan'">\arctan </xsl:when>
+			    <xsl:when test="normalize-space(string())='cot'">\cot </xsl:when>
+			    <xsl:when test="normalize-space(string())='det'">\det </xsl:when>
+			    <xsl:when test="normalize-space(string())='hom'">\hom </xsl:when>
+			    <xsl:when test="normalize-space(string())='lim'">\lim </xsl:when>
+			    <xsl:when test="normalize-space(string())='log'">\log </xsl:when>
+			    <xsl:when test="normalize-space(string())='sec'">\sec </xsl:when>
+			    <xsl:when test="normalize-space(string())='tan'">\tan </xsl:when>
+			    <xsl:when test="normalize-space(string())='arg'">\arg </xsl:when>
+			    <xsl:when test="normalize-space(string())='coth'">\coth </xsl:when>
+			    <xsl:when test="normalize-space(string())='dim'">\dim </xsl:when>
+			    <xsl:when test="normalize-space(string())='inf'">\inf </xsl:when>
+			    <xsl:when test="normalize-space(string())='liminf'">\liminf </xsl:when>
+			    <xsl:when test="normalize-space(string())='max'">\max </xsl:when>
+			    <xsl:when test="normalize-space(string())='sin'">\sin </xsl:when>
+			    <xsl:when test="normalize-space(string())='tanh'">\tanh </xsl:when>
 			    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
 				</xsl:choose>
 	  	</xsl:when>
