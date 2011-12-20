@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:36:34" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm05-01-functions.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Function and Expression Names</h2>
+<html:bodyText>
+   A mathematical <html:italics>expression</html:italics> is a collection of valid
+   expression names combined in a mathematically correct way. The notation for a
+   <html:italics>function</html:italics> consists of a valid function name followed by
+   a pair of parentheses containing a list of variables, called
+   <html:italics>arguments</html:italics>. Trigonometric functions and certain others
+   (trigtype functions) do not always require the parentheses around the
+   argument. The argument of a function can also occur as a subscript.
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Examples of mathematical expressions:
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>b</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>c</mml:mi>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>z</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>b</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>b</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Examples of ordinary function notation:
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>z</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>f</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msub>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#valid names" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Valid
+   Names for Functions and Expressions or Variables</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#custom names" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Custom
+   Names</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#automatic substitution" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Automatic
+   Substitution</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="valid names" xmlns="http://www.w3.org/1999/xhtml">
+</a>Valid Names for Functions
+and Expressions or Variables</html:sectiontitle></html:section>
+<html:bodyText>
+   A variable or function name must be either
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         A single character (other than a standard constant), with or without a
+         subscript.
+      </html:bodyText>
+<html:bodyText>
+         Or
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         A custom Math Name, with or without a subscript.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   Expression names, but not function names, may include decorated characters
+   such as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mover accent="true">
+<mml:mi>Z</mml:mi>
+<mml:mo form="postfix" accent="true">&Hat;</mml:mo>
+</mml:mover>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Examples of valid expression names include
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>&alpha;</mml:mi>
+<mml:mi>X</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>g</mml:mi>
+<mml:mi>&theta;</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>&Omega;</mml:mi>
+<mml:mi>&infin;</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>e</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mover accent="true">
+<mml:mi>r</mml:mi>
+<mml:mo form="postfix" accent="true">&tilde;</mml:mo>
+</mml:mover>
+</mml:mrow>
+</mml:math>
+         (decorated character),
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Waldo</mml:mi>
+</mml:mrow>
+</mml:math>
+         (custom name),
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi mathcolor="gray">John</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+         (custom name with subscript).
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Examples of valid function names include
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>&alpha;</mml:mi>
+<mml:mi>X</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>g</mml:mi>
+<mml:mi>&theta;</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>&Omega;</mml:mi>
+<mml:mi>&infin;</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>e</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Alice</mml:mi>
+</mml:mrow>
+</mml:math>
+         (custom name),
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi mathcolor="gray">Lana</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+         (custom name with subscript).
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Examples of invalid function names include
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">&Delta;</mml:mo>
+<mml:mi>F</mml:mi>
+</mml:mrow>
+</mml:math>
+         (two characters),
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>e</mml:mi>
+</mml:mrow>
+</mml:math>
+         (standard constants),
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+         (two-character subscript),
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>r</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+         (reserved for derivative).
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   In the example of function names, the subscript on
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>f</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   is properly regarded as the number <html:italics>one hundred
+   twenty-three</html:italics>, not "one, two, three."
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="custom names" xmlns="http://www.w3.org/1999/xhtml">
+</a>Custom Names</html:sectiontitle></html:section>
+<html:bodyText>
+   In general, function or expression names must be single characters or
+   subscripted characters. However, the system includes a number of predefined
+   functions with names that appear to be multicharacter---such as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">lcm</mml:mi>
+</mml:mrow>
+</mml:math>---but
+   that behave like a single character in the sense that they can be deleted with
+   a single backspace. You can create custom names with similar behavior that are
+   legitimate function or expression names.
+</html:bodyText>
+<html:bodyText>
+   There are three types of custom names: Operator, Function, and Variable. When
+   you choose Name Type to be Operator, the custom name behaves like
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&sum;</mml:mo>
+</mml:mrow>
+</mml:math>
+   or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+</mml:mrow>
+</mml:math>
+   with regard to Operator Limit Placement. When you choose Name Type to be
+   Function or Variable, it behaves like an ordinary character with regard to
+   subscripts and superscripts. Observe the different behaviors of these types
+   for inline and displayed situations:
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         In-line Operator:
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:munderover>
+</mml:mrow>
+</mml:math>
+         ,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msubsup>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mn>1</mml:mn>
+</mml:msubsup>
+</mml:mrow>
+</mml:math>
+         ,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo mathcolor="gray" form="prefix" movablelimits="true">operator</mml:mo>
+<mml:mi>a</mml:mi>
+<mml:mi>b</mml:mi>
+</mml:munderover>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         In-line Function or Variable:
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msubsup>
+<mml:mi>a</mml:mi>
+<mml:mi>k</mml:mi>
+<mml:mi>j</mml:mi>
+</mml:msubsup>
+</mml:mrow>
+</mml:math>,
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msubsup>
+<mml:mi mathcolor="gray">variable</mml:mi>
+<mml:mi>c</mml:mi>
+<mml:mi>d</mml:mi>
+</mml:msubsup>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Displayed Operator, and displayed Function or Variable:
+         <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:munderover>
+<mml:mtext mathcolor="black">&emsp;&emsp;</mml:mtext>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="false" largeop="true">&int;</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mn>1</mml:mn>
+</mml:munderover>
+<mml:mtext mathcolor="black">&emsp;&emsp;</mml:mtext>
+<mml:munder>
+<mml:mover>
+<mml:mi mathcolor="gray">operator</mml:mi>
+<mml:mi>b</mml:mi>
+</mml:mover>
+<mml:mi>a</mml:mi>
+</mml:munder>
+<mml:mtext mathcolor="black">&emsp;&emsp;</mml:mtext>
+<mml:msubsup>
+<mml:mi>a</mml:mi>
+<mml:mi>k</mml:mi>
+<mml:mi>j</mml:mi>
+</mml:msubsup>
+<mml:mtext mathcolor="black">&emsp;&emsp;</mml:mtext>
+<mml:msubsup>
+<mml:mi mathcolor="gray">variable</mml:mi>
+<mml:mi>c</mml:mi>
+<mml:mi>d</mml:mi>
+</mml:msubsup>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create a custom math name</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Math Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type a custom name in the text box under Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         For Name Type, choose Operator or Function or Variable.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         If you choose Operator, check your choice of Operator Limit Placement.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         If you want this name to automatically gray when typed in mathematics mode,
+         check Add Automatic Substitution.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<html:object data="graphics/dm05-01-functions__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   The gray custom name appears on the screen at the insert point. You can use
+   this name to define a function or expression. You can copy and paste or click
+   and drag this grayed name on the screen, or you can recreate it with the Math
+   Name dialog.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create a decorated character</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type a character.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select the character and choose Edit &gt; Properties &gt; Character
+         Properties.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Click the desired accent and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mover accent="true">
+<mml:mi>a</mml:mi>
+<mml:mo form="postfix" accent="true">&tilde;</mml:mo>
+</mml:mover>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mover accent="true">
+<mml:mi>a</mml:mi>
+<mml:mo form="postfix" accent="true">&tilde;</mml:mo>
+</mml:mover>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="automatic substitution" xmlns="http://www.w3.org/1999/xhtml">
+</a>Automatic Substitution</html:sectiontitle></html:section>
+<html:bodyText>
+   When automatic substitution is enabled, function names such as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">arcsin</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+</mml:mrow>
+</mml:math>
+   automatically turn upright and gray when typed in mathematics. For a list of
+   these names, choose Tools &gt; Auto Substitution.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To enable auto substitution in mathematics</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Choose Tools &gt; Auto Substitution and under Enable auto substitution , check
+         In Math.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   If automatic substitution is not enabled in mathematics, no function names
+   automatically gray and such names must be selected from the Auto Substitution
+   list or created by choosing Insert &gt; Math Objects &gt; Math Name.
+</html:bodyText>
+<html:bodyText>
+   You can evoke the automatic substitution behavior with new custom names using
+   the Automatic Substitution dialog.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To make a custom name automatically gray</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Tools &gt; Auto Substitution.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type the keystrokes that you wish to use. (This may be an abbreviated form of
+         the custom name.)
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Click the Substitution box to place the cursor there and, leaving Auto
+         Substitution open, choose Insert &gt; Math Objects &gt; Math Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose a custom name from the scroll-down list or type a custom name in the
+         Name text box in the Math Name dialog.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Apply. (The custom name will appear in gray in the Substitution box of
+         the Automatic Substitution dialog.)
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the Math Name dialog box, choose OK. (The Math Name dialog will close.)
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the Auto Substitution dialog box, choose Save and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<html:object data="graphics/dm05-01-functions__2.png" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+<a href="dm15-04-custom.xhtml" xmlns="http://www.w3.org/1999/xhtml"> Click here for another example of Automatic
+   Substitution.</a>
+</html:bodyText>
+<html:bodyText>
+   For further details, choose Help &gt; Index &gt; General Information and look
+   under automatic substitution.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm05-01-functions__3.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>
