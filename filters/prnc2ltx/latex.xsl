@@ -704,38 +704,38 @@ should not be done under some conditions -->
 </xsl:template>
 <xsl:template match="mml:mi[@msimathname='true']">
 	<xsl:choose>
-		<xsl:when test=".='arccos'">\arccos</xsl:when>
-    <xsl:when test=".='cos'">\cos</xsl:when>
-    <xsl:when test=".='csc'">\csc</xsl:when>
-    <xsl:when test=".='exp'">\exp</xsl:when>
-    <xsl:when test=".='ker'">\ker</xsl:when>
-    <xsl:when test=".='limsup'">\limsup</xsl:when>
-    <xsl:when test=".='min'">\min</xsl:when>
-    <xsl:when test=".='sinh'">\sinh</xsl:when>
-    <xsl:when test=".='arcsin'">\arcsin</xsl:when>
-    <xsl:when test=".='cosh'">\cosh</xsl:when>
-    <xsl:when test=".='deg'">\deg</xsl:when>
-    <xsl:when test=".='gcd'">\gcd</xsl:when>
-    <xsl:when test=".='lg'">\lg</xsl:when>
-    <xsl:when test=".='ln'">\ln</xsl:when>
-    <xsl:when test=".='Pr'">\Pr</xsl:when>
-    <xsl:when test=".='sup'">\sup</xsl:when>
-    <xsl:when test=".='arctan'">\arctan</xsl:when>
-    <xsl:when test=".='cot'">\cot</xsl:when>
-    <xsl:when test=".='det'">\det</xsl:when>
-    <xsl:when test=".='hom'">\hom</xsl:when>
-    <xsl:when test=".='lim'">\lim</xsl:when>
-    <xsl:when test=".='log'">\log</xsl:when>
-    <xsl:when test=".='sec'">\sec</xsl:when>
-    <xsl:when test=".='tan'">\tan</xsl:when>
-    <xsl:when test=".='arg'">\arg</xsl:when>
-    <xsl:when test=".='coth'">\coth</xsl:when>
-    <xsl:when test=".='dim'">\dim</xsl:when>
-    <xsl:when test=".='inf'">\inf</xsl:when>
-    <xsl:when test=".='liminf'">\liminf</xsl:when>
-    <xsl:when test=".='max'">\max</xsl:when>
-    <xsl:when test=".='sin'">\sin</xsl:when>
-    <xsl:when test=".='tanh'">\tanh</xsl:when>
+		<xsl:when test=".='arccos'">\arccos </xsl:when>
+    <xsl:when test=".='cos'">\cos </xsl:when>
+    <xsl:when test=".='csc'">\csc </xsl:when>
+    <xsl:when test=".='exp'">\exp </xsl:when>
+    <xsl:when test=".='ker'">\ker </xsl:when>
+    <xsl:when test=".='limsup'">\limsup </xsl:when>
+    <xsl:when test=".='min'">\min </xsl:when>
+    <xsl:when test=".='sinh'">\sinh </xsl:when>
+    <xsl:when test=".='arcsin'">\arcsin </xsl:when>
+    <xsl:when test=".='cosh'">\cosh </xsl:when>
+    <xsl:when test=".='deg'">\deg </xsl:when>
+    <xsl:when test=".='gcd'">\gcd </xsl:when>
+    <xsl:when test=".='lg'">\lg </xsl:when>
+    <xsl:when test=".='ln'">\ln </xsl:when>
+    <xsl:when test=".='Pr'">\Pr </xsl:when>
+    <xsl:when test=".='sup'">\sup </xsl:when>
+    <xsl:when test=".='arctan'">\arctan </xsl:when>
+    <xsl:when test=".='cot'">\cot </xsl:when>
+    <xsl:when test=".='det'">\det </xsl:when>
+    <xsl:when test=".='hom'">\hom </xsl:when>
+    <xsl:when test=".='lim'">\lim </xsl:when>
+    <xsl:when test=".='log'">\log </xsl:when>
+    <xsl:when test=".='sec'">\sec </xsl:when>
+    <xsl:when test=".='tan'">\tan </xsl:when>
+    <xsl:when test=".='arg'">\arg </xsl:when>
+    <xsl:when test=".='coth'">\coth </xsl:when>
+    <xsl:when test=".='dim'">\dim </xsl:when>
+    <xsl:when test=".='inf'">\inf </xsl:when>
+    <xsl:when test=".='liminf'">\liminf </xsl:when>
+    <xsl:when test=".='max'">\max </xsl:when>
+    <xsl:when test=".='sin'">\sin </xsl:when>
+    <xsl:when test=".='tanh'">\tanh </xsl:when>
     <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
 	</xsl:choose>
 </xsl:template>
