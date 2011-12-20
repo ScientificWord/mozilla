@@ -114,3 +114,4 @@ en-US.jar:
   locale/NoteOptionsDialog.dtd            (dialogs/NoteOptionsDialog.dtd)
   locale/msiEditorImageProperties.dtd     (dialogs/msiEditorImageProperties.dtd)
   locale/gotomarker.dtd                   (dialogs/gotomarker.dtd)
+  locale/msiGraphicsConversionDlg.dtd     (dialogs/msiGraphicsConversionDlg.dtd)

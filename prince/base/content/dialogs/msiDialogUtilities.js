@@ -502,6 +502,36 @@ function enableControls(theControls, bEnable)
   }
 }
 
+function showHideControlsByID(theControls, bShow)
+{
+  var theControl = null;
+  for (var ix = 0; ix < theControls.length; ++ix)
+  {
+    theControl = document.getElementById(theControls[ix]);
+    if (theControl != null)
+    {
+      if (!bShow)
+        theControl.setAttribute("hidden", "true");
+      else if (theControl.hasAttribute("hidden"))
+        theControl.removeAttribute("hidden");
+    }
+  }
+}
+
+function showHideControls(theControls, bShow)
+{
+  for (var ix = 0; ix < theControls.length; ++ix)
+  {
+    if (theControls[ix] != null)
+    {
+      if (!bShow)
+        theControls[ix].setAttribute("hidden", "true");
+      else if (theControls[ix].hasAttribute("hidden"))
+        theControls[ix].removeAttribute("hidden");
+    }
+  }
+}
+
 
 //The following are taken from Barry's typesetDocFormat.js. They are put here for general use by dialogs involving units.
 
@@ -789,7 +819,7 @@ function msiPostDialogMessage(msgID, paramsObj, titleID)
   var msgStr = msiGetDialogString(msgID, theParams);
   var titleStr = "Error";
   if (titleID)
-    titleStr = GetDialogString(titleID, theParams);  //can use the same array of parameters, in case the message title is parametrized
+    titleStr = msiGetDialogString(titleID, theParams);  //can use the same array of parameters, in case the message title is parametrized
   if (msgStr)
     AlertWithTitle(titleStr, msgStr);
 }
