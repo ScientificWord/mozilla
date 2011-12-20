@@ -1,0 +1,4041 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:53:45" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm12-02-applied_modern_algebra.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Integers Modulo m</h2>
+<html:bodyText>
+   The Euclidean algorithm for integers leads to the notion of congruence of two
+   integers modulo a given integer.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#congruence modulo m" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Congruence
+   Modulo m</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#multiplication tables modulo m" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Multiplication
+   Tables Modulo m</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#inverses modulo m" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Inverses
+   Modulo m</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#solving congruences modulo m" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Solving
+   Congruences Modulo m</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#pairs of linear congruences" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Pairs
+   of Linear Congruences</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#systems of linear congruences" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Systems
+   of Linear Congruences</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#powers modulo m" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Powers
+   Modulo m</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#generating large primes" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Generating
+   Large Primes</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="congruence modulo m" xmlns="http://www.w3.org/1999/xhtml">
+</a>Congruence Modulo m</html:sectiontitle></html:section>
+<html:bodyText>
+   Two integers
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+   are <html:italics>congruent modulo</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   if and only if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+   is a multiple of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>,
+   in which case we write
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   Thus,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>15</mml:mn>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mn>33</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>9</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   because
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>15</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>33</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>18</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a multiple of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>9</mml:mn>
+</mml:mrow>
+</mml:math>.
+   Given integers
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>,
+   the mod function is given by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+   if and only if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>b</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>;
+   hence,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   is the smallest nonnegative residue of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+   modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   The underlying computer algebra system does not understand the congruence
+   notation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   but it does understand the function notation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>.
+   This section shows how to translate problems in algebra and number theory into
+   language that will be handled correctly by the computational engine.
+</html:bodyText>
+<html:bodyText>
+   Traditionally the congruence notation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is written with the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   enclosed inside parentheses since the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   clarifies the expression
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>.
+   In this context, the expression
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   never appears without the preceding
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+</mml:mrow>
+</mml:math>.
+   On the other hand, the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+</mml:mrow>
+</mml:math>
+   function is usually written in the form
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   without parentheses.
+</html:bodyText>
+<html:bodyText>
+   The mod function is a function of two variables, with the function written
+   between the two variables. This usage is similar to the common usage of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo>+</mml:mo>
+</mml:mrow>
+</mml:math>,
+   which is also a function of two variables with the function values expressed
+   as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>,
+   rather than the usual functional notation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">+</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To evaluate the mod function</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Place the insert point in the expression
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+         and choose Compute &gt; Evaluate.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>23</mml:mn>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>14</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>9</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   In terms of the <html:italics>floor</html:italics> function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mml:mo>
+</mml:mrow>
+</mml:math>,
+   the mod function is given by
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">/</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>23</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mml:mo>
+<mml:mfrac>
+<mml:mn>23</mml:mn>
+<mml:mn>14</mml:mn>
+</mml:mfrac>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mn>14</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>9</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="multiplication tables modulo&#xA;m" xmlns="http://www.w3.org/1999/xhtml">
+</a>Multiplication Tables Modulo m</html:sectiontitle></html:section>
+<html:bodyText>
+   You can make tables that display the products modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   of pairs of integers from the set
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>&hellip;</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To get a multiplication table modulo 6</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type the equation
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>j</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         and choose Compute &gt; Definitions &gt; New Definition.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Matrices &gt; Fill Matrix
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select Defined by Function.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+</mml:mrow>
+</mml:math>
+         in the Enter Function Name box.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select 6 rows and 6 columns and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:math>
+         at the right of the matrix.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Evaluate.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>9</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>12</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>15</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>12</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>16</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>20</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>15</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>20</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>25</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   A more efficient way to generate the same multiplication is to define
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>j</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and follow steps 2--6 above.
+</html:bodyText>
+<html:bodyText>
+   You can also find the multiplication table
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   as the product of a column matrix with a row matrix.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Make a copy of this last matrix. Add a new row at the top (position 1) and add
+   a new column at the left (position 1); fill in the blanks and change the new
+   row and column to Bold font, to get the following multiplication table modulo
+   6:<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="infix">&times;</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>0</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>1</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>2</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>3</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>4</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>5</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>0</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>1</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>2</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>3</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>4</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>5</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   From the table, we see that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   A shortcut that creates the multiplication table
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:math>
+   in essentially one step is to define
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mi>j</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and use Compute &gt; Matrices &gt; Fill Matrix and the function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+</mml:mrow>
+</mml:math>
+   to create a
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+</mml:math>
+   matrix.
+</html:bodyText>
+<html:bodyText>
+   You can generate an addition table by defining
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>j</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<div class="example" xmlns="http://www.w3.org/1999/xhtml">
+<span class="leadin">Example</span>
+<html:bodyText>
+      If
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+</mml:mrow>
+</mml:math>
+      is a prime, then the integers modulo
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+</mml:mrow>
+</mml:math>
+      form a field, called a Galois field and denoted
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mi>p</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+      For the prime
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+</mml:math>,
+      you can generate the multiplication table by defining
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>j</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+      and choosing Compute &gt; Matrices &gt; Fill Matrix, then selecting Defined by
+      function from the dialog box. You can generate the addition table in a similar
+      manner using the function
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>j</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.<mml:math display="inline">
+</mml:math>
+<mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="infix">&sdot;</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>0</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>1</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>2</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>3</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>4</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>5</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>6</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>0</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>1</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>2</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>3</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>4</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>5</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>6</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mtext>&emsp;&emsp;</mml:mtext>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mo>+</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>0</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>1</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>2</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>3</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>4</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>5</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>6</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>0</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>1</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>2</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>3</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>4</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>5</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mstyle fontweight="bold" fontstyle="upright">
+<mml:mn>6</mml:mn>
+</mml:mstyle>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</div>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="inverses modulo m" xmlns="http://www.w3.org/1999/xhtml">
+</a>Inverses Modulo m</html:sectiontitle></html:section>
+<html:bodyText>
+   If
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   then
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+   is called an <html:italics>inverse of</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+<html:italics>modulo</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and we write
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   for the least positive residue of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>. The
+   computation engine also recognizes both of the forms
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>a</mml:mi>
+</mml:mfrac>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   for the inverse modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   The inverse
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math> exists
+   if and only if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math> is
+   relatively prime to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>;
+   that is, it exists if and only if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.
+   Thus, modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:math>,
+   only
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math> and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:math> have
+   inverses. Modulo any prime, everynonzero residue has an inverse. In terms of
+   the multiplication table modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>,
+   the integer
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math> has
+   an inverse modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math> if
+   and only if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math> appears
+   in row
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math> (and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math> appears
+   in column
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>).
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To compute the inverse of an integer modulo m</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type the inverse in standard notation .
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Evaluate.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mn>5</mml:mn>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   The three notations
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>b</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">/</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mi>a</mml:mi>
+<mml:mi>b</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   are all interpreted as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>b</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>;
+   that is, first find the inverse of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+   modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>,
+   multiply the result by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and then reduce the product modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>23</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>257</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>56</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>23</mml:mn>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>257</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>56</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:msup>
+<mml:mn>23</mml:mn>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>257</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>56</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="solving congruences modulo m" xmlns="http://www.w3.org/1999/xhtml">
+</a>Solving
+Congruences Modulo m</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To solve a congruence of the form
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Multiply both sides by
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+         to get
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo form="infix">/</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   The congruence
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>17</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mn>23</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>127</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   has a solution
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>91</mml:mn>
+</mml:mrow>
+</mml:math>,
+   as the following two evaluations illustrate.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>23</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>17</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>127</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>91</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>17</mml:mn>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mn>91</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>127</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>23</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Note that, since
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>91</mml:mn>
+</mml:mrow>
+</mml:math> is
+   a solution to the congruence
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>17</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mn>23</mml:mn>
+</mml:mrow>
+<mml:mtext>&ThinSpace;&ThinSpace;</mml:mtext>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>127</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   additional solutions are given by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>91</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>127</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   where
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math> is
+   any integer. In fact,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mn>91</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>127</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math> is
+   just another way of writing
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>91</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>127</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math> for
+   some integer
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="pairs of linear congruences" xmlns="http://www.w3.org/1999/xhtml">
+</a>Pairs of
+Linear Congruences</html:sectiontitle></html:section>
+<html:bodyText>
+   Since linear congruences of the form
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   can be reduced to simple congruences of the form
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mi>c</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   we consider systems of congruences in this latter form.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To solve a pair of linear congruences</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Reduce the problem to a single congruence.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<div class="example" xmlns="http://www.w3.org/1999/xhtml">
+<span class="leadin">Example</span>
+<html:bodyText>
+      Consider the system of two congruences
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mstyle displaystyle="true">
+<mml:mtable>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mn>45</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>237</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mn>19</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>419</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>Checking,
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>237,419</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+      so
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mn>237</mml:mn>
+</mml:mrow>
+</mml:math>
+      and
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mn>419</mml:mn>
+</mml:mrow>
+</mml:math>
+      are relatively prime. The first congruence can be rewritten in the form
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>45</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>237</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+      for some integer
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:math>.
+      Substituting this value into the second congruence, we see that
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>45</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>237</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>19</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>419</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>r</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>for
+      some integer
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+</mml:mrow>
+</mml:math>.
+      This last equation can be rewritten in the form
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>237</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>19</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>45</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>419</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+      which has the solution
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mn>19</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>45</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>237</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>419</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>60</mml:mn>
+</mml:mrow>
+</mml:math>Hence,
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>45</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>237</mml:mn>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mn>60</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>14265</mml:mn>
+</mml:mrow>
+</mml:math>Checking,
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>14265</mml:mn>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>237</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>45</mml:mn>
+</mml:mrow>
+</mml:math>
+      and
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>14265</mml:mn>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>419</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>19</mml:mn>
+</mml:mrow>
+</mml:math>.
+      The complete set of solutions is given by
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>14265</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>237</mml:mn>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mn>419</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>s</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mn>14265</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>99303</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>Thus,
+      the original pair of congruences has been reduced to a single congruence,
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mn>14265</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>99303</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</div>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   In general, if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   are relatively prime, then one solution to the pair
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mstyle displaystyle="true">
+<mml:mtable>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>is
+   given by
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">/</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>A
+   complete set of solutions is given by
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">/</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>m</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>where
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+</mml:mrow>
+</mml:math>
+   is an arbitrary integer.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="systems of linear congruences" xmlns="http://www.w3.org/1999/xhtml">
+</a>Systems
+of Linear Congruences</html:sectiontitle></html:section>
+<html:bodyText>
+   You can reduce systems of any number of congruences to a single congruence by
+   solving systems of congruences two at a time. The <html:italics>Chinese
+   remainder theorem</html:italics> states that, if the moduli are relatively prime in
+   pairs, then there is a unique solution modulo the product of all the moduli.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To solve a system of congruences</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Reduce the system to a single congruence.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<div class="example" xmlns="http://www.w3.org/1999/xhtml">
+<span class="leadin">Example</span>
+<html:bodyText>
+      Consider the system of three linear congruences
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mstyle displaystyle="true">
+<mml:mtable>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mn>45</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>237</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mn>19</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>419</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mn>57</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>523</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>Checking,
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mn>237</mml:mn>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mn>419,523</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+      and
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>237</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>419</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>;
+      hence this system has a solution. The first two congruences can be replaced by
+      the single congruence
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mn>14265</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>99303</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>;
+      hence the three congruences can be replaced by the pair
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mstyle displaystyle="true">
+<mml:mtable>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mn>14265</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>99303</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mn>57</mml:mn>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mn>523</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>As
+      before,
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>14265</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>99303</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>57</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>523</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>r</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+      for some integers
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:math>
+      and
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+</mml:mrow>
+</mml:math>.
+      Thus,
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>57</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>14265</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>99303</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>523</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>134</mml:mn>
+</mml:mrow>
+</mml:math>;
+      hence
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>14265</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>99303</mml:mn>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mn>134</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mn>13320867</mml:mn>
+</mml:mrow>
+</mml:math>.
+      This system of three congruences can thus be reduced to the single congruence
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mn>13320867</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mn>51935469</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</div>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="powers modulo m" xmlns="http://www.w3.org/1999/xhtml">
+</a>Powers Modulo m</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To calculate large powers modulo
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Evaluate
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2789596378267275</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3848590389047349</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2838490563537459</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>m</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>26220&ThinSpace;18141&ThinSpace;09828</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Fermat's Little Theorem<em xmlns="http://www.w3.org/1999/xhtml">
+</em>states that, if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+</mml:mrow>
+</mml:math>
+   is prime and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>p</mml:mi>
+</mml:mrow>
+</mml:math>,
+   then
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>p</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>The
+   integer
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1009</mml:mn>
+</mml:mrow>
+</mml:math>
+   is prime, and the following is no surprise.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mn>1008</mml:mn>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>1009</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="generating large primes" xmlns="http://www.w3.org/1999/xhtml">
+</a>Generating
+Large Primes</html:sectiontitle></html:section>
+<html:bodyText>
+<a id="large primes" xmlns="http://www.w3.org/1999/xhtml">
+</a>There is not a built-in function to generate large
+   primes, but the underlying computational system does have such a function. The
+   following is an example of how to define functions that correspond to existing
+   functions in the underlying computational system.
+</html:bodyText>
+<html:bodyText>
+   In this example,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is defined as the Scientific WorkPlace (Notebook) Name for the MuPAD function,
+   nextprime(x), which generates the next prime greater than or equal to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To define
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml"> as
+   the next-prime function</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Definitions &gt; Define MuPAD Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type nextprime(x) as the MuPAD Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         as the Scientific WorkPlace (Notebook) Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Under The MuPAD Name is a Procedure, check That is Built In to MuPAD or is
+         Automatically Loaded.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   Test the function using Evaluate.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>5</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>500</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>503</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>8290</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>8291</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>593756145682465582</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>593&ThinSpace;756&ThinSpace;145&ThinSpace;682&ThinSpace;465&ThinSpace;583</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm12-02-applied_modern_algebra__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

@@ -1,0 +1,1982 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:43:57" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm07-05-calculus.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Methods of Integration</h2>
+<html:bodyText>
+   Even though you can evaluate many integrals directly, several standard
+   techniques of integration---such as integration by parts, change of variables
+   by substitution, and partial fractions---are also available in
+   <html:italics>Scientific WorkPlace</html:italics> and <html:italics>Scientific
+   Notebook</html:italics>. These techniques were necessary before computational systems
+   were available, and are still important to the understanding of calculus.
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#integration by parts" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Integration
+   by Parts</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#change of variable" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Change
+   of Variable</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#partial fractions" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Partial
+   Fractions</a>
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="integration by parts" xmlns="http://www.w3.org/1999/xhtml">
+</a>Integration by Parts</html:sectiontitle></html:section>
+<html:bodyText>
+   The <span class="Terminology" xmlns="http://www.w3.org/1999/xhtml">integration by parts</span> formula states that
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>v</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>This
+   formula comes from the product formula for
+   differentials<mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>d</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>v</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>and
+   the linearity of integration, which implies
+   that<mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>d</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>v</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>and
+   the fundamental theorem of calculus, which allows you to replace
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>d</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mspace width="thickmathspace">
+</mml:mspace>
+</mml:mrow>
+</mml:math>by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+</mml:math>
+   in the formula for integration by parts.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To use integration by parts</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in an integral.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Calculus &gt; Integrate by Parts.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the dialog box, type an appropriate expression for the Part to
+         Differentiate.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   For the integral
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   for example, choosing
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   for the Part to Differentiate gives the following result:<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Calculus &gt; Integrate by Parts</strong>
+</html:bodyText>
+<html:bodyText>
+   (Part to Differentiate:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>)<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Since
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   can easily be integrated, this solves the problem of integrating
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>. Note
+   that in this example,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>v</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   so that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>v</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="change of variable" xmlns="http://www.w3.org/1999/xhtml">
+</a>Change of Variable</html:sectiontitle></html:section>
+<html:bodyText>
+   It follows from the chain rule that if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   then
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>g</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   This yields the <span class="Terminology" xmlns="http://www.w3.org/1999/xhtml">change of variable formula</span>
+   for integration:
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>g</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>u</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To perform a change of variable</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Enter the integral
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Calculus &gt; Change Variable.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the dialog box, type an appropriate Equation for Substitution
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   For the integral
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   the substitution
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   gives the following:<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Calculus &gt; Change Variable</strong>
+</html:bodyText>
+<html:bodyText>
+   (Equation for Substitution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:math>)
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+<mml:mtext>&ThinSpace;&ThinSpace;</mml:mtext>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   This replaces the problem of integrating
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   by two much easier problems: first integrating
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and then replacing
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:math>
+   by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   in the result. Note that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>u</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   For the integral
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:msqrt>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   the substitution
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is useful.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Calculus &gt; Change Variable</strong>
+</html:bodyText>
+<html:bodyText>
+   (Equation for Substitution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>)
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:msqrt>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mi>u</mml:mi>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mi>u</mml:mi>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>45</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>u</mml:mi>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>u</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Then do an in-place replacement with
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>u</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>:
+</html:bodyText>
+<html:bodyText>
+<mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>15</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>u</mml:mi>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>9</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>u</mml:mi>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>15</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>9</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="partial fractions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Partial Fractions</html:sectiontitle></html:section>
+<html:bodyText>
+   The <span class="Terminology" xmlns="http://www.w3.org/1999/xhtml">method of partial fractions</span> is based on
+   the fact that a factorable rational function can be written as a sum of
+   simpler fractions. Notice how evaluation of the following integral gives the
+   answer as a sum of terms.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   To gain an appreciation for how this calculation might be done internally,
+   consider the method of partial fractions.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To use the method of partial fractions</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Replace a rational function by its partial fractions expansion before carrying
+         out its integration.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<div class="example" xmlns="http://www.w3.org/1999/xhtml">
+<span class="leadin">Example</span>
+<html:bodyText>
+      Here is how you use this method on the integral
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.<br>
+</br>
+<br>
+</br>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+            Enter the rational
+            expression<mml:math display="inline">
+<mml:mrow>
+<mml:mspace width="thickmathspace">
+</mml:mspace>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+         </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+            With the insert point in this expression, choose Compute &gt; Calculus &gt;
+            Partial Fractions or choose Compute &gt; Polynomials &gt; Partial
+            Fractions.<mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>5</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+            Thus
+            <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>5</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+            Write the preceding integral as a sum of three integrals.
+            <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mfrac>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+            Evaluate each of these
+            integrals.<mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mstyle displaystyle="true">
+<mml:mtable>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">=</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">=</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">ln</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd groupalign="right center left">
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" largeop="true">&int;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mfrac>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&dd;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mo form="infix">=</mml:mo>
+<mml:maligngroup>
+</mml:maligngroup>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+</div>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm07-05-calculus__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

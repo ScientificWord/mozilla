@@ -1,0 +1,1330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:53:31" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm12-01-applied_modern_algebra.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Solving Equations</h2>
+<html:bodyText>
+   Many techniques in applied modern algebra are designed to solve equations,
+   from integer equations to polynomial equations to matrix equations. In this
+   section, we describe a few of the methods that can be applied to such
+   problems.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#integer solutions" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Integer
+   Solutions</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#continued fractions" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Continued
+   Fractions</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#recursive solutions" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Recursive
+   Solutions</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="integer solutions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Integer Solutions</html:sectiontitle></html:section>
+<html:bodyText>
+<a id="solve integer" xmlns="http://www.w3.org/1999/xhtml">
+</a>The solver can be restricted to the domain of
+   integers. Choose Compute &gt; Solve &gt; Integer to find integer roots of
+   polynomial expressions with rational coefficients, and integer solutions to
+   equations of the same type.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To find integer roots or integer solutions to an equation</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in an expression or equation.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Solve &gt; Integer.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Integer</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>41</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>421</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>165</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>105</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>11</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>15</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>16</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>21</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="continued fractions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Continued Fractions</html:sectiontitle></html:section>
+<html:bodyText>
+   A <html:italics>simple continued fraction</html:italics> is an expression of the
+   form
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>0</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msub>
+<mml:mo form="postfix">+</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">.</mml:mo>
+<mml:mtext>.</mml:mtext>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>where
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>0</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   is an integer and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>&hellip;</mml:mi>
+</mml:mrow>
+</mml:math>
+   are positive integers. There can be either an infinite or a finite number of
+   terms
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>a</mml:mi>
+<mml:mi>i</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+   A number is rational if and only if it can be expressed as a simple finite
+   continued fraction. You can find rational approximations to irrational numbers
+   by expanding the irrational as a simple continued fraction, then truncating
+   the continued fraction to obtain a rational.
+</html:bodyText>
+<html:bodyText>
+   Continued fractions have been utilized within computer algorithms for
+   computing rational approximations to real numbers, as well as solving
+   indeterminate equations. Connections have been established between continued
+   fractions and chaos theory.
+</html:bodyText>
+<html:bodyText>
+   Use the MuPAD command contfrac to construct a continued fraction of the real
+   numerical expression
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   significant digits.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To define a continued fractions command</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Definitions &gt; Define MuPAD Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the MuPAD Name box, type numlib::contfrac(x,n).
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the <html:italics>Scientific WorkPlace/Scientific Notebook</html:italics> Name
+         box, type
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Check "That is built in to MuPAD or is automatically loaded" and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   Use the continued fractions command to generate continued fractions.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>10</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>15</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>292</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="postfix">+</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">.</mml:mo>
+<mml:mtext>.</mml:mtext>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   The two dots at the bottom indicate an infinite continued fraction. However,
+   you can easily truncate the continued fraction.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To find a good rational approximation to PI</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Select the
+         tail<span style="width:1em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:1em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>292</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="postfix">+</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">.</mml:mo>
+<mml:mtext>.</mml:mtext>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+<span style="width:1em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:1em">
+</span>
+</span>of
+         the continued fraction and delete it.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Evaluate the remaining finite continued fraction.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate, Compute &gt; Evaluate Numeric</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mn>15</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>1</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>355</mml:mn>
+<mml:mn>113</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&approx;</mml:mo>
+<mml:mn>3.&ThinSpace;141&ThinSpace;6</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="recursive solutions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Recursive Solutions</html:sectiontitle></html:section>
+<html:bodyText>
+<a id="solve recursion" xmlns="http://www.w3.org/1999/xhtml">
+</a>Recursion finds solutions to a recursion or a
+   system of recursions.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To solve a recursion or a system of recursions</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Place the insert point in a recursive equation, or in a system of recursive
+         equations entered in a column matrix or display, and choose Compute &gt; Solve
+         &gt; Recursion.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Recursion</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>C</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>C</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   You can also solve recursive equations written in sequence notation.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Recursion</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>C</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>C</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>C</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>C</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   You can specify initial conditions by listing a system of equations in a
+   column matrix.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Recursion</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>0</mml:mn>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Solution is:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   This closed-form solution makes it easy to find specific terms. For example,
+   if you define
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   then
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   can be directly evaluated.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>20</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1048&ThinSpace;573</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   You can use recursion to give a closed-form formula for the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>th
+   Fibonacci number.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Recursion</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>0</mml:mn>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Solution is:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm12-01-applied_modern_algebra__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

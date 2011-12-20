@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:32:12" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm02-05-numbers_functions_units.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Complex Numbers</h2>
+<html:bodyText>
+<a id="complex" xmlns="http://www.w3.org/1999/xhtml">
+</a>The usual notation for a complex number is
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   where
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+   are real numbers and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:math>
+   satisfies
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>i</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#imaginary unit" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Imaginary
+   Unit</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#arithmetic" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Arithmetic</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#absolute value" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Absolute
+   Value</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#complex conjugate" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Complex
+   Conjugate</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#real and imaginary parts" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Real
+   and Imaginary Parts</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="imaginary unit" xmlns="http://www.w3.org/1999/xhtml">
+</a>Imaginary Unit</html:sectiontitle></html:section>
+<html:bodyText>
+   You may prefer to use the letter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+</mml:math> instead
+   of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:math>.
+   If so, choose Tools &gt; Preferences &gt; Computation, Input tab, and select
+   Recognize
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>j</mml:mi>
+</mml:mrow>
+</mml:math> as
+   imaginary
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   You may prefer a distinguished font for the imaginary
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:math>. If
+   so, choose Tools &gt; Preferences &gt; Computation, Entities tab, and check
+   ImaginaryI. If you do not want
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:math>
+   recognized as the imaginary unit, click the Input tab, and uncheck Recognize
+   plain i as imaginary. Choose OK.
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="arithmetic" xmlns="http://www.w3.org/1999/xhtml">
+</a>Arithmetic</html:sectiontitle></html:section>
+<html:bodyText>
+   You can do arithmetic with complex numbers using Evaluate. The result is the
+   <html:italics>rectangular form</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   of the complex number.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msqrt>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mi>i</mml:mi>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&divide;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>13</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>5</mml:mn>
+<mml:mn>13</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="absolute value" xmlns="http://www.w3.org/1999/xhtml">
+</a>Absolute Value</html:sectiontitle></html:section>
+<html:bodyText>
+   The <html:italics>absolute value</html:italics> of a complex number
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is given by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:msqrt>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>b</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:msqrt>
+</mml:mrow>
+</mml:math>.
+   You can compute the absolute value of a complex number using Evaluate.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:msqrt>
+<mml:mn>2</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:msup>
+<mml:mi>e</mml:mi>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="complex conjugate" xmlns="http://www.w3.org/1999/xhtml">
+</a>Complex Conjugate</html:sectiontitle></html:section>
+<html:bodyText>
+   The complex conjugate of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is written
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&midast;</mml:mo>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mover>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+</mml:mover>
+</mml:mrow>
+</mml:math>.The
+   default is the asterisk. To use overbar notation for complex conjugate, choose
+   Tools &gt; Preferences &gt; Computation, Input tab, and check Overbar accent
+   means conjugate. Choose OK.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&midast;</mml:mo>
+</mml:msup>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&midast;</mml:mo>
+</mml:msup>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mover>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+<mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+</mml:mover>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mover>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+</mml:mover>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="real and imaginary parts" xmlns="http://www.w3.org/1999/xhtml">
+</a>Real and
+Imaginary Parts</html:sectiontitle></html:section>
+<html:bodyText>
+   You can find the real and imaginary parts of a complex number using the
+   functions
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Re</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Im</mml:mi>
+</mml:mrow>
+</mml:math>.
+   When you enter the functions
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Re</mml:mi>
+</mml:mrow>
+</mml:math> and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Im</mml:mi>
+</mml:mrow>
+</mml:math> in
+   mathematics mode, they will automatically turn upright and gray. If this does
+   not happen, choose Insert &gt; Math Objects &gt; Math Name, type the name in
+   the Name box, and choose OK.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">Re</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">Im</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   See <a href="dm04-05-trigonometry.xhtml" xmlns="http://www.w3.org/1999/xhtml"> Complex Numbers and Complex
+   Functions</a> for more advanced topics concerning complex numbers.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm02-05-numbers_functions_units__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>
