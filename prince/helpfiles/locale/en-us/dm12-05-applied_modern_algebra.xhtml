@@ -1,0 +1,1358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:54:32" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm12-05-applied_modern_algebra.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Linear Programming</h2>
+<html:bodyText>
+   A <html:italics>linear programming problem</html:italics> consists of minimizing
+   (or maximizing) a linear function subject to certain conditions or constraints
+   expressible as linear inequalities. The word "programming" is used here in the
+   sense of "planning." The importance of linear programming derives in part from
+   its many applications and in part from the existence of good general-purpose
+   techniques for finding optimal solutions.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#the simplex algorithm" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>The
+   Simplex Algorithm</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#feasible systems" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Feasible
+   Systems</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#standard form" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Standard
+   Form</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#the dual of a linear program" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>The
+   Dual of a Linear Program</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="the simplex algorithm" xmlns="http://www.w3.org/1999/xhtml">
+</a>The Simplex Algorithm</html:sectiontitle></html:section>
+<html:bodyText>
+   The basic purpose of the simplex algorithm is to solve linear programming
+   problems. In the following example, the function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is to be maximized subject to the two inequalities shown. The function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is the objective function, and the set of linear constraints is called the
+   linear system.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To enter a linear programming problem with two constraints</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Create a
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+         matrix.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type the function to be maximized in the first row.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type the linear constraints in the subsequent rows.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Leave the insert point in the matrix.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Simplex &gt; Maximize.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplex &gt; Maximize</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Maximum is at:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>12</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Of course, these are the same coordinates that minimize
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:math>.
+   In the following linear programming problem, place the insert point in the
+   matrix and choose Compute &gt; Simplex &gt; Minimize.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplex &gt; Minimize</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Minimum is at:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>12</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="feasible systems" xmlns="http://www.w3.org/1999/xhtml">
+</a>Feasible Systems</html:sectiontitle></html:section>
+<html:bodyText>
+   Two things may prevent the existence of a solution. There may be no values of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:math>
+   satisfying the constraints. Even if there are such values, there may be none
+   maximizing the objective function. If there are values satisfying the
+   constraints, the system is called <html:italics>feasible</html:italics>.
+</html:bodyText>
+<html:bodyText>
+   The following example illustrates a set of inequality constraints with no
+   function to be maximized or minimized. You can ask whether the constraints are
+   feasible---that is, whether they define a nonempty set. Place the insert point
+   in the matrix and choose Compute &gt; Simplex &gt; Feasible.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplex &gt;
+   Feasible?</strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Is feasible?
+   true<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Is feasible? false
+</html:bodyText>
+<html:bodyText>
+   Saying that the system
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+   is not feasible implies, in particular, that there are no values minimizing
+   the objective function in the problem
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mpadded depth="+0.500000ex">
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mpadded>
+</mml:mrow>
+</mml:math>.
+   Geometrically, the two regions that satisfy the inequalities are
+   disjoint.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="standard form" xmlns="http://www.w3.org/1999/xhtml">
+</a>Standard Form</html:sectiontitle></html:section>
+<html:bodyText>
+   A system of linear inequalities is in <html:italics>standard form</html:italics>
+   when all the inequalities are of the form
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+</mml:mrow>
+</mml:math>.
+   To convert a system of linear inequalities to a system in standard form,
+   choose Compute &gt; Simplex &gt; Standardize.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplex &gt; Standardize</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   System in standard form is:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   With a linear function added, you can maximize the resulting linear
+   programming problem.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplex &gt; Maximize</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Maximum is at:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="the dual of a linear program" xmlns="http://www.w3.org/1999/xhtml">
+</a>The Dual
+of a Linear Program</html:sectiontitle></html:section>
+<html:bodyText>
+   The other item on the Simplex menu is Dual. It computes the dual of a linear
+   program.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplex &gt; Dual</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Dual system is:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Applying the simplex algorithm to these two linear programs yields the
+   following results.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplex &gt; Maximize</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="right">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Maximum is at:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>4</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplex &gt; Minimize</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis" columnalign="left">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Minimum is at:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>u</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm12-05-applied_modern_algebra__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

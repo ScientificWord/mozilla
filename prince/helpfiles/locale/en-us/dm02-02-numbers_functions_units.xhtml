@@ -1,0 +1,995 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Monday, December 12, 2011 02:26:36" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm02-02-numbers_functions_units.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Elementary Number Theory</h2>
+<html:bodyText>
+   Number theory is concerned with the properties of numbers in general, and
+   integers in particular.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#prime factorization" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Prime
+   Factorization</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#gcd" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Greatest
+   Common Divisor</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#lcm" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Least
+   Common Multiple</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#factorials" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Factorials</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#binomial coefficients" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Binomial
+   Coefficients</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="prime factorization" xmlns="http://www.w3.org/1999/xhtml">
+</a>Prime Factorization</html:sectiontitle></html:section>
+<html:bodyText>
+   A <html:italics>prime</html:italics> is an integer greater than
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   whose only positive factors are itself and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.
+   You can factor integers into products of powers of primes. Place the insert
+   point inside the number and choose Compute &gt; Factor.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Factor</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>12345</mml:mn>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>823</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>24</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mn>3</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mn>13</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>19</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>24</mml:mn>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mn>22</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:msup>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:msup>
+<mml:mn>5</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:msup>
+<mml:mn>7</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:msup>
+<mml:mn>11</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>13</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>17</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>19</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>23</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="gcd" xmlns="http://www.w3.org/1999/xhtml">
+</a>Greatest Common Divisor</html:sectiontitle></html:section>
+<html:bodyText>
+   The <html:italics>greatest common divisor</html:italics> of two integers is the
+   largest integer that divides both integers evenly. You can find the greatest
+   common divisor of a collection of integers by evaluating the function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+</mml:mrow>
+</mml:math>
+   applied to the list of numbers enclosed in parentheses or square brackets and
+   separated by commas. Leave the insert point in the expression and choose
+   Compute &gt; Evaluate.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>35</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>15</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>65</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mn>14</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mn>3</mml:mn>
+<mml:mn>8</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mn>5</mml:mn>
+<mml:mn>9</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mn>3</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mn>7</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>104</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>221</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>13</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   If you enter the function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+</mml:mrow>
+</mml:math> from
+   the keyboard while in mathematics mode, the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>c</mml:mi>
+</mml:mrow>
+</mml:math> appears
+   in red italics until you type the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>d</mml:mi>
+</mml:mrow>
+</mml:math>,
+   then the function name
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>c</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>d</mml:mi>
+</mml:mrow>
+</mml:math> changes
+   to a gray, non-italic
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+</mml:mrow>
+</mml:math>.
+   Alternately, choose Insert &gt; Math Objects &gt; Math Name, type gcd in the
+   input box and choose OK.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="lcm" xmlns="http://www.w3.org/1999/xhtml">
+</a>Least Common Multiple</html:sectiontitle></html:section>
+<html:bodyText>
+   You can find the <html:italics>least common multiple</html:italics> of a collection
+   of integers by evaluating the function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">lcm</mml:mi>
+</mml:mrow>
+</mml:math>
+   applied to the list of numbers enclosed in parentheses or square brackets and
+   separated by commas. Leave the insert point in the expression and choose
+   Compute &gt; Evaluate.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">lcm</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>35</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>15</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>65</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1365</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">lcm</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>8</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>24</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">lcm</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>104</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>221</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1768</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="factorials" xmlns="http://www.w3.org/1999/xhtml">
+</a>Factorials</html:sectiontitle></html:section>
+<html:bodyText>
+   Factorial is the function of a nonnegative integer
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   denoted by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:math>
+   and defined for positive integers
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   as the product of all positive integers up to and including
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>;
+   that is,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>4</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>&ctdot;</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   It is defined for zero by
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   You can evaluate factorials.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5040</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>10</mml:mn>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3628800</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>20</mml:mn>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>2432&ThinSpace;902&ThinSpace;008&ThinSpace;176&ThinSpace;640&ThinSpace;000</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="binomial coefficients" xmlns="http://www.w3.org/1999/xhtml">
+</a>Binomial Coefficients</html:sectiontitle></html:section>
+<html:bodyText>
+   An expression of the form
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+   is called a <html:italics>binomial</html:italics>. The formula that gives the
+   expansion of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   for any natural number
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   is <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:msup>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:munderover>
+<mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:munderover>
+<mml:mrow>
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>a</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>b</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>This
+   is the same formula that gives the number of combinations of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   things taken
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:math>
+   at a time. The coefficients
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+   that occur in this formula are called <html:italics>binomial
+   coefficients</html:italics>. These coefficients are often denoted by the symbols
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+<mml:mfrac linethickness="0">
+<mml:mi>n</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:mfrac>
+<mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+   or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mi>C</mml:mi>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mspace width="veryverythinmathspace">
+</mml:mspace>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>C</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+   Use the symbol
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+<mml:mfrac linethickness="0">
+<mml:mi>n</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:mfrac>
+<mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+   to compute these coefficients.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To enter a binomial coefficient
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mpadded depth="+0.500000ex">
+<mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+<mml:mfrac linethickness="0">
+<mml:mi>n</mml:mi>
+<mml:mi>k</mml:mi>
+</mml:mfrac>
+<mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+</mml:mpadded>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Binomial.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Check None for Line and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type numbers in the input boxes.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac linethickness="0">
+<mml:mn>5</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>10</mml:mn>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac linethickness="0">
+<mml:mn>35</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>6724&ThinSpace;520</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   A Rewrite command will change a symbolic binomial to a factorial expression.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Rewrite &gt; Factorial</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac linethickness="0">
+<mml:mi>m</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac linethickness="0">
+<mml:mi>m</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mn>120</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>m</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm02-02-numbers_functions_units__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

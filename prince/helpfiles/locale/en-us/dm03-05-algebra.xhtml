@@ -1,0 +1,3728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Monday, December 12, 2011 02:07:59" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm03-05-algebra.xhtml</html:title>
+</html:head>
+<html:body>
+<h1 class="section" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Solving Polynomial Equations</h1>
+<html:bodyText>
+   There are four options on the Solve submenu: Exact, Integer, Numeric, and
+   Recursion. The option Exact is general in nature and is used in most
+   situations. It returns symbolic solutions when it can and numerical solutions
+   otherwise. If any of the components of the problem use numerical notation, the
+   response is a numerical solution. The three options
+   <a href="dm12-01-applied_modern_algebra.xhtml#integer solutions" xmlns="http://www.w3.org/1999/xhtml"> Integer</a>,
+   <a href="#numerical solutions to polynomial equations" xmlns="http://www.w3.org/1999/xhtml"> Numeric</a>, and
+   <a href="dm12-01-applied_modern_algebra.xhtml#recursive solutions" xmlns="http://www.w3.org/1999/xhtml"> Recursion</a>
+   are used in more specialized situations.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#equations with one variable" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Equations
+   with One Variable</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#checking the answer" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Checking
+   the Answer</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#equations with several variables" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Equations
+   with Several Variables</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#systems of equations" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Systems
+   of Equations</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#numerical solutions to polynomial equations" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Numerical
+   Solutions to Polynomial Equations</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#inequalities" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Inequalities</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="equations with one variable" xmlns="http://www.w3.org/1999/xhtml">
+</a>Equations
+with One Variable</html:sectiontitle></html:section>
+<html:bodyText>
+   Default solutions given for polynomial equations include complex solutions.
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="finding real and complex solutions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Finding
+Real and Complex Solutions</html:sectiontitle></html:subsection>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To solve an equation with one variable</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in the equation.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Solve &gt; Exact.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   Your system returns an explicit or implicit solution.
+</html:bodyText>
+<html:bodyText>
+   Note that in the following examples, integer or rational coefficients yield
+   algebraic solutions and real (floating-point) coefficients yield decimal
+   approximations.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>29</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>29</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0.238&ThinSpace;52</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.838&ThinSpace;52</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   When there are multiple solutions, only distinct solutions are displayed.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   You can solve equations with rational expressions, and equations involving
+   absolute values.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>14</mml:mn>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>10</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>5</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>e</mml:mi>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">&mid;</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="finding real solutions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Finding Real Solutions</html:sectiontitle></html:subsection>
+<html:bodyText>
+   If you want only real solutions, first evaluate
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">assume</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi mathcolor="gray">real</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   When you enter these words in mathematics mode, they automatically gray. You
+   can also use Insert &gt;Math Objects &gt; Math Name to enter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">assume</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi mathcolor="gray">real</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   (See <a href="dm05-04-functions.xhtml" xmlns="http://www.w3.org/1999/xhtml"> Assumptions About Variables</a> for more
+   information on the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">assume</mml:mi>
+</mml:mrow>
+</mml:math>
+   function.)
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">assume</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi mathcolor="gray">real</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi mathvariant="double-struck">R</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:math>,
+   No solution found
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<a id="maximum degree" xmlns="http://www.w3.org/1999/xhtml">
+</a>In general, explicit solutions in terms of radicals
+   for polynomial equations of degree greater than 4 do not exist. In these
+   cases, implicit solutions are given in terms of roots of a polynomial. When
+   the equation is a polynomial equation with degree 3 or 4, the explicit
+   solution can be very complicated---and too large to preview, print, or save.
+   To avoid this problem, you can set the engine to return large complicated
+   solutions in implicit form for smaller degree polynomials as well. See
+   <a href="dm15-02-custom.xhtml#engine" xmlns="http://www.w3.org/1999/xhtml"> Customizing the Program for
+   Computing</a> for details.
+</html:bodyText>
+<html:bodyText>
+   With a setting of 1 for maximum degree, only rational or other relatively
+   simple solutions are computed for all polynomials. With a setting of 2 or 3,
+   this behavior occurs for polynomials of degree greater than 2.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact </strong>(Maximum Degree set to 1)
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">RootOf</mml:mi>
+</mml:mrow>
+</mml:math>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>Z</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>Z</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact </strong>(Maximum Degree set to 2 or 3)
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>29</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>29</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">RootOf</mml:mi>
+</mml:mrow>
+</mml:math>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>Z</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>Z</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact </strong>(Maximum Degree set to 4)
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>3</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution is: (It is too long to display here. When you compute this solution,
+   scroll to the right of the screen to see the complete solution.)
+</html:bodyText>
+<html:bodyText>
+   The function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">solve</mml:mi>
+</mml:mrow>
+</mml:math>
+   takes an equation as input. Evaluate
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">solve</mml:mi>
+</mml:mrow>
+</mml:math>
+   at an equation and the output is a list of solutions. To make the function
+   name, type
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>s</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>o</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>l</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>v</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>e</mml:mi>
+</mml:mrow>
+</mml:math>
+   while in mathematics mode and it will automatically gray, or create the name
+   with Insert &gt; Math Objects &gt; Math Name.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">solve</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>29</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>29</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="checking the answer" xmlns="http://www.w3.org/1999/xhtml">
+</a>Checking the Answer</html:sectiontitle></html:section>
+<html:bodyText>
+<a href="dm03-03-algebra.xhtml" xmlns="http://www.w3.org/1999/xhtml"> Substitution</a> provides a convenient way of
+   testing solutions.
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<div class="example" xmlns="http://www.w3.org/1999/xhtml">
+<span class="leadin">Example</span>
+<html:bodyText>
+      Check the solutions to several of the preceding equations.
+   </html:bodyText>
+</div>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>14</mml:mn>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0.238&ThinSpace;52</mml:mn>
+</mml:mrow>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.0</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.838&ThinSpace;52</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.0</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Simplify</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>10</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>29</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:msub>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="equations with several&#xA;variables" xmlns="http://www.w3.org/1999/xhtml">
+</a>Equations with Several Variables</html:sectiontitle></html:section>
+<html:bodyText>
+   If there is more than one variable, enter the Variable(s) to Solve for in the
+   dialog box that opens when you choose Compute &gt; Solve &gt; Exact.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>y</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   (Enter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>),
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>&empty;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>y</mml:mi>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&ne;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">
+</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>y</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>z</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   (Enter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>z</mml:mi>
+</mml:mrow>
+</mml:math>),
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>&empty;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>y</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>y</mml:mi>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>y</mml:mi>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">&ne;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">
+</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mi>R</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   (Enter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>R</mml:mi>
+</mml:mrow>
+</mml:math>),
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>&empty;</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mrow>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mfrac>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">+</mml:mo>
+<mml:msub>
+<mml:mi>r</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">&ne;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">
+</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="systems of equations" xmlns="http://www.w3.org/1999/xhtml">
+</a>Systems of Equations</html:sectiontitle></html:section>
+<html:bodyText>
+   You can create a system of equations either by entering equations in a
+   one-column matrix or by entering equations in a multi-row display. From the
+   View menu, check Helper Lines or Input Boxes to help place equations in a
+   matrix or display.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create a system of equations using a matrix</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Matrix.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Set the number of rows equal to the number of equations.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Set the number of columns to
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+         and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type the equations in the matrix, one equation to a row.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create a system of equations using a display</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Display.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type the equations in the display, one equation to a row, adding rows as
+         needed with the Enter key.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To solve a system of equations</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Create a system of equations and leave the insert point in the system.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Solve &gt; Exact.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         If a dialog box opens asking Variable(s) to Solve for, type the variable
+         name(s) in the box, separated by commas.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   Following are examples for systems of two equations.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>19</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>9</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>301</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>9</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>45</mml:mn>
+<mml:mn>8</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>8</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>301</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mtext>,</mml:mtext>
+</mml:mrow>
+</mml:math>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>301</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>9</mml:mn>
+<mml:mn>4</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>8</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msqrt>
+<mml:mn>301</mml:mn>
+</mml:msqrt>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>45</mml:mn>
+<mml:mn>8</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   When the number of unknowns is larger than the number of equations, you are
+   asked to specify variables in a dialog box.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>z</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Variable(s):
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:math>
+<span style="width:1em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:1em">
+</span>
+</span>Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>4</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>z</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>5</mml:mn>
+<mml:mn>9</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>4</mml:mn>
+<mml:mn>9</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>z</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>z</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:mi>w</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Variable(s):
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>z</mml:mi>
+</mml:mrow>
+</mml:math>
+<span style="width:1em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:1em">
+</span>
+</span>Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>w</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>w</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>z</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>w</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="numerical solutions to polynomial&#xA;equations" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<a id="solve numeric" xmlns="http://www.w3.org/1999/xhtml">
+</a>Numerical Solutions to Polynomial Equations</html:sectiontitle></html:section>
+<html:bodyText>
+   You can find numerical solutions in two ways. You can choose Compute &gt;
+   Solve &gt; Exact after entering at least one coefficient in floating-point
+   form---that is, with a decimal.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>5.2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0.677&ThinSpace;32</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>7.&ThinSpace;677&ThinSpace;3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3.&ThinSpace;8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>15.&ThinSpace;6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.&ThinSpace;5</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>1.&ThinSpace;717&ThinSpace;6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.&ThinSpace;5</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>1.&ThinSpace;717&ThinSpace;6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>3.0</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   You can choose Compute &gt; Solve &gt; Numeric. This gives all solutions, both
+   real and complex, to a polynomial equation or system of polynomial equations.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Numeric</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>5.2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0.677&ThinSpace;32</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>7.&ThinSpace;677&ThinSpace;3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3.&ThinSpace;8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>15.&ThinSpace;6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.5</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>1.7176</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>3.0</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.5</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>1.7176</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>8</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">{</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0.573&ThinSpace;94</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1.240&ThinSpace;8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.002&ThinSpace;3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>0.632&ThinSpace;10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1.002&ThinSpace;3</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>0.632&ThinSpace;10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.240&ThinSpace;8</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>0.573&ThinSpace;94</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1.002&ThinSpace;3</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>0.632&ThinSpace;10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.002&ThinSpace;3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>0.632&ThinSpace;10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">{</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.732&ThinSpace;1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.414&ThinSpace;2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.732&ThinSpace;1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.414&ThinSpace;2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.732&ThinSpace;1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.414&ThinSpace;2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.732&ThinSpace;1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.414&ThinSpace;2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">]</mml:mo>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   The choice Compute &gt; Solve &gt; Numeric is particularly useful when solving
+   transcendental equations or systems of transcendental equations, or when you
+   want to specify a search interval for the solution.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To find a numerical solution within a specified range of the
+   variable</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Add a row to the bottom of the matrix, or
+      </html:bodyText>
+<html:bodyText>
+         Press Enter to generate a new input box in a display.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Write the intervals of your choice, and use the membership symbol
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="infix">&Element;</mml:mo>
+</mml:mrow>
+</mml:math>
+         to indicate that the variable lies in that interval.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Numeric</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mpadded depth="+0.500000ex">
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mpadded>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mpadded depth="+0.500000ex">
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mpadded>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mpadded depth="+0.500000ex">
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mpadded>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.&ThinSpace;732&ThinSpace;1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.&ThinSpace;414&ThinSpace;2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To find all numerical solutions to a system of polynomial
+   equations</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Change at least one of the coefficients to floating-point form.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Solve &gt; Exact.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>5.0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis" columnalign="left">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.4142</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.7321</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.4142</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.7321</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.4142</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.7321</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1.4142</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1.7321</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   These four solutions are illustrated in the graph below, as the four points of
+   intersection of two curves. See
+   <a href="dm06-01-plotting.xhtml#creating 2d implicit plots" xmlns="http://www.w3.org/1999/xhtml"> Creating 2D
+   Implicit Plots</a> for guidelines on making such
+   graphs.
+</html:bodyText>
+<html:bodyText>
+   See <a href="dm15-02-custom.xhtml#output" xmlns="http://www.w3.org/1999/xhtml"> Customizing the Program for
+   Computing</a> for details on changing the appearance of numerical solutions by
+   resetting Digits Rendered, Upper Threshold, and Lower Threshold for Scientific
+   Notation Output.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="inequalities" xmlns="http://www.w3.org/1999/xhtml">
+</a>Inequalities</html:sectiontitle></html:section>
+<html:bodyText>
+   You can find exact solutions for many inequalities.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To solve an inequality</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         With the insert point in the inequality, choose Compute &gt; Solve &gt; Exact.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Solve &gt; Exact</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>16</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>20</mml:mn>
+<mml:mn>17</mml:mn>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&gt;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&cup;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&gt;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&cup;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>&infin;</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>e</mml:mi>
+<mml:mrow>
+<mml:mi>i</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>y</mml:mi>
+</mml:mrow>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>3</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo form="infix" stretchy="true" minsize="0">|</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   Solution:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mfrac>
+<mml:mn>7</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   These solutions are intervals---open, closed, or half-open and half-closed:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">:</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">:</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">:</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">:</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   For two sets (intervals)
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>B</mml:mi>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">&cup;</mml:mo>
+<mml:mi>B</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">:</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mtext mathcolor="black">&ensp;or&ensp;</mml:mtext>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mi>B</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>A</mml:mi>
+<mml:mo form="infix">&cap;</mml:mo>
+<mml:mi>B</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">:</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mi>A</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mtext mathcolor="black">&ensp;and&ensp;</mml:mtext>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&Element;</mml:mo>
+<mml:mi>B</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   The solution to the last inequality,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&gt;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   can also be read from the graph of the polynomial
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   In the plot below, you see the graph passes through the
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>-axis
+   at
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   and the solution includes every point to the left of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+   or to the right of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm03-05-algebra__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

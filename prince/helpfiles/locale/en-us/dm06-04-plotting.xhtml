@@ -1,0 +1,3328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Monday, December 12, 2011 10:14:34" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm06-04-plotting.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>2D Plots of Functions and Expressions</h2>
+<html:bodyText>
+   In the equation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   each of the two
+   sides---<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>---is
+   an <html:italics>expression</html:italics> while
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   is a <html:italics>function</html:italics>. The function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   is a rule that assigns to each number the product of that number and the sine
+   of that number. Thus the function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+   defined by the equation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is the same function as the function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+</mml:mrow>
+</mml:math>
+   defined by the equation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   The expression
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   (or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>)
+   is different from the expression
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   (or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>),
+   since
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is tied to the variable
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is tied to the variable
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#expressions" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Expressions</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#functions of degrees" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Functions
+   of degrees</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#defined functions" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Defined
+   Functions</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#continuous and discontinuous plots" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Continuous
+   and Discontinuous Plots</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#plotting piecewise-defined functions" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Plotting
+   piecewise-defined functions</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#special functions" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Special
+   Functions</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#Greatest integer function and floor function" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Greatest
+   integer function and floor function</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#absolute value function" xmlns="http://www.w3.org/1999/xhtml"> Absolute
+   value function</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#gamma function" xmlns="http://www.w3.org/1999/xhtml"> Gamma
+   function</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#heaviside function" xmlns="http://www.w3.org/1999/xhtml"> Heaviside
+   function</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#polygons" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Polygons</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#point plots" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Point
+   Plots</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#plotting a grid" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Plotting
+   a Grid</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#envelopes" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Envelopes</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#parametric polar plots" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Parametric
+   Polar Plots</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="expressions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Expressions</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To plot an expression involving a single variable</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Enter the expression in your document.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         With the insert point in the expression, choose Compute &gt; Plot 2D &gt;
+         Rectangular.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mn>5</mml:mn>
+<mml:mi>x</mml:mi>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   Add the caption by typing it into the
+   <a href="dm06-03-plotting.xhtml#opening the graph user settings dialog box" xmlns="http://www.w3.org/1999/xhtml"> Graph
+   User Settings &gt; Labelling dialog box</a> in the Caption entry field.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To add an expression to a plot</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Select the expression with the mouse and drag it onto the plot.
+      </html:bodyText>
+<html:bodyText>
+         Or
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Open the Graph User Settings dialog box and click New.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type or paste the expression in the Plot Expression box.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="functions of degrees" xmlns="http://www.w3.org/1999/xhtml">
+</a>Functions of degrees</html:sectiontitle></html:subsection>
+<html:bodyText>
+   You can plot trigonometric functions written as functions of degrees rather
+   than radians.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To plot trigonometric functions of degrees</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type the expression(s) in your document window, using either the red degree
+         symbol in a superscript or the green degree symbol from the Insert &gt; Math
+         Objects &gt; Unit Names dialog box.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         With the insert point in an expression, choose Compute &gt; Plot 2D &gt;
+         Rectangular.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         With the plot selected, open the Graph User Settings dialog box.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Click the Items Plotted tab and choose Variables and Intervals.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Change Plot Intervals to
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>180</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>180</mml:mn>
+</mml:mrow>
+</mml:math>
+         (or other limits as appropriate).
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   Select and drag additional expressions onto the plot, as desired.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&InvisibleTimes;</mml:mo>
+<mml:mi class="msi_unit" mathcolor="green">&deg;</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>(Interval
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>180</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>180</mml:mn>
+</mml:mrow>
+</mml:math>)
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&InvisibleTimes;</mml:mo>
+<mml:mi class="msi_unit" mathcolor="green">&deg;</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mtext>&emsp;</mml:mtext>
+</mml:mrow>
+</mml:math>(Select
+   and drag to the frame.)
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="defined functions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Defined Functions</html:sectiontitle></html:section>
+<html:bodyText>
+   You can plot a defined function. You can define a function such as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math> by
+   placing the insert point in the expression and choosing Compute &gt;
+   Definitions &gt; New Definition.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To plot a defined function
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml"> of
+   one variable</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Select the function name
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+         or select the expression
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Plot 2D &lt; Rectangular.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definitio</strong>n
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">tan</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="continuous and discontinuous&#xA;plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Continuous and Discontinuous Plots</html:sectiontitle></html:section>
+<html:bodyText>
+   The appearance of the plot of a discontinuous function depends on the setting
+   for Adjust for Discontinuities.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To change the appearance of a discontinuous function</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         From the Plot User Settings dialog box, select Not Specified, Adjust for
+         Discontinuities, Show Asymptotes, or Don't adjust.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt;
+   Rectangular</strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   This setting applies to individual items so it is possible to plot together
+   two functions that require opposite settings.
+</html:bodyText>
+<html:bodyText>
+   There may be expressions that do not plot with the setting Adjust for
+   discontinuities, but that will plot with the setting Show Asymptotes. If you
+   know before creating a plot that you wish to change this setting (Not
+   specified is the default), hold down the Ctrl key while applying the plot
+   command. The Graph User Settings dialog box will open for you to edit before
+   the system generates the plot.
+</html:bodyText>
+<html:bodyText>
+   For more examples of continuous and discontinuous piecewise-defined functions,
+   see the following sections.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="plotting piecewise-defined&#xA;functions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Plotting Piecewise-Defined Functions</html:sectiontitle></html:subsection>
+<html:bodyText>
+   A piecewise-defined function must be entered in a two- or three-column matrix
+   enclosed in expanding brackets---a left brace and right null bracket (see
+   <a href="dm05-03-functions.xhtml#piecewise-defined function" xmlns="http://www.w3.org/1999/xhtml"> Piecewise-Defined
+   Functions</a> for details).
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To plot a piecewise-defined function</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in a matrix of a piecewise-defined function.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Plot 2D &gt; Rectangular
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt;
+   Rectangular</strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">
+</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   You can also plot a continuous graph from a discontinuous expression
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   (or directly from the defining matrix) by checking
+   <a href="dm06-04-plotting.xhtml#continuous and discontinuous plots" xmlns="http://www.w3.org/1999/xhtml"> Show
+   Asymptotes</a>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>20</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">
+</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt;
+   Rectangular</strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mtable align="axis" columnalign="center center left">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>t</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">
+</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="special functions" xmlns="http://www.w3.org/1999/xhtml">
+</a>Special Functions</html:sectiontitle></html:section>
+<html:subsection><html:sectiontitle>
+<a id="Greatest integer function and floor&#xA;function" xmlns="http://www.w3.org/1999/xhtml">
+</a>Greatest integer function and floor function</html:sectiontitle></html:subsection>
+<html:bodyText>
+   The function
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mml:mo>
+</mml:mrow>
+</mml:math>
+   is the <html:italics>greatest integer function</html:italics>, or
+   <html:italics>floor</html:italics> function.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To use the greatest integer function (floor function)</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Brackets.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select the left floor bracket
+         <div class="fbox" xmlns="http://www.w3.org/1999/xhtml">
+<mml:math display="inline">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">&lfloor;</mml:mo>
+</mml:mrow>
+</mml:math>
+</div>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+         and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   You can get a continuous plot of this function by checking Vertical
+   Asymptotes.
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="absolute value function" xmlns="http://www.w3.org/1999/xhtml">
+</a>Absolute value function</html:sectiontitle></html:subsection>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To use the absolute value function</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Brackets and select the vertical
+         brackets.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   The following shows the graph of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   You can also use the keyboard shortcut Ctrl+\ to insert expanding absolute
+   values.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="gamma function" xmlns="http://www.w3.org/1999/xhtml">
+</a>Gamma function</html:sectiontitle></html:subsection>
+<html:bodyText>
+   The <html:italics>Gamma function</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&Gamma;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   extends the factorial function in the sense that for each nonnegative integer
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>&Gamma;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="postfix">!</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:subsection><html:sectiontitle>To use the Gamma function</html:sectiontitle></html:subsection>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Click the Uppercase Greek button on the Symbols toolbar.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&Gamma;</mml:mi>
+</mml:mrow>
+</mml:math>
+         from the Greek panel that opens.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   You can also use the keyboard shortcut Ctrl+g,G for the Greek letter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&Gamma;</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   The plot of the Gamma function displays the vertical asymptotes along with the
+   graph if Vertical Asymptotes is checked, and displays only the graph when
+   Adjust for Discontinuities is checked as in the following example.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&Gamma;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="heaviside function" xmlns="http://www.w3.org/1999/xhtml">
+</a>Heaviside function</html:sectiontitle></html:subsection>
+<html:bodyText>
+   The <html:italics>Heaviside function</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">Heaviside</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mfrac>
+<mml:mn>1</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:mfrac>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&gt;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">
+</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a built-in function.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt;
+   Rectangular</strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">Heaviside</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To use the Heaviside function</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Math Name.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type Heaviside in the Name box of the dialog box that opens and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   The Heaviside function provides an alternative method for creating
+   piecewise-defined functions. Note that
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">Heaviside</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">Heaviside</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&ge;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext mathcolor="black">if</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">
+</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">Heaviside</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">Heaviside</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="polygons" xmlns="http://www.w3.org/1999/xhtml">
+</a>Polygons</html:sectiontitle></html:section>
+<html:bodyText>
+   You can plot the points
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">{</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>&hellip;</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">}</mml:mo>
+</mml:mrow>
+</mml:math>, or
+   a polygon whose vertices lie at these points, by typing the vector
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>&hellip;</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+<mml:mo form="infix">,</mml:mo>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+   or by entering the matrix
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msub>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mtext>&vellip;</mml:mtext>
+</mml:mtd>
+<mml:mtd>
+<mml:mtext>&vellip;</mml:mtext>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:msub>
+<mml:mi>x</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mtd>
+<mml:mtd>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msub>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To plot a polygon connecting points</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Create a list of
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+         pairs of points or an
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+         matrix containing the points.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in the list or matrix and choose Compute &gt; Plot 2D
+         &gt; Rectangular.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   View Intervals:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   The beginning point
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math> is
+   also the last point.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To generate a regular pentagon with an enclosed five-point
+   star</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in the vector
+         <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>and
+         choose Compute &gt; Plot 2D &gt; Rectangular.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select the vector
+         <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>with
+         the mouse and drag it to the frame.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Graph User Settings &gt; Axes, under Axes Scaling select Equal Scaling Along
+         Each Axis and under Axes Type select None.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+   (red)
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mfrac>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+<mml:mn>5</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+   (blue)
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="point plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Point Plots</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To plot points</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Create a list of
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+         pairs of points or an
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+         matrix containing the points.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in the list or matrix and choose Compute &gt; Plot 2D
+         &gt; Rectangular.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select the frame and open the Graph User Settings dialog box.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select Edit Plot.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Turn on Include Points.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   The default is to connect the points with straight-line segments. To plot
+   points alone, in the Edit Plot dialog box check Include Points and remove the
+   check from Include Lines.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt;
+   Rectangular</strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   View Intervals:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   You may find it convenient to combine Line and Point styles, as in the
+   following plot that combines a data cloud with a line of best fit. (See
+   <a href="dm11-08-statistics.xhtml#polynomial fit" xmlns="http://www.w3.org/1999/xhtml"> Polynomial Fit</a> for
+   information on curves of best fit.) That technique was used to obtain the
+   expression
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2792</mml:mn>
+<mml:mn>647</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>957</mml:mn>
+<mml:mn>647</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   used in the next example.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mpadded depth="20.000000pt" height="-20.000000pt">
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>7</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>9</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>12</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>15</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>16</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>19</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>21</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mi>T</mml:mi>
+</mml:msup>
+</mml:mpadded>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2792</mml:mn>
+<mml:mn>647</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>957</mml:mn>
+<mml:mn>647</mml:mn>
+</mml:mfrac>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   (Select and drag to the frame.)
+</html:bodyText>
+<html:bodyText>
+   Graph User Settings, Item 1, Edit Plot
+</html:bodyText>
+<html:bodyText>
+   Point Marker: Squares
+</html:bodyText>
+<html:bodyText>
+   Include Points
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="plotting a grid" xmlns="http://www.w3.org/1999/xhtml">
+</a>Plotting a Grid</html:sectiontitle></html:section>
+<html:subsection><html:sectiontitle>
+<html:sansSerif><html:bold>To create a grid</html:bold></html:sansSerif>
+</html:sectiontitle></html:subsection>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Create a 2D plot
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Open the Graph User Settings dialog box, Axes page, and turn grid lines on.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   grid lines on
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+<span class="vspace" style="height:1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>The number of grid lines is
+   determined by the Tick Marks setting (None, Low, Medium, or High) on the Axes
+   page.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="envelopes" xmlns="http://www.w3.org/1999/xhtml">
+</a>Envelopes</html:sectiontitle></html:section>
+<html:bodyText>
+   An interesting phenomenon occurs when simple curves are displayed as the
+   "envelope" of a more complicated function. Such things happen in practice when
+   low-frequency waves (say, frequencies in the audible range for the human ear)
+   ride carrier waves broadcast from a radio station.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create a plot with an envelope</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type an expression
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>R</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         for the envelope.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         With the insert point in the expression, choose Compute &gt; Plot 2D &gt;
+         Rectangular.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select and drag the product
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>R</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>c</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         of the envelope and the carrier wave to the plot.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   The following example shows the curve
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   "riding" on top of the carrier
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>30</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+   To get an accurate plot, increase the point sampled---from the Items Plotted
+   page of the Plot Properties dialog box, raise Item Number to 2, choose
+   Variables and Intervals, and raise the number of Points Sampled to 150 or
+   higher.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Select and drag to the frame
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>30</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="parametric polar plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Parametric
+Polar Plots</html:sectiontitle></html:section>
+<html:bodyText>
+   You can make a parametric polar plot using an expression of the form
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+   where
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a function for the radius and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a function for the angle. You can use any of the forms
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>,
+   or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>,
+   where the last two expressions are
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   matrices, respectively.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To make a parametric polar plot</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Place the insert point in a pair of expressions in one variable and choose
+         Compute &gt; Plot 2D &gt; Polar.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   The polar plot of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:msup>
+<mml:mi>r</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+   is the 2D polar plot of the vector
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:msup>
+<mml:mi>r</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Polar</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:msup>
+<mml:mi>r</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   Both the radius
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+</mml:mrow>
+</mml:math>
+   and the angle
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+</mml:mrow>
+</mml:math>
+   may be defined in terms of some third variable
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>.
+   You can make the polar plot of the parametric curve defined by the equations
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   as the polar plot of the
+   vector <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>.
+   Revise the first plot, choosing Polar and setting the Plot Intervals to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D &gt; Polar</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm06-04-plotting__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

@@ -1,0 +1,4142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Tuesday, December 13, 2011 11:26:50" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm12-04-applied_modern_algebra.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Polynomials Modulo Polynomials</h2>
+<html:bodyText>
+<a id="congruence, modulo polynomials" xmlns="http://www.w3.org/1999/xhtml">
+</a>The Euclidean algorithm for
+   polynomials leads to the notion of congruence of polynomials modulo
+   polynomials.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#polynomials modulo polynomials" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Polynomials
+   Modulo
+   <mml:math display="inline">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#gcd, polynomials" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Greatest
+   Common Divisor of Polynomials</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#multiple roots" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Multiplicity
+   of Roots of Polynomials</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#galois field" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>The
+   Galois Field
+   <mml:math display="inline">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:msup>
+<mml:mi>p</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#galois field GF2" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>The
+   Galois Field
+   <mml:math display="inline">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#galois field GF4" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>The
+   Galois Field
+   <mml:math display="inline">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="polynomials modulo&#xA;polynomials" xmlns="http://www.w3.org/1999/xhtml">
+</a>Polynomials Modulo <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:sectiontitle></html:section>
+<html:bodyText>
+   Two polynomials
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   are <html:italics>congruent modulo a polynomial</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   if and only if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a multiple of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   in which case we write
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&equiv;</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mspace width="thickmathspace">
+</mml:mspace>
+<mml:mo>&InvisibleComma;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" mathcolor="gray">mod</mml:mo>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>We
+   write
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>h</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>h</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a polynomial of minimal degree that is congruent to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To reduce a polynomial
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml"> modulo
+   a polynomial
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Place the insert point in the expression
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         and choose Compute &gt; Evaluate.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>23</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>54</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   To verify this calculation, note the following computation:<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Polynomials &gt; Divide</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>11</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>23</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>54</mml:mn>
+</mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   This result implies that indeed
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>23</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>54</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="gcd, polynomials" xmlns="http://www.w3.org/1999/xhtml">
+</a>Greatest Common
+Divisor of Polynomials</html:sectiontitle></html:section>
+<html:bodyText>
+   The <html:italics>greatest common divisor of two polynomials</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a polynomial
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>d</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   of highest degree that divides both
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To compute the greatest common divisor of two polynomials
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml"> and
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+</mml:mrow>
+</mml:math>
+         in mathematics. (It will automatically turn upright and gray.)
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in the expression
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         and choose Compute &gt; Evaluate.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Definitions &gt; New Definition</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>18</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>7</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>9</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>36</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>16</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>19</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>12</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>15</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>9</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>11</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>17</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>8</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Use the following procedure to verify that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:math>
+   is indeed a common divisor.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Polynomials &gt; Divide</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mstyle displaystyle="true" scriptlevel="0">
+<mml:mfrac>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+</mml:mfrac>
+</mml:mstyle>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   These results demonstrate that
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>p</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>6</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>4</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>3</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>and
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>4</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="multiple roots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Multiplicity of Roots
+of Polynomials</html:sectiontitle></html:section>
+<html:bodyText>
+   A root
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+   of a polynomial
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   has <html:italics>multiplicity</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>k</mml:mi>
+</mml:mrow>
+</mml:math>
+   if
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mi>k</mml:mi>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   where
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>a</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&ne;</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>.
+   If
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">&gt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   then
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mi>k</mml:mi>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>g</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>g</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>and
+   hence
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mrow>
+<mml:mi>k</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:msup>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>h</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&ne;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>This
+   observation provides a test for multiple roots: If
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a constant, then
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   has no multiple roots; otherwise,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   has at least one multiple root---in fact, each root of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is a multiple root of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To test a polynomial
+   </strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+<strong xmlns="http://www.w3.org/1999/xhtml"> for
+   multiple roots</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Define the polynomial
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type the expression
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+         and, with the insert point in this expression, choose Compute &gt;
+         <html:menuDialog>Evaluate</html:menuDialog>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Observe whether or not the result is a constant.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<div class="example" xmlns="http://www.w3.org/1999/xhtml">
+<span class="leadin">Example</span>
+<html:bodyText>
+      The graphs of
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5537</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>34804</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>60229</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>29267</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>19888</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>54692</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>and
+      <mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>5537</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>5</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>34797</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>60207</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mn>29260</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>19873</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>54670</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>appear
+      indistinguishable. Both appear to have a root near
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mn>3.1</mml:mn>
+</mml:mrow>
+</mml:math>.
+      However, the test for multiple roots gives a different result for the two
+      functions.<br>
+</br>
+<br>
+</br>
+<mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>f</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>791</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mfrac>
+<mml:mn>22</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mtext mathcolor="black">&emsp;&emsp;</mml:mtext>
+<mml:mrow>
+<mml:mrow>
+<mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>g</mml:mi>
+<mml:mo form="postfix">&prime;</mml:mo>
+</mml:msup>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thinmathspace">
+</mml:mspace>
+<mml:mn>7</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>Thus,
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mfrac>
+<mml:mn>22</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+</mml:mrow>
+</mml:math>
+      is a root of
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+      of multiplicity at least two, whereas
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+      has no multiple roots. Solving
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>
+      and
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+      the real solutions are computed below. We show both symbolic exact and numeric
+      solutions. Choose Compute &gt; Factor to see
+      that<mml:math mode="display" display="block">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>113</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>22</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+<mml:mtext mathcolor="black">&emsp;&emsp;</mml:mtext>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>7</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>22</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>113</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>355</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>3</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>The
+      polynomial
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+</mml:mrow>
+</mml:math>
+      has two distinct roots that are extremely close, whereas
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+</mml:mrow>
+</mml:math>
+      has a root of multiplicity two at
+      <mml:math display="inline">
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>22</mml:mn>
+<mml:mn>7</mml:mn>
+</mml:mfrac>
+<mml:mo form="infix">&approx;</mml:mo>
+<mml:mn>3.&ThinSpace;142&ThinSpace;9</mml:mn>
+</mml:mrow>
+</mml:math>.
+   </html:bodyText>
+</div>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="galois field" xmlns="http://www.w3.org/1999/xhtml">
+</a>The Galois Field <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:msup>
+<mml:mi>p</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</html:sectiontitle></html:section>
+<html:bodyText>
+<a id="irreducible polynomial" xmlns="http://www.w3.org/1999/xhtml">
+</a>Assume that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is an <a id="polynomials, irreducible" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<html:italics>irreducible</html:italics>
+   polynomial of degree
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   over
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mi>p</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>;
+   that is, assume that
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is of degree
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   and, whenever
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   for some
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   in
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mi>p</mml:mi>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">[</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   either
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">deg</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>
+   or
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">deg</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   Given two polynomials
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   in
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mi>p</mml:mi>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">[</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>,
+   define the <html:italics>product</html:italics> to be the polynomial
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>p</mml:mi>
+</mml:mrow>
+</mml:math>
+   and the <html:italics>sum</html:italics> to be the polynomial
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mi>p</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   With these definitions, the set of polynomials in
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mi>p</mml:mi>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">[</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   of degree less than
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>n</mml:mi>
+</mml:mrow>
+</mml:math>
+   forms a field called the <html:italics>Galois field</html:italics>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:msup>
+<mml:mi>p</mml:mi>
+<mml:mi>n</mml:mi>
+</mml:msup>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="galois field GF2" xmlns="http://www.w3.org/1999/xhtml">
+</a>The Galois Field <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</html:sectiontitle></html:subsection>
+<html:bodyText>
+   The set of polynomials in
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">[</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   of degree less than
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+   forms the field
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:msup>
+<mml:mn>2</mml:mn>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:msub>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mspace width="thickmathspace">
+</mml:mspace>
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   The multiplication and addition tables for
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   are given by
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis" rowlines="solid none none" columnlines="solid none">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="infix">&times;</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mtext>&ThickSpace;&emsp;&emsp;&emsp;&emsp;</mml:mtext>
+<mml:mtable align="axis" rowlines="solid none none" columnlines="solid none">
+<mml:mtr>
+<mml:mtd>
+<mml:mo>+</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mspace width="thickmathspace">
+</mml:mspace>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="galois field GF4" xmlns="http://www.w3.org/1999/xhtml">
+</a>The Galois Field <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</html:sectiontitle></html:subsection>
+<html:bodyText>
+   The polynomial
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   is an irreducible polynomial of degree
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+   over
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+   It is, in fact, the only one. The elements of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   are
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   To find the product
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&sdot;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   in
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+<mml:mtext>,</mml:mtext>
+</mml:mrow>
+</mml:math>
+   reduce the product modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mtext>,</mml:mtext>
+</mml:mrow>
+</mml:math>
+   then reduce the result modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mrow>
+<mml:mi>q</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Thus,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   in
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   You can generate the entire multiplication table efficiently using matrix and
+   modular arithmetic.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Evaluate</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+<mml:mtd>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mpadded depth="38.000000pt" height="-38.000000pt">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mtd>
+<mml:mtd>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mpadded>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Sums require only reduction of polynomial sums modulo
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>.
+   The multiplication and addition tables are given by
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis" rowlines="solid none none none none" columnlines="solid none none none">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="infix">&times;</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis" rowlines="solid none none none none" columnlines="solid none none none">
+<mml:mtr>
+<mml:mtd>
+<mml:mo>+</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mi>x</mml:mi>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Given a polynomial
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>f</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   with
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>a</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:math>
+   in
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+   consider the <a id="binary" xmlns="http://www.w3.org/1999/xhtml">
+</a>binary representation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+   The binary representations for the multiplication and addition tables for
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>G</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msub>
+<mml:mi>F</mml:mi>
+<mml:mn>4</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+   are given by
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis" rowlines="solid none none none none" columnlines="solid none none none">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="infix">&times;</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis" rowlines="solid none none none none" columnlines="solid none none none">
+<mml:mtr>
+<mml:mtd>
+<mml:mo>+</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>11</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>01</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>00</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Converting from binary to decimal, we have
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">=</mml:mo>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>00</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">=</mml:mo>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>01</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">=</mml:mo>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+<mml:mn>10</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">=</mml:mo>
+<mml:msub>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mn>11</mml:mn>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>.
+   Using this shorthand notation for polynomials, the multiplication and addition
+   tables become
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis" rowlines="solid none none none none" columnlines="solid none none none">
+<mml:mtr>
+<mml:mtd>
+<mml:mo form="infix">&times;</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mtable align="axis" rowlines="solid none none none none" columnlines="solid none none none">
+<mml:mtr>
+<mml:mtd>
+<mml:mo>+</mml:mo>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>0</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm12-04-applied_modern_algebra__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>
