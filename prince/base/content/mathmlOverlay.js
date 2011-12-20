@@ -2037,7 +2037,7 @@ function reviseRadical(theRadical, objectName, editorElement)
 }
 
 
-function insertmathname(name, editorElement) 
+function insertmathname(name, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
@@ -2272,29 +2272,44 @@ function doMathnameDlg(editorElement, commandID, commandHandler)
                                         editorElement, commandID, commandHandler, o);
 }
 
+function addTextToElement( element, text)
+{
+  var textNode = element.ownerDocument.createTextNode(text);
+  element.appendChild(textNode);
+}
+
+
 function insertMathnameObject(mathNameObj, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
+  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+  var node; // the mathname object node
   if (mathNameObj.val.length > 0)
   {
-    dump("\ninsertMathnameObject(), mathNameObj.val = " + mathNameObj.val);
     if (mathNameObj.enginefunction)
-      insertenginefunction(mathNameObj.val, editorElement);
+    {
+      node = mathmlEditor.document.createElementNS(mmlns,"mi");
+      node.setAttribute("msimathname","true");
+      node.setAttribute("msiclass","enginefunction");
+      node.setAttribute("msimathname","true");
+	  addTextToElement(node, mathNameObj.val);
+      mathmlEditor.InsertMathNodeAtSelection(node);
+    }
     else if (("appearance" in mathNameObj) && (mathNameObj.appearance != null))
     {
       var insertNodes = mathNameObj.appearance.childNodes;
       var topNode = null;
       if (insertNodes.length > 1)
       {
-        topNode = editor.document.createElementNS(mmlns, "mrow");
+        topNode = mathmlEditor.document.createElementNS(mmlns, "mrow");
         for (var ix = 0; ix < insertNodes.length; ++ix)
         {
           var newNode = insertNodes[ix].cloneNode(true);
           topNode.appendChild(newNode);
         }
-        editor.insertElementAtSelection(topNode, true);
+        mathmlEditor.InsertMathNodeAtSelection(topNode);
       }
       else
       {
@@ -2304,43 +2319,33 @@ function insertMathnameObject(mathNameObj, editorElement)
       {
         topNode.setAttribute("msimathname", "true");
         topNode.setAttribute("msimathnameText", mathNameObj.val);
-        editor.insertElementAtSelection(topNode, true);  //"true" means delete selection
+        mathmlEditor.InsertMathNodeAtSelection(topNode, true);
       }
     }
     else if (mathNameObj.type == "operator")
     {
+      node = mathmlEditor.document.createElementNS(mmlns,"mo");
+      node.setAttribute("msimathname","true");
       var limitPlacement = "auto";
       var sizeSpec = "auto";
       if ("limitPlacement" in mathNameObj)
-        limitPlacement = mathNameObj.limitPlacement;
-      if ("size" in mathNameObj)
-        sizeSpec = mathNameObj.size;
-      insertOperator(mathNameObj.val, limitPlacement, sizeSpec, editorElement);
-      //need to give it the msimathname="true" attribute also!
-      var sel = editor.selection;
-      if (sel != null)
       {
-        var opNode = editor.getElementOrParentByTagName("mo", sel.focusNode);
-        if (opNode == null)  //thus the focus is not in the added operator element - look to the left?
-        {
-          var nOffset = sel.focusOffset;
-          if (nOffset > 0)
-          {
-            var prevNode = sel.focusNode.childNodes[nOffset - 1];
-            if (prevNode && prevNode.nodeName == "mo")
-              opNode = prevNode;
-          }
-        }
-        if (opNode != null)
-          opNode.setAttribute("msimathname", "true");
-//        var focusNode = sel.focusNode;
-//        var focusOffset = sel.focusOffset;
-//        dump("After inserting math operator, focus node and offset are [" + focusNode.nodeName + ", " + focusOffset + "].\n");
+        limitPlacement = mathNameObj.limitPlacement;
       }
+      if ("size" in mathNameObj)
+      {  
+        sizeSpec = mathNameObj.size;
+      }  
+      node.setAttribute("limitPlacement",limitPlacement);
+      node.setAttribute("size", sizeSpec);
+	  addTextToElement(node, mathNameObj.val);
+      mathmlEditor.InsertMathNodeAtSelection(node);
     }
     else {
-      dump("\ninsertMathnameObject(), default");
-      insertmathname(mathNameObj.val, editorElement);  //these go in as "mi"s
+      node = mathmlEditor.document.createElementNS(mmlns,"mi");
+      node.setAttribute("msimathname","true");
+	  addTextToElement(node, mathNameObj.val);
+      mathmlEditor.InsertMathNodeAtSelection(node);
     }
   }
 }
