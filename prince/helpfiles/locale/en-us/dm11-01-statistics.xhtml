@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:50:45" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm11-01-statistics.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Storing Data in Lists and Matrices</h2>
+<html:bodyText>
+   You can store data in lists or in matrices. Numbers in a list should be
+   separated by commas, with the numbers and commas both in mathematics mode.
+   Lists can be plain or enclosed in brackets. A list of data is also referred to
+   as a set of data.
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#lists and matrices" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Lists
+   and Matrices</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#importing data from an ascii file" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Importing
+   Data from an ASCII File</a>
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="lists and matrices" xmlns="http://www.w3.org/1999/xhtml">
+</a>Lists and Matrices</html:sectiontitle></html:section>
+<html:bodyText>
+<a id="reshape" xmlns="http://www.w3.org/1999/xhtml">
+</a>A list can be reshaped into a matrix.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To reshape a comma-delimited list or set of data into a
+   matrix</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         If the list is in text, select the list and choose Insert &gt; Math to change
+         it to mathematics.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Place the insert point in the list or set and choose Compute &gt; Matrices
+         &gt; Reshape.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the dialog box that appears, type a number for Columns and choose OK.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select the matrix with the mouse, choose Insert &gt; Math Objects &gt;
+         Brackets and select appropriate brackets.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt;
+   Reshape</strong>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>3.1</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>9.6</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>10.5</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>4</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>6.8</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>5</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2.9</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>6</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>2.2</mml:mn>
+</mml:mrow>
+</mml:math>,
+   (Columns: 2)
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3.1</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>9.6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10.5</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6.8</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2.9</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2.2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+   For the following plot, the matrix of points was used for two items. Item 1 is
+   a Point Plot with Point Marker set to Circle. Item 2 has Line Style set to
+   Dash. (See <a href="dm08-01-matrix_algebra.xhtml#reshape" xmlns="http://www.w3.org/1999/xhtml"> Reshaping Lists and
+   Matrices</a> for more examples.)
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:msup>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>3</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>3.&ThinSpace;1</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>9.&ThinSpace;6</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>10.&ThinSpace;5</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>6.&ThinSpace;8</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2.&ThinSpace;9</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>2.&ThinSpace;2</mml:mn>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+<mml:mi>T</mml:mi>
+</mml:msup>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="importing data from an ascii&#xA;file" xmlns="http://www.w3.org/1999/xhtml">
+</a>Importing Data from an ASCII File</html:sectiontitle></html:section>
+<html:bodyText>
+   File &gt; Open allows you to read text files. One rather general method for
+   converting data from a text file to a mathematical list or matrix is outlined
+   below. Look under Help for additional options for importing data.
+</html:bodyText>
+<html:bodyText>
+   If the data is a list of numbers separated by commas, select the data with
+   click and drag, then choose Insert &gt; Math to change it to mathematics. Then
+   use the data as a list, or use the techniques described in the previous
+   section to convert the data to a vector or matrix.
+</html:bodyText>
+<html:bodyText>
+   If the data is stored as a column of numbers, it will come in as inline
+   numbers separated by spaces.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To change numbers separated by spaces to a list</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Select the data with click and drag.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Edit &gt; Find and Replace.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the box for Find text, type a normal space.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         In the box for Replace with, type a comma followed by an Allowbreak (choose
+         Insert &gt; Breaks, check Allowbreak, choose OK).
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Replace All.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Select the data with click and drag and choose Insert &gt; Math.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+   The order in which these operations are carried out is important. If you
+   change to mathematics before replacing spaces by commas, the digits will move
+   together to form a single number and the spaces will be lost!
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">File &gt; Import Contents</strong>
+</html:bodyText>
+<html:bodyText>
+   345 26 14 8 19 36 32 14 9 4 20
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Edit &gt; Replace &gt; Replace All:</strong>
+</html:bodyText>
+<html:bodyText>
+   (Find text: (type a space); Replace with: , )
+</html:bodyText>
+<html:bodyText>
+   345,26,14,8,19,36,32,14,9,4,20
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Insert &gt; Math</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>345</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>26</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>14</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>8</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>19</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>36</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>32</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>14</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>9</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>4</mml:mn>
+<mml:mo form="infix">,</mml:mo>
+<mml:mn>20</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span class="rule" style="width: 0pt; height: 0pt; position: relative; bottom: 1pt" xmlns="http://www.w3.org/1999/xhtml">
+</span>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Matrices &gt; Reshape</strong>
+</html:bodyText>
+<html:bodyText>
+   (Choose 2 columns)<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+<mml:mtable align="axis">
+<mml:mtr>
+<mml:mtd>
+<mml:mn>345</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>26</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>14</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>8</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>19</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>36</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>32</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>14</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>9</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mn>4</mml:mn>
+</mml:mtd>
+</mml:mtr>
+<mml:mtr>
+<mml:mtd>
+<mml:mn>20</mml:mn>
+</mml:mtd>
+<mml:mtd>
+<mml:mspace width="veryverythinmathspace">
+</mml:mspace>
+</mml:mtd>
+</mml:mtr>
+</mml:mtable>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm11-01-statistics__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>

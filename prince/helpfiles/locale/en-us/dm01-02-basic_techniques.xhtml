@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
+    ?>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Thursday, December 08, 2011 19:29:31" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm01-02-basic_techniques.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Inserting Text and Mathematics</h2>
+<html:bodyText>
+<html:italics>Scientific WorkPlace</html:italics> and <html:italics>Scientific
+   Notebook</html:italics> are modal in the sense that at all times during information
+   entry you are either entering text or mathematics, and the results obtained
+   from keystrokes and other user interface actions will differ depending on
+   whether you are entering text or mathematics.
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<a href="#toggling between modes" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Toggling
+   Between Modes</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#typing mathematics" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Typing
+   Mathematics</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#constants" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Constants</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#displaying mathematics" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Displaying
+   Mathematics</a>
+</html:bodyText>
+<html:bodyText>
+<a href="#centering" xmlns="http://www.w3.org/1999/xhtml">
+<span style="width:2em">
+<span style="padding-left:2em">
+</span>
+</span>Centering
+   Plots, Graphics and Text</a>
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="toggling between modes" xmlns="http://www.w3.org/1999/xhtml">
+</a>Toggling
+Between Modes</html:sectiontitle></html:section>
+<html:bodyText>
+   We refer to being in either text mode or mathematics mode. The default state
+   is text mode; it is easy to toggle between the two modes and it is also easy
+   to determine what mode you are in. Unless you actively change to mathematics,
+   the program displays a "T" on the Standard toolbar and
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Interprets anything you type as text, displaying it in black in the program
+         window.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Displays alphabetic characters as upright, not italicized.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Inserts a space when you press the spacebar.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   When you start the program, the insert point is in text mode.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To switch from text to mathematics</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Click the "T" on the standard toolbar, or
+      </html:bodyText>
+<html:bodyText>
+         Choose Insert &gt; Math.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   When in mathematics mode, the program
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Displays the insert point between brackets for mathematics.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Interprets anything you type as mathematics, displaying it in red in the
+         program window.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Italicizes alphabetic characters and displays numbers upright.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Automatically formats mathematical expressions, inserting correct spacing
+         around operators such as
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo>+</mml:mo>
+</mml:mrow>
+</mml:math>
+         and relations such as
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+</mml:mrow>
+</mml:math>.
+         Mathematics is automatically spaced differently from text as you enter
+         it---for example,
+         "<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>" rather
+         than "2+2"---so you do not have to make adjustments.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Advances the insert point to the next mathematical object when you press the
+         spacebar.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   On the screen, mathematics appears in red and text in black.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To switch from mathematics to text</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Click the "M" on the standard toolbar, or
+      </html:bodyText>
+<html:bodyText>
+         Choose Insert &gt; Text.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   When you switch from mathematics to text, the "M" changes to "T" and the
+   insert point changes to black.
+</html:bodyText>
+<html:bodyText>
+   The blinking vertical line on your screen is referred to as the
+   <html:italics>insert point</html:italics>. You may have heard it called the
+   <html:italics>insert cursor</html:italics>, or simply the
+   <html:italics>cursor</html:italics>. The insert point marks the position where
+   characters or symbols are entered when you type or click a symbol. You can
+   change the position of the insert point with the arrow keys or by clicking a
+   different screen position with the mouse. The position of the mouse is
+   indicated by the <html:italics>mouse pointer</html:italics>, which assumes the
+   shape of an I-beam over text and an arrow over mathematics.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="typing mathematics" xmlns="http://www.w3.org/1999/xhtml">
+</a>Typing mathematics</html:sectiontitle></html:section>
+<html:bodyText>
+   You can type information in a document in either text or mathematics. The
+   mathematics that you type is recognized by the underlying computing engine as
+   mathematics, and the text is ignored by the computing engine. The state of the
+   Toggle Text/Math button reflects the state at the position of the insert
+   point.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+<html:italics>Text</html:italics> is entered at the position of the insertion point
+         when the <span xmlns="http://www.w3.org/1999/xhtml">Toggle Text/Math</span> button in the <span xmlns="http://www.w3.org/1999/xhtml">Standard</span>
+         toolbar shows T.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+<html:italics>Mathematics</html:italics> is entered at the position of the insert
+         point when the <span xmlns="http://www.w3.org/1999/xhtml">Toggle Text/-Math</span> button on the
+         <span xmlns="http://www.w3.org/1999/xhtml">Standard</span> toolbar shows a red M.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   You can toggle between mathematics and text by clicking the Toggle Text/Math
+   button or by pressing Ctrl+m or Ctrl+t on the keyboard. Entering a mathematics
+   symbol by clicking a button on a toolbar automatically puts the state in
+   mathematics at the position in which the symbol is entered. The state remains
+   in mathematics as you type characters or symbols to the right of existing
+   mathematics, until you either toggle back into text or move the insert point
+   into text by using the mouse or by pressing right arrow, left arrow, or the
+   spacebar.
+</html:bodyText>
+<html:bodyText>
+   Choose View &gt; Toolbars if any toolbar you would like to use does not
+   automatically appear above your Document Window.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To type a fraction, radical, exponent, or subscript</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose <span xmlns="http://www.w3.org/1999/xhtml">Insert</span> &gt; Math Objects &gt;
+         <a id="fraction" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<span xmlns="http://www.w3.org/1999/xhtml">Fraction</span>,
+         <a id="radical" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<span xmlns="http://www.w3.org/1999/xhtml">Radical</span>,
+         <a id="superscript" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<span xmlns="http://www.w3.org/1999/xhtml">Superscript</span>, or
+         <a id="subscript" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<span xmlns="http://www.w3.org/1999/xhtml">Subscript</span> for input
+         boxes:<mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mi>&square;</mml:mi>
+<mml:mi>&square;</mml:mi>
+</mml:mfrac>
+<mml:mtext>&emsp;</mml:mtext>
+<mml:msqrt>
+<mml:mi>&square;</mml:mi>
+</mml:msqrt>
+<mml:mtext>&emsp;</mml:mtext>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mi>&square;</mml:mi>
+</mml:msup>
+<mml:mtext>&emsp;</mml:mtext>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mi>&square;</mml:mi>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Enter expressions in the input
+         boxes:<mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mfrac>
+<mml:mn>2</mml:mn>
+<mml:mn>3</mml:mn>
+</mml:mfrac>
+<mml:mtext>&emsp;</mml:mtext>
+<mml:msqrt>
+<mml:mn>5</mml:mn>
+</mml:msqrt>
+<mml:mtext>&emsp;</mml:mtext>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mtext>&emsp;</mml:mtext>
+<mml:msub>
+<mml:mi>y</mml:mi>
+<mml:mn>1</mml:mn>
+</mml:msub>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   The spacebar and arrow keys move the insertion point through mathematical
+   expressions and the tab key toggles between input boxes.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To use symbols for addition, multiplication and division</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Use standard symbols on the keyboard.
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Choose View &gt; Toolbars and check Symbol Toolbar. Click one of the buttons
+         on the Symbol Toolbar and a row of symbols will appear. (See
+         <a href="dm01-05-basic_techniques.xhtml#symbol toolbar" xmlns="http://www.w3.org/1999/xhtml"> Math and Symbol
+         Toolbars</a>.)
+      </html:bodyText>
+</html:bulletListItem>
+<html:bulletListItem>
+<html:bodyText>
+         Click the left or right sidebar pointer and choose Add &gt; Symbol. Click one
+         of the buttons and a panel of symbols will appear.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br> (See
+         <a href="dm01-05-basic_techniques.xhtml#symbols sidebar" xmlns="http://www.w3.org/1999/xhtml"> Math and Symbol
+         Toolbars</a>.)
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   You select a piece of text with the mouse by holding down the left mouse
+   button while moving the mouse, or from the keyboard by holding down shift and
+   pressing right arrow or left arrow. Your selection appears on the screen in
+   reversed colors. This technique is sometimes referred to as highlighting an
+   area of the screen. This is also one of the ways you can select mathematics.
+   See <a href="dm01-04-basic_techniques.xhtml" xmlns="http://www.w3.org/1999/xhtml"> Selecting Mathematical
+   Expressions</a> for a discussion of automatic and user selections for
+   mathematics.
+</html:bodyText>
+<html:bodyText>
+<a id="expanding brackets" xmlns="http://www.w3.org/1999/xhtml">
+</a>There are many brackets available for
+   mathematics expressions. Brackets entered from buttons or dialogs, or from the
+   keyboard with Ctrl/Cmd pressed, are expanding brackets (sometimes called
+   fences)---both sides are entered and the resulting brackets change size (both
+   height and width) depending on the contents. Expanding brackets will not break
+   at the end of a line so lengthy expressions enclosed in expanding brackets may
+   need to be displayed. Left and right brackets entered from the keyboard
+   (without Ctrl/Cmd pressed) act independently. They also have fixed
+   height.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To insert expanding brackets in a mathematics expression</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Brackets and select the desired brackets
+         from the panel that appears.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   Expanding parentheses and square brackets are also available on the Math
+   toolbar.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>Constants</html:sectiontitle></html:section>
+<html:bodyText>
+<a id="constants" xmlns="http://www.w3.org/1999/xhtml">
+</a>Certain constants are recognized<a id="recognizing&#xA;   constants" xmlns="http://www.w3.org/1999/xhtml">
+</a> in their usual forms---such<a id="pi" xmlns="http://www.w3.org/1999/xhtml">
+</a> as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+</mml:mrow>
+</mml:math>,
+   <a id="i" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>i</mml:mi>
+</mml:mrow>
+</mml:math>,
+   and
+   <a id="e" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>e</mml:mi>
+</mml:mrow>
+</mml:math>---as
+   long as the context is appropriate. On the other hand, they are recognized as
+   <a id="arbitrary constant" xmlns="http://www.w3.org/1999/xhtml">
+</a>arbitrary constants, variables, or <a id="index&#xA;   symbol" xmlns="http://www.w3.org/1999/xhtml">
+</a>indices when appropriate to the context, helping to provide a
+   completely natural way for you to type and perform mathematical computations.
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="displaying mathematics" xmlns="http://www.w3.org/1999/xhtml">
+</a>Displaying Mathematics</html:sectiontitle></html:section>
+<html:bodyText>
+   Mathematics can be centered on a separate line in a display.
+   <mml:math mode="display" display="block" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mi>b</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create a display</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Display.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Type or paste a mathematical expression in the display.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   Pressing enter immediately before a display will add extra vertical space. If
+   you do not want this space, place the insert point immediately before the
+   display and press backspace. (This removes the "new paragraph" symbol.)
+</html:bodyText>
+<html:bodyText>
+   Pressing enter immediately after a display will add extra vertical space and
+   cause the next line to start a new paragraph. If you do not want this space or
+   indention, place the insert point at the start of the next line and press
+   backspace. (This removes the "new paragraph" symbol.)
+</html:bodyText>
+<html:bodyText>
+   You can begin with an existing mathematical expression and put it into a
+   display.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To put mathematics in a display</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Select the mathematics with click and drag or Shift+right arrow.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Insert &gt; Math Objects &gt; Display.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   The default environment in a display is mathematics. You can, however, enter
+   text in a display by toggling to text.
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="centering" xmlns="http://www.w3.org/1999/xhtml">
+</a>Centering Plots, Graphics
+and Text</html:sectiontitle></html:section>
+<html:bodyText>
+   If you have text that you wish to center on a separate line, the natural way
+   to do this operation is with Centered, which you can choose from the
+   Section/Body Tag pop-up menu.
+</html:bodyText>
+<html:bodyText>
+   If you have a plot or graphic that you wish to center on a separate line, you
+   should choose the <a href="dm06-03-plotting.xhtml#displayed frames" xmlns="http://www.w3.org/1999/xhtml"> Displayed
+   setting in the Layout dialog</a>. To center a group of plots or graphics,
+   choose the In Line setting in the Layout dialog and then use Centered.
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+<a href="#top" xmlns="http://www.w3.org/1999/xhtml"> top
+   <mml:math display="inline">
+<mml:mrow>
+<mml:mo form="infix">&uArr;</mml:mo>
+</mml:mrow>
+</mml:math>
+</a>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/dm01-02-basic_techniques__1.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
+</html:html>
