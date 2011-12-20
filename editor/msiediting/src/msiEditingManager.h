@@ -70,13 +70,6 @@ nsresult DetermineParentLeftRight(nsIDOMNode * node,
                                   nsCOMPtr<nsIDOMNode> & parent,
                                   nsCOMPtr<nsIDOMNode> & left,
                                   nsCOMPtr<nsIDOMNode> & right);
-
-nsresult InsertMathmlElement(nsIEditor * editor,
-                             nsISelection * selection, 
-                             nsIDOMNode* node, 
-                             PRUint32 offset,
-                             PRUint32 flags,
-                             const nsCOMPtr<nsIDOMElement> & mathmlElement);
                                   
 PRUint32 GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 rawOffset, 
                                       nsCOMPtr<nsIDOMNode> & mathmlNode,
