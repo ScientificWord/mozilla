@@ -1,0 +1,13 @@
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Converting graphics files">
+
+<!-- Don't translate -file- in the strings below! -->
+<!ENTITY importLoading.label "The graphic -file- is being converted so it can be displayed.">
+<!ENTITY stopImportLoadingButton.label "Stop conversion">
+<!ENTITY stopImportLoadingButton.accesskey "S">
+<!ENTITY texImportLoading.label "The graphic -file- is being converted so it can be typeset.">
+<!ENTITY stopImportTeXLoadingButton.label "Stop typeset conversion">
+<!ENTITY stopImportTeXLoadingButton.accesskey "t">
+
+<!-- <!ENTITY .tooltip "">  -->

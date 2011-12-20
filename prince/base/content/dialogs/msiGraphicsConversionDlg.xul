@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiGraphicsConversionDlg.dtd">
+<!-- JLF to verify-->
+<dialog title="&windowTitle.label;"
+    id="msiGraphicsConversionDlg"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    width = "400"
+    height = "200"
+    buttons="accept"
+    ondialogaccept="return onAccept();"
+    onclose="return doEndDialog();"
+    persist="screenX screenY width height">
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiGraphicsConversionDlg.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <!-- broadcasterset>
+    <broadcaster id="enableDecorationsAround" disabled="false"/>
+    <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
+  </broadcasterset -->
+    
+  <groupbox>
+    <hbox>
+    <description id="importLoadingText" value="&importLoading.label;" />
+		<msibutton id="stopImportButton" label="&stopImportLoadingButton.label;" accesskey="&stopImportLoadingButton.accesskey;" oncommand="forceEndLoad(this);"/>
+    </hbox>
+    <hbox>
+    <description id="texImportLoadingText">&texImportLoading.label;</description>
+		<msibutton id="stopImportTeXButton" label="&stopImportTeXLoadingButton.label;" accesskey="&stopImportTeXLoadingButton.accesskey;" oncommand="forceEndLoad(this);"/>
+    </hbox>
+  </groupbox>
+
+</dialog>
