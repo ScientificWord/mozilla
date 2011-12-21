@@ -22,5 +22,6 @@ glob:extensions/firebut/*.*
 glob:*.rej
 glob:extensions/firebug/*
 glob:extensions/chromebug/*
+.tm_properties
 mozilla\.mchg
 myports\.txt
