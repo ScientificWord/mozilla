@@ -309,8 +309,7 @@
                   onload    = "frameHeightChanged(this, event);"
                   value     = "0"
                   persist   =  "value"/>
-                <checkbox id="autoHeight" checked="true" persist = "checked" checked="false"
-                   oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
+                <checkbox id="autoHeight" checked="true" persist = "checked" oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
                 <checkbox observes="hasNaturalSize" id="constrainCheckbox" oncommand ="ToggleConstrain();"
                   checked="false" persist = "checked"/>
               </row>
