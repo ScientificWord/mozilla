@@ -115,6 +115,7 @@ function doGoNative()
   if (!optionsData.Cancel)
   {
     gDialog.selectedOptionsArray = optionsData.options;
+    gDialog.currentOptionsDescription.value = gDialog.selectedOptionsArray.join(",");
   }
   else {
 		msiGetEditor(editorElement).incrementModificationCount(1);
