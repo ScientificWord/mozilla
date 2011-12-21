@@ -39,11 +39,12 @@ function Startup()
   gDialog.choicesListbox = document.getElementById("optionsListbox");
   gDialog.currentOptionsDescription = document.getElementById("selectedOptionsDescription");
 
-//  if (gDialog.isPackage)
-//    ourRDFRoot = ourRDFRoot.replace("__Type__", "req");
-//  else
-//    ourRDFRoot = ourRDFRoot.replace("__Type__", "class");
-//  ourRDFRoot = ourRDFRoot.replace("__Name__", gDialog.theName);
+  var ourRDFRoot = document.title;
+  if (gDialog.isPackage)
+    ourRDFRoot = ourRDFRoot.replace("__type__", "package");
+  else
+    ourRDFRoot = ourRDFRoot.replace("__type__", "class");
+  document.title = ourRDFRoot.replace("__Name__", gDialog.theName);
 
   InitDialog();
 
@@ -114,6 +115,7 @@ function doGoNative()
   if (!optionsData.Cancel)
   {
     gDialog.selectedOptionsArray = optionsData.options;
+    gDialog.currentOptionsDescription.value = gDialog.selectedOptionsArray.join(",");
   }
   else {
 		msiGetEditor(editorElement).incrementModificationCount(1);
