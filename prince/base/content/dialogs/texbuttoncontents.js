@@ -9,7 +9,7 @@ var gName;
 var gReq;  
 var gOpt;
 var gPre;
-var gOrd;  
+var gPri;  
 var gTeX;  
 var isNewNode;
 
@@ -31,7 +31,7 @@ function Startup()
   gReq   = document.getElementById("req");
   gOpt   = document.getElementById("opt");
   gPre   = document.getElementById("pre");
-  gOrd   = document.getElementById("ord");
+  gPri   = document.getElementById("pri");
   gTeX   = document.getElementById("texbuttonTextbox");
   isNewNode = !(texnode);
   if (texnode) {
@@ -39,7 +39,7 @@ function Startup()
     if (texnode.hasAttribute("name")) gName.value = texnode.getAttribute("name");
     if (texnode.hasAttribute("req")) gReq.value = texnode.getAttribute("req");
     if (texnode.hasAttribute("opt")) gOpt.value = texnode.getAttribute("opt");
-    if (texnode.hasAttribute("ord")) gOrd.value = texnode.getAttribute("ord");
+    if (texnode.hasAttribute("pri")) gPri.value = texnode.getAttribute("pri");
     if (texnode.hasAttribute("pre")) gPre.checked = texnode.getAttribute("pre")==1;
     putInPreamble();
     childnode = texnode.firstChild;
@@ -62,8 +62,8 @@ function Startup()
 
 function putInPreamble()
 {
-  document.getElementById("ord").disabled=!document.getElementById("pre").checked;
-  document.getElementById("ordlabel").disabled=!document.getElementById("pre").checked;
+  document.getElementById("pri").disabled=!document.getElementById("pre").checked;
+  document.getElementById("prilabel").disabled=!document.getElementById("pre").checked;
 }
 
 
@@ -85,8 +85,8 @@ function onAccept()
     if (gOpt.value.length > 0) texnode.setAttribute("opt", gOpt.value)
     else texnode.removeAttribute("opt");
     texnode.setAttribute("pre", (gPre.checked)?"1":"0");
-    if (gOrd.value.length > 0) texnode.setAttribute("ord", gOrd.value);
-    else texnode.removeAttribute("ord");
+    if (gPri.value.length > 0) texnode.setAttribute("pri", gPri.value);
+    else texnode.removeAttribute("pri");
 
     SaveWindowLocation();
     if (isNewNode) editor.insertElementAtSelection(texnode, true);

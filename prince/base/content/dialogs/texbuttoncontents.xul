@@ -37,8 +37,8 @@
     <broadcaster id="inPreamble" disabled="true"/>
     <checkbox id = "enc" label="&Encapsulated.label;" accesskey="&Encapsulated.accesskey;" checked="false"/>
     <checkbox id = "pre" label="&Preamble.label;" accesskey="&Preamble.accesskey;" checked="false" oncommand="putInPreamble()"/>
-    <label id="ordlabel" observes="inPreamble" value="&Ordinal.label;" control="ord" accesskey="&Ordinal.accesskey;"/>
-    <textbox id="ord" type="number" value="100" style="width:5em;" observes="inPreamble" />
+    <label id="prilabel" observes="inPreamble" value="&Ordinal.label;" control="pri" accesskey="&Ordinal.accesskey;"/>
+    <textbox id="pri" type="number" style="width:5em;" observes="inPreamble" />
   </hbox>
   <vbox>
     <label control="name" accesskey="&name.accesskey;" value="&name.label;"/>
