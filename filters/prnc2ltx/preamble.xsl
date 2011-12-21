@@ -9,7 +9,7 @@
 <!-- Package handling. Packages are not inserted directly, but with requirespackage tags and other
   tags with the 'req' and 'opt' attributes. We collect them and remove
   duplicates, and then sort according to the pri attribute -->
-<!--xsl:variable name="masterpackagelist" select="document('packages.xml',.)"/ -->
+<xsl:variable name="masterpackagelist" select="document('packages.xml',.)"/>
   
 
 <xsl:variable name="requiredpackages.tf">
@@ -45,9 +45,9 @@
 	  	      </xsl:when>
    	  		  <xsl:otherwise>
               <xsl:variable name="pkg" select="@req"/>
-              <!--xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/ -->
+              <xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/>
               <xsl:choose>
-                <!--xsl:when test="$pri"><xsl:value-of select="$pri"/></xsl:when -->
+                <xsl:when test="$pri"><xsl:value-of select="$pri"/></xsl:when>
                 <xsl:otherwise>100</xsl:otherwise>
               </xsl:choose>
             </xsl:otherwise>
