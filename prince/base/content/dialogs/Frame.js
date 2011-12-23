@@ -14,22 +14,30 @@ var editor;
 
 function startUp()
 {
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  editor = msiGetEditor(editorElement);
-  if (!editor)
-  {
-    window.close();
-    return;
+  try {
+    var editorElement = msiGetParentEditorElementForDialog(window);
+    editor = msiGetEditor(editorElement);
+    if (!editor)
+    {
+      window.close();
+      return;
+    }
+    msiframe = null;
+    if (window.arguments.length > 0) msiframe = window.arguments[0];
+    isNewNode = !(msiframe);
+    gd = new Object();
+    setHasNaturalSize(false);
+    gd = initFrameTab(gd, msiframe, isNewNode, null);
+  // we don't want heavy-weight frames inline
+    document.getElementById('inline').hidden=true;
+    // no natural size ==> autowidth not possible
+    gd.autoWidthCheck.setAttribute("style", "visibility:hidden;");
+    gd.autoWidthLabel.setAttribute("style", "visibility:hidden;");
+  //  initFrameSizePanel(); // needed when the user can set the size
   }
-  msiframe = null;
-  if (window.arguments.length > 0) msiframe = window.arguments[0];
-  isNewNode = !(msiframe);
-  gd = new Object();
-  setHasNaturalSize(false);
-  gd = initFrameTab(gd, msiframe, isNewNode, null);
-// we don't want heavy-weight frames inline
-  document.getElementById('inline').hidden = true;
-//  initFrameSizePanel(); // needed when the user can set the size
+  catch(e) {
+    throw(e);
+  }
 }
 
 
@@ -59,7 +67,11 @@ function onOK() {
 			dump(e.message+"\n");
 		}
 	}
-  setFrameAttributes(msiframe);
+  if (!setFrameAttributes(msiframe))
+  {
+  	editor.endTransaction();
+    return false;
+  }
 	editor.endTransaction();
 //	if (isNewNode)
 //	{
