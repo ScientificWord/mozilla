@@ -35,7 +35,8 @@
 	<xsl:if test="@topmargin or @sidemargin or @border or @padding">{</xsl:if>				
   <xsl:if test="@topmargin">\setlength\intextsep{<xsl:value-of select="@topmargin"/><xsl:value-of select="$units"/>}      
   </xsl:if>
-  <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/><xsl:value-of select="$units"/>} </xsl:if>
+  <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/><xsl:value-of select="$units"/>}
+     </xsl:if>
   <xsl:if test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="$units"/>} </xsl:if>
   <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$units"/>} </xsl:if>
 <xsl:choose>

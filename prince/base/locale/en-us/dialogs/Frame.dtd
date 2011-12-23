@@ -83,3 +83,5 @@
 <!ENTITY placement.hereInside "Inside">
 <!ENTITY placement.hereOutside "Outside">
 <!ENTITY placement.hereFull "Full width">
+
+<!ENTITY constrain "Constrain proportions">

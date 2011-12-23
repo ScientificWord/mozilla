@@ -130,6 +130,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
   dg.heightInput          = document.getElementById("frameHeightInput");
   dg.autoHeightCheck      = document.getElementById("autoHeight");
   dg.autoWidthCheck       = document.getElementById("autoWidth");
+  dg.autoWidthLabel       = document.getElementById("autoWidthLabel");
   dg.frameUnitMenulist    = document.getElementById("frameUnitMenulist");
   dg.unitList             = document.getElementById("unitList");
   dg.sizeRadioGroup       = document.getElementById("sizeRadio");
@@ -236,7 +237,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
 			var topmargin = element.getAttribute("topmargin");
 			if (topmargin == null) topmargin = 0;
 			dg.marginInput.top.value = topmargin;
-			var borderwidth = contentsElement.getAttribute("border-width");
+			var borderwidth = contentsElement.getAttribute(borderAtt);
 			if (borderwidth == null) borderwidth = 0;
 			dg.borderInput.left.value = borderwidth;
 			var padding = contentsElement.getAttribute("padding");
@@ -713,7 +714,7 @@ function setWidthAndHeight(width, height, event)
   else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
     constrainProportions( "frameHeightInput", "frameWidthInput", event );
 	if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
-	if (Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
+	if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
 }
 
 function setContentSize(width, height)  
@@ -791,8 +792,20 @@ function setTextValueAttributes()
 	}
 }
 
+function isValid()
+{
+  if (!(gFrameTab.widthInput.value > 0))
+  {
+    AlertWithTitle("Layout error", "Width must be positive");
+    return false;
+  }
+  return true;
+}
+
+
 function setFrameAttributes(frameNode, contentsNode)
 {
+  if (!isValid()) return false;
   var rot;
   var editor = msiGetEditor(Dg.editorElement);
 	setTextValueAttributes();
@@ -863,11 +876,11 @@ function setFrameAttributes(frameNode, contentsNode)
     msiEditorEnsureElementAttribute(frameNode, "margin", getCompositeMeasurement("margin", metrics.unit, false), editor);
 	}  
   if (gFrameModeImage) {
-    var borderwidth = getSingleMeasurement("border", "Left", metrics.unit, false);
-    msiEditorEnsureElementAttribute(contentsNode, "border-width", borderwidth, editor);
+    var borderwidth = getSingleMeasurement(borderAtt, "Left", metrics.unit, false);
+    msiEditorEnsureElementAttribute(contentsNode, borderAtt, borderwidth, editor);
   }
   else
-    msiEditorEnsureElementAttribute(contentsNode, "border", getCompositeMeasurement("border",metrics.unit, false), editor);
+    msiEditorEnsureElementAttribute(contentsNode, borderAtt, getCompositeMeasurement("border",metrics.unit, false), editor);
   if (gFrameModeImage) {
     var padding = getSingleMeasurement("padding", "Left", metrics.unit, false);
     msiEditorEnsureElementAttribute(contentsNode, "padding", padding, editor);
@@ -883,7 +896,7 @@ function setFrameAttributes(frameNode, contentsNode)
   }
   else
     msiEditorEnsureElementAttribute(contentsNode, heightAtt, gFrameTab.heightInput.value, editor);
-  if (gFrameTab.autoWidthCheck.checked)
+  if ((gFrameTab.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && gFrameTab.autoWidthCheck.checked)
   {
     if (gFrameModeImage)
       msiEditorEnsureElementAttribute(contentsNode, widthAtt, null, editor);
@@ -994,6 +1007,7 @@ function setFrameAttributes(frameNode, contentsNode)
   else removeStyleAttributeFamilyOnNode(contentsNode, "width", editor);
   if (style != "0px")
     setStyleAttributeOnNode( contentsNode, "border-style", "solid", editor );
+  return true;
 }
 
 function frameHeightChanged(input, event)
@@ -1006,6 +1020,18 @@ function frameHeightChanged(input, event)
   setStyleAttributeByID("content", "height", scaledHeight + "px");
   constrainProportions( "frameHeightInput", "frameWidthInput", event );
   redrawDiagram();
+  if (input.value == 0)
+  {
+    if (input.id === "frameHeightInput"){
+      Dg.autoHeightCheck.checked = true;
+    }
+  }
+  else
+  {
+    if (input.id === "frameHeightInput"){
+      Dg.autoHeightCheck.checked = false;
+    }
+  }
 }
 
 function frameWidthChanged(input, event)
@@ -1032,9 +1058,11 @@ function setDisabled(checkbox,id)
 
 function checkAutoDimens(checkBox, textboxId)
 {
-  if (checkBox.checked && !Dg.constrainCheckbox.checked)
+  if (checkBox.checked && !Dg.constrainCheckbox.checked){
     Dg.constrainCheckbox.checked = true;
-  setDisabled(this, "frameWidthInput");
+  }
+  Dg.frameWidthInput.value = "0";
+  setDisabled(this, textboxId);
 }
 
 function ToggleConstrain()
