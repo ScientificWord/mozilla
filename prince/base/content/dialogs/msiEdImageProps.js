@@ -1108,7 +1108,19 @@ function doGraphicsImport(inputFile, fileTypeData, mode)
   commandFile.initWithPath(graphicDir.path);
   commandFile.append(mode + inputFile.leafName + extension);
   commandFile = commandFile.QueryInterface(Components.interfaces.nsILocalFile);
-  var outputFile = prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode);
+  var outputFile = prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode, (extension != ".cmd"));
+
+////Remove!! Just for testing:
+//  if (extension == ".cmd")
+//  {
+//    var unixTemplate = templateFileURL.substring(0, nDot) + ".bash";
+//    var unixTemplateFileLines = GetLinesFromFile(unixTemplate);
+//    var unixCmdFile = commandFile.clone();
+//    unixCmdFile = unixCmdFile.parent;
+//    unixCmdFile.append(mode + inputFile.leafName + ".bash");
+//    prepareImport(unixCmdFile, unixTemplateFileLines, fileTypeData, inputFile, mode, true);
+//  }
+
   if (outputFile)
     runGraphicsFilter(commandFile, inputFile, outputFile, mode);
   return outputFile;
@@ -1118,31 +1130,39 @@ var replaceableValues = ["targDirectory", "exepath", "inputFile", "outputFile", 
 
 //  aLine - string
 //  substitutions - importLineSubstitutions or texLineSubstitutions object
-function fixCommandFileLine(aLine, substitutions)
+function fixCommandFileLine(aLine, substitutions, bIsUnix)
 {
   var retLine = aLine;
   var theSub = "";
   var aSub;
-  if (retLine.indexOf("%") >= 0)
+  var subRE;
+  var subREStr="(%sub%)|(\\{\\$sub\\})|(\\$sub)";
+  var unixRE=/%([^%]+)%/g;
+  if ((retLine.indexOf("%") >= 0) || (retLine.indexOf("$") >= 0))
   {
     for (var ix = 0; ix < replaceableValues.length; ++ix)
     {
       aSub = replaceableValues[ix];
-      if (retLine.indexOf("%" + aSub + "%") >= 0)
+      subRE = new RegExp(subREStr.replace("sub",aSub,"g"),"g");
+      if (subRE.test(retLine))
+//      if (retLine.indexOf("%" + aSub + "%") >= 0)
       {
         theSub = "";
         if (substitutions[aSub] && substitutions[aSub].length)
           theSub = substitutions[aSub];
-        retLine = retLine.replace("%" + aSub + "%", theSub, "g");
+//        retLine = retLine.replace("%" + aSub + "%", theSub, "g");
+        retLine = retLine.replace(subRE, theSub);
       }
     }
+    if (bIsUnix)
+      retLine = retLine.replace(unixRE,"{$$$1}");
   }
   return retLine;
 };
 
 //  fileTypeData - an object in the array returned from readInGraphicsFileData
 //  inputNSFile - an nsIFile
-function importLineSubstitutions(fileTypeData, inputNSFile)
+function importLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
 {
   this.targDirectory = getDocumentGraphicsDir().path;
   this.exepath = fileTypeData.exepath;
@@ -1151,12 +1171,12 @@ function importLineSubstitutions(fileTypeData, inputNSFile)
   var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i");
   this.outputFile = inputNSFile.leafName.replace(extRE, "." + fileTypeData.output);
   this.commandLine = "";
-  this.commandLine = fixCommandFileLine(fileTypeData.commandLine, this);
+  this.commandLine = fixCommandFileLine(fileTypeData.commandLine, this, bIsUnix);
 }
 
 //  fileTypeData - an object in the array returned from readInGraphicsFileData
 //  inputNSFile - an nsIFile
-function texLineSubstitutions(fileTypeData, inputNSFile)
+function texLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
 {
   this.targDirectory = getDocumentGraphicsDir("tex").path;
   this.exepath = fileTypeData.texexepath;
@@ -1165,7 +1185,7 @@ function texLineSubstitutions(fileTypeData, inputNSFile)
   var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i");
   this.outputFile = inputNSFile.leafName.replace(extRE, "." + this.outputExtension);
   this.commandLine = "";
-  this.commandLine = fixCommandFileLine(fileTypeData.texCommandLine, this);
+  this.commandLine = fixCommandFileLine(fileTypeData.texCommandLine, this, bIsUnix);
 }
 
 //  commandFile - an nsILocalFile; the command file being created
@@ -1174,21 +1194,20 @@ function texLineSubstitutions(fileTypeData, inputNSFile)
 //  inputFile - an nsIFile; the graphic file being converted
 //  mode - a string, either "tex" or "import" (defaults to "import")
 //Returns an nsILocalFile giving the graphics file to be created.
-function prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode)
+function prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode, bIsUnix)
 {
-//  var substVarRE = /%([^%]+)%/;
   var newLine = "";
   var outStr = "";
   var theSubs;
   try
   {
     if (mode == "tex")
-      theSubs = new texLineSubstitutions(fileTypeData, inputFile);
+      theSubs = new texLineSubstitutions(fileTypeData, inputFile, bIsUnix);
     else
-      theSubs = new importLineSubstitutions(fileTypeData, inputFile);
+      theSubs = new importLineSubstitutions(fileTypeData, inputFile, bIsUnix);
     for (var ix = 0; ix < templateFileLines.length; ++ix)
     {
-      newLine = fixCommandFileLine(templateFileLines[ix], theSubs);
+      newLine = fixCommandFileLine(templateFileLines[ix], theSubs, bIsUnix);
       //now output newLine to the file we're going to run
       outStr += "\n" + newLine;
     }
