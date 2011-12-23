@@ -286,7 +286,7 @@
             <rows>
               <row>
                 <label value="&width;" id="frameWidthLabel"/>
-                <label value="&sizeTab.auto;" control="autoWidth"/>
+                <label id="autoWidthLabel" value="&sizeTab.auto;" control="autoWidth"/>
                 <label value="&height;" id="frameHeightLabel"/>
                 <label value="&sizeTab.auto;" control="autoHeight"/>
                 <label observes="hasNaturalSize" value="constrainCheckbox" control="constrainCheck"/>
@@ -334,16 +334,17 @@
     <spacer flex="1"/>
     <groupbox >
       <caption label="&Placementtab.label;"/>
-      <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" selectedIndex="1" persist="selectedIndex value">
+      <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="value">
       <hbox flex="1">
         <vbox>
-          <radio id="inline" label="&inline;" radioGroup="placementRadioGroup"/>
+          <radio id="inline" value="inline" label="&inline;" radioGroup="placementRadioGroup" persist="selected"/>
         </vbox>
         <vbox>
-          <radio id="display" label="&display;" radioGroup="placementRadioGroup"/>
+          <radio id="display" selected="true" value="display" label="&display;" radioGroup="placementRadioGroup" persist="selected"/>
         </vbox>
         <vbox>
-          <radio id="float" label="&floating;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+          <radio id="float" value="float" label="&floating;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"
+             persist="selected"/>
           <vbox>
             <checkbox id="placeForceHereCheck" label="&placement.forceHere;" observes="floatingPlacement" persist="checked"/>
             <checkbox id="placeHereCheck" label="&placement.here;" observes="floatingPlacement" persist="checked"/>
