@@ -2019,7 +2019,7 @@ nsresult msiEditingManager::AddMatrixColumns(nsIEditor * editor, nsIDOMNode *aMa
         }
         else if (insertAt > 0)
         {
-          res = GetCellAt(aMatrix, ii+1, insertAt, getter_AddRefs(prevCell));  //Note that we know this isn't a continuation cell
+          res = GetMatrixCellAt(aMatrix, ii+1, insertAt, getter_AddRefs(prevCell));  //Note that we know this isn't a continuation cell
           msiUtils::GetIndexOfChildInParent(prevCell, insertPos);
           ++insertPos;
 //          insertPos = editor->GetIndexOf(nextRow, prevCell);
@@ -2202,11 +2202,11 @@ nsresult msiEditingManager::FindMatrixCell(nsIDOMNode* aMatrix, nsIDOMNode *aCel
   return retVal;
 }
 
-nsresult msiEditingManager::GetCellAt(nsIDOMNode* aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsIDOMNode** pCell)
+nsresult msiEditingManager::GetMatrixCellAt(nsIDOMNode* aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsIDOMNode** pCell)
 {
   nsresult retVal(NS_ERROR_FAILURE);
-  NS_ASSERTION(pCell, "Null cell pointer passed to msiEditingManager::GetCellAt");
-  NS_ASSERTION(whichRow && whichCol, "Bad row or column index passed to msiEditingManager::GetCellAt");
+  NS_ASSERTION(pCell, "Null cell pointer passed to msiEditingManager::GetMatrixCellAt");
+  NS_ASSERTION(whichRow && whichCol, "Bad row or column index passed to msiEditingManager::GetMatrixCellAt");
   nsIDOMNode* pCellNode = nsnull;
   if (pCell && whichRow && whichCol)
     retVal = GetMatrixInfo(aMatrix, whichRow, whichCol, &pCellNode, nsnull);
