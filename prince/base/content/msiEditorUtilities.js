@@ -1711,7 +1711,7 @@ function msiEnsureElementCSSProperty(elementNode, propName, propValue)
 function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, editor)
 {
   var retVal = false;
-  if ( (attribValue === null) || (attribValue.length === 0) )
+  if ( (!attribValue) || (attribValue.length === 0) )
   {
     if (elementNode.hasAttribute(attribName))
     {
@@ -1735,7 +1735,7 @@ function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, e
 function msiEnsureElementAttribute(elementNode, attribName, attribValue)
 {
   var retVal = false;
-  if (attribValue === null)
+  if (!attribValue || !attribValue.length)
   {
     if (elementNode.hasAttribute(attribName))
     {

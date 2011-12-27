@@ -70,8 +70,8 @@
   <xsl:variable name="theUnit"><xsl:call-template name="unit"/></xsl:variable>
   <xsl:choose>
     <xsl:when test="@pos='float'">
-      <xsl:if test="@border-width">
-        \setlength\fboxrule{<xsl:value-of select="@border-width"/><xsl:value-of select="$theUnit"/>}
+      <xsl:if test="@border">
+        \setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="$theUnit"/>}
         <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$theUnit"/>}</xsl:if>
         <xsl:if test="@border-color">{\color    
           <xsl:choose>
@@ -82,7 +82,7 @@
         \framebox{</xsl:if>
       <xsl:call-template name="buildincludegraphics"/>
       <xsl:if test="@border-color">}</xsl:if>
-      <xsl:if test="@border-width">}</xsl:if>
+      <xsl:if test="@border">}</xsl:if>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="buildincludegraphics"/>
@@ -170,7 +170,7 @@
   </xsl:variable>
   <xsl:variable name="border">
     <xsl:choose>
-      <xsl:when test="$objNode/@border-width"><xsl:value-of select="2*number($objNode/@border-width)"/></xsl:when>
+      <xsl:when test="$objNode/@border"><xsl:value-of select="2*number($objNode/@border)"/></xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
