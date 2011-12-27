@@ -42,6 +42,7 @@ function startUp()
 
 
 function onOK() {
+  if (!isValid()) return false; // isValid is in msiFrameOverlay.j s 
   editor.beginTransaction();
 	if (isNewNode) 
 	{
@@ -67,11 +68,6 @@ function onOK() {
 			dump(e.message+"\n");
 		}
 	}
-  if (!setFrameAttributes(msiframe))
-  {
-  	editor.endTransaction();
-    return false;
-  }
 	editor.endTransaction();
 //	if (isNewNode)
 //	{
