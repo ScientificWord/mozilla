@@ -1071,10 +1071,13 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>othertag</tagclassname>
-      <classcontains><contains>#text</contains></classcontains>
 			<tags>
-        <tag nm="mi"><description>mi</description></tag>
-        <tag nm="mo"><description>mo</description></tag>
+        <tag nm="mi"><description>mi</description>
+          <contains>#text</contains>
+        </tag>
+        <tag nm="mo"><description>mo</description>
+          <contains>#text</contains>
+        </tag>
         <tag nm="hspace"><description>hspace</description></tag>
 				<tag nm="object"><description>Object</description></tag>
 				<tag nm="td"><description>Table cell</description>
@@ -1091,6 +1094,7 @@
         <tag nm="citation">
           <description>Citation</description>
           <contains>biblabel</contains>
+          <contains>#text</contains>
         </tag>
         <tag nm="biblabel">
           <description>Bibliography label</description>

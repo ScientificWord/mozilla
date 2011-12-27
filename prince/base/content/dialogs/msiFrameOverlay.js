@@ -805,7 +805,6 @@ function isValid()
 
 function setFrameAttributes(frameNode, contentsNode)
 {
-  if (!isValid()) return false;
   var rot;
   var editor = msiGetEditor(Dg.editorElement);
 	setTextValueAttributes();
@@ -1007,7 +1006,6 @@ function setFrameAttributes(frameNode, contentsNode)
   else removeStyleAttributeFamilyOnNode(contentsNode, "width", editor);
   if (style != "0px")
     setStyleAttributeOnNode( contentsNode, "border-style", "solid", editor );
-  return true;
 }
 
 function frameHeightChanged(input, event)
