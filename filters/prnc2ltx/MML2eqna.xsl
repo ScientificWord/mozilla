@@ -316,24 +316,25 @@
           </xsl:choose>
         </xsl:for-each>
 
-        <xsl:choose>
-          <xsl:when test="./*[1][self::mml:mrow][@id!='']">
-            <xsl:text xml:space="preserve"> \label{</xsl:text>
-            <xsl:value-of select="child::mml:mrow/@id"/>
-            <xsl:text>}</xsl:text>
-          </xsl:when>
-          <xsl:when test="@key and string-length(normalize-space(@key))">
-            <xsl:text xml:space="preserve"> \label{</xsl:text>
-            <xsl:value-of select="@key"/>
-            <xsl:text>}</xsl:text>
-          </xsl:when>
-          <xsl:when test="@marker and string-length(normalize-space(@marker))">
-            <xsl:text xml:space="preserve"> \label{</xsl:text>
-            <xsl:value-of select="@marker"/>
-            <xsl:text>}</xsl:text>
-          </xsl:when>
-        </xsl:choose>
       </xsl:for-each>
+
+      <xsl:choose>
+        <xsl:when test="./mml:mtd/*[1][self::mml:mrow][@id!='']">
+          <xsl:text xml:space="preserve"> \label{</xsl:text>
+          <xsl:value-of select="child::mml:mrow/@id"/>
+          <xsl:text>}</xsl:text>
+        </xsl:when>
+        <xsl:when test="@key and string-length(normalize-space(@key))">
+          <xsl:text xml:space="preserve"> \label{</xsl:text>
+          <xsl:value-of select="@key"/>
+          <xsl:text>}</xsl:text>
+        </xsl:when>
+        <xsl:when test="@marker and string-length(normalize-space(@marker))">
+          <xsl:text xml:space="preserve"> \label{</xsl:text>
+          <xsl:value-of select="@marker"/>
+          <xsl:text>}</xsl:text>
+        </xsl:when>
+      </xsl:choose>
 
   <!-- handle \tag{} -->
 
@@ -389,12 +390,12 @@
                    and           $eqn-info/is-starred='false'
                    and           $eqn-info/LaTeX-env!='multline'">
           <xsl:choose>
-            <xsl:when test="mml:mtd[1]/@customLabel">
+            <xsl:when test="@customLabel">
               <xsl:text xml:space="preserve"> \tag{</xsl:text>
-              <xsl:value-of select="mml:mtd[1]/@customLabel"/>
+              <xsl:value-of select="@customLabel"/>
               <xsl:text>}</xsl:text>
             </xsl:when>
-            <xsl:when test="mml:mtd[1]/@numbering='none'">
+            <xsl:when test="@numbering='none'">
               <xsl:text xml:space="preserve"> \nonumber </xsl:text>
             </xsl:when>
           </xsl:choose>
@@ -403,10 +404,10 @@
         <xsl:when test="self::mml:mtr and ancestor::html:msidisplay
                    and     $eqn-info/LaTeX-env='multiline'
                    and     $eqn-info/is-starred='false'
-                   and     mml:mtd[1][@customLabel]
-                   and     not(preceding-sibling::*/mml:mtd[1][@customLabel])">
+                   and     @customLabel
+                   and     not(preceding-sibling::*[@customLabel])">
          <xsl:text xml:space="preserve"> \tag{</xsl:text>
-         <xsl:value-of select="mml:mtd[1]/@customLabel"/>
+         <xsl:value-of select="@customLabel"/>
          <xsl:text>}</xsl:text>
        </xsl:when>
   <!-- handle \nonumber -->

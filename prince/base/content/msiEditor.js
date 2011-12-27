@@ -3256,7 +3256,7 @@ function msiEditorNextField(bShift, editorElement)
       }
       if (nRow == startRow && nCol == startCol)
         break;
-      selNode = mathmlEditor.getCellAt(aNode, nRow, nCol);
+      selNode = mathmlEditor.getMatrixCellAt(aNode, nRow, nCol);
       if (selNode && (selNode != aTableCell))
         bDone = true;
       //Now check to be sure this isn't going back to the top of a multi-row cell
@@ -4042,6 +4042,13 @@ function msiSelectPropertiesObjectFromCursor(editorElement)
 {
   var editor = msiGetEditor(editorElement);
   var currNode = editor.selection.anchorNode;
+  var bindingParent = currNode ? currNode.ownerDocument.getBindingParent(currNode) : null;
+  if (bindingParent)
+  {
+    var offset = bindingParent.childNodes ? bindingParent.childNodes.length : 0;
+    return msiFindRevisableObjectToLeft(bindingParent, offset, editorElement);
+  }
+
   //Look to the left of the cursor:
   return msiFindRevisableObjectToLeft(currNode, editor.selection.anchorOffset, editorElement);
 }
@@ -4942,6 +4949,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
   var theMenuStr = null;
   var propsData = null;
   var containingNodeData = null;
+  var bindingParent = null;
   var tagclass;
 
   if (!editorElement)
@@ -4951,6 +4959,8 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 //  if (nodeData)
 //    element = nodeData.theNode;
 
+  if (bindingParent = element.ownerDocument.getBindingParent(element))
+    return msiCreatePropertiesObjectDataFromNode(bindingParent, editorElement, bIncludeParaAndStructure);
   if (element && element.nodeName)
   {
     var name = msiGetBaseNodeName(element);
@@ -7674,6 +7684,7 @@ msiEquationPropertiesObjectData.prototype =
   {
     var foundNode = null, nextNode = null;
     var foundCell = null;
+    var foundRow = null;
     var theAttr, matchArray, spacingArray;
     var paddingBottomRE = /padding-bottom\:\s*([^;^}]+)/;
     var theEditor, mathmlEditor;
@@ -7765,32 +7776,36 @@ msiEquationPropertiesObjectData.prototype =
 
         for (var ix = 0; ix < this.mnRows; ++ix)
         {
-          foundCell = null;
+          foundRow = foundCell = null;
           if (this.mTableElement)
-            foundCell = mathmlEditor.getCellAt(this.mTableElement, ix+1, 1);
+            foundCell = mathmlEditor.getMatrixCellAt(this.mTableElement, ix+1, 1);
           else if (ix == 0)
-            foundCell = this.mDisplay;  //the attributes will be placed on the msidisplay element for a single displayed equation
+            foundRow = foundCell = this.mDisplay;  //the attributes will be placed on the msidisplay element for a single displayed equation
           if (foundCell)
           {
-            this.mRowData[ix].rowNode = foundCell;
+            if (!foundRow)
+              foundRow = msiNavigationUtils.getParentOfType(foundCell, "mtr");
+            if (!foundRow)
+              foundRow = foundCell;
+            this.mRowData[ix].rowNode = foundRow;
 //            if (this.mbSubEqnNumbersEnabled)
 //            {
-            theAttr = foundCell.getAttribute("numbering");
+            theAttr = foundRow.getAttribute("numbering");
             if (theAttr && theAttr == "none")
               this.mRowData[ix].labelType = "numberingNone";
             else
               this.mRowData[ix].labelType = "numberingAuto";
-            theAttr = foundCell.getAttribute("customLabel");
+            theAttr = foundRow.getAttribute("customLabel");
             if (theAttr && theAttr.length)
             {
               this.mRowData[ix].labelType = "numberingCustom";
               this.mRowData[ix].customLabel = theAttr;
-              theAttr = foundCell.getAttribute("suppressAnnotation");
+              theAttr = foundRow.getAttribute("suppressAnnotation");
               if (theAttr && theAttr == "true")
                 this.mRowData[ix].mbSuppressAnnotation = true;
             }
 //            }
-            theAttr = foundCell.getAttribute("marker");
+            theAttr = foundRow.getAttribute("marker");
             if (theAttr && theAttr.length)
               this.mRowData[ix].marker = theAttr;
             if (spacingArray && spacingArray.length > ix)
@@ -7799,7 +7814,7 @@ msiEquationPropertiesObjectData.prototype =
             }
             else
             {
-              theAttr = foundCell.getAttribute("style");
+              theAttr = foundRow.getAttribute("style");
               if (theAttr)
               {
                 matchArray = paddingBottomRE.exec(theAttr);
