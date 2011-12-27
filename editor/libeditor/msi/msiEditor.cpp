@@ -1935,9 +1935,9 @@ nsresult msiEditor::FindMatrixCell(nsIDOMNode *aMatrix, nsIDOMNode *aCell, PRInt
 }
 
 
-nsresult msiEditor::GetCellAt(nsIDOMNode *aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsIDOMNode **_retval)
+nsresult msiEditor::GetMatrixCellAt(nsIDOMNode *aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsIDOMNode **_retval)
 {
-  return m_msiEditingMan->GetCellAt(aMatrix, whichRow, whichCol, _retval);
+  return m_msiEditingMan->GetMatrixCellAt(aMatrix, whichRow, whichCol, _retval);
 }
 
 nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
@@ -3492,9 +3492,9 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       //First find appropriate <td>s using nMatrixRowLeft and Right
       nsCOMPtr<nsIDOMNode> aLeftCell, aRightCell;
       nsCOMPtr<nsIDOMNode> leftRow, rightRow;
-      dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowLeft, 1, getter_AddRefs(aLeftCell));
+      dontcare = m_msiEditingMan->GetMatrixCellAt(matrixContainer, nMatrixRowLeft, 1, getter_AddRefs(aLeftCell));
       newLeftContainer = do_QueryInterface(aLeftCell);
-      dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowRight, 1, getter_AddRefs(aRightCell));
+      dontcare = m_msiEditingMan->GetMatrixCellAt(matrixContainer, nMatrixRowRight, 1, getter_AddRefs(aRightCell));
       newRightContainer = do_QueryInterface(aRightCell);
       PRUint32 flags(0);
 
