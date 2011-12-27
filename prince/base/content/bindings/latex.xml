@@ -502,7 +502,9 @@
 	  </xbl:resources>
     <xbl:content>
       <xbl:children/>
-      <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="eqnnum" onclick=""/>
+      <mml:mtd class="eqnmarker">
+        <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="eqnnum" onclick=""/>
+      </mml:mtd>
     </xbl:content>
   </xbl:binding>
 
@@ -512,7 +514,9 @@
 	  </xbl:resources>
     <xbl:content>
       <xbl:children/>
-      <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="subeqnnum" onclick=""/>
+      <mml:mtd class="eqnmarker">
+        <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="subeqnnum" onclick=""/>
+      </mml:mtd>
     </xbl:content>
   </xbl:binding>
 
@@ -522,7 +526,9 @@
 	  </xbl:resources>
     <xbl:content>
       <xbl:children/>
-      <html:button type="button" xbl:inherits="xbl:text=marker" class="eqnmarker" onclick=""/>
+      <mml:mtd class="eqnmarker">
+        <html:button type="button" xbl:inherits="xbl:text=marker" class="eqnmarker" onclick=""/>
+      </mml:mtd>
     </xbl:content>
   </xbl:binding>
 
