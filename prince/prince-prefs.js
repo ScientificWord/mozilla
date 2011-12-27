@@ -130,7 +130,7 @@ pref("swp.sourceview.maxlinelength",        100);
 pref("swp.sourceview.minlinelength",         60);
 pref("swp.space.after.space", false); // true means space space -> math
 pref("swp.spellchecker.enablerealtimespell", true);
-pref("swp.viewPDF","fixAcrobat.cmd %1");
+pref("swp.viewPDF","default");
 pref("swp.webzip.compression", 9);
 pref("swp.zoom_factor",            "1.0");
 pref("toolkit.defaultChromeURI", "chrome://prince/content/prince.xul");
