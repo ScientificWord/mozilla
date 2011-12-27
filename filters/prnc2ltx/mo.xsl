@@ -104,7 +104,7 @@
           <xsl:with-param name="LaTeX-nom" select="'iiint'"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="normalize-space(string())='&#xE378;'">
+      <xsl:when test="normalize-space(string())='&#x2A0C;'">
         <xsl:call-template name="bigop">
           <xsl:with-param name="LaTeX-nom" select="'iiiint'"/>
         </xsl:call-template>
@@ -460,20 +460,19 @@
   
   <xsl:template name="bigop">
     <xsl:param name="LaTeX-nom"/>
-      <xsl:choose>
-      <xsl:when test="(@largeop='true' or @stretchy='true')
-        and     ancestor::mml:mstyle[@displaystyle='false']">
+    <xsl:choose>
+      <xsl:when test="((@largeop='true') or (@stretchy='true'))">
+<!--        and     ancestor::mml:mstyle[@displaystyle='false']" -->
         <xsl:text xml:space="preserve">\d</xsl:text>
         <xsl:value-of select="$LaTeX-nom"/>
         <xsl:text xml:space="preserve"> </xsl:text>
       </xsl:when>
-<!--
+<!-- The following when clause has been commented out. Does anyone know why? -BBM -->
       <xsl:when test="@largeop='false' and @stretchy='false'">
         <xsl:text xml:space="preserve">\t</xsl:text>
         <xsl:value-of select="$LaTeX-nom"/>
         <xsl:text xml:space="preserve"> </xsl:text>
       </xsl:when>
--->
       <xsl:otherwise>
         <xsl:text xml:space="preserve">\</xsl:text>
         <xsl:value-of select="$LaTeX-nom"/>
