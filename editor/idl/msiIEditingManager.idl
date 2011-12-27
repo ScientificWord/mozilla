@@ -289,12 +289,12 @@ interface msiIEditingManager : nsISupports
                       out PRInt32 whichCol);
 
   /**
-   * getCellAt() returns the cell (<mtd>) in an <mtable> which occupies the
+   * getMatrixCellAt() returns the cell (<mtd>) in an <mtable> which occupies the
    * position in the matrix described by the "whichRow" row and "whichCol" column. 
    * These are 1-based! (i.e., the first row or column is numbered 1 rather than 0).
    * It takes "rowspan" and "colspan" attributes into account.
   */
-  nsIDOMNode getCellAt(in nsIDOMNode aMatrix,
+  nsIDOMNode getMatrixCellAt(in nsIDOMNode aMatrix,
                        in PRInt32 whichRow,
                        in PRInt32 whichCol);
                         
