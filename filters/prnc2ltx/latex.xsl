@@ -906,7 +906,7 @@ should not be done under some conditions -->
             </xsl:when>
             <xsl:when test="@alignment='alignSingleEqn'">
               <xsl:choose>
-              <xsl:when test="./mml:mtr/mml:mtd[not(@numbering='none')]">
+              <xsl:when test="./mml:mtr[not(@numbering='none')]">
                 <xsl:text>1</xsl:text>
               </xsl:when>
               <xsl:otherwise>
@@ -915,7 +915,7 @@ should not be done under some conditions -->
               </xsl:choose>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="count(./mml:mtr/mml:mtd[not(@numbering='none')])" />
+              <xsl:value-of select="count(./mml:mtr[not(@numbering='none')])" />
             </xsl:otherwise>
           </xsl:choose>
         </xsl:with-param>
