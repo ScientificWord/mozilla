@@ -12,6 +12,7 @@
 	<tagclasses>
 		<tagclass>
 			<tagclassname>hidden</tagclassname>
+      <classcontains/>  <!--if there are no contains records for a class, we still need to put in an empty classcontains tag -->
 			<tags>
 				<tag nm="body"><description>Body</description>
   			  <contains>paratag</contains>
@@ -241,8 +242,10 @@
     </tagclass>
 		<tagclass>
 			<tagclassname>listtag</tagclassname>
-			<contains>paratag</contains>
-			<contains>br</contains>
+      <classcontains>
+  			<contains>paratag</contains>
+  			<contains>br</contains>
+      </classcontains>
 			<tags>
 				<tag nm="bulletListItem">
           <description>Bullet list item</description>
@@ -987,6 +990,7 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>frontmtag</tagclassname>
+      <classcontains/>
 			<tags>
 				<tag nm="abstract"><description>Abstract</description>
           <realtagclass>envtag</realtagclass>
@@ -1071,6 +1075,7 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>othertag</tagclassname>
+      <classcontains/>
 			<tags>
         <tag nm="mi"><description>mi</description>
           <contains>#text</contains>
