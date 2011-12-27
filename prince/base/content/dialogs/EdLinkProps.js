@@ -55,10 +55,10 @@ var gCanChangeHeadingSelected = true;
 var gCanChangeAnchorSelected = true;
 var gHaveDocumentUrl = false;
 
-var gCheckboxes = [ "met", "colleague", "co-worker", "muse", "crush", "date", "sweetheart" ];
+//var gCheckboxes = [ "met", "colleague", "co-worker", "muse", "crush", "date", "sweetheart" ];
 
 // NOTE: Use "href" instead of "a" to distinguish from Named Anchor
-// The returned node is has an "a" tagName
+// The returned node has an "a" tagName
 var tagName = "href";
 
 // dialog initialization code
@@ -79,8 +79,6 @@ function Startup()
   gDialog.hrefInput           = document.getElementById("hrefInput");
   gDialog.makeRelativeLink    = document.getElementById("MakeRelativeLink");
   gDialog.AdvancedEditSection = document.getElementById("AdvancedEdit");
-//  gDialog.IsMailAddress       = document.getElementById("IsMailAddress");
-
   gDialog.MoreSection         = document.getElementById("MoreSection");
   gDialog.MoreFewerButton     = document.getElementById("MoreFewerButton");
 
