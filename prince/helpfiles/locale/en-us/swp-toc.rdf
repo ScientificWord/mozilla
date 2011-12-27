@@ -251,7 +251,64 @@
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+
+<!-- Chapter 1 subsections -->   
+  <rdf:Description about="#basic_conventions">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="basic_conventions_notation"     nc:name="General Notation"     nc:link="dm01-01-basic_techniques.xhtml#general notation"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_conventions_keyboard"     nc:name="Keyboard Conventions" nc:link="dm01-01-basic_techniques.xhtml#keyboard conventions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_conventions_computations" nc:name="Computations"         nc:link="dm01-01-basic_techniques.xhtml#computations"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
+  <rdf:Description about="#basic_inserting">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="basic_inserting_toggling"   nc:name="Toggling Between Modes"             nc:link="dm01-02-basic_techniques.xhtml#toggling between modes"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_inserting_typing"     nc:name="Typing Mathematics"                 nc:link="dm01-02-basic_techniques.xhtml#typing mathematics"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_inserting_constants"  nc:name="Constants"                          nc:link="dm01-02-basic_techniques.xhtml#constants"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_inserting_displaying" nc:name="Displaying Mathematics"             nc:link="dm01-02-basic_techniques.xhtml#displaying mathematics"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_inserting_centering"  nc:name="Centering Plots, Graphics and Text" nc:link="dm01-02-basic_techniques.xhtml#centering"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
+  <rdf:Description about="#basic_computing">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="basic_computing_evaluating"   nc:name="Evaluating Expressions"   nc:link="dm01-03-basic_techniques.xhtml#evaluating expressions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_computing_interpreting" nc:name="Interpreting Expressions" nc:link="dm01-03-basic_techniques.xhtml#interpreting expressions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_computing_stopping"     nc:name="Stopping a Computation"   nc:link="dm01-03-basic_techniques.xhtml#stopping a computation"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_computing_customizing"  nc:name="Customizing Your Program" nc:link="dm01-03-basic_techniques.xhtml#customizing your program"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
+  <rdf:Description about="#basic_selecting">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="basic_selecting_automatic"   nc:name="Understanding Automatic Selections"               nc:link="dm01-04-basic_techniques.xhtml#automatic selections"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_selecting_expressions" nc:name="Operations that Select an Expression"             nc:link="dm01-04-basic_techniques.xhtml#select an expression"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_selecting_equation"    nc:name="Operations that Select an Equation or Inequality" nc:link="dm01-04-basic_techniques.xhtml#select an equation"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_selecting_selections"  nc:name="Selections Inside Displays and Matrices"          nc:link="dm01-04-basic_techniques.xhtml#displays and matrices"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_selecting_user"        nc:name="Understanding User Selections"                    nc:link="dm01-04-basic_techniques.xhtml#user selections"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_selecting_computing"   nc:name="Computing In Place"                               nc:link="dm01-04-basic_techniques.xhtml#computing in place"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
+  <rdf:Description about="#basic_shortcuts">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="basic_shortcuts_math"    nc:name="Math Toolbar"             nc:link="dm01-05-basic_techniques.xhtml#math toolbar"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Symbol Toolbar"           nc:link="dm01-05-basic_techniques.xhtml#symbol toolbar"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_shortcuts_sidebar" nc:name="Symbols Sidebar"          nc:link="dm01-05-basic_techniques.xhtml#symbols sidebar"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basic_shortcuts_basic"   nc:name="Basic Keyboard Shortcuts" nc:link="dm01-05-basic_techniques.xhtml#keyboard shortcuts"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
    
 
 </rdf:RDF>
-
