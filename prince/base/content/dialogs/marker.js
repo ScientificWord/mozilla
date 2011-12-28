@@ -1,11 +1,5 @@
-var node;
-//var keys;
+var markerNode;
 var dialogMarkerList;
-
-function dumpln(s)
-{
-  dump(s+"\n");
-}
 
 function startup()
 {
@@ -17,15 +11,20 @@ function startup()
     window.close();
     return;
   }
-  node = getSelectionParentByTag(activeEditor, "a");
-  if (node)
+
+  var markerNode;
+  if (window.arguments && window.arguments.length)
+    markerNode = window.arguments[0];
+  if (!markerNode)
+    markerNode = getSelectionParentByTag(activeEditor, "a");
+  if (markerNode)
   {
-    if (node.hasAttribute("name")) 
-      document.getElementById("keylist").value = node.getAttribute("name");
-    else if (node.hasAttribute("key"))
-      document.getElementById("keylist").value = node.getAttribute("key");
-    else if (node.hasAttribute("id"))
-      document.getElementById("keylist").value = node.getAttribute("id");
+    if (markerNode.hasAttribute("name")) 
+      document.getElementById("keylist").value = markerNode.getAttribute("name");
+    else if (markerNode.hasAttribute("key"))
+      document.getElementById("keylist").value = markerNode.getAttribute("key");
+    else if (markerNode.hasAttribute("id"))
+      document.getElementById("keylist").value = markerNode.getAttribute("id");
   }
   initKeyList();
 }
@@ -63,15 +62,15 @@ function onAccept()
   var domdoc = editor.document;
   var val = document.getElementById("keylist").value;
   if (tagConflicts()) return false;
-  var newnode = !node; 
+  var newnode = !markerNode; 
   if (newnode) 
   {
-    node = domdoc.createElement("a");
+    markerNode = domdoc.createElement("a");
   }
-  node.setAttribute("name", val);
-  node.setAttribute("key", val);
-  node.setAttribute("id", val);
-  if (newnode) editor.insertElementAtSelection(node, true);
+  markerNode.setAttribute("name", val);
+  markerNode.setAttribute("key", val);
+  markerNode.setAttribute("id", val);
+  if (newnode) editor.insertElementAtSelection(markerNode, true);
   return true;
 }
 
@@ -82,43 +81,8 @@ function onCancel()
 }
 
 
-
-var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
-
 function initKeyList()
 {
   dialogMarkerList = new msiKeyMarkerList(window);
   dialogMarkerList.setUpTextBoxControl(document.getElementById("keylist"));
-
-//  var editorElement = msiGetActiveEditorElement();
-//  var editor;
-//  if (editorElement) editor = msiGetEditor(editorElement);
-//  var parser = new DOMParser();
-//  var dom = parser.parseFromString(xsltSheet, "text/xml");
-//  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
-//  var processor = new XSLTProcessor();
-//  processor.importStylesheet(dom.documentElement);
-//  var newDoc;
-//  if (editor) newDoc = processor.transformToDocument(editor.document, document);
-//  dump(newDoc.documentElement.localName+"\n");
-//  var keyString = newDoc.documentElement.textContent;
-//  keys = keyString.split(/\s+/);
-//  var i;
-//  var len;
-//  keys.sort();
-//  var lastkey = "";
-//  for (i=keys.length-1; i >= 0; i--)
-//  {
-//    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
-//    else lastkey = keys[i];
-//  }  
-//  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-//  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-//  ACSA.resetArray("key");
-//  for (i=0, len=keys.length; i<len; i++)
-//  {
-//    if (keys[i].length > 0) 
-//      ACSA.addString("key",keys[i]);
-//  }
-//  dump("Keys are : "+keys.join()+"\n");    
 }
