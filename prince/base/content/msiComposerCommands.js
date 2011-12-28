@@ -4792,8 +4792,8 @@ var msiReviseAnchorCommand =
     var anchorNode = msiGetReviseObjectFromCommandParams(aParams);
     if (anchorNode != null && editorElement != null)
     {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseAnchorCommand, trying to revise hyperlink anchor, dialog not implemented.");
-//      window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "namedanchorprops", "chrome,close,titlebar,modal", "", editorElement);
+//      AlertWithTitle("msiComposerCommands.js", "In msiReviseAnchorCommand, trying to revise hyperlink anchor, dialog not implemented.");
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/marker.xul", "_blank", "chrome, resizable, close, titlebar, dependent", editorElement, "cmd_reviseAnchor", this, anchorNode);
     }
 		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
