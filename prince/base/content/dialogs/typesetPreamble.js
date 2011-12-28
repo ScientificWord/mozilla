@@ -53,7 +53,7 @@ function onAccept()
     var cdata = node.ownerDocument.createCDATASection(value);
     while (node.firstChild) 
     {
-      node.removeChild(node.firstCchild);
+      node.removeChild(node.firstChild);
     }
     node.appendChild(cdata);
 
