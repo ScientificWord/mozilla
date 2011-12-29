@@ -733,13 +733,13 @@
      \msiclosetag[mml][</mml:math>]
   ]
 
-  \gdef\@scan@equation@star#1\end{equation*}[%
-     \egroup
-     \@make@braces@normal
-     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-     \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
-     \msiclosetag[mml][</mml:math>]
-  ]
+  %\gdef\@scan@equation@star#1\end{equation*}[%
+  %   \egroup
+  %   \@make@braces@normal
+  %   \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
+  %   \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
+  %   \msiclosetag[mml][</mml:math>]
+  %]
   \gdef\@scan@array#1\end{array}[%
      \egroup
      \@make@braces@normal
@@ -804,7 +804,11 @@
 \@namedef{msi@end@alignat}{\string\end{alignat}$$\egroup}
 
 
-\@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
+%\@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
+
+\@namedef{msi@begin@equation*}{\bgroup\msi@dollar=0\relax$$\string\begin{equation*}}
+\@namedef{msi@end@equation*}{\string\end{equation*}$$\egroup}
+
 
 %\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
 
