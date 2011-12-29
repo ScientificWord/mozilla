@@ -1,3 +1,2 @@
-echo "Calling open %1"
-"$1"
+%1
 
