@@ -2328,12 +2328,31 @@ nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
     // If the current parent is a root (body or table element)
     // then go no further - we can't insert
     if (nsTextEditUtils::IsBody(parent) || nsHTMLEditUtils::IsTableElement(parent, mtagListManager))
-      return NS_ERROR_FAILURE;
-    // Get the next parent
-    parent->GetParentNode(getter_AddRefs(tmp));
-    NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
-    topChild = parent;
-    parent = tmp;
+    {  
+      nsString defPara;
+      nsIAtom * atomDummy;
+      mtagListManager->GetDefaultParagraphTag(&atomDummy, defPara);
+      if (!CanContainTag(parent, defPara))  
+      {  
+        return NS_ERROR_FAILURE;
+      }
+      // else insert the default paragraph
+      nsCOMPtr<nsIDOMElement> para;
+      CreateElementWithDefaults(defPara, getter_AddRefs(para));
+      res = InsertNode(aNode, para, 0); // put aNode in paragraph
+      // and now put para in place of aNode
+      aNode = para;
+      tagName = defPara;
+      break;
+    }
+    else
+    {
+      // Get the next parent
+      parent->GetParentNode(getter_AddRefs(tmp));
+      NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
+      topChild = parent;
+      parent = tmp;
+    }
   }
   if (parent != topChild)
   {
