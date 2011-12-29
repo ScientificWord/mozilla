@@ -840,24 +840,19 @@ function printTeX(preview )
           if (pdfAction == "launch")
           {
             var os = getOS(window);
-            if (os == "linux") 
+            if (os == "win")
+            {
+              extension = "cmd";
+            }
+            else 
             {
               extension = "bash";
-              exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-              exefile.append("shell."+ extension);
-              theProcess.init(exefile);
-              arr = [pdffile.path];
-              theProcess.run(false, arr, arr.length);
             }
-            else
-            {
-              extension = "bash";
-              exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-              exefile.append("shell."+ extension);
-              theProcess.init(exefile);
-              arr = [pdffile.path];
-              theProcess.run(false, arr, arr.length);
-            }
+            exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+            exefile.append("shell."+ extension);
+            theProcess.init(exefile);
+            arr = [pdffile.path];
+            theProcess.run(false, arr, arr.length);
           }
           else // pdfAction == complete path to viewer
           {
