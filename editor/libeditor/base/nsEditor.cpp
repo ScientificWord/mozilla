@@ -2324,10 +2324,7 @@ nsEditor::QueryComposition(nsTextEventReply* aReply)
         if (restoreFlags)
           SetFlags(flags);
       }
-
-
       // XXX_kin: END HACK! HACK! HACK!
-
       result = caretP->GetCaretCoordinates(nsICaret::eIMECoordinates, selection,
 		                      &(aReply->mCursorPosition), &(aReply->mCursorIsCollapsed), nsnull);
     }
