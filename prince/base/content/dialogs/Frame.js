@@ -68,6 +68,7 @@ function onOK() {
 			dump(e.message+"\n");
 		}
 	}
+  setFrameAttributes(msiframe);
 	editor.endTransaction();
 //	if (isNewNode)
 //	{
