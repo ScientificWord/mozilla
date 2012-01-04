@@ -48,7 +48,7 @@
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
 
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/mathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
@@ -68,20 +68,19 @@
  
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <!--script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/ -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
  
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
-
-#include ../keysfordialogs.inc
 
   <popupset id="msiEditorContentContextSet"/>
 
@@ -104,6 +103,8 @@
     <keyset id="tasksKeys"/>
     <keyset id="MSIKeySet"/>
   </keyset>
+
+#include ../keysfordialogs.inc
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>

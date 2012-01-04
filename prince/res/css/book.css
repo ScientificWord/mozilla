@@ -4,6 +4,10 @@
 /* Division header tags */
 /************************/
 
+part, chapter, section, subsection, subsubsection, paragraph, subparagraph {
+  -moz-user-select: text;
+}
+
 part {
   display: block;
   counter-increment: part;
@@ -218,7 +222,7 @@ epigraph {
   margin-left: 20pt;
   margin-right: 20pt;
 }
-*/
+/*  */
 
 centered {
   display: block;
