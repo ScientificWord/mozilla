@@ -397,7 +397,9 @@ function msiGoUpdateCommandState(command, editorElement)
 function isInMath(editorElement)
 {
   var editor = msiGetEditor(editorElement);
-  return editor.tagListManager.selectionContainedInTag("math",null)
+  var selNode = editor.getSelectionContainer();
+  return msiNavigationUtils.nodeIsInMath(selNode);
+//  return editor.tagListManager.selectionContainedInTag("math",null)
 }
   
 
