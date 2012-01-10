@@ -673,7 +673,7 @@
             <xsl:text xml:space="preserve">\xi </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x03BF;'">
-            <xsl:text xml:space="preserve">\omicron </xsl:text>
+            <xsl:text xml:space="preserve">o</xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x03C0;'">
             <xsl:text xml:space="preserve">\pi </xsl:text>
