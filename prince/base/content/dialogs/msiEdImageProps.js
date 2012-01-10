@@ -115,26 +115,27 @@ function Startup()
   wrapperElement = null;
   if (window.arguments && window.arguments.length >0)
   {
-    wrapperElement = window.arguments[0];
-    if (wrapperElement && (msiGetBaseNodeName(wrapperElement) == "msiframe"))
-      imageElement = wrapperElement.getElementsByTagName("object")[0];
-    else
-      imageElement = wrapperElement;
+    imageElement = window.arguments[0];
+    if (imageElement && (imageElement.nodeName !== "msiframe"))
+    {
+      if (imageElement.parentNode.nodeName === "msiframe")
+      {
+        wrapperElement = imageElement.parentNode;
+      }
+      else wrapperElement = imageElement;  //shouldn't happen
+    } else wrapperElement = imageElement;
   }
   if (!imageElement)
   {
     // Does this ever get run?
     try {
       imageElement = getSelectionParentByTag(editor,"input");
-
       if (!imageElement || imageElement.getAttribute("type") != "image") {
         // Get a single selected image element
         imageElement = getSelectionParentByTag(editor,tagName);
       }
     } catch (e) {}
-
   }
-
   if (imageElement)
   {
     // We found an element and don't need to insert one
