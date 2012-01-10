@@ -4184,6 +4184,43 @@ function msiClearSource(editorElement)
   }
 }
 
+function displayDocTypeIfExists(editor)
+{
+  var domdoc;
+  try { domdoc = editor.document; } catch (e) { dump( e + "\n");}
+  if (domdoc)
+  {
+    var doctypeNode = document.getElementById("doctype-text");
+    var dt = domdoc.doctype;
+    if (doctypeNode)
+    {
+      if (dt)
+      {
+        doctypeNode.collapsed = false;
+        var doctypeText = "<!DOCTYPE " + domdoc.doctype.name;
+        if (dt.publicId)
+          doctypeText += " PUBLIC \"" + domdoc.doctype.publicId;
+        if (dt.systemId)
+          doctypeText += " "+"\"" + dt.systemId;
+        doctypeText += "\">"
+        doctypeNode.setAttribute("value", doctypeText);
+      }
+      else
+        doctypeNode.collapsed = true;
+    }
+  }
+}
+
+function MarkSelection(editor)
+{}
+
+function UnmarkSelection(editor)
+{}
+
+function MarkSelectionInCM(sourceEditor, source)
+{}
+
+
 function msiSetEditMode(mode, editorElement)
 {
   if (!editorElement)
@@ -4200,6 +4237,8 @@ function msiSetEditMode(mode, editorElement)
 
   // must have editor if here!
   var editor = msiGetEditor(editorElement);
+  var sourceIframe = document.getElementById("content-source");
+  var sourceEditor = sourceIframe.contentWindow.gEditor;
 
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
@@ -4210,88 +4249,48 @@ function msiSetEditMode(mode, editorElement)
 
   if (mode == kDisplayModeSource)
   {
-    // Display the DOCTYPE as a non-editable string above edit area
-    var domdoc;
-    try { domdoc = editor.document; } catch (e) { dump( e + "\n");}
-    if (domdoc)
-    {
-      var doctypeNode = document.getElementById("doctype-text");
-      var dt = domdoc.doctype;
-      if (doctypeNode)
-      {
-        if (dt)
-        {
-          doctypeNode.collapsed = false;
-          var doctypeText = "<!DOCTYPE " + domdoc.doctype.name;
-          if (dt.publicId)
-            doctypeText += " PUBLIC \"" + domdoc.doctype.publicId;
-          if (dt.systemId)
-            doctypeText += " "+"\"" + dt.systemId;
-          doctypeText += "\">"
-          doctypeNode.setAttribute("value", doctypeText);
-        }
-        else
-          doctypeNode.collapsed = true;
-      }
-    }
+    // Display the DOCTYPE as a non-editable string above edit area, if it exists
+    displayDocTypeIfExists(editor);
     // Get the entire document's source string
+    MarkSelection(editor);
+    var source = prettyprint(editor);
+    UnmarkSelection(editor);
+    // replace the following with proper selection tracking
+    var start = 0; 
+    sourceIframe.contentWindow.gChangeCallback = null; //onSourceChangeCallback;
 
-    var flags = (editor.documentCharacterSet == "ISO-8859-1")
-      ? 32768  // OutputEncodeLatin1Entities
-      : 16384; // OutputEncodeBasicEntities
-    try { 
-      var encodeEntity = gPrefs.getCharPref("editor.encode_entity");
-      switch (encodeEntity) {
-        case "basic"  : flags = 16384; break; // OutputEncodeBasicEntities
-        case "latin1" : flags = 32768; break; // OutputEncodeLatin1Entities
-        case "html"   : flags = 65536; break; // OutputEncodeHTMLEntities
-        case "none"   : flags = 0;     break;
-      }
-    } catch (e) { }
-
-    try { 
-      var prettyPrint = gPrefs.getBoolPref("editor.prettyprint");
-      if (prettyPrint)
-        flags |= 2; // OutputFormatted
-
-    } catch (e) {}
-
-    flags |= 1024; // OutputLFLineBreak
-    flags |= 32;   // OutputWrap
-    // ignore the above and use the prettyprint function
-    var source = prettyprint(editor);//editor.outputToString("text/xml", flags);
-    // break the source into <li>'s
-    source = encodeEntities(source);
-    source= "<line>"+source.replace(/\n/g,"</line><line>")+"</line>";
-    var start = 0; //source.search(/<html/i);
-    if (start == -1) start = 0;
-    var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
-    try
-    {
-      var theSelection = sourceTextEditor.selection;
-    }
-    catch(ex) {dump("Unable to dump selection from source editor, error is [" + ex + "].\n");}
-    sourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-    var sourceContentWindow = msiGetHTMLSourceTextWindow(editorElement);
-    if (!editorElement.mSourceTextObserver)
-      editorElement.mSourceTextObserver = new msiSourceTextObserver(editorElement);
-    if (!editorElement.mSourceTextListener)
-      editorElement.mSourceTextListener = new msiSourceTextListener(editorElement);
-    if (sourceContentWindow!=null && sourceTextEditor!=null)
-    {
-      InsertColoredSourceView(sourceTextEditor, source);
-      sourceTextEditor.resetModificationCount();
-      sourceTextEditor.addDocumentStateListener(editorElement.mSourceTextListener);
-      sourceTextEditor.enableUndo(true);
-      sourceContentWindow.commandManager.addCommandObserver(editorElement.mSourceTextObserver, "cmd_undo");
-      sourceContentWindow.contentWindow.focus();
-    }
-    goDoCommand("cmd_moveTop");
+    var theme = "neat";
+    var tagManager = editor.tagListManager;
+    var tagsArray = [].concat(
+      tagManager.getTagsInClass('hidden',',',false).split(','),
+      tagManager.getTagsInClass('texttag',',',false).split(','),
+      tagManager.getTagsInClass('paratag',',',false).split(','),
+      tagManager.getTagsInClass('listparenttag',',',false).split(','),
+      tagManager.getTagsInClass('listtag',',',false).split(','),
+      tagManager.getTagsInClass('structtag',',',false).split(','),
+      tagManager.getTagsInClass('envtag',',',false).split(','),
+      tagManager.getTagsInClass('frontmtag',',',false).split(','));
+      
+    sourceIframe.contentWindow.installCodeMirror(onBrowserKeyDown,
+                                                 theme,
+                                                 tagsArray,
+                                                 null);
+    //Ensure a line end at the end
+    var lastEditableChild = editor.document.body.lastChild;
+    if (lastEditableChild.nodeType == Node.TEXT_NODE)
+      lastEditableChild.data = lastEditableChild.data.replace( /\s*$/, "\n");
+    sourceEditor.setValue(source.replace( /\r\n/g, "\n").replace( /\r/g, "\n"));
+    sourceIframe.focus();
+    sourceEditor.refresh();
+    sourceEditor.focus();
+    MarkSelectionInCM(sourceEditor, source);
+    sourceIframe.setUserData("oldSource", sourceEditor.getValue(), null);
   }
   else if (previousMode == kDisplayModeSource)
   {
     // Only rebuild document if a change was made in source window
-    if (msiIsHTMLSourceChanged(editorElement))
+    var historyCount = sourceEditor.historySize();
+    if (historyCount.undo > 0)
     {
       // Reduce the undo count so we don't use too much memory
       //   during multiple uses of source window 
@@ -4306,16 +4305,8 @@ function msiSetEditMode(mode, editorElement)
         //   so transfer that back into the document
         var errMsg="";
         var willReturn = false;
-        var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
-        var srcdoc = sourceTextEditor.document;
-        var lines = srcdoc.documentElement.getElementsByTagName("line");
-        var ln = lines.length;
-        if (lines.length == 0) return;
-        source = "";
-        for (var ix = 0; ix < ln; ix++)
-          source += lines[ix].textContent + "\n";
+        source = sourceEditor.getValue();
         source = decodeEntities(source);
-//        source = sourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
         try {
           errMsg = editor.rebuildDocumentFromSource(source);
           msiSetDocumentEditable(true, editorElement)

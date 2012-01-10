@@ -14,13 +14,16 @@ XML_RESOURCES := $(wildcard $(srcdir)/xml/*.xml)
 TAGDEF_RESOURCES := $(wildcard $(srcdir)/tagdefs/*.xml)
 FRAG_RESOURCES := $(wildcard $(srcdir)/fragments/*.frg)
 DINGBAT_RESOURCES := $(wildcard $(srcdir)/fragments/dingbats/*.frg)
+CM2_RESOURCES := $(wildcard $(srcdir)/cm2/*)
 
-libs::	$(CSS_RESOURCES) $(XBL_RESOURCES)
+
+libs::	$(CSS_RESOURCES) $(XBL_RESOURCES) $(CM2_RESOURCES)
 	$(INSTALL)	$(CSS_RESOURCES)	$(FINAL_TARGET)/res/css
 	$(INSTALL)	$(TAGDEF_RESOURCES)	$(FINAL_TARGET)/res/tagdefs
 	$(INSTALL)	$(XML_RESOURCES)	$(FINAL_TARGET)/res/xml
 	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments
 	$(INSTALL)	$(DINGBAT_RESOURCES)	$(FINAL_TARGET)/res/fragments/dingbats
+	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
 #	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css
 				  
 
