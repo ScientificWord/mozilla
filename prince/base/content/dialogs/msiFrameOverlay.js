@@ -237,7 +237,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
 			var topmargin = element.getAttribute("topmargin");
 			if (topmargin == null) topmargin = 0;
 			dg.marginInput.top.value = topmargin;
-			var borderwidth = contentsElement.getAttribute(borderAtt);
+			var borderwidth = contentsElement.getAttribute("borderw");
 			if (borderwidth == null) borderwidth = 0;
 			dg.borderInput.left.value = borderwidth;
 			var padding = contentsElement.getAttribute("padding");
@@ -252,8 +252,8 @@ function initFrameTab(dg, element, newElement, contentsElement)
 	    for (i = 0; i<4; i++)
 	      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
 	    values = [0,0,0,0];
-	    if (contentsElement.hasAttribute(borderAtt))
-	      { values = parseLengths(contentsElement.getAttribute(borderAtt));}
+	    if (contentsElement.hasAttribute("borderw"))
+	      { values = parseLengths(contentsElement.getAttribute("borderw"));}
 	    for (i = 0; i<4; i++)
 	      { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
 	    values = [0,0,0,0];
@@ -876,10 +876,10 @@ function setFrameAttributes(frameNode, contentsNode)
 	}  
   if (gFrameModeImage) {
     var borderwidth = getSingleMeasurement(borderAtt, "Left", metrics.unit, false);
-    msiEditorEnsureElementAttribute(contentsNode, borderAtt, borderwidth, editor);
+    msiEditorEnsureElementAttribute(contentsNode, "borderw", borderwidth, editor);
   }
   else
-    msiEditorEnsureElementAttribute(contentsNode, borderAtt, getCompositeMeasurement("border",metrics.unit, false), editor);
+    msiEditorEnsureElementAttribute(contentsNode, "borderw", getCompositeMeasurement("border",metrics.unit, false), editor);
   if (gFrameModeImage) {
     var padding = getSingleMeasurement("padding", "Left", metrics.unit, false);
     msiEditorEnsureElementAttribute(contentsNode, "padding", padding, editor);
@@ -953,7 +953,7 @@ function setFrameAttributes(frameNode, contentsNode)
     msiEditorEnsureElementAttribute(frameNode, "placeLocation", placeLocation, editor);
     if (isHere)
     {
-      var floatparam = document.getElementById("herePlacementRadioGroup").value;
+      var floatparam = document.getElementById("herePlacementRadioGroup").selectedItem.value;
       if (floatparam != "full") {
         msiRequirePackage(gFrameTab.editorElement, "wrapfig","");
       }
