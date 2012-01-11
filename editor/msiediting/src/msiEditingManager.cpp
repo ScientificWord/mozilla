@@ -1110,7 +1110,9 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
                                     nsIDOMNode* node, 
                                     PRUint32 offset,
                                     const nsAString & above,
-                                    const nsAString & below)
+                                    const nsAString & below,
+                                    const nsAString & aroundNotation,
+                                    const nsAString & aroundType)
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFence");
@@ -1127,11 +1129,17 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
     res = selection->GetIsCollapsed(&bCollapsed);
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateDecoration(editor, nsnull, above, below, bCollapsed || !inMath, PR_TRUE, flags, mathmlElement);
+    res = msiUtils::CreateDecoration(editor, nsnull, above, below, aroundNotation, aroundType, 
+                                             bCollapsed || !inMath, PR_TRUE, flags, mathmlElement);
     if (!bCollapsed && inMath)
     {
       nsCOMPtr<nsIDOMNode> base;
       res = mathmlElement->GetFirstChild(getter_AddRefs(base));
+      if ( (!above.IsEmpty() || !below.IsEmpty()) && (!aroundNotation.IsEmpty() || !aroundType.IsEmpty()) )
+      {
+        nsCOMPtr<nsIDOMNode> tempparent = base;
+        res = tempparent->GetFirstChild(getter_AddRefs(base));
+      }
       MoveRangeTo(editor, range, base, 0);
     } 
     if (NS_SUCCEEDED(res) && mathmlElement)

@@ -894,7 +894,8 @@ var standardDecorBelowStrings =
 var standardAroundDecorNotationStrings = 
   { frame : {mNotation: "box", mType: "frame"},
     fbox : {mNotation: "box", mType: "fbox"},
-    roundedbox : {mNotation: "roundedbox"} };
+    roundedbox : {mNotation: "roundedbox"},
+    circle : {mNotation: "circle"} };
 
 function msiGetMEncloseNotationAndTypeFromDecorString(decorationAroundStr)
 {
@@ -1593,27 +1594,45 @@ function insertDecoration(decorationAboveStr, decorationBelowStr, decorationArou
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
+//  dump("Entering insertDecoration, selection is " + (editor.selection.isCollapsed ? "collapsed.\n" : "not collapsed.\n"));
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var theParent = editor.selection.focusNode;
     var theOffset = editor.selection.focusOffset;
+    var encloseNotation = {mNotation: "", mType : ""};
 //    var theParent = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
     if (decorationAroundStr && decorationAroundStr.length)
     {
-      var encloseNode = editor.document.createElementNS(mmlns, "menclose");
-      editor.insertNode(encloseNode, theParent, theOffset);
-      msiSetEncloseDecoration(encloseNode, decorationAroundStr, editor);
-      var childNode = newbox(editor);
-      editor.insertNode( childNode, encloseNode, 0 );
-      editor.selection.collapse(childNode, 0);
+      var notationSpec = msiGetMEncloseNotationAndTypeFromDecorString(decorationAroundStr);
+      if (notationSpec)
+      {
+        if (notationSpec.mNotation && notationSpec.mNotation.length)
+          encloseNotation.mNotation = notationSpec.mNotation;
+        if (notationSpec.mType && notationSpec.mType.length)
+          encloseNotation.mType = notationSpec.mType;
+      }
+//      {
+//        if (notationSpec.mNotation && notationSpec.mNotation.length)
+//          msiEditorEnsureElementAttribute(targNode, "notation", notationSpec.mNotation, editor);
+//        if (notationSpec.mType && notationSpec.mType.length)
+//          msiEditorEnsureElementAttribute(targNode, "type", notationSpec.mType, editor);
+//      }
+//      var encloseNode = editor.document.createElementNS(mmlns, "menclose");
+//      editor.insertNode(encloseNode, theParent, theOffset);
+//      msiSetEncloseDecoration(encloseNode, decorationAroundStr, editor);
+//      var childNode = newbox(editor);
+//      editor.insertNode( childNode, encloseNode, 0 );
+//      editor.selection.collapse(childNode, 0);
     }
-    if ( (decorationAboveStr && decorationAboveStr.length) || (decorationBelowStr && decorationBelowStr.length) )
-      mathmlEditor.InsertDecoration(decorationAboveStr, decorationBelowStr);
+    if ( (decorationAboveStr && decorationAboveStr.length) || (decorationBelowStr && decorationBelowStr.length) 
+          || (decorationAroundStr && decorationAroundStr.length) )
+      mathmlEditor.InsertDecoration(decorationAboveStr, decorationBelowStr, encloseNotation.mNotation, encloseNotation.mType);
     editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
+    dump("Exception in mathmlOverlay.js, insertDecoration(): [" + e + "].\n");
   }
 }
 
