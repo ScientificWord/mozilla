@@ -1,6 +1,11 @@
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
 @namespace sw url("http://www.sciword.com/namespaces/sciword");
 
+beamerframe, stepnumberedListItem, stepbulletListItem, alertstepnumberedListItem, alertstepbulletListItem, 
+frametitle, framesubtitle, institute {
+  -moz-user-select: text;
+}
+
 beamerframe {
   display: block;
   position: relative;
