@@ -311,7 +311,7 @@
         align="baseline" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAround" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsAroundButtonGroup.label;" accesskey="&decorationsAroundButtonGroup.accesskey;"/>
-      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="fbox">
+      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="fbox" tooltiptext="&fbox.tooltip;">
         <description>
           <mml:math display="inline" class="fbox">
             <mml:mrow class="phantomBox">
@@ -322,7 +322,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="frame">
+      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="frame" tooltiptext="&frame.tooltip;">
         <description >
           <mml:math display="inline" class="framebox">
             <mml:mrow class="phantomBox">
@@ -333,9 +333,20 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="roundedbox">
+      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="roundedbox" tooltiptext="&roundedbox.tooltip;">
         <description>
           <mml:math display="inline" class="roundedbox">
+            <mml:mrow class="phantomBox">
+              <mml:mphantom>
+                <mml:mi>abcX</mml:mi>
+              </mml:mphantom>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </msibutton>
+      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="circle" tooltiptext="&circle.tooltip;">
+        <description>
+          <mml:math display="inline" class="circle">
             <mml:mrow class="phantomBox">
               <mml:mphantom>
                 <mml:mi>abcX</mml:mi>
