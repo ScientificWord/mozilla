@@ -59,8 +59,14 @@ function startup()
     appendlistitem(xmlList, arr[i]);
   var scripts = editordoc.getElementsByTagName("script");
   var scriptLength = scripts.length;
-  for (i = 0; i< scriptLength; i++)
+  for (i = 0; i< scriptLength; i++){
     appendlistitem(scriptList, scripts[i].getAttribute('src'));
+  }
+  // display the document class file
+  var docclass = editordoc.getElementsByTagName("documentclass");
+  var classfile;
+  if (docclass) classfile = docclass[0].getAttribute("class");
+  document.getElementById("stylefile").setAttribute("class", classfile);
 }
 
 
@@ -133,17 +139,17 @@ function add(listboxid, textboxid, extension)
 // this is all we do when the url is "resource://app/... but in other cases we need to create
 // a css or xml directory in the document working directory and copy the file into it.
   if (!newurl || newurl.spec.length <= 5) return;
-  switch (GetScheme(newurl))
+  switch (GetScheme(newurl.spec))
   {
     case "file": break;
     case "resource":
-      appendlistitem(listbox, newurl);
+      appendlistitem(listbox, newurl.spec);
       return;
     case "http":
-      appendlistitem(listbox, newurl);
+      appendlistitem(listbox, newurl.spec);
       return;
     case "chrome":
-      appendlistitem(listbox, newurl);
+      appendlistitem(listbox, newurl.spec);
       return;
     default: return;
   }
@@ -227,15 +233,20 @@ function onAccept()
   {
     addProcessingInstruction(editordoc, "xml-stylesheet", listbox.getItemAtIndex(i).label, "text/css");
   }
-  // save tagdefs PI's
   // out with the old.
   deleteProcessingInstructions(editordoc,"sw-tagdefs");
   xmlList =  document.getElementById("xmllist");
-  for (i=xmlList.itemCount-1; i>=0; i--)
+  for (i=0; i < xmlList.itemCount; i++)
   {
     addProcessingInstruction(editordoc, "sw-tagdefs", xmlList.getItemAtIndex(i).label,"text/xml");
   }
-  // still need to do something for the other tabs
+  // out with the old.
+  deleteProcessingInstructions(editordoc,"sw-xslt");
+  xmlList =  document.getElementById("xsllist");
+  for (i=0; i < xmlList.itemCount; i++)
+  {
+    addProcessingInstruction(editordoc, "sw-xslt", xmlList.getItemAtIndex(i).label,"text/xml");
+  }
 } 
 
 function onCancel()
