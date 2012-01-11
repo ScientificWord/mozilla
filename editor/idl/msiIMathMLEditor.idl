@@ -38,7 +38,9 @@ interface msiIMathMLEditor : nsISupports
                       in DOMString leftspace, in DOMString rightspace,
                       in DOMString minsize, in DOMString maxsize);
   void InsertDecoration(in DOMString above, 
-                        in DOMString below);
+                        in DOMString below,
+                        in DOMString aroundNotation,
+                        in DOMString aroundType);
   void AdjustSelectionEnds(in boolean isForDeletion, in unsigned long direction);
   void AdjustRange(in nsIDOMRange range, in boolean isForDeletion, in unsigned long direction);
                    

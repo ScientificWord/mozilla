@@ -152,9 +152,9 @@ function checkEnableControls(event)
   else
     disableOKStr = "true";
 
-  document.getElementById("enableDecorationsAboveBelow").setAttribute("disabled", disableAboveBelowStr);
-  document.getElementById("enableDecorationsAboveBelow").setAttribute("disabled", disableAboveBelowStr);
-  document.getElementById("enableDecorationsAround").setAttribute("disabled", disableAroundStr);
+//  document.getElementById("enableDecorationsAboveBelow").setAttribute("disabled", disableAboveBelowStr);
+//  document.getElementById("enableDecorationsAboveBelow").setAttribute("disabled", disableAboveBelowStr);
+//  document.getElementById("enableDecorationsAround").setAttribute("disabled", disableAroundStr);
   if (disableOKStr == "true")
     document.documentElement.getButton("accept").setAttribute("disabled", disableOKStr);
   else
