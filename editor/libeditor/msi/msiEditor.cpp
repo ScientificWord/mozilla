@@ -741,7 +741,8 @@ msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
 }
 
 NS_IMETHODIMP
-msiEditor::InsertDecoration(const nsAString & above, const nsAString & below)
+msiEditor::InsertDecoration(const nsAString & above, const nsAString & below,
+                            const nsAString & aroundNotation, const nsAString & aroundType)
 {
   nsresult res(NS_ERROR_FAILURE);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
@@ -756,10 +757,10 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below)
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        res = DeleteSelection(nsIEditor::eNone); 
-      }
+//      if (!bCollapsed)
+//      {
+//        res = DeleteSelection(nsIEditor::eNone); 
+//      }
       theNode = startNode;
       theOffset = startOffset;
       if (NS_SUCCEEDED(res))
@@ -767,7 +768,7 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below)
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertDecoration(editor, selection, theNode, 
-                                                theOffset, above, below);
+                                                theOffset, above, below, aroundNotation, aroundType);
       }  
     }
   }

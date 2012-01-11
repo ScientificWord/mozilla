@@ -268,7 +268,8 @@ mml|munderover mml|mi[tempinput="true"]::before,
 mml|msub mml|mi[tempinput="true"]::before, 
 mml|msup mml|mi[tempinput="true"]::before, 
 mml|msubsup mml|mi[tempinput="true"]::before, 
-mml|msidisplay mml|mi[tempinput="true"]::before 
+mml|msidisplay mml|mi[tempinput="true"]::before,
+mml|menclose mml|mi[tempinput="true"]::before 
 {
   content: "[";
   color: green;
@@ -286,7 +287,8 @@ mml|munderover mml|mi[tempinput="true"]::after,
 mml|msub mml|mi[tempinput="true"]::after, 
 mml|msup mml|mi[tempinput="true"]::after, 
 mml|msubsup mml|mi[tempinput="true"]::after, 
-mml|msidisplay mml|mi[tempinput="true"]::after 
+mml|msidisplay mml|mi[tempinput="true"]::after,
+mml|msienclose mml|mi[tempinput="true"]::after 
 {
   content: "]";
   color: green;
@@ -297,7 +299,8 @@ mml|msup mml|mi + mml|mi[tempinput="true"],
 mml|msub mml|mi + mml|mi[tempinput="true"], 
 mml|mroot mml|mi[tempinput="true"],
 mml|msqrt mml|mi[tempinput="true"],
-mml|msidisplay mml|mi[tempinput="true"]
+mml|msidisplay mml|mi[tempinput="true"],
+mml|menclose mml|mi[tempinput="true"]
 {
   letter-spacing: 0; /*-0.015em;*/
   -moz-user-select: text;

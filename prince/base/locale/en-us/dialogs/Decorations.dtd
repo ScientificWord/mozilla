@@ -23,3 +23,7 @@
 <!ENTITY Underline.tooltip  "Underline">
 <!ENTITY LabelBelow.tooltip "Label below">
 <!ENTITY VerticalRightCurlyBracket.tooltip "Vertical right curly bracket">
+<!ENTITY fbox.tooltip "Fbox">
+<!ENTITY frame.tooltip "Frame">
+<!ENTITY roundedbox.tooltip "Rounded box">
+<!ENTITY circle.tooltip "Circle">
