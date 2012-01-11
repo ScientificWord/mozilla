@@ -140,6 +140,15 @@ public:
                                    const nsAString & overIsAccent,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement);
  
+  static nsresult CreateMenclose(nsIEditor *editor,
+                                 const nsAString & around,
+                                 const nsAString & typeAttr,
+                                 nsIDOMNode * child,
+                                 PRBool makeInputBox,
+                                 PRBool markCaret,
+                                 PRUint32 & flags,
+                                 nsCOMPtr<nsIDOMElement> & mathmlElement);
+
   static nsresult CreateMsqrt(nsIEditor *editor,
                               nsIDOMNode * child,
                               PRBool createInputBox,
@@ -230,6 +239,8 @@ public:
                                    nsIDOMNode * child,
                                    const nsAString & above,
                                    const nsAString & below,
+                                   const nsAString & aroundNotation,
+                                   const nsAString & aroundType,
                                    PRBool createInputBox,
                                    PRBool markCaret,
                                    PRUint32 & flags,

@@ -94,7 +94,9 @@ MSI_ATOM(displaystyle, "displaystyle")
 MSI_ATOM(subscriptshift, "subscriptshift")
 MSI_ATOM(superscriptshift, "superscriptshift")
 MSI_ATOM(accentunder, "accentunder")
-
+MSI_ATOM(notation, "notation")
+MSI_ATOM(typeAttr, "type")
+//"notation" and "type" used by menclose
 
 //MFenced attributes
 //TODO These should be temporary since we won't create MFenced objects
