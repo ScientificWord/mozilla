@@ -408,7 +408,12 @@ button[class="msi"]::-moz-selection {
   font-style: normal;
 } */
 
-mml|menclose[notation~="box"] {
+mml|menclose {
+  min-width: 1em;
+  min-height: 1.5ex
+}
+
+mml|menclose[notation] {
   border-style : solid;
   border-width : thin;
   border-color : black
@@ -420,12 +425,13 @@ mml|menclose[notation~="box"][type="fbox"] {
 
 mml|menclose[notation~="roundedbox"] {
   padding : 0.5ex 0.4em;
-  border-style : solid;
-  border-width : thin;
-  border-color : black;
   -moz-border-radius : 0.5em
 }
 
+mml|menclose[notation~="circle"] {
+  padding : 0.8ex 0.4em;
+  -moz-border-radius : 100%
+}
 
 *[hideIndexEntries="true"] indexitem {
   display: none;

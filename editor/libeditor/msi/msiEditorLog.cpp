@@ -276,7 +276,8 @@ msiEditorLog::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
 }
 
 NS_IMETHODIMP
-msiEditorLog::InsertDecoration(const nsAString & above, const nsAString & below)
+msiEditorLog::InsertDecoration(const nsAString & above, const nsAString & below,
+                               const nsAString & aroundNotation, const nsAString & aroundType)
 {
   nsAutoHTMLEditorLogLock logLock(this);
   if (!mLocked && mFileStream)
@@ -289,9 +290,15 @@ msiEditorLog::InsertDecoration(const nsAString & above, const nsAString & below)
     str = below;
     PrintUnicode(str);
     Write("\");\n");
+    str = aroundNotation;
+    PrintUnicode(str);
+    Write("\");\n");
+    str = aroundType;
+    PrintUnicode(str);
+    Write("\");\n");
     Flush();
   }
-  return msiEditor::InsertDecoration(above, below);
+  return msiEditor::InsertDecoration(above, below, aroundNotation, aroundType);
 }
 
 

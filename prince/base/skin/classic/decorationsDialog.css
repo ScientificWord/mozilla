@@ -56,3 +56,10 @@ msibutton[group] mml|*[class="phantomBox"], *[class="phantomBox"] {
   margin: 1px;
   -moz-border-radius: 5px
 }
+
+*[class="circle"] {
+  border: 1px solid black;
+  padding: 3px;
+  margin: 1px;
+  -moz-border-radius: 100%
+}

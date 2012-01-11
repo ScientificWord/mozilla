@@ -5,12 +5,18 @@
 
 #include "nsCOMPtr.h"
 #include "nsIDOMNode.h"
-#include "msiMInsertionBase.h"
+#include "msiMContainer.h"
 
-class msiMenclose : public msiMInsertionBase
+class msiMenclose : public msiMContainer
 {
 public:
   msiMenclose(nsIDOMNode* mathmlNode, PRUint32 offset);
+  
+  /* ------------ msiIMathMLInsertion overrides -------------- */
+  NS_IMETHOD Inquiry(nsIEditor* editor,
+                     PRUint32 inquiryID, 
+                     PRBool * result);
+  
 };
 
 #endif // msiMenclose_h___

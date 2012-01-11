@@ -448,7 +448,7 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
 nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
                                            PRUint32 character,
                                            PRUint32 tagType, 
-                                           PRUint32 caretPos,
+                                           PRUint32 caretPos, 
                                            PRUint32 & flags,
                                            nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
@@ -829,20 +829,23 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
                                    nsIDOMNode * base,
                                    const nsAString & above,
                                    const nsAString & below,
+                                   const nsAString & aroundNotation,
+                                   const nsAString & aroundType,
                                    PRBool createInputBox,
                                    PRBool markCaret,
                                    PRUint32 & flags,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE);
-  if (editor && (!above.IsEmpty() || !below.IsEmpty()))
+  if (editor && (!above.IsEmpty() || !below.IsEmpty() || !aroundNotation.IsEmpty() || !aroundType.IsEmpty()))
   {
     res = NS_OK;
     PRBool isOverUnder = !above.IsEmpty() && !below.IsEmpty();
     PRBool isOver = !above.IsEmpty() && below.IsEmpty();
+    PRBool isOverOrUnder = !above.IsEmpty() || !below.IsEmpty();
     PRUint32 dummyFlags(0);
-    nsCOMPtr<nsIDOMElement> over, under;
-    nsCOMPtr<nsIDOMNode> overNode, underNode;
+    nsCOMPtr<nsIDOMElement> over, under, enclosed;
+    nsCOMPtr<nsIDOMNode> overNode, underNode, enclosedNode;
     nsAutoString emptyString;
     if (!above.IsEmpty() && !(msiEditingAtoms::label->Equals(above)))
     {
@@ -863,13 +866,26 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
     }
     if (NS_SUCCEEDED(res) && isOverUnder)
       res = CreateMunderover(editor, base, underNode, overNode, PR_FALSE, PR_FALSE,
-                             createInputBox, PR_TRUE, flags, emptyString, emptyString, mathmlElement);
-    else if (NS_SUCCEEDED(res))
+                             createInputBox, PR_TRUE, flags, emptyString, emptyString, enclosed);
+    else if (NS_SUCCEEDED(res) && isOverOrUnder)
     {
       nsCOMPtr<nsIDOMNode> script = isOver ? overNode : underNode;
       res = CreateMunderOrMover(editor, isOver, base, script, PR_FALSE, createInputBox, PR_TRUE, flags, 
-                                emptyString, mathmlElement);
+                                emptyString, enclosed);
     }
+    if (NS_SUCCEEDED(res))
+    {
+      if (enclosed)
+        enclosedNode = do_QueryInterface(enclosed);
+      else
+        enclosedNode = base;
+    }
+    if (NS_SUCCEEDED(res) && !aroundNotation.IsEmpty())
+    {
+      res = CreateMenclose(editor, aroundNotation, aroundType, enclosedNode, createInputBox, markCaret, flags, mathmlElement);
+    }
+    else if (NS_SUCCEEDED(res) && enclosed)
+      mathmlElement = enclosed;
   }
   return res;
 }                                   
@@ -1074,6 +1090,59 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
   }
   return res;
 }
+
+nsresult msiUtils::CreateMenclose(nsIEditor *editor,
+                                  const nsAString & notationAttr,
+                                  const nsAString & typeAttr,
+                                  nsIDOMNode * child,
+                                  PRBool makeInputBox,
+                                  PRBool markCaret,
+                                  PRUint32 & flags,
+                                  nsCOMPtr<nsIDOMElement> & mathmlElement)
+{
+  nsresult res(NS_ERROR_FAILURE); 
+  nsCOMPtr<nsIDOMNode> enclosed;
+  nsCOMPtr<nsIDOMElement> enclose;
+  res = CreateMathMLElement(editor, msiEditingAtoms::menclose, enclose);
+
+  if (NS_SUCCEEDED(res) && enclose) 
+  {
+    nsAutoString notation, msiTypeAttr;
+    msiEditingAtoms::typeAttr->ToString(msiTypeAttr);
+    msiEditingAtoms::notation->ToString(notation);
+    if (NS_SUCCEEDED(res) && !notationAttr.IsEmpty())
+      res = enclose->SetAttribute(notation, notationAttr);
+    if (NS_SUCCEEDED(res) && !typeAttr.IsEmpty())
+      res = enclose->SetAttribute(msiTypeAttr, typeAttr);
+  }
+    
+  if (NS_SUCCEEDED(res) && enclose) 
+  {
+    if (child)
+      enclosed = child;
+    else if (makeInputBox)
+    {
+      nsCOMPtr<nsIDOMElement> inputbox;
+      res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
+      if (NS_SUCCEEDED(res) && inputbox) 
+        enclosed = do_QueryInterface(inputbox);
+    } else
+    {
+      nsCOMPtr<nsIArray> nodeArray;  //deliberately empty
+      nsCOMPtr<nsIDOMElement> enclosedElement = do_QueryInterface(enclosed);
+      CreateMRow(editor, (nsIArray *) nodeArray, enclosedElement);
+      enclosed = enclosedElement;
+    }
+    if (NS_SUCCEEDED(res) && enclosed)  
+    {
+      nsCOMPtr<nsIDOMNode> dontcare;   //TODO -- do these need to be saved for undo!!!!!!!
+      res = enclose->AppendChild(enclosed, getter_AddRefs(dontcare));
+      if (NS_SUCCEEDED(res))
+        mathmlElement = enclose;
+    }  
+  }
+  return res;
+} 
 
 nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
                                nsIDOMNode * child,
