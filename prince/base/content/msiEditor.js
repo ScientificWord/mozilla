@@ -4171,16 +4171,13 @@ function handleSourceParseError(errorMsg) // returns true if the user wants to g
 
 function msiClearSource(editorElement)
 {
-  var sourceContentWindow = msiGetHTMLSourceTextWindow(editorElement);
-  var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
-  if (sourceContentWindow && sourceTextEditor)
+  var editor = msiGetEditor(editorElement);
+  var sourceIframe = document.getElementById("content-source");
+  var sourceEditor = sourceIframe.contentWindow.gEditor;
+  if (sourceEditor)
   {
-    sourceContentWindow.commandManager.removeCommandObserver(editorElement.mSourceTextObserver, "cmd_undo");
-    sourceTextEditor.removeDocumentStateListener(editorElement.mSourceTextListener);
-    sourceTextEditor.enableUndo(false);
-    sourceTextEditor.selectAll();
-    sourceTextEditor.deleteSelection(sourceTextEditor.eNone);
-    sourceTextEditor.resetModificationCount();
+    sourceEditor.clearHistory();
+    sourceEditor.setValue("");
   }
 }
 
@@ -4211,14 +4208,131 @@ function displayDocTypeIfExists(editor)
   }
 }
 
+var gDummySelectionStartNode = null;
+var gDummySelectionEndNode = null;
+var gDummySelectionStartData = "";
+var gDummySelectionEndData = "";
+
 function MarkSelection(editor)
-{}
+{
+  gDummySelectionStartNode = null;
+  gDummySelectionEndNode = null;
+  gDummySelectionStartData = "";
+  gDummySelectionEndData = "";
+  
+  const kBGBGBG = "--BG--";
+
+  var selection = editor.selection;
+  for (var count = 0; count < 1; count++) {
+    var range = selection.getRangeAt(count);
+    var startContainer = range.startContainer;
+    var endContainer   = range.endContainer;
+    var startOffset    = range.startOffset;
+    var endOffset      = range.endOffset;
+
+    if (startContainer.nodeType == Node.TEXT_NODE) {
+      var data = startContainer.data;
+      gDummySelectionStartNode = startContainer;
+      gDummySelectionStartData = data;
+      data = data.substr(0, startOffset) + kBGBGBG + data.substr(startOffset);
+      startContainer.data = data;
+    }
+    else if (startContainer.nodeType == Node.ELEMENT_NODE) {
+      if (startOffset < startContainer.childNodes.length) {
+        var node = startContainer.childNodes.item(startOffset);
+        if (node.nodeType == Node.TEXT_NODE) {
+          var data = node.data;
+          gDummySelectionStartNode = node;
+          gDummySelectionStartData = data;
+          data = kBGBGBG + data;
+          node.data = data;
+        }
+        else {
+          var t = editor.document.createTextNode(kBGBGBG);
+          gDummySelectionStartNode = t;
+          startContainer.insertBefore(t, node);
+        }
+      }
+      else {
+        var t = editor.document.createTextNode(kBGBGBG);
+        gDummySelectionStartNode = t;
+        startContainer.appendChild(t);
+      }
+    }
+
+    if (endContainer.nodeType == Node.TEXT_NODE) {
+      // same node as start node???
+      if (endContainer == startContainer) {
+        var data = endContainer.data;
+        gDummySelectionEndNode = endContainer;
+        gDummySelectionEndData = data;
+        data = data.substr(0, endOffset + kBGBGBG.length) + kBGBGBG + data.substr(endOffset + kBGBGBG.length);
+        endContainer.data = data;
+      }
+      else {
+        var data = endContainer.data;
+        gDummySelectionEndNode = endContainer;
+        gDummySelectionEndData = data;
+        data = data.substr(0, endOffset) + kBGBGBG + data.substr(endOffset);
+        endContainer.data = data;
+      }
+    }
+    else if (endContainer.nodeType == Node.ELEMENT_NODE) {
+      var node = endContainer.childNodes.item(Math.max(0, endOffset - 1));
+      if (node.nodeType == Node.TEXT_NODE) {
+        var data = node.data;
+        gDummySelectionEndNode = node;
+        gDummySelectionEndData = data;
+        data += kBGBGBG;
+        node.data = data;
+      }
+      else {
+        var t = EditorUtils.getCurrentDocument().createTextNode(kBGBGBG);
+        gDummySelectionEndNode = t;
+        endContainer.insertBefore(t, node.nextSibling);
+      }
+    }
+  }
+}
 
 function UnmarkSelection(editor)
-{}
+{
+  if (gDummySelectionEndNode) {
+    if (gDummySelectionEndData)
+      gDummySelectionEndNode.data = gDummySelectionEndData;
+    else
+      gDummySelectionEndNode.parentNode.removeChild(gDummySelectionEndNode);
+  }
 
-function MarkSelectionInCM(sourceEditor, source)
-{}
+  if (gDummySelectionStartNode) {
+    if (gDummySelectionStartData)
+      gDummySelectionStartNode.data = gDummySelectionStartData;
+    else if (gDummySelectionStartNode.parentNode) // if not already removed....
+      gDummySelectionStartNode.parentNode.removeChild(gDummySelectionStartNode);
+  }
+}
+
+function MarkSelectionInCM(aSourceEditor)
+{
+  const kBGBGBG = "--BG--";
+
+  aSourceEditor.setSelection( { line: 0, ch: 0 }, { line: 0, ch: 0 } );
+
+  var searchCursor = aSourceEditor.getSearchCursor(kBGBGBG, { line: 0, ch: 0 }, true);
+  searchCursor.findNext();
+  var startRow    = searchCursor.from().line;
+  var startColumn = searchCursor.from().ch;
+  searchCursor.replace("");
+
+  searchCursor = aSourceEditor.getSearchCursor(kBGBGBG, { line: 0, ch: 0 }, true);
+  searchCursor.findNext();
+  var endRow      = searchCursor.from().line;
+  var endColumn   = searchCursor.from().ch;
+  searchCursor.replace("");
+
+  aSourceEditor.clearHistory();
+  aSourceEditor.setSelection( { line: startRow, ch: startColumn }, { line: endRow, ch: endColumn } );
+}
 
 
 function msiSetEditMode(mode, editorElement)
@@ -4283,7 +4397,7 @@ function msiSetEditMode(mode, editorElement)
     sourceIframe.focus();
     sourceEditor.refresh();
     sourceEditor.focus();
-    MarkSelectionInCM(sourceEditor, source);
+    MarkSelectionInCM(sourceEditor);
     sourceIframe.setUserData("oldSource", sourceEditor.getValue(), null);
   }
   else if (previousMode == kDisplayModeSource)
@@ -4292,7 +4406,7 @@ function msiSetEditMode(mode, editorElement)
     var historyCount = sourceEditor.historySize();
     if (historyCount.undo > 0)
     {
-      // Reduce the undo count so we don't use too much memory
+      //   Reduce the undo count so we don't use too much memory
       //   during multiple uses of source window 
       //   (reinserting entire doc caches all nodes)
       try {
@@ -4312,7 +4426,7 @@ function msiSetEditMode(mode, editorElement)
           msiSetDocumentEditable(true, editorElement)
         }
         catch(e){}
-        if (errMsg.length >0) // there was a parsing failure
+        if (errMsg.length > 0) // there was a parsing failure
         {
           willReturn = handleSourceParseError(errMsg);
           if (willReturn)
