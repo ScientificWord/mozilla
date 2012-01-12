@@ -1,4 +1,6 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
+#include productname.inc
+#ifndef PROD_SW
 
 function GetMathAsString(math)
 {
@@ -79,3 +81,5 @@ function HasEmptyMath(element)
   var expr = GetMathAsString(element);
   return (expr.indexOf("tempinput=\"true\"") > -1);
 }
+
+#endif
