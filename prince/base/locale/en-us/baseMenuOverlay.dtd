@@ -1,3 +1,4 @@
+#include ../../content/productname.inc
 <!ENTITY minimizeWindow.key       "m">
 <!ENTITY minimizeWindow.label     "Minimize">
 <!ENTITY bringAllToFront.label    "Bring All to Front">

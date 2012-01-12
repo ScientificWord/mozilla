@@ -1,4 +1,13 @@
+#include ../../content/productname.inc
+#ifdef PROD_SWP
 <!ENTITY aboutDialog.title      "About Scientific WorkPlace">
+#endif
+#ifdef PROD_SW
+<!ENTITY aboutDialog.title      "About Scientific Word">
+#endif
+#ifdef PROD_SNB
+<!ENTITY aboutDialog.title      "About Scientific Notebook">
+#endif
 <!ENTITY copyright              "Copyright and contributor information">
 <!ENTITY copyrightLink          "http://www.mackichan.com">
 <!ENTITY AboutTab.label "About">

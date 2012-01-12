@@ -1,4 +1,5 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. --> 
+#include productname.inc
 
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
@@ -142,7 +143,12 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
+#ifdef PROD_SW
+      defaultset="fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
+#else
+
+defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
+#endif
       mode="icons" 
       customizable="true"
       iconsize="large" />
@@ -161,7 +167,7 @@
     </toolbar>
   </toolbox>
 
-  
+#ifndef PROD_SW
     <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
       flex = "1"
       mode="icons" customizable="true"  hidden = "true" observes="vcamactive">
@@ -217,7 +223,7 @@
         </menupopup>
       </toolbarbutton>
     </toolbar>
-
+#endif
 
 <!-- Button section -->
   <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtextButton" tooltiptext="&mathtextButton.tooltip;"

@@ -1,5 +1,16 @@
+#include ../../content/productname.inc
+#ifdef PROD_SWP
 <!ENTITY prince.title       "Scientific WorkPlace">
 <!ENTITY editorWindow.titlemodifier	"Scientific WorkPlace">
+#endif
+#ifdef PROD_SW
+<!ENTITY prince.title       "Scientific Word">
+<!ENTITY editorWindow.titlemodifier	"Scientific Word">
+#endif
+#ifdef PROD_SNB
+<!ENTITY prince.title       "Scientific Notebook">
+<!ENTITY editorWindow.titlemodifier	"Scientific Notebook">
+#endif
 <!ENTITY editorWindow.titlemodifierseparator	" - ">
 
 
