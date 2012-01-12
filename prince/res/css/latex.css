@@ -34,6 +34,7 @@ caption {
 
 table {
   margin: 0px;
+  display: inline-block;
 }
 /*table {
   border-collapse: collapse;
