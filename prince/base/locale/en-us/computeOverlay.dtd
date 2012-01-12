@@ -1,4 +1,6 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+#include ../../content/productname.inc
+#ifndef PROD_SW
 
 
 <!ENTITY MSIComputeMenu.label "Compute">
@@ -339,3 +341,4 @@
       
 <!ENTITY MSItestEvaluationCmd.label "Test Evaluation">
 
+#endif
