@@ -1,7 +1,21 @@
+#include ../../content/productname.inc
 #expand <!ENTITY  lang.version          "__MOZILLA_LOCALE_VERSION__">
+<!ENTITY EnginelogSidebar.title "Engine Log">
+#ifdef PROD_SWP
 <!ENTITY  brandFullName         "Scientific WorkPlace">
 <!ENTITY  brandShortName        "Scientific WorkPlace">
+<!ENTITY mainWindow.titlemodifier	"Scientific WorkPlace">
+#endif
+#ifdef PROD_SW
+<!ENTITY  brandFullName         "Scientific Word">
+<!ENTITY  brandShortName        "Scientific Word">
+<!ENTITY mainWindow.titlemodifier	"Scientific Word">
+#endif
+#ifdef PROD_SNB
+<!ENTITY  brandFullName         "Scientific Notebook">
+<!ENTITY  brandShortName        "Scientific Notebook">
+<!ENTITY mainWindow.titlemodifier	"Scientific Notebook">
+#endif
 <!ENTITY  vendorShortName       "MacKichan Software, Inc">
 <!ENTITY  sidebarName           "Sidebar">
-<!ENTITY mainWindow.titlemodifier	"Scientific WorkPlace">
 <!ENTITY mainWindow.titlemodifiermenuseparator	" - ">
