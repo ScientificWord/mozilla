@@ -1,3 +1,5 @@
+#include productname.inc
+#ifndef PROD_SW
 //----------------------------------------------------------------------------------
 // an array of DOM <graph> elements currently being reformatted
 var currentDOMGs = new Array();
@@ -1157,3 +1159,5 @@ function actualVarCount(variableList) {
       i++;
   return i;    
 }
+
+#endif

@@ -1,3 +1,4 @@
+<!ENTITY customizeComputeToolbar.label "Customize the compute toolbar">
 
 <!ENTITY CustomizeToolbars.label  "Customize Toolbars">
 <!ENTITY SmallSymbols.label "Small symbols">
@@ -6,9 +7,7 @@
 <!ENTITY CompactSymbols.label "Compact">
 
 <!ENTITY mathtextToolbar.tooltip "Toggle Math/Text">
-
 <!ENTITY customizeStandardToolbar.label "Customize the main toolbar">
-<!ENTITY customizeComputeToolbar.label "Customize the compute toolbar">
 <!ENTITY customizeSymbolToolbar.label "Customize the symbol toolbar">
 
 <!ENTITY mathToolbar.tooltip     "Math Toolbar">
