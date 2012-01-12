@@ -4295,6 +4295,7 @@ function MarkSelection(editor)
   }
 }
 
+
 function UnmarkSelection(editor)
 {
   if (gDummySelectionEndNode) {
@@ -4403,7 +4404,6 @@ function msiSetEditMode(mode, editorElement)
     editorElement = msiGetActiveEditorElement();
   if (!msiIsHTMLEditor(editorElement))
     return;
-
   var bodyElement = msiGetBodyElement(editorElement);
   if (!bodyElement)
   {
@@ -4422,7 +4422,6 @@ function msiSetEditMode(mode, editorElement)
 
   if (!msiSetDisplayMode(editorElement, mode))
     return;
-
   if (mode == kDisplayModeSource)
   {
     // Display the DOCTYPE as a non-editable string above edit area, if it exists
@@ -4487,7 +4486,7 @@ function msiSetEditMode(mode, editorElement)
           willReturn = handleSourceParseError(errMsg);
           if (willReturn)
           {
-            msiSetDisplayMode(editorElement, kDisplayModeSource);
+             msiSetDisplayMode(editorElement, kDisplayModeSource);
             return;
           }             
         }
@@ -4530,12 +4529,22 @@ function msiSetEditMode(mode, editorElement)
   else editorElement.contentWindow.focus();
 }
 
+
 function msiCancelHTMLSource(editorElement)
 {
   // Don't convert source text back into the DOM document
   msiClearSource(editorElement);
   editorElement.makeEditable("html");
   editorElement.contentWindow.focus();
+//  try
+//  {
+//    var sourceTextEditor = msiGetSourceTextEditor(editorElement);
+//    if (sourceTextEditor)
+//    {
+//      sourceTextEditor.resetModificationCount();
+//      msiSetDisplayMode(editorElement, msiGetPreviousNonSourceDisplayMode(editorElement));
+//    }
+//  } catch(e) {}
 }
 
 function msiFinishHTMLSource(editorElement)
@@ -4546,6 +4555,7 @@ function msiFinishHTMLSource(editorElement)
     msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
   }
 }
+
 
 function msiGetPreviousNonSourceDisplayMode(editorElement)
 {

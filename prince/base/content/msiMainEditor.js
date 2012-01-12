@@ -166,26 +166,26 @@ function msiEditorOnLoad()
 
   // Initialize our source text <editor>
   try {
-    editorElement.mSourceContentWindow = document.getElementById("content-source");
-    editorElement.mSourceContentWindow.makeEditable("text", false);
-    editorElement.mSourceTextEditor = editorElement.mSourceContentWindow.getEditor(editorElement.mSourceContentWindow.contentWindow);
-    editorElement.mSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-    editorElement.mSourceTextEditor.enableUndo(false);
-    editorElement.mSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
-    editorElement.mSourceTextEditor.rootElement.style.whiteSpace = "pre";
-    editorElement.mSourceTextEditor.rootElement.style.margin = 0;
-    //ljh I don't understand why a new instance of the controller is being created?????
-    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-                               .createInstance(Components.interfaces.nsIControllerContext);
-    controller.init(null);
-    controller.setCommandContext(editorElement.mSourceContentWindow);
-    editorElement.mSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
-    commandTable.registerCommand("cmd_find",        msiFindCommand);
-    commandTable.registerCommand("cmd_findNext",    msiFindAgainCommand);
-    commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
-    
+//    editorElement.mSourceContentWindow = document.getElementById("content-source");
+//    editorElement.mSourceContentWindow.makeEditable("text", false);
+//    editorElement.mSourceTextEditor = editorElement.mSourceContentWindow.getEditor(editorElement.mSourceContentWindow.contentWindow);
+//    editorElement.mSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+//    editorElement.mSourceTextEditor.enableUndo(false);
+//    editorElement.mSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
+//    editorElement.mSourceTextEditor.rootElement.style.whiteSpace = "pre";
+//    editorElement.mSourceTextEditor.rootElement.style.margin = 0;
+//    //ljh I don't understand why a new instance of the controller is being created?????
+//    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
+//                               .createInstance(Components.interfaces.nsIControllerContext);
+//    controller.init(null);
+//    controller.setCommandContext(editorElement.mSourceContentWindow);
+//    editorElement.mSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
+//    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+//                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
+//    commandTable.registerCommand("cmd_find",        msiFindCommand);
+//    commandTable.registerCommand("cmd_findNext",    msiFindAgainCommand);
+//    commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
+//    
     msiSetupMSIMathMenuCommands(editorElement);
     msiSetupMSIComputeMenuCommands(editorElement);
     msiSetupMSITypesetMenuCommands(editorElement);
