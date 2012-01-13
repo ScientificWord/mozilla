@@ -41,15 +41,15 @@ descriptionlist {list-style-type: none;}
 /* bulletListItem { margin-left: 2em; } */
 
 
-numberedListItem>bodyText:first-child:before { content: counter(numberedlist, decimal) '.';
+numberedListItem>bodyText:first-child:before { content: counter(numberedlist, decimal) '. ';
   counter-increment: numberedlist;
   width: 2em;
   -moz-user-modify: read-only;
 }
 
-numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: counter(numberedlist, lower-latin) '.';}
-numberedlist numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: counter(numberedlist, lower-roman) '.';}
-numberedlist numberedlist numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: counter(numberedlist, upper-latin) '.';}
+numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist, lower-latin) ') ';}
+numberedlist numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: counter(numberedlist, lower-roman) '. ';}
+numberedlist numberedlist numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: counter(numberedlist, upper-latin) '. ';}
 
 numberedListItem>bodyText:first-child:first-line { content: '  ';
   -moz-user-modify: read-only;
