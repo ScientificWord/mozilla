@@ -113,14 +113,14 @@ function addListeners()
       normaleditor.addEventListener("keydown", onBrowserKeyDown, false);
       normaleditor.addEventListener("keyup", onBrowserKeyUp, false);
     }
-	  var sourceeditor = document.getElementById("content-source");
-    if (sourceeditor)
-    {
-      sourceeditor.addEventListener("keypress", onBrowserKeyPress, false);
-	    sourceeditor.addEventListener("mousedown", onBrowserMouseDown, false);
-      sourceeditor.addEventListener("keydown", onBrowserKeyDown, false);
-      sourceeditor.addEventListener("keyup", onBrowserKeyUp, false);
-    }
+//	  var sourceeditor = document.getElementById("content-source");
+//    if (sourceeditor)
+//    {
+//      sourceeditor.addEventListener("keypress", onBrowserKeyPress, false);
+//	    sourceeditor.addEventListener("mousedown", onBrowserMouseDown, false);
+//      sourceeditor.addEventListener("keydown", onBrowserKeyDown, false);
+//      sourceeditor.addEventListener("keyup", onBrowserKeyUp, false);
+//    }
   } catch(e) { dump("Error: "+e.message + "\n"); }
 }
 
@@ -136,21 +136,21 @@ function removeListeners()
     normaleditor.removeEventListener("keydown", onBrowserKeyDown, false);
     normaleditor.removeEventListener("keyup", onBrowserKeyUp, false);
   }
-  var sourceeditor = document.getElementById("content-source");
-  if (sourceeditor)
-  {
-    sourceeditor.removeEventListener("keypress", onBrowserKeyPress, false);
-    sourceeditor.removeEventListener("mousedown", onBrowserMouseDown, false);
-    sourceeditor.removeEventListener("keydown", onBrowserKeyDown, false);
-    sourceeditor.removeEventListener("keyup", onBrowserKeyUp, false);
-  }
+//  var sourceeditor = document.getElementById("content-source");
+//  if (sourceeditor)
+//  {
+//    sourceeditor.removeEventListener("keypress", onBrowserKeyPress, false);
+//    sourceeditor.removeEventListener("mousedown", onBrowserMouseDown, false);
+//    sourceeditor.removeEventListener("keydown", onBrowserKeyDown, false);
+//    sourceeditor.removeEventListener("keyup", onBrowserKeyUp, false);
+//  }
 }
 
 
 function initFastCursorBar()
 {
   // Get the xul <editor> element:
-  var editorElement = document.getElementById("content-source");  
+  var editorElement = document.getElementById("content-frame");  
   try {
     // get the find service, which stores global find state
       gFindService = Components.classes["@mozilla.org/find/find_service;1"]
