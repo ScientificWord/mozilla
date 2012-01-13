@@ -4295,6 +4295,7 @@ function MarkSelection(editor)
   }
 }
 
+
 function UnmarkSelection(editor)
 {
   if (gDummySelectionEndNode) {
@@ -4334,6 +4335,68 @@ function MarkSelectionInCM(aSourceEditor)
   aSourceEditor.setSelection( { line: startRow, ch: startColumn }, { line: endRow, ch: endColumn } );
 }
 
+function CloneElementContents(editor, sourceElt, destElt)
+{
+  editor.cloneAttributes(destElt, sourceElt);
+  var lastChild = destElt.lastChild;
+  if (!lastChild || lastChild.nodeName.toLowerCase() != "br") {
+    lastChild = editor.document.createElement("br");
+    lastChild.setAttribute("type", "_moz");
+    editor.insertNode(lastChild, destElt, destElt.childNodes.length);
+  }
+
+  var sourceChild = sourceElt.firstChild;
+  while (sourceChild) {
+    if (sourceChild.nodeType == Node.ELEMENT_NODE) {
+      var destChild = editor.document.importNode(sourceChild, true);
+      editor.insertNode(destChild, destElt, destElt.childNodes.length);
+    }
+    else if (sourceChild.nodeType == Node.TEXT_NODE) {
+      t = editor.document.createTextNode(sourceChild.data);
+      editor.insertNode(t, destElt, destElt.childNodes.length);
+    }
+    else if (sourceChild.nodeType == Node.COMMENT_NODE) {
+      t = editor.document.createComment(sourceChild.data);
+      editor.insertNode(t, destElt, destElt.childNodes.length);
+    }
+
+    sourceChild = sourceChild.nextSibling;
+  }
+
+  var child = destElt.firstChild;
+  do {
+    var stopIt = (child == lastChild);
+    editor.deleteNode(child);
+    child = destElt.firstChild;
+  } while (!stopIt);
+}
+ 
+ 
+function RebuildFromSource(aDoc, editorElement, aContext)
+{
+  if (aContext)
+    delete aContext;
+  var editor = msiGetEditor(editorElement);
+  try {
+
+    // make sure everything is aggregated under one single txn
+    editor.beginTransaction();
+    // clone html attributes
+    editor.cloneAttributes(editor.document.documentElement, aDoc.documentElement);
+    // clone head
+    CloneElementContents(editor, aDoc.getElementsByTagName("head").item(0), editor.document.getElementsByTagName("head").item(0));
+    // clone body
+    CloneElementContents(editor, aDoc.getElementsByTagName("body").item(0), editor.document.getElementsByTagName("body").item(0));
+    editor.endTransaction();
+
+    // the window title is updated by DOMTitleChanged event
+  } catch(ex) {
+  }
+//  NotifierUtils.notify("afterLeavingSourceMode");
+  window.content.focus();
+  editorElement().focus();
+}
+
 
 function msiSetEditMode(mode, editorElement)
 {
@@ -4341,7 +4404,6 @@ function msiSetEditMode(mode, editorElement)
     editorElement = msiGetActiveEditorElement();
   if (!msiIsHTMLEditor(editorElement))
     return;
-
   var bodyElement = msiGetBodyElement(editorElement);
   if (!bodyElement)
   {
@@ -4360,7 +4422,6 @@ function msiSetEditMode(mode, editorElement)
 
   if (!msiSetDisplayMode(editorElement, mode))
     return;
-
   if (mode == kDisplayModeSource)
   {
     // Display the DOCTYPE as a non-editable string above edit area, if it exists
@@ -4406,163 +4467,90 @@ function msiSetEditMode(mode, editorElement)
     var historyCount = sourceEditor.historySize();
     if (historyCount.undo > 0)
     {
-      //   Reduce the undo count so we don't use too much memory
-      //   during multiple uses of source window 
-      //   (reinserting entire doc caches all nodes)
+//   Reduce the undo count so we don't use too much memory
+//   during multiple uses of source window 
+//   (reinserting entire doc caches all nodes)
+//      try {
+//      editor.transactionManager.maxTransactionCount = 1;
+//      } catch (e) {}
+//
+      var errMsg="";
+      var willReturn = false;
+      source = sourceEditor.getValue();
+      source = decodeEntities(source);
+      var xmlParser = new DOMParser();
       try {
-        editor.transactionManager.maxTransactionCount = 1;
-      } catch (e) {}
-
-      editor.beginTransaction();
-      try {
-        // We are coming from edit source mode,
-        //   so transfer that back into the document
-        var errMsg="";
-        var willReturn = false;
-        source = sourceEditor.getValue();
-        source = decodeEntities(source);
-        try {
-          errMsg = editor.rebuildDocumentFromSource(source);
-          msiSetDocumentEditable(true, editorElement)
-        }
-        catch(e){}
-        if (errMsg.length > 0) // there was a parsing failure
-        {
+        var doc = xmlParser.parseFromString(source, "text/xml");
+        if (doc.documentElement.nodeName == "parsererror") {
+          var errMsg = doc.documentElement.lastChild.textContent;
           willReturn = handleSourceParseError(errMsg);
           if (willReturn)
           {
-            editor.endTransaction();
-            msiSetDisplayMode(editorElement, kDisplayModeSource)
+             msiSetDisplayMode(editorElement, kDisplayModeSource);
             return;
           }             
         }
+      }
+      catch (e) {
+      }
+      RebuildFromSource(doc, editorElement);
         // Get the text for the <title> from the newly-parsed document
         // (must do this for proper conversion of "escaped" characters)
-        var title = "";
-        var preambles = editor.document.getElementsByTagName("preamble");
-        if (preambles.length > 0)
+      var title = "";
+      var preambles = editor.document.getElementsByTagName("preamble");
+      if (preambles.length > 0)
+      {
+        var titlenodelist = editor.preambles[0].getElementsByTagName("title");
+        if (titlenodelist.length > 0)
         {
-          var titlenodelist = editor.preambles[0].getElementsByTagName("title");
-          if (titlenodelist.length > 0)
-          {
-            var titleNode = titlenodelist.item(0);
-            if (titleNode) 
-              title = titleNode.textContent;
-          }
+          var titleNode = titlenodelist.item(0);
+          if (titleNode) 
+            title = titleNode.textContent;
         }
-        if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
-        {
-          editor.document.title = title;
-          msiUpdateWindowTitle(title, null);
-        }
-      } catch (ex) {
-        dump(ex);
       }
-      editor.endTransaction();
-
-      // Restore unlimited undo count
-      try {
-        editor.transactionManager.maxTransactionCount = -1;
-      } catch (e) {}
+      if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
+      {
+        editor.document.title = title;
+        msiUpdateWindowTitle(title, null);
+      }
     }
-//    editor.enableStyleSheet(dynAllTagsStyleSheet, false);
+    // Restore unlimited undo count
+//    try {
+//      editor.transactionManager.maxTransactionCount = -1;
+//    } catch (e) {}
+////    editor.enableStyleSheet(dynAllTagsStyleSheet, false);
     msiSetDisplayMode(editorElement, mode);
 
     // Clear out the string buffers
     msiClearSource(editorElement);
     editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
-//		catch(e)
-//		{
-//			dump(e.message+"\n");
-//		}
   }
   else editorElement.contentWindow.focus();
 }
-
-function InsertColoredSourceView(editor, source)
-{
-  var sourceDoc = editor.document;
-  // clean source view first
-  // BBM
-  var bodySourceDoc = sourceDoc.documentElement.getElementsByTagName("body").item(0);
-//  var bodySourceDoc = sourceDoc.documentElement.firstChild.nextSibling;
-  while (bodySourceDoc.lastChild)
-    bodySourceDoc.removeChild(bodySourceDoc.lastChild);
-
-  // the following is ugly but working VERY well
-  var styleElt = sourceDoc.getElementById("moz_sourceview_css");
-  if (!styleElt)
-  {
-    var heads = sourceDoc.getElementsByTagName("head");
-    var headElement;
-    if (!heads)
-    {
-      headElement = sourceDoc.createElement("head");
-      bodySourceDoc.parentNode.insertBefore(headElement, bodySourceDoc);
-    }
-    else
-      headElement = heads.item(0);
-    var styleElt = sourceDoc.createElement("style");
-    styleElt.setAttribute("id", "moz_sourceview_css");
-    styleElt.setAttribute("type", "text/css");
-    var sheet = sourceDoc.createTextNode('@import url("resource://app/res/css/srceditor.css");');
-    styleElt.appendChild(sheet);
-    headElement.appendChild(styleElt);
-  }
-  bodySourceDoc.innerHTML = source;
-}
-
 
 
 function msiCancelHTMLSource(editorElement)
 {
   // Don't convert source text back into the DOM document
-  try
-  {
-    var sourceTextEditor = msiGetSourceTextEditor(editorElement);
-    if (sourceTextEditor)
-    {
-      sourceTextEditor.resetModificationCount();
-      msiSetDisplayMode(editorElement, msiGetPreviousNonSourceDisplayMode(editorElement));
-    }
-  } catch(e) {}
+  msiClearSource(editorElement);
+  editorElement.makeEditable("html");
+  editorElement.contentWindow.focus();
+//  try
+//  {
+//    var sourceTextEditor = msiGetSourceTextEditor(editorElement);
+//    if (sourceTextEditor)
+//    {
+//      sourceTextEditor.resetModificationCount();
+//      msiSetDisplayMode(editorElement, msiGetPreviousNonSourceDisplayMode(editorElement));
+//    }
+//  } catch(e) {}
 }
 
 function msiFinishHTMLSource(editorElement)
 {
-  //Here we need to check whether the HTML source contains <head> and <body> tags
-  //Or RebuildDocumentFromSource() will fail.
   if (msiIsInHTMLSourceMode(editorElement))
   {
-    var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
-    var htmlSource = sourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
-    if (htmlSource.length > 0)
-    {
-      var beginHead = htmlSource.indexOf("<head");
-      if (beginHead == -1)
-      {
-        AlertWithTitle(GetString("Alert"), GetString("NoHeadTag"));
-        //cheat to force back to Source Mode
-        msiSetDisplayMode(editorElement, kDisplayModePreview);
-//        gEditorDisplayMode = kDisplayModePreview;
-//        SetDisplayMode(kDisplayModeSource);
-        throw Components.results.NS_ERROR_FAILURE;
-      }
-
-      var beginBody = htmlSource.indexOf("<body");
-      if (beginBody == -1)
-      {
-        AlertWithTitle(GetString("Alert"), GetString("NoBodyTag"));
-        //cheat to force back to Source Mode
-        editorElement.mEditorDisplayMode = kDisplayModePreview;
-        if (editorElement.contentWindow = window.content && ("gEditorDisplayMode" in window))
-          window.gEditorDisplayMode = kDisplayModePreview;
-        msiSetDisplayMode(editorElement, kDisplayModeSource);
-        throw Components.results.NS_ERROR_FAILURE;
-      }
-    }
-
     // Switch edit modes -- converts source back into DOM document
     msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
   }

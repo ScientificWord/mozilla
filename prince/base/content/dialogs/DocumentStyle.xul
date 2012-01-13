@@ -118,8 +118,9 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> Style</label>
-        <hbox>
+        <label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> document class</label>
+        <label id="stylefile" value=""/>
+        <!-- <hbox>
           <vbox>
             <textbox id="stylefile"/>
             <listbox id="latexstyle" oncommand="">
@@ -130,7 +131,7 @@
             <msibutton class="dialog-button" id = "replacelatexstyle" label = "Replace" oncommand="" />
             <separator flex="1"/>
           </vbox>
-        </hbox>
+        </hbox> -->
         </vbox>
       </tabpanel>
     </tabpanels>

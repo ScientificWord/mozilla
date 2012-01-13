@@ -1,6 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 //Components.utils.import("resource://app/modules/pathutils.jsm");
-//Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
