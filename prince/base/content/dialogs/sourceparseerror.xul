@@ -21,9 +21,10 @@
     buttonlabelaccept="&accept.label;"
     buttonlabelcancel="&cancel.label;" 
     persist="screenX screenY width height sizemode"
-    width="600px" height="200px">
     screenX="40"
     screenY="40"
+    width="600px" height="200px"
+    >
   <script type="application/x-javascript" src="chrome://prince/content/sourceparseerror.js"/>
   <html:style type="text/css">
    .console-error-source { display: none }
