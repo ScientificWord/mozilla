@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+#include productname.inc
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/toolbar.css" type="text/css"?>
@@ -35,6 +35,15 @@
   sizemode="normal"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+#if PROD_SWP
+  <!-- product is swp-->
+#endif
+#if PROD_SW
+  <!-- product is sw-->
+#endif
+#if PROD_SNB
+  <!-- product is snb-->
+#endif
 
    <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
 
@@ -65,7 +74,7 @@
   <!--sidebaritem id="sidebaritem-ajarfile"   name="jarfile" src="jar:file:///C:/Documents and Settings/Barry/My Documents/SWPDocs/guided tour of prince.sci!/main.xhtml" title="Guide"/-->
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="&FragmentsSidebar.title;"/>
   <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="&BookmarksSidebar.title;"/>                              
-  <sidebaritem id="sidebaritem-log"   name="compute log" src="chrome://global/content/engineconsole.xul" title="&EnginelogSidebar.title;"/>                              
+  <!-- <sidebaritem id="sidebaritem-log"   name="compute log" src="chrome://global/content/engineconsole.xul" title="&EnginelogSidebar.title;"/>                               -->
   <sidebaritem id="sidebaritem-symbols"   height="244" name="symbols" src="chrome://prince/content/symbols.xul" title="&SymbolsSidebar.title;"/>
 </sidebaritems>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0"?> 
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
-
+#include productname.inc
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 
 <!DOCTYPE overlay [
@@ -298,7 +298,9 @@
     </menupopup>
   </menu>
   <!--menu id="tableMenu"/>  -->  
+#ifndef PROD_SNB
   <menu id="MSITypesetMenu"/>
+#endif
   <menu id="toolsMenu" label="&toolsmenu.label;" accesskey="&toolsmenu.accesskey;">
     <menupopup id="menu_ToolsPopup">
       <menuitem label="&toolsmenuJavaScriptdebugger.label;" 
@@ -412,6 +414,7 @@
                 observes="cmd_PreviewMode"
                   label="&PreviewMode.label;"/>
       <menuseparator/>
+#ifndef PROD_SNB
       <menuitem id="viewTeXLog"  
                 accesskey="&viewTeXLog.accesskey;"    
                 observes="cmd_showTeXLog" 
@@ -421,6 +424,7 @@
                 observes="cmd_showTeXFile" 
                 label="&viewTeXFile.label;"/>
       <menuseparator/>
+#endif
       <menu id="sidebar-menu" label="&viewSidebars.label;" accesskey="&viewsidebars.accesskey;" >
         <menupopup>
           <menuitem id="viewsidebarleft" 
