@@ -1,8 +1,6 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
-
-<!-- !ENTITY symbolToolbar.tooltip       "Symbol Toolbar" -->
-<!-- !ENTITY viewSymbolToolbar.label     "Symbol Toolbar" -->
-
+#include ../../content/productname.inc
+#ifndef PROD_SNB
 <!ENTITY MSITypesetMenu.label "Typeset">
 <!ENTITY MSITypesetMenu.accesskey "p">
 
@@ -42,4 +40,4 @@
 
 <!ENTITY MSItypesetToolsMenu.label "Tools">
 <!ENTITY MSItypesetToolsMenu.accesskey "T">
-
+#endif

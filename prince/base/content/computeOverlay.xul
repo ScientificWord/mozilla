@@ -1,4 +1,6 @@
 <?xml version="1.0"?> 
+#include productname.inc
+#ifndef PROD_SW
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 <!--JLF - Localization pass on 6/28/2011-->
 <!DOCTYPE overlay [
@@ -527,3 +529,5 @@
 #  <!-- end DEBUG only -->
 
 </overlay>
+
+#endif

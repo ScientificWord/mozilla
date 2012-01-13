@@ -52,6 +52,18 @@
             </framesubtitle>
           </initialcontents>
 				</tag>
+				<tag nm="institute">
+					<nexttag>bodyText</nexttag>
+					<description>Beamer institute</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <initialcontents>
+            <institute>
+              <cursor/>
+              <br/>
+            </institute>
+          </initialcontents>
+				</tag>
 			</tags>
 		</tagclass>
     <tagclass>
