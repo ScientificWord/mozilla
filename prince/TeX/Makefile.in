@@ -30,13 +30,7 @@ else
 CMD_RESOURCES := $(wildcard	$(srcdir)/bin/$(PLATFORM)/*.bash)
 endif
 
-ifeq ($(OS_ARCH),Darwin)
-CMD_RESOURCES += $(wildcard	$(srcdir)/bin/mac/*.applescript)
-endif
-
-
 
 libs::	$(CMD_RESOURCES)
 	chmod 755 $(wildcard     $(srcdir)/bin/linux/*.bash)
-	chmod 755 $(wildcard     $(srcdir)/bin/mac/*.applescript)
 	$(INSTALL)	$(CMD_RESOURCES)	$(FINAL_TARGET)
