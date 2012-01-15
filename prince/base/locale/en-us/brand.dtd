@@ -5,16 +5,19 @@
 <!ENTITY  brandFullName         "Scientific WorkPlace">
 <!ENTITY  brandShortName        "Scientific WorkPlace">
 <!ENTITY mainWindow.titlemodifier	"Scientific WorkPlace">
+<!ENTITY aboutCmd.label         "About Scientific WorkPlace">
 #endif
 #ifdef PROD_SW
 <!ENTITY  brandFullName         "Scientific Word">
 <!ENTITY  brandShortName        "Scientific Word">
 <!ENTITY mainWindow.titlemodifier	"Scientific Word">
+<!ENTITY aboutCmd.label         "About Scientific Word">
 #endif
 #ifdef PROD_SNB
 <!ENTITY  brandFullName         "Scientific Notebook">
 <!ENTITY  brandShortName        "Scientific Notebook">
 <!ENTITY mainWindow.titlemodifier	"Scientific Notebook">
+<!ENTITY aboutCmd.label         "About Scientific Notebook">
 #endif
 <!ENTITY  vendorShortName       "MacKichan Software, Inc">
 <!ENTITY  sidebarName           "Sidebar">
