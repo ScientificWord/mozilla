@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
-
+#include productname.inc
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?> 
 
 <!DOCTYPE dialog [
 <!ENTITY % aboutDialogDTD SYSTEM "chrome://prince/locale/aboutDialog.dtd" >
 %aboutDialogDTD;
+<!ENTITY % brandDTD SYSTEM "chrome://prince/locale/branding/brand.dtd" >
+%brandDTD;
 ]>
 <!--JLF - Localization pass on 6/28/2011-->
 <dialog xmlns:html="http://www.w3.org/1999/xhtml"
@@ -27,7 +29,19 @@
     </tabs>
     <tabpanels>
       <tabpanel orient="vertical">
-        <hbox><vbox flex="1"/><image align="center" src="chrome://prince/content/aboutPrince.png" width="350" height="540"/><vbox flex="1"/></hbox>
+        <hbox><vbox flex="1"/>
+        <image align="center" 
+#ifdef PROD_SW
+          src="chrome://prince/content/aboutSW.png" 
+#endif
+#ifdef PROD_SNB
+          src="chrome://prince/content/aboutSNB.png" 
+#endif
+#ifdef PROD_SWP
+          src="chrome://prince/content/aboutSWP.png" 
+#endif
+          width="350" height="540"/>
+        <vbox flex="1"/></hbox>
         <description id="versionField" align="center"/> 
       </tabpanel> 
       <tabpanel>
@@ -38,9 +52,5 @@
       </tabpanel>     
     </tabpanels>
   </tabbox>
-  <!-- Localizable strings (from .dtd) -->
-  <!--JLF address these -->
-  <strings style="display:none;">
-    <string id="brandShortName">Scientific WorkPlace 6.0</string>
-  </strings>
+  <string id="brandShortName">&brandShortName;</string>
 </dialog>
