@@ -1054,6 +1054,10 @@
           <xsl:when test="$first-char='&#x1D55C;'">
             <xsl:text xml:space="preserve">\Bbbk </xsl:text>
           </xsl:when>
+          <xsl:when test="$first-char='&#x019B;'">
+            <xsl:text xml:space="preserve">\lambdabar </xsl:text>
+          </xsl:when>
+
 
 <!--  Number Forms
           <xsl:otherwise>
@@ -1843,13 +1847,13 @@
           <xsl:when test="$first-char='&#x22E7;'">
             <xsl:text xml:space="preserve">\gnsim </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22E8;'">
+          <xsl:when test="$first-char='&#x2AB9;'">
             <xsl:text xml:space="preserve">\precnapprox </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22E8;'">
             <xsl:text xml:space="preserve">\precnsim </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22E9;'">
+          <xsl:when test="$first-char='&#x2ABA;'">
             <xsl:text xml:space="preserve">\succnapprox </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22E9;'">
