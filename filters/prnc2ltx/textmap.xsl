@@ -259,8 +259,8 @@
           <xsl:text>${{}^3}$</xsl:text>
         </xsl:if>
       </xsl:when>
-      <xsl:when test="$first-char='&#xb4;'">
-		<xsl:if test="$output-mode='SW-LaTeX'">
+     <xsl:when test="$first-char='&#xb4;'">
+    	<xsl:if test="$output-mode='SW-LaTeX'">
           <xsl:text>\U{b4}</xsl:text>
         </xsl:if>
         <xsl:if test="$output-mode='Portable-LaTeX'">
