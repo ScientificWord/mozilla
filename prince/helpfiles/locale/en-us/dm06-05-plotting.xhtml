@@ -1,1197 +1,1599 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet href="css/help.css" type="text/css"
+<?xml-stylesheet 
+    href="css/help.css" type="text/css"
     ?>
 <!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
-<html:html xmlns:html="http://www.w3.org/1999/xhtml"
-  xmlns:mml="http://www.w3.org/1998/Math/MathML"
-  xmlns:exsl="http://exslt.org/common">
-  <html:head>
-
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta name="COMMENTS" content="% This document created by Scientific
-      Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
-    </meta>
-    <meta name="CREATED" content="Mon Aug 19 14:52:24 1996"
-      xmlns="http://www.w3.org/1999/xhtml">
-    </meta>
-    <meta name="REVISED" content="Tuesday, December 20, 2011 23:14:21"
-      xmlns="http://www.w3.org/1999/xhtml">
-    </meta>
-    <meta name="GENERATOR" content="Scientific Word"
-      xmlns="http://www.w3.org/1999/xhtml">
-    </meta>
-    <html:title>dm06-05-plotting.xhtml</html:title>
-  </html:head>
-  <html:body>
-    <h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml"> <a
-        id="top"> </a>Creating Animated 2D Plots</h2>
-    <html:bodyText> For an animated 2D plot, you specify a second
-      variable. One of the two variables will be designated as the
-      Animation Variable. The standard variable names are
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>x</mml:mi> </mml:mrow> </mml:math> for the
-      horizontal axis and
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math> for the Animation
-      Variable. The default intervals for
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>x</mml:mi> </mml:mrow> </mml:math> and
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math> are
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>6</mml:mn> </mml:mrow>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>x</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>6</mml:mn> </mml:mrow> </mml:math> and
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>6</mml:mn> </mml:mrow>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>t</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>6</mml:mn> </mml:mrow> </mml:math>. You can <a
-        href="#settings" xmlns="http://www.w3.org/1999/xhtml"> change
-        these settings</a>. </html:bodyText> <html:bodyText>
-      <hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml"> </hr>
-    </html:bodyText> <html:bodyText> In this section: </html:bodyText>
-    <html:bodyText> <a href="#animation%20tools"
-        xmlns="http://www.w3.org/1999/xhtml"> <span style="width:2em">
-          <span style="padding-left:2em"> </span> </span>Animation
-        Tools</a> </html:bodyText> <html:bodyText> <a
-        href="#animated%202d%20rectangular%20plots"
-        xmlns="http://www.w3.org/1999/xhtml"> <a href=""> <span
-            style="width:2em"> <span style="padding-left:2em"> </span>
-          </span>Animated 2D Rectangular Plots</a> </a> </html:bodyText>
-    <html:bodyText> <a href="#animated%202d%20parametric%20plots"
-        xmlns="http://www.w3.org/1999/xhtml"> <span style="width:2em">
-          <span style="padding-left:2em"> </span> </span>Animated 2D
-        Parametric Plots</a> </html:bodyText> <html:bodyText> <a
-        href="#animated%20plots%20in%20polar%20coordinates"
-        xmlns="http://www.w3.org/1999/xhtml"> <span style="width:2em">
-          <span style="padding-left:2em"> </span> </span>Animated
-        Plots In Polar Coordinates</a> </html:bodyText> <html:bodyText>
-      <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml"> <span
-          style="padding-left:2em"> </span> </span> <a
-        href="#animated%20parametric%20plots%20in%20polar%20coordinates"
-        xmlns="http://www.w3.org/1999/xhtml"> Animated Parametric Plots
-        in Polar Coordinates</a> </html:bodyText> <html:bodyText> <a
-        href="#animated%20implicit%20plots"
-        xmlns="http://www.w3.org/1999/xhtml"> <span style="width:2em">
-          <span style="padding-left:2em"> </span> </span>Animated
-        Implicit Plots</a> </html:bodyText> <html:bodyText> <a
-        href="#animated%20inequality%20plots"
-        xmlns="http://www.w3.org/1999/xhtml"> <span style="width:2em">
-          <span style="padding-left:2em"> </span> </span>Animated
-        Inequality Plots</a> </html:bodyText> <html:bodyText>
-      <hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml"> </hr>
-    </html:bodyText>
-    <html:section><html:sectiontitle> <a id="animation tools"
-          xmlns="http://www.w3.org/1999/xhtml"> </a>Animation Tools</html:sectiontitle></html:section>
-    <html:bodyText> When the frame of an animated plot is selected,
-      several plotting tools become visible just below other toolbars at
-      the top of the screen.<html:br />
-      <html:br />
-    </html:bodyText> <html:bodyText> <html:object height="22px"
-        data="graphics/dm06-05-plotting__1.png" units="px"
-        msi_resize="true"></html:object> </html:bodyText> <html:bodyText>
-      The tool on the left is Reset Viewpoint. Next is the Selection
-      Tool, then the Zooming Tool, the Moving Tool, and the Query Tool.
-      The remaining tools are designed to control the animation. These
-      include jumps to the beginning or the end, begin animation, a
-      slider for manually moving through the animation sequence, and
-      loop controls (Run once, Back and forth, Loop), and speed controls
-      (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>8</mml:mn>
-          <mml:mo form="infix">×</mml:mo> </mml:mrow> </mml:math>
-      slower to
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>8</mml:mn>
-          <mml:mo form="infix">×</mml:mo> </mml:mrow> </mml:math>
-      faster). </html:bodyText> <html:bodyText> <strong
-        xmlns="http://www.w3.org/1999/xhtml">To display the animation
-        tools</strong> </html:bodyText> <html:bulletlist> <html:bulletListItem>
-        <html:bodyText> Click the animated plot </html:bodyText> </html:bulletListItem>
-    </html:bulletlist> <html:bodyText> [ <a href="#top"
-        xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of
-        section</a> ] </html:bodyText>
-    <html:section><html:sectiontitle> <a id="animated 2d rectangular
-          plots" xmlns="http://www.w3.org/1999/xhtml"> </a>Animated 2D
-        Rectangular Plots</html:sectiontitle></html:section>
-    <html:bodyText> <strong xmlns="http://www.w3.org/1999/xhtml">To
-        create a 2D animation</strong> </html:bodyText> <html:bulletlist>
-      <html:bulletListItem> <html:bodyText> Type an expression in
-          <mml:math display="inline"
-            xmlns="http://www.w3.org/1999/xhtml">
-            <mml:mrow>
-              <mml:mi>x</mml:mi> </mml:mrow> </mml:math> and
-          <mml:math display="inline"
-            xmlns="http://www.w3.org/1999/xhtml">
-            <mml:mrow>
-              <mml:mi>t</mml:mi> </mml:mrow> </mml:math>, and choose
-          Compute &gt; Plot 2D Animated &gt; Rectangular. </html:bodyText>
-      </html:bulletListItem> </html:bulletlist> <html:bodyText> <strong
-        xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D
-        Animated &gt; Rectangular</strong> </html:bodyText> <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>x</mml:mi>
-          <mml:mo>⁢</mml:mo>
-          <mml:mi>t</mml:mi></mml:mrow></mml:math></html:bodyText><html:bodyText><span
-        style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml"><img
-          src="graphics/dm06-05-plotting_0.gif" alt="animated plot of
-          line y = tx as t increases" style=" width: 286px; height:
-          287px;" /></span></html:bodyText><html:bodyText><a
-        href="dm06-05-plotting__note1.xhtml#top"
-        xmlns="http://www.w3.org/1999/xhtml"></a></html:bodyText> <html:bodyText>
-      <a id="settings" xmlns="http://www.w3.org/1999/xhtml"> </a> <strong
-        xmlns="http://www.w3.org/1999/xhtml">To edit the animation
-        interval</strong> </html:bodyText> <html:numberedlist> <html:numberedListItem>
-        <html:bodyText> Open the Graph User Settings dialog box, Items
-          Plotted page and click Edit Plot. </html:bodyText> </html:numberedListItem>
-      <html:numberedListItem> <html:bodyText> Open the animation page
-          and type the Start time (seconds), End time (seconds), and
-          Frames per second. </html:bodyText> </html:numberedListItem>
-    </html:numberedlist> <html:bodyText> The following animated plot
-      shows the graph of
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>y</mml:mi>
-          <mml:mo form="infix">=</mml:mo>
-          <mml:mrow>
-            <mml:mi mathcolor="gray">sin</mml:mi>
-            <mml:mo>⁡</mml:mo>
-            <mml:mrow>
-              <mml:mn>2</mml:mn>
-              <mml:mo>⁢</mml:mo>
-              <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-      </mml:math> smoothly transform itself into the graph of
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>y</mml:mi>
-          <mml:mo form="infix">=</mml:mo>
-          <mml:mrow>
-            <mml:mi mathcolor="gray">cos</mml:mi>
-            <mml:mo>⁡</mml:mo>
-            <mml:mrow>
-              <mml:mn>3</mml:mn>
-              <mml:mo>⁢</mml:mo>
-              <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-      </mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
-      </br> <br xmlns="http://www.w3.org/1999/xhtml">
-      </br> </html:bodyText> <html:bodyText> <strong
-        xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D
-        Animated &gt; Rectangular</strong> </html:bodyText> <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mo form="prefix" fence="true" stretchy="true"
-                symmetric="true">(</mml:mo>
-              <mml:mrow>
-                <mml:mn>1</mml:mn>
-                <mml:mo form="infix">−</mml:mo>
-                <mml:mi>t</mml:mi> </mml:mrow>
-              <mml:mo form="postfix" fence="true" stretchy="true"
-                symmetric="true">)</mml:mo> </mml:mrow>
-            <mml:mo>⁢</mml:mo>
-            <mml:mrow>
-              <mml:mi mathcolor="gray">sin</mml:mi>
-              <mml:mo>⁡</mml:mo>
-              <mml:mrow>
-                <mml:mn>2</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-          <mml:mo form="infix">+</mml:mo>
-          <mml:mrow>
-            <mml:mi>t</mml:mi>
-            <mml:mo>⁢</mml:mo>
-            <mml:mrow>
-              <mml:mi mathcolor="gray">cos</mml:mi>
-              <mml:mo>⁡</mml:mo>
-              <mml:mrow>
-                <mml:mn>3</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-        </mml:mrow> </mml:math> Interval:
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mn>0</mml:mn>
-            <mml:mo form="infix">&lt;</mml:mo>
-            <mml:mi>t</mml:mi>
-            <mml:mo form="infix">&lt;</mml:mo>
-            <mml:mn>1</mml:mn> </mml:mrow>
-          <mml:mtext>,</mml:mtext> </mml:mrow> </mml:math>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>6</mml:mn> </mml:mrow>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>x</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>6</mml:mn> </mml:mrow> </mml:math> </html:bodyText>
-    <html:bodyText> <span style="width:0.5in"
-        xmlns="http://www.w3.org/1999/xhtml"><span
-          style="padding-left:0.5in"> </span> </span> </html:bodyText><html:bodyText><a
-        href="dm06-05-plotting__note2.xhtml#top"
-        xmlns="http://www.w3.org/1999/xhtml"></a></html:bodyText> <html:bodyText>
-      <html:img src="graphics/dm06-05-plotting_1.gif" alt="animation
-        that morphs from sin 2x to cos 3x" style=" width: 383px; height:
-        287px;" /><html:br />
-      [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to
-        beginning of section</a> ] </html:bodyText>
-    <html:section><html:sectiontitle> <a id="animated 2d parametric
-          plots" xmlns="http://www.w3.org/1999/xhtml"> </a>Animated 2D
-        Parametric Plots</html:sectiontitle></html:section>
-    <html:bodyText> <strong xmlns="http://www.w3.org/1999/xhtml">To
-        make a parameterized animated plot in rectangular coordinates</strong>
-    </html:bodyText> <html:numberedlist> <html:numberedListItem> <html:bodyText>
-          Type an expression of the form
-          <mml:math display="inline"
-            xmlns="http://www.w3.org/1999/xhtml">
-            <mml:mrow>
-              <mml:mo form="prefix" fence="true" stretchy="true"
-                symmetric="true">(</mml:mo>
-              <mml:mrow>
-                <mml:mrow>
-                  <mml:mi>x</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mo form="prefix" fence="true" stretchy="true"
-                      symmetric="true">(</mml:mo>
-                    <mml:mrow>
-                      <mml:mi>s</mml:mi>
-                      <mml:mo form="infix">,</mml:mo>
-                      <mml:mi>t</mml:mi> </mml:mrow>
-                    <mml:mo form="postfix" fence="true" stretchy="true"
-                      symmetric="true">)</mml:mo> </mml:mrow> </mml:mrow>
-                <mml:mo form="infix">,</mml:mo>
-                <mml:mrow>
-                  <mml:mi>y</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mo form="prefix" fence="true" stretchy="true"
-                      symmetric="true">(</mml:mo>
-                    <mml:mrow>
-                      <mml:mi>s</mml:mi>
-                      <mml:mo form="infix">,</mml:mo>
-                      <mml:mi>t</mml:mi> </mml:mrow>
-                    <mml:mo form="postfix" fence="true" stretchy="true"
-                      symmetric="true">)</mml:mo> </mml:mrow> </mml:mrow>
-              </mml:mrow>
-              <mml:mo form="postfix" fence="true" stretchy="true"
-                symmetric="true">)</mml:mo> </mml:mrow> </mml:math>. </html:bodyText>
-      </html:numberedListItem> <html:numberedListItem> <html:bodyText>
-          Choose Compute &gt; Plot 2D Animated &gt; Parametric, or </html:bodyText>
-        <html:bodyText> Choose Compute &gt; Plot 2D Animated &gt;
-          Rectangular. </html:bodyText> </html:numberedListItem> </html:numberedlist>
-    <html:bodyText> To animate the following Lissajous figure, select
-      the frame and open the Graph User Settings dialog box. Choose the
-      Items Plotted page, click Edit Plot, and set
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>0</mml:mn>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>x</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math> and
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>0</mml:mn>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>t</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math>. On the Axes page
-      turn on Equal Scaling Along Each Axis.<br
-        xmlns="http://www.w3.org/1999/xhtml">
-      </br> <br xmlns="http://www.w3.org/1999/xhtml">
-      </br> </html:bodyText> <html:bodyText> The first formula draws
-      the small circle at the leading edge of the figure. The second
-      formula shows a static figure in light gray. The third formula
-      shows the animated curve.<br xmlns="http://www.w3.org/1999/xhtml">
-      </br> <br xmlns="http://www.w3.org/1999/xhtml">
-      </br> </html:bodyText> <html:bodyText> <strong
-        xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D
-        Animated &gt; Parametric</strong> </html:bodyText> <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix" fence="true" stretchy="true"
-            symmetric="true">(</mml:mo>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">sin</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mn>8</mml:mn>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mn>0.02</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mrow>
-                  <mml:mi mathcolor="gray">cos</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mn>2</mml:mn>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>π</mml:mi>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            </mml:mrow>
-            <mml:mo form="infix">,</mml:mo>
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">cos</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mn>10</mml:mn>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mn>0.02</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mrow>
-                  <mml:mi mathcolor="gray">sin</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mn>2</mml:mn>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>π</mml:mi>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            </mml:mrow> </mml:mrow>
-          <mml:mo form="postfix" fence="true" stretchy="true"
-            symmetric="true">)</mml:mo> </mml:mrow> </mml:math>
-      Intervals:
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>0</mml:mn>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>x</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math>,
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>0</mml:mn>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>t</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math> </html:bodyText>
-    <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix" fence="true" stretchy="true"
-            symmetric="true">(</mml:mo>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mi mathcolor="gray">sin</mml:mi>
-              <mml:mo>⁡</mml:mo>
-              <mml:mrow>
-                <mml:mn>8</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>π</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow>
-            <mml:mo form="infix">,</mml:mo>
-            <mml:mrow>
-              <mml:mi mathcolor="gray">cos</mml:mi>
-              <mml:mo>⁡</mml:mo>
-              <mml:mrow>
-                <mml:mn>10</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>π</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-          <mml:mo form="postfix" fence="true" stretchy="true"
-            symmetric="true">)</mml:mo> </mml:mrow> </mml:math> </html:bodyText>
-    <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix" fence="true" stretchy="true"
-            symmetric="true">(</mml:mo>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mi mathcolor="gray">sin</mml:mi>
-              <mml:mo>⁡</mml:mo>
-              <mml:mrow>
-                <mml:mn>8</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>π</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>x</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-            <mml:mo form="infix">,</mml:mo>
-            <mml:mrow>
-              <mml:mi mathcolor="gray">cos</mml:mi>
-              <mml:mo>⁡</mml:mo>
-              <mml:mrow>
-                <mml:mn>10</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>π</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>x</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-          <mml:mo form="postfix" fence="true" stretchy="true"
-            symmetric="true">)</mml:mo> </mml:mrow></mml:math></html:bodyText><html:bodyText><span
-        style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml"></span></html:bodyText><html:bodyText><html:img
-        src="graphics/dm06-05-plotting_2.gif" alt="animated plot of
-        curve" style=" width: 286px; height: 287px;" /></html:bodyText>
-    <html:bodyText> <a id="limacon"
-        xmlns="http://www.w3.org/1999/xhtml"> </a>A circle of radius
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math> with an arm of
-      length
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>2</mml:mn> </mml:mrow> </mml:math> rolls around a
-      second circle of radius
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math>, leaving behind a
-      smoke trail. The resulting curve is called a <html:italics>Limaçon</html:italics>
-      <span class="QQQBoldRed" xmlns="http://www.w3.org/1999/xhtml">.</span>
-      <br xmlns="http://www.w3.org/1999/xhtml">
-      </br> <br xmlns="http://www.w3.org/1999/xhtml">
-      </br> </html:bodyText> <html:bodyText> <strong
-        xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D
-        Animated &gt; Rectangular</strong> </html:bodyText> <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix" fence="true" stretchy="true"
-            symmetric="true">(</mml:mo>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mn>0.5</mml:mn>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">cos</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>x</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">cos</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mn>2</mml:mn>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>x</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            <mml:mo form="infix">,</mml:mo>
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">sin</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>x</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">sin</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mn>2</mml:mn>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>x</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-          </mml:mrow>
-          <mml:mo form="postfix" fence="true" stretchy="true"
-            symmetric="true">)</mml:mo> </mml:mrow> </mml:math>,
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>0</mml:mn>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>x</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math>,
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>0</mml:mn>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>t</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>2</mml:mn> </mml:mrow> </mml:math> </html:bodyText>
-    <html:bodyText> Select and drag to the frame:
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix" fence="true" stretchy="true"
-            symmetric="true">(</mml:mo>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mn>1</mml:mn>
-                <mml:mo form="infix">/</mml:mo>
-                <mml:mn>2</mml:mn> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mrow>
-                  <mml:mn>1</mml:mn>
-                  <mml:mo form="infix">/</mml:mo>
-                  <mml:mn>2</mml:mn> </mml:mrow>
-                <mml:mo>⁢</mml:mo>
-                <mml:mrow>
-                  <mml:mi mathcolor="gray">cos</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mn>2</mml:mn>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>π</mml:mi>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            </mml:mrow>
-            <mml:mo form="infix">,</mml:mo>
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mn>1</mml:mn>
-                <mml:mo form="infix">/</mml:mo>
-                <mml:mn>2</mml:mn> </mml:mrow>
-              <mml:mo>⁢</mml:mo>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">sin</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mn>2</mml:mn>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-          </mml:mrow>
-          <mml:mo form="postfix" fence="true" stretchy="true"
-            symmetric="true">)</mml:mo> </mml:mrow> </mml:math> </html:bodyText>
-    <html:bodyText> Select and drag to the frame:
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix" fence="true" stretchy="true"
-            symmetric="true">(</mml:mo>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mn>0.5</mml:mn>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">cos</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mn>0.5</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mrow>
-                  <mml:mi mathcolor="gray">cos</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mn>2</mml:mn>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>π</mml:mi>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            </mml:mrow>
-            <mml:mo form="infix">,</mml:mo>
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">sin</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mn>0.5</mml:mn>
-                <mml:mo>⁢</mml:mo>
-                <mml:mrow>
-                  <mml:mi mathcolor="gray">sin</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mn>2</mml:mn>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>π</mml:mi>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>x</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            </mml:mrow> </mml:mrow>
-          <mml:mo form="postfix" fence="true" stretchy="true"
-            symmetric="true">)</mml:mo> </mml:mrow> </mml:math> </html:bodyText>
-    <html:bodyText> Select and drag to the frame:
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix" fence="true" stretchy="true"
-            symmetric="true">(</mml:mo>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mn>0.5</mml:mn>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">cos</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mi>x</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mrow>
-                  <mml:mi mathcolor="gray">cos</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mn>2</mml:mn>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>π</mml:mi>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            </mml:mrow>
-            <mml:mo form="infix">,</mml:mo>
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">sin</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mi>π</mml:mi>
-                  <mml:mo>⁢</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mi>x</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mrow>
-                  <mml:mi mathcolor="gray">sin</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mn>2</mml:mn>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>π</mml:mi>
-                    <mml:mo>⁢</mml:mo>
-                    <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            </mml:mrow> </mml:mrow>
-          <mml:mo form="postfix" fence="true" stretchy="true"
-            symmetric="true">)</mml:mo> </mml:mrow> </mml:math> </html:bodyText>
-    <html:bodyText><a href="dm06-05-plotting__note4.xhtml#top"
-        xmlns="http://www.w3.org/1999/xhtml"></a><html:span
-        style="text-decoration: underline;"><html:img
-          src="graphics/dm06-05-plotting_3.gif" alt="animated curve
-          generated by point on circle being rotated about a second
-          circle" style=" width: 286px; height: 287px;" /></html:span></html:bodyText>
-    <html:bodyText> [ <a href="#top"
-        xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of
-        section</a> ] </html:bodyText>
-    <html:section><html:sectiontitle> <a id="animated plots in polar
-          coordinates" xmlns="http://www.w3.org/1999/xhtml"> </a>Animated
-
-
-
-
-
-        Plots In Polar Coordinates</html:sectiontitle></html:section>
-    <html:bodyText> In polar coordinates, you specify a point
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>P</mml:mi> </mml:mrow> </mml:math> by giving the
-      angle
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>θ</mml:mi> </mml:mrow> </mml:math> that the ray from
-      the origin to the point
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>P</mml:mi> </mml:mrow> </mml:math> makes with the
-      polar axis and the distance
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>r</mml:mi> </mml:mrow> </mml:math> from the origin.
-    </html:bodyText> <html:bodyText> For an animated plot in polar
-      coordinates you also need an animation variable such as
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math>. </html:bodyText>
-    <html:bodyText> <strong xmlns="http://www.w3.org/1999/xhtml">To
-        make an animated plot in polar coordinates</strong> </html:bodyText>
-    <html:numberedlist> <html:numberedListItem> <html:bodyText> Type
-          an expression in two variables. </html:bodyText> </html:numberedListItem>
-      <html:numberedListItem> <html:bodyText> Choose Compute &gt; Plot
-          2D Animated &gt; Polar. </html:bodyText> </html:numberedListItem>
-    </html:numberedlist> <html:bodyText> The following animation shows
-      the effect of the parameter
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math> on the polar
-      equation
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>r</mml:mi>
-          <mml:mo form="infix">=</mml:mo>
-          <mml:mrow>
-            <mml:mi mathcolor="gray">sin</mml:mi>
-            <mml:mo>⁡</mml:mo>
-            <mml:mrow>
-              <mml:mi>θ</mml:mi>
-              <mml:mo>⁢</mml:mo>
-              <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-      </mml:math> as a three-leaved rose changes into an eight-leaved
-      rose and finally into a five-leaved rose. </html:bodyText> <html:bodyText>
-      For this animation, open the Graph User Settings dialog box. Click
-      the Items Plotted tab, choose Edit Plot, and set
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>3.14159</mml:mn> </mml:mrow>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>θ</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>3.14159</mml:mn> </mml:mrow> </mml:math> and
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>3</mml:mn>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>t</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>5</mml:mn> </mml:mrow> </mml:math>. On the View
-      page, select Equal Scaling Along Each Axis.<br
-        xmlns="http://www.w3.org/1999/xhtml">
-      </br> <br xmlns="http://www.w3.org/1999/xhtml">
-      </br> </html:bodyText> <html:bodyText> <strong
-        xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D
-        Animated &gt; Polar</strong> </html:bodyText> <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi mathcolor="gray">sin</mml:mi>
-          <mml:mo>⁡</mml:mo>
-          <mml:mrow>
-            <mml:mi>π</mml:mi>
-            <mml:mo>⁢</mml:mo>
-            <mml:mi>θ</mml:mi>
-            <mml:mo>⁢</mml:mo>
-            <mml:mi>t</mml:mi> </mml:mrow> </mml:mrow> </mml:math> </html:bodyText>
-    <html:bodyText> <span style="width:0.5in"
-        xmlns="http://www.w3.org/1999/xhtml"> <img
-          src="graphics/dm06-05-plotting_4.gif" alt="three leaves morph
-          into five leaves" style=" width: 286px; height: 287px;" /><span
-          style="padding-left:0.5in"> </span> </span> </html:bodyText><html:bodyText><a
-        href="dm06-05-plotting__note5.xhtml#top"
-        xmlns="http://www.w3.org/1999/xhtml"></a></html:bodyText> <html:bodyText>
-      [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to
-        beginning of section</a> ] </html:bodyText>
-    <html:section><html:sectiontitle> <a id="animated parametric plots
-          in polar coordinates" xmlns="http://www.w3.org/1999/xhtml"> </a>Animated
-
-
-
-
-
-        Parametric Plots in Polar Coordinates</html:sectiontitle></html:section>
-    <html:bodyText> <strong xmlns="http://www.w3.org/1999/xhtml">To
-        make a parameterized animated plot in polar coordinates</strong>
-    </html:bodyText> <html:bulletlist> <html:bulletListItem> <html:bodyText>
-          Type an expression of the form
-          <mml:math display="inline"
-            xmlns="http://www.w3.org/1999/xhtml">
-            <mml:mrow>
-              <mml:mo form="prefix" fence="true" stretchy="true"
-                symmetric="true">(</mml:mo>
-              <mml:mrow>
-                <mml:mrow>
-                  <mml:mi>r</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mo form="prefix" fence="true" stretchy="true"
-                      symmetric="true">(</mml:mo>
-                    <mml:mrow>
-                      <mml:mi>s</mml:mi>
-                      <mml:mo form="infix">,</mml:mo>
-                      <mml:mi>t</mml:mi> </mml:mrow>
-                    <mml:mo form="postfix" fence="true" stretchy="true"
-                      symmetric="true">)</mml:mo> </mml:mrow> </mml:mrow>
-                <mml:mo form="infix">,</mml:mo>
-                <mml:mrow>
-                  <mml:mi>θ</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mrow>
-                    <mml:mo form="prefix" fence="true" stretchy="true"
-                      symmetric="true">(</mml:mo>
-                    <mml:mrow>
-                      <mml:mi>s</mml:mi>
-                      <mml:mo form="infix">,</mml:mo>
-                      <mml:mi>t</mml:mi> </mml:mrow>
-                    <mml:mo form="postfix" fence="true" stretchy="true"
-                      symmetric="true">)</mml:mo> </mml:mrow> </mml:mrow>
-              </mml:mrow>
-              <mml:mo form="postfix" fence="true" stretchy="true"
-                symmetric="true">)</mml:mo> </mml:mrow> </mml:math>,
-          and choose Compute &gt; Plot 2D Animated &gt; Polar. </html:bodyText>
-      </html:bulletListItem> </html:bulletlist> <html:bodyText> The
-      following animation shows the effect of the parameter
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math> in the polar
-      equation
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>r</mml:mi>
-          <mml:mo form="infix">=</mml:mo>
-          <mml:mrow>
-            <mml:mn>1</mml:mn>
-            <mml:mo form="infix">−</mml:mo>
-            <mml:mrow>
-              <mml:mi>t</mml:mi>
-              <mml:mo>⁢</mml:mo>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">cos</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mi>θ</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-        </mml:mrow> </mml:math> as
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math> varies from
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix">−</mml:mo>
-          <mml:mn>2</mml:mn> </mml:mrow> </mml:math> to
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>2</mml:mn> </mml:mrow> </mml:math>. The limaçon,
-      also called the limaçon of Pascal, is a polar curve of the form
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>r</mml:mi>
-          <mml:mo form="infix">=</mml:mo>
-          <mml:mrow>
-            <mml:mi>b</mml:mi>
-            <mml:mo form="infix">+</mml:mo>
-            <mml:mrow>
-              <mml:mi>a</mml:mi>
-              <mml:mo>⁢</mml:mo>
-              <mml:mrow>
-                <mml:mi mathcolor="gray">cos</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mi>θ</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-        </mml:mrow> </mml:math>. </html:bodyText> <html:bodyText> For
-      the following animation, select the frame and open the Graph User
-      Settings dialog box. Click the Items Plotted tab, choose Edit
-      Plot, and set
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>3.14159</mml:mn> </mml:mrow>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>θ</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>3.14159</mml:mn> </mml:mrow> </mml:math> and
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>2</mml:mn> </mml:mrow>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>t</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>2</mml:mn> </mml:mrow> </mml:math>. On the View
-      page, select Equal Scaling Along Each Axis.<br
-        xmlns="http://www.w3.org/1999/xhtml">
-      </br> <br xmlns="http://www.w3.org/1999/xhtml">
-      </br> </html:bodyText> <html:bodyText> <strong
-        xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D
-        Animated &gt; Polar</strong> </html:bodyText> <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix" fence="true" stretchy="true"
-            symmetric="true">(</mml:mo>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mn>1</mml:mn>
-              <mml:mo form="infix">−</mml:mo>
-              <mml:mrow>
-                <mml:mi>t</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:mrow>
-                  <mml:mi mathcolor="gray">cos</mml:mi>
-                  <mml:mo>⁡</mml:mo>
-                  <mml:mi>θ</mml:mi> </mml:mrow> </mml:mrow> </mml:mrow>
-            <mml:mo form="infix">,</mml:mo>
-            <mml:mi>θ</mml:mi> </mml:mrow>
-          <mml:mo form="postfix" fence="true" stretchy="true"
-            symmetric="true">)</mml:mo></mml:mrow></mml:math></html:bodyText><html:bodyText></html:bodyText>
-    <html:bodyText> <html:img src="graphics/dm06-05-plotting_5.gif"
-        alt="animated 2d polar plot" style=" width: 383px; height:
-        287px;" />[ <a href="#top" xmlns="http://www.w3.org/1999/xhtml">
-        Return to beginning of section</a> ] </html:bodyText>
-    <html:section><html:sectiontitle> <a id="animated implicit plots"
-          xmlns="http://www.w3.org/1999/xhtml"> </a>Animated Implicit
-        Plots</html:sectiontitle></html:section>
-    <html:bodyText> <strong xmlns="http://www.w3.org/1999/xhtml">To
-        make an animated implicit plot</strong> </html:bodyText> <html:numberedlist>
-      <html:numberedListItem> <html:bodyText> Type an equation in three
-          variables. </html:bodyText> </html:numberedListItem> <html:numberedListItem>
-        <html:bodyText> With the insert point in the expression, choose
-          Compute &gt; Plot 2D Animated &gt; Implicit. </html:bodyText>
-      </html:numberedListItem> </html:numberedlist> <html:bodyText>
-      The following animation shows the effect of the parameter
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math> on the
-      rectangular equation
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:msup>
-              <mml:mi>x</mml:mi>
-              <mml:mn>2</mml:mn> </mml:msup>
-            <mml:mo form="infix">+</mml:mo>
-            <mml:mrow>
-              <mml:mi>t</mml:mi>
-              <mml:mo>⁢</mml:mo>
-              <mml:msup>
-                <mml:mi>y</mml:mi>
-                <mml:mn>2</mml:mn> </mml:msup> </mml:mrow> </mml:mrow>
-          <mml:mo form="infix">=</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math> as
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math> varies from
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix">−</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math> (which yields a
-      hyperbola) to
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="prefix">+</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math> (which yields the
-      unit circle). For this animation, select the frame and open the
-      Graph User Settings dialog box. On the Items Plotted page, choose
-      Edit Plot, and set
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>2</mml:mn> </mml:mrow>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>x</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>2</mml:mn> </mml:mrow> </mml:math>,
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>2</mml:mn> </mml:mrow>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>y</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>2</mml:mn> </mml:mrow> </mml:math>, and
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>1</mml:mn> </mml:mrow>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mi>t</mml:mi>
-          <mml:mo form="infix">≤</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math>. Click the View
-      tab and select Equal Scaling Along Each Axis. (You may notice a
-      substantial delay as an animated implicit plot is generated.)<br
-        xmlns="http://www.w3.org/1999/xhtml">
-      </br> <br xmlns="http://www.w3.org/1999/xhtml">
-      </br> </html:bodyText> <html:bodyText> <strong
-        xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D
-        Animated &gt; Implicit</strong> </html:bodyText> <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mpadded depth="8.000000pt" height="-8.000000pt">
-            <mml:mrow>
-              <mml:msup>
-                <mml:mi>x</mml:mi>
-                <mml:mn>2</mml:mn> </mml:msup>
-              <mml:mo form="infix">+</mml:mo>
-              <mml:mrow>
-                <mml:mi>t</mml:mi>
-                <mml:mo>⁢</mml:mo>
-                <mml:msup>
-                  <mml:mi>y</mml:mi>
-                  <mml:mn>2</mml:mn> </mml:msup> </mml:mrow> </mml:mrow>
-            <mml:mo form="infix">=</mml:mo>
-            <mml:mn>1</mml:mn></mml:mpadded></mml:mrow></mml:math></html:bodyText><html:bodyText><span
-        style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml"><img
-          src="graphics/dm06-05-plotting_6.gif" alt="animated implicit
-          2d plot" style=" width: 286px; height: 287px;" /></span></html:bodyText><html:bodyText></html:bodyText>
-    <html:bodyText> [ <a href="#top"
-        xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of
-        section</a> ] </html:bodyText>
-    <html:section><html:sectiontitle> <a id="animated inequality plots"
-          xmlns="http://www.w3.org/1999/xhtml"> </a>Animated Inequality
-        Plots</html:sectiontitle></html:section>
-    <html:bodyText> <strong xmlns="http://www.w3.org/1999/xhtml">To
-        plot an animated inequality</strong> </html:bodyText> <html:numberedlist>
-      <html:numberedListItem> <html:bodyText> Enter an expression of
-          the form
-          <mml:math display="inline"
-            xmlns="http://www.w3.org/1999/xhtml">
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mi>g</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mo form="prefix" fence="true" stretchy="true"
-                    symmetric="true">(</mml:mo>
-                  <mml:mrow>
-                    <mml:mi>x</mml:mi>
-                    <mml:mo form="infix">,</mml:mo>
-                    <mml:mi>y</mml:mi>
-                    <mml:mo form="infix">,</mml:mo>
-                    <mml:mi>t</mml:mi> </mml:mrow>
-                  <mml:mo form="postfix" fence="true" stretchy="true"
-                    symmetric="true">)</mml:mo> </mml:mrow> </mml:mrow>
-              <mml:mo form="infix">&lt;</mml:mo>
-              <mml:mrow>
-                <mml:mi>h</mml:mi>
-                <mml:mo>⁡</mml:mo>
-                <mml:mrow>
-                  <mml:mo form="prefix" fence="true" stretchy="true"
-                    symmetric="true">(</mml:mo>
-                  <mml:mrow>
-                    <mml:mi>x</mml:mi>
-                    <mml:mo form="infix">,</mml:mo>
-                    <mml:mi>y</mml:mi>
-                    <mml:mo form="infix">,</mml:mo>
-                    <mml:mi>t</mml:mi> </mml:mrow>
-                  <mml:mo form="postfix" fence="true" stretchy="true"
-                    symmetric="true">)</mml:mo> </mml:mrow> </mml:mrow>
-            </mml:mrow> </mml:math>. </html:bodyText> </html:numberedListItem>
-      <html:numberedListItem> <html:bodyText> With the insert point in
-          the expression, choose Compute &gt; Plot 2D Animated &gt;
-          Inequality.<br xmlns="http://www.w3.org/1999/xhtml">
-          </br> <br xmlns="http://www.w3.org/1999/xhtml">
-          </br> </html:bodyText> </html:numberedListItem> </html:numberedlist>
-    <html:bodyText> In the following,
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>1</mml:mn> </mml:mrow>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>x</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math>,
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mo form="prefix">−</mml:mo>
-            <mml:mn>1</mml:mn> </mml:mrow>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>y</mml:mi>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math>, and
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mn>0</mml:mn>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mi>t</mml:mi> </mml:mrow> </mml:math>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mn>1</mml:mn> </mml:mrow> </mml:math>. </html:bodyText>
-    <html:bodyText> <strong xmlns="http://www.w3.org/1999/xhtml">Compute
-
-
-
-
-
-        &gt; Plot 2D Animated &gt; Inequality</strong> </html:bodyText>
-    <html:bodyText>
-      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-        <mml:mrow>
-          <mml:mrow>
-            <mml:mrow>
-              <mml:mi>t</mml:mi>
-              <mml:mo>⁢</mml:mo>
-              <mml:msup>
-                <mml:mi>x</mml:mi>
-                <mml:mn>2</mml:mn> </mml:msup> </mml:mrow>
-            <mml:mo form="infix">+</mml:mo>
-            <mml:mrow>
-              <mml:mrow>
-                <mml:mo form="prefix" fence="true" stretchy="true"
-                  symmetric="true">(</mml:mo>
-                <mml:mrow>
-                  <mml:mn>1</mml:mn>
-                  <mml:mo form="infix">−</mml:mo>
-                  <mml:mi>t</mml:mi> </mml:mrow>
-                <mml:mo form="postfix" fence="true" stretchy="true"
-                  symmetric="true">)</mml:mo> </mml:mrow>
-              <mml:mo>⁢</mml:mo>
-              <mml:msup>
-                <mml:mi>y</mml:mi>
-                <mml:mn>2</mml:mn> </mml:msup> </mml:mrow> </mml:mrow>
-          <mml:mo form="infix">&lt;</mml:mo>
-          <mml:mrow>
-            <mml:mi>t</mml:mi>
-            <mml:mo>⁢</mml:mo>
-            <mml:mrow>
-              <mml:mo form="prefix" fence="true" stretchy="true"
-                symmetric="true">(</mml:mo>
-              <mml:mrow>
-                <mml:mn>1</mml:mn>
-                <mml:mo form="infix">−</mml:mo>
-                <mml:mi>t</mml:mi> </mml:mrow>
-              <mml:mo form="postfix" fence="true" stretchy="true"
-                symmetric="true">)</mml:mo> </mml:mrow> </mml:mrow> </mml:mrow>
-      </mml:math> </html:bodyText> <html:bodyText><a
-        href="dm06-05-plotting__note8.xhtml#top"
-        xmlns="http://www.w3.org/1999/xhtml"></a><html:span
-        style="text-decoration: underline;"><html:img
-          src="graphics/dm06-05-plotting_7.gif" alt="animated 2d
-          inequality plot" style=" width: 286px; height: 287px;" /></html:span></html:bodyText>
-    <html:bodyText> [ <a href="#top"
-        xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of
-        section</a> ] </html:bodyText> <html:bodyText> <em
-        xmlns="http://www.w3.org/1999/xhtml">
-        <hr class="hrulefill"> </hr>
-      </em> </html:bodyText> <html:bodyText> <html:object
-        height="18px" data="graphics/dm06-05-plotting__10.png"
-        units="px" msi_resize="true"></html:object> </html:bodyText>
-  </html:body>
+<html:html xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
+<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="REVISED" content="Monday, January 09, 2012 13:05:38" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
+</meta>
+<html:title>dm06-05-plotting.xhtml</html:title>
+</html:head>
+<html:body>
+<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+<a id="top">
+</a>Creating Animated 2D Plots</h2>
+<html:bodyText>
+   For an animated 2D plot, you specify a second variable. One of the two
+   variables will be designated as the Animation Variable. The standard variable
+   names
+   are <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   for the horizontal axis and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+   for the Animation Variable. The default intervals for
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+   are
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:math>.
+   You can <a href="#settings" xmlns="http://www.w3.org/1999/xhtml"> change these settings</a>.
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:bodyText>
+   In this section:
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#animation tools" xmlns="http://www.w3.org/1999/xhtml"> Animation
+   Tools</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#animated 2d rectangular plots" xmlns="http://www.w3.org/1999/xhtml">
+<a href=""> Animated
+   2D Rectangular Plots</a>
+</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#animated 2d parametric plots" xmlns="http://www.w3.org/1999/xhtml"> Animated
+   2D Parametric Plots</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#animated plots in polar coordinates" xmlns="http://www.w3.org/1999/xhtml"> Animated
+   Plots In Polar Coordinates</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#animated parametric plots in polar coordinates" xmlns="http://www.w3.org/1999/xhtml"> Animated
+   Parametric Plots in Polar Coordinates</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#animated implicit plots" xmlns="http://www.w3.org/1999/xhtml"> Animated
+   Implicit Plots</a>
+</html:bodyText>
+<html:bodyText>
+<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:2em">
+</span>
+</span>
+<a href="#animated inequality plots" xmlns="http://www.w3.org/1999/xhtml"> Animated
+   Inequality Plots</a>
+</html:bodyText>
+<html:bodyText>
+<hr class="hrulefill" xmlns="http://www.w3.org/1999/xhtml">
+</hr>
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="animation tools" xmlns="http://www.w3.org/1999/xhtml">
+</a>Animation Tools</html:sectiontitle></html:section>
+<html:bodyText>
+   When the frame of an animated plot is selected, several plotting tools become
+   visible just below other toolbars at the top of the screen.
+</html:bodyText>
+<html:bodyText>
+<html:object height="22px" data="graphics/animationtoolbar.png" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   The tool on the left is Reset Viewpoint. Next is the Selection Tool, then the
+   Zooming Tool, the Moving Tool, and the Query Tool. The remaining tools are
+   designed to control the animation. These include jumps to the beginning or the
+   end, begin animation, a slider for manually moving through the animation
+   sequence, and loop controls (Run once, Back and forth, Loop), and speed
+   controls
+   (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+</mml:mrow>
+</mml:math>
+   slower to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo form="infix">&times;</mml:mo>
+</mml:mrow>
+</mml:math>
+   faster).
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To display the animation tools</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Click the animated plot
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="animated 2d rectangular plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Animated
+2D Rectangular Plots</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To create a 2D animation</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Type an expression in
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:math>
+         and
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>,
+         and choose Compute &gt; Plot 2D Animated &gt; Rectangular.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm060501.gif" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+<a id="settings" xmlns="http://www.w3.org/1999/xhtml">
+</a>
+<strong xmlns="http://www.w3.org/1999/xhtml">To edit the animation interval</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Open the Graph User Settings dialog box, Items Plotted page and click Edit
+         Plot.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Open the animation page and type the Start time (seconds), End time (seconds),
+         and Frames per second.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   The following animated plot shows the graph of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   smoothly transform itself into the graph of
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   Interval:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mtext>,</mml:mtext>
+</mml:mrow>
+</mml:math>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>6</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm060502.gif" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="animated 2d parametric plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Animated
+2D Parametric Plots</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To make a parameterized animated plot in rectangular
+   coordinates</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type an expression of the form
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>s</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>y</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>s</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Plot 2D Animated &gt; Parametric, or
+      </html:bodyText>
+<html:bodyText>
+         Choose Compute &gt; Plot 2D Animated &gt; Rectangular.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   To animate the following Lissajous figure, select the frame and open the Graph
+   User Settings dialog box. Choose the Items Plotted page, click Edit Plot, and
+   set
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.
+   On the Axes page turn on Equal Scaling Along Each Axis.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+   The first formula draws the small circle at the leading edge of the figure.
+   The second formula shows a static figure in light gray. The third formula
+   shows the animated curve.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Parametric</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>0.02</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>0.02</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+   Intervals:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>8</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>10</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm060503.gif" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+<a id="limacon" xmlns="http://www.w3.org/1999/xhtml">
+</a>A circle of radius
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   with an arm of length
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+   rolls around a second circle of radius
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   leaving behind a smoke trail. The resulting curve is called a
+   <html:italics>Lima&#xe7;on</html:italics>
+<span class="QQQBoldRed" xmlns="http://www.w3.org/1999/xhtml">.</span>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Rectangular</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>0.5</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Select and drag to the frame:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">/</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Select and drag to the frame:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>0.5</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>0.5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mn>0.5</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>x</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+   Select and drag to the frame:
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>0.5</mml:mn>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mn>2</mml:mn>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>&pi;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm060504.gif" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="animated plots in polar coordinates" xmlns="http://www.w3.org/1999/xhtml">
+</a>Animated Plots In Polar Coordinates</html:sectiontitle></html:section>
+<html:bodyText>
+   In polar coordinates, you specify a point
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>P</mml:mi>
+</mml:mrow>
+</mml:math>
+   by giving the angle
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+</mml:mrow>
+</mml:math>
+   that the ray from the origin to the point
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>P</mml:mi>
+</mml:mrow>
+</mml:math>
+   makes with the polar axis and the distance
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+</mml:mrow>
+</mml:math>
+   from the origin.
+</html:bodyText>
+<html:bodyText>
+   For an animated plot in polar coordinates you also need an animation variable
+   such as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To make an animated plot in polar coordinates</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type an expression in two variables.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         Choose Compute &gt; Plot 2D Animated &gt; Polar.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   The following animation shows the effect of the parameter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+   on the polar equation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   as a three-leaved rose changes into an eight-leaved rose and finally into a
+   five-leaved rose.
+</html:bodyText>
+<html:bodyText>
+   For this animation, open the Graph User Settings dialog box. Click the Items
+   Plotted tab, choose Edit Plot, and set
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3.14159</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>&theta;</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>3.14159</mml:mn>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>3</mml:mn>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>5</mml:mn>
+</mml:mrow>
+</mml:math>.
+   On the View page, select Equal Scaling Along Each Axis.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Polar</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi mathcolor="gray">sin</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm060506.gif" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:subsection><html:sectiontitle>
+<a id="animated parametric plots in polar coordinates" xmlns="http://www.w3.org/1999/xhtml">
+</a>Animated Parametric Plots in Polar Coordinates</html:sectiontitle></html:subsection>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To make a parameterized animated plot in polar coordinates</strong>
+</html:bodyText>
+<html:bulletlist>
+<html:bulletListItem>
+<html:bodyText>
+         Type an expression of the form
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>s</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mrow>
+<mml:mi>&theta;</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>s</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>,
+         and choose Compute &gt; Plot 2D Animated &gt; Polar.
+      </html:bodyText>
+</html:bulletListItem>
+</html:bulletlist>
+<html:bodyText>
+   The following animation shows the effect of the parameter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+   in the polar equation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>&theta;</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+   as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+   varies from
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>
+   to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>.
+   The lima&#xe7;on, also called the lima&#xe7;on of Pascal, is a polar curve of
+   the form
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>r</mml:mi>
+<mml:mo form="infix">=</mml:mo>
+<mml:mrow>
+<mml:mi>b</mml:mi>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>a</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>&theta;</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+   For the following animation, select the frame and open the Graph User Settings
+   dialog box. Click the Items Plotted tab, choose Edit Plot, and set
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>3.14159</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>&theta;</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>3.14159</mml:mn>
+</mml:mrow>
+</mml:math>
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>.
+   On the View page, select Equal Scaling Along Each Axis.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Polar</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mi mathcolor="gray">cos</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mi>&theta;</mml:mi>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>&theta;</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm060507.gif" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="animated implicit plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Animated
+Implicit Plots</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To make an animated implicit plot</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Type an equation in three variables.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         With the insert point in the expression, choose Compute &gt; Plot 2D Animated
+         &gt; Implicit.
+      </html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   The following animation shows the effect of the parameter
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+   on the rectangular equation
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   as
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+   varies from
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   (which yields a hyperbola) to
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="prefix">+</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>
+   (which yields the unit circle). For this animation, select the frame and open
+   the Graph User Settings dialog box. On the Items Plotted page, choose Edit
+   Plot, and set
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>2</mml:mn>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mi>t</mml:mi>
+<mml:mo form="infix">&le;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.
+   Click the View tab and select Equal Scaling Along Each Axis. (You may notice a
+   substantial delay as an animated implicit plot is generated.)<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Implicit</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mpadded depth="8.000000pt" height="-8.000000pt">
+<mml:mrow>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">=</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mpadded>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm060508.gif" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:section><html:sectiontitle>
+<a id="animated inequality plots" xmlns="http://www.w3.org/1999/xhtml">
+</a>Animated
+Inequality Plots</html:sectiontitle></html:section>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">To plot an animated inequality</strong>
+</html:bodyText>
+<html:numberedlist>
+<html:numberedListItem>
+<html:bodyText>
+         Enter an expression of the form
+         <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mi>g</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mrow>
+<mml:mi>h</mml:mi>
+<mml:mo>&ApplyFunction;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">,</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>.
+      </html:bodyText>
+</html:numberedListItem>
+<html:numberedListItem>
+<html:bodyText>
+         With the insert point in the expression, choose Compute &gt; Plot 2D Animated
+         &gt; Inequality.<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+<br xmlns="http://www.w3.org/1999/xhtml">
+</br>
+</html:bodyText>
+</html:numberedListItem>
+</html:numberedlist>
+<html:bodyText>
+   In the following,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>x</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix">&minus;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>y</mml:mi>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>,
+   and
+   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mn>0</mml:mn>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+</mml:math>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mn>1</mml:mn>
+</mml:mrow>
+</mml:math>.
+</html:bodyText>
+<html:bodyText>
+<strong xmlns="http://www.w3.org/1999/xhtml">Compute &gt; Plot 2D Animated &gt; Inequality</strong>
+</html:bodyText>
+<html:bodyText>
+<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+<mml:mrow>
+<mml:mrow>
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>x</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+<mml:mo form="infix">+</mml:mo>
+<mml:mrow>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:msup>
+<mml:mi>y</mml:mi>
+<mml:mn>2</mml:mn>
+</mml:msup>
+</mml:mrow>
+</mml:mrow>
+<mml:mo form="infix">&lt;</mml:mo>
+<mml:mrow>
+<mml:mi>t</mml:mi>
+<mml:mo>&InvisibleTimes;</mml:mo>
+<mml:mrow>
+<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+<mml:mrow>
+<mml:mn>1</mml:mn>
+<mml:mo form="infix">&minus;</mml:mo>
+<mml:mi>t</mml:mi>
+</mml:mrow>
+<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</mml:mrow>
+</mml:math>
+</html:bodyText>
+<html:bodyText>
+<span style="width:0.5in" xmlns="http://www.w3.org/1999/xhtml">
+<span style="padding-left:0.5in">
+</span>
+</span>
+<html:object data="graphics/dm060509.gif" units="px" msi_resize="true" />
+</html:bodyText>
+<html:bodyText>
+   [ <a href="#top" xmlns="http://www.w3.org/1999/xhtml"> Return to beginning of section</a> ]
+</html:bodyText>
+<html:bodyText>
+<em xmlns="http://www.w3.org/1999/xhtml">
+<hr class="hrulefill">
+</hr>
+</em>
+</html:bodyText>
+<html:bodyText>
+<html:object height="18px" data="graphics/princelogo.png" units="px" msi_resize="true" />
+</html:bodyText>
+</html:body>
 </html:html>
