@@ -4,6 +4,7 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/preferences.css" type="text/css"?>
+#include ../productname.inc
 
 <!DOCTYPE prefwindow SYSTEM "chrome://prince/locale/preferences.dtd">
 <!-- JLF to verify-->
@@ -495,7 +496,7 @@
           <groupbox>
             <caption>Spell checking</caption>
             <hbox>
-              <label value="&EnableRTSpellCheck.label;"/><checkbox preference="enablerealtimespell" label="&EnableRTSpellCheck.label;" accesskey="&EnableRTSpellCheck.accesskey;"/>
+              <checkbox preference="enablerealtimespell" label="&EnableRTSpellCheck.label;" accesskey="&EnableRTSpellCheck.accesskey;"/>
             </hbox>
 	
           </groupbox>
@@ -545,6 +546,7 @@
       </tabpanels>
     </tabbox>
   </prefpane>
+#ifndef PROD_SW
   <prefpane id="prefComp" label="&Computation.label;">
     <tabbox id="outer-box" flex="1">
 	    <tabs class="tabs-top">
@@ -1018,6 +1020,8 @@
     </tabbox>
 
   </prefpane>
+#endif
+#ifndef PROD_SNB
   <prefpane id="prefTypesetting" label="Typesetting">
     <preferences>
       <preference id="bibTeXExecutable"
@@ -1101,6 +1105,7 @@
       </tabpanels>
     </tabbox>
   </prefpane>
+#endif
   <prefpane id="prefAdvanced" label="&prefAdvanced.label;">
     <tabbox>
       <tabs>
