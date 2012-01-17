@@ -255,8 +255,9 @@
               <toolbarbutton id="symbolgeqq" />
               <toolbarbutton id="symbolgeqslant" />
               <toolbarbutton id="symbolgtrless" />
-              <toolbarbutton id="symbolvartriangleright" />
+<!--              <toolbarbutton id="symbolvartriangleright" />
               <toolbarbutton id="symbolvartriangleleft" />
+              -->
               <toolbarbutton id="symboltrianglerighteq" />
               <toolbarbutton id="symboltrianglelefteq" />
               <toolbarbutton id="symbolbetween" />
@@ -293,35 +294,39 @@
               <toolbarbutton id="symbolapproxeq" />
               <toolbarbutton id="symbolsuccapprox" />
               <toolbarbutton id="symbolprecapprox" />
-              <toolbarbutton id="symbolvartriangle" />
+<!--              <toolbarbutton id="symbolvartriangle" />-->
       </tabpanel>
 
 <!-- NEGATED RELATIONS -->
       <tabpanel id="symbol_negRel" mathsym="true" align="baseline">
               <toolbarbutton id="symbolne" />
               <toolbarbutton id="symbolnotin" />
-              <toolbarbutton id="symbollvertneqq" /> 
+<!--              <toolbarbutton id="symbollvertneqq" /> 
               <toolbarbutton id="symbolgvertneqq" /> 
+              -->
               <toolbarbutton id="symbolnleq" />
               <toolbarbutton id="symbolngeq" />
               <toolbarbutton id="symbolnless" />
               <toolbarbutton id="symbolngtr" />
               <toolbarbutton id="symbolnprec" />
               <toolbarbutton id="symbolnsucc" />
-              <toolbarbutton id="symbollneqq" />
+ <!--             <toolbarbutton id="symbollneqq" />
               <toolbarbutton id="symbolgneqq" />
               <toolbarbutton id="symbolnleqslant" /> 
               <toolbarbutton id="symbolngeqslant" /> 
+              -->
               <toolbarbutton id="symbollneq" />
               <toolbarbutton id="symbolgneq" />
-              <toolbarbutton id="symbolnpreceq" /> 
+<!--              <toolbarbutton id="symbolnpreceq" /> 
               <toolbarbutton id="symbolnsucceq" /> 
+              -->
               <toolbarbutton id="symbolprecnsim" />
               <toolbarbutton id="symbolsuccnsim" />
               <toolbarbutton id="symbollnsim" />
               <toolbarbutton id="symbolgnsim" />
-              <toolbarbutton id="symbolnleqq" /> 
+ <!--             <toolbarbutton id="symbolnleqq" /> 
               <toolbarbutton id="symbolngeqq" />
+              -->
                <toolbarbutton id="symbolprecneqq" /> 
               <toolbarbutton id="symbolsuccneqq" />
               <toolbarbutton id="symbolprecnapprox" />
@@ -330,13 +335,13 @@
               <toolbarbutton id="symbolgnapprox" />
               <toolbarbutton id="symbolnsim" />
               <toolbarbutton id="symbolncong" />
-              <toolbarbutton id="symbolvarsubsetneq" /> 
+<!--              <toolbarbutton id="symbolvarsubsetneq" /> 
               <toolbarbutton id="symbolvarsupsetneq" /> 
               <toolbarbutton id="symbolnsubseteqq" /> 
               <toolbarbutton id="symbolnsupseteqq" /> 
               <toolbarbutton id="symbolsubsetneqq" /> 
               <toolbarbutton id="symbolsupsetneqq" /> 
-<!--            <toolbarbutton id="symbolvarsubsetneqq" /> 
+              <toolbarbutton id="symbolvarsubsetneqq" /> 
               <toolbarbutton id="symbolvarsupsetneqq" /> 
               -->
               <toolbarbutton id="symbolsubsetneq" />
