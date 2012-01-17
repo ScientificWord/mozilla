@@ -548,7 +548,8 @@
       <xsl:when test="ms:string-compare($first-char,'&#x0180') = -1">
         <xsl:choose>
 -->
-          <xsl:when test="$first-char='&#x0131;'">
+<!-- JLF - Using mathematical italic small dotless i here, rather than x131 for dotless i -->
+          <xsl:when test="$first-char='&#x1D6A4;'">
             <xsl:text xml:space="preserve">\imath </xsl:text>
           </xsl:when>
 
@@ -720,6 +721,9 @@
           <xsl:when test="$first-char='&#x03D6;'">
             <xsl:text xml:space="preserve">\varpi </xsl:text>
           </xsl:when>
+         <xsl:when test="$first-char='&#x03DB;'">
+            <xsl:text xml:space="preserve">\stigma </xsl:text>
+          </xsl:when>
           <xsl:when test="$first-char='&#x03DC;'">
             <xsl:text xml:space="preserve">\digamma </xsl:text>
           </xsl:when>
@@ -838,15 +842,33 @@
           <xsl:when test="$first-char='&#x2014;'">
             <xsl:text>--</xsl:text>
           </xsl:when>
+          <xsl:when test="$first-char='&#x2018;'">
+            <xsl:text>\lq</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2019;'">
+            <xsl:text>\rq</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x201A;'">
+            <xsl:text>\quotesinglbase</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x201E;'">
+            <xsl:text>\quotedblbase</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2039;'">
+            <xsl:text>\guilsinglleft</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x203A;'">
+            <xsl:text>\guilsinglright</xsl:text>
+          </xsl:when>
 
           <xsl:when test="$first-char='&#x2016;'">
             <xsl:text xml:space="preserve">\Vert </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2020;'">
-            <xsl:text xml:space="preserve">\dagger </xsl:text>
+            <xsl:text xml:space="preserve">\dag </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2021;'">
-            <xsl:text xml:space="preserve">\ddagger </xsl:text>
+            <xsl:text xml:space="preserve">\ddag </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2022;'">    <!-- bullet symbol -->
             <xsl:text xml:space="preserve">\bullet </xsl:text>
@@ -898,7 +920,7 @@
       <xsl:when test="ms:string-compare($first-char,'&#x20CF') = -1">
         <xsl:choose>
 -->
-          <xsl:when test="$first-char='&#x20A0;'">
+          <xsl:when test="$first-char='&#x20AC;'">
             <xsl:text xml:space="preserve">\texteuro </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x20A3;'">
@@ -1014,13 +1036,28 @@
           <xsl:when test="$first-char='&#x2138;'">
             <xsl:text xml:space="preserve">\daleth </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x213C;'">
+          <xsl:when test="$first-char='&#x03F6;'">
             <xsl:text xml:space="preserve">\backepsilon </xsl:text>
           </xsl:when>
 
           <xsl:when test="$first-char='&#x2146;'">
             <xsl:text>d</xsl:text>
           </xsl:when>
+
+<!-- JLF - add test characters here, put in proper place when done -->
+          <xsl:when test="$first-char='&#x2132;'">
+            <xsl:text>\Finv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2141;'">
+            <xsl:text>\Game </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x1D55C;'">
+            <xsl:text xml:space="preserve">\Bbbk </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x019B;'">
+            <xsl:text xml:space="preserve">\lambdabar </xsl:text>
+          </xsl:when>
+
 
 <!--  Number Forms
           <xsl:otherwise>
@@ -1216,7 +1253,7 @@
           <xsl:when test="$first-char='&#x21DB;'">
             <xsl:text xml:space="preserve">\Rrightarrow </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x21DD;'">
+          <xsl:when test="$first-char='&#x219D;'">
             <xsl:text xml:space="preserve">\rightsquigarrow </xsl:text>
           </xsl:when>
 
@@ -1717,11 +1754,11 @@
           <xsl:when test="$first-char='&#x22BC;'">
             <xsl:text xml:space="preserve">\barwedge </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22C4;'">
-            <xsl:text xml:space="preserve">\diamond </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x22C4;'">
+          <xsl:when test="$first-char='&#x25C7;'">
             <xsl:text xml:space="preserve">\Diamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25C7;'">
+            <xsl:text xml:space="preserve">\diamond </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22C5;'">
             <xsl:text xml:space="preserve">\cdot </xsl:text>
@@ -1810,13 +1847,13 @@
           <xsl:when test="$first-char='&#x22E7;'">
             <xsl:text xml:space="preserve">\gnsim </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22E8;'">
+          <xsl:when test="$first-char='&#x2AB9;'">
             <xsl:text xml:space="preserve">\precnapprox </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22E8;'">
             <xsl:text xml:space="preserve">\precnsim </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22E9;'">
+          <xsl:when test="$first-char='&#x2ABA;'">
             <xsl:text xml:space="preserve">\succnapprox </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22E9;'">
@@ -1881,11 +1918,13 @@
             <xsl:text xml:space="preserve">\lrcorner </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2329;'
-          or              $first-char='&#x3008;'">
+          or              $first-char='&#x3008;'
+          or              $first-char='&#x27E8;'">
             <xsl:text xml:space="preserve">\langle </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x232A;'
-          or              $first-char='&#x3009;'">
+          or              $first-char='&#x3009;'
+          or              $first-char='&#x27E9;'">
             <xsl:text xml:space="preserve">\rangle </xsl:text>
           </xsl:when>
 
@@ -1957,10 +1996,10 @@
         <xsl:choose>
 -->
           <xsl:when test="$first-char='&#x25A1;'">
-            <xsl:text xml:space="preserve">\Box </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x25A1;'">
             <xsl:text xml:space="preserve">\square </xsl:text>
+           </xsl:when>
+          <xsl:when test="$first-char='&#x25A1;'">
+            <xsl:text xml:space="preserve">\Box </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x25AA;'">
             <xsl:text xml:space="preserve">\blacksquare </xsl:text>
@@ -2023,7 +2062,7 @@
           <xsl:when test="$first-char='&#x2663;'">
             <xsl:text xml:space="preserve">\clubsuit </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2666;'">
+          <xsl:when test="$first-char='&#x2662;'">
             <xsl:text xml:space="preserve">\diamondsuit </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x266D;'">
@@ -2084,7 +2123,9 @@
           <xsl:when test="$first-char='&#x2933;'">
             <xsl:text xml:space="preserve">\leadsto </xsl:text>
           </xsl:when>
-
+          <xsl:when test="$first-char='&#x25CA;'">
+            <xsl:text xml:space="preserve">\lozenge </xsl:text>
+          </xsl:when>
 
           <xsl:when test="$first-char='&#x29EB;'">
             <xsl:text xml:space="preserve">\blacklozenge </xsl:text>
@@ -2213,7 +2254,12 @@
           <xsl:when test="$first-char='&#xE2D3;'">
             <xsl:text xml:space="preserve">\emptyset </xsl:text>
           </xsl:when>
+<!--JLF - testing alternate symbol for jmath
           <xsl:when test="$first-char='&#xE2D4;'">
+            <xsl:text xml:space="preserve">\jmath </xsl:text>
+          </xsl:when>
+          -->
+                       <xsl:when test="$first-char='&#x1D6A5;'">
             <xsl:text xml:space="preserve">\jmath </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#xE2D5;'">
