@@ -4,7 +4,7 @@
 <!-- Attn: Localization - some of the menus in this dialog directly affect mail also. -->
 
 <!-- Temporary -->
-<!ENTITY brandShortName "Scientific WorkPlace">
+#include brand.dtd
 
 <!-- File menu items -->
 <!ENTITY fileMenu.label "File">
@@ -223,7 +223,6 @@
 <!ENTITY helpmenuFeatures.accesskey    "F">
 <!ENTITY helpmenuLicense.label    "License Information">
 <!ENTITY helpmenuLicense.accesskey    "L">
-<!ENTITY aboutCmd.label    "About Scientific WorkPlace...">
 <!ENTITY aboutCmd.accesskey    "A">
 
 <!-- View menu items -->
