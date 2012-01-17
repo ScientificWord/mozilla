@@ -12,15 +12,15 @@ include $(topsrcdir)/config/rules.mk
 
 #Set platform
 ifeq ($(OS_ARCH),WINNT)
-  PLATFORM = win
+	PLATFORM = win
 endif
 
 ifeq ($(OS_ARCH),Linux)
-  PLATFORM = linux
+ 	PLATFORM = linux
 endif
 
 ifeq ($(OS_ARCH),Darwin)
-  PLATFORM = mac
+	PLATFORM = mac
 endif
 
 
@@ -31,6 +31,10 @@ CMD_RESOURCES := $(wildcard	$(srcdir)/bin/$(PLATFORM)/*.bash)
 endif
 
 
+ifeq ($(OS_ARCH),Darwin)
+CMD_RESOURCES += $(wildcard	$(srcdir)/bin/mac/*.scpt)
+endif
+
 libs::	$(CMD_RESOURCES)
-	chmod 755 $(wildcard     $(srcdir)/bin/linux/*.bash)
+	chmod 755 $(CMD_RESOURCES)
 	$(INSTALL)	$(CMD_RESOURCES)	$(FINAL_TARGET)
