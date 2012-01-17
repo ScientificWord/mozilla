@@ -11,6 +11,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 /* Implementations of nsIControllerCommand for composer commands */
+#include productname.inc
 
 function msiInitEditorContextMenuItems(aEvent)
 {
@@ -54,11 +55,10 @@ function msiEditPageOrFrame()
 
 function msiPrefs()
 {
-  dump("\n ** msiPrefs\n");
+#ifndef PROD_SW
   var compsample = GetCurrentEngine();
-
   msiComputeLogger.Sent("user settings","");
-
+#endif
   var o = {chromeDoc: document};
   openDialog("chrome://prince/content/preferences.xul", "preferences", "chrome,titlebar,resizable,toolbar,centerscreen,dialog='yes'", o);
 }

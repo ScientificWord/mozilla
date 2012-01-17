@@ -94,7 +94,9 @@
         <iframe id="content-source" 
                 src="resource://app/res/cm2/cm2.html" flex="1" tooltip="aSourceTooltip"/>
       </vbox>
+#ifndef PROD_SNB
       <browser id="preview-frame" src="about:blank" disablehistory="1" flex="1"/>
+#endif
     </deck>
     <hbox id="EditModeToolbar" hidden="false" persist="collapsed">
       <tabs id="EditModeTabs" align="start" class="tabs-bottom" flex="1">
@@ -104,8 +106,10 @@
            oncommand="goDoCommand('cmd_AllTagsMode');" tooltiptext="&TagsMode.tooltip;"/>
        <tab id="SourceModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="0" label="&SourceMode.label;" 
              oncommand="goDoCommand('cmd_HTMLSourceMode');" tooltiptext="&SourceMode.tooltip;" dir="&SourceTabDirection;"/>
+#ifndef PROD_SNB
        <tab id="PreviewModeButton"  class="tab-bottom edit-mode _plain" type="text" selected="0" label="&PreviewMode.label;"
              oncommand="goDoCommand('cmd_PreviewMode');" tooltiptext="&PreviewMode.tooltip;"/>
+#endif
       </tabs>
     </hbox>
     <!--tabeditor/-->
