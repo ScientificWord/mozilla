@@ -119,7 +119,11 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags" 
+#ifdef PROD_SNB
+    defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+#else
+    defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+#endif
       mode="icons" 
       customizable="true"
       iconsize="large" />
@@ -131,7 +135,13 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
+#ifdef PROD_SNB
+defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,importtexButton"
+#elifdef PROD_SW
+ defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
+#else
+defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
+#endif
       mode="icons" 
       customizable="true"
       iconsize="large" />
@@ -146,7 +156,6 @@
 #ifdef PROD_SW
       defaultset="fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #else
-
 defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #endif
       mode="icons" 
@@ -231,6 +240,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     <observes element="cmd_MSImathtext" type="checkbox" attribute="isMath" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSImathtext')"/>
   </toolbarbutton>
 
+#ifndef PROD_SW
   <toolbarbutton id="evalButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEval.tooltip;"
     label="&MSIComputeEval.label;" observes="cmd_MSIComputeEval" >
   </toolbarbutton>
@@ -270,7 +280,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
   <toolbarbutton id="stopButton" class="toolbarbutton-1" tooltoptext="&stopButton.tooltip;"
     label="&stopButton.label;" onclick="alert('Implement me!');" >
   </toolbarbutton>
-
+#endif
   <toolbarbutton id="fractionButton" class="toolbarbutton-1" tooltiptext="&fractionButton.tooltip;"
     label="&fractionButton.label;" observes="cmd_MSIfractionCmd"/>
 
@@ -333,7 +343,17 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
   <toolbarbutton id="saveButton" class="toolbarbutton-1" observes="cmd_save"
                  tooltiptext="&saveToolbarCmd.tooltip;"
                   label="&saveToolbarCmd.label;" />
+#ifdef PROD_SNB
+  <toolbarbutton id="printPreviewButton"  class="toolbarbutton-1"
+        oncommand="msiGoDoCommand('cmd_preview');"/>
+  <toolbarbutton id="printButton"  class="toolbarbutton-1"
+        oncommand="msiGoDoCommand('cmd_print');"/>
+        <!-- label="&printPreviewCmd.label;" 
+        tooltiptext="&printPreviewToolbarCmd.tooltip;"
+        label="&printCmd.label;"
+        tooltiptext="&printToolbarCmd.tooltip;" -->
 
+#else
   <toolbarbutton id="printButton" type="menu-button" class="toolbarbutton-1"
                  label="&printToolbarCmd.label;"
                  tooltiptext="&printToolbarCmd.tooltip;"
@@ -403,7 +423,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     </menupopup>
   </toolbarbutton>
   <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
-
+#endif
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
                  label="&cutCmd.label;" disabled="true" observes="cmd_cut"
                  tooltiptext="&cutCmd.label;"/>

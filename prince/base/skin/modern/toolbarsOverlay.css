@@ -1139,6 +1139,56 @@ toolbar[iconsize="small"] #formulaButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_formula-disabled-sm.png");
 }
 
+
+#ifdef PROD_SNB
+#printButton{
+  list-style-image: url("chrome://prince/skin/icons/print.png");
+}
+toolbar[iconsize="small"] #printButton{
+  list-style-image: url("chrome://prince/skin/icons/print-sm.png");
+}
+#printButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/print-hover.png");
+}
+toolbar[iconsize="small"] #printButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/print-hover-sm.png");
+}
+#printButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/print-active.png");
+}
+toolbar[iconsize="small"] #printButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/print-active-sm.png");
+}
+#printButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/print-disabled.png");
+}
+
+#printPreviewButton{
+  list-style-image: url("chrome://prince/skin/icons/preview.png");
+}
+toolbar[iconsize="small"] #printPreviewButton {
+  list-style-image: url("chrome://prince/skin/icons/preview-sm.png");
+}
+#printPreviewButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/preview-hover.png");
+}
+toolbar[iconsize="small"] #printPreviewButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/preview-hover-sm.png");
+}
+#printPreviewButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/preview-active.png");
+}
+toolbar[iconsize="small"] #printPreviewButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/preview-active-sm.png");
+}
+#printPreviewButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/preview-disabled.png");
+}
+toolbar[iconsize="small"] #printPreviewButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/preview-disabled-sm.png");
+}
+
+#else
 #printButton toolbarbutton {
   list-style-image: url("chrome://prince/skin/icons/print.png");
 }
@@ -1237,7 +1287,7 @@ toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"]  t
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled-sm.png");
 }
 
-
+#endif
 
 
 #pdfcompileButton {
