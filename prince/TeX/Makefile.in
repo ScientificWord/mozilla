@@ -32,7 +32,7 @@ endif
 
 
 ifeq ($(OS_ARCH),Darwin)
-CMD_RESOURCES += $(wildcard	$(srcdir)/bin/mac/*.applescript)
+CMD_RESOURCES += $(wildcard	$(srcdir)/bin/mac/*.scpt)
 endif
 
 libs::	$(CMD_RESOURCES)

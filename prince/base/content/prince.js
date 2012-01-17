@@ -16,16 +16,18 @@ var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file g
 function princeStartUp()
 {
   // take out parts of the UI not needed on the Mac
+  // protect these statements because some of these buttons don't exist in SNB
   var os = getOS(window);
+  var button;
   if ('osx' == os)
   {
-    document.getElementById("printPreviewButton").hidden=true;
-    document.getElementById("printPreviewMenuItem").hidden=true;
+    if (button = document.getElementById("printPreviewButton")) button.hidden=true;
+    if (button = document.getElementById("printPreviewMenuItem")) button.hidden=true;
   }
   else
   {
-    document.getElementById("printPreviewButtonMac").hidden = true;
-    document.getElementById("printPreviewMenuItemMac").hidden=true;
+    if (button = document.getElementById("printPreviewButtonMac")) button.hidden = true;
+     if (button = document.getElementById("printPreviewMenuItemMac")) button.hidden=true;
   }
   msiEditorOnLoad();
 }
