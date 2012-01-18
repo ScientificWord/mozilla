@@ -279,7 +279,7 @@
   <rdf:Description about="#statistics">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="statistics_lists"      nc:name="Lists and Matrices"                   nc:link="dm11-01-statistics.xhtml"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="statistics_lists"      nc:name="Storing Data in Lists and Matrices"   nc:link="dm11-01-statistics.xhtml"/> </rdf:li>
       <rdf:li> <rdf:Description ID="statistics_tendency"   nc:name="Measures of Central Tendency"         nc:link="dm11-02-statistics.xhtml"/> </rdf:li>
       <rdf:li> <rdf:Description ID="statistics_dispersion" nc:name="Measures of Dispersion"               nc:link="dm11-03-statistics.xhtml"/> </rdf:li>
       <rdf:li> <rdf:Description ID="statistics_distribs"   nc:name="Distributions and Densities"          nc:link="dm11-04-statistics.xhtml"/> </rdf:li>
@@ -829,6 +829,9 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="calculus_indefinite_1" nc:name="Entering and Evaluating Indefinite Integrals" nc:link="dm07-04-calculus.xhtml#entering and evaluating indefinite integrals"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_indefinite_2" nc:name="Constant of integration"                      nc:link="dm07-04-calculus.xhtml#constant of integration"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_indefinite_3" nc:name="Piecewise-Defined Functions"                  nc:link="dm07-04-calculus.xhtml#piecewise-defined functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_indefinite_4" nc:name="Interpreting an Expression"                   nc:link="dm07-04-calculus.xhtml#interpreting an expression"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -888,7 +891,7 @@
       <rdf:li> <rdf:Description ID="matrix-algegra_creating_dialog"  nc:name="Creating Matrices with the Matrix Dialog Box" nc:link="dm08-01-matrix_algebra.xhtml#create matrices"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_creating_fill"    nc:name="Creating Matrices with Fill Matrix" nc:link="dm08-01-matrix_algebra.xhtml#fill matrix"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_creating_random"  nc:name="Creating Matrices with Random Matrix" nc:link="dm08-01-matrix_algebra.xhtml#random matrix"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_creating_add"     nc:name="Adding Matrix Delimiters" nc:link="dm08-01-matrix_algebra.xhtml#matrix delimiters"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_creating_add"     nc:name="Matrix Delimiters" nc:link="dm08-01-matrix_algebra.xhtml#matrix delimiters"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_creating_revise"  nc:name="Revising Matrices" nc:link="dm08-01-matrix_algebra.xhtml#revising matrices"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_creating_concat"  nc:name="Concatenating and Stacking Matrices" nc:link="dm08-01-matrix_algebra.xhtml#concatenate"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_creating_reshape" nc:name="Reshaping Lists and Matrices" nc:link="dm08-01-matrix_algebra.xhtml#reshape"/> </rdf:li>
@@ -1119,7 +1122,7 @@
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="statistics_tendency_arith"  nc:name="Arithmetic Mean" nc:link="dm11-02-statistics.xhtml#arithmetic mean"/> </rdf:li>
       <rdf:li> <rdf:Description ID="statistics_tendency_median" nc:name="Median" nc:link="dm11-02-statistics.xhtml#median"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="statistics_tendency_quant"  nc:name="Quantile" nc:link="dm11-02-statistics.xhtml#mode"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="statistics_tendency_quant"  nc:name="Quantile" nc:link="dm11-02-statistics.xhtml#quantile"/> </rdf:li>
       <rdf:li> <rdf:Description ID="statistics_tendency_mode"   nc:name="Mode" nc:link="dm11-02-statistics.xhtml#mode"/> </rdf:li>
       <rdf:li> <rdf:Description ID="statistics_tendency_geo"    nc:name="Geometric Mean" nc:link="dm11-02-statistics.xhtml#geometric mean"/> </rdf:li>
       <rdf:li> <rdf:Description ID="statistics_tendency_harm"   nc:name="Harmonic Mean" nc:link="dm11-02-statistics.xhtml#harmonic mean"/> </rdf:li>
@@ -1226,10 +1229,10 @@
   <rdf:Description about="#applied-algebra_polynomials">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="applied-algebra_polynomials_poly"   nc:name="Polynomials Modulo q ? ( x )" nc:link="dm12-04-applied_modern_algebra.xhtml#polynomials modulo polynomials"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="applied-algebra_polynomials_poly"   nc:name="Polynomials Modulo q(x)" nc:link="dm12-04-applied_modern_algebra.xhtml#polynomials modulo polynomials"/> </rdf:li>
       <rdf:li> <rdf:Description ID="applied-algebra_polynomials_gcd"    nc:name="Greatest Common Divisor of Polynomials" nc:link="dm12-04-applied_modern_algebra.xhtml#gcd, polynomials"/> </rdf:li>
       <rdf:li> <rdf:Description ID="applied-algebra_polynomials_mult"   nc:name="Multiplicity of Roots of Polynomials" nc:link="dm12-04-applied_modern_algebra.xhtml#multiple roots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="applied-algebra_polynomials_galois" nc:name="The Galois Field G ? F p n" nc:link="dm12-04-applied_modern_algebra.xhtml#galois field"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="applied-algebra_polynomials_galois" nc:name="The Galois Field GF p n" nc:link="dm12-04-applied_modern_algebra.xhtml#galois field"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
