@@ -583,9 +583,9 @@ void Typesetter::EndInline()
          ProcessMathML(theCStr, s_mathml, s_anom);
          LOG("\nGot back " << s_mathml.c_str());
          std::string str;
-         str +=  "<mml:math>";
+         str +=  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">";
          str +=  s_mathml;
-         str +=  "</mml:math>";
+         str +=  "</math>";
          AppendTag(str.c_str());
          s_mathml = "";
          TakeDownMathML();
@@ -678,10 +678,10 @@ void Typesetter::EndDisplay()
            str +="\"";
          }
          str += ">";
-         str +=  "<mml:math class=\"displayedmathml\" "
-                 "mode=\"display\" display=\"block\">";
+         str +=  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" \
+            display=\"block\">";
          str +=  s_mathml;
-         str +=  "</mml:math>";
+         str +=  "</math>";
          str += "</msidisplay>";
          AppendTag(str.c_str());
          s_mathml = "";
