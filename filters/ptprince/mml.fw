@@ -28,8 +28,10 @@ const int FIX_IE_BUG = 18;
 
 char *upref_zstrs[] = {
   "200",                           // U8* mml_version
-  "<mml:math class=\"displayedmathml\" mode=\"display\" display=\"block\">",
-  "<mml:math class=\"inlinemathml\" display=\"inline\">",
+  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" \
+      display=\"block\">",
+  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" \
+      display=\"inline\">",
   "mml:",                         //  U8* namespace_prefix;
   "",
   "mathcolor=\"gray\"",           //  U8* mathname_attrs;
