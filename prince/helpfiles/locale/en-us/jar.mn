@@ -16,6 +16,7 @@ en-US.jar:
   locale/helpfiles/images/table.gif			    	(images/table.gif)
   locale/helpfiles/images/image.gif			    	(images/image.gif)
   locale/helpfiles/css/help.css               (css/help.css)
+  locale/helpfiles/css/index.css               (css/index.css)
   locale/helpfiles/graphics/princelogo.png    (graphics/princelogo.png)
 %
   locale/helpfiles/cd00-00-creating_documents.xhtml		  (cd00-00-creating_documents.xhtml)
