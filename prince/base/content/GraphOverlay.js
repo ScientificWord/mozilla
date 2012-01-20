@@ -9,36 +9,21 @@ function Graph () {
   // When adding to this list, you must also add to the MathServiceRequest in the compute engine
   // Compute/iCmpIDs.h and Compute/MRequest.cpp::NameToPID()
   // PlotStatus: UI use only. New/Inited/Deleted.
-  this.GRAPHATTRIBUTES  = new Array ("ImageFile", "XAxisLabel", "YAxisLabel", "ZAxisLabel", "Width",
-                                     "Height", "PrintAttribute", "Placement", "Offset", "Float",
-                                     "PrintFrame", "Key", "Name", "CaptionText", "CaptionPlace",
-                                     "Units", "AxesType", "EqualScaling", "EnableTicks",
-                                     "XTickCount", "YTickCount", "AxesTips", "GridLines", "BGColor",
-									 "Dimension", "AxisScale",
-                                     // added
-									 "CameraLocationX", "CameraLocationY", "CameraLocationZ",
-                                     "FocalPointX", "FocalPointY", "FocalPointZ",
-                                     "UpVectorX", "UpVectorY", "UpVectorZ",
-                                     "ViewingAngle", "OrthogonalProjection", "KeepUp",
-                                     " ");
-  this.PLOTATTRIBUTES   = new Array ("PlotStatus", "PlotType",
-                                     "LineStyle", "PointStyle", "LineThickness", "LineColor",
-                                     "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
-									 "PointSymbol", "SurfaceStyle", "IncludePoints",
-									 "SurfaceMesh", "CameraLocationX", "CameraLocationY",
-									 "CameraLocationZ",	"FontFamily", "IncludeLines",
-                                     "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
-                                     "Animate", "AnimateStart", "AnimateEnd", "AnimateFPS",
-                                     "AnimateVisBefore", "AnimateVisAfter",
-                                     "ConfHorizontalPts", "ConfVerticalPts");
-  this.PLOTELEMENTS     = new Array ("Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin",
-                                     "XVar", "YVar", "ZVar", "XPts", "YPts", "ZPts", "TubeRadius");
-  this.modFlag          = new Object ();
-  this.plotCount        = 0;
+  this.GRAPHATTRIBUTES  = ["ImageFile",   "XAxisLabel",     "YAxisLabel",   "ZAxisLabel", "Width",
+                            "Height",     "PrintAttribute",  "Placement",   "Offset",     "Float",
+                            "PrintFrame", "Key",            "Name",         "CaptionText","CaptionPlace",
+                            "Units",      "AxesType",       "EqualScaling", "EnableTicks","XTickCount",
+                            "YTickCount", "AxesTips",       "GridLines",    "BGColor",    "Dimension", 
+                            "AxisScale",  "CameraLocationX","CameraLocationY","CameraLocationZ",
+                            "FocalPointX","FocalPointY",    "FocalPointZ",  "UpVectorX",  "UpVectorY", 
+                            "UpVectorZ",  "ViewingAngle",   "OrthogonalProjection",       "KeepUp", 
+                            " "];
+  this.plots            = [];  //an array of plots, see below
+  this.modFlag          = {};  //a Boolean for each attribute in GRAPHATTRIBUTES
   this.errStr           = "";
-  this.addPlot          = GraphAddPlot;
-  this.deletePlot       = GraphDeletePlot;
-  this.getNumPlots      = function ()      { return (this.plotCount); };
+  this.addPlot          = graphAddPlot;    // takes plot for a parameter
+  this.deletePlot       = graphDeletePlot; // takes plot number for a parameter
+  this.getNumPlots      = function ()  { return (this.plots.length); };
   this.isModified       = function (x) { return (this.modFlag[x]);};
   this.setModified      = function (x) { this.modFlag[x] = true;};
   this.ser              = new XMLSerializer();
@@ -49,69 +34,85 @@ function Graph () {
   }
 }
 
-Graph.prototype.computeGraph           = GraphComputeGraph;
-Graph.prototype.computeQuery           = GraphComputeQuery;
-Graph.prototype.createGraphDOMElement  = GraphMakeDOMGraphElement;
-Graph.prototype.createPlotDOMElement   = PlotMakeDOMPlotElement;
-Graph.prototype.extractGraphAttributes = GraphReadGraphAttributesFromDOM;
-Graph.prototype.extractPlotAttributes  = PlotReadPlotAttributesFromDOM
-Graph.prototype.getDefaultValue        = GraphGetDefaultGraphValue;
+Graph.prototype.computeGraph           = graphComputeGraph;
+Graph.prototype.computeQuery           = graphComputeQuery;
+Graph.prototype.createGraphDOMElement  = graphMakeDOMGraphElement;
+Graph.prototype.extractGraphAttributes = graphReadGraphAttributesFromDOM;
+Graph.prototype.getDefaultValue        = graphGetDefaultGraphValue;
 Graph.prototype.getGraphAttribute      = function (name) { return (this[name]);};
-Graph.prototype.getPlotAttribute       = function (name) { return (this[name]);};
-Graph.prototype.getPlotValue           = PlotGetPlotValue;
-Graph.prototype.getValue               = GraphGetGraphValue;
+Graph.prototype.getValue               = graphGetGraphValue;
 Graph.prototype.graphAttributeList     = function () { return (this.GRAPHATTRIBUTES); };
-Graph.prototype.graphCompAttributeList = GraphSelectCompAttributes;
-Graph.prototype.plotAttributeList      = function () { return (this.PLOTATTRIBUTES); };
-Graph.prototype.plotElementList        = function () { return (this.PLOTELEMENTS); };
-Graph.prototype.plotCompAttributeList  = PlotSelectCompAttributes;
-Graph.prototype.plotCompElementList    = PlotSelectCompElements;
-Graph.prototype.serializeGraph         = GraphSerializeGraph;
+Graph.prototype.graphCompAttributeList = graphSelectCompAttributes;
+Graph.prototype.serializeGraph         = graphSerializeGraph;
 Graph.prototype.setGraphAttribute      = function (name, value) { this[name] = value; };
-Graph.prototype.setPlotAttribute       = function (name, value) { this[name] = value;
-                                                                  this.setModified(name); };
 
-// Add a plot to a graph. Conceptually, a plot is a collection of attribute/value pairs
-function GraphAddPlot () {
-  this.plotCount = this.plotCount + 1;
+function Plot () {
+  this.element = {};
+  this.attributes = {};
+  this.modFlag = {};
+  this.parent = null;
+  this.PLOTATTRIBUTES   = ["PlotStatus", "PlotType",
+                           "LineStyle", "PointStyle", "LineThickness", "LineColor",
+                           "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
+									         "PointSymbol", "SurfaceStyle", "IncludePoints",
+									         "SurfaceMesh", "CameraLocationX", "CameraLocationY",
+									         "CameraLocationZ",	"FontFamily", "IncludeLines",
+                           "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
+                           "Animate", "AnimateStart", "AnimateEnd", "AnimateFPS",
+                           "AnimateVisBefore", "AnimateVisAfter",
+                           "ConfHorizontalPts", "ConfVerticalPts"];
+  this.PLOTELEMENTS     =["Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin",
+                          "XVar", "YVar", "ZVar", "XPts", "YPts", "ZPts", "TubeRadius"];
+                          // Plot elements are all MathML expressions.
+                        
+  this.isModified       = function (x) { return (this.modFlag[x]);};
+  this.setModified      = function (x) { this.modFlag[x] = true;};
+  var attr;
   for (var i = 0; i < this.PLOTATTRIBUTES.length; i++) {
-    this[PlotAttrName(this.PLOTATTRIBUTES[i],this.plotCount)] = PlotGetDefaultPlotValue(this.PLOTATTRIBUTES[i]);
-    this.modFlag[PlotAttrName(this.PLOTATTRIBUTES[i],this.plotCount)]  = false;
+    attr = this.PLOTATTRIBUTES[i];
+    this.attributes[attr] = this.getDefaultPlotValue(attr);
+    this.modFlag[attr]  = false;
   }
   for (var i = 0; i < this.PLOTELEMENTS.length; i++) {
-    this[PlotAttrName(this.PLOTELEMENTS[i],this.plotCount)]   = this.getDefaultValue(this.PLOTELEMENTS[i]);
-    this.modFlag[PlotAttrName(this.PLOTELEMENTS[i],this.plotCount)] = false;
+    attr = this.PLOTELEMENTS[i];
+    this.element[attr] = this.getDefaultPlotValue(attr);
+    this.modFlag[attr] = false;
   }
-  return (this.plotCount);
+}   
+
+Plot.prototype.createPlotDOMElement       = plotMakeDOMPlotElement;
+Plot.prototype.readPlotAttributesFromDOM  = plotReadPlotAttributesFromDOM
+Plot.prototype.getPlotValue               = plotGetPlotValue;
+Plot.prototype.getDefaultPlotValue        = plotGetDefaultPlotValue;
+Plot.prototype.plotAttributeList          = function () { return (this.PLOTATTRIBUTES); };
+Plot.prototype.plotElementList            = function () { return (this.PLOTELEMENTS); };
+Plot.prototype.plotCompAttributeList      = plotSelectCompAttributes;
+Plot.prototype.plotCompElementList        = plotSelectCompElements;
+Plot.prototype.getPlotAttribute           = function (name) { return (this[name]);};
+Plot.prototype.setPlotAttribute           = function (name, value) { this[name] = value;
+                                                                      this.setModified(name); };
+Plot.prototype.computeQuery               = plotComputeQuery;
+
+                                                            
+// Add a plot to a graph. Conceptually, a plot is a collection of attribute/value pairs
+function graphAddPlot(plot) {
+  this.plots.push(plot);
+  plot.parent = this;
+  return (this.plots.length);
 }
 
 // just decrement the counter and let the GC handle the rest
-function GraphDeletePlot () {
-   if (this.plotCount > 0) {
-     this.plotCount = this.plotCount - 1;
+function graphDeletePlot(plotnum) {
+   if (plotnum >= 0 && plotnum < this.plots.length) {
+     this.plots.splice[plotnum,1];
    }
+   return (this.plots.length);
 }
-
-// mangle plot attribute and element names so that multiple plots don't collide
-// There should be a plot object that contains the elements for a plot, but
-// I wasn't able to make JS behave in the expected way. This is a kludge-around.
-function PlotAttrName (str, num) {
-  return (str + "__" + num);
-}
-
 
 // call the compute engine to create an image
-function GraphComputeGraph (editorElement, filename) {
-//  dump("Entering GraphComputeGraph.\n");
-//  var dumpStr = "In GraphComputeGraph, about to put on ComputeCursor; editorElement is [";
-//  if (editorElement)
-//    dumpStr += editorElement.id;
-//  dumpStr += "].\n";
-//  dump(dumpStr);
+function graphComputeGraph (editorElement, filename) {
   ComputeCursor(editorElement);
-//  dump("In GraphComputeGraph, about to serializeGraph.\n");
   var str = this.serializeGraph();
-//  dump("In GraphComputeGraph, after serializeGraph.\n");
   if (this.errStr == "") {
     try {
       var topWin = msiGetTopLevelWindow();
@@ -136,33 +137,45 @@ function GraphComputeGraph (editorElement, filename) {
 }
 
 // call the compute engine to guess at graph attributes 
-function GraphComputeQuery (plot_no) {    
-  var str = this.serializeGraph (plot_no);
+// If plot is not null, then we build a graph with a single plot to send to the engine.
+// Otherwise, all the plots that are children of the graph are included
+function graphComputeQuery (plot) {    
+  var str = this.serializeGraph (plot);
   var eng = GetCurrentEngine();
   
   try {           
     msiComputeLogger.Sent4 ("plotfuncQuery", "", str, "");
     //msiComputeLogger.Sent4 ("plotfuncQuery", "", "", "");
 
-    var out=eng.plotfuncQuery (str);
-    dump ("ComputQuery plotfuncQuery returns " + out + "\n");
+    var out = eng.plotfuncQuery (str);
+    msidump ("ComputeQuery plotfuncQuery returns " + out + "\n");
     msiComputeLogger.Received(out); 
-    parseQueryReturn (out, this, plot_no);
-    this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "Inited");             
+    parseQueryReturn (out, this, plot);
+    status="Inited";
   }                                                                                             
   catch (e) {                                                                                    
-    this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "ERROR");             
+    status = "ERROR";             
     //this.prompt.alert (null, "Computation Error", "Query Graph: " + eng.getEngineErrors());
     dump("Computation Error", "Query Graph: " + eng.getEngineErrors()+"\n");
     msiComputeLogger.Exception(e);                                                               
-  }                                                                                              
+  } 
+  finally {
+    if (plot)
+      plot.attributes["PlotStatus"] = status;
+    else 
+      for (var i = 0; i < this.plots.length; i++)   
+        this.plots[i].attributes["PlotStatus"] = status;          
+  }                                                                                             
   RestoreCursor();                                                                               
 } 
 
+function plotComputeQuery () {
+  this.parent.computeQuery(this);
+}
 
 // the optionalplot, if specified, indicates that this <graph> has only one plot
 // If any of the plots has an ERROR status, return "ERROR" and a diagnostic
-function GraphSerializeGraph (optionalplot) {
+function graphSerializeGraph (optionalplot) {
   var str;
   try {
     str = this.ser.serializeToString(this.createGraphDOMElement(true,optionalplot));
@@ -175,16 +188,16 @@ function GraphSerializeGraph (optionalplot) {
 //    str = str.replace (/<\/graph>/,"</graph>\n");
   }
   catch (e) {
-    // dump("SMR GraphSerialize exception caught\n");
+    dump("SMR GraphSerialize exception caught\n");
     // this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "ERROR");
-    msiComputeLogger.Exception(e);
+    //msiComputeLogger.Exception(e);
   }
   return str;
 }
 
 
 // get defaults from preference system, or if not there, from hardcoded list
-function GraphGetDefaultGraphValue (key) {
+function graphGetDefaultGraphValue (key) {
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
   var keyname = "swp.graph." + key;
   var value;
@@ -208,7 +221,7 @@ function GraphGetDefaultGraphValue (key) {
 
 
 // look up the value of obj[key]. If not found, look up the default value.
-function GraphGetGraphValue (key) {
+function graphGetGraphValue (key) {
   var value = this.getGraphAttribute(key);
   if ((value != null) && (value != "")) {
     return value;
@@ -221,7 +234,7 @@ function GraphGetGraphValue (key) {
 // if forComp, prepare the <graph> fragment to pass to the computation engine
 // Otherwise, create one suitable for putting into the document
 // An optional second argument is the number of the one plot to include for query
-function GraphMakeDOMGraphElement (forComp, optplot) {
+function graphMakeDOMGraphElement (forComp, optplot) {
   var htmlns="http://www.w3.org/1999/xhtml";
   var DOMGraph  = document.createElementNS(htmlns, "graph");
   var DOMGs     = document.createElementNS(htmlns, "graphSpec");
@@ -252,20 +265,22 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
 
   // if the optional plot number was specified, just include one plot
   // otherwise, for each plot, create a <plot> element
-  if ((arguments.length > 1) && (arguments[1] <= this.getNumPlots())) {
-    var status = this.getPlotAttribute (PlotAttrName ("PlotStatus", arguments[1]));
+  if (optplot) {
+    var status = optplot.attributes.PlotStatus;
     if (status == "ERROR") {
-      this.errStr = "ERROR, Plot number " + arguments[1] + " " + this.errStr;
+      this.errStr = "ERROR, Plot number " + this.plots.indexOf(optplot) + " " + this.errStr;
     } else if (status != "Deleted") {
-      DOMGs.appendChild(this.createPlotDOMElement(document, forComp, arguments[1]));
+      DOMGs.appendChild(optplot.createPlotDOMElement(document, forComp, optplot));
     }
   } else {
-    for (var i=1; i<=this.getNumPlots(); i++) {
-      var status = this.getPlotAttribute (PlotAttrName ("PlotStatus", i));
+    var plot;
+    for (var i=0; i<this.plots.length; i++) {
+      plot = this.plots[i];
+      var status = this.plots[i].attributes.PlotStatus;
       if (status == "ERROR") {
         this.errStr = "ERROR, Plot number " + i + " " + this.errStr;
       } else if (status != "Deleted") {
-          DOMGs.appendChild(this.createPlotDOMElement(document, forComp, i));
+          DOMGs.appendChild(plot.createPlotDOMElement(document, forComp, plot));
       }
     }
   }
@@ -302,7 +317,7 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
 }
 
 // walk down <graphSpec> and extract attributes and elements from existing graph
-function GraphReadGraphAttributesFromDOM (DOMGraph) {
+function graphReadGraphAttributesFromDOM (DOMGraph) {
   var msins="http://www.sciword.com/namespaces/sciword";
   var DOMGs = DOMGraph.getElementsByTagName("graphSpec");
   if (DOMGs.length > 0) {
@@ -311,20 +326,22 @@ function GraphReadGraphAttributesFromDOM (DOMGraph) {
       var key = DOMGs.attributes[i].nodeName;
       var value = DOMGs.attributes[i].nodeValue;
 //      dump("Adding key[" + key + "], value[" + value + "] to graph object.\n");  //rwa
-      this.setGraphAttribute(key, value);
+      this[key] = value;
     }
     var DOMPlots = DOMGraph.getElementsByTagName("plot");
     var debugStr = "Number of plot children of DOMGraph is [" + DOMPlots.length + "]";  //rwa
     if (DOMPlots.length <= 0)  //rwa
     {             //rwa
       DOMPlots = DOMGs.getElementsByTagName("plot");   //rwa
+      if (DOMPlots.length > 0) alert("Wha???");
       debugStr += "; number of plot children of graphSpec is [" + DOMPlots.length + "]";  //rwa
     }
     window.dump("Setting up graph dialog. " + debugStr + ".\n");  //rwa
     for (var i = 0; i<DOMPlots.length; i++) {
-      var plotno = this.addPlot();
-      this.extractPlotAttributes(DOMPlots[i], plotno);
-      this.setPlotAttribute (PlotAttrName ("PlotStatus", plotno), "Inited");
+      var plot = new Plot();
+      var plotno = this.addPlot(plot);
+      plot.readPlotAttributesFromDOM(DOMPlots[i]);
+      plot.attributes.PlotStatus = "Inited";
     }
   }
 }
@@ -332,7 +349,7 @@ function GraphReadGraphAttributesFromDOM (DOMGraph) {
 /**----------------------------------------------------------------------------------*/
 
 // get defaults from preference system, or if not there, from hardcoded list
-function PlotGetDefaultPlotValue (key) {
+function plotGetDefaultPlotValue (key) {
   var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
   var value;
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
@@ -357,14 +374,14 @@ function PlotGetDefaultPlotValue (key) {
 
 
 // look up the value key. If not found, look up the default value.
-function PlotGetPlotValue (key, plotno) {
-  var value = this.getPlotAttribute(PlotAttrName(key,plotno));
+function plotGetPlotValue (key) {
+  var value = this[key];
   if ((value != null) && (value != "")) {
     return value;
   }
-  var ptype = this.getPlotAttribute(PlotAttrName("PlotType",plotno));
+  var ptype = this.PlotType;
   if ((key == "XPts") || (key == "YPts") || (key == "ZPts")) {
-    var dim   = this.getValue ("Dimension");
+    var dim   = this.parent.getValue ("Dimension");
     if (dim == "2") {
       switch (ptype) {
         case "implicit" :            value = GetNumAsMathML(20); break;
@@ -388,31 +405,33 @@ function PlotGetPlotValue (key, plotno) {
     }
     return value;
   }
-  return (PlotGetDefaultPlotValue (key));
+  return (plotGetDefaultPlotValue (key));
 }
 
 
 // return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
-function PlotMakeDOMPlotElement (doc, forComp, plotno) {
+function plotMakeDOMPlotElement (doc, forComp) {
   // do the plot attributes as DOM attributes of <plot>
-  var status = this.getPlotValue("PlotStatus",plotno);
+  var status = this.PlotStatus;
+  var attr;
   if (status != "Deleted") {
- //   var msins="http://www.sciword.com/namespaces/sciword";
     var DOMPlot = doc.createElement("plot");
-    var attributes = (forComp) ? this.plotCompAttributeList(plotno) : this.plotAttributeList();
-    for (var i=0; i<attributes.length; i++) {
-      if ((this.isModified(PlotAttrName(attributes[i],plotno))) || forComp) {
-        var value = this.getPlotAttribute(PlotAttrName(attributes[i],plotno));
+    var attrs = (forComp) ? this.plotCompAttributeList() : this.plotAttributeList();
+    for (var i=0; i<attrs.length; i++) {
+      attr = attrs[i];
+      if (this.isModified[attr] || forComp) {
+        var value = this.attributes[attr];
         if ((value != "") && (value != "unspecified"))
-           DOMPlot.setAttribute (attributes[i], value);
+           DOMPlot.setAttribute (attr, value);
       }
     }
     // do the plot elements as document fragment children of <plot>
-    attributes = (forComp) ? this.plotCompElementList(plotno) : this.plotElementList();
-    for (var i=0; i<attributes.length; i++) {
-      if (forComp || (this.isModified(PlotAttrName(attributes[i],plotno)))) {
-        var DOMEnode = doc.createElement(attributes[i]);
-        var textval = this.getPlotValue(attributes[i],plotno);
+    attrs = (forComp) ? this.plotCompElementList() : this.plotElementList();
+    for (var i=0; i<attrs.length; i++) {
+      attr = attrs[i];
+      if (forComp || (this.element[attr])) {
+        var DOMEnode = doc.createElement(attr);
+        var textval = this.element[attr];
         if ((textval != "") && (textval != "unspecified")) {
           var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
           DOMEnode.appendChild (tNode.documentElement);
@@ -427,11 +446,15 @@ function PlotMakeDOMPlotElement (doc, forComp, plotno) {
 
 
 // get values from a DOM <plot> node
-function PlotReadPlotAttributesFromDOM (DOMPlot, plotno) {
+function plotReadPlotAttributesFromDOM (DOMPlot) {
+  var key;
+  var value;
+  var attr;
   for (var j=0; j<DOMPlot.attributes.length; j++) {
-    var key = PlotAttrName(DOMPlot.attributes[j].nodeName, plotno);
-    var value = DOMPlot.attributes[j].nodeValue;
-    this.setPlotAttribute (key, value);
+    attr = DOMPlot.attributes[j];
+    key = attr.nodeName;
+    value = attr.nodeValue;
+    this.attributes[key] = value;
   }
 
   // the children of <plot> are in general <plotelement> <mathml...> </plotelement>
@@ -439,16 +462,19 @@ function PlotReadPlotAttributesFromDOM (DOMPlot, plotno) {
   // The data is either text or mathml. For text, grab the text value, which must be in the nodeValue
   // of the first child. For DOM fragment, store serialization of the fragment.
   var children = DOMPlot.childNodes;
+  var child;
+  var key;
   for (var j=0; j<children.length; j++) {
-    var key = PlotAttrName(children[j].localName, plotno);
-    if (children[j].nodeType == Node.ELEMENT_NODE) {
-      if ((children[j].childNodes.length > 0) && (children[j].childNodes[0].nodeType == Node.TEXT_NODE)) {
-         this.setPlotAttribute (key, children[j].childNodes[0].nodeValue);
+    child = children[j];
+    var key = child.localName;
+    if (child.nodeType == Node.ELEMENT_NODE) {
+      if ((child.childNodes.length > 0) && (child.childNodes[0].nodeType == Node.TEXT_NODE)) {
+         this.element[key] =  child.childNodes[0].nodeValue;
       }
       else {
 //         var ser = new XMLSerializer();
-         var serialized = this.ser.serializeToString(children[j].firstChild);
-         this.setPlotAttribute (key, serialized);
+         var serialized = this.parent.ser.serializeToString(child.firstChild);
+         this.element[key] = serialized;
       }
     }
   }
@@ -609,7 +635,7 @@ function nonmodalRecreateGraph (graph, DOMGraph, editorElement) {
     }
   }
   catch (e) {
-    dump("ERROR: Recreate Graph failed, line 433 in GraphOverlay.js\n");
+    dump("ERROR: Recreate Graph failed, line 612 in GraphOverlay.js\n");
   }
 }
 
@@ -675,17 +701,17 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate, editorEleme
   graph.setGraphAttribute("Width", width);
   graph.setGraphAttribute("Height", height);
 
-
-  graph.addPlot ();
-  graph.setPlotAttribute (PlotAttrName ("PlotStatus",1), "New");
-  graph.setPlotAttribute (PlotAttrName ("Expression",1), expr);
-  graph.setGraphAttribute ("Dimension", dimension);
-  graph.setPlotAttribute (PlotAttrName ("PlotType",1), plottype);
-  graph.setGraphAttribute("plotnumber", "1");
+  var plot = new Plot();
+  var plotnum = graph.addPlot (plot);
+  plot.attributes["PlotStatus"] = "New";
+  plot.element["Expression"] = expr;
+  graph["Dimension"] = dimension;
+  plot.attributes["PlotType"] = plottype;
+  graph["plotnumber"] = plotnum;
   if ((arguments.length > 3) && (arguments[3] == true)) {
-    graph.setPlotAttribute (PlotAttrName ("Animate",1), "true");
+    plot.attributes["Animate"] = "true";
   }
-  graph.computeQuery(1);
+  plot.computeQuery();
   insertGraph (math, graph, editorElement);
 }
 
@@ -715,15 +741,15 @@ function wrapmi (thing) {
 
 /**----------------------------------------------------------------------------------*/
 
-function graphSaveVars (varList, g, plot_no) {   
+function graphSaveVars (varList, plot) {   
   if (varList[0] != "") {
-    g.setPlotAttribute (PlotAttrName ("XVar", plot_no), wrapMath (wrapmi(varList[0])));         
+    plot.element["XVar"] = wrapMath (wrapmi(varList[0]));         
   }  
   if (varList[1] != "") {
-    g.setPlotAttribute (PlotAttrName ("YVar", plot_no), wrapMath (wrapmi(varList[1])));         
+    plot.element["YVar"] = wrapMath (wrapmi(varList[1]));         
   }
   if (varList[2] != "") {
-    g.setPlotAttribute (PlotAttrName ("ZVar", plot_no), wrapMath (wrapmi(varList[2])));         
+    plot.element["ZVar"] = wrapMath (wrapmi(varList[2]));         
   }
 }
 
@@ -732,7 +758,7 @@ function graphSaveVars (varList, g, plot_no) {
 // return a list of attribute names that correspond to required or optional
 // data elements for the given type of graph. The only restrictions here are
 // based on the dimensions of the graph.
-function GraphSelectCompAttributes() {
+function graphSelectCompAttributes() {
   var NA;
   NA = attributeArrayRemove (this.GRAPHATTRIBUTES, "PrintAttribute");
   NA = attributeArrayRemove (NA,  "Placement");
@@ -778,11 +804,11 @@ function attributeArrayFind (A, element) {
 
 
 
-function PlotSelectCompAttributes (plotno) {
+function plotSelectCompAttributes () {
   var NA;
-  var dim = this.getGraphAttribute("Dimension");
-  var ptype = this.getPlotAttribute(PlotAttrName("PlotType",plotno));
-  var animate = this.getPlotAttribute(PlotAttrName("Animate",plotno));
+  var dim = this.parent["Dimension"];
+  var ptype = this.attributes["PlotType"];
+  var animate = this.attributes["Animate"];
   NA = attributeArrayRemove (this.PLOTATTRIBUTES, "PlotStatus");
 
   if (ptype != "approximateIntegral") {
@@ -827,17 +853,17 @@ function PlotSelectCompAttributes (plotno) {
   return NA;
 }
 
-function PlotSelectCompElements (plotno) {
-  var dim     = this.getGraphAttribute("Dimension");
-  var animate = this.getPlotAttribute(PlotAttrName("Animate",plotno));
-  var ptype   = this.getPlotAttribute(PlotAttrName("PlotType",plotno));
+function plotSelectCompElements () {
+  var dim     = this.parent["Dimension"];
+  var animate = this.attributes["Animate"];
+  var ptype   = this.attributes["PlotType"];
   var NA = this.PLOTELEMENTS;
 
   if (ptype != "tube") {
-    NA = attributeArrayRemove (this.PLOTELEMENTS, "TubeRadius");
+    NA = attributeArrayRemove (NA, "TubeRadius");
   }
 
-  var nvars = PlotVarsNeeded (dim, ptype, animate);
+  var nvars = plotVarsNeeded (dim, ptype, animate);
 
   if (nvars < 2) {
     NA = attributeArrayRemove (NA, "YPts");
@@ -855,7 +881,7 @@ function PlotSelectCompElements (plotno) {
 }
 
 
-function PlotVarsNeeded (dim, ptype, animate) {
+function plotVarsNeeded (dim, ptype, animate) {
   var nvars = 0;  
   switch (ptype) {
     case "curve":
@@ -895,21 +921,21 @@ function testQuery (domgraph) {
   var graph = new Graph();
   graph.extractGraphAttributes(domgraph);
 
-  var expr = graph.getPlotAttribute (PlotAttrName ("Expression",1));
+  var expr = graph.plots[0].element["Expression"];
   var expr2 = runFixup(runFixup(expr));
-  graph.setPlotAttribute (PlotAttrName ("Expression",1), expr2);
+  graph.plots[0].element["Expression"] = expr2;
 
-  graph.computeQuery(1);
+  graph.computeQuery(graph.plots[0]);
 }
 
 function testQueryGraph (domgraph, editorElement) {
   var graph = new Graph();
   graph.extractGraphAttributes(domgraph);
 
-  var expr = graph.getPlotAttribute (PlotAttrName ("Expression",1));
+  var expr = graph.plots[0].element["Expression"];
   var expr2 = runFixup(runFixup(expr));
-  graph.setPlotAttribute (PlotAttrName ("Expression",1), expr2);
-  graph.computeQuery(1);
+  graph.plots[0].element["Expression"] = expr2;
+  graph.computeQuery(plots[0]);
 
   var parent = domgraph.parentNode;
   insertGraph (domgraph, graph, editorElement);
@@ -923,14 +949,14 @@ function testQueryGraph (domgraph, editorElement) {
 // (1) identify the plot parameters by looking for <mi>s and assign them to 
 //     the plot variables. Warn if there are problems
 // (2) Try to identify the type of plot 
-function parseQueryReturn (out, graph, plot_no) {
+function parseQueryReturn (out, graph, plot) {
   var stack = [];                                                             
   var level = 0;                                                              
   var result;                                                                 
   var variableList = [];                                                     
-  var pt       = graph.getPlotAttribute (PlotAttrName ("PlotType", plot_no)); 
-  var dim      = graph.getGraphAttribute ("Dimension"); 
-  var animated = (graph.getPlotAttribute (PlotAttrName ("Animate", plot_no)) == "true")?true:false;
+  var pt       = plot.attributes["PlotType"]; 
+  var dim      = plot.parent["Dimension"]; 
+  var animated = (plot.attributes["Animate"] === "true");
   var mathvars = false, commas = false;
   
   // (1) try to identify all of the variables 
@@ -955,18 +981,17 @@ function parseQueryReturn (out, graph, plot_no) {
   }
   
   // check variables
-  var varsNeeded = PlotVarsNeeded (dim, pt, animated);
+  var varsNeeded = plotVarsNeeded (dim, pt, animated);
   
   // (2) Given a list of potential variables, match them to x,y,z, and t
   variableList = matchVarNames (variableList, animated);
   if (variableList)
-    graphSaveVars (variableList, graph, plot_no);
+    graphSaveVars (variableList, plot);
 
   // (3) identify explicitList and parametric types
   // graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");             
   // Count the number of elements in the returned expression. If it's equal to the
   // dimension, set the plot type to parametric.
-  var dim      = graph.getGraphAttribute("Dimension");
   var commalst = out.match (/<mo>,<\/mo>/g);
   if (commalst) {
     commas = true;
@@ -974,38 +999,42 @@ function parseQueryReturn (out, graph, plot_no) {
     // probably only want to do the following for "rectangular" plots
     if ((dim == n) && (pt != "vectorField") & (pt != "polar") && (pt != "cylindrical") && 
         (pt != "spherical") && (pt != "tube")) {
-      graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "parametric");   
+      plot.attributes["PlotType"] = "parametric";   
     }  
   }  
 
   // (4) try to identify explicit lists
   if ((!commas) && (!mathvars)) {
     if (out.indexOf("<mtable>") >= 0) {
-      graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");   
+      plot.attributes["PlotType"] = "explicitList";   
     }
   }
 
   // (5) some special handling for polar, spherical, and cylindrical
   //     build an expression that looks like [r,t] for polar, [r,t,p] for spherical and cylindrical
   //     Allow constants. For animations, if there is only 1 var, it's the animation var.
-  if ((pt == "polar") || (pt == "spherical") || (pt == "cylindrical")) {
-    if (!commas) {        // create [fn, xvar]
-      if ((!mathvars) || ((animated) && (actualVarCount(variableList) == 1))){    // first arg is a constant, the rest are new
+  if ((pt === "polar") || (pt === "spherical") || (pt === "cylindrical")) {
+    if (!commas) 
+    {        // create [fn, xvar]
+      if ((!mathvars) || ((animated) && (actualVarCount(variableList) === 1)))
+      {
+            // first arg is a constant, the rest are new
         var animvar = variableList[0];
         variableList[0] = newVar ("1");
-        graph.setPlotAttribute (PlotAttrName ("XVar", plot_no), wrapMath (wrapmi(variableList[0])));         
+        plot.element["XVar"] = wrapMath (wrapmi(variableList[0]));         
         variableList[1] = newVar ("2");
-        graph.setPlotAttribute (PlotAttrName ("YVar", plot_no), wrapMath (wrapmi(variableList[1])));         
-        if (animated) {
+        plot.element["YVar"] = wrapMath (wrapmi(variableList[1]));         
+        if (animated) 
+        {
           if (pt == "polar") {
-            graph.setPlotAttribute (PlotAttrName ("YVar", plot_no), wrapMath (wrapmi(animvar)));         
+            plot.element["YVar"] = wrapMath (wrapmi(animvar));         
           } else {
-            graph.setPlotAttribute (PlotAttrName ("ZVar", plot_no), wrapMath (wrapmi(animvar)));         
-          }  
+            plot.element["ZVar"] = wrapMath (wrapmi(animvar));         
+          }
         }
       } 
       out = runFixup (createPolarExpr (out, variableList, pt));
-      graph.setPlotAttribute (PlotAttrName ("Expression", plot_no), out);             
+      plot.element["Expression"] = out;             
     }  
   }
   
@@ -1021,7 +1050,7 @@ function parseQueryReturn (out, graph, plot_no) {
         }
       }  
       out = runFixup(out);
-      graph.setPlotAttribute (PlotAttrName ("Expression", plot_no), out);             
+      plot.element["Expression"] = out;             
     }          
   }
   
