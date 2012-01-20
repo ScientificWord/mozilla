@@ -8,7 +8,6 @@ en-US.jar:
   locale/helpfiles/swp-glossary.rdf				  	(swp-glossary.rdf)
   locale/helpfiles/swp-toc.rdf						    (swp-toc.rdf)
   locale/helpfiles/welcome.xhtml					    (welcome.xhtml)
-  locale/helpfiles/swp_help.xhtml			        (swp_help.xhtml)
   locale/helpfiles/shortcuts.xhtml			    	(shortcuts.xhtml)
   locale/helpfiles/images/anchor-in-doc.gif		(images/anchor-in-doc.gif)
   locale/helpfiles/images/bullets.gif			    (images/bullets.gif)
@@ -19,6 +18,7 @@ en-US.jar:
   locale/helpfiles/css/help.css               (css/help.css)
   locale/helpfiles/graphics/princelogo.png    (graphics/princelogo.png)
 %
+  locale/helpfiles/cd00-00-creating_documents.xhtml		  (cd00-00-creating_documents.xhtml)
 %
   locale/helpfiles/dm00-00-doing_mathematics.xhtml		  (dm00-00-doing_mathematics.xhtml)
   locale/helpfiles/dm01-00-basic_techniques.xhtml		  (dm01-00-basic_techniques.xhtml)
