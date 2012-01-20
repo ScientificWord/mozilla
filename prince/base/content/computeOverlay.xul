@@ -14,13 +14,13 @@
 <overlay id="computeOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/WhitespaceUtils.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/ComputeDebug.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
 
 #include computekeys.inc
 
