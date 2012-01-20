@@ -142,9 +142,16 @@ paragraph>*:first-child:before, paragraph[open="true"]>*:first-child:before  {
   content: "";
 }
 
+h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.2em 0;
+  border-bottom: 1px solid #ccc;
+  font-family: arial, verdana, sans-serif;
+  color: rgb(9, 62, 125);
+}
 
+h1 { font-size: 250%; font-weight: bold;}
 
-h2 { font-size: 150%; font-weight: normal;}
+h2 { font-size: 175%; font-weight: bold;}
 
 
 subsection {
@@ -153,7 +160,7 @@ subsection {
 
 subsection>*:first-child {
   display: block;
-  font-size: 120%;
+  font-size: 110%;
   font-weight: bold;
   margin: 1em 0 0.2em 0;
   border-bottom: 1px solid #ccc;
@@ -199,14 +206,6 @@ subparagraph>*:first-child {
   border-bottom: 1px solid #ccc;
   font-family: arial, verdana, sans-serif;
   font-weight: bold;
-}
-
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 1em 0 0.2em 0;
-  border-bottom: 1px solid #ccc;
-  font-family: arial, verdana, sans-serif;
-  color: rgb(9, 62, 125);
 }
 
 
