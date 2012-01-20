@@ -1981,7 +1981,7 @@ function initKeyList()
 function getGraphicsImportFilterString()
 {
   var convertData = getGraphicsFileTypesData();
-  var typeArray = ["*.png", "*.gif", "*.jpg", "*.jpeg", "*.pdf"];
+  var typeArray = ["*.png", "*.gif", "*.jpg", "*.jpeg", "*.pdf", "*.xvc","*.xvz"];
   var newType;
   for (var ix = 0; ix < convertData.length; ++ix)
   {
