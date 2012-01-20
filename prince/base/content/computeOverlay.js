@@ -383,7 +383,7 @@ function isSelectionMath(selection)
 
 function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
 {
-  if (inPlace == null) inPlace = false;
+  inPlace = !!inPlace;
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
