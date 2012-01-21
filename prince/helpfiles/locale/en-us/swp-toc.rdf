@@ -402,12 +402,26 @@
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#basic_shortcuts_toolbar">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Greek letters"         nc:link="dm01-05-basic_techniques.xhtml#greek letters"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Binary operations"     nc:link="dm01-05-basic_techniques.xhtml#binary operations"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Binary relations"      nc:link="dm01-05-basic_techniques.xhtml#binary relations"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Negated relations"     nc:link="dm01-05-basic_techniques.xhtml#negated relations"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Arrows"                nc:link="dm01-05-basic_techniques.xhtml#arrows"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Miscellaneous symbols" nc:link="dm01-05-basic_techniques.xhtml#miscellaneous symbols"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Delimiters"            nc:link="dm01-05-basic_techniques.xhtml#delimiters"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
 <!-- Chapter 2 subsections -->   
   <rdf:Description about="#numbers_arithmetic">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="numbers_arithmetic_add" nc:name="Addition and Subtraction" nc:link="dm02-01-numbers_functions_units.xhtml#addition and subtraction"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_arithmetic_mult" nc:name="Multiplication and Division" nc:link="dm02-01-numbers_functions_units.xhtml#multiplication and division"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_arithmetic_add" nc:name="Addition and Subtraction"          nc:link="dm02-01-numbers_functions_units.xhtml#addition and subtraction"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_arithmetic_mult" nc:name="Multiplication and Division"      nc:link="dm02-01-numbers_functions_units.xhtml#multiplication and division"/> </rdf:li>
       <rdf:li> <rdf:Description ID="numbers_arithmetic_mixed" nc:name="Mixed Numbers and Long Division" nc:link="dm02-01-numbers_functions_units.xhtml#mixed numbers and long division"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
@@ -416,11 +430,11 @@
   <rdf:Description about="#numbers_theory">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="numbers_theory_prime"     nc:name="Prime Factorization" nc:link="dm02-02-numbers_functions_units.xhtml#prime factorization"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_theory_gcd"     nc:name="Greatest Common Divisor" nc:link="dm02-02-numbers_functions_units.xhtml#gcd"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_theory_lcm"     nc:name="Least Common Multiple" nc:link="dm02-02-numbers_functions_units.xhtml#lcm"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_theory_factorials"     nc:name="Factorials" nc:link="dm02-02-numbers_functions_units.xhtml#factorials"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_theory_binomials"     nc:name="Binomial Coefficient" nc:link="dm02-02-numbers_functions_units.xhtml#binomial coefficients"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_theory_prime"      nc:name="Prime Factorization"     nc:link="dm02-02-numbers_functions_units.xhtml#prime factorization"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_theory_gcd"        nc:name="Greatest Common Divisor" nc:link="dm02-02-numbers_functions_units.xhtml#gcd"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_theory_lcm"        nc:name="Least Common Multiple"   nc:link="dm02-02-numbers_functions_units.xhtml#lcm"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_theory_factorials" nc:name="Factorials"              nc:link="dm02-02-numbers_functions_units.xhtml#factorials"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_theory_binomials"  nc:name="Binomial Coefficient"    nc:link="dm02-02-numbers_functions_units.xhtml#binomial coefficients"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -428,11 +442,11 @@
   <rdf:Description about="#numbers_real">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="numbers_real_arith"      nc:name="Arithmetic" nc:link="dm02-03-numbers_functions_units.xhtml#arithmetic"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_real_powers"     nc:name="Powers and Radicals" nc:link="dm02-03-numbers_functions_units.xhtml#powers and radicals"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_real_arith"      nc:name="Arithmetic"                  nc:link="dm02-03-numbers_functions_units.xhtml#arithmetic"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_real_powers"     nc:name="Powers and Radicals"         nc:link="dm02-03-numbers_functions_units.xhtml#powers and radicals"/> </rdf:li>
       <rdf:li> <rdf:Description ID="numbers_real_rational"   nc:name="Rationalizing a Denominator" nc:link="dm02-03-numbers_functions_units.xhtml#rationalizing a denominator"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_real_numeric"    nc:name="Numerical Approximations" nc:link="dm02-03-numbers_functions_units.xhtml#numerical approximations"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_real_scientific" nc:name="Scientific Notation" nc:link="dm02-03-numbers_functions_units.xhtml#scientific notation"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_real_numeric"    nc:name="Numerical Approximations"    nc:link="dm02-03-numbers_functions_units.xhtml#numerical approximations"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_real_scientific" nc:name="Scientific Notation"         nc:link="dm02-03-numbers_functions_units.xhtml#scientific notation"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -440,11 +454,11 @@
   <rdf:Description about="#numbers_functions">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="numbers_functions_absolute" nc:name="Absolute Value" nc:link="dm02-04-numbers_functions_units.xhtml#absolute value"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_functions_maxmin"   nc:name="Maximum and Minimum" nc:link="dm02-04-numbers_functions_units.xhtml#maximum"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_functions_absolute" nc:name="Absolute Value"                          nc:link="dm02-04-numbers_functions_units.xhtml#absolute value"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_functions_maxmin"   nc:name="Maximum and Minimum"                     nc:link="dm02-04-numbers_functions_units.xhtml#maximum"/> </rdf:li>
       <rdf:li> <rdf:Description ID="numbers_functions_int"      nc:name="Greatest and Smallest Integer Functions" nc:link="dm02-04-numbers_functions_units.xhtml#greatest and smallest integer functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_functions_check"    nc:name="Checking Equality and Inequality" nc:link="dm02-04-numbers_functions_units.xhtml#check equality"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_functions_union"    nc:name="Union, Intersection, and Difference" nc:link="dm02-04-numbers_functions_units.xhtml#union intersection difference"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_functions_check"    nc:name="Checking Equality and Inequality"        nc:link="dm02-04-numbers_functions_units.xhtml#check equality"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_functions_union"    nc:name="Union, Intersection, and Difference"     nc:link="dm02-04-numbers_functions_units.xhtml#union intersection difference"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -452,10 +466,10 @@
   <rdf:Description about="#numbers_complex">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="numbers_complex_unit"     nc:name="Imaginary Unit" nc:link="dm02-05-numbers_functions_units.xhtml#imaginary unit"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_complex_arith"    nc:name="Arithmetic" nc:link="dm02-05-numbers_functions_units.xhtml#arithmetic"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_complex_absolute" nc:name="Absolute Value" nc:link="dm02-05-numbers_functions_units.xhtml#absolute value"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_complex_complex"  nc:name="Complex Conjugate" nc:link="dm02-05-numbers_functions_units.xhtml#complex conjugate"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_complex_unit"     nc:name="Imaginary Unit"           nc:link="dm02-05-numbers_functions_units.xhtml#imaginary unit"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_complex_arith"    nc:name="Arithmetic"               nc:link="dm02-05-numbers_functions_units.xhtml#arithmetic"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_complex_absolute" nc:name="Absolute Value"           nc:link="dm02-05-numbers_functions_units.xhtml#absolute value"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_complex_complex"  nc:name="Complex Conjugate"        nc:link="dm02-05-numbers_functions_units.xhtml#complex conjugate"/> </rdf:li>
       <rdf:li> <rdf:Description ID="numbers_complex_real"     nc:name="Real and Imaginary Parts" nc:link="dm02-05-numbers_functions_units.xhtml#real and imaginary parts"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
@@ -464,9 +478,9 @@
   <rdf:Description about="#numbers_units">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="numbers_units_entering"   nc:name="Entering Units" nc:link="dm02-06-numbers_functions_units.xhtml#entering units"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_units_entering"   nc:name="Entering Units"                   nc:link="dm02-06-numbers_functions_units.xhtml#entering units"/> </rdf:li>
       <rdf:li> <rdf:Description ID="numbers_units_arith"      nc:name="Arithmetic Operations with Units" nc:link="dm02-06-numbers_functions_units.xhtml#arithmetic operations"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="numbers_units_converting" nc:name="Converting Units" nc:link="dm02-06-numbers_functions_units.xhtml#converting units"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="numbers_units_converting" nc:name="Converting Units"                 nc:link="dm02-06-numbers_functions_units.xhtml#converting units"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -475,8 +489,8 @@
   <rdf:Description about="#algebra_polynomials">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="algebra_polynomials_poly"      nc:name="Polynomials" nc:link="dm03-01-algebra.xhtml#polynomials"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_polynomials_summation" nc:name="Summation Notation" nc:link="dm03-01-algebra.xhtml#summation notation"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_polynomials_poly"      nc:name="Polynomials"                                nc:link="dm03-01-algebra.xhtml#polynomials"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_polynomials_summation" nc:name="Summation Notation"                         nc:link="dm03-01-algebra.xhtml#summation notation"/> </rdf:li>
       <rdf:li> <rdf:Description ID="algebra_polynomials_sums"      nc:name="Sums, Differences, Products, and Quotients" nc:link="dm03-01-algebra.xhtml#sums differences products quotients"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
@@ -485,12 +499,12 @@
   <rdf:Description about="#algebra_operations">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="algebra_operations_div"     nc:name="Division by Polynomials" nc:link="dm03-02-algebra.xhtml#division by polynomials"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_operations_div"     nc:name="Division by Polynomials"                      nc:link="dm03-02-algebra.xhtml#division by polynomials"/> </rdf:li>
       <rdf:li> <rdf:Description ID="algebra_operations_sums"    nc:name="Sums and Differences of Rational Expressions" nc:link="dm03-02-algebra.xhtml#sums and differences"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_operations_part"    nc:name="Partial Fractions" nc:link="dm03-02-algebra.xhtml#partial fractions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_operations_collect" nc:name="Collecting and Ordering Terms" nc:link="dm03-02-algebra.xhtml#collecting and ordering terms"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_operations_factor"  nc:name="Factoring Polynomials" nc:link="dm03-02-algebra.xhtml#factoring polynomials"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_operations_gcd"     nc:name="Greatest Common Divisor of Two Polynomials" nc:link="dm03-02-algebra.xhtml#gcd and lcm"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_operations_part"    nc:name="Partial Fractions"                            nc:link="dm03-02-algebra.xhtml#partial fractions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_operations_collect" nc:name="Collecting and Ordering Terms"                nc:link="dm03-02-algebra.xhtml#collecting and ordering terms"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_operations_factor"  nc:name="Factoring Polynomials"                        nc:link="dm03-02-algebra.xhtml#factoring polynomials"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_operations_gcd"     nc:name="Greatest Common Divisor of Two Polynomials"   nc:link="dm03-02-algebra.xhtml#gcd and lcm"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -499,7 +513,7 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="algebra_substitution_sub"  nc:name="Substituting for a Variable" nc:link="dm03-03-algebra.xhtml#substituting for a variable"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_substitution_eval" nc:name="Evaluating at Endpoints" nc:link="dm03-03-algebra.xhtml#evaluating at endpoints"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_substitution_eval" nc:name="Evaluating at Endpoints"     nc:link="dm03-03-algebra.xhtml#evaluating at endpoints"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -507,12 +521,12 @@
   <rdf:Description about="#algebra_roots">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="algebra_roots_complex" nc:name="Finding Real and Complex Roots" nc:link="dm03-04-algebra.xhtml#finding real and complex roots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_roots_real"    nc:name="Finding Real Roots" nc:link="dm03-04-algebra.xhtml#finding real roots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_roots_rect"    nc:name="Rewrite Rectangular" nc:link="dm03-04-algebra.xhtml#rewrite rectangular"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_roots_2nd"     nc:name="Second-degree Polynomials" nc:link="dm03-04-algebra.xhtml#second degree polynomials"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_roots_complex" nc:name="Finding Real and Complex Roots"       nc:link="dm03-04-algebra.xhtml#finding real and complex roots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_roots_real"    nc:name="Finding Real Roots"                   nc:link="dm03-04-algebra.xhtml#finding real roots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_roots_rect"    nc:name="Rewrite Rectangular"                  nc:link="dm03-04-algebra.xhtml#rewrite rectangular"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_roots_2nd"     nc:name="Second-degree Polynomials"            nc:link="dm03-04-algebra.xhtml#second degree polynomials"/> </rdf:li>
       <rdf:li> <rdf:Description ID="algebra_roots_3rd"     nc:name="Third- and Fourth-Degree Polynomials" nc:link="dm03-04-algebra.xhtml#third and fourth degree polynomials"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_roots_5th"     nc:name="Polynomials of Degree 5 and Higher" nc:link="dm03-04-algebra.xhtml#polynomials of degree five and higher"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_roots_5th"     nc:name="Polynomials of Degree 5 and Higher"   nc:link="dm03-04-algebra.xhtml#polynomials of degree five and higher"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -520,26 +534,35 @@
   <rdf:Description about="#algebra_solving">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="algebra_solving_one"     nc:name="Equations with One Variable" nc:link="dm03-05-algebra.xhtml#equations with one variable"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_solving_check"   nc:name="Checking the Answer" nc:link="dm03-05-algebra.xhtml#checking the answer"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_solving_several" nc:name="Equations with Several Variables" nc:link="dm03-05-algebra.xhtml#equations with several variables"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_solving_systems" nc:name="Systems of Equations" nc:link="dm03-05-algebra.xhtml#systems of equations"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_solving_one"     nc:name="Equations with One Variable"                 nc:link="dm03-05-algebra.xhtml#equations with one variable"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_solving_check"   nc:name="Checking the Answer"                         nc:link="dm03-05-algebra.xhtml#checking the answer"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_solving_several" nc:name="Equations with Several Variables"            nc:link="dm03-05-algebra.xhtml#equations with several variables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_solving_systems" nc:name="Systems of Equations"                        nc:link="dm03-05-algebra.xhtml#systems of equations"/> </rdf:li>
       <rdf:li> <rdf:Description ID="algebra_solving_numeric" nc:name="Numerical Solutions to Polynomial Equations" nc:link="dm03-05-algebra.xhtml#numerical solutions to polynomial equations"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_solving_inequal" nc:name="Inequalities" nc:link="dm03-05-algebra.xhtml#inequalities"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_solving_inequal" nc:name="Inequalities"                                nc:link="dm03-05-algebra.xhtml#inequalities"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#algebra_solving_one">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="algebra_solving_oneA" nc:name="Finding real and complex solutions" nc:link="dm03-05-algebra.xhtml#finding real and complex solutions"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="algebra_solving_oneB" nc:name="Finding real solutions"             nc:link="dm03-05-algebra.xhtml#finding real solutions"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
   <rdf:Description about="#algebra_defining">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="algebra_defining_variables" nc:name="Assigning Values to Variables" nc:link="dm03-06-algebra.xhtml#assigning values to variables"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_defining_defining"  nc:name="Defining Functions" nc:link="dm03-06-algebra.xhtml#defining functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_defining_algebra"   nc:name="Algebra of Functions" nc:link="dm03-06-algebra.xhtml#algebra of functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_defining_func"      nc:name="Table of Values for a Function" nc:link="dm03-06-algebra.xhtml#table of values for a function"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_defining_piece"     nc:name="Piecewise-Defined Functions" nc:link="dm03-06-algebra.xhtml#piecewise defined functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_defining_variables" nc:name="Assigning Values to Variables"            nc:link="dm03-06-algebra.xhtml#assigning values to variables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_defining_defining"  nc:name="Defining Functions"                       nc:link="dm03-06-algebra.xhtml#defining functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_defining_algebra"   nc:name="Algebra of Functions"                     nc:link="dm03-06-algebra.xhtml#algebra of functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_defining_func"      nc:name="Table of Values for a Function"           nc:link="dm03-06-algebra.xhtml#table of values for a function"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_defining_piece"     nc:name="Piecewise-Defined Functions"              nc:link="dm03-06-algebra.xhtml#piecewise defined functions"/> </rdf:li>
       <rdf:li> <rdf:Description ID="algebra_defining_generic"   nc:name="Defining Generic Functions and Constants" nc:link="dm03-06-algebra.xhtml#defining generic functions and constants"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_defining_showing"   nc:name="Showing and Removing Definitions" nc:link="dm03-06-algebra.xhtml#showing and removing definitions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_defining_showing"   nc:name="Showing and Removing Definitions"         nc:link="dm03-06-algebra.xhtml#showing and removing definitions"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -547,13 +570,13 @@
   <rdf:Description about="#algebra_exp-and-log">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="algebra_exp-and-log_combining"  nc:name="Combining Exponential Expressions" nc:link="dm03-07-algebra.xhtml#combining exponential expressions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_exp-and-log_powers"     nc:name="Combining Powers" nc:link="dm03-07-algebra.xhtml#combining powers"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_exp-and-log_laws"       nc:name="Laws of Exponents" nc:link="dm03-07-algebra.xhtml#laws of exponents"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_exp-and-log_eval_exp"   nc:name="Evaluating Exponential Expressions" nc:link="dm03-07-algebra.xhtml#evaluating exponential expressions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_exp-and-log_logs"       nc:name="Logarithms and Logarithmic Functions" nc:link="dm03-07-algebra.xhtml#logarithms and logarithmic functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_exp-and-log_properties" nc:name="Properties of Logarithms" nc:link="dm03-07-algebra.xhtml#properties of logarithms"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="algebra_exp-and-log_eval_log"   nc:name="Evaluating Logarithmic Expressions" nc:link="dm03-07-algebra.xhtml#evaluating logarithmic expressions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_exp-and-log_combining"  nc:name="Combining Exponential Expressions"             nc:link="dm03-07-algebra.xhtml#combining exponential expressions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_exp-and-log_powers"     nc:name="Combining Powers"                              nc:link="dm03-07-algebra.xhtml#combining powers"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_exp-and-log_laws"       nc:name="Laws of Exponents"                             nc:link="dm03-07-algebra.xhtml#laws of exponents"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_exp-and-log_eval_exp"   nc:name="Evaluating Exponential Expressions"            nc:link="dm03-07-algebra.xhtml#evaluating exponential expressions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_exp-and-log_logs"       nc:name="Logarithms and Logarithmic Functions"          nc:link="dm03-07-algebra.xhtml#logarithms and logarithmic functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_exp-and-log_properties" nc:name="Properties of Logarithms"                      nc:link="dm03-07-algebra.xhtml#properties of logarithms"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="algebra_exp-and-log_eval_log"   nc:name="Evaluating Logarithmic Expressions"            nc:link="dm03-07-algebra.xhtml#evaluating logarithmic expressions"/> </rdf:li>
       <rdf:li> <rdf:Description ID="algebra_exp-and-log_solving"    nc:name="Solving Exponential and Logarithmic Equations" nc:link="dm03-07-algebra.xhtml#solving exponential and logarithmic equations"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
@@ -563,10 +586,10 @@
   <rdf:Description about="#trigonometry_functions">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="trigonometry_functions_six"     nc:name="The Six Basic Functions" nc:link="dm04-01-trigonometry.xhtml#the six basic functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_functions_radians" nc:name="Radians and Degrees" nc:link="dm04-01-trigonometry.xhtml#radians and degrees"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_functions_six"     nc:name="The Six Basic Functions"            nc:link="dm04-01-trigonometry.xhtml#the six basic functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_functions_radians" nc:name="Radians and Degrees"                nc:link="dm04-01-trigonometry.xhtml#radians and degrees"/> </rdf:li>
       <rdf:li> <rdf:Description ID="trigonometry_functions_eval"    nc:name="Evaluating Trigonometric Functions" nc:link="dm04-01-trigonometry.xhtml#evaluating trigonometric functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_functions_solve"   nc:name="Solving Trigonometric Equations" nc:link="dm04-01-trigonometry.xhtml#solving trigonometric equations"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_functions_solve"   nc:name="Solving Trigonometric Equations"    nc:link="dm04-01-trigonometry.xhtml#solving trigonometric equations"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -575,10 +598,10 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="trigonometry_identities_defs"      nc:name="Definitions in Terms of Basic Trigonometric Functions" nc:link="dm04-02-trigonometry.xhtml#definitions of trig functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_identities_pythag"    nc:name="Pythagorean Identities" nc:link="dm04-02-trigonometry.xhtml#pythagorean identities"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_identities_formulas"  nc:name="Addition Formulas" nc:link="dm04-02-trigonometry.xhtml#addition formulas"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_identities_multiple"  nc:name="Multiple-Angle Formulas" nc:link="dm04-02-trigonometry.xhtml#multiple angle formulas"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_identities_combining" nc:name="Combining and Simplifying Trigonometric Expressions" nc:link="dm04-02-trigonometry.xhtml#combining and simplifying"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_identities_pythag"    nc:name="Pythagorean Identities"                                nc:link="dm04-02-trigonometry.xhtml#pythagorean identities"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_identities_formulas"  nc:name="Addition Formulas"                                     nc:link="dm04-02-trigonometry.xhtml#addition formulas"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_identities_multiple"  nc:name="Multiple-Angle Formulas"                               nc:link="dm04-02-trigonometry.xhtml#multiple angle formulas"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_identities_combining" nc:name="Combining and Simplifying Trigonometric Expressions"   nc:link="dm04-02-trigonometry.xhtml#combining and simplifying"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -586,9 +609,9 @@
   <rdf:Description about="#trigonometry_inverse">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="trigonometry_inverse_inverse"   nc:name="The Inverse Trigonometric Functions" nc:link="dm04-03-trigonometry.xhtml#defining inverse trig functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_inverse_inverse"   nc:name="The Inverse Trigonometric Functions"                     nc:link="dm04-03-trigonometry.xhtml#defining inverse trig functions"/> </rdf:li>
       <rdf:li> <rdf:Description ID="trigonometry_inverse_combining" nc:name="Combining and Rewriting Inverse Trigonometric Functions" nc:link="dm04-03-trigonometry.xhtml#combining and rewriting inverse trig functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_inverse_trig"      nc:name="Trigonometric Equations and Inverse Functions" nc:link="dm04-03-trigonometry.xhtml#trigonometric equations and inverse functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_inverse_trig"      nc:name="Trigonometric Equations and Inverse Functions"           nc:link="dm04-03-trigonometry.xhtml#trigonometric equations and inverse functions"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -596,7 +619,7 @@
   <rdf:Description about="#trigonometry_hyperbolic">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="trigonometry_hyperbolic_hyper"   nc:name="Hyperbolic Functions" nc:link="dm04-04-trigonometry.xhtml#hyperbolic functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_hyperbolic_hyper"   nc:name="Hyperbolic Functions"         nc:link="dm04-04-trigonometry.xhtml#hyperbolic functions"/> </rdf:li>
       <rdf:li> <rdf:Description ID="trigonometry_hyperbolic_inverse" nc:name="Inverse Hyperbolic Functions" nc:link="dm04-04-trigonometry.xhtml#inverse hyperbolic functions"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
@@ -605,11 +628,11 @@
   <rdf:Description about="#trigonometry_complex">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="trigonometry_complex_argument" nc:name="Argument of a Complex Number" nc:link="dm04-05-trigonometry.xhtml#argument of a complex number"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_complex_forms"    nc:name="Forms of a Complex Number" nc:link="dm04-05-trigonometry.xhtml#forms of a complex number"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_complex_euler"    nc:name="Euler Identity" nc:link="dm04-05-trigonometry.xhtml#euler identity"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_complex_complex"  nc:name="Complex Powers and Roots of Complex Numbers" nc:link="dm04-05-trigonometry.xhtml#complex powers and roots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="trigonometry_complex_demoivre" nc:name="DeMoivre's Theorem" nc:link="dm04-05-trigonometry.xhtml#demoivres theorem"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_complex_argument" nc:name="Argument of a Complex Number"                   nc:link="dm04-05-trigonometry.xhtml#argument of a complex number"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_complex_forms"    nc:name="Forms of a Complex Number"                      nc:link="dm04-05-trigonometry.xhtml#forms of a complex number"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_complex_euler"    nc:name="Euler Identity"                                 nc:link="dm04-05-trigonometry.xhtml#euler identity"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_complex_complex"  nc:name="Complex Powers and Roots of Complex Numbers"    nc:link="dm04-05-trigonometry.xhtml#complex powers and roots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="trigonometry_complex_demoivre" nc:name="DeMoivre's Theorem"                             nc:link="dm04-05-trigonometry.xhtml#demoivres theorem"/> </rdf:li>
       <rdf:li> <rdf:Description ID="trigonometry_complex_trig"     nc:name="Complex Trigonometric and Hyperbolic Functions" nc:link="dm04-05-trigonometry.xhtml#complex trig and hyperbolic functions"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
@@ -620,8 +643,8 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="functions_names_valid"  nc:name="Valid Names for Functions and Expressions or Variables" nc:link="dm05-01-functions.xhtml#valid names"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_names_custom" nc:name="Custom Names" nc:link="dm05-01-functions.xhtml#custom names"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_names_auto"   nc:name="Automatic Substitution" nc:link="dm05-01-functions.xhtml#automatic substitution"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_names_custom" nc:name="Custom Names"                                           nc:link="dm05-01-functions.xhtml#custom names"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_names_auto"   nc:name="Automatic Substitution"                                 nc:link="dm05-01-functions.xhtml#automatic substitution"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -630,10 +653,10 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="functions_variables_assign"   nc:name="Assigning Values to Variables, or Naming Expressions" nc:link="dm05-02-functions.xhtml#assigning values to variables"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_variables_show"     nc:name="Show Definitions, Clear Definitions, and Undefine" nc:link="dm05-02-functions.xhtml#show clear undefine"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_variables_compound" nc:name="Compound Definitions" nc:link="dm05-02-functions.xhtml#compound definitions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_variables_full"     nc:name="Full Evaluation and Assignment" nc:link="dm05-02-functions.xhtml#full evaluation"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_variables_define"   nc:name="Defining Generic Constants" nc:link="dm05-02-functions.xhtml#defining generic constants"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_variables_show"     nc:name="Show Definitions, Clear Definitions, and Undefine"    nc:link="dm05-02-functions.xhtml#show clear undefine"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_variables_compound" nc:name="Compound Definitions"                                 nc:link="dm05-02-functions.xhtml#compound definitions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_variables_full"     nc:name="Full Evaluation and Assignment"                       nc:link="dm05-02-functions.xhtml#full evaluation"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_variables_define"   nc:name="Defining Generic Constants"                           nc:link="dm05-02-functions.xhtml#defining generic constants"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -641,13 +664,13 @@
   <rdf:Description about="#functions_functions">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="functions_functions_one"       nc:name="Functions of One Variable" nc:link="dm05-03-functions.xhtml#functions of one variable"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_functions_compound"  nc:name="Compound Definitions" nc:link="dm05-03-functions.xhtml#compound definitions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_functions_one"       nc:name="Functions of One Variable"                         nc:link="dm05-03-functions.xhtml#functions of one variable"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_functions_compound"  nc:name="Compound Definitions"                              nc:link="dm05-03-functions.xhtml#compound definitions"/> </rdf:li>
       <rdf:li> <rdf:Description ID="functions_functions_show"      nc:name="Show Definitions, Clear Definitions, and Undefine" nc:link="dm05-03-functions.xhtml#show clear undefine"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_functions_subs"      nc:name="Subscripts as Functions Arguments" nc:link="dm05-03-functions.xhtml#subscripts as function arguments"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_functions_piece"     nc:name="Piecewise-Defined Functions" nc:link="dm05-03-functions.xhtml#piecewise-defined function"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_functions_define"    nc:name="Defining Generic Functions" nc:link="dm05-03-functions.xhtml#generic functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_functions_functions" nc:name="Functions of Several Variables" nc:link="dm05-03-functions.xhtml#functions of several variables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_functions_subs"      nc:name="Subscripts as Functions Arguments"                 nc:link="dm05-03-functions.xhtml#subscripts as function arguments"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_functions_piece"     nc:name="Piecewise-Defined Functions"                       nc:link="dm05-03-functions.xhtml#piecewise-defined function"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_functions_define"    nc:name="Defining Generic Functions"                        nc:link="dm05-03-functions.xhtml#generic functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_functions_functions" nc:name="Functions of Several Variables"                    nc:link="dm05-03-functions.xhtml#functions of several variables"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -655,9 +678,9 @@
   <rdf:Description about="#functions_assumptions">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="functions_assumptions_assume"   nc:name="Assumptions and Restraint Functions" nc:link="dm05-04-functions.xhtml#assumptions about variables"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_assumptions_make"     nc:name="Making Assumptions About Variables " nc:link="dm05-04-functions.xhtml#making assumptions about variables"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_assumptions_remove"   nc:name="Removing Assumptions About a Variable" nc:link="dm05-04-functions.xhtml#removing assumptions about a variable"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_assumptions_assume"   nc:name="Assumptions and Restraint Functions"                  nc:link="dm05-04-functions.xhtml#assumptions about variables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_assumptions_make"     nc:name="Making Assumptions About Variables "                  nc:link="dm05-04-functions.xhtml#making assumptions about variables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_assumptions_remove"   nc:name="Removing Assumptions About a Variable"                nc:link="dm05-04-functions.xhtml#removing assumptions about a variable"/> </rdf:li>
       <rdf:li> <rdf:Description ID="functions_assumptions_restrict" nc:name="Restricting the Domain of a Complex or Real Variable" nc:link="dm05-04-functions.xhtml#restricting the domain"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
@@ -666,9 +689,9 @@
   <rdf:Description about="#functions_forumulas">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="functions_forumulas_create"   nc:name="Creating a Formula Object" nc:link="dm05-05-functions.xhtml#creating a formula object"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_forumulas_create"   nc:name="Creating a Formula Object"                                nc:link="dm05-05-functions.xhtml#creating a formula object"/> </rdf:li>
       <rdf:li> <rdf:Description ID="functions_forumulas_how"      nc:name="How to Recognize a Formula Object in the Document Window" nc:link="dm05-05-functions.xhtml#changing the view"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_forumulas_examples" nc:name="Examples" nc:link="dm05-05-functions.xhtml#examples"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_forumulas_examples" nc:name="Examples"                                                 nc:link="dm05-05-functions.xhtml#examples"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -677,18 +700,36 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="functions_external_lib"  nc:name="Using Functions in MuPAD Libraries" nc:link="dm05-06-functions.xhtml#functions in mupad libraries"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_external_func" nc:name="User-Defined MuPAD Functions" nc:link="dm05-06-functions.xhtml#user defined mupad functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_external_pass" nc:name="Passthru Code to Engine" nc:link="dm05-06-functions.xhtml#passthru code to engine"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_external_func" nc:name="User-Defined MuPAD Functions"       nc:link="dm05-06-functions.xhtml#user defined mupad functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_external_pass" nc:name="Passthru Code to Engine"            nc:link="dm05-06-functions.xhtml#passthru code to engine"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#functions_external_lib">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="functions_external_libA" nc:name="Removing definitions"          nc:link="dm05-06-functions.xhtml#removing definitions"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="functions_external_libB" nc:name="Function and expression names" nc:link="dm05-06-functions.xhtml#function and expression names"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#functions_external_func">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="functions_external_funcA" nc:name="Removing definitions"          nc:link="dm05-06-functions.xhtml#removing definitions 2"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="functions_external_funcB" nc:name="Function and expression names" nc:link="dm05-06-functions.xhtml#function and expression names 2"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
   <rdf:Description about="#functions_trigtype">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="functions_trigtype_trig"     nc:name="The Trigtype Functions" nc:link="dm05-07-functions.xhtml#the trigtype functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_trigtype_trig"     nc:name="The Trigtype Functions"                          nc:link="dm05-07-functions.xhtml#the trigtype functions"/> </rdf:li>
       <rdf:li> <rdf:Description ID="functions_trigtype_arg"      nc:name="Determining the Argument of a Trigtype Function" nc:link="dm05-07-functions.xhtml#determining the argument of a trigtype function"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="functions_trigtype_decision" nc:name="The Decision Algorithm and Exceptions" nc:link="dm05-07-functions.xhtml#the decision algorithm"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="functions_trigtype_decision" nc:name="The Decision Algorithm and Exceptions"           nc:link="dm05-07-functions.xhtml#the decision algorithm"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -698,23 +739,56 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="plotting_getting-started_2drect"     nc:name="Creating 2D Rectangular Plots" nc:link="dm06-01-plotting.xhtml#creating 2d rectangular plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_getting-started_2dpolar"    nc:name="Creating 2D Polar Plots" nc:link="dm06-01-plotting.xhtml#creating 2d polar plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_getting-started_2dimplicit" nc:name="Creating 2D Implicit Plots" nc:link="dm06-01-plotting.xhtml#creating 2d implicit plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_getting-started_parametric" nc:name="Creating Parametric Plots" nc:link="dm06-01-plotting.xhtml#creating parametric plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_getting-started_inequality" nc:name="Creating Inequality Plots" nc:link="dm06-01-plotting.xhtml#creating inequality plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_getting-started_other"      nc:name="Other Types of 2D Plots" nc:link="dm06-01-plotting.xhtml#other types of 2d plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_getting-started_2dpolar"    nc:name="Creating 2D Polar Plots"       nc:link="dm06-01-plotting.xhtml#creating 2d polar plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_getting-started_2dimplicit" nc:name="Creating 2D Implicit Plots"    nc:link="dm06-01-plotting.xhtml#creating 2d implicit plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_getting-started_parametric" nc:name="Creating Parametric Plots"     nc:link="dm06-01-plotting.xhtml#creating parametric plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_getting-started_inequality" nc:name="Creating Inequality Plots"     nc:link="dm06-01-plotting.xhtml#creating inequality plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_getting-started_other"      nc:name="Other Types of 2D Plots"       nc:link="dm06-01-plotting.xhtml#other types of 2d plots"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+   
+      <rdf:Description about="#plotting_getting-started_2drect">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_getting-started_2drectA" nc:name="Adding expressions to a plot" nc:link="dm06-01-plotting.xhtml#adding expressions to a plot"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_getting-started_2dimplicit">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_getting-started_2dimplicitA" nc:name="Implicit plots of inverses" nc:link="dm06-01-plotting.xhtml#implicit plots of inverses"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_getting-started_parametric">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_getting-started_parametricA" nc:name="Parametric plots of inverses"           nc:link="dm06-01-plotting.xhtml#parametric plots of inverses"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_getting-started_parametricB" nc:name="Parametric plots of stars and polygons" nc:link="dm06-01-plotting.xhtml#parametric plots of stars and polygons"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_getting-started_inequality">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_getting-started_inequalityA" nc:name="Multiple inequalities" nc:link="dm06-01-plotting.xhtml#multiple inequalities"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
    
   <rdf:Description about="#plotting_interactive-2d">
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="plotting_interactive-2d_activate"  nc:name="Activating the Interactive Tools for 2D Plots" nc:link="dm06-02-plotting.xhtml#activating the interactive tools for 2d plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_interactive-2d_reset"     nc:name="Reset Viewpoint" nc:link="dm06-02-plotting.xhtml#reset viewpoint"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_interactive-2d_zoom"      nc:name="Zooming In and Out" nc:link="dm06-02-plotting.xhtml#zooming in and out"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_interactive-2d_translate" nc:name="Translating the View" nc:link="dm06-02-plotting.xhtml#translating the view"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_interactive-2d_plot"      nc:name="Plot Coordinates" nc:link="dm06-02-plotting.xhtml#plot coordinates"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_interactive-2d_reset"     nc:name="Reset Viewpoint"                               nc:link="dm06-02-plotting.xhtml#reset viewpoint"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_interactive-2d_zoom"      nc:name="Zooming In and Out"                            nc:link="dm06-02-plotting.xhtml#zooming in and out"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_interactive-2d_translate" nc:name="Translating the View"                          nc:link="dm06-02-plotting.xhtml#translating the view"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_interactive-2d_plot"      nc:name="Plot Coordinates"                              nc:link="dm06-02-plotting.xhtml#plot coordinates"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -723,40 +797,110 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="plotting_settings_open"   nc:name="Opening the Graph User Settings Dialog Box" nc:link="dm06-03-plotting.xhtml#opening the graph user settings dialog box"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_settings_items"  nc:name="Items plotted" nc:link="dm06-03-plotting.xhtml#items plotted"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_settings_axes"   nc:name="Axes" nc:link="dm06-03-plotting.xhtml#axes"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_settings_layout" nc:name="Layout" nc:link="dm06-03-plotting.xhtml#layout"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_settings_plot"   nc:name="Plot Placement" nc:link="dm06-03-plotting.xhtml#plot placement"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_settings_items"  nc:name="Items plotted"                              nc:link="dm06-03-plotting.xhtml#items plotted"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_settings_axes"   nc:name="Axes"                                       nc:link="dm06-03-plotting.xhtml#axes"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_settings_layout" nc:name="Layout"                                     nc:link="dm06-03-plotting.xhtml#layout"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_settings_plot"   nc:name="Plot Placement"                             nc:link="dm06-03-plotting.xhtml#plot placement"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
    
-  <rdf:Description about="#plotting_2d-plots">
+        <rdf:Description about="#plotting_settings_items">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_settings_itemsA" nc:name="Editing a plot" nc:link="dm06-03-plotting.xhtml#editing a plot"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_itemsB" nc:name="Line style"     nc:link="dm06-03-plotting.xhtml#line style"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_itemsC" nc:name="Point marker"   nc:link="dm06-03-plotting.xhtml#point marker"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_itemsD" nc:name="Line thickness" nc:link="dm06-03-plotting.xhtml#line thickness"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_itemsE" nc:name="Continuity"     nc:link="dm06-03-plotting.xhtml#continuity"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_itemsF" nc:name="New item"       nc:link="dm06-03-plotting.xhtml#new item"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+        <rdf:Description about="#plotting_settings_axes">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_settings_axesA" nc:name="Axes scaling"    nc:link="dm06-03-plotting.xhtml#axes scaling"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_axesB" nc:name="Axes labels"     nc:link="dm06-03-plotting.xhtml#axes labels"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_axesC" nc:name="Axes appearance" nc:link="dm06-03-plotting.xhtml#axes appearance"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_axesD" nc:name="Axes type"       nc:link="dm06-03-plotting.xhtml#axes type"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+        <rdf:Description about="#plotting_settings_layout">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_settings_layoutA" nc:name="Resizing the frame" nc:link="dm06-03-plotting.xhtml#resizing the frame"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_settings_plot">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_settings_plotA" nc:name="Placement options" nc:link="dm06-03-plotting.xhtml#placement options"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_plotB" nc:name="In-line placement" nc:link="dm06-03-plotting.xhtml#in-line placement"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_plotC" nc:name="Displayed frames"  nc:link="dm06-03-plotting.xhtml#displayed frames"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_settings_plotD" nc:name="Floating frames"   nc:link="dm06-03-plotting.xhtml#floating frames"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+<rdf:Description about="#plotting_2d-plots">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="plotting_2d-plots_expression" nc:name="Expressions" nc:link="dm06-04-plotting.xhtml#expressions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_2d-plots_defined"    nc:name="Defined Functions" nc:link="dm06-04-plotting.xhtml#defined functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_2d-plots_expression" nc:name="Expressions"                        nc:link="dm06-04-plotting.xhtml#expressions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_2d-plots_defined"    nc:name="Defined Functions"                  nc:link="dm06-04-plotting.xhtml#defined functions"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_2d-plots_continuous" nc:name="Continuous and Discontinuous Plots" nc:link="dm06-04-plotting.xhtml#continuous and discontinuous plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_2d-plots_special"    nc:name="Special Functions" nc:link="dm06-04-plotting.xhtml#special functions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_2d-plots_polygons"   nc:name="Polygons" nc:link="dm06-04-plotting.xhtml#polygons"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_2d-plots_point"      nc:name="Point Plots" nc:link="dm06-04-plotting.xhtml#point plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_2d-plots_grod"       nc:name="Plotting a Grid" nc:link="dm06-04-plotting.xhtml#plotting a grid"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_2d-plots_envelope"   nc:name="Envelopes" nc:link="dm06-04-plotting.xhtml#envelopes"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_2d-plots_polar"      nc:name="Parametric Polar Plots" nc:link="dm06-04-plotting.xhtml#parametric polar plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_2d-plots_special"    nc:name="Special Functions"                  nc:link="dm06-04-plotting.xhtml#special functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_2d-plots_polygons"   nc:name="Polygons"                           nc:link="dm06-04-plotting.xhtml#polygons"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_2d-plots_point"      nc:name="Point Plots"                        nc:link="dm06-04-plotting.xhtml#point plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_2d-plots_grod"       nc:name="Plotting a Grid"                    nc:link="dm06-04-plotting.xhtml#plotting a grid"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_2d-plots_envelope"   nc:name="Envelopes"                          nc:link="dm06-04-plotting.xhtml#envelopes"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_2d-plots_polar"      nc:name="Parametric Polar Plots"             nc:link="dm06-04-plotting.xhtml#parametric polar plots"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+   
+      <rdf:Description about="#plotting_2d-plots_expression">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_2d-plots_expressionA" nc:name="Functions of degrees" nc:link="dm06-04-plotting.xhtml#functions of degrees"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_2d-plots_continuous">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_2d-plots_continuousA" nc:name="Plotting piecewise-defined functions" nc:link="dm06-04-plotting.xhtml#plotting piecewise-defined functions"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_2d-plots_special">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_2d-plots_specialA" nc:name="Greatest integer function and floor function" nc:link="dm06-04-plotting.xhtml#Greatest integer function and floor function"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_2d-plots_specialB" nc:name="Absolute value function"                      nc:link="dm06-04-plotting.xhtml#absolute value function"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_2d-plots_specialC" nc:name="Gamma function"                               nc:link="dm06-04-plotting.xhtml#gamma function"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_2d-plots_specialD" nc:name="Heaviside function"                           nc:link="dm06-04-plotting.xhtml#heaviside function"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
    
   <rdf:Description about="#plotting_animated-2d">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="plotting_animated-2d_tools"      nc:name="Animation Tools" nc:link="dm06-05-plotting.xhtml#animation tools"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_animated-2d_2drect"     nc:name="Animated 2D Rectangular Plots" nc:link="dm06-05-plotting.xhtml"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_animated-2d_2dpara"     nc:name="Animated 2D Parametric Plots" nc:link="dm06-05-plotting.xhtml#animated 2d parametric plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_animated-2d_polar"      nc:name="Animated Plots In Polar Coordinates" nc:link="dm06-05-plotting.xhtml#animated plots in polar coordinates"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_animated-2d_tools"      nc:name="Animation Tools"                                nc:link="dm06-05-plotting.xhtml#animation tools"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_animated-2d_2drect"     nc:name="Animated 2D Rectangular Plots"                  nc:link="dm06-05-plotting.xhtml"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_animated-2d_2dpara"     nc:name="Animated 2D Parametric Plots"                   nc:link="dm06-05-plotting.xhtml#animated 2d parametric plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_animated-2d_polar"      nc:name="Animated Plots In Polar Coordinates"            nc:link="dm06-05-plotting.xhtml#animated plots in polar coordinates"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_animated-2d_para"       nc:name="Animated Parametric Plots in Polar Coordinates" nc:link="dm06-05-plotting.xhtml#animated parametric plots in polar coordinates"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_animated-2d_implicit"   nc:name="Animated Implicit Plots" nc:link="dm06-05-plotting.xhtml#animated implicit plots"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_animated-2d_inequality" nc:name="Animated Inequality Plots" nc:link="dm06-05-plotting.xhtml#animated inequality plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_animated-2d_implicit"   nc:name="Animated Implicit Plots"                        nc:link="dm06-05-plotting.xhtml#animated implicit plots"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_animated-2d_inequality" nc:name="Animated Inequality Plots"                      nc:link="dm06-05-plotting.xhtml#animated inequality plots"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -775,6 +919,45 @@
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#plotting_creating-3d_para">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_paraA" nc:name="Ellipsoid" nc:link="dm06-06-plotting.xhtml#ellipsoid"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_paraB" nc:name="Hyperboloid of two sheets" nc:link="dm06-06-plotting.xhtml#hyperboloid of two sheets"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_paraC" nc:name="Hyperboloid of one sheet" nc:link="dm06-06-plotting.xhtml#hyperboloid of one sheet"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_creating-3d_curves">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_curvesA" nc:name="Tube plots" nc:link="dm06-06-plotting.xhtml#tube plots"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_curvesB" nc:name="Surfaces of revolution" nc:link="dm06-06-plotting.xhtml#surfaces of revolution"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_curvesC" nc:name="Curves in space viewed as curtains" nc:link="dm06-06-plotting.xhtml#curves in space viewed as curtains"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_creating-3d_cylin">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_cylinA" nc:name="Expressions in cylindrical coordinates" nc:link="dm06-06-plotting.xhtml#expressions in cylindrical coordinates"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_cylinB" nc:name="parameterized surfaces in cylindrical coordinates" nc:link="dm06-06-plotting.xhtml#parameterized surfaces in cylindrical coordinates"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_creating-3d_sphere">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_sphereA" nc:name="Expressions in spherical coordinates" nc:link="dm06-06-plotting.xhtml#expressions in spherical coordinates"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_sphereB" nc:name="Spherical coordinates and defined functions" nc:link="dm06-06-plotting.xhtml#spherical coordinates and defined functions"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_sphereC" nc:name="Parameterized surfaces in spherical coordinates" nc:link="dm06-06-plotting.xhtml#parameterized surfaces in spherical coordinates"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
   <rdf:Description about="#plotting_animated-3d">
     <nc:subheadings>
     <rdf:Seq>
@@ -788,13 +971,37 @@
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#plotting_animated-3d_rect">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_animated-3d_rectA" nc:name="Animated parametric 3d plots in rectangular coordinates" nc:link="dm06-07-plotting.xhtml#animated parametric 3d plots in rectangular coordinates"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_animated-3d_cylind">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_animated-3d_cylindA" nc:name="Animated plots in cylindrical coordinates" nc:link="dm06-07-plotting.xhtml#animated plots in cylindrical coordinates"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#plotting_animated-3d_rect">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="plotting_animated-3d_rectA" nc:name="Animated parametric plots in spherical coordinates" nc:link="dm06-07-plotting.xhtml#animated parametric plots in spherical coordinates"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
 <!-- Chapter 7 subsections -->   
   <rdf:Description about="#calculus_evaluating">
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="calculus_evaluating_calculus" nc:name="Calculus Expressions" nc:link="dm07-01-calculus.xhtml#calculus expressions"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_evaluating_derive"   nc:name="Derivatives" nc:link="dm07-01-calculus.xhtml#derivatives"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_evaluating_integral" nc:name="Integrals" nc:link="dm07-01-calculus.xhtml#integrals"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_evaluating_derive"   nc:name="Derivatives"          nc:link="dm07-01-calculus.xhtml#derivatives"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_evaluating_integral" nc:name="Integrals"            nc:link="dm07-01-calculus.xhtml#integrals"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -802,14 +1009,23 @@
   <rdf:Description about="#calculus_limits">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="calculus_limits_notation" nc:name="Notation for Limits" nc:link="dm07-02-calculus.xhtml#notation for limits"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_limits_special"  nc:name="Special Limits" nc:link="dm07-02-calculus.xhtml#special limits"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_limits_notation" nc:name="Notation for Limits"        nc:link="dm07-02-calculus.xhtml#notation for limits"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_limits_special"  nc:name="Special Limits"             nc:link="dm07-02-calculus.xhtml#special limits"/> </rdf:li>
       <rdf:li> <rdf:Description ID="calculus_limits_tables"   nc:name="Tables of Values and Plots" nc:link="dm07-02-calculus.xhtml#tables of values and plots"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
    
-  <rdf:Description about="#calculus_diff">
+       <rdf:Description about="#calculus_limits_tables">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_limits_tablesA" nc:name="Creating a table of values using auxiliary functions" nc:link="dm07-02-calculus.xhtml#creating a table of values using auxiliary functions"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_limits_tablesB" nc:name="Creating a table of values by concatenating matrices" nc:link="dm07-02-calculus.xhtml#creating a table of values by concatenating matrices"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+ <rdf:Description about="#calculus_diff">
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="calculus_diff_calc"     nc:name="Calculating a Derivative" nc:link="dm07-03-calculus.xhtml#calculating a derivative"/> </rdf:li>
@@ -822,6 +1038,43 @@
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+   
+       <rdf:Description about="#calculus_diff_note">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_diff_noteA" nc:name="Piecewise-defined functions" nc:link="dm07-03-calculus.xhtml#piecewise-defined functions"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_diff_noteB" nc:name="Differentiation rules" nc:link="dm07-03-calculus.xhtml#differentiation rules"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+       <rdf:Description about="#calculus_diff_implicit">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_diff_implicitA" nc:name="Second derivative" nc:link="dm07-03-calculus.xhtml#second derivative"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_diff_implicitB" nc:name="Tangent line" nc:link="dm07-03-calculus.xhtml#tangent line"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+       <rdf:Description about="#calculus_diff_numb">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_diff_numbA" nc:name="Iteration" nc:link="dm07-03-calculus.xhtml#iteration"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_diff_numbB" nc:name="Newton's method" nc:link="dm07-03-calculus.xhtml#newton&apos;s method"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_diff_numbC" nc:name="Numerical solution" nc:link="dm07-03-calculus.xhtml#numerical solution"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
+   
+       <rdf:Description about="#calculus_diff_curve">
+        <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_diff_curveA" nc:name="Extreme values" nc:link="dm07-03-calculus.xhtml#extreme values"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_diff_curveB" nc:name="Concavity" nc:link="dm07-03-calculus.xhtml#concavity"/> </rdf:li>
+        </rdf:Seq>
+        </nc:subheadings>
+      </rdf:Description>
    
   <rdf:Description about="#calculus_indefinite">
     <nc:subheadings>
@@ -838,8 +1091,8 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="calculus_methods_int"  nc:name="Integration by Parts" nc:link="dm07-05-calculus.xhtml#integration by parts"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_methods_var"  nc:name="Change of Variable" nc:link="dm07-05-calculus.xhtml#change of variable"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_methods_frac" nc:name="Partial Fractions" nc:link="dm07-05-calculus.xhtml#partial fractions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_methods_var"  nc:name="Change of Variable"   nc:link="dm07-05-calculus.xhtml#change of variable"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_methods_frac" nc:name="Partial Fractions"    nc:link="dm07-05-calculus.xhtml#partial fractions"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -847,52 +1100,130 @@
   <rdf:Description about="#calculus_definite">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="calculus_definite_int"        nc:name="The Definite Integral" nc:link="dm07-06-calculus.xhtml#definite integral"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_definite_defint"     nc:name="Entering and Evaluating Definite Integrals" nc:link="dm07-06-calculus.xhtml#entering and evaluating definite integrals"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_definite_int"        nc:name="The Definite Integral"                          nc:link="dm07-06-calculus.xhtml#definite integral"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_definite_defint"     nc:name="Entering and Evaluating Definite Integrals"     nc:link="dm07-06-calculus.xhtml#entering and evaluating definite integrals"/> </rdf:li>
       <rdf:li> <rdf:Description ID="calculus_definite_method"     nc:name="Methods of Integration with Definite Integrals" nc:link="dm07-06-calculus.xhtml#methods of integration with definite integrals"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_definite_improper"   nc:name="Improper Integrals" nc:link="dm07-06-calculus.xhtml#improper integrals"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_definite_vars"       nc:name="Assumptions about Variables" nc:link="dm07-06-calculus.xhtml#assumptions about variables"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_definite_defs"       nc:name="Definite Integrals from the Definition" nc:link="dm07-06-calculus.xhtml#definite integrals from the definition"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_definite_riemann"    nc:name="Riemann Sums" nc:link="dm07-06-calculus.xhtml#riemann sums"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_definite_numint"     nc:name="Numerical Integration" nc:link="dm07-06-calculus.xhtml#numerical integration"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_definite_revolution" nc:name="Visualizing Solids of Revolution" nc:link="dm07-06-calculus.xhtml#visualizing solids of revolution"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_definite_improper"   nc:name="Improper Integrals"                             nc:link="dm07-06-calculus.xhtml#improper integrals"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_definite_vars"       nc:name="Assumptions about Variables"                    nc:link="dm07-06-calculus.xhtml#assumptions about variables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_definite_defs"       nc:name="Definite Integrals from the Definition"         nc:link="dm07-06-calculus.xhtml#definite integrals from the definition"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_definite_riemann"    nc:name="Riemann Sums"                                   nc:link="dm07-06-calculus.xhtml#riemann sums"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_definite_numint"     nc:name="Numerical Integration"                          nc:link="dm07-06-calculus.xhtml#numerical integration"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_definite_revolution" nc:name="Visualizing Solids of Revolution"               nc:link="dm07-06-calculus.xhtml#visualizing solids of revolution"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+   
+      <rdf:Description about="#calculus_definite_method">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_definite_methodA" nc:name="Integration by parts" nc:link="dm07-06-calculus.xhtml#integration by parts"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_methodB" nc:name="Change of variable" nc:link="dm07-06-calculus.xhtml#change of variable"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_methodC" nc:name="Partial fractions" nc:link="dm07-06-calculus.xhtml#partial fractions"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#calculus_definite_improper">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_definite_improperA" nc:name="Improper integrals of the first kind" nc:link="dm07-06-calculus.xhtml#improper integrals of the first kind"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_improperB" nc:name="Improper integrals of the second kind" nc:link="dm07-06-calculus.xhtml#improper integrals of the second kind"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#calculus_definite_riemann">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_definite_riemannA" nc:name="Middle sums" nc:link="dm07-06-calculus.xhtml#middle sums"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_riemannB" nc:name="Left sums and right sums" nc:link="dm07-06-calculus.xhtml#left sums and right sums"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_riemannC" nc:name="Upper sums and lower sums" nc:link="dm07-06-calculus.xhtml#upper sums and lower sums"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_riemannD" nc:name="Upper absolute and lower absolute sums" nc:link="dm07-06-calculus.xhtml#upper absolute and lower absolute sums"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_riemannE" nc:name="Trapezoidal sums" nc:link="dm07-06-calculus.xhtml#trapezoidal sums"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_riemannF" nc:name="Simpson's rule" nc:link="dm07-06-calculus.xhtml#simpson&apos;s rule"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#calculus_definite_revolution">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_definite_revolutionA" nc:name="Rectangular coordinates" nc:link="dm07-06-calculus.xhtml#rectangular coordinates"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_revolutionB" nc:name="Parametric equations" nc:link="dm07-06-calculus.xhtml#parametric equations"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_definite_revolutionC" nc:name="Polar coordinates" nc:link="dm07-06-calculus.xhtml#polar coordinates"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
    
   <rdf:Description about="#calculus_sequences">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="calculus_sequences_seq"       nc:name="Sequences" nc:link="dm07-07-calculus.xhtml#sequences"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_sequences_series"    nc:name="Series" nc:link="dm07-07-calculus.xhtml#series"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_sequences_seq"       nc:name="Sequences"        nc:link="dm07-07-calculus.xhtml#sequences"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_sequences_series"    nc:name="Series"           nc:link="dm07-07-calculus.xhtml#series"/> </rdf:li>
       <rdf:li> <rdf:Description ID="calculus_sequences_maclaurin" nc:name="Maclaurin Series" nc:link="dm07-07-calculus.xhtml#maclaurin series"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_sequences_taylor"    nc:name="Taylor Series" nc:link="dm07-07-calculus.xhtml#taylor series"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_sequences_taylor"    nc:name="Taylor Series"    nc:link="dm07-07-calculus.xhtml#taylor series"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#calculus_sequences_series">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_sequences_seriesA" nc:name="Ratio test" nc:link="dm07-07-calculus.xhtml#ratio test"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_sequences_seriesB" nc:name="Root test" nc:link="dm07-07-calculus.xhtml#root test"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_sequences_seriesC" nc:name="Integral test" nc:link="dm07-07-calculus.xhtml#integral test"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
   <rdf:Description about="#calculus_multivariable">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="calculus_multivariable_opt"    nc:name="Optimization" nc:link="dm07-08-calculus.xhtml#optimization"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_multivariable_taylor" nc:name="Taylor Polynomials in Two Variables" nc:link="dm07-08-calculus.xhtml#taylor polynomials in two variables"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="calculus_multivariable_int"    nc:name="Iterated Integrals" nc:link="dm07-08-calculus.xhtml#iterated integrals"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_multivariable_opt"    nc:name="Optimization"                           nc:link="dm07-08-calculus.xhtml#optimization"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_multivariable_taylor" nc:name="Taylor Polynomials in Two Variables"    nc:link="dm07-08-calculus.xhtml#taylor polynomials in two variables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="calculus_multivariable_int"    nc:name="Iterated Integrals"                     nc:link="dm07-08-calculus.xhtml#iterated integrals"/> </rdf:li>
       <rdf:li> <rdf:Description ID="calculus_multivariable_indef"  nc:name="Double and Triple Indefinite Integrals" nc:link="dm07-08-calculus.xhtml#double and triple indefinite integrals"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+   
+      <rdf:Description about="#calculus_multivariable_opt">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_multivariable_optA" nc:name="Extreme values on a surface" nc:link="dm07-08-calculus.xhtml#extreme values on a surface"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_multivariable_optB" nc:name="Level curves" nc:link="dm07-08-calculus.xhtml#level curves"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="calculus_multivariable_optC" nc:name="Lagrange multipliers" nc:link="dm07-08-calculus.xhtml#lagrange multipliers"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#calculus_multivariable_taylor">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_multivariable_taylorA" nc:name="Partial derivatives" nc:link="dm07-08-calculus.xhtml#partial derivatives"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#calculus_multivariable_int">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="calculus_multivariable_intA" nc:name="Viewing double integrals as solids" nc:link="dm07-08-calculus.xhtml#viewing double integrals as solids"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
    
 <!-- Chapter 8 subsections -->   
   <rdf:Description about="#matrix-algegra_creating">
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="matrix-algegra_creating_dialog"  nc:name="Creating Matrices with the Matrix Dialog Box" nc:link="dm08-01-matrix_algebra.xhtml#create matrices"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_creating_fill"    nc:name="Creating Matrices with Fill Matrix" nc:link="dm08-01-matrix_algebra.xhtml#fill matrix"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_creating_random"  nc:name="Creating Matrices with Random Matrix" nc:link="dm08-01-matrix_algebra.xhtml#random matrix"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_creating_add"     nc:name="Matrix Delimiters" nc:link="dm08-01-matrix_algebra.xhtml#matrix delimiters"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_creating_revise"  nc:name="Revising Matrices" nc:link="dm08-01-matrix_algebra.xhtml#revising matrices"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_creating_concat"  nc:name="Concatenating and Stacking Matrices" nc:link="dm08-01-matrix_algebra.xhtml#concatenate"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_creating_reshape" nc:name="Reshaping Lists and Matrices" nc:link="dm08-01-matrix_algebra.xhtml#reshape"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_creating_fill"    nc:name="Creating Matrices with Fill Matrix"           nc:link="dm08-01-matrix_algebra.xhtml#fill matrix"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_creating_random"  nc:name="Creating Matrices with Random Matrix"         nc:link="dm08-01-matrix_algebra.xhtml#random matrix"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_creating_add"     nc:name="Matrix Delimiters"                            nc:link="dm08-01-matrix_algebra.xhtml#matrix delimiters"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_creating_revise"  nc:name="Revising Matrices"                            nc:link="dm08-01-matrix_algebra.xhtml#revising matrices"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_creating_concat"  nc:name="Concatenating and Stacking Matrices"          nc:link="dm08-01-matrix_algebra.xhtml#concatenate"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_creating_reshape" nc:name="Reshaping Lists and Matrices"                 nc:link="dm08-01-matrix_algebra.xhtml#reshape"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -901,11 +1232,11 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_add"     nc:name="Matrix Addition and Scalar Multiplication" nc:link="dm08-02-matrix_algebra.xhtml#addition"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_prod"    nc:name="Inner Products and Matrix Multiplication" nc:link="dm08-02-matrix_algebra.xhtml#matrix multiplication"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_row"     nc:name="Rows and Columns" nc:link="dm08-02-matrix_algebra.xhtml#rows and columns"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_id"      nc:name="Identity and Inverse Matrices" nc:link="dm08-02-matrix_algebra.xhtml#identity and inverse matrices"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_poly"    nc:name="Polynomials with Matrix Values" nc:link="dm08-02-matrix_algebra.xhtml#polynomials"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_entries" nc:name="Operations on Matrix Entries" nc:link="dm08-02-matrix_algebra.xhtml#operations on matrix entries"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_prod"    nc:name="Inner Products and Matrix Multiplication"  nc:link="dm08-02-matrix_algebra.xhtml#matrix multiplication"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_row"     nc:name="Rows and Columns"                          nc:link="dm08-02-matrix_algebra.xhtml#rows and columns"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_id"      nc:name="Identity and Inverse Matrices"             nc:link="dm08-02-matrix_algebra.xhtml#identity and inverse matrices"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_poly"    nc:name="Polynomials with Matrix Values"            nc:link="dm08-02-matrix_algebra.xhtml#polynomials"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_std-ops_entries" nc:name="Operations on Matrix Entries"              nc:link="dm08-02-matrix_algebra.xhtml#operations on matrix entries"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -914,7 +1245,7 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="matrix-algegra_row-ops_echelon"    nc:name="Gaussian Elimination and Row Echelon Form" nc:link="dm08-03-matrix_algebra.xhtml#gaussian elimination"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_row-ops_elementary" nc:name="Elementary Row Operations" nc:link="dm08-03-matrix_algebra.xhtml#elementary row operations"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_row-ops_elementary" nc:name="Elementary Row Operations"                 nc:link="dm08-03-matrix_algebra.xhtml#elementary row operations"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -923,25 +1254,33 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="matrix-algegra_equations_systems"  nc:name="Systems of Linear Equations" nc:link="dm08-04-matrix_algebra.xhtmlfile:///C:/Conversion/xhtml-files/addition"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_equations_matrix"   nc:name="Matrix Equations" nc:link="dm08-04-matrix_algebra.xhtml#matrix equations"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_equations_rotation" nc:name="Rotation Matrices" nc:link="dm08-04-matrix_algebra.xhtml#rotation"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_equations_matrix"   nc:name="Matrix Equations"            nc:link="dm08-04-matrix_algebra.xhtml#matrix equations"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_equations_rotation" nc:name="Rotation Matrices"           nc:link="dm08-04-matrix_algebra.xhtml#rotation"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#matrix-algegra_equations_matrix">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="matrix-algegra_equations_matrixA" nc:name="Rewrite matrix as equations and equations as matrix" nc:link="dm08-04-calculus.xhtml#rewrite"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
   <rdf:Description about="#matrix-algegra_matrix-ops">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_trace"     nc:name="Trace" nc:link="dm08-05-matrix_algebra.xhtml#trace"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_transpose" nc:name="Transpose and Hermitian Transpose" nc:link="dm08-05-matrix_algebra.xhtml#transpose"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_det"       nc:name="Determinant" nc:link="dm08-05-matrix_algebra.xhtml#determinant"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_adj"       nc:name="Adjugate" nc:link="dm08-05-matrix_algebra.xhtml#adjugate"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_perm"      nc:name="Permanent" nc:link="dm08-05-matrix_algebra.xhtml#permanent"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_trace"     nc:name="Trace"                              nc:link="dm08-05-matrix_algebra.xhtml#trace"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_transpose" nc:name="Transpose and Hermitian Transpose"  nc:link="dm08-05-matrix_algebra.xhtml#transpose"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_det"       nc:name="Determinant"                        nc:link="dm08-05-matrix_algebra.xhtml#determinant"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_adj"       nc:name="Adjugate"                           nc:link="dm08-05-matrix_algebra.xhtml#adjugate"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_perm"      nc:name="Permanent"                          nc:link="dm08-05-matrix_algebra.xhtml#permanent"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_max"       nc:name="Maximum and Minimum Matrix Entries" nc:link="dm08-05-matrix_algebra.xhtml#max and min entries"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_norms"     nc:name="Matrix Norms" nc:link="dm08-05-matrix_algebra.xhtml#matrix norms"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_spectral"  nc:name="Spectral Radius" nc:link="dm08-05-matrix_algebra.xhtml#spectral radius"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_cond"      nc:name="Condition Number" nc:link="dm08-05-matrix_algebra.xhtml#condition number"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_exp"       nc:name="Exponential Functions" nc:link="dm08-05-matrix_algebra.xhtml#exponential functions"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_norms"     nc:name="Matrix Norms"                       nc:link="dm08-05-matrix_algebra.xhtml#matrix norms"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_spectral"  nc:name="Spectral Radius"                    nc:link="dm08-05-matrix_algebra.xhtml#spectral radius"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_cond"      nc:name="Condition Number"                   nc:link="dm08-05-matrix_algebra.xhtml#condition number"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_matrix-ops_exp"       nc:name="Exponential Functions"              nc:link="dm08-05-matrix_algebra.xhtml#exponential functions"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -949,10 +1288,10 @@
   <rdf:Description about="#matrix-algegra_polynomials">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="matrix-algegra_polynomials_char"  nc:name="Characteristic Polynomial" nc:link="dm08-06-matrix_algebra.xhtml#characteristic polynomial"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_polynomials_min"   nc:name="Minimal Polynomial" nc:link="dm08-06-matrix_algebra.xhtml#minimal polynomial"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_polynomials_char"  nc:name="Characteristic Polynomial"    nc:link="dm08-06-matrix_algebra.xhtml#characteristic polynomial"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_polynomials_min"   nc:name="Minimal Polynomial"           nc:link="dm08-06-matrix_algebra.xhtml#minimal polynomial"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_polynomials_eigen" nc:name="Eigenvalues and Eigenvectors" nc:link="dm08-06-matrix_algebra.xhtml#eigenvalues"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_polynomials_pos"   nc:name="Positive Definite Matrices" nc:link="dm08-06-matrix_algebra.xhtml#positive definite matrices"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_polynomials_pos"   nc:name="Positive Definite Matrices"   nc:link="dm08-06-matrix_algebra.xhtml#positive definite matrices"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -960,12 +1299,12 @@
   <rdf:Description about="#matrix-algegra_vector">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="matrix-algegra_vector_row"  nc:name="The Row Space" nc:link="dm08-07-matrix_algebra.xhtml#row space"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_vector_col"  nc:name="The Column Space" nc:link="dm08-07-matrix_algebra.xhtml#column space"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_vector_left" nc:name="The Left and Right Nullspaces" nc:link="dm08-07-matrix_algebra.xhtml#nullspaces"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_vector_test" nc:name="Orthogonal Matrices and the Orthogonality Test" nc:link="dm08-07-matrix_algebra.xhtml#orthogonality test"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_vector_row"  nc:name="The Row Space"                                        nc:link="dm08-07-matrix_algebra.xhtml#row space"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_vector_col"  nc:name="The Column Space"                                     nc:link="dm08-07-matrix_algebra.xhtml#column space"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_vector_left" nc:name="The Left and Right Nullspaces"                        nc:link="dm08-07-matrix_algebra.xhtml#nullspaces"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_vector_test" nc:name="Orthogonal Matrices and the Orthogonality Test"       nc:link="dm08-07-matrix_algebra.xhtml#orthogonality test"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_vector_base" nc:name="Orthonormal Bases and Gram-Schmidt Orthogonalization" nc:link="dm08-07-matrix_algebra.xhtml#orthonormal bases"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="matrix-algegra_vector_rank" nc:name="Rank and Dimension" nc:link="dm08-07-matrix_algebra.xhtml#rank and dimension"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_vector_rank" nc:name="Rank and Dimension"                                   nc:link="dm08-07-matrix_algebra.xhtml#rank and dimension"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -1012,6 +1351,15 @@
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#vector-calculus_vectors_planes">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="vector-calculus_vectors_planesA" nc:name="Vector form of a plane" nc:link="dm09-01-calculus.xhtml#vector form of a plane"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="vector-calculus_vectors_planesB" nc:name="Plotting a filled triangle" nc:link="dm09-01-calculus.xhtml#plotting a filled triangle"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
   <rdf:Description about="#vector-calculus_gradient">
     <nc:subheadings>
     <rdf:Seq>
@@ -1034,6 +1382,38 @@
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+   
+      <rdf:Description about="#vector-calculus_plots_2dvect">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="vector-calculus_plots_2dvectA" nc:name="Animated Plots of 2D Vector Fields" nc:link="dm09-03-calculus.xhtml#animated plots of 2d vector fields"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#vector-calculus_plots_3dvect">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="vector-calculus_plots_3dvectA" nc:name="Animated Plots of 3D Vector Fields" nc:link="dm09-03-calculus.xhtml#animated plots of 3d vector fields"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#vector-calculus_plots_2dgrad">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="vector-calculus_plots_2dgradA" nc:name="Animated plots of 2D gradient fields" nc:link="dm09-03-calculus.xhtml#animated plots of 2d gradient fields"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#vector-calculus_plots_3dgrad">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="vector-calculus_plots_3dgradA" nc:name="Animated Plots of 3D Gradient Fields" nc:link="dm09-03-calculus.xhtml#animated plots of 3d gradient fields"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
    
   <rdf:Description about="#vector-calculus_scalar">
     <nc:subheadings>
@@ -1075,6 +1455,15 @@
     </nc:subheadings>
   </rdf:Description>
    
+      <rdf:Description about="#diffyq_ordinary_exact">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="diffyq_ordinary_exactA" nc:name="Exact method" nc:link="dm10-01-calculus.xhtml#exact method"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_ordinary_exactB" nc:name="Laplace method" nc:link="dm10-01-calculus.xhtml#laplace method"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
   <rdf:Description about="#diffyq_laplace">
     <nc:subheadings>
     <rdf:Seq>
@@ -1083,6 +1472,25 @@
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+   
+      <rdf:Description about="#diffyq_laplace_laplace">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_laplaceA" nc:name="Computing laplace transforms" nc:link="dm10-02-calculus.xhtml#computing laplace transforms"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_laplaceB" nc:name="Computing inverse laplace transforms" nc:link="dm10-02-calculus.xhtml#computing inverse laplace transforms"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
+   
+      <rdf:Description about="#diffyq_laplace_fourier">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierA" nc:name="Computing fourier transforms" nc:link="dm10-02-calculus.xhtml#computing fourier transforms"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierB" nc:name="Computing inverse fourier transforms" nc:link="dm10-02-calculus.xhtml#computing inverse fourier transforms"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierC" nc:name="Computing fourier transforms of multiple expressions" nc:link="dm10-02-calculus.xhtml#computing fourier transforms of multiple expressions"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
    
   <rdf:Description about="#diffyq_systems">
     <nc:subheadings>
@@ -1234,6 +1642,15 @@
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
+   
+      <rdf:Description about="#applied-algebra_polynomials_galois">
+       <nc:subheadings>
+        <rdf:Seq>
+          <rdf:li> <rdf:Description ID="applied-algebra_polynomials_galoisA" nc:name="The Galois field GF_2" nc:link="dm12-04-applied_modern_algebra.xhtml#galois field GF2"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="applied-algebra_polynomials_galoisB" nc:name="The Galois field GF_4" nc:link="dm12-04-applied_modern_algebra.xhtml#galois field GF4"/> </rdf:li>
+        </rdf:Seq>
+       </nc:subheadings>
+      </rdf:Description>
    
   <rdf:Description about="#applied-algebra_linear">
     <nc:subheadings>
