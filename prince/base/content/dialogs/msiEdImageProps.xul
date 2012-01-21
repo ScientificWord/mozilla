@@ -46,7 +46,6 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> <!--DO NOT DELETE -->
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
-
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/mathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
