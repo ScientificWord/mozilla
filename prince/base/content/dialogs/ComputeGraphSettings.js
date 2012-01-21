@@ -1,4 +1,4 @@
-// Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+ // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 // Three data items are passed into this dialog: 
 // window.arguments[0]: the graph object 
 // window.arguments[1]: DOMGraph, the DOM element that should be replaced
@@ -9,6 +9,7 @@
 Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 var plotUnitsHandler;
 var graph;
+var plotArray = [];
 
 // Populate the dialog with the current values stored in the Graph object.
 // The element ids in ComputeGraphSettings.xul match the Graph attributes
@@ -24,7 +25,7 @@ function Startup(){
       document.getElementById(alist[i]).value = value;         
     }                                                       
   }                                                          
-  // add the plots to the plot selection dialog
+  // add the plots to the plotArray
   var plotNumControl    = document.getElementById('plotnumber');
   var numPlots = graph.getNumPlots();
   plotNumControl.max = getNumberOfActivePlots();
@@ -58,12 +59,8 @@ function Startup(){
     elem.selectedIndex = 2;
   }
   //radioGroupSetCurrent ("graphPlacement", oldval);
-
   checkEnableFloating();
-
-  
 }                                                                                            
-
 
 // This part pastes data into the editor after the editor has started. 
 // implements nsIObserver
@@ -80,21 +77,20 @@ var msiEditorDocumentObserverG =
   }
 }
 
-var floatControlIDs = ["placeForceHereCheck", "placeHereCheck", "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"];
-
-function checkEnableFloating()
-{
-  var bEnable = false;
-  var elem = document.getElementById("graphPlacement");
-             
-  var val = elem.selectedItem.value;
-  bEnable = (val == "float");
-
-  enableControlsByID(floatControlIDs, bEnable); 
-
-}
+//var floatControlIDs = ["placeForceHereCheck", "placeHereCheck", "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"];
+//
+//function checkEnableFloating()
+//{
+//  var bEnable = false;
+//  var elem = document.getElementById("graphPlacement");
+//             
+//  var val = elem.selectedItem.value;
+//  bEnable = (val == "float");
+//
+//  enableControlsByID(floatControlIDs, bEnable); 
+//
+//}
                   
-
 function tableRow4 (v, min, max, npts,chrome) {
   var str = "<tr>";
   if (chrome) classs = "label";    // class is a reserved word
@@ -107,92 +103,89 @@ function tableRow4 (v, min, max, npts,chrome) {
   return str;
 }
 
-
 // return a string with the xml containing the expression and plot limits
 function buildEditorTable (plotno) {
-//  var str = "";
-//  var tmpstr = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi tempinput=\"true\">()</mi></mrow></math>";
-//  // put the expression in it's own table
-//  var curval = window.arguments[0].getPlotValue ("Expression", plotno);
-//  str += "<table class=\"MathVarsDialog\" chrome=\"1\" xmlns=\"http://www.w3.org/1999/xhtml\">";
-//  str += "<tbody>";
-//  str += "<tr>";                               
-//  str += "<td class=\"label\">";               
-//  str += "Plot expression";                               
-//  str += "</td></tr>";                              
-//  str += "<tr>";                               
-//  str += "<td class=\"value\">";               
-//  str += curval;
-//  str += "</td>";                              
-//  str += "</tr></tbody></table>";
+// var str = "";
+// var tmpstr = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi tempinput=\"true\">()</mi></mrow></math>";
+// // put the expression in it's own table
+// var curval = window.arguments[0].getPlotValue ("Expression", plotno);
+// str += "<table class=\"MathVarsDialog\" chrome=\"1\" xmlns=\"http://www.w3.org/1999/xhtml\">";
+// str += "<tbody>";
+// str += "<tr>";                               
+// str += "<td class=\"label\">";               
+// str += "Plot expression";                               
+// str += "</td></tr>";                              
+// str += "<tr>";                               
+// str += "<td class=\"value\">";               
+// str += curval;
+// str += "</td>";                              
+// str += "</tr></tbody></table>";
 ////  dump("In buildEditorTable, string before breaks is: [" + str + "].\n");
-//  
-//  // put the ranges in a table
-//  str += "<br/><br/>";
-//  str += "<table chrome=\"1\" class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
-//  str += "<tbody>";
-//  str += tableRow4 ("Variable", "Min", "Max", "Sample Points", 1);
-//  
-//   // grab XMin, Xmax, Ymin, Ymax, Zmin, Zmax, Xvar, Yvar, Zvar, XNPTS, YNPTS
-//  var v, min, max, npts;                                           
-//  var ptype = window.arguments[0].getPlotValue ("PlotType", plotno);                      
-//  v    = window.arguments[0].getPlotValue ("XVar", plotno);                      
-//  if (ptype == "conformal")
-//    v = "Re(" + v + ")";               
-//  min  = window.arguments[0].getPlotValue ("XMin", plotno);                      
-//  max  = window.arguments[0].getPlotValue ("XMax", plotno);                      
-//  npts = window.arguments[0].getPlotValue ("XPts", plotno);                      
-//  str += tableRow4 (v, min, max, npts, 0);
+// 
+// // put the ranges in a table
+// str += "<br/><br/>";
+// str += "<table chrome=\"1\" class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
+// str += "<tbody>";
+// str += tableRow4 ("Variable", "Min", "Max", "Sample Points", 1);
+// 
+//  // grab XMin, Xmax, Ymin, Ymax, Zmin, Zmax, Xvar, Yvar, Zvar, XNPTS, YNPTS
+// var v, min, max, npts;                                           
+// var ptype = window.arguments[0].getPlotValue ("PlotType", plotno);                      
+// v    = window.arguments[0].getPlotValue ("XVar", plotno);                      
+// if (ptype == "conformal")
+//   v = "Re(" + v + ")";               
+// min  = window.arguments[0].getPlotValue ("XMin", plotno);                      
+// max  = window.arguments[0].getPlotValue ("XMax", plotno);                      
+// npts = window.arguments[0].getPlotValue ("XPts", plotno);                      
+// str += tableRow4 (v, min, max, npts, 0);
 //
-//  if (needTwoVars (plotno)) {
-//    if (ptype == "conformal") { 
-//      v = "Im(" + v + ")";               
-//    } else {  
-//      v    = window.arguments[0].getPlotValue ("YVar", plotno);                      
-//    }  
-//    min  = window.arguments[0].getPlotValue ("YMin", plotno);                      
-//    max  = window.arguments[0].getPlotValue ("YMax", plotno);                      
-//    npts = window.arguments[0].getPlotValue ("YPts", plotno);                      
-//    str += tableRow4 (v, min, max, npts, 0);
-//                                                                 
-//    if (needThreeVars (plotno)) {
-//      v    = window.arguments[0].getPlotValue ("ZVar", plotno);                      
-//      min  = window.arguments[0].getPlotValue ("ZMin", plotno);                      
-//      max  = window.arguments[0].getPlotValue ("ZMax", plotno);                      
-//      npts = window.arguments[0].getPlotValue ("ZPts", plotno);                      
-//      str += tableRow4 (v, min, max, npts, 0);
-//    }  
-//  }
-//  if (ptype == "conformal") {
-//      var hpts = window.arguments[0].getPlotValue ("ConfHorizontalPts", plotno);                      
-//      var vpts = window.arguments[0].getPlotValue ("ConfVerticalPts", plotno);                      
-//      str += tableRow4 ("Horizontal Samples", "", "", hpts, 1);
-//      str += tableRow4 ("Vertical Samples", "", "", vpts, 1);
-//    }  
+// if (needTwoVars (plotno)) {
+//   if (ptype == "conformal") { 
+//     v = "Im(" + v + ")";               
+//   } else {  
+//     v    = window.arguments[0].getPlotValue ("YVar", plotno);                      
+//   }  
+//   min  = window.arguments[0].getPlotValue ("YMin", plotno);                      
+//   max  = window.arguments[0].getPlotValue ("YMax", plotno);                      
+//   npts = window.arguments[0].getPlotValue ("YPts", plotno);                      
+//   str += tableRow4 (v, min, max, npts, 0);
+//                                                                
+//   if (needThreeVars (plotno)) {
+//     v    = window.arguments[0].getPlotValue ("ZVar", plotno);                      
+//     min  = window.arguments[0].getPlotValue ("ZMin", plotno);                      
+//     max  = window.arguments[0].getPlotValue ("ZMax", plotno);                      
+//     npts = window.arguments[0].getPlotValue ("ZPts", plotno);                      
+//     str += tableRow4 (v, min, max, npts, 0);
+//   }  
+// }
+// if (ptype == "conformal") {
+//     var hpts = window.arguments[0].getPlotValue ("ConfHorizontalPts", plotno);                      
+//     var vpts = window.arguments[0].getPlotValue ("ConfVerticalPts", plotno);                      
+//     str += tableRow4 ("Horizontal Samples", "", "", hpts, 1);
+//     str += tableRow4 ("Vertical Samples", "", "", vpts, 1);
+//   }  
 //
-//  str += "</tbody>";
-//  str += "</table>";
+// str += "</tbody>";
+// str += "</table>";
 //
-//  if ((window.arguments[0].getPlotValue ("PlotType", plotno)) == "tube") {
-//    var curval = window.arguments[0].getPlotValue ("TubeRadius", plotno);
-//    str += "<table class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
-//    str += "<tbody>";
-//    str += "<tr>";                               
-//    str += "<td class=\"label\">";               
-//    str += "Tube Radius";                               
-//    str += "</td></tr>";                              
-//    str += "<tr>";                               
-//    str += "<td class=\"value\">";               
-//    str += curval;                               
-//    str += "</td>";                              
-//    str += "</tr></tbody></table>";
-//  }
+// if ((window.arguments[0].getPlotValue ("PlotType", plotno)) == "tube") {
+//   var curval = window.arguments[0].getPlotValue ("TubeRadius", plotno);
+//   str += "<table class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
+//   str += "<tbody>";
+//   str += "<tr>";                               
+//   str += "<td class=\"label\">";               
+//   str += "Tube Radius";                               
+//   str += "</td></tr>";                              
+//   str += "<tr>";                               
+//   str += "<td class=\"value\">";               
+//   str += curval;                               
+//   str += "</td>";                              
+//   str += "</tr></tbody></table>";
+// }
 //
 ////  dump("In buildEditorTable, string to return is: [" + str + "].\n");
-//  return str;
+// return str;
 }
-
-
 
 // Extract the values from the dialog and store them in the data structure
 // Only save values that are not the defaults
@@ -218,7 +211,6 @@ function OK(){
   return true;
 }                          
 
-  
 // Extract the values from the dialog and store them in the data structure
 // Only save values that are not the defaults
 function GetValuesFromDialog(){
@@ -251,13 +243,13 @@ function GetValuesFromDialog(){
       }                                                                
     }                                                                   
   } 
-  var elem = document.getElementById("graphPlacement");
+  var elem = document.getElementById("placementRadioGroup");
   var newplace = elem.selectedItem.value;
   
   graph.setGraphAttribute("Placement", newplace);
 
 
-  plotUnitsHandler
+  // plotUnitsHandler
   var oldpt = graph.getPlotValue ("PlotType", plotno);                        
   var newpt;
   if (dim == "2") {
@@ -446,7 +438,6 @@ function GetValuesFromDialog(){
   }
 }                          
 
-
 // extract values from the edit table for a variable: varname, max, min, npts
 // axis is "X", "Y", or "Z". 
 // row is a table row with four elements
@@ -505,13 +496,11 @@ function SaveConformalSamples (name, row, plotno) {
   }  
 }
 
-
 function ExtractTextFromNode (node) {
   if (node.nodeType == 3)
     return node.nodeValue;
   return (ExtractTextFromNode (node.childNodes[0]));
 }
-
 
 function Cancel(){
   graph.setGraphAttribute("returnvalue", false);
@@ -527,7 +516,6 @@ function addPlot () {
   graph.setGraphAttribute("returnvalue", false);                 
   addPlotDialogContents();
 }
-
 
 function addPlotDialogContents () {
   var plotnumber = graph.addPlot();
@@ -547,8 +535,6 @@ function addPlotDialogContents () {
   graph.setPlotAttribute (PlotAttrName("PlotStatus", plotnumber), "New");
   populateDialog (plotnumber);   
 }         
-
-
 
 // This is the callback for the command button to edit a plot
 // on entry, the "plotnumber" widget has the plot number of the items to be edited. 
@@ -626,7 +612,6 @@ function changePlotType () {
   populateDialog (plotno);
 }
 
-
 // the user has just selected a new plot number in the dialog: populate the 
 // current screen with the data for this plot
 function changePlot () {
@@ -686,15 +671,18 @@ function populateDialog (plotno) {
     body[0].parentNode.removeChild (body[0]);
   }
   var str = buildEditorTable (plotno);
-  var editor = msiGetEditor(editorControl);
-  var serializer = new XMLSerializer();
-  var debugStr = serializer.serializeToString(doc.documentElement);
-//  dump("Preparing to insert XML in GraphSettings dialog. Editor currently contains: [" + debugStr + "]\n");
-//  dump("Current focus is at node [" + editor.selection.focusNode.localName + "], offset [" + editor.selection.focusOffset + "].\n");
-//  dump("In populateDialog, string to be inserted is: [" + str + "].\n");
-  insertXMLAtCursor(editor, str, true, false);
-  debugStr = serializer.serializeToString(doc.documentElement);
+  if (str && str.length >0)
+  {
+    var editor = msiGetEditor(editorControl);
+    var serializer = new XMLSerializer();
+    var debugStr = serializer.serializeToString(doc.documentElement);
+  //  dump("Preparing to insert XML in GraphSettings dialog. Editor currently contains: [" + debugStr + "]\n");
+  //  dump("Current focus is at node [" + editor.selection.focusNode.localName + "], offset [" + editor.selection.focusOffset + "].\n");
+  //  dump("In populateDialog, string to be inserted is: [" + str + "].\n");
+    insertXMLAtCursor(editor, str, true, false);
+    debugStr = serializer.serializeToString(doc.documentElement);
 //  dump("Editor contains: [" + debugStr + "]\n");
+  }
 
 //  editor.insertHTML(str);
   // now mark the body as in the chrome, to prevent resize widgets around the table.
@@ -803,7 +791,6 @@ function populateDialog (plotno) {
   document.getElementById("KeepUp").checked = (ku == "true")?true:false;
 }
 
-
 function populatePopupMenu (popupname, datavalue) {
   var popup  = document.getElementById (popupname);
   var items  = popup.getElementsByTagName ("menuitem");
@@ -836,7 +823,6 @@ function radioGroupSetCurrent (elemID, oldval) {
   }
 }
 
-
 function needTwoVars (plotno) {
   var dim  = graph.getValue ("Dimension");
   var pt   = graph.getPlotValue ("PlotType", plotno);
@@ -868,8 +854,6 @@ function needThreeVars (plotno) {
 /*   return true;                                                          */
   
 }
-
-
 
 function GetGraphColor (attributeName)
 {

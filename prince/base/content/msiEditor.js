@@ -9840,7 +9840,8 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       var theWindow = window;
       if (!("graphClickEvent" in theWindow))
         theWindow = msiGetTopLevelWindow(window);
-      theWindow.graphObjectClickEvent(cmdstr,element, editorElement);
+      // theWindow.graphObjectClickEvent(cmdstr,element, editorElement);
+      theWindow.graphClickEvent(cmdstr, editorElement);
     }
     else
     {
