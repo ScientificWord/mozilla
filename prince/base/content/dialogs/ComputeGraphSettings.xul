@@ -15,6 +15,7 @@
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
@@ -69,9 +70,12 @@
 
   <popupset id="msiEditorContentContextSet"/>
 
+  <vbox id="units"/>
   <tabbox id="outer-box" flex="1">
     <tabs class="tabs-top">
-	  <tab label="&tabbar.layout;"      selected="0" />
+    <!-- <tab label="&tabbar.layout;"      selected="0" /> -->
+    <tab id="msiPlacementTab"/>
+    <tab id="msiFrameTab"/>
 	  <tab label="&tabbar.labeling;"   selected="0" />
 	  <tab label="&tabbar.items;"       selected="1" />
 	  <tab label="&tabbar.axes;"        selected="0" />
@@ -79,7 +83,12 @@
 	</tabs>
 
     <tabpanels>
-      <tabpanel id="Layout" orient="vertical">
+      <vbox>
+        <vbox id = "msiFrameSize"/>
+        <vbox id="msiPlacement"/>
+      </vbox>
+      <vbox id="msiFrame"/>
+      <!-- <tabpanel id="Layout" orient="vertical">
         <groupbox>
           <caption label="&defaultsizenewplot.label;"/>
           <grid>
@@ -135,7 +144,7 @@
           </hbox>
           </radiogroup>
         </groupbox>
-      </tabpanel>      
+      </tabpanel>       -->
 
       <tabpanel id="Labelling">
         <vbox>
