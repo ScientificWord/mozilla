@@ -78,7 +78,7 @@ console that is used to observe and control the rest of the system.
 Although I have no immediate plans to implement much here it could
 eventually allow you to do the usual debugging things: set breakpoints,
 single step the code, and look at values of variables. The next level is
-the @{Command Interpretter@}. This takes a stream of tokens from the
+the @{Command Interpreter@}. This takes a stream of tokens from the
 @{Macro Processor@} and parses them into commands and then executes
 the commands. Most of the commands will be addressed to the
 @{Typesetter@} subsystem and to the @{Macro Processor@} subsystem. The

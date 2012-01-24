@@ -1,0 +1,37 @@
+\msitraceon
+\makeatletter
+\def\includegraphics{%
+   \@ifnextchar[{\msi@includegraphicsA}{\msi@includegraphicsB}}
+
+\def\msi@includegraphicsA[#1]#2{%
+  \msi@includegraphicsB{#2}}
+
+\def\msi@includegraphicsB#1{%
+   \msigraphicname{#1}%
+   \msitag{<object data="graphics/#1"/>}}
+
+\def\graphicspath#1{%
+  \msitag{<texb enc="1" name="graphicspath"><![CDATA[\graphicspath{#1}]]></texb>}
+  \msi@graphicspath{.}%
+  \msi@collectpath#1!
+  \the\temptoksa}
+
+\def\msi@collectpath#1{%
+   \def\tmp{#1}
+   \def\excl{!}
+   \ifx\tmp\excl
+      \let\@next\relax
+   \else
+      \expandafter\msi@graphicspath\expandafter{\the\msi@graphicspath;#1}
+      \let\@next\msi@collectpath
+   \fi
+   \@next
+}
+
+
+\def\msiappend#1MSIXYZZY{%
+   \expandafter\temptoksa\expandafter{\the\temptoksa #1}%
+}
+
+
+\makeatother
