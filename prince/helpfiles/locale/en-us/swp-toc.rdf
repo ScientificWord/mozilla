@@ -405,13 +405,13 @@
       <rdf:Description about="#basic_shortcuts_toolbar">
         <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Greek letters"         nc:link="dm01-05-basic_techniques.xhtml#greek letters"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Binary operations"     nc:link="dm01-05-basic_techniques.xhtml#binary operations"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Binary relations"      nc:link="dm01-05-basic_techniques.xhtml#binary relations"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Negated relations"     nc:link="dm01-05-basic_techniques.xhtml#negated relations"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Arrows"                nc:link="dm01-05-basic_techniques.xhtml#arrows"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Miscellaneous symbols" nc:link="dm01-05-basic_techniques.xhtml#miscellaneous symbols"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbar" nc:name="Delimiters"            nc:link="dm01-05-basic_techniques.xhtml#delimiters"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbarA" nc:name="Greek letters"         nc:link="dm01-05-basic_techniques.xhtml#greek letters"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbarB" nc:name="Binary operations"     nc:link="dm01-05-basic_techniques.xhtml#binary operations"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbarC" nc:name="Binary relations"      nc:link="dm01-05-basic_techniques.xhtml#binary relations"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbarD" nc:name="Negated relations"     nc:link="dm01-05-basic_techniques.xhtml#negated relations"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbarE" nc:name="Arrows"                nc:link="dm01-05-basic_techniques.xhtml#arrows"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbarF" nc:name="Miscellaneous symbols" nc:link="dm01-05-basic_techniques.xhtml#miscellaneous symbols"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="basic_shortcuts_toolbarG" nc:name="Delimiters"            nc:link="dm01-05-basic_techniques.xhtml#delimiters"/> </rdf:li>
         </rdf:Seq>
         </nc:subheadings>
       </rdf:Description>
