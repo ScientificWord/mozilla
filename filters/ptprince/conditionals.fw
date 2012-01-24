@@ -69,7 +69,7 @@ static std::vector<ConditionEntry> s_condstack(10);
 @B@<Token related conditionals@>
 
 
-@$@<Interpretter forward declarations@>+=@{@-
+@$@<Interpreter forward declarations@>+=@{@-
 bool tfcnIf();
 bool tfcnIfx();
 bool tfcnIfcat();
@@ -206,7 +206,7 @@ bool tfcnIfx()
 
 @B@<Integer conditionals@>
 
-@$@<Interpretter forward declarations@>+=@{@-
+@$@<Interpreter forward declarations@>+=@{@-
 bool tfcnIfnum();
 bool tfcnIfdim();
 bool tfcnIfodd();
@@ -449,7 +449,7 @@ void PassText()
 
 @B@<Mode testing conditionals@>
 
-@$@<Interpretter forward declarations@>+=@{@-
+@$@<Interpreter forward declarations@>+=@{@-
 bool tfcnIfVmode();
 bool tfcnIfHmode();
 bool tfcnIfMmode();
@@ -483,7 +483,7 @@ bool tfcnIfInner()
 
 @B@<ifeof@>
 
-@$@<Interpretter forward declarations@>+=@{@-
+@$@<Interpreter forward declarations@>+=@{@-
 bool tfcnIfEof();
 @}
 
@@ -506,7 +506,7 @@ bool tfcnIfEof()
 
 @B@<Box testing conditionals@>
 
-@$@<Interpretter forward declarations@>+=@{@-
+@$@<Interpreter forward declarations@>+=@{@-
 bool tfcnIfVoid();
 bool tfcnIfHbox();
 bool tfcnIfVbox();
