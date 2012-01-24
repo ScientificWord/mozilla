@@ -1437,12 +1437,44 @@ case CMD_EXTENSION: {
       };
 
       case EXT_GRAPHIC_NAME: {
+         
          std::string graphic;
          LOG("\n----Graphic name");
          Filename fn;
          @<Scan filename@>
          const char* fullname = fn.GetFullName();
          LOG("\n---- the graphic name is: " << fullname);
+
+         // Try to locate graphic ...
+
+         // 1. Get the search paths 
+         StringUtils::AppendToks(Global::msigraphicspath);
+         String str = StringBuilder::Create();
+         std::string paths;
+         int i = 0;
+         while (i < str.Size()){
+             paths += (char) str[i];
+             ++i;
+         }
+         StringBuilder::Discard(str);
+         
+         std::string extn = fn.GetExtString();
+         if (extn != "") {
+            
+         } else {
+             // No extension. 
+             // Try jpg
+             std::string name = fullname;
+             name += ".jpg";
+             char buf[_MAX_PATH];
+             SearchEnv(name.c_str(), paths.c_str(), false, buf);
+
+         }
+         
+         
+
+
+
          if (fullname[0] == '.'){
            // relative path?
            graphic = s_inputdir;
@@ -1454,11 +1486,11 @@ case CMD_EXTENSION: {
            graphic = fullname;
          }
 
+         
          std::string targetdir;
          if (s_outputdir != 0)
            targetdir = s_outputdir;
 
-         std::string extn = fn.GetExtString();
          if (extn == "xvz") {
             targetdir += "/plots/";
          } else {
@@ -1818,6 +1850,7 @@ case CMD_AFTERGROUP:{
 static InputStack inp;
 static TeXToken s_illegal(TT_PARAM, 11, 0); // an illegal token
 static TeXToken s_afterAssignment(s_illegal);
+void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf);
 Typesetter ts;
 SymbolData* frozen_relax = new Primitive(CMD_RELAX);
 
