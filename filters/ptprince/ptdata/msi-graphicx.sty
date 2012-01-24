@@ -13,8 +13,7 @@
 \def\graphicspath#1{%
   \msitag{<texb enc="1" name="graphicspath"><![CDATA[\graphicspath{#1}]]></texb>}
   \msi@graphicspath{.}%
-  \msi@collectpath#1!
-  \the\temptoksa}
+  \msi@collectpath#1!}
 
 \def\msi@collectpath#1{%
    \def\tmp{#1}
@@ -22,7 +21,7 @@
    \ifx\tmp\excl
       \let\@next\relax
    \else
-      \expandafter\msi@graphicspath\expandafter{\the\msi@graphicspath;#1}
+      \expandafter\msi@graphicspath\expandafter{\the\msi@graphicspath;./#1}
       \let\@next\msi@collectpath
    \fi
    \@next
