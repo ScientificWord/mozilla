@@ -35,7 +35,7 @@ there.
 @B@<Outline of TeX@>
 
 \TeX{} is a general programming language. A @{.tex@} file is a program
-written in \TeX. The first to relaize is that \TeX{} is an interpretted
+written in \TeX. The first to relaize is that \TeX{} is an interpreted
 language and not compiled. \TeX{} reads a command and executes it,
 reads a command and executes it, and so on. \TeX{} commands may be
 conveniently divided into two groups: elementary, and expandable.
@@ -44,7 +44,7 @@ embedded in a macro language.
 The purpose of most elementary \TeX{} commands is to drive the
 \TeX{} typesetting engine. The most common elementary commands are
 letters and spaces. It your @{.tex@} file contains the characters
-@{It was the best of times@} these characters are interpretted as
+@{It was the best of times@} these characters are interpreted as
 commands: letter I, letter t, space, letter w, and so on. There are
 many more elementary commands and many of them have complex arguments.
 For example, @{\hbox to 3pt{...}@} is an elementary command
@@ -71,7 +71,7 @@ expands to @{o 3p@} because the condition @{1<2@} is true. So the next
 token the parser sees is `o', follwed by `3', `p' and so on.
 
 According to this discussion \TeX{} has two main pieces:
-(1) a typesetting engine, (2) an interpretter.
+(1) a typesetting engine, (2) an interpreter.
 
 The @{User Interface@} is the top-level subsystem. It provides a
 console that is used to observe and control the rest of the system.
@@ -227,7 +227,7 @@ file. (See Lakos). A good component provides enough functionality that
 it makes sense to implement and test it independently.
 
 So we look for a chunk of functionality that we want to call a
-component. The most obvious is the command interpretter. This is an
+component. The most obvious is the command interpreter. This is an
 object that parses a stream of tokens into commands and parameters,
 and then executes the command.
 

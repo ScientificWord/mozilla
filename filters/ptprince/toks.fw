@@ -194,7 +194,7 @@ bool TestToksCmds()
    Interpretter::InitializeKeywords();
    InputFile("toksassign.tex");
    Interpretter::MainLoop();
-   return CompareLog("toksassign.log", "Interpretter toks test 1");
+   return CompareLog("toksassign.log", "Interpreter toks test 1");
 }
 @}
 

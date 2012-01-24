@@ -955,7 +955,7 @@ bool TestFilename()
 At the lowest level this implementation reads from files
 as though the file was a sequence of bytes. In other words,
 a binary file. This is because we want control over how
-the data is interpretted once read. We'll pass the bytes
+the data is interpreted once read. We'll pass the bytes
 through filters to produce a stream of characters and we
 don't trust the library functions like @{fgets@} to do this
 correctly. Suppose the file is somehow encoded, say UTF-7
@@ -1105,7 +1105,7 @@ bool FileExists(const char* file)
    }
 }
 
-void SearchEnv(const char *file, const char *env, char *buf)
+void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
 {
   char *envVal, *penv;
   char curPath[_MAX_PATH];
@@ -1129,7 +1129,12 @@ void SearchEnv(const char *file, const char *env, char *buf)
   }
 
   /* Search given environment variable */
-  envVal = getenv(env);
+  if (isEnvVar){
+     envVal = getenv(env);
+  } else {
+     envVal = (char*)env;
+  }
+
   if (!envVal)
   {
     return;
@@ -1150,16 +1155,26 @@ void SearchEnv(const char *file, const char *env, char *buf)
     {
       return;
     }
-    memcpy(curPath, penv, end - penv);
-    if (curPath[end - penv] != '/' && curPath[end - penv] != '\\')
+
+    int n = end - penv;
+
+    if (n <= 0)
+      break;
+      
+    memcpy(curPath, penv, n);
+    
+    if (curPath[n - 1] != '/' && curPath[n - 1] != '\\')
     {
       #ifdef _WINDOWS
-        curPath[end - penv] = '\\';
+        curPath[n] = '\\';
+        curPath[n+1] = '\0';
       #else
-        curPath[end - penv] = '/';
+        curPath[n] = '/';
+        curPath[n+1] = '\0';
       #endif
+    } else {
+       curPath[n] = '\0';
     }
-    curPath[end - penv + 1] = '\0';
 
     strcat(curPath, file);
 
@@ -1184,7 +1199,7 @@ const char* SearchFor(const char* searchfile)
    char envvar[] = "MSITEXINPUT";
    //if (getenv("MSITEXINPUT"))
    //  LOG("Search env: MSITEXINPUT =" << getenv("MSITEXINPUT"));
-   SearchEnv( searchfile, envvar, pathbuffer );
+   SearchEnv( searchfile, envvar, true, pathbuffer );
    if( *pathbuffer != '\0' ){
       //LOG("\nPath for " << searchfile << " == " << pathbuffer);
       return pathbuffer;
@@ -1372,7 +1387,7 @@ const char* SearchForOutput(const char* searchfile)
    static char pathbuffer[_MAX_PATH];
    char envvar[] = "MSIOUTPUT";
 
-   SearchEnv( searchfile, envvar, pathbuffer );
+   SearchEnv( searchfile, envvar, true, pathbuffer );
    if( *pathbuffer != '\0' ){
       LOG("\nPath for " << searchfile << " == " << pathbuffer);
       return pathbuffer;

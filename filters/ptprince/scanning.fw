@@ -200,9 +200,9 @@ void NewExpandable(const char* name, EXPFUNC f, int data)
 This subsystem handles ``expandable" tokens.These are either
 (1) symbol tokens whose definition is an @{Expandable@} or (2)
 an active character token. These tokens are not executed by
-the command interpretter but are handled here instead. They
+the command interpreter but are handled here instead. They
 are replaced in the input stream by their expansions. The
-expanded tokens go on to the command interpretter where they
+expanded tokens go on to the command interpreter where they
 are parsed into commands.
 
 
