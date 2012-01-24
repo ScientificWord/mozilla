@@ -324,7 +324,7 @@ bool TestLineOfText()
 
 @B@<Converting Bytes to TeXChars@>
 
-The byte streams will often be interpretted as text.  There are two
+The byte streams will often be interpreted as text.  There are two
 aspects to this. First, how are the bytes converted to characters, and
 second, what charcter pattern represents the end of a line? The
 details depend on how the binary data is encoded. There is also the

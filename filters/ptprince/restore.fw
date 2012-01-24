@@ -55,7 +55,7 @@ protected:
 
 
 The RestoreStack contains all the restorations created by the
-interpretter.  It is a stack of @{RestoreLevel@}s. Each @{RestoreLevel@}
+interpreter.  It is a stack of @{RestoreLevel@}s. Each @{RestoreLevel@}
 is a list of restorations created in a particular level.
 
 @$@<RestoreStack@>==@{@-
