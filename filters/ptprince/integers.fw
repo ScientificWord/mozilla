@@ -232,7 +232,7 @@ bool TestIntCmds()
    InitializeKeywords();
    InputFile("intassign.tex");
    Interpretter::MainLoop();
-   return CompareLog("intassign.log", "Interpretter int test 1");
+   return CompareLog("intassign.log", "Interpreter int test 1");
 }
 @}
 
