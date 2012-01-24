@@ -37,6 +37,19 @@ function setHasNaturalSize(istrue)
 	}
 }
 
+function setCanRotate(istrue)
+{
+  var rotationbox = document.getElementById("rotate");
+  if (!istrue)
+  {
+    rotationbox.setAttribute("hidden", "true");
+  }
+  else
+  {
+    rotationbox.removeAttribute("hidden");
+  }
+}
+
 function updateMetrics()
 {
 	// this function takes care of the mapping in the cases where there are constraints on margins, padding, etc.
@@ -209,15 +222,22 @@ function initFrameTab(dg, element, newElement, contentsElement)
       setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
     setWidthAndHeight(width, height, null);
 
-    for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
+    try
 		{
-      if (dg.frameUnitMenulist.getItemAtIndex(i).value === frameUnitHandler.currentUnit)
-      {
-        dg.frameUnitMenulist.selectedIndex = i;
-        break;
-      }
-		}	
-		if (gFrameModeImage) 
+      for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
+  		{
+        if (dg.frameUnitMenulist.getItemAtIndex(i).value === frameUnitHandler.currentUnit)
+        {
+          dg.frameUnitMenulist.selectedIndex = i;
+          break;
+        }
+  		}	
+		}
+		catch(e)
+    {
+      msidump(e.message);
+    }
+    if (gFrameModeImage) 
 		{
 		  placement = element.getAttribute("placement");
 			if (placement == "L")
@@ -301,28 +321,34 @@ function initFrameTab(dg, element, newElement, contentsElement)
 
   if (!newElement || gDefaultPlacement.length)
   {
-    dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
-    dg.placeHereCheck.checked = (placeLocation.search("h") != -1);
-    dg.placeFloatsCheck.checked = (placeLocation.search("p") != -1);
-    dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
-    dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
+    try
+    {  dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
+      dg.placeHereCheck.checked = (placeLocation.search("h") != -1);
+      dg.placeFloatsCheck.checked = (placeLocation.search("p") != -1);
+      dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
+      dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
 
-    dg.herePlacementRadioGroup.value = placementStr;
-    if (!dg.herePlacementRadioGroup.value || !dg.herePlacementRadioGroup.value.length)
-      dg.herePlacementRadioGroupValue = "full";  //as in the default below
-    switch (dg.herePlacementRadioGroup.value) {
-      case "L": dg.herePlacementRadioGroup.selectedIndex = 0;
-                break;
-      case "R": dg.herePlacementRadioGroup.selectedIndex = 1;
-                break;
-      case "I": dg.herePlacementRadioGroup.selectedIndex = 2;
-                break;
-      case "O": dg.herePlacementRadioGroup.selectedIndex = 3;
-                break;
-      default:  dg.herePlacementRadioGroup.selectedIndex = 4;
-    }
+      dg.herePlacementRadioGroup.value = placementStr;
+      if (!dg.herePlacementRadioGroup.value || !dg.herePlacementRadioGroup.value.length)
+        dg.herePlacementRadioGroupValue = "full";  //as in the default below
+      switch (dg.herePlacementRadioGroup.value) {
+        case "L": dg.herePlacementRadioGroup.selectedIndex = 0;
+                  break;
+        case "R": dg.herePlacementRadioGroup.selectedIndex = 1;
+                  break;
+        case "I": dg.herePlacementRadioGroup.selectedIndex = 2;
+                  break;
+        case "O": dg.herePlacementRadioGroup.selectedIndex = 3;
+                  break;
+        default:  dg.herePlacementRadioGroup.selectedIndex = 4;
+      }
       
-    dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
+      dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
+    }
+    catch(e)
+    {
+      msidump(e.message);
+    }
   }
 
   var placement = 0;
