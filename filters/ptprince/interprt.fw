@@ -1,14 +1,14 @@
 
-@A@<The Command Interpretter@>
+@A@<The Command Interpreter@>
 
-The Command Interpretter contains the main loop of \TeX{}. It gets
+The Command Interpreter contains the main loop of \TeX{}. It gets
 unexpandable tokens from the macro processor and parses tokens until
 a command is recognized. The command is executed immediately.
 Most commands will be addressed to the Typesetter, but not all.
 Some, e.g. @{\catcode@} are addresed to the text io subsystem.
-Some change the state of the command interpretter itself.
+Some change the state of the command interpreter itself.
 
-@$@<class Interpretter@>==@{@-
+@$@<class Interpreter@>==@{@-
 class Interpretter {
 public:
    static void InitializeSymbolTable();
@@ -26,8 +26,8 @@ void Interpretter::InitializeSymbolTable()
 
 
 
-Here are some variables global to the interpretter
-@$@<Declare interpretter global variables@>+=@{@-
+Here are some variables global to the interpreter
+@$@<Declare interpreter global variables@>+=@{@-
 //static CommandCode curcmd;
 //static Primitive* curcmddata;
 extern const char* s_outputdir;
@@ -77,7 +77,7 @@ void Interpretter::MainLoop()
 }
 @}
 
-Each command processed by the command interpretter has a code
+Each command processed by the command interpreter has a code
 that is listed in the enumerated type @{CommandCode@}.
 
 
@@ -146,7 +146,7 @@ that is listed in the enumerated type @{CommandCode@}.
 
 
 
-The command interpretter must maintain a stack that records the current
+The command interpreter must maintain a stack that records the current
 level and type of level.
 
 @$@<GroupStack@>+=@{@-
@@ -389,7 +389,7 @@ If we encounter one of these commands in either horizontal mode
 or mathmode we call the typesetter's SetChar routine. Otherwise, if we
 are in vertical mode, we switch to @{HMODE@} first: when a token
 causes the switch to horizontal mode we first put the token back
-into the input stream. It has to be interpretted
+into the input stream. It has to be interpreted
 in the correct mode. Then we tell the typesetter to switch modes.
 This will cause a new paragraph to start, so we also have to push the
 the everypar tokens into the input stream.
@@ -1794,7 +1794,7 @@ case CMD_AFTERGROUP:{
 @o@<interpretter.h@>==@{@-
 #ifndef INTERPRETTER_H
 #define INTERPRETTER_H
-@<class Interpretter@>
+@<class Interpreter@>
 #endif
 @}
 
@@ -1823,7 +1823,7 @@ SymbolData* frozen_relax = new Primitive(CMD_RELAX);
 
 @<GroupStack@>
 @<TagStack@>
-@<Interpretter forward declarations@>
+@<Interpreter forward declarations@>
 @<Functions for inserting primitive hooks@>
 @<Some box scanning@>
 @<ScanMath@>
@@ -1832,7 +1832,7 @@ SymbolData* frozen_relax = new Primitive(CMD_RELAX);
 @<Declare MakeDimenParam@>
 @<Declare MakeGlueParam@>
 @<Declare MakeToksParameter@>
-@<Declare interpretter global variables@>
+@<Declare interpreter global variables@>
 @<InitializeSymbolTable@>
 
 @<DoAssignments@>
