@@ -10745,11 +10745,9 @@ function openGraphDialog(tagname, node, editorElement)
     return;
   }
   DOMGListAdd (node, currentDOMGs);
-  var graph = new Graph();
-  graph.extractGraphAttributes (node);
   // non-modal dialog, the return is immediate
   var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
-     editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
+     editorElement, "cmd_objectProperties", node, null, node, currentDOMGs);
   var editorElement = msiGetActiveEditorElement();
 	msiGetEditor(editorElement).incrementModificationCount(1);
 

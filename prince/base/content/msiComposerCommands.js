@@ -282,18 +282,23 @@ function msiGetComposerCommandTable(editorElement)
   if (!controller)
   {
     //create it
-    controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"].createInstance();
+    try
+    {
+        controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"].createInstance();
 
-    var editorController = controller.QueryInterface(Components.interfaces.nsIControllerContext);
-    editorController.init(null);
-    editorController.setCommandContext(editorElement);
-    editorElement.contentWindow.controllers.insertControllerAt(0, controller);
-  
-    // Store the controller ID so we can be sure to get the right one later
-    editorElement.mComposerJSCommandControllerID = editorElement.contentWindow.controllers.getControllerId(controller);
-//    alert("Creating command controller for editorElement [" + editorElement.nodeName + ", id " + editorElement.id + "]");
+        var editorController = controller.QueryInterface(Components.interfaces.nsIControllerContext);
+        editorController.init(null);
+        editorController.setCommandContext(editorElement);
+        editorElement.contentWindow.controllers.insertControllerAt(0, controller);
+    
+        // Store the controller ID so we can be sure to get the right one later
+        editorElement.mComposerJSCommandControllerID = editorElement.contentWindow.controllers.getControllerId(controller);
+    }
+    catch(e)
+    {
+      msidump(e.message+"\n");
+    }
   }
-
   if (controller)
 
   {

@@ -81,9 +81,9 @@
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
-\msi@everyrowstart{<tr>}
-\msi@everyrowend{</tr>}
-\msi@everycellstart{<td>}
+\msi@everyrowstart{\msitag{<tr>}\msihmode}
+\msi@everyrowend{\msitag{</tr>}}
+\msi@everycellstart{\msihmode\msiopentag{td}{<td>}\msiopentag{bodyText}{<bodyText>}}
 
 %\msi@everycellstart{\chkmulticol}
 \def\chkmulticol#1{%
@@ -95,7 +95,7 @@
   \fi
   \@next}
 
-\msi@everycellend{</td>}
+\msi@everycellend{\msiclosetag{td}{</td>}}
 
 \def\msi@stylesheets{\msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br}
 
@@ -888,7 +888,7 @@
       \else
         \mathtabularfalse
       \fi   
-      \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+      \msiopentag{table}{<table opt="#2" _moz_resizing="true"  cellpadding="4" border="1">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
         \aftergroup\msi@closetabular
