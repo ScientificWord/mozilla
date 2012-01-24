@@ -1466,14 +1466,15 @@ case CMD_EXTENSION: {
              // Try jpg
              std::string name = fullname;
              name += ".jpg";
-             char buf[_MAX_PATH];
+             #ifndef _WINDOWS
+               char buf[2000];
+             #else
+               char buf[_MAX_PATH];
+             #endif
              SearchEnv(name.c_str(), paths.c_str(), false, buf);
 
          }
          
-         
-
-
 
          if (fullname[0] == '.'){
            // relative path?
