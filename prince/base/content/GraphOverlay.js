@@ -9,31 +9,31 @@ function Graph () {
   // When adding to this list, you must also add to the MathServiceRequest in the compute engine
   // Compute/iCmpIDs.h and Compute/MRequest.cpp::NameToPID()
   // PlotStatus: UI use only. New/Inited/Deleted.
-  this.GRAPHATTRIBUTES  = ["ImageFile",   "XAxisLabel",     "YAxisLabel",   "ZAxisLabel", "Width",
-                            "Height",     "PrintAttribute",  "Placement",   "Offset",     "Float",
-                            "PrintFrame", "Key",            "Name",         "CaptionText","CaptionPlace",
-                            "Units",      "AxesType",       "EqualScaling", "EnableTicks","XTickCount",
-                            "YTickCount", "AxesTips",       "GridLines",    "BGColor",    "Dimension", 
-                            "AxisScale",  "CameraLocationX","CameraLocationY","CameraLocationZ",
-                            "FocalPointX","FocalPointY",    "FocalPointZ",  "UpVectorX",  "UpVectorY", 
-                            "UpVectorZ",  "ViewingAngle",   "OrthogonalProjection",       "KeepUp", 
-                            " "];
   this.plots            = [];  //an array of plots, see below
   this.modFlag          = {};  //a Boolean for each attribute in GRAPHATTRIBUTES
   this.errStr           = "";
-  this.addPlot          = graphAddPlot;    // takes plot for a parameter
-  this.deletePlot       = graphDeletePlot; // takes plot number for a parameter
-  this.getNumPlots      = function ()  { return (this.plots.length); };
-  this.isModified       = function (x) { return (this.modFlag[x]);};
-  this.setModified      = function (x) { this.modFlag[x] = true;};
-  this.ser              = new XMLSerializer();
-  this.prompt           = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-
+  this.currentDisplayedPlot = -1;
   for (var i = 0; i < this.GRAPHATTRIBUTES.length; i++) {
     this[this.GRAPHATTRIBUTES[i]] = this.getDefaultValue(this.GRAPHATTRIBUTES[i]);
   }
 }
 
+Graph.prototype.GRAPHATTRIBUTES  = ["ImageFile",   "XAxisLabel",     "YAxisLabel",   "ZAxisLabel", "Width",
+                          "Height",     "PrintAttribute",  "Placement",   "Offset",     "Float",
+                          "PrintFrame", "Key",            "Name",         "CaptionText","CaptionPlace",
+                          "Units",      "AxesType",       "EqualScaling", "EnableTicks","XTickCount",
+                          "YTickCount", "AxesTips",       "GridLines",    "BGColor",    "Dimension", 
+                          "AxisScale",  "CameraLocationX","CameraLocationY","CameraLocationZ",
+                          "FocalPointX","FocalPointX",    "FocalPointZ",  "UpVectorX",  "UpVectorY", 
+                          "UpVectorZ",  "ViewingAngle",   "OrthogonalProjection",       "KeepUp", 
+                          " "];
+Graph.prototype.addPlot                = graphAddPlot;    // takes plot for a parameter
+Graph.prototype.deletePlot             = graphDeletePlot; // takes plot number for a parameter
+Graph.prototype.getNumPlots            = function ()  { return (this.plots.length); };
+Graph.prototype.isModified             = function (x) { return (this.modFlag[x]);};
+Graph.prototype.setModified            = function (x) { this.modFlag[x] = true;};
+Graph.prototype.ser                    = new XMLSerializer();
+Graph.prototype.prompt                 = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
 Graph.prototype.computeGraph           = graphComputeGraph;
 Graph.prototype.computeQuery           = graphComputeQuery;
 Graph.prototype.createGraphDOMElement  = graphMakeDOMGraphElement;
@@ -41,7 +41,7 @@ Graph.prototype.extractGraphAttributes = graphReadGraphAttributesFromDOM;
 Graph.prototype.getDefaultValue        = graphGetDefaultGraphValue;
 Graph.prototype.getGraphAttribute      = function (name) { return (this[name]);};
 Graph.prototype.getValue               = graphGetGraphValue;
-Graph.prototype.graphAttributeList     = function () { return (this.GRAPHATTRIBUTES); };
+Graph.prototype.graphAttributeList     = function () { return (Graph.prototype.GRAPHATTRIBUTES); };
 Graph.prototype.graphCompAttributeList = graphSelectCompAttributes;
 Graph.prototype.serializeGraph         = graphSerializeGraph;
 Graph.prototype.setGraphAttribute      = function (name, value) { this[name] = value; };
@@ -51,22 +51,6 @@ function Plot () {
   this.attributes = {};
   this.modFlag = {};
   this.parent = null;
-  this.PLOTATTRIBUTES   = ["PlotStatus", "PlotType",
-                           "LineStyle", "PointStyle", "LineThickness", "LineColor",
-                           "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
-									         "PointSymbol", "SurfaceStyle", "IncludePoints",
-									         "SurfaceMesh", "CameraLocationX", "CameraLocationY",
-									         "CameraLocationZ",	"FontFamily", "IncludeLines",
-                           "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
-                           "Animate", "AnimateStart", "AnimateEnd", "AnimateFPS",
-                           "AnimateVisBefore", "AnimateVisAfter",
-                           "ConfHorizontalPts", "ConfVerticalPts"];
-  this.PLOTELEMENTS     =["Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin",
-                          "XVar", "YVar", "ZVar", "XPts", "YPts", "ZPts", "TubeRadius"];
-                          // Plot elements are all MathML expressions.
-                        
-  this.isModified       = function (x) { return (this.modFlag[x]);};
-  this.setModified      = function (x) { this.modFlag[x] = true;};
   var attr;
   for (var i = 0; i < this.PLOTATTRIBUTES.length; i++) {
     attr = this.PLOTATTRIBUTES[i];
@@ -80,25 +64,243 @@ function Plot () {
   }
 }   
 
-Plot.prototype.createPlotDOMElement       = plotMakeDOMPlotElement;
-Plot.prototype.readPlotAttributesFromDOM  = plotReadPlotAttributesFromDOM
-Plot.prototype.getPlotValue               = plotGetPlotValue;
-Plot.prototype.getDefaultPlotValue        = plotGetDefaultPlotValue;
+Plot.prototype.PLOTATTRIBUTES   = ["PlotStatus", "PlotType",
+                         "LineStyle", "PointStyle", "LineThickness", "LineColor",
+                         "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
+								         "PointSymbol", "SurfaceStyle", "IncludePoints",
+								         "SurfaceMesh", "CameraLocationX", "CameraLocationY",
+								         "CameraLocationZ",	"FontFamily", "IncludeLines",
+                         "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
+                         "Animate", "AnimateStart", "AnimateEnd", "AnimateFPS",
+                         "AnimateVisBefore", "AnimateVisAfter",
+                         "ConfHorizontalPts", "ConfVerticalPts"];
+Plot.prototype.PLOTELEMENTS     = ["Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin",
+                        "XVar", "YVar", "ZVar", "XPts", "YPts", "ZPts", "TubeRadius"];
+                        // Plot elements are all MathML expressions.
+                        
+Plot.prototype.isModified                 = function (x) { return (this.modFlag[x]);};
+Plot.prototype.setModified                = function (x) { this.modFlag[x] = true;};
+Plot.prototype.createPlotDOMElement       = function  (doc, forComp) 
+ {
+   // return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
+   // do the plot attributes as DOM attributes of <plot>
+  var status = this.PlotStatus;
+  var attr;
+  if (status != "Deleted") {
+    var DOMPlot = doc.createElement("plot");
+    var attrs = (forComp) ? this.plotCompAttributeList() : this.plotAttributeList();
+    for (var i=0; i<attrs.length; i++) {
+      attr = attrs[i];
+//      if (this.isModified[attr] || forComp) {
+        var value = this.attributes[attr];
+        if (value && (value != "") && (value != "unspecified"))
+           DOMPlot.setAttribute (attr, value);
+//      }
+    }
+    // do the plot elements as document fragment children of <plot>
+    attrs = (forComp) ? this.plotCompElementList() : this.plotElementList();
+    for (var i=0; i<attrs.length; i++) {
+      attr = attrs[i];
+      if (forComp || (this.element[attr])) {
+        var DOMEnode = doc.createElement(attr);
+        var textval = this.element[attr];
+        if ((textval != "") && (textval != "unspecified")) {
+          var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
+          DOMEnode.appendChild (tNode.documentElement);
+          DOMPlot.appendChild (DOMEnode);
+        }
+      }
+    }
+    return(DOMPlot);
+  }
+  return(NULL);
+};
+
+// get values from a DOM <plot> node
+Plot.prototype.readPlotAttributesFromDOM  = function (DOMPlot) {
+  var key;
+  var value;
+  var attr;
+  var j;
+  for (j=0; j<DOMPlot.attributes.length; j++) {
+    attr = DOMPlot.attributes[j];
+    key = attr.nodeName;
+    value = attr.nodeValue;
+    this.attributes[key] = value;
+  }
+
+  // the children of <plot> are in general <plotelement> <mathml...> </plotelement>
+  // We should get an ELEMENT_NODE for the <plotelement>, and the localName is the attribute name.
+  // The data is either text or mathml. For text, grab the text value, which must be in the nodeValue
+  // of the first child. For DOM fragment, store serialization of the fragment.
+  var children = DOMPlot.childNodes;
+  var child;
+  for (j=0; j<children.length; j++) {
+    child = children[j];
+    key = child.localName;
+    if (child.nodeType == Node.ELEMENT_NODE) 
+    {
+       var mathnode = child.getElementsByTagName("math")[0];
+       var serialized = this.parent.ser.serializeToString(mathnode);
+       this.element[key] = serialized;
+    }
+  }
+};
+
+// look up the value key. If not found, look up the default value.
+Plot.prototype.getPlotValue               = function (key) 
+{
+  var value = this[key];
+  if ((value != null) && (value != "")) {
+    return value;
+  }
+  var ptype = this.PlotType;
+  if ((key == "XPts") || (key == "YPts") || (key == "ZPts")) {
+    var dim   = this.parent.getValue ("Dimension");
+    if (dim == "2") {
+      switch (ptype) {
+        case "implicit" :            value = GetNumAsMathML(20); break;
+        case "gradient":
+        case "vectorField":          value = GetNumAsMathML(10); break;
+        case "inequality":           value = GetNumAsMathML(80); break;
+        case "conformal":            value = GetNumAsMathML(20); break;
+        default:                     value = GetNumAsMathML(400); break;
+      }
+    } else {
+      switch (ptype) {
+        case "parametric":
+        case "curve" :               value = GetNumAsMathML(80); break;
+        case "implicit" :            value = GetNumAsMathML(6); break;
+        case "gradient":
+        case "vectorField":          value = GetNumAsMathML(6); break;
+        case "tube":                 value = GetNumAsMathML(40); break;
+        case "approximateIntegral":  value = GetNumAsMathML(400); break;
+        default:                     value = GetNumAsMathML(20); break;
+      }
+    }
+    return value;
+  }
+  return (plotGetDefaultPlotValue (key));
+};
+
+// get defaults from preference system, or if not there, from hardcoded list
+Plot.prototype.getDefaultPlotValue        = function (key) {
+  var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+  var value;
+  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+  var keyname = "swp.plot." + key;
+  if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
+    value = prefs.getCharPref(keyname);
+  }
+  else {
+    switch (key) {
+	  case 'PlotStatus':       value = "New";  // this should never be moved from here
+         break;
+	  case 'ConfHorizontalPts':     value = "15";
+	  case 'ConfVerticalPts':       value = "15";
+         break;
+//      default:
+//        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
+    case 'Expression': value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi tempinput='true'></mi></math>";
+
+    default: value = "";
+    }
+  }
+  return value;
+};
+
 Plot.prototype.plotAttributeList          = function () { return (this.PLOTATTRIBUTES); };
 Plot.prototype.plotElementList            = function () { return (this.PLOTELEMENTS); };
-Plot.prototype.plotCompAttributeList      = plotSelectCompAttributes;
-Plot.prototype.plotCompElementList        = plotSelectCompElements;
+Plot.prototype.plotCompAttributeList      = function () {
+  var NA;
+  var dim = this.parent["Dimension"];
+  var ptype = this.attributes["PlotType"];
+  var animate = this.attributes["Animate"];
+  NA = attributeArrayRemove (this.PLOTATTRIBUTES, "PlotStatus");
+
+  if (ptype != "approximateIntegral") {
+    NA = attributeArrayRemove (NA,  "AISubIntervals");
+    NA = attributeArrayRemove (NA,  "AIMethod");
+    NA = attributeArrayRemove (NA,  "AIInfo");
+  }
+
+  if ((ptype != "approximateIntegral") && (ptype != "inequality")){
+    NA = attributeArrayRemove (NA,  "FillPattern");
+  }
+
+  if (ptype != "conformal") {
+    NA = attributeArrayRemove (NA,  "ConfHorizontalPts");
+    NA = attributeArrayRemove (NA,  "ConfVerticalPts");
+  }
+
+  if (dim == "2") {
+    NA = attributeArrayRemove (NA,  "DirectionalShading");
+    NA = attributeArrayRemove (NA,  "SurfaceStyle");
+    NA = attributeArrayRemove (NA,  "SurfaceMesh");
+    NA = attributeArrayRemove (NA,  "CameraLocationX");
+    NA = attributeArrayRemove (NA,  "CameraLocationY");
+    NA = attributeArrayRemove (NA,  "CameraLocationZ");
+  } else {
+    NA = attributeArrayRemove (NA,  "PointStyle");
+    NA = attributeArrayRemove (NA,  "AxisScale");
+  }
+
+  if ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implict")) {
+    NA = attributeArrayRemove (NA, "DiscAdjust");
+  }
+
+  if (animate != "true") {
+    NA = attributeArrayRemove (NA, "AnimateStart");
+    NA = attributeArrayRemove (NA, "AnimateEnd");
+    NA = attributeArrayRemove (NA, "AnimateFPS");
+    NA = attributeArrayRemove (NA, "AnimateVisBefore");
+    NA = attributeArrayRemove (NA, "AnimateVisAfter");
+  }
+
+  return NA;
+};
+
+Plot.prototype.plotCompElementList        = function () {
+  var dim     = this.parent["Dimension"];
+  var animate = this.attributes["Animate"];
+  var ptype   = this.attributes["PlotType"];
+  var NA = this.PLOTELEMENTS;
+
+  if (ptype != "tube") {
+    NA = attributeArrayRemove (NA, "TubeRadius");
+  }
+
+  var nvars = plotVarsNeeded (dim, ptype, animate);
+
+  if (nvars < 2) {
+    NA = attributeArrayRemove (NA, "YPts");
+    NA = attributeArrayRemove (NA, "YMax");
+    NA = attributeArrayRemove (NA, "YMin");
+  }
+
+  if (nvars < 3) {
+    NA = attributeArrayRemove (NA, "ZPts");
+    NA = attributeArrayRemove (NA, "ZMax");
+    NA = attributeArrayRemove (NA, "ZMin");
+  }
+
+  return NA;
+};
+
 Plot.prototype.getPlotAttribute           = function (name) { return (this[name]);};
 Plot.prototype.setPlotAttribute           = function (name, value) { this[name] = value;
                                                                       this.setModified(name); };
-Plot.prototype.computeQuery               = plotComputeQuery;
+Plot.prototype.computeQuery               = function () {
+  this.parent.computeQuery(this);
+}
+;
 
                                                             
 // Add a plot to a graph. Conceptually, a plot is a collection of attribute/value pairs
 function graphAddPlot(plot) {
   this.plots.push(plot);
   plot.parent = this;
-  return (this.plots.length);
+  return (this.plots.length - 1);
 }
 
 // just decrement the counter and let the GC handle the rest
@@ -125,9 +327,7 @@ function graphComputeGraph (editorElement, filename) {
       msiComputeLogger.Received(out);                                                             
     }                                                                                             
     catch (e) {                                                                                    
-//      this.prompt.alert (null, "Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
       alert ("Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
-      dump("Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors() + "\n");
       msiComputeLogger.Exception(e);                                                               
     } 
   } else {
@@ -146,7 +346,7 @@ function graphComputeQuery (plot) {
   try {           
     msiComputeLogger.Sent4 ("plotfuncQuery", "", str, "");
     //msiComputeLogger.Sent4 ("plotfuncQuery", "", "", "");
-
+    debugger;
     var out = eng.plotfuncQuery (str);
     msidump ("ComputeQuery plotfuncQuery returns " + out + "\n");
     msiComputeLogger.Received(out); 
@@ -169,9 +369,6 @@ function graphComputeQuery (plot) {
   RestoreCursor();                                                                               
 } 
 
-function plotComputeQuery () {
-  this.parent.computeQuery(this);
-}
 
 // the optionalplot, if specified, indicates that this <graph> has only one plot
 // If any of the plots has an ERROR status, return "ERROR" and a diagnostic
@@ -239,9 +436,20 @@ function graphMakeDOMGraphElement (forComp, optplot) {
   var DOMGraph  = document.createElementNS(htmlns, "graph");
   var DOMGs     = document.createElementNS(htmlns, "graphSpec");
   var DOMPw     = document.createElementNS(htmlns, "plotwrapper");
+  
   // set attributes that selection works. I think only one of these is necessary.
   DOMPw.setAttribute("msi_resize","true");
-//  DOMGraph.setAttribute("msi_resize","true");
+  var attributes;
+  var att;
+  if (this["plotwrapper"])
+  { 
+    attributes = this["plotwrapper"].getAttributes();
+    for (var j=0; j < attributes.length; j++)
+    {
+      att = attributes[j];
+      DOMPw.setAttribute(att.name, att.value);
+    }
+  }
 
   // loop through graph attributes and insert them
   var alist;
@@ -348,137 +556,12 @@ function graphReadGraphAttributesFromDOM (DOMGraph) {
 
 /**----------------------------------------------------------------------------------*/
 
-// get defaults from preference system, or if not there, from hardcoded list
-function plotGetDefaultPlotValue (key) {
-  var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
-  var value;
-  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-  var keyname = "swp.plot." + key;
-  if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
-    value = prefs.getCharPref(keyname);
-  }
-  else {
-    switch (key) {
-	  case 'PlotStatus':       value = "New";  // this should never be moved from here
-         break;
-	  case 'ConfHorizontalPts':     value = "15";
-	  case 'ConfVerticalPts':       value = "15";
-         break;
-//      default:
-//        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
-      default: value = "";
-    }
-  }
-  return value;
-}
 
 
-// look up the value key. If not found, look up the default value.
-function plotGetPlotValue (key) {
-  var value = this[key];
-  if ((value != null) && (value != "")) {
-    return value;
-  }
-  var ptype = this.PlotType;
-  if ((key == "XPts") || (key == "YPts") || (key == "ZPts")) {
-    var dim   = this.parent.getValue ("Dimension");
-    if (dim == "2") {
-      switch (ptype) {
-        case "implicit" :            value = GetNumAsMathML(20); break;
-        case "gradient":
-        case "vectorField":          value = GetNumAsMathML(10); break;
-        case "inequality":           value = GetNumAsMathML(80); break;
-        case "conformal":            value = GetNumAsMathML(20); break;
-        default:                     value = GetNumAsMathML(400); break;
-      }
-    } else {
-      switch (ptype) {
-        case "parametric":
-        case "curve" :               value = GetNumAsMathML(80); break;
-        case "implicit" :            value = GetNumAsMathML(6); break;
-        case "gradient":
-        case "vectorField":          value = GetNumAsMathML(6); break;
-        case "tube":                 value = GetNumAsMathML(40); break;
-        case "approximateIntegral":  value = GetNumAsMathML(400); break;
-        default:                     value = GetNumAsMathML(20); break;
-      }
-    }
-    return value;
-  }
-  return (plotGetDefaultPlotValue (key));
-}
 
 
-// return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
-function plotMakeDOMPlotElement (doc, forComp) {
-  // do the plot attributes as DOM attributes of <plot>
-  var status = this.PlotStatus;
-  var attr;
-  if (status != "Deleted") {
-    var DOMPlot = doc.createElement("plot");
-    var attrs = (forComp) ? this.plotCompAttributeList() : this.plotAttributeList();
-    for (var i=0; i<attrs.length; i++) {
-      attr = attrs[i];
-      if (this.isModified[attr] || forComp) {
-        var value = this.attributes[attr];
-        if ((value != "") && (value != "unspecified"))
-           DOMPlot.setAttribute (attr, value);
-      }
-    }
-    // do the plot elements as document fragment children of <plot>
-    attrs = (forComp) ? this.plotCompElementList() : this.plotElementList();
-    for (var i=0; i<attrs.length; i++) {
-      attr = attrs[i];
-      if (forComp || (this.element[attr])) {
-        var DOMEnode = doc.createElement(attr);
-        var textval = this.element[attr];
-        if ((textval != "") && (textval != "unspecified")) {
-          var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
-          DOMEnode.appendChild (tNode.documentElement);
-          DOMPlot.appendChild (DOMEnode);
-        }
-      }
-    }
-    return(DOMPlot);
-  }
-  return(NULL);
-}
 
 
-// get values from a DOM <plot> node
-function plotReadPlotAttributesFromDOM (DOMPlot) {
-  var key;
-  var value;
-  var attr;
-  for (var j=0; j<DOMPlot.attributes.length; j++) {
-    attr = DOMPlot.attributes[j];
-    key = attr.nodeName;
-    value = attr.nodeValue;
-    this.attributes[key] = value;
-  }
-
-  // the children of <plot> are in general <plotelement> <mathml...> </plotelement>
-  // We should get an ELEMENT_NODE for the <plotelement>, and the localName is the attribute name.
-  // The data is either text or mathml. For text, grab the text value, which must be in the nodeValue
-  // of the first child. For DOM fragment, store serialization of the fragment.
-  var children = DOMPlot.childNodes;
-  var child;
-  var key;
-  for (var j=0; j<children.length; j++) {
-    child = children[j];
-    var key = child.localName;
-    if (child.nodeType == Node.ELEMENT_NODE) {
-      if ((child.childNodes.length > 0) && (child.childNodes[0].nodeType == Node.TEXT_NODE)) {
-         this.element[key] =  child.childNodes[0].nodeValue;
-      }
-      else {
-//         var ser = new XMLSerializer();
-         var serialized = this.parent.ser.serializeToString(child.firstChild);
-         this.element[key] = serialized;
-      }
-    }
-  }
-}
 
 
 /**----------------------------------------------------------------------------------*/
@@ -695,11 +778,11 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate, editorEleme
 
   var width = GetStringPref("swp.graph.HSize");
   var height = GetStringPref("swp.graph.VSize");
-
-
+  var unit = GetStringPref("swp.graph.SizeUnits");
 
   graph.setGraphAttribute("Width", width);
   graph.setGraphAttribute("Height", height);
+  graph.setGraphAttribute("Units", unit);
 
   var plot = new Plot();
   var plotnum = graph.addPlot (plot);
@@ -804,81 +887,7 @@ function attributeArrayFind (A, element) {
 
 
 
-function plotSelectCompAttributes () {
-  var NA;
-  var dim = this.parent["Dimension"];
-  var ptype = this.attributes["PlotType"];
-  var animate = this.attributes["Animate"];
-  NA = attributeArrayRemove (this.PLOTATTRIBUTES, "PlotStatus");
 
-  if (ptype != "approximateIntegral") {
-    NA = attributeArrayRemove (NA,  "AISubIntervals");
-    NA = attributeArrayRemove (NA,  "AIMethod");
-    NA = attributeArrayRemove (NA,  "AIInfo");
-  }
-
-  if ((ptype != "approximateIntegral") && (ptype != "inequality")){
-    NA = attributeArrayRemove (NA,  "FillPattern");
-  }
-
-  if (ptype != "conformal") {
-    NA = attributeArrayRemove (NA,  "ConfHorizontalPts");
-    NA = attributeArrayRemove (NA,  "ConfVerticalPts");
-  }
-
-  if (dim == "2") {
-    NA = attributeArrayRemove (NA,  "DirectionalShading");
-    NA = attributeArrayRemove (NA,  "SurfaceStyle");
-    NA = attributeArrayRemove (NA,  "SurfaceMesh");
-    NA = attributeArrayRemove (NA,  "CameraLocationX");
-    NA = attributeArrayRemove (NA,  "CameraLocationY");
-    NA = attributeArrayRemove (NA,  "CameraLocationZ");
-  } else {
-    NA = attributeArrayRemove (NA,  "PointStyle");
-    NA = attributeArrayRemove (NA,  "AxisScale");
-  }
-
-  if ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implict")) {
-    NA = attributeArrayRemove (NA, "DiscAdjust");
-  }
-
-  if (animate != "true") {
-    NA = attributeArrayRemove (NA, "AnimateStart");
-    NA = attributeArrayRemove (NA, "AnimateEnd");
-    NA = attributeArrayRemove (NA, "AnimateFPS");
-    NA = attributeArrayRemove (NA, "AnimateVisBefore");
-    NA = attributeArrayRemove (NA, "AnimateVisAfter");
-  }
-
-  return NA;
-}
-
-function plotSelectCompElements () {
-  var dim     = this.parent["Dimension"];
-  var animate = this.attributes["Animate"];
-  var ptype   = this.attributes["PlotType"];
-  var NA = this.PLOTELEMENTS;
-
-  if (ptype != "tube") {
-    NA = attributeArrayRemove (NA, "TubeRadius");
-  }
-
-  var nvars = plotVarsNeeded (dim, ptype, animate);
-
-  if (nvars < 2) {
-    NA = attributeArrayRemove (NA, "YPts");
-    NA = attributeArrayRemove (NA, "YMax");
-    NA = attributeArrayRemove (NA, "YMin");
-  }
-
-  if (nvars < 3) {
-    NA = attributeArrayRemove (NA, "ZPts");
-    NA = attributeArrayRemove (NA, "ZMax");
-    NA = attributeArrayRemove (NA, "ZMin");
-  }
-
-  return NA;
-}
 
 
 function plotVarsNeeded (dim, ptype, animate) {
