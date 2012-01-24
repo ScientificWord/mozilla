@@ -11,7 +11,7 @@
       xmlns:html="http://www.w3.org/1999/xhtml">
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/conteƒnt/msiEditorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 #include ../editorkeys.inc
 
@@ -316,7 +316,7 @@
             </rows>
           </grid>
         </hbox>
-        <hbox align="center">
+        <hbox id="rotate" align="center">
           <label value="&sizeTab.rotateContents;"/>
           <menulist id = "rotationList" value="rot0" persist="value">
             <menupopup id = "rotationsList">
@@ -374,7 +374,8 @@
       <broadcaster id="sidemargin" width="8"/>         
       <broadcaster id="topmargin" height="8"/>
       <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
-      <broadcaster id="hasNaturalSize" hidden=""/>        
+      <broadcaster id="hasNaturalSize" hidden=""/>  
+      <broadcaster id="role-image" hidden="false"/>      
     </broadcasterset>
   </vbox>
 

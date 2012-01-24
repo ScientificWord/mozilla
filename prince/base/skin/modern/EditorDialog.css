@@ -85,7 +85,7 @@ groupbox {
 }
 
 .medwidth {
-  width: 4.5em;
+  width: 7em;
 }
 
 .wrap {
@@ -378,3 +378,4 @@ tree.AttributesTree {
 .msiShadedTextbox .textbox-input {
   background-color: rgb(222,252,222);
 }
+
