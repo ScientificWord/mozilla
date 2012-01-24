@@ -173,9 +173,9 @@
                    caption="&labelingcaptiontext.label;" />
           </groupbox>
        </vbox>
-      </tabpanel>      
+      </tabpanel>   
+         
       <tabpanel id="ItemsPlotted">
-
 	    <vbox>
   		  <groupbox>
   	        <caption label="&plotstyles.label;"/>
@@ -260,7 +260,7 @@
 		        </vbox>
             <vbox>
               <label control="plot" value="Item number" />
-              <textbox id="plotnumber" class="narrow" type="number" increment="1" decimalplaces="0" min="1" max="1" label="&editplotitem.label;"/>
+              <textbox id="plotnumber" class="narrow" type="number" increment="1" decimalplaces="0" min="1" max="1" label="&editplotitem.label;" onchange="populateDialog(this.valueNumber - 1);"/>
               <msibutton label="&newplot.label;"   command="cmd_newPlot"/>
               <msibutton label="&command.delete;"  command="cmd_deletePlot"/>
             </vbox>
@@ -290,7 +290,7 @@
                     </menupopup>
                   </menulist>
                   <hbox/>
-                  <msibutton id="basecolor" class="color-button" oncommand="getColorAndUpdate(this);">
+                   <msibutton id="basecolor" class="color-button" oncommand="getColorAndUpdate('baseColorWell');">
                     <spacer id="baseColorWell" class="color-well"/>
                   </msibutton>
                   <hbox/>
@@ -306,7 +306,7 @@
                   <hbox/>
                   <hbox/>
                   <hbox/>
-                  <msibutton id="secondcolor" class="color-button" oncommand="getColorAndUpdate(this);">
+                  <msibutton id="secondcolor" class="color-button" oncommand="getColorAndUpdate('secondColorWell');">
                     <spacer id="secondColorWell" class="color-well" />
                   </msibutton>
                   <hbox/>
@@ -461,10 +461,11 @@
 
 
       <tabpanel id="View defaults">
+        <separator/>
         <vbox>
           <row>
             <label id="bgcolor" control="TextButton" value="&DefaultBGColor.label;" />
-            <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
+            <msibutton id="bgcolorbutton" class="color-button" oncommand="getColorAndUpdate('plotCW');">
                <spacer id="plotCW" class="color-well"/>
             </msibutton>
           </row>
@@ -492,7 +493,54 @@
               <textbox id="zrangehigh" style="width: 5em;" cols="6"/>
             </hbox>
           </groupbox>
-
+          <grid align="center">
+            <columns>
+              <column width="100px"/>
+              <column width="60px"/>
+              <column width="60px"/>
+              <column width="60px"/>
+            </columns>
+            <rows>
+              <row>
+                <label />
+                <label text-align="center">x</label>
+                <label text-align="center">y</label>
+                <label text-align="center">z</label>
+              </row> 
+              <row >
+                <label text-align = "end">Focal point</label>
+                <textbox context="msiEditorContentContext" 
+                        id="FocalPointX" flex="1" height="20"/>
+                <textbox context="msiEditorContentContext" 
+                        id="FocalPointY" flex="1" height="20"/>
+                <textbox context="msiEditorContentContext" 
+                        id="FocalPointZ" flex="1" height="20"/>
+              </row>
+              <row>
+                <label text-align = "end">Position</label>
+                <textbox context="msiEditorContentContext" 
+                        id="CameraLocationX" flex="1" height="20"/>
+                <textbox context="msiEditorContentContext" 
+                        id="CameraLocationY" flex="1" height="20"/>
+                <textbox context="msiEditorContentContext" 
+                        id="CameraLocationZ" flex="1" height="20"/>
+              </row>
+              <row>
+                <label text-align = "end">Up Vector</label>
+                <textbox context="msiEditorContentContext" 
+                        id="UpVectorX" flex="1" height="20"/>
+                <textbox context="msiEditorContentContext" 
+                        id="UpVectorY" flex="1" height="20"/>
+                <textbox context="msiEditorContentContext" 
+                        id="UpVectorZ" flex="1" height="20"/>
+              </row>
+              <row>
+                <label text-align = "end">ViewingAngle</label>
+                <textbox context="msiEditorContentContext" 
+                        id="ViewingAngle" flex="1" height="20"/>
+              </row>
+            </rows>  
+          </grid>
        </vbox>
       </tabpanel>      
     </tabpanels>
