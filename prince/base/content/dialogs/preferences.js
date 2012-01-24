@@ -182,8 +182,8 @@ function writeGraphicLayoutPreferences(whichPrefs)
       pref.value = document.getElementById("graphicsWidth").value;
       pref = document.getElementById("defaultGraphicsVSize");
       pref.value = document.getElementById("graphicsHeight").value;
-//      pref = document.getElementById("defaultGraphicsSizeUnits");
-//      pref.value = document.getElementById("graphicsUnitsList").value;
+      pref = document.getElementById("defaultGraphicsSizeUnits");
+      pref.value = document.getElementById("graphicsUnitsList").value;
     break;
     case "plot":
       writeGraphicPlacementPreferences(placementIdsPlot);
