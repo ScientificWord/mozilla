@@ -42,6 +42,7 @@ MakeToksParameter("msi@@display@@proc",  &Global::msidisplaymathproc);
 
 MakeToksParameter("msi@@everypar",       &Global::msieverypar);
 MakeToksParameter("msi@@everyhbox",      &Global::msieveryhbox);
+MakeToksParameter("msi@@graphicspath",   &Global::msigraphicspath);
 @}
 
 @$@<Basic assignment commands@>+=@{@-
