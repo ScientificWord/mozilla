@@ -19,7 +19,7 @@ function Graph () {
 }
 
 Graph.prototype.GRAPHATTRIBUTES  = ["ImageFile",   "XAxisLabel",     "YAxisLabel",   "ZAxisLabel", "Width",
-                          "Height",     "PrintAttribute",  "Placement",   "Offset",     "Float",
+                          "Height",     "PrintAttribute",      
                           "PrintFrame", "Key",            "Name",         "CaptionText","CaptionPlace",
                           "Units",      "AxesType",       "EqualScaling", "EnableTicks","XTickCount",
                           "YTickCount", "AxesTips",       "GridLines",    "BGColor",    "Dimension", 
@@ -426,6 +426,22 @@ function graphGetGraphValue (key) {
   return (this.getDefaultValue(key));
 }
 
+function init(graphObj)
+{
+
+  var graphController = {
+    supportsCommand : function(cmd){ return (cmd == "cmd_paste"); },
+    isCommandEnabled : function(cmd){
+      if (cmd == "cmd_paste") return true;
+      return false;
+    },
+    doCommand : function(cmd){
+      graphObj.addClipboardContents(graphObj.selectedIndex);
+    },
+    onEvent : function(evt){ }
+  };
+}
+
 
 // return a DOM <graph> fragment
 // if forComp, prepare the <graph> fragment to pass to the computation engine
@@ -436,8 +452,13 @@ function graphMakeDOMGraphElement (forComp, optplot) {
   var DOMGraph  = document.createElementNS(htmlns, "graph");
   var DOMGs     = document.createElementNS(htmlns, "graphSpec");
   var DOMPw     = document.createElementNS(htmlns, "plotwrapper");
-  
+  init(DOMGraph);
+//  DOMGraph.setAttribute("ondragover", "nsDragAndDrop.dragOver(event, plotObserver);" );
+//  DOMGraph.setAttribute("ondragdrop", "nsDragAndDrop.drop(event, plotObserver);");
+
+
   // set attributes that selection works. I think only one of these is necessary.
+  
   DOMPw.setAttribute("msi_resize","true");
   var attributes;
   var att;
@@ -470,7 +491,19 @@ function graphMakeDOMGraphElement (forComp, optplot) {
       }
     }
   }
-
+  // Some plotwrapper attributes get promoted to the GraphSpec
+  var value;
+  var plotwrapper = this["plotwrapper"];
+  if (plotwrapper)
+  {
+    if (value = plotwrapper.getAttribute("height"))                                                     
+      DOMGs.setAttribute("Height") = value;
+    if (value = plotwrapper.getAttribute("width"))                                                     
+      DOMGs.setAttribute("Width") = value;
+    if (value = plotwrapper.getAttribute("units"))                                                     
+      DOMGs.setAttribute("Units") = value;
+  }
+  
   // if the optional plot number was specified, just include one plot
   // otherwise, for each plot, create a <plot> element
   if (optplot) {
@@ -509,10 +542,14 @@ function graphMakeDOMGraphElement (forComp, optplot) {
 	  img    = document.createElementNS(htmlns,"img");
 	  img.setAttribute("src", this.getGraphAttribute("ImageFile"));
 	}    
+  var unitHandler = new UnitHandler();
+  unitHandler.initCurrentUnit(this["Units"]);
+  var w = unitHandler.getValueStringAs(this["Width"],"px");
+  var h = unitHandler.getValueStringAs(this["Height"],"px");
 	img.setAttribute("alt", "Generated Plot");
 	img.setAttribute("msigraph","true");
-	img.setAttribute("width","250");
-	img.setAttribute("height","250");
+	img.setAttribute("width",w);
+	img.setAttribute("height",h);
 
   DOMPw.appendChild(img);
 //  var propButton;
@@ -1197,5 +1234,133 @@ function actualVarCount(variableList) {
       i++;
   return i;    
 }
+
+var plotObserver = 
+{ 
+  canHandleMultipleItems: function ()
+  {
+    return true;
+  },
+  
+//  onDragStart: function (evt, transferData, action)
+//  {
+//    var tree = evt.currentTarget;
+//    var namecol = tree.columns.getNamedColumn('Name');
+//    var i = tree.currentIndex;
+//
+//    if (tree.view.isContainer(i)) return;
+//    var s = tree.view.getCellText( i,namecol);
+//    while (tree.view.getParentIndex(i) >= 0)
+//    {           
+//      i = tree.view.getParentIndex(i);
+//      s = tree.view.getCellText(i,namecol)+ "/" + s;
+//    }
+//    // s is now the path of the clicked file relative to the fragment root.
+//    try 
+//    {
+//      var request = Components.
+//                    classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
+//                    createInstance();
+//      request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+//      var urlstring = decodeURIComponent(tree.getAttribute("ref") + s);
+//      var path = msiPathFromFileURL( msiURIFromString(urlstring));
+//
+//      request.open("GET", urlstring, false);
+//      request.send(null);
+//                          
+//      var xmlDoc = request.responseXML; 
+//      if (!xmlDoc && request.responseText)
+//        throw("fragment file exists but cannot be parsed as XML");
+//      if (xmlDoc)
+//      {
+//        var dataString="";
+//        var contextString="";
+//        var infoString="";
+//        var node;
+//        var nodelist;
+//        nodelist = xmlDoc.getElementsByTagName("data");
+//        if (nodelist.length > 0) node = nodelist.item(0);
+//        if (node)
+//        {
+//          dataString = decodeURIComponent(node.textContent);
+//        }
+//        if (dataString.length == 0) return;  // no point in going on in this case
+//        node = null;
+//        nodelist = xmlDoc.getElementsByTagName("context");
+//        if (nodelist.length > 0) node = nodelist.item(0);
+//        if (node)
+//        {
+//          contextString =  decodeURIComponent(node.textContent);
+//        }
+//        node = null;
+//        nodelist = xmlDoc.getElementsByTagName("info");
+//        if (nodelist.length > 0) node = nodelist.item(0);
+//        if (node)
+//        {
+//          infoString =  decodeURIComponent(node.textContent);
+//        }
+//        transferData.data = new TransferData();
+//        transferData.data.addDataForFlavour("privatefragmentfile", path);
+//        transferData.data.addDataForFlavour("text/html",dataString);
+//        transferData.data.addDataForFlavour("text/_moz_htmlcontext",contextString);
+//        transferData.data.addDataForFlavour("text/_moz_htmlinfo",infoString);
+//      }
+//    }
+//    catch(e) {
+//
+//      dump("Error: "+e.message+"\n");
+//
+//    }
+//    focusOnEditor();
+//  },
+  
+  canDrop: function(evt, session)
+  {
+    return true;
+  },
+  
+  onDrop: function(evt, dropData, session)
+  {
+    if (session.isDataFlavorSupported("text/html"))
+    {
+      var trans = Components.classes["@mozilla.org/widget/transferable;1"].
+      var value;
+        createInstance(Components.interfaces.nsITransferable); 
+      if (!trans) return; 
+      var flavour = "text/html";
+      trans.addDataFlavor(flavour);
+      session.getData(trans,0); 
+      var str = new Object();
+      var strLength = new Object();
+      try
+      {
+        trans.getTransferData(flavour,str,strLength);
+        if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString); 
+        if (str) value = str.data.substring(0,strLength.value / 2);
+      }
+      catch (e)
+      {
+        dump("  "+flavour+" not supported\n\n");
+        value = "";
+      }
+      trans.removeDataFlavor(flavour);
+    }
+  },
+  
+  onDragOver: function(evt, flavour, session) 
+  {
+    supported = session.isDataFlavorSupported("text/html");
+    // we should look for math in the fragment
+    if (supported)
+      session.canDrop = true;
+  },
+  
+  getSupportedFlavours: function()
+  {
+    var flavours = new FlavourSet();
+    flavours.appendFlavour("text/html");
+    return flavours;
+  }
+}  
 
 #endif
