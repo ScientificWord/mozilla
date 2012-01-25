@@ -11,6 +11,7 @@
 <!ENTITY prince.title       "Scientific Notebook">
 <!ENTITY editorWindow.titlemodifier	"Scientific Notebook">
 #endif
+
 <!ENTITY editorWindow.titlemodifierseparator	" - ">
 
 
