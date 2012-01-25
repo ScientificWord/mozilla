@@ -640,7 +640,8 @@ function msiDumpClipboard() {
   var trans = Components.classes["@mozilla.org/widget/transferable;1"].
     createInstance(Components.interfaces.nsITransferable); 
   if (!trans) return false; 
-  dump("\nClipboard contents: \n\n"); 
+  var dumpStr;
+  dumpStr = "\nClipboard contents: \n\n"; 
   for (var i in textmimetypes)
   {
     trans.addDataFlavor(textmimetypes[i]);
@@ -652,7 +653,7 @@ function msiDumpClipboard() {
       trans.getTransferData(textmimetypes[i],str,strLength);
       if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString); 
       if (str) pastetext = str.data.substring(0,strLength.value / 2);
-      dump("  "+textmimetypes[i]+": \"" + pastetext+"\"\n\n");
+      dumpStr += ("  "+textmimetypes[i]+": \"" + pastetext+"\"\n\n");
     }
     catch (e)
     {
@@ -660,6 +661,7 @@ function msiDumpClipboard() {
     }
     trans.removeDataFlavor(textmimetypes[i]);
   }
+  alert(dumpStr);
   return false;
 }
 
