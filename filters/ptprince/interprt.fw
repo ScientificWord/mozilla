@@ -1447,7 +1447,7 @@ case CMD_EXTENSION: {
 
          // Try to locate graphic ...
 
-         // 1. Get the search paths 
+         // 1. Get the search paths    
          StringUtils::AppendToks(Global::msigraphicspath);
          String str = StringBuilder::Create();
          std::string paths;
@@ -1461,31 +1461,41 @@ case CMD_EXTENSION: {
          std::string extn = fn.GetExtString();
          if (extn != "") {
             
+              if (fullname[0] == '.'){
+                // relative path?
+                graphic = s_inputdir;
+                graphic += "\\";
+                graphic += fullname;
+                LOG("\n---- Copy " << graphic.c_str());
+              } else {
+                // Absolute path
+                graphic = fullname;
+              }
+
          } else {
-             // No extension. 
-             // Try jpg
-             std::string name = fullname;
-             name += ".jpg";
-             #ifndef _WINDOWS
-               char buf[2000];
-             #else
-               char buf[_MAX_PATH];
-             #endif
-             SearchEnv(name.c_str(), paths.c_str(), false, buf);
+             // No extension.
+             const char* exts[] = {".png", ".jpg", ".pdf", NULL};
+             int i = 0;
+              
+             while (exts[i] != NULL){
+               std::string name = fullname;
+               name += exts[i];
+               #ifndef _WINDOWS
+                 char buf[2000];
+               #else
+                 char buf[_MAX_PATH];
+               #endif
+               SearchEnv(name.c_str(), paths.c_str(), false, buf);
+               if (strlen(buf) != 0) {
+                  // found it
+                  graphic = buf;
+                  break;
+               }
+               ++i;
+             }
 
          }
-         
 
-         if (fullname[0] == '.'){
-           // relative path?
-           graphic = s_inputdir;
-           graphic += "\\";
-           graphic += fullname;
-           LOG("\n---- Copy " << graphic.c_str());
-         } else {
-           // Absolute path
-           graphic = fullname;
-         }
 
          
          std::string targetdir;
@@ -1533,10 +1543,11 @@ case CMD_EXTENSION: {
          reltarget += fn.GetNameString();
          reltarget += ".";
          reltarget += fn.GetExtString();
-
-         Typesetter::AppendTag(reltarget.c_str());
-
-
+         
+         if (extn != "") {
+            Typesetter::AppendTag(reltarget.c_str());
+         } 
+         
          break;
       };
 
