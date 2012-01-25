@@ -1105,6 +1105,15 @@ function onVCamDblClick(screenX, screenY)
   goDoPrinceCommand("cmd_objectProperties", this, editorElement);
 }
 
+function onDrop(evt, dropData, session)
+{
+  return plotObserver.onDrop(evt, dropData, session);
+}
+
+function onDragEnter(event)
+{
+  return 1;
+}
 
 var intervalId;
 function doVCamPreInitialize(obj)
@@ -1114,6 +1123,8 @@ function doVCamPreInitialize(obj)
       obj.addEvent('leftMouseDown', onVCamMouseDown);
       obj.addEvent('leftMouseUp', onVCamMouseUp);
       obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
+      obj.addEvent('dragEnter', onDragEnter);
+      obj.addEvent('drop', onDrop);
       clearInterval(intervalId);
     }
   },200);

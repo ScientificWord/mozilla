@@ -42,7 +42,16 @@ function Startup(){
     if (document.getElementById(id)) {                    
       document.getElementById(id).value = graph[alist[i]];         
     }                                                       
-  }                                                          
+  }     
+  // some plotwrapper attributes override the GraphSpec attributes
+  var value;
+  if (value = plotwrapper.getAttribute("height"))                                                     
+    graph["Height"] = value;
+  if (value = plotwrapper.getAttribute("width"))                                                     
+    graph["Width"] = value;
+  if (value = plotwrapper.getAttribute("units"))                                                     
+    graph["Units"] = value;
+
   var plotNumControl    = document.getElementById('plotnumber');
   var numPlots = graph.getNumPlots();
   if (numPlots ===  0){ 
@@ -65,7 +74,6 @@ function Startup(){
   // code equivalent to the above has been moved to the Plot constructor
   msiInitializeEditorForElement(editorControl, theStringSource, true);
   graph.currentDisplayedPlot = 0;
-
 
   // Caption placement
   var oldval = graph["CaptionPlace"];  
@@ -231,8 +239,6 @@ function buildEditorTable (plotno) {
 function OK(){
   GetValuesFromDialog();
   graph.setGraphAttribute("returnvalue", true);    
-  setFrameAttributes(plotwrapper,plotwrapper);
-  graph["plotwrapper"] = plotwrapper;         
   // nonmodal, call the code that redraws. This dialog closes when
   // the return is executed, so ensure that happens, even if there
   // are problems.
@@ -242,6 +248,8 @@ function OK(){
   if (!theWindow || !("nonmodalRecreateGraph" in theWindow))
     theWindow = msiGetTopLevelWindow();
   var DOMGraph = graph.createGraphDOMElement (false); // is this necessary???
+  setFrameAttributes(plotwrapper,plotwrapper);
+  graph["plotwrapper"] = plotwrapper;         
     
   try {                                                                                         
     theWindow.nonmodalRecreateGraph (graph, DOMGraph, editorElement);

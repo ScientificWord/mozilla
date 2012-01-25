@@ -863,9 +863,9 @@
     <menuitem label="&dumpContentCmd.label;"
            oncommand="msiEditorDumpContent()"/>
     <menuitem label="&testDocumentCmd.label;"
-           oncommand="msiEditorTestDocument()"/>
+           oncommand="msiEditorTestDocument()"/ -->
     <menuitem label="Dump clipboard contents" oncommand="msiDumpClipboard();" />
-    <menuitem label="&runUnitTestsCmd.label;"
+    <!--menuitem label="&runUnitTestsCmd.label;"
            oncommand="msiEditorUnitTests()"/>
     <menuseparator / -->
     <menuitem label="&dumpUndoStack.label;" accesskey="&dumpUndoStack.accesskey;"
