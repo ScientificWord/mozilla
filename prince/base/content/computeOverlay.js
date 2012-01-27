@@ -1105,15 +1105,11 @@ function onVCamDblClick(screenX, screenY)
   goDoPrinceCommand("cmd_objectProperties", this, editorElement);
 }
 
-function onDrop(evt, dropData, session)
-{
-  return plotObserver.onDrop(evt, dropData, session);
-}
-
-function onDragEnter(event)
+function onVCamDragMove(x,y)
 {
   return 1;
 }
+
 
 var intervalId;
 function doVCamPreInitialize(obj)
@@ -1123,8 +1119,7 @@ function doVCamPreInitialize(obj)
       obj.addEvent('leftMouseDown', onVCamMouseDown);
       obj.addEvent('leftMouseUp', onVCamMouseUp);
       obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
-      obj.addEvent('dragEnter', onDragEnter);
-      obj.addEvent('drop', onDrop);
+      obj.addEvent('dragMove', onVCamDragMove);
       clearInterval(intervalId);
     }
   },200);
@@ -1153,6 +1148,10 @@ function doVCamInitialize(obj)
 {
   dump("doVCamInitialize");
   document.getElementById("vcamactive").setAttribute("hidden","false");
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var os = getOS(window);
+
   VCamCommand = (function () {
     var thisobj = obj;
     return function(_cmd, _editorElement) {
@@ -1165,6 +1164,42 @@ function doVCamInitialize(obj)
       thisobj.actionSpeed = factor;
     };
   }());
+  
+  onVCamDragEnter = (function () {
+    var thisGraph = editor.getElementOrParentByTagName("graph", obj);
+    var __editorElement = editorElement;
+    return function () {
+        if (os === "osx")
+        {
+          var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
+          dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
+          netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+          var dropData = DNDUtils.getData("text/html", 0);
+          var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
+          newPlotFromText(thisGraph, str.data, __editorElement);
+          dragService.endDragSession(true);
+        }
+        return 1;
+      }  
+  }());
+  obj.addEvent('dragEnter', onVCamDragEnter);    
+  onVCamDrop = (function () {
+    var thisGraph = editor.getElementOrParentByTagName("graph", obj);
+    var __editorElement = editorElement;
+    return function () {
+      if (os !== osx) {
+        var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
+        dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
+        netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+        var dropData = DNDUtils.getData("text/html", 0);
+        var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
+        newPlotFromText(thisGraph, str.data, __editorElement);
+        dragService.endDragSession(true);
+      }
+      return 1;
+    }  
+  }());
+  obj.addEvent('drop', onVCamDrop);
 
   var threedplot = obj.dimension === 3;
   document.getElementById("3dplot").setAttribute("hidden", threedplot?"false":"true");

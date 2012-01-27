@@ -18,6 +18,7 @@
   <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
   <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
   <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorCommandsDebug.js"/>
 
 #include editorkeys.inc
 
@@ -889,14 +890,14 @@
             oncommand="window.focus()"/>
     <menuseparator />
     <menuitem label="Prepare Plot"              oncommand="msiTestPreparePlotAll();"/>
-    <menuitem label="Prepare Plot and Graph"	oncommand="msiTestPreparePlotGraph();"/>
+    <menuitem label="Prepare Plot and Graph"	oncommand="msiTestPreparePlotGraph();"/ -->
     <menuitem label="Plot Tests"				oncommand="msiTestGraphScript();"/>
-    <menuseparator / -->
+    <!--menuseparator/>
     <menuitem label="&Configuration.label;" accesskey="&Configuration.accesskey;"
             oncommand='window.openDialog("chrome://global/content/config.xul","Configure Prince", "chrome ");'/>
     <menuitem label="&plugins.label;" accesskey="&plugins.accesskey;"
             oncommand='window.openDialog("chrome://prince/content/plugins.html","Installed plugins", "chrome ");'/>
-    <!--menuitem label="Stop animation"
+    <menuitem label="Stop animation"
             oncommand='msiStopAnimation();' />
     <menuitem label="Start animation"
             oncommand='msiStartAnimation();' />
