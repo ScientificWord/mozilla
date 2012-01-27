@@ -36,5 +36,4 @@ CMD_RESOURCES += $(wildcard	$(srcdir)/bin/mac/*.scpt)
 endif
 
 libs::	$(CMD_RESOURCES)
-	chmod 755 $(CMD_RESOURCES)
 	$(INSTALL)	$(CMD_RESOURCES)	$(FINAL_TARGET)
