@@ -19,7 +19,7 @@ function Graph () {
 }
 
 Graph.prototype.GRAPHATTRIBUTES  = ["ImageFile",   "XAxisLabel",     "YAxisLabel",   "ZAxisLabel", "Width",
-                          "Height",     "PrintAttribute",  "Placement",   "Offset",     "Float",
+                          "Height",     "PrintAttribute",      
                           "PrintFrame", "Key",            "Name",         "CaptionText","CaptionPlace",
                           "Units",      "AxesType",       "EqualScaling", "EnableTicks","XTickCount",
                           "YTickCount", "AxesTips",       "GridLines",    "BGColor",    "Dimension", 
@@ -27,23 +27,277 @@ Graph.prototype.GRAPHATTRIBUTES  = ["ImageFile",   "XAxisLabel",     "YAxisLabel
                           "FocalPointX","FocalPointX",    "FocalPointZ",  "UpVectorX",  "UpVectorY", 
                           "UpVectorZ",  "ViewingAngle",   "OrthogonalProjection",       "KeepUp", 
                           " "];
-Graph.prototype.addPlot                = graphAddPlot;    // takes plot for a parameter
-Graph.prototype.deletePlot             = graphDeletePlot; // takes plot number for a parameter
+  // Add a plot to a graph. Conceptually, a plot is a collection of attribute/value pairs
+Graph.prototype.addPlot                = function (plot) {
+  this.plots.push(plot);
+  plot.parent = this;
+  return (this.plots.length - 1);
+}
+Graph.prototype.deletePlot             = function (plotnum) {
+   if (plotnum >= 0 && plotnum < this.plots.length) {
+     this.plots.splice[plotnum,1];
+   }
+   return (this.plots.length);
+}
 Graph.prototype.getNumPlots            = function ()  { return (this.plots.length); };
 Graph.prototype.isModified             = function (x) { return (this.modFlag[x]);};
 Graph.prototype.setModified            = function (x) { this.modFlag[x] = true;};
 Graph.prototype.ser                    = new XMLSerializer();
 Graph.prototype.prompt                 = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-Graph.prototype.computeGraph           = graphComputeGraph;
-Graph.prototype.computeQuery           = graphComputeQuery;
-Graph.prototype.createGraphDOMElement  = graphMakeDOMGraphElement;
-Graph.prototype.extractGraphAttributes = graphReadGraphAttributesFromDOM;
-Graph.prototype.getDefaultValue        = graphGetDefaultGraphValue;
+  // call the compute engine to create an image
+Graph.prototype.computeGraph           = function (editorElement, filename) {
+  ComputeCursor(editorElement);
+  var str = this.serializeGraph();
+  if (this.errStr == "") {
+    try {
+      var topWin = msiGetTopLevelWindow();
+      topWin.msiComputeLogger.Sent4 ("plotfuncCmd", filename, str, "");
+      //msiComputeLogger.Sent4 ("plotfuncCmd", filename, "", "");
+      var out=GetCurrentEngine().plotfuncCmd (str);
+      msiComputeLogger.Received(out);                                                             
+    }                                                                                             
+    catch (e) {                                                                                    
+      alert ("Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
+      msiComputeLogger.Exception(e);                                                               
+    } 
+  } else {
+    dump (this.errStr);
+  }
+  RestoreCursor(editorElement);
+};
+// call the compute engine to guess at graph attributes 
+// If plot is not null, then we build a graph with a single plot to send to the engine.
+// Otherwise, all the plots that are children of the graph are included
+Graph.prototype.computeQuery           = function (plot) {    
+  var str = this.serializeGraph (plot);
+  var eng = GetCurrentEngine();
+  
+  try {           
+    msiComputeLogger.Sent4 ("plotfuncQuery", "", str, "");
+    var out = eng.plotfuncQuery (str);
+    msidump ("ComputeQuery plotfuncQuery returns " + out + "\n");
+    msiComputeLogger.Received(out); 
+    parseQueryReturn (out, this, plot);
+    status="Inited";
+  }                                                                                             
+  catch (e) {                                                                                    
+    status = "ERROR";             
+    //this.prompt.alert (null, "Computation Error", "Query Graph: " + eng.getEngineErrors());
+    dump("Computation Error", "Query Graph: " + eng.getEngineErrors()+"\n");
+    msiComputeLogger.Exception(e);                                                               
+  } 
+  finally {
+    if (plot)
+      plot.attributes["PlotStatus"] = status;
+    else 
+      for (var i = 0; i < this.plots.length; i++)   
+        this.plots[i].attributes["PlotStatus"] = status;          
+  }                                                                                             
+  RestoreCursor();                                                                               
+} ;
+  // return a DOM <graph> node
+  // if forComp, prepare the <graph> fragment to pass to the computation engine
+  // Otherwise, create one suitable for putting into the document
+  // An optional second argument is the number of the one plot to include for query
+Graph.prototype.createGraphDOMElement  = function (forComp, optplot) {
+  var htmlns="http://www.w3.org/1999/xhtml";
+  var DOMGraph = document.createElementNS(htmlns, "graph");
+  var DOMGs     = document.createElementNS(htmlns, "graphSpec");
+  var DOMPw     = document.createElementNS(htmlns, "plotwrapper");
+  init(DOMGraph);
+
+  // set attributes that selection works. I think only one of these is necessary.
+  
+  DOMPw.setAttribute("msi_resize","true");
+  var attributes;
+  var att;
+  if (this["plotwrapper"])
+  { 
+    attributes = this["plotwrapper"].getAttributes();
+    for (var j=0; j < attributes.length; j++)
+    {
+      att = attributes[j];
+      DOMPw.setAttribute(att.name, att.value);
+    }
+  }
+
+  // loop through graph attributes and insert them
+  var alist;
+  if (forComp)
+    alist = this.graphCompAttributeList();
+  else
+    alist = this.graphAttributeList();
+  for (var i=0; i<alist.length; i++) {
+    var attr = alist[i];
+    var value = this.getGraphAttribute(attr);
+    var defaultValue = this.getDefaultValue (attr);
+    if ((value == "") || (value == null)) {
+       value = defaultValue;
+    }
+    if (forComp || (value != defaultValue)) {
+      if ((value != "") && (value != "unspecified")) {
+        DOMGs.setAttribute (attr, value);
+      }
+    }
+  }
+  // Some plotwrapper attributes get promoted to the GraphSpec
+  var value;
+  var plotwrapper = this["plotwrapper"];
+  if (plotwrapper)
+  {
+    if (value = plotwrapper.getAttribute("height"))                                                     
+      DOMGs.setAttribute("Height") = value;
+    if (value = plotwrapper.getAttribute("width"))                                                     
+      DOMGs.setAttribute("Width") = value;
+    if (value = plotwrapper.getAttribute("units"))                                                     
+      DOMGs.setAttribute("Units") = value;
+  }
+  
+  // if the optional plot number was specified, just include one plot
+  // otherwise, for each plot, create a <plot> element
+  if (optplot) {
+    var status = optplot.attributes.PlotStatus;
+    if (status == "ERROR") {
+      this.errStr = "ERROR, Plot number " + this.plots.indexOf(optplot) + " " + this.errStr;
+    } else if (status != "Deleted") {
+      DOMGs.appendChild(optplot.createPlotDOMElement(document, forComp, optplot));
+    }
+  } else {
+    var plot;
+    for (var i=0; i<this.plots.length; i++) {
+      plot = this.plots[i];
+      var status = this.plots[i].attributes.PlotStatus;
+      if (status == "ERROR") {
+        this.errStr = "ERROR, Plot number " + i + " " + this.errStr;
+      } else if (status != "Deleted") {
+          DOMGs.appendChild(plot.createPlotDOMElement(document, forComp, plot));
+      }
+    }
+  }
+  DOMGraph.appendChild(DOMGs);
+  var img;
+  // put the image file in
+  var filetype = this.getDefaultValue ("DefaultFileType");
+  dump("SMR file type is " + filetype + "\n");
+  if (filetype == "xvz") {
+    img    = document.createElementNS(htmlns,"object");
+    img.setAttribute("type","application/x-mupad-graphics+gzip"); 
+    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
+	} else if (filetype == "xvc") {
+    img    = document.createElementNS(htmlns,"object");
+    img.setAttribute("type","application/x-mupad-graphics+xml"); 
+    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
+	} else {
+	  img    = document.createElementNS(htmlns,"img");
+	  img.setAttribute("src", this.getGraphAttribute("ImageFile"));
+	}    
+  var unitHandler = new UnitHandler();
+  unitHandler.initCurrentUnit(this["Units"]);
+  var w = unitHandler.getValueStringAs(this["Width"],"px");
+  var h = unitHandler.getValueStringAs(this["Height"],"px");
+	img.setAttribute("alt", "Generated Plot");
+	img.setAttribute("msigraph","true");
+	img.setAttribute("width",w);
+	img.setAttribute("height",h);
+
+  DOMPw.appendChild(img);
+//  var propButton;
+//  propButton=document.createElementNS(htmlns,"button");
+//  propButton.setAttribute('class','msi');
+//  propButton.value = 'Properties';
+//  DOMPw.appendChild(propButton);
+	DOMGraph.appendChild(DOMPw);
+  return(DOMGraph);
+};
+Graph.prototype.extractGraphAttributes = function (DOMGraph) {
+  var msins="http://www.sciword.com/namespaces/sciword";
+  var DOMGs = DOMGraph.getElementsByTagName("graphSpec");
+  if (DOMGs.length > 0) {
+    DOMGs = DOMGs[0];
+    for (i=0; i<DOMGs.attributes.length; i++) {
+      var key = DOMGs.attributes[i].nodeName;
+      var value = DOMGs.attributes[i].nodeValue;
+//      dump("Adding key[" + key + "], value[" + value + "] to graph object.\n");  //rwa
+      this[key] = value;
+    }
+    var DOMPlots = DOMGraph.getElementsByTagName("plot");
+    for (var i = 0; i<DOMPlots.length; i++) {
+      var plot = new Plot();
+      var plotno = this.addPlot(plot);
+      plot.readPlotAttributesFromDOM(DOMPlots[i]);
+      plot.attributes.PlotStatus = "Inited";
+    }
+  }
+};
+ // get defaults from preference system, or if not there, from hardcoded list
+Graph.prototype.getDefaultValue        = function graphGetDefaultGraphValue (key) {
+  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+  var keyname = "swp.graph." + key;
+  var value;
+  if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
+    try {
+      value = prefs.getCharPref(keyname);
+    }
+    catch (e) {
+      dump("Preference Error", "Can't find preference for " + keyname +"\n");
+//      this.prompt.alert (null, "Preference Error", "Can't find preference for " + keyname);
+      alert ("Preference Error", "Can't find preference for " + keyname);
+      value = "";
+    }
+  } else {
+    switch (key) {
+      default:           value = "";
+    }
+  }
+  return value;
+};
 Graph.prototype.getGraphAttribute      = function (name) { return (this[name]);};
-Graph.prototype.getValue               = graphGetGraphValue;
+Graph.prototype.getValue               = function (key) {
+  var value = this.getGraphAttribute(key);
+  if ((value != null) && (value != "")) {
+    return value;
+    }
+  return (this.getDefaultValue(key));
+};
 Graph.prototype.graphAttributeList     = function () { return (Graph.prototype.GRAPHATTRIBUTES); };
-Graph.prototype.graphCompAttributeList = graphSelectCompAttributes;
-Graph.prototype.serializeGraph         = graphSerializeGraph;
+Graph.prototype.graphCompAttributeList = function () {
+  var NA;
+  NA = attributeArrayRemove (this.GRAPHATTRIBUTES, "PrintAttribute");
+  NA = attributeArrayRemove (NA,  "Placement");
+  NA = attributeArrayRemove (NA,  "Offset");
+  NA = attributeArrayRemove (NA,  "Float");
+  NA = attributeArrayRemove (NA,  "PrintFrame");
+  NA = attributeArrayRemove (NA,  "Key");
+  NA = attributeArrayRemove (NA,  "Name");
+  NA = attributeArrayRemove (NA,  "CaptionText");
+  NA = attributeArrayRemove (NA,  "CaptionPlace");
+
+  var dim = this.getGraphAttribute("Dimension");
+  if (dim == "2") {
+    NA = attributeArrayRemove (NA,  "ZAxisLabel");
+    NA = attributeArrayRemove (NA,  "OrientationTiltTurn");
+  }
+  return NA;
+};
+Graph.prototype.serializeGraph         = function (optionalplot) {
+  var str;
+  try {
+    str = this.ser.serializeToString(this.createGraphDOMElement(true,optionalplot));
+    // strip off the temporary namespace headers ...
+    str = str.replace (/<[a-zA-Z0-9]{2}:/g,"<");
+    str = str.replace (/<\/[a-zA-Z0-9]{2}:/g,"<\/");
+//    // and put in some line breaks so we humans can read the result
+//    str = str.replace (/<graph/,"\n<graph");
+//    str = str.replace (/<plot/,"\n<plot");
+//    str = str.replace (/<\/graph>/,"</graph>\n");
+  }
+  catch (e) {
+    dump("SMR GraphSerialize exception caught\n");
+    // this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "ERROR");
+    //msiComputeLogger.Exception(e);
+  }
+  return str;
+};
 Graph.prototype.setGraphAttribute      = function (name, value) { this[name] = value; };
 
 function Plot () {
@@ -80,7 +334,7 @@ Plot.prototype.PLOTELEMENTS     = ["Expression", "XMax", "XMin", "YMax", "YMin",
                         
 Plot.prototype.isModified                 = function (x) { return (this.modFlag[x]);};
 Plot.prototype.setModified                = function (x) { this.modFlag[x] = true;};
-Plot.prototype.createPlotDOMElement       = function  (doc, forComp) 
+Plot.prototype.createPlotDOMElement       = function (doc, forComp) 
  {
    // return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
    // do the plot attributes as DOM attributes of <plot>
@@ -115,8 +369,7 @@ Plot.prototype.createPlotDOMElement       = function  (doc, forComp)
   }
   return(NULL);
 };
-
-// get values from a DOM <plot> node
+  // get values from a DOM <plot> node
 Plot.prototype.readPlotAttributesFromDOM  = function (DOMPlot) {
   var key;
   var value;
@@ -133,10 +386,10 @@ Plot.prototype.readPlotAttributesFromDOM  = function (DOMPlot) {
   // We should get an ELEMENT_NODE for the <plotelement>, and the localName is the attribute name.
   // The data is either text or mathml. For text, grab the text value, which must be in the nodeValue
   // of the first child. For DOM fragment, store serialization of the fragment.
-  var children = DOMPlot.childNodes;
-  var child;
-  for (j=0; j<children.length; j++) {
-    child = children[j];
+  //var children = DOMPlot.childNodes;
+  var child = DOMPlot.firstChild;
+  while (child)
+  {
     key = child.localName;
     if (child.nodeType == Node.ELEMENT_NODE) 
     {
@@ -144,10 +397,10 @@ Plot.prototype.readPlotAttributesFromDOM  = function (DOMPlot) {
        var serialized = this.parent.ser.serializeToString(mathnode);
        this.element[key] = serialized;
     }
+    child = child.nextSibling;
   }
 };
-
-// look up the value key. If not found, look up the default value.
+  // look up the value key. If not found, look up the default value.
 Plot.prototype.getPlotValue               = function (key) 
 {
   var value = this[key];
@@ -182,8 +435,7 @@ Plot.prototype.getPlotValue               = function (key)
   }
   return (plotGetDefaultPlotValue (key));
 };
-
-// get defaults from preference system, or if not there, from hardcoded list
+  // get defaults from preference system, or if not there, from hardcoded list
 Plot.prototype.getDefaultPlotValue        = function (key) {
   var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
   var value;
@@ -208,7 +460,6 @@ Plot.prototype.getDefaultPlotValue        = function (key) {
   }
   return value;
 };
-
 Plot.prototype.plotAttributeList          = function () { return (this.PLOTATTRIBUTES); };
 Plot.prototype.plotElementList            = function () { return (this.PLOTELEMENTS); };
 Plot.prototype.plotCompAttributeList      = function () {
@@ -259,7 +510,6 @@ Plot.prototype.plotCompAttributeList      = function () {
 
   return NA;
 };
-
 Plot.prototype.plotCompElementList        = function () {
   var dim     = this.parent["Dimension"];
   var animate = this.attributes["Animate"];
@@ -286,283 +536,50 @@ Plot.prototype.plotCompElementList        = function () {
 
   return NA;
 };
-
 Plot.prototype.getPlotAttribute           = function (name) { return (this[name]);};
-Plot.prototype.setPlotAttribute           = function (name, value) { this[name] = value;
-                                                                      this.setModified(name); };
+Plot.prototype.setPlotAttribute           = function (name, value) 
+{ this[name] = value;
+  this.setModified(name);
+};
+  // call the compute engine to guess at graph attributes 
 Plot.prototype.computeQuery               = function () {
   this.parent.computeQuery(this);
-}
-;
+};
 
-                                                            
-// Add a plot to a graph. Conceptually, a plot is a collection of attribute/value pairs
-function graphAddPlot(plot) {
-  this.plots.push(plot);
-  plot.parent = this;
-  return (this.plots.length - 1);
-}
+function init(graphObj)
+{
 
-// just decrement the counter and let the GC handle the rest
-function graphDeletePlot(plotnum) {
-   if (plotnum >= 0 && plotnum < this.plots.length) {
-     this.plots.splice[plotnum,1];
-   }
-   return (this.plots.length);
-}
-
-// call the compute engine to create an image
-function graphComputeGraph (editorElement, filename) {
-  ComputeCursor(editorElement);
-  var str = this.serializeGraph();
-  if (this.errStr == "") {
-    try {
-      var topWin = msiGetTopLevelWindow();
-      // the code in plotfuncCmd is simpler if we force a file with filename
-//      var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-//      outputfile.initWithPath(filename);
-      topWin.msiComputeLogger.Sent4 ("plotfuncCmd", filename, str, "");
-      //msiComputeLogger.Sent4 ("plotfuncCmd", filename, "", "");
-      var out=GetCurrentEngine().plotfuncCmd (str);
-      msiComputeLogger.Received(out);                                                             
-    }                                                                                             
-    catch (e) {                                                                                    
-      alert ("Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
-      msiComputeLogger.Exception(e);                                                               
-    } 
-  } else {
-    dump (this.errStr);
-  }
-  RestoreCursor(editorElement);
+  var graphController = {
+    supportsCommand : function(cmd){ return (cmd == "cmd_paste"); },
+    isCommandEnabled : function(cmd){
+      if (cmd == "cmd_paste") return true;
+      return false;
+    },
+    doCommand : function(cmd){
+      graphObj.addClipboardContents(graphObj.selectedIndex);
+    },
+    onEvent : function(evt){ }
+  };
 }
 
-// call the compute engine to guess at graph attributes 
-// If plot is not null, then we build a graph with a single plot to send to the engine.
-// Otherwise, all the plots that are children of the graph are included
-function graphComputeQuery (plot) {    
-  var str = this.serializeGraph (plot);
-  var eng = GetCurrentEngine();
-  
-  try {           
-    msiComputeLogger.Sent4 ("plotfuncQuery", "", str, "");
-    //msiComputeLogger.Sent4 ("plotfuncQuery", "", "", "");
-    debugger;
-    var out = eng.plotfuncQuery (str);
-    msidump ("ComputeQuery plotfuncQuery returns " + out + "\n");
-    msiComputeLogger.Received(out); 
-    parseQueryReturn (out, this, plot);
-    status="Inited";
-  }                                                                                             
-  catch (e) {                                                                                    
-    status = "ERROR";             
-    //this.prompt.alert (null, "Computation Error", "Query Graph: " + eng.getEngineErrors());
-    dump("Computation Error", "Query Graph: " + eng.getEngineErrors()+"\n");
-    msiComputeLogger.Exception(e);                                                               
-  } 
-  finally {
-    if (plot)
-      plot.attributes["PlotStatus"] = status;
-    else 
-      for (var i = 0; i < this.plots.length; i++)   
-        this.plots[i].attributes["PlotStatus"] = status;          
-  }                                                                                             
-  RestoreCursor();                                                                               
-} 
-
-
-// the optionalplot, if specified, indicates that this <graph> has only one plot
-// If any of the plots has an ERROR status, return "ERROR" and a diagnostic
-function graphSerializeGraph (optionalplot) {
-  var str;
+function newPlotFromText(currentNode, expression, editorElement) {
   try {
-    str = this.ser.serializeToString(this.createGraphDOMElement(true,optionalplot));
-    // strip off the temporary namespace headers ...
-    str = str.replace (/<[a-zA-Z0-9]{2}:/g,"<");
-    str = str.replace (/<\/[a-zA-Z0-9]{2}:/g,"<\/");
-//    // and put in some line breaks so we humans can read the result
-//    str = str.replace (/<graph/,"\n<graph");
-//    str = str.replace (/<plot/,"\n<plot");
-//    str = str.replace (/<\/graph>/,"</graph>\n");
+    var editor = msiGetEditor(editorElement);
+    var graph = new Graph();
+    graph.extractGraphAttributes(currentNode);
+    var plot = new Plot();
+    var firstplot = graph.plots[0];
+    plot.element["Expression"] = expression;
+    plot.attributes["PlotType"]=firstplot.attributes["PlotType"];
+    graph.addPlot(plot);
+    insertGraph(currentNode, graph, editorElement);
+    editor.deleteNode(currentNode);
   }
-  catch (e) {
-    dump("SMR GraphSerialize exception caught\n");
-    // this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "ERROR");
-    //msiComputeLogger.Exception(e);
-  }
-  return str;
-}
-
-
-// get defaults from preference system, or if not there, from hardcoded list
-function graphGetDefaultGraphValue (key) {
-  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-  var keyname = "swp.graph." + key;
-  var value;
-  if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
-    try {
-      value = prefs.getCharPref(keyname);
-    }
-    catch (e) {
-      dump("Preference Error", "Can't find preference for " + keyname +"\n");
-//      this.prompt.alert (null, "Preference Error", "Can't find preference for " + keyname);
-      alert ("Preference Error", "Can't find preference for " + keyname);
-      value = "";
-    }
-  } else {
-    switch (key) {
-      default:           value = "";
-    }
-  }
-  return value;
-}
-
-
-// look up the value of obj[key]. If not found, look up the default value.
-function graphGetGraphValue (key) {
-  var value = this.getGraphAttribute(key);
-  if ((value != null) && (value != "")) {
-    return value;
-    }
-  return (this.getDefaultValue(key));
-}
-
-
-// return a DOM <graph> fragment
-// if forComp, prepare the <graph> fragment to pass to the computation engine
-// Otherwise, create one suitable for putting into the document
-// An optional second argument is the number of the one plot to include for query
-function graphMakeDOMGraphElement (forComp, optplot) {
-  var htmlns="http://www.w3.org/1999/xhtml";
-  var DOMGraph  = document.createElementNS(htmlns, "graph");
-  var DOMGs     = document.createElementNS(htmlns, "graphSpec");
-  var DOMPw     = document.createElementNS(htmlns, "plotwrapper");
-  
-  // set attributes that selection works. I think only one of these is necessary.
-  DOMPw.setAttribute("msi_resize","true");
-  var attributes;
-  var att;
-  if (this["plotwrapper"])
-  { 
-    attributes = this["plotwrapper"].getAttributes();
-    for (var j=0; j < attributes.length; j++)
-    {
-      att = attributes[j];
-      DOMPw.setAttribute(att.name, att.value);
-    }
-  }
-
-  // loop through graph attributes and insert them
-  var alist;
-  if (forComp)
-    alist = this.graphCompAttributeList();
-  else
-    alist = this.graphAttributeList();
-  for (var i=0; i<alist.length; i++) {
-    var attr = alist[i];
-    var value = this.getGraphAttribute(attr);
-    var defaultValue = this.getDefaultValue (attr);
-    if ((value == "") || (value == null)) {
-       value = defaultValue;
-    }
-    if (forComp || (value != defaultValue)) {
-      if ((value != "") && (value != "unspecified")) {
-        DOMGs.setAttribute (attr, value);
-      }
-    }
-  }
-
-  // if the optional plot number was specified, just include one plot
-  // otherwise, for each plot, create a <plot> element
-  if (optplot) {
-    var status = optplot.attributes.PlotStatus;
-    if (status == "ERROR") {
-      this.errStr = "ERROR, Plot number " + this.plots.indexOf(optplot) + " " + this.errStr;
-    } else if (status != "Deleted") {
-      DOMGs.appendChild(optplot.createPlotDOMElement(document, forComp, optplot));
-    }
-  } else {
-    var plot;
-    for (var i=0; i<this.plots.length; i++) {
-      plot = this.plots[i];
-      var status = this.plots[i].attributes.PlotStatus;
-      if (status == "ERROR") {
-        this.errStr = "ERROR, Plot number " + i + " " + this.errStr;
-      } else if (status != "Deleted") {
-          DOMGs.appendChild(plot.createPlotDOMElement(document, forComp, plot));
-      }
-    }
-  }
-  DOMGraph.appendChild(DOMGs);
-  var img;
-  // put the image file in
-  var filetype = this.getDefaultValue ("DefaultFileType");
-  dump("SMR file type is " + filetype + "\n");
-  if (filetype == "xvz") {
-    img    = document.createElementNS(htmlns,"object");
-    img.setAttribute("type","application/x-mupad-graphics+gzip"); 
-    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-	} else if (filetype == "xvc") {
-    img    = document.createElementNS(htmlns,"object");
-    img.setAttribute("type","application/x-mupad-graphics+xml"); 
-    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-	} else {
-	  img    = document.createElementNS(htmlns,"img");
-	  img.setAttribute("src", this.getGraphAttribute("ImageFile"));
-	}    
-	img.setAttribute("alt", "Generated Plot");
-	img.setAttribute("msigraph","true");
-	img.setAttribute("width","250");
-	img.setAttribute("height","250");
-
-  DOMPw.appendChild(img);
-//  var propButton;
-//  propButton=document.createElementNS(htmlns,"button");
-//  propButton.setAttribute('class','msi');
-//  propButton.value = 'Properties';
-//  DOMPw.appendChild(propButton);
-	DOMGraph.appendChild(DOMPw);
-  return(DOMGraph);
-}
-
-// walk down <graphSpec> and extract attributes and elements from existing graph
-function graphReadGraphAttributesFromDOM (DOMGraph) {
-  var msins="http://www.sciword.com/namespaces/sciword";
-  var DOMGs = DOMGraph.getElementsByTagName("graphSpec");
-  if (DOMGs.length > 0) {
-    DOMGs = DOMGs[0];
-    for (i=0; i<DOMGs.attributes.length; i++) {
-      var key = DOMGs.attributes[i].nodeName;
-      var value = DOMGs.attributes[i].nodeValue;
-//      dump("Adding key[" + key + "], value[" + value + "] to graph object.\n");  //rwa
-      this[key] = value;
-    }
-    var DOMPlots = DOMGraph.getElementsByTagName("plot");
-    var debugStr = "Number of plot children of DOMGraph is [" + DOMPlots.length + "]";  //rwa
-    if (DOMPlots.length <= 0)  //rwa
-    {             //rwa
-      DOMPlots = DOMGs.getElementsByTagName("plot");   //rwa
-      if (DOMPlots.length > 0) alert("Wha???");
-      debugStr += "; number of plot children of graphSpec is [" + DOMPlots.length + "]";  //rwa
-    }
-    window.dump("Setting up graph dialog. " + debugStr + ".\n");  //rwa
-    for (var i = 0; i<DOMPlots.length; i++) {
-      var plot = new Plot();
-      var plotno = this.addPlot(plot);
-      plot.readPlotAttributesFromDOM(DOMPlots[i]);
-      plot.attributes.PlotStatus = "Inited";
-    }
+  catch(e)
+  {
+    msidump(e.message);
   }
 }
-
-/**----------------------------------------------------------------------------------*/
-
-
-
-
-
-
-
-
 
 /**----------------------------------------------------------------------------------*/
 // Handle a mouse double click on a graph image in the document. This is bound in editor.js.
@@ -585,7 +602,6 @@ function graphClickEvent (cmdstr, editorElement)
   catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphClickEvent: " + exc);}
 }
 
-
 /**----------------------------------------------------------------------------------*/
 // Handle a mouse double click on a <graph> <object> element. This is bound in msiEditor.js.
 function graphObjectClickEvent(cmdstr,element, editorElement)
@@ -602,10 +618,6 @@ function graphObjectClickEvent(cmdstr,element, editorElement)
     if (graphelement) {
       dump ("SMR found a <graph> element\n");
       // only open one dialog per graph element
-      if (!DOMGListMemberP (graphelement, currentDOMGs)) {
-        DOMGListAdd (graphelement, currentDOMGs);
-      }
-
       var graph = new Graph();
       graph.extractGraphAttributes (graphelement);
       // non-modal dialog, the return is immediate
@@ -615,7 +627,6 @@ function graphObjectClickEvent(cmdstr,element, editorElement)
   }
   catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphObjectClickEvent: " + exc);}
 }
-
 
 /** ---------------------------------------------------------------------------------*/
 // insert the xml DOM fragment into the DOM
@@ -635,7 +646,6 @@ function addGraphElementToDocument(DOMGraphNode, siblingNode, editorElement)
   }
 }
 
-
 /**----------------------------------------------------------------------------------*/
 // Arguments: <name>: first characters of returned name
 //            <ext>:  file extension
@@ -653,42 +663,10 @@ function createUniqueFileName(name, ext) {
   return fn;
 }
 
-
-/**----------------------------------------------------------------------------------*/
-// handle the list operations for preventing multiple dialogs
-function DOMGListMemberP (DOMGraph, thelist) {
-  for (var i=0; i<thelist.length; i++) {
-     if (thelist[i] == DOMGraph)
-        return true;
-  }
-  return false;
-}
-
-// Remove this DOMGraph from the current list of DOMGraphs with open dialogs
-// Call this for OK or Cancel, any time this dialog closes
-function DOMGListRemove (DOMGraph, thelist) {
-  for (var i=0; i<thelist.length; i++) {
-     if (thelist[i] == DOMGraph) {
-         thelist.splice(i,1);
-         return;
-     }
-  }
-}
-
-function DOMGListAdd (DOMGraph, thelist) {
-  thelist[thelist.length] = DOMGraph;
-}
-
 /**----------------------------------------------------------------------------------*/
 // format and recreate a graph and replace the existing one
 // DOMGraph is the DOM graph element we are going to replace.
 function formatRecreateGraph (DOMGraph, commandStr, editorElement) {
-  // only open one dialog per DOMGraph element
-//  if (DOMGListMemberP (DOMGraph, currentDOMGs)) {
-//    return;
-//  }
-  DOMGListAdd (DOMGraph, currentDOMGs);
-
   var graph = new Graph();
   graph.extractGraphAttributes (DOMGraph);
   // non-modal dialog, the return is immediate
@@ -696,7 +674,7 @@ function formatRecreateGraph (DOMGraph, commandStr, editorElement) {
   var extraArgsArray = new Array(graph, DOMGraph, currentDOMGs);
 //  msiOpenModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul",
 //                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
-var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", 
+var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot dialog", 
   "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, commandStr, DOMGraph, graph, DOMGraph, currentDOMGs);
   return;
@@ -708,17 +686,15 @@ var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGr
 // parent (i.e., deleted). No parent, no changes to the picture.
 function nonmodalRecreateGraph (graph, DOMGraph, editorElement) {
   try {
-    if (DOMGraph) {
-      var parent = DOMGraph.parentNode;
-      if (parent) {
-        // parent.replaceChild() doesn't work. insert new, delete current
-        insertGraph (DOMGraph, graph, editorElement);
-        parent.removeChild (DOMGraph);
-      }
-    }
+    
+    var parent=window.arguments[1].parentNode;
+    var editor = msiGetEditor(editorElement);
+    var dg = graph.createGraphDOMElement(false);
+    insertGraph(DOMGraph, graph, editorElement);
+    editor.deleteNode(DOMGraph);
   }
   catch (e) {
-    dump("ERROR: Recreate Graph failed, line 612 in GraphOverlay.js\n");
+    dump("ERROR: Recreate Graph failed, line 715 in GraphOverlay.js\n");
   }
 }
 
@@ -841,25 +817,6 @@ function graphSaveVars (varList, plot) {
 // return a list of attribute names that correspond to required or optional
 // data elements for the given type of graph. The only restrictions here are
 // based on the dimensions of the graph.
-function graphSelectCompAttributes() {
-  var NA;
-  NA = attributeArrayRemove (this.GRAPHATTRIBUTES, "PrintAttribute");
-  NA = attributeArrayRemove (NA,  "Placement");
-  NA = attributeArrayRemove (NA,  "Offset");
-  NA = attributeArrayRemove (NA,  "Float");
-  NA = attributeArrayRemove (NA,  "PrintFrame");
-  NA = attributeArrayRemove (NA,  "Key");
-  NA = attributeArrayRemove (NA,  "Name");
-  NA = attributeArrayRemove (NA,  "CaptionText");
-  NA = attributeArrayRemove (NA,  "CaptionPlace");
-
-  var dim = this.getGraphAttribute("Dimension");
-  if (dim == "2") {
-    NA = attributeArrayRemove (NA,  "ZAxisLabel");
-    NA = attributeArrayRemove (NA,  "OrientationTiltTurn");
-  }
-  return NA;
-}
 
 
 // return a new array with all the elements of A preserved except element
@@ -884,11 +841,6 @@ function attributeArrayFind (A, element) {
   }
   return -1;
 }
-
-
-
-
-
 
 function plotVarsNeeded (dim, ptype, animate) {
   var nvars = 0;  
@@ -1197,5 +1149,139 @@ function actualVarCount(variableList) {
       i++;
   return i;    
 }
+
+var plotObserver = 
+{ 
+  canHandleMultipleItems: function ()
+  {
+    return true;
+  },
+  
+//  onDragStart: function (evt, transferData, action)
+//  {
+//    var tree = evt.currentTarget;
+//    var namecol = tree.columns.getNamedColumn('Name');
+//    var i = tree.currentIndex;
+//
+//    if (tree.view.isContainer(i)) return;
+//    var s = tree.view.getCellText( i,namecol);
+//    while (tree.view.getParentIndex(i) >= 0)
+//    {           
+//      i = tree.view.getParentIndex(i);
+//      s = tree.view.getCellText(i,namecol)+ "/" + s;
+//    }
+//    // s is now the path of the clicked file relative to the fragment root.
+//    try 
+//    {
+//      var request = Components.
+//                    classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
+//                    createInstance();
+//      request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+//      var urlstring = decodeURIComponent(tree.getAttribute("ref") + s);
+//      var path = msiPathFromFileURL( msiURIFromString(urlstring));
+//
+//      request.open("GET", urlstring, false);
+//      request.send(null);
+//                          
+//      var xmlDoc = request.responseXML; 
+//      if (!xmlDoc && request.responseText)
+//        throw("fragment file exists but cannot be parsed as XML");
+//      if (xmlDoc)
+//      {
+//        var dataString="";
+//        var contextString="";
+//        var infoString="";
+//        var node;
+//        var nodelist;
+//        nodelist = xmlDoc.getElementsByTagName("data");
+//        if (nodelist.length > 0) node = nodelist.item(0);
+//        if (node)
+//        {
+//          dataString = decodeURIComponent(node.textContent);
+//        }
+//        if (dataString.length == 0) return;  // no point in going on in this case
+//        node = null;
+//        nodelist = xmlDoc.getElementsByTagName("context");
+//        if (nodelist.length > 0) node = nodelist.item(0);
+//        if (node)
+//        {
+//          contextString =  decodeURIComponent(node.textContent);
+//        }
+//        node = null;
+//        nodelist = xmlDoc.getElementsByTagName("info");
+//        if (nodelist.length > 0) node = nodelist.item(0);
+//        if (node)
+//        {
+//          infoString =  decodeURIComponent(node.textContent);
+//        }
+//        transferData.data = new TransferData();
+//        transferData.data.addDataForFlavour("privatefragmentfile", path);
+//        transferData.data.addDataForFlavour("text/html",dataString);
+//        transferData.data.addDataForFlavour("text/_moz_htmlcontext",contextString);
+//        transferData.data.addDataForFlavour("text/_moz_htmlinfo",infoString);
+//      }
+//    }
+//    catch(e) {
+//
+//      dump("Error: "+e.message+"\n");
+//
+//    }
+//    focusOnEditor();
+//  },
+  
+  canDrop: function(evt, session)
+  {
+    return true;
+  },
+  
+  onDrop: function(evt, dropData, session)
+  {
+    if (session.isDataFlavorSupported("text/html"))
+    {
+      try {
+        var trans = Components.classes["@mozilla.org/widget/transferable;1"].
+            createInstance(Components.interfaces.nsITransferable); 
+        var value;
+        if (!trans) return; 
+        var flavour = "text/html";
+        trans.addDataFlavor(flavour);
+        session.getData(trans,0); 
+        var str = new Object();
+        var strLength = new Object();
+        try
+        {
+          trans.getTransferData(flavour,str,strLength);
+          if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString); 
+          if (str) value = str.data.substring(0,strLength.value / 2);
+        }
+        catch (e)
+        {
+          dump("  "+flavour+" not supported\n\n");
+          value = "";
+        }
+        trans.removeDataFlavor(flavour);
+      }
+      catch(e)
+      {
+        msidump(e.message);
+      }
+    }
+  },
+  
+  onDragOver: function(evt, flavour, session) 
+  {
+    supported = session.isDataFlavorSupported("text/html");
+    // we should look for math in the fragment
+    if (supported)
+      session.canDrop = true;
+  },
+  
+  getSupportedFlavours: function()
+  {
+    var flavours = new FlavourSet();
+    flavours.appendFlavour("text/html");
+    return flavours;
+  }
+}  
 
 #endif
