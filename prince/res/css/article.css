@@ -11,8 +11,10 @@ part {
 
 part>*:first-child {
   display: block;
-  font-size: x-large;
+  font-size: 200%;
   font-weight: bold;
+  color: rgb(9, 62, 125);
+  text-align:center;
 }
 
 part>*:first-child:before {
@@ -20,6 +22,7 @@ part>*:first-child:before {
   display: block;
   font-size: large;
   font-weight: bold;
+  margin-bottom: 5pt;
   -moz-user-select: -moz-none;
 }
 
@@ -71,31 +74,23 @@ section {
 
 section>*:first-child{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: large;
+  margin: 10pt 0pt 0pt 0pt;
+  font-size: 175%;
   font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
 section>*:first-child[open="false"]{
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
-  font-size: large;
+  font-size: 175%;
   font-weight: bold;
 }
 
 section>*:first-child:before, section[open="true"]>*:first-child:before  {
   content: counter(section) ".  ";
   -moz-user-modify: read-only;
-}
-
-section>*:first-child{
-  display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: large;
-  font-weight: bold;
 }
 
 section>*:first-child[open="false"]{
@@ -145,9 +140,10 @@ subsection {
 
 subsection>*:first-child {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: large;
+  margin: 10pt 0pt 0pt 0pt;
+  font-size: 150%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
 subsection>*:first-child:before {
@@ -168,10 +164,10 @@ subsubsection {
 
 subsubsection>*:first-child {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: medium;
+  margin: 10pt 0pt 0pt 0pt;
+  font-size: 120%;
   font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
 subsubsection>*:first-child:before {
@@ -190,9 +186,10 @@ paragraph {
 }
 
 paragraph>*:first-child {
-  font-size: medium;
-  font-weight: normal;
-  font-style: italic;
+  font-size: 100%;
+  font-weight: bold;
+  font-style: normal; 
+  color: rgb(9, 62, 125);
 }
 
 paragraph>*:first-child:before {
@@ -205,6 +202,18 @@ paragraph defaulttitletag:after {
   color: gray;
 }
 
+subparagraph {
+  display: inline;
+  counter-increment: subparagraph;
+}
+
+subparagraph>*:first-child {
+  font-size: 100%;
+  font-weight: bold;
+  font-style: normal; 
+  color: rgb(9, 62, 125);
+}
+
 subparagraph defaulttitletag:after {
   content: "Replace this subsubsubsubsection title"; 
   color: gray;
@@ -215,7 +224,9 @@ subparagraph defaulttitletag:after {
 /*************************/
 
 title {
-  font-size: x-large;
+  font-size: 200%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
   line-height: 20pt;
   display: block;
   margin-top: 12pt;
@@ -223,19 +234,26 @@ title {
 }
 
 author {
+  font-size: 100%;
   font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
   padding-top: 10pt;
   text-align: center;
 }
 
 address {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
   text-align: center;
 }
 
 date {
+  font-size: 100%;
   font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
   padding-top: 2pt;
   text-align: center;
@@ -250,7 +268,7 @@ abstract {
   padding-right: 15pt;
   font-size: small;
   border: thin solid black; 
-  background-color: #FFFFEE;
+  background-color: #E1EEFD;
   -moz-border-radius: 5px;
 }
 
@@ -258,7 +276,8 @@ abstract:before {
   content: "Abstract";
   display: block;
   text-align: center;
-  font-size: medium; font-weight: bold;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
   -moz-user-select: -moz-none;
 }
 
