@@ -92,7 +92,7 @@
       <vbox>                                    
         <label id="doctype-text" crop="right"/>
         <iframe id="content-source" 
-                src="" flex="1" tooltip="aSourceTooltip"/>
+                src="resource://app/res/cm2/cm2.html" flex="1" tooltip="aSourceTooltip"/>
       </vbox>
 #ifndef PROD_SNB
       <browser id="preview-frame" src="about:blank" disablehistory="1" flex="1"/>
