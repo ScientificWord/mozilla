@@ -20,3 +20,5 @@
 <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
 <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
 <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
+<script type="application/x-javascript" src="chrome://inspector/content/jsutil/xul/DNDUtils.js" />
+<script type="application/x-javascript" src="chrome://inspector/content/jsutil/xpcom/XPCU.js" />
