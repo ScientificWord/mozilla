@@ -1090,17 +1090,38 @@ InputByteFile::~InputByteFile()
 
 @$@<Search Utility@>==@{@-
 
+#ifdef _WINDOWS
+  #define SEP '\\'
+  #define NON_SEP '/'
+  #define SEP_STR "\\"
+#else
+  #define SEP '/'
+  #define NON_SEP '\\'
+  #define SEP_STR "/"
+#endif
+
+
 bool FileExists(const char* file)
 {
-   //std::cout << "\nTHE FILE [" << file;
+
+   char* buf = new char[strlen(file) + 1];
+   const char* cwd = GetCWD();
+
+   for (int i = 0; i < strlen(file); ++i){
+     if (file[i] == NON_SEP) {
+       buf[i] = SEP;
+     } else {
+       buf[i] = file[i];
+     }     
+   }
+   buf[strlen(file)] = 0;
+
    std::fstream f;
-   f.open(file, std::fstream::in);
+   f.open(buf, std::fstream::in);
    if(f.is_open()){
      f.close();
-     //std::cout << "] EXISTS\n";
      return true;
    } else {
-     //std::cout << "] DOES NOT EXIST\n";
      return false;
    }
 }
@@ -1109,6 +1130,7 @@ void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
 {
   char *envVal, *penv;
   char curPath[_MAX_PATH];
+  curPath[0] = '\0';
 
   *buf = '\0';
 
@@ -1119,8 +1141,6 @@ void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
     }
     return;
   }
-
-
 
   if ( FileExists( file ) )
   {
@@ -1160,8 +1180,16 @@ void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
 
     if (n <= 0)
       break;
-      
-    memcpy(curPath, penv, n);
+
+    if (!isEnvVar && !(*penv == '/') && !(*penv == '\\')){
+      curPath[0] = '\0';
+      strcat(curPath, s_inputdir);
+      strcat(curPath, SEP_STR);
+      memcpy(curPath + strlen(s_inputdir) + 1, penv, n);
+      n = n + strlen(s_inputdir); 
+    } else {
+      memcpy(curPath, penv, n);
+    }
     
     if (curPath[n - 1] != '/' && curPath[n - 1] != '\\')
     {
@@ -1177,6 +1205,8 @@ void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
     }
 
     strcat(curPath, file);
+    //if (!isEnvVar)
+    //   chdir(s_inputdir);
 
     if (FileExists( curPath ))
     {
@@ -1532,6 +1562,8 @@ computations.  The necessary routines are described here.
   #include <unistd.h>
   #define _MAX_PATH 2000
 #endif
+extern const char* s_inputdir;
+
 
 
 @<TeXException implementation@>

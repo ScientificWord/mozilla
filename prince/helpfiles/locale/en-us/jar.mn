@@ -20,6 +20,13 @@ en-US.jar:
   locale/helpfiles/graphics/princelogo.png    (graphics/princelogo.png)
 %
   locale/helpfiles/cd00-00-creating_documents.xhtml		  (cd00-00-creating_documents.xhtml)
+  locale/helpfiles/cd01-00-gettingstarted.xhtml           (cd01-00-gettingstarted.xhtml)
+  locale/helpfiles/cd02-00-basics.xhtml                   (cd02-00-basics.xhtml)
+  locale/helpfiles/cd03-00-simpledoc.xhtml                (cd03-00-simpledoc.xhtml)
+  locale/helpfiles/cd04-00-editingdocs.xhtml              (cd04-00-editingdocs.xhtml)
+  locale/helpfiles/cd05-00-workwithmath.xhtml             (cd05-00-workwithmath.xhtml)
+  locale/helpfiles/cd06-00-finaltouch.xhtml               (cd06-00-finaltouch.xhtml)
+  locale/helpfiles/cd07-00-shortcuts.xhtml                (cd07-00-shortcuts.xhtml)
 %
   locale/helpfiles/dm00-00-doing_mathematics.xhtml		  (dm00-00-doing_mathematics.xhtml)
   locale/helpfiles/dm01-00-basic_techniques.xhtml		  (dm01-00-basic_techniques.xhtml)
