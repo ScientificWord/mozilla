@@ -1,3 +1,4 @@
+Components.utils.import("resource://app/modules/os.jsm");
 #include productname.inc
 #ifndef PROD_SW
 //----------------------------------------------------------------------------------
@@ -299,6 +300,41 @@ Graph.prototype.serializeGraph         = function (optionalplot) {
   return str;
 };
 Graph.prototype.setGraphAttribute      = function (name, value) { this[name] = value; };
+Graph.prototype.provideDragEnterHandler= function (editorElement, domGraph) {
+  var thisGraph = this;
+  var os = getOS(window);
+  var __editorElement = editorElement;
+  var __domGraph = domGraph;
+  return function () {
+    if (os === "osx")
+    {
+      var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
+      dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
+      netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+      var dropData = DNDUtils.getData("text/html", 0);
+      var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
+      newPlotFromText(__domGraph, str.data, __editorElement);
+      dragService.endDragSession(true);
+    }
+    return 1;
+  }  
+};
+Graph.prototype.provideDropHandler     = function (editorElement, domGraph) {
+  var __domGraph = domGraph;
+  var __editorElement = editorElement;
+  return function () {
+    var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
+    dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
+    netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+    var dropData = DNDUtils.getData("text/html", 0);
+    var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
+    newPlotFromText(__domGraph, str.data, __editorElement);
+    dragService.endDragSession(true);
+    return 1;
+  }  
+};
+  
+
 
 function Plot () {
   this.element = {};
@@ -739,7 +775,7 @@ function insertGraph (siblingElement, graph, editorElement) {
 
   addGraphElementToDocument (gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
-  doVCamPreInitialize(obj);
+  doVCamPreInitialize(obj,graph);
 }
 
 /**-----------------------------------------------------------------------------------------*/
