@@ -10746,7 +10746,7 @@ function openGraphDialog(tagname, node, editorElement)
   }
   DOMGListAdd (node, currentDOMGs);
   // non-modal dialog, the return is immediate
-  var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
+  var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog", "chrome,close,titlebar,dependent",
      editorElement, "cmd_objectProperties", node, null, node, currentDOMGs);
   var editorElement = msiGetActiveEditorElement();
 	msiGetEditor(editorElement).incrementModificationCount(1);
