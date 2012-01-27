@@ -1112,14 +1112,20 @@ function onVCamDragMove(x,y)
 
 
 var intervalId;
-function doVCamPreInitialize(obj)
+function doVCamPreInitialize(obj, graph)
 {
+  
   intervalId = setInterval(function () {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var domGraph = editor.getElementOrParentByTagName("graph", obj);
     if (obj.addEvent) {
       obj.addEvent('leftMouseDown', onVCamMouseDown);
       obj.addEvent('leftMouseUp', onVCamMouseUp);
       obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
       obj.addEvent('dragMove', onVCamDragMove);
+      obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
+      obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
       clearInterval(intervalId);
     }
   },200);
@@ -1164,43 +1170,6 @@ function doVCamInitialize(obj)
       thisobj.actionSpeed = factor;
     };
   }());
-  
-  onVCamDragEnter = (function () {
-    var thisGraph = editor.getElementOrParentByTagName("graph", obj);
-    var __editorElement = editorElement;
-    return function () {
-        if (os === "osx")
-        {
-          var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
-          dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
-          netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-          var dropData = DNDUtils.getData("text/html", 0);
-          var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
-          newPlotFromText(thisGraph, str.data, __editorElement);
-          dragService.endDragSession(true);
-        }
-        return 1;
-      }  
-  }());
-  obj.addEvent('dragEnter', onVCamDragEnter);    
-  onVCamDrop = (function () {
-    var thisGraph = editor.getElementOrParentByTagName("graph", obj);
-    var __editorElement = editorElement;
-    return function () {
-      if (os !== osx) {
-        var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
-        dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
-        netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-        var dropData = DNDUtils.getData("text/html", 0);
-        var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
-        newPlotFromText(thisGraph, str.data, __editorElement);
-        dragService.endDragSession(true);
-      }
-      return 1;
-    }  
-  }());
-  obj.addEvent('drop', onVCamDrop);
-
   var threedplot = obj.dimension === 3;
   document.getElementById("3dplot").setAttribute("hidden", threedplot?"false":"true");
   var animplot = obj.isAnimated;
