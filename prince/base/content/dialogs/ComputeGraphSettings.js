@@ -2,9 +2,6 @@
 // Three data items are passed into this dialog: 
 // window.arguments[0]: the graph object 
 // window.arguments[1]: DOMGraph, the DOM element that should be replaced
-// window.arguments[2]: the list of DOMGraphs currently being edited:
-//    it only makes sense to have one dialog per <graph> element. Don't 
-//    allow any others. 
 
 Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 var gFrameModeImage = true;
@@ -42,7 +39,8 @@ function Startup(){
     if (document.getElementById(id)) {                    
       document.getElementById(id).value = graph[alist[i]];         
     }                                                       
-  }     
+  } 
+   
   // some plotwrapper attributes override the GraphSpec attributes
   var value;
   if (value = plotwrapper.getAttribute("height"))                                                     
@@ -62,7 +60,12 @@ function Startup(){
   plotNumControl.valueNumber = 1;
   var firstActivePlot = 0;
   graph["plotnumber"] = firstActivePlot.toString();
-
+  var plot = graph["plots"][0];
+  // some attributes can't be found as values of dialog elements  
+  setColorWell("baseColorWell", plot.attributes["BaseColor"]);  
+  setColorWell("secondColorWell", plot.attributes["SecondaryColor"]);  
+  setColorWell("lineColorWell", plot.attributes["LineColor"]);  
+  
   initKeyList();
   
   var editorControl = document.getElementById("plotDlg-content-frame");
@@ -81,7 +84,7 @@ function Startup(){
 
   // Graphic Placement
   oldval = graph["Placement"];
-  var elem = document.getElementById("graphPlacement");
+  var elem = document.getElementById("placementRadioGroup");
   if (oldval == "inline"){
     elem.selectedIndsex = 0;
   } else if (oldval == "display") {
@@ -124,116 +127,6 @@ function mapid( graphattribute)
 }
 
 
-//var floatControlIDs = ["placeForceHereCheck", "placeHereCheck", "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"];
-//
-//function checkEnableFloating()
-//{
-//  var bEnable = false;
-//  var elem = document.getElementById("graphPlacement");
-//             
-//  var val = elem.selectedItem.value;
-//  bEnable = (val == "float");
-//
-//  enableControlsByID(floatControlIDs, bEnable); 
-//
-//}
-                  
-//function tableRow4 (v, min, max, npts,chrome) {
-//  var str = "<tr>";
-//  if (chrome) classs = "label";    // class is a reserved word
-//  else classs = "value";                                                   
-//  str += "<td class=\"" + classs + "\">" + v    + "</td>";               
-//  str += "<td class=\"" + classs + "\">" + min  + "</td>";               
-//  str += "<td class=\"" + classs + "\">" + max  + "</td>";               
-//  str += "<td class=\"" + classs + "\">" + npts + "</td>";               
-//  str += "</tr>";        									   
-//  return str;
-//}
-
-// return a string with the xml containing the expression and plot limits
-function buildEditorTable (plotno) {
-// var str = "";
-// var tmpstr = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi tempinput=\"true\">()</mi></mrow></math>";
-// // put the expression in it's own table
-// var curval = window.arguments[0].getPlotValue ("Expression", plotno);
-// str += "<table class=\"MathVarsDialog\" chrome=\"1\" xmlns=\"http://www.w3.org/1999/xhtml\">";
-// str += "<tbody>";
-// str += "<tr>";                               
-// str += "<td class=\"label\">";               
-// str += "Plot expression";                               
-// str += "</td></tr>";                              
-// str += "<tr>";                               
-// str += "<td class=\"value\">";               
-// str += curval;
-// str += "</td>";                              
-// str += "</tr></tbody></table>";
-////  dump("In buildEditorTable, string before breaks is: [" + str + "].\n");
-// 
-// // put the ranges in a table
-// str += "<br/><br/>";
-// str += "<table chrome=\"1\" class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
-// str += "<tbody>";
-// str += tableRow4 ("Variable", "Min", "Max", "Sample Points", 1);
-// 
-//  // grab XMin, Xmax, Ymin, Ymax, Zmin, Zmax, Xvar, Yvar, Zvar, XNPTS, YNPTS
-// var v, min, max, npts;                                           
-// var ptype = window.arguments[0].getPlotValue ("PlotType", plotno);                      
-// v    = window.arguments[0].getPlotValue ("XVar", plotno);                      
-// if (ptype == "conformal")
-//   v = "Re(" + v + ")";               
-// min  = window.arguments[0].getPlotValue ("XMin", plotno);                      
-// max  = window.arguments[0].getPlotValue ("XMax", plotno);                      
-// npts = window.arguments[0].getPlotValue ("XPts", plotno);                      
-// str += tableRow4 (v, min, max, npts, 0);
-//
-// if (needTwoVars (plotno)) {
-//   if (ptype == "conformal") { 
-//     v = "Im(" + v + ")";               
-//   } else {  
-//     v    = window.arguments[0].getPlotValue ("YVar", plotno);                      
-//   }  
-//   min  = window.arguments[0].getPlotValue ("YMin", plotno);                      
-//   max  = window.arguments[0].getPlotValue ("YMax", plotno);                      
-//   npts = window.arguments[0].getPlotValue ("YPts", plotno);                      
-//   str += tableRow4 (v, min, max, npts, 0);
-//                                                                
-//   if (needThreeVars (plotno)) {
-//     v    = window.arguments[0].getPlotValue ("ZVar", plotno);                      
-//     min  = window.arguments[0].getPlotValue ("ZMin", plotno);                      
-//     max  = window.arguments[0].getPlotValue ("ZMax", plotno);                      
-//     npts = window.arguments[0].getPlotValue ("ZPts", plotno);                      
-//     str += tableRow4 (v, min, max, npts, 0);
-//   }  
-// }
-// if (ptype == "conformal") {
-//     var hpts = window.arguments[0].getPlotValue ("ConfHorizontalPts", plotno);                      
-//     var vpts = window.arguments[0].getPlotValue ("ConfVerticalPts", plotno);                      
-//     str += tableRow4 ("Horizontal Samples", "", "", hpts, 1);
-//     str += tableRow4 ("Vertical Samples", "", "", vpts, 1);
-//   }  
-//
-// str += "</tbody>";
-// str += "</table>";
-//
-// if ((window.arguments[0].getPlotValue ("PlotType", plotno)) == "tube") {
-//   var curval = window.arguments[0].getPlotValue ("TubeRadius", plotno);
-//   str += "<table class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
-//   str += "<tbody>";
-//   str += "<tr>";                               
-//   str += "<td class=\"label\">";               
-//   str += "Tube Radius";                               
-//   str += "</td></tr>";                              
-//   str += "<tr>";                               
-//   str += "<td class=\"value\">";               
-//   str += curval;                               
-//   str += "</td>";                              
-//   str += "</tr></tbody></table>";
-// }
-//
-////  dump("In buildEditorTable, string to return is: [" + str + "].\n");
-// return str;
-}
-
 // Extract the values from the dialog and store them in the data structure
 // Only save values that are not the defaults
 function OK(){
@@ -244,6 +137,8 @@ function OK(){
   // are problems.
   var editorElement = msiGetParentEditorElementForDialog(window);
 //  var editor = msiGetEditor(editorElement);
+  var changed = true;
+  if (changed) graph.computeGraph(editorElement, graph["ImageFile"]);
   var theWindow = window.opener;
   if (!theWindow || !("nonmodalRecreateGraph" in theWindow))
     theWindow = msiGetTopLevelWindow();
@@ -251,12 +146,11 @@ function OK(){
   setFrameAttributes(plotwrapper,plotwrapper);
   graph["plotwrapper"] = plotwrapper;         
     
-  try {                                                                                         
-    theWindow.nonmodalRecreateGraph (graph, DOMGraph, editorElement);
-  }                                                                                             
-  catch (e) {                                                                                    
+  try {  
+    theWindow.nonmodalRecreateGraph (graph, window.arguments[1], editorElement);
+  }  
+  catch (e) {   
   }                                                  
-  DOMGListRemove (window.arguments[1], window.arguments[2]);
   return true;
 }                          
 
@@ -297,9 +191,9 @@ function GetValuesFromDialog(){
     }                                                                   
   } 
   var elem = document.getElementById("placementRadioGroup");
-  var newplace = elem.selectedItem.id; // should be value!!! but that didn't work
-  
-  graph.setGraphAttribute("Placement", newplace);
+  var newplace;
+  if (elem.selectedItem) newplace = elem.selectedItem.id; // should be value!!! but that didn't work
+  if (newplace) graph.setGraphAttribute("Placement", newplace);
 
   var oldpt = plot.attributes["PlotType"];                        
   var newpt;
@@ -309,7 +203,7 @@ function GetValuesFromDialog(){
     newpt = document.getElementById("pt3d").value;            
   }
   if (newpt != oldpt) {
-    plot.attributes["PlotType"] = newpt;
+    if (newpt) plot.attributes["PlotType"] = newpt;
     plot.attributes["PlotStatus"] = "New";
   }    
   var oldanimate = plot.attributes["Animate"];
@@ -490,7 +384,6 @@ function ExtractTextFromNode (node) {
 
 function Cancel(){
   graph.setGraphAttribute("returnvalue", false);
-  DOMGListRemove (window.arguments[1], window.arguments[2]);
 }
 
 // This is the callback for the command button to add a new plot
@@ -534,10 +427,6 @@ function addPlotDialogContents () {
 // on exit, the ComputePlotSettings.xul dialog has saved the new data 
 function formatPlot () {
   // only open one dialog per window
-  if (DOMGListMemberP (window, window.arguments[2])) {
-    return;                                                                           
-  }
-  DOMGListAdd (window, window.arguments[2]);
   var count = document.getElementById("plotnumber").valueNumber; 
   graph.setGraphAttribute("plotnumber", getPlotInternalNum(count));
   window.openDialog("chrome://prince/content/ComputePlotSettings.xul", 
@@ -646,7 +535,6 @@ function getNumberOfActivePlots()
   var numplots = graph.getNumPlots();
   return numplots;
 }
-
 
 function populateDialog (plotno) {
   // remove contents here
@@ -806,8 +694,8 @@ function radioGroupSetCurrent (elemID, oldval) {
     var children = elem.childNodes;
     for (var i=0; i<children.length; i++) {
       if (oldval == children[i].value) {    
-	    elem.selectedIndex = i;
-	  }
+	      elem.selectedIndex = i;
+	    }
     }
   }
 }
@@ -844,27 +732,6 @@ function needThreeVars (plotno) {
   
 }
 
-function GetGraphColor (attributeName)
-{
-  // Don't allow a blank color, i.e., using the "default"
-  var colorObj = { NoDefault:true, Type:"", TextColor:0, PageColor:0, Cancel:false };
-  var oldcolor = graph.getValue (attributeName);                        
-  if (oldcolor != "") {
-     colorObj.TextColor = oldcolor;
-     colorObj.PageColor = oldcolor;
-  }
-  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
-
-  // User canceled the dialog
-  if (colorObj.Cancel)
-    return;
-  else {
-		msiGetEditor(editorElement).incrementModificationCount(1);
-	}
-
-  var color = colorObj.TextColor;
-  graph.setGraphAttribute (attributeName, color);
-}
 
 function initKeyList()
 {

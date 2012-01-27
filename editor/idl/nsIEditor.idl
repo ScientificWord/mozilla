@@ -510,7 +510,6 @@ interface nsIEditor  : nsISupports
    */
   void replaceNode(in nsIDOMNode newNode,
                    in nsIDOMNode oldNode,
-
                    in nsIDOMNode parent);
   /** 
    * save the selection for undo purposes
