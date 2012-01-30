@@ -202,13 +202,96 @@ Graph.prototype.createGraphDOMElement  = function (forComp, optplot) {
 	img.setAttribute("height",h);
 
   DOMPw.appendChild(img);
-//  var propButton;
-//  propButton=document.createElementNS(htmlns,"button");
-//  propButton.setAttribute('class','msi');
-//  propButton.value = 'Properties';
-//  DOMPw.appendChild(propButton);
 	DOMGraph.appendChild(DOMPw);
   return(DOMGraph);
+};
+Graph.prototype.reviseGraphDOMElement  = function (DOMgraph, editorElement) 
+{
+  // like createGraphDOMElement, but doesn't delete or create a new VCam plugin instance
+  var editor = msiGetEditor(editorElement);
+  var DOMGs     = DOMgraph.getElementsByTagName("graphSpec")[0];
+  var DOMPw     = DOMgraph.getElementsByTagName("plotwrapper")[0];
+  DOMPw.setAttribute("msi_resize","true");
+  var attributes;
+  var att;
+  if (this["plotwrapper"])
+  { 
+    attributes = this["plotwrapper"].getAttributes();
+    for (var j=0; j < attributes.length; j++)
+    {
+      att = attributes[j];
+      DOMPw.setAttribute(att.name, att.value);
+    }
+  }
+
+  // loop through graph attributes and insert them
+  var alist;
+
+  alist = this.graphAttributeList();
+  for (var i=0; i<alist.length; i++) {
+    var attr = alist[i];
+    var value = this.getGraphAttribute(attr);
+    var defaultValue = this.getDefaultValue (attr);
+    if ((value == "") || (value == null)) {
+       value = defaultValue;
+    }
+    if (value != defaultValue) {
+      if ((value != "") && (value != "unspecified")) {
+        DOMGs.setAttribute (attr, value);
+      }
+    }
+  }
+  // Some plotwrapper attributes get promoted to the GraphSpec
+  var value;
+  var plotwrapper = this["plotwrapper"];
+  if (plotwrapper)
+  {
+    if (value = plotwrapper.getAttribute("height"))                                                     
+      DOMGs.setAttribute("Height") = value;
+    if (value = plotwrapper.getAttribute("width"))                                                     
+      DOMGs.setAttribute("Width") = value;
+    if (value = plotwrapper.getAttribute("units"))                                                     
+      DOMGs.setAttribute("Units") = value;
+  }
+  
+  // if the optional plot number was specified, just include one plot
+  // otherwise, for each plot, create a <plot> element
+  // Clear out current plots first
+  var i;
+  var domPlots = DOMgraph.getElementsByTagName("plot");
+  for (i=domPlots.length -1; i >= 0; i--) {
+    editor.deleteNode(domPlots[i]);
+  }
+  var plot;
+  for (i=0; i<this.plots.length; i++) {
+    plot = this.plots[i];
+    var status = this.plots[i].attributes.PlotStatus;
+    if (status == "ERROR") {
+      this.errStr = "ERROR, Plot number " + i + " " + this.errStr;
+    } else if (status != "Deleted") {
+        DOMGs.appendChild(plot.createPlotDOMElement(document, false, plot));
+    }
+  }
+  var img;
+  img = DOMgraph.getElementsByTagName("object")[0];
+  var filetype = this.getDefaultValue ("DefaultFileType");
+  if (filetype == "xvz") {
+    img.setAttribute("type","application/x-mupad-graphics+gzip"); 
+    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
+	} else if (filetype == "xvc") {
+    img.setAttribute("type","application/x-mupad-graphics+xml"); 
+    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
+	}    
+  img.load(makeRelPathAbsolute(this.getGraphAttribute("ImageFile"), editorElement));
+  var unitHandler = new UnitHandler();
+  unitHandler.initCurrentUnit(this["Units"]);
+  var w = unitHandler.getValueStringAs(this["Width"],"px");
+  var h = unitHandler.getValueStringAs(this["Height"],"px");
+	img.setAttribute("alt", "Generated Plot");
+	img.setAttribute("msigraph","true");
+	img.setAttribute("width",w);
+	img.setAttribute("height",h);
+   return(DOMgraph);
 };
 Graph.prototype.extractGraphAttributes = function (DOMGraph) {
   var msins="http://www.sciword.com/namespaces/sciword";
@@ -313,8 +396,8 @@ Graph.prototype.provideDragEnterHandler= function (editorElement, domGraph) {
       netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
       var dropData = DNDUtils.getData("text/html", 0);
       var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
-      newPlotFromText(__domGraph, str.data, __editorElement);
-      dragService.endDragSession(true);
+//      dragService.endDragSession(true);
+      scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
     }
     return 1;
   }  
@@ -328,13 +411,38 @@ Graph.prototype.provideDropHandler     = function (editorElement, domGraph) {
     netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
     var dropData = DNDUtils.getData("text/html", 0);
     var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
-    newPlotFromText(__domGraph, str.data, __editorElement);
+    scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
     dragService.endDragSession(true);
     return 1;
   }  
 };
+Graph.prototype.recomputeVCamImage     = function (editorElement) {
+  var filename = this.getGraphAttribute("ImageFile"); // the old name
+  var match = /[a-zA-Z0-9]+\.(xv[cz]$)/.exec(filename);
+  var filetype = match[1];
+  var newfilename = "plots/" + createUniqueFileName("plot", filetype);
+  var longnewfilename = makeRelPathAbsolute(newfilename, editorElement);
+  this.setGraphAttribute("ImageFile", longnewfilename); 
+  // the filename that computeGraph uses is the one in the graph structure
+  this.computeGraph(editorElement);
+  this.setGraphAttribute("ImageFile", newfilename); 
+//    file.remove(false);
+}
   
-
+function scheduleNewPlotFromText(domgraph, expression, editorElement)
+{
+  var intervalId;
+  var __domgraph = domgraph;
+  var __editorElement = editorElement;
+  var __expression = expression;
+  intervalId = setInterval(function () {
+    newPlotFromText(__domgraph, __expression, __editorElement);
+//    var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
+//    dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
+//    dragService.endDragSession(true);
+    clearInterval(intervalId);
+  },200);
+}
 
 function Plot () {
   this.element = {};
@@ -371,6 +479,41 @@ Plot.prototype.PLOTELEMENTS     = ["Expression", "XMax", "XMin", "YMax", "YMin",
 Plot.prototype.isModified                 = function (x) { return (this.modFlag[x]);};
 Plot.prototype.setModified                = function (x) { this.modFlag[x] = true;};
 Plot.prototype.createPlotDOMElement       = function (doc, forComp) 
+ {
+   // return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
+   // do the plot attributes as DOM attributes of <plot>
+  var status = this.PlotStatus;
+  var attr;
+  if (status != "Deleted") {
+    var DOMPlot = doc.createElement("plot");
+    var attrs = (forComp) ? this.plotCompAttributeList() : this.plotAttributeList();
+    for (var i=0; i<attrs.length; i++) {
+      attr = attrs[i];
+//      if (this.isModified[attr] || forComp) {
+        var value = this.attributes[attr];
+        if (value && (value != "") && (value != "unspecified"))
+           DOMPlot.setAttribute (attr, value);
+//      }
+    }
+    // do the plot elements as document fragment children of <plot>
+    attrs = (forComp) ? this.plotCompElementList() : this.plotElementList();
+    for (var i=0; i<attrs.length; i++) {
+      attr = attrs[i];
+      if (forComp || (this.element[attr])) {
+        var DOMEnode = doc.createElement(attr);
+        var textval = this.element[attr];
+        if ((textval != "") && (textval != "unspecified")) {
+          var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
+          DOMEnode.appendChild (tNode.documentElement);
+          DOMPlot.appendChild (DOMEnode);
+        }
+      }
+    }
+    return(DOMPlot);
+  }
+  return(NULL);
+};
+Plot.prototype.revisePlotDOMElement       = function (doc, forComp, domPlot) 
  {
    // return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
    // do the plot attributes as DOM attributes of <plot>
@@ -511,16 +654,16 @@ Plot.prototype.plotCompAttributeList      = function () {
     NA = attributeArrayRemove (NA,  "AIInfo");
   }
 
-  if ((ptype != "approximateIntegral") && (ptype != "inequality")){
+  if ((ptype !== "approximateIntegral") && (ptype != "inequality")){
     NA = attributeArrayRemove (NA,  "FillPattern");
   }
 
-  if (ptype != "conformal") {
+  if (ptype !== "conformal") {
     NA = attributeArrayRemove (NA,  "ConfHorizontalPts");
     NA = attributeArrayRemove (NA,  "ConfVerticalPts");
   }
 
-  if (dim == "2") {
+  if (dim == 2) {
     NA = attributeArrayRemove (NA,  "DirectionalShading");
     NA = attributeArrayRemove (NA,  "SurfaceStyle");
     NA = attributeArrayRemove (NA,  "SurfaceMesh");
@@ -608,12 +751,13 @@ function newPlotFromText(currentNode, expression, editorElement) {
     plot.element["Expression"] = expression;
     plot.attributes["PlotType"]=firstplot.attributes["PlotType"];
     graph.addPlot(plot);
-    insertGraph(currentNode, graph, editorElement);
-    editor.deleteNode(currentNode);
+    graph.recomputeVCamImage(editorElement);
+    graph.reviseGraphDOMElement(currentNode, editorElement);
+//    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
   }
   catch(e)
   {
-    msidump(e.message);
+    var m = e.message;
   }
 }
 
@@ -734,16 +878,8 @@ function nonmodalRecreateGraph (graph, DOMGraph, editorElement) {
   }
 }
 
-
-
-/**----------------------------------------------------------------------------------*/
-// compute a graph, create a <graph> element, insert it into DOM after siblingElement
-function insertGraph (siblingElement, graph, editorElement) {
-  var filetype = graph.getDefaultValue ("DefaultFileType");
-  // May want to ensure file type is compatible with animated here
-  //  var editorElement = null;
-  if (!editorElement || editorElement == null)
-    editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
+function makeRelPathAbsolute(relpath, editorElement)
+{
   var longfilename;
   var leaf;
   try
@@ -756,13 +892,50 @@ function insertGraph (siblingElement, graph, editorElement) {
     var documentfile = msiFileFromFileURL(url);
 
     currdocdirectory = documentfile.parent.clone();
-    docauxdirectory = currdocdirectory.clone();
-    docauxdirectory.append("plots");
-    if (!docauxdirectory.exists()) docauxdirectory.create(1, 0755);
+    var pathParts = relpath.split("/");
+    var i;
+    for (i = 0; i < pathParts.length; i++)
+    {
+      currdocdirectory.append(pathParts[i]);
+    }
+    longfilename = currdocdirectory.path;
+  } catch (e) {
+    dump ("Error: "+e+"\n");
+  }
+  return longfilename;
+}
+
+
+/**----------------------------------------------------------------------------------*/
+// compute a graph, create a <graph> element, insert it into DOM after siblingElement
+function insertGraph (siblingElement, graph, editorElement) {
+  var filetype = graph.getDefaultValue ("DefaultFileType");
+  // May want to ensure file type is compatible with animated here
+  //  var editorElement = null;
+  if (!editorElement || editorElement == null)
+    editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
+  var longfilename;
+  var file;
+  var leaf;
+  var urlstring = msiGetEditorURL(editorElement);
+  var url = msiURIFromString(urlstring);
+  var documentfile = msiFileFromFileURL(url);
+  var plotfile;
+  try
+  {
     leaf = createUniqueFileName("plot", filetype);
-    docauxdirectory.append(leaf);  // docauxdirectory is now the name of the file we are creating
-    if (!docauxdirectory.exists()) docauxdirectory.create(0, 0755);
-    longfilename = docauxdirectory.path;
+    var documentfile;
+    var docauxdirectory;
+    var currdocdirectory;
+    var urlstring = msiGetEditorURL(editorElement);
+    var url = msiURIFromString(urlstring);
+    var documentfile = msiFileFromFileURL(url);
+    var plotfile = documentfile.clone();
+    var plotfile = documentfile.parent;
+    plotfile.append("plots");
+    if (!plotfile.exists()) plotfile.create(1, 0755);
+    plotfile.append(leaf);
+    longfilename = plotfile.path;
     graph.setGraphAttribute("ImageFile", longfilename);
     msiGetEditor(editorElement).setCaretAfterElement (siblingElement);
   } catch (e) {
