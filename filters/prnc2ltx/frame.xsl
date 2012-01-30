@@ -117,7 +117,7 @@
 </xsl:choose>
 <xsl:if test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\end{wrapfigure}</xsl:if
 ><xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\end{center}</xsl:if
-><xsl:if test="@pos='float' and (@frametype='image' or @placement='full' or (@placeLocation!='h' and @placeLocation!='H'))">\end{figure}</xsl:if
+><xsl:if test="@pos='float' and (@frametype='image' or @placement='full') and ((@placeLocation!='h' and @placeLocation!='H') or (@placement!='L' and @placement!='R' and @placement!='I' and @placement!='O'))">\end{figure}</xsl:if
 ><xsl:if test="@pos='display'">\end{center}</xsl:if
 ><xsl:if test="@pos='inline' and @frametype='image'">\end{center}}}</xsl:if>
 <xsl:if test="@topmargin or @sidemargin or @border or @padding">}</xsl:if>				
