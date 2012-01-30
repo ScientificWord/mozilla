@@ -81,8 +81,7 @@
           </xsl:choose></xsl:if>
         \framebox{</xsl:if>
       <xsl:call-template name="buildincludegraphics"/>
-      <xsl:if test="@border-color">}</xsl:if>
-      <xsl:if test="@border">}</xsl:if>
+      <xsl:if test="@border"><xsl:if test="@border-color">}</xsl:if>}</xsl:if>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="buildincludegraphics"/>
