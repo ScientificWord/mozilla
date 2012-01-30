@@ -1090,16 +1090,6 @@ InputByteFile::~InputByteFile()
 
 @$@<Search Utility@>==@{@-
 
-#ifdef _WINDOWS
-  #define SEP '\\'
-  #define NON_SEP '/'
-  #define SEP_STR "\\"
-#else
-  #define SEP '/'
-  #define NON_SEP '\\'
-  #define SEP_STR "/"
-#endif
-
 
 bool FileExists(const char* file)
 {
@@ -1183,10 +1173,10 @@ void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
 
     if (!isEnvVar && !(*penv == '/') && !(*penv == '\\')){
       curPath[0] = '\0';
-      strcat(curPath, s_inputdir);
+      strcat(curPath, s_docdir);
       strcat(curPath, SEP_STR);
-      memcpy(curPath + strlen(s_inputdir) + 1, penv, n);
-      n = n + strlen(s_inputdir); 
+      memcpy(curPath + strlen(s_docdir) + 1, penv, n);
+      n = n + strlen(s_docdir); 
     } else {
       memcpy(curPath, penv, n);
     }
@@ -1206,7 +1196,7 @@ void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
 
     strcat(curPath, file);
     //if (!isEnvVar)
-    //   chdir(s_inputdir);
+    //   chdir(s_docdir);
 
     if (FileExists( curPath ))
     {
@@ -1543,6 +1533,19 @@ computations.  The necessary routines are described here.
 @<class InputByteFiles@>
 @<class OutputByteFiles@>
 @<Path declarations@>
+#ifdef _WINDOWS
+  #include <direct.h>
+  #define SEP '\\'
+  #define NON_SEP '/'
+  #define SEP_STR "\\"
+
+#else
+  #include <unistd.h>
+  #define _MAX_PATH 2000
+  #define SEP '/'
+  #define NON_SEP '\\'
+  #define SEP_STR "/"
+#endif
 #endif
 @}
 
@@ -1556,13 +1559,9 @@ computations.  The necessary routines are described here.
 //#include <direct.h>
 #include <cstring>
 #include <stdlib.h>
-#ifdef _WINDOWS
-  #include <direct.h>
-#else
-  #include <unistd.h>
-  #define _MAX_PATH 2000
-#endif
-extern const char* s_inputdir;
+
+
+extern const char* s_docdir;
 
 
 

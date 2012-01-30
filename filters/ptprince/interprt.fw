@@ -31,7 +31,7 @@ Here are some variables global to the interpreter
 //static CommandCode curcmd;
 //static Primitive* curcmddata;
 extern const char* s_outputdir;
-extern const char* s_inputdir;
+extern const char* s_docdir;
 @}
 
 
@@ -1445,7 +1445,7 @@ case CMD_EXTENSION: {
          const char* fullname = fn.GetFullName();
          LOG("\n---- the graphic name is: " << fullname);
 
-         // Try to locate graphic ...
+         // Try to locate graphic ... 
 
          // 1. Get the search paths    
          StringUtils::AppendToks(Global::msigraphicspath);
@@ -1460,17 +1460,16 @@ case CMD_EXTENSION: {
          
          std::string extn = fn.GetExtString();
          if (extn != "") {
-            
-              if (fullname[0] == '.'){
+              // assume everything relative for now
+              //if (fullname[0] == '.'){
                 // relative path?
-                graphic = s_inputdir;
-                graphic += "\\";
+                graphic = s_docdir;
+                graphic += SEP;
                 graphic += fullname;
-                LOG("\n---- Copy " << graphic.c_str());
-              } else {
-                // Absolute path
-                graphic = fullname;
-              }
+              //} else {
+              //  // Absolute path
+              //  graphic = fullname;
+              //}
 
          } else {
              // No extension.
@@ -1480,11 +1479,9 @@ case CMD_EXTENSION: {
              while (exts[i] != NULL){
                std::string name = fullname;
                name += exts[i];
-               #ifndef _WINDOWS
-                 char buf[2000];
-               #else
-                 char buf[_MAX_PATH];
-               #endif
+               
+               char buf[_MAX_PATH];
+               
                SearchEnv(name.c_str(), paths.c_str(), false, buf);
                if (strlen(buf) != 0) {
                   // found it
@@ -1496,16 +1493,21 @@ case CMD_EXTENSION: {
 
          }
 
-
+         // Copy the graphic to <docdir>/graphics
+         LOG("\n---- Copy " << graphic.c_str());
          
          std::string targetdir;
          if (s_outputdir != 0)
            targetdir = s_outputdir;
 
          if (extn == "xvz") {
-            targetdir += "/plots/";
+            targetdir += SEP;
+            targetdir += "plots";
+            targetdir += SEP;
          } else {
-            targetdir += "/graphics/";
+            targetdir += SEP;
+            targetdir += "graphics";
+            targetdir += SEP;
          }
 
          std::string target = targetdir;
@@ -1535,9 +1537,11 @@ case CMD_EXTENSION: {
 
          std::string reltarget;
          if (extn == "xvz") {
-            reltarget += "plots/";
+            reltarget += "plots";
+            reltarget += SEP;
          } else {
-            reltarget += "graphics/";
+            reltarget += "graphics";
+            reltarget += SEP;
          }
 
          reltarget += fn.GetNameString();
