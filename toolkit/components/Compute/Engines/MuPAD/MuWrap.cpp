@@ -289,7 +289,6 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
               plotfile->GetLeafName( strLeafName );
               rv = plotfile->Remove(PR_FALSE);
               if (rv) printf("plotfile->Remove failed\n");              
-              rv = engOutput->CopyTo( destdirectory, strLeafName );
               if (rv != NS_OK) printf("File not ready to copy!\n");
               plotOK = (rv == NS_OK);
           }   
