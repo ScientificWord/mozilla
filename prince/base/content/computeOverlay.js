@@ -1110,6 +1110,10 @@ function onVCamDragMove(x,y)
   return 1;
 }
 
+function onVCamDragLeave(x,y)
+{
+}
+
 
 var intervalId;
 function doVCamPreInitialize(obj, graph)
@@ -1124,6 +1128,7 @@ function doVCamPreInitialize(obj, graph)
       obj.addEvent('leftMouseUp', onVCamMouseUp);
       obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
       obj.addEvent('dragMove', onVCamDragMove);
+      obj.addEvent('dragLeave', (function() {}));
       obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
       obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
       clearInterval(intervalId);
