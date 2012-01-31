@@ -1,14 +1,14 @@
-\msitraceon
 \makeatletter
 \def\includegraphics{%
    \@ifnextchar[{\msi@includegraphicsA}{\msi@includegraphicsB}}
 
 \def\msi@includegraphicsA[#1]#2{%
-  \msigraphicname{#2}
   \msi@includegraphicsB{#2}}
 
 \def\msi@includegraphicsB#1{%
-   \msitag{<object data="graphics/#1"/>}}
+   \msitag{<object data="}%
+       \msigraphicname{#1}%
+   \msitag{"/>}}
 
 \def\graphicspath#1{%
   \msitag{<texb enc="1" name="graphicspath"><![CDATA[\graphicspath{#1}]]></texb>}
@@ -27,10 +27,6 @@
    \@next
 }
 
-
-\def\msiappend#1MSIXYZZY{%
-   \expandafter\temptoksa\expandafter{\the\temptoksa #1}%
-}
 
 
 \makeatother
