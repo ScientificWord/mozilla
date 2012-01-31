@@ -274,23 +274,14 @@ Graph.prototype.reviseGraphDOMElement  = function (DOMgraph, editorElement)
   }
   var img;
   img = DOMgraph.getElementsByTagName("object")[0];
-  var filetype = this.getDefaultValue ("DefaultFileType");
-  if (filetype == "xvz") {
-    img.setAttribute("type","application/x-mupad-graphics+gzip"); 
-    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-	} else if (filetype == "xvc") {
-    img.setAttribute("type","application/x-mupad-graphics+xml"); 
-    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-	}    
-  img.load(makeRelPathAbsolute(this.getGraphAttribute("ImageFile"), editorElement));
-  var unitHandler = new UnitHandler();
-  unitHandler.initCurrentUnit(this["Units"]);
-  var w = unitHandler.getValueStringAs(this["Width"],"px");
-  var h = unitHandler.getValueStringAs(this["Height"],"px");
-	img.setAttribute("alt", "Generated Plot");
-	img.setAttribute("msigraph","true");
-	img.setAttribute("width",w);
-	img.setAttribute("height",h);
+  img.load(this.getGraphAttribute("ImageFile"));
+//  var unitHandler = new UnitHandler();
+//  unitHandler.initCurrentUnit(this["Units"]);
+//  var w = unitHandler.getValueStringAs(this["Width"],"px");
+//  var h = unitHandler.getValueStringAs(this["Height"],"px");
+//	img.setAttribute("width",w);
+//	img.setAttribute("height",h);
+//  doVCamPreInitialize(img,DOMgraph);
    return(DOMgraph);
 };
 Graph.prototype.extractGraphAttributes = function (DOMGraph) {
@@ -412,7 +403,7 @@ Graph.prototype.provideDropHandler     = function (editorElement, domGraph) {
     var dropData = DNDUtils.getData("text/html", 0);
     var str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
     scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
-    dragService.endDragSession(true);
+//    dragService.endDragSession(true);
     return 1;
   }  
 };
