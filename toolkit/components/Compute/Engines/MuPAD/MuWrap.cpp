@@ -287,14 +287,8 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
               if (rv) printf("plotfile->InitWithNativePath failed\n");
               plotfile->GetParent( getter_AddRefs(destdirectory));
               plotfile->GetLeafName( strLeafName );
-              PRBool exists;
-              rv = plotfile->Exists(exists);
-              if (exists) 
-              {
-                rv = plotfile->Remove(PR_FALSE);
-                if (rv) printf("plotfile->Remove failed\n");              
-              }
-              rv = engOutput->CopyTo( destdirectory, strLeafName );
+              rv = plotfile->Remove(PR_FALSE);
+              if (rv) printf("plotfile->Remove failed\n");              
               if (rv != NS_OK) printf("File not ready to copy!\n");
               plotOK = (rv == NS_OK);
           }   
