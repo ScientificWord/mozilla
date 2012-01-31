@@ -203,7 +203,7 @@ paragraph defaulttitletag:after {
 }
 
 subparagraph {
-  display: inline;
+  display: block;	/* Should be a run-in header, but someone esle will have to figure out how to do that.  Instead, use Version 5.5 behavior. */
   counter-increment: subparagraph;
 }
 
@@ -212,6 +212,7 @@ subparagraph>*:first-child {
   font-weight: bold;
   font-style: normal; 
   color: rgb(9, 62, 125);
+  margin-left: 10pt;
 }
 
 subparagraph defaulttitletag:after {
@@ -283,6 +284,11 @@ abstract:before {
 
 button[class="frontmattertag"]{
   position: absolute;
+  left: 5px;
+}
+
+maketitle, maketoc, makelof, makelot {
+  display: block;
   left: 5px;
 }
 
