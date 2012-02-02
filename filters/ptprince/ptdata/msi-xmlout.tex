@@ -83,15 +83,15 @@
 \msi@display@proc{jbm}
 \msi@everyrowstart{\msitag{<tr>}\msihmode}
 \msi@everyrowend{\msitag{</tr>}}
-\msi@everycellstart{\msihmode\msiopentag{td}{<td>}\msiopentag{bodyText}{<bodyText>}}
+%\msi@everycellstart{\msihmode\msiopentag{td}{<td>}}
 
-%\msi@everycellstart{\chkmulticol}
+\msi@everycellstart{\msiclosetag{td}{</td>}\msihmode\chkmulticol}
 \def\chkmulticol#1{%
   \ifx#1\multicolumn
     \let\@next#1
   \else
     \let\@next#1
-    \msitag{<td>}%
+    \msiopentag{td}{<td>}%
   \fi
   \@next}
 
@@ -312,7 +312,6 @@
 
 
 %% newtheorem
-
 
 \def\theoremstyle#1{\def\msi@currentthmstyle{#1}}
 \theoremstyle{plain}
@@ -818,15 +817,13 @@
 
 \def\MSIEqnarrayLikeEnvironment#1{%
   \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\\char`\\}\catcode`\&=12\msi@dollar=0\relax$$\string\begin{#1}}%
-  \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}
-}
+  \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}}
 
 
 
 \def\MSISplitLikeEnvironment#1{%
   \@namedef{msi@begin@#1}{\bgroup\ifmmode\else\msi@dollar=0\relax$$\fi\string\begin{#1}\catcode`\&=11}%
-  \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\fi\egroup}
-}
+  \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\fi\egroup}}
 
 
 \@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
@@ -888,7 +885,7 @@
       \else
         \mathtabularfalse
       \fi   
-      \msiopentag{table}{<table opt="#2" _moz_resizing="true"  cellpadding="4" border="1">}%
+      \msihmode\msiopentag{table}{<table opt="#2" _moz_resizing="true"  cellpadding="4" border="1">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
         \aftergroup\msi@closetabular
@@ -913,14 +910,12 @@
         \let\\=\@cr
         \halign\bgroup&##\cr
 }
-
+ 
 \def\msi@begin@tabular{%
-   \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
-}
+   \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}}
 
 \expandafter\def\csname msi@begin@tabular*\endcsname{%
-   \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
-}
+   \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}}
 
 
 \newif\ifmathtabular
@@ -941,13 +936,12 @@
       \begingroup
         \aftergroup\msi@closetabular
         \let\\=\@cr
-        \halign\bgroup&##\cr
-}
+        \halign\bgroup&##\cr}
 
 
 \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
 
-\def\msi@end@tabular{%  
+\def\msi@end@tabular{% 
         \crcr
         \egroup % the \halign
      \endgroup % to do the closetabular
@@ -970,8 +964,8 @@
    \ifnum\count0=1
       #3
    \else
-      \msitag{ Unimplemented multicol }
-      %\msitag{<td rowspan="1" colspan="#1">#3}%
+      %\msitag{ Unimplemented multicol }
+      \msitag{<td rowspan="1" colspan="#1"><bodyText>#3</bodyText></td>}%
    \fi
 }
 
