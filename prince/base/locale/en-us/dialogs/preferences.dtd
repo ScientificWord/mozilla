@@ -39,7 +39,7 @@
 <!ENTITY ForceText.label  "Force text">
 <!ENTITY ForceMath.label  "Force math">
 <!ENTITY Computation.label  "Computation">
-<!ENTITY DefaultBGColor.label "Default background color: ">
+<!ENTITY DefaultBGColor.label "Default background color ">
 <!ENTITY OrthogonalProjection.label  "Orthogonal projection">
 <!ENTITY KeepUpVector.label "Keep up vector">
 <!ENTITY InitialViewIntervals.label  "Initial View Intervals">
@@ -240,7 +240,7 @@
 <!ENTITY units.label              "Units">
 <!ENTITY unitsinches.label        "Inches">
 <!ENTITY unitscm.label            "Centimeters">
-<!ENTITY unitspicas.label         "Picas">
+<!ENTITY unitsmm.label            "Millimeters">
 <!ENTITY unitspoints.label        "Points">
 
 <!ENTITY layoutscreendisp.label    "Screen Display Attributes">
@@ -306,10 +306,10 @@
 <!ENTITY plotzrangelow.label        "Z Low Range">
 <!ENTITY plot2d.label               "2D">
 <!ENTITY plot3d.label               "3D">
-<!ENTITY plotexpr.label             "Expression to be plotted:">
+<!ENTITY plotexpr.label             "Expression to be plotted">
 <!ENTITY animate.label              "Animate">
 <!ENTITY dimensions.label           "Dimensions">
-<!ENTITY editplotitem.label         "Plot item: ">
+<!ENTITY editplotitem.label         "Plot item ">
 <!ENTITY editplot.label             "Edit Plot">
 <!ENTITY newplot.label              "New ">
 <!ENTITY plot2dmenu.label           "Plot 2D">
@@ -347,8 +347,8 @@
 <!ENTITY EnableSilentAutoSave.accesskey  "E">
 <!ENTITY CursorAdvanceChar.label  "Cursor Advance to Character">
 <!ENTITY DefaultSizeNewGraphics.label "Default Size for New Graphics">
-<!ENTITY DefaultSizeNewGraphicsWidth.label "Width:">
-<!ENTITY DefaultSizeNewGraphicsHeight.label "Height:">
+<!ENTITY DefaultSizeNewGraphicsWidth.label "Width">
+<!ENTITY DefaultSizeNewGraphicsHeight.label "Height">
 <!ENTITY DefaultPlacementNewGraphics.label "Default Placement for New Graphics">
 <!ENTITY DefaultPlacementNewGraphicsInline.label  "In line">
 <!ENTITY DefaultPlacementNewGraphicsDisplayed.label "Displayed">
@@ -367,7 +367,7 @@
 
 <!ENTITY DefaultSizeNewPlots.label "Default Size for New Plots">
 <!ENTITY DefaultSizeNewPlotsWidth.label "Width">
-<!ENTITY DefaultSizeNewPlotsHeight.label  "Height:">
+<!ENTITY DefaultSizeNewPlotsHeight.label  "Height">
 <!ENTITY DefaultPlacementNewPlots.label "Default Placement for New Plots">
 <!ENTITY DefaultPlacementNewPlotsInline.label  "In line">
 <!ENTITY DefaultPlacementNewPlotsDisplayed.label "Displayed">
