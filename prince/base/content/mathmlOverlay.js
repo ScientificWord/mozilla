@@ -160,13 +160,21 @@ var msiToggleMathText =
 	
 	keyIsToggle: function( key )
 	{
-		var prefkey;
-		if (key==="m")
-			prefkey = "swp.ctrl.m";
-		else
-			prefkey = "swp.ctrl.t";
- 	  var prefs = GetPrefs();
-	  return prefs.getCharPref(prefkey)==="toggle";	
+		try 
+    {
+  		var prefkey;
+  		if (key==="m")
+  			prefkey = "swp.ctrl.m";
+  		else
+  			prefkey = "swp.ctrl.t";
+   	  var prefs = GetPrefs();
+  	  return (prefs.getCharPref(prefkey)==="toggle");	
+		}
+    catch(e)
+    {
+      var m = e.message;
+      return false;
+    }
 	},
 	
 	currentState: function()

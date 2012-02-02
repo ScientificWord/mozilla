@@ -18,6 +18,7 @@
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
   <prefpane id="prefGeneral" label="General">
     <preferences>
@@ -48,6 +49,42 @@
       <preference id="defaultGraphicsPlacement" 
                   name="swp.defaultGraphicsPlacement" 
                   type="string"/>
+      <preference id="defaultGraphicsFloatLocation.forceHere"
+                  name="swp.defaultGraphicsFloatLocation.forceHere"
+                  type="bool"/> 
+      <preference id="defaultGraphicsFloatLocation.here"
+                  name="swp.defaultGraphicsFloatLocation.here"
+                  type="bool"/> 
+      <preference id="defaultGraphicsFloatLocation.pageFloats"
+                  name="swp.defaultGraphicsFloatLocation.pageFloats"
+                  type="bool"/> 
+      <preference id="defaultGraphicsFloatLocation.topPage"
+                  name="swp.defaultGraphicsFloatLocation.topPage"
+                  type="bool"/> 
+      <preference id="defaultGraphicsFloatLocation.bottomPage"
+                  name="swp.defaultGraphicsFloatLocation.bottomPage"
+                  type="bool"/> 
+      <preference id="defaultGraphicsFloatPlacement"
+                  name="swp.defaultGraphicsFloatPlacement"
+                  type="string"/> 
+      <preference id="defaultGraphicsHMargin"
+                  name="swp.defaultGraphicsHMargin"
+                  type="string"/> 
+      <preference id="defaultGraphicsVMargin"
+                  name="swp.defaultGraphicsVMargin"
+                  type="string"/> 
+      <preference id="defaultGraphicsBorderWidth"
+                  name="swp.defaultGraphicsBorderWidth"
+                  type="string"/> 
+      <preference id="defaultGraphicsPadding"
+                  name="swp.defaultGraphicsPadding"
+                  type="string"/> 
+      <preference id="graphics.BGColor"
+                  name="swp.graphics.BGColor"
+                  type="string"/> 
+      <preference id="graphics.borderColor"
+                  name="swp.graphics.borderColor"
+                  type="string"/> 
       <preference id="saveintervalseconds" 
                   name="swp.saveintervalseconds" 
                   type="int"/>
@@ -63,17 +100,53 @@
       <preference id="millisecondsfortaps" 
                   name="fastcursor.millisecondsfortaps" 
                   type="int"/>
-      <preference id="GraphHSize" 
+      <preference id="graph.HSize" 
                   name="swp.graph.HSize" 
                   type="string"/>
-      <preference id="GraphVSize" 
+      <preference id="graph.VSize" 
                   name="swp.graph.VSize" 
                   type="string"/>
-      <preference id="defaultGraphSizeUnits" 
-                  name="swp.defaultGraphSizeUnits" 
+      <preference id="graph.border" 
+                  name="swp.graph.border" 
                   type="string"/>
-      <preference id="GraphPlacement" 
-                  name="swp.graph.Placement" 
+      <preference id="graph.HMargin" 
+                  name="swp.graph.HMargin" 
+                  type="string"/>
+      <preference id="graph.VMargin" 
+                  name="swp.graph.VMargin" 
+                  type="string"/>
+      <preference id="graph.padding" 
+                  name="swp.graph.padding" 
+                  type="string"/>
+      <preference id="graph.BGColor" 
+                  name="swp.graph.BGColor" 
+                  type="string"/>
+      <preference id="graph.borderColor" 
+                  name="swp.graph.borderColor" 
+                  type="string"/>
+       <preference id="graph.defaultUnits" 
+                  name="swp.graph.defaultUnits" 
+                  type="string"/>
+      <preference id="graph.placement" 
+                  name="swp.graph.placement" 
+                  type="string"/>
+      <preference id="graph.floatLocation.forceHere" 
+                  name="swp.graph.floatLocation.forceHere" 
+                  type="bool"/>
+      <preference id="graph.floatLocation.here" 
+                  name="swp.graph.floatLocation.here" 
+                  type="bool"/>
+      <preference id="graph.floatLocation.pageFloats" 
+                  name="swp.graph.floatLocation.pageFloats" 
+                  type="bool"/>
+      <preference id="graph.floatLocation.topPage" 
+                  name="swp.graph.floatLocation.topPage" 
+                  type="bool"/>
+      <preference id="graph.floatLocation.bottomPage" 
+                  name="swp.graph.floatLocation.bottomPage" 
+                  type="bool"/>
+      <preference id="graph.floatPlacement" 
+                  name="swp.graph.floatPlacement" 
                   type="string"/>
       <preference id="XTickCount"
                   name="swp.graph.XTickCount"
@@ -153,14 +226,14 @@
       <preference id="AIMethod"
                   name="swp.plot.AIMethod"
                   type="string"/>
-      <preference id="hasaxistips"
-                  name="swp.plot.AxisTips"
+      <preference id="graph.AxisTips"
+                  name="swp.graph.AxisTips"
                   type="bool"/>
-      <preference id="hasgridlines"
-                  name="swp.plot.GridLines"
+      <preference id="graph.GridLines"
+                  name="swp.graph.GridLines"
                   type="bool"/>
-      <preference id="axistype"
-                  name="swp.plot.AxisType"
+      <preference id="graph.AxisType"
+                  name="swp.graph.AxisType"
                   type="string"/>
       <preference id="enablerealtimespell"
                   name="swp.spellchecker.enablerealtimespell"
@@ -301,7 +374,7 @@
             <checkbox id="prefautosave" label="&EnableSilentAutoSave.label;"
                       accesskey="&EnableSilentAutoSave.accesskey;"
                       oncommand=""/>
-            <hbox>
+            <hbox align="center">
               <textbox type="number" style="width: 5em;" label="Save interval in seconds" preference="saveintervalseconds"/>
               <label value="&SaveIntervalSeconds.label;"/>
             </hbox>
@@ -322,14 +395,14 @@
                       accesskey="&EnableCharFindwithArrow.accesskey;"
                       oncommand=""
                       preference="fastcursor.enabled"/>
-            <hbox>
+            <hbox align="center">
               <textbox type="number" style="width: 5em;" preference="tapsforrepeat"/>
               <label value="&NumTapsforArrowAutorepeat.label;"/>
             </hbox>
           </groupbox>
           <groupbox>
             <caption>&FileCompression.label;</caption>
-            <hbox>
+            <hbox align="center">
               <vbox>
                 <label value="&SciCompression.label;"/>
                 <menulist preference="sci.compression">
@@ -408,11 +481,11 @@
                   <column flex="0"/>
                 </columns>
                 <rows>
-                  <row>
+                  <row align="center">
                     <label value="&DefaultSizeNewGraphicsWidth.label;"/>
                     <textbox id="graphicsWidth" type="number" decimalplaces="2" preference="defaultGraphicsHSize" style="width: 5em;"/>
                   </row>
-                  <row>
+                  <row align="center">
                     <label value="&DefaultSizeNewGraphicsHeight.label;"/>
                     <textbox type="number" decimalplaces="2" preference="defaultGraphicsVSize" id="graphicsHeight" style="width: 5em;"/>
                   </row>
@@ -424,8 +497,8 @@
                   <menupopup id = "unitList">
                     <menuitem value="in" label="&unitsinches.label;"/>
                     <menuitem value="cm" label="&unitscm.label;"/>             
-                    <menuitem value="pt" label="&unitspicas.label;"/>               
-                    <menuitem value="mm" label="&unitspoints.label;"/>         
+                    <menuitem value="mm" label="&unitsmm.label;"/>         
+                    <menuitem value="pt" label="&unitspoints.label;"/>               
                   </menupopup>
                 </menulist>
               </vbox>
@@ -433,7 +506,7 @@
           </groupbox>
           <groupbox>
             <caption label="&DefaultPlacementNewGraphics.label;"/>
-            <radiogroup id="placementRadioGroup">
+            <radiogroup id="placementRadioGroup" preference="defaultGraphicsPlacement">
             <hbox flex="1">
               <vbox>
                 <radio id="inline" value="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
@@ -444,15 +517,20 @@
               <vbox>
                 <radio id="float" value="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" />
                 <vbox>
-                  <checkbox id="placeForceHereCheck" label="&placeForceHereCheck.label;"/>
-                  <checkbox id="placeHereCheck" label="&placeHereCheck.label;"/>
-                  <checkbox id="placeFloatsCheck" label="&placeFloatsCheck.label;"/>
-                  <checkbox id="placeTopCheck" label="&placeTopCheck.label;"/>
-                  <checkbox id="placeBottomCheck" label="&placeBottomCheck.label;"/>
+                  <checkbox id="placeForceHereCheck" label="&placeForceHereCheck.label;"
+                    preference="defaultGraphicsFloatLocation.forceHere"/>
+                  <checkbox id="placeHereCheck" label="&placeHereCheck.label;"
+                    preference="defaultGraphicsFloatLocation.here"/>
+                  <checkbox id="placeFloatsCheck" label="&placeFloatsCheck.label;"
+                    preference="defaultGraphicsFloatLocation.pageFloats"/>
+                  <checkbox id="placeTopCheck" label="&placeTopCheck.label;"
+                    preference="defaultGraphicsFloatLocation.topPage"/>
+                  <checkbox id="placeBottomCheck" label="&placeBottomCheck.label;"
+                    preference="defaultGraphicsFloatLocation.bottomPage"/>
                 </vbox>
               </vbox>
               <vbox>
-                <radiogroup id="herePlacementRadioGroup" align="vertical" value="full">
+                <radiogroup id="herePlacementRadioGroup" align="vertical" value="full" preference="defaultGraphicsFloatPlacement">
                   <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="L" radioGroup="herePlacementRadioGroup" />
                   <radio id="hereRightRadio" label="&hereRightRadio.label;" value="R" radioGroup="herePlacementRadioGroup" />
                   <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="I" radioGroup="herePlacementRadioGroup" />
@@ -462,6 +540,46 @@
               </vbox>
             </hbox>
             </radiogroup>
+          </groupbox>
+          <groupbox>
+            <caption label="Frame"/>
+            <grid>
+              <columns>
+                <column/>
+                <column/>
+                <column/>
+                <column/>
+              </columns>
+              <rows>
+                <row align="center">
+                  <label value="Side Margin"/>
+                  <textbox id="graphicsSideMargin" type="number" decimalplaces="2"
+                    preference="defaultGraphicsHMargin" style="width: 5em;"/>
+                  <label value="Top/Bottom Margin"/>
+                  <textbox id="graphicsVMargin" type="number" decimalplaces="2"
+                    preference="defaultGraphicsVMargin" style="width: 5em;"/>
+                </row>
+                <row align="center">
+                  <label value="Padding"/>
+                  <textbox id="graphicsPadding" type="number" decimalplaces="2"
+                    preference="defaultGraphicsPadding" style="width: 5em;"/>
+                  <label value="Padding Color"/>
+                  <msibutton id="graphics.padding,colorbutton" class="color-button" oncommand="getColorAndUpdate('graphics.padding.CW');">
+                    <spacer id="graphics.padding.CW" class="color-well" preference="graphics.BGColor"/>
+                  </msibutton>
+                </row>
+                <row align="center">
+                  <label value="Border Width"/>
+                  <textbox id="graphicsBorder" type="number" decimalplaces="2" 
+                    preference="defaultGraphicsBorderWidth" style="width: 5em;"/>
+                  <label value="Border Color"/>
+                  <msibutton id="graphics.border,colorbutton" class="color-button" oncommand="getColorAndUpdate('graphics.border.CW');">
+                    <spacer id="graphics.border.CW" class="color-well" preference="graphics.borderColor"/>
+                  </msibutton>
+                  
+                </row>
+              </rows>
+            </grid>
           </groupbox>
         </tabpanel>
       </tabpanels>
@@ -504,15 +622,15 @@
             <caption>&SourceEditing.label;</caption>
             <grid><columns><column/><column/><column flex="1"/></columns>
               <rows>
-                <row>
+                <row align="center">
                   <description>&XMLSourceIndent.label;</description>
                   <textbox type="number" id="srcindent" class="medwidth" preference="sourceindent"/>
                 </row>
-                <row>
+                <row align="center">
                   <description>&XMLSourceMaxLineLength.label;</description>
                   <textbox type="number" id="srcmaxlength" class="medwidth" preference="sourcemaxlength"/>
                 </row>
-                <row>
+                <row align="center">
                   <description>&XMLSourceMinLineLength.label;</description>
                   <textbox type="number" id="srcminlength" class="medwidth" preference="sourceminlength"/>
                 </row>
@@ -563,7 +681,7 @@
          <vbox>
           <groupbox>
             <caption label="&logs.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&BaseLoge;</description>
               <spacer flex="1"/>
               <checkbox id ="loge" preference="logepref" />
@@ -571,7 +689,7 @@
           </groupbox>
           <groupbox>
             <caption label="&dots.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&DotAccentMeansDerivative.label;</description>
               <spacer flex="1"/>
               <checkbox id ="dots" preference="dotderivativepref" />
@@ -579,7 +697,7 @@
           </groupbox>
           <groupbox>
             <caption label="&bar.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&OverbarMeansConjugate.label;</description>
               <spacer flex="1"/>
               <checkbox id ="bar" preference="barconjpref" />
@@ -587,7 +705,7 @@
           </groupbox>
           <groupbox>
             <caption label="i"/>
-            <hbox>
+            <hbox align="center">
               <description>&RecognizePlainIasImaginary.label;</description>
               <spacer flex="1"/>
               <checkbox id ="i_imaginary" preference="i_imaginarypref" />
@@ -595,7 +713,7 @@
           </groupbox>
           <groupbox>
             <caption label="j"/>
-            <hbox>
+            <hbox align="center">
               <description>&RecognizejAsImaginaryI.label;</description>
               <spacer flex="1"/>
               <checkbox id ="j_imaginary" preference="j_imaginarypref"
@@ -604,7 +722,7 @@
           </groupbox>
           <groupbox>
             <caption label="e"/>
-            <hbox>
+            <hbox align="center">
               <description>&RecognizePlaineasExponential;</description>
               <spacer flex="1"/>
               <checkbox id ="e_exp" preference="e_exppref"  />
@@ -617,13 +735,13 @@
          <vbox>
           <groupbox>
             <caption label="&scinotation.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&DigitsRendered.label;</description>
               <spacer flex="1"/>
               <textbox type="number" id ="digitsRendered" preference="digitsRenderedpref"   class="medwidth"/>
             </hbox>
             <vbox>
-              <hbox>
+              <hbox align="center">
                 <description>&UpperThreshold.label;</description>
                 <spacer flex="1"/>
                 <textbox type="number" id ="upper" preference="upperthresholdpref"  style="width: 3em"/>
@@ -631,7 +749,7 @@
               <description>&DigitsLeftofDecimal.label;</description>
             </vbox>
             <vbox>
-              <hbox>
+              <hbox align="center">
                 <description>&Lowerthreshold.label;</description>
                 <spacer flex="1"/>
                 <textbox type="number" id ="lower" preference="lowerthresholdpref"  sstyle="width: 3em"/>
@@ -641,7 +759,7 @@
           </groupbox>
           <groupbox>
             <caption label="&mixednum.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&OutputMixedNum.label;</description>
               <spacer flex="1"/>
               <checkbox id ="mixednum" preference="mixednumpref"  />
@@ -649,12 +767,12 @@
           </groupbox>
           <groupbox>
             <caption label="&trigargs.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&ParenthesesforTrig.label;</description>
               <spacer flex="1"/>
               <checkbox id ="trigargs" preference="trigargspref"  />
             </hbox>
-            <hbox>
+            <hbox align="center">
               <description>&UseArc.label;</description>
               <spacer flex="1"/>
               <checkbox id ="usearc" preference="usearcpref" />
@@ -667,7 +785,7 @@
          <vbox>
           <groupbox>
             <caption label="&matrices.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&DefaultMatrixDelimiter.label;</description>
               <spacer flex="1"/>
               <radiogroup id ="matrix_delim" preference="matrix_delimpref" value="matrix_none" >
@@ -694,7 +812,7 @@
           </groupbox>
           <groupbox>
             <caption label="&primeasn.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&SwitchfromPrimestoN.label;</description>
               <spacer flex="1"/>
               <textbox id ="primesasn" preference="primesasnpref"  style="width: 3em"/>
@@ -702,7 +820,7 @@
           </groupbox>
           <groupbox>
             <caption label="&primederiv.label;"/>
-            <hbox>
+            <hbox align="center">
               <description>&PrimeMeansDerivative.label;</description>
               <spacer flex="1"/>
               <checkbox id ="primederiv" preference="primederivpref"/>
@@ -754,29 +872,29 @@
               </radiogroup>
             </groupbox>
             <separator/>
-            <hbox>
+            <hbox align="center">
               <description>&EngineOn.label;</description>
               <checkbox id ="engine_on" preference="engine_onpref" checked="true"/>
             </hbox>
-            <hbox>
+            <hbox align="center">
               <description>&desc.Digits;</description>
               <spacer flex="1"/>
               <textbox type="number" id ="digitsUsed" preference="digitsUsedpref" style="width: 3em"/>
             </hbox>
             <groupbox>
               <caption label="&solve.label;"/>
-              <hbox>
+              <hbox align="center">
                 <description>&desc.Max;</description>
                 <spacer flex="1"/>
                 <textbox id ="degree" preference="degreepref" type="number" decimalplaces="0" min="0" increment="1" 
                   style="width: 3em" value="2"/>
               </hbox>
-              <hbox>
+              <hbox align="center">
                 <description>&desc.Principal;</description>
                 <spacer flex="1"/>
                 <checkbox id ="principal" preference="principalpref"/>
               </hbox>
-              <hbox>
+              <hbox align="center">
                 <description>&desc.Ignore;</description>
                 <spacer flex="1"/>
                 <checkbox id ="special" preference="specialpref"/>
@@ -784,22 +902,22 @@
             </groupbox>
             <groupbox>
               <caption label="&debug.label;"/>
-              <hbox>
+              <hbox align="center">
                 <description>&desc.MMLSent;</description>
               <spacer flex="1"/>
                 <checkbox id ="logSent" preference="logSentpref"/>
               </hbox>
-              <hbox>
+              <hbox align="center">
                 <description>&desc.MMLRec;</description>
               <spacer flex="1"/>
                 <checkbox id ="logReceived" preference="logReceivedpref"/>
               </hbox>
-              <hbox>
+              <hbox align="center">
                 <description>&desc.EngSent;</description>
               <spacer flex="1"/>
                 <checkbox id ="engSent" preference="engSentpref"/>
               </hbox>
-              <hbox>
+              <hbox align="center">
                 <description>&desc.EngRec;</description>
               <spacer flex="1"/>
                 <checkbox id ="engReceived" preference="engReceivedpref"/>
@@ -841,23 +959,23 @@
                 <column/>
               </columns>
               <rows>
-                <row>        
+                <row align="center">        
                   <label value="&axisxaxis.label;"/>
-                  <textbox style="width: 10em;" id="XAxisLabel" cols="20" preference="XAxisLabel"/>
+                  <textbox style="width: 10em;" id="XAxisLabelTB" cols="20" preference="XAxisLabel"/>
                 </row>
-                <row>
+                <row align="center">
                   <label value="&axisyaxis.label;"/>
-                  <textbox style="width: 10em;" id="YAxisLabel" cols="20" preference="YAxisLabel"/>
+                  <textbox style="width: 10em;" id="YAxisLabelTB" cols="20" preference="YAxisLabel"/>
                 </row>
-                <row>
+                <row align="center">
                   <label value="&axiszaxis.label;"/>
-                  <textbox style="width: 10em;" id="ZAxisLabel" cols="20" preference="ZAxisLabel"/>
+                  <textbox style="width: 10em;" id="ZAxisLabelTB" cols="20" preference="ZAxisLabel"/>
                 </row>
               </rows>
             </grid>
           </groupbox>
           <groupbox>
-            <hbox>
+            <hbox align="center">
               <description>&axistickmark.label;</description>
               <menulist id="XTickCount">
                 <menupopup preference="XTickCount"> 
@@ -869,13 +987,13 @@
               </menulist>
             </hbox>
             <!-- <checkbox id="disableticks" label="&axisdisable.label;"/> -->
-            <checkbox id="axestips"     label="&axistips.label;" preference="hasaxistips"/>
-            <checkbox id="gridlines"    label="&axisgridlines.label;" preference="hasgridlines"/>
+            <checkbox id="axestips"     label="&axistips.label;" preference="graph.AxisTips"/>
+            <checkbox id="gridlines"    label="&axisgridlines.label;" preference="graph.GridLines"/>
           </groupbox>
 
           <groupbox>
             <caption label="&axistype.label;" />
-            <radiogroup id="axistype" orient= "horizontal" preference="axistype">
+            <radiogroup id="axistype" orient= "horizontal" preference="graph.AxisType">
               <grid>
                 <columns>
                   <column/>
@@ -883,12 +1001,12 @@
                   <column/>
                 </columns>
                 <rows>
-                  <row>
+                  <row align="center">
                     <radio label="&unspecified.label;" value="unspecified" selected="true"/>
                     <radio label="&axisauto.label;"    value="Automatic"   selected="false"/>
                     <radio label="&axisnormal.label;"  value="Normal"      selected="false"/>
                   </row>
-                  <row>
+                  <row align="center">
                     <radio label="&axisboxed.label;"   value="Boxed"       selected="false"/>
                     <radio label="&axisframed.label;"  value="Frame"       selected="false"/>
                     <radio label="&axisnone.label;"    value="None"        selected="false"/>
@@ -910,24 +1028,24 @@
                 <column flex="0"/>
               </columns>
               <rows>
-                <row>
+                <row align="center">
                    <label value="&DefaultSizeNewPlotsWidth.label;"/> 
-                   <textbox type="number" preference="GraphHSize" decimalplaces="2" id="plotWidth" style="width: 5em;"/>
+                   <textbox type="number" preference="graph.HSize" decimalplaces="2" id="plotWidth" style="width: 5em;"/>
                 </row>
-                <row>
+                <row align="center">
                    <label value="&DefaultSizeNewPlotsHeight.label;"/>
-                   <textbox type="number" preference="GraphVSize" decimalplaces="2" id="plotHeight" style="width: 5em;"/>
+                   <textbox type="number" preference="graph.VSize" decimalplaces="2" id="plotHeight" style="width: 5em;"/>
                 </row>
               </rows>
             </grid>
             <vbox align="center">
               <label value="&units.label;"/>
-              <menulist id="plotUnitsList" preference="defaultGraphSizeUnits" value="pt" selectedIndex="2" oncommand="onChangeUnits(this);">
+              <menulist id="plotUnitsList" preference="graph.defaultUnits" value="pt" selectedIndex="2" oncommand="onChangeUnits(this);">
                 <menupopup id = "unitList">
                   <menuitem value="in" label="&unitsinches.label;"/>
                   <menuitem value="cm" label="&unitscm.label;"/>
-                  <menuitem value="pt" label="&unitspicas.label;"/>
-                  <menuitem value="mm" label="&unitspoints.label;"/>
+                  <menuitem value="mm" label="&unitsmm.label;"/>
+                  <menuitem value="pt" label="&unitspoints.label;"/>
                 </menupopup>
               </menulist>
             </vbox>
@@ -935,7 +1053,7 @@
         </groupbox>
         <groupbox>
           <caption label="&DefaultPlacementNewPlots.label;"/>
-          <radiogroup id="plotPlacementRadioGroup" preference="GraphPlacement">
+          <radiogroup id="plotPlacementRadioGroup" preference="graph.placement">
           <hbox flex="1">
             <vbox>
               <radio id="plotinline" value="inline" label="&DefaultPlacementNewPlotsInline.label;" radioGroup="plotPlacementRadioGroup"/>
@@ -946,15 +1064,21 @@
             <vbox>
               <radio id="plotfloat" value="float" label="&DefaultPlacementNewPlotsFloating.label;" radioGroup="plotPlacementRadioGroup"/>
               <vbox>
-                <checkbox id="plotPlaceForceHereCheck" label="&placeForceHereCheck.label;"/>
-                <checkbox id="plotPlaceHereCheck" label="&placeHereCheck.label;"/>
-                <checkbox id="plotPlaceFloatsCheck" label="&placeFloatsCheck.label;"/>
-                <checkbox id="plotPlaceTopCheck" label="&placeTopCheck.label;"/>
-                <checkbox id="plotPlaceBottomCheck" label="&placeBottomCheck.label;"/>
+                <checkbox id="plotPlaceForceHereCheck" label="&placeForceHereCheck.label;"
+                  preference="graph.floatLocation.forceHere"/>
+                <checkbox id="plotPlaceHereCheck" label="&placeHereCheck.label;"
+                  preference="graph.floatLocation.here"/>
+                <checkbox id="plotPlaceFloatsCheck" label="&placeFloatsCheck.label;"
+                  preference="graph.floatLocation.pageFloats"/>
+                <checkbox id="plotPlaceTopCheck" label="&placeTopCheck.label;"
+                  preference="graph.floatLocation.topPage"/>
+                <checkbox id="plotPlaceBottomCheck" label="&placeBottomCheck.label;"
+                  preference="graph.floatLocation.bottomPage"/>
               </vbox>
             </vbox>
             <vbox>
-              <radiogroup id="plotHerePlacementRadioGroup" align="vertical" value="full">
+              <radiogroup id="plotHerePlacementRadioGroup" align="vertical" value="full"
+                preference="graph.floatPlacement">
                 <radio id="plotHereLeftRadio" label="&hereLeftRadio.label;" radioGroup="plotHerePlacementRadioGroup" value="L" />
                 <radio id="plotHereRightRadio" label="&hereRightRadio.label;" radioGroup="plotHerePlacementRadioGroup" value="R" />
                 <radio id="plotHereInsideRadio" label="&hereInsideRadio.label;" radioGroup="plotHerePlacementRadioGroup" value="I" />
@@ -964,6 +1088,45 @@
             </vbox>
           </hbox>
           </radiogroup>
+        </groupbox>
+        <groupbox>
+          <caption label="Frame"/>
+          <grid>
+            <columns>
+              <column/>
+              <column/>
+              <column/>
+              <column/>
+            </columns>
+            <rows>
+              <row align="center">
+                <label value="Side Margin"/>
+                <textbox id="graphSideMargin" type="number" decimalplaces="2"
+                  preference="graph.HMargin" style="width: 5em;"/>
+                <label value="Top/Bottom Margin"/>
+                <textbox id="graphVMargin" type="number" decimalplaces="2"
+                  preference="graph.VMargin" style="width: 5em;"/>
+              </row>
+              <row align="center">
+                <label value="Padding"/>
+                <textbox id="graphPadding" type="number" decimalplaces="2"
+                  preference="graph.padding" style="width: 5em;"/>
+                <label value="Padding Color"/>
+                <msibutton id="graph.padding,colorbutton" class="color-button" oncommand="getColorAndUpdate('graph.padding.CW');">
+                  <spacer id="graph.padding.CW" class="color-well" preference="graph.BGColor"/>
+                </msibutton>
+              </row>
+              <row align="center">
+                <label value="Border Width"/>
+                <textbox id="graphBorder" type="number" decimalplaces="2" 
+                  preference="graph.border" style="width: 5em;"/>
+                <label value="Border Color"/>
+                <msibutton id="graph.border,colorbutton" class="color-button" oncommand="getColorAndUpdate('graph.border.CW');">
+                  <spacer id="graph.border.CW" class="color-well" preference="graph.borderColor"/>
+                </msibutton>
+              </row>
+            </rows>
+          </grid>
         </groupbox>
       </tabpanel>      
 
@@ -982,9 +1145,9 @@
       <tabpanel id="View defaults">
         <vbox>
           <separator/>
-          <hbox>
+          <hbox align="center">
             <label id="bgcolor" control="TextButton" value="&DefaultBGColor.label;" />
-            <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
+            <msibutton id="bgcolorbutton" class="color-button" oncommand="getColorAndUpdate('plotCW');">
                <spacer id="plotCW" class="color-well"/>
             </msibutton>
           </hbox>
@@ -996,17 +1159,17 @@
           </vbox>
           <groupbox>
             <caption>&InitialViewIntervals.label;</caption>        
-            <hbox>
+            <hbox align="center">
               <label value="&axisxrange.label;"/>
-              <textbox id="xrangelow" style="width: 5em;" cols="6" preference="plot.XMin"/>
+               <editor editortype="html" type="content" context="msiEditorContentContext" id="xrangelow" style="width: 5em;" preference="plot.XMin"/>
               <textbox id="xrangehigh" style="width: 5em;" cols="6" preference="plot.XMax"/>
             </hbox>
-            <hbox>
+            <hbox align="center">
               <label value="&axisyrange.label;"/>
               <textbox id="yrangelow" style="width: 5em;" cols="6" preference="plot.YMin"/>
               <textbox id="yrangehigh" style="width: 5em;" cols="6" preference="plot.YMax"/>
             </hbox>
-            <hbox>
+            <hbox align="center">
               <label value="&axiszrange.label;"/>
               <textbox id="zrangelow" style="width: 5em;" cols="6" preference="plot.ZMin"/>
               <textbox id="zrangehigh" style="width: 5em;" cols="6" preference="plot.ZMax"/>
@@ -1069,19 +1232,19 @@
               <groupbox>
                 <caption label="&bibTexOptions.label;" />
                 <label value="&bibTeXExecutable.label;" accesskey="&bibTeXExecutable.accesskey;" control="bibTeXExecutableTextbox"/>
-                <hbox>
+                <hbox align="center">
                   <textbox id="bibTeXExecutableTextbox" style="width: 18em" />
   			          <msibutton id="browseBibTeXExecutable" label="&browseBibTeXExecutable.label;" accesskey="&browseBibTeXExecutable.accesskey;" oncommand="onBrowseBibTeXExecutable();"/>
                 </hbox>
                 <spacer class="spacer" flex="0"/>
                 <label value="&bibTeXDatabaseDir.label;" accesskey="&bibTeXDatabaseDir.accesskey;" control="bibTeXDatabaseDirTextbox"/>
-                <hbox>
+                <hbox align="center">
                   <textbox id="bibTeXDatabaseDirTextbox" style="width: 18em" />
   			          <msibutton id="browseBibTeXDatabaseDir" label="&browseBibTeXDatabaseDir.label;" accesskey="&browseBibTeXDatabaseDir.accesskey;" oncommand="onBrowseBibTeXDatabaseDir();"/>
                 </hbox>
                 <spacer class="spacer" flex="0"/>
                 <label value="&bibTeXStyleDir.label;" accesskey="&bibTeXStyleDir.accesskey;" control="bibTeXStyleDirTextbox"/>
-                <hbox>
+                <hbox align="center">
                   <textbox id="bibTeXStyleDirTextbox" style="width: 18em" />
   			          <msibutton id="browseBibTeXStyleDir" label="&browseBibTeXStyleDir.label;" accesskey="&browseBibTeXStyleDir.accesskey;" oncommand="onBrowseBibTeXStyleDir();"/>
                 </hbox>
