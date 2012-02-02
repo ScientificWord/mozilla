@@ -44,6 +44,14 @@ sidebar {
   -moz-binding: url('chrome://prince/content/bindings/sidebar.xml#sidebar');
 }
 
+#sidebar1 {
+  padding-left: 7px;
+}
+
+#sidebar2 {
+  padding-right: 7px;
+}
+
 sidebarcontent {
   -moz-box-orient: vertical;
   background-color: rgb(243,243,243);
