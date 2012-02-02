@@ -5,6 +5,7 @@ Components.utils.import("resource://app/modules/os.jsm");
 // an array of DOM <graph> elements currently being reformatted
 var currentDOMGs = new Array();
 
+// ************ Graph section ******
 function Graph () {
   // these arrays enumerate the data for a graph. PLOTELEMENTS are in mathml
   // When adding to this list, you must also add to the MathServiceRequest in the compute engine
@@ -436,6 +437,8 @@ function scheduleNewPlotFromText(domgraph, expression, editorElement)
   },200);
 }
 
+// ************ Plot section; a graph can have many plots ******
+
 function Plot () {
   this.element = {};
   this.attributes = {};
@@ -716,6 +719,8 @@ Plot.prototype.setPlotAttribute           = function (name, value)
 Plot.prototype.computeQuery               = function () {
   this.parent.computeQuery(this);
 };
+
+// ************ Frame section; a graph has a single frame ******
 
 function init(graphObj)
 {
