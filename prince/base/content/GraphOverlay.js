@@ -287,12 +287,13 @@ Graph.prototype.reviseGraphDOMElement  = function (DOMgraph, editorElement)
 Graph.prototype.extractGraphAttributes = function (DOMGraph) {
   var msins="http://www.sciword.com/namespaces/sciword";
   var DOMGs = DOMGraph.getElementsByTagName("graphSpec");
+  var key;
+  var value;
   if (DOMGs.length > 0) {
     DOMGs = DOMGs[0];
     for (i=0; i<DOMGs.attributes.length; i++) {
-      var key = DOMGs.attributes[i].nodeName;
-      var value = DOMGs.attributes[i].nodeValue;
-//      dump("Adding key[" + key + "], value[" + value + "] to graph object.\n");  //rwa
+      key = DOMGs.attributes[i].nodeName;
+      value = DOMGs.attributes[i].nodeValue;
       this[key] = value;
     }
     var DOMPlots = DOMGraph.getElementsByTagName("plot");
@@ -922,7 +923,7 @@ function insertGraph (siblingElement, graph, editorElement) {
     var url = msiURIFromString(urlstring);
     var documentfile = msiFileFromFileURL(url);
     var plotfile = documentfile.clone();
-    var plotfile = documentfile.parent;
+    var plotfile = plotfile.parent;
     plotfile.append("plots");
     if (!plotfile.exists()) plotfile.create(1, 0755);
     plotfile.append(leaf);
@@ -954,7 +955,7 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate, editorEleme
 
   var width = GetStringPref("swp.graph.HSize");
   var height = GetStringPref("swp.graph.VSize");
-  var unit = GetStringPref("swp.graph.SizeUnits");
+  var unit = GetStringPref("swp.graph.defaultUnits");
 
   graph.setGraphAttribute("Width", width);
   graph.setGraphAttribute("Height", height);

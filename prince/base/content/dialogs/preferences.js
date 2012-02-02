@@ -95,11 +95,9 @@ function onShellSelect()
   pref.value = relpath;
 }
 
-
 function onCancel () {
   return true;
 }
-
 
 function onAccept(){
   try {
@@ -115,7 +113,6 @@ function onAccept(){
   catch(e) {
     myDump(e.toString());
   }
-
 }
 
 function writeComputePreferences()
@@ -144,6 +141,7 @@ function writeComputePreferences()
 function setGraphicLayoutPreferences(whichPrefs)
 {
   var pref;
+  var color;
   switch(whichPrefs)
   {
     case "graphics":
@@ -151,23 +149,54 @@ function setGraphicLayoutPreferences(whichPrefs)
       pref = document.getElementById("defaultGraphicsSizeUnits");
       initUnitsControl( document.getElementById("graphicsUnitsList"), pref,
                           [document.getElementById("graphicsWidth"), document.getElementById("graphicsHeight")] );
-//      pref = document.getElementById("defaultGraphicsHSize");
-//      document.getElementById("graphicsWidth").value = (pref.value && pref.value.length) ? pref.value : "0";
-//      pref = document.getElementById("defaultGraphicsVSize");
-//      document.getElementById("graphicsHeight").value = (pref.value && pref.value.length) ? pref.value : "0";
+      initColorWell("graphics.padding.CW");
+      initColorWell("graphics.border.CW");
     break;
     case "plot":
-      setGraphicPlacementPreferences(placementIdsPlot);
-      pref = document.getElementById("defaultGraphSizeUnits");
+//      setGraphicPlacementPreferences(placementIdsPlot);
+      pref = document.getElementById("graph.defaultUnits");
       initUnitsControl( document.getElementById("plotUnitsList"), pref,
                           [document.getElementById("plotWidth"), document.getElementById("plotHeight")]);
-//      pref = document.getElementById("GraphHSize");
-//      document.getElementById("plotWidth").value = (pref.value && pref.value.length) ? pref.value : "0";
-//      pref = document.getElementById("GraphVSize");
-//      document.getElementById("plotHeight").value = (pref.value && pref.value.length) ? pref.value : "0";
+      initColorWell("graph.padding.CW");
+      initColorWell("graph.border.CW");
+      initColorWell("plotCW");
     break;
   }
 }
+
+function initColorWell(id)
+{
+  try
+  {
+    var colorwell = document.getElementById(id);
+    var pref = document.getElementById(colorwell.getAttribute("preference"));
+    if (!pref) return;
+    var color = pref.valueFromPreferences;
+    setColorWell(id, color);
+    colorwell.setAttribute("color",color);
+  }
+  catch(e)
+  {
+    var m = e.message;
+  }
+}
+
+function writeColorWell(id)
+{
+  try
+  {
+    var colorwell = document.getElementById(id);
+    var pref = document.getElementById(colorwell.getAttribute("preference"));
+    if (!pref) return;
+    pref.valueFromPreferences = colorwell.getAttribute("color");
+  }
+  catch(e)
+  {
+    var m = e.message;
+  }
+  
+}
+
 
 function writeGraphicLayoutPreferences(whichPrefs)
 {
@@ -195,6 +224,9 @@ function writeGraphicLayoutPreferences(whichPrefs)
       pref.value = document.getElementById("plotHeight").value;
 //      pref = document.getElementById("defaultGraphSizeUnits");
 //      pref.value = document.getElementById("plotUnitsList").value;
+      writeColorWell("graph.padding.CW");
+      writeColorWell("graph.border.CW");
+      writeColorWell("plotCW");
     break;
   }
 }
@@ -484,3 +516,21 @@ function onChangeUnits(unitBox)
     unitBox.unitsHandler.setCurrentUnit(unitBox.value);
 }
 
+
+
+function getColorAndUpdate(id)
+{
+  var colorWell = document.getElementById(id);
+  if (!colorWell) return;
+  var color;
+
+  var colorObj = { NoDefault: false, Type: "Rule", TextColor: color, PageColor: 0, Cancel: false };
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
+  if (colorObj.Cancel)
+    return;
+  color = colorObj.TextColor;
+  setColorWell(id,color);
+  colorWell.setAttribute("color",color);
+  // next line for immediate writing only 
+  writeColorWell(id);
+}
