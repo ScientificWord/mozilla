@@ -485,7 +485,7 @@ char* WideToASCII(const U16 * w_markup)
   U32 zln = 0;
 
   const U16 *p = w_markup;
-  while (*p) {
+  while (p && *p) {
     char ascii[16];
 
     U16 wchar = *p;
