@@ -4673,6 +4673,18 @@ interrupt:
                     /* Push the frame and set interpreter registers. */
                     cx->fp = fp = &newifp->frame;
                     pc = script->code;
+
+                    /* Call the debugger hook if present. */
+                    hook = cx->debugHooks->callHook;
+                    if (hook) {
+                        newifp->frame.pc = NULL;
+                        newifp->hookData = hook(cx, &newifp->frame, JS_TRUE, 0,
+                                                cx->debugHooks->callHookData);
+                        LOAD_INTERRUPT_HANDLER(cx);
+                    } else {
+                        newifp->hookData = NULL;
+                    }
+                    
                     inlineCallCount++;
                     JS_RUNTIME_METER(rt, inlineCalls);
 
