@@ -1,5 +1,6 @@
 \makeatletter
 
+
 \newcounter{MaxMatrixCols}
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
@@ -81,14 +82,15 @@
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
-\msi@everyrowstart{\msitag{<tr>}\msihmode}
+\msi@everyrowstart{\msitag{<tr>}}
 \msi@everyrowend{\msitag{</tr>}}
 %\msi@everycellstart{\msihmode\msiopentag{td}{<td>}}
 
 \msi@everycellstart{\msiclosetag{td}{</td>}\chkmulticol}
 \def\chkmulticol{%
-  \futurelet\@temp
-  \expandafter\@chkmulticol{\the\@temp}}
+  \futurelet\@temp\@@chkmulticol}
+
+\def\@@chkmulticol{\expandafter\@chkmulticol\expandafter{\the\@temp}}
 
 
 \def\@chkmulticol#1{%
@@ -98,7 +100,7 @@
     \msiopentag{td}{<td>}%
     \ifmmode
     \else
-        \msiopentag{bodyText}{<bodyText>}%
+        \msihmode\msiopentag{bodyText}{<bodyText>}%
     \fi
     \let\@next#1\relax
   \fi
@@ -297,17 +299,18 @@
       \msiclosetag{option}{</option>}%
    \msiclosetag{date}{</date>}}
 
-
-
-
 \def\MSIEmptyElement{%
   \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
-
 
 \def\msi@empty@elmA[#1]#2{%
      \expandafter\def\csname #2\endcsname{%
         \ifmmode
-           \msitag{\msipassthru{<#1#1{\msi@empty@elmA[#1]{#1}}
+           \msitag{\msipassthru{<#1/>}}%
+        \else
+           \msihmode\br\msitag{<#1/>}%
+        \fi}}
+
+\def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
    
 
 \def\MSISimpleEnvironment{%
@@ -1135,7 +1138,13 @@
 
 \def\k#1{\@accent{#1}{k}}
 
+\def\d#1{\@accent{#1}{d}}
 
+\def\b#1{\@accent{#1}{b}}
+
+
+
+\def\t#1{oo}
 
 %% \'{\^{e}}
 
