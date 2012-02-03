@@ -18,6 +18,7 @@ function Graph () {
   for (var i = 0; i < this.GRAPHATTRIBUTES.length; i++) {
     this[this.GRAPHATTRIBUTES[i]] = this.getDefaultValue(this.GRAPHATTRIBUTES[i]);
   }
+  this.frame = new Frame(this);
 }
 
 Graph.prototype.GRAPHATTRIBUTES  = ["ImageFile",   "XAxisLabel",     "YAxisLabel",   "ZAxisLabel", "Width",
@@ -105,23 +106,13 @@ Graph.prototype.createGraphDOMElement  = function (forComp, optplot) {
   var htmlns="http://www.w3.org/1999/xhtml";
   var DOMGraph = document.createElementNS(htmlns, "graph");
   var DOMGs     = document.createElementNS(htmlns, "graphSpec");
-  var DOMPw     = document.createElementNS(htmlns, "plotwrapper");
+  var editorElement = msiGetActiveEditorElement();
   init(DOMGraph);
 
   // set attributes that selection works. I think only one of these is necessary.
   
-  DOMPw.setAttribute("msi_resize","true");
   var attributes;
   var att;
-  if (this["plotwrapper"])
-  { 
-    attributes = this["plotwrapper"].getAttributes();
-    for (var j=0; j < attributes.length; j++)
-    {
-      att = attributes[j];
-      DOMPw.setAttribute(att.name, att.value);
-    }
-  }
 
   // loop through graph attributes and insert them
   var alist;
@@ -142,19 +133,6 @@ Graph.prototype.createGraphDOMElement  = function (forComp, optplot) {
       }
     }
   }
-  // Some plotwrapper attributes get promoted to the GraphSpec
-  var value;
-  var plotwrapper = this["plotwrapper"];
-  if (plotwrapper)
-  {
-    if (value = plotwrapper.getAttribute("height"))                                                     
-      DOMGs.setAttribute("Height") = value;
-    if (value = plotwrapper.getAttribute("width"))                                                     
-      DOMGs.setAttribute("Width") = value;
-    if (value = plotwrapper.getAttribute("units"))                                                     
-      DOMGs.setAttribute("Units") = value;
-  }
-  
   // if the optional plot number was specified, just include one plot
   // otherwise, for each plot, create a <plot> element
   if (optplot) {
@@ -177,32 +155,7 @@ Graph.prototype.createGraphDOMElement  = function (forComp, optplot) {
     }
   }
   DOMGraph.appendChild(DOMGs);
-  var img;
-  // put the image file in
-  var filetype = this.getDefaultValue ("DefaultFileType");
-  dump("SMR file type is " + filetype + "\n");
-  if (filetype == "xvz") {
-    img    = document.createElementNS(htmlns,"object");
-    img.setAttribute("type","application/x-mupad-graphics+gzip"); 
-    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-	} else if (filetype == "xvc") {
-    img    = document.createElementNS(htmlns,"object");
-    img.setAttribute("type","application/x-mupad-graphics+xml"); 
-    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
-	} else {
-	  img    = document.createElementNS(htmlns,"img");
-	  img.setAttribute("src", this.getGraphAttribute("ImageFile"));
-	}    
-  var unitHandler = new UnitHandler();
-  unitHandler.initCurrentUnit(this["Units"]);
-  var w = unitHandler.getValueStringAs(this["Width"],"px");
-  var h = unitHandler.getValueStringAs(this["Height"],"px");
-	img.setAttribute("alt", "Generated Plot");
-	img.setAttribute("msigraph","true");
-	img.setAttribute("width",w);
-	img.setAttribute("height",h);
-
-  DOMPw.appendChild(img);
+  var DOMPw = this.frame.createWrapperDOMElement(editorElement);
 	DOMGraph.appendChild(DOMPw);
   return(DOMGraph);
 };
@@ -276,13 +229,6 @@ Graph.prototype.reviseGraphDOMElement  = function (DOMgraph, editorElement)
   var img;
   img = DOMgraph.getElementsByTagName("object")[0];
   img.load(this.getGraphAttribute("ImageFile"));
-//  var unitHandler = new UnitHandler();
-//  unitHandler.initCurrentUnit(this["Units"]);
-//  var w = unitHandler.getValueStringAs(this["Width"],"px");
-//  var h = unitHandler.getValueStringAs(this["Height"],"px");
-//	img.setAttribute("width",w);
-//	img.setAttribute("height",h);
-//  doVCamPreInitialize(img,DOMgraph);
    return(DOMgraph);
 };
 Graph.prototype.extractGraphAttributes = function (DOMGraph) {
@@ -436,6 +382,22 @@ function scheduleNewPlotFromText(domgraph, expression, editorElement)
     clearInterval(intervalId);
   },200);
 }
+function init(graphObj)
+{
+
+  var graphController = {
+    supportsCommand : function(cmd){ return (cmd == "cmd_paste"); },
+    isCommandEnabled : function(cmd){
+      if (cmd == "cmd_paste") return true;
+      return false;
+    },
+    doCommand : function(cmd){
+      graphObj.addClipboardContents(graphObj.selectedIndex);
+    },
+    onEvent : function(evt){ }
+  };
+}
+
 
 // ************ Plot section; a graph can have many plots ******
 
@@ -721,22 +683,267 @@ Plot.prototype.computeQuery               = function () {
 };
 
 // ************ Frame section; a graph has a single frame ******
+function Frame (parent) {
+  this.attributes = {};
+  this.modFlag = {};
+  this.parent = parent;
+  var attr;
+  for (var i = 0; i < this.FRAMEATTRIBUTES.length; i++) {
+    attr = this.FRAMEATTRIBUTES[i];
+    this.attributes[attr] = this.getDefaultFrameValue(attr);
+    this.modFlag[attr]  = false;
+  }
+}   
 
-function init(graphObj)
+Frame.prototype.FRAMEATTRIBUTES   = ["placement",        "floatPlacement",    "border",
+        "HMargin",     "VMargin",     "padding",           "BGColor",           "borderColor",
+        "floatLocation.forceHere",   "floatLocation.here" ,"floatLocation.pageFloats",
+        "floatLocation.topPage",     "floatLocation.bottomPage"];
+                        
+Frame.prototype.isModified                 = function (x) { return (this.modFlag[x]);};
+Frame.prototype.setModified                = function (x) { this.modFlag[x] = true;};
+Frame.prototype.getDefaultFrameValue       = function(key)
 {
-
-  var graphController = {
-    supportsCommand : function(cmd){ return (cmd == "cmd_paste"); },
-    isCommandEnabled : function(cmd){
-      if (cmd == "cmd_paste") return true;
-      return false;
-    },
-    doCommand : function(cmd){
-      graphObj.addClipboardContents(graphObj.selectedIndex);
-    },
-    onEvent : function(evt){ }
-  };
+  try
+  {
+    var value;
+    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+    var keyname = "swp.graph." + key;
+    if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
+      value = prefs.getCharPref(keyname);
+    }
+    return value;
+  }
+  catch(e)
+  {
+    m = e.message;
+    return ""
+  }  
 }
+Frame.prototype.frameAttributeList         = function () { return (this.FRAMEATTRIBUTES); };
+Frame.prototype.getFrameAttribute           = function (name) { return (this[name]);};
+Frame.prototype.setFrameAttribute           = function (name, value) 
+{ this[name] = value;
+  this.setModified(name);
+};
+Frame.prototype.createWrapperDOMElement     = function (editorElement) {
+  var htmlns="http://www.w3.org/1999/xhtml";
+  var editor = msiGetEditor(editorElement);
+  var DOMPw     = document.createElementNS(htmlns, "plotwrapper");
+  var DOMObj    = document.createElementNS(htmlns, "object");
+  var floatLocation = "";
+  attributes = this.frameAttributeList();
+  for (var j=0; j < attributes.length; j++)
+  {
+    att = attributes[j];
+    switch(att)
+    {
+      case "HMargin"  : editor.setAttribute(DOMPw,"sidemargin", this.getFrameAttribute("HMargin")); break;
+      case "VMargin"  : editor.setAttribute(DOMPw, "topmargin", this.getFrameAttribute("VMargin")); break;
+      case "border"   : editor.setAttribute(DOMObj, "borderw", this.getFrameAttribute("border")); break;
+      case "padding"  : editor.setAttribute(DOMObj, "padding", this.getFrameAttribute("padding")); break;
+      case "BGColor"  : editor.setAttribute(DOMObj, "background-color", 
+                          this.getFrameAttribute("BGColor")); break;
+      case "borderColor": editor.setAttribute(DOMObj, "border-color",
+                          this.getFrameAttribute("borderColor")); break;
+      case "placement"  : editor.setAttribute(DOMPw, "pos", this.getFrameAttribute("placement")); break;
+      case "floatLocation.forceHere": floatLocation += "H"; break;
+      case "floatLocation.here":      floatLocation += "h"; break;
+      case "floatLocation.pageFloats":floatLocation += "p"; break;
+      case "floatLocation.topPage":   floatLocation += "t"; break;
+      case "floatLocation.bottomPage":floatLocation += "b"; break;
+      case "floatPlacement" : if (this.getFrameAttribute("placement") == "float")
+                          editor.setAttribute(DOMPw, "placement", this.getFrameAttribute("floatPlacement"));
+      default : break;
+    }
+  }
+  if (this.getFrameAttribute("placement") == "float")
+  {
+    editor.setAttribute(DOMPw, "placeLocation", floatLocation);
+  }
+  editor.setAttribute(DOMPw, "msi_resize","true");
+  
+    // Some plotwrapper attributes come from the GraphSpec
+  var height;
+  var width;
+  var units;
+  var graph = this.parent;
+  if (graph)
+  {
+    height = graph.getGraphAttribute("Height");                                                     
+    width = graph.getGraphAttribute("Width");                                                     
+    units = graph.getGraphAttribute("Units");                                                     
+  }
+  // what about overhang?
+  
+  // Now we build the CSS style for the object and the plotwrapper
+  var pwStyle = "";
+  var objStyle = "";
+  var lmargin = this.getFrameAttribute("HMargin");
+  var rmargin = lmargin;
+  var vmargin = this.getFrameAttribute("VMargin");
+  if ((this.getFrameAttribute("placement") === "display") ||
+      (this.getFrameAttribute("placement") === "float") && 
+        (this.getFrameAttribute("floatPlacement") === "full"))
+  {
+    pwStyle += "margin: "+vmargin+units+" 0; ";
+  }
+  else
+  {
+    if (this.getFrameAttribute("placement") == "float")
+    {
+      switch (this.getFrameAttribute("floatPlacement"))
+      {
+        case "L":
+        case "I": lmargin = "0"; break;
+        case "R":
+        case "O": rmargin = "0"; break;
+      }
+    }
+    pwStyle += "margin: "+vmargin+units+" "+rmargin+units+" "+vmargin+units+" "+lmargin+units+"; "
+  }
+  var floatParam = this.getFrameAttribute("floatPlacement");
+  if (floatParam === "I" || floatParam === "L") floatParam ="left";
+  else if (floatParam === "O" || floatParam ==="R") floatParam = "right";
+  else floatParam = "none";
+  pwStyle += "float: "+floatParam+"; ";
+  var border = this.getFrameAttribute("border");
+  if (Number(border) > 0)
+  {
+    objStyle += "border: "+border+units+" solid "+this.getFrameAttribute("borderColor");
+  }
+  if (this.getFrameAttribute("placement") !== "inline")
+  {
+    pwStyle += "display: block;"
+  }
+  // put the image file in
+  var filetype = graph.getDefaultValue ("DefaultFileType");
+  dump("SMR file type is " + filetype + "\n");
+  if (filetype == "xvz") {
+    DOMObj.setAttribute("type","application/x-mupad-graphics+gzip"); 
+    DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
+	} else if (filetype == "xvc") {
+    DOMObj.setAttribute("type","application/x-mupad-graphics+xml"); 
+    DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
+	}    
+  var unitHandler = new UnitHandler();
+  unitHandler.initCurrentUnit(units);
+  var w = unitHandler.getValueStringAs(graph["Width"],"px");
+  var h = unitHandler.getValueStringAs(graph["Height"],"px");
+	DOMObj.setAttribute("alt", "Generated Plot");
+	DOMObj.setAttribute("msigraph","true");
+	objStyle += "width: "+ w + "; ";
+	objStyle += "height: "+ h + "; ";
+  editor.setAttribute(DOMPw, "style", pwStyle);
+  editor.setAttribute(DOMObj, "style", objStyle);
+
+  DOMPw.appendChild(DOMObj);
+  return(DOMPw);
+};
+
+Graph.prototype.reviseGraphDOMElement  = function (DOMgraph, editorElement) 
+{
+  // like createGraphDOMElement, but doesn't delete or create a new VCam plugin instance
+  var editor = msiGetEditor(editorElement);
+  var DOMGs     = DOMgraph.getElementsByTagName("graphSpec")[0];
+  var DOMPw     = DOMgraph.getElementsByTagName("plotwrapper")[0];
+  DOMPw.setAttribute("msi_resize","true");
+  var attributes;
+  var att;
+  if (this["plotwrapper"])
+  { 
+    attributes = this["plotwrapper"].getAttributes();
+    for (var j=0; j < attributes.length; j++)
+    {
+      att = attributes[j];
+      DOMPw.setAttribute(att.name, att.value);
+    }
+  }
+
+  // loop through graph attributes and insert them
+  var alist;
+
+  alist = this.graphAttributeList();
+  for (var i=0; i<alist.length; i++) {
+    var attr = alist[i];
+    var value = this.getGraphAttribute(attr);
+    var defaultValue = this.getDefaultValue (attr);
+    if ((value == "") || (value == null)) {
+       value = defaultValue;
+    }
+    if (value != defaultValue) {
+      if ((value != "") && (value != "unspecified")) {
+        DOMGs.setAttribute (attr, value);
+      }
+    }
+  }
+  // Some plotwrapper attributes get promoted to the GraphSpec
+  var value;
+  var plotwrapper = this["plotwrapper"];
+  if (plotwrapper)
+  {
+    if (value = plotwrapper.getAttribute("height"))                                                     
+      DOMGs.setAttribute("Height") = value;
+    if (value = plotwrapper.getAttribute("width"))                                                     
+      DOMGs.setAttribute("Width") = value;
+    if (value = plotwrapper.getAttribute("units"))                                                     
+      DOMGs.setAttribute("Units") = value;
+  }
+  
+  // if the optional plot number was specified, just include one plot
+  // otherwise, for each plot, create a <plot> element
+  // Clear out current plots first
+  var i;
+  var domPlots = DOMgraph.getElementsByTagName("plot");
+  for (i=domPlots.length -1; i >= 0; i--) {
+    editor.deleteNode(domPlots[i]);
+  }
+  var plot;
+  for (i=0; i<this.plots.length; i++) {
+    plot = this.plots[i];
+    var status = this.plots[i].attributes.PlotStatus;
+    if (status == "ERROR") {
+      this.errStr = "ERROR, Plot number " + i + " " + this.errStr;
+    } else if (status != "Deleted") {
+        DOMGs.appendChild(plot.createPlotDOMElement(document, false, plot));
+    }
+  }
+  var img;
+  img = DOMgraph.getElementsByTagName("object")[0];
+  img.load(this.getGraphAttribute("ImageFile"));
+//  var unitHandler = new UnitHandler();
+//  unitHandler.initCurrentUnit(this["Units"]);
+//  var w = unitHandler.getValueStringAs(this["Width"],"px");
+//  var h = unitHandler.getValueStringAs(this["Height"],"px");
+//	img.setAttribute("width",w);
+//	img.setAttribute("height",h);
+
+//  doVCamPreInitialize(img,DOMgraph);
+   return(DOMgraph);
+};
+Graph.prototype.extractGraphAttributes = function (DOMGraph) {
+  var msins="http://www.sciword.com/namespaces/sciword";
+  var DOMGs = DOMGraph.getElementsByTagName("graphSpec");
+  var key;
+  var value;
+  if (DOMGs.length > 0) {
+    DOMGs = DOMGs[0];
+    for (i=0; i<DOMGs.attributes.length; i++) {
+      key = DOMGs.attributes[i].nodeName;
+      value = DOMGs.attributes[i].nodeValue;
+      this[key] = value;
+    }
+    var DOMPlots = DOMGraph.getElementsByTagName("plot");
+    for (var i = 0; i<DOMPlots.length; i++) {
+      var plot = new Plot();
+      var plotno = this.addPlot(plot);
+      plot.readPlotAttributesFromDOM(DOMPlots[i]);
+      plot.attributes.PlotStatus = "Inited";
+    }
+  }
+};
+
+
 
 function newPlotFromText(currentNode, expression, editorElement) {
   try {
