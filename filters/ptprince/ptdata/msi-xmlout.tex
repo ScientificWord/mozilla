@@ -86,17 +86,21 @@
 %\msi@everycellstart{\msihmode\msiopentag{td}{<td>}}
 
 \msi@everycellstart{\msiclosetag{td}{</td>}\chkmulticol}
+\def\chkmulticol{%
+  \futurelet\@temp
+  \expandafter\@chkmulticol{\the\@temp}}
 
-\def\chkmulticol#1{%
+
+\def\@chkmulticol#1{%
   \ifx#1\multicolumn
-    \let\@next#1
+    \let\@next#1\relax
   \else
-    \let\@next#1
     \msiopentag{td}{<td>}%
     \ifmmode
     \else
         \msiopentag{bodyText}{<bodyText>}%
     \fi
+    \let\@next#1\relax
   \fi
   \@next}
 
@@ -303,12 +307,7 @@
 \def\msi@empty@elmA[#1]#2{%
      \expandafter\def\csname #2\endcsname{%
         \ifmmode
-           \msitag{\msipassthru{<#1/>}}%
-        \else
-           \msihmode\br\msitag{<#1/>}%
-        \fi}}
-
-\def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
+           \msitag{\msipassthru{<#1#1{\msi@empty@elmA[#1]{#1}}
    
 
 \def\MSISimpleEnvironment{%
@@ -1656,6 +1655,12 @@
      \ifx\atok\@brackettok
        \let\@donext\@inbracket
      \else
+       \ifx\atok\ \ifx\atok\@bracetok
+     \let\@donext\@inbrace
+   \else
+     \ifx\atok\@brackettok
+       \let\@donext\@inbracket
+     \else
        \ifx\atok\@startok
          \let\@donext\@astar
        \else
@@ -1696,46 +1701,6 @@
     \msiclosetag{texb}{</texb>}}
 
 
-%-------
-% Experiment
-%% 
-%% \def\msi@begin@tabular{%
-%%    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
-%% }
-%% 
-%% \newif\ifmathtabular
-%% \mathtabulartrue
-%% 
-%% \def\msi@begin@tabularA[#1]#2{%
-%%    \begingroup
-%%       \ifmmode
-%%         \string\msipassthru\char`\{%
-%%         \mathtabulartrue
-%%         \msihmode
-%%         \catcode`\&=4%
-%%       \else
-%%         \mathtabularfalse
-%%       \fi   
-%%       \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
-%%       \msiopentag{tbody}{<tbody>}%
-%%       \begingroup
-%%         \aftergroup\msi@closetabular
-%%         \let\\=\@cr
-%%         \halign\bgroup&##\cr}%
-%% }
-%% 
-%% 
-%% \def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
-%% 
-%% \def\msi@end@tabular{%  
-%%         \crcr
-%%         \egroup % the \halign
-%%      \endgroup % to do the closetabular
-%%      \ifmathtabular\char`\}\fi
-%%   \endgroup}
-%% 
-
-%------------
 
 % A hack to fool the jbm filter into handling \dots gracefully
 \def\dots{\msitag{\U{2026}}}
