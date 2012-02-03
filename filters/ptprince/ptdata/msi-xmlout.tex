@@ -85,17 +85,28 @@
 \msi@everyrowend{\msitag{</tr>}}
 %\msi@everycellstart{\msihmode\msiopentag{td}{<td>}}
 
-\msi@everycellstart{\msiclosetag{td}{</td>}\msihmode\chkmulticol}
+\msi@everycellstart{\msiclosetag{td}{</td>}\chkmulticol}
+
 \def\chkmulticol#1{%
   \ifx#1\multicolumn
     \let\@next#1
   \else
     \let\@next#1
     \msiopentag{td}{<td>}%
+    \ifmmode
+    \else
+        \msiopentag{bodyText}{<bodyText>}%
+    \fi
   \fi
   \@next}
 
-\msi@everycellend{\msiclosetag{td}{</td>}}
+\msi@everycellend{%
+   \ifmmode
+   \else
+      \msitag{<br type="_moz"/>}%
+      \msiclosetag{bodyText}{</bodyText>}%
+   \fi
+   \msiclosetag{td}{</td>}}
 
 \def\msi@stylesheets{\msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br}
 
@@ -902,7 +913,8 @@
         \catcode`\&=4%
       \else
         \mathtabularfalse
-      \fi   
+      \fi
+      \msihmode   
       \msiopentag{table}{<table cellspacing="2" cellpadding="2" border="1">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
@@ -930,7 +942,8 @@
         \catcode`\&=4%
       \else
         \mathtabularfalse
-      \fi   
+      \fi
+      \msihmode   
       \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
@@ -939,7 +952,10 @@
         \halign\bgroup&##\cr}
 
 
-\def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
+\def\msi@closetabular{%
+  \msiclosetag{tbody}{</tbody>}%
+  \msiclosetag{table}{</table>}%
+  \msitag{<br type="_moz"/>}}
 
 \def\msi@end@tabular{% 
         \crcr
