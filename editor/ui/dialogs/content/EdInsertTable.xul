@@ -45,6 +45,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdInsertTable.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
@@ -143,11 +144,11 @@
       </vbox>
       <vbox>
         <groupbox><caption label="&size.label;"/>
+          <hbox>
           <grid>
             <columns>
               <column flex="1"/>
               <column flex="1"/>
-              <column flex="6"/>
             </columns>
             <rows>
               <row align="center">
@@ -164,17 +165,16 @@
                 <textbox value="4" class="narrow" id="columnsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
                 <spacer/>
               </row>
-              <row align="center">
-                <label control="widthInput" class="align-right"
-                       value="&widthEditField.label;"
-                       accesskey="&widthEditField.accesskey;"/>
-                <textbox value="100" class="narrow" id="widthInput" oninput="forceInteger(this.id); MakePersistsValue(this)" persist="value"/>
-                <menulist value="pc" id="widthPixelOrPercentMenulist" flex="1" persist="value"/>
-                  <!-- child elements are appended by JS -->
-              </row>
             </rows>
           </grid>
-          <spacer class="spacer"/>
+          <groupbox><caption label="&widthEditField.label;"/>
+            <checkbox id="autoWidthCheckbox" label="&autoWidth.label;" accesskey="&autoWidth.accesskey;" checked="true" persist="checked" oncommand="checkEnableWidthControls();"/>
+            <textbox value="100" class="narrow" id="widthInput" oninput="forceInteger(this.id); MakePersistsValue(this)" persist="value"/>
+            <menulist value="pc" id="widthPixelOrPercentMenulist" flex="1" persist="value"/>
+                  <!-- child elements are appended by JS -->
+          </groupbox>
+        </hbox>
+        <spacer class="spacer"/>
         </groupbox>
         <spacer class="spacer"/>
         <hbox align="center">

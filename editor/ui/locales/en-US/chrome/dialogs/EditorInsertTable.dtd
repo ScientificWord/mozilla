@@ -30,6 +30,8 @@
 <!ENTITY numColumnsEditField.accesskey "C">
 <!ENTITY widthEditField.label "Width:">
 <!ENTITY widthEditField.accesskey "W">
+<!ENTITY autoWidth.label "Automatic">
+<!ENTITY autoWidth.accesskey "A">
 <!ENTITY borderEditField.label "Border:">
 <!ENTITY borderEditField.accesskey "B">
 <!ENTITY borderEditField.tooltip "Type a number for the table's border, or type zero (0) for no border">
