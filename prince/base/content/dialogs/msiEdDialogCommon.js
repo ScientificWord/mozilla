@@ -105,7 +105,7 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
       msiGetEditor(editorElement).removeAttributeOrEquivalent(element, attName, true);
     }
     catch(exc) {
-      //AlertWithTitle("Error in msiValidateNumber in msiEdDialogCommon.js!", exc);
+      dump("Error in msiValidateNumber in msiEdDialogCommon.js!", exc);
     }
   }
   return numString;
