@@ -42,9 +42,9 @@
       <toolbarbutton id="newButton"/>
       <toolbarbutton id="openButton"/>
       <toolbarbutton id="saveButton"/>
-#ifndef PROD_SNB      
+#ifndef PROD_SNB
       <toolbarbutton id="exporttexButton"/>
-#endif      
+#endif
       <toolbarbutton id="exportwebButton"/>
       <toolbarbutton id="importimageButton"/>
       <toolbarbutton id="importtexButton"/>
@@ -59,7 +59,7 @@
       <toolbarbutton id="undoButton"/>
       <toolbarbutton id="redoButton"/>
       <toolbarbutton id="stopButton"/>
-#ifndef PROD_SW      
+#ifndef PROD_SW
       <toolbarbutton id="evalButton"/>
       <toolbarbutton id="evalnumButton"/>
       <toolbarbutton id="solveButton" />
@@ -125,8 +125,11 @@ label="&bibliographyButton.label;" observes="cmd_unimp"/>
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-#ifdef PROD_SNB    defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
-#else    defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+#ifdef PROD_SNB
+ defaultset= "newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+#else
+defaultset=
+"newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
 #endif
       mode="icons" 
       customizable="true"
