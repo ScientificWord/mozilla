@@ -98,10 +98,10 @@
       <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" label="&xrefButton.label;" observes="cmd_MSIinsertCrossReferenceCmd"/>
       <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" label="&texfieldButton.label;" observes="cmd_MSIinsertTeXFieldCmd"/>
       <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;"       
+label="&bibliographyButton.label;" observes="cmd_unimp"/>
       <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
       <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" label="&hspaceButton.label;" observes="cmd_insertHorizontalSpaces" />
       <toolbarbutton id="vspaceButton" tooltiptext="&vspaceButton.tooltip;"  label="&vspaceButton.label;" observes="cmd_insertVerticalSpaces" />
-label="&bibliographyButton.label;" observes="cmd_unimp"/>
       <toolbarbutton id="gifsAnimatedButton" type="checkbox" autoCheck="true" label="&gifsAnimatedButton.label;"  oncommand="setAnimation();" tooltiptext="&gifsAnimatedButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
