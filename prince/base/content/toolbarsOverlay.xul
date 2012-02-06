@@ -42,7 +42,9 @@
       <toolbarbutton id="newButton"/>
       <toolbarbutton id="openButton"/>
       <toolbarbutton id="saveButton"/>
+#ifndef PROD_SNB      
       <toolbarbutton id="exporttexButton"/>
+#endif      
       <toolbarbutton id="exportwebButton"/>
       <toolbarbutton id="importimageButton"/>
       <toolbarbutton id="importtexButton"/>
@@ -57,6 +59,7 @@
       <toolbarbutton id="undoButton"/>
       <toolbarbutton id="redoButton"/>
       <toolbarbutton id="stopButton"/>
+#ifndef PROD_SW      
       <toolbarbutton id="evalButton"/>
       <toolbarbutton id="evalnumButton"/>
       <toolbarbutton id="solveButton" />
@@ -66,6 +69,8 @@
       <toolbarbutton id="plot3DButton" />
       <toolbarbutton id="defineButton" />
       <toolbarbutton id="showdefsButton" />
+      <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" />
+#endif
       <toolbarbutton id="radicalButton"/>
       <toolbarbutton id="fractionButton"/>
       <toolbarbutton id="superscriptButton"/>
@@ -86,17 +91,18 @@
       <toolbarbutton id="footnoteButton" tooltiptext="&footnoteButton.tooltip;" label="&footnoteButton.label;" observes="cmd_footnote"/>
       <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" label="&markerButton.label;" observes="cmd_marker" />
       <toolbarbutton id="htlinkButton" tooltiptext="&htlinkButton.tooltip;" label="&htlinkButton.label;" />
-      <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" />
+      <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;" label="&pdfcompileButton.label;"/>
+#ifndef PROD_SNB
       <toolbarbutton id="packagesButton" tooltiptext="&packagesButton.tooltip;" label="&packagesButton.label;" observes="cmd_MSItypesetOptionsAndPackagesCmd"/>
-      <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
-      <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" label="&hspaceButton.label;" observes="cmd_insertHorizontalSpaces" />
-      <toolbarbutton id="vspaceButton" tooltiptext="&vspaceButton.tooltip;"  label="&vspaceButton.label;" observes="cmd_insertVerticalSpaces" />
       <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" label="&indexentryButton.label;" observes="cmd_MSIinsertIndexEntryCmd"/>
       <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" label="&xrefButton.label;" observes="cmd_MSIinsertCrossReferenceCmd"/>
       <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" label="&texfieldButton.label;" observes="cmd_MSIinsertTeXFieldCmd"/>
-      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;" observes="cmd_unimp"/>
+      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;"       
+      <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
+      <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" label="&hspaceButton.label;" observes="cmd_insertHorizontalSpaces" />
+      <toolbarbutton id="vspaceButton" tooltiptext="&vspaceButton.tooltip;"  label="&vspaceButton.label;" observes="cmd_insertVerticalSpaces" />
+label="&bibliographyButton.label;" observes="cmd_unimp"/>
       <toolbarbutton id="gifsAnimatedButton" type="checkbox" autoCheck="true" label="&gifsAnimatedButton.label;"  oncommand="setAnimation();" tooltiptext="&gifsAnimatedButton.tooltip;"/>
-      <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;" label="&pdfcompileButton.label;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
       <toolbarbutton id="boldButton" class="toolbarbutton-1" observes="cmd_textBold"
@@ -119,10 +125,8 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-#ifdef PROD_SNB
-    defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
-#else
-    defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+#ifdef PROD_SNB    defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+#else    defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
 #endif
       mode="icons" 
       customizable="true"
