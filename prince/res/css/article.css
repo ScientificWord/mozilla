@@ -287,9 +287,13 @@ button[class="frontmattertag"]{
   left: 5px;
 }
 
+button[class="msi"]{
+  position: relative;
+  left: 5px;
+}
+
 maketitle, maketoc, makelof, makelot {
   display: block;
-  left: 5px;
 }
 
 /**********************/
@@ -556,3 +560,4 @@ button[class="subeqnnum"]:after{
 [hidemarkers] a[key] {
   display: none;
 }
+
