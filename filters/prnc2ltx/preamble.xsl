@@ -9,7 +9,7 @@
 <!-- Package handling. Packages are not inserted directly, but with requirespackage tags and other
   tags with the 'req' and 'opt' attributes. We collect them and remove
   duplicates, and then sort according to the pri attribute -->
-<xsl:variable name="masterpackagelist" select="document('packages.xml',.)"/>
+<xsl:variable name="masterpackagelist" select="document('packages.xml')"/>
   
 
 <xsl:variable name="requiredpackages.tf">
