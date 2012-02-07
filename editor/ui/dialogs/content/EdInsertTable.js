@@ -62,6 +62,7 @@ function Startup()
   gDialog.textWrapping   = document.getElementById("textWrapping");
   gDialog.cellSpacing    = document.getElementById("cellSpacing");
   gDialog.cellPadding    = document.getElementById("cellPadding");
+  gDialog.autoCheckbox   = document.getElementById("autoWidthCheckbox");
 
   var cellid;
   if (gRows <= 6 && gColumns <= 6) cellid = 10*(Number(gRows) -1 )+Number(gColumns);
@@ -130,7 +131,8 @@ function InitDialog(hAlign, vAlign, wrapping)
   // Get the width attribute of the element, stripping out "%"
   // This sets contents of menu combobox list
   // 2nd param = null: Use current selection to find if parent is table cell or window
-  /*gDialog.widthInput.value =*/ msiInitPixelOrPercentMenulist(globalElement, null, "width", "widthPixelOrPercentMenulist", gPercent);
+  /*gDialog.widthInput.value =*/ 
+  msiInitPixelOrPercentMenulist(globalElement, null, "width", "widthPixelOrPercentMenulist", gPercent);
   /*gDialog.borderInput.value = globalElement.getAttribute("border");*/
 
   gDialog.horizAlignment.value = hAlign;
@@ -140,6 +142,7 @@ function InitDialog(hAlign, vAlign, wrapping)
                                        document.getElementById("wrapRadio");
   gDialog.cellSpacing.value    = globalElement.getAttribute("cellspacing");
   gDialog.cellPadding.value    = globalElement.getAttribute("cellpadding");
+  checkEnableWidthControls();
 }
 
 function ChangeRowOrColumn(id)
@@ -158,6 +161,12 @@ function ChangeRowOrColumn(id)
 }
 
 
+function checkEnableWidthControls()
+{
+  var bIsAuto = gDialog.autoCheckbox.checked;
+  enableControlsByID(["widthInput","widthPixelOrPercentMenulist"], !bIsAuto);
+}
+
 // Get and validate data from widgets.
 // Set attributes on globalElement so they can be accessed by AdvancedEdit()
 function ValidateData()
@@ -175,9 +184,16 @@ function ValidateData()
   // TODO: Deal with "BORDER" without value issue
   if (gValidationError) return false;
 
-  msiValidateNumber(gDialog.widthInput, gDialog.widthPixelOrPercentMenulist,
-                 1, gMaxTableSize, globalElement, "width", false);
-  gDialog.widthPixelOrPercentMenulist.value = gDialog.widthPixelOrPercentMenulist.selectedItem.value;
+  if (gDialog.autoCheckbox.checked)
+  {
+    gActiveEditor.removeAttributeOrEquivalent(globalElement, "width", true);
+  }
+  else
+  {
+    msiValidateNumber(gDialog.widthInput, gDialog.widthPixelOrPercentMenulist,
+                       1, gMaxTableSize, globalElement, "width", false);
+    gDialog.widthPixelOrPercentMenulist.value = gDialog.widthPixelOrPercentMenulist.selectedItem.value;
+  }
 
   SetOrResetAttribute(globalElement, "cellspacing", gDialog.cellSpacing.value);
   SetOrResetAttribute(globalElement, "cellpadding", gDialog.cellPadding.value);

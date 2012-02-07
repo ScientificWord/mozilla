@@ -51,7 +51,7 @@ pref("editor.table.default_wrapping",        "wrap");
 pref("editor.table.maintain_structure", true);
 pref("editor.text_color",                   "#000000");
 pref("editor.throbber.url","chrome://editor-region/locale/region.properties");
-pref("accessibility.typeaheadfind.flashBar" 0);
+pref("accessibility.typeaheadfind.flashBar", 0);
 pref("editor.use_background_image",         false);
 pref("editor.use_custom_default_colors", 1);
 pref("editor.use_html_editor",              0);
