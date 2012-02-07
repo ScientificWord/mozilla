@@ -835,7 +835,7 @@
 
 
 \def\MSISplitLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\ifmmode\else\msi@dollar=0\relax$$\fi\string\begin{#1}\catcode`\&=11}%
+  \@namedef{msi@begin@#1}{\bgroup\ifmmode\else\msi@dollar=0\relax$$\fi\string\begin{#1}\catcode`\&=12}%
   \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\fi\egroup}}
 
 
@@ -1402,7 +1402,7 @@
 \def\text#1{%
    \msitag{\msipassthru}%
      \char`\{%
-        \msitag{<mml:mtext>}{\msihmode #1}\msitag{</mml:mtext>}%  
+        \msiopentag{mml:text}{<mml:mtext>}{\msihmode #1}\msiclosetag{mml:text}{</mml:mtext>}%  
      \char`\}}
 
 
