@@ -1509,6 +1509,16 @@
           <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
        \msitag{</texb>}}}
 
+\def\MSITeXButtonReqReq#1{%
+    \expandafter\def\csname#1\endcsname##1##2{%
+       \@temptokena={\msitag{##1}}%
+       \@temptokenb={\msitag{##2}}%
+       \msihmode
+       \msitag{<texb enc="1" name="#1">}%
+          <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}\{\the\@temptokenb\}]]>%
+       \msitag{</texb>}}}
+
+
 
 
 
