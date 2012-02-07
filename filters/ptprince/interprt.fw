@@ -919,7 +919,12 @@ case CMD_MSIHMODE : {
      Typesetter::GotoHMode();
      inp.Putback(Global::msieverypar);
      inp.Putback(Global::everypar);
+   } else if (Typesetter::GetMode() == MODE_MATH){
+     Typesetter::GotoHMode();
+     inp.Putback(Global::msieverypar);
+     inp.Putback(Global::everypar);
    }
+    
    break;
 }
 @}
