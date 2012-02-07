@@ -18,8 +18,6 @@ en-US.jar:
   locale/helpfiles/css/help.css               (css/help.css)
   locale/helpfiles/css/index.css               (css/index.css)
   locale/helpfiles/graphics/princelogo.png    (graphics/princelogo.png)
-%
-% Creating Documents help files
   locale/helpfiles/cd00-00-creating_documents.xhtml		  (cd00-00-creating_documents.xhtml)
   locale/helpfiles/cd01-00-gettingstarted.xhtml           (cd01-00-gettingstarted.xhtml)
   locale/helpfiles/cd01-01-gettingstarted.xhtml           (cd01-01-gettingstarted.xhtml)
@@ -32,8 +30,6 @@ en-US.jar:
   locale/helpfiles/cd05-00-workwithmath.xhtml             (cd05-00-workwithmath.xhtml)
   locale/helpfiles/cd06-00-finaltouch.xhtml               (cd06-00-finaltouch.xhtml)
   locale/helpfiles/cd07-00-shortcuts.xhtml                (cd07-00-shortcuts.xhtml)
-%
-% Creating Documents help graphics
   locale/helpfiles/graphicscd/automatic_substitution.png     (graphicscd/automatic_substitution.png)
   locale/helpfiles/graphicscd/check_spelling.png             (graphicscd/check_spelling.png)
   locale/helpfiles/graphicscd/customize_toolbar.png          (graphicscd/customize_toolbar.png)
@@ -41,7 +37,6 @@ en-US.jar:
   locale/helpfiles/graphicscd/multiple-display-options.png   (graphicscd/multiple-display-options.png)
   locale/helpfiles/graphicscd/screen_shot_with_call-outs.png (graphicscd/screen_shot_with_call-outs.png)
   locale/helpfiles/graphicscd/status-bar.png                 (graphicscd/status-bar.png)
-% Doing Math help files
   locale/helpfiles/dm00-00-doing_mathematics.xhtml		  (dm00-00-doing_mathematics.xhtml)
   locale/helpfiles/dm01-00-basic_techniques.xhtml		  (dm01-00-basic_techniques.xhtml)
   locale/helpfiles/dm01-01-basic_techniques.xhtml		  (dm01-01-basic_techniques.xhtml)
@@ -150,8 +145,6 @@ en-US.jar:
   locale/helpfiles/dm16-02-mupad.xhtml					  (dm16-02-mupad.xhtml)
   locale/helpfiles/dm16-03-mupad.xhtml					  (dm16-03-mupad.xhtml)
   locale/helpfiles/dmindex.xhtml						  (dmindex.xhtml)
-%
-% Doing Math help graphics
   locale/helpfiles/graphics/animationtoolbar.png (graphics/animationtoolbar.png)
   locale/helpfiles/graphics/arrows.png           (graphics/arrows.png)
   locale/helpfiles/graphics/assume.png           (graphics/assume.png)
