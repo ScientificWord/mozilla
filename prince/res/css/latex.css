@@ -561,7 +561,7 @@ paragraph[nonum="true"]>sectiontitle:before {
 }
 
 
-frontmatter {
+frontmatter, mainmatter, backmatter {
   display: block;
   position: relative;
   margin-left: 100px;
