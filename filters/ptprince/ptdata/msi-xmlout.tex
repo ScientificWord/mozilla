@@ -835,8 +835,10 @@
 
 
 \def\MSISplitLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\ifmmode\else\msi@dollar=0\relax$$\fi\string\begin{#1}\catcode`\&=11}%
+  \@namedef{msi@begin@#1}{\bgroup\ifmmode\else\msi@dollar=0\relax$$\fi\string\begin{#1}\catcode`\&=12}%
   \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\fi\egroup}}
+
+
 
 
 \@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
@@ -1396,12 +1398,11 @@
 \MSIMathQuote{\QABOVED} % special case? Why is this here?
 
 
-%\def\msi@mtext#1{\msitag{\msipassthru{<mml:mtext>#1</mml:mtext>}}}
 
 \def\text#1{%
    \msitag{\msipassthru}%
      \char`\{%
-        \msitag{<mml:mtext>} #1 \msitag{</mml:mtext>}%  
+        \msiopentag{mml:text}{<mml:mtext>}{\msihmode #1}\msiclosetag{mml:text}{</mml:mtext>}%  
      \char`\}}
 
 
@@ -1665,16 +1666,8 @@
 
 \def\@endgobble{\@endtexb\relax}
 
-
-
 \def\@gobblemore{%
    \ifx\atok\@bracetok
-     \let\@donext\@inbrace
-   \else
-     \ifx\atok\@brackettok
-       \let\@donext\@inbracket
-     \else
-       \ifx\atok\ \ifx\atok\@bracetok
      \let\@donext\@inbrace
    \else
      \ifx\atok\@brackettok
