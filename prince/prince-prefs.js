@@ -97,7 +97,7 @@ pref("swp.graph.Dimension",  "2");
 pref("swp.graph.HSize", "3.0");          
 pref("swp.graph.VSize", "4.5");         
 pref("swp.graph.defaultUnits", "cm");   
-pref("swp.graph.Placement", "display"); 
+pref("swp.graph.placement", "display"); 
 pref("swp.graph.floatLocation.forceHere", false);
 pref("swp.graph.floatLocation.here", true);
 pref("swp.graph.floatLocation.pageFloats", false);
