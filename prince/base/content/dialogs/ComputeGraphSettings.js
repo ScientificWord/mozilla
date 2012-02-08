@@ -17,20 +17,29 @@ var plotArray = [];
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
 
+  msidump("1");
   var graphnode = window.arguments[1];
   graph = new Graph();
   graph.extractGraphAttributes(graphnode);
+  msidump("2");
+  var frame = graphnode.getElementsByTagName("msiframe");
+  if (frame.length > 0) frame = frame[0];
+  msidump("3");
+  var plotwrapper = graphnode.getElementsByTagName("plotwrapper");
+  if (plotwrapper.length>0) plotwrapper = plotwrapper[0];
   var units = graph["Units"];
   if (!units || units.length === 0) 
   {
     units = "cm";
     graph["Units"] = units;
   }
-  gd = new Object();
+  var gd = new Object();
+  msidump("4");
   setHasNaturalSize(false);
   setCanRotate(false);
   document.getElementById("role-image").setAttribute("hidden",gFrameModeImage?"false":"true");
   plotwrapper = graphnode.getElementsByTagName("plotwrapper")[0];
+  msidump("5");
   gd = initFrameTab(gd, plotwrapper, false, null);
   var alist = graph.graphAttributeList(); 
   var id;                   
@@ -41,15 +50,6 @@ function Startup(){
     }                                                       
   } 
    
-  // some plotwrapper attributes override the GraphSpec attributes
-  var value;
-  if (value = plotwrapper.getAttribute("height"))                                                     
-    graph["Height"] = value;
-  if (value = plotwrapper.getAttribute("width"))                                                     
-    graph["Width"] = value;
-  if (value = plotwrapper.getAttribute("units"))                                                     
-    graph["Units"] = value;
-
   var plotNumControl    = document.getElementById('plotnumber');
   var numPlots = graph.getNumPlots();
   if (numPlots ===  0){ 
@@ -58,6 +58,7 @@ function Startup(){
   }
   plotNumControl.max = numPlots;
   plotNumControl.valueNumber = 1;
+  msidump("6");
   var firstActivePlot = 0;
   graph["plotnumber"] = firstActivePlot.toString();
   var plot = graph["plots"][0];
@@ -67,6 +68,7 @@ function Startup(){
   setColorWell("lineColorWell", plot.attributes["LineColor"]);  
   
   initKeyList();
+  msidump("7");
   
   var editorControl = document.getElementById("plotDlg-content-frame");
   editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
@@ -81,19 +83,10 @@ function Startup(){
   // Caption placement
   var oldval = graph["CaptionPlace"];  
   radioGroupSetCurrent ("captionplacement", oldval);
-
-  // Graphic Placement
-  oldval = graph["Placement"];
-  var elem = document.getElementById("placementRadioGroup");
-  if (oldval == "inline"){
-    elem.selectedIndsex = 0;
-  } else if (oldval == "display") {
-    elem.selectedIndex = 1;
-  } else {
-    elem.selectedIndex = 2;
-  }
   //radioGroupSetCurrent ("graphPlacement", oldval);
   enableFloating();
+  msidump("8");
+  
 }                                                                                            
 
 // This part pastes data into the editor after the editor has started. 
@@ -143,8 +136,8 @@ function OK(){
   if (!theWindow || !("nonmodalRecreateGraph" in theWindow))
     theWindow = msiGetTopLevelWindow();
   var DOMGraph = graph.createGraphDOMElement (false); // is this necessary???
-  setFrameAttributes(plotwrapper,plotwrapper);
-  graph["plotwrapper"] = plotwrapper;         
+//  setFrameAttributes(plotwrapper,plotwrapper);
+//  graph["plotwrapper"] = plotwrapper;         
     
   try {  
     theWindow.nonmodalRecreateGraph (graph, window.arguments[1], editorElement);

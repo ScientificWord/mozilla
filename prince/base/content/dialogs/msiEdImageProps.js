@@ -1839,7 +1839,7 @@ function onAccept()
   dump("in onAccept\n");
   if (ValidateData())
   {
-//    var editorElement = msiGetParentEditorElementForDialog(window);
+    var editorElement = msiGetParentEditorElementForDialog(window);
     var editor = msiGetEditor(gEditorElement);
 
     editor.beginTransaction();
@@ -1847,8 +1847,9 @@ function onAccept()
     {
       var tagname="object";
 //      var frameElement = null;
-      gCaptionData.m_captionStr = getCaptionEditContents();
-      var bHasCaption = (gCaptionData.m_captionStr && gCaptionData.m_captionStr.length);
+//BBM      gCaptionData.m_captionStr = getCaptionEditContents();
+//BBM      var bHasCaption = (gCaptionData.m_captionStr && gCaptionData.m_captionStr.length);
+      var bHasCaption = true;
       var posInParent;
       if (imageElement)
       {
@@ -1899,11 +1900,11 @@ function onAccept()
 //        frameElement.appendChild(imageElement);
       }
 
-      var capData = findCaptionNodes(wrapperElement);
-      var capPosition = gDialog.captionPlacementGroup.value;
-      if (!capPosition || !capPosition.length)
-        capPosition = "below";
-//      syncCaptionAndExisting(gCaptionData.m_captionStr.below, capData.belowCaption, editor, wrapperElement, "below");
+//BBM      var capData = findCaptionNodes(wrapperElement);
+//BBM      var capPosition = gDialog.captionPlacementGroup.value;
+//BBM      if (!capPosition || !capPosition.length)
+//BBM        capPosition = "below";
+//BBM//      syncCaptionAndExisting(gCaptionData.m_captionStr.below, capData.belowCaption, editor, wrapperElement, "below");
 //      var capAttrStr = "";
 //      if (capData.aboveCaption && capData.aboveCaption.length)
 //        capAttrStr = "above";
@@ -1926,7 +1927,7 @@ function onAccept()
 //        wrapperElement = imageElement = msiEditorFindJustInsertedElement("object", editor);
 //      dump("In msiEdImageProps.onAccept(), oldWrapper is [" + ((wrapperElement == oldWrapper) ? "same as" : "different from") + "] one in document.\n");
 //      dump("In msiEdImageProps.onAccept(), oldImage is [" + ((imageElement == oldImage) ? "same as" : "different from") + "] one in document.\n");
-      syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
+//BBM      syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
     
       var attrList = ["src,data,title,alt"];
       msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
