@@ -15,15 +15,19 @@ part {
 
 part sectiontitle {
   display: block;
-  font-size: x-large;
+  font-size: 200%;
   font-weight: bold;
+  color: rgb(9, 62, 125);
+  text-align: center;
 }
 
 part>sectiontitle:before {
   content: "Part " counter(part,upper-roman);
   display: block;
-  font-size: large;
+  font-size: 80%;
   font-weight: bold;
+  margin-bottom: 5pt;
+  -moz-user-select: -moz-none;
 }
 
 chapter {
@@ -35,10 +39,10 @@ chapter {
 
 chapter sectiontitle {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: 14pt;
+  margin: 10pt 0pt 0pt 0pt;
+  font-size: 18pt;
   font-weight: bold;
+  text-align: left;
 }
 
 section {
@@ -50,9 +54,8 @@ section {
 
 section sectiontitle {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: large;
+  margin: 10pt 0pt 0pt 0pt;
+  font-size: 14pt;
   font-weight: bold;
 }
 
@@ -75,8 +78,7 @@ subsection{
 
 subsection sectiontitle {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
+  margin: 10pt 0pt 0pt 0pt;
   font-size: large;
 }
 
@@ -99,8 +101,7 @@ subsubsection {
 
 subsubsection sectiontitle {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
+  margin: 10pt 0pt 0pt 0pt;
   font-size: medium;
   font-weight: bold;
 }
@@ -148,39 +149,39 @@ subparagraph defaulttitletag:after {
 /*************************/
 
 title {
-  font-size: x-large;
+  font-size: 200%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
   display: block;
-/*  margin-top: 12pt;*/
+  margin-top: 12pt;
   text-align: center;
 }
 
 author {
+  font-size: 100%;
   font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
-/*  padding-top: 10pt;*/
+  padding-top: 10pt;
+  text-align: center;
 }
 
 address {
+  font-size: 100%;
   font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
   text-align: center;
 }
 
 date {
+  font-size: 100%;
   font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
-/*  padding-top: 2pt;*/
+  padding-top: 2pt;
   text-align: center;
-}
-
-frontmatter {
-  display: block;
-/*  position: relative;
-  margin-left: 100px;
-  padding: 10px 0px;
-  border: thin solid black; */
-  background-color: #EEE8E0;
-/*  -moz-border-radius: 10px;*/
 }
 
 button[class="frontmattertag"]{
@@ -188,9 +189,55 @@ button[class="frontmattertag"]{
   left: 5px;
 }
 
+button[class="msi"]{
+  position: relative;
+  left: 5px;
+}
+
+maketitle, maketoc, makelof, makelot {
+  display: block;
+}
+
 /**********************/
 /* Main text elements */
 /**********************/
+
+frontmatter, mainmatter, backmatter {
+  display: block;
+  position: relative;
+  margin-left: 0px;
+  padding: 10px 0px;
+  border: thin solid black; 
+  background-color: #E1EEFD;
+  -moz-border-radius: 10px;
+}
+
+frontmatter:before {
+  content: "frontmatter";
+  display: block;
+  text-align: left;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
+  -moz-user-select: text;
+}
+
+mainmatter:before {
+  content: " mainmatter";
+  display: block;
+  text-align: left;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
+  -moz-user-select: text;
+}
+
+backmatter:before {
+  content: "backmatter";
+  display: block;
+  text-align: left;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
+  -moz-user-select: text;
+}
 
 p {
   display: block;
