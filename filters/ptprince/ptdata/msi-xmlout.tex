@@ -393,23 +393,35 @@
 
 %% Citations and cross refs
 
+\def\attrib@text{
+  \catcode`\&=\active
+  \catcode`\<=\active
+  \catcode`\>=\active
+}
+
 \def\cite{%
-  \@ifnextchar [{\@tempswatrue\out@citex}{\@tempswafalse\out@citey}}
+  \@ifnextchar[{\@tempswatrue\begingroup\attrib@text\out@citex}{\@tempswafalse\begingroup\attrib@text\out@citey}}
+
+
+%\def\@citey#1#{%
+%  \attrib@text\out@citey
+%}
+
 
 \def\out@citex[#1]#2{%
    \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
-                            citekey="#1" 
-                            hasRemark="true">>}%
+                            citekey="}#1\msitag{" 
+                            hasRemark="true">}%
         \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
             #2%
         \msiclosetag{biblabel}{</biblabel>}%
-  \msiclosetag{citation}{</citation>}}
+  \msiclosetag{citation}{</citation>\endgroup}}
 
 \def\out@citey#1{%
   \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
-                            citekey="#1" 
-                            hasRemark="false">>}
-  \msiclosetag{citation}{</citation>}}
+                            citekey="}#1\msitag{" hasRemark="false">}%
+  \msiclosetag{citation}{</citation>}%
+  \endgroup}
 
 
 %\MSITextElement[a]{ref}
@@ -484,6 +496,7 @@
    \br\msihmode\msiopentag{bibitem}{}<bibitem bibtemkey="#2" hasLabel="true">%
    \msitag{<biblabel class="bibitemlabel">}#1\msitag{</biblabel>}%
    \br\msiopentag{bodyText}{<bodyText>}%
+   \endgroup
 }
 
 \def\out@bibitemB#1{%
@@ -493,8 +506,9 @@
      \msiclosetag{bodyText}{</bodyText>}%
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \br\msiopentag{bibitem}{<bibitem bibitemkey="#1" hasLabel="false">}%
-   \br\msiopentag{bodyText}{<bodyText>}%
+   \br\msiopentag{bibitem}{<bibitem bibitemkey="}#1\msitag{" hasLabel="false">}%
+   \br\msiopentag{bodyText}{<bodyText>}
+   \endgroup%
 }
 
 
