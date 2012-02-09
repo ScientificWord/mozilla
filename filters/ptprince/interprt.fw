@@ -167,6 +167,7 @@ enum GroupType {
 struct GroupRecord {
    GroupType  m_groupType;
    TokenList* m_afterGroup;
+   Mode m_mode;
 };
 
 const int MAX_GROUPS = 400;
@@ -214,6 +215,7 @@ void NewLevel(GroupType type)
       ++s_groupStackTop;
       s_groupStack[s_groupStackTop].m_groupType = type;
       s_groupStack[s_groupStackTop].m_afterGroup = 0;
+      s_groupStack[s_groupStackTop].m_mode = Typesetter::GetMode();
       NewSaveLevel();
       if (type == HBOX_GROUP){
          LOG("\n----Begin group: hbox ");
@@ -293,6 +295,7 @@ void EndLevel()
          InputStack::Putback(*afterGroup);
       }
       --s_groupStackTop;
+      Typesetter::SetMode(s_groupStack[s_groupStackTop].m_mode);
       ShowGroupStack();
    }
 }
@@ -883,7 +886,9 @@ CMD_TAG,
 CMD_MSIHMODE,
 CMD_MSIVMODE,
 CMD_OPENTAG,
+CMD_REQUIRETAG,
 CMD_CLOSETAG,
+CMD_KILLLASTTAG,
 @}
 
 @$@<Create symbols@>+=@{@-
@@ -891,13 +896,15 @@ NewPrimitive("msitag", CMD_TAG);
 NewPrimitive("msihmode", CMD_MSIHMODE);
 NewPrimitive("msivmode", CMD_MSIVMODE);
 NewPrimitive("msiopentag", CMD_OPENTAG);
+NewPrimitive("msirequiretag", CMD_REQUIRETAG);
 NewPrimitive("msiclosetag", CMD_CLOSETAG);
+NewPrimitive("msikilllasttag", CMD_KILLLASTTAG);
 @}
 
 
 
 @$@<TagStack@>+=@{@-
-static std::list<std::string> s_tagStack;
+std::list<std::string> s_tagStack;
 @}
 
 
@@ -958,6 +965,14 @@ case CMD_ENDINPUT : {
 @}
 
 @$@<Misc commands@>+=@{@-
+case CMD_KILLLASTTAG : {
+  Typesetter::KillLastTag();
+  break;
+}
+@}
+
+
+@$@<Misc commands@>+=@{@-
 case CMD_OPENTAG : {
    TokenList* pTL = new TokenList;
    TokenList* pTLoutput = new TokenList;
@@ -981,6 +996,41 @@ case CMD_OPENTAG : {
    break;
 }
 @}
+
+@$@<Misc commands@>+=@{@-
+case CMD_REQUIRETAG : {
+   TokenList* pTL = new TokenList;
+   TokenList* pTLoutput = new TokenList;
+   ScanTokenList(pTL, false);
+   ScanTokenList(pTLoutput, false);
+   LOG("\n----Require open tag " << *pTL << ", " << *pTLoutput);
+
+   StringUtils::AppendToks(*pTL);
+   String str = StringBuilder::Create();
+   std::string strTemp;
+   int i = 0;
+   while (i < str.Size()){
+      strTemp += (char) str[i];
+      ++i;
+   }
+   StringBuilder::Discard(str);
+   
+   // see if already there
+   std::list<std::string>::reverse_iterator it = s_tagStack.rbegin();
+   if (*it == strTemp){
+     LOG("\n----Required tag already there");
+   } else {
+     LOG("\n----Inserting required tag");
+     s_tagStack.push_back(strTemp);
+     Typesetter::AppendTag(pTLoutput);
+   }
+   
+   delete pTL;
+   delete pTLoutput;
+   break;
+}
+@}
+
 
 @$@<Misc commands@>+=@{@-
 case CMD_CLOSETAG : {
