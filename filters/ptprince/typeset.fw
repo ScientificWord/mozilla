@@ -59,7 +59,9 @@ public:
    static void PrintMainList(std::ostream&);
    static void AppendTag(const TokenList* pTL);
    static void AppendTag(const char* cstr);
+   static void KillLastTag();
    static Mode GetMode();
+   static void SetMode(Mode m);
    static bool GetInner();
    static void SetInner(bool);
    static bool Priveledged();
@@ -242,6 +244,20 @@ void Typesetter::AppendTag(const TokenList* pTL)
 @}
 
 @$@<Typesetter implementation@>+=@{@-
+
+extern std::list<std::string> s_tagStack;
+
+void Typesetter::KillLastTag()
+{
+  if (Global::msioutput == 0){
+    s_pList -> pop_back();
+    s_tagStack.pop_back();
+  }
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
 void Typesetter::AppendTag(const char* cstr)
 {
   if (Global::msioutput == 0){
@@ -259,6 +275,14 @@ Mode Typesetter::GetMode()
    return s_mode;
 }
 @}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::SetMode(Mode m)
+{
+   s_mode = m;
+}
+@}
+
 
 @$@<Typesetter implementation@>+=@{@-
 bool Typesetter::GetInner()

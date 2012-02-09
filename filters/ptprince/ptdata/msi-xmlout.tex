@@ -82,35 +82,37 @@
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
-\msi@everyrowstart{\msitag{<tr>}}
-\msi@everyrowend{\msitag{</tr>}}
-%\msi@everycellstart{\msihmode\msiopentag{td}{<td>}}
+\msi@everyrowstart{\msiopentag{tr}{<tr>}}
+\msi@everyrowend{\msiclosetag{tr}{</tr>}}
 
-\msi@everycellstart{\msiclosetag{td}{</td>}\chkmulticol}
-\def\chkmulticol{%
-  \futurelet\@temp\@@chkmulticol}
+\msi@everycellstart{%
+   \msiclosetag{td}{</td>}%
+   \msiopentag{td}{<td>}%
+   \ifmmode\else\msiopentag{bodyText}{<bodyText>}\fi}
 
-\def\@@chkmulticol{\expandafter\@chkmulticol\expandafter{\the\@temp}}
+%\def\chkmulticol{%
+%  \futurelet\@temp\@@chkmulticol}
+
+%\def\@@chkmulticol{\expandafter\@chkmulticol\expandafter{\the\@temp}}
 
 
-\def\@chkmulticol#1{%
-  \ifx#1\multicolumn
-    \let\@next#1\relax
-  \else
-    \msiopentag{td}{<td>}%
-    \ifmmode
-    \else
-        \msihmode\msiopentag{bodyText}{<bodyText>}%
-    \fi
-    \let\@next#1\relax
-  \fi
-  \@next}
+%\def\@chkmulticol#1{%
+%  \ifx#1\multicolumn
+%    \let\@next#1\relax
+%  \else
+%    \msiopentag{td}{<td>}%
+%    \ifmmode
+%    \else
+%        \msihmode\msiopentag{bodyText}{<bodyText>}%
+%    \fi
+%    \let\@next#1\relax
+%  \fi
+%  \@next}
 
 \msi@everycellend{%
    \ifmmode
    \else
       \msitag{<br type="_moz"/>}%
-      \msiclosetag{bodyText}{</bodyText>}%
    \fi
    \msiclosetag{td}{</td>}}
 
@@ -752,12 +754,12 @@
   %   \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
   %   \msiclosetag[mml][</mml:math>]
   %]
-  \gdef\@scan@array#1\end{array}[%
-     \egroup
-     \@make@braces@normal
-     \msitag[\begin{array}#1\end{array}]
-  ]
-  \def\endarray[\cr\egroup\string\end`\{array\char`\}]
+  %\gdef\@scan@array#1\end{array}[%
+  %   \egroup
+  %   \@make@braces@normal
+  %   \msitag[\begin{array}#1\end{array}]
+  %]
+  %\def\endarray[\cr\egroup\string\end`\{array\char`\}]
   \gdef\@scan@bmatrix#1\end{bmatrix}[%
      \egroup
      \@make@braces@normal
@@ -822,7 +824,6 @@
 \@namedef{msi@end@equation*}{\string\end{equation*}$$\egroup}
 
 
-%\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
 
 \def\msi@begin@array{\begingroup\def\\{\char`\\\char`\\}\catcode`\&=12\string\begin{array}}
 \def\msi@end@array{\string\end{array}\endgroup}
@@ -979,14 +980,33 @@
 \def\cline#1{\msitag{<cline/>}}
 \def\hline{\msitag{<hline/>}}
 
-\def\multicolumn#1#2#3{%
+
+%%\def\multicolumn#1#2#3{%
+%%   \count0=#1\relax
+%%   \ifnum\count0=1
+%%     #3
+%%   \else
+%%      %\msitag{ Unimplemented multicol }
+%%      \msikilllasttag  % the td
+%%      \msikilllasttag  % the body text
+%%      \msiopentag{td}{<td rowspan="1" colspan="#1">}%
+%%        \msiopentag{bodyText}{<bodyText>}%
+%%        #3
+%%        %\msiclosetag{bodyText}{</bodyText>}%
+%%      %\msiclosetag{td}{</td>}%
+%%   \fi
+%%}
+
+\def\multicolumn#1#2#3#{%
    \count0=#1\relax
    \ifnum\count0=1
-      #3
    \else
-      %\msitag{ Unimplemented multicol }
-      \msitag{<td rowspan="1" colspan="#1"><bodyText>#3</bodyText></td>}%
+      \msikilllasttag  % the td
+      \msikilllasttag  % the body text
+      \msiopentag{td}{<td rowspan="1" colspan="#1">}%
+        \msiopentag{bodyText}{<bodyText>}%
    \fi
+  
 }
 
 \def\endbrace{\char`\}}
@@ -1380,29 +1400,15 @@
 \mathpass@arg@arg@arg@arg{\QATOPD}
 \mathpass@arg@arg@arg{\QTATOPD}
 \mathpass@arg@arg@arg{\QDATOPD}
-%  \mathpass@arg@arg@arg{}
-%  \mathpass@arg@arg@arg{}
-%  \mathpass@arg@arg@arg{}
-%  
-
-
-%\def\QABOVED#1#2#3#4#5{{#4 \abovewithdelims#1#2#3 #5}}%
-%  \def\QTABOVED#1#2#3#4#5{{\textstyle 
-%     {#4 \abovewithdelims#1#2#3 #5}}}%
-%  \def\QDABOVED#1#2#3#4#5{{\displaystyle 
-%     {#4 \abovewithdelims#1#2#3 #5}}}%
-%  
 
 \def\unit#1{\string\unit\@brace{#1}}
 
 \MSIMathQuote{\QABOVED} % special case? Why is this here?
 
-
-
 \def\text#1{%
    \msitag{\msipassthru}%
      \char`\{%
-        \msiopentag{mml:text}{<mml:mtext>}{\msihmode #1}\msiclosetag{mml:text}{</mml:mtext>}%  
+     \msiopentag{mml:text}{<mml:mtext>}\msibreak\begingroup\msihmode #1\endgroup\msiclosetag{mml:text}{</mml:mtext>}%  
      \char`\}}
 
 
@@ -1483,7 +1489,7 @@
      \ifmmode
        \expandafter\string\csname #2\endcsname{##1}%
      \else
-       \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%     
+       \msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%     
      \fi}}
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
