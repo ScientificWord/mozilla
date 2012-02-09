@@ -15,7 +15,7 @@ part {
 
 part sectiontitle {
   display: block;
-  font-size: 200%;
+  font-size: 24pt;
   font-weight: bold;
   color: rgb(9, 62, 125);
   text-align: center;
@@ -40,7 +40,7 @@ chapter {
 chapter sectiontitle {
   display: block;
   margin: 10pt 0pt 0pt 0pt;
-  font-size: 18pt;
+  font-size: 20pt;
   font-weight: bold;
   text-align: left;
 }
@@ -55,7 +55,7 @@ section {
 section sectiontitle {
   display: block;
   margin: 10pt 0pt 0pt 0pt;
-  font-size: 14pt;
+  font-size: 18pt;
   font-weight: bold;
 }
 
@@ -79,7 +79,7 @@ subsection{
 subsection sectiontitle {
   display: block;
   margin: 10pt 0pt 0pt 0pt;
-  font-size: large;
+  font-size: 12pt;
 }
 
 /*
@@ -102,7 +102,7 @@ subsubsection {
 subsubsection sectiontitle {
   display: block;
   margin: 10pt 0pt 0pt 0pt;
-  font-size: medium;
+  font-size: 10pt;
   font-weight: bold;
 }
 
@@ -123,7 +123,7 @@ paragraph {
 }
 
 paragraph sectiontitle {
-  font-size: medium;
+  font-size: 10pt;
   font-weight: normal;
   font-style: italic;
 }
@@ -137,6 +137,10 @@ paragraph>sectiontitle:before {
 paragraph defaulttitletag:after {
   content: "Replace this subsubsubsection title"; 
   color: red;
+}
+
+subparagraph sectiontitle {
+  margin-left: 10pt;
 }
 
 subparagraph defaulttitletag:after {
