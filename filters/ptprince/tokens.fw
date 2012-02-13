@@ -383,7 +383,8 @@ case CC_MATHSHIFT:{
 
 @$@<Tokenizer cases@>+=@{@-
 case CC_ALIGNTAB:{
-   m_state = STATE_MIDLINE;
+   //m_state = STATE_MIDLINE;
+   m_state = STATE_SKIPPING_BLANKS;
    tt -> SetType(TT_TAB);
    tt -> SetChrCode(ch);
    return;
