@@ -3855,20 +3855,20 @@
       \ignorespaces}
 \def\endlrbox{\unskip\color@endgroup}
 \def\usebox#1{\leavevmode\copy #1\relax}
-\long\def\frame#1{%
-  \leavevmode
-  \hbox{%
-    \hskip-\@wholewidth
-    \vbox{%
-      \vskip-\@wholewidth
-      \hrule \@height\@wholewidth
-      \hbox{%
-        \vrule\@width\@wholewidth
-        #1%
-        \vrule\@width\@wholewidth}%
-      \hrule\@height\@wholewidth
-      \vskip-\@wholewidth}%
-    \hskip-\@wholewidth}}
+%%\long\def\frame#1{%
+%%  \leavevmode
+%%  \hbox{%
+%%    \hskip-\@wholewidth
+%%    \vbox{%
+%%      \vskip-\@wholewidth
+%%      \hrule \@height\@wholewidth
+%%      \hbox{%
+%%        \vrule\@width\@wholewidth
+%%        #1%
+%%        \vrule\@width\@wholewidth}%
+%%      \hrule\@height\@wholewidth
+%%      \vskip-\@wholewidth}%
+%%    \hskip-\@wholewidth}}
 \newdimen\fboxrule
 \newdimen\fboxsep
 
@@ -3876,35 +3876,35 @@
   \@ifnextchar[%]
     {\@iframebox[#1]}%
     {\@iframebox[#1][c]}}
-\long\def\@iframebox[#1][#2]#3{%
-  \leavevmode
-  \@begin@tempboxa\hbox{#3}%
-    \setlength\@tempdima{#1}%
-    \setbox\@tempboxa\hb@xt@\@tempdima
-         {\kern\fboxsep\csname bm@#2\endcsname\kern\fboxsep}%
-    \@frameb@x{\kern-\fboxrule}%
-  \@end@tempboxa}
-\def\@frameb@x#1{%
-  \@tempdima\fboxrule
-  \advance\@tempdima\fboxsep
-  \advance\@tempdima\dp\@tempboxa
-  \hbox{%
-    \lower\@tempdima\hbox{%
-      \vbox{%
-        \hrule\@height\fboxrule
-        \hbox{%
-          \vrule\@width\fboxrule
-          #1%
-          \vbox{%
-            \vskip\fboxsep
-            \box\@tempboxa
-            \vskip\fboxsep}%
-          #1%
-          \vrule\@width\fboxrule}%
-        \hrule\@height\fboxrule}%
-                          }%
-        }%
-}
+%%\long\def\@iframebox[#1][#2]#3{%
+%%  \leavevmode
+%%  \@begin@tempboxa\hbox{#3}%
+%%    \setlength\@tempdima{#1}%
+%%    \setbox\@tempboxa\hb@xt@\@tempdima
+%%         {\kern\fboxsep\csname bm@#2\endcsname\kern\fboxsep}%
+%%    \@frameb@x{\kern-\fboxrule}%
+%%  \@end@tempboxa}
+%%\def\@frameb@x#1{%
+%%  \@tempdima\fboxrule
+%%  \advance\@tempdima\fboxsep
+%%  \advance\@tempdima\dp\@tempboxa
+%%  \hbox{%
+%%    \lower\@tempdima\hbox{%
+%%      \vbox{%
+%%        \hrule\@height\fboxrule
+%%        \hbox{%
+%%          \vrule\@width\fboxrule
+%%          #1%
+%%          \vbox{%
+%%            \vskip\fboxsep
+%%            \box\@tempboxa
+%%            \vskip\fboxsep}%
+%%          #1%
+%%          \vrule\@width\fboxrule}%
+%%        \hrule\@height\fboxrule}%
+%%                          }%
+%%        }%
+%%}
 \def\@framepicbox(#1,#2){%
   \@ifnextchar[{\@iframepicbox(#1,#2)}{\@iframepicbox(#1,#2)[]}}
 \long\def\@iframepicbox(#1,#2)[#3]#4{%
