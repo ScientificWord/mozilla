@@ -21,6 +21,7 @@ case CMD_MATH_SHIFT : {
       inp.Putback(CurTok());
       Typesetter::GotoHMode();
       Typesetter::SetInner(false);
+      s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
       inp.Putback(Global::msieverypar);
       inp.Putback(Global::everypar);
       break;
@@ -45,11 +46,13 @@ case CMD_MATH_SHIFT : {
          Typesetter::StartInline();
          Typesetter::SetInner(true);
          NewLevel(INLINE_GROUP);
+         s_groupStack[s_groupStackTop].m_mode = MODE_MATH;
          inp.Putback(Global::everymath);
       } else {
          Typesetter::StartDisplay();
          Typesetter::SetInner(false);
          NewLevel(DISPLAY_GROUP);
+         s_groupStack[s_groupStackTop].m_mode = MODE_MATH;
          inp.Putback(Global::everydisplay);
       }
    }
