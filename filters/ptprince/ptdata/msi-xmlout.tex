@@ -1496,11 +1496,19 @@
 
 \def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{%
-       \@temptokena={\msitag{##1}}%
-       \msihmode
-       \msitag{<texb enc="1" name="#1">}%
-          <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
-       \msitag{</texb>}}}
+       \ifmmode
+         \begingroup\msihmode      
+         \@temptokena={\msitag{##1}}%       
+         \msitag{<texb enc="1" name="#1">}%
+            \msihmode<![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
+         \msitag{</texb>}%
+         \endgroup
+       \else
+         \@temptokena={\msitag{##1}}%       
+         \msitag{<texb enc="1" name="#1">}%
+            <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
+         \msitag{</texb>}%
+       \fi}}
 
 \def\MSITeXButtonReqReq#1{%
     \expandafter\def\csname#1\endcsname##1##2{%
