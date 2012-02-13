@@ -404,6 +404,7 @@ case CMD_LETTER :
       inp.Putback(CurTok());
       Typesetter::GotoHMode();
       Typesetter::SetInner(false);
+      s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
       inp.Putback(Global::msieverypar);
       inp.Putback(Global::everypar);
    } else if (Typesetter::GetMode() == MODE_HORIZONTAL){
@@ -427,6 +428,7 @@ case CMD_OTHER :
       inp.Putback(CurTok());
       Typesetter::GotoHMode();
       Typesetter::SetInner(false);
+      s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
       inp.Putback(Global::msieverypar);
       inp.Putback(Global::everypar);
    } else if (Typesetter::GetMode() == MODE_HORIZONTAL){
@@ -449,6 +451,7 @@ case CMD_CHAR:{
       // Goto HMODE, rescan token
       inp.Putback(CurTok());
       Typesetter::GotoHMode();
+      s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
       Typesetter::SetInner(false);
       inp.Putback(Global::msieverypar);
       inp.Putback(Global::everypar);
@@ -924,10 +927,12 @@ case CMD_MSIHMODE : {
    LOG("\n----\\msihmode ");
    if (Typesetter::GetMode() == MODE_VERTICAL){
      Typesetter::GotoHMode();
+     s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
      inp.Putback(Global::msieverypar);
      inp.Putback(Global::everypar);
    } else if (Typesetter::GetMode() == MODE_MATH){
      Typesetter::GotoHMode();
+     s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
      inp.Putback(Global::msieverypar);
      inp.Putback(Global::everypar);
    }
@@ -966,7 +971,35 @@ case CMD_ENDINPUT : {
 
 @$@<Misc commands@>+=@{@-
 case CMD_KILLLASTTAG : {
-  Typesetter::KillLastTag();
+  TokenList* pTL = new TokenList;
+  ScanTokenList(pTL, false);
+  TokenList* pTLnew = new TokenList;
+  ScanTokenList(pTLnew, false);
+
+  
+  StringUtils::AppendToks(*pTL);
+  String str = StringBuilder::Create();
+  std::string strTemp;
+  int i = 0;
+  while (i < str.Size()){
+      strTemp += (char) str[i];
+      ++i;
+  }
+  StringBuilder::Discard(str);
+
+
+  StringUtils::AppendToks(*pTLnew);
+  str = StringBuilder::Create();
+  std::string strNew;
+  i = 0;
+  while (i < str.Size()){
+      strNew += (char) str[i];
+      ++i;
+  }
+  StringBuilder::Discard(str);
+
+  Typesetter::AdjustAttributes(strTemp, strNew);
+  
   break;
 }
 @}
@@ -996,6 +1029,7 @@ case CMD_OPENTAG : {
    break;
 }
 @}
+
 
 @$@<Misc commands@>+=@{@-
 case CMD_REQUIRETAG : {
@@ -1032,6 +1066,8 @@ case CMD_REQUIRETAG : {
 @}
 
 
+
+
 @$@<Misc commands@>+=@{@-
 case CMD_CLOSETAG : {
    TokenList* pTL = new TokenList;
@@ -1063,7 +1099,7 @@ case CMD_CLOSETAG : {
    }
    // don't let a </para> close anything except
    // an immediately surrounding <para>
-   if (found && strTemp == "para"){
+   if (found && strTemp == "bodyText"){
       if (it != s_tagStack.rbegin()){
          found = false;
       }
@@ -1141,6 +1177,7 @@ case CMD_LEFT_BRACE : {
         // Goto HMODE, rescan token
         inp.Putback(CurTok());
         Typesetter::GotoHMode();
+        s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
         Typesetter::SetInner(false);
         inp.Putback(Global::msieverypar);
         inp.Putback(Global::everypar);

@@ -1,6 +1,5 @@
 \makeatletter
 
-
 \newcounter{MaxMatrixCols}
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
@@ -46,14 +45,6 @@
 % \newcounter{#1}[#2]
 
 \newtoks\preambleToks
-
-%%\def\out@newcounterA#1{%
-%%  \br\msitag{<texb>\newcounter{#1}</texb>}%   
-%%}
-%%
-%%\def\out@newcounterB#1[#2]{%                                                              
-%%  \br\msitag{<texb>\newcounter{#1}[#2]</texb>}%
-%%}
 
 
 %% redefine these to produce output
@@ -121,7 +112,7 @@
 
 \def\@brace#1{\char123\relax#1\char125\relax}
 
-\def\br{\char10}
+\def\br{\msitag{^^0a}}
 
 
 %% \documentclass.
@@ -319,8 +310,8 @@
   \@ifnextchar[{\msi@simple@envA}{\msi@simple@envB}}
 
 \def\msi@simple@envA[#1]#2{%
-  \expandafter\def\csname msi@begin@#2\endcsname{\msi@open@element<#1>\msi@open@element<bodyText>}%
-  \expandafter\def\csname msi@end@#2\endcsname{\msi@close@element</bodyText>\msi@close@element</#1>}}
+  \expandafter\def\csname msi@begin@#2\endcsname{\msiopentag{#1}{<#1>}\msihmode}%
+  \expandafter\def\csname msi@end@#2\endcsname{\msiclosetag{#1}{</#1>}}}
 
 \def\msi@simple@envB#1{\msi@simple@envA[#1]{#1}}
 
@@ -332,22 +323,19 @@
 \theoremstyle{plain}
 
 
-
 \def\out@newtheorema#1[#2]#3{%
   \@ifundefined{msi@begin@#1}%
-     {%\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
-      \msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
-      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msiopentag{bodyText}{<bodyText>}}
-      \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{#1}{</#1>}}}%
+     {\msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
+      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}
+      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
      {}%
 }
 
 \def\out@newtheoremb#1#2{%
   \@ifundefined{msi@begin@#1}%
-    {%\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
-     \msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
-     \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msiopentag{bodyText}{<bodyText>}}
-     \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{#1}{</#1>}}}%
+    {\msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
+     \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}
+     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
     {}}%
 }
 
@@ -529,21 +517,6 @@
       \br\msiclosetag{#1}{</#1>}}
 }
 
-%% \def\msi@listenv@b#1{%
-%%   \expandafter\def\csname msi@begin@#1\endcsname{%
-%%       \def\itemprefix{}%
-%%       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
-%% 
-%%   \expandafter\def\csname msi@end@#1\endcsname{%
-%%       \br\msiclosetag{#1}{</#1>}}}
-%% 
-%% \def\msi@listenv@a[#1]#2{%
-%%   \expandafter\def\csname msi@begin@#2\endcsname{%
-%%       \def\itemprefix{#1}%
-%%       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
-%% 
-%%   \expandafter\def\csname msi@end@#2\endcsname{%
-%%       \br\msiclosetag{#1}{</#1>}}}
 
        
 \def\msi@begin@thebibliography#1{%
@@ -916,7 +889,7 @@
         \mathtabularfalse
       \fi   
       \msihmode\msiopentag{table}{<table opt="#2" _moz_resizing="true"  cellpadding="4" border="1">}%
-      \msiopentag{tbody}{<tbody>}%
+      \br\msiopentag{tbody}{<tbody>}%
       \begingroup
         \aftergroup\msi@closetabular
         \let\\=\@cr
@@ -961,8 +934,8 @@
         \catcode`\&=4%
       \else
         \mathtabularfalse
+        \msihmode
       \fi
-      \msihmode   
       \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
@@ -974,7 +947,11 @@
 \def\msi@closetabular{%
   \msiclosetag{tbody}{</tbody>}%
   \msiclosetag{table}{</table>}%
-  \msitag{<br type="_moz"/>}}
+  \msitag{<br type="_moz"/>}
+  \ifmathtabular
+    \msiclosetag{bodyText}{</bodyText>}%
+  \fi}
+  
 
 \def\msi@end@tabular{% 
         \crcr
@@ -1013,15 +990,10 @@
 
 \def\multicolumn#1#2#3#{%
    \count0=#1\relax
-   \ifnum\count0=1
+   \ifnum\count0=1\relax
    \else
-      \msikilllasttag  % the td
-      \msikilllasttag  % the body text
-      \msiopentag{td}{<td rowspan="1" colspan="#1">}%
-        \msiopentag{bodyText}{<bodyText>}%
-   \fi
-  
-}
+      \msikilllasttag{<td>}{<td rowspan="1" colspan="#1">}%
+   \fi}
 
 \def\endbrace{\char`\}}
 \chardef\other=12
@@ -1422,7 +1394,7 @@
 \def\text#1{%
    \msitag{\msipassthru}%
      \char`\{%
-     \msiopentag{mml:text}{<mml:mtext>}\msibreak\begingroup\msihmode #1\endgroup\msiclosetag{mml:text}{</mml:mtext>}%  
+     \msiopentag{mml:text}{<mml:mtext>}\begingroup\msihmode #1\endgroup\msiclosetag{mml:text}{</mml:mtext>}%  
      \char`\}}
 
 
