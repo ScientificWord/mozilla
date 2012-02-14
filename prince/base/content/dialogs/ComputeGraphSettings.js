@@ -1,79 +1,83 @@
- // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+// Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 // Three data items are passed into this dialog: 
-// window.arguments[0]: the graph object 
-// window.arguments[1]: DOMGraph, the DOM element that should be replaced
+// window.arguments[0]: editorElement 
+// window.arguments[1]: commandStr
+// window.arguments[2]: DOMGraph, the DOM element that should be replaced
 
 Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 var gFrameModeImage = true;
 var gFrameModeTextFrame = false;
 var plotUnitsHandler = new UnitHandler();
 var graph;
+var graphnode;
 var plotwrapper;
 var plotArray = [];
+
 
 // Populate the dialog with the current values stored in the Graph object.
 // The element ids in ComputeGraphSettings.xul match the Graph attributes
 // if the document has an element matching an attribute name, 
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
-
-  msidump("1");
-  var graphnode = window.arguments[1];
+  var plotwrapper, units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
+    plot, editorControl, theStringSource, oldval;
+  var gd = {};
+  graphnode = window.arguments[2];
+  var editorElement = window.arguments[0];
   graph = new Graph();
   graph.extractGraphAttributes(graphnode);
-  msidump("2");
   var frame = graphnode.getElementsByTagName("msiframe");
-  if (frame.length > 0) frame = frame[0];
-  msidump("3");
-  var plotwrapper = graphnode.getElementsByTagName("plotwrapper");
-  if (plotwrapper.length>0) plotwrapper = plotwrapper[0];
-  var units = graph["Units"];
+  if (frame.length > 0) 
+  {
+    frame = frame[0];
+  }
+  plotwrapper = graphnode.getElementsByTagName("plotwrapper");
+  if (plotwrapper.length>0) 
+  {
+    plotwrapper = plotwrapper[0];
+  }
+  units = graph["Units"];
   if (!units || units.length === 0) 
   {
     units = "cm";
     graph["Units"] = units;
   }
-  var gd = new Object();
-  msidump("4");
   setHasNaturalSize(false);
   setCanRotate(false);
-  document.getElementById("role-image").setAttribute("hidden",gFrameModeImage?"false":"true");
-  plotwrapper = graphnode.getElementsByTagName("plotwrapper")[0];
-  msidump("5");
-  gd = initFrameTab(gd, plotwrapper, false, null);
-  var alist = graph.graphAttributeList(); 
-  var id;                   
-  for (var i=0; i<alist.length; i++) { 
+  document.getElementById("role-image").setAttribute("hidden",(gFrameModeImage?"false":"true"));
+//  graph.frame.extractFrameAttributes(frame, plotwrapper);
+  gd = initFrameTab(gd, frame, false, plotwrapper);
+  
+  alist = graph.graphAttributeList(); 
+  for ( i=0; i<alist.length; i++) { 
     id = mapid(alist[i]);                      
     if (document.getElementById(id)) {                    
       document.getElementById(id).value = graph[alist[i]];         
     }                                                       
   } 
-   
-  var plotNumControl    = document.getElementById('plotnumber');
-  var numPlots = graph.getNumPlots();
+///  return; 
+  plotNumControl    = document.getElementById('plotnumber');
+  numPlots = graph.getNumPlots();
   if (numPlots ===  0){ 
     addPlot();
     numPlots = 1;
   }
   plotNumControl.max = numPlots;
   plotNumControl.valueNumber = 1;
-  msidump("6");
-  var firstActivePlot = 0;
+  firstActivePlot = 0;
   graph["plotnumber"] = firstActivePlot.toString();
-  var plot = graph["plots"][0];
+  plot = graph["plots"][0];
   // some attributes can't be found as values of dialog elements  
   setColorWell("baseColorWell", plot.attributes["BaseColor"]);  
   setColorWell("secondColorWell", plot.attributes["SecondaryColor"]);  
   setColorWell("lineColorWell", plot.attributes["LineColor"]);  
   
   initKeyList();
-  msidump("7");
   
-  var editorControl = document.getElementById("plotDlg-content-frame");
-  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
+  editorControl = document.getElementById("plotDlg-content-frame");
+  editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
 
-  var theStringSource = graph.plots[firstActivePlot].element["Expression"];
+  theStringSource = graph.plots[firstActivePlot].element["Expression"];
   // if (!theStringSource || (theStringSource.length === 0))
   //   theStringSource = GetComputeString("Math.emptyForInput");
   // code equivalent to the above has been moved to the Plot constructor
@@ -81,28 +85,22 @@ function Startup(){
   graph.currentDisplayedPlot = 0;
 
   // Caption placement
-  var oldval = graph["CaptionPlace"];  
+  oldval = graph["CaptionPlace"];  
   radioGroupSetCurrent ("captionplacement", oldval);
-  //radioGroupSetCurrent ("graphPlacement", oldval);
-  enableFloating();
-  msidump("8");
-  
+//  enableFloating();
 }                                                                                            
-
 // This part pastes data into the editor after the editor has started. 
 // implements nsIObserver
-var msiEditorDocumentObserverG =
-{ 
-  observe: function(aSubject, aTopic, aData)
-  { 
-    if (aTopic == "obs_documentCreated") {
+var msiEditorDocumentObserverG = {
+  observe: function (aSubject, aTopic, aData) {
+    if (aTopic === "obs_documentCreated") {
       var plotno = graph["plotnumber"];
-//      var editor = GetCurrentEditor();
-//      editor.addOverrideStyleSheet("chrome://editor/content/MathVarsDialog.css");
-	    populateDialog (plotno);
-    }  
+      //      var editor = GetCurrentEditor();
+      //      editor.addOverrideStyleSheet("chrome://editor/content/MathVarsDialog.css");
+      populateDialog(plotno);
+    }
   }
-}
+};
 
 function mapid( graphattribute)
 // because we are using general-purpose overlays, our scheme of matching graph attributes
@@ -122,36 +120,34 @@ function mapid( graphattribute)
 
 // Extract the values from the dialog and store them in the data structure
 // Only save values that are not the defaults
-function OK(){
+function OK() {
+  var editorElement, changed, theWindow;
+  editorElement = msiGetParentEditorElementForDialog(window);
   GetValuesFromDialog();
-  graph.setGraphAttribute("returnvalue", true);    
-  // nonmodal, call the code that redraws. This dialog closes when
-  // the return is executed, so ensure that happens, even if there
-  // are problems.
-  var editorElement = msiGetParentEditorElementForDialog(window);
-//  var editor = msiGetEditor(editorElement);
-  var changed = true;
-  if (changed) graph.computeGraph(editorElement, graph["ImageFile"]);
-  var theWindow = window.opener;
-  if (!theWindow || !("nonmodalRecreateGraph" in theWindow))
+  graph.reviseGraphDOMElement(graphnode, editorElement);
+  graph.setGraphAttribute("returnvalue", true);
+  //  var editor = msiGetEditor(editorElement);
+  changed = true;
+  if (changed) {
+    graph.computeGraph(editorElement, graph["ImageFile"]);
+  }
+  theWindow = window.opener;
+  if (!theWindow || !(theWindow.hasOwnProperty("nonmodalRecreateGraph"))) {
     theWindow = msiGetTopLevelWindow();
-  var DOMGraph = graph.createGraphDOMElement (false); // is this necessary???
-//  setFrameAttributes(plotwrapper,plotwrapper);
-//  graph["plotwrapper"] = plotwrapper;         
-    
-  try {  
-    theWindow.nonmodalRecreateGraph (graph, window.arguments[1], editorElement);
-  }  
-  catch (e) {   
-  }                                                  
+  }
+  try {
+    theWindow.nonmodalRecreateGraph(graph, window.arguments[2], editorElement);
+  }
+  catch (e) {}
   return true;
-}                          
+}
 
 // Extract the values from the dialog and store them in the data structure
 // Only save values that are not the defaults
 function GetValuesFromDialog(){
   // grab anything that's in the graph attribute list
-  var alist = graph.graphAttributeList();                                
+  var alist = graph.graphAttributeList(); 
+  var frame = graph.frame;                               
   for (var i=0; i<alist.length; i++) {                                   
     if (document.getElementById(alist[i])) {                            
       var newval = document.getElementById(alist[i]).value;            
@@ -183,11 +179,18 @@ function GetValuesFromDialog(){
       }                                                                
     }                                                                   
   } 
-  var elem = document.getElementById("placementRadioGroup");
-  var newplace;
-  if (elem.selectedItem) newplace = elem.selectedItem.id; // should be value!!! but that didn't work
-  if (newplace) graph.setGraphAttribute("Placement", newplace);
-
+  var tempFrame = graphnode.getElementsByTagName("msiframe");
+  if (tempFrame.length > 0) {
+    tempFrame = tempFrame[0];
+  }
+  var tempPw = graphnode.getElementsByTagName("msiframe");
+  if (tempPw.length > 0) {
+    tempPw = tempPw[0];
+  }
+  var f = tempFrame.cloneNode(true);
+  var p = tempPw.cloneNode(true);
+  setFrameAttributes(f, p);  // trick to reuse code in msiFrameOverlay.
+  frame.extractFrameAttributes(f, p);
   var oldpt = plot.attributes["PlotType"];                        
   var newpt;
   if (dim == "2") {
@@ -427,38 +430,26 @@ function formatPlot () {
                     graph, window, window.arguments[2]);
 }
 
-// Mark a plot as deleted and set the dialog to the next available plot
+// Delete a plot and set the dialog to the next available plot
 function deletePlot () {
   // extract the plot number from the dialog
-  var plotno = document.getElementById("plot").selectedItem.value; 
-  // Set status to Deleted and delete the plot
-  graph.setPlotAttribute (PlotAttrName("PlotStatus", plotno), "Deleted");
-  // remove this from the plotnumber dialog
-  var plotNumControl    = document.getElementById('plotnumber');                    
-//  for (var idx=0; idx<popup.childNodes.length; idx++) {                    
-//    if (popup.childNodes[idx].value == plotno) popup.removeChild(popup.childNodes[idx]);                                   
-//  }                                                                        
-  //  graph.deletePlot();
-
+  var newplotno, numplots, plotno, plotNumControl;
+  plotno = document.getElementById("plot").selectedItem.value; 
+  plotno = plotno - 1; // plot numbers are 0-based, the UI uses 1-based.
+  graph.deletePlot(plotno);
+  plotNumControl    = document.getElementById('plotnumber');                    
   // find the next plot if there is one, or the previous plot if there is one
-  var numplots = graph.getNumPlots();
-  plotNumControl.max = getNumberOfActivePlots();
-  var newplot;
-  for (newplot = plotno; 
-       ((newplot <=numplots) && 
-        (graph.getPlotAttribute (PlotAttrName ("PlotStatus", newplot)) == "Deleted"));
-       newplot++);
-  if (newplot > numplots) {
-    for (newplot = plotno; 
-         ((newplot > 0) && 
-          (graph.getPlotAttribute (PlotAttrName ("PlotStatus", newplot)) == "Deleted"));
-         newplot--);
-  }      
-  if (newplot == 0) {   // no undeleted plots, add one.
+  numplots = graph.getNumPlots();
+  plotNumControl.max = numplots;
+  newplotno = plotno;
+  if (newplotno >= numplots) {
+    newplotno = numplots - 1;
+  }
+  if (newplotno < 0) {   // no undeleted plots, add one.
     addPlotDialogContents ();
-  } else {              // use the plot we just found
-    graph.setGraphAttribute("plotnumber", newplot);
-    populateDialog (newplot);
+  } else {               // use the next plot
+    graph.setGraphAttribute("plotnumber", newplotno);
+    populateDialog (newplotno);
   }
 }
 
@@ -521,12 +512,6 @@ function getActivePlotNumber(internalPlotNum)
 // skips over deleted plots and converts from 0-based to 1-based
 {
   return internalPlotNum+1;
-}
-
-function getNumberOfActivePlots()
-{
-  var numplots = graph.getNumPlots();
-  return numplots;
 }
 
 function populateDialog (plotno) {
