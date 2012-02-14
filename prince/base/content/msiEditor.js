@@ -10745,14 +10745,10 @@ function openOTFontDialog(tagname, node)
 
 function openGraphDialog(tagname, node, editorElement)
 {
-  if (DOMGListMemberP (node, currentDOMGs)) {
-    return;
-  }
-  DOMGListAdd (node, currentDOMGs);
   // non-modal dialog, the return is immediate
-  var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog", "chrome,close,titlebar,dependent",
-     editorElement, "cmd_objectProperties", node, null, node, currentDOMGs);
-  var editorElement = msiGetActiveEditorElement();
+  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog", "chrome,close,titlebar,dependent",
+     editorElement, "cmd_objectProperties", node);
+// why find it again???  var editorElement = msiGetActiveEditorElement();
 	msiGetEditor(editorElement).incrementModificationCount(1);
 
 }
