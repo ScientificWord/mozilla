@@ -167,6 +167,7 @@ enum GroupType {
 struct GroupRecord {
    GroupType  m_groupType;
    TokenList* m_afterGroup;
+   Mode m_mode;
 };
 
 const int MAX_GROUPS = 400;
@@ -214,6 +215,7 @@ void NewLevel(GroupType type)
       ++s_groupStackTop;
       s_groupStack[s_groupStackTop].m_groupType = type;
       s_groupStack[s_groupStackTop].m_afterGroup = 0;
+      s_groupStack[s_groupStackTop].m_mode = Typesetter::GetMode();
       NewSaveLevel();
       if (type == HBOX_GROUP){
          LOG("\n----Begin group: hbox ");
@@ -293,6 +295,7 @@ void EndLevel()
          InputStack::Putback(*afterGroup);
       }
       --s_groupStackTop;
+      Typesetter::SetMode(s_groupStack[s_groupStackTop].m_mode);
       ShowGroupStack();
    }
 }
@@ -401,6 +404,7 @@ case CMD_LETTER :
       inp.Putback(CurTok());
       Typesetter::GotoHMode();
       Typesetter::SetInner(false);
+      s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
       inp.Putback(Global::msieverypar);
       inp.Putback(Global::everypar);
    } else if (Typesetter::GetMode() == MODE_HORIZONTAL){
@@ -424,6 +428,7 @@ case CMD_OTHER :
       inp.Putback(CurTok());
       Typesetter::GotoHMode();
       Typesetter::SetInner(false);
+      s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
       inp.Putback(Global::msieverypar);
       inp.Putback(Global::everypar);
    } else if (Typesetter::GetMode() == MODE_HORIZONTAL){
@@ -446,6 +451,7 @@ case CMD_CHAR:{
       // Goto HMODE, rescan token
       inp.Putback(CurTok());
       Typesetter::GotoHMode();
+      s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
       Typesetter::SetInner(false);
       inp.Putback(Global::msieverypar);
       inp.Putback(Global::everypar);
@@ -883,7 +889,9 @@ CMD_TAG,
 CMD_MSIHMODE,
 CMD_MSIVMODE,
 CMD_OPENTAG,
+CMD_REQUIRETAG,
 CMD_CLOSETAG,
+CMD_KILLLASTTAG,
 @}
 
 @$@<Create symbols@>+=@{@-
@@ -891,13 +899,15 @@ NewPrimitive("msitag", CMD_TAG);
 NewPrimitive("msihmode", CMD_MSIHMODE);
 NewPrimitive("msivmode", CMD_MSIVMODE);
 NewPrimitive("msiopentag", CMD_OPENTAG);
+NewPrimitive("msirequiretag", CMD_REQUIRETAG);
 NewPrimitive("msiclosetag", CMD_CLOSETAG);
+NewPrimitive("msikilllasttag", CMD_KILLLASTTAG);
 @}
 
 
 
 @$@<TagStack@>+=@{@-
-static std::list<std::string> s_tagStack;
+std::list<std::string> s_tagStack;
 @}
 
 
@@ -917,10 +927,12 @@ case CMD_MSIHMODE : {
    LOG("\n----\\msihmode ");
    if (Typesetter::GetMode() == MODE_VERTICAL){
      Typesetter::GotoHMode();
+     s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
      inp.Putback(Global::msieverypar);
      inp.Putback(Global::everypar);
    } else if (Typesetter::GetMode() == MODE_MATH){
      Typesetter::GotoHMode();
+     s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
      inp.Putback(Global::msieverypar);
      inp.Putback(Global::everypar);
    }
@@ -958,6 +970,42 @@ case CMD_ENDINPUT : {
 @}
 
 @$@<Misc commands@>+=@{@-
+case CMD_KILLLASTTAG : {
+  TokenList* pTL = new TokenList;
+  ScanTokenList(pTL, false);
+  TokenList* pTLnew = new TokenList;
+  ScanTokenList(pTLnew, false);
+
+  
+  StringUtils::AppendToks(*pTL);
+  String str = StringBuilder::Create();
+  std::string strTemp;
+  int i = 0;
+  while (i < str.Size()){
+      strTemp += (char) str[i];
+      ++i;
+  }
+  StringBuilder::Discard(str);
+
+
+  StringUtils::AppendToks(*pTLnew);
+  str = StringBuilder::Create();
+  std::string strNew;
+  i = 0;
+  while (i < str.Size()){
+      strNew += (char) str[i];
+      ++i;
+  }
+  StringBuilder::Discard(str);
+
+  Typesetter::AdjustAttributes(strTemp, strNew);
+  
+  break;
+}
+@}
+
+
+@$@<Misc commands@>+=@{@-
 case CMD_OPENTAG : {
    TokenList* pTL = new TokenList;
    TokenList* pTLoutput = new TokenList;
@@ -981,6 +1029,44 @@ case CMD_OPENTAG : {
    break;
 }
 @}
+
+
+@$@<Misc commands@>+=@{@-
+case CMD_REQUIRETAG : {
+   TokenList* pTL = new TokenList;
+   TokenList* pTLoutput = new TokenList;
+   ScanTokenList(pTL, false);
+   ScanTokenList(pTLoutput, false);
+   LOG("\n----Require open tag " << *pTL << ", " << *pTLoutput);
+
+   StringUtils::AppendToks(*pTL);
+   String str = StringBuilder::Create();
+   std::string strTemp;
+   int i = 0;
+   while (i < str.Size()){
+      strTemp += (char) str[i];
+      ++i;
+   }
+   StringBuilder::Discard(str);
+   
+   // see if already there
+   std::list<std::string>::reverse_iterator it = s_tagStack.rbegin();
+   if (*it == strTemp){
+     LOG("\n----Required tag already there");
+   } else {
+     LOG("\n----Inserting required tag");
+     s_tagStack.push_back(strTemp);
+     Typesetter::AppendTag(pTLoutput);
+   }
+   
+   delete pTL;
+   delete pTLoutput;
+   break;
+}
+@}
+
+
+
 
 @$@<Misc commands@>+=@{@-
 case CMD_CLOSETAG : {
@@ -1013,7 +1099,7 @@ case CMD_CLOSETAG : {
    }
    // don't let a </para> close anything except
    // an immediately surrounding <para>
-   if (found && strTemp == "para"){
+   if (found && strTemp == "bodyText"){
       if (it != s_tagStack.rbegin()){
          found = false;
       }
@@ -1091,6 +1177,7 @@ case CMD_LEFT_BRACE : {
         // Goto HMODE, rescan token
         inp.Putback(CurTok());
         Typesetter::GotoHMode();
+        s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
         Typesetter::SetInner(false);
         inp.Putback(Global::msieverypar);
         inp.Putback(Global::everypar);
