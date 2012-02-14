@@ -275,7 +275,7 @@ epigraph {
 }
 /*  */
 
-centered {
+centeredEnv, centered {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
   text-align: center;
