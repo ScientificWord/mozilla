@@ -848,6 +848,7 @@ Frame.prototype = {
 //          }
           editor.setAttribute(DOMPw, "width", width);
           pwStyle += "width: " + unitHandler.getValueStringAs(width, "px") + "; ";
+          frmStyle += "width: " + unitHandler.getValueStringAs(width, "px") + "; ";
           break;
         case "border":
           editor.setAttribute(DOMPw, "borderw", this.getFrameAttribute(att));
@@ -890,23 +891,25 @@ Frame.prototype = {
       // what about overhang?
       // Now we build the CSS style for the object and the plotwrapper
       var isfloat = this.getFrameAttribute("placement") === "float";
+      var isdisplay = this.getFrameAttribute("placement") === "display";
       var lmargin = unitHandler.getValueStringAs(this.getFrameAttribute("HMargin"), "px");
       var rmargin = lmargin;
       var vmargin = unitHandler.getValueStringAs(this.getFrameAttribute("VMargin"), "px");
-      if ((this.getFrameAttribute("placement") === "display") || ((this.getFrameAttribute("placement") === "float") && (this.getFrameAttribute("floatPlacement") === "full"))) {
-        frmStyle += "margin: " + vmargin + " 0px; ";
+      if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
+        frmStyle = "margin: " + vmargin + " auto; ";
       }
       else {
         if (isfloat) {
           switch (this.getFrameAttribute("floatPlacement")) {
-          case "L":
-          case "I":
-            lmargin = "0px";
-            break;
-          case "R":
-          case "O":
-            rmargin = "0px";
-            break;
+            case "L":
+            case "I":
+            default:
+              lmargin = "0px";
+              break;
+            case "R":
+            case "O":
+              rmargin = "0px";
+              break;
           }
         }
         frmStyle += "margin: " + vmargin + " " + rmargin + " " + vmargin + " " + lmargin + "; ";
@@ -925,9 +928,6 @@ Frame.prototype = {
         frmStyle += "float: " + floatParam + "; ";
       }
       var border = unitHandler.getValueStringAs(this.getFrameAttribute("border"), "px");
-      if (this.getFrameAttribute("placement") !== "inline") {
-        frmStyle += "display: block;";
-      }
       // put the graph file in
       // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use 
       // the load API
@@ -949,6 +949,7 @@ Frame.prototype = {
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
       objStyle += "width: " + w + "; ";
+      frmStyle += "width: " + w + "; ";
       objStyle += "height: " + h + "; ";
       editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
