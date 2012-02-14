@@ -828,7 +828,6 @@ function isValid()
   return true;
 }
 
-
 function setFrameAttributes(frameNode, contentsNode)
 {
   var rot;
@@ -842,9 +841,9 @@ function setFrameAttributes(frameNode, contentsNode)
     metrics.unit = "pt";
   }
   msiEditorEnsureElementAttribute(frameNode, "units",metrics.unit, editor);
-  if (contentsNode)
+  if (contentsNode) {
     msiEditorEnsureElementAttribute(contentsNode, "units",metrics.unit, editor);
-  
+  }
   if (!contentsNode)
     contentsNode = frameNode;
 
@@ -866,7 +865,7 @@ function setFrameAttributes(frameNode, contentsNode)
     var topmargin = getSingleMeasurement("margin", "Top", metrics.unit, false);
     msiEditorEnsureElementAttribute(frameNode, "topmargin", topmargin, editor);
     var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
-    msiEditorEnsureElementAttribute(frameNode, "overhang", overhang, editor);
+     msiEditorEnsureElementAttribute(frameNode, "overhang", overhang, editor);
 		var marginArray = [];
 		marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
 		marginArray[2] = marginArray[0];
@@ -904,32 +903,42 @@ function setFrameAttributes(frameNode, contentsNode)
     var borderwidth = getSingleMeasurement(borderAtt, "Left", metrics.unit, false);
     msiEditorEnsureElementAttribute(contentsNode, "borderw", borderwidth, editor);
   }
-  else
+  else {
     msiEditorEnsureElementAttribute(contentsNode, "borderw", getCompositeMeasurement("border",metrics.unit, false), editor);
+  }
   if (gFrameModeImage) {
     var padding = getSingleMeasurement("padding", "Left", metrics.unit, false);
     msiEditorEnsureElementAttribute(contentsNode, "padding", padding, editor);
   }
-  else
+  else{
     msiEditorEnsureElementAttribute(contentsNode, "padding", getCompositeMeasurement("padding",metrics.unit, false), editor);
+  }
   if (gFrameTab.autoHeightCheck.checked)
   {
-    if (gFrameModeImage)
+    if (gFrameModeImage){
       msiEditorEnsureElementAttribute(contentsNode, heightAtt, null, editor);
-    else
+    }
+    else{
       msiEditorEnsureElementAttribute(contentsNode, heightAtt, "0", editor);
+    }
   }
-  else
+  else{
     msiEditorEnsureElementAttribute(contentsNode, heightAtt, gFrameTab.heightInput.value, editor);
+  }
   if ((gFrameTab.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && gFrameTab.autoWidthCheck.checked)
   {
-    if (gFrameModeImage)
+    if (gFrameModeImage){
       msiEditorEnsureElementAttribute(contentsNode, widthAtt, null, editor);
-    else
+    }
+    else{
       msiEditorEnsureElementAttribute(contentsNode, widthAtt, "0", editor);
+      contentsNode.setAttribute(widthAtt,0);
+    }
   }
-  else
+  else{
     msiEditorEnsureElementAttribute(contentsNode, widthAtt, gFrameTab.widthInput.value, editor);
+    contentsNode.setAttribute(widthAtt,gFrameTab.widthInput.value);
+  }
   var pos = document.getElementById("placementRadioGroup").selectedItem;
   var posid = pos.getAttribute("id") || "";
   msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
@@ -994,8 +1003,9 @@ function setFrameAttributes(frameNode, contentsNode)
 			else side = null;
 	    if (!gFrameModeImage)
 	    {
-	      if (side)
+	      if (side){
           msiEditorEnsureElementAttribute(frameNode, "overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false), editor);
+        }
 	    }
     }
   }
