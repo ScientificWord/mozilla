@@ -116,7 +116,7 @@ TeXNodeList::~TeXNodeList()
 \noseealso
 @$@<Node declarations@>+=@{@-
 class TagNode : public TeXNode {
-private:
+public:
    char* m_str;
 public:
    TagNode(const String& str);
