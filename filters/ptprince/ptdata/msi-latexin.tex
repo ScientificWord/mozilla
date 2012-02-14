@@ -105,18 +105,6 @@
 
 
 
-%% \begin and \end
-
-%% \def\begin#1{%
-%%   \ifmmode
-%%     \def\dobegin{\string\begin{#1}}%
-%%   \else
-%%     \def\dobegin{%
-%%       \begingroup
-%%       \msitag{^^0a}\csname msi@begin@#1\endcsname}%
-%%   \fi
-%%   \dobegin
-%% }
 
 \def\begin#1{%
    \begingroup
@@ -126,31 +114,6 @@
    \csname msi@end@#1\endcsname
    \msitag{^^0a}%
    \endgroup}
-
-
-
-%% \def\end#1{%
-%%   \ifmmode
-%%     \def\reserved@@a{#1}
-%%     \def\reserved@@b{equation}
-%%     \ifx\reserved@@a\reserved@@b
-%%         $$
-%%     \else
-%%        \def\reserved@@b{align*}
-%%        \ifx\reserved@@a\reserved@@b
-%%           $$
-%%        \else
-%%           \string\end{#1}%
-%%        \fi
-%%     \fi
-%%   \else
-%%     \csname msi@end@#1\endcsname
-%%     \msitag{^^0a}%
-%%     \endgroup
-%%   \fi
-%% }
-   
-
 
 
 
@@ -164,7 +127,6 @@
 \newlinechar`\^^J
 
 
-%\def\typeout{\immediate\write17}
 \def\typeout#1{\relax}
 
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
@@ -1687,18 +1649,6 @@
     \fi}
 \@onlypreamble\@DeclareMathSizes
 
-%%\DeclareRobustCommand\fontencoding[1]{%
-%%    \expandafter\ifx\csname T@#1\endcsname\relax
-%%      \@latex@error{Encoding scheme `#1' unknown}\@eha
-%%    \else
-%%      \edef\f@encoding{#1}%
-%%      \ifx\cf@encoding\f@encoding
-%%        \let\enc@update\relax
-%%      \else
-%%        \let\enc@update\@@enc@update
-%%      \fi
-%%    \fi
-%%}
 
 \def\@@enc@update{%
           \expandafter
@@ -1743,14 +1693,6 @@
     \def\x{\def\rem@pt##1.##2PT{##1\ifnum##2>\z@.##2\fi}}}
   \expandafter\endgroup\x
 \def\strip@pt{\expandafter\rem@pt\the}
-%%\DeclareRobustCommand\mathversion[1]
-%%         {\@nomath\mathversion
-%%          \expandafter\ifx\csname mv@#1\endcsname\relax
-%%          \@latex@error{Math version `#1' is not defined}\@eha\else
-%%          \edef\math@version{#1}%
-%%          \gdef\glb@currsize{}%
-%%          \aftergroup\glb@settings
-%%          \fi}
 
 \newtoks\everymath
 \newtoks\everydisplay
@@ -3175,12 +3117,6 @@
  0\or 1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or
  9\or A\or B\or C\or D\or E\or F\fi}
 \def\nfss@text#1{{\mbox{#1}}}
-%%  \DeclareRobustCommand\normalfont
-%%                   {\usefont\encodingdefault
-%%                            \familydefault
-%%                            \seriesdefault
-%%                            \shapedefault
-%%                    \relax}
 
 \let\reset@font\normalfont
 \let\@addtofilelist\relax
@@ -3833,28 +3769,6 @@
 \@definecounter{enumii}
 \@definecounter{enumiii}
 \@definecounter{enumiv}
-%%jcs \def\enumerate{%
-%%jcs   \ifnum \@enumdepth >\thr@@\@toodeep\else
-%%jcs     \advance\@enumdepth\@ne
-%%jcs     \edef\@enumctr{enum\romannumeral\the\@enumdepth}%
-
-%%jcs       \expandafter
-%%jcs       \list
-%%jcs         \csname label\@enumctr\endcsname
-%%jcs         {\usecounter\@enumctr\def\makelabel##1{\hss\llap{##1}}}%
-%%jcs   \fi}
-%%jcs \let\endenumerate =\endlist
-%%jcs \newcount\@itemdepth \@itemdepth = 0
-%%jcs \def\itemize{%
-%%jcs   \ifnum \@itemdepth >\thr@@\@toodeep\else
-%%jcs     \advance\@itemdepth\@ne
-%%jcs     \edef\@itemitem{labelitem\romannumeral\the\@itemdepth}%
-%%jcs     \expandafter
-%%jcs     \list
-%%jcs       \csname\@itemitem\endcsname
-%%jcs       {\def\makelabel##1{\hss\llap{##1}}}%
-%%jcs   \fi}
-%%jcs \let\enditemize =\endlist
 
 
 %%% From File: ltboxes.dtx
@@ -3941,20 +3855,20 @@
       \ignorespaces}
 \def\endlrbox{\unskip\color@endgroup}
 \def\usebox#1{\leavevmode\copy #1\relax}
-\long\def\frame#1{%
-  \leavevmode
-  \hbox{%
-    \hskip-\@wholewidth
-    \vbox{%
-      \vskip-\@wholewidth
-      \hrule \@height\@wholewidth
-      \hbox{%
-        \vrule\@width\@wholewidth
-        #1%
-        \vrule\@width\@wholewidth}%
-      \hrule\@height\@wholewidth
-      \vskip-\@wholewidth}%
-    \hskip-\@wholewidth}}
+%%\long\def\frame#1{%
+%%  \leavevmode
+%%  \hbox{%
+%%    \hskip-\@wholewidth
+%%    \vbox{%
+%%      \vskip-\@wholewidth
+%%      \hrule \@height\@wholewidth
+%%      \hbox{%
+%%        \vrule\@width\@wholewidth
+%%        #1%
+%%        \vrule\@width\@wholewidth}%
+%%      \hrule\@height\@wholewidth
+%%      \vskip-\@wholewidth}%
+%%    \hskip-\@wholewidth}}
 \newdimen\fboxrule
 \newdimen\fboxsep
 
@@ -3962,35 +3876,35 @@
   \@ifnextchar[%]
     {\@iframebox[#1]}%
     {\@iframebox[#1][c]}}
-\long\def\@iframebox[#1][#2]#3{%
-  \leavevmode
-  \@begin@tempboxa\hbox{#3}%
-    \setlength\@tempdima{#1}%
-    \setbox\@tempboxa\hb@xt@\@tempdima
-         {\kern\fboxsep\csname bm@#2\endcsname\kern\fboxsep}%
-    \@frameb@x{\kern-\fboxrule}%
-  \@end@tempboxa}
-\def\@frameb@x#1{%
-  \@tempdima\fboxrule
-  \advance\@tempdima\fboxsep
-  \advance\@tempdima\dp\@tempboxa
-  \hbox{%
-    \lower\@tempdima\hbox{%
-      \vbox{%
-        \hrule\@height\fboxrule
-        \hbox{%
-          \vrule\@width\fboxrule
-          #1%
-          \vbox{%
-            \vskip\fboxsep
-            \box\@tempboxa
-            \vskip\fboxsep}%
-          #1%
-          \vrule\@width\fboxrule}%
-        \hrule\@height\fboxrule}%
-                          }%
-        }%
-}
+%%\long\def\@iframebox[#1][#2]#3{%
+%%  \leavevmode
+%%  \@begin@tempboxa\hbox{#3}%
+%%    \setlength\@tempdima{#1}%
+%%    \setbox\@tempboxa\hb@xt@\@tempdima
+%%         {\kern\fboxsep\csname bm@#2\endcsname\kern\fboxsep}%
+%%    \@frameb@x{\kern-\fboxrule}%
+%%  \@end@tempboxa}
+%%\def\@frameb@x#1{%
+%%  \@tempdima\fboxrule
+%%  \advance\@tempdima\fboxsep
+%%  \advance\@tempdima\dp\@tempboxa
+%%  \hbox{%
+%%    \lower\@tempdima\hbox{%
+%%      \vbox{%
+%%        \hrule\@height\fboxrule
+%%        \hbox{%
+%%          \vrule\@width\fboxrule
+%%          #1%
+%%          \vbox{%
+%%            \vskip\fboxsep
+%%            \box\@tempboxa
+%%            \vskip\fboxsep}%
+%%          #1%
+%%          \vrule\@width\fboxrule}%
+%%        \hrule\@height\fboxrule}%
+%%                          }%
+%%        }%
+%%}
 \def\@framepicbox(#1,#2){%
   \@ifnextchar[{\@iframepicbox(#1,#2)}{\@iframepicbox(#1,#2)[]}}
 \long\def\@iframepicbox(#1,#2)[#3]#4{%
@@ -4010,65 +3924,6 @@
   \baselineskip\normalbaselineskip
   \sloppy}
 \def\@parboxrestore{\@arrayparboxrestore\let\\\@normalcr}
-%% jcs\def\@minipagefalse{\global\let\if@minipage\iffalse}
-%% jcs\def\@minipagetrue {\global\let\if@minipage\iftrue}
-%% jcs\@minipagefalse
-%% jcs\def\minipage{%
-%% jcs  \@ifnextchar[%]
-%% jcs    \@iminipage
-%% jcs    {\@iiiminipage c\relax[s]}}
-%% jcs\def\@iminipage[#1]{%
-%% jcs  \@ifnextchar[%]
-%% jcs    {\@iiminipage{#1}}%
-%% jcs    {\@iiiminipage{#1}\relax[s]}}
-%% jcs\def\@iiminipage#1[#2]{%
-%% jcs  \@ifnextchar[%]
-%% jcs    {\@iiiminipage{#1}{#2}}%
-%% jcs    {\@iiiminipage{#1}{#2}[#1]}}
-%% jcs\def\@iiiminipage#1#2[#3]#4{%
-%% jcs  \leavevmode
-%% jcs  \@pboxswfalse
-%% jcs  \setlength\@tempdima{#4}%
-%% jcs  \def\@mpargs{{#1}{#2}[#3]{#4}}%
-%% jcs  \setbox\@tempboxa\vbox\bgroup
-%% jcs    \color@begingroup
-%% jcs      \hsize\@tempdima
-%% jcs      \textwidth\hsize \columnwidth\hsize
-%% jcs      \@parboxrestore
-%% jcs      \def\@mpfn{mpfootnote}\def\thempfn{\thempfootnote}\c@mpfootnote\z@
-%% jcs      \let\@footnotetext\@mpfootnotetext
-%% jcs      \let\@listdepth\@mplistdepth \@mplistdepth\z@
-%% jcs      \@minipagerestore
-%% jcs      \@setminipage}
-%% jcs \let\@minipagerestore=\relax
-%% jcs\def\endminipage{%
-%% jcs    \par
-%% jcs    \unskip
-%% jcs    \ifvoid\@mpfootins\else
-%% jcs      \vskip\skip\@mpfootins
-%% jcs      \normalcolor
-%% jcs      \footnoterule
-%% jcs      \unvbox\@mpfootins
-%% jcs    \fi
-%% jcs    \@minipagefalse   %% added 24 May 89
-%% jcs  \color@endgroup
-%% jcs  \egroup
-%% jcs  \expandafter\@iiiparbox\@mpargs{\unvbox\@tempboxa}}
-%% jcs\newcount\@mplistdepth
-%% jcs\newinsert\@mpfootins
-%% jcs\long\def\@mpfootnotetext#1{%
-%% jcs  \global\setbox\@mpfootins\vbox{%
-%% jcs    \unvbox\@mpfootins
-%% jcs    \reset@font\footnotesize
-%% jcs    \hsize\columnwidth
-%% jcs    \@parboxrestore
-%% jcs    \protected@edef\@currentlabel
-%% jcs         {\csname p@mpfootnote\endcsname\@thefnmark}%
-%% jcs    \color@begingroup
-%% jcs      \@makefntext{%
-%% jcs        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
-%% jcs    \color@endgroup}}
-%% jcs\newif\if@pboxsw
 \def\@finalstrut#1{%
   \unskip\ifhmode\nobreak\fi\vrule\@width\z@\@height\z@\@depth\dp#1}
 \def\@@line{\hb@xt@\hsize}
@@ -4641,74 +4496,6 @@
 
 
 
-%% \gdef\qbeziermax{500}
-%% 
-%% \newcommand\qbezier[2][0]{\bezier{#1}#2}
-%% \gdef\bezier#1)#2(#3)#4({\@bezier#1)(#3)(}
-%% \gdef\@bezier#1(#2,#3)(#4,#5)(#6,#7){%
-%%   \ifnum #1=\z@
-%%       \@ovxx #4\unitlength
-%%         \advance\@ovxx -#2\unitlength
-%%         \ifdim \@ovxx<\z@ \@ovxx -\@ovxx \fi
-%%       \@ovdx #6\unitlength
-%%         \advance\@ovdx -#4\unitlength
-%%         \ifdim \@ovdx<\z@ \@ovdx -\@ovdx \fi
-%%         \ifdim \@ovxx<\@ovdx \@ovxx \@ovdx \fi
-%%       \@ovyy #5\unitlength
-%%         \advance\@ovyy -#3\unitlength
-%%         \ifdim \@ovyy<\z@ \@ovyy -\@ovyy \fi
-%%       \@ovdy #7\unitlength
-%%         \advance\@ovdy -#5\unitlength
-%%         \ifdim \@ovdy<\z@  \@ovdy -\@ovdy \fi
-%%         \ifdim \@ovyy<\@ovdy \@ovyy  \@ovdy \fi
-%%       \@multicnt
-%%          \ifdim \@ovxx>\@ovyy \@ovxx \else \@ovyy \fi
-%%       \@ovxx .5\@halfwidth \divide\@multicnt\@ovxx
-%%       \ifnum \qbeziermax<\@multicnt \@multicnt\qbeziermax\relax \fi
-%%   \else \@multicnt#1\relax \fi
-%%   \@tempcnta\@multicnt \advance\@tempcnta\@ne
-%%   \@ovdx #4\unitlength \advance\@ovdx -#2\unitlength
-%%       \multiply\@ovdx \tw@
-%%   \@ovxx #6\unitlength \advance\@ovxx -#2\unitlength
-%%       \advance\@ovxx -\@ovdx \divide\@ovxx\@multicnt
-%%   \@ovdy #5\unitlength \advance\@ovdy -#3\unitlength
-%%        \multiply\@ovdy \tw@
-%%   \@ovyy #7\unitlength \advance\@ovyy -#3\unitlength
-%%       \advance\@ovyy -\@ovdy \divide\@ovyy\@multicnt
-%%   \setbox\@tempboxa\hbox{\vrule \@height\@halfwidth
-%%                                \@depth \@halfwidth
-%%                                \@width \@wholewidth}%
-%%    \put(#2,#3){%
-%%      \count@\z@
-%%      \@whilenum{\count@<\@tempcnta}\do
-%%         {\@xdim\count@\@ovxx
-%%            \advance\@xdim\@ovdx
-%%            \divide\@xdim\@multicnt
-%%            \multiply\@xdim\count@
-%%          \@ydim\count@\@ovyy
-%%             \advance\@ydim\@ovdy
-%%             \divide\@ydim\@multicnt
-%%             \multiply\@ydim\count@
-%%          \raise \@ydim
-%%             \hb@xt@\z@{\kern\@xdim
-%%                         \unhcopy\@tempboxa\hss}%
-%%          \advance\count@\@ne}}}
-%% 
-%% 
-%% \def\qbezier{%
-%%    \br\msitag{\qbezier}%
-%%    \@ifnextchar[{\@qbezier@opt}{\@qbezier}%
-%% }
-%% 
-%% \def\@qbezier@opt[#1]{%
-%%    \msitag{[#1]}%
-%%    \@qbezier
-%% }
-%% 
-%% \def\@qbezier(#1)(#2)(#3){%
-%%    \msitag{(#1)(#2)(#3)}%
-%% }
-
 
 \def\newtheorem#1{%
   \@ifnextchar[{\out@newtheorema{#1}}{\@nthm{#1}}}{}
@@ -4749,78 +4536,6 @@
 \newcount\@secpenalty
 \@secpenalty = -300
 \newif\if@noskipsec \@noskipsectrue
-%%% jcs\def\@startsection#1#2#3#4#5#6{%
-%%% jcs  \if@noskipsec \leavevmode \fi
-%%% jcs  \par
-%%% jcs  \@tempskipa #4\relax
-%%% jcs  \@afterindenttrue
-%%% jcs  \ifdim \@tempskipa <\z@
-%%% jcs    \@tempskipa -\@tempskipa \@afterindentfalse
-%%% jcs  \fi
-%%% jcs  \if@nobreak
-%%% jcs    \everypar{}%
-%%% jcs  \else
-%%% jcs    \addpenalty\@secpenalty\addvspace\@tempskipa
-%%% jcs  \fi
-%%% jcs  \@ifstar
-%%% jcs    {\@ssect{#3}{#4}{#5}{#6}}%
-%%% jcs    {\@dblarg{\@sect{#1}{#2}{#3}{#4}{#5}{#6}}}}
-%%% jcs\def\@sect#1#2#3#4#5#6[#7]#8{%
-%%% jcs  \ifnum #2>\c@secnumdepth
-%%% jcs    \let\@svsec\@empty
-%%% jcs  \else
-%%% jcs    \refstepcounter{#1}%
-%%% jcs    \protected@edef\@svsec{\@seccntformat{#1}\relax}%
-%%% jcs  \fi
-%%% jcs  \@tempskipa #5\relax
-%%% jcs  \ifdim \@tempskipa>\z@
-%%% jcs    \begingroup
-%%% jcs      #6{%
-%%% jcs        \@hangfrom{\hskip #3\relax\@svsec}%
-%%% jcs          \interlinepenalty \@M #8\@@par}%
-%%% jcs    \endgroup
-%%% jcs    \csname #1mark\endcsname{#7}%
-%%% jcs    \addcontentsline{toc}{#1}{%
-%%% jcs      \ifnum #2>\c@secnumdepth \else
-%%% jcs        \protect\numberline{\csname the#1\endcsname}%
-%%% jcs      \fi
-%%% jcs      #7}%
-%%% jcs  \else
-%%% jcs    \def\@svsechd{%
-%%% jcs      #6{\hskip #3\relax
-%%% jcs      \@svsec #8}%
-%%% jcs      \csname #1mark\endcsname{#7}%
-%%% jcs      \addcontentsline{toc}{#1}{%
-%%% jcs        \ifnum #2>\c@secnumdepth \else
-%%% jcs          \protect\numberline{\csname the#1\endcsname}%
-%%% jcs        \fi
-%%% jcs        #7}}%
-%%% jcs  \fi
-%%% jcs  \@xsect{#5}}
-%%% jcs\def\@xsect#1{%
-%%% jcs  \@tempskipa #1\relax
-%%% jcs  \ifdim \@tempskipa>\z@
-%%% jcs    \par \nobreak
-%%% jcs    \vskip \@tempskipa
-%%% jcs    \@afterheading
-%%% jcs  \else
-%%% jcs    \@nobreakfalse
-%%% jcs    \global\@noskipsectrue
-%%% jcs    \everypar{%
-%%% jcs      \if@noskipsec
-%%% jcs        \global\@noskipsecfalse
-%%% jcs       {\setbox\z@\lastbox}%
-%%% jcs        \clubpenalty\@M
-%%% jcs        \begingroup \@svsechd \endgroup
-%%% jcs        \unskip
-%%% jcs        \@tempskipa #1\relax
-%%% jcs        \hskip -\@tempskipa
-%%% jcs      \else
-%%% jcs        \clubpenalty \@clubpenalty
-%%% jcs        \everypar{}%
-%%% jcs      \fi}%
-%%% jcs  \fi
-%%% jcs  \ignorespaces}
 \def\@seccntformat#1{\csname the#1\endcsname\quad}
 \def\@ssect#1#2#3#4#5{%
   \@tempskipa #3\relax
@@ -4898,16 +4613,6 @@
 \def\numberline#1{\hb@xt@\@tempdima{#1\hfil}}
 
 \newcount\@floatpenalty
-%%\def\caption{%
-%%   \ifx\@captype\@undefined
-%%     \@latex@error{\noexpand\caption outside float}\@ehd
-%%     \expandafter\@gobble
-%%   \else
-%%     \refstepcounter\@captype
-%%     \expandafter\@firstofone
-%%   \fi
-%%   {\@dblarg{\@caption\@captype}}%
-%%}
 \msi@pass{\caption}
 \long\def\@caption#1[#2]#3{%
   \par
@@ -5078,23 +4783,6 @@
   \@fpsep \@dblfpsep
   \@fpbot \@dblfpbot
 }
-%% \def\marginpar{%
-%%   \ifhmode
-%%     \@bsphack
-%%     \@floatpenalty -\@Mii
-%%   \else
-%%     \@floatpenalty-\@Miii
-%%   \fi
-%%   \ifinner
-%%     \@parmoderr
-%%     \@floatpenalty\z@
-%%   \else
-%%     \@next\@currbox\@freelist{}{}%
-%%     \@next\@marbox\@freelist{\global\count\@marbox\m@ne}%
-%%        {\@floatpenalty\z@
-%%         \@fltovf\def\@currbox{\@tempboxa}\def\@marbox{\@tempboxa}}%
-%%   \fi
-%%   \@ifnextchar [\@xmpar\@ympar}
 
 \def\marginpar{\@ifnextchar[\@marginparA\@marginparB}
 
@@ -5211,7 +4899,7 @@
 \def\glossary{\@bsphack\begingroup\@sanitize\@index}
 
 
-\def\bibitem{\@ifnextchar[\@lbibitem\@bibitem}
+\def\bibitem{\@ifnextchar[{\@lbibitem}{\begingroup\attrib@text\@bibitem}}
 
 \def\@lbibitem[#1]#2{%
    \toks200{#1}%

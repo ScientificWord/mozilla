@@ -59,7 +59,10 @@ public:
    static void PrintMainList(std::ostream&);
    static void AppendTag(const TokenList* pTL);
    static void AppendTag(const char* cstr);
+   static void KillLastTag(std::string);
+   static void AdjustAttributes(std::string str, std::string newstr);
    static Mode GetMode();
+   static void SetMode(Mode m);
    static bool GetInner();
    static void SetInner(bool);
    static bool Priveledged();
@@ -242,6 +245,44 @@ void Typesetter::AppendTag(const TokenList* pTL)
 @}
 
 @$@<Typesetter implementation@>+=@{@-
+
+extern std::list<std::string> s_tagStack;
+
+void Typesetter::KillLastTag(std::string str)
+{
+  if (Global::msioutput == 0){
+    while (s_tagStack.back() != str){
+      s_pList -> pop_back();
+      s_tagStack.pop_back();
+    }
+    s_pList -> pop_back();
+    s_tagStack.pop_back();
+  }
+}
+
+
+void Typesetter::AdjustAttributes(std::string str, std::string newstr)
+{
+  TeXNodeList::reverse_iterator it = s_pList->rbegin();
+  if (Global::msioutput == 0){
+    bool found = false;
+    while (!found && (it != s_pList -> rend())){
+      TagNode* node = static_cast<TagNode*>(*it);
+      if (node && (node -> m_str == str)){
+        found = true;
+        delete[] node-> m_str;
+        node-> m_str = new char[strlen(node-> m_str)+1];
+        strcpy(node-> m_str,newstr.c_str());
+      }
+      ++it;
+    }
+    
+  }
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
 void Typesetter::AppendTag(const char* cstr)
 {
   if (Global::msioutput == 0){
@@ -259,6 +300,14 @@ Mode Typesetter::GetMode()
    return s_mode;
 }
 @}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::SetMode(Mode m)
+{
+   s_mode = m;
+}
+@}
+
 
 @$@<Typesetter implementation@>+=@{@-
 bool Typesetter::GetInner()
