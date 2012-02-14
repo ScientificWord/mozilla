@@ -1497,12 +1497,7 @@
 \def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{%
        \ifmmode
-         \begingroup\msihmode      
-         \@temptokena={\msitag{##1}}%       
-         \msitag{<texb enc="1" name="#1">}%
-            \msihmode<![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
-         \msitag{</texb>}%
-         \endgroup
+         
        \else
          \@temptokena={\msitag{##1}}%       
          \msitag{<texb enc="1" name="#1">}%
@@ -1523,12 +1518,35 @@
 \def\fbox#1{\ifmmode
               \msitag{\fbox{#1}}%
             \else
+              \msiopentag{fbox}{<fbox>}#1\msiclosetag{fbox}{</fbox>}%
             \fi}
 
 \def\frame#1{\ifmmode
                \msitag{\frame{#1}}%
              \else
+               \msiopentag{frame}{<frame>}#1\msiclosetag{frame}{</frame>}%
              \fi}
+
+
+
+\def\TCItag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
+
+\def\@TCItag#1{\msitag{\TCItag{#1}}}
+\def\@TCItagstar*#1{\msitag{\TCItag{#1}}}
+
+
+
+
+%\def\@TCItag#1{%
+%    \global\tag@true
+%    \global\def\@taggnum{(#1)}%
+%    \global\def\@currentlabel{#1}}
+
+%\def\@TCItagstar*#1{%
+%    \global\tag@true
+%    \global\def\@taggnum{#1}%
+%    \global\def\@currentlabel{#1}}
+
 
 
 
