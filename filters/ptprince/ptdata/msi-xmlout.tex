@@ -662,15 +662,17 @@
   \everypar{\msihmode\br\msiopentag{bodyText}{<bodyText>}}%
 }
 
-
+\msitraceon\msibreak
 \everymath{%
-   \catcode`\&=13 %
+   %\catcode`\&=13 %
+   \catcode`\'=\active
    \aftergroup\endmath
 }
 \def\endmath{}
 
 \everydisplay{%
-  \catcode`\&=13 %
+  %\catcode`\&=13 %
+  \catcode`\'=\active
   \aftergroup\enddisplay
 }
 \def\enddisplay{}
@@ -1534,7 +1536,8 @@
 \def\@TCItag#1{\msitag{\TCItag{#1}}}
 \def\@TCItagstar*#1{\msitag{\TCItag{#1}}}
 
-
+{\catcode`\'=\active
+ \gdef'{^{\prime}}}
 
 
 %\def\@TCItag#1{%
