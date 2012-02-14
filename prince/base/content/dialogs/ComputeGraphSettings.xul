@@ -39,6 +39,8 @@
     buttons="accept,cancel"
     screenX="40"
     screenY="40"
+    width="450"
+    height="600"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
@@ -546,6 +548,8 @@
       </tabpanel>      
     </tabpanels>
   </tabbox>
+  <broadcaster id="role-image" />
+  <broadcaster id="role-textframe" hidden="true"/>
 
   <command id="cmd_editPlot"        oncommand="formatPlot();"/>
   <command id="cmd_newPlot"         oncommand="addPlot();"/>

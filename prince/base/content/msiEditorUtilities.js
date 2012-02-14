@@ -11641,7 +11641,7 @@ function newline(output, currentline, indent)
 }
 
 var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX."+
-  "msidisplay.pagelayout.page.textregion.columns.header.footer."+
+  "msidisplay.pagelayout.page.textregion.columns.header.footer.plot."+
   "titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.";
 function isInlineElement(editor, element)
 {
