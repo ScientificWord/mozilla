@@ -1007,7 +1007,7 @@
 
 
 \def\out@verbatim#1{%
-  \br
+  \br\msihmode
   \msiopentag{verbatim}{<verbatim>}%
   \msiopentag{bodyText}{<bodyText>}%
   #1%
@@ -1020,6 +1020,7 @@
 \endgroup
 
 \def\verb{%
+   \msihmode
    \bgroup
       \catcode`\\=\other
       \catcode`{=\other
