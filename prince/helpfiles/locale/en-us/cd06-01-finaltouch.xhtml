@@ -1,0 +1,106 @@
+<?xml-stylesheet href='css/help.css'?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:sw="http://www.sciword.com/namespaces/sciword">
+<head>
+
+<preamble> 
+<documentclass class="book"/>  
+<usepackage req="amssymb,amsmath"/>
+<usepackage req="xspace"/>
+
+<usepackage req="graphicx"/> 
+<usepackage req="ragged2e"/> 
+<usepackage req="xcolor"/>
+<texb enc="1" name="graphicspath"><![CDATA[\graphicspath {{CreatingDocs60forHelpSmall_tcache/}{CreatingDocs60forHelpSmall_gcache/}{CreatingDocs60forHelpSmall_graphics/}}]]></texb>
+            
+
+<docformat> <colist sides="twoside"/> 
+</docformat>  <preambleTeX><![CDATA[
+\usepackage {bm}
+\usepackage {tabulary}
+\input {tcilatex}]]></preambleTeX> </preamble>
+</head> 
+<body msiSelectionManagerID="137"><section xmlns="http://www.w3.org/1999/xhtml" id="tsid_3141595">
+<sectiontitle>Understanding Differences in Document Production</sectiontitle>
+
+<bodyText>Whether or not you typeset, you can create appealing documents
+with SWP, SW, and SNB. Understanding the differences in the document production
+methods will help you decide when to use each one. </bodyText><vspace dim="\fill " type="customSpace"/><msibreak type="newPage"><newPageRule/></msibreak>
+<subsection id="tsid_3141619">
+<sectiontitle><shortTitle>Typesetting</shortTitle>About Typesetting</sectiontitle>
+
+<bodyText><indexitem req="varioref"><prisec>typesetting</prisec></indexitem>When
+you typeset your document, SWP or SW previews or prints your document after
+compiling it. (Typesetting isn't available in SNB.) The compilation process
+invokes <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+to provide automatic hyphenation, <indexitem req="varioref"><prisec>kerning</prisec></indexitem>kerning,
+<indexitem req="varioref"><prisec>ligatures</prisec></indexitem>ligatures,
+sophisticated <indexitem req="varioref"><prisec>breaks!paragraphs</prisec></indexitem><indexitem req="varioref"><prisec>breaks!line</prisec></indexitem>paragraph
+and line breaking, sophisticated mathematics layout, and other fine formatting
+features. It also provides automatic generation or placement of document
+elements including <indexitem req="varioref"><prisec>table of contents</prisec></indexitem>tables
+of contents, <indexitem req="varioref"><prisec>lists!of figures</prisec></indexitem><indexitem req="varioref"><prisec>lists!of tables</prisec></indexitem>lists
+of figures and tables, <indexitem req="varioref"><prisec>cross-references</prisec></indexitem>cross-references,
+footnotes and margin notes, automatically numbered sections and equations,
+indexes, and bibliographies. </bodyText>
+<bodyText>In Version 6, <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+typesetting yields a <indexitem req="varioref"><prisec>PDF files</prisec></indexitem>Portable
+Document Format, or <smallCaps>pdf</smallCaps> file that contains your typeset
+document embedded with all necessary fonts and with graphics that have been
+converted. Note that the previewed or printed appearance of your document
+depends on specifications initially set by the document shell. These specifications
+have no effect on your document when you don't typeset it. </bodyText>
+<bodyText>You
+can override options specified by the shell and set others using the Document
+Format dialog box accessed via the Typeset menu. Information on doing so
+is given later in this chapter. </bodyText></subsection>
+<subsection id="tsid_3141620">
+<sectiontitle><shortTitle>Direct production</shortTitle>About Direct Production</sectiontitle>
+
+<bodyText><indexitem req="varioref"><prisec>direct printing</prisec></indexitem>When
+you use <indexitem req="varioref"><prisec>Preview command!direct print</prisec></indexitem>direct
+preview or direct print instead of typesetting, the appearance of your document
+depends on specifications in the .css file, which are initially set by the
+document shell you choose. These specifications have no effect on your document
+when you typeset it, although they do control how the document appears on
+the Web. You can modify the specifications as needed using the CSS Editor
+accessed via the Tag menu. </bodyText>
+<bodyText>When you produce your document
+without typesetting it, the program sends the document to a previewer or
+to the printer using many of the same routines with which it displays the
+document in the program window. That means that what you see in the preview
+window or on paper is similar to what you see as you work on your document.
+</bodyText>
+<bodyText>Because the program <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141649"><bodyText><QTR type="QQQMarginheading">Note</QTR></bodyText></note></notewrapper>window
+doesn't reflect the page setup specifications or the print options, you
+don't see page breaks, margins, headers, footers, or <indexitem req="varioref"><prisec>page!numbers</prisec></indexitem>page
+numbers on the screen unless you use Print Preview. </bodyText></subsection>
+<subsection id="tsid_3141621">
+<sectiontitle><shortTitle>Differences in the final product</shortTitle>Differences
+in the Final Product</sectiontitle> 
+<bodyText>We emphasize that producing
+your document with and without typesetting yields noticeably different results.
+While direct production yields a document similar in appearance to what
+you see in the program window, typesetting your document usually yields
+an appearance much different. </bodyText>
+<bodyText>If you have SWP or SW,
+we suggest you follow these general guidelines to choose how to produce
+your document: 
+
+<bulletlist>  
+<bulletListItem><bodyText>When a finely typeset document
+appearance is a high priority, typeset preview or typeset print the document
+with <texb enc="1" name="pdfLaTeX"><![CDATA[\pdfLaTeX{}]]></texb> or <texb enc="1" name="XeTeX"><![CDATA[\XeTeX{}]]></texb>.
+</bodyText></bulletListItem>
+<bulletListItem><bodyText>When a finely typeset
+appearance and automatically generated document elements aren't a priority,
+when you need output <msibreak type="lineBreak" invisDisplay="↵"><br/></msibreak>quickly,
+or when you're producing for Web viewing, use direct print. 
+
+</bodyText>
+
+</bulletListItem>
+</bulletlist>
+ </bodyText>
+</subsection>
+</section></body> 
+</html>
