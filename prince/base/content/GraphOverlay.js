@@ -825,30 +825,43 @@ Frame.prototype = {
           break;
         case "Height":
           height = Number(graph.getGraphAttribute(att));
-//          if (this.getFrameAttribute("border"))
-//          {
-//            height += 2*Number(this.getFrameAttribute("border"));
-//          }
-//          if (this.getFrameAttribute("padding"))
-//          {
-//            height += 2*Number(this.getFrameAttribute("padding"));
-//          }
-          editor.setAttribute(DOMPw, "height", height);
-          pwStyle += "height: "+unitHandler.getValueStringAs(height,"px") + "; ";
+          height = unitHandler.getValueAs(height, "px");
+          x = this.getFrameAttribute("border");
+          if (x) {
+            x = unitHandler.getValueAs(x,"px");
+            x = 2*Math.round(x);
+            height += Number(x);
+          }
+          x = this.getFrameAttribute("padding");
+          if (x) {
+            x = unitHandler.getValueAs(x,"px");
+            x = 2*Math.round(x);
+            height += Number(x);
+          }
+          editor.setAttribute(DOMFrame, "height", height + "px");
+          frmStyle += "height: " + height + "px; ";
+//          editor.setAttribute(DOMPw, "height", height + "px");
+//          pwStyle += "height: "+ height + "px; ";
           break;
         case "Width":
           width = Number(graph.getGraphAttribute(att));
-//          if (this.getFrameAttribute("border"))
-//          {
-//            width += 2*Number(this.getFrameAttribute("border"));
-//          }
-//          if (this.getFrameAttribute("padding"))
-//          {
-//            width += 2*Number(this.getFrameAttribute("padding"));
-//          }
-          editor.setAttribute(DOMPw, "width", width);
-          pwStyle += "width: " + unitHandler.getValueStringAs(width, "px") + "; ";
-          frmStyle += "width: " + unitHandler.getValueStringAs(width, "px") + "; ";
+          width = unitHandler.getValueAs(width, "px");
+          editor.setAttribute(DOMPw, "width", width + "px");
+          pwStyle += "width: "+ width + "px; ";
+          x = this.getFrameAttribute("border");
+          if (x) {
+            x = unitHandler.getValueAs(x,"px");
+            x = 2*Math.round(x);
+            width += Number(x);
+          }
+          x = this.getFrameAttribute("padding");
+          if (x) {
+            x = unitHandler.getValueAs(x,"px");
+            x = 2*Math.round(x);
+            width += Number(x);
+          }
+          editor.setAttribute(DOMFrame, "width", width + "px");
+          frmStyle += "width: " + width + "px; ";
           break;
         case "border":
           editor.setAttribute(DOMPw, "borderw", this.getFrameAttribute(att));
@@ -949,7 +962,6 @@ Frame.prototype = {
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
       objStyle += "width: " + w + "; ";
-      frmStyle += "width: " + w + "; ";
       objStyle += "height: " + h + "; ";
       editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
