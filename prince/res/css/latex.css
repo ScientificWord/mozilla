@@ -236,11 +236,7 @@ plotwrapper {
 	left: 0px;
   -moz-user-select: all;
   -moz-user-focus: normal;
-  padding: 10px;
   cursor: pointer;
-/*  -moz-box-orient: vertical; */
-  background-color: rgb(245,245,255);
-
 }
 
 plotcaption {
