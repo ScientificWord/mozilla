@@ -1,0 +1,181 @@
+<?xml-stylesheet href='css/help.css'?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:sw="http://www.sciword.com/namespaces/sciword">
+<head>
+
+<preamble> 
+<documentclass class="book"/>  
+<usepackage req="amssymb,amsmath"/>
+<usepackage req="xspace"/>
+
+<usepackage req="graphicx"/> 
+<usepackage req="ragged2e"/> 
+<usepackage req="xcolor"/>
+<texb enc="1" name="graphicspath"><![CDATA[\graphicspath {{CreatingDocs60forHelpSmall_tcache/}{CreatingDocs60forHelpSmall_gcache/}{CreatingDocs60forHelpSmall_graphics/}}]]></texb>
+            
+
+<docformat> <colist sides="twoside"/> 
+</docformat>  <preambleTeX><![CDATA[
+\usepackage {bm}
+\usepackage {tabulary}
+\input {tcilatex}]]></preambleTeX> </preamble>
+</head> 
+<body msiSelectionManagerID="149"><section xmlns="http://www.w3.org/1999/xhtml" id="tsid_3141598">
+<sectiontitle>Creating Documents for the Web</sectiontitle> 
+<bodyText>You
+can produce documents for use <indexitem req="varioref"><prisec>online documents</prisec></indexitem>online
+as well as in print. With Version 6, the variety of formats available for
+online use makes it easy to share your documents across platforms, installations,
+and systems, on a network or on the Web. </bodyText>
+<bodyText>When you
+create information for use online rather than in print, the information
+doesn't have to be contained in a single linear document. Instead, from
+any place in your information, you can include hypertext links, or jumps,
+that point readers to key ideas, related topics, and supplementary material
+located inside or outside your document. </bodyText>
+<subsection id="tsid_3141626">
+<sectiontitle><shortTitle>Creating hypertext links</shortTitle>Creating
+Hypertext Links</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>PDF files!hyperlinks</prisec></indexitem><indexitem req="varioref"><prisec>hyperlinks</prisec></indexitem>You
+can create hypertext links to information located in the same document,
+in other SWP, SW, and SNB documents on the current system or network, or
+in documents on the Web. Hypertext links have two parts: the link and the
+target. The link creates a pointer to a target and defines how that pointer
+appears in your document. By default, text for hypertext links appears in
+the document window in color and in print as ordinary text. </bodyText>
+<bodyText>The
+target can be a file, including files on the Web, or an object in a file---such
+as a figure, a section, or equation in SWP, SW, or SNB documents---to which
+you've assigned an identifying key or marker. Specifically, you can create
+links from your document to </bodyText>
+
+<bulletlist>  
+<bulletListItem><bodyText><hspace type="nonBreakingSpace"> </hspace>
+A marker elsewhere in the current document. </bodyText></bulletListItem>
+<bulletListItem><bodyText><hspace type="nonBreakingSpace"> </hspace>
+A different document located on your computer or network, or a marker in
+that document. </bodyText></bulletListItem>
+<bulletListItem><bodyText><hspace type="nonBreakingSpace"> </hspace>
+Any URL location or file on the Web. 
+
+</bodyText>
+
+</bulletListItem>
+</bulletlist>
+ 
+<bodyText>The link specifies the address of the target. <indexitem req="varioref"><prisec>addresses for hypertext links</prisec></indexitem>The
+form of the address differs depending on the target itself and following
+the model used in standard Web browsers. </bodyText>
+<bodyText>When you
+want to link to a place within the current document, you must first establish
+a <indexitem req="varioref"><prisec>online documents!markers</prisec></indexitem>marker
+to which to link. </bodyText>
+<subparagraph id="tsid_3141616">
+<sectiontitle>To add a marker for a future hyperlink</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Click to move the insertion
+point to the place where you'd like to be able to link. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+Insert <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Marker...<hspace type="nonBreakingSpace"> </hspace>
+The Insert Marker dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Provide
+a unique name for the link. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. The marker is added at the insertion point. </bodyText>Markers may be
+used for hyperlink and for cross-reference destinations 
+
+</numberedListItem>
+</numberedlist>
+ </subparagraph>
+<subparagraph id="tsid_3141617">
+<sectiontitle>To create a hyperlink to a marked location</sectiontitle>
+
+<bodyText><indexitem req="varioref"><prisec>online documents!hyperlinks in, creating</prisec></indexitem></bodyText>
+
+<numberedlist>  
+<numberedListItem><bodyText>Click to place the insertion
+point where you want the link to appear. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+Insert <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Hyperlink.
+The Hypelink dialog box appears. 
+<centeredEnv><bodyText>  <hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\hyperlink.png" id="tsid_3141645"/></bodyText></centeredEnv>
+ </bodyText></numberedListItem>
+<numberedListItem><bodyText>Enter text to
+display for the link, if desired. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Select
+the marker to which to link from the Marker or anchor pop-up list. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ 
+<bodyText>Using the Link Location field, you can specify an external web
+page to which to link. Clicking Choose File... allows you to specify a location
+in an external file. </bodyText>
+<subsubsection id="tsid_3141634">
+<sectiontitle>Exporting Web Documents</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>web documents!creating</prisec></indexitem>Exporting
+your SWP, SW, or SNB documents as web files provides a way for others to
+view your documents on a variety of platforms via the Internet. The Web
+export feature in Version 6 provides a fast way to create accurate <indexitem req="varioref"><prisec>online documents!HTML files</prisec></indexitem><smallCaps>html</smallCaps>
+versions of your SWP, SW, or SNB documents. The files can be viewed with
+recent versions of the most popular browsers, provided they display <indexitem req="varioref"><prisec>Mathematics Markup Language (MathML)</prisec></indexitem><texb enc="1" name="MathML"><![CDATA[\MathML{}]]></texb>
+(if your document contains mathematics). Several export formats are available.
+</bodyText>
+<bodyText>When you <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141656"><bodyText>
+<texb enc="1" name="raggedright"><![CDATA[\raggedright]]></texb><QTR type="QQQMarginheading">Note</QTR></bodyText>
+<bodyText><sansSerif>The
+program no longer saves mathematics as graphics. <smallCaps>html</smallCaps>5-compliant
+browsers will display math, as will Firefox or Internet Explorer with the
+Math Player plug-in installed.</sansSerif></bodyText></note></notewrapper>
+<indexitem req="varioref"><prisec>online documents!export defaults</prisec></indexitem>export
+documents as <smallCaps>html</smallCaps> files, the program uses default
+formats for graphics used to represent mathematics, plots, and graphics.
+Also by default, the filter exports any graphics contained in your document
+as PNG files, saving them to a subdirectory of the folder containing the
+<smallCaps>html</smallCaps> file. </bodyText>
+<bodyText>When you export
+to <smallCaps>html</smallCaps>, the program automatically creates ALT text
+for each graphic in your document. By default, the ALT text is the full
+path name of the graphic. </bodyText>
+<bodyText>Because <smallCaps>html</smallCaps>
+files are designed for use online instead of in print, the <smallCaps>html</smallCaps>
+filter doesn't create those document elements that are automatically generated
+when you typeset your document. Those elements, which include indexes, tables
+of contents, section and equation numbers, and internal cross-references,
+don't appear in the <smallCaps>html</smallCaps> file you export. The <smallCaps>html</smallCaps>
+filter completes any cross-references in the document with the key for the
+cross-reference target instead of the automatically generated number for
+the target. </bodyText>
+</subsubsection>
+</subparagraph>
+<subparagraph id="tsid_3141618">
+<sectiontitle>To export a document as an HTML file</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>With the document open, choose
+File <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Export
+to Web... The Export to Web dialog box appears. 
+<centeredEnv><bodyText>  <hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\export_to_web.png" id="tsid_3141646"/></bodyText></centeredEnv>
+ </bodyText></numberedListItem>
+<numberedListItem><bodyText>Enter a name
+for the file. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+whether the file should be saved as a compressed file or as a set of uncompressed
+files in a directory. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. The file is exported. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ 
+</subparagraph>
+
+</subsection>
+</section></body> 
+</html>

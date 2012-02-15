@@ -1,0 +1,159 @@
+<?xml-stylesheet href='css/help.css'?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:sw="http://www.sciword.com/namespaces/sciword">
+<head>
+
+<preamble> 
+<documentclass class="book"/>  
+<usepackage req="amssymb,amsmath"/>
+<usepackage req="xspace"/>
+
+<usepackage req="graphicx"/> 
+<usepackage req="ragged2e"/> 
+<usepackage req="xcolor"/>
+<texb enc="1" name="graphicspath"><![CDATA[\graphicspath {{CreatingDocs60forHelpSmall_tcache/}{CreatingDocs60forHelpSmall_gcache/}{CreatingDocs60forHelpSmall_graphics/}}]]></texb>
+            
+
+<docformat> <colist sides="twoside"/> 
+</docformat>  <preambleTeX><![CDATA[
+\usepackage {bm}
+\usepackage {tabulary}
+\input {tcilatex}]]></preambleTeX> </preamble>
+</head> 
+<body msiSelectionManagerID="72"><section xmlns="http://www.w3.org/1999/xhtml" id="tsid_3141593">
+<sectiontitle>Before You Begin</sectiontitle> 
+<bodyText>Just as grasping
+the concept of a document shell was important to the process of creating
+a new document, understanding how MacKichan software treats different kinds
+of information is important before you enter and edit text. The next sections
+of this chapter note the differences between entering text and entering
+mathematics, and talk about the importance of tagging. </bodyText><vspace dim="\fill " type="customSpace"/><msibreak type="newPage"><newPageRule/></msibreak>
+<subsection id="tsid_3141623">
+<sectiontitle>Text <italics>vs.</italics> Mathematics</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>Text vs. Math</prisec></indexitem>At
+all times during information entry you are either entering <indexitem req="varioref"><prisec>Math/Text!default</prisec></indexitem>text
+or mathematics, and the results obtained from keystrokes and other user
+interface actions will differ depending on whether you are entering text
+or math. Thus we refer to being in either text mode or math mode. The <indexitem req="varioref"><prisec>program!defaults!Math/Text</prisec></indexitem>default
+state is text mode; it is easy to toggle between the two modes and it is
+also easy to determine what mode you are in. Unless you actively change
+to mathematics, the program displays a<hspace type="nonBreakingSpace"> </hspace>``T``
+on the Standard toolbar and </bodyText>
+
+<bulletlist>  
+<bulletListItem><bodyText>Interprets anything you type as
+text, displaying it in black in the program window. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Displays
+alphabetic characters as upright, not italicized. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Inserts
+a space when you press the spacebar. 
+
+</bodyText>
+
+</bulletListItem>
+</bulletlist>
+ 
+<bodyText>When you start the program, the <indexitem req="varioref"><prisec>insertion point!and Math/Text toggle</prisec></indexitem>insertion
+point is in text mode. </bodyText>
+<subparagraph id="tsid_3141602">
+<sectiontitle>To toggle between text and mathematics</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>Math/Text!toggle</prisec></indexitem><indexitem req="varioref"><prisec>modes!toggling between text and math</prisec></indexitem>Click
+the<hspace type="nonBreakingSpace"> </hspace>``T'' on the standard
+toolbar. The<hspace type="nonBreakingSpace"> </hspace>``T'' changes
+to<hspace type="nonBreakingSpace"> </hspace>``M,'' the insertion point
+changes to red and appears between brackets. </bodyText>
+<bodyText>You may
+also choose the Math command from the Insert menu. </bodyText>
+<bodyText>When
+you toggle to mathematics, the Math/Text button changes to an<hspace type="nonBreakingSpace"> </hspace>``M''
+and the program </bodyText>
+
+<bulletlist>  
+<bulletListItem><bodyText>Displays the insertion point between
+brackets for mathematics. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Interprets
+anything you type as mathematics, displaying it in red in the program window.
+</bodyText></bulletListItem>
+<bulletListItem><bodyText>Italicizes alphabetic
+characters and displays numbers upright. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Automatically
+formats mathematical expressions, inserting correct spacing around operators
+such as + and relations such as =. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Advances
+the insertion point to the next mathematical object when you press the spacebar.
+
+
+</bodyText>
+
+</bulletListItem>
+</bulletlist>
+ 
+<bodyText>The remainder of this chapter focuses on entering and editing
+text items. The next chapter discusses how to enter mathematics. </bodyText>
+</subparagraph>
+</subsection>
+<subsection id="tsid_3141624">
+<sectiontitle><shortTitle>Tagging</shortTitle>About Tagging</sectiontitle>
+
+<bodyText><indexitem req="varioref"><prisec>text!tagging</prisec></indexitem>In
+MacKichan software, all information is <indexitem req="varioref"><prisec>tags!and text</prisec></indexitem>tagged.
+As was stated in the New User's section of the first chapter, this tagging
+is semantic, or meaningful, in nature. The tags you apply to your content
+not only establish the document's structure but also consistently define
+its printed, online, or typeset appearance, all according to the properties
+associated with each tag. Tag properties are determined by the document's
+style, a collection of commands that define the way the document appears
+when you display it on the screen or in a browser, and when you produce
+it without typesetting. In SWP and SW, tag properties are also determined
+by the document's typesetting specifications, items generally set using
+the Typeset &gt; Document Format command. </bodyText>
+<bodyText>In general
+there are four types of tags, set by using the four drop-down menus on the
+standard toolbar: text; paragraph or list; <indexitem req="varioref"><prisec>division tags</prisec></indexitem>division
+or environment; and frontmatter. In a sense these are organized in descending
+order of the level of organization to which they apply. <indexitem req="varioref"><prisec>fonts!text tags</prisec></indexitem>Text
+tags can apply to entire blocks of text or to a single character; <indexitem req="varioref"><prisec>paragraph!tags</prisec></indexitem>paragraph
+tags apply to an entire paragraph, structure tags apply to multiple paragraphs.
+</bodyText>
+<bodyText>The exact set <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141650"><bodyText><QTR type="QQQMarginheading">Note</QTR></bodyText></note></notewrapper>
+of tags you have available at any time depends upon your original choice
+of document shell. This is one of the reasons why it is important to choose
+an appropriate shell. </bodyText>
+<bodyText>In general, you use text tags
+for a word or phrase you wish to set off from the rest of text; for example,
+using <indexitem req="varioref"><prisec>italics!on Text tag menu</prisec></indexitem>italics
+to indicate a foreign word or phrase. Use paragraph tags to indicate the
+purpose of an entire paragraph: to serve as the heading for a section, to
+serve as a <indexitem req="varioref"><prisec>body tags</prisec></indexitem>body
+paragraph, a <indexitem req="varioref"><prisec>bibliography!paragraph tag</prisec></indexitem>bibliography
+entry, and so on. These will also affect a paragraph's <indexitem req="varioref"><prisec>alignment!paragraphs</prisec></indexitem>alignment.
+<indexitem req="varioref"><prisec>section!tags</prisec></indexitem>Section
+tags define the purpose of entire blocks of paragraphs: as a subsection
+in the current section, as a <indexitem req="varioref"><prisec>preface</prisec></indexitem>preface,
+and the like. There is a <indexitem req="varioref"><prisec>remove section tag</prisec></indexitem>(removesection)
+tag to take off a previous section choice. Use a frontmatter tag at the
+appropriate place in a document to automatically generate items such as
+the <indexitem req="varioref"><prisec>title page</prisec></indexitem>title
+page, <indexitem req="varioref"><prisec>table of contents</prisec></indexitem>table
+of contents, or a list of figures. (Appearance of such items is controlled
+by the shell and may be adjusted via the Document Format dialog box.) </bodyText>
+<subparagraph id="tsid_3141603">
+<sectiontitle>To apply a tag to a part of a document</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>tags!applying</prisec></indexitem></bodyText>
+
+<numberedlist>  
+<numberedListItem><bodyText><indexitem req="varioref"><prisec>body tags!applying</prisec></indexitem>Click
+to move the <indexitem req="varioref"><prisec>insertion point!moving</prisec></indexitem>insertion
+point to the relevant part OR </bodyText>Click-and-drag to select a section
+of text. </numberedListItem>
+<numberedListItem><bodyText>Choose the desired
+tag from the menu. </bodyText>Additional information about applying specific
+kinds of tags is provided later in the chapter. 
+
+</numberedListItem>
+</numberedlist>
+ 
+</subparagraph>
+
+</subsection>
+</section></body> 
+</html>
