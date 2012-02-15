@@ -1491,7 +1491,7 @@
 \def\MSITeXButton#1{%
     \expandafter\def\csname#1\endcsname{
        \msihmode
-       \msitag{<texb enc="1" name="#1">}%
+       \msitag{<texb enc="1" name="}#1\msitag{">}%
           <![CDATA[\expandafter\string\csname#1\endcsname]]>%
        \msitag{</texb>}}}
 
@@ -1503,7 +1503,7 @@
          
        \else
          \@temptokena={\msitag{##1}}%       
-         \msitag{<texb enc="1" name="#1">}%
+         \msitag{<texb enc="1" name="}#1\msitag{">}%
             <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
          \msitag{</texb>}%
        \fi}}
