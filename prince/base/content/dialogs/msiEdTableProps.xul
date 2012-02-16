@@ -65,7 +65,7 @@
                   <label value="&tableRows.label;"/>
                   <!-- textbox type="number" class="medwidth" id="tableRowCount" value="0"/ -->
                   <label value="xxx" id="tableRowNum"/>
-                  <spacer class="spacer"/>
+                  <spacer class="spacer" width="50"/>
                   <label id="tableRowHeightLabel" value="&tableRowHeight.label;" control="tableRowHeight" accesskey="&tableRowHeight.accesskey;"/>
                   <textbox type="number" class="medwidth" id="tableRowHeight" value="0"/>
                   <menulist id="tableUnitsList" oncommand="onChangeTableUnits();"/>
