@@ -58,19 +58,25 @@
                 <column/>
                 <column/>
                 <column/>
+                <column/>
               </columns>
               <rows>
                 <row align="center">
-                  <label value="&tableRows.label;" control="tableRowCount"  accesskey="&tableRows.accesskey;"/>
-                  <textbox type="number" class="medwidth" id="tableRowCount" value="0"/>
+                  <label value="&tableRows.label;"/>
+                  <!-- textbox type="number" class="medwidth" id="tableRowCount" value="0"/ -->
+                  <label value="xxx" id="tableRowNum"/>
+                  <spacer class="spacer" width="50"/>
                   <label id="tableRowHeightLabel" value="&tableRowHeight.label;" control="tableRowHeight" accesskey="&tableRowHeight.accesskey;"/>
                   <textbox type="number" class="medwidth" id="tableRowHeight" value="0"/>
                   <menulist id="tableUnitsList" oncommand="onChangeTableUnits();"/>
                 </row>
                 <row align="center">
-                  <label value="&tableColumns.label;" control="tableColumnCount"  accesskey="&tableColumns.accesskey;"/>
-                  <textbox type="number" class="medwidth" id="tableColumnCount" value="0"/>
+                  <label value="&tableColumns.label;"/>
+                  <!-- textbox type="number" class="medwidth" id="tableColumnCount" value="0"/ -->
+                  <label value="xx" id="tableColNum"/>
+                  <spacer class="spacer"/>
                   <label value="&tableWidth.label;" control="tableWidth" accesskey="&tableWidth.accesskey;"/>
+                  <checkbox id="autoWidthCheckbox" label="&autoWidth.label;" accesskey="&autoWidth.accesskey;" checked="true" oncommand="checkEnableWidthControls();"/>
                   <textbox type="number" class="medwidth" id="tableWidth" value="0"/>
                 </row>
               </rows>
