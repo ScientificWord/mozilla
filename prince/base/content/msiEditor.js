@@ -5056,6 +5056,8 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 //  if (nodeData)
 //    element = nodeData.theNode;
 
+  if (!element.ownerDocument)
+    return null;
   if (bindingParent = element.ownerDocument.getBindingParent(element))
     return msiCreatePropertiesObjectDataFromNode(bindingParent, editorElement, bIncludeParaAndStructure);
   if (element && element.nodeName)
