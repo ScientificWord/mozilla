@@ -104,12 +104,15 @@ function setVariablesForControls()
   gDialog.CellsTab =  document.getElementById("CellsTab");
   gDialog.LinesTab =  document.getElementById("LinesTab");
 
-  gDialog.tableRowCount = document.getElementById("tableRowCount");
-  gDialog.tableColumnCount = document.getElementById("tableColumnCount");
+//  gDialog.tableRowCount = document.getElementById("tableRowCount");
+//  gDialog.tableColumnCount = document.getElementById("tableColumnCount");
+  gDialog.tableRowsNumber = document.getElementById("tableRowNum");
+  gDialog.tableColsNumber = document.getElementById("tableColNum");
 
   gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
   gDialog.tableWidth =  document.getElementById("tableWidth");
   gDialog.tableUnitsList = document.getElementById("tableUnitsList");
+  gDialog.tableWidthAutoCheckbox = document.getElementById("autoWidthCheckbox");
 
   gDialog.tableLocationList =  document.getElementById("tableLocationList");
   gDialog.floatLocationList =  document.getElementById("floatLocationList");
@@ -560,6 +563,8 @@ function initTablePanel()
   var colCountObj = { value: 0 };
   var widthVal;
   var heightVal;
+  var widthStr = "";
+  var heightStr = "";
   var re;
   var match;
   var currUnit = "in";
@@ -567,7 +572,10 @@ function initTablePanel()
   var tableStyle = gTableElement.getAttribute("style");
   if (gTableElement.hasAttribute("width"))
   {
-    widthVal = tableUnitsHandler.getNumberAndUnitFromString(gTableElement.getAttribute("width"));
+    widthStr = gTableElement.getAttribute("width");
+    widthVal = tableUnitsHandler.getNumberAndUnitFromString(widthStr);
+    if (!widthVal)
+      widthVal = tableUnitsHandler.getNumberAndUnitFromString(widthStr + "pt");
   }
   else if (gTableElement.hasAttribute("style"))
   {
@@ -578,7 +586,10 @@ function initTablePanel()
   }
   if (gTableElement.hasAttribute("height"))
   {
-    heightVal = tableUnitsHandler.getNumberAndUnitFromString(gTableElement.getAttribute("height"));
+    heightStr = gTableElement.getAttribute("height");
+    heightVal = tableUnitsHandler.getNumberAndUnitFromString(heightStr);
+    if (!heightVal)
+      heightVal = tableUnitsHandler.getNumberAndUnitFromString(heightStr + "pt");
   }
   else if (gTableElement.hasAttribute("style"))
   {
@@ -590,9 +601,15 @@ function initTablePanel()
 
   tableUnitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
   if (widthVal)
+  {
     currUnit = widthVal.unit;
+    gDialog.tableWidthAutoCheckbox.checked = false;
+  }
+  else
+    gDialog.tableWidthAutoCheckbox.checked = true;
   tableUnitsHandler.initCurrentUnit(currUnit);
   tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, currUnit);
+  checkEnableWidthControls();
 
   try {
     gActiveEditor.getTableSize(gTableElement, rowCountObj, colCountObj);
@@ -602,8 +619,10 @@ function initTablePanel()
   gLastRowIndex = gRowCount-1;
   gColCount = colCountObj.value;
   gLastColIndex = gColCount-1;
-  gDialog.tableRowCount.value = gRowCount;
-  gDialog.tableColumnCount.value = gColCount; 
+//  gDialog.tableRowCount.value = gRowCount;
+//  gDialog.tableColumnCount.value = gColCount; 
+  gDialog.tableRowsNumber.value = " " + gRowCount;
+  gDialog.tableColsNumber.value = " " + gColCount;
   if (widthVal && widthVal.number) gDialog.tableWidth.value = widthVal.number;
   if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
   gDialog.baselineList.value = gTableBaseline;
@@ -1469,6 +1488,12 @@ function DisableRadioGroup(aGroup)
   aGroup.disabled = true;
 }
 
+function checkEnableWidthControls()
+{
+  var bDisabled = gDialog.tableWidthAutoCheckbox.checked;
+  enableControlsByID(["tableWidth"], !bDisabled);
+}
+
 function EnableDisableControls()
 {
   var bIsWholeCols = false;
@@ -1513,6 +1538,7 @@ function EnableDisableControls()
 //      gDialog.CellHeightCheckbox.disabled = true;
 //    }
   }
+  checkEnableWidthControls();
 }
 
 //function CloneAttribute(destElement, srcElement, attr)
@@ -1749,7 +1775,10 @@ function ApplyTableAttributes()
   var pos = gDialog.tableLocationList.value;
   var float = gDialog.floatLocationList.value;  
   gTableElement.setAttribute("req","tabulary");
-//  gTableElement.setAttribute("width",tableUnitsHandler.getValueAs(gDialog.tableWidth.value, "pt")+"pt");
+  if (gDialog.tableWidthAutoCheckbox.checked)
+    gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
+  else
+    gTableElement.setAttribute("width",tableUnitsHandler.getValueAs(gDialog.tableWidth.value, "pt")+"pt");
   if (pos) {
     if (pos == "inline" || pos == "display") float = "";
     if (float != "") {

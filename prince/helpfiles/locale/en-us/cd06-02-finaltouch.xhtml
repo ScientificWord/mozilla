@@ -1,0 +1,614 @@
+<?xml-stylesheet href='css/help.css'?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:sw="http://www.sciword.com/namespaces/sciword">
+<head>
+
+<preamble> 
+<documentclass class="book"/>  
+<usepackage req="amssymb,amsmath"/>
+<usepackage req="xspace"/>
+
+<usepackage req="graphicx"/> 
+<usepackage req="ragged2e"/> 
+<usepackage req="xcolor"/>
+<texb enc="1" name="graphicspath"><![CDATA[\graphicspath {{CreatingDocs60forHelpSmall_tcache/}{CreatingDocs60forHelpSmall_gcache/}{CreatingDocs60forHelpSmall_graphics/}}]]></texb>
+            
+
+<docformat> <colist sides="twoside"/> 
+</docformat>  <preambleTeX><![CDATA[
+\usepackage {bm}
+\usepackage {tabulary}
+\input {tcilatex}]]></preambleTeX> </preamble>
+</head> 
+<body msiSelectionManagerID="141"><section xmlns="http://www.w3.org/1999/xhtml" id="tsid_3141596">
+<sectiontitle>Readying a Document for Production</sectiontitle> 
+<bodyText>Once
+you understand the differences between direct and typeset production, you
+can begin getting a document ready for completion. This includes adding
+items such as index entries and cross references, preparing a bibliography,
+and adjusting the document's appearance. </bodyText>
+<subsection id="tsid_3141622">
+<sectiontitle><shortTitle>Adding typeset objects</shortTitle>Adding Typeset
+Objects</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>typeset objects!inserting</prisec></indexitem>Version
+6 gives you the tools to easily create indexes, cross-references, and citations.
+Commands for creating all such entries are found on the Insert menu. </bodyText>
+<subsubsection id="tsid_3141628">
+<sectiontitle>Index Entries</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>indexing</prisec></indexitem>Add
+index entries to a document using the Index Entry dialog box accessed via
+Insert <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Typeset
+Objects. </bodyText>
+<bodyText>If you wish to specify different item levels,
+you can use the Secondary and Tertiary index entry fields. For example,
+if the primary entry is Files, the secondary entry might be Opening, and
+the tertiary entry might be With Scientific Workplace. This allows you to
+create indexes that are organized and easier for a reader to search. For
+instance: </bodyText><hspace dim="0.0em" type="noIndent"/>
+<table cellspacing="2" cellpadding="2" border="1" opt="l" id="tsid_3141647"><tbody><tr><td><bodyText>
+<hspace type="twoEmSpace" dim="2em"/>Files<hspace type="nonBreakingSpace"> </hspace>
+</bodyText>
+</td></tr><tr><td><bodyText>
+<hspace type="twoEmSpace" dim="2em"/>
+<hspace type="emSpace" dim="1em"/>Opening<hspace type="nonBreakingSpace"> </hspace>
+</bodyText>
+</td></tr><tr><td><bodyText>
+<hspace type="twoEmSpace" dim="2em"/>
+<hspace type="emSpace" dim="1em"/>
+<hspace type="emSpace" dim="1em"/>with
+Scientific Workplace<hspace type="nonBreakingSpace"> </hspace>
+</bodyText>
+</td></tr><tr><td><bodyText>
+<hspace type="twoEmSpace" dim="2em"/>
+<hspace type="emSpace" dim="1em"/>
+<hspace type="emSpace" dim="1em"/>with
+another program<hspace type="nonBreakingSpace"> </hspace>
+</bodyText>
+</td></tr><tr><td><bodyText>
+<hspace type="twoEmSpace" dim="2em"/>
+<hspace type="emSpace" dim="1em"/>Saving
+
+</bodyText>
+</td></tr></tbody></table>
+<subparagraph id="tsid_3141601">
+<sectiontitle>To add an index entry</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Move the insertion point to
+the location you wish to index. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+Insert <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Typeset
+Object <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Index
+Entry. <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141650"><bodyText><vspace dim="\marginparvspace " type="customSpace"/>
+<object data="graphics\index_entry.png" id="tsid_3141635"/> </bodyText></note></notewrapper>
+The Index Entry dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+and enter the form for the Primary Index Entry and the Secondary and Tertiary
+entries, if desired. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Specify
+the locator (page number or <indexitem req="varioref"><prisec>indexing!cross-references</prisec></indexitem>cross-reference)
+and the style. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. The entry is created. </bodyText>The appearance of the index itself
+is controlled by your document shell and by settings in the Document Format
+dialog under the Typeset menu. For instance, you can choose whether to actually
+display an index and also whether to show entries in your draft (working)
+document. 
+
+</numberedListItem>
+</numberedlist>
+ 
+</subparagraph>
+</subsubsection>
+<subsubsection id="tsid_3141629">
+<sectiontitle>Cross-References</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>cross-references</prisec></indexitem>Cross-references
+are useful tools to point readers in the direction of material elsewhere
+in a manuscript that has bearing upon the topic immediately at hand. Cross-references
+in Version 6 are defined based on keys that you must previously define using
+the Insert Marker dialog box. </bodyText>
+<subparagraph id="tsid_3141602">
+<sectiontitle>To insert a cross-reference</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Move to the location you want
+to reference. Access the Marker dialog box, enter the desired key for the
+location, and click OK. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Move
+the insertion point <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141651"><bodyText><vspace dim="\marginparvspace " type="customSpace"/>
+<object data="graphics\cross_reference.png" id="tsid_3141636"/> </bodyText></note></notewrapper>
+to the location for your cross-reference. Choose Insert <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Typeset
+Object <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Cross
+Reference. The Cross Reference dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+the previously defined key from the Key drop-down list. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+whether to use a page number or an object counter. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. The cross-reference is established. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ 
+</subparagraph>
+</subsubsection>
+<subsubsection id="tsid_3141630">
+<sectiontitle>Preparing a Bibliography</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>bibliography</prisec></indexitem></bodyText>
+<bodyText>Bibliographies,
+or reference lists, usually appear at the end of a document. The body of
+the document can contain citations, which are cross-references to the individual
+items in the bibliography list. When you typeset your document, the formatter
+automatically generates the cross-references between the citations and the
+bibliography item to which they refer. The appearance of the bibliography
+and the citations depends on the typesetting specifications for the shell.
+You can create a bibliography manually or automatically using <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>.
+</bodyText>
+<paragraph id="tsid_3141593">
+<sectiontitle><shortTitle>Creating manual bibliographies</shortTitle>Creating
+Manual Bibliographies</sectiontitle> 
+<bodyText>A manual bibliography, which
+works just like a series of <msibreak type="lineBreak" invisDisplay="↵"><br/></msibreak>cross-references,
+is convenient when the list of references is short and you don't plan to
+use those references in other articles or books. You must format entries
+yourself, a disadvantage if you later decide to <msibreak type="lineBreak" invisDisplay="↵"><br/></msibreak>change
+the style of the bibliography to suit a different requirement. For example,
+if you format the bibliography of an article for a journal that requires
+book titles in italics, then later decide to submit the article to a different
+journal that requires those same titles in boldface, you must make the format
+changes manually. </bodyText>
+<subparagraph id="tsid_3141603">
+<sectiontitle>To establish a manual bibliography</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose Typeset <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Bibliography
+Choice... The Bibliography <msibreak type="lineBreak" invisDisplay="↵"><br/></msibreak>Choice
+dialog box appears. </bodyText><indexitem req="varioref"><prisec>bibliography!manual</prisec></indexitem>
+</numberedListItem>
+<numberedListItem><bodyText>Choose Manual entry. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ </subparagraph>
+<subparagraph id="tsid_3141604">
+<sectiontitle>To create a list of bibliography items</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Move the insertion point to
+the end of the line that is to precede the bibliography and press enter.
+</bodyText></numberedListItem>
+<numberedListItem><bodyText>In the paragraph
+tag menu, choose the tag bibitem. The program displays a dialog box so that
+you can assign a key and an optional label to the item. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Enter
+a unique key for the item. </bodyText>You use this name when you create
+a citation for the bibliography item. Click the arrow next to the Key box
+to display a list of keys already in use in your document, or press down
+arrow to scroll through the list. The keys don't appear when you typeset
+your document. </numberedListItem>
+<numberedListItem><bodyText>If you want
+the item to appear in the list with a label instead of the number automatically
+generated for the item, enter the label in the Label box. </bodyText>The
+label can include mathematics. If you include a label for a list item, the
+program continues sequential numbering with the next list item. The label
+can also be used to create author/date citations. </numberedListItem>
+<numberedListItem><bodyText>Choose
+OK. </bodyText>In the document window, the key for the item appears in the
+lead-in box. </numberedListItem>
+<numberedListItem><bodyText>Type the bibliographic
+information for the item, using text tags to format the information correctly.
+</bodyText>In the document window, the information appears next to the lead-in
+box. </numberedListItem>
+<numberedListItem><bodyText>If you want to create
+another bibliographic item, press enter and repeat steps 3--6. </bodyText></numberedListItem>
+<numberedListItem><bodyText>At
+the end of the bibliography, press enter to complete the last item. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+Cancel and then apply the Remove Item Tag to complete the list. </bodyText>
+
+</numberedListItem>
+</numberedlist>
+ </subparagraph>
+<subparagraph id="tsid_3141605">
+<sectiontitle>To create a citation for a manually created bibliography item</sectiontitle>
+
+<numberedlist> 
+<numberedListItem><bodyText>Place the insertion point where
+you want the citation to appear. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+Insert <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Typeset
+Object <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Citation.
+The Citation dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Enter
+the key for the bibliographic item you want to cite. </bodyText>Click the
+arrow next to the Key box to display a list of all keys defined for the
+document. </numberedListItem>
+<numberedListItem><bodyText>If you want to
+add a comment to the citation, enter it in the Remark box. </bodyText>Comments,
+which can contain both text and mathematics, appear only when you typeset
+preview or print your document. They don't appear in the document window.
+</numberedListItem>
+<numberedListItem><bodyText>Choose OK. </bodyText>
+
+</numberedListItem>
+</numberedlist>
+ 
+<bodyText>The citation is displayed on the screen in a small box containing
+the word Cite and the key you entered. When you typeset the document, the
+formatter creates the correct reference by replacing the key with the number
+of the keyed bibliography item. If you also entered a comment, it appears
+after the number. </bodyText>
+<bodyText>The typesetting specifications for
+the shell determine the citation appearance in print. </bodyText>
+</subparagraph>
+</paragraph>
+<paragraph id="tsid_3141594">
+<sectiontitle><shortTitle>Creating automatic bibliographies</shortTitle>Creating
+Automatic Bibliographies</sectiontitle> 
+<bodyText>You can create an automatic
+bibliography with <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>.
+A <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliography is convenient if you have a long list of references that you
+plan to use in other articles or books, because you don't have to create
+the bibliography list yourself. <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+generates the list automatically by extracting references from a database
+using the citations you insert into your document. <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliographies, which are ASCII files that you create and edit with a standard
+text editor, can be used as often as you like in other documents. Also,
+you can change the appearance of a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliography automatically by specifying a different bibliography style.
+Creating a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliography involves these steps: </bodyText>
+
+<bulletlist>  
+<bulletListItem><bodyText>Creating or obtaining a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+database. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Specifying
+a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliography and bibliography style, and inserting an instruction to include
+the bibliography. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Creating
+a series of citations in the body of your document. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Generating
+the bibliography. 
+
+</bodyText>
+
+</bulletListItem>
+</bulletlist>
+ 
+<bodyText>When you typeset compile your document to generate a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliography, the program passes the document through <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+which generates the bibliography by extracting the cited references from
+the database. The file is formatted according to the specified bibliography
+style. The next time you typeset the document, the formatter includes the
+bibliography file in the document, formatting the citations according to
+the typesetting specifications. </bodyText>
+<bodyText>Before you can create
+a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliography for your document, you must first create or obtain a database
+of bibliographic items in <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+form. </bodyText>
+<subparagraph id="tsid_3141606">
+<sectiontitle>To establish an automatic bibliography</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose Typeset <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Bibliography
+Choice... The Bibliography Choice dialog box appears. </bodyText><indexitem req="varioref"><prisec>bibliography!BibTeX@\BibTeX </prisec></indexitem><indexitem req="varioref"><prisec>bibliography!automatic</prisec></indexitem>
+</numberedListItem>
+<numberedListItem><bodyText>Choose BibTeX. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ </subparagraph>
+<subparagraph id="tsid_3141607">
+<sectiontitle>To insert an instruction to include the bibliography</sectiontitle>
+
+<numberedlist> 
+<numberedListItem><bodyText>Move the insertion point to
+the end of the line that is to precede the bibliography and press enter.
+</bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose Insert
+<texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Typeset
+Object <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Bibliography
+to open the BibTeX Bibliography dialog box. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Select
+the <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+database files containing your references. </bodyText>You can select more
+than one database. </numberedListItem>
+<numberedListItem><bodyText>Select
+a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+style for formatting the references. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+OK. </bodyText>The program inserts into your document a gray [BibTeX] box.
+
+
+</numberedListItem>
+</numberedlist>
+ 
+<bodyText>Creating a citation for a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+reference ensures that it will be included in the bibliography list when
+you generate the bibliography. You can also use the citation process to
+include a reference in the bibliography without citing it in the body of
+your document. </bodyText>
+<bodyText>Specifying a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliography changes the Citation dialog box so that you can select citations
+from a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+database. If your database of bibliography entries is very large, finding
+the reference you want to cite can be time-consuming. You can narrow your
+search by specifying search criteria, or key filters, for the database items,
+then choosing the reference you want from among those that fit the filters.
+</bodyText>
+<bodyText>If you add the authordate1-4, chicago, or harvard
+package to your document, you can create author/date citations for <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+bibliographies. </bodyText></subparagraph>
+<subparagraph id="tsid_3141608">
+<sectiontitle>To create a citation for an item in a BibTeX database</sectiontitle>
+
+<numberedlist>  
+<numberedListItem><bodyText>Place the insertion point in
+your document where you want the citation to appear. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+Insert <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Typeset
+Object <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Citation.
+The Citation dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>If
+the selected database is the one you want and you know the key for the database
+item you want to cite, enter it in the Key box. Otherwise, select the key
+for the item directly from a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+database: </bodyText>
+
+<numberedlist>  
+<numberedListItem><bodyText>Scroll the Database File list
+to select one of the databases listed. If necessary, choose Select BibTeX
+Directory to navigate to the directory containing your <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
+database. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+View Keys to display a Keys dialog box. The box lists the keys for those
+items in the selected database that satisfy the current search criteria.
+</bodyText></numberedListItem>
+<numberedListItem><bodyText>Scroll the list
+to select the item you want. </bodyText>If the item doesn't appear on the
+list, change the search criteria. </numberedListItem>
+<numberedListItem><bodyText>If
+you want to view the full text of the item, choose View Entry. </bodyText>The
+program displays the item in a BibTeX Database Entry dialog box. </numberedListItem>
+<numberedListItem><bodyText>Choose
+Cancel to return to the list of keys. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ </numberedListItem>
+<numberedListItem><bodyText>When you have selected
+the item you want, choose OK to return to the BibTeX Citation dialog box.
+</bodyText></numberedListItem>
+<numberedListItem><bodyText>If you want to
+add a text comment to the citation, enter it in the Remark box. </bodyText>Comments
+appear only when you typeset, not in the document window. </numberedListItem>
+<numberedListItem><bodyText>If
+you want the reference to be uncited---that is, you want it to appear in
+the bibliography without a corresponding citation in your document---check
+the box labeled Bibliography Entry Only - No Citation. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose
+OK to return to your document. </bodyText>The program inserts a citation
+for the item whose key you selected. 
+
+</numberedListItem>
+</numberedlist>
+ 
+</subparagraph>
+
+</paragraph>
+</subsubsection>
+<subsubsection id="tsid_3141631">
+<sectiontitle>Adding a<hspace type="nonBreakingSpace"> </hspace><texb enc="1" name="TeXhd"><![CDATA[\TeXhd{}]]></texb>
+Field</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>TeX fields</prisec></indexitem>If
+you are proficient with <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>,
+you can insert a<hspace type="nonBreakingSpace"> </hspace><texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+field wherever you like to achieve certain special effects. For instance,
+the drop capital letters used in this document were created with objects
+that reference the lettrine package. </bodyText>
+<subparagraph id="tsid_3141609">
+<sectiontitle>To add a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+field</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose Insert <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Typeset
+Object <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Tex
+Field. The Tex Button Contents dialog box appears. 
+<centeredEnv><bodyText>  <hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\tex_field.png" id="tsid_3141637"/></bodyText></centeredEnv>
+ </bodyText></numberedListItem>
+<numberedListItem><bodyText>Enter a name
+for the field, if desired. This can make it easier to locate fields for
+reuse. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Specify
+whether it uses a specific package and any options for that package. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Enter
+the code for the field. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. The<hspace type="nonBreakingSpace"> </hspace><texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+field is inserted. </bodyText>The following illustration shows the dialog
+box as filled out for the dropped-capital field. 
+<centeredEnv><bodyText>  <hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\tex_field_contents.png" id="tsid_3141638"/></bodyText></centeredEnv>
+ 
+
+</numberedListItem>
+</numberedlist>
+ 
+</subparagraph>
+
+</subsubsection>
+</subsection>
+<subsection id="tsid_3141623">
+<sectiontitle><shortTitle>Adjusting a document's appearance</shortTitle>Adjusting
+a Document's Appearance</sectiontitle> 
+<bodyText>Although much of a document's
+appearance is established by the document shell, you have certain choices
+available to you for either supplementing or overriding the shell defaults.
+You can choose to specify<hspace type="nonBreakingSpace"> </hspace><texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+options and add packages to give you additional formatting capabilities.
+You can also use the <indexitem req="varioref"><prisec>page!formatting</prisec></indexitem>Document
+Format dialog box to <indexitem req="varioref"><prisec>shells!overriding defaults</prisec></indexitem>override
+default options and set preferences for how a document appears. In Version
+6, virtually all of the ways to set a document's appearance outside of shell
+choice are controlled with the Document Format dialog box.<hspace type="nonBreakingSpace"> </hspace><br/></bodyText>
+<subsubsection id="tsid_3141632">
+<sectiontitle>Using Options and Packages</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>class options</prisec></indexitem><indexitem req="varioref"><prisec>packages</prisec></indexitem>To
+specify shell and package options, and to call for the use of desired packages,
+use the Options and Packages dialog box accessed via the Typeset menu. </bodyText>
+<subparagraph id="tsid_3141610">
+<sectiontitle>To modify document class options</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose Typeset <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Options
+and Packages... <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141652"><bodyText><vspace dim="\marginparvspace " type="customSpace"/>
+<object data="graphics\options.png" id="tsid_3141639"/> </bodyText></note></notewrapper> The
+<indexitem req="varioref"><prisec>Options and Packages!using</prisec></indexitem>Options
+and Packages dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>On
+the Class Options tab, click Modify. The 
+Class 
+Options dialog box appears. 
+<centeredEnv><bodyText>  <hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\class_options.png" id="tsid_3141640"/></bodyText></centeredEnv>
+ </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click a category
+on the left to see the options available for that category. Click an option
+on the left to select the option you want for that category. In the dialog
+shown above, the 10pt. option has been selected for the body font point
+size. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click OK
+on the 
+Class 
+Options dialog. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK on the Options and Packages dialog. Your choice is put into effect. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ </subparagraph>
+<subparagraph id="tsid_3141611">
+<sectiontitle>To modify package options</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose Typeset <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Options
+and Packages. The Options and Packages dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+the Package Options tab. 
+<centeredEnv><bodyText>  <hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\package_options.png" id="tsid_3141641"/></bodyText></centeredEnv>
+ </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click to set
+a package in use. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+Modify Packages to access the Modify packages dialog box. Make desired changes
+and click OK. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK on the Options and Packages dialog box to put changes into effect. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ </subparagraph>
+<subparagraph id="tsid_3141612">
+<sectiontitle>To add a package</sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose Typeset <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Options
+and Packages. The Options and Packages dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+the Package Options tab. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+Add Package... <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141653"><bodyText><vspace dim="\marginparvspace " type="customSpace"/>
+<object data="graphics\add_package.png" id="tsid_3141642"/> </bodyText></note></notewrapper>
+The Add Package dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+in the list to choose the package to add. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. </bodyText></numberedListItem>
+<numberedListItem><bodyText>If desired,
+select package options for the package you just added. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK on the Options and Packages dialog box. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ 
+</subparagraph>
+</subsubsection>
+<subsubsection id="tsid_3141633">
+<sectiontitle>Setting the Document Format</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>documents!format</prisec></indexitem>Version
+6 has centralized almost all of a document's appearance options in the Document
+Format dialog box. Using this dialog, you may: </bodyText>
+
+<bulletlist>  
+<bulletListItem><bodyText>Specify font choices for specific
+contexts </bodyText></bulletListItem>
+<bulletListItem><bodyText>Control
+the appearance of front-and <indexitem req="varioref"><prisec>backmatter</prisec></indexitem>backmatter
+items. </bodyText></bulletListItem>
+<bulletListItem><bodyText>Set the document
+<indexitem req="varioref"><prisec>margins</prisec></indexitem>margins, page
+size, and other page layout items </bodyText></bulletListItem>
+<bulletListItem><bodyText><indexitem req="varioref"><prisec>headers</prisec></indexitem>Set
+the appearance of headers and footers </bodyText></bulletListItem>
+<bulletListItem><bodyText>Choose
+footnotes or endnotes </bodyText></bulletListItem>
+<bulletListItem><bodyText>Turn
+section numbering on and off and specify the style of numbering to use </bodyText></bulletListItem>
+<bulletListItem><bodyText>Set
+the number of <indexitem req="varioref"><prisec>columns</prisec></indexitem>columns
+
+
+</bodyText>
+
+</bulletListItem>
+</bulletlist>
+ and much more. 
+<subparagraph id="tsid_3141613">
+<sectiontitle>To set document formatting </sectiontitle> 
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose Typeset <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Document
+Format. The Document Format dialog box appears. </bodyText><hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\document_format_full.png" id="tsid_3141643"/></numberedListItem>
+<numberedListItem><bodyText>When
+the dialog box first appears, options on the first three tabs are likely
+to be grayed out. To specify that you want to be able to change them, click
+the relevant override checkbox at the top of the tab. </bodyText></numberedListItem>
+<numberedListItem><bodyText>If
+you wish to use OpenType fonts or Unicode for a variety of languages, click
+the <texb enc="1" name="XeLaTeX"><![CDATA[\XeLaTeX{}]]></texb> option. </bodyText></numberedListItem>
+<numberedListItem><bodyText>There
+are tabs for general settings, page layout, fonts, and sections. Make your
+desired choices for each tab. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK to put your choices into effect. </bodyText>Your changes will <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141654"><bodyText><QTR type="QQQMarginheading">Note</QTR></bodyText></note></notewrapper>appear
+in the typeset version of the document. 
+
+</numberedListItem>
+</numberedlist>
+ 
+</subparagraph>
+
+</subsubsection>
+
+</subsection>
+</section></body> 
+</html>
