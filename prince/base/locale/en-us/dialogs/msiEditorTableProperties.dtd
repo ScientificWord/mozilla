@@ -69,6 +69,8 @@
 <!ENTITY tableRowHeight.accesskey         "h">
 <!ENTITY tableWidth.label                 "Table width">
 <!ENTITY tableWidth.accesskey             "w">
+<!ENTITY autoWidth.label                  "Auto">
+<!ENTITY autoWidth.accesskey              "A">
 <!ENTITY tableLocation.label              "Table location">
 <!ENTITY tableLocation.accesskey          "l">
 <!ENTITY location.label                   "Location">

@@ -2473,6 +2473,7 @@ function msiSoftSave( editor, editorElement, noTeX)
       s.addRange(range);
     }
   }
+  checkPackageDependenciesForEditor(editor);
 
   var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
   // check if the file is to be saved is a format we don't understand; if so, bail
