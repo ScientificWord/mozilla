@@ -548,6 +548,7 @@ function exportTeX()
   var editor = GetCurrentEditor();
   if (!editor) return;
   uri = editor.document.documentURI;
+  checkPackageDependenciesForEditor(editor);
   var file = msiFileFromFileURL(msiURIFromString(uri));
   var fileName = file.parent.leafName.replace(/_work$/i, ".tex");
   fileName = fileName.replace(" ", "_");
@@ -750,6 +751,7 @@ function compileDocument()
     if (texprogNode.hasAttribute("prog")) compiler = texprogNode.getAttribute("prog");
   }
   var editorElement = msiGetTopLevelEditorElement();
+  checkPackageDependenciesForEditor(editor);
   var pdfViewer = document.getElementById("preview-frame");
   if (pdfViewer && (pdfViewer.src != "about:blank"))
     pdfViewer.loadURI("about:blank");   // this releases the currently displayed pdf preview.
@@ -892,6 +894,7 @@ function compileTeX(compiler)
     document.getElementById("preview-frame").loadURI("about:blank");
   // now save this TeX string and run TeX on it.  
     var editorElement = msiGetTopLevelEditorElement();
+    checkPackageDependenciesForEditor(editor);
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
     var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
