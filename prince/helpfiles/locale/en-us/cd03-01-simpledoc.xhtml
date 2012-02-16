@@ -1,0 +1,169 @@
+<?xml-stylesheet href='css/help.css'?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:sw="http://www.sciword.com/namespaces/sciword">
+<head>
+
+<preamble> 
+<documentclass class="book"/>  
+<usepackage req="amssymb,amsmath"/>
+<usepackage req="xspace"/>
+
+<usepackage req="graphicx"/> 
+<usepackage req="ragged2e"/> 
+<usepackage req="xcolor"/>
+<texb enc="1" name="graphicspath"><![CDATA[\graphicspath {{CreatingDocs60forHelpSmall_tcache/}{CreatingDocs60forHelpSmall_gcache/}{CreatingDocs60forHelpSmall_graphics/}}]]></texb>
+            
+
+<docformat> <colist sides="twoside"/> 
+</docformat>  <preambleTeX><![CDATA[
+\usepackage {bm}
+\usepackage {tabulary}
+\input {tcilatex}]]></preambleTeX> </preamble>
+</head> 
+<body msiSelectionManagerID="42"><section xmlns="http://www.w3.org/1999/xhtml" id="tsid_3141593">
+<sectiontitle>About Document Shells</sectiontitle> 
+<bodyText>Every new
+document is created from a <indexitem req="varioref"><prisec>documents!shells</prisec></indexitem>document
+shell. The program includes a number of shells that produce both general-purpose
+documents and documents designed to meet the specific publication requirements
+of various universities and scholarly journals. Document shells, which have
+a file extension of .shl, are installed in the Shells folder of your program
+folder. </bodyText>
+<bodyText>The <indexitem req="varioref"><prisec>shells!choosing</prisec></indexitem>shells
+have different purposes. Some have been designed to create articles; others,
+to create books, reports, or other types of documents. Some of the shells
+in the international folder support creating documents with <indexitem req="varioref"><prisec>fonts!non-Roman</prisec></indexitem>non-Roman
+character sets, including Chinese, Korean, and Japanese. These documents
+must be produced by typesetting with <texb enc="1" name="XeTeX"><![CDATA[\XeTeX{}]]></texb>.
+</bodyText>
+<bodyText>Some shells contain predefined information that you
+can use or modify. The <indexitem req="varioref"><prisec>tag properties!determined by document style</prisec></indexitem>tags
+available for structuring documents differ from shell to shell. Each shell
+has several sets of appearance specification files. The program uses some
+of the files when you display the document in the program window, view it
+as an <texb enc="1" name="XHTML"><![CDATA[\XHTML{}]]></texb> file, or print
+it directly from the program window without typesetting. These files include
+the style specification (.css file) and the print options. The program uses
+the typesetting specifications associated with the shell only when you export
+the document as a .tex file and produce a typeset file (in SWP or SW). </bodyText>
+<bodyText>Occasionally,
+you may want to use a shell that isn't provided as part of the program installation.
+Please note that although you may be able to create a document using a shell
+from another source, we support only those documents created with shells
+and specifications that are provided with the program. </bodyText>
+<bodyText>Choosing
+an appropriate <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141620"><bodyText><QTR type="QQQMarginheading">Please
+Note</QTR></bodyText></note></notewrapper> shell is an important decision.
+It's easier to choose a shell that has all the formats and capabilities
+you'll need right at the start rather than trying to add capabilities later
+as you discover you need them. </bodyText>
+<bodyText>Documents shells provided
+with your program installation are organized by type: articles, books, theses,
+etc. This helps make it easier to choose what shell to use based on what
+type of document you're creating. Are you writing an article for publication?
+Look in the Articles folder and see if the organization (publisher, journal,
+etc.) for whom you're writing has a predefined shell. Are you writing a
+book? Look in the Books folder for a shell adapted to the kind of book you're
+writing. If a specific shell does not exist for what you're writing, there
+are generalized article, book, and thesis shells you can use. </bodyText>
+<subsection id="tsid_3141606">
+<sectiontitle><shortTitle>Standard document shell</shortTitle>Standard Document
+Shell</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>standard document shell</prisec></indexitem><indexitem req="varioref"><prisec>shells!standard document</prisec></indexitem>When
+you first open the program, a template article appears using the <typewriter>Standard_LaTeX_Article</typewriter>
+shell. If this shell meets your needs, you can begin working in it immediately.
+<centeredEnv><bodyText><object data="graphics\standard_document_shell.png" id="tsid_3141609"/></bodyText></centeredEnv>
+ </bodyText></subsection>
+<subsection id="tsid_3141607">
+<sectiontitle><shortTitle>Opening a new document</shortTitle>Opening a New
+Document</sectiontitle> 
+<bodyText>In most cases, the <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141621"><bodyText><vspace dim="\marginparvspace " type="customSpace"/>
+<object data="graphics\open_new.png" id="tsid_3141610"/> </bodyText></note></notewrapper>
+default document shell will not be appropriate for your needs. You need
+to <indexitem req="varioref"><prisec>creating!documents</prisec></indexitem>create
+a <indexitem req="varioref"><prisec>documents!new</prisec></indexitem>new
+document and choose a new shell for it. </bodyText>
+<subparagraph id="tsid_3141598">
+<sectiontitle>To create a new document</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>documents!creating</prisec></indexitem></bodyText>
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose File <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>New
+Document... The Select Shell for New Document dialog box appears. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Navigate
+in the Shell Directories pane until you find the shell you wish to use.
+Click to select it in the Shell Files pane. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. A new document appears using the shell you chose. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ After you create the initial document, you can set a few of its <indexitem req="varioref"><prisec>saving options!new document</prisec></indexitem>initial
+properties using the <indexitem req="varioref"><prisec>Document Info!dialog box</prisec></indexitem>Document
+Info dialog box. Among other things, you can set the document title. </subparagraph>
+<subparagraph id="tsid_3141599">
+<sectiontitle>To give a new document a title</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>documents!title</prisec></indexitem></bodyText>
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose File <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Document
+Info... The Document Info dialog box appears. 
+<centeredEnv><bodyText>  <hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\document_info.png" id="tsid_3141611"/></bodyText></centeredEnv>
+ </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click to place
+the cursor in the Title field at the bottom of the items on the General
+tab. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Enter the
+title for the document. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+OK. The title for the document will now appear in the title bar of the main
+window. <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141622"><bodyText><QTR type="QQQMarginheading">Tip</QTR></bodyText></note></notewrapper>
+Try clicking the different tabs on the Document Info dialog box to see the
+various items you can define for a document. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ 
+<bodyText>Having created a new document and given it a title, you can
+proceed to save it for the first time. </bodyText></subparagraph>
+<subparagraph id="tsid_3141600">
+<sectiontitle>To save a new document</sectiontitle> 
+<bodyText><indexitem req="varioref"><prisec>documents!saving</prisec></indexitem></bodyText>
+
+<numberedlist>  
+<numberedListItem><bodyText>Choose File <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Save...
+The first time you do this in a <indexitem req="varioref"><prisec>documents!saving</prisec></indexitem>new
+document, the Save Document As dialog box appears. 
+<centeredEnv><bodyText>  <hspace dim="-\leftmargini " type="customSpace"/><object data="graphics\save_document_as.png" id="tsid_3141612"/></bodyText></centeredEnv>
+  
+</bodyText>
+</numberedListItem>
+<numberedListItem><bodyText>Enter a valid file name
+for the document. (Remember not to use characters that may be reserved by
+your operating system, such as * and /.) </bodyText></numberedListItem>
+<numberedListItem><bodyText>Use
+the directory pane to navigate to a different location if you wish to save
+the file elsewhere from the default location shown. </bodyText></numberedListItem>
+<numberedListItem><bodyText>Click
+Save. The file name for the document will now appear in the title bar of
+the main window. 
+
+</bodyText>
+
+</numberedListItem>
+</numberedlist>
+ 
+<bodyText>When your editing work is done, you can either choose File <texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Close
+to leave the document without exiting the program, or you can choose File
+<texb enc="1" name="textrightarrow"><![CDATA[\textrightarrow]]></texb>Quit
+to close the document and the program together. On the Macintosh <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141623"><bodyText><QTR type="QQQMarginheading">Macintosh
+Users Note</QTR></bodyText></note></notewrapper>the Quit command is found
+on the SWP (Application) menu. </bodyText>
+</subparagraph>
+
+</subsection>
+</section></body> 
+</html>
