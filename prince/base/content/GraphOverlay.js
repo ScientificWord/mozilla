@@ -29,7 +29,7 @@ Graph.prototype = {
                               "FocalPointX", "FocalPointX", "FocalPointZ", "UpVectorX", "UpVectorY",
                               "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp", 
                               "OrientationTiltTurn"],
-  GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace"],
+  GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace", "Caption"],
   constructor: Graph,
   ser: new XMLSerializer(),
   addPlot: function (plot) {
@@ -130,13 +130,14 @@ Graph.prototype = {
     // Otherwise, create one suitable for putting into the document
     // An optional second argument is the number of the one plot to include for query
     var htmlns = "http://www.w3.org/1999/xhtml";
+    var editorElement = msiGetActiveEditorElement();
+    var document = editorElement.contentDocument;
     var DOMGraph = document.createElementNS(htmlns, "graph");
     var DOMGs = document.createElementNS(htmlns, "graphSpec");
     var DOMFrame = document.createElementNS(htmlns, "msiframe");
     var DOMPw = document.createElementNS(htmlns, "plotwrapper");
     var DOMObj = document.createElementNS(htmlns, "object");
     var DOMCaption = document.createElementNS(htmlns,"imagecaption");
-    var editorElement = msiGetActiveEditorElement();
     DOMGraph.appendChild(DOMGs);
     DOMGraph.appendChild(DOMFrame);
     DOMFrame.appendChild(DOMPw);
@@ -146,12 +147,13 @@ Graph.prototype = {
     return DOMGraph;
   },
   reviseGraphDOMElement: function (DOMgraph, editorElement) {
+    var htmlns = "http://www.w3.org/1999/xhtml";
     var editor = msiGetEditor(editorElement);
     var DOMGs = DOMgraph.getElementsByTagName("graphSpec")[0];
     var DOMPw = DOMgraph.getElementsByTagName("plotwrapper")[0];
     var DOMFrame = DOMgraph.getElementsByTagName("msiframe")[0];
-    var DOMCaption = DOMgraph.getElementsByTagName("imagecaption")[0];
-     var attributes, att, attr, value, defaultValue, alist, i, domPlots, plot, status, img;
+    var DOMCaption = DOMFrame.getElementsByTagName("imagecaption")[0];
+    var attr, value, alist, i, domPlots, plot, status, caption, captionloc, child;
     this.frame.reviseFrameDOMElement(DOMFrame, DOMPw, editorElement);
 
     // loop through graph attributes and insert them
@@ -168,6 +170,7 @@ Graph.prototype = {
         DOMGs.setAttribute(attr, value);
       }
     }
+    
     // if the optional plot number was specified, just include one plot
     // otherwise, for each plot, create a <plot> element
     // Clear out current plots first
@@ -184,13 +187,38 @@ Graph.prototype = {
         DOMGs.appendChild(plot.createPlotDOMElement(document, false, plot));
       }
     }
-    // this.frame.reviseFrameDOMElement(DOMFrame, DOMPw, editorElement);
+    captionloc = this.getGraphAttribute("CaptionPlace");
+    switch (captionloc) {
+      case "labelabove": DOMFrame.setAttribute("captionloc","above"); break;
+      case "labelbelow": DOMFrame.setAttribute("captionloc","below"); break;
+      default: DOMFrame.removeAttribute("captionloc"); break;
+    }
+    caption = this.getGraphAttribute("Caption");
+    if (caption && caption.length > 0) {
+      if (DOMCaption) {
+        while (DOMCaption.firstChild) {
+          editor.deleteNode(DOMCaption.firstChild);
+        }
+      }
+      else {
+        DOMCaption = document.createElementNS(htmlns,"imagecaption");
+        DOMFrame.appendChild(DOMCaption);
+      }
+      caption="<wrapper>"+caption+"</wrapper>";
+      insertXML(editor, caption, DOMCaption, 0);
+    }
   },
   extractGraphAttributes: function (DOMGraph) {
-    var key, value, i, plot, plotno, DomGs, DOMPlots, DOMFrame, DOMPw;
+    var key, value, i, plot, plotno, DOMGs, DOMPlots, DOMFrame, DOMPw;
     DOMGs = DOMGraph.getElementsByTagName("graphSpec");
     if (DOMGs.length > 0) {
       DOMGs = DOMGs[0];
+    }
+    else return;
+    for (i = 0; i < DOMGs.attributes.length; i++) {
+      key = DOMGs.attributes[i].nodeName;
+      value = DOMGs.attributes[i].nodeValue;
+      this[key] = value;
     }
     DOMFrame = DOMGraph.getElementsByTagName("msiframe");
     if (DOMFrame.length > 0) {
@@ -200,11 +228,6 @@ Graph.prototype = {
     if (DOMPw.length > 0) {
       DOMPw = DOMPw[0];
     }    
-    for (i = 0; i < DOMGs.attributes.length; i++) {
-      key = DOMGs.attributes[i].nodeName;
-      value = DOMGs.attributes[i].nodeValue;
-      this[key] = value;
-    }
     DOMPlots = DOMGraph.getElementsByTagName("plot");
     for (i = 0; i < DOMPlots.length; i++) {
       plot = new Plot();
@@ -212,23 +235,29 @@ Graph.prototype = {
       plot.extractPlotAttributes(DOMPlots[i]);
       plot.attributes.PlotStatus = "Inited";
     }
-    if (DOMFrame.hasAttribute("pos")) {
-      this.frame.setFrameAttribute("placement", DOMFrame.getAttribute("pos"));
+    if (DOMFrame){
+      this.frame.extractFrameAttributes(DOMFrame, DOMPw);
     }
-    if (DOMPw) {
-      if (DOMPw.hasAttribute("borderw")) {
-        this.frame.setFrameAttribute("border", DOMPw.getAttribute("borderw"));
-      }
-      if (DOMPw.hasAttribute("padding")) {
-        this.frame.setFrameAttribute("padding", DOMPw.getAttribute("padding"));
-      }
-      if (DOMPw.hasAttribute("background-color")) {
-        this.frame.setFrameAttribute("BGColor", DOMPw.getAttribute("background-color"));
-      }
-      if (DOMPw.hasAttribute("border-color")) {
-        this.frame.setFrameAttribute("borderColor", DOMPw.getAttribute("border-color"));
-      }
+    this.extractCaption(DOMGraph);
+  },
+  extractCaption: function (DOMGraph) {
+    var DOMCaption, basenode, serialized;
+    DOMCaption = DOMGraph.getElementsByTagName("imagecaption");
+    if (DOMCaption.length > 0) {
+      DOMCaption = DOMCaption[0];
     }
+    else {
+      return;
+    }
+    basenode = DOMCaption.getElementsByTagName("imagecaption");
+    if (basenode.length > 0) {
+      basenode = basenode[0];
+    } 
+    else {
+      return;
+    }
+    serialized = this.ser.serializeToString(basenode);
+    this.setGraphAttribute("Caption", serialized);
   },
   getDefaultValue: function (key) {
     // get defaults from preference system, or if not there, from hardcoded list
@@ -691,10 +720,9 @@ function Frame(parent) {
 Frame.prototype = {
   FRAMEATTRIBUTES: ["placement", "floatPlacement", "border",
           "HMargin", "VMargin", "padding", "BGColor", "borderColor",
-          "placeLocation"],
-//  FLOATLOCATIONS: ["floatLocation.forceHere", "floatLocation.here", "floatLocation.pageFloats",
-//                    "floatLocation.topPage", "floatLocation.bottomPage"],
-  FRAMEDOMATTRIBUTES: ["units", "sidemargin", "topmargin", "pos", "placeLocation", "placement"],
+          "placeLocation", "textalignment"],
+  FRAMEDOMATTRIBUTES: ["units", "sidemargin", "topmargin", "pos", "placeLocation", "placement",
+    "captionloc", "textalignment"],
   WRAPPERATTRIBUTES: ["borderw", "padding", "imageheight", "imagewidth", "border-color", "background-color"],
   isModified: function (x) {
     return (this.modFlag[x]);
@@ -729,7 +757,7 @@ Frame.prototype = {
   },
   extractFrameAttributes: function (DOMFrame, DOMPw) {
     var i, att, attlist, len;
-    var graph = DOMFrame.parentNode;
+    var graph = this.parent;
     attlist = this.FRAMEDOMATTRIBUTES;
     len = attlist.length;
     for (i = 0; i < len; i++) {
@@ -760,35 +788,50 @@ Frame.prototype = {
               this.setFrameAttribute("floatPlacement", DOMFrame.getAttribute(att));
             }
             break;
+          case "textalignment":
+            if (DOMFrame.getAttribute(att)) {
+              this.setFrameAttribute(att, DOMFrame.getAttribute(att));
+            }
+            break;
+          case "captionloc":
+            if (DOMFrame.hasAttribute("captionloc")) {
+              graph.setGraphAttribute("CaptionPlace", "label"+DOMFrame.getAttribute("captionloc"));
+            }
+            else {
+              graph.setGraphAttribute("CaptionPlace", "labelnone");
+            }
+            break;
           default: break;
         }
       }
     }
     attlist = this.WRAPPERATTRIBUTES;
     len = attlist.length;
+    if (DOMPw){
     for (i = 0; i < len; i++) {
       att = attlist[i];
-      if (DOMPw.hasAttribute(att)) {
-        switch (att) {
-          case "borderw":
-            this.setFrameAttribute("border", DOMPw.getAttribute(att));
-            break;
-          case "padding":
-            this.setFrameAttribute("padding", DOMPw.getAttribute(att));
-            break;
-//          case "imageheight":
-//            graph.setGraphAttribute("Height", DOMPw.getAttribute(att));
-//            break;
-//          case "imagewidth":
-//            this.setFrameAttribute("Width", DOMPw.getAttribute(att));
-//            break;
-          case "border-color":
-            this.setFrameAttribute("borderColor", DOMPw.getAttribute(att));
-            break;
-          case "background-color":
-            this.setFrameAttribute("BGColor", DOMPw.getAttribute(att));
-            break;
-          default: break;
+        if (DOMPw.hasAttribute(att)) {
+          switch (att) {
+            case "borderw":
+              this.setFrameAttribute("border", DOMPw.getAttribute(att));
+              break;
+            case "padding":
+              this.setFrameAttribute("padding", DOMPw.getAttribute(att));
+              break;
+//            case "imageheight":
+//              graph.setGraphAttribute("Height", DOMPw.getAttribute(att));
+//              break;
+//            case "imagewidth":
+//              this.setFrameAttribute("Width", DOMPw.getAttribute(att));
+//              break;
+            case "border-color":
+              this.setFrameAttribute("borderColor", DOMPw.getAttribute(att));
+              break;
+            case "background-color":
+              this.setFrameAttribute("BGColor", DOMPw.getAttribute(att));
+              break;
+            default: break;
+          }
         }
       }
     }
@@ -803,7 +846,7 @@ Frame.prototype = {
   },
   reviseFrameDOMElement: function (DOMFrame, DOMPw, editorElement) {
     var editor = msiGetEditor(editorElement);
-    var attributes, i, j, att, graph, units, height, width, floatLocation, floattts, fltatt, ch;
+    var attributes, i, j, att, graph, units, height, width, floatLocation, floattts, fltatt, ch, captionlocation;
     var DOMObj = DOMPw.getElementsByTagName("object")[0];
     var frmStyle = "";
     var pwStyle = "";
@@ -885,9 +928,17 @@ Frame.prototype = {
         case "placement":
           editor.setAttribute(DOMFrame, "pos", this.getFrameAttribute(att));
           break;
+        case "textalignment":
+          editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
+          frmStyle += "text-align: "+ this.getFrameAttribute(att)+"; ";
+          break;
         case "placeLocation":
           floatLocation = this.getFrameAttribute(att);
           editor.setAttribute(DOMFrame, "placeLocation", floatLocation);
+          break;
+        case "captionloc":
+          captionlocation = this.getFrameAttribute(att);
+          editor.setAttribute(DOMFrame, att, captionlocation);
           break;
         case "floatPlacement":
           if (this.getFrameAttribute("placement") === "float") 
