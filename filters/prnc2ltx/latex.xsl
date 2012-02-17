@@ -316,9 +316,9 @@ should not be done under some conditions -->
 \listoffigures <xsl:text/>
 </xsl:template>
 
-<!--xsl:template match="html:makelot">
+<xsl:template match="html:makelot">
 \listoftables <xsl:text/>
-</xsl:template -->
+</xsl:template>
 
 <xsl:template match="html:date">
 \date{<xsl:apply-templates/>}<xsl:text/>
