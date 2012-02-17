@@ -9,13 +9,26 @@
 
 <xsl:template name="buildtable">
   <xsl:variable name="theTable" select="." />
+  <xsl:variable name="embedded" select="count(ancestor::html:table)"/>
+  <xsl:variable name="tabularType">
+    <xsl:choose>
+      <xsl:when test="@width &gt; 0">
+        <xsl:choose>
+          <xsl:when test="@req='tabulary'">tabulary</xsl:when>
+          <xsl:otherwise><xsl:text>tabular*</xsl:text></xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>tabular</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="cellData.tf">
     <xsl:call-template name="collectCellData" />
   </xsl:variable>
   <xsl:variable name="cellData" select="exsl:node-set($cellData.tf)"/>
-\begin{tabulary}<xsl:choose>
+  <xsl:text xml:space="preserve">
+</xsl:text><xsl:if test="$embedded!=0">{</xsl:if>\begin{<xsl:value-of select="$tabularType"/>}<xsl:choose>
     <xsl:when test="@width &gt; 0">{<xsl:value-of select="@width"/>pt}</xsl:when>
-    <xsl:otherwise>{500pt}</xsl:otherwise>
+    <xsl:otherwise></xsl:otherwise>
   </xsl:choose>
   <xsl:choose>
     <xsl:when test="@valign = 'bottom'"><xsl:text>[b]</xsl:text></xsl:when>
@@ -42,6 +55,7 @@
   <xsl:text>{</xsl:text>
   <xsl:for-each select="$preambleData/columnData">
     <xsl:call-template name="outputPreamble">
+      <xsl:with-param name="tabularType" select="$tabularType"/>
       <xsl:with-param name="columnData" select="." />
       <xsl:with-param name="whichCol" select="position() - 1" />
     </xsl:call-template>
@@ -95,7 +109,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
-\end{tabulary}
+\end{<xsl:value-of select="$tabularType"/>}<xsl:if test="$embedded">}</xsl:if>
 </xsl:template>    
 
 <xsl:template match="html:table">
@@ -277,11 +291,22 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:variable name="tabularAlignmentMap" select="'lcrj'" />
+<xsl:variable name="tabularyAlignmentMap" select="'LCRJ'" />
+
 <xsl:template name="outputPreamble">
+  <xsl:param name="tabularType" select="tabular"/>
   <xsl:param name="columnData" />
   <xsl:param name="whichCol" select="0" />
   <xsl:if test="$columnData/@alignment">
-    <xsl:value-of select="translate(substring(normalize-space($columnData/@alignment),1,1),'lcrj','LCRJ')" />
+    <xsl:choose>
+      <xsl:when test="$tabularType='tabulary'">
+        <xsl:value-of select="translate(substring(normalize-space($columnData/@alignment),1,1),'lcrj','LCRJ')" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="translate(substring(normalize-space($columnData/@alignment),1,1),'LCRJ','lcrj')" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:if>
   <xsl:if test="string-length($columnData/@width)">
     <xsl:text>{</xsl:text><xsl:value-of select="$columnData/@width" /><xsl:text>mm}</xsl:text>
