@@ -452,7 +452,7 @@
    \ifmmode
      \string\TeXButton{#1}{#2}%
    \else
-     \msitag{<texb enc="1" name="#1"><![CDATA[#2]]></texb>}%
+     \msihmode\msitag{<texb enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
    \fi}
 
 
