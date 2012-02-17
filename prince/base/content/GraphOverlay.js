@@ -26,7 +26,7 @@ Graph.prototype = {
                               "Units", "AxesType", "EqualScaling", "EnableTicks", "XTickCount",
                               "YTickCount", "AxesTips", "GridLines", "BGColor", "Dimension",
                               "AxisScale", "CameraLocationX", "CameraLocationY", "CameraLocationZ",
-                              "FocalPointX", "FocalPointX", "FocalPointZ", "UpVectorX", "UpVectorY",
+                              "FocalPointX", "FocalPointY", "FocalPointZ", "UpVectorX", "UpVectorY",
                               "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp", 
                               "OrientationTiltTurn"],
   GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace", "Caption"],
@@ -336,7 +336,12 @@ Graph.prototype = {
     file.initWithPath( makeRelPathAbsolute(filename, editorElement)) ;
     if (file.exists)
     {
+      try {
       file.remove(false);
+      }
+      catch (e) 
+      {
+      }
     }
     this.setGraphAttribute("ImageFile", newfilename);
     //  reset ImageFile property to relative path
@@ -1128,11 +1133,11 @@ function nonmodalRecreateGraph(graph, DOMGraph, editorElement) {
   // parent (i.e., deleted). No parent, no changes to the picture.
   try {
 
-    var parent = window.arguments[1].parentNode;
-    var editor = msiGetEditor(editorElement);
-    var dg = graph.createGraphDOMElement(false);
-    insertGraph(DOMGraph, graph, editorElement);
-    editor.deleteNode(DOMGraph);
+//    var parent = DOMGraph.parentNode;
+//    var editor = msiGetEditor(editorElement);
+    graph.reviseGraphDOMElement(DOMGraph, editorElement);
+//    insertGraph(DOMGraph, graph, editorElement);
+//    editor.deleteNode(DOMGraph);
   }
   catch (e) {
     dump("ERROR: Recreate Graph failed, line 715 in GraphOverlay.js\n");
