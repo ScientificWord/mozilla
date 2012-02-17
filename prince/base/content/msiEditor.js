@@ -4398,7 +4398,7 @@ function RebuildFromSource(aDoc, editorElement, aContext)
   }
 //  NotifierUtils.notify("afterLeavingSourceMode");
   window.content.focus();
-  editorElement().focus();
+  editorElement.focus();
 }
 
 
@@ -4504,7 +4504,7 @@ function msiSetEditMode(mode, editorElement)
       var preambles = editor.document.getElementsByTagName("preamble");
       if (preambles.length > 0)
       {
-        var titlenodelist = editor.preambles[0].getElementsByTagName("title");
+        var titlenodelist =  preambles[0].getElementsByTagName("title");
         if (titlenodelist.length > 0)
         {
           var titleNode = titlenodelist.item(0);
