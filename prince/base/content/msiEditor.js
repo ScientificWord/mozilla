@@ -3144,21 +3144,26 @@ function msiEditorNextField(bShift, editorElement)
 //    var anOffset = 0;
 //    if (!bShift || !bCollapsed)
 //      anOffset = msiNavigationUtils.lastOffset(aChildNode);
-    var aTableCell = findCellFromPositionInTableOrMatrix(aNode, totalRange.endContainer, totalRange.endOffset, bShift, anEditor);
+    var bIsTableEditor = false;
+    if ((anEditor instanceof nsITableEditor))
+      bIsTableEditor = true;
+    dump("In msiEditor.js, tableDoNextField(), anEditor " + (bIsTableEditor ? "is" : "is NOT") + " an instance of nsITableEditor.\n");
+    var aTableCell = msiFindCellFromPositionInTableOrMatrix(aNode, totalRange.endContainer, totalRange.endOffset, bShift, anEditor);
 //    if (!bCollapsed)
 //      return aTableCell;
     var nRowObj = {value : 0};
     var nColObj = {value : 0};
-    editor.getTableSize(theTable, nRowObj, nColObj);
+    anEditor.getTableSize(aNode, nRowObj, nColObj);
     var numRows = nRowObj.value;
     var numCols = nColObj.value;
-    editor.getCellIndexes(aTableCell, nRowObj, nColObj);
+    anEditor.getCellIndexes(aTableCell, nRowObj, nColObj);
     var nRow = nRowObj.value;
     var nCol = nColObj.value;
     var startCol = nCol;
     var startRow = nRow;
     var selNode = null;
     var selInfo = null;
+    var bDone = false;
     while (!bDone)
     {
       if (bShift)
@@ -3186,13 +3191,13 @@ function msiEditorNextField(bShift, editorElement)
       }
       if (nRow == startRow && nCol == startCol)
         break;
-      selNode = editor.getCellAt(aNode, nRow, nCol);
+      selNode = anEditor.getCellAt(aNode, nRow, nCol);
       if (selNode != aTableCell)
         bDone = true;
       //Now check to be sure this isn't going back to the top of a multi-row cell
       if (bDone)
       {
-        editor.getCellIndexes(selNode, nRowObj, nColObj);
+        anEditor.getCellIndexes(selNode, nRowObj, nColObj);
         if (nRowObj.value != nRow)
           bDone = false;
       }
@@ -3204,7 +3209,7 @@ function msiEditorNextField(bShift, editorElement)
       selInfo.mOffset = bShift ? msiNavigationUtils.lastOffset(selInfo.mNode) : 0;
       selInfo.bInTransaction = false;
     }
-    return selNode;
+    return selInfo;
   }
 
   //It's assumed that "aChildNode" is either a cell or within one.
