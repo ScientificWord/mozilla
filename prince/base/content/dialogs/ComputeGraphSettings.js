@@ -79,7 +79,7 @@ function Startup(){
   editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
   theStringSource = graph.plots[firstActivePlot].element["Expression"];
   msiInitializeEditorForElement(editorControl, theStringSource, true);
-  editorControl.makeEditable("html");
+//  editorControl.makeEditable("html");
   editorControl = document.getElementById("captionText");
   editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
   theStringSource = graph.getGraphAttribute("Caption");
@@ -87,7 +87,7 @@ function Startup(){
     theStringSource = "<br temp='1'/>";
   }
   msiInitializeEditorForElement(editorControl, theStringSource, true);
-  editorControl.makeEditable("html");
+//  editorControl.makeEditable("html");
 
   // Caption placement
   oldval = graph["CaptionPlace"];  
