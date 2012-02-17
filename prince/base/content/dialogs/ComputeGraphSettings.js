@@ -67,6 +67,7 @@ function Startup(){
   firstActivePlot = 0;
   graph["plotnumber"] = firstActivePlot.toString();
   plot = graph["plots"][0];
+  graph.currentDisplayedPlot = 0;
   // some attributes can't be found as values of dialog elements  
   setColorWell("baseColorWell", plot.attributes["BaseColor"]);  
   setColorWell("secondColorWell", plot.attributes["SecondaryColor"]);  
@@ -76,18 +77,22 @@ function Startup(){
   
   editorControl = document.getElementById("plotDlg-content-frame");
   editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
-
   theStringSource = graph.plots[firstActivePlot].element["Expression"];
-  // if (!theStringSource || (theStringSource.length === 0))
-  //   theStringSource = GetComputeString("Math.emptyForInput");
-  // code equivalent to the above has been moved to the Plot constructor
   msiInitializeEditorForElement(editorControl, theStringSource, true);
-  graph.currentDisplayedPlot = 0;
+  editorControl.makeEditable("html");
+  editorControl = document.getElementById("captionText");
+  editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
+  theStringSource = graph.getGraphAttribute("Caption");
+  if (!theStringSource || theStringSource.length === 0) {
+    theStringSource = "<br temp='1'/>";
+  }
+  msiInitializeEditorForElement(editorControl, theStringSource, true);
+//  editorControl.makeEditable("html");
 
   // Caption placement
   oldval = graph["CaptionPlace"];  
   radioGroupSetCurrent ("captionplacement", oldval);
-//  enableFloating();
+//  checkEnableFloating();
 }                                                                                            
 // This part pastes data into the editor after the editor has started. 
 // implements nsIObserver
@@ -298,6 +303,23 @@ function GetValuesFromDialog(){
     var oldval = graph.getValue ("CaptionPlace"); 
     if (newval != oldval) {                                        
       graph.setGraphAttribute ("CaptionPlace", newval);
+    }                                                               
+  }
+  // Caption
+  if (document.getElementById("captionText")) {     
+    var editorControl = document.getElementById("captionText");
+    var doc = editorControl.contentDocument;
+    var aNode = doc.documentElement;
+    if (aNode.nodeName !== 'dialogbase') {
+      aNode = aNode.getElementsByTagName("dialogbase");
+      if (aNode.length > 0) {
+        aNode = aNode[0];
+      } else return;
+    }     
+    var newval = getNodeChildrenAsString(aNode)                  
+    var oldval = graph.getValue ("Caption"); 
+    if (newval != oldval) {                                        
+      graph.setGraphAttribute ("Caption", newval);
     }                                                               
   }
   // View Tab
@@ -716,3 +738,30 @@ function initKeyList()
   gDialog.markerList = new msiKeyMarkerList(window);
   gDialog.markerList.setUpTextBoxControl(document.getElementById("Key"));
 }
+
+function tagConflicts()
+{
+  var keyList = document.getElementById("keylist");
+  if (keyList.controller && (keyList.controller.searchStatus === nsIAutoCompleteController.STATUS_COMPLETE_MATCH))
+    //"new" entry matches an existing key
+  {
+    document.getElementById("uniquekeywarning").hidden = false;
+    //      msiPostDialogMessage("dlgErrors.markerInUse", {markerString : gDialog.keyInput.value});
+    keyList.focus();
+    return true;
+  }
+  return false;
+}
+
+function getNodeChildrenAsString(aNode)
+{
+  var retStr = "";
+  var serializer = new XMLSerializer();
+  var jx
+  var nodeKids = msiNavigationUtils.getSignificantContents(aNode);
+  for ( jx = 0; jx < nodeKids.length; ++jx) {
+    retStr += serializer.serializeToString(nodeKids[jx]);
+  }
+  return retStr;
+}
+
