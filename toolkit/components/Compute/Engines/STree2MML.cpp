@@ -6208,7 +6208,8 @@ void STree2MML::SetUserPref(U32 which_one, const char *new_value)
     if (new_value && *new_value && strlen(new_value) < 16) {
       strcpy(up_differentiald, new_value);
     } else
-      up_differentiald[0] = 'd';
+      strcpy(up_differentiald, "&#x2146;");
+      //up_differentiald[0] = 'd';
     break;
   case CLPF_Output_Euler_e:    // e
     if (new_value && *new_value && strlen(new_value) < 16) {
