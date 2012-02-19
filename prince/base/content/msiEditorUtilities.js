@@ -10983,9 +10983,9 @@ function SS_Timer(delayMS, editor, editorElement) {
   var interval = prefService.getIntPref("swp.saveintervalseconds");
   if (!interval || interval === 0) return;
   this.timer_ = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-  this.observerService_ = new G_ObserverServiceObserver(
-                                        'xpcom-shutdown',
-                                        BindToObject(this.cancel, this));
+//  this.observerService_ = new G_ObserverServiceObserver(
+//                                        'xpcom-shutdown',
+//                                        BindToObject(this.cancel, this));
 
   // Ask the timer to use nsITimerCallback (.notify()) when ready
   // Interval is the time between saves in seconds
