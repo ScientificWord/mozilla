@@ -10983,22 +10983,20 @@ function SS_Timer(delayMS, editor, editorElement) {
   var interval = prefService.getIntPref("swp.saveintervalseconds");
   if (!interval || interval === 0) return;
   this.timer_ = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-//  this.observerService_ = new G_ObserverServiceObserver(
-//                                        'xpcom-shutdown',
-//                                        BindToObject(this.cancel, this));
+  this.observerService_ = new G_ObserverServiceObserver(
+                                        'xpcom-shutdown',
+                                        BindToObject(this.cancel, this));
 
   // Ask the timer to use nsITimerCallback (.notify()) when ready
-  // Interval is the time between saves in minutes
+  // Interval is the time between saves in seconds
   this.timer_.initWithCallback(this, interval*1000, 1);
 }
 
 SS_Timer.prototype.callback_ = function()
 {
-// TODO: re-enable this when it checks the preferences properly
-
-//  var modCt = this.editor.getModificationCount();
-//  if (modCt !== this.modCount) doSoftSave(this.editorElement, this.editor);
-//  this.modCount = modCt;
+  var modCt = this.editor.getModificationCount();
+  if (modCt !== this.modCount) doSoftSave(this.editorElement, this.editor);
+  this.modCount = modCt;
   return true;
 }
 
@@ -11019,7 +11017,7 @@ SS_Timer.prototype.cancel = function() {
   this.callback_ = null;
 
   // We don't need the shutdown observer anymore
-//  this.observerService_.unregister();
+  this.observerService_.unregister();
 }
 
 /*
