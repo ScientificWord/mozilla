@@ -57,7 +57,7 @@
 <!-- Uppercase Greek -->												  
   <m nm="Delta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Delta;<![CDATA[");]]></data></m>
   <m nm="Pi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Pi;<![CDATA[");]]></data></m>
-  <m nm="digamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&gammad;<![CDATA[");]]></data></m>
+  <m nm="digamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x3dc;<![CDATA[");]]></data></m>
   <m nm="Psi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Psi;<![CDATA[");]]></data></m>
   <m nm="Gamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Gamma;<![CDATA[");]]></data></m>
   <m nm="Sigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Sigma;<![CDATA[");]]></data></m>
