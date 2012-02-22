@@ -276,8 +276,6 @@ should not be done under some conditions -->
 <xsl:template match="html:msibr">~\\
 </xsl:template>
 
-<xsl:template match="html:br">
-</xsl:template>
 
 <xsl:template match="html:br"
 ></xsl:template>
@@ -384,7 +382,8 @@ should not be done under some conditions -->
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />
   </xsl:if>
-<xsl:apply-templates/>\par 
+<xsl:apply-templates/>
+<xsl:if test="position()!=last()">\par </xsl:if>
 </xsl:template>
 
 
@@ -489,8 +488,8 @@ should not be done under some conditions -->
 
 <xsl:template match="html:proof">
 \begin{proof}<xsl:apply-templates mode="envleadin"/>
-<xsl:apply-templates/>
-\end{proof}</xsl:template>
+<xsl:apply-templates/>\end{proof}
+</xsl:template>
 
 <xsl:template match="html:envLeadIn"></xsl:template>
 <xsl:template match="*" mode="envleadin"></xsl:template>
