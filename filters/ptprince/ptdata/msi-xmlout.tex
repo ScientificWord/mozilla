@@ -1478,7 +1478,7 @@
      \ifmmode
        \expandafter\string\csname #2\endcsname{##1}%
      \else
-       \msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%     
+       \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%     
      \fi}}
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
@@ -1520,6 +1520,7 @@
 
 \def\fbox#1{\ifmmode
               \msitag{\fbox{#1}}%
+              %\msitag{\msipassthru{<menclose>}}$\relax #1\relax $\msitag{\msipassthru{</menclose>}}%
             \else
               \msiopentag{fbox}{<smallbox>}#1\msiclosetag{fbox}{</smallbox>}%
             \fi}
