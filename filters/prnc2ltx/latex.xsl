@@ -602,6 +602,13 @@ should not be done under some conditions -->
   <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="html:verbatim">
+  
+\begin{verbatim}
+<xsl:apply-templates/>
+\end{verbatim}
+</xsl:template>
+
 <xsl:template match="html:shortQuote"> 
 \begin{quote}
 <xsl:apply-templates/>
