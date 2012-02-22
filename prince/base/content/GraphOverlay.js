@@ -131,7 +131,7 @@ Graph.prototype = {
     // An optional second argument is the number of the one plot to include for query
     var htmlns = "http://www.w3.org/1999/xhtml";
     var editorElement = msiGetActiveEditorElement();
-    var document = editorElement.contentDocument;
+//    var document = editorElement.contentDocument;
     var DOMGraph = document.createElementNS(htmlns, "graph");
     var DOMGs = document.createElementNS(htmlns, "graphSpec");
     var DOMFrame = document.createElementNS(htmlns, "msiframe");
