@@ -123,7 +123,7 @@ function onAccept()
   if (timer) timer.cancel();
   timer=null;
   if (sentinel.exists()) sentinel.remove(false);
-  theProcess = null;a
+  theProcess = null;
   Components.utils.reportError("in onAccept\n");
   SaveWindowLocation();
   return true;
