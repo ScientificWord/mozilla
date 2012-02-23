@@ -24,7 +24,7 @@ const char *default_prefs[] = {
   "0",                                            // CLPF_Parens_on_trigargs
   "1",                                            // CLPF_log_is_base_e
   "D",                                     // CLPF_Output_differentialD
-  "d",                                     // CLPF_Output_differentiald
+  "&#x2146;",                                     // CLPF_Output_differentiald
   "e",                                     // CLPF_Output_Euler_e
   "i",                                     // CLPF_Output_imaginaryi
   "0",                                            // CLPF_Output_InvTrigFuncs_1

@@ -161,6 +161,8 @@
               onfocus="this.select()"
               oninput="tagConflicts();"
               ontextentered="tagConflicts();" />
+            <label id="uniquekeywarning" hidden="true">
+                &KeyNameConflict.label;</label>
           </groupbox>
           <groupbox>        
             <label value="&labelingname.label;"/>
@@ -169,12 +171,16 @@
           <groupbox>
             <caption label="&labelingcaption.label;"/>
             <radiogroup id="captionplacement" orient="horizontal">
+              <radio label="&labelingnone.label;" value="labelnone" selected="false" />
               <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
               <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
             </radiogroup>
-            <textbox id="CaptionText"  multiline="true" rows="4" cols="40" 
-                   caption="&labelingcaptiontext.label;" />
           </groupbox>
+          <groupbox style="height: 2.5in;">
+            <caption value="Caption"/>
+            <editor id="captionText" editortype="html" type="content" height="2in"
+              context="msiEditorContentContext" width="5in" flex="1"/>   
+          </groupbox>       
        </vbox>
       </tabpanel>   
          

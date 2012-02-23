@@ -2488,10 +2488,10 @@ function msiSoftSave( editor, editorElement, noTeX)
     aMimeType = "text/plain";
   else if (GetBoolPref("swp.generateTeXonsave") && !noTeX)
   {
-//    var file = currentFile.parent;
-//    file.append("tex");
-//    file.append("main.tex");
-//    documentAsTeXFile(editorDoc, file, compileInfo);
+    var file = currentFile.parent;
+    file.append("tex");
+    file.append("main.tex");
+    documentAsTeXFile(editorDoc, file, compileInfo);
   }
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
@@ -2559,6 +2559,7 @@ function deleteWorkingDirectory(editorElement)
 
 function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor, editorElement, fUseDirectory)
 {
+  var tempdir;
   var success =  msiSoftSave( editor, editorElement, true);
   if (!success) {
     var saveDocStr = GetString("SaveDocument");
@@ -2578,10 +2579,10 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var htmlurlstring = msiGetEditorURL(editorElement); // this is the url of the file in the directory D. It was updated by the soft save.
   var htmlurl = msiURIFromString(htmlurlstring);
   var sciurlstring = msiFindOriginalDocname(htmlurlstring); // this is the uri of A.sci
-  var mustShowFileDialog = (aSaveAs || aSaveCopy || editorElement.isShellFile || (sciurlstring == ""));
+  var mustShowFileDialog = (aSaveAs || aSaveCopy || editorElement.isShellFile || (sciurlstring === ""));
 
   // If editing a remote URL, force SaveAs dialog
-  if (!mustShowFileDialog && GetScheme(sciurlstring) != "file" && GetScheme(sciurlstring) != "resource")
+  if (!mustShowFileDialog && GetScheme(sciurlstring) !== "file" && GetScheme(sciurlstring) !== "resource")
   {
     mustShowFileDialog = true;
   }
@@ -2606,7 +2607,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   {
     workingDir = msiFileFromFileURL(htmlurl);  // now = the path of the xhtml file in the working dir D
     workingDir = workingDir.parent;       // now = the directory D
-    var tempdir = workingDir.clone();
+    tempdir = workingDir.clone();
     var leaf = tempdir.leafName.replace(/_work$/,"");
     tempdir = tempdir.parent;
     tempdir.append(leaf+".sci");
@@ -2619,26 +2620,28 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     var urlstring;
     try {
       // Prompt for title if we are saving to .sci
-      if (!saveAsTextFile && (editor.editortype == "html"))
+      if (!saveAsTextFile && (editor.editortype === "html"))
       {
         var userContinuing = msiPromptAndSetTitleIfNone(editorElement); // not cancel
-        if (!userContinuing)
+        if (!userContinuing){
           return false;
+        }
       }
 
-      var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editor.editortype=="html"?MSI_EXTENSION:editor.editortype, 
+      var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editor.editortype==="html"?MSI_EXTENSION:editor.editortype, 
         aMimeType, sciurlstring, editorElement, fUseDirectory);
-      if (dialogResult.filepickerClick == msIFilePicker.returnCancel)
+      if (dialogResult.filepickerClick === msIFilePicker.returnCancel) {
         return false;
-
-      replacing = replacing || (dialogResult.filepickerClick == msIFilePicker.returnReplace);
+      }
+      replacing = replacing || (dialogResult.filepickerClick === msIFilePicker.returnReplace);
       urlstring = dialogResult.resultingURIString;
 
       // jcs without .clone() this always set destLocalFile void
       destLocalFile = dialogResult.resultingLocalFile.clone();  // this is B.sci
       // update the new URL for the webshell unless we are saving a copy
-      if (!Boolean(aSaveCopy))
+      if (!Boolean(aSaveCopy)) { 
         doUpdateURI = true;
+      } 
     } catch (e) {
        return false; 
     }
@@ -2661,7 +2664,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       }
       leafname = destLocalFile.leafName;
     }
-    catch (e)
+    catch (ex)
     {
       var saveDocStr = GetString("SaveDocument");
       var failedStr = GetString("SaveFileFailed");
@@ -2671,7 +2674,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   }  // mustShowDialog
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
-    leafname = tempdir.leafName
+    leafname = tempdir.leafName;
     destLocalFile = tempdir.clone(); 
     
   }
@@ -2688,7 +2691,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       // copy D to a new directory B.tempsci
       var destDir = destLocalFile.parent.clone();
       destDir.append(leafname+".tempsci");
-      if (destDir.exists()) destDir.remove(true);
+      if (destDir.exists()) {destDir.remove(true);}
       copyDirectory(destDir, workingDir);
 //   If successful, i.e., if we got this far:
 //   If A==B (a straight save), rename A.bak to A.tempbak, rename A.sci to A.bak, rename A.tempsci to A.sci.
@@ -2697,28 +2700,28 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         tempfile = destDir.clone();
         tempfile = tempfile.parent;
         tempfile.append(leafname+".bak");
-        if (tempfile.exists()) tempfile.moveTo(null, leafname+".tempbak");
+        if (tempfile.exists()) {tempfile.moveTo(null, leafname+".tempbak");}
         tempfile = tempfile.parent;
         tempfile.append(leafname+".sci");
-        if (tempfile.exists()) tempfile.moveTo(null, leafname+".bak");
+        if (tempfile.exists()) {tempfile.moveTo(null, leafname+".bak");}
           // rename A.tempsci to A.sci
         destDir.moveTo(null, leafname+".sci");
 //   If all is successful, delete A.tempbak 
 //   We will now have A.sci, A.bak.
         tempfile = tempfile.parent;
         tempfile.append(leafname+".tempbak");
-        if (tempfile.exists()) tempfile.remove(true);
+        if (tempfile.exists()) {tempfile.remove(true);}
       } else
       {
         // delete B.bak
         tempfile = destDir.clone();
         tempfile = tempfile.parent;
         tempfile.append(leafname+".bak");
-        if (tempfile.exists()) tempfile.remove(true);
+        if (tempfile.exists()) {tempfile.remove(true);}
           // rename B.sci to B.bak
         tempfile = tempfile.parent;
         tempfile.append(leafname+".sci");
-        if (tempfile.exists()) tempfile.moveTo(null, leafname+".bak");
+        if (tempfile.exists()) {tempfile.moveTo(null, leafname+".bak");}
           // rename B.tempsci to B.sci
         destDir.moveTo(null, leafname+".sci");
       }
@@ -2737,19 +2740,19 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       {
         compression = prefs.getIntPref("swp.sci.compression");
       }
-      catch(e) {compression = 0;}
+      catch(ex2) {compression = 0;}
 
       // zip D into the zipfile
       try {
         var zw = Components.classes["@mozilla.org/zipwriter;1"]
                               .createInstance(Components.interfaces.nsIZipWriter);
-        if (zipfile.exists()) zipfile.remove(0);
-        zipfile.create(0,0755);
+        if (zipfile.exists()) {zipfile.remove(0);}
+        zipfile.create(0, 0755);
         zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
         zipDirectory(zw, "", workingDir, compression); 
         zw.close();
       }
-      catch(e) {
+      catch(ex3) {
         throw Components.results.NS_ERROR_UNEXPECTED;
       }
 //   If successful, i.e., if we got this far:
@@ -2768,7 +2771,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
           // rename A.bak to A.tempbak
         tempfile = tempfile.parent;
         tempfile.append(leafname+".bak");
-        if (tempfile.exists()) tempfile.moveTo(null, leafname+".tempbak");
+        if (tempfile.exists()) {tempfile.moveTo(null, leafname+".tempbak");}
           // rename A.sci to A.bak
         tempfile = tempfile.parent;
         tempfile.append(leafname+".sci");
@@ -2778,7 +2781,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
           // delete A.tempbak
         tempfile = tempfile.parent;
         tempfile.append(leafname+".tempbak");
-        if (tempfile.exists()) tempfile.remove(0);
+        if (tempfile.exists()) {tempfile.remove(0);}
       }
       else
       {
@@ -2798,15 +2801,19 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     if (!aContinueEditing)
     {
       var re = /_work$/i;
+      var count = 0;
       if (re.test(workingDir.leafName))
       {
-        try
-        {
-          workingDir.remove(1);
-        }
-        catch(e)
-        {
-          AlertWithTitle("Unable to remove working directory", "Cannot remove working directory. Does another program have one of the directory's files open?", window);          
+        while (count < 2) {
+          try
+          {
+            workingDir.remove(1);
+          }
+          catch(e)
+          {
+            AlertWithTitle("Unable to remove working directory", "Cannot remove working directory. Does another program have one of the directory's files open?", window);          
+            count++;
+          }
         }
       }
     }
