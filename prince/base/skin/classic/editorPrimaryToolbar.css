@@ -30,7 +30,7 @@ toolbar
   background-repeat: repeat-x;
 }
 
-toolbar[iconsize="small"]
+toolbox[iconsize="small"]
 {
   background-image: url("chrome://prince/skin/icons/background-sm.png");
 }

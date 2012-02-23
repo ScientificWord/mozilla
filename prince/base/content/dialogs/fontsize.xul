@@ -16,7 +16,7 @@
 <dialog id="fontsize" title="&fontsizetitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     ondialogaccept="return onAccept();"
-    buttons="apply,accept,cancel" 
+    buttons="accept,cancel" 
     width="300px" height="200px"
     onload="startUp();"
     persist="screenX screenY width height">
