@@ -220,7 +220,7 @@ bool ConvertInline(const char* latex,
                    int start_indent ) {
   //JBMLine("ConvertInline\n");
   MMLFilter* filter =  TCI_NEW( MMLFilter(tree_generator) );
-  filter->FInitialize( &userprefs, log, (char*)n_space, start_indent, NULL );
+  filter->FInitialize( &userprefs, log, (char*)n_space, start_indent, "j.log" );
 
   U16 parse_result  =  filter->TranslateBuffer( latex, renderfunc );
   //JBMLine("End ConvertInline\n");
