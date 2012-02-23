@@ -6,9 +6,9 @@
        version="1.1">
 
   <xsl:variable name="output-mode">
-    <xsl:text>SW-LaTeX</xsl:text>
-<!--
     <xsl:text>Portable-LaTeX</xsl:text>
+<!--
+    <xsl:text>SW-LaTeX</xsl:text>
 -->
   </xsl:variable>
 

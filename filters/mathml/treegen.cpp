@@ -381,7 +381,7 @@ void* TreeGenerator::ConvertParseTree( TNODE* nb_parse_tree,
     DumpLine( "\nDumping re-built XML Parse Tree\n\n" );
     DumpLine( "Source Line       Contents\n" );
     U16 tokenizerID   =  d_xml_grammar->GetTokenizerID();
-//    DumpTList( dst_parse_tree,0,tokenizerID );
+    DumpTList( (TNODE*) dst_parse_tree,0,tokenizerID );
     DumpLine( "\n\n" );
 	  FUCloseDumpFile();
   }
