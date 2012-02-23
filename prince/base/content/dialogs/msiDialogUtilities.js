@@ -730,10 +730,10 @@ function msiDialogConfigManager(theDialogWindow)
 //        this.mOrigAcceptHandler = gDlg.getAttribute("ondialogaccept");
         this.mOrigAcceptHandler = new Function(gDlg.getAttribute("ondialogaccept"));
         gDlg.setAttribute("ondialogaccept", "return mDialogConfigMan.doAccept();");
-        var applyButton = gDlg.getButton("extra1");
-        applyButton.label = this.mStringBundle.GetStringFromName("msiDlgButton.apply");
-        applyButton.hidden = false;
-        applyButton.setAttribute("oncommand", "return mDialogConfigMan.doApply();");
+//        var applyButton = gDlg.getButton("extra1");
+//        applyButton.label = this.mStringBundle.GetStringFromName("msiDlgButton.apply");
+//        applyButton.hidden = false;
+//        applyButton.setAttribute("oncommand", "return mDialogConfigMan.doApply();");
       }
     }
     if (this.mbIsRevise)
