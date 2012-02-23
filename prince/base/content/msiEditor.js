@@ -2841,7 +2841,7 @@ function EditorClick(event)
     }
     if (graphnode) 
     {
-      var obj = graphnode.getElementsByTagName("obj")[0];
+      var obj = graphnode.getElementsByTagName("object")[0];
       if (obj != null) {
         doVCamInitialize(obj);
       }
