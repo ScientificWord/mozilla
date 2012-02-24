@@ -868,7 +868,7 @@ should not be done under some conditions -->
 
 <xsl:template match="html:bibliography">
 <xsl:if test="*">
-\begin{thebibliography}
+\begin{thebibliography}{99}
 <xsl:apply-templates select="html:bibitem"/>
 \end{thebibliography}</xsl:if>
 </xsl:template>
