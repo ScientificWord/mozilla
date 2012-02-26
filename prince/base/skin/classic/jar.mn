@@ -807,6 +807,8 @@ classic.jar:
   skin/classic/icons/v_zoomout-hover.png	(icons/v_zoomout-hover.png)
   skin/classic/icons/v_zoomout-sm.png	(icons/v_zoomout-sm.png)
   skin/classic/icons/v_zoomout.png	(icons/v_zoomout.png)
+  skin/classic/icons/snapshot.png  (icons/snapshot.png)
+  skin/classic/icons/snapshot-sm.png  (icons/snapshot-sm.png)
   skin/classic/mathmlmatrix.css	                                (mathmlmatrix.css)
   skin/classic/MathmlOverlay.css	(MathMLOverlay.css)
   skin/classic/MathVarsDialog.css	(MathVarsDialog.css)
