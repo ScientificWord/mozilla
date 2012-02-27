@@ -1027,6 +1027,43 @@ function makeSnapshotPath( object )
   return path
 }
 
+function insertSnapshot( object, snapshotpath )
+{
+  var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units;
+  parent = object.parentNode;
+  objectlist = parent.getElementsByTagName("object");
+  for (i = 0; i < objectlist.length; ) {
+    element = objectlist[i];
+    if (element.hasAttribute("msisnap")) {
+      parent.removeChild(element);
+    } else {i++;}
+  }
+  graph = msiFindParentOfType( object, "graph");
+  gslist = graph.getElementsByTagName("graphSpec");
+  if (gslist.length > 0) {
+    gslist = gslist[0];
+  }
+  ssobj = object.cloneNode(true); // copies useful attributes
+  ssobj.removeAttribute("msigraph");
+  ssobj.setAttribute("data", snapshotpath);
+  ssobj.setAttribute("msisnap", "true");
+  ssobj.removeAttribute("type");
+  parent.appendChild(ssobj);
+  if (gslist) { // copy some attributes from the graphspec
+    w = gslist.getAttribute("Width");
+    if (w) {
+      ssobj.setAttribute("naturalWidth",w);
+      ssobj.setAttribute("imageWidth", w);
+    }
+    h = gslist.getAttribute("Height");
+    if (h) {
+      ssobj.setAttribute("naturalHeight",h);
+      ssobj.setAttribute("imageHeight", h);
+    }
+    ssobj.setAttribute("units", gslist.getAttribute("Units"));
+  }
+}
+
 function doVCamCommandOnObject(obj, cmd, editorElement)
 {
   var path;
@@ -1077,6 +1114,7 @@ function doVCamCommandOnObject(obj, cmd, editorElement)
       case "cmd_vcSnapshot":
         path = makeSnapshotPath(obj);
         obj.makeSnapshot(path,300); //BBM come back to use preferences
+        insertSnapshot( obj, path );
         break;
       case "cmd_vcAutoSpeed":
         dump("cmd_vcAutoSpeed not implemented");
