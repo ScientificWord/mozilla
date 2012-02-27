@@ -220,15 +220,14 @@ img {
 }
 
 
-graph {
+/*graph {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#graph");
-}
+}*/
 
-graph {
+/*graph {
   display:block;  
   cursor: pointer;
- /*  -moz-box-orient: vertical; */
-}
+}*/
 
 plotwrapper {
   display: block;
@@ -239,16 +238,16 @@ plotwrapper {
   cursor: pointer;
 }
 
-plotcaption {
+/*plotcaption {
   display: block;
   text-align: center;
   -moz-box-flex: 1;
   min-height: 20px;
-}
+}*/
 
-object {
+/*object {
 }
-
+*/
 
 
 * [msimathname="true"] {color: gray; }

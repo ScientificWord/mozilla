@@ -1649,7 +1649,7 @@ function msiFindParentOfType(startNode, nodeType, stopAt)
 {
   var retNode = null;
   var theNode = startNode;
-  if (stopAt === null || stopAt.length === 0)
+  if (stopAt == null || stopAt.length === 0)
     stopAt = "#document";
   while (retNode==null && theNode != null)
   {
