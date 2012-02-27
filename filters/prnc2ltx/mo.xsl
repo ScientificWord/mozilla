@@ -462,11 +462,9 @@
     <xsl:param name="LaTeX-nom"/>
     <xsl:choose>
       <xsl:when test="((@largeop='true') or (@stretchy='true'))">
-        <xsl:choose>
-           <xsl:when test="($LaTeX-nom = 'int')">
-              <xsl:text xml:space="preserve">\mathop{\displaystyle\int}</xsl:text>
-           </xsl:when>
-        </xsl:choose>
+        <xsl:text xml:space="preserve">\mathop{\displaystyle\</xsl:text>
+        <xsl:value-of select="$LaTeX-nom"/>
+        <xsl:text xml:space="preserve">}</xsl:text>
       </xsl:when>
 <!-- The following when clause has been commented out. Does anyone know why? -BBM -->
       <xsl:when test="@largeop='false' and @stretchy='false'">
