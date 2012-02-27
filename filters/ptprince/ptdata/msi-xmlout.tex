@@ -231,7 +231,8 @@
   \msiclosetag{title}{</title>}%
 }
 
-\def\@titleb#1{\@titlea[]{#1}}
+\def\@titleb#1{%
+   \msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}
 
 \def\author#1{\gdef\@author{#1}\out@author{#1}}
 
