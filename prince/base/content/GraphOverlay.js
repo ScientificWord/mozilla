@@ -888,8 +888,8 @@ Frame.prototype = {
           }
           editor.setAttribute(DOMFrame, "height", height + "px");
           frmStyle += "height: " + height + "px; ";
-//          editor.setAttribute(DOMPw, "height", height + "px");
-//          pwStyle += "height: "+ height + "px; ";
+          editor.setAttribute(DOMPw, "height", height + "px");
+          pwStyle += "height: "+ height + "px; ";
           break;
         case "Width":
           width = Number(graph.getGraphAttribute(att));
