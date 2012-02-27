@@ -90,47 +90,49 @@
 </xsl:template>
 
 <xsl:template match="html:object">
-  <xsl:choose>
-    <xsl:when test="@pos='inline'">
-      <xsl:apply-templates select="." mode="contents"/>
-    </xsl:when>
-    <xsl:when test="@pos='display'">
-      \begin{center} <xsl:apply-templates select="." mode="contents"/> \end{center}      
-    </xsl:when>
-    <xsl:when test="@pos='float'">
-      <xsl:choose>
-        <xsl:when test="@placement='full'">
-          \begin{figure}\begin{center}
-        </xsl:when>
-        <xsl:otherwise>
-            \begin{wrapfigure}{<xsl:choose>
-              <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>
-              <xsl:otherwise><xsl:value-of select="substring(@placement,1,1)"/></xsl:otherwise>
-            </xsl:choose>}<xsl:if test="@overhang &gt; 0">[<xsl:value-of select="@overhang"/><xsl:call-template name="unit"/>]</xsl:if>{0pt}
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:if test="@sidemargin &gt; 0">
-        \columnsep=<xsl:value-of select="@sidemargin"/><xsl:call-template name="unit"/>
-      </xsl:if>
-      <xsl:if test="@topmargin &gt; 0">
-        \intextsep=<xsl:value-of select="@topmargin"/><xsl:call-template name="unit"/><xsl:text> </xsl:text>
-      </xsl:if>
+  <xsl:if test="@msigraph!='true'">
+    <xsl:choose>
+      <xsl:when test="@pos='inline'">
+        <xsl:apply-templates select="." mode="contents"/>
+      </xsl:when>
+      <xsl:when test="@pos='display'">
+        \begin{center} <xsl:apply-templates select="." mode="contents"/> \end{center}      
+      </xsl:when>
+      <xsl:when test="@pos='float'">
+        <xsl:choose>
+          <xsl:when test="@placement='full'">
+            \begin{figure}\begin{center}
+          </xsl:when>
+          <xsl:otherwise>
+              \begin{wrapfigure}{<xsl:choose>
+                <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>
+                <xsl:otherwise><xsl:value-of select="substring(@placement,1,1)"/></xsl:otherwise>
+              </xsl:choose>}<xsl:if test="@overhang &gt; 0">[<xsl:value-of select="@overhang"/><xsl:call-template name="unit"/>]</xsl:if>{0pt}
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="@sidemargin &gt; 0">
+          \columnsep=<xsl:value-of select="@sidemargin"/><xsl:call-template name="unit"/>
+        </xsl:if>
+        <xsl:if test="@topmargin &gt; 0">
+          \intextsep=<xsl:value-of select="@topmargin"/><xsl:call-template name="unit"/><xsl:text> </xsl:text>
+        </xsl:if>
       
-      <!-- xsl:if test="@captionabove"><xsl:apply-templates/></xsl:if -->
-      <xsl:apply-templates select="." mode="contents"/>
-      <xsl:choose>
-        <xsl:when test="@placement='full'">
-  \end{centerfigure}\begin{figure}
-        </xsl:when>
-        <xsl:otherwise>
-  \end{wrapfigure}
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:apply-templates select="." mode="contents"/>
-    </xsl:otherwise>
-  </xsl:choose>
+        <!-- xsl:if test="@captionabove"><xsl:apply-templates/></xsl:if -->
+        <xsl:apply-templates select="." mode="contents"/>
+        <xsl:choose>
+          <xsl:when test="@placement='full'">
+    \end{centerfigure}\begin{figure}
+          </xsl:when>
+          <xsl:otherwise>
+    \end{wrapfigure}
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="contents"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:if>
 </xsl:template>
 		  		  
 <xsl:template match="html:caption">\caption{<xsl:apply-templates/>}</xsl:template>
