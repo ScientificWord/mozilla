@@ -185,6 +185,11 @@
     <xsl:if test="not(@largeop='true')">
     <xsl:choose>
 <!-- Start of fencing <mo>'s -->
+      <xsl:when test="normalize-space(string())=''">
+        <xsl:call-template name="translate-fencing-mo">
+          <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
+        </xsl:call-template>
+      </xsl:when>
 
       <xsl:when test="normalize-space(string())='('">
         <xsl:call-template name="translate-fencing-mo">

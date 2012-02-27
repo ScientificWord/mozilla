@@ -226,7 +226,7 @@
  when when the object on its right is scripted. -->
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text xml:space="preserve">\left</xsl:text>
+            <xsl:text xml:space="preserve">\left </xsl:text>
             <xsl:value-of select="$LaTeX-fence-token"/>
           </xsl:otherwise>
         </xsl:choose>
