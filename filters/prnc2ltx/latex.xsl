@@ -979,6 +979,13 @@ should not be done under some conditions -->
     <xsl:if test="not(string-length(translate(@tex,'}','')) &gt; string-length(translate(@tex,'{','')))">{</xsl:if>
     <xsl:apply-templates/>}</xsl:template>
 
+<xsl:template match="html:plotwrapper">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:graphSpec">
+</xsl:template>
+  
 
 
 </xsl:stylesheet>
