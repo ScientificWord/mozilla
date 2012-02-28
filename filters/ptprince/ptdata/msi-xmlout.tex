@@ -257,9 +257,14 @@
    
 \def\out@author#1{%
   \begingroup
-   \def\\{\msitag{^^0a}\msiopentag{address}{<address>}\ignorespaces}%
-   \def\and{\msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
-   \msitag{^^0a}\msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}%
+   \def\\{\msitag{^^0a}%
+          \msiclosetag{author}{</author>}
+          \msitag{^^0a}%
+          \msiopentag{address}{<address>}\ignorespaces}%
+   \def\and{\msiclosetag{address}{</address>}%
+            \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
+   \msitag{^^0a}%
+   \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}\msiclosetag{address}{</address>}%
   \endgroup
 }
 
