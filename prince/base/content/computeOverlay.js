@@ -1064,9 +1064,14 @@ function insertSnapshot( object, snapshotpath )
   }
 }
 
+function makeSnapshot(obj) {
+  var path = makeSnapshotPath(obj);
+  obj.makeSnapshot(path,300); //BBM come back to use preferences
+  insertSnapshot( obj, path );
+}
+
 function doVCamCommandOnObject(obj, cmd, editorElement)
 {
-  var path;
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
@@ -1112,9 +1117,7 @@ function doVCamCommandOnObject(obj, cmd, editorElement)
         obj.cursorTool = "zoomOut";
         break;
       case "cmd_vcSnapshot":
-        path = makeSnapshotPath(obj);
-        obj.makeSnapshot(path,300); //BBM come back to use preferences
-        insertSnapshot( obj, path );
+        makeSnapshot(obj);
         break;
       case "cmd_vcAutoSpeed":
         dump("cmd_vcAutoSpeed not implemented");
@@ -1205,6 +1208,7 @@ function doVCamPreInitialize(obj, graph)
       obj.addEvent('dragLeave', (function() {}));
       obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
       obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
+      makeSnapshot(obj);
       clearInterval(intervalId);
     }
   },200);
