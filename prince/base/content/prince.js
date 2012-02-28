@@ -461,7 +461,7 @@ function documentAsTeXFile( document, outTeXfile, compileInfo )
   var runcount = 1;
   if (/\\tableofcontents|\\listoffigures|\\listoftables/.test(str)) runcount = 3;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  if (/\\xref|\\pageref|\\vxref|\\vpageref|\\cite/.test(str)) runcount = 2;
+  if (/\\xref|\\pageref|\\vxref|\\vref|\\vpageref|\\cite/.test(str)) runcount = 2;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
   if (matcharr && matcharr.length > 1) 
