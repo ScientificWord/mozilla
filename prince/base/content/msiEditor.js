@@ -4486,7 +4486,9 @@ function msiSetEditMode(mode, editorElement)
       try {
         var doc = xmlParser.parseFromString(source, "text/xml");
         if (doc.documentElement.nodeName == "parsererror") {
-          var errMsg = doc.documentElement.lastChild.textContent;
+          var errMsg = doc.documentElement.firstChild.textContent;
+          var ptrLine = doc.documentElement.lastChild.textContent;
+          errMsg += "\n"+ptrLine;;
           willReturn = handleSourceParseError(errMsg);
           if (willReturn)
           {
