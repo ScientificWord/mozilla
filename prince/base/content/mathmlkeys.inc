@@ -4,6 +4,7 @@
 		<key id="MSIdisplayKey"    modifiers="accel" key="&MSIdisplayCmd.keybinding;"    command="cmd_MSIdisplayMathCmd"/>
 		<key id="MSIfractionKey"   modifiers="accel" key="&MSIfractionCmd.keybinding;"   command="cmd_MSIfractionCmd"/>   
   	<key id="MSIIntegralKey"   modifiers="accel" key="i" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>    
+    <key id="MSISummationKey"  modifiers="accel" key="7" oncommand="insertOperator('&#x03A3;', 'auto', 'auto');"/>    
 		<key id="MSIradicalKey"    modifiers="accel" key="&MSIradicalCmd.keybinding;"    command="cmd_MSIradicalCmd"/>    
 		<key id="MSIsupKey"        modifiers="accel" key="&MSIsupCmd.keybinding;"        command="cmd_MSIsupCmd"/>        
 		<key id="MSIAltSupKey"     modifiers="accel" keycode="VK_UP"                     command="cmd_MSIsupCmd"/>        
