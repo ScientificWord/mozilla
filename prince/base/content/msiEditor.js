@@ -1,6 +1,7 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
 Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 
 const msiEditorJS_duplicateTest = "Bad";
 
@@ -520,6 +521,11 @@ var msiResizeListener =
       case "object":
         this.resizeGraphic(anElement, oldWidth, oldHeight, newWidth, newHeight);
       break;
+      case "plotwrapper":
+        this.resizePlot(anElement, oldWidth, oldHeight, newWidth, newHeight);
+        break;
+      default:
+        break;
     }
   },
 
@@ -550,7 +556,45 @@ var msiResizeListener =
       msiEditorEnsureElementAttribute(anElement, "imageWidth", msiCSSUnitsList.convertUnits(newWidth, "pt", theUnits), this.mEditor);
     if (bSetHeight)
       msiEditorEnsureElementAttribute(anElement, "imageHeight", msiCSSUnitsList.convertUnits(newHeight, "pt", theUnits), this.mEditor);
-  }
+  },
+
+  resizePlot : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
+  {
+    // anElement is a plotwrapper. Parent is an msiframe; grandparent is graph;
+    // dimensions are given in pixels.
+    if (oldWidth === newWidth && oldHeight === newHeight) {
+      return;
+    }
+    var DOMGraph = anElement.parentNode.parentNode;
+    if (DOMGraph.nodeName !== "graph") {
+      return;
+    }
+    try {
+      var unithandler = new UnitHandler();
+      var units;
+// skip preserving aspect ratio for now.
+      var graph = new Graph();
+      var editorElement = msiGetActiveEditorElement();
+      graph.extractGraphAttributes(DOMGraph);
+      units = graph.getGraphAttribute("Units");
+      unithandler.initCurrentUnit(units);
+      var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
+      var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
+      graph.setGraphAttribute("Width", newWidthInUnits);
+      graph.setGraphAttribute("Height", newHeightInUnits);
+      graph.recomputeVCamImage( editorElement);
+      graph.reviseGraphDOMElement(DOMGraph, editorElement);
+      var obj = anElement.getElementsByTagName("object");
+      if (obj.length > 0 && obj[0].hasAttribute("msigraph"))
+      {
+        obj = obj[0];
+        makeSnapshot(obj);
+      }
+    }
+    catch(e) {
+      msidump( e.message );
+    }
+  },
 }
 
 function msiResizeListenerForEditor(editor)
