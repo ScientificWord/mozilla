@@ -2939,53 +2939,56 @@ TNODE* LaTeX2MMLTree::FBox2MML( TNODE* tex_fbox_node,
 				  				(U8*)"5.15.1",INVALID_LIST_POS );
   if ( tbucket ) {
     TNODE* local_oof_list =  NULL;
-	  TNODE* contents =  TextInMath2MML( tbucket->contents,
-					    	    &local_oof_list,FALSE,FALSE );
+	  TNODE* contents =  TextInMath2MML( tbucket->contents, &local_oof_list,FALSE,FALSE );
     if ( !contents )
       contents  =  MakeSmallmspace();
-	if ( local_oof_list ) {
+	  if ( local_oof_list ) {
       contents  =  Struts2MML( contents,local_oof_list );
       local_oof_list  =  DisposeOutOfFlowList( local_oof_list,5,800 );
       contents  =  Labels2MML( contents,local_oof_list );
-	// We may want to pass this back to the caller in the future.
+	    // We may want to pass this back to the caller in the future.
       DisposeTList( local_oof_list );
-	}
+	  }
 
-// The only MathML object that can be "framed" is <mtable>
+    // The only MathML object that can be "framed" is <mtable>
 
     TNODE* cell;
-// mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd)!/mtd!
+    // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd)!/mtd!
     contents  =  FixImpliedMRow( contents );
-    cell  =  CreateElemWithBucketAndContents( 5,35,14,8,contents );
+    cell  =  CreateElemWithBucketAndContents( 5,57,1,0, contents);
+    //contents -> sublist_owner = cell;
 
-// Put the cell under a cell list item node
+    mml_rv = cell;
+//      cell  =  CreateElemWithBucketAndContents( 5,35,14,8,contents );
+//  
+//      // Put the cell under a cell list item node
+//  
+//  	  TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
+//  	  list_node->parts  =  cell;
+//  	  cell->sublist_owner =  list_node;
+//  
+//      TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
+//  	  mtr->parts->parts =  list_node;
+//  	  list_node->sublist_owner =  mtr->parts;
 
-	TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
-	list_node->parts  =  cell;
-	cell->sublist_owner =  list_node;
-
-    TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	mtr->parts->parts =  list_node;
-	list_node->sublist_owner =  mtr->parts;
-
-// Put the current row under a node in the row list
-
-	TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.9:0" );
-	row_list_node->parts  =  mtr;
-	mtr->sublist_owner  =  row_list_node;
-
-// mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
-// _LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
-
-    mml_rv  =  CreateElemWithBucketAndContents( 5,35,0,9,NULL );
-    SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_INNER );
-//  SetNodeAttrib( rv,(U8*)"align",(U8*)"bottom" );
-    mml_rv->parts->parts  =  row_list_node;
-    row_list_node->sublist_owner =  mml_rv->parts;
-
-    SetNodeAttrib( mml_rv,(U8*)"frame",(U8*)"solid" );
-	if ( uID==13 )
-      SetNodeAttrib( mml_rv,(U8*)"framespacing",(U8*)"0.8em 1.0ex" );
+//      // Put the current row under a node in the row list
+//  
+//  	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.9:0" );
+//  	  row_list_node->parts  =  mtr;
+//  	  mtr->sublist_owner  =  row_list_node;
+//  
+//      // mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
+//      // _LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
+//  
+//      mml_rv  =  CreateElemWithBucketAndContents( 5,35,0,9,NULL );
+//      SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_INNER );
+//      //  SetNodeAttrib( rv,(U8*)"align",(U8*)"bottom" );
+//      mml_rv->parts->parts  =  row_list_node;
+//      row_list_node->sublist_owner =  mml_rv->parts;
+//  
+//      SetNodeAttrib( mml_rv,(U8*)"frame",(U8*)"solid" );
+//  	  if ( uID==13 )
+//          SetNodeAttrib( mml_rv,(U8*)"framespacing",(U8*)"0.8em 1.0ex" );
   }
 
   return mml_rv;
