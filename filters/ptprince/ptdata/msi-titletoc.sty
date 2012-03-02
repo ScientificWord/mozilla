@@ -1,0 +1,31 @@
+
+
+\def\titlecontents#1{%
+  \gdef\@argA{#1}%
+  \@ifnextchar[{\@continueA}{\@continueA[]}%
+}
+
+\def\@continueA[#1]#2#3#4#5{%
+  \gdef\@argB{#1}%
+  \gdef\@argC{#2}%
+  \gdef\@argD{#3}%
+  \gdef\@argE{#4}%
+  \gdef\@argF{#5}%
+  \@ifnextchar[{\@continueB}{\@continueB[]}}
+
+\def\@continueB[#1]{%
+  \msitag{<texb enc="1" name="titlecontents"><![CDATA[}%
+  \string\titlecontents
+  \expandafter\temptoksa\expandafter{\@argA}%
+  \char`\{\expandafter\msitag\expandafter{\the\temptoksa}\char`\}%
+  \expandafter\temptoksa\expandafter{\@argB}%
+  [\expandafter\msitag\expandafter{\the\@temptoksa}]%
+  \expandafter\temptoksa\expandafter{\@argC}%
+  \char`\{\expandafter\msitag\expandafter{\the\temptoksa}\char`\}%
+  \expandafter\temptoksa\expandafter{\@argD}%
+  \char`\{\expandafter\msitag\expandafter{\the\temptoksa}\char`\}%
+  \expandafter\temptoksa\expandafter{\@argE}%
+  \char`\{\expandafter\msitag\expandafter{\the\temptoksa}\char`\}%
+  \expandafter\temptoksa\expandafter{\@argF}%
+  [\expandafter\msitag\expandafter{\the\temptoksa}]\relax
+  \msitag{]]></texb>}}
