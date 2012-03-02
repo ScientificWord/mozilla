@@ -938,6 +938,7 @@
       \begingroup
         \aftergroup\msi@closetabular
         \let\\=\@cr
+        \def\tabularnewline{\\}%
         \halign\bgroup&##\cr}
 
 
@@ -1358,6 +1359,8 @@
      \msiopentag{mml:text}{<mml:mtext>}\begingroup\msihmode #1\endgroup\msiclosetag{mml:text}{</mml:mtext>}%  
      \char`\}}
 
+   
+
 
 \def\vspace{%
   \@ifnextchar*{\vspaceStar}{\vspaceB}}
@@ -1386,7 +1389,7 @@
 
 
 \def\out@hyperref#1#2#3#4{%
-   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}}
+   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}\ignorespaces}
 
 \newif\if@in@texttag
 \@in@texttagfalse
