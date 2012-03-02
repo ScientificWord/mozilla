@@ -812,6 +812,8 @@ modern.jar:
   skin/modern/icons/v_zoomout-disabled-sm.png       (icons/v_zoomout-disabled-sm.png)
   skin/modern/icons/v_zoomout-hover-sm.png       (icons/v_zoomout-hover-sm.png)
   skin/modern/icons/v_zoomout-sm.png       (icons/v_zoomout-sm.png)
+  skin/modern/icons/snapshot.png  (icons/snapshot.png)
+  skin/modern/icons/snapshot-sm.png  (icons/snapshot-sm.png)
   skin/modern/icons/typesetting.png        (icons/typesetting.png)
   skin/modern/icons/advanced.png        (icons/advanced.png)
   skin/modern/icons/editor.png        (icons/editor.png)

@@ -2480,6 +2480,13 @@ toolbox[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/v_zoomout-disabled-sm.png");
 }
 
+#vc-Snapshot{
+  list-style-image: url("chrome://prince/skin/icons/snapshot.png");
+}
+
+*[iconsize="small"] #vc-Snapshot{
+  list-style-image: url("chrome://prince/skin/icons/snapshot-sm.png");
+}
 
 #vc-ZoomOut{
   list-style-image: url("chrome://prince/skin/icons/v_zoomout.png");

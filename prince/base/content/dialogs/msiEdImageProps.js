@@ -844,8 +844,12 @@ function getLoadableGraphicFile(inputURL)
   var newFile;
   var fileName = "";
   var file = msiFileFromFileURL(inputURL);
+  var filedir = file.parent;
   var extension = getExtension(file.leafName);
   var dir = getDocumentGraphicsDir();
+  if (dir.path === filedir.path) {
+    return file.path;
+  }
   if (!dir.exists())
     dir.create(1, 0755);
   if (extension)  //if not, should we just do the copy and hope for the best? Or forget it?
@@ -1169,7 +1173,7 @@ function importLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
   this.exepath = fileTypeData.exepath;
   this.inputFile = inputNSFile.path;
   this.outputExtension = fileTypeData.output;
-  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i");
+  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i"); 
   this.outputFile = inputNSFile.leafName.replace(extRE, "." + fileTypeData.output);
   this.commandLine = "";
   this.commandLine = fixCommandFileLine(fileTypeData.commandLine, this, bIsUnix);
