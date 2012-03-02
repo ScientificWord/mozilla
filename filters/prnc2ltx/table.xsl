@@ -618,6 +618,13 @@
   </xsl:choose>
 </xsl:template>
 
+<!-- The following appears unduly complicated; the idea is to try to give a width for a cell that won't mess up other cells
+     and will still allow the contents to have room. The algorithm is to use the total table width if given, or a guess
+     depending on how many columns there are if not; to deduct the width of columns which have cells with hard-wired widths;
+     then to find a way to compromise on the distribution of the rest of the width without computing the layout of the
+     whole table. A max width and min width are decided on based on how much leeway there appears to be, and a crude
+     guess as to the size needed (counting text length, and assuming images need their whole widths on one line) is
+     compared to the max and min, finally resulting in a number. --> 
 <xsl:template name="forceGetWidth">
   <xsl:param name="theCell" />
   <xsl:param name="colData" />
@@ -629,7 +636,9 @@
       <xsl:variable name="fullTableWidth">
         <xsl:choose>
           <xsl:when test="$theTable/@width">
-            <xsl:value-of select="number($theTable/@width)"/>
+            <xsl:call-template name="convertSizeSpecsToMM">
+              <xsl:with-param name="theSpec" select="$theTable/@width" />
+            </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>0</xsl:otherwise>
         </xsl:choose>
