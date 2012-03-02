@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!--
+  File base name: intervalsAndAnimation
+  Created by Barry MacKichan on 2012/2/22.
+  Copyright (c) 2012 MacKichan Software, Inc.. All rights reserved.
+-->
+
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/cleanup.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/intervalsAndAnimation.dtd" >
+%dialogDTD;
+]>
+<!--JLF - Localization pass on 6/28/2011-->
+<dialog id="intervalsAndAnimation"
+  title="&windowTitle.label;"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  buttons="accept,cancel"
+  ondialogaccept="return onAccept();"
+  ondialogcancel="return onCancel();"
+  onload="startup();"
+  width="400px"
+  height="400px"
+
+  screenX="40"
+
+  screenY="40"
+  persist="screenX screenY width height"
+>
+<!-- Scripts specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/intervalsAndAnimation.js"/>
+  <broadcasterset>
+    <broadcaster id="threed" hidden="true"/>
+    <broadcaster id="twod" hidden="true"/>
+    <broadcaster id="animated" hidden="true"/>
+  </broadcasterset>
+  
+  <groupbox>
+    <caption label="Coordinates" />
+    <grid>
+      <columns>
+        <column style="text-align: center;"/>
+        <column />
+        <column />
+        <column />
+        <column />
+      </columns>
+      <rows>
+        <row>
+          <label value="Variable"/>
+          <spacer />
+          <label value="Interval" />
+          <spacer />
+          <label value="Points Sampled" />
+          <description value="Animation Variable" observes="animated"/>
+        </row>
+        <row>
+          <label id ="var1">x</label>
+          <textbox id="var1start" type="number" />
+          <label value="to" />
+          <textbox id="var1end" type="number" />
+          <textbox id="ptssamp1" type="number"/>
+          <radiobutton id="var1anim" name="av" />
+        </row>
+        <row observes="threed">
+          <label id ="var2" >y</label>
+          <textbox id="var2start" type="number" />
+          <label value="to" />
+          <textbox id="var2end" type="number" />
+          <textbox id="ptssamp2" type="number"/>
+          <radiobutton id="var2anim" name="av" />
+        </row>
+        <row observes="animated">
+          <label id ="animparam" >t</label>
+          <textbox id="animstart" type="number" />
+          <label value="to" />
+          <textbox id="animend" type="number" />
+          <!-- <textbox id="ptssamp2" type="number"/> -->
+          <spacer/>
+          <radiobutton id="var3anim" name="av" />
+        </row>
+      </rows>
+    </grid>
+    <msibutton label="Switch Variables" observes="threed" command=""/>
+  </groupbox>
+  <groupbox>
+    <caption value="Animation Time Settings" />
+  </groupbox>
+
+
+
+</dialog>

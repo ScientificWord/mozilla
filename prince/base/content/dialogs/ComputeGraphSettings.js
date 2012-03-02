@@ -79,7 +79,7 @@ function Startup(){
   editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
   theStringSource = graph.plots[firstActivePlot].element["Expression"];
   msiInitializeEditorForElement(editorControl, theStringSource, true);
-  editorControl.makeEditable("html");
+//  editorControl.makeEditable("html");
   editorControl = document.getElementById("captionText");
   editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
   theStringSource = graph.getGraphAttribute("Caption");
@@ -134,7 +134,7 @@ function OK() {
   //  var editor = msiGetEditor(editorElement);
   changed = true;
   if (changed) {
-    graph.computeGraph(editorElement, graph["ImageFile"]);
+    graph.recomputeVCamImage(editorElement); 
   }
   theWindow = window.opener;
   if (!theWindow || !(theWindow.hasOwnProperty("nonmodalRecreateGraph"))) {
@@ -568,104 +568,104 @@ function populateDialog (plotno) {
   {
     msidump("populateDialog: " + e.message + "\n");
   }
-//  // handle the top descriptor
-//  var dim = graph.getValue ("Dimension");
-//  populateDescription ("dimension", dim);
-//  var ptype = graph.getPlotValue ("PlotType", plotno);
-//  if (dim == "2") {
-//    document.getElementById("plotcs2d").collapsed = false;            
-//    document.getElementById("plotcs3d").collapsed = true;            
-//    populatePopupMenu ("pt2d", ptype);  
-//  } else {
-//    document.getElementById("plotcs3d").collapsed = false;            
-//    document.getElementById("plotcs2d").collapsed = true;            
-//    populatePopupMenu ("pt3d", ptype);
-//  }
-//  var animatevalue = graph.getPlotValue ("Animate",plotno);
-//  document.getElementById("animate").checked = (animatevalue == "true")?true:false;
-//  //populateDescription ("animate", graph.getPlotValue ("Animate",plotno));
-//
-//  // put the current plot number into the dialog box
-//  var plotml = document.getElementById("plotnumber");
-//  plotml.valueNumber = getActivePlotNumber(plotno+1);
-//  for (var idx=0; idx<plotml.childNodes.length; idx++) { 
-//    if (plotml.childNodes[idx].getAttribute("value") == plotno) {
-//      document.getElementById("plotnumber").selectedItem = plotml.childNodes[idx]; 
-//    }    
-//  }       
-//
-//  // AXES TAB
-//  // GraphAxesScale
-//  var oldval = graph.getValue ("AxisScale"); 
-//  radioGroupSetCurrent ("axisscale", oldval);
-//  // GraphEqualScaling
-//  if (document.getElementById("equalscale")) {  
-//    var oldval = graph.getValue ("EqualScaling");  
-//    if (oldval == "true") {
-//       document.getElementById("equalscale").checked = true;            
-//    }                                                               
-//  }
-//  // GraphAxesTips
-//  if (document.getElementById("axestips")) {                            
-//    var oldval = graph.getValue ("AxesTips");  
-//    if (oldval == "true") {
-//       document.getElementById("axestips").checked = true;            
-//    }                                                               
-//  }
-//  // GraphGridLines
-//  if (document.getElementById("gridlines")) {                            
-//    var oldval = graph.getValue ("GridLines");  
-//    if (oldval == "true") {
-//       document.getElementById("gridlines").checked = true;            
-//    }                                                               
-//  }
-//  // GraphAxesType
-//  var oldval = graph.getValue ("AxesType");  
-//  radioGroupSetCurrent ("axistype", oldval);
-//  // Layout Tab
-//  // printAttribute
-//  var oldval = graph.getValue ("PrintAttribute");  
-//  radioGroupSetCurrent ("printattr", oldval);
-//  // ScreenDisplay
-//  var oldval = graph.getValue ("PrintFrame");  
-//  radioGroupSetCurrent ("screendisplayattr", oldval);
-//  // GraphAxesType
-//  var oldval = graph.getValue ("Placement");  
-//  radioGroupSetCurrent ("placement", oldval);
-//
-//  // Labelling Tab
-//  // Captionplacement
-//  var oldval = graph.getValue ("CaptionPlace");  
-//  radioGroupSetCurrent ("captionplacement", oldval);
-//
-//  // Axes tab
-//  var camLocX = graph.getValue ("CameraLocationX");
-//  var camLocY = graph.getValue ("CameraLocationY");
-//  var camLocZ = graph.getValue ("CameraLocationZ");
-//  populateDescription ("CameraLocationX", camLocX);
-//  populateDescription ("CameraLocationY", camLocY);
-//  populateDescription ("CameraLocationZ", camLocZ);
-//
-//  var focalPtX = graph.getValue ("FocalPointX");
-//  var focalPtY = graph.getValue ("FocalPointY");
-//  var focalPtZ = graph.getValue ("FocalPointZ");
-//  populateDescription ("FocalPointX", focalPtX);
-//  populateDescription ("FocalPointY", focalPtY);
-//  populateDescription ("FocalPointZ", focalPtZ);
-//
-//  var upVecX = graph.getValue ("UpVectorX");
-//  var upVecY = graph.getValue ("UpVectorY");
-//  var upVecZ = graph.getValue ("UpVectorZ");
-//  populateDescription ("UpVectorX", upVecX);
-//  populateDescription ("UpVectorY", upVecY);
-//  populateDescription ("UpVectorZ", upVecZ);
-//
-//  var va = graph.getValue ("ViewingAngle");
-//  var op = graph.getValue ("OrthogonalProjection");
-//  var ku = graph.getValue ("KeepUp");
-//  populateDescription ("ViewingAngle", va);
-//  document.getElementById("OrthogonalProjection").checked = (op == "true")?true:false;
-//  document.getElementById("KeepUp").checked = (ku == "true")?true:false;
+  // handle the top descriptor
+  var dim = graph.getValue ("Dimension");
+  populateDescription ("dimension", dim);
+  var ptype = graph.getPlotValue ("PlotType", plotno);
+  if (dim == "2") {
+    document.getElementById("plotcs2d").collapsed = false;            
+    document.getElementById("plotcs3d").collapsed = true;            
+    populatePopupMenu ("pt2d", ptype);  
+  } else {
+    document.getElementById("plotcs3d").collapsed = false;            
+    document.getElementById("plotcs2d").collapsed = true;            
+    populatePopupMenu ("pt3d", ptype);
+  }
+  var animatevalue = graph.getPlotValue ("Animate",plotno);
+  document.getElementById("animate").checked = (animatevalue == "true")?true:false;
+  //populateDescription ("animate", graph.getPlotValue ("Animate",plotno));
+
+  // put the current plot number into the dialog box
+  var plotml = document.getElementById("plotnumber");
+  plotml.valueNumber = getActivePlotNumber(plotno+1);
+  for (var idx=0; idx<plotml.childNodes.length; idx++) { 
+    if (plotml.childNodes[idx].getAttribute("value") == plotno) {
+      document.getElementById("plotnumber").selectedItem = plotml.childNodes[idx]; 
+    }    
+  }       
+
+  // AXES TAB
+  // GraphAxesScale
+  var oldval = graph.getValue ("AxisScale"); 
+  radioGroupSetCurrent ("axisscale", oldval);
+  // GraphEqualScaling
+  if (document.getElementById("equalscale")) {  
+    var oldval = graph.getValue ("EqualScaling");  
+    if (oldval == "true") {
+       document.getElementById("equalscale").checked = true;            
+    }                                                               
+  }
+  // GraphAxesTips
+  if (document.getElementById("axestips")) {                            
+    var oldval = graph.getValue ("AxesTips");  
+    if (oldval == "true") {
+       document.getElementById("axestips").checked = true;            
+    }                                                               
+  }
+  // GraphGridLines
+  if (document.getElementById("gridlines")) {                            
+    var oldval = graph.getValue ("GridLines");  
+    if (oldval == "true") {
+       document.getElementById("gridlines").checked = true;            
+    }                                                               
+  }
+  // GraphAxesType
+  var oldval = graph.getValue ("AxesType");  
+  radioGroupSetCurrent ("axistype", oldval);
+  // Layout Tab
+  // printAttribute
+  var oldval = graph.getValue ("PrintAttribute");  
+  radioGroupSetCurrent ("printattr", oldval);
+  // ScreenDisplay
+  var oldval = graph.getValue ("PrintFrame");  
+  radioGroupSetCurrent ("screendisplayattr", oldval);
+  // GraphAxesType
+  var oldval = graph.getValue ("Placement");  
+  radioGroupSetCurrent ("placement", oldval);
+
+  // Labelling Tab
+  // Captionplacement
+  var oldval = graph.getValue ("CaptionPlace");  
+  radioGroupSetCurrent ("captionplacement", oldval);
+
+  // Axes tab
+  var camLocX = graph.getValue ("CameraLocationX");
+  var camLocY = graph.getValue ("CameraLocationY");
+  var camLocZ = graph.getValue ("CameraLocationZ");
+  populateDescription ("CameraLocationX", camLocX);
+  populateDescription ("CameraLocationY", camLocY);
+  populateDescription ("CameraLocationZ", camLocZ);
+
+  var focalPtX = graph.getValue ("FocalPointX");
+  var focalPtY = graph.getValue ("FocalPointY");
+  var focalPtZ = graph.getValue ("FocalPointZ");
+  populateDescription ("FocalPointX", focalPtX);
+  populateDescription ("FocalPointY", focalPtY);
+  populateDescription ("FocalPointZ", focalPtZ);
+
+  var upVecX = graph.getValue ("UpVectorX");
+  var upVecY = graph.getValue ("UpVectorY");
+  var upVecZ = graph.getValue ("UpVectorZ");
+  populateDescription ("UpVectorX", upVecX);
+  populateDescription ("UpVectorY", upVecY);
+  populateDescription ("UpVectorZ", upVecZ);
+
+  var va = graph.getValue ("ViewingAngle");
+  var op = graph.getValue ("OrthogonalProjection");
+  var ku = graph.getValue ("KeepUp");
+  populateDescription ("ViewingAngle", va);
+  document.getElementById("OrthogonalProjection").checked = (op == "true")?true:false;
+  document.getElementById("KeepUp").checked = (ku == "true")?true:false;
 }
 
 function populatePopupMenu (popupname, datavalue) {

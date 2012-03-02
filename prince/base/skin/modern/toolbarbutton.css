@@ -62,15 +62,15 @@ toolbarbutton[checked="true"] {
   list-style-image: url("chrome://prince/skin/icons/dropmarkertb-active.gif");
 }
 
-toolbar[iconsize="small"] .toolbarbutton-menu-dropmarker {
+toolbox[iconsize="small"] .toolbarbutton-menu-dropmarker {
   list-style-image: url("chrome://prince/skin/icons/dropmarkertb-sm.gif");
 }
 
-toolbar[iconsize="small"] .toolbarbutton-menu-dropmarker:hover {
+toolbox[iconsize="small"] .toolbarbutton-menu-dropmarker:hover {
   list-style-image: url("chrome://prince/skin/icons/dropmarkertb-hover-sm.gif");
 }
 
-toolbar[iconsize="small"] .toolbarbutton-menu-dropmarker:active {
+toolbox[iconsize="small"] .toolbarbutton-menu-dropmarker:active {
   list-style-image: url("chrome://prince/skin/icons/dropmarkertb-active-sm.gif");
 }
 

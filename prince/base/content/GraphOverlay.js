@@ -26,7 +26,7 @@ Graph.prototype = {
                               "Units", "AxesType", "EqualScaling", "EnableTicks", "XTickCount",
                               "YTickCount", "AxesTips", "GridLines", "BGColor", "Dimension",
                               "AxisScale", "CameraLocationX", "CameraLocationY", "CameraLocationZ",
-                              "FocalPointX", "FocalPointX", "FocalPointZ", "UpVectorX", "UpVectorY",
+                              "FocalPointX", "FocalPointY", "FocalPointZ", "UpVectorX", "UpVectorY",
                               "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp", 
                               "OrientationTiltTurn"],
   GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace", "Caption"],
@@ -131,7 +131,7 @@ Graph.prototype = {
     // An optional second argument is the number of the one plot to include for query
     var htmlns = "http://www.w3.org/1999/xhtml";
     var editorElement = msiGetActiveEditorElement();
-    var document = editorElement.contentDocument;
+//    var document = editorElement.contentDocument;
     var DOMGraph = document.createElementNS(htmlns, "graph");
     var DOMGs = document.createElementNS(htmlns, "graphSpec");
     var DOMFrame = document.createElementNS(htmlns, "msiframe");
@@ -336,7 +336,12 @@ Graph.prototype = {
     file.initWithPath( makeRelPathAbsolute(filename, editorElement)) ;
     if (file.exists)
     {
+      try {
       file.remove(false);
+      }
+      catch (e) 
+      {
+      }
     }
     this.setGraphAttribute("ImageFile", newfilename);
     //  reset ImageFile property to relative path
@@ -1128,11 +1133,11 @@ function nonmodalRecreateGraph(graph, DOMGraph, editorElement) {
   // parent (i.e., deleted). No parent, no changes to the picture.
   try {
 
-    var parent = window.arguments[1].parentNode;
-    var editor = msiGetEditor(editorElement);
-    var dg = graph.createGraphDOMElement(false);
-    insertGraph(DOMGraph, graph, editorElement);
-    editor.deleteNode(DOMGraph);
+//    var parent = DOMGraph.parentNode;
+//    var editor = msiGetEditor(editorElement);
+    graph.reviseGraphDOMElement(DOMGraph, editorElement);
+//    insertGraph(DOMGraph, graph, editorElement);
+//    editor.deleteNode(DOMGraph);
   }
   catch (e) {
     dump("ERROR: Recreate Graph failed, line 715 in GraphOverlay.js\n");
@@ -1202,6 +1207,7 @@ function insertGraph(siblingElement, graph, editorElement) {
   addGraphElementToDocument(gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
   doVCamPreInitialize(obj, graph);
+  editorElement.focus();
 }
 function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElement) {
   /**-----------------------------------------------------------------------------------------*/

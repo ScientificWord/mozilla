@@ -31,11 +31,11 @@
   list-style-image: url("chrome://editor/skin/icons/throbber-single.gif");
 }
 
-toolbar[iconsize="small"] #navigator-throbber,
+toolbox[iconsize="small"] #navigator-throbber,
 toolbar[mode="text"] #navigator-throbber {
   list-style-image: url("chrome://editor/skin/icons/throbber-small.png");
 }
-toolbar[iconsize="small"] #navigator-throbber[busy="true"],
+toolbox[iconsize="small"] #navigator-throbber[busy="true"],
 toolbar[mode="text"] #navigator-throbber[busy="true"] {
   list-style-image: url("chrome://editor/skin/icons/throbber-small.gif");
 }

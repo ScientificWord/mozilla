@@ -10,7 +10,7 @@ toolbar[printpreview="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate.png");
 }
 
-toolbar[iconsize="small"] #evalButton {
+toolbox[iconsize="small"] #evalButton {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-sm.png");
 }
 
@@ -19,7 +19,7 @@ toolbar[iconsize="small"] #evalButton {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-hover.png");
 }
 
-toolbar[iconsize="small"] #evalButton:hover {
+toolbox[iconsize="small"] #evalButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-hover-sm.png");
 }
 
@@ -27,7 +27,7 @@ toolbar[iconsize="small"] #evalButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-active.png");
 }
 
-toolbar[iconsize="small"] #evalButton:hover:active {
+toolbox[iconsize="small"] #evalButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-active-sm.png");
 }
 
@@ -35,7 +35,7 @@ toolbar[iconsize="small"] #evalButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-disabled.png");
 }
 
-toolbar[iconsize="small"] #evalButton[disabled="true"] {
+toolbox[iconsize="small"] #evalButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-disabled-sm.png");
 }
 
@@ -43,7 +43,7 @@ toolbar[iconsize="small"] #evalButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_evaluatenumeric.png");
 }
 
-toolbar[iconsize="small"] #evalnumButton {
+toolbox[iconsize="small"] #evalnumButton {
   list-style-image: url("chrome://prince/skin/icons/math_evaluatenumeric-sm.png");
 }
 
@@ -51,7 +51,7 @@ toolbar[iconsize="small"] #evalnumButton {
   list-style-image: url("chrome://prince/skin/icons/math_evaluatenumeric-hover.png");
 }
 
-toolbar[iconsize="small"] #evalnumButton:hover {
+toolbox[iconsize="small"] #evalnumButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_evaluatenumeric-hover-sm.png");
 }
 
@@ -59,7 +59,7 @@ toolbar[iconsize="small"] #evalnumButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_evaluatenumeric-active.png");
 }
 
-toolbar[iconsize="small"] #evalnumButton:hover:active {
+toolbox[iconsize="small"] #evalnumButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_evaluatenumeric-active-sm.png");
 }
 
@@ -67,7 +67,7 @@ toolbar[iconsize="small"] #evalnumButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_evaluatenumeric-disabled.png");
 }
 
-toolbar[iconsize="small"] #evalnumButton[disabled="true"] {
+toolbox[iconsize="small"] #evalnumButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_evaluatenumeric-disabled-sm.png");
 }
 
@@ -75,7 +75,7 @@ toolbar[iconsize="small"] #evalnumButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_solveexact.png");
 }
 
-toolbar[iconsize="small"] #solveButton {
+toolbox[iconsize="small"] #solveButton {
   list-style-image: url("chrome://prince/skin/icons/math_solveexact-sm.png");
 }
 
@@ -83,7 +83,7 @@ toolbar[iconsize="small"] #solveButton {
   list-style-image: url("chrome://prince/skin/icons/math_solveexact-hover.png");
 }
 
-toolbar[iconsize="small"] #solveButton:hover {
+toolbox[iconsize="small"] #solveButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_solveexact-hover-sm.png");
 }
 
@@ -91,7 +91,7 @@ toolbar[iconsize="small"] #solveButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_solveexact-active.png");
 }
 
-toolbar[iconsize="small"] #solveButton:hover:active {
+toolbox[iconsize="small"] #solveButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_solveexact-active-sm.png");
 }
 
@@ -99,7 +99,7 @@ toolbar[iconsize="small"] #solveButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_solveexact-disabled.png");
 }
 
-toolbar[iconsize="small"] #solveButton[disabled="true"] {
+toolbox[iconsize="small"] #solveButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_solveexact-disabled-sm.png");
 }
 
@@ -107,7 +107,7 @@ toolbar[iconsize="small"] #solveButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_simplify.png");
 }
 
-toolbar[iconsize="small"] #simplifyButton {
+toolbox[iconsize="small"] #simplifyButton {
   list-style-image: url("chrome://prince/skin/icons/math_simplify-sm.png");
 }
 
@@ -115,7 +115,7 @@ toolbar[iconsize="small"] #simplifyButton {
   list-style-image: url("chrome://prince/skin/icons/math_simplify-hover.png");
 }
 
-toolbar[iconsize="small"] #simplifyButton:hover {
+toolbox[iconsize="small"] #simplifyButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_simplify-hover-sm.png");
 }
 
@@ -123,7 +123,7 @@ toolbar[iconsize="small"] #simplifyButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_simplify-active.png");
 }
 
-toolbar[iconsize="small"] #simplifyButton:hover:active {
+toolbox[iconsize="small"] #simplifyButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_simplify-active-sm.png");
 }
 
@@ -131,7 +131,7 @@ toolbar[iconsize="small"] #simplifyButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_simplify-disabled.png");
 }
 
-toolbar[iconsize="small"] #simplifyButton[disabled="true"] {
+toolbox[iconsize="small"] #simplifyButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_simplify-disabled-sm.png");
 }
 
@@ -139,7 +139,7 @@ toolbar[iconsize="small"] #simplifyButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_expand.png");
 }
 
-toolbar[iconsize="small"] #expandButton {
+toolbox[iconsize="small"] #expandButton {
   list-style-image: url("chrome://prince/skin/icons/math_expand-sm.png");
 }
 
@@ -147,7 +147,7 @@ toolbar[iconsize="small"] #expandButton {
   list-style-image: url("chrome://prince/skin/icons/math_expand-hover.png");
 }
 
-toolbar[iconsize="small"] #expandButton:hover {
+toolbox[iconsize="small"] #expandButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_expand-hover-sm.png");
 }
 
@@ -155,7 +155,7 @@ toolbar[iconsize="small"] #expandButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_expand-active.png");
 }
 
-toolbar[iconsize="small"] #expandButton:hover:active {
+toolbox[iconsize="small"] #expandButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_expand-active-sm.png");
 }
 
@@ -163,7 +163,7 @@ toolbar[iconsize="small"] #expandButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_expand-disabled.png");
 }
 
-toolbar[iconsize="small"] #expandButton[disabled="true"] {
+toolbox[iconsize="small"] #expandButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_expand-disabled-sm.png");
 }
 
@@ -171,7 +171,7 @@ toolbar[iconsize="small"] #expandButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_plot.png");
 }
 
-toolbar[iconsize="small"] #plotButton {
+toolbox[iconsize="small"] #plotButton {
   list-style-image: url("chrome://prince/skin/icons/math_plot-sm.png");
 }
 
@@ -179,7 +179,7 @@ toolbar[iconsize="small"] #plotButton {
   list-style-image: url("chrome://prince/skin/icons/math_plot-hover.png");
 }
 
-toolbar[iconsize="small"] #plotButton:hover {
+toolbox[iconsize="small"] #plotButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_plot-hover-sm.png");
 }
 
@@ -187,7 +187,7 @@ toolbar[iconsize="small"] #plotButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_plot-active.png");
 }
 
-toolbar[iconsize="small"] #plotButton:hover:active {
+toolbox[iconsize="small"] #plotButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_plot-active-sm.png");
 }
 
@@ -195,7 +195,7 @@ toolbar[iconsize="small"] #plotButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_plot-disabled.png");
 }
 
-toolbar[iconsize="small"] #plotButton[disabled="true"] {
+toolbox[iconsize="small"] #plotButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_plot-disabled-sm.png");
 }
 
@@ -203,7 +203,7 @@ toolbar[iconsize="small"] #plotButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d.png");
 }
 
-toolbar[iconsize="small"] #plot3DButton {
+toolbox[iconsize="small"] #plot3DButton {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-sm.png");
 }
 
@@ -211,7 +211,7 @@ toolbar[iconsize="small"] #plot3DButton {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-hover.png");
 }
 
-toolbar[iconsize="small"] #plot3DButton:hover {
+toolbox[iconsize="small"] #plot3DButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-hover-sm.png");
 }
 
@@ -219,7 +219,7 @@ toolbar[iconsize="small"] #plot3DButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-active.png");
 }
 
-toolbar[iconsize="small"] #plot3DButton:hover:active {
+toolbox[iconsize="small"] #plot3DButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-active-sm.png");
 }
 
@@ -227,7 +227,7 @@ toolbar[iconsize="small"] #plot3DButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-disabled.png");
 }
 
-toolbar[iconsize="small"] #plot3DButton[disabled="true"] {
+toolbox[iconsize="small"] #plot3DButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_plot3d-disabled-sm.png");
 }
 
@@ -235,7 +235,7 @@ toolbar[iconsize="small"] #plot3DButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_define.png");
 }
 
-toolbar[iconsize="small"] #defineButton {
+toolbox[iconsize="small"] #defineButton {
   list-style-image: url("chrome://prince/skin/icons/math_define-sm.png");
 }
 
@@ -243,7 +243,7 @@ toolbar[iconsize="small"] #defineButton {
   list-style-image: url("chrome://prince/skin/icons/math_define-hover.png");
 }
 
-toolbar[iconsize="small"] #defineButton:hover {
+toolbox[iconsize="small"] #defineButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_define-hover-sm.png");
 }
 
@@ -251,7 +251,7 @@ toolbar[iconsize="small"] #defineButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_define-active.png");
 }
 
-toolbar[iconsize="small"] #defineButton:hover:active {
+toolbox[iconsize="small"] #defineButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_define-active-sm.png");
 }
 
@@ -259,7 +259,7 @@ toolbar[iconsize="small"] #defineButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_define-disabled.png");
 }
 
-toolbar[iconsize="small"] #defineButton[disabled="true"] {
+toolbox[iconsize="small"] #defineButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_define-disabled-sm.png");
 }
 
@@ -267,7 +267,7 @@ toolbar[iconsize="small"] #defineButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs.png");
 }
 
-toolbar[iconsize="small"] #showdefsButton {
+toolbox[iconsize="small"] #showdefsButton {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs-sm.png");
 }
 
@@ -275,7 +275,7 @@ toolbar[iconsize="small"] #showdefsButton {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs-hover.png");
 }
 
-toolbar[iconsize="small"] #showdefsButton:hover {
+toolbox[iconsize="small"] #showdefsButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs-hover-sm.png");
 }
 
@@ -283,7 +283,7 @@ toolbar[iconsize="small"] #showdefsButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs-active.png");
 }
 
-toolbar[iconsize="small"] #showdefsButton:hover:active {
+toolbox[iconsize="small"] #showdefsButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs-active-sm.png");
 }
 
@@ -291,7 +291,7 @@ toolbar[iconsize="small"] #showdefsButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs-disabled.png");
 }
 
-toolbar[iconsize="small"] #showdefsButton[disabled="true"] {
+toolbox[iconsize="small"] #showdefsButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs-disabled-sm.png");
 }
 
@@ -299,7 +299,7 @@ toolbar[iconsize="small"] #showdefsButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext.png");
 }
 
-toolbar[iconsize="small"] #mathtextButton {
+toolbox[iconsize="small"] #mathtextButton {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-sm.png");
 }
 
@@ -307,7 +307,7 @@ toolbar[iconsize="small"] #mathtextButton {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-hover.png");
 }
 
-toolbar[iconsize="small"] #mathtextButton:hover {
+toolbox[iconsize="small"] #mathtextButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-hover-sm.png");
 }
 
@@ -315,7 +315,7 @@ toolbar[iconsize="small"] #mathtextButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked-active.png");
 }
 
-toolbar[iconsize="small"] #mathtextButton:hover:active {
+toolbox[iconsize="small"] #mathtextButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked-active-sm.png");
 }
 
@@ -323,7 +323,7 @@ toolbar[iconsize="small"] #mathtextButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked.png");
 }
 
-toolbar[iconsize="small"] #mathtextButton[isMath="true"] {
+toolbox[iconsize="small"] #mathtextButton[isMath="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked-sm.png");
 }
 
@@ -331,7 +331,7 @@ toolbar[iconsize="small"] #mathtextButton[isMath="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-disabled.png");
 }
 
-toolbar[iconsize="small"] #mathtextButton[disabled="true"] {
+toolbox[iconsize="small"] #mathtextButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-disabled-sm.png");
 }
 
@@ -339,7 +339,7 @@ toolbar[iconsize="small"] #mathtextButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/stop.png");
 }
 
-toolbar[iconsize="small"] #stopButton {
+toolbox[iconsize="small"] #stopButton {
   list-style-image: url("chrome://prince/skin/icons/stop-sm.png");
 }
 
@@ -347,7 +347,7 @@ toolbar[iconsize="small"] #stopButton {
   list-style-image: url("chrome://prince/skin/icons/stop-hover.png");
 }
 
-toolbar[iconsize="small"] #stopButton:hover {
+toolbox[iconsize="small"] #stopButton:hover {
   list-style-image: url("chrome://prince/skin/icons/stop-hover-sm.png");
 }
 
@@ -355,7 +355,7 @@ toolbar[iconsize="small"] #stopButton:hover {
   list-style-image: url("chrome://prince/skin/icons/stop-active.png");
 }
 
-toolbar[iconsize="small"] #stopButton:hover:active {
+toolbox[iconsize="small"] #stopButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/stop-active-sm.png");
 }
 
@@ -363,7 +363,7 @@ toolbar[iconsize="small"] #stopButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/stop-disabled.png");
 }
 
-toolbar[iconsize="small"] #stopButton[disabled="true"] {
+toolbox[iconsize="small"] #stopButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/stop-disabled-sm.png");
 }
 
@@ -371,7 +371,7 @@ toolbar[iconsize="small"] #stopButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/undo.png");
 }
 
-toolbar[iconsize="small"] #undoButton {
+toolbox[iconsize="small"] #undoButton {
   list-style-image: url("chrome://prince/skin/icons/undo-sm.png");
 }
 
@@ -379,7 +379,7 @@ toolbar[iconsize="small"] #undoButton {
   list-style-image: url("chrome://prince/skin/icons/undo-hover.png");
 }
 
-toolbar[iconsize="small"] #undoButton:hover {
+toolbox[iconsize="small"] #undoButton:hover {
   list-style-image: url("chrome://prince/skin/icons/undo-hover-sm.png");
 }
 
@@ -387,7 +387,7 @@ toolbar[iconsize="small"] #undoButton:hover {
   list-style-image: url("chrome://prince/skin/icons/undo-active.png");
 }
 
-toolbar[iconsize="small"] #undoButton:hover:active {
+toolbox[iconsize="small"] #undoButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/undo-active-sm.png");
 }
 
@@ -395,7 +395,7 @@ toolbar[iconsize="small"] #undoButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/undo-disabled.png");
 }
 
-toolbar[iconsize="small"] #undoButton[disabled="true"] {
+toolbox[iconsize="small"] #undoButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/undo-disabled-sm.png");
 }
 
@@ -403,7 +403,7 @@ toolbar[iconsize="small"] #undoButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/redo.png");
 }
 
-toolbar[iconsize="small"] #redoButton {
+toolbox[iconsize="small"] #redoButton {
   list-style-image: url("chrome://prince/skin/icons/redo-sm.png");
 }
 
@@ -411,7 +411,7 @@ toolbar[iconsize="small"] #redoButton {
   list-style-image: url("chrome://prince/skin/icons/redo-hover.png");
 }
 
-toolbar[iconsize="small"] #redoButton:hover {
+toolbox[iconsize="small"] #redoButton:hover {
   list-style-image: url("chrome://prince/skin/icons/redo-hover-sm.png");
 }
 
@@ -419,7 +419,7 @@ toolbar[iconsize="small"] #redoButton:hover {
   list-style-image: url("chrome://prince/skin/icons/redo-active.png");
 }
 
-toolbar[iconsize="small"] #redoButton:hover:active {
+toolbox[iconsize="small"] #redoButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/redo-active-sm.png");
 }
 
@@ -427,7 +427,7 @@ toolbar[iconsize="small"] #redoButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/redo-disabled.png");
 }
 
-toolbar[iconsize="small"] #redoButton[disabled="true"] {
+toolbox[iconsize="small"] #redoButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/redo-disabled-sm.png");
 }
 
@@ -435,7 +435,7 @@ toolbar[iconsize="small"] #redoButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_fraction.png");
 }
 
-toolbar[iconsize="small"] #fractionButton {
+toolbox[iconsize="small"] #fractionButton {
   list-style-image: url("chrome://prince/skin/icons/math_fraction-sm.png");
 }
 
@@ -443,7 +443,7 @@ toolbar[iconsize="small"] #fractionButton {
   list-style-image: url("chrome://prince/skin/icons/math_fraction-hover.png");
 }
 
-toolbar[iconsize="small"] #fractionButton:hover {
+toolbox[iconsize="small"] #fractionButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_fraction-hover-sm.png");
 }
 
@@ -451,7 +451,7 @@ toolbar[iconsize="small"] #fractionButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_fraction-active.png");
 }
 
-toolbar[iconsize="small"] #fractionButton:hover:active {
+toolbox[iconsize="small"] #fractionButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_fraction-active-sm.png");
 }
 
@@ -459,7 +459,7 @@ toolbar[iconsize="small"] #fractionButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_fraction-disabled.png");
 }
 
-toolbar[iconsize="small"] #fractionButton[disabled="true"] {
+toolbox[iconsize="small"] #fractionButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_fraction-disabled-sm.png");
 }
 
@@ -467,7 +467,7 @@ toolbar[iconsize="small"] #fractionButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_radical.png");
 }
 
-toolbar[iconsize="small"] #radicalButton {
+toolbox[iconsize="small"] #radicalButton {
   list-style-image: url("chrome://prince/skin/icons/math_radical-sm.png");
 }
 
@@ -475,7 +475,7 @@ toolbar[iconsize="small"] #radicalButton {
   list-style-image: url("chrome://prince/skin/icons/math_radical-hover.png");
 }
 
-toolbar[iconsize="small"] #radicalButton:hover {
+toolbox[iconsize="small"] #radicalButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_radical-hover-sm.png");
 }
 
@@ -483,7 +483,7 @@ toolbar[iconsize="small"] #radicalButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_radical-active.png");
 }
 
-toolbar[iconsize="small"] #radicalButton:hover:active {
+toolbox[iconsize="small"] #radicalButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_radical-active-sm.png");
 }
 
@@ -491,7 +491,7 @@ toolbar[iconsize="small"] #radicalButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_radical-disabled.png");
 }
 
-toolbar[iconsize="small"] #radicalButton[disabled="true"] {
+toolbox[iconsize="small"] #radicalButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_radical-disabled-sm.png");
 }
 
@@ -499,7 +499,7 @@ toolbar[iconsize="small"] #radicalButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_superscript.png");
 }
 
-toolbar[iconsize="small"] #superscriptButton {
+toolbox[iconsize="small"] #superscriptButton {
   list-style-image: url("chrome://prince/skin/icons/math_superscript-sm.png");
 }
 
@@ -507,7 +507,7 @@ toolbar[iconsize="small"] #superscriptButton {
   list-style-image: url("chrome://prince/skin/icons/math_superscript-hover.png");
 }
 
-toolbar[iconsize="small"] #superscriptButton:hover {
+toolbox[iconsize="small"] #superscriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_superscript-hover-sm.png");
 }
 
@@ -515,7 +515,7 @@ toolbar[iconsize="small"] #superscriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_superscript-active.png");
 }
 
-toolbar[iconsize="small"] #superscriptButton:hover:active {
+toolbox[iconsize="small"] #superscriptButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_superscript-active-sm.png");
 }
 
@@ -523,7 +523,7 @@ toolbar[iconsize="small"] #superscriptButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_superscript-disabled.png");
 }
 
-toolbar[iconsize="small"] #superscriptButton[disabled="true"] {
+toolbox[iconsize="small"] #superscriptButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_superscript-disabled-sm.png");
 }
 
@@ -531,7 +531,7 @@ toolbar[iconsize="small"] #superscriptButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_subscript.png");
 }
 
-toolbar[iconsize="small"] #subscriptButton {
+toolbox[iconsize="small"] #subscriptButton {
   list-style-image: url("chrome://prince/skin/icons/math_subscript-sm.png");
 }
 
@@ -539,7 +539,7 @@ toolbar[iconsize="small"] #subscriptButton {
   list-style-image: url("chrome://prince/skin/icons/math_subscript-hover.png");
 }
 
-toolbar[iconsize="small"] #subscriptButton:hover {
+toolbox[iconsize="small"] #subscriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_subscript-hover-sm.png");
 }
 
@@ -547,7 +547,7 @@ toolbar[iconsize="small"] #subscriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_subscript-active.png");
 }
 
-toolbar[iconsize="small"] #subscriptButton:hover:active {
+toolbox[iconsize="small"] #subscriptButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_subscript-active-sm.png");
 }
 
@@ -555,7 +555,7 @@ toolbar[iconsize="small"] #subscriptButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_subscript-disabled.png");
 }
 
-toolbar[iconsize="small"] #subscriptButton[disabled="true"] {
+toolbox[iconsize="small"] #subscriptButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_subscript-disabled-sm.png");
 }
 
@@ -563,7 +563,7 @@ toolbar[iconsize="small"] #subscriptButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_parentheses.png");
 }
 
-toolbar[iconsize="small"] #parenthesesButton {
+toolbox[iconsize="small"] #parenthesesButton {
   list-style-image: url("chrome://prince/skin/icons/math_parentheses-sm.png");
 }
 
@@ -571,7 +571,7 @@ toolbar[iconsize="small"] #parenthesesButton {
   list-style-image: url("chrome://prince/skin/icons/math_parentheses-hover.png");
 }
 
-toolbar[iconsize="small"] #parenthesesButton:hover {
+toolbox[iconsize="small"] #parenthesesButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_parentheses-hover-sm.png");
 }
 
@@ -579,7 +579,7 @@ toolbar[iconsize="small"] #parenthesesButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_parentheses-active.png");
 }
 
-toolbar[iconsize="small"] #parenthesesButton:hover:active {
+toolbox[iconsize="small"] #parenthesesButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_parentheses-active-sm.png");
 }
 
@@ -587,7 +587,7 @@ toolbar[iconsize="small"] #parenthesesButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_parentheses-disabled.png");
 }
 
-toolbar[iconsize="small"] #parenthesesButton[disabled="true"] {
+toolbox[iconsize="small"] #parenthesesButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_parentheses-disabled-sm.png");
 }
 
@@ -595,7 +595,7 @@ toolbar[iconsize="small"] #parenthesesButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets.png");
 }
 
-toolbar[iconsize="small"] #bracketsButton {
+toolbox[iconsize="small"] #bracketsButton {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets-sm.png");
 }
 
@@ -603,7 +603,7 @@ toolbar[iconsize="small"] #bracketsButton {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets-hover.png");
 }
 
-toolbar[iconsize="small"] #bracketsButton:hover {
+toolbox[iconsize="small"] #bracketsButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets-hover-sm.png");
 }
 
@@ -611,7 +611,7 @@ toolbar[iconsize="small"] #bracketsButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets-active.png");
 }
 
-toolbar[iconsize="small"] #bracketsButton:hover:active {
+toolbox[iconsize="small"] #bracketsButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets-active-sm.png");
 }
 
@@ -619,7 +619,7 @@ toolbar[iconsize="small"] #bracketsButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets-disabled.png");
 }
 
-toolbar[iconsize="small"] #bracketsButton[disabled="true"] {
+toolbox[iconsize="small"] #bracketsButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets-disabled-sm.png");
 }
 
@@ -641,20 +641,20 @@ toolbar[iconsize="small"] #bracketsButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_brackets-active.png");
 }
 
-toolbar[iconsize="small"] #genBracketsButton {
+toolbox[iconsize="small"] #genBracketsButton {
   list-style-image: url("chrome://prince/skin/icons/math_brackets-sm.png");
 }
 
-toolbar[iconsize="small"] #genBracketsButton:hover {
+toolbox[iconsize="small"] #genBracketsButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_brackets-hover-sm.png");
 }
 
 
-toolbar[iconsize="small"] #genBracketsButton[disabled="true"] {
+toolbox[iconsize="small"] #genBracketsButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_brackets-disabled-sm.png");
 }
 
-toolbar[iconsize="small"] #genBracketsButton:hover:active {
+toolbox[iconsize="small"] #genBracketsButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_brackets-active-sm.png");
 }
 
@@ -663,7 +663,7 @@ toolbar[iconsize="small"] #genBracketsButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_sum.png");
 }
 
-toolbar[iconsize="small"] #sumButton {
+toolbox[iconsize="small"] #sumButton {
   list-style-image: url("chrome://prince/skin/icons/math_sum-sm.png");
 }
 
@@ -671,7 +671,7 @@ toolbar[iconsize="small"] #sumButton {
   list-style-image: url("chrome://prince/skin/icons/math_sum-hover.png");
 }
 
-toolbar[iconsize="small"] #sumButton:hover {
+toolbox[iconsize="small"] #sumButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_sum-hover-sm.png");
 }
 
@@ -679,7 +679,7 @@ toolbar[iconsize="small"] #sumButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_sum-active.png");
 }
 
-toolbar[iconsize="small"] #sumButton:hover:active {
+toolbox[iconsize="small"] #sumButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_sum-active-sm.png");
 }
 
@@ -687,7 +687,7 @@ toolbar[iconsize="small"] #sumButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_sum-disabled.png");
 }
 
-toolbar[iconsize="small"] #sumButton[disabled="true"] {
+toolbox[iconsize="small"] #sumButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_sum-disabled-sm.png");
 }
 
@@ -695,7 +695,7 @@ toolbar[iconsize="small"] #sumButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_integral.png");
 }
 
-toolbar[iconsize="small"] #integralButton {
+toolbox[iconsize="small"] #integralButton {
   list-style-image: url("chrome://prince/skin/icons/math_integral-sm.png");
 }
 
@@ -703,7 +703,7 @@ toolbar[iconsize="small"] #integralButton {
   list-style-image: url("chrome://prince/skin/icons/math_integral-hover.png");
 }
 
-toolbar[iconsize="small"] #integralButton:hover {
+toolbox[iconsize="small"] #integralButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_integral-hover-sm.png");
 }
 
@@ -711,7 +711,7 @@ toolbar[iconsize="small"] #integralButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_integral-active.png");
 }
 
-toolbar[iconsize="small"] #integralButton:hover:active {
+toolbox[iconsize="small"] #integralButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_integral-active-sm.png");
 }
 
@@ -719,7 +719,7 @@ toolbar[iconsize="small"] #integralButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_integral-disabled.png");
 }
 
-toolbar[iconsize="small"] #integralButton[disabled="true"] {
+toolbox[iconsize="small"] #integralButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_integral-disabled-sm.png");
 }
 
@@ -727,7 +727,7 @@ toolbar[iconsize="small"] #integralButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_unitname.png");
 }
 
-toolbar[iconsize="small"] #unitnameButton {
+toolbox[iconsize="small"] #unitnameButton {
   list-style-image: url("chrome://prince/skin/icons/math_unitname-sm.png");
 }
 
@@ -735,7 +735,7 @@ toolbar[iconsize="small"] #unitnameButton {
   list-style-image: url("chrome://prince/skin/icons/math_unitname-hover.png");
 }
 
-toolbar[iconsize="small"] #unitnameButton:hover {
+toolbox[iconsize="small"] #unitnameButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_unitname-hover-sm.png");
 }
 
@@ -743,7 +743,7 @@ toolbar[iconsize="small"] #unitnameButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_unitname-active.png");
 }
 
-toolbar[iconsize="small"] #unitnameButton:hover:active {
+toolbox[iconsize="small"] #unitnameButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_unitname-active-sm.png");
 }
 
@@ -751,7 +751,7 @@ toolbar[iconsize="small"] #unitnameButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_unitname-disabled.png");
 }
 
-toolbar[iconsize="small"] #unitnameButton[disabled="true"] {
+toolbox[iconsize="small"] #unitnameButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_unitname-disabled-sm.png");
 }
 
@@ -759,7 +759,7 @@ toolbar[iconsize="small"] #unitnameButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/display.png");
 }
 
-toolbar[iconsize="small"] #displayButton {
+toolbox[iconsize="small"] #displayButton {
   list-style-image: url("chrome://prince/skin/icons/display-sm.png");
 }
 
@@ -767,7 +767,7 @@ toolbar[iconsize="small"] #displayButton {
   list-style-image: url("chrome://prince/skin/icons/display-hover.png");
 }
 
-toolbar[iconsize="small"] #displayButton:hover {
+toolbox[iconsize="small"] #displayButton:hover {
   list-style-image: url("chrome://prince/skin/icons/display-hover-sm.png");
 }
 
@@ -775,7 +775,7 @@ toolbar[iconsize="small"] #displayButton:hover {
   list-style-image: url("chrome://prince/skin/icons/display-active.png");
 }
 
-toolbar[iconsize="small"] #displayButton:hover:active {
+toolbox[iconsize="small"] #displayButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/display-active-sm.png");
 }
 
@@ -783,7 +783,7 @@ toolbar[iconsize="small"] #displayButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/display-disabled.png");
 }
 
-toolbar[iconsize="small"] #displayButton[disabled="true"] {
+toolbox[iconsize="small"] #displayButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/display-disabled-sm.png");
 }
 
@@ -791,7 +791,7 @@ toolbar[iconsize="small"] #displayButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_bigop.png");
 }
 
-toolbar[iconsize="small"] #bigopButton {
+toolbox[iconsize="small"] #bigopButton {
   list-style-image: url("chrome://prince/skin/icons/math_bigop-sm.png");
 }
 
@@ -799,7 +799,7 @@ toolbar[iconsize="small"] #bigopButton {
   list-style-image: url("chrome://prince/skin/icons/math_bigop-hover.png");
 }
 
-toolbar[iconsize="small"] #bigopButton:hover {
+toolbox[iconsize="small"] #bigopButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_bigop-hover-sm.png");
 }
 
@@ -807,7 +807,7 @@ toolbar[iconsize="small"] #bigopButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_bigop-active.png");
 }
 
-toolbar[iconsize="small"] #bigopButton:hover:active {
+toolbox[iconsize="small"] #bigopButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_bigop-active-sm.png");
 }
 
@@ -815,7 +815,7 @@ toolbar[iconsize="small"] #bigopButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_bigop-disabled.png");
 }
 
-toolbar[iconsize="small"] #bigopButton[disabled="true"] {
+toolbox[iconsize="small"] #bigopButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_bigop-disabled-sm.png");
 }
 
@@ -823,7 +823,7 @@ toolbar[iconsize="small"] #bigopButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_matrix.png");
 }
 
-toolbar[iconsize="small"] #matrixButton {
+toolbox[iconsize="small"] #matrixButton {
   list-style-image: url("chrome://prince/skin/icons/math_matrix-sm.png");
 }
 
@@ -831,7 +831,7 @@ toolbar[iconsize="small"] #matrixButton {
   list-style-image: url("chrome://prince/skin/icons/math_matrix-hover.png");
 }
 
-toolbar[iconsize="small"] #matrixButton:hover {
+toolbox[iconsize="small"] #matrixButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_matrix-hover-sm.png");
 }
 
@@ -839,7 +839,7 @@ toolbar[iconsize="small"] #matrixButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_matrix-active.png");
 }
 
-toolbar[iconsize="small"] #matrixButton:hover:active {
+toolbox[iconsize="small"] #matrixButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_matrix-active-sm.png");
 }
 
@@ -847,7 +847,7 @@ toolbar[iconsize="small"] #matrixButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_matrix-disabled.png");
 }
 
-toolbar[iconsize="small"] #matrixButton[disabled="true"] {
+toolbox[iconsize="small"] #matrixButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_matrix-disabled-sm.png");
 }
 
@@ -855,7 +855,7 @@ toolbar[iconsize="small"] #matrixButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathname.png");
 }
 
-toolbar[iconsize="small"] #mathnameButton {
+toolbox[iconsize="small"] #mathnameButton {
   list-style-image: url("chrome://prince/skin/icons/math_mathname-sm.png");
 }
 
@@ -863,7 +863,7 @@ toolbar[iconsize="small"] #mathnameButton {
   list-style-image: url("chrome://prince/skin/icons/math_mathname-hover.png");
 }
 
-toolbar[iconsize="small"] #mathnameButton:hover {
+toolbox[iconsize="small"] #mathnameButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_mathname-hover-sm.png");
 }
 
@@ -871,7 +871,7 @@ toolbar[iconsize="small"] #mathnameButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_mathname-active.png");
 }
 
-toolbar[iconsize="small"] #mathnameButton:hover:active {
+toolbox[iconsize="small"] #mathnameButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_mathname-active-sm.png");
 }
 
@@ -879,7 +879,7 @@ toolbar[iconsize="small"] #mathnameButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_mathname-disabled.png");
 }
 
-toolbar[iconsize="small"] #mathnameButton[disabled="true"] {
+toolbox[iconsize="small"] #mathnameButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathname-disabled-sm.png");
 }
 
@@ -887,7 +887,7 @@ toolbar[iconsize="small"] #mathnameButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_binomial.png");
 }
 
-toolbar[iconsize="small"] #binomialButton {
+toolbox[iconsize="small"] #binomialButton {
   list-style-image: url("chrome://prince/skin/icons/math_binomial-sm.png");
 }
 
@@ -895,7 +895,7 @@ toolbar[iconsize="small"] #binomialButton {
   list-style-image: url("chrome://prince/skin/icons/math_binomial-hover.png");
 }
 
-toolbar[iconsize="small"] #binomialButton:hover {
+toolbox[iconsize="small"] #binomialButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_binomial-hover-sm.png");
 }
 
@@ -903,7 +903,7 @@ toolbar[iconsize="small"] #binomialButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_binomial-active.png");
 }
 
-toolbar[iconsize="small"] #binomialButton:hover:active {
+toolbox[iconsize="small"] #binomialButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_binomial-active-sm.png");
 }
 
@@ -911,7 +911,7 @@ toolbar[iconsize="small"] #binomialButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_binomial-disabled.png");
 }
 
-toolbar[iconsize="small"] #binomialButton[disabled="true"] {
+toolbox[iconsize="small"] #binomialButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_binomial-disabled-sm.png");
 }
 
@@ -919,7 +919,7 @@ toolbar[iconsize="small"] #binomialButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_label.png");
 }
 
-toolbar[iconsize="small"] #labelButton {
+toolbox[iconsize="small"] #labelButton {
   list-style-image: url("chrome://prince/skin/icons/math_label-sm.png");
 }
 
@@ -927,7 +927,7 @@ toolbar[iconsize="small"] #labelButton {
   list-style-image: url("chrome://prince/skin/icons/math_label-hover.png");
 }
 
-toolbar[iconsize="small"] #labelButton:hover {
+toolbox[iconsize="small"] #labelButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_label-hover-sm.png");
 }
 
@@ -935,7 +935,7 @@ toolbar[iconsize="small"] #labelButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_label-active.png");
 }
 
-toolbar[iconsize="small"] #labelButton:hover:active {
+toolbox[iconsize="small"] #labelButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_label-active-sm.png");
 }
 
@@ -943,7 +943,7 @@ toolbar[iconsize="small"] #labelButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_label-disabled.png");
 }
 
-toolbar[iconsize="small"] #labelButton[disabled="true"] {
+toolbox[iconsize="small"] #labelButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_label-disabled-sm.png");
 }
 
@@ -951,7 +951,7 @@ toolbar[iconsize="small"] #labelButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_decoration.png");
 }
 
-toolbar[iconsize="small"] #decorationButton {
+toolbox[iconsize="small"] #decorationButton {
   list-style-image: url("chrome://prince/skin/icons/math_decoration-sm.png");
 }
 
@@ -959,7 +959,7 @@ toolbar[iconsize="small"] #decorationButton {
   list-style-image: url("chrome://prince/skin/icons/math_decoration-hover.png");
 }
 
-toolbar[iconsize="small"] #decorationButton:hover {
+toolbox[iconsize="small"] #decorationButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_decoration-hover-sm.png");
 }
 
@@ -967,7 +967,7 @@ toolbar[iconsize="small"] #decorationButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_decoration-active.png");
 }
 
-toolbar[iconsize="small"] #decorationButton:hover:active {
+toolbox[iconsize="small"] #decorationButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_decoration-active-sm.png");
 }
 
@@ -975,7 +975,7 @@ toolbar[iconsize="small"] #decorationButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_decoration-disabled.png");
 }
 
-toolbar[iconsize="small"] #decorationButton[disabled="true"] {
+toolbox[iconsize="small"] #decorationButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_decoration-disabled-sm.png");
 }
 
@@ -983,7 +983,7 @@ toolbar[iconsize="small"] #decorationButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_note.png");
 }
 
-toolbar[iconsize="small"] #noteButton {
+toolbox[iconsize="small"] #noteButton {
   list-style-image: url("chrome://prince/skin/icons/type_note-sm.png");
 }
 
@@ -991,7 +991,7 @@ toolbar[iconsize="small"] #noteButton {
   list-style-image: url("chrome://prince/skin/icons/type_note-hover.png");
 }
 
-toolbar[iconsize="small"] #noteButton:hover {
+toolbox[iconsize="small"] #noteButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_note-hover-sm.png");
 }
 
@@ -999,7 +999,7 @@ toolbar[iconsize="small"] #noteButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_note-active.png");
 }
 
-toolbar[iconsize="small"] #noteButton:hover:active {
+toolbox[iconsize="small"] #noteButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_note-active-sm.png");
 }
 
@@ -1007,7 +1007,7 @@ toolbar[iconsize="small"] #noteButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_note-disabled.png");
 }
 
-toolbar[iconsize="small"] #noteButton[disabled="true"] {
+toolbox[iconsize="small"] #noteButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_note-disabled-sm.png");
 }
 
@@ -1015,7 +1015,7 @@ toolbar[iconsize="small"] #noteButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_footnote.png");
 }
 
-toolbar[iconsize="small"] #footnoteButton {
+toolbox[iconsize="small"] #footnoteButton {
   list-style-image: url("chrome://prince/skin/icons/type_footnote-sm.png");
 }
 
@@ -1023,7 +1023,7 @@ toolbar[iconsize="small"] #footnoteButton {
   list-style-image: url("chrome://prince/skin/icons/type_footnote-hover.png");
 }
 
-toolbar[iconsize="small"] #footnoteButton:hover {
+toolbox[iconsize="small"] #footnoteButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_footnote-hover-sm.png");
 }
 
@@ -1031,7 +1031,7 @@ toolbar[iconsize="small"] #footnoteButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_footnote-active.png");
 }
 
-toolbar[iconsize="small"] #footnoteButton:hover:active {
+toolbox[iconsize="small"] #footnoteButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_footnote-active-sm.png");
 }
 
@@ -1039,7 +1039,7 @@ toolbar[iconsize="small"] #footnoteButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_footnote-disabled.png");
 }
 
-toolbar[iconsize="small"] #footnoteButton[disabled="true"] {
+toolbox[iconsize="small"] #footnoteButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_footnote-disabled-sm.png");
 }
 
@@ -1047,7 +1047,7 @@ toolbar[iconsize="small"] #footnoteButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_marker.png");
 }
 
-toolbar[iconsize="small"] #markerButton {
+toolbox[iconsize="small"] #markerButton {
   list-style-image: url("chrome://prince/skin/icons/type_marker-sm.png");
 }
 
@@ -1055,7 +1055,7 @@ toolbar[iconsize="small"] #markerButton {
   list-style-image: url("chrome://prince/skin/icons/type_marker-hover.png");
 }
 
-toolbar[iconsize="small"] #markerButton:hover {
+toolbox[iconsize="small"] #markerButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_marker-hover-sm.png");
 }
 
@@ -1063,7 +1063,7 @@ toolbar[iconsize="small"] #markerButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_marker-active.png");
 }
 
-toolbar[iconsize="small"] #markerButton:hover:active {
+toolbox[iconsize="small"] #markerButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_marker-active-sm.png");
 }
 
@@ -1071,7 +1071,7 @@ toolbar[iconsize="small"] #markerButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_marker-disabled.png");
 }
 
-toolbar[iconsize="small"] #markerButton[disabled="true"] {
+toolbox[iconsize="small"] #markerButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_marker-disabled-sm.png");
 }
 
@@ -1079,7 +1079,7 @@ toolbar[iconsize="small"] #markerButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/htlink.png");
 }
 
-toolbar[iconsize="small"] #htlinkButton {
+toolbox[iconsize="small"] #htlinkButton {
   list-style-image: url("chrome://prince/skin/icons/htlink-sm.png");
 }
 
@@ -1087,7 +1087,7 @@ toolbar[iconsize="small"] #htlinkButton {
   list-style-image: url("chrome://prince/skin/icons/htlink-hover.png");
 }
 
-toolbar[iconsize="small"] #htlinkButton:hover {
+toolbox[iconsize="small"] #htlinkButton:hover {
   list-style-image: url("chrome://prince/skin/icons/htlink-hover-sm.png");
 }
 
@@ -1095,7 +1095,7 @@ toolbar[iconsize="small"] #htlinkButton:hover {
   list-style-image: url("chrome://prince/skin/icons/htlink-active.png");
 }
 
-toolbar[iconsize="small"] #htlinkButton:hover:active {
+toolbox[iconsize="small"] #htlinkButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/htlink-active-sm.png");
 }
 
@@ -1103,7 +1103,7 @@ toolbar[iconsize="small"] #htlinkButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/htlink-disabled.png");
 }
 
-toolbar[iconsize="small"] #htlinkButton[disabled="true"] {
+toolbox[iconsize="small"] #htlinkButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/htlink-disabled-sm.png");
 }
 
@@ -1111,7 +1111,7 @@ toolbar[iconsize="small"] #htlinkButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_formula.png");
 }
 
-toolbar[iconsize="small"] #formulaButton {
+toolbox[iconsize="small"] #formulaButton {
   list-style-image: url("chrome://prince/skin/icons/math_formula-sm.png");
 }
 
@@ -1119,7 +1119,7 @@ toolbar[iconsize="small"] #formulaButton {
   list-style-image: url("chrome://prince/skin/icons/math_formula-hover.png");
 }
 
-toolbar[iconsize="small"] #formulaButton:hover {
+toolbox[iconsize="small"] #formulaButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_formula-hover-sm.png");
 }
 
@@ -1127,7 +1127,7 @@ toolbar[iconsize="small"] #formulaButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_formula-active.png");
 }
 
-toolbar[iconsize="small"] #formulaButton:hover:active {
+toolbox[iconsize="small"] #formulaButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_formula-active-sm.png");
 }
 
@@ -1135,7 +1135,7 @@ toolbar[iconsize="small"] #formulaButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_formula-disabled.png");
 }
 
-toolbar[iconsize="small"] #formulaButton[disabled="true"] {
+toolbox[iconsize="small"] #formulaButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_formula-disabled-sm.png");
 }
 
@@ -1144,19 +1144,19 @@ toolbar[iconsize="small"] #formulaButton[disabled="true"] {
 #printButton{
   list-style-image: url("chrome://prince/skin/icons/print.png");
 }
-toolbar[iconsize="small"] #printButton{
+toolbox[iconsize="small"] #printButton{
   list-style-image: url("chrome://prince/skin/icons/print-sm.png");
 }
 #printButton:hover {
   list-style-image: url("chrome://prince/skin/icons/print-hover.png");
 }
-toolbar[iconsize="small"] #printButton:hover {
+toolbox[iconsize="small"] #printButton:hover {
   list-style-image: url("chrome://prince/skin/icons/print-hover-sm.png");
 }
 #printButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/print-active.png");
 }
-toolbar[iconsize="small"] #printButton:hover:active {
+toolbox[iconsize="small"] #printButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/print-active-sm.png");
 }
 #printButton[disabled="true"] {
@@ -1166,25 +1166,25 @@ toolbar[iconsize="small"] #printButton:hover:active {
 #printPreviewButton{
   list-style-image: url("chrome://prince/skin/icons/preview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton {
+toolbox[iconsize="small"] #printPreviewButton {
   list-style-image: url("chrome://prince/skin/icons/preview-sm.png");
 }
 #printPreviewButton:hover {
   list-style-image: url("chrome://prince/skin/icons/preview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton:hover {
+toolbox[iconsize="small"] #printPreviewButton:hover {
   list-style-image: url("chrome://prince/skin/icons/preview-hover-sm.png");
 }
 #printPreviewButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/preview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton:hover:active {
+toolbox[iconsize="small"] #printPreviewButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/preview-active-sm.png");
 }
 #printPreviewButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/preview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[disabled="true"] {
+toolbox[iconsize="small"] #printPreviewButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/preview-disabled-sm.png");
 }
 
@@ -1192,19 +1192,19 @@ toolbar[iconsize="small"] #printPreviewButton[disabled="true"] {
 #printButton toolbarbutton {
   list-style-image: url("chrome://prince/skin/icons/print.png");
 }
-toolbar[iconsize="small"] #printButton toolbarbutton{
+toolbox[iconsize="small"] #printButton toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/print-sm.png");
 }
 #printButton toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/print-hover.png");
 }
-toolbar[iconsize="small"] #printButton toolbarbutton:hover {
+toolbox[iconsize="small"] #printButton toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/print-hover-sm.png");
 }
 #printButton toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/print-active.png");
 }
-toolbar[iconsize="small"] #printButton toolbarbutton:hover:active {
+toolbox[iconsize="small"] #printButton toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/print-active-sm.png");
 }
 #printButton[disabled="true"] toolbarbutton {
@@ -1214,25 +1214,25 @@ toolbar[iconsize="small"] #printButton toolbarbutton:hover:active {
 #printButton[defcomp="pdf"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="pdf"]  toolbarbutton{
+toolbox[iconsize="small"] #printButton[defcomp="pdf"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-sm.png");
 }
 #printButton[defcomp="pdf"] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-hover.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="pdf"] toolbarbutton:hover {
+toolbox[iconsize="small"] #printButton[defcomp="pdf"] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-hover-sm.png");
 }
 #printButton[defcomp="pdf"] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-active.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="pdf"] toolbarbutton:hover:active {
+toolbox[iconsize="small"] #printButton[defcomp="pdf"] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-active-sm.png");
 }
 #printButton[defcomp="pdf"][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-disabled.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="pdf"][disabled="true"]  toolbarbutton{
+toolbox[iconsize="small"] #printButton[defcomp="pdf"][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-disabled-sm.png");
 }
 
@@ -1240,50 +1240,50 @@ toolbar[iconsize="small"] #printButton[defcomp="pdf"][disabled="true"]  toolbarb
 #printPreviewButton toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton  toolbarbutton{
+toolbox[iconsize="small"] #printPreviewButton  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview-sm.png");
 }
 #printPreviewButton toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/preview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton toolbarbutton:hover {
+toolbox[iconsize="small"] #printPreviewButton toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/preview-hover-sm.png");
 }
 #printPreviewButton toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/preview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton toolbarbutton:hover:active {
+toolbox[iconsize="small"] #printPreviewButton toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/preview-active-sm.png");
 }
 #printPreviewButton[disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[disabled="true"]  toolbarbutton{
+toolbox[iconsize="small"] #printPreviewButton[disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview-disabled-sm.png");
 }
 
 #printPreviewButton[defcomp='pdf']  toolbarbutton, #printPreviewButtonMac{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']  toolbarbutton, toolbar[iconsize="small"] #printPreviewButtonMac{
+toolbox[iconsize="small"] #printPreviewButton[defcomp='pdf']  toolbarbutton, toolbox[iconsize="small"] #printPreviewButtonMac{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-sm.png");
 }
 #printPreviewButton[defcomp='pdf'] toolbarbutton:hover, #printPreviewButtonMac:hover{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover, toolbar[iconsize="small"] #printPreviewButtonMac:hover {
+toolbox[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover, toolbox[iconsize="small"] #printPreviewButtonMac:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover-sm.png");
 }
 #printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active, #printPreviewButtonMac:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active, toolbar[iconsize="small"] #printPreviewButtonMac:hover:active {
+toolbox[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active, toolbox[iconsize="small"] #printPreviewButtonMac:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active-sm.png");
 }
 #printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton, #printPreviewButtonMac[disabled="true"]{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton, toolbar[iconsize="small"] #printPreviewButtonMac[disabled="true"]{
+toolbox[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton, toolbox[iconsize="small"] #printPreviewButtonMac[disabled="true"]{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled-sm.png");
 }
 
@@ -1294,7 +1294,7 @@ toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"]  t
   list-style-image: url("chrome://prince/skin/icons/type_pdfcompile.png");
 }
 
-toolbar[iconsize="small"] #pdfcompileButton {
+toolbox[iconsize="small"] #pdfcompileButton {
   list-style-image: url("chrome://prince/skin/icons/type_pdfcompile-sm.png");
 }
 
@@ -1302,7 +1302,7 @@ toolbar[iconsize="small"] #pdfcompileButton {
   list-style-image: url("chrome://prince/skin/icons/type_pdfcompile-hover.png");
 }
 
-toolbar[iconsize="small"] #pdfcompileButton:hover {
+toolbox[iconsize="small"] #pdfcompileButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfcompile-hover-sm.png");
 }
 
@@ -1310,7 +1310,7 @@ toolbar[iconsize="small"] #pdfcompileButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfcompile-active.png");
 }
 
-toolbar[iconsize="small"] #pdfcompileButton:hover:active {
+toolbox[iconsize="small"] #pdfcompileButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfcompile-active-sm.png");
 }
 
@@ -1318,7 +1318,7 @@ toolbar[iconsize="small"] #pdfcompileButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfcompile-disabled.png");
 }
 
-toolbar[iconsize="small"] #pdfcompileButton[disabled="true"] {
+toolbox[iconsize="small"] #pdfcompileButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfcompile-disabled-sm.png");
 }
 
@@ -1327,7 +1327,7 @@ toolbar[iconsize="small"] #pdfcompileButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_frontmatter.png");
 }
 
-toolbar[iconsize="small"] #frontmatterButton {
+toolbox[iconsize="small"] #frontmatterButton {
   list-style-image: url("chrome://prince/skin/icons/type_frontmatter-sm.png");
 }
 
@@ -1335,7 +1335,7 @@ toolbar[iconsize="small"] #frontmatterButton {
   list-style-image: url("chrome://prince/skin/icons/type_frontmatter-hover.png");
 }
 
-toolbar[iconsize="small"] #frontmatterButton:hover {
+toolbox[iconsize="small"] #frontmatterButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_frontmatter-hover-sm.png");
 }
 
@@ -1343,7 +1343,7 @@ toolbar[iconsize="small"] #frontmatterButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_frontmatter-active.png");
 }
 
-toolbar[iconsize="small"] #frontmatterButton:hover:active {
+toolbox[iconsize="small"] #frontmatterButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_frontmatter-active-sm.png");
 }
 
@@ -1351,7 +1351,7 @@ toolbar[iconsize="small"] #frontmatterButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_frontmatter-disabled.png");
 }
 
-toolbar[iconsize="small"] #frontmatterButton[disabled="true"] {
+toolbox[iconsize="small"] #frontmatterButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_frontmatter-disabled-sm.png");
 }
 
@@ -1360,7 +1360,7 @@ toolbar[iconsize="small"] #frontmatterButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_packages.png");
 }
 
-toolbar[iconsize="small"] #packagesButton {
+toolbox[iconsize="small"] #packagesButton {
   list-style-image: url("chrome://prince/skin/icons/type_packages-sm.png");
 }
 
@@ -1368,7 +1368,7 @@ toolbar[iconsize="small"] #packagesButton {
   list-style-image: url("chrome://prince/skin/icons/type_packages-hover.png");
 }
 
-toolbar[iconsize="small"] #packagesButton:hover {
+toolbox[iconsize="small"] #packagesButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_packages-hover-sm.png");
 }
 
@@ -1376,7 +1376,7 @@ toolbar[iconsize="small"] #packagesButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_packages-active.png");
 }
 
-toolbar[iconsize="small"] #packagesButton:hover:active {
+toolbox[iconsize="small"] #packagesButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_packages-active-sm.png");
 }
 
@@ -1384,7 +1384,7 @@ toolbar[iconsize="small"] #packagesButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_packages-disabled.png");
 }
 
-toolbar[iconsize="small"] #packagesButton[disabled="true"] {
+toolbox[iconsize="small"] #packagesButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_packages-disabled-sm.png");
 }
 
@@ -1393,7 +1393,7 @@ toolbar[iconsize="small"] #packagesButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_citation.png");
 }
 
-toolbar[iconsize="small"] #citationButton {
+toolbox[iconsize="small"] #citationButton {
   list-style-image: url("chrome://prince/skin/icons/type_citation-sm.png");
 }
 
@@ -1401,7 +1401,7 @@ toolbar[iconsize="small"] #citationButton {
   list-style-image: url("chrome://prince/skin/icons/type_citation-hover.png");
 }
 
-toolbar[iconsize="small"] #citationButton:hover {
+toolbox[iconsize="small"] #citationButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_citation-hover-sm.png");
 }
 
@@ -1409,7 +1409,7 @@ toolbar[iconsize="small"] #citationButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_citation-active.png");
 }
 
-toolbar[iconsize="small"] #citationButton:hover:active {
+toolbox[iconsize="small"] #citationButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_citation-active-sm.png");
 }
 
@@ -1417,7 +1417,7 @@ toolbar[iconsize="small"] #citationButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_citation-disabled.png");
 }
 
-toolbar[iconsize="small"] #citationButton[disabled="true"] {
+toolbox[iconsize="small"] #citationButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_citation-disabled-sm.png");
 }
 
@@ -1425,7 +1425,7 @@ toolbar[iconsize="small"] #citationButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz.png");
 }
 
-toolbar[iconsize="small"] #hspaceButton {
+toolbox[iconsize="small"] #hspaceButton {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-sm.png");
 }
 
@@ -1433,7 +1433,7 @@ toolbar[iconsize="small"] #hspaceButton {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-hover.png");
 }
 
-toolbar[iconsize="small"] #hspaceButton:hover {
+toolbox[iconsize="small"] #hspaceButton:hover {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-hover-sm.png");
 }
 
@@ -1441,7 +1441,7 @@ toolbar[iconsize="small"] #hspaceButton:hover {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-active.png");
 }
 
-toolbar[iconsize="small"] #hspaceButton:hover:active {
+toolbox[iconsize="small"] #hspaceButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-active-sm.png");
 }
 
@@ -1449,7 +1449,7 @@ toolbar[iconsize="small"] #hspaceButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-disabled.png");
 }
 
-toolbar[iconsize="small"] #hspaceButton[disabled="true"] {
+toolbox[iconsize="small"] #hspaceButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/spacehoriz-disabled-sm.png");
 }
 
@@ -1457,7 +1457,7 @@ toolbar[iconsize="small"] #hspaceButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/spacevertical.png");
 }
 
-toolbar[iconsize="small"] #vspaceButton {
+toolbox[iconsize="small"] #vspaceButton {
   list-style-image: url("chrome://prince/skin/icons/spacevertical-sm.png");
 }
 
@@ -1465,7 +1465,7 @@ toolbar[iconsize="small"] #vspaceButton {
   list-style-image: url("chrome://prince/skin/icons/spacevertical-hover.png");
 }
 
-toolbar[iconsize="small"] #vspaceButton:hover {
+toolbox[iconsize="small"] #vspaceButton:hover {
   list-style-image: url("chrome://prince/skin/icons/spacevertical-hover-sm.png");
 }
 
@@ -1473,7 +1473,7 @@ toolbar[iconsize="small"] #vspaceButton:hover {
   list-style-image: url("chrome://prince/skin/icons/spacevertical-active.png");
 }
 
-toolbar[iconsize="small"] #vspaceButton:hover:active {
+toolbox[iconsize="small"] #vspaceButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/spacevertical-active-sm.png");
 }
 
@@ -1481,7 +1481,7 @@ toolbar[iconsize="small"] #vspaceButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/spacevertical-disabled.png");
 }
 
-toolbar[iconsize="small"] #vspaceButton[disabled="true"] {
+toolbox[iconsize="small"] #vspaceButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/spacevertical-disabled-sm.png");
 }
 
@@ -1491,7 +1491,7 @@ toolbar[iconsize="small"] #vspaceButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry.png");
 }
 
-toolbar[iconsize="small"] #indexentryButton {
+toolbox[iconsize="small"] #indexentryButton {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry-sm.png");
 }
 
@@ -1499,7 +1499,7 @@ toolbar[iconsize="small"] #indexentryButton {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry-hover.png");
 }
 
-toolbar[iconsize="small"] #indexentryButton:hover {
+toolbox[iconsize="small"] #indexentryButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry-hover-sm.png");
 }
 
@@ -1507,7 +1507,7 @@ toolbar[iconsize="small"] #indexentryButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry-active.png");
 }
 
-toolbar[iconsize="small"] #indexentryButton:hover:active {
+toolbox[iconsize="small"] #indexentryButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry-active-sm.png");
 }
 
@@ -1515,7 +1515,7 @@ toolbar[iconsize="small"] #indexentryButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry-disabled.png");
 }
 
-toolbar[iconsize="small"] #indexentryButton[disabled="true"] {
+toolbox[iconsize="small"] #indexentryButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry-disabled-sm.png");
 }
 
@@ -1523,7 +1523,7 @@ toolbar[iconsize="small"] #indexentryButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_xreference.png");
 }
 
-toolbar[iconsize="small"] #xrefButton {
+toolbox[iconsize="small"] #xrefButton {
   list-style-image: url("chrome://prince/skin/icons/type_xreference-sm.png");
 }
 
@@ -1531,7 +1531,7 @@ toolbar[iconsize="small"] #xrefButton {
   list-style-image: url("chrome://prince/skin/icons/type_xreference-hover.png");
 }
 
-toolbar[iconsize="small"] #xrefButton:hover {
+toolbox[iconsize="small"] #xrefButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_xreference-hover-sm.png");
 }
 
@@ -1539,7 +1539,7 @@ toolbar[iconsize="small"] #xrefButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_xreference-active.png");
 }
 
-toolbar[iconsize="small"] #xrefButton:hover:active {
+toolbox[iconsize="small"] #xrefButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_xreference-active-sm.png");
 }
 
@@ -1547,7 +1547,7 @@ toolbar[iconsize="small"] #xrefButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_xreference-disabled.png");
 }
 
-toolbar[iconsize="small"] #xrefButton[disabled="true"] {
+toolbox[iconsize="small"] #xrefButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_xreference-disabled-sm.png");
 }
 
@@ -1555,7 +1555,7 @@ toolbar[iconsize="small"] #xrefButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_texfield.png");
 }
 
-toolbar[iconsize="small"] #texfieldButton {
+toolbox[iconsize="small"] #texfieldButton {
   list-style-image: url("chrome://prince/skin/icons/type_texfield-sm.png");
 }
 
@@ -1563,7 +1563,7 @@ toolbar[iconsize="small"] #texfieldButton {
   list-style-image: url("chrome://prince/skin/icons/type_texfield-hover.png");
 }
 
-toolbar[iconsize="small"] #texfieldButton:hover {
+toolbox[iconsize="small"] #texfieldButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_texfield-hover-sm.png");
 }
 
@@ -1571,7 +1571,7 @@ toolbar[iconsize="small"] #texfieldButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_texfield-active.png");
 }
 
-toolbar[iconsize="small"] #texfieldButton:hover:active {
+toolbox[iconsize="small"] #texfieldButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_texfield-active-sm.png");
 }
 
@@ -1579,7 +1579,7 @@ toolbar[iconsize="small"] #texfieldButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_texfield-disabled.png");
 }
 
-toolbar[iconsize="small"] #texfieldButton[disabled="true"] {
+toolbox[iconsize="small"] #texfieldButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_texfield-disabled-sm.png");
 }
 
@@ -1587,7 +1587,7 @@ toolbar[iconsize="small"] #texfieldButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_subdoc.png");
 }
 
-toolbar[iconsize="small"] #subdocButton {
+toolbox[iconsize="small"] #subdocButton {
   list-style-image: url("chrome://prince/skin/icons/type_subdoc-sm.png");
 }
 
@@ -1595,7 +1595,7 @@ toolbar[iconsize="small"] #subdocButton {
   list-style-image: url("chrome://prince/skin/icons/type_subdoc-hover.png");
 }
 
-toolbar[iconsize="small"] #subdocButton:hover {
+toolbox[iconsize="small"] #subdocButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_subdoc-hover-sm.png");
 }
 
@@ -1603,7 +1603,7 @@ toolbar[iconsize="small"] #subdocButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_subdoc-active.png");
 }
 
-toolbar[iconsize="small"] #subdocButton:hover:active {
+toolbox[iconsize="small"] #subdocButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_subdoc-active-sm.png");
 }
 
@@ -1611,7 +1611,7 @@ toolbar[iconsize="small"] #subdocButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_subdoc-disabled.png");
 }
 
-toolbar[iconsize="small"] #subdocButton[disabled="true"] {
+toolbox[iconsize="small"] #subdocButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_subdoc-disabled-sm.png");
 }
 
@@ -1619,7 +1619,7 @@ toolbar[iconsize="small"] #subdocButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_bibliography.png");
 }
 
-toolbar[iconsize="small"] #bibliographyButton {
+toolbox[iconsize="small"] #bibliographyButton {
   list-style-image: url("chrome://prince/skin/icons/type_bibliography-sm.png");
 }
 
@@ -1627,7 +1627,7 @@ toolbar[iconsize="small"] #bibliographyButton {
   list-style-image: url("chrome://prince/skin/icons/type_bibliography-hover.png");
 }
 
-toolbar[iconsize="small"] #bibliographyButton:hover {
+toolbox[iconsize="small"] #bibliographyButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_bibliography-hover-sm.png");
 }
 
@@ -1635,7 +1635,7 @@ toolbar[iconsize="small"] #bibliographyButton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_bibliography-active.png");
 }
 
-toolbar[iconsize="small"] #bibliographyButton:hover:active {
+toolbox[iconsize="small"] #bibliographyButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_bibliography-active-sm.png");
 }
 
@@ -1643,7 +1643,7 @@ toolbar[iconsize="small"] #bibliographyButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_bibliography-disabled.png");
 }
 
-toolbar[iconsize="small"] #bibliographyButton[disabled="true"] {
+toolbox[iconsize="small"] #bibliographyButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_bibliography-disabled-sm.png");
 }
 
@@ -1671,23 +1671,23 @@ toolbar[iconsize="small"] #bibliographyButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_animation-disabled.png");
 }
 
-toolbar[iconsize="small"] #gifsAnimatedButton {
+toolbox[iconsize="small"] #gifsAnimatedButton {
   list-style-image: url("chrome://prince/skin/icons/math_animation-sm.png");
 }
 
-toolbar[iconsize="small"] #gifsAnimatedButton[checked="true"] {
+toolbox[iconsize="small"] #gifsAnimatedButton[checked="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_animation-sm.gif");
 }
 
-toolbar[iconsize="small"] #gifsAnimatedButton:hover {
+toolbox[iconsize="small"] #gifsAnimatedButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_animation-hover-sm.png");
 }
 
-toolbar[iconsize="small"] #gifsAnimatedButton:hover:active {
+toolbox[iconsize="small"] #gifsAnimatedButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_animation-active-sm.png");
 }
 
-toolbar[iconsize="small"] #gifsAnimatedButton[disabled="true"] {
+toolbox[iconsize="small"] #gifsAnimatedButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_animation-disabled-sm.gif");
 }
 
@@ -1695,7 +1695,7 @@ toolbar[iconsize="small"] #gifsAnimatedButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/new.png");
 }
 
-toolbar[iconsize="small"] #newButton {
+toolbox[iconsize="small"] #newButton {
   list-style-image: url("chrome://prince/skin/icons/new-sm.png");
 }
 
@@ -1703,7 +1703,7 @@ toolbar[iconsize="small"] #newButton {
   list-style-image: url("chrome://prince/skin/icons/new-hover.png");
 }
 
-toolbar[iconsize="small"] #newButton:hover {
+toolbox[iconsize="small"] #newButton:hover {
   list-style-image: url("chrome://prince/skin/icons/new-hover-sm.png");
 }
 
@@ -1711,7 +1711,7 @@ toolbar[iconsize="small"] #newButton:hover {
   list-style-image: url("chrome://prince/skin/icons/new-active.png");
 }
 
-toolbar[iconsize="small"] #newButton:hover:active {
+toolbox[iconsize="small"] #newButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/new-active-sm.png");
 }
 
@@ -1719,7 +1719,7 @@ toolbar[iconsize="small"] #newButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/new-disabled.png");
 }
 
-toolbar[iconsize="small"] #newButton[disabled="true"] {
+toolbox[iconsize="small"] #newButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/new-disabled-sm.png");
 }
 
@@ -1727,7 +1727,7 @@ toolbar[iconsize="small"] #newButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/open.png");
 }
 
-toolbar[iconsize="small"] #openButton {
+toolbox[iconsize="small"] #openButton {
   list-style-image: url("chrome://prince/skin/icons/open-sm.png");
 }
 
@@ -1735,7 +1735,7 @@ toolbar[iconsize="small"] #openButton {
   list-style-image: url("chrome://prince/skin/icons/open-hover.png");
 }
 
-toolbar[iconsize="small"] #openButton:hover {
+toolbox[iconsize="small"] #openButton:hover {
   list-style-image: url("chrome://prince/skin/icons/open-hover-sm.png");
 }
 
@@ -1743,7 +1743,7 @@ toolbar[iconsize="small"] #openButton:hover {
   list-style-image: url("chrome://prince/skin/icons/open-active.png");
 }
 
-toolbar[iconsize="small"] #openButton:hover:active {
+toolbox[iconsize="small"] #openButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/open-active-sm.png");
 }
 
@@ -1751,7 +1751,7 @@ toolbar[iconsize="small"] #openButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/open-deisabled.png");
 }
 
-toolbar[iconsize="small"] #openButton[disabled="true"] {
+toolbox[iconsize="small"] #openButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/open-deisabled-sm.png");
 }
 
@@ -1759,7 +1759,7 @@ toolbar[iconsize="small"] #openButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/save.png");
 }
 
-toolbar[iconsize="small"] #saveButton {
+toolbox[iconsize="small"] #saveButton {
   list-style-image: url("chrome://prince/skin/icons/save-sm.png");
 }
 
@@ -1767,7 +1767,7 @@ toolbar[iconsize="small"] #saveButton {
   list-style-image: url("chrome://prince/skin/icons/save-hover.png");
 }
 
-toolbar[iconsize="small"] #saveButton:hover {
+toolbox[iconsize="small"] #saveButton:hover {
   list-style-image: url("chrome://prince/skin/icons/save-hover-sm.png");
 }
 
@@ -1775,7 +1775,7 @@ toolbar[iconsize="small"] #saveButton:hover {
   list-style-image: url("chrome://prince/skin/icons/save-active.png");
 }
 
-toolbar[iconsize="small"] #saveButton:hover:active {
+toolbox[iconsize="small"] #saveButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/save-active-sm.png");
 }
 
@@ -1783,7 +1783,7 @@ toolbar[iconsize="small"] #saveButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/save-disabled.png");
 }
 
-toolbar[iconsize="small"] #saveButton[disabled="true"] {
+toolbox[iconsize="small"] #saveButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/save-disabled-sm.png");
 }
 
@@ -1791,7 +1791,7 @@ toolbar[iconsize="small"] #saveButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/paste.png");
 }
 
-toolbar[iconsize="small"] #pasteButton {
+toolbox[iconsize="small"] #pasteButton {
   list-style-image: url("chrome://prince/skin/icons/paste-sm.png");
 }
 
@@ -1799,7 +1799,7 @@ toolbar[iconsize="small"] #pasteButton {
   list-style-image: url("chrome://prince/skin/icons/paste-hover.png");
 }
 
-toolbar[iconsize="small"] #pasteButton:hover {
+toolbox[iconsize="small"] #pasteButton:hover {
   list-style-image: url("chrome://prince/skin/icons/paste-hover-sm.png");
 }
 
@@ -1807,7 +1807,7 @@ toolbar[iconsize="small"] #pasteButton:hover {
   list-style-image: url("chrome://prince/skin/icons/paste-active.png");
 }
 
-toolbar[iconsize="small"] #pasteButton:hover:active {
+toolbox[iconsize="small"] #pasteButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/paste-active-sm.png");
 }
 
@@ -1815,7 +1815,7 @@ toolbar[iconsize="small"] #pasteButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/paste-disabled.png");
 }
 
-toolbar[iconsize="small"] #pasteButton[disabled="true"] {
+toolbox[iconsize="small"] #pasteButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/paste-disabled-sm.png");
 }
 
@@ -1823,7 +1823,7 @@ toolbar[iconsize="small"] #pasteButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/spellcheck.png");
 }
 
-toolbar[iconsize="small"] #spellcheckButton {
+toolbox[iconsize="small"] #spellcheckButton {
   list-style-image: url("chrome://prince/skin/icons/spellcheck-sm.png");
 }
 
@@ -1831,7 +1831,7 @@ toolbar[iconsize="small"] #spellcheckButton {
   list-style-image: url("chrome://prince/skin/icons/spellcheck-hover.png");
 }
 
-toolbar[iconsize="small"] #spellcheckButton:hover {
+toolbox[iconsize="small"] #spellcheckButton:hover {
   list-style-image: url("chrome://prince/skin/icons/spellcheck-hover-sm.png");
 }
 
@@ -1839,7 +1839,7 @@ toolbar[iconsize="small"] #spellcheckButton:hover {
   list-style-image: url("chrome://prince/skin/icons/spellcheck-active.png");
 }
 
-toolbar[iconsize="small"] #spellcheckButton:hover:active {
+toolbox[iconsize="small"] #spellcheckButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/spellcheck-active-sm.png");
 }
 
@@ -1847,7 +1847,7 @@ toolbar[iconsize="small"] #spellcheckButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/spellcheck-disabled.png");
 }
 
-toolbar[iconsize="small"] #spellcheckButton[disabled="true"] {
+toolbox[iconsize="small"] #spellcheckButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/spellcheck-disabled-sm.png");
 }
 
@@ -1855,7 +1855,7 @@ toolbar[iconsize="small"] #spellcheckButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/cut.png");
 }
 
-toolbar[iconsize="small"] #cutButton {
+toolbox[iconsize="small"] #cutButton {
   list-style-image: url("chrome://prince/skin/icons/cut-sm.png");
 }
 
@@ -1863,7 +1863,7 @@ toolbar[iconsize="small"] #cutButton {
   list-style-image: url("chrome://prince/skin/icons/cut-hover.png");
 }
 
-toolbar[iconsize="small"] #cutButton:hover {
+toolbox[iconsize="small"] #cutButton:hover {
   list-style-image: url("chrome://prince/skin/icons/cut-hover-sm.png");
 }
 
@@ -1871,7 +1871,7 @@ toolbar[iconsize="small"] #cutButton:hover {
   list-style-image: url("chrome://prince/skin/icons/cut-active.png");
 }
 
-toolbar[iconsize="small"] #cutButton:hover:active {
+toolbox[iconsize="small"] #cutButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/cut-active-sm.png");
 }
 
@@ -1879,7 +1879,7 @@ toolbar[iconsize="small"] #cutButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/cut-disabled.png");
 }
 
-toolbar[iconsize="small"] #cutButton[disabled="true"] {
+toolbox[iconsize="small"] #cutButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/cut-disabled-sm.png");
 }
 
@@ -1887,7 +1887,7 @@ toolbar[iconsize="small"] #cutButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/copy.png");
 }
 
-toolbar[iconsize="small"] #copyButton {
+toolbox[iconsize="small"] #copyButton {
   list-style-image: url("chrome://prince/skin/icons/copy-sm.png");
 }
 
@@ -1895,7 +1895,7 @@ toolbar[iconsize="small"] #copyButton {
   list-style-image: url("chrome://prince/skin/icons/copy-hover.png");
 }
 
-toolbar[iconsize="small"] #copyButton:hover {
+toolbox[iconsize="small"] #copyButton:hover {
   list-style-image: url("chrome://prince/skin/icons/copy-hover-sm.png");
 }
 
@@ -1903,7 +1903,7 @@ toolbar[iconsize="small"] #copyButton:hover {
   list-style-image: url("chrome://prince/skin/icons/copy-active.png");
 }
 
-toolbar[iconsize="small"] #copyButton:hover:active {
+toolbox[iconsize="small"] #copyButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/copy-active-sm.png");
 }
 
@@ -1911,7 +1911,7 @@ toolbar[iconsize="small"] #copyButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/copy-disabled.png");
 }
 
-toolbar[iconsize="small"] #copyButton[disabled="true"] {
+toolbox[iconsize="small"] #copyButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/copy-disabled-sm.png");
 }
 
@@ -1919,7 +1919,7 @@ toolbar[iconsize="small"] #copyButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/find.png");
 }
 
-toolbar[iconsize="small"] #findButton {
+toolbox[iconsize="small"] #findButton {
   list-style-image: url("chrome://prince/skin/icons/find-sm.png");
 }
 
@@ -1927,7 +1927,7 @@ toolbar[iconsize="small"] #findButton {
   list-style-image: url("chrome://prince/skin/icons/find-hover.png");
 }
 
-toolbar[iconsize="small"] #findButton:hover {
+toolbox[iconsize="small"] #findButton:hover {
   list-style-image: url("chrome://prince/skin/icons/find-hover-sm.png");
 }
 
@@ -1935,7 +1935,7 @@ toolbar[iconsize="small"] #findButton:hover {
   list-style-image: url("chrome://prince/skin/icons/find-active.png");
 }
 
-toolbar[iconsize="small"] #findButton:hover:active {
+toolbox[iconsize="small"] #findButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/find-active-sm.png");
 }
 
@@ -1943,7 +1943,7 @@ toolbar[iconsize="small"] #findButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/find-disabled.png");
 }
 
-toolbar[iconsize="small"] #findButton[disabled="true"] {
+toolbox[iconsize="small"] #findButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/find-disabled-sm.png");
 
 }
@@ -1952,7 +1952,7 @@ toolbar[iconsize="small"] #findButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/exporttex.png");
 }
 
-toolbar[iconsize="small"] #exporttexButton {
+toolbox[iconsize="small"] #exporttexButton {
   list-style-image: url("chrome://prince/skin/icons/exporttex-sm.png");
 }
 
@@ -1960,7 +1960,7 @@ toolbar[iconsize="small"] #exporttexButton {
   list-style-image: url("chrome://prince/skin/icons/exporttex-hover.png");
 }
 
-toolbar[iconsize="small"] #exporttexButton:hover {
+toolbox[iconsize="small"] #exporttexButton:hover {
   list-style-image: url("chrome://prince/skin/icons/exporttex-hover-sm.png");
 }
 
@@ -1968,7 +1968,7 @@ toolbar[iconsize="small"] #exporttexButton:hover {
   list-style-image: url("chrome://prince/skin/icons/exporttex-active.png");
 }
 
-toolbar[iconsize="small"] #exporttexButton:hover:active {
+toolbox[iconsize="small"] #exporttexButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/exporttex-active-sm.png");
 }
 
@@ -1976,7 +1976,7 @@ toolbar[iconsize="small"] #exporttexButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/exporttex-disabled.png");
 }
 
-toolbar[iconsize="small"] #exporttexButton[disabled="true"] {
+toolbox[iconsize="small"] #exporttexButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/exporttex-disabled-sm.png");
 }
 
@@ -1984,7 +1984,7 @@ toolbar[iconsize="small"] #exporttexButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/exportweb.png");
 }
 
-toolbar[iconsize="small"] #exportwebButton {
+toolbox[iconsize="small"] #exportwebButton {
   list-style-image: url("chrome://prince/skin/icons/exportweb-sm.png");
 }
 
@@ -1992,7 +1992,7 @@ toolbar[iconsize="small"] #exportwebButton {
   list-style-image: url("chrome://prince/skin/icons/exportweb-hover.png");
 }
 
-toolbar[iconsize="small"] #exportwebButton:hover {
+toolbox[iconsize="small"] #exportwebButton:hover {
   list-style-image: url("chrome://prince/skin/icons/exportweb-hover-sm.png");
 }
 
@@ -2000,7 +2000,7 @@ toolbar[iconsize="small"] #exportwebButton:hover {
   list-style-image: url("chrome://prince/skin/icons/exportweb-active.png");
 }
 
-toolbar[iconsize="small"] #exportwebButton:hover:active {
+toolbox[iconsize="small"] #exportwebButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/exportweb-active-sm.png");
 }
 
@@ -2008,7 +2008,7 @@ toolbar[iconsize="small"] #exportwebButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/exportweb-disabled.png");
 }
 
-toolbar[iconsize="small"] #exportwebButton[disabled="true"] {
+toolbox[iconsize="small"] #exportwebButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/exportweb-disabled-sm.png");
 }
 
@@ -2016,7 +2016,7 @@ toolbar[iconsize="small"] #exportwebButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/importimage.png");
 }
 
-toolbar[iconsize="small"] #importimageButton {
+toolbox[iconsize="small"] #importimageButton {
   list-style-image: url("chrome://prince/skin/icons/importimage-sm.png");
 }
 
@@ -2024,7 +2024,7 @@ toolbar[iconsize="small"] #importimageButton {
   list-style-image: url("chrome://prince/skin/icons/importimage-hover.png");
 }
 
-toolbar[iconsize="small"] #importimageButton:hover {
+toolbox[iconsize="small"] #importimageButton:hover {
   list-style-image: url("chrome://prince/skin/icons/importimage-hover-sm.png");
 }
 
@@ -2032,7 +2032,7 @@ toolbar[iconsize="small"] #importimageButton:hover {
   list-style-image: url("chrome://prince/skin/icons/importimage-active.png");
 }
 
-toolbar[iconsize="small"] #importimageButton:hover:active {
+toolbox[iconsize="small"] #importimageButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/importimage-active-sm.png");
 }
 
@@ -2040,7 +2040,7 @@ toolbar[iconsize="small"] #importimageButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/importimage-disabled.png");
 }
 
-toolbar[iconsize="small"] #importimageButton[disabled="true"] {
+toolbox[iconsize="small"] #importimageButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/importimage-disabled-sm.png");
 }
 
@@ -2048,7 +2048,7 @@ toolbar[iconsize="small"] #importimageButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/importtex.png");
 }
 
-toolbar[iconsize="small"] #importtexButton {
+toolbox[iconsize="small"] #importtexButton {
   list-style-image: url("chrome://prince/skin/icons/importtex-sm.png");
 }
 
@@ -2056,7 +2056,7 @@ toolbar[iconsize="small"] #importtexButton {
   list-style-image: url("chrome://prince/skin/icons/importtex-hover.png");
 }
 
-toolbar[iconsize="small"] #importtexButton:hover {
+toolbox[iconsize="small"] #importtexButton:hover {
   list-style-image: url("chrome://prince/skin/icons/importtex-hover-sm.png");
 }
 
@@ -2064,7 +2064,7 @@ toolbar[iconsize="small"] #importtexButton:hover {
   list-style-image: url("chrome://prince/skin/icons/importtex-active.png");
 }
 
-toolbar[iconsize="small"] #importtexButton:hover:active {
+toolbox[iconsize="small"] #importtexButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/importtex-active-sm.png");
 }
 
@@ -2072,7 +2072,7 @@ toolbar[iconsize="small"] #importtexButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/importtex-disabled.png");
 }
 
-toolbar[iconsize="small"] #importtexButton[disabled="true"] {
+toolbox[iconsize="small"] #importtexButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/importtex-disabled-sm.png");
 }
 
@@ -2080,7 +2080,7 @@ toolbar[iconsize="small"] #importtexButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/javascript.png");
 }
 
-toolbar[iconsize="small"] #javascriptButton {
+toolbox[iconsize="small"] #javascriptButton {
   list-style-image: url("chrome://prince/skin/icons/javascript-sm.png");
 }
 
@@ -2089,7 +2089,7 @@ toolbar[iconsize="small"] #javascriptButton {
 }
 
 
-toolbar[iconsize="small"] #javascriptButton:hover {
+toolbox[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/javascript-hover-sm.png");
 }
 
@@ -2115,23 +2115,23 @@ toolbar[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/bold-disabled.png");
 }
 
-toolbar[iconsize="small"] #boldButton {
+toolbox[iconsize="small"] #boldButton {
   list-style-image: url("chrome://prince/skin/icons/bold-sm.png");
 }
 
-toolbar[iconsize="small"] #boldButton:hover {
+toolbox[iconsize="small"] #boldButton:hover {
   list-style-image: url("chrome://prince/skin/icons/bold-hover-sm.png");
 }
 
-toolbar[iconsize="small"] #boldButton:hover:active {
+toolbox[iconsize="small"] #boldButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/bold-active-sm.png");
 }
 
-toolbar[iconsize="small"] #boldButton[checked="true"] {
+toolbox[iconsize="small"] #boldButton[checked="true"] {
   list-style-image: url("chrome://prince/skin/icons/bold-active-sm.png");
 }
 
-toolbar[iconsize="small"] #boldButton[disabled="true"] {
+toolbox[iconsize="small"] #boldButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/bold-disabled-sm.png");
 }
 
@@ -2155,23 +2155,23 @@ toolbar[iconsize="small"] #boldButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/italic-disabled.png");
 }
 
-toolbar[iconsize="small"] #italicButton {
+toolbox[iconsize="small"] #italicButton {
   list-style-image: url("chrome://prince/skin/icons/italic-sm.png");
 }
 
-toolbar[iconsize="small"] #italicButton:hover {
+toolbox[iconsize="small"] #italicButton:hover {
   list-style-image: url("chrome://prince/skin/icons/italic-hover-sm.png");
 }
 
-toolbar[iconsize="small"] #italicButton:hover:active {
+toolbox[iconsize="small"] #italicButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/italic-active-sm.png");
 }
 
-toolbar[iconsize="small"] #italicButton[checked="true"] {
+toolbox[iconsize="small"] #italicButton[checked="true"] {
   list-style-image: url("chrome://prince/skin/icons/italic-active-sm.png");
 }
 
-toolbar[iconsize="small"] #italicButton[disabled="true"] {
+toolbox[iconsize="small"] #italicButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/italic-disabled-sm.png");
 }
 
@@ -2179,7 +2179,7 @@ toolbar[iconsize="small"] #italicButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/javascript-hover.png");
 }
 
-toolbar[iconsize="small"] #javascriptButton:hover {
+toolbox[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/javascript-hover-sm.png");
 }
 
@@ -2386,19 +2386,19 @@ toolbar[iconsize="small"] #javascriptButton:hover {
 #vc-AutoSpeed:hover{
   list-style-image: url("chrome://prince/skin/icons/v_speed-hover.png");
 }
-*[iconsize="small"]#vc-AutoSpeed:hover{
+*[iconsize="small"] #vc-AutoSpeed:hover{
   list-style-image: url("chrome://prince/skin/icons/v_speed-hover-sm.png");
 }
 #vc-AutoSpeed:active{
   list-style-image: url("chrome://prince/skin/icons/v_speed-active.png");
 }
-*[iconsize="small"]#vc-AutoSpeed:active{
+*[iconsize="small"] #vc-AutoSpeed:active{
   list-style-image: url("chrome://prince/skin/icons/v_speed-active-sm.png");
 }
 #vc-AutoSpeed[disabled="true"]{
   list-style-image: url("chrome://prince/skin/icons/v_speed-disabled.png");
 }
-*[iconsize="small"]#vc-AutoSpeed[disabled="true"]{
+*[iconsize="small"] #vc-AutoSpeed[disabled="true"]{
   list-style-image: url("chrome://prince/skin/icons/v_speed-disabled-sm.png");
 }
 
@@ -2479,6 +2479,111 @@ toolbar[iconsize="small"] #javascriptButton:hover {
 *[iconsize="small"] #vc-AutoZoomOut[disabled="true"]{
   list-style-image: url("chrome://prince/skin/icons/v_zoomout-disabled-sm.png");
 }
+
+
+#vc-ZoomOut{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout.png");
+}
+*[iconsize="small"] #vc-ZoomOut{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-sm.png");
+}
+#vc-ZoomOut:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-hover.png");
+}
+*[iconsize="small"] #vc-ZoomOut:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-hover-sm.png");
+}
+#vc-ZoomOut[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-active.png");
+}
+*[iconsize="small"] #vc-ZoomOut[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-active-sm.png");
+}
+#vc-ZoomOut[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-disabled.png");
+}
+*[iconsize="small"] #vc-ZoomOut[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-disabled-sm.png");
+}
+
+#vc-ZoomIn{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin.png");
+}
+*[iconsize="small"] #vc-ZoomIn{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-sm.png");
+}
+#vc-ZoomIn:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-hover.png");
+}
+*[iconsize="small"] #vc-ZoomIn:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-hover-sm.png");
+}
+#vc-ZoomIn[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-active.png");
+}
+*[iconsize="small"] #vc-ZoomIn[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-active-sm.png");
+}
+#vc-ZoomIn[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-disabled.png");
+}
+*[iconsize="small"] #vc-ZoomIn[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-disabled-sm.png");
+}
+
+
+
+
+#vc-ZoomBoxOut{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout.png");
+}
+*[iconsize="small"] #vc-ZoomBoxOut{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-sm.png");
+}
+#vc-ZoomBoxOut:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-hover.png");
+}
+*[iconsize="small"] #vc-ZoomBoxOut:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-hover-sm.png");
+}
+#vc-ZoomBoxOut[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-active.png");
+}
+*[iconsize="small"] #vc-ZoomBoxOut[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-active-sm.png");
+}
+#vc-ZoomBoxOut[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-disabled.png");
+}
+*[iconsize="small"] #vc-ZoomBoxOut[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-disabled-sm.png");
+}
+
+#vc-ZoomBoxIn{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin.png");
+}
+*[iconsize="small"] #vc-ZoomBoxIn{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-sm.png");
+}
+#vc-ZoomBoxIn:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-hover.png");
+}
+*[iconsize="small"] #vc-ZoomBoxIn:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-hover-sm.png");
+}
+#vc-ZoomBoxIn[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-active.png");
+}
+*[iconsize="small"] #vc-ZoomBoxIn[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-active-sm.png");
+}
+#vc-ZoomBoxIn[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-disabled.png");
+}
+*[iconsize="small"] #vc-ZoomBoxIn[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-disabled-sm.png");
+}
+
 
 #vc-GoToEnd{
   list-style-image: url("chrome://prince/skin/icons/v_end.png");

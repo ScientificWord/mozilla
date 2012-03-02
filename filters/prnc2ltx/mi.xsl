@@ -34,54 +34,73 @@
 
 
     <xsl:choose>
-      <xsl:when test="string-length(normalize-space(string())) = 1">        <xsl:choose>
+
+      <xsl:when test="string-length(normalize-space(string())) = 1">        
+        <xsl:choose>
           <xsl:when test="$tag!='false'">
-		    <xsl:if test="$output-mode='Portable-LaTeX'">
+
+            <xsl:if test="$output-mode='Portable-LaTeX'">
               <xsl:value-of select="$tag"/>
               <xsl:value-of select="$LaTeX-symbols"/>
               <xsl:text>}</xsl:text>
-			</xsl:if>
+            </xsl:if>
 
-		    <xsl:if test="$output-mode='SW-LaTeX'">
-              <xsl:choose>
-                <xsl:when test="@mathvariant='script'
-                or              @mathvariant='double-struck'">
-			      <xsl:variable name="all-caps">
-				    <xsl:call-template name="is-all-caps">
-				      <xsl:with-param name="unicode-cdata" select="$LaTeX-symbols"/>
-				    </xsl:call-template>
-				  </xsl:variable>
+            <xsl:if test="$output-mode='SW-LaTeX'">
+                <xsl:choose>
+                  <xsl:when test="@mathvariant='script' or @mathvariant='double-struck'">
+                    <xsl:variable name="all-caps">
+                       <xsl:call-template name="is-all-caps">
+                          <xsl:with-param name="unicode-cdata" select="$LaTeX-symbols"/>
+                       </xsl:call-template>
+                    </xsl:variable>
+                
+                    <xsl:choose>
+                       <xsl:when test="$all-caps='true'">
+                          <xsl:value-of select="$tag"/>
+                            <xsl:value-of select="$LaTeX-symbols"/>
+                          <xsl:text>}</xsl:text>
+                       </xsl:when>
+                       <xsl:when test="@mathvariant='double-struck' and  $LaTeX-symbols='k'">
+                          <xsl:text>\Bbbk </xsl:text>
+                       </xsl:when>
+                       <xsl:otherwise>
+                          <xsl:value-of select="$LaTeX-symbols"/>
+                       </xsl:otherwise>
+                    </xsl:choose>
 
-                  <xsl:choose>
-				    <xsl:when test="$all-caps='true'">
-                      <xsl:value-of select="$tag"/>
-                        <xsl:value-of select="$LaTeX-symbols"/>
-                      <xsl:text>}</xsl:text>
-				    </xsl:when>
-				    <xsl:when test="@mathvariant='double-struck'
-				    and             $LaTeX-symbols='k'">
-					  <xsl:text>\Bbbk </xsl:text>
-				    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:value-of select="$LaTeX-symbols"/>
-                    </xsl:otherwise>
-                  </xsl:choose>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:value-of select="$tag"/>
-                  <xsl:value-of select="$LaTeX-symbols"/>
-                  <xsl:text>}</xsl:text>
-                </xsl:otherwise>
-              </xsl:choose>
-			</xsl:if>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="$tag"/>
+                    <xsl:value-of select="$LaTeX-symbols"/>
+                    <xsl:text>}</xsl:text>
+                  </xsl:otherwise>
+                </xsl:choose>
+            </xsl:if>
 
           </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$LaTeX-symbols"/>
-          </xsl:otherwise>
-        </xsl:choose>      </xsl:when>
 
-      <xsl:when test="string-length(normalize-space(string())) = 2">        <xsl:if test="$tag!='false'">
+          <xsl:otherwise>
+            <xsl:choose>
+              <xsl:when test="$tag != 'false'">
+                <xsl:value-of select="$LaTeX-symbols"/>
+              </xsl:when>
+              <xsl:when test="$all-ASCII='true' and @class='msi_unit'">
+                <xsl:text>\operatorname{</xsl:text>
+                  <xsl:value-of select="$LaTeX-symbols"/>
+                <xsl:text>}</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>\mathnormal{</xsl:text>
+                <xsl:value-of select="$LaTeX-symbols"/>
+                <xsl:text>}</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:otherwise>
+        </xsl:choose>      
+      </xsl:when>
+
+      <xsl:when test="string-length(normalize-space(string())) = 2">        
+        <xsl:if test="$tag!='false'">
           <xsl:value-of select="$tag"/>
         </xsl:if>
         <xsl:choose>
@@ -444,12 +463,12 @@
         <xsl:text>\mathit{</xsl:text>
       </xsl:when>
       <xsl:when test="ancestor::mml:mstyle[@fontstyle='slanted']">
-	    <xsl:if test="$output-mode='SW-LaTeX'">
+      <xsl:if test="$output-mode='SW-LaTeX'">
           <xsl:text>\QTR{sl}{</xsl:text>
-	    </xsl:if>
-	    <xsl:if test="$output-mode='Portable-LaTeX'">
+      </xsl:if>
+      <xsl:if test="$output-mode='Portable-LaTeX'">
           <xsl:text>\mathit{</xsl:text>
-	    </xsl:if>
+      </xsl:if>
       </xsl:when>
       <xsl:when test="ancestor::mml:mstyle[@fontweight='normal']">
         <xsl:text>\mathrm{</xsl:text>
@@ -500,7 +519,7 @@
       </xsl:otherwise>
 
     </xsl:choose>
-	  </xsl:template>
+    </xsl:template>
 
 <!-- JCS
   <xsl:template match="mml:mi" >
