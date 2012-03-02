@@ -222,8 +222,10 @@
     <command id="cmd_vcRotateScene"   oncommand="doVCamCommand('cmd_vcRotateScene')"/>
     <command id="cmd_vcZoom"          oncommand="doVCamCommand('cmd_vcZoom')"/>
     <command id="cmd_vcMove"          oncommand="doVCamCommand('cmd_vcMove')"/>
-    <command id="cmd_vcZoomIn"          oncommand="doVCamCommand('cmd_vcZoomIn')"/>
-    <command id="cmd_vcZoomOut"          oncommand="doVCamCommand('cmd_vcZoomOut')"/>
+    <command id="cmd_vcZoomBoxIn"     oncommand="doVCamCommand('cmd_vcZoomBoxIn')"/>
+    <command id="cmd_vcZoomBoxOut"    oncommand="doVCamCommand('cmd_vcZoomBoxOut')"/>
+    <command id="cmd_vcZoomIn"        oncommand="doVCamCommand('cmd_vcZoomIn')"/>
+    <command id="cmd_vcZoomOut"       oncommand="doVCamCommand('cmd_vcZoomOut')"/>
     <command id="cmd_vcAutoSpeed"     oncommand="doVCamCommand('cmd_vcAutoSpeed')"/>
     <command id="cmd_vcAnimSpeed"     oncommand="doVCamCommand('cmd_vcAnimSpeed')"/>
     <command id="cmd_vcAutoZoomIn"    oncommand="doVCamCommand('cmd_vcAutoZoomIn')"/>
@@ -240,6 +242,7 @@
   <broadcasterset id="vcam_broadcasterset">
     <broadcaster id="vcamactive" hidden = "true"/>
     <broadcaster id="3dplot" hidden = "true" />
+    <broadcaster id="2dplot" hidden = "true" />
     <broadcaster id="animplot" hidden = "true" />
   </broadcasterset>
   

@@ -89,6 +89,8 @@ prince.jar:
 * content/EdLinkProps.js            (dialogs/EdLinkProps.js)
 * content/EdLinkProps.xul           (dialogs/EdLinkProps.xul)
 * content/RealTimeSpell.js          (RealTimeSpell.js)
+  content/intervalsAndAnimation.xul (dialogs/intervalsAndAnimation.xul)
+  content/intervalsAndAnimation.js  (dialogs/intervalsAndAnimation.js)
   content/fragmentname.xul          (dialogs/FragmentName.xul)
   content/fragmentname.js           (dialogs/FragmentName.js)
   content/htmlfield.xul             (dialogs/htmlfield.xul)
