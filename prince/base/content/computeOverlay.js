@@ -957,54 +957,60 @@ function vcamToolbarFromPlugin(obj)
   // Call for initialization and after each button action.
   // Cursor tool section
   var ct = obj.cursorTool;
+  var dim = obj.dimension;
+  var anim = obj.isAnimated;
+  var za = obj.zoomAction;
   document.getElementById("vc-SelObj").checked = (ct === 'select');
   document.getElementById("vc-RotateScene").checked = (ct === 'rotate');
   document.getElementById("vc-Move").checked = (ct === 'move');
   document.getElementById("vc-Query").checked = (ct === 'query');
-  document.getElementById("vc-Zoom").checked = (ct === 'zoom');
-  document.getElementById("vc-AutoZoomIn").checked = (ct === 'zoomIn');
-  document.getElementById("vc-AutoZoomOut").checked = (ct === 'zoomOut');
-  // Rotation section
-  var va = obj.rotateVerticalAction;
-  document.getElementById("vc-RotateRight").checked = (va === 1);
-  document.getElementById("vc-RotateLeft").checked = (va === 2);
-  var ha = obj.rotateHorizontalAction;
-  document.getElementById("vc-RotateUp").checked = (ha === 1);
-  document.getElementById("vc-RotateDown").checked = (va === 2);
-  // Zoom section
-  var za = obj.zoomAction;
-//  document.getElementById("AutoZoomIn").checked = (za === 1);
-//  document.getElementById("AutoZoomOut").checked = (za === 2);
-  // Speed controlf
-  var spd = obj.actionSpeed;
-  if (spd <= 0.125) document.getElementById("actionspeed8s").checked = true;
-  else if (spd > 0.125 && spd <= 0.25) 
-    document.getElementById("actionspeed4s").checked = true;
-  else if (spd > 0.25 && spd <= 0.5) 
-    document.getElementById("actionspeed2s").checked = true;
-  else if (spd > 0.5 && spd <= 1.0) 
-    document.getElementById("actionspeedN").checked = true;
-  else if (spd > 1.0 && spd <= 2.0) 
-    document.getElementById("actionspeed2f").checked = true;
-  else if (spd > 2.0 && spd <= 4.0) 
-    document.getElementById("actionspeed4f").checked = true;
-  else if (spd > 4.0) 
-    document.getElementById("actionspeed8f").checked = true;
+  document.getElementById("vc-AutoZoomIn").checked = (za === 1);
+  document.getElementById("vc-AutoZoomOut").checked = (za === 2);
+    // Rotation section
+  if (dim === 3) {
+    document.getElementById("vc-Zoom").checked = (ct === 'zoom');
+    var va = obj.rotateVerticalAction;
+    document.getElementById("vc-RotateRight").checked = (va === 1);
+    document.getElementById("vc-RotateLeft").checked = (va === 2);
+    var ha = obj.rotateHorizontalAction;
+    document.getElementById("vc-RotateUp").checked = (ha === 1);
+    document.getElementById("vc-RotateDown").checked = (ha === 2);
+    // Zoom section
+  //  document.getElementById("AutoZoomIn").checked = (za === 1);
+  //  document.getElementById("AutoZoomOut").checked = (za === 2);
+    // Speed controlf
+    var spd = obj.actionSpeed;
+    if (spd <= 0.125) document.getElementById("actionspeed8s").checked = true;
+    else if (spd > 0.125 && spd <= 0.25) 
+      document.getElementById("actionspeed4s").checked = true;
+    else if (spd > 0.25 && spd <= 0.5) 
+      document.getElementById("actionspeed2s").checked = true;
+    else if (spd > 0.5 && spd <= 1.0) 
+      document.getElementById("actionspeedN").checked = true;
+    else if (spd > 1.0 && spd <= 2.0) 
+      document.getElementById("actionspeed2f").checked = true;
+    else if (spd > 2.0 && spd <= 4.0) 
+      document.getElementById("actionspeed4f").checked = true;
+    else if (spd > 4.0) 
+      document.getElementById("actionspeed8f").checked = true;
+  }  
+  if (anim) { 
   // animation section, including animation speed control
-  var aspd = obj.animationSpeed;
-  if (aspd <= 0.125) document.getElementById("animspeed8s").checked = true;
-  else if (aspd > 0.125 && aspd <= 0.25) 
-    document.getElementById("animspeed4s").checked = true;
-  else if (aspd > 0.25 && aspd <= 0.5) 
-    document.getElementById("animspeed2s").checked = true;
-  else if (aspd > 0.5 && aspd <= 1.0) 
-    document.getElementById("animspeedN").checked = true;
-  else if (aspd > 1.0 && aspd <= 2.0) 
-    document.getElementById("animspeed2f").checked = true;
-  else if (aspd > 2.0 && aspd <= 4.0) 
-    document.getElementById("animspeed4f").checked = true;
-  else if (aspd > 4.0) 
-    document.getElementById("animspeed8f").checked = true;
+    var aspd = obj.animationSpeed;
+    if (aspd <= 0.125) document.getElementById("animspeed8s").checked = true;
+    else if (aspd > 0.125 && aspd <= 0.25) 
+      document.getElementById("animspeed4s").checked = true;
+    else if (aspd > 0.25 && aspd <= 0.5) 
+      document.getElementById("animspeed2s").checked = true;
+    else if (aspd > 0.5 && aspd <= 1.0) 
+      document.getElementById("animspeedN").checked = true;
+    else if (aspd > 1.0 && aspd <= 2.0) 
+      document.getElementById("animspeed2f").checked = true;
+    else if (aspd > 2.0 && aspd <= 4.0) 
+      document.getElementById("animspeed4f").checked = true;
+    else if (aspd > 4.0) 
+      document.getElementById("animspeed8f").checked = true;
+  }
 }
 
 function doVCamCommandOnObject(obj, cmd, editorElement)
@@ -1013,70 +1019,76 @@ function doVCamCommandOnObject(obj, cmd, editorElement)
     editorElement = msiGetActiveEditorElement();
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
   switch (cmd) {
-  case "cmd_vcRotateLeft":
-    if (obj.rotateVerticalAction == 2) obj.rotateVerticalAction = 0; else obj.rotateVerticalAction = 2;
-    break;
-  case "cmd_vcRotateRight":
-    if (obj.rotateVerticalAction == 1) obj.rotateVerticalAction = 0; else obj.rotateVerticalAction = 1;
-    break;
-  case "cmd_vcRotateUp":
-    if (obj.rotateHorizontalAction == 1) obj.rotateHorizontalAction = 0; else obj.rotateHorizontalAction = 1;
-    break;
-  case "cmd_vcRotateDown":
-    if (obj.rotateHorizontalAction == 2) obj.rotateHorizontalAction = 0; else obj.rotateHorizontalAction = 2;
-    break;
-  case "cmd_vcRotateScene":
-    obj.cursorTool = "rotate";
-    break;
-  case "cmd_vcZoom":
-    obj.cursorTool = "zoom";
-    break;
-  case "cmd_vcZoomIn":
-    obj.cursorTool = "zoomIn";
-    break;
-  case "cmd_vcZoomOut":
-    obj.cursorTool = "zoomOut";
-    break;
-  case "cmd_vcMove":
-    obj.cursorTool = "move";
-    break;
-  case "cmd_vcQuery":
-    obj.cursorTool = "query";
-    break;
-  case "cmd_vcAutoSpeed":
-    dump("cmd_vcAutoSpeed not implemented");
-    break;
-  case "cmd_vcAnimSpeed":
-    dump("cmd_vcAnimSpeed not implemented");
-    break;
-  case "cmd_vcAutoZoomIn":
-    if (obj.zoomAction == 1) obj.zoomAction = 0; else obj.zoomAction = 1;
-    break;
-  case "cmd_vcAutoZoomOut":
-    if (obj.zoomAction == 2) obj.zoomAction = 0; else obj.zoomAction = 2;
-    break;
-  case "cmd_vcGoToEnd":
-    obj.currentTime = obj.endTime;
-    break;
-  case "cmd_vcGoToStart":
-    obj.currentTime = obj.beginTime;
-    break;
-  case "cmd_vcLoopType":
-    dump("cmd_vcLoopType not implemented");
-    break;
-  case "cmd_vcPlay":
-    if (isRunning) obj.stopAnimation();
-    else obj.startAnimation();
-    isRunning = !isRunning;
-    break;
-  case "cmd_vcSelObj":
-    dump("cmd_vcSelObj not implemented");
-    break;
-  case "cmd_vcFitContents":
-    obj.fitContents();
-    break;
-  default:
-  }
+    case "cmd_vcSelObj" :
+      obj.cursorTool = "select";
+      break;
+    case "cmd_vcRotateLeft":
+      if (obj.rotateVerticalAction == 2) {obj.rotateVerticalAction = 0;} else {obj.rotateVerticalAction = 2;}
+      break;
+    case "cmd_vcRotateRight":
+      if (obj.rotateVerticalAction == 1) {obj.rotateVerticalAction = 0;} else {obj.rotateVerticalAction = 1;}
+      break;
+    case "cmd_vcRotateUp":
+      if (obj.rotateHorizontalAction == 1) {obj.rotateHorizontalAction = 0;} else {obj.rotateHorizontalAction = 1;}
+      break;
+    case "cmd_vcRotateDown":
+      if (obj.rotateHorizontalAction == 2) {obj.rotateHorizontalAction = 0;} else {obj.rotateHorizontalAction = 2;}
+      break;
+    case "cmd_vcRotateScene":
+      obj.cursorTool = "rotate";
+      break;
+    case "cmd_vcZoom":
+      obj.cursorTool = "zoom"; 
+      break;
+    case "cmd_vcMove":
+      obj.cursorTool = "move";
+      break;
+    case "cmd_vcQuery":
+      obj.cursorTool = "query";
+      break;
+    case "cmd_vcZoomBoxIn":
+      obj.cursorTool = "select"; // This is zoomBoxIn in the 2d case
+      break;
+    case "cmd_vcZoomBoxOut":
+      obj.cursorTool = "select"; 
+      break;
+    case "cmd_vcZoomIn":
+      obj.cursorTool = "zoomIn";
+      break;
+    case "cmd_vcZoomOut":
+      obj.cursorTool = "zoomOut";
+      break;
+    case "cmd_vcAutoSpeed":
+      dump("cmd_vcAutoSpeed not implemented");
+      break;
+    case "cmd_vcAnimSpeed":
+      dump("cmd_vcAnimSpeed not implemented");
+      break;
+    case "cmd_vcAutoZoomIn":
+      if (obj.zoomAction == 1) obj.zoomAction = 0; else obj.zoomAction = 1;
+      break;
+    case "cmd_vcAutoZoomOut":
+      if (obj.zoomAction == 2) obj.zoomAction = 0; else obj.zoomAction = 2;
+      break;
+    case "cmd_vcGoToEnd":
+      obj.currentTime = obj.endTime;
+      break;
+    case "cmd_vcGoToStart":
+      obj.currentTime = obj.beginTime;
+      break;
+    case "cmd_vcLoopType":
+      dump("cmd_vcLoopType not implemented");
+      break;
+    case "cmd_vcPlay":
+      if (isRunning) obj.stopAnimation();
+      else obj.startAnimation();
+      isRunning = !isRunning;
+      break;
+   case "cmd_vcFitContents":
+      obj.fitContents();
+      break;
+    default:
+    }
   vcamToolbarFromPlugin(obj);
   return;
 }
@@ -1176,7 +1188,9 @@ function doVCamInitialize(obj)
     };
   }());
   var threedplot = obj.dimension === 3;
+  var twodplot = obj.dimension === 2;
   document.getElementById("3dplot").setAttribute("hidden", threedplot?"false":"true");
+  document.getElementById("2dplot").setAttribute("hidden", twodplot?"false":"true");
   var animplot = obj.isAnimated;
   document.getElementById("animplot").setAttribute("hidden", animplot?"false":"true");
   if (animplot) // set up the progress bar
