@@ -252,6 +252,11 @@ plotwrapper {
 
 * [msimathname="true"] {color: gray; }
 
+*[mathvariant="double-struck"] {
+  font-family: monotype corsiva;
+  color: rgb(0,255,255)
+}
+
 
 mml|mfrac mml|mi[tempinput="true"]::before, 
 mml|msup mml|mi + mml|mi[tempinput="true"]::before, 
