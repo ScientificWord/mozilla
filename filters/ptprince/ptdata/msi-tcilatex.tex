@@ -448,11 +448,13 @@
   \let\QQQuwave\uwave
   \let\QQQxout\xout
 
+\def\@wrap#1{\msitag{#1}}
+
 \def\TeXButton#1#2{%
    \ifmmode
      \string\TeXButton{#1}{#2}%
    \else
-     \msihmode\msitag{<texb enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
+     \msihmode\msitag{<texb enc="1" name="}\@wrap{#1}\msitag{"><![CDATA[#2]]></texb>}%
    \fi}
 
 

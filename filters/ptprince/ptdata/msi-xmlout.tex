@@ -8,7 +8,7 @@
    \ifmmode
       \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
-       \msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
+      \msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
    \fi}
 
 
@@ -73,32 +73,17 @@
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
+
+
 \msi@everyrowstart{\msiopentag{tr}{<tr>}}
 \msi@everyrowend{\msiclosetag{tr}{</tr>}}
+
 
 \msi@everycellstart{%
    \msiclosetag{td}{</td>}%
    \msiopentag{td}{<td>}%
    \ifmmode\else\msiopentag{bodyText}{<bodyText>}\fi}
 
-%\def\chkmulticol{%
-%  \futurelet\@temp\@@chkmulticol}
-
-%\def\@@chkmulticol{\expandafter\@chkmulticol\expandafter{\the\@temp}}
-
-
-%\def\@chkmulticol#1{%
-%  \ifx#1\multicolumn
-%    \let\@next#1\relax
-%  \else
-%    \msiopentag{td}{<td>}%
-%    \ifmmode
-%    \else
-%        \msihmode\msiopentag{bodyText}{<bodyText>}%
-%    \fi
-%    \let\@next#1\relax
-%  \fi
-%  \@next}
 
 \msi@everycellend{%
    \ifmmode
@@ -152,8 +137,7 @@
 \newtoks\temptoksb
 
 \def\msiappend#1MSIXYZZY{%
-   \expandafter\temptoksa\expandafter{\the\temptoksa #1}%
-}
+   \expandafter\temptoksa\expandafter{\the\temptoksa #1}}
 
 \def\msi@nextopt#1,{%
    \def\MSIXYZZY{MSIXYZZY}%
@@ -171,36 +155,36 @@
       \expandafter\msiappend\the\temptoksb MSIXYZZY
       \let\@next\msi@nextopt
    \fi
-   \@next
-}  
+   \@next}  
   
 \def\out@documentclassA[#1]#2{%
-   \msi@firstopttrue
-   \temptoksa={}%
-   \msi@nextopt#1,MSIXYZZY,%
-   \edef\colist{\the\temptoksa}%
+   %\msi@firstopttrue
+   %\temptoksa={}%
+   %\msi@nextopt#1,MSIXYZZY,%
+   %\edef\colist{\the\temptoksa}%
    \msi@opendocument
-   \br\msitag{<documentclass class="#2"/>}%
-}
+   \temptoksa{#1}
+   \ifx\temptoksa\relax
+     \br\msitag{<documentclass class="#2"/>}%
+   \else
+     \br\msitag{<documentclass class="#2" options="#1"/>}%
+   \fi}
 
 \def\out@documentclassB#1{%
-   \def\colist{}%
    \msi@opendocument
-   \br\msitag{<documentclass class="#1"/>}%
-}
+   \br\msitag{<documentclass class="#1"/>}}
 
 
 
 \def\out@preamble@tex#1{%
-   \msitag{<preambleTeX><![CDATA[#1]]></preambleTeX>}%
-}
+   \msitag{<preambleTeX><![CDATA[#1]]></preambleTeX>}}
 
 %% \document and \enddocument
 
 \def\out@begin@document{%
-   \br\msiopentag{docformat}{<docformat>}
-      \msitag{<colist }\colist\msitag{/>}
-   \br\msiclosetag{docformat}{</docformat>}
+   %\br\msiopentag{docformat}{<docformat>}
+   %   \msitag{<colist }\colist\msitag{/>}
+   %\br\msiclosetag{docformat}{</docformat>}
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{bm}}%
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{tabulary}}%
    \@ifundefined{@TCILATEX}
@@ -217,20 +201,18 @@
 
 \def\out@end@document{%
    %%\br\msiclosetag{docbody}{</docbody>}%
-   \br\msiclosetag{body}{</body>}
+   \br\msiclosetag{body}{</body>}%
    \br\msitag{</html>}%
    \msimakecss
-   \endinput
-}
+   \endinput}
 
 
 %% \usepackage
 \def\out@usepackageA[#1]#2{%
-   \br\msitag{<usepackage req="#2" options="#1"/>}%
-}
+   \br\msitag{<usepackage req="#2" options="#1"/>}}
+
 \def\out@usepackageB#1{%
-   \br\msitag{<usepackage req="#1"/>}%
-}
+   \br\msitag{<usepackage req="#1"/>}}
 
 
 %% Frontmatter
@@ -249,7 +231,8 @@
   \msiclosetag{title}{</title>}%
 }
 
-\def\@titleb#1{\@titlea[]{#1}}
+\def\@titleb#1{%
+   \msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}
 
 \def\author#1{\gdef\@author{#1}\out@author{#1}}
 
@@ -274,9 +257,14 @@
    
 \def\out@author#1{%
   \begingroup
-   \def\\{\msitag{^^0a}\msiopentag{address}{<address>}\ignorespaces}%
-   \def\and{\msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
-   \msitag{^^0a}\msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}%
+   \def\\{\msitag{^^0a}%
+          \msiclosetag{author}{</author>}
+          \msitag{^^0a}%
+          \msiopentag{address}{<address>}\ignorespaces}%
+   \def\and{\msiclosetag{address}{</address>}%
+            \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
+   \msitag{^^0a}%
+   \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}\msiclosetag{address}{</address>}%
   \endgroup
 }
 
@@ -327,18 +315,16 @@
 \def\out@newtheorema#1[#2]#3{%
   \@ifundefined{msi@begin@#1}%
      {\msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
-      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}
+      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
       \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
-     {}%
-}
+     {}}
 
 \def\out@newtheoremb#1#2{%
   \@ifundefined{msi@begin@#1}%
     {\msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}
      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
-    {}}%
-}
+    {}}}
 
 
 
@@ -819,8 +805,15 @@
 \def\msi@end@array{\string\end{array}\endgroup}
 
 
+%\def\@label#1{\msikilllasttag{<tr>}{<tr marker="#1" style="">}}%
+
 \def\MSIEqnarrayLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\def\\{\char`\\\char`\\}\catcode`\&=12\msi@dollar=0\relax$$\string\begin{#1}}%
+  \@namedef{msi@begin@#1}{%
+     \bgroup
+        \def\\{\char`\\\char`\\}%
+%        \let\label\@label
+        \catcode`\&=12\msi@dollar=0\relax$$%
+        \string\begin{#1}}%
   \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}}
 
 
@@ -865,6 +858,7 @@
 
 \def\@cra[#1]{\cr}%
 \def\@crb{\cr}%
+
 
 \def\tabularnewline{\\}
 
@@ -1064,9 +1058,9 @@
 \def\mathfrak#1{\string\mathfrak\char123#1\char125}
 
 
-\def\TeX{\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>}}
-\def\LaTeX{\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>}}
-\def\BibTeX{\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>}}
+\def\TeX{\msihmode\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>}}
+\def\LaTeX{\msihmode\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>}}
+\def\BibTeX{\msihmode\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>}}
 
 % Operators
 
@@ -1166,21 +1160,6 @@
 %% Spacing
 
 
-%%\def\qquad{%
-%%   \ifmmode
-%%      \msitag{\qquad}%
-%%   \else
-%%      \msihmode\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}%
-%%   \fi
-%%}
-%%
-%%\def\quad{%
-%%   \ifmmode
-%%     \msitag{\quad}%
-%%   \else
-%%     \msihmode\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}%
-%%   \fi
-%%}
 
 \def\ {%
   \ifmmode
@@ -1203,27 +1182,6 @@
     \msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}%
   \fi}
 
-
-%% \def\,{%
-%%   \ifmmode
-%%     \char`\\\char`\,%
-%%   \else
-%%     \msihmode\msitag{<hspace dim="0.083en" type="thinspace">}\@hex{200a}\msitag{</hspace>}%
-%%   \fi}
-%% 
-%% \def\;{%
-%%   \ifmmode
-%%     \char`\\\char`\;%
-%%   \else
-%%     \msihmode\msitag{<hspace dim="0.083en" type="thickspace">}\@hex{200a}\msitag{</hspace>}%
-%%   \fi}
-%% 
-%% \def\!{%
-%%   \ifmmode
-%%     \char`\\\char`\!%
-%%   \else
-%%     \msihmode\msitag{<hspace dim="0.083en" type="negativethinspace">}\@hex{200a}\msitag{</hspace>}%
-%%   \fi}
 
 
 
@@ -1290,8 +1248,7 @@
       \msitag{\label{#1}}%
    \else
       \msihmode\msitag{<marker id="#1"/>}%
-   \fi
-}
+   \fi}
 
 \def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
 \def\dfrac#1#2{\string\dfrac\@brace{#1}\@brace{#2}}
@@ -1429,7 +1386,7 @@
 
 
 \def\out@hyperref#1#2#3#4{%
-   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}}
+   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}\ignorespaces}
 
 \newif\if@in@texttag
 \@in@texttagfalse
