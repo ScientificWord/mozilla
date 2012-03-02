@@ -417,9 +417,9 @@ Plot.prototype = {
   PLOTATTRIBUTES: ["PlotStatus", "PlotType",
                            "LineStyle", "PointStyle", "LineThickness", "LineColor",
                            "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
-                                           "PointSymbol", "SurfaceStyle", "IncludePoints",
-                                           "SurfaceMesh", "CameraLocationX", "CameraLocationY",
-                                           "CameraLocationZ", "FontFamily", "IncludeLines",
+                           "PointSymbol", "SurfaceStyle", "IncludePoints",
+                           "SurfaceMesh", "CameraLocationX", "CameraLocationY",
+                           "CameraLocationZ", "FontFamily", "IncludeLines",
                            "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
                            "Animate", "AnimateStart", "AnimateEnd", "AnimateFPS",
                            "AnimateVisBefore", "AnimateVisAfter",
@@ -851,7 +851,7 @@ Frame.prototype = {
   },
   reviseFrameDOMElement: function (DOMFrame, DOMPw, editorElement) {
     var editor = msiGetEditor(editorElement);
-    var attributes, i, j, att, graph, units, height, width, floatLocation, floattts, fltatt, ch, captionlocation;
+    var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, floatLocation, floattts, fltatt, ch, captionlocation;
     var DOMObj = DOMPw.getElementsByTagName("object")[0];
     var frmStyle = "";
     var pwStyle = "";
@@ -873,43 +873,42 @@ Frame.prototype = {
           break;
         case "Height":
           height = Number(graph.getGraphAttribute(att));
-          height = unitHandler.getValueAs(height, "px");
+          heightinpx = unitHandler.getValueAs(height, "px");
+          editor.setAttribute(DOMPw, "height", height);
+          pwStyle += "height: "+ heightinpx + "px; ";
+          objStyle += "height: "+ heightinpx + "px; ";
+          // dimensions of outer msiframe need to be adjusted for border and padding
           x = this.getFrameAttribute("border");
-          if (x) {
-            x = unitHandler.getValueAs(x,"px");
-            x = 2*Math.round(x);
-            height += Number(x);
+          if (x)
+          {
+            height += 2*(x-0);
           }
           x = this.getFrameAttribute("padding");
-          if (x) {
-            x = unitHandler.getValueAs(x,"px");
-            x = 2*Math.round(x);
-            height += Number(x);
+          if (x)
+          {
+            height += 2*(x-0);
           }
-          editor.setAttribute(DOMFrame, "height", height + "px");
-          frmStyle += "height: " + height + "px; ";
-          editor.setAttribute(DOMPw, "height", height + "px");
-          pwStyle += "height: "+ height + "px; ";
+          editor.setAttribute(DOMFrame, "height", height);
+          heightinpx = unitHandler.getValueAs(height, "px");
+          frmStyle += "height: " + heightinpx + "px; ";
           break;
         case "Width":
           width = Number(graph.getGraphAttribute(att));
-          width = unitHandler.getValueAs(width, "px");
-          editor.setAttribute(DOMPw, "width", width + "px");
-          pwStyle += "width: "+ width + "px; ";
+          widthinpx = unitHandler.getValueAs(width, "px");
+          editor.setAttribute(DOMPw, "width", width);
+          pwStyle += "width: "+ widthinpx + "px; ";
+          objStyle += "width: "+ widthinpx + "px; ";
           x = this.getFrameAttribute("border");
           if (x) {
-            x = unitHandler.getValueAs(x,"px");
-            x = 2*Math.round(x);
-            width += Number(x);
+            width += 2*(x-0);
           }
           x = this.getFrameAttribute("padding");
           if (x) {
-            x = unitHandler.getValueAs(x,"px");
-            x = 2*Math.round(x);
-            width += Number(x);
+            width += 2*(x-0);
           }
-          editor.setAttribute(DOMFrame, "width", width + "px");
-          frmStyle += "width: " + width + "px; ";
+          editor.setAttribute(DOMFrame, "width", width);
+          widthinpx = unitHandler.getValueAs(width, "px");
+          frmStyle += "width: " + widthinpx + "px; ";
           break;
         case "border":
           editor.setAttribute(DOMPw, "borderw", this.getFrameAttribute(att));
@@ -1013,13 +1012,9 @@ Frame.prototype = {
       } else if (filetype === "xvc") {
         DOMObj.setAttribute("type", "application/x-mupad-graphics+xml");
       }
-      var w = unitHandler.getValueStringAs(graph["Width"], "px");
-      var h = unitHandler.getValueStringAs(graph["Height"], "px");
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
       DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
-      objStyle += "width: " + w + "; ";
-      objStyle += "height: " + h + "; ";
       editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
       editor.setAttribute(DOMObj, "style", objStyle);

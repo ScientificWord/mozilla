@@ -1817,11 +1817,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     case "cmd_preview":
       strID = "BeforePreview";
       break;
-    case "cmd_editSendPage":
-      strID = "SendPageReason";
-      break;
-    case "cmd_validate":
-      strID = "BeforeValidate";
+    default:
       break;
   }
     
@@ -1836,8 +1832,8 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   if (arr && arr.length >1) document.title = arr[1];
   if (!document.title) document.title=GetString("untitled");
 
-  var dialogTitle = GetString(doPublish ? "PublishPage" : "SaveDocument");
-  var dialogMsg = GetString(doPublish ? "PublishPrompt" : "SaveFilePrompt");
+  var dialogTitle = GetString("SaveDocument");
+  var dialogMsg = GetString("SaveFilePrompt");
   dialogMsg = (dialogMsg.replace(/%title%/,document.title)).replace(/%reason%/,reasonToSave);
 
   var promptService = msiGetPromptService();
@@ -1847,24 +1843,13 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var result = {value:0};
   var promptFlags = promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1;
   var button1Title = null;
-  var button3Title = null;
+  var button3Title = "&Don't Save";
 
-  if (doPublish)
-  {
-    promptFlags += promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_0;
-    button1Title = GetString("Publish");
-    button3Title = GetString("DontPublish");    
-  }
-  else
-  {
-    promptFlags += promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0;
-  }
+  promptFlags += promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0;
 
   // If allowing "Don't..." button, add that
   if (allowDontSave)
-    promptFlags += doPublish ?
-        (promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_2)
-        : (promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2);
+    promptFlags += (promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2);
   
   result = promptService.confirmEx(window, dialogTitle, dialogMsg, promptFlags,
                           button1Title, null, button3Title, null, {value:0});
