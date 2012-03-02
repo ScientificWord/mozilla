@@ -381,7 +381,7 @@
                       <menuitem label="&surfacecontour.label;"/>
                     </menupopup>
                   </menulist>
-                  <msibutton><description>&VariablesAndIntervals.label;</description></msibutton>
+                  <msibutton label="&VariablesAndIntervals.label;" oncommand="openDialog('chrome://prince/content/intervalsAndAnimation.xul', 'Plot Intervals and Animation', 'chrome,close,titlebar,modal,resizable');"/>
                 </row>
               </rows>
             </grid>

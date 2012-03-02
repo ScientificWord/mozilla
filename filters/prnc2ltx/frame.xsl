@@ -37,7 +37,10 @@
   </xsl:if>
   <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/><xsl:value-of select="$units"/>}
      </xsl:if>
-  <xsl:if test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="$units"/>} </xsl:if>
+  <xsl:choose>   
+    <xsl:when test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="$units"/>} </xsl:when>
+    <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
+  </xsl:choose>
   <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$units"/>} </xsl:if>
 <xsl:choose>
   <xsl:when test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">\begin{wrapfigure}

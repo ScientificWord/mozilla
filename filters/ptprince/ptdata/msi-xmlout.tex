@@ -298,7 +298,8 @@
 \def\msi@empty@elmA[#1]#2{%
      \expandafter\def\csname #2\endcsname{%
         \ifmmode
-           \msitag{\msipassthru{<#1/>}}%
+           %\msitag{\msipassthru{<#1/>}}%
+           \expandafter\msitag\expandafter{\csname#2\endcsname}%
         \else
            \msihmode\br\msitag{<#1/>}%
         \fi}}
@@ -1203,26 +1204,26 @@
   \fi}
 
 
-\def\,{%
-  \ifmmode
-    \char`\\\char`\,%
-  \else
-    \msihmode\msitag{<hspace dim="0.083en" type="thinspace">}\@hex{200a}\msitag{</hspace>}%
-  \fi}
-
-\def\;{%
-  \ifmmode
-    \char`\\\char`\;%
-  \else
-    \msihmode\msitag{<hspace dim="0.083en" type="thickspace">}\@hex{200a}\msitag{</hspace>}%
-  \fi}
-
-\def\!{%
-  \ifmmode
-    \char`\\\char`\!%
-  \else
-    \msihmode\msitag{<hspace dim="0.083en" type="negativethinspace">}\@hex{200a}\msitag{</hspace>}%
-  \fi}
+%% \def\,{%
+%%   \ifmmode
+%%     \char`\\\char`\,%
+%%   \else
+%%     \msihmode\msitag{<hspace dim="0.083en" type="thinspace">}\@hex{200a}\msitag{</hspace>}%
+%%   \fi}
+%% 
+%% \def\;{%
+%%   \ifmmode
+%%     \char`\\\char`\;%
+%%   \else
+%%     \msihmode\msitag{<hspace dim="0.083en" type="thickspace">}\@hex{200a}\msitag{</hspace>}%
+%%   \fi}
+%% 
+%% \def\!{%
+%%   \ifmmode
+%%     \char`\\\char`\!%
+%%   \else
+%%     \msihmode\msitag{<hspace dim="0.083en" type="negativethinspace">}\@hex{200a}\msitag{</hspace>}%
+%%   \fi}
 
 
 
@@ -1478,7 +1479,7 @@
      \ifmmode
        \expandafter\string\csname #2\endcsname{##1}%
      \else
-       \msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%     
+       \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%     
      \fi}}
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
@@ -1520,6 +1521,7 @@
 
 \def\fbox#1{\ifmmode
               \msitag{\fbox{#1}}%
+              %\msitag{\msipassthru{<menclose>}}$\relax #1\relax $\msitag{\msipassthru{</menclose>}}%
             \else
               \msiopentag{fbox}{<smallbox>}#1\msiclosetag{fbox}{</smallbox>}%
             \fi}
