@@ -1013,82 +1013,147 @@ function vcamToolbarFromPlugin(obj)
   }
 }
 
+function makeSnapshotPath( object )
+{
+  try {
+    var path = object.data;
+    path = path.replace(/\/plots\//,'/graphics/');
+    path = path.replace(/xv[cz]$/,'png');  //BBM: what about Windows?
+    path = path.slice(7); // take off leading 'file://'.
+  }
+  catch(e) {
+    msidump(e.message);
+  }
+  return path
+}
+
+function insertSnapshot( object, snapshotpath )
+{
+  var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units;
+  parent = object.parentNode;
+  objectlist = parent.getElementsByTagName("object");
+  for (i = 0; i < objectlist.length; ) {
+    element = objectlist[i];
+    if (element.hasAttribute("msisnap")) {
+      parent.removeChild(element);
+    } else {i++;}
+  }
+  graph = msiFindParentOfType( object, "graph");
+  gslist = graph.getElementsByTagName("graphSpec");
+  if (gslist.length > 0) {
+    gslist = gslist[0];
+  }
+  ssobj = object.cloneNode(true); // copies useful attributes
+  ssobj.removeAttribute("msigraph");
+  ssobj.setAttribute("data", snapshotpath);
+  ssobj.setAttribute("msisnap", "true");
+  ssobj.removeAttribute("type");
+  parent.appendChild(ssobj);
+  if (gslist) { // copy some attributes from the graphspec
+    w = gslist.getAttribute("Width");
+    if (w) {
+      ssobj.setAttribute("naturalWidth",w);
+      ssobj.setAttribute("imageWidth", w);
+    }
+    h = gslist.getAttribute("Height");
+    if (h) {
+      ssobj.setAttribute("naturalHeight",h);
+      ssobj.setAttribute("imageHeight", h);
+    }
+    ssobj.setAttribute("units", gslist.getAttribute("Units"));
+  }
+}
+
+function makeSnapshot(obj) {
+  var path = makeSnapshotPath(obj);
+  obj.makeSnapshot(path,300); //BBM come back to use preferences
+  insertSnapshot( obj, path );
+}
+
 function doVCamCommandOnObject(obj, cmd, editorElement)
 {
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-  switch (cmd) {
-    case "cmd_vcSelObj" :
-      obj.cursorTool = "select";
-      break;
-    case "cmd_vcRotateLeft":
-      if (obj.rotateVerticalAction == 2) {obj.rotateVerticalAction = 0;} else {obj.rotateVerticalAction = 2;}
-      break;
-    case "cmd_vcRotateRight":
-      if (obj.rotateVerticalAction == 1) {obj.rotateVerticalAction = 0;} else {obj.rotateVerticalAction = 1;}
-      break;
-    case "cmd_vcRotateUp":
-      if (obj.rotateHorizontalAction == 1) {obj.rotateHorizontalAction = 0;} else {obj.rotateHorizontalAction = 1;}
-      break;
-    case "cmd_vcRotateDown":
-      if (obj.rotateHorizontalAction == 2) {obj.rotateHorizontalAction = 0;} else {obj.rotateHorizontalAction = 2;}
-      break;
-    case "cmd_vcRotateScene":
-      obj.cursorTool = "rotate";
-      break;
-    case "cmd_vcZoom":
-      obj.cursorTool = "zoom"; 
-      break;
-    case "cmd_vcMove":
-      obj.cursorTool = "move";
-      break;
-    case "cmd_vcQuery":
-      obj.cursorTool = "query";
-      break;
-    case "cmd_vcZoomBoxIn":
-      obj.cursorTool = "select"; // This is zoomBoxIn in the 2d case
-      break;
-    case "cmd_vcZoomBoxOut":
-      obj.cursorTool = "select"; 
-      break;
-    case "cmd_vcZoomIn":
-      obj.cursorTool = "zoomIn";
-      break;
-    case "cmd_vcZoomOut":
-      obj.cursorTool = "zoomOut";
-      break;
-    case "cmd_vcAutoSpeed":
-      dump("cmd_vcAutoSpeed not implemented");
-      break;
-    case "cmd_vcAnimSpeed":
-      dump("cmd_vcAnimSpeed not implemented");
-      break;
-    case "cmd_vcAutoZoomIn":
-      if (obj.zoomAction == 1) obj.zoomAction = 0; else obj.zoomAction = 1;
-      break;
-    case "cmd_vcAutoZoomOut":
-      if (obj.zoomAction == 2) obj.zoomAction = 0; else obj.zoomAction = 2;
-      break;
-    case "cmd_vcGoToEnd":
-      obj.currentTime = obj.endTime;
-      break;
-    case "cmd_vcGoToStart":
-      obj.currentTime = obj.beginTime;
-      break;
-    case "cmd_vcLoopType":
-      dump("cmd_vcLoopType not implemented");
-      break;
-    case "cmd_vcPlay":
-      if (isRunning) obj.stopAnimation();
-      else obj.startAnimation();
-      isRunning = !isRunning;
-      break;
-   case "cmd_vcFitContents":
-      obj.fitContents();
-      break;
-    default:
+  try {
+    switch (cmd) {
+      case "cmd_vcSelObj" :
+        obj.cursorTool = "select";
+        break;
+      case "cmd_vcRotateLeft":
+        if (obj.rotateVerticalAction == 2) {obj.rotateVerticalAction = 0;} else {obj.rotateVerticalAction = 2;}
+        break;
+      case "cmd_vcRotateRight":
+        if (obj.rotateVerticalAction == 1) {obj.rotateVerticalAction = 0;} else {obj.rotateVerticalAction = 1;}
+        break;
+      case "cmd_vcRotateUp":
+        if (obj.rotateHorizontalAction == 1) {obj.rotateHorizontalAction = 0;} else {obj.rotateHorizontalAction = 1;}
+        break;
+      case "cmd_vcRotateDown":
+        if (obj.rotateHorizontalAction == 2) {obj.rotateHorizontalAction = 0;} else {obj.rotateHorizontalAction = 2;}
+        break;
+      case "cmd_vcRotateScene":
+        obj.cursorTool = "rotate";
+        break;
+      case "cmd_vcZoom":
+        obj.cursorTool = "zoom"; 
+        break;
+      case "cmd_vcMove":
+        obj.cursorTool = "move";
+        break;
+      case "cmd_vcQuery":
+        obj.cursorTool = "query";
+        break;
+      case "cmd_vcZoomBoxIn":
+        obj.cursorTool = "select"; // This is zoomBoxIn in the 2d case
+        break;
+      case "cmd_vcZoomBoxOut":
+        obj.cursorTool = "select"; 
+        break;
+      case "cmd_vcZoomIn":
+        obj.cursorTool = "zoomIn";
+        break;
+      case "cmd_vcZoomOut":
+        obj.cursorTool = "zoomOut";
+        break;
+      case "cmd_vcSnapshot":
+        makeSnapshot(obj);
+        break;
+      case "cmd_vcAutoSpeed":
+        dump("cmd_vcAutoSpeed not implemented");
+        break;
+      case "cmd_vcAnimSpeed":
+        dump("cmd_vcAnimSpeed not implemented");
+        break;
+      case "cmd_vcAutoZoomIn":
+        if (obj.zoomAction == 1) obj.zoomAction = 0; else obj.zoomAction = 1;
+        break;
+      case "cmd_vcAutoZoomOut":
+        if (obj.zoomAction == 2) obj.zoomAction = 0; else obj.zoomAction = 2;
+        break;
+      case "cmd_vcGoToEnd":
+        obj.currentTime = obj.endTime;
+        break;
+      case "cmd_vcGoToStart":
+        obj.currentTime = obj.beginTime;
+        break;
+      case "cmd_vcLoopType":
+        dump("cmd_vcLoopType not implemented");
+        break;
+      case "cmd_vcPlay":
+        if (isRunning) obj.stopAnimation();
+        else obj.startAnimation();
+        isRunning = !isRunning;
+        break;
+     case "cmd_vcFitContents":
+        obj.fitContents();
+        break;
+      default:
     }
+  }
+  catch (e) {
+    msidump(e.message);
+  }
   vcamToolbarFromPlugin(obj);
   return;
 }
@@ -1143,6 +1208,7 @@ function doVCamPreInitialize(obj, graph)
       obj.addEvent('dragLeave', (function() {}));
       obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
       obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
+      makeSnapshot(obj);
       clearInterval(intervalId);
     }
   },200);

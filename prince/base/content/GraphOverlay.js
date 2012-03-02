@@ -334,10 +334,10 @@ Graph.prototype = {
     file = Components.classes["@mozilla.org/file/local;1"].  
                          createInstance(Components.interfaces.nsILocalFile);  
     file.initWithPath( makeRelPathAbsolute(filename, editorElement)) ;
-    if (file.exists)
+    if (file.exists())
     {
       try {
-      file.remove(false);
+        file.remove(false);
       }
       catch (e) 
       {
@@ -888,8 +888,8 @@ Frame.prototype = {
           }
           editor.setAttribute(DOMFrame, "height", height + "px");
           frmStyle += "height: " + height + "px; ";
-//          editor.setAttribute(DOMPw, "height", height + "px");
-//          pwStyle += "height: "+ height + "px; ";
+          editor.setAttribute(DOMPw, "height", height + "px");
+          pwStyle += "height: "+ height + "px; ";
           break;
         case "Width":
           width = Number(graph.getGraphAttribute(att));
@@ -1017,6 +1017,7 @@ Frame.prototype = {
       var h = unitHandler.getValueStringAs(graph["Height"], "px");
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
+      DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
       objStyle += "width: " + w + "; ";
       objStyle += "height: " + h + "; ";
       editor.setAttribute(DOMPw, "style", pwStyle);
