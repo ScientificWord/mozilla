@@ -565,6 +565,13 @@ MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
 
             case OP_prefix:
               if (rover->next ) {
+                // Check nabla times special case
+                if ( ( 0 == strcmp(rover -> p_chdata , "&#x2207;") ) &&
+                     ( 0 == strcmp(rover -> next -> p_chdata , "&#xd7;") ) )
+                {
+                   the_next = rover -> next -> next;
+                   break;
+                }
             	  // If the next thing is also an infix op, skip this one till later
             	  // pass through loop.
             	  if (the_next->form != OP_none && the_next->precedence == curr_prec){
