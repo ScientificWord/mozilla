@@ -159,7 +159,7 @@
   <sub ctx="math" tp="sc"><pattern>uBtu</pattern><data>insertMathunit('Btu','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ucal</pattern><data>insertMathunit('cal','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ucd</pattern><data>insertMathunit('cd','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>ucel</pattern><data>insertMathunit('');</data></sub>	 -->
+  <sub ctx="math" tp="sc"><pattern>ucel</pattern><data>insertMathunit('tmpC', 'true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ucg</pattern><data>insertMathunit('cg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uCi</pattern><data>insertMathunit('curie','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ucm</pattern><data>insertMathunit('cm','true');</data></sub>
@@ -177,7 +177,7 @@
   <sub ctx="math" tp="sc"><pattern>uerg</pattern><data>insertMathunit('erg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ueV</pattern><data>insertMathunit('eV','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uF</pattern><data>insertMathunit('F','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>ufahr</pattern><data>insertMathunit('');</data></sub>  -->
+  <sub ctx="math" tp="sc"><pattern>ufahr</pattern><data>insertMathunit('tmpF', 'true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ufc</pattern><data>insertMathunit('fc','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ufme</pattern><data>insertMathunit('fm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ufmol</pattern><data>insertMathunit('fmol','true');</data></sub>
