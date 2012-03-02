@@ -2298,6 +2298,14 @@ toolbox[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/v_rotatedown-disabled-sm.png");
 }
 
+#vc-Snapshot{
+  list-style-image: url("chrome://prince/skin/icons/snapshot.png");
+}
+
+*[iconsize="small"] #vc-Snapshot{
+  list-style-image: url("chrome://prince/skin/icons/snapshot-sm.png");
+}
+
 
 #vc-RotateScene{
   list-style-image: url("chrome://prince/skin/icons/v_rotate.png");
