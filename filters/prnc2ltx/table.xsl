@@ -6,6 +6,16 @@
     xmlns:exsl="http://exslt.org/common"
 >
 
+<!-- xsl:variable name="tagsList" select="document('latexdefs.xml')//*[local-name()='tagproperties']/*[local-name()='tagclasses']"/ -->
+
+<xsl:variable name="paraList"><xsl:text>__bodyText__rtlBodyText__sectiontitle__centered__</xsl:text></xsl:variable>
+
+<xsl:variable name="envList"><xsl:text>__bulletlist__numberedlist__descriptionlist__set__book__part__chapter__section__subsection</xsl:text>
+  <xsl:text>__subsubsection__paragraph__subparagraph__longQuotation__dedication__centeredEnv__preface__glossary__verbatim__note</xsl:text>
+  <xsl:text>__assertion__conjecture__corollary__criterion__lemma__proposition__theorem__algorithm__assumption__axiom__condition</xsl:text>
+  <xsl:text>__definition__example__exercise__hypothesis__problem__property__question__case__claim__conclusion__notation</xsl:text>
+  <xsl:text>__remark__summary__proof__</xsl:text>
+</xsl:variable>
 
 <xsl:template name="buildtable">
   <xsl:variable name="theTable" select="." />
@@ -21,13 +31,23 @@
       <xsl:otherwise>tabular</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  <xsl:variable name="mmWidth">
+    <xsl:choose>
+    <xsl:when test="@width &gt; 0">
+      <xsl:call-template name="convertSizeSpecsToMM">
+        <xsl:with-param name="theSpec" select="@width" />
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="cellData.tf">
     <xsl:call-template name="collectCellData" />
   </xsl:variable>
   <xsl:variable name="cellData" select="exsl:node-set($cellData.tf)"/>
   <xsl:text xml:space="preserve">
 </xsl:text><xsl:if test="$embedded!=0">{</xsl:if>\begin{<xsl:value-of select="$tabularType"/>}<xsl:choose>
-    <xsl:when test="@width &gt; 0">{<xsl:value-of select="@width"/>pt}</xsl:when>
+    <xsl:when test="@width &gt; 0">{<xsl:value-of select="$mmWidth" />mm}</xsl:when>
     <xsl:otherwise></xsl:otherwise>
   </xsl:choose>
   <xsl:choose>
@@ -134,7 +154,28 @@
   </xsl:choose>
 </xsl:template>
 		  
-<xsl:template match = "html:td//html:br"> <!-- don't allow \\ in table data-->
+<xsl:template match="html:td//html:br"><xsl:text xml:space="preserve">\msipar </xsl:text></xsl:template> <!-- don't allow \\ in table data-->
+
+<xsl:template match="html:td//*[self::html:br and position()=last()]" />
+
+<xsl:template match="html:td//html:bodyText">
+  <xsl:apply-templates/>
+  <xsl:if test="following-sibling::*">
+    <xsl:text xml:space="preserve">\msipar </xsl:text>
+  </xsl:if>
+</xsl:template>
+
+<xsl:variable name="msipar"><xsl:text>\msipar</xsl:text></xsl:variable>
+<xsl:variable name="dblBackslash"><xsl:text xml:space="preserve">\\ </xsl:text></xsl:variable>
+
+<xsl:template match="html:td|html:th" mode="parbox">
+  <xsl:variable name="normalOutput"><xsl:apply-templates/></xsl:variable>
+  <xsl:call-template name="doReplaceMacro">
+    <xsl:with-param name="targStr" select="$normalOutput"/>
+    <xsl:with-param name="findStr" select="$msipar"/>
+    <xsl:with-param name="replaceStr" select="$dblBackslash"/>
+    <xsl:with-param name="global" select="1"/>
+  </xsl:call-template>
 </xsl:template>
 
 <xsl:template match="html:td|html:th" mode="doOutput">
@@ -487,6 +528,16 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    <xsl:variable name="needParbox">
+      <xsl:choose>
+        <xsl:when test="number($needMultiRow) or number($needMultiCol)">
+          <xsl:call-template name="requiresParbox">
+            <xsl:with-param name="theCell" select="$theCell" />
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>0</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="number($needMultiCol)">
         <xsl:text>\multicolumn{</xsl:text><xsl:number value="$columnspan" /><xsl:text>}{</xsl:text>
@@ -536,7 +587,19 @@
         <xsl:otherwise><xsl:text>*}{</xsl:text></xsl:otherwise>
       </xsl:choose>
     </xsl:if>
-    <xsl:apply-templates select="$theCell" mode="doOutput" />
+    <xsl:choose>
+      <xsl:when test="number($needParbox)">
+        <xsl:text>\parbox{</xsl:text><xsl:call-template name="forceGetWidth">
+          <xsl:with-param name="theCell" select="$theCell"/>
+          <xsl:with-param name="colData" select="$colData"/>
+          <xsl:with-param name="whichCol" select="number($theCellData/@col)" />
+        </xsl:call-template><xsl:text>mm}{</xsl:text>
+        <xsl:apply-templates select="$theCell" mode="parbox" /><xsl:text>}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="$theCell" mode="doOutput" />
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:if test="$needMultiRow != 0">
       <xsl:text>}</xsl:text>
     </xsl:if>
@@ -544,6 +607,146 @@
       <xsl:text>}</xsl:text>
     </xsl:if>
   </xsl:if>
+</xsl:template>
+
+<xsl:template name="requiresParbox">
+  <xsl:param name="theCell" />
+  <xsl:choose>
+    <xsl:when test="$theCell//*[contains($envList, concat('__',local-name(),'__'))]">1</xsl:when>
+    <xsl:when test="$theCell//*[contains($paraList, concat('__',local-name(),'__'))][following-sibling::*]">1</xsl:when>
+    <xsl:otherwise>0</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="forceGetWidth">
+  <xsl:param name="theCell" />
+  <xsl:param name="colData" />
+  <xsl:param name="whichCol" />
+  <xsl:choose>
+    <xsl:when test="$theCell/@width"><xsl:value-of select="$theCell/@width"/></xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="theTable" select="$theCell/ancestor::*[local-name()='table'][1]" />
+      <xsl:variable name="fullTableWidth">
+        <xsl:choose>
+          <xsl:when test="$theTable/@width">
+            <xsl:value-of select="number($theTable/@width)"/>
+          </xsl:when>
+          <xsl:otherwise>0</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="numCols">
+        <xsl:choose>
+          <xsl:when test="$theCell/@colspan"><xsl:value-of select="number($theCell/@colspan)"/></xsl:when>
+          <xsl:otherwise>1</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="fixedColWidth">
+        <xsl:choose>
+          <xsl:when test="$numCols &lt; (count($colData/columnData) - 1)">
+            <xsl:value-of select="sum($colData/columnData[(position() &gt; $whichCol) and (position() &lt; ($whichCol + 1 + $numCols))][number(@width)]/@width)"/>
+          </xsl:when>
+          <xsl:otherwise><xsl:value-of select="number($fullTableWidth)"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="numVariableCols">
+        <xsl:choose>
+          <xsl:when test="$numCols &lt; (count($colData/columnData) - 1)">
+            <xsl:value-of select="count($colData/columnData[(position() &gt; $whichCol) and (position() &lt; ($whichCol + 1 + $numCols))][not(number(@width) &gt; 0)])"/>
+          </xsl:when>
+          <xsl:otherwise>0</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="unavailableWidth">
+        <xsl:choose>
+          <xsl:when test="$colData/columnData[number(@width)]">
+            <xsl:value-of select="sum($colData/columnData[number(@width)]/@width)" />
+          </xsl:when>
+          <xsl:otherwise>0</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="numColsUsing">
+        <xsl:choose>
+          <xsl:when test="count($colData/columnData[not(number(@width) &gt; 0)]) &gt; 1"><xsl:value-of select="count($colData/columnData[not(number(@width) &gt; 0)]) - 1"/></xsl:when>
+          <xsl:otherwise>1</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="availableWidth">
+        <xsl:choose>
+          <xsl:when test="number($fullTableWidth)">
+            <xsl:value-of select="number($fullTableWidth) - number($unavailableWidth)" />
+          </xsl:when>
+          <xsl:when test="($unavailableWidth &gt; 70) or ($numColsUsing &gt; 4)">  <!-- 70mm = 200pt -->
+            <xsl:value-of select="175 - number($unavailableWidth)" />  <!-- 175mm = 500pt -->
+          </xsl:when>
+          <xsl:when test="($unavailableWidth &gt; 35) or ($numColsUsing &gt; 3)">  <!-- 35mm = 100pt -->
+            <xsl:value-of select="140 - number($unavailableWidth)" />  <!-- 140mm = 400pt -->
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="70 - number($unavailableWidth)" />  <!-- 70mm = 200pt -->
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="avgWidth" select="$numVariableCols * (number($availableWidth) div $numColsUsing)" />
+      <!-- xsl:text xml:space="preserve"> - numColsUsing is </xsl:text><xsl:value-of select="$numColsUsing"/>
+      <xsl:text xml:space="preserve">, unavailableWidth is </xsl:text><xsl:value-of select="$unavailableWidth"/>
+      <xsl:text xml:space="preserve">, avgWidth is </xsl:text><xsl:value-of select="$avgWidth"/>
+      <xsl:text xml:space="preserve">, numVariableCols is </xsl:text><xsl:value-of select="$numVariableCols"/>
+      <xsl:text xml:space="preserve">, fixedColWidth is </xsl:text><xsl:value-of select="$fixedColWidth"/>
+      <xsl:text xml:space="preserve">, fullTableWidth is </xsl:text><xsl:value-of select="$fullTableWidth"/>
+      <xsl:text xml:space="preserve">, numColsUsing should be 1 less than </xsl:text><xsl:value-of select="count($colData/columnData[not(number(@width) &gt; 0)])"/>
+      <xsl:text xml:space="preserve">
+  </xsl:text -->
+      <xsl:variable name="calcMinWidth">
+        <xsl:choose>
+          <xsl:when test="$numColsUsing &gt; 4"><xsl:value-of select="$fixedColWidth + (.5 * $avgWidth)"/></xsl:when>
+          <xsl:when test="$numColsUsing &gt; 2"><xsl:value-of select="$fixedColWidth + (.4 * $avgWidth)"/></xsl:when>
+          <xsl:otherwise><xsl:value-of select="$fixedColWidth + (.3 * $avgWidth)"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="minWidth">
+        <xsl:choose>
+          <xsl:when test="$calcMinWidth &lt; 7">7</xsl:when>
+          <xsl:otherwise><xsl:value-of select="$calcMinWidth"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="calcMaxWidth">
+        <xsl:choose>
+          <xsl:when test="$numColsUsing &gt; 4"><xsl:value-of select="$fixedColWidth + (2.5 * $avgWidth)"/></xsl:when>
+          <xsl:when test="$numColsUsing=4"><xsl:value-of select="$fixedColWidth + (2 * $avgWidth)"/></xsl:when>
+          <xsl:when test="$numColsUsing=3"><xsl:value-of select="$fixedColWidth + (1.5 * $avgWidth)"/></xsl:when>
+          <xsl:otherwise><xsl:value-of select="$fixedColWidth + (1.33 * $avgWidth)"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="maxWidth">
+        <xsl:choose>
+          <xsl:when test="$calcMaxWidth &gt; (number($availableWidth) - 7 * ($numColsUsing - $numVariableCols))">
+            <xsl:value-of select="number($availableWidth) - 7 * ($numColsUsing - $numVariableCols)" />
+          </xsl:when>
+          <xsl:otherwise><xsl:value-of select="$calcMaxWidth"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:variable name="guessedParaWidth">
+        <xsl:for-each select="$theCell//*[contains($paraList, concat('__',local-name(),'__'))]">
+          <xsl:sort select="string-length(string(.))" data-type="number" order="descending" />
+          <xsl:if test="position()=1"><xsl:value-of select="2.8 * string-length(string(.))"/></xsl:if>  <!-- 2.8mm = 8pt -->
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:variable name="minParaWidth">
+        <xsl:for-each select="$theCell//*[local-name()='img' or local-name()='object']">
+          <xsl:sort select="number(@width)" data-type="number" order="descending" />
+          <xsl:if test="position()=1"><xsl:value-of select="2.1 + number(@width)"/></xsl:if>  <!-- 2.8mm = 8pt -->
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:choose>
+        <xsl:when test="($guessedParaWidth + $minParaWidth) &lt; $minWidth"><xsl:value-of select="$minWidth"/></xsl:when>
+        <xsl:when test="($guessedParaWidth + $minParaWidth) &lt; $maxWidth"><xsl:value-of select="$guessedParaWidth + $minParaWidth"/></xsl:when>
+        <xsl:when test="$minParaWidth &gt; $maxWidth"><xsl:value-of select="$minParaWidth"/></xsl:when>
+        <xsl:when test="($guessedParaWidth div $maxWidth) &gt; 4"><xsl:value-of select="$maxWidth"/></xsl:when>
+        <xsl:when test="($guessedParaWidth div $maxWidth) &gt; 2"><xsl:value-of select="(.3 * $avgWidth) + (.7 * $maxWidth)"/></xsl:when>
+        <xsl:otherwise><xsl:value-of select="(.6 * $avgWidth) + (.4 * $maxWidth)"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:variable name="rowContainersStr" select="'--thead--tfoot--tbody--'" />
@@ -932,7 +1135,7 @@
     <xsl:when test="$unitStr = 'bp'"><xsl:value-of select="$numberStr * 0.3514598" /></xsl:when>
     <xsl:when test="$unitStr = 'pc'"><xsl:value-of select="$numberStr * 2.54" /></xsl:when>
     <xsl:when test="$unitStr = 'px'"><xsl:value-of select="$numberStr * 0.2645833" /></xsl:when>
-    <xsl:otherwise><xsl:value-of select="$numberStr" /></xsl:otherwise>
+    <xsl:otherwise><xsl:value-of select="$numberStr * 0.2645833" /></xsl:otherwise>  <!-- assume pixels -->
   </xsl:choose>
 </xsl:template>
 
@@ -1085,11 +1288,40 @@
   </xsl:element>
   <xsl:if test="$numToGenerate &gt; 1">
     <xsl:call-template name="generateEmptyCells">
-      <xsl:param name="numToGenerate" select="number($numToGenerate) - 1" />
-      <xsl:param name="currRow" select="$currRow" />
-      <xsl:param name="currCol" select="$currCol + 1" />
+      <xsl:with-param name="numToGenerate" select="number($numToGenerate) - 1" />
+      <xsl:with-param name="currRow" select="$currRow" />
+      <xsl:with-param name="currCol" select="$currCol + 1" />
     </xsl:call-template>
   </xsl:if>
+</xsl:template>
+
+<xsl:template name="doReplaceMacro">
+  <xsl:param name="targStr" select="''"/>
+  <xsl:param name="findStr" select="''"/>
+  <xsl:param name="replaceStr" select="''"/>
+  <xsl:param name="global" select="0"/>
+  <xsl:choose>
+    <xsl:when test="contains($targStr, $findStr)">
+      <xsl:choose>
+        <xsl:when test="not(contains('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', substring(substring-after($targStr,$findStr),1,1)))">
+          <xsl:value-of select="substring-before($targStr,$findStr)"/><xsl:value-of select="$replaceStr"/>
+          <xsl:choose>
+            <xsl:when test="number($global)">
+              <xsl:call-template name="doReplaceMacro">
+                <xsl:with-param name="targStr" select="substring-after($targStr,$findStr)"/>
+                <xsl:with-param name="findStr" select="$findStr"/>
+                <xsl:with-param name="replaceStr" select="$replaceStr"/>
+                <xsl:with-param name="global" select="1"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise><xsl:value-of select="substring-after($targStr,$findStr)"/></xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="$targStr"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise><xsl:value-of select="$targStr"/></xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:stylesheet>

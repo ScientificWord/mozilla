@@ -115,9 +115,9 @@
     <xsl:variable name="existingThmTranslation">
       <xsl:call-template name="checkTeXNameForEnvironments">
         <xsl:with-param name="theTag" select="name(.)"/>
-        <xsl:if test="not(not(@numbering)) and string-length(@numbering)">
-          <xsl:with-param name="theNumbering" select="@numbering"/>
-        </xsl:if>
+        <xsl:with-param name="theNumbering">
+          <xsl:if test="not(not(@numbering)) and string-length(@numbering)"><xsl:value-of select="@numbering"/></xsl:if>
+        </xsl:with-param>
       </xsl:call-template>
     </xsl:variable>
     <xsl:if test="not($existingThmTranslation) or not(string-length($existingThmTranslation))">
