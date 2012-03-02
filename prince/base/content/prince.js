@@ -1204,6 +1204,8 @@ function documentToTeXString(document, xslPath)
 
     while (strResult.search(/\\par[ \t\n]+/) >= 0)
 		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
+    while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
+		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");
 		//while (strResult.search(/\\par/) >= 0)
 		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
   }
