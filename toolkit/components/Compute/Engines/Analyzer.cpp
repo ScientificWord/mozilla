@@ -871,7 +871,13 @@ void AnalyzeMO(MNODE* mml_mo_node,
         break;
       case POI_gradient:
         snode->semantic_type = SEM_TYP_PREFIX_OP;
-        f_nom = "grad";
+        if ( (mml_mo_node -> next) && (0 == strcmp(mml_mo_node -> next -> p_chdata, "&#xd7;") ) ){
+           op_ilk = POI_curl;
+           f_nom = "curl";
+           nodes_done = 2;
+        } else {
+          f_nom = "grad";
+        }
         break;
       case POI_divergence:
         snode->semantic_type = SEM_TYP_PREFIX_OP;
