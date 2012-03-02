@@ -169,7 +169,7 @@ mpass<uID3.207.1>
 \huge<uID5.488.0>mathsize="2.90ex"
 \Huge<uID5.489.0>mathsize="3.15ex"
 
-\mathrm<uID5.81.0>fontweight="normal"
+\mathrm<uID5.81.0>fontweight="normal" fontstyle="upright"  mathcolor="blue"
 \mathbf<uID5.82.0>fontweight="bold" fontstyle="upright"
 \mathsf<uID5.83.0>fontstyle="italic"
 \mathtt<uID5.84.0>fontstyle="italic"

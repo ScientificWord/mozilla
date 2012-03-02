@@ -25,6 +25,11 @@ case CMD_MATH_SHIFT : {
       inp.Putback(Global::msieverypar);
       inp.Putback(Global::everypar);
       break;
+   } else if ( (Typesetter::GetMode() == MODE_MATH)  &&
+                bCurrentLevelType(INLINE_GROUP) ) {
+      LOG("\n---- ending math shift");
+      EndLevel();
+      break;
    }
    LOG("\n---- math shift");
    GetRawToken();
