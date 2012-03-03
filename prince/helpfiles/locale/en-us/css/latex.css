@@ -1,0 +1,1342 @@
+@namespace mml url("http://www.w3.org/1998/Math/MathML");
+@namespace sw url("http://www.sciword.com/namespaces/sciword");
+
+texlogo {
+  font-family: Times, "Times New Roman", serif;
+  font-variant: small-caps;	
+  letter-spacing: 1px;
+}
+
+
+/* texlogo:before{ content: "_";} */
+
+texlogo sup {
+  font-size: 0.85em;
+  vertical-align: 0.15em;
+  margin-left: -0.36em;
+  margin-right: -0.15em;
+}
+
+
+texlogo sub {
+  vertical-align: -0.5ex;
+  margin-left: -0.1667em;
+  margin-right: -0.125em;
+  font-size: 1em;
+}
+
+
+caption {
+  background-color: rgb(250,240,240);
+  margin-top: 3pt;
+  margin-bottom: 3pt;
+}
+
+table {
+  margin: 0px;  
+}
+
+/*table {
+  border-collapse: collapse;
+  border-style: dotted;
+  border-color: red;
+  border-width: 1px;
+}
+*/
+
+hspace {
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
+  display: inline-block;
+}
+
+hspace * {
+  visibility: hidden;
+}
+
+*[showinvis="true"] hspace {
+  visibility: visible;
+  color: green;
+  border-bottom: thin solid;
+}
+
+hspace[type="emSpace"] {
+  min-width: 1em;
+}
+
+hspace[type="twoEmSpace"] {
+  min-width: 2em;
+}
+
+hspace[type="thinSpace"] {
+  min-width: 0.17em;
+}
+
+hspace[type="thickSpace"] {
+  min-width: 0.5em;
+}
+
+hspace[type="italicCorrectionSpace"] {
+  min-width: 0.083em;
+}
+
+hspace[type="requiredSpace"] {
+  min-width: 0.5em;
+  /*display: inline;*/
+}
+
+hspace[type="nonBreakingSpace"] {
+  display: inline;
+  white-space: nowrap;
+}
+
+/*
+hspace[type="negativeThinSpace"] {
+  min-width: 0.0em;
+}
+
+hspace[type="zeroSpace"] {
+  min-width: 0.0em;
+}
+
+hspace[type="noIndent"] {
+  min-width: 0.0em;
+} */
+
+vspace {
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#vspace"); */
+  display: inline-block;
+	max-width: 2px;
+/*  overflow: hidden;  */
+  max-width: 1px;
+  white-space: pre;
+/*  position: relative;  */
+}
+
+vspace[type="smallSkip"] {
+  height: 3pt;
+	vertical-align: -3pt;
+}
+
+vspace[type="mediumSkip"] {
+  height: 6pt;
+	vertical-align: -6pt;
+}
+
+vspace[type="bigSkip"] {
+  height: 12pt;
+	vertical-align: -12pt;
+}
+
+vpsace[type="strut"] {
+  line-height: 100%;
+}
+
+vspace[type="mathStrut"] {
+  line-height: 100%;
+}
+
+vspace[type="customSpace"] {
+  vertical-align: -100%;
+}
+
+
+*[showinvis="true"] vspace {
+  border-left: thin solid green;
+}
+
+msirule {
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msirule"); */
+  display: inline-block;
+}
+
+msibreak[type="customNewLine"]
+{
+	display: block;
+	width: 2px;
+}
+
+msibreak[type="customNewLine"]:after {
+  white-space: pre;
+  content: "\A";
+  -moz-user-select: -moz-none;
+}
+
+*[showinvis="true"] msibreak {
+	width: 2px;
+}
+
+*[showinvis="true"] msibreak[type="customNewLine"] {
+	background-color: green;
+}
+
+msibreak[type="newPage"]:after {
+  white-space: pre;
+  content: "\A";
+  -moz-user-select: -moz-none;
+}
+
+phantom {
+  color: transparent;
+}
+
+centeredEnv, centered {
+  text-align: center;
+}
+
+newPageRule {
+	display: inline-block;
+	position: absolute;
+	left: 0px;
+	bottom: auto;
+	height: 1px;
+	width: 100%;
+	border-bottom: 2px dashed green;
+}
+
+/* invis {
+  display: none;
+}
+
+*[showinvis="true"] sw|invis {
+  display: inline;
+}  */
+
+otfont {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#otfont");
+}
+
+fontsize {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fontsize");
+}
+
+fontcolor {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fontcolor");
+}
+
+
+img {
+  -moz-force-broken-image-icon: 1;
+  min-height: 6px; min-width: 6px;
+}
+
+
+/*graph {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#graph");
+}*/
+
+/*graph {
+  display:block;  
+  cursor: pointer;
+}*/
+
+plotwrapper {
+  display: block;
+	top: 0px;
+	left: 0px;
+  -moz-user-select: all;
+  -moz-user-focus: normal;
+  cursor: pointer;
+}
+
+/*plotcaption {
+  display: block;
+  text-align: center;
+  -moz-box-flex: 1;
+  min-height: 20px;
+}*/
+
+/*object {
+}
+*/
+
+
+* [msimathname="true"] {color: gray; }
+
+*[mathvariant="double-struck"] {
+  font-family: monotype corsiva;
+  color: rgb(0,255,255)
+}
+
+
+mml|mfrac mml|mi[tempinput="true"]::before, 
+mml|msup mml|mi + mml|mi[tempinput="true"]::before, 
+mml|msub mml|mi + mml|mi[tempinput="true"]::before, 
+mml|mroot mml|mi[tempinput="true"]::before, 
+mml|msqrt mml|mi[tempinput="true"]::before, 
+mml|munder mml|mi[tempinput="true"]::before, 
+mml|mover mml|mi[tempinput="true"]::before, 
+mml|munderover mml|mi[tempinput="true"]::before, 
+mml|msub mml|mi[tempinput="true"]::before, 
+mml|msup mml|mi[tempinput="true"]::before, 
+mml|msubsup mml|mi[tempinput="true"]::before, 
+mml|msidisplay mml|mi[tempinput="true"]::before,
+mml|menclose mml|mi[tempinput="true"]::before 
+{
+  content: "[";
+  color: green;
+}
+
+
+mml|mfrac mml|mi[tempinput="true"]::after, 
+mml|msup mml|mi + mml|mi[tempinput="true"]::after, 
+mml|msub mml|mi + mml|mi[tempinput="true"]::after, 
+mml|mroot mml|mi[tempinput="true"]::after, 
+mml|msqrt mml|mi[tempinput="true"]::after, 
+mml|munder mml|mi[tempinput="true"]::after, 
+mml|mover mml|mi[tempinput="true"]::after, 
+mml|munderover mml|mi[tempinput="true"]::after, 
+mml|msub mml|mi[tempinput="true"]::after, 
+mml|msup mml|mi[tempinput="true"]::after, 
+mml|msubsup mml|mi[tempinput="true"]::after, 
+mml|msidisplay mml|mi[tempinput="true"]::after,
+mml|msienclose mml|mi[tempinput="true"]::after 
+{
+  content: "]";
+  color: green;
+}
+
+mml|mfrac mml|mi[tempinput="true"],
+mml|msup mml|mi + mml|mi[tempinput="true"], 
+mml|msub mml|mi + mml|mi[tempinput="true"], 
+mml|mroot mml|mi[tempinput="true"],
+mml|msqrt mml|mi[tempinput="true"],
+mml|msidisplay mml|mi[tempinput="true"],
+mml|menclose mml|mi[tempinput="true"]
+{
+  letter-spacing: 0; /*-0.015em;*/
+  -moz-user-select: text;
+  color: red;
+}
+
+#rotateleft{
+  list-style-image: url("chrome://prince/skin/icons/vc-rotateleft.png");
+}
+
+mml|mrow[id] {
+  position: fixed;  
+  top: auto; 
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 0;
+
+}
+mml|mrow[id]:after {
+  content: "[#" attr(id) "]" ;
+  position: fixed;  
+  top: auto; 
+  right: 0em;
+  margin-right: 0em;
+  z-index: 1;
+  left: auto; 
+  color: black;
+  background-color:rgb(180,180,180);
+  -moz-user-select: -moz-none;
+}
+
+ 
+.collapsible {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+ 
+/* The following is a generic set of rules to control opening and closing
+   sections. They are repeated for each structure that can be closed. Also
+   implement the switch between numbered and not numbered*/
+
+chapter>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+chapter>sectiontitle {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+/* Keep counters from incrementing on unnumbered structures */
+
+chapter[nonum="true"] {
+  counter-increment: none;
+}
+
+/* Suppress	title for nonnumbered sections */
+chapter[nonum="true"]>*:first-child {
+  content: "";
+}
+																 
+chapter[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+																 
+chapter[open="false"]>* {
+  display: none;
+}
+
+chapter[open="false"]>*:first-child {
+  display: block;
+}
+
+chapter[open="false"]>*:first-child {
+  display: block;
+}
+
+section>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+section[open="false"]>sectiontitle {
+  display: block;
+}
+
+section>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+
+section>sectiontitle {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+section[nonum="true"]>*:first-child:before {
+  content: "";
+}
+
+section[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+
+section[nonum="true"] {
+  counter-increment: none;
+}
+
+
+section[open="false"]>* {
+  display: none;
+}
+
+section[open="false"]>*:first-child {
+  display: block;
+}
+
+section[open="false"]>sectiontitle {
+  display: block;
+}
+
+section[open="false"]>button.expander {
+  display: inline;
+}
+
+subsection>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+subsection[open="false"]>sectiontitle {
+  display: block;
+}
+
+subsection>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+
+subsection>sectiontitle {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+subsection[nonum="true"] {
+  counter-increment: none;
+}
+
+subsection[nonum="true"]>*:first-child:before {
+  content: "";
+}
+
+
+subsection[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+
+
+subsubsection[nonum="true"] {
+  counter-increment: none;
+}
+
+subsubsection[nonum="true"]>*:first-child:before {
+  content: "";
+}
+
+
+subsubsection[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+
+
+subsubsection[open="false"]>* {
+  display: none;
+}
+
+subsubsection[open="false"]>*:first-child {
+  display: block;
+}
+
+subsubsection[open="false"]>sectiontitle {
+  display: block;
+}
+
+subsubsection[open="false"]>button.expander {
+  display: inline;
+}
+
+
+
+
+paragraph[nonum="true"] {
+  counter-increment: none;
+}
+
+paragraph[nonum="true"]>*:first-child:before {
+  content: "";
+}
+
+paragraph[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+
+
+*[showinvis="true"] sectiontitle:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+
+*[showinvis="true"] p:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+
+*[showinvis="true"] bodyText:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+*[showinvis="true"] bodyMath:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+
+*[showinvis="true"] title:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+
+*[showinvis="true"] shortQuote:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+
+frontmatter, mainmatter, backmatter {
+  display: block;
+  position: relative;
+  margin-left: 100px;
+  padding: 10px 0px;
+  border: thin solid black; 
+  background-color: #EEE8E0;
+  -moz-border-radius: 10px;
+}
+
+preface {
+  display: block;
+  margin-top: 30pt;
+  border: thin solid black; 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] preface:before {
+  content: "Preface";
+  display: block;
+  font-size: medium; font-weight: bold;
+  color: green;
+  -moz-user-select: -moz-none;
+}
+
+
+/* ordinary breaks -- emulate behavior of <br/>*/
+
+msibr:before {
+  content: "\A";
+  white-space: pre;
+  -moz-user-select: -moz-none;
+} 
+
+*[showinvis="true"] msibr:before {
+  content: "\AC\A";
+  white-space: pre;
+  color: green;
+  -moz-user-select: -moz-none;
+}
+
+
+/* Selection rules */
+
+body {
+  -moz-user-select: -moz-none; /* -moz-none can be overridden */
+  counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
+  display: block;
+  position: relative;
+  font-family: Georgia;
+  font-size: 12pt;
+  line-height: 14pt;
+}
+
+/* selection is possible in paragraph and front matter tags */
+
+bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line, 
+  dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
+  abstract, address, author, date, title {
+  -moz-user-select: text;
+}
+
+/*  makelof, makelot, maketitle, maketoc {
+  -moz-user-select: none;
+  display:block;
+	height: 1.3em;
+	width: 100%;
+}  */
+
+
+/* front matter tags */
+address {
+  display:block;
+  text-align: center;
+}
+
+author {
+  display:block;
+  text-align: center;
+}
+
+date {
+  display:block;
+  text-align: center;
+}
+
+
+
+/* Key to the entries below for msidisplay:
+    i) msidisplay with no "numbering" attribute will be assumed to be numbered automatically as a single equation.
+         What's displayed will depend on the "marker", "subEquationNumbers", and "subEquationContinuation" attributes, but
+         a number (with marker if available) will be displayed. Uses #msidisplaynumbered or #msidisplaysubnumbered binding.
+   ii) msidisplay with "numbering=eqns" means the numbering is on the individual equations within an mtable.
+         No marker will be displayed at the level of the msidisplay; the individual rows (that is, mtr content) will
+         set the text of markers and numbers. Use #msidisplaybase.
+  iii) msidisplay with "numbering=none" means either a single equation with no numbering or containing individual equations
+       which are all unnumbered.
+         If a marker is present, these will display the marker; otherwise nothing at the top level. Individual rows with markers
+         will still show them. Use #msidisplaybase without a marker, or #msidisplaymarker if one is present.
+
+  Key to the entries for individual equations, coded as msidisplay>math>mtable>mtr or msidisplay>math>mstyle>mtable>mtr:
+    i) Equation with no "numbering" attribute will be assumed to be numbered automatically. As above, what's displayed will depend
+         on "subEquationNumbers" and "subEquationContinuation" attributes. Use #msidisplayrownumbered or #msidisplayrowsubnumbered binding.
+   ii) Equation with "numbering=none", but with a marker. Use #msidisplayrowmarker binding.
+  iii) Equation with "numbering=none" but no marker; no binding needed?
+
+  Counters:
+    i) Generally, "counter-increment" is "eqnnumber" or "subeqnnum" depending on whether a button is "class=eqnnum" or
+         "class=subeqnnum". Also, each "class=eqnnum" button will have a "counter-reset=subeqnnum".
+   ii) Also, an msidisplay with "subEquationNumbers=true" and "numbering" not equal to "none" but without "subEquationContinuation=true" will add "counter-increment=eqnnumber".
+  iii) The one difficult case is "subEquationContinuation=true". Here the msidisplay will only increment "eqnnumber" counter if
+         its "subEquationReset" attribute is "true"; managing this attribute will have to be done dynamically, and it will (attempt to)
+         track whether previous display has "subEquationContinuation=true" and "subEquationNumbers=true".
+*/
+
+msidisplay {
+ -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaynumbered");
+  position: relative;
+  display: block;
+}
+
+msidisplay[subEquationNumbers="true"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaysubnumbered");
+}
+
+msidisplay[numbering="none"], msidisplay[numbering="eqns"], msidisplay[numbering="eqns"][subEquationNumbers="true"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaybase");
+}
+
+msidisplay[numbering="none"][marker] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaymarker");
+}
+
+msidisplay[numbering="eqns"] mtable[type="eqnarray"]>mtr {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
+}
+
+msidisplay mtable[type="eqnarray"]>mtr[numbering="none"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowbase");
+}
+
+msidisplay mtable[type="eqnarray"]>mtr[numbering="none"][marker] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowmarker");
+}
+
+msidisplay[numbering="eqns"][subEquationNumbers="true"] mtable[type="eqnarray"]>mtr {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowsubnumbered");
+}
+
+
+msidisplay[subEquationNumbers="true"] {
+  counter-increment: eqnnumber;
+  counter-reset: subeqnnum;
+}
+
+msidisplay[subEquationNumbers="true"][numbering="none"], msidisplay[subEquationNumbers="true"][subEquationContinuation="true"] {
+  counter-increment: none;
+  counter-reset: none;
+}
+
+msidisplay[subEquationNumbers="true"][subEquationContinuation="true"][subEquationReset="true"] {
+  counter-increment: eqnnumber;
+  counter-reset: subeqnnum;
+}
+
+mtd[class="eqnmarker"],mml|mtd[class="eqnmarker"]
+{
+  padding-left: 50px;
+  text-align: right;
+  border-top-style:  hidden;
+  border-right-style: hidden;
+  border-bottom-style: hidden;
+  border-left-style: none;
+}
+
+button[class="eqnnum"]{
+  counter-increment: eqnnumber;
+/*  counter-reset: subeqnnum; */
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  font-style: normal; 
+  color: red;
+  -moz-user-select: -moz-none ! important;
+}
+
+button[class="subeqnnum"]{
+  counter-increment: subeqnnum;
+  counter-reset: none;
+  position: absolute;
+  right: 20px;
+  font-style: normal; 
+  color: blue;
+  -moz-user-select: -moz-none ! important;
+}
+
+button[class="eqnmarker"]{
+  position: absolute;
+  right: 0px;
+  font-style: normal; 
+  color: red;
+  -moz-user-select: -moz-none ! important;
+}
+
+mtr button[class="eqnnum"], mtr button[class="subeqnnum"], mtr button[class="eqnmarker"] {
+  display: inline;
+  right: 0px;
+}
+
+button[class="eqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber);
+  -moz-user-modify: read-only ! important;
+}
+
+button[class="eqnnum"][customLabel]:after{
+  content: "  " attr(customLabel);
+  -moz-user-modify: read-only ! important;
+}
+
+button[class="subeqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
+  -moz-user-modify: read-only ! important;
+}
+
+button[class="subeqnnum"][customLabel]:after{
+  content: "  " attr(customLabel);
+  -moz-user-modify: read-only ! important;
+}
+
+title {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-title");
+}
+
+author {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-author");
+}
+
+address {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-address");
+}
+
+date {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-date");
+}
+
+maketitle {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketitle");
+} 
+
+maketoc {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketoc");
+}
+
+makelof {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelof");
+}
+
+makelot {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelot");
+} 
+
+line {
+  display: block;
+}
+
+/* 
+*[showinvis="true"] numberedlist {
+  padding: 10px;
+  border: 2px solid rgb(220,220,220); 
+  -moz-border-radius: 8px;
+}
+
+*[showinvis="true"] bulletlist {
+  padding: 10px;
+  border: 2px solid rgb(220,220,220); 
+  -moz-border-radius: 8px;
+}
+
+*[showinvis="true"] descriptionlist {
+  padding: 10px;
+  border: 2px solid rgb(220,220,220); 
+  -moz-border-radius: 8px;
+}  */
+
+*[showinvis="true"] numberedListItem {
+  border: 2px solid rgb(220,210,220); 
+  -moz-border-radius: 8px;
+}
+
+*[showinvis="true"] bulletListItem {
+  border: 2px solid rgb(220,210,220); 
+  -moz-border-radius: 8px;
+}
+
+*[showinvis="true"] descriptionListItem {
+  border: 2px solid rgb(220,210,220); 
+  -moz-border-radius: 8px;
+}
+
+*[showinvis="true"] numberedListItem + numberedListItem {
+  margin-top: -5px;
+}
+
+/* In the AMS-sanctioned classification of theorem environments, we have the breakdown:
+    Plain      - assertion, conjecture, corollary, criterion, lemma, proposition, theorem
+    Definition - algorithm, assumption, axiom, condition, definition, example,
+                 exercise, hypothesis, problem, property, question
+    Remark     - acknowledgment (not encouraged), case, claim, conclusion, notation, 
+                 note (we would use the tag "texnote", but no support currently), 
+                 remark, summary
+  The CSS properties for these should be:
+    Plain lead-in      - normal bold
+    Plain content      - italic normal
+    Definition lead-in - normal bold
+    Definition content - normal normal
+    Remark lead-in     - normal normal (but we use bold on-screen, per George)
+    Remark content     - italic normal
+*/
+
+assertion > *:first-child::before, conjecture > *:first-child::before,
+corollary > *:first-child::before, criterion > *:first-child::before, 
+lemma > *:first-child::before, proposition > *:first-child::before, theorem > *:first-child::before
+{
+  font-style: normal;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+assertion, conjecture, corollary, criterion, lemma, proposition, theorem {
+  display: block;
+  font-style: italic;
+  counter-increment: theorem;
+}
+
+assertion > *:first-child::before {
+  content: 'Assertion ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+assertion[numbering="none"] > *:first-child::before {
+  content: 'Assertion ';
+  -moz-user-modify: read-only;
+}
+
+conjecture > *:first-child::before {
+  content: 'Conjecture ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+conjecture[numbering="none"] > *:first-child::before {
+  content: 'Conjecture ';
+  -moz-user-modify: read-only;
+}
+
+corollary > *:first-child::before {
+  content: 'Corollary ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+corollary[numbering="none"] > *:first-child::before {
+  content: 'Corollary ';
+  -moz-user-modify: read-only;
+}
+
+criterion > *:first-child::before {
+  content: 'Criterion ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+criterion[numbering="none"] > *:first-child::before {
+  content: 'Criterion ';
+  -moz-user-modify: read-only;
+}
+
+lemma > *:first-child::before {
+  content: 'Lemma ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+lemma[numbering="none"] > *:first-child::before {
+  content: 'Lemma ';
+  -moz-user-modify: read-only;
+}
+
+proposition > *:first-child::before {
+  content: 'Proposition ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+proposition[numbering="none"] > *:first-child::before {
+  content: 'Proposition ';
+  -moz-user-modify: read-only;
+}
+
+theorem > *:first-child::before {
+  content: 'Theorem ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+ 
+theorem[numbering="none"] > *:first-child::before {
+  content: 'Theorem ';
+  -moz-user-modify: read-only;
+}
+
+algorithm > *:first-child::before, assumption > *:first-child::before, 
+axiom > *:first-child::before, condition > *:first-child::before,
+definition > *:first-child::before, example > *:first-child::before,
+exercise > *:first-child::before, hypothesis > *:first-child::before,
+problem > *:first-child::before, property > *:first-child::before, question > *:first-child::before
+{
+  font-style: normal;
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+algorithm, assumption, axiom, condition, definition, example, exercise, hypothesis,
+problem, property, question
+{
+  display: block;
+  font-style: normal;
+  counter-increment: theorem;
+}
+
+algorithm > *:first-child::before {
+  content: 'Algorithm ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+algorithm[numbering="none"] > *:first-child::before {
+  content: 'Algorithm ';
+  -moz-user-modify: read-only;
+}
+
+assumption > *:first-child::before {
+  content: 'Assumption ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+assumption[numbering="none"] > *:first-child::before {
+  content: 'Assumption ';
+  -moz-user-modify: read-only;
+}
+
+axiom > *:first-child::before {
+  content: 'Axiom ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+axiom[numbering="none"] > *:first-child::before {
+  content: 'Axiom ';
+  -moz-user-modify: read-only;
+}
+
+condition > *:first-child::before {
+  content: 'Condition ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+condition[numbering="none"] > *:first-child::before {
+  content: 'Condition ';
+  -moz-user-modify: read-only;
+}
+
+definition > *:first-child::before {
+  content: 'Definition ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+definition[numbering="none"] > *:first-child::before {
+  content: 'Definition ';
+  -moz-user-modify: read-only;
+}
+
+example > *:first-child::before {
+  content: 'Example ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+example[numbering="none"] > *:first-child::before {
+  content: 'Example ';
+  -moz-user-modify: read-only;
+}
+
+exercise > *:first-child::before {
+  content: 'Exercise ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+exercise[numbering="none"] > *:first-child::before {
+  content: 'Exercise ';
+  -moz-user-modify: read-only;
+}
+
+hypothesis > *:first-child::before {
+  content: 'Hypothesis ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+hypothesis[numbering="none"] > *:first-child::before {
+  content: 'Hypothesis ';
+  -moz-user-modify: read-only;
+}
+
+problem > *:first-child::before {
+  content: 'Problem ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+problem[numbering="none"] > *:first-child::before {
+  content: 'Problem ';
+  -moz-user-modify: read-only;
+}
+
+property > *:first-child::before {
+  content: 'Property ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+property[numbering="none"] > *:first-child::before {
+  content: 'Property ';
+  -moz-user-modify: read-only;
+}
+
+question > *:first-child::before {
+  content: 'Question ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+question[numbering="none"] > *:first-child::before {
+  content: 'Question ';
+  -moz-user-modify: read-only;
+}
+
+acknowledgment > *:first-child::before, case > *:first-child::before, claim > *:first-child::before,
+conclusion > *:first-child::before, notation > *:first-child::before,
+remark > *:first-child::before, summary > *:first-child::before
+{
+  font-style: italic;
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+  
+acknowledgment, case, claim, conclusion, notation, remark, summary {
+  display: block;
+  font-style: normal;
+  counter-increment: theorem;
+}
+
+acknowledgment > *:first-child::before {
+  content: 'Acknowledgment ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+acknowledgment[numbering="none"] > *:first-child::before {
+  content: 'Acknowledgment ';
+  -moz-user-modify: read-only;
+}
+
+case > *:first-child::before {
+  content: 'Case ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+case[numbering="none"] > *:first-child::before {
+  content: 'Case ';
+  -moz-user-modify: read-only;
+}
+
+claim > *:first-child::before {
+  content: 'Claim ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+claim[numbering="none"] > *:first-child::before {
+  content: 'Claim ';
+  -moz-user-modify: read-only;
+}
+
+conclusion > *:first-child::before {
+  content: 'Conclusion ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+conclusion[numbering="none"] > *:first-child::before {
+  content: 'Conclusion ';
+  -moz-user-modify: read-only;
+}
+
+notation > *:first-child::before {
+  content: 'Notation ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+notation[numbering="none"] > *:first-child::before {
+  content: 'Notation ';
+  -moz-user-modify: read-only;
+}
+
+remark > *:first-child::before {
+  content: 'Remark ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+remark[numbering="none"] > *:first-child::before {
+  content: 'Remark ';
+  -moz-user-modify: read-only;
+}
+
+summary > *:first-child::before {
+  content: 'Summary ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+summary[numbering="none"] > *:first-child::before {
+  content: 'Summary ';
+  -moz-user-modify: read-only;
+}
+
+proof > *:first-child::before {
+  content: 'Proof ';
+  -moz-user-modify: read-only;
+  background-color: lightgray;
+  font-weight: bold;
+}
+
+assertion[leadInType="custom"],
+conjecture[leadInType="custom"],
+corollary[leadInType="custom"],
+criterion[leadInType="custom"],
+lemma[leadInType="custom"],
+proposition[leadInType="custom"],
+theorem[leadInType="custom"],
+algorithm[leadInType="custom"],
+assumption[leadInType="custom"],
+axiom[leadInType="custom"],
+condition[leadInType="custom"],
+definition[leadInType="custom"],
+example[leadInType="custom"],
+exercise[leadInType="custom"],
+hypothesis[leadInType="custom"],
+problem[leadInType="custom"],
+property[leadInType="custom"],
+question[leadInType="custom"],
+acknowledgment[leadInType="custom"],
+case[leadInType="custom"],
+claim[leadInType="custom"],
+conclusion[leadInType="custom"],
+notation[leadInType="custom"],
+remark[leadInType="custom"],
+summary[leadInType="custom"], 
+proof[leadInType="custom"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
+}
+
+assertion > envLeadIn,
+conjecture > envLeadIn,
+corollary > envLeadIn,
+criterion > envLeadIn,
+lemma > envLeadIn,
+proposition > envLeadIn,
+theorem > envLeadIn,
+algorithm > envLeadIn,
+assumption > envLeadIn,
+axiom > envLeadIn,
+condition > envLeadIn,
+definition > envLeadIn,
+example > envLeadIn,
+exercise > envLeadIn,
+hypothesis > envLeadIn,
+problem > envLeadIn,
+property > envLeadIn,
+question > envLeadIn,
+acknowledgment > envLeadIn,
+case > envLeadIn,
+claim > envLeadIn,
+conclusion > envLeadIn,
+notation > envLeadIn,
+remark > envLeadIn,
+summary > envLeadIn {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin");
+}
+
+assertion[numbering="none"],
+conjecture[numbering="none"],
+corollary[numbering="none"],
+criterion[numbering="none"],
+lemma[numbering="none"],
+proposition[numbering="none"],
+theorem[numbering="none"],
+algorithm[numbering="none"],
+assumption[numbering="none"],
+axiom[numbering="none"],
+condition[numbering="none"],
+definition[numbering="none"],
+example[numbering="none"],
+exercise[numbering="none"],
+hypothesis[numbering="none"],
+problem[numbering="none"],
+property[numbering="none"],
+question[numbering="none"],
+acknowledgment[numbering="none"],
+case[numbering="none"],
+claim[numbering="none"],
+conclusion[numbering="none"],
+notation[numbering="none"],
+remark[numbering="none"],
+summary[numbering="none"] {
+  counter-increment: none;
+}
+
+assertion > envLeadIn+bodyText,
+conjecture > envLeadIn+bodyText,
+corollary > envLeadIn+bodyText,
+criterion > envLeadIn+bodyText,
+lemma > envLeadIn+bodyText,
+proposition > envLeadIn+bodyText,
+theorem > envLeadIn+bodyText,
+algorithm > envLeadIn+bodyText,
+assumption > envLeadIn+bodyText,
+axiom > envLeadIn+bodyText,
+condition > envLeadIn+bodyText,
+definition > envLeadIn+bodyText,
+example > envLeadIn+bodyText,
+exercise > envLeadIn+bodyText,
+hypothesis > envLeadIn+bodyText,
+problem > envLeadIn+bodyText,
+property > envLeadIn+bodyText,
+question > envLeadIn+bodyText,
+acknowledgment > envLeadIn+bodyText,
+case > envLeadIn+bodyText,
+claim > envLeadIn+bodyText,
+conclusion > envLeadIn+bodyText,
+notation > envLeadIn+bodyText,
+remark > envLeadIn+bodyText,
+summary > envLeadIn+bodyText,
+proof > envLeadIn+bodyText {
+  display: inline;
+}
+
+/* "texnote" would be intended to represent the AMSTeX \note, as we already have a <note> tag.
+  It's commented out as the benefits are probably fewer than the hazards.
+  "solution" isn't in the AMS-canonized list.
+texnote > *:first-child::before {
+  content: 'Note ' counter(section) "." counter(theorem) ' ';
+}
+
+solution > *:first-child::before {
+  content: 'Solution ' counter(section) "." counter(theorem) ' ';
+}
+
+texnote, solution {
+  display: block;
+  font-style: normal;
+  font-weight: normal;
+}
+
+texnote[leadInType="custom"], solution[leadInType="custom"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
+}
+*/
+
+rawTeX {
+ color: #6600cc;
+}
+
+smallbox {
+	border: 1px solid black;
+}
+
+*[hilite] {
+	background-color: rgb(255,255,186);
+}
+
+/* These are the tags that polyglossia introduces for right-to-left languages */
+Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, hebrew, texthebrew, syriac, textsyriac, urdu, texturdu
+{ 
+	direction: rtl; 
+	text-align: right; }
+	
