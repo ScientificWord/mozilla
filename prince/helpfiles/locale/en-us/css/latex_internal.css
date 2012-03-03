@@ -1,0 +1,145 @@
+
+
+invis {
+  display: none;
+}
+
+texbdata {
+  display: none;
+}
+
+space {
+/*  display: -moz-inline-box;  */
+  display: inline-block;
+  vertical-align: baseline;
+}
+  
+*[showinvis="true"] space {
+  border-bottom-width: thin;
+  border-bottom-style: solid;
+  border-bottom-color: green;
+}
+
+*[showinvis="true"] invis {
+  display: inline;
+}
+
+*[showinvis="true"] space[type="noIndent"] {
+  display: none;
+}
+
+*[showinvis="true"] space[type="noIndent"]:after {
+  content: "\002190";
+  color: green;
+}
+
+linebox {
+  display: -moz-inline-box;
+  width: 100%;
+}
+
+/*
+space.stretchySpace[fillWith="line"] {
+  border-bottom: thin solid;  Note that omitting the border-color causes the text color to be used (per CSS 2.1 specification)
+}
+
+space.stretchySpace[fillWith="dots"] {
+  border-bottom: thin dotted;
+}
+
+*[showinvis="true"] space.stretchySpace {
+  border-bottom-color: green;
+}
+*/
+
+/*  Display values: "inline-block", "inline-table" produces parsing error. "-moz-inline-box", "inline" ignore width and padding.
+      "-moz-inline-block" breaks line, also ignores width and padding. 
+    Solution used is derived from Bugzilla comment at "https://bugzilla.mozilla.org/show_bug.cgi?id=9458#c37", and is
+    partially embedded in the XBL in latex.xml#vspace. */
+vertspace {
+  display: -moz-inline-box;
+  vertical-align: baseline;
+  overflow: hidden;
+  max-width: 1px;
+  white-space: pre;
+}
+  
+span.vertspace, span.breakvspace {
+  display: block;
+}
+
+*[showinvis="true"] span.vertspace {
+  border-left: thin solid green;
+}
+
+rulebox {
+  display: -moz-inline-box;
+  /*vertical-align: baseline;*/
+  position: relative;
+  overflow: hidden;
+  white-space: pre;
+}
+
+span.msirule {
+  display: block;
+  overflow: hidden;
+}
+
+msibreak {
+  display: inline;
+  white-space: pre;
+}
+
+breakobj {
+  display: inline;
+  white-space: pre;
+}
+
+*[showinvis="true"] breakobj:before {
+  color: green;
+  content: attr(invisDisplay);
+}
+
+span {
+  display: inline;
+}
+
+button.expander {
+  position: absolute;
+  background-image: url("chrome://global/skin/tree/twisty-open.png");
+  background-repeat: no-repeat;
+  border: none;
+  top: 4pt; 
+  left: -12px; 
+  height: 9px;
+  width: 9px;
+}
+
+button.inline {
+  font-size: 90%;
+  margin-top: -5px;
+  margin-bottom: -8px;
+}
+
+button.inline [type="transparentbutton"] {
+  background-color: transparent;
+}
+
+button.bibitemlabel {
+  display: inline;
+  background-color: transparent;
+  font-size: 90%;
+  margin-top: -5px;
+  margin-bottom: -8px;
+}
+
+*[open="false"] button.expander {
+  position: absolute;
+  background-image: url("chrome://global/skin/tree/twisty-clsd.png");
+  background-repeat: no-repeat;
+  border: none;
+  top: 4pt; 
+  left: -12px; 
+  height: 9px;
+  width: 9px;
+}
