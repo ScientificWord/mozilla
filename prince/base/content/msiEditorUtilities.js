@@ -285,6 +285,22 @@ function msiGetSelectionAsText(editorElement)
   return "";
 }
 
+function hexcolor(rgbcolor)
+{
+	var regexp = /\s*rgb\s*\(\s*(\d+)[^\d]*(\d+)[^\d]*(\d+)/ ;
+	var arr = regexp.exec(rgbcolor);
+  if (!arr || (arr.length < 4)) // color was given a 'black' or 'blue'
+	  return textColorToHex(rgbcolor);
+
+	var r = parseFloat(arr[1]).toString(16);
+	if (r.length<2) r = "0"+r;
+	var g = parseFloat(arr[2]).toString(16);
+	if (g.length<2) g = "0"+g;
+	var b = parseFloat(arr[3]).toString(16);
+	if (b.length<2) b = "0"+b;
+	return "#"+ r + g + b;
+}
+
 
 /************* Get Current Editor and associated interfaces or info ***************/
 //const nsIPlaintextEditor = Components.interfaces.nsIPlaintextEditor;

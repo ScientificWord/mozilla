@@ -53,7 +53,7 @@ private:
   char*     Execute( const char* cmd );
   bool  RenderPlot( const char* VCamFile, const char* outFile);
 
-  char*     CreateEngineCommandStr( MathServiceRequest& msr, U32 cmd_ID, const char* eng_expr, int& error_code );
+  char*     CreateEngineCommandStr( MathServiceRequest& msr, U32 cmd_ID, const char* eng_expr, const char* plotfilename, int& error_code );
   char*     ProcessSemNode(  SEMANTICS_NODE* handle, const char* modulus, int& error_code );
 
   char*     VARIABLEtoEstr(   SEMANTICS_NODE* node_info, int& error_code );
@@ -153,7 +153,7 @@ private:
   char*     CreatePLOTVAReStr( MathServiceRequest& msr,U32 cmd_ID, const char* eng_expr, const char* cmd_template,
                                int& error_code );
   char*     CreatePLOTVAR2eStr( MathServiceRequest& msr, U32 cmd_ID, const char* cmd_template,int& error_code );
-  char*     CreatePLOTFUNCeStr( PlotServiceRequest* psr, const char* eng_expr, int& error_code );
+  char*     CreatePLOTFUNCeStr( PlotServiceRequest* psr, const char* eng_expr, const char* plotfilename, int& error_code );
 
   bool  IsMatrix( SEMANTICS_NODE* s_node );
 
