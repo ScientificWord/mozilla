@@ -65,7 +65,7 @@ var gPreviewImageHeight = 50;
 var gFrameModeImage = true;
 var gFrameModeTextFrame = false;
 
-var gInsertNewImage;
+var gInsertNewImage = true;
 var gCaptionData;
 
 var importTimer;
@@ -123,7 +123,12 @@ function Startup()
         wrapperElement = imageElement.parentNode;
       }
       else wrapperElement = imageElement;  //shouldn't happen
-    } else wrapperElement = imageElement;
+    } 
+    else
+    {
+      wrapperElement = imageElement;
+      imageElement = wrapperElement.getElementsByTagName("object")[0];
+    }
   }
   if (!imageElement)
   {
