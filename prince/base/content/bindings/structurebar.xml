@@ -145,7 +145,8 @@
         <parameter name="aNode"/>
         <body>
         <![CDATA[
-          var editor = EditorUtils.getCurrentEditor();
+          var editorElement = msiGetActiveEditorElement();
+          var editor = msiGetEditor(editorElement);
           var node   = aNode.getUserData("node");
           if (editor && node)
             editor.selectElement(node);
