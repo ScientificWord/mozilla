@@ -1,0 +1,551 @@
+@namespace mml url("http://www.w3.org/1998/Math/MathML");
+
+/* Print-only rules. We put them here where they are noticeable. */
+@media print {
+*[nopr] {display: none;}
+object[msigraph="true"] {display:none;} 
+}
+
+@media screen {
+  plotwrapper object[msisnap] { display:none;}
+}
+
+/* This section gives the default colors for a range 
+of items. The user can override these colors using a dialog. 
+In that case in internal style sheet will rewrite these rules. */
+
+mml|math { color: red;}
+[msimathname="true"] { color: gray; 
+	font-style: normal;}
+mml|* [msiunit="true"] {color: green; 
+	font-style: normal;}
+mml|mtd {border-color: green; }
+mml|mtext { color: black; }  
+[msiclass="msi_passthrough"] {color: orange; }
+mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
+
+
+pre, verbatim { font-family: Courier; white-space: pre }
+
+numberedListItem,
+bulletListItem,
+descriptionListItem { 
+       margin-left: 2em; 
+       padding-left: 1em; 
+       display: list-item;}
+
+numberedlist {
+  list-style-type: none;
+  list-style-position: outside;
+  counter-reset: numberedlist;
+}
+
+bulletlist { list-style: disc outside;}
+bulletlist bulletlist { list-style: circle outside;}
+bulletlist bulletlist bulletlist { list-style: square outside;}
+bulletlist bulletlist bulletlist bulletlist { list-style: disc outside;}
+
+
+descriptionlist {list-style-type: none;}
+
+/* bulletListItem { margin-left: 2em; } */
+
+
+numberedListItem>bodyText:first-child:before { content: counter(numberedlist, decimal) '. ';
+  counter-increment: numberedlist;
+  width: 2em;
+  -moz-user-modify: read-only;
+}
+
+numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist, lower-latin) ') ';}
+numberedlist numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: counter(numberedlist, lower-roman) '. ';}
+numberedlist numberedlist numberedlist numberedlist numberedListItem>bodyText:first-child:before { content: counter(numberedlist, upper-latin) '. ';}
+
+numberedListItem>bodyText:first-child:first-line { content: '  ';
+  -moz-user-modify: read-only;
+}
+
+/* proof {
+  display: block;
+}
+
+proof:before {
+  content: "Proof. ";
+  background-color: lightgray;
+  font-weight: bold;
+} */
+  
+img { display: inline;} 
+
+shortQuote { display: block; }
+
+tabular {
+display: table
+}
+
+tr {
+display: table-row
+}
+
+
+td {
+display: table-cell
+}
+
+td[lines="none"] {
+  border-style: none;
+}
+
+td[lines="solid"] {
+  border-style: solid;
+}
+
+td[lines="double"] {
+  border-style: double;
+}
+
+td[line-top="none"] {
+  border-top-style: none;
+}
+
+td[line-top="solid"] {
+  border-top-style: solid;
+}
+
+td[line-top="double"] {
+  border-top-style: double;
+}
+
+td[line-right="none"] {
+  border-right-style: none;
+}
+
+td[line-right="solid"] {
+  border-right-style: solid;
+}
+
+td[line-right="double"] {
+  border-right-style: double;
+}
+
+td[line-bottom="none"] {
+  border-bottom-style: none;
+}
+
+td[line-bottom="solid"] {
+  border-bottom-style: solid;
+}
+
+td[line-bottom="double"] {
+  border-bottom-style: double;
+}
+
+td[line-left="none"] {
+  border-left-style: none;
+}
+
+td[line-left="solid"] {
+  border-left-style: solid;
+}
+
+td[line-left="double"] {
+  border-left-style: double;
+}
+
+texb {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#texb");
+}
+
+xref {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#xref");
+}
+
+printindex {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#printindex");
+}
+
+minpasses {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#minpasses");
+}
+
+indexitem {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#indexitem");
+}
+
+latexstyleb {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#latexstyleb");
+}
+
+a[name]{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#label");
+}
+
+latexstyleb { 
+  color: red;
+  -moz-appearance: button;
+  padding: 2px 10px;
+  min-width: 6.3em;
+  border: 3px solid;
+  -moz-border-top-colors: transparent ThreeDHighlight ThreeDLightShadow;
+  -moz-border-right-colors: transparent ThreeDDarkShadow ThreeDShadow;
+  -moz-border-bottom-colors: transparent ThreeDDarkShadow ThreeDShadow;
+  -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
+  background-color: ThreeDFace;
+  -moz-user-select: all;	  
+}
+
+xref {
+  content: attr(key);
+  -moz-appearance: button;
+}
+
+requestimplementation {
+  -moz-appearance: button;
+  color: brown;
+  font-size: 12pt;
+  border: 1px solid;
+  padding: 1px 2px;
+  min-width: 6.3em;
+  font-size: 10pt;
+}
+
+
+requestimplementation:before {content: "Support Me: "}
+
+											
+styledata {
+  display: none;
+}
+
+											
+styleprop {
+  -moz-user-select: all;
+}
+
+preamble{
+  display: none;
+}
+
+/* We make the refprint... tags invisible on the screen, but we want to make
+ them visible in print.  TODO */
+
+refprintleft {
+  display: none;
+}
+
+refprintright {
+  display: none;
+}
+
+img {
+  -moz-force-broken-image-icon: 1;
+  min-height: 6px; min-width: 6px;
+}
+
+graphSpec {
+  display: none;
+}  
+
+upper {
+  text-transform: uppercase;
+}
+  
+lower {
+  text-transform: lowercase;
+}
+  
+otfont {
+  display: inline;
+}
+
+/* show footnotes by default*/
+note[type="footnote"], node[type="footnote"][hide="false"] {
+  display: block;
+  float: left;
+  width: 100%;
+  clear: right;
+}
+
+/* never show footnotes marked 'hide'*/
+note[hide="true"] {
+  display: none !important;
+} 
+
+
+/* display footnotes marked 'hide=false' even when 'hideFootnotes=true'
+*[hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block !important;
+}
+*/
+
+*[hideOtherNotes="true"] note[type="footnote"] {
+  display: block !important;
+}
+
+*[hideOtherNotes="true"] note[type="footnote"] {
+  display: block !important;
+}
+
+*[hideFootnotes="true"] note[type="footnote"] {
+  display: none;
+}
+
+*[hideOtherNotes="true"] note {
+  display: none !important;
+}
+
+*[hideOtherNotes="true"][hideFootnotes="true"] note[type="footnote"] {
+  display: none !important;
+}
+
+*[hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block;
+}
+
+*[hideOtherNotes="true"] note[hide="false"] {
+  display: block !important;
+}
+
+*[hideOtherNotes="true"][hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block !important;
+}
+
+note[type="footnote"] {
+  margin: 1px 0;
+  border-width: 1px 0;
+  border-color: blue;
+  border-style: solid;
+  color: blue;
+}	 
+
+notewrapper[type="footnote"]:before { 
+  content: counter(ftnotectr);
+  vertical-align: super;
+  font-size: small;
+  color: red;
+  display: inline;
+  -moz-user-modify: read-only;
+  -moz-user-select: text;
+} 
+
+notewrapper[type="footnote"][markOrText="textOnly"]:before {
+  content: none !important;
+}
+
+notewrapper[type="footnote"][markOrText="markOnly"] > note {
+  display: none !important;
+}
+
+notewrapper[type="footnote"]{ 
+  counter-increment: ftnotectr;
+}
+
+notewrapper[type="footnote"][footnoteNumber]:before {
+  content: attr(footnoteNumber);
+}
+
+notewrapper[type="footnote"][footnoteNumber], notewrapper[type="footnote"][markOrText="textOnly"] {
+  counter-increment: none !important;
+}
+
+notewrapper {
+  display: inline;
+}
+
+note {
+  margin: 0px 20px;
+  border-width: 1px;
+  border-color: red;
+  border-style: solid;
+  display: block;
+  color: red;
+  float: right;
+  width: 3in
+}
+
+
+
+drop {
+  float: left;
+  font-size: 4.2em;
+  line-height: .7;
+  padding-top: .08em;
+}
+
+marker {
+  background-color: gray;
+}
+
+marker:before {
+  content: "[Marker: " attr(id) "]";
+  -moz-user-modify: read-only;
+}
+
+
+
+IncludeSubdoc {
+  display: block;
+  background-color: gray;
+}
+
+IncludeSubdoc:before {
+  content: "Include: "
+}
+
+IncludeSubdoc>TeX {
+  display: none;
+}
+
+
+button [class="frontmattertag"] {
+  position: absolute;
+  left: -160px;
+  font-family: sans-serif;
+  font-style: normal;
+}
+
+button [class="msi"] {
+  font-family: sans-serif;
+  font-style: normal;
+}
+
+button[class="msi"]::-moz-selection {
+  background-color: blue;
+}
+
+/* texb, makelof, makelot, maketitle, maketoc{
+  font-family: sans-serif;
+  font-style: normal;
+} */
+
+mml|menclose {
+  min-width: 1em;
+  min-height: 1.5ex
+}
+
+mml|menclose[notation] {
+  border-style : solid;
+  border-width : thin;
+  border-color : black
+}
+
+mml|menclose[notation~="box"][type="fbox"] {
+  padding : 4px
+}
+
+mml|menclose[notation~="roundedbox"] {
+  padding : 0.5ex 0.4em;
+  -moz-border-radius : 0.5em
+}
+
+mml|menclose[notation~="circle"] {
+  padding : 0.8ex 0.4em;
+  -moz-border-radius : 100%
+}
+
+*[hideIndexEntries="true"] indexitem {
+  display: none;
+}
+
+*[hideindexentries="true"] indexitem {
+  display: none;
+}
+
+*[hidemarkers] a[key] {
+  display: none !important;
+}
+
+*[hideMarkers] a[key] {
+  display: none !important;
+}
+
+
+*[hideHelperLines="true"] mml|mtd {
+  border-style : none;
+}
+
+mml|mtd {
+  border-width: 0 1px 1px 0;
+  border-style: solid;
+}
+
+mml|mtr > mml|mtd:first-child {
+  border-left-width: 1px;
+}
+
+  
+mml|mtr:first-child > mml|mtd {
+  border-top-width: 1px;
+}
+
+[hideInputBoxes="true"] mml|*[tempinput="true"] {
+  visibility: hidden;
+}
+
+
+citation {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#citation");
+}
+
+bibtexbibliography {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibtexbibliography");
+}
+
+bibliography {
+  list-style-type: none;
+  list-style-position: outside;
+  counter-reset: bibliographylist;
+}
+
+bibitem {
+  counter-increment: bibliographylist;
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitem");
+}
+
+bibitem[hasLabel="true"] {
+  counter-increment: none;
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
+}
+
+bibitem > biblabel+bodyText {
+  display: inline;
+}
+
+shortTitle {
+  display: none;
+}
+
+msiframe {
+  display: block;
+}
+
+msiframe[pos="inline"] {
+  display: inline-block;
+}
+
+msiframe[captionloc]
+{
+  display: table;
+}
+
+msiframe[captionloc][pos="inline"] {
+  display: inline-table;
+}
+
+msiframe[captionloc] > object {
+  display: table-row;
+}
+
+msiframe[captionloc="above"] > imagecaption {
+  display: table-caption;
+  caption-side: top;
+}
+
+msiframe[captionloc="below"] > imagecaption {
+  display: table-caption;
+  caption-side: bottom;
+}
+
+a:link, xref, xref button {
+  cursor: pointer !important;
+}
