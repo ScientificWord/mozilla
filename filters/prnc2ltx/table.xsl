@@ -614,6 +614,7 @@
   <xsl:choose>
     <xsl:when test="$theCell//*[contains($envList, concat('__',local-name(),'__'))]">1</xsl:when>
     <xsl:when test="$theCell//*[contains($paraList, concat('__',local-name(),'__'))][following-sibling::*]">1</xsl:when>
+    <xsl:when test="$theCell//html:br[following-sibling::*]">1</xsl:when>
     <xsl:otherwise>0</xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -743,7 +744,11 @@
       <xsl:variable name="minParaWidth">
         <xsl:for-each select="$theCell//*[local-name()='img' or local-name()='object']">
           <xsl:sort select="number(@width)" data-type="number" order="descending" />
-          <xsl:if test="position()=1"><xsl:value-of select="2.1 + number(@width)"/></xsl:if>  <!-- 2.8mm = 8pt -->
+          <xsl:if test="position()=1">
+            <xsl:call-template name="convertSizeSpecsToMM">
+              <xsl:with-param name="theSpec" select="number(@width) + 2" />
+            </xsl:call-template>
+          </xsl:if>
         </xsl:for-each>
       </xsl:variable>
       <xsl:choose>
