@@ -71,11 +71,12 @@ string MuPADPlotWrapper::SemanticsToString (MuPADWrapper * const mpw, PlotServic
 
 
 char *MuPADPlotWrapper::CreatePLOTFUNCeStr(MuPADWrapper * const mpw, PlotServiceRequest * psr,
-                                       const char *eng_zstr, int& error_code) {
+                                       const char *eng_zstr, const char* plotfilename, int& error_code) {
   error_code = 0;
   string ptype = MuPADPlotWrapper::CreatePlotString (*psr, 1, "PlotType", error_code);
   string cmd = "plot(";
   string camstr = "@camera@";
+  string filename = plotfilename;
 
   MuPADPlot *plot = new MuPADPlot (mpw, psr, 1);  
   camstr = plot->ToString(camstr);
@@ -93,6 +94,8 @@ char *MuPADPlotWrapper::CreatePLOTFUNCeStr(MuPADWrapper * const mpw, PlotService
     cmd += plot->ToString(plotstr);
     delete plot;
   }
+  if (filename.length() > 0)
+    cmd += ", OutputFile = \"" + filename + "\"";
   cmd += ")";
   
   // << "\n\nSMR Final CMD is " << cmd << "\n" << endl;

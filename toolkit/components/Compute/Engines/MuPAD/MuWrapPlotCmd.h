@@ -24,7 +24,7 @@ public:
 
   static string    CreatePlotString(PlotServiceRequest & psr, U32 plot_no, const char *str_key, int & error_code);
   static char*     CreatePLOTQueryeStr(MuPADWrapper * const mpw, PlotServiceRequest * psr, const char *eng_zstr, int& error_code);
-  static char*     CreatePLOTFUNCeStr(MuPADWrapper * const mpw, PlotServiceRequest * psr, const char *eng_zstr, int& error_code);
+  static char*     CreatePLOTFUNCeStr(MuPADWrapper * const mpw, PlotServiceRequest * psr, const char *eng_zstr, const char* plotfilename, int& error_code);
   static string    SemanticsToString (MuPADWrapper * const mpw, PlotServiceRequest &psr, U32 plot_no, const char *str_key, int & error_code);
   static int       CheckCmdString (char * cmd);
 
