@@ -830,10 +830,10 @@ Frame.prototype = {
 //              this.setFrameAttribute("Width", DOMPw.getAttribute(att));
 //              break;
             case "border-color":
-              this.setFrameAttribute("borderColor", DOMPw.getAttribute(att));
+              this.setFrameAttribute("borderColor", hexcolor(DOMPw.getAttribute(att)));
               break;
             case "background-color":
-              this.setFrameAttribute("BGColor", DOMPw.getAttribute(att));
+              this.setFrameAttribute("BGColor", hexcolor(DOMPw.getAttribute(att)));
               break;
             default: break;
           }
@@ -924,10 +924,10 @@ Frame.prototype = {
           editor.setAttribute(DOMFrame, "units", units);
           break;
         case "BGColor":
-          editor.setAttribute(DOMPw, "background-color", cssColor(this.getFrameAttribute(att)));
+          editor.setAttribute(DOMPw, "background-color", hexcolor(this.getFrameAttribute(att)));
           break;
         case "borderColor":
-          editor.setAttribute(DOMPw, "border-color", cssColor(this.getFrameAttribute(att)));
+          editor.setAttribute(DOMPw, "border-color", hexcolor(this.getFrameAttribute(att)));
           break;
         case "placement":
           editor.setAttribute(DOMFrame, "pos", this.getFrameAttribute(att));

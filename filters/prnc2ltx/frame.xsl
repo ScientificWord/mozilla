@@ -93,19 +93,21 @@
 <xsl:otherwise> -->
 <xsl:if test="@rotation='rot90'">\begin{turn}{-90}</xsl:if>
 <xsl:if test="@rotation='rot270'">\begin{turn}{90}</xsl:if>
-\fcolorbox<xsl:if test="@border-color"><xsl:choose
- 	><xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"
-  /></xsl:when
-	><xsl:otherwise>{<xsl:value-of select="./@border-color"/></xsl:otherwise
-  ></xsl:choose
-  >}</xsl:if><xsl:if test="not(@border-color)">{white}</xsl:if>
-<xsl:if test="@background-color">{<xsl:choose
- 	><xsl:when test="substring(./@background-color,1,1)='#'"><xsl:value-of select="translate(substring(./@background-color,2,8),'abcdef','ABCDEF')"
-	/></xsl:when
-	><xsl:otherwise><xsl:value-of select="./@background-color"/></xsl:otherwise
-  ></xsl:choose
-  >}</xsl:if><xsl:if test="not(@background-color)">{white}</xsl:if
->{\begin{minipage}[t]<xsl:if test="@height and not(@height='0')">[<xsl:value-of select="@height"/><xsl:value-of select="$units"/>]</xsl:if
+<xsl:if test="@border-color or @background-color">
+  \fcolorbox<xsl:if test="@border-color"><xsl:choose
+   	><xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"
+    /></xsl:when
+  	><xsl:otherwise>{<xsl:value-of select="./@border-color"/></xsl:otherwise
+    ></xsl:choose
+    >}</xsl:if><xsl:if test="not(@border-color)">{#FFFFFF}</xsl:if>
+  <xsl:if test="@background-color">{<xsl:choose
+   	><xsl:when test="substring(./@background-color,1,1)='#'"><xsl:value-of select="translate(substring(./@background-color,2,8),'abcdef','ABCDEF')"
+  	/></xsl:when
+  	><xsl:otherwise><xsl:value-of select="./@background-color"/></xsl:otherwise
+    ></xsl:choose
+    >}</xsl:if><xsl:if test="not(@background-color)">{white}</xsl:if>
+  </xsl:if>
+{\begin{minipage}[t]<xsl:if test="@height and not(@height='0')">[<xsl:value-of select="@height"/><xsl:value-of select="$units"/>]</xsl:if
 >{<xsl:choose><xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="$width"/></xsl:when><xsl:otherwise><xsl:value-of select="$width"/></xsl:otherwise></xsl:choose><xsl:value-of select="$units"/>} %
 <xsl:choose><xsl:when test="@textalignment='center'">\begin{centering}</xsl:when>
   <xsl:when test="@textalignment='justify'"></xsl:when>

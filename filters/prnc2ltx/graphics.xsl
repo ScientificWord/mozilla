@@ -8,18 +8,6 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
-  <xsl:variable name="bordercolor">
-    <xsl:if test="@border-color">{\color    
-      <xsl:choose>
-        <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{
-          <xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}
-        </xsl:when>
-        <xsl:otherwise>{black}</xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
-  </xsl:variable>
-  
   <xsl:template name="buildincludegraphics"><xsl:variable name="theUnit"><xsl:call-template name="unit"/></xsl:variable><xsl:variable name="imageWidth"><xsl:call-template name="getImageWidth"><xsl:with-param name="objNode" select="."/></xsl:call-template></xsl:variable>
   \includegraphics[<xsl:if test="@rot">angle=<xsl:value-of select="@rot"/>,</xsl:if>
   <xsl:if test="number($imageWidth) != 0"> width=<xsl:value-of select="$imageWidth"/>
@@ -90,7 +78,9 @@
 <xsl:value-of select="$theUnit"/>}
     <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/>
 <xsl:value-of select="$theUnit"/>}</xsl:if>
-<xsl:value-of select="$bordercolor"/>
+    <xsl:if test="@border-color">{\color    
+      <xsl:choose><xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}</xsl:when><xsl:otherwise>{black}</xsl:otherwise></xsl:choose>
+</xsl:if>
     \framebox{
   </xsl:if>
     <xsl:call-template name="buildincludegraphics"/>
@@ -144,11 +134,9 @@
     </xsl:if>
   </xsl:template>
   <xsl:template match="html:caption">\caption{<xsl:apply-templates/>}</xsl:template>
-  
   <xsl:template match="html:imagecaption" mode="caption">
     <xsl:apply-templates/>
   </xsl:template>
-  
   <xsl:template name="getImageWidth">
     <xsl:param name="objNode"/>
     <xsl:param name="noZero" select="false"/>
@@ -200,14 +188,34 @@
   <!-- plotwrapper section. Plotwrappers do not have a placement information (they will frequently be inside an msiframe, which takes
     care of that). They do not have margins (that's done by the frame's padding). They do have borders, background color, and padding. They
     are also given a size. -->
-  <xsl:template match="html:plotwrapper">
-    <xsl:choose>   
-      <xsl:when test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:call-template name="unit"/>} 
-      </xsl:when>
+  <xsl:template match="html:plotwrapper">pw
+    <xsl:choose>
+      <xsl:when test="@borderw">\setlength\fboxrule{<xsl:value-of select="@borderw"/><xsl:value-of select="@units"/>} </xsl:when>
       <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
     </xsl:choose>
-    
-    <xsl:apply-templates/>
+    <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>} </xsl:if>
+    <xsl:if test="@border-color or @background-color"> \fcolorbox
+      <xsl:if test="@border-color">
+        <xsl:choose>
+          <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}
+          </xsl:when>
+          <xsl:otherwise>{<xsl:value-of select="./@border-color"/>}
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+      <xsl:if test="not(@border-color)">{white}</xsl:if>
+      <xsl:if test="@background-color">
+        <xsl:choose>
+          <xsl:when test="substring(./@background-color,1,1)='#'">{<xsl:value-of select="translate(substring(./@background-color,2,8),'abcdef','ABCDEF')"/>}
+          </xsl:when>
+          <xsl:otherwise>{<xsl:value-of select="./@background-color"/>}</xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+      <xsl:if test="not(@background-color)">{white}</xsl:if>
+      {<xsl:apply-templates/>}
+    </xsl:if>
+    <xsl:if test="not (@border-color or @background-color)">
+      <xsl:apply-templates/>
+    </xsl:if>
   </xsl:template>
-  
 </xsl:stylesheet>

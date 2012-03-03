@@ -4325,7 +4325,7 @@ function MarkSelection(editor)
         node.data = data;
       }
       else {
-        var t = EditorUtils.getCurrentDocument().createTextNode(kBGBGBG);
+        var t = editor.document.createTextNode(kBGBGBG);
         gDummySelectionEndNode = t;
         endContainer.insertBefore(t, node.nextSibling);
       }
