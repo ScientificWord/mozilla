@@ -727,20 +727,26 @@ function setWidthAndHeight(width, height, event)
     Dg.autoWidthCheck.checked = false;
   }
   else
+  {
     Dg.autoWidthCheck.checked = true;
+    Dg.constrainCheckbox.checked = true;
+  }
   if (Number(height) > 0)
   {
     Dg.heightInput.value = height;
     Dg.autoHeightCheck.checked = false;
   }
   else
+  {
     Dg.autoHeightCheck.checked = true;
+    Dg.constrainCheckbox.checked = true;
+  }
   if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
     constrainProportions( "frameWidthInput", "frameHeightInput", event );
   else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
     constrainProportions( "frameHeightInput", "frameWidthInput", event );
-	if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
-	if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
+//	if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
+//	if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
 }
 
 function setContentSize(width, height)  
@@ -1123,20 +1129,20 @@ function constrainProportions( srcID, destID, event )
     // which is kind of funky if you change one number without the constrain
     // and then turn constrain on and change a number
     // I prefer the old strategy (below) but I can see some merit to this solution
-      if (srcID == "frameWidthInput")
-        destElement.value = unitRound( srcElement.value * gActualHeight / gActualWidth );
-      else
+      if (srcID == "frameHeightInput")
         destElement.value = unitRound( srcElement.value * gActualWidth / gActualHeight );
+      else
+        destElement.value = unitRound( srcElement.value * gActualHeight / gActualWidth );
     }
   }
   else  //not a graphic - use the other strategy, as there's no natural width
   {
     // With this strategy, the width and height ratio
     //   can be reset to whatever the user entered.
-    if (srcID == "frameWidthInput")
-      destElement.value = unitRound( srcElement.value * gConstrainHeight / gConstrainWidth );
-    else
+    if (srcID == "frameHeightInput")
       destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
+    else
+      destElement.value = unitRound( srcElement.value * gConstrainHeight / gConstrainWidth );
   }
   setContentSize(frameUnitHandler.getValueAs(Dg.widthInput.value,"px"), frameUnitHandler.getValueAs(Dg.heightInput.value,"px"));
 }
