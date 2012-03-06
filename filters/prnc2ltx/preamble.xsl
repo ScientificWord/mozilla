@@ -70,7 +70,7 @@
 
 <xsl:template match="html:preamble">
 <xsl:text>%% preamble
-\usepackage{amssymb,amsmath}
+\usepackage{amssymb,amsmath,xcolor,graphicx}
 </xsl:text>
 <xsl:if test="$compiler='xelatex'">
 \usepackage{xltxtra}
@@ -101,10 +101,10 @@
   <!-- xsl:call-template name="generateMissingNewTheorems" / -->
   <xsl:call-template name="writeNewTheoremList" />
 
-<!--put this in only if graphicx is used-->
-  <xsl:if test="$packagelist//*[@package='graphicx']">
+<!--put this in only if graphicx is used, which, now, it always is-->
+  <!-- <xsl:if test="$packagelist//*[@package='graphicx']"> -->
   \graphicspath{{../tcache/}{../gcache/}{../graphics/}}
-  </xsl:if>
+  <!-- </xsl:if> -->
   <xsl:apply-templates/>
 </xsl:template>
 

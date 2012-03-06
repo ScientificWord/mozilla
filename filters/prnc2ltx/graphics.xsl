@@ -188,7 +188,7 @@
   <!-- plotwrapper section. Plotwrappers do not have a placement information (they will frequently be inside an msiframe, which takes
     care of that). They do not have margins (that's done by the frame's padding). They do have borders, background color, and padding. They
     are also given a size. -->
-  <xsl:template match="html:plotwrapper">pw
+  <xsl:template match="html:plotwrapper">
     <xsl:choose>
       <xsl:when test="@borderw">\setlength\fboxrule{<xsl:value-of select="@borderw"/><xsl:value-of select="@units"/>} </xsl:when>
       <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
