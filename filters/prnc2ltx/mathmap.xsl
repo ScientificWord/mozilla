@@ -1483,12 +1483,6 @@
             <xsl:text xml:space="preserve">\geqq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2268;'">
-            <xsl:text xml:space="preserve">\lneq </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x2268;'">
-            <xsl:text xml:space="preserve">\lneqq </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x2268;'">
             <xsl:text xml:space="preserve">\lvertneqq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2269;'">

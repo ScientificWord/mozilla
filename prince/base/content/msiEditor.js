@@ -3574,6 +3574,17 @@ function msiEditorCheckEnter(event)
         foundSplittable = (msiGetBaseNodeName(parent.parentNode) == "msidisplay");
         break;
       }
+      else
+      {
+        switch(msiGetBaseNodeName(parent))
+        {
+          case "mtd":
+          //Presumably we don't want to return true for mtable rows or mtables?
+          case "msqrt":
+            foundSplittable = true;
+          break;
+        }
+      }
     }
     dump("In msiEditorCheckEnter, we're in math, and we " + (foundSplittable ? "found" : "didn't find") + " a splittable parent.\n");
     if (foundSplittable)
