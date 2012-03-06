@@ -898,9 +898,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
     default:
       dump("Unknown compute command. (" + cmd + ")\n");
       return;
-} 
-  editor.endTransaction();
-} }
+    } 
+    editor.endTransaction();
+  }
+}
 
 function doGlobalComputeCommand(cmd, editorElement)
 {
@@ -1013,12 +1014,39 @@ function vcamToolbarFromPlugin(obj)
   }
 }
 
-function makeSnapshotPath( object )
+function makeSnapshotPath( object)
 {
+  var extension;
+//  var graph, gslist, animated, dimension;
+//  if (extension == null) {
+//    graph = msiFindParentOfType( object, "graph");
+//    gslist = graph.getElementsByTagName("graphSpec");
+//    if (gslist.length > 0) {
+//      gslist = gslist[0];
+//    }
+//    extension = "png";
+//    if (gslist) {
+//      dimension = gslist.getAttribute("Dimension");
+//      animated = gslist.getAttribute("Animate");
+//      if (animated == "true") {
+//        extension = "avi";
+//      } else if (dimension == 3) {
+//        extension = "png";
+//      } else if (dimension == 2) {
+//        extension = "svg";
+//      }
+//    }    
+//  }
+  if ( getOS(window) == "win") {
+    extension = "bmp";
+  }
+  else {
+    extension = "png";
+  }
   try {
     var path = object.data;
     path = path.replace(/\/plots\//,'/graphics/');
-    path = path.replace(/xv[cz]$/,'png');  //BBM: what about Windows?
+    path = path.replace(/xv[cz]$/,extension);  
     path = path.slice(7); // take off leading 'file://'.
   }
   catch(e) {
@@ -1064,9 +1092,30 @@ function insertSnapshot( object, snapshotpath )
   }
 }
 
-function makeSnapshot(obj) {
+function makeSnapshot(obj, graph, editorElement) {
   var path = makeSnapshotPath(obj);
-  obj.makeSnapshot(path,300); //BBM come back to use preferences
+  var prefs;
+  var res;
+  try {
+    prefs = GetPrefs();
+    res = prefs.getIntPref("swp.GraphicsSnapshopRes");
+  }
+  catch(e){
+    res = 300;
+  }
+  if (graph == null) {
+    graph = new Graph();
+    DOMGraph = msiFindParentOfType( obj, "graph");
+    gslist = DOMGraph.getElementsByTagName("graphSpec");
+    if (gslist.length > 0) {
+      gslist = gslist[0];
+    }
+    graph.extractGraphAttributes(DOMGraph);
+  }
+  if (editorElement == null) {
+    editorElement = msiGetActiveEditorElement();
+  }
+  obj.makeSnapshot(path, res);
   insertSnapshot( obj, path );
 }
 
@@ -1117,7 +1166,7 @@ function doVCamCommandOnObject(obj, cmd, editorElement)
         obj.cursorTool = "zoomOut";
         break;
       case "cmd_vcSnapshot":
-        makeSnapshot(obj);
+        makeSnapshot(obj, null, editorElement);
         break;
       case "cmd_vcAutoSpeed":
         dump("cmd_vcAutoSpeed not implemented");
@@ -1200,7 +1249,7 @@ function doVCamPreInitialize(obj, graph)
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     var domGraph = editor.getElementOrParentByTagName("graph", obj);
-    if (obj.addEvent) {
+    if (obj.addEvent) {  // && obj.readyState()===2
       obj.addEvent('leftMouseDown', onVCamMouseDown);
       obj.addEvent('leftMouseUp', onVCamMouseUp);
       obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
@@ -1208,7 +1257,7 @@ function doVCamPreInitialize(obj, graph)
       obj.addEvent('dragLeave', (function() {}));
       obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
       obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
-      makeSnapshot(obj);
+      makeSnapshot(obj, graph, editorElement);
       clearInterval(intervalId);
     }
   },200);
@@ -1231,7 +1280,6 @@ function doVCamCommand(cmd)
 {
 	VCamCommand(cmd);
 }
-
 
 function doVCamInitialize(obj)
 {
@@ -1291,7 +1339,6 @@ function doVCamInitialize(obj)
   }
   vcamToolbarFromPlugin(obj);
 }
-
 
 function showAnimationTime(obj)
 {
@@ -1417,8 +1464,6 @@ function GetRHS(math)
   return math;
 }
 
-
-
 function isAChildOf(node, parent)
 {
   while (node) {
@@ -1430,7 +1475,6 @@ function isAChildOf(node, parent)
   }
   return false;
 }
-
 
 function isEqualSign(node)
 {
@@ -1479,7 +1523,6 @@ function  FindRightEndOfSide(mathElement, leftEnd)
    return rightEnd;
 }
 
-
 function CloneTheSide(mathElement, leftEnd, rightEnd)
 {
   var mathout = mathElement.cloneNode(false);
@@ -1503,7 +1546,6 @@ function GetASide(mathElement, editorElement)
   var mathOut = CloneTheSide(mathElement, leftEnd, rightEnd);
   return mathOut;
 }
-
 
 //SLS for unknown reasons, get parsing error if text is at outer level
 function insertLabeledXML(editor, text, node, offset)
@@ -1535,7 +1577,6 @@ function appendResult(result, sep, math, editorElement)
   coalescemath(editorElement);
 }
 
-
 function GetOffset(math, node)
 {
   var i = 1;
@@ -1546,7 +1587,6 @@ function GetOffset(math, node)
   }
   return i;
 }
-
 
 function insertResult(result, sep, mathElement, editorElement, rightEnd)
 {
@@ -1560,7 +1600,6 @@ function insertResult(result, sep, mathElement, editorElement, rightEnd)
 
   coalescemath(editorElement);
 }
-
 
 function appendLabel(label,math,editorElement)
 {
@@ -1601,7 +1640,7 @@ function appendLabeledResult(result, label, math, editorElement)
   editor.insertHTML(result);
   editor.insertHTML(postStr);
   
-  }
+}
 
 function appendTaggedResult(result,label,body,index,editorElement)
 {
@@ -1638,7 +1677,6 @@ function GetFixedMath(math)
 {
   return runFixup(GetMathAsString(math));
 }
-
 
 function doLabeledComputation(math, vars, op, labelID, editorElement)
 {
@@ -1687,7 +1725,6 @@ function doLabeledComputation(math, vars, op, labelID, editorElement)
   RestoreCursor(editorElement);
 }
 
-
 function doScalarPotential(math, op, labelID, editorElement)
 {
   var mathstr = GetFixedMath(GetRHS(math));
@@ -1709,7 +1746,6 @@ function doScalarPotential(math, op, labelID, editorElement)
   }
   RestoreCursor(editorElement);
 }
-
 
 function CloneTheRange(mathElement, r, editorElement)
 {
@@ -1947,7 +1983,6 @@ function doComputeCheckEquality(math, editorElement)
   //doLabeledComputation(math, eng.Check_Equality, "CheckEquality.fmt", editorElement);
 }
 
-
 function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler)
 {
   var mathstr = GetFixedMath(math);
@@ -1999,7 +2034,6 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler)
 //    } 
   } 
 }
-
 
 function doComputeSolveInteger(math, vars, editorElement, cmd, cmdHandler)
 {
@@ -2232,7 +2266,6 @@ function doComputeRoots(math, vars, editorElement, cmd, cmdHandler)
       msiComputeLogger.Exception(ex);
 } } }
 
-
 function doComputeSort(math, vars, editorElement, cmd, cmdHandler)
 {
   if (!editorElement)
@@ -2403,7 +2436,6 @@ function finishComputeIterate(editorElement, o)
   RestoreCursor(editorElement);
 }                                                                                    
 
-							                                                                                   
 function doComputeImplicitDiff(math, editorElement, cmdHandler)
 {
   if (!editorElement)
@@ -2438,7 +2470,6 @@ function finishComputeImplicitDiff(math, editorElement, o)
   }
   RestoreCursor(editorElement);
 }
-
 
 function doComputeSolveODEExact(math, labelID, titleID, vars, editorElement, cmd, cmdHandler)
 {
@@ -2485,7 +2516,6 @@ function doComputeSolveODEExact(math, labelID, titleID, vars, editorElement, cmd
     } else {
       msiComputeLogger.Exception(ex);
 } } }
-
 
 function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, cmd, cmdHandler)
 {
@@ -2538,10 +2568,6 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
       msiComputeLogger.Exception(ex);
 } } }
 
-
-
-
-
 function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, cmd, cmdHandler)
 {
   var mathstr = GetFixedMath(math);
@@ -2593,7 +2619,6 @@ function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, c
     } 
   } 
 }
-
 
 function doComputeSolveODESeries(math, editorElement)
 {
@@ -3358,7 +3383,6 @@ function doComputePassthru(editorElement)
   }
   RestoreCursor(editorElement);
 }
-
 
 // "math" is the expression to plot
 // "type" is the type from the menu. 

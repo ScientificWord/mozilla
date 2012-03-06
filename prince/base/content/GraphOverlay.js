@@ -29,7 +29,7 @@ Graph.prototype = {
                               "FocalPointX", "FocalPointY", "FocalPointZ", "UpVectorX", "UpVectorY",
                               "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp", 
                               "OrientationTiltTurn"],
-  GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace", "Caption"],
+  GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace"],
   constructor: Graph,
   ser: new XMLSerializer(),
   addPlot: function (plot) {
@@ -841,17 +841,9 @@ Frame.prototype = {
       }
     }
   },
-  createFrameDOMElement: function (editorElement) {
-//    var htmlns = "http://www.w3.org/1999/xhtml";
-//    var editor = msiGetEditor(editorElement);
-//    var DOMPw = document.createElementNS(htmlns, "plotwrapper");
-//    var DOMObj = document.createElementNS(htmlns, "object");
-//    DOMPw.appendChild(DOMObj);
-//    return this.reviseWrapperDOMElement(DOMPw, editorElement);
-  },
   reviseFrameDOMElement: function (DOMFrame, DOMPw, editorElement) {
     var editor = msiGetEditor(editorElement);
-    var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, floatLocation, floattts, fltatt, ch, captionlocation;
+    var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, placeLocation, floattts, fltatt, ch, captionlocation;
     var DOMObj = DOMPw.getElementsByTagName("object")[0];
     var frmStyle = "";
     var pwStyle = "";
@@ -937,8 +929,8 @@ Frame.prototype = {
           frmStyle += "text-align: "+ this.getFrameAttribute(att)+"; ";
           break;
         case "placeLocation":
-          floatLocation = this.getFrameAttribute(att);
-          editor.setAttribute(DOMFrame, "placeLocation", floatLocation);
+          placeLocation = this.getFrameAttribute(att);
+          editor.setAttribute(DOMFrame, "placeLocation", placeLocation);
           break;
         case "captionloc":
           captionlocation = this.getFrameAttribute(att);

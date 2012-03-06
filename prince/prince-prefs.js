@@ -73,10 +73,11 @@ pref("swp.bibtex.dir", "/swp55/TCITeX/BibTeX/bib");
 pref("swp.ctrl.m","math"); // other value is 'toggle'
 pref("swp.ctrl.t","text"); // other value is'toggle'
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
+pref("swp.GraphicsSnapshopRes", 300);
 pref("swp.defaultGraphicsVSize", "2.0");
 pref("swp.defaultGraphicsHSize", "3.0");
 pref("swp.defaultGraphicsSizeUnits", "in");
-pref("swp.defaultGraphicsPlacement", "display,,");
+pref("swp.defaultGraphicsPlacement", "display");
 pref("swp.defaultGraphicsFloatLocation.forceHere", false);
 pref("swp.defaultGraphicsFloatLocation.here", true);
 pref("swp.defaultGraphicsFloatLocation.pageFloats", false);
@@ -98,11 +99,7 @@ pref("swp.graph.HSize", "3.0");
 pref("swp.graph.VSize", "4.5");         
 pref("swp.graph.defaultUnits", "cm");   
 pref("swp.graph.placement", "display"); 
-pref("swp.graph.floatLocation.forceHere", false);
-pref("swp.graph.floatLocation.here", true);
-pref("swp.graph.floatLocation.pageFloats", false);
-pref("swp.graph.floatLocation.topPage", false);
-pref("swp.graph.floatLocation.bottomPage", false);
+pref("swp.graph.placeLocation", "h");  // other choices from LaTeX: subsets of hHptb
 pref("swp.graph.floatPlacement", "I");
 pref("swp.graph.XAxisLabel", "x");       
 pref("swp.graph.XTickCount", "0");      
