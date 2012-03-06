@@ -588,7 +588,7 @@ var msiResizeListener =
       if (obj.length > 0 && obj[0].hasAttribute("msigraph"))
       {
         obj = obj[0];
-        makeSnapshot(obj);
+        makeSnapshot(obj, graph, editorElement);
       }
     }
     catch(e) {

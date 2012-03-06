@@ -938,36 +938,32 @@ function setFrameAttributes(frameNode, contentsNode)
   msiEditorEnsureElementAttribute(contentsNode, "background-color", hexcolor(theColor), editor);
 	msiRequirePackage(gFrameTab.editorElement, "xcolor", "");
   msiEditorEnsureElementAttribute(frameNode, "textalignment", gFrameTab.textAlignment.value, editor);
-	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value, editor)
+	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value, editor);
 //RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
 //      the override for graphics with captions will take effect. See baselatex.css.)
 //  if (document.getElementById("inline").selected)
 //    setStyleAttributeOnNode(frameNode, "display", "inline-block");
 //  else setStyleAttributeOnNode(frameNode, "display", "block");
   // some experimentation here.
-
-  if (posid == "float")
+  if (posid !=='inline') {
+     msiRequirePackage(gFrameTab.editorElement, "boxedminipage", "");
+  }
+  if (posid === "float")
   {
     var placeLocation="";
     var isHere = false;
-    if (gFrameTab.placeForceHereCheck.checked)
-    {
+    if (gFrameTab.placeForceHereCheck.checked) {
       placeLocation += "H";
       isHere = true;
-    }
-    else
-    {
-      if (gFrameTab.placeHereCheck.checked)
-      {
-        placeLocation += "h";
-        isHere = true;
-      }
-      if (gFrameTab.placeFloatsCheck.checked)
-        { placeLocation += "p"}
-      if (gFrameTab.placeTopCheck.checked)
-        { placeLocation += "t"}
-      if (gFrameTab.placeBottomCheck.checked)
-        { placeLocation += "b" }
+    } else if (gFrameTab.placeHereCheck.checked) {
+      placeLocation += "h";
+      isHere = true;
+    } else if (gFrameTab.placeFloatsCheck.checked) {
+      placeLocation += "p";
+    } else if (gFrameTab.placeTopCheck.checked) { 
+      placeLocation += "t";
+    } else if (gFrameTab.placeBottomCheck.checked) {
+      placeLocation += "b";
     }
     msiEditorEnsureElementAttribute(frameNode, "placeLocation", placeLocation, editor);
     if (isHere)
