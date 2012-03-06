@@ -9518,9 +9518,9 @@ var msiNavigationUtils =
       case 'munderover':
       case 'mroot':
 //		  case 'msqrt':  
-		  case 'mtr':
-			case 'mtd':
-		  case 'mtable': 
+//		  case 'mtr':
+//			case 'mtd':
+//		  case 'mtable': 
         return true;
       break;
       case 'mrow':
@@ -9531,12 +9531,12 @@ var msiNavigationUtils =
         if (this.isMathTemplate(singleChild))
           return true;
  				break;
-			case "math":
-				if (node.hasAttribute("display") && node.getAttribute("display")==="block")
-				{
-					return true;
-				}
-      break;
+//			case "math":
+//				if (node.hasAttribute("display") && node.getAttribute("display")==="block")
+//				{
+//					return true;
+//				}
+//      break;
     }
     return false;
   },
@@ -10456,7 +10456,14 @@ var msiNavigationUtils =
       case "mphantom":
       case "msqrt":
       case "menclose":
+      case "mtd":
         return true;
+      break;
+      case "mtable":
+        return (msiGetBaseNodeName(aNode) == "mtr");
+      break;
+      case "mtr":
+        return (msiGetBaseNodeName(aNode) == "mtd");
       break;
       case "hspace":
       case "vspace":
