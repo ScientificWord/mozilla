@@ -256,7 +256,6 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
         
         // let plotqueries be handled by the standard code
         if ((context_cmdtype == CC_PLOTFUNC) && (context_cmdtemplatetype != CT_PLOTQUERY)) {
-          mr->PutResultCode(CR_success);
 //          // convert VCam to filename
 //          // BBM. The file is already a vcam file. We will simply copy it -- a better longterm 
 //          //   solution is for the engine to save it in the right place with the right name 

@@ -13,6 +13,14 @@ var graphnode;
 var plotwrapper;
 var plotArray = [];
 
+function getFirstElementByTagName(node, name) {
+  var  element = node.getElementsByTagName(name);
+  if (element.length > 0) {
+    element = element[0];
+    return element;
+  }
+  return null;
+}
 
 // Populate the dialog with the current values stored in the Graph object.
 // The element ids in ComputeGraphSettings.xul match the Graph attributes
@@ -20,79 +28,93 @@ var plotArray = [];
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
   var plotwrapper, units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
-    plot, editorControl, theStringSource, oldval;
-  var gd = {};
-  graphnode = window.arguments[2];
-  var editorElement = window.arguments[0];
-  graph = new Graph();
-  graph.extractGraphAttributes(graphnode);
-  var frame = graphnode.getElementsByTagName("msiframe");
-  if (frame.length > 0) 
-  {
-    frame = frame[0];
-  }
-  plotwrapper = graphnode.getElementsByTagName("plotwrapper");
-  if (plotwrapper.length>0) 
-  {
-    plotwrapper = plotwrapper[0];
-  }
-  units = graph["Units"];
-  if (!units || units.length === 0) 
-  {
-    units = "cm";
-    graph["Units"] = units;
-  }
-  setHasNaturalSize(false);
-  setCanRotate(false);
-  document.getElementById("role-image").setAttribute("hidden",(gFrameModeImage?"false":"true"));
-//  graph.frame.extractFrameAttributes(frame, plotwrapper);
-  gd = initFrameTab(gd, frame, false, plotwrapper);
+    plot, editorControl, theStringSource, oldval, captionnode, placeLocation;
+  try {
+    var gd = {};
+    graphnode = window.arguments[2];
+    var editorElement = window.arguments[0];
+    graph = new Graph();
+    graph.extractGraphAttributes(graphnode);
+    var frame = getFirstElementByTagName(graphnode,"msiframe");
+    plotwrapper = getFirstElementByTagName(graphnode,"plotwrapper");
+    units = graph["Units"];
+    if (!units || units.length === 0) 
+    {
+      units = "cm";
+      graph["Units"] = units;
+    }
+    setHasNaturalSize(false);
+    setCanRotate(false);
+    document.getElementById("role-image").setAttribute("hidden",(gFrameModeImage?"false":"true"));
+  //  graph.frame.extractFrameAttributes(frame, plotwrapper);
+    gd = initFrameTab(gd, frame, false, plotwrapper);
   
-  alist = graph.graphAttributeList(); 
-  for ( i=0; i<alist.length; i++) { 
-    id = mapid(alist[i]);                      
-    if (document.getElementById(id)) {                    
-      document.getElementById(id).value = graph[alist[i]];         
-    }                                                       
-  } 
-///  return; 
-  plotNumControl    = document.getElementById('plotnumber');
-  numPlots = graph.getNumPlots();
-  if (numPlots ===  0){ 
-    addPlot();
-    numPlots = 1;
-  }
-  plotNumControl.max = numPlots;
-  plotNumControl.valueNumber = 1;
-  firstActivePlot = 0;
-  graph["plotnumber"] = firstActivePlot.toString();
-  plot = graph["plots"][0];
-  graph.currentDisplayedPlot = 0;
-  // some attributes can't be found as values of dialog elements  
-  setColorWell("baseColorWell", plot.attributes["BaseColor"]);  
-  setColorWell("secondColorWell", plot.attributes["SecondaryColor"]);  
-  setColorWell("lineColorWell", plot.attributes["LineColor"]);  
+    alist = graph.graphAttributeList(); 
+    for ( i=0; i<alist.length; i++) { 
+      id = mapid(alist[i]);                      
+      if (document.getElementById(id)) {                    
+        document.getElementById(id).value = graph[alist[i]];         
+      }                                                       
+    } 
+  ///  return; 
+    plotNumControl    = document.getElementById('plotnumber');
+    numPlots = graph.getNumPlots();
+    if (numPlots ===  0){ 
+      addPlot();
+      numPlots = 1;
+    }
+    plotNumControl.max = numPlots;
+    plotNumControl.valueNumber = 1;
+    firstActivePlot = 0;
+    graph["plotnumber"] = firstActivePlot.toString();
+    plot = graph["plots"][0];
+    graph.currentDisplayedPlot = 0;
+    // some attributes can't be found as values of dialog elements  
+    setColorWell("baseColorWell", plot.attributes["BaseColor"]);  
+    setColorWell("secondColorWell", plot.attributes["SecondaryColor"]);  
+    setColorWell("lineColorWell", plot.attributes["LineColor"]);  
+    alist = graph.frame.FRAMEATTRIBUTES; 
+    for ( i=0; i<alist.length; i++) { 
+      id = mapid(alist[i]);                      
+      if (document.getElementById(id)) {                    
+        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);         
+      }                                                       
+    } 
+    placeLocation = graph.frame.getFrameAttribute("placeLocation");
+    document.getElementById("placeForceHereCheck").checked = (placeLocation.search("H") != -1);
+    document.getElementById("placeHereCheck").checked = (placeLocation.search("h") != -1);
+    document.getElementById("placeFloatsCheck").checked = (placeLocation.search("p") != -1);
+    document.getElementById("placeTopCheck").checked = (placeLocation.search("t") != -1);
+    document.getElementById("placeBottomCheck").checked = (placeLocation.search("b") != -1);
+    
   
-  initKeyList();
+    initKeyList();
   
-  editorControl = document.getElementById("plotDlg-content-frame");
-  editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
-  theStringSource = graph.plots[firstActivePlot].element["Expression"];
-  msiInitializeEditorForElement(editorControl, theStringSource, true);
-//  editorControl.makeEditable("html");
-  editorControl = document.getElementById("captionText");
-  editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
-  theStringSource = graph.getGraphAttribute("Caption");
-  if (!theStringSource || theStringSource.length === 0) {
-    theStringSource = "<br temp='1'/>";
-  }
-  msiInitializeEditorForElement(editorControl, theStringSource, true);
-//  editorControl.makeEditable("html");
+    editorControl = document.getElementById("plotDlg-content-frame");
+    editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
+    theStringSource = graph.plots[firstActivePlot].element["Expression"];
+    msiInitializeEditorForElement(editorControl, theStringSource, true);
+  //  editorControl.makeEditable("html");
+    editorControl = document.getElementById("captionText");
+    editorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
+    captionnode = getFirstElementByTagName(graphnode,"imageCaption");
+    if (captionnode) {
+      theStringSource = graph.ser.serializeToString(captionnode);
+      if (!theStringSource || theStringSource.length === 0) {
+        theStringSource = "<br temp='1'/>";
+      }
+    } else (theStringSource = "<br temp='1'/>")
+    msiInitializeEditorForElement(editorControl, theStringSource, true);
+  //  editorControl.makeEditable("html");
 
-  // Caption placement
-  oldval = graph["CaptionPlace"];  
-  radioGroupSetCurrent ("captionplacement", oldval);
-//  checkEnableFloating();
+    // Caption placement
+    oldval = graph["CaptionPlace"];  
+    radioGroupSetCurrent ("captionplacement", oldval);
+  //  checkEnableFloating();
+  }
+  catch(e) {
+    msidump(e.message);
+  }
 }                                                                                            
 // This part pastes data into the editor after the editor has started. 
 // implements nsIObserver

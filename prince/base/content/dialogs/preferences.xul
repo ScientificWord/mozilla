@@ -37,6 +37,9 @@
       <preference id="pdf.viewer"
                   name="swp.prefPDFPath"
                   type="string"/>
+      <preference id="GraphicsSnapshopRes" 
+                  name="swp.GraphicsSnapshopRes" 
+                  type="int"/>
       <preference id="defaultGraphicsHSize" 
                   name="swp.defaultGraphicsHSize" 
                   type="string"/>
@@ -1175,7 +1178,17 @@
               <textbox id="zrangehigh" style="width: 5em;" cols="6" preference="plot.ZMax"/>
             </hbox>
           </groupbox>
-
+          <groupbox>
+            <menulist id="plotresolutions" preference="swp.GraphicsSnapshopRes">
+              <menupopup>
+                <menuitem value="72" label="72"/>
+                <menuitem value="100" label="100"/>
+                <menuitem value="300" label="300"/>
+                <menuitem value="600" label="600"/>
+                <menuitem value="1200" label="1200"/>
+              </menupopup>
+            </menulist>
+          </groupbox>
        </vbox>
       </tabpanel>      
 
