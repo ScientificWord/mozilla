@@ -776,11 +776,11 @@ should not be done under some conditions -->
 <xsl:template match="html:tex"
   >\TeX{}</xsl:template>
 <xsl:template match="html:textquotedblleft"
-  >\textquotedblleft</xsl:template>
+  >\textquotedblleft </xsl:template>
 <xsl:template match="html:textquotedblright"
-  >\textquotedblright</xsl:template>
+  >\textquotedblright </xsl:template>
 <xsl:template match="html:textbackslash"
-  >\textbackslash</xsl:template>
+  >\textbackslash </xsl:template>
 
 <xsl:template match="html:TeXButton">
 <xsl:if test="not(@pre)">

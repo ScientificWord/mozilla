@@ -875,6 +875,10 @@ void AnalyzeMO(MNODE* mml_mo_node,
            op_ilk = POI_curl;
            f_nom = "curl";
            nodes_done = 2;
+        } else if ( (mml_mo_node -> next) && (0 == strcmp(mml_mo_node -> next -> p_chdata, "&#x22c5;") ) ){
+           op_ilk = POI_divergence;
+           f_nom = "div";
+           nodes_done = 2;
         } else {
           f_nom = "grad";
         }

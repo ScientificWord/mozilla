@@ -36,10 +36,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-@import url('css/latex_internal.css');
-@import url('css/baselatex.css');
-@import url('css/latex.css');
-@import url('css/article.css');
+@import url('latex_internal.css');
+@import url('baselatex.css');
+@import url('latex.css');
+@import url('article.css');
 
 math {
   direction: ltr;
