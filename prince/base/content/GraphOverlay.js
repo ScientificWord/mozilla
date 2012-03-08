@@ -727,7 +727,7 @@ Frame.prototype = {
           "HMargin", "VMargin", "padding", "BGColor", "borderColor",
           "placeLocation", "textalignment"],
   FRAMEDOMATTRIBUTES: ["units", "sidemargin", "topmargin", "pos", "placeLocation", "placement",
-    "captionloc", "textalignment"],
+    "captionloc", "textalignment", "req"],
   WRAPPERATTRIBUTES: ["borderw", "padding", "imageheight", "imagewidth", "border-color", "background-color"],
   isModified: function (x) {
     return (this.modFlag[x]);
@@ -849,6 +849,7 @@ Frame.prototype = {
     var pwStyle = "";
     var objStyle = "";
     var unitHandler = new UnitHandler();
+    var needsWrapfig = false;
     try {
       graph = this.parent;
       units = graph.getGraphAttribute("Units");
@@ -922,7 +923,11 @@ Frame.prototype = {
           editor.setAttribute(DOMPw, "border-color", hexcolor(this.getFrameAttribute(att)));
           break;
         case "placement":
-          editor.setAttribute(DOMFrame, "pos", this.getFrameAttribute(att));
+          pos = this.getFrameAttribute(att);
+          editor.setAttribute(DOMFrame, "pos", pos);
+          if (pos === "float") {
+            needsWrapfig = this.getFrameAttribute("floatPlacement") !== "none";
+          }
           break;
         case "textalignment":
           editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
@@ -991,7 +996,7 @@ Frame.prototype = {
       // put the graph file in
       // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use 
       // the load API
-      if (DOMObj.load) {
+      if (false) { //DOMObj.load) {
         DOMObj.load(graph.getGraphAttribute("ImageFile"));
       }
       else {
@@ -1003,6 +1008,9 @@ Frame.prototype = {
         DOMObj.setAttribute("type", "application/x-mupad-graphics+gzip");
       } else if (filetype === "xvc") {
         DOMObj.setAttribute("type", "application/x-mupad-graphics+xml");
+      }
+      if (needsWrapfig) {
+        editor.setAttribute(DOMFrame, "req", "wrapfig");
       }
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");

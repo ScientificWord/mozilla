@@ -1045,9 +1045,8 @@ function makeSnapshotPath( object)
   }
   try {
     var path = object.data;
-    path = path.replace(/\/plots\//,'/graphics/');
+    path = path.replace(/file:[-/[a-z_A-Z0-9.]+\/plots\//,'graphics/');
     path = path.replace(/xv[cz]$/,extension);  
-    path = path.slice(7); // take off leading 'file://'.
   }
   catch(e) {
     msidump(e.message);
@@ -1057,12 +1056,31 @@ function makeSnapshotPath( object)
 
 function insertSnapshot( object, snapshotpath )
 {
-  var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units;
+  var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units,
+    oldpath, file, url;
   parent = object.parentNode;
   objectlist = parent.getElementsByTagName("object");
   for (i = 0; i < objectlist.length; ) {
     element = objectlist[i];
     if (element.hasAttribute("msisnap")) {
+      // remove the snapshot file as well as the object node
+      oldpath = element.data;
+      if (oldpath && oldpath.length > 7) {
+        oldpath = oldpath.slice(7);
+      }
+      file = Components.classes["@mozilla.org/file/local;1"].  
+                           createInstance(Components.interfaces.nsILocalFile);  
+      file.initWithPath(oldpath);
+      if (file.exists())
+      {
+        try {
+          file.remove(false);
+        }
+        catch (e) 
+        {
+          msidump(e.message);
+        }
+      }
       parent.removeChild(element);
     } else {i++;}
   }
@@ -1092,31 +1110,83 @@ function insertSnapshot( object, snapshotpath )
   }
 }
 
-function makeSnapshot(obj, graph, editorElement) {
-  var path = makeSnapshotPath(obj);
-  var prefs;
-  var res;
-  try {
-    prefs = GetPrefs();
-    res = prefs.getIntPref("swp.GraphicsSnapshopRes");
-  }
-  catch(e){
-    res = 300;
-  }
-  if (graph == null) {
-    graph = new Graph();
-    DOMGraph = msiFindParentOfType( obj, "graph");
-    gslist = DOMGraph.getElementsByTagName("graphSpec");
-    if (gslist.length > 0) {
-      gslist = gslist[0];
+
+function buildSnapshotFile(obj, abspath, res)
+{
+  var func = function(abspath, res) {obj.makeSnapshot(abspath, res);}
+  func(abspath, res);
+}
+
+function doMakeSnapshot(obj, graph, editorElement) {
+//  tryUntilSuccessful(200,10, function(){
+//  var intervalId;
+//  var count = 0;
+//  intervalId = setInterval(function() {
+//    if (count >= 10) {
+//      clearInterval(intervalId);
+//      return;
+//    }
+    if (obj.makeSnapshot && obj.readyState === 2) {
+      try {
+        var path = makeSnapshotPath(obj);
+        var abspath;
+        var prefs;
+        var res;
+        var plotWrapper = obj.parentNode;
+        try {
+          prefs = GetPrefs();
+          res = prefs.getIntPref("swp.GraphicsSnapshotRes");
+        }
+        catch(e){
+          res = 300;
+        }
+        if (graph == null) {
+          graph = new Graph();
+          DOMGraph = msiFindParentOfType( obj, "graph");
+          gslist = DOMGraph.getElementsByTagName("graphSpec");
+          if (gslist.length > 0) {
+            gslist = gslist[0];
+          }
+          graph.extractGraphAttributes(DOMGraph);
+        }
+        if (editorElement == null) {
+          editorElement = msiGetActiveEditorElement();
+        }
+        abspath = makeRelPathAbsolute(path, editorElement);
+        plotWrapper.wrappedObj.makeSnapshot (abspath, res);
+        insertSnapshot( obj, path );
+      }
+      catch(e) {
+        msidump(e.message);
+      }
     }
-    graph.extractGraphAttributes(DOMGraph);
+//    count++;
+//  }, 200);
+}
+
+function rebuildSnapshots (doc) {
+  var wrapperlist, objlist, length, objlength, i, regexp, match, name1, name2;
+  var editorElement = msiGetActiveEditorElement();
+  wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
+  length = wrapperlist.length;
+  for (i = 0; i < length; i++)
+  {
+    objlist = wrapperlist[i].getElementsByTagName("object");
+    objlength = objlist.length;
+    if (objlength === 1) {
+      doMakeSnapshot(objlist[0], null, editorElement);
+    }
+    else if (objlength > 1){
+      regexp = /plot\d+/;
+      match = regexp.exec(objlist[0].data);
+      name1 = match[0];
+      match = regexp.exec(objlist[1].data);
+      name2 = match[0];
+      if (name1 !== name2) {
+        doMakeSnapshot(objlist[0], null, editorElement);
+      }
+    }
   }
-  if (editorElement == null) {
-    editorElement = msiGetActiveEditorElement();
-  }
-  obj.makeSnapshot(path, res);
-  insertSnapshot( obj, path );
 }
 
 function doVCamCommandOnObject(obj, cmd, editorElement)
@@ -1166,7 +1236,7 @@ function doVCamCommandOnObject(obj, cmd, editorElement)
         obj.cursorTool = "zoomOut";
         break;
       case "cmd_vcSnapshot":
-        makeSnapshot(obj, null, editorElement);
+        doMakeSnapshot(obj, null, editorElement);
         break;
       case "cmd_vcAutoSpeed":
         dump("cmd_vcAutoSpeed not implemented");
@@ -1240,27 +1310,38 @@ function onVCamDragLeave(x,y)
 {
 }
 
-
-var intervalId;
 function doVCamPreInitialize(obj, graph)
 {
-  
-  intervalId = setInterval(function () {
+  tryUntilSuccessful(200,10, function(){
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     var domGraph = editor.getElementOrParentByTagName("graph", obj);
-    if (obj.addEvent) {  // && obj.readyState()===2
-      obj.addEvent('leftMouseDown', onVCamMouseDown);
-      obj.addEvent('leftMouseUp', onVCamMouseUp);
-      obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
-      obj.addEvent('dragMove', onVCamDragMove);
-      obj.addEvent('dragLeave', (function() {}));
-      obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
-      obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
-      makeSnapshot(obj, graph, editorElement);
-      clearInterval(intervalId);
+    var plotWrapper = obj.parentNode;
+    try {
+      if (obj.addEvent && obj.readyState===2) {   
+        obj.addEvent('leftMouseDown', onVCamMouseDown);
+        obj.addEvent('leftMouseUp', onVCamMouseUp);
+        obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
+        obj.addEvent('dragMove', onVCamDragMove);
+        obj.addEvent('dragLeave', (function() {}));
+        if (graph) {
+          obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
+          obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
+        }
+        // add a method for writing a snapshot
+        var fn = function() {
+          return doMakeSnapshot(obj, graph, editorElement);
+        }
+        plotWrapper.wrappedObj = obj;
+        doMakeSnapshot(obj, editorElement);
+        return true;
+      }
     }
-  },200);
+    catch(e){
+      msidump(e.message);
+    }
+    return false;
+  });
 }
 
 

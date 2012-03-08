@@ -12134,3 +12134,19 @@ function offsetOfChild(parent, child)
 	return offset;
 }
 
+function tryUntilSuccessful(interval, timeout, funct)
+// Try function funct every interval milliseconds until it has run timeout times or funct returns true.
+{
+  var intervalId, count;
+  count = 0;
+  intervalId = setInterval(function () {
+    if (funct()) {
+      clearInterval(intervalId);      
+    } else if (count >= timeout) {
+      clearInterval(intervalId);
+    } else {
+      count++;
+      msidump("A try failed in 'tryUntilSuccessful");
+    }
+  },interval);
+}
