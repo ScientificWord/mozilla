@@ -62,14 +62,14 @@
       <xsl:when test="(html:imagecaption[1]) and (@captionloc='below')">0</xsl:when>
       <!-- <xsl:otherwise></xsl:otherwise> -->
     </xsl:choose>
-</xsl:variable>
+  </xsl:variable>
   <xsl:variable name="usecolor">
     <xsl:choose>
       <xsl:when test="@border-color or @background-color">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="needminipage" select="1"/>
+  <xsl:variable name="needminipage" select="0"/>
 	<xsl:if test="$limitframemetrics=1">{				
     <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/>
       <xsl:value-of select="$units"/>}
@@ -86,11 +86,11 @@
     <xsl:when test="$floatsonside=1">\begin{wrapfigure}
       <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
       <xsl:choose>
-        <xsl:when test="@placement='I'">{i}</xsl:when>
-        <xsl:when test="@placement='O'">{o}</xsl:when>
-        <xsl:when test="@placement='L'">{l}</xsl:when>
-        <xsl:when test="@placement='R'">{r}</xsl:when>
-        <xsl:otherwise>{r}</xsl:otherwise>
+        <xsl:when test="@placement='I'">{I}</xsl:when>
+        <xsl:when test="@placement='O'">{O}</xsl:when>
+        <xsl:when test="@placement='L'">{L}</xsl:when>
+        <xsl:when test="@placement='R'">{R}</xsl:when>
+        <xsl:otherwise>{R}</xsl:otherwise>
       </xsl:choose>
       <xsl:if test="@overhang">[<xsl:value-of select="@overhang"/><xsl:value-of select="$units"/>]</xsl:if>
       {<xsl:choose>
@@ -121,8 +121,8 @@
   </xsl:if>
   <!-- <xsl:apply-templates mode="contents" select="html:object[1]"/> -->
   <xsl:if test="@rotation='rot90'">\begin{turn}{-90}</xsl:if>
-  <xsl:if test="@rotation='rot270'">\begin{turn}{90}</xsl:if>
-{  <xsl:if test="$usecolor=1">\fcolorbox
+  <xsl:if test="@rotation='rot270'">\begin{turn}{90}</xsl:if>{ 
+  <xsl:if test="$usecolor=1">\fcolorbox
     <xsl:if test="@border-color">
       <xsl:choose>
         <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>
@@ -140,7 +140,7 @@
     <xsl:if test="not(@background-color)">{#FFFFFF}</xsl:if>{
   </xsl:if>
   <xsl:if test="$needminipage=1">
-    {\begin{minipage}[t]<xsl:if test="@height and not(@height='0')">[<xsl:value-of select="@height"/><xsl:value-of select="$units"/>]</xsl:if>{
+    {\begin{minipage}[t]{
     <xsl:choose>
       <xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="$width"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="$width"/></xsl:otherwise>

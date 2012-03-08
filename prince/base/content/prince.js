@@ -1186,6 +1186,9 @@ function documentToTeXString(document, xslPath)
   var xsltString = "";
   var strResult = "";
   xsltString = getXSLAsString(xslPath);
+#ifndef PROD_SW
+  rebuildSnapshots(document);
+#endif
 
   var xsltProcessor = new XSLTProcessor();
 

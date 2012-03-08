@@ -727,26 +727,20 @@ function setWidthAndHeight(width, height, event)
     Dg.autoWidthCheck.checked = false;
   }
   else
-  {
     Dg.autoWidthCheck.checked = true;
-    Dg.constrainCheckbox.checked = true;
-  }
   if (Number(height) > 0)
   {
     Dg.heightInput.value = height;
     Dg.autoHeightCheck.checked = false;
   }
   else
-  {
     Dg.autoHeightCheck.checked = true;
-    Dg.constrainCheckbox.checked = true;
-  }
   if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
     constrainProportions( "frameWidthInput", "frameHeightInput", event );
   else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
     constrainProportions( "frameHeightInput", "frameWidthInput", event );
-//	if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
-//	if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
+	if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
+	if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
 }
 
 function setContentSize(width, height)  
@@ -944,7 +938,7 @@ function setFrameAttributes(frameNode, contentsNode)
   msiEditorEnsureElementAttribute(contentsNode, "background-color", hexcolor(theColor), editor);
 	msiRequirePackage(gFrameTab.editorElement, "xcolor", "");
   msiEditorEnsureElementAttribute(frameNode, "textalignment", gFrameTab.textAlignment.value, editor);
-	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value, editor);
+	setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value, editor)
 //RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
 //      the override for graphics with captions will take effect. See baselatex.css.)
 //  if (document.getElementById("inline").selected)
@@ -958,6 +952,7 @@ function setFrameAttributes(frameNode, contentsNode)
   {
     var placeLocation="";
     var isHere = false;
+    var needsWrapfig = false;
     if (gFrameTab.placeForceHereCheck.checked) {
       placeLocation += "H";
       isHere = true;
@@ -980,14 +975,21 @@ function setFrameAttributes(frameNode, contentsNode)
       }
       var floatshort = floatparam.slice(0,1);
       msiEditorEnsureElementAttribute(frameNode, "placement",floatshort, editor);
+      needsWrapfig = true;
       if (floatparam == "I" || floatparam == "L") floatparam = "left";
       else if (floatparam == "O" || floatparam=="R") floatparam = "right";
-			else floatparam = "none";
+			else {
+        floatparam = "none";
+        needWrapfig = true;
+      }
       setStyleAttributeOnNode(frameNode, "float", floatparam, editor);
 	    if (floatparam == "right") side = "Right";
 	    else if (floatparam == "left") side = "Left";
 			else side = null;
-	    if (!gFrameModeImage)
+	    if (needsWrapfig) {
+	      msiEditorEnsureElementAttribute(frameNode, "req", "wrapfig", "");  
+	    }
+      if (!gFrameModeImage)
 	    {
 	      if (side){
           msiEditorEnsureElementAttribute(frameNode, "overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false), editor);
@@ -1125,20 +1127,20 @@ function constrainProportions( srcID, destID, event )
     // which is kind of funky if you change one number without the constrain
     // and then turn constrain on and change a number
     // I prefer the old strategy (below) but I can see some merit to this solution
-      if (srcID == "frameHeightInput")
-        destElement.value = unitRound( srcElement.value * gActualWidth / gActualHeight );
-      else
+      if (srcID == "frameWidthInput")
         destElement.value = unitRound( srcElement.value * gActualHeight / gActualWidth );
+      else
+        destElement.value = unitRound( srcElement.value * gActualWidth / gActualHeight );
     }
   }
   else  //not a graphic - use the other strategy, as there's no natural width
   {
     // With this strategy, the width and height ratio
     //   can be reset to whatever the user entered.
-    if (srcID == "frameHeightInput")
-      destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
-    else
+    if (srcID == "frameWidthInput")
       destElement.value = unitRound( srcElement.value * gConstrainHeight / gConstrainWidth );
+    else
+      destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
   }
   setContentSize(frameUnitHandler.getValueAs(Dg.widthInput.value,"px"), frameUnitHandler.getValueAs(Dg.heightInput.value,"px"));
 }
