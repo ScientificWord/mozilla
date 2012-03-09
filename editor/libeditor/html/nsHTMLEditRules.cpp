@@ -89,6 +89,7 @@
 #include "nsIDOM3Node.h"
 #include "nsIDOMSerializer.h"
 #include "msiISimpleComputeEngine.h"
+#include "jcsDumpNode.h"
 
 
 
@@ -1958,6 +1959,10 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 {
 
   if (!aSelection || !aCancel || !aHandled) { return NS_ERROR_NULL_POINTER; }
+
+  printf("In nsHTMLEditRules::WillDeleteSelection\n");
+  DumpSelection(aSelection);
+
   // initialize out param
   *aCancel = PR_FALSE;
   *aHandled = PR_FALSE;
@@ -2031,6 +2036,10 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     else
       res = wsObj.PriorVisibleNode(startNode, startOffset, address_of(visNode), &visOffset, &wsType);
     if (NS_FAILED(res)) return res;
+
+    printf("In nsHTMLEditRules::WillDeleteSelection. VisNode = \n");
+    DumpNode(visNode, 0, true);
+
   
   //BBM: is this where we can intercept for math objects?
     
@@ -3019,11 +3028,7 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
       PRUint32 dontcare(0);
       PRUint32 mathmltype;
 
-      msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
-      if (editingBC) {
-        mathmltype = msiUtils::GetMathmlNodeType(editingBC);
-      }
-
+      
       nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
 
       nsCOMPtr<nsIDOMNodeList> childList;
@@ -3033,12 +3038,21 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
       childList->GetLength(&numChildren);
 
       if (numChildren == 0){
-        printf("\nNo children");
+        // However, an empty text in the node will not have been counted.
+        // That node could be the one we're looking for
+        printf("\nNo children");        
         editor->DumpNode(node, 2*level, true);
+
+        nsCOMPtr<nsIDOMNode> tmp;
+        caretNode->GetParentNode(getter_AddRefs(tmp));
+        if (node == tmp){
+          done = true;
+          printf("\nReturn sum %d", count);
+          return count;
+        }
       }
 
-      if (node == caretNode){
-    
+      if (node == caretNode){    
          numChildren = caretOffset;
       }
 
@@ -3046,10 +3060,18 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 
       for (int i = 0; i < numChildren; ++i) {
         msiUtils::GetChildNode(node, i, child);
+
+        
+        count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
+
+        msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+        if (editingBC) {
+          mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+        }
+
         if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
           count += 1;  // to distinguish numerator from denominator
         }
-        count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
         if (done)
           break;
       }
@@ -3147,16 +3169,21 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
                                     nsresult aResult)
 {
   if (!aSelection) { return NS_ERROR_NULL_POINTER; }
+
+  nsresult res;
+
+  nsCOMPtr<nsISelection> curSelection;
+  res = mHTMLEditor->GetSelection(getter_AddRefs(curSelection));
   
   // find where we are
   nsCOMPtr<nsIDOMNode> startNode;
   PRInt32 startOffset;
-  nsresult res = mEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  res = mEditor->GetStartNodeAndOffset(curSelection, address_of(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
   
   // See if we're in math
-  /*
+  
   nsCOMPtr<nsIDOMNode> mathNode;
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
@@ -3186,7 +3213,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
      nsCOMPtr<nsIDOMNode> newMath;
      PRInt32 mathOffset;
 
-     res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(parentOfMath), &mathOffset);
+     res = mHTMLEditor->GetStartNodeAndOffset(curSelection, address_of(parentOfMath), &mathOffset);
   
      mHTMLEditor -> InsertHTML(resString);
 
@@ -3210,11 +3237,11 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
         printf("\nOffset = %d\n", theOffset);
 
         nsIDOMRange* range;
-        aSelection->GetRangeAt(0, &range);
+        curSelection->GetRangeAt(0, &range);
 
 
         range->SetStart(theNode, theOffset);
-        aSelection->CollapseToStart();
+        curSelection->CollapseToStart();
      
         //mHTMLEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
@@ -3222,7 +3249,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
      }
      return res;
   }
-  */
+  
 
   // find any enclosing mailcite
   nsCOMPtr<nsIDOMNode> citeNode;

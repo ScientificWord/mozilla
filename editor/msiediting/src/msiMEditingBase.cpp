@@ -20,14 +20,14 @@ msiMEditingBase::msiMEditingBase(nsIDOMNode* mathmlNode,
     {
       nsCOMPtr<nsIDOMNode> nextChild;
       res = currChild->GetNextSibling(getter_AddRefs(nextChild));
-      if (msiUtils::IsWhitespace(currChild))
-      {
-        nsCOMPtr<nsIDOMNode> dontcare;
-        res = m_mathmlNode->RemoveChild(currChild, getter_AddRefs(dontcare));
-        if (m_offset <= LAST_VALID && m_offset > index)
-          m_offset -= 1;
-      }
-      else
+      // if (msiUtils::IsWhitespace(currChild))
+      // {
+      //   nsCOMPtr<nsIDOMNode> dontcare;
+      //   res = m_mathmlNode->RemoveChild(currChild, getter_AddRefs(dontcare));
+      //   if (m_offset <= LAST_VALID && m_offset > index)
+      //     m_offset -= 1;
+      // }
+      // else
         index += 1;
       currChild = nextChild;    
     }
