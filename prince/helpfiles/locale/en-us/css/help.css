@@ -487,3 +487,16 @@ theorem {
 theorem:before {
   content:  "Theorem " counter(section) "."  counter(theorem) ". " ;
 }
+
+button {
+  display: none;
+}
+
+indexitem, prisec{
+  display: none;
+}
+
+marker {
+  display: none;
+}
+
