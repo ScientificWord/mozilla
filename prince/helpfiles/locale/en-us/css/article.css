@@ -80,6 +80,7 @@ section>*:first-child{
   color: rgb(9, 62, 125);
 }
 
+/* Remove "open" stuff (gp)
 section>*:first-child[open="false"]{
   display: block;
   margin: 10pt 10pt 0pt 0pt;
@@ -105,6 +106,7 @@ section>*:first-child:before, section[open="true"]>*:first-child:before  {
   content: counter(section) ".  ";
   -moz-user-select: -moz-none;
 }
+*/
 
 section>sectiontitle{
   display: block;
@@ -114,6 +116,7 @@ section>sectiontitle{
   font-weight: bold;
 }
 
+/* Remove "open" stuff (gp)
 section>sectiontitle[open="false"]{
   display: block;
   margin: 10pt 10pt 0pt 0pt;
@@ -126,6 +129,7 @@ section>sectiontitle:before, section[open="true"]>sectiontitle:before  {
   content: counter(section) ".  ";
   -moz-user-select: -moz-none;
 }
+*/
 
 section defaulttitletag:after {
   content: "Replace this section title"; 
