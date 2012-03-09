@@ -584,12 +584,12 @@ var msiResizeListener =
       graph.setGraphAttribute("Height", newHeightInUnits);
       graph.recomputeVCamImage( editorElement);
       graph.reviseGraphDOMElement(DOMGraph, editorElement);
-      var obj = anElement.getElementsByTagName("object");
-      if (obj.length > 0 && obj[0].hasAttribute("msigraph"))
-      {
-        obj = obj[0];
-        makeSnapshot(obj, graph, editorElement);
-      }
+//      var obj = anElement.getElementsByTagName("object");
+//      if (obj.length > 0 && obj[0].hasAttribute("msigraph"))
+//      {
+//        obj = obj[0];
+//        makeSnapshot(obj, graph, editorElement);
+//      }
     }
     catch(e) {
       msidump( e.message );
@@ -707,7 +707,7 @@ function ShutdownAllEditors()
   var tmpWindow = window;
   var keepgoing = true;
   
-//  do {
+  try {
     // Get the <editor> element(s)
     var editorList = document.getElementsByTagName("editor");
     for (var i = 0; i < editorList.length; ++i)
@@ -724,11 +724,10 @@ function ShutdownAllEditors()
         else break;
       }
     }
-
-//    tmpWindow = tmpWindow.opener;
-//  } 
-//  while (tmpWindow);
-
+  } 
+  catch (e) {
+    msidump(e.message);
+  }
   return !keepgoing;
 }
 
