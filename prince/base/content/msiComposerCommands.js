@@ -239,7 +239,7 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_openRemote",     msiOpenRemoteCommand);
   commandTable.registerCommand("cmd_preview",        msiPreviewCommand);
   commandTable.registerCommand("cmd_editSendPage",   msiSendPageCommand);
-  commandTable.registerCommand("cmd_print",          msiDirectPrintCommand);
+  commandTable.registerCommand("cmd_print",          msiPrintDirectCommand);
   commandTable.registerCommand("cmd_printSetup",     msiPrintSetupCommand);
   commandTable.registerCommand("cmd_quit",           nsQuitCommand);
   commandTable.registerCommand("cmd_close",          msiCloseCommand);
@@ -1315,6 +1315,9 @@ var msiPrintDirectCommand =
 
   doCommand: function(aCommand)
   {
+    var editorElement = msiGetActiveEditorElement();
+    var doc = editorElement.contentDocument;
+    rebuildSnapshots(doc);
     PrintUtils.print();
   }
 }
@@ -1353,6 +1356,9 @@ var msiPreviewDirectCommand =
 
   doCommand: function(aCommand)
   {
+    var editorElement = msiGetActiveEditorElement();
+    var doc = editorElement.contentDocument;
+    rebuildSnapshots(doc);
     PrintUtils.printPreview(onEnterPP, onExitPP);
   }
 }
@@ -3679,6 +3685,9 @@ var msiDirectPrintCommand =
   doCommand: function(aCommand)
   {
     // In editor.js
+    var editorElement = msiGetActiveEditorElement();
+    var doc = editorElement.contentDocument;
+    rebuildSnapshots(doc);
     msiFinishHTMLSource();
     try {
 //      NSPrint();
