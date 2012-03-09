@@ -653,7 +653,7 @@ nsHTMLEditor::NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock)
       tagAtom==nsGkAtoms::mtr_            ||
       tagAtom==nsGkAtoms::mtd_            ||
       //tagAtom==nsGkAtoms::mi_             ||
-      tagAtom==nsGkAtoms::mn_             ||
+      //tagAtom==nsGkAtoms::mn_             ||
       tagAtom==nsEditProperty::li         ||
       tagAtom==nsEditProperty::dt         ||
       tagAtom==nsEditProperty::dd         ||
@@ -804,7 +804,7 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
   nsIAtom *tagAtom = GetTag(aNode);
   if (!tagAtom) return NS_ERROR_NULL_POINTER;
 
-// BBM: search for XML tags classified as paragraph or section tags.
+// BBM: search for XML tags classified  paragraph or section tags.
   nsAutoString strTagName;
   nsAutoString strTagClass;
   nsIAtom * namespaceAtom = nsnull;
