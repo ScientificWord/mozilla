@@ -666,6 +666,65 @@ Make list of figures here
     </xbl:content>
   </xbl:binding>
 
+	<xbl:binding id="indexitemSpecApp">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="indexbutton" anonid="btn" nopr="1" state="1" xbl:inherits="pri,sec,ter,specAppearance" oncommand="">
+        Index: <html:label><xbl:children includes="prispec"/></html:label>
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+	<!-- xbl:binding id="indexitemSpecAppCycle">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="indexbutton" anonid="btn" nopr="1" state="1" xbl:inherits="pri,sec,ter,specAppearance" 
+         oncommand="this.toggle(); ">
+        Index: <html:label>
+                 <xbl:children includes="prispec,secspec,terspec"/>
+                 <html:span class="indexPri" xbl:inherits="xbl:text=pri"/>
+                 <html:span class="indexSec" xbl:inherits="xbl:text=sec"/>
+                 <html:span class="indexTer" xbl:inherits="xbl:text=ter"/>
+               </html:label>
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:method name="toggle">
+        <xbl:body>
+          <![CDATA[
+            var theButton = document.getAnonymousElementByAttribute(this, "anonid", "btn");
+            var currState = 1 + Number(theButton.getAttribute("state"));
+            if (!this.getAttribute("sec") || !this.getAttribute("sec").length)
+            {
+              currState = 1;
+            }
+            else if (!this.getAttribute("ter") || !this.getAttribute("ter").length)
+            {
+              currState = 2;
+            }
+            else if (currState > 3)
+            {
+              currState = 1;
+            }
+            theButton.setAttribute("state", currState);
+          ]]>
+        </xbl:body>
+      </xbl:method>
+    </xbl:implementation>    
+  </xbl:binding -->
+
 	<xbl:binding id="printindex">
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
