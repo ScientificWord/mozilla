@@ -1163,6 +1163,57 @@
           <contains>msibreak</contains>
           <contains>texb</contains>
         </tag>
+        <tag nm="indexentry">
+          <description>Index entry</description>
+          <contains>prispec</contains>
+          <contains>secspec</contains>
+          <contains>terspec</contains>
+        </tag>
+        <tag nm="prispec">
+          <description>Special appearance of primary index entry</description>
+          <contains>#text</contains>
+          <contains>texttag</contains>
+          <contains>hspace</contains>
+          <contains>table</contains>
+          <contains>mml:math</contains>
+			    <contains>img</contains>
+			    <contains>object</contains>
+          <contains>line</contains>
+          <contains>a</contains>
+          <contains>msiframe</contains>       
+          <contains>msibreak</contains>
+          <contains>texb</contains>
+        </tag>
+        <tag nm="secspec">
+          <description>Special appearance of secondary index entry</description>
+          <contains>#text</contains>
+          <contains>texttag</contains>
+          <contains>hspace</contains>
+          <contains>table</contains>
+          <contains>mml:math</contains>
+			    <contains>img</contains>
+			    <contains>object</contains>
+          <contains>line</contains>
+          <contains>a</contains>
+          <contains>msiframe</contains>       
+          <contains>msibreak</contains>
+          <contains>texb</contains>
+        </tag>
+        <tag nm="terspec">
+          <description>Special appearance of tertiary index entry</description>
+          <contains>#text</contains>
+          <contains>texttag</contains>
+          <contains>hspace</contains>
+          <contains>table</contains>
+          <contains>mml:math</contains>
+			    <contains>img</contains>
+			    <contains>object</contains>
+          <contains>line</contains>
+          <contains>a</contains>
+          <contains>msiframe</contains>       
+          <contains>msibreak</contains>
+          <contains>texb</contains>
+        </tag>
 <!-- most math editing is done outside this framework, but a few math tags are needed here -->
         <tag nm = "math">
           <contains>mspace</contains>      

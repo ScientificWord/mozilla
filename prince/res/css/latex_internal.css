@@ -143,3 +143,28 @@ button.bibitemlabel {
   height: 9px;
   width: 9px;
 }
+
+/* Following was an attempt to get the button to cycle through the different index levels (primary, secondary, tertiary).
+   It's being commented out as it didn't work, but I may want to revive it.  rwa 03-09-2012
+
+button[class="indexbutton"][state="1"]>span[class="indexSec"],
+button[class="indexbutton"][state="1"]>secspec,
+button[class="indexbutton"][state="1"]>span[class="indexTer"],
+button[class="indexbutton"][state="1"]>terspec,
+button[class="indexbutton"][state="2"]>span[class="indexPri"],
+button[class="indexbutton"][state="2"]>prispec,
+button[class="indexbutton"][state="2"]>span[class="indexTer"],
+button[class="indexbutton"][state="2"]>terspec,
+button[class="indexbutton"][state="3"]>span[class="indexPri"],
+button[class="indexbutton"][state="3"]>prispec,
+button[class="indexbutton"][state="3"]>span[class="indexSec"],
+button[class="indexbutton"][state="3"]>secspec {
+  display: none;
+}
+
+button[class="indexbutton"][specAppearance~="p"]>span[class="indexPri"],
+button[class="indexbutton"][specAppearance~="s"]>span[class="indexSec"],
+button[class="indexbutton"][specAppearance~="t"]>span[class="indexTer"] {
+  display: none;
+}
+*/
