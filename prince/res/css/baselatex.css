@@ -172,6 +172,10 @@ indexitem {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#indexitem");
 }
 
+indexitem[specAppearance] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#indexitemSpecApp");
+}
+
 latexstyleb {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#latexstyleb");
 }
