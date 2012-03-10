@@ -556,9 +556,9 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:prispec">@<xsl:value-of select="."/></xsl:template>
-<xsl:template match="html:secspec">@<xsl:value-of select="."/></xsl:template>
-<xsl:template match="html:terspec">@<xsl:value-of select="."/></xsl:template>
+<xsl:template match="html:prispec">@<xsl:apply-templates/></xsl:template>
+<xsl:template match="html:secspec">@<xsl:apply-templates/></xsl:template>
+<xsl:template match="html:terspec">@<xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:indexitem">
 \index<xsl:if test="@pri"

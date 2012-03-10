@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/indexentry.dtd">
 <!-- JLF to verify.  Need to create DTD and update related files.-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
@@ -14,27 +21,55 @@
   persist="screenX screenY width height"
   ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
 >
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/indexentry.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
+  <!--script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+ 
+  <popupset id="msiEditorContentContextSet"/>
 
+#include ../keysfordialogs.inc
 
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+  <commandset id="MSImathMenuCommands"/>
+  
   <label control="primary" accesskey="&primary.accesskey;" value="&primary.label;"/>
   <textbox id="primary" value="" oninput="keypress(event, this,'prispec');"/>
   <checkbox id="prispec" disabled="true" label="&prispeccheckbox.label;" checked="false"
-    oncommand="checkboxchanged(event, this,'prispecapp');"/>
-  <textbox id="prispecapp" value="" hidden="true"/>
+    oncommand="checkboxchanged(event, this,'prispecappInput');"/>
+  <!--textbox id="prispecapp" value="" hidden="true"/ -->
+  <editor id="prispecappInput" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
   <spacer flex="1"/>
   <label control="secondary" accesskey="&secondary.accesskey;" value="&secondary.label;"/>
   <textbox id="secondary" value="" oninput="keypress(event, this,'secspec');"/>
   <checkbox id="secspec" disabled="true" label="&secspeccheckbox.label;" checked="false"
-    oncommand="checkboxchanged(event, this,'secspecapp');"/>
-  <textbox id="secspecapp" value="" hidden="true"/>
+    oncommand="checkboxchanged(event, this,'secspecappInput');"/>
+  <!-- textbox id="secspecapp" value="" hidden="true"/ -->
+  <editor id="secspecappInput" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
   <spacer flex="1"/>
   <label control="tertiary" accesskey="&tertiary.accesskey;" value="&tertiary.label;"/>
   <textbox id="tertiary" value="" oninput="keypress(event, this,'terspec');"/>
   <checkbox id="terspec" disabled="true" label="&tertspeccheckbox.label;" checked="false"
-    oncommand="checkboxchanged(event, this,'terspecapp');"/>
-  <textbox id="terspecapp" value="" hidden="true"/>
+    oncommand="checkboxchanged(event, this,'terspecappInput');"/>
+  <!-- textbox id="terspecapp" value="" hidden="true"/ -->
+  <editor id="terspecappInput" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
   <spacer flex="1"/>
 
   <groupbox>
