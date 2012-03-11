@@ -3079,14 +3079,301 @@ msiEditor::AdjustRange(nsIDOMRange * aRange, PRBool isForDeletion, PRUint32 dire
   return res;
 }
 
+nsStringArray* charMap = nsnull;
 
+void InitCharMap()
+{
+  if (charMap == nsnull) {
+    charMap = new nsStringArray(250);
+    charMap->AppendString(NS_LITERAL_STRING("~")); // a0
+    charMap->AppendString(NS_LITERAL_STRING("\\textexclamdown"));
+    charMap->AppendString(NS_LITERAL_STRING("\\hbox{\\rm\\rlap/c}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\pounds "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textcurrency "));
+    charMap->AppendString(NS_LITERAL_STRING("\\yen "));
+    charMap->AppendString(NS_LITERAL_STRING("$\\vert$"));
+    charMap->AppendString(NS_LITERAL_STRING("\\S "));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\copyright "));
+    charMap->AppendString(NS_LITERAL_STRING("S{{}^a}$"));
+    charMap->AppendString(NS_LITERAL_STRING("\\guillemotleft "));
+    charMap->AppendString(NS_LITERAL_STRING("$\\lnot$"));
+    charMap->AppendString(NS_LITERAL_STRING("-"));
+    charMap->AppendString(NS_LITERAL_STRING("\\textregistered"));
+    charMap->AppendString(NS_LITERAL_STRING("\\={}"));
+    charMap->AppendString(NS_LITERAL_STRING("${{}^\\circ}$"));  // b0
+    charMap->AppendString(NS_LITERAL_STRING("$\pm$"));
+    charMap->AppendString(NS_LITERAL_STRING("${{}^2}$"));
+    charMap->AppendString(NS_LITERAL_STRING("${{}^3}$"));
+    charMap->AppendString(NS_LITERAL_STRING("\'{}"));
+    charMap->AppendString(NS_LITERAL_STRING("$\\mu$"));
+    charMap->AppendString(NS_LITERAL_STRING("\\P "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textperiodcentered "));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{}"));
+    charMap->AppendString(NS_LITERAL_STRING("${{}^1}$"));
+    charMap->AppendString(NS_LITERAL_STRING("${{}^o}$"));
+    charMap->AppendString(NS_LITERAL_STRING("\\guillemotright "));
+    charMap->AppendString(NS_LITERAL_STRING("$\\frac14$"));
+    charMap->AppendString(NS_LITERAL_STRING("$\\frac12$"));
+    charMap->AppendString(NS_LITERAL_STRING("$\\frac34$"));
+    charMap->AppendString(NS_LITERAL_STRING("\\textquestiondown "));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{A}"));  // c0
+    charMap->AppendString(NS_LITERAL_STRING("\\'{A}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{A}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\~{A}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{A}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\AA "));
+    charMap->AppendString(NS_LITERAL_STRING("\\AE "));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{C}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{I}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{I}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{I}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{I}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\DH "));  // d0
+    charMap->AppendString(NS_LITERAL_STRING("\\~{N}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{O}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{O}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{O}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\~{O}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{O}"));
+    charMap->AppendString(NS_LITERAL_STRING("$\times$"));
+    charMap->AppendString(NS_LITERAL_STRING("\\O "));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{Y}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\TH "));
+    charMap->AppendString(NS_LITERAL_STRING("\\ss "));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{a}"));  // e0
+    charMap->AppendString(NS_LITERAL_STRING("\\'{a}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{a}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\~{a}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{a}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\aa "));
+    charMap->AppendString(NS_LITERAL_STRING("\\ae "));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{c}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\dh "));  // f0
+    charMap->AppendString(NS_LITERAL_STRING("\\~{n}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{o}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{o}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{o}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\~{o}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{o}"));
+    charMap->AppendString(NS_LITERAL_STRING("$\\div$"));
+    charMap->AppendString(NS_LITERAL_STRING("\\o "));
+    charMap->AppendString(NS_LITERAL_STRING("\\`{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{y}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\th "));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{y}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\={A}"));  // 100
+    charMap->AppendString(NS_LITERAL_STRING("\\={a}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{A}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{a}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\k{A}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\k{a}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{C}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{c}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{C}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{c}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\.{C}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\.{c}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{C}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{c}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{D}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{d}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\DJ "));  // 110
+    charMap->AppendString(NS_LITERAL_STRING("\\dj "));
+    charMap->AppendString(NS_LITERAL_STRING("\\={E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\={e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\.{E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\.{e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\k{E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\k{e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{E}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{e}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{G}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{g}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{G}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{g}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\.{G}"));  // 120
+    charMap->AppendString(NS_LITERAL_STRING("\\.{g}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{G}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{g}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{H}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{h}"));
+    charMap->AppendString(NS_LITERAL_STRING("H\\llap{\\protect\\rule[1.1ex]{.735em}{.1ex}}"));
+    charMap->AppendString(NS_LITERAL_STRING("h{\\hskip-.2em}\\llap{\\protect\\rule[1.1ex]{.325em}{.1ex}}{\\hskip.2em}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\~{I}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\~{\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\={I}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\={\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{I}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\k{I}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\k{i}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\.{I}"));  // 130
+    charMap->AppendString(NS_LITERAL_STRING("\\i "));
+    charMap->AppendString(NS_LITERAL_STRING("\\symbol{156}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\symbol{188}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{J}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{\\j}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{K}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{k}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\U{138}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{L}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{l}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{L}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{l}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{L}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{l}"));
+    charMap->AppendString(NS_LITERAL_STRING("L{\\hskip-.05em}\\llap{\raise.5ex\\hbox{$\\cdot$}}{\\hskip.05em}"));
+    charMap->AppendString(NS_LITERAL_STRING("l{\\hskip.15em}\\llap{\\raise.5ex\\hbox{$\\cdot$}}"));  // 140
+    charMap->AppendString(NS_LITERAL_STRING("\\L "));
+    charMap->AppendString(NS_LITERAL_STRING("\\l "));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{N}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{n}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{N}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{n}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{N}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{n}"));
+    charMap->AppendString(NS_LITERAL_STRING("n{\\hskip-.3em}\\llap{\raise1.5ex\\hbox{,}}{\\hskip.3em}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\NG "));
+    charMap->AppendString(NS_LITERAL_STRING("\\ng "));
+    charMap->AppendString(NS_LITERAL_STRING("\\={O}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\={o}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{O}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{o}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\H{O}"));  // 150
+    charMap->AppendString(NS_LITERAL_STRING("\\H{o}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\OE "));
+    charMap->AppendString(NS_LITERAL_STRING("\\oe "));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{R}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{r}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{R}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{r}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{R}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{r}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{S}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{s}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{S}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{s}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{S}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{s}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{S}"));  // 160
+    charMap->AppendString(NS_LITERAL_STRING("\\v{s}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{T}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\c{t}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{T}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{t}"));
+    charMap->AppendString(NS_LITERAL_STRING("T{\\hskip-.05em}\\llap{\\protect\\rule[.7ex]{.6em}{.1ex}}{\\hskip.05em}"));
+    charMap->AppendString(NS_LITERAL_STRING("t{\\hskip-.05em}\\llap{\\protect\\rule[.7ex]{.36em}{.1ex}}{\\hskip.05em}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\~{U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\~{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\={U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\={u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\u{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\r{U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\r{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\H{U}"));  // 170
+    charMap->AppendString(NS_LITERAL_STRING("\\H{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\k{U}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\k{u}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{W}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{w}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{Y}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\^{y}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\\"{Y}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{Z}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\'{z}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\.{Z}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\.{z}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{Z}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{z}"));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING("")); // 180
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+    charMap->AppendString(NS_LITERAL_STRING(""));
+  }
+}
+
+/* string FilterCharsForLaTeX (in DOMString orig); */
+NS_IMETHODIMP 
+msiEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
+{
+  nsresult res = NS_OK;
+  const PRUnichar*  cur;
+  const PRUnichar*  end;
+  cur = orig.BeginReading();
+  end = orig.EndReading();
+  nsAutoString str;
+  InitCharMap();
+  for (; cur < end; ++cur) {
+    if (*cur < 160) 
+    {
+       _retval.Append(*cur);
+    }   
+    else if (*cur < 256) {
+      _retval.Append(*(charMap->StringAt((int)(*cur) - 160)));
+    }
+  }
+  return res;
+}
 
 NS_IMETHODIMP
 msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
 {
   nsresult res = NS_OK;
 //  PRInt32 rangeCount;
-  PRUint32 i;
+//  PRUint32 i;
   nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsIDOMRange> range;
   nsCOMPtr<nsIDOMRange> modrange;
