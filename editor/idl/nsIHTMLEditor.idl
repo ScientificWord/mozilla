@@ -258,6 +258,9 @@ interface nsIHTMLEditor : nsISupports
    *
    */
   void insertReturnFancy();
+  
+  DOMString filterCharsForLaTeX(in DOMString orig);
+  
 
   /** 
     * Paste the text in the OS clipboard at the cursor position, replacing
