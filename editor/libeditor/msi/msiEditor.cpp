@@ -48,6 +48,7 @@
 #include "msiUtils.h"
 #include "msiEditingAtoms.h"
 #include "jcsDumpNode.h"
+#include "nsTextFormatter.h"
 //#include "msiEditingManager.h"
 
 static PRInt32 instanceCounter = 0;
@@ -3350,19 +3351,68 @@ NS_IMETHODIMP
 msiEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
 {
   nsresult res = NS_OK;
+  nsTextFormatter * tf = new nsTextFormatter();
   const PRUnichar*  cur;
   const PRUnichar*  end;
   cur = orig.BeginReading();
   end = orig.EndReading();
   nsAutoString str;
+  nsString fmt = NS_LITERAL_STRING("{\\small\\fbox{%X}} ");
   InitCharMap();
   for (; cur < end; ++cur) {
-    if (*cur < 160) 
+    if (*cur < 0xA0) 
     {
        _retval.Append(*cur);
     }   
-    else if (*cur < 256) {
+    else if (*cur <0x179) {
       _retval.Append(*(charMap->StringAt((int)(*cur) - 160)));
+      } 
+    else switch ((int)(*cur)) {
+      case 0x03BC : 
+        _retval.Append(NS_LITERAL_STRING("$\\mu$")); break;
+      case 0x03A9 : 
+        _retval.Append(NS_LITERAL_STRING("$\\Omega$")); break;
+      case 0x2002 : 
+        _retval.Append(NS_LITERAL_STRING("\\ ")); break;
+      case 0x2003 : 
+        _retval.Append(NS_LITERAL_STRING("\\quad ")); break;
+      case 0x2009 : 
+        _retval.Append(NS_LITERAL_STRING("\\thinspace ")); break;
+      case 0x200B : 
+        _retval.Append(NS_LITERAL_STRING("{}")); break;
+      case 0x2020 : 
+        _retval.Append(NS_LITERAL_STRING("\\dag ")); break;
+      case 0x2021 : 
+        _retval.Append(NS_LITERAL_STRING("\\ddag ")); break;
+      case 0x2032 : 
+        _retval.Append(NS_LITERAL_STRING("${}^{\\prime}$")); break;
+      case 0x2033 : 
+        _retval.Append(NS_LITERAL_STRING("${}^{\\prime\\prime}$")); break;
+      case 0x20A0 : 
+        _retval.Append(NS_LITERAL_STRING("\\texteuro ")); break;
+      case 0x20A3 : 
+        _retval.Append(NS_LITERAL_STRING("\\textfranc ")); break;
+      case 0x20A4 : 
+        _retval.Append(NS_LITERAL_STRING("\\textlira ")); break;
+      case 0x20A7 : 
+        _retval.Append(NS_LITERAL_STRING("\\textpeseta ")); break;
+      case 0x2103 : 
+        _retval.Append(NS_LITERAL_STRING("${{}^\\circ}$C")); break;
+      case 0x2109 : 
+        _retval.Append(NS_LITERAL_STRING("${{}^\\circ}$F")); break;
+      case 0x212B : 
+        _retval.Append(NS_LITERAL_STRING("\\AA ")); break;
+      case 0x20EE : 
+        _retval.Append(NS_LITERAL_STRING("$\\vdots$")); break;
+      case 0x22F1 : 
+        _retval.Append(NS_LITERAL_STRING("$\\ddots$")); break;
+      case 0xE2D4 : 
+        _retval.Append(NS_LITERAL_STRING("\\j")); break;
+      case 0xE897 : 
+        _retval.Append(NS_LITERAL_STRING("\\ ")); break;
+      default :
+        tf->ssprintf(str, fmt.get(), *cur);
+        _retval.Append(str); break;
     }
   }
   return res;
