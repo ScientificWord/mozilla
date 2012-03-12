@@ -2258,7 +2258,7 @@ nsHTMLEditor::InsertElementAtSelection(nsIDOMElement* aElement, PRBool aDeleteSe
       // Adjust position based on the node we are going to insert.
       NormalizeEOLInsertPosition(node, address_of(parentSelectedNode), &offsetForInsert);
 
-      res = InsertNodeAtPoint(node, address_of(parentSelectedNode), &offsetForInsert, PR_FALSE);
+      res = InsertNodeAtPoint(node, (nsIDOMNode **)address_of(parentSelectedNode), &offsetForInsert, PR_FALSE);
       NS_ENSURE_SUCCESS(res, res);
       // Set caret after element, but check for special case 
       //  of inserting table-related elements: set in first cell instead
@@ -2301,9 +2301,9 @@ nsHTMLEditor::InsertElementAtSelection(nsIDOMElement* aElement, PRBool aDeleteSe
               PRInt32               *ioOffset        insertion offset
               PRBool                aNoEmptyNodes    splitting can result in empty nodes?
 */
-nsresult
+NS_IMETHODIMP 
 nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode, 
-                                nsCOMPtr<nsIDOMNode> *ioParent, 
+                                nsIDOMNode **ioParent, 
                                 PRInt32 *ioOffset, 
                                 PRBool aNoEmptyNodes)
 {
