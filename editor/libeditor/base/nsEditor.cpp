@@ -1949,7 +1949,11 @@ nsEditor::InsertContainerAbove( nsIDOMNode *inNode,
   }
 
   // put new parent in doc
-  return InsertNode(*outNode, parent, offset);
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<nsIEditor> editor = this;
+  htmlEditor = do_QueryInterface(editor);
+  if (!htmlEditor) return InsertNode(*outNode, parent, offset);
+  return htmlEditor->InsertNodeAtPoint(*outNode, (nsIDOMNode **)address_of(parent), &offset, true);
 }
 
 nsresult
@@ -2008,7 +2012,11 @@ nsEditor::InsertContainerAboveNS( nsIDOMNode *inNode,
   }
 
   // put new parent in doc
-  return InsertNode(*outNode, parent, offset);
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<nsIEditor> editor = this;
+  htmlEditor = do_QueryInterface(editor);
+  if (!htmlEditor) return InsertNode(*outNode, parent, offset);
+  return htmlEditor->InsertNodeAtPoint(*outNode, (nsIDOMNode **)address_of(parent), &offset, true);
 }
 
 ///////////////////////////////////////////////////////////////////////////
