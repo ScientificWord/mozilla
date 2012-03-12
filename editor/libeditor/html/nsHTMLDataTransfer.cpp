@@ -611,7 +611,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         curNode->GetFirstChild(getter_AddRefs(child));
         while (child)
         {
-          res = InsertNodeAtPoint(child, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+          res = InsertNodeAtPoint(child, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
           if (NS_SUCCEEDED(res)) 
           {
             bDidInsert = PR_TRUE;
@@ -653,7 +653,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                 }
               }
             } 
-            res = InsertNodeAtPoint(child, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            res = InsertNodeAtPoint(child, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
             if (NS_SUCCEEDED(res)) 
             {
               bDidInsert = PR_TRUE;
@@ -676,7 +676,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         curNode->GetFirstChild(getter_AddRefs(child));
         while (child)
         {
-          res = InsertNodeAtPoint(child, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+          res = InsertNodeAtPoint(child, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
           if (NS_SUCCEEDED(res)) 
           {
             bDidInsert = PR_TRUE;
@@ -719,7 +719,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
             nsCOMPtr<nsIDOMElement> mrow;
             msiUtils::CreateMRow(this, curNode, mrow);
-            res = InsertNodeAtPoint(mrow, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
             parentNode = mrow;
             offsetOfNewNode = 1;
             if (NS_SUCCEEDED(res)) 
@@ -730,7 +730,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
           }
           else
           {
-            res = InsertNodeAtPoint(curNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
             if (NS_SUCCEEDED(res)) 
             {
               bDidInsert = PR_TRUE;
@@ -747,15 +747,15 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             nsCOMPtr<nsIDOMElement> mathElement;
             res = msiUtils::CreateMathMLElement(this, msiEditingAtoms::math, mathElement);
             nsCOMPtr<nsIDOMNode> mathNode = do_QueryInterface(mathElement);
-            res = InsertNodeAtPoint(mathNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            res = InsertNodeAtPoint(mathNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
             PRInt32 offset = 0;
-            res = InsertNodeAtPoint(curNode, address_of(mathNode), &offset, PR_TRUE);
+            res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(mathNode), &offset, PR_TRUE);
             parentNode = mathElement;
             offsetOfNewNode = 1;
           }
           else
           {
-            res = InsertNodeAtPoint(curNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
           }
           if (NS_SUCCEEDED(res)) 
           {
@@ -774,7 +774,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 //     DebExamineNode(curNode);
 //     DebExamineNode(parentNode);
 // #endif
-        res = InsertNodeAtPoint(curNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+        res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
         if (NS_SUCCEEDED(res)) 
         {
           bDidInsert = PR_TRUE;
@@ -792,7 +792,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 // #endif
           if (parent && !nsTextEditUtils::IsBody(parent))
           {
-            res = InsertNodeAtPoint(parent, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            res = InsertNodeAtPoint(parent, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
             if (NS_SUCCEEDED(res)) 
             {
               bDidInsert = PR_TRUE;

@@ -261,6 +261,10 @@ interface nsIHTMLEditor : nsISupports
   
   DOMString filterCharsForLaTeX(in DOMString orig);
   
+  void insertNodeAtPoint(in nsIDOMNode aNode, 
+                         inout nsIDOMNode parent, 
+                         inout long ioOffset, 
+                         in boolean aNoEmptyNodes);
 
   /** 
     * Paste the text in the OS clipboard at the cursor position, replacing
