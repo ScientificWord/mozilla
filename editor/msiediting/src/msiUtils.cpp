@@ -2272,7 +2272,7 @@ nsresult msiUtils::GetMathTagParent(nsIDOMNode * node,
                                     nsIAtom * tagAtom,
                                     nsCOMPtr<nsIDOMNode> & mathParent)
 {
-  nsresult res(NS_ERROR_FAILURE);
+  nsresult res(NS_OK);
   mathParent = nsnull;
   nsCOMPtr<nsIDOMNode> p = node;
   if (!p)

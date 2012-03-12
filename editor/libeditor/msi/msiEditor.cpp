@@ -238,15 +238,6 @@ msiEditor::GetMathMLCoalesceInterface(nsIDOMNode * node, PRUint32 offset,
 
 
 
-nsresult
-msiEditor::InsertNodeAtPoint(nsIDOMNode *aNode, 
-                                nsCOMPtr<nsIDOMNode> *ioParent, 
-                                PRInt32 *ioOffset, 
-                                PRBool aNoEmptyNodes)
-{
-     return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, PR_TRUE/*aNoEmptyNodes*/);
-}
-
 nsresult 
 msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
 {
