@@ -6929,6 +6929,8 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("\\thinspace ")); break;
       case 0x200B : 
         _retval.Append(NS_LITERAL_STRING("{}")); break;
+      case 0x2019 :
+        _retval.Append(NS_LITERAL_STRING("'")); break;
       case 0x2020 : 
         _retval.Append(NS_LITERAL_STRING("\\dag ")); break;
       case 0x2021 : 
