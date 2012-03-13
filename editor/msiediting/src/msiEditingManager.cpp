@@ -718,7 +718,7 @@ msiEditingManager::InsertMath(nsIEditor * editor,
         res = htmlEditor->InsertNodeAtPoint(mathNode, (nsIDOMNode**)address_of(parent), (PRInt32*)&offset, true);
         if (right) {
           offset++;
-          res = htmlEditor->InsertNodeAtPoint(right, (nsIDOMNode**)address_of(parent), (PRInt32*)offset, true);
+          res = htmlEditor->InsertNodeAtPoint(right, (nsIDOMNode**)address_of(parent), (PRInt32*)&offset, true);
         }
         if (isDisplay)
         {
