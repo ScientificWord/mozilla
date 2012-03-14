@@ -214,7 +214,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
 				*aOutFrame = pTempFrame; 
 	      PRInt32 start, end;
 	      pTempFrame->GetOffsets(start,end);
-	      (*aOutOffset) = (end - start - count);
+	      (*aOutOffset) = 0; // was (end - start - count), but we do not want the cursor inside math names or multiple-character operators.
 	      *_retval = 0;
 			}
     }
