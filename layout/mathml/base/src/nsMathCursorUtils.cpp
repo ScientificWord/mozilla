@@ -53,25 +53,25 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
       *aOutOffset = 1+pContent->IndexOf(pFrame->GetContent());
       *aOutFrame = pParent;
     }
-    else if (IsDisplayFrame(pParent, count))
-    {
-      *aOutFrame = pParent->GetParent();
-      pContent = (*aOutFrame)->GetContent();
-      *aOutOffset = 1+pContent->IndexOf(pParent->GetContent());
-    }
+//    else if (IsDisplayFrame(pParent, count))
+//    {
+//      *aOutFrame = pParent->GetParent();
+//      pContent = (*aOutFrame)->GetContent();
+//      *aOutOffset = 1+pContent->IndexOf(pParent->GetContent());
+//    }
     else
     {
-//      *aOutFrame = GetFirstTextFramePastFrame(pFrame);
-//      *aOutOffset = count;
-	    pParent = pFrame->GetParent();
-	    *aOutFrame = pParent; 
-			(*aOutOffset) = 1;
-			pChild = pParent->GetFirstChild(nsnull);
-			while (pChild && pChild != pFrame)
-			{
-				pChild = pChild->GetNextSibling();
-				(*aOutOffset)++;
-			}
+      *aOutFrame = GetFirstTextFramePastFrame(pFrame);
+      *aOutOffset = count;
+//	    pParent = pFrame->GetParent();
+//	    *aOutFrame = pParent; 
+//			(*aOutOffset) = 1;
+//			pChild = pParent->GetFirstChild(nsnull);
+//			while (pChild && pChild != pFrame)
+//			{
+//				pChild = pChild->GetNextSibling();
+//				(*aOutOffset)++;
+//			}
     } 
 //    (*paPos)->mMath = PR_TRUE;
   }
@@ -96,19 +96,19 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   }
   else // don't put the cursor inside the tag
   {
-    if (count == 0)
-    {
-      pParent = pFrame->GetParent();
-      pContent = pParent->GetContent();
-      *aOutOffset = pContent->IndexOf(pFrame->GetContent());
-      *aOutFrame = pParent;
-    }
-    else
-    { 
+//    if (count == 0)
+//    {
+//      pParent = pFrame->GetParent();
+//      pContent = pParent->GetContent();
+//      *aOutOffset = pContent->IndexOf(pFrame->GetContent());
+//      *aOutFrame = pParent;
+//    }
+//    else
+//    { 
       pChild = GetLastTextFrameBeforeFrame(pFrame);
       *aOutFrame = pChild;
       *aOutOffset = (pChild->GetContent())->TextLength() - count;
-     }
+//     }
   }
   return PR_TRUE;
 }

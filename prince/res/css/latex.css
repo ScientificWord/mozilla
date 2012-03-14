@@ -179,6 +179,16 @@ phantom {
   color: transparent;
 }
 
+inserted {
+  color: blue;
+  text-decoration: underline;
+}
+
+deleted {
+  color: red;
+  text-decoration: line-throug;
+}
+
 centeredEnv, centered {
   text-align: center;
 }
