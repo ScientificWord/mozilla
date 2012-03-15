@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!DOCTYPE Canvas SYSTEM "muplotml.dtd">
+<Canvas id="plotObject1956" Consistent="1" Layout="Tabular" FooterFont="&apos;sans-serif&apos; 12" OutputUnits="MM" Height="61.1124" FooterAlignment="Center" BackgroundColor="#E1E1E1" BorderColor="#808080" BorderWidth="0" LeftMargin="1" AutoPlay="0" RightMargin="1" Width="51.3334" AnimationStyle="RunOnce" Spacing="1" Columns="0" Rows="0" HeaderFont="&apos;sans-serif&apos; 12" HeaderAlignment="Center" BottomMargin="1" TopMargin="1">
+<Scene3dStyle Lighting="Automatic" BackgroundTransparent="0" FooterFont="&apos;sans-serif&apos; 12" Height="80" LegendPlacement="Bottom" BackgroundColor="#E1E1E1" FooterAlignment="Center" LegendFont="&apos;sans-serif&apos; 8" BorderColor="#808080" BorderWidth="0" LegendAlignment="Center" LeftMargin="1" RightMargin="1" YXRatio="1" Width="120" BackgroundColor2="#BFBFBF" BackgroundStyle="Flat" LegendVisible="0" HeaderFont="&apos;sans-serif&apos; 12" ZXRatio="0.666666666667" HeaderAlignment="Center" BottomMargin="1" TopMargin="1"/>
+<CoordinateSystem3dStyle Scaling="Constrained" XTicksNumber="Low" XAxisTitleAlignment="Center" YTicksVisible="1" ZAxisVisible="1" SubgridLineColor="#CCCCCC" SubgridLineWidth="0.1" ZSubgridVisible="0" YTicksLabelsVisible="1" AxesLineColor="#000000" ZTicksLabelStyle="Horizontal" AxesLineWidth="0.18" ZTicksBetween="1" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" YAxisTitleAlignment="Center" ZTicksVisible="1" YTicksNumber="Low" GridLineStyle="Solid" ZTicksLabelsVisible="1" XGridVisible="0" XAxisVisible="1" SubgridLineStyle="Solid" ZTicksNumber="Normal" XSubgridVisible="0" ZAxisTitleAlignment="Center" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" XTicksLabelStyle="Horizontal" XTicksBetween="1" YGridVisible="0" Axes="Boxed" YAxisVisible="1" XTicksVisible="1" TicksLength="2" GridLineColor="#999999" YSubgridVisible="0" XTicksLabelsVisible="1" GridLineWidth="0.1" YTicksLabelStyle="Horizontal" YTicksBetween="1" ZGridVisible="0" AxesTips="0"/>
+<ObjStyle Type="Default" FillColor="#FF0000" LineColor2="#FF1493" VerticalAsymptotesStyle="Dashed" FillPattern="DiagonalLines" TimeBegin="0" XMesh="11" Tubular="0" TipLength="4" VerticalAsymptotesVisible="1" TitleFont="&apos;sans-serif&apos; 11" LineStyle="Solid" LineColorDirectionX="0" OrthogonalProjection="0" AffectViewingBox="1" LineColorDirectionY="1" TitleAlignment="Center" LineColorDirectionZ="1" TextFont="&apos;sans-serif&apos; 11" Frames="50" PointSize="1.5" ArrowLength="Proportional" UMesh="25" FillColorType="Dichromatic" XLinesVisible="1" VisibleAfterEnd="1" LightColor="#FFFFFF" AdaptiveMesh="0" XSubmesh="0" Extension="Finite" LinesVisible="1" YMesh="11" FillColor2="#6495ED" Shading="Smooth" PointStyle="FilledCircles" FillColorDirectionX="0" TimeEnd="10" CameraCoordinates="0" ULinesVisible="1" VisibleBeforeBegin="1" FillStyle="EvenOdd" FillColorDirectionY="0" VerticalAsymptotesColor="#808080" USubmesh="0" FillColorDirectionZ="1" VerticalAlignment="BaseLine" VerticalAsymptotesWidth="0.2" VMesh="25" YLinesVisible="1" YSubmesh="0" TubeDiameter="2.5" Filled="1" ZMesh="11" PointsVisible="0" LineColor="#0000FF" LineWidth="0.35" LegendEntry="0" VLinesVisible="1" VSubmesh="0" TipAngle="0.418879020479" TipStyle="Filled" HorizontalAlignment="Center" KeepUpVector="0" DiscontinuitySearch="1" MeshVisible="0" Closed="0" PointColor="#191970" LineColorType="Flat"/>
+<ObjStyle Type="Curve3d" LegendColor="LineColor" LegendEntry="1" UMesh="121" LineColorDirectionY="0"/>
+<ObjStyle Type="Camera" KeepUpVector="0"/>
+<Scene3d id="plotObject1957" Consistent="1" Left="0" Bottom="0" BackgroundColor="#E1E1E1" Lighting="Automatic"><CoordinateSystem3dStyle AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Constrained" Axes="Boxed" XTicksNumber="Low" YTicksNumber="Low" ZTicksNumber="Normal" AxesTips="0"/>
+<ObjStyle Type="Curve3d" LegendColor="LineColor"/>
+<View3d ViewDirectional="1" ViewPositionX="48.4371" ViewPositionY="21.5674" ViewPositionZ="25.0848" ViewFocalPointX="0.000780395" ViewFocalPointY="0.000305507" ViewFocalPointZ="3.15" ViewViewingAngle="0.174533" ViewUpVectorX="-1.4644" ViewUpVectorY="-0.442994" ViewUpVectorZ="4.06814" ViewKeepUpVector="0" ViewOrthogonalProjection="0"></View3d>
+<CoordinateSystem3d id="plotObject1958" Consistent="1" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Constrained" Axes="Boxed" XTicksNumber="Low" YTicksNumber="Low" ZTicksNumber="Normal" AxesTips="0" AutoViewingBox="63"><AxesOriginX Val="0">0</AxesOriginX>
+<AxesOriginY Val="0">0</AxesOriginY>
+<AxesOriginZ Val="0">0</AxesOriginZ>
+<XAxisTitle>x</XAxisTitle>
+<YAxisTitle>y</YAxisTitle>
+<ZAxisTitle>z</ZAxisTitle>
+<XTicksAnchor Val="0">0</XTicksAnchor>
+<XTicksDistance Val="0">0</XTicksDistance>
+<YTicksAnchor Val="0">0</YTicksAnchor>
+<YTicksDistance Val="0">0</YTicksDistance>
+<ZTicksAnchor Val="0">0</ZTicksAnchor>
+<ZTicksDistance Val="0">0</ZTicksDistance>
+<ObjStyle Type="Curve3d" LegendColor="LineColor"/>
+<Obj3d Type="Curve3d" id="plotObject1955" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.5" LineStyle="Solid" LinesVisible="1" LineColorType="Rainbow" LineColor="#800000" LineColor2="#FF0000" UMesh="50"><Expr Opt="UName">q10v58130</Expr>
+<Expr Opt="XFunction">cos(q10v58130)</Expr>
+<Expr Opt="YFunction">sin(q10v58130)</Expr>
+<Expr Opt="UMax">6.3</Expr>
+<Expr Opt="UMin">0</Expr>
+<Expr Opt="ZFunction">q10v58130</Expr>
+<Img3d><Poly3d Closed="0" Filled="0"><P3>1 0 0</P3>
+<P3>0.991746073486 0.128217493831 0.128571428571</P3>
+<P3>0.967120548552 0.254318392118 0.257142857143</P3>
+<P3>0.926529939742 0.376221039766 0.385714285714</P3>
+<P3>0.870644310861 0.491913085784 0.514285714286</P3>
+<P3>0.800386213658 0.599484702879 0.642857142857</P3>
+<P3>0.716915458475 0.697160114607 0.771428571429</P3>
+<P3>0.621609968271 0.783326909627 0.9</P3>
+<P3>0.51604303207 0.856562659151 1.02857142857</P3>
+<P3>0.40195733334 0.915658398189 1.15714285714</P3>
+<P3>0.281236182028 0.959638582967 1.28571428571</P3>
+<P3>0.155872425157 0.987777195057 1.41428571429</P3>
+<P3>0.0279355492011 0.999609726389 1.54285714286</P3>
+<P3>-0.100462482696 0.994940847272 1.67142857143</P3>
+<P3>-0.227202094693 0.973847630878 1.8</P3>
+<P3>-0.350191087904 0.936678280923 1.92857142857</P3>
+<P3>-0.467399178104 0.884046383572 2.05714285714</P3>
+<P3>-0.576891511368 0.816820778453 2.18571428571</P3>
+<P3>-0.676860604349 0.736111215973 2.31428571429</P3>
+<P3>-0.765656181953 0.643250037728 2.44285714286</P3>
+<P3>-0.841812419837 0.539770182401 2.57142857143</P3>
+<P3>-0.904072142017 0.427379880234 2.7</P3>
+<P3>-0.951407574151 0.307934453817 2.82857142857</P3>
+<P3>-0.983037309882 0.183405690695 2.95714285714</P3>
+<P3>-0.998439210182 0.0558492933869 3.08571428571</P3>
+<P3>-0.997359022743 -0.0726290558484 3.21428571429</P3>
+<P3>-0.979814579141 -0.199908455304 3.34285714286</P3>
+<P3>-0.946095500473 -0.323887795361 3.47142857143</P3>
+<P3>-0.896758416334 -0.442520443295 3.6</P3>
+<P3>-0.832617776057 -0.553848028789 3.72857142857</P3>
+<P3>-0.754732403905 -0.656032772425 3.85714285714</P3>
+<P3>-0.664388020155 -0.747387823472 3.98571428571</P3>
+<P3>-0.563076016615 -0.826405106176 4.11428571429</P3>
+<P3>-0.452468836949 -0.891780214845 4.24285714286</P3>
+<P3>-0.334392368224 -0.942433946796 4.37142857143</P3>
+<P3>-0.210795799431 -0.977530117665 4.5</P3>
+<P3>-0.0837194445618 -0.996489365022 4.62857142857</P3>
+<P3>0.0447389385935 -0.998998712398 4.75714285714</P3>
+<P3>0.172458777926 -0.985016735856 4.88571428571</P3>
+<P3>0.297331693099 -0.954774247809 5.01428571429</P3>
+<P3>0.417296300382 -0.908770486805 5.14285714286</P3>
+<P3>0.53037224167 -0.847764876169 5.27142857143</P3>
+<P3>0.634692875943 -0.772764487556 5.4</P3>
+<P3>0.728536093502 -0.685007416358 5.52857142857</P3>
+<P3>0.810352744304 -0.585942343408 5.65714285714</P3>
+<P3>0.878792211104 -0.477204620371 5.78571428571</P3>
+<P3>0.932724705241 -0.360589273596 5.91428571429</P3>
+<P3>0.97125991703 -0.23802137209 6.04285714286</P3>
+<P3>0.993761712856 -0.111524248757 6.17142857143</P3>
+<P3>0.999858636383 0.0168139004843 6.3</P3>
+</Poly3d>
+</Img3d>
+</Obj3d>
+<ViewingBoxXMin Val="-0.998439210382">-9.984392104e-1</ViewingBoxXMin>
+<ViewingBoxXMax Val="1.0000000002">1.0</ViewingBoxXMax>
+<ViewingBoxYMin Val="-0.998998712598">-9.989987126e-1</ViewingBoxYMin>
+<ViewingBoxYMax Val="0.999609726589">9.996097266e-1</ViewingBoxYMax>
+<ViewingBoxZMin Val="-6.3e-010">-6.3e-10</ViewingBoxZMin>
+<ViewingBoxZMax Val="6.30000000063">6.300000001</ViewingBoxZMax>
+<Hints Scaling="Constrained"/></CoordinateSystem3d>
+</Scene3d>
+</Canvas>
