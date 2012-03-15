@@ -12,7 +12,7 @@
 msiMInsertionBase::msiMInsertionBase(nsIDOMNode* mathmlNode, 
                                  PRUint32 offset,
                                  PRUint32 mathmlType) 
-: msiMEditingBase(mathmlNode, offset, mathmlType)
+: msiMEditingBase(mathmlNode, offset, true, mathmlType)
 {
 }
   
