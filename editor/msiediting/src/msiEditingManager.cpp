@@ -153,6 +153,7 @@ nsresult MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, P
 NS_IMETHODIMP
 msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode, 
                                       PRUint32    rawOffset,
+                                      PRBool clean,
                                       msiIMathMLEditingBC ** editingBC)
                                              
 {
@@ -166,7 +167,7 @@ msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode,
     PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
     if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
     {
-      *editingBC = new msiMEditingBase(mathmlNode, offset, mathmlNodeType);
+      *editingBC = new msiMEditingBase(mathmlNode, offset, clean, mathmlNodeType);
       if (*editingBC == nsnull)
         res = NS_ERROR_OUT_OF_MEMORY;
       else
