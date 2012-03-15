@@ -89,6 +89,7 @@ nsresult msiUtils::GetMathMLInsertionInterface(nsIEditor *editor,
 nsresult msiUtils::GetMathMLEditingBC(nsIEditor *editor,
                                       nsIDOMNode * node,
                                       PRUint32   offset,
+                                      bool       clean,
                                       nsCOMPtr<msiIMathMLEditingBC> & editingBC)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -96,7 +97,7 @@ nsresult msiUtils::GetMathMLEditingBC(nsIEditor *editor,
   {
     nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
     if (msiEditor)
-      res = msiEditor->GetMathMLEditingBC(node, offset, getter_AddRefs(editingBC));
+      res = msiEditor->GetMathMLEditingBC(node, offset, clean, getter_AddRefs(editingBC));
   }
   return res;
 }                      
@@ -1897,7 +1898,7 @@ nsresult msiUtils::GetMathmlNodeType(nsIEditor * editor,
   {
     nsCOMPtr<msiIMathMLEditingBC> editingBC; 
     PRUint32 dontcare(0);
-    GetMathMLEditingBC(editor, node, dontcare, editingBC);
+    GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC)
       res = editingBC->GetMathmlType(&nodetype);
   }    
@@ -1923,7 +1924,7 @@ PRBool msiUtils::IsInputbox(nsIEditor * editor,
   {
     nsCOMPtr<msiIMathMLEditingBC> editingBC; 
     PRUint32 dontcare(0);
-    GetMathMLEditingBC(editor, node, dontcare, editingBC);
+    GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC)
       rv = IsInputbox(editingBC);
   }    
@@ -1945,7 +1946,7 @@ PRBool msiUtils::IsMleaf(nsIEditor * editor,
   {
     nsCOMPtr<msiIMathMLEditingBC> editingBC; 
     PRUint32 dontcare(0);
-    GetMathMLEditingBC(editor, node, dontcare, editingBC);
+    GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC)
       rv = IsMleaf(editingBC, allowInputbox);
   }    
@@ -1977,7 +1978,7 @@ PRBool msiUtils::IsMrow(nsIEditor * editor,
   {
     nsCOMPtr<msiIMathMLEditingBC> editingBC; 
     PRUint32 dontcare(0);
-    GetMathMLEditingBC(editor, node, dontcare, editingBC);
+    GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC)
       rv = IsMrow(editingBC);
   }    
@@ -2008,7 +2009,7 @@ PRBool msiUtils::hasMMLType(nsIEditor * editor,	nsIDOMNode * node, 	unsigned sho
   {
     nsCOMPtr<msiIMathMLEditingBC> editingBC; 
     PRUint32 dontcare(0);
-    GetMathMLEditingBC(editor, node, dontcare, editingBC);
+    GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC) {
 	  PRUint32 mathmltype = GetMathmlNodeType(editingBC);
 

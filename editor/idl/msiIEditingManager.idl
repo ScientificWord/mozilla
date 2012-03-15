@@ -30,6 +30,7 @@ interface msiIEditingManager : nsISupports
 
   void getMathMLEditingBC(in nsIDOMNode aNode,
                           in unsigned long offset,
+                          in boolean clean,  // delete empty #text nodes?
                           out msiIMathMLEditingBC editingBC);
                                   
   /**
