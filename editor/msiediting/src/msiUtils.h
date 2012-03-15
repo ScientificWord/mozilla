@@ -29,6 +29,7 @@ public:
   static nsresult GetMathMLEditingBC(nsIEditor *editor,
                                      nsIDOMNode * node,
                                      PRUint32   offset,
+                                     bool       clean,
                                      nsCOMPtr<msiIMathMLEditingBC> & editingBC);
                                      
   static nsresult GetMathMLInsertionInterface(nsIEditor *editor,

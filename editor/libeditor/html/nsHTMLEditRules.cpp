@@ -89,6 +89,7 @@
 #include "nsIDOM3Node.h"
 #include "nsIDOMSerializer.h"
 #include "msiISimpleComputeEngine.h"
+#include "msiEditingManager.h"
 #include "jcsDumpNode.h"
 
 
@@ -3064,7 +3065,7 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
         
         count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
 
-        msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+        msiUtils::GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
         if (editingBC) {
           mathmltype = msiUtils::GetMathmlNodeType(editingBC);
         }
@@ -3116,7 +3117,7 @@ void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& ch
          PRUint32 dontcare(0);
          PRUint32 mathmltype;
 
-         msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+         msiUtils::GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
          if (editingBC) {
            mathmltype = msiUtils::GetMathmlNodeType(editingBC);
          }

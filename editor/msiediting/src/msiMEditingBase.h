@@ -11,7 +11,7 @@
 class msiMEditingBase : public msiIMathMLEditingBC
 {
 public:
-  msiMEditingBase(nsIDOMNode* mathmlNode, PRUint32 offset, PRUint32 mathmlType);
+  msiMEditingBase(nsIDOMNode* mathmlNode, PRUint32 offset, PRBool clean, PRUint32 mathmlType);
   virtual ~msiMEditingBase();
 
   // nsISupports
