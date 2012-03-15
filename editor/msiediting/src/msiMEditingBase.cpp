@@ -8,10 +8,11 @@
 
 msiMEditingBase::msiMEditingBase(nsIDOMNode* mathmlNode, 
                                  PRUint32 offset,
+                                 PRBool clean,
                                  PRUint32 mathmlType) 
 : m_mathmlNode(mathmlNode), m_offset(offset), m_mathmlType(mathmlType), m_numKids(INVALID)
 {
-  if(m_mathmlNode)
+  if(m_mathmlNode && clean)
   {
     nsCOMPtr<nsIDOMNode> currChild;
     nsresult res = m_mathmlNode->GetFirstChild(getter_AddRefs(currChild));
@@ -20,14 +21,14 @@ msiMEditingBase::msiMEditingBase(nsIDOMNode* mathmlNode,
     {
       nsCOMPtr<nsIDOMNode> nextChild;
       res = currChild->GetNextSibling(getter_AddRefs(nextChild));
-      // if (msiUtils::IsWhitespace(currChild))
-      // {
-      //   nsCOMPtr<nsIDOMNode> dontcare;
-      //   res = m_mathmlNode->RemoveChild(currChild, getter_AddRefs(dontcare));
-      //   if (m_offset <= LAST_VALID && m_offset > index)
-      //     m_offset -= 1;
-      // }
-      // else
+      if (msiUtils::IsWhitespace(currChild))
+      {
+        nsCOMPtr<nsIDOMNode> dontcare;
+        res = m_mathmlNode->RemoveChild(currChild, getter_AddRefs(dontcare));
+        if (m_offset <= LAST_VALID && m_offset > index)
+          m_offset -= 1;
+      }
+      else
         index += 1;
       currChild = nextChild;    
     }

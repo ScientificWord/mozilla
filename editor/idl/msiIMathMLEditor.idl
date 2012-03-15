@@ -50,6 +50,7 @@ interface msiIMathMLEditor : nsISupports
    */
   [noscript]void GetMathMLEditingBC(in nsIDOMNode aNode,
                           in unsigned long offset,
+                          in boolean clean,
                           out msiIMathMLEditingBC editingBC);
                    
   /* GetMathMLInsertionInterface returns a msiIMathMLInsertion object based

@@ -168,12 +168,12 @@ msiEditor::RemoveEventListeners()
 //Begin msiIMathMLEditor
 
 NS_IMETHODIMP 
-msiEditor::GetMathMLEditingBC(nsIDOMNode * node, PRUint32 offset,
+msiEditor::GetMathMLEditingBC(nsIDOMNode * node, PRUint32 offset, PRBool clean,
                               msiIMathMLEditingBC** editingBC)
 {
   nsresult res(NS_ERROR_FAILURE);
   if (m_msiEditingMan)
-    res = m_msiEditingMan->GetMathMLEditingBC(node, offset, editingBC);
+    res = m_msiEditingMan->GetMathMLEditingBC(node, offset, clean, editingBC);
   return res;
 }
 
@@ -3277,7 +3277,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
     else if ( tagName.EqualsLiteral("mrow") )  //Here we must test to see whether this is in fact an mfenced, in which case it will be both the splittable and the split parent.
     {
 	    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
-      GetMathMLEditingBC(nextNode, 0, getter_AddRefs(editingBC));
+      GetMathMLEditingBC(nextNode, 0, true, getter_AddRefs(editingBC));
       if (editingBC)
       {
         PRUint32 mmlType(msiIMathMLEditingBC::MATHML_UNKNOWN);
