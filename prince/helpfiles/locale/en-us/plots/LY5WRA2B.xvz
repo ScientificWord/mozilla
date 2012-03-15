@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<!DOCTYPE Canvas SYSTEM "muplotml.dtd">
+<Canvas id="plotObject344" Consistent="1" Layout="Tabular" FooterFont="&apos;sans-serif&apos; 12" OutputUnits="MM" Height="37.5666" FooterAlignment="Center" BackgroundColor="#E1E1E1" BorderColor="#808080" BorderWidth="0" LeftMargin="1" AutoPlay="0" RightMargin="1" Width="75.9206" AnimationStyle="RunOnce" Spacing="1" Columns="0" Rows="0" HeaderFont="&apos;sans-serif&apos; 12" HeaderAlignment="Center" BottomMargin="1" TopMargin="1">
+<Scene2dStyle BackgroundTransparent="0" FooterFont="&apos;sans-serif&apos; 12" Height="80" LegendPlacement="Bottom" BackgroundColor="#E1E1E1" FooterAlignment="Center" LegendFont="&apos;sans-serif&apos; 8" BorderColor="#808080" BorderWidth="0" LegendAlignment="Center" LeftMargin="1" RightMargin="1" Width="120" LegendVisible="0" HeaderFont="&apos;sans-serif&apos; 12" HeaderAlignment="Center" BottomMargin="1" TopMargin="1"/>
+<CoordinateSystem2dStyle Scaling="Unconstrained" XTicksNumber="Normal" XAxisTitleAlignment="End" YTicksVisible="1" SubgridLineColor="#CCCCCC" SubgridLineWidth="0.1" YTicksLabelsVisible="1" AxesLineColor="#000000" AxesLineWidth="0.18" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" YAxisTitleAlignment="End" YTicksNumber="Normal" CoordinateType="LinLin" GridLineStyle="Solid" XGridVisible="0" GridInFront="0" XAxisVisible="1" SubgridLineStyle="Solid" XSubgridVisible="0" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" XTicksLabelStyle="Horizontal" XTicksBetween="1" YGridVisible="0" YAxisTitleOrientation="Horizontal" Axes="Automatic" AxesInFront="0" YAxisVisible="1" XTicksVisible="1" TicksLength="2" GridLineColor="#999999" YSubgridVisible="0" XTicksLabelsVisible="1" GridLineWidth="0.1" YTicksLabelStyle="Horizontal" YTicksBetween="1" AxesTips="0"/>
+<ObjStyle Type="Default" FillColor="#FF0000" LineColor2="#FF1493" VerticalAsymptotesStyle="Dashed" FillPattern="DiagonalLines" TimeBegin="0" XMesh="11" Tubular="0" TipLength="4" VerticalAsymptotesVisible="1" TitleFont="&apos;sans-serif&apos; 11" LineStyle="Solid" LineColorDirectionX="0" OrthogonalProjection="0" AffectViewingBox="1" LineColorDirectionY="1" TitleAlignment="Center" LineColorDirectionZ="1" Frames="50" PointSize="1.5" ArrowLength="Proportional" UMesh="25" FillColorType="Dichromatic" XLinesVisible="1" VisibleAfterEnd="1" LightColor="#FFFFFF" AdaptiveMesh="0" XSubmesh="0" Extension="Finite" LinesVisible="1" YMesh="11" FillColor2="#6495ED" Shading="Smooth" PointStyle="FilledCircles" FillColorDirectionX="0" TimeEnd="10" CameraCoordinates="0" ULinesVisible="1" VisibleBeforeBegin="1" FillStyle="EvenOdd" FillColorDirectionY="0" VerticalAsymptotesColor="#808080" USubmesh="0" FillColorDirectionZ="1" VerticalAsymptotesWidth="0.2" VMesh="25" YLinesVisible="1" YSubmesh="0" TubeDiameter="2.5" Filled="1" ZMesh="11" PointsVisible="0" LineColor="#0000FF" LineWidth="0.35" LegendEntry="0" VLinesVisible="1" VSubmesh="0" TipAngle="0.418879020479" TipStyle="Filled" KeepUpVector="1" DiscontinuitySearch="1" MeshVisible="0" Closed="0" PointColor="#191970" LineColorType="Flat"/>
+<ObjStyle Type="Polygon2d" LegendColor="LineColor" Filled="0"/>
+<Scene2d id="plotObject345" Consistent="1" Left="0" Bottom="0" BackgroundColor="#E1E1E1"><CoordinateSystem2dStyle AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Unconstrained" Axes="Automatic" AxesTips="0"/>
+<ObjStyle Type="Polygon2d" LegendColor="LineColor"/>
+<CoordinateSystem2d id="plotObject346" Consistent="1" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Unconstrained" Axes="Automatic" AxesTips="0" AutoViewingBox="15"><AxesOriginX Val="0">0</AxesOriginX>
+<AxesOriginY Val="0">0</AxesOriginY>
+<XAxisTitle>x</XAxisTitle>
+<YAxisTitle>y</YAxisTitle>
+<XTicksAnchor Val="0">0</XTicksAnchor>
+<XTicksDistance Val="0">0</XTicksDistance>
+<YTicksAnchor Val="0">0</YTicksAnchor>
+<YTicksDistance Val="0">0</YTicksDistance>
+<ObjStyle Type="Polygon2d" LegendColor="LineColor"/>
+<Obj2d Type="Polygon2d" id="plotObject341" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.2" LineStyle="Solid" LineColorType="Flat" LineColor="#FF0000"><Points2d><Point2d><IExpr>0.0</IExpr>
+<IExpr>1.0</IExpr>
+</Point2d>
+<Point2d><IExpr>1.0e-1</IExpr>
+<IExpr>1.116</IExpr>
+</Point2d>
+<Point2d><IExpr>2.0e-1</IExpr>
+<IExpr>1.267</IExpr>
+</Point2d>
+<Point2d><IExpr>3.0e-1</IExpr>
+<IExpr>1.458</IExpr>
+</Point2d>
+<Point2d><IExpr>4.0e-1</IExpr>
+<IExpr>1.695</IExpr>
+</Point2d>
+<Point2d><IExpr>5.0e-1</IExpr>
+<IExpr>1.98</IExpr>
+</Point2d>
+<Point2d><IExpr>6.0e-1</IExpr>
+<IExpr>2.326</IExpr>
+</Point2d>
+<Point2d><IExpr>7.0e-1</IExpr>
+<IExpr>2.726</IExpr>
+</Point2d>
+<Point2d><IExpr>8.0e-1</IExpr>
+<IExpr>3.187</IExpr>
+</Point2d>
+<Point2d><IExpr>9.0e-1</IExpr>
+<IExpr>3.708</IExpr>
+</Point2d>
+<Point2d><IExpr>1.0</IExpr>
+<IExpr>4.284</IExpr>
+</Point2d>
+</Points2d>
+<Img2d><Poly2d><P2>0 1</P2>
+<P2>0.1 1.116</P2>
+<P2>0.2 1.267</P2>
+<P2>0.3 1.458</P2>
+<P2>0.4 1.695</P2>
+<P2>0.5 1.98</P2>
+<P2>0.6 2.326</P2>
+<P2>0.7 2.726</P2>
+<P2>0.8 3.187</P2>
+<P2>0.9 3.708</P2>
+<P2>1 4.284</P2>
+</Poly2d>
+</Img2d>
+</Obj2d>
+<Obj2d Type="Polygon2d" id="plotObject342" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.2" LineStyle="Solid" LineColorType="Flat" LineColor="#00C800"><Points2d><Point2d><IExpr>0.0</IExpr>
+<IExpr>1.0</IExpr>
+</Point2d>
+<Point2d><IExpr>1.0e-1</IExpr>
+<IExpr>1.0938</IExpr>
+</Point2d>
+<Point2d><IExpr>2.0e-1</IExpr>
+<IExpr>1.1695</IExpr>
+</Point2d>
+<Point2d><IExpr>3.0e-1</IExpr>
+<IExpr>1.2173</IExpr>
+</Point2d>
+<Point2d><IExpr>4.0e-1</IExpr>
+<IExpr>1.2253</IExpr>
+</Point2d>
+<Point2d><IExpr>5.0e-1</IExpr>
+<IExpr>1.1791</IExpr>
+</Point2d>
+<Point2d><IExpr>6.0e-1</IExpr>
+<IExpr>1.0619</IExpr>
+</Point2d>
+<Point2d><IExpr>7.0e-1</IExpr>
+<IExpr>8.542e-1</IExpr>
+</Point2d>
+<Point2d><IExpr>8.0e-1</IExpr>
+<IExpr>5.344e-1</IExpr>
+</Point2d>
+<Point2d><IExpr>9.0e-1</IExpr>
+<IExpr>7.77e-2</IExpr>
+</Point2d>
+<Point2d><IExpr>1.0</IExpr>
+<IExpr>-5.424e-1</IExpr>
+</Point2d>
+</Points2d>
+<Img2d><Poly2d><P2>0 1</P2>
+<P2>0.1 1.0938</P2>
+<P2>0.2 1.1695</P2>
+<P2>0.3 1.2173</P2>
+<P2>0.4 1.2253</P2>
+<P2>0.5 1.1791</P2>
+<P2>0.6 1.0619</P2>
+<P2>0.7 0.8542</P2>
+<P2>0.8 0.5344</P2>
+<P2>0.9 0.0777</P2>
+<P2>1 -0.5424</P2>
+</Poly2d>
+</Img2d>
+</Obj2d>
+<Obj2d Type="Polygon2d" id="plotObject343" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.2" LineStyle="Solid" LineColorType="Flat" LineColor="#0000FF"><Points2d><Point2d><IExpr>0.0</IExpr>
+<IExpr>1.0</IExpr>
+</Point2d>
+<Point2d><IExpr>1.0e-1</IExpr>
+<IExpr>8.842e-1</IExpr>
+</Point2d>
+<Point2d><IExpr>2.0e-1</IExpr>
+<IExpr>7.332e-1</IExpr>
+</Point2d>
+<Point2d><IExpr>3.0e-1</IExpr>
+<IExpr>5.418e-1</IExpr>
+</Point2d>
+<Point2d><IExpr>4.0e-1</IExpr>
+<IExpr>3.047e-1</IExpr>
+</Point2d>
+<Point2d><IExpr>5.0e-1</IExpr>
+<IExpr>1.7e-2</IExpr>
+</Point2d>
+<Point2d><IExpr>6.0e-1</IExpr>
+<IExpr>-3.256e-1</IExpr>
+</Point2d>
+<Point2d><IExpr>7.0e-1</IExpr>
+<IExpr>-7.265e-1</IExpr>
+</Point2d>
+<Point2d><IExpr>8.0e-1</IExpr>
+<IExpr>-1.1873</IExpr>
+</Point2d>
+<Point2d><IExpr>9.0e-1</IExpr>
+<IExpr>-1.7077</IExpr>
+</Point2d>
+<Point2d><IExpr>1.0</IExpr>
+<IExpr>-2.2842</IExpr>
+</Point2d>
+</Points2d>
+<Img2d><Poly2d><P2>0 1</P2>
+<P2>0.1 0.8842</P2>
+<P2>0.2 0.7332</P2>
+<P2>0.3 0.5418</P2>
+<P2>0.4 0.3047</P2>
+<P2>0.5 0.017</P2>
+<P2>0.6 -0.3256</P2>
+<P2>0.7 -0.7265</P2>
+<P2>0.8 -1.1873</P2>
+<P2>0.9 -1.7077</P2>
+<P2>1 -2.2842</P2>
+</Poly2d>
+</Img2d>
+</Obj2d>
+<ViewingBoxXMin Val="0">0.0</ViewingBoxXMin>
+<ViewingBoxXMax Val="1">1.0</ViewingBoxXMax>
+<ViewingBoxYMin Val="-2.2842">-2.2842</ViewingBoxYMin>
+<ViewingBoxYMax Val="4.284">4.284</ViewingBoxYMax>
+<Hints Scaling="Unconstrained"/></CoordinateSystem2d>
+</Scene2d>
+</Canvas>
