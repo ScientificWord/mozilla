@@ -205,6 +205,57 @@ nsresult TypeInState::SetProp(nsIAtom *aProp, const nsString &aAttr, const nsStr
   return NS_OK;
 }
 
+nsresult TypeInState::ReadSetProps( nsAString &setPropsString)
+{
+  PRUint32 i;
+  PRUint32 length;
+  PropItem * item;
+  nsString str;
+  nsString semi = NS_LITERAL_STRING(";");
+  nsString comma = NS_LITERAL_STRING(",");
+  length = mSetArray.Count();
+  for (i = 0; i < length; i++) {
+    item = (PropItem *) mSetArray[i];
+    if ( item->tag ) {
+      item->tag->ToString(str);
+      setPropsString += str;
+    }
+    setPropsString += comma;
+    setPropsString += item->attr;
+    setPropsString += comma;
+    setPropsString += item->value;
+    if ( i + 1 < length) {
+      setPropsString += semi;
+    }
+  }
+  return NS_OK;
+}
+
+nsresult TypeInState::ReadClearedProps( nsAString &clearPropsString)
+{
+  PRUint32 i;
+  PRUint32 length;
+  PropItem * item;
+  nsString str;
+  nsString semi = NS_LITERAL_STRING(";");
+  nsString comma = NS_LITERAL_STRING(",");
+  length = mClearedArray.Count();
+  for (i = 0; i < length; i++) {
+    item = (PropItem *) mClearedArray[i];
+    if ( item->tag ) {
+      item->tag->ToString(str);
+      clearPropsString += str;
+    }
+    clearPropsString += comma;
+    clearPropsString += item->attr;
+    clearPropsString += comma;
+    clearPropsString += item->value;
+    if ( i + 1 < length) {
+      clearPropsString += semi;
+    }
+  }
+  return NS_OK;
+}
 
 nsresult TypeInState::ClearAllProps()
 {
