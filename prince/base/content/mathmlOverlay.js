@@ -152,7 +152,8 @@ var msiToggleMathText =
 		{
 	    if (this.currentState() == "t")
 				insertinlinemath();
-	    toggleMathText(editor);
+      else
+	      toggleMathText(editor);
 			editorElement.contentWindow.focus();
 		}
     return;
