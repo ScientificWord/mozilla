@@ -8,10 +8,11 @@
 
 msiMEditingBase::msiMEditingBase(nsIDOMNode* mathmlNode, 
                                  PRUint32 offset,
+                                 PRBool clean,
                                  PRUint32 mathmlType) 
 : m_mathmlNode(mathmlNode), m_offset(offset), m_mathmlType(mathmlType), m_numKids(INVALID)
 {
-  if(m_mathmlNode)
+  if(m_mathmlNode && clean)
   {
     nsCOMPtr<nsIDOMNode> currChild;
     nsresult res = m_mathmlNode->GetFirstChild(getter_AddRefs(currChild));

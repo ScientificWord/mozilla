@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<!DOCTYPE Canvas SYSTEM "muplotml.dtd">
+<Canvas id="plotObject59" Consistent="1" Layout="Tabular" FooterFont="&apos;sans-serif&apos; 12" OutputUnits="MM" Height="50.2666" FooterAlignment="Center" BackgroundColor="#E1E1E1" BorderColor="#808080" BorderWidth="0" LeftMargin="1" AutoPlay="0" RightMargin="1" Width="50.2666" AnimationStyle="RunOnce" Spacing="1" Columns="0" Rows="0" HeaderFont="&apos;sans-serif&apos; 12" HeaderAlignment="Center" BottomMargin="1" TopMargin="1">
+<Scene2dStyle BackgroundTransparent="0" FooterFont="&apos;sans-serif&apos; 12" Height="80" LegendPlacement="Bottom" BackgroundColor="#E1E1E1" FooterAlignment="Center" LegendFont="&apos;sans-serif&apos; 8" BorderColor="#808080" BorderWidth="0" LegendAlignment="Center" LeftMargin="1" RightMargin="1" Width="120" LegendVisible="0" HeaderFont="&apos;sans-serif&apos; 12" HeaderAlignment="Center" BottomMargin="1" TopMargin="1"/>
+<CoordinateSystem2dStyle Scaling="Unconstrained" XTicksNumber="Normal" XAxisTitleAlignment="End" YTicksVisible="1" SubgridLineColor="#CCCCCC" SubgridLineWidth="0.1" YTicksLabelsVisible="1" AxesLineColor="#000000" AxesLineWidth="0.18" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" YAxisTitleAlignment="End" YTicksNumber="Normal" CoordinateType="LinLin" GridLineStyle="Solid" XGridVisible="0" GridInFront="0" XAxisVisible="1" SubgridLineStyle="Solid" XSubgridVisible="0" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" XTicksLabelStyle="Horizontal" XTicksBetween="1" YGridVisible="0" YAxisTitleOrientation="Horizontal" Axes="Automatic" AxesInFront="0" YAxisVisible="1" XTicksVisible="1" TicksLength="2" GridLineColor="#999999" YSubgridVisible="0" XTicksLabelsVisible="1" GridLineWidth="0.1" YTicksLabelStyle="Horizontal" YTicksBetween="1" AxesTips="0"/>
+<ObjStyle Type="Default" FillColor="#FF0000" LineColor2="#FF1493" VerticalAsymptotesStyle="Dashed" FillPattern="DiagonalLines" TimeBegin="0" XMesh="11" Tubular="0" TipLength="4" VerticalAsymptotesVisible="1" TitleFont="&apos;sans-serif&apos; 11" LineColorDirectionX="0" LineStyle="Solid" OrthogonalProjection="0" AffectViewingBox="1" LineColorDirectionY="1" TitleAlignment="Center" LineColorDirectionZ="1" Frames="50" PointSize="1.5" ArrowLength="Proportional" UMesh="25" FillColorType="Dichromatic" XLinesVisible="1" VisibleAfterEnd="1" LightColor="#FFFFFF" AdaptiveMesh="0" XSubmesh="0" Extension="Finite" LinesVisible="1" YMesh="11" FillColor2="#6495ED" Shading="Smooth" PointStyle="FilledCircles" FillColorDirectionX="0" TimeEnd="10" CameraCoordinates="0" ULinesVisible="1" VisibleBeforeBegin="1" FillStyle="EvenOdd" FillColorDirectionY="0" VerticalAsymptotesColor="#808080" USubmesh="0" FillColorDirectionZ="1" VerticalAsymptotesWidth="0.2" VMesh="25" YLinesVisible="1" YSubmesh="0" TubeDiameter="2.5" Filled="1" ZMesh="11" PointsVisible="0" LineColor="#0000FF" LineWidth="0.35" LegendEntry="0" VLinesVisible="1" VSubmesh="0" TipAngle="0.418879020479" TipStyle="Filled" KeepUpVector="1" DiscontinuitySearch="1" MeshVisible="0" Closed="0" PointColor="#191970" LineColorType="Flat"/>
+<ObjStyle Type="Curve2d" LegendColor="LineColor" LegendEntry="1" UMesh="121"/>
+<Scene2d id="plotObject60" Consistent="1" Left="0" Bottom="0" BackgroundColor="#E1E1E1"><CoordinateSystem2dStyle AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Unconstrained" Axes="Automatic" AxesTips="0"/>
+<ObjStyle Type="Curve2d" LegendColor="LineColor"/>
+<CoordinateSystem2d id="plotObject61" Consistent="1" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Unconstrained" Axes="Automatic" AxesTips="0" AutoViewingBox="15"><AxesOriginX Val="0">0</AxesOriginX>
+<AxesOriginY Val="0">0</AxesOriginY>
+<XAxisTitle>x</XAxisTitle>
+<YAxisTitle>y</YAxisTitle>
+<XTicksAnchor Val="0">0</XTicksAnchor>
+<XTicksDistance Val="0">0</XTicksDistance>
+<YTicksAnchor Val="0">0</YTicksAnchor>
+<YTicksDistance Val="0">0</YTicksDistance>
+<ObjStyle Type="Curve2d" LegendColor="LineColor"/>
+<Obj2d Type="Curve2d" id="plotObject58" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.2" LineStyle="Solid" UMesh="100" LineColorType="Flat" LineColor="#FF0000" LinesVisible="1" DiscontinuitySearch="1"><Expr Opt="UName">q3x</Expr>
+<Expr Opt="UMin">1.0e-3</Expr>
+<Expr Opt="UMax">1</Expr>
+<Expr Opt="XFunction">q3x</Expr>
+<Expr Opt="YFunction">q3x^(2/3)</Expr>
+<Img2d><Poly2d Filled="0" Closed="0"><P2>0.001 0.01</P2>
+<P2>0.0110909090909 0.049733012149</P2>
+<P2>0.0211818181818 0.0765553401664</P2>
+<P2>0.0312727272727 0.0992606629814</P2>
+<P2>0.0413636363636 0.119604028464</P2>
+<P2>0.0514545454545 0.138340443624</P2>
+<P2>0.0615454545455 0.155882485672</P2>
+<P2>0.0716363636364 0.172486729722</P2>
+<P2>0.0817272727273 0.188326457716</P2>
+<P2>0.0918181818182 0.203525638437</P2>
+<P2>0.101909090909 0.218176825433</P2>
+<P2>0.112 0.232351429343</P2>
+<P2>0.122090909091 0.246106009363</P2>
+<P2>0.132181818182 0.259486328322</P2>
+<P2>0.142272727273 0.272530076306</P2>
+<P2>0.152363636364 0.285268763339</P2>
+<P2>0.162454545455 0.297729072781</P2>
+<P2>0.172545454545 0.309933852985</P2>
+<P2>0.182636363636 0.321902859354</P2>
+<P2>0.192727272727 0.333653319908</P2>
+<P2>0.202818181818 0.345200373348</P2>
+<P2>0.212909090909 0.35655741326</P2>
+<P2>0.223 0.367736362055</P2>
+<P2>0.233090909091 0.378747891504</P2>
+<P2>0.243181818182 0.389601602135</P2>
+<P2>0.253272727273 0.400306170548</P2>
+<P2>0.263363636364 0.410869471436</P2>
+<P2>0.273454545455 0.421298679447</P2>
+<P2>0.283545454545 0.43160035484</P2>
+<P2>0.293636363636 0.441780515998</P2>
+<P2>0.303727272727 0.451844701194</P2>
+<P2>0.313818181818 0.461798021504</P2>
+<P2>0.323909090909 0.47164520638</P2>
+<P2>0.334 0.481390643101</P2>
+<P2>0.344090909091 0.491038411081</P2>
+<P2>0.354181818182 0.50059231183</P2>
+<P2>0.364272727273 0.510055895238</P2>
+<P2>0.374363636364 0.519432482712</P2>
+<P2>0.384454545455 0.528725187622</P2>
+<P2>0.394545454545 0.537936933435</P2>
+<P2>0.404636363636 0.547070469836</P2>
+<P2>0.414727272727 0.556128387126</P2>
+<P2>0.424818181818 0.565113129098</P2>
+<P2>0.434909090909 0.574027004597</P2>
+<P2>0.445 0.582872197919</P2>
+<P2>0.455090909091 0.591650778193</P2>
+<P2>0.465181818182 0.600364707868</P2>
+<P2>0.475272727273 0.609015850394</P2>
+<P2>0.485363636364 0.617605977214</P2>
+<P2>0.495454545455 0.626136774113</P2>
+<P2>0.505545454545 0.634609847019</P2>
+<P2>0.515636363636 0.6430267273</P2>
+<P2>0.525727272727 0.65138887661</P2>
+<P2>0.535818181818 0.659697691339</P2>
+<P2>0.545909090909 0.667954506697</P2>
+<P2>0.556 0.676160600475</P2>
+<P2>0.566090909091 0.684317196505</P2>
+<P2>0.576181818182 0.692425467859</P2>
+<P2>0.586272727273 0.700486539806</P2>
+<P2>0.596363636364 0.708501492544</P2>
+<P2>0.606454545455 0.716471363739</P2>
+<P2>0.616545454545 0.724397150875</P2>
+<P2>0.626636363636 0.732279813442</P2>
+<P2>0.636727272727 0.740120274969</P2>
+<P2>0.646818181818 0.747919424921</P2>
+<P2>0.656909090909 0.755678120464</P2>
+<P2>0.667 0.763397188118</P2>
+<P2>0.677090909091 0.771077425294</P2>
+<P2>0.687181818182 0.77871960174</P2>
+<P2>0.697272727273 0.786324460893</P2>
+<P2>0.707363636364 0.793892721142</P2>
+<P2>0.717454545455 0.801425077017</P2>
+<P2>0.727545454545 0.808922200308</P2>
+<P2>0.737636363636 0.816384741113</P2>
+<P2>0.747727272727 0.82381332882</P2>
+<P2>0.757818181818 0.831208573046</P2>
+<P2>0.767909090909 0.838571064503</P2>
+<P2>0.778 0.845901375832</P2>
+<P2>0.788090909091 0.853200062378</P2>
+<P2>0.798181818182 0.860467662928</P2>
+<P2>0.808272727273 0.86770470041</P2>
+<P2>0.818363636364 0.874911682546</P2>
+<P2>0.828454545455 0.882089102481</P2>
+<P2>0.838545454545 0.889237439372</P2>
+<P2>0.848636363636 0.896357158947</P2>
+<P2>0.858727272727 0.903448714037</P2>
+<P2>0.868818181818 0.910512545081</P2>
+<P2>0.878909090909 0.917549080604</P2>
+<P2>0.889 0.924558737671</P2>
+<P2>0.899090909091 0.931541922323</P2>
+<P2>0.909181818182 0.938499029985</P2>
+<P2>0.919272727273 0.945430445862</P2>
+<P2>0.929363636364 0.952336545309</P2>
+<P2>0.939454545455 0.959217694187</P2>
+<P2>0.949545454545 0.966074249204</P2>
+<P2>0.959636363636 0.97290655824</P2>
+<P2>0.969727272727 0.979714960651</P2>
+<P2>0.979818181818 0.986499787569</P2>
+<P2>0.989909090909 0.993261362181</P2>
+<P2>1 1</P2>
+</Poly2d>
+</Img2d>
+</Obj2d>
+<ViewingBoxXMin Val="0.0009999999001">9.999999001e-4</ViewingBoxXMin>
+<ViewingBoxXMax Val="1.0000000001">1.0</ViewingBoxXMax>
+<ViewingBoxYMin Val="0.009999999901">9.999999901e-3</ViewingBoxYMin>
+<ViewingBoxYMax Val="1.0000000001">1.0</ViewingBoxYMax>
+<Hints Scaling="Constrained"/></CoordinateSystem2d>
+</Scene2d>
+</Canvas>
