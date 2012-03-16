@@ -35,15 +35,18 @@
     <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
   </broadcasterset -->
     
-  <groupbox>
-    <hbox>
-    <description id="importLoadingText" value="&importLoading.label;" />
-		<msibutton id="stopImportButton" label="&stopImportLoadingButton.label;" accesskey="&stopImportLoadingButton.accesskey;" oncommand="forceEndLoad(this);"/>
-    </hbox>
-    <hbox>
-    <description id="texImportLoadingText">&texImportLoading.label;</description>
-		<msibutton id="stopImportTeXButton" label="&stopImportTeXLoadingButton.label;" accesskey="&stopImportTeXLoadingButton.accesskey;" oncommand="forceEndLoad(this);"/>
-    </hbox>
-  </groupbox>
+  <hbox>
+    <groupbox>
+      <hbox>
+      <description id="importLoadingText" value="&importLoading.label;" />
+		  <msibutton id="stopImportButton" label="&stopImportLoadingButton.label;" accesskey="&stopImportLoadingButton.accesskey;" oncommand="forceEndLoad(this);"/>
+      </hbox>
+      <hbox>
+      <description id="texImportLoadingText">&texImportLoading.label;</description>
+		  <msibutton id="stopImportTeXButton" label="&stopImportTeXLoadingButton.label;" accesskey="&stopImportTeXLoadingButton.accesskey;" oncommand="forceEndLoad(this);"/>
+      </hbox>
+    </groupbox>
+    <msibutton dlgtype="accept" label="&closeButton.label;"/>
+  </hbox>
 
 </dialog>
