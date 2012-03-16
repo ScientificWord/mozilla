@@ -9,5 +9,6 @@
 <!ENTITY texImportLoading.label "The graphic -file- is being converted so it can be typeset.">
 <!ENTITY stopImportTeXLoadingButton.label "Stop typeset conversion">
 <!ENTITY stopImportTeXLoadingButton.accesskey "t">
+<!ENTITY closeButton.label "Cancel all">
 
 <!-- <!ENTITY .tooltip "">  -->
