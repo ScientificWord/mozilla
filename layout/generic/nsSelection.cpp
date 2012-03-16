@@ -1230,6 +1230,27 @@ nsFrameSelection::Init(nsIPresShell *aShell, nsIContent *aLimiter)
 extern PRBool IsMathFrame( nsIFrame * aFrame );
 extern PRBool IsParentMathFrame( nsIFrame * aFrame );
 
+PRBool isMathNode( nsIDOMNode * aNode)
+{
+  nsresult res;
+  nsAutoString sNamespace;
+  nsCOMPtr<nsIDOMNode> pNode;
+  PRUint16 nodeType;
+  aNode->GetNodeType(&nodeType);
+ 
+  while (nodeType == 3) { // nsINode::eTEXT) {
+    aNode->GetParentNode(getter_AddRefs(pNode));
+    aNode = pNode;
+    aNode->GetNodeType(&nodeType);
+  }
+
+  res = aNode->GetNamespaceURI(sNamespace);
+  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML")) 
+  {
+    return PR_TRUE;
+  }
+  return PR_FALSE;
+}
 
 nsresult
 nsFrameSelection::MoveCaret(PRUint32          aKeycode,
@@ -1325,37 +1346,38 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   
   nsIFrame *frame;
   result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
-  // in mathml we don't want the changes given by the above line.
   PRBool isMath = PR_FALSE;
-  if (NS_SUCCEEDED(result) && frame)
-  {
-    nsIFrame *tempFrame;
-    nsCOMPtr<nsIContent> tempContent;
-    PRInt32 SaveOffsetUsed = offsetused;
-
-    if (IsMathFrame(frame) || IsParentMathFrame(frame)) // the returned frame was math or contained in math (a text frame), so undo the GetPrimaryFrameForFocusNode.
+  // in mathml we don't want the changes given by the above line.
+  if (isMathNode(weakNodeUsed)) {
+    if (NS_SUCCEEDED(result) && frame)
     {
-      isMath = PR_TRUE;
-      tempFrame = frame;
-      tempContent = do_QueryInterface(weakNodeUsed);
-      while ( tempFrame && (tempFrame->GetContent() != tempContent)) tempFrame = tempFrame->GetParent();
-      if (tempFrame)
-      {
-        frame = tempFrame;
-        // adjust offset to account for ignorable whitespace nodes.
-        for (PRInt32 i = 0; i < SaveOffsetUsed; i++)
-        {
-          nsCOMPtr<nsIContent> childNode = tempContent->GetChildAt(i);
-          if (childNode && childNode->TextIsOnlyWhitespace())
-          {
-            offsetused--;
-          }
-        }
-//		if (aKeycode == nsIDOMKeyEvent::DOM_VK_LEFT) offsetused--;
-      }
-    }
-  }  
+      nsIFrame *tempFrame;
+      nsCOMPtr<nsIContent> tempContent;
+      PRInt32 SaveOffsetUsed = offsetused;
 
+      if (IsMathFrame(frame) || IsParentMathFrame(frame)) // the returned frame was math or contained in math (a text frame), so undo the GetPrimaryFrameForFocusNode.
+      {
+        isMath = PR_TRUE;
+        tempFrame = frame;
+        tempContent = do_QueryInterface(weakNodeUsed);
+        while ( tempFrame && (tempFrame->GetContent() != tempContent)) tempFrame = tempFrame->GetParent();
+        if (tempFrame)
+        {
+          frame = tempFrame;
+          // adjust offset to account for ignorable whitespace nodes.
+          for (PRInt32 i = 0; i < SaveOffsetUsed; i++)
+          {
+            nsCOMPtr<nsIContent> childNode = tempContent->GetChildAt(i);
+            if (childNode && childNode->TextIsOnlyWhitespace())
+            {
+              offsetused--;
+            }
+          }
+  //		if (aKeycode == nsIDOMKeyEvent::DOM_VK_LEFT) offsetused--;
+        }
+      }
+    }  
+  }
   if (NS_FAILED(result) || !frame)
     return result?result:NS_ERROR_FAILURE;
 

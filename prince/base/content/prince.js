@@ -47,8 +47,8 @@ function GetCurrentEditor() {
   try {
 	  var editorElement = msiGetActiveEditorElement();
 	  editor = msiGetEditor(editorElement);
-    editor instanceof Components.interfaces.nsIPlaintextEditor;
-    editor instanceof Components.interfaces.nsIHTMLEditor;
+//    editor instanceof Components.interfaces.nsIPlaintextEditor;
+//    editor instanceof Components.interfaces.nsIHTMLEditor;
   } catch (e) { 
 		throw ("Failure in GetCurrentEditor: \n" + e.message); 
 	}
@@ -423,10 +423,21 @@ function openTeX()
 // Returns true if the TeX file was created.
 // outTeXfile is an nsILocalFile. If it is null, create main.tex in the document's 'tex' directory.
 
-function documentAsTeXFile( document, outTeXfile, compileInfo )
+function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
 {
   dump("\nDocument as TeXFile\n");
   if (!document) return false;
+  // determine the compiler
+  var compiler = "pdflatex";
+  // Determine which compiler to use
+  var texprogNode;
+  var texprogNodes = document.getElementsByTagName("texprogram");
+  if (texprogNodes.length > 0)
+  {
+    texprogNode = texprogNodes[0];
+    if (texprogNode.hasAttribute("prog")) compiler = texprogNode.getAttribute("prog");
+  }
+  
   var xslfiles = processingInstructionsList(document, "sw-xslt", false);
   //  if nothing returned, use the default xlt
   if (xslfiles.length < 1) xslfiles = ["latex.xsl"];
@@ -455,6 +466,10 @@ function documentAsTeXFile( document, outTeXfile, compileInfo )
   var xslPath;
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
+  if (compiler === "pdflatex")  //convert utf-8 characters to tex strings
+  {
+    str = editor.filterCharsForLaTeX(str);
+  }
   compileInfo.runMakeIndex = /\\makeindex/.test(str);
   compileInfo.runBibTeX = /\\bibliography/.test(str);
   compileInfo.passCount = 1;
@@ -545,7 +560,8 @@ function currentFileName()
 
 function exportTeX()
 {
-  var editor = GetCurrentEditor();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   if (!editor) return;
   uri = editor.document.documentURI;
   checkPackageDependenciesForEditor(editor);
@@ -560,7 +576,7 @@ function exportTeX()
   var compileInfo = new Object();
   var dialogResult = fp.show();
   if (dialogResult != msIFilePicker.returnCancel)
-    if (!documentAsTeXFile(editor.document, fp.file, compileInfo ))
+    if (!documentAsTeXFile(editor, editor.document, fp.file, compileInfo ))
       throw("TeX file not created");
 }
 
@@ -570,7 +586,8 @@ function exportToWeb()
   dump("\nExport to Web\n");
 
   if (currentFileName().length < 0) return;
-  var editor = GetCurrentEditor();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   if (!editor) return;
 
    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
@@ -739,7 +756,8 @@ function printPDFFile(infile)
 // Returns true if everything succeeded. 
 function compileDocument()
 {
-  var editor = GetCurrentEditor();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   if (!editor) return null;
   var compiler = "pdflatex";
   // Determine which compiler to use
@@ -750,7 +768,6 @@ function compileDocument()
     texprogNode = texprogNodes[0];
     if (texprogNode.hasAttribute("prog")) compiler = texprogNode.getAttribute("prog");
   }
-  var editorElement = msiGetTopLevelEditorElement();
   checkPackageDependenciesForEditor(editor);
   var pdfViewer = document.getElementById("preview-frame");
   if (pdfViewer && (pdfViewer.src != "about:blank"))
@@ -785,7 +802,7 @@ function compileDocument()
     dump("TeX file="+outputfile.path + "\n");
 //    dump("PDF file is " + pdffile.path + "\n"); 
     var compileInfo = new Object();  // an object to hold pass counts and whether makeindex needs to run.
-    if (documentAsTeXFile(editor.document, null, compileInfo ))
+    if (documentAsTeXFile(editor, editor.document, null, compileInfo ))
     {
       if (compileTeXFile(compiler, "main", outputfile.path, pdffile.path, compileInfo))
       {
@@ -888,12 +905,12 @@ function compileTeX(compiler)
 {
   try
   {
-    var editor = GetCurrentEditor();
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
     if (!editor) return;
 
     document.getElementById("preview-frame").loadURI("about:blank");
   // now save this TeX string and run TeX on it.  
-    var editorElement = msiGetTopLevelEditorElement();
     checkPackageDependenciesForEditor(editor);
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
@@ -943,7 +960,7 @@ function compileTeX(compiler)
 //    os.close();
   //   fos.close();
     var compileInfo = new Object();
-    documentAsTeXFile(editor.document, null, compileInfo );
+    documentAsTeXFile(editor, editor.document, null, compileInfo );
     if (!outputfile.exists())
     {
       AlertWithTitle("XSLT Error", "Unable to generate TeX file");
@@ -1186,6 +1203,9 @@ function documentToTeXString(document, xslPath)
   var xsltString = "";
   var strResult = "";
   xsltString = getXSLAsString(xslPath);
+#ifndef PROD_SW
+  rebuildSnapshots(document);
+#endif
 
   var xsltProcessor = new XSLTProcessor();
 
@@ -1205,7 +1225,7 @@ function documentToTeXString(document, xslPath)
     while (strResult.search(/\\par[ \t\n]+/) >= 0)
 		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
     while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
-		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");
+		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");  
 		//while (strResult.search(/\\par/) >= 0)
 		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
   }
