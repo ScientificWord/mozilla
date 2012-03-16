@@ -6973,3 +6973,15 @@ NS_IMETHODIMP nsHTMLEditor::NodesInRange(nsIDOMRange *aRange, nsIArray** _retval
 {
   return sRangeHelper->NodesInRange(aRange, _retval);
 }
+
+NS_IMETHODIMP nsHTMLEditor::ReadCursorSetProps(nsAString & _retval)
+{
+  mTypeInState->ReadSetProps((nsAString&)_retval);
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLEditor::ReadCursorClearedProps(nsAString & _retval) 
+{
+  mTypeInState->ReadClearedProps((nsAString&)_retval);
+  return NS_OK;
+}
