@@ -9550,6 +9550,29 @@ function newContextmenuListener(button, element)
   return function() { return InitStructBarContextMenu(button, element); };
 }
 
+function insertStructToolbarButton(tag, toolbar, realElement)
+{
+  var button;
+  var uiButton;
+  var uiCommand;
+  if (tag==="math") {
+    document.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
+  }
+  button = document.createElementNS(XUL_NS, "toolbarbutton");
+  button.setAttribute("label",   "<" + tag + ">");
+  button.setAttribute("value",   tag);
+  button.setAttribute("context", realElement?"structToolbarContext":"");
+  button.className = "struct-button";
+
+  toolbar.insertBefore(button, toolbar.firstChild);
+  // update the tagbutton, if there is one.
+//  uiButton = document.getElementById(tag+"Button");
+//  if (uiButton) {
+//    uiCommand = uiButton.getAttribute("observes");
+//    uiCommand.setAttribute("active");
+//  }
+  return button;
+}
 
 function msiUpdateStructToolbar(editorElement)
 {
@@ -9608,37 +9631,86 @@ function msiUpdateStructToolbar(editorElement)
   var bodyElement = msiGetBodyElement(editorElement);
   var isFocusNode = true;
   var tmp;
+  var i;
+  var propertyStack = [];
 
   // the theory here is that by following up the chain of parentNodes, 
   // we will eventually get to the root <body> tag. But due to some bug, 
   // there may be multiple <body> elements in the document. 
   document.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
+  var cursorSetProps = editor.readCursorSetProps().split(";"); // these are tags set on the cursor
+  var cursorClearedProps = editor.readCursorClearedProps().split(";"); // these are tags cleared at the cursor
+  for (i = 0; i < cursorClearedProps.length; i++)
+  {
+    tmp = cursorClearedProps[i].split(",");
+    cursorClearedProps[i] = tmp[0];
+  }
+  var property;
+  var propertyStack;
+  for (i = cursorSetProps.length - 1; i >= 0; i--)
+  {
+    property = cursorSetProps[i].split(",");
+    if (property[0].length > 0) {
+      insertStructToolbarButton(property[0], toolbar, false);
+      propertyStack.push(property[0]);
+    }
+  }
   do {
     tag = element.nodeName;
-    if (tag=="math") 
-      document.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
+    if (cursorClearedProps.indexOf(tag) === -1) {
+      button = insertStructToolbarButton(tag, toolbar, true);
+      propertyStack.push(tag);
+      button.addEventListener("command", newCommandListener(element), false);
 
-    button = theDocument.createElementNS(XUL_NS, "toolbarbutton");
-    button.setAttribute("label",   "<" + tag + ">");
-    button.setAttribute("value",   tag);
-    button.setAttribute("context", "structToolbarContext");
-    button.className = "struct-button";
+      button.addEventListener("contextmenu", newContextmenuListener(button, element), false);
 
-    toolbar.insertBefore(button, toolbar.firstChild);
-
-    button.addEventListener("command", newCommandListener(element), false);
-
-    button.addEventListener("contextmenu", newContextmenuListener(button, element), false);
-
-    if (isFocusNode && oneElementSelected) {
-      button.setAttribute("checked", "true");
-      isFocusNode = false;
+      if (isFocusNode && oneElementSelected) {
+        button.setAttribute("checked", "true");
+        isFocusNode = false;
+      }
     }
-
     tmp = element;
     element = element.parentNode;
 
   } while (element && (tmp != bodyElement) && (tag != "body"));
+  setTagFieldContents(editor, propertyStack);
+}
+
+function setTagFieldContents(editor, propertyStack)
+{
+  var tagManager = editor.tagListManager;
+  var str = propertyStack.pop();
+  var klass;
+  var textbox;
+  var tt, pt, st, ft;
+  tt = document.getElementById("TextTagSelections");
+  pt = document.getElementById("ParaTagSelections");
+  st = document.getElementById("StructTagSelections");
+  ft = document.getElementById("FrontMTagSelections");  
+  tt.value = pt.value = st.value = ft.value = "";
+  while (str) {
+    if (str.length > 0) {
+    	klass = tagManager.getClassOfTag(str, null);
+      textbox = null;
+      switch(klass) {
+        case "texttag" : textbox = tt;
+          break;
+        case "paratag" : 
+        case "listtag" : textbox = pt;
+        break;
+        case "structtag" :
+        case "envtag"  : textbox = st;
+        break;
+        case "frontmtag" : textbox = ft;
+        break;
+        default : break;
+      }
+      if (textbox) {
+        textbox.value = str;
+      }
+    }
+    str = propertyStack.pop();
+  }
 }
 
 function msiSelectFocusNodeAncestor(editorElement, element, inner)

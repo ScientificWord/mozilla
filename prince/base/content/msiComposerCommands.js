@@ -597,7 +597,7 @@ function msiPokeMultiStateUI(uiID, cmdParams)
   if (isMixed)
     desiredAttrib = "mixed";
   else
-    desiredAttrib = cmdParams.getCStringValue("state_attribute");
+    desiredAttrib = cmdParams.getStringValue("state_attribute");
 
   try
   {
@@ -704,7 +704,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     var cmdParams = newCommandParams();
     if (!cmdParams) return;
 
-    cmdParams.setCStringValue("state_attribute", newState);
+    cmdParams.setStringValue("state_attribute", newState);
     var editor = msiGetEditor(editorElement);
     var ns = new Object;
     if (commandID=="cmd_texttag" && editor && editor.tagListManager && editor.tagListManager.getClearTextTag(ns) == newState)
@@ -736,7 +736,9 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
         msiPokeMultiStateUI(commandID, cmdParams);
     }
     msiResetStructToolbar(editorElement);
-  } catch(e) { dump("error thrown in msiDoStatefulCommand: "+e+"\n"); }
+  } catch(e) { 
+    dump("error thrown in msiDoStatefulCommand: "+e+"\n"); 
+  }
 }
 
 //This repeats much of the functionality from msiDoStatefulCommand above, but is called from the dialog which has to run first.
@@ -752,7 +754,7 @@ function msiDoTagBibItem(dlgData, paraContainer, editorElement)
     var cmdParams = newCommandParams();
     if (!cmdParams) return;
 
-    cmdParams.setCStringValue("state_attribute", "bibitem");
+    cmdParams.setStringValue("state_attribute", "bibitem");
     msiGoDoCommandParams("cmd_listtag", cmdParams, editorElement);
   } catch(e) { dump("error thrown in msiDoTagBibItem: "+e+"\n"); }
 
@@ -7872,7 +7874,7 @@ var msiSmileyCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var smileyCode = aParams.getCStringValue("state_attribute");
+    var smileyCode = aParams.getStringValue("state_attribute");
 
     var strSml;
     switch(smileyCode)
