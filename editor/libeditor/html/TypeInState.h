@@ -75,10 +75,12 @@ public:
   nsresult SetProp(nsIAtom *aProp);
   nsresult SetProp(nsIAtom *aProp, const nsString &aAttr);
   nsresult SetProp(nsIAtom *aProp, const nsString &aAttr, const nsString &aValue);
+  nsresult ReadSetProps( nsAString &setPropsString);
 
   nsresult ClearAllProps();
   nsresult ClearProp(nsIAtom *aProp);
   nsresult ClearProp(nsIAtom *aProp, const nsString &aAttr);
+  nsresult ReadClearedProps( nsAString &clearPropsString);
   
   //**************************************************************************
   //    TakeClearProperty: hands back next property item on the clear list.

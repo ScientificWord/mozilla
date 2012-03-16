@@ -647,7 +647,11 @@ msiTagListManager::BuildParentTagList()
   nsAutoString strTemp2;
   nsAutoString strTempURI;
   nsAutoString strQName;
+  nsAutoString strSetTags;
+  nsAutoString strClearedTags;
   nsCOMPtr<nsIAtom> nsAtom; // namespace atom
+  nsStringArray * markedTags = new nsStringArray();
+  markedTags->Clear();
   if (!mparentTags) mparentTags = new nsStringArray();
   mparentTags->Clear();
  // BBM todo: put in error checking
@@ -657,26 +661,60 @@ msiTagListManager::BuildParentTagList()
   nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> temp;
+  // get tags attached to the cursor
+  editor->ReadCursorSetProps(strSetTags);
+  editor->ReadCursorClearedProps(strClearedTags);
+  PRInt32 index = 0;
+  PRInt32 newIndex;
+  PRInt32 length = strSetTags.Length();
+  PRUnichar semi = ';';
+  PRUnichar comma = ',';
+  nsAutoString substring;
+  // strSetTags looks like "tagname,attr,val;tagname2,attr,val;..."
+  while (index < length) {
+    newIndex = strSetTags.FindChar(comma,index);
+    substring = Substring(strSetTags, index, newIndex - index);
+    markedTags->AppendString(substring);
+    index = newIndex + 1;
+    newIndex = strSetTags.FindChar(semi, index);
+    if (newIndex == -1) {
+      break;
+    }
+    index = newIndex + 1;
+  }
+  nsAString::const_iterator start, end;
+
+  strClearedTags.BeginReading(start);
+  strClearedTags.EndReading(end);
+  
   res = editor->GetSelectionContainer(getter_AddRefs(element));
   node = element;
   while (node)
   {
     node->GetLocalName(strTemp);
 	  if (strTemp.Equals(NS_LITERAL_STRING("#document"))) break;
-    node->GetNamespaceURI(strTempURI);
-    if (strTempURI.Length() == 0) nsAtom = nsnull;
-    else nsAtom = NS_NewAtom(strTempURI);
-    if (nsAtom) 
-    {
-      strTemp2 = NS_LITERAL_STRING(" - ")+PrefixFromNameSpaceAtom(nsAtom);
-      strQName = strTemp + strTemp2;
+//    node->GetNamespaceURI(strTempURI);
+//    if (strTempURI.Length() == 0) nsAtom = nsnull;
+//    else nsAtom = NS_NewAtom(strTempURI);
+//    if (nsAtom) 
+//    {
+//      strTemp2 = NS_LITERAL_STRING(" - ")+PrefixFromNameSpaceAtom(nsAtom);
+//      strQName = strTemp + strTemp2;
+//    }
+//    else 
+    strQName = strTemp; 
+    strClearedTags.BeginReading(start);
+    strClearedTags.EndReading(end);
+    
+    if (!FindInReadable(strQName, start, end) /*&& *(start-1)==';' */) {
+      // end now points to the character after the pattern
+  	  mparentTags->AppendString(strQName);
+      markedTags->AppendString(strQName);
     }
-    else strQName = strTemp;  
-	  mparentTags->AppendString(strQName);
     node->GetParentNode((nsIDOMNode **)(&temp));
     node = temp;
   }
-  return pACSSA->SetMarkedStrings(mparentTags);
+  return pACSSA->SetMarkedStrings(markedTags);
 }
 
 

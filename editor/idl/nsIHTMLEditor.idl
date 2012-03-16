@@ -656,6 +656,8 @@ interface nsIHTMLEditor : nsISupports
   void mathToText(in nsISelection selection);
   nsIArray nodesInRange( in nsIDOMRange aRange);
 	boolean setCursorInNewHTML(in nsIDOMElement newElement);
+  AString readCursorSetProps();
+  AString readCursorClearedProps();
 };
 
 
