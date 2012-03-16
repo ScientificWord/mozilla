@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!DOCTYPE Canvas SYSTEM "muplotml.dtd">
+<Canvas id="plotObject295" Consistent="1" Layout="Tabular" FooterFont="&apos;sans-serif&apos; 12" OutputUnits="MM" Height="63.2206" FooterAlignment="Center" BackgroundColor="#FFFFFF" BorderColor="#808080" BorderWidth="0" LeftMargin="1" AutoPlay="0" RightMargin="1" Width="75.6666" AnimationStyle="RunOnce" Spacing="1" Columns="0" Rows="0" HeaderFont="&apos;sans-serif&apos; 12" HeaderAlignment="Center" BottomMargin="1" TopMargin="1">
+<Scene3dStyle Lighting="Automatic" BackgroundTransparent="0" FooterFont="&apos;sans-serif&apos; 12" Height="80" LegendPlacement="Bottom" BackgroundColor="#FFFFFF" FooterAlignment="Center" LegendFont="&apos;sans-serif&apos; 8" BorderColor="#808080" BorderWidth="0" LegendAlignment="Center" LeftMargin="1" RightMargin="1" YXRatio="1" Width="120" BackgroundColor2="#BFBFBF" BackgroundStyle="Flat" LegendVisible="0" HeaderFont="&apos;sans-serif&apos; 12" ZXRatio="0.666666666667" HeaderAlignment="Center" BottomMargin="1" TopMargin="1"/>
+<CoordinateSystem3dStyle Scaling="Unconstrained" XTicksNumber="Normal" XAxisTitleAlignment="Center" ZAxisVisible="1" YTicksVisible="1" SubgridLineColor="#CCCCCC" SubgridLineWidth="0.1" ZSubgridVisible="0" YTicksLabelsVisible="1" AxesLineColor="#000000" ZTicksLabelStyle="Horizontal" AxesLineWidth="0.18" ZTicksBetween="1" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" YAxisTitleAlignment="Center" ZTicksVisible="1" YTicksNumber="Normal" GridLineStyle="Solid" ZTicksLabelsVisible="1" XGridVisible="0" XAxisVisible="1" SubgridLineStyle="Solid" ZTicksNumber="Normal" XSubgridVisible="0" ZAxisTitleAlignment="Center" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" XTicksLabelStyle="Horizontal" XTicksBetween="1" YGridVisible="0" Axes="Boxed" YAxisVisible="1" XTicksVisible="1" TicksLength="2" GridLineColor="#999999" YSubgridVisible="0" XTicksLabelsVisible="1" GridLineWidth="0.1" YTicksLabelStyle="Horizontal" YTicksBetween="1" ZGridVisible="0" AxesTips="0"/>
+<ObjStyle Type="Default" FillColor="#FF0000" LineColor2="#FF1493" VerticalAsymptotesStyle="Dashed" FillPattern="DiagonalLines" TimeBegin="0" XMesh="11" Tubular="0" TipLength="4" VerticalAsymptotesVisible="1" TitleFont="&apos;sans-serif&apos; 11" LineStyle="Solid" LineColorDirectionX="0" OrthogonalProjection="0" AffectViewingBox="1" LineColorDirectionY="1" TitleAlignment="Center" LineColorDirectionZ="1" Frames="50" PointSize="1.5" ArrowLength="Proportional" UMesh="25" FillColorType="Dichromatic" XLinesVisible="1" VisibleAfterEnd="1" LightColor="#FFFFFF" AdaptiveMesh="0" XSubmesh="0" Extension="Finite" LinesVisible="1" YMesh="11" FillColor2="#6495ED" Shading="Smooth" PointStyle="FilledCircles" FillColorDirectionX="0" TimeEnd="10" CameraCoordinates="0" ULinesVisible="1" VisibleBeforeBegin="1" FillStyle="EvenOdd" FillColorDirectionY="0" VerticalAsymptotesColor="#808080" USubmesh="0" FillColorDirectionZ="1" VerticalAsymptotesWidth="0.2" VMesh="25" YLinesVisible="1" YSubmesh="0" TubeDiameter="2.5" Filled="1" ZMesh="11" PointsVisible="0" LineColor="#0000FF" LineWidth="0.35" LegendEntry="0" VLinesVisible="1" VSubmesh="0" TipAngle="0.418879020479" TipStyle="Filled" KeepUpVector="0" DiscontinuitySearch="1" MeshVisible="0" Closed="0" PointColor="#191970" LineColorType="Flat"/>
+<ObjStyle Type="Polygon3d" LegendColor="LineColor" FillColor="#3366FF" Filled="0" LineColorDirectionY="0"/>
+<ObjStyle Type="Camera" KeepUpVector="0"/>
+<Scene3d id="plotObject296" Consistent="1" Left="0" Bottom="0" Lighting="Automatic"><CoordinateSystem3dStyle AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Unconstrained" Axes="Boxed" AxesTips="0"/>
+<ObjStyle Type="Polygon3d" LegendColor="LineColor"/>
+<View3d ViewDirectional="1" ViewPositionX="4.81985" ViewPositionY="1.62107" ViewPositionZ="4.15801" ViewFocalPointX="0" ViewFocalPointY="0" ViewFocalPointZ="0" ViewViewingAngle="0.785398" ViewUpVectorX="0" ViewUpVectorY="0" ViewUpVectorZ="0.999999" ViewKeepUpVector="1" ViewOrthogonalProjection="0"></View3d>
+<CoordinateSystem3d id="plotObject297" Consistent="1" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Unconstrained" Axes="Boxed" AxesTips="0" AutoViewingBox="63"><AxesOriginX Val="0">0</AxesOriginX>
+<AxesOriginY Val="0">0</AxesOriginY>
+<AxesOriginZ Val="0">0</AxesOriginZ>
+<XAxisTitle>x</XAxisTitle>
+<YAxisTitle>y</YAxisTitle>
+<ZAxisTitle>z</ZAxisTitle>
+<XTicksAnchor Val="0">0</XTicksAnchor>
+<XTicksDistance Val="0">0</XTicksDistance>
+<YTicksAnchor Val="0">0</YTicksAnchor>
+<YTicksDistance Val="0">0</YTicksDistance>
+<ZTicksAnchor Val="0">0</ZTicksAnchor>
+<ZTicksDistance Val="0">0</ZTicksDistance>
+<ObjStyle Type="Polygon3d" LegendColor="LineColor"/>
+<Obj3d Type="Polygon3d" id="plotObject294" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.5" LineStyle="Solid" LineColorType="Dichromatic" LineColor="#99CDFF" LineColor2="#000080" LineColorDirectionX="1" LineColorDirectionY="1" LineColorDirectionZ="1"><Points3d><Point3d><IExpr>1.0</IExpr>
+<IExpr>1.0</IExpr>
+<IExpr>1.0</IExpr>
+</Point3d>
+<Point3d><IExpr>1.1158</IExpr>
+<IExpr>1.0938</IExpr>
+<IExpr>8.842e-1</IExpr>
+</Point3d>
+<Point3d><IExpr>1.2668</IExpr>
+<IExpr>1.1695</IExpr>
+<IExpr>7.332e-1</IExpr>
+</Point3d>
+<Point3d><IExpr>1.4582</IExpr>
+<IExpr>1.2173</IExpr>
+<IExpr>5.418e-1</IExpr>
+</Point3d>
+<Point3d><IExpr>1.6953</IExpr>
+<IExpr>1.2253</IExpr>
+<IExpr>3.047e-1</IExpr>
+</Point3d>
+<Point3d><IExpr>1.983</IExpr>
+<IExpr>1.1791</IExpr>
+<IExpr>1.7e-2</IExpr>
+</Point3d>
+<Point3d><IExpr>2.3256</IExpr>
+<IExpr>1.0619</IExpr>
+<IExpr>-3.256e-1</IExpr>
+</Point3d>
+<Point3d><IExpr>2.7265</IExpr>
+<IExpr>8.542e-1</IExpr>
+<IExpr>-7.265e-1</IExpr>
+</Point3d>
+<Point3d><IExpr>3.1873</IExpr>
+<IExpr>5.344e-1</IExpr>
+<IExpr>-1.1873</IExpr>
+</Point3d>
+<Point3d><IExpr>3.7077</IExpr>
+<IExpr>7.77e-2</IExpr>
+<IExpr>-1.7077</IExpr>
+</Point3d>
+<Point3d><IExpr>4.2842</IExpr>
+<IExpr>-5.424e-1</IExpr>
+<IExpr>-2.2842</IExpr>
+</Point3d>
+</Points3d>
+<Img3d><Poly3d><P3>1 1 1</P3>
+<P3>1.1158 1.0938 0.8842</P3>
+<P3>1.2668 1.1695 0.7332</P3>
+<P3>1.4582 1.2173 0.5418</P3>
+<P3>1.6953 1.2253 0.3047</P3>
+<P3>1.983 1.1791 0.017</P3>
+<P3>2.3256 1.0619 -0.3256</P3>
+<P3>2.7265 0.8542 -0.7265</P3>
+<P3>3.1873 0.5344 -1.1873</P3>
+<P3>3.7077 0.0777 -1.7077</P3>
+<P3>4.2842 -0.5424 -2.2842</P3>
+</Poly3d>
+</Img3d>
+</Obj3d>
+<ViewingBoxXMin Val="1">1.0</ViewingBoxXMin>
+<ViewingBoxXMax Val="4.2842">4.2842</ViewingBoxXMax>
+<ViewingBoxYMin Val="-0.5424">-5.424e-1</ViewingBoxYMin>
+<ViewingBoxYMax Val="1.2253">1.2253</ViewingBoxYMax>
+<ViewingBoxZMin Val="-2.2842">-2.2842</ViewingBoxZMin>
+<ViewingBoxZMax Val="1">1.0</ViewingBoxZMax>
+<Hints Scaling="Constrained"/></CoordinateSystem3d>
+</Scene3d>
+</Canvas>

@@ -43,13 +43,14 @@ interface msiIMathMLEditor : nsISupports
                         in DOMString aroundType);
   void AdjustSelectionEnds(in boolean isForDeletion, in unsigned long direction);
   void AdjustRange(in nsIDOMRange range, in boolean isForDeletion, in unsigned long direction);
-                   
+                  
   /* GetMathMLEditingBC returns a msiIMathMLEditingBC object based
    * on the aNode. A pointer to aNode and the offset are stored in the 
    * msiMathMLEditingBC.
    */
   [noscript]void GetMathMLEditingBC(in nsIDOMNode aNode,
                           in unsigned long offset,
+                          in boolean clean,
                           out msiIMathMLEditingBC editingBC);
                    
   /* GetMathMLInsertionInterface returns a msiIMathMLInsertion object based

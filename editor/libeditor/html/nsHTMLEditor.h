@@ -393,10 +393,6 @@ public:
   /* ------------ Utility Routines, not part of public API -------------- */
   NS_IMETHOD GetListForListItem(const nsAString& listItem, nsAString& listName);
   NS_IMETHOD TypedText(const nsAString& aString, PRInt32 aAction);
-  virtual nsresult InsertNodeAtPoint( nsIDOMNode *aNode, 
-                              nsCOMPtr<nsIDOMNode> *ioParent, 
-                              PRInt32 *ioOffset, 
-                              PRBool aNoEmptyNodes);
   nsCOMPtr<nsIDOMNode> FindUserSelectAllNode(nsIDOMNode *aNode);
                                 
   NS_IMETHOD InsertReturnImpl ( PRBool fFancy );

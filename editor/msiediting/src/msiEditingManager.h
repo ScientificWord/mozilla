@@ -47,6 +47,10 @@ public:
 
   ~msiEditingManager();
 
+PRUint32 GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 rawOffset, 
+                                      nsCOMPtr<nsIDOMNode> & mathmlNode,
+                                      PRUint32 & offset); 
+
   NS_DECL_ISUPPORTS
   NS_DECL_MSIIEDITINGMANAGER
 
@@ -71,9 +75,7 @@ nsresult DetermineParentLeftRight(nsIDOMNode * node,
                                   nsCOMPtr<nsIDOMNode> & left,
                                   nsCOMPtr<nsIDOMNode> & right);
                                   
-PRUint32 GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 rawOffset, 
-                                      nsCOMPtr<nsIDOMNode> & mathmlNode,
-                                      PRUint32 & offset); 
+
                                       
 PRUint32 GetMMLNodeTypeFromLocalName(nsIDOMNode * mathmlNode, 
                                      const nsAString & localName); 

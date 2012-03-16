@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<!DOCTYPE Canvas SYSTEM "muplotml.dtd">
+<Canvas id="plotObject1669" Consistent="1" Layout="Tabular" FooterFont="&apos;sans-serif&apos; 12" OutputUnits="MM" Height="63.246" FooterAlignment="Center" BackgroundColor="#E1E1E1" BorderColor="#808080" BorderWidth="0" LeftMargin="1" AutoPlay="0" RightMargin="1" Width="75.6666" AnimationStyle="RunOnce" Spacing="1" Columns="0" Rows="0" HeaderFont="&apos;sans-serif&apos; 12" HeaderAlignment="Center" BottomMargin="1" TopMargin="1">
+<Scene3dStyle Lighting="Automatic" BackgroundTransparent="0" FooterFont="&apos;sans-serif&apos; 12" Height="80" LegendPlacement="Bottom" BackgroundColor="#E1E1E1" FooterAlignment="Center" LegendFont="&apos;sans-serif&apos; 8" BorderColor="#808080" BorderWidth="0" LegendAlignment="Center" LeftMargin="1" RightMargin="1" YXRatio="1" Width="120" BackgroundColor2="#BFBFBF" BackgroundStyle="Flat" LegendVisible="0" HeaderFont="&apos;sans-serif&apos; 12" ZXRatio="0.666666666667" HeaderAlignment="Center" BottomMargin="1" TopMargin="1"/>
+<CoordinateSystem3dStyle Scaling="Unconstrained" XTicksNumber="Normal" XAxisTitleAlignment="Center" ZAxisVisible="1" YTicksVisible="1" SubgridLineColor="#CCCCCC" SubgridLineWidth="0.1" ZSubgridVisible="0" YTicksLabelsVisible="1" AxesLineColor="#000000" ZTicksLabelStyle="Horizontal" AxesLineWidth="0.18" ZTicksBetween="1" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" YAxisTitleAlignment="Center" ZTicksVisible="1" YTicksNumber="Normal" GridLineStyle="Solid" ZTicksLabelsVisible="1" XGridVisible="0" XAxisVisible="1" SubgridLineStyle="Solid" ZTicksNumber="Normal" XSubgridVisible="0" ZAxisTitleAlignment="Center" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" XTicksLabelStyle="Horizontal" XTicksBetween="1" YGridVisible="0" Axes="Boxed" YAxisVisible="1" XTicksVisible="1" TicksLength="2" GridLineColor="#999999" YSubgridVisible="0" XTicksLabelsVisible="1" GridLineWidth="0.1" YTicksLabelStyle="Horizontal" YTicksBetween="1" ZGridVisible="0" AxesTips="0"/>
+<ObjStyle Type="Default" FillColor="#FF0000" LineColor2="#FF1493" VerticalAsymptotesStyle="Dashed" FillPattern="DiagonalLines" TimeBegin="0" XMesh="11" Tubular="0" TipLength="4" VerticalAsymptotesVisible="1" TitleFont="&apos;sans-serif&apos; 11" LineStyle="Solid" LineColorDirectionX="0" OrthogonalProjection="0" AffectViewingBox="1" LineColorDirectionY="1" TitleAlignment="Center" LineColorDirectionZ="1" Frames="50" PointSize="1.5" ArrowLength="Proportional" UMesh="25" FillColorType="Dichromatic" XLinesVisible="1" VisibleAfterEnd="1" LightColor="#FFFFFF" AdaptiveMesh="0" XSubmesh="0" Extension="Finite" LinesVisible="1" YMesh="11" FillColor2="#6495ED" Shading="Smooth" PointStyle="FilledCircles" FillColorDirectionX="0" TimeEnd="10" CameraCoordinates="0" ULinesVisible="1" VisibleBeforeBegin="1" FillStyle="EvenOdd" FillColorDirectionY="0" VerticalAsymptotesColor="#808080" USubmesh="0" FillColorDirectionZ="1" VerticalAsymptotesWidth="0.2" VMesh="25" YLinesVisible="1" YSubmesh="0" TubeDiameter="2.5" Filled="1" ZMesh="11" PointsVisible="0" LineColor="#0000FF" LineWidth="0.35" LegendEntry="0" VLinesVisible="1" VSubmesh="0" TipAngle="0.418879020479" TipStyle="Filled" KeepUpVector="0" DiscontinuitySearch="1" MeshVisible="0" Closed="0" PointColor="#191970" LineColorType="Flat"/>
+<ObjStyle Type="VectorField3d" LegendColor="LineColor" XMesh="7" YMesh="7" ZMesh="7" PointsVisible="1" LineWidth="0.1" LineColorDirectionY="0"/>
+<ObjStyle Type="Camera" KeepUpVector="0"/>
+<Scene3d id="plotObject1670" Consistent="1" Left="0" Bottom="0" BackgroundColor="#E1E1E1" Lighting="Automatic"><CoordinateSystem3dStyle AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Unconstrained" Axes="Boxed" AxesTips="0"/>
+<ObjStyle Type="VectorField3d" LegendColor="LineColor"/>
+<View3d ViewDirectional="1" ViewPositionX="14.1235" ViewPositionY="5.4215" ViewPositionZ="7.81364" ViewFocalPointX="0" ViewFocalPointY="0" ViewFocalPointZ="0" ViewViewingAngle="0.174533" ViewUpVectorX="0" ViewUpVectorY="0" ViewUpVectorZ="3" ViewKeepUpVector="1" ViewOrthogonalProjection="0"></View3d>
+<CoordinateSystem3d id="plotObject1671" Consistent="1" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Unconstrained" Axes="Boxed" AxesTips="0" AutoViewingBox="63"><AxesOriginX Val="0">0</AxesOriginX>
+<AxesOriginY Val="0">0</AxesOriginY>
+<AxesOriginZ Val="0">0</AxesOriginZ>
+<XAxisTitle>x</XAxisTitle>
+<YAxisTitle>y</YAxisTitle>
+<ZAxisTitle>z</ZAxisTitle>
+<XTicksAnchor Val="0">0</XTicksAnchor>
+<XTicksDistance Val="0">0</XTicksDistance>
+<YTicksAnchor Val="0">0</YTicksAnchor>
+<YTicksDistance Val="0">0</YTicksDistance>
+<ZTicksAnchor Val="0">0</ZTicksAnchor>
+<ZTicksDistance Val="0">0</ZTicksDistance>
+<ObjStyle Type="VectorField3d" LegendColor="LineColor"/>
+<Obj3d Type="VectorField3d" id="plotObject1668" Consistent="1" Visible="1" LineWidth="0.2" LineColorType="Dichromatic" LineColor="#FF0000" LineColor2="#FF0000" LineColorDirectionX="1" LineColorDirectionY="1" LineColorDirectionZ="0" XMesh="6" YMesh="6" ZMesh="6"><Expr Opt="XName">q1x</Expr>
+<Expr Opt="XFunction">-q1y/q1z</Expr>
+<Expr Opt="ZMax">1</Expr>
+<Expr Opt="YFunction">q1x/q1z</Expr>
+<Expr Opt="ZName">q1z</Expr>
+<Expr Opt="ZMin">-1</Expr>
+<Expr Opt="YMax">1</Expr>
+<Expr Opt="XMin">-1</Expr>
+<Expr Opt="YMin">-1</Expr>
+<Expr Opt="YName">q1y</Expr>
+<Expr Opt="XMax">1</Expr>
+<Expr Opt="ZFunction">q1z</Expr>
+<Img3d><Field3d Anchor="-1 -1 -1" Delta="0.4 0.4 0.4" XMesh="6" YMesh="6" ZMesh="6"><P3>-1 1 -1</P3>
+<P3>-1 0.6 -1</P3>
+<P3>-1 0.2 -1</P3>
+<P3>-1 -0.2 -1</P3>
+<P3>-1 -0.6 -1</P3>
+<P3>-1 -1 -1</P3>
+<P3>-0.6 1 -1</P3>
+<P3>-0.6 0.6 -1</P3>
+<P3>-0.6 0.2 -1</P3>
+<P3>-0.6 -0.2 -1</P3>
+<P3>-0.6 -0.6 -1</P3>
+<P3>-0.6 -1 -1</P3>
+<P3>-0.2 1 -1</P3>
+<P3>-0.2 0.6 -1</P3>
+<P3>-0.2 0.2 -1</P3>
+<P3>-0.2 -0.2 -1</P3>
+<P3>-0.2 -0.6 -1</P3>
+<P3>-0.2 -1 -1</P3>
+<P3>0.2 1 -1</P3>
+<P3>0.2 0.6 -1</P3>
+<P3>0.2 0.2 -1</P3>
+<P3>0.2 -0.2 -1</P3>
+<P3>0.2 -0.6 -1</P3>
+<P3>0.2 -1 -1</P3>
+<P3>0.6 1 -1</P3>
+<P3>0.6 0.6 -1</P3>
+<P3>0.6 0.2 -1</P3>
+<P3>0.6 -0.2 -1</P3>
+<P3>0.6 -0.6 -1</P3>
+<P3>0.6 -1 -1</P3>
+<P3>1 1 -1</P3>
+<P3>1 0.6 -1</P3>
+<P3>1 0.2 -1</P3>
+<P3>1 -0.2 -1</P3>
+<P3>1 -0.6 -1</P3>
+<P3>1 -1 -1</P3>
+<P3>-1.66666666667 1.66666666667 -0.6</P3>
+<P3>-1.66666666667 1 -0.6</P3>
+<P3>-1.66666666667 0.333333333333 -0.6</P3>
+<P3>-1.66666666667 -0.333333333333 -0.6</P3>
+<P3>-1.66666666667 -1 -0.6</P3>
+<P3>-1.66666666667 -1.66666666667 -0.6</P3>
+<P3>-1 1.66666666667 -0.6</P3>
+<P3>-1 1 -0.6</P3>
+<P3>-1 0.333333333333 -0.6</P3>
+<P3>-1 -0.333333333333 -0.6</P3>
+<P3>-1 -1 -0.6</P3>
+<P3>-1 -1.66666666667 -0.6</P3>
+<P3>-0.333333333333 1.66666666667 -0.6</P3>
+<P3>-0.333333333333 1 -0.6</P3>
+<P3>-0.333333333333 0.333333333333 -0.6</P3>
+<P3>-0.333333333333 -0.333333333333 -0.6</P3>
+<P3>-0.333333333333 -1 -0.6</P3>
+<P3>-0.333333333333 -1.66666666667 -0.6</P3>
+<P3>0.333333333333 1.66666666667 -0.6</P3>
+<P3>0.333333333333 1 -0.6</P3>
+<P3>0.333333333333 0.333333333333 -0.6</P3>
+<P3>0.333333333333 -0.333333333333 -0.6</P3>
+<P3>0.333333333333 -1 -0.6</P3>
+<P3>0.333333333333 -1.66666666667 -0.6</P3>
+<P3>1 1.66666666667 -0.6</P3>
+<P3>1 1 -0.6</P3>
+<P3>1 0.333333333333 -0.6</P3>
+<P3>1 -0.333333333333 -0.6</P3>
+<P3>1 -1 -0.6</P3>
+<P3>1 -1.66666666667 -0.6</P3>
+<P3>1.66666666667 1.66666666667 -0.6</P3>
+<P3>1.66666666667 1 -0.6</P3>
+<P3>1.66666666667 0.333333333333 -0.6</P3>
+<P3>1.66666666667 -0.333333333333 -0.6</P3>
+<P3>1.66666666667 -1 -0.6</P3>
+<P3>1.66666666667 -1.66666666667 -0.6</P3>
+<P3>-5 5 -0.2</P3>
+<P3>-5 3 -0.2</P3>
+<P3>-5 1 -0.2</P3>
+<P3>-5 -1 -0.2</P3>
+<P3>-5 -3 -0.2</P3>
+<P3>-5 -5 -0.2</P3>
+<P3>-3 5 -0.2</P3>
+<P3>-3 3 -0.2</P3>
+<P3>-3 1 -0.2</P3>
+<P3>-3 -1 -0.2</P3>
+<P3>-3 -3 -0.2</P3>
+<P3>-3 -5 -0.2</P3>
+<P3>-1 5 -0.2</P3>
+<P3>-1 3 -0.2</P3>
+<P3>-1 1 -0.2</P3>
+<P3>-1 -1 -0.2</P3>
+<P3>-1 -3 -0.2</P3>
+<P3>-1 -5 -0.2</P3>
+<P3>1 5 -0.2</P3>
+<P3>1 3 -0.2</P3>
+<P3>1 1 -0.2</P3>
+<P3>1 -1 -0.2</P3>
+<P3>1 -3 -0.2</P3>
+<P3>1 -5 -0.2</P3>
+<P3>3 5 -0.2</P3>
+<P3>3 3 -0.2</P3>
+<P3>3 1 -0.2</P3>
+<P3>3 -1 -0.2</P3>
+<P3>3 -3 -0.2</P3>
+<P3>3 -5 -0.2</P3>
+<P3>5 5 -0.2</P3>
+<P3>5 3 -0.2</P3>
+<P3>5 1 -0.2</P3>
+<P3>5 -1 -0.2</P3>
+<P3>5 -3 -0.2</P3>
+<P3>5 -5 -0.2</P3>
+<P3>5 -5 0.2</P3>
+<P3>5 -3 0.2</P3>
+<P3>5 -1 0.2</P3>
+<P3>5 1 0.2</P3>
+<P3>5 3 0.2</P3>
+<P3>5 5 0.2</P3>
+<P3>3 -5 0.2</P3>
+<P3>3 -3 0.2</P3>
+<P3>3 -1 0.2</P3>
+<P3>3 1 0.2</P3>
+<P3>3 3 0.2</P3>
+<P3>3 5 0.2</P3>
+<P3>1 -5 0.2</P3>
+<P3>1 -3 0.2</P3>
+<P3>1 -1 0.2</P3>
+<P3>1 1 0.2</P3>
+<P3>1 3 0.2</P3>
+<P3>1 5 0.2</P3>
+<P3>-1 -5 0.2</P3>
+<P3>-1 -3 0.2</P3>
+<P3>-1 -1 0.2</P3>
+<P3>-1 1 0.2</P3>
+<P3>-1 3 0.2</P3>
+<P3>-1 5 0.2</P3>
+<P3>-3 -5 0.2</P3>
+<P3>-3 -3 0.2</P3>
+<P3>-3 -1 0.2</P3>
+<P3>-3 1 0.2</P3>
+<P3>-3 3 0.2</P3>
+<P3>-3 5 0.2</P3>
+<P3>-5 -5 0.2</P3>
+<P3>-5 -3 0.2</P3>
+<P3>-5 -1 0.2</P3>
+<P3>-5 1 0.2</P3>
+<P3>-5 3 0.2</P3>
+<P3>-5 5 0.2</P3>
+<P3>1.66666666667 -1.66666666667 0.6</P3>
+<P3>1.66666666667 -1 0.6</P3>
+<P3>1.66666666667 -0.333333333333 0.6</P3>
+<P3>1.66666666667 0.333333333333 0.6</P3>
+<P3>1.66666666667 1 0.6</P3>
+<P3>1.66666666667 1.66666666667 0.6</P3>
+<P3>1 -1.66666666667 0.6</P3>
+<P3>1 -1 0.6</P3>
+<P3>1 -0.333333333333 0.6</P3>
+<P3>1 0.333333333333 0.6</P3>
+<P3>1 1 0.6</P3>
+<P3>1 1.66666666667 0.6</P3>
+<P3>0.333333333333 -1.66666666667 0.6</P3>
+<P3>0.333333333333 -1 0.6</P3>
+<P3>0.333333333333 -0.333333333333 0.6</P3>
+<P3>0.333333333333 0.333333333333 0.6</P3>
+<P3>0.333333333333 1 0.6</P3>
+<P3>0.333333333333 1.66666666667 0.6</P3>
+<P3>-0.333333333333 -1.66666666667 0.6</P3>
+<P3>-0.333333333333 -1 0.6</P3>
+<P3>-0.333333333333 -0.333333333333 0.6</P3>
+<P3>-0.333333333333 0.333333333333 0.6</P3>
+<P3>-0.333333333333 1 0.6</P3>
+<P3>-0.333333333333 1.66666666667 0.6</P3>
+<P3>-1 -1.66666666667 0.6</P3>
+<P3>-1 -1 0.6</P3>
+<P3>-1 -0.333333333333 0.6</P3>
+<P3>-1 0.333333333333 0.6</P3>
+<P3>-1 1 0.6</P3>
+<P3>-1 1.66666666667 0.6</P3>
+<P3>-1.66666666667 -1.66666666667 0.6</P3>
+<P3>-1.66666666667 -1 0.6</P3>
+<P3>-1.66666666667 -0.333333333333 0.6</P3>
+<P3>-1.66666666667 0.333333333333 0.6</P3>
+<P3>-1.66666666667 1 0.6</P3>
+<P3>-1.66666666667 1.66666666667 0.6</P3>
+<P3>1 -1 1</P3>
+<P3>1 -0.6 1</P3>
+<P3>1 -0.2 1</P3>
+<P3>1 0.2 1</P3>
+<P3>1 0.6 1</P3>
+<P3>1 1 1</P3>
+<P3>0.6 -1 1</P3>
+<P3>0.6 -0.6 1</P3>
+<P3>0.6 -0.2 1</P3>
+<P3>0.6 0.2 1</P3>
+<P3>0.6 0.6 1</P3>
+<P3>0.6 1 1</P3>
+<P3>0.2 -1 1</P3>
+<P3>0.2 -0.6 1</P3>
+<P3>0.2 -0.2 1</P3>
+<P3>0.2 0.2 1</P3>
+<P3>0.2 0.6 1</P3>
+<P3>0.2 1 1</P3>
+<P3>-0.2 -1 1</P3>
+<P3>-0.2 -0.6 1</P3>
+<P3>-0.2 -0.2 1</P3>
+<P3>-0.2 0.2 1</P3>
+<P3>-0.2 0.6 1</P3>
+<P3>-0.2 1 1</P3>
+<P3>-0.6 -1 1</P3>
+<P3>-0.6 -0.6 1</P3>
+<P3>-0.6 -0.2 1</P3>
+<P3>-0.6 0.2 1</P3>
+<P3>-0.6 0.6 1</P3>
+<P3>-0.6 1 1</P3>
+<P3>-1 -1 1</P3>
+<P3>-1 -0.6 1</P3>
+<P3>-1 -0.2 1</P3>
+<P3>-1 0.2 1</P3>
+<P3>-1 0.6 1</P3>
+<P3>-1 1 1</P3>
+</Field3d>
+</Img3d>
+</Obj3d>
+<ViewingBoxXMin Val="-1">-1.0</ViewingBoxXMin>
+<ViewingBoxXMax Val="1">1.0</ViewingBoxXMax>
+<ViewingBoxYMin Val="-1">-1.0</ViewingBoxYMin>
+<ViewingBoxYMax Val="1">1.0</ViewingBoxYMax>
+<ViewingBoxZMin Val="-1">-1.0</ViewingBoxZMin>
+<ViewingBoxZMax Val="1">1.0</ViewingBoxZMax>
+<Hints Scaling="Constrained"/></CoordinateSystem3d>
+</Scene3d>
+</Canvas>
