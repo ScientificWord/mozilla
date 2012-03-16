@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<!DOCTYPE Canvas SYSTEM "muplotml.dtd">
+<Canvas id="plotObject1762" Consistent="1" Layout="Tabular" FooterFont="&apos;sans-serif&apos; 12" OutputUnits="MM" Height="50.2666" FooterAlignment="Center" BackgroundColor="#E1E1E1" BorderColor="#808080" BorderWidth="0" LeftMargin="1" AutoPlay="0" RightMargin="1" Width="75.6666" AnimationStyle="RunOnce" Spacing="1" Columns="0" Rows="0" HeaderFont="&apos;sans-serif&apos; 12" HeaderAlignment="Center" BottomMargin="1" TopMargin="1"><ObjType Type="Text3d"><PropCat Name="Definition"><PropInfo Name="Text" Dom="Expr" Opt="Text" Info="Text expression"/>
+<PropInfo Name="PositionX" Dom="Expr" Opt="PositionX" Info="The x coordinate of the object position."/>
+<PropInfo Name="PositionY" Dom="Expr" Opt="PositionY" Info="The y coordinate of the object position."/>
+<PropInfo Name="PositionZ" Dom="Expr" Opt="PositionZ" Info="The z coordinate of the object position."/>
+<PropInfo Name="TextOrientation" Dom="TextOrientation" Type="TextOrientation"/>
+<PropInfo Name="ParameterName" Dom="ParameterName" Type="Expression" Info="Animation parameter."/>
+<PropInfo Name="ParameterBegin" Dom="ParameterBegin" Type="Expression" Info="Lower bound of animation parameter."/>
+<PropInfo Name="ParameterEnd" Dom="ParameterEnd" Type="Expression" Info="Upper bound of animation parameter."/>
+<PropInfo Name="Name" Dom="Name" Type="String" Info="The name of the object."/>
+<PropInfo Name="AffectViewingBox" Dom="AffectViewingBox" Type="Bool" Info="Is the object considered in ViewingBox calculation?" Recalc="1"/>
+<PropInfo Name="Visible" Dom="Visible" Type="Bool" Info="Is the object visible?"/>
+</PropCat>
+<PropCat Name="Animation"><PropInfo Name="TimeBegin" Dom="TimeBegin" Type="Float" Info="Begin of animation time." Recalc="1"/>
+<PropInfo Name="TimeEnd" Dom="TimeEnd" Type="Float" Info="End of animation time." Recalc="1"/>
+<PropInfo Name="VisibleBeforeBegin" Dom="VisibleBeforeBegin" Type="Bool" Info="Is the object visible before TimeBegin?"/>
+<PropInfo Name="VisibleAfterEnd" Dom="VisibleAfterEnd" Type="Bool" Info="Is the object visible after TimeEnd?"/>
+<PropInfo Name="Frames" Dom="Frames" Type="PosInt" Info="Number of animation time frames." Recalc="1"/>
+</PropCat>
+<PropCat Name="Annotation"><PropInfo Name="Title" Dom="Title" Type="Title" Info="The title of the object."/>
+<PropInfo Name="TitlePositionX" Dom="TitlePositionX" Type="Expression" Info="The x position of the title."/>
+<PropInfo Name="TitlePositionY" Dom="TitlePositionY" Type="Expression" Info="The y position of the title."/>
+<PropInfo Name="TitlePositionZ" Dom="TitlePositionZ" Type="Expression" Info="The z position of the title."/>
+<PropInfo Name="LegendEntry" Dom="LegendEntry" Type="Bool" Info="Is the object to be described in the legend?"/>
+<PropInfo Name="LegendText" Dom="LegendText" Type="Title" Info="Legend text for the object."/>
+</PropCat>
+<PropCat Name="Style"><PropInfo Name="HorizontalAlignment" Dom="HorizontalAlignment" Type="HorAlignment" Info="Horizontal alignment of text."/>
+<PropInfo Name="VerticalAlignment" Dom="VerticalAlignment" Type="VertAlignment" Info="Vertical alignment of text."/>
+<PropInfo Name="TextFont" Dom="TextFont" Type="Font" Info="Text font."/>
+<PropInfo Name="Billboarding" Dom="Billboarding" Type="Bool" Info="Is the text always directed to the user?"/>
+<PropInfo Name="TitleFont" Dom="TitleFont" Type="Font" Info="Text font."/>
+<PropInfo Name="TitleAlignment" Dom="TitleAlignment" Type="HorAlignment"/>
+</PropCat>
+</ObjType>
+
+<Scene3dStyle Lighting="Automatic" BackgroundTransparent="0" FooterFont="&apos;sans-serif&apos; 12" Height="80" LegendPlacement="Bottom" BackgroundColor="#E1E1E1" FooterAlignment="Center" LegendFont="&apos;sans-serif&apos; 8" BorderColor="#808080" BorderWidth="0" LegendAlignment="Center" LeftMargin="1" RightMargin="1" YXRatio="1" Width="120" BackgroundColor2="#BFBFBF" BackgroundStyle="Flat" LegendVisible="0" HeaderFont="&apos;sans-serif&apos; 12" ZXRatio="0.666666666667" HeaderAlignment="Center" BottomMargin="1" TopMargin="1"/>
+<CoordinateSystem3dStyle Scaling="Constrained" XTicksNumber="Normal" XAxisTitleAlignment="Center" ZAxisVisible="1" YTicksVisible="1" SubgridLineColor="#CCCCCC" SubgridLineWidth="0.1" ZSubgridVisible="0" YTicksLabelsVisible="1" AxesLineColor="#000000" ZTicksLabelStyle="Horizontal" AxesLineWidth="0.18" ZTicksBetween="1" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" YAxisTitleAlignment="Center" ZTicksVisible="1" YTicksNumber="Normal" GridLineStyle="Solid" ZTicksLabelsVisible="1" XGridVisible="0" XAxisVisible="1" SubgridLineStyle="Solid" ZTicksNumber="Normal" XSubgridVisible="0" ZAxisTitleAlignment="Center" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" XTicksLabelStyle="Horizontal" XTicksBetween="1" YGridVisible="0" Axes="Boxed" YAxisVisible="1" XTicksVisible="1" TicksLength="2" GridLineColor="#999999" YSubgridVisible="0" XTicksLabelsVisible="1" GridLineWidth="0.1" YTicksLabelStyle="Horizontal" YTicksBetween="1" ZGridVisible="0" AxesTips="0"/>
+<ObjStyle Type="Default" FillColor="#FF0000" LineColor2="#FF1493" VerticalAsymptotesStyle="Dashed" FillPattern="DiagonalLines" TimeBegin="0" XMesh="11" Tubular="0" TipLength="4" VerticalAsymptotesVisible="1" TitleFont="&apos;sans-serif&apos; 11" LineStyle="Solid" LineColorDirectionX="0" OrthogonalProjection="0" AffectViewingBox="1" LineColorDirectionY="1" TitleAlignment="Center" LineColorDirectionZ="1" TextFont="&apos;sans-serif&apos; 11" Frames="50" PointSize="1.5" ArrowLength="Proportional" UMesh="25" FillColorType="Dichromatic" XLinesVisible="1" VisibleAfterEnd="1" LightColor="#FFFFFF" AdaptiveMesh="0" XSubmesh="0" Extension="Finite" LinesVisible="1" YMesh="11" FillColor2="#6495ED" Shading="Smooth" PointStyle="FilledCircles" FillColorDirectionX="0" TimeEnd="10" CameraCoordinates="0" ULinesVisible="1" VisibleBeforeBegin="1" FillStyle="EvenOdd" FillColorDirectionY="0" VerticalAsymptotesColor="#808080" USubmesh="0" FillColorDirectionZ="1" VerticalAlignment="BaseLine" VerticalAsymptotesWidth="0.2" VMesh="25" YLinesVisible="1" YSubmesh="0" TubeDiameter="2.5" Filled="1" ZMesh="11" PointsVisible="0" LineColor="#0000FF" LineWidth="0.35" LegendEntry="0" Billboarding="1" VLinesVisible="1" VSubmesh="0" TipAngle="0.418879020479" TipStyle="Filled" HorizontalAlignment="Center" KeepUpVector="0" DiscontinuitySearch="1" MeshVisible="0" Closed="0" PointColor="#191970" LineColorType="Flat"/>
+<ObjStyle Type="Text3d"/>
+<ObjStyle Type="Polygon3d" LegendColor="LineColor" FillColor="#3366FF" Filled="0" LineColorDirectionY="0"/>
+<ObjStyle Type="Camera" KeepUpVector="0"/>
+<Scene3d id="plotObject1763" Consistent="1" Left="0" Bottom="0" BackgroundColor="#E1E1E1" Lighting="Automatic"><CoordinateSystem3dStyle AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Constrained" Axes="Boxed" AxesTips="0"/>
+<ObjStyle Type="Text3d"/>
+<ObjStyle Type="Polygon3d" LegendColor="LineColor"/>
+<View3d ViewDirectional="1" ViewPositionX="1.94384" ViewPositionY="-5.64533" ViewPositionZ="3.98743" ViewFocalPointX="0" ViewFocalPointY="0" ViewFocalPointZ="0" ViewViewingAngle="0.785398" ViewUpVectorX="0" ViewUpVectorY="0" ViewUpVectorZ="1.6" ViewKeepUpVector="1" ViewOrthogonalProjection="0"></View3d>
+<CoordinateSystem3d id="plotObject1764" Consistent="1" AxesTitleFont="&apos;Times New Roman&apos; 12 #000000" TicksLabelFont="&apos;Times New Roman&apos; 8 #000000" Scaling="Constrained" Axes="Boxed" AxesTips="0" AutoViewingBox="63"><AxesOriginX Val="0">0</AxesOriginX>
+<AxesOriginY Val="0">0</AxesOriginY>
+<AxesOriginZ Val="0">0</AxesOriginZ>
+<XAxisTitle>x</XAxisTitle>
+<YAxisTitle>y</YAxisTitle>
+<ZAxisTitle>z</ZAxisTitle>
+<XTicksAnchor Val="0">0</XTicksAnchor>
+<XTicksDistance Val="0">0</XTicksDistance>
+<YTicksAnchor Val="0">0</YTicksAnchor>
+<YTicksDistance Val="0">0</YTicksDistance>
+<ZTicksAnchor Val="0">0</ZTicksAnchor>
+<ZTicksDistance Val="0">0</ZTicksDistance>
+<ObjStyle Type="Text3d"/>
+<ObjStyle Type="Polygon3d" LegendColor="LineColor"/>
+<Obj3d Type="Polygon3d" id="plotObject1754" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.5" LineStyle="Solid" LineColorType="Dichromatic" LineColor="#C0C0C0" LineColor2="#FF0000" LineColorDirectionX="1" LineColorDirectionY="1" LineColorDirectionZ="1"><Points3d><Point3d><IExpr>0.0</IExpr>
+<IExpr>0.0</IExpr>
+<IExpr>0.0</IExpr>
+</Point3d>
+<Point3d><IExpr>2.0</IExpr>
+<IExpr>1.0</IExpr>
+<IExpr>1.0</IExpr>
+</Point3d>
+</Points3d>
+<Img3d><Poly3d><P3>0 0 0</P3>
+<P3>2 1 1</P3>
+</Poly3d>
+</Img3d>
+</Obj3d>
+<Obj3d Type="Polygon3d" id="plotObject1755" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.5" LineStyle="Solid" LineColorType="Dichromatic" LineColor="#C0C0C0" LineColor2="#008000" LineColorDirectionX="1" LineColorDirectionY="1" LineColorDirectionZ="1"><Points3d><Point3d><IExpr>0.0</IExpr>
+<IExpr>0.0</IExpr>
+<IExpr>0.0</IExpr>
+</Point3d>
+<Point3d><IExpr>1.0</IExpr>
+<IExpr>2.0</IExpr>
+<IExpr>2.0</IExpr>
+</Point3d>
+</Points3d>
+<Img3d><Poly3d><P3>0 0 0</P3>
+<P3>1 2 2</P3>
+</Poly3d>
+</Img3d>
+</Obj3d>
+<Obj3d Type="Polygon3d" id="plotObject1756" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.5" LineStyle="Solid" LineColorType="Dichromatic" LineColor="#0000FF" LineColor2="#000000" LineColorDirectionX="1" LineColorDirectionY="1" LineColorDirectionZ="1"><Points3d><Point3d><IExpr>0.0</IExpr>
+<IExpr>0.0</IExpr>
+<IExpr>0.0</IExpr>
+</Point3d>
+<Point3d><IExpr>3.0</IExpr>
+<IExpr>3.0</IExpr>
+<IExpr>3.0</IExpr>
+</Point3d>
+</Points3d>
+<Img3d><Poly3d><P3>0 0 0</P3>
+<P3>3 3 3</P3>
+</Poly3d>
+</Img3d>
+</Obj3d>
+<Obj3d Type="Polygon3d" id="plotObject1757" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.35" LineStyle="Solid" LineColorType="Dichromatic" LineColor="#FF0000" LineColor2="#FF0000" LineColorDirectionX="1" LineColorDirectionY="1" LineColorDirectionZ="1"><Points3d><Point3d><IExpr>2.0</IExpr>
+<IExpr>1.0</IExpr>
+<IExpr>1.0</IExpr>
+</Point3d>
+<Point3d><IExpr>3.0</IExpr>
+<IExpr>3.0</IExpr>
+<IExpr>3.0</IExpr>
+</Point3d>
+</Points3d>
+<Img3d><Poly3d><P3>2 1 1</P3>
+<P3>3 3 3</P3>
+</Poly3d>
+</Img3d>
+</Obj3d>
+<Obj3d Type="Polygon3d" id="plotObject1758" Consistent="1" Visible="1" PointStyle="FilledCircles" LineWidth="0.35" LineStyle="Solid" LineColorType="Dichromatic" LineColor="#00FF00" LineColor2="#008000" LineColorDirectionX="1" LineColorDirectionY="1" LineColorDirectionZ="1"><Points3d><Point3d><IExpr>1.0</IExpr>
+<IExpr>2.0</IExpr>
+<IExpr>2.0</IExpr>
+</Point3d>
+<Point3d><IExpr>3.0</IExpr>
+<IExpr>3.0</IExpr>
+<IExpr>3.0</IExpr>
+</Point3d>
+</Points3d>
+<Img3d><Poly3d><P3>1 2 2</P3>
+<P3>3 3 3</P3>
+</Poly3d>
+</Img3d>
+</Obj3d>
+<Obj3d Type="Text3d" id="plotObject1759" Consistent="1" Visible="1" HorizontalAlignment="Center" VerticalAlignment="BaseLine" TextFont="&apos;Times New Roman&apos; 12 Bold #000000" Billboarding="1"><Expr Opt="PositionX">1</Expr>
+<Expr Opt="PositionY">5.0e-1</Expr>
+<Expr Opt="PositionZ">6.0e-1</Expr>
+<Expr Opt="Text">&quot;a&quot;</Expr>
+<TextOrientation><IExpr>1</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>1</IExpr>
+</TextOrientation>
+<Img3d><Text3d Position="1 0.5 0.6" BaseDir="1 0 0" FaceDir="0 0 1">a</Text3d>
+</Img3d>
+</Obj3d>
+<Obj3d Type="Text3d" id="plotObject1760" Consistent="1" Visible="1" HorizontalAlignment="Center" VerticalAlignment="BaseLine" TextFont="&apos;Times New Roman&apos; 12 Bold #000000" Billboarding="1"><Expr Opt="PositionX">5.0e-1</Expr>
+<Expr Opt="PositionY">1</Expr>
+<Expr Opt="PositionZ">1.1</Expr>
+<Expr Opt="Text">&quot;b&quot;</Expr>
+<TextOrientation><IExpr>1</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>1</IExpr>
+</TextOrientation>
+<Img3d><Text3d Position="0.5 1 1.1" BaseDir="1 0 0" FaceDir="0 0 1">b</Text3d>
+</Img3d>
+</Obj3d>
+<Obj3d Type="Text3d" id="plotObject1761" Consistent="1" Visible="1" HorizontalAlignment="Center" VerticalAlignment="BaseLine" TextFont="&apos;Times New Roman&apos; 12 Bold #000000" Billboarding="1"><Expr Opt="PositionX">1.5</Expr>
+<Expr Opt="PositionY">1.5</Expr>
+<Expr Opt="PositionZ">1.8</Expr>
+<Expr Opt="Text">&quot;a + b&quot;</Expr>
+<TextOrientation><IExpr>1</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>0</IExpr>
+<IExpr>1</IExpr>
+</TextOrientation>
+<Img3d><Text3d Position="1.5 1.5 1.8" BaseDir="1 0 0" FaceDir="0 0 1">a + b</Text3d>
+</Img3d>
+</Obj3d>
+<ViewingBoxXMin Val="0">0.0</ViewingBoxXMin>
+<ViewingBoxXMax Val="3">3.0</ViewingBoxXMax>
+<ViewingBoxYMin Val="0">0.0</ViewingBoxYMin>
+<ViewingBoxYMax Val="3">3.0</ViewingBoxYMax>
+<ViewingBoxZMin Val="0">0.0</ViewingBoxZMin>
+<ViewingBoxZMax Val="3">3.0</ViewingBoxZMax>
+<Hints Scaling="Constrained"/></CoordinateSystem3d>
+</Scene3d>
+</Canvas>

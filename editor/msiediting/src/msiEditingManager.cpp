@@ -153,6 +153,7 @@ nsresult MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, P
 NS_IMETHODIMP
 msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode, 
                                       PRUint32    rawOffset,
+                                      PRBool clean,
                                       msiIMathMLEditingBC ** editingBC)
                                              
 {
@@ -166,7 +167,7 @@ msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode,
     PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
     if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
     {
-      *editingBC = new msiMEditingBase(mathmlNode, offset, mathmlNodeType);
+      *editingBC = new msiMEditingBase(mathmlNode, offset, clean, mathmlNodeType);
       if (*editingBC == nsnull)
         res = NS_ERROR_OUT_OF_MEMORY;
       else
@@ -647,6 +648,9 @@ msiEditingManager::InsertMath(nsIEditor * editor,
 {
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> mathParent, parent, left, right;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  htmlEditor = do_QueryInterface(editor);
+  if (!htmlEditor) return NS_ERROR_FAILURE;
   if (node)
     msiUtils::GetMathParent(node, mathParent);
   if (mathParent)
@@ -712,9 +716,11 @@ msiEditingManager::InsertMath(nsIEditor * editor,
       {
         if (left)
           res = editor->ReplaceNode(left, node, parent);
-        res = editor->InsertNode(mathNode, parent, offset);
-        if (right)
-          res = editor->InsertNode(right, parent, offset+1);
+        res = htmlEditor->InsertNodeAtPoint(mathNode, (nsIDOMNode**)address_of(parent), (PRInt32*)&offset, true);
+        if (right) {
+          offset++;
+          res = htmlEditor->InsertNodeAtPoint(right, (nsIDOMNode**)address_of(parent), (PRInt32*)&offset, true);
+        }
         if (isDisplay)
         {
           nsCOMPtr<nsIDOMNode> msidisplay;
