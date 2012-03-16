@@ -98,6 +98,7 @@
         <xsl:with-param name="theCellData" select="." />
         <xsl:with-param name="colData" select="$preambleData" />
         <xsl:with-param name="positionInRow" select="position()" />
+        <xsl:with-param name="tabularType" select="$tabularType"/>
       </xsl:call-template>
     </xsl:for-each>
     <xsl:choose>
@@ -496,6 +497,7 @@
   <xsl:param name="theCellData" />
   <xsl:param name="colData" />
   <xsl:param name="positionInRow" select="1" />
+  <xsl:param name="tabularType" select="$tabularType"/>
   <xsl:if test="$positionInRow &gt; 1">
     <xsl:text xml:space="preserve"> &amp; </xsl:text>
   </xsl:if>
@@ -549,7 +551,14 @@
         </xsl:if>
         <xsl:choose>
           <xsl:when test="$theCellData/@alignment">
-            <xsl:value-of select="translate(substring(normalize-space($theCellData/@alignment),1,1),'lcrj', 'LCRJ')" />
+            <xsl:choose>
+              <xsl:when test="$tabularType='tabulary'">
+                <xsl:value-of select="translate(substring(normalize-space($theCellData/@alignment),1,1),'lcrj', 'LCRJ')" />
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="translate(substring(normalize-space($theCellData/@alignment),1,1),'LCRJ', 'lcrj')" />
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>L</xsl:text>
