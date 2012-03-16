@@ -144,6 +144,11 @@ button.bibitemlabel {
   width: 9px;
 }
 
+button[class="indexbutton"] {
+  -moz-user-modify: read-only;
+  -moz-user-select: all;	  
+}
+
 /* Following was an attempt to get the button to cycle through the different index levels (primary, secondary, tertiary).
    It's being commented out as it didn't work, but I may want to revive it.  rwa 03-09-2012
 
