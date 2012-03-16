@@ -926,8 +926,15 @@ var importTimerHandler =
 //        stopImportTimer("import");
 //      }
       timer.cancel();
-      var importData = {mSourceFile : this.sourceFile, mImportProcess : this.importProcess, mTexImportTargFile : this.texTargFile,
-                    mTexImportProcess : this.texImportProcess, mImportTargFile : this.importTargFile};
+      this.checkLogFileStatus();
+      var importData = {mSourceFile : this.sourceFile, 
+                        mImportProcess : this.importProcess, mTexImportProcess : this.texImportProcess,
+                        mImportStatus : this.importStatus, mTexImportStatus: this.texImportStatus,
+                        mImportTargFile : this.importTargFile, mTexImportTargFile : this.texTargFile,
+                        mImportSentinelFile : this.getFailureSentinelFile("import"),
+                        mTexSentinelFile : this.getFailureSentinelFile("tex"),
+                        mImportLogFile : this.getImportLogFile("import"), 
+                        mTexImportLogFile : this.getImportLogFile("tex")};
       launchConvertingDialog(importData);
       //Put up a dialog asking if user wants to cancel?
       return;
@@ -946,6 +953,9 @@ var importTimerHandler =
       if (sentFile.exists())
         sentFile.remove(false);
       this.importTargFile = null;
+      var logFile = this.getImportLogFile("import");
+      if (logFile.exists())
+        logFile.remove(false);
     }
     if (this.texTargFile)
     {
@@ -953,6 +963,9 @@ var importTimerHandler =
       if (texSentFile.exists())
         texSentFile.remove(false);
       this.texTargFile = null;
+      var texLogFile = this.getImportLogFile("tex");
+      if (texLogFile.exists())
+        texLogFile.remove(false);
     }
     this.timerCount = 0;
     this.sourceFile = null;
@@ -992,7 +1005,7 @@ var importTimerHandler =
       if (this.texTargFile.exists())
         this.texImportStatus = this.statusSuccess;
       else if (!this.texImportProcess || this.processFailed("tex"))
-        this.importStatus = this.statusFailed;
+        this.texImportStatus = this.statusFailed;
     }
     if (this.importStatus == this.statusRunning)
     {
@@ -1003,9 +1016,48 @@ var importTimerHandler =
     }
   },
 
+  checkLogFileStatus : function()
+  {
+    var errorRE = /(error)|(fail)/i;
+    if (this.texImportStatus == this.statusRunning)
+    {
+      if (this.getImportLogFile("tex") && this.getImportLogFile("tex").exists())
+      {
+        var logStr;
+        try
+        {
+          logStr = this.getImportLogInfo("tex");
+        } catch(ex) {}
+        if (logStr)
+        {
+          if (errorRE.exec(logStr))
+            this.texImportStatus = this.statusFailed;
+        }
+      }
+    }
+    if (this.importStatus == this.statusRunning)
+    {
+      if (this.getImportLogFile("import") && this.getImportLogFile("import").exists())
+      {
+        var logStr;
+        try
+        {
+          logStr = this.getImportLogInfo("import");
+        } catch(ex) {}
+        if (logStr)
+        {
+          if (errorRE.exec(logStr))
+            this.importStatus = this.statusFailed;
+        }
+      }
+    }
+  },
+
   checkFinalStatus : function()
   {
     this.checkStatus();
+    if ((this.importStatus == this.statusRunning) || (this.texImportStatus == this.statusRunning))
+      this.checkLogFileStatus();
     if (this.importStatus == this.statusFailed || this.texImportStatus == this.statusFailed)
       this.postFailedImportNotice();
 
@@ -1035,6 +1087,18 @@ var importTimerHandler =
     return sentinelFile;
   },
 
+  getImportLogFile : function(mode)
+  {
+    var logFile = (mode == "tex") ? this.texTargFile.clone() : this.importTargFile.clone();
+    if (!logFile || !logFile.path)
+      return null;
+    var leaf = logFile.leafName;
+    leaf += ".log";
+    logFile = logFile.parent;
+    logFile.append(leaf);
+    return logFile;
+  },
+
   processFailed: function(mode)
   {
     var sentFile = this.getFailureSentinelFile(mode);
@@ -1045,6 +1109,7 @@ var importTimerHandler =
   {
     var theMsg = "";
     var ext = "";
+    var logInfo = "";
     if (this.importStatus == this.statusFailed)
     {
       theMsg = "imageProps.couldNotImport";
@@ -1053,16 +1118,29 @@ var importTimerHandler =
         theMsg = "imageProps.couldNotImportButCanTeX";
         ext = getExtension(this.importTargFile.leafName);
       }
+      logInfo = this.getImportLogInfo("import");
     }
     else if (this.texImportStatus == this.statusFailed)
     {
       theMsg = "imageProps.couldNotImportTeX";
       ext = getExtension(this.texTargFile.leafName);
+      logInfo = this.getImportLogInfo("tex");
     }
     var msgParams = {file : this.sourceFile.path};
     if (ext.length)
       msgParams.extension = ext;
-    msiPostDialogMessage(theMsg, msgParams, "imageProps.importErrorTitle");
+    var msgString = msiGetDialogString(theMsg, msgParams);
+    if (logInfo && (logInfo.length > 0))
+      msgString += "\n" + logInfo;
+    var titleStr = msiGetDialogString("imageProps.importErrorTitle", msgParams);
+    AlertWithTitle(titleStr, msgString);
+  },
+
+  getImportLogInfo : function(mode)
+  {
+    var logFile = this.getImportLogFile(mode);
+    var logUrl = msiFileURLFromFile( logFile );
+    return getFileAsString(logUrl.spec);
   },
 
   canTypesetSourceFile : function()
@@ -1089,12 +1167,10 @@ function launchConvertingDialog(importData)
 {
   window.openDialog("chrome://prince/content/msiGraphicsConversionDlg.xul", "graphicsConversionRunning", "chrome,close,titlebar,modal", importData);
   //Then collect data the dialog may have changed (notably if the user cancelled the conversion)
-  importTimerHandler.importProcess = importData.mImportProcess;
-  importTimerHandler.texImportProcess = importData.mTexImportProcess;
-  if (importData.importFailed)
-    importTimerHandler.importStatus = importTimerHandler.statusFailed;
-  if (importData.texImportFailed)
-    importTimerHandler.texImportStatus = importTimerHandler.statusFailed;
+//  importTimerHandler.importProcess = importData.mImportProcess;
+//  importTimerHandler.texImportProcess = importData.mTexImportProcess;
+  importTimerHandler.importStatus = importData.mImportStatus;
+  importTimerHandler.texImportStatus = importData.mTexImportStatus;
 
   importTimerHandler.checkFinalStatus();
 }
@@ -1182,6 +1258,10 @@ function importLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
   this.outputFile = inputNSFile.leafName.replace(extRE, "." + fileTypeData.output);
   this.commandLine = "";
   this.commandLine = fixCommandFileLine(fileTypeData.commandLine, this, bIsUnix);
+  if (this.commandLine.indexOf('>') < 0)
+    this.commandLine +=  " >" + this.outputFile + ".log 2>&1";
+  else
+    this.commandLine += " 2>" + this.outputFile + ".log";
 }
 
 //  fileTypeData - an object in the array returned from readInGraphicsFileData
@@ -1196,6 +1276,10 @@ function texLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
   this.outputFile = inputNSFile.leafName.replace(extRE, "." + this.outputExtension);
   this.commandLine = "";
   this.commandLine = fixCommandFileLine(fileTypeData.texCommandLine, this, bIsUnix);
+  if (this.commandLine.indexOf('>') < 0)
+    this.commandLine +=  " >" + this.outputFile + ".log 2>&1";
+  else
+    this.commandLine += " 2>" + this.outputFile + ".log";
 }
 
 //  commandFile - an nsILocalFile; the command file being created
@@ -1263,11 +1347,11 @@ function runGraphicsFilter(filterSourceFile, graphicsInFile, graphicsOutFile, mo
 //  }
   importTimerHandler.startLoading(graphicsInFile, graphicsOutFile, theProcess, mode);
 
-//  var outLogFile = filterSourceFile.leafName;
+  var outLogFile = importTimerHandler.getImportLogFile(mode);
 //  var nDot = outLogFile.lastIndexOf(".");
 //  outLogFile = outLogFile.substr(0,nDot) + ".log";
   theProcess.init(filterSourceFile);
-//  theProcess.run(false, [">" + outLogFile], 1);
+//  theProcess.run(false, [">" + outLogFile + " 2>&1"], 1);
   theProcess.run(false, [], 0);
   var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
   theTimer.initWithCallback( importTimerHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
@@ -1449,7 +1533,7 @@ function adjustObjectForFileType(imageNode, extension)
 function readSizeFromPDFFile(pdfSrc)
 {
   var pdfSrcUrl = msiMakeAbsoluteUrl(pdfSrc);
-  var theText = getFileAsString(pdfSrcUrl);
+  var theText = getFileAsString(pdfSrcUrl.spec);
 
 //  var wdthRE = /(\/Width)\s+([0-9]+)/i;
 //  var htRE = /(\/Height\s+([0-9]+)/i;
