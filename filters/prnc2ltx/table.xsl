@@ -706,15 +706,6 @@
         </xsl:choose>
       </xsl:variable>
       <xsl:variable name="avgWidth" select="$numVariableCols * (number($availableWidth) div $numColsUsing)" />
-      <!-- xsl:text xml:space="preserve"> - numColsUsing is </xsl:text><xsl:value-of select="$numColsUsing"/>
-      <xsl:text xml:space="preserve">, unavailableWidth is </xsl:text><xsl:value-of select="$unavailableWidth"/>
-      <xsl:text xml:space="preserve">, avgWidth is </xsl:text><xsl:value-of select="$avgWidth"/>
-      <xsl:text xml:space="preserve">, numVariableCols is </xsl:text><xsl:value-of select="$numVariableCols"/>
-      <xsl:text xml:space="preserve">, fixedColWidth is </xsl:text><xsl:value-of select="$fixedColWidth"/>
-      <xsl:text xml:space="preserve">, fullTableWidth is </xsl:text><xsl:value-of select="$fullTableWidth"/>
-      <xsl:text xml:space="preserve">, numColsUsing should be 1 less than </xsl:text><xsl:value-of select="count($colData/columnData[not(number(@width) &gt; 0)])"/>
-      <xsl:text xml:space="preserve">
-  </xsl:text -->
       <xsl:variable name="calcMinWidth">
         <xsl:choose>
           <xsl:when test="$numColsUsing &gt; 4"><xsl:value-of select="$fixedColWidth + (.5 * $avgWidth)"/></xsl:when>
@@ -751,15 +742,31 @@
         </xsl:for-each>
       </xsl:variable>
       <xsl:variable name="minParaWidth">
-        <xsl:for-each select="$theCell//*[local-name()='img' or local-name()='object']">
-          <xsl:sort select="number(@width)" data-type="number" order="descending" />
-          <xsl:if test="position()=1">
-            <xsl:call-template name="convertSizeSpecsToMM">
-              <xsl:with-param name="theSpec" select="number(@width) + 2" />
-            </xsl:call-template>
-          </xsl:if>
-        </xsl:for-each>
+        <xsl:choose>
+          <xsl:when test="$theCell//*[local-name()='img' or local-name()='object']">
+            <xsl:for-each select="$theCell//*[local-name()='img' or local-name()='object']">
+              <xsl:sort select="number(@width)" data-type="number" order="descending" />
+              <xsl:if test="position()=1">
+                <xsl:call-template name="convertSizeSpecsToMM">
+                  <xsl:with-param name="theSpec" select="number(@width) + 2" />
+                </xsl:call-template>
+              </xsl:if>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>0</xsl:otherwise>
+        </xsl:choose>
       </xsl:variable>
+      <!-- xsl:text xml:space="preserve"> - numColsUsing is </xsl:text><xsl:value-of select="$numColsUsing"/>
+      <xsl:text xml:space="preserve">, unavailableWidth is </xsl:text><xsl:value-of select="$unavailableWidth"/>
+      <xsl:text xml:space="preserve">, avgWidth is </xsl:text><xsl:value-of select="$avgWidth"/>
+      <xsl:text xml:space="preserve">, numVariableCols is </xsl:text><xsl:value-of select="$numVariableCols"/>
+      <xsl:text xml:space="preserve">, fixedColWidth is </xsl:text><xsl:value-of select="$fixedColWidth"/>
+      <xsl:text xml:space="preserve">, fullTableWidth is </xsl:text><xsl:value-of select="$fullTableWidth"/>
+      <xsl:text xml:space="preserve">, numColsUsing should be 1 less than </xsl:text><xsl:value-of select="count($colData/columnData[not(number(@width) &gt; 0)])"/>
+      <xsl:text xml:space="preserve">guessedParaWidth is </xsl:text><xsl:value-of select="$guessedParaWidth"/>
+      <xsl:text xml:space="preserve">, minParaWidth is </xsl:text><xsl:value-of select="$minParaWidth"/>
+      <xsl:text xml:space="preserve">
+  </xsl:text -->
       <xsl:choose>
         <xsl:when test="($guessedParaWidth + $minParaWidth) &lt; $minWidth"><xsl:value-of select="$minWidth"/></xsl:when>
         <xsl:when test="($guessedParaWidth + $minParaWidth) &lt; $maxWidth"><xsl:value-of select="$guessedParaWidth + $minParaWidth"/></xsl:when>
