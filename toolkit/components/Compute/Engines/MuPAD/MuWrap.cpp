@@ -256,46 +256,48 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
         
         // let plotqueries be handled by the standard code
         if ((context_cmdtype == CC_PLOTFUNC) && (context_cmdtemplatetype != CT_PLOTQUERY)) {
-//          // convert VCam to filename
-//          // BBM. The file is already a vcam file. We will simply copy it -- a better longterm 
-//          //   solution is for the engine to save it in the right place with the right name 
-//          // copy the file zeng_output to the file plotfilename
-//          nsCOMPtr<nsILocalFile> engOutput, plotfile;
-//          nsCOMPtr<nsIFile> destdirectory;
-//          nsAutoString strLeafName;
-//          nsresult rv;
-//          bool plotOK;
-//          engOutput = do_CreateInstance("@mozilla.org/file/local;1", &rv);
-//          plotOK = (rv == NS_OK);
-//          if (plotOK)
-//          {
-//              #ifdef XP_WIN
-//              // We need to make sure the filename zeng_output is ok for InitWithNativePath() below. 
-//              // In particular, don't allow forward slash as in c:/temp\mx27.
-//              // This is preventing debugging on windows.
-//              for (int i = 0; i<numBytes; ++i){
-//                if (zeng_output[i] == L'/'){
-//                  zeng_output[i] = L'\\';
-//                }
-//              }
-//              #endif
-//
-//              printf("plotOK is true\n");
-//              plotfile = do_CreateInstance("@mozilla.org/file/local;1", &rv);
-//              for (int i =0; i<100000;i++);
-//                rv = engOutput->InitWithNativePath( nsDependentCString(zeng_output) );
-//                if (rv) printf("engOutput->InitWithNativePath failed: %h\n", rv);
-//              rv = plotfile->InitWithNativePath( nsDependentCString(plotfilename) );
-//              if (rv) printf("plotfile->InitWithNativePath failed\n");
-//              plotfile->GetParent( getter_AddRefs(destdirectory));
-//              plotfile->GetLeafName( strLeafName );
-//              rv = plotfile->Remove(PR_FALSE);
-//              if (rv) printf("plotfile->Remove failed\n");              
-//              rv = engOutput->CopyTo( destdirectory, strLeafName );
-//              if (rv != NS_OK) printf("File not ready to copy!\n");
-//              plotOK = (rv == NS_OK);
-//          }   
-//          // plotOK = RenderPlot(zeng_output, plotfilename);
+#ifndef XM_MACOSX
+          // convert VCam to filename
+          // BBM. The file is already a vcam file. We will simply copy it -- a better longterm 
+          //   solution is for the engine to save it in the right place with the right name 
+          // copy the file zeng_output to the file plotfilename
+          nsCOMPtr<nsILocalFile> engOutput, plotfile;
+          nsCOMPtr<nsIFile> destdirectory;
+          nsAutoString strLeafName;
+          nsresult rv;
+          bool plotOK;
+          engOutput = do_CreateInstance("@mozilla.org/file/local;1", &rv);
+          plotOK = (rv == NS_OK);
+          if (plotOK)
+          {
+#ifdef XP_WIN
+              // We need to make sure the filename zeng_output is ok for InitWithNativePath() below. 
+              // In particular, don't allow forward slash as in c:/temp\mx27.
+              // This is preventing debugging on windows.
+              for (int i = 0; i<numBytes; ++i){
+                if (zeng_output[i] == L'/'){
+                  zeng_output[i] = L'\\';
+                }
+              }
+#endif
+
+              printf("plotOK is true\n");
+              plotfile = do_CreateInstance("@mozilla.org/file/local;1", &rv);
+              for (int i =0; i<100000;i++);
+                rv = engOutput->InitWithNativePath( nsDependentCString(zeng_output) );
+                if (rv) printf("engOutput->InitWithNativePath failed: %h\n", rv);
+              rv = plotfile->InitWithNativePath( nsDependentCString(plotfilename) );
+              if (rv) printf("plotfile->InitWithNativePath failed\n");
+              plotfile->GetParent( getter_AddRefs(destdirectory));
+              plotfile->GetLeafName( strLeafName );
+              rv = plotfile->Remove(PR_FALSE);
+              if (rv) printf("plotfile->Remove failed\n");              
+              rv = engOutput->CopyTo( destdirectory, strLeafName );
+              if (rv != NS_OK) printf("File not ready to copy!\n");
+              plotOK = (rv == NS_OK);
+          }   
+#endif          
+          // plotOK = RenderPlot(zeng_output, plotfilename);
           mr->PutResultCode(CR_success);
 
         } else if (cmd_ID == CCID_Define ||
