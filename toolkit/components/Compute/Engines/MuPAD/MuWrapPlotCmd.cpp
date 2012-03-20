@@ -94,8 +94,10 @@ char *MuPADPlotWrapper::CreatePLOTFUNCeStr(MuPADWrapper * const mpw, PlotService
     cmd += plot->ToString(plotstr);
     delete plot;
   }
+#ifdef XP_MACOSX
   if (filename.length() > 0)
     cmd += ", OutputFile = \"" + filename + "\"";
+#endif
   cmd += ")";
   
   // << "\n\nSMR Final CMD is " << cmd << "\n" << endl;
