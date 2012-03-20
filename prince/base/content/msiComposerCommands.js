@@ -988,7 +988,12 @@ var msiOpenCommand =
 
   doCommand: function(aCommand)
 	{
-	  openDocument();
+	  try {
+      openDocument();
+    }
+    catch (e) {
+      finalThrow(cmdFailString("open"), e.message);
+    }
 	}
 };
 
@@ -1022,7 +1027,7 @@ function openDocument()
   } 
   catch (e) 
   { 
-    finalThrow("Open document command failed", e.message); 
+    finalThrow(cmdFailString('Open'), e.message); 
   }
 }
 
@@ -1040,7 +1045,12 @@ var msiNewCommand =
 
   doCommand: function(aCommand)
   {
-	  openNewDocument();
+	  try {
+      openNewDocument();
+    }
+    catch (e) {
+      finalThrow(cmdFailString('new'), e.message);
+    }
 	}
 } 
 
@@ -1076,10 +1086,14 @@ var msiUpdateStructToolbarCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    msiUpdateStructToolbar(editorElement);
+    try {
+      msiUpdateStructToolbar(editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('updateStructureToolbar'), e.message);
+    }
     return true;
   },
-
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
   doCommand: function(aCommand)  {}
@@ -1103,7 +1117,10 @@ var msiSaveCommand =
       return msiIsDocumentEditable(editorElement) &&
         (msiIsDocumentModified(editorElement) || msiIsHTMLSourceChanged(editorElement) ||
          IsUrlAboutBlank(docUrl) || IsUrlUntitled(docUrl) || GetScheme(docUrl) != "file");
-    } catch (e) {return false;}
+    } 
+    catch (e) {
+      finalThrow(cmdFailString('save'), e.message);
+    }
   },
   
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -1111,18 +1128,23 @@ var msiSaveCommand =
 
   doCommand: function(aCommand)
   {
-    var result = false;
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return result;
+    try {
+      var result = false;
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return result;
 
-    var editor = msiGetEditor(editorElement);
-    if (editor)
-    {
-      msiFinishHTMLSource(editorElement);
-      var url = msiGetEditorURL(editorElement);
-      result = msiSaveDocument(true, IsUrlAboutBlank(url)||IsUrlUntitled(url), false, editor.contentsMIMEType, editor, editorElement);
-      editorElement.contentWindow.focus();
+      var editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        msiFinishHTMLSource(editorElement);
+        var url = msiGetEditorURL(editorElement);
+        result = msiSaveDocument(true, IsUrlAboutBlank(url)||IsUrlUntitled(url), false, editor.contentsMIMEType, editor, editorElement);
+        editorElement.contentWindow.focus();
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('save'), e.message);
     }
     return result;
   }
@@ -1153,13 +1175,18 @@ var msiSoftSaveCommand =
 
   doCommand: function(aCommand)
   {
-    var result = false;
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return result;
+    try {
+      var result = false;
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return result;
 
-    var editor = msiGetEditor(editorElement);
-    return doSoftSave(editorElement, editor, false);
+      var editor = msiGetEditor(editorElement);
+      return doSoftSave(editorElement, editor, false);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('softsave'), e.message);
+    }
   }
 }
 
@@ -1178,16 +1205,21 @@ var msiSaveAsCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return false;
-    var editor = msiGetEditor(editorElement);
-    if (editor)
-    {
-      msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, true, false, editor.contentsMIMEType, editor, editorElement, aCommand==="cmd_saveAsDir");
-      editorElement.contentWindow.focus();
-      return result;
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return false;
+      var editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        msiFinishHTMLSource(editorElement);
+        var result = msiSaveDocument(true, true, false, editor.contentsMIMEType, editor, editorElement, aCommand==="cmd_saveAsDir");
+        editorElement.contentWindow.focus();
+        return result;
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('saveas'), e.message);
     }
     return false;
   }
@@ -1211,16 +1243,21 @@ var msiSaveCopyAsCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return false;
-    var editor = msiGetEditor(editorElement);
-    if (editor)
-    {
-      msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, true, true, editor.contentsMIMEType, editor, editorElement, aCommand==="cmd_saveCopyAsDir");
-      editorElement.contentWindow.focus();
-      return result;
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return false;
+      var editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        msiFinishHTMLSource(editorElement);
+        var result = msiSaveDocument(true, true, true, editor.contentsMIMEType, editor, editorElement, aCommand==="cmd_saveCopyAsDir");
+        editorElement.contentWindow.focus();
+        return result;
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('savecopyas'), e.message);
     }
     return false;
   }
@@ -1243,16 +1280,21 @@ var msiExportToTextCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return false;
-    var editor = msiGetEditor(editorElement);
-    if (editor)
-    {
-      msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, true, true, "text/plain", editor, editorElement, falsle);
-      editorElement.contentWindow.focus();
-      return result;
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return false;
+      var editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        msiFinishHTMLSource(editorElement);
+        var result = msiSaveDocument(true, true, true, "text/plain", editor, editorElement, falsle);
+        editorElement.contentWindow.focus();
+        return result;
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('exporttotext'), e.message);
     }
     return false;
   }
@@ -1317,10 +1359,15 @@ var msiPrintDirectCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var doc = editorElement.contentDocument;
-    rebuildSnapshots(doc);
-    PrintUtils.print();
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var doc = editorElement.contentDocument;
+      rebuildSnapshots(doc);
+      PrintUtils.print();
+    }
+    catch (e) {
+      finalThrow(cmdFailString('directprint'), e.message);
+    }
   }
 }
 
@@ -1358,10 +1405,15 @@ var msiPreviewDirectCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var doc = editorElement.contentDocument;
-    rebuildSnapshots(doc);
-    PrintUtils.printPreview(onEnterPP, onExitPP);
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var doc = editorElement.contentDocument;
+      rebuildSnapshots(doc);
+      PrintUtils.printPreview(onEnterPP, onExitPP);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('directprintpreview'), e.message);
+    }
   }
 }
 
@@ -3237,38 +3289,43 @@ var msiRevertCommand =
 
   doCommand: function(aCommand)
   {
-    // Confirm with the user to abandon current changes
-    var promptService = msiGetPromptService();
-    if (promptService)
-    {
-      // Put the page title in the message string
-      var editorElement = msiGetActiveEditorElement();
-      var title = msiGetDocumentTitle(editorElement);
-      if (!title)
-        title = GetString("untitled");
-
-      var msg = GetString("AbandonChanges").replace(/%title%/,title);
-
-      var result = promptService.confirmEx(window, GetString("RevertCaption"), msg,
-                    (promptService.BUTTON_TITLE_REVERT * promptService.BUTTON_POS_0) +
-                    (promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
-                    null, null, null, null, {value:0});
-
-      // Reload page if first button (Revert) was pressed
-      if(result == 0)
+    try {
+      // Confirm with the user to abandon current changes
+      var promptService = msiGetPromptService();
+      if (promptService)
       {
-        msiCancelHTMLSource(editorElement);
-        var urlstring = msiGetEditorURL(editorElement);
-        var url = msiGetURIFromString(urlstring);
-        var documentfile = msiFileFromFileURL(url);
-        var currFilePath = GetFilepath(urlstring);
-        var scifileUrlString = msiFindOriginalDocname(currFilePath);
-        var scifileurl = msiURIFromString(scifileUrlString);
-        var scifile = msiFileFromFileURL(scifileurl);;
-        msiRevertFile( true, documentfile, false );
-        createWorkingDirectory(scifile);
-        msiEditorLoadUrl(editorElement, msiGetEditorURL(editorElement));
+        // Put the page title in the message string
+        var editorElement = msiGetActiveEditorElement();
+        var title = msiGetDocumentTitle(editorElement);
+        if (!title)
+          title = GetString("untitled");
+
+        var msg = GetString("AbandonChanges").replace(/%title%/,title);
+
+        var result = promptService.confirmEx(window, GetString("RevertCaption"), msg,
+                      (promptService.BUTTON_TITLE_REVERT * promptService.BUTTON_POS_0) +
+                      (promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
+                      null, null, null, null, {value:0});
+
+        // Reload page if first button (Revert) was pressed
+        if(result == 0)
+        {
+          msiCancelHTMLSource(editorElement);
+          var urlstring = msiGetEditorURL(editorElement);
+          var url = msiGetURIFromString(urlstring);
+          var documentfile = msiFileFromFileURL(url);
+          var currFilePath = GetFilepath(urlstring);
+          var scifileUrlString = msiFindOriginalDocname(currFilePath);
+          var scifileurl = msiURIFromString(scifileUrlString);
+          var scifile = msiFileFromFileURL(scifileurl);;
+          msiRevertFile( true, documentfile, false );
+          createWorkingDirectory(scifile);
+          msiEditorLoadUrl(editorElement, msiGetEditorURL(editorElement));
+        }
       }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('revert'), e.message);
     }
   }
 };
@@ -3291,7 +3348,12 @@ var msiCloseCommand =
 
   doCommand: function(aCommand)
   {
-    msiCloseWindow();
+    try {
+      msiCloseWindow();
+    }
+    catch (e) {
+      finalThrow(cmdFailString('close'), e.message);
+    }
   }
 };
 
@@ -3310,13 +3372,18 @@ var msiCleanupCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var editor = msiGetEditor(editorElement);    
-    var editorDoc = editor.document;
-    var param =new Object();
-    param.cleanupOptions=[];
-    window.openDialog( "chrome://prince/content/cleanup.xul", "cleanup", "chrome,resizable=yes, modal,titlebar", param);    
-    cleanupWorkDirectory(editorDoc, getWorkingDirectory(editorElement), param.cleanupOptions );
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);    
+      var editorDoc = editor.document;
+      var param =new Object();
+      param.cleanupOptions=[];
+      window.openDialog( "chrome://prince/content/cleanup.xul", "cleanup", "chrome,resizable=yes, modal,titlebar", param);    
+      cleanupWorkDirectory(editorDoc, getWorkingDirectory(editorElement), param.cleanupOptions );
+    }
+    catch (e) {
+      finalThrow(cmdFailString('cleanup'), e.message);
+    }
   }
 };
 
@@ -3686,15 +3753,17 @@ var msiDirectPrintCommand =
 
   doCommand: function(aCommand)
   {
-    // In editor.js
-    var editorElement = msiGetActiveEditorElement();
-    var doc = editorElement.contentDocument;
-    rebuildSnapshots(doc);
-    msiFinishHTMLSource();
-    try {
-//      NSPrint();
+    try 
+    {
+      var editorElement = msiGetActiveEditorElement();
+      var doc = editorElement.contentDocument;
+      rebuildSnapshots(doc);
+      msiFinishHTMLSource();
       PrintUtils.print();
-    } catch (e) {}
+    }
+    catch (e) {
+      finalThrow(cmdFailString('directprint'), e.message);
+    }
   }
 };
 
@@ -3715,7 +3784,12 @@ var msiPrintCommand =
   },
   doCommand: function(aCommand)
   {
-    printTeX(aCommand=='cmd_printPdf',false);  
+    try {
+      printTeX(aCommand=='cmd_printPdf',false);  
+    }
+    catch (e) {
+      finalThrow(cmdFailString('printPdf'), e.message);
+    }
   }
 };
 
@@ -3736,7 +3810,12 @@ var msiPreviewCommand =
   },
   doCommand: function(aCommand)
   {
-    printTeX(aCommand=='cmd_previewPdf',true);  
+    try {
+      printTeX(aCommand=='cmd_previewPdf',true);  
+    }
+    catch (e) {
+      finalThrow(cmdFailString('previewPDF'), e.message);
+    }
   }
 };
 
@@ -3758,7 +3837,12 @@ var msiCompileCommand =
   },
   doCommand: function(aCommand)
   {
-     compileTeX(aCommand=='cmd_compilePdf')
+     try {
+       compileTeX(aCommand=='cmd_compilePdf')
+     }
+     catch (e) {
+       finalThrow(cmdFailString('compilePDF'), e.message);
+     }
   }
 };
 
@@ -3782,10 +3866,13 @@ var msiPrintSetupCommand =
 
   doCommand: function(aCommand)
   {
-    // In editor.js
-    msiFinishHTMLSource();
-    PrintUtils.showPageSetup();
-//    NSPrintSetup();
+    try {
+      msiFinishHTMLSource();
+      PrintUtils.showPageSetup();
+    }
+    catch (e) {
+      finalThrow(cmdFailString('printsetup'), e.message);
+    }
   }
 };
 
@@ -3806,10 +3893,15 @@ var msiOneShotGreek =
   },
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var editor = msiGetEditor(editorElement);
-    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
-    htmleditor.setOneShotTranslation("greek");  
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+      var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+      htmleditor.setOneShotTranslation("greek");  
+    }
+    catch (e) {
+      finalThrow(cmdFailString('oneshotgreek'), e.message);
+    }
   }
 };
 
@@ -3830,10 +3922,15 @@ var msiOneShotSymbol =
   },
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var editor = msiGetEditor(editorElement);
-    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
-    htmleditor.setOneShotTranslation("symbol");  
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+      var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+      htmleditor.setOneShotTranslation("symbol");  
+    }
+    catch (e) {
+      finalThrow(cmdFailString('oneshotsymbol'), e.message);
+    }
   }
 };
 
@@ -3856,22 +3953,27 @@ var msiCopyTeX =
   },
   doCommand: function(aCommand)
   {
-	  var editorElement = msiGetActiveEditorElement();
-	  var editor = msiGetEditor(editorElement);
-	  if (!editor) {
-			throw("No editor in msiCopyTeX");
+		try {
+  	  var editorElement = msiGetActiveEditorElement();
+  	  var editor = msiGetEditor(editorElement);
+  	  if (!editor) {
+  			throw("No editor in msiCopyTeX");
+  		}
+  	  var selection = editor.selection;
+  	  if (!selection)
+  	  {
+  	    throw("No selection in msiCopyTeX!");
+  	  }
+  	  var intermediateText;
+  	  intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
+  	  var output = xmlFragToTeX(intermediateText);
+  		const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].  
+  		getService(Components.interfaces.nsIClipboardHelper);  
+  		gClipboardHelper.copyString(output);
 		}
-	  var selection = editor.selection;
-	  if (!selection)
-	  {
-	    throw("No selection in msiCopyTeX!");
-	  }
-	  var intermediateText;
-	  intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
-	  var output = xmlFragToTeX(intermediateText);
-		const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].  
-		getService(Components.interfaces.nsIClipboardHelper);  
-		gClipboardHelper.copyString(output);
+    catch (e) {
+      finalThrow(cmdFailString('copyTeX'), e.message);
+    }
   }
 };
 //--------
@@ -3890,24 +3992,27 @@ var msiFontColor =
   },
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-//    var editor = msiGetEditor(editorElement);
-//    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
-    var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+		try {
+      var editorElement = msiGetActiveEditorElement();
+      var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
 
-    window.openDialog("chrome://prince/content/color.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
-    "", colorObj, null);
+      window.openDialog("chrome://prince/content/color.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
+      "", colorObj, null);
 
-    // User canceled the dialog
-    if (colorObj.Cancel)
-      return;
-	  else {
-			msiGetEditor(editorElement).incrementModificationCount(1);
+      // User canceled the dialog
+      if (colorObj.Cancel)
+        return;
+  	  else {
+  			msiGetEditor(editorElement).incrementModificationCount(1);
+  		}
+      
+      msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+      var theWindow = msiGetTopLevelWindow();
+      theWindow.msiRequirePackage(editorElement, "xcolor", null);
 		}
-    
-    msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
-    var theWindow = msiGetTopLevelWindow();
-    theWindow.msiRequirePackage(editorElement, "xcolor", null);
+    catch (e) {
+      finalThrow(cmdFailString('fontcolor'), e.message);
+    }
   }
 };
 
@@ -3922,16 +4027,12 @@ var nsQuitCommand =
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {}
+  doCommandParams: function(aCommand, aParams, aRefCon) {}, 
 
-  /* The doCommand is not used, since cmd_quit's oncommand="goQuitApplication()" in platformCommunicatorOverlay.xul
   doCommand: function(aCommand)
   {
-    // In editor.js
-    FinishHTMLSource();
-    goQuitApplication();
+    finalThrow(cmdFailString('quit'), "This command should not be called directly");
   }
-  */
 };
 
 //-----------------------------------------------------------------------------------
@@ -3947,16 +4048,13 @@ var msiAutoSubDlgCommand =
 
   doCommand: function(aCommand)
   {
-//    AlertWithTitle("Unimplemented", "AutoSubstitution dialog not yet available.");
     var editorElement = msiGetActiveEditorElement();
     try {
       msiOpenModelessDialog("chrome://prince/content/autoSubstituteDialog.xul", "_blank", "chrome,resizable=yes,close,titlebar,dependent",
                                         editorElement, "cmd_MSIAutoSubDlg", this, editorElement);
-//      window.openDialog("chrome://editor/content/EdReplace.xul", "replace",
-//                        "chrome,modal,titlebar", editorElement);
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open AutoSubstitution Dialog: " + ex + "\n");
+    catch (e) {
+      finalThrow(cmdFailString('autosubdialog'), e.message);
     }
   }
 };
@@ -3986,25 +4084,22 @@ var msiFindCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var editor = editorElement.getEditor(editorElement.contentWindow);
-    if (window.gEditorDisplayMode == kDisplayModeSource)
-    {
-      //openFastCursorBar(false, true);  Didn't work
-    }
-    else
-    {
-      try {
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = editorElement.getEditor(editorElement.contentWindow);
+      if (window.gEditorDisplayMode == kDisplayModeSource)
+      {
+        //openFastCursorBar(false, true);  Didn't work
+      }
+      else
+      {
         msiOpenModelessDialog("chrome://prince/content/msiEdReplace.xul", "replace", "chrome,close,titlebar,dependent,resizable",
                                           editorElement, "cmd_find", this, editorElement);
-  //      window.openDialog("chrome://editor/content/EdReplace.xul", "replace",
-  //                        "chrome,modal,titlebar", editorElement);
-      }
-      catch(ex) {
-        dump("*** Exception: couldn't open Replace Dialog: " + ex + "\n");
       }
     }
-    //window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('find'), e.message);
+    }
   }
 };
 
@@ -4043,7 +4138,9 @@ var msiFindAgainCommand =
       // reset to what it was in dialog, otherwise dialog setting can get reversed
       findInst.findBackwards = findService.findBackwards; 
     }
-    catch(exc) {dump("Error in msiFindAgainCommand.doCommand: " + exc);}
+    catch (e) {
+      finalThrow(cmdFailString('findagain'), e.message);
+    }
   }
 };
 
@@ -4086,15 +4183,17 @@ var msiSpellingCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
-    window.cancelSendMessage = false;
-    try {
+		try {
+      var editorElement = msiGetActiveEditorElement();
+      window.cancelSendMessage = false;
       window.openDialog("chrome://prince/content/EdSpellCheck.xul", "spellcheck",
               "chrome,close,titlebar,modal,resizable", false, false, true, editorElement);
+  		msiGetEditor(editorElement).incrementModificationCount(1);
+      editorElement.focus();
+		}
+    catch (e) {
+      finalThrow(cmdFailString('spellcheck'), e.message);
     }
-    catch(ex) {}
-		msiGetEditor(editorElement).incrementModificationCount(1);
-    editorElement.focus();
   }
 };
 
@@ -4198,26 +4297,34 @@ var msiFormCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdFormProps.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                                                                     editorElement, "cmd_form", this);
-//    window.openDialog("chrome://editor/content/msiEdFormProps.xul", "formprops", "chrome,close,titlebar,modal");
-    editorElement.focus();
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdFormProps.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                                                                       editorElement, "cmd_form", this);
+  //    window.openDialog("chrome://editor/content/msiEdFormProps.xul", "formprops", "chrome,close,titlebar,modal");
+      editorElement.focus();
+    }
+    catch (e) {
+      finalThrow(cmdFailString('previewPDF'), e.message);
+    }
   },
 
   msiGetReviseObject: function(editorElement)
   {
     // Get a single selected form element
-    var editor = msiGetEditor(editorElement);
-    var theFormElement = null;
-    const kTagName = "form";
     try {
+      var editor = msiGetEditor(editorElement);
+      var theFormElement = null;
+      const kTagName = "form";
       theFormElement = editor.getSelectedElement(kTagName);
       if (!theFormElement)
         theFormElement = editor.getElementOrParentByTagName(kTagName, editor.selection.anchorNode);
       if (!theFormElement)
         theFormElement = editor.getElementOrParentByTagName(kTagName, editor.selection.focusNode);
-    } catch (e) {}
+    } 
+    catch (e) {
+      finalThrow(cmdFailString('getreviseobject'), e.message);
+    }
     return theFormElement;
   }
 };
@@ -4293,11 +4400,14 @@ var msiInputImageCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdInputImage.xul", "inputimage", "chrome,close,titlebar,dependent,resizable",
-                                                                                                     editorElement, "cmd_inputimage", this);
-//    window.openDialog("chrome://editor/content/EdInputImage.xul", "inputimage", "chrome,close,titlebar,modal", editorElement);
-//    editorElement.focus();
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdInputImage.xul", "inputimage", "chrome,close,titlebar,dependent,resizable",
+        editorElement, "cmd_inputimage", this);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('inputimage'), e.message);
+    }
   },
 
   msiGetReviseObject: function(editorElement)
@@ -4442,8 +4552,7 @@ var msiReviseButtonCommand =
     if (buttonNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseButtonCommand, trying to revise a button, dialog not yet implemented.");
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                                     editorElement, "cmd_reviseButton", buttonNode);
+
     }
     editorElement.focus();
   },
@@ -4896,16 +5005,20 @@ var msiReviseCharsCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var charReviseData = msiGetPropertiesDataFromCommandParams(aParams);
-    var charData = new Object();
-    charData.reviseData = charReviseData;
-    if (charReviseData != null && editorElement != null)
-    {
-//      AlertWithTitle("msiComposerCommands.js", "In msiReviseCharsCommand, trying to revise a character, dialog not yet implemented.");
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent", editorElement, "cmd_reviseChars", this, charData);
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var charReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+      var charData = new Object();
+      charData.reviseData = charReviseData;
+      if (charReviseData != null && editorElement != null)
+      {
+        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent", editorElement, "cmd_reviseChars", this, charData);
+      }
+      editorElement.focus();
     }
-    editorElement.focus();
+    catch (e) {
+      finalThrow(cmdFailString('revisechars'), e.message);
+    }
   },
 
   doCommand: function(aCommand, dummy)  {}
@@ -5106,10 +5219,13 @@ var msiInsertBreakCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
     try {
-      msiGetEditor(editorElement).insertHTML("<br/>");
-    } catch (e) {}
+      var editorElement = msiGetActiveEditorElement();
+      msiGetEditor(editorElement).insertHTML("<msibr/>");
+    }
+    catch (e) {
+      finalThrow(cmdFailString('insertbreak'), e.message);
+    }
   }
 };
 
@@ -5127,14 +5243,16 @@ var msiInsertBreakAllCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
     try {
+      var editorElement = msiGetActiveEditorElement();
       msiGetEditor(editorElement).insertHTML("<br clear='all'/>");
-    } catch (e) {}
+    }
+    catch (e) {
+      finalThrow(cmdFailString('getreviseobject'), e.message);
+    }
   }
 };
 
-//-----------------------------------------------------------------------------------
 
 var msiInsertHorizontalSpacesCommand =
 {
@@ -5149,15 +5267,15 @@ var msiInsertHorizontalSpacesCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var hSpaceData = new Object();
-    hSpaceData.spaceType = "normalSpace";
     try {
+      var editorElement = msiGetActiveEditorElement();
+      var hSpaceData = new Object();
+      hSpaceData.spaceType = "normalSpace";
       msiOpenModelessDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                        editorElement, "cmd_insertHorizontalSpaces", this, hSpaceData);
+                                          editorElement, "cmd_insertHorizontalSpaces", this, hSpaceData);
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open HorizontalSpaces Dialog: " + ex + "\n");
+    catch (e) {
+      finalThrow(cmdFailString('inserthorizspace'), e.message);
     }
   }
 };
@@ -5168,18 +5286,21 @@ var msiReviseHorizontalSpacesCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement();
-//    var hspaceNode = msiGetReviseObjectFromCommandParams(aParams);
-    var hSpaceReviseData = msiGetPropertiesDataFromCommandParams(aParams);
-    var hSpaceData = new Object();
-    hSpaceData.reviseData = hSpaceReviseData;
-    if (hSpaceReviseData != null && editorElement != null)
-    {
-//      AlertWithTitle("msiComposerCommands.js", "In msiReviseHorizontalSpacesCommand, trying to revise a horizontal space, dialog not yet implemented.");
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                     editorElement, "cmd_reviseHorizontalSpaces", this, hSpaceData);
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var hSpaceReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+      var hSpaceData = new Object();
+      hSpaceData.reviseData = hSpaceReviseData;
+      if (hSpaceReviseData != null && editorElement != null)
+      {
+        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                       editorElement, "cmd_reviseHorizontalSpaces", this, hSpaceData);
+      }
+      editorElement.focus();
     }
-    editorElement.focus();
+    catch (e) {
+      finalThrow(cmdFailString('revisehorizspace'), e.message);
+    }
   },
 
   doCommand: function(aCommand, dummy)  {}
@@ -5487,15 +5608,15 @@ var msiInsertVerticalSpacesCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var vSpaceData = new Object();
-    vSpaceData.spaceType = "smallSkip";
     try {
+      var editorElement = msiGetActiveEditorElement();
+      var vSpaceData = new Object();
+      vSpaceData.spaceType = "smallSkip";
       msiOpenModelessDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                        editorElement, "cmd_insertVerticalSpaces", this, vSpaceData);
+                                          editorElement, "cmd_insertVerticalSpaces", this, vSpaceData);
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open VerticalSpaces Dialog: " + ex + "\n");
+    catch (e) {
+      finalThrow(cmdFailString('insertvertspace'), e.message);
     }
   }
 };
@@ -5506,18 +5627,23 @@ var msiReviseVerticalSpacesCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-
-    var editorElement = msiGetActiveEditorElement();
-    var vSpaceReviseData = msiGetPropertiesDataFromCommandParams(aParams);
-    var vSpaceData = new Object();
-    vSpaceData.reviseData = vSpaceReviseData;
-    if (vSpaceReviseData != null && editorElement != null)
+    try 
     {
-//      AlertWithTitle("msiComposerCommands.js", "In msiReviseVerticalSpacesCommand, trying to revise a vertical space, dialog not yet implemented.");
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                     editorElement, "cmd_reviseVerticalSpaces", this, vSpaceData);
+      var editorElement = msiGetActiveEditorElement();
+      var vSpaceReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+      var vSpaceData = new Object();
+      vSpaceData.reviseData = vSpaceReviseData;
+      if (vSpaceReviseData != null && editorElement != null)
+      {
+  //      AlertWithTitle("msiComposerCommands.js", "In msiReviseVerticalSpacesCommand, trying to revise a vertical space, dialog not yet implemented.");
+        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                       editorElement, "cmd_reviseVerticalSpaces", this, vSpaceData);
+      }
+      editorElement.focus();
     }
-    editorElement.focus();
+    catch (e) {
+      finalThrow(cmdFailString('insertvertspace'), e.message);
+    }
   },
 
   doCommand: function(aCommand, dummy)  {}
@@ -5682,14 +5808,14 @@ var msiInsertRulesCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var rulesData = new Object();
     try {
+      var editorElement = msiGetActiveEditorElement();
+      var rulesData = new Object();
       msiOpenModelessDialog("chrome://prince/content/msiRulesDialog.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                        editorElement, "cmd_msiInsertRules", this, rulesData);
+        editorElement, "cmd_msiInsertRules", this, rulesData);
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open msiRules Dialog: " + ex + "\n");
+    catch (e) {
+      finalThrow(cmdFailString('insertrules'), e.message);
     }
   }
 };
@@ -5700,17 +5826,22 @@ var msiReviseRulesCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var ruleReviseData = msiGetPropertiesDataFromCommandParams(aParams);
-    var ruleData = new Object();
-    ruleData.reviseData = ruleReviseData;
-    if (ruleReviseData != null && editorElement != null)
-    {
-//      AlertWithTitle("msiComposerCommands.js", "In msiReviseRulesCommand, trying to revise a rule, dialog not yet implemented.");
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiRulesDialog.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                     editorElement, "cmd_msiReviseRules", this, ruleData);
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var ruleReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+      var ruleData = new Object();
+      ruleData.reviseData = ruleReviseData;
+      if (ruleReviseData != null && editorElement != null)
+      {
+  //      AlertWithTitle("msiComposerCommands.js", "In msiReviseRulesCommand, trying to revise a rule, dialog not yet implemented.");
+        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiRulesDialog.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                       editorElement, "cmd_msiReviseRules", this, ruleData);
+      }
+      editorElement.focus();
     }
-    editorElement.focus();
+    catch (e) {
+      finalThrow(cmdFailString('reviserules'), e.message);
+    }
   },
 
   doCommand: function(aCommand, dummy)  {}
@@ -5838,14 +5969,14 @@ var msiInsertBreaksCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var breaksData = new Object();
     try {
+      var editorElement = msiGetActiveEditorElement();
+      var breaksData = new Object();
       msiOpenModelessDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
-                                        editorElement, "cmd_msiInsertBreaks", this, breaksData);
+                                          editorElement, "cmd_msiInsertBreaks", this, breaksData);
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open msiBreaksDialog: " + ex + "\n");
+    catch (e) {
+      finalThrow(cmdFailString('insertbreaks'), e.message);
     }
   }
 };
@@ -5856,17 +5987,23 @@ var msiReviseBreaksCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var breakReviseData = msiGetPropertiesDataFromCommandParams(aParams);
-    var breakData = new Object();
-    breakData.reviseData = breakReviseData;
-    if (breakReviseData != null && editorElement != null)
+    try 
     {
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                     editorElement, "cmd_msiReviseBreaks", this, breakData);
-//      AlertWithTitle("msiComposerCommands.js", "In msiReviseBreaksCommand, trying to revise a break, dialog not yet implemented.");
+      var editorElement = msiGetActiveEditorElement();
+      var breakReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+      var breakData = new Object();
+      breakData.reviseData = breakReviseData;
+      if (breakReviseData != null && editorElement != null)
+      {
+        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                       editorElement, "cmd_msiReviseBreaks", this, breakData);
+  //      AlertWithTitle("msiComposerCommands.js", "In msiReviseBreaksCommand, trying to revise a break, dialog not yet implemented.");
+      }
+      editorElement.focus();
     }
-    editorElement.focus();
+    catch (e) {
+      finalThrow(cmdFailString('revisebreaks'), e.message);
+    }
   },
 
   doCommand: function(aCommand, dummy)  {}
@@ -6044,12 +6181,15 @@ var msiMarkerCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
-    try {
+		try{
+      var editorElement = msiGetActiveEditorElement();
       // more goes here
       window.openDialog("chrome://prince/content/marker.xul", "Insert marker", "resizable=yes,dependent=yes,chrome,close,titlebar");
-			msiGetEditor(editorElement).incrementModificationCount(1);
-    } catch (e) {}
+  		msiGetEditor(editorElement).incrementModificationCount(1);
+		}
+    catch (e) {
+      finalThrow(cmdFailString('reviserules'), e.message);
+    }
   }
 };
 //----------------------------------------------------
@@ -6088,10 +6228,13 @@ var msiInsertReturnFancyCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var editorElement = msiGetActiveEditorElement();
     try {
+      var editorElement = msiGetActiveEditorElement();
       msiGetEditor(editorElement).insertReturnFancy();
-    } catch (e) {}
+    }
+    catch (e) {
+      finalThrow(cmdFailString('insertreturnfancy'), e.message);
+    }
   }
 };
 //-----------------------------------------------------------------------------------
@@ -6116,9 +6259,9 @@ var msiInsertSubstructureCommand =
       var currentStruct = editor.tagListManager.currentValue("structtag", atom);
       var nextStruct = editor.tagListManager.getStringPropertyForTag(currentStruct, atom, "prefsub");
       msiDoStatefulCommand('cmd_structtag',nextStruct);
-    } catch (e) 
-    {
-      alert("Exception: "+e);
+    } 
+    catch (e) {
+      finalThrow(cmdFailString('insertsubstructure'), e.message);
     }
   }
 };
@@ -6138,11 +6281,16 @@ var msiMacroFragmentCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
-    if (macrofragmentStatusPanel)
-    {
-      macrofragmentStatusPanel.setAttribute("hidden", "false");
-      document.getElementById('macroAndFragments').focus();
+    try {
+      var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
+      if (macrofragmentStatusPanel)
+      {
+        macrofragmentStatusPanel.setAttribute("hidden", "false");
+        document.getElementById('macroAndFragments').focus();
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('macrofragment'), e.message);
     }
   }
 };
@@ -6246,20 +6394,20 @@ var msiDocumentInfoCommand =
 
   doCommand: function(aCommand)
   {
-    // Launch Document Info dialog
-    var editorElement = msiGetTopLevelEditorElement();
-    var documentInfo = new msiDocumentInfo(editorElement);
-    documentInfo.initializeDocInfo();
-    var dlgInfo = documentInfo.getDialogInfo();
-
-    try {
+    try 
+    {
+      // Launch Document Info dialog
+      var editorElement = msiGetTopLevelEditorElement();
+      var documentInfo = new msiDocumentInfo(editorElement);
+      documentInfo.initializeDocInfo();
+      var dlgInfo = documentInfo.getDialogInfo();
       msiOpenModelessDialog("chrome://prince/content/DocumentInfo.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                        editorElement, "cmd_documentInfo", this, dlgInfo);
+                                          editorElement, "cmd_documentInfo", this, dlgInfo);
+      editorElement.contentWindow.focus();
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open DocInfo Dialog: " + ex + "\n");
+    catch (e) {
+      finalThrow(cmdFailString('documentinfo'), e.message);
     }
-    editorElement.contentWindow.focus();
   }
 };
 
@@ -7383,20 +7531,20 @@ var msiDocumentStyleCommand =
 
   doCommand: function(aCommand)
   {
-    // Launch Document Style dialog
-    var editorElement = msiGetTopLevelEditorElement();
-    var documentStyle = {};
-    documentStyle.edElement = editorElement;
-
-    try {
+    try
+    {
+      // Launch Document Style dialog
+      var editorElement = msiGetTopLevelEditorElement();
+      var documentStyle = {};
+      documentStyle.edElement = editorElement;
       msiOpenModelessDialog("chrome://prince/content/DocumentStyle.xul", "_blank", 
-                                        "chrome,close,titlebar,dependent, resizable",
-                                        editorElement, "cmd_documentInfo", this, documentStyle);
+                                          "chrome,close,titlebar,dependent, resizable",
+                                          editorElement, "cmd_documentInfo", this, documentStyle);
+      editorElement.contentWindow.focus();
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open DocStyle Dialog: " + ex + "\n");
+    catch (e) {
+      finalThrow(cmdFailString('documentstyle'), e.message);
     }
-    editorElement.contentWindow.focus();
   }
 };
 
@@ -7424,13 +7572,16 @@ var msiViewInvisiblesCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    updateEditorFromViewMenu(editorElement);
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      updateEditorFromViewMenu(editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('viewinvis'), e.message);
+    }
   }
-
 };
-
-//-----------------------------------------------------------------------------------
 
 var msiNoteCommand =
 {
@@ -7446,10 +7597,16 @@ var msiNoteCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    //temporary
-    // need to get current note if it exists -- if none, initialize as follows 
-    msiNote(null, editorElement);
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      //temporary
+      // need to get current note if it exists -- if none, initialize as follows 
+      msiNote(null, editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('note'), e.message);
+    }
   }
 };
 
@@ -7467,10 +7624,16 @@ var msiFootnoteCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    //temporary
-    // need to get current note if it exists -- if none, initialize as follows 
-    msiNote(null, editorElement, 'footnote');
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      //temporary
+      // need to get current note if it exists -- if none, initialize as follows 
+      msiNote(null, editorElement, 'footnote');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('footnote'), e.message);
+    }
   }
 };
 
@@ -7490,24 +7653,30 @@ var msiCitationCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var bibChoice = getBibliographyScheme(editorElement);
-    if (bibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
+    try
     {
-      var bibCiteData = {databaseFile : "", key : "", remark : "", bBibEntryOnly : false};
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "resizable=yes, chrome,close,titlebar,dependent",
-                                                       editorElement, aCommand, this, bibCiteData);
-    }
-    else
-    {
-      var manualCiteData = {key : "", remark : ""};
-      manualCiteData.keyList = new Array();
-      var editor = msiGetEditor(editorElement);
-  //    if (editor)
-  //      manualCiteData.keyList = manualCiteData.keyList.concat(getEditorBibItemList(editor));
+        var editorElement = msiGetActiveEditorElement();
+        var bibChoice = getBibliographyScheme(editorElement);
+        if (bibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
+        {
+          var bibCiteData = {databaseFile : "", key : "", remark : "", bBibEntryOnly : false};
+          var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "resizable=yes, chrome,close,titlebar,dependent",
+                                                           editorElement, aCommand, this, bibCiteData);
+        }
+        else
+        {
+          var manualCiteData = {key : "", remark : ""};
+          manualCiteData.keyList = new Array();
+          var editor = msiGetEditor(editorElement);
+      //    if (editor)
+      //      manualCiteData.keyList = manualCiteData.keyList.concat(getEditorBibItemList(editor));
 
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                             editorElement, aCommand, this, manualCiteData);
+          var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                                 editorElement, aCommand, this, manualCiteData);
+        }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('citation'), e.message);
     }
   }
 };
@@ -7524,21 +7693,27 @@ var msiReviseCitationCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var citeReviseData = msiGetPropertiesDataFromCommandParams(aParams);
-    var citeData = {key : "", remark : "", reviseData : citeReviseData};
-    var citeNode = citeReviseData.getReferenceNode();
-    if (citeNode.hasAttribute("type") && (citeNode.getAttribute("type") == "bibtex"))
+    try
     {
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                             editorElement, "cmd_reviseCitationCmd", this, citeData);
+      var editorElement = msiGetActiveEditorElement();
+      var citeReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+      var citeData = {key : "", remark : "", reviseData : citeReviseData};
+      var citeNode = citeReviseData.getReferenceNode();
+      if (citeNode.hasAttribute("type") && (citeNode.getAttribute("type") == "bibtex"))
+      {
+        var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                               editorElement, "cmd_reviseCitationCmd", this, citeData);
+      }
+      else
+      {
+        var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                               editorElement, "cmd_reviseCitationCmd", this, citeData);
+      }
+      editorElement.focus();
     }
-    else
-    {
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                             editorElement, "cmd_reviseCitationCmd", this, citeData);
+    catch (e) {
+      finalThrow(cmdFailString('revisecitation'), e.message);
     }
-    editorElement.focus();
   },
 
   doCommand: function(aCommand) {}
@@ -7558,13 +7733,19 @@ var msiReviseCrossRefCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var xrefReviseData = msiGetPropertiesDataFromCommandParams(aParams);
-    var xrefData = {key : "", refType : "page", reviseData : xrefReviseData};
-    var xrefNode = xrefReviseData.getReferenceNode();
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/xref.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                           editorElement, "cmd_reviseCrossRefCmd", this, xrefData);
-    editorElement.focus();
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      var xrefReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+      var xrefData = {key : "", refType : "page", reviseData : xrefReviseData};
+      var xrefNode = xrefReviseData.getReferenceNode();
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/xref.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                             editorElement, "cmd_reviseCrossRefCmd", this, xrefData);
+      editorElement.focus();
+    }
+    catch (e) {
+      finalThrow(cmdFailString('revisecrossref'), e.message);
+    }
   },
 
   doCommand: function(aCommand) {}
@@ -7586,10 +7767,16 @@ var msiFrameCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    //temporary
-    // need to get current note if it exists -- if none, initialize as follows 
-    msiFrame(editorElement, null, null);
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      //temporary
+      // need to get current note if it exists -- if none, initialize as follows 
+      msiFrame(editorElement, null, null);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('frame'), e.message);
+    }
   }
 };
 
@@ -7616,237 +7803,243 @@ var msiObjectPropertiesCommand =
 
   doCommand: function(aCommand)
   {
-    // Launch Object properties for appropriate selected element 
-    var editorElement = msiGetActiveEditorElement();
-    var nodeData = msiGetObjectDataForProperties(editorElement);
-    if (!nodeData) return;
-    var element = nodeData.theNode;
-    var cmdString = nodeData.getCommandString(0);
+    try
+  {
+      // Launch Object properties for appropriate selected element 
+      var editorElement = msiGetActiveEditorElement();
+      var nodeData = msiGetObjectDataForProperties(editorElement);
+      if (!nodeData) return;
+      var element = nodeData.theNode;
+      var cmdString = nodeData.getCommandString(0);
 
-    if (element)
-    {
-      var cmdParams = newCommandParams();
-      if (!cmdParams)
-      {
-        dump("Trouble in msiObjectPropertiesCommand.doCommand! Can't create new CommandParams - aborting.\n");
-        return;
-      }
-      if (element.nodeType == nsIDOMNode.TEXT_NODE)
-      {
-        if (nodeData.theOffset != null)
-        {
-          //Need to bring up the ReviseCharacter dialog. Not yet implemented.
-//          var theCharacter = element.data.charAt(nodeData.theOffset);
-          cmdString = "cmd_reviseChars";
-        }
-        else
-        {
-          dump("No offset specified in text node for Properties dialog! Aborting.\n");
-          return;
-        }
-      }
-
-//      var name = msiGetBaseNodeName(element).toLowerCase();
-      cmdParams.setISupportsValue("reviseObject", element);
-      msiSetCommandParamWeakRefValue(cmdParams, "propertiesData", nodeData);
-//      cmdParams.setISupportsValue("propertiesData", nodeData);
-      if (cmdString)
-        msiGoDoCommandParams(cmdString, cmdParams, editorElement);
-      else
-      {
-        var wrappedChildElement = element;
-        while ((name == 'mstyle') || (name == 'mrow') )
-        {
-          var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
-          if (newChildElement == null)
-            break;
-          wrappedChildElement = newChildElement;
-          name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
-        }
-
-        switch (name)
-        {
-          case 'img':
-            msiGoDoCommandParams("cmd_reviseImage", cmdParams, editorElement);
-          break;
-          case 'hr':
-            msiGoDoCommandParams("cmd_reviseLine", cmdParams, editorElement);
-          break;
-          case 'form':
-            msiGoDoCommandParams("cmd_reviseForm", cmdParams, editorElement);
-          break;
-          case 'input':
-            var type = element.getAttribute("type");
-            if (type && type.toLowerCase() == "image")
-              msiGoDoCommand("cmd_inputimage", editorElement);
-            else
-              msiGoDoCommand("cmd_inputtag", editorElement);
-          break;
-          case 'textarea':
-            msiGoDoCommandParams("cmd_reviseTextarea", cmdParams, editorElement);
-          break;
-          case 'select':
-  //          msiGoDoCommand("cmd_select", editorElement);
-  //  Don't think we want to support this???
-          break;
-          case 'button':
-            msiGoDoCommandParams("cmd_reviseButton", cmdParams, editorElement);
-          break;
-//          case 'label':
-//            msiGoDoCommandParams("cmd_reviseLabel", cmdParams, editorElement);
-//          break;
-          case 'fieldset':
-            msiGoDoCommandParams("cmd_reviseFieldset", cmdParams, editorElement);
-          break;
-
-          case 'table':
-            msiGoDoCommandParams("cmd_editTable", cmdParams, editorElement);
-//            msiEditorInsertOrEditTable(false, editorElement, "cmd_objectProperties", this, nodeData);
-          break;
-          case 'td':
-          case 'th':
-            msiGoDoCommandParams("cmd_editTableCell", cmdParams, editorElement);
-//            msiEditorTableCellProperties(editorElement);
-          break;
-
-          case 'ol':
-          case 'ul':
-          case 'dl':
-          case 'li':
-            msiGoDoCommand("cmd_listProperties", editorElement);
-          break;
-
-          case 'a':
-            if (element.name)
-            {
-              msiGoDoCommandParams("cmd_reviseAnchor", cmdParams, editorElement);
-            }
-            else if(element.href)
-            {
-              msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
-            }
-          break;
-
-          case 'hspace':
-            msiGoDoCommandParams("cmd_reviseHorizontalSpaces", cmdParams, editorElement);
-          break;
-
-          case 'vspace':
-            msiGoDoCommandParams("cmd_reviseVerticalSpaces", cmdParams, editorElement);
-          break;
-
-          case 'msirule':
-            msiGoDoCommandParams("cmd_msiReviseRules", cmdParams, editorElement);
-          break;
-
-          case 'msibreak':
-            msiGoDoCommandParams("cmd_msiReviseBreaks", cmdParams, editorElement);
-          break;
-
-          case 'mfrac':
-            msiGoDoCommandParams("cmd_MSIreviseFractionCmd", cmdParams, editorElement);
-          break;
-
-          case 'mroot':
-          case 'msqrt':
-            msiGoDoCommandParams("cmd_MSIreviseRadicalCmd", cmdParams, editorElement);
-          break;
-
-          case 'msub':
-          case 'msup':
-          case 'msubsup':
-            if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-              msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
-  //          msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
-  // Should be no Properties dialog available for these cases? SWP has none...
-          break;
-
-          case 'mtable':
-            msiGoDoCommandParams("cmd_MSIreviseMatrixCmd", cmdParams, editorElement);
-          break;
-
-          case 'mmultiscripts':
-            if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-              msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
-            else
-              msiGoDoCommandParams("cmd_MSIreviseTensorCmd", cmdParams, editorElement);
-          break;
-
-
-          case 'mi':
-            if (msiNavigationUtils.isUnit(wrappedChildElement))
-              msiGoDoCommandParams("cmd_MSIreviseUnitsCommand", cmdParams, editorElement);
-            else if (msiNavigationUtils.isMathname(wrappedChildElement))
-              msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
-          break;
-
-  //    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
-
-          case 'mstyle':
-            if (msiNavigationUtils.isFence(wrappedChildElement))
-            {
-              if (msiNavigationUtils.isBinomial(wrappedChildElement))
-                msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
-              else
-                msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
-            }
-          break;
-
-          case 'mrow':
-            if (msiNavigationUtils.isFence(wrappedChildElement))
-            {
-              if (msiNavigationUtils.isBinomial(wrappedChildElement))
-                msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
-              else
-                msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
-            }
-          break;
-
-          case 'mo':
-            if (msiNavigationUtils.isMathname(wrappedChildElement))
-              msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
-            else
-              msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
-          break;
-
-          case 'mover':
-          case 'munder':
-          case 'munderover':
-            if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-              msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
-
-            else
-              msiGoDoCommandParams("cmd_MSIreviseDecorationsCmd", cmdParams, editorElement);
-          break;
-
-          default:
-            msiDoAdvancedProperties(element, editorElement);
-            break;
-        }
-      }
-    } else {
-      // We get a partially-selected link if asked for specifically
-      try {
-        element = msiGetEditor(editorElement).getSelectedElement("href");
-      } catch (e) {}
       if (element)
       {
-        var linkCmdParams = newCommandParams();
-        if (!linkCmdParams)
+        var cmdParams = newCommandParams();
+        if (!cmdParams)
         {
           dump("Trouble in msiObjectPropertiesCommand.doCommand! Can't create new CommandParams - aborting.\n");
           return;
         }
+        if (element.nodeType == nsIDOMNode.TEXT_NODE)
+        {
+          if (nodeData.theOffset != null)
+          {
+            //Need to bring up the ReviseCharacter dialog. Not yet implemented.
+  //          var theCharacter = element.data.charAt(nodeData.theOffset);
+            cmdString = "cmd_reviseChars";
+          }
+          else
+          {
+            dump("No offset specified in text node for Properties dialog! Aborting.\n");
+            return;
+          }
+        }
 
-        linkCmdParams.setISupportsValue("reviseObject", element);
-        var linkData = msiCreatePropertiesObjectDataFromNode(element, editorElement);
-        msiSetCommandParamWeakRefValue(linkCmdParams, "propertiesData", linkData);
-//        linkCmdParams.setISupportsValue("propertiesData", linkData);
-        msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
-//        msiGoDoReviseCommand("cmd_link", editorElement);
+  //      var name = msiGetBaseNodeName(element).toLowerCase();
+        cmdParams.setISupportsValue("reviseObject", element);
+        msiSetCommandParamWeakRefValue(cmdParams, "propertiesData", nodeData);
+  //      cmdParams.setISupportsValue("propertiesData", nodeData);
+        if (cmdString)
+          msiGoDoCommandParams(cmdString, cmdParams, editorElement);
+        else
+        {
+          var wrappedChildElement = element;
+          while ((name == 'mstyle') || (name == 'mrow') )
+          {
+            var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
+            if (newChildElement == null)
+              break;
+            wrappedChildElement = newChildElement;
+            name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
+          }
+
+          switch (name)
+          {
+            case 'img':
+              msiGoDoCommandParams("cmd_reviseImage", cmdParams, editorElement);
+            break;
+            case 'hr':
+              msiGoDoCommandParams("cmd_reviseLine", cmdParams, editorElement);
+            break;
+            case 'form':
+              msiGoDoCommandParams("cmd_reviseForm", cmdParams, editorElement);
+            break;
+            case 'input':
+              var type = element.getAttribute("type");
+              if (type && type.toLowerCase() == "image")
+                msiGoDoCommand("cmd_inputimage", editorElement);
+              else
+                msiGoDoCommand("cmd_inputtag", editorElement);
+            break;
+            case 'textarea':
+              msiGoDoCommandParams("cmd_reviseTextarea", cmdParams, editorElement);
+            break;
+            case 'select':
+    //          msiGoDoCommand("cmd_select", editorElement);
+    //  Don't think we want to support this???
+            break;
+            case 'button':
+              msiGoDoCommandParams("cmd_reviseButton", cmdParams, editorElement);
+            break;
+  //          case 'label':
+  //            msiGoDoCommandParams("cmd_reviseLabel", cmdParams, editorElement);
+  //          break;
+            case 'fieldset':
+              msiGoDoCommandParams("cmd_reviseFieldset", cmdParams, editorElement);
+            break;
+
+            case 'table':
+              msiGoDoCommandParams("cmd_editTable", cmdParams, editorElement);
+  //            msiEditorInsertOrEditTable(false, editorElement, "cmd_objectProperties", this, nodeData);
+            break;
+            case 'td':
+            case 'th':
+              msiGoDoCommandParams("cmd_editTableCell", cmdParams, editorElement);
+  //            msiEditorTableCellProperties(editorElement);
+            break;
+
+            case 'ol':
+            case 'ul':
+            case 'dl':
+            case 'li':
+              msiGoDoCommand("cmd_listProperties", editorElement);
+            break;
+
+            case 'a':
+              if (element.name)
+              {
+                msiGoDoCommandParams("cmd_reviseAnchor", cmdParams, editorElement);
+              }
+              else if(element.href)
+              {
+                msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
+              }
+            break;
+
+            case 'hspace':
+              msiGoDoCommandParams("cmd_reviseHorizontalSpaces", cmdParams, editorElement);
+            break;
+
+            case 'vspace':
+              msiGoDoCommandParams("cmd_reviseVerticalSpaces", cmdParams, editorElement);
+            break;
+
+            case 'msirule':
+              msiGoDoCommandParams("cmd_msiReviseRules", cmdParams, editorElement);
+            break;
+
+            case 'msibreak':
+              msiGoDoCommandParams("cmd_msiReviseBreaks", cmdParams, editorElement);
+            break;
+
+            case 'mfrac':
+              msiGoDoCommandParams("cmd_MSIreviseFractionCmd", cmdParams, editorElement);
+            break;
+
+            case 'mroot':
+            case 'msqrt':
+              msiGoDoCommandParams("cmd_MSIreviseRadicalCmd", cmdParams, editorElement);
+            break;
+
+            case 'msub':
+            case 'msup':
+            case 'msubsup':
+              if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+                msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+    //          msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
+    // Should be no Properties dialog available for these cases? SWP has none...
+            break;
+
+            case 'mtable':
+              msiGoDoCommandParams("cmd_MSIreviseMatrixCmd", cmdParams, editorElement);
+            break;
+
+            case 'mmultiscripts':
+              if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+                msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+              else
+                msiGoDoCommandParams("cmd_MSIreviseTensorCmd", cmdParams, editorElement);
+            break;
+
+
+            case 'mi':
+              if (msiNavigationUtils.isUnit(wrappedChildElement))
+                msiGoDoCommandParams("cmd_MSIreviseUnitsCommand", cmdParams, editorElement);
+              else if (msiNavigationUtils.isMathname(wrappedChildElement))
+                msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
+            break;
+
+    //    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
+
+            case 'mstyle':
+              if (msiNavigationUtils.isFence(wrappedChildElement))
+              {
+                if (msiNavigationUtils.isBinomial(wrappedChildElement))
+                  msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
+                else
+                  msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
+              }
+            break;
+
+            case 'mrow':
+              if (msiNavigationUtils.isFence(wrappedChildElement))
+              {
+                if (msiNavigationUtils.isBinomial(wrappedChildElement))
+                  msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
+                else
+                  msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
+              }
+            break;
+
+            case 'mo':
+              if (msiNavigationUtils.isMathname(wrappedChildElement))
+                msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
+              else
+                msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+            break;
+
+            case 'mover':
+            case 'munder':
+            case 'munderover':
+              if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+                msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+
+              else
+                msiGoDoCommandParams("cmd_MSIreviseDecorationsCmd", cmdParams, editorElement);
+            break;
+
+            default:
+              msiDoAdvancedProperties(element, editorElement);
+              break;
+          }
+        }
+      } else {
+        // We get a partially-selected link if asked for specifically
+        try {
+          element = msiGetEditor(editorElement).getSelectedElement("href");
+        } catch (e) {}
+        if (element)
+        {
+          var linkCmdParams = newCommandParams();
+          if (!linkCmdParams)
+          {
+            dump("Trouble in msiObjectPropertiesCommand.doCommand! Can't create new CommandParams - aborting.\n");
+            return;
+          }
+
+          linkCmdParams.setISupportsValue("reviseObject", element);
+          var linkData = msiCreatePropertiesObjectDataFromNode(element, editorElement);
+          msiSetCommandParamWeakRefValue(linkCmdParams, "propertiesData", linkData);
+  //        linkCmdParams.setISupportsValue("propertiesData", linkData);
+          msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
+  //        msiGoDoReviseCommand("cmd_link", editorElement);
+        }
       }
+      editorElement.contentWindow.focus();
     }
-    editorElement.contentWindow.focus();
+    catch (e) {
+      finalThrow(cmdFailString('objectproperties'), e.message);
+    }
   },
 
   msiGetReviseObject: function(editorElement)
@@ -7966,78 +8159,74 @@ var msiSmileyCommand =
 //
 function msiDoAdvancedProperties(element, editorElement)
 {
-  try
+  if (!editorElement)
+    editorElement = findEditorElementForDocument(element.ownerDocument);
+  //use which msiopendialog function here?
+  var dlgParentWindow = msiGetWindowContainingEditor(editorElement);
+  if (element)
   {
-    if (!editorElement)
-      editorElement = findEditorElementForDocument(element.ownerDocument);
-    //use which msiopendialog function here?
-    var dlgParentWindow = msiGetWindowContainingEditor(editorElement);
-    if (element)
+    if (element.role || element.localName == "texb")
     {
-      if (element.role || element.localName == "texb")
+      var data = new Object();
+      if (element.role == "texbutton" || element.localName == "texb")
       {
-        var data = new Object();
-        if (element.role == "texbutton" || element.localName == "texb")
+      // security restrictions prohibit calling openDialog from within XBL code,
+      // but we don't want to hard-wire tag names in this code. Thus, the compromise
+      // is to create 'roles' for elements, attach behavior to roles (as we do here)
+      // and the XBL code will then assign a role to an element. Thus we have 'texbutton'
+      // as a role, and currently that role is played by texb tags, but any other tag
+      // could play this role as well. 
+        try {
+          dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,dependent");
+					msiGetEditor(editorElement).incrementModificationCount(1);
+          editorElement.contentWindow.focus();
+        }
+        catch (e)
+        { dump(e); }
+      }
+      else if (element.role == "latexstylebutton")
+      {
+        if (element.prop == "pagenumber")
         {
-        // security restrictions prohibit calling openDialog from within XBL code,
-        // but we don't want to hard-wire tag names in this code. Thus, the compromise
-        // is to create 'roles' for elements, attach behavior to roles (as we do here)
-        // and the XBL code will then assign a role to an element. Thus we have 'texbutton'
-        // as a role, and currently that role is played by texb tags, but any other tag
-        // could play this role as well. 
-          try {
-            dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,dependent");
-						msiGetEditor(editorElement).incrementModificationCount(1);
+          try
+          {
+            data.numstyle = element.value;
+            dlgParentWindow.openDialog("chrome://prince/content/latexpagenumberstyle.xul", "pagenumberstyle", "chrome,close,titlebar,modal,resizable=yes", data);
             editorElement.contentWindow.focus();
+            if (!data.Cancel)
+            {
+              element.value = data.numstyle;
+							msiGetEditor(editorElement).incrementModificationCount(1);
+            }
           }
           catch (e)
           { dump(e); }
         }
-        else if (element.role == "latexstylebutton")
+        else if (element.prop == "headers")
         {
-          if (element.prop == "pagenumber")
-          {
-            try
+          try {
+            data.lheader = element.value;
+            data.rheader = element.value2;
+            dlgParentWindow.openDialog("chrome://prince/content/latexheaders.xul", "latexheaders", "chrome,close,titlebar,modal,resizable=yes", data);
+            editorElement.contentWindow.focus();
+            if (!data.Cancel)
             {
-              data.numstyle = element.value;
-              dlgParentWindow.openDialog("chrome://prince/content/latexpagenumberstyle.xul", "pagenumberstyle", "chrome,close,titlebar,modal,resizable=yes", data);
-              editorElement.contentWindow.focus();
-              if (!data.Cancel)
-              {
-                element.value = data.numstyle;
-								msiGetEditor(editorElement).incrementModificationCount(1);
-              }
+              element.value = data.lheader;
+              element.value2 = data.rheader;
+							msiGetEditor(editorElement).incrementModificationCount(1);
             }
-            catch (e)
-            { dump(e); }
           }
-          else if (element.prop == "headers")
-          {
-            try {
-              data.lheader = element.value;
-              data.rheader = element.value2;
-              dlgParentWindow.openDialog("chrome://prince/content/latexheaders.xul", "latexheaders", "chrome,close,titlebar,modal,resizable=yes", data);
-              editorElement.contentWindow.focus();
-              if (!data.Cancel)
-              {
-                element.value = data.lheader;
-                element.value2 = data.rheader;
-								msiGetEditor(editorElement).incrementModificationCount(1);
-              }
-            }
-            catch (e)
-            { dump(e); }
-          }
+          catch (e)
+          { dump(e); }
         }
-      }      
-      else
-      {
-        dlgParentWindow.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "advedit", "chrome,close,titlebar,modal,resizable=yes", "", element);
-        editorElement.contentWindow.focus();
       }
+    }      
+    else
+    {
+      dlgParentWindow.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "advedit", "chrome,close,titlebar,modal,resizable=yes", "", element);
+      editorElement.contentWindow.focus();
     }
   }
-  catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiDoAdvancedProperties: " + exc);}
 }
 
 var msiAdvancedPropertiesCommand =
@@ -8058,7 +8247,10 @@ var msiAdvancedPropertiesCommand =
       var editorElement = msiGetActiveEditorElement();
       var element = msiGetEditor(editorElement).getSelectedElement("");
       msiDoAdvancedProperties(element, editorElement);
-    } catch (e) {}
+    }
+    catch (e) {
+      finalThrow(cmdFailString('advancedprops'), e.message);
+    }
   }
 };
 
@@ -8088,7 +8280,9 @@ var msiColorPropertiesCommand =
       msiUpdateDefaultColors(editorElement);
       editorElement.contentWindow.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiColorPropertiesCommand.doCommand: " + exc);}
+    catch (e) {
+      finalThrow(cmdFailString('colorprops'), e.message);
+    }
   }
 };
 
@@ -8112,7 +8306,9 @@ var msiRemoveNamedAnchorsCommand =
       msiEditorRemoveTextProperty(editorElement, "name", "");
       editorElement.contentWindow.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiRemoveNamedAnchorsCommand.doCommand: " + exc);}
+    catch (e) {
+      finalThrow(cmdFailString('removenamedanchor'), e.message);
+    }
   }
 };
 
@@ -8138,10 +8334,9 @@ var msiEditLinkCommand =
       if (element)
         msiEditPage(msiURIFromString(element.href), window, false);
     }
-    catch (exc) 
-		{
-			throw("Error in msiEditLinkCommand.doCommand: " + exc.message);
-		}
+    catch (e) {
+      finalThrow(cmdFailString('editlink'), e.message);
+    }
     editorElement.contentWindow.focus();
   }
 };
@@ -8161,8 +8356,14 @@ var msiNormalModeCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetTopLevelEditorElement();
-    msiSetEditMode(kDisplayModeNormal, editorElement);
+    try
+    {
+      var editorElement = msiGetTopLevelEditorElement();
+      msiSetEditMode(kDisplayModeNormal, editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('normalmode'), e.message);
+    }
   }
 };
 
@@ -8179,8 +8380,14 @@ var msiAllTagsModeCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetTopLevelEditorElement();
-    msiSetEditMode(kDisplayModeAllTags, editorElement);
+    try
+    {
+      var editorElement = msiGetTopLevelEditorElement();
+      msiSetEditMode(kDisplayModeAllTags, editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('alltagsmode'), e.message);
+    }
   }
 };
 
@@ -8197,8 +8404,14 @@ var msiHTMLSourceModeCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetTopLevelEditorElement();
-    msiSetEditMode(kDisplayModeSource, editorElement);
+    try
+    {
+      var editorElement = msiGetTopLevelEditorElement();
+      msiSetEditMode(kDisplayModeSource, editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('sourcemode'), e.message);
+    }
   }
 };
 
@@ -8215,8 +8428,14 @@ var msiPreviewModeCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetTopLevelEditorElement();
-    msiSetEditMode(kDisplayModePreview, editorElement);
+    try
+    {
+      var editorElement = msiGetTopLevelEditorElement();
+      msiSetEditMode(kDisplayModePreview, editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('pdfpreviewmode'), e.message);
+    }
   }
 };
 
@@ -8233,19 +8452,18 @@ var msiSelectMatrixCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
-      msiGetTableEditor(editorElement).selectTable();
+      var editorElement = msiGetActiveEditorElement();
+        msiGetTableEditor(editorElement).selectTable();
+        if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) 
-		{
-			throw("Error in msiSelectTableCommand.doCommand: " + exc.message);
-		}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('selectmatrix'), e.message);
+    }
   }
 };
 
@@ -8484,13 +8702,19 @@ var msiInsertOrEditTableCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    if (msiIsInTableCell(editorElement))
-      msiEditorTableCellProperties(editorElement);
-//      EditorTableCellProperties();
-    else
-//      EditorInsertOrEditTable(true);
-      msiEditorInsertOrEditTable(true, editorElement, aCommand, this);
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      if (msiIsInTableCell(editorElement))
+        msiEditorTableCellProperties(editorElement);
+  //      EditorTableCellProperties();
+      else
+  //      EditorInsertOrEditTable(true);
+        msiEditorInsertOrEditTable(true, editorElement, aCommand, this);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('insertedittable'), e.message);
+    }
   }
 };
 
@@ -8508,22 +8732,34 @@ var msiEditTableCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) 
   {
-    var editorElement = msiGetActiveEditorElement();
-    var tableNodeData = msiGetPropertiesDataFromCommandParams(aParams);
-
-    if (tableNodeData != null && editorElement != null)
+    try
     {
-      msiEditorInsertOrEditTable(false, editorElement, aCommand, this, tableNodeData);
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                                     editorElement, "cmd_editTable", tableNode);
+      var editorElement = msiGetActiveEditorElement();
+      var tableNodeData = msiGetPropertiesDataFromCommandParams(aParams);
+
+      if (tableNodeData != null && editorElement != null)
+      {
+        msiEditorInsertOrEditTable(false, editorElement, aCommand, this, tableNodeData);
+  //      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,close,titlebar,dependent",
+  //                                                     editorElement, "cmd_editTable", tableNode);
+      }
+      editorElement.focus();
     }
-    editorElement.focus();
+    catch (e) {
+      finalThrow(cmdFailString('edittable'), e.message);
+    }
   },
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    msiEditorInsertOrEditTable(false, editorElement, aCommand, this);
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      msiEditorInsertOrEditTable(false, editorElement, aCommand, this);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('edittable'), e.message);
+    }
   }
 };
 
@@ -8541,16 +8777,18 @@ var msiSelectTableCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).selectTable();
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSelectTableCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('selecttable'), e.message);
+    }
   }
 };
 
@@ -8566,17 +8804,18 @@ var msiSelectTableRowCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
-
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).selectTableRow();
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSelectTableRowCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('selecttablerow'), e.message);
+    }
   }
 };
 
@@ -8593,15 +8832,18 @@ var msiSelectTableColumnCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    try {
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).selectTableColumn();
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSelectTableColumnCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('selecttablecolumn'), e.message);
+    }
   }
 };
 
@@ -8617,16 +8859,18 @@ var msiSelectTableCellCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).selectTableCell();
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSelectTableCellCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('selecttablecell'), e.message);
+    }
   }
 };
 
@@ -8642,16 +8886,18 @@ var msiSelectAllTableCellsCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).selectAllTableCells();
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSelectAllTableCellsCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('selectalltablecells'), e.message);
+    }
   }
 };
 
@@ -8668,9 +8914,14 @@ var msiInsertTableCommand =
 
   doCommand: function(aCommand)
   {
-//    EditorInsertTable();
-    var editorElement = msiGetActiveEditorElement();
-    msiEditorInsertTable(editorElement, aCommand, this);
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      msiEditorInsertTable(editorElement, aCommand, this);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('inserttable'), e.message);
+    }
   }
 };
 
@@ -8686,16 +8937,18 @@ var msiInsertTableRowAboveCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).insertTableRow(1, false);
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiInsertTableRowAboveCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('insertrowabove'), e.message);
+    }
   }
 };
 
@@ -8711,16 +8964,18 @@ var msiInsertTableRowBelowCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    try
+    try 
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).insertTableRow(1, true);
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiInsertTableRowBelowCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('insertrowbelow'), e.message);
+    }
   }
 };
 
@@ -8736,16 +8991,18 @@ var msiInsertTableColumnBeforeCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).insertTableColumn(1, false);
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiInsertTableColumnBeforeCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('insertcolumnbefore'), e.message);
+    }
   }
 };
 
@@ -8761,16 +9018,18 @@ var msiInsertTableColumnAfterCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).insertTableColumn(1, true);
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiInsertTableColumnAfterCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('insertcolumnafter'), e.message);
+    }
   }
 };
 
@@ -8786,16 +9045,18 @@ var msiInsertTableCellBeforeCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).insertTableCell(1, false);
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiInsertTableCellBeforeCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('insertcellbefore'), e.message);
+    }
   }
 };
 
@@ -8811,16 +9072,18 @@ var msiInsertTableCellAfterCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).insertTableCell(1, true);
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiInsertTableCellAfterCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('insertcellafter'), e.message);
+    }
   }
 };
 
@@ -8837,16 +9100,18 @@ var msiDeleteTableCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).deleteTable();
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiDeleteTableCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('deletetable'), e.message);
+    }
   }
 };
 
@@ -8865,9 +9130,9 @@ var msiDeleteTableRowCommand =
     var editorElement = msiGetActiveEditorElement();
     var rows = msiGetNumberOfContiguousSelectedRows(editorElement);
     // Delete at least one row
-    if (rows == 0)
+    if (rows == 0){
       rows = 1;
-
+    }
     try
     {
       var editor = msiGetTableEditor(editorElement);
@@ -8880,6 +9145,10 @@ var msiDeleteTableRowCommand =
         rows = msiGetNumberOfContiguousSelectedRows(editorElement);
       }
     }
+    catch (e) {
+      finalThrow(cmdFailString('deletetablerow'), e.message);
+    }
+    
     finally { editor.endTransaction(); }
     if (editorElement)
       editorElement.contentWindow.focus();
@@ -8918,6 +9187,9 @@ var msiDeleteTableColumnCommand =
         columns = msiGetNumberOfContiguousSelectedColumns(editorElement);
       }
     }
+    catch (e) {
+      finalThrow(cmdFailString('deletetablecolumn'), e.message);
+    }
     finally { editor.endTransaction(); }
     if (editorElement)
       editorElement.contentWindow.focus();
@@ -8938,16 +9210,18 @@ var msiDeleteTableCellCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement(); 
       msiGetTableEditor(editorElement).deleteTableCell(1);   
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiDeleteTableCellCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('deletetablecell'), e.message);
+    }
   }
 };
 
@@ -8962,18 +9236,19 @@ var msiDeleteTableCellContentsCommand =
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand)
-
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
+      var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).deleteTableCellContents();
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiDeleteTableCellContentsCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+     finalThrow(cmdFailString('deletetablecellcontents'), e.message);
+    }
   }
 };
 
@@ -8991,17 +9266,19 @@ var msiNormalizeTableCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    // Use nsnull to let editor find table enclosing current selection
     try
     {
+      var editorElement = msiGetActiveEditorElement();
+      // Use nsnull to let editor find table enclosing current selection
       msiGetTableEditor(editorElement).normalizeTable(null);   
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiNormalizeTableCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('normalizeTable'), e.message);
+    }
   }
 };
 
@@ -9010,11 +9287,11 @@ var msiJoinTableCellsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-
-    var editorElement = msiGetActiveEditorElement();
-    if (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement))
+    try
     {
-      try {
+      var editorElement = msiGetActiveEditorElement();
+      if (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement))
+      {
         var editor = msiGetTableEditor(editorElement);
         var tagNameObj = { value: "" };
         var countObj = { value: 0 };
@@ -9049,11 +9326,11 @@ var msiJoinTableCellsCommand =
                                               colObj.value + colSpan));
         }
       }
-      catch (exc) {
-				dump(exc.message+"\n");
-			}
+      return false;
     }
-    return false;
+    catch (e) {
+      finalThrow(cmdFailString('reviserules'), e.message);
+    }
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -9061,10 +9338,10 @@ var msiJoinTableCellsCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    // Param: Don't merge non-contiguous cells
     try
     {
+      var editorElement = msiGetActiveEditorElement();
+      // Param: Don't merge non-contiguous cells
       var editor = msiGetTableEditor(editorElement);
       editor.joinTableCells(false);
       var tableNode;
@@ -9075,12 +9352,14 @@ var msiJoinTableCellsCommand =
         if (tableNode)
           checkForMultiRowInTable(tableNode, editor);
       }
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiJoinTableCellsCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('jointablecells'), e.message);
+    }
   }
 };
 
@@ -9121,10 +9400,9 @@ var msiSplitTableCellCommand =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
     try
     {
-
+      var editorElement = msiGetActiveEditorElement();
       var editor = msiGetTableEditor(editorElement);
       editor.splitTableCell();
       var tableNode;
@@ -9135,12 +9413,14 @@ var msiSplitTableCellCommand =
         if (tableNode)
           checkForMultiRowInTable(tableNode, editor);
       }
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSplitTableCellCommand.doCommand: " + exc);}
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
+    catch (e) {
+      finalThrow(cmdFailString('splittablecell'), e.message);
+    }
   }
 };
 
@@ -9158,7 +9438,13 @@ var msiTableOrCellColorCommand =
 
   doCommand: function(aCommand, editorElement)
   {
-    msiEditorSelectColor("TableOrCell", null, editorElement);
+    try
+    {
+      msiEditorSelectColor("TableOrCell", null, editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('tablecolor'), e.message);
+    }
   }
 };
 
@@ -9175,8 +9461,14 @@ var nsPreferencesCommand =
 
   doCommand: function(aCommand)
   {
-    goPreferences('editor', 'chrome://editor/content/pref-composer.xul','editor');
-    window.content.focus();
+    try
+    {
+      goPreferences('editor', 'chrome://editor/content/pref-composer.xul','editor');
+      window.content.focus();
+    }
+    catch (e) {
+      finalThrow(cmdFailString('preferences'), e.message);
+    }
   }
 };
 //
@@ -9193,9 +9485,14 @@ var msiFinishHTMLSourceCmd =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    // In msiEditor.js
-    msiFinishHTMLSource(editorElement);
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      msiFinishHTMLSource(editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('finishsource'), e.message);
+    }
   }
 };
 
@@ -9211,9 +9508,15 @@ var msiCancelHTMLSource =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    // In msiEditor.js
-    msiCancelHTMLSource(editorElement);
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      // In msiEditor.js
+      msiCancelHTMLSource(editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('cancelsource'), e.message);
+    }
   }
 };
 
@@ -9263,21 +9566,23 @@ var msiConvertToTable =
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement();
-    if (this.isCommandEnabled())
+		try
     {
-      try
+      var editorElement = msiGetActiveEditorElement();
+      if (this.isCommandEnabled())
       {
         var theWindow = msiGetWindowContainingEditor(editorElement);
         window.openDialog("chrome://editor/content/EdConvertToTable.xul","converttotable", "chrome,close,titlebar,modal");
-				msiGetEditor(editorElement).incrementModificationCount(1);
+  			msiGetEditor(editorElement).incrementModificationCount(1);
       }
-      catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiConvertToTable.doCommand: " + exc);}
+      if (editorElement)
+        editorElement.contentWindow.focus();
+      else
+        window.content.focus();
+		}
+    catch (e) {
+      finalThrow(cmdFailString('c'), e.message);
     }
-    if (editorElement)
-      editorElement.contentWindow.focus();
-    else
-      window.content.focus();
   }
 };
 
@@ -9590,26 +9895,32 @@ var msiShowTeXLogCommand =
 
   doCommand: function(aCommand)
   {
-    result = true;
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return result;
-
-    var editor = msiGetEditor(editorElement);
-    if (editor)
+    try
     {
-      var url = msiGetEditorURL(editorElement);
-//      var re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
-      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
-      var match = re.exec(url);
-      if (match)
+      result = true;
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return result;
+
+      var editor = msiGetEditor(editorElement);
+      if (editor)
       {
-        var resurl = match[1]+"/tex/SWP.log";
-        openDialog("chrome://global/content/viewSource.xul",
-               "_blank",
-               "all,dialog=no",
-               resurl, null, null);
+        var url = msiGetEditorURL(editorElement);
+  //      var re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
+        var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+        var match = re.exec(url);
+        if (match)
+        {
+          var resurl = match[1]+"/tex/SWP.log";
+          openDialog("chrome://global/content/viewSource.xul",
+                 "_blank",
+                 "all,dialog=no",
+                 resurl, null, null);
+        }
       }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('showtexlog'), e.message);
     }
     return result;
   }
@@ -9646,26 +9957,32 @@ var msiShowTeXFileCommand =
 
   doCommand: function(aCommand)
   {
-    result = true;
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return result;
-
-    var editor = msiGetEditor(editorElement);
-    if (editor)
+    try
     {
-      var url = msiGetEditorURL(editorElement);
-//      var re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
-      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
-      var match = re.exec(url);
-      if (match)
+      result = true;
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return result;
+
+      var editor = msiGetEditor(editorElement);
+      if (editor)
       {
-        var resurl = match[1]+"/tex/main.tex";
-        openDialog("chrome://global/content/viewSource.xul",
-               "_blank",
-               "all,dialog=no",
-               resurl, null, null);
+        var url = msiGetEditorURL(editorElement);
+  //      var re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
+        var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+        var match = re.exec(url);
+        if (match)
+        {
+          var resurl = match[1]+"/tex/main.tex";
+          openDialog("chrome://global/content/viewSource.xul",
+                 "_blank",
+                 "all,dialog=no",
+                 resurl, null, null);
+        }
       }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('showtexfile'), e.message);
     }
     return result;
   }
@@ -9687,18 +10004,24 @@ var msiGoToParagraphCommand =
 
   doCommand: function(aCommand)
   {
-    result = true;
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return;
-
-    var editor = msiGetEditor(editorElement);
-    if (editor)
+    try
     {
-      // use the first node of the selection as the context node
-      var contextNode = editor.selection.focusNode;
-      window.openDialog('chrome://prince/content/gotoparagraph.xul','gotoparagraph', 'chrome,resizable,close,modal,titlebar',editor, contextNode, editorElement);
-      window.content.focus();
+      result = true;
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return;
+
+      var editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        // use the first node of the selection as the context node
+        var contextNode = editor.selection.focusNode;
+        window.openDialog('chrome://prince/content/gotoparagraph.xul','gotoparagraph', 'chrome,resizable,close,modal,titlebar',editor, contextNode, editorElement);
+        window.content.focus();
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('gotoparagraph'), e.message);
     }
   }
 };
@@ -9716,16 +10039,22 @@ var msiGoToMarkerCommand =
 
   doCommand: function(aCommand)
   {
-    result = true;
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return;
-
-    var editor = msiGetEditor(editorElement);
-    if (editor)
+    try
     {
-      window.openDialog('chrome://prince/content/gotomarker.xul','gotomarker', 'chrome,resizable,close,modal,titlebar',editorElement, this);
-      window.content.focus();
+      result = true;
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return;
+
+      var editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        window.openDialog('chrome://prince/content/gotomarker.xul','gotomarker', 'chrome,resizable,close,modal,titlebar',editorElement, this);
+        window.content.focus();
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('gotomarker'), e.message);
     }
   }
 };
@@ -9743,19 +10072,25 @@ var msiWordCountCommand =
 
   doCommand: function(aCommand)
   {
-    result = true;
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return;
-
-    var editor = msiGetEditor(editorElement);
-    if (editor)
+    try
     {
-      // use the first node of the selection as the context node
-      var wc = countWords(editor.document);
-      window.openDialog('chrome://prince/content/wordcount.xul','wordcount', 'chrome,resizable,close,titlebar, dependent',wc);
-      window.content.focus();
-     
+      result = true;
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return;
+
+      var editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        // use the first node of the selection as the context node
+        var wc = countWords(editor.document);
+        window.openDialog('chrome://prince/content/wordcount.xul','wordcount', 'chrome,resizable,close,titlebar, dependent',wc);
+        window.content.focus();
+       
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('wordcount'), e.message);
     }
   }
 };
