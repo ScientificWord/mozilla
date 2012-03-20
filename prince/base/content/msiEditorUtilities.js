@@ -76,7 +76,7 @@ function dumpMath()
 	}
 	catch(e)
 	{
-		finalThrow("dumpMath failed", e.message);
+		finalThrow(commandFailureStrin("dumpMath"), e.message);
 	}
 }
 
@@ -179,10 +179,27 @@ function finalThrow(message, moremessage)
 	var flags = prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING  +  
 	            prompts.BUTTON_POS_2 * prompts.BUTTON_TITLE_CANCEL +
 							33554432;
-	var button = prompts.confirmEx(null, GetString("commandfailed"), message,  
-	                               flags, "", GetString("moreinfo"), "", null, null);  
-	if (button===2)
+	var checkBool = {};
+  var button = prompts.confirmEx(null, GetString("commandfailed"), message,  
+	                               flags, "", GetString("moreinfo"), "", null, checkBool );  
+	if (button===1)
 	  prompts.alert(null, GetString("moredetails"), moremessage);
+}
+
+function cmdFailString(command) {
+  var message = GetString("CmdFailed");
+  return message.replace("##",command);
+}
+
+function MsiException( message, previous )
+{
+   this.message = message + "\n";
+   if (previous) {
+     this.message += previous.message;
+   }
+   this.toString = function() {
+      return this.message;
+   };
 }
 
 ///************* String Utilities ***************/
@@ -199,13 +216,17 @@ function GetString(name)
 
       gStringBundle = strBundleService.createBundle("chrome://prince/locale/editor.properties"); 
 
-    } catch (ex) {}
+    } catch (e) {
+      throw new MsiException("Unable to load editor.properties string bundle", e);
+    }
   }
   if (gStringBundle)
   {
     try {
       return gStringBundle.GetStringFromName(name);
-    } catch (e) {}
+    } catch (e) {
+      throw  new MsiException("Can\'t find name \'" + name + " in string bundle", e);
+    }
   }
   return null;
 }
@@ -280,7 +301,9 @@ function msiGetSelectionAsText(editorElement)
     editorElement = msiGetActiveEditorElement();
   try {
     return msiGetEditor(editorElement).outputToString("text/plain", 1); // OutputSelectionOnly
-  } catch (e) {}
+  } catch (e) {
+    throw new MsiException("Failure converting selection to text",e);
+  }
 
   return "";
 }
@@ -441,7 +464,9 @@ function clearPrevActiveEditor(timerData)
       var activeWin = winWatcher.activeWindow;
       var commandDispatcher = activeWin.document.commandDispatcher;
       currFocusedElement = commandDispatcher.focusedElement;
-    } catch(exc) {dump("In clearPrevActiveEditor, unable to retrieve curr focused element, error is [" + exc + "].\n");}
+    } catch(e) {
+      throw new MsiException("In clearPrevActiveEditor, unable to retrieve curr focused element",e);
+    }
   }
 //End logging stuff
   if (theWindow.msiClearEditorTimerList !== null)
@@ -461,7 +486,9 @@ function clearPrevActiveEditor(timerData)
     try
     {
       theWindow.clearTimeout(timerData.nTimerID);
-    } catch(exc) {dump("Exception in clearPrevActiveEditor; theWindow couldn't clear timeout [" + timerData.nTimerID + "], exception [" + exc + "].\n");}
+    } catch(e) {
+      throw new MsiException("Exception in clearPrevActiveEditor",e);
+    }
     var nFound = msiFindTimerInArray(theWindow.msiClearEditorTimerList, timerData);
     if (nFound >= 0)
     {
@@ -568,7 +595,9 @@ function msiClearAllFocusTimers(theWindow, timerList)
       {
         theWindow.clearTimeout(timerList[ix]);
         timerList.splice(ix, 1);
-      } catch(exc) {dump("In msiClearAllFocusTimers, theWindow couldn't clear timer [" + timerList[ix] + "], exception [" + exc + "].\n");}
+      } catch(e) {
+        throw new MsiException("In msiClearAllFocusTimers, theWindow couldn't clear timer",e);
+      }
     }
   }
 //  timerList.splice(0, timerList.length);
@@ -888,7 +917,7 @@ function msiGetEditor(editorElement)
   }
   catch(e) 
   { 
-    dump("msiGetEditor exception: [" + e + "]; editorElement is [" + editorElement + "] and has ID [" + editorElement.id + "]\n");
+    throw new MsiException("msiGetEditor exception",e);
     editor = null;
   }
   return editor;
@@ -898,7 +927,10 @@ function msiGetCommandManager(editorElement)
 {
   var commandManager;
   try {commandManager = editorElement.commandManager;}
-  catch(e) {dump("In msiGetCommandManager, exception: " + e + "\n"); commandManager = null;}
+  catch(e) {
+    throw new MsiException("In msiGetCommandManager",e);
+    commandManager = null;
+  }
   return commandManager;
 }
 
@@ -921,7 +953,9 @@ function msiGetControllerForCommand(command, editorElement)
 //        controller = editorElement.ownerDocument.commandDispatcher.getControllerForCommand(command);
       }
     }
-    catch(exc) {dump(exc);}
+    catch(e) {
+      throw new MsiException("msiGetControllerForCommand",e);
+    }
   }
   return controller;
 }
@@ -930,9 +964,10 @@ function msiGetEditorType(editorElement)
 {
   try {
     return editorElement.editortype;
-  } catch (e) { dump (e)+"\n"; }
-
-  return "";
+  } catch (e) { 
+    throw new MsiException("msiGetEditorType",e);
+    return "";
+  }
 }
 
 function msiIsHTMLEditor(editorElement)
@@ -1087,7 +1122,9 @@ function msiGetUpdatableItemContainers(commandID, editorElement)
     if (theItem !== null)
       returnList.push(topWindow.document);
   }
-  catch(exc) {AlertWithTitle("Error in msiGetUpdatableItemContainers!", exc);}
+  catch(e) {
+    throw new MsiException("Error in msiGetUpdatableItemContainers", e);
+  }
 
   if (!msiIsTopLevelEditor(editorElement) && currWindow !== null && currWindow !== topWindow)
   {
@@ -1110,7 +1147,9 @@ function msiIsDocumentEditable(editorElement)
     editorElement = msiGetActiveEditorElement();
   try {
     return msiGetEditor(editorElement).isDocumentEditable;
-  } catch (e) {}
+  } catch (e) {
+    throw new MsiException("Error in msiIsDocumentEditable",e);
+  }
   return false;
 }
 
@@ -1158,7 +1197,9 @@ function msiIsDocumentEmpty(editorElement)
     editorElement = msiGetActiveEditorElement();
   try {
     return msiGetEditor(editorElement).documentIsEmpty;
-  } catch (e) {}
+  } catch (e) {
+    throw new MsiException("Error in msiIsDocumentEmpty",e);
+  }
   return false;
 }
 
@@ -1166,7 +1207,9 @@ function msiIsDocumentModified(editorElement)
 {
   try {
     return msiGetEditor(editorElement).documentModified;
-  } catch (e) {}
+  } catch (e) {
+    throw new MsiException("Error in msiIsDocumentModified",e);
+  }
   return false;
 }
 
@@ -1182,7 +1225,9 @@ function msiGetEditorURL(editorElement)
     try {
       editor = msiGetEditor(editorElement);
       return editor.document.documentURI;
-    } catch (e){}
+    } catch (e){
+      throw new MsiException("Error in msiGetEditorURL",e);
+    }
   }
   return "";
 }
@@ -1215,7 +1260,7 @@ function msiRequirePackage(editorElement, packagename, options)
   }
   catch(e)
   {
-    dump("Exception in msiRequirePackage: "+e+"\n");
+    throw new MsiException("Exception in msiRequirePackage",e);
   }
 }
     
@@ -1229,7 +1274,9 @@ function newCommandParams()
   try {
     return Components.classes["@mozilla.org/embedcomp/command-params;1"].createInstance(Components.interfaces.nsICommandParams);
   }
-  catch(e) { dump("error thrown in newCommandParams: "+e+"\n"); }
+  catch(e) {
+    throw new MsiException("Error in newCommandParams",e); 
+  }
   return null;
 }
 
@@ -1315,7 +1362,7 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
     insertXMLNodes(editor, nodeList, theElement, theOffset, true);
 //    dump("insertXML now done.\n");
   }
-  catch(exc)
+  catch(e)
   {
     dump("If you see this dump, Barry loses his bet\n");
     dump("In insertXMLAtCursor, couldn't use editor.selection! (Exception: [" + exc + "]\n");
@@ -1343,12 +1390,12 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
       catch(exc)
       {
         bOK = false;
-        dump("In insertXMLNodesAtCursor, unable to insert at all! Exception: [" + exc + "].\n");
+        throw new MsiException("Error in insertXMLNodesAtCursor",e);
       }
     }
     else
     {
-      dump("No content nodes to insert into in editor (insertXMLAtCursor)!\n");
+      //No content nodes to insert into in editor
       bOK = false;
     }
   }
@@ -1367,7 +1414,9 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
       newOffset = editor.selection.focusOffset;
       newDumpStr += "], and focusOffset is [" + newOffset + "].\n";
       dump(newDumpStr);
-    } catch(ex) {dump("Exception in insertXMLAtCursor trying to get post-insert position; exception is [" + ex + "].\n");}
+    } catch(e) {
+      throw new MsiException("Error in insertXMLAtCursor",e);
+    }
     //Find inserted nodes now in order to rationally place cursor.
     var newLength = theElement.childNodes.length;
 
@@ -1401,7 +1450,9 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
             editor.selection.collapse(caretNodeData.theNode, caretNodeData.theOffset);
   //          dump("In insertXMLAtCursor, set caret inside node [" + caretNodeData.theNode.nodeName + "], at offset [" + caretNodeData.theOffset + "], with old length = [" + theLength + "] and new length = [" + newLength + "].\n");
           }
-          catch(exc) {dump("In insertXMLAtCursor, unable to set caret inside node [" + caretNodeData.theNode.nodeName + "]; exception is [" + exc + "].\n");}
+          catch(exc) {
+            throw new MsiException("Error in insertXMLAtCursor",exc);
+          }
         }
       }
       else
@@ -1827,7 +1878,9 @@ function msiEditorMoveChildToPosition(newParent, nOffset, childNode, editor)
     editor.deleteNode(childNode);
     editor.insertNode(childNode, newParent, nOffset);
   }
-  catch(exc) {dump("Exception in msiEditorUtilities.js, msiEditorMoveChildToPosition; exception is [" + exc + "\.\n");}
+  catch(exc) {
+    throw new MsiException("Error in msiEditorMoveChildToPosition",exc);
+  }
 }
 
 
@@ -11039,8 +11092,8 @@ SS_Timer.prototype.cancel = function() {
   this.timer_ = null;
   this.callback_ = null;
 
-  // We don't need the shutdown observer anymore
-  this.observerService_.unregister();
+//  // We don't need the shutdown observer anymore
+//  this.observerService_.unregister();
 }
 
 /*
