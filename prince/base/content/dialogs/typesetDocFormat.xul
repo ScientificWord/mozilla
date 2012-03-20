@@ -427,7 +427,7 @@
         </groupbox>
         <groupbox observes="reformatok">
           <caption>
-            <label  observes="reformatok" label="&FrontBackMatter.label;" accesskey="&FrontBackMatter.accesskey;" control="toc"/>
+            <label  observes="reformatok" label="&FrontBackMatter.label;" accesskey="&FrontBackMatter.accesskey;"/>
           </caption>   
           <grid>
             <columns>
