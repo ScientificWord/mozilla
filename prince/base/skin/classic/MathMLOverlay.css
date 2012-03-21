@@ -30,6 +30,6 @@
 #sidebar-symbol-tabbox  toolbarbutton[observes="cmd_MSIsymbolCmd"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="true"] { color: red; }
 #sidebar-symbol-tabbox  tab[mathsym="false"] { color: black; }
-#sidebar-symbol-tabbox  #cachebar {font-style: sans-serif; color: black;}
+#sidebar-symbol-tabbox  #cachebar {font-family: sans-serif; color: black;}
   
 #sidebar-symbol-tabbox row label math{ font-size: medium; }
