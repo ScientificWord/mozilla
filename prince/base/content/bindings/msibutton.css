@@ -17,7 +17,7 @@ toolbox[iconsize="small"] msibutton [class="msibutton-right"]{
 
 msibutton[disabled="true"] [class="msibutton-right"]{
 	color: gray;
-  list-style-image: url(chrome://prince/skin/icons/slice-right-.png);
+  list-style-image: url(chrome://prince/skin/icons/slice-right.png);
 }
 
 toolbox[iconsize="small"] msibutton[disabled="true"] [class="msibutton-right"]{
