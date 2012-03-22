@@ -4174,6 +4174,7 @@ nsTypedSelection::SetPresShell(nsIPresShell *aPresShell)
 NS_IMETHODIMP
 nsTypedSelection::GetAnchorNode(nsIDOMNode** aAnchorNode)
 {
+  
   if (!aAnchorNode)
     return NS_ERROR_NULL_POINTER;
   *aAnchorNode = nsnull;
