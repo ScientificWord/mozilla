@@ -156,6 +156,17 @@ msiMContainer::InsertNodes(nsIEditor * editor,
       if (NS_SUCCEEDED(res) && nodeArray)
         res = msiCoalesceUtils::CoalesceArray(editor, nodeArray, coalesced);
     }
+    if (!NS_SUCCEEDED(res))  //if the coalescing fails, just make the uncoalesced list and insert?
+    {
+      mutableArray->Clear();
+      if (lfClone)
+        mutableArray->AppendElement(lfClone, PR_FALSE);
+      res = msiUtils::AppendToMutableList(mutableArray, inList);
+      if (NS_SUCCEEDED(res) && rtClone)
+        mutableArray->AppendElement(rtClone, PR_FALSE);
+      if (NS_SUCCEEDED(res))
+        coalesced = do_QueryInterface(mutableArray);
+    }
     if (NS_SUCCEEDED(res) && coalesced)
     {
       nsCOMPtr<nsISimpleEnumerator> enumerator;
