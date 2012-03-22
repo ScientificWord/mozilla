@@ -4825,6 +4825,9 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
             current->GetFrameFromDirection(aPos->mDirection, aPos->mVisual,
                                            aPos->mJumpLines, aPos->mScrollViewStop,
                                            &current, &offset, &jumpedLine, &math, &fBailing);
+          if (fBailing)
+            done = PR_TRUE;
+
           if (NS_FAILED(result))
             return result;
 
@@ -5404,10 +5407,11 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       pLastChild = pChild;
       pChild = pChild->GetNextSibling();
     }
-    pMathChild = IsMathFrame(pChild)?pChild:nsnull;
+    //pChild = pLastChild;
+    //pMathChild = IsMathFrame(pChild)?pChild:nsnull;
     if (aDirection == eDirNext)
     {
-      pMathChild = IsMathFrame(pChild)?pChild:nsnull;
+      pMathChild = IsMathFrame(pLastChild)?pLastChild:nsnull;
       if ((pMathChild) && (pMathCM = GetMathCursorMover(pMathChild))) 
       {
         pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
@@ -5416,6 +5420,8 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       {
         if (pMathCM = GetMathCursorMover(pFrame))
           pMathCM->MoveOutToRight(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
+        else
+          (*fBailing) = PR_TRUE;
       }
     }
     else {
