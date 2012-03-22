@@ -652,7 +652,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   result = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(result)) return result;
   if (!selection) return NS_ERROR_NULL_POINTER;
-  //DumpSelection( selection);
+  DumpSelection( selection);
 
   // If there is an existing selection when an extended delete is requested,
   //  platforms that use "caret-style" caret positioning collapse the
@@ -680,7 +680,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   // This needs to happen inside selection batching,
   // otherwise the deleted text is autocopied to the clipboard.
   if (aAction == eNextWord || aAction == ePreviousWord
-      || (aAction == eNext && bCollapsed)
+      //|| (aAction == eNext && bCollapsed)
       || aAction == eToBeginningOfLine || aAction == eToEndOfLine)
   {
     nsCOMPtr<nsISelectionController> selCont (do_QueryReferent(mSelConWeak));
@@ -700,8 +700,9 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
           aAction = eNone;
           break;
         case eNext:
+          DumpSelection(selection);
           result = selCont->CharacterExtendForDelete();
-          //DumpSelection(selection);
+          DumpSelection(selection);
           aAction = eNone;
           break;
         case eToBeginningOfLine:
