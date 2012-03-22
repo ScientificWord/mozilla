@@ -3138,6 +3138,8 @@ void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& ch
               charCount -= 1;  // to distinguish numerator from denominator
             }
             if (editor->IsTextNode(child)){
+              if (charCount == 0)
+                break;
               charCount -= CharLength(child);
               theOffset += 1;
             } else {
