@@ -160,8 +160,8 @@
                   <menulist observes="reformatok" id="columns"  persist="value" >
                     <menupopup style="width: 9em" oncommand="broadcastColCount();" >
                       <menuitem label="&default.label;" def="1"/>
-                      <menuitem value="1" label="&one.label;"/>
-                      <menuitem value="2" label="&two.label;"/>
+                      <menuitem value="onecolumn" label="&one.label;"/>
+                      <menuitem value="twocolumn" label="&two.label;"/>
                     </menupopup>
                   </menulist>
                 </vbox>
