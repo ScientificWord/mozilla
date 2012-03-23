@@ -2206,7 +2206,9 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       // (translation: users cannot backspace or delete across table cells)
       if (nsHTMLEditUtils::IsTableElement(visNode, mtagListManager))
       {
-        *aCancel = PR_TRUE;
+        //*aCancel = PR_TRUE;
+        mHTMLEditor->DeleteNode(visNode);
+        *aHandled = PR_TRUE;
         return NS_OK;
       }
       
