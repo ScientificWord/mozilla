@@ -55,7 +55,7 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
     {
       count = 0;
       PlaceCursorAfter(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
-//      *fBailingOut = PR_TRUE;
+      *fBailingOut = PR_TRUE;
     }
     *_retval = 0;
   }
