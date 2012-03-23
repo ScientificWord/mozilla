@@ -83,6 +83,12 @@ msiEditRules::Init(nsPlaintextEditor *aEditor, PRUint32 aFlags)
 nsresult
 msiEditRules::WillInsert(nsISelection *aSelection, PRBool *aCancel)
 {
+        if (mBogusNode)
+        {
+          mEditor->DeleteNode(mBogusNode);
+          mBogusNode = nsnull;
+        }
+  
   nsresult res = nsHTMLEditRules::WillInsert(aSelection, aCancel);
   if (NS_FAILED(res)) return res;
 

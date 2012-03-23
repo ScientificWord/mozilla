@@ -289,6 +289,7 @@ nsresult msiEditor::InsertMath(PRBool isDisplay)
         SaveSelection(selection);
         if (m_msiEditingMan)
           res = m_msiEditingMan->InsertMath(editor, selection, theNode, theOffset, flags, isDisplay);
+
         EndTransaction();
       }
     }
