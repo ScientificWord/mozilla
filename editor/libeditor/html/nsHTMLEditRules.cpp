@@ -9887,6 +9887,12 @@ nsHTMLEditRules::DidCreateNode(const nsAString& aTag,
 NS_IMETHODIMP 
 nsHTMLEditRules::WillInsertNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aPosition)
 {
+  if (mBogusNode)
+  {
+    mEditor->DeleteNode(mBogusNode);
+    mBogusNode = nsnull;
+  }
+  
   return NS_OK;  
 }
 
