@@ -9687,7 +9687,10 @@ function setTagFieldContents(editor, propertyStack)
   pt = document.getElementById("ParaTagSelections");
   st = document.getElementById("StructTagSelections");
   ft = document.getElementById("FrontMTagSelections");  
-  tt.value = pt.value = st.value = ft.value = "";
+  if (ft) tt.value = "";
+  if (pt) pt.value = "";
+  if (st) st.value = "";
+  if (ft) ft.value = "";
   while (str) {
     if (str.length > 0) {
     	klass = tagManager.getClassOfTag(str, null);
