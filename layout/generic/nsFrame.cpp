@@ -5434,6 +5434,8 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       {
         if (pMathCM = GetMathCursorMover(pFrame))
           pMathCM->MoveOutToLeft(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
+        else
+          (*fBailing) = PR_TRUE;
       }  
     }
     if (*fBailing) goto bailedOut;
