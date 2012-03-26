@@ -55,6 +55,7 @@ REQUIRES	= xpcom \
 		  locale \
 		  unicharutil \
 		  content \
+      netwerk \
 		  txmgr \
 		  txtsvc \
 		  htmlparser \

@@ -29,11 +29,11 @@
 #include "nsIArray.h"
 #include "nsArrayUtils.h"
 #include "nsCOMArray.h"
-
 #include "DeleteTextTxn.h"
 #include "DeleteElementTxn.h"
 #include "FlattenMrowTxn.h"
 #include "ReplaceScriptBaseTxn.h"
+#include "nsILocalFile.h"
 
 #include "msiISelection.h"
 #include "msiIEditingManager.h"
@@ -48,6 +48,9 @@
 #include "msiUtils.h"
 #include "msiEditingAtoms.h"
 #include "jcsDumpNode.h"
+#include "nsEscape.h"
+#include "nsIURI.h"
+#include "nsIURL.h"
 //#include "msiEditingManager.h"
 
 static PRInt32 instanceCounter = 0;
@@ -59,18 +62,25 @@ nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
 msiEditor::msiEditor()
 {
   nsresult res(NS_OK);
+  if (m_filter == nsnull) { 
+    m_filter = new msiContentFilter(this);
+  }
+  AddInsertionListener(m_filter);
   m_msiEditingMan = do_CreateInstance(MSI_EDITING_MANAGER_CONTRACTID, &res);
   if (!m_rangeUtils)
     m_rangeUtils = do_GetService("@mozilla.org/content/range-utils;1");
   instanceCounter += 1;
   if (!m_autosub)
     m_autosub = do_GetService("@mozilla.org/autosubstitute;1");
+  
 }
 
 msiEditor::~msiEditor()
 {
   instanceCounter -= 1;
   m_msiEditingMan = nsnull;
+  RemoveInsertionListener(m_filter);
+  
 //  if (instanceCounter <= 0)
 //    NS_IF_RELEASE(m_rangeUtils);
 }
@@ -3760,61 +3770,170 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       }
     }
   }
-//          editor->EndTransaction();
-//        }
-//        res = msiEditingManager::InsertMatrix(editor, selection, splitParent, nLength, 2, 1, rowSignature);  //insert at the end
-//        res = m_msiEditingMan->InsertMatrix(editor, selection, splitParent, nLength, 2, 1, rowSignature);  //insert at the end
-//        res = m_msiEditingMan->InsertMathmlElement(editor, selection, splitParent, nLength, flags, newMatrix);
-//      else if (!bReplaceNode)
-////        res = msiEditingManager::InsertMatrix(editor, selection, splitParent, nInsertPos, 2, 1, rowSignature);
-////        res = m_msiEditingMan->InsertMatrix(editor, selection, splitParent, nInsertPos, 2, 1, rowSignature);
-//        res = m_msiEditingMan->InsertMathmlElement(editor, selection, splitParent, nInsertPos, flags, newMatrix);
-//      }
-//      else  //In this case we need to be rather careful:
-//      {
-//        existingNode = GetChildAt(splitParent, nInsertPos);
-////        dontcare = DeleteNode(existingNode);
-//        if (existingNode == leftNode)
-//        {
-//          leftInsert = existingNode;
-//          leftNode = nsnull;
-//        }
-//        else if (existingNode == rightNode)
-//        {
-//          rightInsert = existingNode;
-//          rightNode = nsnull;
-//        }
-//        else
-//        {
-//          if (!leftNode)
-//            leftInsert = existingNode;
-//          else if (!rightNode)
-//            rightInsert = existingNode;
-//          //Otherwise assume it was already taken care of???
-//        }
-//
-////      res = m_msiEditingMan->InsertMatrix(editor, selection, splitParent, nInsertPos, 2, 1, rowSignature);
-//        res = ReplaceNode(matrixContainer, existingNode, splitParent);
-//      }
-//    if (NS_SUCCEEDED(res))
-//    {
-//      NS_ASSERTION(matrixContainer == GetChildAt(splitParent, nInsertPos), "Newly inserted matrix not found in msiEditor::InsertReturnInMath!");  //Check that this is the newly inserted node
-////      matrixContainer = GetChildAt(splitParent, nInsertPos);  //recover the newly inserted node
-////      matrixContainer->GetLocalName(tagName);
-////      if (!tagName.EqualsLiteral("mtable"))
-////      {
-////        NS_ASSERTION(PR_FALSE, "Can't find inserted mtable in InsertReturnInMath!");
-////        matrixContainer = nsnull;
-////      }
-//    }
-//  }
-//  }
 
   EndTransaction();
   return res;
-//From nsEditor.h:
-//  static PRInt32 GetIndexOf(nsIDOMNode *aParent, nsIDOMNode *aChild);
-//  static nsCOMPtr<nsIDOMNode> GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset);
-//  nsresult MoveNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aOffset);
 }
   
+
+// Implementation of an nsIContentFilter
+
+
+NS_IMPL_ISUPPORTS1(msiContentFilter, nsIContentFilter)
+
+msiContentFilter::msiContentFilter(nsIEditor * editor)
+{
+  m_editor = editor;
+}
+
+nsresult copyfiles( 
+  nsIDocument * srcDoc,
+  nsIDocument * doc,
+  nsIDOMNodeList * objnodes, PRUint32 count)
+{
+  nsresult res;
+  nsString dataPath;
+  nsCOMPtr<nsIURL> destURL;
+  nsCOMPtr<nsIURL> srcURL;
+  nsCOMPtr<nsIURI> destURI;
+  nsCOMPtr<nsIURI> srcURI;
+  nsCOMPtr<nsILocalFile> srcFile;
+  nsCOMPtr<nsILocalFile> destFile;
+  nsCOMPtr<nsILocalFile> srcDir;
+  nsCOMPtr<nsILocalFile> destDir;
+  nsCOMPtr<nsIFile> file;
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMElement> elem;
+  // get the objects with relative paths for the data attribute
+  res = objnodes->Item(count, getter_AddRefs(node));
+  elem = do_QueryInterface(node);
+  NS_ENSURE_SUCCESS(res, res);
+  elem->GetAttribute(NS_LITERAL_STRING("data"), dataPath);
+  if (dataPath.Length() == 0)
+    elem->GetAttribute(NS_LITERAL_STRING("src"), dataPath);
+  if (dataPath.Length() > 0) {
+    if ( PR_TRUE) { //IsRelativePath(dataPath)) {
+      destURI = doc->GetDocumentURI();
+      srcURI = srcDoc->GetDocumentURI();
+      destURL = do_QueryInterface(destURI);
+      srcURL = do_QueryInterface(srcURI);
+      nsCAutoString dirPath;
+      res = destURL->GetDirectory(dirPath);
+      char * unescaped = strdup(dirPath.get());
+      nsUnescape(unescaped);
+      dirPath.Assign(unescaped, PR_UINT32_MAX); 
+      res = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(destFile));
+      res = srcURL->GetDirectory(dirPath);
+      unescaped = strdup(dirPath.get());
+      nsUnescape(unescaped);
+      dirPath.Assign(unescaped, PR_UINT32_MAX); 
+      res = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(srcFile));
+      res = destFile->GetParent(getter_AddRefs(file));
+      destDir = do_QueryInterface(file);
+      res = srcFile->GetParent(getter_AddRefs(file));
+      srcDir = do_QueryInterface(file);
+      nsAutoString substring;
+      PRUnichar slash = '/';
+      PRInt32 index = 0;
+      PRInt32 newIndex = 0;
+      PRInt32 length = dataPath.Length();
+      PRBool fExists;
+      PRBool fIsDirectory;
+      while (index < length) {
+        newIndex = dataPath.FindChar(slash,index);
+        if (newIndex == -1) newIndex = length;
+        substring = Substring(dataPath, index, newIndex - index);
+        index = newIndex + 1;
+        destDir->Append(substring);
+        destDir->Exists(&fExists);
+        if (!fExists) {
+          destDir->Create((index < length? 1 : 0), 0755);
+        }
+        srcDir->Append(substring);
+      }
+      // now we are ready to copy from srcDir to destDir
+      res = srcDir->CopyTo(destDir, EmptyString());
+    }
+  }
+}
+
+msiContentFilter::~msiContentFilter()
+{
+}
+
+NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
+  const nsAString & mimeType, 
+  nsIURL *contentSourceURL, 
+  nsIDOMDocument *sourceDocument, 
+  PRBool willDeleteSelection, 
+  nsIDOMNode **docFragment, 
+  nsIDOMNode **contentStartNode, 
+  PRInt32 *contentStartOffset, 
+  nsIDOMNode **contentEndNode,
+  PRInt32 *contentEndOffset, 
+  nsIDOMNode **insertionPointNode,
+  PRInt32 *insertionPointOffset, 
+  PRBool *continueWithInsertion)
+{
+  nsresult res;
+  nsCOMPtr<nsIDOMDocument> domDoc;
+  m_editor->GetDocument(getter_AddRefs(domDoc));
+  nsCOMPtr<nsIDocument> srcDoc = do_QueryInterface(sourceDocument);
+  nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+  if (!doc) return (NS_ERROR_FAILURE);
+  if (domDoc == sourceDocument) return (NS_OK);  // pasting from same document doesn't require work
+  // We look for img and object tags that have relative paths for data or src attributes.
+  nsCOMPtr<nsIDOMNode> rootnode = *docFragment;
+  nsCOMPtr<nsIDOMNodeList> children;
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMElement> elem;
+  PRUint32 childCount;
+  nsCOMPtr<nsIDOMNodeList> objnodes;
+  PRUint32 count;
+  PRUint32 i;
+  PRUint32 j;
+  res = rootnode->GetChildNodes(getter_AddRefs(children));
+  NS_ENSURE_SUCCESS(res, res);
+  res = children->GetLength(&childCount);
+  NS_ENSURE_SUCCESS(res, res);
+  for ( j=0; j < childCount; j++ )
+  {
+    res = children->Item(j, getter_AddRefs(node));
+    NS_ENSURE_SUCCESS(res, res);
+    elem = do_QueryInterface(node);
+    if (elem) {
+      res = elem->GetElementsByTagName(NS_LITERAL_STRING("object"), getter_AddRefs(objnodes));
+      NS_ENSURE_SUCCESS(res, res);
+      objnodes->GetLength(&count);
+      for (i = 0; i < count; i++) {
+        copyfiles(doc, srcDoc, objnodes, i);
+      }
+      res = elem->GetElementsByTagName(NS_LITERAL_STRING("img"), getter_AddRefs(objnodes));
+      NS_ENSURE_SUCCESS(res, res);
+      objnodes->GetLength(&count);
+      for (i = 0; i < count; i++) {
+        copyfiles(doc, srcDoc, objnodes, i);
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
