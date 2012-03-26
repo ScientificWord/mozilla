@@ -21,6 +21,7 @@ REQUIRES = xpcom \
 		   txmgr \
 		   htmlparser \
 		   necko \
+       netwerk \
 		   pref \
 		   gfx \
 		   thebes \

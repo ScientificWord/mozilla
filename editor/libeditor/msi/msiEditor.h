@@ -12,6 +12,7 @@
 #include "msiILayoutUtils.h"
 #include "msiISelection.h"
 #include "msiIAutosub.h"
+#include "nsIContentFilter.h"
 
 class msiEditorMouseListener;
 class msiISelection;
@@ -57,6 +58,7 @@ protected:
   nsCOMPtr<nsIDOMEventListener> m_mouseMotionListener;
   static nsCOMPtr<nsIRangeUtils> m_rangeUtils;
   static nsCOMPtr<msiIAutosub> m_autosub;
+  nsCOMPtr<nsIContentFilter> m_filter;
   
   friend class msiEditorMouseListener;
   friend class msiEditorMouseMotionListener;
@@ -133,6 +135,18 @@ protected:
                                        PRBool* bHandled);
                                        
 
+};
+
+class msiContentFilter : public nsIContentFilter
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSICONTENTFILTER
+  msiContentFilter( nsIEditor * editor);
+private:
+  nsIEditor * m_editor;
+  ~msiContentFilter();
+protected:
 };
 
 #endif // msiEditor_h___
