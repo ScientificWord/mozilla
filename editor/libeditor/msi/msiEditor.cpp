@@ -3799,11 +3799,9 @@ nsresult copyfiles(
   nsCOMPtr<nsIURI> srcURI;
   nsCOMPtr<nsILocalFile> srcFile;
   nsCOMPtr<nsILocalFile> destFile;
-  nsCOMPtr<nsILocalFile> srcDir;
-  nsCOMPtr<nsILocalFile> destDir;
-  nsCOMPtr<nsIFile> file;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMElement> elem;
+  PRBool fExists;
   // get the objects with relative paths for the data attribute
   res = objnodes->Item(count, getter_AddRefs(node));
   elem = do_QueryInterface(node);
@@ -3828,31 +3826,34 @@ nsresult copyfiles(
       nsUnescape(unescaped);
       dirPath.Assign(unescaped, PR_UINT32_MAX); 
       res = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(srcFile));
-      res = destFile->GetParent(getter_AddRefs(file));
-      destDir = do_QueryInterface(file);
-      res = srcFile->GetParent(getter_AddRefs(file));
-      srcDir = do_QueryInterface(file);
       nsAutoString substring;
       PRUnichar slash = '/';
       PRInt32 index = 0;
       PRInt32 newIndex = 0;
       PRInt32 length = dataPath.Length();
-      PRBool fExists;
       PRBool fIsDirectory;
-      while (index < length) {
+      while (index < length) {  // don't do this for the final leaf; destFile should be a directory
         newIndex = dataPath.FindChar(slash,index);
         if (newIndex == -1) newIndex = length;
         substring = Substring(dataPath, index, newIndex - index);
         index = newIndex + 1;
-        destDir->Append(substring);
-        destDir->Exists(&fExists);
-        if (!fExists) {
-          destDir->Create((index < length? 1 : 0), 0755);
+        if (index < length) {
+          destFile->Append(substring);
+          destFile->Exists(&fExists);
+          if (!fExists) {
+            destFile->Create((index < length? 1 : 0), 0755);
+          }
         }
-        srcDir->Append(substring);
+        srcFile->Append(substring);
       }
-      // now we are ready to copy from srcDir to destDir
-      res = srcDir->CopyTo(destDir, EmptyString());
+      // now we are ready to copy from srcFile to destFile
+      res = srcFile->CopyTo(destFile, EmptyString());
+    }
+    if (elem->HasAttribute(NS_LITERAL_STRING("data"), &fExists)) {
+      elem->SetAttribute(NS_LITERAL_STRING("data"), dataPath);
+    }
+    if (elem->HasAttribute(NS_LITERAL_STRING("src"), &fExists)) {
+      elem->SetAttribute(NS_LITERAL_STRING("src"), dataPath);
     }
   }
 }
@@ -3906,13 +3907,13 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
       NS_ENSURE_SUCCESS(res, res);
       objnodes->GetLength(&count);
       for (i = 0; i < count; i++) {
-        copyfiles(doc, srcDoc, objnodes, i);
+        copyfiles(srcDoc, doc, objnodes, i);
       }
       res = elem->GetElementsByTagName(NS_LITERAL_STRING("img"), getter_AddRefs(objnodes));
       NS_ENSURE_SUCCESS(res, res);
       objnodes->GetLength(&count);
       for (i = 0; i < count; i++) {
-        copyfiles(doc, srcDoc, objnodes, i);
+        copyfiles(srcDoc, doc, objnodes, i);
       }
     }
   }
