@@ -592,15 +592,17 @@ function msiDoStyleUICommand(cmdStr)
 
 function msiPokeMultiStateUI(uiID, cmdParams)
 {
-  var isMixed = cmdParams.getBooleanValue("state_mixed");
-  var desiredAttrib;
-  if (isMixed)
-    desiredAttrib = "mixed";
-  else
-    desiredAttrib = cmdParams.getStringValue("state_attribute");
-
   try
   {
+  
+     var isMixed = cmdParams.getBooleanValue("state_mixed");
+     var desiredAttrib;
+     if (isMixed)
+       desiredAttrib = "mixed";
+     else 
+          desiredAttrib = cmdParams.getStringValue("state_attribute");
+  
+
     var docList = msiGetUpdatableItemContainers(uiID, msiGetActiveEditorElement());
     for (var i = 0; i < docList.length; ++i)
     {
