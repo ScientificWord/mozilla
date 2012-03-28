@@ -30,20 +30,25 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
     if (pTempFrame)
     {
       pMCM = do_QueryInterface(pTempFrame);  
-      if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      else  // probably pTempFrame is a text frame
-      {
-        *aOutFrame = pTempFrame;
-        *aOutOffset = count;  
-        *_retval = 0;
-      }
-      return NS_OK;
+      if (pMCM) {
+        pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+        return NS_OK;
+      } else { // probably pTempFrame is a text frame
+         nsIAtom* frametype = pTempFrame->GetType();
+         if (frametype == nsGkAtoms::textFrame) {
+           *aOutFrame = pTempFrame;
+           *aOutOffset = count;  
+           *_retval = 0;
+           return NS_OK;
+         }       
+      }      
     }
   } 
   // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame.
   pTempFrame = pFrame->GetParent();
   pMCM = do_QueryInterface(pTempFrame);
-  if (pMCM) pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+  if (pMCM) 
+    pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else // we have gone out of math.  Put the cursor at the end of the math if count == 0
        // and after the math if count == 1 
   {                                                                        
