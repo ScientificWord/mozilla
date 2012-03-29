@@ -1343,7 +1343,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
   offsetused = mDomSelections[index]->FetchFocusOffset();
   weakNodeUsed = mDomSelections[index]->FetchFocusNode();
-  
+  DumpSelection(mDomSelections[index]);
   nsIFrame *frame;
   result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
   PRBool isMath = PR_FALSE;
@@ -1361,6 +1361,23 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
         tempFrame = frame;
         tempContent = do_QueryInterface(weakNodeUsed);
         while ( tempFrame && (tempFrame->GetContent() != tempContent)) tempFrame = tempFrame->GetParent();
+        // look for msi input box
+        if (tempFrame && tempFrame->GetParent()) {
+          nsIContent* pContent = tempFrame -> GetParent() -> GetContent();
+          if (pContent ->Tag() == nsGkAtoms::mi_)
+          {
+            nsCOMPtr<nsIDOMElement> mielt(do_QueryInterface(pContent));
+            if (mielt) {
+              nsAutoString tempinput;
+              mielt->GetAttribute(NS_LITERAL_STRING("tempinput"), tempinput);
+              if (tempinput.EqualsLiteral("true") ){
+                int i = 0;
+              }
+            }
+
+          }
+        } 
+
         if (tempFrame)
         {
           frame = tempFrame;
