@@ -5407,11 +5407,12 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       pLastChild = pChild;
       pChild = pChild->GetNextSibling();
     }
-    //pChild = pLastChild;
-    //pMathChild = IsMathFrame(pChild)?pChild:nsnull;
+    
+    pMathChild = IsMathFrame(pChild)?pChild:nsnull;
+
     if (aDirection == eDirNext)
     {
-      pMathChild = IsMathFrame(pLastChild)?pLastChild:nsnull;
+      pMathChild = IsMathFrame(pChild)?pChild:nsnull;
       if ((pMathChild) && (pMathCM = GetMathCursorMover(pMathChild))) 
       {
         pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
