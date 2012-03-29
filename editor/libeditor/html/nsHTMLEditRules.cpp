@@ -1962,7 +1962,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   if (!aSelection || !aCancel || !aHandled) { return NS_ERROR_NULL_POINTER; }
 
   printf("In nsHTMLEditRules::WillDeleteSelection\n");
-  DumpSelection(aSelection);
+  //DumpSelection(aSelection);
 
   // initialize out param
   *aCancel = PR_FALSE;
