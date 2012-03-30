@@ -76,11 +76,18 @@ function UnitHandler()
       return prev;
     }
     var factor = this.units[this.currentUnit].size/this.units[unit].size;
+    var limAttr;
     for (var i = 0, len = this.editFieldList.length; i < len; i++)
     {
       this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
-      this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places); 
-      this.editFieldList[i].value *= factor; 
+      this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places);
+      limAttr = this.editFieldList[i].getAttribute("min");
+      if (limAttr && (Number(limAttr) != Number.NaN))
+        this.editFieldList[i].setAttribute("min", String(Number(limAttr) * factor));
+      limAttr = this.editFieldList[i].getAttribute("max");
+      if (limAttr && (Number(limAttr) != Number.NaN))
+        this.editFieldList[i].setAttribute("max", String(Number(limAttr) * factor));
+      this.editFieldList[i].value *= factor;
     }
     this.currentUnit = unit;
     return prev;

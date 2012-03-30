@@ -53,6 +53,7 @@ var imageElement;
 var wrapperElement;
 var gDefaultWidth = 200;
 var gDefaultHeight = 100;
+var gDefaultUnit = "pt";
 var gOriginalSrc = "";
 var gHaveDocumentUrl = false;
 
@@ -176,7 +177,6 @@ function Startup()
 
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
-  gDefaultPlacement = GetStringPref("swp.defaultGraphicsPlacement");
 
   initFrameTab(frameTabDlg, wrapperElement, gInsertNewImage, imageElement);
   InitDialog();
@@ -246,6 +246,16 @@ function getSourceLocationFromElement(imageNode)
   return fileSrc;
 }
 
+function loadDefaultsFromPrefs()
+{
+  try
+  { gDefaultPlacement = GetStringPref("swp.defaultGraphicsPlacement"); }
+  catch(ex) {gDefaultPlacement = "inline"; dump("Exception getting pref swp.defaultGraphicsPlacement: " + ex + "\n");}
+  try
+  { gDefaultInlineOffset = GetStringPref("swp.defaultGraphicsInlineOffset"); }
+  catch(ex) {gDefaultInlineOffset = "0"; dump("Exception getting pref swp.defaultGraphicsInlineOffset: " + ex + "\n");}
+}
+
 // Set dialog widgets with attribute data
 // We get them from globalElement copy so this can be used
 //   by AdvancedEdit(), which is shared by all property dialogs
@@ -268,6 +278,9 @@ function InitImage()
 //  var height = msiInitPixelOrPercentMenulist(globalImage,
 //                    gInsertNewImage ? null : imageElement,
 //                    heightAtt, "heightUnitsMenulist", gPixel);
+
+  loadDefaultsFromPrefs();
+
   if (!gInsertNewImage)
   {
     // We found an element and don't need to insert one
@@ -329,14 +342,31 @@ function InitImage()
   }
   else
   {
-    var unit = GetStringPref("swp.defaultGraphicsSizeUnits");
-    if (unit && unit.length)
+    var defaultUnitStr, defaultWidthStr, defaultHeightStr;
+    try
+    {defaultUnitStr = GetStringPref("swp.defaultGraphicsSizeUnits");}
+    catch(ex) {defaultUnitStr = ""; dump("Exception getting pref swp.defaultGraphicsSizeUnits: " + ex + "\n");}
+    if (defaultUnitStr.length)
     {
-      frameUnitHandler.setCurrentUnit(unit);
-      frameTabDlg.frameUnitMenulist.value = unit;
+      gDefaultUnit = defaultUnitStr;
+      frameUnitHandler.setCurrentUnit(gDefaultUnit);
+      frameTabDlg.frameUnitMenulist.value = gDefaultUnit;
     }
-    width = Number(GetStringPref("swp.defaultGraphicsHSize"));
-    height = Number(GetStringPref("swp.defaultGraphicsVSize"));
+
+    try
+    {defaultWidthStr = GetStringPref("swp.defaultGraphicsHSize");}
+    catch(ex) {defaultWidthStr = ""; dump("Exception getting pref swp.defaultGraphicsHSize: " + ex + "\n");}
+    if (defaultWidthStr.length)
+      width = frameUnitHandler.getValueFromString( defaultWidthStr, gDefaultUnit );
+    gDefaultWidth = Math.round(frameUnitHandler.getValueAs(width, "px"));
+
+    try
+    {defaultHeightStr = GetStringPref("swp.defaultGraphicsVSize");}
+    catch(ex) {defaultHeightStr = ""; dump("Exception getting pref swp.defaultGraphicsVSize: " + ex + "\n");}
+    if (defaultHeightStr.length)
+      height = frameUnitHandler.getValueFromString( defaultHeightStr, gDefaultUnit );
+    gDefaultHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
+    
   }
 
   if ((width > 0) || (height > 0))
@@ -1421,10 +1451,14 @@ function PreviewImageLoaded()
       gDialog.ImageHolder.collapsed = false;
       setContentSize(gActualWidth, gActualHeight);
 
-      dump("Before setActualSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
-      if (frameTabDlg.actual.selected || bReset)
-        setActualSize();
+      dump("Before setActualOrDefaultSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
 
+      if (frameTabDlg.actual.selected || bReset)
+      {
+        setActualOrDefaultSize();
+      }
+
+      doDimensionEnabling();
       SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(frameTabDlg.widthInput.value,"px")), 
                       Math.round(frameUnitHandler.getValueAs(frameTabDlg.heightInput.value,"px")) );
     }
@@ -1620,10 +1654,85 @@ function readSizeFromPDFFile(pdfSrc)
       bReset = true;
     }
     if (frameTabDlg.actual.selected || bReset)
-      setActualSize();
+      setActualOrDefaultSize();
 
     SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(frameTabDlg.widthInput.value,"px")), 
                     Math.round(frameUnitHandler.getValueAs(frameTabDlg.heightInput.value,"px")) );
+  }
+}
+
+function setActualOrDefaultSize()
+{
+  var prefStr = "";
+  var bUseDefaultWidth, bUseDefaultHeight;
+  var width, height;
+  try {bUseDefaultWidth = GetBoolPref("swp.graphicsUseDefaultWidth");}
+  catch(ex) {bUseDefaultWidth = false; dump("Exception getting pref swp.graphicsUseDefaultWidth: " + ex + "\n");}
+
+  try {bUseDefaultHeight = GetBoolPref("swp.graphicsUseDefaultHeight");}
+  catch(ex) {bUseDefaultHeight = false; dump("Exception getting pref swp.graphicsUseDefaultHeight: " + ex + "\n");}
+
+  if (bUseDefaultWidth || bUseDefaultheight)
+  {
+    frameTabDlg.sizeRadioGroup.selectedItem = frameTabDlg.custom;
+    try {prefStr = GetStringPref("swp.defaultGraphicsSizeUnits");}
+    catch(ex) {prefStr = ""; dump("Exception getting pref swp.defaultGraphicsSizeUnits: " + ex + "\n");}
+    if (prefStr.length)
+      gDefaultUnit = prefStr;
+    frameUnitHandler.setCurrentUnit(gDefaultUnit);
+    frameTabDlg.frameUnitMenulist.value = gDefaultUnit;
+  }
+  if (bUseDefaultWidth)
+  {
+    frameTabDlg.autoWidthCheck.checked = false;
+    try {prefStr = GetStringPref("swp.defaultGraphicsHSize");}
+    catch(ex) {prefStr = ""; dump("Exception getting pref swp.defaultGraphicsHSize: " + ex + "\n");}
+    if (prefStr.length)
+    {
+      width = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
+      gDefaultWidth = Math.round(frameUnitHandler.getValueAs(width, "px"));
+      frameTabDlg.widthInput.value = width;
+    }
+    if (bUseDefaultHeight)
+    {
+      try {prefStr = GetStringPref("swp.defaultGraphicsVSize");}
+      catch(ex) {prefStr = ""; dump("Exception getting pref swp.defaultGraphicsVSize: " + ex + "\n");}
+      if (prefStr.length)
+      {
+        height = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
+        gDefaultHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
+      }
+      frameTabDlg.autoHeightCheck.checked = false;
+      frameTabDlg.constrainCheckbox.checked = false;
+      frameTabDlg.heightInput.value = height;
+    }
+    else
+    {
+      frameTabDlg.autoHeightCheck.checked = true;
+      frameTabDlg.constrainCheckbox.checked = true;
+      frameTabDlg.constrainCheckbox.disabled = false;
+      constrainProportions( "frameWidthInput", "frameHeightInput", null );
+    }
+  }
+  else if (bUseDefaultHeight)
+  {
+    try {prefStr = GetStringPref("swp.defaultGraphicsVSize");}
+    catch(ex) {prefStr = ""; dump("Exception getting pref swp.defaultGraphicsVSize: " + ex + "\n");}
+    if (prefStr.length)
+    {
+      height = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
+      gDefaultHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
+    }
+    frameTabDlg.autoWidthCheck.checked = true;
+    frameTabDlg.autoHeightCheck.checked = false;
+    frameTabDlg.constrainCheckbox.disabled = false;
+    frameTabDlg.constrainCheckbox.checked = true;
+    frameTabDlg.heightInput.value = height;
+    constrainProportions( "frameHeightInput", "frameWidthInput", null );
+  }
+  else
+  {
+    setActualSize();
   }
 }
 
