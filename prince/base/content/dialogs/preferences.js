@@ -148,7 +148,8 @@ function setGraphicLayoutPreferences(whichPrefs)
       setGraphicPlacementPreferences(placementIdsGraphics);
       pref = document.getElementById("defaultGraphicsSizeUnits");
       initUnitsControl( document.getElementById("graphicsUnitsList"), pref,
-                          [document.getElementById("graphicsWidth"), document.getElementById("graphicsHeight")] );
+                          [document.getElementById("graphicsWidth"), document.getElementById("graphicsHeight"),
+                           document.getElementById("graphicsInlineOffset")] );
       initColorWell("graphics.padding.CW");
       initColorWell("graphics.border.CW");
     break;
@@ -213,6 +214,8 @@ function writeGraphicLayoutPreferences(whichPrefs)
       pref.value = document.getElementById("graphicsHeight").value;
       pref = document.getElementById("defaultGraphicsSizeUnits");
       pref.value = document.getElementById("graphicsUnitsList").value;
+      pref = document.getElementById("defaultGraphicsInlineOffset");
+      pref.value = document.getElementById("graphicsInlineOffset").value;
     break;
     case "plot":
       writeGraphicPlacementPreferences(placementIdsPlot);
