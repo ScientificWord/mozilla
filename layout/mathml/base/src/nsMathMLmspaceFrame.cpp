@@ -44,6 +44,7 @@
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
+#include "nsMathCursorUtils.h"
 
 #include "nsMathMLmspaceFrame.h"
 
@@ -144,3 +145,55 @@ nsMathMLmspaceFrame::Reflow(nsPresContext*          aPresContext,
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
   return NS_OK;
 }
+
+
+nsresult
+nsMathMLmspaceFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
+    PRInt32 *_retval)
+{
+  printf("mspace EnterFromLeft, count = %d\n", count);
+
+  if (count > 0)
+  {
+    count = 0;
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  }
+
+
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmspaceFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("mspace EnterFromRight, count = %d\n", count);
+
+  if (count > 0)
+  {
+    count = 0;
+    PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  }
+
+  return NS_OK;  
+}
+
+                            
+nsresult
+nsMathMLmspaceFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("mspace MoveOutToRight, count = %d\n", count);
+  
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmspaceFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{                
+  printf("mspace MoveOutToLeft, count = %d\n", count);
+
+  return NS_OK;  
+}  
+
