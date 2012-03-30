@@ -5,6 +5,7 @@
 <!--JLF Confirm use with BBM -->
 <!ENTITY  inner						"Inner margin">
 <!ENTITY  inline					"In line">
+<!ENTITY  inlineOffset    "Offset to Bottom of Frame">
 <!ENTITY  display					"Displayed">
 <!ENTITY  floating				"Floating">
 <!ENTITY  outer						"Outer margin">
@@ -70,6 +71,7 @@
 <!ENTITY sizeTab.actualSize "Actual size">
 <!ENTITY sizeTab.custom "Custom">
 <!ENTITY sizeTab.auto "Auto">
+<!ENTITY sizeTab.default "Use default height or width">
 <!ENTITY sizeTab.rotateContents "Rotate contents">
 <!ENTITY sizeTab.rotate0 "None">
 <!ENTITY sizeTab.rotate90 "90 degrees CW">
