@@ -3091,6 +3091,11 @@ nsHTMLEditor::GetCellDataAt(nsIDOMElement* aTable, PRInt32 aRowIndex,
     // Get the selected table or the table enclosing the selection anchor
     nsCOMPtr<nsIDOMElement> table;
     res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), nsnull, getter_AddRefs(table));
+    if (!table) 
+	  {
+	     res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), aTable, getter_AddRefs(table));
+	     if (NS_FAILED(res)) return res;
+	  }
     if (NS_FAILED(res)) return res;
     if (table)
       aTable = table;
