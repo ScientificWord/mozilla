@@ -67,6 +67,8 @@
 #include "nsIDOMNodeList.h"
 #include "nsTArray.h"
 #include "nsMathMLFrame.h"
+#include "nsMathMLCursorMover.h"
+
 
 #include "nsISelectionListener.h"
 #include "nsIContentIterator.h"
@@ -1360,9 +1362,12 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
         isMath = PR_TRUE;
         tempFrame = frame;
         tempContent = do_QueryInterface(weakNodeUsed);
-        while ( tempFrame && (tempFrame->GetContent() != tempContent)) tempFrame = tempFrame->GetParent();
+        while ( tempFrame && (tempFrame->GetContent() != tempContent)) 
+          tempFrame = tempFrame->GetParent();
+
         // look for msi input box
         if (tempFrame && tempFrame->GetParent()) {
+   
           nsIContent* pContent = tempFrame -> GetParent() -> GetContent();
           if (pContent ->Tag() == nsGkAtoms::mi_)
           {
@@ -1371,7 +1376,31 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
               nsAutoString tempinput;
               mielt->GetAttribute(NS_LITERAL_STRING("tempinput"), tempinput);
               if (tempinput.EqualsLiteral("true") ){
-                int i = 0;
+                 // found msi input box
+
+                 nsIFrame* miFrame = tempFrame->GetParent();
+                 nsCOMPtr<nsIMathMLCursorMover> pMathCM;
+                 pMathCM = do_QueryInterface(miFrame);
+                 nsIFrame* outFrame;
+                 PRInt32  outOffset;
+                 PRInt32 count = 1;
+                 PRBool  fBailing;
+
+                 if (pMathCM && aKeycode == nsIDOMKeyEvent::DOM_VK_LEFT){
+                     
+                     pMathCM->MoveOutToLeft(miFrame, &outFrame, &outOffset, count, &fBailing, &count);
+                     TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
+
+                     return NS_OK;
+
+                 } else if (pMathCM && aKeycode == nsIDOMKeyEvent::DOM_VK_RIGHT){
+                     
+                     pMathCM->MoveOutToRight(miFrame, &outFrame, &outOffset, count, &fBailing, &count);
+                     TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
+                     
+                     return NS_OK;
+                 }
+                 
               }
             }
 

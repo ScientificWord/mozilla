@@ -5382,7 +5382,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   // Mozilla uses; that means it is a leaf. For mathematics, we need to check to see if we should instead
   // choose a parent of this frame.
   //  printf("Moving to a new frame; check to see if we are in math\n");
-  nsIFrame* pFrame = IsMathFrame(this)?this:nsnull;  // will succeed if "this" is a math frame.
+  nsIFrame* pFrame = IsMathFrame(this) ? this : nsnull;  // will succeed if "this" is a math frame.
   nsIFrame* pFrameChild;
   nsIFrame * pChild;
   nsIFrame * pLastChild = nsnull;
