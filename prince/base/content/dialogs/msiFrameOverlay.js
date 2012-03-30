@@ -22,6 +22,7 @@ var gConstrainHeight = 0;
 var gActualWidth = 0;
 var gActualHeight = 0;
 var gDefaultPlacement = "";
+var gDefaultInlineOffset = "";
 
 function setHasNaturalSize(istrue)
 // images frequently have a natural size
@@ -81,7 +82,7 @@ function updateMetrics()
 		sub = metrics.margin;		
 	  sub.top =    Dg.marginInput.top.value;
 		sub.right =  Dg.marginInput.right.value; 
-		sub.bottom = Dg.marginInput.bottom.value; 
+		sub.bottom = Dg.marginInput.bottom.value;
 		sub.left =   Dg.marginInput.left.value;
 		if (position == 0)
 		{
@@ -168,6 +169,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
   dg.textAlignment				= document.getElementById("textAlignment");
   dg.rotationList					= document.getElementById("rotationList");
   dg.placementRadioGroup  = document.getElementById("placementRadioGroup");
+  dg.inlineOffsetInput    = document.getElementById("frameInlineOffsetInput");
   dg.placeForceHereCheck  = document.getElementById("placeForceHereCheck");
   dg.placeHereCheck       = document.getElementById("placeHereCheck");
   dg.placeFloatsCheck     = document.getElementById("placeFloatsCheck");
@@ -186,11 +188,13 @@ function initFrameTab(dg, element, newElement, contentsElement)
   }
   fieldList.push(dg.heightInput);
   fieldList.push(dg.widthInput);
+  fieldList.push(dg.inlineOffsetInput);
   frameUnitHandler.setEditFieldList(fieldList);
 	frameUnitHandler.initCurrentUnit(dg.frameUnitMenulist.value);
 // The defaults for the document are set by the XUL document, modified by persist attributes. If there is
 // no pre-existing frame object, the dg is set to go.
   var placeLocation, placementStr, pos;
+  var inlineOffset = 0;
   if (!newElement)
   {   // we need to initialize the dg from the frame element
     if (!contentsElement)
@@ -237,6 +241,13 @@ function initFrameTab(dg, element, newElement, contentsElement)
     {
       msidump(e.message);
     }
+
+    pos = element.getAttribute("pos");
+    if (!pos)
+      pos = "";
+    if ((pos=="inline") && element.hasAttribute("inlineOffset"))
+      inlineOffset = frameUnitHandler.getValueFromString( element.getAttribute("inlineOffset") );
+
     if (gFrameModeImage) 
 		{
 		  placement = element.getAttribute("placement");
@@ -269,6 +280,8 @@ function initFrameTab(dg, element, newElement, contentsElement)
 	    values = [0,0,0,0];
 	    if (element.hasAttribute(marginAtt))
 	      { values = parseLengths(element.getAttribute(marginAtt));}
+      if (inlineOffset > 0)
+        values[2] -= inlineOffset;  //NOTE! InlineOffset is added into the bottom margin property of an inline frame if it's positive. rwa
 	    for (i = 0; i<4; i++)
 	      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
 	    values = [0,0,0,0];
@@ -288,9 +301,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
     placementStr = element.getAttribute("placement");
     if (!placementStr)
       placementStr = "";
-    pos = element.getAttribute("pos");
-    if (!pos)
-      pos = "";
 
     var theColor;
     if (contentsElement.hasAttribute("border-color"))
@@ -304,19 +314,24 @@ function initFrameTab(dg, element, newElement, contentsElement)
       setColorInDialog("bgcolorWell", theColor);
     }
   }
-  else if (gDefaultPlacement.length)
+  else  //so it is a new element
   {
-    var defPlacementArray = gDefaultPlacement.split(",");
-    if (defPlacementArray.length)
+    if (gDefaultPlacement.length)
     {
-      pos = TrimString(defPlacementArray[0]);
-      if (defPlacementArray.length > 1)
+      var defPlacementArray = gDefaultPlacement.split(",");
+      if (defPlacementArray.length)
       {
-        placeLocation = TrimString(defPlacementArray[1]);
-        if (defPlacementArray.length > 2)
-          placementStr = TrimString(defPlacementArray[2]);
+        pos = TrimString(defPlacementArray[0]);
+        if (defPlacementArray.length > 1)
+        {
+          placeLocation = TrimString(defPlacementArray[1]);
+          if (defPlacementArray.length > 2)
+            placementStr = TrimString(defPlacementArray[2]);
+        }
       }
     }
+    if (gDefaultInlineOffset.length)
+      inlineOffset = frameUnitHandler.getValueFromString( gDefaultInlineOffset );
   }
 
   if (!newElement || gDefaultPlacement.length)
@@ -344,6 +359,10 @@ function initFrameTab(dg, element, newElement, contentsElement)
       }
       
       dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
+      if (pos == "inline")
+      {
+        dg.inlineOffsetInput.value= inlineOffset;
+      }
     }
     catch(e)
     {
@@ -661,6 +680,7 @@ function enableFloating( )
 {
   var broadcaster = document.getElementById("floatingPlacement");
   var theValue = "true";
+  var bEnableInlineOffset = false;
   if (document.getElementById('float').selected)
  	{
 		theValue = "false";
@@ -675,7 +695,11 @@ function enableFloating( )
 	  updateDiagram("margin");
 	} 
 	else if (document.getElementById('inline').selected)
+  {
 		updateDiagram("margin");
+    bEnableInlineOffset = true;
+  }
+  showHideControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
 }
 
 /************************************/
@@ -739,8 +763,11 @@ function setWidthAndHeight(width, height, event)
     constrainProportions( "frameWidthInput", "frameHeightInput", event );
   else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
     constrainProportions( "frameHeightInput", "frameWidthInput", event );
-	if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
-	if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
+  if (!gFrameModeImage)
+  {
+	  if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
+	  if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
+  }
 }
 
 function setContentSize(width, height)  
@@ -843,6 +870,8 @@ function setFrameAttributes(frameNode, contentsNode)
 	}
   //frameNode.setAttribute("req", "ragged2e");
   msiRequirePackage(gFrameTab.editorElement, "ragged2e", null);
+
+  var inlineOffsetNum = getInlineOffset("px");  //returns 0 unless inline position is chosen!
   if (gFrameModeImage) {
     var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
     msiEditorEnsureElementAttribute(frameNode, "sidemargin", sidemargin, editor);
@@ -853,6 +882,8 @@ function setFrameAttributes(frameNode, contentsNode)
 		var marginArray = [];
 		marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
 		marginArray[2] = marginArray[0];
+    if (inlineOffsetNum > 0)
+      marginArray[2] += inlineOffsetNum;
 		if (position == 1) //left
 		{
 			if (overhang < 0) marginArray[3] = -frameUnitHandler.getValueAs(overhang,"px");
@@ -879,7 +910,17 @@ function setFrameAttributes(frameNode, contentsNode)
   }
   else 
 	{
-    var style = getCompositeMeasurement("margin","px", true);
+    var style = "";
+    if (inlineOffsetNum > 0)
+    {
+      style = getSingleMeasurement("margin", "Top", "px", true);
+      style += " " + getSingleMeasurement("margin", "Right", "px", true);
+      var bottomMargin = getSingleMeasurement("margin", "Bottom", "px", false);
+      style += " " + String( Number(bottomMargin) + inlineOffsetNum ) + "px ";
+      style += getSingleMeasurement("margin", "Left", "px", true);
+    }
+    else
+      style = getCompositeMeasurement("margin","px", true);
     setStyleAttributeOnNode(frameNode, "margin", style, editor);
     msiEditorEnsureElementAttribute(frameNode, "margin", getCompositeMeasurement("margin", metrics.unit, false), editor);
 	}  
@@ -947,6 +988,26 @@ function setFrameAttributes(frameNode, contentsNode)
   // some experimentation here.
   if (posid !=='inline') {
      msiRequirePackage(gFrameTab.editorElement, "boxedminipage", "");
+  }
+  else
+  {
+    if (inlineOffsetNum != 0)
+    {
+      inlineOffset = frameUnitHandler.getValueString( gFrameTab.inlineOffsetInput.value );
+      msiEditorEnsureElementAttribute(frameNode, "inlineOffset", inlineOffset, editor);
+      if (inlineOffset[0] == '-')
+        inlineOffset = inlineOffset.substring(1);
+      else
+        inlineOffset = "-" + inlineOffset;
+	    setStyleAttributeOnNode(frameNode, "position", "relative", editor);
+	    setStyleAttributeOnNode(frameNode, "bottom", inlineOffset, editor);
+    }
+    else
+    {
+      msiEditorEnsureElementAttribute(frameNode, "inlineOffset", null, editor);
+      removeStyleAttributeFamilyOnNode(frameNode, "position", editor);
+      removeStyleAttributeFamilyOnNode(frameNode, "bottom", editor);
+    }
   }
   if (posid === "float")
   {
@@ -1065,6 +1126,15 @@ function frameWidthChanged(input, event)
   redrawDiagram();
 }
 
+function getInlineOffset(whichUnit)
+{
+  if (!whichUnit)
+    whichUnit = frameUnitHandler.currentUnit;
+  if (Dg.placementRadioGroup.selectedIndex == 0)  //inline
+    return frameUnitHandler.getValueAs(Dg.inlineOffsetInput.value, whichUnit);
+  return 0;
+}
+
 function setDisabled(checkbox,id)
 {
 	var textbox = document.getElementById(id);
@@ -1161,7 +1231,7 @@ function doDimensionEnabling()
 
   SetElementEnabledById( "unitList", enable );
 
-  var constrainEnable = enable ;
+  var constrainEnable = enable;
 //         && ( gDialog.widthUnitsMenulist.selectedIndex == 0 )
 //         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
 

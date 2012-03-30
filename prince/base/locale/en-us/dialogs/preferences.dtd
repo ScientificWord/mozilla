@@ -349,6 +349,8 @@
 <!ENTITY DefaultSizeNewGraphics.label "Default Size for New Graphics">
 <!ENTITY DefaultSizeNewGraphicsWidth.label "Width">
 <!ENTITY DefaultSizeNewGraphicsHeight.label "Height">
+<!ENTITY useDefaultWidthCheck.label "Use Default Width for New Graphic">
+<!ENTITY useDefaultHeightCheck.label "Use Default Height for New Graphic">
 <!ENTITY DefaultPlacementNewGraphics.label "Default Placement for New Graphics">
 <!ENTITY DefaultPlacementNewGraphicsInline.label  "In line">
 <!ENTITY DefaultPlacementNewGraphicsDisplayed.label "Displayed">
@@ -370,6 +372,7 @@
 <!ENTITY DefaultSizeNewPlotsHeight.label  "Height">
 <!ENTITY DefaultPlacementNewPlots.label "Default Placement for New Plots">
 <!ENTITY DefaultPlacementNewPlotsInline.label  "In line">
+<!ENTITY DefaultNewGraphicsInlineOffset.label "Default Vertical Offset for Inline Graphics">
 <!ENTITY DefaultPlacementNewPlotsDisplayed.label "Displayed">
 <!ENTITY DefaultPlacementNewPlotsFloating.label  "Floating">
 

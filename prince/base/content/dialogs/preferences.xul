@@ -49,8 +49,17 @@
       <preference id="defaultGraphicsSizeUnits" 
                   name="swp.defaultGraphicsSizeUnits" 
                   type="string"/>
+      <preference id="graphicUseDefaultWidth"
+                  name="swp.graphicsUseDefaultWidth"
+                  type="bool"/>
+      <preference id="graphicUseDefaultHeight"
+                  name="swp.graphicsUseDefaultHeight"
+                  type="bool"/>
       <preference id="defaultGraphicsPlacement" 
                   name="swp.defaultGraphicsPlacement" 
+                  type="string"/>
+      <preference id="defaultGraphicsInlineOffset" 
+                  name="swp.defaultGraphicsInlineOffset" 
                   type="string"/>
       <preference id="defaultGraphicsFloatLocation.forceHere"
                   name="swp.defaultGraphicsFloatLocation.forceHere"
@@ -505,6 +514,12 @@
                   </menupopup>
                 </menulist>
               </vbox>
+              <vbox>
+                <checkbox id="useDefaultWidthCheck" label="&useDefaultWidthCheck.label;"
+                  preference="graphicUseDefaultWidth"/>
+                <checkbox id="useDefaultHeightCheck" label="&useDefaultHeightCheck.label;"
+                  preference="graphicUseDefaultHeight"/>
+              </vbox>
             </hbox>
           </groupbox>
           <groupbox>
@@ -513,6 +528,8 @@
             <hbox flex="1">
               <vbox>
                 <radio id="inline" value="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
+                <label value="&DefaultNewGraphicsInlineOffset.label;"/>
+                <textbox id="graphicsInlineOffset" type="number" decimalplaces="2" preference="defaultGraphicsInlineOffset" style="width: 5em;"/>
               </vbox>
               <vbox>
                 <radio id="display" value="display" label="&DefaultPlacementNewGraphicsDisplayed.label;" radioGroup="placementRadioGroup"/>
