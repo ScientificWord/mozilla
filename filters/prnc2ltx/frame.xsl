@@ -44,6 +44,14 @@
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+  <xsl:variable name="inlineOffset">
+    <xsl:choose>
+      <xsl:when test="(@pos='inline') and (@inlineOffset) and (number(@inlineOffset)!=0)">
+        <xsl:value-of select="-number(@inlineOffset)"/><xsl:value-of select="$units"/>
+      </xsl:when>
+      <xsl:otherwise></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="floatsonside">
     <xsl:choose>
       <xsl:when test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">1</xsl:when>
@@ -59,7 +67,7 @@
   <xsl:variable name="captionloc">
     <xsl:choose>
       <xsl:when test="(html:imagecaption[1]) and (@captionloc='above')">1</xsl:when>
-      <xsl:when test="(html:imagecaption[1]) and (@captionloc='below')">0</xsl:when>
+      <xsl:when test="(html:imagecaption[1]) and (@captionloc='below')">2</xsl:when>
       <!-- <xsl:otherwise></xsl:otherwise> -->
     </xsl:choose>
   </xsl:variable>
@@ -70,7 +78,8 @@
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="needminipage" select="0"/>
-	<xsl:if test="$limitframemetrics=1">{				
+  <xsl:if test="$inlineOffset and string-length($inlineOffset)">\raisebox{<xsl:value-of select="$inlineOffset"/>}{</xsl:if>
+	<xsl:if test="$limitframemetrics=1"><xsl:if test="not($inlineOffset) or not(string-length($inlineOffset))">{</xsl:if>
     <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/>
       <xsl:value-of select="$units"/>}
     </xsl:if>
@@ -107,7 +116,7 @@
     <xsl:when test="$floatcenter=1">\begin{figure}[<xsl:value-of select="@placeLocation"/>]</xsl:when>
     <xsl:when test="$isdisplay=1">\begin{center}</xsl:when>
     <xsl:when test="(@pos='inline') and (@frametype='image')">
-    {\parbox[t]{<xsl:value-of select="$width"/><xsl:value-of select="$units"/>}{ %
+    {\parbox[b]{<xsl:value-of select="$width"/><xsl:value-of select="$units"/>}{ %
 \begin{center}
     </xsl:when>
   </xsl:choose>
@@ -119,7 +128,6 @@
       <xsl:otherwise>\\</xsl:otherwise>
     </xsl:choose>
   </xsl:if>
-  <!-- <xsl:apply-templates mode="contents" select="html:object[1]"/> -->
   <xsl:if test="@rotation='rot90'">\begin{turn}{-90}</xsl:if>
   <xsl:if test="@rotation='rot270'">\begin{turn}{90}</xsl:if>{ 
   <xsl:if test="$usecolor=1">\fcolorbox
@@ -147,17 +155,24 @@
     </xsl:choose><xsl:value-of select="$units"/>} %
   </xsl:if>
   <xsl:choose>
-    <xsl:when test="@textalignment='center'">\centering</xsl:when>
+    <xsl:when test="@textalignment='center'">\centering </xsl:when>
     <xsl:when test="@textalignment='left'">\begin{FlushLeft}</xsl:when>
     <xsl:when test="@textalignment='right'">\begin{FlushRight}</xsl:when>
   </xsl:choose>
-  <xsl:apply-templates/>
+  <xsl:choose>
+    <xsl:when test="@frametype='image'">
+      <xsl:apply-templates mode="contents" select="html:object[1]"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates/>
+    </xsl:otherwise>
+  </xsl:choose>
   <!-- Now back out putting in \end{environment} or } as necessary -->
   <xsl:choose>
     <xsl:when test="@textalignment='left'">\end{FlushLeft}</xsl:when>
     <xsl:when test="@textalignment='right'">\end{FlushRight}</xsl:when>
   </xsl:choose>
-  <xsl:if test="$captionloc=0">
+  <xsl:if test="$captionloc=2">
     <xsl:if test="@pos='float'">\caption{</xsl:if>
     <xsl:apply-templates select="html:imagecaption[1]" mode="caption"/>
     <xsl:choose>
@@ -175,8 +190,8 @@
     <xsl:when test="$isdisplay=1">\end{center}</xsl:when>
     <xsl:when test="$floatcenter=1">\end{figure}</xsl:when>
     <xsl:when test="$floatsonside=1">\end{wrapfigure} </xsl:when>   
-  </xsl:choose>  
-  <xsl:if test="$limitframemetrics=1">}</xsl:if> 
+  </xsl:choose>
+  <xsl:if test="($limitframemetrics=1) or ($inlineOffset and string-length($inlineOffset))">}</xsl:if> 
 </xsl:template>
 		  
 </xsl:stylesheet>
