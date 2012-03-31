@@ -11914,10 +11914,12 @@ function getEventParentByTag( event, tagname)
 
 
 
-function writeStringAsFile( str, file )
+function writeStringAsFile( str, file, mode )
 {
+  if (!mode)
+    mode = -1;
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(file, -1, -1, false);
+  fos.init(file, -1, mode, false);
   var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
     .createInstance(Components.interfaces.nsIConverterOutputStream);
   os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
