@@ -1338,7 +1338,7 @@ function prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, 
   //  var commandFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   //  commandFile.initWithPath(commandFilePath);
     if (commandFile.exists()) commandFile.remove(false);
-    writeStringAsFile( outStr, commandFile );
+    writeStringAsFile( outStr, commandFile, 0755 );
   }
   catch(exc) {dump("Exception in msiEdImageProps.js, prepareImport: [" + exc + "]\n"); return null;}
   if (!commandFile.exists())
