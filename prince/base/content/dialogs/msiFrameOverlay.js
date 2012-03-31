@@ -246,7 +246,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
     if (!pos)
       pos = "";
     if ((pos=="inline") && element.hasAttribute("inlineOffset"))
-      inlineOffset = frameUnitHandler.getValueFromString( element.getAttribute("inlineOffset") );
+      inlineOffset = frameUnitHandler.getValueFromString( element.getAttribute("inlineOffset"), frameUnitHandler.currentUnit );
 
     if (gFrameModeImage) 
 		{
@@ -993,14 +993,12 @@ function setFrameAttributes(frameNode, contentsNode)
   {
     if (inlineOffsetNum != 0)
     {
-      inlineOffset = frameUnitHandler.getValueString( gFrameTab.inlineOffsetInput.value );
-      msiEditorEnsureElementAttribute(frameNode, "inlineOffset", inlineOffset, editor);
-      if (inlineOffset[0] == '-')
-        inlineOffset = inlineOffset.substring(1);
-      else
-        inlineOffset = "-" + inlineOffset;
+      inlineOffset = Number(gFrameTab.inlineOffsetInput.value);
+      var inlineOffsetStr = String(inlineOffset);
+      msiEditorEnsureElementAttribute(frameNode, "inlineOffset", inlineOffsetStr, editor);
+      inlineOffsetStr = String(-inlineOffset) + frameUnitHandler.currentUnit;
 	    setStyleAttributeOnNode(frameNode, "position", "relative", editor);
-	    setStyleAttributeOnNode(frameNode, "bottom", inlineOffset, editor);
+	    setStyleAttributeOnNode(frameNode, "bottom", inlineOffsetStr, editor);
     }
     else
     {
