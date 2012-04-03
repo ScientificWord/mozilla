@@ -150,10 +150,11 @@ var msiToggleMathText =
 			togglekey = "t";
 		if (aCommand == "cmd_MSImathtextButton" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
 		{
-	    if (this.currentState() == "t")
-				insertinlinemath();
-      else
-	      toggleMathText(editor);
+      toggleMathText(editor);
+	    //if (this.currentState() == "t")
+			//	insertinlinemath();
+     
+	    
 			editorElement.contentWindow.focus();
 		}
     return;
