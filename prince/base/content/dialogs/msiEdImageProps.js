@@ -1271,7 +1271,7 @@ function fixCommandFileLine(aLine, substitutions, bIsUnix)
       }
     }
     if (bIsUnix)
-      retLine = retLine.replace(unixRE,"{$$$1}");
+      retLine = retLine.replace(unixRE,"$${$1}");
   }
   return retLine;
 };
@@ -1672,7 +1672,7 @@ function setActualOrDefaultSize()
   try {bUseDefaultHeight = GetBoolPref("swp.graphicsUseDefaultHeight");}
   catch(ex) {bUseDefaultHeight = false; dump("Exception getting pref swp.graphicsUseDefaultHeight: " + ex + "\n");}
 
-  if (bUseDefaultWidth || bUseDefaultheight)
+  if (bUseDefaultWidth || bUseDefaultHeight)
   {
     frameTabDlg.sizeRadioGroup.selectedItem = frameTabDlg.custom;
     try {prefStr = GetStringPref("swp.defaultGraphicsSizeUnits");}
