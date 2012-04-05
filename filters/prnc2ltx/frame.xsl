@@ -60,7 +60,7 @@
   </xsl:variable>
   <xsl:variable name="floatcenter">
     <xsl:choose>
-      <xsl:when test="@pos='float' and ((@placement='full') or ((@placeLocation !='h') and (@placeLocation !='H')))">1</xsl:when>
+      <xsl:when test="@pos='float' and ((@placement='full') or (@placement='f') or ((@placeLocation !='h') and (@placeLocation !='H')))">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -173,7 +173,10 @@
     <xsl:when test="@textalignment='right'">\end{FlushRight}</xsl:when>
   </xsl:choose>
   <xsl:if test="$captionloc=2">
-    <xsl:if test="@pos='float'">\caption{</xsl:if>
+    <xsl:choose>
+      <xsl:when test="@pos='float'">\caption{</xsl:when>
+      <xsl:otherwise>\\ </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates select="html:imagecaption[1]" mode="caption"/>
     <xsl:choose>
       <xsl:when test="@pos='float'">}</xsl:when>
