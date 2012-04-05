@@ -8276,7 +8276,7 @@ var msiColorPropertiesCommand =
     try
     {
       var theWindow = msiGetWindowContainingEditor(editorElement);
-      theWindow.openDialog("chrome://editor/content/EdColorProps.xul","colorprops", "chrome,close,titlebar,modal", ""); 
+      theWindow.openDialog("chrome://editor/content/EdColorProps.xul","colorprops", "chrome,close,resizable,titlebar,modal", ""); 
 //      UpdateDefaultColors(); 
 			msiGetEditor(editorElement).incrementModificationCount(1);
       msiUpdateDefaultColors(editorElement);
@@ -9574,7 +9574,7 @@ var msiConvertToTable =
       if (this.isCommandEnabled())
       {
         var theWindow = msiGetWindowContainingEditor(editorElement);
-        window.openDialog("chrome://editor/content/EdConvertToTable.xul","converttotable", "chrome,close,titlebar,modal");
+        window.openDialog("chrome://editor/content/EdConvertToTable.xul","converttotable", "chrome,close,resizable,titlebar,modal");
   			msiGetEditor(editorElement).incrementModificationCount(1);
       }
       if (editorElement)

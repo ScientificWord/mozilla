@@ -21,7 +21,7 @@ function Package()
     };
   this.setOptions = function(optionArray)
     {
-      this.packageOptions = optionArray;
+      this.opt = optionArray;
     };
   this.getOptionsStr = function()
     {
@@ -86,7 +86,7 @@ function findPackageByName(packageList, packageName)
   var theIndex = -1;
   for (var i = 0; i < packageList.length; ++i)
   {
-    if (packageList[i].packageName == packageName)
+    if (packageList[i].pkg == packageName)
     {
       theIndex = i;
       break;

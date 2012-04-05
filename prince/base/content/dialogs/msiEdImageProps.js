@@ -1195,7 +1195,7 @@ var importTimerHandler =
 
 function launchConvertingDialog(importData)
 {
-  window.openDialog("chrome://prince/content/msiGraphicsConversionDlg.xul", "graphicsConversionRunning", "chrome,close,titlebar,modal", importData);
+  window.openDialog("chrome://prince/content/msiGraphicsConversionDlg.xul", "graphicsConversionRunning", "chrome,close,resizable,titlebar,modal", importData);
   //Then collect data the dialog may have changed (notably if the user cancelled the conversion)
 //  importTimerHandler.importProcess = importData.mImportProcess;
 //  importTimerHandler.texImportProcess = importData.mTexImportProcess;
