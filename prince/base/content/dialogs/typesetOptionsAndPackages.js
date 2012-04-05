@@ -1,58 +1,124 @@
-// Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+ // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
 var gBodyElement;
 
 const emptyElementStr=" ";
 
-//const mmlns    = "http://www.w3.org/1998/Math/MathML";
-//const xhtmlns  = "http://www.w3.org/1999/xhtml";
-
 var data;
 
-// dialog initialization code
+function fillUsedPackagesList(strResult, objArray) {
+  var obj;
+  var lineArray=[];
+  var fieldArray=[];
+  var pkg;
+  lineArray = strResult.split(/\n/);
+  var i, j;
+  var addobj;
+  var optstring;
+  var optarray;
+  for (i = 0; i < lineArray.length; i++) {
+    fieldArray = lineArray[i].split(/;\s*/);
+    if (fieldArray.length < 4) break;
+    var o = objArray.filter(function (x) { return x.pkg===fieldArray[1];})[0];
+    if (o) {
+      obj = o;
+      addobj = false;
+    } else {
+      obj={usedby: [], pkg: "", opt: [], pri: NaN};
+      obj.pkg = fieldArray[1];
+      addobj = true;
+    } 
+    if (fieldArray[2].length > 0) {
+      optstring = fieldArray[2];
+      optarray = optstring.split(/\s*,\s*/,"g");
+      if (optstring.length > 0 && optarray.length === 0) {
+        obj.opt.push(optstring);
+      }
+      else for (j = 0; j < optarray.length; j++) {
+        obj.opt.push(optarray[j]);
+      }
+    }
+    if (fieldArray[3] && !isNaN(Number(fieldArray[3])))
+    {
+      if (isNaN(obj.pri)) {
+        obj.pri = fieldArray[3];
+      }
+      else {
+        obj.pri = Math.min(obj.pri, Number(fieldArray[3]));
+      }
+    }
+    obj.usedby.push(fieldArray[0]);
+    if (addobj) objArray.push(obj);
+  }
+}
+
 function Startup()
 {
-//  var editor = GetCurrentEditor();
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
     return;
   }
+  var princedoc = editorElement.contentDocument;
 
   doSetOKCancel(onAccept, onCancel);
+  var xsltPath = "chrome://prince/content/optionspackages.xsl";
+  var xslString;
+  var strResult = "";
+  var xsltProcessor = new XSLTProcessor();
+  var request = new XMLHttpRequest();
+  var attlist, colist, i, str;
+  request.open("GET", xsltPath, false); 
+  request.send(null);
+  // print the name of the root element or error message
+  var xslString = request.responseText;
+
+  try{
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(xslString, "text/xml");
+    xsltProcessor.importStylesheet(doc);
+    var newDoc = xsltProcessor.transformToDocument(princedoc);
+    strResult = newDoc.documentElement.textContent || "";
+  }
+  catch (e)
+  {
+    msidump(e.message);
+  }
+  // strResult is a series of lines, each of which looks like
+  // <tag>, <required package>, <options>, <priority>
+  var packageList=[];
+  var docClassElement;
+  fillUsedPackagesList(strResult, packageList);
   data = window.arguments[0];
   data.Cancel = false;
-  gDialog.docClassName = data.docClassName;
-  var classOptStr = "";
-  if (data.docClassOptions)
-    classOptStr = data.docClassOptions;
-  gDialog.docClassOptions = classOptStr.split(/\,\s*/);
-  gDialog.packages = new Array();
-  gDialog.packagesAdded = new Array();
-  for (var i = 0; i < data.packages.length; ++i)
-  {
-    gDialog.packages[i] = new Package();
-    gDialog.packages[i].packageName = data.packages[i].packageName;
-    gDialog.packages[i].priority = data.packages[i].packagePriority;
-    gDialog.packages[i].setOptionsFromStr(data.packages[i].packageOptions);
+  docClassElement = princedoc.documentElement.getElementsByTagName("documentclass")[0];
+  gDialog.docClassName = docClassElement.getAttribute("class");
+  gDialog.docClassOptions = [];
+  colist = princedoc.documentElement.getElementsByTagName("colist");
+  if (colist && colist.length >= 1) {
+    attlist = colist[0].attributes;
+    str = "";
+    for (i = 0; i < attlist.length; i++) {
+      att = attlist[i];
+      if (att.value && att.value.length > 0) {
+        gDialog.docClassOptions.push(att.value);
+      }
+    }
   }
+  gDialog.packages = packageList;
+  gDialog.packagesAdded = [];
   gDialog.packages.sort(comparePackagesByPriority);
 
   gDialog.globalLaTeXData = { packages : ReadInPackagesData("chrome://user/content/classes.pkg", gDialog.docClassName),
                               classOptions : ReadInOptionData("chrome://user/content/classes.opt", [gDialog.docClassName])[gDialog.docClassName] };
-//  gDialog.globalLaTeXData = new Object();
-
   gDialog.globalLaTeXData.packageOptions = ReadInOptionData("chrome://user/content/packgs.opt", gDialog.globalLaTeXData.packages);
-
-//  gDialog.packages = data.packages;  //this should be an array of objects; each object will have a package name and an array of options (strings)
 
   gDialog.packagesInUseListbox = document.getElementById("packagesInUseListbox");
   gDialog.currentPackageDescription = document.getElementById("currentPackageDescription");
   gDialog.descCaptionTemplate = document.getElementById("currentPackageDescriptionCaption").label;
 
   InitDialog();
-
 //  document.getElementById("modifyButton").focus();
   msiSetInitialDialogFocus(document.getElementById("modifyButton"));
 
@@ -83,6 +149,62 @@ function InitDialog()
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
+function getOptionNameMap()
+{
+  var obj = new Object();
+  obj["orientation"] = "pgorient";
+  obj["paper size"] = "papersize";
+  obj["print side"] = "sides";
+  obj["quality"] = "qual";
+  obj["columns"] = "columns";
+  obj["title page"] = "titlepage";
+  obj["body text point size"] = "textsize";
+  obj["equation numbering"] = "eqnnopos";
+  obj["displayed equations"] = "eqnpos";
+  obj["bibliography style"] = "bibstyle";
+  return obj;
+}
+
+function addOptionNames(arr, docclass)
+{ // we use the classes.opt file to map from an option name to the attribute name
+  var i, n, name, counter;
+  var returnArray=[];
+  var request = new XMLHttpRequest();
+  request.open("GET", "chrome://user/content/classes.opt", false); 
+  request.send(null);
+  // print the name of the root element or error message
+  var optfile = request.responseText;
+  var regex1 = new RegExp("\\["+docclass+"\\]([^\\[]*)"); // selects the [classname] block
+  var match = regex1.exec(optfile);
+  if (match.length > 1) {
+    optfile = match[1];
+  }
+  else {return null;} // document class not found
+  var optNameMap = getOptionNameMap();
+  counter=0;
+  for (i = 0; i < arr.length; i++) {
+    var regex2 = new RegExp("(^\\d+).*,\\s*"+arr[i]+"\\s*$","m");
+    match = regex2.exec(optfile);
+    if (match.length > 1) {
+      n = match[1];
+      // now look for header line: "n=<attribute name>"
+    }
+    var regex3 = new RegExp("^"+n+"=(.*)\s*$","m");
+    match = regex3.exec(optfile);
+    if (match.length > 1) {
+      nm = (match[1].toLowerCase());
+      if (optNameMap[nm]) {
+        nm = optNameMap[nm];
+      }
+      else {
+        nm = "option" + count++;
+      }
+      returnArray.push(nm+"="+arr[i]); 
+    }
+  }
+  return returnArray;
+}
+
 function onAccept()
 {
   modifyPackagePriorities();
@@ -91,12 +213,12 @@ function onAccept()
   for (var i = 0; i < gDialog.packages.length; ++i)
   {
     data.packages[i] = new Object();
-    data.packages[i].packageName = gDialog.packages[i].packageName;
-    data.packages[i].packageOptions = gDialog.packages[i].packageOptions.join(",");
-    if ("packagePriority" in gDialog.packages[i])
-      data.packages[i].packagePriority = gDialog.packages[i].packagePriority;
+    data.packages[i].packageName = gDialog.packages[i].pkg;
+    data.packages[i].packageOptions = gDialog.packages[i].opt.join(",");
+    if ("pri" in gDialog.packages[i])
+      data.packages[i].packagePriority = gDialog.packages[i].pri;
   }
-  data.docClassOptions = gDialog.docClassOptions.join(",");
+  data.docClassOptions = addOptionNames(gDialog.docClassOptions, gDialog.docClassName);
 
   var parentEditorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
@@ -129,20 +251,20 @@ function setDocumentClassDescription(className)
 
 function goNative()
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
   var packagesData = new Object();
   packagesData.packages = gDialog.packages;
-  window.openDialog("chrome://prince/content/typesetNativePackages.xul", "nativepackages", "chrome,close,titlebar,modal", packagesData);
+  window.openDialog("chrome://prince/content/typesetNativePackages.xul", "nativepackages", "chrome,close,titlebar,resizable,modal", packagesData);
   if (!packagesData.Cancel)
   {
     gDialog.packages = packagesData.packages;
-  }
-  else {
 		msiGetEditor(editorElement).incrementModificationCount(1);
-	}
+  }
 }
 
 function doModifyDialog()
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
   var classOptionData = new Object();
   classOptionData.isPackage = false;
   classOptionData.theName = gDialog.docClassName;
@@ -150,16 +272,13 @@ function doModifyDialog()
 //  gDialog.selectedOptionsStr = data.optionsStr;
 
   classOptionData.options = gDialog.docClassOptions;
-  window.openDialog("chrome://prince/content/typesetStyleOptions.xul", "styleoptions", "chrome,close,titlebar,modal", classOptionData);
+  window.openDialog("chrome://prince/content/typesetStyleOptions.xul", "styleoptions", "chrome,close,titlebar,resizable,modal", classOptionData);
   if (!classOptionData.Cancel)
   {
     gDialog.docClassOptions = classOptionData.options;
     document.getElementById("optionsDescriptionBox").value=gDialog.docClassOptions.join(",");
-  }
-  else {
 		msiGetEditor(editorElement).incrementModificationCount(1);
-	}
-
+  }
 }
 
 function movePackage(bUp)
@@ -198,29 +317,27 @@ function movePackage(bUp)
 
 function addPackage()
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
   var addPackageData = new Object();
   addPackageData.packages = gDialog.packages;
   addPackageData.docClassName = gDialog.docClassName;
   addPackageData.packagesAvailable = gDialog.globalLaTeXData.packages;
-  window.openDialog("chrome://prince/content/typesetAddPackage.xul", "addpackage", "chrome,close,titlebar,modal", addPackageData);
+  window.openDialog("chrome://prince/content/typesetAddPackage.xul", "addpackage", "chrome,close,resizable,titlebar,modal", addPackageData);
   if (!addPackageData.Cancel)
   {
     var newPackage = addPackageData.newPackage;
     if ( (newPackage.length > 0) && (findPackageByName(gDialog.packages, newPackage) < 0) )  //if we're actually adding anything
     {
-      var newPackage = new Package();
-      newPackage.packageName = addPackageData.newPackage;
+      var newPackage = {};
+      newPackage.pkg = addPackageData.newPackage;
       gDialog.packagesAdded.push(newPackage);
       gDialog.packages.push(newPackage);
       gDialog.packagesInUseListbox.selectItem( gDialog.packagesInUseListbox.appendItem(addPackageData.newPackage, '') );
-      selectPackage(newPackage.packageName);
+      selectPackage(newPackage.pkg);
       checkDisabledControls();
+  		msiGetEditor(editorElement).incrementModificationCount(1);
     }
   }
-  else {
-		msiGetEditor(editorElement).incrementModificationCount(1);
-	}
-
 }
 
 function removeCurrentlySelectedPackage()
@@ -250,49 +367,37 @@ function modifyCurrentlySelectedPackage()
 
 function modifyPackage(packageName)
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
   var whichPackage = findPackageByName(gDialog.packages, packageName);
   var packageData = new Object();
   packageData.isPackage = true;
   packageData.options = null;
   if (whichPackage >= 0)
   {
-    packageData.options = gDialog.packages[whichPackage].packageOptions;
-    packageData.theName = gDialog.packages[whichPackage].packageName;
+    packageData.options = gDialog.packages[whichPackage].opt;
+    packageData.theName = gDialog.packages[whichPackage].pkg;
     packageData.optionSet = gDialog.globalLaTeXData.packageOptions[packageName];
   }
 
-  window.openDialog("chrome://prince/content/typesetStyleOptions.xul", "styleoptions", "chrome,close,titlebar,modal", packageData);
+  window.openDialog("chrome://prince/content/typesetStyleOptions.xul", "styleoptions", "chrome,close,titlebar,resizable,modal", packageData);
   if (!packageData.Cancel)
   {
-    gDialog.packages[whichPackage].setOptions( packageData.options );
+    gDialog.packages[whichPackage].opt = packageData.options;
     setPackageDescriptionLine(gDialog.packages[whichPackage]);
-  }
-  else {
 		msiGetEditor(editorElement).incrementModificationCount(1);
-	}
-
+  }
 }
 
-//Function moved to typesetDialogUtils.js, as it can be generally used in the child dialogs.
-//function findPackageByName(packageList, packageName)
-//{
-//  var theIndex = -1;
-//  for (var i = 0; i < packageList.length; ++i)
-//  {
-//    if (packageList[i].packageName == packageName)
-//    {
-//      theIndex = i;
-//      break;
-//    }
-//  }
-//  return theIndex;
-//}
 
 function fillPackagesListbox(packageList)
 {
+  var item;
+  var pkgObj;
   for (var i = 0; i < packageList.length; ++i)
   {
-    gDialog.packagesInUseListbox.appendItem(packageList[i].packageName, packageList[i].packageOptions);
+    pkgObj = packageList[i];
+    item = gDialog.packagesInUseListbox.appendItem(pkgObj.pkg, pkgObj.opt);
+//    item.setAttribute("optional") = !("reqirespackage" in pkgObj.usedby);
   }
 }
 
@@ -356,24 +461,24 @@ function setPackageDescriptionLine(thePackage)
   else
   {
     var caption = document.getElementById("currentPackageDescriptionCaption");
-    caption.label = gDialog.descCaptionTemplate.replace(caption.getAttribute("replaceTemplate"), thePackage.packageName);
-    gDialog.currentPackageDescription.value = thePackage.getOptionsStr();
+    caption.label = gDialog.descCaptionTemplate.replace(caption.getAttribute("replaceTemplate"), thePackage.pkg);
+    gDialog.currentPackageDescription.value = thePackage.opt;
   }
 }
 
 function comparePackagesByPriority(a,b)
 {
-  var aPriority = 0;
-  var bPriority = 0;
-  if ( "priority" in a )
-    aPriority = a.priority;
-  if ( "priority" in b )
-    bPriority = b.priority;
+  var aPriority = 100;
+  var bPriority = 100;
+  if (a.pri && !isNaN(a.pri))
+    aPriority = a.pri;
+  if (b.pri && !isNaN(b.pri))
+    bPriority = b.pri;
   if (aPriority < bPriority)
-    return 1; //a should come after b
+    return 1; 
   if (aPriority > bPriority)
-    return -1; //a should come before b
-  return a.packageName.toLowerCase().localeCompare(b.packageName.toLowerCase());
+    return -1;
+  return 0;
 };
 
 //The algorithm here is intended to do the following:
@@ -395,7 +500,7 @@ function modifyPackagePriorities()
   {
     whichPackage = findPackageByName(gDialog.packages, gDialog.packagesInUseListbox.getItemAtIndex(ix).label);
     if (whichPackage >= 0)
-      gDialog.packages[whichPackage].packagePriority = newPriorities[ix];
+      gDialog.packages[whichPackage].pri = newPriorities[ix];
   }
 }
 
@@ -414,9 +519,9 @@ function getModifiedPriorityList()
     whichPackage = findPackageByName(gDialog.packages, gDialog.packagesInUseListbox.getItemAtIndex(ix).label);
     thePackage = gDialog.packages[whichPackage];
     packageArray.push(thePackage);
-    if (thePackage != null && "priority" in thePackage)
+    if (thePackage != null && "pri" in thePackage)
     {
-      priorityValues.push(thePackage.priority);
+      priorityValues.push(thePackage.pri);
       origPackages.push(thePackage);
     }
     else
@@ -664,12 +769,12 @@ function doTestDialog()
   for (var i = 0; i < gDialog.packages.length; ++i)
   {
     data.packages[i] = new Object();
-    data.packages[i].packageName = gDialog.packages[i].packageName;
-    data.packages[i].packageOptions = gDialog.packages[i].packageOptions.join(",");
-    if ("packagePriority" in gDialog.packages[i])
-      data.packages[i].packagePriority = gDialog.packages[i].packagePriority;
+    data.packages[i].packageName = gDialog.packages[i].pkg;
+    data.packages[i].packageOptions = gDialog.packages[i].opt.join(",");
+    if ("pri" in gDialog.packages[i])
+      data.packages[i].packagePriority = gDialog.packages[i].pri;
   }
-  data.docClassOptions = gDialog.docClassOptions.join(",");
+  data.docClassOptions = gDialog.docClassOptions;
 
   var parentEditorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;

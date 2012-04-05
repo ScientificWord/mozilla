@@ -666,7 +666,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
   {
     for (var ix = 0; ix < packageList.length; ++ix)
     {
-      if (packageList[ix].packageName == aName)
+      if (packageList[ix].pkg == aName)
         return ix;
     }
     return null;
@@ -674,19 +674,14 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
 
   function copyPackageData(srcPkg)
   {
-    var retVal = {packageName : srcPkg.packageName};
-//    var logStr = "In reviseLaTeXPackagesAndOptions(), copyPackageData; packagename is [" + retVal.packageName + "]";
-    if ("packageOptions" in srcPkg)
-//    {
-      retVal.packageOptions = srcPkg.packageOptions;
-//      logStr += ", packageOptions are [" + retVal.packageOptions + "]";
-//    }
-    if ("packagePriority" in srcPkg)
-//    {
-      retVal.packagePriority = srcPkg.packagePriority;
-//      logStr += ", and packagePriority is [" + retVal.packagePriority + "].";
-//    }
-//    dump(logStr + "\n");
+    var retVal = {pkg : srcPkg.pkg};
+    if ("opt" in srcPkg) {
+      retVal.opt = srcPkg.opt;
+    }
+    if ("pri" in srcPkg)
+    {
+      retVal.pri = srcPkg.pri;
+    }
     return retVal;
   }
 
@@ -723,31 +718,46 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
           pkgObject = pkgArray[pkgIndex];
           if (pkgObject)
           {
-            if (pkgObject.packageOptions && pkgObject.packageOptions.length)
-              msiEditorEnsureElementAttribute(nextNode, "opt", pkgObject.packageOptions, editor)
+            if (pkgObject.opt && pkgObject.opt.length)
+              msiEditorEnsureElementAttribute(nextNode, "opt", pkgObject.opt,join(), editor)
             else
               msiEditorEnsureElementAttribute(nextNode, "opt", null, editor)
-            if ("packagePriority" in pkgObject)
-              msiEditorEnsureElementAttribute(nextNode, "pri", String(pkgObject.packagePriority), editor)
+            if ("pri" in pkgObject)
+              msiEditorEnsureElementAttribute(nextNode, "pri", String(pkgObject.pri), editor)
             else
               msiEditorEnsureElementAttribute(nextNode, "pri", null, editor)
             insertNewAfter = nextNode;
-//            dump("In reviseLaTeXPackagesAndOptions(), keeping requirepackage node for [" + pkgName + "], removing from revise array.\n");
             pkgArray.splice( pkgIndex, 1 );  //Now that it's taken care of, remove it
           }
           else
           {
             if (!insertNewAfter)
               insertNewAfter = nextNode.previousSibling;
-//            dump("In reviseLaTeXPackagesAndOptions(), deleting requirepackage node for [" + pkgName + "].\n");
             delNodes.push(nextNode);
           }
         break;
-        case "documentclass":
-          if ("docClassOptions" in dlgData)
-            msiEditorEnsureElementAttribute(nextNode, "options", dlgData.docClassOptions, editor)
-          else
-            msiEditorEnsureElementAttribute(nextNode, "options", null, editor)
+        case "documentclass":  //  must be written to use colist
+          var colist = nextNode.parentNode.getElementsByTagName("colist");
+          if (colist && colist.length > 0) {
+            colist = colist[0];
+            if (colist) {
+              editor.deleteNode(colist);
+            }
+          }
+          if ("docClassOptions" in dlgData) {
+            colist = editor.createNode("colist", nextNode.parentNode, 0);
+            var k;
+            var arr;
+            var s;
+            for (k = 0; k < dlgData.docClassOptions.length; k++)
+            {
+              s = dlgData.docClassOptions[k];
+              arr = s.split("=");
+              if (arr.length === 2) {
+                msiEditorEnsureElementAttribute(colist, arr[0], arr[1], editor);
+              }
+            }
+          }
         break;
         default:
         break;
@@ -783,21 +793,6 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
   }
 
 }
-
-//function doPDFPreviewDlg()
-//{
-//  alert("PDF Preview Dialog not implemented!");
-//}
-//
-//function doPDFPrintDlg()
-//{
-//  alert("PDF Print Dialog not implemented!");
-//}
-//
-//function doPDFCompileDlg()
-//{
-//  alert("PDF Compile Dialog not implemented!");
-//}
 
 function doGenSettingsDlg()
 {
