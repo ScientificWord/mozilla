@@ -4001,7 +4001,7 @@ function createWorkingDirectory(documentfile)
         if (mainfile.exists())
         {
           var data = {value: false};
-          var result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "workinprogress", "chrome,titlebar,modal", data);
+          var result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "workinprogress", "chrome,titlebar,resizable,modal", data);
           if (data.value)
           {
             return mainfile; 

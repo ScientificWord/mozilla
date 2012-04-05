@@ -111,7 +111,7 @@ function doGoNative()
 {
   var optionsData = new Object();
   optionsData.options = gDialog.selectedOptionsArray;
-  window.openDialog("chrome://prince/content/typesetNativeStyleOptions.xul", "nativestyleoptions", "chrome,close,titlebar,modal", optionsData);
+  window.openDialog("chrome://prince/content/typesetNativeStyleOptions.xul", "nativestyleoptions", "chrome,close,resizable,titlebar,modal", optionsData);
   if (!optionsData.Cancel)
   {
     gDialog.selectedOptionsArray = optionsData.options;
@@ -250,10 +250,12 @@ function diffArrays(oldArray, newArray)
 
 function removeEmptyElements(stringArray)
 {
-  for (var ix = stringArray.length - 1; ix >= 0; --ix)
-  {
-    if (!stringArray[ix] || stringArray.length == 0)
-      stringArray.splice(ix, 1);
+  if (stringArray) {
+    for (var ix = stringArray.length - 1; ix >= 0; --ix)
+    {
+      if (!stringArray[ix] || stringArray.length == 0)
+        stringArray.splice(ix, 1);
+    }
   }
 }
 
