@@ -3849,11 +3849,16 @@ nsresult copyfiles(
       // now we are ready to copy from srcFile to destFile
       res = srcFile->CopyTo(destFile, EmptyString());
     }
-    if (elem->HasAttribute(NS_LITERAL_STRING("data"), &fExists)) {
+    // the following doesn't seem to make any difference
+    elem->HasAttribute(NS_LITERAL_STRING("data"), &fExists);
+    if (fExists) {
+      elem->RemoveAttribute(NS_LITERAL_STRING("data"));
       elem->SetAttribute(NS_LITERAL_STRING("data"), dataPath);
     }
-    if (elem->HasAttribute(NS_LITERAL_STRING("src"), &fExists)) {
-      elem->SetAttribute(NS_LITERAL_STRING("src"), dataPath);
+    elem->HasAttribute(NS_LITERAL_STRING("src"), &fExists);
+    if (fExists) {
+      elem->RemoveAttribute(NS_LITERAL_STRING("src"));
+      elem->SetAttribute(NS_LITERAL_STRING("srcq"), dataPath);
     }
   }
 }
