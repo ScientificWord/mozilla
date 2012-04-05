@@ -10868,7 +10868,7 @@ function openOTFontDialog(tagname, node)
 function openGraphDialog(tagname, node, editorElement)
 {
   // non-modal dialog, the return is immediate
-  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog", "chrome,close,titlebar,dependent",
+  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog", "chrome,close,resizable,titlebar,dependent",
      editorElement, "cmd_objectProperties", node);
 // why find it again???  var editorElement = msiGetActiveEditorElement();
 	msiGetEditor(editorElement).incrementModificationCount(1);

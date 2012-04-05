@@ -74,16 +74,17 @@ function doAccept()
 
 function findPackageByName(packageList, packageName)
 {
-  var theIndex = -1;
-  for (var i = 0; i < packageList.length; ++i)
-  {
-    if (packageList[i].packageName == packageName)
-    {
-      theIndex = i;
-      break;
-    }
-  }
-  return theIndex;
+  return packageList.indexOf(packageName);
+//  var theIndex = -1;
+//  for (var i = 0; i < packageList.length; ++i)
+//  {
+//    if (packageList[i].packageName == packageName)
+//    {
+//      theIndex = i;
+//      break;
+//    }
+//  }
+//  return theIndex;
 }
 
 function fillPackagesAvailableListbox()

@@ -2550,7 +2550,7 @@ function addrule()
   nextbox.hidden=false;
   nextbox.setAttribute("style","height:3px;background-color:black;");
   window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", 
-    "resizable=yes,chrome,close,titlebar,resizable=true,alwaysRaised", nextbox, secUnitHandler.currentUnit);
+    "rchrome,close,titlebar,resizable,alwaysRaised", nextbox, secUnitHandler.currentUnit);
   boxlist[i] = nextbox;
 }
 
@@ -2596,10 +2596,10 @@ function reviseruleorspace(element)
 {
   if (element.getAttribute("role")=="rule")
     window.openDialog("chrome://prince/content/addruleforsection.xul", 
-      "addruleforsection", "chrome,close,titlebar,alwaysRaised",element, secUnitHandler.currentUnit);
+      "addruleforsection", "chrome,close,titlebar,resizable,alwaysRaised",element, secUnitHandler.currentUnit);
   else if (element.getAttribute("role")=="vspace")
     window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-      "vspaceforsection", "chrome,close,titlebar,alwaysRaised",element, secUnitHandler.currentUnit);
+      "vspaceforsection", "chrome,close,titlebar,resizable,alwaysRaised",element, secUnitHandler.currentUnit);
 }                                
 
 // add "old style" fonts (those with TeX metrics) to the menu. We get them from a file mathfonts.xml
