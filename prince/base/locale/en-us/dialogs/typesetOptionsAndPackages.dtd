@@ -25,6 +25,7 @@
 <!ENTITY modifyClassOptionsButton.accesskey "M">
 <!ENTITY currentPackageDescription.label "Currently Selected Options for the Package __packagename__">
 <!ENTITY currentPackageDescription.templateStr "__packagename__">
+<!ENTITY redpackagesarerequired "Packages in bold red have been added because they are needed by some document component. If you delete one of these, it may be added back automatically.">
    
 
 <!-- <!ENTITY .tooltip "">  -->

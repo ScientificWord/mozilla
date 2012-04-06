@@ -204,7 +204,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
       <toolbarbutton id="vc-ZoomOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomOut" command="cmd_vcZoomOut" observes="2dplot"/>
       <toolbarbutton id="vc-ZoomBoxIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxIn" command="cmd_vcZoomBoxIn" observes="2dplot"/>
       <toolbarbutton id="vc-ZoomBoxOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxOut" command="cmd_vcZoomBoxOut" observes="2dplot"/>
-      <toolbarbutton id="vc-Snapshot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot"/>
+      <toolbarbutton id="vc-SnapShot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot"/>
       <toolbarseparator/>
       <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
         <menupopup>
