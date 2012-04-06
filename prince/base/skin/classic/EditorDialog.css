@@ -91,6 +91,11 @@ groupbox {
  width: 1em;
 }
 
+.highlight {
+  font-weight: bold;
+  color: red;
+}
+
 .menuitem-highlight-1 {
   font-weight : bold;
 }
