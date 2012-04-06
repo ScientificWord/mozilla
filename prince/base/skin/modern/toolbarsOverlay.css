@@ -2799,6 +2799,31 @@ toolbox[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/v_reset-disabled-sm.png");
 }
 
+#vc-SnapShot{
+  list-style-image: url("chrome://prince/skin/icons/math_snapshot.png");
+}
+*[iconsize="small"] #vc-SnapShot{
+  list-style-image: url("chrome://prince/skin/icons/math_snapshot-sm.png");
+}
+#vc-SnapShot:hover{
+  list-style-image: url("chrome://prince/skin/icons/math_snapshot-hover.png");
+}
+*[iconsize="small"] #vc-SnapShot:hover{
+  list-style-image: url("chrome://prince/skin/icons/math_snapshot-hover-sm.png");
+}
+#vc-SnapShot[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/math_snapshot-active.png");
+}
+*[iconsize="small"] #vc-SnapShot[checked="true"]{
+  list-style-image: url("chrome://prince/skin/icons/math_snapshot-active-sm.png");
+}
+#vc-SnapShot[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/math_snapshot-disabled.png");
+}
+*[iconsize="small"] #vc-SnapShot[disabled="true"]{
+  list-style-image: url("chrome://prince/skin/icons/math_snapshot-disabled-sm.png");
+}
+
 toolbox textbox { 
   -moz-appearance: none;
   min-height : 25px;
