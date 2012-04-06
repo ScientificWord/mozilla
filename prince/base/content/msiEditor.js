@@ -1842,7 +1842,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var result = {value:0};
   var promptFlags = promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1;
   var button1Title = null;
-  var button3Title = "&Don't Save";
+  var button3Title = GetString("DontSave");
 
   promptFlags += promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0;
 

@@ -68,6 +68,8 @@
 				  <caption label="&packagesInUse.label;" accesskey="&packagesInUse.accesskey;"/>
 					<listbox id="packagesInUseListbox" onselect="onSelectPackage();"/>
 					<spacer flex="1"/>
+          <description style="width: 15em">&redpackagesarerequired;</description>
+          <spacer flex="1"/>
 					<vbox>
 						<msibutton id="moveUpButton" label="&moveUpButton.label;" accesskey="&moveUpButton.accesskey;" oncommand="movePackage(true);"/>
 						<msibutton id="moveDownButton" label="&moveDownButton.label;" accesskey="&moveDownButton.accesskey;" oncommand="movePackage(false);"/>
