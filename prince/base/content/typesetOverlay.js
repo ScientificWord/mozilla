@@ -623,21 +623,6 @@ function doOptionsAndPackagesDlg(editorElement)
 	{
 		msiGetEditor(editorElement).incrementModificationCount(1); 
 	}
-//  if (!options.Cancel)
-//  {
-//    var packagesOptionsStr = options.docClassName;
-//    if (options.docClassOptions.length > 0)
-//      packagesOptionsStr += "[" + options.docClassOptions + "]";
-//    for (var i = 0; i < options.packages.length; ++i)
-//    {
-//      var packageStr = "\n";
-//      if (options.packages[i].packageOptions.length)
-//        packageStr += "[" + options.packages[i].packageOptions + "]";
-//      packageStr += "{" + options.packages[i].packageName + "}";
-//      packagesOptionsStr += packageStr;
-//    }
-//    alert("Options and packages dialog returned; needs to be hooked up to do something! Options and packages are:\n" + packagesOptionsStr);
-//  }
 }
 
 function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
@@ -646,45 +631,6 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var aDocument = editor.document;
-  var isDocStyleOrPackage = {
-    acceptNode: function(aNode)
-    {
-      switch(msiGetBaseNodeName(aNode))
-      {
-        case "requirespackage":
-        case "documentclass":
-          return NodeFilter.FILTER_ACCEPT;
-        break;
-        default:
-        break;
-      }
-      return NodeFilter.FILTER_SKIP;
-    }
-  };
-
-  function findPackageInData(packageList, aName)
-  {
-    for (var ix = 0; ix < packageList.length; ++ix)
-    {
-      if (packageList[ix].pkg == aName)
-        return ix;
-    }
-    return null;
-  }
-
-  function copyPackageData(srcPkg)
-  {
-    var retVal = {pkg : srcPkg.pkg};
-    if ("opt" in srcPkg) {
-      retVal.opt = srcPkg.opt;
-    }
-    if ("pri" in srcPkg)
-    {
-      retVal.pri = srcPkg.pri;
-    }
-    return retVal;
-  }
-
   var pkgArray = [];
   for (var ii = 0; ii < dlgData.packages.length; ++ii)
   {
@@ -706,14 +652,14 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
     var delNodes = [];
     while (nextNode = currPreambleWalker.nextNode())
     {
-
       switch(msiGetBaseNodeName(nextNode))
       {
-    
         case "requirespackage":
+        case "usepackage":
           if (!insertParent)
             insertParent = nextNode.parentNode;
           pkgName = nextNode.getAttribute("req");
+          if (!pkgName) pkgName = nextNode.getAttribute("package");
           pkgIndex = findPackageInData(pkgArray, pkgName);
           pkgObject = pkgArray[pkgIndex];
           if (pkgObject)
@@ -729,14 +675,14 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
             insertNewAfter = nextNode;
             pkgArray.splice( pkgIndex, 1 );  //Now that it's taken care of, remove it
           }
-          else
+          else if (nextNode.nodeName === "usepackage")
           {
             if (!insertNewAfter)
               insertNewAfter = nextNode.previousSibling;
             delNodes.push(nextNode);
           }
         break;
-        case "documentclass":  //  must be written to use colist
+        case "documentclass":  
           var colist = nextNode.parentNode.getElementsByTagName("colist");
           if (colist && colist.length > 0) {
             colist = colist[0];
@@ -776,22 +722,60 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
       insertPos = msiNavigationUtils.offsetInParent(insertNewAfter) + 1;
     for (var jx = 0; jx < pkgArray.length; ++jx)
     {
-      newNode = aDocument.createElement("requirespackage");
+      newNode = aDocument.createElement("usepackage");
       pkgObject = pkgArray[jx];
-      dump("In reviseLaTeXPackagesAndOptions(), inserting requirepackage node for [" + pkgObject.packageName + "].\n");
+      dump("In reviseLaTeXPackagesAndOptions(), inserting usepackage node for [" + pkgObject.packageName + "].\n");
       if (!insertParent)
           insertParent =  nextNode;
       editor.insertNode( newNode, insertParent, insertPos++);
-      msiEditorEnsureElementAttribute(newNode, "req", pkgObject.packageName, editor);
+      msiEditorEnsureElementAttribute(newNode, "req", pkgObject.pkg, editor);
       if (pkgObject.packageOptions && pkgObject.packageOptions.length)
-        msiEditorEnsureElementAttribute(newNode, "opt", pkgObject.packageOptions, editor);
-      if ("packagePriority" in pkgObject)
-        msiEditorEnsureElementAttribute(newNode, "pri", String(pkgObject.packagePriority), editor);
+        msiEditorEnsureElementAttribute(newNode, "opt", pkgObject.opt, editor);
+      if ("pri" in pkgObject)
+        msiEditorEnsureElementAttribute(newNode, "pri", String(pkgObject.pri), editor);
       if (!insertParent)
         insertParent = startNode;  //should be the preamble!
     }
   }
+  
+  var isDocStyleOrPackage = {
+    acceptNode: function(aNode)
+    {
+      switch(msiGetBaseNodeName(aNode))
+      {
+        case "requirespackage":
+        case "documentclass":
+          return NodeFilter.FILTER_ACCEPT;
+        break;
+        default:
+        break;
+      }
+      return NodeFilter.FILTER_SKIP;
+    }
+  };
 
+  function findPackageInData(packageList, aName)
+  {
+    for (var ix = 0; ix < packageList.length; ++ix)
+    {
+      if (packageList[ix].pkg == aName)
+        return ix;
+    }
+    return null;
+  }
+
+  function copyPackageData(srcPkg)
+  {
+    var retVal = {pkg : srcPkg.packageName};
+    if ("packageOptions" in srcPkg) {
+      retVal.opt = srcPkg.packageOptions;
+    }
+    if ("packagePriority" in srcPkg)
+    {
+      retVal.pri = srcPkg.packagePriority;
+    }
+    return retVal;
+  }
 }
 
 function doGenSettingsDlg()
@@ -1097,6 +1081,7 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
       switch(msiGetBaseNodeName(aNode))
       {
         case "requirespackage":
+        case "usepackage":
         case "documentclass":
         case "colist":
           return NodeFilter.FILTER_ACCEPT;
@@ -1126,6 +1111,7 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
       switch(msiGetBaseNodeName(nextNode))
       {
         case "requirespackage":
+        case "usepackage":
           pkgName = nextNode.getAttribute("req");
           if (!pkgName || !pkgName.length)
             pkgName = nextNode.getAttribute("package");

@@ -23,10 +23,12 @@ function fillUsedPackagesList(strResult, objArray) {
     if (o) {
       obj = o;
       addobj = false;
-    } else {
       obj={usedby: [], pkg: "", opt: [], pri: NaN};
       obj.pkg = fieldArray[1];
+    } else {
       addobj = true;
+      obj={usedby: [], pkg: "", opt: [], pri: NaN};
+      obj.pkg = fieldArray[1];
     } 
     if (fieldArray[2].length > 0) {
       optstring = fieldArray[2];
@@ -214,7 +216,8 @@ function onAccept()
   {
     data.packages[i] = new Object();
     data.packages[i].packageName = gDialog.packages[i].pkg;
-    data.packages[i].packageOptions = gDialog.packages[i].opt.join(",");
+    if (gDialog.packages[i].opt)
+      data.packages[i].packageOptions = gDialog.packages[i].opt.join(",");
     if ("pri" in gDialog.packages[i])
       data.packages[i].packagePriority = gDialog.packages[i].pri;
   }
@@ -288,6 +291,7 @@ function movePackage(bUp)
     return;
   var packageName = gDialog.packagesInUseListbox.getSelectedItem(0).label;
   var valueStr = gDialog.packagesInUseListbox.getSelectedItem(0).value;
+  var isHighlighted = (gDialog.packagesInUseListbox.getSelectedItem(0).getAttribute("class")==="highlight");
   var desiredIndex = currIndex + 1;
   if (bUp)
     desiredIndex = currIndex - 1;
@@ -295,6 +299,7 @@ function movePackage(bUp)
   {
     gDialog.packagesInUseListbox.removeItemAt(currIndex);
     var newItem = gDialog.packagesInUseListbox.insertItemAt(desiredIndex, packageName, valueStr);
+    if (isHighlighted) newItem.setAttribute("class","highlight")
     gDialog.packagesInUseListbox.selectItem(newItem);
   }
   if (packageName && packageName.length > 0)
@@ -397,7 +402,8 @@ function fillPackagesListbox(packageList)
   {
     pkgObj = packageList[i];
     item = gDialog.packagesInUseListbox.appendItem(pkgObj.pkg, pkgObj.opt);
-//    item.setAttribute("optional") = !("reqirespackage" in pkgObj.usedby);
+    if (pkgObj.usedby.indexOf("usepackage") === -1)
+      item.setAttribute("class","highlight");
   }
 }
 
