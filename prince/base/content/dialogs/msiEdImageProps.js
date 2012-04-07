@@ -1252,7 +1252,7 @@ function fixCommandFileLine(aLine, substitutions, bIsUnix)
   var theSub = "";
   var aSub;
   var subRE;
-  var subREStr="(%sub%)|(\\{\\$sub\\})|(\\$sub)";
+  var subREStr="(%sub%)|(\\$\\{sub\\})|(\\$sub)";
   var unixRE=/%([^%]+)%/g;
   if ((retLine.indexOf("%") >= 0) || (retLine.indexOf("$") >= 0))
   {
