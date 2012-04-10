@@ -48,7 +48,6 @@ class msiITagListManager;
 class nsHTMLEditUtils
 {
 public:
-  static PRBool IsMath(nsIDOMNode *aNode);
   // from nsTextEditRules:
   static PRBool IsBig(nsIDOMNode *aNode);
   static PRBool IsSmall(nsIDOMNode *aNode);
@@ -91,6 +90,8 @@ public:
   static PRBool IsStructNode(nsIDOMNode *aNode, msiITagListManager * manager);
   static PRBool IsFrontMNode(nsIDOMNode *aNode, msiITagListManager * manager);
   static PRBool IsOtherNode(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsMath(nsIDOMNode *aNode);
+  static PRBool IsMathNode(nsIDOMNode *aNode);
   static PRBool CanContain(PRInt32 aParent, PRInt32 aChild, msiITagListManager * manager);
   static PRBool IsContainer(PRInt32 aTag, msiITagListManager * manager);
 };
