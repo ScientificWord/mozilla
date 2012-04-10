@@ -191,6 +191,20 @@ nsCOMPtr<nsIDOMNode> nsHTMLEditor::GetListParent(nsIDOMNode* aNode)
   return nsnull;
 }
 
+nsCOMPtr<nsIDOMNode> nsHTMLEditor::GetMathParent(nsIDOMNode* aNode)
+{
+  if (!aNode) return nsnull;
+  nsCOMPtr<nsIDOMNode> parent, tmp;
+  aNode->GetParentNode(getter_AddRefs(parent));
+  while (parent)
+  {
+    if (nsHTMLEditUtils::IsMathNode(parent)) return parent;
+    parent->GetParentNode(getter_AddRefs(tmp));
+    parent = tmp;
+  }
+  return nsnull;
+}
+
 nsCOMPtr<nsIDOMNode> nsHTMLEditor::GetTableParent(nsIDOMNode* aNode)
 {
   if (!aNode) return nsnull;
@@ -396,16 +410,6 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                  streamEndParent, streamEndOffset);
   NS_ENSURE_SUCCESS(res, res);
   PRInt32 listCount = nodeList.Count();
-#if DEBUG_barry || DEBUG_Barry
-  // for (j=0; j<listCount; j++)
-  // {
-  //   printf("\nnodeList[%d]\n", j);
-  //   DumpNode(nodeList[j],0,true);
-  // }
-// FixMathematics(nodeList[0], PR_FALSE, PR_FALSE, PR_FALSE);
-//  if (listCount > 1) FixMathematics(nodeList[listCount-1], PR_FALSE, PR_FALSE, PR_FALSE);
-  listCount = nodeList.Count();
-#endif
   if (listCount == 0)
     return NS_OK;
 //  DumpNode();
@@ -507,7 +511,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     }
 
     // build up list of parents of first node in list that are either
-    // lists or tables.  First examine front of paste node list.
+    // lists or tables or math nodes.  First examine front of paste node list.
     nsCOMArray<nsIDOMNode> startListAndTableArray;
     res = GetListAndTableParents(PR_FALSE, nodeList, startListAndTableArray);
     NS_ENSURE_SUCCESS(res, res);
@@ -549,34 +553,35 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       NS_ENSURE_SUCCESS(res, res);
     }
 // Now do the same for math as we did for tables and list items
-    nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
+//    nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
 //    nsCOMPtr<nsIDOMNode> mathNode;
 //    MathParent( endNode, getter_AddRefs(mathNode));
 //    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
 //    // now do the other end.
-    PRUint32 length = nodeList.Count();
+//    PRUint32 length = nodeList.Count();
 //    if (length > 1) {
 //      endNode = nodeList[length-1];
 //      MathParent( endNode, getter_AddRefs(mathNode));
 //      if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
 //    }
 // Now fix up fragments internal to the math node
-    endNode = nodeList[0];
+//    endNode = nodeList[0];
 	// #if DEBUG_barry || DEBUG_Barry
 	//   printf("\nendNode before FixMath\n");
 	//   DumpNode(endNode, 0, true);
 	// #endif
-    FixMathematics(endNode, length > 1, PR_FALSE);
+//    FixMathematics(endNode, length > 1, PR_FALSE);
 	// #if DEBUG_barry || DEBUG_Barry
 	//   printf("\nendNode after FixMath\n");
 	//   DumpNode(endNode, 0, true);
 	// #endif
-
-    if (length > 1) 
-    {
-      endNode = nodeList[length-1];
-      FixMathematics(endNode, PR_FALSE, PR_TRUE);
-    }
+//
+//    if (length > 1) 
+//    {
+//      endNode = nodeList[length-1];
+//      FixMathematics(endNode, PR_FALSE, PR_TRUE);
+//    }
+    listCount = nodeList.Count();
     // Loop over the node list and paste the nodes:
     PRBool bDidInsert = PR_FALSE;
     nsCOMPtr<nsIDOMNode> parentBlock, lastInsertNode, insertedContextParent;
@@ -3579,10 +3584,12 @@ nsresult
 nsHTMLEditor::GetListAndTableParents(PRBool aEnd, 
                                      nsCOMArray<nsIDOMNode>& aListOfNodes,
                                      nsCOMArray<nsIDOMNode>& outArray)
+// Now checks for math nodes too
 {
   PRInt32 listCount = aListOfNodes.Count();
   if (listCount <= 0)
     return NS_ERROR_FAILURE;  // no empty lists, please
+  nsCOMPtr<nsIDOMNode> parent;
     
   // build up list of parents of first (or last) node in list 
   // that are either lists, or tables.  
@@ -3592,14 +3599,14 @@ nsHTMLEditor::GetListAndTableParents(PRBool aEnd,
   nsCOMPtr<nsIDOMNode>  pNode = aListOfNodes[idx];
   while (pNode)
   {
-    if (nsHTMLEditUtils::IsList(pNode, mtagListManager) || nsHTMLEditUtils::IsTable(pNode, mtagListManager))
+    if (nsHTMLEditUtils::IsList(pNode, mtagListManager) || nsHTMLEditUtils::IsTable(pNode, mtagListManager) ||
+      nsHTMLEditUtils::IsMath(pNode))
     {
       if (!outArray.AppendObject(pNode))
       {
         return NS_ERROR_FAILURE;
       }
     }
-    nsCOMPtr<nsIDOMNode> parent;
     pNode->GetParentNode(getter_AddRefs(parent));
     pNode = parent;
   }
@@ -3658,6 +3665,23 @@ nsHTMLEditor::DiscoverPartialListsAndTables(nsCOMArray<nsIDOMNode>& aPasteNodes,
         }
       }
     }
+    if (nsHTMLEditUtils::IsMath(curNode))
+    {
+      nsCOMPtr<nsIDOMNode> theMath = GetMathParent(curNode);
+      if (theMath)
+      {
+        PRInt32 indexL = aListsAndTables.IndexOf(theMath);
+        if (indexL >= 0)
+        {
+          *outHighWaterMark = indexL;
+          if (*outHighWaterMark == listAndTableParents-1) break;
+        }
+        else
+        {
+          break;
+        }
+      }
+    }
   }
   return NS_OK;
 }
@@ -3669,6 +3693,7 @@ nsHTMLEditor::ScanForListAndTableStructure( PRBool aEnd,
                                             nsCOMPtr<nsIDOMNode> *outReplaceNode)
 {
   NS_ENSURE_TRUE(aListOrTable, NS_ERROR_NULL_POINTER);
+  // aListOrTable can be a list, table, or math
   NS_ENSURE_TRUE(outReplaceNode, NS_ERROR_NULL_POINTER);
 
   *outReplaceNode = 0;
@@ -3677,23 +3702,28 @@ nsHTMLEditor::ScanForListAndTableStructure( PRBool aEnd,
   PRInt32 listCount = aNodes.Count(), idx = 0;
   if (aEnd) idx = listCount-1;
   PRBool bList = nsHTMLEditUtils::IsList(aListOrTable, mtagListManager);
+  PRBool bMath = nsHTMLEditUtils::IsMath(aListOrTable);
   
   nsCOMPtr<nsIDOMNode>  pNode = aNodes[idx];
   nsCOMPtr<nsIDOMNode>  originalNode = pNode;
   while (pNode)
   {
     if ( (bList && nsHTMLEditUtils::IsListItem(pNode, mtagListManager)) ||
-      (!bList && (nsHTMLEditUtils::IsTableElement(pNode, mtagListManager) && !nsHTMLEditUtils::IsTable(pNode, mtagListManager))) )
+      (!bList && !bMath && (nsHTMLEditUtils::IsTableElement(pNode, mtagListManager) && !nsHTMLEditUtils::IsTable(pNode, mtagListManager)))
+        || (bMath && nsHTMLEditUtils::IsMath(pNode)) )
     {
       nsCOMPtr<nsIDOMNode> structureNode;
       if (bList) structureNode = GetListParent(pNode);
+      else if (bMath) structureNode = GetMathParent(pNode);
       else structureNode = GetTableParent(pNode);
       if (structureNode == aListOrTable)
       {
-        if (bList)
+//        if (bList)
           *outReplaceNode = structureNode;
-        else
-          *outReplaceNode = structureNode; // BBM- this seems really strange to me -- pNode;
+//        else if (bMath)
+//          *outReplaceNode = structureNode;
+//        else
+//          *outReplaceNode = structureNode; // BBM- this seems really strange to me -- pNode;
         break;
       }
     }
