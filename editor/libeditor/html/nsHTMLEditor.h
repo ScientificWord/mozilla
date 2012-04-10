@@ -983,6 +983,7 @@ protected:
   void     SetResizeIncrements(PRInt32 aX, PRInt32 aY, PRInt32 aW, PRInt32 aH, PRBool aPreserveRatio);
 
   nsCOMPtr<nsIDOMNode> GetListParent(nsIDOMNode* aNode);
+  nsCOMPtr<nsIDOMNode> GetMathParent(nsIDOMNode* aNode);
   nsCOMPtr<nsIDOMNode> GetTableParent(nsIDOMNode* aNode);
   /* ABSOLUTE POSITIONING */
 
