@@ -1218,9 +1218,11 @@
         <tag nm = "math">
           <contains>mspace</contains>      
           <contains>mstyle</contains>
+          <contains>bold</contains>
         </tag>
         <tag nm="mrow">
           <contains>mspace</contains>
+          <contains>bold</contains>
           <contains>mstyle</contains>
         </tag>   
       </tags>
