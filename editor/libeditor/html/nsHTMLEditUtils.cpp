@@ -52,23 +52,7 @@
 #include "nsIDOMElement.h"
 #include "msiITagListManager.h"
 
-
-///////////////////////////////////////////////////////////////////////////
-//                  
-PRBool 
-nsHTMLEditUtils::IsMath(nsIDOMNode *node)
-{
-  nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
-  nsAutoString tagNamespace;
-  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
-  if (element)
-  {
-    element->GetNamespaceURI(tagNamespace);
-    return tagNamespace.Equals(strMathMLNs);
-  }
-  return PR_FALSE;
-}
-
+nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
 
 ///////////////////////////////////////////////////////////////////////////
 //                  
@@ -652,6 +636,28 @@ nsHTMLEditUtils::IsOtherNode(nsIDOMNode *aNode, msiITagListManager * manager)
   return IsNodeType(aNode, NS_LITERAL_STRING("othertag"), manager); 
 }
 
+PRBool nsHTMLEditUtils::IsMath(nsIDOMNode *aNode)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsMath");
+  nsAutoString tagNamespace;
+  aNode->GetNamespaceURI(tagNamespace);
+  return tagNamespace.Equals(strMathMLNs);
+  
+}
+
+PRBool nsHTMLEditUtils::IsMathNode(nsIDOMNode *aNode)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsMathNode");
+  nsAutoString tagNamespace;
+  nsAutoString tagName;
+  nsCOMPtr<nsIDOMElement> element;
+  element = do_QueryInterface(aNode);
+  if (!element) return PR_FALSE;
+  element->GetTagName(tagName);
+  element->GetNamespaceURI(tagNamespace);
+  return (tagName.EqualsLiteral("math") && tagNamespace.Equals(strMathMLNs));
+  
+}
 
 // We use bitmasks to test containment of elements. Elements are marked to be
 // in certain groups by setting the mGroup member of the nsElementInfo struct
