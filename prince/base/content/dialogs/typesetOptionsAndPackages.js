@@ -108,6 +108,7 @@ function Startup()
       }
     }
   }
+  getDefaultPriorities(packageList);
   gDialog.packages = packageList;
   gDialog.packagesAdded = [];
   gDialog.packages.sort(comparePackagesByPriority);
@@ -126,6 +127,51 @@ function Startup()
 
   SetWindowLocation();
 }
+
+function getDefaultPriorities(pklist) { 
+  // get default priorities for those package declarations that don't override the priority
+  // we save both the given priority (if given) and the final priority, since we need to know whether the user overrode the priority.
+  var i, length, n, pkg, priDoc;
+  length = pklist.length;
+  priDoc = loadDefaultPriDefinitions();
+  for (i=0; i < length; i++) {
+    pkg = pklist[i];
+    if (pkg) {
+      n = Number(pkg.pri);
+      if (n && !isNaN(n)) {
+        pkg.finalpri = n;
+      }
+      else {
+        n = getPriorityOf(pkg.pkg, priDoc);
+        if (n && !isNaN(n)) {
+          pkg.finalpri = n;
+        }
+      }
+    }
+  }
+}
+
+function loadDefaultPriDefinitions() {
+  var request = new XMLHttpRequest();
+  request.open("GET", "chrome://prnc2ltx/content/packages.xml", false); 
+  request.send(null);
+  return request.responseXML;
+}
+
+function getPriorityOf(name, xmldoc) {
+  var names = xmldoc.getElementsByTagName("package");
+  var i, length;
+  length = names.length;
+  var record;
+  for (i = 0; i < length; i++) {
+    record = names[i];
+    if (record.getAttribute("name") === name) {
+      return (record.getAttribute("pri"));
+    } 
+  }
+  return null;
+}
+
 
 function InitDialog()
 {
@@ -476,14 +522,14 @@ function comparePackagesByPriority(a,b)
 {
   var aPriority = 100;
   var bPriority = 100;
-  if (a.pri && !isNaN(a.pri))
-    aPriority = a.pri;
-  if (b.pri && !isNaN(b.pri))
-    bPriority = b.pri;
+  if (a.pri && !isNaN(a.finalpri))
+    aPriority = a.finalpri;
+  if (b.finalpri && !isNaN(b.finalpri))
+    bPriority = b.finalpri;
   if (aPriority < bPriority)
-    return 1; 
+    return -1; 
   if (aPriority > bPriority)
-    return -1;
+    return 1;
   return 0;
 };
 
@@ -712,60 +758,6 @@ function getModifiedPriorityList()
   return revisedPriorities;
 }
 
-
-
-////function modifyPackagePriorities()
-////{
-////  var nPackages = gDialog.packagesInUseListbox.getRowCount();
-////  var packageArray = [];
-////  var priorityVals = [];
-////  var origPackages = [];
-////  var revisedPriorities = [];
-////  var thePackage;
-////  for (var ix = 0; ix < nPackages; ++ix)
-////  {
-////    thePackage = findPackageByName(gDialog.packages, gDialog.packagesInUseListbox.getItemAtIndex(ix).label);
-////    packageArray.push(thePackage);
-////    if ("priority" in thePackage)
-////    {
-////      priorityValues.push(thePackage.priority);
-////      origPackages.push(thePackage);
-////    }
-////  }
-////
-////  function sortTopFirst(a,b)
-////  { return ( (a < b) ? 1 : ( (a > b) ? -1 : 0 ) ) };
-////
-//////Should we create an array by index of the order these started in?
-////  priorityValues.sort( sortTopFirst );
-////  origPackages.sort( comparePackagesByPriority );
-////  var currPri = 0;
-////  var priAdjustment = 0;
-////
-////  for (ix = 0; ix < packageArray.length; ++ix)
-////  {
-////    priAdjustment = 0;
-////    if ("priority" in packageArray[ix])
-////    {
-////      revisedPriorities[ix] = priorityValues[currPri++];
-////      for (var jx = 0; jx < ix; ++jx)
-////      {
-////        if (revisedPriorities[jx] == revisedPriorities[ix])
-////        {
-////          if (comparePackagesByPriority(packageArray[jx], packageArray[ix]) < 0)  //one above us was a priori below us
-////            --priAdjustment;
-////        }
-////        else
-////          break;
-////      }
-////      revisedPriorities[ix] += priAdjustment;
-////    }
-////  }
-////
-//////    gDialog.packages[i].priority = data.packages[i].packagePriority;
-//////    gDialog.packages[i].setOptionsFromStr(data.packages[i].packageOptions);
-////
-////}
 
 function doTestDialog()
 {
