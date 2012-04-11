@@ -1428,7 +1428,7 @@ function parseQueryReturn(out, graph, plot) {
           }
         }
       }
-      out = runFixup(createPolarExpr(out, variableList, pt));
+      //out = runFixup(createPolarExpr(out, variableList, pt));
       plot.element["Expression"] = out;
     }
   }
