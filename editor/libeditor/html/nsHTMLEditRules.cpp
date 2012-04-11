@@ -3057,6 +3057,7 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 
       if (node == caretNode){    
          numChildren = caretOffset;
+         done = true;
       }
 
       nsCOMPtr<nsIDOMNode> child;
