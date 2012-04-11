@@ -697,8 +697,8 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doLabeledComputation(element,"",eng.Singular_Values,"Singular.fmt", editorElement);
       break;
     case "cmd_MSIComputeSVD":      
-      //doLabeledComputation(element,eng.SVD,"SVD.fmt", editorElement);
-      doEvalComputation(element,"",eng.SVD,"<mo>=</mo>", "evaluate SVD", editorElement, inPlace);
+      doLabeledComputation(element,"", eng.SVD, "SVD.fmt", editorElement);
+      //doEvalComputation(element,"",eng.SVD,"<mo>=</mo>", "evaluate SVD", editorElement, inPlace);
       break;
     case "cmd_MSIComputeSmith":    
       doLabeledComputation(element,"",eng.Smith_Normal_Form,"Smith.fmt", editorElement);
