@@ -2311,61 +2311,15 @@ nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
   NS_ENSURE_TRUE(ioParent, NS_ERROR_NULL_POINTER);
   NS_ENSURE_TRUE(*ioParent, NS_ERROR_NULL_POINTER);
   NS_ENSURE_TRUE(ioOffset, NS_ERROR_NULL_POINTER);
-  
-  nsresult res = NS_OK;
-  nsAutoString tagName;
-  nsAutoString tagclass;
-  aNode->GetNodeName(tagName);
-  nsCOMPtr<nsIDOMNode> parent = *ioParent;
-  nsCOMPtr<nsIDOMNode> topChild = *ioParent;
-  nsCOMPtr<nsIDOMNode> tmp;
   PRInt32 offsetOfInsert = *ioOffset;
-   
-  mtagListManager->GetClassOfTag(tagName, nsnull, tagclass);
-    // tags not known to the tag manager get a free pass.
-    // Search up the parent chain to find a suitable container      
-  while (!CanContainTag(parent, tagName))
-  {
-    // If the current parent is a root (body or table element)
-    // then go no further - we can't insert
-    if (nsTextEditUtils::IsBody(parent) || nsHTMLEditUtils::IsTableElement(parent, mtagListManager))
-    {  
-      nsString defPara;
-      nsIAtom * atomDummy;
-      mtagListManager->GetDefaultParagraphTag(&atomDummy, defPara);
-      if (!CanContainTag(parent, defPara))  
-      {  
-        return NS_ERROR_FAILURE;
-      }
-      // else insert the default paragraph
-      nsCOMPtr<nsIDOMElement> para;
-      CreateElementWithDefaults(defPara, getter_AddRefs(para));
-      res = InsertNode(aNode, para, 0); // put aNode in paragraph
-      // and now put para in place of aNode
-      aNode = para;
-      tagName = defPara;
-      break;
-    }
-    else
-    {
-      // Get the next parent
-      parent->GetParentNode(getter_AddRefs(tmp));
-      NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
-      topChild = parent;
-      parent = tmp;
-    }
-  }
-  if (parent != topChild)
-  {
-    // we need to split some levels above the original selection parent
-    res = SplitNodeDeep(topChild, *ioParent, *ioOffset, &offsetOfInsert, aNoEmptyNodes);
-    if (NS_FAILED(res))
-      return res;
-    *ioParent = parent;
-    *ioOffset = offsetOfInsert;
-  }
+  nsCOMPtr<nsIDOMNode> newParent(*ioParent);
+  nsCOMPtr<nsIDOMNode> newNode(aNode);
+  nsresult res;
+  
+  InsertBufferNodeIfNeeded( newNode, newParent, *ioOffset, &offsetOfInsert); 
   // Now we can insert the new node
-  res = InsertNode(aNode, parent, offsetOfInsert);
+  if (offsetOfInsert >= 0) 
+    res = InsertNode(newNode, newParent, offsetOfInsert);
   return res;
 }
 
