@@ -3000,7 +3000,8 @@ PRInt32 CharLength(nsCOMPtr<nsIDOMNode> node)
 }
 
 
-
+// caretNode and caretOffset are the location of the caret. It is somewhere in node.
+// This function counts the number of characters, into node, that the caret lies.  
 
 PRInt32 FindCursorIndex(nsHTMLEditor* editor, 
                         nsIDOMNode* node, 
@@ -3011,8 +3012,8 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 {
   printf("\nFindCursor\n");
   editor->DumpNode(node, 2*level, true);
+  
   int count = 0;
-
 
   if (editor->IsTextNode(node)) {
 
@@ -3031,7 +3032,6 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
       PRUint32 dontcare(0);
       PRUint32 mathmltype;
 
-      
       nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
 
       nsCOMPtr<nsIDOMNodeList> childList;
@@ -3055,9 +3055,8 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
         }
       }
 
-      if (node == caretNode){    
-         numChildren = caretOffset;
-         done = true;
+      if (node == caretNode) {    
+         numChildren = caretOffset;   // we'll only have to look at this many
       }
 
       nsCOMPtr<nsIDOMNode> child;
@@ -3065,19 +3064,26 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
       for (int i = 0; i < numChildren; ++i) {
         msiUtils::GetChildNode(node, i, child);
 
-        
-        count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
-
         msiUtils::GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
+        
         if (editingBC) {
           mathmltype = msiUtils::GetMathmlNodeType(editingBC);
         }
 
         if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
-          count += 1;  // to distinguish numerator from denominator
+          // Passing into a denominator
+          count += 1;  
         }
+        
+        int n = FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);        
+        count += n;
+
         if (done)
           break;
+        
+      }
+      if (node == caretNode) {    
+         done = true;
       }
       printf("\nReturn sum %d", count);
       return count;
