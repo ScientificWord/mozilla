@@ -40,6 +40,34 @@
 				<em:maxVersion>0.3</em:maxVersion>
 			</Description>
 		</em:targetApplication>
+    
+		<!-- target: SWP, version 6.0 -->
+		<em:targetApplication>
+			<Description>
+				<em:id>ScientificWorkPlace@mackichan.com</em:id>
+				<em:minVersion>6.0</em:minVersion>
+				<em:maxVersion>6.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
+		<!-- target: SW, version 6.0 -->
+		<em:targetApplication>
+			<Description>
+				<em:id>ScientificWord@mackichan.com</em:id>
+				<em:minVersion>6.0</em:minVersion>
+				<em:maxVersion>6.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
+		<!-- target: SWP, version 6.0 -->
+		<em:targetApplication>
+			<Description>
+				<em:id>ScientificNotebook@mackichan.com</em:id>
+				<em:minVersion>6.0</em:minVersion>
+				<em:maxVersion>6.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
 
 		<!-- front-end metadata -->
 		<em:name>JavaScript Debugger</em:name>

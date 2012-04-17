@@ -450,7 +450,7 @@ interface nsIEditor  : nsISupports
   nsIDOMNode createNode(in AString tag,
                         in nsIDOMNode parent,
                         in long position);
-
+  
   /** 
    * insertNode inserts aNode into aParent at aPosition.
    * No checking is done to verify the legality of the insertion.

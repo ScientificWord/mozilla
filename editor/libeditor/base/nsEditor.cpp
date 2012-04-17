@@ -118,6 +118,7 @@
 #include "nsINameSpaceManager.h"
 #include "nsIHTMLDocument.h"
 #include "nsIParserService.h"
+#include "nsHTMLEditUtils.h"
 //ljh
 #include "msiIEditActionListenerExtension.h"
 
@@ -1553,29 +1554,91 @@ NS_IMETHODIMP nsEditor::CreateNode(const nsAString& aTag,
   return result;
 }
 
+NS_IMETHODIMP 
+nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNode>& parent, PRInt32 aPosition, PRInt32 *_retval)
+{
+  nsresult res = NS_OK;
+  nsAutoString tagName;
+  nsAutoString tagclass;
+  nsCOMPtr<nsIDOMNode> topChild(parent);
+  nsCOMPtr<nsIDOMNode> tmp;
+  PRInt32 offsetOfInsert = aPosition;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)this);
+  if (!htmlEditor) return -1;
+  nsCOMPtr<msiITagListManager> tlm;
+  htmlEditor->GetTagListManager(getter_AddRefs(tlm));
+  node->GetNodeName(tagName);
+  tlm->GetClassOfTag(tagName, nsnull, tagclass);
+    // Search up the parent chain to find a suitable container  
+  while (!CanContainTag(parent, tagName))
+  {
+    // If the current parent is a root (body or table element)
+    // then go no further - we can't insert. See if interposing a default paragraph helps.
+    if (nsTextEditUtils::IsBody(parent) || nsHTMLEditUtils::IsTableElement(parent, tlm))
+    {  
+      nsString defPara;
+      nsIAtom * atomDummy;
+      tlm->GetDefaultParagraphTag(&atomDummy, defPara);
+      if (!CanContainTag(parent, defPara))  
+      {  
+        return NS_ERROR_FAILURE;
+      }
+      // else insert the default paragraph
+      nsCOMPtr<nsIDOMElement> para;
+      nsCOMPtr<nsIDOMNode> inserted;
+      htmlEditor->CreateElementWithDefaults(defPara, getter_AddRefs(para));
+      res = para->AppendChild(node, getter_AddRefs(inserted)); // put node in paragraph
+      // and now put para in place of aNode
+      node = para;
+      tagName = defPara;
+      break;
+    }
+    else
+    {
+      // Get the next parent
+      parent->GetParentNode(getter_AddRefs(tmp));
+      NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
+      topChild = parent;
+      parent = tmp;
+    }
+  }
+  if (parent != topChild)
+  {
+    // we need to split some levels above the original selection parent
+    res = SplitNodeDeep(topChild, parent, offsetOfInsert, &offsetOfInsert, PR_TRUE);
+    if (NS_FAILED(res))
+      return -1;
+  }
+  *_retval = offsetOfInsert;
+} 
+
 
 NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
                                    nsIDOMNode * aParent,
                                    PRInt32      aPosition)
 {
   PRInt32 i;
+  PRInt32 offset = aPosition;
+  nsresult result;
   nsAutoRules beginRulesSniffing(this, kOpInsertNode, nsIEditor::eNext);
+//  InsertBufferNodeIfNeeded((nsIDOMNode **)&aNode, (nsIDOMNode **)&aParent, aPosition, &offset);
+  if (offset >= 0)
+  {
+    for (i = 0; i < mActionListeners.Count(); i++)
+      mActionListeners[i]->WillInsertNode(aNode, aParent, aPosition);
 
-  for (i = 0; i < mActionListeners.Count(); i++)
-    mActionListeners[i]->WillInsertNode(aNode, aParent, aPosition);
+    nsRefPtr<InsertElementTxn> txn;
+    result = CreateTxnForInsertElement(aNode, aParent, aPosition,
+                                                getter_AddRefs(txn));
+    if (NS_SUCCEEDED(result))  {
+      result = DoTransaction(txn);  
+    }
 
-  nsRefPtr<InsertElementTxn> txn;
-  nsresult result = CreateTxnForInsertElement(aNode, aParent, aPosition,
-                                              getter_AddRefs(txn));
-  if (NS_SUCCEEDED(result))  {
-    result = DoTransaction(txn);  
+    mRangeUpdater.SelAdjInsertNode(aParent, aPosition);
+
+    for (i = 0; i < mActionListeners.Count(); i++)
+      mActionListeners[i]->DidInsertNode(aNode, aParent, aPosition, result);
   }
-
-  mRangeUpdater.SelAdjInsertNode(aParent, aPosition);
-
-  for (i = 0; i < mActionListeners.Count(); i++)
-    mActionListeners[i]->DidInsertNode(aNode, aParent, aPosition, result);
-
   return result;
 }
 
