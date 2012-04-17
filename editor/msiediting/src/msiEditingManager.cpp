@@ -693,7 +693,7 @@ msiEditingManager::InsertMath(nsIEditor * editor,
         nsCOMPtr<nsIDOMNode> tempparent = node;
         nsString localName;  
         res = tempparent->GetLocalName(localName);
-        if (!localName.Equals(strmsidisplay))
+        if (!localName.EqualsLiteral("body") && !localName.Equals(strmsidisplay))
         {
           res = tempparent->GetParentNode(getter_AddRefs(tempparent));
           res = tempparent->GetLocalName(localName);
@@ -703,7 +703,7 @@ msiEditingManager::InsertMath(nsIEditor * editor,
             res = tempparent->GetLocalName(localName);
           }
         }
-        if (localName.Equals(strmsidisplay)) // parent or grandparent is "msidisplay", change node and offset
+        if (!localName.EqualsLiteral("body") && localName.Equals(strmsidisplay)) // parent or grandparent is "msidisplay", change node and offset
         {
           left = nsnull;
           right = nsnull;
@@ -714,20 +714,26 @@ msiEditingManager::InsertMath(nsIEditor * editor,
       }
       if (NS_SUCCEEDED(res) && mathNode)
       {
-        if (left)
-          res = editor->ReplaceNode(left, node, parent);
-        res = htmlEditor->InsertNodeAtPoint(mathNode, (nsIDOMNode**)address_of(parent), (PRInt32*)&offset, true);
-        if (right) {
-          offset++;
-          res = htmlEditor->InsertNodeAtPoint(right, (nsIDOMNode**)address_of(parent), (PRInt32*)&offset, true);
+        if (offset >= 0){
+          if (left)
+            res = editor->ReplaceNode(left, node, parent);
+          if (isDisplay)
+          {
+            nsCOMPtr<nsIDOMElement> msidisplay;
+            nsCOMPtr<nsIDOMNode> inserted;
+            htmlEditor->CreateElementWithDefaults(strmsidisplay, getter_AddRefs(msidisplay));
+            res = msidisplay->AppendChild(mathNode, getter_AddRefs(inserted)); // put node in msidisplay
+            // and now put display in place of node
+            mathNode = msidisplay;
+          }
+          res = htmlEditor->InsertNodeAtPoint(mathNode, (nsIDOMNode **)address_of(parent), (PRInt32*)&offset, true);
+          if (right) {
+            offset++;
+            res = htmlEditor->InsertNodeAtPoint(right,(nsIDOMNode **)address_of(parent), (PRInt32*)&offset, true);
+          }
+          if (NS_SUCCEEDED(res))
+            msiUtils::doSetCaretPosition(editor, selection, mathNode);
         }
-        if (isDisplay)
-        {
-          nsCOMPtr<nsIDOMNode> msidisplay;
-          static_cast<nsEditor*>(editor)->InsertContainerAbove(mathNode, address_of(msidisplay), strmsidisplay , nsnull, nsnull);
-        }
-        if (NS_SUCCEEDED(res))
-          msiUtils::doSetCaretPosition(editor, selection, mathNode);
       }
     }  
   }  
