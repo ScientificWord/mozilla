@@ -283,18 +283,21 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
 
               printf("plotOK is true\n");
               plotfile = do_CreateInstance("@mozilla.org/file/local;1", &rv);
-              for (int i =0; i<100000;i++);
+//              for (int i =0; i<100000;i++);
+              if (zeng_output && *zeng_output)
+              {
                 rv = engOutput->InitWithNativePath( nsDependentCString(zeng_output) );
                 if (rv) printf("engOutput->InitWithNativePath failed: %h\n", rv);
-              rv = plotfile->InitWithNativePath( nsDependentCString(plotfilename) );
-              if (rv) printf("plotfile->InitWithNativePath failed\n");
-              plotfile->GetParent( getter_AddRefs(destdirectory));
-              plotfile->GetLeafName( strLeafName );
-              rv = plotfile->Remove(PR_FALSE);
-              if (rv) printf("plotfile->Remove failed\n");              
-              rv = engOutput->CopyTo( destdirectory, strLeafName );
-              if (rv != NS_OK) printf("File not ready to copy!\n");
-              plotOK = (rv == NS_OK);
+                rv = plotfile->InitWithNativePath( nsDependentCString(plotfilename) );
+                if (rv) printf("plotfile->InitWithNativePath failed\n");
+                plotfile->GetParent( getter_AddRefs(destdirectory));
+                plotfile->GetLeafName( strLeafName );
+                rv = plotfile->Remove(PR_FALSE);
+                if (rv) printf("plotfile->Remove failed\n");              
+                rv = engOutput->CopyTo( destdirectory, strLeafName );
+                if (rv != NS_OK) printf("File not ready to copy!\n");
+                plotOK = (rv == NS_OK);
+              }
           }   
 #endif          
           // plotOK = RenderPlot(zeng_output, plotfilename);
