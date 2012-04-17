@@ -82,7 +82,7 @@ interface msiIEditingManager : nsISupports
 
  
   /**
-   * Call insertMath to create inline or dispaly mathml math tag. In some cases this may just
+   * Call insertMath to create inline or display mathml math tag. In some cases this may just
    * absorb the caret to the left or right into an existing math tag.
   */
   void insertMath(in nsIEditor editor,
