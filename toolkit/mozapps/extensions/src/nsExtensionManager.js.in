@@ -3499,7 +3499,7 @@ ExtensionManager.prototype = {
    *          the application must now be restarted to reinitialize XPCOM,
    *          false otherwise.
    */
-  checkForMismatches: function() {
+  checkForMismatches: function() { return false;  // BBM
     // Check to see if the version of the application that is being started
     // now is the same one that was started last time.
     var currAppVersion = gApp.version;
