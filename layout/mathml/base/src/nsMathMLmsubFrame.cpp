@@ -331,8 +331,9 @@ nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, 
   {
     // leaving superscript. Place the cursor just after the base.
     count= 0;
-    pMCM = do_QueryInterface(pChild);
-    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    PlaceCursorAfter(pChild, PR_TRUE, aOutFrame, aOutOffset, count);
+    //pMCM = do_QueryInterface(pChild);
+    //if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
    *_retval = 0;
   }
   return NS_OK;  
