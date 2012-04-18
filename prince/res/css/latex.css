@@ -191,6 +191,7 @@ deleted {
 
 centeredEnv, centered {
   text-align: center;
+  -moz-user-select: text;
 }
 
 newPageRule {
