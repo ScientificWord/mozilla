@@ -1,0 +1,10 @@
+#include "nsISupports.idl"
+
+interface msiIUtil;
+interface nsIFile;
+
+[scriptable, uuid(553C0D24-9C96-461B-9A7f-f9DB1EB7CC96)]
+interface msiIUtil: nsISupports
+{
+  boolean SynchronousFileCopy(in nsIFile inFile, in nsIFile outFile);
+};

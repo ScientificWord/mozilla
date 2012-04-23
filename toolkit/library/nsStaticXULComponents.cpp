@@ -232,6 +232,7 @@
     MODULE(satchel)                          \
     MODULE(PKI)								 \
     MODULE(tkautosubModule)                  \
+    MODULE(msiUtil)                          \
     MODULE(keymapModule)                     \
     MODULE(arrowstateModule)                 \
     MODULE(simplecomputeengine2Module)		 \
