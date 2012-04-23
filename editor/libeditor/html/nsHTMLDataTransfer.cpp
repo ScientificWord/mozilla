@@ -338,13 +338,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                    &streamStartOffset,
                                    &streamEndOffset);
 
-// #if DEBUG_barry || DEBUG_Barry
-//   printf("\nFragment As Node:\n");
-//   DumpNode(fragmentAsNode, 0, true);
-// #endif
-  
   NS_ENSURE_SUCCESS(res, res);
-//  DumpNode(fragmentAsNode);
   nsCOMPtr<nsIDOMNode> targetNode, tempNode;
   PRInt32 targetOffset=0;
 
@@ -373,6 +367,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                 (nsIDOMNode **)address_of(targetNode), 
                                 &targetOffset, &doContinue);
 
+  printf("Out of DoContentFilterCallback\n");
   NS_ENSURE_SUCCESS(res, res);
   if (!doContinue)
     return NS_OK;
@@ -616,6 +611,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         curNode->GetFirstChild(getter_AddRefs(child));
         while (child)
         {
+          printf("Inserting nodeds\n");
           res = InsertNodeAtPoint(child, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
           if (NS_SUCCEEDED(res)) 
           {
@@ -1959,14 +1955,16 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
                 dir->Exists(&fExists);
 
                 if (!fExists) dir->Create(1,0755);
+                
+                
                 fileObj->CopyTo(dir, NS_LITERAL_STRING(""));
 
-                stuffToPaste.AssignLiteral("<img xmlns=\"http://www.w3.org/1999/xhtml\" src=\"");
+                stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
                 stuffToPaste.AppendLiteral("graphics/");
                 unescaped = strdup(fileName.get());
                 nsUnescape(unescaped);
                 AppendUTF8toUTF16(unescaped, stuffToPaste);
-                stuffToPaste.AppendLiteral("\" alt=\"\"></img>");
+                stuffToPaste.AppendLiteral("\" alt=\"\"></object>");
               }
               else // insertAsLink
               {

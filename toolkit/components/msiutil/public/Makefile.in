@@ -1,0 +1,14 @@
+DEPTH=../../../..
+topsrcdir=@top_srcdir@
+srcdir=@srcdir@
+VPATH=@srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE = msiutil
+XPIDL_MODULE = msiutil
+
+XPIDLSRCS	= msiIUtil.idl \
+            $(NULL)
+
+include $(topsrcdir)/config/rules.mk
