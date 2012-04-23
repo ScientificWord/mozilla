@@ -26,16 +26,17 @@ REQUIRES = xpcom \
 		   gfx \
 		   thebes \
 		   widget \
-           view \
-           msiediting \
-           js \
-           xpconnect \
-           txtsvc  \
-           autosub \
+       view \
+       msiediting \
+       js \
+       xpconnect \
+       txtsvc  \
+       autosub \
 		   scriptrunner \
 		   keymap \
 		   compute \
 		   arrowstate \
+       msiutil \
 		   $(NULL)
 
 

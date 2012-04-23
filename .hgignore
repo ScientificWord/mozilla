@@ -2,6 +2,7 @@ glob:.mozconfig.*
 glob:*/.DS_Store
 glob:.DS_Store
 glob:NONE
+glob:*.out
 glob:*.bak
 glob:security/manager/.nss.checkout
 glob:config/Expression.pyc
@@ -23,5 +24,6 @@ glob:*.rej
 glob:extensions/firebug/*
 glob:extensions/chromebug/*
 .tm_properties
+.tmhotkeys
 mozilla\.mchg
 myports\.txt

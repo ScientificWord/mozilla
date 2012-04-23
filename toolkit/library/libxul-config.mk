@@ -258,6 +258,7 @@ COMPONENT_LIBS += \
   compeng2 \
   tkautosub \
   arrowstate \
+  msiutil \
   keymap \
 	satchel \
 	pippki \

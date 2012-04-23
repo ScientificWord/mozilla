@@ -69,6 +69,7 @@ REQUIRES	= xpcom \
 		  scriptrunner \
 		  keymap \
 		  arrowstate \
+      msiutil \
       compute \
 		  $(NULL)
 

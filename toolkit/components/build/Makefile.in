@@ -64,6 +64,7 @@ REQUIRES = 	\
 		intl \
 		docshell \
 		autosub \
+    msiutil \
 		autocomplete \
 		compute \
 		keymap \
@@ -109,6 +110,7 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../Compute/public \
   -I$(srcdir)/../Compute/computelib \
 	-I$(srcdir)/../autosub/src \
+	-I$(srcdir)/../msiutil/src \
 	-I$(srcdir)/../autocomplete/src \
 	-I$(srcdir)/../keymap/src \
 	-I$(srcdir)/../arrowstate/src \
