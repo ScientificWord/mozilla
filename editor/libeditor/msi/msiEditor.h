@@ -13,6 +13,7 @@
 #include "msiISelection.h"
 #include "msiIAutosub.h"
 #include "nsIContentFilter.h"
+#include "nsITimer.h"
 
 class msiEditorMouseListener;
 class msiISelection;
@@ -143,8 +144,13 @@ public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSICONTENTFILTER
   msiContentFilter( nsIEditor * editor);
+  NS_IMETHOD copyfiles( nsIDocument * srcDoc,nsIDocument * doc, nsIDOMNodeList * objnodes, PRUint32 count);
+
+  static void SetDataFromTimer(nsITimer *aTimer, void *closure);
+  void ClearTimerList();
 private:
   nsIEditor * m_editor;
+  nsCOMArray<nsITimer> m_timerlist;
   ~msiContentFilter();
 protected:
 };
