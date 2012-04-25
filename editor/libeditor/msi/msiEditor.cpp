@@ -51,6 +51,7 @@
 #include "nsEscape.h"
 #include "nsIURI.h"
 #include "nsIURL.h"
+#include "msiIUtil.h"
 //#include "msiEditingManager.h"
 
 static PRInt32 instanceCounter = 0;
@@ -3784,9 +3785,11 @@ NS_IMPL_ISUPPORTS1(msiContentFilter, nsIContentFilter)
 msiContentFilter::msiContentFilter(nsIEditor * editor)
 {
   m_editor = editor;
+  nsCOMArray<nsITimer> m_timerlist;
+  printf("&d\n", 0);
 }
 
-nsresult copyfiles( 
+NS_IMETHODIMP msiContentFilter::copyfiles( 
   nsIDocument * srcDoc,
   nsIDocument * doc,
   nsIDOMNodeList * objnodes, PRUint32 count)
@@ -3832,6 +3835,7 @@ nsresult copyfiles(
       PRInt32 newIndex = 0;
       PRInt32 length = dataPath.Length();
       PRBool fIsDirectory;
+      nsAutoString leafname;
       while (index < length) {  // don't do this for the final leaf; destFile should be a directory
         newIndex = dataPath.FindChar(slash,index);
         if (newIndex == -1) newIndex = length;
@@ -3847,24 +3851,74 @@ nsresult copyfiles(
         srcFile->Append(substring);
       }
       // now we are ready to copy from srcFile to destFile
-      res = srcFile->CopyTo(destFile, EmptyString());
+      res = srcFile->GetLeafName(leafname);
+      res = destFile->Append(leafname);
+      nsCOMPtr<msiIUtil> utils = do_GetService("@mackichan.com/msiutil;1", &res);
+      PRBool success;
+      res = utils->SynchronousFileCopy(srcFile, destFile, &success);
+      // set data attribute using a timer.
+      nsCOMPtr<nsITimer> timer = do_CreateInstance("@mozilla.org/timer;1");
+      if (!timer) {
+        return NS_OK;
+      }
+      timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, (void*)elem, 200,
+                                    nsITimer::TYPE_ONE_SHOT);
+      m_timerlist.AppendObject(timer); 
+      
     }
     // the following doesn't seem to make any difference
+//    elem->HasAttribute(NS_LITERAL_STRING("data"), &fExists);
+//    if (fExists) {
+//      elem->RemoveAttribute(NS_LITERAL_STRING("data"));
+//      elem->SetAttribute(NS_LITERAL_STRING("data"), dataPath);
+//    }
+//    elem->HasAttribute(NS_LITERAL_STRING("src"), &fExists);
+//    if (fExists) {
+//      elem->RemoveAttribute(NS_LITERAL_STRING("src"));
+//      elem->SetAttribute(NS_LITERAL_STRING("src"), dataPath);
+//    }
+  }
+}
+
+void msiContentFilter::SetDataFromTimer(nsITimer *aTimer, void *closure)
+{
+  if (closure) {
+    nsIDOMElement * elem = static_cast<nsIDOMElement*>(closure);
+    PRBool fExists;
+    nsAutoString dataPath;
     elem->HasAttribute(NS_LITERAL_STRING("data"), &fExists);
     if (fExists) {
+      elem->GetAttribute(NS_LITERAL_STRING("data"), dataPath);
       elem->RemoveAttribute(NS_LITERAL_STRING("data"));
       elem->SetAttribute(NS_LITERAL_STRING("data"), dataPath);
     }
     elem->HasAttribute(NS_LITERAL_STRING("src"), &fExists);
     if (fExists) {
+      elem->GetAttribute(NS_LITERAL_STRING("src"), dataPath);
       elem->RemoveAttribute(NS_LITERAL_STRING("src"));
-      elem->SetAttribute(NS_LITERAL_STRING("srcq"), dataPath);
+      elem->SetAttribute(NS_LITERAL_STRING("src"), dataPath);
     }
   }
 }
 
 msiContentFilter::~msiContentFilter()
 {
+  ClearTimerList();
+}
+
+void msiContentFilter::ClearTimerList()
+{
+  if (m_timerlist.Count() == 0)
+      return;
+
+  PRUint32 n = m_timerlist.Count();
+  PRUint32 i;
+  for (i=0; i<n; ++i) {
+    nsCOMPtr<nsITimer> timer = m_timerlist[i];
+    if (timer)
+        timer->Cancel();        
+  }
+  m_timerlist.Clear();
 }
 
 NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
@@ -3883,6 +3937,7 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
 {
   nsresult res;
   nsCOMPtr<nsIDOMDocument> domDoc;
+  ClearTimerList();
   m_editor->GetDocument(getter_AddRefs(domDoc));
   nsCOMPtr<nsIDocument> srcDoc = do_QueryInterface(sourceDocument);
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);

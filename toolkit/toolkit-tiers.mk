@@ -139,6 +139,7 @@ tier_gecko_dirs	+= \
 		toolkit/components/Compute/public \
 		toolkit/components/arrowstate/public \
 		toolkit/components/autosub/public \
+		toolkit/components/msiutil/public \
 		editor \
 		layout \
 		docshell \
