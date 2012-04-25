@@ -70,6 +70,7 @@
 #include "nsAutoCompleteSimpleResult.h"
 #include "nsAutoCompleteStringArray.h"
 #include "msiAutosub.h"
+#include "msiUtil.h"
 #include "msiSimpleComputeEngine2.h"
 #include "msiKeyMap.h"
 #include "msiArrowStateService.h"
@@ -131,6 +132,7 @@ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsAutoCompleteSearchStringArray, nsAuto
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteMdbResult)
 #endif
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiUtil, msiUtil::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
 
@@ -227,6 +229,11 @@ static const nsModuleComponentInfo components[] =
    MSI_AUTOSUBSTITUTE_CID ,
    MSI_AUTOSUBSTITUTE_CONTRACTID,
    msiAutosubConstructor },
+                                      
+ { "msiUtil",
+   MSI_UTIL_CID ,
+   MSI_UTIL_CONTRACTID,
+   msiUtilConstructor },
    
  { "SimpleComputeEngine",
    MSI_SIMPLECOMPUTEENGINE2_CID ,
