@@ -66,6 +66,7 @@ REQUIRES	= xpcom \
 		  widget \
 		  unicharutil \
 		  commandhandler \
+      msiutil \
 		  docshell \
 		  $(NULL)
 

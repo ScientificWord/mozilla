@@ -105,6 +105,7 @@ DIRS += \
 	scriptrunner \
 	arrowstate \
 	satchel \
+  msiutil \
 	$(NULL)
 endif # MOZ_XUL
 
