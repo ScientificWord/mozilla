@@ -8225,7 +8225,7 @@ function msiDoAdvancedProperties(element, editorElement)
     }      
     else
     {
-      dlgParentWindow.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "advedit", "chrome,close,titlebar,modal,resizable=yes", "", element);
+      dlgParentWindow.openDialog("chrome://editor/content/ç.xul", "advedit", "chrome,close,titlebar,modal,resizable=yes", "", element);
       editorElement.contentWindow.focus();
     }
   }
