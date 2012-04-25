@@ -3794,6 +3794,7 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
   nsIDocument * doc,
   nsIDOMNodeList * objnodes, PRUint32 count)
 {
+  if (!srcDoc) return NS_OK; // copying to same document
   nsresult res;
   nsString dataPath;
   nsCOMPtr<nsIURL> destURL;
@@ -3937,6 +3938,7 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
 {
   nsresult res;
   nsCOMPtr<nsIDOMDocument> domDoc;
+  if (!sourceDocument) return NS_OK; // Apparently this means src and dest are same document.
   ClearTimerList();
   m_editor->GetDocument(getter_AddRefs(domDoc));
   nsCOMPtr<nsIDocument> srcDoc = do_QueryInterface(sourceDocument);
