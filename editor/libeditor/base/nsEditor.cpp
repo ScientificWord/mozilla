@@ -1562,7 +1562,6 @@ nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNod
   nsAutoString tagclass;
   nsCOMPtr<nsIDOMNode> topChild(parent);
   nsCOMPtr<nsIDOMNode> tmp;
-  nsCOMPtr<nsIDOMNode> ptr(parent);
   PRInt32 offsetOfInsert = aPosition;
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)this);
   if (!htmlEditor) return -1;
@@ -1571,16 +1570,16 @@ nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNod
   node->GetNodeName(tagName);
   tlm->GetClassOfTag(tagName, nsnull, tagclass);
     // Search up the parent chain to find a suitable container  
-  while (!CanContainTag(ptr, tagName))
+  while (!CanContainTag(parent, tagName))
   {
     // If the current parent is a root (body or table element)
     // then go no further - we can't insert. See if interposing a default paragraph helps.
-    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm))
+    if (nsTextEditUtils::IsBody(parent) || nsHTMLEditUtils::IsTableElement(parent, tlm))
     {  
       nsString defPara;
       nsIAtom * atomDummy;
       tlm->GetDefaultParagraphTag(&atomDummy, defPara);
-      if (!CanContainTag(ptr, defPara))  
+      if (!CanContainTag(parent, defPara))  
       {  
         return NS_ERROR_FAILURE;
       }
@@ -1597,20 +1596,19 @@ nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNod
     else
     {
       // Get the next parent
-      ptr->GetParentNode(getter_AddRefs(tmp));
+      parent->GetParentNode(getter_AddRefs(tmp));
       NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
-      topChild = ptr;
-      ptr = tmp;
+      topChild = parent;
+      parent = tmp;
     }
   }
-  if (ptr != topChild)
+  if (parent != topChild)
   {
     // we need to split some levels above the original selection parent
     res = SplitNodeDeep(topChild, parent, offsetOfInsert, &offsetOfInsert, PR_TRUE);
     if (NS_FAILED(res))
       return -1;
   }
-  parent = ptr;
   *_retval = offsetOfInsert;
 } 
 
