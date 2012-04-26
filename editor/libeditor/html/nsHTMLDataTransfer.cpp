@@ -152,7 +152,7 @@ static NS_DEFINE_CID(kCParserCID,     NS_PARSER_CID);
 #define kHTMLContext   "text/_moz_htmlcontext"
 #define kHTMLInfo      "text/_moz_htmlinfo"
 #define kInsertCookie  "_moz_Insert Here_moz_"
-
+#define kURLPrivateMime  "text/x-moz-url-priv"   // same as kURLDataMime but for private uses
 #define NS_FOUND_TARGET NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR, 3)
 
 // some little helpers
@@ -2007,7 +2007,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       NS_ENSURE_TRUE(imageStream, NS_ERROR_FAILURE);
 
       nsCOMPtr<nsIFile> fileToUse;
-      NS_GetSpecialDirectory(NS_OS_TEMP_DIR, getter_AddRefs(fileToUse));
+      NS_GetSpecialDirectory(NS_OS_TEMP_DIR, getter_AddRefs(fileToUse)); //BBM change this
       fileToUse->Append(NS_LITERAL_STRING("moz-screenshot.jpg"));
       nsCOMPtr<nsILocalFile> path = do_QueryInterface(fileToUse);
       path->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0600);
@@ -2484,7 +2484,7 @@ NS_IMETHODIMP nsHTMLEditor::Paste(PRInt32 aSelectionType)
         infoTrans->AddDataFlavor(kHTMLInfo);
         clipboard->GetData(infoTrans, aSelectionType);
         infoTrans->GetTransferData(kHTMLInfo, getter_AddRefs(infoDataObj), &infoLen);
-        
+                
         if (contextDataObj)
         {
           nsAutoString text;
@@ -2501,7 +2501,7 @@ NS_IMETHODIMP nsHTMLEditor::Paste(PRInt32 aSelectionType)
           textDataObj->GetData(text);
           NS_ASSERTION(text.Length() <= (infoLen/2), "Invalid length!");
           infoStr.Assign(text.get(), infoLen / 2);
-        }
+        }        
       }
 
       // handle transferable hooks
