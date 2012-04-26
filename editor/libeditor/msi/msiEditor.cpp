@@ -3789,6 +3789,25 @@ msiContentFilter::msiContentFilter(nsIEditor * editor)
   printf("&d\n", 0);
 }
 
+
+PRBool IsRelativePath(const nsString& path)
+{
+  nsAString::const_iterator start, end;
+
+  path.BeginReading(start);
+  path.EndReading(end);
+
+  NS_NAMED_LITERAL_STRING(valuePrefix, "://");
+
+  if (FindInReadable(valuePrefix, start, end)) {
+      // end now points to the character after the pattern
+      return PR_FALSE;
+
+  }
+  return PR_TRUE;
+}
+
+
 NS_IMETHODIMP msiContentFilter::copyfiles( 
   nsIDocument * srcDoc,
   nsIDocument * doc,
@@ -3797,6 +3816,7 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
   if (!srcDoc) return NS_OK; // copying to same document
   nsresult res;
   nsString dataPath;
+  nsAutoString leafname;
   nsCOMPtr<nsIURL> destURL;
   nsCOMPtr<nsIURL> srcURL;
   nsCOMPtr<nsIURI> destURI;
@@ -3814,11 +3834,15 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
   if (dataPath.Length() == 0)
     elem->GetAttribute(NS_LITERAL_STRING("src"), dataPath);
   if (dataPath.Length() > 0) {
-    if ( PR_TRUE) { //IsRelativePath(dataPath)) {
+    if ( PR_TRUE) { 
+      if (IsRelativePath(dataPath))
+      {
+        if (!srcDoc) return NS_ERROR_FAILURE;
+        srcURI = srcDoc->GetDocumentURI();
+//        dataPath = srcURI->Resolve(dataPath);
+      }
       destURI = doc->GetDocumentURI();
-      srcURI = srcDoc->GetDocumentURI();
       destURL = do_QueryInterface(destURI);
-      srcURL = do_QueryInterface(srcURI);
       nsCAutoString dirPath;
       res = destURL->GetDirectory(dirPath);
       char * unescaped = strdup(dirPath.get());
@@ -3836,21 +3860,20 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
       PRInt32 newIndex = 0;
       PRInt32 length = dataPath.Length();
       PRBool fIsDirectory;
-      nsAutoString leafname;
-      while (index < length) {  // don't do this for the final leaf; destFile should be a directory
-        newIndex = dataPath.FindChar(slash,index);
-        if (newIndex == -1) newIndex = length;
-        substring = Substring(dataPath, index, newIndex - index);
-        index = newIndex + 1;
-        if (index < length) {
-          destFile->Append(substring);
-          destFile->Exists(&fExists);
-          if (!fExists) {
-            destFile->Create((index < length? 1 : 0), 0755);
-          }
-        }
-        srcFile->Append(substring);
-      }
+//      while (index < length) {  // don't do this for the final leaf; destFile should be a directory
+//        newIndex = dataPath.FindChar(slash,index);
+//        if (newIndex == -1) newIndex = length;
+//        substring = Substring(dataPath, index, newIndex - index);
+//        index = newIndex + 1;
+//        if (index < length) {
+//          destFile->Append(substring);
+//          destFile->Exists(&fExists);
+//          if (!fExists) {
+//            destFile->Create((index < length? 1 : 0), 0755);
+//          }
+//        }
+//        srcFile->Append(substring);
+//      }
       // now we are ready to copy from srcFile to destFile
       res = srcFile->GetLeafName(leafname);
       res = destFile->Append(leafname);

@@ -46,7 +46,6 @@
 class nsVoidArray;
 class nsString;
 class nsDataObj;
-class nsVoidArray;
 
 
 /**
