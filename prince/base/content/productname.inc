@@ -1,1 +1,1 @@
-#define PROD_SNB
+#define PROD_SWP
