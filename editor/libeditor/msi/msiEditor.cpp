@@ -3786,7 +3786,6 @@ msiContentFilter::msiContentFilter(nsIEditor * editor)
 {
   m_editor = editor;
   nsCOMArray<nsITimer> m_timerlist;
-  printf("&d\n", 0);
 }
 
 
@@ -3796,50 +3795,91 @@ PRBool IsRelativePath(const nsString& path)
 
   path.BeginReading(start);
   path.EndReading(end);
-
+  if (*start == '/') return PR_FALSE;
   NS_NAMED_LITERAL_STRING(valuePrefix, "://");
 
   if (FindInReadable(valuePrefix, start, end)) {
-      // end now points to the character after the pattern
-      return PR_FALSE;
+    return PR_FALSE;
 
   }
+  
   return PR_TRUE;
 }
+
+//typedef struct {
+//    nsCOMPtr<nsIDOMElement> elem;
+//    nsEditor * ed;
+//} str;
 
 
 NS_IMETHODIMP msiContentFilter::copyfiles( 
   nsIDocument * srcDoc,
   nsIDocument * doc,
-  nsIDOMNodeList * objnodes, PRUint32 count)
+  nsIDOMNodeList * objnodes, 
+  nsIDOMNode * anode,
+  PRUint32 count)
 {
-  if (!srcDoc) return NS_OK; // copying to same document
   nsresult res;
-  nsString dataPath;
+  nsAutoString dataPath;
+  nsAutoString absPath;
   nsAutoString leafname;
+  nsAutoString srcDirName;
+  nsAutoString attr;
   nsCOMPtr<nsIURL> destURL;
   nsCOMPtr<nsIURL> srcURL;
   nsCOMPtr<nsIURI> destURI;
   nsCOMPtr<nsIURI> srcURI;
   nsCOMPtr<nsILocalFile> srcFile;
+  nsCOMPtr<nsIFile> srcFileClone;
   nsCOMPtr<nsILocalFile> destFile;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMElement> elem;
   PRBool fExists;
-  // get the objects with relative paths for the data attribute
-  res = objnodes->Item(count, getter_AddRefs(node));
+  // get the data attribute from each <object>
+  if (objnodes) {
+    res = objnodes->Item(count, getter_AddRefs(node));
+  }
+  else {
+    node = anode;
+  }
   elem = do_QueryInterface(node);
+  if (srcDoc == doc) {
+    // nothing to do, except make sure recently copied files show up
+    // if copying a graphic from another document, we have written a file to 
+    // the document directory tree, but it may not be ready to show up yet.
+    nsCOMPtr<nsITimer> timer = do_CreateInstance("@mozilla.org/timer;1");
+    if (!timer) {
+      return NS_OK;
+    }
+//    str * mystruct = new str();
+//    mystruct->elem = elem;
+//    mystruct->ed = static_cast<nsEditor*>(m_editor);
+    timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, static_cast<void*>(elem), 200,
+                                  nsITimer::TYPE_ONE_SHOT);
+    m_timerlist.AppendObject(timer); 
+    return NS_OK;
+  }
+  
   NS_ENSURE_SUCCESS(res, res);
-  elem->GetAttribute(NS_LITERAL_STRING("data"), dataPath);
-  if (dataPath.Length() == 0)
-    elem->GetAttribute(NS_LITERAL_STRING("src"), dataPath);
+  attr = NS_LITERAL_STRING("data");
+  elem->GetAttribute(attr, dataPath);
+  if (dataPath.Length() == 0) {
+    attr = NS_LITERAL_STRING("src");
+    elem->GetAttribute(attr, dataPath);
+  }
   if (dataPath.Length() > 0) {
-    if ( PR_TRUE) { 
       if (IsRelativePath(dataPath))
       {
         if (!srcDoc) return NS_ERROR_FAILURE;
         srcURI = srcDoc->GetDocumentURI();
-//        dataPath = srcURI->Resolve(dataPath);
+        srcURL = do_QueryInterface(srcURI);
+        nsCAutoString dirPath;
+        res = srcURL->GetDirectory(dirPath);
+        absPath.Truncate(0);
+        AppendASCIItoUTF16(dirPath, absPath);
+        absPath.Append(dataPath);
+        dataPath = absPath;
+        // now dataPath is an absolute path
       }
       destURI = doc->GetDocumentURI();
       destURL = do_QueryInterface(destURI);
@@ -3849,34 +3889,22 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
       nsUnescape(unescaped);
       dirPath.Assign(unescaped, PR_UINT32_MAX); 
       res = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(destFile));
-      res = srcURL->GetDirectory(dirPath);
-      unescaped = strdup(dirPath.get());
-      nsUnescape(unescaped);
-      dirPath.Assign(unescaped, PR_UINT32_MAX); 
-      res = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(srcFile));
-      nsAutoString substring;
-      PRUnichar slash = '/';
-      PRInt32 index = 0;
-      PRInt32 newIndex = 0;
-      PRInt32 length = dataPath.Length();
-      PRBool fIsDirectory;
-//      while (index < length) {  // don't do this for the final leaf; destFile should be a directory
-//        newIndex = dataPath.FindChar(slash,index);
-//        if (newIndex == -1) newIndex = length;
-//        substring = Substring(dataPath, index, newIndex - index);
-//        index = newIndex + 1;
-//        if (index < length) {
-//          destFile->Append(substring);
-//          destFile->Exists(&fExists);
-//          if (!fExists) {
-//            destFile->Create((index < length? 1 : 0), 0755);
-//          }
-//        }
-//        srcFile->Append(substring);
-//      }
-      // now we are ready to copy from srcFile to destFile
-      res = srcFile->GetLeafName(leafname);
+      res = NS_NewLocalFile(dataPath, PR_FALSE, getter_AddRefs(srcFile));
+      // Now take apart the source path to get a name for the dest file.
+      res = srcFile->Clone(getter_AddRefs(srcFileClone));
+      res = srcFileClone->GetLeafName(leafname);
+      res = srcFileClone->GetParent(getter_AddRefs(srcFileClone));
+      res = srcFileClone->GetLeafName(srcDirName);
+      res = destFile->Append(srcDirName);
+      res = destFile->Exists(&fExists);
+      if (!fExists) {
+        destFile->Create(1, 0755);
       res = destFile->Append(leafname);
+      nsAutoString newDataAttribute(srcDirName);
+      newDataAttribute.Append(NS_LITERAL_STRING("/"));
+      newDataAttribute.Append(leafname);
+      elem->SetAttribute(attr, newDataAttribute);
+      // now we are ready to copy from srcFile to destFile
       nsCOMPtr<msiIUtil> utils = do_GetService("@mackichan.com/msiutil;1", &res);
       PRBool success;
       res = utils->SynchronousFileCopy(srcFile, destFile, &success);
@@ -3885,30 +3913,33 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
       if (!timer) {
         return NS_OK;
       }
+//      str * mystruct = new str();
+//      mystruct->elem = elem;
+//      mystruct->ed = static_cast<nsEditor*>(m_editor);
       timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, (void*)elem, 200,
                                     nsITimer::TYPE_ONE_SHOT);
       m_timerlist.AppendObject(timer); 
       
     }
-    // the following doesn't seem to make any difference
-//    elem->HasAttribute(NS_LITERAL_STRING("data"), &fExists);
-//    if (fExists) {
-//      elem->RemoveAttribute(NS_LITERAL_STRING("data"));
-//      elem->SetAttribute(NS_LITERAL_STRING("data"), dataPath);
-//    }
-//    elem->HasAttribute(NS_LITERAL_STRING("src"), &fExists);
-//    if (fExists) {
-//      elem->RemoveAttribute(NS_LITERAL_STRING("src"));
-//      elem->SetAttribute(NS_LITERAL_STRING("src"), dataPath);
-//    }
   }
 }
 
 void msiContentFilter::SetDataFromTimer(nsITimer *aTimer, void *closure)
 {
   if (closure) {
-    nsIDOMElement * elem = static_cast<nsIDOMElement*>(closure);
+//    str * mystruct = static_cast<str*>(closure);
     PRBool fExists;
+//    nsCOMPtr<nsIDOMElement> elem(mystruct->elem);
+    nsCOMPtr<nsIDOMElement> elem = static_cast<nsIDOMElement*>(closure);
+//    nsEditor * editor = mystruct->ed;
+    nsCOMPtr<nsIDOMNode> parent;
+//    PRInt32 offset;
+    
+//    nsresult res = editor->GetNodeLocation(elem, address_of(parent), &offset);
+//    editor->DeleteNode(elem);
+//    editor->InsertNode(elem, parent, offset);
+    
+
     nsAutoString dataPath;
     elem->HasAttribute(NS_LITERAL_STRING("data"), &fExists);
     if (fExists) {
@@ -3961,13 +3992,12 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
 {
   nsresult res;
   nsCOMPtr<nsIDOMDocument> domDoc;
-  if (!sourceDocument) return NS_OK; // Apparently this means src and dest are same document.
   ClearTimerList();
   m_editor->GetDocument(getter_AddRefs(domDoc));
   nsCOMPtr<nsIDocument> srcDoc = do_QueryInterface(sourceDocument);
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
   if (!doc) return (NS_ERROR_FAILURE);
-  if (domDoc == sourceDocument) return (NS_OK);  // pasting from same document doesn't require work
+//  if (domDoc == sourceDocument) return (NS_OK);  // pasting from same document doesn't require work
   // We look for img and object tags that have relative paths for data or src attributes.
   nsCOMPtr<nsIDOMNode> rootnode = *docFragment;
   nsCOMPtr<nsIDOMNodeList> children;
@@ -3975,6 +4005,7 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
   nsCOMPtr<nsIDOMElement> elem;
   PRUint32 childCount;
   nsCOMPtr<nsIDOMNodeList> objnodes;
+  nsAutoString nodename;
   PRUint32 count;
   PRUint32 i;
   PRUint32 j;
@@ -3988,17 +4019,32 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
     NS_ENSURE_SUCCESS(res, res);
     elem = do_QueryInterface(node);
     if (elem) {
+      res = elem->GetNodeName(nodename);
       res = elem->GetElementsByTagName(NS_LITERAL_STRING("object"), getter_AddRefs(objnodes));
       NS_ENSURE_SUCCESS(res, res);
-      objnodes->GetLength(&count);
-      for (i = 0; i < count; i++) {
-        copyfiles(srcDoc, doc, objnodes, i);
+      if (nodename.EqualsLiteral("object"))
+      {
+        copyfiles(srcDoc, doc, nsnull, elem, i);
+      }
+      else
+      {  
+        objnodes->GetLength(&count);
+        for (i = 0; i < count; i++) {
+          copyfiles(srcDoc, doc, objnodes, nsnull, i);
+        }
       }
       res = elem->GetElementsByTagName(NS_LITERAL_STRING("img"), getter_AddRefs(objnodes));
       NS_ENSURE_SUCCESS(res, res);
-      objnodes->GetLength(&count);
-      for (i = 0; i < count; i++) {
-        copyfiles(srcDoc, doc, objnodes, i);
+      if (nodename.EqualsLiteral("img"))
+      {
+        copyfiles(srcDoc, doc, nsnull, elem, i);
+      }
+      else
+      {  
+        objnodes->GetLength(&count);
+        for (i = 0; i < count; i++) {
+          copyfiles(srcDoc, doc, objnodes, nsnull, i);
+        }
       }
     }
   }
