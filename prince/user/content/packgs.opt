@@ -78,6 +78,9 @@
 [amssymb]
 1=None available
 
+[amsthm]
+1=None available
+
 [answers]
 1=Solution Files
 1.1=Create solution files - default,
@@ -852,6 +855,9 @@
 3.1=No,reals
 3.2=Yes - default,integers
 
+[leading]
+1=None available
+
 [lineno]
 1=Left/right number position
 1.1=Left margin - default,left
@@ -1001,6 +1007,9 @@
 1.4=Level three,markshow
 1.5=All,debugshow
 
+[multirow]
+1=None available
+
 [natbib]
 1=Punctuation for citations
 1.1=Round parentheses - default,round
@@ -1143,6 +1152,17 @@
 4=Debug mode
 4.1=Off - default,
 4.2=On,verbose
+
+[polyglossia]
+1=Use Babel shorthands
+1.1=No - default,
+1.2=Yes,babelshorthands
+2=Use local marks
+2.1=No - default,nolocalmarks
+2.2=Yes,localmarks
+3=Quite mode
+3.1=No,default
+3.2=Yes,quiet
 
 [points]
 1=None available
@@ -1431,6 +1451,11 @@
 1.3=Full error info,debugshow
 
 [tabularx]
+1=Debug mode
+1.1=Off - default,
+1.2=On,debugshow
+
+[tabulary]
 1=Debug mode
 1.1=Off - default,
 1.2=On,debugshow
