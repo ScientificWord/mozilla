@@ -3800,16 +3800,9 @@ PRBool IsRelativePath(const nsString& path)
 
   if (FindInReadable(valuePrefix, start, end)) {
     return PR_FALSE;
-
   }
-  
   return PR_TRUE;
 }
-
-//typedef struct {
-//    nsCOMPtr<nsIDOMElement> elem;
-//    nsEditor * ed;
-//} str;
 
 
 NS_IMETHODIMP msiContentFilter::copyfiles( 
