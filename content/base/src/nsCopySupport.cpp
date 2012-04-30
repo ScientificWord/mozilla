@@ -68,6 +68,7 @@
 #include "nsIImage.h"
 #include "nsContentUtils.h"
 #include "nsContentCID.h"
+#include "nsIURL.h"
 
 static NS_DEFINE_CID(kCClipboardCID,           NS_CLIPBOARD_CID);
 static NS_DEFINE_CID(kCTransferableCID,        NS_TRANSFERABLE_CID);
@@ -85,6 +86,106 @@ static nsresult AppendString(nsITransferable *aTransferable,
 // copy HTML node data
 static nsresult AppendDOMNode(nsITransferable *aTransferable,
                               nsIDOMNode *aDOMNode);
+
+static PRBool IsInTag(nsAString& str, PRUint32 offset)
+{
+  return PR_TRUE;
+  const PRUnichar* cur = str.BeginReading();
+  const PRUnichar* end = cur + offset;
+  PRUnichar ch;
+  PRInt32 bracketcount = 0;
+  for (; cur < end; ++cur) 
+  {
+    ch = *cur;
+    if (ch == (PRUnichar)'<') 
+    {
+      bracketcount++;
+    }
+    else if (bracketcount > 0) 
+    {
+      if (ch == (PRUnichar)'>') 
+      {
+        bracketcount--;
+      }
+    }
+  }
+  return (bracketcount > 0);
+}
+
+static PRBool PathIsRelative( nsAString & path)
+{
+  nsAString::const_iterator start,end;
+  NS_NAMED_LITERAL_STRING(pattern, "://");
+  path.BeginReading(start);
+  path.EndReading(end);
+  
+  return !FindInReadable(pattern, start, end);
+}
+
+static PRBool PathToAbs( nsAString& path, nsAString& abspath, nsIDocument * doc)
+{
+  abspath = path;
+  if (!PathIsRelative(path) || path.First() == '/') {
+    return PR_FALSE;
+  }
+  nsresult res;
+  nsCOMPtr<nsIURI> srcURI = doc->GetDocumentURI();
+  nsCOMPtr<nsIURL> srcURL = do_QueryInterface(srcURI);
+  nsCAutoString dirPath;
+  res = srcURL->GetDirectory(dirPath);
+  abspath.Truncate(0);
+  AppendASCIItoUTF16(dirPath, abspath);
+  abspath.Append(path);
+  
+  return PR_TRUE;
+}
+
+
+static nsresult ConvertPathsToAbsolute(nsAString& aString, nsIDocument * doc)
+  // If we copy an image or an object with a relative data path, we need to make it 
+  // absolute in order to paste it if the source document is gone.
+{
+  if (aString.Length() == 0) return NS_OK;
+  nsAString::const_iterator cur,end,start,endstring,savecur;
+  aString.BeginReading(cur);
+  aString.EndReading(end);
+  start = cur;
+  endstring = end;
+  NS_NAMED_LITERAL_STRING(pattern, "data");
+  NS_NAMED_LITERAL_STRING(quote, "\"");
+  while (FindInReadable(pattern, cur, end))
+    // cur shows how far through the string we have worked.
+  {
+    if (PR_TRUE) //IsInTag(aString, (cur.get() - start.get())) && !NS_IS_ALPHA(*(cur.get() -1)) && !NS_IS_ALPHA(*(end.get()+1))) 
+    {
+      cur = end;
+      while (nsCRT::IsAsciiSpace(*cur)) cur++;
+      if (*cur == PRUnichar('='))
+      {
+        cur++;
+        while (nsCRT::IsAsciiSpace(*cur)) cur++;
+        if (*cur == PRUnichar('\"')) {
+          cur++;
+          savecur = cur;
+          end = endstring;
+          if (FindCharInReadable((PRUnichar)'"', cur, end))
+          {
+            PRUint32 length = cur.get() - savecur.get();
+            PRUint32 index = savecur.get() - start.get();
+            nsAutoString path;
+            path.Assign(savecur.get(), length);
+            nsAutoString abspath;
+            if (PathToAbs(path, abspath, doc))
+            {
+              aString.Replace(index, length, abspath);
+            }
+          }
+        }
+      }
+    }
+  }
+  return NS_OK;
+}
 
 nsresult nsCopySupport::HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 aClipboardID)
 {
@@ -123,7 +224,7 @@ nsresult nsCopySupport::HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 
   rv = docEncoder->EncodeToString(textBuffer);
   if (NS_FAILED(rv)) 
     return rv;
-
+   
   nsCOMPtr<nsIFormatConverter> htmlConverter;
 
   // sometimes we also need the HTML version
@@ -157,6 +258,10 @@ nsresult nsCopySupport::HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 
     // encode the selection as html with contextual info
     rv = docEncoder->EncodeToStringWithContext(parents, info, buffer);
     NS_ENSURE_SUCCESS(rv, rv);
+    rv = ConvertPathsToAbsolute(buffer, aDoc);
+    if (NS_FAILED(rv)) 
+      return rv;
+    
   }
   
   // Get the Clipboard
