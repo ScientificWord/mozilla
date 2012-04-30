@@ -65,6 +65,7 @@
 #include "nsIDOMHTMLImageElement.h"
 #include "nsISelectionController.h"
 #include "nsIFileChannel.h"
+#include "nsIFileURL.h"
 
 #include "nsICSSLoader.h"
 #include "nsICSSStyleSheet.h"
@@ -1812,6 +1813,8 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
                                                    PRBool aDoDeleteSelection)
 {
   nsresult rv = NS_OK;
+  PRBool fExists;
+  nsCAutoString dirPath;
   nsXPIDLCString bestFlavor;
   nsCOMPtr<nsISupports> genericDataObj;
   PRUint32 len = 0;
@@ -1903,6 +1906,9 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
               || (nsCRT::strcasecmp(fileextension.get(), "jpeg") == 0 )
               || (nsCRT::strcasecmp(fileextension.get(), "gif") == 0 )
               || (nsCRT::strcasecmp(fileextension.get(), "png") == 0 )
+              || (nsCRT::strcasecmp(fileextension.get(), "pdf") == 0 )
+              || (nsCRT::strcasecmp(fileextension.get(), "tif") == 0 )
+              || (nsCRT::strcasecmp(fileextension.get(), "tiff") == 0 )
               //BBM Extend this list!
                )
             {
@@ -1934,24 +1940,22 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
                 docURI = doc->GetDocumentURI();
                 nsCOMPtr<nsIURL> docURL;
                 docURL = do_QueryInterface(docURI);
-                nsCAutoString dirPath;
                 rv = docURL->GetDirectory(dirPath);
                 char * unescaped = strdup(dirPath.get());
                 nsUnescape(unescaped);
                 dirPath.Assign(unescaped, PR_UINT32_MAX); 
 
-// ifdef windows
+#ifdef XP_WIN
                 dirPath.Cut(0,1);
                 PRInt32 len = dirPath.Length();
                 for (PRInt32 i = 0; i < len; i++)
                 {
                   if (dirPath[i]=='/') dirPath.Replace(i,1,'\\');
                 }
-// endif
+#endif
                 nsCOMPtr<nsILocalFile> dir;
                 rv = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(dir));
                 dir->Append(NS_LITERAL_STRING("graphics"));
-                PRBool fExists;
                 dir->Exists(&fExists);
 
                 if (!fExists) dir->Create(1,0755);
@@ -2006,11 +2010,25 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       nsCOMPtr<nsIInputStream> imageStream(do_QueryInterface(genericDataObj));
       NS_ENSURE_TRUE(imageStream, NS_ERROR_FAILURE);
 
-      nsCOMPtr<nsIFile> fileToUse;
-      NS_GetSpecialDirectory(NS_OS_TEMP_DIR, getter_AddRefs(fileToUse)); //BBM change this
-      fileToUse->Append(NS_LITERAL_STRING("moz-screenshot.jpg"));
+      nsCOMPtr<nsILocalFile> fileToUse;
+      nsCOMPtr<nsIDOMDocument> domDoc;
+      GetDocument(getter_AddRefs(domDoc));
+      if (!domDoc) return NS_ERROR_FAILURE;
+      nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+      if (!doc) return NS_ERROR_FAILURE;
+      nsCOMPtr<nsIURI> docURI;
+      docURI = doc->GetDocumentURI();
+      nsCOMPtr<nsIFileURL> docURL;
+      docURL = do_QueryInterface(docURI);
+      rv = docURL->GetDirectory(dirPath);
+      rv = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(fileToUse));
+      fileToUse->Append(NS_LITERAL_STRING("graphics"));
+      fileToUse->Exists(&fExists);
+      if (!fExists) fileToUse->Create(1,0755);
+      
+      fileToUse->Append(NS_LITERAL_STRING("msi-screenshot.jpg"));
       nsCOMPtr<nsILocalFile> path = do_QueryInterface(fileToUse);
-      path->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0600);
+      path->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0755);
 
       nsCOMPtr<nsIOutputStream> outputStream;
       rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), fileToUse);
@@ -2032,26 +2050,25 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       rv = bufferedOutputStream->Close();
       NS_ENSURE_SUCCESS(rv, rv);
       
-      nsCOMPtr<nsIURI> uri;
-      rv = NS_NewFileURI(getter_AddRefs(uri), fileToUse);
-      NS_ENSURE_SUCCESS(rv, rv);
-      nsCOMPtr<nsIURL> fileURL(do_QueryInterface(uri));
-      if (fileURL)
+      nsAutoString urltext;
+      urltext.Append(NS_LITERAL_STRING("graphics/"));
+      nsAutoString leafname;
+      fileToUse->GetLeafName(leafname);
+      urltext.Append(leafname);
+      if (NS_SUCCEEDED(rv) && !urltext.IsEmpty())
       {
-        nsCAutoString urltext;
-        rv = fileURL->GetSpec(urltext);
-        if (NS_SUCCEEDED(rv) && !urltext.IsEmpty())
-        {
-          stuffToPaste.AssignLiteral("<IMG src=\"");
-          AppendUTF8toUTF16(urltext, stuffToPaste);
-          stuffToPaste.AppendLiteral("\" alt=\"\" >");
-          nsAutoEditBatch beginBatching(this);
-          rv = InsertHTMLWithContext(stuffToPaste, EmptyString(), EmptyString(), 
-                                     NS_LITERAL_STRING(kFileMime),
-                                     aSourceDoc,
-                                     aDestinationNode, aDestOffset,
-                                     aDoDeleteSelection);
-        }
+        stuffToPaste.AssignLiteral("<object data=\"");
+        stuffToPaste.Append(urltext);
+        stuffToPaste.AppendLiteral("\" alt=\"\" />");
+        nsAutoEditBatch beginBatching(this);
+        nsCOMPtr<nsIDOMDocument> domDoc;
+        GetDocument(getter_AddRefs(domDoc));
+        
+        rv = InsertHTMLWithContext(stuffToPaste, EmptyString(), EmptyString(), 
+                                   NS_LITERAL_STRING(kNativeHTMLMime),
+                                   domDoc, // this says the graphics file is already in this document and doesn't need to be copied.
+                                   aDestinationNode, aDestOffset,
+                                   aDoDeleteSelection);
       }
     }
   }
