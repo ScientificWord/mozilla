@@ -30,6 +30,7 @@
       <classcontains>
         <contains>#text</contains>
 			  <contains>texttag</contains>
+        <contains>mml:math</contains>
       </classcontains>
 			<tags>
 				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
