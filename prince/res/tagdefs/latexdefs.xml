@@ -82,6 +82,7 @@
 			  <contains>shortQuote</contains>
 			  <contains>othertag</contains>
 			  <contains>mml:math</contains>
+        <contains>msidisplay</contains>
 			  <contains>br</contains>
 			  <contains>cursor</contains>
 			  <contains>defaulttitletag</contains>
@@ -939,6 +940,13 @@
               </bodyText>
             </proof>
           </initialcontents>
+        </tag>
+        <tag nm="msidisplay">
+          <level>*</level>
+          <contains>mml:math</contains>
+          <description>Display</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
         </tag>
   		  <tag nm="msiframe">
           <contains>envtag</contains>         
