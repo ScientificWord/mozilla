@@ -148,3 +148,12 @@ function softSave(delSelection)
   msiGoDoCommand('cmd_softSave');
 }
 
+function insertIntegral(delSelection)
+{
+  if (delSelection) deleteSelection();
+  insertsymbol('&#x222B;'); 
+  insertsymbol('&#2146;'); 
+  insertText('x');
+  msiGoDoCommand('cmd_charPrevious');
+  msiGoDoCommand('cmd_charPrevious');
+}
