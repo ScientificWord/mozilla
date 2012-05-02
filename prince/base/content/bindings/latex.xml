@@ -1340,7 +1340,13 @@ Make list of figures here
           this.plotplugin.load(url);
         </xbl:body>
       </xbl:method>
-        
+      <xbl:method name="makeSnapshot">
+        <xbl:parameter name="snapshotPath"/>
+        <xbl:parameter name="resolution"/>
+        <xbl:body>
+          this.plotplugin.makeSnapshot(abspath,res);
+        </xbl:body>
+      </xbl:method>
     </xbl:implementation>
   </xbl:binding>
 
@@ -1349,7 +1355,8 @@ Make list of figures here
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button class="expander" image="chrome://global/skin/tree/twisty-clsd.png" onclick="document.getBindingParent(this).toggle();"/>
+      <html:button class="expander"  
+        onclick="document.getBindingParent(this).toggle();">-</html:button>
       <xbl:children />
     </xbl:content>
     <xbl:implementation>
@@ -1361,14 +1368,14 @@ Make list of figures here
         </xbl:getter>
         <xbl:setter><![CDATA[
           this.parentNode.setAttribute("open",val);
-          var buttonsymbol = this.parentNode.open?"−":"+";
+          var buttonsymbol = val==="false"?"+":"-";
           if (this.parentNode.hasAttribute("subdoc"))
           {
             var fname = this.parentNode.getAttribute("subdoc");
             if (!this.open) this.saveToDisk(fname);
             else this.getFromDisk(fname);
           }
-          //debugger;
+//          var len = document.getAnonymousNodes(this).length;
           document.getAnonymousNodes(this)[0].textContent=buttonsymbol;
           
           ]]>
