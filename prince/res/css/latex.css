@@ -8,8 +8,6 @@ texlogo {
 }
 
 
-/* texlogo:before{ content: "_";} */
-
 texlogo sup {
   font-size: 0.85em;
   vertical-align: 0.15em;
@@ -355,11 +353,7 @@ mml|mrow[id]:after {
    sections. They are repeated for each structure that can be closed. Also
    implement the switch between numbered and not numbered*/
 
-chapter>*:first-child {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
-}
-
-chapter>sectiontitle {
+chapter>*:first-child, chapter>sectiontitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
@@ -390,21 +384,12 @@ chapter[open="false"]>*:first-child {
   display: block;
 }
 
-section>*:first-child {
+section>*:first-child, section>sectiontitle{
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
 section[open="false"]>sectiontitle {
   display: block;
-}
-
-section>*:first-child {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
-}
-
-
-section>sectiontitle {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
 section[nonum="true"]>*:first-child:before {
@@ -436,33 +421,24 @@ section[open="false"]>button.expander {
   display: inline;
 }
 
-subsection>*:first-child {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
-}
-
 subsection[open="false"]>sectiontitle {
   display: block;
 }
 
-subsection>*:first-child {
+subsection[open="false"]>* {
+  display: none;
+}
+
+subsection>*:first-child, subsection>sectiontitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
-
-subsection>sectiontitle {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
-}
 
 subsection[nonum="true"] {
   counter-increment: none;
 }
 
-subsection[nonum="true"]>*:first-child:before {
-  content: "";
-}
-
-
-subsection[nonum="true"]>sectiontitle:before {
+subsection[nonum="true"]>*:first-child:before, subsection[nonum="true"]>sectiontitle:before {
   content: "";
 }
 

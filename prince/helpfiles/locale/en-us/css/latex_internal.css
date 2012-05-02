@@ -110,7 +110,7 @@ button.expander {
   background-repeat: no-repeat;
   border: none;
   top: 4pt; 
-  left: -12px; 
+  left: 0px; 
   height: 9px;
   width: 9px;
 }
@@ -139,7 +139,7 @@ button.bibitemlabel {
   background-repeat: no-repeat;
   border: none;
   top: 4pt; 
-  left: -12px; 
+  left: 0px; 
   height: 9px;
   width: 9px;
 }
