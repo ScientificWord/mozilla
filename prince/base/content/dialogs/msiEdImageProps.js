@@ -47,8 +47,6 @@ var gEditorElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 var frameTabDlg = new Object();
 
-//var gConstrainWidth  = 0;  //Moved to msiFrameOverlay
-//var gConstrainHeight = 0;  //Moved to msiFrameOverlay
 var imageElement;
 var wrapperElement;
 var gDefaultWidth = 200;
@@ -57,8 +55,6 @@ var gDefaultUnit = "pt";
 var gOriginalSrc = "";
 var gHaveDocumentUrl = false;
 
-// These must correspond to values in EditorDialog.css for each theme
-// (unfortunately, setting "style" attribute here doesn't work!)
 var gPreviewImageWidth = 80;
 var gPreviewImageHeight = 50;
 
@@ -70,11 +66,6 @@ var gInsertNewImage = true;
 var gCaptionData;
 
 var importTimer;
-//var texImportTimer;
-//var gfxImportProcess;
-//var texImportProcess;
-//var importTargFile;
-//var texImportTargFile;
 
 // dialog initialization code
 function Startup()
