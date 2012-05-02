@@ -364,7 +364,7 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
       buffer = AppendStr2HeapStr(buffer, bln, zzz);
     } else {
       if (!strcmp(mml_node->src_tok, "mspace")) {
-	    buffer = AppendStr2HeapStr(buffer, bln, ">");
+	      buffer = AppendStr2HeapStr(buffer, bln, "/>");
 	    
       } else {
         FUSetPrefix(mml_node->src_tok, l_prefix, element);
