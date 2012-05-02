@@ -1214,7 +1214,7 @@
           <contains>texttag</contains>
           <contains>hspace</contains>
           <contains>table</contains>
-          <contains>mml:math</contains>
+          <contains>math</contains>
 			    <contains>img</contains>
 			    <contains>object</contains>
           <contains>line</contains>
@@ -1228,6 +1228,10 @@
           <contains>mspace</contains>      
           <contains>mstyle</contains>
           <contains>bold</contains>
+        </tag>
+        <tag nm = "mtext">
+          <contains>#text</contains>      
+          <contains>texttag</contains>
         </tag>
         <tag nm="mrow">
           <contains>mspace</contains>
