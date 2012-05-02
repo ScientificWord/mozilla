@@ -1154,6 +1154,13 @@ function doMakeSnapshot(obj, graph, editorElement) {
         }
         abspath = makeRelPathAbsolute(path, editorElement);
         plotWrapper.wrappedObj.makeSnapshot (abspath, res);
+        if ( getOS(window) == "win") {
+          file = Components.classes["@mozilla.org/file/local;1"].  
+                               createInstance(Components.interfaces.nsILocalFile);  
+          file.initWithPath(abspath);
+          doGraphicsImport(file, "bmp", "import");
+          path.replace(".bmp", ".png");
+        }
         insertSnapshot( obj, path );
       }
       catch(e) {
