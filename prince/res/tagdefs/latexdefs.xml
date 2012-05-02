@@ -942,7 +942,7 @@
             </proof>
           </initialcontents>
         </tag>
-        <tag nm="msidisplay">
+        <tag nm="msidisplay" hidden="1">
           <level>*</level>
           <contains>mml:math</contains>
           <description>Display</description>
