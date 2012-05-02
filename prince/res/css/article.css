@@ -91,9 +91,16 @@ section>*:first-child[open="false"]{
 section>*:first-child:before, section[open="true"]>*:first-child:before  {
   content: counter(section) ".  ";
   -moz-user-modify: read-only;
+  -moz-user-select: -moz-none;
 }
 
-section>*:first-child[open="false"]{
+section[nonum="true"]>*:first-child:before, section[nonum="true"][open="true"]>*:first-child:before  {
+  content: "";
+  -moz-user-modify: read-only;
+}
+
+
+section>*:first-child[open="false"], section>sectiontitle[open="false"] {
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
@@ -101,12 +108,7 @@ section>*:first-child[open="false"]{
   font-weight: bold;
 }
  
-section>*:first-child:before, section[open="true"]>*:first-child:before  {
-  content: counter(section) ".  ";
-  -moz-user-select: -moz-none;
-}
-
-section>sectiontitle{
+\section>sectiontitle{
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
@@ -114,23 +116,6 @@ section>sectiontitle{
   font-weight: bold;
 }
 
-section>sectiontitle[open="false"]{
-  display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: large;
-  font-weight: bold;
-}
- 
-section>sectiontitle:before, section[open="true"]>sectiontitle:before  {
-  content: counter(section) ".  ";
-  -moz-user-select: -moz-none;
-}
-
-section defaulttitletag:after {
-  content: "Replace this section title"; 
-  color: gray;
-}
 
 subsection {
   display: block;
@@ -148,13 +133,14 @@ subsection>*:first-child {
 
 subsection>*:first-child:before {
   content: counter(section) "." counter(subsection) ".  ";
+  -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 
-subsection defaulttitletag:after {
-  content: "Replace this subsection title"; 
-  color: gray;
+subsection[nonum="true"]>*:first-child:before {
+  content: "";
 }
+
 
 subsubsection {
   display:block;
@@ -174,6 +160,11 @@ subsubsection>*:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
   -moz-user-select: -moz-none;
 }
+subsubsection[nonum="true"]>*:first-child:before {
+  content: "";
+  -moz-user-select: -moz-none;
+}
+
 
 subsubsection defaulttitletag:after {
   content: "Replace this subsubsection title"; 
@@ -197,9 +188,9 @@ paragraph>*:first-child:before {
   -moz-user-select: -moz-none;
 }
 
-paragraph defaulttitletag:after {
-  content: "Replace this subsubsubsection title"; 
-  color: gray;
+paragraph[nonum="true"]>*:first-child:before {
+  content: ""; 
+  -moz-user-select: -moz-none;
 }
 
 subparagraph {
@@ -215,10 +206,6 @@ subparagraph>*:first-child {
   margin-left: 10pt;
 }
 
-subparagraph defaulttitletag:after {
-  content: "Replace this subsubsubsubsection title"; 
-  color: gray;
-}
 
 /*************************/
 /* Front matter elements */
