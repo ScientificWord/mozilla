@@ -31,6 +31,7 @@
         <contains>#text</contains>
 			  <contains>texttag</contains>
         <contains>mml:math</contains>
+        <contains>texlogo</contains>
       </classcontains>
 			<tags>
 				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
@@ -70,6 +71,8 @@
 				<tag nm="rawTeX" hidden="1"><description>Raw TeX tag</description></tag>
 				<tag nm="text##lang1##" hidden="1" babel="1"><description>##lang## language</description></tag>
 				<tag nm="text##lang2##" hidden="1" babel="2"><description>##lang## language</description></tag>
+        <!-- <tag nm="deleted"><description>Deleted text</description></tag>
+        <tag nm="inserted"><description>Inserted text></description></tag> -->
 			</tags>
 		</tagclass>
 		<tagclass>
