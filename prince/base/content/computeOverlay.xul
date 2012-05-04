@@ -20,6 +20,7 @@
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
 
 #include computekeys.inc
