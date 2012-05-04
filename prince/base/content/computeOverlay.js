@@ -1153,12 +1153,19 @@ function doMakeSnapshot(obj, graph, editorElement) {
           editorElement = msiGetActiveEditorElement();
         }
         abspath = makeRelPathAbsolute(path, editorElement);
+        if ( getOS(window) == "win") {
+        // in this case path is a complete file url string
+          abspath = path.slice(8);
+          abspath = abspath.replace("/","\\","g");
+          abspath = abspath.replace("%20", " ", "g");
+        }
         plotWrapper.wrappedObj.makeSnapshot (abspath, res);
         if ( getOS(window) == "win") {
-          file = Components.classes["@mozilla.org/file/local;1"].  
+          var file = Components.classes["@mozilla.org/file/local;1"].  
                                createInstance(Components.interfaces.nsILocalFile);  
           file.initWithPath(abspath);
-          doGraphicsImport(file, "bmp", "import");
+          doGraphicsImport(file, {inFileType:"bmp",exepath:"%ImageMagick%",output:"png",commandLine:"convert %inputFile% %outputFile%" }, "import");
+          path.replace("plots","graphics");
           path.replace(".bmp", ".png");
         }
         insertSnapshot( obj, path );
