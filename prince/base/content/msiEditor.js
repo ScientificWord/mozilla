@@ -4861,6 +4861,14 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
     theBody.setAttribute("showinvis", "true");
   else
     theBody.removeAttribute("showinvis");
+  if (viewSettings.showSectionExpanders)
+    theBody.setAttribute("showexpanders", "true");
+  else
+    theBody.removeAttribute("showexpanders");
+  if (viewSettings.showFMButtons)
+    theBody.setAttribute("showfmbuttons", "true");
+  else
+    theBody.removeAttribute("showfmbuttons");
   if (!viewSettings.showHelperLines)
     theBody.setAttribute("hideHelperLines", "true");
   else
