@@ -482,6 +482,16 @@
                 accesskey="&viewInvisibles.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewInvisibles.label;"/>
+      <menuitem id="viewSectionExpanders"
+                type="checkbox"
+                accesskey="&viewSectionExpanders.accesskey;"
+                observes="cmd_viewInvisibles"
+                label="&viewSectionExpanders.label;"/>
+      <menuitem id="viewFMButtons"
+                type="checkbox"
+                accesskey="&viewFMButtons.accesskey;"
+                observes="cmd_viewInvisibles"
+                label="&viewFMButtons.label;"/>
       <menuitem id="viewHelperLines" 
                 type="checkbox"
                 accesskey="&viewHelperLines.accesskey;"

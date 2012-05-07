@@ -400,14 +400,6 @@ IncludeSubdoc>TeX {
   display: none;
 }
 
-
-button [class="frontmattertag"] {
-  position: absolute;
-  left: -160px;
-  font-family: sans-serif;
-  font-style: normal;
-}
-
 button [class="msi"] {
   font-family: sans-serif;
   font-style: normal;
