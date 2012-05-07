@@ -125,6 +125,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_documentStyle",       msiDocumentStyleCommand);
   commandTable.registerCommand("cmd_macrofragment", msiMacroFragmentCommand);
   commandTable.registerCommand("cmd_viewInvisibles", msiViewInvisiblesCommand);
+
   commandTable.registerCommand("cmd_msiReviseHyperlink", msiReviseHyperlinkCommand);
   commandTable.registerCommand("cmd_reviseAnchor", msiReviseAnchorCommand);
   commandTable.registerCommand("cmd_reviseImage", msiReviseImageCommand);
@@ -861,7 +862,10 @@ function doTagKeyCommand(event, commandID, value)
 function getViewSettingsFromViewMenu()
 {
   var viewSettings = new msiViewSettings(1);   //1 is really the default - hide invisibles, show everything else
-  var invisChoices = [["viewInvisibles","showInvisibles"], ["viewHelperLines","showHelperLines"], 
+  var invisChoices = [["viewInvisibles","showInvisibles"], 
+                      ["viewSectionExpanders","showSectionExpanders"],
+                      ["viewFMButtons","showFMButtons"],
+                      ["viewHelperLines","showHelperLines"], 
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"],       ["viewFootnotes", "showFootnotes"],
                       ["viewOtherNotes","showOtherNotes"]];
@@ -886,7 +890,7 @@ function updateEditorFromViewMenu(editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var viewSettings = getViewSettingsFromViewMenu();
-  dump("Calling msiEditorDoShowInvisibles, with viewSettings = [invis: " + viewSettings.showInvisibles + ", helperLines: " + viewSettings.showHelperLines + ", inputBoxes: " + viewSettings.showInputBoxes + ", indexEntries: " + viewSettings.showIndexEntries + ", markers: " + viewSettings.showMarkers + "]\n");
+//  dump("Calling msiEditorDoShowInvisibles, with viewSettings = [invis: " + viewSettings.showInvisibles + ", helperLines: " + viewSettings.showHelperLines + ", inputBoxes: " + viewSettings.showInputBoxes + ", indexEntries: " + viewSettings.showIndexEntries + ", markers: " + viewSettings.showMarkers + "]\n");
   msiEditorDoShowInvisibles(editorElement, viewSettings);
 }
 
@@ -895,7 +899,10 @@ function updateViewMenuFromEditor(editorElement)
   if (!("viewSettings" in editorElement) || (editorElement.viewSettings == null))
     return;  //No settings in the editor - leave menu as is.
 
-  var invisChoices = [["viewInvisibles","showInvisibles"], ["viewHelperLines","showHelperLines"], 
+  var invisChoices = [["viewInvisibles","showInvisibles"], 
+                      ["viewSectionExpanders","showSectionExpanders"],
+                      ["viewFMButtons","showFMButtons"],
+                      ["viewHelperLines","showHelperLines"], 
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"]];
   for (var ix = 0; ix < invisChoices.length; ++ix)

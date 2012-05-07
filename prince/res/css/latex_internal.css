@@ -115,6 +115,11 @@ button.expander {
   margin-right: 5px;
   margin-bottom: 4px;
   vertical-align: text-bottom;
+  display: none;
+}
+
+*[showexpanders="true"] button.expander {
+  display: inline;
 }
 
 button.inline {
