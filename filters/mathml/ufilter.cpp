@@ -105,13 +105,11 @@ U16 MMLFilter::TranslateBuffer( const char* srcbuffer,
   anomaly_list->off1   =  0;
   U8 eqn_option;
 
-  //JBMLine("TranslateBuffer\n");
 
   TNODE* XML_tree =  (TNODE*)converter->BufferToDestTree( 
 	  			const_cast<U8*>(reinterpret_cast<const U8*>(srcbuffer)),
    				FALSE,msgcount,anomaly_list,eqn_option );
 
-  //JBMLine("Mid TranslateBuffer\n");
 
   MMLTreeToRenderer( XML_tree,anomaly_list,
 	  			const_cast<U8*>(reinterpret_cast<const U8*>(srcbuffer)),
@@ -129,7 +127,6 @@ U16 MMLFilter::TranslateBuffer( const char* srcbuffer,
 	  delete del->atext;
     delete del;
   }
-  //JBMLine("End TranslateBuffer\n");
   return 0;
 }
 
@@ -139,7 +136,6 @@ void MMLFilter::MMLTreeToRenderer( TNODE* mml_tree,
   								ANOMALY_REC* anomaly_list,
 								U8* src_LaTeX,
 								FILTRENDERTILE renderfunc ) {
-  //JBMLine("MMLTreeToRenderer\n");
   TILE* tiles  =  mml_tiler->MMLtreeToTiles( mml_tree,0 );
 
   //JBMLine("End MMLTreeToRenderer\n");
