@@ -111,7 +111,7 @@ bool InitializeMML( const char* datapath,
                  const char* name_space,
                  const char** upref_zstrs )
 {
-  //JBMLine("InitializeMML=========================\n");
+  //JBMLine("\nInitializeMML=========================");
   memset( &userprefs, 0, sizeof(USERPREFS) );
 
   userprefs.output_mode = 4;  // bare MathML
@@ -168,7 +168,7 @@ bool InitializeMML( const char* datapath,
       TCI_ASSERT(0);
   } else
     n_space[0]  =  0;
-  //JBMLine("End InitializeMML\n");
+  //JBMLine("\nEnd InitializeMML\n");
   return true;
 }
 
@@ -218,12 +218,9 @@ bool Version(U16 major, U16 minor)
 bool ConvertInline(const char* latex,
                    LPRENDERTILE renderfunc,
                    int start_indent ) {
-  //JBMLine("ConvertInline\n");
   MMLFilter* filter =  TCI_NEW( MMLFilter(tree_generator) );
   filter->FInitialize( &userprefs, log, (char*)n_space, start_indent, "j.log" );
-
   U16 parse_result  =  filter->TranslateBuffer( latex, renderfunc );
-  //JBMLine("End ConvertInline\n");
   delete filter;
   return true;
 }

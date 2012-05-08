@@ -159,14 +159,12 @@ void* TreeGenerator::BufferToDestTree( U8* src_LaTeX,
 // Generate a "LaTeX" parse tree from src_LaTeX
   TNODE* TeX_tree =  ParseBytes( NULL,src_LaTeX,is_clipbrd,nlog_msgs );
 
-  //JBMLine("Mid BufferToDestTree\n");
 
 // Generate a "MTEF" parse tree from TeX_tree
   void* temp  =  ConvertParseTree( TeX_tree,FALSE,anomalies,eqn_option );
 
   DisposeTList( TeX_tree );
 
-  //JBMLine("End BufferToDestTree\n");
 
   return temp;
 }
@@ -363,7 +361,6 @@ void* TreeGenerator::ConvertParseTree( TNODE* nb_parse_tree,
                                     TCI_BOOL is_preamble,
                                     ANOMALY_REC* anomalies,
                                     U8& eqn_option ) {
-
   void* dst_parse_tree  =  NULL;
 
   if ( nb_parse_tree ) {	  
