@@ -53,17 +53,20 @@ math {
   unicode-bidi: embed;
   display: inline;
   font-style: normal;
-  font-family: Cambria, Cambria Math, STIXGeneral;
+  font-family: STIXGeneral, STIXSize1, DejaVu Serif, DejaVu Sans, Cambria, Cambria Math, Times, Lucida Sans Unicode, OpenSymbol, Standard Symbols L, serif;
   text-rendering: optimizeLegibility;
   -moz-float-edge: margin-box;
 }
+
 math[mode="display"], math[display="block"] {
   display: block;
   text-align: -moz-center;
 }
+
 math[display="inline"] {
   display: inline;
 }
+
 ::-moz-math-inline {
   display: inline;
 }
