@@ -833,7 +833,7 @@ pref("intl.locale.matchOS",                 false);
 pref("intl.fallbackCharsetList.ISO-8859-1", "windows-1252");
 pref("font.language.group",                 "chrome://global/locale/intl.properties");
 
-pref("font.mathfont-family", "STIXNonUnicode, STIXSize1, STIXGeneral, Cambria Math, Standard Symbols L, DejaVu Sans");
+pref("font.mathfont-family", "STIXNonUnicode, STIXSize1, Cambria Math, Standard Symbols L, DejaVu Sans");
 
 pref("images.dither", "auto");
 pref("security.directory",              "");
@@ -1344,6 +1344,9 @@ pref("font.default.zh-HK", "sans-serif");
 pref("font.size.variable.zh-HK", 16);
 pref("font.size.fixed.zh-HK", 16);
 
+// We have special support for Monotype Symbol on Windows.
+pref("font.mathfont-family", "STIXNonUnicode, STIXSize1, Symbol, DejaVu Sans, Cambria Math");
+
 pref("ui.key.menuAccessKeyFocuses", true);
 
 // override double-click word selection behavior.
@@ -1738,7 +1741,7 @@ pref("font.size.variable.zh-HK", 15);
 pref("font.size.fixed.zh-HK", 16);
 
 // Apple's Symbol is Unicode so use it
-pref("font.mathfont-family", "STIXNonUnicode, STIXSize1, STIXGeneral, Cambria Math, Symbol, DejaVu Sans");
+pref("font.mathfont-family", "STIXNonUnicode, STIXSize1, Symbol, Cambria Math, DejaVu Sans");
 
 // individual font faces to be treated as independent families
 // names are Postscript names of each face
