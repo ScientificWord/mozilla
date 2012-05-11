@@ -388,6 +388,7 @@ TNODE* LaTeX2MMLTree::NBLaTeXTreeToMML( TNODE* LaTeX_parse_tree,
   										  ANOMALY_REC* anomalies,
 			  							  U16& error_code ) {
 
+  
   TNODE* mml_rv =  NULL;
   error_code  =  0;
   p_anomalies =  anomalies;		// list head is passed in.
@@ -428,7 +429,7 @@ TNODE* LaTeX2MMLTree::NBLaTeXTreeToMML( TNODE* LaTeX_parse_tree,
 //	as scripted by SWP are accepted as sources.
 
 TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
-
+  //JBMLine("\nTranslateMathObject");
   TNODE* mml_rv =  NULL;
 
   U16 uobjtype,usubtype,uID;
@@ -443,8 +444,10 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 		if ( uID == 0 ) {
           TNODE* local_oof_list =  NULL;
           script_level  =  0;
+          
           TNODE* mml_cont =  TranslateTeXDollarMath( math_container_obj,
 								                    &local_oof_list );
+          
           script_level  =  0;
 
           U16 vspace_context  =  renderer_implements_baselining ? 2 : 1;
@@ -549,15 +552,17 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 	  case 132  :		// TENV_gatherstar     132
 	  case 133  :		// TENV_multline       133
 	  case 134  : 	// TENV_multlinestar   134
+    //JBMLine("\nTranslateMathObject A");
 		if ( uID == 0 ) {
           script_level  =  0;
-		  in_display  =  TRUE;
+		      in_display  =  TRUE;
           mml_rv  =  TranslateTeXEqnArray( math_container_obj,
    							                &out_of_flow_list,usubtype );
           mml_rv  =  AddEQNAttribs( mml_rv,usubtype );
 		  in_display  =  FALSE;
           script_level  =  0;
 		}
+    
 	  break;
 
 	  case 135  :
@@ -590,6 +595,7 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
   } else	// if ( uobjtype == 5 )
     TCI_ASSERT(0);
 
+  //JBMLine("\nEnd TranslateMathObject");
   return mml_rv;
 }
 
@@ -601,12 +607,14 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 //  thru the "out_of_flow_list" parameter.
 // Caller MUST handle the out_of_flow objects.
 
-TNODE* LaTeX2MMLTree::TranslateMathList( TNODE* LaTeX_list,
-  										  TCI_BOOL do_bindings,
- 								          MATH_CONTEXT_INFO* m_context,
-                                  		  U16& tex_nodes_done,
-                                  		  U16& error_code,
-                                  		  TNODE** out_of_flow_list ) {
+TNODE* LaTeX2MMLTree::TranslateMathList( 
+                            TNODE* LaTeX_list,
+  										      TCI_BOOL do_bindings,
+ 								            MATH_CONTEXT_INFO* m_context,
+                            U16& tex_nodes_done,
+                            U16& error_code,
+                            TNODE** out_of_flow_list ) {
+
 
   tex_nodes_done  =  0;		// first level LaTeX nodes processed
   error_code      =  0;
@@ -629,10 +637,11 @@ TNODE* LaTeX2MMLTree::TranslateMathList( TNODE* LaTeX_list,
     curr_mml_node   =  NULL;
     U16 local_nodes_done  =  1;	// assumed - set if otherwise
     TNODE* save_next  =  NULL;
-	TCI_BOOL use_save_next  =  FALSE;
+	  TCI_BOOL use_save_next  =  FALSE;
 
     U16 uobjtype,usubtype,uID;
     GetUids( rover->zuID,uobjtype,usubtype,uID );
+    
     switch ( uobjtype ) {       // switch on primary object type
 	  case 0  :
       case 1  :	  // Context Start
@@ -667,12 +676,12 @@ TNODE* LaTeX2MMLTree::TranslateMathList( TNODE* LaTeX_list,
           HyperObj2MML( &oof_list,rover,usubtype,TRUE,NULL );
           local_nodes_done  =  1;
         } else if ( usubtype==700 && uID==0 ) {
-	      use_save_next =  TRUE;
+	        use_save_next =  TRUE;
           save_next   =  rover->next;
           oof_list  =  MoveNodeToList( oof_list,rover );
           local_nodes_done  =  1;
-		} else {
-	      use_save_next =  TRUE;
+		   } else {
+	        use_save_next =  TRUE;
           save_next =  rover->next;
           curr_mml_node =  MathStructureToMML( rover,&oof_list,
           					m_context,local_nodes_done,error_code );
@@ -809,7 +818,6 @@ TNODE* LaTeX2MMLTree::TranslateMathList( TNODE* LaTeX_list,
     } else
       *out_of_flow_list =  oof_list;
   }
-
   return MML_rv;
 }
 
@@ -1023,13 +1031,12 @@ TNODE* LaTeX2MMLTree::MathSymbolToMML( TNODE* tex_symbol_node,
 
 
 TNODE* LaTeX2MMLTree::TEXBUTTON2MML(TNODE* texb) {
-  
   U8* texb_name = NULL;
   U8* texb_content = NULL;
   TNODE* mml_cdata = NULL;
 
   if ( texb && texb->parts ) {
-
+    
     // Get the name
     TNODE* name_bucket =  FindObject( texb->parts, (U8*)"5.418.2", INVALID_LIST_POS );
     if ( name_bucket && name_bucket->contents ) {
@@ -1040,15 +1047,15 @@ TNODE* LaTeX2MMLTree::TEXBUTTON2MML(TNODE* texb) {
     TNODE* tex_bucket =  FindObject( texb->parts, (U8*)"5.418.3", INVALID_LIST_POS );
     if ( tex_bucket && tex_bucket->contents ) {
        texb_content = tex_bucket -> contents -> var_value;
+       
        // need to make a <!CDATA ...
        mml_cdata = MakeTNode( 0L, 0L, 0L, (U8*)"4.418.5" );
-       char* buf = new char[strlen((const char*)texb_content) + strlen("<![CDATA[]]>")];
+       char* buf = new char[1+ strlen((const char*)texb_content) + strlen("<![CDATA[]]>")];
        strcpy(buf, "<![CDATA[");
        strcpy(buf + strlen("<![CDATA["), (const char*)texb_content);
        strcpy(buf +  strlen("<![CDATA[") + strlen((const char*)texb_content), "]]>"); 
        SetChData( mml_cdata, (U8*)buf, NULL ); 
     }
-
     // put the name and tex into a mml object
 
     TNODE* mml_rv = CreateElemWithBucketAndContents( 5, 418, 1, 4, mml_cdata );
@@ -2350,7 +2357,6 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
   U16 objclass,subclass,id;
   GetUids( obj_node->zuID,objclass,subclass,id );
 
-
   if        ( subclass == 12 && id >= 15 ) {	// \mbox{TEXT}, etc.
     mml_rv  =  MBox2MML( obj_node,out_of_flow_list,id );
     tex_nodes_done  =  1;
@@ -2370,7 +2376,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
     mml_rv  =  OverOrUnder2MML( obj_node,subclass,id,out_of_flow_list );
     tex_nodes_done  =  1;
 
-  } else {              
+  } else {
 
 // all other MATH schemata
     switch ( subclass ) {
@@ -4632,7 +4638,6 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
   U16 src_line_counter  =  0;
   U16 dest_line_counter =  0;
   while ( TRUE ) {     	// loop down thru lines in LaTeX eqnarray
-
     TNODE* mtd_cont_head  =  NULL;	// we build a list of <mtd>'s
 
 // Find the current line in the list of lines
@@ -4732,6 +4737,7 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
       dest_line_counter++;
 	}
 
+
 // end intertext
 
     TNODE* tag  =  NULL;
@@ -4742,8 +4748,8 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
 
     TNODE* line_bucket  =  FindObject( curr_line->parts,
    							              (U8*)"5.121.4",INVALID_LIST_POS );
-    if ( line_bucket ) {
 
+    if ( line_bucket ) {
 // Look for \TCItag, etc.
 
       if ( line_bucket->contents ) {
@@ -4753,6 +4759,7 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
           tag =  FindObject( line_bucket->contents,(U8*)"5.702.0",
                                         INVALID_LIST_POS );
       }
+
 
 // If there is no tag, determine if the line is enumerated
 
@@ -4783,7 +4790,6 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
       TNODE* contents =  TranslateMathList( line_bucket->contents,
 								              do_bindings,NULL,tex_nodes_done,
 								              error_code,&local_oof_list );
-
 // WARNING: At present, TeX Explorer ignores <maligngroup> if it is nested
 //  in an <mpadded>, so we can't pad lines in an eqnarray
 //    U16 vspace_context  =  2;   // mpadded
@@ -4985,7 +4991,6 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 
   }		// loop down thru lines in LaTeX eqnarray
 
-
 // mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
 // _LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
 
@@ -4998,7 +5003,6 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 
   mml_rv->parts->parts  =  mtr_head;
   mtr_head->sublist_owner =  mml_rv->parts;
-
   return mml_rv;
 }
 

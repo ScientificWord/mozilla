@@ -103,25 +103,23 @@ JLogLine( zzz );
 */
 
     char zzz[256];
-    sprintf( zzz,"%8lu %s<%s>%s\n",
-                t_node->src_linenum,
-                    indent_str,t_node->zuID,t_node->src_tok );
-    DumpLine( zzz );
-	if ( t_node->var_value ) {
-      DumpLine( (char*)t_node->var_value );
-      DumpLine( "\n" );
-	}
-	if ( t_node->var_value2 ) {
-      DumpLine( (char*)t_node->var_value2 );
-      DumpLine( "\n" );
-	}
+    sprintf( zzz,"%8lu %s<%s>%s\n", t_node->src_linenum, indent_str, t_node->zuID, t_node->src_tok );
+    JBMLine( zzz );
+	  if ( t_node->var_value ) {
+      JBMLine( (char*)t_node->var_value );
+      JBMLine( "\n" );
+	  }
+	  if ( t_node->var_value2 ) {
+      JBMLine( (char*)t_node->var_value2 );
+      JBMLine( "\n" );
+	  }
 
     CVLINE_REC* cv_rover  =  t_node->cv_list;
-	while ( cv_rover ) {
-      DumpLine( (char*)cv_rover->cvline );
-      DumpLine( "\n" );
-	  cv_rover  =  cv_rover->next;
-	}
+	  while ( cv_rover ) {
+      JBMLine( (char*)cv_rover->cvline );
+      JBMLine( "\n" );
+	    cv_rover  =  cv_rover->next;
+	  }
 
   } else
     TCI_ASSERT(0);
