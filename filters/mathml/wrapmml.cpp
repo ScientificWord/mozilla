@@ -57,7 +57,6 @@ void* OutTreeGenerator::CreateDestTree( TNODE* src_tree,
                                         U8& eqn_option,
                                         ANOMALY_REC* anomalies,
                                         U16& result ) {
-
   void* rv =  NULL;
 
   if ( output_type==1 ) {    // MathML
