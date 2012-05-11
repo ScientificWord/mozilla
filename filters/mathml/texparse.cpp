@@ -388,7 +388,7 @@ JBMLine( zzz );
           ClearTokenList( enders_list );
           if ( error_stop_list )
             ClearTokenList( error_stop_list );
-TCI_ASSERT( save_sp == context_sp );
+          TCI_ASSERT( save_sp == context_sp );
           return head;
         }
         rover =  rover->next;
