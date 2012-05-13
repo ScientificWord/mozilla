@@ -38,9 +38,12 @@
 #
 # ***** END LICENSE BLOCK *****
 
+#include ../../../../prince/base/content/productname.inc
+
 <?xml-stylesheet href="chrome://help/skin/" type="text/css"?>
 
 <?xul-overlay href="chrome://help/content/helpContextOverlay.xul"?>
+<?xul-overlay href="chrome://help/content/msiHelpOverlay.xul"?>
 <!DOCTYPE window [
     <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
     %brandDTD;
@@ -70,6 +73,7 @@
   <script type="application/javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/javascript" src="chrome://global/content/viewZoomOverlay.js"/>
   <script type="application/javascript" src="chrome://global/content/globalOverlay.js"/>
+  <script type="application/javascript" src="chrome://help/content/msiHelp.js"/>
 
   <menupopup id="backMenu" position="after_start"
              onpopupshowing="return createBackMenu(event);"
@@ -83,6 +87,7 @@
     <broadcaster id="canGoBack"    disabled="true"/>
     <broadcaster id="canGoForward" disabled="true"/>
   </broadcasterset>
+  <broadcasterset id="vcam_broadcasterset" />
   <commandset id="globalEditMenuItems"/>
   <commandset id="selectEditMenuItems">
     <command id="cmd_close" oncommand="close();"/>
@@ -103,6 +108,8 @@
     <command id="cmd_copy" oncommand="goDoCommand('cmd_copy')" disabled="true"/>
     <command id="cmd_selectAll" oncommand="goDoCommand('cmd_selectAll')"/>
   </commandset>
+  <commandset id="MSIVCamCommands" />
+
   <keyset id="keys">
     <key id="goHome"      keycode="VK_HOME"  command="Help:Home" modifiers="alt"/>
 #ifdef XP_UNIX
@@ -182,6 +189,7 @@
                    oncommand="doFind();"/>
         </toolbaritem>
       </toolbar>
+      <toolbar id="VCamToolbar" hidden="true"/>
     </toolbox>
 
     <hbox flex="1">
