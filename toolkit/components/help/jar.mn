@@ -3,5 +3,7 @@ toolkit.jar:
 * content/help/help.xul                 (content/help.xul)
 * content/help/contextHelp.js           (content/contextHelp.js)
 * content/help/help.js                  (content/help.js)
+* content/help/msiHelp.js               (content/msiHelp.js)
 * content/help/helpContextOverlay.xul   (content/helpContextOverlay.xul)
 * content/help/platformClasses.css      (content/platformClasses.css)
+* content/help/msiHelpOverlay.xul       (content/msiHelpOverlay.xul)
