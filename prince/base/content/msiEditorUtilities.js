@@ -1838,7 +1838,7 @@ function msiCopyElementAttributes(newElement, oldElement, editor, bSuppressID)
       default:
         if (msiElementCanHaveAttribute(newElement, attrName))
         {
-          if (editor !== null)
+          if (editor)
             msiEditorEnsureElementAttribute(newElement, attrName, theAttrs.item(jx).textContent, editor);
           else
             msiEnsureElementAttribute(newElement, attrName, theAttrs.item(jx).textContent);
@@ -1858,7 +1858,7 @@ function msiCopySpecifiedElementAttributes(newElement, oldElement, editor, attrL
       attrVal = oldElement.getAttribute(attrName);
     else
       attrVal = null;
-    if (editor !== null)
+    if (editor)
       msiEditorEnsureElementAttribute(newElement, attrName, attrVal, editor);
     else
       msiEnsureElementAttribute(newElement, attrName, attrVal);
