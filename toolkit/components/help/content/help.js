@@ -167,6 +167,8 @@ function init() {
   //Start the status handler.
   window.XULBrowserWindow.init();
 
+  msiHelpInit();
+
   // Hook up UI through Progress Listener
   const interfaceRequestor = helpBrowser.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
   const webProgress = interfaceRequestor.getInterface(Components.interfaces.nsIWebProgress);
@@ -531,7 +533,9 @@ function nsHelpStatusHandler() {
 
 nsHelpStatusHandler.prototype = {
 
-    onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus) {},
+    onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus) {
+      msiCheckLoadStatus(aWebProgress, aRequest, aStateFlags, aStatus);
+    },
     onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress,
         aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {},
     onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage) {},
