@@ -3179,7 +3179,7 @@ void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& ch
                              
             } else {
               FindCursorNodeAndOffset(editor, child, charCount, theNode, theOffset);
-              if (charCount == 0){
+              if (charCount == 0 && theNode == NULL){
                  theNode = node;
                  theOffset = i+1;
             }
