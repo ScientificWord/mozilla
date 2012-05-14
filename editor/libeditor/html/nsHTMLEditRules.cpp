@@ -3070,8 +3070,10 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
           mathmltype = msiUtils::GetMathmlNodeType(editingBC);
         }
 
-        if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
-          // Passing into a denominator
+        if (( mathmltype == msiIMathMLEditingBC::MATHML_MFRAC || 
+              mathmltype == msiIMathMLEditingBC::MATHML_MSUB  ||
+              mathmltype == msiIMathMLEditingBC::MATHML_MSUP     )  && i == 1) {
+          // Passing into a denominator, subscript, ...
           count += 1;  
         }
         
@@ -3082,9 +3084,24 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
           break;
         
       }
+
       if (node == caretNode) {    
          done = true;
       }
+
+      if (!done){
+        msiUtils::GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
+        
+        if (editingBC) {
+          mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+        }
+
+        if ( mathmltype == msiIMathMLEditingBC::MATHML_MFRAC) {
+            // Passing out of denominator ...
+            count += 1;  
+        }
+      }
+
       printf("\nReturn sum %d", count);
       return count;
 
@@ -3119,8 +3136,8 @@ void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& ch
          }
 
      }  else {
-         theNode = node;
-         theOffset = 0;
+         //theNode = node;
+         //theOffset = 0;
 
          nsCOMPtr<msiIMathMLEditingBC> editingBC; 
          PRUint32 dontcare(0);
@@ -3138,26 +3155,45 @@ void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& ch
          node->GetChildNodes(getter_AddRefs(children));
          msiUtils::GetNumberofChildren(node, number);
 
+         //nsCOMPtr<nsIDOMNode>& saveNode = theNode;
+
          for (PRUint32 i = 0; i < number; ++i) {
             printf("\nGet child %d\n", i);
             msiUtils::GetChildNode(node, i, child);
 
             //printf("\nCharLength is %d\n", CharLength(child));
-            if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
+            if ((mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1) ||
+                (mathmltype == msiIMathMLEditingBC::MATHML_MSUP && i == 1) ||
+                (mathmltype == msiIMathMLEditingBC::MATHML_MSUP && i == 1) ){
               charCount -= 1;  // to distinguish numerator from denominator
             }
             if (editor->IsTextNode(child)){
-              if (charCount == 0)
+              if (charCount <= CharLength(child)){
+                theNode = child;
+                theOffset = charCount;
+                charCount = 0;
                 break;
-              charCount -= CharLength(child);
-              theOffset += 1;
+              } else {
+                charCount -= CharLength(child);
+              }
+                             
             } else {
               FindCursorNodeAndOffset(editor, child, charCount, theNode, theOffset);
+              if (charCount == 0){
+                 theNode = node;
+                 theOffset = i+1;
             }
             if (charCount <= 0)
               break;
-      }
-    }
+         }
+         if (charCount > 0)
+            if ((mathmltype == msiIMathMLEditingBC::MATHML_MFRAC  &&  i == 1) ||
+                (mathmltype == msiIMathMLEditingBC::MATHML_MSUP   &&  i == 1) ||
+                (mathmltype == msiIMathMLEditingBC::MATHML_MSUB   &&  i == 1)){
+            charCount -= 1;  // to leave denom
+         }
+       }
+    }    
 }
 
 
