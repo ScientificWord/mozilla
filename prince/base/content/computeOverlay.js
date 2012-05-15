@@ -1160,14 +1160,14 @@ function doMakeSnapshot(obj, graph, editorElement) {
           abspath = abspath.replace("%20", " ", "g");
         }
         plotWrapper.wrappedObj.makeSnapshot (abspath, res);
-        if ( getOS(window) == "win") {
-          var file = Components.classes["@mozilla.org/file/local;1"].  
-                               createInstance(Components.interfaces.nsILocalFile);  
-          file.initWithPath(abspath);
-          doGraphicsImport(file, {inFileType:"bmp",exepath:"%ImageMagick%",output:"png",commandLine:"convert %inputFile% %outputFile%" }, "import");
-          path.replace("plots","graphics");
-          path.replace(".bmp", ".png");
-        }
+//        if ( getOS(window) == "win") {
+//          var file = Components.classes["@mozilla.org/file/local;1"].  
+//                               createInstance(Components.interfaces.nsILocalFile);  
+//          file.initWithPath(abspath);
+//          doGraphicsImport(file, {inFileType:"bmp",exepath:"%ImageMagick%",output:"png",commandLine:"convert %inputFile% %outputFile%" }, "import");
+//          path.replace("plots","graphics");
+//          path.replace(".bmp", ".png");
+//        }
         insertSnapshot( obj, path );
       }
       catch(e) {
