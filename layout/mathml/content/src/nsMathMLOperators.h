@@ -65,6 +65,9 @@ enum {
   NS_MATHML_OPERATOR_FORM_INFIX           = 1,
   NS_MATHML_OPERATOR_FORM_PREFIX          = 2,
   NS_MATHML_OPERATOR_FORM_POSTFIX         = 3,
+  NS_MATHML_OPERATOR_DIRECTION            = 0x3<<2,
+  NS_MATHML_OPERATOR_DIRECTION_HORIZONTAL = 1<<2,
+  NS_MATHML_OPERATOR_DIRECTION_VERTICAL   = 2<<2,
   // the next 2 bits tell us the stretchiness
   NS_MATHML_OPERATOR_STRETCHY           = 0xC,
   NS_MATHML_OPERATOR_STRETCHY_VERT        = 1<<2,
@@ -76,12 +79,16 @@ enum {
   NS_MATHML_OPERATOR_SEPARATOR          = 1<<7,
   NS_MATHML_OPERATOR_MOVABLELIMITS      = 1<<8,
   NS_MATHML_OPERATOR_SYMMETRIC          = 1<<9,
+  NS_MATHML_OPERATOR_INTEGRAL           = 1<<11,
+  NS_MATHML_OPERATOR_MIRRORABLE         = 1<<12,
 
   // Additional bits not stored in the dictionary
   NS_MATHML_OPERATOR_MINSIZE_ABSOLUTE   = 1<<10,
   NS_MATHML_OPERATOR_MAXSIZE_ABSOLUTE   = 1<<11,
   NS_MATHML_OPERATOR_LEFTSPACE_ATTR     = 1<<12,
-  NS_MATHML_OPERATOR_RIGHTSPACE_ATTR    = 1<<13
+  NS_MATHML_OPERATOR_RIGHTSPACE_ATTR    = 1<<13,
+  NS_MATHML_OPERATOR_LSPACE_ATTR        = 1<<15,
+  NS_MATHML_OPERATOR_RSPACE_ATTR        = 1<<16
 };
 
 #define NS_MATHML_OPERATOR_SIZE_INFINITY NS_IEEEPositiveInfinity()
@@ -150,6 +157,8 @@ public:
   static PRInt32 FindStretchyOperator(PRUnichar aOperator);
   static nsStretchDirection GetStretchyDirectionAt(PRInt32 aIndex);
   static void DisableStretchyOperatorAt(PRInt32 aIndex);
+  static nsStretchDirection
+    GetStretchyDirection(const nsString& aOperator);
 
   // Return the variant type of one Unicode Mathematical Alphanumeric Symbol
   // character (which may be represented by a surrogate pair), or return
@@ -199,14 +208,23 @@ public:
 #define NS_MATHML_OPERATOR_FORM_IS_POSTFIX(_flags) \
   (NS_MATHML_OPERATOR_FORM_POSTFIX == ((_flags) & NS_MATHML_OPERATOR_FORM_POSTFIX ))
 
-#define NS_MATHML_OPERATOR_IS_STRETCHY(_flags) \
-  (0 != ((_flags) & NS_MATHML_OPERATOR_STRETCHY))
+#define NS_MATHML_OPERATOR_IS_INTEGRAL(_flags) \
+    (NS_MATHML_OPERATOR_INTEGRAL == ((_flags) & NS_MATHML_OPERATOR_INTEGRAL))
 
 #define NS_MATHML_OPERATOR_IS_STRETCHY_VERT(_flags) \
   (NS_MATHML_OPERATOR_STRETCHY_VERT == ((_flags) & NS_MATHML_OPERATOR_STRETCHY_VERT))
 
 #define NS_MATHML_OPERATOR_IS_STRETCHY_HORIZ(_flags) \
   (NS_MATHML_OPERATOR_STRETCHY_HORIZ == ((_flags) & NS_MATHML_OPERATOR_STRETCHY_HORIZ))
+
+#define NS_MATHML_OPERATOR_IS_DIRECTION_VERTICAL(_flags) \
+  (NS_MATHML_OPERATOR_DIRECTION_VERTICAL == ((_flags) & NS_MATHML_OPERATOR_DIRECTION))
+
+#define NS_MATHML_OPERATOR_IS_DIRECTION_HORIZONTAL(_flags) \
+  (NS_MATHML_OPERATOR_DIRECTION_HORIZONTAL == ((_flags) & NS_MATHML_OPERATOR_DIRECTION))
+
+#define NS_MATHML_OPERATOR_IS_STRETCHY(_flags) \
+  (NS_MATHML_OPERATOR_STRETCHY == ((_flags) & NS_MATHML_OPERATOR_STRETCHY))
 
 #define NS_MATHML_OPERATOR_IS_FENCE(_flags) \
   (NS_MATHML_OPERATOR_FENCE == ((_flags) & NS_MATHML_OPERATOR_FENCE))
@@ -237,5 +255,11 @@ public:
 
 #define NS_MATHML_OPERATOR_HAS_RIGHTSPACE_ATTR(_flags) \
   (NS_MATHML_OPERATOR_RIGHTSPACE_ATTR == ((_flags) & NS_MATHML_OPERATOR_RIGHTSPACE_ATTR))
+
+#define NS_MATHML_OPERATOR_HAS_LSPACE_ATTR(_flags) \
+  (NS_MATHML_OPERATOR_LSPACE_ATTR == ((_flags) & NS_MATHML_OPERATOR_LSPACE_ATTR))
+
+#define NS_MATHML_OPERATOR_HAS_RSPACE_ATTR(_flags) \
+  (NS_MATHML_OPERATOR_RSPACE_ATTR == ((_flags) & NS_MATHML_OPERATOR_RSPACE_ATTR))
 
 #endif /* nsMathMLOperators_h___ */

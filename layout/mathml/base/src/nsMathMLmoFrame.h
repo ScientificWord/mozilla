@@ -50,6 +50,8 @@
 
 class nsMathMLmoFrame : public nsMathMLTokenFrame {
 public:
+//  NS_DECL_FRAMEARENA_HELPERS
+
   friend nsIFrame* NS_NewMathMLmoFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
 
   virtual eMathMLFrameType GetMathMLFrameType();
@@ -118,7 +120,7 @@ protected:
   nsMathMLmoFrame(nsStyleContext* aContext) : nsMathMLTokenFrame(aContext) {}
   virtual ~nsMathMLmoFrame();
  
-  PRBool IsInvisibleOp();
+  bool IsInvisibleOp();
   
   virtual PRIntn GetSkipSides() const { return 0; }
 
@@ -127,7 +129,7 @@ protected:
   float            mMinSize;
   float            mMaxSize;
 
-  PRBool UseMathMLChar();
+  bool UseMathMLChar();
 
   // overload the base method so that we can setup our nsMathMLChar
   virtual void ProcessTextData();
@@ -139,7 +141,7 @@ protected:
   ProcessOperatorData();
 
   // helper to double check thar our char should be rendered as a selected char
-  PRBool
+  bool
   IsFrameInSelection(nsIFrame* aFrame);
 };
 

@@ -106,12 +106,39 @@ static const char* const kMathVariant_name[] = {
   "double-struck"
 };
 
-void
+static void
+SetBooleanProperty(OperatorData* aOperatorData,
+                   nsString      aName)
+{
+  if (aName.IsEmpty())
+    return;
+
+  if (aName.EqualsLiteral("stretchy") && (1 == aOperatorData->mStr.Length()))
+    aOperatorData->mFlags |= NS_MATHML_OPERATOR_STRETCHY;
+  else if (aName.EqualsLiteral("fence"))
+    aOperatorData->mFlags |= NS_MATHML_OPERATOR_FENCE;
+  else if (aName.EqualsLiteral("accent"))
+    aOperatorData->mFlags |= NS_MATHML_OPERATOR_ACCENT;
+  else if (aName.EqualsLiteral("largeop"))
+    aOperatorData->mFlags |= NS_MATHML_OPERATOR_LARGEOP;
+  else if (aName.EqualsLiteral("separator"))
+    aOperatorData->mFlags |=  NS_MATHML_OPERATOR_SEPARATOR;
+  else if (aName.EqualsLiteral("movablelimits"))
+    aOperatorData->mFlags |= NS_MATHML_OPERATOR_MOVABLELIMITS;
+  else if (aName.EqualsLiteral("symmetric"))
+    aOperatorData->mFlags |= NS_MATHML_OPERATOR_SYMMETRIC;
+  else if (aName.EqualsLiteral("integral"))
+    aOperatorData->mFlags |= NS_MATHML_OPERATOR_INTEGRAL;
+  else if (aName.EqualsLiteral("mirrorable"))
+    aOperatorData->mFlags |= NS_MATHML_OPERATOR_MIRRORABLE;
+}
+
+static void
 SetProperty(OperatorData* aOperatorData,
             nsString      aName,
             nsString      aValue)
 {
-  if (!aName.Length() || !aValue.Length())
+  if (aName.IsEmpty() || aValue.IsEmpty())
     return;
 
   // XXX These ones are not kept in the dictionary
@@ -119,71 +146,33 @@ SetProperty(OperatorData* aOperatorData,
   // maxsize (default: infinity)
   // minsize (default: 1)
 
-  if (aValue.EqualsLiteral("true")) {
-    // see if we should enable flags with default value=false
-    if (aName.EqualsLiteral("fence"))
-      aOperatorData->mFlags |= NS_MATHML_OPERATOR_FENCE;
-    else if (aName.EqualsLiteral("accent"))
-      aOperatorData->mFlags |= NS_MATHML_OPERATOR_ACCENT;
-    else if (aName.EqualsLiteral("largeop"))
-      aOperatorData->mFlags |= NS_MATHML_OPERATOR_LARGEOP;
-    else if (aName.EqualsLiteral("separator"))
-      aOperatorData->mFlags |=  NS_MATHML_OPERATOR_SEPARATOR;
-    else if (aName.EqualsLiteral("movablelimits"))
-      aOperatorData->mFlags |= NS_MATHML_OPERATOR_MOVABLELIMITS;
-  }
-  else if (aValue.EqualsLiteral("false")) {
-    // see if we should disable flags with default value=true
-    if (aName.EqualsLiteral("symmetric"))
-      aOperatorData->mFlags &= ~NS_MATHML_OPERATOR_SYMMETRIC;
-  }
-  else if (aName.EqualsLiteral("stretchy") &&
-          (1 == aOperatorData->mStr.Length())) {
+  if (aName.EqualsLiteral("direction")) {
     if (aValue.EqualsLiteral("vertical"))
-      aOperatorData->mFlags |= NS_MATHML_OPERATOR_STRETCHY_VERT;
+      aOperatorData->mFlags |= NS_MATHML_OPERATOR_DIRECTION_VERTICAL;
     else if (aValue.EqualsLiteral("horizontal"))
-      aOperatorData->mFlags |= NS_MATHML_OPERATOR_STRETCHY_HORIZ;
+      aOperatorData->mFlags |= NS_MATHML_OPERATOR_DIRECTION_HORIZONTAL;
     else return; // invalid value
-    if (kNotFound == nsMathMLOperators::FindStretchyOperator(aOperatorData->mStr[0])) {
-      gStretchyOperatorArray->AppendElement(aOperatorData);
-    }
-  }
-  else {
-    PRInt32 i = 0;
-    float space = 0.0f;
-    PRBool isLeftSpace;
+  } else {
+    bool isLeadingSpace;
     if (aName.EqualsLiteral("lspace"))
-      isLeftSpace = PR_TRUE;
+      isLeadingSpace = true;
     else if (aName.EqualsLiteral("rspace"))
-      isLeftSpace = PR_FALSE;
+      isLeadingSpace = false;
     else return;  // input is not applicable
 
-    // See if it is a numeric value (unit is assumed to be 'em')
-    if (nsCRT::IsAsciiDigit(aValue[0])) {
-      PRInt32 error = 0;
-      space = aValue.ToFloat(&error);
-      if (error) return;
-    }
-    // See if it is one of the 'namedspace' (ranging 1/18em...7/18em)
-    else if (aValue.EqualsLiteral("veryverythinmathspace"))  i = 1;
-    else if (aValue.EqualsLiteral("verythinmathspace"))      i = 2;
-    else if (aValue.EqualsLiteral("thinmathspace"))          i = 3;
-    else if (aValue.EqualsLiteral("mediummathspace"))        i = 4;
-    else if (aValue.EqualsLiteral("thickmathspace"))         i = 5;
-    else if (aValue.EqualsLiteral("verythickmathspace"))     i = 6;
-    else if (aValue.EqualsLiteral("veryverythickmathspace")) i = 7;
+    // aValue is assumed to be a digit from 0 to 7
+    PRInt32 error = 0;
+    float space = aValue.ToFloat(&error) / 18.0;
+    if (error) return;
 
-    if (0 != i) // it was a namedspace value
-      space = float(i)/float(18);
-
-    if (isLeftSpace)
+    if (isLeadingSpace)
       aOperatorData->mLeftSpace = space;
     else
       aOperatorData->mRightSpace = space;
   }
 }
 
-PRBool
+static bool
 SetOperator(OperatorData*   aOperatorData,
             nsOperatorFlags aForm,
             const nsCString& aOperator,
@@ -201,12 +190,12 @@ SetOperator(OperatorData*   aOperatorData,
   while (i <= len) {
     if (0 == state) {
       if (c != '\\')
-        return PR_FALSE;
+        return false;
       if (i < len)
         c = aOperator[i];
       i++;
       if (('u' != c) && ('U' != c))
-        return PR_FALSE;
+        return false;
       if (i < len)
         c = aOperator[i];
       i++;
@@ -219,7 +208,7 @@ SetOperator(OperatorData*   aOperatorData,
          uchar = (uchar << 4) | (c - 'a' + 0x0a);
       else if (('A' <= c) && (c <= 'F'))
          uchar = (uchar << 4) | (c - 'A' + 0x0a);
-      else return PR_FALSE;
+      else return false;
       if (i < len)
         c = aOperator[i];
       i++;
@@ -231,15 +220,15 @@ SetOperator(OperatorData*   aOperatorData,
       }
     }
   }
-  if (0 != state) return PR_FALSE;
+  if (0 != state) return false;
 
   // Quick return when the caller doesn't care about the attributes and just wants
   // to know if this is a valid operator (this is the case at the first pass of the
   // parsing of the dictionary in InitOperators())
-  if (!aForm) return PR_TRUE;
+  if (!aForm) return true;
 
-  // Add operator to hash table (symmetric="true" by default for all operators)
-  aOperatorData->mFlags |= aForm | NS_MATHML_OPERATOR_SYMMETRIC;
+  // Add operator to hash table
+  aOperatorData->mFlags |= aForm;
   aOperatorData->mStr.Assign(value);
   value.AppendInt(aForm, 10);
   nsStringKey key(value);
@@ -260,35 +249,37 @@ SetOperator(OperatorData*   aOperatorData,
       ++start;
     }
     end = start;
-    // look for ':' or '='
-    while ((kNullCh!=*end) && (kDashCh!=*end) && (kColonCh!=*end) && (kEqualCh!=*end)) {
+    // look for ':'
+    while ((kNullCh!=*end) && (kDashCh!=*end) && !nsCRT::IsAsciiSpace(*end) &&
+           (kColonCh!=*end)) {
       ++end;
     }
-    if ((kColonCh!=*end) && (kEqualCh!=*end)) {
-#ifdef NS_DEBUG
-      printf("Bad MathML operator: %s\n", str.get());
-#endif
-      return PR_TRUE;
-    }
+    // If ':' is not found, then it's a boolean property
+    bool IsBooleanProperty = (kColonCh != *end);
     *end = kNullCh; // end segment here
     // this segment is the name
     if (start < end) {
       name.Assign(start);
     }
-    start = ++end;
-    // look for space or end of line
-    while ((kNullCh!=*end) && (kDashCh!=*start) && !nsCRT::IsAsciiSpace(*end)) {
-      ++end;
+    if (IsBooleanProperty) {
+      SetBooleanProperty(aOperatorData, name);
+    } else {
+      start = ++end;
+      // look for space or end of line
+      while ((kNullCh!=*end) && (kDashCh!=*end) &&
+             !nsCRT::IsAsciiSpace(*end)) {
+        ++end;
+      }
+      *end = kNullCh; // end segment here
+      if (start < end) {
+        // this segment is the value
+        value.Assign(start);
+      }
+      SetProperty(aOperatorData, name, value);
     }
-    *end = kNullCh; // end segment here
-    // this segment is the value
-    if (start < end) {
-      value.Assign(start);
-    }
-    SetProperty(aOperatorData, name, value);
     start = ++end;
   }
-  return PR_TRUE;
+  return true;
 }
 
 nsresult
@@ -313,6 +304,7 @@ InitOperators(void)
   // Parse the Operator Dictionary in two passes.
   // The first pass is to count the number of operators; the second pass is to
   // allocate the necessary space for them and to add them in the hash table.
+  gOperatorCount = 0;
   for (PRInt32 pass = 1; pass <= 2; pass++) {
     OperatorData dummyData;
     OperatorData* operatorData = &dummyData;
@@ -361,11 +353,13 @@ InitOperators(void)
               if (SetOperator(operatorData, form, name, attributes)) {
                 index++;
                 if (1 == pass) gOperatorCount = index;
+                printf("OperatorCount is %d\n", gOperatorCount);
               }
             }
           }
         }
       }
+      printf("Operator count is %d\n", gOperatorCount);
     }
   }
   return NS_OK;
@@ -488,6 +482,27 @@ nsMathMLOperators::LookupOperator(const nsString&       aOperator,
     }
   }
   return PR_FALSE;
+}
+
+/* static */ nsStretchDirection
+nsMathMLOperators::GetStretchyDirection(const nsString& aOperator)
+{
+  // LookupOperator will search infix, postfix and prefix forms of aOperator and
+  // return the first form found. It is assumed that all these forms have same
+  // direction.
+  nsOperatorFlags flags = 0;
+  float dummy;
+  nsMathMLOperators::LookupOperator(aOperator,
+                                    NS_MATHML_OPERATOR_FORM_INFIX,
+                                    &flags, &dummy, &dummy);
+
+  if (NS_MATHML_OPERATOR_IS_DIRECTION_VERTICAL(flags)) {
+      return NS_STRETCH_DIRECTION_VERTICAL;
+  } else if (NS_MATHML_OPERATOR_IS_DIRECTION_HORIZONTAL(flags)) {
+    return NS_STRETCH_DIRECTION_HORIZONTAL;
+  } else {
+    return NS_STRETCH_DIRECTION_UNSUPPORTED;
+  }
 }
 
 void
