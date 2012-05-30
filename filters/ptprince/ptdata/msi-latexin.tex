@@ -4875,9 +4875,12 @@
 
 %<indexitem req="varioref" pri="asdf" sec="fff"/>
 
+
+\def\partA#1@#2!!{#1}
+
 \def\index#1{%
   \msihmode
-  \msitag{<indexitem req="varioref" pri="#1"></indexitem>}%
+  \msitag{<indexitem req="varioref" pri="}\partA#1@!!\msitag{"></indexitem>}%
 }
 
 
