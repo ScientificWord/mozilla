@@ -566,7 +566,7 @@ MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
             case OP_prefix:
               if (rover->next && rover -> next -> p_chdata) {
                 // Check nabla times special case
-                if ( ( 0 == strcmp(rover -> p_chdata , "&#x2207;") ) &&
+                if ( ( (rover -> p_chdata) && 0 == strcmp(rover -> p_chdata , "&#x2207;") ) &&
                      ( ( 0 == strcmp(rover -> next -> p_chdata , "&#xd7;") ) || 
                        ( 0 == strcmp(rover -> next -> p_chdata , "&#x22c5;") ) ) )
                 {
@@ -2242,7 +2242,7 @@ MNODE* Tree2StdMML::RemoveEmptyTags(MNODE* MML_list)
     } else {
         if (IsEmptyMO(rover)
             || ElementNameIs(rover, "mn")
-            || ElementNameIs(rover, "mi") ) {
+            || (ElementNameIs(rover, "mi") && (0 == GetATTRIBvalue(rover->attrib_list, "tempinput"))) ) {
           if (!rover->p_chdata || !*rover->p_chdata) {
             if (!HasRequiredChildren(rover->parent)) {
               DelinkTNode(rover);
