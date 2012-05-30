@@ -230,7 +230,7 @@ public:
   NS_IMETHOD Translate(nscoord aX, nscoord aY) = 0;
   
   /**
-   * Set the translation compoennt of the current transformation matrix.
+   * Set the translation component of the current transformation matrix.
    * Useful to set it to a known pixel value without incurring roundoff
    * errors.
    */
