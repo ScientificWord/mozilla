@@ -80,32 +80,32 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../../../xul/base/src \
 	$(NULL)
 
-CPPSRCS =         nsMathMLChar.cpp		        \
-                  nsMathMLFrame.cpp		\
-                  nsMathMLContainerFrame.cpp		\
-                  nsMathMLForeignFrameWrapper.cpp		\
-                  nsMathMLTokenFrame.cpp		\
-                  nsMathMLmoFrame.cpp			\
-                  nsMathMLmrowFrame.cpp		        \
-                  nsMathMLmphantomFrame.cpp		\
-                  nsMathMLmfencedFrame.cpp		\
-                  nsMathMLmfracFrame.cpp		\
-                  nsMathMLmsupFrame.cpp			\
-                  nsMathMLmsubFrame.cpp			\
-                  nsMathMLmsubsupFrame.cpp		\
-                  nsMathMLmmultiscriptsFrame.cpp	\
-                  nsMathMLmtableFrame.cpp		\
-                  nsMathMLmunderFrame.cpp		\
-                  nsMathMLmoverFrame.cpp		\
-                  nsMathMLmunderoverFrame.cpp		\
-                  nsMathMLmpaddedFrame.cpp		\
-                  nsMathMLmspaceFrame.cpp		\
-                  nsMathMLmstyleFrame.cpp		\
-                  nsMathMLmsqrtFrame.cpp		\
-                  nsMathMLmrootFrame.cpp		\
-                  nsMathMLmactionFrame.cpp		\
-                  nsMathCursorUtils.cpp			\
-                  nsMathMLCursorMover.cpp		\
+CPPSRCS =         nsMathMLChar.cpp \
+                  nsMathMLFrame.cpp \
+                  nsMathMLContainerFrame.cpp \
+                  nsMathMLForeignFrameWrapper.cpp \
+                  nsMathMLTokenFrame.cpp \
+                  nsMathMLmoFrame.cpp \
+                  nsMathMLmrowFrame.cpp \
+                  nsMathMLmphantomFrame.cpp \
+                  nsMathMLmfencedFrame.cpp \
+                  nsMathMLmfracFrame.cpp \
+                  nsMathMLmsupFrame.cpp \
+                  nsMathMLmsubFrame.cpp \
+                  nsMathMLmsubsupFrame.cpp \
+                  nsMathMLmmultiscriptsFrame.cpp \
+                  nsMathMLmtableFrame.cpp \
+                  nsMathMLmunderFrame.cpp \
+                  nsMathMLmoverFrame.cpp \
+                  nsMathMLmunderoverFrame.cpp \
+                  nsMathMLmpaddedFrame.cpp \
+                  nsMathMLmspaceFrame.cpp \
+                  nsMathMLmstyleFrame.cpp \
+                  nsMathMLmsqrtFrame.cpp \
+                  nsMathMLmrootFrame.cpp \
+                  nsMathMLmactionFrame.cpp \
+                  nsMathCursorUtils.cpp \
+                  nsMathMLCursorMover.cpp \
                   nsMathMLContainerCursorMover.cpp \
                   $(NULL)
 
@@ -118,11 +118,22 @@ FORCE_STATIC_LIB = 1
 include $(topsrcdir)/config/rules.mk
 
 font_properties = \
-	mathfontUnicode.properties \
-	mathfontSTIXNonUnicode.properties \
-	mathfontSTIXSize1.properties \
-	mathfontStandardSymbolsL.properties \
-	$(NULL)
+  mathfont.properties \
+  mathfontMathJax_Main.properties \
+  mathfontAsanaMath.properties \
+  mathfontPUA.properties \
+  mathfontCMEX10.properties \
+  mathfontSTIXNonUnicode.properties \
+  mathfontCMSY10.properties \
+  mathfontSTIXSize1.properties \
+  mathfontMTExtra.properties \
+  mathfontSTIXSizeOneSym.properties \
+  mathfontMath1.properties \
+  mathfontStandardSymbolsL.properties \
+  mathfontMath2.properties \
+  mathfontMath4.properties \
+  mathfontUnicode.properties \
+  $(NULL)
 
 ifeq ($(TARGET_MD_ARCH),win32)
 font_properties += \
