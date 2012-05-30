@@ -463,11 +463,11 @@ nsMathMLContainerFrame::Stretch(nsIRenderingContext& aRenderingContext,
           nsEmbellishData coreData;
           GetEmbellishDataFrom(mEmbellishData.coreFrame, coreData);
 
-          mBoundingMetrics.width += coreData.leftSpace + coreData.rightSpace;
+          mBoundingMetrics.width += coreData.leadingSpace + coreData.trailingSpace;
           aDesiredStretchSize.width = mBoundingMetrics.width;
           aDesiredStretchSize.mBoundingMetrics.width = mBoundingMetrics.width;
 
-          nscoord dx = coreData.leftSpace;
+          nscoord dx = coreData.leadingSpace;
           if (dx != 0) {
             mBoundingMetrics.leftBearing += dx;
             mBoundingMetrics.rightBearing += dx;
