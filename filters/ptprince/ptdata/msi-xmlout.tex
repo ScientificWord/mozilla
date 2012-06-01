@@ -375,6 +375,7 @@
 }
 
 \def\cite{%
+  \msihmode
   \@ifnextchar[{\@tempswatrue\begingroup\attrib@text\out@citex}{\@tempswafalse\begingroup\attrib@text\out@citey}}
 
 
@@ -385,18 +386,17 @@
 
 \def\out@citex[#1]#2{%
    \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
-                            citekey="}#1\msitag{" 
+                            citekey="}#2\msitag{" 
                             hasRemark="true">}%
         \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
-            #2%
+            #1%
         \msiclosetag{biblabel}{</biblabel>}%
-  \msiclosetag{citation}{</citation>\endgroup}}
+  \msiclosetag{citation}{</citation>}}
 
 \def\out@citey#1{%
   \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
                             citekey="}#1\msitag{" hasRemark="false">}%
-  \msiclosetag{citation}{</citation>}%
-  \endgroup}
+  \msiclosetag{citation}{</citation>}}
 
 
 %\MSITextElement[a]{ref}
