@@ -5,7 +5,7 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
+ * http://www.mozilla.or©g/MPL/
  *
  * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
@@ -69,16 +69,14 @@ enum {
   NS_MATHML_OPERATOR_DIRECTION_HORIZONTAL = 1<<2,
   NS_MATHML_OPERATOR_DIRECTION_VERTICAL   = 2<<2,
   // the next 2 bits tell us the stretchiness
-  NS_MATHML_OPERATOR_STRETCHY           = 0xC,
-  NS_MATHML_OPERATOR_STRETCHY_VERT        = 1<<2,
-  NS_MATHML_OPERATOR_STRETCHY_HORIZ       = 1<<3,
+  NS_MATHML_OPERATOR_STRETCHY           = 1<<4,
   // other bits used in the Operator Dictionary
-  NS_MATHML_OPERATOR_FENCE              = 1<<4,
-  NS_MATHML_OPERATOR_ACCENT             = 1<<5,
-  NS_MATHML_OPERATOR_LARGEOP            = 1<<6,
-  NS_MATHML_OPERATOR_SEPARATOR          = 1<<7,
-  NS_MATHML_OPERATOR_MOVABLELIMITS      = 1<<8,
-  NS_MATHML_OPERATOR_SYMMETRIC          = 1<<9,
+  NS_MATHML_OPERATOR_FENCE              = 1<<5,
+  NS_MATHML_OPERATOR_ACCENT             = 1<<6,
+  NS_MATHML_OPERATOR_LARGEOP            = 1<<7,
+  NS_MATHML_OPERATOR_SEPARATOR          = 1<<8,
+  NS_MATHML_OPERATOR_MOVABLELIMITS      = 1<<9,
+  NS_MATHML_OPERATOR_SYMMETRIC          = 1<<10,
   NS_MATHML_OPERATOR_INTEGRAL           = 1<<11,
   NS_MATHML_OPERATOR_MIRRORABLE         = 1<<12,
 
@@ -155,7 +153,7 @@ public:
   // nsMathMLChar class.
   static PRInt32 CountStretchyOperator();
   static PRInt32 FindStretchyOperator(PRUnichar aOperator);
-  static nsStretchDirection GetStretchyDirectionAt(PRInt32 aIndex);
+//  static nsStretchDirection GetStretchyDirectionAt(PRInt32 aIndex);
   static void DisableStretchyOperatorAt(PRInt32 aIndex);
   static nsStretchDirection
     GetStretchyDirection(const nsString& aOperator);

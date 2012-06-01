@@ -600,23 +600,23 @@ nsMathMLOperators::FindStretchyOperator(PRUnichar aOperator)
   return kNotFound;
 }
 
-nsStretchDirection
-nsMathMLOperators::GetStretchyDirectionAt(PRInt32 aIndex)
-{
-  NS_ASSERTION(gStretchyOperatorArray, "invalid call");
-  if (gStretchyOperatorArray) {
-    NS_ASSERTION(aIndex < gStretchyOperatorArray->Count(), "invalid call");
-    OperatorData* data = (OperatorData*)gStretchyOperatorArray->ElementAt(aIndex);
-    if (data) {
-      if (NS_MATHML_OPERATOR_IS_STRETCHY_VERT(data->mFlags))
-        return NS_STRETCH_DIRECTION_VERTICAL;
-      else if (NS_MATHML_OPERATOR_IS_STRETCHY_HORIZ(data->mFlags))
-        return NS_STRETCH_DIRECTION_HORIZONTAL;
-      NS_ASSERTION(PR_FALSE, "*** bad setup ***");
-    }
-  }
-  return NS_STRETCH_DIRECTION_UNSUPPORTED;
-}
+//nsStretchDirection
+//nsMathMLOperators::GetStretchyDirectionAt(PRInt32 aIndex)
+//{
+//  NS_ASSERTION(gStretchyOperatorArray, "invalid call");
+//  if (gStretchyOperatorArray) {
+//    NS_ASSERTION(aIndex < gStretchyOperatorArray->Count(), "invalid call");
+//    OperatorData* data = (OperatorData*)gStretchyOperatorArray->ElementAt(aIndex);
+//    if (data) {
+//      if (NS_MATHML_OPERATOR_IS_STRETCHY_VERT(data->mFlags))
+//        return NS_STRETCH_DIRECTION_VERTICAL;
+//      else if (NS_MATHML_OPERATOR_IS_STRETCHY_HORIZ(data->mFlags))
+//        return NS_STRETCH_DIRECTION_HORIZONTAL;
+//      NS_ASSERTION(PR_FALSE, "*** bad setup ***");
+//    }
+//  }
+//  return NS_STRETCH_DIRECTION_UNSUPPORTED;
+//}
 
 void
 nsMathMLOperators::DisableStretchyOperatorAt(PRInt32 aIndex)
