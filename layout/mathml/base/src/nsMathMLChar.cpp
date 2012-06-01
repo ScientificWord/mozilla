@@ -1107,7 +1107,7 @@ public:
                      PRUint32             aStretchHint,
                      nsBoundingMetrics&   aStretchedMetrics,
                      const nsAString&     aFamilies,
-					           bool&				        aGlyphFound)
+					 bool&				  aGlyphFound)
     : mChar(aChar),
       mPresContext(aPresContext),
       mRenderingContext(aRenderingContext),
@@ -1278,6 +1278,7 @@ nsMathMLChar::StretchEnumContext::TryParts(nsGlyphTable*    aGlyphTable,
     // all went well, painting will be delegated from now on to children
     mChar->mGlyph = kNullGlyph; // this will tell paint to build by parts
     mChar->mGlyphFound = true;
+	mGlyphFound = true;
     mChar->mGlyphTable = aGlyphTable;
     mBoundingMetrics = compositeSize;
     return true; // no more searching
@@ -1407,6 +1408,7 @@ nsMathMLChar::StretchEnumContext::TryParts(nsGlyphTable*    aGlyphTable,
     mBoundingMetrics.rightBearing = computedSize;
   }
   mChar->mGlyphFound = true;
+  mGlyphFound = true;
   if (maxWidth)
     return false; // Continue to check other sizes
 
@@ -2148,7 +2150,8 @@ nsMathMLChar::PaintForeground(nsPresContext* aPresContext,
     PRUint32 len = PRUint32(mData.Length());
 //printf("Painting %04X like a normal char\n", mData[0]);
 //aRenderingContext.SetColor(NS_RGB(255,0,0));
-    aRenderingContext.DrawString(mData.get(), len, 0, mUnscaledAscent);
+    aRenderingContext.DrawString(mData.get(), len, 0, 
+     mBoundingMetrics.ascent ); //mUnscaledAscent);
   }
   else {
     // Grab some metrics to adjust the placements ...
@@ -2157,7 +2160,7 @@ nsMathMLChar::PaintForeground(nsPresContext* aPresContext,
 //printf("Painting %04X with a glyph of appropriate size\n", mData[0]);
 //aRenderingContext.SetColor(NS_RGB(0,0,255));
       aRenderingContext.DrawString(mGlyph.code, mGlyph.Length(),
-                                   0, mUnscaledAscent);
+       0, mUnscaledAscent);
     }
     else { // paint by parts
 //aRenderingContext.SetColor(NS_RGB(0,255,0));
