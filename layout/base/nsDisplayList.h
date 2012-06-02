@@ -845,7 +845,9 @@ public:
      const nsRect& aDirtyRect) {
     mPaint(mFrame, aCtx, aDirtyRect, aBuilder->ToReferenceFrame(mFrame));
   }
+#ifdef DEBUG
   NS_DISPLAY_DECL_NAME(mName)
+#endif
 protected:
   PaintCallback mPaint;
 #ifdef DEBUG
