@@ -15,7 +15,8 @@
 ]>
 
 <overlay id="msiHelpOverlay"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+         onload="msiHelpInit();">
 
 #ifndef PROD_SW
   <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
@@ -84,31 +85,31 @@
                   commandupdater="true"
                   events="create, mode_switch"
                   oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
-    <command id="cmd_vcReset"         oncommand="doVCamCommand('cmd_vcReset')"/>
-    <command id="cmd_vcFitContents"   oncommand="doVCamCommand('cmd_vcFitContents')"/>
-    <command id="cmd_vcRotateLeft"    oncommand="doVCamCommand('cmd_vcRotateLeft')"/>
-    <command id="cmd_vcRotateRight"   oncommand="doVCamCommand('cmd_vcRotateRight')"/>
-    <command id="cmd_vcRotateUp"      oncommand="doVCamCommand('cmd_vcRotateUp')"/>
-    <command id="cmd_vcRotateDown"    oncommand="doVCamCommand('cmd_vcRotateDown')"/>
-    <command id="cmd_vcRotateScene"   oncommand="doVCamCommand('cmd_vcRotateScene')"/>
-    <command id="cmd_vcZoom"          oncommand="doVCamCommand('cmd_vcZoom')"/>
-    <command id="cmd_vcMove"          oncommand="doVCamCommand('cmd_vcMove')"/>
-    <command id="cmd_vcZoomBoxIn"     oncommand="doVCamCommand('cmd_vcZoomBoxIn')"/>
-    <command id="cmd_vcZoomBoxOut"    oncommand="doVCamCommand('cmd_vcZoomBoxOut')"/>
-    <command id="cmd_vcZoomIn"        oncommand="doVCamCommand('cmd_vcZoomIn')"/>
-    <command id="cmd_vcZoomOut"       oncommand="doVCamCommand('cmd_vcZoomOut')"/>
-    <command id="cmd_vcSnapshot"      oncommand="doVCamCommand('cmd_vcSnapshot')"/>
-    <command id="cmd_vcAutoSpeed"     oncommand="doVCamCommand('cmd_vcAutoSpeed')"/>
-    <command id="cmd_vcAnimSpeed"     oncommand="doVCamCommand('cmd_vcAnimSpeed')"/>
-    <command id="cmd_vcAutoZoomIn"    oncommand="doVCamCommand('cmd_vcAutoZoomIn')"/>
-    <command id="cmd_vcAutoZoomOut"   oncommand="doVCamCommand('cmd_vcAutoZoomOut')"/>
-    <command id="cmd_vcGoToEnd"       oncommand="doVCamCommand('cmd_vcGoToEnd')"/>
-    <command id="cmd_vcGoToStart"     oncommand="doVCamCommand('cmd_vcGoToStart')"/>
-    <command id="cmd_vcLoopType"      oncommand="doVCamCommand('cmd_vcLoopType')"/>
-    <command id="cmd_vcPlay"          oncommand="doVCamCommand('cmd_vcPlay')"/>
-    <command id="cmd_vcQuery"         oncommand="doVCamCommand('cmd_vcQuery')"/>
-    <command id="cmd_vcSelObj"        oncommand="doVCamCommand('cmd_vcSelObj')"/>
-    <command id="cmd_vcFitContents"   oncommand="doVCamCommand('cmd_vcFitContents')"/>
+    <command id="cmd_vcReset"         oncommand="vcReset();"/>
+    <command id="cmd_vcFitContents"   oncommand="vcFitContents();"/>
+    <command id="cmd_vcRotateLeft"    oncommand="vcRotateLeft();"/>
+    <command id="cmd_vcRotateRight"   oncommand="vcRotateRight();"/>
+    <command id="cmd_vcRotateUp"      oncommand="vcRotateUp();"/>
+    <command id="cmd_vcRotateDown"    oncommand="vcRotateDown();"/>
+    <command id="cmd_vcRotateScene"   oncommand="vcRotateScene();"/>
+    <command id="cmd_vcZoom"          oncommand="vcZoom();"/>
+    <command id="cmd_vcMove"          oncommand="vcMove();"/>
+    <command id="cmd_vcZoomBoxIn"     oncommand="vcZoomBoxIn();"/>
+    <command id="cmd_vcZoomBoxOut"    oncommand="vcZoomBoxOut();"/>
+    <command id="cmd_vcZoomIn"        oncommand="vcZoomIn();"/>
+    <command id="cmd_vcZoomOut"       oncommand="vcZoomOut();"/>
+    <command id="cmd_vcSnapshot"      oncommand="vcSnapshot();"/>
+    <command id="cmd_vcAutoSpeed"     oncommand="vcAutoSpeed();"/>
+    <command id="cmd_vcAnimSpeed"     oncommand="vcAnimSpeed();"/>
+    <command id="cmd_vcAutoZoomIn"    oncommand="vcAutoZoomIn();"/>
+    <command id="cmd_vcAutoZoomOut"   oncommand="vcAutoZoomOut();"/>
+    <command id="cmd_vcGoToEnd"       oncommand="vcGoToEnd();"/>
+    <command id="cmd_vcGoToStart"     oncommand="vcGoToStart();"/>
+    <command id="cmd_vcLoopType"      oncommand="vcLoopType();"/>
+    <command id="cmd_vcPlay"          oncommand="vcPlay();"/>
+    <command id="cmd_vcQuery"         oncommand="vcQuery();"/>
+    <command id="cmd_vcSelObj"        oncommand="vcSelObj();"/>
+    <command id="cmd_vcFitContents"   oncommand="vcFitContents();"/>
   </commandset>
 
   <broadcasterset id="vcam_broadcasterset">
