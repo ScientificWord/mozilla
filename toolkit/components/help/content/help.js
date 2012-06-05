@@ -212,7 +212,7 @@ function hideSearchSidebar(aEvent) {
 # loadHelpRDF
 # Parse the provided help content pack RDF file, and use it to
 # populate the datasources attached to the trees in the viewer.
-# Filter out any information not applicable to the user's platform.
+# Filter out any information not applicable to the user''s platform.
 function loadHelpRDF() {
   if (!helpFileDS) {
     try {
@@ -416,6 +416,7 @@ function loadURI(uri) {
     }
     getWebNavigation().loadURI(uri, Components.interfaces.nsIWebNavigation.LOAD_FLAGS_NONE,
         null, null, null);
+    initDocument(helpBrowser); // in msiHelp.js, in case the document contains plots
 }
 
 function goBack() {
