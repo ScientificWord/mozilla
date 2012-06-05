@@ -72,6 +72,9 @@
 
 //#define SHOW_BORDERS 1
 //#define NOISY_SEARCH 1
+#ifndef M_SQRT2
+#define M_SQRT2         1.41421356237309504880
+#endif
 
 // -----------------------------------------------------------------------------------
 static const PRUnichar   kSpaceCh   = PRUnichar(' ');
@@ -1453,7 +1456,7 @@ nsMathMLChar::StretchEnumContext::EnumCallback(const nsString& aFamily,
   // If the unicode table is being used, then search all font families.  If a
   // special table is being used then the font in this family should have the
   // specified glyphs.
-  const nsAString& family = glyphTable == &gGlyphTableList->mUnicodeTable ?
+  const nsString& family = glyphTable == &gGlyphTableList->mUnicodeTable ?
     context->mFamilies : aFamily;
 
   if((context->mTryVariants && context->TryVariants(glyphTable, family)) ||
@@ -1994,7 +1997,7 @@ private:
   bool          mIsSelected;
 };
 
-#if false
+#ifdef NOTNOW
 #ifdef NS_DEBUG
 class nsDisplayMathMLCharDebug : public nsDisplayItem {
 public:
