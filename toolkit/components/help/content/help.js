@@ -157,17 +157,17 @@ function init() {
   const width = document.documentElement.getAttribute("width");
   const height = document.documentElement.getAttribute("height");
   window.moveTo((screen.availWidth - width) / 2, (screen.availHeight - height) / 2);
+  msiHelpInit();
+
 
   // Initialize history.
-  getWebNavigation().sessionHistory = 
-    Components.classes["@mozilla.org/browser/shistory;1"]
-              .createInstance(Components.interfaces.nsISHistory);
+//  getWebNavigation().sessionHistory = 
+//    Components.classes["@mozilla.org/browser/shistory;1"]
+//              .createInstance(Components.interfaces.nsISHistory);
   window.XULBrowserWindow = new nsHelpStatusHandler();
 
   //Start the status handler.
   window.XULBrowserWindow.init();
-
-  msiHelpInit();
 
   // Hook up UI through Progress Listener
   const interfaceRequestor = helpBrowser.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
@@ -348,7 +348,7 @@ function filterSeqByPlatform(aDatasource, aNode, aCurrentLevel) {
   }
 }
 
-# Prepend helpBaseURI to list of space separated links if they don't start with
+# Prepend helpBaseURI to list of space separated links if they do not start with
 # "chrome:"
 function normalizeLinks(helpBaseURI, links) {
   if (!helpBaseURI) {
