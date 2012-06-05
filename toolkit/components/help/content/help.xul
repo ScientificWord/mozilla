@@ -66,8 +66,8 @@
 #else
         persist="width height screenX screenY"
 #endif
-        onload="init();"
-        onunload="window.XULBrowserWindow.destroy();">
+        onload="init();">
+        <!-- onunload="window.XULBrowserWindow.destroy();"> -->
 
   <script type="application/javascript" src="chrome://help/content/help.js"/>
   <script type="application/javascript" src="chrome://global/content/nsDragAndDrop.js"/>
@@ -311,7 +311,7 @@
         <!-- type attribute is used by frame construction to locate
              iframes intended to hold (html) content -->
         <browser context="contentAreaContextMenu"
-                 type="content-primary" id="help-content"
+                 type="chrome" id="help-content"
                  src="about:blank" flex="1"/>
         <findbar id="FindToolbar" browserid="help-content"/>
       </vbox>
