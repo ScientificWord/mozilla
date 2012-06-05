@@ -2680,7 +2680,7 @@ toolbox[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/v_start-hover-sm.png");
 }
 #vc-Play[checked="true"]:hover{
-  list-style-image: url("chrome://prince/skin/icons/v_play-hover.png");
+  list-style-image: url("chrome://prince/skin/icons/v_pause-hover.png");
 }
 *[iconsize="small"] #vc-Play[checked="true"]:hover{
   list-style-image: url("chrome://prince/skin/icons/v_pause-hover-sm.png");

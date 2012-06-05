@@ -8,11 +8,17 @@ var gPrefsBranch;
 var isRunning = false;
 var currdoc = null;
 var gProgressbar;
+var gBrowserElement;
+var gAnimInterval = [0, 0];
 
 function currObj() {
   return currdoc.getElementById("msi-current");
 }
 
+function initDocument(browserElement)
+{
+  msiHelpInit(browserElement);
+}
 
 function addClickEventListenerForBrowserElement(browserElement)
 {
@@ -102,12 +108,15 @@ function msiHelpHandleClick(event)
   if (event.detail == 1)
   {
     if ((currObj() === event.target) && (document.getElementById("vcamactive").getAttribute("hidden") == "false")) return;
+    if (currObj() != null && (currObj().getAttribute("id") === "msi-current")) 
+    {
+      currObj().removeEvent("currentTimeChange", showAnimationTime);
+      currObj().removeAttribute("id");
+    }
     var isPlot = false;
-    var oldobj;
     var node;
     var objName = event.target.localName;
     var graphnode;
-    if (oldobj = currdoc.getElementById("msi-current")) oldobj.removeAttribute("msi-current");
     if (objName !== "object")
     {
       graphnode = getEventParentByTag(event, "plotwrapper");
@@ -134,24 +143,22 @@ function msiHelpHandleClick(event)
     if (isPlot)
     {
       node.setAttribute("id","msi-current");
-      doVCamInitialize(node);
 	    document.getElementById("vcamactive").setAttribute("hidden",false);
+      vcamToolbarFromPlugin();
     }
     else
     {
 	    document.getElementById("vcamactive").setAttribute("hidden",true);
-      if (oldobj = currdoc.getElementById("msi-current")) oldobj.removeAttribute("msi-current");
     }
   }
 }
 
 
-function msiHelpInit()
+function msiHelpInit(browserElement)
 {
-  var browserElement = document.getElementById("help-content");
-  currdoc = browserElement.contentWindow;
+  // needs to be called for each new document
   addClickEventListenerForBrowserElement(browserElement);
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+//  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
 
 #ifndef PROD_SW
   // BBM: this has to be a run-time test.
@@ -213,7 +220,22 @@ function vcamToolbarFromPlugin()
   var dim = currObj().dimension;
   var anim = currObj().isAnimated;
   var za = currObj().zoomAction;
-  document.getElementById("vc-SelObj").checked = (ct === 'select');
+  if (dim == 3) {
+    document.getElementById("3dplot").setAttribute("hidden","false");
+    document.getElementById("2dplot").setAttribute("hidden","true");
+  }
+  else
+  {
+    document.getElementById("3dplot").setAttribute("hidden","true");
+    document.getElementById("2dplot").setAttribute("hidden","false");
+  }
+  document.getElementById("animplot").setAttribute("hidden", anim ? "false" : "true");
+  if (anim) {
+    gAnimInterval = [currObj().beginTime, currObj().endTime];
+    currObj().addEvent("currentTimeChange", showAnimationTime);
+  }
+  
+  // document.getElementById("vc-SelObj").checked = (ct === 'select');
   document.getElementById("vc-RotateScene").checked = (ct === 'rotate');
   document.getElementById("vc-Move").checked = (ct === 'move');
   document.getElementById("vc-Query").checked = (ct === 'query');
@@ -492,64 +514,33 @@ function doVCamPreInitialize(obj)
   return false;
 }
 
-function doVCamInitialize(obj)
-{
-//  document.getElementById("vcamactive").setAttribute("hidden","false");
-  if (currObj() == obj) return;
-  
-  var threedplot = currObj().dimension === 3;
-  var twodplot = currObj().dimension === 2;
-  document.getElementById("3dplot").setAttribute("hidden", threedplot?"false":"true");
-  document.getElementById("2dplot").setAttribute("hidden", twodplot?"false":"true");
-  var animplot = currObj().isAnimated;
-  document.getElementById("animplot").setAttribute("hidden", animplot?"false":"true");
-//  if (animplot) // set up the progress bar
-//  {
-//    setAnimationTime = (function() {
-//      return function() {
-//        var time = currObj().beginTime + (gProgressbar.value/100)*(currObj().endTime-currObj().beginTime);
-//        currObj().currentTime = time;
-//      };
-//    }()); 
-//    try {
-//      gProgressbar = document.getElementById("vc-AnimScale");
-//      currObj().addEvent("currentTimeChange", showAnimationTime(currObj()));
-//    }
-//    catch (e)
-//    {
-//      dump("failure: " + e.toString() + "\n");
-//    }
-//    setAnimSpeed = (function() {
-//      return function(factor) {
-//        currObj().animationSpeed = factor;
-//      }
-//    }());
-//    setLoopMode = (function() {
-//      return function( mode ) {
-//        currObj().animationLoopingMode = mode;
-//      }
-//   }());
-//  }
-  vcamToolbarFromPlugin();
-}
 
 function showAnimationTime(time)
 {
-  var obj = currObj();
-  var newval = Math.round(100*(time/(obj.endTime - obj.beginTime)));
-  gProgressbar.value = newval;
+  var newval = Math.round(100*(time/(gAnimInterval[1] - gAnimInterval[0])));
+  document.getElementById("vc-AnimScale").value = newval;
 } 
 
-function dontSetAnimationTime()
-{
-  return;
+function setAnimationTime() {
+  var obj = currObj();
+  var time = gAnimInterval[0] + (document.getElementById("vc-AnimScale").value/100)*(gAnimInterval[1]-gAnimInterval[0]);
+  obj.currentTime = time;
+};
+
+//function dontSetAnimationTime()
+//{
+//  return;
+//}
+
+function setAnimSpeed(factor) {
+  var obj = currObj();
+  obj.animationSpeed = factor;
 }
 
-
-function vcSelObj () {
-  currObj().cursorTool = "select";
-  vcamToolbarFromPlugin();
-};
+function setLoopMode(mode) {
+  var obj = currObj();
+  obj.animationLoopingMode = mode;
+}
 
 function vcRotateLeft () {
   var obj = currObj();
@@ -618,6 +609,11 @@ function vcQuery () {
   vcamToolbarFromPlugin();
 };
 
+function vcZoom () {
+  currObj().cursorTool = "zoom";  
+  vcamToolbarFromPlugin();
+}
+
 function vcZoomBoxIn () {
   currObj().cursorTool = "select"; // This is zoomBoxIn in the 2d case
   vcamToolbarFromPlugin();
@@ -638,10 +634,10 @@ function vcZoomOut () {
   vcamToolbarFromPlugin();
 };
 
-function vcSnapshot () {
-  doMakeSnapshot(currObj(), browserElement);
-  vcamToolbarFromPlugin();
-};
+//function vcSnapshot () {
+//  doMakeSnapshot(currObj(), browserElement);
+//  vcamToolbarFromPlugin();
+//};
 
 function vcAutoSpeed () {
   dump("cmd_vcAutoSpeed not implemented");
@@ -664,12 +660,12 @@ function vcAutoZoomOut () {
 };
 
 function vcGoToEnd () {
-  currObj().currentTime = currObj().endTime;
+  currObj().currentTime = gAnimInterval[1];
   vcamToolbarFromPlugin();
 };
 
 function vcGoToStart () {
-  currObj().currentTime = currObj().beginTime;
+  currObj().currentTime = gAnimInterval[0];
   vcamToolbarFromPlugin();
 };
 
@@ -695,7 +691,7 @@ function setActionSpeed (factor) {
 };
 
 function vcReset () {
-  currObj().reset();
+  currObj().resetViewpoint();
 };
 
 #endif
