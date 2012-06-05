@@ -1,32 +1,28 @@
-//Need:
-//     getOS()
-//     msidump()
-//     graph and DOMGraph?
-//     makeRelPathAbsolute and a path to start from (won't have editor!)
-//  editor.checkSelectionStateForAnonymousButtons(editor.selection);?? don't really need?
 
 Components.utils.import("resource://app/modules/os.jsm");
 
 const xhtmlns  = "http://www.w3.org/1999/xhtml";
-//const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
 
 var gPrefsService;
 var gPrefsBranch;
-
 var isRunning = false;
-var currDocument = null;
+var currdoc = null;
+var gProgressbar;
+
+function currObj() {
+  return currdoc.getElementById("msi-current");
+}
+
 
 function addClickEventListenerForBrowserElement(browserElement)
 {
   try {
-//    var bodyelement = msiGetBodyElement(editorElement);
     if (browserElement && browserElement.contentDocument)
     {
-      if (currDocument != browserElement.contentDocument)
+      if (currdoc != browserElement.contentDocument)
       {
-        dump("Adding click event listener for document.\n");
-        currDocument = browserElement.contentDocument;
-        currDocument.addEventListener("click", msiHelpHandleClick, true);
+        currdoc = browserElement.contentDocument;
+        currdoc.addEventListener("click", msiHelpHandleClick, true);
       }
     }
   } catch (e) {dump("Unable to register browser element click event listener; error [" + e + "].\n");}
@@ -34,38 +30,27 @@ function addClickEventListenerForBrowserElement(browserElement)
 
 function msiGetBaseNodeName(node)
 {
-  return (node && ((node.localName)||(node.nodeName))) || null;
+  return (node && node.localName) || null;
 }
 
 function getEventParentByTag( event, tagname)
 {
 	var node = event.target;
-	while (node && msiGetBaseNodeName(node) !== tagname) node = node.parentNode;
-	if (node && msiGetBaseNodeName(node) === tagname)
+	while (node && node.localName !== tagname) node = node.parentNode;
+	if (node && node.localName === tagname)
 	  return node;
   return null;
-}
-
-function getChildrenByTagName(node, tagname)
-{
-  var nodeList = node.getElementsByTagName(tagname);
-  if (!nodeList || !nodeList.length)
-    nodeList = node.getElementsByTagNameNS(xhtmlns, tagname);
-  return nodeList;
 }
 
 function GetPrefsService()
 {
   if (gPrefsService)
     return gPrefsService;
-
   try {
-    gPrefsService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
   }
   catch(ex) {
     dump("failed to get prefs service!\n");
   }
-
   return gPrefsService;
 }
 
@@ -90,7 +75,7 @@ function GetPrefs()
   return null;
 }
 
-//This is called from the nsIWebProgressListener onStateChange() message handler
+//This is called from the nsIWebProgressListener onStateChange() message //handler
 function msiCheckLoadStatus(aWebProgress, aRequest, aStateFlags, aStatus)
 {
   var stateStopFlag = 0x0010;
@@ -104,6 +89,7 @@ function msiCheckLoadStatus(aWebProgress, aRequest, aStateFlags, aStatus)
     dump("In msiCheckLoadStatus, stateflags are " + aStateFlags.toString(16) + " and flagsWeWant are " + flagsWeWant.toString(16) + ".\n");
 }
 
+
 function msiHelpHandleClick(event)
 {
   if (!event)
@@ -112,85 +98,68 @@ function msiHelpHandleClick(event)
 #ifdef PROD_SW
   return;
 #endif
-//  if (event.target.onclick) return;
+
   if (event.detail == 1)
   {
-    var plotObj = null;
-    var theURI, targWin;
-    var objName = msiGetBaseNodeName(event.target);
-	  var graphnode = getEventParentByTag(event, "plotwrapper");
-    var linkNode;
-    if (graphnode) 
+    if ((currObj() === event.target) && (document.getElementById("vcamactive").getAttribute("hidden") == "false")) return;
+    var isPlot = false;
+    var oldobj;
+    var node;
+    var objName = event.target.localName;
+    var graphnode;
+    if (oldobj = currdoc.getElementById("msi-current")) oldobj.removeAttribute("msi-current");
+    if (objName !== "object")
     {
-      plotObj = getChildrenByTagName(graphnode, "object")[0];
-//      plotObj = graphnode.getElementsByTagName("object")[0];
+      graphnode = getEventParentByTag(event, "plotwrapper");
+      if (graphnode) 
+      {
+        node = graphnode.getElementsByTagName("object")[0];
+        if (currObj() === node ) return;
+      }
     }
-    else if (objName == "object")
+    else node = event.target;
+    if (node) 
     {
+        if (node.getAttribute("msigraph") === "true")
+        {
+          isPlot = true;
+        }
+     }
+    else {
       if (event.target.getAttribute("msigraph") == "true")
-        plotObj = event.target;
+      {
+        isPlot = true;
+      }
     }
-//    if (!plotObj)
-//     linkNode = getEventParentByTag(event, "xref");
-//      if (!linkNode)
-//	      linkNode = getEventParentByTag(event, "a");
-//    }
-    if (plotObj) 
+    if (isPlot)
     {
-      doVCamInitialize(plotObj);
+      node.setAttribute("id","msi-current");
+      doVCamInitialize(node);
+	    document.getElementById("vcamactive").setAttribute("hidden",false);
     }
-//    else if (linkNode && (objName=="xref"))
-//    {
-//      theURI = event.target.getAttribute("href");
-//      if (!theURI)
-//        theURI = event.target.getAttribute("key");
-//      if (theURI && theURI.length)
-//        theURI = "#" + theURI;
-//      msiClickLink(event, theURI, targWin, editorElement);
-//    }
-//    else if (linkNode)
-//    {
-//      theURI = event.target.getAttribute("href");
-//      if (event.target.hasAttribute("target"))
-//        targWin = event.target.getAttribute("target");
-//      msiClickLink(event, theURI, targWin, editorElement);
-//    }
     else
     {
-		  if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false") 
-	    {
-	      document.getElementById("vcamactive").setAttribute("hidden",true);
-	    }
+	    document.getElementById("vcamactive").setAttribute("hidden",true);
+      if (oldobj = currdoc.getElementById("msi-current")) oldobj.removeAttribute("msi-current");
     }
   }
-
-//  event.currentTarget should be "body" or something...
-
-  // For Web Composer: In Show All Tags Mode,
-  // single click selects entire element,
-  //  except for body and table elements
-//  if (IsWebComposer() && event.explicitOriginalTarget && msiIsHTMLEditor(editorElement) &&
-//      msiGetEditorDisplayMode(editorElement) == kDisplayModeAllTags)
 }
+
 
 function msiHelpInit()
 {
   var browserElement = document.getElementById("help-content");
+  currdoc = browserElement.contentWindow;
   addClickEventListenerForBrowserElement(browserElement);
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
 
 #ifndef PROD_SW
-  var innerDoc = browserElement.contentDocument;
-  var wrapperList = innerDoc.getElementsByTagName("object");
+  // BBM: this has to be a run-time test.
+   var wrapperList = currdoc.getElementsByTagName("object");
   for (var ii = 0; ii < wrapperList.length; ++ii)
   {
     if (wrapperList[ii].getAttribute("msigraph") == "true")
       doVCamPreInitialize(wrapperList[ii]);
-  }
-  var nsWrapperList = innerDoc.getElementsByTagNameNS(xhtmlns, "object");
-  for (var jj = 0; jj < nsWrapperList.length; ++jj)
-  {
-    if (nsWrapperList[jj].getAttribute("msigraph") == "true")
-      doVCamPreInitialize(nsWrapperList[jj]);
   }
 #endif
 }
@@ -230,22 +199,20 @@ function getElementOrParentByTagName(tagName, node)
   var nextNode = node;
   while (!retNode && nextNode)
   {
-    if (msiGetBaseNodeName(nextNode) == tagName)
+    if (nextNode.localName == tagName)
       retNode = nextNode;
     nextNode = nextNode.parentNode;
   }
   return retNode;
 }
 
-function vcamToolbarFromPlugin(obj)
+function vcamToolbarFromPlugin()
 {
-  // sets the state of the toolbar buttoms from the plugin state
-  // Call for initialization and after each button action.
-  // Cursor tool section
-  var ct = obj.cursorTool;
-  var dim = obj.dimension;
-  var anim = obj.isAnimated;
-  var za = obj.zoomAction;
+  if (currObj() == null) return;
+  var ct = currObj().cursorTool;
+  var dim = currObj().dimension;
+  var anim = currObj().isAnimated;
+  var za = currObj().zoomAction;
   document.getElementById("vc-SelObj").checked = (ct === 'select');
   document.getElementById("vc-RotateScene").checked = (ct === 'rotate');
   document.getElementById("vc-Move").checked = (ct === 'move');
@@ -255,17 +222,17 @@ function vcamToolbarFromPlugin(obj)
     // Rotation section
   if (dim === 3) {
     document.getElementById("vc-Zoom").checked = (ct === 'zoom');
-    var va = obj.rotateVerticalAction;
+    var va = currObj().rotateVerticalAction;
     document.getElementById("vc-RotateRight").checked = (va === 1);
     document.getElementById("vc-RotateLeft").checked = (va === 2);
-    var ha = obj.rotateHorizontalAction;
+    var ha = currObj().rotateHorizontalAction;
     document.getElementById("vc-RotateUp").checked = (ha === 1);
     document.getElementById("vc-RotateDown").checked = (ha === 2);
     // Zoom section
   //  document.getElementById("AutoZoomIn").checked = (za === 1);
   //  document.getElementById("AutoZoomOut").checked = (za === 2);
     // Speed controlf
-    var spd = obj.actionSpeed;
+    var spd = currObj().actionSpeed;
     if (spd <= 0.125) document.getElementById("actionspeed8s").checked = true;
     else if (spd > 0.125 && spd <= 0.25) 
       document.getElementById("actionspeed4s").checked = true;
@@ -282,7 +249,7 @@ function vcamToolbarFromPlugin(obj)
   }  
   if (anim) { 
   // animation section, including animation speed control
-    var aspd = obj.animationSpeed;
+    var aspd = currObj().animationSpeed;
     if (aspd <= 0.125) document.getElementById("animspeed8s").checked = true;
     else if (aspd > 0.125 && aspd <= 0.25) 
       document.getElementById("animspeed4s").checked = true;
@@ -304,7 +271,7 @@ function makeSnapshotPath( object)
   var extension;
 //  var graph, gslist, animated, dimension;
 //  if (extension == null) {
-//    graph = msiFindParentOfType( object, "graph");
+//    graph = msiFindParentOfType( currObj()ect, "graph");
 //    gslist = graph.getElementsByTagName("graphSpec");
 //    if (gslist.length > 0) {
 //      gslist = gslist[0];
@@ -329,7 +296,7 @@ function makeSnapshotPath( object)
     extension = "png";
   }
   try {
-    var path = object.data;
+    var path = currObj().data;
     path = path.replace(/file:[-/[a-z_A-Z0-9.]+\/plots\//,'graphics/');
     path = path.replace(/xv[cz]$/,extension);  
   }
@@ -341,15 +308,14 @@ function makeSnapshotPath( object)
 
 function insertSnapshot( object, snapshotpath )
 {
-  var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units,
+  var parent, i, element, ssobj, graph, gslist, objlist, w, h, units,
     oldpath, file, url;
-  parent = object.parentNode;
-  objectlist = getChildrenByTagName(parent, "object");
-//  objectlist = parent.getElementsByTagName("object");
-  for (i = 0; i < objectlist.length; ) {
-    element = objectlist[i];
+  parent = currObj().parentNode;
+  objlist = parent.getElementsByTagName("object");
+  for (i = 0; i < objlist.length; ) {
+    element = objlist[i];
     if (element.hasAttribute("msisnap")) {
-      // remove the snapshot file as well as the object node
+      // remove the snapshot file as well as the currObj()ect node
       oldpath = element.data;
       if (oldpath && oldpath.length > 7) {
         oldpath = oldpath.slice(7);
@@ -370,37 +336,36 @@ function insertSnapshot( object, snapshotpath )
       parent.removeChild(element);
     } else {i++;}
   }
-  graph = msiFindParentOfType( object, "graph");
-  gslist = getChildrenByTagName(graph, "graphSpec");
-//  gslist = graph.getElementsByTagName("graphSpec");
+  graph = msiFindParentOfType( currObj(), "graph");
+  gslist = graph.getElementsByTagName("graphSpec");
   if (gslist.length > 0) {
     gslist = gslist[0];
   }
-  ssobj = object.cloneNode(true); // copies useful attributes
-  ssobj.removeAttribute("msigraph");
-  ssobj.setAttribute("data", snapshotpath);
-  ssobj.setAttribute("msisnap", "true");
-  ssobj.removeAttribute("type");
-  parent.appendChild(ssobj);
+  sscurrobj = currObj().cloneNode(true); // copies useful attributes
+  sscurrobj.removeAttribute("msigraph");
+  sscurrobj.setAttribute("data", snapshotpath);
+  sscurrobj.setAttribute("msisnap", "true");
+  sscurrobj.removeAttribute("type");
+  parent.appendChild(sscurrObj());
   if (gslist) { // copy some attributes from the graphspec
     w = gslist.getAttribute("Width");
     if (w) {
-      ssobj.setAttribute("naturalWidth",w);
-      ssobj.setAttribute("imageWidth", w);
+      sscurrobj.setAttribute("naturalWidth",w);
+      sscurrobj.setAttribute("imageWidth", w);
     }
     h = gslist.getAttribute("Height");
     if (h) {
-      ssobj.setAttribute("naturalHeight",h);
-      ssobj.setAttribute("imageHeight", h);
+      sscurrobj.setAttribute("naturalHeight",h);
+      sscurrobj.setAttribute("imageHeight", h);
     }
-    ssobj.setAttribute("units", gslist.getAttribute("Units"));
+    sscurrobj.setAttribute("units", gslist.getAttribute("Units"));
   }
 }
 
 
 function buildSnapshotFile(obj, abspath, res)
 {
-  var func = function(abspath, res) {obj.makeSnapshot(abspath, res);}
+  var func = function(abspath, res) {currObj().makeSnapshot(abspath, res);}
   func(abspath, res);
 }
 
@@ -413,13 +378,13 @@ function doMakeSnapshot(obj, browserElement) {
 //      clearInterval(intervalId);
 //      return;
 //    }
-    if (obj.makeSnapshot && obj.readyState === 2) {
+    if (currObj().makeSnapshot && currObj().readyState === 2) {
       try {
-        var path = makeSnapshotPath(obj);
+        var path = makeSnapshotPath(currObj());
         var abspath;
         var prefs;
         var res;
-        var plotWrapper = obj.parentNode;
+        var plotWrapper = currObj().parentNode;
         try {
           prefs = GetPrefs();
           res = prefs.getIntPref("swp.GraphicsSnapshotRes");
@@ -430,7 +395,7 @@ function doMakeSnapshot(obj, browserElement) {
 //rwa The following can have no effect in the Help documents - these will not have graphSpec elements.
 //        if (graph == null) {
 //          graph = new Graph();
-//          DOMGraph = msiFindParentOfType( obj, "graph");
+//          DOMGraph = msiFindParentOfType( currObj(), "graph");
 //          gslist = DOMGraph.getElementsByTagName("graphSpec");
 //          if (gslist.length > 0) {
 //            gslist = gslist[0];
@@ -439,7 +404,7 @@ function doMakeSnapshot(obj, browserElement) {
 //        }
         abspath = makeSnapshotPathAbsolute(path, browserElement);
         plotWrapper.wrappedObj.makeSnapshot(abspath, res);
-        insertSnapshot( obj, path );
+        insertSnapshot( currObj(), path );
       }
       catch(e) {
         dump(e.message);
@@ -452,14 +417,12 @@ function doMakeSnapshot(obj, browserElement) {
 function rebuildSnapshots (doc) {
   var wrapperlist, objlist, length, objlength, i, regexp, match, name1, name2;
 //  var editorElement = msiGetActiveEditorElement();
-  wrapperlist = getChildrenByTagName(doc.documentElement, "plotwrapper");
-//  wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
+  wrapperlist = wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
   length = wrapperlist.length;
   var browserElement = document.GetElementById("help-content");
   for (i = 0; i < length; i++)
   {
-    objlist = getChildrenByTagName(wrapperlist[i], "object");
-//    objlist = wrapperlist[i].getElementsByTagName("object");
+    objlist = wrapperlist[i].getElementsByTagName("object");
     objlength = objlist.length;
     if (objlength === 1) {
       doMakeSnapshot(objlist[0], null, browserElement);
@@ -477,115 +440,22 @@ function rebuildSnapshots (doc) {
   }
 }
 
-function doVCamCommandOnObject(obj, cmd)
-{
-  var browserElement = document.getElementById("help-content");
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-  try {
-    switch (cmd) {
-      case "cmd_vcSelObj" :
-        obj.cursorTool = "select";
-        break;
-      case "cmd_vcRotateLeft":
-        if (obj.rotateVerticalAction == 2) {obj.rotateVerticalAction = 0;} else {obj.rotateVerticalAction = 2;}
-        break;
-      case "cmd_vcRotateRight":
-        if (obj.rotateVerticalAction == 1) {obj.rotateVerticalAction = 0;} else {obj.rotateVerticalAction = 1;}
-        break;
-      case "cmd_vcRotateUp":
-        if (obj.rotateHorizontalAction == 1) {obj.rotateHorizontalAction = 0;} else {obj.rotateHorizontalAction = 1;}
-        break;
-      case "cmd_vcRotateDown":
-        if (obj.rotateHorizontalAction == 2) {obj.rotateHorizontalAction = 0;} else {obj.rotateHorizontalAction = 2;}
-        break;
-      case "cmd_vcRotateScene":
-        obj.cursorTool = "rotate";
-        break;
-      case "cmd_vcZoom":
-        obj.cursorTool = "zoom"; 
-        break;
-      case "cmd_vcMove":
-        obj.cursorTool = "move";
-        break;
-      case "cmd_vcQuery":
-        obj.cursorTool = "query";
-        break;
-      case "cmd_vcZoomBoxIn":
-        obj.cursorTool = "select"; // This is zoomBoxIn in the 2d case
-        break;
-      case "cmd_vcZoomBoxOut":
-        obj.cursorTool = "select"; 
-        break;
-      case "cmd_vcZoomIn":
-        obj.cursorTool = "zoomIn";
-        break;
-      case "cmd_vcZoomOut":
-        obj.cursorTool = "zoomOut";
-        break;
-      case "cmd_vcSnapshot":
-        doMakeSnapshot(obj, browserElement);
-        break;
-      case "cmd_vcAutoSpeed":
-        dump("cmd_vcAutoSpeed not implemented");
-        break;
-      case "cmd_vcAnimSpeed":
-        dump("cmd_vcAnimSpeed not implemented");
-        break;
-      case "cmd_vcAutoZoomIn":
-        if (obj.zoomAction == 1) obj.zoomAction = 0; else obj.zoomAction = 1;
-        break;
-      case "cmd_vcAutoZoomOut":
-        if (obj.zoomAction == 2) obj.zoomAction = 0; else obj.zoomAction = 2;
-        break;
-      case "cmd_vcGoToEnd":
-        obj.currentTime = obj.endTime;
-        break;
-      case "cmd_vcGoToStart":
-        obj.currentTime = obj.beginTime;
-        break;
-      case "cmd_vcLoopType":
-        dump("cmd_vcLoopType not implemented");
-        break;
-      case "cmd_vcPlay":
-        if (isRunning) obj.stopAnimation();
-        else obj.startAnimation();
-        isRunning = !isRunning;
-        break;
-     case "cmd_vcFitContents":
-        obj.fitContents();
-        break;
-      default:
-    }
-  }
-  catch (e) {
-    dump(e.message);
-  }
-  vcamToolbarFromPlugin(obj);
-  return;
-}
 
-var gProgressbar;
 
-function onVCamMouseDown(screenX, screenY)
-{
-//  var editorElement = msiGetActiveEditorElement();
-//  var editor = msiGetEditor(editorElement);
-////  var evt = editor.document.createEvent("MouseEvents");
-////  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView,null,
-////    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
-//  editor.selection.collapse(this.parentNode,0);
-//  editor.checkSelectionStateForAnonymousButtons(editor.selection);
-  doVCamInitialize(this);
-}
+//function onVCamMouseDown(screenX, screenY)
+//{
+////  var editorElement = msiGetActiveEditorElement();
+////  var editor = msiGetEditor(editorElement);
+//////  var evt = editor.document.createEvent("MouseEvents");
+//////  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView,null,
+//////    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
+////  editor.selection.collapse(this.parentNode,0);
+////  editor.checkSelectionStateForAnonymousButtons(editor.selection);
+//  doVCamInitialize(this);
+//}
 
 function onVCamDblClick(screenX, screenY)
 {
-//  var editorElement = msiGetActiveEditorElement();
-////  var editor = msiGetEditor(editorElement);
-////  var evt = editor.document.createEvent("MouseEvents");
-////  evt.initMouseEvent("dblclick", true, true, editor.document.defaultView,null,
-////    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
-//  goDoPrinceCommand("cmd_objectProperties", this, editorElement);
 }
 
 function onVCamDragMove(x,y)
@@ -599,122 +469,233 @@ function onVCamDragLeave(x,y)
 
 function doVCamPreInitialize(obj)
 {
-  tryUntilSuccessful(200,10, function(){
-    var domGraph = getElementOrParentByTagName("graph", obj);
-    var plotWrapper = getElementOrParentByTagName("plotwrapper", obj);
-    var browserElement = document.getElementById("help-content");
-    try {
-      if (obj.addEvent && obj.readyState===2) {   
-        obj.addEvent('leftMouseDown', onVCamMouseDown);
-        obj.addEvent('leftMouseUp', onVCamMouseUp);
-        obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
-        obj.addEvent('dragMove', onVCamDragMove);
-        obj.addEvent('dragLeave', (function() {}));
-        // add a method for writing a snapshot
-        var fn = function() {
-          return doMakeSnapshot(obj, browserElement);
-        }
-        plotWrapper.wrappedObj = obj;
-        doMakeSnapshot(obj, browserElement);
-        return true;
+  var domGraph = getElementOrParentByTagName("graph", obj);
+  var plotWrapper = getElementOrParentByTagName("plotwrapper", obj);
+  var browserElement = document.getElementById("help-content");
+  try {
+    if (obj.addEvent && obj.readyState===2) {   
+      obj.addEvent('leftMouseDown', onVCamMouseDown);
+      obj.addEvent('dragMove', onVCamDragMove);
+      obj.addEvent('dragLeave', (function() {}));
+      // add a method for writing a snapshot
+      var fn = function() {
+        return doMakeSnapshot(obj, browserElement);
       }
+      plotWrapper.wrappedObj = obj;
+      doMakeSnapshot(obj, browserElement);
+      return true;
     }
-    catch(e){
-      dump(e.message);
-    }
-    return false;
-  });
-}
-
-
-function onVCamMouseUp()
-{
-//  alert("Mouse up in plugin!");
-}
-
-var setAnimationTime;
-var VCamCommand;
-var setActionSpeed;
-var setAnimSpeed;
-var setLoopMode;
-
-
-function doVCamCommand(cmd)
-{
-	VCamCommand(cmd);
+  }
+  catch(e){
+    dump(e.message);
+  }
+  return false;
 }
 
 function doVCamInitialize(obj)
 {
-  dump("doVCamInitialize");
-  document.getElementById("vcamactive").setAttribute("hidden","false");
-//  var editorElement = msiGetActiveEditorElement();
-//  var editor = msiGetEditor(editorElement);
-  var os = getOS(window);
-
-  VCamCommand = (function () {
-    var thisobj = obj;
-    return function(_cmd) {
-      return doVCamCommandOnObject(thisobj, _cmd);
-    };
-  }()); 
-  setActionSpeed = (function() {
-    var thisobj = obj;
-    return function(factor) {
-      thisobj.actionSpeed = factor;
-    };
-  }());
-  var threedplot = obj.dimension === 3;
-  var twodplot = obj.dimension === 2;
+//  document.getElementById("vcamactive").setAttribute("hidden","false");
+  if (currObj() == obj) return;
+  
+  var threedplot = currObj().dimension === 3;
+  var twodplot = currObj().dimension === 2;
   document.getElementById("3dplot").setAttribute("hidden", threedplot?"false":"true");
   document.getElementById("2dplot").setAttribute("hidden", twodplot?"false":"true");
-  var animplot = obj.isAnimated;
+  var animplot = currObj().isAnimated;
   document.getElementById("animplot").setAttribute("hidden", animplot?"false":"true");
-  if (animplot) // set up the progress bar
-  {
-    setAnimationTime = (function() {
-      var thisobj = obj;
-      return function() {
-        var time = thisobj.beginTime + (gProgressbar.value/100)*(thisobj.endTime-thisobj.beginTime);
-        obj.currentTime = time;
-      };
-    }()); 
-    try {
-      gProgressbar = document.getElementById("vc-AnimScale");
-      obj.addEvent("currentTimeChange", showAnimationTime(obj));
-    }
-    catch (e)
-    {
-      dump("failure: " + e.toString() + "\n");
-    }
-    setAnimSpeed = (function() {
-      var thisobj = obj;
-      return function(factor) {
-        thisobj.animationSpeed = factor;
-      }
-    }());
-    setLoopMode = (function() {
-      var thisobj = obj;
-      return function( mode ) {
-        thisobj.animationLoopingMode = mode;
-      }
-   }());
-  }
-  vcamToolbarFromPlugin(obj);
+//  if (animplot) // set up the progress bar
+//  {
+//    setAnimationTime = (function() {
+//      return function() {
+//        var time = currObj().beginTime + (gProgressbar.value/100)*(currObj().endTime-currObj().beginTime);
+//        currObj().currentTime = time;
+//      };
+//    }()); 
+//    try {
+//      gProgressbar = document.getElementById("vc-AnimScale");
+//      currObj().addEvent("currentTimeChange", showAnimationTime(currObj()));
+//    }
+//    catch (e)
+//    {
+//      dump("failure: " + e.toString() + "\n");
+//    }
+//    setAnimSpeed = (function() {
+//      return function(factor) {
+//        currObj().animationSpeed = factor;
+//      }
+//    }());
+//    setLoopMode = (function() {
+//      return function( mode ) {
+//        currObj().animationLoopingMode = mode;
+//      }
+//   }());
+//  }
+  vcamToolbarFromPlugin();
 }
 
-function showAnimationTime(obj)
+function showAnimationTime(time)
 {
-  var thisobj = obj;
-  return function(time) {
-    var newval = Math.round(100*(time/(thisobj.endTime - thisobj.beginTime)));
-    gProgressbar.value = newval;
-  };
+  var obj = currObj();
+  var newval = Math.round(100*(time/(obj.endTime - obj.beginTime)));
+  gProgressbar.value = newval;
 } 
 
 function dontSetAnimationTime()
 {
   return;
 }
+
+
+function vcSelObj () {
+  currObj().cursorTool = "select";
+  vcamToolbarFromPlugin();
+};
+
+function vcRotateLeft () {
+  var obj = currObj();
+  if (obj.rotateVerticalAction == 2) 
+  {
+    obj.rotateVerticalAction = 0;
+  } 
+  else 
+  {
+    obj.rotateVerticalAction = 2;
+  }
+  vcamToolbarFromPlugin();
+};
+
+function vcRotateRight () {
+  var obj = currObj();
+  if (obj.rotateVerticalAction == 1) 
+  {
+    obj.rotateVerticalAction = 0;
+  } 
+  else 
+  {
+    obj.rotateVerticalAction = 1;
+  }
+  vcamToolbarFromPlugin();
+};   
+
+function vcRotateUp () {
+  var obj = currObj();
+  if (obj.rotateHorizontalAction == 1) 
+  {
+    obj.rotateHorizontalAction = 0;
+  } 
+  else 
+  {
+    obj.rotateHorizontalAction = 1;
+  }
+  vcamToolbarFromPlugin();
+};
+  
+function vcRotateDown () {
+  var obj = currObj();
+  if (obj.rotateHorizontalAction == 2) 
+  {
+    obj.rotateHorizontalAction = 0;
+  } 
+  else 
+  {
+    obj.rotateHorizontalAction = 2;
+  }
+  vcamToolbarFromPlugin();
+};
+  
+function vcRotateScene () {
+  currObj().cursorTool = "rotate";
+  vcamToolbarFromPlugin();
+};
+  
+function vcMove () {
+  currObj().cursorTool = "move";    
+  vcamToolbarFromPlugin();
+};
+
+function vcQuery () {
+  currObj().cursorTool = "query";
+  vcamToolbarFromPlugin();
+};
+
+function vcZoomBoxIn () {
+  currObj().cursorTool = "select"; // This is zoomBoxIn in the 2d case
+  vcamToolbarFromPlugin();
+};
+
+function vcZoomBoxOut () {
+  currObj().cursorTool = "select"; 
+  vcamToolbarFromPlugin();
+};
+  
+function vcZoomIn () {
+  currObj().cursorTool = "zoomIn";
+  vcamToolbarFromPlugin();
+};
+  
+function vcZoomOut () {
+  currObj().cursorTool = "zoomOut";
+  vcamToolbarFromPlugin();
+};
+
+function vcSnapshot () {
+  doMakeSnapshot(currObj(), browserElement);
+  vcamToolbarFromPlugin();
+};
+
+function vcAutoSpeed () {
+  dump("cmd_vcAutoSpeed not implemented");
+  vcamToolbarFromPlugin();
+};
+  
+function vcAnimSpeed () {
+  dump("cmd_vcAnimSpeed not implemented");
+  vcamToolbarFromPlugin();
+};
+  
+function vcAutoZoomIn () {
+  if (currObj().zoomAction == 1) currObj().zoomAction = 0; else currObj().zoomAction = 1;
+  vcamToolbarFromPlugin();
+};
+
+function vcAutoZoomOut () {
+  if (currObj().zoomAction == 2) currObj().zoomAction = 0; else currObj().zoomAction = 2;
+  vcamToolbarFromPlugin();
+};
+
+function vcGoToEnd () {
+  currObj().currentTime = currObj().endTime;
+  vcamToolbarFromPlugin();
+};
+
+function vcGoToStart () {
+  currObj().currentTime = currObj().beginTime;
+  vcamToolbarFromPlugin();
+};
+
+function vcLoopType () {
+  dump("cmd_vcLoopType not implemented");
+  vcamToolbarFromPlugin();
+};
+
+function vcPlay () {
+  if (isRunning) currObj().stopAnimation();
+  else currObj().startAnimation();
+  isRunning = !isRunning;
+  vcamToolbarFromPlugin();
+};
+  
+function vcFitContents () {
+  currObj().fitContents();
+  vcamToolbarFromPlugin();
+};
+
+function setActionSpeed (factor) {
+  currObj().actionSpeed = factor;
+};
+
+function vcReset () {
+  currObj().reset();
+};
 
 #endif
