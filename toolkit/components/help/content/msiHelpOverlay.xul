@@ -2,7 +2,10 @@
 
 #include ../../../../prince/base/content/productname.inc
 
+<?xml-stylesheet href="chrome://global/content/xul.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/toolbar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/toolbarbutton.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 
 <!DOCTYPE overlay [
@@ -20,13 +23,11 @@
 
 #ifndef PROD_SW
   <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
-    flex = "1"
+    flex = "1" iconsize="small"
     mode="icons" customizable="true"  hidden = "true" observes="vcamactive">
-    <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
-    <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents"/>
-    <!-- <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/> -->
-    <toolbarseparator/>
-    <toolbarbutton id="vc-SelObj" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcSelObj" command="cmd_vcSelObj"/>
+    <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset" observes="3dplot"/>
+    <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/>
+    <toolbarseparator observes="3dplot"/>
     <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
     <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoom" command="cmd_vcZoom" observes="3dplot"/>
     <toolbarbutton id="vc-Move" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcMove" command="cmd_vcMove"/>
@@ -43,7 +44,7 @@
     <toolbarbutton id="vc-ZoomOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomOut" command="cmd_vcZoomOut" observes="2dplot"/>
     <toolbarbutton id="vc-ZoomBoxIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxIn" command="cmd_vcZoomBoxIn" observes="2dplot"/>
     <toolbarbutton id="vc-ZoomBoxOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxOut" command="cmd_vcZoomBoxOut" observes="2dplot"/>
-    <toolbarbutton id="vc-SnapShot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot"/>
+    <!-- <toolbarbutton id="vc-SnapShot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot"/> -->
     <toolbarseparator/>
     <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
       <menupopup>
@@ -108,7 +109,7 @@
     <command id="cmd_vcLoopType"      oncommand="vcLoopType();"/>
     <command id="cmd_vcPlay"          oncommand="vcPlay();"/>
     <command id="cmd_vcQuery"         oncommand="vcQuery();"/>
-    <command id="cmd_vcSelObj"        oncommand="vcSelObj();"/>
+    <!-- <command id="cmd_vcSelObj"        oncommand="vcSelObj();"/> -->
     <command id="cmd_vcFitContents"   oncommand="vcFitContents();"/>
   </commandset>
 
