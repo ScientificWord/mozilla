@@ -1109,7 +1109,7 @@ public:
                      nscoord              aTargetSize,
                      PRUint32             aStretchHint,
                      nsBoundingMetrics&   aStretchedMetrics,
-                     const nsAString&     aFamilies,
+                     const nsString&      aFamilies,
 					 bool&				  aGlyphFound)
     : mChar(aChar),
       mPresContext(aPresContext),
@@ -1141,7 +1141,7 @@ private:
   const PRUint32 mStretchHint;
   nsBoundingMetrics& mBoundingMetrics;
   // Font families to search
-  const nsAString& mFamilies;
+  const nsString& mFamilies;
 
 public:
   PRPackedBool mTryVariants;
