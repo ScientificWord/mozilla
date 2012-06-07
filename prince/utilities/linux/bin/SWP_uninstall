@@ -1,0 +1,11 @@
+#!/bin/bash
+uninst=/opt/MacKichan/SWP-Uninstall
+echo About to run the uninstaller.
+echo You will be asked for the root password.
+xdg-desktop-menu uninstall --novendor /opt/MacKichan/SWP.directory /opt/MacKichan/SWP.desktop /opt/MacKichan/SWP-uninstall.desktop
+su -c "$uninst"
+rm -rf ~/.swp
+rm ~/Desktop/SWP.desktop
+
+
+
