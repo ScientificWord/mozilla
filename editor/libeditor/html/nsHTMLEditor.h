@@ -817,6 +817,7 @@ protected:
   PRBool TagCanContainNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, nsIDOMNode* aChild);
   virtual PRBool TagCanContainTagNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, const nsAString &aChildTag, nsIAtom * nsAtomChild);
   nsresult GetWrapper(nsIDOMNode * node, nsIDOMNode ** wrapperNode);
+  nsresult NodeContainsOnlyMn(nsIDOMNode * curNode, nsIDOMNode ** textNode);
 
 
 // Data members
