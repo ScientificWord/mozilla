@@ -24,5 +24,6 @@ endif
 UTILITIES := $(wildcard	$(srcdir)/$(PLATFORM)/*)
 
 libs::	$(UTILITIES)
-	$(INSTALL)	$(UTILITIES)	$(FINAL_TARGET)/utilities
+	mkdir $(FINAL_TARGET)/utilities
+	cp -R	${srcdir}/${PLATFORM}/*	$(FINAL_TARGET)/utilities
 
