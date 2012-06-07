@@ -1,0 +1,3 @@
+#!/bin/bash
+# Open SWP with a different profile
+$SWPHOME/SWP/swp -P
