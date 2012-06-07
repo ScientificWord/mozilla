@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+# Configure options script for re-calling Magick+ compilation options
+# required to use the Magick++ library.
+#
+#
+usage='Usage: Magick++-config [--cppflags] [--cxxflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]
+
+ For example, "magick.cpp" may be compiled to produce "magick" as follows:
+
+  "c++ -o magick magick.cpp `Magick++-config --cppflags --cxxflags --ldflags --libs`"'
+
+if test $# -eq 0; then
+      echo "${usage}" 1>&2
+      exit 1
+fi
+
+while test $# -gt 0; do
+  case $1 in
+    --prefix)
+      echo /usr/local
+      ;;
+    --exec-prefix)
+      echo /usr/local
+      ;;
+    --version)
+      echo 6.3.3
+      ;;
+    --cflags)
+      echo '-g -O2 -Wall -W -D_THREAD_SAFE'
+      ;;
+    --cxxflags)
+      echo '-g -O2 -Wall -W -D_THREAD_SAFE'
+      ;;
+    --cppflags)
+      echo '-I/usr/local/include'
+      ;;
+    --ldflags)
+      echo '-L/usr/local/lib -L/usr/X11R6/lib -L/usr/local/lib -lfreetype -lz -Wl,-framework,CoreServices,-framework,ApplicationServices'
+      ;;
+    --libs)
+      echo '-lMagick++ -lMagick -ltiff -lfreetype -ljpeg -lXext -lSM -lICE -lX11 -lXt -lbz2 -lz -lpthread -lm -lpthread -lWand -lMagick'
+      ;;
+    *)
+      echo "${usage}" 1>&2
+      exit 1
+      ;;
+  esac
+  shift
+done
+
