@@ -157,17 +157,17 @@ function init() {
   const width = document.documentElement.getAttribute("width");
   const height = document.documentElement.getAttribute("height");
   window.moveTo((screen.availWidth - width) / 2, (screen.availHeight - height) / 2);
+  msiHelpInit();
+
 
   // Initialize history.
-  getWebNavigation().sessionHistory = 
-    Components.classes["@mozilla.org/browser/shistory;1"]
-              .createInstance(Components.interfaces.nsISHistory);
+//  getWebNavigation().sessionHistory = 
+//    Components.classes["@mozilla.org/browser/shistory;1"]
+//              .createInstance(Components.interfaces.nsISHistory);
   window.XULBrowserWindow = new nsHelpStatusHandler();
 
   //Start the status handler.
   window.XULBrowserWindow.init();
-
-  msiHelpInit();
 
   // Hook up UI through Progress Listener
   const interfaceRequestor = helpBrowser.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
@@ -212,7 +212,7 @@ function hideSearchSidebar(aEvent) {
 # loadHelpRDF
 # Parse the provided help content pack RDF file, and use it to
 # populate the datasources attached to the trees in the viewer.
-# Filter out any information not applicable to the user's platform.
+# Filter out any information not applicable to the user''s platform.
 function loadHelpRDF() {
   if (!helpFileDS) {
     try {
@@ -348,7 +348,7 @@ function filterSeqByPlatform(aDatasource, aNode, aCurrentLevel) {
   }
 }
 
-# Prepend helpBaseURI to list of space separated links if they don't start with
+# Prepend helpBaseURI to list of space separated links if they do not start with
 # "chrome:"
 function normalizeLinks(helpBaseURI, links) {
   if (!helpBaseURI) {
@@ -416,6 +416,7 @@ function loadURI(uri) {
     }
     getWebNavigation().loadURI(uri, Components.interfaces.nsIWebNavigation.LOAD_FLAGS_NONE,
         null, null, null);
+    initDocument(helpBrowser); // in msiHelp.js, in case the document contains plots
 }
 
 function goBack() {

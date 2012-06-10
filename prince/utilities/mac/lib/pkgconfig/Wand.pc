@@ -1,0 +1,11 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Wand
+Version: 6.3.3
+Description:  MagickWand - C API for ImageMagick
+Requires: ImageMagick
+Libs: -L${libdir} -lWand -lMagick
+Cflags: -I${includedir} 

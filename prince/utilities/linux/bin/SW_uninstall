@@ -1,0 +1,11 @@
+#!/bin/bash
+uninst=/opt/MacKichan/SW-Uninstall
+echo About to run the uninstaller.
+echo You will be asked for the root password.
+xdg-desktop-menu uninstall --novendor /opt/MacKichan/SW.directory /opt/MacKichan/SW.desktop /opt/MacKichan/SW-uninstall.desktop
+su -c "$uninst"
+rm -rf ~/.sw
+rm ~/Desktop/SW.desktop
+
+
+
