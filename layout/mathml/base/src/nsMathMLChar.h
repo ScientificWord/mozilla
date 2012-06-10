@@ -23,6 +23,7 @@
  *   Roger B. Sidje <rbs@maths.uq.edu.au>
  *   Shyjan Mahamud <mahamud@cs.cmu.edu>
  *   Karl Tomlinson <karlt+@karlt.net>, Mozilla Corporation
+ *   Frederic Wang <fred.wang@free.fr>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -58,9 +59,11 @@ enum {
   NS_STRETCH_LARGER   = 0x08, // don't stretch less than requested size
   // A largeop in displaystyle
   NS_STRETCH_LARGEOP  = 0x10,
+  NS_STRETCH_INTEGRAL  = 0x20,
+
   // Intended for internal use:
   // Find the widest metrics that might be returned from a vertical stretch
-  NS_STRETCH_MAXWIDTH = 0x20
+  NS_STRETCH_MAXWIDTH = 0x40
 };
 
 // A single glyph in our internal representation is characterized by a 'code@font' 
@@ -68,18 +71,20 @@ enum {
 // (depending on the type of nsGlyphTable where this comes from). The 'font' is a
 // numeric identifier given to the font to which the glyph belongs.
 struct nsGlyphCode {
-  PRUnichar code; 
+  PRUnichar code[2]; 
   PRInt32   font;
 
-  PRBool Exists() const
+  PRInt32 Length() { return (code[1] == PRUnichar('\0') ? 1 : 2); }
+  bool Exists() const
   {
-    return (code != 0);
+    return (code[0] != 0);
   }
-  PRBool operator==(const nsGlyphCode& other) const
+  bool operator==(const nsGlyphCode& other) const
   {
-    return other.code == code && other.font == font;
+    return (other.code[0] == code[0] && other.code[1] == code[1] && 
+            other.font == font);
   }
-  PRBool operator!=(const nsGlyphCode& other) const
+  bool operator!=(const nsGlyphCode& other) const
   {
     return ! operator==(other);
   }
@@ -104,6 +109,11 @@ public:
     mStyleContext = nsnull;
     mSibling = nsnull;
     mParent = aParent;
+    mUnscaledAscent = 0;
+    mScaleX = mScaleY = 1.0;
+    mDrawNormal = true;
+    mMirrored = false;
+    mGlyphFound = false;
   }
 
   ~nsMathMLChar() { // not a virtual destructor: this class is not intended to be subclassed
@@ -122,13 +132,13 @@ public:
   Display(nsDisplayListBuilder*   aBuilder,
           nsIFrame*               aForFrame,
           const nsDisplayListSet& aLists,
-          const nsRect*           aSelectedRect = nsnull,
-          PRBool                  fForceSelected = PR_FALSE);
+          PRUint32                aIndex = 0,
+          const nsRect*           aSelectedRect = nsnull);
           
   void PaintForeground(nsPresContext* aPresContext,
                        nsIRenderingContext& aRenderingContext,
                        nsPoint aPt,
-                       PRBool aIsSelected);
+                       bool aIsSelected);
 
   // This is the method called to ask the char to stretch itself.
   // @param aContainerSize - IN - suggested size for the stretched char
@@ -139,7 +149,8 @@ public:
           nsStretchDirection       aStretchDirection,
           const nsBoundingMetrics& aContainerSize,
           nsBoundingMetrics&       aDesiredStretchSize,
-          PRUint32                 aStretchHint = NS_STRETCH_NORMAL);
+          PRUint32                 aStretchHint = 0,
+          bool                     aRTL = false);
 
   void
   SetData(nsPresContext* aPresContext,
@@ -237,7 +248,6 @@ protected:
 
 private:
   nsRect             mRect;
-  PRInt32            mOperator;
   nsStretchDirection mDirection;
   nsBoundingMetrics  mBoundingMetrics;
   nsStyleContext*    mStyleContext;
@@ -246,6 +256,15 @@ private:
   // mFamily is non-empty when the family for the current size is different
   // from the family in the nsStyleContext.
   nsString           mFamily;
+  // mUnscaledAscent is the actual ascent of the char.
+  nscoord            mUnscaledAscent;
+  // mScaleX, mScaleY are the factors by which we scale the char.
+  float              mScaleX, mScaleY;
+  // mDrawNormal indicates whether we use special glyphs or not.
+  bool               mDrawNormal;
+  // mMirrored indicates whether the character is mirrored. 
+  bool               mMirrored;
+  bool               mGlyphFound;
 
   class StretchEnumContext;
   friend class StretchEnumContext;
@@ -259,7 +278,7 @@ private:
                   nsBoundingMetrics&       aDesiredStretchSize,
                   PRUint32                 aStretchHint,
                   float           aMaxSize = NS_MATHML_OPERATOR_SIZE_INFINITY,
-                  PRBool          aMaxSizeIsAbsolute = PR_FALSE);
+                  bool            aMaxSizeIsAbsolute = false);
 
   nsresult
   ComposeChildren(nsPresContext*       aPresContext,
@@ -284,6 +303,9 @@ private:
                     nsStyleContext*      aStyleContext,
                     nsGlyphTable*        aGlyphTable,
                     nsRect&              aRect);
+
+  void
+  ApplyTransforms(nsIRenderingContext* aRenderingContext, nsRect &r);
 };
 
 #endif /* nsMathMLChar_h___ */

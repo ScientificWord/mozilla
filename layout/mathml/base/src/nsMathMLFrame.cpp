@@ -113,8 +113,8 @@ nsMathMLFrame::InheritAutomaticData(nsIFrame* aParent)
   mEmbellishData.flags = 0;
   mEmbellishData.coreFrame = nsnull;
   mEmbellishData.direction = NS_STRETCH_DIRECTION_UNSUPPORTED;
-  mEmbellishData.leftSpace = 0;
-  mEmbellishData.rightSpace = 0;
+  mEmbellishData.leadingSpace = 0;
+  mEmbellishData.trailingSpace = 0;
 
   mPresentationData.flags = 0;
   mPresentationData.baseFrame = nsnull;
@@ -191,8 +191,8 @@ nsMathMLFrame::GetEmbellishDataFrom(nsIFrame*        aFrame,
   aEmbellishData.flags = 0;
   aEmbellishData.coreFrame = nsnull;
   aEmbellishData.direction = NS_STRETCH_DIRECTION_UNSUPPORTED;
-  aEmbellishData.leftSpace = 0;
-  aEmbellishData.rightSpace = 0;
+  aEmbellishData.leadingSpace = 0;
+  aEmbellishData.trailingSpace = 0;
 
   if (aFrame && aFrame->IsFrameOfType(nsIFrame::eMathML)) {
     nsIMathMLFrame* mathMLFrame;
@@ -332,10 +332,10 @@ nsMathMLFrame::GetAxisHeight(nsIRenderingContext& aRenderingContext,
   // get the bounding metrics of the minus sign, the rendering context
   // is assumed to have been set with the font of the current style context
 #ifdef NS_DEBUG
-  nsCOMPtr<nsIFontMetrics> currFontMetrics;
-  aRenderingContext.GetFontMetrics(*getter_AddRefs(currFontMetrics));
-  NS_ASSERTION(currFontMetrics->Font().Equals(aFontMetrics->Font()),
-	"unexpected state");
+//  nsCOMPtr<nsIFontMetrics> currFontMetrics;
+//  aRenderingContext.GetFontMetrics(*getter_AddRefs(currFontMetrics));
+//  NS_ASSERTION(currFontMetrics->Font().Equals(aFontMetrics->Font()),
+//	"unexpected state");
 #endif
   nscoord xHeight;
   aFontMetrics->GetXHeight(xHeight);
