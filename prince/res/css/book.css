@@ -207,7 +207,7 @@ maketitle, maketoc, makelof, makelot {
 /* Main text elements */
 /**********************/
 
-frontmatter, mainmatter, backmatter {
+frontmatter, mainmatter, backmatter, appendix {
   display: block;
   position: relative;
   margin-left: 0px;
@@ -237,6 +237,15 @@ mainmatter:before {
 
 backmatter:before {
   content: "backmatter";
+  display: block;
+  text-align: left;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
+  -moz-user-select: text;
+}
+
+appendix:before {
+  content: "appendix";
   display: block;
   text-align: left;
   font-size: 100%; font-weight: bold;
