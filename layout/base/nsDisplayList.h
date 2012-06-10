@@ -101,12 +101,20 @@ class nsIDeviceContext;
  * tree containing FRAME/IFRAME elements can include frames from the subdocuments.
  */
 
+#if 0
 #ifdef NS_DEBUG
-#define NS_DISPLAY_DECL_NAME(n) virtual const char* Name() { return n; }
+#define NS_DISPLAY_DECL_NAME(n, e) \
+   virtual const char* Name() { return n; } \
+   virtual Type GetType() { return e; }
 #else
-#define NS_DISPLAY_DECL_NAME(n) 
+#define NS_DISPLAY_DECL_NAME(n, e) \
+  virtual Type GetType() { return e; }
 #endif
+#endif
+#define NS_DISPLAY_DECL_NAME(n) \
+  virtual const char* Name() { return n; }
 
+  
 /**
  * This manages a display list and is passed as a parameter to
  * nsIFrame::BuildDisplayList.
@@ -837,7 +845,9 @@ public:
      const nsRect& aDirtyRect) {
     mPaint(mFrame, aCtx, aDirtyRect, aBuilder->ToReferenceFrame(mFrame));
   }
+#ifdef DEBUG
   NS_DISPLAY_DECL_NAME(mName)
+#endif
 protected:
   PaintCallback mPaint;
 #ifdef DEBUG

@@ -303,6 +303,36 @@ NS_IMETHODIMP nsHTMLEditor::InsertHTML(const nsAString & aInString)
                                nsnull,  nsnull, 0, PR_TRUE);
 }
 
+nsresult nsHTMLEditor::NodeContainsOnlyMn(nsIDOMNode * curNode, nsIDOMNode ** textNode)
+{
+  nsCOMPtr<nsIDOMNode> node = curNode;
+  nsCOMPtr<nsIDOMNode> retNode;
+  node->Normalize();
+  PRUint32 childCount;
+  nsAutoString nodeName;
+  nsresult res;
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  while (node)
+  {
+    res = GetTagString(node, nodeName);
+    node->GetChildNodes(getter_AddRefs(nodeList));
+    res = nodeList->GetLength(&childCount);
+    if (childCount != 1)
+    {
+      *textNode = nsnull;
+      return NS_OK;
+    }
+    if (nodeName.EqualsLiteral("mn"))
+    {
+      node->GetFirstChild(getter_AddRefs(retNode));
+      *textNode = retNode;
+      return NS_OK;
+    }
+    node->GetFirstChild(getter_AddRefs(node));
+  }
+  *textNode = retNode;
+  return NS_OK;
+}
 
 nsresult
 nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
@@ -716,7 +746,22 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             {
             }
           }
-          if (!(tagName.EqualsLiteral("math") || tagName.EqualsLiteral("mrow")))
+          if (tagName.EqualsLiteral("mn"))
+          {
+            nsCOMPtr<nsIDOMNode> textNode;
+            res = NodeContainsOnlyMn(curNode, getter_AddRefs(textNode));
+            if (textNode)
+            {
+              curNode = textNode;
+              parentNode->Normalize();
+              res = parentNode->GetFirstChild(getter_AddRefs(parentNode));
+              NS_ENSURE_SUCCESS(res, res);
+              GetTagString(parentNode, tagName);
+              // don't put mn into an mn, but put the contents into the contents
+            }
+          }
+          if (!(tagName.EqualsLiteral("math") || tagName.EqualsLiteral("mrow")
+            || tagName.EqualsLiteral("#text")))
           {
             // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
             nsCOMPtr<nsIDOMElement> mrow;
@@ -732,7 +777,21 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
           }
           else
           {
-            res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            PRUint16 nodeType1;
+            PRUint16 nodeType2;
+            curNode->GetNodeType(&nodeType1);
+            parentNode->GetNodeType(&nodeType2);
+            if (nodeType1 == 3 && nodeType2 == 3)
+            {
+              nsAutoString textContent;
+              curNode->GetNodeValue(textContent);
+              nsCOMPtr<nsIDOMCharacterData> textNode(do_QueryInterface(parentNode));
+              res = InsertTextIntoTextNodeImpl(textContent, (nsIDOMCharacterData*)textNode, offsetOfNewNode, PR_TRUE);
+            }
+            else
+            {
+              res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            }
             if (NS_SUCCEEDED(res)) 
             {
               bDidInsert = PR_TRUE;
