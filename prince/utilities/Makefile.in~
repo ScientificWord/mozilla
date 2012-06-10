@@ -1,0 +1,28 @@
+DEPTH		= ../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+
+
+
+include $(DEPTH)/config/autoconf.mk
+include $(topsrcdir)/config/rules.mk
+
+ifeq ($(OS_ARCH),WINNT)
+  PLATFORM = win32
+endif
+
+ifeq ($(OS_ARCH),Linux)
+  PLATFORM = linux
+endif
+
+ifeq ($(OS_ARCH),Darwin)
+  PLATFORM = mac
+endif
+
+PLUGINS := $(wildcard	$(srcdir)/$(PLATFORM)/*)
+
+libs::	$(PLUGINS)
+	$(INSTALL)	$(PLUGINS)	$(FINAL_TARGET)/plugins
+

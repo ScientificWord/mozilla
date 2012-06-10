@@ -1,0 +1,35 @@
+#! /bin/sh
+# switch between TeXLive installations
+TEXDISTROS=/usr/local/texlive
+LIST=`ls $TEXDISTROS`
+for file in $LIST
+do
+  if [[ $file =~ 2[0-1] ]]
+  then
+    if [ -e $TEXDISTROS/$file/bin/i386-linux/pdflatex ]
+    then
+      DISTROS=$DISTROS" "$file
+    fi
+  fi
+done
+echo "The TeXLive distributions shown below have been found on this machine.\n"
+echo $DISTROS
+echo
+echo -n "Which one do you want to use?  "
+read dist
+for distro in $DISTROS
+do
+  if [ $dist == $distro ]
+  then
+    cd $TEXDISTROS
+    link=$TEXDISTROS/$dist/bin/i386-linux
+    if [ -e $TEXDISTROS/swTexbin ]
+    then
+      rm $TEXDISTROS/swTexbin
+    fi
+    ln -s $link swTexbin
+    exit 0
+  fi
+done
+echo $dist was not on the list
+exit 1

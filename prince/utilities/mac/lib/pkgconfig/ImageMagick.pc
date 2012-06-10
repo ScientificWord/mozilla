@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: ImageMagick
+Description: ImageMagick - Convert, Edit, and Compose Images
+Version: 6.3.3
+Libs: -L${libdir} -lWand -lMagick
+Cflags: -I${includedir} 
