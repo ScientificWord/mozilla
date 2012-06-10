@@ -3,68 +3,80 @@
 //var gDialog = new Object();
 var importDataIn;
 
-var theTimer = Components.classes["@mozilla.org/timer;1"]
-                    .createInstance(Components.interfaces.nsITimer);
+Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 
-var dlgTimerCallback = 
+//var theTimer = Components.classes["@mozilla.org/timer;1"]
+//                    .createInstance(Components.interfaces.nsITimer);
+
+var dlgTimerCallbackObject = 
 {  
-  statusNone : 0,
-  statusRunning : 1,
-  statusSuccess : 2,
-  statusFailed : 3,
-  
-  mTimer : null,
-  timercopy : null,
-  timerCount : 0,
-//  mImpData : null,
-//  importFinished : false,
-//  texImportFinished : false,
-  importStatus : this.statusNone,
-  texImportStatus : this.statusNone,
+  mImportHandler : null,
+  mTexHandler : null,
+  importProcess : null,
+  texImportProcess : null,
+  importTargFile : null,
+  texImportTargFile : null,
+//  importStatus : this.statusNone,
+//  texImportStatus : this.statusNone,
 
-  notify : function(timer)
-  {
-    if (!this.timercopy)
-      this.timercopy = timer;
-    if ( (this.importStatus != this.statusRunning) && (this.texImportStatus != this.statusRunning) )
-    {
-      timer.cancel();
-      return;
-    }
-    this.checkLoadingComplete();
-    ++this.timerCount;  //May want to display time elapsed in dialog
-    if (!(this.timerCount % 8))
-      this.checkLogFileStatus();
-//    dump("In graphics convert dialog timerCallback, timer count is [" + this.timerCount + "].\n");
-    this.disableDialogControls();
-    if ((this.importStatus != this.statusRunning) && (this.texImportStatus != this.statusRunning))
-    {
-      this.stopTimer();
-      dump("In msiGraphicsConversionDlg.notify; calling stopTimer()\n");
-      this.closeTheDialog();
-      return true;
-    }
-  },
+//  notify : function(timer)
+//  {
+//    if (!this.timercopy)
+//      this.timercopy = timer;
+//    if ( (this.importStatus != this.statusRunning) && (this.texImportStatus != this.statusRunning) )
+//    {
+//      timer.cancel();
+//      return;
+//    }
+//    this.checkLoadingComplete();
+//    ++this.timerCount;  //May want to display time elapsed in dialog
+//    if (!(this.timerCount % 8))
+//      this.checkLogFileStatus();
+////    dump("In graphics convert dialog timerCallback, timer count is [" + this.timerCount + "].\n");
+//    this.disableDialogControls();
+//    if ((this.importStatus != this.statusRunning) && (this.texImportStatus != this.statusRunning))
+//    {
+//      this.stopTimer();
+//      dump("In msiGraphicsConversionDlg.notify; calling stopTimer()\n");
+//      this.closeTheDialog();
+//      return true;
+//    }
+//  },
+
   stopTimer : function()
   {
-    if (this.timercopy)
-      this.timercopy.cancel();
-//    if (this.mTimer && this.mTimer != this.timercopy)
-//      this.mTimer.cancel();
+    if (this.mImportHandler)
+      this.mImportHandler.stop();
+    if (this.mTexHandler)
+      this.mTexHandler.stop();
   },
   
-  setData : function(impData, theWindow, theDocument)
+  init : function(impData, theWindow, theDocument)
   {
-    this.importProcess = impData.mImportProcess;
-    this.texImportProcess = impData.mTexImportProcess;
-    this.importTargFile = impData.mImportTargFile;
-    this.texImportTargFile = impData.mTexImportTargFile;
-    this.importSentinelFile = impData.mImportSentinelFile;
-    this.texSentinelFile = impData.mTexSentinelFile;
-    this.importLogFile = impData.mImportLogFile;
-    this.texImportLogFile = impData.mTexImportLogFile;
-    this.importStatus = impData.mImportStatus;
-    this.texImportStatus = impData.mTexImportStatus;
+//    if (impData.mImportProcess)
+//    {
+//      this.importProcess = impData.mImportProcess;
+//      this.mImportHandler = new graphicsTimerHandler(graphicsTimerHandler.maxGraphicsLoadTime, this);
+//      this.importTargFile = impData.mImportTargFile;
+//      var importTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+//      importTimer.initWithCallback( this.mImportHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+//      this.mImportHandler.startLoading(impData.mSourceFile, impData.mImportTargFile, impData.mImportProcess);
+//    }
+//    if (impData.mTexImportProcess)
+//    {
+//      this.texImportProcess = impData.mTexImportProcess;
+//      this.mTexHandler = new graphicsTimerHandler(graphicsTimerHandler.maxGraphicsLoadTime, this);
+//      this.texImportTargFile = impData.mTexImportTargFile;
+//      var texImportTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+//      texImportTimer.initWithCallback( this.mTexHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+//      this.mTexHandler.startLoading(impData.mSourceFile, impData.mTexImportTargFile, impData.mTexImportProcess);
+//    }
+//    this.importSentinelFile = impData.mImportSentinelFile;
+//    this.texSentinelFile = impData.mTexSentinelFile;
+//    this.importLogFile = impData.mImportLogFile;
+//    this.texImportLogFile = impData.mTexImportLogFile;
+//    this.importStatus = impData.mImportStatus;
+//    this.texImportStatus = impData.mTexImportStatus;
     this.importDataInOut = impData;
     this.ourWindow = theWindow;
     this.ourDocument = theDocument;
@@ -76,69 +88,82 @@ var dlgTimerCallback =
     impData.mTexImportStatus = this.texImportStatus;
   },
 
+  terminalCallback : function(sourceFile, targFile, importStatus, errorString)
+  {
+    this.checkLoadingComplete();
+    this.disableDialogControls();
+    if (!this.isLoading())
+    {
+      this.stopTimer();
+//      dump("In msiGraphicsConversionDlg.notify; calling stopTimer()\n");
+      this.closeTheDialog();
+      return true;
+    }
+  },
+
   forceEnd : function(mode)
   {
     if (mode == "tex")
     {
-      if (this.texImportStatus == this.statusRunning)
+      if (this.mTexHandler && this.mTexHandler.isLoading())
       {
-        this.texImportProcess.kill();
-        this.texImportStatus = this.statusFailed;
+        this.mTexHandler.stop();
+        this.texImportStatus = this.mTexHandler.importStatus;
       }
     }
     else
     {
-      if (this.importStatus == this.statusRunning)
+      if (this.mImportHandler && this.mImportHandler.isLoading())
       {
-        this.importProcess.kill();
-        this.importStatus = this.statusFailed;
+        this.mImportHandler.stop();
+        this.importStatus = this.mImportHandler.importStatus;
       }
     }
   },
 
-  checkLogFileStatus : function()
-  {
-    var errorRE = /(error)|(fail)/i;
-    var logUrl;
-    if (this.texImportStatus == this.statusRunning)
-    {
-      if (this.texImportLogFile && this.texImportLogFile.exists())
-      {
-        var logStr;
-        try
-        {
-          logUrl = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).newFileURI(this.texImportLogFile);
-          logStr = getFileAsString(logUrl.spec);
-        } catch(ex) {dump("Exception in msiGraphicsConversionDlg.js, checkLogFileStatus: " + ex + "\n");}
-        if (logStr)
-        {
-          if (errorRE.exec(logStr))
-            this.texImportStatus = this.statusFailed;
-        }
-        else
-          dump("Couldn't read logfile [" + logUrl + "], from nsILocalFile [" + this.texImportLogFile.path + "]!\n");
-      }
-    }
-    if (this.importStatus == this.statusRunning)
-    {
-      if (this.importLogFile && this.importLogFile.exists())
-      {
-        var logStr;
-        try
-        {
-          logUrl = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).newFileURI(this.importLogFile);  
-          logStr = getFileAsString(logUrl.spec);
-        } catch(ex) {dump("Exception in msiGraphicsConversionDlg.js, checkLogFileStatus: " + ex + "\n");}
-        if (logStr)
-        {
-          if (errorRE.exec(logStr))
-            this.importStatus = this.statusFailed;
-        }
-        else
-          dump("Couldn't read logfile " + logUrl + "], from nsILocalFile [" + this.importLogFile.path + "]!\n");
-      }
-    }
-  },
+//  checkLogFileStatus : function()
+//  {
+//    var errorRE = /(error)|(fail)/i;
+//    var logUrl;
+//    if (this.texImportStatus == this.statusRunning)
+//    {
+//      if (this.texImportLogFile && this.texImportLogFile.exists())
+//      {
+//        var logStr;
+//        try
+//        {
+//          logUrl = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).newFileURI(this.texImportLogFile);
+//          logStr = getFileAsString(logUrl.spec);
+//        } catch(ex) {dump("Exception in msiGraphicsConversionDlg.js, checkLogFileStatus: " + ex + "\n");}
+//        if (logStr)
+//        {
+//          if (errorRE.exec(logStr))
+//            this.texImportStatus = this.statusFailed;
+//        }
+//        else
+//          dump("Couldn't read logfile [" + logUrl + "], from nsILocalFile [" + this.texImportLogFile.path + "]!\n");
+//      }
+//    }
+//    if (this.importStatus == this.statusRunning)
+//    {
+//      if (this.importLogFile && this.importLogFile.exists())
+//      {
+//        var logStr;
+//        try
+//        {
+//          logUrl = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).newFileURI(this.importLogFile);  
+//          logStr = getFileAsString(logUrl.spec);
+//        } catch(ex) {dump("Exception in msiGraphicsConversionDlg.js, checkLogFileStatus: " + ex + "\n");}
+//        if (logStr)
+//        {
+//          if (errorRE.exec(logStr))
+//            this.importStatus = this.statusFailed;
+//        }
+//        else
+//          dump("Couldn't read logfile " + logUrl + "], from nsILocalFile [" + this.importLogFile.path + "]!\n");
+//      }
+//    }
+//  },
 
   closeTheDialog : function()
   {
@@ -157,57 +182,57 @@ var dlgTimerCallback =
 
   checkLoadingComplete : function()
   {
-    if (this.importStatus == this.statusRunning)
+    if (this.mImportHandler)
     {
-      if (this.importTargFile.exists())
-        this.importStatus = this.statusSuccess;
-      else if (this.importSentinelFile && this.importSentinelFile.exists())
-        this.importStatus = this.statusFailed;
+      this.mImportHandler.checkStatus();
     }
-    if (this.texImportStatus == this.statusRunning)
+    if (this.mTexHandler)
     {
-      if (this.texImportTargFile.exists())
-        this.texImportStatus = this.statusSuccess;
-      else if (this.texSentinelFile && this.texSentinelFile.exists())
-        this.texImportStatus = this.statusFailed;
+      this.mTexHandler.checkStatus();
     }
-    var loggingStrs = ["none", "running", "success", "failed"];
+//    var loggingStrs = ["none", "running", "success", "failed"];
 //    dump("In msiGraphicsConversionDlg.checkLoadingComplete; importStatus is [" + loggingStrs[this.importStatus] + "] and texImportStatus is [" + loggingStrs[this.texImportStatus] + "].\n");
     
     return false;
+  },
+
+  isLoading : function()
+  {
+    return ( (this.mImportHandler && this.mImportHandler.isLoading()) 
+             || (this.mTexHandler && this.mTexHandler.isLoading()) );
   },
 
   disableDialogControls : function()
   {
     var stopButton = this.ourDocument.getElementById("stopImportButton");
     var texStopButton = this.ourDocument.getElementById("stopImportTeXButton");
-    if (this.importStatus != this.statusRunning)
+    if (!this.mImportHandler || ! this.mImportHandler.isLoading())
       stopButton.disabled = true;
-    if (this.texImportStatus != this.statusRunning)
+    if (!this.mTexHandler || ! this.mTexHandler.isLoading())
       texStopButton.disabled = true;
   }
 
 };
 
-function disableControls(importRunning, texImportRunning)
-{
-  if (!importRunning)
-    gDialog.importControls[1].disabled = true;
-  if (!texImportRunning)
-    gDialog.texImportControls[1].disabled = true;
-}
+//function disableControls(importRunning, texImportRunning)
+//{
+//  if (!importRunning)
+//    gDialog.importControls[1].disabled = true;
+//  if (!texImportRunning)
+//    gDialog.texImportControls[1].disabled = true;
+//}
 
 function forceEndLoad(control)
 {
   if (control.id == "stopImportTeXButton")
   {
-    dlgTimerCallback.forceEnd("tex");
+    dlgTimerCallbackObject.forceEnd("tex");
   }
   else
   {
-    dlgTimerCallback.forceEnd("import");
+    dlgTimerCallbackObject.forceEnd("import");
   }
-  dlgTimerCallback.checkLoadingComplete();
+  dlgTimerCallbackObject.checkLoadingComplete();
 }
 
 
@@ -237,9 +262,29 @@ function Startup()
 
   //Components.utils.reportError("in Init\n");
   // set up the first pass
-  dlgTimerCallback.setData(importDataIn, window, document);
-  dlgTimerCallback.mTimer = theTimer;
-  theTimer.initWithCallback( dlgTimerCallback, 500, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+//  dlgTimerCallback = new graphicsTimerSimpleCallback(millisecondsTimeLimit, terminateCallbackObject);
+
+  dlgTimerCallbackObject.init(importDataIn, window, document);
+  var timerHandler, importTimer;
+  if (importDataIn.mImportProcess)
+  {
+    timerHandler = new graphicsTimerHandler(0, dlgTimerCallbackObject);
+    importTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+    timerHandler.startLoading(importDataIn.mSourceFile, importDataIn.mImportTargFile, importDataIn.mImportProcess);
+    dlgTimerCallbackObject.mImportHandler = timerHandler;
+    importTimer.initWithCallback( timerHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+  }
+  if (importDataIn.mTexImportProcess)
+  {
+    timerHandler = new graphicsTimerHandler(0, dlgTimerCallbackObject);
+    importTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+    timerHandler.startLoading(importDataIn.mSourceFile, importDataIn.mTexImportTargFile, importDataIn.mTexImportProcess);
+    dlgTimerCallbackObject.mTexHandler = timerHandler;
+    importTimer.initWithCallback( timerHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+  }
+
+//  dlgTimerCallback.mTimer = theTimer;
+//  theTimer.initWithCallback( dlgTimerCallback, 500, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
 }
 
 function onAccept()
@@ -252,15 +297,17 @@ function doEndDialog()
 {
 //  dump("In msiGraphicsConversionDlg.doEndDialog\n");
 //  if (importData.mImportProcess)
-  forceEndLoad(gDialog.importControls[1]);
+//  forceEndLoad(gDialog.importControls[1]);
+  dlgTimerCallbackObject.forceEnd("import");
 //  if (importData.mTexImportProcess)
-  forceEndLoad(gDialog.texImportControls[1]);
+//  forceEndLoad(gDialog.texImportControls[1]);
+  dlgTimerCallbackObject.forceEnd("tex");
 //  if (theTimer)
 //    theTimer.cancel();
 //  theTimer = null;
-  dlgTimerCallback.stopTimer();
+  dlgTimerCallbackObject.stopTimer();
 //  Components.utils.reportError("in onCancel\n");
-  dlgTimerCallback.copyDataOut(importDataIn);
+  dlgTimerCallbackObject.copyDataOut(importDataIn);
   SaveWindowLocation();
   top.document.commandDispatcher.focusedWindow.focus();  
   window.close();
