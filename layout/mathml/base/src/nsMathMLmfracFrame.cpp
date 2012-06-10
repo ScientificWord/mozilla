@@ -326,8 +326,8 @@ nsMathMLmfracFrame::Place(nsIRenderingContext& aRenderingContext,
   // our last visit there)
   nsEmbellishData coreData;
   GetEmbellishDataFrom(mEmbellishData.coreFrame, coreData);
-  nscoord leftSpace = PR_MAX(onePixel, coreData.leftSpace);
-  nscoord rightSpace = PR_MAX(onePixel, coreData.rightSpace);
+  nscoord leftSpace = PR_MAX(onePixel, coreData.leadingSpace);
+  nscoord rightSpace = PR_MAX(onePixel, coreData.trailingSpace);
 
   // see if the linethickness attribute is there 
   nsAutoString value;
