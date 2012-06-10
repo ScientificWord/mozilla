@@ -1,0 +1,11 @@
+#!/bin/bash
+uninst=/opt/MacKichan/SNB-Uninstall
+echo About to run the uninstaller.
+echo You will be asked for the root password.
+xdg-desktop-menu uninstall --novendor /opt/MacKichan/SNB.directory /opt/MacKichan/SNB.desktop /opt/MacKichan/SNB-uninstall.desktop
+su -c "$uninst"
+rm -rf ~/.snb
+rm ~/Desktop/SNB.desktop
+
+
+

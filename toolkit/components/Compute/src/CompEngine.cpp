@@ -394,6 +394,9 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
                SEMANTICS_NODE *semantics_tree =
                    semantic_analyzer->BuildSemanticsTree (*psr, mr, mmlstr, dMML_tree2, 
                                                           CCID_PlotFuncCmd, p_input_notation);
+               #ifdef DEBUG
+                 JBM::DumpSList(semantics_tree);
+               #endif
                curr_IDs_2mml =
                  JoinIDsLists(curr_IDs_2mml, semantic_analyzer->GetBackMap());
                psr->AddSemanticsToParam (plotno, child->src_tok, semantics_tree);
