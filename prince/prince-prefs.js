@@ -187,3 +187,4 @@ pref("swp.user.special", false);
 pref("swp.user.trigargs", false);
 pref("swp.user.upperthreshold", 4);
 pref("swp.user.usearc", false);
+pref("font.mathfont-family", "MathJax_Main, Asana Math, XITS Math, Symbol, DejaVu Sans, Cambria Math");

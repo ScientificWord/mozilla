@@ -1,0 +1,13 @@
+#!/bin/sh
+if [ ! -e $HOME/.swp/NoDesktop ] ; then
+  if [ ! -e $HOME/Desktop/SWP.desktop ] ; then
+    echo "Do you want to install the Desktop shortcut for SWP? [Yn] "
+    read short
+    if [ -z $short ] || [ $short == 'y' ] || [ $short == 'Y' ] ; then
+      cp /opt/swp-6.0/SWP.desktop $HOME/Desktop
+    else
+      touch $HOME/.swp/NoDesktop
+    fi
+  fi
+fi
+LD_LIBRARY_PATH=/opt/swp-6.0/SWP/MuPAD/linux/lib:$LD_LIBRARY_PATH /opt/swp-6.0/SWP/swp
