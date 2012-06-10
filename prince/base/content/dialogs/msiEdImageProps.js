@@ -45,6 +45,7 @@ var globalElement;
 var globalImage;
 var gEditorElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
+Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 var frameTabDlg = new Object();
 
 var imageElement;
@@ -66,6 +67,8 @@ var gInsertNewImage = true;
 var gCaptionData;
 
 var importTimer;
+var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "xvc","xvz"];
+var typesetGraphicTypes = ["eps", "pdf", "png", "jpg"];
 
 // dialog initialization code
 function Startup()
@@ -859,8 +862,11 @@ function chooseFile()
     doOverallEnabling();
   }
   if (!importTimerHandler.isLoading("import"))
+  {
 //  if (!gfxImportProcess || !gfxImportProcess.isRunning)
+    dump("Calling LoadPreviewImage after importTimerHandler.isLoading returned false.\n");
     LoadPreviewImage();
+  }
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
 }
@@ -880,10 +886,10 @@ function getLoadableGraphicFile(inputURL)
     dir.create(1, 0755);
   if (extension)  //if not, should we just do the copy and hope for the best? Or forget it?
   {
-    var fileTypeData = getImportDataForGraphicType(extension);
-    if (fileTypeData && fileTypeData.commandLine)
+    var nNative = nativeGraphicTypes.indexOf(extension);
+    if (nNative < 0)
     {
-      newFile = doGraphicsImport(file, fileTypeData);
+      newFile = doGraphicsImport(file, "import");
       fileName = "graphics/" + newFile.leafName;
     }
     else  //ordinary import
@@ -903,286 +909,477 @@ function getLoadableGraphicFile(inputURL)
         dump("exception: e="+e.msg);
       }
     }
-    if (fileTypeData && fileTypeData.texCommandLine)  //Need file in LaTeX-friendly format
+    if (typesetGraphicTypes.indexOf(extension.toLowerCase()) < 0)  //Need file in LaTeX-friendly format
     {
-      doGraphicsImport(file, fileTypeData, "tex");
+      var bCanUseImport = false;
+      if (newFile)
+      {
+        var impExtension = getExtension(newFile.leafName).toLowerCase();
+        if (typesetGraphicTypes.indexOf(impExtension) >= 0)
+          bCanUseImport = true;
+      }
+      if (!bCanUseImport)
+        doGraphicsImport(file, "tex");
     }
   }
   return fileName;
 }
 
-var importTimerHandler = 
-{  
-  statusNone : 0,
-  statusRunning : 1,
-  statusSuccess : 2,
-  statusFailed : 3,
-//  this.timercopy = timer;
-  sourceFile : null,
-  importTargFile : null,
-  texTargFile : null,
-  importProcess : null,
-  texImportProcess : null,
-  importStatus : this.statusNone,
-  texImportStatus : this.statusNone,
-  timerCount : 0,
+var importTimerHandler =
+{
+  mSourceFile : null,
+  mImportHandler : null,
+  mTexHandler : null,
 
-  notify : function(timer)
-  { 
-//    if (timer)
-//      this.timercopy = timer;
-    this.checkStatus();
+//  this.startLoading = function(sourceFile, targFile, process, mode)
+//  {
+//  };
 
-    if (this.importStatus == this.statusRunning || this.texImportStatus == this.statusRunning)
+  terminalCallback : function(sourceFile, importTargFile, importStatus, errorString)
+  {
+//    if (this.texImportFile.path == importTargFile.path)
+//    {
+//      this.texImportStatus = importStatus;
+//      this.texImportError = errorString;
+//    }
+//    else
+//    {
+//      this.importStatus = importStatus;
+//      this.importError = errorString;
+//    }
+    this.checkStatusLaunchDialog();
+  },
+
+  checkStatusLaunchDialog : function()
+  {
+    var bLaunchDialog = false;
+    var bTimerRunning = false;
+    var importData = {};
+    if (this.mImportHandler && this.mImportHandler.isLoading())
     {
-      ++this.timerCount;
-//      var exitVal = "[" + (this.importProcess ? this.importProcess.exitValue : "none");
-//      exitVal += "," + (this.texImportProcess ? this.texImportProcess.exitValue : "none") + "]";
-//      dump("In graphics loading timerCallback, timer count is [" + this.timerCount + "], exit vals are " + exitVal + ".\n");
-      if (this.timerCount < 8)  //keep waiting
-        return;
+      if (!this.mImportHandler.timerStopped)
+        bTimerRunning = true;
+      bLaunchDialog = true;
+      importData.mSourceFile = this.mImportHandler.sourceFile;
+      importData.mImportProcess = this.mImportHandler.importProcess;
+      importData.mImportStatus = this.mImportHandler.importStatus;
+      importData.mImportTargFile = this.mImportHandler.importTargFile;
+//      importData.mImportSentinelFile = this.getFailureSentinelFile("import");
+//      importData.mImportLogFile = this.getImportLogFile("import");
+    }
+    if (this.mTexHandler && this.mTexHandler.isLoading())
+    {
+      if (!this.mTexHandler.timerStopped)
+        bTimerRunning = true;
+      bLaunchDialog = true;
+      importData.mSourceFile = this.mTexHandler.sourceFile;
+      importData.mTexImportProcess = this.mTexHandler.importProcess,
+      importData.mTexImportStatus = this.mTexHandler.importStatus;
+      importData.mTexImportTargFile = this.mTexHandler.importTargFile;
+//      importData.mTexSentinelFile = this.getFailureSentinelFile("tex");
+//      importData.mTexImportLogFile = this.getImportLogFile("tex");
+    }
+    if (bTimerRunning)
+      return;
 
-//      if (gfxImportProcess && !gfxImportProcess.isRunning)
-//      {
-//        stopImportTimer("import");
-//      }
-      timer.cancel();
-      this.checkLogFileStatus();
-      var importData = {mSourceFile : this.sourceFile, 
-                        mImportProcess : this.importProcess, mTexImportProcess : this.texImportProcess,
-                        mImportStatus : this.importStatus, mTexImportStatus: this.texImportStatus,
-                        mImportTargFile : this.importTargFile, mTexImportTargFile : this.texTargFile,
-                        mImportSentinelFile : this.getFailureSentinelFile("import"),
-                        mTexSentinelFile : this.getFailureSentinelFile("tex"),
-                        mImportLogFile : this.getImportLogFile("import"), 
-                        mTexImportLogFile : this.getImportLogFile("tex")};
+    if (bLaunchDialog)
+    {
+      dump("Launching ConvertGraphics dialog.\n");
       launchConvertingDialog(importData);
       //Put up a dialog asking if user wants to cancel?
-      return;
     }
-     
-    //Otherwise, we're finished
-    timer.cancel();
-    this.checkFinalStatus();
+    else
+      this.checkFinalStatus();
+  },
+
+  checkStatus : function()
+  {
+    if (this.mImportHandler)
+      this.mImportHandler.checkStatus();
+    if (this.mTexHandler)
+      this.mTexHandler.checkStatus();
   },
 
   reset : function()
   {
-    if (this.importTargFile)
-    {
-      var sentFile = this.getFailureSentinelFile("import");
-      if (sentFile.exists())
-        sentFile.remove(false);
-      this.importTargFile = null;
-      var logFile = this.getImportLogFile("import");
-      if (logFile.exists())
-        logFile.remove(false);
-    }
-    if (this.texTargFile)
-    {
-      var texSentFile = this.getFailureSentinelFile("tex");
-      if (texSentFile.exists())
-        texSentFile.remove(false);
-      this.texTargFile = null;
-      var texLogFile = this.getImportLogFile("tex");
-      if (texLogFile.exists())
-        texLogFile.remove(false);
-    }
-    this.timerCount = 0;
-    this.sourceFile = null;
-    this.importProcess = null;
-    this.texTargFile = null;
-    this.texImportProcess = null;
-    this.importStatus = this.statusNone;
-    this.texImportStatus = this.statusNone;
+    if (this.mImportHandler)
+      this.mImportHandler.reset();
+    if (this.mTexHandler)
+      this.mTexHandler.reset();
   },
 
-  startLoading : function(srcFile, targFile, process, mode)
+  isLoading : function(mode)
   {
-    this.timerCount = 0;  //always restart timer count with second load if two are converting?
-    this.sourceFile = srcFile;
-    if (mode == "tex")
-    {
-      this.texTargFile = targFile;
-      this.texImportProcess = process;
-      this.texImportStatus = this.statusRunning;
-    }
+    if (mode == "import")
+      return (this.mImportHandler && this.mImportHandler.isLoading());
+    else if (mode == "tex")
+      return (this.mTexHandler && this.mTexHandler.isLoading());
     else
-    {
-      this.importTargFile = targFile;
-      this.importProcess = process;
-      this.importStatus = this.statusRunning;
-    }
+      return ( (this.mImportHandler && this.mImportHandler.isLoading())
+                || (this.mTexHandler && this.mTexHandler.isLoading()) );
   },
 
-  //Assumptions about status:
-  //  (i)If no import conversion process is launched, it is assumed that the file is of an importable type as is.
-  // (ii)If no tex import conversion process is launched, either the result of the import process or the native file must be
-  //       typesettable. Which is the case should be noted somewhere here (using this.canTypesetSourceFile()).
-  checkStatus : function()
+  didNotSucceed : function()
   {
-    if (this.texImportStatus == this.statusRunning)
-    {
-      if (this.texTargFile.exists())
-        this.texImportStatus = this.statusSuccess;
-      else if (!this.texImportProcess || this.processFailed("tex"))
-        this.texImportStatus = this.statusFailed;
-    }
-    if (this.importStatus == this.statusRunning)
-    {
-      if (this.importTargFile.exists())
-        this.importStatus = this.statusSuccess;
-      else if (!this.importProcess || this.processFailed("import"))
-        this.importStatus = this.statusFailed;
-    }
+    return ( (this.mImportHandler && this.mImportHandler.didNotSucceed())
+             || (this.mTexHandler && this.mTexHandler.didNotSucceed()) );
   },
 
   checkLogFileStatus : function()
   {
-    var errorRE = /(error)|(fail)/i;
-    if (this.texImportStatus == this.statusRunning)
-    {
-      if (this.getImportLogFile("tex") && this.getImportLogFile("tex").exists())
-      {
-        var logStr;
-        try
-        {
-          logStr = this.getImportLogInfo("tex");
-        } catch(ex) {}
-        if (logStr)
-        {
-          if (errorRE.exec(logStr))
-            this.texImportStatus = this.statusFailed;
-        }
-      }
-    }
-    if (this.importStatus == this.statusRunning)
-    {
-      if (this.getImportLogFile("import") && this.getImportLogFile("import").exists())
-      {
-        var logStr;
-        try
-        {
-          logStr = this.getImportLogInfo("import");
-        } catch(ex) {}
-        if (logStr)
-        {
-          if (errorRE.exec(logStr))
-            this.importStatus = this.statusFailed;
-        }
-      }
-    }
+    if (this.mImportHandler)
+      this.mImportHandler.checkLogFileStatus();
+    if (this.mTexHandler)
+      this.mTexHandler.checkLogFileStatus();
+  },
+
+  stopLoading : function()
+  {
+    if (this.mImportHandler)
+      this.mImportHandler.stop();
+    if (this.mTexHandler)
+      this.mTexHandler.stop();
+    this.checkFinalStatus();
   },
 
   checkFinalStatus : function()
   {
+    if (this.failNoticePosted)
+      return;
     this.checkStatus();
-    if ((this.importStatus == this.statusRunning) || (this.texImportStatus == this.statusRunning))
+    if ((this.isLoading()))
       this.checkLogFileStatus();
-    if (this.importStatus == this.statusFailed || this.texImportStatus == this.statusFailed)
+    if (this.didNotSucceed())
+    {
+//      dump("In msiEdImageProps.js, checkFinalStatus, calling postFailedImportNotice.\n");
       this.postFailedImportNotice();
+    }
 
     if (this.importStatus == this.statusSuccess)
       LoadPreviewImage();
   },
 
-  isLoading : function(mode)
+  sourceFile : function()
   {
-    this.checkStatus();
-    if (mode == "import")
-      return (this.importStatus == this.statusRunning);
-    if (mode == "tex")
-      return (this.texImportStatus == this.statusRunning);
-    return ((this.importStatus == this.statusRunning) || (this.texImportStatus == this.statusRunning));
-  },
-
-  getFailureSentinelFile : function(mode)
-  {
-    var sentinelFile = (mode == "tex") ? this.texTargFile.clone() : this.importTargFile.clone();
-    if (!sentinelFile || !sentinelFile.path)
-      return null;
-    var leaf = sentinelFile.leafName;
-    leaf += ".txt";
-    sentinelFile = sentinelFile.parent;
-    sentinelFile.append(leaf);
-    return sentinelFile;
-  },
-
-  getImportLogFile : function(mode)
-  {
-    var logFile = (mode == "tex") ? this.texTargFile.clone() : this.importTargFile.clone();
-    if (!logFile || !logFile.path)
-      return null;
-    var leaf = logFile.leafName;
-    leaf += ".log";
-    logFile = logFile.parent;
-    logFile.append(leaf);
-    return logFile;
-  },
-
-  processFailed: function(mode)
-  {
-    var sentFile = this.getFailureSentinelFile(mode);
-    return (sentFile && sentFile.exists());
+    var theFile = null;
+    if (this.mImportHandler)
+      theFile = this.mImportHandler.sourceFile;
+    if (!theFile && this.mTexHandler)
+      theFile = this.mTexHandler.sourceFile;
+    return theFile;
   },
 
   postFailedImportNotice : function()
   {
+    if (this.failNoticePosted)
+      return;
     var theMsg = "";
     var ext = "";
     var logInfo = "";
-    if (this.importStatus == this.statusFailed)
+    if (this.mImportHandler && this.mImportHandler.processFailed())
     {
       theMsg = "imageProps.couldNotImport";
-      if ((this.texImportStatus == this.statusSuccess) || this.canTypesetSourceFile() )
+//      if ((this.mTexHandler == this.statusSuccess) || this.canTypesetSourceFile() )
+      if (!this.mTexHandler || !this.mTexHandler.processFailed())
       {
         theMsg = "imageProps.couldNotImportButCanTeX";
-        ext = getExtension(this.importTargFile.leafName);
+        ext = getExtension(this.mImportHandler.importTargFile.leafName);
       }
-      logInfo = this.getImportLogInfo("import");
+      logInfo = this.mImportHandler.getImportLogInfo();
     }
-    else if (this.texImportStatus == this.statusFailed)
+    else if (this.mTexHandler && this.mTexHandler.processFailed())
     {
       theMsg = "imageProps.couldNotImportTeX";
-      ext = getExtension(this.texTargFile.leafName);
-      logInfo = this.getImportLogInfo("tex");
+      ext = getExtension(this.mTexHandler.importTargFile.leafName);
+      logInfo = this.mTexHandler.getImportLogInfo();
     }
-    var msgParams = {file : this.sourceFile.path};
+    var msgParams = {};
+    if (this.sourceFile())
+      msgParams.file = this.sourceFile().path;
     if (ext.length)
       msgParams.extension = ext;
     var msgString = msiGetDialogString(theMsg, msgParams);
     if (logInfo && (logInfo.length > 0))
       msgString += "\n" + logInfo;
     var titleStr = msiGetDialogString("imageProps.importErrorTitle", msgParams);
+    this.failNoticePosted = true;
     AlertWithTitle(titleStr, msgString);
-  },
-
-  getImportLogInfo : function(mode)
-  {
-    var logFile = this.getImportLogFile(mode);
-    var logUrl = msiFileURLFromFile( logFile );
-    return getFileAsString(logUrl.spec);
-  },
-
-  canTypesetSourceFile : function()
-  {
-    var ret = false;
-    var ext = "";
-    if (this.sourceFile)
-      ext = getExtension(this.sourceFile.leafName);
-    switch(ext)
-    {
-      case "eps":
-      case "pdf":
-      case "png":
-      case "jpg":
-        ret = true;
-      break;
-    }
-    return ret;
   }
 
 };
+
+//rwa 5-19-12var importTimerHandler = 
+//rwa 5-19-12{  
+//rwa 5-19-12  statusNone : 0,
+//rwa 5-19-12  statusRunning : 1,
+//rwa 5-19-12  statusSuccess : 2,
+//rwa 5-19-12  statusFailed : 3,
+//rwa 5-19-12//  this.timercopy = timer;
+//rwa 5-19-12  sourceFile : null,
+//rwa 5-19-12  importTargFile : null,
+//rwa 5-19-12  texTargFile : null,
+//rwa 5-19-12  importProcess : null,
+//rwa 5-19-12  texImportProcess : null,
+//rwa 5-19-12  importStatus : this.statusNone,
+//rwa 5-19-12  texImportStatus : this.statusNone,
+//rwa 5-19-12  timerCount : 0,
+//rwa 5-19-12
+//rwa 5-19-12  notify : function(timer)
+//rwa 5-19-12  { 
+//rwa 5-19-12//    if (timer)
+//rwa 5-19-12//      this.timercopy = timer;
+//rwa 5-19-12    this.checkStatus();
+//rwa 5-19-12
+//rwa 5-19-12    if (this.importStatus == this.statusRunning || this.texImportStatus == this.statusRunning)
+//rwa 5-19-12    {
+//rwa 5-19-12      ++this.timerCount;
+//rwa 5-19-12//      var exitVal = "[" + (this.importProcess ? this.importProcess.exitValue : "none");
+//rwa 5-19-12//      exitVal += "," + (this.texImportProcess ? this.texImportProcess.exitValue : "none") + "]";
+//rwa 5-19-12//      dump("In graphics loading timerCallback, timer count is [" + this.timerCount + "], exit vals are " + exitVal + ".\n");
+//rwa 5-19-12      if (this.timerCount < 8)  //keep waiting
+//rwa 5-19-12        return;
+//rwa 5-19-12
+//rwa 5-19-12//      if (gfxImportProcess && !gfxImportProcess.isRunning)
+//rwa 5-19-12//      {
+//rwa 5-19-12//        stopImportTimer("import");
+//rwa 5-19-12//      }
+//rwa 5-19-12      timer.cancel();
+//rwa 5-19-12      this.checkLogFileStatus();
+//rwa 5-19-12      var importData = {mSourceFile : this.sourceFile, 
+//rwa 5-19-12                        mImportProcess : this.importProcess, mTexImportProcess : this.texImportProcess,
+//rwa 5-19-12                        mImportStatus : this.importStatus, mTexImportStatus: this.texImportStatus,
+//rwa 5-19-12                        mImportTargFile : this.importTargFile, mTexImportTargFile : this.texTargFile,
+//rwa 5-19-12                        mImportSentinelFile : this.getFailureSentinelFile("import"),
+//rwa 5-19-12                        mTexSentinelFile : this.getFailureSentinelFile("tex"),
+//rwa 5-19-12                        mImportLogFile : this.getImportLogFile("import"), 
+//rwa 5-19-12                        mTexImportLogFile : this.getImportLogFile("tex")};
+//rwa 5-19-12      launchConvertingDialog(importData);
+//rwa 5-19-12      //Put up a dialog asking if user wants to cancel?
+//rwa 5-19-12      return;
+//rwa 5-19-12    }
+//rwa 5-19-12     
+//rwa 5-19-12    //Otherwise, we're finished
+//rwa 5-19-12    timer.cancel();
+//rwa 5-19-12    this.checkFinalStatus();
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  reset : function()
+//rwa 5-19-12  {
+//rwa 5-19-12    if (this.importTargFile)
+//rwa 5-19-12    {
+//rwa 5-19-12      var sentFile = this.getFailureSentinelFile("import");
+//rwa 5-19-12      if (sentFile.exists())
+//rwa 5-19-12        sentFile.remove(false);
+//rwa 5-19-12      this.importTargFile = null;
+//rwa 5-19-12      var logFile = this.getImportLogFile("import");
+//rwa 5-19-12      if (logFile.exists())
+//rwa 5-19-12        logFile.remove(false);
+//rwa 5-19-12    }
+//rwa 5-19-12    if (this.texTargFile)
+//rwa 5-19-12    {
+//rwa 5-19-12      var texSentFile = this.getFailureSentinelFile("tex");
+//rwa 5-19-12      if (texSentFile.exists())
+//rwa 5-19-12        texSentFile.remove(false);
+//rwa 5-19-12      this.texTargFile = null;
+//rwa 5-19-12      var texLogFile = this.getImportLogFile("tex");
+//rwa 5-19-12      if (texLogFile.exists())
+//rwa 5-19-12        texLogFile.remove(false);
+//rwa 5-19-12    }
+//rwa 5-19-12    this.timerCount = 0;
+//rwa 5-19-12    this.sourceFile = null;
+//rwa 5-19-12    this.importProcess = null;
+//rwa 5-19-12    this.texTargFile = null;
+//rwa 5-19-12    this.texImportProcess = null;
+//rwa 5-19-12    this.importStatus = this.statusNone;
+//rwa 5-19-12    this.texImportStatus = this.statusNone;
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  startLoading : function(srcFile, targFile, process, mode)
+//rwa 5-19-12  {
+//rwa 5-19-12    this.timerCount = 0;  //always restart timer count with second load if two are converting?
+//rwa 5-19-12    this.sourceFile = srcFile;
+//rwa 5-19-12    if (mode == "tex")
+//rwa 5-19-12    {
+//rwa 5-19-12      this.texTargFile = targFile;
+//rwa 5-19-12      this.texImportProcess = process;
+//rwa 5-19-12      this.texImportStatus = this.statusRunning;
+//rwa 5-19-12    }
+//rwa 5-19-12    else
+//rwa 5-19-12    {
+//rwa 5-19-12      this.importTargFile = targFile;
+//rwa 5-19-12      this.importProcess = process;
+//rwa 5-19-12      this.importStatus = this.statusRunning;
+//rwa 5-19-12    }
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  //Assumptions about status:
+//rwa 5-19-12  //  (i)If no import conversion process is launched, it is assumed that the file is of an importable type as is.
+//rwa 5-19-12  // (ii)If no tex import conversion process is launched, either the result of the import process or the native file must be
+//rwa 5-19-12  //       typesettable. Which is the case should be noted somewhere here (using this.canTypesetSourceFile()).
+//rwa 5-19-12  checkStatus : function()
+//rwa 5-19-12  {
+//rwa 5-19-12    if (this.texImportStatus == this.statusRunning)
+//rwa 5-19-12    {
+//rwa 5-19-12      if (this.texTargFile.exists())
+//rwa 5-19-12        this.texImportStatus = this.statusSuccess;
+//rwa 5-19-12      else if (!this.texImportProcess || this.processFailed("tex"))
+//rwa 5-19-12        this.texImportStatus = this.statusFailed;
+//rwa 5-19-12    }
+//rwa 5-19-12    if (this.importStatus == this.statusRunning)
+//rwa 5-19-12    {
+//rwa 5-19-12      if (this.importTargFile.exists())
+//rwa 5-19-12        this.importStatus = this.statusSuccess;
+//rwa 5-19-12      else if (!this.importProcess || this.processFailed("import"))
+//rwa 5-19-12        this.importStatus = this.statusFailed;
+//rwa 5-19-12    }
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  checkLogFileStatus : function()
+//rwa 5-19-12  {
+//rwa 5-19-12    var errorRE = /(error)|(fail)/i;
+//rwa 5-19-12    if (this.texImportStatus == this.statusRunning)
+//rwa 5-19-12    {
+//rwa 5-19-12      if (this.getImportLogFile("tex") && this.getImportLogFile("tex").exists())
+//rwa 5-19-12      {
+//rwa 5-19-12        var logStr;
+//rwa 5-19-12        try
+//rwa 5-19-12        {
+//rwa 5-19-12          logStr = this.getImportLogInfo("tex");
+//rwa 5-19-12        } catch(ex) {}
+//rwa 5-19-12        if (logStr)
+//rwa 5-19-12        {
+//rwa 5-19-12          if (errorRE.exec(logStr))
+//rwa 5-19-12            this.texImportStatus = this.statusFailed;
+//rwa 5-19-12        }
+//rwa 5-19-12      }
+//rwa 5-19-12    }
+//rwa 5-19-12    if (this.importStatus == this.statusRunning)
+//rwa 5-19-12    {
+//rwa 5-19-12      if (this.getImportLogFile("import") && this.getImportLogFile("import").exists())
+//rwa 5-19-12      {
+//rwa 5-19-12        var logStr;
+//rwa 5-19-12        try
+//rwa 5-19-12        {
+//rwa 5-19-12          logStr = this.getImportLogInfo("import");
+//rwa 5-19-12        } catch(ex) {}
+//rwa 5-19-12        if (logStr)
+//rwa 5-19-12        {
+//rwa 5-19-12          if (errorRE.exec(logStr))
+//rwa 5-19-12            this.importStatus = this.statusFailed;
+//rwa 5-19-12        }
+//rwa 5-19-12      }
+//rwa 5-19-12    }
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  checkFinalStatus : function()
+//rwa 5-19-12  {
+//rwa 5-19-12    this.checkStatus();
+//rwa 5-19-12    if ((this.importStatus == this.statusRunning) || (this.texImportStatus == this.statusRunning))
+//rwa 5-19-12      this.checkLogFileStatus();
+//rwa 5-19-12    if (this.importStatus == this.statusFailed || this.texImportStatus == this.statusFailed)
+//rwa 5-19-12      this.postFailedImportNotice();
+//rwa 5-19-12
+//rwa 5-19-12    if (this.importStatus == this.statusSuccess)
+//rwa 5-19-12      LoadPreviewImage();
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  isLoading : function(mode)
+//rwa 5-19-12  {
+//rwa 5-19-12    this.checkStatus();
+//rwa 5-19-12    if (mode == "import")
+//rwa 5-19-12      return (this.importStatus == this.statusRunning);
+//rwa 5-19-12    if (mode == "tex")
+//rwa 5-19-12      return (this.texImportStatus == this.statusRunning);
+//rwa 5-19-12    return ((this.importStatus == this.statusRunning) || (this.texImportStatus == this.statusRunning));
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  getFailureSentinelFile : function(mode)
+//rwa 5-19-12  {
+//rwa 5-19-12    var sentinelFile = (mode == "tex") ? this.texTargFile.clone() : this.importTargFile.clone();
+//rwa 5-19-12    if (!sentinelFile || !sentinelFile.path)
+//rwa 5-19-12      return null;
+//rwa 5-19-12    var leaf = sentinelFile.leafName;
+//rwa 5-19-12    leaf += ".txt";
+//rwa 5-19-12    sentinelFile = sentinelFile.parent;
+//rwa 5-19-12    sentinelFile.append(leaf);
+//rwa 5-19-12    return sentinelFile;
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  getImportLogFile : function(mode)
+//rwa 5-19-12  {
+//rwa 5-19-12    var logFile = (mode == "tex") ? this.texTargFile.clone() : this.importTargFile.clone();
+//rwa 5-19-12    if (!logFile || !logFile.path)
+//rwa 5-19-12      return null;
+//rwa 5-19-12    var leaf = logFile.leafName;
+//rwa 5-19-12    leaf += ".log";
+//rwa 5-19-12    logFile = logFile.parent;
+//rwa 5-19-12    logFile.append(leaf);
+//rwa 5-19-12    return logFile;
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  processFailed: function(mode)
+//rwa 5-19-12  {
+//rwa 5-19-12    var sentFile = this.getFailureSentinelFile(mode);
+//rwa 5-19-12    return (sentFile && sentFile.exists());
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  postFailedImportNotice : function()
+//rwa 5-19-12  {
+//rwa 5-19-12    var theMsg = "";
+//rwa 5-19-12    var ext = "";
+//rwa 5-19-12    var logInfo = "";
+//rwa 5-19-12    if (this.importStatus == this.statusFailed)
+//rwa 5-19-12    {
+//rwa 5-19-12      theMsg = "imageProps.couldNotImport";
+//rwa 5-19-12      if ((this.texImportStatus == this.statusSuccess) || this.canTypesetSourceFile() )
+//rwa 5-19-12      {
+//rwa 5-19-12        theMsg = "imageProps.couldNotImportButCanTeX";
+//rwa 5-19-12        ext = getExtension(this.importTargFile.leafName);
+//rwa 5-19-12      }
+//rwa 5-19-12      logInfo = this.getImportLogInfo("import");
+//rwa 5-19-12    }
+//rwa 5-19-12    else if (this.texImportStatus == this.statusFailed)
+//rwa 5-19-12    {
+//rwa 5-19-12      theMsg = "imageProps.couldNotImportTeX";
+//rwa 5-19-12      ext = getExtension(this.texTargFile.leafName);
+//rwa 5-19-12      logInfo = this.getImportLogInfo("tex");
+//rwa 5-19-12    }
+//rwa 5-19-12    var msgParams = {file : this.sourceFile.path};
+//rwa 5-19-12    if (ext.length)
+//rwa 5-19-12      msgParams.extension = ext;
+//rwa 5-19-12    var msgString = msiGetDialogString(theMsg, msgParams);
+//rwa 5-19-12    if (logInfo && (logInfo.length > 0))
+//rwa 5-19-12      msgString += "\n" + logInfo;
+//rwa 5-19-12    var titleStr = msiGetDialogString("imageProps.importErrorTitle", msgParams);
+//rwa 5-19-12    AlertWithTitle(titleStr, msgString);
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  getImportLogInfo : function(mode)
+//rwa 5-19-12  {
+//rwa 5-19-12    var logFile = this.getImportLogFile(mode);
+//rwa 5-19-12    var logUrl = msiFileURLFromFile( logFile );
+//rwa 5-19-12    return getFileAsString(logUrl.spec);
+//rwa 5-19-12  },
+//rwa 5-19-12
+//rwa 5-19-12  canTypesetSourceFile : function()
+//rwa 5-19-12  {
+//rwa 5-19-12    var ret = false;
+//rwa 5-19-12    var ext = "";
+//rwa 5-19-12    if (this.sourceFile)
+//rwa 5-19-12      ext = getExtension(this.sourceFile.leafName);
+//rwa 5-19-12    switch(ext)
+//rwa 5-19-12    {
+//rwa 5-19-12      case "eps":
+//rwa 5-19-12      case "pdf":
+//rwa 5-19-12      case "png":
+//rwa 5-19-12      case "jpg":
+//rwa 5-19-12        ret = true;
+//rwa 5-19-12      break;
+//rwa 5-19-12    }
+//rwa 5-19-12    return ret;
+//rwa 5-19-12  }
+//rwa 5-19-12
+//rwa 5-19-12};
 
 function launchConvertingDialog(importData)
 {
@@ -1197,200 +1394,186 @@ function launchConvertingDialog(importData)
 }
 
 //  inputFile - an nsIFile, the graphic file being converted
-//  fileTypeData - an object in the array returned from readInGraphicsFileData
 //  mode - a string, either "tex" or "import" (defaults to "import")
 //  Returns nsIFile representing the graphic file being created.
-function doGraphicsImport(inputFile, fileTypeData, mode)
+function doGraphicsImport(inputFile, mode)
 {
   if (!mode || !mode.length)
     mode = "import";
-  var templateFileURL = getTemplateFileURI();
-  var nDot = templateFileURL.lastIndexOf(".");
-  var extension = templateFileURL.substring(nDot);
-  var templateFileLines = GetLinesFromFile(templateFileURL);
   var graphicDir = getDocumentGraphicsDir(mode);
   if (!graphicDir.exists())
     graphicDir.create(1, 0755);
-  var commandFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  commandFile.initWithPath(graphicDir.path);
-  commandFile.append(mode + inputFile.leafName + extension);
-  commandFile = commandFile.QueryInterface(Components.interfaces.nsILocalFile);
-  var outputFile = prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode, (extension != ".cmd"));
 
-////Remove!! Just for testing:
-//  if (extension == ".cmd")
-//  {
-//    var unixTemplate = templateFileURL.substring(0, nDot) + ".bash";
-//    var unixTemplateFileLines = GetLinesFromFile(unixTemplate);
-//    var unixCmdFile = commandFile.clone();
-//    unixCmdFile = unixCmdFile.parent;
-//    unixCmdFile.append(mode + inputFile.leafName + ".bash");
-//    prepareImport(unixCmdFile, unixTemplateFileLines, fileTypeData, inputFile, mode, true);
-//  }
-
-  if (outputFile)
-    runGraphicsFilter(commandFile, inputFile, outputFile, mode);
+  var timerHandler = new graphicsTimerHandler(1600, importTimerHandler);
+  var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+//  timerHandler.startLoading(inputFile, targFile, process, theTimer);
+  if (mode=="tex")
+    importTimerHandler.mTexHandler = timerHandler;
+  else
+    importTimerHandler.mImportHandler = timerHandler;
+//  dump("\nIn msiEdImageProps.js, doGraphicsImport; calling graphicsConverterin mode " + mode + ".\n");
+  var outputFile = graphicsConverter.doGraphicsImport(inputFile, graphicDir, mode, window, timerHandler);
   return outputFile;
 }
 
-var replaceableValues = ["targDirectory", "exepath", "inputFile", "outputFile", "commandLine"];
-
-//  aLine - string
-//  substitutions - importLineSubstitutions or texLineSubstitutions object
-function fixCommandFileLine(aLine, substitutions, bIsUnix)
-{
-  var retLine = aLine;
-  var theSub = "";
-  var aSub;
-  var subRE;
-  var subREStr="(%sub%)|(\\$\\{sub\\})|(\\$sub)";
-  var unixRE=/%([^%]+)%/g;
-  if ((retLine.indexOf("%") >= 0) || (retLine.indexOf("$") >= 0))
-  {
-    for (var ix = 0; ix < replaceableValues.length; ++ix)
-    {
-      aSub = replaceableValues[ix];
-      subRE = new RegExp(subREStr.replace("sub",aSub,"g"),"g");
-      if (subRE.test(retLine))
-//      if (retLine.indexOf("%" + aSub + "%") >= 0)
-      {
-        theSub = "";
-        if (substitutions[aSub] && substitutions[aSub].length)
-          theSub = substitutions[aSub];
-//        retLine = retLine.replace("%" + aSub + "%", theSub, "g");
-        retLine = retLine.replace(subRE, theSub);
-      }
-    }
-    if (bIsUnix)
-      retLine = retLine.replace(unixRE,"$${$1}");
-  }
-  return retLine;
-};
-
-//  fileTypeData - an object in the array returned from readInGraphicsFileData
-//  inputNSFile - an nsIFile
-function importLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
-{
-  this.targDirectory = getDocumentGraphicsDir().path;
-  this.exepath = fileTypeData.exepath;
-  this.inputFile = inputNSFile.path;
-  this.outputExtension = fileTypeData.output;
-  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i"); 
-  this.outputFile = inputNSFile.leafName.replace(extRE, "." + fileTypeData.output);
-  this.commandLine = "";
-  this.commandLine = fixCommandFileLine(fileTypeData.commandLine, this, bIsUnix);
-  if (this.commandLine.indexOf('>') < 0)
-    this.commandLine +=  " >" + this.outputFile + ".log 2>&1";
-  else
-    this.commandLine += " 2>" + this.outputFile + ".log";
-}
-
-//  fileTypeData - an object in the array returned from readInGraphicsFileData
-//  inputNSFile - an nsIFile
-function texLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
-{
-  this.targDirectory = getDocumentGraphicsDir("tex").path;
-  this.exepath = fileTypeData.texexepath;
-  this.inputFile = inputNSFile.path;
-  this.outputExtension = fileTypeData.texoutput;
-  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i");
-  this.outputFile = inputNSFile.leafName.replace(extRE, "." + this.outputExtension);
-  this.commandLine = "";
-  this.commandLine = fixCommandFileLine(fileTypeData.texCommandLine, this, bIsUnix);
-  if (this.commandLine.indexOf('>') < 0)
-    this.commandLine +=  " >" + this.outputFile + ".log 2>&1";
-  else
-    this.commandLine += " 2>" + this.outputFile + ".log";
-}
-
-//  commandFile - an nsILocalFile; the command file being created
-//  templateFileLines - an array of strings, each representing a line from the template command file
-//  fileTypeData - an object in the array returned from readInGraphicsFileData
-//  inputFile - an nsIFile; the graphic file being converted
-//  mode - a string, either "tex" or "import" (defaults to "import")
-//Returns an nsILocalFile giving the graphics file to be created.
-function prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode, bIsUnix)
-{
-  var newLine = "";
-  var outStr = "";
-  var theSubs;
-  try
-  {
-    if (mode == "tex")
-      theSubs = new texLineSubstitutions(fileTypeData, inputFile, bIsUnix);
-    else
-      theSubs = new importLineSubstitutions(fileTypeData, inputFile, bIsUnix);
-    for (var ix = 0; ix < templateFileLines.length; ++ix)
-    {
-      newLine = fixCommandFileLine(templateFileLines[ix], theSubs, bIsUnix);
-      //now output newLine to the file we're going to run
-      outStr += "\n" + newLine;
-    }
-  //  var commandFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  //  commandFile.initWithPath(commandFilePath);
-    if (commandFile.exists()) commandFile.remove(false);
-    writeStringAsFile( outStr, commandFile, 0755 );
-  }
-  catch(exc) {dump("Exception in msiEdImageProps.js, prepareImport: [" + exc + "]\n"); return null;}
-  if (!commandFile.exists())
-    return null;
-
-  var outFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  outFile.initWithPath(theSubs.targDirectory);
-  outFile.append(theSubs.outputFile);
-  return outFile;
-}
-
-//  filterSourceFile - an nsIFile; the command file generated for this import
-//  graphicsInFile - an nsIFile
-//  graphicsOutFile - an nsILocalFile
-//  mode - a string, either "tex" or "import" (defaults to "import")
-//  Returns void
-function runGraphicsFilter(filterSourceFile, graphicsInFile, graphicsOutFile, mode)
-{
-  var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-//  if (mode == "tex") 
-//    texImportProcess = theProcess;
-//  else
-//    gfxImportProcess = theProcess;
-//
-//  if (mode == "tex")
-//  {
-//    texImportTargFile = graphicsOutFile;
-//    texImportTimer = theTimer;
-//    theCallback = texImportTimerCallback;
-//  }
-//  else
-//  {
-//    importTargFile = graphicsOutFile;
-//    importTimer = theTimer;
-//    theCallback = importTimerCallback;
-//  }
-  importTimerHandler.startLoading(graphicsInFile, graphicsOutFile, theProcess, mode);
-
-  var outLogFile = importTimerHandler.getImportLogFile(mode);
-//  var nDot = outLogFile.lastIndexOf(".");
-//  outLogFile = outLogFile.substr(0,nDot) + ".log";
-  theProcess.init(filterSourceFile);
-//  theProcess.run(false, [">" + outLogFile + " 2>&1"], 1);
-  theProcess.run(false, [], 0);
-  var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-  theTimer.initWithCallback( importTimerHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
-}
-
-//Returns a string (the .path of a file)
-function getTemplateFileURI()
-{
-  var os = getOS(window);
-  var extension = "";
-  if (os == "win") extension = "cmd";
-  else extension = "bash";
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var templateFile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-  templateFile.append("rungfxconv." + extension);
-  var theURL = msiFileURLFromFile( templateFile );
-  return theURL.spec;
-}
+//rwa 5-19-12var replaceableValues = ["targDirectory", "exepath", "inputFile", "outputFile", "commandLine"];
+//rwa 5-19-12
+//rwa 5-19-12//  aLine - string
+//rwa 5-19-12//  substitutions - importLineSubstitutions or texLineSubstitutions object
+//rwa 5-19-12function fixCommandFileLine(aLine, substitutions, bIsUnix)
+//rwa 5-19-12{
+//rwa 5-19-12  var retLine = aLine;
+//rwa 5-19-12  var theSub = "";
+//rwa 5-19-12  var aSub;
+//rwa 5-19-12  var subRE;
+//rwa 5-19-12  var subREStr="(%sub%)|(\\$\\{sub\\})|(\\$sub)";
+//rwa 5-19-12  var unixRE=/%([^%]+)%/g;
+//rwa 5-19-12  if ((retLine.indexOf("%") >= 0) || (retLine.indexOf("$") >= 0))
+//rwa 5-19-12  {
+//rwa 5-19-12    for (var ix = 0; ix < replaceableValues.length; ++ix)
+//rwa 5-19-12    {
+//rwa 5-19-12      aSub = replaceableValues[ix];
+//rwa 5-19-12      subRE = new RegExp(subREStr.replace("sub",aSub,"g"),"g");
+//rwa 5-19-12      if (subRE.test(retLine))
+//rwa 5-19-12//      if (retLine.indexOf("%" + aSub + "%") >= 0)
+//rwa 5-19-12      {
+//rwa 5-19-12        theSub = "";
+//rwa 5-19-12        if (substitutions[aSub] && substitutions[aSub].length)
+//rwa 5-19-12          theSub = substitutions[aSub];
+//rwa 5-19-12//        retLine = retLine.replace("%" + aSub + "%", theSub, "g");
+//rwa 5-19-12        retLine = retLine.replace(subRE, theSub);
+//rwa 5-19-12      }
+//rwa 5-19-12    }
+//rwa 5-19-12    if (bIsUnix)
+//rwa 5-19-12      retLine = retLine.replace(unixRE,"$${$1}");
+//rwa 5-19-12  }
+//rwa 5-19-12  return retLine;
+//rwa 5-19-12};
+//rwa 5-19-12
+//rwa 5-19-12//  fileTypeData - an object in the array returned from readInGraphicsFileData
+//rwa 5-19-12//  inputNSFile - an nsIFile
+//rwa 5-19-12function importLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
+//rwa 5-19-12{
+//rwa 5-19-12  this.targDirectory = getDocumentGraphicsDir().path;
+//rwa 5-19-12  this.exepath = fileTypeData.exepath;
+//rwa 5-19-12  this.inputFile = inputNSFile.path;
+//rwa 5-19-12  this.outputExtension = fileTypeData.output;
+//rwa 5-19-12  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i"); 
+//rwa 5-19-12  this.outputFile = inputNSFile.leafName.replace(extRE, "." + fileTypeData.output);
+//rwa 5-19-12  this.commandLine = "";
+//rwa 5-19-12  this.commandLine = fixCommandFileLine(fileTypeData.commandLine, this, bIsUnix);
+//rwa 5-19-12  if (this.commandLine.indexOf('>') < 0)
+//rwa 5-19-12    this.commandLine +=  " >" + this.outputFile + ".log 2>&1";
+//rwa 5-19-12  else
+//rwa 5-19-12    this.commandLine += " 2>" + this.outputFile + ".log";
+//rwa 5-19-12}
+//rwa 5-19-12
+//rwa 5-19-12//  fileTypeData - an object in the array returned from readInGraphicsFileData
+//rwa 5-19-12//  inputNSFile - an nsIFile
+//rwa 5-19-12function texLineSubstitutions(fileTypeData, inputNSFile, bIsUnix)
+//rwa 5-19-12{
+//rwa 5-19-12  this.targDirectory = getDocumentGraphicsDir("tex").path;
+//rwa 5-19-12  this.exepath = fileTypeData.texexepath;
+//rwa 5-19-12  this.inputFile = inputNSFile.path;
+//rwa 5-19-12  this.outputExtension = fileTypeData.texoutput;
+//rwa 5-19-12  var extRE = new RegExp("\\." + fileTypeData.inFileType + "$", "i");
+//rwa 5-19-12  this.outputFile = inputNSFile.leafName.replace(extRE, "." + this.outputExtension);
+//rwa 5-19-12  this.commandLine = "";
+//rwa 5-19-12  this.commandLine = fixCommandFileLine(fileTypeData.texCommandLine, this, bIsUnix);
+//rwa 5-19-12  if (this.commandLine.indexOf('>') < 0)
+//rwa 5-19-12    this.commandLine +=  " >" + this.outputFile + ".log 2>&1";
+//rwa 5-19-12  else
+//rwa 5-19-12    this.commandLine += " 2>" + this.outputFile + ".log";
+//rwa 5-19-12}
+//rwa 5-19-12
+//rwa 5-19-12//  commandFile - an nsILocalFile; the command file being created
+//rwa 5-19-12//  templateFileLines - an array of strings, each representing a line from the template command file
+//rwa 5-19-12//  fileTypeData - an object in the array returned from readInGraphicsFileData
+//rwa 5-19-12//  inputFile - an nsIFile; the graphic file being converted
+//rwa 5-19-12//  mode - a string, either "tex" or "import" (defaults to "import")
+//rwa 5-19-12//Returns an nsILocalFile giving the graphics file to be created.
+//rwa 5-19-12function prepareImport(commandFile, templateFileLines, fileTypeData, inputFile, mode, bIsUnix)
+//rwa 5-19-12{
+//rwa 5-19-12  var newLine = "";
+//rwa 5-19-12  var outStr = "";
+//rwa 5-19-12  var theSubs;
+//rwa 5-19-12  try
+//rwa 5-19-12  {
+//rwa 5-19-12    if (mode == "tex")
+//rwa 5-19-12      theSubs = new texLineSubstitutions(fileTypeData, inputFile, bIsUnix);
+//rwa 5-19-12    else
+//rwa 5-19-12      theSubs = new importLineSubstitutions(fileTypeData, inputFile, bIsUnix);
+//rwa 5-19-12    for (var ix = 0; ix < templateFileLines.length; ++ix)
+//rwa 5-19-12    {
+//rwa 5-19-12      newLine = fixCommandFileLine(templateFileLines[ix], theSubs, bIsUnix);
+//rwa 5-19-12      //now output newLine to the file we're going to run
+//rwa 5-19-12      outStr += "\n" + newLine;
+//rwa 5-19-12    }
+//rwa 5-19-12  //  var commandFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//rwa 5-19-12  //  commandFile.initWithPath(commandFilePath);
+//rwa 5-19-12    if (commandFile.exists()) commandFile.remove(false);
+//rwa 5-19-12    writeStringAsFile( outStr, commandFile, 0755 );
+//rwa 5-19-12  }
+//rwa 5-19-12  catch(exc) {dump("Exception in msiEdImageProps.js, prepareImport: [" + exc + "]\n"); return null;}
+//rwa 5-19-12  if (!commandFile.exists())
+//rwa 5-19-12    return null;
+//rwa 5-19-12
+//rwa 5-19-12  var outFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//rwa 5-19-12  outFile.initWithPath(theSubs.targDirectory);
+//rwa 5-19-12  outFile.append(theSubs.outputFile);
+//rwa 5-19-12  return outFile;
+//rwa 5-19-12}
+//rwa 5-19-12
+//rwa 5-19-12//  filterSourceFile - an nsIFile; the command file generated for this import
+//rwa 5-19-12//  graphicsInFile - an nsIFile
+//rwa 5-19-12//  graphicsOutFile - an nsILocalFile
+//rwa 5-19-12//  mode - a string, either "tex" or "import" (defaults to "import")
+//rwa 5-19-12//  Returns void
+//rwa 5-19-12function runGraphicsFilter(filterSourceFile, graphicsInFile, graphicsOutFile, mode)
+//rwa 5-19-12{
+//rwa 5-19-12  var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+//rwa 5-19-12//  if (mode == "tex") 
+//rwa 5-19-12//    texImportProcess = theProcess;
+//rwa 5-19-12//  else
+//rwa 5-19-12//    gfxImportProcess = theProcess;
+//rwa 5-19-12//
+//rwa 5-19-12//  if (mode == "tex")
+//rwa 5-19-12//  {
+//rwa 5-19-12//    texImportTargFile = graphicsOutFile;
+//rwa 5-19-12//    texImportTimer = theTimer;
+//rwa 5-19-12//    theCallback = texImportTimerCallback;
+//rwa 5-19-12//  }
+//rwa 5-19-12//  else
+//rwa 5-19-12//  {
+//rwa 5-19-12//    importTargFile = graphicsOutFile;
+//rwa 5-19-12//    importTimer = theTimer;
+//rwa 5-19-12//    theCallback = importTimerCallback;
+//rwa 5-19-12//  }
+//rwa 5-19-12  importTimerHandler.startLoading(graphicsInFile, graphicsOutFile, theProcess, mode);
+//rwa 5-19-12
+//rwa 5-19-12  var outLogFile = importTimerHandler.getImportLogFile(mode);
+//rwa 5-19-12//  var nDot = outLogFile.lastIndexOf(".");
+//rwa 5-19-12//  outLogFile = outLogFile.substr(0,nDot) + ".log";
+//rwa 5-19-12  theProcess.init(filterSourceFile);
+//rwa 5-19-12//  theProcess.run(false, [">" + outLogFile + " 2>&1"], 1);
+//rwa 5-19-12  theProcess.run(false, [], 0);
+//rwa 5-19-12  var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+//rwa 5-19-12  theTimer.initWithCallback( importTimerHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+//rwa 5-19-12}
+//rwa 5-19-12
+//rwa 5-19-12//Returns a string (the .path of a file)
+//rwa 5-19-12function getTemplateFileURI()
+//rwa 5-19-12{
+//rwa 5-19-12  var os = getOS(window);
+//rwa 5-19-12  var extension = "";
+//rwa 5-19-12  if (os == "win") extension = "cmd";
+//rwa 5-19-12  else extension = "bash";
+//rwa 5-19-12  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+//rwa 5-19-12  var templateFile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+//rwa 5-19-12  templateFile.append("rungfxconv." + extension);
+//rwa 5-19-12  var theURL = msiFileURLFromFile( templateFile );
+//rwa 5-19-12  return theURL.spec;
+//rwa 5-19-12}
 
 function SetImport(bSet)
 {
@@ -1401,9 +1584,9 @@ function PreviewImageLoaded()
 {
   if (gDialog.PreviewImage)
   {
-    dump("In PreviewImageLoaded! New offset size is [" + gDialog.PreviewImage.offsetWidth + "," + gDialog.PreviewImage.offsetHeight + "]\n");
-    dump("  Existing actual size is [" + gActualWidth + "," + gActualHeight + "]\n");
-    dump("  Current contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
+//    dump("In PreviewImageLoaded! New offset size is [" + gDialog.PreviewImage.offsetWidth + "," + gDialog.PreviewImage.offsetHeight + "]\n");
+//    dump("  Existing actual size is [" + gActualWidth + "," + gActualHeight + "]\n");
+//    dump("  Current contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
     // Image loading has completed -- we can get actual width
     var bReset = false;
     if (gDialog.PreviewImage.offsetWidth && (gActualWidth != gDialog.PreviewImage.offsetWidth))
@@ -1442,7 +1625,7 @@ function PreviewImageLoaded()
       gDialog.ImageHolder.collapsed = false;
       setContentSize(gActualWidth, gActualHeight);
 
-      dump("Before setActualOrDefaultSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
+//      dump("Before setActualOrDefaultSize(), contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
 
       if (frameTabDlg.actual.selected || bReset)
       {
@@ -1658,7 +1841,8 @@ function setActualOrDefaultSize()
   var bUseDefaultWidth, bUseDefaultHeight;
   var width, height;
   try {bUseDefaultWidth = GetBoolPref("swp.graphicsUseDefaultWidth");}
-  catch(ex) {bUseDefaultWidth = false; dump("Exception getting pref swp.graphicsUseDefaultWidth: " + ex + "\n");}
+  catch(ex) 
+  {bUseDefaultWidth = false; dump("Exception getting pref swp.graphicsUseDefaultWidth: " + ex + "\n");}
 
   try {bUseDefaultHeight = GetBoolPref("swp.graphicsUseDefaultHeight");}
   catch(ex) {bUseDefaultHeight = false; dump("Exception getting pref swp.graphicsUseDefaultHeight: " + ex + "\n");}
@@ -1854,7 +2038,7 @@ function doOverallEnabling()
 //   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
 function ValidateImage()
 {
-  dump("in ValidateImage()\n");
+//  dump("in ValidateImage()\n");
 //  var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(gEditorElement);
 //  var editor = GetCurrentEditor();
@@ -1862,7 +2046,7 @@ function ValidateImage()
     return false;
 
 //  gValidateTab = gDialog.tabLocation;
-  dump("1\n");
+//  dump("1\n");
   if (!gDialog.srcInput.value)
   {
     AlertWithTitle(null, GetString("MissingImageError"));
@@ -1873,7 +2057,7 @@ function ValidateImage()
 
   //TODO: WE NEED TO DO SOME URL VALIDATION HERE, E.G.:
   // We must convert to "file:///" or "http://" format else image doesn't load!
-  dump("2\n");
+//  dump("2\n");
   var src = TrimString(gDialog.srcInput.value);
   globalImage.setAttribute("src", src);
 
@@ -1885,12 +2069,12 @@ function ValidateImage()
 
   var alt = TrimString(gDialog.altTextInput.value);
 
-  dump("3\n");
+//  dump("3\n");
   globalImage.setAttribute("alt", alt);
 
   if (gDialog.keyInput.controller)
   {
-    dump("In msiEdImageProps.js, keyInput autosearch controller's status is [" + gDialog.keyInput.controller.searchStatus + "]\n");
+//    dump("In msiEdImageProps.js, keyInput autosearch controller's status is [" + gDialog.keyInput.controller.searchStatus + "]\n");
     var oldKey = imageElement.getAttribute("key");
     var bUnchanged = false;
     if (!oldKey || !oldKey.length)
@@ -1929,7 +2113,7 @@ function ValidateImage()
     width = gActualWidth;
   if (!height)
     height = gActualHeight;
-  dump("4\n");
+//  dump("4\n");
 
   // Remove existing width and height only if source changed
   //  and we couldn't obtain actual dimensions
@@ -1946,7 +2130,7 @@ function ValidateImage()
 
   // spacing attributes
 //  gValidateTab = gDialog.tabBorder;
-  dump("5\n");
+//  dump("5\n");
 //  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
 //                 globalElement, "hspace", false, true, true);
 //  if (gValidationError)
@@ -1962,7 +2146,7 @@ function ValidateImage()
 //                 globalElement, "border", false, true);
 //  if (gValidationError)
 //    return false;
-  dump("6\n");
+//  dump("6\n");
 
   // Default or setting "bottom" means don't set the attribute
   // Note that the attributes "left" and "right" are opposite
@@ -1981,7 +2165,7 @@ function ValidateImage()
 //        editor.removeAttributeOrEquivalent(globalElement, "align", true);
 //      } catch (e) {}
 //  }
-  dump("7\n");
+//  dump("7\n");
 
   return true;
 }
@@ -2027,9 +2211,11 @@ function imageLoaded(event)
 function onAccept()
 {
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
+  importTimerHandler.stopLoading();
+
   gDoAltTextError = true;
-  dump("**************************************************************************\n");
-  dump("in onAccept\n");
+//  dump("**************************************************************************\n");
+//  dump("in onAccept\n");
   if (ValidateData())
   {
     var editorElement = msiGetParentEditorElementForDialog(window);
@@ -2157,6 +2343,14 @@ function onAccept()
   return true;
 }
 
+function onCancel()
+{
+  importTimerHandler.stopLoading();
+  SaveWindowLocation();
+  return true;
+}
+
+
 //// These mode variables control the msiFrameOverlay code
 //var gFrameModeImage = true;
 //var gFrameModeTextFrame = false;
@@ -2174,15 +2368,17 @@ function initKeyList()
 
 function getGraphicsImportFilterString()
 {
-  var convertData = getGraphicsFileTypesData();
-  var typeArray = ["*.png", "*.gif", "*.jpg", "*.jpeg", "*.pdf", "*.xvc","*.xvz"];
+  var convertData = graphicsConverter.getConvertibleFileTypes(window);
+  var typeArray = [];
+  for (var jx = 0; jx < nativeGraphicTypes.length; ++jx)
+    typeArray.push("*." + nativeGraphicTypes[jx]);
   var newType;
   for (var ix = 0; ix < convertData.length; ++ix)
   {
-    if ( ("output" in convertData[ix]) && ("commandLine" in convertData[ix]) 
-          && convertData[ix].output.length && convertData[ix].commandLine.length )
+    newType = TrimString(convertData[ix]);
+    if (newType.length > 0)
     {
-      newType = "*." + convertData[ix].inFileType;
+      newType = "*." + newType;
       if (typeArray.indexOf(newType) < 0)
         typeArray.push(newType);
     }
@@ -2190,96 +2386,96 @@ function getGraphicsImportFilterString()
   return typeArray.join("; ");
 }
 
-function getImportDataForGraphicType(extension)
-{
-  var convertData = getGraphicsFileTypesData();
-  for (var ix = 0; ix < convertData.length; ++ix)
-  {
-    if (convertData[ix].inFileType == extension.toLowerCase())
-      return convertData[ix];
-  }
-  return null;
-}
-
-var sectionRE = /^\s*\[([^\]]+)\]/;
-var keyValueRE = /^([^=]+)=(.*)$/;
-
-function getGraphicsFileTypesData(bForceReload)
-{
-  if (!gDialog.graphicsConvertData || bForceReload)
-    gDialog.graphicsConvertData = readInGraphicsFileData("chrome://user/content/gfximport.ini");
-  return gDialog.graphicsConvertData;
-}
-
-function readInGraphicsFileData(fileURI)
-{
-  var theLines = GetLinesFromFile(fileURI);
-  var gfxList = [];
-  var sectionData = {mFileType : "", mStart : 0, mEnd : 0};
-  var found = null;
-  var theKey, theValue;
-  var newData;
-  while (FindNextBracketDelimitedSection(theLines, sectionData))
-  {
-    if (sectionData.mFileType.length)
-    {
-      newData = {inFileType : sectionData.mFileType.toLowerCase()};
-      for (var ix = sectionData.mStart+1; ix <= sectionData.mEnd; ++ix)
-      {
-        found = keyValueRE.exec(TrimString(theLines[ix]));
-        if (found && found[1] && found[1].length && found[2] && found[2].length)
-        {
-          theKey = TrimString(found[1]);
-          theValue = TrimString(found[2]);
-          newData[theKey] = theValue;
-        }
-      }
-      gfxList.push(newData);
-    }
-    sectionData.mStart = sectionData.mEnd + 1;
-  }
-  return gfxList;
-}
-
-function GetLinesFromFile(aFileUrl)
-{
-  var theText = getFileAsString(aFileUrl);
-  if (!theText)
-    theText = "";
-  // read lines into array
-  var lines = theText.split("\n");
-  return lines;
-}
-
-function FindNextBracketDelimitedSection(lineList, sectionData)
-{
-  var found = null, foundLine = null;
-  var foundStart = false;
-  var foundEnd = false;
-  for (var ix = sectionData.mStart; ix < lineList.length; ++ix)
-  {
-    if (lineList[ix].charAt(0) == ";")  //skip comment lines!
-      continue;
-    foundLine = TrimString(lineList[ix]);
-    if (!foundLine || !foundLine.length)
-      continue;
-    if (found = sectionRE.exec(foundLine))
-    {
-      if (!foundStart)
-      {
-        sectionData.mStart = ix;
-        sectionData.mFileType = found[1];
-        foundStart = true;
-      }
-      else
-      {
-        foundEnd = true;
-        sectionData.mEnd = ix-1;
-        break;
-      }
-    }
-  }
-  if (!foundEnd)
-      sectionData.mEnd = ix-1;
-  return foundStart;
-}
+//rwa5-19-12function getImportDataForGraphicType(extension)
+//rwa5-19-12{
+//rwa5-19-12  var convertData = getGraphicsFileTypesData();
+//rwa5-19-12  for (var ix = 0; ix < convertData.length; ++ix)
+//rwa5-19-12  {
+//rwa5-19-12    if (convertData[ix].inFileType == extension.toLowerCase())
+//rwa5-19-12      return convertData[ix];
+//rwa5-19-12  }
+//rwa5-19-12  return null;
+//rwa5-19-12}
+//rwa5-19-12
+//rwa5-19-12var sectionRE = /^\s*\[([^\]]+)\]/;
+//rwa5-19-12var keyValueRE = /^([^=]+)=(.*)$/;
+//rwa5-19-12
+//rwa5-19-12function getGraphicsFileTypesData(bForceReload)
+//rwa5-19-12{
+//rwa5-19-12  if (!gDialog.graphicsConvertData || bForceReload)
+//rwa5-19-12    gDialog.graphicsConvertData = readInGraphicsFileData("chrome://user/content/gfximport.ini");
+//rwa5-19-12  return gDialog.graphicsConvertData;
+//rwa5-19-12}
+//rwa5-19-12
+//rwa5-19-12function readInGraphicsFileData(fileURI)
+//rwa5-19-12{
+//rwa5-19-12  var theLines = GetLinesFromFile(fileURI);
+//rwa5-19-12  var gfxList = [];
+//rwa5-19-12  var sectionData = {mFileType : "", mStart : 0, mEnd : 0};
+//rwa5-19-12  var found = null;
+//rwa5-19-12  var theKey, theValue;
+//rwa5-19-12  var newData;
+//rwa5-19-12  while (FindNextBracketDelimitedSection(theLines, sectionData))
+//rwa5-19-12  {
+//rwa5-19-12    if (sectionData.mFileType.length)
+//rwa5-19-12    {
+//rwa5-19-12      newData = {inFileType : sectionData.mFileType.toLowerCase()};
+//rwa5-19-12      for (var ix = sectionData.mStart+1; ix <= sectionData.mEnd; ++ix)
+//rwa5-19-12      {
+//rwa5-19-12        found = keyValueRE.exec(TrimString(theLines[ix]));
+//rwa5-19-12        if (found && found[1] && found[1].length && found[2] && found[2].length)
+//rwa5-19-12        {
+//rwa5-19-12          theKey = TrimString(found[1]);
+//rwa5-19-12          theValue = TrimString(found[2]);
+//rwa5-19-12          newData[theKey] = theValue;
+//rwa5-19-12        }
+//rwa5-19-12      }
+//rwa5-19-12      gfxList.push(newData);
+//rwa5-19-12    }
+//rwa5-19-12    sectionData.mStart = sectionData.mEnd + 1;
+//rwa5-19-12  }
+//rwa5-19-12  return gfxList;
+//rwa5-19-12}
+//rwa5-19-12
+//rwa5-19-12function GetLinesFromFile(aFileUrl)
+//rwa5-19-12{
+//rwa5-19-12  var theText = getFileAsString(aFileUrl);
+//rwa5-19-12  if (!theText)
+//rwa5-19-12    theText = "";
+//rwa5-19-12  // read lines into array
+//rwa5-19-12  var lines = theText.split("\n");
+//rwa5-19-12  return lines;
+//rwa5-19-12}
+//rwa5-19-12
+//rwa5-19-12function FindNextBracketDelimitedSection(lineList, sectionData)
+//rwa5-19-12{
+//rwa5-19-12  var found = null, foundLine = null;
+//rwa5-19-12  var foundStart = false;
+//rwa5-19-12  var foundEnd = false;
+//rwa5-19-12  for (var ix = sectionData.mStart; ix < lineList.length; ++ix)
+//rwa5-19-12  {
+//rwa5-19-12    if (lineList[ix].charAt(0) == ";")  //skip comment lines!
+//rwa5-19-12      continue;
+//rwa5-19-12    foundLine = TrimString(lineList[ix]);
+//rwa5-19-12    if (!foundLine || !foundLine.length)
+//rwa5-19-12      continue;
+//rwa5-19-12    if (found = sectionRE.exec(foundLine))
+//rwa5-19-12    {
+//rwa5-19-12      if (!foundStart)
+//rwa5-19-12      {
+//rwa5-19-12        sectionData.mStart = ix;
+//rwa5-19-12        sectionData.mFileType = found[1];
+//rwa5-19-12        foundStart = true;
+//rwa5-19-12      }
+//rwa5-19-12      else
+//rwa5-19-12      {
+//rwa5-19-12        foundEnd = true;
+//rwa5-19-12        sectionData.mEnd = ix-1;
+//rwa5-19-12        break;
+//rwa5-19-12      }
+//rwa5-19-12    }
+//rwa5-19-12  }
+//rwa5-19-12  if (!foundEnd)
+//rwa5-19-12      sectionData.mEnd = ix-1;
+//rwa5-19-12  return foundStart;
+//rwa5-19-12}
