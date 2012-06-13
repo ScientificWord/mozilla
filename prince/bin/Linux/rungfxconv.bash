@@ -34,7 +34,7 @@ case $inputFormat in
     esac
     ;;
  
-  cdr | ccx | cdrx | cmx | cgm | xfig | sk | sk1 | aff | plt | dxf | dst | pes | exp | pcs)
+  cdr | ccx | cdrx | cmx | cgm | xfig | sk | sk1 | aff | plt | dxf | dst | pes | exp | pcs | wmf | emf)
     case $mode in
       out)
         echo svg
@@ -59,33 +59,33 @@ case $inputFormat in
     esac
     ;;
     
-  wmf | emf)
-    case $mode in
-      out)
-        echo svg
-        ;;
-      outtex)
-        echo pdf
-        ;;
-      disp)
-        $wmf2eps/wmf2eps $inputPath.$2 "$outputPath.eps" >"$outputPath.svg.log" 2>&1
-        $Uniconvertor/uniconvertor $"outputPath.eps" "$outputPath.svg" >>"$outputPath.svg.log" 2>&1
-        echo Need to put in wmf2eps here
-        if [ ! -f "$outputPath.svg" ]
-          then
-          echo failed >"$outputPath.svg.txt"
-        fi
-        ;;
-      tex)
-        $wmf2eps/wmf2eps $inputPath.$2 "$outputPath.eps" >"$outputPath.eps.log" 2>&1
-        echo Need to put in wmf2eps here
-        if [ ! -f "$outputPath.eps" ]
-          then
-          echo failed >"$outputPath.eps.txt"
-        fi
-        ;;
-    esac
-    ;;
+#   wmf | emf)
+#     case $mode in
+#       out)
+#         echo svg
+#         ;;
+#       outtex)
+#         echo pdf
+#         ;;
+#       disp)
+#         $wmf2eps/wmf2eps $inputPath.$2 "$outputPath.eps" >"$outputPath.svg.log" 2>&1
+#         $Uniconvertor/uniconvertor $"outputPath.eps" "$outputPath.svg" >>"$outputPath.svg.log" 2>&1
+#         echo Need to put in wmf2eps here
+#         if [ ! -f "$outputPath.svg" ]
+#           then
+#           echo failed >"$outputPath.svg.txt"
+#         fi
+#         ;;
+#       tex)
+#         $wmf2eps/wmf2eps $inputPath.$2 "$outputPath.eps" >"$outputPath.eps.log" 2>&1
+#         echo Need to put in wmf2eps here
+#         if [ ! -f "$outputPath.eps" ]
+#           then
+#           echo failed >"$outputPath.eps.txt"
+#         fi
+#         ;;
+#     esac
+#     ;;
   *)
   ;;
 esac
