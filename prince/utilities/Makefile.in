@@ -25,5 +25,6 @@ UTILITIES := $(wildcard	$(srcdir)/$(PLATFORM)/*)
 
 libs::	$(UTILITIES)
 	if test ! -d $(FINAL_TARGET)/utilities; then mkdir $(FINAL_TARGET)/utilities; fi
-	cp -R	${srcdir}/${PLATFORM}/*	$(FINAL_TARGET)/utilities
+	-cp -R	${srcdir}/${PLATFORM}/*	$(FINAL_TARGET)/utilities
+
 
