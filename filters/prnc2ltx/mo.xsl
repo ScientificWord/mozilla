@@ -467,7 +467,15 @@
     <xsl:param name="LaTeX-nom"/>
     <xsl:choose>
       <xsl:when test="((@largeop='true') or (@stretchy='true'))">
-        <xsl:text xml:space="preserve">\mathop{\displaystyle\</xsl:text>
+        <xsl:text xml:space="preserve">\mathop{</xsl:text>
+        <xsl:choose>
+          <xsl:when test="ancestor-or-self::*/@displaystyle='true'">
+            <xsl:text>\displaystyle\</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>\textstyle\</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:value-of select="$LaTeX-nom"/>
         <xsl:text xml:space="preserve">}</xsl:text>
       </xsl:when>
