@@ -10,9 +10,13 @@ var graphicsConverter =
     {
       var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
       var utilsDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
-      utilsDir = utilsDir.parent;
-      utilsDir.append("Utils");
-      this.wmf2epsDir = this.uniconvertorDir = this.imageMagickDir = utilsDir;
+//      utilsDir = utilsDir.parent;
+      utilsDir.append("utilities");
+      this.uniconvertorDir = this.imageMagickDir = utilsDir;
+      this.wmf2epsDir = utilsDir.clone();
+      this.wmf2epsDir.append("wmf2eps");
+      if (!this.wmf2epsDir.exists())
+        this.wmf2epsDir = null;
 //      dump("Path to UniConvertor and ImageMagick is " + utilsDir.path + "\n");
     }
     switch(filterName)
@@ -24,7 +28,13 @@ var graphicsConverter =
         return this.imageMagickDir.path;
       break;
       case "wmf2eps":
-        return this.wmf2epsDir.path;
+        if (this.wmf2epsDir)
+        {
+          return this.wmf2epsDir.path;
+          break;
+        }
+      default:
+        return "";
       break;
     }
   },
@@ -34,10 +44,15 @@ var graphicsConverter =
     var params = [];
     var nameAndExtension = this.splitExtension(graphicsInFile.path);
     params.push(nameAndExtension.name);
+
+    //Note: Windows and Unix et al are treated differently here - the Unix shell can readily handle converting case of the
+    //  parameter (for purpose of matching expected ones), while on the other hand it may need the original case
+    //  preserved in order to find the source file. Windows is the opposite on both counts, so the conversion is done here.
     if (theOS == "win")
       params.push(nameAndExtension.ext.toLowerCase());
     else
       params.push(nameAndExtension.ext);
+        
     var graphicsOutFile = graphicsOutDir.clone();
     var leafName = graphicsInFile.leafName;
     nameAndExtension = this.splitExtension(leafName);
