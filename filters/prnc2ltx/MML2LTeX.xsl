@@ -122,7 +122,7 @@
          contain a "display" tag with a value of 'inline' or 'block' -->
 
     <xsl:variable name="is-display.tr">
-    <xsl:message>Finding is-display for node <xsl:value-of select="name()"/>, display is "{@display}<xsl:value-of select="@display"/></xsl:message>
+    <!-- <xsl:message>Finding is-display for node <xsl:value-of select="name()"/>, display is "{@display}<xsl:value-of select="@display"/></xsl:message> -->
       <xsl:choose>
 
 	      <xsl:when test="@display='inline'">
