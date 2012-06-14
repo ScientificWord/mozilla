@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
@@ -29,91 +29,45 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdReviseChars.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
 
-  <groupbox orient="vertical" id="AccentAboveButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);"
+  <groupbox orient="vertical" id="AccentAboveButtonGroupGr"  onfocus="radioGroupSetFocus(this,event.target);"
             xmlns:mml="http://www.w3.org/1998/Math/MathML">
     <caption label="&accentAbove.label;" accesskey="&accentAbove.accesskey;" />
-    <grid>
+    <!-- <grid>
       <columns><column/><column/><column/><column/><column/><column/><column/></columns>
       <rows>
-        <row>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0302;">^</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x030c;">&#x02c7;</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0303;">~</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0301;">&#x00b4;</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0300;">&#x0060;</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0306;">&#x02d8;</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0305;">&#x00af;</msibutton>
-        </row>
-        <row>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x030b;">&#x02dd;</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x030a;">&#x02da;</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0307;">&#x02d9;</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0308;">&#x00a8;</msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x20db;">
-            <description>
-              <mml:math display="inline">
-                <mml:mrow>
-                  <mml:mover accent="true">
-                    <mml:mrow class="phantomBox">
-                      <mml:mphantom>
-                        <mml:mi>X</mml:mi>
-                      </mml:mphantom>
-                    </mml:mrow>
-                    <mml:mo stretchy="false">&#x20db;</mml:mo>
-                  </mml:mover>
-                </mml:mrow>
-              </mml:math>
-            </description>
-          </msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x20dc;">
-            <description>
-              <mml:math display="inline">
-                <mml:mrow>
-                  <mml:mover accent="true">
-                    <mml:mrow class="phantomBox">
-                      <mml:mphantom>
-                        <mml:mi>X</mml:mi>
-                      </mml:mphantom>
-                    </mml:mrow>
-                    <mml:mo stretchy="false">&#x20dc;</mml:mo>
-                  </mml:mover>
-                </mml:mrow>
-              </mml:math>
-            </description>
-          </msibutton>
-          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x20d7;">
-            <description>
-              <mml:math display="inline">
-                <mml:mrow>
-                  <mml:mover accent="true">
-                    <mml:mrow class="phantomBox">
-                      <mml:mphantom>
-                        <mml:mi>X</mml:mi>
-                      </mml:mphantom>
-                    </mml:mrow>
-                    <mml:mo stretchy="false">&#x20d7;</mml:mo>
-                  </mml:mover>
-                </mml:mrow>
-              </mml:math>
-            </description>
-          </msibutton>
-        </row>
-      </rows>
-    </grid>
+        <row> -->
+  <radiogroup orient="horizontal" id="AccentAbove" value="">          
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0302;" label="^"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030c;" label="&#x02c7;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0303;" label="~"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0301;" label="&#x00b4;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0300;" label="&#x0060;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0306;" label="&#x02d8;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0305;" label="&#x00af;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030b;" label="&#x02dd;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030a;" label="&#x02da;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0307;" label="&#x02d9;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0308;" label="&#x00a8;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x20db;" label="&#x20db;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x20d7;" label="&#x20d7;"/>
+      <!-- </rows>
+    </grid> -->
+  </radiogroup>          
   </groupbox>
   <separator />
   <hbox>
-    <groupbox orient="horizontal" id="AccentBelowButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+    <groupbox orient="horizontal" id="AccentBelowButtonGroup"  onfocus="radioGroupSetFocus(this,event.target);">
       <caption label="&accentBelow.label;" accesskey="&accentBelow.accesskey;" />
-      <msibutton group="AccentBelowButtonGroup" autoCheck="false" value="&#x0327;">&#x00b8;</msibutton>
-      <msibutton group="AccentBelowButtonGroup" autoCheck="false" value="&#x0328;">&#x02db;</msibutton>
-      <msibutton group="AccentBelowButtonGroup" autoCheck="false" value="&#x0323;">&#x02d3;</msibutton>
-      <msibutton group="AccentBelowButtonGroup" autoCheck="false" value="&#x0332;">&#x005f;</msibutton>
+  <radiogroup orient="horizontal" id="AccentBelow" value="">          
+      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0327;" label="&#x00b8;"/>
+      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0328;" label="&#x02db;"/>
+      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0323;" label="&#x02d3;"/>
+      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0332;" label="&#x005f;"/>
+ </radiogroup>
     </groupbox>
     <checkbox id="NegatedCheckbox" label="&negateCheck.label;" accesskey="&negateCheck.accesskey;" />
   </hbox>

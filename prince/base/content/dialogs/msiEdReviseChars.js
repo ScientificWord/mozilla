@@ -13,8 +13,8 @@ function Startup()
     return;
   }
 
-  gDialog.AccentAboveButtonGroup = document.getElementById("AccentAboveButtonGroup");
-  gDialog.AccentBelowButtonGroup = document.getElementById("AccentBelowButtonGroup");
+  gDialog.AccentAbove = document.getElementById("AccentAbove");
+  gDialog.AccentBelow = document.getElementById("AccentBelow");
   gDialog.NegatedCheckbox = document.getElementById("NegatedCheckbox");
   
   doSetOKCancel(onAccept, onCancel);
@@ -42,8 +42,8 @@ function Startup()
 
 function initDialog()
 {
-  makeMSIButtonGroup(gDialog.AccentAboveButtonGroup, false);
-  makeMSIButtonGroup(gDialog.AccentBelowButtonGroup, false);
+//  makeMSIButtonGroup(gDialog.AccentAboveButtonGroup, false);
+//  makeMSIButtonGroup(gDialog.AccentBelowButtonGroup, false);
 
   var nWhichSel = -1;
   if (("mUpperAccent" in data) && (data.mUpperAccent != null))
@@ -146,24 +146,43 @@ function setDataFromTextReviseData(reviseData)
   }
 }
 
+function getRadioValue(radioParent)
+{
+  var kids = radioParent.childNodes;
+  var i;
+  var len = kids.length;
+  for ( i=0; i<len; i++) {
+    if (kids[i].nodeName ==="msibutton" && kids[i].checked) {
+      return kids[i].getAttribute("value");
+    }
+  }
+  return null;
+}
+
+
 function collectDialogData()
 {
-  data.mUpperAccent = gDialog.AccentAboveButtonGroup.valueStr;
+  data.mUpperAccent = getRadioValue(gDialog.AccentAbove);
   data.mUpperAccentStandAlone = getStandAloneForm(data.mUpperAccent);
-  data.mLowerAccent = gDialog.AccentBelowButtonGroup.valueStr;
+  data.mLowerAccent = getRadioValue(gDialog.AccentBelow);
   data.mLowerAccentStandAlone = getStandAloneForm(data.mLowerAccent);
   data.mNegated = gDialog.NegatedCheckbox.checked;
   var theCharStr = data.mBaseChar;
-  if (msiNavigationUtils.upperAccentCombinesWithCharInMath(data.mLowerAccent))
+  if (data.mUpperAccent)
   {
-    theCharStr += data.mUpperAccent;
-    data.mUpperAccentStandAlone = null;
-  }
-  if (msiNavigationUtils.lowerAccentCombinesWithCharInMath(data.mLowerAccent))
-  {
+    if (msiNavigationUtils.upperAccentCombinesWithCharInMath(data.mUpperAccent))
+    {
+      theCharStr += data.mUpperAccent;
+      data.mUpperAccentStandAlone = null;
+    }
+  } else data.mUpperAccent="";
+  if (data.mLowerAccent) {
+    if (msiNavigationUtils.lowerAccentCombinesWithCharInMath(data.mLowerAccent))
+    {
     theCharStr += data.mLowerAccent;
     data.mLowerAccentStandAlone = null;
-  }
+    }
+  } else data.mLowerAccent="";
   if (data.mNegated)
     theCharStr += "\u0338";
   var baseComposed = new Object();
