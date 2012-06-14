@@ -2010,44 +2010,66 @@ function msiEditorMoveCorrespondingContents(targNode, srcNode, editor)
 
 function msiEditorReplaceTextWithText(editor, textNode, startOffset, endOffset, replaceText)
 {
-  var newTextNode = editor.document.createTextNode(replaceText);
-  var theParentNode = textNode.parentNode;
-  var nOrigLen = textNode.textContent.length;
-  msiEditorReplaceTextWithNode2(editor, textNode, startOffset, endOffset, newTextNode);
-  var insertPos = msiNavigationUtils.offsetInParent(newTextNode);
-  var joinedNode = newTextNode;
-
-  if (startOffset > 0)
-  {
-    if ( (insertPos < 1) || !msiNavigationUtils.isTextNode(theParentNode.childNodes[insertPos-1]) )
-      dump("Error in msiEditorUtilities.js, in msiEditorReplaceTextWithText; newTextNode's previous sibling isn't a text node although startOffset>0!\n");
-    else
-    {
-      joinedNode = theParentNode.childNodes[insertPos - 1];
-      editor.joinNodes(joinedNode, newTextNode, theParentNode);
-      --insertPos;
+  var currentContent = textNode.textContent;
+  var newContentEnd = currentContent.slice(endOffset);
+  var newContentStart = currentContent.slice(0,startOffset);
+  var newContent = newContentStart+replaceText+newContentEnd;
+  var newTextNode = editor.document.createTextNode(newContent);
+  var parent = textNode.parentNode;
+  var offset = -1;
+  var i;
+  var kids = parent.childNodes;
+  var l = kids.length;
+  for (i=0; i < l; i++) {
+    if (kids[i] === textNode) {
+      offset = i;
+      break;
     }
   }
-  msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithText, after the first joinNode.\n", ["reviseChars"]);
-  msiKludgeLogNodeContents(joinedNode, ["reviseChars"], "  joinedNode", true);
-  if (!joinedNode.parentNode || (joinedNode.parentNode !== theParentNode))
-    msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
-  if (endOffset < nOrigLen)
-  {
-    var logStr = "  Now parent node has [" + theParentNode.childNodes.length + "] children; ";
-    if ( (insertPos+1 >= theParentNode.childNodes.length) || !msiNavigationUtils.isTextNode(theParentNode.childNodes[insertPos+1]) )
-      dump("Error in msiEditorUtilities.js, in msiEditorReplaceTextWithText; newTextNode's next sibling isn't a text node although endOffset<origLen!\n");
-    else
-    {
-      var rightNode = theParentNode.childNodes[insertPos+1];
-      msiKludgeLogString(logStr, ["reviseChars"]);
-      msiKludgeLogNodeContents(joinedNode, ["reviseChars"], "  joinedNode", true);
-      msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
-      editor.joinNodes(joinedNode, rightNode, theParentNode);
-    }
-  }
-  msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithText, after the second joinNode.\n", ["reviseChars"]);
+  if (offset >= 0) {
+    editor.insertNode(newTextNode, parent, offset);
+    editor.deleteNode(textNode);
+  }  
 }
+  
+//  var newTextNode = editor.document.createTextNode(replaceText);
+//  var theParentNode = textNode.parentNode;
+//  var nOrigLen = textNode.textContent.length;
+//  msiEditorReplaceTextWithNode2(editor, textNode, startOffset, endOffset, newTextNode);
+//  var insertPos = msiNavigationUtils.offsetInParent(newTextNode);
+//  var joinedNode = newTextNode;
+//
+//  if (startOffset > 0)
+//  {
+//    if ( (insertPos < 1) || !msiNavigationUtils.isTextNode(theParentNode.childNodes[insertPos-1]) )
+//      dump("Error in msiEditorUtilities.js, in msiEditorReplaceTextWithText; newTextNode's previous sibling isn't a text node although startOffset>0!\n");
+//    else
+//    {
+//      joinedNode = theParentNode.childNodes[insertPos - 1];
+//      editor.joinNodes(joinedNode, newTextNode, theParentNode);
+//      --insertPos;
+//    }
+//  }
+//  msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithText, after the first joinNode.\n", ["reviseChars"]);
+//  msiKludgeLogNodeContents(joinedNode, ["reviseChars"], "  joinedNode", true);
+//  if (!joinedNode.parentNode || (joinedNode.parentNode !== theParentNode))
+//    msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
+//  if (endOffset < nOrigLen)
+//  {
+//    var logStr = "  Now parent node has [" + theParentNode.childNodes.length + "] children; ";
+//    if ( (insertPos+1 >= theParentNode.childNodes.length) || !msiNavigationUtils.isTextNode(theParentNode.childNodes[insertPos+1]) )
+//      dump("Error in msiEditorUtilities.js, in msiEditorReplaceTextWithText; newTextNode's next sibling isn't a text node although endOffset<origLen!\n");
+//    else
+//    {
+//      var rightNode = theParentNode.childNodes[insertPos+1];
+//      msiKludgeLogString(logStr, ["reviseChars"]);
+//      msiKludgeLogNodeContents(joinedNode, ["reviseChars"], "  joinedNode", true);
+//      msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
+//      editor.joinNodes(joinedNode, rightNode, theParentNode);
+//    }
+//  }
+//  msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithText, after the second joinNode.\n", ["reviseChars"]);
+//}
 
 function msiEditorPrepareForInsertion(editor, nodeToInsert, insertPosition)
 {
