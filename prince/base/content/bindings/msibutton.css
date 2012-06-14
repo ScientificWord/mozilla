@@ -212,3 +212,11 @@ msibutton[checked] {
   color: red;
 }
 
+msibutton.charbtn {
+  font-size: 150%;
+  padding-top: 6px;
+  margin: 0px;
+  min-height: 1em;
+  position: relative;
+}
+
