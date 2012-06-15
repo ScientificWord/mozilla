@@ -141,7 +141,7 @@
       </xsl:when>
       <xsl:when test="normalize-space(string())='&#x2295;'">
         <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'oplus'"/>
+          <xsl:with-param name="LaTeX-nom" select="'bigoplus'"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="normalize-space(string())='&#x2299;'">
