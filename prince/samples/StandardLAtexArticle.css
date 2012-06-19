@@ -154,15 +154,10 @@ rm {
   color: rgb(0,0,255)
 }
 
-cal, *[mathvariant="script"] {
+cal {
  font-family: monotype corsiva;
  color: rgb(0,0,255)
  }
-
-*[mathvariant="double-struck"] {
-  font-family: monotype corsiva;
-  color: rgb(0,255,255)
-}
 
 bold {
   font-weight: 700

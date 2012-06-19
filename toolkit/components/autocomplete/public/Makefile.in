@@ -53,6 +53,7 @@ XPIDLSRCS	= nsIAutoCompleteController.idl \
             nsIAutoCompleteResult.idl \
             nsIAutoCompleteResultTypes.idl \
             nsIAutoCompleteSimpleResult.idl \
+            nsIAutoCompleteResultStringArray.idl \
             nsIAutoCompleteSearchStringArray.idl \
             $(NULL)
 

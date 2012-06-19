@@ -30,6 +30,7 @@ public:
   nsString htmllist;
   nsString prefsub;
 	nsString babel; 
+  nsString mathonly;
   nsCOMPtr<nsIDOMElement> initialContents;
   PRBool   wrapper;
   PRBool   discardEmptyBlock;
