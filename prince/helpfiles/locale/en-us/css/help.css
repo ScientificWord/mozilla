@@ -388,7 +388,7 @@ roman {
   font-family: Times New Roman, serif
 }
 
-calligraphic, *[mathvariant="script"] {
+calligraphic {
   font-family: monotype corsiva
 }
 

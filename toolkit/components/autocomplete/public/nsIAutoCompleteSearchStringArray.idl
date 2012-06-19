@@ -5,7 +5,7 @@
 [scriptable, uuid(3A6BB324-512A-4d41-AC56-C8B8249A2E45)]                                             
 interface nsIAutoCompleteSearchStringArray : nsIAutoCompleteSearch
 {
-  boolean addString( in AString strCategory, in AString strAdd);
+  boolean addString( in AString strCategory, in AString strAdd, in AString strComment, in AString srtMathOnly);
   boolean deleteString( in AString strCategory, in AString strDelete);
   long sizeofArray( in AString strCategory );
   // returns the contents of an array as a single string using strSep as a separator
@@ -20,3 +20,4 @@ interface nsIAutoCompleteSearchStringArray : nsIAutoCompleteSearch
   [noscript]
   void setMarkedStrings( in nsNativeStringArray sa);
 };
+
