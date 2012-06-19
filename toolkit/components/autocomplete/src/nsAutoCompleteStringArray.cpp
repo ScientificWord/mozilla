@@ -80,9 +80,10 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::StopSearch()
 }
 
 /* boolean addString (in AString strCategory, in AString strAdd); */
-NS_IMETHODIMP nsAutoCompleteSearchStringArray::AddString(const nsAString & strCategory, const nsAString & strAdd, PRBool *_retval)
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::AddString(const nsAString & strCategory, const nsAString & strAdd, 
+  const nsAString & strComment, const nsAString & strMathOnly, PRBool *_retval)
 {
-  if (m_imp) return m_imp->AddString(strCategory, strAdd, _retval);
+  if (m_imp) return m_imp->AddString(strCategory, strAdd, strComment, strMathOnly, _retval);
   printf("nsAutoCompletSearchStringArray uninitialized\n");
   return NS_OK; // is there an NS_UNINITIALIZED ??
 }
@@ -206,10 +207,38 @@ nsAutoCompleteSearchStringArrayImp::~nsAutoCompleteSearchStringArrayImp()
    }
 }
 
-nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( const nsAString & strCategory, PRBool doCopy)
+stringStringArray * nsAutoCompleteSearchStringArrayImp::GetPssaForCategory(const nsAString & strCategory)
 {
   stringStringArray * pssa = m_stringArrays;
+  nsAString::const_iterator start, end;
+  nsAString::const_iterator startsave, endsave;
+  while (pssa)
+  {
+    strCategory.BeginReading(start);
+    startsave = start;
+    strCategory.EndReading(end);
+    endsave = end;
+    if (FindInReadable(pssa->strCategory, start, end))
+    {
+      // pssa->strCategory is in the space-separated list; check to see if it is at the beginning
+      // or end of the list or bounded by a space.
+      if (start == startsave || *(--start) == ' ')
+      {
+        if ((end == endsave) || (*end == ' '))
+        {
+          return pssa;
+        }                                                                       
+      }
+    }
+    pssa = pssa->next;
+  }  
+  return nsnull;
+}
+
+nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( const nsAString & strCategory, PRBool doCopy)
+{
   nsStringArray * psa = nsnull;
+  stringStringArray * pssa = m_stringArrays;
   nsAString::const_iterator start, end;
   nsAString::const_iterator startsave, endsave;
   PRInt32 i;  
@@ -252,7 +281,8 @@ nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( c
 
 
 /* boolean addString (in AString strCategory, in AString strAdd); */
-NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & strCategory, const nsAString & strAdd, PRBool *_retval)
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & strCategory, const nsAString & strAdd, 
+  const nsAString & strComment, const nsAString & strMath, PRBool *_retval)
 {
   stringStringArray * pssa = m_stringArrays;
   nsString str;
@@ -264,6 +294,8 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & st
     pssa = new stringStringArray;
     pssa->strCategory = strCategory;
     pssa->strArray = psa;
+    pssa->strComments = new nsStringArray;
+    pssa->strMathOnly = new nsStringArray;
     pssa->next = m_stringArrays;
     m_stringArrays = pssa;
   }
@@ -276,6 +308,8 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & st
   if (psa && (psa->IndexOf(strAdd)==-1))  // should be true, unless there was a error creating a new one.
   {
     psa->AppendString(strAdd); 
+    pssa->strComments->AppendString(strComment);
+    pssa->strMathOnly->AppendString(strMath);
     // Now read it back out to make sure
 //    printf(" added (%S)[%d] = %S\n", strCategory.BeginReading(), psa->IndexOf(strAdd), psa->StringAt(psa->IndexOf(strAdd))->BeginReading());
   }
@@ -306,8 +340,10 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SortArrays(void)
   
   while (pssa)
   {
-    if (pssa->strArray) pssa->strArray->Sort();
-    pssa = pssa->next;
+     if (pssa->strCategory.EqualsLiteral("texttag"))
+       SortStringStringArray(pssa);
+     else pssa->strArray->Sort();
+     pssa = pssa->next;
   }
   return NS_OK;
 }
@@ -380,6 +416,8 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetArray(const nsAString & s
       if (pPrev == nsnull) m_stringArrays = pssa->next;
       else pPrev->next = pssa->next;
       delete pssa->strArray;
+      delete pssa->strComments;
+      delete pssa->strMathOnly;
       delete pssa;
       return NS_OK;
     }
@@ -402,17 +440,55 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetAll()
       delete pssa->strArray;
       pssa->strArray = nsnull;
     }
+    if (pssa->strComments)
+    {
+      delete pssa->strComments;
+      pssa->strComments = nsnull;
+    }
+    if (pssa->strMathOnly)
+    {
+      delete pssa->strMathOnly;
+      pssa->strMathOnly = nsnull;
+    }
     pssa = pssa->next;
   }
   return NS_OK;
 }
 
+
+void nsAutoCompleteSearchStringArrayImp::SortStringStringArray(stringStringArray * pssa)
+{
+  PRUint32 i;
+  PRUint32 count;
+  PRUint32 length;
+  PRUnichar ch;
+  nsString space((PRUnichar)' ');
+  if (pssa->strArray) {
+    count = pssa->strArray->Count();
+    for (i = 0; i < count; i++) {
+      (*(pssa->strArray))[i]->Insert(space,length-1);
+      (*(pssa->strArray))[i]->Insert((*(pssa->strMathOnly))[i]->CharAt(0), length);
+    }
+    pssa->strArray->Sort();
+    for (i = 0; i < count; i++) {
+      length = (*(pssa->strArray))[i]->Length();
+      ch = (*(pssa->strArray))[i]->CharAt(length-1);
+      (*(pssa->strMathOnly))[i]->SetCharAt(ch,0);
+      (*(pssa->strArray))[i]->Truncate(length - 2);
+    }
+  }
+}
+
 /* void sortArray (in AString strCategory); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SortArray(const nsAString & strCategory)
 {
-  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
-  if (psa) psa->Sort();
-  return NS_OK;
+  stringStringArray * pssa = GetPssaForCategory(strCategory);
+  if (strCategory.EqualsLiteral("texttag")) {
+    // Since we added several other arrays, we have to do a hack to sort them
+    // consistently. We ignore the description array for now.
+    SortStringStringArray(pssa);
+  }
+  else pssa->strArray->Sort();
 }
 
 /* nsIAutoCompleteSearchStringArray getGlobalSearchStringArray (); */
@@ -447,19 +523,32 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
 {
     // initially, ignore previousResult and searchParam
   nsAString::const_iterator start, end, originalStart;
+  PRUint32 index;
   nsString str;
+  nsString strcomment;
+  nsString strmathonly;
+  nsString emptystring;
   nsStringArray * psa = GetStringArrayForCategory(searchParam, PR_TRUE);
   if (!psa) return  PR_INVALID_ARGUMENT_ERROR;
   PRUint32 count = psa->Count();
   nsCOMPtr<nsAutoCompleteResultStringArray> mResult = new nsAutoCompleteResultStringArray(m_markedStrings);
   if (!mResult) return NS_ERROR_FAILURE;
+  stringStringArray * pssa = GetPssaForCategory(NS_LITERAL_STRING("texttag"));
   mResult->SetSearchString(searchString);
   mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_NOMATCH);
 
   for (PRUint32 i = 0; i < count; i++) {
     psa->StringAt(i, str);
     if (searchString.IsEmpty()) {   // everything matches the empty string
-      mResult->AppendString(str); 
+      index = pssa->strArray->IndexOf(str);
+      if (index >= 0) {
+        pssa->strComments->StringAt(index,strcomment);
+        pssa->strMathOnly->StringAt(index,strmathonly);
+        mResult->AppendString(str, strcomment, strmathonly); 
+      }
+      else
+        mResult->AppendString(str, emptystring, emptystring); 
+        
       mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_SUCCESS);
     }
     else {      
@@ -469,7 +558,15 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
       if (FindInReadable(searchString,  start, end, nsDefaultStringComparator())) {
         if (start==originalStart) { // pattern was found at the beginning of 
                                     // the string
-          mResult->AppendString(str); 
+          index = pssa->strArray->IndexOf(str);
+          if (index >= 0) {
+            pssa->strComments->StringAt(index,strcomment);
+            pssa->strMathOnly->StringAt(index,strmathonly);
+            mResult->AppendString(str, strcomment, strmathonly); 
+          }
+          else
+            mResult->AppendString(str, emptystring, emptystring); 
+            
           mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_SUCCESS);
         } 
       }
@@ -490,7 +587,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StopSearch()
 
 NS_INTERFACE_MAP_BEGIN(nsAutoCompleteResultStringArray)
   NS_INTERFACE_MAP_ENTRY(nsIAutoCompleteResult)
-  NS_INTERFACE_MAP_ENTRY(nsIAutoCompleteBaseResult)
+//  NS_INTERFACE_MAP_ENTRY(nsIAutoCompleteBaseResult)
   NS_INTERFACE_MAP_ENTRY(nsAutoCompleteResultStringArray)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIAutoCompleteResult)
 NS_INTERFACE_MAP_END
@@ -501,13 +598,17 @@ NS_IMPL_RELEASE(nsAutoCompleteResultStringArray)
 
 nsAutoCompleteResultStringArray::nsAutoCompleteResultStringArray(nsStringArray * pmarkedStrings):pMarkedTags(pmarkedStrings)
 {
-  mReturnStrings = new nsStringArray(10);
+  mReturnStrings = new nsStringArray(50);
+  mCommentStrings = new nsStringArray(50);
+  mMathStrings = new nsStringArray(50);
   mDefaultIndex = 0;
 }
 
 nsAutoCompleteResultStringArray::~nsAutoCompleteResultStringArray()
 {
   delete mReturnStrings;
+  delete mCommentStrings;
+  delete mMathStrings;
 }
 
 /* readonly attribute AString searchString; */
@@ -556,16 +657,31 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::GetValueAt(PRInt32 index, nsAStri
 /* AString getCommentAt (in long index); */
 NS_IMETHODIMP nsAutoCompleteResultStringArray::GetCommentAt(PRInt32 index, nsAString & _retval)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
+  mCommentStrings->StringAt(index, _retval);
+  return NS_OK;
+}
+
+/* AString getMathAt(in long index); */  // BBM this is wrong
+NS_IMETHODIMP nsAutoCompleteResultStringArray::GetMathAt(PRUint32 index, nsAString & _retval)
+{
+  mMathStrings->StringAt(index, _retval);
+  return NS_OK;
 }
 
 /* AString getStyleAt (in long index); */
 NS_IMETHODIMP nsAutoCompleteResultStringArray::GetStyleAt(PRInt32 index, nsAString & _retval)
 {
 	nsAutoString strValue;
+  nsAutoString strMathOnly;
 	nsString str;
   nsString start;
   nsString endsWithSpace;
+  GetMathAt(index, strMathOnly);
+  if (strMathOnly.EqualsLiteral("1")) {
+    strMathOnly = NS_LITERAL_STRING("sw_mathonly");
+  }
+  else
+    strMathOnly = NS_LITERAL_STRING("");
   if (!pMarkedTags) return NS_OK;
 	GetValueAt(index, strValue);
 	if (!strValue.IsEmpty())
@@ -575,14 +691,18 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::GetStyleAt(PRInt32 index, nsAStri
 	 	  pMarkedTags->StringAt(i, str);
       str.Left(start, strValue.Length()+1);
       endsWithSpace = strValue + NS_LITERAL_STRING(" ");
-	    if (endsWithSpace.Equals(start))
+	    if (endsWithSpace.Equals(start) || strValue.Equals(start))
 	 	  {
 	       _retval = NS_LITERAL_STRING("sw_checked");
+         if (strMathOnly.Length() > 0) {
+           _retval = _retval + NS_LITERAL_STRING(" ");
+           _retval = _retval + strMathOnly;
+         }
 	       return NS_OK;
 	 	  }
 	  }
 	}
-	_retval = NS_LITERAL_STRING("");
+	_retval = strMathOnly;
   return NS_OK;
 }
 
@@ -604,9 +724,11 @@ void DebExamineNode(nsIDOMNode * aNode)
 /* void removeValueAt (in long rowIndex, in boolean removeFromDb); */
 NS_IMETHODIMP nsAutoCompleteResultStringArray::RemoveValueAt(PRInt32 rowIndex, PRBool removeFromDb)
 {
-    mReturnStrings->RemoveStringAt(rowIndex);
+  mReturnStrings->RemoveStringAt(rowIndex);
+  mCommentStrings->RemoveStringAt(rowIndex);
+  mMathStrings->RemoveStringAt(rowIndex);
     //  if (removeFromDb, remove the string from nsAutoCompleteSearchStringArrayImp
-    return NS_OK;
+  return NS_OK;
 }
 
 /* void setSearchString (in AString searchString); */
@@ -636,9 +758,11 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::SetSearchResult(PRUint32 searchRe
   return NS_OK;
 }
 
-NS_IMETHODIMP nsAutoCompleteResultStringArray::AppendString( nsString aString )
+NS_IMETHODIMP nsAutoCompleteResultStringArray::AppendString(const nsAString & aString, const nsAString & aComment, const nsAString & aMathOnly)
 {
   mReturnStrings->AppendString(aString);
+  mCommentStrings->AppendString(aComment);
+  mMathStrings->AppendString(aMathOnly);
   return NS_OK;
 }
   

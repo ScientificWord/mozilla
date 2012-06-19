@@ -401,7 +401,8 @@ roman {
   color: rgb(0,0,255)
 }
 
-calligraphic, *[mathvariant="script"] {
+
+calligraphic {
   font-family: monotype corsiva;
   color: rgb(0,0,255)
 }
@@ -411,14 +412,6 @@ alt {
 }
 
 bold {
-  font-weight: 700
-}
-
-blackboardBold {
-  font-weight: 700
-}
-
-fraktur {
   font-weight: 700
 }
 

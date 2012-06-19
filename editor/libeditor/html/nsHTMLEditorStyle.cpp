@@ -629,6 +629,19 @@ nsHTMLEditor::SetInlinePropertyOnTextNode( nsIDOMCharacterData *aTextNode,
   return SetInlinePropertyOnNode(node, aProperty, aAttribute, aValue);
 }
 
+nsString translatePropertyToMath( const nsAString * textProperty)
+{
+  if (textProperty->EqualsLiteral("bold")) return NS_LITERAL_STRING("bold");
+  if (textProperty->EqualsLiteral("italic")) return NS_LITERAL_STRING("italic");
+  if (textProperty->EqualsLiteral("blackboardBold")) return NS_LITERAL_STRING("double-struck");
+  if (textProperty->EqualsLiteral("fraktur")) return NS_LITERAL_STRING("fraktur");
+  if (textProperty->EqualsLiteral("sansSerif")) return NS_LITERAL_STRING("sans-serif");
+  if (textProperty->EqualsLiteral("calligraphic")) return NS_LITERAL_STRING("script");
+  if (textProperty->EqualsLiteral("typewriter")) return NS_LITERAL_STRING("monospace");
+  nsString empty;
+  return empty;
+}
+
 
 nsresult
 nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
@@ -641,8 +654,15 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
   nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> tmp;
   nsAutoString tag;
+  nsString mathequiv;
+  nsAutoString aPropertyString;
+  nsString mstyle = NS_LITERAL_STRING("mstyle");
+  nsString mathvariant = NS_LITERAL_STRING("mathvariant");
+  aProperty->ToString(aPropertyString);
+  
   aProperty->ToString(tag);
-//  ToLowerCase(tag);
+  
+  PRBool isMath = nsHTMLEditUtils::IsMath(aNode);
   
   PRBool useCSS;
   GetIsCSSEnabled(&useCSS);
@@ -659,7 +679,8 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
       {
         // we are working on a text node and need to create a span container
         // that will carry the styles
-        InsertContainerAbove( aNode, 
+
+          InsertContainerAbove( aNode, 
                               address_of(tmp), 
                               NS_LITERAL_STRING("span"),
                               nsnull,
@@ -720,20 +741,20 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
   }
   
   // can it be put inside inline node?
-  if (TagCanContain(tag, aNode))
+  if (TagCanContain(tag, aNode)||isMath)
   {
     nsCOMPtr<nsIDOMNode> priorNode, nextNode;
     // is either of it's neighbors the right kind of node?
     GetPriorHTMLSibling(aNode, address_of(priorNode));
     GetNextHTMLSibling(aNode, address_of(nextNode));
-    if (priorNode && NodeIsType(priorNode, aProperty) && 
+    if (!isMath && priorNode && NodeIsType(priorNode, aProperty) && 
         HasAttrVal(priorNode, aAttribute, aValue)     &&
         IsOnlyAttribute(priorNode, aAttribute) )
     {
       // previous sib is already right kind of inline node; slide this over into it
       res = MoveNode(aNode, priorNode, -1);
     }
-    else if (nextNode && NodeIsType(nextNode, aProperty) && 
+    else if (!isMath && nextNode && NodeIsType(nextNode, aProperty) && 
              HasAttrVal(nextNode, aAttribute, aValue)    &&
              IsOnlyAttribute(priorNode, aAttribute) )
     {
@@ -742,8 +763,21 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
     }
     else
     {
-      // ok, chuck it in it's very own container
-      res = InsertContainerAbove(aNode, address_of(tmp), tag, aAttribute, aValue);
+      if (isMath)
+      {
+        nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
+        mathequiv = translatePropertyToMath(&aPropertyString);
+        if (mathequiv.Length() > 0) 
+        {
+          nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(aNode);
+          if (elem)
+            SetAttribute(elem, mathvariant, mathequiv);
+        }
+      }
+      else {
+        // ok, chuck it in its very own container
+        res = InsertContainerAbove(aNode, address_of(tmp), tag, aAttribute, aValue);
+      }
     }
     if (NS_FAILED(res)) return res;
     return RemoveStyleInside(aNode, aProperty, aAttribute);
