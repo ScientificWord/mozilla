@@ -9691,36 +9691,42 @@ function setTagFieldContents(editor, propertyStack)
   var klass;
   var textbox;
   var tt, pt, st, ft;
-  tt = document.getElementById("TextTagSelections");
-  pt = document.getElementById("ParaTagSelections");
-  st = document.getElementById("StructTagSelections");
-  ft = document.getElementById("FrontMTagSelections");  
-  if (ft) tt.value = "";
-  if (pt) pt.value = "";
-  if (st) st.value = "";
-  if (ft) ft.value = "";
-  while (str) {
-    if (str.length > 0) {
-    	klass = tagManager.getClassOfTag(str, null);
-      textbox = null;
-      switch(klass) {
-        case "texttag" : textbox = tt;
+  try 
+  {
+    tt = document.getElementById("TextTagSelections");
+    pt = document.getElementById("ParaTagSelections");
+    st = document.getElementById("StructTagSelections");
+    ft = document.getElementById("FrontMTagSelections");  
+    if (tt) tt.value = "";
+    if (pt) pt.value = "";
+    if (st) st.value = "";
+    if (ft) ft.value = "";
+    while (str && (str.length > 0)) {
+  //    if (str.length > 0) {
+      	klass = tagManager.getClassOfTag(str, null);
+        textbox = null;
+        switch(klass) {
+          case "texttag" : textbox = tt;
+            break;
+          case "paratag" : 
+          case "listtag" : textbox = pt;
           break;
-        case "paratag" : 
-        case "listtag" : textbox = pt;
-        break;
-        case "structtag" :
-        case "envtag"  : textbox = st;
-        break;
-        case "frontmtag" : textbox = ft;
-        break;
-        default : break;
-      }
-      if (textbox) {
-        textbox.value = str;
-      }
+          case "structtag" :
+          case "envtag"  : textbox = st;
+          break;
+          case "frontmtag" : textbox = ft;
+          break;
+          default : break;
+        }
+        if (textbox) {
+          textbox.value = str;
+        }
+  //    }
+      str = propertyStack.pop();
     }
-    str = propertyStack.pop();
+  }
+  catch(e) {
+    dump(e);
   }
 }
 

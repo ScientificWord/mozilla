@@ -640,7 +640,15 @@ PRBool nsHTMLEditUtils::IsMath(nsIDOMNode *aNode)
 {
   NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsMath");
   nsAutoString tagNamespace;
-  aNode->GetNamespaceURI(tagNamespace);
+  PRUint16 nodeType;
+  aNode->GetNodeType(&nodeType);
+  nsCOMPtr<nsIDOMNode> theNode;
+  if (nodeType == nsIDOMNode::TEXT_NODE)
+    aNode->GetParentNode(getter_AddRefs(theNode));
+  else
+    theNode = aNode;
+
+  theNode->GetNamespaceURI(tagNamespace);
   return tagNamespace.Equals(strMathMLNs);
   
 }
