@@ -219,7 +219,7 @@ roman {
   color: rgb(0,0,255)
 }
 
-calligraphic, *[mathvariant="script"] {
+calligraphic {
   font-family: monotype corsiva;
   color: rgb(0,0,255)
 }

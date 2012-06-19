@@ -335,7 +335,13 @@ nsString msiTagListManager::GetStringProperty( const nsAString & str, nsIDOMElem
   {
     nodeList->Item(0, getter_AddRefs(node));
     textNode=do_QueryInterface(node);
+    if (str.EqualsLiteral("mathonly"))
+      return NS_LITERAL_STRING("1");
     textNode->GetTextContent(strResult);
+  }
+  else if (str.EqualsLiteral("mathonly"))
+  {
+    return NS_LITERAL_STRING("0");
   }
   return strResult;
 }
@@ -550,6 +556,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           tagNameElement->HasAttribute(NS_LITERAL_STRING("hidden"),&(pdata->hidden));              
           pdata->tagClass = strClassName;
           pdata->description = GetStringProperty(NS_LITERAL_STRING("description"), tagNameElement);
+          pdata->mathonly = GetStringProperty(NS_LITERAL_STRING("mathonly"), tagNameElement);
           pdata->realTagClass = GetStringProperty(NS_LITERAL_STRING("realtagclass"), tagNameElement);
           pdata->initialContents =
             GetNodeProperty(NS_LITERAL_STRING("initialcontents"), tagNameElement);
@@ -620,7 +627,7 @@ nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg)
   if (aData->tagClass == ua->tagClass && !(aData->hidden))
   {
     nsString name = tk.altForm();
-    ua->ptlm->pACSSA->AddString(ua->tagClass, name, &bres);
+    ua->ptlm->pACSSA->AddString(ua->tagClass, name, aData->description, aData->mathonly, &bres);
   }
   return PL_DHASH_NEXT;
 }
@@ -1120,6 +1127,8 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
 			_retval = data->babel;
 		else if (propertyName.EqualsLiteral("hidden"))
 			_retval = data->hidden ? NS_LITERAL_STRING("1") : NS_LITERAL_STRING("0");
+		else if (propertyName.EqualsLiteral("mathonly"))
+			_retval = data->mathonly;
 		else _retval.Assign(emptyString);
   }
   else _retval.Assign(emptyString);

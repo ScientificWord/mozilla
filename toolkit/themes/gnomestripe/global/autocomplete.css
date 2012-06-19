@@ -63,6 +63,11 @@ treechildren:-moz-tree-cell-text(sw_checked) {
   -moz-margin-start: 3px !important;
 }
 
+treechildren::-moz-tree-cell-text(sw_mathonly) {
+  color: red;
+}   
+
+
 
 
 textbox {
