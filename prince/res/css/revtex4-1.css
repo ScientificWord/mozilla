@@ -371,7 +371,7 @@ rm {
   color: rgb(0,0,255)
 }
 
-cal, *[mathvariant="script"] {
+cal{
   font-family: monotype corsiva;
   color: rgb(0,0,255)
 }
@@ -381,10 +381,6 @@ bold {
 }
 
 bbold {
-  font-weight: 700
-}
-
-fraktur {
   font-weight: 700
 }
 

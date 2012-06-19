@@ -36,15 +36,19 @@
 			<tags>
 				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
 				<tag nm="alt"><description>Stylistic alternate</description></tag>
-				<tag nm="bold"><description>Bold</description></tag>
-				<tag nm="blackboardBold"><description>Blackboard Bold</description></tag>
-				<tag nm="calligraphic"><description>Calligraphic</description></tag>
+				<tag nm="bold"><description>Bold</description>
+          <mathvar>bold</mathvar></tag>
+				<tag nm="blackboardBold"><description>Blackboard Bold</description>
+          <mathonly/><mathvar>double-struck</mathvar></tag>
+				<tag nm="calligraphic"><description>Calligraphic</description>
+          <mathvar>script</mathvar></tag>
 				<tag nm="emphasized"><description>Emphasized</description></tag>
 				<tag nm="footnotesize"><description>Footnote size</description></tag>
 				<tag nm="otfont" hidden="1"><description>Open TypeFont</description></tag>
 				<tag nm="fontsize" hidden="1"><description>Font size</description></tag>
 				<tag nm="fontcolor" hidden="1"><description>Font color</description></tag>
-				<tag nm="fraktur"><description>Fraktur</description></tag>
+				<tag nm="fraktur"><description>Fraktur</description>
+          <mathonly/><mathvar>fraktur</mathvar></tag>
 				<tag nm="rtl"><description>Right-to-left font</description></tag>
 				<tag nm="Huge"><description>Huge</description></tag>
 				<tag nm="huge"><description>huge</description></tag>
@@ -55,8 +59,10 @@
 				<tag nm="lower"><description>Lower case</description></tag>
 				<tag nm="normalsize"><description>normalsize</description></tag>
 				<tag nm="phantom"><description>phantom</description></tag>
-				<tag nm="roman"><description>Roman</description></tag>
-				<tag nm="sansSerif"><description>Sans Serif</description></tag>
+				<tag nm="roman"><description>Roman</description>
+          <mathonly/><mathvar>normal</mathvar></tag>
+				<tag nm="sansSerif"><description>Sans Serif</description>
+          <mathvar>sans-serif</mathvar></tag>
 				<tag nm="scriptsize"><description>Scriptsize</description></tag>
 				<tag nm="slanted"><description>Slanted</description></tag>
 				<tag nm="small"><description>Small</description></tag>
@@ -65,7 +71,8 @@
 				<tag nm="sub"><description>Text subscript</description></tag>
 				<tag nm="sup"><description>Text superscript</description></tag>
 				<tag nm="tiny"><description>Tiny</description></tag>
-				<tag nm="typewriter"><description>Typewriter font</description></tag>
+				<tag nm="typewriter"><description>Typewriter font</description>
+          <mathvar>monospace</mathvar></tag>
 				<tag nm="underline"><description>Underline</description></tag>
 				<tag nm="upper"><description>Upper case</description></tag>
 				<tag nm="rawTeX" hidden="1"><description>Raw TeX tag</description></tag>
