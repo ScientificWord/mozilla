@@ -125,6 +125,8 @@ interface nsIHTMLEditor : nsISupports
   void setInlineProperty(in nsIAtom aProperty, 
                          in AString aAttribute,
                          in AString aValue);
+                         
+  AString translatePropertyToMath( in AString textProperty);
 
   /**
    * getInlineProperty() gets aggregate properties of the current selection.
