@@ -726,14 +726,40 @@ msiTagListManager::BuildParentTagList()
 
 
 NS_IMETHODIMP 
-msiTagListManager::GetParentTagList(const nsAString & strSep, PRBool includeNS, nsAString & _retval)
+msiTagListManager::GetParentTagList(const nsAString & strSep, PRBool includeTypeInState, PRBool includeNS, nsAString & _retval)
 {
 // we ignore includeNS for now.
   BuildParentTagList();
   PRInt32 i;
+  nsAutoString strSetTags;
+  nsAutoString substring;
   _retval = NS_LITERAL_STRING("");
-  PRInt32 length = mparentTags?mparentTags->Count():-1;
-  if (length > 0) _retval = *(*mparentTags)[0];
+  PRInt32 length, newIndex;
+  PRInt32 index = 0;
+  PRUnichar semi = ';';
+  PRUnichar comma = ',';
+  if (includeTypeInState) {
+    nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
+    editor->ReadCursorSetProps(strSetTags);
+    length = strSetTags.Length();
+    while (index < length) {
+      newIndex = strSetTags.FindChar(comma,index);
+      substring = Substring(strSetTags, index, newIndex - index);
+      if (_retval.Length() > 0) _retval += strSep;
+      _retval+=substring;
+      index = newIndex + 1;
+      newIndex = strSetTags.FindChar(semi, index);
+      if (newIndex == -1) {
+        break;
+      }
+      index = newIndex + 1;
+    }
+  }
+  length = mparentTags?mparentTags->Count():-1;
+  if (length > 0 && _retval.Length() > 0) { 
+    _retval += strSep;
+    _retval += *(*mparentTags)[0];
+  }
   for (i = 1; i < length; i++)
     _retval += strSep + *(*mparentTags)[i];
   return NS_OK;

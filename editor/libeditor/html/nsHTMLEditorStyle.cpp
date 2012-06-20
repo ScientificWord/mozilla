@@ -629,17 +629,18 @@ nsHTMLEditor::SetInlinePropertyOnTextNode( nsIDOMCharacterData *aTextNode,
   return SetInlinePropertyOnNode(node, aProperty, aAttribute, aValue);
 }
 
-nsString nsHTMLEditor::TranslatePropertyToMath( nsAString& textProperty)
+NS_IMETHODIMP nsHTMLEditor::TranslatePropertyToMath( const nsAString& textProperty, nsAString& _retval)
 {
-  if (textProperty.EqualsLiteral("bold")) return NS_LITERAL_STRING("bold");
-  if (textProperty.EqualsLiteral("italic")) return NS_LITERAL_STRING("italic");
-  if (textProperty.EqualsLiteral("blackboardBold")) return NS_LITERAL_STRING("double-struck");
-  if (textProperty.EqualsLiteral("fraktur")) return NS_LITERAL_STRING("fraktur");
-  if (textProperty.EqualsLiteral("sansSerif")) return NS_LITERAL_STRING("sans-serif");
-  if (textProperty.EqualsLiteral("calligraphic")) return NS_LITERAL_STRING("script");
-  if (textProperty.EqualsLiteral("typewriter")) return NS_LITERAL_STRING("monospace");
   nsString empty;
-  return empty;
+  _retval = empty;
+  if (textProperty.EqualsLiteral("bold")) _retval = NS_LITERAL_STRING("bold");
+  else if (textProperty.EqualsLiteral("italic")) _retval = NS_LITERAL_STRING("italic");
+  else if (textProperty.EqualsLiteral("blackboardBold")) _retval = NS_LITERAL_STRING("double-struck");
+  else if (textProperty.EqualsLiteral("fraktur")) _retval = NS_LITERAL_STRING("fraktur");
+  else if (textProperty.EqualsLiteral("sansSerif")) _retval = NS_LITERAL_STRING("sans-serif");
+  else if (textProperty.EqualsLiteral("calligraphic")) _retval = NS_LITERAL_STRING("script");
+  else if (textProperty.EqualsLiteral("typewriter")) _retval = NS_LITERAL_STRING("monospace");
+  return NS_OK;
 }
 
 PRBool nsHTMLEditor::PropertyIsMathOnly( nsAString& textProperty)
@@ -777,7 +778,7 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
       if (isMath)
       {
         nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
-        mathequiv = TranslatePropertyToMath(tag);
+        TranslatePropertyToMath(tag, mathequiv);
         if (mathequiv.Length() > 0) 
         {
           nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(aNode);
