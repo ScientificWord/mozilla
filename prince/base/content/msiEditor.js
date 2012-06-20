@@ -4260,6 +4260,7 @@ var gDummySelectionStartNode = null;
 var gDummySelectionEndNode = null;
 var gDummySelectionStartData = "";
 var gDummySelectionEndData = "";
+const kBGBGBG = "--BG--";
 
 function MarkSelection(editor)
 {
@@ -4267,8 +4268,6 @@ function MarkSelection(editor)
   gDummySelectionEndNode = null;
   gDummySelectionStartData = "";
   gDummySelectionEndData = "";
-  
-  const kBGBGBG = "--BG--";
 
   var selection = editor.selection;
   for (var count = 0; count < 1; count++) {
@@ -4363,8 +4362,6 @@ function UnmarkSelection(editor)
 
 function MarkSelectionInCM(aSourceEditor)
 {
-  const kBGBGBG = "--BG--";
-
   aSourceEditor.setSelection( { line: 0, ch: 0 }, { line: 0, ch: 0 } );
 
   var searchCursor = aSourceEditor.getSearchCursor(kBGBGBG, { line: 0, ch: 0 }, true);
