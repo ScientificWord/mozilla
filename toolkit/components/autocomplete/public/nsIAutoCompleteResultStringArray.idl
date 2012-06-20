@@ -1,0 +1,10 @@
+#include "nsIAutoCompleteResult.idl"
+
+
+[scriptable, uuid(b8db43ad-a3ff-4525-bd94-1d28e5735603)]                                             
+interface nsIAutoCompleteResultStringArray : nsIAutoCompleteResult
+{
+  void appendString( in AString strAdd, in AString strComment, in AString srtMathOnly);
+  AString getMathAt( in unsigned long index);
+};
+
