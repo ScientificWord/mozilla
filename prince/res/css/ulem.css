@@ -1,24 +1,24 @@
 /* ulem.css */
 
-uline {
+uline, QTR[type="QQQuline"] {
   text-decoration:underline;
 }
 
-uuline {
+uuline, QTR[type="QQQuuline"] {
   border-bottom: 3px double;
   line-height: 1.7em;
 }
 
-uwave {
+uwave, QTR[type="QQQuwave"] {
   color: green;
   background: url(resource://app/res/css/ulem-wavy.png) bottom repeat-x;
 }
 
-sout {
+sout, QTR[type="QQQsout"] {
   text-decoration:line-through;
 }
 
-xout {
+xout, QTR[type="QQQxout"] {
   text-decoration:line-through;
   color:red;
 }
