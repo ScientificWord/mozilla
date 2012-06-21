@@ -41,7 +41,7 @@
 				<tag nm="blackboardBold"><description>Blackboard Bold</description>
           <mathonly/><mathvar>double-struck</mathvar></tag>
 				<tag nm="calligraphic"><description>Calligraphic</description>
-          <mathvar>script</mathvar></tag>
+          <mathonly/><mathvar>script</mathvar></tag>
 				<tag nm="emphasized"><description>Emphasized</description></tag>
 				<tag nm="footnotesize"><description>Footnote size</description></tag>
 				<tag nm="otfont" hidden="1"><description>Open TypeFont</description></tag>
