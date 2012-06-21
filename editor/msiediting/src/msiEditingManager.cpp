@@ -13,7 +13,7 @@
 #include "nsISimpleEnumerator.h"
 #include "nsIHTMLEditor.h"
 #include "nsIDOMRange.h"
-#include "../../libeditor/base/nsEditor.h"
+#include "nsEditor.h"
 
 #include "msiEditingManager.h"
 #include "msiIMathMLEditor.h"
@@ -749,13 +749,54 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSymbol");
+  nsCOMPtr<nsIHTMLEditor> htmleditor = do_QueryInterface(editor);
   if (editor && selection && node)
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     res = msiUtils::CreateMathMLLeafElement(editor, symbol, 1, flags, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement)
+    {
+      nsAutoString localName;
+      nsAutoString parenttaglist;
+      nsAutoString tag;
+      nsAutoString mathtag;
+      PRUint32 len;
+      
+      nsAutoString strSep(NS_LITERAL_STRING(","));
+      mathmlElement->GetLocalName(localName);
+      if (localName.EqualsLiteral("mi"))
+      {
+        nsCOMPtr<msiITagListManager> TagListManager;
+        htmleditor->GetTagListManager(getter_AddRefs(TagListManager));        
+        // see if one of the math variants applies
+        TagListManager->BuildParentTagList();
+          // return a comma-separated list of all the tags containing the selection.
+        TagListManager->GetParentTagList(strSep, PR_TRUE, PR_FALSE, parenttaglist);
+        len = parenttaglist.Length();
+        const PRUnichar* cur = parenttaglist.BeginReading();
+        const PRUnichar* start = cur;
+        const PRUnichar* wordend = cur;
+        const PRUnichar* end = parenttaglist.EndReading();
+
+        while (cur < end) {
+          if ((wordend == end) || PRUnichar(',') == *wordend) {
+            parenttaglist.Mid(tag, cur - start, wordend - cur);
+            htmleditor->TranslatePropertyToMath( tag, mathtag );
+            if (mathtag.Length()>0)
+            {
+              editor->SetAttribute(mathmlElement, NS_LITERAL_STRING("mathvariant"), mathtag);
+              break;
+            }
+            if (wordend == end)
+              break;
+            cur = wordend + 1;
+          }
+          wordend++;
+        }
+      }        
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+    } 
   }
   return res;
 }      

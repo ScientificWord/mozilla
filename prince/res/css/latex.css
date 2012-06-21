@@ -1342,3 +1342,118 @@ Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, he
 	direction: rtl; 
 	text-align: right; }
 	
+  /***********************/
+  /* Tagged run elements */
+  /***********************/
+
+emphasized {
+  font-style: italic;
+  color: rgb(9,62,125)
+}
+
+emphasized span.inlineMath {
+  color: rgb(255,0,255)
+}
+
+roman {
+  font-family: Times New Roman, serif;
+  color: rgb(0,0,255)
+}
+
+calligraphic{
+  font-family: Apple Chancery, monotype corsiva;
+  color: rgb(0,0,255)
+}
+
+alt {
+  color: rgb(0,255,0)
+}
+
+bold {
+  font-weight: 700
+}
+
+blackboardBold {
+  font-weight: 700
+}
+
+fraktur {
+  font-family: MathJax_Fraktur;
+  font-weight: 700
+}
+
+italics {
+  font-style: italic
+}
+
+slanted {
+  font-style: italic;
+  font-weight: 700;
+  color: rgb(9,62,125)
+}
+
+sansSerif {
+  font-family: Arial;
+  font-weight: 400;
+  color: rgb(9,62,125)
+}
+
+smallCaps {
+  font-variant: small-caps;
+  color: rgb(0,0,0)
+}
+
+typewriter {
+  font-family: Courier New;
+  font-weight: 300
+}
+
+rtl {
+  color: rgb(100,50,0);
+  direction: rtl;
+  unicode-bidi: bidi-override 
+}
+
+tiny {
+  font-size: 50%
+}
+
+scriptsize {
+  font-size: 67%
+}
+
+footnotesize {
+  font-size: 75%
+}
+
+small {
+  font-size: 83%
+}
+
+normalsize {
+  font-size: 100%
+}
+
+large {
+  font-size: 117%
+}
+
+Large {
+  font-size: 133%
+}
+
+LARGE {
+  font-size: 150%
+}
+
+huge {
+  font-size: 167%
+}
+
+Huge {
+  font-size: 183%
+}
+
+underline {
+  text-decoration: underline;
+}

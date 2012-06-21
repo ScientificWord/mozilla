@@ -483,7 +483,7 @@ NS_IMETHODIMP
 msiEditor::InsertSymbol(const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
-  if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
+  if (!(mFlags & eEditorPlaintextMask)) 
   {
     nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
