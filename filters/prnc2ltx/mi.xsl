@@ -495,6 +495,36 @@
           <xsl:text>\mathbb{</xsl:text>
         </xsl:if>
       </xsl:when>
+      <xsl:when test="@mathvariant='bold-italic'">
+        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+          <xsl:text>\boldsymbol{</xsl:text>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="@mathvariant='bold-fraktur'"> <!-- requires unicode-math package -->
+        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+          <xsl:text>\mathbffrak{</xsl:text>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="@mathvariant='bold-script'">
+        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+          <xsl:text>\mathbfscr{</xsl:text>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="@mathvariant='bold-sans-serif'">
+        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+          <xsl:text>\mathbfsfup{</xsl:text>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="@mathvariant='sans-serif-italic'">
+        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+          <xsl:text>\mathsfit{</xsl:text>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="@mathvariant='sans-serif-bold-italic'">
+        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+          <xsl:text>\mathbfsfit{</xsl:text>
+        </xsl:if>
+      </xsl:when>
 
       <xsl:otherwise>
 

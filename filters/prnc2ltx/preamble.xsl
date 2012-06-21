@@ -22,7 +22,7 @@
 
 <xsl:variable name="preambletexbuttons.tf">
   <xsl:for-each select="//*[@pre]">
-    <xsl:sort select="@ord"/>
+    <xsl:sort select="@pri"/>
 	  <xsl:copy-of select="."/>
   </xsl:for-each>
 </xsl:variable>
@@ -95,7 +95,8 @@
     >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
   <!--xsl:apply-templates/ -->
   <xsl:for-each select="$preambletexbuttons/*"
-  ><xsl:if test="@pre='1'"><xsl:apply-templates mode="tex"/>
+  ><xsl:if test="@pre='1'"><xsl:text>
+  </xsl:text><xsl:apply-templates mode="tex"/>
 </xsl:if></xsl:for-each>
 
 <!-- back to template match="html:preamble"-->
