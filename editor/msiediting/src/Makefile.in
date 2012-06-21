@@ -67,8 +67,10 @@ SHARED_LIBRARY_LIBS = \
 include $(topsrcdir)/config/rules.mk
 
 INCLUDES += -I$(srcdir)/insertion \
-            -I$(srcdir)/caret \
-            -I$(srcdir)/coalesce \
-            -I$(srcdir) \
-            -I$(topsrcdir)/editor/libeditor/base
+			-I$(srcdir)/caret \
+			-I$(srcdir)/coalesce \
+			-I$(srcdir) \
+			-I$(topsrcdir)/editor/libeditor/base \
+			-I$(topsrcdir)/editor/libeditor/msi \
+			$(NULL)
             

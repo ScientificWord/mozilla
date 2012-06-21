@@ -153,7 +153,7 @@ function addSectionProperties(editorElement, contextMenuNode)
   removeSectionProperties(contextMenuNode);
   if (editor && editor.tagListManager)
   {
-    parentTagString = editor.tagListManager.getParentTagList(",",false);
+    parentTagString = editor.tagListManager.getParentTagList(",",false,false);
     parentTagArray = parentTagString.split(","); 
     labelString = GetString("TagPropertiesMenuLabel");
     for (i = 0, length = parentTagArray.length; i < length; i++)
