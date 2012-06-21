@@ -44,7 +44,7 @@ interface msiITagListManager : nsISupports
   AString getTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
   void buildParentTagList();
   // return a comma-separated list of all the tags containing the selection.
-  AString getParentTagList(in AString strSep, in boolean includedNS);
+  AString getParentTagList(in AString strSep, in boolean includeTypeInState, in boolean includedNS);
 	nsIAtom nameSpaceAtomOfTagKey( in AString key);
 	AString getDefaultParagraphTag( out nsIAtom atomNamespace );
 	AString getClearTextTag( out nsIAtom atomNamespace );
