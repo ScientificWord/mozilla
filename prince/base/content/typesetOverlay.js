@@ -1147,38 +1147,6 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
   return retObj;
 }
 
-function checkPackageDependenciesForEditor(editor)
-{
-  var aDocument = editor.document;
-//  if (!aDocument.documentModified)
-//    return;
-
-  var ourExpr = "//*[local-name()='table'][@width]";  //This can be adjusted as needed to allow checking other items
-  var xPathEval = new XPathEvaluator();
-  var nsResolver = xPathEval.createNSResolver(aDocument.documentElement);
-  var resultNodes = xPathEval.evaluate(ourExpr, aDocument.documentElement, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-  var currNode;
-  var package;
-  try
-  {
-    for (var i = 0; i < resultNodes.snapshotLength; ++i)
-    {
-      currNode = resultNodes.snapshotItem(i);
-//      dump("In checkPackageDependenciesForEditor, examining node [" + msiGetBaseNodeName(currNode) + "].\n");
-      switch(msiGetBaseNodeName(currNode))
-      {
-        case "table":
-          package = "tabulary";
-          var parentTable = msiNavigationUtils.getParentOfType(currNode.parentNode, "table");
-          if (parentTable && parentTable.hasAttribute("width"))
-            package = null;  //we could use tabularx?? Will use tabular* instead...
-          msiEnsureElementAttribute(currNode, "req", package); //don't use the msiEnsureElementAttributeEditor method, so as not to be on the undo stack
-        break;
-      }
-    }
-  } catch(ex) {dump("Error in checkPackageDependenciesForEditor: " + ex + ".\n");}
-}
-
 //This list needs to be variable depending on the document - have to have "isFrontMatterTag()" available as query on
 //tags.
 var gFrontMatterTags = ["author", "title", "makeTitle", "makeTOC"];
