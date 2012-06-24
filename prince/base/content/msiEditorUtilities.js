@@ -1757,7 +1757,8 @@ function msiElementCanHaveAttribute(elementNode, attribName)
   return retVal;
 }
 
-function msiEnsureElementCSSProperty(elementNode, propName, propValue)
+//Note that "editor" can be null - then this just goes through msiEnsureElementAttribute()
+function msiEnsureElementCSSProperty(elementNode, propName, propValue, editor)
 {
 //  if (propValue && propValue.length)
 //    elementNode.style.setProperty(propName, propValue, "");
@@ -1769,14 +1770,24 @@ function msiEnsureElementCSSProperty(elementNode, propName, propValue)
     replaceStr = propName + ": " + propValue + ";";
   var searchRE = new RegExp(propName + "\\:\\s*[^;]+;?");
   if (currStyleStr && currStyleStr.length)
-    currStyleStr.replace(searchRE, replaceStr);
+  {
+    if (searchRE.test(currStyleStr))
+      currStyleStr.replace(searchRE, replaceStr);
+    else
+      currStyleStr += replaceStr;
+  }
   else
     currStyleStr = replaceStr;
-  elementNode.setAttribute("style", currStyleStr);
+  msiEditorEnsureElementAttribute(elementNode, "style", currStyleStr, editor);
+//  elementNode.setAttribute("style", currStyleStr);
 }
 
+//Note that "editor" can be null - then this just goes through msiEnsureElementAttribute()
 function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, editor)
 {
+  if (!editor)
+    return msiEnsureElementAttribute(elementNode, attribName, attribValue);
+
   var retVal = false;
   if ( (!attribValue) || (attribValue.length === 0) )
   {

@@ -1,4 +1,4 @@
-var EXPORTED_SYMBOLS = ["graphicsConverter", "graphicsTimerHandler" ];
+var EXPORTED_SYMBOLS = ["graphicsConverter", "graphicsTimerHandler", "graphicsMultipleTimerHandler" ];
 
 Components.utils.import("resource://app/modules/os.jsm");
 
@@ -65,6 +65,32 @@ var graphicsConverter =
     return params;
   },
 
+  getTargetFileExtension : function(graphicsInFile, graphicsOutDir, mode, aWindow)
+  {
+    var os = getOS(aWindow);
+    var filterCommandFile = this.getBatchFile(os);
+    var infoMode = (mode == "tex" ? "outtex" : "out");
+    var paramArray = this.formParamArray(graphicsInFile, graphicsOutDir, infoMode, os);
+    var outInfoFile = graphicsOutDir.clone();
+//    var outInfoFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//    outInfoFile.initWithPath("C:\\temp");
+    outInfoFile.append(graphicsInFile.leafName + "info.txt");
+    var infoProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+//    paramArray.push(">" + outInfoFile.path);
+    paramArray.push(outInfoFile.path);
+//    paramArray.push(">C:\\temp\\logGfxCommands.txt");  //for debugging only!!
+    infoProcess.init(filterCommandFile);
+//    dump("In getTargetFileExtension, running infoProcess in mode " + mode + " for file " + graphicsInFile.leafName + ".\n");
+    infoProcess.run(true, paramArray, paramArray.length);
+
+//    dump("In getTargetFileExtension mode " + mode + " trying to get file contents for file [" + outInfoFile.path + "].\n");
+    var extension = this.getFileAsString(outInfoFile);
+    extension = extension.replace(/^\s*/,"");
+    extension = extension.replace(/\s*$/,"");
+//    dump("Got extension back from file " + outInfoFile.path + "; it's " + extension + ".\n");
+    return extension;
+  },
+
 //  filterSourceFile - an nsIFile; the command file generated for this import
 //  graphicsInFile - an nsIFile
 //  graphicsOutFile - an nsILocalFile
@@ -82,33 +108,13 @@ var graphicsConverter =
     if (!callbackObject)
       bRunSynchronously = true;
     var os = getOS(aWindow);
+    var extension = this.getTargetFileExtension(graphicsInFile, graphicsOutDir, mode, aWindow);
+
     var filterCommandFile = this.getBatchFile(os);
-    var infoMode = (mode == "tex" ? "outtex" : "out");
-    var paramArray = this.formParamArray(graphicsInFile, graphicsOutDir, infoMode, os);
-    var outInfoFile = graphicsOutDir.clone();
-//    var outInfoFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-//    outInfoFile.initWithPath("C:\\temp");
-    outInfoFile.append(graphicsInFile.leafName + "info.txt");
-    var infoProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-//    paramArray.push(">" + outInfoFile.path);
-    paramArray.push(outInfoFile.path);
-//    paramArray.push(">C:\\temp\\logGfxCommands.txt");  //for debugging only!!
-    infoProcess.init(filterCommandFile);
-//    dump("In doGraphicsImport, running infoProcess in mode " + mode + " for file " + graphicsInFile.leafName + ".\n");
-    infoProcess.run(true, paramArray, paramArray.length);
-
-//    dump("In doGraphicsImport mode " + mode + " trying to get file contents for file [" + outInfoFile.path + "].\n");
-    var extension = this.getFileAsString(outInfoFile);
-    extension = extension.replace(/^\s*/,"");
-    extension = extension.replace(/\s*$/,"");
-//    dump("Got extension back from file " + outInfoFile.path + "; it's " + extension + ".\n");
-
+    var paramArray = this.formParamArray(graphicsInFile, graphicsOutDir, mode, os);
     var graphicsOutFile = graphicsOutDir.clone();
     var nameAndExtension = this.splitExtension(graphicsInFile.leafName);
     graphicsOutFile.append(nameAndExtension.name + "." + extension);
-    paramArray[3] = mode;
-//    paramArray.pop();  //remove the debugging redirection parameter
-    paramArray.pop();  //remove the outFile parameter
 //    dump("In doGraphicsImport, initializing import process for file [" + graphicsInFile.path + "] in mode " + mode + " .\n");
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(filterCommandFile);
@@ -125,6 +131,29 @@ var graphicsConverter =
     }
 //    dump("Returning from doGraphicsImport with return [" + graphicsOutFile.path + "].\n");
     return graphicsOutFile;
+  },
+
+  //Calling this function with an array of objects of the form {mFile : nsIFile, mOutDirectory : nsIFile, mMode : modeString} to convert will 
+  //  return a graphicsMultipleTimerHandler (see bottom of file). This handler will record successes and failures for
+  //  each conversion process; after mSecTimeLimit number of milliseconds it will stop any unfinished processes.
+  //  It can initially be queried to get the target files by calling getTargetFile(sourceFile, mode).
+  //  You should then manage it somehow - probably with a timer of its own rather than a simple loop? It can be asked to
+  //  stopAll(), or queried as to the status of loading. In particular, calling .isFinished() on it will let you know
+  //  whether there are pending conversions.
+  doMultipleGraphicsImport : function(graphicsInFileArray, aWindow, mSecTimeLimit)
+  {
+    if (!mSecTimeLimit)
+      mSecTimeLimit = 300000;  //5 minutes?
+    var multiCallbackHandler = new graphicsMultipleTimerHandler();
+    var theTimerHandler;
+    var theImportTimer;
+    for (var ii = 0; ii < graphicsInFileArray.length; ++ii)
+    {
+      theTimerHandler = new graphicsTimerHandler(mSecTimeLimit, multiCallbackHandler, ii+1);
+      multiCallbackHandler.addTimerHandler(theTimerHandler);
+      this.doGraphicsImport(graphicsInFileArray[ii].mFile, graphicsInFileArray[ii].mOutDirectory, graphicsInFileArray[ii].mMode, aWindow, theTimerHandler);
+    }
+    return multiCallbackHandler;
   },
 
   getFileAsString : function( aFile )  //Takes an nsIFile
@@ -239,6 +268,7 @@ var graphicsTimerCallbackBase =
   userData : null,
   endCallbackObject : null,
   timerStopped : false,
+  mode : "import",
 
   notify : function(aTimer)
   { 
@@ -250,7 +280,7 @@ var graphicsTimerCallbackBase =
     {
       ++this.timerCount;
 //      var exitVal = "[" + (this.importProcess ? this.importProcess.exitValue : "none");
-//      if (!(this.timerCount & 7))
+//      if (!(this.timerCount & 1))
 //        dump("In graphics loading timerCallback for file [" + this.importTargFile.path + ", timer count is [" + this.timerCount + "], status is " + this.statusStrings[this.importStatus] + ", timer limit is " + this.timerCountLimit + ".\n");
       if (this.timerCount < this.timerCountLimit)  //keep waiting
         return;
@@ -300,7 +330,7 @@ var graphicsTimerCallbackBase =
     }
   },
 
-  startLoading : function(srcFile, targFile, process, aTimer)
+  startLoading : function(srcFile, targFile, process, mode, aTimer)
   {
     this.timerCount = 0;
     this.timer = aTimer;
@@ -308,6 +338,7 @@ var graphicsTimerCallbackBase =
     this.importTargFile = targFile;
     this.importProcess = process;
     this.importStatus = this.statusRunning;
+    this.mode = mode;
 //    dump("In timerhandler for target file " + targFile.path + "; failure sentinel is " + this.getFailureSentinelFile().path + ".\n");
   },
 
@@ -438,7 +469,7 @@ var graphicsTimerCallbackBase =
 };
 
 // This timer handler will handle tracking the success or failure of the conversion up to the time limit passed in.
-//   Either when the conversion succeeds (or definitively fails) or at the end of the time limit, a function on the 
+//   Either when the conversion succeeds (or definitively fails) or at the end of the time limit, a function the 
 //   terminateCallback object should contain will be called. It will be passed the parameters:
 //     endCallback(nsIFile sourceGraphicsFile, nsIFile targetGraphicsFile, importStatus, string errorMessage, data)
 //   The importStatus parameter is one of the constants in graphicsTimerCallbackBase, so one of:
@@ -470,4 +501,88 @@ function graphicsTimerHandler(millisecondsTimeLimit, terminateCallbackObject, da
 
 graphicsTimerHandler.prototype = graphicsTimerCallbackBase;
 
+var graphicsMultipleTimerBase = 
+{
+  mTimerHandlers : [],
 
+  terminalCallback : function(sourceFile, importTargFile, importStatus, errorString, userData)
+  {
+    var ix = 0;
+    if (userData)
+      ix = userData;
+    else
+      ix = 1 + this.findByTargFile(importTargFile);
+    if (ix > 0)
+      this.mTimerHandlers[ix-1].mbFinished = true;
+  },
+
+  isFinished : function()
+  {
+    var bDone = true;
+    for (var ix = 0; bDone && (ix < this.mTimerHandlers.length); ++ix)
+    {
+      if (!this.mTimerHandlers[ix].mbFinished)
+        bDone = false;
+    }
+//    dump("In graphicsMultipleTimerHandler.isFinished; returning " + (bDone ? "true\n" : "false\n"));
+    return bDone;
+  },
+
+  addTimerHandler : function(aTimerHandler)
+  {
+    this.mTimerHandlers.push({mHandler : aTimerHandler, mbFinished : false});
+    return this.mTimerHandlers.length;  //returning the index of the new timer
+  },
+
+  addNewTimerHandler : function(mSecTimeLimit)
+  {
+    if (!mSecTimeLimit)
+      mSecTimeLimit = 300000;  //5 minutes outside limit?
+    var aTimerHandler = new graphicsTimerHandler(mSecTimeLimit, this, this.mTimerHandlers.length + 1);
+    this.addTimerHandler(aTimerHandler);
+    return aTimerHandler;
+  },
+
+  stopAll : function()
+  {
+    for (var ix = 0; ix < this.mTimerHandlers.length; ++ix)
+      this.mTimerHandlers[ix].stop();
+  },
+
+  getStatus : function(aTargFile)
+  {
+    var ix = this.findByTargFile(aTargFile);
+    if (ix > 0)
+      return this.mTimerHandlers[ix].importStatus;
+    return graphicsTimerCallbackBase.statusNone;
+  },
+
+  findByTargFile : function(targFile)
+  {
+    var index = -1;
+    for (var ix = 0; (index < 0) && (ix < this.mTimerHandlers.length); ++ix)
+    {
+      if (this.mTimerHandlers[ix].mHandler.importTargFile.path == targFile.path)
+        index = ix;
+    }
+    return index;
+  },
+
+  getTargetFile : function(srcFile, mode)
+  {
+    var targFile = null;
+    for (var ix = 0; (!targFile) && (ix <this.mTimerHandlers.length); ++ix)
+    {
+      if ( (this.mTimerHandlers[ix].mHandler.sourceFile.path == srcFile.path) && (this.mTimerHandlers[ix].mHandler.mode == mode) )
+        targFile = this.mTimerHandlers[ix].mHandler.importTargFile;
+    }
+    return targFile;
+  }
+};
+
+function graphicsMultipleTimerHandler()
+{
+  this.mTimerHandlers = [];
+}
+
+graphicsMultipleTimerHandler.prototype = graphicsMultipleTimerBase;
