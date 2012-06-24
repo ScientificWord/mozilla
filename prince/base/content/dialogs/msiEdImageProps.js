@@ -2325,6 +2325,7 @@ function onAccept()
         theKey = null;
       msiEditorEnsureElementAttribute(imageElement, "key", theKey, editor);
       msiEditorEnsureElementAttribute(imageElement, "id", theKey, editor);
+      msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
     }
     catch (e)
     {

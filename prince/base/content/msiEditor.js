@@ -556,6 +556,7 @@ var msiResizeListener =
       msiEditorEnsureElementAttribute(anElement, "imageWidth", msiCSSUnitsList.convertUnits(newWidth, "pt", theUnits), this.mEditor);
     if (bSetHeight)
       msiEditorEnsureElementAttribute(anElement, "imageHeight", msiCSSUnitsList.convertUnits(newHeight, "pt", theUnits), this.mEditor);
+    msiSetGraphicFrameAttrsFromGraphic(anElement, null);
   },
 
   resizePlot : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
@@ -9989,6 +9990,39 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
   catch(exc) {AlertWithTitle("Error in msiEditor.js", "Error in goDoPrinceCommand: " + exc);}
 }
 
+function msiSetGraphicFrameAttrsFromGraphic(imageObj, editor)
+{
+  var frameObj = msiNavigationUtils.getParentOfType(imageObj, "msiframe");
+  if (!frameObj)
+    return;
+
+  var theUnits = imageObj.getAttribute("units");
+  var unitHandler = new UnitHandler();
+  unitHandler.initCurrentUnit(theUnits);
+  var width = Number(imageObj.getAttribute("imageWidth"));
+  var borderWidth = Number(imageObj.getAttribute("borderw"));
+  if (!borderWidth || isNaN(borderWidth))
+    borderWidth = 0;
+  var paddingWidth = Number(imageObj.getAttribute("padding"));
+  if (!paddingWidth || isNaN(paddingWidth))
+    paddingWidth = 0;
+
+  if (width && !isNaN(width))
+  {
+    width += 2 * borderWidth + 2 * paddingWidth;
+    msiEditorEnsureElementAttribute(frameObj, "width", String(width), editor);
+    msiEnsureElementCSSProperty(frameObj, "width", String(unitHandler.getValueAs(width, "px")), editor);
+    msiEditorEnsureElementAttribute(frameObj, "units", theUnits, editor);
+  }
+  var height = Number(imageObj.getAttribute("imageHeight"));
+  if (height && !isNaN(height))
+  {
+    height += 2 * borderWidth + 2 * paddingWidth;
+    msiEditorEnsureElementAttribute(frameObj, "height", String(height), editor);
+    msiEnsureElementCSSProperty(frameObj, "height", String(unitHandler.getValueAs(height, "px")), editor);
+    msiEditorEnsureElementAttribute(frameObj, "units", theUnits, editor);
+  }
+}
 
 //
 // Command Updater functions

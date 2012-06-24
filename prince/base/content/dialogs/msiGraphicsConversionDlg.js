@@ -270,7 +270,7 @@ function Startup()
   {
     timerHandler = new graphicsTimerHandler(0, dlgTimerCallbackObject);
     importTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-    timerHandler.startLoading(importDataIn.mSourceFile, importDataIn.mImportTargFile, importDataIn.mImportProcess);
+    timerHandler.startLoading(importDataIn.mSourceFile, importDataIn.mImportTargFile, importDataIn.mImportProcess, "import", importTimer);
     dlgTimerCallbackObject.mImportHandler = timerHandler;
     importTimer.initWithCallback( timerHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
   }
@@ -278,7 +278,7 @@ function Startup()
   {
     timerHandler = new graphicsTimerHandler(0, dlgTimerCallbackObject);
     importTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-    timerHandler.startLoading(importDataIn.mSourceFile, importDataIn.mTexImportTargFile, importDataIn.mTexImportProcess);
+    timerHandler.startLoading(importDataIn.mSourceFile, importDataIn.mTexImportTargFile, importDataIn.mTexImportProcess, "tex", importTimer);
     dlgTimerCallbackObject.mTexHandler = timerHandler;
     importTimer.initWithCallback( timerHandler, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
   }
