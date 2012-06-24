@@ -4,6 +4,7 @@
 #ifndef PROD_SW
 Components.utils.import("resource://app/modules/computelogger.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 
 //-----------------------------------------------------------------------------------
 var msiEvaluateCommand =
@@ -1043,15 +1044,21 @@ function makeSnapshotPath( object)
   else {
     extension = "png";
   }
+  var path;
   try {
-    var path = object.data;
-    path = path.replace(/file:[-/[a-z_A-Z0-9.]+\/plots\//,'graphics/');
-    path = path.replace(/xv[cz]$/,extension);  
+    var srcPath = msiGetIOService().newURI(object.data, null, null);
+    srcPath = srcPath.QueryInterface(Components.interfaces.nsIURL);
+    var fileName = srcPath.fileName;
+    fileName = fileName.replace(/xv[cz]$/,extension);
+//    path = object.data;
+    path = "graphics/" + fileName;
+//    path = path.replace(/(file:\/\/.*)(\/plots\/)([^\/]+)/,'graphics/$3');
+//    path = path.replace(/xv[cz]$/,extension);  
   }
   catch(e) {
     msidump(e.message);
   }
-  return path
+  return path;
 }
 
 function insertSnapshot( object, snapshotpath )
@@ -1060,6 +1067,8 @@ function insertSnapshot( object, snapshotpath )
     oldpath, file, url;
   parent = object.parentNode;
   objectlist = parent.getElementsByTagName("object");
+  var snapshotUrl = msiFileURLFromAbsolutePath(snapshotpath);
+  var snapshotRelUrl = msiMakeRelativeUrl(snapshotUrl.spec);
   for (i = 0; i < objectlist.length; ) {
     element = objectlist[i];
     if (element.hasAttribute("msisnap")) {
@@ -1091,7 +1100,7 @@ function insertSnapshot( object, snapshotpath )
   }
   ssobj = object.cloneNode(true); // copies useful attributes
   ssobj.removeAttribute("msigraph");
-  ssobj.setAttribute("data", snapshotpath);
+  ssobj.setAttribute("data", snapshotRelUrl);
   ssobj.setAttribute("msisnap", "true");
   ssobj.removeAttribute("type");
   parent.appendChild(ssobj);
@@ -1117,7 +1126,7 @@ function buildSnapshotFile(obj, abspath, res)
   func(abspath, res);
 }
 
-function doMakeSnapshot(obj, graph, editorElement) {
+function doMakeSnapshot(obj, graph, editorElement, graphicsMultiCallback) {
 //  tryUntilSuccessful(200,10, function(){
 //  var intervalId;
 //  var count = 0;
@@ -1153,12 +1162,18 @@ function doMakeSnapshot(obj, graph, editorElement) {
           editorElement = msiGetActiveEditorElement();
         }
         abspath = makeRelPathAbsolute(path, editorElement);
-        if ( getOS(window) == "win") {
-        // in this case path is a complete file url string
-          abspath = path.slice(8);
-          abspath = abspath.replace("/","\\","g");
-          abspath = abspath.replace("%20", " ", "g");
-        }
+        var snapshotDir = Components.classes["@mozilla.org/file/local;1"].  
+                               createInstance(Components.interfaces.nsILocalFile);
+        snapshotDir.initWithPath(abspath);
+        snapshotDir = snapshotDir.parent;
+        if (!snapshotDir.exists())
+          snapshotDir.create(1, 0755);
+//        if ( getOS(window) == "win") {
+//        // in this case path is a complete file url string
+//          abspath = path.slice(8);
+//          abspath = abspath.replace("/","\\","g");
+//          abspath = abspath.replace("%20", " ", "g");
+//        }
         plotWrapper.wrappedObj.makeSnapshot (abspath, res);
         if ( getOS(window) == "win") {
           var file = Components.classes["@mozilla.org/file/local;1"].  
@@ -1166,11 +1181,15 @@ function doMakeSnapshot(obj, graph, editorElement) {
           file.initWithPath(abspath);
           var graphicsPath = file.clone();
           graphicsPath = graphicsPath.parent;
-          graphicsPath.append("graphics");
-          graphicsConverter.doGraphicsImport(file, graphicsPath, "import", window, null);
+//          graphicsPath.append("graphics");
+          var timerHandler = null;
+          if (graphicsMultiCallback)
+            timerHandler = graphicsMultiCallback.addNewTimerHandler(10000); //set time limit of 10 seconds for conversion to finish?
+          var targFile = graphicsConverter.doGraphicsImport(file, graphicsPath, "import", window, timerHandler);
 //          doGraphicsImport(file, {inFileType:"bmp",exepath:"%ImageMagick%",output:"png",commandLine:"convert %inputFile% %outputFile%" }, "import");
-          path.replace("plots","graphics");
-          path.replace(".bmp", ".png");
+          path = targFile.path;
+//          path.replace("plots","graphics");
+//          path.replace(".bmp", ".png");
         }
         insertSnapshot( obj, path );
       }
@@ -1180,11 +1199,13 @@ function doMakeSnapshot(obj, graph, editorElement) {
     }
 //    count++;
 //  }, 200);
+
 }
 
 function rebuildSnapshots (doc) {
   var wrapperlist, objlist, length, objlength, i, regexp, match, name1, name2;
   var editorElement = msiGetActiveEditorElement();
+  var graphicsCallbackObj = new graphicsMultipleTimerHandler();
   wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
   length = wrapperlist.length;
   for (i = 0; i < length; i++)
@@ -1192,7 +1213,7 @@ function rebuildSnapshots (doc) {
     objlist = wrapperlist[i].getElementsByTagName("object");
     objlength = objlist.length;
     if (objlength === 1) {
-      doMakeSnapshot(objlist[0], null, editorElement);
+      doMakeSnapshot(objlist[0], null, editorElement, graphicsCallbackObj);
     }
     else if (objlength > 1){
       regexp = /plot\d+/;
@@ -1201,10 +1222,16 @@ function rebuildSnapshots (doc) {
       match = regexp.exec(objlist[1].data);
       name2 = match[0];
       if (name1 !== name2) {
-        doMakeSnapshot(objlist[0], null, editorElement);
+        doMakeSnapshot(objlist[0], null, editorElement, graphicsCallbackObj);
       }
     }
   }
+  var checkGraphicsCallback = (function(callbackObj)
+    {return function(){return callbackObj.isFinished();};
+    })(graphicsCallbackObj);
+
+
+  tryUntilSuccessful( 200, 200, checkGraphicsCallback );
 }
 
 function doVCamCommandOnObject(obj, cmd, editorElement)
@@ -1351,7 +1378,7 @@ function doVCamPreInitialize(obj, graph)
           return doMakeSnapshot(obj, graph, editorElement);
         }
         plotWrapper.wrappedObj = obj;
-        doMakeSnapshot(obj, editorElement);
+        doMakeSnapshot(obj, graph, editorElement);
         return true;
       }
     }
