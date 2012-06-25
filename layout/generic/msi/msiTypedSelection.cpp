@@ -155,7 +155,7 @@ msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset,
     }
     else if (newNSAnchor != FetchAnchorNode() || newNSAnchorOffset != FetchAnchorOffset())
     {
-      res =  nsTypedSelection::Extend(newNSAnchor, newNSAnchorOffset);
+      res =  nsTypedSelection::Collapse(newNSAnchor, newNSAnchorOffset);
       if (NS_SUCCEEDED(res))
       {
         nsDirection direction = GetDirection();
