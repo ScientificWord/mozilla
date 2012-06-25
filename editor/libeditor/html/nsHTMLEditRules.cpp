@@ -91,6 +91,7 @@
 #include "msiISimpleComputeEngine.h"
 #include "msiEditingManager.h"
 #include "jcsDumpNode.h"
+#include "../base/nsEditorUtils.h"
 
 
 
@@ -3001,114 +3002,182 @@ PRInt32 CharLength(nsCOMPtr<nsIDOMNode> node)
 
 
 // caretNode and caretOffset are the location of the caret. It is somewhere in node.
-// This function counts the number of characters, into node, that the caret lies.  
+// This function counts the number of characters, into node, that the caret lies and
+// records the characters it passes in the process (appending them to chars)  
 
 PRInt32 FindCursorIndex(nsHTMLEditor* editor, 
                         nsIDOMNode* node, 
                         nsIDOMNode* caretNode, 
                         PRInt32 caretOffset, 
                         bool& done,
-                        PRInt32 level)
+                        PRInt32 level,
+                        nsAString& chars)
 {
   printf("\nFindCursor\n");
+  nsAutoString str;
   editor->DumpNode(node, 2*level, true);
   
   int count = 0;
 
   if (editor->IsTextNode(node)) {
+    nsCOMPtr<nsIDOM3Node> m;
+    m = do_QueryInterface(node);
+    m->GetTextContent(str);
 
       if (caretNode == node) {
           done = true;
           printf("\nReturn caret offset %d", caretOffset);
+          str.Truncate(caretOffset);
+          chars += str;
           return caretOffset;
       } else {
           printf("\nReturn char length %d", CharLength(node));
-          return CharLength(node); 
+          chars += str;
+          return str.Length(); 
       }
 
   }	else {
-      
-      nsCOMPtr<msiIMathMLEditingBC> editingBC; 
-      PRUint32 dontcare(0);
-      PRUint32 mathmltype;
+    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
 
-      nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
+    nsCOMPtr<nsIDOMNodeList> childList;
+    node->GetChildNodes(getter_AddRefs(childList));
+    if (!childList) return 0;
+    PRUint32 numChildren;
+    childList->GetLength(&numChildren);
 
-      nsCOMPtr<nsIDOMNodeList> childList;
-      node->GetChildNodes(getter_AddRefs(childList));
-      if (!childList) return 0;
-      PRUint32 numChildren;
-      childList->GetLength(&numChildren);
+    if (node == caretNode) {    
+       numChildren = caretOffset;   // we'll only have to look at this many
+    }
 
-      if (numChildren == 0){
-        // However, an empty text in the node will not have been counted.
-        // That node could be the one we're looking for
-        printf("\nNo children");        
-        editor->DumpNode(node, 2*level, true);
+    nsCOMPtr<nsIDOMNode> child;
 
-        nsCOMPtr<nsIDOMNode> tmp;
-        caretNode->GetParentNode(getter_AddRefs(tmp));
-        if (node == tmp){
-          done = true;
-          printf("\nReturn sum %d", count);
-          return count;
-        }
-      }
+    for (int i = 0; i < numChildren; ++i) {
+      msiUtils::GetChildNode(node, i, child);      
+      int n = FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1, chars);        
+      count += n;
 
-      if (node == caretNode) {    
-         numChildren = caretOffset;   // we'll only have to look at this many
-      }
-
-      nsCOMPtr<nsIDOMNode> child;
-
-      for (int i = 0; i < numChildren; ++i) {
-        msiUtils::GetChildNode(node, i, child);
-
-        msiUtils::GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
+      if (done)
+        break;
         
-        if (editingBC) {
-          mathmltype = msiUtils::GetMathmlNodeType(editingBC);
-        }
+    }
 
-        if (( mathmltype == msiIMathMLEditingBC::MATHML_MFRAC || 
-              mathmltype == msiIMathMLEditingBC::MATHML_MSUB  ||
-              mathmltype == msiIMathMLEditingBC::MATHML_MSUP     )  && i == 1) {
-          // Passing into a denominator, subscript, ...
-          count += 1;  
-        }
-        
-        int n = FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);        
-        count += n;
+    if (node == caretNode) {    
+       done = true;
+    }
 
-        if (done)
-          break;
-        
-      }
-
-      if (node == caretNode) {    
-         done = true;
-      }
-
-      if (!done){
-        msiUtils::GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
-        
-        if (editingBC) {
-          mathmltype = msiUtils::GetMathmlNodeType(editingBC);
-        }
-
-        if ( mathmltype == msiIMathMLEditingBC::MATHML_MFRAC) {
-            // Passing out of denominator ...
-            count += 1;  
-        }
-      }
-
-      printf("\nReturn sum %d", count);
-      return count;
-
+    printf("\nReturn sum %d", count);
+    return count;
   }
-      
 }
 
+void BuildAncestorArray( nsIDOMNode * startnode, nsIDOMNode * topancestor, nsCOMArray<nsIDOMNode>& aNodeArray)
+{
+  // precondition: aNodeArray is empty.
+  if (startnode == topancestor) return;
+  PRUint16 type;
+  nsresult res;
+  nsCOMPtr<nsIDOMNode> node(startnode);
+  nsCOMPtr<nsIDOMNode> parent;
+  nsAutoString localName;
+  res = node->GetNodeType(&type);
+  if (type == nsIDOMNode::TEXT_NODE)
+    return;
+  aNodeArray.AppendObject(node);
+  while (node != topancestor) {
+    node->GetParentNode(getter_AddRefs(parent));
+    node = parent;
+    if (node)
+    {
+      node->GetLocalName(localName);
+      while (localName.EqualsLiteral("mrow") ||
+             localName.EqualsLiteral("mstyle") ||
+             localName.EqualsLiteral("maction") ||
+             localName.EqualsLiteral("maligngroup") ||
+             localName.EqualsLiteral("malignmark"))
+      {
+        node->GetParentNode(getter_AddRefs(parent));
+        node = parent;
+        node->GetLocalName(localName);
+        // we don't check against topancestor, because we assume it is not of this list of types
+      }
+      aNodeArray.AppendObject(node);
+    }    
+    else
+     return;
+  }
+}
+
+bool ArraysMatch( nsCOMArray<nsIDOMNode>& array1, nsCOMArray<nsIDOMNode>& array2)
+{
+  if (array1.Count() != array2.Count())
+  {
+    return false;
+  }
+  PRInt32 length = array1.Count();
+  PRInt32 i;
+  nsAutoString tag1;
+  nsAutoString tag2;
+  for (i=0; i < length; i++)
+  {
+    array1[i]->GetLocalName(tag1);
+    array2[i]->GetLocalName(tag2);
+    if (!(tag1.Equals(tag2))) return false;
+  }
+  return true;
+}
+
+
+void FindCursorAndOffset(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNode, nsIDOMNode * stopnode, 
+  nsCOMArray<nsIDOMNode>&array, nsIDOMNode ** newNode, PRInt32& newOffset)
+{
+  if (array.Count() == 0) {
+    *newNode = startNode;
+    newOffset = -1;
+    return;
+  }
+  nsCOMPtr<nsIDOMNode> node = startNode;
+  nsCOMPtr<nsIDOMNode> nextNode;
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 offset;
+  nsresult rv;
+  PRUint16 type;
+  nsCOMArray<nsIDOMNode> arr;
+  nsEditor * ed = static_cast<nsEditor*>(editor);
+  bool done = false;
+  nsCOMPtr<nsIDOMDocument> doc;
+  rv = mathNode->GetOwnerDocument(getter_AddRefs(doc));
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  doctrav = do_QueryInterface(doc);
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  rv = doctrav->CreateTreeWalker( mathNode, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
+  if (!(NS_SUCCEEDED(rv) && tw)) return;
+  tw->SetCurrentNode(startNode);
+  tw->NextNode(getter_AddRefs(node));
+  
+  while (node && (node != stopnode))
+  {
+    node->GetNodeType(&type);
+    while (node && type == nsIDOMNode::TEXT_NODE && nodeIsWhiteSpace(node, -1, -1))
+    {
+      tw->NextNode(getter_AddRefs(node));
+      if (node) node->GetNodeType(&type);
+    }
+    if (node && (node != stopnode))
+    {
+      arr.Clear();
+      BuildAncestorArray(node, mathNode, arr);
+      if (ArraysMatch(array,arr)) {
+        *newNode = node;
+        newOffset = 0;
+        done = true; // unnecessary
+        return;
+      }
+      tw->NextNode(getter_AddRefs(node));
+    }
+  }
+  // if we get here we have failed.
+  *newNode = startNode;
+}
 
 nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode) {
   nsCOMPtr<nsIDOMSerializer> ds = do_CreateInstance(NS_XMLSERIALIZER_CONTRACTID);
@@ -3118,83 +3187,63 @@ nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode) {
 }
 
 
-void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset)
+void FindCursorNodeAndOffset(nsIEditor* editor, nsIDOMNode* mathnode, PRInt32& charCount, 
+  nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset,
+  nsAString& chars, nsCOMArray<nsIDOMNode> array)
 {
      printf("\nFindNodeAndOffset of char %d in node\n", charCount);
-     editor->DumpNode(node, 0, true);
-
-     if (editor->IsTextNode(node)) {
-         PRInt32 len = CharLength(node);
-
-         if (len >= charCount){
-           theNode = node;
-           theOffset = charCount;
-           charCount = 0;
-     	     printf("\nFound\n");
-         } else {
-           charCount -= len;
+     nsresult rv;
+     nsAutoString txt;
+     nsAutoString dupChars(chars);
+     nsAutoString firstPart;
+     nsCOMPtr<nsIDOMDocument> doc;
+     bool done = false;
+     rv = mathnode->GetOwnerDocument(getter_AddRefs(doc));
+     nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+     doctrav = do_QueryInterface(doc);
+     nsCOMPtr<nsIDOMTreeWalker> tw;
+     nsCOMPtr<nsIDOMNode> node;
+     rv = doctrav->CreateTreeWalker( mathnode, nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
+     if (!(NS_SUCCEEDED(rv) && tw)) return;
+     tw->NextNode(getter_AddRefs(node));
+     while (node && !done)
+     {
+       node->GetNodeValue(txt);
+       // need to skip over whitespace nodes.
+       if (txt.Length() < dupChars.Length())
+       {
+         firstPart = Substring(dupChars, 0, txt.Length());
+         if (firstPart.Equals(txt)) {
+           dupChars = Substring(dupChars, txt.Length());
          }
-
-     }  else {
-         //theNode = node;
-         //theOffset = 0;
-
-         nsCOMPtr<msiIMathMLEditingBC> editingBC; 
-         PRUint32 dontcare(0);
-         PRUint32 mathmltype;
-
-         msiUtils::GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
-         if (editingBC) {
-           mathmltype = msiUtils::GetMathmlNodeType(editingBC);
-         }
-           
-         nsCOMPtr<nsIDOMNodeList> children;
-         PRUint32 number;
-         nsCOMPtr<nsIDOMNode> child;
-
-         node->GetChildNodes(getter_AddRefs(children));
-         msiUtils::GetNumberofChildren(node, number);
-
-         //nsCOMPtr<nsIDOMNode>& saveNode = theNode;
-
-         for (PRUint32 i = 0; i < number; ++i) {
-            printf("\nGet child %d\n", i);
-            msiUtils::GetChildNode(node, i, child);
-
-            //printf("\nCharLength is %d\n", CharLength(child));
-            if ((mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1) ||
-                (mathmltype == msiIMathMLEditingBC::MATHML_MSUP && i == 1) ||
-                (mathmltype == msiIMathMLEditingBC::MATHML_MSUP && i == 1) ){
-              charCount -= 1;  // to distinguish numerator from denominator
-            }
-            if (editor->IsTextNode(child)){
-              if (charCount <= CharLength(child)){
-                theNode = child;
-                theOffset = charCount;
-                charCount = 0;
-                break;
-              } else {
-                charCount -= CharLength(child);
-              }
-                             
-            } else {
-              FindCursorNodeAndOffset(editor, child, charCount, theNode, theOffset);
-              if (charCount == 0 && theNode == NULL){
-                 theNode = node;
-                 theOffset = i+1;
-            }
-            if (charCount <= 0)
-              break;
-         }
-         if (charCount > 0)
-            if ((mathmltype == msiIMathMLEditingBC::MATHML_MFRAC  &&  i == 1) ||
-                (mathmltype == msiIMathMLEditingBC::MATHML_MSUP   &&  i == 1) ||
-                (mathmltype == msiIMathMLEditingBC::MATHML_MSUB   &&  i == 1)){
-            charCount -= 1;  // to leave denom
+         else 
+         {
+           //failure. What do we do here?
+           return;
          }
        }
-    }    
-}
+       else // We are in the last text node
+       {
+         theNode = node;
+         theOffset = dupChars.Length();
+         PRInt32 newOffset;
+         nsCOMPtr<nsIDOMNode> newNode;
+         if (theOffset == txt.Length()) {
+           // then the cursor may be anywhere from the end of this text node to the beginning of the
+           // next text node.
+           // Find the next text node
+           tw->NextNode(getter_AddRefs(node));
+           FindCursorAndOffset(editor, mathnode, theNode, node, array, getter_AddRefs(newNode), newOffset);
+           theNode = newNode;
+           if (newOffset >= 0)
+             theOffset = newOffset;
+         }
+         return;
+       }
+       tw->NextNode(getter_AddRefs(node));
+     }
+   return; // error: what do we do here? 
+ }
 
 
 
@@ -3219,6 +3268,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   if (!aSelection) { return NS_ERROR_NULL_POINTER; }
 
   nsresult res;
+  nsAutoString chars;
 
   nsCOMPtr<nsISelection> curSelection;
   res = mHTMLEditor->GetSelection(getter_AddRefs(curSelection));
@@ -3238,7 +3288,11 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
 
   if (mathNode) {
      bool b = false;
-     int idx = FindCursorIndex(mHTMLEditor, mathNode, startNode, startOffset, b, 0);
+     nsCOMArray<nsIDOMNode> array;
+     BuildAncestorArray( startNode, mathNode, array);
+     
+     
+     PRInt32 idx = FindCursorIndex(mHTMLEditor, mathNode, startNode, startOffset, b, 0, chars);
      printf("\nidx is %d\n", idx);
   
      nsString text = SerializeMathNode(mathNode);
@@ -3249,7 +3303,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
      text.GetData(&inp);
 
      printf("\nSending for cleanup: %ls\n" , inp);
-     pEngine->Perform(inp, 152, &result); // Cleanup function
+     res = pEngine->Perform(inp, 152, &result); // Cleanup function
      printf("\nBack from cleanup: %ls\n", result);
 
      nsString resString(result);
@@ -3278,7 +3332,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   
         nsCOMPtr<nsIDOMNode> theNode = 0;
         PRInt32 theOffset = 0;
-        FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset);
+        FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset, chars, array);
 
         printf("\nThe indicated node\n ");
         mHTMLEditor->DumpNode(theNode, 0, true);
