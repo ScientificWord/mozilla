@@ -206,7 +206,7 @@
     <command id="cmd_MSIComputeSettings"                 oncommand="doGlobalComputeCommand('cmd_compute_Settings')"/>
     <command id="cmd_MSIComputeSwitchEngines"            oncommand="doGlobalComputeCommand('cmd_compute_SwitchEngines')"/ -->
     <command id="cmd_MSIComputeInterpret"                oncommand="doComputeCommand('cmd_compute_Interpret')"/>
-    <!-- command id="cmd_MSIComputeFixup"                    oncommand="doComputeCommand('cmd_compute_Fixup')"/ -->
+    <command id="cmd_MSIComputeFixup"                    oncommand="doComputeCommand('cmd_compute_Fixup')"/>
     <command id="cmd_MSIComputePassthru"                 oncommand="doGlobalComputeCommand('cmd_compute_Passthru')"/>
   </commandset>
  
@@ -518,7 +518,7 @@
       <menuitem label="&MSIComputeSwitchEnginesCmd.label;"  accesskey="&MSIComputeSwitchEnginesCmd.accesskey;"              observes="cmd_MSIComputeSwitchEngines"/>
       <menuseparator/ -->                                                                                                                                        
       <menuitem label="&MSIComputeInterpretCmd.label;"  accesskey="&MSIComputeInterpretCmd.accesskey;" key="MSIinterpretKey" observes="cmd_MSIComputeInterpret"/>
-      <!-- menuitem label="&MSIComputeFixupCmd.label;"      accesskey="&MSIComputeFixupCmd.accesskey;"     observes="cmd_MSIComputeFixup"/ -->
+      <menuitem label="&MSIComputeFixupCmd.label;"      accesskey="&MSIComputeFixupCmd.accesskey;"     observes="cmd_MSIComputeFixup"/>
       <menuitem label="&MSIComputePassthruCmd.label;"   accesskey="&MSIComputePassthruCmd.accesskey;"  observes="cmd_MSIComputePassthru"/>
     </menupopup>
   </menu>
