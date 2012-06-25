@@ -100,9 +100,11 @@
       <preference id="saveintervalseconds" 
                   name="swp.saveintervalseconds" 
                   type="int"/>
+#ifndef PROD_SNB
       <preference id="genTeXonsave" 
                   name="swp.generateTeXonsave" 
                   type="int"/>
+#endif
       <preference id="fastcursor.enabled" 
                   name="fastcursor.enabled" 
                   type="bool"/>
@@ -390,7 +392,9 @@
               <textbox type="number" style="width: 5em;" label="Save interval in seconds" preference="saveintervalseconds"/>
               <label value="&SaveIntervalSeconds.label;"/>
             </hbox>
+#ifndef PROD_SNB
             <checkbox id="generatetex" label="&GenerateTeXonAutoSave.label;" preference="genTeXonsave"/>
+#endif
           </groupbox>
           <groupbox>
             <caption>&Skin.label;</caption>
