@@ -23,6 +23,7 @@
 #include "nsIDOM3Node.h"
 #include "../text/nsPlaintextEditor.h"
 #include "../html/nsHTMLEditor.h"
+#include "../base/nsEditorUtils.h"
 #include "nsIAutoCompleteSearchStringArray.h"
 
 
@@ -1383,43 +1384,6 @@ NS_IMETHODIMP msiTagListManager::GetClearListTag(nsIAtom **atomNamespace, nsAStr
    one must be either all white space or a descendent of a strTag node or (if the
    first or last node in the selection) all white space after or before the offset), */
 
-PRBool nodeIsWhiteSpace( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lastindex)
-/* return whether all the text (or all the text before index or all the text after index) is white space */
-{
-  // \f\n\r\t\v\ u00A0\u2028\u2029 are the white space characters
-  nsAutoString theText;
-  nsAutoString text;
-  PRUint16 nodeType;
-  node->GetNodeType(&nodeType);
-
-  if(nodeType != nsIDOMNode::TEXT_NODE) return false;
-//  get the string from the node
-  node->GetNodeValue(theText);
-  PRUint32 length = theText.Length();
-  text = Substring(theText, firstindex, lastindex);
-
-//  set up the iterators
-  nsAString::const_iterator cur, end;
-
-  text.BeginReading(cur);
-  text.EndReading(end);
-
-  for (; cur != end; cur++)
-  {
-    if ((*cur == PRUnichar(' ')) ||
-        (*cur == PRUnichar('\f')) ||
-        (*cur == PRUnichar('\n')) ||
-        (*cur == PRUnichar('\r')) ||
-        (*cur == PRUnichar('\t')) ||
-        (*cur == PRUnichar('\v')) ||
-        (*cur == PRUnichar(0x00A0)) ||
-        (*cur == PRUnichar(0x2028)) ||
-        (*cur == PRUnichar(0x2029)))
-    {}
-    else return PR_FALSE;
-  }
-  return PR_TRUE;
-}
 
 PRBool isInTag(nsIDOMNode * node, const nsAString & strTag)
 {

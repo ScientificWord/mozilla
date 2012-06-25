@@ -371,3 +371,44 @@ nsEditorHookUtils::DoInsertionHook(nsIDOMDocument *aDoc, nsIDOMEvent *aDropEvent
 
   return PR_TRUE;
 }
+
+
+PRBool nodeIsWhiteSpace( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lastindex)
+/* return whether all the text (or all the text before index or all the text after index) is white space */
+{
+  // \f\n\r\t\v\ u00A0\u2028\u2029 are the white space characters
+  nsAutoString theText;
+  nsAutoString text;
+  PRUint16 nodeType;
+  node->GetNodeType(&nodeType);
+
+  if(nodeType != nsIDOMNode::TEXT_NODE) return false;
+//  get the string from the node
+  node->GetNodeValue(theText);
+  PRUint32 length = theText.Length();
+  if (firstindex >= 0 && lastindex >= 0)
+    text = Substring(theText, firstindex, lastindex);
+  else text = theText;
+
+//  set up the iterators
+  nsAString::const_iterator cur, end;
+
+  text.BeginReading(cur);
+  text.EndReading(end);
+
+  for (; cur != end; cur++)
+  {
+    if ((*cur == PRUnichar(' ')) ||
+        (*cur == PRUnichar('\f')) ||
+        (*cur == PRUnichar('\n')) ||
+        (*cur == PRUnichar('\r')) ||
+        (*cur == PRUnichar('\t')) ||
+        (*cur == PRUnichar('\v')) ||
+        (*cur == PRUnichar(0x00A0)) ||
+        (*cur == PRUnichar(0x2028)) ||
+        (*cur == PRUnichar(0x2029)))
+    {}
+    else return PR_FALSE;
+  }
+  return PR_TRUE;
+}
