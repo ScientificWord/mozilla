@@ -286,4 +286,6 @@ class nsEditorHookUtils
                                                   nsISimpleEnumerator **aEnumerator);
 };
 
+PRBool nodeIsWhiteSpace( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lastindex);
+
 #endif // nsEditorUtils_h__
