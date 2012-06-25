@@ -9691,6 +9691,8 @@ function setTagFieldContents(editor, propertyStack)
   var tt, pt, st, ft;
   try 
   {
+    document.getElementById("cmd_textBold").setAttribute("checked", "false");
+    document.getElementById("cmd_textItalic").setAttribute("checked", "false");
     tt = document.getElementById("TextTagSelections");
     pt = document.getElementById("ParaTagSelections");
     st = document.getElementById("StructTagSelections");
@@ -9700,26 +9702,30 @@ function setTagFieldContents(editor, propertyStack)
     if (st) st.value = "";
     if (ft) ft.value = "";
     while (str && (str.length > 0)) {
-  //    if (str.length > 0) {
-      	klass = tagManager.getClassOfTag(str, null);
-        textbox = null;
-        switch(klass) {
-          case "texttag" : textbox = tt;
-            break;
-          case "paratag" : 
-          case "listtag" : textbox = pt;
+    	klass = tagManager.getClassOfTag(str, null);
+      textbox = null;
+      switch(klass) {
+        case "texttag" : textbox = tt;
           break;
-          case "structtag" :
-          case "envtag"  : textbox = st;
-          break;
-          case "frontmtag" : textbox = ft;
-          break;
-          default : break;
+        case "paratag" : 
+        case "listtag" : textbox = pt;
+        break;
+        case "structtag" :
+        case "envtag"  : textbox = st;
+        break;
+        case "frontmtag" : textbox = ft;
+        break;
+        default : break;
+      }
+      if (textbox) {
+        textbox.value = str;
+        if (str === "bold") {
+          document.getElementById("cmd_textBold").setAttribute("checked", "true");
         }
-        if (textbox) {
-          textbox.value = str;
+        else if (str === "italics") {
+          document.getElementById("cmd_textItalic").setAttribute("checked", "true");
         }
-  //    }
+      }
       str = propertyStack.pop();
     }
   }
