@@ -106,9 +106,9 @@ label="&bibliographyButton.label;" observes="cmd_unimp"/>
       <toolbarbutton id="gifsAnimatedButton" type="checkbox" autoCheck="true" label="&gifsAnimatedButton.label;"  oncommand="setAnimation();" tooltiptext="&gifsAnimatedButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
-      <toolbarbutton id="boldButton" class="toolbarbutton-1" observes="cmd_textBold"
+      <toolbarbutton id="boldButton" class="toolbarbutton-1" type="checkbox" observes="cmd_textBold"
                  tooltiptext="&boldToolbarButton.tooltip;" label="&boldToolbarButton.label;"/>
-      <toolbarbutton id="italicButton" class="toolbarbutton-1" observes="cmd_textItalic"
+      <toolbarbutton id="italicButton" class="toolbarbutton-1" type="checkbox" observes="cmd_textItalic"
                  tooltiptext="&italicToolbarButton.tooltip;" label="&italicToolbarButton.label;"/>
       <toolbaritem id="TextTags" title="&texttagselect.label;"><textbox id="TextTagSelections"/></toolbaritem>
       <toolbaritem id="ParaTags" title="&paratagselect.label;"><textbox id="ParaTagSelections"/></toolbaritem>
