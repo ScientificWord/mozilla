@@ -489,6 +489,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SortArray(const nsAString & st
     SortStringStringArray(pssa);
   }
   else pssa->strArray->Sort();
+  return NS_OK;
 }
 
 /* nsIAutoCompleteSearchStringArray getGlobalSearchStringArray (); */
