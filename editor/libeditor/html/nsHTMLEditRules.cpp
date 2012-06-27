@@ -3073,23 +3073,23 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 void BuildAncestorArray( nsIDOMNode * startnode, nsIDOMNode * topancestor, nsCOMArray<nsIDOMNode>& aNodeArray)
 {
   // precondition: aNodeArray is empty.
-  if (startnode == topancestor) return;
+//  if (startnode == topancestor) return;
   PRUint16 type;
   nsresult res;
   nsCOMPtr<nsIDOMNode> node(startnode);
   nsCOMPtr<nsIDOMNode> parent;
   nsAutoString localName;
   res = node->GetNodeType(&type);
-  if (type == nsIDOMNode::TEXT_NODE)
-    return;
-  aNodeArray.AppendObject(node);
+  if (type != nsIDOMNode::TEXT_NODE)
+    aNodeArray.AppendObject(node);
   while (node != topancestor) {
     node->GetParentNode(getter_AddRefs(parent));
     node = parent;
     if (node)
     {
       node->GetLocalName(localName);
-      while (localName.EqualsLiteral("mrow") ||
+      while (localName.EqualsLiteral("#text") ||
+             localName.EqualsLiteral("mrow") ||
              localName.EqualsLiteral("mstyle") ||
              localName.EqualsLiteral("maction") ||
              localName.EqualsLiteral("maligngroup") ||
@@ -3126,24 +3126,28 @@ bool ArraysMatch( nsCOMArray<nsIDOMNode>& array1, nsCOMArray<nsIDOMNode>& array2
   return true;
 }
 
+void SecondPass(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNode,
+  nsCOMArray<nsIDOMNode>&array, nsIDOMNode ** newNode, PRInt32& newOffset);
+
 
 void FindCursorAndOffset(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNode, nsIDOMNode * stopnode, 
   nsCOMArray<nsIDOMNode>&array, nsIDOMNode ** newNode, PRInt32& newOffset)
 {
   if (array.Count() == 0) {
     *newNode = startNode;
-    newOffset = -1;
+    newOffset = -1;  // i.e., don't change the offset
     return;
   }
-  nsCOMPtr<nsIDOMNode> node = startNode;
+  nsCOMPtr<nsIDOMNode> node( startNode );
   nsCOMPtr<nsIDOMNode> nextNode;
   nsCOMPtr<nsIDOMNode> parent;
-  PRInt32 offset;
+  nsAutoString tag;
+  PRUint32 offset;
   nsresult rv;
   PRUint16 type;
   nsCOMArray<nsIDOMNode> arr;
   nsEditor * ed = static_cast<nsEditor*>(editor);
-  bool done = false;
+  PRBool onText = PR_FALSE;
   nsCOMPtr<nsIDOMDocument> doc;
   rv = mathNode->GetOwnerDocument(getter_AddRefs(doc));
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
@@ -3152,7 +3156,36 @@ void FindCursorAndOffset(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode *
   rv = doctrav->CreateTreeWalker( mathNode, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
   if (!(NS_SUCCEEDED(rv) && tw)) return;
   tw->SetCurrentNode(startNode);
+  // look for Larry's marker
+  node = startNode;
+  while (node && !msiUtils::NodeHasCaretMark(node, offset, onText))
+  {
+    tw->NextNode(getter_AddRefs(node));
+  }
+  if (node)  // we found a caret mark
+  {
+    node->GetLocalName(tag);
+    if (tag.EqualsLiteral("mi"))
+    {
+      nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
+      elem->SetAttribute(NS_LITERAL_STRING("tempinput"),NS_LITERAL_STRING("true"));
+    }
+    if (onText) {
+      node->GetFirstChild(newNode);
+      newOffset = offset;
+      return;
+    }
+    *newNode = node;
+    newOffset = offset;
+    return;
+  }
+  
+  // Larry's code didn't find it. Try another search
+  
+  
+  tw->SetCurrentNode(startNode);
   tw->NextNode(getter_AddRefs(node));
+
   
   while (node && (node != stopnode))
   {
@@ -3169,14 +3202,52 @@ void FindCursorAndOffset(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode *
       if (ArraysMatch(array,arr)) {
         *newNode = node;
         newOffset = 0;
-        done = true; // unnecessary
         return;
       }
       tw->NextNode(getter_AddRefs(node));
     }
   }
-  // if we get here we have failed.
-  *newNode = startNode;
+
+  SecondPass(editor, mathNode, startNode, array, newNode, newOffset);
+}
+
+void SecondPass(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNode,
+  nsCOMArray<nsIDOMNode>&array, nsIDOMNode ** newNode, PRInt32& newOffset)
+{
+  nsCOMArray<nsIDOMNode> arr;
+  nsCOMPtr<nsIDOMNode> node( startNode );
+  nsEditor * ed = static_cast<nsEditor*>(editor);
+  BuildAncestorArray(node, mathNode, arr);  // call arr the current one, array the original
+  nsAutoString tagOrig;
+  nsAutoString tagCurrent;
+  PRInt32 iOrig, iCurrent;
+  iOrig = array.Count() -1;
+  iCurrent = arr.Count() -1;
+  while (iOrig > -1 && iCurrent > -1)
+  {
+    array[iOrig]->GetLocalName(tagOrig);
+    arr[iCurrent]->GetLocalName(tagCurrent);
+    if (!tagCurrent.Equals(tagOrig)) {
+      // failure
+      *newNode = startNode;
+      newOffset = 100;
+    }
+    iOrig--;
+    iCurrent--;
+  }
+  // iOrig should be the negative one. 
+  if (iCurrent < 0) {
+    // the two arrays matched. 
+    *newNode = startNode;
+    newOffset = 100;
+  }
+  else
+  {
+    nsCOMPtr<nsIDOMNode> parent;
+    nsEditor::GetNodeLocation(arr[iCurrent], address_of(parent), &newOffset);
+    *newNode = parent.get();
+    newOffset++;
+  }
 }
 
 nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode) {
@@ -3227,13 +3298,33 @@ void FindCursorNodeAndOffset(nsIEditor* editor, nsIDOMNode* mathnode, PRInt32& c
          theNode = node;
          theOffset = dupChars.Length();
          PRInt32 newOffset;
-         nsCOMPtr<nsIDOMNode> newNode;
+         nsIDOMNode * newNode;
          if (theOffset == txt.Length()) {
            // then the cursor may be anywhere from the end of this text node to the beginning of the
            // next text node.
            // Find the next text node
            tw->NextNode(getter_AddRefs(node));
-           FindCursorAndOffset(editor, mathnode, theNode, node, array, getter_AddRefs(newNode), newOffset);
+           // in some cases involving subscripts, superscripts, fractions, etc, the
+           // deletion code may have put in a <mi  tempinput="true"> in which case we
+           // use it
+//           if (node)
+//           {  
+//             nsAutoString contents;
+//             nsCOMPtr<nsIDOMNode> child;
+//             nsCOMPtr<nsIDOM3Node> d3 = do_QueryInterface(node);
+//             d3->GetTextContent(contents);
+//             nsAutoString text(PRUnichar(0x200B)); // zero width space   
+//             if (contents.Equals(text))
+//             {
+//               nsEditor::GetNodeLocation(node, address_of(newNode), &newOffset);
+//               nsEditor::GetNodeLocation(newNode, address_of(newNode), &newOffset);
+//               newNode->RemoveChild(node, getter_AddRefs(child));
+//               theNode = newNode;
+//               theOffset = newOffset;
+//               return;
+//             }
+//           }
+           FindCursorAndOffset(editor, mathnode, theNode, node, array, &newNode, newOffset);
            theNode = newNode;
            if (newOffset >= 0)
              theOffset = newOffset;
