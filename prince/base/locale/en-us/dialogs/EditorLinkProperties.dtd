@@ -48,6 +48,7 @@
 <!ENTITY chooseButton.label "Choose File...">
 <!ENTITY chooseFileLink.accessKey "o">
 <!ENTITY MarkerorAnchor "Marker or Anchor">
+<!ENTITY EnterExistingKeyName "Enter an existing key name">
 
 
 <!ENTITY targetBox.label "Target">

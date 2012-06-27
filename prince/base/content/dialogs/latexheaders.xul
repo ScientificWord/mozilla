@@ -75,7 +75,7 @@
       <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="menutooltip">
         <menu id="editMenu"/>
         <menu id="MSIMathMenu"/>
-        <menu id="formatMenu" label="formatMenu.label;">
+        <menu id="formatMenu" label="&formatMenu.label;">
           <menupopup id="formatMenuPopup">
             <menuitem id="snapToGrid"/>
             <menuseparator/>
