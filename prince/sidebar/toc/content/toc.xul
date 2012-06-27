@@ -20,21 +20,21 @@
   <script type="application/x-javascript" src="chrome://prince/content/toc.js"/>
   
   <menupopup id="toc-context-menu">
-    <menuitem label="&jumptomain;" oncommand="jump();"/>
+    <menuitem label="&jumptomain.label;" oncommand="jump();"/>
   </menupopup>
 
   <broadcaster id="taglist" taglist="note firstdef"/>
     
   <toolbox >
     <menubar id="toctoolbar" class="chromeclass-menubar">
-    <menuitem id="refresh" label="Refresh" accesskey="r" flex="0" command="cmd_build_toc"/>
-    <menuitem id="TOC" label="TOC" tooltip="&showtoc;" checked="true"
+    <menuitem id="refresh" label="&Refresh.label;" accesskey="&Refresh.accesskey;" flex="0" command="cmd_build_toc"/>
+    <menuitem id="TOC" label="&TOC.label;" tooltiptext="&showtoc.tooltip;" checked="true"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
-    <menuitem id="LOF" label="LOF" tooltip="&showfigureslist;" checked="false" 
+    <menuitem id="LOF" label="&LOF.label;" tooltiptext="&showfigureslist.tooltip;" checked="false" 
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
-    <menuitem id="LOT" label="LOT" tooltip="&showtablelist;" checked="false"
+    <menuitem id="LOT" label="&LOT.label;" tooltiptext="&showtablelist.tooltip;" checked="false"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
-    <menuitem id="Tag" label="Notes" tooltip="&shownotes;" checked="false"
+    <menuitem id="Tag" label="&Notes.label;" tooltiptext="&shownotes.tooltip;" checked="false"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
     <scale id="toc-level-scale" min="0" max="7" width="50px" height="15px"
       increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
