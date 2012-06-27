@@ -28,13 +28,13 @@
   <toolbox >
     <menubar id="toctoolbar" class="chromeclass-menubar">
     <menuitem id="refresh" label="Refresh" accesskey="r" flex="0" command="cmd_build_toc"/>
-    <menuitem id="TOC" label="TOC" tooltip="Show table of contents" checked="true"
+    <menuitem id="TOC" label="TOC" tooltip="&showtoc;" checked="true"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
-    <menuitem id="LOF" label="LOF" tooltip="Show list of figures" checked="false" 
+    <menuitem id="LOF" label="LOF" tooltip="&showfigureslist;" checked="false" 
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
-    <menuitem id="LOT" label="LOT" tooltip="Show list of tables" checked="false"
+    <menuitem id="LOT" label="LOT" tooltip="&showtablelist;" checked="false"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
-    <menuitem id="Tag" label="Notes" tooltip="Show notes" checked="false"
+    <menuitem id="Tag" label="Notes" tooltip="&shownotes;" checked="false"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
     <scale id="toc-level-scale" min="0" max="7" width="50px" height="15px"
       increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
