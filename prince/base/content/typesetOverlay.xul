@@ -2,7 +2,7 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!DOCTYPE overlay SYSTEM "chrome://prince/locale/typesetOverlay.dtd">
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/25/2012-->
 <overlay id="typesetOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
