@@ -9,7 +9,7 @@
 
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd">
-<!--JLF to verify-->
+<!--JLF - Localization pass on 6/25/2012 -->
 <overlay id="toolbarsOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   
@@ -97,8 +97,7 @@
       <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" label="&indexentryButton.label;" observes="cmd_MSIinsertIndexEntryCmd"/>
       <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" label="&xrefButton.label;" observes="cmd_MSIinsertCrossReferenceCmd"/>
       <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" label="&texfieldButton.label;" observes="cmd_MSIinsertTeXFieldCmd"/>
-      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;"       
-label="&bibliographyButton.label;" observes="cmd_unimp"/>
+      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;" observes="cmd_unimp"/>
       <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
 #endif
       <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" label="&hspaceButton.label;" observes="cmd_insertHorizontalSpaces" />
@@ -114,8 +113,7 @@ label="&bibliographyButton.label;" observes="cmd_unimp"/>
       <toolbaritem id="ParaTags" title="&paratagselect.label;"><textbox id="ParaTagSelections"/></toolbaritem>
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
       <toolbaritem id="FrontMTags" title="&frontmtagselect.label;"><textbox id="FrontMTagSelections"/></toolbaritem>
-     <!-- JLF, apply correct format for % in entity.  Using the percent symbol in the entity string in DTD file causes parsing error-->
-      <toolbaritem id="zoomer" title="Zoom setting" ><textbox id="zoomValue" label="Zoom %" tooltiptext="&ZoomSetting.tooltip;" type="number" observes="cmd_textZoomSet"/></toolbaritem>
+      <toolbaritem id="zoomer" title="Zoom settings" ><textbox id="zoomValue" label="&ZoomSetting.label;" tooltiptext="&ZoomSetting.tooltip;" type="number" observes="cmd_textZoomSet"/></toolbaritem>
       
     </toolbarpalette>
     <toolbar 
