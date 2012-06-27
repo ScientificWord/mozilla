@@ -148,6 +148,7 @@
 <!ENTITY MSISymbolTabLatin1      "Latin-1">
 <!ENTITY MSISymbolTabLatinE      "Latin extended-A">
 <!ENTITY MSISymbolTabPunctuation  "General punctuation">
+<!ENTITY MSISymbolTabDrag.tooltip "Drag frequently-used symbols here">
 
 
 <!ENTITY symbolalpha.tooltip       "alpha">

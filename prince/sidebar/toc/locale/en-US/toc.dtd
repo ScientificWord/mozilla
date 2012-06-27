@@ -1,2 +1,6 @@
 <!ENTITY  toc         "Table of contents">
 <!ENTITY  jumptomain  "Jump to main document">
+<!ENTITY showtoc "Show table of contents">
+<!ENTITY showfigureslist  "Show list of figures">
+<!ENTITY showtablelist  "Show list of tables">
+<!ENTITY shownotes  "Show Notes">

@@ -11,7 +11,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/otfont.dtd" >
 %dialogDTD;
 ]>
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/25/2012-->
 <!-- JLF - verify use with BBM-->
 <dialog id="fontsize" title="&fontsizetitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -28,7 +28,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/fontsize.js"/>
    <description>&label.generaluseA;</description>
-  <description>&label.generaluseB;</description>
+ <!-- <description>&label.generaluseB;</description>-->
   <hbox>
     <vbox>
       <label value="&fontsize.label;" control="otfont.fontsize" 	accesskey="&fontsize.accesskey;"/>

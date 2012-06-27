@@ -39,6 +39,7 @@
 <!ENTITY frontmtagselect.tooltip "Apply a front matter tag" >
 <!ENTITY frontmtagselect.label "Front matter tags" >
 
+<!ENTITY ZoomSetting.label  "Zoom percent">
 <!ENTITY ZoomSetting.tooltip  "Zoom setting">
 
 <!ENTITY mathtextButton.tooltip "Toggle between math and text" >

@@ -17,7 +17,7 @@
 <!ENTITY % rulesdialogDTD SYSTEM "chrome://prince/locale/msiRulesDialog.dtd" >
 %rulesdialogDTD;
 ]>
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/25/2012-->
 
 <dialog class="dialogScroll" id="otfontdlg" title="&fontwindowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
