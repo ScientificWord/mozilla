@@ -483,12 +483,12 @@ NS_IMETHODIMP
 msiEditor::InsertSymbol(const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
+  PRBool bCollapsed(PR_FALSE);
   if (!(mFlags & eEditorPlaintextMask)) 
   {
     nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
-    PRBool bCollapsed(PR_FALSE);
     res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res)) 
@@ -503,6 +503,8 @@ msiEditor::InsertSymbol(const nsAString & symbol)
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
+      res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+                             endOffset, bCollapsed);
       theNode = startNode;
       theOffset = startOffset;
       if (NS_SUCCEEDED(res))
