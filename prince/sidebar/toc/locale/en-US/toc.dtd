@@ -1,6 +1,16 @@
-<!ENTITY  toc         "Table of contents">
-<!ENTITY  jumptomain  "Jump to main document">
-<!ENTITY showtoc "Show table of contents">
-<!ENTITY showfigureslist  "Show list of figures">
-<!ENTITY showtablelist  "Show list of tables">
-<!ENTITY shownotes  "Show Notes">
+<!ENTITY  jumptomain.label  "Jump to main document">
+<!ENTITY  Refresh.label         "Refresh">
+<!ENTITY  Refresh.accesskey         "r">
+<!ENTITY  TOC.label         "TOC">
+<!ENTITY showtoc.tooltip "Show table of contents">
+<!ENTITY LOF.label  "LOF">
+<!ENTITY showfigureslist.tooltip  "Show list of figures">
+<!ENTITY LOT.label  "LOT">
+<!ENTITY showtablelist.tooltip  "Show list of tables">
+<!ENTITY Notes.label  "Notes">
+<!ENTITY shownotes.tooltip  "Show Notes">
+
+
+
+
+
