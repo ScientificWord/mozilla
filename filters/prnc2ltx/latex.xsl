@@ -983,7 +983,48 @@ should not be done under some conditions -->
 
 <xsl:template match="html:graphSpec">
 </xsl:template>
-  
 
+<!-- Start definitions for ulem package -->
+<xsl:template match="html:QTR[@type='QQQuline']">
+\uline{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:QTR[@type='QQQuuline']">
+\uuline{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:QTR[@type='QQQuwave']">
+\uwave{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:QTR[@type='QQQsout']">
+\sout{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:QTR[@type='QQQxout']">
+\xout{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:uline">
+\preprint{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:uuline">
+\preprint{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:uwave">
+\preprint{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:sout">
+\preprint{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:xout">
+\preprint{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+<!-- End definitions for ulem package -->
 
 </xsl:stylesheet>
+
