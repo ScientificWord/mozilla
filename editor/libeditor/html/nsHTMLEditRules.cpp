@@ -3126,6 +3126,21 @@ bool ArraysMatch( nsCOMArray<nsIDOMNode>& array1, nsCOMArray<nsIDOMNode>& array2
   return true;
 }
 
+PRUint32 TextNodeLength(nsIDOMNode * node)
+{
+  if (!node) return 0;
+  nsAutoString txt;
+  PRUint16 type;
+  nsresult rv = node->GetNodeType(&type);
+  if (type == nsIDOMNode::TEXT_NODE)
+  {
+    node->GetNodeValue(txt);
+    return txt.Length();
+  }
+  else
+    return 0;
+}
+
 void SecondPass(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNode,
   nsCOMArray<nsIDOMNode>&array, nsIDOMNode ** newNode, PRInt32& newOffset);
 
@@ -3158,9 +3173,15 @@ void FindCursorAndOffset(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode *
   tw->SetCurrentNode(startNode);
   // look for Larry's marker
   node = startNode;
-  while (node && !msiUtils::NodeHasCaretMark(node, offset, onText))
+  while (node)
   {
-    tw->NextNode(getter_AddRefs(node));
+    rv = node->GetNodeType(&type);
+    if (type == nsIDOMNode::TEXT_NODE)
+      node->GetParentNode(getter_AddRefs(node));
+    
+    if (msiUtils::NodeHasCaretMark(node, offset, onText))
+      break;
+     tw->NextNode(getter_AddRefs(node));
   }
   if (node)  // we found a caret mark
   {
@@ -3230,7 +3251,7 @@ void SecondPass(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNod
     if (!tagCurrent.Equals(tagOrig)) {
       // failure
       *newNode = startNode;
-      newOffset = 100;
+      newOffset = TextNodeLength(startNode);
     }
     iOrig--;
     iCurrent--;
@@ -3239,7 +3260,7 @@ void SecondPass(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNod
   if (iCurrent < 0) {
     // the two arrays matched. 
     *newNode = startNode;
-    newOffset = 100;
+    newOffset = TextNodeLength(startNode);
   }
   else
   {
@@ -3360,6 +3381,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
 
   nsresult res;
   nsAutoString chars;
+  nsIEditor * ed = static_cast<nsIEditor*>(mHTMLEditor);  
 
   nsCOMPtr<nsISelection> curSelection;
   res = mHTMLEditor->GetSelection(getter_AddRefs(curSelection));
@@ -3367,6 +3389,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   // find where we are
   nsCOMPtr<nsIDOMNode> startNode;
   PRInt32 startOffset;
+
   res = mEditor->GetStartNodeAndOffset(curSelection, address_of(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
@@ -3374,6 +3397,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   // See if we're in math
   
   nsCOMPtr<nsIDOMNode> mathNode;
+  nsCOMPtr<nsIDOMNode> node;
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
 
@@ -3381,7 +3405,16 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
      bool b = false;
      nsCOMArray<nsIDOMNode> array;
      BuildAncestorArray( startNode, mathNode, array);
-     
+     PRUint32 flags = 0;
+     PRUint16 type;
+     res = startNode->GetNodeType(&type);
+     PRBool onText = (type == nsIDOMNode::TEXT_NODE);
+     if (onText) 
+       startNode->GetParentNode(getter_AddRefs(node));
+     else
+       node = startNode;
+       
+     msiUtils::MarkCaretPosition(ed, node.get(), (PRUint32&)startOffset, flags, onText, PR_TRUE);
      
      PRInt32 idx = FindCursorIndex(mHTMLEditor, mathNode, startNode, startOffset, b, 0, chars);
      printf("\nidx is %d\n", idx);
