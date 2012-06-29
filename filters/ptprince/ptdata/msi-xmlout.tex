@@ -391,12 +391,14 @@
         \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
             #1%
         \msiclosetag{biblabel}{</biblabel>}%
-  \msiclosetag{citation}{</citation>}}
+  \msiclosetag{citation}{</citation>}
+  \endgroup}
 
 \def\out@citey#1{%
   \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
-                            citekey="}#1\msitag{" hasRemark="false">}%
-  \msiclosetag{citation}{</citation>}}
+                                  citekey="}#1\msitag{" hasRemark="false">}%
+  \msiclosetag{citation}{</citation>}
+  \endgroup}
 
 
 %\MSITextElement[a]{ref}
