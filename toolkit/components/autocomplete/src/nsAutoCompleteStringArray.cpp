@@ -80,10 +80,18 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::StopSearch()
 }
 
 /* boolean addString (in AString strCategory, in AString strAdd); */
-NS_IMETHODIMP nsAutoCompleteSearchStringArray::AddString(const nsAString & strCategory, const nsAString & strAdd, 
-  const nsAString & strComment, const nsAString & strMathOnly, PRBool *_retval)
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::AddString(const nsAString & strCategory, const nsAString & strAdd, PRBool *_retval)
 {
-  if (m_imp) return m_imp->AddString(strCategory, strAdd, strComment, strMathOnly, _retval);
+  if (m_imp) return m_imp->AddString(strCategory, strAdd, _retval);
+  printf("nsAutoCompletSearchStringArray uninitialized\n");
+  return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
+/* boolean addStringEx(in AString strCategory, in AString strAdd, in AString strDescription, in AString strMathOnly); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::AddStringEx(const nsAString & strCategory, const nsAString & strAdd,
+  const nsAString & strDescription, const nsAString & strMathOnly, PRBool *_retval)
+{
+  if (m_imp) return m_imp->AddStringEx(strCategory, strAdd, strDescription, strMathOnly, _retval);
   printf("nsAutoCompletSearchStringArray uninitialized\n");
   return NS_OK; // is there an NS_UNINITIALIZED ??
 }
@@ -279,9 +287,15 @@ nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( c
   return psa; // returns nsnull if no string array exists for the category.
 }
 
-
 /* boolean addString (in AString strCategory, in AString strAdd); */
-NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & strCategory, const nsAString & strAdd, 
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & strCategory, const nsAString & strAdd, PRBool *_retval)
+{
+  nsAutoString zero;
+  return AddStringEx(strCategory, strAdd, zero, zero, _retval);
+}
+
+/* boolean AddStringEx (in AString strCategory, in AString strAdd, in AString strComment, in AString strMath); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & strCategory, const nsAString & strAdd, 
   const nsAString & strComment, const nsAString & strMath, PRBool *_retval)
 {
   stringStringArray * pssa = m_stringArrays;
@@ -302,7 +316,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & st
   if (!psa) // unable to create new string array
   { 
     *_retval = PR_FALSE;
-    printf("out of memory in nsAutoCompleteSearchStringArrayImp::AddString\n");
+    printf("out of memory in nsAutoCompleteSearchStringArrayImp::AddStringEx\n");
     return NS_OK;
   }
   if (psa && (psa->IndexOf(strAdd)==-1))  // should be true, unless there was a error creating a new one.
