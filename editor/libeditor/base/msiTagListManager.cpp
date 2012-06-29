@@ -628,7 +628,7 @@ nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg)
   if (aData->tagClass == ua->tagClass && !(aData->hidden))
   {
     nsString name = tk.altForm();
-    ua->ptlm->pACSSA->AddString(ua->tagClass, name, aData->description, aData->mathonly, &bres);
+    ua->ptlm->pACSSA->AddStringEx(ua->tagClass, name, aData->description, aData->mathonly, &bres);
   }
   return PL_DHASH_NEXT;
 }
