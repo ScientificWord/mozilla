@@ -1006,23 +1006,23 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:uline">
-\preprint{<xsl:apply-templates/>}<xsl:text/>
+\uline{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:uuline">
-\preprint{<xsl:apply-templates/>}<xsl:text/>
+\uuline{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:uwave">
-\preprint{<xsl:apply-templates/>}<xsl:text/>
+\uwave{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:sout">
-\preprint{<xsl:apply-templates/>}<xsl:text/>
+\sout{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:xout">
-\preprint{<xsl:apply-templates/>}<xsl:text/>
+\xout{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 <!-- End definitions for ulem package -->
 
