@@ -153,6 +153,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_gotoMarker", msiGoToMarkerCommand);
   commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
   commandTable.registerCommand("cmd_reviseCrossRef", msiReviseCrossRefCommand);
+  commandTable.registerCommand("cmd_copypicture", msiCopyPictureCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -9594,6 +9595,37 @@ var msiConvertToTable =
     }
   }
 };
+
+///// "cmd_copypicture" /////////
+var msiCopyPictureCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+  	var editorElement = msiGetActiveEditorElement();
+  	var editor = msiGetEditor(editorElement);
+  	if (!editor || !editor.selection || editor.selection.isCollapsed)
+      return false;
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+      if (editor && editor.selection && !editor.selection.isCollapsed)
+        msiCopyAsPicture(editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('copypicture'), e.message);
+    }
+  }
+};
+
 
 function msiNote(currNode, editorElement, type, hidden)
 {
