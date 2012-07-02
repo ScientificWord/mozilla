@@ -45,7 +45,7 @@
 
 <!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorPublishProgress.dtd">
 <!-- dialog containing a control requiring initial setup -->
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <dialog title=""
     id="msiEditorPublishProgressDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

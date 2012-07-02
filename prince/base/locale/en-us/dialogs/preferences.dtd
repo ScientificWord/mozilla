@@ -276,7 +276,7 @@
 <!ENTITY axiscustom.label           "Custom">
 <!ENTITY axisnticks.label           "Number of X Ticks">
 <!ENTITY axisdisable.label          "Disable Tick Labeling">
-<!ENTITY axislabels.label           "Axis labels">
+<!ENTITY axislabels.label           "Axis abels">
 <!ENTITY axisxaxis.label            "X">
 <!ENTITY axisyaxis.label            "Y">
 <!ENTITY axiszaxis.label            "Z">
@@ -295,6 +295,7 @@
 <!ENTITY axisnormal.label           "Normal">
 <!ENTITY axisboxed.label            "Boxed">
 <!ENTITY axistickmark.label         "Axis Tick Marks">
+<!-- axisframed.label is also used on groupbox caption label -->
 <!ENTITY axisframed.label           "Frame">
 <!ENTITY axisauto.label             "Automatic">
 
@@ -384,3 +385,19 @@
 <!ENTITY prefAdvancedPrefs.label  "Advanced Preferences">
 <!ENTITY prefAdvancedPlugins.label  "Plugins">
 <!ENTITY InstalledPlugins.label "Installed plugins">
+
+<!ENTITY FrameTab.label  "Frame">
+<!ENTITY SideMargin.label "Side Margin">
+<!ENTITY TopBottomMargin.label  "Top/Bottom Margin">
+<!ENTITY Padding.label  "Padding">
+<!ENTITY PaddingColor.label "Padding Color">
+<!ENTITY BorderWidth.label  "Border Width">
+<!ENTITY BorderColor.label  "Border Color">
+<!ENTITY EditorTab.label  "Editor">
+<!ENTITY SpellChecking.label  "Spell checking">
+<!ENTITY PlotsTab.label "Plots">
+
+<!ENTITY LabellingTab.label "Labelling">
+<!ENTITY ViewDefaults.label "View defaults">
+
+<!ENTITY TypesettingTab.label "Typesetting">
