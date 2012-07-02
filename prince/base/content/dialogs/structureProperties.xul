@@ -11,7 +11,7 @@
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/structureproperties.dtd">
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&windowTitle.label;"
     id="structurepropertiesdlg"
@@ -76,7 +76,7 @@
           <label id="textboxlabel" disabled="true" control="subdocFileName" value="&subdocFileName.label;"
              accesskey="&subdocFileName.accesskey;"/>
           <textbox id="subdocFileName" disabled="true" onchange="filenameChanged(this);"/>
-          <!-- JLF for RA.  The Accesskey below works, but does not display as intended. I suspect this may be due to how the strings are added here.  See bug 1031. -->
+          <!-- JLF - The Accesskey below works, but does not display as intended. I suspect this may be due to how the strings are added here.  See bug 1031. -->
           <checkbox id="numberedCheckbox" label="&numberedCheckbox.label;" accesskey="&numberedCheckbox.accesskey;"
              checked="true" oncommand="numbering(this);" persist="checked"/> 
           <hbox flex="4"/>         
@@ -87,6 +87,7 @@
           <caption> 
             <label value="&sectionShortHeader.label;" />
           </caption>
+          <!-- JLF - address string in value below -->
           <label id="showwhendisabled" value="You can't set a short title for an unnumbered ##."
              persist="hidden" hidden="true"/>
           <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext"

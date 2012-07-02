@@ -27,7 +27,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <dialog id="AutoSubstitutionDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
