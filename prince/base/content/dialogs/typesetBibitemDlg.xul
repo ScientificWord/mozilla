@@ -23,7 +23,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
-<!-- JLF to verify-->
+<!-- JLF - localization pass on 7/2/2012 -->
 <dialog title="&windowTitle.label;"
     id="typesetBibitemDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

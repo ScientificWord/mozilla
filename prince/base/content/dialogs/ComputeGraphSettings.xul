@@ -517,7 +517,7 @@
                 <label text-align="center">z</label>
               </row> 
               <row >
-                <label text-align = "end">Focal point</label>
+                <label text-align = "end">&Focalpoint.label;</label>
                 <textbox context="msiEditorContentContext" 
                         id="FocalPointX" flex="1" height="20"/>
                 <textbox context="msiEditorContentContext" 
@@ -526,7 +526,7 @@
                         id="FocalPointZ" flex="1" height="20"/>
               </row>
               <row>
-                <label text-align = "end">Position</label>
+                <label text-align = "end">&Position.label;</label>
                 <textbox context="msiEditorContentContext" 
                         id="CameraLocationX" flex="1" height="20"/>
                 <textbox context="msiEditorContentContext" 
@@ -535,7 +535,7 @@
                         id="CameraLocationZ" flex="1" height="20"/>
               </row>
               <row>
-                <label text-align = "end">Up Vector</label>
+                <label text-align = "end">&UpVector.label;</label>
                 <textbox context="msiEditorContentContext" 
                         id="UpVectorX" flex="1" height="20"/>
                 <textbox context="msiEditorContentContext" 
@@ -544,7 +544,7 @@
                         id="UpVectorZ" flex="1" height="20"/>
               </row>
               <row>
-                <label text-align = "end">ViewingAngle</label>
+                <label text-align = "end">&ViewingAngle.label;</label>
                 <textbox context="msiEditorContentContext" 
                         id="ViewingAngle" flex="1" height="20"/>
               </row>

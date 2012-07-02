@@ -9,7 +9,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/useWorkInProgress.dtd" >
 %dialogDTD;
 ]>
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <dialog id="workinprogress" 
     title="&useWIP.title;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

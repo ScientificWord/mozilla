@@ -271,3 +271,11 @@
 <!ENTITY AreaFillStyle.label  "Area Fill Style">
 <!ENTITY KeyNameConflict.tooltip  "Enter a key name which does not conflict with the current keys">
 <!ENTITY KeyNameConflict.label  "This key conflicts with an existing <br/>key. Choose a different one.">
+
+<!ENTITY VisibleBefore.label  "Visible Before">
+<!ENTITY VisibleAfter.label "Visible After">
+
+<!ENTITY Focalpoint.label "Focal point">
+<!ENTITY Position.label "Position">
+<!ENTITY UpVector.label "Up Vector">
+<!ENTITY ViewingAngle.label "ViewingAngle">
