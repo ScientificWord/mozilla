@@ -548,7 +548,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
   PRUint32 count = psa->Count();
   nsCOMPtr<nsAutoCompleteResultStringArray> mResult = new nsAutoCompleteResultStringArray(m_markedStrings);
   if (!mResult) return NS_ERROR_FAILURE;
-  stringStringArray * pssa = GetPssaForCategory(NS_LITERAL_STRING("texttag"));
+  //stringStringArray * pssa = GetPssaForCategory(NS_LITERAL_STRING("texttag"));
+  stringStringArray * pssa = GetPssaForCategory(searchParam);
+
   mResult->SetSearchString(searchString);
   mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_NOMATCH);
 
