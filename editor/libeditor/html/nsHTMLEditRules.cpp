@@ -3468,6 +3468,8 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
 
         range->SetStart(theNode, theOffset);
         curSelection->CollapseToStart();
+
+        msiUtils::ClearCaretPositionMark(ed, newMath, true);
      
         //mHTMLEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 

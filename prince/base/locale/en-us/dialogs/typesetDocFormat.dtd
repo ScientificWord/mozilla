@@ -169,6 +169,7 @@
 <!ENTITY EnableOverridePageLayout.accesskey "E">
 <!ENTITY Orientation.label  "Orientation">
 <!ENTITY Orientation.accesskey  "O">
+<!ENTITY PageHeight.label "Page height">
 <!ENTITY PageWidth.label  "Page width">
 <!ENTITY CropMarks.label  "Crop marks">
 <!ENTITY PageSizeHeight.label "Height">
@@ -240,6 +241,9 @@
 <!ENTITY RemoveTopRuleOrSpace.label "Remove Top Rule or Space">
 <!ENTITY InsertText.label "Insert Text">
 
+<!ENTITY PolyglossiaLanguage.label  "Polyglossia Language">
+<!ENTITY BabelLanguage.label  "Babel Language">
+<!ENTITY SecondLanguage.label "Second Language">
 
 <!-- Language List -->
 <!ENTITY USenglish.label "US English">
