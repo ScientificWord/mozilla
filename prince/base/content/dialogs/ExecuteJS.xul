@@ -10,7 +10,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/fragmentname.dtd">
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <dialog title="&executejs.title;"
     id="ExecuteJSDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" persist="height width"
