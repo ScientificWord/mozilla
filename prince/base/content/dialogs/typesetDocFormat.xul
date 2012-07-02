@@ -22,7 +22,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;                        
 ]>
-<!-- JLF to verify-->
+<!-- JLF - localization pass on 7/2/2012 -->
 <dialog title="&windowTitle.label;"
     id="docformat.dialog"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -195,11 +195,11 @@
               <row>                
                 <vbox>
                   <deck id="babelpoly">
-                    <label>Babel Language
+                    <label>&BabelLanguage.label;
                       <observes element="pdflatex" attribute="hidden"/>
                       <observes element="reformatok" attribute="disabled"/>
                     </label>
-                    <label style="width:9em">Polyglossia Language
+                    <label style="width:9em">&PolyglossiaLanguage.label;
                       <observes element="xelatex" attribute="hidden"/>
                       <!--observes element="reformatok" attribute="disabled"/ -->
                     </label>
@@ -293,7 +293,7 @@
                   </menulist>
                 </vbox>
                 <vbox>
-                  <label ><!--observes="reformatok" -->Second Language</label>
+                  <label ><!--observes="reformatok" -->&SecondLanguage.label;</label>
                   <menulist id="babelLang2"  persist="value" ><!--observes="reformatok" -->
                     <menupopup style="width: 12em">
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdflatex"'-->
@@ -404,7 +404,7 @@
                   <label observes="reformatok" value="&EqnNumberPosition.label;"/>
                   <menulist observes="reformatok" id="eqnnopos"  persist="value" >
                     <menupopup style="width: 9em" >
-                      <menuitem label="-default-" def="1"/>
+                      <menuitem label="&default.label;" def="1"/>
                       <menuitem value="reqno" label="&OnTheRight.label;"/>
                       <menuitem value="leqno" label="&OnTheLeft.label;"/>
                     </menupopup>
@@ -466,7 +466,7 @@
                   <label observes="reformatok" value="&BibliographyStyle.label;"/>
                   <menulist observes="reformatok" id="bibstyle"  persist="value" >
                     <menupopup style="width: 9em" >
-                      <menuitem label="-default-" def="1"/>
+                      <menuitem label="&default.label;" def="1"/>
                       <menuitem value="compbib" label="&Compressed.label;"/>
                       <menuitem value="openbib" label="&Open.label;"/>
                     </menupopup>
@@ -696,7 +696,7 @@
                           <broadcaster id="bc.finishpagesize" />
                           <spacer flex="1"/>
                           <vbox>
-                            <label observes="pagelayoutok" value="Page height"/>
+                            <label observes="pagelayoutok" value="PageHeight.label;"/>
                             <hbox><textbox type="number"  increment="0.1" decimalplaces="2" style="width: 5em" id="tbpageheight" observes="bc.finishpagesize"  persist="value"
                               onkeypress="geomHandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);onWindowSizeReset(false);" 
                               onchange="changePageDim(this);onWindowSizeReset(false);">

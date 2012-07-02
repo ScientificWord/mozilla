@@ -24,7 +24,7 @@
 %editorOverlayDTD;
 ]>
 
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&latexHeaders.label;"
     id="latexcontentslineDlg"
@@ -75,7 +75,7 @@
       <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="menutooltip">
         <menu id="editMenu"/>
         <menu id="MSIMathMenu"/>
-        <menu id="formatMenu" label="formatMenu.label;">
+        <menu id="formatMenu" label="&formatMenu.label;">
           <menupopup id="formatMenuPopup">
             <menuitem id="snapToGrid"/>
             <menuseparator/>

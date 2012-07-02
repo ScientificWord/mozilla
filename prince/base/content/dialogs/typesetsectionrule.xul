@@ -12,7 +12,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
-<!-- JLF to BBM on 6/30/2011. Use of file?-->
+<!-- JLF to BBM on 6/30/2012. Use of file?-->
 <dialog title="Add a rule"
     id="docformat.sections.addrule"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

@@ -9,7 +9,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/passes.dtd" >
 %dialogDTD;
 ]>
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&LaTeXPasses;" 
     id="passesDlg"

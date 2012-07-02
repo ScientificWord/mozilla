@@ -20,7 +20,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
-  <prefpane id="prefGeneral" label="General">
+  <prefpane id="prefGeneral" label="&GeneralTab.label;">
     <preferences>
       <preference id="defaultshell" 
                   name="swp.defaultShell" 
@@ -566,7 +566,7 @@
             </radiogroup>
           </groupbox>
           <groupbox>
-            <caption label="Frame"/>
+            <caption label="&FrameTab.label;"/>
             <grid>
               <columns>
                 <column/>
@@ -576,27 +576,27 @@
               </columns>
               <rows>
                 <row align="center">
-                  <label value="Side Margin"/>
+                  <label value="&SideMargin.label;"/>
                   <textbox id="graphicsSideMargin" type="number" decimalplaces="2"
                     preference="defaultGraphicsHMargin" style="width: 5em;"/>
-                  <label value="Top/Bottom Margin"/>
+                  <label value="&TopBottomMargin.label;"/>
                   <textbox id="graphicsVMargin" type="number" decimalplaces="2"
                     preference="defaultGraphicsVMargin" style="width: 5em;"/>
                 </row>
                 <row align="center">
-                  <label value="Padding"/>
+                  <label value="&Padding.label;"/>
                   <textbox id="graphicsPadding" type="number" decimalplaces="2"
                     preference="defaultGraphicsPadding" style="width: 5em;"/>
-                  <label value="Padding Color"/>
+                  <label value="&PaddingColor.label;"/>
                   <msibutton id="graphics.padding,colorbutton" class="color-button" oncommand="getColorAndUpdate('graphics.padding.CW');">
                     <spacer id="graphics.padding.CW" class="color-well" preference="graphics.BGColor"/>
                   </msibutton>
                 </row>
                 <row align="center">
-                  <label value="Border Width"/>
+                  <label value="&BorderWidth.label;"/>
                   <textbox id="graphicsBorder" type="number" decimalplaces="2" 
                     preference="defaultGraphicsBorderWidth" style="width: 5em;"/>
-                  <label value="Border Color"/>
+                  <label value="&BorderColor.label;"/>
                   <msibutton id="graphics.border,colorbutton" class="color-button" oncommand="getColorAndUpdate('graphics.border.CW');">
                     <spacer id="graphics.border.CW" class="color-well" preference="graphics.borderColor"/>
                   </msibutton>
@@ -611,7 +611,7 @@
 
   </prefpane>
 
-  <prefpane id="prefEdit" label="Editor" >
+  <prefpane id="prefEdit" label="&EditorTab.label;" >
     <preferences>
       <preference id="enablerealtimespell"
                   name="swp.spellchecker.enablerealtimespell"
@@ -636,7 +636,7 @@
         <tabpanel id="prefEdits" orient="vertical">
           <separator flex="1"/>
           <groupbox>
-            <caption>Spell checking</caption>
+            <caption>&SpellChecking.label;</caption>
             <hbox>
               <checkbox preference="enablerealtimespell" label="&EnableRTSpellCheck.label;" accesskey="&EnableRTSpellCheck.accesskey;"/>
             </hbox>
@@ -953,7 +953,7 @@
     </tabbox>
   </prefpane>
 
-  <prefpane id="prefPlots" label="Plots">
+  <prefpane id="prefPlots" label="&PlotsTab.label;">
     <tabbox id="outer-box" flex="1">
       <tabs class="tabs-top">
 	    <tab label="&tabbar.axes;"        selected="0" />
@@ -976,7 +976,7 @@
           </groupbox>
 
           <groupbox>
-            <caption>Axis Labels</caption>
+            <caption>&axislabels.label;</caption>
             <grid>
               <columns>
                 <column/>
@@ -1114,7 +1114,8 @@
           </radiogroup>
         </groupbox>
         <groupbox>
-          <caption label="Frame"/>
+        <!--JLF - note that axisframed.label is used more than once in this file. -->
+          <caption label="&axisframed.label;"/>
           <grid>
             <columns>
               <column/>
@@ -1124,27 +1125,27 @@
             </columns>
             <rows>
               <row align="center">
-                <label value="Side Margin"/>
+                <label value="&SideMargin.label;"/>
                 <textbox id="graphSideMargin" type="number" decimalplaces="2"
                   preference="graph.HMargin" style="width: 5em;"/>
-                <label value="Top/Bottom Margin"/>
+                <label value="TopBottomMargin.label;"/>
                 <textbox id="graphVMargin" type="number" decimalplaces="2"
                   preference="graph.VMargin" style="width: 5em;"/>
               </row>
               <row align="center">
-                <label value="Padding"/>
+                <label value="&Padding.label;"/>
                 <textbox id="graphPadding" type="number" decimalplaces="2"
                   preference="graph.padding" style="width: 5em;"/>
-                <label value="Padding Color"/>
+                <label value="&PaddingColor.label;"/>
                 <msibutton id="graph.padding,colorbutton" class="color-button" oncommand="getColorAndUpdate('graph.padding.CW');">
                   <spacer id="graph.padding.CW" class="color-well" preference="graph.BGColor"/>
                 </msibutton>
               </row>
               <row align="center">
-                <label value="Border Width"/>
+                <label value="&BorderWidth.label;"/>
                 <textbox id="graphBorder" type="number" decimalplaces="2" 
                   preference="graph.border" style="width: 5em;"/>
-                <label value="Border Color"/>
+                <label value="&BorderColor.label;"/>
                 <msibutton id="graph.border,colorbutton" class="color-button" oncommand="getColorAndUpdate('graph.border.CW');">
                   <spacer id="graph.border.CW" class="color-well" preference="graph.borderColor"/>
                 </msibutton>
@@ -1154,7 +1155,7 @@
         </groupbox>
       </tabpanel>      
 
-      <tabpanel id="Labelling">
+      <tabpanel id="&LabellingTab.label;">
         <vbox>
           <groupbox>
             <caption label="&labelingcaption.label;"/>
@@ -1166,7 +1167,7 @@
        </vbox>
       </tabpanel>      
 
-      <tabpanel id="View defaults">
+      <tabpanel id="&ViewDefaults.label;">
         <vbox>
           <separator/>
           <hbox align="center">
@@ -1219,7 +1220,7 @@
   </prefpane>
 #endif
 #ifndef PROD_SNB
-  <prefpane id="prefTypesetting" label="Typesetting">
+  <prefpane id="prefTypesetting" label="&TypesettingTab.label;">
     <preferences>
       <preference id="bibTeXExecutable"
                   name="swp.bibtex.appPath"

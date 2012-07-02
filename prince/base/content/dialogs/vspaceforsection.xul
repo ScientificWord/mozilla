@@ -14,7 +14,7 @@
 <!ENTITY % docformatdialogDTD SYSTEM "chrome://prince/locale/typesetDocFormat.dtd" >
 %docformatdialogDTD;
 ]>
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <!--JLF - need to set correct initial width/height-->
 <dialog id="SectionVspaceDlg"
   title="&vspaceWindowTitle.label;"
@@ -39,7 +39,7 @@
 	<vbox>
 	<label value="&spaceHeight.label;" accesskey="&spaceHeight.accesskey;"/>
 	<textbox id="spaceHeight" style="width: 3.5em" onkeypress="handleChar(event,'spaceheight');"
-	  tooltip="&spaceHeight.label;"/>
+	  tooltiptext="&spaceHeight.label;"/>
 	</vbox>
   </vbox>
 </dialog>
