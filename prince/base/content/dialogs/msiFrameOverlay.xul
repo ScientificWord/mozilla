@@ -6,7 +6,7 @@
 <?xml-stylesheet href="chrome://global/skin/form.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd">
- <!-- JLF to verify-->
+ <!-- JLF - localization pass 7/2/2012-->
 <overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       xmlns:html="http://www.w3.org/1999/xhtml">
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>

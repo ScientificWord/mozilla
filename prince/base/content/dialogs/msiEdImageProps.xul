@@ -53,7 +53,7 @@
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
  
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorImageProperties.dtd">
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <dialog id="imgDialog" 
     title="&windowTitle.label;"
     xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

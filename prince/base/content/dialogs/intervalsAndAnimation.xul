@@ -13,7 +13,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/intervalsAndAnimation.dtd" >
 %dialogDTD;
 ]>
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <dialog id="intervalsAndAnimation"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -23,9 +23,7 @@
   onload="startup();"
   width="400px"
   height="400px"
-
   screenX="40"
-
   screenY="40"
   persist="screenX screenY width height"
 >
