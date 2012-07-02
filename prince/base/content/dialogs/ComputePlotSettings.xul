@@ -21,7 +21,7 @@
 <!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
 %editorOverlayDTD;
 ]>
-<!-- JLF to verify-->
+<!-- JLF - Localization pass on 6/25/2012 -->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitleP.label;"
     id="ComputePlotSettingsDlg"
@@ -197,7 +197,7 @@
    	                  <menuitem label="&FillPatternForwardDiagLines.label;"  value="ForwardDiagonalLines"/>
                       <menuitem label="&FillPatternHorizLines.label;"        value="HorizontalLines"/>
                       <menuitem label="&FillPatternVertLines.label;"          value="VerticalLines"/>
-   	                  <menuitem label="FillPatternCrossedDiagLines.label"  value="CrossedDiagonalLines"/>
+   	                  <menuitem label="&FillPatternCrossedDiagLines.label"  value="CrossedDiagonalLines"/>
                     </menupopup>
                    </menulist>
    	            </row>
@@ -263,10 +263,10 @@
                   <textbox id="AnimateFPS" style="width: 3em"/>
    	            </row>
    	            <row>
-                 <checkbox id="AnimateVisBefore"  label="Visible Before"/>
+                 <checkbox id="AnimateVisBefore"  label="&VisibleBefore.label;"/>
    	            </row>
    	            <row>
-                 <checkbox id="AnimateVisAfter"  label="VisibleAfter"/>
+                 <checkbox id="AnimateVisAfter"  label="&VisibleAfter.label;"/>
    	            </row>
               </rows>
    	        </grid>

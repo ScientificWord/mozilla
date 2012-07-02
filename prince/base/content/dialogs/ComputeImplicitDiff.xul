@@ -27,7 +27,7 @@
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
     id="ComputeImplicitDiffDlg"

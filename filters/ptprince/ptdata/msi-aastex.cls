@@ -3,8 +3,8 @@
 \MSITeXButtonReq{email}
 \MSITeXButton{and}
 
-\MSITeXButton{sun}
-\MSITeXButton{earth}
+%\MSITeXButton{sun}
+%\MSITeXButton{earth}
 
 \MSITeXButton{micron}
 \MSITeXButton{sbond}
