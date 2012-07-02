@@ -12,7 +12,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Operators.dtd">
-<!-- JLF to verify-->
+<!-- JLF - localization pass 7/2/2012-->
 <dialog title="&windowTitle.label;"
     id="OperatorsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -44,7 +44,7 @@
   <broadcasterset>
     <broadcaster id="enableBrackets" disabled="false"/>
   </broadcasterset>
-<!--JLF, 3/4/2011 First pass for Operator label in tooltiptext.  Needs review. -->
+
   <vbox>
     <hbox>
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />

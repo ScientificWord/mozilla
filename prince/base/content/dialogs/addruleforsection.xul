@@ -14,7 +14,7 @@
 <!ENTITY % docformatdialogDTD SYSTEM "chrome://prince/locale/typesetDocFormat.dtd" >
 %docformatdialogDTD;
 ]>
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <!-- JLF - verify initial size -->
 <dialog id="SectionRuleDlg"
   title="&windowTitle.label;"
@@ -37,12 +37,12 @@
       <caption id="ruleLabel" label="&rule.label;" accesskey="&rule.accesskey;"/>
   <!-- we need width, height, units, color, and as an alternative to width, wide (margin-to-margin) and narrow (width of title) -->
       <vbox align="center">
-    	  <label>Units are: </label><label id="ruleUnits" value=""/>
+    	  <label>&UnitsAre.label; </label><label id="ruleUnits" value=""/>
       </vbox>
       <vbox>
         <label value="&ruleHeight.label;" accesskey="&ruleHeight.accesskey;"/>
         <textbox id="ruleHeight" style="width: 3.5em" onkeypress="handleChar(event,'ruleheight');"
-          tooltip="&ruleHeight.label;"/>
+          tooltiptext="&ruleHeight.label;"/>
       </vbox>
       <vbox>
         <label>&ruleWidth.label;</label>
@@ -52,14 +52,14 @@
           <hbox>
             <radio id="other" label="&other.label;"  value="other" accesskey="&other.accesskey;" oncommand=""/>
             <textbox id="ruleWidth" style="width: 3.5em" onkeypress="handleChar(event,'rulewidth');"
-              tooltip="&ruleWidth.label;"/>
+              tooltiptext="&ruleWidth.label;"/>
           </hbox>
         </radiogroup>
       </vbox>
     </groupbox>
     <spacer flex="1"/>
     <hbox>
-      <radiogroup id="rulealign" label="Rule alignment">
+      <radiogroup id="rulealign" label="&RuleAlignment.label">
         <radio id="left" label="&left.label;" selected = "true" value="l" accesskey="&left.accesskey;" />
         <radio id="center" label="&center.label;" value="c" accesskey="&center.accesskey;" />
         <radio id="right" label="&right.label;" value="r" accesskey="&right.accesskey;" />
