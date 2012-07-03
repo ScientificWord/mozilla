@@ -24,7 +24,7 @@
 <!ENTITY % menuDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuDTD;
 ]>
-<!-- JLF to verify-->
+<!-- JLF - localiazation pass on 7/2/2012-->
 <dialog title="&windowTitle.label;"
     id="typesetBibTeXCitationDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
