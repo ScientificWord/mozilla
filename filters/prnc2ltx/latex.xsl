@@ -1029,8 +1029,8 @@ should not be done under some conditions -->
 \dashuline{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
-<xsl:template match="html:dashuline">
-\dashuline{<xsl:apply-templates/>}<xsl:text/>
+<xsl:template match="html:dotuline">
+\dotuline{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 <!-- End definitions for ulem package -->
 </xsl:stylesheet>
