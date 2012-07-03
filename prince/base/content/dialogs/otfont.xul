@@ -6,7 +6,6 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="resource://app/res/css/latex.css" type="text/css"?>
 
-
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 
 <!DOCTYPE dialog [
@@ -21,6 +20,7 @@
 
 <dialog class="dialogScroll" id="otfontdlg" title="&fontwindowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
     onload = "return startup();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
@@ -35,9 +35,17 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/otfont.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-  <description>&label.generaluseA;</description>
-  <description>&label.generaluseB;</description>
-  <separator/>
+
+ <!-- <description>&label.generaluseA;<xsl:text disable-output-escaping="yes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">&#10;</xsl:text>&label.generaluseB;</description>-->
+  <description>
+  <html:p>
+  &label.generaluseA;
+  </html:p>
+  <html:p>
+  &label.generaluseB;
+  </html:p>
+  </description>
+
   <menulist id="otfontlist" oncommand="">
     <menupopup id="systemfontlist">
       <menuitem id="otfont.instruction" label="&menuitem.select.a.font;"/>
