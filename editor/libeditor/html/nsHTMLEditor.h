@@ -819,6 +819,11 @@ protected:
   nsresult GetWrapper(nsIDOMNode * node, nsIDOMNode ** wrapperNode);
   nsresult NodeContainsOnlyMn(nsIDOMNode * curNode, nsIDOMNode ** textNode);
   PRBool PropertyIsMathOnly( nsAString& textProperty);
+  nsresult InsertMathNode( nsIDOMNode * cNode, 
+    nsIDOMNode * parentNode, 
+    PRInt32 offsetOfNewNode,
+    PRBool& bDidInsert,
+    nsIDOMNode ** lastInsertNode);
 
 
 // Data members
