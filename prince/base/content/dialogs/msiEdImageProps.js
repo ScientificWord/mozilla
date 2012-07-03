@@ -68,6 +68,7 @@ var gFrameModeTextFrame = false;
 var gInsertNewImage = true;
 var gCaptionData;
 
+var gErrorMessageShown = false;
 var importTimer;
 var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "xvc","xvz"];
 var typesetGraphicTypes = ["eps", "pdf", "png", "jpg"];
@@ -855,7 +856,18 @@ function chooseFile()
 
     if (gDialog.import) // copy the file into the graphics directory
     {
-      fileName = getLoadableGraphicFile(url);
+      var importName;
+      try
+      { importName = getLoadableGraphicFile(url); }
+      catch(exc)
+      { dump("Exception in getLoadableGraphicFile loading " + url.spec + ": " + exc + "\n"); importName = null; }
+      if (!importName || !importName.length)
+      {
+        displayImportErrorMessage(fileName)
+        fileName = "";
+      }
+      else
+        fileName = importName;
     }
     else
     {
@@ -895,7 +907,7 @@ function getLoadableGraphicFile(inputURL)
 
   if (extension)  //if not, should we just do the copy and hope for the best? Or forget it?
   {
-    var nNative = nativeGraphicTypes.indexOf(extension);
+    var nNative = nativeGraphicTypes.indexOf(extension.toLowerCase());
     if (nNative < 0)
     {
       importFiles = getGraphicsImportTargets(file, "import");
@@ -957,6 +969,7 @@ var importTimerHandler =
   mSourceFile : null,
   mImportHandler : null,
   mTexHandler : null,
+  failNoticePosted : false,
 
 //  this.startLoading = function(sourceFile, targFile, process, mode)
 //  {
@@ -1033,6 +1046,7 @@ var importTimerHandler =
       this.mImportHandler.reset();
     if (this.mTexHandler)
       this.mTexHandler.reset();
+    this.failNoticePosted = false;
   },
 
   isLoading : function(mode)
@@ -1131,6 +1145,11 @@ var importTimerHandler =
     var titleStr = msiGetDialogString("imageProps.importErrorTitle", msgParams);
     this.failNoticePosted = true;
     AlertWithTitle(titleStr, msgString);
+  },
+
+  errorMessageShown : function()
+  {
+    return this.failNoticePosted;
   }
 
 };
@@ -2041,6 +2060,24 @@ function doOverallEnabling()
   doDimensionEnabling();
 }
 
+function shouldShowErrorMessage()
+{
+  return (!gErrorMessageShown && !importTimerHandler.errorMessageShown());
+}
+
+function displayImportErrorMessage(fileName)
+{
+  if (!shouldShowErrorMessage())
+    return;
+
+  var theMsg = "imageProps.couldNotImport";
+  var msgParams = {file: fileName};
+  var msgString = msiGetDialogString(theMsg, msgParams);
+  var titleStr = msiGetDialogString("imageProps.importErrorTitle", msgParams);
+  gErrorMessageShown = true;
+  AlertWithTitle(titleStr, msgString);
+}
+
 //function editImageMap()
 //{
 //  // Create an imagemap for image map editor
@@ -2085,7 +2122,8 @@ function ValidateImage()
 //  dump("1\n");
   if (!gDialog.srcInput.value)
   {
-    AlertWithTitle(null, GetString("MissingImageError"));
+    if (shouldShowErrorMessage())
+      AlertWithTitle(null, GetString("MissingImageError"));
 //    SwitchToValidatePanel();
     gDialog.srcInput.focus();
     return false;
