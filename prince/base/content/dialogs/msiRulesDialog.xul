@@ -11,7 +11,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiRulesDialog.dtd">
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <!--JLF - Look at width/height -->
 <dialog id="msiRulesDialog" title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -37,7 +37,7 @@
   </keyset>
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-<!--JLF, 3/4/2011, liftSizeTextbox, widthSizeTextbox, heightSizeTextbox and sizeUnitsbox need to have initial values set and 
+<!--JLF - Review 7/2/2012, liftSizeTextbox, widthSizeTextbox, heightSizeTextbox and sizeUnitsbox need to have initial values set and 
 persistence to maintain user's entries. -->
   <vbox>
     <groupbox id="sizeGroupbox">
