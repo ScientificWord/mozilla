@@ -334,6 +334,94 @@ nsresult nsHTMLEditor::NodeContainsOnlyMn(nsIDOMNode * curNode, nsIDOMNode ** te
   return NS_OK;
 }
 
+nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode, 
+  nsIDOMNode * parent, 
+  PRInt32 offsetOfNewNode,
+  PRBool& bDidInsert,
+  nsIDOMNode ** lastInsertNode)
+{
+  nsresult res;
+  nsAutoString strTempInput;
+  nsAutoString tagName;
+  nsCOMPtr<nsIDOMElement> pNode;
+  nsCOMPtr<nsIDOMNode> parentNode(parent);
+  pNode = do_QueryInterface(parentNode);
+  GetTagString(parentNode, tagName);
+  if (tagName.EqualsLiteral("mi") || tagName.EqualsLiteral("mo"))
+  {
+    // can't insert in these. Move to the side or, if a tempinput mi, delete the mi.
+    nsCOMPtr<nsIDOMNode> grandParent;
+    PRUint32 saveOffset = offsetOfNewNode;
+    res = parentNode->GetParentNode(getter_AddRefs(grandParent));
+    res = GetChildOffset(parentNode, grandParent, offsetOfNewNode);
+    res = pNode->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
+    if (strTempInput.EqualsLiteral("true"))
+    {
+      // delete the tempinput mi, reset parentNode and offsetOfNewNode, and start again
+      res = DeleteNode(parentNode);
+    }
+    else
+    {
+      // move past the mi (which is parentNode right now)
+      if (saveOffset > 0) offsetOfNewNode++;
+    }
+    parentNode = grandParent;
+    GetTagString(parentNode, tagName);
+  }
+  if (tagName.EqualsLiteral("mn"))
+  {
+    nsCOMPtr<nsIDOMNode> textNode;
+    res = NodeContainsOnlyMn(cNode, getter_AddRefs(textNode));
+    if (textNode)
+    {
+      cNode = textNode;
+      parentNode->Normalize();
+      res = parentNode->GetFirstChild(getter_AddRefs(parentNode));
+      NS_ENSURE_SUCCESS(res, res);
+      GetTagString(parentNode, tagName);
+      // don't put mn into an mn, but put the contents into the contents
+    }
+  }
+  if (!(tagName.EqualsLiteral("math") || tagName.EqualsLiteral("mrow")
+    || tagName.EqualsLiteral("#text")))
+  {
+    // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
+    nsCOMPtr<nsIDOMElement> mrow;
+    msiUtils::CreateMRow(this, cNode, mrow);
+    res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+    parentNode = mrow;
+    offsetOfNewNode = 1;
+    if (NS_SUCCEEDED(res)) 
+    {
+      bDidInsert = PR_TRUE;
+      *lastInsertNode = cNode;
+    }
+  }
+  else
+  {
+    PRUint16 nodeType1;
+    PRUint16 nodeType2;
+    cNode->GetNodeType(&nodeType1);
+    parentNode->GetNodeType(&nodeType2);
+    if (nodeType1 == 3 && nodeType2 == 3)
+    {
+      nsAutoString textContent;
+      cNode->GetNodeValue(textContent);
+      nsCOMPtr<nsIDOMCharacterData> textNode(do_QueryInterface(parentNode));
+      res = InsertTextIntoTextNodeImpl(textContent, (nsIDOMCharacterData*)textNode, offsetOfNewNode, PR_TRUE);
+    }
+    else
+    {
+      res = InsertNodeAtPoint(cNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+    }
+    if (NS_SUCCEEDED(res)) 
+    {
+      bDidInsert = PR_TRUE;
+      *lastInsertNode = cNode;
+    }
+  }
+}
+
 nsresult
 nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                     const nsAString & aContextStr,
@@ -586,21 +674,21 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 //    // now do the other end.
 //    PRUint32 length = nodeList.Count();
 //    if (length > 1) {
-//      endNode = nodeList[length-1];
-//      MathParent( endNode, getter_AddRefs(mathNode));
-//      if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+//    endNode = nodeList[length-1];
+//    MathParent( endNode, getter_AddRefs(mathNode));
+//    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
 //    }
-// Now fix up fragments internal to the math node
+//// Now fix up fragments internal to the math node
 //    endNode = nodeList[0];
-	// #if DEBUG_barry || DEBUG_Barry
-	//   printf("\nendNode before FixMath\n");
-	//   DumpNode(endNode, 0, true);
-	// #endif
+//// #if DEBUG_barry || DEBUG_Barry
+////   printf("\nendNode before FixMath\n");
+////   DumpNode(endNode, 0, true);
+//// #endif
 //    FixMathematics(endNode, length > 1, PR_FALSE);
-	// #if DEBUG_barry || DEBUG_Barry
-	//   printf("\nendNode after FixMath\n");
-	//   DumpNode(endNode, 0, true);
-	// #endif
+//// #if DEBUG_barry || DEBUG_Barry
+////   printf("\nendNode after FixMath\n");
+////   DumpNode(endNode, 0, true);
+//// #endif
 //
 //    if (length > 1) 
 //    {
@@ -619,6 +707,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     for (j=0; j<listCount; j++)
     {
       nsCOMPtr<nsIDOMNode> curNode = nodeList[j];
+      
 
       NS_ENSURE_TRUE(curNode, NS_ERROR_FAILURE);
       NS_ENSURE_TRUE(curNode != fragmentAsNode, NS_ERROR_FAILURE);
@@ -642,7 +731,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         curNode->GetFirstChild(getter_AddRefs(child));
         while (child)
         {
-          printf("Inserting nodeds\n");
+          printf("Inserting nodes\n");
           res = InsertNodeAtPoint(child, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
           if (NS_SUCCEEDED(res)) 
           {
@@ -724,80 +813,39 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         PRBool parentIsMath = nsHTMLEditUtils::IsMath(parentNode);
         if (parentIsMath)
         {
-          nsAutoString strTempInput;
-          nsCOMPtr<nsIDOMElement> pNode;
-          pNode = do_QueryInterface(parentNode);
-          GetTagString(parentNode, tagName);
-          if (tagName.EqualsLiteral("mi") || tagName.EqualsLiteral("mo"))
+          nsAutoString name;
+          GetTagString(curNode, name);
+          if (name.EqualsLiteral("math"))
           {
-            // can't insert in these. Move to the side or, if a tempinput mi, delete the mi.
-            res = pNode->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
-            if (strTempInput.EqualsLiteral("true"))
+            nsCOMPtr<nsIDOMNodeList> childNodes;
+            nsCOMPtr<nsIDOMNode> cNode;
+            res = curNode->GetChildNodes(getter_AddRefs(childNodes));
+            if (NS_FAILED(res)) return res;
+            if (!childNodes) return NS_ERROR_NULL_POINTER;
+            PRUint32 childCount;
+            res = childNodes->GetLength(&childCount);
+            if (NS_FAILED(res)) return res;
+            PRUint32 k; 
+            for (k = 0; k < childCount; k++)
             {
-              // delete the tempinput mi, reset parentNode and offsetOfNewNode, and start again
-              nsCOMPtr<nsIDOMNode> grandParent;
-              res = parentNode->GetParentNode(getter_AddRefs(grandParent));
-              res = GetChildOffset(parentNode, grandParent, offsetOfNewNode);
-              res = DeleteNode(parentNode);
-              parentNode = grandParent;
-              GetTagString(parentNode, tagName);
+              res = childNodes->Item(k, getter_AddRefs(cNode));
+              res = InsertMathNode( cNode, 
+                parentNode, 
+                offsetOfNewNode,
+                bDidInsert,
+                getter_AddRefs(lastInsertNode));
+              offsetOfNewNode++;
             }
-            else
-            {
-            }
+            
           }
-          if (tagName.EqualsLiteral("mn"))
+          else 
           {
-            nsCOMPtr<nsIDOMNode> textNode;
-            res = NodeContainsOnlyMn(curNode, getter_AddRefs(textNode));
-            if (textNode)
-            {
-              curNode = textNode;
-              parentNode->Normalize();
-              res = parentNode->GetFirstChild(getter_AddRefs(parentNode));
-              NS_ENSURE_SUCCESS(res, res);
-              GetTagString(parentNode, tagName);
-              // don't put mn into an mn, but put the contents into the contents
-            }
-          }
-          if (!(tagName.EqualsLiteral("math") || tagName.EqualsLiteral("mrow")
-            || tagName.EqualsLiteral("#text")))
-          {
-            // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
-            nsCOMPtr<nsIDOMElement> mrow;
-            msiUtils::CreateMRow(this, curNode, mrow);
-            res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
-            parentNode = mrow;
-            offsetOfNewNode = 1;
-            if (NS_SUCCEEDED(res)) 
-            {
-              bDidInsert = PR_TRUE;
-              lastInsertNode = curNode;
-            }
-          }
-          else
-          {
-            PRUint16 nodeType1;
-            PRUint16 nodeType2;
-            curNode->GetNodeType(&nodeType1);
-            parentNode->GetNodeType(&nodeType2);
-            if (nodeType1 == 3 && nodeType2 == 3)
-            {
-              nsAutoString textContent;
-              curNode->GetNodeValue(textContent);
-              nsCOMPtr<nsIDOMCharacterData> textNode(do_QueryInterface(parentNode));
-              res = InsertTextIntoTextNodeImpl(textContent, (nsIDOMCharacterData*)textNode, offsetOfNewNode, PR_TRUE);
-            }
-            else
-            {
-              res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
-            }
-            if (NS_SUCCEEDED(res)) 
-            {
-              bDidInsert = PR_TRUE;
-              lastInsertNode = curNode;
-            }
-          }
+            res = InsertMathNode( curNode, 
+              parentNode, 
+              offsetOfNewNode,
+              bDidInsert,
+              getter_AddRefs(lastInsertNode));
+          }  
         }
         else
         {
