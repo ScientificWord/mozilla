@@ -7,7 +7,7 @@
 <?xml-stylesheet href="chrome://prince/skin/typesetDocFormat.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
-<!-- JLF to verify-->
+<!-- JLF - Localization pass on 6/29/2012 -->
 <overlay id="docformatsectionsoverlay.dialog"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:html="http://www.w3.org/1999/xhtml"

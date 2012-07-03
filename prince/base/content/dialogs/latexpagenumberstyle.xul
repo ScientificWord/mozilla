@@ -10,7 +10,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/latexpagenumberstyle.dtd">
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <!--JLF - confirm latexvalue with BBM -->
 <dialog title="&numberStyles.title;"
     id="latexpagenumberstyleDlg"

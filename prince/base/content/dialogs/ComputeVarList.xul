@@ -21,7 +21,7 @@
 <!ENTITY % menuDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuDTD;
 ]>
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
     id="ComputVarListDlg"

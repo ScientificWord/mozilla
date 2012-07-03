@@ -10,7 +10,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/tagkeyassignments.dtd" >
 %dialogDTD;
 ]>
-<!--JLF - Localization pass on 6/29/2011-->
+<!--JLF - Localization pass on 6/29/2012-->
 <dialog title="&windowTitle.label;"
     id="tagkeyassignmentsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
