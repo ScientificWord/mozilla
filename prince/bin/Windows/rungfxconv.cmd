@@ -10,7 +10,7 @@ REM wmf emf
 REM END EXTENSION LIST
 
 if %ImageMagick%x==x set ImageMagick=%5
-if %Uniconverter%x==x set Uniconvertor=%6
+if %Uniconvertor%x==x set Uniconvertor=%6
 if %wmf2epsDir%x==x set wmf2epsDir=%7
 set inputPath=%1
 set inputFormat=%2
