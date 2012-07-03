@@ -4128,10 +4128,23 @@ nsEditor::CanContainTag(nsIDOMNode* aParent, const nsAString &aChildTag)
 {
   nsCOMPtr<nsIDOMElement> parentElement = do_QueryInterface(aParent);
   if (!parentElement) return PR_FALSE;
-  
-  nsAutoString parentStringTag;
-  parentElement->GetTagName(parentStringTag);
-  return TagCanContainTag(parentStringTag, aChildTag);
+  nsAutoString parentTag;
+  parentElement->GetTagName(parentTag);
+  PRBool isMath = nsHTMLEditUtils::IsMath(aParent);
+  if (isMath)
+  {
+    if (aChildTag.EqualsLiteral("math")) return PR_FALSE;
+    if (aChildTag.EqualsLiteral("#text")) return PR_TRUE;
+    if (parentTag.EqualsLiteral("mrow") ||
+      parentTag.EqualsLiteral("math") ||
+      parentTag.EqualsLiteral("mstyle")) return PR_TRUE;
+    // BBM: this probably needs more cases
+    return PR_TRUE;
+  }
+  else
+  {
+    return TagCanContainTag(parentTag, aChildTag);
+  }
 }
 
 PRBool 
