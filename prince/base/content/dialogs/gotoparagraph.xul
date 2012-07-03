@@ -6,7 +6,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/gotoparagraph.dtd" >
 %dialogDTD;
 ]>
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <dialog id="gotoparagraphdialog" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"

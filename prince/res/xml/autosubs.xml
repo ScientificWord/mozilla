@@ -26,8 +26,8 @@
   <sub ctx="text" tp="sc"><pattern>.save.</pattern><data>softSave(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ftn.</pattern><data>insertFootnote();</data></sub>
   <sub ctx="text" tp="sc"><pattern>.mnote.</pattern><data>insertMarginNote();</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.ol.</pattern><data>insertListItem('numberedlistitem', true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.ul.</pattern><data>insertListItem('bulletlistitem', true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.ol.</pattern><data>insertListItem('numberedListItem', true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.ul.</pattern><data>insertListItem('bulletListItem', true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('italics',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.tt.</pattern><data>toggleTextTag('typewriter',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>toggleTextTag('bold',true);</data></sub>

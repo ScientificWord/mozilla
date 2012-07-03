@@ -56,6 +56,7 @@
 <!ENTITY expe_expe.label            "ExponentialE">
 
 <!ENTITY  Scope.label "Scope">
+<!ENTITY Default.label  "Default">
 <!ENTITY  ThisDocOnly.label "This document only">
 <!ENTITY  BaseLoge  "Base of log is e (otherwise 10)">
 <!ENTITY  DotAccentMeansDerivative.label  "Dot accent means derivative">

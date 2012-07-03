@@ -12,7 +12,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Binomial.dtd">
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <dialog title="&windowTitle.label;"
     id="BinomialDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -141,7 +141,7 @@
         <spacer flex="1"/> 
         <button type="radio" label="&#x230B;" group="leftBracketGroup" tooltiptext="&RightFloor.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x232A;" group="leftBracketGroup" tooltiptext="&RightPointingAngleBracket.tooltip;"/>
+        <button type="radio" label="&#x232A;" group="leftBracketGroup" tooltiptext="&RightPointingAngleBracket.tooltip:"/>
         <spacer flex="1"/> 
         <button type="radio" label="}" group="leftBracketGroup" tooltiptext="&RightCurlyBrace.tooltip;"/>
         <spacer flex="1"/> 

@@ -29,7 +29,7 @@
 %editorOverlayDTD; -->
 ]>
 
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <!--JLF - Look at width/height values -->
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;" 

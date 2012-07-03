@@ -12,7 +12,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Brackets.dtd">
-<!-- JLF to verify-->
+<!-- JLF - localization pass on 7/2/2012-->
 <dialog title="&windowTitle.label;"
     id="BracketsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
