@@ -35,7 +35,7 @@
   </broadcasterset>
   
   <groupbox>
-    <caption label="Coordinates" />
+    <caption label="&Coordinates.label;" />
     <grid>
       <columns>
         <column style="text-align: center;"/>
@@ -46,15 +46,15 @@
       </columns>
       <rows>
         <row>
-          <label value="Variable"/>
+          <label value="&Variable.label;"/>
           <spacer />
-          <label value="Interval" />
+          <label value="&Interval.label;" />
           <spacer />
-          <label value="Points Sampled" />
+          <label value="&PointsSampled.label;" />
           <description value="Animation Variable" observes="animated"/>
         </row>
         <row>
-          <label id ="var1">x</label>
+          <label id ="var1">&x.label;</label>
           <textbox id="var1start" type="number" />
           <label value="to" />
           <textbox id="var1end" type="number" />
@@ -62,7 +62,7 @@
           <radiobutton id="var1anim" name="av" />
         </row>
         <row observes="threed">
-          <label id ="var2" >y</label>
+          <label id ="var2" >&y.label;</label>
           <textbox id="var2start" type="number" />
           <label value="to" />
           <textbox id="var2end" type="number" />
@@ -70,7 +70,7 @@
           <radiobutton id="var2anim" name="av" />
         </row>
         <row observes="animated">
-          <label id ="animparam" >t</label>
+          <label id ="animparam" >&t.label;</label>
           <textbox id="animstart" type="number" />
           <label value="to" />
           <textbox id="animend" type="number" />
@@ -80,10 +80,10 @@
         </row>
       </rows>
     </grid>
-    <msibutton label="Switch Variables" observes="threed" command=""/>
+    <msibutton label="&SwitchVariables.label;" observes="threed" command=""/>
   </groupbox>
   <groupbox>
-    <caption value="Animation Time Settings" />
+    <caption value="&AnimationTimeSettings.label;" />
   </groupbox>
 
 
