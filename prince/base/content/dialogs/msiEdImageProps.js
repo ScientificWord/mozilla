@@ -325,12 +325,12 @@ function InitImage()
       heightStr = heightStr.replace(re,"");
       pixelHeight = Math.round(Number(heightStr));
     }
-    if (imageElement.hasAttribute("src"))
+    if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
     {
-      gActualWidth  = gConstrainWidth = imageElement.naturalWidth;
-      gActualHeight = gConstrainHeight = imageElement.naturalHeight;
-    } else if (imageElement.hasAttribute("data"))
-    {
+//      gActualWidth  = gConstrainWidth = imageElement.naturalWidth;
+//      gActualHeight = gConstrainHeight = imageElement.naturalHeight;
+//    } else if (imageElement.hasAttribute("data"))
+//    {
       var natWidth = imageElement.getAttribute("naturalWidth");
       var natHeight = imageElement.getAttribute("naturalHeight");
       if (natWidth)
@@ -2382,24 +2382,28 @@ function onAccept()
 //      dump("In msiEdImageProps.onAccept(), oldImage is [" + ((imageElement == oldImage) ? "same as" : "different from") + "] one in document.\n");
       syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
     
-      var attrList = ["src,data,title,alt"];
-      msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
-      imageElement.setAttribute("data",gDialog.srcInput.value);
+      globalImage.setAttribute("data",gDialog.srcInput.value);
       var extension = getExtension(gDialog.srcInput.value);
-      adjustObjectForFileType(imageElement, extension);
-      msiEditorEnsureElementAttribute(imageElement, "req", "graphicx", editor);
-      msiEditorEnsureElementAttribute(imageElement, "naturalWidth", frameUnitHandler.getValueOf(gConstrainWidth, "px"), editor);
-      msiEditorEnsureElementAttribute(imageElement, "naturalHeight", frameUnitHandler.getValueOf(gConstrainHeight, "px"), editor);
+      adjustObjectForFileType(globalImage, extension);
+      msiEditorEnsureElementAttribute(globalImage, "req", "graphicx", null);
+      msiEditorEnsureElementAttribute(globalImage, "naturalWidth", String(frameUnitHandler.getValueOf(gConstrainWidth, "px")), null);
+      msiEditorEnsureElementAttribute(globalImage, "naturalHeight", String(frameUnitHandler.getValueOf(gConstrainHeight, "px")), null);
       
-      setFrameAttributes(wrapperElement, imageElement);
+      setFrameAttributes(globalElement, globalImage, null);
+//      setFrameAttributes(wrapperElement, imageElement);
 //      msiEditorEnsureElementAttribute(wrapperElement, "captionLoc", capAttrStr, editor);  //Now taken care of above
 
       var theKey = gDialog.keyInput.value;
       if (!theKey.length)
         theKey = null;
-      msiEditorEnsureElementAttribute(imageElement, "key", theKey, editor);
-      msiEditorEnsureElementAttribute(imageElement, "id", theKey, editor);
-      msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
+      msiEditorEnsureElementAttribute(globalImage, "key", theKey, editor);
+      msiEditorEnsureElementAttribute(globalImage, "id", theKey, editor);
+      msiSetGraphicFrameAttrsFromGraphic(globalImage, null);  //unless we first end the transaction, this seems to have trouble!
+
+      var imgAttrList = ["src","data","title","alt","req","imageWidth","imageHeight","naturalWidth","naturalHeight","key","units","rotation","msi_resize","borderw","padding","border-color","background-color","style"];
+      msiCopySpecifiedElementAttributes(imageElement, globalImage, editor, imgAttrList);
+      var frameAttrList = ["title","req","width","height","units","sidemargin","topmargin","overhang","pos","textalignment","inlineOffset","placeLocation","placement","style"];
+      msiCopySpecifiedElementAttributes(wrapperElement, globalElement, editor, frameAttrList);
     }
     catch (e)
     {
