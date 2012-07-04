@@ -321,3 +321,5 @@
 <!ENTITY uppersorbian.label "Upper Sorbian">
 <!ENTITY urdu.label "Urdu">
 <!ENTITY welsh.label "Welsh">
+
+<!ENTITY Enableoverridingheaderformats.label "Enable overriding ## header formats">

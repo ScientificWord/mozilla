@@ -45,7 +45,7 @@
   <!ENTITY % openDialogDTD SYSTEM "chrome://prince/locale/openLocation.dtd" >
   %openDialogDTD;
 ]>            
-<!--JLF - Localization pass on 6/28/2011-->
+<!--JLF - Localization pass on 6/28/2012-->
 <!--JLF - width/height values -->
 <dialog id="openLocation"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
