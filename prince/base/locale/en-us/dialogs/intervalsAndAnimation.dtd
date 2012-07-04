@@ -1,3 +1,13 @@
 <!-- Copyright (c) 2012 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!ENTITY windowTitle.label "Plot Variables and Animation">
+<!ENTITY Coordinates.label  "Coordinates">
+<!ENTITY Variable.label "Variable">
+<!ENTITY Interval.label "Interval">
+<!ENTITY PointsSampled.label  "Points Sampled">
+<!ENTITY AnimationVariable.label  "Animation Variable">
+<!ENTITY x.label  "x">
+<!ENTITY y.label  "y">
+<!ENTITY t.label  "t">
+<!ENTITY SwitchVariables.label  "Switch Variables">
+<!ENTITY AnimationTimeSettings.label  "Animation Time Settings">

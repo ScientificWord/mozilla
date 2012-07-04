@@ -8,7 +8,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorTableProperties.dtd">
-<!-- JLF - localization pass on 7/2/2012 needs more work-->
+<!-- JLF - localization pass on 7/4/2012 -->
 <dialog title="&tableWindow.title;"
     id="msiEdTablePropsDlg"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -96,46 +96,46 @@
                   <label value="&location.label;" control="tableLocationList" />
                   <menulist id="tableLocationList" oncommand="">
                     <menupopup>
-                      <menuitem label="inline"  value=""/>
-                      <menuitem label="left" value="left"/>
-                      <menuitem label="inside" value="inside"/>
-                      <menuitem label="center" value="center"/>
-                      <menuitem label="right" value="right"/>
-                      <menuitem label="outside" value="outside"/>
+                      <menuitem label="&inline.label;"  value=""/>
+                      <menuitem label="&left.label;" value="left"/>
+                      <menuitem label="&inside.label;" value="inside"/>
+                      <menuitem label="&center.label;" value="center"/>
+                      <menuitem label="&right.label;" value="right"/>
+                      <menuitem label="&outside.label;" value="outside"/>
                     </menupopup>
                   </menulist> 
                   <label value="&floatLocation.label;" control="floatLocationList"/>
                   <menulist id="floatLocationList" oncommand="">
                     <menupopup>
-                      <menuitem label="none"  value=""/>
-                      <menuitem label="here" value="h"/>
-                      <menuitem label="on page of floats" value="p"/>
-                      <menuitem label="top of page" value="t"/>
-                      <menuitem label="bottom of page" value="b"/>
+                      <menuitem label="&none.label;"  value=""/>
+                      <menuitem label="&here.label;" value="h"/>
+                      <menuitem label="&onpageoffloats.label;" value="p"/>
+                      <menuitem label="&topofpage.label;" value="t"/>
+                      <menuitem label="&bottomofpage.label;" value="b"/>
                     </menupopup>
                   </menulist> 
                 </row>
                 <row align="center">
-                  <label value="Table baseline" control="baselineList"/>
+                  <label value="&Tablebaseline.label;" control="baselineList"/>
                   <menulist id="baselineList" oncommand="TablePropertyChanged('TableBaselineRadioGroup');">
                     <menupopup>
-                      <menuitem label="baseline" value="baseline"/>
-                      <menuitem label="same as top row"  value="top"/>
-                      <menuitem label="at vertical center" value="middle"/>
-                      <menuitem label="same as bottom row" value="bottom"/>
+                      <menuitem label="&baseline.label;" value="baseline"/>
+                      <menuitem label="&sameastoprow.label;"  value="top"/>
+                      <menuitem label="&atverticalcenter.label;" value="middle"/>
+                      <menuitem label="&sameasbottomrow.label;" value="bottom"/>
                     </menupopup>
                   </menulist>
                 </row>
                 <row align="center">
-                  <label value="Caption" control="captionLocation"/>
+                  <label value="&Caption.label;" control="captionLocation"/>
                   <menulist id="captionLocation" oncommand="TablePropertyChanged('TableCaptionList');">
                     <menupopup>
-                      <menuitem label="none"  value=""/>
-                      <menuitem label="above table" value="top"/>
-                      <menuitem label="below table" value="bottom"/>
+                      <menuitem label="&none.label;"  value=""/>
+                      <menuitem label="&abovetable.label;" value="top"/>
+                      <menuitem label="&belowtable.label;" value="bottom"/>
                     </menupopup>
                   </menulist>
-                  <label id="BackgroundColorLabel" value="Base color"/>
+                  <label id="BackgroundColorLabel" value="&Basecolor.label;"/>
                   <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('tableBackgroundCW');">
                     <spacer id="tableBackgroundCW" class="color-well"/>
                   </msibutton><spacer flex="2"/></hbox>
@@ -156,13 +156,13 @@
               <columns><column/><column/><column flex="1"/></columns>
               <rows>
                 <row align="center">
-                  <label value="Row height"/>
+                  <label value="&Rowheight.label;"/>
                   <textbox id="CellHeightInput" type="number" class="medwidth" 
                            oninput="ChangeCellSize(this.id);"/>
                   <menulist id="cellUnitsList" oncommand="onChangeCellUnits();" />
                 </row>
                 <row align="center">
-                  <label value="Column width"/>
+                  <label value="&Columnwidth.label;"/>
                   <textbox id="CellWidthInput" type="number" class="medwidth" 
                            oninput="ChangeCellSize(this.id);"/>
                 </row>
@@ -202,7 +202,7 @@
         <hbox align="center">
           <groupbox orient="horizontal" align="center">
             <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" oncommand="CheckboxChanged(this.id);"/>
-            <label id="cellBackgroundColorLabel" value="Cell color"/>
+            <label id="cellBackgroundColorLabel" value="&Cellcolor.label;"/>
             <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('cellBackgroundCW');">
               <spacer id="cellBackgroundCW" class="color-well"/>
             </msibutton><spacer flex="2"/></hbox>
