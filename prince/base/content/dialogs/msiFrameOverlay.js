@@ -839,10 +839,10 @@ function isValid()
   return true;
 }
 
-function setFrameAttributes(frameNode, contentsNode)
+function setFrameAttributes(frameNode, contentsNode, editor)
 {
   var rot;
-  var editor = msiGetEditor(Dg.editorElement);
+//  var editor = msiGetEditor(Dg.editorElement);
 	setTextValueAttributes();
 	metrics.unit = frameUnitHandler.currentUnit;
   if (metrics.unit == "px") // switch to pts
