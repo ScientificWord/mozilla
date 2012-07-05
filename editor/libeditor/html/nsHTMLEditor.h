@@ -820,9 +820,9 @@ protected:
   nsresult NodeContainsOnlyMn(nsIDOMNode * curNode, nsIDOMNode ** textNode);
   PRBool PropertyIsMathOnly( nsAString& textProperty);
   nsresult InsertMathNode( nsIDOMNode * cNode, 
-    nsIDOMNode * parentNode, 
-    PRInt32 offsetOfNewNode,
-    PRBool& bDidInsert,
+    nsIDOMNode ** ioParentNode, 
+    PRInt32 & offsetOfNewNode,
+    PRBool & bDidInsert,
     nsIDOMNode ** lastInsertNode);
 
 
