@@ -116,3 +116,4 @@ en-US.jar:
   locale/msiEditorImageProperties.dtd     (dialogs/msiEditorImageProperties.dtd)
   locale/gotomarker.dtd                   (dialogs/gotomarker.dtd)
   locale/msiGraphicsConversionDlg.dtd     (dialogs/msiGraphicsConversionDlg.dtd)
+  locale/documentStyle.dtd     (dialogs/documentStyle.dtd)

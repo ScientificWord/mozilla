@@ -194,3 +194,28 @@
 <!ENTITY vAlignTop.label  "Top">
 <!ENTITY vAlignCenter.label "Center">
 <!ENTITY vAlignBottom.label "Bottom">
+
+<!ENTITY inline.label "Inline">
+<!ENTITY left.label "Left">
+<!ENTITY inside.label "Inside">
+<!ENTITY center.label "Center">
+<!ENTITY right.label  "Right">
+<!ENTITY outside.label  "Outside">
+<!ENTITY none.label "None">
+<!ENTITY here.label "Here">
+<!ENTITY onpageoffloats.label "On page of floats">
+<!ENTITY topofpage.label  "Top of page">
+<!ENTITY bottomofpage.label "Bottom of page">
+<!ENTITY Tablebaseline.label  "Table Baseline">
+<!ENTITY baseline.label "Baseline">
+<!ENTITY sameastoprow.label "Same as top row">
+<!ENTITY atverticalcenter.label "At vertical center">
+<!ENTITY sameasbottomrow.label  "Same as bottom row">
+<!ENTITY Caption.label  "Caption">
+<!ENTITY abovetable.label "Above table">
+<!ENTITY belowtable.label "Below table">
+<!ENTITY Basecolor.label  "Base color">
+<!ENTITY Rowheight.label  "Row height">
+<!ENTITY Columnwidth.label  "Column width">
+<!ENTITY Cellcolor.label  "Cell color">
+<!ENTITY interit.label  "Inherit">
