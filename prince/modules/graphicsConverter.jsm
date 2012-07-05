@@ -65,7 +65,21 @@ var graphicsConverter =
     return params;
   },
 
-  getTargetFileExtension : function(graphicsInFile, graphicsOutDir, mode, aWindow)
+  getTargetFilesForImport : function(graphicsInFile, graphicsOutDir, mode, aWindow)
+  {
+    var theExtensions = this.getTargetFileExtensions(graphicsInFile, graphicsOutDir, mode, aWindow);
+    var graphicsOutFileList = [];
+    var nameAndExtension = this.splitExtension(graphicsInFile.leafName);
+    for (var kk = 0; kk < theExtensions.length; ++kk)
+    {
+      var outFile = graphicsOutDir.clone();
+      outFile.append(nameAndExtension.name + "." + theExtensions[kk]);
+      graphicsOutFileList.push( outFile );
+    }
+    return graphicsOutFileList;
+  },
+
+  getTargetFileExtensions : function(graphicsInFile, graphicsOutDir, mode, aWindow)
   {
     var os = getOS(aWindow);
     var filterCommandFile = this.getBatchFile(os);
@@ -84,11 +98,19 @@ var graphicsConverter =
     infoProcess.run(true, paramArray, paramArray.length);
 
 //    dump("In getTargetFileExtension mode " + mode + " trying to get file contents for file [" + outInfoFile.path + "].\n");
-    var extension = this.getFileAsString(outInfoFile);
-    extension = extension.replace(/^\s*/,"");
-    extension = extension.replace(/\s*$/,"");
+    var extensionLines = this.getFileAsString(outInfoFile);
+    var extensions = extensionLines.split("\n");
+    var extensionList = [];
+    var extension;
+    for (var jj = 0; jj < extensions.length; ++jj)
+    {
+      extension = extensions[jj].replace(/^\s*/,"");
+      extension = extension.replace(/\s*$/,"");
+      if (extension.length > 0)
+        extensionList.push(extension);
+    }
 //    dump("Got extension back from file " + outInfoFile.path + "; it's " + extension + ".\n");
-    return extension;
+    return extensionList;
   },
 
 //  filterSourceFile - an nsIFile; the command file generated for this import
@@ -102,19 +124,56 @@ var graphicsConverter =
 //                   which will be called to allow the object to store the source and target files, process, mode, and timer
 //    NOTE: If callbackObject is null, the conversion will be run as a synchronous process, and will thus block the calling thread.
 //  Returns nsIFile representing graphics file being created
-  doGraphicsImport : function(graphicsInFile, graphicsOutDir, mode, aWindow, callbackObject)
+  doGraphicsImport : function(graphicsInFile, graphicsOutDir, mode, aWindow, callbackObject, bReturnAllFiles)
   {
+//    var graphicsOutFileList = [];
+//    var os = getOS(aWindow);
+//    var extensionList = this.getTargetFileExtensions(graphicsInFile, graphicsOutDir, mode, aWindow);
+//    if (!extensionList || !extensionList.length)
+//    {
+//      return graphicsOutFileList;
+//    }
+//
+//    var nameAndExtension = this.splitExtension(graphicsInFile.leafName);
+//    var extension = extensionList[extensionList.length - 1];
+//    var graphicsOutFile = graphicsOutDir.clone();
+//    graphicsOutFile.append(nameAndExtension.name + "." + extension);
+
+    var graphicsOutFileList = this.getTargetFilesForImport(graphicsInFile, graphicsOutDir, mode, aWindow);
+    var graphicsOutFile = null;
+    if (graphicsOutFileList.length > 0)
+    {
+      graphicsOutFile = graphicsOutFileList[graphicsOutFileList.length - 1];
+      this.doImportGraphicsToTarget(graphicsInFile, graphicsOutFile, mode, aWindow, callbackObject);
+    }
+
+//    dump("Returning from doGraphicsImport with return [" + graphicsOutFile.path + "].\n");
+    if (bReturnAllFiles)
+      return graphicsOutFileList;
+
+    return graphicsOutFile;
+
+//    for (var kk = 0; kk < extensionList.length - 1; ++kk)
+//    {
+//      var outFile = graphicsOutDir.clone();
+//      outFile.append(nameAndExtension.name + "." + extensionList[kk]);
+//      graphicsOutFileList.push( outFile );
+//    }
+//    graphicsOutFileList.push(graphicsOutFile);
+//    return graphicsOutFileList;
+  },
+
+  //This function should only be called following a call to getTargetFilesForImport above!
+  //It does no checking that the input file can be converted to the graphicsOutFile indicated.
+  doImportGraphicsToTarget : function(graphicsInFile, graphicsOutFile, mode, aWindow, callbackObject)
+  {
+    var os = getOS(aWindow);
     var bRunSynchronously = false;
     if (!callbackObject)
       bRunSynchronously = true;
-    var os = getOS(aWindow);
-    var extension = this.getTargetFileExtension(graphicsInFile, graphicsOutDir, mode, aWindow);
-
     var filterCommandFile = this.getBatchFile(os);
+    var graphicsOutDir = graphicsOutFile.parent;
     var paramArray = this.formParamArray(graphicsInFile, graphicsOutDir, mode, os);
-    var graphicsOutFile = graphicsOutDir.clone();
-    var nameAndExtension = this.splitExtension(graphicsInFile.leafName);
-    graphicsOutFile.append(nameAndExtension.name + "." + extension);
 //    dump("In doGraphicsImport, initializing import process for file [" + graphicsInFile.path + "] in mode " + mode + " .\n");
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(filterCommandFile);
@@ -129,8 +188,6 @@ var graphicsConverter =
 //      dump("In doGraphicsImport, starting timer for file " + graphicsInFile.leafName + ".\n");
       theTimer.initWithCallback( callbackObject, 200, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
     }
-//    dump("Returning from doGraphicsImport with return [" + graphicsOutFile.path + "].\n");
-    return graphicsOutFile;
   },
 
   //Calling this function with an array of objects of the form {mFile : nsIFile, mOutDirectory : nsIFile, mMode : modeString} to convert will 
@@ -151,7 +208,7 @@ var graphicsConverter =
     {
       theTimerHandler = new graphicsTimerHandler(mSecTimeLimit, multiCallbackHandler, ii+1);
       multiCallbackHandler.addTimerHandler(theTimerHandler);
-      this.doGraphicsImport(graphicsInFileArray[ii].mFile, graphicsInFileArray[ii].mOutDirectory, graphicsInFileArray[ii].mMode, aWindow, theTimerHandler);
+      this.doGraphicsImport(graphicsInFileArray[ii].mFile, graphicsInFileArray[ii].mOutDirectory, graphicsInFileArray[ii].mMode, aWindow, theTimerHandler, false);
     }
     return multiCallbackHandler;
   },

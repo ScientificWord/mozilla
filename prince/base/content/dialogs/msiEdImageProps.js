@@ -40,6 +40,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include ../productname.inc
+
 var gDialog;
 var globalElement;
 var globalImage;
@@ -66,9 +68,16 @@ var gFrameModeTextFrame = false;
 var gInsertNewImage = true;
 var gCaptionData;
 
+var gErrorMessageShown = false;
 var importTimer;
 var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "xvc","xvz"];
 var typesetGraphicTypes = ["eps", "pdf", "png", "jpg"];
+
+#ifdef PROD_SNB
+var bNeedTypeset = false;
+#else
+var bNeedTypeset = true;
+#endif
 
 // dialog initialization code
 function Startup()
@@ -316,12 +325,12 @@ function InitImage()
       heightStr = heightStr.replace(re,"");
       pixelHeight = Math.round(Number(heightStr));
     }
-    if (imageElement.hasAttribute("src"))
+    if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
     {
-      gActualWidth  = gConstrainWidth = imageElement.naturalWidth;
-      gActualHeight = gConstrainHeight = imageElement.naturalHeight;
-    } else if (imageElement.hasAttribute("data"))
-    {
+//      gActualWidth  = gConstrainWidth = imageElement.naturalWidth;
+//      gActualHeight = gConstrainHeight = imageElement.naturalHeight;
+//    } else if (imageElement.hasAttribute("data"))
+//    {
       var natWidth = imageElement.getAttribute("naturalWidth");
       var natHeight = imageElement.getAttribute("naturalHeight");
       if (natWidth)
@@ -847,7 +856,18 @@ function chooseFile()
 
     if (gDialog.import) // copy the file into the graphics directory
     {
-      fileName = getLoadableGraphicFile(url);
+      var importName;
+      try
+      { importName = getLoadableGraphicFile(url); }
+      catch(exc)
+      { dump("Exception in getLoadableGraphicFile loading " + url.spec + ": " + exc + "\n"); importName = null; }
+      if (!importName || !importName.length)
+      {
+        displayImportErrorMessage(fileName)
+        fileName = "";
+      }
+      else
+        fileName = importName;
     }
     else
     {
@@ -873,54 +893,73 @@ function chooseFile()
 
 function getLoadableGraphicFile(inputURL)
 {
-  var newFile;
+  var importFiles = [];
+  var typesetFiles = [];
   var fileName = "";
   var file = msiFileFromFileURL(inputURL);
   var filedir = file.parent;
   var extension = getExtension(file.leafName);
   var dir = getDocumentGraphicsDir();
-  if (dir.path === filedir.path) {
-    return file.path;
-  }
+  var bDoImport = false;
+  var bDoTypesetImport = false;
   if (!dir.exists())
     dir.create(1, 0755);
+
   if (extension)  //if not, should we just do the copy and hope for the best? Or forget it?
   {
-    var nNative = nativeGraphicTypes.indexOf(extension);
+    var nNative = nativeGraphicTypes.indexOf(extension.toLowerCase());
     if (nNative < 0)
     {
-      newFile = doGraphicsImport(file, "import");
-      fileName = "graphics/" + newFile.leafName;
+      importFiles = getGraphicsImportTargets(file, "import");
+      if (importFiles.length)
+      {
+        fileName = "graphics/" + importFiles[importFiles.length - 1].leafName;
+        bDoImport = true;
+      }
     }
-    else  //ordinary import
+    else //ordinary import
     {
-      try
-      {
-        isSVGFile = /\.svg$/.test(file.leafName);
-        file.permissions = 0755;
-        fileName = "graphics/"+file.leafName;
-        newFile = dir.clone();
-        newFile.append(file.leafName);
-        if (newFile.exists()) newFile.remove(false);
-        file.copyTo(dir,"");
+      fileName = "graphics/"+file.leafName;
+      if (dir.path != filedir.path) {
+        try
+        {
+          file.permissions = 0755;
+          importFiles.push( dir.clone() );
+          importFiles[0].append(file.leafName);
+          if (importFiles[0].exists())
+            importFiles[0].remove(false);
+          file.copyTo(dir,"");
+        }
+        catch(e)
+        {
+          dump("exception: e="+e.msg);
+        }
       }
-      catch(e)
-      {
-        dump("exception: e="+e.msg);
-      }
+      isSVGFile = /\.svg$/.test(fileName);
     }
-    if (typesetGraphicTypes.indexOf(extension.toLowerCase()) < 0)  //Need file in LaTeX-friendly format
+    if (bNeedTypeset)
     {
-      var bCanUseImport = false;
-      if (newFile)
+      if (typesetGraphicTypes.indexOf(extension.toLowerCase()) < 0)  //Need file in LaTeX-friendly format
       {
-        var impExtension = getExtension(newFile.leafName).toLowerCase();
-        if (typesetGraphicTypes.indexOf(impExtension) >= 0)
-          bCanUseImport = true;
+        var bCanUseImport = false;
+        for (var kk = 0; !bCanUseImport && (kk < importFiles.length); ++kk)
+        {
+          var impExtension = getExtension(importFiles[kk].leafName).toLowerCase();
+          if (typesetGraphicTypes.indexOf(impExtension) >= 0)
+            bCanUseImport = true;
+        }
+        if (!bCanUseImport)
+        {
+          typesetFiles = getGraphicsImportTargets(file, "tex");
+          if (typesetFiles.length)
+            bDoTypesetImport = true;
+        }
       }
-      if (!bCanUseImport)
-        doGraphicsImport(file, "tex");
     }
+    if (bDoImport)
+      doGraphicsImportToFile(file, importFiles[importFiles.length - 1], "import");
+    if (bDoTypesetImport)
+      doGraphicsImportToFile(file, typesetFiles[typesetFiles.length - 1], "tex");
   }
   return fileName;
 }
@@ -930,6 +969,7 @@ var importTimerHandler =
   mSourceFile : null,
   mImportHandler : null,
   mTexHandler : null,
+  failNoticePosted : false,
 
 //  this.startLoading = function(sourceFile, targFile, process, mode)
 //  {
@@ -1006,6 +1046,7 @@ var importTimerHandler =
       this.mImportHandler.reset();
     if (this.mTexHandler)
       this.mTexHandler.reset();
+    this.failNoticePosted = false;
   },
 
   isLoading : function(mode)
@@ -1104,6 +1145,11 @@ var importTimerHandler =
     var titleStr = msiGetDialogString("imageProps.importErrorTitle", msgParams);
     this.failNoticePosted = true;
     AlertWithTitle(titleStr, msgString);
+  },
+
+  errorMessageShown : function()
+  {
+    return this.failNoticePosted;
   }
 
 };
@@ -1396,24 +1442,33 @@ function launchConvertingDialog(importData)
 //  inputFile - an nsIFile, the graphic file being converted
 //  mode - a string, either "tex" or "import" (defaults to "import")
 //  Returns nsIFile representing the graphic file being created.
-function doGraphicsImport(inputFile, mode)
+function getGraphicsImportTargets(inputFile, mode)
 {
   if (!mode || !mode.length)
     mode = "import";
   var graphicDir = getDocumentGraphicsDir(mode);
   if (!graphicDir.exists())
     graphicDir.create(1, 0755);
+  return graphicsConverter.getTargetFilesForImport(inputFile, graphicDir, mode, window);
+}
 
+//  inputFile - an nsIFile, the graphic file being converted
+//  mode - a string, either "tex" or "import" (defaults to "import")
+//  Function initiates the import process and related timer and timer handlers, assuming the outputFile is the correct
+//    target (that is, has been identified using the graphicsConverter.getTargetFilesForImport() function.
+function doGraphicsImportToFile(inputFile, outputFile, mode)
+{
+  var graphicDir = outputFile.parent;
   var timerHandler = new graphicsTimerHandler(1600, importTimerHandler);
-  var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+//  var theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
 //  timerHandler.startLoading(inputFile, targFile, process, theTimer);
   if (mode=="tex")
     importTimerHandler.mTexHandler = timerHandler;
   else
     importTimerHandler.mImportHandler = timerHandler;
 //  dump("\nIn msiEdImageProps.js, doGraphicsImport; calling graphicsConverterin mode " + mode + ".\n");
-  var outputFile = graphicsConverter.doGraphicsImport(inputFile, graphicDir, mode, window, timerHandler);
-  return outputFile;
+  graphicsConverter.doImportGraphicsToTarget(inputFile, outputFile, mode, window, timerHandler);
+// return graphicsConverter.doGraphicsImport(inputFile, graphicDir, mode, window, timerHandler, false);
 }
 
 //rwa 5-19-12var replaceableValues = ["targDirectory", "exepath", "inputFile", "outputFile", "commandLine"];
@@ -2005,6 +2060,24 @@ function doOverallEnabling()
   doDimensionEnabling();
 }
 
+function shouldShowErrorMessage()
+{
+  return (!gErrorMessageShown && !importTimerHandler.errorMessageShown());
+}
+
+function displayImportErrorMessage(fileName)
+{
+  if (!shouldShowErrorMessage())
+    return;
+
+  var theMsg = "imageProps.couldNotImport";
+  var msgParams = {file: fileName};
+  var msgString = msiGetDialogString(theMsg, msgParams);
+  var titleStr = msiGetDialogString("imageProps.importErrorTitle", msgParams);
+  gErrorMessageShown = true;
+  AlertWithTitle(titleStr, msgString);
+}
+
 //function editImageMap()
 //{
 //  // Create an imagemap for image map editor
@@ -2049,7 +2122,8 @@ function ValidateImage()
 //  dump("1\n");
   if (!gDialog.srcInput.value)
   {
-    AlertWithTitle(null, GetString("MissingImageError"));
+    if (shouldShowErrorMessage())
+      AlertWithTitle(null, GetString("MissingImageError"));
 //    SwitchToValidatePanel();
     gDialog.srcInput.focus();
     return false;
@@ -2308,24 +2382,28 @@ function onAccept()
 //      dump("In msiEdImageProps.onAccept(), oldImage is [" + ((imageElement == oldImage) ? "same as" : "different from") + "] one in document.\n");
       syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
     
-      var attrList = ["src,data,title,alt"];
-      msiCopySpecifiedElementAttributes(imageElement, globalElement, editor, attrList);
-      imageElement.setAttribute("data",gDialog.srcInput.value);
+      globalImage.setAttribute("data",gDialog.srcInput.value);
       var extension = getExtension(gDialog.srcInput.value);
-      adjustObjectForFileType(imageElement, extension);
-      msiEditorEnsureElementAttribute(imageElement, "req", "graphicx", editor);
-      msiEditorEnsureElementAttribute(imageElement, "naturalWidth", frameUnitHandler.getValueOf(gConstrainWidth, "px"), editor);
-      msiEditorEnsureElementAttribute(imageElement, "naturalHeight", frameUnitHandler.getValueOf(gConstrainHeight, "px"), editor);
+      adjustObjectForFileType(globalImage, extension);
+      msiEditorEnsureElementAttribute(globalImage, "req", "graphicx", null);
+      msiEditorEnsureElementAttribute(globalImage, "naturalWidth", String(frameUnitHandler.getValueOf(gConstrainWidth, "px")), null);
+      msiEditorEnsureElementAttribute(globalImage, "naturalHeight", String(frameUnitHandler.getValueOf(gConstrainHeight, "px")), null);
       
-      setFrameAttributes(wrapperElement, imageElement);
+      setFrameAttributes(globalElement, globalImage, null);
+//      setFrameAttributes(wrapperElement, imageElement);
 //      msiEditorEnsureElementAttribute(wrapperElement, "captionLoc", capAttrStr, editor);  //Now taken care of above
 
       var theKey = gDialog.keyInput.value;
       if (!theKey.length)
         theKey = null;
-      msiEditorEnsureElementAttribute(imageElement, "key", theKey, editor);
-      msiEditorEnsureElementAttribute(imageElement, "id", theKey, editor);
-      msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
+      msiEditorEnsureElementAttribute(globalImage, "key", theKey, editor);
+      msiEditorEnsureElementAttribute(globalImage, "id", theKey, editor);
+      msiSetGraphicFrameAttrsFromGraphic(globalImage, null);  //unless we first end the transaction, this seems to have trouble!
+
+      var imgAttrList = ["src","data","title","alt","req","imageWidth","imageHeight","naturalWidth","naturalHeight","key","units","rotation","msi_resize","borderw","padding","border-color","background-color","style"];
+      msiCopySpecifiedElementAttributes(imageElement, globalImage, editor, imgAttrList);
+      var frameAttrList = ["title","req","width","height","units","sidemargin","topmargin","overhang","pos","textalignment","inlineOffset","placeLocation","placement","style"];
+      msiCopySpecifiedElementAttributes(wrapperElement, globalElement, editor, frameAttrList);
     }
     catch (e)
     {

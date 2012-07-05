@@ -11239,3 +11239,47 @@ function msiEditPage(url, launchWindow, delay, windowName)
   } catch(e) {}
   return null;
 }
+
+function msiCopyAsPicture(editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  var selection = editor.selection;
+
+  AlertWithTitle("Copy as Picture", "Feature not yet implemented.");
+
+//NOTE: The following does not appear to work...
+//  var editorWindow = editorElement.contentWindow;
+//
+//  var printSettings = PrintUtils.getPrintSettings();
+//  printSettings.downloadFonts = true;
+//  printSettings.printToFile = true;
+//  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+//  var targFile = dsprops.get("TmpD", Components.interfaces.nsIFile);
+//  targFile.append("copyOutput.pdf");
+//  printSettings.toFileName = targFile.path;
+//  printSettings.outputFormat = 2;
+//  printSettings.printSilent = true;
+//  printSettings.printRange = Components.interfaces.nsIPrintSettings.kRangeSelection;
+//  printSettings.headerStrLeft = printSettings.headerStrCenter = printSettings.headerStrRight = "";
+//  printSettings.footerStrLeft = printSettings.footerStrCenter = printSettings.footerStrRight = "";
+//  printSettings.orientation = Components.interfaces.nsIPrintSettings.kPortraitOrientation;
+//  if (printSettings.paperSizeUnit == Components.interfaces.nsIPrintSettings.kPaperSizeInches)
+//  {
+//    printSettings.marginTop = printSettings.marginRight = printSettings.marginBottom = printSettings.marginLeft = .04;
+//  }
+//  else
+//  {
+//    printSettings.marginTop = printSettings.marginRight = printSettings.marginBottom = printSettings.marginLeft = 1;
+//  }
+//
+//  var webBrowserPrint = PrintUtils.getWebBrowserPrint(editorWindow);
+//  try
+//  {
+//    webBrowserPrint.print(printSettings, null);
+//  }
+//  catch(exc)
+//  {
+//    dump("Exception in msiCopyAsPicture: " + exc + "\n");
+//    webBrowserPrint.cancel();
+//  }
+}

@@ -173,6 +173,8 @@ function OK() {
 // Only save values that are not the defaults
 function GetValuesFromDialog(){
   // grab anything that's in the graph attribute list
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   var alist = graph.graphAttributeList(); 
   var frame = graph.frame;                               
   for (var i=0; i<alist.length; i++) {                                   
@@ -216,7 +218,7 @@ function GetValuesFromDialog(){
   }
   var f = tempFrame.cloneNode(true);
   var p = tempPw.cloneNode(true);
-  setFrameAttributes(f, p);  // trick to reuse code in msiFrameOverlay.
+  setFrameAttributes(f, p, editor);  // trick to reuse code in msiFrameOverlay.
   frame.extractFrameAttributes(f, p);
   var oldpt = plot.attributes["PlotType"];                        
   var newpt;
