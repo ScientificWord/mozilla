@@ -2936,18 +2936,20 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 // \frame<uID5.12.14>!\frame!REQPARAM(5.15.1,TEXT)	- tight box
 
 TNODE* LaTeX2MMLTree::FBox2MML( TNODE* tex_fbox_node,
-							  	TNODE** out_of_flow_list,
-								U16 uID ) {
+							  	              TNODE** out_of_flow_list,
+								                U16 uID ) {
+
+  DumpTList( tex_fbox_node, 0, TOKENIZER_TEX );
 
   TNODE* mml_rv =  NULL;
 
-  TNODE* tbucket  =  FindObject( tex_fbox_node->parts,
-				  				(U8*)"5.15.1",INVALID_LIST_POS );
+  TNODE* tbucket  =  FindObject( tex_fbox_node->parts, (U8*)"5.15.1", INVALID_LIST_POS );
   if ( tbucket ) {
     TNODE* local_oof_list =  NULL;
 	  TNODE* contents =  TextInMath2MML( tbucket->contents, &local_oof_list,FALSE,FALSE );
     if ( !contents )
       contents  =  MakeSmallmspace();
+
 	  if ( local_oof_list ) {
       contents  =  Struts2MML( contents,local_oof_list );
       local_oof_list  =  DisposeOutOfFlowList( local_oof_list,5,800 );
@@ -2955,12 +2957,11 @@ TNODE* LaTeX2MMLTree::FBox2MML( TNODE* tex_fbox_node,
 	    // We may want to pass this back to the caller in the future.
       DisposeTList( local_oof_list );
 	  }
-
-    // The only MathML object that can be "framed" is <mtable>
+    contents  =  FixImpliedMRow( contents );
 
     TNODE* cell;
     // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd)!/mtd!
-    contents  =  FixImpliedMRow( contents );
+    
     cell  =  CreateElemWithBucketAndContents( 5,57,1,0, contents);
     //contents -> sublist_owner = cell;
 
