@@ -14,7 +14,7 @@
 %dialogDTD;
 ]>
 <!-- JLF to verify-->
-<dialog title="Document Style Sheets"
+<dialog title="&windowTitle.label;"
     id="DocumentStyleDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:html="http://www.w3.org/1999/xhtml"
@@ -29,28 +29,29 @@
   <script type="application/x-javascript"  src="chrome://prince/content/DocumentStyle.js"/>
   <tabbox>
     <tabs>
-      <tab label="Style Sheets"/>
-      <tab label="Scripts"/>
-      <tab label="Tag Definitions"/>
-      <tab label="XSLT Translations"/>
-      <tab><label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> Style</label></tab>
+      <tab label="&StyleSheets.label;"/>
+      <tab label="&Scripts.label;"/>
+      <tab label="&TagDefinitions.label;"/>
+      <tab label="&XSLTTranslations.label;"/>
+      <!-- JLF - BBM -->
+      <tab><label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> &Style.label;</label></tab>
     </tabs>
     <tabpanels>
       <tabpanel>
         <vbox>
-        <label>Style Sheets in Use</label>
+        <label>&StyleSheetsinUse.label;</label>
         <hbox>
           <vbox>
-            <textbox id="cssfile" value="Enter new cascading style sheets here"/>
+            <textbox id="cssfile" value="&EnternewCSShere.label;"/>
             <listbox id="csslist" seltype="multiple" oncommand="">
             </listbox>
           </vbox>
           <vbox>
-            <msibutton id = "browsecss" label = "Browse" oncommand="browse('css')" />
-            <msibutton id = "addcss" label = "Add" oncommand="add('csslist','cssfile','css');" />
-            <msibutton label="Remove" oncommand="remove('csslist')"/>
-            <msibutton label="Move Up" oncommand="moveup('csslist')"/>
-            <msibutton label="Move Down" oncommand="movedown('csslist')"/>
+            <msibutton id = "browsecss" label = "&Browse.label;" oncommand="browse('css')" />
+            <msibutton id = "addcss" label = "&Add.label;" oncommand="add('csslist','cssfile','css');" />
+            <msibutton label="&Remove.label;" oncommand="remove('csslist')"/>
+            <msibutton label="&MoveUp.label;" oncommand="moveup('csslist')"/>
+            <msibutton label="&MoveDown.label;" oncommand="movedown('csslist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -58,19 +59,19 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label>Included JavaScript Files</label>
+        <label>&IncludedJSFiles.label;</label>
         <hbox>
           <vbox>
-            <textbox id="scriptfile" value="Enter new JavaScript files here"/>
+            <textbox id="scriptfile" value="&EnternewJSfileshere.label;"/>
             <listbox id="scriptlist" seltype="multiple" oncommand="">
             </listbox>
           </vbox>
           <vbox>
-            <msibutton id = "browsescript" label = "Browse" oncommand="browse('js')" />
-            <msibutton id = "addscript" label = "Add" oncommand="add('scriptlist','scriptfile','js');" />
-            <msibutton label="Remove" oncommand="remove('scriptlist')"/>
-            <msibutton label="Move Up" oncommand="moveup('scriptlist')"/>
-            <msibutton label="Move Down" oncommand="movedown('scriptlist')"/>
+            <msibutton id = "browsescript" label = "&Browse.label;" oncommand="browse('js')" />
+            <msibutton id = "addscript" label = "&Add.label;" oncommand="add('scriptlist','scriptfile','js');" />
+            <msibutton label="&Remove.label;" oncommand="remove('scriptlist')"/>
+            <msibutton label="&MoveUp.label;" oncommand="moveup('scriptlist')"/>
+            <msibutton label="&MoveDown.label;" oncommand="movedown('scriptlist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -78,7 +79,7 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label>Tag Definition Files in Use </label>
+        <label>&TagDefinitionFilesinUse.label; </label>
         <hbox>
           <vbox>
             <textbox id="xmlfile"/>
@@ -86,11 +87,11 @@
             </listbox>
           </vbox>
           <vbox>
-            <msibutton id = "browsexml" label = "Browse" oncommand="browse('xml')" />
-            <msibutton class="dialog-button" id = "addxml" label = "Add" oncommand="add('xmllist','xmlfile','xml');" />
-            <msibutton label="Remove" oncommand="remove('xmllist')"/>
-            <msibutton label="Move Up" oncommand="moveup('xmllist')"/>
-            <msibutton label="Move Down" oncommand="movedown('xmllist')"/>
+            <msibutton id = "browsexml" label = "&Browse.label;" oncommand="browse('xml')" />
+            <msibutton class="dialog-button" id = "addxml" label = "&Add.label;" oncommand="add('xmllist','xmlfile','xml');" />
+            <msibutton label="&Remove.label;" oncommand="remove('xmllist')"/>
+            <msibutton label="&MoveUp.label;" oncommand="moveup('xmllist')"/>
+            <msibutton label="&MoveDown.label;" oncommand="movedown('xmllist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -98,7 +99,7 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label>XSLT Translations </label>
+        <label>&XSLTTranslations.label; </label>
         <hbox>
           <vbox>
             <textbox id="xslfile"/>
@@ -106,11 +107,11 @@
             </listbox>
           </vbox>
           <vbox>
-            <msibutton id = "browsexslt" label = "Browse" oncommand="browse('xsl')" />
-            <msibutton class="dialog-button" id = "addxslt" label = "Add" oncommand="add('xsllist','xslfile','xsl');" />
-            <msibutton label="Remove" oncommand="remove('addxslt')"/>
-            <msibutton label="Move Up" oncommand="moveup('addxslt')"/>
-            <msibutton label="Move Down" oncommand="movedown('addxslt')"/>
+            <msibutton id = "browsexslt" label = "&Browse.label;" oncommand="browse('xsl')" />
+            <msibutton class="dialog-button" id = "addxslt" label = "&Add.label;" oncommand="add('xsllist','xslfile','xsl');" />
+            <msibutton label="&Remove.label;" oncommand="remove('addxslt')"/>
+            <msibutton label="&MoveUp.label;" oncommand="moveup('addxslt')"/>
+            <msibutton label="&MoveDown.label;" oncommand="movedown('addxslt')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -118,7 +119,8 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> document class</label>
+       
+        <label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> &documentclass.label;</label>
         <label id="stylefile" value=""/>
         <!-- <hbox>
           <vbox>
