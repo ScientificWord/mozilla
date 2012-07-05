@@ -10,13 +10,14 @@ REM wmf emf
 REM END EXTENSION LIST
 
 if %ImageMagick%x==x set ImageMagick=%5
-if %Uniconverter%x==x set Uniconvertor=%6
+if %Uniconvertor%x==x set Uniconvertor=%6
 if %wmf2epsDir%x==x set wmf2epsDir=%7
 set inputPath=%1
 set inputFormat=%2
 set outputPath=%3
 set mode=%4
 set outputFile=%8
+set extraFiles=()
 REM give output format=out; convert for graphic display=disp; give output for tex=outtex; convert for tex=tex
 for %%E in (bmp tif tiff gif art arw cals cin cmyk cmyka crw cut dcm dcr dcx djvu dot dng dot fax fits gray hdr hrz mat mono mrw mtv nef orf otb p7 palm pam pbm pcd pcds pcl pcx pdb pef pfm pgm picon pict pix pnm ppm psd ptif pwp raf rgb rgba rla rle sct sfw sgi sun tga tim uil uyvy vicar viff wbmp wpg xbm xcf xpm xwd x3f ycbcr ycbcra yuv) do (if %%Ex==%inputFormat%x goto imMagick)
 for %%E in (cdr cdt ccx cdrx cmx cgm xfig sk sk1 aff plt dxf dst pes exp pcs eps ps) do (if %%Ex==%inputFormat%x goto UniConv)
@@ -38,8 +39,9 @@ call %Uniconvertor%\uniconvertor %inputPath%.%inputFormat% %outputPath%.%outputF
 goto finish
 :wmfeps
 set outputFormat=svg
-if %mode%x==texx set outputFormat=pdf
-if %mode%x==outtexx set outputFormat=pdf
+if %mode%x==outx set extraFiles=(eps)
+if %mode%x==texx set outputFormat=eps
+if %mode%x==outtexx set outputFormat=eps
 if %mode%x==outx goto echoIt
 if %mode%x==outtexx goto echoIt
 copy /Y %inputPath%.%inputFormat% %outputPath%.%inputFormat%
@@ -47,7 +49,10 @@ copy /Y %inputPath%.%inputFormat% %outputPath%.%inputFormat%
 call %Uniconvertor%/uniconvertor %outputPath%.eps %outputPath%.%outputFormat% >>%outputPath%.%outputFormat%.log 2>&1
 goto finish
 :echoIt
-if not %outputFile%x==x echo %outputFormat% >%outputFile%
+if %outputFile%x==x goto noextra
+for %%g in %extraFiles% do echo %%g >>%outputFile%
+:noextra
+if not %outputFile%x==x echo %outputFormat% >>%outputFile%
 echo %outputFormat%
 goto endIt
 :finish

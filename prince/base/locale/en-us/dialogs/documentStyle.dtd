@@ -1,0 +1,25 @@
+
+
+
+
+
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Document Style Sheets">
+<!ENTITY StyleSheets.label  "Style Sheets">
+<!ENTITY Scripts.label  "Scripts">
+<!ENTITY TagDefinitions.label "Tag Definitions">
+<!ENTITY XSLTTranslations.label "XSLT Translations">
+<!ENTITY StyleSheetsinUse.label "Style Sheets in Use">
+<!ENTITY EnternewCSShere.label  "Enter new cascading style sheets here">
+<!ENTITY EnternewJSfileshere.label  "Enter new JavaScript files here">
+<!ENTITY IncludedJSFiles.label  "Included JavaScript Files">
+<!ENTITY TagDefinitionFilesinUse.label  "Tag Definition Files in Use">
+<!ENTITY Browse.label "Browse">
+<!ENTITY Add.label  "Add">
+<!ENTITY Remove.label "Remove">
+<!ENTITY MoveUp.label "Move Up">
+<!ENTITY MoveDown.label "Move Down">
+<!-- the following strings are used following the LaTeX Style tab in this dialog. Be sure to check formatting in dialog after translating.-->
+<!ENTITY Style.label  "Style"> 
+<!ENTITY documentclass.label  "Document Class">
