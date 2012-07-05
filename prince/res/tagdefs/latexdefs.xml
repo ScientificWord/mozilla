@@ -80,6 +80,14 @@
 				<tag nm="text##lang2##" hidden="1" babel="2"><description>##lang## language</description></tag>
         <!-- <tag nm="deleted"><description>Deleted text</description></tag>
         <tag nm="inserted"><description>Inserted text></description></tag> -->
+		<!-- comment out the ulem tags  
+				<tag nm="uline"><description>Underline (ulem)</description></tag>
+				<tag nm="uuline"><description>Double underline (ulem)</description></tag>
+				<tag nm="uwave"><description>Wavy underline (ulem)</description></tag>
+				<tag nm="sout"><description>Strikeout (ulem)</description></tag>
+				<tag nm="xout"><description>X-ed out (ulem)</description></tag>
+				<tag nm="dashuline"><description>Dash underline (ulem)</description></tag>
+				<tag nm="dotuline"><description>Dot underline (ulem)</description></tag> -->
 			</tags>
 		</tagclass>
 		<tagclass>
