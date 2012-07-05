@@ -2,7 +2,7 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/textbox.css" type="text/css"?>
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/marker.dtd">
-<!-- JLF to verify and add DTD file-->
+<!-- JLF - localization pass 7/4/2012 -->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&windowTitle.label;" buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
