@@ -335,8 +335,8 @@ nsresult nsHTMLEditor::NodeContainsOnlyMn(nsIDOMNode * curNode, nsIDOMNode ** te
 }
 
 nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode, 
-  nsIDOMNode * parent, 
-  PRInt32 offsetOfNewNode,
+  nsIDOMNode ** ioParent, 
+  PRInt32& offsetOfNewNode,
   PRBool& bDidInsert,
   nsIDOMNode ** lastInsertNode)
 {
@@ -344,7 +344,8 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
   nsAutoString strTempInput;
   nsAutoString tagName;
   nsCOMPtr<nsIDOMElement> pNode;
-  nsCOMPtr<nsIDOMNode> parentNode(parent);
+  nsCOMPtr<nsIDOMNode> parentNode(*ioParent);
+  nsCOMPtr<nsIDOMNode> newParentNode = parentNode;
   pNode = do_QueryInterface(parentNode);
   GetTagString(parentNode, tagName);
   if (tagName.EqualsLiteral("mi") || tagName.EqualsLiteral("mo"))
@@ -366,6 +367,7 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
       if (saveOffset > 0) offsetOfNewNode++;
     }
     parentNode = grandParent;
+    newParentNode = parentNode;
     GetTagString(parentNode, tagName);
   }
   if (tagName.EqualsLiteral("mn"))
@@ -390,6 +392,7 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     msiUtils::CreateMRow(this, cNode, mrow);
     res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
     parentNode = mrow;
+    newParentNode = mrow;
     offsetOfNewNode = 1;
     if (NS_SUCCEEDED(res)) 
     {
@@ -412,7 +415,8 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     }
     else
     {
-      res = InsertNodeAtPoint(cNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+      res = InsertNodeAtPoint(cNode, (nsIDOMNode **)(address_of(newParentNode)), &offsetOfNewNode, PR_TRUE);
+      offsetOfNewNode++;
     }
     if (NS_SUCCEEDED(res)) 
     {
@@ -420,6 +424,7 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
       *lastInsertNode = cNode;
     }
   }
+  *ioParent = newParentNode;
 }
 
 nsresult
@@ -811,6 +816,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       {
         //putting in math; check to see if it is going into math.
         PRBool parentIsMath = nsHTMLEditUtils::IsMath(parentNode);
+        nsCOMPtr<nsIDOMNode> newParentNode;
         if (parentIsMath)
         {
           nsAutoString name;
@@ -826,22 +832,27 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             res = childNodes->GetLength(&childCount);
             if (NS_FAILED(res)) return res;
             PRUint32 k; 
+            nsCOMArray<nsIDOMNode> arr;
             for (k = 0; k < childCount; k++)
             {
-              res = childNodes->Item(k, getter_AddRefs(cNode));
+              res = childNodes->Item(0, getter_AddRefs(cNode));
+              if (!cNode) break;
+              nsAutoString s;
+          		nsCOMPtr<nsIDOM3Node> dom3tempnode;
+          	  dom3tempnode = do_QueryInterface(cNode);
+          		dom3tempnode->GetTextContent(s);
+              NS_ADDREF(cNode.get());
               res = InsertMathNode( cNode, 
-                parentNode, 
+                (nsIDOMNode **)address_of(parentNode),
                 offsetOfNewNode,
                 bDidInsert,
                 getter_AddRefs(lastInsertNode));
-              offsetOfNewNode++;
             }
-            
           }
           else 
           {
             res = InsertMathNode( curNode, 
-              parentNode, 
+              (nsIDOMNode **)address_of(parentNode),
               offsetOfNewNode,
               bDidInsert,
               getter_AddRefs(lastInsertNode));
