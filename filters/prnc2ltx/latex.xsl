@@ -841,11 +841,15 @@ should not be done under some conditions -->
 <xsl:template match="html:QTR">\QTR{<xsl:value-of select="@type"/>}{<xsl:apply-templates/>} 
 </xsl:template>
 
-<xsl:template match="html:QTP">\QTP{<xsl:value-of select="@type"/>}
-  
+<!-- Just send Body Math through without additional markup -->
+<xsl:template match="html:QTP[@type='Body Math']"><xsl:value-of select="@type"/>
 <xsl:apply-templates/>
 \par
+</xsl:template>
 
+<xsl:template match="html:QTP">\QTP{<xsl:value-of select="@type"/>}
+<xsl:apply-templates/>
+\par
 </xsl:template>
 
 <xsl:template match="html:minpasses">
