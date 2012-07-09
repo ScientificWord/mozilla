@@ -1096,8 +1096,8 @@ var importTimerHandler =
       this.postFailedImportNotice();
     }
 
-    if (this.importStatus == this.statusSuccess)
-      LoadPreviewImage();
+    //if (this.importStatus == this.statusSuccess)
+    //  LoadPreviewImage();
   },
 
   sourceFile : function()
