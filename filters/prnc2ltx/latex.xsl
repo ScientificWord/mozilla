@@ -391,6 +391,9 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:sectiontitle">
+<xsl:if test="name(..)='part'">
+\part<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
+</xsl:if>
 <xsl:if test="name(..)='chapter'">
 \chapter<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
 </xsl:if>
