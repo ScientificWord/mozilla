@@ -1358,8 +1358,9 @@
 \def\text#1{%
    \msitag{\msipassthru}%
      \char`\{%
-     %\msiopentag{mml:text}{<mml:mtext>}
-     \begingroup\msihmode #1\endgroup
+     \msiopentag{bodyText}{<bodyText>}%
+     {#1}%
+     \msiclosetag{bodyText}{</bodyText>}%
      %\msiclosetag{mml:text}{</mml:mtext>}%  
      \char`\}}
 
