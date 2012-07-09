@@ -1270,6 +1270,22 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
         meditor->MarkNodeDirty(*secondNode);
       }
     }
+    else
+    {
+      nsAutoString theclass;
+      nsCOMPtr<nsIDOMNode> secttitle, br;
+      GetClassOfTag(secondNodeName, nsAtomSecond, theclass);
+      if (theclass.EqualsLiteral("structtag"))
+      {
+        // insert a sectiontitle tag at the beginning of the second half of a split section.
+        rv = meditor->CreateNode(NS_LITERAL_STRING("sectiontitle"), *secondNode, 0, 
+                                                   getter_AddRefs(secttitle));
+        rv = editor->CreateBR(secttitle, 0, address_of(br));
+        meditor->MarkNodeDirty(*secondNode);
+        rv = selection->Collapse(secttitle, 0);
+        return NS_OK;
+      }
+    }
   //  if (!pnode) pnode = *secondNode;
   //#if DEBUG_barry || DEBUG_Barry
   //  editor->DumpNode(pnode,0);
