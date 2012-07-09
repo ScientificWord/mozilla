@@ -3144,7 +3144,52 @@ PRUint32 TextNodeLength(nsIDOMNode * node)
 void SecondPass(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNode,
   nsCOMArray<nsIDOMNode>&array, nsIDOMNode ** newNode, PRInt32& newOffset);
 
-
+PRBool FindMarkedNode(nsIEditor * editor, nsIDOMNode * mathNode,
+    nsIDOMNode ** newNode, PRInt32& newOffset)
+{
+  PRBool found = PR_FALSE;
+  nsCOMPtr<nsIDOMDocument> doc;
+  nsCOMPtr<nsIDOMNode> node;
+  PRUint32 offset;
+  PRUint16 type;
+  PRBool onText;
+  nsresult rv = mathNode->GetOwnerDocument(getter_AddRefs(doc));
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  doctrav = do_QueryInterface(doc);
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  rv = doctrav->CreateTreeWalker( mathNode, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+  if (!(NS_SUCCEEDED(rv) && tw)) return PR_FALSE;
+  // look for Larry's marker
+  tw->NextNode(getter_AddRefs(node));
+  while (node)
+  {
+    rv = node->GetNodeType(&type);
+    if (msiUtils::NodeHasCaretMark(node, offset, onText))
+      break;
+    tw->NextNode(getter_AddRefs(node));
+  }
+  if (node)  // we found a caret mark
+  {
+    found = PR_TRUE;
+//    node->GetLocalName(tag);
+//    if (tag.EqualsLiteral("mi"))
+//    {
+//      nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
+//      elem->SetAttribute(NS_LITERAL_STRING("tempinput"),NS_LITERAL_STRING("true"));
+//    }
+    if (onText) {
+      node->GetFirstChild(newNode);
+      newOffset = offset;
+      return PR_TRUE;
+    }
+    *newNode = node;
+    newOffset = offset;
+  }
+  return found;
+}
+  
+  
+  
 void FindCursorAndOffset(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode * startNode, nsIDOMNode * stopnode, 
   nsCOMArray<nsIDOMNode>&array, nsIDOMNode ** newNode, PRInt32& newOffset)
 {
@@ -3161,6 +3206,8 @@ void FindCursorAndOffset(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode *
   nsresult rv;
   PRUint16 type;
   nsCOMArray<nsIDOMNode> arr;
+  if (FindMarkedNode(editor, mathNode, newNode, newOffset))
+        return;
   nsEditor * ed = static_cast<nsEditor*>(editor);
   PRBool onText = PR_FALSE;
   nsCOMPtr<nsIDOMDocument> doc;
@@ -3171,37 +3218,6 @@ void FindCursorAndOffset(nsIEditor * editor, nsIDOMNode * mathNode, nsIDOMNode *
   rv = doctrav->CreateTreeWalker( mathNode, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
   if (!(NS_SUCCEEDED(rv) && tw)) return;
   tw->SetCurrentNode(startNode);
-  // look for Larry's marker
-  node = startNode;
-  while (node)
-  {
-    rv = node->GetNodeType(&type);
-    if (type == nsIDOMNode::TEXT_NODE)
-      node->GetParentNode(getter_AddRefs(node));
-    
-    if (msiUtils::NodeHasCaretMark(node, offset, onText))
-      break;
-     tw->NextNode(getter_AddRefs(node));
-  }
-  if (node)  // we found a caret mark
-  {
-    node->GetLocalName(tag);
-    if (tag.EqualsLiteral("mi"))
-    {
-      nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
-      elem->SetAttribute(NS_LITERAL_STRING("tempinput"),NS_LITERAL_STRING("true"));
-    }
-    if (onText) {
-      node->GetFirstChild(newNode);
-      newOffset = offset;
-      return;
-    }
-    *newNode = node;
-    newOffset = offset;
-    return;
-  }
-  
-  // Larry's code didn't find it. Try another search
   
   
   tw->SetCurrentNode(startNode);
@@ -3371,12 +3387,42 @@ GetEngine() {
   return engine;
 }
 
+void   hackSelectionCorrection(nsIHTMLEditor * ed, 
+  nsCOMPtr<nsIDOMNode> & startNode, 
+  PRInt32 & startOffset)
+{
+  PRUint16 type;
+  nsresult res;
+  res = startNode->GetNodeType(&type);
+  
+  if (type == 1 && startOffset > 0)  // it is possible that the previous node is a tempinput node.
+    // if so, put the cursor inside it.
+  {
+    nsCOMPtr<nsIDOMNodeList> children;
+    nsCOMPtr<nsIDOMElement> el;
+    PRBool isTemp;
+    el = do_QueryInterface(startNode);
+    res = el->GetChildNodes(getter_AddRefs(children));
+    nsCOMPtr<nsIDOMNode> node;
+    res = children->Item(startOffset - 1, getter_AddRefs(node));
+    el = do_QueryInterface(node);
+    res = el->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTemp);
+    if (isTemp) 
+    {
+      startNode = node;
+      startOffset = 0;
+    }
+  }
+}
+
+
 
 nsresult
 nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection, 
                                     nsIEditor::EDirection aDir, 
                                     nsresult aResult)
 {
+//  return NS_OK;
   if (!aSelection) { return NS_ERROR_NULL_POINTER; }
 
   nsresult res;
@@ -3391,6 +3437,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   PRInt32 startOffset;
 
   res = mEditor->GetStartNodeAndOffset(curSelection, address_of(startNode), &startOffset);
+  hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
   
@@ -9099,6 +9146,7 @@ nsHTMLEditRules::AdjustSpecialBreaks(PRBool aSafeToAskFrames)
 
   // put moz-br's into these empty li's and td's
   nodeCount = arrayOfNodes.Count();
+  PRBool first = PR_TRUE;
   for (j = 0; j < nodeCount; j++)
   {
     // need to put br at END of node.  It may have
@@ -9107,11 +9155,35 @@ nsHTMLEditRules::AdjustSpecialBreaks(PRBool aSafeToAskFrames)
     // to be after the selection if the selection is in this node.
     PRUint32 len;
     nsCOMPtr<nsIDOMNode> brNode, theNode = arrayOfNodes[0];
+    nsCOMPtr<nsIDOMElement> inputNode, theElement;
+    nsAutoString tagName;
+    PRUint32 flags(0);
     arrayOfNodes.RemoveObjectAt(0);
-    res = nsEditor::GetLengthOfDOMNode(theNode, len);
-    if (NS_FAILED(res)) return res;
-    res = CreateMozBR(theNode, (PRInt32)len, address_of(brNode));
-    if (NS_FAILED(res)) return res;
+    // we don't want br's in math, however. In some cases, however, we 
+    // want to put in an <mi tempinput="true"
+    if (nsHTMLEditUtils::IsMath(theNode))
+    {
+      theElement = do_QueryInterface(theNode);
+      theElement->GetTagName(tagName);
+      if (tagName.EqualsLiteral("mtd"))
+      {
+        msiUtils::CreateInputbox(mHTMLEditor, PR_FALSE, first, flags, inputNode);
+        mHTMLEditor->InsertNode(inputNode, theNode, 0);
+        if (first) {
+          nsCOMPtr<nsISelection> sel;
+          mHTMLEditor->GetSelection(getter_AddRefs(sel));
+          sel->Collapse(inputNode, 0);
+        }
+        first = PR_FALSE;
+      }
+    }
+    else
+    {
+      res = nsEditor::GetLengthOfDOMNode(theNode, len);
+      if (NS_FAILED(res)) return res;
+      res = CreateMozBR(theNode, (PRInt32)len, address_of(brNode));
+      if (NS_FAILED(res)) return res;
+    }
   }
   
   return res;
