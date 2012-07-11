@@ -121,7 +121,7 @@
     <xsl:text>&#x27F5;&#x27F8;&#x27F6;&#x27F9;&#x27F7;&#x27FA;&#x27FC;&#x21AA;&#x21C0;&#x21C1;&#x2933;&#x21D5;&#x2197;</xsl:text>
     <xsl:text>&#x2198;&#x2199;&#x2196;&#x21BB;&#x21BA;&#x21CC;&#x21CB;&#x21A0;&#x219E;&#x21C7;&#x21C9;&#x21C8;&#x21CA;</xsl:text>
     <xsl:text>&#x21BE;&#x21C2;&#x21BF;&#x21C3;&#x21A3;&#x21A2;&#x21C6;&#x21C4;&#x21B0;&#x21B1;&#x219D;&#x21AD;&#x21AB;</xsl:text>
-    <xsl:text>&#x21AC;&#x22B8;&#x21DB;&#x21DA;&#x21B6;&#x21B7;&#x290F;&#x290E;&#x21D2;&#x21D0;&#x21D4;</xsl:text>
+    <xsl:text>&#x21AC;&#x22B8;&#x23DF;&#x21DB;&#x21DA;&#x21B6;&#x21B7;&#x290F;&#x290E;&#x21D2;&#x21D0;&#x21D4;&#xFD37;&#xFD38;</xsl:text>
   </xsl:variable>
 
   <xsl:template name="getAlignmentPoint">
