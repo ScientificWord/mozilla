@@ -133,6 +133,10 @@
       <xsl:when test="./*[2][normalize-space(string())='&#xF612;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x23DE;']
+      or              ./*[2][normalize-space(string())='&#xFE37;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x0302;']
       and             ./*[2][@stretchy='true']">
         <xsl:text>true</xsl:text>
@@ -290,7 +294,8 @@
               <xsl:with-param name="LaTeX-acc" select="'\overleftrightarrow'"/>
             </xsl:call-template>
           </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#xF612;']">
+          <xsl:when test="./*[2][normalize-space(string())='&#x23DE;']
+          or              ./*[2][normalize-space(string())='&#xFE37;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\overbrace'"/>
             </xsl:call-template>
@@ -379,6 +384,12 @@
           <xsl:when test="./*[2][normalize-space(string())='&#x20DC;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\ddddot'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x23DE;']
+          or              ./*[2][normalize-space(string())='&#xFE37;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overbrace'"/>
             </xsl:call-template>
           </xsl:when>
 
