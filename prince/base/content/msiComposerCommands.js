@@ -1100,7 +1100,8 @@ var msiUpdateStructToolbarCommand =
       msiUpdateStructToolbar(editorElement);
     }
     catch (e) {
-      finalThrow(cmdFailString('updateStructureToolbar'), e.message);
+// silent fail      
+      return false;
     }
     return true;
   },
@@ -8393,6 +8394,9 @@ var msiAllTagsModeCommand =
     try
     {
       var editorElement = msiGetTopLevelEditorElement();
+      var previousMode = msiGetEditorDisplayMode(editorElement);
+      if (previousMode == kDisplayModeSource)
+        msiSetEditMode(kDisplayModeNormal, editorElement);
       msiSetEditMode(kDisplayModeAllTags, editorElement);
     }
     catch (e) {
