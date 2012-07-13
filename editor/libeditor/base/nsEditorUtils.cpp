@@ -386,7 +386,7 @@ PRBool nodeIsWhiteSpace( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lastin
 //  get the string from the node
   node->GetNodeValue(theText);
   PRUint32 length = theText.Length();
-  if (firstindex >= 0 && lastindex >= 0)
+  if (firstindex >= 0 && lastindex >= 0)  // BBM: this is always the case for PRUints
     text = Substring(theText, firstindex, lastindex);
   else text = theText;
 
