@@ -3387,30 +3387,96 @@ GetEngine() {
   return engine;
 }
 
-void   hackSelectionCorrection(nsIHTMLEditor * ed, 
+void   hackSelectionCorrection(nsHTMLEditor * ed, 
   nsCOMPtr<nsIDOMNode> & startNode, 
   PRInt32 & startOffset)
 {
   PRUint16 type;
   nsresult res;
+  nsCOMPtr<nsIDOMElement> el;
+  nsCOMPtr<nsIDOMNodeList> children;
+  nsCOMPtr<nsIDOMNode> node;
   res = startNode->GetNodeType(&type);
   
   if (type == 1 && startOffset > 0)  // it is possible that the previous node is a tempinput node.
     // if so, put the cursor inside it.
   {
-    nsCOMPtr<nsIDOMNodeList> children;
-    nsCOMPtr<nsIDOMElement> el;
     PRBool isTemp;
     el = do_QueryInterface(startNode);
-    res = el->GetChildNodes(getter_AddRefs(children));
-    nsCOMPtr<nsIDOMNode> node;
-    res = children->Item(startOffset - 1, getter_AddRefs(node));
-    el = do_QueryInterface(node);
-    res = el->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTemp);
-    if (isTemp) 
+    if (el)
     {
-      startNode = node;
-      startOffset = 0;
+      res = el->GetChildNodes(getter_AddRefs(children));
+      res = children->Item(startOffset - 1, getter_AddRefs(node));
+      if (node)
+      {
+        el = do_QueryInterface(node);
+        if (el)
+        {
+        res = el->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTemp);
+          if (isTemp) 
+          {
+            startNode = node;
+            startOffset = 0;
+          }
+        }
+      }
+    }
+  }
+  else {
+    PRUint32 length = TextNodeLength(startNode);
+    PRUint32 nodeLength;
+    if (type == 3 && length == 0) // position is in an empty text node. Look at previous node
+    {
+      nsCOMPtr<nsIDOMNode> parent;
+      PRInt32 offset;
+      nsAutoString(name);
+      nsAutoString(s);
+      nsEditor::GetNodeLocation(startNode, address_of(parent), &offset);
+      // special case. If parent is mi, mn, or mo and empty, we move the cursor again
+      parent->GetNodeName(name);
+      if (name.EqualsLiteral("mi")
+        ||name.EqualsLiteral("mn")
+        ||name.EqualsLiteral("mo"))
+      {
+    		nsCOMPtr<nsIDOM3Node> dom3node;
+    	  dom3node = do_QueryInterface(parent);
+    		dom3node->GetTextContent(s);
+      //  set up the iterators
+        nsAString::const_iterator cur, end;
+
+        s.BeginReading(cur);
+        s.EndReading(end);
+        for (; cur != end; cur++)
+        {
+          if ((*cur == PRUnichar(' ')) ||
+              (*cur == PRUnichar('\f')) ||
+              (*cur == PRUnichar('\n')) ||
+              (*cur == PRUnichar('\r')) ||
+              (*cur == PRUnichar('\t')) ||
+              (*cur == PRUnichar('\v')) ||
+              (*cur == PRUnichar(0x00A0)) ||
+              (*cur == PRUnichar(0x2028)) ||
+              (*cur == PRUnichar(0x2029)))
+          {}
+          else
+          {
+            nsEditor::GetNodeLocation(parent, address_of(parent), &offset);
+            break;  
+          } 
+        }
+      }
+            
+      el = do_QueryInterface(parent);
+      if (el)
+      {
+        res = el->GetChildNodes(getter_AddRefs(children));
+        if (offset == 0) return;
+        res = children->Item(offset - 1, getter_AddRefs(node));
+        if (!node) return;
+        res = ed->GetLengthOfDOMNode(node, nodeLength);
+        startNode = node;
+        startOffset = nodeLength;
+      }
     }
   }
 }
