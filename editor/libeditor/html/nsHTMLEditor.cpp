@@ -4079,7 +4079,8 @@ NS_IMETHODIMP
 nsHTMLEditor::RemoveStyleSheet(const nsAString &aURL)
 {
   nsCOMPtr<nsICSSStyleSheet> sheet;
-  nsresult rv = GetStyleSheetForURL(aURL, getter_AddRefs(sheet));
+  nsresult rv = 
+    (aURL, getter_AddRefs(sheet));
   NS_ENSURE_SUCCESS(rv, rv);
   if (!sheet)
     return NS_ERROR_UNEXPECTED;
@@ -4200,9 +4201,12 @@ nsHTMLEditor::EnableStyleSheet(const nsAString &aURL, PRBool aEnable)
   nsCOMPtr<nsICSSStyleSheet> sheet;
   nsresult rv = GetStyleSheetForURL(aURL, getter_AddRefs(sheet));
   NS_ENSURE_SUCCESS(rv, rv);
-  if (!sheet)
-    return NS_OK; // Don't fail if sheet not found
+  NS_ENSURE_TRUE(sheet, NS_OK);
 
+  // Ensure the style sheet is owned by our document.
+  nsCOMPtr<nsIDocument> doc = do_QueryReferent(mDocWeak);
+  sheet->SetOwningDocument(doc);
+  
   nsCOMPtr<nsIDOMStyleSheet> domSheet(do_QueryInterface(sheet));
   NS_ASSERTION(domSheet, "Sheet not implementing nsIDOMStyleSheet!");
   

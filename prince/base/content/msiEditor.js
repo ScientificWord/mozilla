@@ -856,18 +856,29 @@ function msiEditorDocumentObserver(editorElement)
               editor.addTagInfo(tagdeflist[i]);
             
           }
+              
 					UpdateWindowTitle();
 // Add language tags if there is a <babel> tag
 					addLanguageTagsFromBabelTag(editor.document)
 				  var htmlurlstring = editor.document.documentURI;;
 				  var htmlurl = msiURIFromString(htmlurlstring);
 				  var htmlFile = msiFileFromFileURL(htmlurl);
+          editor.QueryInterface(nsIEditorStyleSheets);
 				  if (htmlFile)
 				  {
 						var cssFile = htmlFile.parent;
 					  cssFile.append("css");
 					  cssFile.append("msi_Tags.css")
 					  dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+            var stylesheet;
+            try 
+            {
+              stylesheet = editor.getStyleSheetForURL(dynAllTagsStyleSheet);
+              if (stylesheet) editor.removeStyleSheet(dynAllTagsStyleSheet);
+            }
+            catch(e) {}  // if there was an exception, there was no stylesheet to remove
+            editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
+            editor.enableStyleSheet(dynAllTagsStyleSheet, false);
 					}
 
           try{
@@ -4575,6 +4586,7 @@ function msiSetEditMode(mode, editorElement)
     editorElement.contentWindow.focus();
   }
   else editorElement.contentWindow.focus();
+  msiSetAllTagsMode(editor, mode == kDisplayModeAllTags)
 }
 
 
@@ -4619,6 +4631,17 @@ function msiGetEditorDisplayMode(editorElement)
   if ("gEditorDisplayMode" in window)
     return window.gEditorDisplayMode;
   return kDisplayModeNormal;
+}
+
+function msiSetAllTagsMode(editor, on)
+{
+  editor.QueryInterface(nsIEditorStyleSheets);
+  editor.enableStyleSheet(dynAllTagsStyleSheet, on);
+  editor instanceof Components.interfaces.nsIHTMLObjectResizer;
+  if (editor.resizedObject) 
+  {
+    editor.hideResizers();
+  }
 }
 
 function msiSetDisplayMode(editorElement, mode)
@@ -4711,43 +4734,7 @@ function msiSetDisplayMode(editorElement, mode)
     // Save the last non-source mode so we can cancel source editing easily
     editorElement.mPreviousNonSourceDisplayMode = mode;
 
-    // Load/unload appropriate override style sheet
-    try {
-      var editor = msiGetEditor(editorElement);
-      var url;
-      editor.QueryInterface(nsIEditorStyleSheets);
-      editor instanceof Components.interfaces.nsIHTMLObjectResizer;
-
-      switch (mode)
-      {
-        case kDisplayModeNormal:
-          editor.addOverrideStyleSheet(kNormalStyleSheet);
-          if (editorElement.mgMathStyleSheet != null)            
-            editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
-          else
-            editor.addOverrideStyleSheet(gMathStyleSheet);
-          // Disable ShowAllTags mode
-          editor.removeOverrideStyleSheet(dynAllTagsStyleSheet);
-        break;
-        
-        case kDisplayModeAllTags:
-          editor.addOverrideStyleSheet(kNormalStyleSheet);
-          if (editorElement.mgMathStyleSheet != null)
-            editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
-          else
-            editor.addOverrideStyleSheet(gMathStyleSheet);
-          editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
-          // don't allow resizing in AllTags mode because the visible tags
-          // change the computed size of images and tables...
-          if (editor.resizedObject) {
-            editor.hideResizers();
-          }
-          break;
-      }
-    } catch(e) {
-        dump("Exception in msiSetDisplayMode: "+e.message+"\n");
-    }
-
+ 
     // Switch to the normal editor (first in the deck)
     if ("gContentWindowDeck" in window)
       window.gContentWindowDeck.selectedIndex = 0;
