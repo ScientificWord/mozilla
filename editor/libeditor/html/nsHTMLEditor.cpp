@@ -4079,8 +4079,7 @@ NS_IMETHODIMP
 nsHTMLEditor::RemoveStyleSheet(const nsAString &aURL)
 {
   nsCOMPtr<nsICSSStyleSheet> sheet;
-  nsresult rv = 
-    (aURL, getter_AddRefs(sheet));
+  nsresult rv = GetStyleSheetForURL(aURL, getter_AddRefs(sheet));
   NS_ENSURE_SUCCESS(rv, rv);
   if (!sheet)
     return NS_ERROR_UNEXPECTED;
