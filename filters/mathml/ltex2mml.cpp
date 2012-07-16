@@ -4962,6 +4962,16 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 	  list_node->sublist_owner =  mtr->parts;
     }
 
+    if (out_of_flow_list && *out_of_flow_list) {
+       TNODE* lis = *out_of_flow_list;  
+       if (strcmp((const char*) lis->src_tok, "\\label") == 0 ) {
+         U8* marker =  lis->parts->contents->var_value;
+         SetNodeAttrib( mtr, (U8*)"marker", marker );
+         SetNodeAttrib( mtr, (U8*)"id", marker );
+       }
+    }
+   
+
 
     if ( strlen((char*)row_spacing_vals) < 120 )
       strcat( (char*)row_spacing_vals,(char*)r_space );
@@ -15164,12 +15174,28 @@ TNODE* LaTeX2MMLTree::HandleOutOfFlowObjects( TNODE* MML_list,
     the_list  =  DisposeOutOfFlowList( the_list,9,3 );
   }
   if ( the_list ) {
-    MML_rv  =  Labels2MML( MML_rv,the_list );
-    the_list  =  DisposeOutOfFlowList( the_list,0,0 );
+    //MML_rv  =  Labels2MML( MML_rv,the_list );
+    //move \labels to  out_of_flow_list
+    TNODE* r =  the_list;
+    while (r) {
+      TNODE* nxt = r->next;
+      U16 uobjtype, usubtype, uID;
+      GetUids( r->zuID, uobjtype, usubtype, uID );
+      if (usubtype == 700){
+        if ( out_of_flow_list != NULL ) {
+          r->next = *out_of_flow_list;
+        } else {
+          r->next = NULL;
+        }
+        *out_of_flow_list = r;
+      }
+      r = nxt;
+    }
+    //the_list  =  DisposeOutOfFlowList( the_list,0,0 );
   }
 
   *local_oof_list =  the_list;
-  TCI_ASSERT( *local_oof_list == NULL );
+  //TCI_ASSERT( *local_oof_list == NULL );
 
 // append anything left on the_list to "the_list".
   return MML_rv;
@@ -17692,8 +17718,8 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 
     } else {
       mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	  mtr->parts->parts =  list_node;
-	  list_node->sublist_owner =  mtr->parts;
+	    mtr->parts->parts =  list_node;
+	    list_node->sublist_owner =  mtr->parts;
     }
 
 
