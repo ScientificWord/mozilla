@@ -721,9 +721,10 @@ void Typesetter::EndDisplay()
          }
          std::string marker = "";
          if (s_anom != ""){
-            if (s_anom.substr(0,7) == "\\label{"){
-               int end = s_anom.find_first_of("}", 7);
-               marker = s_anom.substr(7, end-7);
+            if (s_anom.substr(0,6) == "\\label"){
+               int start = 1+s_anom.find_first_of("{");
+               int end = s_anom.find_first_of("}", start);
+               marker = s_anom.substr(start, end-start);
             }
          }
 
