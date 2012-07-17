@@ -162,42 +162,42 @@ issuenumber {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-issuenumber");
 }
 
 eid {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-eid");
 }
 
 received {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-received");
 }
 
 revised {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-revised");
 }
 
 accepted {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-accepted");
 }
 
 published {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-published");
 }
 
 title {
@@ -218,26 +218,26 @@ affiliation {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-affiliation");
 }
 
 altaffiliation {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-altaffiliation");
 }
 
 collaboration {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-collaboration");
 }
 
 noaffiliation { /* use maketitle from latex.css as the example (gp) */
   -moz-user-select: text;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-noaffiliation");
 }
 
 address {
@@ -249,28 +249,28 @@ email {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-email");
 }
 
 homepage {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-homepage");
 }
 
 pacs {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-pacs");
 }
 
 keywords {
   font-weight: normal;
   display: block;
   text-align: center;
-  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-keywords");
 }
 
 date {
