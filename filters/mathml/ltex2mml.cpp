@@ -477,11 +477,19 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 	  case  TCMD_DisplayedMath  : 	// \begin{mathdisplay}, etc.
 	    if ( uID==1 || uID==11 || uID==21 || uID==31 || uID==41 ) {
           script_level  =  0;
-		  in_display  =  TRUE;
-          mml_rv  =  TranslateTeXDisplay( math_container_obj,
-        							            uID,&out_of_flow_list );
-		  in_display  =  FALSE;
+		      in_display  =  TRUE;
+          mml_rv  =  TranslateTeXDisplay( math_container_obj, uID, &out_of_flow_list );
+		      in_display  =  FALSE;
           script_level  =  0;
+
+          // move leftover labels to anomaly list
+          TNODE* lis = out_of_flow_list;
+          
+          if (strcmp((const char*) lis->src_tok, "\\label") == 0 ) {
+             U8* marker =  lis->parts->contents->var_value;
+             RecordAnomaly( 1005, NULL, lis->src_offset1, lis->src_offset2 );
+             out_of_flow_list = lis->next;
+          }
 
 // We have translated the contents of the TeX display.  It remains
 //  to nest it in an <mstyle> marked for "display".  There are other
@@ -4968,6 +4976,7 @@ _EQNNUMBER_reqELEMENT(5.35.42)
          U8* marker =  lis->parts->contents->var_value;
          SetNodeAttrib( mtr, (U8*)"marker", marker );
          SetNodeAttrib( mtr, (U8*)"id", marker );
+         *out_of_flow_list = lis->next;
        }
     }
    
