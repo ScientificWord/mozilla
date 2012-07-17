@@ -719,12 +719,27 @@ void Typesetter::EndDisplay()
                customLabel = s_anom.substr(5, end-5);
             }
          }
+         std::string marker = "";
+         if (s_anom != ""){
+            if (s_anom.substr(0,7) == "\\label{"){
+               int end = s_anom.find_first_of("}", 7);
+               marker = s_anom.substr(7, end-7);
+            }
+         }
+
          std::string str;
          str += "<msidisplay";
          if (customLabel != ""){
            str += " customLabel=\"";
            str += customLabel;
            str +="\"";
+         }
+         if (marker != ""){
+           str += " marker=\"";
+           str += marker;
+           str += "\" id=\"";
+           str += marker;
+           str += "\"";
          }
          str += ">";
          str +=  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" \
