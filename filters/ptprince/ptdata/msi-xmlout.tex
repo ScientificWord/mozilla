@@ -1621,10 +1621,13 @@
 
 %% Temporary until prince can read xml
 
+\newtoks\msi@extrapi
+
 \def\msi@opendocument{%
    \msitag{<?xml version="1.0" encoding="UTF-8"?>}\br
    \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br
    \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>}\br
+   \the\msi@extrapi
    \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\br
    
    \msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
