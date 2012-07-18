@@ -482,13 +482,15 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 		      in_display  =  FALSE;
           script_level  =  0;
 
-          // move leftover labels to anomaly list
-          TNODE* lis = out_of_flow_list;
+          if (out_of_flow_list){
+            // move leftover labels to anomaly list
+            TNODE* lis = out_of_flow_list;
           
-          if (strcmp((const char*) lis->src_tok, "\\label") == 0 ) {
-             U8* marker =  lis->parts->contents->var_value;
-             RecordAnomaly( 1005, NULL, lis->src_offset1, lis->src_offset2 );
-             out_of_flow_list = lis->next;
+            if (strcmp((const char*) lis->src_tok, "\\label") == 0 ) {
+               U8* marker =  lis->parts->contents->var_value;
+               RecordAnomaly( 1005, NULL, lis->src_offset1, lis->src_offset2 );
+               out_of_flow_list = lis->next;
+            }
           }
 
 // We have translated the contents of the TeX display.  It remains
