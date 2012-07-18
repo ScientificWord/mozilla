@@ -20,6 +20,6 @@
 <!ENTITY Remove.label "Remove">
 <!ENTITY MoveUp.label "Move Up">
 <!ENTITY MoveDown.label "Move Down">
-<!-- the following strings are used following the LaTeX Style tab in this dialog. Be sure to check formatting in dialog after translating.-->
+<!-- the following strings are used following the LaTeX Style tab in this dialog. Be sure to check formatting in dialog after translating. -->
 <!ENTITY Style.label  "Style"> 
 <!ENTITY documentclass.label  "Document Class">
