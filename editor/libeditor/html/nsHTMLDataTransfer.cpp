@@ -344,8 +344,10 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
   nsAutoString strTempInput;
   nsAutoString tagName;
   nsCOMPtr<nsIDOMElement> pNode;
+  nsCOMPtr<nsIDOMNode> textNode;
   nsCOMPtr<nsIDOMNode> parentNode(*ioParent);
   nsCOMPtr<nsIDOMNode> newParentNode = parentNode;
+  nsCOMPtr<nsIDOMCharacterData> characterNode;
   pNode = do_QueryInterface(parentNode);
   GetTagString(parentNode, tagName);
   if (tagName.EqualsLiteral("mi") || tagName.EqualsLiteral("mo"))
@@ -370,21 +372,15 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     newParentNode = parentNode;
     GetTagString(parentNode, tagName);
   }
-  if (tagName.EqualsLiteral("mn"))
+  if (tagName.EqualsLiteral("mn") && (NodeContainsOnlyMn(cNode, getter_AddRefs(textNode)),textNode))
   {
-    nsCOMPtr<nsIDOMNode> textNode;
-    res = NodeContainsOnlyMn(cNode, getter_AddRefs(textNode));
-    if (textNode)
-    {
-      cNode = textNode;
-      parentNode->Normalize();
-      res = parentNode->GetFirstChild(getter_AddRefs(parentNode));
-      NS_ENSURE_SUCCESS(res, res);
-      GetTagString(parentNode, tagName);
-      // don't put mn into an mn, but put the contents into the contents
-    }
+    // don't put mn into an mn, but put the contents into the mn, which has had its text node split
+    res = InsertNodeAtPoint(textNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+    offsetOfNewNode++;
+    newParentNode = parentNode;
+    *lastInsertNode = textNode;
   }
-  if (!(tagName.EqualsLiteral("math") || tagName.EqualsLiteral("mrow")
+  else if (!(tagName.EqualsLiteral("math") || tagName.EqualsLiteral("mrow")
     || tagName.EqualsLiteral("#text")))
   {
     // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
@@ -410,8 +406,9 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     {
       nsAutoString textContent;
       cNode->GetNodeValue(textContent);
-      nsCOMPtr<nsIDOMCharacterData> textNode(do_QueryInterface(parentNode));
-      res = InsertTextIntoTextNodeImpl(textContent, (nsIDOMCharacterData*)textNode, offsetOfNewNode, PR_TRUE);
+      characterNode = do_QueryInterface(parentNode);
+      newParentNode = parentNode;
+      res = InsertTextIntoTextNodeImpl(textContent, (nsIDOMCharacterData*)characterNode, offsetOfNewNode, PR_TRUE);
     }
     else
     {
@@ -425,6 +422,7 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     }
   }
   *ioParent = newParentNode;
+  NS_ADDREF(*lastInsertNode);
 }
 
 nsresult
@@ -502,9 +500,11 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   // also occur later; this block is intended to cover the various
   // scenarios where we are dropping in an editor (and may want to delete
   // the selection before collapsing the selection in the new destination)
+  PRBool collapsed;
+  res = selection->GetIsCollapsed(&collapsed);
   if (aDestNode)
   {
-    if (aDeleteSelection)
+    if (aDeleteSelection && collapsed)
     {
       // Use an auto tracker so that our drop point is correctly
       // positioned after the delete.
@@ -567,6 +567,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   if (!cellSelectionMode)
   {
     res = DeleteSelectionAndPrepareToCreateNode(parentNode, offsetOfNewNode);
+    selection->Collapse(parentNode, offsetOfNewNode);
     NS_ENSURE_SUCCESS(res, res);
 
     // pasting does not inherit local inline styles
@@ -622,7 +623,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     if (IsTextNode(parentNode))
     {
       nsCOMPtr<nsIDOMNode> temp;
-      res = SplitNodeDeep(parentNode, parentNode, offsetOfNewNode, &offsetOfNewNode);
+      res = SplitNodeDeep(parentNode, parentNode, offsetOfNewNode, &offsetOfNewNode, PR_TRUE);
       if (NS_FAILED(res)) return res;
       res = parentNode->GetParentNode(getter_AddRefs(temp));
       if (NS_FAILED(res)) return res;
@@ -820,9 +821,11 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         if (parentIsMath)
         {
           nsAutoString name;
+          lastInsertNode = nsnull;
           GetTagString(curNode, name);
           if (name.EqualsLiteral("math"))
           {
+//            curNode->Normalize();
             nsCOMPtr<nsIDOMNodeList> childNodes;
             nsCOMPtr<nsIDOMNode> cNode;
             res = curNode->GetChildNodes(getter_AddRefs(childNodes));
@@ -883,6 +886,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             lastInsertNode = curNode;
           }
         }
+        selection->Collapse(parentNode, offsetOfNewNode);
+        res = mRules->DidDoAction(selection, &ruleInfo, res);
+        return res;
       }
       else
       {
@@ -1006,8 +1012,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
           }
         }
       }
-      selection->Collapse(selNode, selOffset);
-      
+       
       // if we just pasted a link, discontinue link style
       nsCOMPtr<nsIDOMNode> link;
       if (!bStartedInLink && IsInLink(selNode, address_of(link)))
@@ -1022,8 +1027,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         if (NS_FAILED(res)) return res;
         res = GetNodeLocation(leftLink, address_of(selNode), &selOffset);
         if (NS_FAILED(res)) return res;
-        selection->Collapse(selNode, selOffset+1);
       }
+      selection->Collapse(selNode, selOffset);
     }
   }
   
