@@ -425,7 +425,6 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     }
   }
   *ioParent = newParentNode;
-  return res;
 }
 
 nsresult
