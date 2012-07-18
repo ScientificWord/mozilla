@@ -149,6 +149,7 @@ preprint {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-preprint");
+  -moz-user-select: text;
 }
 
 volumeyear {
@@ -156,6 +157,15 @@ volumeyear {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-volumeyear");
+  -moz-user-select: text;
+}
+
+volumenumber {
+  font-weight: normal;
+  display: block;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-volumenumber");
+  -moz-user-select: text;
 }
 
 issuenumber {
@@ -163,6 +173,7 @@ issuenumber {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-issuenumber");
+  -moz-user-select: text;
 }
 
 eid {
@@ -170,6 +181,7 @@ eid {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-eid");
+  -moz-user-select: text;
 }
 
 received {
@@ -177,6 +189,7 @@ received {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-received");
+  -moz-user-select: text;
 }
 
 revised {
@@ -184,6 +197,7 @@ revised {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-revised");
+  -moz-user-select: text;
 }
 
 accepted {
@@ -191,6 +205,7 @@ accepted {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-accepted");
+  -moz-user-select: text;
 }
 
 published {
@@ -198,6 +213,7 @@ published {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-published");
+  -moz-user-select: text;
 }
 
 title {
@@ -219,6 +235,7 @@ affiliation {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-affiliation");
+  -moz-user-select: text;
 }
 
 altaffiliation {
@@ -226,6 +243,7 @@ altaffiliation {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-altaffiliation");
+  -moz-user-select: text;
 }
 
 collaboration {
@@ -233,11 +251,13 @@ collaboration {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-collaboration");
+  -moz-user-select: text;
 }
 
 noaffiliation { /* use maketitle from latex.css as the example (gp) */
   -moz-user-select: text;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-noaffiliation");
+  -moz-user-select: text;
 }
 
 address {
@@ -250,6 +270,7 @@ email {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-email");
+  -moz-user-select: text;
 }
 
 homepage {
@@ -257,6 +278,7 @@ homepage {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-homepage");
+  -moz-user-select: text;
 }
 
 pacs {
@@ -264,6 +286,7 @@ pacs {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-pacs");
+  -moz-user-select: text;
 }
 
 keywords {
@@ -271,6 +294,7 @@ keywords {
   display: block;
   text-align: center;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-keywords");
+  -moz-user-select: text;
 }
 
 date {
