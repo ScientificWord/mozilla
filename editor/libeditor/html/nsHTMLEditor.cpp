@@ -2399,6 +2399,7 @@ nsHTMLEditor::SetCaretAfterElement(nsIDOMElement* aElement)
 NS_IMETHODIMP 
 nsHTMLEditor::SetStructureTag(const nsAString& aSectionTag)
 {
+  nsresult res;
   nsAutoString strStruct; strStruct.Assign(aSectionTag);
   TagKey tag(strStruct);
   if (tag.localName().EqualsLiteral("dd") || tag.localName().EqualsLiteral("dt"))
@@ -2407,8 +2408,11 @@ nsHTMLEditor::SetStructureTag(const nsAString& aSectionTag)
   else
   {
     nsCOMPtr<nsIAtom> nsAtom;
+    BeginTransaction();
     mtagListManager->NameSpaceAtomOfTagKey(tag.key, (nsIAtom**)address_of(nsAtom));
-    return InsertStructureNS(tag.localName(), nsAtom);
+    res = InsertStructureNS(tag.localName(), nsAtom);
+    EndTransaction();
+    return res;
   }
 }
 
