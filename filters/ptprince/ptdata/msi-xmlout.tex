@@ -1715,6 +1715,21 @@
     \msiclosetag{texb}{</texb>}}
 
 
+\def\msi@begin@figure{%
+   \msiopentag{msiframe}{<msiframe>}%
+}
+
+\def\msi@end@figure{%
+   \msiclosetag{msiframe}{</msiframe>}%
+}
+
+\def\caption{\msi@caption}
+
+\def\msi@caption#1{%
+  \msiopentag{imagecaption}{<imagecaption>}%
+  #1%
+  \msiclosetag{imagecaption}{</imagecaption>}%
+}
 
 % A hack to fool the jbm filter into handling \dots gracefully
 \def\dots{\msitag{\U{2026}}}
