@@ -4613,19 +4613,19 @@
 \def\numberline#1{\hb@xt@\@tempdima{#1\hfil}}
 
 \newcount\@floatpenalty
-\msi@pass{\caption}
-\long\def\@caption#1[#2]#3{%
-  \par
-  \addcontentsline{\csname ext@#1\endcsname}{#1}%
-    {\protect\numberline{\csname the#1\endcsname}{\ignorespaces #2}}%
-  \begingroup
-    \@parboxrestore
-    \if@minipage
-      \@setminipage
-    \fi
-    \normalsize
-    \@makecaption{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
-  \endgroup}
+%%\msi@pass{\caption}
+%%\long\def\@caption#1[#2]#3{%
+%%  \par
+%%  \addcontentsline{\csname ext@#1\endcsname}{#1}%
+%%    {\protect\numberline{\csname the#1\endcsname}{\ignorespaces #2}}%
+%%  \begingroup
+%%    \@parboxrestore
+%%    \if@minipage
+%%      \@setminipage
+%%    \fi
+%%    \normalsize
+%%    \@makecaption{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
+%%  \endgroup}
 \def\@float#1{%
   \@ifnextchar[%
     {\@xfloat{#1}}%
