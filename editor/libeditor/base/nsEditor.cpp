@@ -1623,24 +1623,20 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
   PRInt32 offset = aPosition;
   nsresult result;
   nsAutoRules beginRulesSniffing(this, kOpInsertNode, nsIEditor::eNext);
-//  InsertBufferNodeIfNeeded((nsIDOMNode **)&aNode, (nsIDOMNode **)&aParent, aPosition, &offset);
-  if (offset >= 0)
-  {
-    for (i = 0; i < mActionListeners.Count(); i++)
-      mActionListeners[i]->WillInsertNode(aNode, aParent, aPosition);
+  for (i = 0; i < mActionListeners.Count(); i++)
+    mActionListeners[i]->WillInsertNode(aNode, aParent, aPosition);
 
-    nsRefPtr<InsertElementTxn> txn;
-    result = CreateTxnForInsertElement(aNode, aParent, aPosition,
-                                                getter_AddRefs(txn));
-    if (NS_SUCCEEDED(result))  {
-      result = DoTransaction(txn);  
-    }
-
-    mRangeUpdater.SelAdjInsertNode(aParent, aPosition);
-
-    for (i = 0; i < mActionListeners.Count(); i++)
-      mActionListeners[i]->DidInsertNode(aNode, aParent, aPosition, result);
+  nsRefPtr<InsertElementTxn> txn;
+  result = CreateTxnForInsertElement(aNode, aParent, aPosition,
+                                              getter_AddRefs(txn));
+  if (NS_SUCCEEDED(result))  {
+    result = DoTransaction(txn);  
   }
+
+  mRangeUpdater.SelAdjInsertNode(aParent, aPosition);
+
+  for (i = 0; i < mActionListeners.Count(); i++)
+    mActionListeners[i]->DidInsertNode(aNode, aParent, aPosition, result);
   return result;
 }
 
@@ -1845,6 +1841,10 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   if (!inNode || !outNode)
     return NS_ERROR_NULL_POINTER;
   nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMNode> newNode;
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<nsINode> childNode;
+  nsCOMPtr<nsIDOMElement> elem;
   PRInt32 offset;
   nsresult res = GetNodeLocation(inNode, address_of(parent), &offset);
   if (NS_FAILED(res)) return res;
@@ -1852,20 +1852,24 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   // create new container
   nsCOMPtr<nsIDOMDocument> doc;
   res = parent->GetOwnerDocument(getter_AddRefs(doc));
-  res = manager->GetNewInstanceOfNode(aNodeType, nsnull, doc, getter_AddRefs(*outNode));
-  nsCOMPtr<nsIDOMElement> elem(do_QueryInterface(*outNode));
-  if (*outNode)
+  res = manager->GetNewInstanceOfNode(aNodeType, nsnull, doc, getter_AddRefs(newNode));
+  if (newNode)
   {
+    res = doc->ImportNode(newNode, PR_TRUE, getter_AddRefs(*outNode));
+    elem = do_QueryInterface(*outNode);
+    nsCOMPtr<nsINode> elemNode(do_QueryInterface(*outNode));
+    elemNode->SetEditableFlag(PR_TRUE);
+    res = InsertNode(*outNode, parent, offset);
        // since we are applying this to existing text, take out the contents of newNode
-    nsCOMPtr<nsIDOMNode> child;
     res = elem->GetFirstChild(getter_AddRefs(child));
     while (child && (res==NS_OK)) 
     {
+      childNode = do_QueryInterface(child);
+      childNode->SetEditableFlag(PR_TRUE);
       res = DeleteNode(child);
-      if (res != NS_OK) break;
+//      if (res != NS_OK) break;
       res = elem->GetFirstChild(getter_AddRefs(child));
     }    
-    res = InsertNode(*outNode, parent, offset);
   }
   else
   {
@@ -1885,8 +1889,8 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   }
   if (aCloneAttributes)
   {
-    nsCOMPtr<nsIDOMNode>newNode = do_QueryInterface(elem);
-    res = CloneAttributes(newNode, inNode);
+    nsCOMPtr<nsIDOMNode>newElementNode = do_QueryInterface(elem);
+    res = CloneAttributes(newElementNode, inNode);
     if (NS_FAILED(res)) return res;
   }
   
@@ -1896,29 +1900,26 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   nsAutoReplaceContainerSelNotify selStateNotify(mRangeUpdater, inNode, *outNode);
   {
     nsAutoTxnsConserveSelection conserveSelection(this);
-    nsCOMPtr<nsIDOMNode> child;
     PRBool bHasMoreChildren;
     inNode->HasChildNodes(&bHasMoreChildren);
     while (bHasMoreChildren)
     {
       inNode->GetFirstChild(getter_AddRefs(child));
+      childNode = do_QueryInterface(child);
+      childNode->SetEditableFlag(PR_TRUE);
       res = DeleteNode(child);
-      if (NS_FAILED(res)) return res;
+//      if (NS_FAILED(res)) return res;
       
-      if (!nsTextEditUtils::IsBreak(child))
-      {
+//      if (!nsTextEditUtils::IsBreak(child))
+//      {
         res = InsertNode(child, *outNode, -1);
         if (NS_FAILED(res)) return res;
-      }
+//      }
       inNode->HasChildNodes(&bHasMoreChildren);
     }
   }
-  // insert new container into tree
-//  res = InsertNode( *outNode, parent, offset);
-//  if (NS_FAILED(res)) return res;
-  
   // delete old container
-  return DeleteNode(inNode);
+    return DeleteNode(inNode);
 }
 
 ///////////////////////////////////////////////////////////////////////////
