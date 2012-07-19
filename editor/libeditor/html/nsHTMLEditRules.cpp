@@ -8821,7 +8821,8 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   }
   if (topSplitNode != sourceNode) {
     NS_ASSERTION(topSplitNode,"no node can hold the section. Not even body?");
-    mHTMLEditor->SplitNodeDeep(topSplitNode, sourceNode, sourceOffset, &destOffset, PR_TRUE, 
+    res = nsEditor::GetNodeLocation(sourceNode, address_of(parent), &sourceOffset);
+    mHTMLEditor->SplitNodeDeep(topSplitNode, parent, sourceOffset, &destOffset, PR_TRUE, 
       address_of(outLeftNode), address_of(outRightNode)); 
     res = nsEditor::GetNodeLocation(outRightNode, address_of(destParentNode), &destOffset);
   } else
@@ -8844,35 +8845,37 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     newStructureNode = do_QueryInterface(elem);
   }
   *outNode = newStructureNode; 
-  NS_ADDREF(*outNode);
-  // Hold off on inserting this node until it is fully populated. This makes counter update more
-  // reliable
+    NS_ADDREF(*outNode);
+if (false)
+{
+// Hold off on inserting this node until it is fully populated. This makes counter update more
+// reliable
   
-  // now march up the tree while the new tagtype (aStructureType, atomNamespace) is *not*
-  // allowed as a contained item. As we go, we collect children to the right of our chain
-  // in the new outNode. 
+// now march up the tree while the new tagtype (aStructureType, atomNamespace) is *not*
+// allowed as a contained item. As we go, we collect children to the right of our chain
+// in the new outNode. 
   
-  offset = 0;
-  MoveNodesFromRight(mHTMLEditor, sourceNode, newStructureNode, offset);  
-  // Now move the source paragraph node to the new section node
-  PRInt32 zeroOffset = 0;
-  mHTMLEditor->MoveNode( sourceNode, newStructureNode, zeroOffset);
-  offset++;
-  parent = sourceParentNode;
-  while (parent)
-  {
-    res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
+offset = 0;
+MoveNodesFromRight(mHTMLEditor, sourceNode, newStructureNode, offset);  
+// Now move the source paragraph node to the new section node
+PRInt32 zeroOffset = 0;
+//  mHTMLEditor->MoveNode( sourceNode, newStructureNode, zeroOffset);
+offset++;
+parent = sourceParentNode;
+while (parent)
+{
+  res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
 #if DEBUG_BarryNo || DEBUG_BarryNo
-   DebExamineNode(inNode);
+ DebExamineNode(inNode);
 #endif
-    if (NS_FAILED(res)) return res;
-    if (fCanContain) break;
+  if (NS_FAILED(res)) return res;
+  if (fCanContain) break;
     
-    MoveNodesFromRight(mHTMLEditor, currentNode, newStructureNode, offset); 
-    currentNode = parent;
-    currentNode->GetParentNode(getter_AddRefs(parent));
-  } 
-    // If there are no nodes other than whitespace text nodes left, we should delete parent 
+  MoveNodesFromRight(mHTMLEditor, currentNode, newStructureNode, offset); 
+  currentNode = parent;
+  currentNode->GetParentNode(getter_AddRefs(parent));
+} 
+  // If there are no nodes other than whitespace text nodes left, we should delete parent 
 //    PRBool fDelParent = PR_TRUE;
 //    res = parent->GetChildNodes(getter_AddRefs(childNodes));
 //    nsCOMPtr<nsIContent> tc;
@@ -8939,6 +8942,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
 //    }
 //    else break;
 //  }
+}
   // Now finally insert the node
   res = mHTMLEditor->InsertNode( newStructureNode, destParentNode, destOffset);
   return res;
@@ -8948,7 +8952,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
 ///////////////////////////////////////////////////////////////////////////
 // SplitAsNeeded:  given a tag name, split inOutParent up to the point   
 //                 where we can insert the tag.  Adjust inOutParent and
-//                 inOutOffset to pint to new location for tag.
+//                 inOutOffset to point to new location for tag.
 nsresult 
 nsHTMLEditRules::SplitAsNeeded(const nsAString *aTag, 
                                nsCOMPtr<nsIDOMNode> *inOutParent,
