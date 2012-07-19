@@ -60,6 +60,8 @@ public:
                                  PRInt32 operation,
                                  nsCOMArray<nsIDOMNode>& arrayOfNodes,
                                  PRBool aDontTouchContent=PR_FALSE)=0;
+  NS_IMETHOD InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode, 
+                           const nsAString &aStructureType, nsIAtom * atomNamespace )=0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIHTMLEditRules, NS_IHTMLEDITRULES_IID)
