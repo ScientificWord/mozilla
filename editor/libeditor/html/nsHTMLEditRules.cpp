@@ -8754,7 +8754,7 @@ void MoveNodesFromRight( nsHTMLEditor * editor, nsIDOMNode * startNode, nsIDOMNo
 //                  go in the titlenode. Returns outNode, which is the inserted
 //                  structure node.
 
-nsresult
+NS_IMETHODIMP
 nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode, 
                            nsIDOMNode **outNode, 
                            const nsAString &aStructureType,
