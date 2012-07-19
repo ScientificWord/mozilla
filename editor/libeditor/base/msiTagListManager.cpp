@@ -1177,7 +1177,7 @@ NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, 
   {
     retNode = data->initialContents;
     res = doc->ImportNode(retNode, PR_TRUE, _retval);
-    // Do we need to AddRef?    
+    NS_ADDREF(retNode.get());
   }
   return NS_OK;
 }
