@@ -423,6 +423,7 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
   }
   *ioParent = newParentNode;
   NS_ADDREF(*lastInsertNode);
+  return res;
 }
 
 nsresult
