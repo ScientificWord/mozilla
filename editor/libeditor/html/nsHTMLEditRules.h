@@ -104,6 +104,8 @@ public:
                                  PRInt32 operation,
                                  nsCOMArray<nsIDOMNode>& arrayOfNodes,
                                  PRBool aDontTouchContent=PR_FALSE);
+  NS_IMETHOD InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode, 
+                           const nsAString &aStructureType, nsIAtom * atomNamespace );
 
   // nsIEditActionListener methods
   
@@ -274,8 +276,6 @@ protected:
                               nsVoidArray &inTransitionArray);
   nsresult RemoveBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aBlockTag);
-  nsresult InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode, 
-                           const nsAString &aStructureType, nsIAtom * atomNamespace );
   nsresult ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aStructureTag);
 
   nsresult RemoveStructure(nsIDOMNode *node, const nsAString & notThisTag);
