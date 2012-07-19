@@ -1175,7 +1175,7 @@ NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, 
   PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
   if (fInHash)
   {
-    retNode = data->initialContents;
+    res = data->initialContents->CloneNode( PR_TRUE, getter_AddRefs(retNode));
     res = doc->ImportNode(retNode, PR_TRUE, _retval);
     NS_ADDREF(retNode.get());
   }
