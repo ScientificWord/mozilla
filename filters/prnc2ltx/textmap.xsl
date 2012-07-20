@@ -170,7 +170,7 @@
           <xsl:text xml:space="preserve">\cents </xsl:text>
         </xsl:if>
         <xsl:if test="$output-mode='Portable-LaTeX'">
-          <xsl:text>\hbox{\rm\rlap/c}</xsl:text>
+          <xsl:text>\mbox{\rm\rlap/c}</xsl:text>
         </xsl:if>
       </xsl:when>
       <xsl:when test="$first-char='&#xa3;'">
