@@ -6606,7 +6606,7 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("\\S "));
     charMap->AppendString(NS_LITERAL_STRING("\\\"{}"));
     charMap->AppendString(NS_LITERAL_STRING("\\copyright "));
-    charMap->AppendString(NS_LITERAL_STRING("S{{}^a}$"));
+    charMap->AppendString(NS_LITERAL_STRING("${{}^a}$"));
     charMap->AppendString(NS_LITERAL_STRING("\\guillemotleft "));
     charMap->AppendString(NS_LITERAL_STRING("$\\lnot$"));
     charMap->AppendString(NS_LITERAL_STRING("-"));
@@ -6755,7 +6755,7 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("\\c{l}"));
     charMap->AppendString(NS_LITERAL_STRING("\\v{L}"));
     charMap->AppendString(NS_LITERAL_STRING("\\v{l}"));
-    charMap->AppendString(NS_LITERAL_STRING("L{\\hskip-.05em}\\llap{\raise.5ex\\hbox{$\\cdot$}}{\\hskip.05em}"));
+    charMap->AppendString(NS_LITERAL_STRING("L{\\hskip-.05em}\\llap{\\raise.5ex\\hbox{$\\cdot$}}{\\hskip.05em}"));
     charMap->AppendString(NS_LITERAL_STRING("l{\\hskip.15em}\\llap{\\raise.5ex\\hbox{$\\cdot$}}"));  // 140
     charMap->AppendString(NS_LITERAL_STRING("\\L "));
     charMap->AppendString(NS_LITERAL_STRING("\\l "));
@@ -6765,7 +6765,7 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("\\c{n}"));
     charMap->AppendString(NS_LITERAL_STRING("\\v{N}"));
     charMap->AppendString(NS_LITERAL_STRING("\\v{n}"));
-    charMap->AppendString(NS_LITERAL_STRING("n{\\hskip-.3em}\\llap{\raise1.5ex\\hbox{,}}{\\hskip.3em}"));
+    charMap->AppendString(NS_LITERAL_STRING("n{\\hskip-.3em}\\llap{\\raise1.5ex\\hbox{,}}{\\hskip.3em}"));
     charMap->AppendString(NS_LITERAL_STRING("\\NG "));
     charMap->AppendString(NS_LITERAL_STRING("\\ng "));
     charMap->AppendString(NS_LITERAL_STRING("\\={O}"));
