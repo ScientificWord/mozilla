@@ -935,7 +935,7 @@
         \mathtabularfalse
         \msihmode
       \fi
-      \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+      \msiopentag{table}{<table cols="#2" cellpadding="4" border="1" req="tabulary" _moz_resizing="true">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
         \aftergroup\msi@closetabular
@@ -968,8 +968,11 @@
   \endgroup}
 
 
-\def\cline#1{\msitag{<cline/>}}
-\def\hline{\msitag{<hline/>}}
+%\def\cline#1{\msitag{<cline/>}}
+%\def\hline{\msitag{<hline/>}}
+
+\def\hline{}
+\def\cline#1{}
 
 
 %%\def\multicolumn#1#2#3{%
