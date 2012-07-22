@@ -2408,10 +2408,8 @@ nsHTMLEditor::SetStructureTag(const nsAString& aSectionTag)
   else
   {
     nsCOMPtr<nsIAtom> nsAtom;
-    BeginTransaction();
     mtagListManager->NameSpaceAtomOfTagKey(tag.key, (nsIAtom**)address_of(nsAtom));
     res = InsertStructureNS(tag.localName(), nsAtom);
-    EndTransaction();
     return res;
   }
 }
