@@ -1918,6 +1918,10 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
       inNode->HasChildNodes(&bHasMoreChildren);
     }
   }
+  // insert new container into tree
+//  res = InsertNode( *outNode, parent, offset);
+//  if (NS_FAILED(res)) return res;
+  
   // delete old container
     return DeleteNode(inNode);
 }

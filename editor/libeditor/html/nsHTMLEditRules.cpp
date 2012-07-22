@@ -8835,6 +8835,8 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   if (str.Equals(aStructureType))
   {
     newStructureNode = outRightNode;
+    *outNode = newStructureNode; 
+    return NS_OK;
   }
   else
   {
@@ -8845,9 +8847,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     newStructureNode = do_QueryInterface(elem);
   }
   *outNode = newStructureNode; 
-    NS_ADDREF(*outNode);
-if (false)
-{
+  NS_ADDREF(*outNode);
 // Hold off on inserting this node until it is fully populated. This makes counter update more
 // reliable
   
@@ -8859,7 +8859,7 @@ offset = 0;
 MoveNodesFromRight(mHTMLEditor, sourceNode, newStructureNode, offset);  
 // Now move the source paragraph node to the new section node
 PRInt32 zeroOffset = 0;
-//  mHTMLEditor->MoveNode( sourceNode, newStructureNode, zeroOffset);
+mHTMLEditor->MoveNode( sourceNode, newStructureNode, zeroOffset);
 offset++;
 parent = sourceParentNode;
 while (parent)
@@ -8942,8 +8942,7 @@ while (parent)
 //    }
 //    else break;
 //  }
-}
-  // Now finally insert the node
+// Now finally insert the node
   res = mHTMLEditor->InsertNode( newStructureNode, destParentNode, destOffset);
   return res;
 }  

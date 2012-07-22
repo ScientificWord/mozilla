@@ -421,18 +421,18 @@ function msiDumpUndoStack()
 
     if (!txmgr)
     {
-      dump("**** Editor has no TransactionManager!\n");
+      msidump("**** Editor has no TransactionManager!\n");
       return;
     }
 
-    dump("---------------------- BEGIN UNDO STACK DUMP\n");
-    dump("<!-- Bottom of Stack -->\n");
+    msidump("---------------------- BEGIN UNDO STACK DUMP\n");
+    msidump("<!-- Bottom of Stack -->\n");
     PrintTxnList(txmgr.getUndoList(), "");
-    dump("<!--  Top of Stack  -->\n");
-    dump("Num Undo Items: " + txmgr.numberOfUndoItems + "\n");
-    dump("---------------------- END   UNDO STACK DUMP\n");
+    msidump("<!--  Top of Stack  --->\n");
+    msidump("Num Undo Items: " + txmgr.numberOfUndoItems + "\n");
+    msidump("---------------------- END  UNDO  STACK DUMP\n");
   } catch (e) {
-    dump("ERROR: DumpUndoStack() failed: " + e);
+    msidump("ERROR: DumpUndoStack() failed: " + e);
   }
 }
 
@@ -450,36 +450,36 @@ function msiDumpRedoStack()
     dump("---------------------- BEGIN REDO STACK DUMP\n");
     dump("<!-- Bottom of Stack -->\n");
     PrintTxnList(txmgr.getRedoList(), "");
-    dump("<!--  Top of Stack  -->\n");
+    dump("<!--  Top of Stack  --->\n");
     dump("Num Redo Items: " + txmgr.numberOfRedoItems + "\n");
-    dump("---------------------- END   REDO STACK DUMP\n");
+    dump("---------------------- END  REDO  STACK DUMP\n");
   } catch (e) {
     dump("ERROR: DumpUndoStack() failed: " + e);
   }
 }
 
-//function PrintTxnList(txnList, prefixStr)
-//{
-//  var i;
-//
-//  for (i=0 ; i < txnList.numItems; i++)
-//  {
-//    var txn = txnList.getItem(i);
-//    var desc = "TXMgr Batch";
-//
-//    if (txn)
-//    {
-//      try {
-//        txn = txn.QueryInterface(Components.interfaces.nsPIEditorTransaction);
-//        desc = txn.txnDescription;
-//      } catch(e) {
-//        desc = "UnknownTxnType";
-//      }
-//    }
-//    dump(prefixStr + "+ " + desc + "\n");
-//    PrintTxnList(txnList.getChildListForItem(i), prefixStr + "|    ");
-//  }
-//}
+function PrintTxnList(txnList, prefixStr)
+{
+  var i;
+
+  for (i=0 ; i < txnList.numItems; i++)
+  {
+    var txn = txnList.getItem(i);
+    var desc = "TXMgr Batch";
+
+    if (txn)
+    {
+      try {
+        txn = txn.QueryInterface(Components.interfaces.nsPIEditorTransaction);
+        desc = txn.txnDescription;
+      } catch(e) {
+        desc = "UnknownTxnType";
+      }
+    }
+    msidump(prefixStr + "+ " + desc + "\n");
+    PrintTxnList(txnList.getChildListForItem(i), prefixStr + "|    ");
+  }
+}
 
 // ------------------------ 3rd Party Transaction Test ------------------------
 
