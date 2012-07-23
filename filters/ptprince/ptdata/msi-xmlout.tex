@@ -1011,7 +1011,7 @@
   \br\msihmode
   \msiopentag{verbatim}{<verbatim>}%
   \msiopentag{bodyText}{<bodyText>}%
-  #1%
+  \msitag{#1}%
   \msiclosetag{bodyText}{</bodyText>}
   \msiclosetag{verbatim}{</verbatim>}}%
 
@@ -1160,7 +1160,7 @@
 
 %% \'{\^{e}}
 
-\def\MSIUnicode#1#2{\@namedef{#1}{\@hex{#2}}}
+\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\noexpand\csname#1\endcsname\else\@hex{#2}\fi}}
 
 
 %% Spacing
