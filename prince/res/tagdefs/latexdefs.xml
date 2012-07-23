@@ -584,81 +584,7 @@
             </assertion>
           </initialcontents>
         </tag>
-				<tag nm="conjecture">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Conjecture</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-            <conjecture>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </conjecture>
-          </initialcontents>
-        </tag>
-				<tag nm="corollary">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Corollary</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <corollary>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </corollary>
-           </initialcontents>
-        </tag>
-				<tag nm="criterion">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Criterion</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <criterion>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </criterion>
-           </initialcontents>
-        </tag>
-				<tag nm="lemma">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Lemma</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <lemma>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </lemma>
-           </initialcontents>
-        </tag>
-				<tag nm="proposition">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Proposition</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <proposition>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </proposition>
-           </initialcontents>
-        </tag>
+<!-- Begin standard set of theorem-like environments used in Version 5.5 shells -->
 				<tag nm="theorem">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -689,21 +615,6 @@
              </algorithm>
            </initialcontents>
         </tag>
-				<tag nm="assumption">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Assumption</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <assumption>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </assumption>
-           </initialcontents>
-        </tag>
 				<tag nm="axiom">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -717,126 +628,6 @@
                  <br/>
                </bodyText>
              </axiom>
-           </initialcontents>
-        </tag>
-				<tag nm="condition">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Condition</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <condition>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </condition>
-           </initialcontents>
-        </tag>
-				<tag nm="definition">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Definition</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <definition>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </definition>
-           </initialcontents>
-        </tag>
-				<tag nm="example">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Example</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <example>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </example>
-           </initialcontents>
-        </tag>
-				<tag nm="exercise">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Exercise</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <exercise>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </exercise>
-           </initialcontents>
-        </tag>
-				<tag nm="hypothesis">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Hypothesis</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <hypothesis>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </hypothesis>
-           </initialcontents>
-        </tag>
-				<tag nm="problem">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Problem</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <problem>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </problem>
-           </initialcontents>
-        </tag>
-				<tag nm="property">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Property</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <property>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </property>
-           </initialcontents>
-        </tag>
-				<tag nm="question">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Question</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-             <question>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
-             </question>
            </initialcontents>
         </tag>
 				<tag nm="case">
@@ -884,6 +675,126 @@
              </conclusion>
            </initialcontents>
         </tag>
+				<tag nm="condition">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Condition</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <condition>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </condition>
+           </initialcontents>
+        </tag>
+				<tag nm="conjecture">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Conjecture</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+            <conjecture>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </conjecture>
+          </initialcontents>
+        </tag>
+				<tag nm="corollary">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Corollary</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <corollary>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </corollary>
+           </initialcontents>
+        </tag>
+				<tag nm="criterion">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Criterion</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <criterion>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </criterion>
+           </initialcontents>
+        </tag>
+				<tag nm="definition">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Definition</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <definition>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </definition>
+           </initialcontents>
+        </tag>
+				<tag nm="example">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Example</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <example>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </example>
+           </initialcontents>
+        </tag>
+				<tag nm="exercise">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Exercise</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <exercise>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </exercise>
+           </initialcontents>
+        </tag>
+				<tag nm="lemma">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Lemma</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <lemma>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </lemma>
+           </initialcontents>
+        </tag>
 				<tag nm="notation">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -899,6 +810,36 @@
             </notation>
           </initialcontents>
         </tag>
+				<tag nm="problem">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Problem</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <problem>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </problem>
+           </initialcontents>
+        </tag>
+				<tag nm="proposition">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Proposition</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <proposition>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </proposition>
+           </initialcontents>
+        </tag>
 				<tag nm="remark">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -912,6 +853,21 @@
                 <br/>
               </bodyText>
             </remark>
+          </initialcontents>
+        </tag>
+				<tag nm="solution">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Solution</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+            <solution>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </solution>
           </initialcontents>
         </tag>
 				<tag nm="summary">
@@ -929,6 +885,82 @@
             </summary>
           </initialcontents>
         </tag>
+				<tag nm="proof">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Proof</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+            <proof>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
+            </proof>
+          </initialcontents>
+        </tag>
+<!-- End standard set of theorem-like environments used in Version 5.5 shells -->
+				<tag nm="assumption">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Assumption</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <assumption>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </assumption>
+           </initialcontents>
+        </tag>
+				<tag nm="hypothesis">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Hypothesis</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <hypothesis>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </hypothesis>
+           </initialcontents>
+        </tag>
+				<tag nm="property">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Property</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <property>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </property>
+           </initialcontents>
+        </tag>
+				<tag nm="question">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Question</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <initialcontents>
+             <question>
+               <bodyText>
+                 <cursor/>
+                 <br/>
+               </bodyText>
+             </question>
+           </initialcontents>
+        </tag>
         <!-- The "acknowledgment" tag isn't intended to be added to the interface, as the non-front-matter version induces only confusion among TeX users. -->
 				<tag nm="acknowledgment" hidden="1">
           <level>*</level>
@@ -943,21 +975,6 @@
                 <br/>
               </bodyText>
             </acknowledgment>
-          </initialcontents>
-        </tag>
-				<tag nm="proof">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Proof</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-          <initialcontents>
-            <proof>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </proof>
           </initialcontents>
         </tag>
         <tag nm="msidisplay" hidden="1">
