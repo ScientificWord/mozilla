@@ -1252,6 +1252,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
           } 
           currentNode = parent;
           res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
+          offset++;
       //    printf("Parent of target tag: \n");
       //    mHTMLEditor->DumpNode(parent); 
       #if DEBUG_barry || DEBUG_Barry
@@ -1295,7 +1296,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   //        PRInt32 offset;
   //        res = nsEditor::GetNodeLocation(splitNode, address_of(parent), &offset);
           res = GetTagString(splitNode, strTagName);
-  		    nsEditor::DeleteNode(splitNode);
+  		    nsEditor::RemoveContainer(splitNode);
           res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
   	      if (!s2.EqualsLiteral("true"))
             res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);  
