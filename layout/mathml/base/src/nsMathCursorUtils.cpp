@@ -113,7 +113,6 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   return PR_TRUE;
 }
 
-
 nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
 {
   if (!pFrame) return nsnull;
@@ -121,17 +120,17 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
   nsIFrame * pRet = nsnull;
   nsIFrame * pChild = nsnull; 
   if (type == nsGkAtoms::textFrame )
-    return pFrame;
-  else
   {
-    pChild = pFrame->GetFirstChild(nsnull);
-    while (pChild && !(pRet = GetFirstTextFrame(pChild)))
-    {
-      pChild = pChild->GetNextSibling();
-      pRet = GetFirstTextFrame( pChild);
-    }
-    return pRet;
+    if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
+      return pFrame;
   }
+  pChild = pFrame->GetFirstChild(nsnull);
+  while (pChild && !(pRet = GetFirstTextFrame(pChild)))
+  {
+    pChild = pChild->GetNextSibling();
+    pRet = GetFirstTextFrame( pChild);
+  }
+  return pRet;
 }
 
 nsIFrame * GetPrevSib(nsIFrame * pFrame)
