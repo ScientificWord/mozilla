@@ -4268,18 +4268,18 @@ function displayDocTypeIfExists(editor)
   }
 }
 
-var gDummySelectionStartNode = null;
-var gDummySelectionEndNode = null;
-var gDummySelectionStartData = "";
-var gDummySelectionEndData = "";
+var gSelectionStartNode;
+var gSelectionEndNode;
+var gSelectionStartData;
+var gSelectionEndData;
 const kBGBGBG = "--BG--";
 
 function MarkSelection(editor)
 {
-  gDummySelectionStartNode = null;
-  gDummySelectionEndNode = null;
-  gDummySelectionStartData = "";
-  gDummySelectionEndData = "";
+  gSelectionStartNode = null;
+  gSelectionEndNode = null;
+  gSelectionStartData = "";
+  gelectionEndData = "";
 
   var selection = editor.selection;
   for (var count = 0; count < 1; count++) {
@@ -4291,8 +4291,8 @@ function MarkSelection(editor)
 
     if (startContainer.nodeType == Node.TEXT_NODE) {
       var data = startContainer.data;
-      gDummySelectionStartNode = startContainer;
-      gDummySelectionStartData = data;
+      gSelectionStartNode = startContainer;
+      gSelectionStartData = data;
       data = data.substr(0, startOffset) + kBGBGBG + data.substr(startOffset);
       startContainer.data = data;
     }
@@ -4301,20 +4301,20 @@ function MarkSelection(editor)
         var node = startContainer.childNodes.item(startOffset);
         if (node.nodeType == Node.TEXT_NODE) {
           var data = node.data;
-          gDummySelectionStartNode = node;
-          gDummySelectionStartData = data;
+          gSelectionStartNode = node;
+          gSelectionStartData = data;
           data = kBGBGBG + data;
           node.data = data;
         }
         else {
           var t = editor.document.createTextNode(kBGBGBG);
-          gDummySelectionStartNode = t;
+          gSelectionStartNode = t;
           startContainer.insertBefore(t, node);
         }
       }
       else {
         var t = editor.document.createTextNode(kBGBGBG);
-        gDummySelectionStartNode = t;
+        gSelectionStartNode = t;
         startContainer.appendChild(t);
       }
     }
@@ -4323,15 +4323,15 @@ function MarkSelection(editor)
       // same node as start node???
       if (endContainer == startContainer) {
         var data = endContainer.data;
-        gDummySelectionEndNode = endContainer;
-        gDummySelectionEndData = data;
+        gSelectionEndNode = endContainer;
+        gSelectionEndData = data;
         data = data.substr(0, endOffset + kBGBGBG.length) + kBGBGBG + data.substr(endOffset + kBGBGBG.length);
         endContainer.data = data;
       }
       else {
         var data = endContainer.data;
-        gDummySelectionEndNode = endContainer;
-        gDummySelectionEndData = data;
+        gSelectionEndNode = endContainer;
+        gSelectionEndData = data;
         data = data.substr(0, endOffset) + kBGBGBG + data.substr(endOffset);
         endContainer.data = data;
       }
@@ -4340,14 +4340,14 @@ function MarkSelection(editor)
       var node = endContainer.childNodes.item(Math.max(0, endOffset - 1));
       if (node.nodeType == Node.TEXT_NODE) {
         var data = node.data;
-        gDummySelectionEndNode = node;
-        gDummySelectionEndData = data;
+        gSelectionEndNode = node;
+        gSelectionEndData = data;
         data += kBGBGBG;
         node.data = data;
       }
       else {
         var t = editor.document.createTextNode(kBGBGBG);
-        gDummySelectionEndNode = t;
+        gSelectionEndNode = t;
         endContainer.insertBefore(t, node.nextSibling);
       }
     }
@@ -4357,18 +4357,18 @@ function MarkSelection(editor)
 
 function UnmarkSelection(editor)
 {
-  if (gDummySelectionEndNode) {
-    if (gDummySelectionEndData)
-      gDummySelectionEndNode.data = gDummySelectionEndData;
+  if (gSelectionEndNode) {
+    if (gSelectionEndData)
+      gSelectionEndNode.data = gSelectionEndData;
     else
-      gDummySelectionEndNode.parentNode.removeChild(gDummySelectionEndNode);
+      gSelectionEndNode.parentNode.removeChild(gSelectionEndNode);
   }
 
-  if (gDummySelectionStartNode) {
-    if (gDummySelectionStartData)
-      gDummySelectionStartNode.data = gDummySelectionStartData;
-    else if (gDummySelectionStartNode.parentNode) // if not already removed....
-      gDummySelectionStartNode.parentNode.removeChild(gDummySelectionStartNode);
+  if (gSelectionStartNode) {
+    if (gSelectionStartData)
+      gSelectionStartNode.data = gSelectionStartData;
+    else if (gSelectionStartNode.parentNode) // if not already removed....
+      gSelectionStartNode.parentNode.removeChild(gSelectionStartNode);
   }
 }
 
