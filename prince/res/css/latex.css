@@ -870,6 +870,7 @@ line {
     Plain      - assertion, conjecture, corollary, criterion, lemma, proposition, theorem
     Definition - algorithm, assumption, axiom, condition, definition, example,
                  exercise, hypothesis, problem, property, question
+				 Add solution to this group, it is a standard theorem-like environment in Version 5.x shells (gp).
     Remark     - acknowledgment (not encouraged), case, claim, conclusion, notation, 
                  note (we would use the tag "texnote", but no support currently), 
                  remark, summary
@@ -971,7 +972,8 @@ algorithm > *:first-child::before, assumption > *:first-child::before,
 axiom > *:first-child::before, condition > *:first-child::before,
 definition > *:first-child::before, example > *:first-child::before,
 exercise > *:first-child::before, hypothesis > *:first-child::before,
-problem > *:first-child::before, property > *:first-child::before, question > *:first-child::before
+problem > *:first-child::before, property > *:first-child::before, 
+question > *:first-child::before, solution > *:first-child::before
 {
   font-style: normal;
   font-weight: bold;
@@ -979,7 +981,7 @@ problem > *:first-child::before, property > *:first-child::before, question > *:
 }
 
 algorithm, assumption, axiom, condition, definition, example, exercise, hypothesis,
-problem, property, question
+problem, property, question, solution
 {
   display: block;
   font-style: normal;
@@ -1096,6 +1098,16 @@ question[numbering="none"] > *:first-child::before {
   -moz-user-modify: read-only;
 }
 
+solution > *:first-child::before {
+  content: 'Solution ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+solution[numbering="none"] > *:first-child::before {
+  content: 'Solution ';
+  -moz-user-modify: read-only;
+}
+
 acknowledgment > *:first-child::before, case > *:first-child::before, claim > *:first-child::before,
 conclusion > *:first-child::before, notation > *:first-child::before,
 remark > *:first-child::before, summary > *:first-child::before
@@ -1206,6 +1218,7 @@ hypothesis[leadInType="custom"],
 problem[leadInType="custom"],
 property[leadInType="custom"],
 question[leadInType="custom"],
+solution[leadInType="custom"],
 acknowledgment[leadInType="custom"],
 case[leadInType="custom"],
 claim[leadInType="custom"],
@@ -1235,6 +1248,7 @@ hypothesis > envLeadIn,
 problem > envLeadIn,
 property > envLeadIn,
 question > envLeadIn,
+solution > envLeadIn,
 acknowledgment > envLeadIn,
 case > envLeadIn,
 claim > envLeadIn,
@@ -1263,6 +1277,7 @@ hypothesis[numbering="none"],
 problem[numbering="none"],
 property[numbering="none"],
 question[numbering="none"],
+solution[numbering="none"],
 acknowledgment[numbering="none"],
 case[numbering="none"],
 claim[numbering="none"],
@@ -1291,6 +1306,7 @@ hypothesis > envLeadIn+bodyText,
 problem > envLeadIn+bodyText,
 property > envLeadIn+bodyText,
 question > envLeadIn+bodyText,
+solution > envLeadIn+bodyText,
 acknowledgment > envLeadIn+bodyText,
 case > envLeadIn+bodyText,
 claim > envLeadIn+bodyText,
