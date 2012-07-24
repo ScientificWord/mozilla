@@ -131,6 +131,9 @@
 }
 \def\@publishedb#1{\@publisheda[]{#1}}
 
+\msi@extrapi{%
+  \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>}\br
+}
 
 \def\classcss{@import url("resource://app/res/css/revtex4-1.css");}
 
