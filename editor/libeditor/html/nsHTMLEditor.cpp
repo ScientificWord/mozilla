@@ -1766,7 +1766,7 @@ NS_IMETHODIMP nsHTMLEditor::CreateMsiBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent,
     }
     else
     {
-      // split the text node
+      // split the  
       res = SplitNode(node, theOffset, getter_AddRefs(tmp));
       if (NS_FAILED(res)) return res;
       res = GetNodeLocation(node, address_of(tmp), &offset);

@@ -1603,14 +1603,14 @@ nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNod
       ptr = tmp;
     }
   }
-  if (parent != topChild)
+  if (ptr != topChild) //If suspicious, check the history of this line
   {
     // we need to split some levels above the original selection parent
     res = SplitNodeDeep(topChild, parent, offsetOfInsert, &offsetOfInsert, PR_TRUE);
+    parent = ptr;
     if (NS_FAILED(res))
       return -1;
   }
-  parent = ptr;
   *_retval = offsetOfInsert;
 } 
 
