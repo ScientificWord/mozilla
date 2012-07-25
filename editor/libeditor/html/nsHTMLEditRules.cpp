@@ -3179,6 +3179,14 @@ PRBool FindMarkedNode(nsIEditor * editor, nsIDOMNode * mathNode,
 //    }
     if (onText) {
       node->GetFirstChild(newNode);
+      if (!(*newNode)) 
+      {
+        nsAutoString data;
+        nsCOMPtr<nsIDOMText> textNode;
+        rv = doc->CreateTextNode(data, getter_AddRefs(textNode));
+        rv = editor->InsertNode(textNode, node, 0);
+        *newNode = textNode;
+      }
       newOffset = offset;
       return PR_TRUE;
     }
