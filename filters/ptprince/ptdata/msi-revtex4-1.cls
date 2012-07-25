@@ -1,6 +1,7 @@
 
 %\title{Manuscript Title:\\with Forced Linebreak}% Force line breaks with \\
 %(gp) Use underlying LaTeX definition
+%Looks like optional parameter (like AMS styles) to title has been removed with REVTeX4-1.
 
 %\date{\today}
 %(gp) Use underlying LaTeX definition
