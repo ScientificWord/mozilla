@@ -25,6 +25,14 @@
 \eid{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
+<xsl:template match="html:startpage">
+\startpage{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:endpage">
+\endpage{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
 <xsl:template match="html:received">
 \received{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
