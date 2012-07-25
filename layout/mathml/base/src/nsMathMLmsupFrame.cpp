@@ -46,6 +46,7 @@
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
 #include "nsMathCursorUtils.h"
+#include "nsTextFrame.h"
 
 #include "nsMathMLmsupFrame.h"
 
@@ -372,7 +373,10 @@ nsMathMLmsupFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, 
   {
     // leaving superscript. Place the cursor just after the base.
     count= 0;
-    PlaceCursorAfter(pChild, PR_TRUE, aOutFrame, aOutOffset, count);
+    nsIFrame * textFrame = GetLastTextFrame(pChild);
+    *aOutFrame = textFrame;
+    *aOutOffset = (static_cast<nsTextFrame*>(textFrame))->GetContentEnd();
+//    PlaceCursorAfter(pChild, PR_TRUE, aOutFrame, aOutOffset, count);
     //pMCM = do_QueryInterface(pChild);
     //if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     *_retval = 0;
