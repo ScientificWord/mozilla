@@ -96,8 +96,18 @@
 
 %\eid{identifier}
 \def\eid#1{\out@eid{#1}}
-\def\outeid#1{%
+\def\out@eid#1{%
    \msitag{^^0a}\msiopentag{eid}{<eid>}#1\msiclosetag{eid}{</eid>}}
+
+%\startpage{page #}
+\def\startpage#1{\out@startpage{#1}}
+\def\out@startpage#1{%
+   \msitag{^^0a}\msiopentag{startpage}{<startpage>}#1\msiclosetag{startpage}{</startpage>}}
+
+%\endpage{page #}
+\def\endpage#1{\out@endpage{#1}}
+\def\out@endpage#1{%
+   \msitag{^^0a}\msiopentag{endpage}{<endpage>}#1\msiclosetag{endpage}{</endpage>}}
 
 %\received[Received text]{date}
 \def\received{%
