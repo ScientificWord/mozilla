@@ -176,24 +176,22 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
   nsIFrame * pChild = nsnull; 
   nsIContent * pContent = nsnull;
   if (type == nsGkAtoms::textFrame) 
-    return pFrame;
-  else
+    if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
+      return pFrame;
+  pChild = GetLastChild(pFrame);
+  while (PR_TRUE)
   {
-    pChild = GetLastChild(pFrame);
-    while (PR_TRUE)
+    while (pChild && !(pRet = GetLastTextFrame(pChild)))
     {
-      while (pChild && !(pRet = GetLastTextFrame(pChild)))
-      {
-        pChild = GetPrevSib(pChild);
-        pRet = GetLastTextFrame( pChild);
-      }
-      if (pRet)
-      {
-        pContent = pRet->GetContent();
-        if (!pContent->TextIsOnlyWhitespace()) return pRet;
-      }
-      else return pRet;
+      pChild = GetPrevSib(pChild);
+      pRet = GetLastTextFrame( pChild);
     }
+    if (pRet)
+    {
+      pContent = pRet->GetContent();
+      if (!pContent->TextIsOnlyWhitespace()) return pRet;
+    }
+    else return pRet;
   }
 }											   
 
