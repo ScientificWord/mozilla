@@ -10369,25 +10369,8 @@ var msiCommandUpdater = {
         controller.onEvent(event);
     }
   }
-  
-//  doReviseCommand: function(command, editorElement) {
-//    if (!editorElement)
-//      editorElement = msiGetActiveEditorElement();
-//    try {
-////      if ( controller && controller.isCommandEnabled(command))
-////        controller.doCommand(command);
-//      var controller = this._getControllerForCommand(command, editorElement);
-//      if (!controller)
-//        return;
-//      controller.bRevising = true;
-//      controller.doCommand(command);
-//      controller.bRevising = false;
-//    }
-//    catch (e) {
-//      dump("An error occurred executing the "+command+" command\n");
-//    }
-//  }  
 };
+
 // Shim for compatibility with existing code. 
 function msiGoDoCommand(command, editorElement) 
 { 
