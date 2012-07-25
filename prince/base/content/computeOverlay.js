@@ -288,20 +288,48 @@ function doSetupMSIComputeMenuCommands(commandTable)
 
 function goUpdateMSIcomputeMenuItems(commandset)
 {
+  var commandNode;
+  var commandID;
+  var controller;
+  var computeEnabled;
+  var inMathBroadcaster;
+  var editorElement;
   for (var i = 0; i < commandset.childNodes.length; i++)
   {
-    var commandNode = commandset.childNodes[i];
-    var commandID = commandNode.id;
+    commandNode = commandset.childNodes[i];
+    commandID = commandNode.id;
     if (commandID)
     {
       goUpdateCommand(commandID);
       if (commandNode.hasAttribute("state"))
         goUpdateCommandState(commandID);
-} } }
+    } 
+  }
+  // We find out if we are in math -- by finding if cmd_MSIComputeEval is enabled
+  // If so, we set imMathBroadcaster to disabled. Operations disabled in math, such
+  // as insert footnote, will observe this and hence be disabled.
+  editorElement = msiGetActiveEditorElement();
+  controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
+  computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
+  inMathBroadcaster = document.getElementById("inMathBroadcaster");
+  if (computeEnabled)
+  {
+    inMathBroadcaster.setAttribute("disabled","true");
+  }
+  else
+  {
+    inMathBroadcaster.removeAttribute("disabled");
+  }
+}
 
 
 function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement)
 {
+  var commandNode;
+  var commandID;
+  var controller;
+  var computeEnabled;
+  var inMathBroadcaster;
   for (var i = 0; i < commandset.childNodes.length; i++)
   {
     var commandNode = commandset.childNodes[i];
@@ -313,8 +341,22 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement)
         msiGoUpdateCommandState(commandID, editorElement);
     } 
   } 
+  // We find out if we are in math -- by finding if cmd_MSIComputeEval is enabled
+  // If so, we set imMathBroadcaster to disabled. Operations disabled in math, such
+  // as insert footnote, will observe this and hence be disabled.
+  controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
+  computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
+  inMathBroadcaster = document.getElementById("inMathBroadcaster");
+  if (computeEnabled)
+  {
+    inMathBroadcaster.setAttribute("disabled","true");
+  }
+  else
+  {
+    inMathBroadcaster.removeAttribute("disabled");
+  }
 }
- 
+
 
 // const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
