@@ -35,12 +35,12 @@
 							events="create, mode_switch"
 							oncommandupdate="goUpdateMSITypesetInsertMenuItems(this)">
 
-		<command id="cmd_MSIinsertIndexEntryCmd"								oncommand="goDoCommand('cmd_MSIinsertIndexEntryCmd');"/>
-		<command id="cmd_MSIinsertCrossReferenceCmd"						oncommand="goDoCommand('cmd_MSIinsertCrossReferenceCmd');"/>
-		<command id="cmd_MSIinsertCitationCmd"									oncommand="goDoCommand('cmd_MSIinsertCitationCmd');"/>
-		<command id="cmd_MSIinsertBibliographyCmd"							oncommand="goDoCommand('cmd_MSIinsertBibliographyCmd');"/>
+		<command id="cmd_MSIinsertIndexEntryCmd"								oncommand="goDoCommand('cmd_MSIinsertIndexEntryCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertCrossReferenceCmd"						oncommand="goDoCommand('cmd_MSIinsertCrossReferenceCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertCitationCmd"									oncommand="goDoCommand('cmd_MSIinsertCitationCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertBibliographyCmd"							oncommand="goDoCommand('cmd_MSIinsertBibliographyCmd');" observes="inMathBroadcaster"/>
 		<command id="cmd_MSIinsertTeXFieldCmd"									oncommand="goDoCommand('cmd_MSIinsertTeXFieldCmd');"/>
-		<command id="cmd_MSIinsertSubdocumentCmd"								oncommand="goDoCommand('cmd_MSIinsertSubdocumentCmd');"/>
+		<command id="cmd_MSIinsertSubdocumentCmd"								oncommand="goDoCommand('cmd_MSIinsertSubdocumentCmd');" observes="inMathBroadcaster"/>
 	</commandset>
 
   <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->
@@ -74,38 +74,4 @@
          command="cmd_MSItypesetExpertSettingsCmd"/ -->
     </menupopup>
   </menu>
-
-  <!--menu id="insertMenu">
-    <menupopup id="insertMenuPopup" >
-      <menu id="insertTypesetObjectMenu">
-        <menupopup oonpopupshowing="InitTypesetObjectMenu()">
-          <menuitem id="MSIinsertIndexEntry"         
-            label="&MSIinsertIndexEntry.label;"         
-            accesskey="&MSIinsertIndexEntry.accesskey;"         
-            command="cmd_MSIinsertIndexEntryCmd"/>
-          <menuitem id="MSIinsertCrossReference"     
-            label="&MSIinsertCrossReference.label;"     
-            accesskey="&MSIinsertCrossReference.accesskey;"     
-            command="cmd_MSIinsertCrossReferenceCmd"/>
-          <menuitem id="MSIinsertCitation"           
-            label="&MSIinsertCitation.label;"           
-            accesskey="&MSIinsertCitation.accesskey;"           
-            command="cmd_MSIinsertCitationCmd"/>
-          <menuitem id="MSIinsertBibliography"       
-            label="&MSIinsertBibliography.label;"       
-            accesskey="&MSIinsertBibliography.accesskey;"       
-            command="cmd_MSIinsertBibliographyCmd"/>
-          <menuitem id="MSIinsertTeXField"           
-            label="&MSIinsertTeXField.label;"           
-            accesskey="&MSIinsertTeXField.accesskey;"           
-            command="cmd_MSIinsertTeXFieldCmd"/>
-          <menuitem id="MSIinsertSubdocument"        
-            label="&MSIinsertSubdocument.label;"        
-            accesskey="&MSIinsertSubdocument.accesskey;"        
-            command="cmd_MSIinsertSubdocumentCmd"/>
-        </menupopup>
-      </menu>
-    </menupopup>
-  </menu -->
-
 </overlay>
