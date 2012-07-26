@@ -57,6 +57,26 @@
     </xbl:content>
   </xbl:binding>
 
+  <xbl:binding id="fmtag-startpage"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Start page</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-endpage"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">End page</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
   <xbl:binding id="fmtag-received"> /*front matter label*/
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
