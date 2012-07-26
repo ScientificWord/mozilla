@@ -184,6 +184,22 @@ eid {
   -moz-user-select: text;
 }
 
+startpage {
+  font-weight: normal;
+  display: block;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-startpage");
+  -moz-user-select: text;
+}
+
+endpage {
+  font-weight: normal;
+  display: block;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-endpage");
+  -moz-user-select: text;
+}
+
 received {
   font-weight: normal;
   display: block;
