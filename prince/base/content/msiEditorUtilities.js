@@ -793,17 +793,23 @@ function msiGetPrimaryEditorElementForWindow(theWindow)
   if (!theWindow)
     theWindow = window.document.defaultView;
   var theEditor = null;
-  var editorElements = theWindow.document.getElementsByTagName("editor");
-  for (var i = 0; (!theEditor) && (i < editorElements.length); ++i)
+  if (theWindow.document)
   {
-    if (editorElements[i].getAttribute("type") === "content-primary")
-      theEditor = editorElements[i];
+    var editorElements = theWindow.document.getElementsByTagName("editor");
+    for (var i = 0; (!theEditor) && (i < editorElements.length); ++i)
+    {
+      if (editorElements[i].getAttribute("type") === "content-primary")
+        theEditor = editorElements[i];
+    }
+    if (!theEditor)
+      theEditor = editorElements[0];
+    if (!theEditor)
+      dump("\nmsiGetPrimaryEditorElementForWindow returning void or null\m");
+    return theEditor;
   }
-  if (!theEditor)
-    theEditor = editorElements[0];
-  if (!theEditor)
-    dump("\nmsiGetPrimaryEditorElementForWindow returning void or null\m");
-  return theEditor;
+  else {
+    return msiGetEditorElement();
+  }
 }
 
 function msiIsTopLevelEditor(editorElement)
