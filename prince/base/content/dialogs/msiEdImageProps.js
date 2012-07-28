@@ -65,6 +65,8 @@ var gPreviewImageHeight = 50;
 var gFrameModeImage = true;
 var gFrameModeTextFrame = false;
 
+var gPreviewImageNeeded = false;
+var gIsGoingAway = false;
 var gInsertNewImage = true;
 var gCaptionData;
 
@@ -331,6 +333,7 @@ function InitImage()
 //      gActualHeight = gConstrainHeight = imageElement.naturalHeight;
 //    } else if (imageElement.hasAttribute("data"))
 //    {
+      gPreviewImageNeeded = true;
       var natWidth = imageElement.getAttribute("naturalWidth");
       var natHeight = imageElement.getAttribute("naturalHeight");
       if (natWidth)
@@ -494,58 +497,61 @@ function InitImage()
 }    
 
 
-
-function LoadPreviewImage()
-{
-  gDialog.PreviewSize.collapsed = true;
-
-  var imageSrc = TrimString(gDialog.srcInput.value);
-  if (!imageSrc)
-    return;
-
-  try {
-    // Remove the image URL from image cache so it loads fresh
-    //  (if we don't do this, loads after the first will always use image cache
-    //   and we won't see image edit changes or be able to get actual width and height)
-    
-    var IOService = msiGetIOService();
-    if (IOService)
-    {
-      // We must have an absolute URL to preview it or remove it from the cache
-      imageSrc = msiMakeAbsoluteUrl(imageSrc);
-
-      if (GetScheme(imageSrc))
-      {
-        var uri = IOService.newURI(imageSrc, null, null);
-        if (uri)
-        {
-          var imgCacheService = Components.classes["@mozilla.org/image/cache;1"].getService();
-          var imgCache = imgCacheService.QueryInterface(Components.interfaces.imgICache);
-
-          // This returns error if image wasn't in the cache; ignore that
-          imgCache.removeEntry(uri);
-        }
-      }
-    }
-  } catch(e) {}
-
-  if (gDialog.PreviewImage)
-    removeEventListener("load", PreviewImageLoaded, true);
-
-  if (gDialog.ImageHolder.firstChild)
-    gDialog.ImageHolder.removeChild(gDialog.ImageHolder.firstChild);
-    
-  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "object");
-  if (gDialog.PreviewImage)
-  {
-    // set the src before appending to the document -- see bug 198435 for why
-    // this is needed.
-    gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
-    gDialog.PreviewImage.src = imageSrc;
-    gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
-  }
-}
-
+//function LoadPreviewImage()
+//{
+//  gDialog.PreviewSize.collapsed = true;
+//
+//  var imageSrc = TrimString(gDialog.srcInput.value);
+//  if (!imageSrc)
+//    return;
+//
+//  try {
+//    // Remove the image URL from image cache so it loads fresh
+//    //  (if we don't do this, loads after the first will always use image cache
+//    //   and we won't see image edit changes or be able to get actual width and height)
+//    
+//    var IOService = msiGetIOService();
+//    if (IOService)
+//    {
+//      // We must have an absolute URL to preview it or remove it from the cache
+//      imageSrc = msiMakeAbsoluteUrl(imageSrc);
+//
+//      if (GetScheme(imageSrc))
+//      {
+//        var uri = IOService.newURI(imageSrc, null, null);
+//        if (uri)
+//        {
+//          var imgCacheService = Components.classes["@mozilla.org/image/cache;1"].getService();
+//          var imgCache = imgCacheService.QueryInterface(Components.interfaces.imgICache);
+//
+//          // This returns error if image wasn't in the cache; ignore that
+//          imgCache.removeEntry(uri);
+//        }
+//      }
+//    }
+//  } catch(e) {}
+//
+//  if (gDialog.PreviewImage)
+//    removeEventListener("load", PreviewImageLoaded, true);
+//
+//  if (gDialog.ImageHolder.firstChild)
+//    gDialog.ImageHolder.removeChild(gDialog.ImageHolder.firstChild);
+//    
+//  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "html:object");
+//  if (gDialog.PreviewImage)
+//  {
+//    // set the src before appending to the document -- see bug 198435 for why
+//    // this is needed.
+//    gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
+//    gDialog.PreviewImage.data = imageSrc;
+//    var extension = getExtension(imageSrc);
+//    if (extension == "pdf")
+//      readSizeFromPDFFile(imageSrc);
+//    adjustObjectForFileType(gDialog.PreviewImage, extension);
+//    gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
+//  }
+//}
+//
 
 //This function assumes "width" and "height" are in pixels
 function  SetSizeWidgets(width, height)
@@ -853,6 +859,7 @@ function chooseFile()
   {
     importTimerHandler.reset();
     var url = msiURIFromString(fileName);
+    gPreviewImageNeeded = true;
 
     if (gDialog.import) // copy the file into the graphics directory
     {
@@ -1066,6 +1073,17 @@ var importTimerHandler =
              || (this.mTexHandler && this.mTexHandler.didNotSucceed()) );
   },
 
+  //isActive means that an import process is in use, whether it's finished, failed, or still running
+  isActive : function(mode)
+  {
+    if (this.mImportHandler && (!mode || (mode != "tex")))
+      return true;
+    else if (this.mTexHandler && (!mode || (mode != "import")))
+      return true;
+    else
+      return false;
+  },
+
   checkLogFileStatus : function()
   {
     if (this.mImportHandler)
@@ -1096,8 +1114,8 @@ var importTimerHandler =
       this.postFailedImportNotice();
     }
 
-    //if (this.importStatus == this.statusSuccess)
-    //  LoadPreviewImage();
+    if (this.mImportHandler && (this.mImportHandler.importStatus == this.mImportHandler.statusSuccess))
+      LoadPreviewImage();
   },
 
   sourceFile : function()
@@ -1725,6 +1743,9 @@ function PreviewImageLoaded()
 
 function LoadPreviewImage()
 {
+  if (!gPreviewImageNeeded || gIsGoingAway)
+    return;
+
   gDialog.PreviewSize.collapsed = true;
 
   var imageSrc = TrimString(gDialog.srcInput.value);
@@ -1775,6 +1796,7 @@ function LoadPreviewImage()
       readSizeFromPDFFile(imageSrc);
     adjustObjectForFileType(gDialog.PreviewImage, extension);
     gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
+    gPreviewImageNeeded = false;
   }
 }
 
@@ -2285,6 +2307,7 @@ function imageLoaded(event)
 function onAccept()
 {
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
+  gIsGoingAway = true;
   importTimerHandler.stopLoading();
 
   gDoAltTextError = true;
@@ -2417,6 +2440,7 @@ function onAccept()
   }
   else dump("Validation FAILED\n");
 
+  gIsGoingAway = false;
   gDoAltTextError = false;
 
   return true;
@@ -2424,6 +2448,7 @@ function onAccept()
 
 function onCancel()
 {
+  gIsGoingAway = true;
   importTimerHandler.stopLoading();
   SaveWindowLocation();
   return true;
