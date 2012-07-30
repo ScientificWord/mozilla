@@ -257,11 +257,8 @@
     \edef\filename@base{#1}}
   \def\filename@dot#1.\\{#1}
 \else
-  \typeout{^^J^^J%
-    \noexpand\filename@parse was defined in texsys.cfg:^^J%
-    \expandafter\strip@prefix\meaning\filename@parse.^^J%
-    }
 \fi
+
 \ifx\@TeXversion\@undefined
   \ifx\@undefined\inputlineno
     \def\@TeXversion{2}
@@ -3573,28 +3570,28 @@
 \newif\if@noitemarg \@noitemargfalse
 \newif\if@nmbrlist  \@nmbrlistfalse
 
-\def\list#1#2{%
-  \ifnum \@listdepth >5\relax
-    \@toodeep
-  \else
-    \global\advance\@listdepth\@ne
-  \fi
-  \rightmargin\z@
-  \listparindent\z@
-  \itemindent\z@
-  \csname @list\romannumeral\the\@listdepth\endcsname
-  \def\@itemlabel{#1}%
-  \let\makelabel\@mklab
-  \@nmbrlistfalse
-  #2\relax
-  \@trivlist
-  \parskip\parsep
-  \parindent\listparindent
-  \advance\linewidth -\rightmargin
-  \advance\linewidth -\leftmargin
-  \advance\@totalleftmargin \leftmargin
-  \parshape \@ne \@totalleftmargin \linewidth
-  \ignorespaces}
+%% jcs\def\list#1#2{%
+%% jcs  \ifnum \@listdepth >5\relax
+%% jcs    \@toodeep
+%% jcs  \else
+%% jcs    \global\advance\@listdepth\@ne
+%% jcs  \fi
+%% jcs  \rightmargin\z@
+%% jcs  \listparindent\z@
+%% jcs  \itemindent\z@
+%% jcs  \csname @list\romannumeral\the\@listdepth\endcsname
+%% jcs  \def\@itemlabel{#1}%
+%% jcs  \let\makelabel\@mklab
+%% jcs  \@nmbrlistfalse
+%% jcs  #2\relax
+%% jcs  \@trivlist
+%% jcs  \parskip\parsep
+%% jcs  \parindent\listparindent
+%% jcs  \advance\linewidth -\rightmargin
+%% jcs  \advance\linewidth -\leftmargin
+%% jcs  \advance\@totalleftmargin \leftmargin
+%% jcs  \parshape \@ne \@totalleftmargin \linewidth
+%% jcs  \ignorespaces}
 \newcount\par@deathcycles
 \def\@trivlist{%
   \if@noskipsec \leavevmode \fi
@@ -3855,20 +3852,6 @@
       \ignorespaces}
 \def\endlrbox{\unskip\color@endgroup}
 \def\usebox#1{\leavevmode\copy #1\relax}
-%%\long\def\frame#1{%
-%%  \leavevmode
-%%  \hbox{%
-%%    \hskip-\@wholewidth
-%%    \vbox{%
-%%      \vskip-\@wholewidth
-%%      \hrule \@height\@wholewidth
-%%      \hbox{%
-%%        \vrule\@width\@wholewidth
-%%        #1%
-%%        \vrule\@width\@wholewidth}%
-%%      \hrule\@height\@wholewidth
-%%      \vskip-\@wholewidth}%
-%%    \hskip-\@wholewidth}}
 \newdimen\fboxrule
 \newdimen\fboxsep
 
@@ -3876,35 +3859,6 @@
   \@ifnextchar[%]
     {\@iframebox[#1]}%
     {\@iframebox[#1][c]}}
-%%\long\def\@iframebox[#1][#2]#3{%
-%%  \leavevmode
-%%  \@begin@tempboxa\hbox{#3}%
-%%    \setlength\@tempdima{#1}%
-%%    \setbox\@tempboxa\hb@xt@\@tempdima
-%%         {\kern\fboxsep\csname bm@#2\endcsname\kern\fboxsep}%
-%%    \@frameb@x{\kern-\fboxrule}%
-%%  \@end@tempboxa}
-%%\def\@frameb@x#1{%
-%%  \@tempdima\fboxrule
-%%  \advance\@tempdima\fboxsep
-%%  \advance\@tempdima\dp\@tempboxa
-%%  \hbox{%
-%%    \lower\@tempdima\hbox{%
-%%      \vbox{%
-%%        \hrule\@height\fboxrule
-%%        \hbox{%
-%%          \vrule\@width\fboxrule
-%%          #1%
-%%          \vbox{%
-%%            \vskip\fboxsep
-%%            \box\@tempboxa
-%%            \vskip\fboxsep}%
-%%          #1%
-%%          \vrule\@width\fboxrule}%
-%%        \hrule\@height\fboxrule}%
-%%                          }%
-%%        }%
-%%}
 \def\@framepicbox(#1,#2){%
   \@ifnextchar[{\@iframepicbox(#1,#2)}{\@iframepicbox(#1,#2)[]}}
 \long\def\@iframepicbox(#1,#2)[#3]#4{%
@@ -4498,21 +4452,20 @@
 
 
 \def\newtheorem#1{%
-  \@ifnextchar[{\out@newtheorema{#1}}{\@nthm{#1}}}{}
+  \@ifnextchar[{\out@newtheorema{#1}}{\@nthm{#1}}}
+
   
 \def\@nthm#1#2{%
-  \@ifnextchar[{\@xnthm{#1}{#2}}{\out@newtheoremb{#1}{#2}}}
-
-
+  \@ifnextchar[{\out@newtheoremc{#1}{#2}}{\out@newtheoremb{#1}{#2}}}
   
-\def\@xnthm#1#2[#3]{%
-  \expandafter\@ifdefinable\csname #1\endcsname
-    {\@definecounter{#1}\@newctr{#1}[#3]%
-     \expandafter\xdef\csname the#1\endcsname{%
-       \expandafter\noexpand\csname the#3\endcsname \@thmcountersep
-          \@thmcounter{#1}}%
-     \global\@namedef{#1}{\@thm{#1}{#2}}%
-     \global\@namedef{end#1}{\@endtheorem}}}
+%% jcs\def\@xnthm#1#2[#3]{%
+%% jcs  \expandafter\@ifdefinable\csname #1\endcsname
+%% jcs    {\@definecounter{#1}\@newctr{#1}[#3]%
+%% jcs     \expandafter\xdef\csname the#1\endcsname{%
+%% jcs       \expandafter\noexpand\csname the#3\endcsname \@thmcountersep
+%% jcs          \@thmcounter{#1}}%
+%% jcs     \global\@namedef{#1}{\@thm{#1}{#2}}%
+%% jcs     \global\@namedef{end#1}{\@endtheorem}}}
 
 
 
@@ -4533,10 +4486,11 @@
 
 
 \message{sectioning,}
-\newcount\@secpenalty
-\@secpenalty = -300
+%\newcount\@secpenalty
+%\@secpenalty = -300
+
 \newif\if@noskipsec \@noskipsectrue
-\def\@seccntformat#1{\csname the#1\endcsname\quad}
+%\def\@seccntformat#1{\csname the#1\endcsname\quad}
 \def\@ssect#1#2#3#4#5{%
   \@tempskipa #3\relax
   \ifdim \@tempskipa>\z@
@@ -4613,19 +4567,6 @@
 \def\numberline#1{\hb@xt@\@tempdima{#1\hfil}}
 
 \newcount\@floatpenalty
-%%\msi@pass{\caption}
-%%\long\def\@caption#1[#2]#3{%
-%%  \par
-%%  \addcontentsline{\csname ext@#1\endcsname}{#1}%
-%%    {\protect\numberline{\csname the#1\endcsname}{\ignorespaces #2}}%
-%%  \begingroup
-%%    \@parboxrestore
-%%    \if@minipage
-%%      \@setminipage
-%%    \fi
-%%    \normalsize
-%%    \@makecaption{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
-%%  \endgroup}
 \def\@float#1{%
   \@ifnextchar[%
     {\@xfloat{#1}}%
@@ -6160,7 +6101,7 @@
   \AtEndOfPackage{\let\@unprocessedoptions\relax}%
   \@loadwithoptions\@pkgextension\RequirePackage}
 \@onlypreamble\RequirePackageWithOptions
-%%jcs \let\usepackage\RequirePackage
+
 \@onlypreamble\usepackage
 \def\NeedsTeXFormat#1{%
   \def\reserved@a{#1}%
@@ -6478,24 +6419,6 @@
 \fi
 \lccode`\^^[=`\^^[   % oe in OT1
 
-%% \DeclareRobustCommand{\MakeUppercase}[1]{{%
-%%       \def\i{I}\def\j{J}%
-%%       \def\reserved@a##1##2{\let##1##2\reserved@a}%
-%%       \expandafter\reserved@a\@uclclist\reserved@b{\reserved@b\@gobble}%
-%%       \protected@edef\reserved@a{\uppercase{#1}}%
-%%       \reserved@a
-%%    }}
-
-%% \DeclareRobustCommand{\MakeLowercase}[1]{{%
-%%       \def\reserved@a##1##2{\let##2##1\reserved@a}%
-%%       \expandafter\reserved@a\@uclclist\reserved@b{\reserved@b\@gobble}%
-%%       \protected@edef\reserved@a{\lowercase{#1}}%
-%%       \reserved@a
-%%    }}
-%% \def\@uclclist{\oe\OE\o\O\ae\AE
-%%       \dh\DH\dj\DJ\l\L\ng\NG\ss\SS\th\TH}
-%% \protected@edef\MakeUppercase#1{\MakeUppercase{#1}}
-%% \protected@edef\MakeLowercase#1{\MakeLowercase{#1}}
 
 
 \let\reserved@a\@filelist
@@ -6569,8 +6492,6 @@
 
 \def\mathring#1{\if A#1\U{212B}\fi}
 
-%% \def\msihyperref#1#2#3#4
-%% Replace with contortion to convert & in parameter 4
 
 \begingroup
    \catcode`\&=13%
