@@ -312,19 +312,28 @@
 \theoremstyle{plain}
 
 
+% should check for second optional
 \def\out@newtheorema#1[#2]#3{%
+  \msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
   \@ifundefined{msi@begin@#1}%
-     {\msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
-      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
-      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
-     {}}
+    {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
+     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
+    {}}
 
 \def\out@newtheoremb#1#2{%
   \@ifundefined{msi@begin@#1}%
     {\msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
-     \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}
+     \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
-    {}}}
+    {}}
+
+%% recheck this one
+\def\out@newtheoremc#1#2[#3]{%
+  \msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
+  \@ifundefined{msi@begin@#1}%
+    {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
+     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
+    {}}
 
 
 
@@ -1450,6 +1459,22 @@
      \fi}}
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
+
+
+\def\MSISimpleElement{%
+  \@ifnextchar[{\msi@simple@elmA}{\msi@simple@elmB}}
+
+\def\msi@simple@elmA[#1]#2{%
+  \expandafter\def\csname #2\endcsname##1{%
+     \ifmmode
+       \expandafter\string\csname #2\endcsname{##1}%
+     \else
+       \msitag{^^0a}\msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%   
+     \fi}}
+
+\def\msi@simple@elmB#1{\msi@simple@elmA[#1]{#1}}
+
+
 
 
 
