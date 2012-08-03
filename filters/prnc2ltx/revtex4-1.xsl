@@ -34,19 +34,19 @@
 </xsl:template>
 
 <xsl:template match="html:received">
-\received{<xsl:apply-templates/>}<xsl:text/>
+\received<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:revised">
-\revised{<xsl:apply-templates/>}<xsl:text/>
+\revised<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:accepted">
-\accepted{<xsl:apply-templates/>}<xsl:text/>
+\accepted<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:published">
-\published{<xsl:apply-templates/>}<xsl:text/>
+\published<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:affiliation">
