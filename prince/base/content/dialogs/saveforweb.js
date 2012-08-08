@@ -182,7 +182,7 @@ function handleStyleSheet (oldHRef, newHRef, dir, depth)  // modify and copy sty
   try {
     var f = appendRelativePath(dir, newHRef);
 //    if (f.exists()) return;
-    var re = /resource:\/\/app\/res\/([a-zA-Z0-9_\/\.]+)/i;
+    var re = /resource:\/\/app\/res\/([a-zA-Z0-9_\/\.\-]+)/i;
 //    var re2= /^(.*-moz-binding.*)$/mgi;
 
     var match;  
