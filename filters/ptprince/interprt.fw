@@ -1948,6 +1948,7 @@ case CMD_AFTERGROUP:{
 #include "expandables.h"
 #include "macros.h"
 #include "scanutils.h"
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
