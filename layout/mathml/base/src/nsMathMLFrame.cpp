@@ -603,8 +603,9 @@ nsMathMLFrame::DumpFrameData(nsIFrame* aFrame, PRUint32 indent)
   printf("%S", indentString.get());
   printf("%p", aFrame);
   nsAutoString tagName;
-  aFrame->GetContent()->Tag()->ToString(tagName);
-  printf(" Content: %S", tagName);
+  nsCOMPtr<nsIContent> content =  aFrame->GetContent();
+  content -> Tag() -> ToString(tagName);
+  printf(" Content: %S",  NS_ConvertUTF16toUTF8(tagName).get() );
   if (tagName.EqualsLiteral("#text"))
   {
     nsString data;
