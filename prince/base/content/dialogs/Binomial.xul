@@ -141,7 +141,7 @@
         <spacer flex="1"/> 
         <button type="radio" label="&#x230B;" group="leftBracketGroup" tooltiptext="&RightFloor.tooltip;"/>
         <spacer flex="1"/> 
-        <button type="radio" label="&#x232A;" group="leftBracketGroup" tooltiptext="&RightPointingAngleBracket.tooltip:"/>
+        <button type="radio" label="&#x232A;" group="leftBracketGroup" tooltiptext="&RightPointingAngleBracket.tooltip;"/>
         <spacer flex="1"/> 
         <button type="radio" label="}" group="leftBracketGroup" tooltiptext="&RightCurlyBrace.tooltip;"/>
         <spacer flex="1"/> 
