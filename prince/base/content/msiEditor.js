@@ -786,6 +786,7 @@ function msiEditorDocumentObserver(editorElement)
 
         // Get state to see if document creation succeeded
         msiDumpWithID("Got obs_documentCreated message in documentCreated observer for editor [@]; aData is [" + aData + "]; msiGetEditor returned [" + edStr + "].\n", editorElement);
+        setZoom();
         var params = newCommandParams();
         if (!params)
           return;
@@ -829,7 +830,6 @@ function msiEditorDocumentObserver(editorElement)
           this.mEditorElement.softsavetimer = new SS_Timer(seconds*1000, editor, this.mEditorElement);
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
-
         if (msiIsHTMLEditor(this.mEditorElement))
         {
           var match;
@@ -1089,6 +1089,7 @@ function msiEditorDocumentObserver(editorElement)
         }
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
+        
       break;
 
       case "cmd_setDocumentModified":
@@ -1140,7 +1141,6 @@ function msiSetFocusOnStartup(editorElement)
 {
   try
   {
-    setZoom();
     editorElement.contentWindow.focus();
   } catch(e) {}
 }
@@ -1979,16 +1979,20 @@ function msiGetMarkupDocumentViewer(editorElement)
 
 function setZoom()
 {
-  var zoomfactor = 1.0;
+  var zoomfactor = 1.0;        
   try {
     var zoomstr;
-    zoomstr = gPrefs.getCharPref("swp.zoom_factor");
-    zoomfactor = parseFloat(zoomstr);
+    var editorElement = msiGetActiveEditorElement();
+    zoomfactor = msiGetSavedViewPercent(editorElement);
+    if (zoomfactor == null) {
+      zoomstr = gPrefs.getCharPref("swp.zoom_factor");
+      zoomfactor = parseFloat(zoomstr);
+    }
   }
   catch(ex) {
     dump("\nfailed to get zoom_factor pref!\n");
   }
-  getMarkupDocumentViewer().textZoom = zoomfactor;
+  ZoomManager.zoom = zoomfactor;
 }
 
 var gRealtimeSpellPrefs = {
