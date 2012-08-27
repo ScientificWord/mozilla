@@ -522,15 +522,15 @@
           <menuitem id="viewZoomEnlarge" 
                     accesskey="&viewZoomEnlarge.accesskey;" 
                     label="&viewZoomEnlarge.label;" 
-                    observes="cmd_textZoomEnlarge"/>
+                    observes="cmd_zoomin"/>
           <menuitem id="viewZoomReduce" 
                     accesskey="&viewZoomReduce.accesskey;" 
                     label="&viewZoomReduce.label;" 
-                    observes="cmd_textZoomReduce"/>
+                    observes="cmd_zoomout"/>
           <menuitem id="viewZoomReset" 
                     accesskey="&viewZoomReset.accesskey;" 
                     label="&viewZoomReset.label;" 
-                    observes="cmd_textZoomReset"/>
+                    observes="cmd_zoomreset"/>
         </menupopup>
       </menu>
     </menupopup>
@@ -562,9 +562,9 @@
     <command id="cmd_documentInfo" oncommand="msiGoDoCommand('cmd_documentInfo')"/>
     <command id="cmd_documentStyle" oncommand="msiGoDoCommand('cmd_documentStyle')"/>
     <command id="cmd_quit"        oncommand="msiGoDoCommand('cmd_quit')"/>
-    <command id="cmd_textZoomReduce" oncommand="ZoomManager.reduce();"/>
-    <command id="cmd_textZoomEnlarge" oncommand="ZoomManager.enlarge();"/>
-    <command id="cmd_textZoomReset" oncommand="ZoomManager.reset();"/>
+    <command id="cmd_textZoomReduce" oncommand="msiDoCommand('cmd_zoomout')"/>
+    <command id="cmd_textZoomEnlarge" oncommand="msiDoCommand('cmd_zoomin')"/>
+    <command id="cmd_textZoomReset" oncommand="msiDoCommand('cmd_zoomreset')"/>
   </commandset>
 
   <commandset id="composerMenuItems"
@@ -674,6 +674,10 @@
     <command id="cmd_preview"                                          oncommand="msiGoDoCommand('cmd_preview')"/>
     <command id="cmd_editSendPage"   label="&sendPageCmd.label;"
                                      accesskey="&sendPage.accesskey;"  oncommand="msiGoDoCommand('cmd_editSendPage')"/>
+    <command id="cmd_zoomin" oncommand="msiGoDoCommand('cmd_zoomin')"/>
+    <command id="cmd_zoomout" oncommand="msiGoDoCommand('cmd_zoomout')"/>
+    <command id="cmd_zoomreset" oncommand="msiGoDoCommand('cmd_zoomreset')"/>
+                                     
   </commandset>
 
 

@@ -6375,13 +6375,70 @@ function msiGetCurrNoteViewSettings(editorElement)
   return viewSettings;
 }
 
-//Fix This!
-function msiGetCurrViewPerCent(editorElement)
+
+function msiGetCurrViewPercent()
+{
+  var zoom = ZoomManager.zoom * 100;
+  return zoom;
+}
+
+function msiSetCurrViewPercent(zoomvalue)
+{
+  ZoomManager.zoom = zoomvalue/100;
+  return ZoomManager.zoom;
+}
+
+function msiGetSavedViewPercent(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  return 100;
+  var editor = msiGetEditor(editorElement);
+  var doc = editor.document;
+  var regex = /TCIDATA\{meta name=\"ViewPercent\" content=\"([.\d]+)\"\}/;
+  var treeWalker = doc.createTreeWalker(
+      doc.documentElement,
+      NodeFilter.SHOW_COMMENT,
+      { acceptNode: function(node) { return regex.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; } },
+      false
+  );
+  var node = treeWalker.nextNode();
+  if (node) {
+    match = regex.exec(node.nodeValue);
+    if (match) {
+      if (match[1])
+      {
+        return match[1]/100;
+      }
+    }
+  }
+  return null;
 }
+
+function msiSetSavedViewPercent(editorElement, zoompercent)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var doc = editor.document;
+  var regex = /TCIDATA\{meta name=\"ViewPercent\" content=\"([.\d]+)\"\}/;
+  var treeWalker = doc.createTreeWalker(
+      doc.documentElement,
+      NodeFilter.SHOW_COMMENT,
+      { acceptNode: function(node) { return regex.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; } },
+      false
+  );
+  node = treeWalker.nextNode();
+  if (node) {
+    match = regex.exec(node.nodeValue);
+    if (match) {
+      if (match[1])
+      {
+        node.nodeValue = 'TCIDATA{meta name="ViewPercent" content="'+ zoompercent + '"}';
+      }
+    }
+  }
+}
+
 
 //The default print options should be stored as a numerical bit-encoded value, as of old? (Since otherwise they'd
 //  be a bit lengthy.) But we should return an object with the bits interpreted(?).
