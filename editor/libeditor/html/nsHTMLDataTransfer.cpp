@@ -1075,6 +1075,7 @@ nsresult
 nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
 
 {
+  nsAutoUpdateViewBatch viewBatch(this);
   if (!mRules) return NS_ERROR_NOT_INITIALIZED;
 
   // force IME commit; set up rules sniffing and batching

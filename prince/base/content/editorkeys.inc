@@ -28,9 +28,9 @@
   <key id="msiParaTagKey" key="2" action="document.getElementById('ParaTagSelections').focus();" modifiers="accel"/>
   <key id="msiStructTagKey" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="accel"/>
   <key id="msiFMTagKey" key="4" action="document.getElementById('OtherTagSelections').focus();" modifiers="accel"/>
-  <key id="msiZoomInKey" key="+" action="ZoomManager.enlarge();" modifiers="accel,shift"/>
-  <key id="msiZoomOutKey" key="1" action="ZoomManager.reduce();" modifiers="accel"/>
-  <key id="msiZoomReset" key="0" action="ZoomManager.reset();" modifiers="accel"/>
+  <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
+  <key id="msiZoomOutKey" key="-" command="cmd_zoomout" modifiers="accel"/>
+  <key id="msiZoomReset" key="0" command="cmd_zoomreset" modifiers="accel"/>
 </keyset>
 
 <!--commands needed for some of these key bindings-->

@@ -154,6 +154,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
   commandTable.registerCommand("cmd_reviseCrossRef", msiReviseCrossRefCommand);
   commandTable.registerCommand("cmd_copypicture", msiCopyPictureCommand);
+  commandTable.registerCommand("cmd_zoomin", msiZoomInCommand);
+  commandTable.registerCommand("cmd_zoomout", msiZoomOutCommand);
+  commandTable.registerCommand("cmd_zoomreset", msiZoomResetCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -4692,6 +4695,7 @@ var msiReviseFieldsetCommand =
     if (fieldSetNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseFieldsetCommand, trying to revise a fieldset, dialog not yet implemented.");
+// TODO: Ron
 //      var dlgWindow = msiDoModelessPropertiesDialog("chrome://editor/content/what??.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                                     editorElement, "cmd_reviseFieldset", fieldSetNode);
     }
@@ -7228,7 +7232,7 @@ function msiDocumentInfo(editorElement)
 
     dlgInfo.printOptions.zoomPercentage = 100;
     if (dlgInfo.printOptions.theOptions.useCurrViewZoom)
-      dlgInfo.printOptions.zoomPercentage = msiGetCurrViewPerCent(this.mEditorElement);  //in msiEditorUtilities.js, though not yet really implemented
+      dlgInfo.printOptions.zoomPercentage = msiGetCurrViewPercent(this.mEditorElement);  //in msiEditorUtilities.js, though not yet really implemented
     else if (this.printSettings.printviewpercent != null && this.printSettings.printviewpercent.contents != null)
       dlgInfo.printOptions.zoomPercentage = this.printSettings.printviewpercent.contents.valueOf();
   };
@@ -7337,7 +7341,7 @@ function msiDocumentInfo(editorElement)
       theContents = msiGetCurrViewSettings(this.mEditorElement).getFlags();
     this.setObjectFromData(this.saveSettings, "viewsettings", dlgInfo.saveOptions.storeViewSettings, "ViewSettings", String(theContents), "comment-meta");
 
-    theContents = msiGetCurrViewPerCent(this.mEditorElement);
+    theContents = msiGetCurrViewPercent(this.mEditorElement);
     this.setObjectFromData(this.saveSettings, "viewpercent", dlgInfo.saveOptions.storeViewPercent, "ViewPercent", String(theContents), "comment-meta");
 
     theContents = 1;
@@ -10273,3 +10277,75 @@ function doReviseTheoremNode(editor, origData, reviseData)
       editor.deleteNode(customLeadInNode);
   }
 }
+
+var msiZoomInCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    try
+    {
+      ZoomManager.enlarge();   
+      var editorElement = msiGetActiveEditorElement();
+      msiSetSavedViewPercent(editorElement, ZoomManager.zoom * 100); 
+    }
+    catch (e) {
+      finalThrow(cmdFailString('zoomin'), e.message);
+    }
+  }
+};
+
+var msiZoomOutCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    try
+    {
+      ZoomManager.reduce();   
+      var editorElement = msiGetActiveEditorElement();
+      msiSetSavedViewPercent(editorElement, ZoomManager.zoom * 100); 
+    }
+    catch (e) {
+      finalThrow(cmdFailString('zoomin'), e.message);
+    }
+  }
+};
+
+var msiZoomResetCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    try
+    {
+      ZoomManager.reset();   
+      var editorElement = msiGetActiveEditorElement();
+      msiSetSavedViewPercent(editorElement, 100); 
+    }
+    catch (e) {
+      finalThrow(cmdFailString('zoomin'), e.message);
+    }
+  }
+};
