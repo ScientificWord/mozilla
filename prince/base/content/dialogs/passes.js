@@ -45,9 +45,12 @@ var timerCallback =
          SaveWindowLocation();
          setProgressStatement(true);
          document.getElementById("oktocontinue").hidden = false;
+         var dlg = document.getElementById("passesDlg");
+         dlg.getButton("accept").disabled = false;
+         dlg.getButton("cancel").disabled = true;
          top.document.commandDispatcher.focusedWindow.focus();  
-         window.opener.cancelSendMessage = true;
-         window.close();
+//         window.opener.cancelSendMessage = true;
+//         window.close();
        }
      }
    } 
@@ -79,6 +82,9 @@ function Init()
     passData.passCount ++; // since running BibTeX will count as a pass.
   }
   Components.utils.reportError("in Init\n");
+  var dlg = document.getElementById("passesDlg");
+  dlg.getButton("accept").disabled = true;
+  dlg.getButton("cancel").disabled = false;
   // set up the first pass
   setProgressStatement(false);
   theProcess.run(false, passData.args, passData.args.length);
@@ -120,12 +126,15 @@ function onCancel()
 
 function onAccept()
 {
-  if (timer) timer.cancel();
-  timer=null;
-  if (sentinel.exists()) sentinel.remove(false);
-  theProcess = null;
-  Components.utils.reportError("in onAccept\n");
-  SaveWindowLocation();
+  try {
+    if (timer) timer.cancel();
+    timer=null;
+    if (sentinel && sentinel.exists()) sentinel.remove(false);
+    theProcess = null;
+    Components.utils.reportError("in onAccept\n");
+    SaveWindowLocation();
+  }
+  catch(e) {}
   return true;
 }
 
