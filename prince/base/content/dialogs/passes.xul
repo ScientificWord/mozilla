@@ -21,7 +21,7 @@
     buttonlabelaccept="&continue.label;"
     onload="Init();"
     width="300"
-    height="220"
+    height="400"
     screenX="40"
     screenY="40"
     persist="screenX screenY width height"
