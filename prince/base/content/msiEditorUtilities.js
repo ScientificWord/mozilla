@@ -3833,8 +3833,8 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory, compression)
   var f;
   e = sourceDirectory.directoryEntries;
   if (compression === null) compression = 0;
-  
-  while (e.hasMoreElements())
+  var more = e.hasMoreElements();
+  while (more)
   {
     f = e.getNext().QueryInterface(Components.interfaces.nsIFile);
     var leaf = f.leafName;
@@ -3852,6 +3852,7 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory, compression)
         aZipWriter.removeEntry(path,true);
       aZipWriter.addEntryFile(path, compression, f, false);
     }
+    more = e.hasMoreElements();
   }
 }
 
