@@ -7,22 +7,17 @@ msibutton label {
   padding: 0 4px;
 }
 
+msibutton[disabled="true"]
+{
+  color: rgb(180,180,180);
+}
+
 msibutton [class="msibutton-right"]{
   list-style-image: url(chrome://prince/skin/icons/slice-right.png);
 }
 
 toolbox[iconsize="small"] msibutton [class="msibutton-right"]{
   list-style-image: url(chrome://prince/skin/icons/slice-right-sm.png);
-}
-
-msibutton[disabled="true"] [class="msibutton-right"]{
-	color: gray;
-  list-style-image: url(chrome://prince/skin/icons/slice-right-disabled.png);
-}
-
-toolbox[iconsize="small"] msibutton[disabled="true"] [class="msibutton-right"]{
-	color: gray;
-  list-style-image: url(chrome://prince/skin/icons/slice-right-disabled-sm.png);
 }
 
 msibutton:hover [class="msibutton-right"]{
@@ -67,16 +62,6 @@ toolbox[iconsize="small"] msibutton [class="msibutton-left"]{
   list-style-image: url(chrome://prince/skin/icons/slice-left-sm.png);
 }
 
-msibutton[disabled="true"] [class="msibutton-left"]{
-	color: gray;
-  list-style-image: url(chrome://prince/skin/icons/slice-left-disabled.png);
-}
-
-toolbox[iconsize="small"] msibutton[disabled="true"] [class="msibutton-left"]{
-	color: gray;
-  list-style-image: url(chrome://prince/skin/icons/slice-left-disabled-sm.png);
-}
-
 msibutton:hover [class="msibutton-left"]{
   list-style-image: url(chrome://prince/skin/icons/slice-left-hover.png);
 }
@@ -118,16 +103,6 @@ toolbox[iconsize="small"] msibutton [class="msibutton-mid"]{
   background-image: url(chrome://prince/skin/icons/slice-middle-sm.png);
 }
 
-msibutton[disabled="true"] [class="msibutton-mid"]{
-	color: gray;
-  background-image: url(chrome://prince/skin/icons/slice-middle-disabled.png);
-}
-
-toolbox[iconsize="small"] msibutton[disabled="true"] [class="msibutton-mid"]{
-	color: gray;
-  background-image: url(chrome://prince/skin/icons/slice-middle-disabled-sm.png);
-}
-
 msibutton:hover [class="msibutton-mid"]{
   background-image: url(chrome://prince/skin/icons/slice-middle-hover.png);
 }
@@ -162,7 +137,7 @@ toolbox[iconsize="small"] msibutton:active	[class="msibutton-mid"]{
 
 *[class="msibutton-mid"] {
   font: menu;
-  background-repeat: repeat-x; 
+  background-repeat: repeat-x;
 }
 
 /*--------------------------*/
@@ -172,16 +147,6 @@ msibutton [class="msibutton-strut"]{
 
 toolbox[iconsize="small"] msibutton [class="msibutton-strut"]{
   list-style-image: url(chrome://prince/skin/icons/slice-middle-sm.png);
-}
-
-msibutton[disabled="true"] [class="msibutton-strut"]{
-	color: gray;
-  list-style-image: url(chrome://prince/skin/icons/slice-middle-disabled.png);
-}
-
-toolbox[iconsize="small"] msibutton[disabled="true"] [class="msibutton-strut"]{
-	color: gray;
-  list-style-image: url(chrome://prince/skin/icons/slice-middle-disabled-sm.png);
 }
 
 msibutton:hover [class="msibutton-strut"]{
