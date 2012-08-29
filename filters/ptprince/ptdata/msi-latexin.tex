@@ -4815,14 +4815,139 @@
 
 
 %<indexitem req="varioref" pri="asdf" sec="fff"/>
+ 
 
 
-\def\partA#1@#2!!{#1}
+{\makeatother
+ \gdef\otherat{@}
+ \gdef\nonspecentry#1@#2xxxx{#1}
+ \gdef\specentry#1@#2xxxx{#2}}
+
+\edef\@emptyindx{\expandafter\@second\@split!xxxx}%
+
+\newcount\@idxlev
+\newtoks\@msi@toks
+
+\def\appendtoks#1{\expandafter\expandafter\expandafter
+   \@msi@toks\expandafter{\the\@msi@toks #1}}%
+
+\def\defname#1{\expandafter\def\csname #1\endcsname}
+
+\def\@process@idx@ent{%
+     \ifnum\@idxlev=0\relax
+       \expandafter\gdef\expandafter\@idxentA\expandafter{\the\@msi@toks}
+       \advance\@idxlev by 1\relax
+       \@msi@toks={}%
+     \else\ifnum\@idxlev=1
+       \expandafter\gdef\expandafter\@idxentB\expandafter{\the\@msi@toks}
+       \advance\@idxlev by 1\relax
+       \@msi@toks={}%
+     \else\ifnum\@idxlev=2\relax
+       \expandafter\gdef\expandafter\@idxentC\expandafter{\the\@msi@toks}
+       \advance\@idxlev by 1\relax
+       \@msi@toks={}%
+     \fi\fi\fi
+}
+
+\def\@idx@#1{%
+   \if#1!
+     \@process@idx@ent 
+   \else
+     \appendtoks{#1}%
+   \fi}
+
+
+\def\@split#1@#2\@msi@end{{#1}{#2}}
+
 
 \def\index#1{%
   \msihmode
-  \msitag{<indexitem req="varioref" pri="}\partA#1@!!\msitag{"></indexitem>}%
+  \msi@maptoks{#1}{\@idx@}%
+  \ifx\@msi@toks\@empty
+  \else 
+    \@process@idx@ent
+  \fi
+  \temptoksa={}%
+  \edef\@tmp{\expandafter\@split\@idxentA @\@msi@end}%
+  \edef\@tmpEnt{\expandafter\@first\@tmp}
+  \edef\@tmpSpcPri{\expandafter\@second\@tmp}
+  \ifx\@tmpEnt\@empty
+  \else
+     \msitag{<indexitem req="varioref" pri="}\@tmpEnt\msitag{"}%
+     \ifx\@tmpSpcPri\@empty
+     \else
+        \expandafter\temptoksa\expandafter{\the\temptoksa p}
+     \fi
+     \edef\@tmpA{\expandafter\@split\@idxentB @\@msi@end}%
+     \edef\@tmpEnt{\expandafter\@first\@tmpA}
+     \edef\@tmpSpcSec{\expandafter\@second\@tmpA}
+     \ifx\@tmpEnt\@empty
+     \else
+       \msitag{ sec="}\@tmpEnt\msitag{"}%
+       \ifx\@tmpSpcSec\@empty
+       \else
+          \expandafter\temptoksa\expandafter{\the\temptoksa s}
+       \fi
+       \edef\@tmpA{\expandafter\@split\@idxentC @\@msi@end}%
+       \edef\@tmpEnt{\expandafter\@first\@tmpA}
+       \edef\@tmpSpcTer{\expandafter\@second\@tmpA}%
+       \ifx\@tmpEnt\@empty
+       \else
+         \msitag{ ter="}\@tmpEnt\msitag{"}%
+         \ifx\@tmpSpcTer\@empty
+         \else
+            \expandafter\temptoksa\expandafter{\the\temptoksa t}
+         \fi
+       \fi
+     \fi
+     \ifx\temptoksa\@empty
+     \else    
+       \msitag{ specAppearance="}\the\temptoksa\msitag{"}%
+     \fi
+     \msitag{>}%
+     \ifx\@tmpSpcPri\@empty
+     \else
+        \msitag{<prispec="}\@tmpSpcPri\msitag{"/>}
+     \fi
+     \ifx\@tmpSpcSec\@empty
+     \else
+        \msitag{<secspec="}\@tmpSpcSec\msitag{"/>}
+     \fi
+     \ifx\@tmpSpcTer\@empty
+     \else
+        \msitag{<terspec="}\@tmpSpcTer\msitag{"/>}
+     \fi
+     \msitag{</indexitem>}%
+  \fi
+  }%
+
+
+%%\def\@split#1!#2!xxxx{[#1][#2]}
+\def\@first#1#2{#1}
+\def\@second#1#2{#2}
+
+
+\def\msi@maptoks#1#2{%
+  \def\msi@mapmacro{#2}%
+  \temptoksa{#1\@msi@end@}%
+  \expandafter\msi@@map\the\temptoksa% 
 }
+
+\def\msi@@map#1{%
+  \def\@tokstrA{#1}%
+  \def\@tokstrB{\@msi@end@}%
+  \ifx\@tokstrA\@tokstrB
+    \let\map@next=\relax
+  \else
+    \msi@mapmacro{#1}%
+    \let\map@next=\msi@@map
+  \fi
+  \map@next
+}
+
+\def\@dupl#1{#1#1}
+
+\def\dupl#1{\msi@maptoks{#1}{\@dupl}}
 
 
 \def\makeglossary{%
