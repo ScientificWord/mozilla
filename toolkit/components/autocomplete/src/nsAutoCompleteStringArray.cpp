@@ -481,13 +481,17 @@ void nsAutoCompleteSearchStringArrayImp::SortStringStringArray(stringStringArray
     count = pssa->strArray->Count();
     for (i = 0; i < count; i++) {
       (*(pssa->strArray))[i]->Insert(space,length-1);
-      (*(pssa->strArray))[i]->Insert((*(pssa->strMathOnly))[i]->CharAt(0), length);
+      if (i < pssa->strMathOnly->Count() ){
+         (*(pssa->strArray))[i]->Insert((*(pssa->strMathOnly))[i]->CharAt(0), length);
+      }
     }
     pssa->strArray->Sort();
     for (i = 0; i < count; i++) {
       length = (*(pssa->strArray))[i]->Length();
       ch = (*(pssa->strArray))[i]->CharAt(length-1);
-      (*(pssa->strMathOnly))[i]->SetCharAt(ch,0);
+      if (i < pssa->strMathOnly->Count()){
+         (*(pssa->strMathOnly))[i]->SetCharAt(ch,0);
+      }
       (*(pssa->strArray))[i]->Truncate(length - 2);
     }
   }
