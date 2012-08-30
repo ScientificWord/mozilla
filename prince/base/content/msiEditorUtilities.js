@@ -8868,11 +8868,11 @@ function checkSubEqnContinuation(aChangedEqn)
   var bPrevSubCont, bNextSubCont;
   var bResetSubs = false;
   var prevEqn, nextEqn;
-  var container = getSiblingEquationsContainer(anEqnNode);
+  var container = getSiblingEquationsContainer(aChangedEqn);
   var eqnlist = container.getElementsByTagName("msidisplay");
   for (var ix = 0; ix < eqnlist.length; ++ix)
   {
-    if (eqnlist[ix] === anEqnNode)
+    if (eqnlist[ix] === aChangedEqn)
     {
       if (ix > 0)
         prevEqn = eqnlist[ix-1];
