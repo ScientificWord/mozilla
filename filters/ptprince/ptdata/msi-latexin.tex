@@ -4858,7 +4858,8 @@
 
 
 \def\@split#1@#2\@msi@end{{#1}{#2}}
-
+\newtoks\@emptytoks
+\@emptytoks={}
 
 \def\index#1{%
   \msihmode
@@ -4900,7 +4901,7 @@
          \fi
        \fi
      \fi
-     \ifx\temptoksa\@empty
+     \ifx\temptoksa\@emptytoks
      \else    
        \msitag{ specAppearance="}\the\temptoksa\msitag{"}%
      \fi
