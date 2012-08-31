@@ -259,16 +259,16 @@
 \else
 \fi
 
-\ifx\@TeXversion\@undefined
-  \ifx\@undefined\inputlineno
-    \def\@TeXversion{2}
-  \else
-   {\catcode`\^^J=\active
-     \def\reserved@a#1#2\@@{\if#1\string^3\fi}
-     \edef\reserved@a{\expandafter\reserved@a\string^^J\@@}
-     \ifx\reserved@a\@empty\else\gdef\@TeXversion{3}\fi}
-  \fi
-\fi
+%% jcs\ifx\@TeXversion\@undefined
+%% jcs  \ifx\@undefined\inputlineno
+%% jcs    \def\@TeXversion{2}
+%% jcs  \else
+%% jcs   {\catcode`\^^J=\active
+%% jcs     \def\reserved@a#1#2\@@{\if#1\string^3\fi}
+%% jcs     \edef\reserved@a{\expandafter\reserved@a\string^^J\@@}
+%% jcs     \ifx\reserved@a\@empty\else\gdef\@TeXversion{3}\fi}
+%% jcs  \fi
+%% jcs\fi
 
 
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
@@ -665,7 +665,6 @@
 \def\@unexpandable@protect{\noexpand\protect\noexpand}
 \def\DeclareRobustCommand{\@star@or@long\declare@robustcommand}
 \def\declare@robustcommand#1{%
-   
    \ifx#1\@undefined\else\ifx#1\relax\else
       \@latex@info{Redefining \string#1}%
    \fi\fi
@@ -4852,14 +4851,18 @@
 \def\@idx@#1{%
    \if#1!
      \@process@idx@ent 
+   \else\if#1@
+     ((AT))
    \else
      \appendtoks{#1}%
-   \fi}
+   \fi\fi}
 
 
 \def\@split#1@#2\@msi@end{{#1}{#2}}
 \newtoks\@emptytoks
 \@emptytoks={}
+
+\def\@stripat#1@{#1}
 
 \def\index#1{%
   \msihmode
@@ -4871,7 +4874,7 @@
   \temptoksa={}%
   \edef\@tmp{\expandafter\@split\@idxentA @\@msi@end}%
   \edef\@tmpEnt{\expandafter\@first\@tmp}
-  \edef\@tmpSpcPri{\expandafter\@second\@tmp}
+  \edef\@tmpSpcPri{\expandafter\@stripat\expandafter\@second\@tmp}
   \ifx\@tmpEnt\@empty
   \else
      \msitag{<indexitem req="varioref" pri="}\@tmpEnt\msitag{"}%
@@ -4908,15 +4911,15 @@
      \msitag{>}%
      \ifx\@tmpSpcPri\@empty
      \else
-        \msitag{<prispec="}\@tmpSpcPri\msitag{"/>}
+        \msitag{<prispec>}\@tmpSpcPri\msitag{</prispec>}
      \fi
      \ifx\@tmpSpcSec\@empty
      \else
-        \msitag{<secspec="}\@tmpSpcSec\msitag{"/>}
+        \msitag{<secspec>}\@tmpSpcSec\msitag{</secspec>}
      \fi
      \ifx\@tmpSpcTer\@empty
      \else
-        \msitag{<terspec="}\@tmpSpcTer\msitag{"/>}
+        \msitag{<terspec>}\@tmpSpcTer\msitag{</terspec>}
      \fi
      \msitag{</indexitem>}%
   \fi
