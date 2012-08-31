@@ -3,12 +3,12 @@
 const mathmlOverlayJS_duplicateTest = "Bad";
 var gProcessor;
 
-  
+
 
 function msiSetupMSIMathMenuCommands(editorElement)
 {
   var commandTable = msiGetComposerCommandTable(editorElement);
-  
+
   //dump("Registering msi math menu commands\n");
   commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
@@ -78,7 +78,7 @@ function msiSetupMSIMathMenuCommands(editorElement)
 //  doPanelLoad(document.getElementById("symbol.arrow"),"mo");
 //  doPanelLoad(document.getElementById("symbol.misc"),"mi");
 //  doPanelLoad(document.getElementById("symbol.delims"),"mo");
-}  
+}
 
 function goUpdateMSIMathMenuItems(commandset)
 {
@@ -153,16 +153,16 @@ var msiToggleMathText =
       toggleMathText(editor);
 	    //if (this.currentState() == "t")
 			//	insertinlinemath();
-     
-	    
+
+
 			editorElement.contentWindow.focus();
 		}
     return;
   },
-	
+
 	keyIsToggle: function( key )
 	{
-		try 
+		try
     {
   		var prefkey;
   		if (key==="m")
@@ -170,7 +170,7 @@ var msiToggleMathText =
   		else
   			prefkey = "swp.ctrl.t";
    	  var prefs = GetPrefs();
-  	  return (prefs.getCharPref(prefkey)==="toggle");	
+  	  return (prefs.getCharPref(prefkey)==="toggle");
 		}
     catch(e)
     {
@@ -178,7 +178,7 @@ var msiToggleMathText =
       return false;
     }
 	},
-	
+
 	currentState: function()
 	{
     var editorElement = msiGetActiveEditorElement(window);
@@ -229,7 +229,7 @@ var msiFraction =
   }
 };
 
-var msiReviseFractionCmd = 
+var msiReviseFractionCmd =
 {
   isCommandEnabled: function(aCommand, dummy)
   { return true; },
@@ -748,7 +748,7 @@ var msiColors =
   }
 };
 
-var msiGenBrackets = 
+var msiGenBrackets =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -790,7 +790,7 @@ var msiReviseGenBracketsCmd =
 };
 
 
-var msiBinomials = 
+var msiBinomials =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -825,7 +825,7 @@ var msiReviseBinomialsCmd =
 //                                      editorElement, "cmd_MSIreviseBinomialsCmd", theBinomial, argArray);
     var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                      editorElement, "cmd_MSIreviseBinomialsCmd", theBinomial, binomialData);
-    
+
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseBinomialsCmd, trying to revise binomial, dialog unimplemented.");
   },
 
@@ -834,7 +834,7 @@ var msiReviseBinomialsCmd =
   }
 };
 
-var msiOperators = 
+var msiOperators =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -875,7 +875,7 @@ var msiReviseOperatorsCmd =
   }
 };
 
-var msiDecorations = 
+var msiDecorations =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -892,16 +892,16 @@ var msiDecorations =
   }
 };
 
-var standardDecorAboveStrings = 
+var standardDecorAboveStrings =
   [ String.fromCharCode(0x00AF), String.fromCharCode(0x2190), String.fromCharCode(0x2192),
     String.fromCharCode(0x2194), String.fromCharCode(0xFE37), String.fromCharCode(0x0302),
     String.fromCharCode(0x02DC) ];
 
-var standardDecorBelowStrings = 
+var standardDecorBelowStrings =
   [ String.fromCharCode(0x0332), String.fromCharCode(0x2190), String.fromCharCode(0x2192),
     String.fromCharCode(0x2194), String.fromCharCode(0xFE38) ];
 
-var standardAroundDecorNotationStrings = 
+var standardAroundDecorNotationStrings =
   { frame : {mNotation: "box", mType: "frame"},
     fbox : {mNotation: "box", mType: "fbox"},
     roundedbox : {mNotation: "roundedbox"},
@@ -1036,7 +1036,7 @@ var msiReviseDecorationsCmd =
   }
 };
 
-var msiUnitsDialog = 
+var msiUnitsDialog =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -1053,7 +1053,7 @@ var msiUnitsDialog =
   }
 };
 
-var msiReviseEqnArrayCommand = 
+var msiReviseEqnArrayCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   { return true; },
@@ -1112,7 +1112,7 @@ var msiReviseUnitsCommand =
   }
 };
 
-var msiInsertMatrixRowsCommand = 
+var msiInsertMatrixRowsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   { return true; },
@@ -1150,7 +1150,7 @@ function insertMatrixRows(matrixElement, positionToInsert, numberToInsert, edito
   catch(exc) { dump("In mathmlOverlay.js, insertMatrixRows(), exception: " + exc + "\n."); }
 }
 
-var msiInsertMatrixColumnsCommand = 
+var msiInsertMatrixColumnsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   { return true; },
@@ -1192,76 +1192,76 @@ function insertMatrixColumns(matrixElement, positionToInsert, numberToInsert, ed
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
-function insertinlinemath(editorElement) 
+function insertinlinemath(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertInlineMath();
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
 
-function insertdisplay(editorElement) 
+function insertdisplay(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertDisplay();
     editorElement.contentWindow.focus();   // needed for command dispatch to work
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
 
-function insertsup(editorElement) 
+function insertsup(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertSuperscript();
     editorElement.contentWindow.focus();   // needed for command dispatch to work
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
 
-function insertsub(editorElement) 
+function insertsub(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertSubscript();
     editorElement.contentWindow.focus();   // needed for command dispatch to work
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
 
-function insertfraction(lineSpec, sizeSpec, editorElement) 
+function insertfraction(lineSpec, sizeSpec, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_autoSize;
@@ -1271,8 +1271,8 @@ function insertfraction(lineSpec, sizeSpec, editorElement)
       sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_displaySize;
     mathmlEditor.InsertFraction(lineSpec, sizeFlags);
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
@@ -1329,7 +1329,7 @@ function insertBinomial(openingBracket, closingBracket, lineSpec, sizeSpec, edit
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_autoSize;
@@ -1338,11 +1338,11 @@ function insertBinomial(openingBracket, closingBracket, lineSpec, sizeSpec, edit
     else if (sizeSpec == "big")
       sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_displaySize;
     if (lineSpec == "undefined")
-      lineSpec = "";  
+      lineSpec = "";
     mathmlEditor.InsertBinomial(openingBracket, closingBracket, lineSpec, sizeFlags);
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
@@ -1357,7 +1357,7 @@ function reviseBinomial(objectNode, openingBracket, closingBracket, lineSpec, si
 //  editor.enableUndo(true);
 
   editor.beginTransaction();
-  try 
+  try
   {
 //    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
 
@@ -1410,7 +1410,7 @@ function reviseBinomial(objectNode, openingBracket, closingBracket, lineSpec, si
     else
       dump("Problem in mathmlOverlay.js, reviseBinomial - binomial node not found!\n");
     editorElement.contentWindow.focus();
-  } 
+  }
   catch (e) { dump("Error in mathmlOverlay.js, reviseBinomial! [" + e + "].\n"); }
 
   editor.endTransaction();
@@ -1423,7 +1423,7 @@ function insertOperator(operator, limitPlacement, sizeSpec, editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_autoSize;
@@ -1445,8 +1445,8 @@ function insertOperator(operator, limitPlacement, sizeSpec, editorElement)
     mathmlEditor.InsertOperator(operator, (sizeFlags | limitFlags | largeOpFlag),
                                 "", "", "", "");
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
@@ -1461,7 +1461,7 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
 
   editor.beginTransaction();
 
-  try 
+  try
   {
     var outerOperator = msiNavigationUtils.getWrappedObject(objectNode, "operator");
     var bWrapped = (objectNode != outerOperator);
@@ -1567,10 +1567,10 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
     if (outerOperator != operatorNode)
       objTypeStr = msiGetBaseNodeName(outerOperator);
     retVal = applyMathStyleToObject(styleObj, objTypeStr, objectNode, editor);
-    
+
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
     dump("Error in mathmlOverlay.js, reviseOperator; error is [" + e + "].\n");
   }
@@ -1605,7 +1605,7 @@ function insertDecoration(decorationAboveStr, decorationBelowStr, decorationArou
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
 //  dump("Entering insertDecoration, selection is " + (editor.selection.isCollapsed ? "collapsed.\n" : "not collapsed.\n"));
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var theParent = editor.selection.focusNode;
@@ -1635,12 +1635,12 @@ function insertDecoration(decorationAboveStr, decorationBelowStr, decorationArou
 //      editor.insertNode( childNode, encloseNode, 0 );
 //      editor.selection.collapse(childNode, 0);
     }
-    if ( (decorationAboveStr && decorationAboveStr.length) || (decorationBelowStr && decorationBelowStr.length) 
+    if ( (decorationAboveStr && decorationAboveStr.length) || (decorationBelowStr && decorationBelowStr.length)
           || (decorationAroundStr && decorationAroundStr.length) )
       mathmlEditor.InsertDecoration(decorationAboveStr, decorationBelowStr, encloseNotation.mNotation, encloseNotation.mType);
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
     dump("Exception in mathmlOverlay.js, insertDecoration(): [" + e + "].\n");
   }
@@ -1703,7 +1703,7 @@ function reviseDecoration(decorationNode, decorationAboveStr, decorationBelowStr
 
   function moveCorrespondingContents(targNode, srcNode)
   {
-    var childContentTable = 
+    var childContentTable =
     {
       mover : { base : 1, sup : 2 },
       munder : { base : 1, sub : 2 },
@@ -1915,7 +1915,7 @@ function reviseDecoration(decorationNode, decorationAboveStr, decorationBelowStr
 
   if (newTopName && !targTopNode)
     targTopNode = decorationNode.ownerDocument.createElementNS(mmlns, newTopName);
-  
+
   var theParent = decorationNode.parentNode;
   if (targTopNode)
   {
@@ -1949,34 +1949,34 @@ function reviseDecoration(decorationNode, decorationAboveStr, decorationBelowStr
   editor.endTransaction();
 }
 
-function insertroot(editorElement) 
+function insertroot(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertRoot();
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
 
-function insertradical(editorElement) 
+function insertradical(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertSqRoot();
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
@@ -2039,7 +2039,7 @@ function reviseRadical(theRadical, objectName, editorElement)
         msiEditorMoveChildren(newRoot, children[0], editor);
       }
       else
-        msiEditorMoveChild(newRoot, children[0], editor); 
+        msiEditorMoveChild(newRoot, children[0], editor);
     }
     editor.replaceNode(newRoot, currRoot, currRoot.parentNode);
     if (currRoot == retVal)  //radical was top level object being modified; new one should be the return value
@@ -2048,7 +2048,7 @@ function reviseRadical(theRadical, objectName, editorElement)
       editor.selection.collapse(nb,0);
     else
       editor.selection.collapse(newRoot,0);
-    
+
 //    currRoot.parentNode.removeChild(currRoot);
 
 //    AlertWithTitle("mathmlOverlay.js", "In reviseFraction, functionality needs to be implemented.");
@@ -2071,12 +2071,12 @@ function insertmathname(name, editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertMathname(name);
     editorElement.contentWindow.focus();
-  } 
+  }
   catch (e) {dump("In mathmlOverlay.js, insertmathname(" + name + ") for editorElement [" + editorElement.id + "], error: [" + e + "].\n");}
 }
 
@@ -2121,7 +2121,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
         newNode.appendChild(newText);
       }
     }
-  
+
     if (newNode !=  null)  //Need to replace the old mathname node with the new one
     {
       newNode.setAttribute("msimathname", "true");
@@ -2179,7 +2179,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
 }
 
 
-function insertmathunit(unitName, editorElement) 
+function insertmathunit(unitName, editorElement)
 {
   dump("In insertmathunit. Unitname is [" + unitName + "]\n");
 
@@ -2190,7 +2190,7 @@ function insertmathunit(unitName, editorElement)
   dump("In insertmathunit, nameData is [" + nameData + "]\n");
 
 
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var bUsedAppearance = false;
@@ -2218,11 +2218,11 @@ function insertmathunit(unitName, editorElement)
     if (!bUsedAppearance)
       mathmlEditor.InsertMathunit(nameData.data);
     editorElement.contentWindow.focus();
-  } 
+  }
   catch (e) {}
 }
 
-function reviseMathUnit(unitNode, newName, editorElement) 
+function reviseMathUnit(unitNode, newName, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
@@ -2230,7 +2230,7 @@ function reviseMathUnit(unitNode, newName, editorElement)
   var nameData = msiBaseMathUnitsList.getUnitNameData(newName);
 
   editor.beginTransaction();
-  try 
+  try
   {
     var wrappedUnitNode = msiNavigationUtils.getWrappedObject(unitNode, "unit");
     var retVal = unitNode;
@@ -2271,24 +2271,24 @@ function reviseMathUnit(unitNode, newName, editorElement)
       msiSetMathTokenText(wrappedUnitNode, nameData.data, editor);
     }
     editorElement.contentWindow.focus();
-  } 
+  }
   catch (e) {dump("Error in mathmlOverlay.js, reviseMathUnit; exception is [" + e + "].\n");}
   editor.endTransaction();
 
   return retVal;
 }
 
-function insertenginefunction(name, editorElement) 
+function insertenginefunction(name, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertEngineFunction(name);
     editorElement.contentWindow.focus();
-  } 
+  }
   catch (e) {}
 }
 
@@ -2362,9 +2362,9 @@ function insertMathnameObject(mathNameObj, editorElement)
         limitPlacement = mathNameObj.limitPlacement;
       }
       if ("size" in mathNameObj)
-      {  
+      {
         sizeSpec = mathNameObj.size;
-      }  
+      }
       node.setAttribute("limitPlacement",limitPlacement);
       node.setAttribute("size", sizeSpec);
 	  addTextToElement(node, mathNameObj.val);
@@ -2443,7 +2443,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
   {
     infoStr += "enabled, subequation continuation ";
     subEqAttrStr = "true";
-    if (dialogData.subEqnContinuation) 
+    if (dialogData.subEqnContinuation)
     {
       subContAttrStr = "true";
       infoStr += "enabled";
@@ -2559,7 +2559,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
       else
       {
         //Here we have to determine the appropriate value of padding-bottom to set. If the previous value for space-after-line
-        //  wasn't zero, we subtract to determine the needed change and then adjust the current computed value (which may just be 
+        //  wasn't zero, we subtract to determine the needed change and then adjust the current computed value (which may just be
         //  from a style statement on the node) by that amount. If the previous value was zero, then of course there's no subtraction
         //  necessary, though then it wouldn't hurt. Trick is that it may appear as null, and then the subtraction algorithm wouldn't
         //  work unless we modify it.
@@ -2718,7 +2718,7 @@ var msiMathStyleUtils =
 };
 
 // maintain color attributes and generate corresponding CSS
-var msiColorObj = 
+var msiColorObj =
 {
   Format: function()
   {
@@ -2856,7 +2856,7 @@ function doUnitsDlg(unitStr, commandID, editorElement, commandHandler)
 }
 
 // change symbol panels to MathML so they're styled correctly.
-// for some reason, just adding the children to the button doesn't do the job, so we have to build 
+// for some reason, just adding the children to the button doesn't do the job, so we have to build
 // a new button
 function doPanelLoad(panel,elementtype)
 {
@@ -2923,14 +2923,14 @@ function applyMathStyleToObject(styleVals, objType, targ, editor)
 //  }
 
   styleNode = msiNavigationUtils.findStyleEnclosingObj(targ, objType, styleVals, foundAttrs);
-  
+
   var bAddStyleNode = false;
   if (styleNode == null)
   {
     styleNode = targ.ownerDocument.createElement("mstyle");
     bAddStyleNode = true;
   }
-  
+
   for (var attrib in styleVals)
   {
     if ( !(attrib in foundAttrs) || (foundAttrs[attrib] != styleVals[attrib]) )
@@ -2976,36 +2976,36 @@ function applyMathStyleToObject(styleVals, objType, targ, editor)
   return targ;
 }
 
-function insertsymbol(s, editorElement) 
+function insertsymbol(s, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertSymbol(s);
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
     dump("insertsymbol failed: "+e+"\n");
   }
 }
 
 
-function inserttext(s, editorElement) 
+function inserttext(s, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     var plaintextEditor = editor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
     plaintextEditor.insertText(s);
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
     dump("inserttext failed: "+e+"\n");
   }
@@ -3013,12 +3013,12 @@ function inserttext(s, editorElement)
 
 
 
-function insertfence(left, right, editorElement) 
+function insertfence(left, right, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  try 
+  try
   {
     if (!editorElement) throw("In insertfence, editor element is null!");
     if (!editor) throw("In insertfence, editor element [" + editorElement.id + "] has null editor!");
@@ -3026,8 +3026,8 @@ function insertfence(left, right, editorElement)
     if (!mathmlEditor) throw("In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!");
     mathmlEditor.InsertFence(left, right);
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
     throw e;
   }
@@ -3035,7 +3035,7 @@ function insertfence(left, right, editorElement)
 
 //NOTE!! All the convoluted replacement code used below is necessary due to a bug in Mozilla MathML rendering.
 //Changing the textContent of a token node <mo> or <mi> does not reliably force a rerendering.
-function reviseFence(fenceNode, left, right, editorElement) 
+function reviseFence(fenceNode, left, right, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
@@ -3056,7 +3056,7 @@ function reviseFence(fenceNode, left, right, editorElement)
   }
 
   editor.beginTransaction();
-  try 
+  try
   {
 //    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
 //    if (!mathmlEditor)
@@ -3068,14 +3068,14 @@ function reviseFence(fenceNode, left, right, editorElement)
     var lastNode = theChildren[theChildren.length - 1];
     var newLast = msiSetMathTokenText(lastNode, right, editor);
     editorElement.contentWindow.focus();
-  } 
+  }
   catch (e) { dump("Error in mathmlOverlay.js, reviseFence! [" + e + "].\n"); }
   editor.endTransaction();
 
   return retVal;
 }
 
-function insertmatrix(rows, cols, rowsignature, editorElement) 
+function insertmatrix(rows, cols, rowsignature, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
@@ -3099,18 +3099,18 @@ function insertmatrix(rows, cols, rowsignature, editorElement)
   }
   var editor = msiGetEditor(editorElement);
 
-  try 
+  try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertMatrix(rows, cols, rowsignature);
     editorElement.contentWindow.focus();
-  } 
-  catch (e) 
+  }
+  catch (e)
   {
   }
 }
 
-function insertmath(editorElement) 
+function insertmath(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
@@ -3123,7 +3123,7 @@ function insertmath(editorElement)
   editorElement.contentWindow.focus();
 }
 
-function newbox(editor) 
+function newbox(editor)
 {
   var box = editor.document.createElementNS(mmlns,"mi");
 ////  box.appendChild(editor.document.createTextNode("\u25A1"));
@@ -3132,7 +3132,7 @@ function newbox(editor)
   return box;
 }
 
-function caret_on_box(editor, rb) 
+function caret_on_box(editor, rb)
 {
   var c = rb.firstChild;
   while (c && c.nodeType != Node.TEXT_NODE)
@@ -3141,56 +3141,56 @@ function caret_on_box(editor, rb)
 }
 
 
-function insertfragment(editor, node) 
+function insertfragment(editor, node)
 {
-  if (editor.selection) 
+  if (editor.selection)
   {
     var end = editor.selection.focusNode;
     var off = editor.selection.focusOffset;
     var sel_length = Math.abs(off-editor.selection.anchorOffset);
-    if (editor.selection.anchorNode == end && inputboxselected(end)) 
+    if (editor.selection.anchorNode == end && inputboxselected(end))
     {
       replacebox(end,node);
-    } 
-    else if (end.nodeType == Node.TEXT_NODE && off > 0) 
+    }
+    else if (end.nodeType == Node.TEXT_NODE && off > 0)
     {
-      if (off == end.length) 
+      if (off == end.length)
       {
         appendhere(editor, end, node);
-      } 
-      else 
+      }
+      else
       {
         insertbefore(editor, end.splitText(off), node);
       }
-    } 
-    else if (end.localName == "mrow") 
+    }
+    else if (end.localName == "mrow")
     {
       var cl = end.childNodes;
-      if (off < cl.length) 
+      if (off < cl.length)
       {
         insertbefore(editor, end.childNodes[off],node);
-      } 
-      else 
+      }
+      else
       {
         end.appendChild(node)
       }
-    } 
-    else 
+    }
+    else
     {
       insertbefore(editor, end, node);
-    } 
+    }
   }
 }
 
-function replacebox(loc,node) 
+function replacebox(loc,node)
 {
   var parent = loc.parentNode;
   var m = findmathparent(parent);
-  if (parent.localName == "mi") 
+  if (parent.localName == "mi")
   {
     parent.parentNode.replaceChild(node,parent);
-  } 
-  else 
+  }
+  else
   {
     dump("\nmathmled: impossible replacebox!");
   }
@@ -3212,14 +3212,14 @@ function appendhere(editor, loc, node) {
     insertafter(loc,node);
 } }
 
-function nestinmath(editor, node) 
+function nestinmath(editor, node)
 {
   var d = editor.document.createDocumentFragment();
   var m = editor.document.createElementNS(mmlns,"math");
   m.setAttribute("xmlns",mmlns);
   var r = editor.document.createElementNS(mmlns,"mrow");
-  r.appendChild(node); 
-  m.appendChild(r); 
+  r.appendChild(node);
+  m.appendChild(r);
   d.appendChild(m);
   return d;
 }
@@ -3245,7 +3245,7 @@ function insertafter(loc,node) {
     loc.parentNode.appendChild(node);
 }
 
-function inputboxselected(node) 
+function inputboxselected(node)
 {
   if (node.nodeType == Node.TEXT_NODE
    && node.data == "\u200B"
@@ -3255,7 +3255,7 @@ function inputboxselected(node)
     return inputboxselected(node.firstChild);
   else
     return false;
-} 
+}
 
 function mathNodeSplittable(node)
 {
@@ -3275,14 +3275,14 @@ function offsetOfChild(parent, child)
 	{
 		node = node.nextSibling;
 		offset++;
-	}	
+	}
 	return offset;
 }
 
 function splitMathDeep(editor, node, offset, text)
 /* This will  split the  math expression at  the point (node,offset); if  offset == -1,  then the
 expression will  be split  by node, which  will then be  deleted. The  text in 'text'  will be
-inserted into an mtext node or an ordinary text  node, as appropriate. */  
+inserted into an mtext node or an ordinary text  node, as appropriate. */
 {
 	var newNode= {};
 	var saveNode = node;
@@ -3313,7 +3313,7 @@ inserted into an mtext node or an ordinary text  node, as appropriate. */
 		}
 		if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
 		{
-		  editor.deleteNode(newNode.value);		
+		  editor.deleteNode(newNode.value);
 			offset--;
 		}
 		parent = newParent;
@@ -3323,11 +3323,11 @@ inserted into an mtext node or an ordinary text  node, as appropriate. */
 	if (msiNavigationUtils.isMathNode(parent))
 	{
 		mtextNode = editor.document.createElementNS(mmlns, "mtext");
-	  editor.insertNode(mtextNode, parent, offset);  
+	  editor.insertNode(mtextNode, parent, offset);
 		mtextNode.textContent = text;
 		editor.selection.collapse(mtextNode,text.length);
 	}
-	else 
+	else
 	{
 		var textNode = editor.document.createTextNode(text);
 		editor.insertNode(textNode, parent, offset);
@@ -3484,3 +3484,4 @@ function switchToTextMode(editor)
     toggleMathText(editor);
   }
 }
+
