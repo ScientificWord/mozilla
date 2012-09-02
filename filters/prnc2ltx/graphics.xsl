@@ -8,6 +8,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <xsl:variable name="upperCaseAlpha">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
+  <xsl:variable name="lowerCaseAlpha">abcdefghijklmnopqrstuvwxyz</xsl:variable>
+
   <xsl:template name="buildincludegraphics"><xsl:variable name="theUnit"><xsl:call-template name="unit"/></xsl:variable><xsl:variable name="imageWidth"><xsl:call-template name="getImageWidth"><xsl:with-param name="objNode" select="."/></xsl:call-template></xsl:variable>
   \includegraphics[<xsl:if test="@rot">angle=<xsl:value-of select="@rot"/>,</xsl:if>
   <xsl:if test="number($imageWidth) != 0"> width=<xsl:value-of select="$imageWidth"/>
@@ -19,7 +23,130 @@
 <xsl:value-of select="$theUnit"/>
 </xsl:if>]{<xsl:call-template name="getSourceName"/>}
 </xsl:template>
+
+<xsl:template name="convertHourMinSecThirtiethTimeToSeconds">
+  <xsl:param name="HMSTime" select="0"/>
+  <xsl:param name="currPiece" select="0"/>
+  <xsl:param name="prevValue" select="0"/>
+  <xsl:variable name="ourValue">
+    <xsl:value-of select="substring-before($HMSTime,':')" />
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="number($currPiece) &gt; 2">
+      <xsl:value-of select="number($prevValue) + (number($ourValue) div 30.0)"/>
+    </xsl:when>
+    <xsl:when test="contains($HMSTime,':')">
+      <xsl:call-template name="convertHourMinSecThirtiethTimeToSeconds">
+        <xsl:with-param name="HMSTime" select="substring-after($HMSTime,':')"/>
+        <xsl:with-param name="currPiece" select="number($currPiece) + 1" />
+        <xsl:with-param name="prevValue">
+          <xsl:choose>
+            <xsl:when test="number($currPiece) = 2">
+              <xsl:value-of select="number($ourValue) + number($prevValue)" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="60 * (number($ourValue) + number($prevValue))" />
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:with-param>
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="number($ourValue) + number($prevValue)" />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+  <xsl:template name="getMovieOptions">
+    <xsl:variable name="controller">
+      <xsl:choose>
+        <xsl:when test="local-name()='object'">
+          <xsl:value-of select="./*[local-name()='param'][@name='controller']/@value" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@controller" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="autoplay">
+      <xsl:choose>
+        <xsl:when test="local-name()='object'">
+          <xsl:value-of select="./*[local-name()='param'][@name='autoplay']/@value" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@autoplay" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="loop">
+      <xsl:choose>
+        <xsl:when test="local-name()='object'">
+          <xsl:value-of select="./*[local-name()='param'][@name='loop']/@value" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@loop" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="starttime">
+      <xsl:choose>
+        <xsl:when test="local-name()='object'">
+          <xsl:value-of select="./*[local-name()='param'][@name='starttime']/@value" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@starttime" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="endtime">
+      <xsl:choose>
+        <xsl:when test="local-name()='object'">
+          <xsl:value-of select="./*[local-name()='param'][@name='endtime']/@value" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@endtime" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:text xml:space="preserve">poster, url, </xsl:text>
+    <xsl:if test="@type and string-length(@type)">
+      <xsl:text>mimetype=</xsl:text><xsl:value-of select="@type"/><xsl:text xml:space="preserve">, </xsl:text>
+    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="$controller and not($controller='false')"><xsl:text xml:space="preserve">controls, </xsl:text></xsl:when>
+      <xsl:otherwise><xsl:text>mouse=true, </xsl:text></xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="$autoplay and not($autoplay='false')"><xsl:text xml:space="preserve">autoplay, </xsl:text></xsl:if>
+    <xsl:choose>
+      <xsl:when test="not($loop) or not(string-length($loop))"></xsl:when>
+      <xsl:when test="translate($loop,$upperCaseAlpha,$lowerCaseAlpha)='palindrome'"><xsl:text xml:space="preserve">palindrome, </xsl:text></xsl:when>
+      <xsl:when test="translate($loop,$upperCaseAlpha,$lowerCaseAlpha)='true'"><xsl:text xml:space="preserve">repeat, </xsl:text></xsl:when>
+      <xsl:otherwise></xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="$starttime and string-length($starttime)">
+      <xsl:text xml:space="preserve">startat=time:</xsl:text>
+      <xsl:call-template name="convertHourMinSecThirtiethTimeToSeconds"><xsl:with-param name="HMSTime" select="$starttime"/></xsl:call-template>
+      <xsl:text xml:space="preserve">, </xsl:text>
+    </xsl:if>
+    <xsl:if test="$endtime and string-length($endtime)">
+      <xsl:text xml:space="preserve">endat=time:</xsl:text>
+      <xsl:call-template name="convertHourMinSecThirtiethTimeToSeconds"><xsl:with-param name="HMSTime" select="$endtime"/></xsl:call-template>
+      <xsl:text xml:space="preserve">, </xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="buildincludemovie"><xsl:variable name="theUnit"><xsl:call-template name="unit"/></xsl:variable><xsl:variable name="imageWidth"><xsl:call-template name="getImageWidth"><xsl:with-param name="objNode" select="."/></xsl:call-template></xsl:variable>
+  <xsl:variable name="movieOptions"><xsl:call-template name="getMovieOptions"/></xsl:variable>
+  \includemovie<xsl:if test="$movieOptions and (string-length(normalize-space($movieOptions)) &gt; 0)">[<xsl:value-of select="$movieOptions"/>]</xsl:if>
+  {<xsl:if test="number($imageWidth) != 0"><xsl:value-of select="$imageWidth"/>
+<xsl:value-of select="$theUnit"/></xsl:if>}{<xsl:if test="@imageHeight and (number(@imageHeight) != 0)"><xsl:value-of select="@imageHeight"/>
+<xsl:value-of select="$theUnit"/></xsl:if>}
+{<xsl:call-template name="getSourceName"><xsl:with-param name="needExtension" select="1" /><xsl:with-param name="fullPath" select="1" /></xsl:call-template>}
+  </xsl:template>
+
   <xsl:template name="getSourceName">
+    <xsl:param name="needExtension" select="0" />
+    <xsl:param name="fullPath" select="0" />
     <xsl:variable name="rawName">
       <xsl:choose>
         <xsl:when test="@typesetSource">
@@ -36,13 +163,22 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    <xsl:variable name="correctedName">
+      <xsl:choose>
+        <xsl:when test="contains($rawName,'%') and @originalSrcUrl and string-length(@originalSrcUrl)"
+        ><xsl:value-of select="@originalSrcUrl"/>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="$rawName"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:variable name="fileName">
       <xsl:choose>
-        <xsl:when test="starts-with($rawName, 'graphics/')">
-          <xsl:value-of select="substring-after($rawName, 'graphics/')"/>
+        <xsl:when test="starts-with($correctedName, 'graphics/')">
+          <xsl:if test="$fullPath = 1"><xsl:text>../graphics/</xsl:text></xsl:if>
+          <xsl:value-of select="substring-after($correctedName, 'graphics/')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="$rawName"/>
+          <xsl:value-of select="$correctedName"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -52,7 +188,10 @@
         <xsl:with-param name="theSubstring" select="'.'"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:value-of select="substring($fileName, 1, string-length($fileName) - number($afterLastDot) - 1)"/>
+    <xsl:choose>
+      <xsl:when test="$needExtension = 1"><xsl:value-of select="$fileName"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="substring($fileName, 1, string-length($fileName) - number($afterLastDot) - 1)"/></xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template name="charsAfterLastOccurence">
     <xsl:param name="theString"/>
@@ -69,7 +208,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  <xsl:template match="html:object" mode="contents">
+  <xsl:template match="html:object|html:embed" mode="contents">
     <xsl:variable name="theUnit">
       <xsl:call-template name="unit"/>
     </xsl:variable>
@@ -83,10 +222,17 @@
 </xsl:if>
     \framebox{
   </xsl:if>
-    <xsl:call-template name="buildincludegraphics"/>
+    <xsl:choose>
+      <xsl:when test="@isVideo='true'">
+        <xsl:call-template name="buildincludemovie"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="buildincludegraphics"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:if test="@border"><xsl:if test="@border-color">}</xsl:if>}</xsl:if>
   </xsl:template>
-  <xsl:template match="html:object">
+  <xsl:template match="html:object|html:embed">
     <xsl:if test="@msisnap or @msigraph!='true'">
       <xsl:choose>
         <xsl:when test="@pos='inline'">
