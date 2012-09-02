@@ -11,7 +11,7 @@
     <xsl:choose>
       <xsl:when test="@frametype='image'">
         <xsl:call-template name="getObjectWidth">
-          <xsl:with-param name="objNode" select="./html:object[1]"/>
+          <xsl:with-param name="objNode" select="(./html:object|./html:embed)[1]"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="@imageWidth"><xsl:value-of select="@imageWidth"/></xsl:when>
@@ -161,7 +161,7 @@
   </xsl:choose>
   <xsl:choose>
     <xsl:when test="@frametype='image'">
-      <xsl:apply-templates mode="contents" select="html:object[1]"/>
+      <xsl:apply-templates mode="contents" select="(html:object|html:embed)[1]"/>
     </xsl:when>
     <xsl:otherwise>
       <xsl:apply-templates/>
