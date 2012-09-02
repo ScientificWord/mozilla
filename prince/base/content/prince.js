@@ -474,7 +474,7 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   compileInfo.runBibTeX = /\\bibliography/.test(str);
   compileInfo.passCount = 1;
   var runcount = 1;
-  if (/\\tableofcontents|\\listoffigures|\\listoftables/.test(str)) runcount = 3;
+  if (/\\tableofcontents|\\listoffigures|\\listoftables|\\includemovie/.test(str)) runcount = 3;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   if (/\\xref|\\pageref|\\vxref|\\vref|\\vpageref|\\cite/.test(str)) runcount = 2;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
@@ -499,7 +499,7 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
 		var k;
 		for (k = 0; k < specialDirs.length; k++)
 		{
-      str = str.replace("{../"+specialDirs[k]+"/}", "{"+prefix+specialDirs[k]+"/}");		  
+      str = str.replace("{../"+specialDirs[k]+"/", "{"+prefix+specialDirs[k]+"/", "g");		  
 		}
 	}
     

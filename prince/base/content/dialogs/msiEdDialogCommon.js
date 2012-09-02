@@ -422,6 +422,10 @@ function msiGetLocalFileURLSpecial(filterAndTitleArray, fileType)
   if (fileType == "image")
   {
     fp.init(window, GetString("SelectImageFile"), nsIFilePicker.modeOpen);
+  }
+  else if (fileType == "video")
+  {
+    fp.init(window, GetString("SelectVideoFile"), nsIFilePicker.modeOpen);
     fileType = "image";
   }
   else if (filterAndTitleArray[0].filterTitle.indexOf("xhtml") == 0)

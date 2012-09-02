@@ -56,6 +56,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_fieldset",      msiFieldSetCommand);
   commandTable.registerCommand("cmd_isindex",       msiIsIndexCommand);
   commandTable.registerCommand("cmd_image",         msiImageCommand);
+  commandTable.registerCommand("cmd_video",         msiVideoCommand);
   commandTable.registerCommand("cmd_hline",         msiHLineCommand);
   commandTable.registerCommand("cmd_link",          msiLinkCommand);
   commandTable.registerCommand("cmd_anchor",        msiAnchorCommand);
@@ -129,6 +130,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_msiReviseHyperlink", msiReviseHyperlinkCommand);
   commandTable.registerCommand("cmd_reviseAnchor", msiReviseAnchorCommand);
   commandTable.registerCommand("cmd_reviseImage", msiReviseImageCommand);
+  commandTable.registerCommand("cmd_reviseVideo", msiReviseVideoCommand);
 //  commandTable.registerCommand("cmd_reviseLine",  msiReviseLineCommand);
   commandTable.registerCommand("cmd_reviseForm",  msiReviseFormCommand);
   commandTable.registerCommand("cmd_reviseTextarea", msiReviseTextareaCommand);
@@ -4746,8 +4748,9 @@ var msiImageCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
+    var imageData = {isVideo : false, mNode : null};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome, resizable, close,titlebar,dependent,resizable",
-                                                                                                     editorElement, "cmd_image", this);
+                                                                                                     editorElement, "cmd_image", this, imageData);
 //    window.openDialog("chrome://editor/content/EdImageProps.xul","imageprops", "chrome,close,titlebar,modal");
 //    editorElement.focus();
   },
@@ -4779,8 +4782,70 @@ var msiReviseImageCommand =
     var imageNode = msiGetReviseObjectFromCommandParams(aParams);
     if (imageNode != null && editorElement != null)
     {
+      var imageData = {isVideo : false, mNode : imageNode};
       var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
-                                                     editorElement, "cmd_reviseImage", imageNode, imageNode);
+                                                     editorElement, "cmd_reviseImage", imageNode, imageData);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
+
+//-----------------------------------------------------------------------------------
+//Once again, need to tie the editor to the dialog.
+var msiVideoCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var imageData = {isVideo : true, mNode : null};
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "", "chrome, resizable, close,titlebar,dependent,resizable",
+                                                                                                     editorElement, "cmd_video", this, imageData);
+//    window.openDialog("chrome://editor/content/EdImageProps.xul","imageprops", "chrome,close,titlebar,modal");
+//    editorElement.focus();
+  },
+  msiGetReviseObject: function(editorElement)
+  {
+    var videoElement = null;
+    var editor = msiGetEditor(editorElement);
+    try {
+      // Get a single selected video element
+      var videoTags = ["embed", "object"];
+      for (var ix = 0; (!videoElement) && (ix < 2); ++ix)
+      {
+        videoElement = editor.getSelectedElement(videoTags[ix]);
+        if (videoElement && !(videoElement.getAttribute("isVideo") == "true"))
+          videoElement = null;
+      }
+    } catch (e) {}
+    return videoElement;
+  }
+};
+
+var msiReviseVideoCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var videoNode = msiGetReviseObjectFromCommandParams(aParams);
+    if (videoNode != null && editorElement != null)
+    {
+      var imageData = {isVideo : true, mNode : videoNode};
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseVideo", videoNode, imageData);
     }
     editorElement.focus();
   },
@@ -4882,7 +4947,12 @@ var msiLinkCommand =
     var editorElement = msiGetActiveEditorElement();
     var element = msiGetObjectDataForProperties(editorElement);
     if (element && msiGetBaseNodeName(element) == "img")
-      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable=true,chrome,close,titlebar,dependent", null, true);
+    {
+      var imageData = {isVideo : false, mNode : element};
+      msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseImage", element, imageData);
+//      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable=true,chrome,close,titlebar,dependent", imageData);
+    }
     else
       window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar,dependent");
 		msiGetEditor(editorElement).incrementModificationCount(1);
@@ -7872,6 +7942,13 @@ var msiObjectPropertiesCommand =
           {
             case 'img':
               msiGoDoCommandParams("cmd_reviseImage", cmdParams, editorElement);
+            break;
+            case 'object':
+            case 'embed':
+              if (element.getAttribute("isVideo") == "true")
+                msiGoDoCommandParams("cmd_reviseVideo", cmdParams, editorElement);
+              else
+                msiGoDoCommandParams("cmd_reviseImage", cmdParams, editorElement);
             break;
             case 'hr':
               msiGoDoCommandParams("cmd_reviseLine", cmdParams, editorElement);

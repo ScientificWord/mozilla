@@ -39,6 +39,7 @@
 
 <!-- Window title -->
 <!ENTITY windowTitle.label "Image">
+<!ENTITY videoTitle.label "Video">
 
 <!ENTITY pixelsPopup.value "pixels">
 <!ENTITY percentPopup.value "percent">
@@ -137,4 +138,23 @@
 
 <!ENTITY imageKey.label "Key">
 <!ENTITY captionPlacement.label "Caption Placement">
-                    
+
+<!ENTITY videoTab.label "Video properties">
+<!ENTITY videoShowControls.label "Show video controls">
+<!ENTITY videoShowControls.accesskey "w">
+<!ENTITY videoAutoplay.label "Autoplay">
+<!ENTITY videoAutoplay.accesskey "y">
+<!ENTITY videoLooping.label "Looping">
+<!ENTITY videoLooping.accesskey "l">
+<!ENTITY videoRepeatOnce.label "Play once">
+<!ENTITY videoRepeatLoop.label "Loop">
+<!ENTITY videoRepeatPalindrome.label "Back and forth">
+<!ENTITY videoStartAtBeginning.label "Play from beginning">
+<!ENTITY videoStartAtBeginning.accesskey "s">
+<!ENTITY videoStartAt.label "Start at:">
+<!ENTITY videoEndAtEnding.label "Play to end">
+<!ENTITY videoEndAt.label "End at:">
+<!ENTITY videoStartEndMinutes.label "m">
+<!ENTITY videoStartEndSeconds.label "s">
+<!ENTITY videoStartEndFrames.label "frame">
+
