@@ -10,12 +10,68 @@
   duplicates, and then sort according to the pri attribute -->
   <xsl:variable name="masterpackagelist" select="document('packages.xml')"/>
 
-  <xsl:variable name="requiredpackages.tf">
+  <!-- xsl:variable name="requiredpackages.tf">
     <xsl:for-each select="//*[@req]">
       <xsl:sort select="@req"/>
-      <xsl:copy-of select="."/>
+	    <xsl:copy-of select="."/>
+    </xsl:for-each>
+  </xsl:variable -->
+
+  <xsl:variable name="rawrequiredpackages.tf">
+    <xsl:for-each select="//*[@req]">
+      <xsl:call-template name="parsePackageInfo">
+        <xsl:with-param name="pkgString" select="@req"/>
+        <xsl:with-param name="optString" select="@opt"/>
+        <xsl:with-param name="priString" select="@pri"/>
+      </xsl:call-template>
     </xsl:for-each>
   </xsl:variable>
+
+  <xsl:template name="parsePackageInfo">
+    <xsl:param name="pkgString" />
+    <xsl:param name="optString" />
+    <xsl:param name="priString" />
+    <xsl:variable name="ourPkg">
+      <xsl:choose>
+        <xsl:when test="contains($pkgString,';')">
+          <xsl:value-of select="substring-before($pkgString,';')"/>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="$pkgString"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="ourOptions">
+      <xsl:choose>
+        <xsl:when test="$optString and contains($optString,';')">
+          <xsl:value-of select="substring-before($optString,';')"/>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="$optString"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="ourPri">
+      <xsl:choose>
+        <xsl:when test="$priString and contains($priString,';')">
+          <xsl:value-of select="substring-before($priString,';')"/>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="$priString"/></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:element name="pkgInfo">
+      <xsl:attribute name="pkgname"><xsl:value-of select="$ourPkg"/></xsl:attribute>
+      <xsl:if test="$ourOptions and string-length($ourOptions)">
+        <xsl:attribute name="options"><xsl:value-of select="$ourOptions"/></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="$ourPri and string-length($ourPri)">
+        <xsl:attribute name="priority"><xsl:value-of select="$ourPri"/></xsl:attribute>
+      </xsl:if>
+    </xsl:element>
+    <xsl:if test="contains($pkgString,';')">
+      <xsl:call-template name="parsePackageInfo">
+        <xsl:with-param name="pkgString" select="substring-after($pkgString,';')"/>
+        <xsl:with-param name="optString" select="substring-after($optString,';')"/>
+        <xsl:with-param name="priString" select="substring-after($priString,';')"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
 
   <xsl:variable name="preambletexbuttons.tf">
     <xsl:for-each select="//*[@pre]">
@@ -24,30 +80,70 @@
     </xsl:for-each>
   </xsl:variable>
 
+  <xsl:variable name="rawrequiredpackages" select ="exsl:node-set($rawrequiredpackages.tf)"/>
+
+  <xsl:variable name="requiredpackages.tf">
+    <xsl:for-each select="$rawrequiredpackages/*">
+      <xsl:sort select="@pkgname" />
+      <xsl:sort select="@priority" data-type="number"/>
+      <xsl:copy-of select="."/>
+    </xsl:for-each>
+  </xsl:variable>
+
   <xsl:variable name="requiredpackages" select ="exsl:node-set($requiredpackages.tf)"/>
   <xsl:variable name="preambletexbuttons" select ="exsl:node-set($preambletexbuttons.tf)"/>
 
-  <xsl:variable name="packagelist.tf">
+  <xsl:variable name="packagelist.tf"> 
     <xsl:for-each select="$requiredpackages/*">
       <xsl:variable name="pos" select="position()"/>
-      <xsl:variable name="currentpackage" select="@req"/>
-      <xsl:if
-      test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@req)">
-        <xsl:element name="requiredpackage" >
-          <xsl:attribute name="package">
-            <xsl:value-of select="@req"/>
-          </xsl:attribute>
-          <xsl:if test="@opt">
-            <xsl:attribute name="options">
-              <xsl:value-of select="@opt"/>
-            </xsl:attribute>
-          </xsl:if>
-          <xsl:attribute name="pri">
-            <xsl:choose>
-              <xsl:when test="@pri">
-                <xsl:value-of select="@pri"/>
-              </xsl:when>
-              <xsl:otherwise>
+	    <xsl:variable name="currentpackage" select="@pkgname"/>
+	    <xsl:if
+	      test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@pkgname)">
+	      <xsl:element name="requiredpackage" >
+	        <xsl:attribute name="package"><xsl:value-of select="@pkgname"/></xsl:attribute>
+	        <xsl:if test="@options and string-length(@options)"><xsl:attribute name="options"><xsl:value-of select="@options"/></xsl:attribute></xsl:if>
+	        <xsl:attribute name="pri">
+	  	      <xsl:choose>
+	  	        <xsl:when test="@priority">
+	  	          <xsl:value-of select="@priority"/>
+	  	        </xsl:when>
+   	  		    <xsl:otherwise>
+                <xsl:variable name="pkg" select="@pkgname"/>
+                <xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/>
+                <xsl:choose>
+                  <xsl:when test="$pri"><xsl:value-of select="$pri"/></xsl:when>
+                  <xsl:otherwise>100</xsl:otherwise>
+                </xsl:choose>
+              </xsl:otherwise>
+	  	      </xsl:choose>
+	        </xsl:attribute>
+        </xsl:element>
+	          <!-- xsl:copy-of select="."/ -->
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:variable>
+ 
+  <!-- xsl:variable name="packagelist.tf"> 
+    <xsl:for-each select="$requiredpackages/*">
+      <xsl:variable name="pos" select="position()"/>
+	    <xsl:variable name="currentpackage" select="@req"/>
+	    <xsl:if
+	      test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@req)">
+	      <xsl:element name="requiredpackage" >
+	        <xsl:attribute name="package">
+	          <xsl:value-of select="@req"/>
+	        </xsl:attribute>
+	        <xsl:if test="@opt">
+	          <xsl:attribute name="options">
+	            <xsl:value-of select="@opt"/>
+	          </xsl:attribute>
+	        </xsl:if>
+	        <xsl:attribute name="pri">
+	  	      <xsl:choose>
+	  	        <xsl:when test="@pri">
+	  	          <xsl:value-of select="@pri"/>
+	  	        </xsl:when>
+   	  		    <xsl:otherwise>
                 <xsl:variable name="pkg" select="@req"/>
                 <xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/>
                 <xsl:choose>
@@ -57,13 +153,14 @@
                   <xsl:otherwise>100</xsl:otherwise>
                 </xsl:choose>
               </xsl:otherwise>
-            </xsl:choose>
-          </xsl:attribute>
-        </xsl:element>
-        <!-- xsl:copy-of select="."/ --> </xsl:if>
+	  	      </xsl:choose>
+	        </xsl:attribute>
+        </xsl:element -->
+	          <!-- xsl:copy-of select="."/ -->
+      <!-- /xsl:if>
     </xsl:for-each>
-  </xsl:variable>
-
+  </xsl:variable -->
+   
   <xsl:variable name="packagelist" select ="exsl:node-set($packagelist.tf)"/>
 
   <xsl:variable name="compiler" select="//html:texprogram/@prog"/>
@@ -94,18 +191,9 @@
     <xsl:for-each select="$packagelist/*"
   >
       <xsl:sort select="@pri" data-type="number"/>
-      \usepackage
-      <xsl:if test="@options"
-    >
-        [
-        <xsl:value-of select="@options"/>
-        ]
-      </xsl:if
-    >
-      {
-      <xsl:value-of select="@package"/>
-      }  %%
-      <xsl:value-of select="@pri"/>
+      \usepackage<xsl:if test="@options"
+    >[<xsl:value-of select="@options"/>]</xsl:if
+    >{<xsl:value-of select="@package"/>}  %%  <xsl:value-of select="@pri"/>
     </xsl:for-each>
     <!--xsl:apply-templates/ -->
     <xsl:for-each select="$preambletexbuttons/*"

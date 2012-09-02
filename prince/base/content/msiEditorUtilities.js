@@ -1788,6 +1788,115 @@ function msiEnsureElementCSSProperty(elementNode, propName, propValue, editor)
 //  elementNode.setAttribute("style", currStyleStr);
 }
 
+function msiEnsureElementPackage(element, packageName, editor, options, priority)
+{
+  var attribStr = element.getAttribute("req");
+  var currPackages = [];
+  var currIndex = -1;
+  var currOpts = [];
+  var currPris = [];
+  var retVal = false;
+
+  if (attribStr && attribStr.length)
+  {
+    currPackages = attribStr.split(";");
+    currIndex = currPackages.indexOf(packageName);
+  }
+  if (currIndex < 0)
+  {
+    currIndex = currPackages.length;  //Do this before pushing, since we'd have to subtract 1 to get correct index anyway
+    currPackages.push(packageName);
+  }
+  attribStr = currPackages.join(";");
+  if (attribStr.search(/[^\;\s]/) < 0)
+    attribStr = "";
+  retVal = msiEditorEnsureElementAttribute(element, "req", attribStr, editor) || retVal;
+
+  attribStr = element.getAttribute("opt");
+  if (attribStr && (attribStr > 0))
+    currOpts = attribStr.split(";");
+  if (options && (options.length > 0))
+    currOpts[currIndex] = options;
+  else
+    currOpts[currIndex] = "";
+  attribStr = currOpts.join(";");
+  if (attribStr.search(/[^\;\s]/) < 0)
+    attribStr = "";
+  retVal = msiEditorEnsureElementAttribute(element, "opt", attribStr, editor) || retVal;
+
+  attribStr = element.getAttribute("pri");
+  if (attribStr && (attribStr > 0))
+    currPris = attribStr.split(";");
+  if (priority >= 0)
+    currPris[currIndex] = priority;
+  else
+    currPris[currIndex] = "";
+  attribStr = currPris.join(";");
+  if (attribStr.search(/[^\;\s]/) < 0)
+    attribStr = "";
+  retVal = msiEditorEnsureElementAttribute(element, "pri", attribStr, editor) || retVal;
+
+  return retVal;
+}
+
+function msiRemoveElementPackage(element, packageName, editor)
+{
+  var attribStr = element.getAttribute("req");
+  var currPackages = [];
+  var currIndex = -1;
+  var currOpts = [];
+  var currPris = [];
+  var retVal = false;
+
+  if (attribStr && attribStr.length)
+  {
+    currPackages = attribStr.split(";");
+    currIndex = currPackages.indexOf(packageName);
+  }
+  if (currIndex < 0)
+    return false;
+
+  currPackages.splice(currIndex,1);
+  attribStr = currPackages.join(";");
+  if (attribStr.search(/[^\;\s]/) < 0)
+    attribStr = "";
+  retVal = msiEditorEnsureElementAttribute(element, "req", attribStr, editor) || retVal;
+
+  attribStr = element.getAttribute("opt");
+  if (attribStr && (attribStr > 0))
+  {
+    currOpts = attribStr.split(";");
+    if (currOpts.length > currIndex)
+      currOpts.splice(currIndex,1);
+    attribStr = currOpts.join(";");
+    if (attribStr.search(/[^\;\s]/) < 0)
+      attribStr = "";
+    retVal = msiEditorEnsureElementAttribute(element, "opt", attribStr, editor) || retVal;
+  }
+
+  attribStr = element.getAttribute("pri");
+  if (attribStr && (attribStr > 0))
+  {
+    currPris = attribStr.split(";");
+    if (currPris.length > currIndex)
+      currPris.splice(currIndex,1);
+    attribStr = currPris.join(";");
+    if (attribStr.search(/[^\;\s]/) < 0)
+      attribStr = "";
+    retVal = msiEditorEnsureElementAttribute(element, "pri", attribStr, editor) || retVal;
+  }
+
+  return retVal;
+}
+
+function msiClearElementPackages(element, packageName, editor)
+{
+  var retVal = msiEditorEnsureElementAttribute(element, "req", null, editor);
+  retVal = msiEditorEnsureElementAttribute(element, "req", null, editor) || retVal;
+  retVal = msiEditorEnsureElementAttribute(element, "req", null, editor) || retVal;
+  return retVal;
+}
+
 //Note that "editor" can be null - then this just goes through msiEnsureElementAttribute()
 function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, editor)
 {
@@ -1838,6 +1947,82 @@ function msiEnsureElementAttribute(elementNode, attribName, attribValue)
   return retVal;
 }
 
+function msiGetObjElementParam(anElement, attrName)
+{
+  var theParam = null;
+  var paramKids = msiNavigationUtils.getChildrenByTagName(anElement, "param");
+  for (var ii = 0; !theParam && (ii < paramKids.length); ++ii)
+  {
+    if (paramKids[ii].getAttribute("name") == attrName)
+      theParam = paramKids[ii];
+  }
+  return theParam;
+}
+
+function msiEditorEnsureObjElementParam(anElement, attrName, attrVal, editor)
+{
+  if (!editor)
+    return msiEnsureObjElementParam(anElement, attrName, attrVal);
+
+  var theParam = msiGetObjElementParam(anElement, attrName);
+  if (theParam)
+  {
+    if (attrVal && attrVal.length)
+      return msiEditorEnsureElementAttribute(theParam, "value", attrVal, editor);
+    editor.deleteNode(theParam);
+    return true;
+  }
+
+  if (!attrVal || !attrVal.length)  //We're deleting a <param> that isn't there; no change, so return false
+    return false;
+
+  theParam = editor.document.createElementNS(xhtmlns, "param");
+  theParam.setAttribute("name", attrName);
+  theParam.setAttribute("value", attrVal);
+  editor.insertNode(theParam, anElement, anElement.childNodes.length);
+  return true;
+}
+
+function msiEnsureObjElementParam(anElement, attrName, attrVal)
+{
+  var refDoc;  //We need a document for document.createElement()
+  if (document)
+    refDoc = document;
+  else
+  {
+    dump("In msiEnsureObjElementParam, the 'document' variable is null!?\n");
+    var editor = msiGetActiveEditor();
+    if (editor)
+      refDoc = editor.document;
+  }
+
+  var theParam = msiGetObjElementParam(anElement, attrName);
+  if (theParam)
+  {
+    if (attrVal && attrVal.length)
+      return msiEnsureElementAttribute(theParam, "value", attrVal);
+    anElement.removeChild(theParam);
+    return true;
+  }
+
+  if (!attrVal || !attrVal.length)  //We're deleting a <param> that isn't there; no change, so return false
+    return false;
+
+  theParam = refDoc.createElementNS(xhtmlns, "param");
+  theParam.setAttribute("name", attrName);
+  theParam.setAttribute("value", attrVal);
+  anElement.appendChild(theParam);
+  return true;
+}
+
+function msiEditorEnsureAttributeOrParam(anElement, attrName, attrVal, editor)
+{
+  if (msiGetBaseNodeName(anElement) == "object")
+    return msiEditorEnsureObjElementParam(anElement, attrName, attrVal, editor);
+
+  return msiEditorEnsureElementAttribute(anElement, attrName, attrVal, editor);
+}
+
 function msiCopyElementAttributes(newElement, oldElement, editor, bSuppressID)
 {
   var theAttrs = oldElement.attributes;
@@ -1879,6 +2064,20 @@ function msiCopySpecifiedElementAttributes(newElement, oldElement, editor, attrL
       msiEditorEnsureElementAttribute(newElement, attrName, attrVal, editor);
     else
       msiEnsureElementAttribute(newElement, attrName, attrVal);
+  }
+}
+
+function msiCopySpecifiedObjElementParams(newObj, oldObj, paramList, editor)
+{
+  var oldKid, oldVal;
+  for (var ii = 0; ii < paramList.length; ++ii)
+  {
+    oldKid = msiGetObjElementParam(oldObj, paramList[ii]);
+    if (oldKid)
+      oldVal = oldKid.getAttribute("value");
+    else
+      oldVal = null;
+    msiEditorEnsureObjElementParam(newObj, paramList[ii], oldVal, editor);
   }
 }
 
@@ -9866,6 +10065,33 @@ var msiNavigationUtils =
         }  
       break;
 
+      case 'msiframe':
+        if (aNode.getAttribute("frametype") == "image")
+        {
+          var nodeContents = this.getSignificantContents(aNode);
+          var foundOther = false;
+          var imageNode;
+          for (var ii = 0; !foundOther && (ii < nodeContents.length); ++ii)
+          {
+            switch(msiGetBaseNodeName(nodeContents[ii]))
+            {
+              case 'img':
+              case 'object':
+              case 'embed':
+                imageNode = nodeContents[ii];
+              break;
+              case 'imagecaption':  //just keep looking
+              break;
+              default:
+                foundOther = true;
+              break;
+            }
+          }
+          if (imageNode && !foundOther)
+            return imageNode;
+        }
+      break;
+
       default:
       break;
     }
@@ -11543,6 +11769,7 @@ function msiFileURLFromAbsolutePath( absPath )
   catch (e)
   {
     dump("//// error in msiFileURLFromAbsolutePath: "+e.message+"\n");
+    return null;
   }
 }                       
 
@@ -12220,6 +12447,7 @@ function msiEditorFindJustInsertedElement(tagName, editor)
   switch(tagName)
   {
     case "object":
+    case "embed":
     case "msiframe":
       lookWhere = ["left", "right"];
     break;

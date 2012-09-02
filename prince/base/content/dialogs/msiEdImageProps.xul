@@ -105,11 +105,13 @@
 
 #include ../keysfordialogs.inc
 
+  <label id="videoTitle" value="&videoTitle.label;" style="display:none;" />
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
   <broadcasterset id="bcasters">
     <broadcaster id="role-image" style="display:block"/>
     <broadcaster id="role-textframe" style="display:none;"/>
+    <broadcaster id="isVideo" hidden="true"/>
   </broadcasterset>
   <vbox id="units" />
  
@@ -120,6 +122,7 @@
       <tab id="msiPlacementTab"/>
       <tab id="msiFrameTab"/>
       <tab id="imageLabelingTab" label="&imageLabelingTab.label;"/>
+      <tab observes="isVideo" id="videoPropertiesTab" label="&videoTab.label;"/>
       <!-- tab id="imageLinkTab" label="&imageLinkTab.label;"/ -->
     </tabs>
     <tabpanels>
@@ -178,7 +181,47 @@
         <label value="&AltText.label;"/>
         <textbox id="altTextInput"/>
       </vbox>
-      <!--vbox>
+      <vbox id="videoProperties" observes="isVideo">
+        <checkbox id="vidAutoplayCheckbox" label="&videoAutoplay.label;" checked="false" persist="checked"/>
+        <checkbox id="vidShowControlsCheckbox" label="&videoShowControls.label;" checked="false" persist="checked"/>
+        <label value="&videoLooping.label;"/>
+        <menulist id = "vidLoopingList" value="False" persist="value">
+          <menupopup id = "vidLoopingPopup">
+            <menuitem value="False" label="&videoRepeatOnce.label;"/>
+            <menuitem value="True" label="&videoRepeatLoop.label;" />
+            <menuitem value="Palindrome" label="&videoRepeatPalindrome.label;"/>
+          </menupopup>
+        </menulist>
+        <checkbox id="vidStartBeginningCheckbox" label="&videoStartAtBeginning.label;" checked="true"
+                  oncommand="activateVideoStartControls(this);" />
+        <label value="&videoStartAt.label;"/>
+        <hbox>
+          <textbox id="startMinutesInput" type="number" disabled="true" onkeypress= "" onchange="" onload="" value="0"
+                   min="0" max="999" width="32px" />
+          <label value="&videoStartEndMinutes.label;"/>
+          <textbox id="startSecondsInput" type="number" disabled="true" onkeypress= "" onchange="" onload="" value="0"
+                   min="0" max="59" width="32px" />
+          <label value="&videoStartEndSeconds.label;"/>
+          <textbox id="startFramesInput" type="number" disabled="true" onkeypress= "" onchange="" onload="" value="0"
+                   min="0" max="29" width="32px" />
+          <label value="&videoStartEndFrames.label;"/>
+        </hbox>
+        <checkbox id="vidEndAtEndingCheckbox" label="&videoEndAtEnding.label;" checked="true"
+                  oncommand="activateVideoEndControls(this);" />
+        <label value="&videoEndAt.label;"/>
+        <hbox>
+          <textbox id="endMinutesInput" type="number" disabled="true" onkeypress= "" onchange="" onload="" value="0"
+                   min="0" max="999" width="32px" />
+          <label value="&videoStartEndMinutes.label;"/>
+          <textbox id="endSecondsInput" type="number" disabled="true" onkeypress= "" onchange="" onload="" value="0"
+                   min="0" max="59" width="32px" />
+          <label value="&videoStartEndSeconds.label;"/>
+          <textbox id="endFramesInput" type="number" disabled="true" onkeypress= "" onchange="" onload="" value="0"
+                   min="0" max="29" width="32px" />
+          <label value="&videoStartEndFrames.label;"/>
+        </hbox>
+      </vbox>
+      <!-- vbox>
         <spacer class="spacer"/ -->
         <!-- label wrap="true" value="Enter a document location, a local document, or select a marker"/ -->
         <!-- label value="or heading from the popup list:"/>

@@ -519,6 +519,7 @@ var msiResizeListener =
     switch(msiGetBaseNodeName(anElement))
     {
       case "object":
+      case "embed":
         this.resizeGraphic(anElement, oldWidth, oldHeight, newWidth, newHeight);
       break;
       case "plotwrapper":
@@ -5110,7 +5111,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 //      name = name.toLowerCase();
 
     var wrappedChildElement = element;
-    while ( (name == 'mstyle') || (name == 'mrow') || (name == "notewrapper") )
+    while ( (name == 'mstyle') || (name == 'mrow') || (name == "notewrapper") || (name == "msiframe") )
     {
       var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
       if (newChildElement == null)
@@ -5118,6 +5119,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       wrappedChildElement = newChildElement;
       name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
     }
+
     coreElement = wrappedChildElement;
 
     switch (name)
@@ -5146,6 +5148,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         }
         //otherwise fallthrough
       case "img":
+      case "embed":
         // Check if img is enclosed in link
         //  (use "href" to not be fooled by named anchor)
 //        try
@@ -5156,11 +5159,19 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         
         if (!objStr || !objStr.length)
         {
-          objStr = GetString("Image");
-          commandStr = "cmd_reviseImage";
+          if (coreElement.getAttribute("isVideo") == "true")
+          {
+            objStr = GetString("Video");
+            commandStr = "cmd_reviseVideo";
+          }
+          else
+          {
+            objStr = GetString("Image");
+            commandStr = "cmd_reviseImage";
+          }
         }
-        if ((msiGetBaseNodeName(element.parentNode) == "msiframe") && (element.parentNode.getAttribute("frametype") == "image"))
-          coreElement = element.parentNode;
+        if ((msiGetBaseNodeName(coreElement.parentNode) == "msiframe") && (coreElement.parentNode.getAttribute("frametype") == "image"))
+          coreElement = coreElement.parentNode;
         break;
       case "hr":
         objStr = GetString("HLine");
@@ -9891,7 +9902,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       editorElement = findEditorElementForDocument(element.ownerDocument);
 
     var elementName = element.localName;
-    if (elementName == "object" && !element.hasAttribute("msigraph"))
+    if ((elementName == "object" || elementName == "embed") && !element.hasAttribute("msigraph"))
     { // if this is one of our graphics objects ...
       openObjectTagDialog(elementName, element, editorElement);
       elementName = element.parentNode.localName;
@@ -10853,8 +10864,15 @@ function openObjectTagDialog(tagname, node, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+  var imgData = {isVideo : false, mNode : node};
+  var cmdStr = "cmd_reviseImage";
+  if (node.getAttribute("isVideo") == "true")
+  {
+    imgData.isVideo = true;
+    cmdStr = "cmd_reviseVideo";
+  }
   msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
-                                                     editorElement, "cmd_reviseImage", node, node);
+                                                     editorElement, cmdStr, node, imgData);
 //  openDialog('chrome://prince/content/msiEdImageProps.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
 //    null, 'cmd_reviseImage', node);
 
