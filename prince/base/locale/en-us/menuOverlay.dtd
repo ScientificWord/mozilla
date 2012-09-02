@@ -255,6 +255,8 @@
 <!ENTITY insertanchor.accesskey "A">
 <!ENTITY insertImageCmd.label "Image...">
 <!ENTITY insertimage.accesskey "i">
+<!ENTITY insertVideoCmd.label "Video...">
+<!ENTITY insertVideo.accesskey "v">
 <!ENTITY insertImageMapCmd.label "Image Map...">
 <!ENTITY insertLine.label "Line...">
 <!ENTITY insertline.accesskey "L">

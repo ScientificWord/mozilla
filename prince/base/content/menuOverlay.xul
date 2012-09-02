@@ -244,6 +244,10 @@
                 accesskey="&insertimage.accesskey;"      
                 command="cmd_image"  
                 label="&insertImageCmd.label;"/>
+      <menuitem id="insertVideo" 
+                accesskey="&insertVideo.accesskey;"      
+                command="cmd_video"  
+                label="&insertVideoCmd.label;"/>
       <menuitem id="insertTable" 
                 accesskey="&inserttable.accesskey;"      
                 command="cmd_InsertTable" 
@@ -583,6 +587,8 @@
       oncommand="msiGoDoCommand('cmd_anchor')"/>
     <command id="cmd_image"            observes="inMathBroadcaster"
          oncommand="msiGoDoCommand('cmd_image')"/>
+    <command id="cmd_video"            observes="inMathBroadcaster"
+         oncommand="msiGoDoCommand('cmd_video')"/>
     <command id="cmd_line"             oncommand="msiGoDoCommand('cmd_line')"/>
     <command id="cmd_table"            observes="inMathBroadcaster"
       oncommand="msiGoDoCommand('cmd_table')"/>
@@ -628,6 +634,7 @@
     <command id="cmd_msiReviseHyperlink"       oncommand="msiGoDoCommand('cmd_msiReviseHyperlink')"/>
     <command id="cmd_reviseAnchor"             oncommand="msiGoDoCommand('cmd_reviseAnchor')"/>
     <command id="cmd_reviseImage"              oncommand="msiGoDoCommand('cmd_reviseImage')"/>
+    <command id="cmd_reviseVideo"              oncommand="msiGoDoCommand('cmd_reviseVideo')"/>
     <command id="cmd_reviseLine"               oncommand="msiGoDoCommand('cmd_reviseLine')"/>
     <!-- command id="cmd_reviseTable"            oncommand="msiGoDoCommand('cmd_reviseTable')"/ -->
     <command id="cmd_reviseForm"               oncommand="msiGoDoCommand('cmd_reviseForm')"/>

@@ -55,8 +55,9 @@ var wrapperElement;
 var gDefaultWidth = 200;
 var gDefaultHeight = 100;
 var gDefaultUnit = "pt";
-var gOriginalSrc = "";
+var gInitialSrc = "";
 var gHaveDocumentUrl = false;
+var gOriginalSrcUrl = "";
 
 var gPreviewImageWidth = 80;
 var gPreviewImageHeight = 50;
@@ -69,11 +70,13 @@ var gPreviewImageNeeded = false;
 var gIsGoingAway = false;
 var gInsertNewImage = true;
 var gCaptionData;
+var gVideo = false;
 
 var gErrorMessageShown = false;
 var importTimer;
 var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "xvc","xvz"];
 var typesetGraphicTypes = ["eps", "pdf", "png", "jpg"];
+var videoTypes = ["avi","mov","qt","mp4","mpeg","mpg","prc","rm","rv","swf","u3d","wmv"];
 
 #ifdef PROD_SNB
 var bNeedTypeset = false;
@@ -93,7 +96,8 @@ function Startup()
   }
 
   gDialog = new Object();
-  gDialog.import            = document.getElementById( "importRefRadioGroup").selectedIndex == 0;
+  gDialog.importRadioGroup  = document.getElementById( "importRefRadioGroup")
+  gDialog.isImport          = gDialog.importRadioGroup.selectedIndex == 0;
   gDialog.tabBox            = document.getElementById( "TabBox" );
   gDialog.tabPicture        = document.getElementById( "imagePictureTab" );
   gDialog.tabPlacement      = document.getElementById( "msiPlacementTab" );
@@ -116,13 +120,24 @@ function Startup()
 //  gDialog.linkKeyInput      = document.getElementById( "linkKeyInput" );
   
   // Get a single selected image element
-  var tagName = "object";
   imageElement = null;
   wrapperElement = null;
   if (window.arguments && window.arguments.length >0)
   {
-    imageElement = window.arguments[0];
-    if (imageElement && (imageElement.nodeName !== "msiframe"))
+    gVideo = window.arguments[0].isVideo;
+    imageElement = window.arguments[0].mNode;
+    if (gVideo)
+    {
+      document.getElementById("isVideo").removeAttribute("hidden");
+      document.title = document.getElementById("videoTitle").textContent;
+      forceIsImport(false);  //Set import/reference to be reference by default for video files
+    }
+  }
+  var tagName = gVideo ? "embed" : "object";
+//  var tagName = "object";
+  if (imageElement)
+  {
+    if (imageElement.nodeName !== "msiframe")
     {
       if (imageElement.parentNode.nodeName === "msiframe")
       {
@@ -132,11 +147,25 @@ function Startup()
     } 
     else
     {
+      var tagsToTry = gVideo ? ["embed", "object"] : ["object", "img", "embed"];
       wrapperElement = imageElement;
-      imageElement = wrapperElement.getElementsByTagName("object")[0];
+      var imgList = null;
+      for (var iii = 0; (!imgList || !imgList.length) && (iii < tagsToTry.length); ++iii)
+      {
+        imgList = msiNavigationUtils.getChildrenByTagName(wrapperElement, tagsToTry[iii]);
+      }
+      if (!imgList || !imgList.length)
+      {
+        for (iii = 0; (!imgList || !imgList.length) && (iii < tagsToTry.length); ++iii)
+        {
+          imgList = wrapperElement.getElementsByTagName(tagsToTry[iii]);
+        }
+      }
+      if (imgList && imgList.length)
+        imageElement = imgList[0];
     }
   }
-  if (!imageElement)
+  if (!gVideo && !imageElement)
   {
     // Does this ever get run?
     try {
@@ -151,7 +180,12 @@ function Startup()
   {
     // We found an element and don't need to insert one
     if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
+    {
       gInsertNewImage = false;
+      tagname = msiGetBaseNodeName(imageElement);
+    }
+    if (imageElement.hasAttribute("originalSrcUrl"))
+      gOriginalSrcUrl = imageElement.getAttribute("originalSrcUrl");
   }
   else
   {
@@ -178,7 +212,7 @@ function Startup()
   globalElement = wrapperElement.cloneNode(true);
   globalImage = globalElement;
   if (msiGetBaseNodeName(globalElement) == "msiframe")
-    globalImage = globalElement.getElementsByTagName("object")[0];
+    globalImage = globalElement.getElementsByTagName(tagname)[0];
 
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
@@ -188,7 +222,7 @@ function Startup()
 //  ChangeLinkLocation();
 
   // Save initial source URL
-  gOriginalSrc = gDialog.srcInput.value;
+  gInitialSrc = gDialog.srcInput.value;
 
   // By default turn constrain on, but both width and height must be in pixels
 //  frameTabDlg.constrainCheckbox.checked = true;
@@ -259,6 +293,142 @@ function loadDefaultsFromPrefs()
   try
   { gDefaultInlineOffset = GetStringPref("swp.defaultGraphicsInlineOffset"); }
   catch(ex) {gDefaultInlineOffset = "0"; dump("Exception getting pref swp.defaultGraphicsInlineOffset: " + ex + "\n");}
+}
+
+var vidStartTimeControlIds = ["startFramesInput","startSecondsInput","startMinutesInput"];
+var vidEndTimeControlIds = ["endFramesInput","endSecondsInput","endMinutesInput"];
+
+function setVideoControlsFromElement(anElement)
+{
+  if (anElement && (msiGetBaseNodeName(anElement)=="object"))
+    return setVideoControlsFromObjectElement(anElement);
+  
+  var attrStr;
+  if (anElement)
+    attrStr = anElement.getAttribute("autoplay");
+  document.getElementById("vidAutoplayCheckbox").checked = (attrStr && (attrStr.toLowerCase() == "true")) ? true : false;
+  if (anElement)
+    attrStr = anElement.getAttribute("controller");
+  document.getElementById("vidShowControlsCheckbox").checked = (attrStr && (attrStr.toLowerCase() == "true")) ? true : false;
+  var valueStr = "False";
+  if (anElement)
+    attrStr = anElement.getAttribute("loop");
+  if (attrStr && (attrStr.length > 0))
+    valueStr = attrStr.substr(0,1).toUpperCase() + atrStr.subStr(1).toLowerCase();
+  document.getElementById("vidLoopingList").value = valueStr;
+
+  if (anElement)
+    attrStr = anElement.getAttribute("starttime");
+  setVideoStartEndTimeControls(true, attrStr);
+  if (anElement)
+    attrStr = anElement.getAttribute("endtime");
+  setVideoStartEndTimeControls(false, attrStr);
+}
+
+function setVideoControlsFromObjectElement(anElement)
+{
+  var attrStr;
+  var frameKids = [];
+  var theAttrs = {autoplay : null, controller : null, loop : null, starttime : null, endtime : null};
+  if (anElement)
+    frameKids = anElement.getElementsByTagName("param");
+  for (var ii = 0; ii < frameKids.length; ++ii)
+  {
+    theAttrs[frameKids[ii].getAttribute("name").toLowerCase()] = frameKids[ii].getAttribute("value");
+  }
+
+  document.getElementById("vidAutoplayCheckbox").checked = (theAttrs.autoplay && (theAttrs.autoplay == "true")) ? true : false;
+  document.getElementById("vidShowControlsCheckbox").checked = (theAttrs.controller && (theAttrs.controller.toLowerCase() == "true")) ? true : false;
+
+  var valueStr = "False";
+  if (theAttrs.loop && (theAttrs.loop.length > 0))
+    valueStr = theAttrs.loop.substr(0,1).toUpperCase() + theAttrs.loop.substr(1).toLowerCase();
+  document.getElementById("vidLoopingList").value = valueStr;
+
+  setVideoStartEndTimeControls(true, theAttrs.starttime);
+  setVideoStartEndTimeControls(false, theAttrs.endtime);
+}
+
+function setVideoStartEndTimeControls(bStart, attrStr)
+{
+  var ourIds = (bStart ? vidStartTimeControlIds : vidEndTimeControlIds);
+  var ourCheckboxId = (bStart ? "vidStartBeginningCheckbox" : "vidEndAtEndingCheckbox");
+  var timePieces;
+  var valNum = 0;
+  if (attrStr && attrStr.length)
+  {
+    document.getElementById(ourCheckboxId).checked = false;
+    timePieces = attrStr.split(":");
+    for (var ii = 0; ii < timePieces.length; ++ii)
+    {
+      valNum = timePieces[timePieces.length - ii - 1];
+      if (ii == 2)
+      {
+        if (timePieces.length > 3)
+          valNum += 60 * timePieces[timePieces.length - 4];
+        document.getElementById(ourIds[2]).valueNumber = valNum;
+        break;
+      }
+      else
+        document.getElementById(ourIds[ii]).valueNumber = valNum;
+    }
+  }
+  else
+  {
+    document.getElementById(ourCheckboxId).checked = true;
+  }
+}
+
+function setVideoSettingsToElement(anElement, editor)
+{
+  if (anElement && (msiGetBaseNodeName(anElement)=="object"))
+    return setVideoSettingsToObjectElement(anElement);
+
+  var attrStr = document.getElementById("vidAutoplayCheckbox").checked ? "true" : "false";
+  msiEditorEnsureElementAttribute(anElement, "autoplay", attrStr, editor);
+
+  var attrStr = document.getElementById("vidShowControlsCheckbox").checked ? "true" : "false";
+  msiEditorEnsureElementAttribute(anElement, "controller", attrStr, editor);
+
+  msiEditorEnsureElementAttribute(anElement, "loop", document.getElementById("vidLoopingList").value, editor);
+  
+  attrStr = readVideoStartEndControls(true);
+  msiEditorEnsureElementAttribute(anElement, "starttime", attrStr, editor);
+  attrStr = readVideoStartEndControls(false);
+  msiEditorEnsureElementAttribute(anElement, "endtime", attrStr, editor);
+}
+
+function setVideoSettingsToObjectElement(anElement, editor)
+{
+  var attrStr = document.getElementById("vidAutoplayCheckbox").checked ? "true" : "false";
+  msiEditorEnsureObjElementParam(anElement, "autoplay", attrStr, editor);
+
+  var attrStr = document.getElementById("vidShowControlsCheckbox").checked ? "true" : "false";
+  msiEditorEnsureObjElementParam(anElement, "controller", attrStr, editor);
+
+  msiEditorEnsureObjElementParam(anElement, "loop", document.getElementById("vidLoopingList").value, editor);
+  
+  attrStr = readVideoStartEndControls(true);
+  msiEditorEnsureObjElementParam(anElement, "starttime", attrStr, editor);
+  attrStr = readVideoStartEndControls(false);
+  msiEditorEnsureObjElementParam(anElement, "endtime", attrStr, editor);
+}
+
+function readVideoStartEndControls(bStart)
+{
+  var ourIds = (bStart ? vidStartTimeControlIds : vidEndTimeControlIds);
+  var ourCheckboxId = (bStart ? "vidStartBeginningCheckbox" : "vidEndAtEndingCheckbox");
+  var attrStr = null;
+  if (!document.getElementById(ourCheckboxId).checked)
+  {
+    timePieces = attrStr.split(":");
+    valNum = document.getElementById(ourIds[2]).valueNumber;
+    attrStr = String( Math.floor(valNum/60) );
+    attrStr += ":" + String(valNum % 60);
+    attrStr += ":" + String( document.getElementById(ourIds[1]).valueNumber);
+    attrStr += ":" + String( document.getElementById(ourIds[0]).valueNumber);
+  }
+  return attrStr;
 }
 
 // Set dialog widgets with attribute data
@@ -845,6 +1015,14 @@ function getDocumentGraphicsDir(mode)
   return dir;
 }
 
+function makeImagePathRelative(filePath)
+{
+  var fileUrl = msiFileURLFromAbsolutePath(filePath);
+  if (fileUrl)
+    return msiMakeRelativeUrl(fileUrl.spec, gEditorElement);
+  return filePath;  //if the above failed, was it already relative?
+}
+
 var isSVGFile = false;
 function chooseFile()
 {
@@ -853,35 +1031,55 @@ function chooseFile()
 
   // Get a local file, converted into URL format
 //  var fileName = GetLocalFileURL(["img"]); // return a URLString
-  var graphicsFileFilterStr = getGraphicsImportFilterString();
-  var fileName = msiGetLocalFileURLSpecial([{filter : graphicsFileFilterStr, filterTitle : GetString("IMGFiles")}], "image");
+  var fileFilterStr = "";
+  var filterTitleStr = "";
+  var fileTypeStr = "";
+  gDialog.relativeURL       = document.getElementById( "makeRelativeCheckbox" ).checked;  //check this in case it's changed
+
+  if (gVideo)
+  {
+    fileFilterStr = getVideoImportFilterString();
+    filterTitleStr = GetString("VideoFiles");
+    fileTypeStr = "video";
+  }
+  else
+  {
+    fileFilterStr = getGraphicsImportFilterString();
+    filterTitleStr = GetString("IMGFiles");
+    fileTypeStr = "image";
+  }
+  var filterArray = [{filter : fileFilterStr, filterTitle : filterTitleStr}];
+  var fileName = msiGetLocalFileURLSpecial(filterArray, fileTypeStr);
   if (fileName)
   {
     importTimerHandler.reset();
+    gDialog.importRadioGroup.disabled = false;  //Reset in case it was previously disabled
     var url = msiURIFromString(fileName);
+    gOriginalSrcUrl = decodeURI(url.spec);
     gPreviewImageNeeded = true;
 
-    if (gDialog.import) // copy the file into the graphics directory
+//    if (gDialog.import) // copy the file into the graphics directory
+//    {
+    var importName;
+    try
+    { importName = getLoadableGraphicFile(url); }
+    catch(exc)
+    { dump("Exception in getLoadableGraphicFile loading " + url.spec + ": " + exc + "\n"); importName = null; }
+    if (!importName || !importName.length)
     {
-      var importName;
-      try
-      { importName = getLoadableGraphicFile(url); }
-      catch(exc)
-      { dump("Exception in getLoadableGraphicFile loading " + url.spec + ": " + exc + "\n"); importName = null; }
-      if (!importName || !importName.length)
-      {
-        displayImportErrorMessage(fileName)
-        fileName = "";
-      }
-      else
-        fileName = importName;
+      displayImportErrorMessage(fileName)
+      fileName = "";
     }
     else
-    {
-    // Always try to relativize local file URLs
-      if (gHaveDocumentUrl)
-        fileName = msiMakeRelativeUrl(fileName);
-    }
+      fileName = importName;
+//    }
+//    else
+//    {
+  // Try to relativize local file URLs if appropriate
+    if (gHaveDocumentUrl && (gDialog.isImport || gDialog.relativeURL))
+      fileName = makeImagePathRelative(fileName);
+//      fileName = msiMakeRelativeUrl(fileName, gEditorElement);
+//    }
 
     gDialog.srcInput.value = fileName;
 
@@ -897,6 +1095,7 @@ function chooseFile()
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
 }
+
 
 function getLoadableGraphicFile(inputURL)
 {
@@ -915,8 +1114,10 @@ function getLoadableGraphicFile(inputURL)
   if (extension)  //if not, should we just do the copy and hope for the best? Or forget it?
   {
     var nNative = nativeGraphicTypes.indexOf(extension.toLowerCase());
-    if (nNative < 0)
+    if ((nNative < 0) && !gVideo)
     {
+      forceIsImport(true);
+      gDialog.importRadioGroup.disabled = true;  //Converted files must be "imported"
       importFiles = getGraphicsImportTargets(file, "import");
       if (importFiles.length)
       {
@@ -924,31 +1125,26 @@ function getLoadableGraphicFile(inputURL)
         bDoImport = true;
       }
     }
-    else //ordinary import
+    else if (gDialog.isImport) // copy the file into the graphics directory
     {
-      fileName = "graphics/"+file.leafName;
-      if (dir.path != filedir.path) {
-        try
+      if (dir.path != filedir.path)
+      {
+        var newFile = makeInternalCopy(file, dir);
+        if (newFile)
         {
-          file.permissions = 0755;
-          importFiles.push( dir.clone() );
-          importFiles[0].append(file.leafName);
-          if (importFiles[0].exists())
-            importFiles[0].remove(false);
-          file.copyTo(dir,"");
-        }
-        catch(e)
-        {
-          dump("exception: e="+e.msg);
+          importFiles.push( newFile );
+          fileName = newFile.path;
         }
       }
       isSVGFile = /\.svg$/.test(fileName);
     }
+    else
+      fileName = file.path;
     if (bNeedTypeset)
     {
       if (typesetGraphicTypes.indexOf(extension.toLowerCase()) < 0)  //Need file in LaTeX-friendly format
       {
-        var bCanUseImport = false;
+        var bCanUseImport = gVideo;  //if this is a video file, we don't consider converting it, otherwise check
         for (var kk = 0; !bCanUseImport && (kk < importFiles.length); ++kk)
         {
           var impExtension = getExtension(importFiles[kk].leafName).toLowerCase();
@@ -969,6 +1165,53 @@ function getLoadableGraphicFile(inputURL)
       doGraphicsImportToFile(file, typesetFiles[typesetFiles.length - 1], "tex");
   }
   return fileName;
+}
+
+function makeInternalCopy(file, dir)
+{
+  var fileName = "graphics/"+file.leafName;
+  var importFile;
+  try
+  {
+    file.permissions = 0755;
+    importFile = dir.clone();
+    importFile.append(file.leafName);
+    if (importFile.exists())
+      importFile.remove(false);
+    file.copyTo(dir,"");
+  }
+  catch(e)
+  {
+    dump("exception: e="+e.msg);
+  }
+  return importFile;
+}
+
+function checkSourceAndImportSetting(src)
+{
+  try
+  {
+    var srcUrl = encodeURI(gOriginalSrcUrl);
+    if (gDialog.isImport)
+    {
+      var dir = getDocumentGraphicsDir();
+      var targFile = dir.clone();
+      targFile.append(GetFilename(srcUrl));
+      if (!targFile.exists())
+      {
+        var origSrc = msiURIFromString(encodeURI(srcUrl));
+        var origSrcFile = msiFileFromFileURL(origSrc);
+        targFile = makeInternalCopy(origSrcFile, dir);
+        var targFileUrl = msiFileURLFromFile(targFile);
+        src = msiMakeRelativeUrl(targFileUrl.spec, gEditorElement);
+      }
+    }
+    else if (!gDialog.relativeURL)  //if it isn't relative, we need to be using the URL form rather than the file form
+    {
+      src = encodeURI(gOriginalSrcUrl);
+    }
+  } catch(ex) {dump("Exception in msiEdImageProps, checkSourceAndImportSettings: " + ex + "\n");}
+  return src;
 }
 
 var importTimerHandler =
@@ -1650,7 +1893,13 @@ function doGraphicsImportToFile(inputFile, outputFile, mode)
 
 function SetImport(bSet)
 {
-  gDialog.import = bSet;
+  gDialog.isImport = bSet;
+}
+
+function forceIsImport(bImport)
+{
+  gDialog.isImport = bImport; 
+  document.getElementById( "importRefRadioGroup").selectedIndex = (bImport ? 0 : 1);
 }
 
 function PreviewImageLoaded()
@@ -1660,6 +1909,8 @@ function PreviewImageLoaded()
 //    dump("In PreviewImageLoaded! New offset size is [" + gDialog.PreviewImage.offsetWidth + "," + gDialog.PreviewImage.offsetHeight + "]\n");
 //    dump("  Existing actual size is [" + gActualWidth + "," + gActualHeight + "]\n");
 //    dump("  Current contents of size fields are [" + frameTabDlg.widthInput.value + "," + frameTabDlg.heightInput.value + "]\n");
+    if (gVideo)
+      dump("PreviewImageLoaded reached for video file!\n");
     // Image loading has completed -- we can get actual width
     var bReset = false;
     if (gDialog.PreviewImage.offsetWidth && (gActualWidth != gDialog.PreviewImage.offsetWidth))
@@ -1741,6 +1992,14 @@ function PreviewImageLoaded()
   }
 }
 
+function isVideoSource(srcFile)
+{
+  var extension = getExtension(imageSrc);
+  if (videoTypes.indexOf(extension) >= 0)
+    return true;
+  return false;
+}
+
 function LoadPreviewImage()
 {
   if (!gPreviewImageNeeded || gIsGoingAway)
@@ -1784,17 +2043,33 @@ function LoadPreviewImage()
   if (gDialog.ImageHolder.firstChild)
     gDialog.ImageHolder.removeChild(gDialog.ImageHolder.firstChild);
     
-  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "html:object");
+  var prevNodeName = "html:object";
+  if (gVideo)
+    prevNodeName = "html:embed";
+  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", prevNodeName);
   if (gDialog.PreviewImage)
   {
     // set the src before appending to the document -- see bug 198435 for why
     // this is needed.
+    var eventStr = "load";
+//    if (gVideo)
+//      eventStr = "qt_load";  //really, this is just for QuickTime videos
     gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
-    gDialog.PreviewImage.data = imageSrc;
+    if (gVideo)
+      gDialog.PreviewImage.src = imageSrc;
+    else
+      gDialog.PreviewImage.data = imageSrc;
     var extension = getExtension(imageSrc);
     if (extension == "pdf")
       readSizeFromPDFFile(imageSrc);
     adjustObjectForFileType(gDialog.PreviewImage, extension);
+    if (gVideo)
+    {
+      gDialog.PreviewImage.setAttribute("controller", "false");
+      gDialog.PreviewImage.setAttribute("showlogo", "true");
+      gDialog.PreviewImage.setAttribute("autoplay", "false");
+      gDialog.PreviewImage.setAttribute("postdomevents", "true");
+    }
     gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
     gPreviewImageNeeded = false;
   }
@@ -1805,13 +2080,24 @@ var pdfSetupStr = "#toolbar=0&statusbar=0&navpanes=0";
 
 function adjustObjectForFileType(imageNode, extension)
 {
-  switch(extension.toLowerCase())
+  var ext = extension.toLowerCase();
+  switch(ext)
   {
     case "pdf":
       var theSrc = getSourceLocationFromElement(imageNode);
       if (theSrc.indexOf(pdfSetupStr) < 0)
         imageNode.setAttribute("data", theSrc + pdfSetupStr);
     break;
+    default:
+    break;
+  }
+  if (gVideo)
+  {
+    msiEditorEnsureAttributeOrParam(imageNode, "scale", "aspect", null);
+    var mimeService = Components.classes["@mozilla.org/mime;1"].getService(Components.interfaces.nsIMIMEService);
+    var mimeType = mimeService.getTypeFromExtension(ext);
+    if (mimeType && (mimeType.length > 0))
+      imageNode.setAttribute("type", mimeType);
   }
 }
 
@@ -2087,6 +2373,18 @@ function shouldShowErrorMessage()
   return (!gErrorMessageShown && !importTimerHandler.errorMessageShown());
 }
 
+function activateVideoStartControls(checkbox)
+{
+  var bEnable = !checkbox.checked;
+  enableControlsByID(vidStartTimeControlIds, bEnable);
+}
+
+function activateVideoEndControls(checkbox)
+{
+  var bEnable = !checkbox.checked;
+  enableControlsByID(vidEndTimeControlIds, bEnable);
+}
+
 function displayImportErrorMessage(fileName)
 {
   if (!shouldShowErrorMessage())
@@ -2155,7 +2453,10 @@ function ValidateImage()
   // We must convert to "file:///" or "http://" format else image doesn't load!
 //  dump("2\n");
   var src = TrimString(gDialog.srcInput.value);
+  src = checkSourceAndImportSetting(src, gDialog.isImport);
+
   globalImage.setAttribute("src", src);
+  globalImage.setAttribute("data", src);
 
 //  var title = TrimString(gDialog.titleInput.value);
 //  if (title)
@@ -2213,7 +2514,7 @@ function ValidateImage()
 
   // Remove existing width and height only if source changed
   //  and we couldn't obtain actual dimensions
-  var srcChanged = (src != gOriginalSrc);
+  var srcChanged = (src != gInitialSrc);
   if (width)
     globalImage.setAttribute("width", width);
   else if (srcChanged)
@@ -2310,6 +2611,7 @@ function onAccept()
   gIsGoingAway = true;
   importTimerHandler.stopLoading();
 
+  gDialog.relativeURL       = document.getElementById( "makeRelativeCheckbox" ).checked;  //check this in case it's changed
   gDoAltTextError = true;
 //  dump("**************************************************************************\n");
 //  dump("in onAccept\n");
@@ -2321,7 +2623,8 @@ function onAccept()
     editor.beginTransaction();
     try
     {
-      var tagname="object";
+      var tagname = gVideo ? "embed" : "object";
+//      var tagname = "object";
 //      var frameElement = null;
       gCaptionData.m_captionStr = getCaptionEditContents();
       var bHasCaption = (gCaptionData.m_captionStr && gCaptionData.m_captionStr.length);
@@ -2405,13 +2708,27 @@ function onAccept()
 //      dump("In msiEdImageProps.onAccept(), oldImage is [" + ((imageElement == oldImage) ? "same as" : "different from") + "] one in document.\n");
       syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
     
-      globalImage.setAttribute("data",gDialog.srcInput.value);
-      var extension = getExtension(gDialog.srcInput.value);
+//      globalImage.setAttribute("data",gDialog.srcInput.value);  //This happens correctly in ValidateImage(); don't repeat here
+      var extension = getExtension(gDialog.srcInput.value).toLowerCase();
       adjustObjectForFileType(globalImage, extension);
-      msiEditorEnsureElementAttribute(globalImage, "req", "graphicx", null);
-      msiEditorEnsureElementAttribute(globalImage, "naturalWidth", String(frameUnitHandler.getValueOf(gConstrainWidth, "px")), null);
-      msiEditorEnsureElementAttribute(globalImage, "naturalHeight", String(frameUnitHandler.getValueOf(gConstrainHeight, "px")), null);
-      
+
+      msiEnsureElementPackage(globalImage,"graphics",null);
+      if (gVideo)
+      {
+        setVideoSettingsToElement(globalImage, null);
+        msiEnsureElementPackage(globalImage,"hyperref",null);
+        msiEnsureElementPackage(globalImage,"movie15",null);
+      }
+
+      if (gConstrainWidth > 0)
+        msiEditorEnsureElementAttribute(globalImage, "naturalWidth", String(frameUnitHandler.getValueOf(gConstrainWidth, "px")), null);
+      if (gConstrainHeight > 0)
+        msiEditorEnsureElementAttribute(globalImage, "naturalHeight", String(frameUnitHandler.getValueOf(gConstrainHeight, "px")), null);
+
+      msiEditorEnsureElementAttribute(globalImage, "originalSrcUrl", gOriginalSrcUrl, null);
+      if (!gDialog.isImport)
+        msiEditorEnsureElementAttribute(globalImage, "byReference", "true", null);
+          
       setFrameAttributes(globalElement, globalImage, null);
 //      setFrameAttributes(wrapperElement, imageElement);
 //      msiEditorEnsureElementAttribute(wrapperElement, "captionLoc", capAttrStr, editor);  //Now taken care of above
@@ -2419,12 +2736,26 @@ function onAccept()
       var theKey = gDialog.keyInput.value;
       if (!theKey.length)
         theKey = null;
-      msiEditorEnsureElementAttribute(globalImage, "key", theKey, editor);
-      msiEditorEnsureElementAttribute(globalImage, "id", theKey, editor);
+      msiEditorEnsureElementAttribute(globalImage, "key", theKey, null);
+      msiEditorEnsureElementAttribute(globalImage, "id", theKey, null);
       msiSetGraphicFrameAttrsFromGraphic(globalImage, null);  //unless we first end the transaction, this seems to have trouble!
 
-      var imgAttrList = ["src","data","title","alt","req","imageWidth","imageHeight","naturalWidth","naturalHeight","key","units","rotation","msi_resize","borderw","padding","border-color","background-color","style"];
+      var imgAttrList = ["src","data","title","alt","req","imageWidth","imageHeight","naturalWidth","naturalHeight","key","units","rotation","msi_resize","borderw","padding","border-color","background-color","style","type","byReference","originalSrcUrl"];
+      var imgParamList = ["scale","autoplay","controller","showlogo","starttime","endtime"];
+      if (gVideo)
+      {
+        //msiEditorEnsureElementAttribute(globalImage, "autoplay", "false", null);
+        //msiEditorEnsureElementAttribute(globalImage, "controller", "true", null);
+        msiEditorEnsureAttributeOrParam(globalImage, "showlogo", "false", null);
+        msiEditorEnsureAttributeOrParam(globalImage, "scale", "aspect", null);
+        msiEditorEnsureElementAttribute(globalImage, "isVideo", "true", null);
+        imgAttrList = imgAttrList.concat(["scale","autoplay","controller","showlogo","starttime","endtime","isVideo"]);
+      }
+
       msiCopySpecifiedElementAttributes(imageElement, globalImage, editor, imgAttrList);
+      if (msiGetBaseNodeName(globalImage) == "object")
+        msiCopySpecifiedObjElementParams(imageElement, globalImage, imgParamList, editor);
+
       var frameAttrList = ["title","req","width","height","units","sidemargin","topmargin","overhang","pos","textalignment","inlineOffset","placeLocation","placement","style"];
       msiCopySpecifiedElementAttributes(wrapperElement, globalElement, editor, frameAttrList);
     }
@@ -2483,6 +2814,27 @@ function getGraphicsImportFilterString()
     if (newType.length > 0)
     {
       newType = "*." + newType;
+      if (typeArray.indexOf(newType) < 0)
+        typeArray.push(newType);
+    }
+  }
+  return typeArray.join("; ");
+}
+
+function getVideoImportFilterString()
+{
+  var mimeService = Components.classes["@mozilla.org/mime;1"].getService(Components.interfaces.nsIMIMEService);
+  var mimeType;
+  var typeArray = [];
+  var newType;
+  for (var ii = 0; ii < videoTypes.length; ++ii)
+  {
+    try {mimeType = mimeService.getTypeFromExtension(videoTypes[ii]);}
+    catch(exc) {mimeType = ""; dump("Exception calling nsIMIMEService.getTypeFromExtension for extension " + videoTypes[ii] + ": " + exc + "\n");}
+    if (mimeType && (mimeType.length > 0) && (mimeType != "text/plain"))
+    {
+      //Now look to see if we have a registered plugin that can handle this mimetype
+      newType = "*." + videoTypes[ii];
       if (typeArray.indexOf(newType) < 0)
         typeArray.push(newType);
     }
