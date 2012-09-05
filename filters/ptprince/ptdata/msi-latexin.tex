@@ -4832,28 +4832,60 @@
 
 \def\defname#1{\expandafter\def\csname #1\endcsname}
 
+\newif\if@inspec
+\@inspecfalse
+
 \def\@process@idx@ent{%
      \ifnum\@idxlev=0\relax
-       \expandafter\gdef\expandafter\@idxentA\expandafter{\the\@msi@toks}
+       \if@inspec
+         \expandafter\gdef\expandafter\@idxspecA\expandafter{\the\@msi@toks}
+       \else
+         \expandafter\gdef\expandafter\@idxentA\expandafter{\the\@msi@toks} 
+       \fi
        \advance\@idxlev by 1\relax
        \@msi@toks={}%
      \else\ifnum\@idxlev=1
-       \expandafter\gdef\expandafter\@idxentB\expandafter{\the\@msi@toks}
+       \if@inspec
+         \expandafter\gdef\expandafter\@idxspecB\expandafter{\the\@msi@toks}
+       \else
+         \expandafter\gdef\expandafter\@idxentB\expandafter{\the\@msi@toks}%
+       \fi
        \advance\@idxlev by 1\relax
        \@msi@toks={}%
      \else\ifnum\@idxlev=2\relax
-       \expandafter\gdef\expandafter\@idxentC\expandafter{\the\@msi@toks}
+       \if@inspec
+         \expandafter\gdef\expandafter\@idxspecC\expandafter{\the\@msi@toks}
+       \else
+         \expandafter\gdef\expandafter\@idxentC\expandafter{\the\@msi@toks}%
+       \fi
        \advance\@idxlev by 1\relax
        \@msi@toks={}%
      \fi\fi\fi
 }
 
+\def\@start@spec{%
+     \@inspectrue
+     \ifnum\@idxlev=0\relax       
+       \expandafter\gdef\expandafter\@idxentA\expandafter{\the\@msi@toks} 
+       \@msi@toks={}%
+       \gdef\@idxspecA{}%
+     \else\ifnum\@idxlev=1
+       \expandafter\gdef\expandafter\@idxentB\expandafter{\the\@msi@toks}
+       \@msi@toks={}%
+     \else\ifnum\@idxlev=2\relax
+       \expandafter\gdef\expandafter\@idxentC\expandafter{\the\@msi@toks}
+       \@msi@toks={}%
+     \fi\fi\fi
+}
+
+
 \def\@idx@#1{%
    \if#1!
-     \@process@idx@ent 
+     \@process@idx@ent
+     \@inspecfalse
    \else\if#1@
-     ((AT))
-   \else
+     \@start@spec
+   \else 
      \appendtoks{#1}%
    \fi\fi}
 
@@ -4865,6 +4897,13 @@
 \def\@stripat#1@{#1}
 
 \def\index#1{%
+  \@inspecfalse
+  \gdef\@idxentA{}%
+  \gdef\@idxspecA{}%
+  \gdef\@idxentB{}%
+  \gdef\@idxspecB{}%
+  \gdef\@idxentC{}%
+  \gdef\@idxspecC{}%
   \msihmode
   \msi@maptoks{#1}{\@idx@}%
   \ifx\@msi@toks\@empty
@@ -4872,54 +4911,46 @@
     \@process@idx@ent
   \fi
   \temptoksa={}%
-  \edef\@tmp{\expandafter\@split\@idxentA @\@msi@end}%
-  \edef\@tmpEnt{\expandafter\@first\@tmp}
-  \edef\@tmpSpcPri{\expandafter\@stripat\expandafter\@second\@tmp}
-  \ifx\@tmpEnt\@empty
+  \ifx\@idxentA\@empty
   \else
-     \msitag{<indexitem req="varioref" pri="}\@tmpEnt\msitag{"}%
-     \ifx\@tmpSpcPri\@empty
+     \msitag{<indexitem req="varioref" pri="}\@idxentA\msitag{"}%
+     \ifx\@idxspecA\@empty
      \else
-        \expandafter\temptoksa\expandafter{\the\temptoksa p}
+        \expandafter\temptoksa\expandafter{\the\temptoksa p}%
      \fi
-     \edef\@tmpA{\expandafter\@split\@idxentB @\@msi@end}%
-     \edef\@tmpEnt{\expandafter\@first\@tmpA}
-     \edef\@tmpSpcSec{\expandafter\@second\@tmpA}
-     \ifx\@tmpEnt\@empty
+     \ifx\@idxentB\@empty
      \else
-       \msitag{ sec="}\@tmpEnt\msitag{"}%
-       \ifx\@tmpSpcSec\@empty
+       \msitag{ sec="}\@idxentB\msitag{"}%
+       \ifx\@idxspecB\@empty
        \else
           \expandafter\temptoksa\expandafter{\the\temptoksa s}
        \fi
-       \edef\@tmpA{\expandafter\@split\@idxentC @\@msi@end}%
-       \edef\@tmpEnt{\expandafter\@first\@tmpA}
-       \edef\@tmpSpcTer{\expandafter\@second\@tmpA}%
-       \ifx\@tmpEnt\@empty
+       \ifx\@idxentC\@empty
        \else
-         \msitag{ ter="}\@tmpEnt\msitag{"}%
-         \ifx\@tmpSpcTer\@empty
+         \msitag{ ter="}\@idxentC\msitag{"}%
+         \ifx\@idxspecC\@empty
          \else
             \expandafter\temptoksa\expandafter{\the\temptoksa t}
          \fi
        \fi
      \fi
-     \ifx\temptoksa\@emptytoks
+     \edef\@tempa{\the\temptoksa}
+     \ifx\@tempa\@emptytoks
      \else    
        \msitag{ specAppearance="}\the\temptoksa\msitag{"}%
      \fi
      \msitag{>}%
-     \ifx\@tmpSpcPri\@empty
+     \ifx\@idxspecA\@empty
      \else
-        \msitag{<prispec>}\@tmpSpcPri\msitag{</prispec>}
+        \msitag{<prispec>}\@idxspecA\msitag{</prispec>}%
      \fi
-     \ifx\@tmpSpcSec\@empty
+     \ifx\@idxspecB\@empty
      \else
-        \msitag{<secspec>}\@tmpSpcSec\msitag{</secspec>}
+        \msitag{<secspec>}\@idxspecB\msitag{</secspec>}%
      \fi
-     \ifx\@tmpSpcTer\@empty
+     \ifx\@idxspecC\@empty
      \else
-        \msitag{<terspec>}\@tmpSpcTer\msitag{</terspec>}
+        \msitag{<terspec>}\@idxspecC\msitag{</terspec>}%
      \fi
      \msitag{</indexitem>}%
   \fi
