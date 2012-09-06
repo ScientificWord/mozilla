@@ -3769,11 +3769,11 @@
 
 %%% From File: ltboxes.dtx
 \message{boxes,}
-\def\makebox{%
-  \leavevmode
-  \@ifnextchar(%)
-    \@makepicbox
-    {\@ifnextchar[\@makebox\mbox}}
+%% jcs\def\makebox{%
+%% jcs  \leavevmode
+%% jcs  \@ifnextchar(%)
+%% jcs    \@makepicbox
+%% jcs    {\@ifnextchar[{\@makebox}{\mbox}}}
 
 \long\def\mbox#1{%
   \ifmmode
@@ -3783,8 +3783,11 @@
   \fi
 }
 
+
 \def\@makebox[#1]{%
   \@ifnextchar [{\@imakebox[#1]}{\@imakebox[#1][c]}}
+
+
 \long\def\@begin@tempboxa#1#2{%
    \begingroup
      \setbox\@tempboxa#1{\color@begingroup#2\color@endgroup}%
@@ -3799,13 +3802,10 @@
 \def\bm@l{\unhbox\@tempboxa\hss}\let\bm@t\bm@l
 \def\bm@r{\hss\unhbox\@tempboxa}\let\bm@b\bm@r
 \def\bm@s{\unhbox\@tempboxa}
-\long\def\@imakebox[#1][#2]#3{%
-  \@begin@tempboxa\hbox{#3}%
-    \setlength\@tempdima{#1}%       support calc
-    \hb@xt@\@tempdima{\csname bm@#2\endcsname}%
-  \@end@tempboxa}
+
 \def\@makepicbox(#1,#2){%
   \@ifnextchar[{\@imakepicbox(#1,#2)}{\@imakepicbox(#1,#2)[]}}
+
 \long\def\@imakepicbox(#1,#2)[#3]#4{%
   \vbox to#2\unitlength
    {\let\mb@b\vss \let\mb@l\hss\let\mb@r\hss
@@ -4880,10 +4880,10 @@
 
 
 \def\@idx@#1{%
-   \if#1!
+   \ifx#1!
      \@process@idx@ent
      \@inspecfalse
-   \else\if#1@
+   \else\ifx#1@
      \@start@spec
    \else 
      \appendtoks{#1}%
