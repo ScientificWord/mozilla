@@ -829,8 +829,21 @@
 
 
 \def\MSISplitLikeEnvironment#1{%
-  \@namedef{msi@begin@#1}{\bgroup\ifmmode\else\msi@dollar=0\relax$$\fi\string\begin{#1}\catcode`\&=12}%
-  \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\fi\egroup}}
+  \@namedef{msi@begin@#1}{
+    \bgroup
+      \def\\{\char`\\\char`\\}%
+      \ifmmode
+      \else
+         \msi@dollar=0\relax$$
+      \fi
+      \string\begin{#1}\catcode`\&=12}%
+  \@namedef{msi@end@#1}{%
+      \string\end{#1}%
+      \ifmmode
+      \else
+         $$
+      \fi
+    \egroup}}
 
 
 
@@ -1366,18 +1379,36 @@
 
 \MSIMathQuote{\QABOVED} % special case? Why is this here?
 
-\def\text#1{%
-   \msitag{\msipassthru}%
-     \char`\{%
-     \msiopentag{bodyText}{<bodyText>}%
-     {#1}%
-     \msiclosetag{bodyText}{</bodyText>}%
-     %\msiclosetag{mml:text}{</mml:mtext>}%  
-     \char`\}}
+\newif\if@mathintext
+\@mathintextfalse 
+
+{\catcode`\$=\active
+ \gdef${%
+   \if@mathintext
+      \@mathintextfalse
+      \msitag{\msipassthru}%
+      \char`\{
+      \msiopentag{mtext}{<mtext>}
+   \else
+      \@mathintexttrue
+      \msiclosetag{mtext}{</mtext>}%
+      \char`\}%
+   \fi}
+}
+
+
+\def\text{\@mathintextfalse\catcode`\$=\active\@text}
+
+\def\@text#1{%
+  \msitag{\msipassthru}%
+  \char`\{%
+  \msiopentag{mtext}{<mtext>}%
+  \begingroup #1\endgroup%
+  \msiclosetag{mtext}{</mtext>}%
+  \char`\}
+  \catcode`\$=3\relax}
 
    
-
-
 \def\vspace{%
   \@ifnextchar*{\vspaceStar}{\vspaceB}}
 
@@ -1393,6 +1424,7 @@
      \msitag{<vspace dim="#1" type="customSpace"></vspace>}%
    \fi
 }
+
 
 
 
@@ -1482,11 +1514,19 @@
 %% Create TeX Buttons
 
 \def\MSITeXButton#1{%
-    \expandafter\def\csname#1\endcsname{
-       \msihmode
+    \expandafter\def\csname#1\endcsname{%
+       \ifmmode
+          \string\msipassthru\char`\{%}
+       \else
+          \msihmode 
+       \fi
        \msitag{<texb enc="1" name="}#1\msitag{">}%
-          <![CDATA[\expandafter\string\csname#1\endcsname]]>%
-       \msitag{</texb>}}}
+                <![CDATA[\expandafter\string\csname#1\endcsname]]>%
+       \msitag{</texb>}%
+       \ifmmode
+         \char`\}%}
+       \fi
+     }}
 
 
 
@@ -1561,9 +1601,6 @@
      \catcode`\(=1  % use parens for braces
      \catcode`\)=2
      \catcode`\\=12
-
- 
-
      |gdef|MSITeXButtonEnvironment#1(%
           |expandafter|gdef|csname msi@begin@#1|endcsname
              (|bgroup
