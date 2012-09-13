@@ -29,4 +29,5 @@ include $(topsrcdir)/config/rules.mk
 ifneq (,$(ICONS))
 libs:: $(ICONS)
 	$(INSTALL) $^ $(FINAL_TARGET)/chrome/icons/default
+	$(INSTALL) -R $(srcdir)/TCITeX/TeX/LaTeX/* $(FINAL_TARGET)/TCItex/tex/latex
 endif
