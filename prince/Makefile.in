@@ -8,7 +8,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 DIRS		= base samples res plugins helpfiles bin sidebar shells TeX dictionaries user  \
-	fastcursor modules Wrappers utilities \
+	fastcursor modules Wrappers utilities TCITeX\
 	$(NULL)
 
 PREF_JS_EXPORTS	= $(srcdir)/prince-prefs.js
