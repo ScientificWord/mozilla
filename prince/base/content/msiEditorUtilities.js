@@ -7183,7 +7183,7 @@ var msiBaseMathNameList =
       //The following should be reinstated as soon as it's implemented in the object.
     var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
     var bAdded = autosub.addEntry( aName, Components.interfaces.msiIAutosub.CONTEXT_MATHONLY, Components.interfaces.msiIAutosub.ACTION_EXECUTE,
-                      "insertMathname('" + aName + "')", "", "" );
+                      "insertMathname('" + aName + "', 'true')", "", "" );
     dump("autosub.addEntry returned " + (bAdded ? "true" : "false") + "\n.");
     this.bModifiedAutoSubs = true;
   },
