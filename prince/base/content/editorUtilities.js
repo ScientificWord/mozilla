@@ -39,7 +39,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 /**** NAMESPACES ****/
-const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+var XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
 // Each editor window must include this file
 // Variables  shared by all dialogs:
@@ -48,14 +48,14 @@ Components.utils.import("resource://app/modules/os.jsm");
 // Object to attach commonly-used widgets (all dialogs should use this)
 var gDialog = {};
 
-const kOutputEncodeBasicEntities = Components.interfaces.nsIDocumentEncoder.OutputEncodeBasicEntities;
-const kOutputEncodeHTMLEntities = Components.interfaces.nsIDocumentEncoder.OutputEncodeHTMLEntities;
-const kOutputEncodeLatin1Entities = Components.interfaces.nsIDocumentEncoder.OutputEncodeLatin1Entities;
-const kOutputEncodeW3CEntities = Components.interfaces.nsIDocumentEncoder.OutputEncodeW3CEntities;
-const kOutputFormatted = Components.interfaces.nsIDocumentEncoder.OutputFormatted;
-const kOutputLFLineBreak = Components.interfaces.nsIDocumentEncoder.OutputLFLineBreak;
-const kOutputSelectionOnly = Components.interfaces.nsIDocumentEncoder.OutputSelectionOnly;
-const kOutputWrap = Components.interfaces.nsIDocumentEncoder.OutputWrap;
+var kOutputEncodeBasicEntities = Components.interfaces.nsIDocumentEncoder.OutputEncodeBasicEntities;
+var kOutputEncodeHTMLEntities = Components.interfaces.nsIDocumentEncoder.OutputEncodeHTMLEntities;
+var kOutputEncodeLatin1Entities = Components.interfaces.nsIDocumentEncoder.OutputEncodeLatin1Entities;
+var kOutputEncodeW3CEntities = Components.interfaces.nsIDocumentEncoder.OutputEncodeW3CEntities;
+var kOutputFormatted = Components.interfaces.nsIDocumentEncoder.OutputFormatted;
+var kOutputLFLineBreak = Components.interfaces.nsIDocumentEncoder.OutputLFLineBreak;
+var kOutputSelectionOnly = Components.interfaces.nsIDocumentEncoder.OutputSelectionOnly;
+var kOutputWrap = Components.interfaces.nsIDocumentEncoder.OutputWrap;
 
 var gStringBundle;
 var gIOService;
@@ -66,8 +66,8 @@ var gFilePickerDirectory;
 
 
 
-const kWebComposerWindowID = "editorWindow";
-const kMailComposerWindowID = "msgcomposeWindow";
+var kWebComposerWindowID = "editorWindow";
+var kMailComposerWindowID = "msgcomposeWindow";
 
 var gIsHTMLEditor;
 /************* Message dialogs ***************/
@@ -78,8 +78,7 @@ var gIsHTMLEditor;
  * @param {string} message      Text for the body
  * @param {xul window} parentWindow Parent of the alert window
  */
-function AlertWithTitle(title, message, parentWindow)
-{
+function AlertWithTitle(title, message, parentWindow) {
   if (!parentWindow)
     parentWindow = window;
 
@@ -156,12 +155,12 @@ function TrimStringRight(string)
 function TrimString(string)
 {
   if (!string) return "";
-  return string.replace(/(^\s+)|(\s+$)/g, '')
+  return string.replace(/(^\s+)|(\s+$)/g, '');
 }
 
 function IsWhitespace(string)
 {
-  return /^\s/.test(string);
+  return (/^\s/).test(string);
 }
 
 function TruncateStringAtWordEnd(string, maxLength, addEllipses)
@@ -178,7 +177,7 @@ function TruncateStringAtWordEnd(string, maxLength, addEllipses)
   // We need to truncate the string to maxLength or fewer chars
   if (addEllipses)
     maxLength -= 3;
-  string = string.replace(RegExp("(.{0," + maxLength + "})\\s.*"), "$1")
+  string = string.replace(RegExp("(.{0," + maxLength + "})\\s.*"), "$1");
 
   if (string.length > maxLength)
     string = string.slice(0, maxLength);
@@ -193,7 +192,7 @@ function TruncateStringAtWordEnd(string, maxLength, addEllipses)
 //       Use charReplace = "_" when you don't want spaces (like in a URL)
 function ReplaceWhitespace(string, charReplace)
 {
-  return string.replace(/(^\s+)|(\s+$)/g,'').replace(/\s+/g,charReplace)
+  return string.replace(/(^\s+)|(\s+$)/g,'').replace(/\s+/g,charReplace);
 }
 
 // Replace whitespace with "_" and allow only HTML CDATA
@@ -215,11 +214,11 @@ function GetSelectionAsText()
 
 
 /************* Get Current Editor and associated interfaces or info ***************/
-const nsIPlaintextEditor = Components.interfaces.nsIPlaintextEditor;
-const nsIHTMLEditor = Components.interfaces.nsIHTMLEditor;
-const nsITableEditor = Components.interfaces.nsITableEditor;
-const nsIEditorStyleSheets = Components.interfaces.nsIEditorStyleSheets;
-const nsIEditingSession = Components.interfaces.nsIEditingSession;
+var nsIPlaintextEditor = Components.interfaces.nsIPlaintextEditor;
+var nsIHTMLEditor = Components.interfaces.nsIHTMLEditor;
+var nsITableEditor = Components.interfaces.nsITableEditor;
+var nsIEditorStyleSheets = Components.interfaces.nsIEditorStyleSheets;
+var nsIEditingSession = Components.interfaces.nsIEditingSession;
 
 function GetCurrentEditor()
 {
@@ -229,15 +228,16 @@ function GetCurrentEditor()
 
   // For dialogs: Search up parent chain to find top window with editor
   var editor;
+  var x;
   try {
     var editorElement = GetCurrentEditorElement();
     editor = editorElement.getEditor(editorElement.contentWindow);
 
     // Do QIs now so editor users won't have to figure out which interface to use
     // Using "instanceof" does the QI for us.
-    editor instanceof Components.interfaces.nsIPlaintextEditor;
-    editor instanceof Components.interfaces.nsIHTMLEditor;
-  } catch (e) { dump (e)+"\n"; }
+  x = editor instanceof Components.interfaces.nsIPlaintextEditor;
+  x = editor instanceof Components.interfaces.nsIHTMLEditor;
+  } catch (e) { dump (e+"\n"); }
 
   return editor;
 }
@@ -271,7 +271,7 @@ function GetCurrentCommandManager()
 {
   try {
     return GetCurrentEditorElement().commandManager;
-  } catch (e) { dump (e)+"\n"; }
+  } catch (e) { dump (e.message+"\n"); }
 
   return null;
 }
@@ -280,7 +280,7 @@ function GetCurrentEditorType()
 {
   try {
     return GetCurrentEditorElement().editortype;
-  } catch (e) { dump (e)+"\n"; }
+  } catch (e) { dump (e.message +"\n"); }
 
   return "";
 }
@@ -300,7 +300,7 @@ function IsHTMLEditor()
 
       case "text":
       case "textmail":
-        return false
+        return false;
 
       default:
         dump("INVALID EDITOR TYPE: " + editortype + "\n");
@@ -642,9 +642,7 @@ function GetDefaultBrowserColors()
 
 function TextIsURI(selectedText)
 {
-  return selectedText && /^http:\/\/|^https:\/\/|^file:\/\/|\
-    ^ftp:\/\/|^about:|^mailto:|^news:|^snews:|^telnet:|^ldap:|\
-    ^ldaps:|^gopher:|^finger:|^javascript:/i.test(selectedText);
+  return selectedText && (/^http:\/\/|^https:\/\/|^file:\/\/|^ftp:\/\/|^about:|^mailto:|^news:|^snews:|^telnet:|^ldap:|^ldaps:|^gopher:|^finger:|^javascript:/i).test(selectedText);
 }
 
 function IsUrlAboutBlank(urlString)

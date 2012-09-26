@@ -16,29 +16,29 @@ var gOS = "";
 // a tracing utility
 function msidump(str, indent, clear)
 {
-	var pref = GetStringPref("swp.messagelogger");
-	var indentstring="";
-	var spaces="                 ";
-	if (pref === null || pref.length === 0) pref = "dump";
-	if (indent!== null && indent > 0)
-	  indentstring = spaces.substring(1,indent+indent);
-	switch (pref)
-	{
-		case "dump":
-			dump(indentstring+str+"\n");
-			break;
-		case "jsconsole":
-			var cons;
-		  cons = Components.classes['@mozilla.org/consoleservice;1']
-	            .getService(Components.interfaces.nsIConsoleService);
-			if (clear)
-				cons.reset();
-			cons.logStringMessage(indentstring+str);
-			break;
-		case "alert":
-			AlertWithTitle("Dump", str, null);
-			break;
-	}
+  var pref = GetStringPref("swp.messagelogger");
+  var indentstring="";
+  var spaces="                 ";
+  if (pref === null || pref.length === 0) pref = "dump";
+  if (indent!== null && indent > 0)
+    indentstring = spaces.substring(1,indent+indent);
+  switch (pref)
+  {
+    case "dump":
+      dump(indentstring+str+"\n");
+      break;
+    case "jsconsole":
+      var cons;
+      cons = Components.classes['@mozilla.org/consoleservice;1']
+              .getService(Components.interfaces.nsIConsoleService);
+      if (clear)
+        cons.reset();
+      cons.logStringMessage(indentstring+str);
+      break;
+    case "alert":
+      AlertWithTitle("Dump", str, null);
+      break;
+  }
 }
 
 // The following was added by BBM for diagnostic purposes. It should not be in the release version
@@ -47,7 +47,7 @@ function msidump(str, indent, clear)
 
 function dumpMath()
 {
-	msidump('',0,	true);
+  msidump('',0, true);
   var editorElement = getCurrentEditorElement();
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
@@ -56,28 +56,28 @@ function dumpMath()
   while (rootnode && rootnode.parentNode && i-- >0) rootnode= rootnode.parentNode;
 //  while (rootnode && rootnode.localName !== "math" && editor.tagListManager.getTagInClass("paratags",rootnode.localName,null)) rootnode = rootnode.parentNode;
 //  if (!rootnode)
-//  { 
+//  {
 //    msidump("Failed to find math or paragraph node\n");
 //    return;
 //  }
   try
   {
-		var sel = HTMLEditor.selection;
-	  var selNode = sel.anchorNode;
-	  var selOffset = sel.anchorOffset;
-	  var focNode = sel.focusNode;
-	  var focOffset = sel.focusOffset;
-	  var indent = 0;
-	  msidump(selNode.nodeName + " to " + focNode.nodeName+"\n",0);
-	  msidump("Selection:  selNode="+(selNode.nodeType === Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
-	  msidump("focusNode="+(focNode.nodeType === Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
-	  msidump("rootnode="+rootnode.nodeName+"\n",6);
-	  dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
-	}
-	catch(e)
-	{
-		finalThrow(commandFailureStrin("dumpMath"), e.message);
-	}
+    var sel = HTMLEditor.selection;
+    var selNode = sel.anchorNode;
+    var selOffset = sel.anchorOffset;
+    var focNode = sel.focusNode;
+    var focOffset = sel.focusOffset;
+    var indent = 0;
+    msidump(selNode.nodeName + " to " + focNode.nodeName+"\n",0);
+    msidump("Selection:  selNode="+(selNode.nodeType === Node.TEXT_NODE?"text":selNode.nodeName)+", offset="+selOffset+"\n",0);
+    msidump("focusNode="+(focNode.nodeType === Node.TEXT_NODE?"text":focNode.nodeName)+", offset="+focOffset+"\n",6);
+    msidump("rootnode="+rootnode.nodeName+"\n",6);
+    dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
+  }
+  catch(e)
+  {
+    finalThrow(commandFailureStrin("dumpMath"), e.message);
+  }
 }
 
 
@@ -90,22 +90,22 @@ function doIndent( k )
 function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent)
 {
 try{
-	
+
 //  msidump("dumpNodeMarkingSel, indent = "+indent+", node = "+node.nodeName+"\n");
   var len = node.childNodes.length;
   if (node.nodeType === Node.ELEMENT_NODE)
   {
     msidump("<"+node.nodeName+"> \n",indent);
     for (var i = 0; i < len; i++)
-    {    
-	    if (node===selnode && seloffset===i) 
-	    {
-	      msidump("<selection anchor>\n", indent);
-	    }
-	    if (node===focnode && focoffset===i) 
-	    {
-	      msidump("<selection focus>\n", indent);
-	    }
+    {
+      if (node===selnode && seloffset===i)
+      {
+        msidump("<selection anchor>\n", indent);
+      }
+      if (node===focnode && focoffset===i)
+      {
+        msidump("<selection focus>\n", indent);
+      }
       dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
     }
     msidump("</"+node.nodeName+">\n", indent);
@@ -113,45 +113,45 @@ try{
   else if (node.nodeType === Node.TEXT_NODE)
   {
     var offset1;
-		var offset2;
-		if (node === selnode && selnode === focnode)
-		{
-			offset1 = Math.min(seloffset, focoffset);
-			offset2 = Math.max(seloffset, focoffset);
-			msidump(node.nodeValue.slice(0, offset1)+"<selection " + (offset1===seloffset?"anchor":"focus")+">"+
-			  node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1===seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2))
-		}
-		else
-		{
-			if (node===selnode)
-	    {
-	      msidump(node.nodeValue.slice(0,seloffset)+"<selection anchor>"+node.nodeValue.slice(seloffset)+"\n",indent);
-	    }
-	    else {
-	      if (node===focnode)
-	      {
-	        msidump(node.nodeValue.slice(0,focoffset)+"<selection focus>"+node.nodeValue.slice(focoffset)+"\n",indent);
-	      }
-	      else {
-	        var s = node.nodeValue;
-	        var t = s.replace(/^\s*/,'');
-	        var r = t.replace(/\s*$/,'');
-	        if (r.length>0)
-	        {
-		          msidump(r+'\n', indent);
-	        }
-	        else msidump("whitespace node\n");
-	      }
-			}
-    }  
+    var offset2;
+    if (node === selnode && selnode === focnode)
+    {
+      offset1 = Math.min(seloffset, focoffset);
+      offset2 = Math.max(seloffset, focoffset);
+      msidump(node.nodeValue.slice(0, offset1)+"<selection " + (offset1===seloffset?"anchor":"focus")+">"+
+        node.nodeValue.slice(offset1,offset2) + "<selection "+(offset1===seloffset?"focus":"anchor")+">"+node.nodeValue.slice(offset2))
+    }
+    else
+    {
+      if (node===selnode)
+      {
+        msidump(node.nodeValue.slice(0,seloffset)+"<selection anchor>"+node.nodeValue.slice(seloffset)+"\n",indent);
+      }
+      else {
+        if (node===focnode)
+        {
+          msidump(node.nodeValue.slice(0,focoffset)+"<selection focus>"+node.nodeValue.slice(focoffset)+"\n",indent);
+        }
+        else {
+          var s = node.nodeValue;
+          var t = s.replace(/^\s*/,'');
+          var r = t.replace(/\s*$/,'');
+          if (r.length>0)
+          {
+              msidump(r+'\n', indent);
+          }
+          else msidump("whitespace node\n");
+        }
+      }
+    }
   }
 }
 catch(e)
 {
-	finalThrow("dumpNodeMarkingSel failed", e.message);
+  finalThrow("dumpNodeMarkingSel failed", e.message);
 }
-}   
-  
+}
+
 
 function AlertWithTitle(title, message, parentWindow)
 {
@@ -173,17 +173,17 @@ function AlertWithTitle(title, message, parentWindow)
 
 function finalThrow(message, moremessage)
 {
-	var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]  
-	                        .getService(Components.interfaces.nsIPromptService);  
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                          .getService(Components.interfaces.nsIPromptService);
 
-	var flags = prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING  +  
-	            prompts.BUTTON_POS_2 * prompts.BUTTON_TITLE_CANCEL +
-							33554432;
-	var checkBool = {};
-  var button = prompts.confirmEx(null, GetString("commandfailed"), message,  
-	                               flags, "", GetString("moreinfo"), "", null, checkBool );  
-	if (button===1)
-	  prompts.alert(null, GetString("moredetails"), moremessage);
+  var flags = prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_IS_STRING  +
+              prompts.BUTTON_POS_2 * prompts.BUTTON_TITLE_CANCEL +
+              33554432;
+  var checkBool = {};
+  var button = prompts.confirmEx(null, GetString("commandfailed"), message,
+                                 flags, "", GetString("moreinfo"), "", null, checkBool );
+  if (button===1)
+    prompts.alert(null, GetString("moredetails"), moremessage);
 }
 
 function cmdFailString(command) {
@@ -210,11 +210,11 @@ function GetString(name)
   {
     try {
       var strBundleService =
-          Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
-      strBundleService = 
+          Components.classes["@mozilla.org/intl/stringbundle;1"].getService();
+      strBundleService =
           strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
 
-      gStringBundle = strBundleService.createBundle("chrome://prince/locale/editor.properties"); 
+      gStringBundle = strBundleService.createBundle("chrome://prince/locale/editor.properties");
 
     } catch (e) {
       throw new MsiException("Unable to load editor.properties string bundle", e);
@@ -236,7 +236,7 @@ function TrimStringLeft(string)
   if(!string) return "";
   return string.replace(/^\s+/, "");
 }
-
+Tri
 function TrimStringRight(string)
 {
   if (!string) return "";
@@ -310,18 +310,18 @@ function msiGetSelectionAsText(editorElement)
 
 function hexcolor(rgbcolor)
 {
-	var regexp = /\s*rgb\s*\(\s*(\d+)[^\d]*(\d+)[^\d]*(\d+)/ ;
-	var arr = regexp.exec(rgbcolor);
+  var regexp = /\s*rgb\s*\(\s*(\d+)[^\d]*(\d+)[^\d]*(\d+)/ ;
+  var arr = regexp.exec(rgbcolor);
   if (!arr || (arr.length < 4)) // color was given a 'black' or 'blue'
-	  return textColorToHex(rgbcolor);
+    return textColorToHex(rgbcolor);
 
-	var r = parseFloat(arr[1]).toString(16);
-	if (r.length<2) r = "0"+r;
-	var g = parseFloat(arr[2]).toString(16);
-	if (g.length<2) g = "0"+g;
-	var b = parseFloat(arr[3]).toString(16);
-	if (b.length<2) b = "0"+b;
-	return "#"+ r + g + b;
+  var r = parseFloat(arr[1]).toString(16);
+  if (r.length<2) r = "0"+r;
+  var g = parseFloat(arr[2]).toString(16);
+  if (g.length<2) g = "0"+g;
+  var b = parseFloat(arr[3]).toString(16);
+  if (b.length<2) b = "0"+b;
+  return "#"+ r + g + b;
 }
 
 
@@ -364,7 +364,7 @@ function msiGetTableEditor(editorElement)
 //function msiGetCurrentEditorElement()
 //{
 //  var tmpWindow = window;
-//  
+//
 //  do {
 //    // Get the <editor> element(s)
 //    var editorList = tmpWindow.document.getElementsByTagName("editor");
@@ -374,7 +374,7 @@ function msiGetTableEditor(editorElement)
 //      return editorList.item(0);
 //
 //    tmpWindow = tmpWindow.opener;
-//  } 
+//  }
 //  while (tmpWindow);
 //
 //  return null;
@@ -662,7 +662,7 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
     }
 //    To Do: update command states, Math/Text state...
   }
-    
+
 //  if (!theWindow.bIgnoreNextFocus || !bIsFocusEvent)
 //  {
 ////Logging stuff only:
@@ -720,7 +720,7 @@ function msiGetCurrentEditor(theWindow)
 function msiGetActiveEditorElement(currWindow)
 {
   var editorElement;
-	if (!currWindow)
+  if (!currWindow)
     currWindow = window.document.defaultView;
   if ("msiActiveEditorElement" in currWindow && (currWindow.msiActiveEditorElement !== null) )
     return currWindow.msiActiveEditorElement;
@@ -865,7 +865,7 @@ function msiSetParentEditor(parentEditor, theWindow)
   if (!theWindow)
     theWindow = window;
   if (!parentEditor)
-    dump("\nmsiSetParentEditor was given null or void SetParentEditor\n");    
+    dump("\nmsiSetParentEditor was given null or void SetParentEditor\n");
   if ("msiParentEditor" in theWindow)
   {
     if (theWindow.msiParentEditor !== parentEditor)
@@ -921,8 +921,8 @@ function msiGetEditor(editorElement)
     editor instanceof Components.interfaces.nsIPlaintextEditor;
     editor instanceof Components.interfaces.nsIHTMLEditor;
   }
-  catch(e) 
-  { 
+  catch(e)
+  {
     throw new MsiException("msiGetEditor exception",e);
     editor = null;
   }
@@ -970,7 +970,7 @@ function msiGetEditorType(editorElement)
 {
   try {
     return editorElement.editortype;
-  } catch (e) { 
+  } catch (e) {
     throw new MsiException("msiGetEditorType",e);
     return "";
   }
@@ -1005,7 +1005,7 @@ function msiWindowHasHTMLEditor(theWindow)
 
   if (!theWindow)
     theWindow = window;
-  
+
   if (theWindow.document !== null)
   {
     var editorList = theWindow.document.getElementsByTagName("editor");
@@ -1024,7 +1024,7 @@ function GetEditorElementForDocument(innerDocument, theWindow)
   if (!theWindow)
     theWindow = window;
 //  var tmpWindow = theWindow;
-  
+
 //  do
 //  {
     // Get the <editor> element(s)
@@ -1042,7 +1042,7 @@ function GetEditorElementForDocument(innerDocument, theWindow)
 //      tmpWindow = tmpWindow.opener;
 //    else
 //      tmpWindow = null;
-//  } 
+//  }
 //  while (tmpWindow);
 
   return null;
@@ -1180,7 +1180,7 @@ function msiIsHTMLSourceChanged(editorElement)
   var sourceEditor = msiGetHTMLSourceEditor(editorElement);
   if (sourceEditor)
     return sourceEditor.documentModified;
-  return false;    
+  return false;
 }
 
 function msiIsInHTMLSourceMode(editorElement)
@@ -1270,7 +1270,7 @@ function msiRequirePackage(editorElement, packagename, options)
     throw new MsiException("Exception in msiRequirePackage",e);
   }
 }
-    
+
 //function IsHTMLSourceChanged()
 //{
 //  return gSourceTextEditor.documentModified;
@@ -1282,7 +1282,7 @@ function newCommandParams()
     return Components.classes["@mozilla.org/embedcomp/command-params;1"].createInstance(Components.interfaces.nsICommandParams);
   }
   catch(e) {
-    throw new MsiException("Error in newCommandParams",e); 
+    throw new MsiException("Error in newCommandParams",e);
   }
   return null;
 }
@@ -1317,19 +1317,19 @@ function insertXMLNodes(editor, nodeList, node, offset)
       var newNode = editor.document.createTextNode("");
       editor.splitNode(node, offset, newNode);
       var list = node.parentNode.childNodes;
-      for (i = 0; i< list.length; i++) 
+      for (i = 0; i< list.length; i++)
         if (list[i]===node) break;
       offset = i;
       node = node.parentNode;
     }
   }
-  
+
   var nodeListLength = nodeList.length;
   for (i = nodeListLength-1; i >= 0; --i)
   {
     editor.insertNode(nodeList[i], node, offset);
   }
-  editor.selection.collapse(node, offset+nodeListLength);   
+  editor.selection.collapse(node, offset+nodeListLength);
 }
 
 function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
@@ -1393,7 +1393,7 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
       try
       {
         insertXMLNodes(editor, nodeList, theElement, theOffset, false);
-      } 
+      }
       catch(exc)
       {
         bOK = false;
@@ -1673,7 +1673,7 @@ function fixInsertPosition(editor, theNode, offset)
     var blockParent = msiGetBlockNodeParent(editor, aNode);
     if (blockParent === topNode)
       return NodeFilter.FILTER_SKIP;
-    else if (blockParent !== null) 
+    else if (blockParent !== null)
       return NodeFilter.FILTER_ACCEPT;
     else
       return NodeFilter.FILTER_REJECT;  //rejects whole subtree
@@ -2117,7 +2117,7 @@ function msiEditorMoveChildren(toElement, fromElement, editor)
 
 function msiEditorMoveCorrespondingContents(targNode, srcNode, editor)
 {
-  var childContentTable = 
+  var childContentTable =
   {
     mover : { base : 1, sup : 2 },
     munder : { base : 1, sub : 2 },
@@ -2246,9 +2246,9 @@ function msiEditorReplaceTextWithText(editor, textNode, startOffset, endOffset, 
   if (offset >= 0) {
     editor.insertNode(newTextNode, parent, offset);
     editor.deleteNode(textNode);
-  }  
+  }
 }
-  
+
 //  var newTextNode = editor.document.createTextNode(replaceText);
 //  var theParentNode = textNode.parentNode;
 //  var nOrigLen = textNode.textContent.length;
@@ -2452,7 +2452,7 @@ function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffse
 //      if (textNode)
 //        logStr += "has content [" + textNode.textContent + "].\n";
 //      else
-//        logStr += "is null.\n", 
+//        logStr += "is null.\n",
 //      msiKludgeLogString(logStr, ["spaces"]);
 //      theEditor.deleteNode(textNode);
 //      msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the first splitNode, inside the trouble clause, after the deleteNode.\n", ["spaces"]);
@@ -2500,7 +2500,7 @@ function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffse
 ////      msiKludgeLogString(logStr, ["spaces"]);
 //    }
 //  }
-//  else 
+//  else
 //Forget all the splitNode calls - just try to hammer it in the crude way:
 //  {
     logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); inside the trouble clause, before deleting and inserting.\n  textNode contains [";
@@ -2527,7 +2527,7 @@ function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffse
 
 
 //NOTE!! This is to get around a bug in Mozilla. When the bug is fixed, this function should just read:
-//  theElement.textContent = newText; 
+//  theElement.textContent = newText;
 //  return theElement;
 function msiSetMathTokenText(theElement, newText, editor)
 {
@@ -2590,7 +2590,7 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
   theRange.setEnd(endNode, endOffset);
   var rootNode = theRange.commonAncestorContainer;
   theRange.detach();
-  
+
   function isCaretPosition(aNode)
   {
 
@@ -2911,7 +2911,7 @@ function singleDialogList(theWindow)
     singleDialogList.prototype.ourList = new Object();
 //    AlertWithTitle("Information", "singleDialogList.ourList created!");
   }
-    
+
 //  this.ourList = new Object();
   this.findDialog = function(dialogName)
   {
@@ -2959,7 +2959,7 @@ function singleDialogList(theWindow)
       return;  //Only want to change parenting if focus is being set to a new editor.
     for (var entry in this.ourList)
     {
-      if (msiEditorSupportsCommand(newActiveEditorElement, this.ourList[entry].theCommand) && 
+      if (msiEditorSupportsCommand(newActiveEditorElement, this.ourList[entry].theCommand) &&
             !msiEditorIsDependentOnWindow(newActiveEditorElement, this.ourList[entry].theDialog))
       {
         this.ourList[entry].theDialog.msiParentEditor = this.ourList[entry].theEditor = newActiveEditorElement;
@@ -3066,14 +3066,14 @@ function msiSetEditorSinglePara(editorElement, bSet)
   {
     try {
       var flags = editor.flags;
-      editor.flags = bSet ?  
+      editor.flags = bSet ?
             flags | nsIPlaintextEditor.eEditorSingleLineMask :
             flags & ~nsIPlaintextEditor.eEditorSingleLineMask;
     } catch(e) {}
 //    editorElement.mbSinglePara = bSet;
     // update all commands
     window.updateCommands("create");
-  }  
+  }
 }
 
 function msiEditorIsSinglePara(editorElement)
@@ -3118,7 +3118,7 @@ function msiLaunchSingleInstanceDialog(chromeUrl, dlgName, options, targetEditor
     break;
   }
   if (theDialog)
-  {  
+  {
     theDialog.msiParentEditor = targetEditor;
     var topWindow = msiGetTopLevelWindow(window);
     msiRegisterSingleInstanceDialog(topWindow, chromeUrl, theDialog, commandID, targetEditor);
@@ -3158,7 +3158,7 @@ function msiLaunchPropertiesDialog(chromeUrl, dlgName, options, targetEditorElem
     break;
   }
   if (theDialog)
-  {  
+  {
     theDialog.msiParentEditor = targetEditorElement;
     var topWindow = msiGetTopLevelWindow(window);
     msiRegisterPropertiesDialog(topWindow, chromeUrl, theDialog, commandID, targetEditorElement, reviseObject);
@@ -3363,7 +3363,7 @@ function propertyDialogList(theWindow)
     propertyDialogList.prototype.ourList = new Object();
 //    AlertWithTitle("Information", "propertyDialogList.ourList created!");
   }
-    
+
   this.findDialogForObject = function(dialogName, reviseObject)
   {
     var theDialog = null;
@@ -3431,7 +3431,7 @@ function propertyDialogList(theWindow)
 //      return;  //Only want to change parenting if focus is being set to a new editor.
 //    for (var entry in this.ourList)
 //    {
-//      if (msiEditorSupportsCommand(newActiveEditorElement, this.ourList[entry].theCommand) && 
+//      if (msiEditorSupportsCommand(newActiveEditorElement, this.ourList[entry].theCommand) &&
 //            !msiEditorIsDependentOnWindow(newActiveEditorElement, this.ourList[entry].theDialog))
 //      {
 //        this.ourList[entry].theDialog.msiParentEditor = this.ourList[entry].theEditor = newActiveEditorElement;
@@ -3595,7 +3595,7 @@ function msiGetParentEditorElementForDialog(dialogWindow, bLogEverything)
 
 function msiGetDocumentTitle(editorElement)
 {
-    var title = "untitled"; 
+    var title = "untitled";
     var doc = msiGetEditor(editorElement).document;
     var nodes = doc.getElementsByTagName('preamble');
     var titleNodes;
@@ -3607,7 +3607,7 @@ function msiGetDocumentTitle(editorElement)
 
 function msiSetDocumentTitle(editorElement, title)
 {
-  // if we changed the name of a shell document, we saved the filename in 
+  // if we changed the name of a shell document, we saved the filename in
   // a broadcaster with id="filename"
   var theFilename = document.getElementById("filename");
   var newtitle = "";
@@ -3898,7 +3898,7 @@ function msiSaveFilePickerDirectory(filePicker, fileType)
 
       if (prefBranch)
        prefBranch.setComplexValue("editor.lastFileLocation."+fileType, Components.interfaces.nsILocalFile, fileDir);
-    
+
       var prefsService = GetPrefsService();
         prefsService.savePrefFile(null);
     } catch (e) {}
@@ -3928,7 +3928,7 @@ function msiSaveFilePickerDirectoryEx(filePicker, path, fileType)
 
       if (prefBranch)
        prefBranch.setComplexValue("editor.lastFileLocation."+fileType, Components.interfaces.nsILocalFile, fileDir);
-    
+
       var prefsService = GetPrefsService();
         prefsService.savePrefFile(null);
     } catch (e) {}
@@ -3942,7 +3942,7 @@ function msiSaveFilePickerDirectoryEx(filePicker, path, fileType)
   window.gFilePickerDirectory = null;
 }
 
-     
+
 function getUntitledName(destinationDirectory)
 {
   var untitled = "untitled";
@@ -3950,7 +3950,7 @@ function getUntitledName(destinationDirectory)
   var ffile;
   var fdir;
   var returnval;
-  var count = 1; 
+  var count = 1;
   var maxcount = 100; // a maximum allowed for files named "untitledxx.sci"
   while (count < maxcount)
   {
@@ -3960,7 +3960,7 @@ function getUntitledName(destinationDirectory)
     ffile.append(returnval+".sci");
     fdir.append(returnval+"_work");
     count++;
-    if (!ffile.exists() && !fdir.exists()) 
+    if (!ffile.exists() && !fdir.exists())
     {
 //      fdir.append("main.xhtml");
       return returnval;
@@ -3969,9 +3969,9 @@ function getUntitledName(destinationDirectory)
   alert("too many files called 'untitledxx.sci' in directory "+destinationDirectory.path); // BBM: fix this up
   return "";
 };
-    
 
-function installZipEntry(aZipReader, aZipEntry, aDestination) 
+
+function installZipEntry(aZipReader, aZipEntry, aDestination)
 {
   var file = aDestination.clone();
 
@@ -3999,8 +3999,8 @@ function installZipEntry(aZipReader, aZipEntry, aDestination)
 // Write a file to the zip file represented by aZipWriter. RelPath is the path relative to the
 // directory we are zipping and sourceFile is the particular file being written.
 // BBM - doesn't seem to be used??
- 
-function writeZipEntry(aZipWriter, relPath, sourceFile, compression) 
+
+function writeZipEntry(aZipWriter, relPath, sourceFile, compression)
 {
   var path = "";
   var dirs = relPath.split(/\//);
@@ -4058,7 +4058,7 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory, compression)
 
 // copyDirectory is called recursively. sourceDirectory is the directory
 // we are copying, and destDirectory is the directory we are copyint to.
-                         
+
 function copyDirectory(destDirectory, sourceDirectory)
 {
   var e;
@@ -4071,7 +4071,7 @@ function copyDirectory(destDirectory, sourceDirectory)
   }
   e = sourceDirectory.directoryEntries;
   while (e.hasMoreElements())
-  {                       
+  {
     f = e.getNext().QueryInterface(Components.interfaces.nsIFile);
     var leaf;
     if (f) {
@@ -4083,7 +4083,7 @@ function copyDirectory(destDirectory, sourceDirectory)
       {
   // skip temp directory
         if (leaf !== 'temp')
-        {       
+        {
           if (!dest2.exists()) {
             dest2.create(1, 0755);
           }
@@ -4127,15 +4127,15 @@ function msiFindOriginalDocname(docUrlString)
 }
 
 
-// createWorkingDirectory does the following: 
+// createWorkingDirectory does the following:
 // It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
 // The return value is an nsILocalFile which is the main xhtml file in the .sci file, usually named
 // main.xhtml.
 // if the file parameter is something like foo.sci, it knows that the file is a jar file.
 //
-// If the file parameter is not a zip file, then it creates the directory and 
+// If the file parameter is not a zip file, then it creates the directory and
 // copies, e.g., foo.xhtml to foo_work/main.xhtml. If the directory containing the file looks like a .sci
-// directory (has the .sci extension, the file is called main.xhtml, or there are only one xhtml and zero 
+// directory (has the .sci extension, the file is called main.xhtml, or there are only one xhtml and zero
 // or more xml files in the directory, plus other files with junk extensions (such as.bak)) then it
 // clones the drectory and its contents. It returns the nsILocalFile for foo_work/main.xhtml.
 //
@@ -4211,13 +4211,13 @@ function createWorkingDirectory(documentfile)
       {
         dump (e.message+"\n");
         name="main"+(index++).toString()+extension;
-        done = false;        
+        done = false;
       }
     }
   }
   if (theCase === 1)
   // remaining case is the main one, a .sci file
-  {  
+  {
     var doc = documentfile.clone();
     extension = ".xhtml"
     var zr;
@@ -4228,7 +4228,7 @@ function createWorkingDirectory(documentfile)
     {
       if (isShell(doc.path))
       {
-        // if we are opening a shell document, we create the working directory 
+        // if we are opening a shell document, we create the working directory
         // and change the document leaf name to "untitledxxx"
         dir =  msiDefaultNewDocDirectory();
         basename = getUntitledName(dir);
@@ -4244,7 +4244,7 @@ function createWorkingDirectory(documentfile)
           var result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "workinprogress", "chrome,titlebar,resizable,modal", data);
           if (data.value)
           {
-            return mainfile; 
+            return mainfile;
           }
         }
         try
@@ -4272,11 +4272,11 @@ function createWorkingDirectory(documentfile)
     catch( e) {
       dump("Error in createWorkingDirectory: "+e.toString()+"\n");
       return null;
-    } 
+    }
   }
   var newdocfile;
   newdocfile = dir.clone();
-  newdocfile.append(name); 
+  newdocfile.append(name);
   // We expect that the file is main.xhtml, but if the user opens an html file, it might be
   // .html or .htm or .shtml.
   if (!newdocfile.exists())
@@ -4287,8 +4287,8 @@ function createWorkingDirectory(documentfile)
     while (fileenum.hasMoreElements())
     {
       file = fileenum.getNext();
-      file.QueryInterface(Components.interfaces.nsIFile);      
-      if ((/\.[xs]?html?/i).test(file.leafName)) 
+      file.QueryInterface(Components.interfaces.nsIFile);
+      if ((/\.[xs]?html?/i).test(file.leafName))
       {
         newdocfile = file;
         break;
@@ -4323,7 +4323,7 @@ function msiDefaultNewDocDirectory()
       return docdir;
     }
     catch (e) {}
-  }  
+  }
   var dirkey;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var os = getOS(window);
@@ -4369,15 +4369,15 @@ function msiDefaultNewDocDirectory()
 //     revertdir.append(leafname+"_files");
 //     revertdir.append("revert");
 //     if (revertdir.exists()) revertdir.remove(true);
-//     
+//
 //   // now move the temp dir to ..._files/bak
-//     tempbakdir.moveTo(_filesdir, "bak"); 
+//     tempbakdir.moveTo(_filesdir, "bak");
 //   }
 //   catch (e) {
 //     dump("msiCopyFileAndDirectoryToBak failed: "+e+"\n");
 //   }
 // }
-// 
+//
 
 // This should be no longer needed
 // function msiCopyAuxDirectory( originalfile, newfile ) // both nsILocalFiles
@@ -4407,10 +4407,10 @@ function msiDefaultNewDocDirectory()
 
 // Recall that the current editing session has changed only files in the working directory, and
 // that the .sci file has not been changed.
-// 
+//
 // The File/Revert calls this function, but also reloads the .sci file. The pre-reverted
 // file is saved.
-// If the file was created from a shell file then del===true, and we delete the file. 
+// If the file was created from a shell file then del===true, and we delete the file.
 //
 // The algorithm:
 // Our file is currently main.xhtml in a directory we call D. Let A be the leafname of the .sci file
@@ -4432,7 +4432,7 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
     var editor = msiGetEditor(editorElement);
 
     var tempfile;
-    var leafname;    
+    var leafname;
     var url = msiFileURLFromFile(documentfile);
     var docUrlString = msiFindOriginalDocname(url.spec);
     var leafregex = /.*\/([^\/\.]+)\.sci$/i;
@@ -4440,7 +4440,7 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
     if (arr && arr.length >1) leafname = arr[1];
 
     var dir = documentfile.parent.clone();
-    
+
     if (del)
     {
       tempfile = dir.clone();
@@ -4452,7 +4452,7 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
     else
     {
       var success =  msiSoftSave( editor, editorElement);
-      if (!success) 
+      if (!success)
         throw Components.results.NS_ERROR_UNEXPECTED;
 
       var zipfile = dir.parent.clone();
@@ -4472,12 +4472,12 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
         if (zipfile.exists()) zipfile.remove(0);
         zipfile.create(0,0755);
         zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
-        zipDirectory(zw, "", dir, compression); 
+        zipDirectory(zw, "", dir, compression);
         zw.close();
       }
       catch(e) {
         throw Components.results.NS_ERROR_UNEXPECTED;
-      } 
+      }
       dir.remove(1);
       return true;
     }
@@ -4494,7 +4494,7 @@ function GetDefaultBrowserColors()
   var colors = { TextColor:0, BackgroundColor:0, LinkColor:0, ActiveLinkColor:0 , VisitedLinkColor:0 };
   var useSysColors = false;
   try { useSysColors = prefs.getBoolPref("browser.display.use_system_colors"); } catch (e) {}
-                        
+
   if (!useSysColors)
   {
     try { colors.TextColor = prefs.getCharPref("browser.display.foreground_color"); } catch (e) {}
@@ -4615,12 +4615,12 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
 
       // Remove filename for named anchors in the same file
       if (nextBaseSlash === -1 && baseFilename)
-      { 
+      {
         var anchorIndex = urlPath.indexOf("#");
         if (anchorIndex > 0)
         {
           var urlFilename = doCaseInsensitive ? urlPath.toLowerCase() : urlPath;
-        
+
           if (urlFilename.indexOf(baseFilename) === 0)
             urlPath = urlPath.slice(anchorIndex);
         }
@@ -4647,8 +4647,8 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
         // No match, we're done
         done = true;
 
-        // Be sure we are on the same local drive or volume 
-        //   (the first "dir" in the path) because we can't 
+        // Be sure we are on the same local drive or volume
+        //   (the first "dir" in the path) because we can't
         //   relativize to different drives/volumes.
         // UNIX doesn't have volumes, so we must not do this else
         //  the first directory will be misinterpreted as a volume name
@@ -4697,14 +4697,14 @@ function msiMakeAbsoluteUrl(url, editorElement)
   var  IOService = msiGetIOService();
   if (!IOService)
     return resultUrl;
-  
+
   // Make a URI object to use its "resolve" method
   var absoluteUrl = resultUrl;
   var docUri = IOService.newURI(docUrl, msiGetCurrentEditor().documentCharacterSet, null);
 
   try {
     absoluteUrl = docUri.resolve(resultUrl);
-    // This is deprecated and buggy! 
+    // This is deprecated and buggy!
     // If used, we must make it a path for the parent directory (remove filename)
     //absoluteUrl = IOService.resolveRelativePath(resultUrl, docUrl);
   } catch (e) {}
@@ -4721,7 +4721,7 @@ function msiGetDocumentBaseUrl(editorElement)
   try {
     var docUrl;
 
-    // if document supplies a <base> tag, use that URL instead 
+    // if document supplies a <base> tag, use that URL instead
     var baseList = msiGetEditor(editorElement).document.getElementsByTagName("base");
     if (baseList)
     {
@@ -4814,7 +4814,7 @@ function GetFilename(urlspec)
 
   var filename;
   if (urlspec.indexOf(":") < 1)
-	  urlspec = "file://"+urlspec;
+    urlspec = "file://"+urlspec;
 
   try {
     var uri = IOService.newURI(urlspec, null, null);
@@ -4859,7 +4859,7 @@ function GetFilepath(urlspec) // BBM: I believe this can be simplified
 }
 
 
-// apparently no longer needed 
+// apparently no longer needed
 //function GetLastDirectory(urlspec)
 //{
 //  if (!urlspec || IsUrlAboutBlank(urlspec))
@@ -4983,7 +4983,7 @@ function StripUsernamePasswordFromURI(uri)
         start = urlspec.indexOf(userPass);
         urlspec = urlspec.slice(0, start) + urlspec.slice(start+userPass.length+1);
       }
-    } catch (e) {}    
+    } catch (e) {}
   }
   return urlspec;
 }
@@ -5029,7 +5029,7 @@ function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPrope
   {
     dump("In msiEditorUtilities.js, msiGetHTMLOrCSSStyleValue() called with null element!\n");
     return "";
-  }  
+  }
 
   var element = theElement;
   var value;
@@ -5069,14 +5069,14 @@ function msiGetHTMLOrCSSStyleValue(editorElement, theElement, attrName, cssPrope
     if (element && (element !== theElement))
       value = msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssPropertyName, bPreferAttr);
   }
-  
+
   if (!value)
     return "";
   return value;
 }
 
 //This list (copied here from the Cascades code) represents the base HTML named colors.
-var msiHTMLNamedColorsList = 
+var msiHTMLNamedColorsList =
 {  aqua : "#00ffff", black : "#000000", blue : "#0000ff", fuchsia : "#ff00ff",
    gray : "#808080", green : "#008000", lime : "#c0ff00", maroon : "#800000",
    navy : "#000080", olive : "#808000", purple : "#c00040", red : "#ff0000",
@@ -5088,7 +5088,7 @@ var msiHTMLNamedColorsList =
 
 function textColorToHex(colorname)
 {
-	var name = TrimString(colorname).toLowerCase();
+  var name = TrimString(colorname).toLowerCase();
   var retStr = msiHTMLNamedColors.colorStringToHexRGBString(name);
   if (!retStr || !retStr.length)
     retStr = "#ffffff";
@@ -5142,7 +5142,7 @@ function msiNamedColors(aNameSet)
 
 var msiHTMLNamedColors = new msiNamedColors(msiHTMLNamedColorsList);
 
-var msiCSSUtils = 
+var msiCSSUtils =
 {
   getLengthWithUnitsStringFromCSSPrimitiveValue : function(cssValue)
   {
@@ -5289,7 +5289,7 @@ function changeCSSPropertiesForSelector(aDoc, selectorText, propValArray)
 //      thmAndCorArray.push( new cssPropertyChangeRecord(thmAndCorProperties[i], thmAndCorValues[i], thmAndCorImportant[i]) );
 //    for (i = 0; i < thmAndCorLabelProperties.length; ++i)
 //      thmAndCorLabelArray.push( new cssPropertyChangeRecord(thmAndCorLabelProperties[i], thmAndCorLabelValues[i], thmAndCorLabelImportant[i]) );
-//    changeCSSPropertiesForSelector(document, [["theorem,corollary", thmAndCorArray], 
+//    changeCSSPropertiesForSelector(document, [["theorem,corollary", thmAndCorArray],
 //                                             ["theorem > *:first-child:before, corollary > *:first-child:before", thmAndCorLabelArray]] );
 //This has the advantage of making all the changes at once (hopefully).
 function changeCSSPropertiesForSelectorPropertiesArray(aDoc, theArray)
@@ -5298,7 +5298,7 @@ function changeCSSPropertiesForSelectorPropertiesArray(aDoc, theArray)
   return cssMan.changeArrayOfProperties(theArray);
 }
 
-var cssPropertyChangeRecordBase = 
+var cssPropertyChangeRecordBase =
 {
   notePropertyIsSet : function(aSelectorObj, aRuleSetObj, matchedSelector, valueStr, priorityStr, anIndex)
   {
@@ -5434,12 +5434,12 @@ function cssPropertyChangeRecord(propName, newValue, bImportant)
 
 cssPropertyChangeRecord.prototype = cssPropertyChangeRecordBase;
 
-var cssChangesManagerBase = 
+var cssChangesManagerBase =
 {
   m_replaceCharsRE : /[\*\.\$\^\|\[\]\(\)\{\}\+\?]/g,
   m_deletionMarker : "del----",
   m_document : null,
-  m_modifiableStyleSheet : null,  
+  m_modifiableStyleSheet : null,
   //this is set up to have one target stylesheet associated with the document which we'll modify
   m_styleSheetArray : null,
   m_bStyleSheetModified : false,
@@ -5494,7 +5494,7 @@ var cssChangesManagerBase =
     var currSelector = null;
     var currRuleChange;
     var ruleText = "";
-    ix = 0; 
+    ix = 0;
     while (ix < changesRequired.addProperties.length)
     {
       currSelector = changesRequired.addProperties[ix].theSelector;
@@ -5567,7 +5567,7 @@ var cssChangesManagerBase =
 
     if (ruleChanges.length || ruleAdditions.length)
       this.m_bStyleSheetModified = true;
-    
+
   },
 
   writeCSSFile : function()  //These should come in as a nsIFile and a string respectively
@@ -5596,7 +5596,7 @@ var cssChangesManagerBase =
       os.close();
       fos.close();
     }
-    catch(ex) 
+    catch(ex)
     {
       dump("Exception in writing out CSS file [" + this.m_modifiableStyleSheet.href + "]; exception is [" + ex + "].\n");
       rv = false;
@@ -5618,7 +5618,7 @@ var cssChangesManagerBase =
         testRuleSet = cssRuleSetToRuleSetObj(aStyleSheet.cssRules[jx]);
         for (var ix = 0; ix < selectorObjArray.length; ++ix)
           this.checkRuleSetForProperties( selectorObjArray[ix], propChangeArray, testRuleSet, anIndex );
-      }  
+      }
     }
   },
 
@@ -5805,7 +5805,7 @@ var cssChangesManagerBase =
         }
       }
     }
-    
+
     ruleChanges.push( {m_ruleSet : theRuleSetObj, m_changedSelectorStr : changedSelectorStr, m_changes : changeProps} );
   },
 
@@ -5942,7 +5942,7 @@ function saveCSSFileIfChanged(aDocument)
     cssMan.writeCSSFile();
 }
 
-var cssRuleSetBase = 
+var cssRuleSetBase =
 {
   m_cssRule : null,  //a cssRule object - provides access to the individual property settings
   m_selectors : [],  //an array of cssSelectors (see below)
@@ -6041,7 +6041,7 @@ function parseCSSSelectorString(selString)
   return selectorObjs;
 }
 
-var cssSelectorObjBase = 
+var cssSelectorObjBase =
 {
   m_combinatorsRE : /(?:\s*([\\\"\'\+>])\s*)|(\s+)/,
   m_whiteSpaceRE : /^\s+$/,
@@ -6101,7 +6101,7 @@ var cssSelectorObjBase =
               simpleSelectorStrings.push(currSimpleSelector);
               this.m_separators.push(" ");
               currSimpleSelector = "";
-            } 
+            }
             else
             {
               currSimpleSelector += selectorPieces[jx];
@@ -6540,7 +6540,7 @@ function msiViewSettings(viewFlags)
 }
 
 var msiViewSettingsBase =
-{ 
+{
   hideInvisiblesFlag   :  1,
   hideHelperLinesFlag  :  2,
   hideInputBoxesFlag   :  4,
@@ -6648,7 +6648,7 @@ function msiSetSavedViewPercent(editorElement, zoompercent)
 function msiPrintOptions(printFlags)
 {
   this.useCurrViewSettings = (printFlags & msiDocumentInfoBase.printUseViewSettingsFlag) !== 0;
-  this.printInvisibles = (printFlags & msiDocumentInfoBase.printShowInvisiblesFlag) !== 0;    
+  this.printInvisibles = (printFlags & msiDocumentInfoBase.printShowInvisiblesFlag) !== 0;
   this.printHelperLines = (printFlags & msiDocumentInfoBase.printShowMatrixLinesFlag) !== 0;
   this.printInputBoxes = (printFlags & msiDocumentInfoBase.printShowInputBoxesFlag) !== 0;
   this.printMarkers = (printFlags & msiDocumentInfoBase.printShowIndexFieldsFlag) !== 0;
@@ -6790,9 +6790,9 @@ var msiUnitsListBase =
     if (!this.mStringBundle)
     {
       try {
-        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService();
         strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
-        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties"); 
+        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties");
       } catch (ex) {dump("Problem in initializing string bundle in msiUnitsList.getDisplayString: exception is [" + ex + "].\n");}
     }
     if (this.mStringBundle)
@@ -6909,7 +6909,7 @@ var msiUnitsListBase =
 
 }
 
-function msiUnitsList(unitConversions) 
+function msiUnitsList(unitConversions)
 {
   this.mUnitFactors = unitConversions;
 }
@@ -6943,7 +6943,7 @@ function msiCSSWithFontUnitsList(fontSize, fontUnits)
   this.mUnitFactors.px = .75 * msiCSSUnitConversions.pt;  //generic guess is that a pixel is 3/4 of a point
   this.mUnitFactors.pc = 12 * msiCSSUnitConversions.pt;
   this.defaultUnit = function() {return "pt";};
-  this.fontSizeInPoints = function() 
+  this.fontSizeInPoints = function()
     {return Math.round( this.convertUnits(1, "em", "pt") );}
   ;
 }
@@ -6982,7 +6982,7 @@ function msiGetNumberAndLengthUnitFromString (valueStr)
   return null;
 };
 
-var msiBaseMathNameList = 
+var msiBaseMathNameList =
 {
   bInitialized: false,
   namesDoc : null,
@@ -7006,8 +7006,8 @@ var msiBaseMathNameList =
     try {
       request.open("GET", thePath, false);
       request.send(null);
-                                
-      this.namesDoc = request.responseXML; 
+
+      this.namesDoc = request.responseXML;
       if (!this.namesDoc && request.responseText)
         throw("file exists but cannot be parsed as XML");
 
@@ -7316,7 +7316,7 @@ function msiMathNameList()
   };
 }
 
-var msiBaseMathUnitsList = 
+var msiBaseMathUnitsList =
 {
   bInitialized: false,
   namesDoc : null,
@@ -7336,8 +7336,8 @@ var msiBaseMathUnitsList =
     try {
       request.open("GET", thePath, false);
       request.send(null);
-                                
-      this.namesDoc = request.responseXML; 
+
+      this.namesDoc = request.responseXML;
       if (!this.namesDoc && request.responseText)
         throw("file exists but cannot be parsed as XML");
 
@@ -7522,7 +7522,7 @@ var msiBaseMathUnitsList =
     autosub.Reset();
     var result = Components.interfaces.msiIAutosub.STATE_INIT;
     for (var ix = unitStr.length - 1; ix >= 0; --ix)
-    { 
+    {
       result = autosub.nextChar(true, unitStr.charAt(ix));
       if (result === Components.interfaces.msiIAutosub.STATE_FAIL)
         return false;
@@ -7689,7 +7689,7 @@ function msiMathUnitsList()
 }
 
 
-var msiAutosubstitutionList = 
+var msiAutosubstitutionList =
 {
 
   bInitialized: false,
@@ -7707,8 +7707,8 @@ var msiAutosubstitutionList =
     try {
       request.open("GET", thePath, false);
       request.send(null);
-                                
-      var subsDoc = request.responseXML; 
+
+      var subsDoc = request.responseXML;
       if (!subsDoc && request.responseText)
         throw("file exists but cannot be parsed as XML");
 
@@ -7736,7 +7736,7 @@ var msiAutosubstitutionList =
 //    ACSAService.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
 //    var ACSA = ACSAService.getGlobalSearchStringArray();
     var ACSA = msiSearchStringManager.setACSAImpGetService();
-  
+
     var rootElementList = subsDoc.getElementsByTagName("subs");
     dump("In msiAutoSubstitutionList.initialize(), subsDoc loaded, rootElementList has length [" + rootElementList.length + "].\n");
     var nameNodesList = null;
@@ -7817,7 +7817,7 @@ var msiAutosubstitutionList =
   }
 };
 
-var msiSearchStringManager = 
+var msiSearchStringManager =
 {
   mDocumentArrays : [],
   baseString : "",
@@ -7991,7 +7991,7 @@ var msiSearchStringManager =
         theString = theTitle;
     }
     var baseString = theString;
-    
+
     for (var ix = 0; (ix < 1000) && (theString in this.mDocumentArrays); ++ix)
     {
       theString = baseString + String(++ix);
@@ -8087,7 +8087,7 @@ var msiKeyListManager =
     return retVal;
   },
 
-  resetMarkerListForControl : function(aControl, bForce) 
+  resetMarkerListForControl : function(aControl, bForce)
   {
     var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
     return this.resetMarkerList(aControlRecord, bForce);
@@ -8129,7 +8129,7 @@ var msiKeyListManager =
 
   getMarkerStringList : function(aDocument, bForce)
   {
-    
+
     var docRecord = this.getRecordForDocument(aDocument);
     return this.updateMarkerList(docRecord, bForce);
   },
@@ -8199,7 +8199,7 @@ var msiMarkerListPrototype =
 //    ACSA.resetArray(ourKey);
 //    for (i=0, len=keyStrings.length; i<len; i++)
 //    {
-//      if (keyStrings[i].length > 0) 
+//      if (keyStrings[i].length > 0)
 //        ACSA.addString(ourKey, keyStrings[i]);
 //    }
   },
@@ -8321,7 +8321,7 @@ var msiMarkerListPrototype =
 
 };
 
-function msiKeyMarkerList(aControl) 
+function msiKeyMarkerList(aControl)
 {
   this.mControl = aControl;
   this.mKeyListManager = msiKeyListManager;
@@ -8353,7 +8353,7 @@ var msiBibItemKeyListManager =
 
 msiBibItemKeyListManager.__proto__ = msiKeyListManager;
 
-function msiBibItemKeyMarkerList(aControl) 
+function msiBibItemKeyMarkerList(aControl)
 {
   this.mControl = aControl;
   this.mKeyListManager = msiBibItemKeyListManager;
@@ -8386,13 +8386,13 @@ function msiGetKeyListForDocument(aDocument, editor)
 //  {
 //    if (keys[i] === "" || keys[i] === lastkey) keys.splice(i,1);
 //    else lastkey = keys[i];
-//  }  
-//  dump("Keys are : "+keys.join()+"\n");    
+//  }
+//  dump("Keys are : "+keys.join()+"\n");
 //  return keys;
-	var ignoreIdsList = "section--subsection--subsubsection--part--chapter";
+  var ignoreIdsList = "section--subsection--subsubsection--part--chapter";
   if (editor)
     ignoreIdsList = editor.tagListManager.getTagsInClass("structtag","--", false);
-	ignoreIdsList = "--" + ignoreIdsList + "--";
+  ignoreIdsList = "--" + ignoreIdsList + "--";
   var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' xmlns:mathml='http://www.w3.org/1998/Math/MathML' ><xsl:output method='text' encoding='UTF-8'/><xsl:variable name='hyphen'>--</xsl:variable>";
   xsltSheetForKeyAttrib += "<xsl:variable name='ignoreIDs'>" + ignoreIdsList + "</xsl:variable><xsl:variable name='xrefName'>xref</xsl:variable>";
   xsltSheetForKeyAttrib += "<xsl:template match='/'>  <xsl:apply-templates select='//*[@key][not(local-name()=$xrefName)]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'/></xsl:template>\
@@ -8435,12 +8435,12 @@ function msiGetItemListForDocumentFromXSLTemplate(aDocument, aTemplate, separato
   {
     if (items[i] === "" || items[i] === lastitem) items.splice(i,1);
     else lastitem = items[i];
-  }  
-  dump("Keys are : "+items.join()+"\n");    
+  }
+  dump("Keys are : "+items.join()+"\n");
   return items;
 }
 
-var msiTheoremEnvListManager = 
+var msiTheoremEnvListManager =
 {
   baseString : "theoremenv",
 
@@ -8502,13 +8502,13 @@ var msiTheoremEnvListManager =
     return retVal;
   },
 
-  resetTheoremListForControl : function(aControl, bForce) 
+  resetTheoremListForControl : function(aControl, bForce)
   {
     var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
     return this.resetTheoremList(aControlRecord, bForce);
   },
 
-  resetGenericTheoremListForDoc : function(aDocument, bForce) 
+  resetGenericTheoremListForDoc : function(aDocument, bForce)
   {
     var aControlRecord = this.getSearchStringArrayRecordByName(aDocument, "docTheoremManager");
     return this.resetTheoremList(aControlRecord, bForce);
@@ -8610,7 +8610,7 @@ var msiTheoremListPrototype =
 
 //Structure of theorem list is:
 //  {defaultNumbering : "self", defaultStyle : "theorem", theoremArray : []};
-//where each member of theoremArray looks like:     
+//where each member of theoremArray looks like:
 //  {tagName : theTagName, numbering : theNumbering, bDefault : isDefault, thmStyle : theThmStyle};
   getTheoremList : function(bForceUpdate)
   {
@@ -8825,7 +8825,7 @@ var msiTheoremListPrototype =
   }
 };
 
-function msiTheoremEnvList(aControl) 
+function msiTheoremEnvList(aControl)
 {
   this.mControl = aControl;
   this.mTheoremListManager = msiTheoremEnvListManager;
@@ -8950,8 +8950,8 @@ function getEquationArrayCells(displayNode)
       break;
     }
   }
-  
-  var walker = document.createTreeWalker( displayNode, NodeFilter.SHOW_ELEMENT, findMatrixCallback, false ); 
+
+  var walker = document.createTreeWalker( displayNode, NodeFilter.SHOW_ELEMENT, findMatrixCallback, false );
   while (aNode = walker.nextNode())
   {
     typeAttr = aNode.getAttribute("type");
@@ -9173,7 +9173,7 @@ function checkForMultiRowInTable(aTable, editor)
 }
 
 /**************************msiNavigationUtils**********************/
-var msiNavigationUtils = 
+var msiNavigationUtils =
 {
   m_DOMUtils : Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils),
   mAtomService : Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService),
@@ -9246,7 +9246,7 @@ var msiNavigationUtils =
         return true;
       case "frontmtag":
       default:
-      break;                          
+      break;
     }
     switch(msiGetBaseNodeName(node))
     {
@@ -9343,7 +9343,7 @@ var msiNavigationUtils =
       {
         retVal = ix;
         break;
-      }  
+      }
     }
     return retVal;
   },
@@ -9451,7 +9451,7 @@ var msiNavigationUtils =
       return 1;
     if (lastRefNode && !lastNode)  //in this case the ref position is inside lastRefNode and thus to the right of our position
       return -1;
-        
+
     return 0;
   },
 
@@ -9829,7 +9829,7 @@ var msiNavigationUtils =
       var children = this.getSignificantContents(node);
       if (children.length > 1)
       {
-        return (children[0].hasAttribute('msiBoundFence') && (children[0].getAttribute('msiBoundFence') === 'true') 
+        return (children[0].hasAttribute('msiBoundFence') && (children[0].getAttribute('msiBoundFence') === 'true')
                && children[children.length - 1].hasAttribute('msiBoundFence') && (children[children.length - 1].getAttribute('msiBoundFence') === 'true') );
       }
     }
@@ -9867,10 +9867,10 @@ var msiNavigationUtils =
       case 'mover':
       case 'munderover':
       case 'mroot':
-//		  case 'msqrt':  
-//		  case 'mtr':
-//			case 'mtd':
-//		  case 'mtable': 
+//      case 'msqrt':
+//      case 'mtr':
+//      case 'mtd':
+//      case 'mtable':
         return true;
       break;
       case 'mrow':
@@ -9880,12 +9880,12 @@ var msiNavigationUtils =
         var singleChild = this.getSingleWrappedChild(node);
         if (this.isMathTemplate(singleChild))
           return true;
- 				break;
-//			case "math":
-//				if (node.hasAttribute("display") && node.getAttribute("display")==="block")
-//				{
-//					return true;
-//				}
+        break;
+//      case "math":
+//        if (node.hasAttribute("display") && node.getAttribute("display")==="block")
+//        {
+//          return true;
+//        }
 //      break;
     }
     return false;
@@ -9893,62 +9893,62 @@ var msiNavigationUtils =
 
 // the next two functions give more precise information than isMathTemplate
   isUnsplittableMath : function(node)
-	{
-	  if (node === null)
+  {
+    if (node === null)
       return false;
 
     switch(node.localName)
-		{
-			case 'mfrac':
-			case 'msub':
-			case 'msubsup':
-			case 'msup':
-			case 'munder':
-			case 'mover':
-			case 'munderover':
-			case 'mroot':
-			case 'msqrt':  
-			case 'mtr':
-			case 'mtd':
-			case 'mtable': 
-			  return true;
-			break;
-			case 'mrow':
-			case 'mstyle':
-			  if (this.isFence(node))
-			    return true;
-			break;
-			case "math":
-			if (node.hasAttribute("display") && node.getAttribute("display")==="block")
-			{
-				return true;
-			}
-			break;	
-		}
-		return false;
-	},
-	
-	hasFixedNumberOfChildren : function(node)
-	{
-	  if (node === null)
+    {
+      case 'mfrac':
+      case 'msub':
+      case 'msubsup':
+      case 'msup':
+      case 'munder':
+      case 'mover':
+      case 'munderover':
+      case 'mroot':
+      case 'msqrt':
+      case 'mtr':
+      case 'mtd':
+      case 'mtable':
+        return true;
+      break;
+      case 'mrow':
+      case 'mstyle':
+        if (this.isFence(node))
+          return true;
+      break;
+      case "math":
+      if (node.hasAttribute("display") && node.getAttribute("display")==="block")
+      {
+        return true;
+      }
+      break;
+    }
+    return false;
+  },
+
+  hasFixedNumberOfChildren : function(node)
+  {
+    if (node === null)
       return false;
     switch(node.localName)
-		{
-			case 'mfrac':
-			case 'msub':
-			case 'msubsup':
-			case 'msup':
-			case 'munder':
-			case 'mover':
-			case 'munderover':
-			case 'mroot':
-			case 'mtr':
-			case 'mtable': 
-			  return true;
-		}
-	  return false;	
-	},
-	
+    {
+      case 'mfrac':
+      case 'msub':
+      case 'msubsup':
+      case 'msup':
+      case 'munder':
+      case 'mover':
+      case 'munderover':
+      case 'mroot':
+      case 'mtr':
+      case 'mtable':
+        return true;
+    }
+    return false;
+  },
+
   isUnit : function(node)
   {
     if ( node !== null && node.hasAttribute("msiunit") && (node.getAttribute("msiunit") === "true") )
@@ -10063,7 +10063,7 @@ var msiNavigationUtils =
         {
           if (msiGetBaseNodeName(nodeContents[ix]) === "note")
             return nodeContents[ix];
-        }  
+        }
       break;
 
       case 'msiframe':
@@ -10342,7 +10342,7 @@ var msiNavigationUtils =
   //  An <mrow> wrapping a qualifying node, but only if it's an (unnecessary) <mrow> representing a child of a <mover>, <munder>, or <munderover>,
   //    or the only child of an <mstyle>.
   //Maybe the key is to do a simple test recursively - a test which would never pass to the parent node - and repeatedly apply the
-  //  test to successive parents as long as it succeeds. This separation of the test from the overall function (getTopMathNodeAsAccentedCharacter, below), 
+  //  test to successive parents as long as it succeeds. This separation of the test from the overall function (getTopMathNodeAsAccentedCharacter, below),
   //  which does have the responsibility to find the topmost qualifying node, may finally solve this stupidity.
   treatMathNodeAsAccentedCharacter : function(aNode, bDontCheckKids)
   {
@@ -10417,11 +10417,11 @@ var msiNavigationUtils =
   {
     if (aNode.nodeType === nsIDOMNode.TEXT_NODE)
       return aNode;
-    
+
     var childNodes = this.getSignificantContents(aNode);
     if ( (childNodes.length === 1) && (childNodes[0].nodeType === nsIDOMNode.TEXT_NODE) )
       return childNodes[0];
-    
+
     var kid = this.getSingleWrappedChild(aNode);
     if (kid !== null)
       return this.getLeafNodeText(kid);
@@ -10462,7 +10462,7 @@ var msiNavigationUtils =
 //      default:
 //        if (nodeName === objTypeStr)
 //          return retStyleNode;
-//      break; 
+//      break;
 //    }
     return retStyleNode;
   },
@@ -10703,7 +10703,7 @@ var msiNavigationUtils =
 //      compVal = aRange.startContainer.compareDocumentPosition(aNode);
 //      retVal = ( (compVal & Node.DOCUMENT_POSITION_FOLLOWING) !== null);
 //    }
-    return retVal;  
+    return retVal;
   },
 
   nodeHasContentAfterRangeStart : function(aRange, aNode)
@@ -10713,7 +10713,7 @@ var msiNavigationUtils =
     var compVal = this.comparePositions(aNode, anOffset, aRange.startContainer, aRange.startOffset);
     if (compVal > 0) //end of aNode is after start position of aRange
       retVal = true;
-    return retVal;  
+    return retVal;
   },
 
   nodeHasContentBeforeSelection : function(aSelection, aNode)
@@ -10743,7 +10743,7 @@ var msiNavigationUtils =
     var compVal = this.comparePositions(aNode, anOffset, aRange.endContainer, aRange.endOffset);
     if (compVal > 0) //last offset in aNode is after end position of aRange
       retVal = true;
-    
+
 //    var compNode = msiNavigationUtils.getNodeAfterPosition(aRange.endContainer, aRange.endOffset);
 //    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
 //      retVal = true;
@@ -10754,7 +10754,7 @@ var msiNavigationUtils =
 //      compVal = aRange.endContainer.compareDocumentPosition(aNode);
 //      retVal = ( (compVal & Node.DOCUMENT_POSITION_PRECEDING) !== null);
 //    }
-    return retVal;  
+    return retVal;
   },
 
   nodeHasContentBeforeRangeEnd : function(aRange, aNode)
@@ -10763,7 +10763,7 @@ var msiNavigationUtils =
     var compVal = this.comparePositions(aNode, 0, aRange.endContainer, aRange.endOffset);
     if (compVal < 0) //start of aNode is before end position of aRange
       retVal = true;
-    return retVal;  
+    return retVal;
   },
 
   getCommonAncestorForSelection : function(aSelection)
@@ -10864,8 +10864,8 @@ var msiNavigationUtils =
 /**************************More general utilities**********************/
 
 // Clone simple JS objects
-//function Clone(obj) 
-//{ 
+//function Clone(obj)
+//{
 //  var clone = {};
 //  for (var i in obj)
 //  {
@@ -10877,7 +10877,7 @@ var msiNavigationUtils =
 //  return clone;
 //}
 
-var msiSpaceUtils = 
+var msiSpaceUtils =
 {
 //How to properly use the "charContent" fields in the following is unclear. Where there are "dimensions" they provide a much more
 //  straightforward way to produce the effects desired without undesirable editing effects (like cursors in the middle of spaces).
@@ -10897,7 +10897,7 @@ var msiSpaceUtils =
     italicCorrectionSpace : {dimensions: "0.083en", charContent: "&#x200a;"},   //the "HAIR SPACE" in Unicode?
     negativeThinSpace :     {dimensions: "0.0em"},
     zeroSpace :             {dimensions: "0.0em", charContent: "&#x200b;"},
-    noIndent :              {dimensions: "0.0em", showInvisibleChars: "&#x2190;"} 
+    noIndent :              {dimensions: "0.0em", showInvisibleChars: "&#x2190;"}
   },
 
   vSpaceInfo : {
@@ -10919,7 +10919,7 @@ var msiSpaceUtils =
 //    lineBreak:              {charContent: "<br xmlns=\"" + xhtmlns + "\"></br>", showInvisibleChars: "&#x21b5;"},
 //    newLine:                {charContent: "<br xmlns=\"" + xhtmlns + "\"></br>", showInvisibleChars: "&#x21b5;"}
   },
-  
+
   spaceInfoFromChars : function(charStr)
   {
     var retData = null;
@@ -11135,7 +11135,7 @@ function addDataToFile(aFilePath, aDataStream)
 
   var localFileInstance;
   var outputStream;
-  
+
   var LocalFileInstance = Components.classes[LOCALFILE_CTRID].createInstance(nsILocalFile);
   LocalFileInstance.initWithPath(aFilePath);
 
@@ -11353,14 +11353,14 @@ function setStyleAttribute(elem, attribute, value )
         found = true;
       foundindex = i;
       }
-      array[i] = array[i].join(":"); 
-  }  
-  if (value===null && found) array.splice(foundindex,1);  
+      array[i] = array[i].join(":");
+  }
+  if (value===null && found) array.splice(foundindex,1);
   var outStyleString = array.join(";");
   if (!found)  outStyleString = attribute+": "+value+"; "+outStyleString;
   elem.setAttribute("style", outStyleString);
 }
-      
+
 
 function msiToPixels(distance,unit)
 {
@@ -11403,7 +11403,7 @@ SS_Timer.prototype.callback_ = function()
 
 
 /**
- * Cancel this timer 
+ * Cancel this timer
  */
 SS_Timer.prototype.cancel = function() {
   if (!this.timer_) {
@@ -11422,14 +11422,14 @@ SS_Timer.prototype.cancel = function() {
 
 /*
  * Invoked by the timer when it fires
- * 
- * @param timer Reference to the nsITimer which fired (not currently 
+ *
+ * @param timer Reference to the nsITimer which fired (not currently
  *              passed along)
  */
 SS_Timer.prototype.notify = function(timer) {
   // fire callback and save results
   var ret = this.callback_();
-  
+
   return ret;
 }
 
@@ -11452,8 +11452,8 @@ function processingInstructionsList( doc, target, fNodes )
   var treeWalker = doc.createTreeWalker(
     doc,
     NodeFilter.SHOW_PROCESSING_INSTRUCTION,
-    { 
-      acceptNode: function(node) { 
+    {
+      acceptNode: function(node) {
         if (node.target === target)
           return NodeFilter.FILTER_ACCEPT;
         else return NodeFilter.FILTER_REJECT; }
@@ -11498,8 +11498,8 @@ function deleteProcessingInstructions( doc, target )
   var treeWalker = doc.createTreeWalker(
     doc,
     NodeFilter.SHOW_PROCESSING_INSTRUCTION,
-    { 
-      acceptNode: function(node) { 
+    {
+      acceptNode: function(node) {
         if (node.target === target)
           return NodeFilter.FILTER_ACCEPT;
         else return NodeFilter.FILTER_REJECT; }
@@ -11570,7 +11570,7 @@ function getUserResourceFile( name, resdirname )
   }
   return userAreaFile;
 }
- 
+
 
 
 
@@ -11583,10 +11583,10 @@ function getResourceFile( name, resdirname )
   if (resfile) {
     if (resdirname && resdirname.length > 0) resfile.append(resdirname);
     resdir.append(name);
-  }    
+  }
   return resfile;
 }
- 
+
 var wordSep = /\s+/;  // this needs to be localizable BBM
 
 function countNodeWords(node) //the intent is to count words in a text node
@@ -11612,11 +11612,11 @@ function countWords(doc)
   var thisNode;
   try {
     var thisNode = iterator.iterateNext();
-  
+
     while (thisNode) {
       wordcount += countNodeWords(thisNode);
       thisNode = iterator.iterateNext();
-    }   
+    }
   }
   catch (e) {
     dump( 'Error: Document tree modified during iteration ' + e );
@@ -11629,7 +11629,7 @@ function getTagsXPath( editor, tagcategory ) // tagcategory is one of texttag, p
   var tagarray, taglist, theTagManager, i, length, xpath;
   theTagManager = editor ? editor.tagListManager : null;
   if (!theTagManager) return;
-  taglist = theTagManager.getTagsInClass(tagcategory,',',false); 
+  taglist = theTagManager.getTagsInClass(tagcategory,',',false);
   tagarray = taglist.split(',');
   length = tagarray.length;
   xpath = "";
@@ -11654,11 +11654,11 @@ function gotoFirstNonspaceInElement( editor, node )
   firstNode = treeWalker.nextNode();
   if (firstNode){
     editor.selection.collapse(firstNode,0);
-	currNode = firstNode;
+  currNode = firstNode;
   }
   else{
     editor.selection.collapse(node,0);
-	currNode = node;
+  currNode = node;
   }
   // put the selection at the beginning of the first text node in case there is only white space
   for ( ; currNode !== null; currNode = treeWalker.nextNode())
@@ -11671,7 +11671,7 @@ function gotoFirstNonspaceInElement( editor, node )
     }
   }
   var selectionController = editor.selectionController;
-  selectionController.scrollSelectionIntoView(selectionController.SELECTION_NORMAL,selectionController.SELECTION_ANCHOR_REGION, 
+  selectionController.scrollSelectionIntoView(selectionController.SELECTION_NORMAL,selectionController.SELECTION_ANCHOR_REGION,
     false);
 }
 
@@ -11692,14 +11692,14 @@ function updateTextNumber(textelement, id, event)
     var selEnd = textelement.selectionEnd;
     var keycode = event.keyCode;
     var charcode = event.charCode;
-  
+
     if (keycode === event.DOM_VK_BACK_SPACE) {
       if (selStart > 0) {
         selStart--;
         val = val.slice(0,selStart)+val.slice(selEnd);
       }
     }
-    else 
+    else
     if (keycode === event.DOM_VK_DELETE) {
       selEnd++;
       val = val.slice(0,selStart)+val.slice(selEnd);
@@ -11714,7 +11714,7 @@ function updateTextNumber(textelement, id, event)
     else return;
     // now check to see if we have a string
     try {
-      if (!isNaN(Number(val))) 
+      if (!isNaN(Number(val)))
       {
         textelement.value = val;
         textelement.setSelectionRange(selStart, selStart)
@@ -11762,8 +11762,8 @@ function goDown(id)
 function msiFileURLFromAbsolutePath( absPath )
 {
   try {
-    var file = Components.classes["@mozilla.org/file/local;1"].  
-                         createInstance(Components.interfaces.nsILocalFile);  
+    var file = Components.classes["@mozilla.org/file/local;1"].
+                         createInstance(Components.interfaces.nsILocalFile);
     file.initWithPath( absPath );
     return msiFileURLFromFile( file );
   }
@@ -11772,7 +11772,7 @@ function msiFileURLFromAbsolutePath( absPath )
     dump("//// error in msiFileURLFromAbsolutePath: "+e.message+"\n");
     return null;
   }
-}                       
+}
 
 function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
 {
@@ -11782,7 +11782,7 @@ function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
     dump("In msiFileURLFromChrome, path [" + chromePath + "] isn't a chrome URL! Returning null.\n");
     return retPath;
   }
-   
+
   var ios = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
   var uri = ios.newURI(chromePath, "UTF-8", null);
   var cr = Components.classes['@mozilla.org/chrome/chrome-registry;1'].getService(Components.interfaces.nsIChromeRegistry);
@@ -11802,19 +11802,19 @@ function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
 
 function msiFileURLFromFile( file )
 {
-  // file is nsIFile  
-  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
-                      getService(Components.interfaces.nsIIOService);  
-  return ios.newFileURI(file);  
+  // file is nsIFile
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                      getService(Components.interfaces.nsIIOService);
+  return ios.newFileURI(file);
 }
 
 function msiURIFromString(str)
 {
-  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
-                      getService(Components.interfaces.nsIIOService);  
-  return ios.newURI(str, null, null);  
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                      getService(Components.interfaces.nsIIOService);
+  return ios.newURI(str, null, null);
 }
-  
+
 function msiFileURLStringFromFile( file )
 {
   return  msiFileURLFromFile( file ).spec;
@@ -11830,12 +11830,12 @@ function msiFileFromFileURL(url)
     dump("Error in msiFileFromFileURL: url = "+url.spec+" "+e.message+"\n");
   }
 }
-  
+
 function msiPathFromFileURL( url )     // redundant BBM: remove instances of this or of GetFilePath
 {
   //return GetFilepath( url );
   // or
-  return msiFileFromFileURL(url).path; 
+  return msiFileFromFileURL(url).path;
 }
 
 
@@ -11863,7 +11863,7 @@ function unionArrayWith(theArray, otherArray)
   return theArray;
 }
 
- 
+
 function openAllSubdocs()
 {
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
@@ -11878,31 +11878,31 @@ function openAllSubdocs()
     if (!theTagManager) return;
     var taglist;
     var list;
-    taglist = theTagManager.getTagsInClass('structtag',',',false); 
+    taglist = theTagManager.getTagsInClass('structtag',',',false);
     tagarray = taglist.split(',');
     var i,j;
     for (i=0; i<tagarray.length; i++)
     {
       list=doc.getElementsByTagName(tagarray[i]);
       for (j=0; j<list.length; j++)
-      {                          
+      {
         if (list[j].hasAttribute("subdoc") && list[j].hasAttribute("open")
           && list[j].getAttribute("open") === "false")
         {
           var node = list[j];
           var fname = node.getAttribute("subdoc");
-          var ioService = Components.classes['@mozilla.org/network/io-service;1']  
-                .getService(Components.interfaces.nsIIOService);  
-          var fileHandler = ioService.getProtocolHandler('file')  
-                  .QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
-          var file = fileHandler.getFileFromURLSpec(node.baseURI);  
+          var ioService = Components.classes['@mozilla.org/network/io-service;1']
+                .getService(Components.interfaces.nsIIOService);
+          var fileHandler = ioService.getProtocolHandler('file')
+                  .QueryInterface(Components.interfaces.nsIFileProtocolHandler);
+          var file = fileHandler.getFileFromURLSpec(node.baseURI);
           file = file.parent; // and now it points to the working directory
           file.append(fname+".xml");
           // now convert to URL
-          var url = ioService.newFileURI(file);  
-          var fileURL = url.spec;  
+          var url = ioService.newFileURI(file);
+          var fileURL = url.spec;
           var req = new XMLHttpRequest();
-          req.open("GET", fileURL, false); 
+          req.open("GET", fileURL, false);
           req.send(null);
           // print the name of the root element or error message
           var dom = req.responseXML;
@@ -11915,7 +11915,7 @@ function openAllSubdocs()
           i++;
           while (i < children.length){
             node.appendChild(doc.adoptNode(children[i]));
-          } 
+          }
           list[j].setAttribute("open","true");
           file.remove(false);
         }
@@ -11925,27 +11925,27 @@ function openAllSubdocs()
   catch(e)
   {
     dump(e.message+"\n");
-  }    
-}          
+  }
+}
 
 /* The following code is for pretty printing. The idea is to cause little change in the text form for little
    changes in the document. This is done by having canonical indents for all elements (except text tags
    will be inline), and to change the line breaks minimally. That is long lines will be broken, very short lines
    will be consolidated, but the changes should not propagate to the end of a paragraph. */
 
-var indentIncrement = "  ";  // should eventually come from a user 
+var indentIncrement = "  ";  // should eventually come from a user
 var maxLengthDefault = 100; // should come from prefs; if a line is longer than this, we must break it
 var minLengthDefault = 60; // if a line is shorter than this, we at least try to consolidate it
-var maxLength; 
-var minLength; 
-var reallyMinLength = 50; 
+var maxLength;
+var minLength;
+var reallyMinLength = 50;
 
 function replacer(str, p1, p2, offset, s)
 {
   switch (str)
   {
     case "\"": return "&quot;"; break;
-    case "&" : return "&amp;"; break; 
+    case "&" : return "&amp;"; break;
     case "<" : return "&lt;"; break;
     case ">" : return "&gt;"; break;
     default: return str; break;
@@ -11955,7 +11955,7 @@ function replacer(str, p1, p2, offset, s)
 function reversereplacer(str, p1, p2, offset, s)
 {
   switch (str)
-  { 
+  {
     case "&quot;": return "\""; break;
     case "&lt;"  : return "<"; break;
     case "&gt;"  : return ">"; break;
@@ -11975,7 +11975,7 @@ function decodeEntities(instring)
 
 
 function isEmptyText(textnode)
-{                                                                   
+{
   return !/\S/.test(textnode.textContent);
 }
 
@@ -11986,7 +11986,7 @@ function writeLineInPieces( output, currentline )
   while (currentline.s.length > 0)
   {
     L = currentline.s.length;
-		if (L < maxLength || L >= lastLength) // this assures us we get out of the while loop
+    if (L < maxLength || L >= lastLength) // this assures us we get out of the while loop
     {
       output.s += currentline.s.replace("\n"," ", "g") + "\n";
       currentline.s = "";
@@ -11999,14 +11999,14 @@ function writeLineInPieces( output, currentline )
       if (index < 0 || index > maxLength)
       { // no linebreaks where we want. Look harder at shorter lines
         index = currentline.s.indexOf("\n", reallyMinLength);
-      } 
-      if (index >=0 && index <= maxLength) 
+      }
+      if (index >=0 && index <= maxLength)
       {
         firstLine = currentline.s.substr(0,index);
         output.s += firstLine.replace("\n"," ","g")+"\n";
         firstLine = currentline.s.substr(index+1);
         currentline.s = firstLine;
-      }    
+      }
       else // no convenient linebreaks, look for spaces
       {
         index = currentline.s.lastIndexOf(" ", maxLength);
@@ -12023,8 +12023,8 @@ function writeLineInPieces( output, currentline )
         if (!forced) index++;
         firstLine = currentline.s.substr(index);
         currentline.s = firstLine;
-      }                                                              
-    }                                              
+      }
+    }
   }
 }
 
@@ -12033,9 +12033,9 @@ function newline(output, currentline, indent)
   if (/\S/.test(currentline.s))
   {
     writeLineInPieces(output, currentline);
-  }    
+  }
   currentline.s ="";
-  if (indent) 
+  if (indent)
     for (var i = 0; i < indent; i++) currentline.s += indentIncrement;
 }
 
@@ -12050,19 +12050,19 @@ function isInlineElement(editor, element)
   if (tagclass === "texttag" || tagclass === "othertag" || tagclass.length === 0) return true;
   return false;
 }
-  
+
 /* ELEMENT_NODE =1 */
 function processElement( editor, node, treeWalker, output, currentline, indent )
 {
 //  dump("ProcessElement, indent = "+indent+"\n");
   var inline = isInlineElement(editor, node);
-  if (!inline) 
+  if (!inline)
     newline(output, currentline, indent);
   currentline.s += "<" + node.nodeName;
   if (node.hasAttributes())
   {
     var attrs = node.attributes;
-    var len = attrs.length;   
+    var len = attrs.length;
     for (var i = 0; i < len; i++)
     {
       if ((attrs[i].name.indexOf("-moz-") === -1)
@@ -12070,12 +12070,12 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
          &&(attrs[i].name!=="msiSelectionManagerID"))
         currentline.s += ' '+attrs[i].name + '="' +attrs[i].value+'"';
     }
-  }   
+  }
   var child = treeWalker.firstChild();
   if (child)
   {
     currentline.s += ">";
-    while (child) 
+    while (child)
     {
       processNode(editor, child, treeWalker, output, currentline, indent+1);
       treeWalker.currentNode = child;
@@ -12086,8 +12086,8 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
     currentline.s += "</"+node.nodeName+">";
   }
   else currentline.s +="/>";
-  if (!inline) newline(output, currentline, indent);   
-}       
+  if (!inline) newline(output, currentline, indent);
+}
 
 /* ATTRIBUTE_NODE = 2, handled in element code
    TEXT_NODE = 3*/
@@ -12095,7 +12095,7 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
 function processText( node, output, currentline)
 {
     if ( !isEmptyText(node)) currentline.s += encodeEntities((node.textContent.replace(/\s+/," ","g")));
-}                                                        
+}
 
 /* CDATA_SECTION_NODE = 4 */
 
@@ -12108,7 +12108,7 @@ function processCData( node, output, currentline, indent )
 
 /* ENTITY_REFERENCE_NODE = 5
    ENTITY_NODE = 6 */
-   
+
 /* PROCESSING_INSTRUCTION_NODE = 7 */
 
 function processPINode (node, output, currentline, indent)
@@ -12116,7 +12116,7 @@ function processPINode (node, output, currentline, indent)
   newline(output, currentline, 0);
   currentline.s += "<?"+node.target+" "+node.data+"?>";
   newline(output, currentline, indent);
-}   
+}
 
 /* COMMENT_NODE = 8*/
 
@@ -12136,7 +12136,7 @@ function processDocument(editor, node, treeWalker, output, currentline, indent )
   currentline.s += '<?xml version="1.0" encoding="UTF-8"?>';
   newline(output, currentline, 0);
   var child = treeWalker.firstChild();
-  while (child) 
+  while (child)
   {
     processNode(editor, child, treeWalker, output, currentline, indent);
     treeWalker.currentNode = child;
@@ -12156,32 +12156,32 @@ function processDocumentType(node, output, currentline, indent)
 
 function processNode( editor, node, treeWalker, output, currentline, indent)
 {
-  switch (node.nodeType) {                                                    
-    case 1: //Node.ELEMENT_NODE: 
-      processElement(editor, node, treeWalker, output, currentline, indent); 
+  switch (node.nodeType) {
+    case 1: //Node.ELEMENT_NODE:
+      processElement(editor, node, treeWalker, output, currentline, indent);
       break;
-    case 3: //Node.TEXT_NODE: 
-      processText(node, output, currentline); 
+    case 3: //Node.TEXT_NODE:
+      processText(node, output, currentline);
       break;
-    case 4:  //Node.CDATA_SECTION_NODE: 
-      processCData(node, output, currentline, indent); 
+    case 4:  //Node.CDATA_SECTION_NODE:
+      processCData(node, output, currentline, indent);
       break;
-    case 7: //Node.PROCESSING_INSTRUCTION_NODE: 
-      processPINode( node, output, currentline, indent); 
+    case 7: //Node.PROCESSING_INSTRUCTION_NODE:
+      processPINode( node, output, currentline, indent);
       break;
-    case 8: //Node.COMMENT_NODE: 
-      processComment( node, output, currentline, indent); 
+    case 8: //Node.COMMENT_NODE:
+      processComment( node, output, currentline, indent);
       break;
-    case 9: //Node.DOCUMENT_NODE: 
-      processDocument(editor, node, treeWalker, output, currentline, indent); 
+    case 9: //Node.DOCUMENT_NODE:
+      processDocument(editor, node, treeWalker, output, currentline, indent);
       break;
-    case 10: //Node.DOCUMENT_NODE: 
-      processDocumentType(node, output, currentline, indent); 
+    case 10: //Node.DOCUMENT_NODE:
+      processDocumentType(node, output, currentline, indent);
       break;
-    default:  
-      newline(output, currentline, 0); 
-      currentline.s += "Stub for node type "+node.nodeType; 
-      newline(output, currentline, indent); 
+    default:
+      newline(output, currentline, 0);
+      currentline.s += "Stub for node type "+node.nodeType;
+      newline(output, currentline, indent);
       break;
   }
 }
@@ -12192,7 +12192,7 @@ function prettyprint(editor)
   var output = new Object();
   output.s = "";
   var currentline = new Object;
-  currentline.s = "";          
+  currentline.s = "";
   var indent = 0;
   if (!editor) {
     var editorElement = msiGetActiveEditorElement();
@@ -12217,9 +12217,9 @@ function prettyprint(editor)
   dump("First node is "+treeWalker.root.nodeName+"\n");
   processNode(editor, treeWalker.root, treeWalker, output, currentline, indent);
   return output.s;
-} 
-  
- 
+}
+
+
 function getSelectionParentByTag( editor, tagname)
 {
   var sel = editor.selection;
@@ -12232,9 +12232,9 @@ function getSelectionParentByTag( editor, tagname)
 
 function getEventParentByTag( event, tagname)
 {
-	var node = event.target;
-	while (node && node.tagName !== tagname) node = node.parentNode;
-	if (node && node.tagName === tagname) return node;
+  var node = event.target;
+  while (node && node.tagName !== tagname) node = node.parentNode;
+  if (node && node.tagName === tagname) return node;
 }
 
 
@@ -12257,161 +12257,161 @@ function getFileAsString( url )
 {
   var req = new XMLHttpRequest();
   req.overrideMimeType("text/plain");
-  req.open('GET', url, false);   
-  req.send(null);  
+  req.open('GET', url, false);
+  req.send(null);
   if (req.status === 0)
     return req.responseText;
   else
     return null;
 }
 
-function addLanguagesToTagDefs(lang1, lang2)	
+function addLanguagesToTagDefs(lang1, lang2)
 {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-	var babelTags = editor.tagListManager.getBabelTags();
-	var tagArray = babelTags.split(",");
-	var i;
-	var lang;
-	for (i = 0; i < tagArray.length; i++)
-	{
-		var index = i+1;
-		tag = tagArray[i];
-		hidden = editor.tagListManager.getStringPropertyForTag( tag, null, "hidden");
-		if (index%2 === 1) lang = lang1;
-		else lang = lang2;
-		if (lang)	
-		{
-			needsResetting = true;
-			editor.tagListManager.setTagVisibility(tag, null, false);
-			if (index < 3)
-			{
-				editor.tagListManager.setTagName(tag, null, "text"+ lang);
-			}
-			else
-			{
-				editor.tagListManager.setTagName(tag, null, (lang==="arabic" ? "Arabic" : lang) )
-			}
-		}
-		else
-		{
-			lang = "##lang" + (1 + index%2).toString();
-			editor.tagListManager.setTagVisibility(tag, null, true);
-			if (index < 3)
-			{
-				editor.tagListManager.setTagName(tag, null, "text"+ lang);
-			}
-			else
-			{
-				editor.tagListManager.setTagName(tag, null, lang);
-			}			
-		}
-	}
-	//if (needsResetting)
-	editor.tagListManager.rebuildHash();
-	buildAllTagsViewStylesheet(editor);	
+  var babelTags = editor.tagListManager.getBabelTags();
+  var tagArray = babelTags.split(",");
+  var i;
+  var lang;
+  for (i = 0; i < tagArray.length; i++)
+  {
+    var index = i+1;
+    tag = tagArray[i];
+    hidden = editor.tagListManager.getStringPropertyForTag( tag, null, "hidden");
+    if (index%2 === 1) lang = lang1;
+    else lang = lang2;
+    if (lang)
+    {
+      needsResetting = true;
+      editor.tagListManager.setTagVisibility(tag, null, false);
+      if (index < 3)
+      {
+        editor.tagListManager.setTagName(tag, null, "text"+ lang);
+      }
+      else
+      {
+        editor.tagListManager.setTagName(tag, null, (lang==="arabic" ? "Arabic" : lang) )
+      }
+    }
+    else
+    {
+      lang = "##lang" + (1 + index%2).toString();
+      editor.tagListManager.setTagVisibility(tag, null, true);
+      if (index < 3)
+      {
+        editor.tagListManager.setTagName(tag, null, "text"+ lang);
+      }
+      else
+      {
+        editor.tagListManager.setTagName(tag, null, lang);
+      }
+    }
+  }
+  //if (needsResetting)
+  editor.tagListManager.rebuildHash();
+  buildAllTagsViewStylesheet(editor);
 }
 
 function addLanguageTagsFromBabelTag(doc)
 {
-	var babeltags = doc.getElementsByTagName("babel");
-	var babeltag;
-	if (babeltags && babeltags.length > 0)
-	{
-		var lang1;
-		var lang2;
-		babeltag = babeltags[0];
-		lang1 = babeltag.getAttribute("lang1");
-		lang2 = babeltag.getAttribute("lang2");
-		if (lang1 || lang2)
-		{
-			addLanguagesToTagDefs(lang1, lang2);
-		}
-	}
+  var babeltags = doc.getElementsByTagName("babel");
+  var babeltag;
+  if (babeltags && babeltags.length > 0)
+  {
+    var lang1;
+    var lang2;
+    babeltag = babeltags[0];
+    lang1 = babeltag.getAttribute("lang1");
+    lang2 = babeltag.getAttribute("lang2");
+    if (lang1 || lang2)
+    {
+      addLanguagesToTagDefs(lang1, lang2);
+    }
+  }
 }
 
 function buildAllTagsViewStylesheet(editor)
 {
-	var templatefile = msiFileFromFileURL(msiURIFromString("resource://app/res/css/tagtemplate.css"));
-	var data = "";  
-	var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].  
-	                        createInstance(Components.interfaces.nsIFileInputStream);  
-	var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].  
-	                        createInstance(Components.interfaces.nsIConverterInputStream);  
-	fstream.init(templatefile, -1, 0, 0);  
-	cstream.init(fstream, "UTF-8", 0, 0);  
+  var templatefile = msiFileFromFileURL(msiURIFromString("resource://app/res/css/tagtemplate.css"));
+  var data = "";
+  var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].
+                          createInstance(Components.interfaces.nsIFileInputStream);
+  var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].
+                          createInstance(Components.interfaces.nsIConverterInputStream);
+  fstream.init(templatefile, -1, 0, 0);
+  cstream.init(fstream, "UTF-8", 0, 0);
 
-	var templatestr = {};
-  cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
-  data = templatestr.value;  
-	cstream.close(); // this closes fstream  
-	var classtemplates = data.split(/\-{4,}/);
-	var j;
-	for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
-
-
-	var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
-	var taglist;
-	var i;
-	var k;
-	var str = "";
-	var ok;
-	var classname;
-	var classtemplate;
-	for (j = 0; j < tagclasses.length; j++)
-	{
-	  ok = false;
-	  classname= tagclasses[j];
-	  for (k = 0; k < classtemplates.length; k++)
-	  {
-	    if (classtemplates[k].indexOf(classname)===0) 
-	    {
-	      classtemplate = classtemplates[k];
-	      ok = true;
-	      break;
-	    }
-	  }
-
-	  taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
-	  for (i = 0; i < taglist.length; i++)
-	  {
-	    if (taglist[i].length && taglist[i][0] !== "(")
-	      str += classtemplate.replace(classname,taglist[i],"g")+"\n";
-	  }
-	}
-
-	try {
-	  var htmlurlstring = editor.document.documentURI;;
-	  var htmlurl = msiURIFromString(htmlurlstring);
-	     // ... seems ok
-	  var htmlFile = msiFileFromFileURL(htmlurl);
-	   // Throws exception. htmlurl doesn't have nsIFileURL interface.
-	   // Can fix by setting the dialog shell in the prefs to something like
-	   // ...   "resource://app/res/StdDialogShell.xhtml"
-	   // and moving the file there in the build/install.
-
-	  var cssFile = htmlFile.parent;
- 
-	  cssFile.append("css");
-	  if (!cssFile.exists()) cssFile.create(1, 0755);
-   
-	  cssFile.append("msi_Tags.css");
-		if (cssFile.exists()) cssFile.remove(0);
-		cssFile.create(0, 0755);
+  var templatestr = {};
+  cstream.readString(-1, templatestr); // read the whole file and put it in str.value
+  data = templatestr.value;
+  cstream.close(); // this closes fstream
+  var classtemplates = data.split(/\-{4,}/);
+  var j;
+  for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
 
 
-	  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-	  fos.init(cssFile, -1, -1, false);
-	  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-	    .createInstance(Components.interfaces.nsIConverterOutputStream);
-	  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-	  os.writeString(str);
-	  os.close();
-	  fos.close();
-	}
-	catch (e) {
-	  dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
-	}
+  var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
+  var taglist;
+  var i;
+  var k;
+  var str = "";
+  var ok;
+  var classname;
+  var classtemplate;
+  for (j = 0; j < tagclasses.length; j++)
+  {
+    ok = false;
+    classname= tagclasses[j];
+    for (k = 0; k < classtemplates.length; k++)
+    {
+      if (classtemplates[k].indexOf(classname)===0)
+      {
+        classtemplate = classtemplates[k];
+        ok = true;
+        break;
+      }
+    }
+
+    taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
+    for (i = 0; i < taglist.length; i++)
+    {
+      if (taglist[i].length && taglist[i][0] !== "(")
+        str += classtemplate.replace(classname,taglist[i],"g")+"\n";
+    }
+  }
+
+  try {
+    var htmlurlstring = editor.document.documentURI;;
+    var htmlurl = msiURIFromString(htmlurlstring);
+       // ... seems ok
+    var htmlFile = msiFileFromFileURL(htmlurl);
+     // Throws exception. htmlurl doesn't have nsIFileURL interface.
+     // Can fix by setting the dialog shell in the prefs to something like
+     // ...   "resource://app/res/StdDialogShell.xhtml"
+     // and moving the file there in the build/install.
+
+    var cssFile = htmlFile.parent;
+
+    cssFile.append("css");
+    if (!cssFile.exists()) cssFile.create(1, 0755);
+
+    cssFile.append("msi_Tags.css");
+    if (cssFile.exists()) cssFile.remove(0);
+    cssFile.create(0, 0755);
+
+
+    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+    fos.init(cssFile, -1, -1, false);
+    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+      .createInstance(Components.interfaces.nsIConverterOutputStream);
+    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+    os.writeString(str);
+    os.close();
+    fos.close();
+  }
+  catch (e) {
+    dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
+  }
 }
 
 function msiEditorFindJustInsertedElement(tagName, editor)
@@ -12501,18 +12501,18 @@ function msiEditorFindJustInsertedElement(tagName, editor)
 
 function offsetOfChild(parent, child)
 {
-	var offset = 0;
-	if (child.parentNode != parent)
-	{
-		throw ("offsetOfChild: 'parent' must by parent of 'child'");
-	}
-	var node = parent.firstChild;
-	while (node && node != child)
-	{
-		node = node.nextSibling;
-		offset++;
-	}	
-	return offset;
+  var offset = 0;
+  if (child.parentNode != parent)
+  {
+    throw ("offsetOfChild: 'parent' must by parent of 'child'");
+  }
+  var node = parent.firstChild;
+  while (node && node != child)
+  {
+    node = node.nextSibling;
+    offset++;
+  }
+  return offset;
 }
 
 function tryUntilSuccessful(interval, timeout, funct)
@@ -12522,7 +12522,7 @@ function tryUntilSuccessful(interval, timeout, funct)
   count = 0;
   intervalId = setInterval(function () {
     if (funct()) {
-      clearInterval(intervalId);      
+      clearInterval(intervalId);
     } else if (count >= timeout) {
       clearInterval(intervalId);
     } else {

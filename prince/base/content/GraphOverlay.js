@@ -27,7 +27,7 @@ Graph.prototype = {
                               "YTickCount", "AxesTips", "GridLines", "BGColor", "Dimension",
                               "AxisScale", "CameraLocationX", "CameraLocationY", "CameraLocationZ",
                               "FocalPointX", "FocalPointY", "FocalPointZ", "UpVectorX", "UpVectorY",
-                              "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp", 
+                              "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp",
                               "OrientationTiltTurn"],
   GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace"],
   constructor: Graph,
@@ -46,7 +46,7 @@ Graph.prototype = {
   },
   getNumPlots: function () {
     return (this.plots.length);
-  },  
+  },
   isModified: function (x) {
     return (this.modFlag[x]);
   },
@@ -74,7 +74,7 @@ Graph.prototype = {
     RestoreCursor(editorElement);
   },
   computeQuery: function (plot) {
-    // call the compute engine to guess at graph attributes 
+    // call the compute engine to guess at graph attributes
     // If plot is not null, then we build a graph with a single plot to send to the engine.
     // Otherwise, all the plots that are children of the graph are included
     var str = this.serializeGraph(plot);
@@ -170,7 +170,7 @@ Graph.prototype = {
         DOMGs.setAttribute(attr, value);
       }
     }
-    
+
     // if the optional plot number was specified, just include one plot
     // otherwise, for each plot, create a <plot> element
     // Clear out current plots first
@@ -227,7 +227,7 @@ Graph.prototype = {
     DOMPw = DOMGraph.getElementsByTagName("plotwrapper");
     if (DOMPw.length > 0) {
       DOMPw = DOMPw[0];
-    }    
+    }
     DOMPlots = DOMGraph.getElementsByTagName("plot");
     for (i = 0; i < DOMPlots.length; i++) {
       plot = new Plot();
@@ -252,7 +252,7 @@ Graph.prototype = {
     basenode = DOMCaption.getElementsByTagName("imagecaption");
     if (basenode.length > 0) {
       basenode = basenode[0];
-    } 
+    }
     else {
       return;
     }
@@ -272,7 +272,7 @@ Graph.prototype = {
         msidump("Preference Error", "Can't find preference for " + keyname + "\n");
         value = "";
       }
-    } 
+    }
     else if (prefs.getPrefType(keyname) === prefs.PREF_BOOL) {
       value = prefs.getBoolPref(keyname);
     }
@@ -331,15 +331,15 @@ Graph.prototype = {
     // the filename that computeGraph uses is the one in the graph structure
     this.computeGraph(editorElement);
     // if the new file exists, delete the old one
-    file = Components.classes["@mozilla.org/file/local;1"].  
-                         createInstance(Components.interfaces.nsILocalFile);  
+    file = Components.classes["@mozilla.org/file/local;1"].
+                         createInstance(Components.interfaces.nsILocalFile);
     file.initWithPath( makeRelPathAbsolute(filename, editorElement)) ;
     if (file.exists())
     {
       try {
         file.remove(false);
       }
-      catch (e) 
+      catch (e)
       {
       }
     }
@@ -445,18 +445,18 @@ Plot.prototype = {
         attr = attrs[i];
   //      if (this.isModified[attr] || forComp) {
           var value = this.attributes[attr];
-          if (value && (value != "") && (value != "unspecified"))
+          if (value && (value !== "") && (value !== "unspecified"))
              DOMPlot.setAttribute (attr, value);
   //      }
       }
       // do the plot elements as document fragment children of <plot>
       attrs = (forComp) ? this.plotCompElementList() : this.plotElementList();
-      for (var i=0; i<attrs.length; i++) {
+      for (i=0; i<attrs.length; i++) {
         attr = attrs[i];
         if (forComp || (this.element[attr])) {
           var DOMEnode = doc.createElement(attr);
           var textval = this.element[attr];
-          if ((textval != "") && (textval != "unspecified")) {
+          if ((textval !=="") && (textval !== "unspecified")) {
             var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
             DOMEnode.appendChild (tNode.documentElement);
             DOMPlot.appendChild (DOMEnode);
@@ -479,17 +479,17 @@ Plot.prototype = {
         attr = attrs[i];
         //      if (this.isModified[attr] || forComp) {
         var value = this.attributes[attr];
-        if (value && (value != "") && (value != "unspecified")) DOMPlot.setAttribute(attr, value);
+        if (value && (value !== "") && (value !== "unspecified")) DOMPlot.setAttribute(attr, value);
         //      }
       }
       // do the plot elements as document fragment children of <plot>
       attrs = (forComp) ? this.plotCompElementList() : this.plotElementList();
-      for (var i = 0; i < attrs.length; i++) {
+      for (i = 0; i < attrs.length; i++) {
         attr = attrs[i];
         if (forComp || (this.element[attr])) {
           var DOMEnode = doc.createElement(attr);
           var textval = this.element[attr];
-          if ((textval != "") && (textval != "unspecified")) {
+          if ((textval !== "") && (textval !== "unspecified")) {
             var tNode = (new DOMParser()).parseFromString(textval, "text/xml");
             DOMEnode.appendChild(tNode.documentElement);
             DOMPlot.appendChild(DOMEnode);
@@ -532,7 +532,7 @@ Plot.prototype = {
   getPlotValue: function (key) {
     // look up the value key. If not found, look up the default value.
     var value = this[key];
-    if ((value != null) && (value != "")) {
+    if ((value !== null) && (value !== "")) {
       return value;
     }
     var ptype = this.PlotType;
@@ -601,6 +601,7 @@ Plot.prototype = {
         break;
       case 'ConfHorizontalPts':
         value = "15";
+        break;
       case 'ConfVerticalPts':
         value = "15";
         break;
@@ -608,7 +609,7 @@ Plot.prototype = {
         //        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
       case 'Expression':
         value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi tempinput='true'></mi></math>";
-
+        break;
       default:
         value = "";
       }
@@ -703,7 +704,7 @@ Plot.prototype = {
     this.setModified(name);
   },
   computeQuery: function () {
-    // call the compute engine to guess at graph attributes 
+    // call the compute engine to guess at graph attributes
     this.parent.computeQuery(this);
   }
 };
@@ -747,7 +748,7 @@ Frame.prototype = {
     }
     catch (e) {
       m = e.message;
-      return ""
+      return "";
     }
   },
   frameAttributeList: function () {
@@ -784,7 +785,7 @@ Frame.prototype = {
             this.setFrameAttribute("placement", DOMFrame.getAttribute(att));
             break;
           case "placeLocation":
-            if (DOMFrame.getAttribute(att).length > 0) { 
+            if (DOMFrame.getAttribute(att).length > 0) {
               this.setFrameAttribute("placeLocation", DOMFrame.getAttribute(att));
             }
             break;
@@ -905,7 +906,7 @@ Frame.prototype = {
           break;
         case "border":
           editor.setAttribute(DOMPw, "borderw", this.getFrameAttribute(att));
-          pwStyle += "border: " + unitHandler.getValueStringAs(this.getFrameAttribute(att),"px") + 
+          pwStyle += "border: " + unitHandler.getValueStringAs(this.getFrameAttribute(att),"px") +
             " solid " + cssColor(this.getFrameAttribute("borderColor")) + "; ";
           break;
         case "padding":
@@ -942,7 +943,7 @@ Frame.prototype = {
           editor.setAttribute(DOMFrame, att, captionlocation);
           break;
         case "floatPlacement":
-          if (this.getFrameAttribute("placement") === "float") 
+          if (this.getFrameAttribute("placement") === "float")
           {
             editor.setAttribute(DOMFrame, "placement", this.getFrameAttribute(att));
           }
@@ -994,7 +995,7 @@ Frame.prototype = {
       }
       var border = unitHandler.getValueStringAs(this.getFrameAttribute("border"), "px");
       // put the graph file in
-      // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use 
+      // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use
       // the load API
       if (false) { //DOMObj.load) {
         DOMObj.load(graph.getGraphAttribute("ImageFile"));
@@ -1023,7 +1024,7 @@ Frame.prototype = {
     catch (e) {
       msidump("reviseFrameDOMElement "+e.message);
     }
-  },
+  }
 };
 
 function newPlotFromText(currentNode, expression, editorElement) {
@@ -1093,7 +1094,7 @@ function addGraphElementToDocument(DOMGraphNode, siblingNode, editorElement) {
     if (!editorElement) editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     for (idx = 0;
-    (editor != null) && idx < parent.childNodes.length && siblingNode != parent.childNodes[idx]; idx++);
+    (editor != null) && idx < parent.childNodes.length && siblingNode !== parent.childNodes[idx]; idx++);
     editor.insertNode(DOMGraphNode, parent, idx + 1);
   }
 }
@@ -1107,7 +1108,7 @@ function createUniqueFileName(name, ext) {
   //  where <path>, relative to the current document directory, is <docdir_files>/plots/
   //  There must be a current document directory
   //  <date> is the system time from the Date method.
-  // now gin up a unique name  
+  // now gin up a unique name
   var newdate = new Date();
   var fn = name + newdate.getTime() + "." + ext;
   return fn;
@@ -1148,7 +1149,7 @@ function makeRelPathAbsolute(relpath, editorElement) {
     var currdocdirectory;
     var urlstring = msiGetEditorURL(editorElement);
     var url = msiURIFromString(urlstring);
-    var documentfile = msiFileFromFileURL(url);
+    documentfile = msiFileFromFileURL(url);
 
     currdocdirectory = documentfile.parent.clone();
     var pathParts = relpath.split("/");
@@ -1176,16 +1177,12 @@ function insertGraph(siblingElement, graph, editorElement) {
   var url = msiURIFromString(urlstring);
   var documentfile = msiFileFromFileURL(url);
   var plotfile;
+  var docauxdirectory;
+  var currdocdirectory;
   try {
     leaf = createUniqueFileName("plot", filetype);
-    var documentfile;
-    var docauxdirectory;
-    var currdocdirectory;
-    var urlstring = msiGetEditorURL(editorElement);
-    var url = msiURIFromString(urlstring);
-    var documentfile = msiFileFromFileURL(url);
-    var plotfile = documentfile.clone();
-    var plotfile = plotfile.parent;
+    plotfile = documentfile.clone();
+    plotfile = plotfile.parent;
     plotfile.append("plots");
     if (!plotfile.exists()) plotfile.create(1, 0755);
     plotfile.append(leaf);
@@ -1254,13 +1251,13 @@ function wrapmi(thing) {
   return ("<mi>" + thing + "</mi>");
 }
 function graphSaveVars(varList, plot) {
-  if (varList[0] != "") {
+  if (varList[0] !== "") {
     plot.element["XVar"] = wrapMath(wrapmi(varList[0]));
   }
-  if (varList[1] != "") {
+  if (varList[1] !== "") {
     plot.element["YVar"] = wrapMath(wrapmi(varList[1]));
   }
-  if (varList[2] != "") {
+  if (varList[2] !== "") {
     plot.element["ZVar"] = wrapMath(wrapmi(varList[2]));
   }
 }
@@ -1346,9 +1343,9 @@ function testQueryGraph(domgraph, editorElement) {
 function parseQueryReturn(out, graph, plot) {
   //================================================================================
   // The engine has simply run eval(expression) and out is the mathml returned.
-  // (1) identify the plot parameters by looking for <mi>s and assign them to 
+  // (1) identify the plot parameters by looking for <mi>s and assign them to
   //     the plot variables. Warn if there are problems
-  // (2) Try to identify the type of plot 
+  // (2) Try to identify the type of plot
   var stack = [];
   var level = 0;
   var result;
@@ -1359,7 +1356,7 @@ function parseQueryReturn(out, graph, plot) {
   var mathvars = false,
     commas = false;
 
-  // (1) try to identify all of the variables 
+  // (1) try to identify all of the variables
   //     Variables are indicated by <mi>, but these might also be mathnames of functions
   var count = 0;
   var index = 0;
@@ -1367,7 +1364,7 @@ function parseQueryReturn(out, graph, plot) {
   while ((start = out.indexOf("<mi", index)) >= 0) {
     mathvars = true;
     start = out.indexOf(">", start);
-    var stop = out.indexOf("</mi>", start) + 1; // find </mi>                                              
+    var stop = out.indexOf("</mi>", start) + 1; // find </mi>
     index = stop + 1;
     var v = out.slice(start + 1, stop - 1);
     if (nameNotIn(v, stack)) {
@@ -1388,7 +1385,7 @@ function parseQueryReturn(out, graph, plot) {
   if (variableList) graphSaveVars(variableList, plot);
 
   // (3) identify explicitList and parametric types
-  // graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");             
+  // graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");
   // Count the number of elements in the returned expression. If it's equal to the
   // dimension, set the plot type to parametric.
   var commalst = out.match(/<mo>,<\/mo>/g);
@@ -1472,7 +1469,7 @@ function nameNotIn(vin, list) {
   return ret;
 }
 function matchVarNames(variableList, animated) {
-  // Given a list of variable names, assign them to the x, y, z, and animation 
+  // Given a list of variable names, assign them to the x, y, z, and animation
   // variables for a plot
   var newVarList = ["", "", "", ""];
   var animVar = "";
@@ -1480,7 +1477,7 @@ function matchVarNames(variableList, animated) {
     yvar = -1,
     zvar = -1;
 
-  // If variableList contains "x", "y", or "z", match them to position 0, 1, 
+  // If variableList contains "x", "y", or "z", match them to position 0, 1,
   // or 2 respectively, but only if all of the predecessors are there.
   for (var i = 0; i < variableList.length; i++) {
     if ((variableList[i] === "x") || (variableList[i] === "X")) {
@@ -1505,9 +1502,9 @@ function matchVarNames(variableList, animated) {
     }
   }
 
-  // grab the animation variable ... 
+  // grab the animation variable ...
   if (animated) {
-    for (var i = 0; i < variableList.length; i++) {
+    for (i = 0; i < variableList.length; i++) {
       if ((variableList[i] === "t") || (variableList[i] === "T")) {
         animVar = variableList[i];
         variableList[i] = "";
@@ -1522,22 +1519,23 @@ function matchVarNames(variableList, animated) {
   for (oldptr = 0;
   ((oldptr < variableList.length) && (variableList[oldptr] === "")); oldptr++);
   for (newptr = 0;
-  ((newptr < newVarList.length) && (newVarList[newptr] != "")); newptr++);
+  ((newptr < newVarList.length) && (newVarList[newptr] !== "")); newptr++);
   while ((oldptr < variableList.length) && (newptr < newVarList.length)) {
-    if (oldptr < variableList.length && variableList[oldptr] != "") newVarList[newptr++] = variableList[oldptr++];
+    if (oldptr < variableList.length && variableList[oldptr] !== "") newVarList[newptr++] = variableList[oldptr++];
     for (;
     ((oldptr < variableList.length) && (variableList[oldptr] === "")); oldptr++);
     for (;
-    ((newptr < newVarList.length) && (newVarList[newptr] != "")); newptr++);
+    ((newptr < newVarList.length) && (newVarList[newptr] !== "")); newptr++);
   }
 
-  // insert animation var if it's there 
-  if ((animated) && (animVar != "")) {
+  // insert animation var if it's there
+  if ((animated) && (animVar !== "")) {
     newVarList[newptr] = animVar;
   }
-
   return newVarList;
 }
+
+
 function createPolarExpr(mathexp, variableList, plottype) {
   var newexp = stripMath(mathexp);
   newexp = "<mrow><mo>[</mo>" + newexp;
@@ -1552,6 +1550,7 @@ function createPolarExpr(mathexp, variableList, plottype) {
 function newVar(x) {
   return "o" + x;
 }
+
 function stripMath(mathexp) {
   var start = mathexp.indexOf("<math", 0);
   start = mathexp.indexOf(">", start) + 1;
@@ -1559,12 +1558,14 @@ function stripMath(mathexp) {
   var newexp = mathexp.slice(start, finish);
   return newexp;
 }
+
 function actualVarCount(variableList) {
   var i = 0;
   for (var j = 0; j < variableList.length; j++)
-  if (variableList[j] != "") i++;
+  if (variableList[j] !== "") i++;
   return i;
 }
+
 function cssColor(hexColor) {
   var regex = /^[#A-F0-9]/;
   var R, G, B;
@@ -1579,6 +1580,7 @@ function cssColor(hexColor) {
   }
   return hexColor;
 }
+
 var plotObserver = {
   canHandleMultipleItems: function () {
     return true;
@@ -1593,12 +1595,12 @@ var plotObserver = {
   //    if (tree.view.isContainer(i)) return;
   //    var s = tree.view.getCellText( i,namecol);
   //    while (tree.view.getParentIndex(i) >= 0)
-  //    {           
+  //    {
   //      i = tree.view.getParentIndex(i);
   //      s = tree.view.getCellText(i,namecol)+ "/" + s;
   //    }
   //    // s is now the path of the clicked file relative to the fragment root.
-  //    try 
+  //    try
   //    {
   //      var request = Components.
   //                    classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
@@ -1609,8 +1611,8 @@ var plotObserver = {
   //
   //      request.open("GET", urlstring, false);
   //      request.send(null);
-  //                          
-  //      var xmlDoc = request.responseXML; 
+  //
+  //      var xmlDoc = request.responseXML;
   //      if (!xmlDoc && request.responseText)
   //        throw("fragment file exists but cannot be parsed as XML");
   //      if (xmlDoc)
@@ -1669,8 +1671,8 @@ var plotObserver = {
         var flavour = "text/html";
         trans.addDataFlavor(flavour);
         session.getData(trans, 0);
-        var str = new Object();
-        var strLength = new Object();
+        var str = {};
+        var strLength = {};
         try {
           trans.getTransferData(flavour, str, strLength);
           if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString);
@@ -1699,7 +1701,7 @@ var plotObserver = {
     flavours.appendFlavour("text/html");
     return flavours;
   }
-}
+};
 
 #endif
 
