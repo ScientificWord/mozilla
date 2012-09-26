@@ -3,24 +3,24 @@
 /* Print-only rules. We put them here where they are noticeable. */
 @media print {
 *[nopr] {display: none;}
-object[msigraph="true"] {display:none;} 
+object[msigraph="true"] {display:none;}
 }
 
 @media screen {
   plotwrapper object[msisnap] { display:none;}
 }
 
-/* This section gives the default colors for a range 
-of items. The user can override these colors using a dialog. 
+/* This section gives the default colors for a range
+of items. The user can override these colors using a dialog.
 In that case in internal style sheet will rewrite these rules. */
 
 mml|math { color: red;}
-[msimathname="true"] { color: gray; 
+[msimathname="true"] { color: gray;
 	font-style: normal;}
-mml|* [msiunit="true"] {color: green; 
+mml|* [msiunit="true"] {color: green;
 	font-style: normal;}
 mml|mtd {border-color: green; }
-mml|mtext { color: black; }  
+mml|mtext { color: black; }
 [msiclass="msi_passthrough"] {color: orange; }
 mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
 
@@ -29,9 +29,9 @@ pre, verbatim { font-family: Courier; white-space: pre }
 
 numberedListItem,
 bulletListItem,
-descriptionListItem { 
-       margin-left: 2em; 
-       padding-left: 1em; 
+descriptionListItem {
+       margin-left: 2em;
+       padding-left: 1em;
        display: list-item;}
 
 numberedlist {
@@ -74,8 +74,8 @@ proof:before {
   background-color: lightgray;
   font-weight: bold;
 } */
-  
-img { display: inline;} 
+
+img { display: inline;}
 
 shortQuote { display: block; }
 
@@ -184,7 +184,7 @@ a[name]{
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#label");
 }
 
-latexstyleb { 
+latexstyleb {
   color: red;
   -moz-appearance: button;
   padding: 2px 10px;
@@ -195,7 +195,7 @@ latexstyleb {
   -moz-border-bottom-colors: transparent ThreeDDarkShadow ThreeDShadow;
   -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
   background-color: ThreeDFace;
-  -moz-user-select: all;	  
+  -moz-user-select: all;
 }
 
 xref {
@@ -210,18 +210,17 @@ requestimplementation {
   border: 1px solid;
   padding: 1px 2px;
   min-width: 6.3em;
-  font-size: 10pt;
 }
 
 
 requestimplementation:before {content: "Support Me: "}
 
-											
+
 styledata {
   display: none;
 }
 
-											
+
 styleprop {
   -moz-user-select: all;
 }
@@ -248,16 +247,16 @@ img {
 
 graphSpec {
   display: none;
-}  
+}
 
 upper {
   text-transform: uppercase;
 }
-  
+
 lower {
   text-transform: lowercase;
 }
-  
+
 otfont {
   display: inline;
 }
@@ -273,7 +272,7 @@ note[type="footnote"], node[type="footnote"][hide="false"] {
 /* never show footnotes marked 'hide'*/
 note[hide="true"] {
   display: none !important;
-} 
+}
 
 
 /* display footnotes marked 'hide=false' even when 'hideFootnotes=true'
@@ -320,9 +319,9 @@ note[type="footnote"] {
   border-color: blue;
   border-style: solid;
   color: blue;
-}	 
+}
 
-notewrapper[type="footnote"]:before { 
+notewrapper[type="footnote"]:before {
   content: counter(ftnotectr);
   vertical-align: super;
   font-size: small;
@@ -330,7 +329,7 @@ notewrapper[type="footnote"]:before {
   display: inline;
   -moz-user-modify: read-only;
   -moz-user-select: text;
-} 
+}
 
 notewrapper[type="footnote"][markOrText="textOnly"]:before {
   content: none !important;
@@ -340,7 +339,7 @@ notewrapper[type="footnote"][markOrText="markOnly"] > note {
   display: none !important;
 }
 
-notewrapper[type="footnote"]{ 
+notewrapper[type="footnote"]{
   counter-increment: ftnotectr;
 }
 
@@ -357,7 +356,7 @@ notewrapper {
 }
 
 note {
-  margin: 0px 20px;
+  margin: 0 20px;
   border-width: 1px;
   border-color: red;
   border-style: solid;
@@ -469,7 +468,7 @@ mml|mtr > mml|mtd:first-child {
   border-left-width: 1px;
 }
 
-  
+
 mml|mtr:first-child > mml|mtd {
   border-top-width: 1px;
 }
