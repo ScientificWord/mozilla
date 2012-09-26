@@ -1221,18 +1221,19 @@ function msiIsDocumentModified(editorElement)
 
 function msiGetEditorURL(editorElement)
 {
-  var editor;
+  var editor = msiGetEditor(editorElement);
+  if (editor === null)
+     throw new MsiException("Error in msiGetEditorURL, editor is null");
+
   try
   {
-    editor = msiGetEditor(editorElement);
     var aDOMHTMLDoc = editor.document.QueryInterface(Components.interfaces.nsIDOMHTMLDocument);
     return aDOMHTMLDoc.URL;
   } catch (e) {
     try {
-      editor = msiGetEditor(editorElement);
       return editor.document.documentURI;
-    } catch (e){
-      throw new MsiException("Error in msiGetEditorURL",e);
+    } catch (e1){
+      throw new MsiException("Error in msiGetEditorURL",e1);
     }
   }
   return "";
