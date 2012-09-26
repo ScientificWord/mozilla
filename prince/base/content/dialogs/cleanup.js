@@ -2,7 +2,7 @@ var cleanupOptions = [];
 
 function startup()
 {
-  cleanupOptions= window.arguments[0].cleanupOptions;  
+  cleanupOptions= window.arguments[0].cleanupOptions;
   
 }
 
