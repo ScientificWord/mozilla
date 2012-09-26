@@ -878,8 +878,10 @@ function msiEditorDocumentObserver(editorElement)
               if (stylesheet) editor.removeStyleSheet(dynAllTagsStyleSheet);
             }
             catch(e) {}  // if there was an exception, there was no stylesheet to remove
-            editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
-            editor.enableStyleSheet(dynAllTagsStyleSheet, false);
+            try {
+              editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
+              editor.enableStyleSheet(dynAllTagsStyleSheet, false);
+            }catch(e) {}
 					}
 
           try{
@@ -1993,7 +1995,7 @@ function setZoom()
   catch(ex) {
     dump("\nfailed to get zoom_factor pref!\n");
   }
-  ZoomManager.zoom = zoomfactor;
+  //ZoomManager.zoom = zoomfactor;
 }
 
 var gRealtimeSpellPrefs = {
