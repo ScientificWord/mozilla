@@ -12,8 +12,6 @@ function timeReport(domdoc,label)
   return report;
 }
 
-//** This is a fairly long comment line that should stretch the comment block
-//
 function makeTR(domdoc,label,value)
 {
   var tr = domdoc.createElement("tr");
