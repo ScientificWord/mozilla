@@ -39,14 +39,14 @@ function CleanMathString(mathstr)
   mathstr = mathstr.replace(/<\/mn><mn>/g,"");
   // a decimal must have a digit after it
   mathstr = mathstr.replace(/\.<\/mn>/g,".0</mn>");
-  
+
   // remove empty math operators:  <mo form="prefix"></mo>
   mathstr = mathstr.replace(/<mo><\/mo>/g,"");
   mathstr = mathstr.replace(/<(\w+:)*mo\/>/g,"");
   mathstr = mathstr.replace(/<mo form=\"prefix\"><\/mo>/g,"");
   mathstr = mathstr.replace(/<mo form=\"prefix\"\/>/g,"");
   mathstr = mathstr.replace(/<mi><\/mi>/g,"");
-  
+
   // remove _moz_dirty=""
   mathstr = mathstr.replace (/_moz_dirty=\"\"/g, "");
 

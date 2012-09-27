@@ -41,7 +41,6 @@ var msiDefineCommand = {
   isCommandEnabled: function(aCommand, dummy) {
     var editorElement = msiGetActiveEditorElement();
     return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeShowDefs" || aCommand == "cmd_MSIComputeMapMuPADName" ||
-
     //aCommand == "cmd_MSI/ComputeUserSettings" ||
     aCommand == "cmd_MSIComputeClearDefs" ||
     //aCommand == "cmd_MSIComputeSettings" ||
