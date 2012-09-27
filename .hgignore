@@ -23,6 +23,8 @@ glob:extensions/firebut/*.*
 glob:*.rej
 glob:extensions/firebug/*
 glob:extensions/chromebug/*
+glob:*.sublime-project
+glob:*.sublime-workspace
 .tm_properties
 .tmhotkeys
 mozilla\.mchg
