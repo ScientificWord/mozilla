@@ -21,11 +21,11 @@ chapter {
 /*  counter-increment: chapter;
   counter-reset: subchapter;
   counter-reset: theorem; */
-}  
+}
 
 chapter sectiontitle {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: 14pt;
   font-weight: bold;
@@ -36,11 +36,11 @@ section {
 /*    counter-increment: section;
   counter-reset: subsection;
   counter-reset: theorem; */
-}  
+}
 
 section sectiontitle {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
@@ -60,7 +60,7 @@ subsection{
 
 subsection sectiontitle {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
 }
@@ -79,7 +79,7 @@ subsubsection {
 
 subsubsection sectiontitle {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: medium;
   font-weight: bold;
@@ -102,9 +102,9 @@ paragraph sectiontitle {
   font-style: italic;
 }
 
-/*  
+/*
 paragraph>sectiontitle:before {
-  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
 }
 */
 
@@ -115,7 +115,7 @@ p {
 
 bodyMath {
   display: block;
-  margin: 0pt 10pt 0pt 5pt;
+  margin: 0 10pt 0 5pt;
   color: rgb(0,128,64);
 }
 
@@ -146,18 +146,18 @@ title {
 
 title > short {
    display: inline;
-   padding: 0pt 0pt 0pt 20pt;}
+   padding: 0 0 0 20pt;}
 
 /* Not in article.css (gp)
 pre, verbatim {
   font-family: Courier; white-space: pre
 }
 */
-  
+
 /* Not in article.css (gp)
 item {
-  margin: 0pt 0pt 0pt 0pt; 
-  padding: 10pt 0pt 0pt 20pt; 
+  margin: 0 0 0 0;
+  padding: 10pt 0 0 20pt;
   display: list-item
 }
 */
@@ -168,7 +168,7 @@ item:before {
   counter-increment: item;
 }
 */
-   
+
 /* Not in article.css (gp)
 enumerate {
   counter-reset: item;
@@ -183,26 +183,26 @@ description {
 
 /* Not in article.css (gp)
 itemize {
-  list-style: disc; 
+  list-style: disc;
   counter-reset: item;
 }
 */
 
 /* Not in article.css (gp)
 img {
-  display: inline; 
+  display: inline;
   margin: 2em
-} 
+}
 */
 
 shortQuote {
-  display: block; 
+  display: block;
   margin-left: 20pt;
   margin-right: 20pt;
 }
 
 longQuotation {
-  display: block; 
+  display: block;
   margin-left: 20pt;
   margin-right: 20pt;
 }
@@ -230,7 +230,7 @@ emphasized {
   color: rgb(9,62,125)
 }
 
-emphasized span.inlineMath {
+emphasized .inlineMath {
   color: rgb(255,0,255)
 }
 
@@ -340,27 +340,27 @@ td {
 */
 
 section defaulttitletag:after {
-  content: "Replace this section title"; 
+  content: "Replace this section title";
   color: red;
 }
 
 subsection defaulttitletag:after {
-  content: "Replace this subsection title"; 
+  content: "Replace this subsection title";
   color: red;
 }
 
 subsubsection defaulttitletag:after {
-  content: "Replace this subsubsection title"; 
+  content: "Replace this subsubsection title";
   color: red;
 }
 
 paragraph defaulttitletag:after {
-  content: "Replace this subsubsubsection title"; 
+  content: "Replace this subsubsubsection title";
   color: red;
 }
 
 subparagraph defaulttitletag:after {
-  content: "Replace this subsubsubsubsection title"; 
+  content: "Replace this subsubsubsubsection title";
   color: red;
 }
 

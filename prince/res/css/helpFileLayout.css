@@ -87,9 +87,9 @@ h1 { font-size: 160%; font-weight: normal; }
 
 section {
   display: block;
-}  
+}
 
-section>*:first-child {
+section>sectiontitle:first-child {
   display: block;
   font-size: 160%;
   font-weight: normal;
@@ -105,7 +105,7 @@ subsection {
   display: block;
 }
 
-subsection>*:first-child {
+subsection>sectiontitle:first-child {
   display: block;
   font-size: 150%;
   font-weight: normal;
@@ -120,7 +120,7 @@ subsubsection {
   display:block;
 }
 
-subsubsection>*:first-child {
+subsubsection>sectiontitle:first-child {
   display: block;
   font-size: 120%;
   margin: 1em 0 0.2em 0;
@@ -135,7 +135,7 @@ paragraph {
   display:block;
 }
 
-paragraph>*:first-child {
+paragraph>sectiontitle:first-child {
   font-size: 100%;
   margin: 1em 0 0.2em 0;
   border-bottom: 1px solid #ccc;
@@ -166,10 +166,10 @@ sup {
   border: 0;
 }
 
-.contentsBox, 
+.contentsBox,
 .contentsBox > ul,
 li {
-	text-indent: 0px;
+	text-indent: 0;
 }
 
 .contentsBox > ul,
@@ -213,7 +213,7 @@ th {
 .noTableBorder td,
 .noTableBorder th {
 	background-color: transparent;
-	border: 0px solid transparent;
+	border: 0 solid transparent;
 }
 
 bodyText {
@@ -232,7 +232,7 @@ bodyText {
 
 bodyMath {
   display: block;
-  margin: 0pt 10pt 0pt 5pt;
+  margin: 0 10pt 0 5pt;
   color: rgb(0,128,64);
 }
 
@@ -279,7 +279,7 @@ title {
 }
 
 shortQuote {
-  display: block; 
+  display: block;
   margin-left: 20pt;
   margin-right: 20pt;
 }
@@ -293,7 +293,7 @@ shortQuote {
 }
 
 longQuotation {
-  display: block; 
+  display: block;
   margin-left: 20pt;
   margin-right: 20pt;
 }
@@ -329,7 +329,7 @@ emphasized {
   color: rgb(9,62,125)
 }
 
-emphasized span.inlineMath {
+emphasized .inlineMath {
   color: rgb(255,0,255)
 }
 
@@ -388,7 +388,7 @@ typewriter {
 rtl {
   color: rgb(100,50,0);
   direction: rtl;
-  unicode-bidi: bidi-override 
+  unicode-bidi: bidi-override
 }
 
 tiny {
