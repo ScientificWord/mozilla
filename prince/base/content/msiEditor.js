@@ -1,14 +1,14 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
-Components.utils.import("resource://app/modules/unitHandler.jsm"); 
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 const msiEditorJS_duplicateTest = "Bad";
 
 
 var dynAllTagsStyleSheet;
 
-function aColorObj(editorElement) 
+function aColorObj(editorElement)
 {
   this.mEditorElement = editorElement;
   this.LastTextColor = "";
@@ -26,7 +26,7 @@ function aColorObj(editorElement)
   this.CellColor = "";
 };
 
- 
+
 function msiAddToolbarPrefListener(editorElement)
 {
   try {
@@ -49,7 +49,7 @@ function msiRemoveToolbarPrefListener(editorElement)
   }
 }
 
-function msiEditorToolbarPrefListener(editorElement) 
+function msiEditorToolbarPrefListener(editorElement)
 {
   this.mEditorElement = editorElement;
   this.observe = function(subject, topic, prefName)
@@ -112,7 +112,7 @@ function msiButtonPrefListener(editorElement)
         var state = editor.getHighlightColorState(mixedObj);
         cmd.setAttribute("state", state);
         cmd.collapsed = false;
-      }      
+      }
       else {
         cmd.setAttribute("state", "transparent");
         cmd.collapsed = true;
@@ -175,7 +175,7 @@ function msiButtonPrefListener(editorElement)
 //      button.setAttribute("state", state);
 //      onHighlightColorChange();
 //    } catch (e) {}
-//  }      
+//  }
 //}
 
 function msiEditorArrayInitializer()
@@ -327,7 +327,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
     commandTable.registerCommand("cmd_find",        msiFindCommand);
     commandTable.registerCommand("cmd_findNext",    msiFindAgainCommand);
     commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
-    
+
     msiSetupMSIMathMenuCommands(editorElement);
     msiSetupMSIComputeMenuCommands(editorElement);
     if ("msiSetupMSITypesetMenuCommands" in window)
@@ -664,13 +664,13 @@ function msiEditorOnFocus(event)
     {
       logStr += "], explicit original target frame element is [";
       if (event.explicitOriginalTarget.frameElement)
-        logStr += event.explicitOriginalTarget.frameElement.nodeName; 
+        logStr += event.explicitOriginalTarget.frameElement.nodeName;
     }
     else if ("defaultView" in event.explicitOriginalTarget)
     {
       logStr += "], explicit original target default view frame element is [";
       if (event.explicitOriginalTarget.defaultView.frameElement)
-        logStr += event.explicitOriginalTarget.defaultView.frameElement.nodeName; 
+        logStr += event.explicitOriginalTarget.defaultView.frameElement.nodeName;
     }
   }
   logStr += "].\n";
@@ -708,7 +708,7 @@ function ShutdownAllEditors()
 {
   var tmpWindow = window;
   var keepgoing = true;
-  
+
   try {
     // Get the <editor> element(s)
     var editorList = document.getElementsByTagName("editor");
@@ -726,7 +726,7 @@ function ShutdownAllEditors()
         else break;
       }
     }
-  } 
+  }
   catch (e) {
     msidump(e.message);
   }
@@ -741,7 +741,7 @@ function msiEditorDocumentObserver(editorElement)
 //  this.mDumpMessage = 3;
   this.mbInsertInitialContents = true;
   this.mbAddOverrideStyleSheets = true;
-  this.doInitFastCursor = function() 
+  this.doInitFastCursor = function()
   {
     if (this.mEditorElement && ("fastCursorInit" in this.mEditorElement) && this.mEditorElement.fastCursorInit!==null)
     {
@@ -750,7 +750,7 @@ function msiEditorDocumentObserver(editorElement)
     }
   }
   this.observe = function(aSubject, aTopic, aData)
-  {              
+  {
     // Should we allow this even if NOT the focused editor?
     if (!this.mEditorElement.docShell)
     {
@@ -768,7 +768,7 @@ function msiEditorDocumentObserver(editorElement)
     var editor = null;
     try
     { editor = msiGetEditor(this.mEditorElement); }
-    catch(exc) 
+    catch(exc)
     { msiDumpWithID("In documentCreated observer for editorElement [@]; error trying to get editor: " + exc + "\n", this.mEditorElement);
       editor = null;
     }
@@ -812,7 +812,7 @@ function msiEditorDocumentObserver(editorElement)
             case nsIEditingSession.eEditorErrorUnknown:
               errorStringId = "CantEditDocumentMsg";
               break;
-            // Note that for "eEditorErrorFileNotFound, 
+            // Note that for "eEditorErrorFileNotFound,
             // network code popped up an alert dialog, so we don't need to
           }
           if (errorStringId)
@@ -822,10 +822,10 @@ function msiEditorDocumentObserver(editorElement)
         // We have a bad editor -- nsIEditingSession will rebuild an editor
         //   with a blank page, so simply abort here
         if (editorStatus)
-          return; 
+          return;
 
         var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
-        var seconds = GetIntPref("swp.saveintervalseconds"); 
+        var seconds = GetIntPref("swp.saveintervalseconds");
         if (!seconds) seconds = 120;
         if (is_topLevel && (seconds > 0))
           this.mEditorElement.softsavetimer = new SS_Timer(seconds*1000, editor, this.mEditorElement);
@@ -853,11 +853,11 @@ function msiEditorDocumentObserver(editorElement)
               fileurl = msiFileURLFromAbsolutePath( file.path );
               editor.addTagInfo(fileurl.spec);
             }
-            else    
+            else
               editor.addTagInfo(tagdeflist[i]);
-            
+
           }
-              
+
 					UpdateWindowTitle();
 // Add language tags if there is a <babel> tag
 					addLanguageTagsFromBabelTag(editor.document)
@@ -872,7 +872,7 @@ function msiEditorDocumentObserver(editorElement)
 					  cssFile.append("msi_Tags.css")
 					  dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
             var stylesheet;
-            try 
+            try
             {
               stylesheet = editor.getStyleSheetForURL(dynAllTagsStyleSheet);
               if (stylesheet) editor.removeStyleSheet(dynAllTagsStyleSheet);
@@ -892,7 +892,7 @@ function msiEditorDocumentObserver(editorElement)
                defnList = elemList[0].getElementsByTagName("math");
              if (defnList)
                n =  defnList.length;
-          
+
              var defn;
              for (var ix = 0; ix < n; ++ix)
              {
@@ -1063,7 +1063,7 @@ function msiEditorDocumentObserver(editorElement)
 //              var editor = msiGetEditor(editorElement);
               editor.addEditorObserver( this.mEditorElement.mInitialEditorObserver[ix] );
             }
-          }    
+          }
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialEditorObserver: " + exc);}
         }
 //        var extraDumpStr = "  bIsRealDocument is ";
@@ -1092,7 +1092,7 @@ function msiEditorDocumentObserver(editorElement)
         }
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
-        
+
       break;
 
       case "cmd_setDocumentModified":
@@ -1147,7 +1147,7 @@ function msiSetFocusOnStartup(editorElement)
     editorElement.contentWindow.focus();
   } catch(e) {}
 }
-// BBM - this function is not robust wrt localization. 
+// BBM - this function is not robust wrt localization.
 // TODO - find a better way or use a localizable string.
 
 function isShell (filename)
@@ -1227,11 +1227,11 @@ function EditorStartupForEditorElement(editorElement, topwindow)
 
   // Get url for editor content and load it.
   // The editor gets instantiated by the editingSession when the URL has finished loading.
-  
+
   // orphaned lines of code:
   //  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   //  dir = doc.parent;
-  
+
 function msiLoadInitialDocument(editorElement, bTopLevel)
 {
   try {
@@ -1261,16 +1261,16 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       if (docurl) dump("Url in args is "+docurl.spec+"\n");
     };
 // Two cases: if (docurl), then the url of a doc to load was passed. It might be for a shell.
-//            if (!docurl), nothing was passed. Load the default shell. 
+//            if (!docurl), nothing was passed. Load the default shell.
     if (!docurl)
-    {   
+    {
       editorElement.isShellFile = true;
       editorElement.fileLeafName = "unsaved file";
       if (!bTopLevel)
       {
-        try { 
+        try {
           docurlstring = prefs.getCharPref("swp.defaultDialogShell");   //BBM: check this later
-        }  
+        }
         catch(exc) {
           dump("In msiLoadInitialDocument(), trying to get default dialog shell, error: " + exc + ".\n");
           docurlstring = "chrome://prince/content/StdDialogShell.xhtml";
@@ -1300,15 +1300,15 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       }
     }
     else editorElement.isShellFile = false;
-    if (!docurl) 
+    if (!docurl)
     {
       dump("Unable to find Doc Url\n");
       return;
     }
 // now we have a url for the doc.
-         
+
     if (docurl && docurl.schemeIs("resource"))
-    { 
+    {
       // convert to a file URL
       docpath = msiPathFromFileURL( docurl );
       docurl = msiFileURLFromAbsolutePath(docpath); // this converts docurl to a file URL
@@ -1404,12 +1404,12 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
 // //    {
 // //      shellfile = Components.classes["@mozilla.org/file/local;1"].
 // //            createInstance(Components.interfaces.nsILocalFile);
-// //    } 
+// //    }
 // //    if (isShell(docname))
 // //    {
 // //      editorElement.isShellFile = true;
-// 
-// 
+//
+//
 //     var shellfile = Components.classes["@mozilla.org/file/local;1"].
 //           createInstance(Components.interfaces.nsILocalFile);
 //     shellfile.initWithPath(docname);
@@ -1501,7 +1501,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
 //     dump("Uncaught error in msiPrepareDocumentTargetForShell: " + e + "\n.");
 //   }
 //   return url;
-//       
+//
 // //      // set document title when?? It is too early now, so we will save the name in the XUL
 // //      var theFilename = document.getElementById("filename");
 // //      if (theFilename != null)
@@ -1519,7 +1519,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
 // //      var theFilename = document.getElementById("filename");
 // //      if (theFilename != null)
 // //        theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
-// //    }  
+// //    }
 // ////    var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
 // //    var contentViewer = null;
 // //    if (editorElement.docShell)
@@ -1544,7 +1544,7 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 //  msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editorElement [@], parentEditor is [" + parentEditor + "].\n", editorElement);
   if (parentEditor)
   {
-    //NOTE THE FOLLOWING! This means that if you want a dialog editor to allow multiple paragraphs, you must set mbSinglePara=false before 
+    //NOTE THE FOLLOWING! This means that if you want a dialog editor to allow multiple paragraphs, you must set mbSinglePara=false before
     //  calling the editor initialization. This reflects that single-para is the default.
     if (!("mbSinglePara" in editorElement))
       editorElement.mbSinglePara = true;
@@ -1613,7 +1613,7 @@ function SharedStartupForEditor(editorElement)
 
   var theDocument = null;
 
-  // add observer to be called when document is really done loading 
+  // add observer to be called when document is really done loading
   // and is modified
   // Note: We're really screwed if we fail to install this observer!
   try {
@@ -1692,7 +1692,7 @@ function SharedStartupForEditor(editorElement)
 // This method is only called by Message composer when recycling a compose window
 function msiEditorResetFontAndColorAttributes(editorElement)
 {
-  try {  
+  try {
     document.getElementById("cmd_fontFace").setAttribute("state", "");
     msiEditorRemoveTextProperty(editorElement, "font", "color");
     msiEditorRemoveTextProperty(editorElement, "font", "bgcolor");
@@ -1761,7 +1761,7 @@ function ShutdownAnEditor(editorElement)
         }
       }
     }
-  } catch (e) {msiDumpWithID( "In ShutdownAnEditor for editor [@], removing command observers, error: " + e + "\n", editorElement );}   
+  } catch (e) {msiDumpWithID( "In ShutdownAnEditor for editor [@], removing command observers, error: " + e + "\n", editorElement );}
 }
 
 function SafeSetAttribute(theDocument, nodeID, attributeName, attributeValue)
@@ -1797,7 +1797,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     document = editor.document;
     if (!document)
       return true;
-		var htmlurlstring = msiGetEditorURL(editorElement); 
+		var htmlurlstring = msiGetEditorURL(editorElement);
 	  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
 	  var fileURL = msiURIFromString(sciurlstring);
 	  var file = msiFileFromFileURL(fileURL);
@@ -1810,14 +1810,14 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
         doRevert(false, editorElement, true);
       return true;
     }
-  } 
+  }
 	catch (e) {
-		return false; 
+		return false;
 	}
 
   // call window.focus, since we need to pop up a dialog
   // and therefore need to be visible (to prevent user confusion)
-  top.document.commandDispatcher.focusedWindow.focus();  
+  top.document.commandDispatcher.focusedWindow.focus();
 
   var scheme = GetScheme(htmlurlstring);
   var doPublish = (scheme && scheme != "file");
@@ -1834,13 +1834,13 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     default:
       break;
   }
-    
+
   var reasonToSave = strID ? GetString(strID) : "";
 
   if (/_work/.test(sciurlstring))
   {
     sciurlstring = sciurlstring.replace((/_work\/[^\/]*\.[a-z0-9]+$/i),"")+".sci";
-  }  
+  }
   var leafregex = /.*\/([^\/]+$)/;
   var arr = leafregex.exec(sciurlstring);
   if (arr && arr.length >1) document.title = arr[1];
@@ -1864,7 +1864,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   // If allowing "Don't..." button, add that
   if (allowDontSave)
     promptFlags += (promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2);
-  
+
   result = promptService.confirmEx(window, dialogTitle, dialogMsg, promptFlags,
                           button1Title, null, button3Title, null, {value:0});
 
@@ -1897,7 +1897,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     return success;
   }
 
-  if (result == 2) 
+  if (result == 2)
   {
     // "Don't Save"
     if (command == "cmd_close")
@@ -1982,7 +1982,7 @@ function msiGetMarkupDocumentViewer(editorElement)
 
 function setZoom()
 {
-  var zoomfactor = 1.0;        
+  var zoomfactor = 1.0;
   try {
     var zoomstr;
     var editorElement = msiGetActiveEditorElement();
@@ -2000,7 +2000,7 @@ function setZoom()
 
 var gRealtimeSpellPrefs = {
   RTSPref: "swp.spellchecker.enablerealtimespell",
- 
+
   observe: function(aSubject, aTopic, aPrefName)
   {
     if (aTopic != "nsPref:changed" || aPrefName != "enablerealtimespell")
@@ -2011,7 +2011,7 @@ var gRealtimeSpellPrefs = {
         .getService(Components.interfaces.nsIPrefBranch);
       editorElement = msiGetActiveEditorElement();
       var editor = msiGetEditor(editorElement);
-    
+
       editor.setSpellcheckUserOverride(prefService.getBoolPref(this.RTSPref));
     }
     catch(e)
@@ -2047,7 +2047,7 @@ function SetDocumentCharacterSetForEditor(aCharset, editorElement)
     var docUrl = msiGetEditorURL(editorElement);
     if( !IsUrlAboutBlank(docUrl))
     {
-      // reloading the document will reverse any changes to the META charset, 
+      // reloading the document will reverse any changes to the META charset,
       // we need to put them back in, which is achieved by a dedicated listener
       editor.addDocumentStateListener( aDocumentReloadListener(editorElement) );
       EditorLoadUrl(docUrl);
@@ -2298,7 +2298,7 @@ function msiInitLocalFontFaceMenu(menuPopup, editorElement)
   if (!editorElement.mLocalFonts)
   {
     // Build list of all local fonts once per editor
-    try 
+    try
     {
       var enumerator = Components.classes["@mozilla.org/gfx/fontenumerator;1"]
                                  .getService(Components.interfaces.nsIFontEnumerator);
@@ -2307,9 +2307,9 @@ function msiInitLocalFontFaceMenu(menuPopup, editorElement)
     }
     catch(e) { }
   }
-  
-  var useRadioMenuitems = (menuPopup.parentNode.localName == "menu"); // don't do this for menulists  
-  if (menuPopup.childNodes.length == kFixedFontFaceMenuItems) 
+
+  var useRadioMenuitems = (menuPopup.parentNode.localName == "menu"); // don't do this for menulists
+  if (menuPopup.childNodes.length == kFixedFontFaceMenuItems)
   {
     if (editorElement.mLocalFonts.length == 0) {
       menuPopup.childNodes[kFixedFontFaceMenuItems - 1].hidden = true;
@@ -2331,7 +2331,7 @@ function msiInitLocalFontFaceMenu(menuPopup, editorElement)
     }
   }
 }
- 
+
 
 //TO BE DONE: Again, propose calling via "goDoCommand(cmd_initFontSizeMenu)" with appropriate command handler.
 function msiInitFontSizeMenu(menuPopup, editorElement)
@@ -2877,7 +2877,7 @@ function EditorClick(event)
   {
     var obj, theURI, targWin;
     var objName = msiGetBaseNodeName(event.target);
-	  var editor = msiGetEditor(editorElement);  
+	  var editor = msiGetEditor(editorElement);
 	  var graphnode = getEventParentByTag(event, "plotwrapper");
     var linkNode;
     if (!graphnode)
@@ -2886,7 +2886,7 @@ function EditorClick(event)
       if (!linkNode)
 	      linkNode = getEventParentByTag(event, "a");
     }
-    if (graphnode) 
+    if (graphnode)
     {
       var obj = graphnode.getElementsByTagName("object")[0];
       if (obj != null) {
@@ -2911,7 +2911,7 @@ function EditorClick(event)
     }
     else
     {
-		  if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false") 
+		  if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false")
 	    {
 	      document.getElementById("vcamactive").setAttribute("hidden",true);
 	    }
@@ -2938,8 +2938,8 @@ function EditorClick(event)
       var name = element.localName.toLowerCase();
       if (name != "body" && name != "table" &&
           name != "td" && name != "th" && name != "caption" && name != "tr")
-      {          
-        
+      {
+
         msiGetEditor(editorElement).selectElement(event.explicitOriginalTarget);
         event.preventDefault();
       }
@@ -3052,7 +3052,7 @@ function msiFindCellFromPositionInTableOrMatrix(aTableNode, aChildNode, anOffset
         nextChild = msiNavigationUtils.getSignificantChildPrecedingPosition(nextChild, ourOffset, false);
         if (!nextChild)
           nextChild = msiNavigationUtils.getSignificantChildFollowingPosition(nextChild, ourOffset, false);
-      }    
+      }
     }
     if (!isAboveCellLevel(nextChild))
       retNode = nextChild;
@@ -3473,7 +3473,7 @@ function msiEditorNextField(bShift, editorElement)
 
 //  function objectTabFromSelection(aNode, bShift, anEditor)
 //  {
-//    if (!msiNavigationUtils.nodeHasContentBeforeSelection(anEditor.selection, aNode) 
+//    if (!msiNavigationUtils.nodeHasContentBeforeSelection(anEditor.selection, aNode)
 //        && !msiNavigationUtils.nodeHasContentAfterSelection(anEditor.selection, aNode) )
 //      return false;
 //
@@ -3508,7 +3508,7 @@ function msiEditorNextField(bShift, editorElement)
 //          {
 //            if (wholeRange.endNode != aNode)
 //              selNode = msiNavigationUtils.findTopChildContaining(wholeRange.endNode, aNode);
-//            else 
+//            else
 //              selNode = msiNavigationUtils.getSignificantChildPrecedingPosition(aNode, wholeRange.endOffset, true);
 //          }
 //          else if (bShift)
@@ -3570,7 +3570,7 @@ function msiEditorCheckEnter(event)
   var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   if (msiGetContainingTableOrMatrix(container))
     bEditorHandle = true;
-  
+
   if (!bEditorHandle && msiNavigationUtils.nodeIsInMath(container))
   {
     //Here we have to be careful. If we're out in the open in math, it would be a normal paragraph entry, which we don't want.
@@ -3911,7 +3911,7 @@ function msiGetPropertiesObjectFromSelection(editorElement)
     retObj = msiCreatePropertiesObjectDataFromSelection(editor.selection, editorElement);
 //rwa      if (retObj)
 //rwa        return retObj;
-//rwa  
+//rwa
 //rwa      var theRange = editor.selection.getRangeAt(0);
 //rwa      if (theRange == null)
 //rwa      {
@@ -3929,14 +3929,14 @@ function msiGetPropertiesObjectFromSelection(editorElement)
 //rwa      else
 //rwa        retObj = msiSelectPropertiesObjectFromRange(editorElement, theRange);
 //rwa    }
-//rwa  
+//rwa
 //rwa    if ( (retObj != null) && (retObj.theOffset == null) )  //in the case we've identified a revisable object
 //rwa    {
 //rwa      var parentNode = msiNavigationUtils.findWrappingStyleNode(retObj.theNode);
 //rwa      if (parentNode != null)
 //rwa        retObj.theNode = parentNode;
 //rwa    }
-//rwa  
+//rwa
 //rwa    return retObj;
 //rwa    //We're trying to identify the situation where there's essentially (to be laboriously defined below) one object selected.
 //rwa    //The plan is:
@@ -4132,7 +4132,7 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editorElement)
   {
     if (anOffset > 0)
     {
-      if ( msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) 
+      if ( msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode)
            || msiNavigationUtils.isBigOperator(aNode.parentNode) || msiNavigationUtils.isSpacingObject(aNode.parentNode)
            || msiNavigationUtils.isMathMLLeafNode(aNode.parentNode) )
       {
@@ -4434,8 +4434,8 @@ function CloneElementContents(editor, sourceElt, destElt)
     child = destElt.firstChild;
   } while (!stopIt);
 }
- 
- 
+
+
 function RebuildFromSource(aDoc, editorElement, aContext)
 {
   if (aContext)
@@ -4461,6 +4461,9 @@ function RebuildFromSource(aDoc, editorElement, aContext)
   editorElement.focus();
 }
 
+//function escaped (source) {
+//  return source.replace(/>/g,'&gt;').replace(/</g, '&lt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+//}
 
 function msiSetEditMode(mode, editorElement)
 {
@@ -4493,9 +4496,10 @@ function msiSetEditMode(mode, editorElement)
     // Get the entire document's source string
     MarkSelection(editor);
     var source = prettyprint(editor);
+    //source = escaped(source);
     UnmarkSelection(editor);
     // replace the following with proper selection tracking
-    var start = 0; 
+    var start = 0;
     sourceIframe.contentWindow.gChangeCallback = null; //onSourceChangeCallback;
 
     var theme = "neat";
@@ -4509,7 +4513,7 @@ function msiSetEditMode(mode, editorElement)
       tagManager.getTagsInClass('structtag',',',false).split(','),
       tagManager.getTagsInClass('envtag',',',false).split(','),
       tagManager.getTagsInClass('frontmtag',',',false).split(','));
-      
+
     sourceIframe.contentWindow.installCodeMirror(onBrowserKeyDown,
                                                  theme,
                                                  tagsArray,
@@ -4532,7 +4536,7 @@ function msiSetEditMode(mode, editorElement)
     if (historyCount.undo > 0)
     {
 //   Reduce the undo count so we don't use too much memory
-//   during multiple uses of source window 
+//   during multiple uses of source window
 //   (reinserting entire doc caches all nodes)
 //      try {
 //      editor.transactionManager.maxTransactionCount = 1;
@@ -4541,7 +4545,7 @@ function msiSetEditMode(mode, editorElement)
       var errMsg="";
       var willReturn = false;
       source = sourceEditor.getValue();
-      source = decodeEntities(source);
+      //source = decodeEntities(source);
       var xmlParser = new DOMParser();
       try {
         var doc = xmlParser.parseFromString(source, "text/xml");
@@ -4554,7 +4558,7 @@ function msiSetEditMode(mode, editorElement)
           {
              msiSetDisplayMode(editorElement, kDisplayModeSource);
             return;
-          }             
+          }
         }
       }
       catch (e) {
@@ -4570,7 +4574,7 @@ function msiSetEditMode(mode, editorElement)
         if (titlenodelist.length > 0)
         {
           var titleNode = titlenodelist.item(0);
-          if (titleNode) 
+          if (titleNode)
             title = titleNode.textContent;
         }
       }
@@ -4645,7 +4649,7 @@ function msiSetAllTagsMode(editor, on)
   editor.QueryInterface(nsIEditorStyleSheets);
   editor.enableStyleSheet(dynAllTagsStyleSheet, on);
   editor instanceof Components.interfaces.nsIHTMLObjectResizer;
-  if (editor.resizedObject) 
+  if (editor.resizedObject)
   {
     editor.hideResizers();
   }
@@ -4697,7 +4701,7 @@ function msiSetDisplayMode(editorElement, mode)
           document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
         }
         else
-        { 
+        {
           dump("PDF file not found\n");
           printTeX(true, true);
         }
@@ -4741,7 +4745,7 @@ function msiSetDisplayMode(editorElement, mode)
     // Save the last non-source mode so we can cancel source editing easily
     editorElement.mPreviousNonSourceDisplayMode = mode;
 
- 
+
     // Switch to the normal editor (first in the deck)
     if ("gContentWindowDeck" in window)
       window.gContentWindowDeck.selectedIndex = 0;
@@ -4781,8 +4785,8 @@ function msiSetDisplayMode(editorElement, mode)
     document.getElementById(kDisplayModeMenuIDs[previousMode]).setAttribute("checked","false");
   }
   document.getElementById(kDisplayModeMenuIDs[mode]).setAttribute("checked","true");
-  
-  
+
+
 
   return true;
 }
@@ -4920,7 +4924,7 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
 //  editor.addOverrideStyleSheet(editorElement.mInvisiblesStyleSheet);
   editorElement.viewSettings = viewSettings;
 
-} 
+}
 
 function msiGetViewSettingsFromDocument(editorElement)
 {
@@ -5060,7 +5064,7 @@ function msiInitPasteAsMenu(editorElement)
   var menuItem = document.getElementById("menu_pasteTable")
   if(menuItem)
   {
-    menuItem.IsInTable  
+    menuItem.IsInTable
     menuItem.setAttribute("label", GetString(msiIsInTable(editorElement) ? "NestedTable" : "Table"));
    // menuItem.setAttribute("accesskey",GetString("ObjectPropertiesAccessKey"));
   }
@@ -5137,7 +5141,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
           theMenuStr = theMenuStr.replace(/%tagname%/, GetString("msiFrame"));
           scriptStr = "msiFrame(event.target.refEditor, null, event.target.refElement);";
           break;
-        } 
+        }
         //otherwise fallthrough
       case "object":
         if (element.getAttribute("msigraph") == "true")
@@ -5158,7 +5162,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 //          if (editor.getElementOrParentByTagName("href", element))
 //            objStr = GetString("ImageAndLink");
 //        } catch(e) {}
-        
+
         if (!objStr || !objStr.length)
         {
           if (coreElement.getAttribute("isVideo") == "true")
@@ -5463,7 +5467,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontcolor"));
         scriptStr = "openFontColorDialog('fontcolor', event.target.refElement);";
       break;
-      
+
       case "fontsize":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
@@ -5488,7 +5492,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       default:
         tagclass = editor.tagListManager.getClassOfTag(name, null);
         switch (tagclass)
-        { 
+        {
           case "texttag":
           break;
           case "paratag":
@@ -5899,7 +5903,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
         }
         currPos.m_nCol += colspan;  //we don't change nRow here, incidentally - it can only change at the outer level of the loop (in the calling function).
       break;
-      
+
       default:
         // We end up here when the cell contains a text node. Not an error.
         // dump("In msiEditor.js, msiGetRowAndColumnData(), bad cell node passed in to addCellToList - node is [" + msiGetBaseNodeName(cellNode) + "].\n");
@@ -6012,14 +6016,14 @@ var msiPropertiesObjectDataBase =
         this.mSelection.push( theEditor.selection.getRangeAt(ix).cloneRange() );
     }
     this.finishInit();
-//    this.initFromData(rangeArray, editorElement);  
+//    this.initFromData(rangeArray, editorElement);
   },
 
 //  initFromData : function(rangeArray, editorElement)
 //  {
 //    this.mEditorElement = editorElement;
 //    this.mSelection = rangeArray;
-//    this.mNode = 
+//    this.mNode =
 ////    this.mContentType = this.getContentType();
 //    this.finishInit();
 //  },
@@ -6212,7 +6216,7 @@ var msiPropertiesObjectDataBase =
 //      this.mContentType = this.contentTypeFromNode(this.mNode);
 //      return this.mContentType;
 //    }
-//    
+//
 //    //Otherwise we're looking at a selection. Is it just a range?
 //    var theRange = this.getRange();
 //    if (theRange)
@@ -6327,7 +6331,7 @@ var msiPropertiesObjectDataBase =
 msiPropertiesObjectData.prototype = msiPropertiesObjectDataBase;
 
 function msiCharPropertiesObjectData() {}
-msiCharPropertiesObjectData.prototype = 
+msiCharPropertiesObjectData.prototype =
 {
 //Data:
   mOffset : null,
@@ -6506,7 +6510,7 @@ function msiTablePropertiesObjectData()
   this.scriptStrings = [];
 }
 
-msiTablePropertiesObjectData.prototype = 
+msiTablePropertiesObjectData.prototype =
 {
 //Data:
   menuStrings: [],
@@ -6798,7 +6802,7 @@ msiTablePropertiesObjectData.prototype =
       break;
       case "Cell":
       case "CellGroup":
-        return ( this.mTableInfo.cellInfoArray[nRow][nCol] && ("mSelected" in this.mTableInfo.cellInfoArray[nRow][nCol]) 
+        return ( this.mTableInfo.cellInfoArray[nRow][nCol] && ("mSelected" in this.mTableInfo.cellInfoArray[nRow][nCol])
           && (this.mTableInfo.cellInfoArray[nRow][nCol].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) );
       break;
       case "Table":
@@ -6848,7 +6852,7 @@ msiTablePropertiesObjectData.prototype =
     //  (i) if we have "mCell" it means the selection is a single cell, so Table Cell, Table Row, Table Column, and Table properties should be on menu.
     // (ii) We don't want to show Table Row properties only if the rows selection includes the whole table, and similarly for columns.
     //(iii) if we do have a cell then the others should show up if present? (If we have a cell in a one-row table, would we want to activate
-    //      column properties?) 
+    //      column properties?)
     var ourArray = ["mCell", "mSelection", "mRowSelection", "mColSelection", "mTableElement"];
     var strArray = null;
     var commandArray = null;
@@ -6962,7 +6966,7 @@ msiTablePropertiesObjectData.prototype =
 ////  ContentType_TableCellGroup : 0x12,  //The selected text is a group (block?) of table cells.
 ////  ContentType_TableRows : 0x14,  //The selected text consists of a group of cells spanning entire table rows. This may or may not be the same as a <tr>.
 ////  ContentType_TableColumns : 0x18, //The selected text consists of a group of cells spanning entire table columns.
-//    
+//
 //  },
 
   markRowSelected : function(tableData, nWhichRow, nSelectionType)
@@ -7334,7 +7338,7 @@ msiTablePropertiesObjectData.prototype =
       }
       return newExtraRows;
     }
-    
+
     function findRowParent(aNode)
     {
       var retParent = null;
@@ -7522,7 +7526,7 @@ msiTablePropertiesObjectData.prototype =
       }
       return newExtraCols;
     }
-    
+
     for (var jx = 0; jx < nCols; ++jx)
       bNeedExpandSel = checkAColumn(jx, addColsArray, this.mTableInfo) || bNeedExpandSel;
     addColsArray.sort( function(a,b) {return (a-b);} );
@@ -7617,7 +7621,7 @@ function msiEquationPropertiesObjectData()
   this.mRowData = [];
 }
 
-msiEquationPropertiesObjectData.prototype = 
+msiEquationPropertiesObjectData.prototype =
 {
 
 //Interface:
@@ -7855,7 +7859,7 @@ msiEquationPropertiesObjectData.prototype =
       {
         dump("  Unable to find a display node! Aborting...\n");
         return;
-      }    
+      }
     }
     if (this.mTableElement)
     {
@@ -7996,7 +8000,7 @@ msiEquationPropertiesObjectData.prototype =
 msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBase;
 
 //rwa//function msiInitObjectPropertiesMenuitem(editorElement, id)
-//rwa//{ 
+//rwa//{
 //rwa//  try {
 //rwa//  var editor = msiGetEditor(editorElement);
 //rwa//  var propertiesMenu = document.getElementById(id);
@@ -8008,15 +8012,15 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 //rwa//  while (child = popupMenu.firstChild) popupMenu.removeChild(child);
 //rwa//
 //rwa//  var parentTagString = editor.tagListManager.getParentTagList(",",false);
-//rwa//  var parentTagArray = parentTagString.split(","); 
+//rwa//  var parentTagArray = parentTagString.split(",");
 //rwa//  var i;
 //rwa//  var paL = parentTagArray.length;
 //rwa//  var node = editor.getSelectionContainer();
 //rwa//  // We have a problem when a node is selected.
-//rwa//  if (editor.selection.focusNode == editor.selection.anchorNode && 
+//rwa//  if (editor.selection.focusNode == editor.selection.anchorNode &&
 //rwa//    Math.abs(editor.selection.focusOffset-editor.selection.anchorOffset)==1)
 //rwa//  {
-//rwa//    if (editor.selection.focusNode.nodeType != 3) node = 
+//rwa//    if (editor.selection.focusNode.nodeType != 3) node =
 //rwa//      editor.selection.focusNode.childNodes.item(Math.min(editor.selection.focusOffset,editor.selection.anchorOffset));
 //rwa//  }
 //rwa//  if (node.nodeType == 3) node = node.parentNode; //if text node, go to the parent
@@ -8038,7 +8042,7 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 //rwa//    tagclass = editor.tagListManager.getClassOfTag(tag, null);
 //rwa//    var propsdata;
 //rwa//    switch (tagclass)
-//rwa//    { 
+//rwa//    {
 //rwa//      case "texttag":
 //rwa//        switch( tag )
 //rwa//        {
@@ -8124,11 +8128,11 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 //rwa//          break;
 //rwa//        case "mtable":
 //rwa//          break;
-//rwa//        default: 
+//rwa//        default:
 //rwa//          propsdata = msiCreatePropertiesObjectDataFromNode(node, editorElement, false);
 //rwa//          if (propsdata)
 //rwa//          {
-//rwa//            try 
+//rwa//            try
 //rwa//            {
 //rwa//              if (propsdata.menuStrings)
 //rwa//              {
@@ -8137,7 +8141,7 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 //rwa//                  newitem = propertiesMenu.appendItem(propsdata.menuStrings[k]);
 //rwa//                  if (propsdata.menuStrings && propsdata.menuStrings[k].length)
 //rwa//                    newitem.setAttribute("command", propsdata.menuStrings[k]);
-//rwa//                  else 
+//rwa//                  else
 //rwa//                    newitem.setAttribute("oncommand", propsdata.scriptStrings[k]);
 //rwa//                  newitem.node = node;
 //rwa//                  count++;
@@ -8149,7 +8153,7 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 //rwa//                if (propsdata.commandStr && propsdata.commandStr.length)
 //rwa////                  newitem.setAttribute("command", propsdata.commandStr);
 //rwa//                  newitem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('" + propsdata.commandStr + "', this);");
-//rwa//                else 
+//rwa//                else
 //rwa//                  newitem.setAttribute("oncommand", propsdata.scriptStr);
 //rwa//                newitem.refElement = node;
 //rwa//                newitem.propertiesData = propsdata;
@@ -8175,7 +8179,7 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 // Note that we directly do the enabling instead of
 //  using goSetCommandEnabled since we already have the menuitem
 function msiInitObjectPropertiesMenuitem(editorElement, id)
-{ 
+{
   var name;
 
   try {
@@ -8184,7 +8188,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
     var editor = msiGetEditor(editorElement);
     if ( (id != "propertiesMenu") && (id != "propertiesMenu_cm") )
       dump("Problem in msiEditor.js, msiInitObjectPropertiesMenuitem() - id passed in isn't correct (it's " + id + ").\n");
-  
+
     var menuItem;
     var subMenu = document.getElementById(id);
     if (!subMenu) return null;
@@ -8222,7 +8226,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
 			  item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
 			}
 			if (propData.mNode && propData.mNode.setAttribute)
-			{		
+			{
 				item.addEventListener("DOMMenuItemActive", function (event) {
 					event.target.propertiesData.mNode.setAttribute("hilite","1");
 				}, false);
@@ -8412,7 +8416,7 @@ function msiPropMenuCloseup(event, thePopupMenu)
     return;
   msiPropMenuResetOrigSel(thePopupMenu.id);
 }
-  
+
 function AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData)
 {
 //  var editPopup = parentPropertiesMenu.parentNode;
@@ -8423,7 +8427,7 @@ function AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData)
 //	var insertMatrixID = "matrixInsert";
 //	var selectMatrixID = "matrixSelect";
 //	var deleteMatrixID = "matrixDelete";
-//	
+//
 ////  var rowID = "InsertMatrixRows";
 ////  var colID = "InsertMatrixColumns";
 //  if (bIsContextMenu)
@@ -8718,7 +8722,7 @@ function msiEditorSetDefaultPrefsAndDoctype(editorElement)
   var editor = msiGetEditor(editorElement);
 
   var domdoc;
-  try { 
+  try {
     domdoc = editor.document;
   } catch (e) { dump( e + "\n"); }
   if ( !domdoc )
@@ -8727,7 +8731,7 @@ function msiEditorSetDefaultPrefsAndDoctype(editorElement)
     return;
   }
 
-  // Insert a doctype element 
+  // Insert a doctype element
   // if it is missing from existing doc
   if (!domdoc.doctype)
   {
@@ -8735,7 +8739,7 @@ function msiEditorSetDefaultPrefsAndDoctype(editorElement)
     if (newdoctype)
       domdoc.insertBefore(newdoctype, domdoc.firstChild);
   }
-  
+
   // search for head; we'll need this for meta tag additions
   var headelement = 0;
   var headnodelist = domdoc.getElementsByTagName("head");
@@ -8974,7 +8978,7 @@ function msiOnButtonUpdate(button, commmandID, invert)
     {
       var topWindow = msiGetTopLevelWindow(window);
       commandNode = topWindow.document.getElementById(commandID);
-    }  
+    }
     var state = commandNode.getAttribute("state");
     button.checked = invert?(!(state == "true")):state=="true";
   }
@@ -8992,7 +8996,7 @@ function msiOnStateButtonUpdate(button, commmandID, onState)
     {
       var topWindow = msiGetTopLevelWindow(window);
       commandNode = topWindow.document.getElementById(commandID);
-    }  
+    }
 
     button.checked = state == onState;
   }
@@ -9078,7 +9082,7 @@ function msiInitJoinCellMenuitem(id, editorElement)
   // Use "Join selected cells if there's more than 1 cell selected
   var numSelected;
   var foundElement;
-  
+
   try {
     var tagNameObj = {};
     var countObj = {value:0}
@@ -9136,7 +9140,7 @@ function msiInitRemoveStylesMenuitems(editorElement, removeStylesId, removeLinks
       try {
         docList[i].defaultView.SetElementEnabled(linkItem, !isCollapsed ||
                         editor.getElementOrParentByTagName("href", null));
-      } catch(e) {}      
+      } catch(e) {}
     }
     // Disable if selection is collapsed
   }   //end of the docList loop
@@ -9237,7 +9241,7 @@ function msiIsInTableCell(editorElement)
     var editor = msiGetEditor(editorElement);
     var flags = editor.flags;
     return (msiIsHTMLEditor(editorElement) &&
-            !(flags & nsIPlaintextEditor.eEditorReadonlyMask) && 
+            !(flags & nsIPlaintextEditor.eEditorReadonlyMask) &&
             msiIsEditingRenderedHTML(editorElement) &&
             null != editor.getElementOrParentByTagName("td", null));
   } catch (e) {}
@@ -9253,7 +9257,7 @@ function msiIsInMatrixCell(editorElement)
     var editor = msiGetEditor(editorElement);
     var flags = editor.flags;
     return (msiIsHTMLEditor(editorElement) &&
-            !(flags & nsIPlaintextEditor.eEditorReadonlyMask) && 
+            !(flags & nsIPlaintextEditor.eEditorReadonlyMask) &&
             msiIsEditingRenderedHTML(editorElement) &&
             null != editor.getElementOrParentByTagName("mtd", null));
   } catch (e) {}
@@ -9309,7 +9313,7 @@ function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, comma
                                          command, commandHandler, theData);
 //      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal", "","TablePanel");
     editorElement.contentWindow.focus();
-  } 
+  }
   else if (insertAllowed)
   {
     try {
@@ -9333,7 +9337,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
     return;
 
       //HERE USE MODELESS DIALOG FUNCTIONALITY??
-//  msiOpenModelessDialog("chrome://editor/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,dependent", editorElement, 
+//  msiOpenModelessDialog("chrome://editor/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,dependent", editorElement,
 //                                         command, commandHandler, "")
 
   window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
@@ -9644,9 +9648,9 @@ function msiUpdateStructToolbar(editorElement)
   var i;
   var propertyStack = [];
 
-  // the theory here is that by following up the chain of parentNodes, 
-  // we will eventually get to the root <body> tag. But due to some bug, 
-  // there may be multiple <body> elements in the document. 
+  // the theory here is that by following up the chain of parentNodes,
+  // we will eventually get to the root <body> tag. But due to some bug,
+  // there may be multiple <body> elements in the document.
   document.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
   var cursorSetProps = editor.readCursorSetProps().split(";"); // these are tags set on the cursor
   var cursorClearedProps = editor.readCursorClearedProps().split(";"); // these are tags cleared at the cursor
@@ -9693,14 +9697,14 @@ function setTagFieldContents(editor, propertyStack)
   var klass;
   var textbox;
   var tt, pt, st, ft;
-  try 
+  try
   {
     document.getElementById("cmd_textBold").setAttribute("checked", "false");
     document.getElementById("cmd_textItalic").setAttribute("checked", "false");
     tt = document.getElementById("TextTagSelections");
     pt = document.getElementById("ParaTagSelections");
     st = document.getElementById("StructTagSelections");
-    ft = document.getElementById("FrontMTagSelections");  
+    ft = document.getElementById("FrontMTagSelections");
     if (tt) tt.value = "";
     if (pt) pt.value = "";
     if (st) st.value = "";
@@ -9711,7 +9715,7 @@ function setTagFieldContents(editor, propertyStack)
       switch(klass) {
         case "texttag" : textbox = tt;
           break;
-        case "paratag" : 
+        case "paratag" :
         case "listtag" : textbox = pt;
         break;
         case "structtag" :
@@ -9886,18 +9890,18 @@ function FillInHTMLTooltip(tooltip)
 
 
 //function initializeAutoCompleteStringArrayForEditor(theEditor)
-//{ 
+//{
 //  dump("===> initializeAutoCompleteStringArray\n");
-//                              
+//
 ////  var stringArraySearch = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService(Components.interfaces.nsIAutoCompleteSearchStringArray);
 ////  stringArraySearch.editor = theEditor;
 //}
- 
- 
- 
-// handle events on prince-specific elements here, or call the default goDoCommand() 
-function goDoPrinceCommand (cmdstr, element, editorElement) 
-{ 
+
+
+
+// handle events on prince-specific elements here, or call the default goDoCommand()
+function goDoPrinceCommand (cmdstr, element, editorElement)
+{
   try
   {
     if (!editorElement)
@@ -9915,7 +9919,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       var isDisplayed;
       if (element.hasAttribute("hide"))
         isDisplayed = (element.getAttribute("hide")=="false");
-      else 
+      else
       {
         var body = msiGetBodyElement(editorElement);
         isDisplayed = !(body.getAttribute("hideFootnotes") && body.getAttribute("hideFootnotes") == "true");
@@ -9963,7 +9967,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     }
     else if ((elementName == "img") || (elementName=="graph") || elementName=="plotwrapper")
     {
-      var bIsGraph = (element.tagName == "plotwrapper");                   
+      var bIsGraph = (element.tagName == "plotwrapper");
       if (!bIsGraph)
       {
         for (var ix = 0; !bIsGraph && (ix < element.childNodes.length); ++ix)
@@ -10177,15 +10181,15 @@ function msiDoUpdateCommands(eventStr, editorElement)
  */
 var msiCommandUpdater = {
   /**
-   * Gets a controller that can handle a particular command. 
+   * Gets a controller that can handle a particular command.
    * @param   command
    *          A command to locate a controller for, preferring controllers that
    *          show the command as enabled.
    * @returns In this order of precedence:
-   *            - the first controller supporting the specified command 
+   *            - the first controller supporting the specified command
    *              associated with the focused element that advertises the
    *              command as ENABLED
-   *            - the first controller supporting the specified command 
+   *            - the first controller supporting the specified command
    *              associated with the global window that advertises the
    *              command as ENABLED
    *            - the first controller supporting the specified command
@@ -10243,7 +10247,7 @@ var msiCommandUpdater = {
     }
     return controller || window.controllers.getControllerForCommand(command);
   },
-  
+
   /**
    * Updates the state of a XUL <command> element for the specified command
    * depending on its state.
@@ -10263,7 +10267,7 @@ var msiCommandUpdater = {
       dump("Error in msiEditor.js, in msiCommandUpdater.updateCommand, command is [" + command + "]");
     }
   },
-  
+
   /**
    * Enables or disables a XUL <command> element.
    * @param   command
@@ -10316,8 +10320,8 @@ var msiCommandUpdater = {
     catch (e) {
       dump("An error occurred executing the "+command+" command: "+e.message+"\n");
     }
-  }, 
-  
+  },
+
   /**
    * Changes the label attribute for the specified command.
    * @param   command
@@ -10341,7 +10345,7 @@ var msiCommandUpdater = {
       }
     }
   },
-  
+
   /**
    * Changes the accesskey attribute for the specified command.
    * @param   command
@@ -10388,10 +10392,10 @@ var msiCommandUpdater = {
   }
 };
 
-// Shim for compatibility with existing code. 
-function msiGoDoCommand(command, editorElement) 
-{ 
-	msiCommandUpdater.doCommand(command, editorElement); 
+// Shim for compatibility with existing code.
+function msiGoDoCommand(command, editorElement)
+{
+	msiCommandUpdater.doCommand(command, editorElement);
 }
 function msiGoUpdateCommand(command, editorElement) { msiCommandUpdater.updateCommand(command, editorElement); }
 function msiGoSetCommandEnabled(command, enabled, editorElement) { msiCommandUpdater.enableCommand(command, enabled, editorElement); }
@@ -10487,7 +10491,7 @@ function msiDialogEditorContentFilter(anEditorElement)
 //          return this.reject;
 //      break;
     }
-    return this.acceptAll;  
+    return this.acceptAll;
     //We still need to fill in the tags for which we want to accept the tag but leave open the possibility of not accepting a child.
     //Examples may include field tags, list tags, etc.; the point being that one may occur as the parent of something like a
     //  sw:dialogbase paragraph. Not implemented that way at this point.  rwa, 8-
@@ -10786,7 +10790,7 @@ function msiDialogEditorContentFilter(anEditorElement)
 function OpenExtensions(aOpenMode)
 {
   const EMTYPE = "Extension:Manager";
-  
+
   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
                      .getService(Components.interfaces.nsIWindowMediator);
   var needToOpen = true;
@@ -11158,7 +11162,7 @@ function msiEditPage(url, launchWindow, delay, windowName)
     }
   }
 
-  // if the current window is a browser window, then extract the current charset menu setting from the current 
+  // if the current window is a browser window, then extract the current charset menu setting from the current
   // document and use it to initialize the new composer window...
 
   var wintype = document.documentElement.getAttribute('windowtype');
