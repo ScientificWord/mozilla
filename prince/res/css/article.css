@@ -9,7 +9,7 @@ part {
   counter-increment: part;
 }
 
-part>*:first-child {
+part>sectiontitle:first-child {
   display: block;
   font-size: 200%;
   font-weight: bold;
@@ -17,7 +17,7 @@ part>*:first-child {
   text-align:center;
 }
 
-part>*:first-child:before {
+part>sectiontitle:first-child:before {
   content: "Part " counter(part,upper-roman);
   display: block;
   font-size: large;
@@ -40,7 +40,7 @@ chapter>sectiontitle{
   line-height: 24pt;
   text-align: center;
 }
- 
+
 chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
   content: "Chapter " counter(chapter,upper-roman) " ";
   display: block;
@@ -70,47 +70,47 @@ section {
   position: relative;
   top: 0;
   left: 0;
-}  
+}
 
-section>*:first-child{
+section>sectiontitle:first-child{
   display: block;
-  margin: 10pt 0pt 0pt 0pt;
+  margin: 10pt 0 0 0;
   font-size: 175%;
   font-weight: bold;
   color: rgb(9, 62, 125);
 }
 
-section>*:first-child[open="false"]{
+section>sectiontitle:first-child[open="false"]{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: 175%;
   font-weight: bold;
 }
 
-section>*:first-child:before, section[open="true"]>*:first-child:before  {
+section>sectiontitle:first-child:before, section[open="true"]>sectiontitle:first-child:before  {
   content: counter(section) ".  ";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 
-section[nonum="true"]>*:first-child:before, section[nonum="true"][open="true"]>*:first-child:before  {
+section[nonum="true"]>sectiontitle:first-child:before, section[nonum="true"][open="true"]>sectiontitle:first-child:before  {
   content: "";
   -moz-user-modify: read-only;
 }
 
 
-section>*:first-child[open="false"], section>sectiontitle[open="false"] {
+section>sectiontitle:first-child[open="false"], section>sectiontitle[open="false"] {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
 }
- 
-\section>sectiontitle{
+
+section>sectiontitle{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
@@ -123,21 +123,21 @@ subsection {
   counter-reset: subsubsection;
 }
 
-subsection>*:first-child {
+subsection>sectiontitle:first-child {
   display: block;
-  margin: 10pt 0pt 0pt 0pt;
+  margin: 10pt 0 0 0;
   font-size: 150%;
   font-weight: bold;
   color: rgb(9, 62, 125);
 }
 
-subsection>*:first-child:before {
+subsection>sectiontitle:first-child:before {
   content: counter(section) "." counter(subsection) ".  ";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 
-subsection[nonum="true"]>*:first-child:before {
+subsection[nonum="true"]>sectiontitle:first-child:before {
   content: "";
 }
 
@@ -148,26 +148,26 @@ subsubsection {
   counter-reset: paragraph;
 }
 
-subsubsection>*:first-child {
+subsubsection>sectiontitle:first-child {
   display: block;
-  margin: 10pt 0pt 0pt 0pt;
+  margin: 10pt 0 0 0;
   font-size: 120%;
   font-weight: bold;
   color: rgb(9, 62, 125);
 }
 
-subsubsection>*:first-child:before {
+subsubsection>sectiontitle:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
   -moz-user-select: -moz-none;
 }
-subsubsection[nonum="true"]>*:first-child:before {
+subsubsection[nonum="true"]>sectiontitle:first-child:before {
   content: "";
   -moz-user-select: -moz-none;
 }
 
 
 subsubsection defaulttitletag:after {
-  content: "Replace this subsubsection title"; 
+  content: "Replace this subsubsection title";
   color: gray;
 }
 
@@ -176,20 +176,20 @@ paragraph {
   counter-increment: paragraph;
 }
 
-paragraph>*:first-child {
+paragraph>sectiontitle:first-child {
   font-size: 100%;
   font-weight: bold;
-  font-style: normal; 
+  font-style: normal;
   color: rgb(9, 62, 125);
 }
 
-paragraph>*:first-child:before {
-  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
+paragraph>sectiontitle:first-child:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
   -moz-user-select: -moz-none;
 }
 
-paragraph[nonum="true"]>*:first-child:before {
-  content: ""; 
+paragraph[nonum="true"]>sectiontitle:first-child:before {
+  content: "";
   -moz-user-select: -moz-none;
 }
 
@@ -198,10 +198,10 @@ subparagraph {
   counter-increment: subparagraph;
 }
 
-subparagraph>*:first-child {
+subparagraph>sectiontitle:first-child {
   font-size: 100%;
   font-weight: bold;
-  font-style: normal; 
+  font-style: normal;
   color: rgb(9, 62, 125);
   margin-left: 10pt;
 }
@@ -255,7 +255,7 @@ abstract {
   padding-left: 15pt;
   padding-right: 15pt;
   font-size: small;
-  border: thin solid black; 
+  border: thin solid black;
   background-color: #E1EEFD;
   -moz-border-radius: 5px;
 }
@@ -288,29 +288,29 @@ math {
 
 bodyText {
   display: block;
-  margin: 10pt 0pt 5pt 0pt;
+  margin: 10pt 0 5pt 0;
 }
 
 rtlBodyText {
   display: block;
   direction: rtl;
-  unicode-bidi: bidi-override; 
+  unicode-bidi: bidi-override;
   margin: 10pt 10pt 5pt 5pt;
 }
 
 bodyMath {
   display: block;
-  margin: 0pt 10pt 0pt 5pt;
+  margin: 0 10pt 0 5pt;
   color: rgb(0,128,64);
 }
 
 shortQuote {
-  display: block; 
+  display: block;
   margin-left: 20pt;
   margin-right: 20pt;
 }
 longQuotation {
-  display: block; 
+  display: block;
   margin-left: 20pt;
   margin-right: 20pt;
 }
@@ -376,10 +376,10 @@ theorem:before {
 /***************/
 
 enumerate { counter-reset: item-number }
- 
+
 enumerate>item { display: block ;
-                 margin: 0pt 0pt 0pt 0pt; 
-                 padding: 10pt 0pt 0pt 20pt }
+                 margin: 0 0 0 0;
+                 padding: 10pt 0 0 20pt }
 
 enumerate>item:before { content: counter(item-number) ". "; counter-increment: item-number }
 
@@ -388,7 +388,7 @@ description {
 }
 
 itemize {
-  list-style: disc; 
+  list-style: disc;
   counter-reset: item;
 }
 
@@ -397,13 +397,12 @@ itemize {
 /***************/
 
 img {
-  display: inline; 
-  margin: 2em
-} 
+  display: inline;
+}
 
 button[class="subeqnnum"]{
   right: 20px;
-  font-style: normal; 
+  font-style: normal;
   color: blue;
 }
 
