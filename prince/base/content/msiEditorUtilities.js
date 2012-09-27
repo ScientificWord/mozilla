@@ -236,7 +236,7 @@ function TrimStringLeft(string)
   if(!string) return "";
   return string.replace(/^\s+/, "");
 }
-
+Tri
 function TrimStringRight(string)
 {
   if (!string) return "";
@@ -11949,6 +11949,7 @@ function replacer(str, p1, p2, offset, s)
     case '&': return "&amp;"; break;
     case '<': return "&lt;"; break;
     case '>': return "&gt;"; break;
+
     default: return str; break;
   }
 }
