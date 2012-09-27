@@ -58,30 +58,30 @@ function windowChanged()
 
 
 
-var symObserver = 
-{ 
+var symObserver =
+{
   canHandleMultipleItems: function ()
   {
     return true;
   },
-  
+
   onDragStart: function (evt, transferData, action)
   {
     var button = evt.originalTarget;
     if (button.nodeName !== "toolbarbutton") return;
-    var buttonData = 
+    var buttonData =
     "id:"+ button.getAttribute("id") +" label:"+button.getAttribute("label")+" msivalue:"+
         button.getAttribute("msivalue")+" observes:"+ button.getAttribute("observes")+" tooltiptext:" +
         button.getAttribute("tooltiptext");
     transferData.data = new TransferData();
     transferData.data.addDataForFlavour("symbolbutton", buttonData);
   },
-  
+
   canDrop: function(evt, session)
   {
     return true;
   },
-  
+
   onDrop: function(evt, dropData, session)
   {
     if (evt.currentTarget.id == "cachebar")
@@ -104,13 +104,13 @@ var symObserver =
           arr = attArray[i].split(":");
           if (arr[0].length > 0)
           {
-            if (arr[0] === "id") 
+            if (arr[0] === "id")
             {
               id = arr[1];
               arr[1] = "cache_"+id;
             }
             button.setAttribute(arr[0],arr[1]);
-          }          
+          }
         }
         var usersymbols = cachepanel.getAttribute("userlistofsymbols");
         if (usersymbols.indexOf(" "+id+" ") < 0)
@@ -121,8 +121,8 @@ var symObserver =
       }
     }
   },
-  
-  onDragOver: function(evt, flavour, session) 
+
+  onDragOver: function(evt, flavour, session)
   {
     dump(flavour.contentType+"\n");
     if (evt.currentTarget.nodeName == "tab")
@@ -136,7 +136,7 @@ var symObserver =
       }
     }
   },
-  
+
   onDragEnter: function(evt, flavour, session)
   {
     var supported = session.isDataFlavorSupported("symbolbutton");
@@ -144,7 +144,7 @@ var symObserver =
     if (supported)
       evt.currentTarget.setAttribute("selected", "1");
   },
-  
+
   getSupportedFlavours: function()
   {
     var flavours = new FlavourSet();
@@ -152,7 +152,7 @@ var symObserver =
 //    flavours.appendFlavour("text/html");
     return flavours;
   }
-}  
+}
 
 
 function initUserSymbols()
