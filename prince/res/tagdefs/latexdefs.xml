@@ -107,7 +107,6 @@
 			  <contains>defaulttitletag</contains>
 			  <contains>img</contains>
 			  <contains>object</contains>
-        <contains>line</contains>
         <contains>a</contains>
         <contains>note</contains>
         <contains>notewrapper</contains>
@@ -184,18 +183,6 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
 			  </tag>
-				<tag nm="line">
-					<nexttag>line</nexttag>
-					<description>Line</description>
-          <initialcontents>
-            <line>
-              <cursor/>
-              <br/>
-            </line>
-          </initialcontents>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
-				</tag>
 				<tag nm="centered">
 					<nexttag>centered</nexttag>
 					<description>Centered paragraph</description>
@@ -1205,7 +1192,6 @@
 			    <contains>defaulttitletag</contains>
 			    <contains>img</contains>
 			    <contains>object</contains>
-          <contains>line</contains>
           <contains>a</contains>
           <contains>note</contains>
           <contains>notewrapper</contains>
@@ -1228,7 +1214,6 @@
           <contains>mml:math</contains>
 			    <contains>img</contains>
 			    <contains>object</contains>
-          <contains>line</contains>
           <contains>a</contains>
           <contains>msiframe</contains>       
           <contains>msibreak</contains>
@@ -1243,7 +1228,6 @@
           <contains>mml:math</contains>
 			    <contains>img</contains>
 			    <contains>object</contains>
-          <contains>line</contains>
           <contains>a</contains>
           <contains>msiframe</contains>       
           <contains>msibreak</contains>
@@ -1258,7 +1242,6 @@
           <contains>math</contains>
 			    <contains>img</contains>
 			    <contains>object</contains>
-          <contains>line</contains>
           <contains>a</contains>
           <contains>msiframe</contains>       
           <contains>msibreak</contains>
