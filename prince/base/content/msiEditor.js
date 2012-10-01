@@ -1,5 +1,13 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+<<<<<<< local
+"use strict";
+=======
+>>>>>>> other
 Components.utils.import("resource://app/modules/pathutils.jsm");
+<<<<<<< local
+
+=======
+>>>>>>> other
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
@@ -1258,7 +1266,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       docurlstring = theArgs.getAttribute("value");
       if (docurlstring.length > 0)
         docurl = msiURIFromString(docurlstring);
-      if (docurl) dump("Url in args is "+docurl.spec+"\n");
+      if (docurl != null) dump("Url in args is "+docurl.spec+"\n");
     };
 // Two cases: if (docurl), then the url of a doc to load was passed. It might be for a shell.
 //            if (!docurl), nothing was passed. Load the default shell.
