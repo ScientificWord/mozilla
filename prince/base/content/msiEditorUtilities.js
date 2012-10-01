@@ -236,7 +236,7 @@ function TrimStringLeft(string)
   if(!string) return "";
   return string.replace(/^\s+/, "");
 }
-Tri
+
 function TrimStringRight(string)
 {
   if (!string) return "";
