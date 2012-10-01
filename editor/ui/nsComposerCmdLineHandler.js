@@ -33,6 +33,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+ "use strict";
 
 const nsICmdLineHandler     = Components.interfaces.nsICmdLineHandler;
 const nsICommandLineHandler = Components.interfaces.nsICommandLineHandler;
@@ -79,7 +80,7 @@ nsComposerCmdLineHandler.prototype = {
   openWindowWithArgs : true,
 
   /* nsICommandLineHandler */
-  handle : function handle(cmdLine) {
+  handle : function (cmdLine) {
     dump("clh: Prince command line handler\n");
     var args = Components.classes["@mozilla.org/supports-string;1"]
                          .createInstance(nsISupportsString);
@@ -106,7 +107,7 @@ nsComposerCmdLineHandler.prototype = {
       }
       dump("2. UriStr is '"+uristr+"'\n");
 
-      if ((uristr==null) && !cmdLine.preventDefault) {
+      if ((uristr==null) && !cmdLine.preventDefault &&cmdLine.length > 1) {
         // dump("clh: param 0 is " + cmdLine.getArgument(0));
         // dump("clh: param 1 is " + cmdLine.getArgument(1));
         // dump("clh: param 2 is " + cmdLine.getArgument(2));
@@ -126,14 +127,12 @@ nsComposerCmdLineHandler.prototype = {
         else args.data = "";
       }
     }
-    catch (e){
-      // One of the flags is present but no data, so set default arg.
+    catch(e) {
       args.data = "";
     }
-
     var wwatch = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
-                           .getService(nsIWindowWatcher);
-    dump("+++ Opening prince window with args = " + args.data + " and features = " + features + "\n");
+                               .getService(nsIWindowWatcher);
+    dump("+++ Opening prince window with args = '" + args.data + "' and features = '" + features + "'\n");
     wwatch.openWindow(null, "chrome://prince/content/prince.xul", "_blank",
                       features, args);
     cmdLine.preventDefault = true;

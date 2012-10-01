@@ -1,4 +1,5 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
+"use strict";
 
 function CustomizeMainToolbar(id1, id2, id3, id4, id5) {
   // make sure our toolbar buttons have the correct enabled state restored to them...
@@ -23,14 +24,26 @@ function createContextMenuItem(id, label, target, collapsed) {
   item.setAttribute("value", target);
   item.setAttribute("type", "checkbox");
   item.setAttribute("checked", !collapsed);
-  item.setAttribute("oncommand", "changeCollapsedState(this.value);");
+  item.setAttribute("oncommand", "changeCollapsedState('" + target + "');");
+  return item;
+}
+
+function toggleToolbarItem(id, label, target, collapsed) {
+  var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuitem");
+
+  item.id = "contextmenuitem_" + id;
+  item.setAttribute("label", label);
+  item.setAttribute("value", target);
+  item.setAttribute("type", "checkbox");
+  item.setAttribute("checked", !collapsed);
+  item.setAttribute("oncommand", "changeCollapsedState('" + item.id + "');");
   return item;
 }
 
 function changeCollapsedState(target) {
   var tb = document.getElementById(target);
-  if (tb.collapsed) tb.collapsed = false;
-  else tb.collapsed = true;
+  if (tb.getAttribute("collapsed") === "true") tb.setAttribute("collapsed", "false");
+  else tb.setAttribute("collapsed", "true");
 }
 
 function initCustomizeMenu(popup, id) {
