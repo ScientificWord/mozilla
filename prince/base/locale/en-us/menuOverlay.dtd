@@ -99,8 +99,9 @@
 <!ENTITY copyCmd.accel						"C">  
 <!ENTITY copyCmd.accesskey					"c"> 
 <!ENTITY copyCmd.acceltext					"Ctrl+C">
-<!ENTITY copytexCmd.label						"Copy as TeX">  
-<!ENTITY copypictureCmd.label						"Copy as Picture">  
+<!ENTITY copytexCmd.label					"Copy as TeX">  
+<!ENTITY copypictureCmd.label			"Copy as Picture">
+<!ENTITY savepictureCmd.label			"Export Selection as Picture">
 <!ENTITY pasteCmd.label						"Paste">  
 <!ENTITY pasteCmd.key						"V">  
 <!ENTITY pasteCmd.accesskey					"p"> 

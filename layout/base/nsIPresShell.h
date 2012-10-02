@@ -98,6 +98,8 @@ class nsWeakFrame;
 class nsIScrollableFrame;
 class gfxASurface;
 class gfxContext;
+class nsIOutputStream;
+class nsIImage;
 
 typedef short SelectionType;
 typedef PRUint32 nsFrameState;
@@ -766,6 +768,11 @@ public:
   virtual already_AddRefed<gfxASurface> RenderSelection(nsISelection* aSelection,
                                                         nsPoint& aPoint,
                                                         nsRect* aScreenRect) = 0;
+
+  NS_IMETHOD DrawSelectionToFile(nsISelection* aSelection, const nsAString& extension, nsIOutputStream *outputStream, 
+                               PRBool* retval) = 0;
+
+  NS_IMETHOD RenderSelectionToImage(nsISelection* aSelection, nsIImage** imageObj) = 0;
 
   void AddWeakFrame(nsWeakFrame* aWeakFrame);
   void RemoveWeakFrame(nsWeakFrame* aWeakFrame);
