@@ -156,6 +156,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
   commandTable.registerCommand("cmd_reviseCrossRef", msiReviseCrossRefCommand);
   commandTable.registerCommand("cmd_copypicture", msiCopyPictureCommand);
+  commandTable.registerCommand("cmd_savepicture", msiSavePictureCommand);
   commandTable.registerCommand("cmd_zoomin", msiZoomInCommand);
   commandTable.registerCommand("cmd_zoomout", msiZoomOutCommand);
   commandTable.registerCommand("cmd_zoomreset", msiZoomResetCommand);
@@ -9707,6 +9708,36 @@ var msiCopyPictureCommand =
     }
     catch (e) {
       finalThrow(cmdFailString('copypicture'), e.message);
+    }
+  }
+};
+
+///// "cmd_savepicture" /////////
+var msiSavePictureCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+  	var editorElement = msiGetActiveEditorElement();
+  	var editor = msiGetEditor(editorElement);
+  	if (!editor || !editor.selection || editor.selection.isCollapsed)
+      return false;
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    try
+    {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+      if (editor && editor.selection && !editor.selection.isCollapsed)
+        msiSaveAsPicture(editorElement);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('savepicture'), e.message);
     }
   }
 };

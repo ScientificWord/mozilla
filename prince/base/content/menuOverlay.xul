@@ -184,6 +184,9 @@
       <menuitem id="menu_copypicture"
                 label="&copypictureCmd.label;"
                 observes="cmd_copypicture"/>
+      <menuitem id="menu_savepicture"
+                label="&savepictureCmd.label;"
+                observes="cmd_savepicture"/>
       <menuitem id="menu_paste"
                 label="&pasteCmd.label;"
                 key="key_paste"
@@ -717,6 +720,10 @@
     </command>
     <command id="cmd_copypicture" 
             oncommand="msiGoDoCommand('cmd_copypicture')">
+      <observes element="cmd_copy" attribute="disabled" /> 
+    </command>
+    <command id="cmd_savepicture" 
+            oncommand="msiGoDoCommand('cmd_savepicture')">
       <observes element="cmd_copy" attribute="disabled" /> 
     </command>
     <command id="cmd_paste" 

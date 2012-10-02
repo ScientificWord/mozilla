@@ -162,7 +162,9 @@
 #include "nsThreadUtils.h"
 #include "nsStyleSheetService.h"
 #include "gfxImageSurface.h"
+#include "gfxPDFSurface.h"
 #include "gfxContext.h"
+#include "nsIImage.h"
 
 // Drag & Drop, Clipboard
 #include "nsWidgetsCID.h"
@@ -892,6 +894,17 @@ public:
                                                         nsPoint& aPoint,
                                                         nsRect* aScreenRect);
 
+  virtual already_AddRefed<gfxASurface> RenderSelectionForOutput(nsISelection* aSelection,
+                                                                 const nsAString& extension,
+                                                                 nsIOutputStream *outputStream,
+                                                                 nsPoint& aPoint,
+                                                                 nsRect* aScreenRect);
+
+  NS_IMETHODIMP DrawSelectionToFile(nsISelection* aSelection, const nsAString& extension, nsIOutputStream *outputStream, 
+                               PRBool* retval);
+
+  NS_IMETHOD RenderSelectionToImage(nsISelection* aSelection, nsIImage** imageObj);
+
   //nsIViewObserver interface
 
   NS_IMETHOD Paint(nsIView *aView,
@@ -1092,6 +1105,16 @@ protected:
                       nsPoint& aPoint,
                       nsRect* aScreenRect);
 
+  already_AddRefed<gfxASurface>
+  PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aItems,
+                               nsISelection* aSelection,
+                               nsIRegion* aRegion,
+                               nsRect aArea,
+                               const nsAString& extension,
+                               nsIOutputStream *outputStream,
+                               nsPoint& aPoint,
+                               nsRect* aScreenRect);
+ 
   /**
    * Methods to handle changes to user and UA sheet lists that we get
    * notified about.
@@ -5273,6 +5296,151 @@ PresShell::PaintRangePaintInfo(nsTArray<nsAutoPtr<RangePaintInfo> >* aItems,
   return surface;
 }
 
+//Note that outputStream may be null unless extension is "pdf" or "svg"
+already_AddRefed<gfxASurface>
+PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aItems,
+                               nsISelection* aSelection,
+                               nsIRegion* aRegion,
+                               nsRect aArea,
+                               const nsAString& extension,
+                               nsIOutputStream *outputStream,
+                               nsPoint& aPoint,
+                               nsRect* aScreenRect)
+{
+  nsPresContext* pc = GetPresContext();
+  if (!pc || aArea.width == 0 || aArea.height == 0)
+    return nsnull;
+
+  nsIDeviceContext* deviceContext = pc->DeviceContext();
+
+  // use the rectangle to create the surface
+  nsRect pixelArea = aArea;
+  pixelArea.ScaleRoundOut(1.0 / pc->AppUnitsPerDevPixel());
+
+  // if the area of the image is larger than the maximum area, scale it down
+  float scale = 0.0;
+  nsIntRect rootScreenRect = GetRootFrame()->GetScreenRect();
+
+  // if the image is larger in one or both directions than the size of
+  // the available screen area, scale the image down to that size.
+  nsRect maxSize;
+  deviceContext->GetClientRect(maxSize);
+  nscoord maxWidth = pc->AppUnitsToDevPixels(maxSize.width);
+  nscoord maxHeight = pc->AppUnitsToDevPixels(maxSize.height);
+  PRBool resize = (pixelArea.width > maxWidth || pixelArea.height > maxHeight);
+  if (resize) {
+    scale = 1.0;
+    // divide the maximum size by the image size in both directions. Whichever
+    // direction produces the smallest result determines how much should be
+    // scaled.
+    if (pixelArea.width > maxWidth)
+      scale = PR_MIN(scale, float(maxWidth) / pixelArea.width);
+    if (pixelArea.height > maxHeight)
+      scale = PR_MIN(scale, float(maxHeight) / pixelArea.height);
+
+    pixelArea.width = NSToIntFloor(float(pixelArea.width) * scale);
+    pixelArea.height = NSToIntFloor(float(pixelArea.height) * scale);
+
+    // adjust the screen position based on the rescaled size
+    nscoord left = rootScreenRect.x + pixelArea.x;
+    nscoord top = rootScreenRect.y + pixelArea.y;
+    aScreenRect->x = NSToIntFloor(aPoint.x - float(aPoint.x - left) * scale);
+    aScreenRect->y = NSToIntFloor(aPoint.y - float(aPoint.y - top) * scale);
+  }
+  else {
+    // move aScreenRect to the position of the surface in screen coordinates
+    aScreenRect->MoveTo(rootScreenRect.x + pixelArea.x, rootScreenRect.y + pixelArea.y);
+  }
+  aScreenRect->width = pixelArea.width;
+  aScreenRect->height = pixelArea.height;
+  gfxSize rectSize(pixelArea.width, pixelArea.height);  //Should transform to points here!
+
+//  nsRefPtr<gfxASurface> surface;
+  gfxASurface* surface = nsnull;
+  if ( extension.EqualsLiteral("png") || extension.EqualsLiteral("jpg") || extension.EqualsLiteral("jpeg") )
+  {
+    gfxImageSurface* imageSurface = new gfxImageSurface(gfxIntSize(pixelArea.width, pixelArea.height),
+                        gfxImageSurface::ImageFormatARGB32);
+    if (!imageSurface || imageSurface->CairoStatus())
+      delete imageSurface;
+    else
+      surface = imageSurface;
+  }
+  else if (extension.EqualsLiteral("pdf") && outputStream)
+  {
+    gfxPDFSurface* pdfSurface = new gfxPDFSurface(outputStream, rectSize);
+    if (!pdfSurface || pdfSurface->CairoStatus())
+      delete pdfSurface;
+    else
+      surface = pdfSurface;
+  }
+  else if (extension.EqualsLiteral("svg") && outputStream)
+  {
+    //want to insert:
+    //gfxSVGSurface* svgSurface = new gfxSVGSurface(outputStream, rectSize);
+    //if (!svgfSurface || svgSurface->CairoStatus())
+    //  delete svgSurface;
+    //else
+    //  surface = svgSurface;
+  }
+
+  if (!surface)
+    return nsnull;
+
+  // clear the image
+  gfxContext context(surface);
+  context.SetOperator(gfxContext::OPERATOR_CLEAR);
+  context.Rectangle(gfxRect(0, 0, pixelArea.width, pixelArea.height));
+  context.Fill();
+
+  nsCOMPtr<nsIRenderingContext> rc;
+  deviceContext->CreateRenderingContextInstance(*getter_AddRefs(rc));
+  rc->Init(deviceContext, surface);
+
+  if (aRegion)
+    rc->SetClipRegion(*aRegion, nsClipCombine_kReplace);
+
+  if (resize)
+    rc->Scale(scale, scale);
+
+  // translate so that points are relative to the surface area
+  rc->Translate(-aArea.x, -aArea.y);
+
+  // temporarily hide the selection so that text is drawn normally. If a
+  // selection is being rendered, use that, otherwise use the presshell's
+  // selection.
+  nsCOMPtr<nsFrameSelection> frameSelection;
+  if (aSelection) {
+    nsCOMPtr<nsISelectionPrivate> selpriv = do_QueryInterface(aSelection);
+    selpriv->GetFrameSelection(getter_AddRefs(frameSelection));
+  }
+  else {
+    frameSelection = FrameSelection();
+  }
+  PRInt16 oldDisplaySelection = frameSelection->GetDisplaySelection();
+  frameSelection->SetDisplaySelection(nsISelectionController::SELECTION_HIDDEN);
+
+  // next, paint each range in the selection
+  PRInt32 count = aItems->Length();
+  for (PRInt32 i = 0; i < count; i++) {
+    RangePaintInfo* rangeInfo = (*aItems)[i];
+    // the display lists paint relative to the offset from the reference
+    // frame, so translate the rendering context
+    nsIRenderingContext::AutoPushTranslation
+      translate(rc, rangeInfo->mRootOffset.x, rangeInfo->mRootOffset.y);
+
+    aArea.MoveBy(-rangeInfo->mRootOffset.x, -rangeInfo->mRootOffset.y);
+    rangeInfo->mList.Paint(&rangeInfo->mBuilder, rc, aArea);
+    aArea.MoveBy(rangeInfo->mRootOffset.x, rangeInfo->mRootOffset.y);
+  }
+
+  // restore the old selection display state
+  frameSelection->SetDisplaySelection(oldDisplaySelection);
+
+  NS_ADDREF(surface);
+  return surface;
+}
+
 already_AddRefed<gfxASurface>
 PresShell::RenderNode(nsIDOMNode* aNode,
                       nsIRegion* aRegion,
@@ -5348,6 +5516,43 @@ PresShell::RenderSelection(nsISelection* aSelection,
 
   return PaintRangePaintInfo(&rangeItems, aSelection, nsnull, area, aPoint,
                              aScreenRect);
+}
+
+already_AddRefed<gfxASurface>
+PresShell::RenderSelectionForOutput(nsISelection* aSelection,
+                               const nsAString& extension,
+                               nsIOutputStream *outputStream,
+                               nsPoint& aPoint,
+                               nsRect* aScreenRect)
+{
+  // area will hold the size of the surface needed to draw the selection,
+  // measured from the root frame.
+  nsRect area;
+  nsTArray<nsAutoPtr<RangePaintInfo> > rangeItems;
+
+  // iterate over each range and collect them into the rangeItems array.
+  // This is done so that the size of selection can be determined so as
+  // to allocate a surface area
+  PRInt32 numRanges;
+  aSelection->GetRangeCount(&numRanges);
+  NS_ASSERTION(numRanges > 0, "RenderSelectionForOutput called with no selection");
+
+  for (PRInt32 r = 0; r < numRanges; r++)
+  {
+    nsCOMPtr<nsIDOMRange> range;
+    aSelection->GetRangeAt(r, getter_AddRefs(range));
+
+    RangePaintInfo* info = CreateRangePaintInfo(range, area);
+    if (info && !rangeItems.AppendElement(info)) {
+      delete info;
+      return nsnull;
+    }
+  }
+
+//  return PaintRangePaintInfo(&rangeItems, aSelection, nsnull, area, aPoint,
+//                             aScreenRect);
+  return PaintRangePaintInfoForOutput(&rangeItems, aSelection, nsnull, area, 
+                               extension, outputStream, aPoint, aScreenRect);
 }
 
 NS_IMETHODIMP
@@ -6091,6 +6296,137 @@ PresShell::Thaw()
     mDocument->EnumerateSubDocuments(ThawSubDocument, nsnull);
 
   UnsuppressPainting();
+}
+
+NS_IMETHODIMP
+PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& extension, nsIOutputStream *outputStream, 
+                               PRBool* retval)
+{
+  PRInt32 width=1000, height=1000;
+  nsRect r(0, 0, GetPresContext()->DevPixelsToAppUnits(width),
+                 GetPresContext()->DevPixelsToAppUnits(height));
+
+//  nsRefPtr<gfxASurface> surface = 
+//    gfxPlatform::GetPlatform()->
+//    CreateOffscreenSurface(gfxIntSize(width, height),
+//      gfxASurface::ImageFormatARGB32);
+//  NS_ENSURE_TRUE(surface, NS_ERROR_OUT_OF_MEMORY);
+//
+//  nsRefPtr<gfxContext> context = new gfxContext(surface);
+//  NS_ENSURE_TRUE(context, NS_ERROR_OUT_OF_MEMORY);
+
+  nsIFrame* rootFrame = GetRootFrame();
+  nsRect refScreenRect;
+  nsIntRect screenRect = rootFrame->GetScreenRectExternal();
+  refScreenRect.SetRect(screenRect.x, screenRect.y, 20, 20);
+  nsPoint pnt(refScreenRect.x, refScreenRect.y);
+//                                 dragRect.width, dragRect.height);
+//  nsRefPtr<gfxASurface> surface = RenderSelection(aSelection, pnt, &refScreenRect);
+  nsRefPtr<gfxASurface> surface = RenderSelectionForOutput(aSelection, extension, outputStream,
+                                                                 pnt, &refScreenRect);
+
+  if (!surface)
+    return NS_ERROR_FAILURE;
+
+//  nsresult rv = shell->RenderDocument(r, PR_FALSE, PR_FALSE,
+//                                      NS_RGB(255, 255, 0), context);
+//  NS_ENSURE_SUCCESS(rv, rv);
+
+
+  if ( extension.EqualsLiteral("png") || extension.EqualsLiteral("jpg") || extension.EqualsLiteral("jpeg") )
+  {
+    nsRefPtr<gfxImageSurface> imgSurface =
+       new gfxImageSurface(gfxIntSize(refScreenRect.width, refScreenRect.height),
+                           gfxImageSurface::ImageFormatARGB32);
+    NS_ENSURE_TRUE(imgSurface, NS_ERROR_OUT_OF_MEMORY);
+    nsRefPtr<gfxContext> imgContext = new gfxContext(imgSurface);
+
+    imgContext->DrawSurface(surface, gfxSize(refScreenRect.width, refScreenRect.height));
+
+    nsCOMPtr<imgIEncoder> encoder = do_CreateInstance("@mozilla.org/image/encoder;2?type=image/png");
+    NS_ENSURE_TRUE(encoder, NS_ERROR_FAILURE);
+    encoder->InitFromData(imgSurface->Data(), imgSurface->Stride() * refScreenRect.height,
+                          refScreenRect.width, refScreenRect.height, imgSurface->Stride(),
+                          imgIEncoder::INPUT_FORMAT_HOSTARGB, EmptyString());
+
+    PRUint32 length;
+    encoder->Available(&length);
+
+    nsCOMPtr<nsIOutputStream> bufferedOutputStream;
+    nsresult rv = NS_NewBufferedOutputStream(getter_AddRefs(bufferedOutputStream),
+                                    outputStream, length);
+    NS_ENSURE_SUCCESS(rv, rv);
+    PRUint32 numWritten;
+    rv = bufferedOutputStream->WriteFrom(encoder, length, &numWritten);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+  else if (extension.EqualsLiteral("pdf") || extension.EqualsLiteral("svg"))
+    surface->Finish();    //is this necessary? appropriate??
+
+  *retval = PR_TRUE;
+  return NS_OK;
+}
+
+NS_IMETHODIMP PresShell::RenderSelectionToImage(nsISelection* aSelection, nsIImage** imageObj)
+{
+  nsresult rv = NS_ERROR_FAILURE;
+
+  PRInt32 width=1000, height=1000;
+  nsRect r(0, 0, GetPresContext()->DevPixelsToAppUnits(width),
+                 GetPresContext()->DevPixelsToAppUnits(height));
+
+//  nsRefPtr<gfxASurface> surface = 
+//    gfxPlatform::GetPlatform()->
+//    CreateOffscreenSurface(gfxIntSize(width, height),
+//      gfxASurface::ImageFormatARGB32);
+//  NS_ENSURE_TRUE(surface, NS_ERROR_OUT_OF_MEMORY);
+//
+//  nsRefPtr<gfxContext> context = new gfxContext(surface);
+//  NS_ENSURE_TRUE(context, NS_ERROR_OUT_OF_MEMORY);
+
+  nsIFrame* rootFrame = GetRootFrame();
+  nsRect refScreenRect;
+  nsIntRect screenRect = rootFrame->GetScreenRectExternal();
+  refScreenRect.SetRect(screenRect.x, screenRect.y, 20, 20);
+  nsPoint pnt(refScreenRect.x, refScreenRect.y);
+  NS_NAMED_LITERAL_STRING(extension, "jpeg");
+  nsRefPtr<gfxASurface> surface = RenderSelectionForOutput(aSelection, extension, nsnull,
+                                                                 pnt, &refScreenRect);
+
+  if (!surface)
+    return rv;
+
+//  nsresult rv = shell->RenderDocument(r, PR_FALSE, PR_FALSE,
+//                                      NS_RGB(255, 255, 0), context);
+//  NS_ENSURE_SUCCESS(rv, rv);
+
+
+  nsRefPtr<gfxImageSurface> imgSurface =
+     new gfxImageSurface(gfxIntSize(refScreenRect.width, refScreenRect.height),
+                         gfxImageSurface::ImageFormatARGB32);
+  NS_ENSURE_TRUE(imgSurface, NS_ERROR_OUT_OF_MEMORY);
+  nsRefPtr<gfxContext> imgContext = new gfxContext(imgSurface);
+  imgContext->DrawSurface(surface, gfxSize(refScreenRect.width, refScreenRect.height));
+
+  nsCOMPtr<nsIImage> image = do_CreateInstance("@mozilla.org/gfx/image;1", &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
+  rv = image->Init(refScreenRect.width, refScreenRect.height, 24, nsMaskRequirements_kNeeds8Bit);
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  image->LockImagePixels(PR_FALSE);
+  PRUint8* bits = image->GetBits();
+  memcpy (bits, imgSurface->Data(), imgSurface->Stride() * refScreenRect.height);
+  image->UnlockImagePixels(PR_FALSE);
+  *imageObj = image.get();
+  NS_IF_ADDREF(*imageObj);
+
+//  nsCOMPtr<imgIEncoder> encoder = do_CreateInstance("@mozilla.org/image/encoder;2?type=image/png");
+//  NS_ENSURE_TRUE(encoder, NS_ERROR_FAILURE);
+//  encoder->InitFromData(imgSurface->Data(), imgSurface->Stride() * refScreenRect.height,
+//                        refScreenRect.width, refScreenRect.height, imgSurface->Stride(),
+//                        imgIEncoder::INPUT_FORMAT_HOSTARGB, EmptyString());
+
+  return NS_OK;
 }
 
 //--------------------------------------------------------
