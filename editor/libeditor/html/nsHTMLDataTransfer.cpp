@@ -2144,10 +2144,13 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       if (!doc) return NS_ERROR_FAILURE;
       nsCOMPtr<nsIURI> docURI;
       docURI = doc->GetDocumentURI();
-      nsCOMPtr<nsIFileURL> docURL;
-      docURL = do_QueryInterface(docURI);
-      rv = docURL->GetDirectory(dirPath);
-      rv = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(fileToUse));
+      nsCAutoString docFilePath;
+      rv = docURI->GetSpec(docFilePath);
+      nsCOMPtr<nsIFile> docFile;
+      rv = NS_GetFileFromURLSpec(docFilePath, getter_AddRefs(docFile));
+      nsCOMPtr<nsIFile>docDir;
+      rv = docFile->GetParent(getter_AddRefs(docDir));
+      fileToUse = do_QueryInterface(docDir);
       fileToUse->Append(NS_LITERAL_STRING("graphics"));
       fileToUse->Exists(&fExists);
       if (!fExists) fileToUse->Create(1,0755);
@@ -3154,6 +3157,104 @@ nsHTMLEditor::InsertAsCitedQuotation(const nsAString & aQuotedText,
       selection->Collapse(parent, offset+1);
   }
   return res;
+}
+
+NS_IMETHODIMP nsHTMLEditor::CopySelectionAsImage(PRBool* _retval)
+{
+  nsresult rv = NS_ERROR_FAILURE;
+  nsCOMPtr<nsIPresShell> presShell;
+  GetPresShell(getter_AddRefs(presShell));
+  nsCOMPtr<nsISelection> selection;
+  rv = GetSelection(getter_AddRefs(selection));
+//  nsCOMPtr<msiISelection> msiSelection;
+//  GetMSISelection(msiSelection);
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!selection)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsITransferable> trans(do_CreateInstance("@mozilla.org/widget/transferable;1", &rv));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+//  //first put SVG on clipboard if available
+//  nsCOMPtr<nsIStorageStream> svgStorage;
+//  nsresult res = NS_NewStorageStream(4096, PR_UINT32_MAX, getter_AddRefs(svgStorage));
+//  if (svgStorage)
+//    nsCOMPtr<nsIOutputStream> svgOut = svgStream->getOutputStream(0);
+//  if (svgOut)
+//  {
+//    NS_NAMED_LITERAL_STRING(svgExt, "svg");
+//    res = presShell->DrawSelectionToFile(selection, svgExt, svgOut, _retval);
+//    if (NS_SUCCEEDED(res))
+//    {
+//      nsCOMPtr<nsIInputStream> svgIn = svgStream->newInputStream(0);
+//      //Now we want to parse svgIn to strip file header info from beginning and end? Copy the rest as strings into tran?
+//    }
+//  }
+
+  //then put a JPEG image (actually, this puts a native bitmap image)
+  nsCOMPtr<nsIImage> imageObj;
+  nsresult res = presShell->RenderSelectionToImage(selection, getter_AddRefs(imageObj));
+  if (imageObj)
+  {
+
+    //Wrap it in nsISupportsInterfacePointer
+    nsCOMPtr<nsISupportsInterfacePointer>
+      imgPtr(do_CreateInstance(NS_SUPPORTS_INTERFACE_POINTER_CONTRACTID, &rv));
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = imgPtr->SetData(imageObj);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    // copy the image data onto the transferable
+    rv = trans->SetTransferData(kNativeImageMime, imgPtr,
+                                sizeof(nsISupports*));
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  // get clipboard
+  nsCOMPtr<nsIClipboard> clipboard(do_GetService("@mozilla.org/widget/clipboard;1", &rv));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // check whether the system supports the selection clipboard or not.
+  PRBool selectionSupported;
+  rv = clipboard->SupportsSelectionClipboard(&selectionSupported);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // put the transferable on the clipboard
+  if (selectionSupported) {
+    rv = clipboard->SetData(trans, nsnull, nsIClipboard::kSelectionClipboard);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  return clipboard->SetData(trans, nsnull, nsIClipboard::kGlobalClipboard);
+}
+
+NS_IMETHODIMP nsHTMLEditor::SaveSelectionAsImage(const nsAString& filepath, PRBool* _retval)
+{
+  nsCOMPtr<nsIPresShell> presShell;
+  GetPresShell(getter_AddRefs(presShell));
+  nsCOMPtr<nsISelection> selection;
+  nsresult res = GetSelection(getter_AddRefs(selection));
+//  nsCOMPtr<msiISelection> msiSelection;
+//  GetMSISelection(msiSelection);
+  if (!selection)
+    return NS_ERROR_FAILURE;
+    
+  nsString extension(NS_LITERAL_STRING("png"));
+  nsAutoString theFile(filepath);
+  PRInt32 lastdot = theFile.RFindChar('.', -1, -1);
+  if (lastdot != kNotFound)
+    theFile.Right(extension, theFile.Length() - lastdot - 1);
+
+  nsCOMPtr<nsILocalFile> file = do_CreateInstance("@mozilla.org/file/local;1");
+  NS_ENSURE_TRUE(file, NS_ERROR_FAILURE);
+  nsresult rv = file->InitWithPath(filepath);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIOutputStream> outputStream;
+  rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), file);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return presShell->DrawSelectionToFile(selection, extension, outputStream, _retval);
 }
 
 void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * fragNode)

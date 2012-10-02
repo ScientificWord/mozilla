@@ -335,6 +335,9 @@ interface nsIHTMLEditor : nsISupports
    */
   void updateBaseURL();
 
+  boolean copySelectionAsImage();
+
+  boolean saveSelectionAsImage(in DOMString filepath);
 
   /* ------------ Selection manipulation -------------- */
   /* Should these be moved to nsISelection? */
