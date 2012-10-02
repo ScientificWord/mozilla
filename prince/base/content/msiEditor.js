@@ -11246,46 +11246,84 @@ function msiEditPage(url, launchWindow, delay, windowName)
   return null;
 }
 
+// returns file picker result
+function msiGetSaveLocationForImage(editorElement)
+{
+  var dialogResult = {};
+  dialogResult.filepickerClick = msIFilePicker.returnCancel;
+//  dialogResult.resultingURI = "";
+  dialogResult.resultingLocalFile = null;
+
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  var fp = null;
+  try {
+    fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+  } catch (e) {}
+  if (!fp) return dialogResult;
+
+  // determine prompt string based on type of saving we'll do
+  var promptString = GetString("SavePictureAs");
+  fp.init(window, promptString, msIFilePicker.modeSave);
+
+  // Set filters according to the type of output
+  var exportTypes = ["png","pdf","jpg"];
+  for (var ii = 0; ii < exportTypes.length; ++ii)
+  {
+    fp.appendFilter(GetString("SaveImageAsDesc_" + exportTypes[ii]),"*."+exportTypes[ii]);
+  }
+  fp.defaultExtension = "png";
+  fp.appendFilters(msIFilePicker.filterAll);
+
+//  // now let's actually set the filepicker's suggested filename
+//  var suggestedFileName = msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement);
+//  if (suggestedFileName)
+//  {
+//    var lastDot = suggestedFileName.lastIndexOf(".");
+//    if (lastDot != -1)
+//      suggestedFileName = suggestedFileName.slice(0, lastDot);
+//  
+//    fp.defaultString = suggestedFileName;
+//  }
+
+  // set the file picker's current directory
+  // assuming we have information needed (like prior saved location)
+      // Initialize to the last-used directory for the particular type (saved in prefs)
+  msiSetFilePickerDirectory(fp, "SaveAsPicture");
+
+  dialogResult.filepickerClick = fp.show();
+  if (dialogResult.filepickerClick != msIFilePicker.returnCancel)
+  {
+    // reset urlstring to new save location
+//    dialogResult.resultingURIString = fileHandler.getURLSpecFromFile(fp.file);
+    dialogResult.resultingLocalFile = fp.file;
+    msiSaveFilePickerDirectory(fp, "SaveAsPicture");
+  }
+
+  return dialogResult;
+}
+
 function msiCopyAsPicture(editorElement)
 {
+//  msiSaveAsPicture(editorElement);  //temp only!
+
   var editor = msiGetEditor(editorElement);
+//  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+//  var selection = editor.selection;
+//
+////  AlertWithTitle("Copy as Picture", "Feature not yet implemented.");
+  editor.copySelectionAsImage();
+}
+
+function msiSaveAsPicture(editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+//  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
   var selection = editor.selection;
 
-  AlertWithTitle("Copy as Picture", "Feature not yet implemented.");
-
-//NOTE: The following does not appear to work...
-//  var editorWindow = editorElement.contentWindow;
-//
-//  var printSettings = PrintUtils.getPrintSettings();
-//  printSettings.downloadFonts = true;
-//  printSettings.printToFile = true;
-//  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-//  var targFile = dsprops.get("TmpD", Components.interfaces.nsIFile);
-//  targFile.append("copyOutput.pdf");
-//  printSettings.toFileName = targFile.path;
-//  printSettings.outputFormat = 2;
-//  printSettings.printSilent = true;
-//  printSettings.printRange = Components.interfaces.nsIPrintSettings.kRangeSelection;
-//  printSettings.headerStrLeft = printSettings.headerStrCenter = printSettings.headerStrRight = "";
-//  printSettings.footerStrLeft = printSettings.footerStrCenter = printSettings.footerStrRight = "";
-//  printSettings.orientation = Components.interfaces.nsIPrintSettings.kPortraitOrientation;
-//  if (printSettings.paperSizeUnit == Components.interfaces.nsIPrintSettings.kPaperSizeInches)
-//  {
-//    printSettings.marginTop = printSettings.marginRight = printSettings.marginBottom = printSettings.marginLeft = .04;
-//  }
-//  else
-//  {
-//    printSettings.marginTop = printSettings.marginRight = printSettings.marginBottom = printSettings.marginLeft = 1;
-//  }
-//
-//  var webBrowserPrint = PrintUtils.getWebBrowserPrint(editorWindow);
-//  try
-//  {
-//    webBrowserPrint.print(printSettings, null);
-//  }
-//  catch(exc)
-//  {
-//    dump("Exception in msiCopyAsPicture: " + exc + "\n");
-//    webBrowserPrint.cancel();
-//  }
+//  AlertWithTitle("Copy as Picture", "Feature not yet implemented.");
+  var dialogResult = msiGetSaveLocationForImage(editorElement);
+  if (dialogResult.filepickerClick != msIFilePicker.returnCancel)
+    editor.saveSelectionAsImage(dialogResult.resultingLocalFile.path);
 }
