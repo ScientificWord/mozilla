@@ -1,13 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-<<<<<<< local
 "use strict";
-=======
->>>>>>> other
 Components.utils.import("resource://app/modules/pathutils.jsm");
-<<<<<<< local
-
-=======
->>>>>>> other
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
