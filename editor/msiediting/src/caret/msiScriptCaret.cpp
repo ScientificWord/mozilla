@@ -84,7 +84,7 @@ msiScriptCaret::Inquiry(nsIEditor* editor, PRUint32 inquiryID, PRBool *result)
   else if (inquiryID == AT_LEFT_EQUIV_TO_RIGHT_MOST) 
     *result = PR_FALSE;
   else if (inquiryID == CAN_SELECT_CHILD_LEAF)
-    *result = (m_numKids == 2 && m_offset >= 1) ? PR_FALSE : PR_TRUE;
+    *result = PR_TRUE;
   return res;
 }
 
@@ -369,7 +369,7 @@ msiScriptCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint,
     NS_ADDREF(*selectionNode);
     // *selectionOffset = 1;
     *selectionOffset = m_offset;
-    selDone = PR_TRUE;
+    //selDone = PR_TRUE;
   }
   nsresult res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, incOffset, pCaret);
   if (NS_SUCCEEDED(res) && pCaret)  
