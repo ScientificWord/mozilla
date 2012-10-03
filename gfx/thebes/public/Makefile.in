@@ -29,6 +29,7 @@ EXPORTS		= 	gfxASurface.h \
 			gfxTypes.h \
 			gfxTextRunCache.h \
 			gfxTextRunWordCache.h \
+      gfxPDFSurface.h \
 			$(NULL)
 
 EXPORTS += gfxFontTest.h
@@ -44,7 +45,7 @@ EXPORTS	+=	gfxWindowsFonts.h \
 		gfxWindowsSurface.h \
 		gfxWindowsNativeDrawing.h \
 		$(NULL)
-EXPORTS +=	gfxPDFSurface.h
+# EXPORTS +=	gfxPDFSurface.h
 
 ifdef MOZ_ENABLE_GLITZ
 REQUIRES += glitzwgl
