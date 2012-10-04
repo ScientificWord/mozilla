@@ -5387,11 +5387,11 @@ PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aI
   else if (extension.EqualsLiteral("svg") && outputStream)
   {
     //want to insert:
-    //gfxSVGSurface* svgSurface = new gfxSVGSurface(outputStream, rectSize);
-    //if (!svgfSurface || svgSurface->CairoStatus())
-    //  delete svgSurface;
-    //else
-    //  surface = svgSurface;
+    gfxSVGSurface* svgSurface = new gfxSVGSurface(outputStream, rectSize);
+    if (!svgSurface || svgSurface->CairoStatus())
+      delete svgSurface;
+    else
+      surface = svgSurface;
   }
 
   if (!surface)
