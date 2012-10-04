@@ -41,7 +41,7 @@
 #include "nsIDocumentEncoder.h"
 #include "nsISupports.h"
 #include "nsIContent.h"
-#include "nsIComponentManager.h" 
+#include "nsIComponentManager.h"
 #include "nsIServiceManager.h"
 #include "nsIClipboard.h"
 #include "nsISelection.h"
@@ -94,16 +94,16 @@ static PRBool IsInTag(nsAString& str, PRUint32 offset)
   const PRUnichar* end = cur + offset;
   PRUnichar ch;
   PRInt32 bracketcount = 0;
-  for (; cur < end; ++cur) 
+  for (; cur < end; ++cur)
   {
     ch = *cur;
-    if (ch == (PRUnichar)'<') 
+    if (ch == (PRUnichar)'<')
     {
       bracketcount++;
     }
-    else if (bracketcount > 0) 
+    else if (bracketcount > 0)
     {
-      if (ch == (PRUnichar)'>') 
+      if (ch == (PRUnichar)'>')
       {
         bracketcount--;
       }
@@ -118,7 +118,7 @@ static PRBool PathIsRelative( nsAString & path)
   NS_NAMED_LITERAL_STRING(pattern, "://");
   path.BeginReading(start);
   path.EndReading(end);
-  
+
   return !FindInReadable(pattern, start, end);
 }
 
@@ -136,13 +136,13 @@ static PRBool PathToAbs( nsAString& path, nsAString& abspath, nsIDocument * doc)
   abspath.Truncate(0);
   AppendASCIItoUTF16(dirPath, abspath);
   abspath.Append(path);
-  
+
   return PR_TRUE;
 }
 
 
 static nsresult ConvertPathsToAbsolute(nsAString& aString, nsIDocument * doc)
-  // If we copy an image or an object with a relative data path, we need to make it 
+  // If we copy an image or an object with a relative data path, we need to make it
   // absolute in order to paste it if the source document is gone.
 {
   if (aString.Length() == 0) return NS_OK;
@@ -156,7 +156,7 @@ static nsresult ConvertPathsToAbsolute(nsAString& aString, nsIDocument * doc)
   while (FindInReadable(pattern, cur, end))
     // cur shows how far through the string we have worked.
   {
-    if (PR_TRUE) //IsInTag(aString, (cur.get() - start.get())) && !NS_IS_ALPHA(*(cur.get() -1)) && !NS_IS_ALPHA(*(end.get()+1))) 
+    if (PR_TRUE) //IsInTag(aString, (cur.get() - start.get())) && !NS_IS_ALPHA(*(cur.get() -1)) && !NS_IS_ALPHA(*(end.get()+1)))
     {
       cur = end;
       while (nsCRT::IsAsciiSpace(*cur)) cur++;
@@ -190,11 +190,11 @@ static nsresult ConvertPathsToAbsolute(nsAString& aString, nsIDocument * doc)
 nsresult nsCopySupport::HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 aClipboardID)
 {
   nsresult rv = NS_OK;
-  
+
   PRBool bIsPlainTextContext = PR_FALSE;
 
   rv = IsPlainTextContext(aSel, aDoc, &bIsPlainTextContext);
-  if (NS_FAILED(rv)) 
+  if (NS_FAILED(rv))
     return rv;
 
   PRBool bIsHTMLCopy = !bIsPlainTextContext;
@@ -213,18 +213,18 @@ nsresult nsCopySupport::HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 
   NS_ASSERTION(domDoc, "Need a document");
 
   rv = docEncoder->Init(domDoc, mimeType, flags);
-  if (NS_FAILED(rv)) 
+  if (NS_FAILED(rv))
     return rv;
   rv = docEncoder->SetSelection(aSel);
-  if (NS_FAILED(rv)) 
+  if (NS_FAILED(rv))
     return rv;
 
   nsAutoString buffer, parents, info, textBuffer, plaintextBuffer;
 
   rv = docEncoder->EncodeToString(textBuffer);
-  if (NS_FAILED(rv)) 
+  if (NS_FAILED(rv))
     return rv;
-   
+
   nsCOMPtr<nsIFormatConverter> htmlConverter;
 
   // sometimes we also need the HTML version
@@ -259,21 +259,21 @@ nsresult nsCopySupport::HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 
     rv = docEncoder->EncodeToStringWithContext(parents, info, buffer);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = ConvertPathsToAbsolute(buffer, aDoc);
-    if (NS_FAILED(rv)) 
+    if (NS_FAILED(rv))
       return rv;
-    
+
   }
-  
+
   // Get the Clipboard
   nsCOMPtr<nsIClipboard> clipboard(do_GetService(kCClipboardCID, &rv));
-  if (NS_FAILED(rv)) 
+  if (NS_FAILED(rv))
     return rv;
 
-  if ( clipboard ) 
+  if ( clipboard )
   {
     // Create a transferable for putting data on the Clipboard
     nsCOMPtr<nsITransferable> trans = do_CreateInstance(kCTransferableCID);
-    if ( trans ) 
+    if ( trans )
     {
       if (bIsHTMLCopy)
       {
@@ -401,7 +401,7 @@ nsresult nsCopySupport::IsPlainTextContext(nsISelection *aSel, nsIDocument *aDoc
     return NS_ERROR_NULL_POINTER;
 
   *aIsPlainTextContext = PR_FALSE;
-  
+
   nsCOMPtr<nsIDOMRange> range;
   nsCOMPtr<nsIDOMNode> commonParent;
   PRInt32 count = 0;
@@ -412,7 +412,7 @@ nsresult nsCopySupport::IsPlainTextContext(nsISelection *aSel, nsIDocument *aDoc
   // if selection is uninitialized return
   if (!count)
     return NS_ERROR_FAILURE;
-  
+
   // we'll just use the common parent of the first range.  Implicit assumption
   // here that multi-range selections are table cell selections, in which case
   // the common parent is somewhere in the table and we don't really care where.
@@ -443,8 +443,8 @@ nsresult nsCopySupport::IsPlainTextContext(nsISelection *aSel, nsIDocument *aDoc
 
     if (atom == nsGkAtoms::body)
     {
-      // check for moz prewrap style on body.  If it's there we are 
-      // in a plaintext editor.  This is pretty cheezy but I haven't 
+      // check for moz prewrap style on body.  If it's there we are
+      // in a plaintext editor.  This is pretty cheezy but I haven't
       // found a good way to tell if we are in a plaintext editor.
       nsCOMPtr<nsIDOMElement> bodyElem = do_QueryInterface(selContent);
       nsAutoString wsVal;
@@ -456,7 +456,7 @@ nsresult nsCopySupport::IsPlainTextContext(nsISelection *aSel, nsIDocument *aDoc
       }
     }
   }
-  
+
   // also consider ourselves in a text widget if we can't find an html
   // document. Note that XHTML is not counted as HTML here, because we can't
   // copy it properly (all the copy code for non-plaintext assumes using HTML
@@ -474,17 +474,17 @@ nsresult
 nsCopySupport::GetContents(const nsACString& aMimeType, PRUint32 aFlags, nsISelection *aSel, nsIDocument *aDoc, nsAString& outdata)
 {
   nsresult rv = NS_OK;
-  
+
   nsCOMPtr<nsIDocumentEncoder> docEncoder;
 
   nsCAutoString encoderContractID(NS_DOC_ENCODER_CONTRACTID_BASE);
   encoderContractID.Append(aMimeType);
-    
+
   docEncoder = do_CreateInstance(encoderContractID.get());
   NS_ENSURE_TRUE(docEncoder, NS_ERROR_FAILURE);
 
   PRUint32 flags = aFlags;
-  
+
   if (aMimeType.Equals("text/plain"))
     flags |= nsIDocumentEncoder::OutputPreformatted;
 
@@ -495,13 +495,13 @@ nsCopySupport::GetContents(const nsACString& aMimeType, PRUint32 aFlags, nsISele
 
   rv = docEncoder->Init(domDoc, unicodeMimeType, flags);
   if (NS_FAILED(rv)) return rv;
-  
+
   if (aSel)
   {
     rv = docEncoder->SetSelection(aSel);
     if (NS_FAILED(rv)) return rv;
-  } 
-  
+  }
+
   // encode the selection
   return docEncoder->EncodeToString(outdata);
 }
@@ -603,7 +603,7 @@ static nsresult AppendDOMNode(nsITransferable *aTransferable,
                               nsIDOMNode *aDOMNode)
 {
   nsresult rv;
-  
+
   // selializer
   nsCOMPtr<nsIDocumentEncoder>
     docEncoder(do_CreateInstance(NS_HTMLCOPY_ENCODER_CONTRACTID, &rv));
