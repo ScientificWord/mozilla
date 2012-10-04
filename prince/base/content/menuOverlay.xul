@@ -183,9 +183,11 @@
                 observes="cmd_copytex"/>
       <menuitem id="menu_copypicture"
                 label="&copypictureCmd.label;"
+                accesskey="&copypictureCmd.accesskey;"
                 observes="cmd_copypicture"/>
       <menuitem id="menu_savepicture"
                 label="&savepictureCmd.label;"
+                accesskey="&savepictureCmd.accesskey;"
                 observes="cmd_savepicture"/>
       <menuitem id="menu_paste"
                 label="&pasteCmd.label;"
