@@ -164,8 +164,9 @@ EXPORTS += $(PDF_EXPORTS)
 endif
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
-CSRCS   += cairo-quartz-surface.c cairo-quartz-image-surface.c cairo-atsui-font.c
+CSRCS   += cairo-quartz-surface.c cairo-quartz-image-surface.c cairo-atsui-font.c $(PSPDF_BASE_CSRCS) $(PDF_CSRCS)
 EXPORTS += cairo-quartz.h cairo-atsui.h
+EXPORTS += $(PDF_EXPORTS)
 endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),beos)
@@ -178,10 +179,11 @@ CSRCS   += $(PSPDF_BASE_CSRCS) $(PDF_CSRCS) $(PS_CSRCS)
 EXPORTS += $(PDF_EXPORTS) $(PS_EXPORTS)
 endif
 
-ifdef BUILD_CAIRO_SVG
+# quick and dirty
+# ifdef BUILD_CAIRO_SVG
 CSRCS	+= cairo-svg-surface.c
 EXPORTS += cairo-svg.h
-endif
+# endif
 
 ifdef MOZ_X11
 CSRCS   += cairo-xlib-surface.c \
