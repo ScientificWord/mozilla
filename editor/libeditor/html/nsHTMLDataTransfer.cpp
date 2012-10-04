@@ -3232,7 +3232,7 @@ NS_IMETHODIMP nsHTMLEditor::SaveSelectionAsImage(const nsAString& filepath, PRBo
 //  GetMSISelection(msiSelection);
   if (!selection)
     return NS_ERROR_FAILURE;
-    
+
   nsString extension(NS_LITERAL_STRING("png"));
   nsAutoString theFile(filepath);
   PRInt32 lastdot = theFile.RFindChar('.', -1, -1);
@@ -3248,7 +3248,7 @@ NS_IMETHODIMP nsHTMLEditor::SaveSelectionAsImage(const nsAString& filepath, PRBo
   rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), file);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  return presShell->DrawSelectionToFile(selection, extension, outputStream, _retval);
+  return presShell->DrawSelectionToFile(selection, filepath, extension, outputStream, _retval);
 }
 
 void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * fragNode)

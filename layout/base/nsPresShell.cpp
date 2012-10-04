@@ -163,6 +163,7 @@
 #include "nsStyleSheetService.h"
 #include "gfxImageSurface.h"
 #include "gfxPDFSurface.h"
+#include "gfxSVGSurface.h"
 #include "gfxContext.h"
 #include "nsIImage.h"
 
@@ -895,13 +896,15 @@ public:
                                                         nsRect* aScreenRect);
 
   virtual already_AddRefed<gfxASurface> RenderSelectionForOutput(nsISelection* aSelection,
+                                                                 const nsAString& path,
                                                                  const nsAString& extension,
                                                                  nsIOutputStream *outputStream,
                                                                  nsPoint& aPoint,
                                                                  nsRect* aScreenRect);
 
-  NS_IMETHODIMP DrawSelectionToFile(nsISelection* aSelection, const nsAString& extension, nsIOutputStream *outputStream,
-                               PRBool* retval);
+  NS_IMETHODIMP DrawSelectionToFile(nsISelection* aSelection,
+    const nsAString& path, const nsAString& extension, nsIOutputStream *outputStream,
+    PRBool* retval);
 
   NS_IMETHOD RenderSelectionToImage(nsISelection* aSelection, nsIImage** imageObj);
 
@@ -1110,6 +1113,7 @@ protected:
                                nsISelection* aSelection,
                                nsIRegion* aRegion,
                                nsRect aArea,
+                               const nsAString& path,
                                const nsAString& extension,
                                nsIOutputStream *outputStream,
                                nsPoint& aPoint,
@@ -5302,6 +5306,7 @@ PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aI
                                nsISelection* aSelection,
                                nsIRegion* aRegion,
                                nsRect aArea,
+                               const nsAString& path,
                                const nsAString& extension,
                                nsIOutputStream *outputStream,
                                nsPoint& aPoint,
@@ -5368,7 +5373,12 @@ PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aI
   }
   else if (extension.EqualsLiteral("pdf") && outputStream)
   {
+#ifdef XP_MACOSX_NO
+    const char * pch = NS_ConvertUTF16toUTF8(path).get();
+    gfxQuartzPDFSurface* pdfSurface = new gfxQuartzPDFSurface(pch, rectSize);
+#else
     gfxPDFSurface* pdfSurface = new gfxPDFSurface(outputStream, rectSize);
+#endif
     if (!pdfSurface || pdfSurface->CairoStatus())
       delete pdfSurface;
     else
@@ -5520,6 +5530,7 @@ PresShell::RenderSelection(nsISelection* aSelection,
 
 already_AddRefed<gfxASurface>
 PresShell::RenderSelectionForOutput(nsISelection* aSelection,
+                               const nsAString& path,
                                const nsAString& extension,
                                nsIOutputStream *outputStream,
                                nsPoint& aPoint,
@@ -5552,7 +5563,7 @@ PresShell::RenderSelectionForOutput(nsISelection* aSelection,
 //  return PaintRangePaintInfo(&rangeItems, aSelection, nsnull, area, aPoint,
 //                             aScreenRect);
   return PaintRangePaintInfoForOutput(&rangeItems, aSelection, nsnull, area,
-                               extension, outputStream, aPoint, aScreenRect);
+                               path, extension, outputStream, aPoint, aScreenRect);
 }
 
 NS_IMETHODIMP
@@ -6299,7 +6310,7 @@ PresShell::Thaw()
 }
 
 NS_IMETHODIMP
-PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& extension, nsIOutputStream *outputStream,
+PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& path, const nsAString& extension, nsIOutputStream *outputStream,
                                PRBool* retval)
 {
   PRInt32 width=1000, height=1000;
@@ -6322,7 +6333,7 @@ PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& extens
   nsPoint pnt(refScreenRect.x, refScreenRect.y);
 //                                 dragRect.width, dragRect.height);
 //  nsRefPtr<gfxASurface> surface = RenderSelection(aSelection, pnt, &refScreenRect);
-  nsRefPtr<gfxASurface> surface = RenderSelectionForOutput(aSelection, extension, outputStream,
+  nsRefPtr<gfxASurface> surface = RenderSelectionForOutput(aSelection, path, extension, outputStream,
                                                                  pnt, &refScreenRect);
 
   if (!surface)
@@ -6386,11 +6397,14 @@ NS_IMETHODIMP PresShell::RenderSelectionToImage(nsISelection* aSelection, nsIIma
 
   nsIFrame* rootFrame = GetRootFrame();
   nsRect refScreenRect;
+  nsString empty = EmptyString();
   nsIntRect screenRect = rootFrame->GetScreenRectExternal();
   refScreenRect.SetRect(screenRect.x, screenRect.y, 20, 20);
   nsPoint pnt(refScreenRect.x, refScreenRect.y);
   NS_NAMED_LITERAL_STRING(extension, "jpeg");
-  nsRefPtr<gfxASurface> surface = RenderSelectionForOutput(aSelection, extension, nsnull,
+  // we pass empty as the path since the path is used only in the PDF case and on the Mac,
+  //  and here the extension is 'jpeg', so path will be unreferenced.
+  nsRefPtr<gfxASurface> surface = RenderSelectionForOutput(aSelection, empty, extension, nsnull,
                                                                  pnt, &refScreenRect);
 
   if (!surface)

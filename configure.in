@@ -7055,6 +7055,7 @@ if test "$MOZ_TREE_CAIRO"; then
 
     # Define macros for cairo-features.h
     SVG_SURFACE_FEATURE="#define CAIRO_HAS_SVG_SURFACE 1"
+    BUILD_CAIRO_SVG=1
     if test "$MOZ_X11"; then
         XLIB_SURFACE_FEATURE="#define CAIRO_HAS_XLIB_SURFACE 1"
         XLIB_XRENDER_SURFACE_FEATURE="#define CAIRO_HAS_XLIB_XRENDER_SURFACE 1"
@@ -7067,6 +7068,7 @@ if test "$MOZ_TREE_CAIRO"; then
     if test "$MOZ_WIDGET_TOOLKIT" = "mac" -o "$MOZ_WIDGET_TOOLKIT" = "cocoa"; then
         QUARTZ_SURFACE_FEATURE="#define CAIRO_HAS_QUARTZ_SURFACE 1"
         ATSUI_FONT_FEATURE="#define CAIRO_HAS_ATSUI_FONT 1"
+        PDF_SURFACE_FEATURE="#define CAIRO_HAS_PDF_SURFACE 1"
     fi
     if test "$MOZ_WIDGET_TOOLKIT" = "windows"; then
         WIN32_SURFACE_FEATURE="#define CAIRO_HAS_WIN32_SURFACE 1"
