@@ -740,7 +740,8 @@ protected:
   virtual nsresult InsertReturnInMath( nsIDOMNode * splitpointNode, 
                                        PRInt32 splitpointOffset, 
                                        PRBool* bHandled);
-                                       
+  
+  virtual nsresult GetDocumentGraphicsDir(nsILocalFile** graphicsDir, PRBool bCreate = PR_TRUE);                                     
 
   /* helper routines for inline style */
   nsresult SetInlinePropertyOnTextNode( nsIDOMCharacterData *aTextNode, 
