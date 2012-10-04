@@ -10,7 +10,7 @@ Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 var msiEvaluateCommand = {
   isCommandEnabled: function(aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(editorElement).selection && (!msiGetEditor(editorElement).selection.isCollapsed))));
+    return (theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -25,7 +25,7 @@ var msiEvaluateCommand = {
 var msiEvaluateCommandKeyboard = {
   isCommandEnabled: function(aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(editorElement).selection && (!msiGetEditor(editorElement).selection.isCollapsed))));
+    return (theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -40,7 +40,7 @@ var msiEvaluateCommandKeyboard = {
 var msiDefineCommand = {
   isCommandEnabled: function(aCommand, dummy) {
     var editorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeShowDefs" || aCommand == "cmd_MSIComputeMapMuPADName" ||
+    return (editorElement && msiGetEditor(editorElement) && msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeShowDefs" || aCommand == "cmd_MSIComputeMapMuPADName" ||
     //aCommand == "cmd_MSI/ComputeUserSettings" ||
     aCommand == "cmd_MSIComputeClearDefs" ||
     //aCommand == "cmd_MSIComputeSettings" ||
