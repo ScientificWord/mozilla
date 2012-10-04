@@ -1139,6 +1139,41 @@ PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
 }
 
 
+
+nsresult nsHTMLEditor::GetDocumentGraphicsDir(nsILocalFile** graphicsDir, PRBool bCreate)
+{
+  nsresult rv = NS_OK;
+  nsCOMPtr<nsILocalFile> graphics;
+  nsCOMPtr<nsIDOMDocument> domDoc;
+  GetDocument(getter_AddRefs(domDoc));
+  if (!domDoc) return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+  if (!doc) return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIURI> docURI;
+  docURI = doc->GetDocumentURI();
+  nsCAutoString docFilePath;
+  rv = docURI->GetSpec(docFilePath);
+  NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIFile> docFile;
+  rv = NS_GetFileFromURLSpec(docFilePath, getter_AddRefs(docFile));
+  NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIFile>docDir;
+  rv = docFile->GetParent(getter_AddRefs(docDir));
+  NS_ENSURE_SUCCESS(rv, rv);
+  graphics = do_QueryInterface(docDir);
+  graphics->Append(NS_LITERAL_STRING("graphics"));
+  if (bCreate)
+  {
+    PRBool fExists;
+    graphics->Exists(&fExists);
+    if (!fExists)
+      graphics->Create(1,0755);
+  }
+  *graphicsDir = graphics;
+  NS_IF_ADDREF(*graphicsDir);
+  return NS_OK;
+}
+
 // InsertReturnAt -- usually splits a paragraph; may call itself recursively
 nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy)
@@ -2052,46 +2087,49 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
               {
                 // copy file to graphics directory. Insert image with path "graphics/imagename.xxx"
                 nsresult rv;
-                nsCOMPtr<nsILocalFile> file;
+//                nsCOMPtr<nsILocalFile> file;
                 nsCAutoString fileName;
                 rv = fileURL->GetFileName(fileName);
                 if (NS_FAILED(rv))
                     return rv;
-                nsCOMPtr<nsIDOMDocument> domDoc;
-                GetDocument(getter_AddRefs(domDoc));
-                if (!domDoc) return NS_ERROR_FAILURE;
-                nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
-                if (!doc) return NS_ERROR_FAILURE;
-                nsCOMPtr<nsIURI> docURI;
-                docURI = doc->GetDocumentURI();
-                nsCOMPtr<nsIURL> docURL;
-                docURL = do_QueryInterface(docURI);
-                rv = docURL->GetDirectory(dirPath);
-                char * unescaped = strdup(dirPath.get());
-                nsUnescape(unescaped);
-                dirPath.Assign(unescaped, PR_UINT32_MAX); 
-
-#ifdef XP_WIN
-                dirPath.Cut(0,1);
-                PRInt32 len = dirPath.Length();
-                for (PRInt32 i = 0; i < len; i++)
-                {
-                  if (dirPath[i]=='/') dirPath.Replace(i,1,'\\');
-                }
-#endif
-                nsCOMPtr<nsILocalFile> dir;
-                rv = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(dir));
-                dir->Append(NS_LITERAL_STRING("graphics"));
-                dir->Exists(&fExists);
-
-                if (!fExists) dir->Create(1,0755);
+//                nsCOMPtr<nsIDOMDocument> domDoc;
+//                GetDocument(getter_AddRefs(domDoc));
+//                if (!domDoc) return NS_ERROR_FAILURE;
+//                nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+//                if (!doc) return NS_ERROR_FAILURE;
+//                nsCOMPtr<nsIURI> docURI;
+//                docURI = doc->GetDocumentURI();
+//                nsCOMPtr<nsIURL> docURL;
+//                docURL = do_QueryInterface(docURI);
+//                rv = docURL->GetDirectory(dirPath);
+//                char * unescaped = strdup(dirPath.get());
+//                nsUnescape(unescaped);
+//                dirPath.Assign(unescaped, PR_UINT32_MAX); 
+//
+//#ifdef XP_WIN
+//                dirPath.Cut(0,1);
+//                PRInt32 len = dirPath.Length();
+//                for (PRInt32 i = 0; i < len; i++)
+//                {
+//                  if (dirPath[i]=='/') dirPath.Replace(i,1,'\\');
+//                }
+//#endif
+//                nsCOMPtr<nsILocalFile> dir;
+//                rv = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(dir));
+//                dir->Append(NS_LITERAL_STRING("graphics"));
+//                dir->Exists(&fExists);
+//
+//                if (!fExists) dir->Create(1,0755);
                 
+                nsCOMPtr<nsILocalFile> dir;
+                rv = GetDocumentGraphicsDir(getter_AddRefs(dir));
+                NS_ENSURE_SUCCESS(rv, rv);
                 
                 fileObj->CopyTo(dir, NS_LITERAL_STRING(""));
 
                 stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
                 stuffToPaste.AppendLiteral("graphics/");
-                unescaped = strdup(fileName.get());
+                char * unescaped = strdup(fileName.get());
                 nsUnescape(unescaped);
                 AppendUTF8toUTF16(unescaped, stuffToPaste);
                 stuffToPaste.AppendLiteral("\" alt=\"\"></object>");
@@ -2137,23 +2175,26 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       NS_ENSURE_TRUE(imageStream, NS_ERROR_FAILURE);
 
       nsCOMPtr<nsILocalFile> fileToUse;
-      nsCOMPtr<nsIDOMDocument> domDoc;
-      GetDocument(getter_AddRefs(domDoc));
-      if (!domDoc) return NS_ERROR_FAILURE;
-      nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
-      if (!doc) return NS_ERROR_FAILURE;
-      nsCOMPtr<nsIURI> docURI;
-      docURI = doc->GetDocumentURI();
-      nsCAutoString docFilePath;
-      rv = docURI->GetSpec(docFilePath);
-      nsCOMPtr<nsIFile> docFile;
-      rv = NS_GetFileFromURLSpec(docFilePath, getter_AddRefs(docFile));
-      nsCOMPtr<nsIFile>docDir;
-      rv = docFile->GetParent(getter_AddRefs(docDir));
-      fileToUse = do_QueryInterface(docDir);
-      fileToUse->Append(NS_LITERAL_STRING("graphics"));
-      fileToUse->Exists(&fExists);
-      if (!fExists) fileToUse->Create(1,0755);
+      rv = GetDocumentGraphicsDir(getter_AddRefs(fileToUse));
+      NS_ENSURE_SUCCESS(rv, rv);
+
+//      nsCOMPtr<nsIDOMDocument> domDoc;
+//      GetDocument(getter_AddRefs(domDoc));
+//      if (!domDoc) return NS_ERROR_FAILURE;
+//      nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+//      if (!doc) return NS_ERROR_FAILURE;
+//      nsCOMPtr<nsIURI> docURI;
+//      docURI = doc->GetDocumentURI();
+//      nsCAutoString docFilePath;
+//      rv = docURI->GetSpec(docFilePath);
+//      nsCOMPtr<nsIFile> docFile;
+//      rv = NS_GetFileFromURLSpec(docFilePath, getter_AddRefs(docFile));
+//      nsCOMPtr<nsIFile>docDir;
+//      rv = docFile->GetParent(getter_AddRefs(docDir));
+//      fileToUse = do_QueryInterface(docDir);
+//      fileToUse->Append(NS_LITERAL_STRING("graphics"));
+//      fileToUse->Exists(&fExists);
+//      if (!fExists) fileToUse->Create(1,0755);
       
       fileToUse->Append(NS_LITERAL_STRING("msi-screenshot.jpg"));
       nsCOMPtr<nsILocalFile> path = do_QueryInterface(fileToUse);
@@ -2186,7 +2227,8 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       urltext.Append(leafname);
       if (NS_SUCCEEDED(rv) && !urltext.IsEmpty())
       {
-        stuffToPaste.AssignLiteral("<object data=\"");
+        stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
+//        stuffToPaste.AssignLiteral("<object data=\"");
         stuffToPaste.Append(urltext);
         stuffToPaste.AppendLiteral("\" alt=\"\" />");
         nsAutoEditBatch beginBatching(this);
