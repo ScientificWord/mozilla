@@ -39,6 +39,9 @@
 
 #include <errno.h>
 #include <png.h>
+#define PNG_FILLER_BEFORE 0
+#define PNG_FILLER_AFTER 1
+
 
 /* Unpremultiplies data and converts native endian ARGB => RGBA bytes */
 static void
