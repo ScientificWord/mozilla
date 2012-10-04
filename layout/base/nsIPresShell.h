@@ -191,7 +191,7 @@ public:
   virtual void PushStackMemory() = 0;
   virtual void PopStackMemory() = 0;
   virtual void* AllocateStackMemory(size_t aSize) = 0;
-  
+
   nsIDocument* GetDocument() { return mDocument; }
 
   nsPresContext* GetPresContext() { return mPresContext; }
@@ -390,7 +390,7 @@ public:
   /**
    * Determine if it is safe to flush all pending notifications
    * @param aIsSafeToFlush PR_TRUE if it is safe, PR_FALSE otherwise.
-   * 
+   *
    */
   NS_IMETHOD IsSafeToFlush(PRBool& aIsSafeToFlush) = 0;
 
@@ -542,7 +542,7 @@ public:
    */
   NS_IMETHOD SetSelectionFlags(PRInt16 aInEnable) = 0;
 
-  /** 
+  /**
     * Gets the current state of non text selection effects
     * @param aEnabled  [OUT] set to the current state of non text selection,
     *                  as set by SetDisplayNonTextSelection
@@ -550,7 +550,7 @@ public:
     *           else NS_OK
     */
   NS_IMETHOD GetSelectionFlags(PRInt16 *aOutEnabled) = 0;
-  
+
   virtual nsISelection* GetCurrentSelection(SelectionType aType) = 0;
 
   /**
@@ -581,7 +581,7 @@ public:
   NS_IMETHOD GetEventTargetContent(nsEvent* aEvent, nsIContent** aContent) = 0;
 
   /**
-   * Get and set the history state for the current document 
+   * Get and set the history state for the current document
    */
 
   NS_IMETHOD CaptureHistoryState(nsILayoutHistoryState** aLayoutHistoryState, PRBool aLeavingPage = PR_FALSE) = 0;
@@ -590,7 +590,7 @@ public:
    * Determine if reflow is currently locked
    * @param aIsReflowLocked returns PR_TRUE if reflow is locked, PR_FALSE otherwise
    */
-  NS_IMETHOD IsReflowLocked(PRBool* aIsLocked) = 0;  
+  NS_IMETHOD IsReflowLocked(PRBool* aIsLocked) = 0;
 
   /**
    * Called to find out if painting is suppressed for this presshell.  If it is suppressd,
@@ -670,9 +670,9 @@ public:
 #ifdef MOZ_REFLOW_PERF
   NS_IMETHOD DumpReflows() = 0;
   NS_IMETHOD CountReflows(const char * aName, nsIFrame * aFrame) = 0;
-  NS_IMETHOD PaintCount(const char * aName, 
-                        nsIRenderingContext* aRenderingContext, 
-                        nsPresContext * aPresContext, 
+  NS_IMETHOD PaintCount(const char * aName,
+                        nsIRenderingContext* aRenderingContext,
+                        nsPresContext * aPresContext,
                         nsIFrame * aFrame,
                         PRUint32 aColor) = 0;
   NS_IMETHOD SetPaintFrameCount(PRBool aOn) = 0;
@@ -713,7 +713,7 @@ public:
   {
     mForwardingContainer = aContainer;
   }
-  
+
   /**
    * Render the document into an arbitrary gfxContext
    * Designed for getting a picture of a document or a piece of a document
@@ -769,7 +769,7 @@ public:
                                                         nsPoint& aPoint,
                                                         nsRect* aScreenRect) = 0;
 
-  NS_IMETHOD DrawSelectionToFile(nsISelection* aSelection, const nsAString& extension, nsIOutputStream *outputStream, 
+  NS_IMETHOD DrawSelectionToFile(nsISelection* aSelection, const nsAString& path, const nsAString& extension, nsIOutputStream *outputStream,
                                PRBool* retval) = 0;
 
   NS_IMETHOD RenderSelectionToImage(nsISelection* aSelection, nsIImage** imageObj) = 0;
