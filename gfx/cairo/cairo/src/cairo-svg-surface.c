@@ -901,32 +901,33 @@ static cairo_int_status_t
 _cairo_surface_base64_encode (cairo_surface_t       *surface,
 			      cairo_output_stream_t *output)
 {
-    cairo_status_t status;
-    base64_write_closure_t info;
-    unsigned int i;
-
-    info.output = output;
-    info.in_mem = 0;
-    info.trailing = 0;
-    memset (info.dst, '\x0', 5);
-
-    _cairo_output_stream_printf (info.output, "data:image/png;base64,");
-
-    status = cairo_surface_write_to_png_stream (surface, base64_write_func,
-						(void *) &info);
-
-    if (status)
-	return status;
-
-    if (info.in_mem > 0) {
-	for (i = info.in_mem; i < 3; i++)
-	    info.src[i] = '\x0';
-	info.trailing = 3 - info.in_mem;
-	info.in_mem = 3;
-	status = base64_write_func (&info, NULL, 0);
-    }
-
-    return status;
+    return 0;
+//    cairo_status_t status;
+//    base64_write_closure_t info;
+//    unsigned int i;
+//
+//    info.output = output;
+//    info.in_mem = 0;
+//    info.trailing = 0;
+//    memset (info.dst, '\x0', 5);
+//
+//    _cairo_output_stream_printf (info.output, "data:image/png;base64,");
+//
+//    status = cairo_surface_write_to_png_stream (surface, base64_write_func,
+//						(void *) &info);
+//
+//    if (status)
+//	return status;
+//
+//    if (info.in_mem > 0) {
+//	for (i = info.in_mem; i < 3; i++)
+//	    info.src[i] = '\x0';
+//	info.trailing = 3 - info.in_mem;
+//	info.in_mem = 3;
+//	status = base64_write_func (&info, NULL, 0);
+//    }
+//
+//    return status;
 }
 
 static cairo_status_t

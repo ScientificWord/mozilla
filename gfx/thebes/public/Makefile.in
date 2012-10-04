@@ -30,6 +30,7 @@ EXPORTS		= 	gfxASurface.h \
 			gfxTextRunCache.h \
 			gfxTextRunWordCache.h \
       gfxPDFSurface.h \
+      gfxSVGSurface.h \
 			$(NULL)
 
 EXPORTS += gfxFontTest.h
@@ -80,10 +81,12 @@ ifneq (,$(filter $(MOZ_WIDGET_TOOLKIT),mac cocoa))
 EXPORTS +=	gfxPlatformMac.h \
 		gfxQuartzSurface.h \
 		gfxQuartzImageSurface.h \
-		gfxQuartzPDFSurface.h \
+		gfxPDFSurface.h \
+		gfxSVGSurface.h \
 		gfxAtsuiFonts.h \
 		gfxQuartzNativeDrawing.h \
 		$(NULL)
+#		gfxQuartzPDFSurface.h \
 
 ifdef MOZ_ENABLE_GLITZ
 REQUIRES += glitzagl
