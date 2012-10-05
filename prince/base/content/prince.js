@@ -19,6 +19,7 @@ function princeStartUp()
   // protect these statements because some of these buttons don't exist in SNB
   var os = getOS(window);
   var button;
+  var menuitem;
   if ('osx' == os)
   {
     if (button = document.getElementById("printPreviewButton")) button.hidden=true;
@@ -29,6 +30,14 @@ function princeStartUp()
     if (button = document.getElementById("printPreviewButtonMac")) button.hidden = true;
      if (button = document.getElementById("printPreviewMenuItemMac")) button.hidden=true;
   }
+  var prefs = GetPrefs();
+  var wantdebug = prefs.getBoolPref("swp.debugtools");
+  if (wantdebug)
+  {
+    if (menuitem = document.getElementById("venkmanName")) menuitem.hidden = false;
+    if (menuitem = document.getElementById("menu_inspector")) menuitem.hidden = false;
+  }
+  
   msiEditorOnLoad();
 }
 
