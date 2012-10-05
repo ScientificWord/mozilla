@@ -3,9 +3,7 @@ DEPTH		= ../..
 topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
-
 include $(DEPTH)/config/autoconf.mk
-
 MODULE	= thebes
 
 DIRS	= public src
