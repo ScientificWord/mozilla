@@ -329,11 +329,13 @@
     <menupopup id="menu_ToolsPopup">
       <menuitem label="&toolsmenuJavaScriptdebugger.label;" 
                 accesskey="&toolsmenuJavaScriptdebugger.accesskey;"
+                hidden="true"
                 id="venkmanName" 
                 oncommand="start_venkman();"/>
       <menuitem id="menu_inspector" 
                 label="&inspectorTaskCmd.label;" 
                 accesskey="&inspectorTaskCmd.accesskey;" 
+                hidden="true"
                 command="Tasks:Inspector"/>
       <menuitem label="&toolsmenuExtensions.label;" 
                 accesskey="&toolsmenuExtensions.accesskey;" 
