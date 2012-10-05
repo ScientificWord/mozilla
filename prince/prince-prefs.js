@@ -124,6 +124,7 @@ pref("swp.MuPAD.log_engine_received", true);
 pref("swp.MuPAD.log_engine_sent", true);
 pref("swp.MuPAD.log_mathml_received", false);
 pref("swp.MuPAD.log_mathml_sent", false);
+pref("swp.newFileConsideredDirty", true);
 pref("swp.plot.AIInfo",         "NoInfo");
 pref("swp.plot.AIMethod",       "Middle");
 pref("swp.plot.AISubIntervals", "10");
