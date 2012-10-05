@@ -1803,8 +1803,9 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 	  var fileURL = msiURIFromString(sciurlstring);
 	  var file = msiFileFromFileURL(fileURL);
 		var scifileExists = file.exists();
-//    var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    if ((!editor.documentModified) && (!msiIsHTMLSourceChanged(editorElement)) && scifileExists)
+    var prefs = GetPrefs();
+    var newfileisdirty = prefs.getBoolPref("swp.newFileConsideredDirty");
+    if ((!editor.documentModified) && (!msiIsHTMLSourceChanged(editorElement)) && (scifileExists || !newfileisdirty))
     {
       if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
       // if the document is a shell and has never been saved, it will be deleted by Revert
