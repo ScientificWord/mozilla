@@ -57,8 +57,8 @@ CPPSRCS	+= 	gfxWindowsFonts.cpp \
 		nsUnicodeRange.cpp \
 		$(NULL)
 CPPSRCS +=	gfxPDFSurface.cpp \
-		gfxSVGSurface.cpp
-		$(NULL)
+  gfxSVGSurface.cpp
+  $(NULL)
 
 _OS_LIBS	= usp10 msimg32
 ifdef GNU_CXX
