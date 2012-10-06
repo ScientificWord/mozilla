@@ -2125,11 +2125,13 @@ nsMathMLChar::PaintForeground(nsPresContext* aPresContext,
 
   // Set color ...
   nscolor fgColor = styleContext->GetStyleColor()->mColor;
-  if (aIsSelected) {
-    // get color to use for selection from the look&feel object
-    aPresContext->LookAndFeel()->
-      GetColor(nsILookAndFeel::eColor_TextSelectForeground, fgColor);
-  }
+  // We want the color to be uchanged by selection
+  // BBM
+//  if (aIsSelected) {
+//    // get color to use for selection from the look&feel object
+//    aPresContext->LookAndFeel()->
+//      GetColor(nsILookAndFeel::eColor_TextSelectForeground, fgColor);
+//  }
   aRenderingContext.SetColor(fgColor);
 
   nsFont theFont(styleContext->GetStyleFont()->mFont);
