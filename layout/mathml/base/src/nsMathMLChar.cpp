@@ -156,7 +156,7 @@ LoadProperties(const nsString& aName,
   uriStr.Append(aName);
   uriStr.StripWhitespace(); // that may come from aName
   uriStr.AppendLiteral(".properties");
-  return NS_LoadPersistentPropertiesFromURISpec(getter_AddRefs(aProperties), 
+  return NS_LoadPersistentPropertiesFromURISpec(getter_AddRefs(aProperties),
                                                 NS_ConvertUTF16toUTF8(uriStr));
 }
 
@@ -232,13 +232,13 @@ private:
   nsGlyphCode ElementAt(nsPresContext* aPresContext, nsMathMLChar* aChar, PRUint32 aPosition);
 
   // The type is either NS_TABLE_TYPE_UNICODE or NS_TABLE_TYPE_GLYPH_INDEX
-  PRInt32 mType;    
-                           
-  // mFontName[0] is the primary font associated to this table. The others 
+  PRInt32 mType;
+
+  // mFontName[0] is the primary font associated to this table. The others
   // are possible "external" fonts for glyphs not in the primary font
   // but which are needed to stretch certain characters in the table
-  nsTArray<nsString> mFontName; 
-                               
+  nsTArray<nsString> mFontName;
+
   // Tri-state variable for error/empty/ready
   PRInt32 mState;
 
@@ -541,7 +541,7 @@ nsresult
 nsGlyphTableList::Initialize()
 {
   nsresult rv = NS_OK;
-  nsCOMPtr<nsIObserverService> obs = 
+  nsCOMPtr<nsIObserverService> obs =
            do_GetService("@mozilla.org/observer-service;1", &rv);
   if (!obs)
     return NS_ERROR_FAILURE;
@@ -558,7 +558,7 @@ nsGlyphTableList::Finalize()
 {
   // Remove our observer from the observer service
   nsresult rv = NS_OK;
-  nsCOMPtr<nsIObserverService> obs = 
+  nsCOMPtr<nsIObserverService> obs =
            do_GetService("@mozilla.org/observer-service;1", &rv);
   if (obs)
     rv = obs->RemoveObserver(this, NS_XPCOM_SHUTDOWN_OBSERVER_ID);
@@ -584,7 +584,7 @@ nsGlyphTableList::AddGlyphTable(const nsString& aPrimaryFontName)
 }
 
 nsGlyphTable*
-nsGlyphTableList::GetGlyphTableFor(nsPresContext* aPresContext, 
+nsGlyphTableList::GetGlyphTableFor(nsPresContext* aPresContext,
                                    nsMathMLChar*   aChar)
 {
   if (mUnicodeTable.Has(aPresContext, aChar))
@@ -646,12 +646,12 @@ GetFontExtensionPref(PRUnichar aChar,
   // initialize OUT param
   aValue.Truncate();
 
-  // We are going to try two keys because some users specify their pref as 
+  // We are going to try two keys because some users specify their pref as
   // user_pref("font.mathfont-family.\uNNNN.base", "...") rather than
   // user_pref("font.mathfont-family.\\uNNNN.base", "...").
   // The \uNNNN in the former is interpreted as an UTF16 escape sequence by
-  // JavaScript and is converted to the internal UTF8 string that JavaScript uses. 
-  // But clueless users who are not savvy of JavaScript have no idea as to what 
+  // JavaScript and is converted to the internal UTF8 string that JavaScript uses.
+  // But clueless users who are not savvy of JavaScript have no idea as to what
   // is going on and are baffled as to why their pref setting is not working.
   // So to save countless explanations, we are going to support both keys.
 
@@ -1500,7 +1500,7 @@ nsMathMLChar::StretchInternal(nsPresContext*           aPresContext,
     // Record the families in case there is no stretch.  But don't bother
     // storing families when they are just those from the StyleContext.
     mFamily = families;
-  }    
+  }
 
   aRenderingContext.SetFont(font, nsnull);
   nsresult rv =
@@ -1587,7 +1587,7 @@ nsMathMLChar::StretchInternal(nsPresContext*           aPresContext,
   if (!done && !maxWidth && !largeop) {
     // Doing Stretch() not GetMaxWidth(),
     // and not a largeop in display mode; we're done if size fits
-    if ((targetSize <= 0) || 
+    if ((targetSize <= 0) ||
         ((isVertical && charSize >= targetSize) ||
          IsSizeOK(aPresContext, charSize, targetSize, aStretchHint)))
       return NS_OK;
@@ -1660,7 +1660,7 @@ nsMathMLChar::StretchInternal(nsPresContext*           aPresContext,
     mDrawNormal = !glyphFound;
     mUnscaledAscent = aDesiredStretchSize.ascent;
   }
-    
+
   // stretchy character
   if (stretchy) {
     if (isVertical) {
@@ -1889,7 +1889,7 @@ private:
   nsRect    mRect;
 };
 
-void 
+void
 nsDisplayMathMLSelectionRect::Paint(nsDisplayListBuilder* aBuilder, nsIRenderingContext* aCtx,
    const nsRect& aDirtyRect)
 {
@@ -1899,6 +1899,8 @@ nsDisplayMathMLSelectionRect::Paint(nsDisplayListBuilder* aBuilder, nsIRendering
   nsresult result;
   const nsFrameSelection* frameSelection = mFrame->GetConstFrameSelection();
   PRInt16 selectionValue = frameSelection->GetDisplaySelection();
+  if (selectionValue <= nsISelectionController::SELECTION_HIDDEN)
+    return; // selection is hidden or off
   if (selectionValue == nsISelectionController::SELECTION_ON) {
     colorID = nsILookAndFeel::eColor_TextSelectBackground;
   } else if (selectionValue == nsISelectionController::SELECTION_ATTENTION) {
@@ -1914,7 +1916,7 @@ nsDisplayMathMLSelectionRect::Paint(nsDisplayListBuilder* aBuilder, nsIRendering
 
 class nsDisplayMathMLCharBackground : public nsDisplayItem {
 public:
-  nsDisplayMathMLCharBackground(nsDisplayListBuilder* aBuilder, nsIFrame* aFrame, 
+  nsDisplayMathMLCharBackground(nsDisplayListBuilder* aBuilder, nsIFrame* aFrame,
     const nsRect& aRect,
     nsStyleContext* aStyleContext)
     : nsDisplayItem(aFrame), mStyleContext(aStyleContext), mRect(aRect) {
@@ -1940,7 +1942,7 @@ void nsDisplayMathMLCharBackground::Paint(nsDisplayListBuilder* aBuilder,
   const nsStyleBorder* border = mStyleContext->GetStyleBorder();
   const nsStylePadding* padding = mStyleContext->GetStylePadding();
   const nsStyleBackground* backg = mStyleContext->GetStyleBackground();
-  
+
   nsRect rect(mRect + aBuilder->ToReferenceFrame(mFrame));
   nsCSSRendering::PaintBackgroundWithSC(mFrame->PresContext(), *aCtx, mFrame,
                                         mRect, rect,
@@ -1953,7 +1955,7 @@ public:
   nsDisplayMathMLCharForeground(nsDisplayListBuilder* aBuilder,
                                 nsIFrame* aFrame, nsMathMLChar* aChar,
 				                PRUint32 aIndex, bool aIsSelected)
-    : nsDisplayItem(aFrame), mChar(aChar), 
+    : nsDisplayItem(aFrame), mChar(aChar),
       mIndex(aIndex), mIsSelected(aIsSelected) {
     MOZ_COUNT_CTOR(nsDisplayMathMLCharForeground);
   }
@@ -1988,7 +1990,7 @@ public:
     bool snap;
     return GetBounds(aBuilder, &snap);
   }
-  
+
 //  virtual PRUint32 GetPerFrameKey() { return (mIndex << TYPE_BITS) | nsDisplayItem::GetPerFrameKey(); }
 
 private:
@@ -2153,7 +2155,7 @@ nsMathMLChar::PaintForeground(nsPresContext* aPresContext,
     PRUint32 len = PRUint32(mData.Length());
 //printf("Painting %04X like a normal char\n", mData[0]);
 //aRenderingContext.SetColor(NS_RGB(255,0,0));
-    aRenderingContext.DrawString(mData.get(), len, 0, 
+    aRenderingContext.DrawString(mData.get(), len, 0,
      mBoundingMetrics.ascent ); //mUnscaledAscent);
   }
   else {
