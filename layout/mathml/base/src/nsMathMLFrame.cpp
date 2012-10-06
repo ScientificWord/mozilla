@@ -79,7 +79,7 @@ nsMathMLFrame::GetMathMLFrameType()
     return GetMathMLFrameTypeFor(mPresentationData.baseFrame);
 
   // everything else is treated as ordinary (mapped to 'Ord' in TeX)
-  return eMathMLFrameType_Ordinary;  
+  return eMathMLFrameType_Ordinary;
 }
 
 // snippet of code used by <mstyle> and <mtable>, which are the only
@@ -108,7 +108,7 @@ nsMathMLFrame::FindAttrDisplaystyle(nsIContent*         aContent,
 }
 
 NS_IMETHODIMP
-nsMathMLFrame::InheritAutomaticData(nsIFrame* aParent) 
+nsMathMLFrame::InheritAutomaticData(nsIFrame* aParent)
 {
   mEmbellishData.flags = 0;
   mEmbellishData.coreFrame = nsnull;
@@ -162,7 +162,7 @@ nsMathMLFrame::UpdatePresentationData(PRUint32        aFlagsValues,
 }
 
 // Helper to give a style context suitable for doing the stretching of
-// a MathMLChar. Frame classes that use this should ensure that the 
+// a MathMLChar. Frame classes that use this should ensure that the
 // extra leaf style contexts given to the MathMLChars are accessible to
 // the Style System via the Get/Set AdditionalStyleContext() APIs.
 /* static */ void
@@ -232,7 +232,7 @@ nsMathMLFrame::GetPresentationDataFrom(nsIFrame*           aFrame,
     // stop if we reach the root <math> tag
     nsIContent* content = frame->GetContent();
     NS_ASSERTION(content || !frame->GetParent(), // no assert for the root
-                 "dangling frame without a content node"); 
+                 "dangling frame without a content node");
     if (!content)
       break;
 
@@ -494,7 +494,7 @@ nsMathMLFrame::DisplayBoundingMetrics(nsDisplayListBuilder* aBuilder,
                                       const nsDisplayListSet& aLists) {
   if (!NS_MATHML_PAINT_BOUNDING_METRICS(mPresentationData.flags))
     return NS_OK;
-    
+
   nscoord x = aPt.x + aMetrics.leftBearing;
   nscoord y = aPt.y - aMetrics.ascent;
   nscoord w = aMetrics.rightBearing - aMetrics.leftBearing;
@@ -531,15 +531,16 @@ void nsDisplayMathMLBar::Paint(nsDisplayListBuilder* aBuilder,
   // paint the bar with the current text color
   // Set color ...
   nscolor fgcolor;
-  if (mSelected) {
-    // get color to use for selection from the look&feel object
-    mFrame->PresContext()->LookAndFeel()->
-      GetColor(nsILookAndFeel::eColor_TextSelectForeground, fgcolor);
-  }
-  else
-  {
+  // BBM: We want to keep red in selected math, so ...
+  // if (mSelected) {
+  //   // get color to use for selection from the look&feel object
+  //   mFrame->PresContext()->LookAndFeel()->
+  //     GetColor(nsILookAndFeel::eColor_TextSelectForeground, fgcolor);
+  // }
+  // else
+  // {
     fgcolor = mFrame->GetStyleContext()->GetStyleColor()->mColor;
-  }
+ // }
   aCtx->SetColor(fgcolor);
 
   aCtx->FillRect(mRect + aBuilder->ToReferenceFrame(mFrame));
@@ -569,7 +570,7 @@ PRBool IsMath( nsIFrame * aFrame )
   pNode = do_QueryInterface(pContent);
   if (!pNode) return PR_FALSE;
   res = pNode->GetNamespaceURI(sNamespace);
-  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML")) 
+  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML"))
   {
     return PR_TRUE;
   }
