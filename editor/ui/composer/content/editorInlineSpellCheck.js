@@ -57,7 +57,7 @@ var InlineSpellChecker =
 
   checkDocument : function(doc)
   {
-    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell) 
+    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell)
       return;
 
     var range = doc.createRange();
@@ -67,7 +67,7 @@ var InlineSpellChecker =
 
   getMispelledWord : function()
   {
-    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell) 
+    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell)
       return null;
 
     var selection = this.editor.selection;
@@ -81,11 +81,11 @@ var InlineSpellChecker =
   // added by updateSuggestionsMenu.
   updateSuggestionsMenu : function (menupopup, firstNonWordMenuItem, word)
   {
-    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell) 
+    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell)
       return kSpellNoMispelling;
 
     var child = menupopup.firstChild;
-    while (child != firstNonWordMenuItem) 
+    while (child != firstNonWordMenuItem)
     {
       var next = child.nextSibling;
       menupopup.removeChild(child);
@@ -95,22 +95,22 @@ var InlineSpellChecker =
     if (!word)
     {
       word = this.getMispelledWord();
-      if (!word) 
+      if (!word)
         return kSpellNoMispelling;
     }
 
     var spellChecker = this.inlineSpellChecker.spellChecker;
-    if (!spellChecker) 
+    if (!spellChecker)
       return kSpellNoMispelling;
 
-    var numSuggestedWords = 0; 
+    var numSuggestedWords = 0;
 
     var isIncorrect = spellChecker.CheckCurrentWord(word.toString());
     if (isIncorrect)
     {
       do {
         var suggestion = spellChecker.GetSuggestedWord();
-        if (!suggestion) 
+        if (!suggestion)
           break;
 
         var item = document.createElement("menuitem");
@@ -122,7 +122,7 @@ var InlineSpellChecker =
         numSuggestedWords++;
       } while (numSuggestedWords < kSpellMaxNumSuggestions);
     }
-    else 
+    else
       numSuggestedWords = kSpellNoMispelling;
 
     return numSuggestedWords;
@@ -130,10 +130,10 @@ var InlineSpellChecker =
 
   selectSuggestion : function (newword, node, offset)
   {
-    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell) 
+    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell)
       return;
 
-    if (!node) 
+    if (!node)
     {
       var selection = this.editor.selection;
       node = selection.anchorNode;
@@ -145,7 +145,7 @@ var InlineSpellChecker =
 
   addToDictionary : function (node, offset)
   {
-    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell) 
+    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell)
       return;
 
     if (!node)
@@ -161,7 +161,7 @@ var InlineSpellChecker =
 
   ignoreWord : function (node, offset)
   {
-    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell) 
+    if (!this.inlineSpellChecker || !this.inlineSpellChecker.enableRealTimeSpell)
       return;
 
     if (!node)
@@ -172,7 +172,7 @@ var InlineSpellChecker =
     }
 
     var word = this.inlineSpellChecker.getMispelledWord(node, offset);
-    if (word) 
+    if (word)
       this.inlineSpellChecker.ignoreWord(word);
   }
 }
