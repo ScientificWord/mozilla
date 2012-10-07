@@ -34,7 +34,7 @@ case $inputFormat in
     esac
     ;;
  
-  cdr | ccx | cdrx | cmx | cgm | xfig | sk | sk1 | aff | plt | dxf | dst | pes | exp | pcs | wmf | emf)
+  cdr | ccx | cdrx | cmx | cgm | xfig | sk | sk1 | aff | plt | dxf | dst | pes | exp | pcs | svg | wmf | emf)
     case $mode in
       out)
         echo svg
