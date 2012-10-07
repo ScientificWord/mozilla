@@ -20,9 +20,9 @@ set outputFile=%8
 set extraFiles=()
 REM give output format=out; convert for graphic display=disp; give output for tex=outtex; convert for tex=tex
 for %%E in (bmp tif tiff gif art arw cals cin cmyk cmyka crw cut dcm dcr dcx djvu dot dng dot fax fits gray hdr hrz mat mono mrw mtv nef orf otb p7 palm pam pbm pcd pcds pcl pcx pdb pef pfm pgm picon pict pix pnm ppm psd ptif pwp raf rgb rgba rla rle sct sfw sgi sun tga tim uil uyvy vicar viff wbmp wpg xbm xcf xpm xwd x3f ycbcr ycbcra yuv) do (if %%Ex==%inputFormat%x goto imMagick)
-for %%E in (cdr cdt ccx cdrx cmx cgm xfig sk sk1 aff plt dxf dst pes exp pcs eps ps) do (if %%Ex==%inputFormat%x goto UniConv)
+for %%E in (cdr cdt ccx cdrx cmx cgm xfig sk sk1 aff plt dxf dst pes exp pcs eps ps svg) do (if %%Ex==%inputFormat%x goto UniConv)
 for %%E in (wmf emf) do (if %%Ex==%inputFormat%x goto wmfeps)
-goto done
+goto finish
 :imMagick
 set outputFormat=png
 if %mode%x==outx goto echoIt
@@ -35,7 +35,7 @@ if %mode%x==texx set outputFormat=pdf
 if %mode%x==outtexx set outputFormat=pdf
 if %mode%x==outx goto echoIt
 if %mode%x==outtexx goto echoIt
-call %Uniconvertor%\uniconvertor %inputPath%.%inputFormat% %outputPath%.%outputFormat% >%outputPath%.%outputFormat%.log 2>&1
+call %Uniconvertor%\uniconvertor "%~1.%inputFormat%" "%~3.%outputFormat%" >%outputPath%.%outputFormat%.log 2>&1
 goto finish
 :wmfeps
 set outputFormat=svg
@@ -46,7 +46,7 @@ if %mode%x==outx goto echoIt
 if %mode%x==outtexx goto echoIt
 copy /Y %inputPath%.%inputFormat% %outputPath%.%inputFormat%
 %wmf2epsDir%\wmf2eps %outputPath%.%inputFormat% >%outputPath%.%outputFormat%.log 2>&1
-call %Uniconvertor%/uniconvertor %outputPath%.eps %outputPath%.%outputFormat% >>%outputPath%.%outputFormat%.log 2>&1
+call %Uniconvertor%/uniconvertor "%~3.eps" %~3.%outputFormat%" >>%outputPath%.%outputFormat%.log 2>&1
 goto finish
 :echoIt
 if %outputFile%x==x goto noextra
