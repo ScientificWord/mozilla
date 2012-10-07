@@ -74,7 +74,7 @@ var gVideo = false;
 
 var gErrorMessageShown = false;
 var importTimer;
-var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "xvc","xvz"];
+var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "svg", "xvc","xvz"];
 var typesetGraphicTypes = ["eps", "pdf", "png", "jpg"];
 var videoTypes = ["avi","mov","qt","mp4","mpeg","mpg","prc","rm","rv","swf","u3d","wmv"];
 
