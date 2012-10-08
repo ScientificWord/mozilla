@@ -92,8 +92,9 @@ CPPSRCS +=  gfxSVGSurface.cpp
 CPPSRCS +=	gfxFontconfigUtils.cpp
 CPPSRCS +=	nsUnicodeRange.cpp
 CPPSRCS +=	gfxPDFSurface.cpp \
-		gfxSVGSurface.cpp
+		gfxSVGSurface.cpp \
 		$(NULL)
+
 CSRCS = cairo-xlib-utils.c
 EXTRA_DSO_LDOPTS += $(MOZ_PANGO_LIBS) $(ZLIB_LIBS) $(MOZ_XFT_LIBS) $(XLDFLAGS) $(XLIBS)
 endif
