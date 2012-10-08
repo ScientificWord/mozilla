@@ -814,8 +814,20 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
           curNode->GetFirstChild(getter_AddRefs(child));
         }
       }
-      else if (nsHTMLEditUtils::IsMath(curNode))
+      else if ( (nsHTMLEditUtils::IsMath(curNode))  || 
+                (nsHTMLEditUtils::IsMath(targetNode)) )
       {
+        if ( ! nsHTMLEditUtils::IsMath(curNode) ) {
+           // putting text into math -- change the text to math and carry on
+           // First wrap in an <mtext>
+           nsCOMPtr<nsIDOMElement> mtextElement;
+           res = msiUtils::CreateMathMLElement(this, msiEditingAtoms::mtext, mtextElement);
+           PRInt32 offset = 0;
+           res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(mtextElement), &offset, PR_TRUE);
+
+           curNode = mtextElement;
+        }
+      
         //putting in math; check to see if it is going into math.
         PRBool parentIsMath = nsHTMLEditUtils::IsMath(parentNode);
         nsCOMPtr<nsIDOMNode> newParentNode;
