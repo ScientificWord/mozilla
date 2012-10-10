@@ -22,12 +22,12 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 function msiSetupHTMLEditorCommands(editorElement)
 {
   var commandTable = msiGetComposerCommandTable(editorElement);
-  if (!commandTable)                   
+  if (!commandTable)
   {
     alert("No command table for editor element in msiSetupHTMLEditorCommands!");
     return;
   }
-  
+
   // Include everthing a text editor does
 //  alert("Calling msiSetupTextEditorCommands from msiSetupHTMLEditorCommands");
   msiSetupTextEditorCommands(editorElement);
@@ -45,7 +45,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_objectProperties",   msiObjectPropertiesCommand);
   commandTable.registerCommand("cmd_removeNamedAnchors", msiRemoveNamedAnchorsCommand);
   commandTable.registerCommand("cmd_editLink",        msiEditLinkCommand);
-  
+
   commandTable.registerCommand("cmd_form",          msiFormCommand);
   commandTable.registerCommand("cmd_inputtag",      msiInputTagCommand);
   commandTable.registerCommand("cmd_inputimage",    msiInputImageCommand);
@@ -167,9 +167,9 @@ function msiSetupTextEditorCommands(editorElement)
   var commandTable = msiGetComposerCommandTable(editorElement);
   if (!commandTable)
     return;
-  
+
   //dump("Registering plain text editor commands\n");
-  
+
   commandTable.registerCommand("cmd_find",       msiFindCommand);
   commandTable.registerCommand("cmd_findNext",   msiFindAgainCommand);
   commandTable.registerCommand("cmd_findPrev",   msiFindAgainCommand);
@@ -195,8 +195,8 @@ function msiSetupComposerWindowCommands(editorElement)
   //   specific to Web Composer window (file-related commands, HTML Source...)
   //   We can't use the composer controller created on the content window else
   //     we can't process commands when in HTMLSource editor
-  // IMPORTANT: For each of these commands, the doCommand method 
-  //            must first call FinishHTMLSource() 
+  // IMPORTANT: For each of these commands, the doCommand method
+  //            must first call FinishHTMLSource()
   //            to go from HTML Source mode to any other edit mode
 
   var windowControllers = topWin.controllers;
@@ -283,7 +283,7 @@ function msiGetComposerCommandTable(editorElement)
   var controller;
   if (editorElement.mComposerJSCommandControllerID)
   {
-    try { 
+    try {
       controller = editorElement.contentWindow.controllers.getControllerById(editorElement.mComposerJSCommandControllerID);
     } catch (e) {}
   }
@@ -298,7 +298,7 @@ function msiGetComposerCommandTable(editorElement)
         editorController.init(null);
         editorController.setCommandContext(editorElement);
         editorElement.contentWindow.controllers.insertControllerAt(0, controller);
-    
+
         // Store the controller ID so we can be sure to get the right one later
         editorElement.mComposerJSCommandControllerID = editorElement.contentWindow.controllers.getControllerId(controller);
     }
@@ -397,7 +397,7 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_increaseFont":
       case "cmd_decreaseFont":
       case "cmd_removeStyles":
-      
+
       case "cmd_smiley":
         break;
 
@@ -414,13 +414,13 @@ function isInMath(editorElement)
   return msiNavigationUtils.nodeIsInMath(selNode);
 //  return editor.tagListManager.selectionContainedInTag("math",null)
 }
-  
+
 
 function updateMathText(editorElement)
 {
   var cmd = document.getElementById("cmd_MSImathtext");
   var editor = msiGetEditor(editorElement);
-  
+
   cmd.setAttribute("isMath",isInMath(editorElement)?"true":"false");
 }
 
@@ -602,14 +602,14 @@ function msiPokeMultiStateUI(uiID, cmdParams)
 {
   try
   {
-  
+
      var isMixed = cmdParams.getBooleanValue("state_mixed");
      var desiredAttrib;
      if (isMixed)
        desiredAttrib = "mixed";
-     else 
+     else
           desiredAttrib = cmdParams.getStringValue("state_attribute");
-  
+
 
     var docList = msiGetUpdatableItemContainers(uiID, msiGetActiveEditorElement());
     for (var i = 0; i < docList.length; ++i)
@@ -649,7 +649,7 @@ function msiPokeTagStateUI(uiID, cmdParams)
     default:
       break;
 //      return;
-  }   
+  }
   var desiredAttrib;
   desiredAttrib = cmdParams.getStringValue("state_attribute");
 
@@ -703,7 +703,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
   for (var i = 0; i < docList.length; ++i)
   {
     var commandNode = docList[i].getElementById(commandID);
-    if (commandNode)     
+    if (commandNode)
       commandNode.setAttribute("state", newState);
   }
 
@@ -746,8 +746,8 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
         msiPokeMultiStateUI(commandID, cmdParams);
     }
     msiResetStructToolbar(editorElement);
-  } catch(e) { 
-    dump("error thrown in msiDoStatefulCommand: "+e+"\n"); 
+  } catch(e) {
+    dump("error thrown in msiDoStatefulCommand: "+e+"\n");
   }
 }
 
@@ -777,7 +777,7 @@ function msiDoTagBibItem(dlgData, paraContainer, editorElement)
   for (var i = 0; i < docList.length; ++i)
   {
     var commandNode = docList[i].getElementById("cmd_listtag");
-    if (commandNode)     
+    if (commandNode)
       commandNode.setAttribute("state", "bibitem");
   }
   try
@@ -829,7 +829,7 @@ function getNextTagWindow(commandID)
   }
   return document.getElementById(idNext);
 }
-      
+
 function getPrevTagWindow(commandID)
 {
   var idPrev;
@@ -852,27 +852,27 @@ function getPrevTagWindow(commandID)
   }
   return document.getElementById(idPrev);
 }
-      
+
 
 function doTagKeyCommand(event, commandID, value)
 {
 //  if (event.keyCode == KeyEvent.DOM_VK_RETURN) msiDoStatefulCommand(commandID, value);
-//  else 
+//  else
   if (event.keyCode == KeyEvent.DOM_VK_ESCAPE) msiGetActiveEditorElement().contentWindow.focus();
   else if (event.keyCode == KeyEvent.DOM_VK_TAB)
   {
     if (event.shiftKey) getPrevTagWindow(commandID).focus();
     else getNextTagWindow(commandID).focus();
-  } 
+  }
 }
 
 function getViewSettingsFromViewMenu()
 {
   var viewSettings = new msiViewSettings(1);   //1 is really the default - hide invisibles, show everything else
-  var invisChoices = [["viewInvisibles","showInvisibles"], 
+  var invisChoices = [["viewInvisibles","showInvisibles"],
                       ["viewSectionExpanders","showSectionExpanders"],
                       ["viewFMButtons","showFMButtons"],
-                      ["viewHelperLines","showHelperLines"], 
+                      ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"],       ["viewFootnotes", "showFootnotes"],
                       ["viewOtherNotes","showOtherNotes"]];
@@ -906,10 +906,10 @@ function updateViewMenuFromEditor(editorElement)
   if (!("viewSettings" in editorElement) || (editorElement.viewSettings == null))
     return;  //No settings in the editor - leave menu as is.
 
-  var invisChoices = [["viewInvisibles","showInvisibles"], 
+  var invisChoices = [["viewInvisibles","showInvisibles"],
                       ["viewSectionExpanders","showSectionExpanders"],
                       ["viewFMButtons","showFMButtons"],
-                      ["viewHelperLines","showHelperLines"], 
+                      ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"]];
   for (var ix = 0; ix < invisChoices.length; ++ix)
@@ -939,7 +939,7 @@ function updateViewMenuFromEditor(editorElement)
 //    else
 //      names += i + "\n";
 //  }
-//  
+//
 //  dump(names + "-----------\n");
 //}
 //
@@ -972,7 +972,7 @@ var nsDummyHTMLCommand =
 
 
 //-----------------------------------------------------------------------------------
-var msiGIFAnimation = 
+var msiGIFAnimation =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -1030,9 +1030,9 @@ function openDocument()
     dump("filePicker.show() threw an exception: "+ex.toString()+"\n");
   }
 
-  try 
+  try
   {
-    if ((fp.file) && (fp.file.path.length > 0)) 
+    if ((fp.file) && (fp.file.path.length > 0))
     {
       dump("Ready to edit page: " + fp.fileURL.spec +"\n");
       var newdocumentfile;
@@ -1040,10 +1040,10 @@ function openDocument()
       msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
       msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
     }
-  } 
-  catch (e) 
-  { 
-    finalThrow(cmdFailString('Open'), e.message); 
+  }
+  catch (e)
+  {
+    finalThrow(cmdFailString('Open'), e.message);
   }
 }
 
@@ -1068,11 +1068,11 @@ var msiNewCommand =
       finalThrow(cmdFailString('new'), e.message);
     }
 	}
-} 
+}
 
 function openNewDocument()
 {
-	
+
   var newdocumentfile;
   var dir;
   var data={file: "not yet"};
@@ -1083,7 +1083,7 @@ function openNewDocument()
     if (data.filename && data.filename.length > 0) {
       dump("Ready to edit shell: " + data.filename +"\n");
       try {
-        var thefile = Components.classes["@mozilla.org/file/local;1"].           
+        var thefile = Components.classes["@mozilla.org/file/local;1"].
           createInstance(Components.interfaces.nsILocalFile);
         thefile.initWithPath(data.filename);
         newdocumentfile = createWorkingDirectory(thefile);
@@ -1106,7 +1106,7 @@ var msiUpdateStructToolbarCommand =
       msiUpdateStructToolbar(editorElement);
     }
     catch (e) {
-// silent fail      
+// silent fail
       return false;
     }
     return true;
@@ -1134,12 +1134,12 @@ var msiSaveCommand =
       return msiIsDocumentEditable(editorElement) &&
         (msiIsDocumentModified(editorElement) || msiIsHTMLSourceChanged(editorElement) ||
          IsUrlAboutBlank(docUrl) || IsUrlUntitled(docUrl) || GetScheme(docUrl) != "file");
-    } 
+    }
     catch (e) {
       finalThrow(cmdFailString('save'), e.message);
     }
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -1186,7 +1186,7 @@ var msiSoftSaveCommand =
   {
     return msiSaveCommand.isCommandEnabled(aCommand, dummy);
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -1331,7 +1331,7 @@ var msiSaveAndChangeEncodingCommand =
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand)
-  {    
+  {
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
       return false;
@@ -1370,7 +1370,7 @@ var msiPrintDirectCommand =
   {
     return true;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -1416,7 +1416,7 @@ var msiPreviewDirectCommand =
   {
     return true;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -1455,7 +1455,7 @@ var msiPublishCommand =
     }
     return false;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -1492,8 +1492,8 @@ var msiPublishCommand =
         publishData = {};
         window.ok = false;
         var oldTitle = msiGetDocumentTitle(editorElement);
-        // jlf - should EditorPublish be modal or dependent 
-        window.openDialog("chrome://editor/content/EditorPublish.xul","publish", 
+        // jlf - should EditorPublish be modal or dependent
+        window.openDialog("chrome://editor/content/EditorPublish.xul","publish",
                           "chrome,close,titlebar,modal", "", "", publishData);
         if (msiGetDocumentTitle(editorElement) != oldTitle)
           UpdateWindowTitle();
@@ -1520,7 +1520,7 @@ var msiPublishAsCommand =
     return (msiIsDocumentEditable(msiGetTopLevelEditorElement()));
 //    return (IsDocumentEditable());
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -1534,7 +1534,7 @@ var msiPublishAsCommand =
       window.ok = false;
       var publishData = {};
       var oldTitle = msiGetDocumentTitle(editorElement);
-      window.openDialog("chrome://editor/content/EditorPublish.xul","publish", 
+      window.openDialog("chrome://editor/content/EditorPublish.xul","publish",
                         "chrome,close,titlebar,modal", "", "", publishData);
       if (msiGetDocumentTitle(editorElement) != oldTitle)
         UpdateWindowTitle();
@@ -1576,10 +1576,10 @@ function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
 {
   var filename = decodeURI(GetFilename(aDocumentURLString));
   if (filename.length > 0) return filename;
-  
+
   // I kind of doubt that any of the following code gets used
   dump("If you see this message, look at msiGetSuggestedFileName in msiComposerCommands\n");
-  
+
   var extension = msiGetExtensionBasedOnMimeType(aMIMEType);
   if (extension)
   {
@@ -1604,7 +1604,7 @@ function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
       if (url)
         return url+extension;
     } catch(e) {}
-  } 
+  }
 
   // check if there is a title we can use
   var title = msiGetDocumentTitle(editorElement);
@@ -1660,7 +1660,7 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
     var lastDot = suggestedFileName.lastIndexOf(".");
     if (lastDot != -1)
       suggestedFileName = suggestedFileName.slice(0, lastDot);
-  
+
     fp.defaultString = suggestedFileName;
   }
   // set the file picker's current directory
@@ -1668,7 +1668,7 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
   try {
     var ioService = msiGetIOService();
     var fileHandler = msiGetFileProtocolHandler();
-    
+
     var isLocalFile = true;
     try {
       var docURI = ioService.newURI(aDocumentURLString, msiGetEditor(editorElement).documentCharacterSet, null);
@@ -1707,7 +1707,7 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
     msiSaveFilePickerDirectory(fp, aEditorType);
   }
   else if ("gFilePickerDirectory" in window && gFilePickerDirectory)
-    fp.displayDirectory = gFilePickerDirectory; 
+    fp.displayDirectory = gFilePickerDirectory;
 
   return dialogResult;
 }
@@ -1764,7 +1764,7 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
   try {
     var tmp1 = aDestinationLocation.QueryInterface(Components.interfaces.nsIFile);
     isLocalFile = true;
-  } 
+  }
   catch (e) {
     try {
       var tmp = aDestinationLocation.QueryInterface(Components.interfaces.nsIURI);
@@ -1777,7 +1777,7 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
     // we should supply a parent directory if/when we turn on functionality to save related documents
     var persistObj = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(msiWebPersist);
     persistObj.progressListener = new msiEditorOutputProgressListener(editorElement);
-    
+
     var wrapColumn = msiGetWrapColumn(editorElement);
     var outputFlags = msiGetOutputFlags(aMimeType, wrapColumn, editorElement);
 
@@ -1796,18 +1796,20 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
     // note: we always want to set the replace existing files flag since we have
     // already given user the chance to not replace an existing file (file picker)
     // or the user picked an option where the file is implicitly being replaced (save)
-    persistObj.persistFlags = persistObj.persistFlags 
+    persistObj.persistFlags = persistObj.persistFlags
                             | msiWebPersist.PERSIST_FLAGS_NO_BASE_TAG_MODIFICATIONS
                             | msiWebPersist.PERSIST_FLAGS_REPLACE_EXISTING_FILES
                             | msiWebPersist.PERSIST_FLAGS_DONT_FIXUP_LINKS
                             | msiWebPersist.PERSIST_FLAGS_DONT_CHANGE_FILENAMES
                             | msiWebPersist.PERSIST_FLAGS_FIXUP_ORIGINAL_DOM;
-    persistObj.saveDocument(editorDoc, aDestinationLocation, aRelatedFilesParentDir, 
+    persistObj.saveDocument(editorDoc, aDestinationLocation, aRelatedFilesParentDir,
                             aMimeType, outputFlags, wrapColumn);
     editorElement.mPersistObj = persistObj;
   }
-  catch(e) { dump("caught an error, bail\n"); return false; }
-
+  catch(e) {
+    dump("caught an error, bail\n");
+    return false;
+  }
   return true;
 }
 
@@ -1957,8 +1959,8 @@ function msiEditorOutputProgressListener(editorElement)
 
         if (bDebugOutputStateChange)
           dump("http response is: "+httpResponse+"\n");
-      } 
-      catch(e) 
+      }
+      catch(e)
       {
         if (aStatus == kErrorBindingAborted)
           aStatus = 0;
@@ -1968,10 +1970,10 @@ function msiEditorOutputProgressListener(editorElement)
       var abortPublishing = (aStatus != 0 && aStatus != kFileNotFound);
 
       // Notify progress dialog when we receive the STOP
-      //  notification for a file if there was an error 
+      //  notification for a file if there was an error
       //  or a successful finish
       //  (Check requestSpec to be sure message is for destination url)
-      if (aStatus != 0 
+      if (aStatus != 0
            || (requestSpec && requestSpec.indexOf(GetScheme(this.msiEditorElement.mgPublishData.publishUrl)) == 0))
       {
         try {
@@ -1994,7 +1996,7 @@ function msiEditorOutputProgressListener(editorElement)
           try {
             editor.rebuildDocumentFromSource(this.msiEditorElement.mgRestoreDocumentSource);
 
-            // Clear transaction cache since we just did a potentially 
+            // Clear transaction cache since we just did a potentially
             //  very large insert and this will eat up memory
             editor.transactionManager.clear();
           }
@@ -2012,7 +2014,7 @@ function msiEditorOutputProgressListener(editorElement)
       //XXX HACK: "file://" protocol is not supported in network code
       //    (bug 151867 filed to add this support, bug 151869 filed
       //     to remove this and other code in nsIWebBrowserPersist)
-      //    nsIWebBrowserPersist *does* copy the file(s), but we don't 
+      //    nsIWebBrowserPersist *does* copy the file(s), but we don't
       //    get normal onStateChange messages.
 
       // Case 1: If images are included, we get fairly normal
@@ -2020,7 +2022,7 @@ function msiEditorOutputProgressListener(editorElement)
       //    thus we must finish HTML file progress below
 
       // Case 2: If just HTML file is uploaded, we get STATE_START and STATE_STOP
-      //    notification with a null "requestSpec", and 
+      //    notification with a null "requestSpec", and
       //    the gPersistObj is destroyed before we get here!
       //    So create an new object so we can flow through normal processing below
       if (!requestSpec && GetScheme(this.msiEditorElement.mgPublishData.publishUrl) == "file"
@@ -2028,7 +2030,7 @@ function msiEditorOutputProgressListener(editorElement)
       {
         aStateFlags |= nsIWebProgressListener.STATE_IS_NETWORK;
         if (!this.msiEditorElement.mPersistObj)
-        {          
+        {
           this.msiEditorElement.mPersistObj = new msiPersistObj(aStatus, nsIWebBrowserPersist.PERSIST_STATE_FINISHED);
         }
       }
@@ -2146,7 +2148,7 @@ function msiEditorOutputProgressListener(editorElement)
         dump("*****        request: " + channel.URI.spec + "\n");
       }
       catch (e) { dump("          couldn't get request\n"); }
-      
+
       msiDumpDebugStatus(aStatus);
 
       if (this.msiEditorElement.mPersistObj)
@@ -2239,7 +2241,7 @@ function msiEditorOutputProgressListener(editorElement)
 
     var ret = false;
     try {
-      // Note difference with nsIAuthPrompt::promptPassword, which has 
+      // Note difference with nsIAuthPrompt::promptPassword, which has
       // just "in" savePassword param, while nsIPrompt is "inout"
       // Initialize with user's previous preference for this site
       if (this.msiEditorElement.mgPublishData)
@@ -2307,7 +2309,7 @@ function msiEditorOutputProgressListener(editorElement)
       if (!promptServ)
         return false;
 
-      // Note difference with nsIPrompt::promptPassword, which has 
+      // Note difference with nsIPrompt::promptPassword, which has
       // "inout" savePassword param, while nsIAuthPrompt is just "in"
       // Also nsIAuth doesn't supply "checkBoxLabel"
       // Initialize with user's previous preference for this site
@@ -2355,8 +2357,8 @@ function msiPromptUsernameAndPassword(dlgTitle, text, savePW, userObj, pwObj, ed
         userObj.value = editorElement.mgPublishData.username;
     }
 
-    ret = promptServ.promptUsernameAndPassword(editorElement.mgProgressDialog ? editorElement.mgProgressDialog : window, 
-                                               dlgTitle, text, userObj, pwObj, 
+    ret = promptServ.promptUsernameAndPassword(editorElement.mgProgressDialog ? editorElement.mgProgressDialog : window,
+                                               dlgTitle, text, userObj, pwObj,
                                                GetString("SavePassword"), savePWObj);
     if (ret && editorElement.mgPublishData)
       msiUpdateUsernamePasswordFromPrompt(editorElement.mgPublishData, userObj.value, pwObj.value, savePWObj.value);
@@ -2449,8 +2451,8 @@ function msiUpdateUsernamePasswordFromPrompt(publishData, username, password, sa
 {
   if (!publishData)
     return;
-  
-  // Set flag to save publish data after publishing if it changed in dialog 
+
+  // Set flag to save publish data after publishing if it changed in dialog
   //  and the "SavePassword" checkbox was checked
   //  or we already had site data for this site
   // (Thus we don't automatically create a site until user brings up Publish As dialog)
@@ -2499,9 +2501,9 @@ function msiSoftSave( editor, editorElement, noTeX)
   if (!msiIsTopLevelEditor(editorElement))
     return false;
 
-  //if (!editor) 
+  //if (!editor)
   editor = msiGetEditor(editorElement);
-  
+
   var aMimeType = editor.contentsMIMEType;
   var editorDoc = editor.document;
 
@@ -2511,11 +2513,11 @@ function msiSoftSave( editor, editorElement, noTeX)
 
   // if we don't have the right editor type bail (we handle text and html)
 //  var editorType = editor.editortype;
-//  if (editorType != "text" && editorType != "html" 
+//  if (editorType != "text" && editorType != "html"
 //      && editorType != "htmlmail" && editorType != "textmail")
 //    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 //
-  
+
   //Check the my.css file to see if changes need to be written to it.
   saveCSSFileIfChanged(editorDoc);
 
@@ -2579,21 +2581,21 @@ function msiSoftSave( editor, editorElement, noTeX)
 
 function getWorkingDirectory(editorElement)
 {
-  var htmlurlstring = msiGetEditorURL(editorElement); 
+  var htmlurlstring = msiGetEditorURL(editorElement);
   if (!htmlurlstring || htmlurlstring.length == 0) return;
   var htmlurl = msiURIFromString(htmlurlstring);
   var workingDir = msiFileFromFileURL(htmlurl);
   workingDir = workingDir.parent;
   return workingDir;
 }
-    
+
 function deleteWorkingDirectory(editorElement)
 {
   var workingDir = getWorkingDirectory(editorElement);
   if (!workingDir) return;
-// we know we shouldn't delete the directory unless it really is a working directory; i.e., unless it 
+// we know we shouldn't delete the directory unless it really is a working directory; i.e., unless it
 // ends with "_work/main.xhtml"
-  var regEx = /_work$/i;  
+  var regEx = /_work$/i;
   if (regEx.test(workingDir.path))
   {
     try
@@ -2613,26 +2615,26 @@ function deleteWorkingDirectory(editorElement)
 // The original file is A.sci (a zipfile or a directory).
 // There may be a previously created file A.bak.
 //
-// If we are doing SaveAs or SaveCopy (SaveAs is alway true when SaveCopy is true), we bring up the 
-// PromptForSaveLocation dialog box. Assume the filename returned is B.sci (this can be a directory). 
-// We also assume that if B.sci exists, the user has already given permission to overwrite it. If we 
+// If we are doing SaveAs or SaveCopy (SaveAs is alway true when SaveCopy is true), we bring up the
+// PromptForSaveLocation dialog box. Assume the filename returned is B.sci (this can be a directory).
+// We also assume that if B.sci exists, the user has already given permission to overwrite it. If we
 // are doing a straight save, B=A.
-// 
+//
 // We do the following:
-// 
+//
 // Save the directory D to a zipfile or or copy it to a directory called B.tempsci.
-// 
+//
 // If successful:
 //   If A==B (a straight save), rename A.bak to A.tempbak, rename A.sci to A.bak, rename A.tempsci (which in this
 //   case is also B.tempsci, which is a copy or a zip of D) to A.sci.
-//   If all is successful, delete A.tempbak 
+//   If all is successful, delete A.tempbak
 //   We will now have A.sci, A.bak.
-// 
+//
 //   If A!=B (a save-as), delete B.bak and rename B.sci to B.bak if they exist. Rename B.tempsci to B.sci.
-// 
+//
 // If successful:
 //   Delete directory D unless we are returning to editing.
-// 
+//
 
 function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor, editorElement, fUseDirectory)
 {
@@ -2641,7 +2643,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   if (!success) {
     var saveDocStr = GetString("SaveDocument");
     var failedStr = GetString("SaveFileFailed");
-    AlertWithTitle(saveDocStr, failedStr);                                                                
+    AlertWithTitle(saveDocStr, failedStr);
     throw Components.results.NS_ERROR_UNEXPECTED;
   }
 
@@ -2676,11 +2678,11 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var isSciFile;
   var fileurl = msiURIFromString(sciurlstring);
   currentSciFile = msiFileFromFileURL(fileurl);
-  currentSciFilePath = msiPathFromFileURL(fileurl); 
-  
+  currentSciFilePath = msiPathFromFileURL(fileurl);
+
   var regEx = /_work\/main.[a-z]?html?$/i;  // BBM: localize this
   isSciFile = regEx.test(htmlurlstring);
-  if (isSciFile) 
+  if (isSciFile)
   {
     workingDir = msiFileFromFileURL(htmlurl);  // now = the path of the xhtml file in the working dir D
     workingDir = workingDir.parent;       // now = the directory D
@@ -2705,7 +2707,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         }
       }
 
-      var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editor.editortype==="html"?MSI_EXTENSION:editor.editortype, 
+      var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editor.editortype==="html"?MSI_EXTENSION:editor.editortype,
         aMimeType, sciurlstring, editorElement, fUseDirectory);
       if (dialogResult.filepickerClick === msIFilePicker.returnCancel) {
         return false;
@@ -2716,15 +2718,15 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       // jcs without .clone() this always set destLocalFile void
       destLocalFile = dialogResult.resultingLocalFile.clone();  // this is B.sci
       // update the new URL for the webshell unless we are saving a copy
-      if (!Boolean(aSaveCopy)) { 
+      if (!Boolean(aSaveCopy)) {
         doUpdateURI = true;
-      } 
+      }
     } catch (e) {
-       return false; 
+       return false;
     }
     var ioService;
     try {
-      // if somehow we didn't get a local file but we did get a uri, 
+      // if somehow we didn't get a local file but we did get a uri,
       // attempt to create the localfile if it's a "file" url. This may be a directory.
       var docURI;
 
@@ -2732,7 +2734,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       {
         ioService = msiGetIOService();
         docURI = ioService.newURI(urlstring, editor.documentCharacterSet, null);
-    
+
         if (docURI.schemeIs("file"))
         {
           var fileHandler = msiGetFileProtocolHandler();
@@ -2752,16 +2754,16 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
     leafname = tempdir.leafName;
-    destLocalFile = tempdir.clone(); 
-    
+    destLocalFile = tempdir.clone();
+
   }
   if (/\.sci$/i.test(leafname))
-  {  
+  {
     leafname = leafname.slice(0, leafname.lastIndexOf(".")); // trim off extension
   }
-  
+
   var tempfile;
-  if (isSciFile) 
+  if (isSciFile)
   {
     if (fUseDirectory)
     {
@@ -2783,7 +2785,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         if (tempfile.exists()) {tempfile.moveTo(null, leafname+".bak");}
           // rename A.tempsci to A.sci
         destDir.moveTo(null, leafname+".sci");
-//   If all is successful, delete A.tempbak 
+//   If all is successful, delete A.tempbak
 //   We will now have A.sci, A.bak.
         tempfile = tempfile.parent;
         tempfile.append(leafname+".tempbak");
@@ -2804,13 +2806,13 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       }
 
 //
-//   If A!=B (a save-as), delete B.bak if it exists, rename B.sci to B.bak if it exists. 
+//   If A!=B (a save-as), delete B.bak if it exists, rename B.sci to B.bak if it exists.
 //   Rename B.tempsci to B.sci.
     } else
     {
       var zipfile = destLocalFile.parent.clone();
-      
-      zipfile.append(leafname+".tempsci"); 
+
+      zipfile.append(leafname+".tempsci");
       var compression;
       var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
       try
@@ -2826,7 +2828,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         if (zipfile.exists()) {zipfile.remove(0);}
         zipfile.create(0, 0755);
         zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
-        zipDirectory(zw, "", workingDir, compression); 
+        zipDirectory(zw, "", workingDir, compression);
         zw.close();
       }
       catch(ex3) {
@@ -2834,11 +2836,11 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       }
 //   If successful, i.e., if we got this far:
 //   If A==B (a straight save), rename A.bak to A.tempbak, rename A.sci to A.bak, rename A.tempsci to A.sci.
-//   If all is successful, delete A.tempbak 
+//   If all is successful, delete A.tempbak
 //   We will now have A.sci, A.bak.
 //   Now delete directory D.
 //
-//   If A!=B (a save-as), delete B.bak if it exists, rename B.sci to B.bak if it exists. 
+//   If A!=B (a save-as), delete B.bak if it exists, rename B.sci to B.bak if it exists.
 //   Rename B.tempsci to B.sci.
 //   Delete directory D if not going back to edit.
 //
@@ -2888,7 +2890,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
           }
           catch(e)
           {
-            AlertWithTitle("Unable to remove working directory", "Cannot remove working directory. Does another program have one of the directory's files open?", window);          
+            AlertWithTitle("Unable to remove working directory", "Cannot remove working directory. Does another program have one of the directory's files open?", window);
             count++;
           }
         }
@@ -2899,26 +2901,34 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       // if the editorElement did have a shell file, it doesn't any longer
       editorElement.isShellFile = false;
       editorElement.fileLeafName = destLocalFile.leafName;
+      var newURI;
+      var newWorkingDir;
+      var newMainfile;
       if (doUpdateURI)
       {
-
         // the name has changed, but we want to continue to work in the working
-        // directory, so change its name
-        var newWorkingDir = workingDir.clone();
-        newWorkingDir.append(leafname+"_work");
-
-        if (newWorkingDir.exists())
-           newWorkingDir.remove(true); // recursive delete
-        
-
-        workingDir.moveTo(null, leafname+"_work");
-         
-        var newMainfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        newMainfile.initWithPath(destLocalFile.path.replace(".sci","")+"_work");
+        // directory, so change its name if its location hasn't changed, or move it
+        // to its new location otherwise.
+        if (destLocalFile.parent.path === workingDir.parent.path) // location not changing
+        {
+          newWorkingDir = workingDir.parent.clone();
+          newWorkingDir.append(leafname+"_work");
+          if (newWorkingDir.exists())
+             newWorkingDir.remove(true); // recursive delete
+          workingDir.moveTo(null, leafname+"_work");
+          newMainfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+          newMainfile.initWithPath(destLocalFile.path.replace(".sci","")+"_work");
+        }
+        else
+        {
+          workingDir.moveTo(destLocalFile.parent, leafname + "_work");
+          newWorkingDir = destLocalFile.parent.clone();
+          newWorkingDir.append(leafname + "_work");
+          newMainfile = newWorkingDir.clone();
+        }
         newMainfile.append("main.xhtml");
         //Create a new uri from nsILocalFile
-        var newURI = msiGetFileProtocolHandler().newFileURI(newMainfile);
-
+        newURI = msiGetFileProtocolHandler().newFileURI(newMainfile);
         // We need to set new document uri before notifying listeners
         SetDocumentURI(newURI);
         document.getElementById("filename").value = leafname;
@@ -2933,7 +2943,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     currentSciFile.copyTo(destDir, destLocalFile.leafName);
     // this still needs work: In the SaveAs and SaveCopyAs cases, we don't want to change the orginal file. We need to copy before
     // we do the SoftSave.
-    
+
 
   }
 
@@ -3011,7 +3021,7 @@ function msiPublish(publishData, editorElement)
     dump(" * gPublishData.docURI.spec w/o pass="+StripPassword(editorElement.mgPublishData.docURI.spec)+", PublishOtherFiles="+editorElement.mgPublishData.publishOtherFiles+"\n");
   }
 
-  // XXX Missing username will make FTP fail 
+  // XXX Missing username will make FTP fail
   // and it won't call us for prompt dialog (bug 132320)
   // (It does prompt if just password is missing)
   // So we should do the prompt ourselves before trying to publish
@@ -3036,7 +3046,7 @@ function msiPublish(publishData, editorElement)
   }
 
   try {
-    // We launch dialog as a dependent 
+    // We launch dialog as a dependent
     // Don't allow editing document!
     msiSetDocumentEditable(false, editorElement);
 
@@ -3067,13 +3077,13 @@ function msiStartPublishing(editorElement)
     {
       try {
         // (256 = Output encoded entities)
-        editorElement.mgRestoreDocumentSource = 
+        editorElement.mgRestoreDocumentSource =
           editor.outputToString(editor.contentsMIMEType, 256);
       } catch (e) {}
     }
 
-    OutputFileWithPersistAPI(editor.document, 
-                             editorElement.mgPublishData.docURI, editorElement.mgPublishData.otherFilesURI, 
+    OutputFileWithPersistAPI(editor.document,
+                             editorElement.mgPublishData.docURI, editorElement.mgPublishData.otherFilesURI,
                              editor.contentsMIMEType);
     return editorElement.mPersistObj;
   }
@@ -3087,12 +3097,12 @@ function msiCancelPublishing(editorElement)
     editorElement.mgProgressDialog.SetProgressStatusCancel();
   } catch (e) {}
 
-  // If canceling publishing do not do any commands after this    
+  // If canceling publishing do not do any commands after this
   editorElement.mgCommandAfterPublishing = null;
 
   if (editorElement.mgProgressDialog)
   {
-    // Close Progress dialog 
+    // Close Progress dialog
     // (this will call FinishPublishing())
     editorElement.mgProgressDialog.CloseDialog();
   }
@@ -3126,7 +3136,7 @@ function msiCreateURIFromPublishData(publishData, doDocUri, editorElement)
   try {
     var spec = publishData.publishUrl;
     if (doDocUri)
-      spec += FormatDirForPublishing(publishData.docDir) + publishData.filename; 
+      spec += FormatDirForPublishing(publishData.docDir) + publishData.filename;
     else
       spec += FormatDirForPublishing(publishData.otherDir);
 
@@ -3185,14 +3195,14 @@ function msiSetDocumentEditable(isDocEditable, editorElement)
   {
     try {
       var flags = editor.flags;
-      editor.flags = isDocEditable ?  
+      editor.flags = isDocEditable ?
             flags &= ~nsIPlaintextEditor.eEditorReadonlyMask :
             flags | nsIPlaintextEditor.eEditorReadonlyMask;
     } catch(e) {}
 
     // update all commands
     window.updateCommands("create");
-  }  
+  }
 }
 
 // ****** end of save / publish **********//
@@ -3266,7 +3276,7 @@ var msiPublishSettingsCommand =
         publishData.msiEditorParent = editorElement;
         window.ok = false;
         var oldTitle = msiGetDocumentTitle(editorElement);
-        window.openDialog("chrome://editor/content/EditorPublish.xul","publish", 
+        window.openDialog("chrome://editor/content/EditorPublish.xul","publish",
                           "chrome,close,titlebar,modal", "", "", publishData);
         if (msiGetDocumentTitle(editorElement) != oldTitle)
           UpdateWindowTitle();
@@ -3359,7 +3369,7 @@ var msiCloseCommand =
       return false;
     return true;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -3383,7 +3393,7 @@ var msiCleanupCommand =
       return false;
     return true;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -3391,11 +3401,11 @@ var msiCleanupCommand =
   {
     try {
       var editorElement = msiGetActiveEditorElement();
-      var editor = msiGetEditor(editorElement);    
+      var editor = msiGetEditor(editorElement);
       var editorDoc = editor.document;
       var param =new Object();
       param.cleanupOptions=[];
-      window.openDialog( "chrome://prince/content/cleanup.xul", "cleanup", "chrome,resizable=yes, modal,titlebar", param);    
+      window.openDialog( "chrome://prince/content/cleanup.xul", "cleanup", "chrome,resizable=yes, modal,titlebar", param);
       cleanupWorkDirectory(editorDoc, getWorkingDirectory(editorElement), param.cleanupOptions );
     }
     catch (e) {
@@ -3433,7 +3443,7 @@ backupfiles */
     texOptions.forEach(function(val){cleanupOptions.splice(cleanupOptions.indexOf(val),1);});
 //    alert(cleanupOptions.join());
   }
-  else    
+  else
   {
     cleanupOptions.forEach(function(val){cleanup(directory, document, val);})
   }
@@ -3484,8 +3494,8 @@ function deleteFilesByPattern(directory, regexp, complement)
     while (fileenum.hasMoreElements())
     {
       file = fileenum.getNext();
-      file.QueryInterface(Components.interfaces.nsIFile);      
-      if (regexp.test(file.leafName)) 
+      file.QueryInterface(Components.interfaces.nsIFile);
+      if (regexp.test(file.leafName))
       {
         if (!complement) file.remove(false);
       }
@@ -3530,7 +3540,7 @@ function deleteOrphanedGraphics( basedirectory, document)
           str = str.replace(/\.[a-zA-Z0-9]*$/,'')
           stringlist[str]=1;
         }
-      }      
+      }
     }
   }
   var dirlist = ["tgraphics","cgraphics","graphics"];
@@ -3546,12 +3556,12 @@ function deleteOrphanedGraphics( basedirectory, document)
       while (fileenum && fileenum.hasMoreElements())
       {
         file = fileenum.getNext();
-        file.QueryInterface(Components.interfaces.nsIFile);      
+        file.QueryInterface(Components.interfaces.nsIFile);
         str = file.leafName;
         str = str.replace(regexp2,'');
         if (!stringlist[str])  // the name wasn't found in the document
           if (file.exists()) file.remove(false);
-      }  
+      }
     }
   }
 }
@@ -3587,7 +3597,7 @@ function deleteOrphanedPlots( basedirectory, document)
           str = str.replace(/\.[a-zA-Z0-9]*$/,'')
           stringlist[str]=1;
         }
-      }      
+      }
     }
   }
   var plotsdir = basedirectory.clone();
@@ -3597,12 +3607,12 @@ function deleteOrphanedPlots( basedirectory, document)
   while (fileenum.hasMoreElements())
   {
     file = fileenum.getNext();
-    file.QueryInterface(Components.interfaces.nsIFile);      
+    file.QueryInterface(Components.interfaces.nsIFile);
     str = file.leafName;
     str.replace(/.[xvcz]*$/,'');
     if (!stringlist[str])  // the name wasn't found in the document
       if (file.exists()) file.remove(false);
-  }  
+  }
 }
 
 function msiCloseWindow(theWindow)
@@ -3770,7 +3780,7 @@ var msiDirectPrintCommand =
 
   doCommand: function(aCommand)
   {
-    try 
+    try
     {
       var editorElement = msiGetActiveEditorElement();
       var doc = editorElement.contentDocument;
@@ -3794,15 +3804,15 @@ var msiPrintCommand =
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)
   {
-    
+
   },
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
   },
   doCommand: function(aCommand)
   {
     try {
-      printTeX(aCommand=='cmd_printPdf',false);  
+      printTeX(aCommand=='cmd_printPdf',false);
     }
     catch (e) {
       finalThrow(cmdFailString('printPdf'), e.message);
@@ -3820,15 +3830,15 @@ var msiPreviewCommand =
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)
   {
-    
+
   },
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
   },
   doCommand: function(aCommand)
   {
     try {
-      printTeX(aCommand=='cmd_previewPdf',true);  
+      printTeX(aCommand=='cmd_previewPdf',true);
     }
     catch (e) {
       finalThrow(cmdFailString('previewPDF'), e.message);
@@ -3841,16 +3851,16 @@ var msiCompileCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return true;  // BBM todo: doesn't this depend on the save state?   
+    return true;  // BBM todo: doesn't this depend on the save state?
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)
   {
-    
+
   },
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    
+
   },
   doCommand: function(aCommand)
   {
@@ -3903,9 +3913,9 @@ var msiOneShotGreek =
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)
   {
-    
+
   },
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
   },
   doCommand: function(aCommand)
@@ -3914,7 +3924,7 @@ var msiOneShotGreek =
       var editorElement = msiGetActiveEditorElement();
       var editor = msiGetEditor(editorElement);
       var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
-      htmleditor.setOneShotTranslation("greek");  
+      htmleditor.setOneShotTranslation("greek");
     }
     catch (e) {
       finalThrow(cmdFailString('oneshotgreek'), e.message);
@@ -3932,9 +3942,9 @@ var msiOneShotSymbol =
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)
   {
-    
+
   },
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
   },
   doCommand: function(aCommand)
@@ -3943,7 +3953,7 @@ var msiOneShotSymbol =
       var editorElement = msiGetActiveEditorElement();
       var editor = msiGetEditor(editorElement);
       var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
-      htmleditor.setOneShotTranslation("symbol");  
+      htmleditor.setOneShotTranslation("symbol");
     }
     catch (e) {
       finalThrow(cmdFailString('oneshotsymbol'), e.message);
@@ -3965,7 +3975,7 @@ var msiCopyTeX =
   getCommandStateParams: function(aCommand, aParams, aRefCon)
   {
   },
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
   },
   doCommand: function(aCommand)
@@ -3984,8 +3994,8 @@ var msiCopyTeX =
   	  var intermediateText;
   	  intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
   	  var output = xmlFragToTeX(intermediateText);
-  		const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].  
-  		getService(Components.interfaces.nsIClipboardHelper);  
+  		const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
+  		getService(Components.interfaces.nsIClipboardHelper);
   		gClipboardHelper.copyString(output);
 		}
     catch (e) {
@@ -4004,7 +4014,7 @@ var msiFontColor =
   getCommandStateParams: function(aCommand, aParams, aRefCon)
   {
   },
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
   },
   doCommand: function(aCommand)
@@ -4013,7 +4023,7 @@ var msiFontColor =
       var editorElement = msiGetActiveEditorElement();
       var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
 
-      window.openDialog("chrome://prince/content/color.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
+      window.openDialog("chrome://prince/content/color.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal",
       "", colorObj, null);
 
       // User canceled the dialog
@@ -4022,7 +4032,7 @@ var msiFontColor =
   	  else {
   			msiGetEditor(editorElement).incrementModificationCount(1);
   		}
-      
+
       msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
       var theWindow = msiGetTopLevelWindow();
       theWindow.msiRequirePackage(editorElement, "xcolor", null);
@@ -4044,7 +4054,7 @@ var nsQuitCommand =
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {}, 
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand)
   {
@@ -4053,7 +4063,7 @@ var nsQuitCommand =
 };
 
 //-----------------------------------------------------------------------------------
-var msiAutoSubDlgCommand = 
+var msiAutoSubDlgCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -4153,7 +4163,7 @@ var msiFindAgainCommand =
       findInst.findBackwards = findService.findBackwards ^ findPrev;
       findInst.findNext();
       // reset to what it was in dialog, otherwise dialog setting can get reversed
-      findInst.findBackwards = findService.findBackwards; 
+      findInst.findBackwards = findService.findBackwards;
     }
     catch (e) {
       finalThrow(cmdFailString('findagain'), e.message);
@@ -4191,7 +4201,7 @@ var msiSpellingCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(editorElement) && 
+    return (msiIsDocumentEditable(editorElement) &&
               !msiIsInHTMLSourceMode(editorElement) && msiIsSpellCheckerInstalled());
   },
 
@@ -4338,7 +4348,7 @@ var msiFormCommand =
         theFormElement = editor.getElementOrParentByTagName(kTagName, editor.selection.anchorNode);
       if (!theFormElement)
         theFormElement = editor.getElementOrParentByTagName(kTagName, editor.selection.focusNode);
-    } 
+    }
     catch (e) {
       finalThrow(cmdFailString('getreviseobject'), e.message);
     }
@@ -4357,7 +4367,7 @@ var msiReviseFormCommand =
     if (formNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseFormCommand, trying to revise a form, dialog not yet implemented.");
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://editor/content/msiEdFormProps.xul", "_blank", "chrome,close,titlebar,dependent", 
+//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://editor/content/msiEdFormProps.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                                     editorElement, "cmd_reviseForm", formNode);
     }
     editorElement.focus();
@@ -4596,7 +4606,7 @@ var msiReviseButtonCommand =
 //    try {
 //      var editor = msiGetEditor(editorElement);
 //      var labelElement = this.msiGetReviseObject(editorElement);
-////      // Find selected label or if start/end of selection is in label 
+////      // Find selected label or if start/end of selection is in label
 //      if (labelElement) {
 //        // We only open the dialog for an existing label
 //        var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdLabelProps.xul", "_blank", "chrome,close,titlebar,dependent",
@@ -4617,7 +4627,7 @@ var msiReviseButtonCommand =
 //    const kTagName = "label";
 //    var editor = msiGetEditor(editorElement);
 //    try {
-//      // Find selected label or if start/end of selection is in label 
+//      // Find selected label or if start/end of selection is in label
 //      labelElement = editor.getSelectedElement(kTagName);
 //      if (!labelElement)
 //        labelElement = editor.getElementOrParentByTagName(kTagName, editor.selection.anchorNode);
@@ -4876,7 +4886,7 @@ var msiHLineCommand =
     var editorElement = msiGetActiveEditorElement();
     var tagName = "hr";
     var editor = msiGetEditor(editorElement);
-      
+
     var hLine;
     try {
       hLine = editor.getSelectedElement(tagName);
@@ -4888,7 +4898,7 @@ var msiHLineCommand =
       window.openDialog("chrome://editor/content/EdHLineProps.xul", "hlineprops", "chrome,close,titlebar,modal,resizable");
 			msiGetEditor(editorElement).incrementModificationCount(1);
       editorElement.focus();
-    } 
+    }
     else
     {
       try {
@@ -4903,7 +4913,7 @@ var msiHLineCommand =
           editor.setAttributeOrEquivalent(hLine, "align", "right", true);
 
         //Note: Default is center (don't write attribute)
-  
+
         var width = prefs.getIntPref("editor.hrule.width");
         var percent = prefs.getBoolPref("editor.hrule.width_percent");
         if (percent)
@@ -4943,8 +4953,8 @@ var msiLinkCommand =
 
   doCommand: function(aCommand, dummy)
   {
-    // If selected element is an image, launch that dialog instead 
-    // since last tab panel handles 
+    // If selected element is an image, launch that dialog instead
+    // since last tab panel handles
     var editorElement = msiGetActiveEditorElement();
     var element = msiGetObjectDataForProperties(editorElement);
     if (element && msiGetBaseNodeName(element) == "img")
@@ -5396,7 +5406,7 @@ function msiInsertStockSpace(spacename)
 {
 	var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  if (spacename === "normalSpace") 
+  if (spacename === "normalSpace")
 	{
 		editor.insertText(" ");
 		return;
@@ -5411,7 +5421,7 @@ function msiInsertStockSpace(spacename)
   node.setAttribute('type',spacename);
   var dimsStr = msiSpaceUtils.getHSpaceDims(spacename);
   if (dimsStr)
-    node.setAttribute('dim',dimsStr);	
+    node.setAttribute('dim',dimsStr);
   contentStr = msiSpaceUtils.getHSpaceDisplayableContent(spacename);
   if (contentStr)
     node.textContent=contentStr;
@@ -5423,7 +5433,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
   var editor = msiGetEditor(editorElement);
   var dimsStr, contentStr;
   if (dialogData.spaceType == "normalSpace") editor.insertText(" ");
-//  var dimensionsFromSpaceType = 
+//  var dimensionsFromSpaceType =
 //  {
 ////    requiredSpace:
 ////    nonBreakingSpace:
@@ -5436,7 +5446,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 //    zeroSpace:           "0.0em",
 //    noIndent:            "0.0em"
 //  };
-//  var contentFromSpaceType = 
+//  var contentFromSpaceType =
 //  {
 //    requiredSpace:     "&#x205f;",  //MEDIUM MATHEMATICAL SPACE in Unicode?
 //    nonBreakingSpace:  "&#x00a0;",
@@ -5449,13 +5459,13 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 ////    negativeThinSpace:
 ////    noIndent:
 //  };
-//  var specialShowInvisibleChars = 
+//  var specialShowInvisibleChars =
 //  {
 //    noIndent:          "&#x2190;"  //left arrow
 //  };
-  
+
  // editor.deleteSelection(1);
-  var parent = editor.selection.focusNode;  
+  var parent = editor.selection.focusNode;
   var offset = editor.selection.focusOffset;
   var node = null;
 
@@ -5563,7 +5573,7 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
     editor.endTransaction();
     return;
   }
-  
+
   //If we get here, bIsText is false, so we want an <hspace> object. Do we already have one? Otherwise create one?
   var ourNode = null;
   var bNeedInsert = false;
@@ -5663,7 +5673,7 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
 
     }
   }
-  
+
   logStr = "After the spaceType different clause; bNeedInsert is [";
   if (bNeedInsert)
     logStr += "true].\n";
@@ -5713,7 +5723,7 @@ var msiReviseVerticalSpacesCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    try 
+    try
     {
       var editorElement = msiGetActiveEditorElement();
       var vSpaceReviseData = msiGetPropertiesDataFromCommandParams(aParams);
@@ -5875,7 +5885,7 @@ function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
         editor.setAttribute(ourNode, "style", styleStr);
     }
   }
-  
+
   editor.endTransaction();
 }
 
@@ -6073,7 +6083,7 @@ var msiReviseBreaksCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    try 
+    try
     {
       var editorElement = msiGetActiveEditorElement();
       var breakReviseData = msiGetPropertiesDataFromCommandParams(aParams);
@@ -6110,7 +6120,7 @@ function msiInsertBreaks(dialogData, editorElement)
 //    lineBreak:              "<br xmlns=\"" + xhtmlns + "\"></br>",
 //    newLine:                "<br xmlns=\"" + xhtmlns + "\"></br>"
 //  };
-//  var alternateContentFromBreakType = 
+//  var alternateContentFromBreakType =
 //
 //  {
 //    allowBreak:             "|",
@@ -6122,14 +6132,14 @@ function msiInsertBreaks(dialogData, editorElement)
 //    newLine:                "&#x21b5;"
 //  };
 
-            
+
   var contentStr;
 	editor.beginTransaction();
   var node = editor.document.createElement('msibreak',true);
   editor.insertElementAtSelection(node,true);
   switch(dialogData.breakType) {
     case "lineBreak":
-    case "newLine": 
+    case "newLine":
       editor.createNode('br',node,0);
       break;
     case "newPage":
@@ -6148,7 +6158,7 @@ function msiInsertBreaks(dialogData, editorElement)
     node.setAttribute('dim', dimStr);
     var vAlignStr = String(-(dialogData.customBreakData.sizeData.size)) + dialogData.customBreakData.sizeData.units;
     node.setAttribute('style','vertical-align: '+vAlignStr+'; height: '+ dimStr);
-    if (!contentStr)                             
+    if (!contentStr)
       contentStr = "";
     node.textContent = contentStr;
   }
@@ -6249,7 +6259,7 @@ function msiReviseBreaks(reviseData, dialogData, editorElement)
       }
     }
   }
-  
+
   editor.endTransaction();
 }
 
@@ -6345,7 +6355,7 @@ var msiInsertSubstructureCommand =
       var currentStruct = editor.tagListManager.currentValue("structtag", atom);
       var nextStruct = editor.tagListManager.getStringPropertyForTag(currentStruct, atom, "prefsub");
       msiDoStatefulCommand('cmd_structtag',nextStruct);
-    } 
+    }
     catch (e) {
       finalThrow(cmdFailString('insertsubstructure'), e.message);
     }
@@ -6454,7 +6464,7 @@ var msiPagePropertiesCommand =
     var oldTitle = msiGetDocumentTitle(editorElement);
     window.openDialog("chrome://editor/content/EdPageProps.xul","pageprops", "chrome,close,titlebar,modal", "");
 
-    // Update main window title and 
+    // Update main window title and
     // recent menu data in prefs if doc title changed
     if (msiGetDocumentTitle(editorElement) != oldTitle && ("UpdateWindowTitle" in window))
       window.UpdateWindowTitle();
@@ -6465,7 +6475,7 @@ var msiPagePropertiesCommand =
 
 
 //-----------------------------------------------------------------------------------
-var msiDocumentInfoCommand = 
+var msiDocumentInfoCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -6480,7 +6490,7 @@ var msiDocumentInfoCommand =
 
   doCommand: function(aCommand)
   {
-    try 
+    try
     {
       // Launch Document Info dialog
       var editorElement = msiGetTopLevelEditorElement();
@@ -6573,7 +6583,7 @@ function msiDocumentInfo(editorElement)
       case "address":
         return NodeFilter.FILTER_ACCEPT;
       break;
-      
+
       default:
         return NodeFilter.FILTER_SKIP;
       break;
@@ -6752,7 +6762,7 @@ function msiDocumentInfo(editorElement)
     {
       for (var currNode = treeWalker.nextNode(); currNode != null; )
       {
-        var objParent = null; 
+        var objParent = null;
         var objName = null;
         var theName = currNode.localName;
         if (!theName || !theName.length)
@@ -7045,7 +7055,7 @@ function msiDocumentInfo(editorElement)
         contentStr = contentStr.replace("&dblquote;", "\\\"");
         contentStr = contentStr.replace("&singlequote;", "\\'");
       }
-    }  
+    }
     var commentStr = "";
 
     switch(theType)
@@ -7098,7 +7108,7 @@ function msiDocumentInfo(editorElement)
     var tciData = theData.match(this.tcidataRegExp);
     //NOTE! In JavaScript String.match(regExp), the first thing returned is the full matching expression; capturing-parentheses
     //  matches are returned in subsequent array members. So we're after array[1] in each case...
-    if (tciData && (tciData.length > 1))  
+    if (tciData && (tciData.length > 1))
     {
       var metaName = tciData[1].match(this.fullNameSyntax);
       if (!metaName || (metaName.length == 0))
@@ -7585,7 +7595,7 @@ var msiDocumentInfoBase =
   printShowInvisiblesFlag:                 1,
   printShowMatrixLinesFlag:                2,
   printShowInputBoxesFlag:                 4,
-  printShowIndexFieldsFlag:                8,  
+  printShowIndexFieldsFlag:                8,
   printShowMarkerFieldsFlag:          0x0010,
   printUseViewSettingsFlag:           0x0020,
   printUseViewOverridesFlag:          0x0040,
@@ -7602,7 +7612,7 @@ msiDocumentInfo.prototype = msiDocumentInfoBase;
 //-----------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------
-var msiDocumentStyleCommand = 
+var msiDocumentStyleCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -7623,7 +7633,7 @@ var msiDocumentStyleCommand =
       var editorElement = msiGetTopLevelEditorElement();
       var documentStyle = {};
       documentStyle.edElement = editorElement;
-      msiOpenModelessDialog("chrome://prince/content/DocumentStyle.xul", "_blank", 
+      msiOpenModelessDialog("chrome://prince/content/DocumentStyle.xul", "_blank",
                                           "chrome,close,titlebar,dependent, resizable",
                                           editorElement, "cmd_documentInfo", this, documentStyle);
       editorElement.contentWindow.focus();
@@ -7687,7 +7697,7 @@ var msiNoteCommand =
     {
       var editorElement = msiGetActiveEditorElement();
       //temporary
-      // need to get current note if it exists -- if none, initialize as follows 
+      // need to get current note if it exists -- if none, initialize as follows
       msiNote(null, editorElement);
     }
     catch (e) {
@@ -7714,7 +7724,7 @@ var msiFootnoteCommand =
     {
       var editorElement = msiGetActiveEditorElement();
       //temporary
-      // need to get current note if it exists -- if none, initialize as follows 
+      // need to get current note if it exists -- if none, initialize as follows
       msiNote(null, editorElement, 'footnote');
     }
     catch (e) {
@@ -7857,7 +7867,7 @@ var msiFrameCommand =
     {
       var editorElement = msiGetActiveEditorElement();
       //temporary
-      // need to get current note if it exists -- if none, initialize as follows 
+      // need to get current note if it exists -- if none, initialize as follows
       msiFrame(editorElement, null, null);
     }
     catch (e) {
@@ -7891,7 +7901,7 @@ var msiObjectPropertiesCommand =
   {
     try
   {
-      // Launch Object properties for appropriate selected element 
+      // Launch Object properties for appropriate selected element
       var editorElement = msiGetActiveEditorElement();
       var nodeData = msiGetObjectDataForProperties(editorElement);
       if (!nodeData) return;
@@ -8223,7 +8233,7 @@ var msiSmileyCommand =
 
       //just for mailnews, because of the way it removes HTML
       var topWindow = msiGetTopLevelWindow();
-      var smileButMenu = topWindow.document.getElementById('smileButtonMenu');      
+      var smileButMenu = topWindow.document.getElementById('smileButtonMenu');
       if (smileButMenu.getAttribute("padwithspace"))
          smileyCode = " " + smileyCode + " ";
 
@@ -8237,10 +8247,10 @@ var msiSmileyCommand =
 
       editor.insertElementAtSelection(extElement,true);
       editorElement.contentWindow.focus();
-//      window.content.focus();   
+//      window.content.focus();
 
-    } 
-    catch (e) 
+    }
+    catch (e)
     {
       dump("Exception occured in smiley InsertElementAtSelection: " + e + ".\n");
     }
@@ -8268,7 +8278,7 @@ function msiDoAdvancedProperties(element, editorElement)
       // is to create 'roles' for elements, attach behavior to roles (as we do here)
       // and the XBL code will then assign a role to an element. Thus we have 'texbutton'
       // as a role, and currently that role is played by texb tags, but any other tag
-      // could play this role as well. 
+      // could play this role as well.
         try {
           dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,dependent");
 					msiGetEditor(editorElement).incrementModificationCount(1);
@@ -8313,7 +8323,7 @@ function msiDoAdvancedProperties(element, editorElement)
           { dump(e); }
         }
       }
-    }      
+    }
     else
     {
       dlgParentWindow.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "advedit", "chrome,close,titlebar,modal,resizable=yes", "", element);
@@ -8367,8 +8377,8 @@ var msiColorPropertiesCommand =
     try
     {
       var theWindow = msiGetWindowContainingEditor(editorElement);
-      theWindow.openDialog("chrome://editor/content/EdColorProps.xul","colorprops", "chrome,close,resizable,titlebar,modal", ""); 
-//      UpdateDefaultColors(); 
+      theWindow.openDialog("chrome://editor/content/EdColorProps.xul","colorprops", "chrome,close,resizable,titlebar,modal", "");
+//      UpdateDefaultColors();
 			msiGetEditor(editorElement).incrementModificationCount(1);
       msiUpdateDefaultColors(editorElement);
       editorElement.contentWindow.focus();
@@ -8536,7 +8546,7 @@ var msiPreviewModeCommand =
 };
 
 ////-----Matrix commands
-var msiSelectMatrixCommand = 
+var msiSelectMatrixCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8563,7 +8573,7 @@ var msiSelectMatrixCommand =
   }
 };
 
-var msiSelectMatrixRow = 
+var msiSelectMatrixRow =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8580,7 +8590,7 @@ var msiSelectMatrixRow =
       alert("Implement me!");
   }
 };
-var msiSelectMatrixColumn = 
+var msiSelectMatrixColumn =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8597,7 +8607,7 @@ var msiSelectMatrixColumn =
       alert("Implement me!");
   }
 };
-var msiSelectMatrixCell = 
+var msiSelectMatrixCell =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8614,7 +8624,7 @@ var msiSelectMatrixCell =
       alert("Implement me!");
   }
 };
-var msiSelectAllMatrixCells = 
+var msiSelectAllMatrixCells =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8631,7 +8641,7 @@ var msiSelectAllMatrixCells =
       alert("Implement me!");
   }
 };
-var msiInsertMatrix = 
+var msiInsertMatrix =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8648,7 +8658,7 @@ var msiInsertMatrix =
       alert("Implement me!");
   }
 };
-var msiInsertMatrixRowAbove = 
+var msiInsertMatrixRowAbove =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8665,7 +8675,7 @@ var msiInsertMatrixRowAbove =
       alert("Implement me!");
   }
 };
-var msiInsertMatrixRowBelow = 
+var msiInsertMatrixRowBelow =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8682,7 +8692,7 @@ var msiInsertMatrixRowBelow =
       alert("Implement me!");
   }
 };
-var msiInsertMatrixColumnBefore = 
+var msiInsertMatrixColumnBefore =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8699,7 +8709,7 @@ var msiInsertMatrixColumnBefore =
       alert("Implement me!");
   }
 };
-var msiInsertMatrixColumnAfter = 
+var msiInsertMatrixColumnAfter =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8716,7 +8726,7 @@ var msiInsertMatrixColumnAfter =
       alert("Implement me!");
   }
 };
-var msiDeleteMatrix = 
+var msiDeleteMatrix =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8733,7 +8743,7 @@ var msiDeleteMatrix =
       alert("Implement me!");
   }
 };
-var msiDeleteMatrixRow = 
+var msiDeleteMatrixRow =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8750,7 +8760,7 @@ var msiDeleteMatrixRow =
       alert("Implement me!");
   }
 };
-var msiDeleteMatrixColumn = 
+var msiDeleteMatrixColumn =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8767,7 +8777,7 @@ var msiDeleteMatrixColumn =
       alert("Implement me!");
   }
 };
-var msiDeleteMatrixCellContents = 
+var msiDeleteMatrixCellContents =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -8826,7 +8836,7 @@ var msiEditTableCommand =
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
     try
     {
@@ -9060,7 +9070,7 @@ var msiInsertTableRowBelowCommand =
 
   doCommand: function(aCommand)
   {
-    try 
+    try
     {
       var editorElement = msiGetActiveEditorElement();
       msiGetTableEditor(editorElement).insertTableRow(1, true);
@@ -9244,7 +9254,7 @@ var msiDeleteTableRowCommand =
     catch (e) {
       finalThrow(cmdFailString('deletetablerow'), e.message);
     }
-    
+
     finally { editor.endTransaction(); }
     if (editorElement)
       editorElement.contentWindow.focus();
@@ -9308,8 +9318,8 @@ var msiDeleteTableCellCommand =
   {
     try
     {
-      var editorElement = msiGetActiveEditorElement(); 
-      msiGetTableEditor(editorElement).deleteTableCell(1);   
+      var editorElement = msiGetActiveEditorElement();
+      msiGetTableEditor(editorElement).deleteTableCell(1);
       if (editorElement)
         editorElement.contentWindow.focus();
       else
@@ -9366,7 +9376,7 @@ var msiNormalizeTableCommand =
     {
       var editorElement = msiGetActiveEditorElement();
       // Use nsnull to let editor find table enclosing current selection
-      msiGetTableEditor(editorElement).normalizeTable(null);   
+      msiGetTableEditor(editorElement).normalizeTable(null);
       if (editorElement)
         editorElement.contentWindow.focus();
       else
@@ -9474,9 +9484,9 @@ var msiSplitTableCellCommand =
         cell = msiGetTableEditor(editorElement).getSelectedOrParentTableElement(tagNameObj, countObj);
       } catch (e) {}
 
-      // We need a cell parent and there's just 1 selected cell 
+      // We need a cell parent and there's just 1 selected cell
       // or selection is entirely inside 1 cell
-      if ( cell && (tagNameObj.value == "td") && 
+      if ( cell && (tagNameObj.value == "td") &&
            countObj.value <= 1 &&
            msiIsSelectionInOneCell(editorElement) )
       {
@@ -9650,7 +9660,7 @@ var msiConvertToTable =
         if ( GetParentTableCell(selection.focusNode) !=
              GetParentTableCell(selection.anchorNode) )
           return false;
-      
+
         return true;
       }
     }
@@ -9789,7 +9799,7 @@ function msiNote(currNode, editorElement, type, hidden)
     window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,dependent", data);
     // data comes back altered
 		if (!data.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
-		
+
 //      return;
   }
 
@@ -9806,7 +9816,7 @@ function msiNote(currNode, editorElement, type, hidden)
 //      currNode.parentNode.removeAttribute("type");
 //    currNode.setAttribute("type",data.type);
 //    currNode.setAttribute("hide",data.hide?"true":"false");
-//    if (data.type != 'footnote') 
+//    if (data.type != 'footnote')
 //    {
 //      currNode.setAttribute("req","ragged2e");
 //      currNode.setAttribute("opt","raggedrightboxes");
@@ -9825,16 +9835,16 @@ function msiNote(currNode, editorElement, type, hidden)
 //  }
 //  else
 //  {
-//  try 
+//  try
 //  {
-//    var namespace = new Object();                      
-//    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
+//    var namespace = new Object();
+//    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
 //    var wrapperNode = editor.document.createElement('notewrapper');
 //    if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
 //    var node = editor.document.createElement('note');
 //    node.setAttribute('type',data.type);
 //    node.setAttribute('hide','false');
-//    if (data.type != 'footnote') 
+//    if (data.type != 'footnote')
 //    {
 //      node.setAttribute("req","ragged2e");
 //      node.setAttribute("opt","raggedrightboxes");
@@ -9863,7 +9873,7 @@ function msiNote(currNode, editorElement, type, hidden)
 //    dump("msiNote: exception = '"+e.message+"'\n");
 //  }
 //  }
-//  editor.endTransaction(); 
+//  editor.endTransaction();
 }
 
 function msiInsertOrReviseNote(currNode, editorElement, data)
@@ -9882,7 +9892,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       currNode.parentNode.removeAttribute("type");
     currNode.setAttribute("type",data.type);
     currNode.setAttribute("hide",data.hide?"true":"false");
-    if (data.type != 'footnote') 
+    if (data.type != 'footnote')
     {
       currNode.setAttribute("req","ragged2e");
       currNode.setAttribute("opt","raggedrightboxes");
@@ -9901,16 +9911,16 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
   }
   else
   {
-    try 
+    try
     {
-      var namespace = new Object();    
-      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
+      var namespace = new Object();
+      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
       var wrapperNode = editor.document.createElement('notewrapper');
       if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
       var node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
       node.setAttribute('type',data.type);
       node.setAttribute('hide','false');
-      if (data.type != 'footnote') 
+      if (data.type != 'footnote')
       {
         node.setAttribute("req","ragged2e");
         node.setAttribute("opt","raggedrightboxes");
@@ -9923,7 +9933,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
           wrapperNode.setAttribute("markOrText", data.markOrText);
       }
       if (node)
-      {  
+      {
         wrapperNode.insertBefore(node, null);
         editor.insertElementAtSelection(wrapperNode, true);
         editor.setCursorInNewHTML(node);
@@ -9935,7 +9945,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       dump("msiNote: exception = '"+e.message+"'\n");
     }
   }
-  editor.endTransaction(); 
+  editor.endTransaction();
 }
 
 function msiTable(element,editorElement)
@@ -9955,7 +9965,7 @@ function msiFrame(editorElement, editor, node)
 
 
 function msiStopAnimation()
-{                
+{
   var cmdParams = newCommandParams();
   if (!cmdParams) return;
   cmdParams.setLongValue("imageAnimation", 1);
@@ -9974,7 +9984,7 @@ function msiStartAnimation()
 function callFunctionKeyDialog()
 {
   var editorElement = msiGetActiveEditorElement();
-  var theDialog = msiOpenModelessDialog("chrome://prince/content/tagkeyassignments.xul", "_blank", 
+  var theDialog = msiOpenModelessDialog("chrome://prince/content/tagkeyassignments.xul", "_blank",
       "chrome,close,titlebar,resizable,dependent",
       editorElement, "cmd_tagkeyassignments", null, null);
 }
@@ -9982,7 +9992,7 @@ function callFunctionKeyDialog()
 function callOTFontDialog()
 {
   var editorElement = msiGetActiveEditorElement();
-  var theDialog = msiOpenModelessDialog("chrome://prince/content/otfont.xul", "_blank", 
+  var theDialog = msiOpenModelessDialog("chrome://prince/content/otfont.xul", "_blank",
       "chrome,close,titlebar,resizable,dependent",
       editorElement, "cmd_otfont", null, null);
 }
@@ -9991,7 +10001,7 @@ function callOTFontDialog()
 function callFontSizeDialog()
 {
   var editorElement = msiGetActiveEditorElement();
-  var theDialog = msiOpenModelessDialog("chrome://prince/content/fontsize.xul", "_blank", 
+  var theDialog = msiOpenModelessDialog("chrome://prince/content/fontsize.xul", "_blank",
       "chrome,close,titlebar,resizable,dependent",
       editorElement, "cmd_fontsize", null, null);
 }
@@ -10002,13 +10012,13 @@ function callColorDialog()
   // TODO: get the current color if we are within a fontcolor tag
   var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
 
-  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", 
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable",
   "", colorObj);
 
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
-    
+
   var cmdParams = newCommandParams();
   if (!cmdParams) return;
 
@@ -10046,7 +10056,7 @@ var msiShowTeXLogCommand =
     }
     return result;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -10108,7 +10118,7 @@ var msiShowTeXFileCommand =
     }
     return result;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -10155,7 +10165,7 @@ var msiGoToParagraphCommand =
   {
     return true;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -10190,7 +10200,7 @@ var msiGoToMarkerCommand =
   {
     return true;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -10223,7 +10233,7 @@ var msiWordCountCommand =
   {
     return true;
   },
-  
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -10243,7 +10253,7 @@ var msiWordCountCommand =
         var wc = countWords(editor.document);
         window.openDialog('chrome://prince/content/wordcount.xul','wordcount', 'chrome,resizable,close,titlebar, dependent',wc);
         window.content.focus();
-       
+
       }
     }
     catch (e) {
@@ -10264,7 +10274,7 @@ function doReviseStructureNode(editor, origData, reviseData)
     dump("In msiComposerCommands.js, doReviseStructureNode() called without a structure node!\n");
     return;
   }
-  
+
   msiEditorEnsureElementAttribute(origData.structNode, "subdoc", reviseData.subDocName, editor);
   msiEditorEnsureElementAttribute(origData.structNode, "nonum", reviseData.noNumAttr, editor);
   var shortTitleNode = origData.shortFormNode;
@@ -10282,7 +10292,7 @@ function doReviseStructureNode(editor, origData, reviseData)
       editor.insertHTMLWithContext(reviseData.newShortForm, "", "", "", null, shortTitleNode, 0, false);
     }
   }
-  else 
+  else
   {
     if (shortTitleNode)
       editor.deleteNode(shortTitleNode);
@@ -10296,7 +10306,7 @@ function doReviseEnvironmentNode(editor, origData, reviseData)
     dump("In msiComposerCommands.js, doReviseEnvironmentNode() called without a environment node!\n");
     return;
   }
-  
+
   var leadInTypeStr = (reviseData.leadInType == "auto") ? "" : reviseData.leadInType;  //Prevent adding leadInType="auto" as an attribute
   msiEditorEnsureElementAttribute(origData.envNode, "leadInType", leadInTypeStr, editor);
   var numberingStr = "";
@@ -10325,7 +10335,7 @@ function doReviseEnvironmentNode(editor, origData, reviseData)
       editor.insertHTMLWithContext(reviseData.customLeadInStr, "", "", "", null, customLeadInNode, 0, false);
     }
   }
-  else 
+  else
   {
     if (customLeadInNode)
       editor.deleteNode(customLeadInNode);
@@ -10339,11 +10349,11 @@ function doReviseTheoremNode(editor, origData, reviseData)
     dump("In msiComposerCommands.js, doReviseTheoremNode() called without an environment node!\n");
     return;
   }
-  
+
   var tagName = msiGetBaseNodeName(origData.envNode);
   var leadInTypeStr = (reviseData.leadInType == "auto") ? "" : reviseData.leadInType;  //Prevent adding leadInType="auto" as an attribute
   msiEditorEnsureElementAttribute(origData.envNode, "leadInType", leadInTypeStr, editor);
-  
+
   var thmList;
   if ((origData.defaultNumbering != reviseData.defaultNumbering) || (origData.theoremstyle != reviseData.theoremstyle))
   {
@@ -10379,7 +10389,7 @@ function doReviseTheoremNode(editor, origData, reviseData)
       editor.insertHTMLWithContext(reviseData.customLeadInStr, "", "", "", null, customLeadInNode, 0, false);
     }
   }
-  else 
+  else
   {
     if (customLeadInNode)
       editor.deleteNode(customLeadInNode);
@@ -10400,9 +10410,9 @@ var msiZoomInCommand =
   {
     try
     {
-      ZoomManager.enlarge();   
+      ZoomManager.enlarge();
       var editorElement = msiGetActiveEditorElement();
-      msiSetSavedViewPercent(editorElement, ZoomManager.zoom * 100); 
+      msiSetSavedViewPercent(editorElement, ZoomManager.zoom * 100);
     }
     catch (e) {
       finalThrow(cmdFailString('zoomin'), e.message);
@@ -10424,9 +10434,9 @@ var msiZoomOutCommand =
   {
     try
     {
-      ZoomManager.reduce();   
+      ZoomManager.reduce();
       var editorElement = msiGetActiveEditorElement();
-      msiSetSavedViewPercent(editorElement, ZoomManager.zoom * 100); 
+      msiSetSavedViewPercent(editorElement, ZoomManager.zoom * 100);
     }
     catch (e) {
       finalThrow(cmdFailString('zoomin'), e.message);
@@ -10448,9 +10458,9 @@ var msiZoomResetCommand =
   {
     try
     {
-      ZoomManager.reset();   
+      ZoomManager.reset();
       var editorElement = msiGetActiveEditorElement();
-      msiSetSavedViewPercent(editorElement, 100); 
+      msiSetSavedViewPercent(editorElement, 100);
     }
     catch (e) {
       finalThrow(cmdFailString('zoomin'), e.message);
