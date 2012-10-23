@@ -29,7 +29,7 @@ public:
   nsString htmllistparent;
   nsString htmllist;
   nsString prefsub;
-	nsString babel; 
+  nsString babel;
   nsString mathonly;
   nsCOMPtr<nsIDOMElement> initialContents;
   PRBool   wrapper;
@@ -57,23 +57,23 @@ struct TagKey // a class castable to and from strings that supports pulling out 
 
 
 class msiTagListManager : public msiITagListManager
-{                                
+{
 public:
   NS_DECL_ISUPPORTS
   NS_DECL_MSIITAGLISTMANAGER
-  
+
   msiTagListManager();
   ~msiTagListManager();
   nsString GetStringProperty( const nsAString & str, nsIDOMElement * element);
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
   void BuildContainsListForElement(nsIDOMElement * element, const nsAString & name);
-	void BuildBabelList(nsIDOMXMLDocument * docTagInfo, TagKeyListHead ** ppBabelList);
-	PRBool ContainsListForOuterIncludesInner( const nsAString & strOuter, const nsAString & strInner );
-  
-  
+  void BuildBabelList(nsIDOMXMLDocument * docTagInfo, TagKeyListHead ** ppBabelList);
+  PRBool ContainsListForOuterIncludesInner( const nsAString & strOuter, const nsAString & strInner );
+
+
   nsCOMPtr<nsIAutoCompleteSearchStringArray> pACSSA;
-  static nsIAtom * htmlnsAtom; // an atom corresponding to  "http://www.w3.org/1999/xhtml"   
-protected:  
+  static nsIAtom * htmlnsAtom; // an atom corresponding to  "http://www.w3.org/1999/xhtml"
+protected:
   nsStringArray* mparentTags;
   nsEditor * meditor; // this is a back pointer, hence not ref counted
   PRBool mInitialized;
@@ -87,8 +87,8 @@ protected:
   TagKey mclearTextTag;
   TagKey mclearStructTag;
   TagKey mclearEnvTag;
-	TagKey mclearListTag;
-	TagKeyListHead * pBabelList; // tags that Babel or Polyglossia need to change at run time.
+  TagKey mclearListTag;
+  TagKeyListHead * pBabelList; // tags that Babel or Polyglossia need to change at run time.
   TagKeyListHead * pContainsList;
 };
 
