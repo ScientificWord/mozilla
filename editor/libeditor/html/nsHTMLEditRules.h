@@ -57,12 +57,12 @@ class nsHTMLEditor;
 struct StyleCache : public PropItem
 {
   PRBool mPresent;
-  
+
   StyleCache() : PropItem(), mPresent(PR_FALSE) {
     MOZ_COUNT_CTOR(StyleCache);
   }
 
-  StyleCache(nsIAtom *aTag, const nsAString &aAttr, const nsAString &aValue) : 
+  StyleCache(nsIAtom *aTag, const nsAString &aAttr, const nsAString &aValue) :
              PropItem(aTag, aAttr, aValue), mPresent(PR_FALSE) {
     MOZ_COUNT_CTOR(StyleCache);
   }
@@ -80,7 +80,7 @@ class nsHTMLEditRules : public nsIHTMLEditRules, public nsTextEditRules, public 
 public:
 
   NS_DECL_ISUPPORTS_INHERITED
-  
+
             nsHTMLEditRules();
   virtual   ~nsHTMLEditRules();
 
@@ -93,7 +93,7 @@ public:
   NS_IMETHOD DidDoAction(nsISelection *aSelection, nsRulesInfo *aInfo, nsresult aResult);
 
   // nsIHTMLEditRules methods
-  
+
   NS_IMETHOD GetListState(PRBool *aMixed, PRBool *aOL, PRBool *aUL, PRBool *aDL);
   NS_IMETHOD GetListItemState(PRBool *aMixed, PRBool *aLI, PRBool *aDT, PRBool *aDD);
   NS_IMETHOD GetIndentState(PRBool *aCanIndent, PRBool *aCanOutdent);
@@ -104,11 +104,14 @@ public:
                                  PRInt32 operation,
                                  nsCOMArray<nsIDOMNode>& arrayOfNodes,
                                  PRBool aDontTouchContent=PR_FALSE);
-  NS_IMETHOD InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode, 
+  NS_IMETHOD InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode,
                            const nsAString &aStructureType, nsIAtom * atomNamespace );
+//  NS_IMETHOD WillMakeVerbatim(nsISelection *aSelection,
+//                                    PRBool *aCancel,
+//                                    PRBool *aHandled);
 
   // nsIEditActionListener methods
-  
+
   NS_IMETHOD WillCreateNode(const nsAString& aTag, nsIDOMNode *aParent, PRInt32 aPosition);
   NS_IMETHOD DidCreateNode(const nsAString& aTag, nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aPosition, nsresult aResult);
   NS_IMETHOD WillInsertNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aPosition);
@@ -150,7 +153,7 @@ protected:
   nsresult DidInsert(nsISelection *aSelection, nsresult aResult);
 #endif
   nsresult WillInsertText(  PRInt32          aAction,
-                            nsISelection *aSelection, 
+                            nsISelection *aSelection,
                             PRBool          *aCancel,
                             PRBool          *aHandled,
                             const nsAString *inString,
@@ -161,13 +164,13 @@ protected:
   nsresult StandardBreakImpl(nsIDOMNode *aNode, PRInt32 aOffset, nsISelection *aSelection);
   nsresult DidInsertBreak(nsISelection *aSelection, nsresult aResult);
   nsresult SplitMailCites(nsISelection *aSelection, PRBool aPlaintext, PRBool *aHandled);
-  virtual nsresult WillDeleteSelection(nsISelection *aSelection, nsIEditor::EDirection aAction, 
+  virtual nsresult WillDeleteSelection(nsISelection *aSelection, nsIEditor::EDirection aAction,
                                PRBool *aCancel, PRBool *aHandled);
-  nsresult DidDeleteSelection(nsISelection *aSelection, 
-                              nsIEditor::EDirection aDir, 
+  nsresult DidDeleteSelection(nsISelection *aSelection,
+                              nsIEditor::EDirection aDir,
                               nsresult aResult);
   nsresult InsertBRIfNeeded(nsISelection *aSelection);
-  nsresult GetGoodSelPointForNode(nsIDOMNode *aNode, nsIEditor::EDirection aAction, 
+  nsresult GetGoodSelPointForNode(nsIDOMNode *aNode, nsIEditor::EDirection aAction,
                                   nsCOMPtr<nsIDOMNode> *outSelNode, PRInt32 *outSelOffset);
   nsresult JoinBlocks(nsCOMPtr<nsIDOMNode> *aLeftBlock, nsCOMPtr<nsIDOMNode> *aRightBlock, PRBool *aCanceled);
   nsresult MoveBlock(nsIDOMNode *aLeft, nsIDOMNode *aRight, PRInt32 aLeftOffset, PRInt32 aRightOffset);
@@ -203,40 +206,40 @@ protected:
   nsresult ReturnInHeader(nsISelection *aSelection, nsIDOMNode *aHeader, nsIDOMNode *aTextNode, PRInt32 aOffset);
   nsresult ReturnInParagraph(nsISelection *aSelection, nsIDOMNode *aHeader, nsIDOMNode *aTextNode, PRInt32 aOffset, PRBool *aCancel, PRBool *aHandled);
   nsresult SplitParagraph(nsIDOMNode *aPara,
-                          nsIDOMNode *aBRNode, 
+                          nsIDOMNode *aBRNode,
                           nsISelection *aSelection,
-                          nsCOMPtr<nsIDOMNode> *aSelNode, 
+                          nsCOMPtr<nsIDOMNode> *aSelNode,
                           PRInt32 *aOffset);
   nsresult ReturnInListItem(nsISelection *aSelection, nsIDOMNode *aHeader, nsIDOMNode *aTextNode, PRInt32 aOffset);
   nsresult AfterEditInner(PRInt32 action, nsIEditor::EDirection aDirection);
-  nsresult RemovePartOfBlock(nsIDOMNode *aBlock, 
-                             nsIDOMNode *aStartChild, 
+  nsresult RemovePartOfBlock(nsIDOMNode *aBlock,
+                             nsIDOMNode *aStartChild,
                              nsIDOMNode *aEndChild,
                              nsCOMPtr<nsIDOMNode> *aLeftNode = 0,
                              nsCOMPtr<nsIDOMNode> *aRightNode = 0);
-  nsresult SplitBlock(nsIDOMNode *aBlock, 
-                      nsIDOMNode *aStartChild, 
+  nsresult SplitBlock(nsIDOMNode *aBlock,
+                      nsIDOMNode *aStartChild,
                       nsIDOMNode *aEndChild,
                       nsCOMPtr<nsIDOMNode> *aLeftNode = 0,
                       nsCOMPtr<nsIDOMNode> *aRightNode = 0,
                       nsCOMPtr<nsIDOMNode> *aMiddleNode = 0);
-  nsresult OutdentPartOfBlock(nsIDOMNode *aBlock, 
-                              nsIDOMNode *aStartChild, 
+  nsresult OutdentPartOfBlock(nsIDOMNode *aBlock,
+                              nsIDOMNode *aStartChild,
                               nsIDOMNode *aEndChild,
                               PRBool aIsBlockIndentedWithCSS,
                               nsCOMPtr<nsIDOMNode> *aLeftNode = 0,
                               nsCOMPtr<nsIDOMNode> *aRightNode = 0);
   nsresult ConvertListType(nsIDOMNode *aList, nsCOMPtr<nsIDOMNode> *outList, const nsAString& aListType, const nsAString& aItemType);
   nsresult CreateStyleForInsertText(nsISelection *aSelection, nsIDOMDocument *aDoc);
-  nsresult IsEmptyBlock(nsIDOMNode *aNode, 
-                        PRBool *outIsEmptyBlock, 
+  nsresult IsEmptyBlock(nsIDOMNode *aNode,
+                        PRBool *outIsEmptyBlock,
                         PRBool aMozBRDoesntCount = PR_FALSE,
                         PRBool aListItemsNotEmpty = PR_FALSE);
-  nsresult CheckForEmptyBlock(nsIDOMNode *aStartNode, 
+  nsresult CheckForEmptyBlock(nsIDOMNode *aStartNode,
                               nsIDOMNode *aBodyNode,
                               nsISelection *aSelection,
                               PRBool *aHandled);
-  nsresult CheckForInvisibleBR(nsIDOMNode *aBlock, nsHTMLEditRules::BRLocation aWhere, 
+  nsresult CheckForInvisibleBR(nsIDOMNode *aBlock, nsHTMLEditRules::BRLocation aWhere,
                                nsCOMPtr<nsIDOMNode> *outBRNode, PRInt32 aOffset=0);
   PRBool ExpandSelectionForDeletion(nsISelection *aSelection);
   PRBool IsFirstNode(nsIDOMNode *aNode);
@@ -248,17 +251,17 @@ protected:
   PRBool AtEndOfBlock(nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *aBlock);
 #endif
   nsresult NormalizeSelection(nsISelection *inSelection);
-  nsresult GetPromotedPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, PRInt32 aOffset, 
+  nsresult GetPromotedPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, PRInt32 aOffset,
                             PRInt32 actionID, nsCOMPtr<nsIDOMNode> *outNode, PRInt32 *outOffset);
-  nsresult GetPromotedRanges(nsISelection *inSelection, 
-                             nsCOMArray<nsIDOMRange> &outArrayOfRanges, 
+  nsresult GetPromotedRanges(nsISelection *inSelection,
+                             nsCOMArray<nsIDOMRange> &outArrayOfRanges,
                              PRInt32 inOperationType);
   nsresult PromoteRange(nsIDOMRange *inRange, PRInt32 inOperationType);
-  nsresult GetNodesForOperation(nsCOMArray<nsIDOMRange>& inArrayOfRanges, 
-                                nsCOMArray<nsIDOMNode>& outArrayOfNodes, 
+  nsresult GetNodesForOperation(nsCOMArray<nsIDOMRange>& inArrayOfRanges,
+                                nsCOMArray<nsIDOMNode>& outArrayOfNodes,
                                 PRInt32 inOperationType,
                                 PRBool aDontTouchContent=PR_FALSE);
-  nsresult GetChildNodesForOperation(nsIDOMNode *inNode, 
+  nsresult GetChildNodesForOperation(nsIDOMNode *inNode,
                                      nsCOMArray<nsIDOMNode>& outArrayOfNodes);
   nsresult GetNodesFromPoint(DOMPoint point,
                              PRInt32 operation,
@@ -269,10 +272,10 @@ protected:
   nsresult GetParagraphFormatNodes(nsCOMArray<nsIDOMNode>& outArrayOfNodes, PRBool aDontTouchContent=PR_FALSE);
   nsresult LookInsideDivBQandList(nsCOMArray<nsIDOMNode>& aNodeArray);
   nsresult BustUpInlinesAtRangeEndpoints(nsRangeStore &inRange);
-  nsresult BustUpInlinesAtBRs(nsIDOMNode *inNode, 
+  nsresult BustUpInlinesAtBRs(nsIDOMNode *inNode,
                               nsCOMArray<nsIDOMNode>& outArrayOfNodes);
   nsCOMPtr<nsIDOMNode> GetHighestInlineParent(nsIDOMNode* aNode);
-  nsresult MakeTransitionList(nsCOMArray<nsIDOMNode>& inArrayOfNodes, 
+  nsresult MakeTransitionList(nsCOMArray<nsIDOMNode>& inArrayOfNodes,
                               nsVoidArray &inTransitionArray);
   nsresult RemoveBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aBlockTag);
@@ -284,23 +287,23 @@ protected:
   nsresult MakeBlockquote(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult SplitAsNeeded(const nsAString *aTag, nsCOMPtr<nsIDOMNode> *inOutParent, PRInt32 *inOutOffset);
   nsresult AddTerminatingBR(nsIDOMNode *aBlock);
-  nsresult JoinNodesSmart( nsIDOMNode *aNodeLeft, 
-                           nsIDOMNode *aNodeRight, 
-                           nsCOMPtr<nsIDOMNode> *aOutMergeParent, 
+  nsresult JoinNodesSmart( nsIDOMNode *aNodeLeft,
+                           nsIDOMNode *aNodeRight,
+                           nsCOMPtr<nsIDOMNode> *aOutMergeParent,
                            PRInt32 *aOutMergeOffset);
   nsresult GetTopEnclosingMailCite(nsIDOMNode *aNode, nsCOMPtr<nsIDOMNode> *aOutCiteNode, PRBool aPlaintext);
   nsresult PopListItem(nsIDOMNode *aListItem, PRBool *aOutOfList);
   nsresult RemoveListStructure(nsIDOMNode *aList);
   nsresult CacheInlineStyles(nsIDOMNode *aNode);
-  nsresult ReapplyCachedStyles(); 
+  nsresult ReapplyCachedStyles();
   nsresult ClearCachedStyles();
   nsresult AdjustSpecialBreaks(PRBool aSafeToAskFrames = PR_FALSE);
   nsresult AdjustWhitespace(nsISelection *aSelection);
   nsresult PinSelectionToNewBlock(nsISelection *aSelection);
   nsresult CheckInterlinePosition(nsISelection *aSelection);
   nsresult AdjustSelection(nsISelection *aSelection, nsIEditor::EDirection aAction);
-  nsresult FindNearSelectableNode(nsIDOMNode *aSelNode, 
-                                  PRInt32 aSelOffset, 
+  nsresult FindNearSelectableNode(nsIDOMNode *aSelNode,
+                                  PRInt32 aSelOffset,
                                   nsIEditor::EDirection &aDirection,
                                   nsCOMPtr<nsIDOMNode> *outSelectableNode);
   nsresult InDifferentTableElements(nsIDOMNode *aNode1, nsIDOMNode *aNode2, PRBool *aResult);
@@ -319,7 +322,7 @@ protected:
 
   /** creates a bogus text node if the document has no editable content */
    nsresult CreateBogusNodeIfNeeded(nsISelection *aSelection);
-  
+
 
 // data members
 protected:

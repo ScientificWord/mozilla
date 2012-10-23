@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE tagproperties [
 <!ATTLIST tag id ID #IMPLIED> ]>
-<tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML"> 
+<tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">
 	<namespaces>
     <!-- currently white space in the namespace declarations will be kept, so these declarations
       should be on one line with no white space -->
@@ -80,7 +80,7 @@
 				<tag nm="text##lang2##" hidden="1" babel="2"><description>##lang## language</description></tag>
         <!-- <tag nm="deleted"><description>Deleted text</description></tag>
         <tag nm="inserted"><description>Inserted text></description></tag> -->
-		<!-- comment out the ulem tags  
+		<!-- comment out the ulem tags
 				<tag nm="uline"><description>Underline (ulem)</description></tag>
 				<tag nm="uuline"><description>Double underline (ulem)</description></tag>
 				<tag nm="uwave"><description>Wavy underline (ulem)</description></tag>
@@ -110,7 +110,7 @@
         <contains>a</contains>
         <contains>note</contains>
         <contains>notewrapper</contains>
-        <contains>msiframe</contains>       
+        <contains>msiframe</contains>
         <contains>msibreak</contains>
         <contains>texb</contains>
       </classcontains>
@@ -181,7 +181,7 @@
             </shortQuote>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
 			  </tag>
 				<tag nm="centered">
 					<nexttag>centered</nexttag>
@@ -193,7 +193,7 @@
             </centered>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
 				<tag nm="dialogbase" hidden="1">
 					<nexttag>bodyText</nexttag>
@@ -205,6 +205,15 @@
             </dialogbase>
           </initialcontents>
 				</tag>
+        <tag nm="verbatim">
+          <description>Verbatim text 'paragraph'</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents>
+            <verbatim>
+            </verbatim>
+          </initialcontents>
+          <nexttag>bodyText</nexttag>
+        </tag>
 			</tags>
 		</tagclass>
     <tagclass>
@@ -493,7 +502,7 @@
           <level>*</level>
           <description>Centered</description>
 	  		  <inclusion>true</inclusion>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <centeredEnv>
@@ -535,13 +544,6 @@
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
-  		  <tag nm="verbatim">
-          <level>*</level>
-  			  <description>Verbatim text</description>
-          <discardemptyblock>true</discardemptyblock>
-				  <nexttag>bodyText</nexttag>
-  		    <inclusion>true</inclusion>
-  		  </tag>
   		  <tag nm="note">
           <level>*</level>
           <description>Note</description>
@@ -561,7 +563,7 @@
           <contains>envLeadIn</contains>
           <description>Assertion</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <assertion>
               <bodyText>
@@ -577,7 +579,7 @@
           <contains>envLeadIn</contains>
           <description>Theorem</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <theorem>
                <bodyText>
@@ -592,7 +594,7 @@
           <contains>envLeadIn</contains>
           <description>Algorithm</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <algorithm>
                <bodyText>
@@ -607,7 +609,7 @@
           <contains>envLeadIn</contains>
           <description>Axiom</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <axiom>
                <bodyText>
@@ -622,7 +624,7 @@
           <contains>envLeadIn</contains>
           <description>Case</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <case>
                <bodyText>
@@ -637,7 +639,7 @@
           <contains>envLeadIn</contains>
           <description>Claim</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <claim>
                <bodyText>
@@ -652,7 +654,7 @@
           <contains>envLeadIn</contains>
           <description>Conclusion</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <conclusion>
                <bodyText>
@@ -667,7 +669,7 @@
           <contains>envLeadIn</contains>
           <description>Condition</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <condition>
                <bodyText>
@@ -682,7 +684,7 @@
           <contains>envLeadIn</contains>
           <description>Conjecture</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <conjecture>
               <bodyText>
@@ -697,7 +699,7 @@
           <contains>envLeadIn</contains>
           <description>Corollary</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <corollary>
                <bodyText>
@@ -712,7 +714,7 @@
           <contains>envLeadIn</contains>
           <description>Criterion</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <criterion>
                <bodyText>
@@ -727,7 +729,7 @@
           <contains>envLeadIn</contains>
           <description>Definition</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <definition>
                <bodyText>
@@ -742,7 +744,7 @@
           <contains>envLeadIn</contains>
           <description>Example</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <example>
                <bodyText>
@@ -757,7 +759,7 @@
           <contains>envLeadIn</contains>
           <description>Exercise</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <exercise>
                <bodyText>
@@ -772,7 +774,7 @@
           <contains>envLeadIn</contains>
           <description>Lemma</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <lemma>
                <bodyText>
@@ -787,7 +789,7 @@
           <contains>envLeadIn</contains>
           <description>Notation</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <notation>
               <bodyText>
@@ -802,7 +804,7 @@
           <contains>envLeadIn</contains>
           <description>Problem</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <problem>
                <bodyText>
@@ -817,7 +819,7 @@
           <contains>envLeadIn</contains>
           <description>Proposition</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <proposition>
                <bodyText>
@@ -832,7 +834,7 @@
           <contains>envLeadIn</contains>
           <description>Remark</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <remark>
               <bodyText>
@@ -847,7 +849,7 @@
           <contains>envLeadIn</contains>
           <description>Solution</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <solution>
               <bodyText>
@@ -862,7 +864,7 @@
           <contains>envLeadIn</contains>
           <description>Summary</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <summary>
               <bodyText>
@@ -877,7 +879,7 @@
           <contains>envLeadIn</contains>
           <description>Proof</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <proof>
               <bodyText>
@@ -893,7 +895,7 @@
           <contains>envLeadIn</contains>
           <description>Assumption</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <assumption>
                <bodyText>
@@ -908,7 +910,7 @@
           <contains>envLeadIn</contains>
           <description>Hypothesis</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <hypothesis>
                <bodyText>
@@ -923,7 +925,7 @@
           <contains>envLeadIn</contains>
           <description>Property</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <property>
                <bodyText>
@@ -938,7 +940,7 @@
           <contains>envLeadIn</contains>
           <description>Question</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
              <question>
                <bodyText>
@@ -954,7 +956,7 @@
           <contains>envLeadIn</contains>
           <description>Acknowledgment</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <acknowledgment>
               <bodyText>
@@ -969,14 +971,14 @@
           <contains>mml:math</contains>
           <description>Display</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
   		  <tag nm="msiframe">
-          <contains>envtag</contains>         
+          <contains>envtag</contains>
           <level>*</level>
           <description>Frame</description>
 	  		  <inclusion>true</inclusion>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <msiframe style="border: thin solid black; padding: 10px;">
@@ -993,7 +995,7 @@
           <level>*</level>
           <description>First language environment</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <!--initialcontents>
             <##lang1##>
               <bodyText>
@@ -1007,7 +1009,7 @@
           <level>*</level>
           <description>Second language environment</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <!-- initialcontents>
             <##lang2##>
               <bodyText>
@@ -1025,7 +1027,7 @@
 			<tags>
 				<tag nm="abstract"><description>Abstract</description>
           <realtagclass>envtag</realtagclass>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <abstract>
@@ -1040,7 +1042,7 @@
         <tag nm="address"><description>Address</description>ymsi
           <realtagclass>paratag</realtagclass>
 	  		  <inclusion>true</inclusion>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <address>
@@ -1054,7 +1056,7 @@
           <realtagclass>paratag</realtagclass>
 	  		  <inclusion>true</inclusion>
 					<nexttag>bodyText</nexttag>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <author>
@@ -1092,7 +1094,7 @@
         <tag nm="title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>bodyText</nexttag>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>        
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
@@ -1195,7 +1197,7 @@
           <contains>a</contains>
           <contains>note</contains>
           <contains>notewrapper</contains>
-          <contains>msiframe</contains>       
+          <contains>msiframe</contains>
           <contains>msibreak</contains>
           <contains>texb</contains>
         </tag>
@@ -1215,7 +1217,7 @@
 			    <contains>img</contains>
 			    <contains>object</contains>
           <contains>a</contains>
-          <contains>msiframe</contains>       
+          <contains>msiframe</contains>
           <contains>msibreak</contains>
           <contains>texb</contains>
         </tag>
@@ -1229,7 +1231,7 @@
 			    <contains>img</contains>
 			    <contains>object</contains>
           <contains>a</contains>
-          <contains>msiframe</contains>       
+          <contains>msiframe</contains>
           <contains>msibreak</contains>
           <contains>texb</contains>
         </tag>
@@ -1243,25 +1245,25 @@
 			    <contains>img</contains>
 			    <contains>object</contains>
           <contains>a</contains>
-          <contains>msiframe</contains>       
+          <contains>msiframe</contains>
           <contains>msibreak</contains>
           <contains>texb</contains>
         </tag>
 <!-- most math editing is done outside this framework, but a few math tags are needed here -->
         <tag nm = "math">
-          <contains>mspace</contains>      
+          <contains>mspace</contains>
           <contains>mstyle</contains>
           <contains>bold</contains>
         </tag>
         <tag nm = "mtext">
-          <contains>#text</contains>      
+          <contains>#text</contains>
           <contains>texttag</contains>
         </tag>
         <tag nm="mrow">
           <contains>mspace</contains>
           <contains>bold</contains>
           <contains>mstyle</contains>
-        </tag>   
+        </tag>
       </tags>
 		</tagclass>
 	</tagclasses>

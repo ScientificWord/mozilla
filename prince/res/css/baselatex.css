@@ -27,6 +27,10 @@ mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
 
 pre, verbatim { font-family: Courier; white-space: pre }
 
+verbatim bodyText {
+  margin: 0;
+  padding: 0;
+}
 numberedListItem,
 bulletListItem,
 descriptionListItem {

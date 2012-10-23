@@ -46,21 +46,21 @@
 #include "nsEditRules.h"
 
 /** Object that encapsulates HTML text-specific editing rules.
-  *  
+  *
   * To be a good citizen, edit rules must live by these restrictions:
-  * 1. All data manipulation is through the editor.  
+  * 1. All data manipulation is through the editor.
   *    Content nodes in the document tree must <B>not</B> be manipulated directly.
   *    Content nodes in document fragments that are not part of the document itself
   *    may be manipulated at will.  Operations on document fragments must <B>not</B>
   *    go through the editor.
-  * 2. Selection must not be explicitly set by the rule method.  
+  * 2. Selection must not be explicitly set by the rule method.
   *    Any manipulation of Selection must be done by the editor.
   */
 class nsTextEditRules : public nsIEditRules
 {
 public:
   NS_DECL_ISUPPORTS
-  
+
               nsTextEditRules();
   virtual     ~nsTextEditRules();
 
@@ -75,7 +75,7 @@ public:
   NS_IMETHOD DocumentIsEmpty(PRBool *aDocumentIsEmpty);
 
   // nsTextEditRules action id's
-  enum 
+  enum
   {
     kDefault             = 0,
     // any editor that has a txn mgr
@@ -105,9 +105,9 @@ public:
     kIncreaseZIndex      = 3018,
     kMakeStructure       = 3019,
     kRemoveStructure     = 3020,
-    kRemoveEnv     = 3021
+    kRemoveEnv           = 3021
   };
-  
+
 public:
   nsresult ResetIMETextPWBuf();
 
@@ -115,7 +115,7 @@ protected:
 
   // nsTextEditRules implementation methods
   nsresult WillInsertText(  PRInt32          aAction,
-                            nsISelection *aSelection, 
+                            nsISelection *aSelection,
                             PRBool          *aCancel,
                             PRBool          *aHandled,
                             const nsAString *inString,
@@ -130,12 +130,12 @@ protected:
   nsresult WillInsert(nsISelection *aSelection, PRBool *aCancel);
   nsresult DidInsert(nsISelection *aSelection, nsresult aResult);
 
-  nsresult WillDeleteSelection(nsISelection *aSelection, 
-                               nsIEditor::EDirection aCollapsedAction, 
+  nsresult WillDeleteSelection(nsISelection *aSelection,
+                               nsIEditor::EDirection aCollapsedAction,
                                PRBool *aCancel,
                                PRBool *aHandled);
-  nsresult DidDeleteSelection(nsISelection *aSelection, 
-                              nsIEditor::EDirection aCollapsedAction, 
+  nsresult DidDeleteSelection(nsISelection *aSelection,
+                              nsIEditor::EDirection aCollapsedAction,
                               nsresult aResult);
 
   nsresult WillSetTextProperty(nsISelection *aSelection, PRBool *aCancel, PRBool *aHandled);
@@ -159,33 +159,33 @@ protected:
     */
   nsresult WillOutputText(nsISelection *aSelection,
                           const nsAString  *aInFormat,
-                          nsAString *aOutText, 
-                          PRBool   *aOutCancel, 
+                          nsAString *aOutText,
+                          PRBool   *aOutCancel,
                           PRBool *aHandled);
 
   nsresult DidOutputText(nsISelection *aSelection, nsresult aResult);
 
 
   // helper functions
-  
+
   /** replaces newllines with breaks, if needed.  acts on doc portion in aRange */
   nsresult ReplaceNewlines(nsIDOMRange *aRange);
-  
+
   /** creates a trailing break in the text doc if there is not one already */
   nsresult CreateTrailingBRIfNeeded();
-  
+
  /** creates a bogus text node if the document has no editable content */
   nsresult CreateBogusNodeIfNeeded(nsISelection *aSelection);
 
   /** returns a truncated insertion string if insertion would place us
       over aMaxLength */
-  nsresult TruncateInsertionIfNeeded(nsISelection             *aSelection, 
+  nsresult TruncateInsertionIfNeeded(nsISelection             *aSelection,
                                      const nsAString          *aInString,
                                      nsAString                *aOutString,
                                      PRInt32                   aMaxLength);
-  
+
   /** Echo's the insertion text into the password buffer, and converts
-      insertion text to '*'s */                                        
+      insertion text to '*'s */
   nsresult EchoInsertionToPWBuff(PRInt32 aStart, PRInt32 aEnd, nsAString *aOutString);
 
   /** Remove IME composition text from password buffer */
@@ -194,8 +194,8 @@ protected:
   nsresult CreateMozBR(nsIDOMNode *inParent, PRInt32 inOffset, nsCOMPtr<nsIDOMNode> *outBRNode);
 
   nsresult CheckBidiLevelForDeletion(nsISelection         *aSelection,
-                                     nsIDOMNode           *aSelNode, 
-                                     PRInt32               aSelOffset, 
+                                     nsIDOMNode           *aSelNode,
+                                     PRInt32               aSelOffset,
                                      nsIEditor::EDirection aAction,
                                      PRBool               *aCancel);
 
@@ -212,7 +212,7 @@ protected:
   PRPackedBool         mLockRulesSniffing;
   PRPackedBool         mDidExplicitlySetInterline;
   PRPackedBool         mDeleteBidiImmediately; // in bidirectional text, delete
-                                               // characters not visually 
+                                               // characters not visually
                                                // adjacent to the caret without
                                                // moving the caret first.
   PRInt32              mTheAction;     // the top level editor action
@@ -226,8 +226,8 @@ protected:
 class nsTextRulesInfo : public nsRulesInfo
 {
  public:
- 
-  nsTextRulesInfo(int aAction) : 
+
+  nsTextRulesInfo(int aAction) :
     nsRulesInfo(aAction),
     inString(0),
     outString(0),
@@ -244,16 +244,16 @@ class nsTextRulesInfo : public nsRulesInfo
     {}
 
   virtual ~nsTextRulesInfo() {}
-  
+
   // kInsertText
   const nsAString *inString;
   nsAString *outString;
   const nsAString *outputFormat;
   PRInt32 maxLength;
-  
+
   // kDeleteSelection
   nsIEditor::EDirection collapsedAction;
-  
+
   // kMakeList
   PRBool bOrdered;
   PRBool entireList;
@@ -261,12 +261,12 @@ class nsTextRulesInfo : public nsRulesInfo
 
   // kAlign
   const nsAString *alignType;
-  
+
   // kMakeBasicBlock
   const nsAString *blockType;
-  
+
   nsCOMPtr<nsIAtom> namespaceAtom;
-  
+
   // kInsertElement
   const nsIDOMElement* insertElement;
 };
@@ -275,17 +275,17 @@ class nsTextRulesInfo : public nsRulesInfo
 /***************************************************************************
  * stack based helper class for StartOperation()/EndOperation() sandwich.
  * this class sets a bool letting us know to ignore any rules sniffing
- * that tries to occur reentrantly. 
+ * that tries to occur reentrantly.
  */
 class nsAutoLockRulesSniffing
 {
   public:
-  
-  nsAutoLockRulesSniffing(nsTextEditRules *rules) : mRules(rules) 
+
+  nsAutoLockRulesSniffing(nsTextEditRules *rules) : mRules(rules)
                  {if (mRules) mRules->mLockRulesSniffing = PR_TRUE;}
-  ~nsAutoLockRulesSniffing() 
+  ~nsAutoLockRulesSniffing()
                  {if (mRules) mRules->mLockRulesSniffing = PR_FALSE;}
-  
+
   protected:
   nsTextEditRules *mRules;
 };
@@ -298,12 +298,12 @@ class nsAutoLockRulesSniffing
 class nsAutoLockListener
 {
   public:
-  
+
   nsAutoLockListener(PRPackedBool *enabled) : mEnabled(enabled)
                  {if (mEnabled) { mOldState=*mEnabled; *mEnabled = PR_FALSE;}}
-  ~nsAutoLockListener() 
+  ~nsAutoLockListener()
                  {if (mEnabled) *mEnabled = mOldState;}
-  
+
   protected:
   PRPackedBool *mEnabled;
   PRPackedBool mOldState;

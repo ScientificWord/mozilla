@@ -41,11 +41,11 @@
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsIMutableArray.h"
-
 #include "nsHTMLEditor.h"
 #include "nsHTMLEditRules.h"
 #include "nsTextEditUtils.h"
 #include "nsHTMLEditUtils.h"
+#include "nsIDOMNodeFilter.h"
 
 #include "nsEditorEventListeners.h"
 #include "nsHTMLEditorMouseListener.h"
@@ -63,6 +63,8 @@
 #include "nsIDOMEventTarget.h"
 #include "nsIDOM3EventTarget.h"
 #include "nsIDOM3Document.h"
+#include "nsIDOMDocumentTraversal.h"
+#include "nsIDOMTreeWalker.h"
 #include "nsIDOMKeyEvent.h"
 #include "nsIDOMKeyListener.h"
 #include "nsIDOMMouseListener.h"
@@ -76,6 +78,7 @@
 #include "nsGUIEvent.h"
 #include "nsIDOMEventGroup.h"
 #include "nsILinkHandler.h"
+#include "nsArrayUtils.h"
 
 #include "TransactionFactory.h"
 
@@ -2431,7 +2434,6 @@ nsHTMLEditor::SetParagraphFormat(const nsAString& aParagraphFormat)
   }
 }
 
-
 nsresult
 nsHTMLEditor::SetListFormat(const nsAString& newState)
 {
@@ -3086,6 +3088,9 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
   res = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res)) return res;
   if (!selection) return NS_ERROR_NULL_POINTER;
+  if (aBlockType.EqualsLiteral("verbatim")) {
+    return InsertVerbatim(selection);
+  }
   nsTextRulesInfo ruleInfo(nsTextEditRules::kMakeBasicBlock);
   ruleInfo.blockType = &aBlockType;
   ruleInfo.namespaceAtom = namespaceAtom;
@@ -3164,6 +3169,308 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
 
   res = mRules->DidDoAction(selection, &ruleInfo, res);
   return res;
+}
+///////////////////////////////////////////////////////////////////////////
+// SplitAsNeeded:  given a tag name, split inOutParent up to the point
+//                 where we can insert the tag.  Adjust inOutParent and
+//                 inOutOffset to point to new location for tag.
+nsresult
+nsHTMLEditor::SplitAsNeeded(const nsAString *aTag,
+                               nsCOMPtr<nsIDOMNode> *inOutParent,
+                               PRInt32 *inOutOffset)
+{
+  if (!aTag || !inOutParent || !inOutOffset) return NS_ERROR_NULL_POINTER;
+  if (!*inOutParent) return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMNode> tagParent, temp, splitNode, parent = *inOutParent;
+  nsresult res = NS_OK;
+
+  // check that we have a place that can legally contain the tag
+  while (!tagParent)
+  {
+    // sniffing up the parent tree until we find
+    // a legal place for the block
+    if (!parent) break;
+    if (CanContainTag(parent, *aTag))
+    {
+      tagParent = parent;
+      break;
+    }
+    splitNode = parent;
+    parent->GetParentNode(getter_AddRefs(temp));
+    parent = temp;
+  }
+  if (!tagParent)
+  {
+    // could not find a place to build tag!
+    return NS_ERROR_FAILURE;
+  }
+  if (splitNode)
+  {
+    // we found a place for block, but above inOutParent.  We need to split nodes.
+    res = SplitNodeDeep(splitNode, *inOutParent, *inOutOffset, inOutOffset);
+    if (NS_FAILED(res)) return res;
+    *inOutParent = tagParent;
+  }
+  return res;
+}
+
+void nodeData(nsIDOMNode * node, nsAString& data)
+{
+  PRUint16 nodeType;
+  nsCOMPtr<nsIDOM3Node> textNode;
+  nsAutoString str;
+  node->GetNodeType(&nodeType);
+  if (nodeType ==  nsIDOMNode::TEXT_NODE) {
+    textNode=do_QueryInterface(node);
+    textNode->GetTextContent(str);
+    // convert returns to spaces
+    data = str;
+  }
+  else
+  {
+    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
+    element->GetNodeName(str);
+    data = str;
+  }
+}
+
+void AddStringToContents(nsAString& contents, nsAString& strToAdd)
+{
+  int len = strToAdd.Length();
+  int contLen = contents.Length();
+  int ctr = 0;
+  contents.SetLength(len + contLen);
+
+  PRUnichar *curCont = contents.BeginWriting() + contLen - 1;
+  PRUnichar *endCont = contents.EndWriting();
+  const PRUnichar *curStr = strToAdd.BeginReading();
+  const PRUnichar *endStr = strToAdd.EndReading();
+
+  PRBool space = (contLen > 0) && nsCRT::IsAsciiSpace(*curCont);
+  curCont ++;
+
+  while (curStr < endStr) {
+    if (nsCRT::IsAsciiSpace(*curStr)) {
+      if (!space) { // move the space over 
+        (*curCont++) = ' ';
+        ctr++;
+      }
+      space = PR_TRUE;
+    }
+    else {
+      *curCont++ = *curStr;
+      ctr++;
+      space = PR_FALSE;
+    }
+    curStr++;
+  }
+  contents.SetLength(contLen + ctr);
+}
+
+PRBool nsHTMLEditor::NodeInRange( nsIDOMNode * node, nsIDOMRange * range)
+{
+  PRBool nodeBefore = PR_TRUE;
+  PRBool nodeAfter = PR_TRUE;
+  nsCOMPtr<nsIContent> content = do_QueryInterface(node);
+  if (content) {
+    sRangeHelper->CompareNodeToRange(content, range, &nodeBefore, &nodeAfter);
+  }
+  return !(nodeBefore || nodeAfter);
+}
+
+
+void RemoveNodeAndEmptyAncestors(nsHTMLEditor * editor, nsIDOMNode * node, nsIDOMRange * range)
+{
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMNode>  theNode = node;
+  nsresult res;
+  res = theNode->GetParentNode(getter_AddRefs(parent));
+  editor->DeleteNode(theNode);
+  theNode = parent;
+  while (theNode && nodeIsWhiteSpace(theNode, -1, -1) && editor->NodeInRange(theNode, range))
+  {
+    res = theNode->GetParentNode(getter_AddRefs(parent));
+    editor->DeleteNode(theNode);
+    theNode = parent;
+  }
+}
+
+nsresult
+nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
+{
+  if (!aSelection) return NS_ERROR_NULL_POINTER;
+  NS_NAMED_LITERAL_STRING(verbType, "verbatim");
+
+  nsCOMPtr<nsIDOMNode> tempNode; 
+  PRUint16 nodeType;
+  PRBool isCollapsed;
+  nsresult res = aSelection->GetIsCollapsed(&isCollapsed);
+  if (NS_FAILED(res)) return res;
+  RemoveAllInlineProperties();
+
+//  nsINode*
+//  nsRange::GetCommonAncestor()
+  nsCOMPtr<nsIDOMRange> domRange;  // BBM: first implement for only one range; we can handle multiple selections later.
+  res = aSelection->GetRangeAt(0, getter_AddRefs(domRange));
+  NS_ENSURE_SUCCESS(res, res);
+  // split at each end of the range; then there will be no text nodes split by the range ends
+  nsCOMPtr<nsIDOMNode> startParent;
+  PRInt32 startOffset;
+  nsCOMPtr<nsIDOMNode> endParent;
+  PRInt32 endOffset;
+  // several variables useful for debugging
+  PRInt32 offset;
+  PRUint32 length;
+  nsString nodeNameOrContents;
+
+  domRange->GetStartContainer(getter_AddRefs(startParent));
+  domRange->GetStartOffset(&startOffset);
+
+  nodeData(startParent, nodeNameOrContents);
+  offset = startOffset;
+
+  domRange->GetEndContainer(getter_AddRefs(endParent));
+  domRange->GetEndOffset(&endOffset);
+
+  nodeData(endParent, nodeNameOrContents);
+  offset = endOffset;
+
+  if (startParent == endParent)
+  {
+    endOffset = endOffset - startOffset;
+  }
+  SplitAsNeeded(&verbType, &startParent, &startOffset);
+  // the above position is where the verbatim node will go
+  nsCOMPtr<nsIDOMNode> verbNode;
+  nsCOMPtr<nsIDOMText> tnode;
+  res = CreateNode(verbType, startParent, startOffset, getter_AddRefs(verbNode));
+  startOffset += 1;  // skip over the node we just added
+  SplitAsNeeded(&verbType, &endParent, &endOffset);
+
+  // because of the SplitAsNeeded calls above the starting and ending text nodes will either be
+  // completely excluded or completely included in the range. If they are completely excluded, we
+  // now effectively remove them from the range.
+
+  nsCOMPtr<nsIArray> arrayOfNodes;
+  res = NodesInRange(domRange, getter_AddRefs(arrayOfNodes));
+  arrayOfNodes->GetLength(&length);
+  PRInt32 topLimit = length - 1;
+  PRInt32 bottomLimit = 0;
+
+  tempNode = do_QueryElementAt(arrayOfNodes, length - 1);
+  tempNode->GetNodeType(&nodeType);
+  if (nodeType == 3)  //text
+  {
+    domRange->GetStartOffset(&offset);
+    if (offset == 0) // none of the node is included, therefore we delete it
+      // i.e., offset == text node length
+    {
+      topLimit-- ;
+    }
+  }
+  tempNode = do_QueryElementAt(arrayOfNodes, 0);
+  tempNode->GetNodeType(&nodeType);
+  if (nodeType == 3)  //text
+  {
+    domRange->GetStartOffset(&offset);
+    if (offset > 0) // part of the node is excluded, therefore all of it is excluded,
+      // i.e., offset == text node length
+    {
+      bottomLimit = 1;
+    }
+  }
+ 
+
+  // now look at the range
+  nodeData(startParent, nodeNameOrContents);
+  offset = startOffset;
+
+  nodeData(endParent, nodeNameOrContents);
+  offset = endOffset;
+
+// void               setStart(in nsIDOMNode refNode, in long offset)
+//                                         raises(RangeException, DOMException);
+//   void               setEnd(in nsIDOMNode refNode, in long offset)
+//                                         raises(RangeException, DOMException);
+//   void               setStartBefore(in nsIDOMNode refNode)
+//                                         raises(RangeException, DOMException);
+//   void               setStartAfter(in nsIDOMNode refNode)
+//                                         raises(RangeException, DOMException);
+//   void               setEndBefore(in nsIDOMNode refNode)
+//                                         raises(RangeException, DOMException);
+//   void               setEndAfter(in nsIDOMNode refNode)
+                                        // raises(RangeException, DOMException);
+
+  // reset domRange. The endpoints should be non-text nodes, or just before or after text nodes
+  domRange->SetStart(startParent, startOffset);
+  domRange->SetEnd(endParent, endOffset);
+  // now check selection again. Has it changed?
+  // res = aSelection->GetRangeAt(0, getter_AddRefs(domRange));
+
+  // domRange->GetStartContainer(getter_AddRefs(startParent));
+  // domRange->GetStartOffset(&startOffset);
+
+  // nodeData(startParent, nodeNameOrContents);
+  // offset = startOffset;
+
+  // domRange->GetEndContainer(getter_AddRefs(endParent));
+  // domRange->GetEndOffset(&endOffset);
+
+  // nodeData(endParent, nodeNameOrContents);
+  // offset = endOffset;
+
+  nsCOMPtr<nsIDOMNode> ancestor;
+  domRange->GetCommonAncestorContainer(getter_AddRefs(ancestor));
+  nsCOMPtr<nsIDOMDocument> doc;
+  res = ancestor->GetOwnerDocument(getter_AddRefs(doc));
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  doctrav = do_QueryInterface(doc);
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  res = doctrav->CreateTreeWalker( ancestor, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
+  if (!(NS_SUCCEEDED(res) && tw)) return PR_FALSE;
+
+  nsCOMPtr<nsIDOMNode> currentNode;
+  tw->GetCurrentNode(getter_AddRefs(currentNode));
+  nsAutoString verbContents;
+  PRBool nodeBefore;
+  PRBool nodeAfter;
+  PRBool needReturn = PR_FALSE;
+  nsCOMPtr<nsIDOM3Node> textNode;
+  nsAutoString str;
+  NS_NAMED_LITERAL_STRING(strRet, "\n");
+  nsCOMPtr<nsIContent> content;
+  while (currentNode)
+  {
+    nodeData(currentNode, nodeNameOrContents);
+    if (NodeInRange(currentNode, domRange)) // node is in the range
+    {
+      nodeData(currentNode, nodeNameOrContents);
+      currentNode->GetNodeType(&nodeType);
+      if (nodeType == nsIDOMNode::TEXT_NODE) {
+        textNode=do_QueryInterface(currentNode);
+        textNode->GetTextContent(str);
+        // convert returns to spaces
+        AddStringToContents(verbContents, str);
+      }
+      else // entering an element
+      {
+        if (IsBlockNode(currentNode)) {
+          verbContents += strRet;
+        }
+      }
+    }
+    tw->NextNode(getter_AddRefs(currentNode));
+  }
+  doc->CreateTextNode(verbContents, getter_AddRefs(tnode));
+  InsertNode(tnode, verbNode, 0);
+  if (length > 0)
+  {
+    for (int j = topLimit; j >= bottomLimit; j--) {
+      tempNode = do_QueryElementAt(arrayOfNodes, j);
+      if (tempNode) DeleteNode(tempNode);
+    }
+  }
+  return NS_OK;
 }
 
 nsresult
@@ -6577,6 +6884,8 @@ NS_IMETHODIMP nsHTMLEditor::RemoveEnvAboveSelection(nsISelection * selection)
 }
 
 /* nsIDOMNodeList NodesFromSelection (in nsISelection selection); */
+//BBM: WTF?  This doesn't seem to get called from anywhere and it has nothing to do with converting math to text
+// That happens in the JavaScript.
 NS_IMETHODIMP nsHTMLEditor::MathToText(nsISelection *selection)
 {
   nsCOMArray<nsIDOMNode> arrayOfNodes;

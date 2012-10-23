@@ -34,7 +34,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
- 
+
 #include "nsISupports.idl"
 
 interface nsIDOMKeyEvent;
@@ -82,7 +82,7 @@ interface nsIPlaintextEditor : nsISupports
   attribute long maxTextLength;
 
   /** Get and set the body wrap width.
-    * 
+    *
     * Special values:
     *    0 = wrap to window width
     *   -1 = no wrap at all
@@ -103,7 +103,7 @@ interface nsIPlaintextEditor : nsISupports
    */
   attribute long newlineHandling;
 
-  /** 
+  /**
    * EditorKeyPress consumes a keyevent.
    * @param aKeyEvent    key event to consume
    */
@@ -118,7 +118,7 @@ interface nsIPlaintextEditor : nsISupports
    * @param aString   the string to be inserted
    */
    void insertText(in DOMString aStringToInsert);
-  
+
   /**
    * Insert a line break into the content model.
    * The interpretation of a break is up to the implementation:
