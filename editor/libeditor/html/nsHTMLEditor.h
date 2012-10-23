@@ -397,7 +397,7 @@ public:
                                 
   NS_IMETHOD InsertReturnImpl ( PRBool fFancy );
   NS_IMETHOD InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy);
-                         
+  PRBool NodeInRange( nsIDOMNode * node, nsIDOMRange * range);                      
 
   /** returns the absolute position of the end points of aSelection
     * in the document as a text stream.
@@ -455,7 +455,7 @@ public:
                                   nsICSSStyleSheet *aStyleSheet);
 
   nsresult RemoveStyleSheetFromList(const nsAString &aURL);
-                       
+
 protected:
 
   NS_IMETHOD  InitRules();
@@ -740,6 +740,7 @@ protected:
   virtual nsresult InsertReturnInMath( nsIDOMNode * splitpointNode, 
                                        PRInt32 splitpointOffset, 
                                        PRBool* bHandled);
+
   
   virtual nsresult GetDocumentGraphicsDir(nsILocalFile** graphicsDir, PRBool bCreate = PR_TRUE);                                     
 
@@ -825,6 +826,11 @@ protected:
     PRInt32 & offsetOfNewNode,
     PRBool & bDidInsert,
     nsIDOMNode ** lastInsertNode);
+  nsresult SplitAsNeeded(const nsAString *aTag,
+                               nsCOMPtr<nsIDOMNode> *inOutParent,
+                               PRInt32 *inOutOffset);
+  nsresult InsertVerbatim(nsISelection *aSelection);
+
 
 
 // Data members
