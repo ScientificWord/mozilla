@@ -86,11 +86,11 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside)
   {
-    pChild = GetFirstTextFrame(pFrame);
+    pChild = GetLastTextFrame(pFrame);
     if (pChild)
     {
-      *aOutOffset = count;
       count = 0;
+      *aOutOffset = count;
       *aOutFrame = pChild; 
     }
   }
@@ -176,7 +176,7 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
   nsIFrame * pChild = nsnull; 
   nsIContent * pContent = nsnull;
   if (type == nsGkAtoms::textFrame) 
-    if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
+    //if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
       return pFrame;
   pChild = GetLastChild(pFrame);
   while (PR_TRUE)
