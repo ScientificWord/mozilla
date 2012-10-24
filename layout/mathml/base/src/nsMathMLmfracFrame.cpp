@@ -566,6 +566,23 @@ nsMathMLmfracFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
   }
   count = 0;
   nsIFrame * pFrame = GetFirstChild(nsnull);
+  // if base is a mi with tempinput then we need to add 1 to count
+
+    nsresult res;
+    nsAutoString strTempInput;
+    nsAutoString tagName;
+    
+    nsCOMPtr<nsIContent> pContent = pFrame -> GetContent();
+    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pContent);
+    //GetTagString(element, tagName);
+    nsIAtom *atom = pContent -> Tag();
+    atom->ToString(tagName);
+    if (tagName.EqualsLiteral("mi")){
+      res = element->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
+      if (strTempInput.EqualsLiteral("true")){
+         count = 1;
+      }
+    }
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
   {
