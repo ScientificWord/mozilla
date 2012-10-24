@@ -357,8 +357,29 @@ nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pBaseFrame)
   {
+    // if base is a mi with tempinput then we need to add 1 to count
+
+    nsresult res;
+    nsAutoString strTempInput;
+    nsAutoString tagName;
+    
+    nsCOMPtr<nsIContent> pContent = pBaseFrame -> GetContent();
+    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pContent);
+    //GetTagString(element, tagName);
+    nsIAtom *atom = pContent -> Tag();
+    atom->ToString(tagName);
+    if (tagName.EqualsLiteral("mi")){
+      res = element->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
+      if (strTempInput.EqualsLiteral("true")){
+         count += 1;
+      }
+    }
+   
+
     pMCM = do_QueryInterface(pBaseFrame);
-    if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+    if (pMCM) {
+      pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+    } 
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
       PlaceCursorBefore(pBaseFrame, PR_TRUE, aOutFrame, aOutOffset, count);
@@ -375,40 +396,81 @@ nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
 
 nsresult
 nsMathMLmsqrtFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
-    PRBool* fBailingOut, PRInt32 *_retval)
+    PRBool* fBailing, PRInt32 *_retval)
 {
   printf("msqrt EnterFromRight, count = %d\n", count);
-  if (count > 0)
+  count = 0;
+  nsIFrame * pBaseFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pBaseFrame)
   {
-    printf("msqrt EnterFromRight called with count > 0\n");
-    PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
-//    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
-//    pFrame = pFrame->GetNextSibling();
-//    count = 0;
-//    nsCOMPtr<nsIMathMLCursorMover> pMCM;
-//    if (pFrame)
-//    {
-//      pMCM = do_QueryInterface(pFrame);
-//      count--;
-//      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-//      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
-//      {
-//        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-//        *_retval = 0;
-//        return NS_OK;
-//      }
-//    }
-//    else 
-//    {
-//      printf("Found msqrt frame with no superscript\n");
-//    }
+    // if base is a mi with tempinput then we need to add 1 to count
+
+    nsresult res;
+    nsAutoString strTempInput;
+    nsAutoString tagName;
+    
+    nsCOMPtr<nsIContent> pContent = pBaseFrame -> GetContent();
+    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pContent);
+    //GetTagString(element, tagName);
+    nsIAtom *atom = pContent -> Tag();
+    atom->ToString(tagName);
+    if (tagName.EqualsLiteral("mi")){
+      res = element->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
+      if (strTempInput.EqualsLiteral("true")){
+         count += 1;
+      }
+    }
+   
+
+    pMCM = do_QueryInterface(pBaseFrame);
+    if (pMCM) {
+      pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+    } 
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+    {
+      PlaceCursorAfter(pBaseFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
+    }
   }
-  else
+  else 
   {
-    printf("msqrt EnterFromRight called with count == 0\n");
-    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    printf("Found msqrt frame with no children\n");
   }
   return NS_OK;  
+   
+//    if (count > 0)
+//    {
+//      printf("msqrt EnterFromRight called with count > 0\n");
+//      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
+//  //    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
+//  //    pFrame = pFrame->GetNextSibling();
+//  //    count = 0;
+//  //    nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//  //    if (pFrame)
+//  //    {
+//  //      pMCM = do_QueryInterface(pFrame);
+//  //      count--;
+//  //      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+//  //      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+//  //      {
+//  //        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+//  //        *_retval = 0;
+//  //        return NS_OK;
+//  //      }
+//  //    }
+//  //    else 
+//  //    {
+//  //      printf("Found msqrt frame with no superscript\n");
+//  //    }
+//    }
+//    else
+//    {
+//      printf("msqrt EnterFromRight called with count == 0\n");
+//      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+//    }
+//    return NS_OK;  
 }
 
                             
