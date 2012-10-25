@@ -282,6 +282,10 @@ should not be done under some conditions -->
 <xsl:template match="html:br"
 ></xsl:template>
 
+<xsl:template match="html:verbatim/html:br"><xsl:text>
+</xsl:text>
+</xsl:template>
+
 <xsl:template match="html:title">
 \title{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
