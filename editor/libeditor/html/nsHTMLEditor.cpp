@@ -1691,7 +1691,7 @@ NS_IMETHODIMP nsHTMLEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent,
     else
     {
       // split the text node
-      res = SplitNode(node, theOffset, getter_AddRefs(tmp));
+      res = (SplitNode)(node, theOffset, getter_AddRefs(tmp));
       if (NS_FAILED(res)) return res;
       res = GetNodeLocation(node, address_of(tmp), &offset);
       if (NS_FAILED(res)) return res;
@@ -3322,6 +3322,8 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
   PRInt32 offset;
   PRUint32 length;
   nsString nodeNameOrContents;
+  nsCOMPtr<nsIDOMNode> verbNode;
+  nsCOMPtr<nsIDOMText> tnode;
 
   domRange->GetStartContainer(getter_AddRefs(startParent));
   domRange->GetStartOffset(&startOffset);
@@ -3337,17 +3339,23 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
 
   if (startParent == endParent)
   {
+    nsCOMPtr<nsIDOMNode> slicedNode;
     endOffset = endOffset - startOffset;
+    SplitAsNeeded(&verbType, &startParent, &startOffset);
+    SplitNode(endParent, endOffset, getter_AddRefs(slicedNode));
+    endOffset = 0;
+    SplitAsNeeded(&verbType, &endParent, &endOffset);
+    res = CreateNode(verbType, startParent, startOffset, getter_AddRefs(verbNode));
+    res = MoveNode(slicedNode, verbNode, 0);
+    return res;
   }
   SplitAsNeeded(&verbType, &startParent, &startOffset);
   // the above position is where the verbatim node will go
-  nsCOMPtr<nsIDOMNode> verbNode;
-  nsCOMPtr<nsIDOMText> tnode;
   res = CreateNode(verbType, startParent, startOffset, getter_AddRefs(verbNode));
   startOffset += 1;  // skip over the node we just added
   SplitAsNeeded(&verbType, &endParent, &endOffset);
 
-  // because of the SplitAsNeeded calls above the starting and ending text nodes will either be
+  // because of the SplitAsNeeded calls   above the starting and ending text nodes will either be
   // completely excluded or completely included in the range. If they are completely excluded, we
   // now effectively remove them from the range.
 
