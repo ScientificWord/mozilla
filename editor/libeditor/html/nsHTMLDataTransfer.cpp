@@ -1227,11 +1227,18 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   else splitNode = GetBlockNodeParent(splitpointNode);
   nsString strTagName;
   if (splitNode) GetTagString(splitNode, strTagName);
-  if (!IsBlockNode(splitNode)||strTagName.Equals(NS_LITERAL_STRING("body"))
-    ||strTagName.Equals(NS_LITERAL_STRING("#document")))
+  if (!IsBlockNode(splitNode)||strTagName.EqualsLiteral("body")
+    ||strTagName.EqualsLiteral("#document"))
 	{
     nsCOMPtr<nsIDOMNode> brNode;
     return InsertBR(address_of(brNode));  // only inserts a br node
+  }
+  else
+  {
+    if (strTagName.EqualsLiteral("verbatim"))
+    {
+      return InsertText(NS_LITERAL_STRING("\n"));
+    }
   }
   // if fFancy and if splitNode has no text and it is at the end of its parent structure, we want to check with
   // the taglistmanager. Maybe we need to delete splitNode

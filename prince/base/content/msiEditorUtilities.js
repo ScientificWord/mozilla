@@ -11940,6 +11940,9 @@ var maxLength;
 var minLength;
 var reallyMinLength = 50;
 
+// state object is passed to the routines. Currently, it keeps track of whether spacing should be preserved
+
+
 function replacer(str, p1, p2, offset, s)
 {
   switch (str)
@@ -12032,8 +12035,9 @@ function writeLineInPieces( output, currentline )
   }
 }
 
-function newline(output, currentline, indent)
+function newline(output, currentline, indent, state)
 {
+  if (state.preserveSpacing) return;
   if (/\S/.test(currentline.s))
   {
     writeLineInPieces(output, currentline);
@@ -12044,7 +12048,7 @@ function newline(output, currentline, indent)
 }
 
 var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX."+
-  "msidisplay.pagelayout.page.textregion.columns.header.footer.plot."+
+  "msidisplay.pagelayout.page.textregion.columns.header.footer.plot.verbatim."+
   "titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.";
 function isInlineElement(editor, element)
 {
@@ -12056,12 +12060,13 @@ function isInlineElement(editor, element)
 }
 
 /* ELEMENT_NODE =1 */
-function processElement( editor, node, treeWalker, output, currentline, indent )
+function processElement( editor, node, treeWalker, output, currentline, indent, state )
 {
 //  dump("ProcessElement, indent = "+indent+"\n");
   var inline = isInlineElement(editor, node);
   if (!inline)
-    newline(output, currentline, indent);
+    newline(output, currentline, indent, state);
+  state.preserveSpacing = (node.nodeName === "verbatim");
   currentline.s += "<" + node.nodeName;
   if (node.hasAttributes())
   {
@@ -12081,29 +12086,33 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
     currentline.s += ">";
     while (child)
     {
-      processNode(editor, child, treeWalker, output, currentline, indent+1);
+      processNode(editor, child, treeWalker, output, currentline, indent+1, state);
       treeWalker.currentNode = child;
       child = treeWalker.nextSibling();
     }
     if (!inline)
-      newline(output, currentline, indent);
+      newline(output, currentline, indent, state);
     currentline.s += "</"+node.nodeName+">";
   }
   else currentline.s +="/>";
-  if (!inline) newline(output, currentline, indent);
+  if (!inline) newline(output, currentline, indent, state);
 }
 
 /* ATTRIBUTE_NODE = 2, handled in element code
    TEXT_NODE = 3*/
 
-function processText( node, output, currentline)
+function processText( node, output, currentline, state)
 {
-    if ( !isEmptyText(node)) currentline.s += encodeEntities((node.textContent.replace(/\s+/," ","g")));
+    var s = node.textContent;
+    if (!state.preserveSpacing) {
+      s = s.replace(/\s+/," ","g");
+    }
+    if ( !isEmptyText(node)) currentline.s += encodeEntities(s);
 }
 
 /* CDATA_SECTION_NODE = 4 */
 
-function processCData( node, output, currentline, indent )
+function processCData( node, output, currentline, indent, state)
 {
   currentline.s += "<![CDATA[";
   currentline.s += node.data;
@@ -12115,77 +12124,77 @@ function processCData( node, output, currentline, indent )
 
 /* PROCESSING_INSTRUCTION_NODE = 7 */
 
-function processPINode (node, output, currentline, indent)
+function processPINode (node, output, currentline, indent, state)
 {
-  newline(output, currentline, 0);
+  newline(output, currentline, 0, state);
   currentline.s += "<?"+node.target+" "+node.data+"?>";
-  newline(output, currentline, indent);
+  newline(output, currentline, indent, state);
 }
 
 /* COMMENT_NODE = 8*/
 
-function processComment(node, output, currentline, indent )
+function processComment(node, output, currentline, indent, state )
 {
-  newline(output, currentline,0);
+  newline(output, currentline,0, state);
   currentline.s += "<!--";
   currentline.s += node.data;
   currentline.s += "-->";
-  newline(output, currentline, indent);
+  newline(output, currentline, indent, state);
 }
 
 /* DOCUMENT_NODE = 9*/
 
-function processDocument(editor, node, treeWalker, output, currentline, indent )
+function processDocument(editor, node, treeWalker, output, currentline, indent, state )
 {
   currentline.s += '<?xml version="1.0" encoding="UTF-8"?>';
-  newline(output, currentline, 0);
+  newline(output, currentline, 0, state);
   var child = treeWalker.firstChild();
   while (child)
   {
-    processNode(editor, child, treeWalker, output, currentline, indent);
+    processNode(editor, child, treeWalker, output, currentline, indent, state);
     treeWalker.currentNode = child;
     child = treeWalker.nextSibling();
   }
 }
 
 /* DOCUMENT_TYPE_NODE = 10*/
-function processDocumentType(node, output, currentline, indent)
+function processDocumentType(node, output, currentline, indent, state)
 {  //maybe this should be based on a mode. When building source view, doctype declaration is handled differently
-//  newline(output, currentline,0);
+//  newline(output, currentline,0, state);
 //  currentline.s +=
 //  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">'
-//  newline(output, currentline, indent);
+//  newline(output, currentline, indent, state);
 }
 
 
-function processNode( editor, node, treeWalker, output, currentline, indent)
+function processNode( editor, node, treeWalker, output, currentline, indent, state)
 {
   switch (node.nodeType) {
     case 1: //Node.ELEMENT_NODE:
-      processElement(editor, node, treeWalker, output, currentline, indent);
+      processElement(editor, node, treeWalker, output, currentline, indent, state);
       break;
     case 3: //Node.TEXT_NODE:
-      processText(node, output, currentline);
+      processText(node, output, currentline, state);
       break;
     case 4:  //Node.CDATA_SECTION_NODE:
-      processCData(node, output, currentline, indent);
+      processCData(node, output, currentline, indent, state);
       break;
     case 7: //Node.PROCESSING_INSTRUCTION_NODE:
-      processPINode( node, output, currentline, indent);
+      processPINode( node, output, currentline, indent, state);
       break;
     case 8: //Node.COMMENT_NODE:
-      processComment( node, output, currentline, indent);
+      processComment( node, output, currentline, indent, state);
       break;
     case 9: //Node.DOCUMENT_NODE:
-      processDocument(editor, node, treeWalker, output, currentline, indent);
+      processDocument(editor, node, treeWalker, output, currentline, indent, state);
       break;
     case 10: //Node.DOCUMENT_NODE:
-      processDocumentType(node, output, currentline, indent);
+      processDocumentType(node, output, currentline, indent, state);
       break;
     default:
-      newline(output, currentline, 0);
+      newline(output, currentline, 0, state);
       currentline.s += "Stub for node type "+node.nodeType;
-      newline(output, currentline, indent);
+      newline(output, currentline, indent, state);
       break;
   }
 }
@@ -12198,6 +12207,7 @@ function prettyprint(editor)
   var currentline = new Object;
   currentline.s = "";
   var indent = 0;
+  var state = { preserveSpacing: false };
   if (!editor) {
     var editorElement = msiGetActiveEditorElement();
     var editor;
@@ -12213,13 +12223,13 @@ function prettyprint(editor)
   if (minLength === 0) minLength = minLengthDefault;
   var intInc = GetIntPref("swp.sourceview.indentincrement");
   if (intInc !== 0) intervalIncrement = "          ".substr(0,intInc);
-  editor.document.normalize();
+//  editor.document.normalize();
   var treeWalker = editor.document.createTreeWalker(editor.document,
         1021,     // everything but fragments and attributes
         { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },
         false);
   dump("First node is "+treeWalker.root.nodeName+"\n");
-  processNode(editor, treeWalker.root, treeWalker, output, currentline, indent);
+  processNode(editor, treeWalker.root, treeWalker, output, currentline, indent, state);
   return output.s;
 }
 
