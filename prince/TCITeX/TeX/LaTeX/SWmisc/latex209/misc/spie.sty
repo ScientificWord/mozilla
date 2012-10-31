@@ -1,0 +1,126 @@
+\typeout{Document Style Option `spie proceedings style'.}
+%
+% Prepared by Rick Zaccone <zaccone@bucknell.edu> on 6/3/91.
+% Modified by Adrian F Clark <alien@uk.ac.essex> on 11-Jan-1992.
+%
+% Usage:
+% \documentstyle[spie]{article}
+%
+% The user needs to make a few adjustments manually:
+%
+% 1. Section titles should be in upper case.
+% 2. Title, subsection, subsubsection, etc. should be in lower case except 
+%    for the first letter.
+% 3. Format authors as follows
+%    \author{author1 \\[12pt]
+%            affiliation\\
+%            affiliation\\[12pt]
+%            author2 \\[12pt]
+%            affiliation\\
+%            affiliation\\[12pt]}
+%
+% 4. No date: use \date{}
+% --------------------------------------------------------------------
+
+% No headers or footers
+
+\oddsidemargin -.15in \evensidemargin -.15in \topmargin .1in
+\headheight 0in \headsep 0in
+\footheight 0in \footskip 0in 
+\pagestyle{empty} % No page numbers
+
+
+% Page parameters
+
+\parskip 12pt
+\textheight 8.8in \textwidth 6.8in 
+\floatsep 6pt plus 2pt minus 4pt \textfloatsep 30pt plus 20pt minus 10pt
+
+
+% Center section headings and make them produce indexted next lines (ugh)
+
+\def\section{\@startsection {section}{1}{\z@}{3.5ex plus -1ex minus
+ -.2ex}{2.3ex plus .2ex}{\centering\Large\bf}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{3.25ex plus -1ex minus
+ -.2ex}{1.5ex plus .2ex}{\large\bf}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{3.25ex plus
+-1ex minus -.2ex}{1.5ex plus .2ex}{\normalsize\bf}}
+
+
+% Add theorem, lemma, and definition environments
+
+\def\@begintheorem#1#2{\par\bgroup{\sc #1\ #2. }\it\ignorespaces}
+\def\@opargbegintheorem#1#2#3{\par\bgroup{\sc #1\ #2\ (#3). }\it\ignorespaces}
+\def\@endtheorem{\egroup}
+\def\proof{\par{\it Proof}. \ignorespaces}
+\def\endproof{{\ \vbox{\hrule\hbox{%
+   \vrule height1.3ex\hskip0.8ex\vrule}\hrule
+  }}\par}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+
+
+% The abstract
+
+\def\abstract{
+\section*{ABSTRACT}
+}
+\def\endabstract{}
+
+% Citations are superscripts (taken from aip.sty)
+
+% Superscript citations -- skip optional arg to \cite
+% Move citation after period and comma.
+
+\def\@cite#1#2{\unskip\nobreak\relax
+    \def\@tempa{$\m@th^{\hbox{\the\scriptfont0 #1}}$}%
+    \futurelet\@tempc\@citexx}
+\def\@citexx{\ifx.\@tempc\let\@tempd=\@citepunct\else
+    \ifx,\@tempc\let\@tempd=\@citepunct\else
+    \let\@tempd=\@tempa\fi\fi\@tempd}
+\def\@citepunct{\@tempc\edef\@sf{\spacefactor=\the\spacefactor\relax}\@tempa
+    \@sf\@gobble}
+
+% \citenum emits the plain citation number without ornament
+% \citea puts its argument into the ornamentation for citations
+% thus \cite{foo} is equivalent to \citea{\citenum{foo}}
+
+\def\citenum#1{{\def\@cite##1##2{##1}\cite{#1}}}
+\def\citea#1{\@cite{#1}{}}
+
+% Collapse citation numbers to ranges.  Non-numeric and undefined labels
+% are handled.  No sorting is done.  E.g., 1,3,2,3,4,5,foo,1,2,3,?,4,5
+% gives 1,3,2-5,foo,1-3,?,4,5
+
+\newcount\@tempcntc
+\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \@tempcnta\z@\@tempcntb\m@ne\def\@citea{}\@cite{\@for\@citeb:=#2\do
+    {\@ifundefined
+       {b@\@citeb}{\@citeo\@tempcntb\m@ne\@citea\def\@citea{,}{\bf ?}\@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+    {\setbox\z@\hbox{\global\@tempcntc0\csname b@\@citeb\endcsname\relax}%
+     \ifnum\@tempcntc=\z@ \@citeo\@tempcntb\m@ne
+       \@citea\def\@citea{,}\hbox{\csname b@\@citeb\endcsname}%
+     \else
+      \advance\@tempcntb\@ne
+      \ifnum\@tempcntb=\@tempcntc
+      \else\advance\@tempcntb\m@ne\@citeo
+      \@tempcnta\@tempcntc\@tempcntb\@tempcntc\fi\fi}}\@citeo}{#1}}
+\def\@citeo{\ifnum\@tempcnta>\@tempcntb\else\@citea\def\@citea{,}%
+  \ifnum\@tempcnta=\@tempcntb\the\@tempcnta\else
+   {\advance\@tempcnta\@ne\ifnum\@tempcnta=\@tempcntb \else \def\@citea{--}\fi
+    \advance\@tempcnta\m@ne\the\@tempcnta\@citea\the\@tempcntb}\fi\fi}
+
+
+% Give the references section a section number
+
+\def\thebibliography#1{\section{REFERENCES\@mkboth
+ {REFERENCES}{REFERENCES}}\list
+ {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist

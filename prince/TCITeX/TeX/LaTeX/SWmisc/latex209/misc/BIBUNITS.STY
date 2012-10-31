@@ -1,0 +1,197 @@
+%% Author: Jose Alberto <alberto@cs.umd.edu>
+%% Original source: comp.text.tex <ALBERTO.91Sep7174145@yamuna.cs.umd.edu>
+%% Date: 7 Sep 91 21:41:45 GMT
+%% Text of accompanying post follows \endinput
+%% 
+%% BIBUNITS.STY     by Jose Alberto Fernandez (alberto@cs.umd.edu)
+%% 
+%% BIBUNITS is a style to generate separate bibliographies for
+%% different units (parts) of the text (currently only one of
+%% chapters, sections or bibunit-environments). 
+%% The style will separate the citations of each unit of text into a
+%% separate file to be processed by bibtex. The global bibliography
+%% section produced by LATEX also can appear in the document and
+%% citations can be placed in both at the same time.
+%% 
+%% Use the \bibliographyunit[<unit>] (<unit> = \chapter, \section) to
+%% select how the references will be generated. (For every chapter or
+%% for every section). Use \bibliographyunit with no arguments to
+%% deactivate bibliographyunits. By default citations will only appear
+%% in the local bibliography. WARNING: By default \bibliographyunit is
+%% in a deactivated state.
+%% 
+%% If \bibliographyunit is active the \bibliography{bibtex-files} and
+%% \bibliographystyle{style} commands also specify the bibtex-files
+%% and style to be used by default in the local units. The commands
+%% \bibliography*{<bibtex-files>} and \bibliographystyle*{<style>}
+%% specify the defaults for BIBUNITS and not generate any information
+%% for the global bibliography. WARNING: This values are taken as
+%% defaults only when executed after activate \bibliographyunit
+%% 
+%% The environment \begin{bibunit}[<style>] .. \end{bibunit} allows
+%% the creation of a unit while \bibliographyunit is not active. The
+%% optional parameter <style> specifies a style for the biblography
+%% different from the default if any. WARNING: The use of this
+%% environment while \bibliographyunit is active can produce extrange
+%% results. Note that default style and bibtex-files only exist if
+%% specified while \bibliographyunit was active.
+%% 
+%% Use \cite and \nocite to generate citations. \cite* and \nocite*
+%% can be use to generate citations to be added in both the local and
+%% global bibliography while inside a unit.
+%%
+%% You must insert the command \putbib[<bibtex-files>] before the end
+%% of each <unit> in the location where you want the bibliography to
+%% be inserted. If the optional argument is ommited, \putbib uses the
+%% default bibtex-files if any.
+%% 
+%% BIBTEX processing:
+%% For each <unit>, in sequence, there is now a corresponding file 
+%% \jobname.\the\@bibunitauxcnt.aux that need to be compiled though
+%% BIBTEX as well as the \jobname.aux that generates the global
+%% database. 
+%% 
+%% Suppose your document is foo.tex, you must now invoke bibtex not only
+%% on foo, but also on foo.1, ..., foo.n given that there are n
+%% different <units> with separate bibliography.
+
+\newwrite\@bibunitaux                                %File desc.
+\newcount\@bibunitauxcnt \@bibunitauxcnt = 0         %Units cnt.
+\newif\if@localcite                                  %Local/Global cite
+\def\@localcitedflt{\@localcitetrue} \@localcitedflt
+% 
+% \cite definition
+%
+\let\REALcite\cite
+\def\NEWcite{
+  \@ifstar{\@localcitefalse\REALcite}
+    {\@localcitetrue\REALcite}}
+%
+% \@cite new definition
+\let\REAL@citex\@citex
+\def\NEW@citex[#1]#2{\if@filesw
+  \immediate\write\@bibunitaux{\string\citation{#2}}\fi
+  \if@localcite
+    \if@filesw
+      \@fileswfalse\REAL@citex[#1]{#2}\@fileswtrue
+    \else\REAL@citex[#1]{#2}\fi 
+  \else\REAL@citex[#1]{#2}\fi
+  \@localcitedflt}
+%
+% \nocite definition
+% 
+\let\REALnocite\nocite
+\def\NEWnocite{
+  \@ifstar{\@localcitefalse\@NEWnocite}
+    {\@localcitetrue\@NEWnocite}}
+\def\@NEWnocite#1{\@bsphack
+  \if@filesw
+    \immediate\write\@bibunitaux{\string\citation{#1}}\fi
+  \@esphack
+  \if@localcite\else\REALnocite{#1}\fi\@localcitedflt}
+%
+% \bibliography definition
+% 
+\def\@bibdata{}                              %Data files store
+\let\REALbibliography\bibliography
+\def\NEWbibliography{
+  \@ifstar{\@localcitetrue\@NEWbibliography}
+    {\@localcitefalse\@NEWbibliography}}
+\def\@NEWbibliography#1{
+  \if@filesw
+    \immediate\write\@auxout{\string\gdef\string\@bibdata{#1}}\fi
+  \if@localcite\else\REALbibliography{#1}\fi\@localcitedflt}
+%
+% \bibliographystyle definition
+%
+\def\@bibstyle{}                              %Style store
+\let\REALbibliographystyle\bibliographystyle
+\def\NEWbibliographystyle{
+  \@ifstar{\@localcitetrue\@NEWbibliographystyle}
+    {\@localcitefalse\@NEWbibliographystyle}}
+\def\@NEWbibliographystyle#1{
+  \if@filesw
+    \immediate\write\@auxout{\string\gdef\string\@bibstyle{#1}}\fi
+  \if@localcite\else\REALbibliographystyle{#1}\fi\@localcitedflt}
+%
+% \begin{bibunit} .. \end{bibunit} definition
+% 
+\def\bibunit{\global\advance\@bibunitauxcnt 1
+  \global\let\cite\NEWcite
+  \global\let\@citex\NEW@citex
+  \global\let\nocite\NEWnocite
+  \if@filesw
+    \immediate\openout\@bibunitaux \jobname.\the\@bibunitauxcnt.aux
+  \fi\@ifnextchar[{\@bibunitx}{\@bibunitx[\@bibstyle]}
+}
+\def\@bibunitx[#1]{\if@filesw
+  \immediate\write\@bibunitaux{\string\bibstyle{#1}}\fi}
+\def\endbibunit{
+  \global\let\cite\REALcite
+  \global\let\@citex\REAL@citex
+  \global\let\nocite\REALnocite
+  \if@filesw
+    \immediate\closeout\@bibunitaux\fi}
+%
+% \chapter or \section substituting definition
+%
+\let\OLD@bibunit\@gobble
+\def\@bibunit{\endbibunit\bibunit\OLD@bibunit}
+\def\@endbibunit{}
+%
+% \bibliographyunit definition
+% 
+\def\bibliographyunit{\@endbibunit
+  \@ifnextchar[{\@bibliographyunit}{
+    \global\let\OLD@bibunit\@gobble
+    \global\let\bibliography\REALbibliography
+    \global\let\bibliographystyle\REALbibliographystyle
+    \endbibunit
+    \gdef\@endbibunit{}}}
+\def\@bibliographyunit[#1]{
+  \global\let\bibliography\NEWbibliography
+  \global\let\bibliographystyle\NEWbibliographystyle
+  \global\let\OLD@bibunit#1
+  \global\let#1\@bibunit
+  \gdef\@endbibunit{\global\let#1\OLD@bibunit}}
+%
+% \putbib definition
+% 
+\def\putbib{\@ifnextchar[{\@putbib}{\@putbib[\@bibdata]}}
+\def\@putbib[#1]{\if@filesw
+  \immediate\write\@bibunitaux{\string\bibdata{#1}}\fi
+  \@input{\jobname.\the\@bibunitauxcnt.bbl}}
+
+\endinput
+
+In article <1991Aug29.012118.8708@cs.cornell.edu> rjohnson@cs.cornell.edu (Richard C. Johnson) writes:
+
+   Is there a way to make a multisection bibliography using LaTex and Bibtex?
+   Ideally, I'd like to be able to do something like:
+
+	   \section{VLIW Architectures}
+	   \nocite{Colwell87}
+	   \nocite{ ...etc...
+
+	   \section{Trace Scheduling}
+	   \nocite{Fisher81}
+	   \nocite{ ...etc...
+
+   and end up with a multisection bibliography.  Any suggestions other than
+   resorting to using \bibitem's out of the .bbl file?  Thanks in advance.
+
+   Richard Johnson		rjohnson@cs.cornell.edu
+
+I created a style called bibunits.sty that allow that some other
+things more. You can specify if you want bibliografy by chapters,
+sections or by your own subdivision. You can also specify if you want
+that all the reference be callected ALSO in a global bibliography or
+not.
+
+Here is the style, have fun.
+
+--
+:/       \ Jose Alberto Fernandez R | INTERNET: alberto@cs.umd.edu
+:| o   o | Dept. of Computer Sc.    | BITNET: alberto@cs.umd.edu
+:|   ^   | University of Maryland   | UUCP: {...}!mimsy!alberto
+:\  \_/  / College Park, MD 20742   | 
