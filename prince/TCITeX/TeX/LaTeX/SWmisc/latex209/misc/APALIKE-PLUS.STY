@@ -1,0 +1,68 @@
+%  This style-option file, apalike-plus.sty, is based on apalike.sty.
+%  As such, it can be used to redefine \cite and thebibliography for:
+%  - production of do-it-yourself author-date bibliographies
+%  - use with BibTeX, with \bibliographystyle{apalike}.
+%
+%  It differs from apalike.sty in that:
+%  - a command \bibtitle is defined, to generate the bibliography title
+%  - a command \bibheadtitle is defined, to generate the text to be used
+%    by \pagestyle{headings}
+%  - \bibtitle and \bibheadtitle are set to generate "References" and
+%    "REFERENCES" respectively.
+%  - an \addcontentsline{toc}{...}{\bibtitle} command is issued.
+%  Thus:
+%  - the default bibliography title is "References", but can be changed by
+%    having \renewcommand{\bibtitle}{...} before \begin{thebibliography}
+%    or \bibliography
+%  - the default page header text is "REFERENCES", but can be changed by
+%    \renewcommand{\bibheadtitle}{...}
+%  - \tableofcontents will give a table of contents that mentions the
+%    bibliography.
+%
+%                                                     David Rhead
+%                                                     Cripps Computing Centre
+%                                                     Nottingham University
+%                                                     February 1990
+
+% Use parens instead of brackets for \cite, and no label in the bibliography
+%
+\def\@cite#1#2{(#1\if@tempswa , #2\fi)}
+\def\@biblabel#1{}
+
+% Set length of hanging indentation for bibliography entries
+%
+\newlength{\bibhang}
+\setlength{\bibhang}{2em}
+
+%  Define default title and page-head text.
+%
+\def\bibtitle{References}
+\def\bibheadtitle{REFERENCES}
+ 
+\@ifundefined{chapter}{\def\thebibliography#1{\section*{\bibtitle\@mkboth
+  {\bibheadtitle}{\bibheadtitle}}
+  \addcontentsline{toc}{section}{\bibtitle}\list
+  {\relax}{\setlength{\labelsep}{0em}
+	\setlength{\itemindent}{-\bibhang}
+	\setlength{\leftmargin}{\bibhang}}
+    \def\newblock{\hskip .11em plus .33em minus .07em}
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}}%
+{\def\thebibliography#1{\chapter*{\bibtitle\@mkboth
+  {\bibheadtitle}{\bibheadtitle}}
+  \addcontentsline{toc}{chapter}{\bibtitle}\list
+  {\relax}{\setlength{\labelsep}{0em}
+	\setlength{\itemindent}{-\bibhang}
+	\setlength{\leftmargin}{\bibhang}}
+    \def\newblock{\hskip .11em plus .33em minus .07em}
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}}
+
+% `; ' goes between cites, and there's no \hbox around individual cites
+%
+\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{; }\@ifundefined
+       {b@\@citeb}{{\bf ?}\@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+{\csname b@\@citeb\endcsname}}}{#1}}
