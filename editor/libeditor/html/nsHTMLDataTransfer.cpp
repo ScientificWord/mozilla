@@ -1475,7 +1475,9 @@ nsHTMLEditor::SetCursorInNewHTML(nsIDOMElement * newElement, PRBool * success)
     DeleteNode(node);
     //selPriv->SetInterlinePosition(PR_TRUE);
     res = GetSelection(getter_AddRefs(selection));
-    res = selection->Collapse(parentNode, offset);
+    //res = selection->Collapse(parentNode, offset);
+    // BBM: put a comment in latexdefs about how this works.
+    res = selection->Collapse(parentNode, 0);
 		if (success) *success = PR_TRUE;
   }
 //  cmd_updateStructToolbar

@@ -25,6 +25,7 @@ glob:extensions/firebug/*
 glob:extensions/chromebug/*
 glob:*.sublime-project
 glob:*.sublime-workspace
+glob:*/docs/*
 .tm_properties
 .tmhotkeys
 mozilla\.mchg

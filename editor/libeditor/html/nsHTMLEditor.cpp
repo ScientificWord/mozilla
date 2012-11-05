@@ -1279,6 +1279,9 @@ PRBool nsHTMLEditor::IsVisBreak(nsIDOMNode *aNode)
     return PR_FALSE;
   if (!nsTextEditUtils::IsBreak(aNode))
     return PR_FALSE;
+  // msi breaks are always visible
+  if (nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("msibr")))
+    return PR_TRUE;
   // check if there is a later node in block after br
   nsCOMPtr<nsIDOMNode> priorNode, nextNode;
   GetPriorHTMLNode(aNode, address_of(priorNode), PR_TRUE);
