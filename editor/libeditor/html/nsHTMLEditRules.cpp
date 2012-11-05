@@ -1469,14 +1469,15 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
       return NS_ERROR_FAILURE;
     // else insert the default paragraph
     mHTMLEditor->SetParagraphFormat(defPara);
-    // We want to move the selection here as well.
-    // selNode is the parent node
-    nsCOMPtr<nsIDOMNodeList> nodelist;
-    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(selNode);
-    if (!element) return false;
-    res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
-    res = nodelist->Item(0, getter_AddRefs(selNode)); // now selNode is the new selection node.
-    aSelection->Collapse(selNode,0);
+    // Commenting out the following code since the selection is already set
+//    // We want to move the selection here as well.
+//    // selNode is the parent node
+//    nsCOMPtr<nsIDOMNodeList> nodelist;
+//    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(selNode);
+//    if (!element) return false;
+//    res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
+//    res = nodelist->Item(0, getter_AddRefs(selNode)); // now selNode is the new selection node.
+//    aSelection->Collapse(selNode,0);
 #ifdef DEBUG_Barry
     printf("Just inserted default paragraph (%s) here\n", defPara.BeginReading());
 #endif
@@ -1506,8 +1507,10 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   else // aAction == kInsertText
   {
     // find where we are
-    nsCOMPtr<nsIDOMNode> curNode = selNode;
-    PRInt32 curOffset = selOffset;
+     nsCOMPtr<nsIDOMNode> curNode;
+     PRInt32 curOffset;
+     res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(curNode), &curOffset);
+    if (NS_FAILED(res)) return res;
 
     // is our text going to be PREformatted?
     // We remember this so that we know how to handle tabs.
