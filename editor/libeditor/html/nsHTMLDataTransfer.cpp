@@ -110,6 +110,7 @@
 #include "nsIDOMNSUIEvent.h"
 #include "nsIOutputStream.h"
 #include "nsIInputStream.h"
+#include "nsIStorageStream.h"
 #include "nsDirectoryServiceDefs.h"
 
 // for relativization
@@ -494,6 +495,104 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   NS_ENSURE_SUCCESS(res, res);
   if (!doContinue)
     return NS_OK;
+
+  // If there's only one top-level node and it's an <svg>, we want to replace it
+  // with an <object>:
+
+  if (fragmentAsNode)
+  {
+    PRUint32 numKids;
+    PRInt32 svgIndex = -1;
+    PRBool hasOtherContent = PR_FALSE;
+    nsCOMPtr<nsIDOMNodeList> kidNodes;
+    res = fragmentAsNode->GetChildNodes(getter_AddRefs(kidNodes));
+    if (NS_SUCCEEDED(res) && kidNodes) 
+      res = kidNodes->GetLength(&numKids);
+    nsCOMPtr<nsIDOMNode> theKid;
+    nsCOMPtr<nsINode> theKidNode;
+    nsAutoString kidName;
+    for (PRInt32 ii = 0; !hasOtherContent && (ii < numKids); ++ii)
+    {
+      res = kidNodes->Item(ii, getter_AddRefs(theKid));
+      if (NS_SUCCEEDED(res))
+      {
+        theKidNode = do_QueryInterface(theKid);
+        if (theKidNode->IsNodeOfType(nsINode::eSVG))
+        {
+          theKid->GetLocalName(kidName);
+          if (kidName.LowerCaseEqualsLiteral("svg"))
+            svgIndex = ii;
+          else
+            hasOtherContent = PR_TRUE;
+        }
+        else if (!nodeIsWhiteSpace(theKid, -1, -1))
+          hasOtherContent = PR_TRUE;
+      }
+    }
+    if (!hasOtherContent && (svgIndex >= 0))
+    {
+      //Want to replace entire contents - that is, the <svg> node - by an object, and put the string
+      //  representation into an external file to be its data:
+      nsCOMPtr<nsILocalFile> fileToUse;
+      nsresult rv = GetDocumentGraphicsDir(getter_AddRefs(fileToUse));
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      fileToUse->Append(NS_LITERAL_STRING("msi-screenshot-svg.svg"));
+      nsCOMPtr<nsILocalFile> path = do_QueryInterface(fileToUse);
+      path->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0755);
+
+      nsCOMPtr<nsIOutputStream> outputStream;
+      rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), fileToUse);
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      PRUint32 totLength, headerLength, strLength, numWritten;
+      nsCOMPtr<nsIOutputStream> bufferedOutputStream;
+      NS_NAMED_LITERAL_CSTRING(headerStr, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+      headerLength = headerStr.Length();
+      strLength = aInputString.Length();
+      totLength = headerLength + strLength;
+
+      rv = NS_NewBufferedOutputStream(getter_AddRefs(bufferedOutputStream), outputStream, totLength);
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      const char* headerBuff = headerStr.BeginReading();
+      rv = bufferedOutputStream->Write(headerBuff, headerLength, &numWritten);
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      rv = bufferedOutputStream->Write(NS_ConvertUTF16toUTF8(aInputString).get(), strLength, &numWritten);
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      // force the stream close before we try to insert the image
+      // into the document.
+      rv = bufferedOutputStream->Close();
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      nsAutoString urltext;
+      urltext.Append(NS_LITERAL_STRING("graphics/"));
+      nsAutoString leafname;
+      fileToUse->GetLeafName(leafname);
+      urltext.Append(leafname);
+
+      if (!urltext.IsEmpty())
+      {
+        NS_NAMED_LITERAL_STRING(xmlnsAttr, "http://www.w3.org/1999/xhtml");
+        nsCOMPtr<nsIDOMElement> objectElt;
+        nsCOMPtr<nsINode> fragNode = do_QueryInterface(fragmentAsNode);
+//        rv = CreateElementWithDefaults(NS_LITERAL_STRING("object"), getter_AddRefs(objectElt));
+        rv = CreateContentNS(NS_LITERAL_STRING("object"), NS_NewAtom(xmlnsAttr), getter_AddRefs(objectElt));
+        SetAttribute(objectElt, NS_LITERAL_STRING("data"), urltext);
+        SetAttribute(objectElt, NS_LITERAL_STRING("xmlns"), xmlnsAttr);
+        SetAttribute(objectElt, NS_LITERAL_STRING("alt"), EmptyString());
+        nsCOMPtr<nsIDOMNode> objNode(do_QueryInterface(objectElt));
+        nsCOMPtr<nsIDOMNode> kidNode = GetChildAt(fragmentAsNode, svgIndex);
+        nsCOMPtr<nsIDOMNode> ignoreNode;
+//        fragmentAsNode->RemoveChild(kidNode, getter_AddRefs(ignoreNode));
+//        fragmentAsNode->InsertChild(objNode, svgIndex);
+        ApplyGraphicsDefaults( objectElt, PR_FALSE );
+        fragmentAsNode->ReplaceChild(objNode, kidNode, getter_AddRefs(ignoreNode));
+      }
+    }
+  }
 
   // if we have a destination / target node, we want to insert there
   // rather than in place of the selection
@@ -1184,6 +1283,412 @@ nsresult nsHTMLEditor::GetDocumentGraphicsDir(nsILocalFile** graphicsDir, PRBool
   *graphicsDir = graphics;
   NS_IF_ADDREF(*graphicsDir);
   return NS_OK;
+}
+
+float
+nsHTMLEditor::ConvertLengthStringToPixels(const nsAString& lengthStr, float* pOriginal)
+{
+  float length;
+  nsIAtom* unit;
+  mHTMLCSSUtils->nsHTMLCSSUtils::ParseLength(lengthStr, &length, &unit);
+  *pOriginal = length;
+  if (!unit || (nsEditProperty::cssPxUnit == unit))
+    return length;
+
+  float rv = length * NS_EDITOR_INDENT_INCREMENT_PX;
+  if (nsEditProperty::cssInUnit == unit)
+    rv = rv / NS_EDITOR_INDENT_INCREMENT_IN;
+  else if (nsEditProperty::cssCmUnit == unit)
+    rv = rv / NS_EDITOR_INDENT_INCREMENT_CM;
+  else if (nsEditProperty::cssMmUnit == unit)
+    rv = rv / NS_EDITOR_INDENT_INCREMENT_MM;
+  else if (nsEditProperty::cssPtUnit == unit)
+    rv = rv / NS_EDITOR_INDENT_INCREMENT_PT;
+  else if (nsEditProperty::cssPcUnit == unit)
+    rv = rv / NS_EDITOR_INDENT_INCREMENT_PC;
+  else if (nsEditProperty::cssEmUnit == unit)
+    rv = rv / NS_EDITOR_INDENT_INCREMENT_EM;
+  else if (nsEditProperty::cssExUnit == unit)
+    rv = rv / NS_EDITOR_INDENT_INCREMENT_EX;
+  else if (nsEditProperty::cssPercentUnit == unit)
+    rv = length / NS_EDITOR_INDENT_INCREMENT_PERCENT;
+  return rv;
+}
+
+nsresult
+nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* graphic, PRBool bIsPlot )
+{
+  nsresult res = NS_OK;
+  // Check user preferences
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &res);
+
+  nsAutoString floatPlacement;
+  nsXPIDLCString prefString, unitString;
+  nsAutoString setPrefString, setUnitString;
+  PRBool prefBool = PR_FALSE;
+  float lengthVal, origVal;
+
+  SetAttribute(graphic, NS_LITERAL_STRING("xmlns"), NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
+  if (NS_SUCCEEDED(res) && prefBranch)
+  {
+    if (bIsPlot)
+    {
+      res = prefBranch->GetCharPref("swp.graph.placement", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+        CopyASCIItoUTF16(prefString, setPrefString);
+      else
+        setPrefString = NS_LITERAL_STRING("inline");
+      SetAttribute(graphic, NS_LITERAL_STRING("pos"), setPrefString);
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.forceHere", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('H'));
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.here", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('h'));
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.pageFloats", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('p'));
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.topPage", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('t'));
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.bottomPage", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('b'));
+      SetAttribute(graphic, NS_LITERAL_STRING("placeLocation"), floatPlacement);
+      res = prefBranch->GetCharPref("swp.graph.floatPlacement", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        SetAttribute(graphic, NS_LITERAL_STRING("placement"), setPrefString);
+      }
+
+      res = prefBranch->GetCharPref("swp.graph.defaultUnits", getter_Copies(unitString));
+      if (NS_SUCCEEDED(res))
+        CopyASCIItoUTF16(unitString, setUnitString);
+      else
+        setUnitString = NS_LITERAL_STRING("in");
+      SetAttribute(graphic, NS_LITERAL_STRING("units"), setUnitString);
+
+      res = prefBranch->GetCharPref("swp.graph.HSize", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+        setPrefString = EmptyString();
+        setPrefString.AppendFloat(origVal);
+        SetAttribute(graphic, NS_LITERAL_STRING("imageWidth"), setPrefString);
+        nsAutoString newValue;
+        newValue.AppendFloat(lengthVal);
+        SetAttribute(graphic, NS_LITERAL_STRING("width"), newValue);
+      }
+
+      res = prefBranch->GetCharPref("swp.graph.VSize", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+        setPrefString = EmptyString();
+        setPrefString.AppendFloat(origVal);
+        SetAttribute(graphic, NS_LITERAL_STRING("imageHeight"), setPrefString);
+        nsAutoString newValue;
+        newValue.AppendFloat(lengthVal);
+        SetAttribute(graphic, NS_LITERAL_STRING("height"), newValue);
+      }
+    }
+    else
+    {
+      res = prefBranch->GetCharPref("swp.defaultGraphicsPlacement", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+        CopyASCIItoUTF16(prefString, setPrefString);
+      else
+        setPrefString = NS_LITERAL_STRING("inline");
+      SetAttribute(graphic, NS_LITERAL_STRING("pos"), setPrefString);
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.forceHere", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('H'));
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.here", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('h'));
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.pageFloats", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('p'));
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.topPage", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('t'));
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.bottomPage", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('b'));
+      SetAttribute(graphic, NS_LITERAL_STRING("placeLocation"), floatPlacement);
+      res = prefBranch->GetCharPref("swp.defaultGraphicsFloatPlacement", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        SetAttribute(graphic, NS_LITERAL_STRING("placement"), setPrefString);
+      }
+
+      res = prefBranch->GetCharPref("swp.defaultGraphicsSizeUnits", getter_Copies(unitString));
+      if (NS_SUCCEEDED(res))
+        CopyASCIItoUTF16(unitString, setUnitString);
+      else
+        setUnitString = NS_LITERAL_STRING("in");
+      SetAttribute(graphic, NS_LITERAL_STRING("units"), setUnitString);
+      res = prefBranch->GetCharPref("swp.defaultGraphicsInlineOffset", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+        if (lengthVal)
+        {
+          nsAutoString newValue;
+          if (lengthVal > 0)
+            newValue = NS_LITERAL_STRING("-");
+          newValue.AppendFloat(lengthVal);
+          setPrefString = EmptyString();
+          setPrefString.AppendFloat(origVal);
+          SetAttribute(graphic, NS_LITERAL_STRING("inlineOffset"), setPrefString);
+          mHTMLCSSUtils->SetCSSProperty(graphic, nsEditProperty::cssPosition, NS_LITERAL_STRING("relative"), PR_TRUE);
+          mHTMLCSSUtils->SetCSSProperty(graphic, nsEditProperty::cssBottom, newValue, PR_TRUE);
+        }
+      }
+
+      res = prefBranch->GetBoolPref("swp.graphicsUseDefaultWidth", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+      {
+        res = prefBranch->GetCharPref("swp.defaultGraphicsHSize", getter_Copies(prefString));
+        if (NS_SUCCEEDED(res))
+        {
+          CopyASCIItoUTF16(prefString, setPrefString);
+          lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+          setPrefString = EmptyString();
+          setPrefString.AppendFloat(origVal);
+          SetAttribute(graphic, NS_LITERAL_STRING("imageWidth"), setPrefString);
+          nsAutoString newValue;
+          newValue.AppendFloat(lengthVal);
+          SetAttribute(graphic, NS_LITERAL_STRING("width"), newValue);
+        }
+      }
+      res = prefBranch->GetBoolPref("swp.graphicsUseDefaultHeight", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+      {
+        res = prefBranch->GetCharPref("swp.defaultGraphicsVSize", getter_Copies(prefString));
+        if (NS_SUCCEEDED(res))
+        {
+          CopyASCIItoUTF16(prefString, setPrefString);
+          lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+          setPrefString = EmptyString();
+          setPrefString.AppendFloat(origVal);
+          SetAttribute(graphic, NS_LITERAL_STRING("imageHeight"), setPrefString);
+          nsAutoString newValue;
+          newValue.AppendFloat(lengthVal);
+          SetAttribute(graphic, NS_LITERAL_STRING("height"), newValue);
+        }
+      }
+    }
+  }
+
+  return res;
+}
+
+nsresult
+nsHTMLEditor::GetGraphicsDefaultsAsString( nsAString& retStr, PRBool bIsPlot )
+{
+  nsresult res = NS_OK;
+  // Check user preferences
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &res);
+
+  nsAutoString attribStr, styleStr, floatPlacement;
+  nsXPIDLCString prefString, unitString;
+  nsAutoString setPrefString, setUnitString;
+  PRBool prefBool = PR_FALSE;
+  float lengthVal, origVal;
+
+  attribStr = NS_LITERAL_STRING("xmlns=\"http://www.w3.org/1999/xhtml\"");
+  if (NS_SUCCEEDED(res) && prefBranch)
+  {
+    if (bIsPlot)
+    {
+      res = prefBranch->GetCharPref("swp.graph.placement", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+        CopyASCIItoUTF16(prefString, setPrefString);
+      else
+        setPrefString = NS_LITERAL_STRING("inline");
+      attribStr.AppendLiteral(" pos=\"");
+      attribStr.Append(setPrefString);
+      attribStr.Append(PRUnichar('\"'));
+
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.forceHere", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('H'));
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.here", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('h'));
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.pageFloats", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('p'));
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.topPage", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('t'));
+      res = prefBranch->GetBoolPref("swp.graph.floatLocation.bottomPage", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('b'));
+      attribStr.AppendLiteral(" placeLocation=\"");
+      attribStr.Append(floatPlacement);
+      attribStr.Append(PRUnichar('\"'));
+      
+      res = prefBranch->GetCharPref("swp.graph.floatPlacement", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        attribStr.AppendLiteral("placement=\"");
+        attribStr.Append(setPrefString);
+        attribStr.Append(PRUnichar('\"'));
+      }
+
+      res = prefBranch->GetCharPref("swp.graph.defaultUnits", getter_Copies(unitString));
+      if (NS_SUCCEEDED(res))
+        CopyASCIItoUTF16(unitString, setUnitString);
+      else
+        setUnitString = NS_LITERAL_STRING("in");
+      attribStr.AppendLiteral(" units=\"");
+      attribStr.Append(setUnitString);
+      attribStr.Append(PRUnichar('\"'));
+
+      res = prefBranch->GetCharPref("swp.graph.HSize", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+        attribStr.AppendLiteral(" imageWidth=\"");
+        attribStr.AppendFloat(origVal);
+        attribStr.Append(PRUnichar('\"'));
+        attribStr.AppendLiteral(" width=\"");
+        attribStr.AppendFloat(lengthVal);
+        attribStr.Append(PRUnichar('\"'));
+      }
+
+      res = prefBranch->GetCharPref("swp.graph.VSize", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+        attribStr.AppendLiteral(" imageHeight=\"");
+        attribStr.AppendFloat(origVal);
+        attribStr.Append(PRUnichar('\"'));
+        attribStr.AppendLiteral(" height=\"");
+        attribStr.AppendFloat(lengthVal);
+        attribStr.Append(PRUnichar('\"'));
+      }
+    }
+    else
+    {
+      res = prefBranch->GetCharPref("swp.defaultGraphicsPlacement", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+        CopyASCIItoUTF16(prefString, setPrefString);
+      else
+        setPrefString = NS_LITERAL_STRING("inline");
+      attribStr.AppendLiteral(" pos=\"");
+      attribStr.Append(setPrefString);
+      attribStr.Append(PRUnichar('\"'));
+
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.forceHere", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('H'));
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.here", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('h'));
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.pageFloats", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('p'));
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.topPage", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('t'));
+      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.bottomPage", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('b'));
+      attribStr.AppendLiteral(" placeLocation=\"");
+      attribStr.Append(floatPlacement);
+      attribStr.Append(PRUnichar('\"'));
+
+      res = prefBranch->GetCharPref("swp.defaultGraphicsFloatPlacement", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        attribStr.AppendLiteral(" placement=\"");
+        attribStr.Append(setPrefString);
+        attribStr.Append(PRUnichar('\"'));
+      }
+
+      res = prefBranch->GetCharPref("swp.defaultGraphicsSizeUnits", getter_Copies(unitString));
+      if (NS_SUCCEEDED(res))
+        CopyASCIItoUTF16(unitString, setUnitString);
+      else
+        setUnitString = NS_LITERAL_STRING("in");
+      attribStr.AppendLiteral(" units=\"");
+      attribStr.Append(setUnitString);
+      attribStr.Append(PRUnichar('\"'));
+
+      res = prefBranch->GetCharPref("swp.defaultGraphicsInlineOffset", getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+        if (lengthVal)
+        {
+          attribStr.AppendLiteral(" inlineOffset=\"");
+          attribStr.AppendFloat(origVal);
+          attribStr.Append(PRUnichar('\"'));
+          styleStr.AppendLiteral("position: relative; bottom: ");
+          if (lengthVal > 0)
+            styleStr.Append(PRUnichar("-"));
+          styleStr.AppendFloat(lengthVal);
+          styleStr.Append(PRUnichar(";"));
+        }
+      }
+
+      res = prefBranch->GetBoolPref("swp.graphicsUseDefaultWidth", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+      {
+        res = prefBranch->GetCharPref("swp.defaultGraphicsHSize", getter_Copies(prefString));
+        if (NS_SUCCEEDED(res))
+        {
+          CopyASCIItoUTF16(prefString, setPrefString);
+          lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+          attribStr.AppendLiteral(" imageWidth=\"");
+          attribStr.AppendFloat(origVal);
+          attribStr.Append(PRUnichar('\"'));
+
+          attribStr.AppendLiteral("width");
+          attribStr.AppendFloat(lengthVal);
+          attribStr.Append(PRUnichar('\"'));
+        }
+      }
+      res = prefBranch->GetBoolPref("swp.graphicsUseDefaultHeight", &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+      {
+        res = prefBranch->GetCharPref("swp.defaultGraphicsVSize", getter_Copies(prefString));
+        if (NS_SUCCEEDED(res))
+        {
+          CopyASCIItoUTF16(prefString, setPrefString);
+          lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+          attribStr.AppendLiteral(" imageHeight=\"");
+          attribStr.AppendFloat(origVal);
+          attribStr.Append(PRUnichar('\"'));
+          attribStr.AppendLiteral(" height=\"");
+          attribStr.AppendFloat(lengthVal);
+          attribStr.Append(PRUnichar('\"'));
+        }
+      }
+    }
+  }
+
+  retStr = attribStr;
+  if (styleStr.Length() > 0)
+  {
+    retStr.AppendLiteral(" style=\"");
+    retStr.Append(styleStr);
+    retStr.Append(PRUnichar('\"'));
+  }
+  return res;
 }
 
 // InsertReturnAt -- usually splits a paragraph; may call itself recursively
@@ -2116,12 +2621,21 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
                 NS_ENSURE_SUCCESS(rv, rv);
                 fileObj->CopyTo(dir, NS_LITERAL_STRING(""));
 
-                stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
+//                stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
+                stuffToPaste.AssignLiteral("<object data=\"");
                 stuffToPaste.AppendLiteral("graphics/");
                 char * unescaped = strdup(fileName.get());
                 nsUnescape(unescaped);
                 AppendUTF8toUTF16(unescaped, stuffToPaste);
-                stuffToPaste.AppendLiteral("\" alt=\"\"></object>");
+                stuffToPaste.AppendLiteral("\" alt=\"\"");
+                nsAutoString attributeStr;
+                rv = GetGraphicsDefaultsAsString( attributeStr);
+                if (NS_SUCCEEDED(rv) && attributeStr.Length())
+                {
+                  stuffToPaste.Append(PRUnichar(' '));
+                  stuffToPaste += attributeStr;
+                }
+                stuffToPaste.AppendLiteral("></object>");
               }
               else // insertAsLink
               {
@@ -2198,10 +2712,18 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       urltext.Append(leafname);
       if (NS_SUCCEEDED(rv) && !urltext.IsEmpty())
       {
-        stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
-//        stuffToPaste.AssignLiteral("<object data=\"");
+//        stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
+        stuffToPaste.AssignLiteral("<object data=\"");
         stuffToPaste.Append(urltext);
-        stuffToPaste.AppendLiteral("\" alt=\"\" />");
+        stuffToPaste.AppendLiteral("\" alt=\"\"");
+        nsAutoString attributeStr;
+        rv = GetGraphicsDefaultsAsString( attributeStr);
+        if (NS_SUCCEEDED(rv) && attributeStr.Length())
+        {
+          stuffToPaste.Append(PRUnichar(' '));
+          stuffToPaste += attributeStr;
+        }
+        stuffToPaste.AppendLiteral(" />");
         nsAutoEditBatch beginBatching(this);
         nsCOMPtr<nsIDOMDocument> domDoc;
         GetDocument(getter_AddRefs(domDoc));
@@ -3189,24 +3711,74 @@ NS_IMETHODIMP nsHTMLEditor::CopySelectionAsImage(PRBool* _retval)
   NS_ENSURE_SUCCESS(rv, rv);
 
 //  //first put SVG on clipboard if available
-//  nsCOMPtr<nsIStorageStream> svgStorage;
-//  nsresult res = NS_NewStorageStream(4096, PR_UINT32_MAX, getter_AddRefs(svgStorage));
-//  if (svgStorage)
-//    nsCOMPtr<nsIOutputStream> svgOut = svgStream->getOutputStream(0);
-//  if (svgOut)
-//  {
-//    NS_NAMED_LITERAL_STRING(svgExt, "svg");
-//    res = presShell->DrawSelectionToFile(selection, svgExt, svgOut, _retval);
-//    if (NS_SUCCEEDED(res))
-//    {
-//      nsCOMPtr<nsIInputStream> svgIn = svgStream->newInputStream(0);
-//      //Now we want to parse svgIn to strip file header info from beginning and end? Copy the rest as strings into tran?
-//    }
-//  }
+  nsCOMPtr<nsIStorageStream> svgStorage;
+  nsresult res = NS_NewStorageStream(4096, PR_UINT32_MAX, getter_AddRefs(svgStorage));
+  nsCOMPtr<nsIOutputStream> svgOut;
+  if (svgStorage)
+    svgStorage->GetOutputStream(0, getter_AddRefs(svgOut));
+  if (svgOut)
+  {
+    NS_NAMED_LITERAL_STRING(svgExt, "svg");
+    res = presShell->DrawSelectionToFile(selection, EmptyString(), svgExt, svgOut, _retval);
+    if (NS_SUCCEEDED(res))
+    {
+      nsCAutoString outString;
+      nsCOMPtr<nsIInputStream> svgRead;
+      res = svgStorage->NewInputStream(0, getter_AddRefs(svgRead));
+      PRUint32 available, bytesRead;
+      svgRead->Available(&available);
+      char* inString = new char[available + 1];
+      PRInt32 svgStart = 0;
+      res = svgRead->Read(inString, available, &bytesRead);
+      inString[available] = 0;  //hand-null-terminate necessary??
+      nsDependentCString svgFileStr(inString);
+      NS_NAMED_LITERAL_CSTRING(svgEltStart, "<svg");
+      svgStart = svgFileStr.Find(svgEltStart,PR_TRUE);
+      if (svgStart < 0)
+      {
+        PRInt32 eltStart = svgFileStr.Find("<", PR_FALSE);
+        PRInt32 eltEnd = 0;
+        nsCString nodeCnts;
+        while (svgStart < 0)
+        {
+          eltStart = svgFileStr.Find("<", eltEnd, PR_FALSE);
+          if (eltStart >= 0)
+          {
+            eltEnd = svgFileStr.Find(">", eltStart, PR_FALSE);
+            if (eltStart < eltEnd)
+            {
+              nodeCnts = Substring(svgFileStr, eltStart + 1, eltEnd - eltStart - 1);
+              nodeCnts.CompressWhitespace();
+              if (StringBeginsWith(nodeCnts, NS_LITERAL_CSTRING("svg")))
+                svgStart = eltStart;
+            }
+            if (eltEnd < 0)
+              break;
+          }
+          else
+            break;
+        }
+      }
+      if (svgStart < 0)
+        svgStart = 0;
+      outString = Substring(svgFileStr, svgStart);
+
+      nsCOMPtr<nsISupportsString> svgWrapper;
+      svgWrapper = do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID, &res);
+      NS_ENSURE_SUCCESS(res, res);
+      res = svgWrapper->SetData(NS_ConvertUTF8toUTF16(outString));
+
+      // copy the svg data onto the transferable
+      rv = trans->AddDataFlavor(kHTMLMime);
+      nsCOMPtr<nsISupports> genericDataObj(do_QueryInterface(svgWrapper));
+      rv = trans->SetTransferData(kHTMLMime, genericDataObj, outString.Length() * sizeof(PRUnichar));
+      NS_ENSURE_SUCCESS(rv, rv);
+    }
+  }
 
   //then put a JPEG image (actually, this puts a native bitmap image)
   nsCOMPtr<nsIImage> imageObj;
-  nsresult res = presShell->RenderSelectionToImage(selection, getter_AddRefs(imageObj));
+  res = presShell->RenderSelectionToImage(selection, getter_AddRefs(imageObj));
   if (imageObj)
   {
 

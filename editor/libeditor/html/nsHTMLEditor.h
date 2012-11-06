@@ -903,6 +903,12 @@ protected:
                                     PRInt32 & aMarginLeft,
                                     PRInt32 & aMarginTop);
 
+  float    ConvertLengthStringToPixels(const nsAString& lengthStr, float* pOriginal);
+
+  nsresult ApplyGraphicsDefaults( nsIDOMElement* graphic, PRBool bIsPlot=PR_FALSE );
+  nsresult GetGraphicsDefaultsAsString( nsAString& retStr, PRBool bIsPlot=PR_FALSE );
+
+
   /* PACKED BOOLEANS FOR RESIZING, ABSOLUTE POSITIONING AND */
   /* INLINE TABLE EDITING */
 
