@@ -74,8 +74,8 @@ var gVideo = false;
 
 var gErrorMessageShown = false;
 var importTimer;
-var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "svg", "xvc","xvz"];
-var typesetGraphicTypes = ["eps", "pdf", "png", "jpg"];
+//var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "svg", "xvc","xvz"];
+//var typesetGraphicTypes = ["eps", "pdf", "png", "jpg"];
 var videoTypes = ["avi","mov","qt","mp4","mpeg","mpg","prc","rm","rv","swf","u3d","wmv"];
 
 #ifdef PROD_SNB
@@ -1113,7 +1113,7 @@ function getLoadableGraphicFile(inputURL)
 
   if (extension)  //if not, should we just do the copy and hope for the best? Or forget it?
   {
-    var nNative = nativeGraphicTypes.indexOf(extension.toLowerCase());
+    var nNative = graphicsConverter.nativeGraphicTypes.indexOf(extension.toLowerCase());
     if ((nNative < 0) && !gVideo)
     {
       forceIsImport(true);
@@ -1142,13 +1142,13 @@ function getLoadableGraphicFile(inputURL)
       fileName = file.path;
     if (bNeedTypeset)
     {
-      if (typesetGraphicTypes.indexOf(extension.toLowerCase()) < 0)  //Need file in LaTeX-friendly format
+      if (graphicsConverter.typesetGraphicTypes.indexOf(extension.toLowerCase()) < 0)  //Need file in LaTeX-friendly format
       {
         var bCanUseImport = gVideo;  //if this is a video file, we don't consider converting it, otherwise check
         for (var kk = 0; !bCanUseImport && (kk < importFiles.length); ++kk)
         {
           var impExtension = getExtension(importFiles[kk].leafName).toLowerCase();
-          if (typesetGraphicTypes.indexOf(impExtension) >= 0)
+          if (graphicsConverter.typesetGraphicTypes.indexOf(impExtension) >= 0)
             bCanUseImport = true;
         }
         if (!bCanUseImport)
@@ -2805,8 +2805,8 @@ function getGraphicsImportFilterString()
 {
   var convertData = graphicsConverter.getConvertibleFileTypes(window);
   var typeArray = [];
-  for (var jx = 0; jx < nativeGraphicTypes.length; ++jx)
-    typeArray.push("*." + nativeGraphicTypes[jx]);
+  for (var jx = 0; jx < graphicsConverter.nativeGraphicTypes.length; ++jx)
+    typeArray.push("*." + graphicsConverter.nativeGraphicTypes[jx]);
   var newType;
   for (var ix = 0; ix < convertData.length; ++ix)
   {
