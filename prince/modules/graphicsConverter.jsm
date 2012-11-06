@@ -1,9 +1,14 @@
 var EXPORTED_SYMBOLS = ["graphicsConverter", "graphicsTimerHandler", "graphicsMultipleTimerHandler" ];
 
 Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/pathutils.jsm");
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 var graphicsConverter =
 {
+  nativeGraphicTypes : ["png", "gif", "jpg", "jpeg", "pdf", "svg", "xvc","xvz"],
+  typesetGraphicTypes : ["eps", "pdf", "png", "jpg"],
+
   getGraphicsFilterDirPath : function(filterName)
   {
     if (!this.imageMagickDir || !this.uniconvertorDir || !this.wmf2epsDir)
@@ -299,6 +304,166 @@ var graphicsConverter =
       retExt = fileName.substr(splitAt + 1);
     }
     return {name : retName, ext : retExt};
+  },
+
+  isDisplayableGraphicFile : function(fileName)
+  {
+    var pathAndExt = this.splitExtension(fileName);
+    return this.nativeGraphicTypes.indexOf(pathAndExt.ext);
+  },
+
+  //baseDir is an nsIFile
+  //return an nsILocalFile
+  resolveRelativeFilePath : function(baseDir, relPathStr)
+  {
+    var baseURI, resolvedURI, resolvedURIStr, filePath;
+    var outFile = null;
+    try
+    {
+      baseURI = msiFileURLFromFile( baseDir );
+      resolvedURIStr = baseURI.resolve(relPathStr);
+      resolvedURI = msiURIFromString(resolvedURIStr);
+      filePath = msiPathFromFileURL(resolvedURI);
+      outFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      outFile.initWithPath(filePath);
+    } catch(ex) {dump("Exception in graphicsConverter.resolveRelativeFilePath: " + ex + "\n");}
+    return outFile;
+  },
+
+  canUseFormatForTypeset : function(extension)
+  {
+    return (this.typesetGraphicTypes.indexOf(extension.toLowerCase()) >= 0);
+  },
+
+  //Note: documentDir should be an nsILocalFile
+  ensureTypesetGraphicForElement : function(objElement, documentDir, aWindow, callbackObject)
+  {
+    dump("In graphicsConverter.ensureTypesetGraphicForElement, 1\n");
+    var gfxFileStr = objElement.getAttribute("data");
+    if (!gfxFileStr || !gfxFileStr.length)
+      gfxFileStr = objElement.getAttribute("src");
+    if (!gfxFileStr || !gfxFileStr.length)
+    {
+      dump("Error in graphicsConverter.ensureTypesetGraphicForElement! No data or src for " + objElement.nodeName + " element.\n");
+      return false;
+    }
+    if (!this.isDisplayableGraphicFile(gfxFileStr))
+      return false;
+
+    var theUnits = objElement.getAttribute("units");
+    if (!theUnits || !theUnits.length)
+      theUnits = "in";
+    var theWidth = objElement.getAttribute("imageWidth") || objElement.getAttribute("width") || objElement.getAttribute("naturalWidth");
+    var theHeight = objElement.getAttribute("imageHeight") || objElement.getAttribute("height") || objElement.getAttribute("naturalHeight");
+    if (!theWidth || !theHeight)
+    {
+      var pixWidth, pixHeight;
+      var handler = new UnitHandler();
+      try
+      {
+        if (!theWidth)
+        {
+          pixWidth = objElement.offsetWidth;
+          handler.initCurrentUnit(theUnits);
+          var attrValStr = String(handler.getValueOf(pixWidth,"px"));
+          objElement.setAttribute("imageWidth", attrValStr);
+          objElement.setAttribute("naturalWidth", attrValStr);
+        }
+        if (!theHeight)
+        {
+          pixHeight = objElement.offsetHeight;
+          attrValStr = String(handler.getValueOf(pixHeight,"px"));
+          objElement.setAttribute("imageHeight", attrValStr);
+          objElement.setAttribute("naturalHeight", attrValStr);
+        }
+      } catch(exc) {dump("In graphicsConverter.ensureTypesetGraphicForElement, error [" + exc + "] trying to get offsetWidth or offsetHeight for graphic [" + gfxFileStr + "]\n");}
+    }
+
+    var typesetFile = objElement.getAttribute("typesetSource");
+    if (typesetFile && typesetFile.length)
+    {
+      var typesetNSFile = this.resolveRelativeFilePath(documentDir, typesetFile);
+      if (typesetNSFile && typsetNSFile.exists())
+        return false;
+    }
+    dump("In graphicsConverter.ensureTypesetGraphicForElement, 2\n");
+    var gfxFile = this.resolveRelativeFilePath(documentDir, gfxFileStr);
+    dump("In graphicsConverter.ensureTypesetGraphicForElement, 3\n");
+    gfxFileStr = gfxFile.leafName;
+    var nameAndExt = this.splitExtension(gfxFileStr);
+    if (this.canUseFormatForTypeset(nameAndExt.ext))
+      return false;
+
+    var bChanged = false;
+    var graphicsDirNames = ["tcache", "graphics", "gcache"];
+    var targetDir, dirEntries;
+    var aFile, fName, fNameAndExt;
+    for (var jj = 0; jj < graphicsDirNames.length; ++jj)
+    {
+      dump("In graphicsConverter.ensureTypesetGraphicForElement, " + String(jj+4) + "\n");
+      targetDir = documentDir.clone();
+      targetDir.append(graphicsDirNames[jj]);
+      if (!targetDir.exists())
+        continue;
+      dirEntries = targetDir.directoryEntries;
+      while (dirEntries.hasMoreElements())
+      {
+        aFile = dirEntries.getNext().QueryInterface(Components.interfaces.nsILocalFile);
+        fNameAndExt = this.splitExtension(aFile.leafName);
+        if ( (fNameAndExt.name == nameAndExt.name) && this.canUseFormatForTypeset(nameAndExt.ext) )
+          return false;  //no action needed
+      }
+    }
+
+    //if we get here, we need to generate a typesettable graphic file
+    targetDir = documentDir.clone();
+    targetDir.append("tcache");
+    if (!targetDir.exists())
+      targetDir.create(1, 0755);
+    dump("In graphicsConverter.ensureTypesetGraphicForElement, 7\n");
+    var targExtArray = this.getTargetFileExtensions(gfxFile, targetDir, "tex", aWindow);
+    var targetFile;
+    dump("In graphicsConverter.ensureTypesetGraphicForElement, 8\n");
+    if (targExtArray && targExtArray.length)
+    {
+      fName = nameAndExt.name + targExtArray[targExtArray.length - 1];
+      targetFile = targetDir.clone();
+      targetFile.append(fName);
+      this.doImportGraphicsToTarget(gfxFile, targetFile, "tex", aWindow, callbackObject);
+      bChanged = true;
+    }
+    dump("In graphicsConverter.ensureTypesetGraphicForElement, 9\n");
+    return bChanged;
+  },
+
+  ensureTypesetGraphicsForDocument : function(aDocument, aWindow)
+  {
+    dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 1\n");
+    var docURI = msiURIFromString(aDocument.documentURI);
+    var filePath = msiPathFromFileURL(docURI);
+    var documentDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//    dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 2\n  with documentURI=[" + aDocument.documentURI + "]\n");
+    documentDir.initWithPath(filePath);
+    dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 3\n");
+    documentDir = documentDir.parent;
+
+    var objList = aDocument.getElementsByTagName("object");
+    var imgList = aDocument.getElementsByTagName("img");
+    var multiCallbackHandler = new graphicsMultipleTimerHandler();
+    var timerHandler;
+    var bChanged = false;
+
+    for (var ii=0; ii < objList.length; ++ii)
+    {
+      timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
+      bChanged = this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, timerHandler) || bChanged;
+    }
+    for (ii=0; ii < imgList.length; ++ii)
+    {
+      timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
+      bChanged = this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, timerHandler) || bChanged;
+    }
+    return (bChanged ? multiCallbackHandler : null);
   }
 };
 
@@ -603,15 +768,29 @@ var graphicsMultipleTimerBase =
   stopAll : function()
   {
     for (var ix = 0; ix < this.mTimerHandlers.length; ++ix)
-      this.mTimerHandlers[ix].stop();
+    {
+      if (this.mTimerHandlers[ix].mHandler)
+        this.mTimerHandlers[ix].mHandler.stop();
+    }
   },
 
   getStatus : function(aTargFile)
   {
     var ix = this.findByTargFile(aTargFile);
-    if (ix > 0)
-      return this.mTimerHandlers[ix].importStatus;
+    if (ix > 0 && this.mTimerHandlers[ix].mHandler)
+      return this.mTimerHandlers[ix].mHandler.importStatus;
     return graphicsTimerCallbackBase.statusNone;
+  },
+
+  getActiveCount : function()
+  {
+    var rv = 0;
+    for (var ix = 0; ix < this.mTimerHandlers.length; ++ix)
+    {
+      if (this.mTimerHandlers[ix] && this.mTimerHandlers[ix].mHandler && this.mTimerHandlers[ix].mHandler.isLoading())
+        ++rv;
+    }
+    return rv;
   },
 
   findByTargFile : function(targFile)
