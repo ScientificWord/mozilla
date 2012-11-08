@@ -84,6 +84,8 @@
 #include "nsIEditorDocShell.h"
 #include "nsIEventStateManager.h"
 #include "nsISelection.h"
+#include "nsIDOMHTMLElement.h"
+#include "nsIDOMHTMLDocument.h"
 #include "nsISelectionPrivate.h"
 #include "nsFrameSelection.h"
 #include "nsHTMLParts.h"
@@ -485,8 +487,7 @@ nsFrame::Destroy()
   nsIPresShell *shell = presContext->GetPresShell();
   NS_ASSERTION(!(mState & NS_FRAME_OUT_OF_FLOW) ||
                !shell->FrameManager()->GetPlaceholderFrameFor(this),
-"Deleting out of flow without tearing down placeholder relationship; see comments in nsFrame.h"
-               );
+                "Deleting out of flow without tearing down placeholder relationship; see comments in nsFrame.h" );
 
   shell->NotifyDestroyingFrame(this);
 
@@ -3557,7 +3558,7 @@ nsIntRect nsIFrame::GetScreenRect() const
       nsRect ourRect = mRect;
       ourRect.MoveTo(toViewOffset + toWidgetOffset);
       ourRect.ScaleRoundOut(1.0f / PresContext()->AppUnitsPerDevPixel());
-      // Is it safe to pass the same rect for both args of WidgetToScreen?
+      // Is isafe to pass the same rect for both args of WidgetToScreen?
       // It's not clear, so let's not...
       nsIntRect ourPxRect(ourRect.x, ourRect.y, ourRect.width, ourRect.height);
 
@@ -3587,6 +3588,7 @@ NS_IMETHODIMP nsFrame::GetOffsetFromView(nsPoint&  aOffset,
   return NS_OK;
 }
 
+//
 // The (x,y) value of the frame's upper left corner is always
 // relative to its parentFrame's upper left corner, unless
 // its parentFrame has a view associated with it, in which case, it
@@ -7759,5 +7761,64 @@ void DR_cookie::Change() const
 
 #endif
 // End Display Reflow
+
+NS_IMETHODIMP
+nsFrame::MoveLeftAtDocStart(nsISelection * sel)
+{
+  nsPresContext* presContext = PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsIDocument *doc = shell->GetDocument();
+  nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
+    do_QueryInterface(doc);
+  if (htmlDoc) {
+    nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+    htmlDoc->GetBody(getter_AddRefs(bodyElement));
+    sel->Collapse(bodyElement, 0);
+  }
+  return NS_OK;
+
+//  nsIFrame* parent = this;
+//  nsIAtom * frametype = parent->GetType();
+//  while (parent && (frametype != nsGkAtoms::blockFrame))
+//  {
+//    parent = parent->GetParent();
+//    frametype = parent->GetType();
+//  }
+//  parent = parent->GetParent();
+//  frametype = parent->GetType();
+//  while (parent && (frametype != nsGkAtoms::blockFrame))
+//  {
+//    parent = parent->GetParent();
+//    frametype = parent->GetType();
+//  }
+//  if (parent)
+//  {
+//    nsCOMPtr<nsIDOMNode> node;
+//    node = do_QueryInterface(parent->GetContent());
+//    sel->Collapse(node, 0);
+//    return NS_OK;
+//  }
+//  return NS_ERROR_FAILURE;
+}
+
+NS_IMETHODIMP
+nsFrame::MoveRightAtDocEnd(nsISelection * sel)
+{
+  PRUint32 offset;
+  nsPresContext* presContext = PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsIDocument *doc = shell->GetDocument();
+  nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
+    do_QueryInterface(doc);
+  if (htmlDoc) {
+    nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+    htmlDoc->GetBody(getter_AddRefs(bodyElement));
+    nsCOMPtr<nsIDOMNodeList> nodeList;    
+    bodyElement->GetChildNodes(getter_AddRefs(nodeList));
+    nodeList->GetLength(&offset);
+    sel->Collapse(bodyElement, offset);
+  }
+  return NS_OK;
+}
 
 #endif
