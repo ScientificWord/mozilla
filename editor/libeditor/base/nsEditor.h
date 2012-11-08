@@ -386,7 +386,7 @@ protected:
 
 public:
 
-  NS_IMETHOD InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNode>& parent, PRInt32 aPosition, PRInt32 *_retval);
+ // NS_IMETHOD InsertBufferNodeIfNeeded(nsIDOMNode* node, nsIDOMNode ** outNode, nsIDOMNode * parent, nsIDOMNode ** outParent, PRInt32 aPosition, PRInt32 *_retval);
 
   /** All editor operations which alter the doc should be prefaced
    *  with a call to StartOperation, naming the action and direction */

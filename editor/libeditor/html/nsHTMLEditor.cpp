@@ -2317,12 +2317,14 @@ nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
   NS_ENSURE_TRUE(ioParent, NS_ERROR_NULL_POINTER);
   NS_ENSURE_TRUE(*ioParent, NS_ERROR_NULL_POINTER);
   NS_ENSURE_TRUE(ioOffset, NS_ERROR_NULL_POINTER);
+  nsCOMPtr<nsIDOMNode> node(aNode);
   PRInt32 offsetOfInsert = *ioOffset;
-  nsCOMPtr<nsIDOMNode> newParent(*ioParent);
-  nsCOMPtr<nsIDOMNode> newNode(aNode);
+  nsCOMPtr<nsIDOMNode> parent(*ioParent);
+  nsCOMPtr<nsIDOMNode> newNode;
+  nsCOMPtr<nsIDOMNode> newParent;
   nsresult res;
 
-  InsertBufferNodeIfNeeded( newNode, newParent, *ioOffset, &offsetOfInsert);
+  InsertBufferNodeIfNeeded( node, getter_AddRefs(newNode), parent, getter_AddRefs(newParent), *ioOffset, &offsetOfInsert);
   // Now we can insert the new node
   if (offsetOfInsert >= 0)
     res = InsertNode(newNode, newParent, offsetOfInsert);
