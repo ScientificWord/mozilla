@@ -1562,11 +1562,22 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   if (NS_SUCCEEDED(result))
   {
     mHint = tHint; //save the hint parameter now for the next time
-    result = mDomSelections[index]->
+  }
+  else
+  {
+    if (pos.mDirection == eDirPrevious)
+    {
+      frame->MoveLeftAtDocStart(mDomSelections[index]);
+    }
+    else
+    {
+      frame->MoveRightAtDocEnd(mDomSelections[index]);
+
+    }
+  }
+  result = mDomSelections[index]->
       ScrollIntoView(nsISelectionController::SELECTION_FOCUS_REGION,
                      PR_FALSE, PR_FALSE);
-  }
-
   return result;
 }
 
