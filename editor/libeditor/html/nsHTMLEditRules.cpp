@@ -1455,40 +1455,30 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   // get the (collapsed) selection location
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
+    // we need to get the doc
+  nsCOMPtr<nsIDOMDocument>doc;
+  res = mHTMLEditor->GetDocument(getter_AddRefs(doc));
+  if (NS_FAILED(res)) return res;
 
   // dont put text in places that can't have it
   if (!bPlaintext && !mHTMLEditor->IsTextNode(selNode) &&
       !mHTMLEditor->CanContainTag(selNode, NS_LITERAL_STRING("#text")))
   {
-    // If a text node is not allowed, check to see if the default paragraph
-    // tag is acceptable. If so, insert a paragraph node and then continue.
-    nsString defPara;
-    nsIAtom * atomDummy;
-    mHTMLEditor->mtagListManager->GetDefaultParagraphTag(&atomDummy, defPara);
-    if (!mHTMLEditor->CanContainTag(selNode, defPara))
-      return NS_ERROR_FAILURE;
-    // else insert the default paragraph
-    mHTMLEditor->SetParagraphFormat(defPara);
-    // Commenting out the following code since the selection is already set
-//    // We want to move the selection here as well.
-//    // selNode is the parent node
-//    nsCOMPtr<nsIDOMNodeList> nodelist;
-//    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(selNode);
-//    if (!element) return false;
-//    res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
-//    res = nodelist->Item(0, getter_AddRefs(selNode)); // now selNode is the new selection node.
-//    aSelection->Collapse(selNode,0);
+    
+    nsCOMPtr<nsIDOMText>textNode;
+    res = doc->CreateTextNode(EmptyString(), getter_AddRefs(textNode));
+    nsCOMPtr<nsIDOMNode> outNode;
+    nsCOMPtr<nsIDOMNode> outParent;
+    mHTMLEditor->InsertBufferNodeIfNeeded(textNode, getter_AddRefs(outNode), selNode, getter_AddRefs(outParent), selOffset, &selOffset);
+    aSelection->Collapse(outNode, 0);
+    // res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
 #ifdef DEBUG_Barry
     printf("Just inserted default paragraph (%s) here\n", defPara.BeginReading());
 #endif
   }
 
-  // we need to get the doc
-  nsCOMPtr<nsIDOMDocument>doc;
-  res = mHTMLEditor->GetDocument(getter_AddRefs(doc));
+  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
-  if (!doc) return NS_ERROR_NULL_POINTER;
-
   if (aAction == kInsertTextIME)
   {
     // Right now the nsWSRunObject code bails on empty strings, but IME needs
@@ -1507,10 +1497,6 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   else // aAction == kInsertText
   {
     // find where we are
-     nsCOMPtr<nsIDOMNode> curNode;
-     PRInt32 curOffset;
-     res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(curNode), &curOffset);
-    if (NS_FAILED(res)) return res;
 
     // is our text going to be PREformatted?
     // We remember this so that we know how to handle tabs.
@@ -1561,12 +1547,12 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
         // is it a return?
         if (subStr.Equals(newlineStr))
         {
-          res = mHTMLEditor->CreateBRImpl(address_of(curNode), &curOffset, address_of(unused), nsIEditor::eNone);
+          res = mHTMLEditor->CreateBRImpl(address_of(selNode), &selOffset, address_of(unused), nsIEditor::eNone);
           pos++;
         }
         else
         {
-          res = mHTMLEditor->InsertTextImpl(subStr, address_of(curNode), &curOffset, doc);
+          res = mHTMLEditor->InsertTextImpl(subStr, address_of(selNode), &selOffset, doc);
         }
         if (NS_FAILED(res)) return res;
       }
@@ -1596,25 +1582,25 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
         }
 
         nsDependentSubstring subStr(tString, oldPos, subStrLen);
-        nsWSRunObject wsObj(mHTMLEditor, curNode, curOffset);
+        nsWSRunObject wsObj(mHTMLEditor, selNode, selOffset);
 
         // is it a tab?
         if (subStr.Equals(tabStr))
         {
-          res = wsObj.InsertText(spacesStr, address_of(curNode), &curOffset, doc);
+          res = wsObj.InsertText(spacesStr, address_of(selNode), &selOffset, doc);
           if (NS_FAILED(res)) return res;
           pos++;
         }
         // is it a return?
         else if (subStr.Equals(newlineStr))
         {
-          res = wsObj.InsertBreak(address_of(curNode), &curOffset, address_of(unused), nsIEditor::eNone);
+          res = wsObj.InsertBreak(address_of(selNode), &selOffset, address_of(unused), nsIEditor::eNone);
           if (NS_FAILED(res)) return res;
           pos++;
         }
         else
         {
-          res = wsObj.InsertText(subStr, address_of(curNode), &curOffset, doc);
+          res = wsObj.InsertText(subStr, address_of(selNode), &selOffset, doc);
           if (NS_FAILED(res)) return res;
         }
         if (NS_FAILED(res)) return res;
@@ -1623,7 +1609,7 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
     nsCOMPtr<nsISelection> selection(aSelection);
     nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
     selPriv->SetInterlinePosition(PR_FALSE);
-    if (curNode) aSelection->Collapse(curNode, curOffset);
+    if (selNode) aSelection->Collapse(selNode, selOffset);
     // manually update the doc changed range so that AfterEdit will clean up
     // the correct portion of the document.
     if (!mDocChangeRange)
@@ -1633,8 +1619,8 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
     }
     res = mDocChangeRange->SetStart(selNode, selOffset);
     if (NS_FAILED(res)) return res;
-    if (curNode)
-      res = mDocChangeRange->SetEnd(curNode, curOffset);
+    if (selNode)
+      res = mDocChangeRange->SetEnd(selNode, selOffset);
     else
       res = mDocChangeRange->SetEnd(selNode, selOffset);
     if (NS_FAILED(res)) return res;
@@ -4111,7 +4097,8 @@ nsHTMLEditRules::WillMakeBasicBlock(nsISelection *aSelection,
 
   // reset list count
   listCount = arrayOfNodes.Count();
-
+  nsAutoString firstNodeName;
+  arrayOfNodes[0]->GetNodeName(firstNodeName);
   // if nothing visible in list, make an empty block
   if (ListIsEmptyLine(arrayOfNodes))
   {
@@ -5904,27 +5891,20 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
     if (blockParent == aBodyNode)
     {
       PRBool bodyIsEmpty;
+      nsCOMPtr<nsIDOMDocument>doc;
+      res = mHTMLEditor->GetDocument(getter_AddRefs(doc));
+      if (NS_FAILED(res)) return res;
       res = mHTMLEditor->IsEmptyNode(aBodyNode, &bodyIsEmpty, PR_TRUE, PR_FALSE);
       if (bodyIsEmpty)
       {
-        nsString defPara;
-        nsIAtom * atomDummy;
-        mHTMLEditor->mtagListManager->GetDefaultParagraphTag(&atomDummy, defPara);
-        if (!mHTMLEditor->CanContainTag(blockParent, defPara))
-          return NS_ERROR_FAILURE;
-        // else insert the default paragraph
-        mHTMLEditor->SetParagraphFormat(defPara);
-        // We want to move the selection here as well.
-        // blockParent is the parent node
-        nsCOMPtr<nsIDOMNodeList> nodelist;
-        nsCOMPtr<nsIDOMElement> element = do_QueryInterface(blockParent);
-        if (!element) return false;
-        res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
-        res = nodelist->Item(0, getter_AddRefs(blockParent)); // now selNode is the new selection node.
-        aSelection->Collapse(blockParent,0);
-#ifdef DEBUG_Barry
-        printf("Just inserted default paragraph (%S) here\n", defPara.BeginReading());
-#endif
+        PRInt32 offset;
+        nsCOMPtr<nsIDOMNode> body = aBodyNode;
+        nsEditor * ed = static_cast<nsEditor*>(mHTMLEditor);
+        nsCOMPtr<nsIDOMText> textNode;
+        res = doc->CreateTextNode(EmptyString(), getter_AddRefs(textNode));
+        nsCOMPtr<nsIDOMNode> tNode = do_QueryInterface(textNode);
+        ed->InsertBufferNodeIfNeeded(tNode, getter_AddRefs(tNode), body, getter_AddRefs(body), 0, &offset);
+        aSelection->Collapse(tNode, 0);
       }
       else // advance cursor into next text or block
       {
