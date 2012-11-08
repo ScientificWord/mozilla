@@ -172,6 +172,8 @@ public:
                            nsIFrame*       aFrameList);
   NS_IMETHOD  RemoveFrame(nsIAtom*        aListName,
                           nsIFrame*       aOldFrame);
+  NS_IMETHOD MoveRightAtDocEnd(nsISelection * sel);
+  NS_IMETHOD MoveLeftAtDocStart(nsISelection * sel);
   virtual void Destroy();
   virtual nsStyleContext* GetAdditionalStyleContext(PRInt32 aIndex) const;
   virtual void SetAdditionalStyleContext(PRInt32 aIndex,
@@ -292,6 +294,8 @@ public:
   // Compute tight bounds assuming this frame honours its border, background
   // and outline, its children's tight bounds, and nothing else.
   nsRect ComputeSimpleTightBounds(gfxContext* aContext) const;
+
+
   
   /**
    * A helper, used by |nsFrame::ComputeSize| (for frames that need to
