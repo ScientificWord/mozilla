@@ -321,7 +321,7 @@ protected:
   nsresult GetStructNodeFromNode(nsIDOMNode *inNode, nsIDOMElement ** structNode, const nsAString& notThisTag);
 
   /** creates a bogus text node if the document has no editable content */
-   nsresult CreateBogusNodeIfNeeded(nsISelection *aSelection);
+  nsresult CreateBogusNodeIfNeeded(nsISelection *aSelection);
 
 
 // data members

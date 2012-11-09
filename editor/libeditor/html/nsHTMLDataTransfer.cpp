@@ -1639,9 +1639,9 @@ nsHTMLEditor::GetGraphicsDefaultsAsString( nsAString& retStr, PRBool bIsPlot )
           attribStr.Append(PRUnichar('\"'));
           styleStr.AppendLiteral("position: relative; bottom: ");
           if (lengthVal > 0)
-            styleStr.Append(PRUnichar("-"));
+            styleStr.Append(PRUnichar('-'));
           styleStr.AppendFloat(lengthVal);
-          styleStr.Append(PRUnichar(";"));
+          styleStr.Append(PRUnichar(';'));
         }
       }
 

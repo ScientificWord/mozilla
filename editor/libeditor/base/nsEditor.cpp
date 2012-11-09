@@ -1595,6 +1595,8 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
     // then go no further - we can't insert. See if interposing a default paragraph helps.
     if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm))
     {
+      nsCOMPtr<nsIDOMNode> para;
+      htmlEditor->CreateDefaultParagraph(parent, aPosition, getter_AddRefs(para));
       nsString defPara;
       nsIAtom * atomDummy;
       tlm->GetDefaultParagraphTag(&atomDummy, defPara);
@@ -1603,7 +1605,6 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
         return NS_ERROR_FAILURE;
       }
       // else insert the default paragraph
-      nsCOMPtr<nsIDOMNode> para;
       CreateNode(defPara, parent, aPosition, getter_AddRefs(para));
       *outParent = para;
       offsetOfInsert = 0;
