@@ -7266,3 +7266,20 @@ NS_IMETHODIMP nsHTMLEditor::ReadCursorClearedProps(nsAString & _retval)
   mTypeInState->ReadClearedProps((nsAString&)_retval);
   return NS_OK;
 }
+
+NS_IMETHODIMP
+nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, nsIDOMNode **outParaNode)
+{
+  nsString defPara;
+  nsIAtom * atomDummy;
+  nsCOMPtr<msiITagListManager> tlm;
+  GetTagListManager(getter_AddRefs(tlm));
+  tlm->GetDefaultParagraphTag(&atomDummy, defPara);
+  // else insert the default paragraph
+  nsCOMPtr<nsIDOMNode> para;
+  CreateNode(defPara, inParent, inOffset, getter_AddRefs(para));
+  *outParaNode = para;
+  return NS_OK;
+}
+
+
