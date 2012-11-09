@@ -646,6 +646,9 @@ interface nsIHTMLEditor : nsISupports
 
   boolean isAnonymousElement(in nsIDOMElement aElement);
 
+  nsIDOMNode createDefaultParagraph(in nsIDOMNode inParent, in long inOffset);
+
+
   /**
    * A boolean indicating if a return key pressed in a paragraph creates
    * another paragraph or just inserts a <br> at the caret
