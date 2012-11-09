@@ -9295,10 +9295,10 @@ nsHTMLEditRules::AdjustSpecialBreaks(PRBool aSafeToAskFrames)
     arrayOfNodes.RemoveObjectAt(0);
     // we don't want br's in math, however. In some cases, however, we
     // want to put in an <mi tempinput="true"
+    theElement = do_QueryInterface(theNode);
+    theElement->GetTagName(tagName);
     if (nsHTMLEditUtils::IsMath(theNode))
     {
-      theElement = do_QueryInterface(theNode);
-      theElement->GetTagName(tagName);
       if (tagName.EqualsLiteral("mtd"))
       {
         msiUtils::CreateInputbox(mHTMLEditor, PR_FALSE, first, flags, inputNode);
@@ -9307,15 +9307,17 @@ nsHTMLEditRules::AdjustSpecialBreaks(PRBool aSafeToAskFrames)
           nsCOMPtr<nsISelection> sel;
           mHTMLEditor->GetSelection(getter_AddRefs(sel));
           sel->Collapse(inputNode, 0);
+          first = PR_FALSE;
         }
-        first = PR_FALSE;
       }
     }
     else
     {
       res = nsEditor::GetLengthOfDOMNode(theNode, len);
       if (NS_FAILED(res)) return res;
-      res = CreateMozBR(theNode, (PRInt32)len, address_of(brNode));
+      nsCOMPtr<nsIDOMNode> para;
+      res = mHTMLEditor->CreateDefaultParagraph(theNode, (PRInt32)len, getter_AddRefs(para));
+      res = CreateMozBR(para, (PRInt32)0, address_of(brNode));
       if (NS_FAILED(res)) return res;
     }
   }
@@ -11079,3 +11081,4 @@ nsHTMLEditRules::WillRelativeChangeZIndex(nsISelection *aSelection,
   PRInt32 zIndex;
   return absPosHTMLEditor->RelativeChangeElementZIndex(elt, aChange, &zIndex);
 }
+
