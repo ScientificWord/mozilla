@@ -1597,15 +1597,10 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
     {
       nsCOMPtr<nsIDOMNode> para;
       htmlEditor->CreateDefaultParagraph(parent, aPosition, getter_AddRefs(para));
-      nsString defPara;
-      nsIAtom * atomDummy;
-      tlm->GetDefaultParagraphTag(&atomDummy, defPara);
-      if (!CanContainTag(ptr, defPara))
+      if (!para)
       {
         return NS_ERROR_FAILURE;
       }
-      // else insert the default paragraph
-      CreateNode(defPara, parent, aPosition, getter_AddRefs(para));
       *outParent = para;
       offsetOfInsert = 0;
       break;
