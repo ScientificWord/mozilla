@@ -6868,7 +6868,7 @@ nsFrame::VerifyDirtyBitSet(nsIFrame* aFrameList)
     NS_ASSERTION(f->GetStateBits() & NS_FRAME_IS_DIRTY, "dirty bit not set");
   }
 }
-
+#endif
 // Start Display Reflow
 #ifdef DEBUG
 
@@ -7821,4 +7821,4 @@ nsFrame::MoveRightAtDocEnd(nsISelection * sel)
   return NS_OK;
 }
 
-#endif
+
