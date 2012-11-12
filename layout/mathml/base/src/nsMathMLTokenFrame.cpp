@@ -484,16 +484,15 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
 NS_IMETHODIMP 
 nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
 {
-    *_retval = count;
+    *_retval = 0;
     if (count > 0)  //BBM: if this code stays unchanged, this test is redundant
     {
+
       PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
     }
     else
     {
-      *_retval = 0;
       PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
     }
-    *_retval = 0;
     return NS_OK;
 }

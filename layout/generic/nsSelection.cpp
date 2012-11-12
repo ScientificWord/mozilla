@@ -1378,35 +1378,38 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
               if (tempinput.EqualsLiteral("true") ){
                  // found msi input box
 
-                 nsIFrame* miFrame = tempFrame->GetParent();
-                 nsCOMPtr<nsIMathMLCursorMover> pMathCM;
-                 //pMathCM = GetMathCursorMover(miFrame);
-                 pMathCM =  do_QueryInterface(miFrame);
-                 nsIFrame* outFrame;
-                 PRInt32  outOffset;
-                 PRInt32 count = 1;
-                 PRBool  fBailing;
+                nsIFrame* miFrame = tempFrame->GetParent();
+                nsCOMPtr<nsIMathMLCursorMover> pMathCM;
+                pMathCM =  do_QueryInterface(miFrame);
+                if (!pMathCM) {
+                  miFrame = miFrame->GetParent();
+                  pMathCM = do_QueryInterface(miFrame);
+                }
+                if (!pMathCM)
+                  return NS_ERROR_FAILURE;
+                nsIFrame* outFrame;
+                PRInt32  outOffset;
+                PRInt32 count = 1;
+                PRBool  fBailing;
 
-                 if (pMathCM && aKeycode == nsIDOMKeyEvent::DOM_VK_LEFT){
-                     
-                     pMathCM->MoveOutToLeft(miFrame, &outFrame, &outOffset, count, &fBailing, &count);
-                     if (outFrame)
-                        TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
+                if (pMathCM && (aKeycode == nsIDOMKeyEvent::DOM_VK_LEFT)){
+                   
+                   pMathCM->MoveOutToLeft(miFrame, &outFrame, &outOffset, count, &fBailing, &count);
+                   if (outFrame)
+                      TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
 
-                     return NS_OK;
+                   return NS_OK;
 
-                 } else if (pMathCM && aKeycode == nsIDOMKeyEvent::DOM_VK_RIGHT){
-                     
-                     pMathCM->MoveOutToRight(miFrame, &outFrame, &outOffset, count, &fBailing, &count);
-                     if (outFrame)
-                        TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
-                     
-                     return NS_OK;
-                 }
-                 
+                } else if (pMathCM && (aKeycode == nsIDOMKeyEvent::DOM_VK_RIGHT)){
+                   
+                   pMathCM->MoveOutToRight(miFrame, &outFrame, &outOffset, count, &fBailing, &count);
+                   if (outFrame)
+                      TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
+                   
+                   return NS_OK;
+                }
               }
             }
-
           }
         } 
 
