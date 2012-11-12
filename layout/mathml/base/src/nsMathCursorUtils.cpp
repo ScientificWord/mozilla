@@ -33,18 +33,21 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
     // find the last child
-//    pChild = GetLastTextFrame(pFrame);
-//    if (pChild) *aOutFrame = pChild;
-//    else return PR_FALSE;
-//    nsAutoString value;
-//    *aOutOffset = (pChild->GetContent())->TextLength();
-		*aOutFrame = pFrame;
-	  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pFrame->GetContent());
-    nsCOMPtr<nsIDOMNodeList> nodelist;
-		nsresult res = element->GetChildNodes(getter_AddRefs(nodelist));
-		PRUint32 countofNodes;
-		res = nodelist->GetLength(&countofNodes);
-		*aOutOffset = countofNodes;
+    pChild = GetLastTextFrame(pFrame);
+    if (pChild) {
+      *aOutFrame = pChild;
+      *aOutOffset = (pChild->GetContent())->TextLength();
+    }
+    else
+    {
+  		*aOutFrame = pFrame;
+  	  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pFrame->GetContent());
+      nsCOMPtr<nsIDOMNodeList> nodelist;
+  		nsresult res = element->GetChildNodes(getter_AddRefs(nodelist));
+  		PRUint32 countofNodes;
+  		res = nodelist->GetLength(&countofNodes);
+  		*aOutOffset = countofNodes;
+    }
   }
   else // don't put the cursor inside the tag
   {
