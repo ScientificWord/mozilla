@@ -1470,8 +1470,13 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
     nsCOMPtr<nsIDOMNode> outNode;
     nsCOMPtr<nsIDOMNode> outParent;
     mHTMLEditor->InsertBufferNodeIfNeeded(textNode, getter_AddRefs(outNode), selNode, getter_AddRefs(outParent), selOffset, &selOffset);
-    aSelection->Collapse(outNode, 0);
-    // res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
+    // Now we can insert the new node
+    if (selOffset >= 0)
+    {
+      res = mHTMLEditor->InsertNode(outNode, outParent, selOffset);
+      aSelection->Collapse(outNode, 0);
+    }
+    res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
 #ifdef DEBUG_Barry
     printf("Just inserted default paragraph (%s) here\n", defPara.BeginReading());
 #endif
@@ -5902,9 +5907,20 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
         nsEditor * ed = static_cast<nsEditor*>(mHTMLEditor);
         nsCOMPtr<nsIDOMText> textNode;
         res = doc->CreateTextNode(EmptyString(), getter_AddRefs(textNode));
-        nsCOMPtr<nsIDOMNode> tNode = do_QueryInterface(textNode);
-        ed->InsertBufferNodeIfNeeded(tNode, getter_AddRefs(tNode), body, getter_AddRefs(body), 0, &offset);
-        aSelection->Collapse(tNode, 0);
+        if (NS_FAILED(res)) return res;
+        if (!textNode) return NS_ERROR_NULL_POINTER;
+        nsCOMPtr<nsIDOMNode> outNode;
+        nsCOMPtr<nsIDOMNode> outParent;
+        if (textNode)
+        {
+          res = ed->InsertBufferNodeIfNeeded(textNode, getter_AddRefs(outNode), body, getter_AddRefs(outParent), 0, &offset);
+         if (NS_FAILED(res)) return res;
+         // Now we can insert the new node
+          if (offset >= 0) {
+            res = ed->InsertNode(outNode, outParent, offset);
+            aSelection->Collapse(outNode, 0);
+          }
+        }
       }
       else // advance cursor into next text or block
       {
