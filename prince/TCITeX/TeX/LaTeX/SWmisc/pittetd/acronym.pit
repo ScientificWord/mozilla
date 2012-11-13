@@ -1,6 +1,0 @@
-\makeatletter
-\@ifundefined{acronym@patch}{\relax}{\endinput}
-\let\acro\AC@acro
-\let\acronym@patch\@empty
-\makeatother
-\endinput
