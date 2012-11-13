@@ -1279,6 +1279,9 @@ PRBool nsHTMLEditor::IsVisBreak(nsIDOMNode *aNode)
     return PR_FALSE;
   if (!nsTextEditUtils::IsBreak(aNode))
     return PR_FALSE;
+  // msi breaks are always visible
+  if (nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("msibr")))
+    return PR_TRUE;
   // check if there is a later node in block after br
   nsCOMPtr<nsIDOMNode> priorNode, nextNode;
   GetPriorHTMLNode(aNode, address_of(priorNode), PR_TRUE);
@@ -2314,12 +2317,14 @@ nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
   NS_ENSURE_TRUE(ioParent, NS_ERROR_NULL_POINTER);
   NS_ENSURE_TRUE(*ioParent, NS_ERROR_NULL_POINTER);
   NS_ENSURE_TRUE(ioOffset, NS_ERROR_NULL_POINTER);
+  nsCOMPtr<nsIDOMNode> node(aNode);
   PRInt32 offsetOfInsert = *ioOffset;
-  nsCOMPtr<nsIDOMNode> newParent(*ioParent);
-  nsCOMPtr<nsIDOMNode> newNode(aNode);
+  nsCOMPtr<nsIDOMNode> parent(*ioParent);
+  nsCOMPtr<nsIDOMNode> newNode;
+  nsCOMPtr<nsIDOMNode> newParent;
   nsresult res;
 
-  InsertBufferNodeIfNeeded( newNode, newParent, *ioOffset, &offsetOfInsert);
+  InsertBufferNodeIfNeeded( node, getter_AddRefs(newNode), parent, getter_AddRefs(newParent), *ioOffset, &offsetOfInsert);
   // Now we can insert the new node
   if (offsetOfInsert >= 0)
     res = InsertNode(newNode, newParent, offsetOfInsert);
@@ -7261,3 +7266,20 @@ NS_IMETHODIMP nsHTMLEditor::ReadCursorClearedProps(nsAString & _retval)
   mTypeInState->ReadClearedProps((nsAString&)_retval);
   return NS_OK;
 }
+
+NS_IMETHODIMP
+nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, nsIDOMNode **outParaNode)
+{
+  nsString defPara;
+  nsIAtom * atomDummy;
+  nsCOMPtr<msiITagListManager> tlm;
+  GetTagListManager(getter_AddRefs(tlm));
+  tlm->GetDefaultParagraphTag(&atomDummy, defPara);
+  // else insert the default paragraph
+  nsCOMPtr<nsIDOMNode> para;
+  CreateNode(defPara, inParent, inOffset, getter_AddRefs(para));
+  *outParaNode = para;
+  return NS_OK;
+}
+
+
