@@ -36,6 +36,8 @@
   <mathname id="min" type="operator" builtIn="true"><data>insertMathnameOperator('min');</data></mathname>
   <mathname id="Pr" type="operator" builtIn="true"><data>insertMathnameOperator('Pr');</data></mathname>
   <mathname id="projlim" type="operator" builtIn="true"><data>insertMathnameOperator('projlim');</data></mathname>
+  <mathname id="rand" type="function" builtIn="true"><data>insertMathname('rand');</data></mathname>
+  <mathname id="rank" type="function" builtIn="true"><data>insertMathname('rank');</data></mathname>
   <mathname id="sec" type="function" builtIn="true"><data>insertMathname('sec');</data></mathname>
   <mathname id="sup" type="operator" builtIn="true"><data>insertMathnameOperator('sup');</data></mathname>
   <!-- mathname id="varinjlim" type="operator" builtIn="true"><appearance><munder><mi>lim</mi><mo stretchy="true" accent="true">&rarr;</mo></munder></appearance><data>insertMathnameOperator('varinjlim');</data></mathname>
