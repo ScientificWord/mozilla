@@ -1471,3 +1471,4 @@ nsTextEditRules::CreateMozBR(nsIDOMNode *inParent, PRInt32 inOffset, nsCOMPtr<ns
   }
   return res;
 }
+
