@@ -5,10 +5,11 @@
 #include "nsMathCursorUtils.h"
 #include "nsMathMLCursorMover.h"
 #include "nsIDOMNodeList.h"
+#include "nsGkAtoms.h"
 
 PRBool IsMathFrame( nsIFrame * aFrame );
 PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
-{  
+{
   PRBool retval = PR_FALSE;
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aFrame->GetContent());
   if (element)
@@ -32,18 +33,21 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
     // find the last child
-//    pChild = GetLastTextFrame(pFrame);
-//    if (pChild) *aOutFrame = pChild;
-//    else return PR_FALSE;
-//    nsAutoString value;
-//    *aOutOffset = (pChild->GetContent())->TextLength();
-		*aOutFrame = pFrame;
-	  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pFrame->GetContent());
-    nsCOMPtr<nsIDOMNodeList> nodelist;
-		nsresult res = element->GetChildNodes(getter_AddRefs(nodelist));
-		PRUint32 countofNodes;
-		res = nodelist->GetLength(&countofNodes);
-		*aOutOffset = countofNodes;
+    pChild = GetLastTextFrame(pFrame);
+    if (pChild) {
+      *aOutFrame = pChild;
+      *aOutOffset = (pChild->GetContent())->TextLength();
+    }
+    else
+    {
+  		*aOutFrame = pFrame;
+  	  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pFrame->GetContent());
+      nsCOMPtr<nsIDOMNodeList> nodelist;
+  		nsresult res = element->GetChildNodes(getter_AddRefs(nodelist));
+  		PRUint32 countofNodes;
+  		res = nodelist->GetLength(&countofNodes);
+  		*aOutOffset = countofNodes;
+    }
   }
   else // don't put the cursor inside the tag
   {
@@ -64,7 +68,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
       *aOutFrame = GetFirstTextFramePastFrame(pFrame);
       *aOutOffset = count;
 //	    pParent = pFrame->GetParent();
-//	    *aOutFrame = pParent; 
+//	    *aOutFrame = pParent;
 //			(*aOutOffset) = 1;
 //			pChild = pParent->GetFirstChild(nsnull);
 //			while (pChild && pChild != pFrame)
@@ -72,7 +76,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
 //				pChild = pChild->GetNextSibling();
 //				(*aOutOffset)++;
 //			}
-    } 
+    }
 //    (*paPos)->mMath = PR_TRUE;
   }
   return PR_TRUE;
@@ -91,7 +95,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
     {
       count = 0;
       *aOutOffset = count;
-      *aOutFrame = pChild; 
+      *aOutFrame = pChild;
     }
   }
   else // don't put the cursor inside the tag
@@ -104,10 +108,19 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
 //      *aOutFrame = pParent;
 //    }
 //    else
-//    { 
+//    {
       pChild = GetLastTextFrameBeforeFrame(pFrame);
       *aOutFrame = pChild;
-      *aOutOffset = (pChild->GetContent())->TextLength() - count;
+      if (pChild)
+      {
+        nsIAtom*  frameType = pChild->GetType();
+        if (nsGkAtoms::textFrame == frameType)
+          *aOutOffset = (pChild->GetContent())->TextLength() - count;
+        else
+          *aOutOffset = 0;
+      }
+      else
+        return PR_FALSE;
 //     }
   }
   return PR_TRUE;
@@ -118,7 +131,7 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
   if (!pFrame) return nsnull;
   nsIAtom* type = pFrame->GetType();
   nsIFrame * pRet = nsnull;
-  nsIFrame * pChild = nsnull; 
+  nsIFrame * pChild = nsnull;
   if (type == nsGkAtoms::textFrame )
   {
     if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
@@ -147,7 +160,7 @@ nsIFrame * GetLastChild(nsIFrame * pFrame)
   nsIFrame * pTemp = pFrame->GetFirstChild(nsnull);
   while (pTemp && pTemp->GetNextSibling()) pTemp = pTemp->GetNextSibling();
   return pTemp;
-} 
+}
 
 nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame )
 {
@@ -173,9 +186,9 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
   nsAutoString textContents;
   nsIAtom* type = pFrame->GetType();
   nsIFrame * pRet = nsnull;
-  nsIFrame * pChild = nsnull; 
+  nsIFrame * pChild = nsnull;
   nsIContent * pContent = nsnull;
-  if (type == nsGkAtoms::textFrame) 
+  if (type == nsGkAtoms::textFrame)
     //if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
       return pFrame;
   pChild = GetLastChild(pFrame);
@@ -193,26 +206,37 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
     }
     else return pRet;
   }
-}											   
+}
 
-
-nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame )
+nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is not previous text frame, this will return the frame the
+//cursor should be in.
 {
   nsIFrame *pTemp = pFrame;
+  nsIFrame *pNextTemp = nsnull;
   nsIFrame *pTextFrame = nsnull;
-  while (!pTextFrame && pTemp)
+  nsCOMPtr<nsIDOMNode> pNode;
+  nsAutoString tagName;
+  pNode = do_QueryInterface(pTemp->GetContent());
+  pNode->GetNodeName(tagName);
+  while (!pTextFrame && !tagName.EqualsLiteral("body") && pTemp)
   {
-    while (pTemp && !GetPrevSib(pTemp))
+    while (pTemp && !tagName.EqualsLiteral("body") && !GetPrevSib(pTemp))
     {
-      pTemp = pTemp->GetParent();
+      pNextTemp = pTemp->GetParent();
+      pNode = do_QueryInterface( pNextTemp ->GetContent());
+      pNode->GetNodeName(tagName);
+      if (!tagName.EqualsLiteral("body"))
+          pTemp = pNextTemp;
     }
-    pTemp = GetPrevSib(pTemp);
-    pTextFrame = GetLastTextFrame(pTemp);
+    pNextTemp = GetPrevSib(pTemp);
+    if (pNextTemp)
+      pTextFrame = GetLastTextFrame(pNextTemp);
+    else
+      pTextFrame = pTemp;
   }
   return pTextFrame;
 }
 
-											   
 // DOM tree navigation routines that pass over ignorable white space.
 // See the "Whitespace in the DOM" article on the MDC
 /*
@@ -241,7 +265,7 @@ PRBool IsIgnorable( nsIDOMNode * node)
 nsIDOMNode * NodeBefore( nsIDOMNode * node)
 {
   nsCOMPtr<nsIDOMNode> sibling(node);
-  do 
+  do
   {
      sibling->GetPreviousSibling(getter_AddRefs(sibling));
   } while (sibling && IsIgnorable(sibling));
@@ -251,7 +275,7 @@ nsIDOMNode * NodeBefore( nsIDOMNode * node)
 nsIDOMNode * NodeAfter( nsIDOMNode * node)
 {
   nsCOMPtr<nsIDOMNode> sibling(node);
-  do 
+  do
   {
      sibling->GetNextSibling(getter_AddRefs(sibling));
   } while (sibling && IsIgnorable(sibling));

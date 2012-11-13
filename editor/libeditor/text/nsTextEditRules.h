@@ -192,7 +192,7 @@ protected:
   nsresult RemoveIMETextFromPWBuf(PRUint32 &aStart, nsAString *aIMEString);
 
   nsresult CreateMozBR(nsIDOMNode *inParent, PRInt32 inOffset, nsCOMPtr<nsIDOMNode> *outBRNode);
-
+  
   nsresult CheckBidiLevelForDeletion(nsISelection         *aSelection,
                                      nsIDOMNode           *aSelNode,
                                      PRInt32               aSelOffset,

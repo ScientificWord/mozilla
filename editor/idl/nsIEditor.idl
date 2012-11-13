@@ -571,7 +571,7 @@ interface nsIEditor  : nsISupports
   void setTopXULWindow( in nsIDOMWindow window);
 
   void simpleDeleteNode( in nsIDOMNode aNode);
-
+  long insertBufferNodeIfNeeded(in nsIDOMNode node, out nsIDOMNode outNode, in nsIDOMNode parent, out nsIDOMNode outParent, in long aPosition);
 
   /* ------------ Debug methods -------------- */
 

@@ -6351,10 +6351,19 @@ PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& path, 
                            gfxImageSurface::ImageFormatARGB32);
     NS_ENSURE_TRUE(imgSurface, NS_ERROR_OUT_OF_MEMORY);
     nsRefPtr<gfxContext> imgContext = new gfxContext(imgSurface);
+    //First clear it?
+//    imgContext->SetOperator(gfxContext::OPERATOR_CLEAR);
+//    imgContext->Rectangle(gfxRect(0, 0, refScreenRect.width, refScreenRect.height));
+//    imgContext->Fill();
 
     imgContext->DrawSurface(surface, gfxSize(refScreenRect.width, refScreenRect.height));
+    char* encoderID;
+    if (extension.EqualsLiteral("png"))
+      encoderID = "@mozilla.org/image/encoder;2?type=image/png";
+    else
+      encoderID = "@mozilla.org/image/encoder;2?type=image/jpeg";
 
-    nsCOMPtr<imgIEncoder> encoder = do_CreateInstance("@mozilla.org/image/encoder;2?type=image/png");
+    nsCOMPtr<imgIEncoder> encoder = do_CreateInstance(encoderID);
     NS_ENSURE_TRUE(encoder, NS_ERROR_FAILURE);
     encoder->InitFromData(imgSurface->Data(), imgSurface->Stride() * refScreenRect.height,
                           refScreenRect.width, refScreenRect.height, imgSurface->Stride(),
@@ -6420,6 +6429,11 @@ NS_IMETHODIMP PresShell::RenderSelectionToImage(nsISelection* aSelection, nsIIma
                          gfxImageSurface::ImageFormatARGB32);
   NS_ENSURE_TRUE(imgSurface, NS_ERROR_OUT_OF_MEMORY);
   nsRefPtr<gfxContext> imgContext = new gfxContext(imgSurface);
+//  //First clear it?
+//  imgContext->SetOperator(gfxContext::OPERATOR_CLEAR);
+//  imgContext->Rectangle(gfxRect(0, 0, refScreenRect.width, refScreenRect.height));
+//  imgContext->Fill();
+
   imgContext->DrawSurface(surface, gfxSize(refScreenRect.width, refScreenRect.height));
 
   nsCOMPtr<nsIImage> image = do_CreateInstance("@mozilla.org/gfx/image;1", &rv);
