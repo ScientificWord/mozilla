@@ -233,7 +233,7 @@
     <xsl:if test="@border"><xsl:if test="@border-color">}</xsl:if>}</xsl:if>
   </xsl:template>
   <xsl:template match="html:object|html:embed">
-    <xsl:if test="@msisnap or @msigraph!='true'">
+    <xsl:if test="@msisnap or not(@msigraph='true')">
       <xsl:choose>
         <xsl:when test="@pos='inline'">
           <xsl:apply-templates select="." mode="contents"/>
