@@ -136,6 +136,7 @@
   <sub ctx="math" tp="sc"><pattern>prime</pattern><data>insertMathname('prime','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>projlim</pattern><data>insertMathname('projlim','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Psi</pattern><data>insertMathname('Psi','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>rand</pattern><data>insertMathname('rand','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>rank</pattern><data>insertMathname('rank','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>rational</pattern><data>insertMathname('rational','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Re</pattern><data>insertMathname('Re','true');</data></sub>
