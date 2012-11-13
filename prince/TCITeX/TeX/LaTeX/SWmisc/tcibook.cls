@@ -1,1 +1,0 @@
-\input tcibook.sty
