@@ -1554,8 +1554,24 @@ NS_IMETHODIMP nsEditor::CreateNode(const nsAString& aTag,
   return result;
 }
 
-NS_IMETHODIMP
-nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNode>& parent, PRInt32 aPosition, PRInt32 *_retval)
+/**
+ * Sometimes we need to put a node where the rules do not allow it. A common example is inserting text into the
+ * body tag or into a td tag. We do not allow this, but before aborting, we check to see if we can put in a default
+ * paragraph tag to go between the text tag and the body or table tag. 
+ *
+ * node -- the node being inserted
+ * parent -- in: the node into which we are inserting
+ *           out: the final node we are inserting into; due to node splitting, it may be an ancestor of the original parent.
+ * aPosition -- the offset in parent where we are inserting
+ * _retval -- the final offset into which we are inserting. It may be different from aPosition because of node splitting.
+ */
+
+NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node, 
+                                                 nsIDOMNode **  outNode, 
+                                                 nsIDOMNode *   parent, 
+                                                 nsIDOMNode **  outParent, 
+                                                 PRInt32        aPosition, 
+                                                 PRInt32 *      _retval)
 {
   nsresult res = NS_OK;
   nsAutoString tagName;
@@ -1563,6 +1579,8 @@ nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNod
   nsCOMPtr<nsIDOMNode> topChild(parent);
   nsCOMPtr<nsIDOMNode> tmp;
   nsCOMPtr<nsIDOMNode> ptr(parent);
+  *outNode = node;
+  *outParent = parent;
   PRInt32 offsetOfInsert = aPosition;
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)this);
   if (!htmlEditor) return -1;
@@ -1577,21 +1595,14 @@ nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNod
     // then go no further - we can't insert. See if interposing a default paragraph helps.
     if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm))
     {
-      nsString defPara;
-      nsIAtom * atomDummy;
-      tlm->GetDefaultParagraphTag(&atomDummy, defPara);
-      if (!CanContainTag(ptr, defPara))
+      nsCOMPtr<nsIDOMNode> para;
+      htmlEditor->CreateDefaultParagraph(parent, aPosition, getter_AddRefs(para));
+      if (!para)
       {
         return NS_ERROR_FAILURE;
       }
-      // else insert the default paragraph
-      nsCOMPtr<nsIDOMElement> para;
-      nsCOMPtr<nsIDOMNode> inserted;
-      htmlEditor->CreateElementWithDefaults(defPara, getter_AddRefs(para));
-      res = para->AppendChild(node, getter_AddRefs(inserted)); // put node in paragraph
-      // and now put para in place of aNode
-      node = para;
-      tagName = defPara;
+      *outParent = para;
+      offsetOfInsert = 0;
       break;
     }
     else
@@ -1607,7 +1618,7 @@ nsEditor::InsertBufferNodeIfNeeded(nsCOMPtr<nsIDOMNode>& node,nsCOMPtr<nsIDOMNod
   {
     // we need to split some levels above the original selection parent
     res = SplitNodeDeep(topChild, parent, offsetOfInsert, &offsetOfInsert, PR_TRUE);
-    parent = ptr;
+    *outParent = ptr;
     if (NS_FAILED(res))
       return -1;
   }
