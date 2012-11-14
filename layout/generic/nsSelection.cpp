@@ -1376,9 +1376,15 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
               nsAutoString tempinput;
               mielt->GetAttribute(NS_LITERAL_STRING("tempinput"), tempinput);
               if (tempinput.EqualsLiteral("true") ){
-                 // found msi input box
+                 // "this" is an msi input box
 
-                nsIFrame* miFrame = tempFrame->GetParent();
+                nsIFrame* miFrame;
+                miFrame = tempFrame->GetParent();
+                pContent = miFrame -> GetContent();
+                while (pContent ->Tag() == nsGkAtoms::mi_) {
+                  miFrame = miFrame->GetParent();
+                  pContent = miFrame -> GetContent();
+                }
                 nsCOMPtr<nsIMathMLCursorMover> pMathCM;
                 pMathCM =  do_QueryInterface(miFrame);
                 if (!pMathCM) {

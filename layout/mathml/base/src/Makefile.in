@@ -67,6 +67,7 @@ REQUIRES	= xpcom \
 		  pref \
 		  js \
 		  layout \
+      editor \
 		  $(NULL)
 
 LOCAL_INCLUDES = \
