@@ -21,6 +21,7 @@ PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
   return retval;
 }
 
+    
 PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
   nsIFrame * pParent;
@@ -67,6 +68,11 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
     {
       *aOutFrame = GetFirstTextFramePastFrame(pFrame);
       *aOutOffset = count;
+      if (*aOutFrame == nsnull)
+      {
+        count = 0;
+        pFrame->MoveRightAtDocEndFrame( aOutFrame, *aOutOffset);
+      }
 //	    pParent = pFrame->GetParent();
 //	    *aOutFrame = pParent;
 //			(*aOutOffset) = 1;
@@ -90,7 +96,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside)
   {
-    pChild = GetLastTextFrame(pFrame);
+    pChild = GetFirstTextFrame(pFrame);
     if (pChild)
     {
       count = 0;
@@ -100,28 +106,33 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   }
   else // don't put the cursor inside the tag
   {
-//    if (count == 0)
-//    {
-//      pParent = pFrame->GetParent();
-//      pContent = pParent->GetContent();
-//      *aOutOffset = pContent->IndexOf(pFrame->GetContent());
-//      *aOutFrame = pParent;
-//    }
-//    else
-//    {
+    pParent = pFrame->GetParent();
+    pContent = pParent->GetContent();
+    if (count == 0)
+    {
+      pParent = pFrame->GetParent();
+      pContent = pParent->GetContent();
+      *aOutOffset = pContent->IndexOf(pFrame->GetContent());
+      *aOutFrame = pParent;
+    }
+    else
+    {
       pChild = GetLastTextFrameBeforeFrame(pFrame);
       *aOutFrame = pChild;
       if (pChild)
       {
-        nsIAtom*  frameType = pChild->GetType();
-        if (nsGkAtoms::textFrame == frameType)
-          *aOutOffset = (pChild->GetContent())->TextLength() - count;
-        else
-          *aOutOffset = 0;
+       nsIAtom*  frameType = pChild->GetType();
+       if (nsGkAtoms::textFrame == frameType)
+         *aOutOffset = (pChild->GetContent())->TextLength() - count;
+       else
+         *aOutOffset = 0;
       }
       else
-        return PR_FALSE;
-//     }
+      {
+        count = 0;
+        return pFrame->MoveLeftAtDocStartFrame( aOutFrame, *aOutOffset);
+      }
+    }
   }
   return PR_TRUE;
 }
