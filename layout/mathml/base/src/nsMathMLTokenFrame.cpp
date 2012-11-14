@@ -538,17 +538,25 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
         childFrame = childFrame->GetNextSibling();
       }
     }
-
-    if (count == 0)  //BBM: if this code stays unchanged, this test is redundant
+    PRBool isOperator = PR_FALSE;
+    PRBool inside = PR_TRUE;
+    eMathMLFrameType type = GetMathMLFrameType();
+    if (type >=eMathMLFrameType_OperatorOrdinary && type <= eMathMLFrameType_OperatorUserDefined)
+    {  
+      isOperator = PR_TRUE;
+      inside = PR_FALSE;
+    }
+    if (count == 0) 
     {
-      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+      PlaceCursorAfter(this, inside, aOutFrame, aOutOffset, *_retval);
     }
     else
     {
       *_retval = 0;
-      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+    //      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+      PlaceCursorBefore(this, inside, aOutFrame, aOutOffset, *_retval);
     }
-    *_retval = 0;
+    //   *_retval = 0;
     return NS_OK;
 }
 
@@ -591,11 +599,11 @@ nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, 
   if (count > 0)  //BBM: if this code stays unchanged, this test is redundant
   {
 
-    PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
   }
   else
   {
-    PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+    PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
   }
   return NS_OK;
 }

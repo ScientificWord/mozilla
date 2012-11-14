@@ -8,6 +8,7 @@
 #include "nsGkAtoms.h"
 
 PRBool IsMathFrame( nsIFrame * aFrame );
+nsIFrame * GetLastChild(nsIFrame * pFrame);
 PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
 {
   PRBool retval = PR_FALSE;
@@ -26,7 +27,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
 {
   nsIFrame * pParent;
   nsIFrame * pChild;
-  PRBool df = PR_FALSE;
+  nsIFrame * pSiblingFrame;
   nsCOMPtr<nsIContent> pContent;
   pParent = pFrame->GetParent();
 
@@ -34,13 +35,28 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
     // find the last child
-    pChild = GetLastTextFrame(pFrame);
-    if (pChild) {
-      *aOutFrame = pChild;
-      *aOutOffset = (pChild->GetContent())->TextLength();
-    }
-    else
+    // this won't work pChild = GetLastTextFrame(pFrame);
+    pChild = GetLastChild(pFrame);
+    pContent = pFrame->GetContent();
+    while (pChild && pContent == pChild->GetContent())
     {
+      pChild = GetLastChild(pChild);
+    }
+    if (pChild && pContent) {
+      // nsIAtom* type = pChild->GetType();
+      // if (type == nsGkAtoms::textFrame )
+      // {
+      //   *aOutFrame = pChild;
+      //   *aOutOffset = -1;
+      // }
+      // else if (pChild){
+        *aOutOffset = 1+pContent->IndexOf(pChild->GetContent());
+        *aOutFrame = pFrame;
+ //     }
+    }
+     else
+    {
+      // BBM: This is left over from previous iterations and probably never runs
   		*aOutFrame = pFrame;
   	  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pFrame->GetContent());
       nsCOMPtr<nsIDOMNodeList> nodelist;
@@ -57,6 +73,19 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
       pContent = pParent->GetContent();
       *aOutOffset = 1+pContent->IndexOf(pFrame->GetContent());
       *aOutFrame = pParent;
+      //check to see if next frame is a temp input
+      pSiblingFrame = pFrame->GetNextSibling();
+      if (pSiblingFrame) {
+        pContent = pSiblingFrame->GetContent();
+        nsCOMPtr<nsIDOMElement> pElem = do_QueryInterface(pContent);
+        nsAutoString attrVal;
+        pElem ->GetAttribute(NS_LITERAL_STRING("tempinput"), attrVal);
+        if (attrVal.EqualsLiteral("true"))
+        {
+          *aOutFrame = pSiblingFrame;
+          *aOutOffset = 0;
+        }
+      } 
     }
 //    else if (IsDisplayFrame(pParent, count))
 //    {
@@ -207,8 +236,8 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
   {
     while (pChild && !(pRet = GetLastTextFrame(pChild)))
     {
-      pChild = GetPrevSib(pChild);
-      pRet = GetLastTextFrame( pChild);
+     pChild = GetPrevSib(pChild);
+     pRet = GetLastTextFrame( pChild);
     }
     if (pRet)
     {
