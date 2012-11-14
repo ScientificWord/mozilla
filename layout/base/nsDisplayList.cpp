@@ -596,6 +596,8 @@ nsDisplayCaret::Paint(nsDisplayListBuilder* aBuilder,
   // Note: Because we exist, we know that the caret is visible, so we don't
   // need to check for the caret's visibility.
   mCaret->PaintCaret(aBuilder, aCtx, aBuilder->ToReferenceFrame(mFrame),
+    // BBM: to make the caret color match the selection location, we can 
+    // check the cursor is in math or not here.
                      mFrame->GetStyleColor()->mColor);
 }
 
