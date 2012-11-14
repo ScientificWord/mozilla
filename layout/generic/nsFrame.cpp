@@ -4802,9 +4802,11 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
   PRBool fBailing = PR_FALSE;
   PRBool math = PR_FALSE;
   FrameContentRange range = GetRangeForFrame(this);
-  if (aPos->mMath)
-    offset = aPos->mStartOffset; // we do it differently for math -- BBM
-  else
+  if (aPos->mMath){
+      offset = aPos->mStartOffset; // we do it differently for math -- BBM
+      math = PR_TRUE;
+    }
+    else
   {
     // Translate content offset to be relative to frame
     offset = aPos->mStartOffset - range.start;
@@ -7761,6 +7763,49 @@ void DR_cookie::Change() const
 
 #endif
 // End Display Reflow
+
+NS_IMETHODIMP 
+nsFrame::MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index)
+{
+  PRUint32 offset;
+  nsPresContext* presContext = PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsIDocument *doc = shell->GetDocument();
+  nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
+    do_QueryInterface(doc);
+  if (htmlDoc) {
+    nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+    htmlDoc->GetBody(getter_AddRefs(bodyElement));
+    nsCOMPtr<nsIDOMNodeList> nodeList;    
+    bodyElement->GetChildNodes(getter_AddRefs(nodeList));
+    nodeList->GetLength(&offset);
+    nsCOMPtr<nsIContent> content = do_QueryInterface(bodyElement);
+    nsIFrame *bodyFrame = shell->GetPrimaryFrameFor(content);
+    *node = bodyFrame;
+    index = offset;
+  }
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
+{
+  nsPresContext* presContext = PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsIDocument *doc = shell->GetDocument();
+  nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
+    do_QueryInterface(doc);
+  if (htmlDoc) {
+    nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+    htmlDoc->GetBody(getter_AddRefs(bodyElement));
+    nsCOMPtr<nsIContent> content = do_QueryInterface(bodyElement);
+    nsIFrame *bodyFrame = shell->GetPrimaryFrameFor(content);
+    *node = bodyFrame;
+    index = 0;
+  }
+  return NS_OK;
+
+}
 
 NS_IMETHODIMP
 nsFrame::MoveLeftAtDocStart(nsISelection * sel)

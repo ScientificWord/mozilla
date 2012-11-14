@@ -49,6 +49,7 @@
 #include "nsIFrameDebug.h"
 #endif
 
+#include "nsIDOMNode.h"
 #include "nsIPresShell.h"
 #include "nsFrameSelection.h"
 #include "nsHTMLReflowState.h"
@@ -174,6 +175,8 @@ public:
                           nsIFrame*       aOldFrame);
   NS_IMETHOD MoveRightAtDocEnd(nsISelection * sel);
   NS_IMETHOD MoveLeftAtDocStart(nsISelection * sel);
+  NS_IMETHOD MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index);
+  NS_IMETHOD MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index);
   virtual void Destroy();
   virtual nsStyleContext* GetAdditionalStyleContext(PRInt32 aIndex) const;
   virtual void SetAdditionalStyleContext(PRInt32 aIndex,
