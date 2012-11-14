@@ -331,6 +331,7 @@ nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
 		nsIFrame * pTempFrame;
 		pTempFrame = GetParent();
 		count = 0;
+    *_retval = 0;
 	  pMCM = do_QueryInterface(pTempFrame);
 	  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
 		// there is no "else" because this frame has to be inside a math node.

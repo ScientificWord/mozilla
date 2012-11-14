@@ -1347,6 +1347,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   weakNodeUsed = mDomSelections[index]->FetchFocusNode();
   DumpSelection(mDomSelections[index]);
   nsIFrame *frame;
+  nsIFrame *leavingFrame;
   result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
   PRBool isMath = PR_FALSE;
   // in mathml we don't want the changes given by the above line.
@@ -1361,10 +1362,12 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
       {
         isMath = PR_TRUE;
         tempFrame = frame;
+        leavingFrame = frame;
         tempContent = do_QueryInterface(weakNodeUsed);
         while ( tempFrame && (tempFrame->GetContent() != tempContent)) 
+        {
           tempFrame = tempFrame->GetParent();
-
+        }
         // look for msi input box
         if (tempFrame && tempFrame->GetParent()) {
    
@@ -1381,7 +1384,9 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
                 nsIFrame* miFrame;
                 miFrame = tempFrame->GetParent();
                 pContent = miFrame -> GetContent();
+                leavingFrame = tempFrame;
                 while (pContent ->Tag() == nsGkAtoms::mi_) {
+                  leavingFrame = miFrame;
                   miFrame = miFrame->GetParent();
                   pContent = miFrame -> GetContent();
                 }
@@ -1400,7 +1405,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
                 if (pMathCM && (aKeycode == nsIDOMKeyEvent::DOM_VK_LEFT)){
                    
-                   pMathCM->MoveOutToLeft(miFrame, &outFrame, &outOffset, count, &fBailing, &count);
+                   pMathCM->MoveOutToLeft(leavingFrame, &outFrame, &outOffset, count, &fBailing, &count);
                    if (outFrame)
                       TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
 
@@ -1408,7 +1413,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
                 } else if (pMathCM && (aKeycode == nsIDOMKeyEvent::DOM_VK_RIGHT)){
                    
-                   pMathCM->MoveOutToRight(miFrame, &outFrame, &outOffset, count, &fBailing, &count);
+                   pMathCM->MoveOutToRight(leavingFrame, &outFrame, &outOffset, count, &fBailing, &count);
                    if (outFrame)
                       TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
                    
