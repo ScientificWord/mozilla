@@ -462,11 +462,83 @@ nsMathMLTokenFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, 
   return NS_OK;
 }
 
+PRBool nodeIsWhiteSpace2( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lastindex)
+/* return whether all the text (or all the text before index or all the text after index) is white space */
+{
+  // \f\n\r\t\v\ u00A0\u2028\u2029 are the white space characters
+  nsAutoString theText;
+  nsAutoString text;
+  PRUint16 nodeType;
+  node->GetNodeType(&nodeType);
+
+//  if(nodeType != nsIDOMNode::TEXT_NODE) return false;
+//  get the string from the node
+  node->GetNodeValue(theText);
+  PRUint32 length = theText.Length();
+  if ((PRInt32)firstindex >= 0 && (PRInt32)lastindex >= 0)
+    text = Substring(theText, firstindex, lastindex);
+  else text = theText;
+
+//  set up the iterators
+  nsAString::const_iterator cur, end;
+
+  text.BeginReading(cur);
+  text.EndReading(end);
+
+  for (; cur != end; cur++)
+  {
+    if ((*cur == PRUnichar(' ')) ||
+        (*cur == PRUnichar('\f')) ||
+        (*cur == PRUnichar('\n')) ||
+        (*cur == PRUnichar('\r')) ||
+        (*cur == PRUnichar('\t')) ||
+        (*cur == PRUnichar('\v')) ||
+        (*cur == PRUnichar(0x00A0)) ||
+        (*cur == PRUnichar(0x2028)) ||
+        (*cur == PRUnichar(0x2029)))
+    {}
+    else return PR_FALSE;
+  }
+  return PR_TRUE;
+}
+
+
 /* long enterFromRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
 NS_IMETHODIMP 
 nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
 {
     *_retval = count;
+    nsCOMPtr<nsIContent> pcontent = GetContent();
+    nsCOMPtr<nsIDOMElement> pnode = do_QueryInterface(pcontent);
+    nsIFrame * childFrame;
+    nsCOMPtr<nsIDOMNode> child;
+    nsAutoString attr;
+    PRInt16 nodeType;
+    pnode->GetAttribute(NS_LITERAL_STRING("tempinput"), attr);
+    if (attr.EqualsLiteral("true"))
+    {
+      childFrame = GetFirstChild(nsnull);
+      while (childFrame && (nsGkAtoms::textFrame != childFrame->GetType())) {
+        childFrame = childFrame->GetFirstChild(nsnull);
+        // this is because a child frame of an mi frame can have the same content ptr.
+      }
+      while (childFrame) {
+        if (nsGkAtoms::textFrame == childFrame->GetType())
+        {
+          nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
+          child = do_QueryInterface(childContent);
+          if (!nodeIsWhiteSpace2(child, 0, 20))
+          {
+            *aOutFrame = childFrame;
+            *aOutOffset = 1;
+            *_retval = 0;
+            return NS_OK;
+          }
+        }
+        childFrame = childFrame->GetNextSibling();
+      }
+    }
+
     if (count == 0)  //BBM: if this code stays unchanged, this test is redundant
     {
       PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
@@ -484,15 +556,46 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
 NS_IMETHODIMP 
 nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
 {
-    *_retval = 0;
-    if (count > 0)  //BBM: if this code stays unchanged, this test is redundant
-    {
+  *_retval = 0;
+  nsCOMPtr<nsIContent> pcontent = GetContent();
+  nsCOMPtr<nsIDOMElement> pnode = do_QueryInterface(pcontent);
+  nsIFrame * childFrame;
+  nsCOMPtr<nsIDOMNode> child;
+  nsAutoString attr;
+  PRInt16 nodeType;
+  pnode->GetAttribute(NS_LITERAL_STRING("tempinput"), attr);
+  if (attr.EqualsLiteral("true"))
+  {
+    childFrame = GetFirstChild(nsnull);
+    while (childFrame && (nsGkAtoms::textFrame != childFrame->GetType())) {
+      childFrame = childFrame->GetFirstChild(nsnull);
+      // this is because a child frame of an mi frame can have the same content ptr.
+    }
+    while (childFrame) {
+      if (nsGkAtoms::textFrame == childFrame->GetType())
+      {
+        nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
+        child = do_QueryInterface(childContent);
+        if (!nodeIsWhiteSpace2(child, 0, 20))
+        {
+          *aOutFrame = childFrame;
+          *aOutOffset = 1;
+          *_retval = 0;
+          return NS_OK;
+        }
+      }
+      childFrame = childFrame->GetNextSibling();
+    }
+  }
 
-      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-    }
-    else
-    {
-      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-    }
-    return NS_OK;
+  if (count > 0)  //BBM: if this code stays unchanged, this test is redundant
+  {
+
+    PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+  }
+  else
+  {
+    PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+  }
+  return NS_OK;
 }
