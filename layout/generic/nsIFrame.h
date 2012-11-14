@@ -52,6 +52,7 @@
 #include "nsStyleStruct.h"
 #include "nsStyleContext.h"
 #include "nsIContent.h"
+#include "nsIDOMNode.h"
 #include "nsHTMLReflowMetrics.h"
 
 /**
@@ -603,7 +604,8 @@ public:
 
   NS_IMETHOD MoveRightAtDocEnd(nsISelection * sel) = 0;
   NS_IMETHOD MoveLeftAtDocStart(nsISelection * sel) = 0;
-
+  NS_IMETHOD MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index) = 0;
+  NS_IMETHOD MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index) = 0;
   /**
    * Get the style context associated with this frame.
    *

@@ -549,6 +549,8 @@ nsMathMLmsqrtFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
       }
       return NS_OK;
     }
+//    else
+//      count = 0;
   } 
   if (count == 0)
   {
