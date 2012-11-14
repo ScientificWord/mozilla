@@ -651,7 +651,7 @@ PRBool nsHTMLEditUtils::IsMath(nsIDOMNode *aNode)
     aNode->GetParentNode(getter_AddRefs(theNode));
   else
     theNode = aNode;
-
+  if (!theNode) return PR_FALSE;
   theNode->GetNamespaceURI(tagNamespace);
   return tagNamespace.Equals(strMathMLNs);
 
