@@ -2,9 +2,9 @@
 <?xml-stylesheet 
  href="css/help.css" type="text/css"
  ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
-<html hideHelperLines="true" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
-<head>
+<!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html:html hideHelperLines="true" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
+<html:head>
 <meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
 </meta>
 <meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
@@ -15,13 +15,13 @@
 </meta>
 <script type="text/javascript"
    src="resource://res/html/vcam.js"></script>
-<title>Plotting Curves and Surfaces</title>
-</head>
-<body>
+<html:title>Plotting Curves and Surfaces</html:title>
+</html:head>
+<html:body>
 <h1 class="section" xmlns="http://www.w3.org/1999/xhtml">
 <a id="top">
 </a>Plotting Curves and Surfaces</h1>
-<bodyText>
+<html:bodyText>
    The plotting capabilities of symbolic algebra systems are among their most
    powerful features. With the system you are using, you can carry out operations
    interactively. You can plot functions and expressions, examine the results,
@@ -32,94 +32,94 @@
    to illustrate properties of functions. You will find yourself creating plots
    in many situations to help answer questions about the behavior of different
    functions or families of functions.
-</bodyText>
-<bodyText>
+</html:bodyText>
+<html:bodyText>
 <em xmlns="http://www.w3.org/1999/xhtml">
 <hr class="hrulefill">
 </hr>
 </em>
-</bodyText>
-<bodyText>
+</html:bodyText>
+<html:bodyText>
    In this chapter:
-</bodyText>
-<bodyText>
+</html:bodyText>
+<html:bodyText>
 <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
 <span style="padding-left:2em">
 </span>
 </span>
-<a href="dm06-01-plotting.xhtml#top"> Getting
+<html:a href="dm06-01-plotting.xhtml#top"> Getting
    Started with 2D
-   Plots</a>
+   Plots</html:a>
 <br xmlns="http://www.w3.org/1999/xhtml" />
 <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
 <span style="padding-left:2em">
 </span>
 </span>
-<a href="dm06-02-plotting.xhtml#top"> Interactive
+<html:a href="dm06-02-plotting.xhtml#top"> Interactive
    Tools for 2D
-   Plots</a>
+   Plots</html:a>
 <br xmlns="http://www.w3.org/1999/xhtml" />
 <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
 <span style="padding-left:2em">
 </span>
 </span>
-<a href="dm06-03-plotting.xhtml#top"> Graph
+<html:a href="dm06-03-plotting.xhtml#top"> Graph
    User
-   Settings</a>
+   Settings</html:a>
 <br xmlns="http://www.w3.org/1999/xhtml" />
 <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
 <span style="padding-left:2em">
 </span>
 </span>
-<a href="dm06-04-plotting.xhtml#top"> 2D
+<html:a href="dm06-04-plotting.xhtml#top"> 2D
    Plots of Functions and
-   Expressions</a>
+   Expressions</html:a>
 <br xmlns="http://www.w3.org/1999/xhtml" />
 <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
 <span style="padding-left:2em">
 </span>
 </span>
-<a href="dm06-05-plotting.xhtml"> Creating
+<html:a href="dm06-05-plotting.xhtml"> Creating
    Animated 2D
-   Plots</a>
+   Plots</html:a>
 <br xmlns="http://www.w3.org/1999/xhtml" />
 <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
 <span style="padding-left:2em">
 </span>
 </span>
-<a href="dm06-06-plotting.xhtml"> Creating
+<html:a href="dm06-06-plotting.xhtml"> Creating
    3D
-   Plots</a>
+   Plots</html:a>
 <br xmlns="http://www.w3.org/1999/xhtml" />
 <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
 <span style="padding-left:2em">
 </span>
 </span>
-<a href="dm06-07-plotting.xhtml"> Creating
-   Animated 3D Plots</a>
-</bodyText>
-<bodyText>
+<html:a href="dm06-07-plotting.xhtml"> Creating
+   Animated 3D Plots</html:a>
+</html:bodyText>
+<html:bodyText>
 <em xmlns="http://www.w3.org/1999/xhtml">
 <hr class="hrulefill">
 </hr>
 </em>
-</bodyText>
-<bodyText>
+</html:bodyText>
+<html:bodyText>
    In Plotting Curves and Surfaces, you will find techniques for creating plots,
    showing how to plot lines and curves in the Euclidean plane, and lines,
    curves, and surfaces in three-dimensional Euclidean space. These techniques
    use the basic routines Rectangular, Polar, Implicit, and Parametric from the
    Plot 2D submenu, and Rectangular, Cylindrical, Spherical, Implicit, and Tube
    from the Plot 3D submenu.
-</bodyText>
-<bodyText>
+</html:bodyText>
+<html:bodyText>
    The submenus of Plot 2D, Plot 3D, and Calculus also contain a variety of
    specialized plotting routines for advanced topics in calculus, vector
    calculus, and differential equations. Those plotting options are introduced
    and discussed elsewhere, along with the related mathematics.
-</bodyText>
-<bodyText>
-   [ <a href="#top"> Return to beginning of section</a> ]
-</bodyText>
-</body>
-</html>
+</html:bodyText>
+<html:bodyText>
+   [ <html:a href="#top"> Return to beginning of section</html:a> ]
+</html:bodyText>
+</html:body>
+</html:html>
