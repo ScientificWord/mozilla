@@ -96,7 +96,7 @@ try{
   if (node.nodeType === Node.ELEMENT_NODE)
   {
     msidump("<"+node.nodeName+"> \n",indent);
-    for (var i = 0; i < len; i++)
+    for (var i = 0; i <= len; i++)
     {
       if (node===selnode && seloffset===i)
       {
@@ -106,7 +106,10 @@ try{
       {
         msidump("<selection focus>\n", indent);
       }
-      dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
+      if (i < len)
+      {
+        dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
+      }
     }
     msidump("</"+node.nodeName+">\n", indent);
   }
