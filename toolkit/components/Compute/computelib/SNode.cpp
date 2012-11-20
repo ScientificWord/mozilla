@@ -252,7 +252,7 @@ SEMANTICS_NODE* LocateVarAndExpr(BUCKET_REC* l_bucket,
                   char *key = s_super->contents;
                   if (!strcmp(key, "+"))
                     direction = 1;
-                  else if (!strcmp(key, "&#x2212;"))
+                  else if ( (!strcmp(key, "&#x2212;")) || (!strcmp(key, "-")) )
                     direction = 2;
                   else
                     TCI_ASSERT(0);
