@@ -682,13 +682,17 @@ begin
   solve( eq, v, Domain=Dom::Integer );
 end_proc:
 
+tciassume := proc(v,p)
+begin
+  assume(v, p);
+  getprop(v);
+end_proc:
+
+
 tciadditionally := proc(v,p)
 begin
-  if args(0) >= 2 then
-    assume( v, p, _and );
-  else
-    assume( v, _and );
-  end_if;
+    assumeAlso(v, p);
+    getprop(v);
 end_proc:
 
 

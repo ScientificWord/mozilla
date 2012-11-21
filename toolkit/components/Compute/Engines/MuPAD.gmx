@@ -432,7 +432,7 @@ signIm<uID8065.1>signIm%arg_list%
 hypergeom<uID8066.0>hypergeom
 about<uID8067.0>getprop%arg_list%
 additionally<uID8068.0>tciadditionally%arg_list%
-assume<uID8069.0>assume%arg_list%
+assume<uID8069.0>tciassume%arg_list%
 unassume<uID8070.0>unassume%arg_list%
 AndProp<uID8071.0>AndProp
 Re<uID8072.0>Re%arg_list%
