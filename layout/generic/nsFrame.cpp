@@ -5409,15 +5409,13 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
     // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
     PRUint32 nodecount = 0;
     pChild = GetFirstChild(nsnull);
-    pLastChild = nsnull;
+    pLastChild = pChild;
     while (pChild && nodecount < (*aOutOffset))
     {
       nodecount++;
       pLastChild = pChild;
       pChild = pChild->GetNextSibling();
     }
-
-    pMathChild = IsMathFrame(pChild)?pChild:nsnull;
 
     if (aDirection == eDirNext)
     {
@@ -5440,7 +5438,21 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       {
          pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
       }
-      else
+      else if (pLastChild->GetType() == nsGkAtoms::textFrame)
+      {
+        PRUint32 length;
+        nsCOMPtr<nsIContent> tc = pLastChild->GetContent();
+        nsCOMPtr<nsINode> node = do_QueryInterface(tc);
+        nsString strcontent;
+        nsContentUtils::GetNodeTextContent(node, PR_FALSE, strcontent);
+        length = strcontent.Length();
+        if (length < count) 
+          length = count;
+        *aOutOffset = length - count;
+        count = 0; 
+        *aOutFrame = pLastChild;        
+      }
+      else 
       {
         if (pMathCM = GetMathCursorMover(pFrame))
           pMathCM->MoveOutToLeft(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);

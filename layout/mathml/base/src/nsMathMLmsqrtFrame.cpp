@@ -347,220 +347,220 @@ nsMathMLmsqrtFrame::SetAdditionalStyleContext(PRInt32          aIndex,
   }
 }
 
-nsresult
-nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
-    PRInt32 *_retval)
-{
-  printf("msqrt EnterFromLeft, count = %d\n", count);
-  count = 0;
-  nsIFrame * pBaseFrame = GetFirstChild(nsnull);
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  if (pBaseFrame)
-  {
-    // if base is a mi with tempinput then we need to add 1 to count
+// nsresult
+// nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
+//     PRInt32 *_retval)
+// {
+//   printf("msqrt EnterFromLeft, count = %d\n", count);
+//   count = 0;
+//   nsIFrame * pBaseFrame = GetFirstChild(nsnull);
+//   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//   if (pBaseFrame)
+//   {
+//     // if base is a mi with tempinput then we need to add 1 to count
 
-    nsresult res;
-    nsAutoString strTempInput;
-    nsAutoString tagName;
+//     nsresult res;
+//     nsAutoString strTempInput;
+//     nsAutoString tagName;
     
-    nsCOMPtr<nsIContent> pContent = pBaseFrame -> GetContent();
-    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pContent);
-    //GetTagString(element, tagName);
-    nsIAtom *atom = pContent -> Tag();
-    atom->ToString(tagName);
-    if (tagName.EqualsLiteral("mi")){
-      res = element->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
-      if (strTempInput.EqualsLiteral("true")){
-         count += 1;
-      }
-    }
+//     nsCOMPtr<nsIContent> pContent = pBaseFrame -> GetContent();
+//     nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pContent);
+//     //GetTagString(element, tagName);
+//     nsIAtom *atom = pContent -> Tag();
+//     atom->ToString(tagName);
+//     if (tagName.EqualsLiteral("mi")){
+//       res = element->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
+//       if (strTempInput.EqualsLiteral("true")){
+//          count += 1;
+//       }
+//     }
    
 
-    pMCM = do_QueryInterface(pBaseFrame);
-    if (pMCM) {
-      pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
-    } 
-    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
-    {
-      PlaceCursorBefore(pBaseFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-      *_retval = 0;
-      return NS_OK;
-    }
-  }
-  else 
-  {
-    printf("Found msqrt frame with no children\n");
-  }
-  return NS_OK;  
-}
+//     pMCM = do_QueryInterface(pBaseFrame);
+//     if (pMCM) {
+//       pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+//     } 
+//     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+//     {
+//       PlaceCursorBefore(pBaseFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+//       *_retval = 0;
+//       return NS_OK;
+//     }
+//   }
+//   else 
+//   {
+//     printf("Found msqrt frame with no children\n");
+//   }
+//   return NS_OK;  
+// }
 
-nsresult
-nsMathMLmsqrtFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
-    PRBool* fBailing, PRInt32 *_retval)
-{
-  printf("msqrt EnterFromRight, count = %d\n", count);
-  count = 0;
-  nsIFrame * pBaseFrame = GetFirstChild(nsnull);
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  if (pBaseFrame)
-  {
-    // if base is a mi with tempinput then we need to add 1 to count
+// nsresult
+// nsMathMLmsqrtFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+//     PRBool* fBailing, PRInt32 *_retval)
+// {
+//   printf("msqrt EnterFromRight, count = %d\n", count);
+//   //count = 0; ??
+//   nsIFrame * pBaseFrame = GetFirstChild(nsnull); 
+//   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//   if (pBaseFrame)
+//   {
+//     // if base is a mi with tempinput then we need to add 1 to count
 
-    nsresult res;
-    nsAutoString strTempInput;
-    nsAutoString tagName;
+//     nsresult res;
+//     nsAutoString strTempInput;
+//     nsAutoString tagName;
     
-    nsCOMPtr<nsIContent> pContent = pBaseFrame -> GetContent();
-    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pContent);
-    //GetTagString(element, tagName);
-    nsIAtom *atom = pContent -> Tag();
-    atom->ToString(tagName);
-    if (tagName.EqualsLiteral("mi")){
-      res = element->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
-      if (strTempInput.EqualsLiteral("true")){
-         count += 1;
-      }
-    }
+//     nsCOMPtr<nsIContent> pContent = pBaseFrame -> GetContent();
+//     nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pContent);
+//     //GetTagString(element, tagName);
+//     nsIAtom *atom = pContent -> Tag();
+//     atom->ToString(tagName);
+//     if (tagName.EqualsLiteral("mi")){
+//       res = element->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
+//       if (strTempInput.EqualsLiteral("true")){
+//          count += 1;
+//       }
+//     }
    
 
-    pMCM = do_QueryInterface(pBaseFrame);
-    if (pMCM) {
-      pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
-    } 
-    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
-    {
-      PlaceCursorAfter(pBaseFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-      *_retval = 0;
-      return NS_OK;
-    }
-  }
-  else 
-  {
-    printf("Found msqrt frame with no children\n");
-  }
-  return NS_OK;  
+//     pMCM = do_QueryInterface(pBaseFrame);
+//     if (pMCM) {
+//       pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+//     } 
+//     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+//     {
+//       PlaceCursorAfter(pBaseFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+//       *_retval = 0;
+//       return NS_OK;
+//     }
+//   }
+//   else 
+//   {
+//     printf("Found msqrt frame with no children\n");
+//   }
+//   return NS_OK;  
    
-//    if (count > 0)
-//    {
-//      printf("msqrt EnterFromRight called with count > 0\n");
-//      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
-//  //    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
-//  //    pFrame = pFrame->GetNextSibling();
-//  //    count = 0;
-//  //    nsCOMPtr<nsIMathMLCursorMover> pMCM;
-//  //    if (pFrame)
-//  //    {
-//  //      pMCM = do_QueryInterface(pFrame);
-//  //      count--;
-//  //      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-//  //      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
-//  //      {
-//  //        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-//  //        *_retval = 0;
-//  //        return NS_OK;
-//  //      }
-//  //    }
-//  //    else 
-//  //    {
-//  //      printf("Found msqrt frame with no superscript\n");
-//  //    }
-//    }
-//    else
-//    {
-//      printf("msqrt EnterFromRight called with count == 0\n");
-//      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
-//    }
-//    return NS_OK;  
-}
+// //    if (count > 0)
+// //    {
+// //      printf("msqrt EnterFromRight called with count > 0\n");
+// //      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
+// //  //    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
+// //  //    pFrame = pFrame->GetNextSibling();
+// //  //    count = 0;
+// //  //    nsCOMPtr<nsIMathMLCursorMover> pMCM;
+// //  //    if (pFrame)
+// //  //    {
+// //  //      pMCM = do_QueryInterface(pFrame);
+// //  //      count--;
+// //  //      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+// //  //      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+// //  //      {
+// //  //        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+// //  //        *_retval = 0;
+// //  //        return NS_OK;
+// //  //      }
+// //  //    }
+// //  //    else 
+// //  //    {
+// //  //      printf("Found msqrt frame with no superscript\n");
+// //  //    }
+// //    }
+// //    else
+// //    {
+// //      printf("msqrt EnterFromRight called with count == 0\n");
+// //      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+// //    }
+// //    return NS_OK;  
+// }
 
                             
-nsresult
-nsMathMLmsqrtFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
-    PRBool* fBailingOut, PRInt32 *_retval)
-{
-#ifdef debug_barry
-  printf("nsMathMLmsqrtFrame MoveOutToRight, count = %d\n", count);
-#endif
-  // get the frame we are part of  
-  nsIFrame* pFrame;
-  pFrame = this;
-  nsIFrame* pTempFrame;
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  if (leavingFrame)
-  {
-    NS_ASSERTION(this == leavingFrame->GetParent(), "In MoveOutToRight, leavingFrame must be a child!");
-    pTempFrame = leavingFrame->GetNextSibling();
-    if (pTempFrame)
-    {
-      pMCM = do_QueryInterface(pTempFrame);  
-      if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      else  // probably pTempFrame is a text frame
-      {
-        *aOutFrame = pTempFrame;
-        *aOutOffset = count;  
-        *_retval = 0;
-      }
-      return NS_OK;
-    }
-  } 
-  // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame if count > 0,
-  // put the cursor at the end if count == 0.
-  if (count == 0)
-  {
-    PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-  }
-  else  //bail out so that the default Mozilla code takes over
-  {
-    count = 0;
-    PlaceCursorAfter(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
-  }
-  *_retval = 0;
-  return NS_OK;  
-}
+// nsresult
+// nsMathMLmsqrtFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+//     PRBool* fBailingOut, PRInt32 *_retval)
+// {
+// #ifdef debug_barry
+//   printf("nsMathMLmsqrtFrame MoveOutToRight, count = %d\n", count);
+// #endif
+//   // get the frame we are part of  
+//   nsIFrame* pFrame;
+//   pFrame = this;
+//   nsIFrame* pTempFrame;
+//   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//   if (leavingFrame)
+//   {
+//     NS_ASSERTION(this == leavingFrame->GetParent(), "In MoveOutToRight, leavingFrame must be a child!");
+//     pTempFrame = leavingFrame->GetNextSibling();
+//     if (pTempFrame)
+//     {
+//       pMCM = do_QueryInterface(pTempFrame);  
+//       if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+//       else  // probably pTempFrame is a text frame
+//       {
+//         *aOutFrame = pTempFrame;
+//         *aOutOffset = count;  
+//         *_retval = 0;
+//       }
+//       return NS_OK;
+//     }
+//   } 
+//   // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame if count > 0,
+//   // put the cursor at the end if count == 0.
+//   if (count == 0)
+//   {
+//     PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+//   }
+//   else  //bail out so that the default Mozilla code takes over
+//   {
+//     count = 0;
+//     PlaceCursorAfter(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
+//   }
+//   *_retval = 0;
+//   return NS_OK;  
+// }
 
-nsresult
-nsMathMLmsqrtFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
-    PRBool* fBailingOut, PRInt32 *_retval)
-{                
-#ifdef debug_barry
-  printf("nsMathMLmsqrtFrame MoveOutToLeft, count = %d\n", count);
-#endif
-  // get the frame we are part of  
-  nsIFrame* pFrame;
-  pFrame = this;
-  nsIFrame* pTempFrame;
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  if (leavingFrame)
-  {
-    NS_ASSERTION(pFrame == leavingFrame->GetParent(), "In MoveOutToLeft, leavingFrame must be a child!");
-    // awkward getprevioussibling
-    pTempFrame = pFrame->GetFirstChild(nsnull);
-    if (pTempFrame == leavingFrame) pTempFrame = nsnull; //there is no predecessor to leavingFrame
-    while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame)) pTempFrame = pTempFrame->GetNextSibling();
-    if (pTempFrame)
-    {
-      pMCM = do_QueryInterface(pTempFrame);  
-      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      else  // probably pTempFrame is a text frame
-      {
-        *aOutFrame = pTempFrame;
-        *aOutOffset = count;  
-        *_retval = 0;
-      }
-      return NS_OK;
-    }
-//    else
-//      count = 0;
-  } 
-  if (count == 0)
-  {
-    PlaceCursorBefore(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-  }
-  else  //bail out so that the default Mozilla code takes over
-  {
-    count = 0;
-    PlaceCursorBefore(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
-  }
-  *_retval = 0;
-  return NS_OK;  
-}  
+// nsresult
+// nsMathMLmsqrtFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+//     PRBool* fBailingOut, PRInt32 *_retval)
+// {                
+// #ifdef debug_barry
+//   printf("nsMathMLmsqrtFrame MoveOutToLeft, count = %d\n", count);
+// #endif
+//   // get the frame we are part of  
+//   nsIFrame* pFrame;
+//   pFrame = this;
+//   nsIFrame* pTempFrame;
+//   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//   if (leavingFrame)
+//   {
+//     NS_ASSERTION(pFrame == leavingFrame->GetParent(), "In MoveOutToLeft, leavingFrame must be a child!");
+//     // awkward getprevioussibling
+//     pTempFrame = pFrame->GetFirstChild(nsnull);
+//     if (pTempFrame == leavingFrame) pTempFrame = nsnull; //there is no predecessor to leavingFrame
+//     while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame)) pTempFrame = pTempFrame->GetNextSibling();
+//     if (pTempFrame)
+//     {
+//       pMCM = do_QueryInterface(pTempFrame);  
+//       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+//       else  // probably pTempFrame is a text frame
+//       {
+//         *aOutFrame = pTempFrame;
+//         *aOutOffset = count;  
+//         *_retval = 0;
+//       }
+//       return NS_OK;
+//     }
+// //    else
+// //      count = 0;
+//   } 
+//   if (count == 0)
+//   {
+//     PlaceCursorBefore(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+//   }
+//   else  //bail out so that the default Mozilla code takes over
+//   {
+//     count = 0;
+//     PlaceCursorBefore(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
+//   }
+//   *_retval = 0;
+//   return NS_OK;  
+// }  
