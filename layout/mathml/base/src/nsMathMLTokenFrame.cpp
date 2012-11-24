@@ -440,6 +440,22 @@ nsMathMLTokenFrame::SetQuotes()
   }
 }
 
+PRBool
+nsMathMLTokenFrame::PeekOffsetCharacter(PRBool aForward, PRInt32* aOffset)
+{
+  NS_ASSERTION (aOffset && *aOffset <= 1, "aOffset out of range");
+  PRInt32 startOffset = *aOffset;
+  // A negative offset means "end of frame", which in our case means offset 1.
+  if (startOffset < 0)
+    startOffset = 1;
+  if (aForward == (startOffset == 0)) {
+    // We're before the frame and moving forward, or after it and moving backwards:
+    // skip to the other side and we're done.
+    *aOffset = 1 - startOffset;
+    return PR_TRUE;
+  }
+  return PR_FALSE;
+}
 /* long moveOutToRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
 NS_IMETHODIMP 
 nsMathMLTokenFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
@@ -596,14 +612,16 @@ nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, 
     }
   }
 
-  if (count > 0)  //BBM: if this code stays unchanged, this test is redundant
+  if (count > 0) 
   {
-
-    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+    // BBM: Different cases seem to require different values of the second parameter
+    // For going across a simple mo, we need PR_TRUE
+    PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+    // PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
   }
   else
   {
-    PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+    PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
   }
   return NS_OK;
 }
