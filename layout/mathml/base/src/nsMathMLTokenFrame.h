@@ -90,6 +90,9 @@ public:
     return nsMathMLContainerFrame::ChildListChanged(aModType);
   }
 
+  virtual PRBool
+  PeekOffsetCharacter(PRBool aForward, PRInt32* aOffset);
+
   NS_IMETHOD
   MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
 
