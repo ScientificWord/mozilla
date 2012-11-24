@@ -231,8 +231,9 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
   if (type == nsGkAtoms::textFrame)
     //if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
       return pFrame;
+  PRInt16 n = 0;
   pChild = GetLastChild(pFrame);
-  while (PR_TRUE)
+  while (n++ < 1000)  // was PR_TRUE
   {
     while (pChild && !(pRet = GetLastTextFrame(pChild)))
     {
@@ -245,7 +246,9 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
       if (!pContent->TextIsOnlyWhitespace()) return pRet;
     }
     else return pRet;
+//    if (pChild == pRet) return nsnull;
   }
+//  return nsnull;
 }
 
 nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is not previous text frame, this will return the frame the
