@@ -22,6 +22,7 @@ function getCurrentEditorElement()
 function insertMathSymbol( s, delSelection )
 {
   if (delSelection) deleteSelection();
+  dump("\ninsertMathSymbol(" + s + ")");
   doParamCommand('cmd_MSIsymbolCmd',s);
 }
 
@@ -150,10 +151,12 @@ function softSave(delSelection)
 
 function insertIntegral(delSelection)
 {
-  if (delSelection) deleteSelection();
-  insertsymbol('&#x222B;'); 
-  insertsymbol('&#2146;'); 
+  dump("\ninsertIntegeral\n");
+  if (delSelection) 
+    deleteSelection();
+  insertMathSymbol("\u222B");
+  insertMathSymbol("\u2146"); 
   insertText('x');
-  msiGoDoCommand('cmd_charPrevious');
-  msiGoDoCommand('cmd_charPrevious');
+  //msiGoDoCommand('cmd_charPrevious');
+  //msiGoDoCommand('cmd_charPrevious');
 }
