@@ -168,6 +168,7 @@ _create_dc_and_bitmap (cairo_win32_surface_t *surface,
     surface->dc = NULL;
     surface->bitmap = NULL;
     surface->is_dib = FALSE;
+    surface->is_win_metafile = FALSE;
 
     switch (format) {
     case CAIRO_FORMAT_ARGB32:
@@ -1645,14 +1646,24 @@ _cairo_win32_surface_show_glyphs (void			*surface,
         }
     }
 
-    win_result = ExtTextOutW(dst->dc,
-                             start_x,
-                             start_y,
-                             ETO_GLYPH_INDEX | ETO_PDY,
-                             NULL,
-                             glyph_buf,
-                             num_glyphs,
-                             dxy_buf);
+    if (_cairo_surface_is_win32_metafile (dst))
+      win_result = ExtTextOutW(dst->dc,
+                               start_x,
+                               start_y,
+                               ETO_GLYPH_INDEX,
+                               NULL,
+                               glyph_buf,
+                               num_glyphs,
+                               NULL);
+    else
+      win_result = ExtTextOutW(dst->dc,
+                               start_x,
+                               start_y,
+                               ETO_GLYPH_INDEX | ETO_PDY,
+                               NULL,
+                               glyph_buf,
+                               num_glyphs,
+                               dxy_buf);
     if (!win_result) {
         _cairo_win32_print_gdi_error("_cairo_win32_surface_show_glyphs(ExtTextOutW failed)");
     }
@@ -1713,6 +1724,7 @@ cairo_win32_surface_create (HDC hdc)
     surface->saved_dc_bitmap = NULL;
     surface->brush = NULL;
     surface->old_brush = NULL;
+    surface->is_win_metafile = FALSE;
 
     GetClipBox(hdc, &rect);
     surface->extents.x = rect.left;
@@ -1748,6 +1760,21 @@ cairo_win32_surface_create_with_dib (cairo_format_t format,
 				     int	    height)
 {
     return _cairo_win32_surface_create_for_dc (NULL, format, width, height);
+}
+
+/**
+ * cairo_win32_metafile_surface_create:
+ * @hdc: the metafile DC to create a surface for
+ *
+ * Creates a cairo surface that targets the given metafile DC, and marks it as a metafile surface.
+ * Return value: the newly created surface
+ **/
+cairo_surface_t *
+cairo_win32_metafile_surface_create (HDC hdc)
+{
+  cairo_win32_surface_t *new_surf = cairo_win32_surface_create(hdc);
+  new_surf->is_win_metafile = TRUE;
+  return new_surf;
 }
 
 /**
@@ -1838,6 +1865,24 @@ int
 _cairo_surface_is_win32 (cairo_surface_t *surface)
 {
     return surface->backend == &cairo_win32_surface_backend;
+}
+
+/**
+ * _cairo_surface_is_win32_metafile:
+ * @surface: a #cairo_surface_t
+ *
+ * Checks if a surface is a win32 metafile surface.  This will
+ * return true if the surface was created from a metafile DC.
+ *
+ * Return value: True if the surface is an win32 metafile surface
+ **/
+int
+_cairo_surface_is_win32_metafile (cairo_surface_t *surface)
+{
+  int rv = _cairo_surface_is_win32(surface);
+  if (rv)
+    rv = ((cairo_win32_surface_t *)surface)->is_win_metafile;
+  return rv;
 }
 
 /**
