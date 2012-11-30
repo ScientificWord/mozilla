@@ -92,6 +92,7 @@ typedef struct _cairo_win32_surface {
     cairo_bool_t has_ctm;
     cairo_matrix_t ctm;
     HBRUSH brush, old_brush;
+    cairo_bool_t is_win_metafile;
 } cairo_win32_surface_t;
 
 /* Surface DC flag values */
@@ -177,6 +178,9 @@ _cairo_win32_save_initial_clip (HDC dc, cairo_win32_surface_t *surface);
 
 cairo_int_status_t
 _cairo_win32_restore_initial_clip (cairo_win32_surface_t *surface);
+
+cairo_bool_t
+_cairo_surface_is_win32_metafile (cairo_surface_t *surface);
 
 void
 _cairo_win32_debug_dump_hrgn (HRGN rgn, char *header);

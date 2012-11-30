@@ -11262,7 +11262,10 @@ function msiGetSaveLocationForImage(editorElement)
   fp.init(window, promptString, msIFilePicker.modeSave);
 
   // Set filters according to the type of output
-  var exportTypes = ["png","pdf","jpg"];
+  var exportTypes = ["png","pdf","jpg","svg"];
+  var os = getOS(window);
+  if (os==="win")
+    exportTypes.push("emf");
   for (var ii = 0; ii < exportTypes.length; ++ii)
   {
     fp.appendFilter(GetString("SaveImageAsDesc_" + exportTypes[ii]),"*."+exportTypes[ii]);

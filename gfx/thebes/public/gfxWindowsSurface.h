@@ -47,7 +47,8 @@ class THEBES_API gfxWindowsSurface : public gfxASurface {
 public:
     enum {
         FLAG_TAKE_DC = (1 << 0),
-        FLAG_FOR_PRINTING = (1 << 1)
+        FLAG_FOR_PRINTING = (1 << 1),
+        FLAG_METAFILE = (1 << 2)
     };
 
     gfxWindowsSurface(HWND wnd);
@@ -82,12 +83,32 @@ public:
 
     virtual PRInt32 GetDefaultContextFlags() const;
 
-private:
+protected:
     PRPackedBool mOwnsDC;
     PRPackedBool mForPrinting;
+    PRPackedBool mMetafile;
 
     HDC mDC;
+
+private:
     HWND mWnd;
+};
+
+class THEBES_API gfxWindowsMetafileSurface : public gfxWindowsSurface {
+public:
+  gfxWindowsMetafileSurface(HDC dc, PRUint32 flags = FLAG_TAKE_DC|FLAG_METAFILE);
+  ~gfxWindowsMetafileSurface();
+
+//  static already_AddRefed<gfxWindowsMetafileSurface> CreateWindowsMetafileSurface(gfxWindowsSurface* refSurface, 
+//                                                             const gfxIntSize& size);
+
+  virtual void Finish();
+//  HENHMETAFILE GetEnhMetaFile() {return mHEnhMetafile;}
+  virtual nsresult GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile );
+  virtual nsresult WriteFile(const nsAString& filename);
+
+private:
+  HENHMETAFILE mHEnhMetafile;
 };
 
 #endif /* GFX_WINDOWSSURFACE_H */

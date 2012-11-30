@@ -80,6 +80,9 @@ public:
   NS_IMETHOD GetDeviceContextFor(nsIDeviceContextSpec *aDevice,
                                  nsIDeviceContext *&aContext);
 
+  NS_IMETHOD CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, 
+                                            const nsRect& bounds, gfxASurface*& surfaceOut);
+  
   NS_IMETHOD BeginDocument(PRUnichar * aTitle, PRUnichar* aPrintToFileName, PRInt32 aStartPage, PRInt32 aEndPage);
   NS_IMETHOD EndDocument(void);
   NS_IMETHOD AbortDocument(void);

@@ -52,6 +52,7 @@ class nsIFontMetrics;
 class nsIWidget;
 class nsIDeviceContextSpec;
 class nsIAtom;
+class gfxASurface;
 
 struct nsFont;
 
@@ -275,6 +276,14 @@ public:
    * GTK2 calls this to get the required visual for the window.
    */
   NS_IMETHOD PrepareNativeWidget(nsIWidget* aWidget, void** aOut) = 0;
+
+  /**
+   * Create a graphics surface for a native metafile compatible with our 
+   * device context, with given size.
+   * This may only make sense on Windows...
+   */
+  NS_IMETHOD CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, const nsRect& bounds, 
+                                                            gfxASurface*& surfaceOut) = 0;
 
   /**
    * Gets the number of app units in one CSS pixel; this number is global,

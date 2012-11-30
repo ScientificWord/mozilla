@@ -58,6 +58,9 @@ public:
    * @result error status
    */
   NS_IMETHOD CreateDrawingSurface(HDC aDC, nsIDrawingSurface* &aSurface) = 0;
+
+  NS_IMETHOD CreateCompatibleMetafileSurface(const nsRect& bounds, gfxASurface* &aSurface) = 0;
+
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIRenderingContextWin,

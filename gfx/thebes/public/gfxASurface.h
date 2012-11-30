@@ -46,6 +46,8 @@ typedef struct _cairo_user_data_key cairo_user_data_key_t;
 
 typedef void (*thebes_destroy_func_t) (void *data);
 
+typedef void* nsNativeMetafile;
+
 /**
  * A surface is something you can draw on. Instantiate a subclass of this
  * abstract class, and use gfxContext to draw on this surface.
@@ -138,6 +140,9 @@ public:
      * gfxContext::SetFlag for documentation.
      */
     virtual PRInt32 GetDefaultContextFlags() const { return 0; }
+
+    virtual nsresult GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile );
+    virtual nsresult WriteFile(const nsAString& filename);
 
 protected:
     gfxASurface() : mSurface(nsnull), mFloatingRefs(0), mSurfaceValid(PR_FALSE) { }
