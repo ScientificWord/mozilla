@@ -45,14 +45,14 @@
 #include "nsString.h"
 
 gfxWindowsSurface::gfxWindowsSurface(HWND wnd) :
-    mOwnsDC(PR_TRUE), mForPrinting(PR_FALSE), mWnd(wnd)
+    mOwnsDC(PR_TRUE), mForPrinting(PR_FALSE), mMetafile(PR_FALSE), mWnd(wnd)
 {
     mDC = ::GetDC(mWnd);
     Init(cairo_win32_surface_create(mDC));
 }
 
 gfxWindowsSurface::gfxWindowsSurface(HDC dc, PRUint32 flags) :
-    mOwnsDC(PR_FALSE), mForPrinting(PR_FALSE), mDC(dc), mWnd(nsnull)
+    mOwnsDC(PR_FALSE), mForPrinting(PR_FALSE), mMetafile(PR_FALSE), mDC(dc), mWnd(nsnull)
 {
     if (flags & FLAG_TAKE_DC)
         mOwnsDC = PR_TRUE;
@@ -60,13 +60,18 @@ gfxWindowsSurface::gfxWindowsSurface(HDC dc, PRUint32 flags) :
     if (flags & FLAG_FOR_PRINTING) {
         Init(cairo_win32_printing_surface_create(mDC));
         mForPrinting = PR_TRUE;
+    } else if (flags & FLAG_METAFILE) {
+        Init(cairo_win32_metafile_surface_create(mDC));
     } else {
         Init(cairo_win32_surface_create(mDC));
     }
+
+    if (flags & FLAG_METAFILE)
+      mMetafile = PR_TRUE;
 }
 
 gfxWindowsSurface::gfxWindowsSurface(const gfxIntSize& size, gfxImageFormat imageFormat) :
-    mOwnsDC(PR_FALSE), mForPrinting(PR_FALSE), mWnd(nsnull)
+    mOwnsDC(PR_FALSE), mForPrinting(PR_FALSE), mMetafile(PR_FALSE), mWnd(nsnull)
 {
     if (!CheckSurfaceSize(size))
         return;
@@ -82,7 +87,7 @@ gfxWindowsSurface::gfxWindowsSurface(const gfxIntSize& size, gfxImageFormat imag
 }
 
 gfxWindowsSurface::gfxWindowsSurface(HDC dc, const gfxIntSize& size, gfxImageFormat imageFormat) :
-    mOwnsDC(PR_FALSE), mForPrinting(PR_FALSE), mWnd(nsnull)
+    mOwnsDC(PR_FALSE), mForPrinting(PR_FALSE), mMetafile(PR_FALSE), mWnd(nsnull)
 {
     if (!CheckSurfaceSize(size))
         return;
@@ -99,7 +104,7 @@ gfxWindowsSurface::gfxWindowsSurface(HDC dc, const gfxIntSize& size, gfxImageFor
 
 
 gfxWindowsSurface::gfxWindowsSurface(cairo_surface_t *csurf) :
-    mOwnsDC(PR_FALSE), mForPrinting(PR_FALSE), mWnd(nsnull)
+    mOwnsDC(PR_FALSE), mForPrinting(PR_FALSE), mMetafile(PR_FALSE), mWnd(nsnull)
 {
     if (cairo_surface_status(csurf) == 0)
         mDC = cairo_win32_surface_get_dc(csurf);
@@ -114,7 +119,7 @@ gfxWindowsSurface::gfxWindowsSurface(cairo_surface_t *csurf) :
 
 gfxWindowsSurface::~gfxWindowsSurface()
 {
-    if (mOwnsDC) {
+    if (mOwnsDC && !mMetafile) {
         if (mWnd)
             ::ReleaseDC(mWnd, mDC);
         else
@@ -250,4 +255,41 @@ PRInt32 gfxWindowsSurface::GetDefaultContextFlags() const
                gfxContext::FLAG_DISABLE_SNAPPING;
 
     return 0;
+}
+
+gfxWindowsMetafileSurface::gfxWindowsMetafileSurface(HDC dc, PRUint32 flags) :
+                 gfxWindowsSurface(dc, flags | FLAG_METAFILE), mHEnhMetafile(nsnull)
+{
+}
+
+gfxWindowsMetafileSurface::~gfxWindowsMetafileSurface()
+{
+  Finish();
+  ::DeleteEnhMetaFile(mHEnhMetafile);
+}
+
+void gfxWindowsMetafileSurface::Finish()
+{
+  if (!mHEnhMetafile)
+  {
+    gfxASurface::Finish();
+    mHEnhMetafile = ::CloseEnhMetaFile(mDC);
+    mDC = nsnull;
+  }
+}
+
+nsresult gfxWindowsMetafileSurface::GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile )
+{
+  Finish();  //check to be sure we've closed the metafile
+  *outMetafile = ::CopyEnhMetaFile(mHEnhMetafile, nsnull);
+  return NS_OK;
+}
+
+nsresult gfxWindowsMetafileSurface::WriteFile(const nsAString& filename)
+{
+  Finish();  //check to be sure we've closed the metafile
+  char* fileUTF8 = ToNewUTF8String(filename);
+  HENHMETAFILE outMetafile = ::CopyEnhMetaFile(mHEnhMetafile, (LPCTSTR)fileUTF8);
+//  HENHMETAFILE outMetafile = ::CopyEnhMetaFile(mHEnhMetafile, (LPCTSTR)filename.BeginReading());
+  return NS_OK;
 }

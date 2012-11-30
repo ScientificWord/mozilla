@@ -362,6 +362,48 @@ nsThebesDeviceContext::SupportsNativeWidgets(PRBool &aSupportsWidgets)
     return NS_OK;
 }
 
+#ifdef XP_WIN
+NS_IMETHODIMP nsThebesDeviceContext::CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, 
+                                      const nsRect& bounds, gfxASurface*& surfaceOut)
+{
+  HDC hDC = (HDC)rContext.GetNativeGraphicData(nsIRenderingContext::NATIVE_WINDOWS_DC);
+
+//  nsRect appUnitsRect;
+//  GetClientRect(appUnitsRect);
+  RECT rect;
+  int mmWidth = ::GetDeviceCaps(hDC, HORZSIZE);
+  int mmHeight = ::GetDeviceCaps(hDC, VERTSIZE);
+  int pxWidth = ::GetDeviceCaps(hDC, HORZRES);
+  int pxHeight = ::GetDeviceCaps(hDC, VERTRES);
+//  float hScale = ((float)mmWidth * 100.0)/(mAppUnitsPerDevNotScaledPixel * pxWidth);
+//  float vScale = ((float)mmHeight * 100.0)/(mAppUnitsPerDevNotScaledPixel * pxHeight);
+  float hScale = ((float)mmWidth * 100.0)/pxWidth;
+  float vScale = ((float)mmHeight * 100.0)/pxHeight;
+//  rect.left = NSToCoordRound((float)bounds.x * hScale);
+//  rect.top = NSToCoordRound((float)bounds.y * vScale);
+  rect.left = 0;
+  rect.top = 0;
+  rect.right = rect.left + NSToCoordRound((float)bounds.width * hScale);
+  rect.bottom = rect.top + NSToCoordRound((float)bounds.height * vScale);
+
+  HDC metaDC = ::CreateEnhMetaFile(hDC, nsnull, &rect, nsnull);
+  SIZE viewExt, winExt;
+  ::GetWindowExtEx(hDC, &winExt);
+  ::GetWindowExtEx(hDC, &viewExt);
+  hScale = (float)winExt.cx/(float)viewExt.cx;
+  hScale = (float)winExt.cy/(float)viewExt.cy;
+  if (::GetViewportExtEx(metaDC, &viewExt))
+    ::SetWindowExtEx(metaDC, NSToCoordRound(hScale * viewExt.cx), 
+                             NSToCoordRound(vScale * viewExt.cy), &winExt);
+//    ::SetWindowExtEx(metaDC, NSToCoordRound(mAppUnitsPerDevNotScaledPixel * viewExt.cx), 
+//                             NSToCoordRound(mAppUnitsPerDevNotScaledPixel * viewExt.cy), nsnull);
+  gfxWindowsMetafileSurface* surface = new gfxWindowsMetafileSurface(metaDC);
+  surfaceOut = (gfxASurface*)surface;
+  NS_ADDREF(surfaceOut);
+  return NS_OK;
+}
+#endif
+
 NS_IMETHODIMP
 nsThebesDeviceContext::ClearCachedSystemFonts()
 {

@@ -3838,8 +3838,11 @@ NS_IMETHODIMP nsHTMLEditor::SaveSelectionAsImage(const nsAString& filepath, PRBo
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIOutputStream> outputStream;
-  rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), file);
-  NS_ENSURE_SUCCESS(rv, rv);
+  if (!extension.EqualsLiteral("emf"))  //want to pass a null outputstream for this one; operating system does the work
+  {
+    rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), file);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
 
   return presShell->DrawSelectionToFile(selection, filepath, extension, outputStream, _retval);
 }

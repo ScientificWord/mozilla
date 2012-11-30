@@ -345,3 +345,15 @@ gfxASurface::EndPage()
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
+
+nsresult 
+gfxASurface::GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile )
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+nsresult 
+gfxASurface::WriteFile(const nsAString& filename)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}

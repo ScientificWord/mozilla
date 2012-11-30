@@ -112,6 +112,9 @@ public:
     NS_IMETHOD EndPage(void);
     /* end printing goop */
 
+    NS_IMETHOD CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, 
+                                            const nsRect& bounds, gfxASurface*& surfaceOut);
+  
     static void DebugShowCairoSurface (const char *aName, cairo_surface_t *aSurface);
 
     virtual PRBool CheckDPIChange();

@@ -704,6 +704,32 @@ NS_IMETHODIMP nsDeviceContextWin :: GetDeviceContextFor(nsIDeviceContextSpec *aD
   return devConWin->Init(dc, this); // take ownership of the DC
 }
 
+NS_IMETHODIMP nsDeviceContextWin :: CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, 
+                                      const nsRect& bounds, gfxASurface*& surfaceOut)
+{
+  HDC hDC = (HDC)rContext.GetNativeGraphicData(nsIRenderingContext::NATIVE_WINDOWS_DC);
+
+//  nsRect appUnitsRect;
+//  GetClientRect(appUnitsRect);
+  RECT rect;
+  int mmWidth = ::GetDeviceCaps(hDC, HORZSIZE);
+  int mmHeight = ::GetDeviceCaps(hDC, VERTSIZE);
+  int pxWidth = ::GetDeviceCaps(hDC, HORZRES);
+  int pxHeight = ::GetDeviceCaps(hDC, VERTRES);
+  float hScale = (mmWidth * 100)/(mDevUnitsToAppUnits * pxWidth);
+  float vScale = (mmHeight * 100)/(mDevUnitsToAppUnits * pxHeight);
+  rect.left = NSToIntRound(bounds.x * hScale);
+  rect.top = MSToIntRound(bounds.y * vScale);
+  rect.right = rect.left + NSToIntRound(bounds.width * hScale);
+  rect.bottom = rect.top + MSToIntRound(bounds.height * vScale);
+
+  HDC metaDC = ::CreateEnhMetaFile(hDC, &rect, nsnull);
+  gfxWindowsMetafileSurface* surface = new gfxWindowsMetafileSurface(metaDC);
+  surfaceOut = (gfxASurface*)surface;
+  NS_ADDREF(surfaceOut);
+  return NS_OK;
+}
+
 #if defined(DEBUG_rods) || defined(DEBUG_dcone)
 static void DisplayLastError()
 {
