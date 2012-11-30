@@ -99,6 +99,9 @@ public:
   NS_IMETHOD  CreateRenderingContext(nsIRenderingContext *&aContext){return NS_ERROR_NOT_IMPLEMENTED;}
   NS_IMETHOD  CreateRenderingContextInstance(nsIRenderingContext *&aContext);
 
+  NS_IMETHOD CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, const nsRect& bounds, 
+                                                            gfxASurface*& surfaceOut);
+
   NS_IMETHOD  GetMetricsFor(const nsFont& aFont, nsIAtom* aLangGroup,
                             nsIFontMetrics*& aMetrics);
   NS_IMETHOD  GetMetricsFor(const nsFont& aFont, nsIFontMetrics*& aMetrics);
