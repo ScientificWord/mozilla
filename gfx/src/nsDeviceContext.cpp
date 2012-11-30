@@ -600,3 +600,11 @@ DeviceContextImpl::ClearCachedSystemFonts()
 {
   return NS_OK;
 }
+
+NS_IMETHODIMP
+DeviceContextImpl::CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, const nsRect& bounds, 
+                                                            gfxASurface*& surfaceOut)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+

@@ -5324,7 +5324,8 @@ PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aI
 
   // if the area of the image is larger than the maximum area, scale it down
   float scale = 0.0;
-  nsIntRect rootScreenRect = GetRootFrame()->GetScreenRect();
+  nsIFrame* rootFrame = GetRootFrame();
+  nsIntRect rootScreenRect = rootFrame->GetScreenRect();
 
   // if the image is larger in one or both directions than the size of
   // the available screen area, scale the image down to that size.
@@ -5332,6 +5333,7 @@ PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aI
   deviceContext->GetClientRect(maxSize);
   nscoord maxWidth = pc->AppUnitsToDevPixels(maxSize.width);
   nscoord maxHeight = pc->AppUnitsToDevPixels(maxSize.height);
+  PRBool clearSurface = PR_TRUE;
   PRBool resize = (pixelArea.width > maxWidth || pixelArea.height > maxHeight);
   if (resize) {
     scale = 1.0;
@@ -5386,22 +5388,37 @@ PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aI
   }
   else if (extension.EqualsLiteral("svg") && outputStream)
   {
-    //want to insert:
+    clearSurface = PR_FALSE;
     gfxSVGSurface* svgSurface = new gfxSVGSurface(outputStream, rectSize);
     if (!svgSurface || svgSurface->CairoStatus())
       delete svgSurface;
     else
       surface = svgSurface;
   }
+#ifdef XP_WIN
+  else if (extension.EqualsLiteral("emf"))
+  {
+    clearSurface = PR_FALSE;
+    nsCOMPtr<nsIRenderingContext> rcx;
+    nsresult res = CreateRenderingContext(rootFrame, getter_AddRefs(rcx));
+    if (NS_SUCCEEDED(res))
+      res = deviceContext->CreateCompatibleNativeMetafileSurface(*rcx, pixelArea, surface);
+    if (NS_FAILED(res))
+      surface = nsnull;
+  }
+#endif
 
   if (!surface)
     return nsnull;
 
   // clear the image
   gfxContext context(surface);
-  context.SetOperator(gfxContext::OPERATOR_CLEAR);
-  context.Rectangle(gfxRect(0, 0, pixelArea.width, pixelArea.height));
-  context.Fill();
+  if (clearSurface)
+  {
+    context.SetOperator(gfxContext::OPERATOR_CLEAR);
+    context.Rectangle(gfxRect(0, 0, pixelArea.width, pixelArea.height));
+    context.Fill();
+  }
 
   nsCOMPtr<nsIRenderingContext> rc;
   deviceContext->CreateRenderingContextInstance(*getter_AddRefs(rc));
@@ -6346,17 +6363,18 @@ PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& path, 
 
   if ( extension.EqualsLiteral("png") || extension.EqualsLiteral("jpg") || extension.EqualsLiteral("jpeg") )
   {
-    nsRefPtr<gfxImageSurface> imgSurface =
-       new gfxImageSurface(gfxIntSize(refScreenRect.width, refScreenRect.height),
-                           gfxImageSurface::ImageFormatARGB32);
-    NS_ENSURE_TRUE(imgSurface, NS_ERROR_OUT_OF_MEMORY);
-    nsRefPtr<gfxContext> imgContext = new gfxContext(imgSurface);
-    //First clear it?
-//    imgContext->SetOperator(gfxContext::OPERATOR_CLEAR);
-//    imgContext->Rectangle(gfxRect(0, 0, refScreenRect.width, refScreenRect.height));
-//    imgContext->Fill();
-
-    imgContext->DrawSurface(surface, gfxSize(refScreenRect.width, refScreenRect.height));
+//    nsRefPtr<gfxImageSurface> imgSurface =
+//       new gfxImageSurface(gfxIntSize(refScreenRect.width, refScreenRect.height),
+//                           gfxImageSurface::ImageFormatARGB32);
+//    NS_ENSURE_TRUE(imgSurface, NS_ERROR_OUT_OF_MEMORY);
+//    nsRefPtr<gfxContext> imgContext = new gfxContext(imgSurface);
+////    //First clear it?
+////    imgContext->SetOperator(gfxContext::OPERATOR_CLEAR);
+////    imgContext->Rectangle(gfxRect(0, 0, refScreenRect.width, refScreenRect.height));
+////    imgContext->Fill();
+//
+//    imgContext->DrawSurface(surface, gfxSize(refScreenRect.width, refScreenRect.height));
+    gfxImageSurface* imgSurface = reinterpret_cast<gfxImageSurface*>(surface.get());
     char* encoderID;
     if (extension.EqualsLiteral("png"))
       encoderID = "@mozilla.org/image/encoder;2?type=image/png";
@@ -6365,8 +6383,9 @@ PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& path, 
 
     nsCOMPtr<imgIEncoder> encoder = do_CreateInstance(encoderID);
     NS_ENSURE_TRUE(encoder, NS_ERROR_FAILURE);
-    encoder->InitFromData(imgSurface->Data(), imgSurface->Stride() * refScreenRect.height,
-                          refScreenRect.width, refScreenRect.height, imgSurface->Stride(),
+    const gfxIntSize surfSize = imgSurface->GetSize();
+    encoder->InitFromData(imgSurface->Data(), imgSurface->Stride() * surfSize.height,
+                          surfSize.width, surfSize.height, imgSurface->Stride(),
                           imgIEncoder::INPUT_FORMAT_HOSTARGB, EmptyString());
 
     PRUint32 length;
@@ -6382,6 +6401,13 @@ PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& path, 
   }
   else if (extension.EqualsLiteral("pdf") || extension.EqualsLiteral("svg"))
     surface->Finish();    //is this necessary? appropriate??
+#ifdef XP_WIN
+  else if (extension.EqualsLiteral("emf"))
+  {
+    surface->Finish();
+    nsresult rv = surface->WriteFile(path);  //don't need an output stream for this, as the operating system will do it
+  }
+#endif
 
   *retval = PR_TRUE;
   return NS_OK;
