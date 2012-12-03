@@ -1308,6 +1308,9 @@
           <xsl:when test="$first-char='&#x220B;'">
             <xsl:text xml:space="preserve">\ni </xsl:text>
           </xsl:when>
+          <xsl:when test="$first-char='&#x2211;'">
+            <xsl:text xml:space="preserve">\sum </xsl:text>
+          </xsl:when>
           <xsl:when test="$first-char='&#x2212;'">
             <xsl:text xml:space="preserve">-</xsl:text>
           </xsl:when>
