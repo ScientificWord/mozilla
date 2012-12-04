@@ -10,7 +10,7 @@
     title="&HTMLField.title;"
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
-    onload="Startup();"
+    onload="startup();"
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
     width="400"
     height="500"
@@ -28,5 +28,5 @@
     <label control="name" value="&name.label;"/>
     <textbox id="name" value=""/>
   </vbox>
-  <textbox id="texbuttonTextbox" multiline="true" flex="1"  value=""/>
+  <textbox id="htmlbuttonTextbox" multiline="true" flex="1"  value=""/>
 </dialog>
