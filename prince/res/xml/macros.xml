@@ -36,24 +36,25 @@
   <m nm="tau" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&tau;<![CDATA[");]]></data></m>
   <m nm="backepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&backepsilon;<![CDATA[");]]></data></m>
 <!--Big Operators -->
-  <m nm="bigcap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xcap;<![CDATA[");]]></data></m>
-  <m nm="coprod"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&coprod;<![CDATA[");]]></data></m>
-  <m nm="bigcup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xcup;<![CDATA[");]]></data></m>
-  <m nm="idotsint"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&int;&ctdot;&int;<![CDATA[");]]></data></m>
-  <m nm="bigodot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xodot;<![CDATA[");]]></data></m>
-  <m nm="iiiint"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&qint;<![CDATA[");]]></data></m>
-  <m nm="bigoplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xoplus;<![CDATA[");]]></data></m>
-  <m nm="iiint"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&tint;<![CDATA[");]]></data></m>
-  <m nm="bigotimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xotime;<![CDATA[");]]></data></m>
-  <m nm="iint"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Int;<![CDATA[");]]></data></m>
-  <m nm="bigsqcup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xsqcup;<![CDATA[");]]></data></m>
-  <m nm="int"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&int;<![CDATA[");]]></data></m>
-  <m nm="biguplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xuplus;<![CDATA[");]]></data></m>
-  <m nm="oint"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&conint;<![CDATA[");]]></data></m>
-  <m nm="bigvee"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xvee;<![CDATA[");]]></data></m>
-  <m nm="prod"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prod;<![CDATA[");]]></data></m>
-  <m nm="bigwedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xwedge;<![CDATA[");]]></data></m>
-  <m nm="sum"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sum;<![CDATA[");]]></data></m>
+  <m nm="int"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&Int;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&tint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iiiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&qint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="idotsint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;&ctdot;&int;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="oint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&conint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="sum"  tp="sc"><data><![CDATA[insertMathOperator("]]>&sum;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="prod"  tp="sc"><data><![CDATA[insertMathOperator("]]>&prod;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigcap"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xcap;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigwedge"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xwedge;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigoplus"  tp="sc"><data><![CDATA[insertMathOperator("]]>&oplus;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigodot"  tp="sc"><data><![CDATA[insertMathOperator("]]>&odot;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigsqcup"  tp="sc"><data><![CDATA[insertMathOperator("]]>&sqcup;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="coprod"  tp="sc"><data><![CDATA[insertMathOperator("]]>&coprod;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigcup"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xcup;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigvee"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xvee;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigotimes"  tp="sc"><data><![CDATA[insertMathOperator("]]>&otimes;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="biguplus"  tp="sc"><data><![CDATA[insertMathOperator("]]>&uplus;<![CDATA[", "", "", false);]]></data></m>
+      
 <!-- Uppercase Greek -->												  
   <m nm="Delta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Delta;<![CDATA[");]]></data></m>
   <m nm="Pi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Pi;<![CDATA[");]]></data></m>
