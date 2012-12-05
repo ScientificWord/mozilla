@@ -757,7 +757,5 @@
   <m nm="textquotedblright" fm="0"><data>&rdquo;</data><context/><info>0,0</info></m>
   <m nm="guilsinglleft" fm="0"><data>&lsaquo;</data><context/><info>0,0</info></m>
   <m nm="guilsinglright" fm="0"><data>&rsaquo;</data><context/><info>0,0</info></m>
-<!-- Units -->
-  <m nm="uft" tp="sc"><data>insertMathunit('ft');</data></m>
 
 </macros>
