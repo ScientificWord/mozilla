@@ -92,7 +92,11 @@ typedef struct _cairo_win32_surface {
     cairo_bool_t has_ctm;
     cairo_matrix_t ctm;
     HBRUSH brush, old_brush;
+
+    /* For Windows metafile creation support */
     cairo_bool_t is_win_metafile;
+//rwa12-06-12     cairo_scaled_font_subsets_t *font_subsets;
+
 } cairo_win32_surface_t;
 
 /* Surface DC flag values */
@@ -181,6 +185,11 @@ _cairo_win32_restore_initial_clip (cairo_win32_surface_t *surface);
 
 cairo_bool_t
 _cairo_surface_is_win32_metafile (cairo_surface_t *surface);
+
+//rwa12-06-12 cairo_int_status_t
+//rwa12-06-12  _cairo_win32_scaled_font_convert_glyphs_to_unicode (cairo_scaled_font_t *scaled_font,
+//rwa12-06-12             cairo_win32_surface_t *surface, uint16_t *glyphs, uint16_t *unicode_str,
+//rwa12-06-12             int num_glyphs);
 
 void
 _cairo_win32_debug_dump_hrgn (HRGN rgn, char *header);
