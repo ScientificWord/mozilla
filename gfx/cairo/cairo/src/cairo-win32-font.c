@@ -45,6 +45,7 @@
 #include "cairoint.h"
 
 #include "cairo-win32-private.h"
+//rwa12-06-12 #include "cairo-scaled-font-subsets-private.h"
 
 #ifndef SPI_GETFONTSMOOTHINGTYPE
 #define SPI_GETFONTSMOOTHINGTYPE 0x200a
@@ -1528,6 +1529,75 @@ fail1:
 
     return status;
 }
+
+//rwa12-07-12 The commented code below failed to ever properly be linked to, for some reason. What has now worked
+//rwa12-07-12   for metafile creation renders this more or less unnecessary. However, that code could probably 
+//rwa12-07-12   be sharpened to cache values as long as the surface is being drawn to; I'll leave this code commented
+//rwa12-07-12   to serve as a bit of a reminder about dealing with font_subsets etc.
+
+//rwa12-06-12 typedef struct {
+//rwa12-06-12   unsigned int num_glyphs;
+//rwa12-06-12   cairo_scaled_font_subsets_glyph_t *glyph_records;
+//rwa12-06-12   uint16_t *glyphIDs;
+//rwa12-06-12   uint16_t *unicodeIDs;
+//rwa12-06-12 } cairo_win32_scaled_font_string_conversion_t;
+//rwa12-06-12 
+//rwa12-06-12 
+//rwa12-06-12 static cairo_status_t
+//rwa12-06-12 _cairo_win32_font_subset_convert(cairo_scaled_font_subset_t	*font_subset, void *closure)
+//rwa12-06-12 {
+//rwa12-06-12   cairo_win32_scaled_font_string_conversion_t* conversion = (cairo_win32_scaled_font_string_conversion_t*)closure;
+//rwa12-06-12   int i, j;
+//rwa12-06-12   cairo_status_t status = _cairo_win32_scaled_font_map_glyphs_to_unicode (font_subset->scaled_font,
+//rwa12-06-12 						                      font_subset);
+//rwa12-06-12   for (i = 0; i < conversion->num_glyphs; ++i)
+//rwa12-06-12   {
+//rwa12-06-12     if (conversion->glyph_records[i].font_id == font_subset->font_id && 
+//rwa12-06-12                   conversion->glyph_records[i].subset_id == font_subset->subset_id)
+//rwa12-06-12     {
+//rwa12-06-12       for (j = 0; j < font_subset->num_glyphs; ++j)
+//rwa12-06-12       {
+//rwa12-06-12         if (font_subset->glyphs[j] == conversion->glyphIDs[i])
+//rwa12-06-12           conversion->unicodeIDs[i] = font_subset->to_unicode[j];
+//rwa12-06-12       }
+//rwa12-06-12     }
+//rwa12-06-12   }
+//rwa12-06-12 }
+//rwa12-06-12 
+//rwa12-06-12 static cairo_int_status_t
+//rwa12-06-12 _cairo_win32_scaled_font_convert_glyphs_to_unicode (cairo_scaled_font_t *scaled_font,
+//rwa12-06-12             cairo_win32_surface_t     *surface, uint16_t *glyphs, uint16_t *unicode_str,
+//rwa12-06-12             int num_glyphs)
+//rwa12-06-12 {
+//rwa12-06-12     cairo_scaled_font_subset_t *font_subset;
+//rwa12-06-12     int i, j;
+//rwa12-06-12     cairo_status_t status = CAIRO_STATUS_SUCCESS;
+//rwa12-06-12     cairo_win32_scaled_font_string_conversion_t *conversion = malloc(sizeof(cairo_win32_scaled_font_string_conversion_t));
+//rwa12-06-12     cairo_scaled_font_subsets_glyph_t *glyph_ret = malloc(num_glyphs * sizeof(cairo_scaled_font_subsets_glyph_t));
+//rwa12-06-12     conversion->num_glyphs = num_glyphs;
+//rwa12-06-12     conversion->glyphIDs = glyphs;
+//rwa12-06-12     conversion->glyph_records = glyph_ret;
+//rwa12-06-12     conversion->unicodeIDs = unicode_str;
+//rwa12-06-12 
+//rwa12-06-12     if (!surface->font_subsets)
+//rwa12-06-12       surface->font_subsets = _cairo_scaled_font_subsets_create_scaled();
+//rwa12-06-12 
+//rwa12-06-12     for (i = 0; i < num_glyphs; ++i)
+//rwa12-06-12     {
+//rwa12-06-12       status = _cairo_scaled_font_subsets_map_glyph(surface->font_subsets, scaled_font,
+//rwa12-06-12 				                              glyphs[i],	&glyph_ret[i]);
+//rwa12-06-12       if (status)
+//rwa12-06-12         goto BAIL;
+//rwa12-06-12     }
+//rwa12-06-12 
+//rwa12-06-12     status = _cairo_scaled_font_subsets_foreach_scaled(surface->font_subsets,
+//rwa12-06-12                                            _cairo_win32_font_subset_convert, conversion);
+//rwa12-06-12 
+//rwa12-06-12 BAIL:
+//rwa12-06-12     free(conversion);
+//rwa12-06-12     free(glyph_ret);
+//rwa12-06-12     return status;
+//rwa12-06-12 }
 
 static cairo_status_t
 _cairo_win32_scaled_font_init_glyph_surface (cairo_win32_scaled_font_t *scaled_font,
