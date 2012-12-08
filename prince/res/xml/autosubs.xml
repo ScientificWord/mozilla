@@ -116,7 +116,7 @@
   <sub ctx="math" tp="sc"><pattern>log</pattern><data>insertMathname('log','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>max</pattern><data>insertMathname('max','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>min</pattern><data>insertMathname('min','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>mod</pattern><data>insertMathOperator('mod','atRight','small','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>mod</pattern><data>insertMathname('mod','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>negative</pattern><data>insertMathname('negative','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>negint</pattern><data>insertMathname('negint','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>negrat</pattern><data>insertMathname('negrat','true');</data></sub>
