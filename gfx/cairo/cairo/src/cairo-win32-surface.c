@@ -169,6 +169,7 @@ _create_dc_and_bitmap (cairo_win32_surface_t *surface,
     surface->bitmap = NULL;
     surface->is_dib = FALSE;
     surface->is_win_metafile = FALSE;
+//rwa12-06-12     surface->font_subsets = NULL;
 
     switch (format) {
     case CAIRO_FORMAT_ARGB32:
@@ -480,6 +481,12 @@ _cairo_win32_surface_finish (void *abstract_surface)
 
     if (surface->initial_clip_rgn)
 	DeleteObject (surface->initial_clip_rgn);
+
+//rwa12-06-12     if (surface->font_subsets)
+//rwa12-06-12     {
+//rwa12-06-12       _cairo_scaled_font_subsets_destroy (surface->font_subsets);
+//rwa12-06-12       surface->font_subsets = NULL;
+//rwa12-06-12     }
 
     return CAIRO_STATUS_SUCCESS;
 }
@@ -1532,6 +1539,90 @@ _cairo_win32_surface_flush (void *abstract_surface)
     return _cairo_surface_reset_clip (abstract_surface);
 }
 
+
+static cairo_status_t
+_cairo_win32_quick_convert_glyphs_to_unicode(cairo_win32_surface_t *surface, uint16_t *glyph_list, 
+                                               uint16_t *unicode_list, int num_glyphs)
+{
+    GLYPHSET *glyph_set;
+    uint16_t *utf16 = NULL;
+    WORD *glyph_indices = NULL;
+    HDC hdc = surface->dc;
+    int res;
+    unsigned int i, j, k, count, num_range_glyphs;
+    cairo_status_t status = CAIRO_STATUS_SUCCESS;
+
+    res = GetFontUnicodeRanges(hdc, NULL);
+    if (res == 0) {
+	    status = _cairo_win32_print_gdi_error (
+	    "_cairo_win32_scaled_font_map_glyphs_to_unicode:GetFontUnicodeRanges");
+	    return status;
+    }
+
+    glyph_set = malloc (res);
+    if (glyph_set == NULL) {
+	    status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	    return status;
+    }
+
+    res = GetFontUnicodeRanges(hdc, glyph_set);
+    if (res == 0) {
+	    status = _cairo_win32_print_gdi_error (
+	    "_cairo_win32_scaled_font_map_glyphs_to_unicode:GetFontUnicodeRanges");
+	    goto fail1;
+    }
+
+    count = num_glyphs;
+    for (i = 0; i < glyph_set->cRanges && count > 0; i++) {
+	    num_range_glyphs = glyph_set->ranges[i].cGlyphs;
+	    utf16 = _cairo_malloc_ab (num_range_glyphs + 1, sizeof (uint16_t));
+	    if (utf16 == NULL) {
+	      status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	      goto fail1;
+	    }
+
+	    glyph_indices = _cairo_malloc_ab (num_range_glyphs + 1, sizeof (WORD));
+	    if (glyph_indices == NULL) {
+	      status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	      goto fail1;
+	    }
+
+	    for (j = 0; j < num_range_glyphs; j++)
+	      utf16[j] = glyph_set->ranges[i].wcLow + j;
+	    utf16[j] = 0;
+
+	    if (GetGlyphIndicesW (hdc, utf16, num_range_glyphs, glyph_indices, 0) == GDI_ERROR) {
+	      status = _cairo_win32_print_gdi_error (
+		    "_cairo_win32_scaled_font_map_glyphs_to_unicode:GetGlyphIndicesW");
+	      goto fail1;
+	    }
+
+	    for (j = 0; j < num_range_glyphs; j++) {
+	      for (k = 0; k < num_glyphs; k++) {
+		      if (glyph_list[k] == glyph_indices[j]) {
+		        unicode_list[k] = utf16[j];
+		        count--;
+//		        break;
+		      }
+	      }
+	    }
+
+	    free (glyph_indices);
+	    glyph_indices = NULL;
+	    free (utf16);
+	    utf16= NULL;
+    }
+
+fail1:
+    if (glyph_indices)
+	    free (glyph_indices);
+    if (utf16)
+	    free (utf16);
+    free (glyph_set);
+
+    return status;
+}
+
 #define STACK_GLYPH_SIZE 256
 
 cairo_int_status_t
@@ -1549,6 +1640,7 @@ _cairo_win32_surface_show_glyphs (void			*surface,
     WORD *glyph_buf = glyph_buf_stack;
     int dxy_buf_stack[2 * STACK_GLYPH_SIZE];
     int *dxy_buf = dxy_buf_stack;
+    cairo_int_status_t local_stat = CAIRO_STATUS_SUCCESS;
 
     BOOL win_result = 0;
     int i, j;
@@ -1561,6 +1653,8 @@ _cairo_win32_surface_show_glyphs (void			*surface,
     int start_x, start_y;
     double user_x, user_y;
     int logical_x, logical_y;
+
+    uint16_t *unicode_list, *glyph_list;
 
     /* We can only handle win32 fonts */
     if (cairo_scaled_font_get_type (scaled_font) != CAIRO_FONT_TYPE_WIN32)
@@ -1646,15 +1740,38 @@ _cairo_win32_surface_show_glyphs (void			*surface,
         }
     }
 
-    if (_cairo_surface_is_win32_metafile (dst))
+    if (_cairo_surface_is_win32_metafile((cairo_surface_t*)dst))
+    {
+//rwa12-07-12  NOTE: The previous attempts calling the function _cairo_win32_scaled_font_convert_glyphs_to_unicode()
+//rwa12-07-12   failed to link (though they did compile). For some reason the functions in cairo-win32-font.c, though 
+//rwa12-07-12   they also compiled into an .obj, couldn't be linked to.
+//rwa12-07-12  The correct thing to do is probably to simply maintain new structures, using the cairo_hash machinery
+//rwa12-07-12    to access glyph-unicode mapping pairs within each, and indexing the structures by the font_id from
+//rwa12-07-12    the font_subsets structure. This would be a refinement; the current quick-and-dirty method seems to
+//rwa12-07-12    work most of the time, however.
+
+      unicode_list = (uint16_t*)malloc(num_glyphs * sizeof(uint16_t));
+      glyph_list = (uint16_t*)malloc(num_glyphs * sizeof(uint16_t));
+      for (i = 0; i < num_glyphs; ++i)
+      {
+        unicode_list[i] = 0;
+        glyph_list[i] = (uint16_t)glyph_buf[i];
+      }
+      local_stat = _cairo_win32_quick_convert_glyphs_to_unicode(dst, glyph_list, unicode_list, num_glyphs);
+
       win_result = ExtTextOutW(dst->dc,
-                               start_x,
-                               start_y,
-                               ETO_GLYPH_INDEX,
-                               NULL,
-                               glyph_buf,
-                               num_glyphs,
-                               NULL);
+                                start_x,
+                                start_y,
+                                ETO_PDY,
+                                NULL,
+                                unicode_list,
+                                num_glyphs,
+                                dxy_buf);
+      free(unicode_list);
+      free(glyph_list);
+      unicode_list = NULL;
+      glyph_list = NULL;
+    }
     else
       win_result = ExtTextOutW(dst->dc,
                                start_x,
@@ -1725,6 +1842,7 @@ cairo_win32_surface_create (HDC hdc)
     surface->brush = NULL;
     surface->old_brush = NULL;
     surface->is_win_metafile = FALSE;
+//rwa12-06-12      surface->font_subsets = NULL;
 
     GetClipBox(hdc, &rect);
     surface->extents.x = rect.left;
@@ -1772,9 +1890,9 @@ cairo_win32_surface_create_with_dib (cairo_format_t format,
 cairo_surface_t *
 cairo_win32_metafile_surface_create (HDC hdc)
 {
-  cairo_win32_surface_t *new_surf = cairo_win32_surface_create(hdc);
+  cairo_win32_surface_t *new_surf = (cairo_win32_surface_t*)cairo_win32_surface_create(hdc);
   new_surf->is_win_metafile = TRUE;
-  return new_surf;
+  return (cairo_surface_t*)new_surf;
 }
 
 /**
