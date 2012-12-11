@@ -108,6 +108,10 @@ UINT nsClipboard::GetFormat(const char* aMimeStr)
            strcmp(aMimeStr, kFilePromiseMime) == 0)
     format = CF_HDROP;
 #endif
+  else if (strcmp(aMimeStr, kWin32EnhMetafile) == 0)
+    format = CF_ENHMETAFILE;
+  else if (strcmp(aMimeStr, kWin32MetafilePict) == 0)
+    format = CF_METAFILEPICT;
   else if (strcmp(aMimeStr, kNativeHTMLMime) == 0)
     format = CF_HTML;
   else
@@ -221,6 +225,17 @@ nsresult nsClipboard::SetupNativeDataObject(nsITransferable * aTransferable, IDa
         SET_FORMATETC(imageFE, CF_DIB, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL)
         dObj->AddDataFlavor(flavorStr, &imageFE);      
       }
+      else if ( strcmp(flavorStr, kWin32EnhMetafile) == 0) {
+        FORMATETC emfFE;
+        SET_FORMATETC(emfFE, CF_ENHMETAFILE, 0, DVASPECT_CONTENT, -1, TYMED_ENHMF);
+        dObj->AddDataFlavor(flavorStr, &emfFE);
+      }
+      else if ( strcmp(flavorStr, kWin32MetafilePict) == 0) {
+        FORMATETC wmfFE;
+        SET_FORMATETC(wmfFE, CF_METAFILEPICT, 0, DVASPECT_CONTENT, -1, TYMED_MFPICT);
+        dObj->AddDataFlavor(flavorStr, &wmfFE);
+      }
+
 #ifndef WINCE
       else if ( strcmp(flavorStr, kFilePromiseMime) == 0 ) {
          // if we're a file promise flavor, also register the 
