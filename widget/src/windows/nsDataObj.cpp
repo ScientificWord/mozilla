@@ -509,8 +509,12 @@ STDMETHODIMP nsDataObj::GetData(LPFORMATETC pFE, LPSTGMEDIUM pSTM)
         // ... not yet implemented ...
         //case CF_BITMAP:
         //  return GetBitmap(*pFE, *pSTM);
-        //case CF_METAFILEPICT:
-        //  return GetMetafilePict(*pFE, *pSTM);
+        
+        case CF_ENHMETAFILE:
+          return GetEnhMetafile(*pFE, *pSTM);
+            
+//        case CF_METAFILEPICT:
+//          return GetMetafilePict(*pFE, *pSTM);
             
         default:
           if ( format == fileDescriptorFlavorA )
@@ -1380,6 +1384,40 @@ HRESULT nsDataObj::GetText(const nsACString & aDataFlavor, FORMATETC& aFE, STGME
 
   return ResultFromScode(S_OK);
 }
+
+
+//-----------------------------------------------------
+HRESULT nsDataObj::GetEnhMetafile(FORMATETC&  FE, STGMEDIUM&  STM)
+{
+  PRNTDEBUG("nsDataObj::GetEnhMetafile\n");
+  ULONG result = E_FAIL;
+  
+  PRUint32 len = 0;
+  nsCOMPtr<nsISupports> genericDataWrapper;
+  mTransferable->GetTransferData(kWin32EnhMetafile, getter_AddRefs(genericDataWrapper), &len);
+  nsCOMPtr<nsISupportsVoid> emfWrapper ( do_QueryInterface(genericDataWrapper) );
+  if ( !emfWrapper ) {
+    nsCOMPtr<nsISupportsInterfacePointer> ptr(do_QueryInterface(genericDataWrapper));
+    if ( ptr )
+      ptr->GetData(getter_AddRefs(emfWrapper));
+  }
+  
+  if ( emfWrapper ) {
+    void* emfPtr;
+    emfWrapper->GetData(&emfPtr);
+    if (emfPtr) {
+    HANDLE bits = nsnull;
+      STM.hEnhMetaFile = (HENHMETAFILE)emfPtr;
+      STM.tymed = TYMED_ENHMF;
+      result = S_OK;
+    }
+  } // if we have an enhanced metafile
+//  else  
+//    NS_WARNING ( "Definitely not an image on clipboard" );
+
+	return ResultFromScode(result);
+}
+
 
 //-----------------------------------------------------
 HRESULT nsDataObj::GetMetafilePict(FORMATETC&, STGMEDIUM&)
