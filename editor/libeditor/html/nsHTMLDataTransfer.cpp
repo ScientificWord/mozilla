@@ -3778,12 +3778,38 @@ NS_IMETHODIMP nsHTMLEditor::CopySelectionAsImage(PRBool* _retval)
     }
   }
 
+#ifdef XP_WIN
+  //Put an enhanced metafile image on clipboard
+  void* enhMetafile;
+  //enhMetafile is actually a Windows handle (HENHMETAFILE), so it doesn't understand add_ref. Just pass the pointer to fill in.
+  res = presShell->RenderSelectionToNativeMetafile(selection, &enhMetafile);
+  if (NS_SUCCEEDED(res))
+  {
+    //Wrap it in nsISupportsVoid
+    nsCOMPtr<nsISupportsVoid>
+      emfPtr(do_CreateInstance(NS_SUPPORTS_VOID_CONTRACTID, &rv));
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = emfPtr->SetData(enhMetafile);
+    NS_ENSURE_SUCCESS(rv, rv);
+    //Then wrap it in nsISupportsInterfacePointer
+    nsCOMPtr<nsISupportsInterfacePointer>
+      dataPtr(do_CreateInstance(NS_SUPPORTS_INTERFACE_POINTER_CONTRACTID, &rv));
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = dataPtr->SetData(emfPtr);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    // copy the image data onto the transferable
+    rv = trans->SetTransferData(kWin32EnhMetafile, dataPtr,
+                                sizeof(nsISupports*));
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+#endif
+
   //then put a JPEG image (actually, this puts a native bitmap image)
   nsCOMPtr<nsIImage> imageObj;
   res = presShell->RenderSelectionToImage(selection, getter_AddRefs(imageObj));
   if (imageObj)
   {
-
     //Wrap it in nsISupportsInterfacePointer
     nsCOMPtr<nsISupportsInterfacePointer>
       imgPtr(do_CreateInstance(NS_SUPPORTS_INTERFACE_POINTER_CONTRACTID, &rv));

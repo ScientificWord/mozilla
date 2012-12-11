@@ -908,6 +908,8 @@ public:
 
   NS_IMETHOD RenderSelectionToImage(nsISelection* aSelection, nsIImage** imageObj);
 
+  NS_IMETHOD RenderSelectionToNativeMetafile(nsISelection* aSelection, void** metafilePtr);
+
   //nsIViewObserver interface
 
   NS_IMETHOD Paint(nsIView *aView,
@@ -6481,6 +6483,38 @@ NS_IMETHODIMP PresShell::RenderSelectionToImage(nsISelection* aSelection, nsIIma
 //                        imgIEncoder::INPUT_FORMAT_HOSTARGB, EmptyString());
 
   return NS_OK;
+}
+
+NS_IMETHODIMP PresShell::RenderSelectionToNativeMetafile(nsISelection* aSelection, void** metafilePtr)
+{
+
+#ifdef XP_WIN
+  nsresult rv = NS_ERROR_FAILURE;
+
+  PRInt32 width=1000, height=1000;
+  nsRect r(0, 0, GetPresContext()->DevPixelsToAppUnits(width),
+                 GetPresContext()->DevPixelsToAppUnits(height));
+
+  nsIFrame* rootFrame = GetRootFrame();
+  nsRect refScreenRect;
+  nsString empty = EmptyString();
+  nsIntRect screenRect = rootFrame->GetScreenRectExternal();
+  refScreenRect.SetRect(screenRect.x, screenRect.y, 20, 20);
+  nsPoint pnt(refScreenRect.x, refScreenRect.y);
+  NS_NAMED_LITERAL_STRING(extension, "emf");
+  // we pass empty as the path since the path is used only in the PDF case and on the Mac,
+  //  and here the extension is 'emf', so path will be unreferenced.
+  nsRefPtr<gfxASurface> surface = RenderSelectionForOutput(aSelection, empty, extension, nsnull,
+                                                                 pnt, &refScreenRect);
+  if (!surface)
+    return rv;
+
+  rv = surface->GetEnhMetaFileCopy(metafilePtr);
+  return rv;
+
+#else
+  return NS_ERROR_NOT_IMPLEMENTED;
+#endif
 }
 
 //--------------------------------------------------------

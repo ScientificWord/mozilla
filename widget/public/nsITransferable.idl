@@ -55,6 +55,10 @@
 #define kGIFImageMime               "image/gif"
 #define kFileMime                   "application/x-moz-file"
 
+//These two are NOT real mimetypes - kludge to allow pasting of these under windows
+#define kWin32EnhMetafile           "application/x-moz-win32-enhMetafile"
+#define kWin32MetafilePict          "application/x-moz-win32-metafilePict"
+
 #define kURLMime                    "text/x-moz-url"        // data contains url\ntitle
 #define kURLDataMime                "text/x-moz-url-data"   // data contains url only
 #define kURLDescriptionMime         "text/x-moz-url-desc"   // data contains description
