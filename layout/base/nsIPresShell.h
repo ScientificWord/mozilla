@@ -774,6 +774,9 @@ public:
 
   NS_IMETHOD RenderSelectionToImage(nsISelection* aSelection, nsIImage** imageObj) = 0;
 
+  NS_IMETHOD RenderSelectionToNativeMetafile(nsISelection* aSelection, void** metafilePtr) = 0;
+
+
   void AddWeakFrame(nsWeakFrame* aWeakFrame);
   void RemoveWeakFrame(nsWeakFrame* aWeakFrame);
 
