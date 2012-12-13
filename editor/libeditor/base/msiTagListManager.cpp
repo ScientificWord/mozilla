@@ -1173,7 +1173,7 @@ NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, 
   nsCOMPtr<nsIDOMNode> retNode;
   
   PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
-  if (fInHash)
+  if (fInHash && data && doc && data->initialContents)
   {
     res = data->initialContents->CloneNode( PR_TRUE, getter_AddRefs(retNode));
     res = doc->ImportNode(retNode, PR_TRUE, _retval);
