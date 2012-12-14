@@ -54,6 +54,7 @@
 #define kJPEGImageMime              "image/jpg"
 #define kGIFImageMime               "image/gif"
 #define kFileMime                   "application/x-moz-file"
+#define kSVGImageMime               "image/svg+xml"
 
 //These two are NOT real mimetypes - kludge to allow pasting of these under windows
 #define kWin32EnhMetafile           "application/x-moz-win32-enhMetafile"

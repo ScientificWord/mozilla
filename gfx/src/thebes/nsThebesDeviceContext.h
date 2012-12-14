@@ -112,8 +112,10 @@ public:
     NS_IMETHOD EndPage(void);
     /* end printing goop */
 
+#ifdef XP_WIN
     NS_IMETHOD CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, 
                                             const nsRect& bounds, gfxASurface*& surfaceOut);
+#endif
   
     static void DebugShowCairoSurface (const char *aName, cairo_surface_t *aSurface);
 
