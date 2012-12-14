@@ -26,7 +26,7 @@ Evaluate<UID(CCID_Evaluate,0)>eval(%s);
 
 Evaluate Numerically<UID(CCID_Evaluate_Numerically,0)>float(%s);
 Simplify<UID(CCID_Simplify,0)>tcisimplify(%s);
-Combine Exponentials<UID(CCID_Combine_Exponentials,0)>tcicombine(%s,1);
+Combine Exponentials<UID(CCID_Combine_Exponentials,0)>eval(tcicombine(%s,1));
 Combine Logs<UID(CCID_Combine_Logs,0)>tcicombine(%s,3);
 Combine Powers<UID(CCID_Combine_Powers,0)>tcicombine(%s,2);
 Combine Trig Functions<UID(CCID_Combine_Trig_Functions,0)>tcicombine(%s,0);
