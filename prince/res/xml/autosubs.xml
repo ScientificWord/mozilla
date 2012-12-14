@@ -198,9 +198,9 @@
   <sub ctx="math" tp="sc"><pattern>uGHz</pattern><data>insertMathunit('GHz','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uGJ</pattern><data>insertMathunit('GJ','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uGmol</pattern><data>insertMathunit('Gmol','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>uGohm</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>uGohm</pattern><data>insertMathunit('Gohm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ugr</pattern><data>insertMathunit('g','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>uGW</pattern><data>insertMathunit('GW','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uGWa</pattern><data>insertMathunit('GW','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uHe</pattern><data>insertMathunit('H','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uhectare</pattern><data>insertMathunit('hectare','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uhp</pattern><data>insertMathunit('hp','true');</data></sub>
@@ -218,7 +218,7 @@
   <sub ctx="math" tp="sc"><pattern>ukme</pattern><data>insertMathunit('km','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ukmol</pattern><data>insertMathunit('kmol','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ukN</pattern><data>insertMathunit('kN','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>ukohm</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>ukohm</pattern><data>insertMathunit('kohm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ukPa</pattern><data>insertMathunit('kPa','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ukS</pattern><data>insertMathunit('kS','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ukV</pattern><data>insertMathunit('kV','true');</data></sub>
@@ -264,8 +264,8 @@
   <sub ctx="math" tp="sc"><pattern>umn</pattern><data>insertMathunit('min','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umN</pattern><data>insertMathunit('mN','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uMN</pattern><data>insertMathunit('MN','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>umohm</pattern><data>insertMathunit('');</data></sub> -->
-<!--  <sub ctx="math" tp="sc"><pattern>uMohm</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>umohm</pattern><data>insertMathunit('mohm','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMohm</pattern><data>insertMathunit('Mohm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umol</pattern><data>insertMathunit('mol','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uMPa</pattern><data>insertMathunit('MPa','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umrad</pattern><data>insertMathunit('mrad','true');</data></sub>
@@ -317,7 +317,7 @@
   <sub ctx="math" tp="sc"><pattern>uTHz</pattern><data>insertMathunit('THz','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uTmol</pattern><data>insertMathunit('Tmol','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>utorr</pattern><data>insertMathunit('torr','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>uu</pattern><data>insertMathunit('u','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uy</pattern><data>insertMathunit('y','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uV</pattern><data>insertMathunit('V','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uWa</pattern><data>insertMathunit('W','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uWb</pattern><data>insertMathunit('Wb','true');</data></sub>
