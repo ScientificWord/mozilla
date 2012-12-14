@@ -682,10 +682,10 @@ begin
   solve( eq, v, Domain=Dom::Integer );
 end_proc:
 
-tciassume := proc(v,p)
+tciassume := proc()
 begin
-  assume(v, p);
-  getprop(v);
+  assume(args(1), args(2));
+  getprop(args(1));
 end_proc:
 
 
