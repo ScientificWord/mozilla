@@ -153,13 +153,13 @@
           <row>
             <label control="TextButton" value="Base Color" height="30"/>
             <button id="basecolorbutton" class="color-button" oncommand="GetPlotColor('BaseColor');">
-              <spacer id="plotCW" class="color-well"/>
+              <spacer id="plotCWBase" class="color-well"/>
    	        </button>
           </row>
           <row>
             <label control="TextButton" value="Secondary Color" height="30"/>
             <button id="secondarycolorbutton" class="color-button" oncommand="GetPlotColor('SecondaryColor');">
-              <spacer id="plotCW" class="color-well"/>
+              <spacer id="plotCWSecondary" class="color-well"/>
    	        </button>
           </row>
 
