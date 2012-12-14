@@ -331,16 +331,16 @@ bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, n
   TCI_ASSERT(m_kernel == 0);
   
 #ifdef XP_WIN
-  printf("\n\n  jcs Check 1\n");
+  //printf("\n\n  jcs Check 1\n");
   m_kernel = MUP_new_wmsg_kernel(pathEng, NULL);
-  printf("\n\n  jcs Check 2\n");
+  //printf("\n\n  jcs Check 2\n");
 #else
-  printf("\n\n  jcs Check 1\n");
+  //printf("\n\n  jcs Check 1\n");
   m_kernel = MUP_get_uds_kernel(pathEng,NULL,1);
-  printf("\n\n  jcs Check 2\n");
+  //printf("\n\n  jcs Check 2\n");
 #endif
   if (m_kernel) {
-    printf("\n\n  jcs Check 3\n");
+    //printf("\n\n  jcs Check 3\n");
     MUP_set_event_handler(Stop_MuPAD, m_kernel);
     MUP_set_fatal_exit_handler(Cleanup_MuPAD);
     // Set client data for kernel.
@@ -371,7 +371,7 @@ bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, n
     MUP_delete_kernel(m_kernel);
     m_kernel = 0;
   }
-  printf("\n\n  jcs Check End, %d\n", rv);
+  //printf("\n\n  jcs Check End, %d\n", rv);
   return rv;
 }
 
@@ -491,6 +491,9 @@ bool MuPADEngine::Exec(TCIString & cmd)
       errorstr_sent = false;
     }
     eng_errorstr += cmd;
+    const MUP_Char *p = static_cast<const MUP_Char*>(eng_errorstr);
+    printf("\n\n  jcs MuPADEngine error(%s)\n", p);
+
   } else {
     if (m_client->Warning()) {
       TCI_ASSERT(!"No place for warning string.");
@@ -512,6 +515,8 @@ bool MuPADEngine::Exec(TCIString & cmd)
       cmd = plotFile;
       eng_outstr += cmd;
     }
+    const MUP_Char *p = static_cast<const MUP_Char*>(eng_outstr);
+    printf("\n\n  jcs MuPADEngine result: %s\n", p);
     rv = true;
   }
 
