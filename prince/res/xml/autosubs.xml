@@ -317,6 +317,7 @@
   <sub ctx="math" tp="sc"><pattern>uTHz</pattern><data>insertMathunit('THz','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uTmol</pattern><data>insertMathunit('Tmol','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>utorr</pattern><data>insertMathunit('torr','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uu</pattern><data>insertMathunit('u','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uy</pattern><data>insertMathunit('y','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uV</pattern><data>insertMathunit('V','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uWa</pattern><data>insertMathunit('W','true');</data></sub>
