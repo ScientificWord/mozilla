@@ -479,8 +479,10 @@ void MathWorkShop::ProcessRequest(MathServiceRequest & msr, MathResult & mr)
       if (a_markup) {
         if (strstr(a_markup, "math>"))
           msr.PutMarkupType(MT_MATHML);
-        else if (strstr(a_markup, "tci"))
-          msr.PutMarkupType(MT_MAPLEV_INPUT);
+        else 
+          msr.PutMarkupType(MT_UNDEFINED);
+        //if (strstr(a_markup, "tci"))
+        //  msr.PutMarkupType(MT_MUPAD_INPUT);
       } else {
         // Some command don't carry any markup
       }
