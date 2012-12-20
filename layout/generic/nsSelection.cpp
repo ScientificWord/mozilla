@@ -1364,7 +1364,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
         tempFrame = frame;
         leavingFrame = frame;
         tempContent = do_QueryInterface(weakNodeUsed);
-        while ( tempFrame && (tempFrame->GetContent() != tempContent)) 
+        while ( tempFrame && (tempFrame->GetContent() != tempContent)) // restored BBM December 18, 2012
         {
           tempFrame = tempFrame->GetParent();
         }

@@ -153,15 +153,27 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
 		if (pTempFrame) frametype = pTempFrame->GetType();
 	}
 	if (pTempFrame)
-	{ // either pMCM is not null, of frametype == textframe
+	{ // either pMCM is not null, or frametype == textframe
 		if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
 		else
 		{
 			if (nsGkAtoms::textFrame == frametype)
 			{
-			*aOutOffset = count;
-			*aOutFrame = pTempFrame;
-			*_retval = count;
+  			if (count == 0){
+          *_retval = 0;
+          PlaceCursorBefore(pTempFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+          *_retval = count;
+        }
+        else if (count == pTempFrame->GetContent()->TextLength()) {
+          *_retval = count;
+          PlaceCursorAfter(pTempFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+          *_retval = count;
+        }
+        else {          
+          *aOutOffset = count;
+          *aOutFrame = pTempFrame;
+  			  *_retval = count;
+        }
 			}
 		}
 		return NS_OK;
@@ -220,6 +232,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
 	}
   if (pTempFrame)
   {
+    frametype = pTempFrame->GetType();
     if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else
 		{
@@ -228,8 +241,10 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
 				*aOutFrame = pTempFrame;
 	      PRInt32 start, end;
 	      pTempFrame->GetOffsets(start,end);
-	      (*aOutOffset) = 0; // was (end - start - count), but we do not want the cursor inside math names or multiple-character operators.
-	      *_retval = 0;
+	      if (count > 0) (*aOutOffset) = 0; // was (end - start - count), but we do not want the cursor inside math names or multiple-character operators.
+	      // There had better be an override for mn
+        else (*aOutOffset = end); 
+        *_retval = 0;
 			}
     }
     return NS_OK;
