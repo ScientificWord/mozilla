@@ -11265,7 +11265,12 @@ function msiGetSaveLocationForImage(editorElement)
   var exportTypes = ["png","pdf","jpg","svg"];
   var os = getOS(window);
   if (os==="win")
+  {
     exportTypes.push("emf");
+//rwa12-19-12 We won't have the WMF option visible; though the code will produce one if asked to, the user will generally
+//rwa12-19-12   be unhappy with the results thus far, for reasons documented elsewhere.
+//rwa12-19-12  exportTypes.push("wmf");
+  }
   for (var ii = 0; ii < exportTypes.length; ++ii)
   {
     fp.appendFilter(GetString("SaveImageAsDesc_" + exportTypes[ii]),"*."+exportTypes[ii]);

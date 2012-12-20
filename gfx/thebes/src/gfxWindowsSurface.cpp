@@ -61,7 +61,8 @@ gfxWindowsSurface::gfxWindowsSurface(HDC dc, PRUint32 flags) :
         Init(cairo_win32_printing_surface_create(mDC));
         mForPrinting = PR_TRUE;
     } else if (flags & FLAG_METAFILE) {
-        Init(cairo_win32_metafile_surface_create(mDC));
+        cairo_bool_t oldStyle = ( (flags & FLAG_OLD_METAFILE) != 0 );
+        Init(cairo_win32_metafile_surface_create(mDC, oldStyle));
     } else {
         Init(cairo_win32_surface_create(mDC));
     }
@@ -257,39 +258,114 @@ PRInt32 gfxWindowsSurface::GetDefaultContextFlags() const
     return 0;
 }
 
-gfxWindowsMetafileSurface::gfxWindowsMetafileSurface(HDC dc, PRUint32 flags) :
-                 gfxWindowsSurface(dc, flags | FLAG_METAFILE), mHEnhMetafile(nsnull)
+//rwa12-18-12 An attempt was made to use an old-style metafile device context here to produce a reasonable .wmf image.
+//rwa12-18-12 This fails quite early on since such a device context can't be queried - any attempt to call a device
+//rwa12-18-12   context Get...() function (like GetViewportOrigin) returns an error, which causes the cairo code to
+//rwa12-18-12   abort the construction of the surface. I'll leave all of this code here as a base for a future attempt
+//rwa12-18-12   in case it's felt worth trying to work around this limitation (for instance, by adding an information 
+//rwa12-18-12   device context member to the surface and directing queries to it); it's possible that by using the 
+//rwa12-18-12   CreateMetaFileW function to instantiate such a device context in the first place, the unicode (wide char) 
+//rwa12-18-12   text output would succeed, but that's not completely clear either.
+//rwa12-18-12 gfxWindowsMetafileSurface::gfxWindowsMetafileSurface(HDC dc, gfxIntSize& himetSize, PRBool oldStyle, PRUint32 flags) :
+//rwa12-18-12                 gfxWindowsSurface(dc, (oldStyle ? flags | FLAG_OLD_METAFILE : flags | FLAG_ENH_METAFILE)),
+//rwa12-18-12                 mHEnhMetafile(nsnull), mHMetafile(nsnull), mHiMetricExtent(himetSize)
+gfxWindowsMetafileSurface::gfxWindowsMetafileSurface(HDC dc, PRBool oldStyle, PRUint32 flags) :
+                 gfxWindowsSurface(dc, (oldStyle ? flags | FLAG_OLD_METAFILE : flags | FLAG_ENH_METAFILE)),
+                 mHEnhMetafile(nsnull)
 {
 }
 
 gfxWindowsMetafileSurface::~gfxWindowsMetafileSurface()
 {
   Finish();
-  ::DeleteEnhMetaFile(mHEnhMetafile);
+  if (mHEnhMetafile)
+    ::DeleteEnhMetaFile(mHEnhMetafile);
+//rwa12-18-12  if (mHMetafile)
+//rwa12-18-12    ::DeleteMetaFile(mHMetafile);
+}
+
+PRBool gfxWindowsMetafileSurface::IsOldStyleMetafile()
+{
+  return _cairo_surface_is_win32_old_metafile(CairoSurface());
 }
 
 void gfxWindowsMetafileSurface::Finish()
 {
+//rwa12-18-12  if (!mHEnhMetafile && !mHMetafile)
   if (!mHEnhMetafile)
   {
     gfxASurface::Finish();
+//rwa12-18-12     if (IsOldStyleMetafile())
+//rwa12-18-12       mHMetafile = ::CloseMetaFile(mDC);
+//rwa12-18-12     else
     mHEnhMetafile = ::CloseEnhMetaFile(mDC);
     mDC = nsnull;
   }
 }
 
-nsresult gfxWindowsMetafileSurface::GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile )
+nsresult gfxWindowsMetafileSurface::GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile)
 {
   Finish();  //check to be sure we've closed the metafile
   *outMetafile = ::CopyEnhMetaFile(mHEnhMetafile, nsnull);
   return NS_OK;
 }
 
+nsresult gfxWindowsMetafileSurface::GetMetaFilePictCopy(void* refDC, nsNativeMetafile*& outMetafile)
+{
+  Finish();  //check to be sure we've closed the metafile
+
+  ENHMETAHEADER enhMFHeader;
+  UINT buffSize = sizeof(ENHMETAHEADER);
+  ::GetEnhMetaFileHeader(mHEnhMetafile, buffSize, &enhMFHeader);
+
+  UINT bytesNeeded = ::GetWinMetaFileBits(mHEnhMetafile, 0, NULL, MM_ANISOTROPIC, (HDC)refDC);
+  buffSize = bytesNeeded;
+  BYTE* mfBits = new BYTE[buffSize];
+  UINT bytesReceived = ::GetWinMetaFileBits(mHEnhMetafile, buffSize, mfBits, MM_ANISOTROPIC, (HDC)refDC);
+  HMETAFILE hMF = ::SetMetaFileBitsEx(bytesReceived, mfBits);
+//rwa12-18-12  HMETAFILE hMF = ::CopyMetaFile(mHMetafile, nsnull);
+  HANDLE mfHandle = (HANDLE)GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE,sizeof(METAFILEPICT));
+  METAFILEPICT* pMFPict = (LPMETAFILEPICT)GlobalLock(mfHandle);
+  pMFPict->mm = MM_ANISOTROPIC;
+  pMFPict->hMF = hMF;
+//rwa12-18-12  pMFPict->xExt = mHiMetricExtent.width;
+//rwa12-18-12  pMFPict->yExt = mHiMetricExtent.height;
+  pMFPict->xExt = enhMFHeader.rclFrame.right -  enhMFHeader.rclFrame.left;
+  pMFPict->yExt = enhMFHeader.rclFrame.bottom - enhMFHeader.rclFrame.top;
+  GlobalUnlock(mfHandle);
+  
+////  delete mfBits;
+  
+  *outMetafile = (nsNativeMetafile)mfHandle;
+  return NS_OK;
+}
+
 nsresult gfxWindowsMetafileSurface::WriteFile(const nsAString& filename)
 {
   Finish();  //check to be sure we've closed the metafile
-  char* fileUTF8 = ToNewUTF8String(filename);
-  HENHMETAFILE outMetafile = ::CopyEnhMetaFile(mHEnhMetafile, (LPCTSTR)fileUTF8);
+//  char* fileUTF8 = ToNewUTF8String(filename);
+  char* fileStr = GetACPString(filename);
+  HENHMETAFILE outMetafile = ::CopyEnhMetaFile(mHEnhMetafile, (LPCTSTR)fileStr);
 //  HENHMETAFILE outMetafile = ::CopyEnhMetaFile(mHEnhMetafile, (LPCTSTR)filename.BeginReading());
   return NS_OK;
+}
+
+nsresult gfxWindowsMetafileSurface::WriteMetafilePictFile(const nsAString& filename, void* refDC)
+{
+  Finish();
+
+  char* fileStr = GetACPString(filename);
+//rwa12-18-12  ::CopyMetaFile(mHMetafile, fileStr);
+  nsNativeMetafile* pNativeMF;
+  nsresult rv = GetMetaFilePictCopy(refDC, pNativeMF);
+  if (NS_SUCCEEDED(rv))
+  {
+    HANDLE mfPictHandle = (HANDLE)(*pNativeMF);
+    METAFILEPICT* pMFPict = (METAFILEPICT*)GlobalLock(mfPictHandle);
+    HMETAFILE mfHandle = (pMFPict)->hMF;
+    CopyMetaFile(mfHandle, (LPCTSTR)fileStr);
+    GlobalUnlock(mfPictHandle);
+    GlobalFree(mfPictHandle);
+  }
+  return rv;
 }

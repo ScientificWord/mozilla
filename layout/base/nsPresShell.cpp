@@ -908,7 +908,7 @@ public:
 
   NS_IMETHOD RenderSelectionToImage(nsISelection* aSelection, nsIImage** imageObj);
 
-  NS_IMETHOD RenderSelectionToNativeMetafile(nsISelection* aSelection, void** metafilePtr);
+  NS_IMETHOD RenderSelectionToNativeMetafile(nsISelection* aSelection, void** metafilePtr, PRBool bOldStyle=PR_FALSE);
 
   //nsIViewObserver interface
 
@@ -5398,13 +5398,14 @@ PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aI
       surface = svgSurface;
   }
 #ifdef XP_WIN
-  else if (extension.EqualsLiteral("emf"))
+  else if (extension.EqualsLiteral("emf") || extension.EqualsLiteral("wmf"))
   {
     clearSurface = PR_FALSE;
+    PRBool bOldStyle = (extension.EqualsLiteral("wmf"));
     nsCOMPtr<nsIRenderingContext> rcx;
     nsresult res = CreateRenderingContext(rootFrame, getter_AddRefs(rcx));
     if (NS_SUCCEEDED(res))
-      res = deviceContext->CreateCompatibleNativeMetafileSurface(*rcx, pixelArea, surface);
+      res = deviceContext->CreateCompatibleNativeMetafileSurface(*rcx, pixelArea, bOldStyle, surface);
     if (NS_FAILED(res))
       surface = nsnull;
   }
@@ -6409,6 +6410,18 @@ PresShell::DrawSelectionToFile(nsISelection* aSelection, const nsAString& path, 
     surface->Finish();
     nsresult rv = surface->WriteFile(path);  //don't need an output stream for this, as the operating system will do it
   }
+  else if (extension.EqualsLiteral("wmf"))
+  {
+    surface->Finish();
+
+    nsCOMPtr<nsIRenderingContext> rContext;
+    void* hDC;
+    nsresult rv = CreateRenderingContext(rootFrame, getter_AddRefs(rContext));
+    if (NS_SUCCEEDED(rv))
+      hDC = rContext->GetNativeGraphicData(nsIRenderingContext::NATIVE_WINDOWS_DC);
+    if (hDC)
+      rv = surface->WriteMetafilePictFile(path, hDC);
+  }
 #endif
 
   *retval = PR_TRUE;
@@ -6485,7 +6498,7 @@ NS_IMETHODIMP PresShell::RenderSelectionToImage(nsISelection* aSelection, nsIIma
   return NS_OK;
 }
 
-NS_IMETHODIMP PresShell::RenderSelectionToNativeMetafile(nsISelection* aSelection, void** metafilePtr)
+NS_IMETHODIMP PresShell::RenderSelectionToNativeMetafile(nsISelection* aSelection, void** metafilePtr, PRBool bOldStyle)
 {
 
 #ifdef XP_WIN
@@ -6501,15 +6514,32 @@ NS_IMETHODIMP PresShell::RenderSelectionToNativeMetafile(nsISelection* aSelectio
   nsIntRect screenRect = rootFrame->GetScreenRectExternal();
   refScreenRect.SetRect(screenRect.x, screenRect.y, 20, 20);
   nsPoint pnt(refScreenRect.x, refScreenRect.y);
-  NS_NAMED_LITERAL_STRING(extension, "emf");
+  nsString extension;
+  if (bOldStyle)
+    extension = NS_LITERAL_STRING("wmf");
+  else
+    extension = NS_LITERAL_STRING("emf");
   // we pass empty as the path since the path is used only in the PDF case and on the Mac,
-  //  and here the extension is 'emf', so path will be unreferenced.
+  //  and here the extension is 'emf' or 'wmf', so path will be unreferenced.
   nsRefPtr<gfxASurface> surface = RenderSelectionForOutput(aSelection, empty, extension, nsnull,
                                                                  pnt, &refScreenRect);
   if (!surface)
     return rv;
 
-  rv = surface->GetEnhMetaFileCopy(metafilePtr);
+  if (bOldStyle)
+  {
+    nsIFrame* rootFrame = GetRootFrame();
+    nsCOMPtr<nsIRenderingContext> rContext;
+    void* hDC;
+    nsresult res = CreateRenderingContext(rootFrame, getter_AddRefs(rContext));
+    if (NS_SUCCEEDED(res))
+      hDC = rContext->GetNativeGraphicData(nsIRenderingContext::NATIVE_WINDOWS_DC);
+    if (hDC)
+      rv = surface->GetMetaFilePictCopy(hDC, metafilePtr);
+  }
+  else
+    rv = surface->GetEnhMetaFileCopy(metafilePtr);
+
   return rv;
 
 #else

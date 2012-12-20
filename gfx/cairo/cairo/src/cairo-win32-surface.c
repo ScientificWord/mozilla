@@ -168,7 +168,7 @@ _create_dc_and_bitmap (cairo_win32_surface_t *surface,
     surface->dc = NULL;
     surface->bitmap = NULL;
     surface->is_dib = FALSE;
-    surface->is_win_metafile = FALSE;
+    surface->is_win_metafile = CAIRO_WIN32_NOT_METAFILE;
 //rwa12-06-12     surface->font_subsets = NULL;
 
     switch (format) {
@@ -1655,6 +1655,8 @@ _cairo_win32_surface_show_glyphs (void			*surface,
     int logical_x, logical_y;
 
     uint16_t *unicode_list, *glyph_list;
+    CHAR* utf8_list;
+    int buffSize;
 
     /* We can only handle win32 fonts */
     if (cairo_scaled_font_get_type (scaled_font) != CAIRO_FONT_TYPE_WIN32)
@@ -1759,14 +1761,34 @@ _cairo_win32_surface_show_glyphs (void			*surface,
       }
       local_stat = _cairo_win32_quick_convert_glyphs_to_unicode(dst, glyph_list, unicode_list, num_glyphs);
 
-      win_result = ExtTextOutW(dst->dc,
-                                start_x,
-                                start_y,
-                                ETO_PDY,
-                                NULL,
-                                unicode_list,
-                                num_glyphs,
-                                dxy_buf);
+//rwa12-15-12  This code fails to produce a usable WMF-style metafile. I'll leave it for future reference, (or a
+//rwa12-15-12  subsequent attempt).
+//      if (_cairo_surface_is_win32_old_metafile((cairo_surface_t*)dst))
+//      {
+//        buffSize = WideCharToMultiByte(CP_ACP, 0, unicode_list, num_glyphs, NULL, 0, NULL, NULL);
+//        utf8_list = malloc(sizeof(CHAR) *buffSize);
+//        WideCharToMultiByte(CP_UTF8, 0, unicode_list, num_glyphs, utf8_list, buffSize, NULL, NULL);
+//        win_result = ExtTextOutA(dst->dc,
+//                                  start_x,
+//                                  start_y,
+//                                  0,
+//                                  NULL,
+//                                  utf8_list,
+//                                  buffSize,
+//                                  NULL);
+//        //rwa12-14-12 Should adjust dxy_buf now, using IsDBCSLeadByte() to pad with 0's in multi-byte situation,
+//        //but let's leave it out for now.
+//        free(utf8_list);
+//      }
+//      else
+        win_result = ExtTextOutW(dst->dc,
+                                  start_x,
+                                  start_y,
+                                  ETO_PDY,
+                                  NULL,
+                                  unicode_list,
+                                  num_glyphs,
+                                  dxy_buf);
       free(unicode_list);
       free(glyph_list);
       unicode_list = NULL;
@@ -1841,7 +1863,7 @@ cairo_win32_surface_create (HDC hdc)
     surface->saved_dc_bitmap = NULL;
     surface->brush = NULL;
     surface->old_brush = NULL;
-    surface->is_win_metafile = FALSE;
+    surface->is_win_metafile = CAIRO_WIN32_NOT_METAFILE;
 //rwa12-06-12      surface->font_subsets = NULL;
 
     GetClipBox(hdc, &rect);
@@ -1888,10 +1910,13 @@ cairo_win32_surface_create_with_dib (cairo_format_t format,
  * Return value: the newly created surface
  **/
 cairo_surface_t *
-cairo_win32_metafile_surface_create (HDC hdc)
+cairo_win32_metafile_surface_create (HDC hdc, cairo_bool_t oldMetafile)
 {
   cairo_win32_surface_t *new_surf = (cairo_win32_surface_t*)cairo_win32_surface_create(hdc);
-  new_surf->is_win_metafile = TRUE;
+  if (oldMetafile)
+    new_surf->is_win_metafile = CAIRO_WIN32_METAFILEPICT;
+  else
+    new_surf->is_win_metafile = CAIRO_WIN32_ENH_METAFILE;
   return (cairo_surface_t*)new_surf;
 }
 
@@ -1994,12 +2019,30 @@ _cairo_surface_is_win32 (cairo_surface_t *surface)
  *
  * Return value: True if the surface is an win32 metafile surface
  **/
-int
+cairo_bool_t
 _cairo_surface_is_win32_metafile (cairo_surface_t *surface)
 {
   int rv = _cairo_surface_is_win32(surface);
   if (rv)
-    rv = ((cairo_win32_surface_t *)surface)->is_win_metafile;
+    rv = ( ((cairo_win32_surface_t *)surface)->is_win_metafile != CAIRO_WIN32_NOT_METAFILE );
+  return rv;
+}
+
+/**
+ * _cairo_surface_is_win32_old_metafile:
+ * @surface: a #cairo_surface_t
+ *
+ * Checks if a surface is an old-style win32 metafile surface.  This will
+ * return true if the surface was created from a metafile DC intended for a WMF-style metafile.
+ *
+ * Return value: True if the surface is a WMF-style win32 metafile surface
+ **/
+cairo_bool_t
+_cairo_surface_is_win32_old_metafile (cairo_surface_t *surface)
+{
+  int rv = _cairo_surface_is_win32(surface);
+  if (rv)
+    rv = ( ((cairo_win32_surface_t *)surface)->is_win_metafile == CAIRO_WIN32_METAFILEPICT );
   return rv;
 }
 

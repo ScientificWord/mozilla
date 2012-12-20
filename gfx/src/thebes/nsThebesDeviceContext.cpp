@@ -364,7 +364,7 @@ nsThebesDeviceContext::SupportsNativeWidgets(PRBool &aSupportsWidgets)
 
 #ifdef XP_WIN
 NS_IMETHODIMP nsThebesDeviceContext::CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, 
-                                      const nsRect& bounds, gfxASurface*& surfaceOut)
+                                      const nsRect& bounds, PRBool oldStyle, gfxASurface*& surfaceOut)
 {
   HDC hDC = (HDC)rContext.GetNativeGraphicData(nsIRenderingContext::NATIVE_WINDOWS_DC);
 
@@ -387,6 +387,11 @@ NS_IMETHODIMP nsThebesDeviceContext::CreateCompatibleNativeMetafileSurface(nsIRe
   rect.bottom = rect.top + NSToCoordRound((float)bounds.height * vScale);
 
   HDC metaDC = ::CreateEnhMetaFile(hDC, nsnull, &rect, nsnull);
+//rwa12-18-12  if (oldStyle)
+//rwa12-18-12    metaDC = ::CreateMetaFile(nsnull);
+//rwa12-18-12  else
+//rwa12-18-12    metaDC = ::CreateEnhMetaFile(hDC, nsnull, &rect, nsnull);
+  
   SIZE viewExt, winExt;
   ::GetWindowExtEx(hDC, &winExt);
   ::GetWindowExtEx(hDC, &viewExt);
@@ -397,7 +402,9 @@ NS_IMETHODIMP nsThebesDeviceContext::CreateCompatibleNativeMetafileSurface(nsIRe
                              NSToCoordRound(vScale * viewExt.cy), &winExt);
 //    ::SetWindowExtEx(metaDC, NSToCoordRound(mAppUnitsPerDevNotScaledPixel * viewExt.cx), 
 //                             NSToCoordRound(mAppUnitsPerDevNotScaledPixel * viewExt.cy), nsnull);
-  gfxWindowsMetafileSurface* surface = new gfxWindowsMetafileSurface(metaDC);
+  
+  gfxWindowsMetafileSurface* surface = new gfxWindowsMetafileSurface(metaDC, oldStyle);
+//rwa12-18-12  gfxWindowsMetafileSurface* surface = new gfxWindowsMetafileSurface(metaDC, gfxIntSize(rect.right, rect.bottom), oldStyle);
   surfaceOut = (gfxASurface*)surface;
   NS_ADDREF(surfaceOut);
   return NS_OK;

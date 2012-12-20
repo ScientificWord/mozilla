@@ -352,8 +352,20 @@ gfxASurface::GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile )
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
+nsresult
+gfxASurface::GetMetaFilePictCopy(void* refDC, nsNativeMetafile*& outMetafile)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 nsresult 
 gfxASurface::WriteFile(const nsAString& filename)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+nsresult
+gfxASurface::WriteMetafilePictFile(const nsAString& filename, void* refDC)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
