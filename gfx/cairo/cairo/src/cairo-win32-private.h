@@ -93,8 +93,9 @@ typedef struct _cairo_win32_surface {
     cairo_matrix_t ctm;
     HBRUSH brush, old_brush;
 
-    /* For Windows metafile creation support */
-    cairo_bool_t is_win_metafile;
+    /* For Windows metafile creation support - one of CAIRO_WIN32_NOT_METAFILE, CAIRO_WIN32_ENH_METAFILE,
+       or CAIRO_WIN32_METAFILEPICT (the last signifying an old-style Windows metafile) */
+    uint32_t is_win_metafile;
 //rwa12-06-12     cairo_scaled_font_subsets_t *font_subsets;
 
 } cairo_win32_surface_t;
@@ -121,6 +122,13 @@ enum {
 
     /* Whether we can use GradientFill rectangles with this surface */
     CAIRO_WIN32_SURFACE_CAN_RECT_GRADIENT = (1<<6),
+};
+
+/* Values for is_win_metafile*/
+enum {
+  CAIRO_WIN32_NOT_METAFILE = 0,
+  CAIRO_WIN32_ENH_METAFILE = 1,
+  CAIRO_WIN32_METAFILEPICT = 2
 };
 
 cairo_status_t

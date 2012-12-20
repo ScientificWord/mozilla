@@ -100,7 +100,7 @@ public:
   NS_IMETHOD  CreateRenderingContextInstance(nsIRenderingContext *&aContext);
 
   NS_IMETHOD CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, const nsRect& bounds, 
-                                                            gfxASurface*& surfaceOut);
+                                                            PRBool oldStyle, gfxASurface*& surfaceOut);
 
   NS_IMETHOD  GetMetricsFor(const nsFont& aFont, nsIAtom* aLangGroup,
                             nsIFontMetrics*& aMetrics);

@@ -283,7 +283,7 @@ public:
    * This may only make sense on Windows...
    */
   NS_IMETHOD CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, const nsRect& bounds, 
-                                                            gfxASurface*& surfaceOut) = 0;
+                                        PRBool oldStyle, gfxASurface*& surfaceOut) = 0;
 
   /**
    * Gets the number of app units in one CSS pixel; this number is global,
