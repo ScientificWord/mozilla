@@ -142,7 +142,9 @@ public:
     virtual PRInt32 GetDefaultContextFlags() const { return 0; }
 
     virtual nsresult GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile );
+    virtual nsresult GetMetaFilePictCopy(void* refDC, nsNativeMetafile*& outMetafile);
     virtual nsresult WriteFile(const nsAString& filename);
+    virtual nsresult WriteMetafilePictFile(const nsAString& filename, void* refDC);
 
 protected:
     gfxASurface() : mSurface(nsnull), mFloatingRefs(0), mSurfaceValid(PR_FALSE) { }
