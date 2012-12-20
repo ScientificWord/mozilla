@@ -63,7 +63,10 @@ cairo_win32_surface_create_with_dib (cairo_format_t format,
                                      int height);
 
 cairo_public cairo_surface_t *
-cairo_win32_metafile_surface_create (HDC hdc);
+cairo_win32_metafile_surface_create (HDC hdc, cairo_bool_t oldMetafile);
+
+cairo_bool_t
+_cairo_surface_is_win32_old_metafile (cairo_surface_t *surface);
 
 cairo_public HDC
 cairo_win32_surface_get_dc (cairo_surface_t *surface);
