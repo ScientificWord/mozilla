@@ -48,7 +48,9 @@ public:
     enum {
         FLAG_TAKE_DC = (1 << 0),
         FLAG_FOR_PRINTING = (1 << 1),
-        FLAG_METAFILE = (1 << 2)
+        FLAG_ENH_METAFILE = (1 << 2),
+        FLAG_OLD_METAFILE = (1 << 3),
+        FLAG_METAFILE = (FLAG_ENH_METAFILE | FLAG_OLD_METAFILE)
     };
 
     gfxWindowsSurface(HWND wnd);
@@ -96,7 +98,8 @@ private:
 
 class THEBES_API gfxWindowsMetafileSurface : public gfxWindowsSurface {
 public:
-  gfxWindowsMetafileSurface(HDC dc, PRUint32 flags = FLAG_TAKE_DC|FLAG_METAFILE);
+  gfxWindowsMetafileSurface(HDC dc, PRBool oldStyle=PR_FALSE, PRUint32 flags = FLAG_TAKE_DC);
+//rwa12-18-12  gfxWindowsMetafileSurface(HDC dc, gfxIntSize& himetSize, PRBool oldStyle=PR_FALSE, PRUint32 flags = FLAG_TAKE_DC);
   ~gfxWindowsMetafileSurface();
 
 //  static already_AddRefed<gfxWindowsMetafileSurface> CreateWindowsMetafileSurface(gfxWindowsSurface* refSurface, 
@@ -105,10 +108,16 @@ public:
   virtual void Finish();
 //  HENHMETAFILE GetEnhMetaFile() {return mHEnhMetafile;}
   virtual nsresult GetEnhMetaFileCopy(nsNativeMetafile*& outMetafile );
+  virtual nsresult GetMetaFilePictCopy(void* refDC, nsNativeMetafile*& outMetafile);
   virtual nsresult WriteFile(const nsAString& filename);
+  virtual nsresult WriteMetafilePictFile(const nsAString& filename, void* refDC);
+
+  PRBool  IsOldStyleMetafile();
 
 private:
   HENHMETAFILE mHEnhMetafile;
+//rwa12-18-12  HMETAFILE    mHMetafile;
+//rwa12-18-12  gfxIntSize   mHiMetricExtent;
 };
 
 #endif /* GFX_WINDOWSSURFACE_H */

@@ -513,8 +513,8 @@ STDMETHODIMP nsDataObj::GetData(LPFORMATETC pFE, LPSTGMEDIUM pSTM)
         case CF_ENHMETAFILE:
           return GetEnhMetafile(*pFE, *pSTM);
             
-//        case CF_METAFILEPICT:
-//          return GetMetafilePict(*pFE, *pSTM);
+        case CF_METAFILEPICT:
+          return GetMetafilePict(*pFE, *pSTM);
             
         default:
           if ( format == fileDescriptorFlavorA )
@@ -1420,9 +1420,35 @@ HRESULT nsDataObj::GetEnhMetafile(FORMATETC&  FE, STGMEDIUM&  STM)
 
 
 //-----------------------------------------------------
-HRESULT nsDataObj::GetMetafilePict(FORMATETC&, STGMEDIUM&)
+HRESULT nsDataObj::GetMetafilePict(FORMATETC& FE, STGMEDIUM& STM)
 {
-	return ResultFromScode(E_NOTIMPL);
+  PRNTDEBUG("nsDataObj::GetMetafilePict\n");
+  ULONG result = E_FAIL;
+  
+  PRUint32 len = 0;
+  nsCOMPtr<nsISupports> genericDataWrapper;
+  mTransferable->GetTransferData(kWin32MetafilePict, getter_AddRefs(genericDataWrapper), &len);
+  nsCOMPtr<nsISupportsVoid> wmfWrapper ( do_QueryInterface(genericDataWrapper) );
+  if ( !wmfWrapper ) {
+    nsCOMPtr<nsISupportsInterfacePointer> ptr(do_QueryInterface(genericDataWrapper));
+    if ( ptr )
+      ptr->GetData(getter_AddRefs(wmfWrapper));
+  }
+  
+  if ( wmfWrapper ) {
+    void* wmfPtr;
+    wmfWrapper->GetData(&wmfPtr);
+    if (wmfPtr) {
+      HANDLE bits = nsnull;
+      STM.hMetaFilePict = (HMETAFILEPICT)wmfPtr;
+      STM.tymed = TYMED_MFPICT;
+      result = S_OK;
+    }
+  } // if we have an enhanced metafile
+//  else  
+//    NS_WARNING ( "Definitely not an image on clipboard" );
+
+	return ResultFromScode(result);
 }
 
 //-----------------------------------------------------

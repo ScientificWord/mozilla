@@ -705,7 +705,7 @@ NS_IMETHODIMP nsDeviceContextWin :: GetDeviceContextFor(nsIDeviceContextSpec *aD
 }
 
 NS_IMETHODIMP nsDeviceContextWin :: CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, 
-                                      const nsRect& bounds, gfxASurface*& surfaceOut)
+                                      const nsRect& bounds, PRBool oldStyle, gfxASurface*& surfaceOut)
 {
   HDC hDC = (HDC)rContext.GetNativeGraphicData(nsIRenderingContext::NATIVE_WINDOWS_DC);
 
@@ -738,7 +738,7 @@ NS_IMETHODIMP nsDeviceContextWin :: CreateCompatibleNativeMetafileSurface(nsIRen
                              NSToCoordRound(vScale * viewExt.cy), &winExt);
 //    ::SetWindowExtEx(metaDC, NSToCoordRound(mAppUnitsPerDevNotScaledPixel * viewExt.cx), 
 //                             NSToCoordRound(mAppUnitsPerDevNotScaledPixel * viewExt.cy), nsnull);
-  gfxWindowsMetafileSurface* surface = new gfxWindowsMetafileSurface(metaDC);
+  gfxWindowsMetafileSurface* surface = new gfxWindowsMetafileSurface(metaDC, oldStyle);
   surfaceOut = (gfxASurface*)surface;
   NS_ADDREF(surfaceOut);
   return NS_OK;

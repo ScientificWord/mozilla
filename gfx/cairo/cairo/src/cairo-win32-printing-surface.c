@@ -1500,7 +1500,7 @@ cairo_win32_printing_surface_create (HDC hdc)
     surface->flags = _cairo_win32_flags_for_dc (surface->dc);
     surface->flags |= CAIRO_WIN32_SURFACE_FOR_PRINTING;
 
-    surface->is_win_metafile = FALSE;
+    surface->is_win_metafile = CAIRO_WIN32_NOT_METAFILE;
 //rwa12-06-12     surface->font_subsets = NULL;
 
     _cairo_win32_printing_surface_init_ps_mode (surface);

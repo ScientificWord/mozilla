@@ -603,7 +603,7 @@ DeviceContextImpl::ClearCachedSystemFonts()
 
 NS_IMETHODIMP
 DeviceContextImpl::CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, const nsRect& bounds, 
-                                                            gfxASurface*& surfaceOut)
+                                                         PRBool oldStyle, gfxASurface*& surfaceOut)
 {
   return NS_ERROR_NOT_IMPLEMENTED;
 }
