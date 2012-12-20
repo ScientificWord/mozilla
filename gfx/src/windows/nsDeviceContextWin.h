@@ -81,7 +81,7 @@ public:
                                  nsIDeviceContext *&aContext);
 
   NS_IMETHOD CreateCompatibleNativeMetafileSurface(nsIRenderingContext &rContext, 
-                                            const nsRect& bounds, gfxASurface*& surfaceOut);
+                                            const nsRect& bounds, PRBool oldStyle, gfxASurface*& surfaceOut);
   
   NS_IMETHOD BeginDocument(PRUnichar * aTitle, PRUnichar* aPrintToFileName, PRInt32 aStartPage, PRInt32 aEndPage);
   NS_IMETHOD EndDocument(void);

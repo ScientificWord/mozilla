@@ -3803,6 +3803,34 @@ NS_IMETHODIMP nsHTMLEditor::CopySelectionAsImage(PRBool* _retval)
                                 sizeof(nsISupports*));
     NS_ENSURE_SUCCESS(rv, rv);
   }
+
+//rwa12-19-12  Removing the WMF code, as I can't get it to work. The automatic conversion produced by the clipboard
+//rwa12-19-12    from EMF to WMF is certainly no worse than anything I was able to do, and it seems better not to
+//rwa12-19-12    do the extra work, or to advertise a WMF format explicitly.
+//rwa12-19-12   //Put an old-fashioned metafile image on clipboard
+//rwa12-19-12   void* oldMetafile;
+//rwa12-19-12   //enhMetafile is actually a Windows handle (HENHMETAFILE), so it doesn't understand add_ref. Just pass the pointer to fill in.
+//rwa12-19-12   res = presShell->RenderSelectionToNativeMetafile(selection, &oldMetafile, PR_TRUE);
+//rwa12-19-12   if (NS_SUCCEEDED(res))
+//rwa12-19-12   {
+//rwa12-19-12     //Wrap it in nsISupportsVoid
+//rwa12-19-12     nsCOMPtr<nsISupportsVoid>
+//rwa12-19-12       wmfPtr(do_CreateInstance(NS_SUPPORTS_VOID_CONTRACTID, &rv));
+//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
+//rwa12-19-12     rv = wmfPtr->SetData(oldMetafile);
+//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
+//rwa12-19-12     //Then wrap it in nsISupportsInterfacePointer
+//rwa12-19-12     nsCOMPtr<nsISupportsInterfacePointer>
+//rwa12-19-12       dataPtr(do_CreateInstance(NS_SUPPORTS_INTERFACE_POINTER_CONTRACTID, &rv));
+//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
+//rwa12-19-12     rv = dataPtr->SetData(wmfPtr);
+//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
+//rwa12-19-12 
+//rwa12-19-12     // copy the image data onto the transferable
+//rwa12-19-12     rv = trans->SetTransferData(kWin32MetafilePict, dataPtr,
+//rwa12-19-12                                 sizeof(nsISupports*));
+//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
+//rwa12-19-12   }
 #endif
 
   //then put a JPEG image (actually, this puts a native bitmap image)
@@ -3864,7 +3892,7 @@ NS_IMETHODIMP nsHTMLEditor::SaveSelectionAsImage(const nsAString& filepath, PRBo
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIOutputStream> outputStream;
-  if (!extension.EqualsLiteral("emf"))  //want to pass a null outputstream for this one; operating system does the work
+  if (!extension.EqualsLiteral("emf") && !extension.EqualsLiteral("wmf"))  //want to pass a null outputstream for this one; operating system does the work
   {
     rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), file);
     NS_ENSURE_SUCCESS(rv, rv);
