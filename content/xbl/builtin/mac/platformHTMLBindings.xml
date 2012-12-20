@@ -177,6 +177,7 @@
       <handler event="keypress" keycode="VK_RIGHT" modifiers="shift" command="cmd_selectCharNext" />
       <handler event="keypress" keycode="VK_UP" modifiers="accel" command="cmd_scrollTop"/>
       <handler event="keypress" keycode="VK_UP" modifiers="shift" command="cmd_selectLinePrevious" />
+      <handler event="keypress" keycode="/" modifiers="accel,shift" oncommand="alert('It worked!');" />
 	</handlers>
   </binding>
 
@@ -250,6 +251,7 @@
       <handler event="keypress" key="u" modifiers="control" command="cmd_deleteToBeginningOfLine"/>
       <handler event="keypress" key="v" modifiers="control" command="cmd_scrollPageDown"/>
       <handler event="keypress" key="w" modifiers="control" command="cmd_deleteWordBackward"/>
+      <handler event="keypress" keycode="/" modifiers="accel,shift" oncommand="alert('It worked!');" />
     </handlers>
   </binding>
 
