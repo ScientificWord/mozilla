@@ -296,6 +296,7 @@ nsMathMLmsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
     {
       pMCM = do_QueryInterface(pFrame);
       count--;
+      *_retval = count;
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else // child frame is not a math frame. Probably a text frame. We'll assume this for now
       {

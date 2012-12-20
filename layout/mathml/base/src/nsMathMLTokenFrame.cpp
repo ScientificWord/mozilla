@@ -440,43 +440,43 @@ nsMathMLTokenFrame::SetQuotes()
   }
 }
 
-PRBool
-nsMathMLTokenFrame::PeekOffsetCharacter(PRBool aForward, PRInt32* aOffset)
-{
-  NS_ASSERTION (aOffset && *aOffset <= 1, "aOffset out of range");
-  PRInt32 startOffset = *aOffset;
-  // A negative offset means "end of frame", which in our case means offset 1.
-  if (startOffset < 0)
-    startOffset = 1;
-  if (aForward == (startOffset == 0)) {
-    // We're before the frame and moving forward, or after it and moving backwards:
-    // skip to the other side and we're done.
-    *aOffset = 1 - startOffset;
-    return PR_TRUE;
-  }
-  return PR_FALSE;
-}
+// PRBool
+// nsMathMLTokenFrame::PeekOffsetCharacter(PRBool aForward, PRInt32* aOffset)
+// {
+//   NS_ASSERTION (aOffset && *aOffset <= 1, "aOffset out of range");
+//   PRInt32 startOffset = *aOffset;
+//   // A negative offset means "end of frame", which in our case means offset 1.
+//   if (startOffset < 0)
+//     startOffset = 1;
+//   if (aForward == (startOffset == 0)) {
+//     // We're before the frame and moving forward, or after it and moving backwards:
+//     // skip to the other side and we're done.
+//     *aOffset = 1 - startOffset;
+//     return PR_TRUE;
+//   }
+//   return PR_FALSE;
+// }
 /* long moveOutToRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
-NS_IMETHODIMP 
-nsMathMLTokenFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-{
-  nsIFrame * pParent = GetParent();
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  pMCM = do_QueryInterface(pParent);
-  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, _retval);
-  return NS_OK;
-}
+// NS_IMETHODIMP 
+// nsMathMLTokenFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+// {
+//   nsIFrame * pParent = GetParent();
+//   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//   pMCM = do_QueryInterface(pParent);
+//   if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, _retval);
+//   return NS_OK;
+// }
 
 /* long moveOutToLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
-NS_IMETHODIMP 
-nsMathMLTokenFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-{
-  nsIFrame * pParent = GetParent();
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  pMCM = do_QueryInterface(pParent);
-  if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, _retval);
-  return NS_OK;
-}
+// NS_IMETHODIMP 
+// nsMathMLTokenFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+// {
+//   nsIFrame * pParent = GetParent();
+//   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//   pMCM = do_QueryInterface(pParent);
+//   if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, _retval);
+//   return NS_OK;
+// }
 
 PRBool nodeIsWhiteSpace2( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lastindex)
 /* return whether all the text (or all the text before index or all the text after index) is white space */
@@ -568,60 +568,89 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
     }
     else
     {
-      *_retval = 0;
-    //      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-      PlaceCursorBefore(this, inside, aOutFrame, aOutOffset, *_retval);
+      nsCOMPtr<nsIContent> pcontent = GetContent();
+      if (pcontent->Tag() != nsGkAtoms::mn_) 
+      {
+        *_retval = 0;
+        PlaceCursorBefore(this, inside, aOutFrame, aOutOffset, *_retval);
+      }
+      else
+      {
+        childFrame = GetFirstChild(nsnull);
+        while(childFrame)
+        {
+          if (nsGkAtoms::textFrame == childFrame->GetType())
+          {
+            nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
+            child = do_QueryInterface(childContent);
+            if (!nodeIsWhiteSpace2(child, 0, 20))
+            {
+              *aOutFrame = childFrame;
+              nsAutoString theText;
+              child->GetNodeValue(theText);
+              PRUint32 length = theText.Length();
+              *aOutOffset = length - 1;
+              *_retval = 0;
+              return NS_OK;
+            }
+            childFrame = childFrame->GetNextSibling();
+          }
+          childFrame = childFrame->GetFirstChild(nsnull);
+        }
+      }
+
     }
-    //   *_retval = 0;
     return NS_OK;
 }
 
 /* long enterFromLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
-NS_IMETHODIMP 
-nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-{
-  *_retval = 0;
-  nsCOMPtr<nsIContent> pcontent = GetContent();
-  nsCOMPtr<nsIDOMElement> pnode = do_QueryInterface(pcontent);
-  nsIFrame * childFrame;
-  nsCOMPtr<nsIDOMNode> child;
-  nsAutoString attr;
-  PRInt16 nodeType;
-  pnode->GetAttribute(NS_LITERAL_STRING("tempinput"), attr);
-  if (attr.EqualsLiteral("true"))
-  {
-    childFrame = GetFirstChild(nsnull);
-    while (childFrame && (nsGkAtoms::textFrame != childFrame->GetType())) {
-      childFrame = childFrame->GetFirstChild(nsnull);
-      // this is because a child frame of an mi frame can have the same content ptr.
-    }
-    while (childFrame) {
-      if (nsGkAtoms::textFrame == childFrame->GetType())
-      {
-        nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
-        child = do_QueryInterface(childContent);
-        if (!nodeIsWhiteSpace2(child, 0, 20))
-        {
-          *aOutFrame = childFrame;
-          *aOutOffset = 1;
-          *_retval = 0;
-          return NS_OK;
-        }
-      }
-      childFrame = childFrame->GetNextSibling();
-    }
-  }
+// NS_IMETHODIMP 
+// nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+// {
+//   *_retval = 0;
+//   nsCOMPtr<nsIContent> pcontent = GetContent();
+//   nsCOMPtr<nsIDOMElement> pnode = do_QueryInterface(pcontent);
+//   nsIFrame * childFrame;
+//   nsCOMPtr<nsIDOMNode> child;
+//   nsAutoString attr;
+//   PRInt16 nodeType;
+//   pnode->GetAttribute(NS_LITERAL_STRING("tempinput"), attr);
+//   if (attr.EqualsLiteral("true"))
+//   {
+//     childFrame = GetFirstChild(nsnull);
+//     while (childFrame && (nsGkAtoms::textFrame != childFrame->GetType())) {
+//       childFrame = childFrame->GetFirstChild(nsnull);
+//       // this is because a child frame of an mi frame can have the same content ptr.
+//     }
+//     while (childFrame) {
+//       if (nsGkAtoms::textFrame == childFrame->GetType())
+//       {
+//         nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
+//         child = do_QueryInterface(childContent);
+//         if (!nodeIsWhiteSpace2(child, 0, 20))
+//         {
+//           *aOutFrame = childFrame;
+//           *aOutOffset = 1;
+//           *_retval = 0;
+//           return NS_OK;
+//         }
+//       }
+//       childFrame = childFrame->GetNextSibling();
+//     }
+//   }
 
-  if (count > 0) 
-  {
-    // BBM: Different cases seem to require different values of the second parameter
-    // For going across a simple mo, we need PR_TRUE
-    PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-    // PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
-  }
-  else
-  {
-    PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-  }
-  return NS_OK;
-}
+//   return nsMathMLContainerCursorMover::EnterFromLeft(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
+
+//   // if (count > 0) 
+//   // {
+//     // BBM: Different cases seem to require different values of the second parameter
+//     // For going across a simple mo, we need PR_TRUE
+//     // PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+//     // PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+//   // }
+//   // else
+//   // {
+//     // PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+//   // }
+//   //return NS_OK;
+// }
