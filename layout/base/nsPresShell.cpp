@@ -5418,9 +5418,14 @@ PresShell::PaintRangePaintInfoForOutput(nsTArray<nsAutoPtr<RangePaintInfo> >* aI
   gfxContext context(surface);
   if (clearSurface)
   {
-    context.SetOperator(gfxContext::OPERATOR_CLEAR);
+//    context.SetOperator(gfxContext::OPERATOR_CLEAR);
+    gfxRGBA oldColor;
+    gfxRGBA white(NS_RGB(255, 255, 255));
+    context.GetColor(oldColor);
+    context.SetColor(white);
     context.Rectangle(gfxRect(0, 0, pixelArea.width, pixelArea.height));
     context.Fill();
+    context.SetColor(oldColor);
   }
 
   nsCOMPtr<nsIRenderingContext> rc;
