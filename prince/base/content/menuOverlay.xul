@@ -373,7 +373,7 @@
   </menu>          
 
   <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;">
-    <menupopup id="helpPopup">
+    <menupopup id="helpPopup" key="msiMacHelp">
       <menuitem id="helpmenuContents" 
                 label="&helpmenuContents.label;" 
                 accesskey="&helpmenuContents.accesskey;" 

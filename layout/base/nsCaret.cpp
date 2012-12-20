@@ -693,13 +693,16 @@ GetIndexInParent( nsIFrame * pF, nsIFrame * pParent)
 void
 AdjustCaretFrameForMathMLmo(nsIFrame** aFrame, PRInt32* aOffset)
 {
+  // We assume *aOffset is either 0 or 1, since mo's have text length 1.
+  //
   nsIFrame * pFrame = *aFrame;
   nsresult rv = NS_OK;
   nsAutoString name;
   nsCOMPtr<nsIDOMElement> pElement;
   nsCOMPtr<nsIContent> pContent;
-  nsIFrame * pF;
-  if ((pFrame->GetType() == nsGkAtoms::textFrame) && (pF = pFrame->GetParent()))
+  nsIFrame * pF = nsnull;
+  PRBool doBoth = PR_TRUE;
+  if (pFrame->GetType() == nsGkAtoms::textFrame && (pF = pFrame->GetParent()))
   {
     pContent = pF->GetContent();
     pElement = do_QueryInterface(pContent);
@@ -709,17 +712,17 @@ AdjustCaretFrameForMathMLmo(nsIFrame** aFrame, PRInt32* aOffset)
       *aFrame = pF->GetParent();
       *aOffset += GetIndexInParent(pF, *aFrame);
     }
-    else
+  }
+  else if (doBoth)
+  {
+    pF = pFrame;
+    pContent = pF->GetContent();
+    pElement = do_QueryInterface(pContent);
+    rv = pElement->GetLocalName( name );
+    if (name.EqualsLiteral("mo"))
     {
-     pF = pF->GetParent();
-     pContent = pF->GetContent();
-     pElement = do_QueryInterface(pContent);
-     rv = pElement->GetLocalName( name );
-     if (name.EqualsLiteral("mo"))
-     {
-        *aFrame = pF->GetParent();
-        *aOffset += GetIndexInParent(pF, *aFrame);
-     }
+      *aFrame = pF->GetParent();
+      *aOffset += GetIndexInParent(pF, *aFrame);
     }
   }
 }
@@ -756,7 +759,7 @@ nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
   // that text frame instead. This way, the caret will be positioned as if
   // trailing whitespace was not trimmed.
   AdjustCaretFrameForLineEnd(&theFrame, &theFrameOffset);
-  AdjustCaretFrameForMathMLmo(&theFrame, &theFrameOffset);
+//  AdjustCaretFrameForMathMLmo(&theFrame, &theFrameOffset);
   
   // Mamdouh : modification of the caret to work at rtl and ltr with Bidi
   //

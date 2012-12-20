@@ -14,7 +14,7 @@
   <key id="msiInsertSubstructKey" key=">" command="cmd_insertSubstructure" modifiers="accel,shift"/>
   <key id="msiFindNextKey" keycode="VK_F3" command="cmd_findNext" />
   <key id="msiFindPrevKey" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
-  <key id="msiSelectMacroKey" key=" " modifiers="control" command="cmd_macrofragment"/>
+  <key id="msiSelectMacroKey" key=" " modifiers="control,accel" command="cmd_macrofragment"/>
   <key id="msiFindKey" key="f" command="cmd_find" modifiers="accel"/>
   <key id="msiUndoKey" key="z" command="cmd_undo" modifiers="accel"/>
   <key id="msiAltRedoKey" key="z" command="cmd_redo" modifiers="accel,shift" />
@@ -31,6 +31,8 @@
   <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
   <key id="msiZoomOutKey" key="-" command="cmd_zoomout" modifiers="accel"/>
   <key id="msiZoomReset" key="0" command="cmd_zoomreset" modifiers="accel"/>
+  <key id="msiMacHelp" keycode="?" modifiers="accel" oncommand="openHelp('swp-doc')" />
+
 </keyset>
 
 <!--commands needed for some of these key bindings-->

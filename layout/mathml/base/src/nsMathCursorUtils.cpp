@@ -29,13 +29,30 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   nsIFrame * pChild;
   nsIFrame * pSiblingFrame;
   nsCOMPtr<nsIContent> pContent;
-  pParent = pFrame->GetParent();
+  pParent = GetSignificantParent(pFrame);
+
+  // BBM provisional code
+  // Cursor doesn't show up if it is inside an mo tag
+  if (pFrame->GetContent()->Tag() == nsGkAtoms::mo_) {
+    fInside = PR_FALSE;
+  }
+  else if ( GetSignificantParent(pFrame)->GetContent()->Tag() == nsGkAtoms::mo_)
+  {
+    fInside = PR_FALSE;
+    pFrame = GetSignificantParent(pFrame);
+  }
 
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
-    // find the last child
-    // this won't work pChild = GetLastTextFrame(pFrame);
+    nsIAtom* frametype = pFrame->GetType();
+    if (frametype == nsGkAtoms::textFrame) {
+      *aOutFrame = pFrame;
+      *aOutOffset = pFrame->GetContent()->TextLength();
+      count = 0;
+      return NS_OK;
+    }    
+     // find the last child
     pChild = GetLastChild(pFrame);
     pContent = pFrame->GetContent();
     while (pChild && pContent == pChild->GetContent())
@@ -54,7 +71,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
         *aOutFrame = pFrame;
  //     }
     }
-     else
+    else
     {
       // BBM: This is left over from previous iterations and probably never runs
   		*aOutFrame = pFrame;
@@ -89,7 +106,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
     }
 //    else if (IsDisplayFrame(pParent, count))
 //    {
-//      *aOutFrame = pParent->GetParent();
+//      *aOutFrame = GetSignificantParent(pParent);
 //      pContent = (*aOutFrame)->GetContent();
 //      *aOutOffset = 1+pContent->IndexOf(pParent->GetContent());
 //    }
@@ -102,7 +119,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
         count = 0;
         pFrame->MoveRightAtDocEndFrame( aOutFrame, *aOutOffset);
       }
-//	    pParent = pFrame->GetParent();
+//	    pParent = GetSignificantParent(pFrame);
 //	    *aOutFrame = pParent;
 //			(*aOutOffset) = 1;
 //			pChild = pParent->GetFirstChild(nsnull);
@@ -123,6 +140,18 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsIFrame * pParent;
   nsCOMPtr<nsIContent> pContent;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+
+    // BBM provisional code
+  // Cursor doesn't show up if it is inside an mo tag, so we arrange to have it outside
+  if (pFrame->GetContent()->Tag() == nsGkAtoms::mo_) {
+    fInside = PR_FALSE;
+  }
+  else if ( GetSignificantParent(pFrame)->GetContent()->Tag() == nsGkAtoms::mo_)
+  {
+    fInside = PR_FALSE;
+    pFrame = GetSignificantParent(pFrame);
+  }
+
   if (fInside)
   {
     pChild = GetFirstTextFrame(pFrame);
@@ -135,11 +164,11 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   }
   else // don't put the cursor inside the tag
   {
-    pParent = pFrame->GetParent();
+    pParent = GetSignificantParent(pFrame);
     pContent = pParent->GetContent();
     if (count == 0)
     {
-      pParent = pFrame->GetParent();
+      pParent = GetSignificantParent(pFrame);
       pContent = pParent->GetContent();
       *aOutOffset = pContent->IndexOf(pFrame->GetContent());
       *aOutFrame = pParent;
@@ -188,7 +217,7 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
 
 nsIFrame * GetPrevSib(nsIFrame * pFrame)
 {
-  nsIFrame * pTemp = pFrame->GetParent()->GetFirstChild(nsnull);
+  nsIFrame * pTemp = GetSignificantParent(pFrame)->GetFirstChild(nsnull);
   while (pTemp && (pTemp->GetNextSibling() != pFrame))
     pTemp = pTemp->GetNextSibling();
   return pTemp;
@@ -210,7 +239,7 @@ nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame )
   {
     while (pTemp && !pTemp->GetNextSibling())
     {
-      pTemp = pTemp->GetParent();
+      pTemp = GetSignificantParent(pTemp);
     }
     if (pTemp) pTemp = pTemp->GetNextSibling();
     if (pTemp) pTextFrame = GetFirstTextFrame(pTemp);
@@ -251,7 +280,7 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
 //  return nsnull;
 }
 
-nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is not previous text frame, this will return the frame the
+nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is no previous text frame, this will return the frame the
 //cursor should be in.
 {
   nsIFrame *pTemp = pFrame;
@@ -265,7 +294,7 @@ nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is not p
   {
     while (pTemp && !tagName.EqualsLiteral("body") && !GetPrevSib(pTemp))
     {
-      pNextTemp = pTemp->GetParent();
+      pNextTemp = GetSignificantParent(pTemp);
       pNode = do_QueryInterface( pNextTemp ->GetContent());
       pNode->GetNodeName(tagName);
       if (!tagName.EqualsLiteral("body"))
@@ -278,6 +307,15 @@ nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is not p
       pTextFrame = pTemp;
   }
   return pTextFrame;
+}
+
+nsIFrame * GetSignificantParent(nsIFrame * pFrame)
+{
+  nsCOMPtr<nsIContent> pContent = pFrame->GetContent();
+  nsIFrame * rval = pFrame->GetParent();
+  while (rval && rval->GetContent() == pContent)
+    rval = rval->GetParent();
+  return rval;
 }
 
 // DOM tree navigation routines that pass over ignorable white space.

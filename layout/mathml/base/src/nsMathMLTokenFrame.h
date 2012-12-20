@@ -90,17 +90,20 @@ public:
     return nsMathMLContainerFrame::ChildListChanged(aModType);
   }
 
-  virtual PRBool
-  PeekOffsetCharacter(PRBool aForward, PRInt32* aOffset);
+  // MathML token frame is a parent for mo and mi frames, and so as far as cursor movement goes,
+  // it is a simple container.
 
-  NS_IMETHOD
-  MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
+  // virtual PRBool
+  // PeekOffsetCharacter(PRBool aForward, PRInt32* aOffset);
 
-  NS_IMETHOD 
-  MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
+  // NS_IMETHOD
+  // MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
 
-  NS_IMETHOD 
-  EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
+  // NS_IMETHOD 
+  // MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
+
+  // NS_IMETHOD 
+  // EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
 
   NS_IMETHOD 
   EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);

@@ -4797,7 +4797,6 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
 
   if (mState & NS_FRAME_IS_DIRTY)
     return NS_ERROR_UNEXPECTED;
-
   PRInt32 offset;
   PRBool fBailing = PR_FALSE;
   PRBool math = PR_FALSE;
@@ -5403,6 +5402,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   {
 //    printf("Starting in a math frame\n");
 //    nsMathMLFrame::DumpMathFrameData(pFrame);
+//    if (*aOutJumpedLine) count = 0;
 
 //    *aMath = PR_TRUE;
     // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving or entering
@@ -5410,7 +5410,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
     PRUint32 nodecount = 0;
     pChild = GetFirstChild(nsnull);
     pLastChild = pChild;
-    while (pChild && nodecount < (*aOutOffset))
+    while (pChild && nodecount < (*aOutOffset)) // BBM modified December 18, 2012
     {
       nodecount++;
       pLastChild = pChild;
@@ -5436,7 +5436,10 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       pMathChild = IsMathFrame(pLastChild)?pLastChild:nsnull;
       if ((pMathChild) && (pMathCM = GetMathCursorMover(pMathChild)))
       {
-         pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
+        if (nodecount == 0)
+          pMathCM->MoveOutToLeft(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
+        else
+          pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
       }
       else if (pLastChild->GetType() == nsGkAtoms::textFrame)
       {
@@ -5473,6 +5476,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       nsMathMLFrame::DumpMathFrameData(pFrame);
       // this is not a math frame, but a parent is. Probably this is a text frame.
       // Check if the next frame is a text frame. If so, bail and let the default code take care of it.
+      // if (*aOutJumpedLine) count = 0;
       *aMath = PR_TRUE;
       if (GetNextContinuation())
       {
