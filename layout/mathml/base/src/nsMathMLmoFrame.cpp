@@ -170,10 +170,10 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     // for visual debug
     rv = DisplayBoundingMetrics(aBuilder, this, mReference, mBoundingMetrics, aLists);
 #endif
-//    if (firstChild == aBuilder->GetCaretFrame())
-//    {
-//      this->DisplayCaret(aBuilder, aDirtyRect, aLists);
-//    }
+   // if (firstChild == aBuilder->GetCaretFrame())
+   // {
+   //   this->DisplayCaret(aBuilder, aDirtyRect, aLists);
+   // }
 
   }
 //BBM

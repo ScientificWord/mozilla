@@ -37,6 +37,15 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame );
 nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame );
 nsIFrame * GetLastChild(nsIFrame * pFrame);
 
+/**
+ * GetSignificantParent Sometimes a frame with have a parent frame with the same content pointer. In some cases we want
+ *   to go up the parent tree until the content pointer is different. That is what this function does.
+ * @param  pFrame A child frame
+ * @return        The first ancestor with a different content pointer.
+ * 
+ */
+nsIFrame * GetSignificantParent( nsIFrame * pFrame);
+
 // DOM tree navigation routines that pass over ignorable white space.
 // See the "Whitespace in the DOM" article on the MDC
 
