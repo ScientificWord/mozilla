@@ -33,14 +33,14 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
 
   // BBM provisional code
   // Cursor doesn't show up if it is inside an mo tag
-  if (pFrame->GetContent()->Tag() == nsGkAtoms::mo_) {
-    fInside = PR_FALSE;
-  }
-  else if ( GetSignificantParent(pFrame)->GetContent()->Tag() == nsGkAtoms::mo_)
-  {
-    fInside = PR_FALSE;
-    pFrame = GetSignificantParent(pFrame);
-  }
+  // if (pFrame->GetContent()->Tag() == nsGkAtoms::mo_) {
+  //   fInside = PR_FALSE;
+  // }
+  // else if ( GetSignificantParent(pFrame)->GetContent()->Tag() == nsGkAtoms::mo_)
+  // {
+  //   fInside = PR_FALSE;
+  //   pFrame = GetSignificantParent(pFrame);
+  // }
 
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
@@ -143,14 +143,14 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
 
     // BBM provisional code
   // Cursor doesn't show up if it is inside an mo tag, so we arrange to have it outside
-  if (pFrame->GetContent()->Tag() == nsGkAtoms::mo_) {
-    fInside = PR_FALSE;
-  }
-  else if ( GetSignificantParent(pFrame)->GetContent()->Tag() == nsGkAtoms::mo_)
-  {
-    fInside = PR_FALSE;
-    pFrame = GetSignificantParent(pFrame);
-  }
+  // if (pFrame->GetContent()->Tag() == nsGkAtoms::mo_) {
+  //   fInside = PR_FALSE;
+  // }
+  // else if ( GetSignificantParent(pFrame)->GetContent()->Tag() == nsGkAtoms::mo_)
+  // {
+  //   fInside = PR_FALSE;
+  //   pFrame = GetSignificantParent(pFrame);
+  // }
 
   if (fInside)
   {
