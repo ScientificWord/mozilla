@@ -590,15 +590,55 @@ nsDisplayOutline::OptimizeVisibility(nsDisplayListBuilder* aBuilder,
   return PR_TRUE;
 }
 
+PRBool IsMathNodeForCaret(nsIContent * aNode)
+{
+  if (! aNode ) return PR_FALSE;
+  nsAutoString sNamespace;
+  nsCOMPtr<nsIDOMNode> pNode = do_QueryInterface(aNode);
+  PRUint16 nodeType;
+  pNode->GetNodeType(&nodeType);
+  while (nodeType == nsIDOMNode::TEXT_NODE) {
+    pNode->GetParentNode(getter_AddRefs(pNode));
+    pNode->GetNodeType(&nodeType);
+  }
+  nsresult res;
+  if (!pNode) return PR_FALSE;
+  res = pNode->GetNamespaceURI(sNamespace);
+  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML"))
+  {
+    return PR_TRUE;
+  }
+  return PR_FALSE;
+}
+
+
 void
 nsDisplayCaret::Paint(nsDisplayListBuilder* aBuilder,
     nsIRenderingContext* aCtx, const nsRect& aDirtyRect) {
   // Note: Because we exist, we know that the caret is visible, so we don't
   // need to check for the caret's visibility.
+  nsCOMPtr<nsIDOMNode> focusNode;
+  nsCOMPtr<nsISelection> domSelection;
+  nsresult rv = mCaret->GetCaretDOMSelection(getter_AddRefs(domSelection));
+  if (NS_FAILED(rv))
+    return;
+  if (!domSelection)
+    return;
+
+  rv = domSelection->GetFocusNode(getter_AddRefs(focusNode));
+  nsCOMPtr<nsIContent> content = do_QueryInterface(focusNode);
+  nscolor color;
+  if (IsMathNodeForCaret(content)) {
+    color =  NS_RGB(  255,   0,   0);
+  }
+  else
+    color =  NS_RGB(  0,   0,   0);
+
+
   mCaret->PaintCaret(aBuilder, aCtx, aBuilder->ToReferenceFrame(mFrame),
     // BBM: to make the caret color match the selection location, we can 
     // check the cursor is in math or not here.
-                     mFrame->GetStyleColor()->mColor);
+                     color);
 }
 
 PRBool
