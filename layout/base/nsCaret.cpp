@@ -37,7 +37,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-/* the caret is the text cursor used, e.g., when editing */
+/* the caret is the text  used, e.g., when editing */
 
 #include "nsCOMPtr.h"
 
@@ -710,7 +710,7 @@ AdjustCaretFrameForMathMLmo(nsIFrame** aFrame, PRInt32* aOffset)
     if (name.EqualsLiteral("mo"))
     {
       *aFrame = pF->GetParent();
-      *aOffset += GetIndexInParent(pF, *aFrame);
+      (*aOffset) += GetIndexInParent(pF, *aFrame);
     }
   }
   else if (doBoth)
@@ -722,11 +722,27 @@ AdjustCaretFrameForMathMLmo(nsIFrame** aFrame, PRInt32* aOffset)
     if (name.EqualsLiteral("mo"))
     {
       *aFrame = pF->GetParent();
-      *aOffset += GetIndexInParent(pF, *aFrame);
+      (*aOffset) += GetIndexInParent(pF, *aFrame);
     }
   }
 }
 
+
+PRBool IsMathNode(nsIContent * aNode)
+{
+  if (! aNode ) return PR_FALSE;
+  nsAutoString sNamespace;
+  nsCOMPtr<nsIDOMNode> pNode;
+  nsresult res;
+  pNode = do_QueryInterface(aNode);
+  if (!pNode) return PR_FALSE;
+  res = pNode->GetNamespaceURI(sNamespace);
+  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML"))
+  {
+    return PR_TRUE;
+  }
+  return PR_FALSE;
+}
 
 NS_IMETHODIMP 
 nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
@@ -749,8 +765,17 @@ nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
   nsIFrame* theFrame = nsnull;
   PRInt32   theFrameOffset = 0;
 
-  theFrame = frameSelection->GetFrameForNodeOffset(aContentNode, aOffset,
-                                                   aFrameHint, &theFrameOffset);
+  if (PR_FALSE)//(IsMathNode( aContentNode ))
+  {
+    nsCOMPtr<nsIPresShell> presShell = do_QueryReferent(mPresShell);
+    theFrame = presShell->GetPrimaryFrameFor(aContentNode);
+    theFrameOffset = aOffset;
+    // increment *aReturnOffset if there are whitespace-only nodes?
+  }
+  else {
+    theFrame = frameSelection->GetFrameForNodeOffset(aContentNode, aOffset,
+                                                     aFrameHint, &theFrameOffset);
+  }
   if (!theFrame)
     return NS_ERROR_FAILURE;
 

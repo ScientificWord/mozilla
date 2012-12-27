@@ -754,7 +754,12 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMathMLLeafElement(editor, symbol, 1, flags, mathmlElement);
+    nsAutoString newSymbol(symbol);
+
+    if (symbol.EqualsLiteral("-")) {
+      newSymbol.Assign(0x2212);
+    }      
+    res = msiUtils::CreateMathMLLeafElement(editor, newSymbol, 1, flags, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement)
     {
       nsAutoString localName;
@@ -1126,7 +1131,12 @@ msiEditingManager::InsertOperator(nsIEditor * editor,
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     PRUint32 caretPos = symbol.Length();
-    res = msiUtils::CreateMathOperator(editor, symbol, caretPos, flags, attrFlags, 
+    nsAutoString newSymbol(symbol);
+    if (symbol.EqualsLiteral("-"))
+    {
+      newSymbol.Assign(0x2212);
+    }
+    res = msiUtils::  CreateMathOperator(editor, newSymbol, caretPos, flags, attrFlags, 
                                        leftspace, rightspace, minsize, maxsize, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
