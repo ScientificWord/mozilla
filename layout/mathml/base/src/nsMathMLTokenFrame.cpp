@@ -520,88 +520,88 @@ PRBool nodeIsWhiteSpace2( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lasti
 
 
 /* long enterFromRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
-NS_IMETHODIMP 
-nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-{
-    *_retval = count;
-    nsCOMPtr<nsIContent> pcontent = GetContent();
-    nsCOMPtr<nsIDOMElement> pnode = do_QueryInterface(pcontent);
-    nsIFrame * childFrame;
-    nsCOMPtr<nsIDOMNode> child;
-    nsAutoString attr;
-    PRInt16 nodeType;
-    pnode->GetAttribute(NS_LITERAL_STRING("tempinput"), attr);
-    if (attr.EqualsLiteral("true"))
-    {
-      childFrame = GetFirstChild(nsnull);
-      while (childFrame && (nsGkAtoms::textFrame != childFrame->GetType())) {
-        childFrame = childFrame->GetFirstChild(nsnull);
-        // this is because a child frame of an mi frame can have the same content ptr.
-      }
-      while (childFrame) {
-        if (nsGkAtoms::textFrame == childFrame->GetType())
-        {
-          nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
-          child = do_QueryInterface(childContent);
-          if (!nodeIsWhiteSpace2(child, 0, 20))
-          {
-            *aOutFrame = childFrame;
-            *aOutOffset = 1;
-            *_retval = 0;
-            return NS_OK;
-          }
-        }
-        childFrame = childFrame->GetNextSibling();
-      }
-    }
-    PRBool isOperator = PR_FALSE;
-    PRBool inside = PR_TRUE;
-    eMathMLFrameType type = GetMathMLFrameType();
-    if (type >=eMathMLFrameType_OperatorOrdinary && type <= eMathMLFrameType_OperatorUserDefined)
-    {  
-      isOperator = PR_TRUE;
-      inside = PR_FALSE;
-    }
-    if (count == 0) 
-    {
-      PlaceCursorAfter(this, inside, aOutFrame, aOutOffset, *_retval);
-    }
-    else
-    {
-      nsCOMPtr<nsIContent> pcontent = GetContent();
-      if (pcontent->Tag() != nsGkAtoms::mn_) 
-      {
-        *_retval = 0;
-        PlaceCursorBefore(this, inside, aOutFrame, aOutOffset, *_retval);
-      }
-      else
-      {
-        childFrame = GetFirstChild(nsnull);
-        while(childFrame)
-        {
-          if (nsGkAtoms::textFrame == childFrame->GetType())
-          {
-            nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
-            child = do_QueryInterface(childContent);
-            if (!nodeIsWhiteSpace2(child, 0, 20))
-            {
-              *aOutFrame = childFrame;
-              nsAutoString theText;
-              child->GetNodeValue(theText);
-              PRUint32 length = theText.Length();
-              *aOutOffset = length - 1;
-              *_retval = 0;
-              return NS_OK;
-            }
-            childFrame = childFrame->GetNextSibling();
-          }
-          childFrame = childFrame->GetFirstChild(nsnull);
-        }
-      }
+// NS_IMETHODIMP 
+// nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+// {
+//     *_retval = count;
+//     nsCOMPtr<nsIContent> pcontent = GetContent();
+//     nsCOMPtr<nsIDOMElement> pnode = do_QueryInterface(pcontent);
+//     nsIFrame * childFrame;
+//     nsCOMPtr<nsIDOMNode> child;
+//     nsAutoString attr;
+//     PRInt16 nodeType;
+//     pnode->GetAttribute(NS_LITERAL_STRING("tempinput"), attr);
+//     if (attr.EqualsLiteral("true"))
+//     {
+//       childFrame = GetFirstChild(nsnull);
+//       while (childFrame && (nsGkAtoms::textFrame != childFrame->GetType())) {
+//         childFrame = childFrame->GetFirstChild(nsnull);
+//         // this is because a child frame of an mi frame can have the same content ptr.
+//       }
+//       while (childFrame) {
+//         if (nsGkAtoms::textFrame == childFrame->GetType())
+//         {
+//           nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
+//           child = do_QueryInterface(childContent);
+//           if (!nodeIsWhiteSpace2(child, 0, 20))
+//           {
+//             *aOutFrame = childFrame;
+//             *aOutOffset = 1;
+//             *_retval = 0;
+//             return NS_OK;
+//           }
+//         }
+//         childFrame = childFrame->GetNextSibling();
+//       }
+//     }
+//     PRBool isOperator = PR_FALSE;
+//     PRBool inside = PR_TRUE;
+//     eMathMLFrameType type = GetMathMLFrameType();
+//     if (type >=eMathMLFrameType_OperatorOrdinary && type <= eMathMLFrameType_OperatorUserDefined)
+//     {  
+//       isOperator = PR_TRUE;
+//       inside = PR_FALSE;
+//     }
+//     if (count == 0) 
+//     {
+//       PlaceCursorAfter(this, inside, aOutFrame, aOutOffset, *_retval);
+//     }
+//     else
+//     {
+//       nsCOMPtr<nsIContent> pcontent = GetContent();
+//       if (pcontent->Tag() != nsGkAtoms::mn_) 
+//       {
+//         *_retval = 0;
+//         PlaceCursorBefore(this, inside, aOutFrame, aOutOffset, *_retval);
+//       }
+//       else
+//       {
+//         childFrame = GetFirstChild(nsnull);
+//         while(childFrame)
+//         {
+//           if (nsGkAtoms::textFrame == childFrame->GetType())
+//           {
+//             nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
+//             child = do_QueryInterface(childContent);
+//             if (!nodeIsWhiteSpace2(child, 0, 20))
+//             {
+//               *aOutFrame = childFrame;
+//               nsAutoString theText;
+//               child->GetNodeValue(theText);
+//               PRUint32 length = theText.Length();
+//               *aOutOffset = length - 1;
+//               *_retval = 0;
+//               return NS_OK;
+//             }
+//             childFrame = childFrame->GetNextSibling();
+//           }
+//           childFrame = childFrame->GetFirstChild(nsnull);
+//         }
+//       }
 
-    }
-    return NS_OK;
-}
+//     }
+//     return NS_OK;
+// }
 
 /* long enterFromLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
 // NS_IMETHODIMP 
