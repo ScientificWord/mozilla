@@ -160,6 +160,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_zoomin", msiZoomInCommand);
   commandTable.registerCommand("cmd_zoomout", msiZoomOutCommand);
   commandTable.registerCommand("cmd_zoomreset", msiZoomResetCommand);
+  commandTable.registerCommand("cmd_showhelp", msiShowHelpCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -10467,3 +10468,25 @@ var msiZoomResetCommand =
     }
   }
 };
+
+var msiShowHelpCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    try
+    {
+      //alert('Show help');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('showhelp'), e.message);
+    }
+  }
+}
