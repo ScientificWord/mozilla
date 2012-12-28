@@ -31,7 +31,7 @@
   <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
   <key id="msiZoomOutKey" key="-" command="cmd_zoomout" modifiers="accel"/>
   <key id="msiZoomReset" key="0" command="cmd_zoomreset" modifiers="accel"/>
-  <key id="msiMacHelp" keycode="?" modifiers="accel" oncommand="openHelp('swp-doc')" />
+  <key id="msiMacHelp" key="?" modifiers="accel,shift" command="cmd_showhelp"/>
 
 </keyset>
 
@@ -45,4 +45,5 @@
   <command id="cmd_lineNext" oncommand="msiGoDoCommand('cmd_lineNext')"/>
   <command id="cmd_selectLinePrevious" oncommand="msiGoDoCommand('cmd_selectLinePrevious')"/>
   <command id="cmd_selectLineNext" oncommand="msiGoDoCommand('cmd_selectLineNext')" />
+  <command id="cmd_showhelp" oncommand="msiGoDoCommand('cmd_showhelp')"/>
 </commandset>

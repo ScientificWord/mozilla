@@ -216,6 +216,7 @@
 <!ENTITY propertiesMenu.accesskey "o">
 
 <!ENTITY helpmenu.label    "Help">
+<!ENTITY helpMac.commandkey "?">
 <!ENTITY helpmenu.accesskey    "H">
 <!ENTITY helpmenuContents.label    "Contents...">
 <!ENTITY helpmenuContents.accesskey    "C">
