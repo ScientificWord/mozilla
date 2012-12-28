@@ -413,7 +413,7 @@
   <m nm="blacksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
   <m nm="smblksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
   <m nm="blacktriangle" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&utrif;<![CDATA[");]]></data></m>
-  <m nm="ldots" fm="0"><data>&hellip;</data><context/><info>0,0</info></m>
+  <m nm="ldots" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&hellip;<![CDATA[");]]></data><context/><info>0,0</info></m>
   <m nm="dots" fm="0"><data>&hellip;</data><context/><info>0,0</info></m>
   <m nm="blacktriangledown" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&dtrif;<![CDATA[");]]></data></m>
   <m nm="lnot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&not;<![CDATA[");]]></data></m>
