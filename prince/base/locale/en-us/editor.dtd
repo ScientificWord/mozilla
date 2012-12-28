@@ -11,6 +11,7 @@
 <!ENTITY formatmenu.accesskey "o">
 
 <!ENTITY helpMenu.label "Help">
+<!ENTITY helpMenu.accesskey "H">
 <!ENTITY aboutCmd.label ".About">
 
 <!-- Display Mode Toolbar -->
