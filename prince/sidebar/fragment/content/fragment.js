@@ -584,8 +584,8 @@ var fragObserver =
         var sFileContent = '<?xml version="1.0"?>\n<fragment>\n  <data>\n    ' + encodeURIComponent(mimetypes.kHTMLMime) +
           '\n  </data>\n  <context>\n    ' + encodeURIComponent(mimetypes.kHTMLContext) +
           '\n  </context>\n  <info>\n    ' + encodeURIComponent(mimetypes.kHTMLInfo) +
-          '\n  </info>\n  <description>\n    ' +  encodeURIComponent(data.description) +
-          '\n  </description>\n</fragment>';
+          '\n  </info>\n  <description>' +  encodeURIComponent(data.description) +
+              '</description>\n</fragment>';
         var urlstring = urlbasestring + path + "/" + data.filename;
         var filepath = msiPathFromFileURL( msiURIFromString(urlstring));        
         if (filepath.search(/.frg/) == -1) filepath += ".frg";
@@ -696,8 +696,8 @@ function createFragmentFromClip()
       var sFileContent = '<?xml version="1.0"?>\n<fragment>\n  <data>\n    ' + encodeURIComponent(mimetypes.kHTMLMime) +
         '\n  </data>\n  <context>\n    ' + encodeURIComponent(mimetypes.kHTMLContext) +
         '\n  </context>\n  <info>\n    ' + encodeURIComponent(mimetypes.kHTMLInfo) +
-        '\n  </info>\n  <description>\n    ' + encodeURIComponent(data.description) +
-        '\n  </description>\n</fragment>';
+        '\n  </info>\n  <description>' + encodeURIComponent(data.description) +
+            '</description>\n</fragment>';
       var urlstring = urlbasestring + path + "/" + data.filename;
       var filepath = msiPathFromFileURL( msiURIFromString(urlstring));        
       if (filepath.search(/.frg/) == -1) filepath += ".frg";
