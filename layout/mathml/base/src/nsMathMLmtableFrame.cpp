@@ -651,7 +651,7 @@ nsMathMLmtableOuterFrame::Reflow(nsPresContext*          aPresContext,
 
 NS_IMPL_ADDREF_INHERITED(nsMathMLmtableFrame, nsTableFrame)
 NS_IMPL_RELEASE_INHERITED(nsMathMLmtableFrame, nsTableFrame)
-NS_IMPL_QUERY_INTERFACE_INHERITED0(nsMathMLmtableFrame, nsTableFrame)
+NS_IMPL_QUERY_INTERFACE_INHERITED1(nsMathMLmtableFrame, nsTableFrame, nsMathMLContainerCursorMover)
 
 nsIFrame*
 NS_NewMathMLmtableFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
@@ -725,19 +725,22 @@ nsresult
 nsMathMLmtableFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
-  printf("matable EnterFromRight, count = %d\n", count);
+  printf("mtable EnterFromRight, count = %d\n", count);
   if (count > 0)
   {
-    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
-    pFrame = pFrame->GetNextSibling();
+    nsIFrame * pFrame = this;
+    while (pFrame && pFrame->GetContent()->Tag() != nsGkAtoms::mtr_)
+      pFrame = pFrame->GetFirstChild(nsnull);
+
     nsCOMPtr<nsIMathMLCursorMover> pMCM;
     if (pFrame)
     {
       pMCM = do_QueryInterface(pFrame);
-      count--;
+      count = 0;
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else // child frame is not a math frame. Probably a text frame. We'll assume this for now
       {
+        // This should never happen
         PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
         *_retval = 0;
         return NS_OK;
@@ -745,12 +748,12 @@ nsMathMLmtableFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
     }
     else 
     {
-      printf("Found msup frame with no superscript\n");
+      printf("Found mtable frame with no rows\n");
     }
   }
   else
   {
-    printf("msub EnterFromRight called with count == 0\n");
+    printf("mtable EnterFromRight called with count == 0\n");
     PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
   }
   return NS_OK;  
@@ -774,7 +777,7 @@ nsMathMLmtableFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFram
   }
   else
   {
-    // leaving base 
+    // leaving a cell 
     count= 0;
     pChild = pChild->GetNextSibling();
     pMCM = do_QueryInterface(pChild);
@@ -962,6 +965,21 @@ nsMathMLmtdFrame::AttributeChanged(PRInt32  aNameSpaceID,
 
   return NS_OK;
 }
+
+  NS_IMETHODIMP 
+  nsMathMLmtdFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+  {
+    count = 0;
+    return nsMathMLContainerCursorMover::MoveOutToRight(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
+  }
+
+  NS_IMETHODIMP 
+  nsMathMLmtdFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+  {
+    count = 0;
+    return nsMathMLContainerCursorMover::MoveOutToLeft(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
+  }
+
 
 
 // --------
