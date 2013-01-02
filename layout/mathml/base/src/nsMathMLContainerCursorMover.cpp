@@ -111,7 +111,15 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
   }
   // if we get here, leavingFrame is null or there is no child preceding leavingFrame. Leave this frame.
   pTempFrame = pFrame->GetParent();
+  // pTempFrame = pFrame;
+  // pMCM = nsnull;
+  // while (pTempFrame && (pMCM == nsnull))
+  // {
+  //   pTempFrame = pTempFrame->GetParent();
+  //   pMCM = do_QueryInterface(pTempFrame);
+  // }
   pMCM = do_QueryInterface(pTempFrame);
+
   if (pMCM) pMCM->MoveOutToLeft(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else // we have gone out of math.  Put the cursor at the beginning of the math if count == 0
        // and before the math if count == 1

@@ -5429,7 +5429,16 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         if (pMathCM = GetMathCursorMover(pFrame))
           pMathCM->MoveOutToRight(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
         else
-          (*fBailing) = PR_TRUE;
+        {
+          while (pMathCM == nsnull && pFrame) {
+            pFrame = pFrame->GetParent();
+            pMathCM = GetMathCursorMover(pFrame);
+          }
+          if (pMathCM)
+            pMathCM->MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
+          else
+            (*fBailing) = PR_TRUE;
+        } 
       }
     }
     else {
@@ -5457,11 +5466,15 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       }
       else 
       {
-        if (pMathCM = GetMathCursorMover(pFrame))
-          pMathCM->MoveOutToLeft(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
+        while (pMathCM == nsnull && pFrame) {
+          pFrame = pFrame->GetParent();
+          pMathCM = GetMathCursorMover(pFrame);
+        }
+        if (pMathCM)
+          pMathCM->MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
         else
           (*fBailing) = PR_TRUE;
-      }
+      }  
     }
     if (*fBailing) goto bailedOut;
     *aMath = PR_TRUE;

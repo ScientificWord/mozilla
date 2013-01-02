@@ -318,11 +318,11 @@ msiMtableCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, P
 NS_IMETHODIMP
 msiMtableCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  if (m_offset < m_numKids)
+  if (m_offset < m_numKids - 1){
     ++m_offset;
-  else
-    return msiMCaretBase::CaretUp(editor,flags,node,offset);
-  return Accept(editor, FROM_ABOVE, node, offset);
+    return Accept(editor, FROM_ABOVE, node, offset);
+  } else return NS_ERROR_FAILURE; // went out of math; Mozilla code will take over
+    // return msiMCaretBase::CaretUp(editor,flags,node,offset);
 }
 
 //TODO

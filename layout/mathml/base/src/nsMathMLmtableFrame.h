@@ -103,7 +103,8 @@ protected:
 
 // --------------
 
-class nsMathMLmtableFrame : public nsTableFrame
+class nsMathMLmtableFrame : public nsTableFrame,
+							public nsMathMLContainerCursorMover
 {
 public:
   friend nsIFrame* NS_NewMathMLmtableFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -168,7 +169,7 @@ public:
   EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
 
 protected:
-  nsMathMLmtableFrame(nsStyleContext* aContext) : nsTableFrame(aContext) {}
+  nsMathMLmtableFrame(nsStyleContext* aContext) : nsTableFrame(aContext), nsMathMLContainerCursorMover(this) {}
   virtual ~nsMathMLmtableFrame();
 }; // class nsMathMLmtableFrame
 
@@ -262,6 +263,12 @@ public:
     return nsTableCellFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
+
+  NS_IMETHOD 
+  MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
+
+  NS_IMETHOD 
+  MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
 
 protected:
   nsMathMLmtdFrame(nsStyleContext* aContext) : nsTableCellFrame(aContext),nsMathMLContainerCursorMover(this) {}
