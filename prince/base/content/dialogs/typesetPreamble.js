@@ -26,11 +26,13 @@ function Startup()
     newNode=true;
     node=editor.createNode('preambleTeX',preamble,1000); 
   }
-  document.getElementById("preambleTextbox").value = node.textContent;
+  var str = node.textContent.replace(/[ \t]*$/,'');
+  document.getElementById("preambleTextbox").value = str;
   InitDialog();
 
-//  document.getElementById("preambleTextbox").focus();
+  var tb = document.getElementById("preambleTextbox");
   msiSetInitialDialogFocus(document.getElementById("preambleTextbox"));
+  tb.selectionEnd = tb.selectionStart = tb.textLength;
 
   SetWindowLocation();
 }

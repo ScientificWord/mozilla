@@ -3507,6 +3507,7 @@ IsSpecialContent(nsIContent*     aContent,
       aTag == nsGkAtoms::merror_ ||
       aTag == nsGkAtoms::none   ||
       aTag == nsGkAtoms::mprescripts_ ||
+      aTag == nsGkAtoms::menclose_ ||
       aTag == nsGkAtoms::math;
 #endif
   return PR_FALSE;
@@ -6967,7 +6968,8 @@ nsCSSFrameConstructor::ConstructMathMLFrame(nsFrameConstructorState& aState,
   else if (aTag == nsGkAtoms::maction_)
     newFrame = NS_NewMathMLmactionFrame(mPresShell, aStyleContext);
   else if (aTag == nsGkAtoms::mrow_ ||
-           aTag == nsGkAtoms::merror_)
+           aTag == nsGkAtoms::merror_ ||
+           aTag == nsGkAtoms::menclose_)
     newFrame = NS_NewMathMLmrowFrame(mPresShell, aStyleContext);
   else if (aTag == nsGkAtoms::math) { 
     // root <math> element
