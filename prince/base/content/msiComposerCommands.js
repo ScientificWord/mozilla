@@ -9937,7 +9937,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       {
         wrapperNode.insertBefore(node, null);
         editor.insertElementAtSelection(wrapperNode, true);
-        editor.setCursorInNewHTML(node);
+//        editor.setCursorInNewHTML(node);
         editorElement.contentWindow.focus();
       }
     }
