@@ -13,7 +13,8 @@ ICON_RESOURCES := $(wildcard $(srcdir)/css/*.png)
 XML_RESOURCES := $(wildcard $(srcdir)/xml/*.xml)
 TAGDEF_RESOURCES := $(wildcard $(srcdir)/tagdefs/*.xml)
 FRAG_RESOURCES := $(wildcard $(srcdir)/fragments/*.frg)
-CONSTANTS_RESOURCES := $(wildcard $(srcdir)/fragments/Constants/*.frg)
+CONSTANTS1_RESOURCES := $(wildcard $(srcdir)/fragments/Constants1/*.frg)
+CONSTANTS2_RESOURCES := $(wildcard $(srcdir)/fragments/Constants2/*.frg)
 DINGBAT_RESOURCES := $(wildcard $(srcdir)/fragments/dingbats/*.frg)
 CM2_RESOURCES := $(wildcard $(srcdir)/cm2/*)
 
@@ -23,7 +24,8 @@ libs::	$(CSS_RESOURCES) $(XBL_RESOURCES) $(CM2_RESOURCES)
 	$(INSTALL)	$(TAGDEF_RESOURCES)	$(FINAL_TARGET)/res/tagdefs
 	$(INSTALL)	$(XML_RESOURCES)	$(FINAL_TARGET)/res/xml
 	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments
-	$(INSTALL)	$(CONSTANTS_RESOURCES)	$(FINAL_TARGET)/res/fragments/Constants
+	$(INSTALL)	$(CONSTANTS1_RESOURCES)	$(FINAL_TARGET)/res/fragments/Constants
+	$(INSTALL)	$(CONSTANTS2_RESOURCES)	$(FINAL_TARGET)/res/fragments/Constants
 	$(INSTALL)	$(DINGBAT_RESOURCES)	$(FINAL_TARGET)/res/fragments/dingbats
 	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
 	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css
