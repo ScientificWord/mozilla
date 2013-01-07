@@ -38,6 +38,11 @@
 \msi@pass@newline{\settodepth}
 \msi@pass@newline{\settowidth}
 
+%\def\leftline#1{\@@line{#1\hss}}
+%\def\rightline#1{\@@line{\hss#1}}
+%\def\centerline#1{#1}
+
+
 \def\MSIMathQuote#1{%
    %\expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
    \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\char32\relax}}
@@ -1266,8 +1271,8 @@
 %\msi@rfi{\msi@hook@vfil}{\vfil}
 %\msi@rfi{\msi@hook@vfill}{\vfill}
 
-%%\def\msi@hook@hss{\msitag{\hss}}
-%%\def\msi@hook@vss{\msitag{\vss}}
+\def\msi@hook@hss{\msitag{\hss}}
+\def\msi@hook@vss{\msitag{\vss}}
 
 
 \def\label#1{%
@@ -1780,12 +1785,39 @@
 
 
 \def\msi@begin@figure{%
+  \@ifnextchar[{\msi@begin@figureA}{msi@begin@figureB}}
+
+
+\def\msi@begin@figureA[#1]{%
+   \msiopentag{msiframe}{<msiframe opt="#1">}%
+}
+
+\def\msi@begin@figureB{%
    \msiopentag{msiframe}{<msiframe>}%
 }
 
 \def\msi@end@figure{%
    \msiclosetag{msiframe}{</msiframe>}%
 }
+
+
+
+\def\msi@begin@table{%
+  \@ifnextchar[{\msi@begin@tableA}{msi@begin@tableB}}
+
+
+\def\msi@begin@tableA[#1]{%
+   \msiopentag{msiframe}{<msiframe kind="table" opt="#1">}%
+}
+
+\def\msi@begin@tableB{%
+   \msiopentag{msiframe}{<msiframe kind="table">}%
+}
+
+\def\msi@end@table{%
+   \msiclosetag{msiframe}{</msiframe>}%
+}
+
 
 \def\caption{\msi@caption}
 
