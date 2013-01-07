@@ -1234,6 +1234,8 @@ extern PRBool IsParentMathFrame( nsIFrame * aFrame );
 
 PRBool isMathNode( nsIDOMNode * aNode)
 {
+  if (!aNode) 
+    return PR_FALSE;
   nsresult res;
   nsAutoString sNamespace;
   nsCOMPtr<nsIDOMNode> pNode;
@@ -1242,6 +1244,8 @@ PRBool isMathNode( nsIDOMNode * aNode)
  
   while (nodeType == 3) { // nsINode::eTEXT) {
     aNode->GetParentNode(getter_AddRefs(pNode));
+    if (!pNode) 
+      return PR_FALSE;
     aNode = pNode;
     aNode->GetNodeType(&nodeType);
   }
