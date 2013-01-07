@@ -6056,94 +6056,90 @@ void LaTeX2MMLTree::InsertApplyFunction( TNODE* MML_list ) {
     TCI_BOOL is_delimited =  FALSE;
     if ( MMLNodeIsFunction(mml_rover) ) {
       U16 n_space_nodes,n_arg_nodes;
+
       if ( FunctionHasArg(mml_rover,n_space_nodes,n_arg_nodes,is_delimited) ) {
         do_insert =  TRUE;
-	    if ( n_space_nodes+n_arg_nodes > 1 ) {
-    // Multiple nodes in the arg, as in "sin 2x"
-	  // Here we complete bindings within the arg.
-		  TNODE* tail =  mml_rover;
-		  U16 tally =  0;
-	      while ( tally < n_space_nodes+n_arg_nodes ) {
-		    tail  =  tail->next;
-		    tally++;
-		  }
-		  TNODE* right_anchor =  tail->next;
-		  tail->next  =  NULL;
+
+	      if ( n_space_nodes+n_arg_nodes > 1 ) {
+            // Multiple nodes in the arg, as in "sin 2x"
+	          // Here we complete bindings within the arg.
+		      TNODE* tail =  mml_rover;
+		      U16 tally =  0;
+	        while ( tally < n_space_nodes+n_arg_nodes ) {
+		        tail  =  tail->next;
+		        tally++;
+		      }
+		      TNODE* right_anchor =  tail->next;
+		      tail->next  =  NULL;
           TNODE* arg_nodes  =  mml_rover->next;
           mml_rover->next =  NULL;
           TNODE* new_arg  =  FinishMMLBindings( arg_nodes );
           SetDetailNum( new_arg,DETAILS_is_func_arg,1 );
-		  mml_rover->next =  new_arg;
-		  new_arg->prev   =  mml_rover;
-		  if ( right_anchor ) {
-		    TNODE* new_arg_tail =  new_arg;
-	        while ( new_arg_tail->next )
-		      new_arg_tail  =  new_arg_tail->next;
-		    new_arg_tail->next  =  right_anchor;
-		    right_anchor->prev  =  new_arg_tail;
-		  }
+		      mml_rover->next =  new_arg;
+		      new_arg->prev   =  mml_rover;
+		      if ( right_anchor ) {
+		        TNODE* new_arg_tail =  new_arg;
+	          while ( new_arg_tail->next )
+		          new_arg_tail  =  new_arg_tail->next;
+		        new_arg_tail->next  =  right_anchor;
+		        right_anchor->prev  =  new_arg_tail;
+		      }
+	      }
 	    }
-	  } else {		// known function without any args
-        //jcs if ( mml_rover->next )
-	    //jcs  TCI_ASSERT(0);
-	  }
+	  } else if ( MMLNodeIsOperator(mml_rover) ) {
 
-	} else if ( MMLNodeIsOperator(mml_rover) ) {
-
-	} else {		// possible implicit function, f,g,...
+	  } else {		// possible implicit function, f,g,...
 	  U16 args_on_right =  0;
 	  if ( mml_rover->next )
-	  if ( mml_rover->next->details )
-	  if ( mml_rover->next->details->delimited_group != UNDEFINED_DETAIL ) {
-	    args_on_right =  IsGroupAFuncArg( mml_rover->next );
-        is_delimited  =  TRUE;
-      }
-      if ( args_on_right ) {
+	     if ( mml_rover->next->details )
+	       if ( mml_rover->next->details->delimited_group != UNDEFINED_DETAIL ) {
+	         args_on_right =  IsGroupAFuncArg( mml_rover->next );
+           is_delimited  =  TRUE;
+         }
+         if ( args_on_right ) {
+           if ( IsFuncDerivative(mml_rover) ) {
+		         do_insert =  TRUE;
+	         } else {
+             U8 identifier_nom[80];	// We record name of each possible
+	           identifier_nom[0] =  0;   //  implicit function, f, myfunc,...
+	           TCI_BOOL in_funcs_list  =  FALSE;
+             if ( MMLNodeCouldBeFunction(mml_rover,identifier_nom,80) ) {
+	             if ( IdentifierInList(funcs_list,identifier_nom) )
+		             in_funcs_list =  TRUE;
 
-        if ( IsFuncDerivative(mml_rover) ) {
-		  do_insert =  TRUE;
-
-	    } else {
-          U8 identifier_nom[80];	// We record name of each possible
-	      identifier_nom[0] =  0;   //  implicit function, f, myfunc,...
-	      TCI_BOOL in_funcs_list  =  FALSE;
-          if ( MMLNodeCouldBeFunction(mml_rover,identifier_nom,80) ) {
-	        if ( IdentifierInList(funcs_list,identifier_nom) )
-		      in_funcs_list =  TRUE;
-	        if      ( args_on_right==2 )
-		      do_insert =  TRUE;
-	        else if ( args_on_right==1 ) {
-	          if ( in_funcs_list )
-		        do_insert =  TRUE;
-			  else {
-			    U16 nom_ln  =  strlen( (char*)identifier_nom );
-			    if ( nom_ln > 9 ) {
-                  char* ptr =  (char*)identifier_nom + nom_ln - 9;
-                  if        ( !strcmp(ptr,"^&minus;1") ) {
-		            do_insert =  TRUE;
-                  } else {
-			        if ( identifier_nom[nom_ln-3] == '^' )
-			        if ( identifier_nom[nom_ln-2] == '-' )
-			        if ( identifier_nom[nom_ln-1] == '1' )
+	             if  ( args_on_right==2 )
 		              do_insert =  TRUE;
-                  }
-			    }
-			  }
-		    }
-            if ( do_insert && !in_funcs_list ) {
-              funcs_list  =  AddIdentifier( funcs_list,
-              								identifier_nom );
-		      do_second_pass  =  TRUE;
-	        }
-		  }	// if ( MMLNodeCouldBeFunction(...) )
-		}
-	  }
+	             else if ( args_on_right==1 ) {
+	               if ( in_funcs_list )
+		               do_insert =  TRUE;
+			           else {
+			             U16 nom_ln  =  strlen( (char*)identifier_nom );
+			             if ( nom_ln > 9 ) {
+                      char* ptr =  (char*)identifier_nom + nom_ln - 9;
+                      if  ( !strcmp(ptr,"^&minus;1") ) {
+		                     do_insert =  TRUE;
+                      } else {
+			                   if ( identifier_nom[nom_ln-3] == '^' )
+			                     if ( identifier_nom[nom_ln-2] == '-' )
+			                       if ( identifier_nom[nom_ln-1] == '1' )
+		                           do_insert =  TRUE;
+                      }
+			             }
+			           }
+		           }
+               if ( do_insert && !in_funcs_list ) {
+                 funcs_list  =  AddIdentifier( funcs_list, identifier_nom );
+		             do_second_pass  =  TRUE;
+	             }
+		         }	// if ( MMLNodeCouldBeFunction(...) )
+		     }
+  	  }
     }	// clause for implicit functions
 
     if ( do_insert ) {
-	  InsertAF( mml_rover,is_delimited );
-	  mml_rover =  mml_rover->next;	// <mo>ApplyF..
-	}
+	    InsertAF( mml_rover,is_delimited );
+	    mml_rover =  mml_rover->next;	// <mo>ApplyF..
+	  }
 
     mml_rover =  mml_rover->next;
   }   // loop thru level one nodes - pass one
@@ -6151,26 +6147,26 @@ void LaTeX2MMLTree::InsertApplyFunction( TNODE* MML_list ) {
   if ( do_second_pass ) {
     TNODE* mml_rover  =  MML_list;
     while ( mml_rover ) {	// loop thru level one contents nodes
-	  U16 args_on_right =  0;
+	    U16 args_on_right =  0;
       TCI_BOOL is_delimited =  FALSE;
-	  if ( mml_rover->next )
-	  if ( mml_rover->next->details )
-	  if ( mml_rover->next->details->delimited_group != UNDEFINED_DETAIL ) {
-	    args_on_right =  IsGroupAFuncArg( mml_rover->next );
-        is_delimited  =  TRUE;
-      }
-	  if ( args_on_right ) {
-	    U8 identifier_nom[80];
+	    if ( mml_rover->next )
+	      if ( mml_rover->next->details )
+	        if ( mml_rover->next->details->delimited_group != UNDEFINED_DETAIL ) {
+	          args_on_right =  IsGroupAFuncArg( mml_rover->next );
+            is_delimited  =  TRUE;
+          }
+	    if ( args_on_right ) {
+	      U8 identifier_nom[80];
         if ( MMLNodeCouldBeFunction(mml_rover,identifier_nom,80) ) {
-	      TCI_BOOL in_funcs_list  =  FALSE;
-	      if ( IdentifierInList(funcs_list,identifier_nom) )
-	        in_funcs_list =  TRUE;
-	      if ( args_on_right==1 && in_funcs_list ) {
-	        InsertAF( mml_rover,is_delimited );
-	        mml_rover =  mml_rover->next;	// <mo>ApplyF..
+	        TCI_BOOL in_funcs_list  =  FALSE;
+	        if ( IdentifierInList(funcs_list,identifier_nom) )
+	          in_funcs_list =  TRUE;
+	        if ( args_on_right==1 && in_funcs_list ) {
+	          InsertAF( mml_rover,is_delimited );
+	          mml_rover =  mml_rover->next;	// <mo>ApplyF..
+	        }
 	      }
-	    }
-	  }		// if ( args_on_right )
+	    }		// if ( args_on_right )
       mml_rover =  mml_rover->next;
     }   // loop thru level one nodes
   }   // second pass
