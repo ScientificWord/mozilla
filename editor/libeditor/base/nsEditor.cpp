@@ -1576,11 +1576,13 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   nsresult res = NS_OK;
   nsAutoString tagName;
   nsAutoString tagclass;
-  nsCOMPtr<nsIDOMNode> topChild(parent);
+  nsCOMPtr<nsIDOMNode> topChild = do_QueryInterface(parent);
   nsCOMPtr<nsIDOMNode> tmp;
-  nsCOMPtr<nsIDOMNode> ptr(parent);
+  nsCOMPtr<nsIDOMNode> ptr = do_QueryInterface(parent);
   *outNode = node;
+  NS_ADDREF(node);
   *outParent = parent;
+  NS_ADDREF(parent);
   PRInt32 offsetOfInsert = aPosition;
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)this);
   if (!htmlEditor) return -1;
@@ -1670,14 +1672,15 @@ NS_IMETHODIMP nsEditor::ReplaceNode(nsIDOMNode * aNewChild,
     }
   }
 
-  ReplaceElementTxn *txn;
-  nsresult result = CreateTxnForReplaceElement(aNewChild, aOldChild, aParent, PR_TRUE, &txn);
+  //ReplaceElementTxn *txn;
+  nsRefPtr<ReplaceElementTxn> txn;
+  nsresult result = CreateTxnForReplaceElement(aNewChild, aOldChild, aParent, PR_TRUE, getter_AddRefs(txn));
   if (NS_SUCCEEDED(result))
   {
     result = DoTransaction(txn);
   }
-  // The transaction system (if any) has taken ownwership of txn
-  NS_IF_RELEASE(txn);
+  //// The transaction system (if any) has taken ownwership of txn
+  //NS_IF_RELEASE(txn);
 
   for (i = 0; i < mActionListeners.Count(); i++)
   {
@@ -1711,15 +1714,13 @@ NS_IMETHODIMP nsEditor::SaveSelection(nsISelection * selection)
 //    }
 //  }
 
-  PlaceholderTxn *txn;
-  nsresult result = CreateTxnForSaveSelection(selection, &txn);
+  nsRefPtr<PlaceholderTxn> txn;
+  nsresult result = CreateTxnForSaveSelection(selection, getter_AddRefs(txn));
   if (NS_SUCCEEDED(result))
   {
     result = DoTransaction(txn);
   }
-  // The transaction system (if any) has taken ownwership of txn
-  NS_IF_RELEASE(txn);
-
+  
   return result;
 }
 
