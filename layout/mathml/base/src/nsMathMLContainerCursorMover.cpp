@@ -249,9 +249,20 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
 				*aOutFrame = pTempFrame;
 	      PRInt32 start, end;
 	      pTempFrame->GetOffsets(start,end);
-	      if (count > 0) (*aOutOffset) = 0; // was (end - start - count), but we do not want the cursor inside math names or multiple-character operators.
-	      // There had better be an override for mn
-        else (*aOutOffset = end); 
+
+	      if (count > 0) {
+          // Check for mn
+          pContent = m_pMyFrame->GetContent();
+            
+          if (pContent ->Tag() == nsGkAtoms::mn_) {
+             *aOutOffset = (end - start - count);
+          } else {
+	           *aOutOffset = 0; // was (end - start - count), but we do not want the cursor inside math names or multiple-character operators.
+          }
+	      
+        } else {
+          *aOutOffset = end; 
+        }
         *_retval = 0;
 			}
     }
