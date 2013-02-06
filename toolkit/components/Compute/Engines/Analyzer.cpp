@@ -971,7 +971,7 @@ void AnalyzeMN(MNODE* mml_mn_node, SEMANTICS_NODE* snode, Analyzer* pAnalyzer)
 {
   if (mml_mn_node && mml_mn_node->p_chdata) {
     size_t zln = strlen(mml_mn_node->p_chdata);
-    char* num_str = new char[zln + 1];
+    char* num_str = new char[zln + 2];
 
     int n_digits = 0;
     int di = 0;
@@ -1008,6 +1008,9 @@ void AnalyzeMN(MNODE* mml_mn_node, SEMANTICS_NODE* snode, Analyzer* pAnalyzer)
         break;
       }
       ptr++;
+    }
+    if (num_str[di-1] == '.'){
+       num_str[di++] = '0';
     }
     num_str[di] = 0;
 
