@@ -969,14 +969,14 @@ nsMathMLmtdFrame::AttributeChanged(PRInt32  aNameSpaceID,
   NS_IMETHODIMP 
   nsMathMLmtdFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
   {
-    count = 0;
+    //count = 0;
     return nsMathMLContainerCursorMover::MoveOutToRight(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
   }
 
   NS_IMETHODIMP 
   nsMathMLmtdFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
   {
-    count = 0;
+    //count = 0;
     return nsMathMLContainerCursorMover::MoveOutToLeft(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
   }
 

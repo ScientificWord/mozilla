@@ -94,11 +94,19 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
     NS_ASSERTION(m_pMyFrame == leavingFrame->GetParent(), "In MoveOutToLeft, leavingFrame must be a child!");
     // awkward getprevioussibling
     pTempFrame = pFrame->GetFirstChild(nsnull);
-    if (pTempFrame == leavingFrame) pTempFrame = nsnull; //there is no predecessor to leavingFrame
-    while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame)) pTempFrame = pTempFrame->GetNextSibling();
+    if (pTempFrame == leavingFrame) 
+      pTempFrame = nsnull; //there is no predecessor to leavingFrame
+
+    while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame)) 
+      pTempFrame = pTempFrame->GetNextSibling();
+
     if (pTempFrame)
     {
       pMCM = do_QueryInterface(pTempFrame);
+      if (!pMCM) {
+        pTempFrame = GetSignificantParent(pTempFrame);
+        pMCM = do_QueryInterface(pTempFrame);
+      }
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else  // probably pTempFrame is a text frame
       {
