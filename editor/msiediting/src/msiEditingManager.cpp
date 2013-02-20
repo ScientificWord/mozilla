@@ -1208,7 +1208,7 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
         //editor->InsertNode(mathmlElement, node, offset);
-    selection->Collapse(node,offset+1);
+    //selection->Collapse(node,offset+1);
     editor->EndTransaction();
   }
   return res;
