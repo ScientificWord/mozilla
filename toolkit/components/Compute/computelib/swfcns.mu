@@ -684,7 +684,7 @@ end_proc:
 
 tciassume := proc()
 begin
-  assume(args(1), args(2));
+  context(hold(assume)(args(1),args(2)));
   getprop(args(1));
 end_proc:
 
