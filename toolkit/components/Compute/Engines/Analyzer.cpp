@@ -1293,8 +1293,11 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
 
 // Lot's more to do in the following
 
-void AnalyzeMSUP(MNODE* mml_msup_node, SEMANTICS_NODE* snode,
-                           int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer)
+void AnalyzeMSUP(MNODE* mml_msup_node, 
+                 SEMANTICS_NODE* snode,
+                 int& nodes_done, 
+                 bool isLHSofDef, 
+                 Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
@@ -1338,15 +1341,17 @@ void AnalyzeMSUP(MNODE* mml_msup_node, SEMANTICS_NODE* snode,
     }
     break;
 
-    case ET_HTRANSPOSE_INDICATOR:{
-		AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
-
-        snode->semantic_type = SEM_TYP_HTRANSPOSE;
-        done = true;
+    case ET_HTRANSPOSE_INDICATOR: {
+		   AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+       snode->semantic_type = SEM_TYP_HTRANSPOSE;
+       done = true;
       }
-      break;
-    case ET_PRIMES:{
-        if (pAnalyzer -> Get_prime_is_derivative()) {
+    break;
+
+    case ET_PRIMES: {
+       // If the previous is a degree, then a prime is a minute
+
+       if (pAnalyzer -> Get_prime_is_derivative()) {
           AnalyzePrimed(mml_msup_node, snode, nodes_done, pAnalyzer );
           if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
              pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_primes++;
