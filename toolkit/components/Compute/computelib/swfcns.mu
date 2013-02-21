@@ -691,7 +691,7 @@ end_proc:
 
 tciadditionally := proc(v,p)
 begin
-    assumeAlso(v, p);
+    context(hold(assumeAlso)(v, p));
     getprop(v);
 end_proc:
 
