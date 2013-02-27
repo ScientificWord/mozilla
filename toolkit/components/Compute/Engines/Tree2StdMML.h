@@ -43,6 +43,7 @@ protected:
   void AddDDOperatorInfo(MNODE* dMML_list);
 
   MNODE* BindMixedNumbers(MNODE* dMML_list);
+  MNODE* BindDegMinSec(MNODE* dMML_list);
   MNODE* BindDelimitedIntegrals(MNODE* dMML_list);
   MNODE* BindIntegral(MNODE* dMML_list);
   void FixupCapitalD(MNODE* dMML_list);
