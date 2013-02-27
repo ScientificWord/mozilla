@@ -1314,11 +1314,28 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
     case ET_DEGREE: {
       snode->semantic_type = SEM_TYP_INFIX_OP;
       snode->contents = DuplicateString("&#x2062;");
-      SEMANTICS_NODE* new_contentA = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
-      
+      SEMANTICS_NODE* new_contentA = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);      
       SEMANTICS_NODE* new_contentB = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, exp, true, pAnalyzer);
       new_contentB -> semantic_type = SEM_TYP_SIUNIT;
       new_contentB -> contents = DuplicateString("&#xb0;");
+
+      // If the next is a prime, it is a minute
+      bool haveMinutes = false;
+      if (mml_msup_node && mml_msup_node->next && mml_msup_node ->next -> next) {        
+         MNODE* nxt = mml_msup_node->next;
+         if (strcmp(nxt->src_tok, "mo") == 0 && ContentIs (nxt, "+") ) {
+            MNODE* nxt2 = nxt->next;
+            if (strcmp(nxt2->src_tok, "msup") == 0){
+               MNODE* exp = nxt2->first_kid->next;
+               if (exp &&  ContentIs (exp, "&#x2032;")){   // prime = 2032
+                  haveMinutes = true;
+                  nodes_done += 2;
+
+               }     
+            }
+         }
+      }  
+      
       done = true;
     }
     break;
@@ -1349,8 +1366,7 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
     break;
 
     case ET_PRIMES: {
-       // If the previous is a degree, then a prime is a minute
-
+       
        if (pAnalyzer -> Get_prime_is_derivative()) {
           AnalyzePrimed(mml_msup_node, snode, nodes_done, pAnalyzer );
           if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
