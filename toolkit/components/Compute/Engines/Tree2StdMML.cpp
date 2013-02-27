@@ -533,6 +533,8 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE* dMML_list)
     bool do_insert = false;
     MNODE* candidate = rover;
     rover = rover->next;
+          
+   
     if (NodeIsNumber(candidate) || NodeIsFactor(candidate)) {
       if (!rover)
         break;
@@ -827,6 +829,50 @@ MNODE* Tree2StdMML::BindMixedNumbers(MNODE * dMML_list)
   return rv;
 }
 
+
+MNODE* Tree2StdMML::BindDegMinSec(MNODE * dMML_list)
+{
+  MNODE* rv = dMML_list;
+  MNODE* rover = rv;
+
+  while (rover && rover->next) {
+    MNODE* the_next = rover->next;
+    bool bb = NeedsInvisiblePlus(rover);
+    if (bb) {
+        MNODE* l_anchor = rover;
+        MNODE* r_anchor = rover->next;
+        MNODE* plus = MakeTNode(r_anchor->src_start_offset, 0, r_anchor->src_linenum);
+          
+        SetElementName(plus, "mo");
+        SetContent(plus, "+");
+
+        plus->prev = l_anchor;
+        plus->next = r_anchor;
+
+        l_anchor->next = plus;
+        r_anchor->prev = plus;
+
+        if (l_anchor->parent)
+          plus->parent = l_anchor->parent;
+      
+    }  
+      //MNODE * new_row = MakeMROW(rover, rover->next);
+      //if (new_row != rover) {
+      //  the_next = new_row;
+      //  if (rover == rv)
+      //    rv = the_next;
+      //}
+    
+    rover = the_next;
+  }
+  return rv;
+}
+
+
+
+
+
+
 // \int ... dx
 
 MNODE* Tree2StdMML::BindDelimitedIntegrals(MNODE* dMML_list)
@@ -978,7 +1024,9 @@ MNODE* Tree2StdMML::FinishFixup(MNODE* dMML_tree)
 
   //rv = BindMixedNumbers(rv);
   //TODO: BindUnits
-  //TODO: BindDegMinSec
+
+  //InsertInvisibleAddSigns(rv);  // binds deg/min/sec
+  rv = BindDegMinSec(rv);
   rv = BindDelimitedIntegrals(rv);
   
   AddDDOperatorInfo(rv);
@@ -3061,8 +3109,7 @@ void Tree2StdMML::InsertInvisibleAddSigns(MNODE* dMML_list)
         if (NeedsInvisiblePlus(rover)) {
           MNODE* l_anchor = rover;
           MNODE* r_anchor = rover->next;
-          MNODE* plus = MakeTNode(r_anchor->src_start_offset,
-                                  0, r_anchor->src_linenum);
+          MNODE* plus = MakeTNode(r_anchor->src_start_offset, 0, r_anchor->src_linenum);
           
           SetElementName(plus, "mo");
           SetContent(plus, "+");
@@ -3141,7 +3188,7 @@ bool Tree2StdMML::NeedsInvisiblePlus(MNODE* dMML_mrow)
     }
     if (c1 && c2 && ElementNameIs(c1, t1) && ElementNameIs(c2, t2)) {
 
-      if (ContentIs(c1, "&#xb0;")) {  // degree
+      if (ContentIs(c1, "&#xb0;") || ContentIs(c1, "&#x2218;")) {  // degree
         if (ContentIs(c2, "&#x2032;") || // minute
             ContentIs(c2, "&#x2033;"))   // second
           rv = true;
