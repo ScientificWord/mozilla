@@ -1090,7 +1090,8 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
           if (symbol == ' ')
           {
             // SWP actually has some special behavior if you're at the end of math
-            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+            if (!isShift)
+              res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
           }
           else if (symbol == '\t')
           {
