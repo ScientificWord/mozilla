@@ -4908,13 +4908,14 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
 
           PRInt32 nextFrameOffset;
           PRBool jumpedLine;
-          PRBool math = PR_FALSE;
+          math = PR_FALSE;
           result =
             current->GetFrameFromDirection(aPos->mDirection, aPos->mVisual,
                                            aPos->mJumpLines, aPos->mScrollViewStop,
                                            &nextFrame, &nextFrameOffset, &jumpedLine, &math, &fBailing);
           // We can't jump lines if we're looking for whitespace following
           // non-whitespace, and we already encountered non-whitespace.
+          if (math) done = PR_TRUE;
           if (NS_FAILED(result) ||
               jumpedLine && !wordSelectEatSpace && state.mSawBeforeType) {
             done = PR_TRUE;
@@ -5048,6 +5049,13 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
       nsCOMPtr<nsILineIteratorNavigator> it;
       // Adjusted so that the caret can't get confused when content changes
       nsIFrame* blockFrame = AdjustFrameForSelectionStyles(this);
+      // If we are in math, or in a text frame in math, move up to the math parent.
+      nsIFrame* pf = blockFrame;
+      while (pf && !IsMathFrame(pf)) pf = pf->GetParent();
+      if (pf) {  // found some math
+        blockFrame = pf;
+        while (IsMathFrame(blockFrame)) blockFrame = blockFrame->GetParent();
+      }
       PRInt32 thisLine = nsFrame::GetLineNumber(blockFrame, &blockFrame);
       if (thisLine < 0)
         return NS_ERROR_FAILURE;
