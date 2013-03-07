@@ -1315,6 +1315,10 @@ rawTeX {
  color: #6600cc;
 }
 
+htmlfield { 
+  background-color: #ccccff;
+}
+
 smallbox {
 	border: 1px solid black;
 }
