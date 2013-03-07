@@ -135,10 +135,10 @@
                       <menuitem label="&belowtable.label;" value="bottom"/>
                     </menupopup>
                   </menulist>
-                  <label id="BackgroundColorLabel" value="&Basecolor.label;"/>
+                  <!-- <label id="BackgroundColorLabel" value="&Basecolor.label;"/>
                   <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('tableBackgroundCW');">
                     <spacer id="tableBackgroundCW" class="color-well"/>
-                  </msibutton><spacer flex="2"/></hbox>
+                  </msibutton><spacer flex="2"/></hbox> -->
                 </row>
               </rows>
             </grid> 
@@ -202,10 +202,10 @@
         <hbox align="center">
           <groupbox orient="horizontal" align="center">
             <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" oncommand="CheckboxChanged(this.id);"/>
-            <label id="cellBackgroundColorLabel" value="&Cellcolor.label;"/>
+            <!-- <label id="cellBackgroundColorLabel" value="&Cellcolor.label;"/>
             <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('cellBackgroundCW');">
               <spacer id="cellBackgroundCW" class="color-well"/>
-            </msibutton><spacer flex="2"/></hbox>
+            </msibutton><spacer flex="2"/></hbox> -->
           </groupbox>
         </hbox>
         <spacer flex="1"/>

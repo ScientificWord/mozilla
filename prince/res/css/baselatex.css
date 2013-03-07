@@ -20,6 +20,9 @@ mml|math { color: red;}
 mml|* [msiunit="true"] {color: green;
 	font-style: normal;}
 mml|mtd {border-color: green; }
+msidisplay mml|math {border-color: green; 
+  border-width: 1px; 
+  border-style: solid; }
 mml|mtext { color: black; }
 [msiclass="msi_passthrough"] {color: orange; }
 mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
@@ -31,7 +34,7 @@ verbatim bodyText {
   margin: 0;
   padding: 0;
 }
-numberedListItem,
+numberedListItem, 
 bulletListItem,
 descriptionListItem {
        margin-left: 2em;
@@ -460,6 +463,10 @@ mml|menclose[notation~="circle"] {
 
 
 *[hideHelperLines="true"] mml|mtd {
+  border-style : none;
+}
+
+*[hideHelperLines="true"] msidisplay math {
   border-style : none;
 }
 
