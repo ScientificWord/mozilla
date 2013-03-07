@@ -1,5 +1,4 @@
-var gHTML;
-var gName;
+var node;
 
 function startup()
 {
@@ -11,6 +10,11 @@ function startup()
     window.close();
     return;
   }
+  node = getSelectionParentByTag(activeEditor,"htmlfield");
+  if (node) {
+     document.getElementById("htmlbuttonTextbox").value = node.innerHTML;
+     document.getElementById("name").value = node.getAttribute("name");
+  }
 }
 
 
@@ -20,26 +24,28 @@ function onAccept()
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   var domdoc = editor.document;
+  var gHTML;
+  var gName;
 
   gHTML  = document.getElementById("htmlbuttonTextbox");
   gName  = document.getElementById("name");
 
   var htmlNode;
-  var newnode = !gHTML;
   dump("\nhtmlfield onAccept()"); 
-  if (newnode) 
+  if (node == null) 
   {
     dump("\nhtmlfield onAccept() newnode");
-    htmlNode = domdoc.createElement("span");
-  
-    if (gName.value.length > 0) 
-      htmlNode.setAttribute("name", gName.value)
-    else 
-      htmlNode.removeAttribute("name");
-  
+    htmlNode = domdoc.createElement("htmlfield");
     editor.insertElementAtSelection(htmlNode, true);
   }
-
+  else htmlNode = node;
+  
+  if (gName.value.length > 0) 
+    htmlNode.setAttribute("name", gName.value)
+  else 
+    htmlNode.removeAttribute("name");
+  htmlNode.innerHTML = gHTML.value;
+  
   return true;
 }
 
