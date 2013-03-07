@@ -5463,6 +5463,20 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         scriptStr = "openOTFontDialog('otfont', event.target.refElement);";
       break;
 
+      case "rawTeX":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("rawtex"));
+        scriptStr = "openOTFontDialog('otfont', event.target.refElement);";
+      break;
+
+      case "htmlfield":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("htmlfield"));
+        scriptStr = "openHTMLField(event.target.refElement);";
+      break;
+
       case "fontcolor":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
@@ -9959,6 +9973,10 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       openOTFontDialog(elementName,element);
     }
+    else if (elementName == "htmlfield")
+    {
+      openHTMLField(element);
+    }
     else if (elementName == "fontcolor")
     {
       openFontColorDialog(elementName,element);
@@ -10897,6 +10915,14 @@ function openTeXButtonDialog(tagname, node)
 function openOTFontDialog(tagname, node)
 {
   openDialog('chrome://prince/content/otfont.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+    node);
+  var editorElement = msiGetActiveEditorElement();
+  msiGetEditor(editorElement).incrementModificationCount(1);
+}
+
+function openHTMLField(node)
+{
+  openDialog('chrome://prince/content/htmlfield.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
   var editorElement = msiGetActiveEditorElement();
 	msiGetEditor(editorElement).incrementModificationCount(1);
