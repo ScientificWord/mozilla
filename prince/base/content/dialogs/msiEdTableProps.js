@@ -118,7 +118,7 @@ function setVariablesForControls()
   gDialog.floatLocationList =  document.getElementById("floatLocationList");
   gDialog.baselineList =  document.getElementById("baselineList");
   gDialog.captionLocation =  document.getElementById("captionLocation");
-  gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
+  // gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
   
   // Cells Panel
   gDialog.CellHeightInput = document.getElementById("CellHeightInput");
@@ -130,7 +130,7 @@ function setVariablesForControls()
   gDialog.vAlignChoices = document.getElementById("vAlignChoices");
 
   gDialog.TextWrapCheckbox = document.getElementById("TextWrapCheckbox");
-  gDialog.cellBackgroundCW = document.getElementById("cellBackgroundCW");
+  // gDialog.cellBackgroundCW = document.getElementById("cellBackgroundCW");
 
   // Lines Panel
   gDialog.BordersPreviewCenterCell = document.getElementById("BordersPreviewCenterCell");
