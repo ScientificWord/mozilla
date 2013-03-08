@@ -5467,7 +5467,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("rawtex"));
-        scriptStr = "openOTFontDialog('otfont', event.target.refElement);";
+        scriptStr = "openOTFontDialog('rawtex', event.target.refElement);";
       break;
 
       case "htmlfield":
@@ -5481,14 +5481,14 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontcolor"));
-        scriptStr = "openFontColorDialog('fontcolor', event.target.refElement);";
+        scriptStr = "openOTFontDialog('fontcolor', event.target.refElement);";
       break;
 
       case "fontsize":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontsize"));
-        scriptStr = "openFontSizeDialog('fontsize', event.target.refElement);";
+        scriptStr = "openOTFontDialog('fontsize', event.target.refElement);";
       break;
 
       case "note":
