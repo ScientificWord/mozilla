@@ -3,6 +3,9 @@ Components.utils.import("resource://app/modules/fontlist.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 var texnode;
+var fontnode;
+var fontsizenode;
+var colornode;
 var data = { ruleColor: "#000000" };
 var unitHandler;
 
@@ -14,6 +17,9 @@ function startup()
     throw("No editor in otfont.OnAccept!");
   }
   var editor = msiGetEditor(editorElement);  
+  var name;
+  var count = 0;
+  var item;
 	unitHandler = new UnitHandler();
 	initializeUnitHandler(unitHandler);
   var menuObject = { menulist: []};
@@ -22,6 +28,46 @@ function startup()
   texnode = getSelectionParentByTag(editor, "rawTeX");
   if (texnode) {
 		document.getElementById("rawtex").value = texnode.getAttribute("tex");
+	}
+  fontsizenode = getSelectionParentByTag(editor, "fontsize");
+  if (fontsizenode) {
+  	var sizeandleading = fontsizenode.getAttribute("size");
+  	var arr = sizeandleading.split('/');
+  	document.getElementById("otfont.fontsize").value = arr[0];
+  	if (arr.length > 0) {
+  		var leading = arr[1].split(' ');
+  		document.getElementById("leading").value = leading[0];
+  		if (leading.length > 1) {
+  			var unitlist = document.getElementById('otfont.units');
+  			count = unitlist.itemCount;
+  			if (count != null) while (count--) {
+  				item = unitlist.getItemAtIndex(count);
+  				if (item && item.value == leading[1]) {
+  					unitlist.selectedIndex = count;
+  					break;
+  				}
+  			}
+  		}
+  	}
+	}
+  fontnode = getSelectionParentByTag(editor, "otfont");
+  if (fontnode) {
+		name = fontnode.getAttribute("fontname");
+    var list = document.getElementById('otfontlist');
+    count=list.itemCount;
+ 		if (count != null) while (count--){
+	    item = list.getItemAtIndex(count);
+	    if (item && item.label === name) {
+	    	list.selectedIndex = count;
+	    	break;
+	    }
+  	}
+	}
+  colornode = getSelectionParentByTag(editor, "fontcolor");
+  if (colornode) {
+  	var color = colornode.getAttribute("color");
+		setColorWell("colorWell", color);
+	  colorWell.setAttribute("color",color);
 	}
 }
 
