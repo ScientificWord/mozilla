@@ -258,11 +258,6 @@ nsEditor::~nsEditor()
 NS_IMPL_ISUPPORTS5(nsEditor, nsIEditor, nsIEditorIMESupport,
                    nsISupportsWeakReference, nsIPhonetic, nsIMutationObserver)
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsIEditorMethods
-#pragma mark -
-#endif
 
 //#ifdef DEBUG_Barry||DEBUG_barry
 void
@@ -1515,11 +1510,6 @@ NS_IMETHODIMP nsEditor::SetSpellcheckUserOverride(PRBool enable)
   return SyncRealTimeSpell();
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  main node manipulation routines
-#pragma mark -
-#endif
 
 NS_IMETHODIMP nsEditor::CreateNode(const nsAString& aTag,
                                    nsIDOMNode *    aParent,
@@ -2140,11 +2130,6 @@ nsEditor::MoveNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aOffset)
   return InsertNode(aNode, aParent, aOffset);
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  editor observer maintainance
-#pragma mark -
-#endif
 
 NS_IMETHODIMP
 nsEditor::AddEditorObserver(nsIEditorObserver *aObserver)
@@ -2184,11 +2169,6 @@ void nsEditor::NotifyEditorObservers(void)
     mEditorObservers[i]->EditAction();
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  action listener maintainance
-#pragma mark -
-#endif
 
 NS_IMETHODIMP
 nsEditor::AddEditActionListener(nsIEditActionListener *aListener)
@@ -2220,11 +2200,6 @@ nsEditor::RemoveEditActionListener(nsIEditActionListener *aListener)
 }
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  docstate listener maintainance
-#pragma mark -
-#endif
 
 
 NS_IMETHODIMP
@@ -2256,11 +2231,6 @@ nsEditor::RemoveDocumentStateListener(nsIDocumentStateListener *aListener)
 }
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  misc
-#pragma mark -
-#endif
 
 NS_IMETHODIMP nsEditor::OutputToString(const nsAString& aFormatType,
                                        PRUint32 aFlags,
@@ -2317,11 +2287,6 @@ nsEditor::DebugUnitTests(PRInt32 *outNumTests, PRInt32 *outNumTestsFailed)
   return NS_OK;
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  support for selection preservation
-#pragma mark -
-#endif
 
 PRBool
 nsEditor::ArePreservingSelection()
@@ -2354,11 +2319,6 @@ nsEditor::StopPreservingSelection()
 }
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsIEditorIMESupport
-#pragma mark -
-#endif
 
 //
 // The BeingComposition method is called from the Editor Composition event listeners.
@@ -2551,7 +2511,7 @@ nsEditor::ForceCompositionEnd()
 // flag for Unix.
 // We should use nsILookAndFeel to resolve this
 
-#if defined(XP_MAC) || defined(XP_MACOSX) || defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_MACOSX) || defined(XP_WIN) || defined(XP_OS2)
   if(! mInIMEMode)
     return NS_OK;
 #endif
@@ -2676,11 +2636,6 @@ nsEditor::GetQueryCaretRect(nsQueryCaretRectEventReply* aReply)
   return rv;
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  public nsEditor methods
-#pragma mark -
-#endif
 /* Non-interface, public methods */
 
 
@@ -2943,11 +2898,6 @@ nsEditor::CloneAttributes(nsIDOMNode *aDestNode, nsIDOMNode *aSourceNode)
   return result;
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  Protected and static methods
-#pragma mark -
-#endif
 
 NS_IMETHODIMP nsEditor::ScrollSelectionIntoView(PRBool aScrollToAnchor)
 {
@@ -3349,11 +3299,6 @@ NS_IMETHODIMP nsEditor::CreateTxnForJoinNode(nsIDOMNode  *aLeftNode,
 
 // END nsEditor core implementation
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsEditor public static helper methods
-#pragma mark -
-#endif
 
 // BEGIN nsEditor public helper methods
 
@@ -4874,11 +4819,6 @@ nsEditor::GetShouldTxnSetSelection()
 }
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  protected nsEditor methods
-#pragma mark -
-#endif
 
 
 NS_IMETHODIMP
