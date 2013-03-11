@@ -26,9 +26,13 @@ glob:extensions/chromebug/*
 glob:*.sublime-project
 glob:*.sublime-workspace
 glob:*/docs/*
-glob:*/symupload/*
+glob:mozilla/toolkit/crashreporter/google-breakpad/src/tools/mac/dump_syms/*
+glob:mozilla/toolkit/crashreporter/google-breakpad/src/tools/mac/symupload/*
+glob:mozilla/toolkit/crashreporter/google-breakpad/src/tools/mac/crash_report/*
 glob:*/dump_syms/*
 glob:*.xcodeproj
+glob:*.pbxproj
+glob:*.save
 .tm_properties
 .tmhotkeys
 mozilla\.mchg
