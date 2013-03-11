@@ -464,9 +464,6 @@ nsSetDocumentStateCommand::GetCommandStateParams(const char *aCommandName,
  *
  */
 
-#ifdef XP_MAC
-#pragma mark -
-#endif
 
 NS_IMETHODIMP
 nsDocumentStateCommand::IsCommandEnabled(const char* aCommandName,
