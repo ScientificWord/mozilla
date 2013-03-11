@@ -4631,11 +4631,7 @@ nsTextServicesDocument::NodeHasOffsetEntry(nsVoidArray *aOffsetTable, nsIDOMNode
 }
 
 // Spellchecker code has this. See bug 211343
-#ifdef XP_MAC
-#define IS_NBSP_CHAR(c) (((unsigned char)0xca)==(c))
-#else
 #define IS_NBSP_CHAR(c) (((unsigned char)0xa0)==(c))
-#endif
 
 nsresult
 nsTextServicesDocument::FindWordBounds(nsVoidArray *aOffsetTable,
