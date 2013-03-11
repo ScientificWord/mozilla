@@ -26,6 +26,9 @@ glob:extensions/chromebug/*
 glob:*.sublime-project
 glob:*.sublime-workspace
 glob:*/docs/*
+glob:*/symupload/*
+glob:*/dump_syms/*
+glob:*.xcodeproj
 .tm_properties
 .tmhotkeys
 mozilla\.mchg

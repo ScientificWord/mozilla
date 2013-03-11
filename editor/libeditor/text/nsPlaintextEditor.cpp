@@ -367,11 +367,6 @@ PRBool nsPlaintextEditor::IsModifiable()
 }
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsIHTMLEditor methods 
-#pragma mark -
-#endif
 
 NS_IMETHODIMP nsPlaintextEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
 {
@@ -1090,11 +1085,6 @@ nsPlaintextEditor::SetNewlineHandling(PRInt32 aNewlineHandling)
   return NS_OK;
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsIEditor overrides 
-#pragma mark -
-#endif
 
 NS_IMETHODIMP 
 nsPlaintextEditor::Undo(PRUint32 aCount)
@@ -1392,11 +1382,6 @@ nsPlaintextEditor::OutputToStream(nsIOutputStream* aOutputStream,
 }
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsIEditorMailSupport overrides 
-#pragma mark -
-#endif
 
 NS_IMETHODIMP
 nsPlaintextEditor::InsertTextWithQuotations(const nsAString &aStringToInsert)
@@ -1643,11 +1628,6 @@ nsPlaintextEditor::GetEmbeddedObjects(nsISupportsArray** aNodeList)
 }
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsIEditorIMESupport overrides 
-#pragma mark -
-#endif
 
 NS_IMETHODIMP
 nsPlaintextEditor::SetCompositionString(const nsAString& aCompositionString, nsIPrivateTextRangeList* aTextRangeList,nsTextEventReply* aReply)
@@ -1789,12 +1769,6 @@ nsPlaintextEditor::GetReconversionString(nsReconversionEventReply* aReply)
   return DeleteSelection(eNone);
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsEditor overrides 
-#pragma mark -
-#endif
-
 
 /** All editor operations which alter the doc should be prefaced
  *  with a call to StartOperation, naming the action and direction */
@@ -1843,12 +1817,6 @@ nsPlaintextEditor::SelectEntireDocument(nsISelection *aSelection)
 
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  Random methods 
-#pragma mark -
-#endif
-
 
 NS_IMETHODIMP nsPlaintextEditor::GetLayoutObject(nsIDOMNode *aNode, nsISupports **aLayoutObject)
 {
@@ -1870,9 +1838,6 @@ NS_IMETHODIMP nsPlaintextEditor::GetLayoutObject(nsIDOMNode *aNode, nsISupports 
   return result;
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#endif
 
 nsresult
 nsPlaintextEditor::SetAttributeOrEquivalent(nsIDOMElement * aElement,

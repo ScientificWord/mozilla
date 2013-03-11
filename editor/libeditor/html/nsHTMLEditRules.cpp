@@ -37,10 +37,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-/* build on macs with low memory */
-#if defined(XP_MAC) && defined(MOZ_MAC_LOWMEM)
-#pragma optimization_level 1
-#endif
 
 #include "nsHTMLEditRules.h"
 
@@ -2039,6 +2035,28 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     if (NS_FAILED(res)) return res;
     if (*aCancel) return NS_OK;
 
+      // Skip over math tempnode, if we are in one.
+    nsCOMPtr<nsIDOMNode> parent;
+    nsCOMPtr<nsIDOMElement> parentEl;
+    PRUint16 nodeType;
+    startNode->GetNodeType(&nodeType);
+    nsAutoString nodeName;
+    PRBool tempinput;
+    if (nodeType == nsIDOMNode::TEXT_NODE)
+    {
+      startNode->GetParentNode(getter_AddRefs(parent));
+      parent->GetNodeName(nodeName);
+      if (nodeName.EqualsLiteral("mi")) {
+        parentEl = do_QueryInterface(parent);
+        parentEl->HasAttribute(NS_LITERAL_STRING("tempinput"), &tempinput);
+        if (tempinput) {
+          if (aAction == nsIEditor::eNext) startOffset = 2;
+          else startOffset = 0;
+        }
+      }
+    }
+
+
     // We should delete nothing.
     if (aAction == nsIEditor::eNone)
       return NS_OK;
@@ -3412,98 +3430,252 @@ GetEngine() {
   return engine;
 }
 
+
+PRBool IsSpecialMath(nsIDOMElement * node)
+{
+  PRBool retval = PR_FALSE;
+  PRBool isMath = nsHTMLEditUtils::IsMath(node);
+  nsAutoString name;
+  nsCOMPtr<nsIDOMElement> parentEl;
+  nsCOMPtr<nsIDOMNode> parent;
+  if (isMath) {
+    node->GetTagName(name);
+    if (name.EqualsLiteral("msup") ||
+      name.EqualsLiteral("msub") ||
+      name.EqualsLiteral("msubsup") ||
+      name.EqualsLiteral("mfrac") ||
+      name.EqualsLiteral("mroot") ||
+      name.EqualsLiteral("msqrt") ||
+      name.EqualsLiteral("mover") ||
+      name.EqualsLiteral("munder") )
+    {
+      retval = PR_TRUE;
+    } 
+    else {
+      if (name.EqualsLiteral("mtd") ||
+        name.EqualsLiteral("mtr") ||
+        name.EqualsLiteral("mtable")) {
+        // Search up and see if the enclosing table has the attribute 'type="eqnarray"'. If so,
+        // don't try to preserve the table cells.
+        parentEl = node;
+        while (parentEl && !name.EqualsLiteral("mtable") && !name.EqualsLiteral("body"))
+        {
+          parentEl->GetParentNode(getter_AddRefs(parent));
+          if (parent) {
+            parentEl = do_QueryInterface(parent);
+            parentEl->GetTagName(name);
+          }
+        }
+        // parent is null, or mtable or body
+        if (parentEl && name.EqualsLiteral("mtable")) {
+          nsAutoString attr;
+          parentEl->GetAttribute(NS_LITERAL_STRING("type"), attr);
+          if (!attr.EqualsLiteral("eqnarray")) retval = PR_TRUE;
+        }
+      }
+    }
+  }
+  return retval;
+}
+
+PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * siblingElement)
+{
+  // A subnode has been deleted. If elt is an msub or msup, remove that tag. If elt is an msubsup,
+  // replace it with an msub or msup, depending on whether siblingNode is null or not.
+  PRBool retval = PR_FALSE;
+  nsresult res;
+  nsAutoString name;
+  nsAutoString tagName;
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMNode> siblingNode = siblingElement;
+  nsCOMPtr<nsIDOMNode> newNode;
+  elt->GetTagName(name);
+  if (name.EqualsLiteral("msubsup") || name.EqualsLiteral("munderover"))
+  {  
+    retval = PR_TRUE;
+    PRUint16 type;
+    nsCOMPtr<nsIDOMElement> subOrSup;
+    if (siblingNode) {
+      siblingNode->GetNodeType(&type);
+      while (siblingNode && type != nsIDOMNode::ELEMENT_NODE) {
+        siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
+        siblingNode->GetNodeType(&type);
+      }
+    }
+
+    // BBM: Must also cope with the case where the base has been removed !!!
+    // Also: code here for munderover?
+    if (siblingNode) { // the sub was deleted
+      if (name.EqualsLiteral("msubsup"))
+        tagName = NS_LITERAL_STRING("msup");
+      else
+        tagName = NS_LITERAL_STRING("mover");
+    }
+    else {
+      if (name.EqualsLiteral("msubsup"))
+        tagName = NS_LITERAL_STRING("msub");
+      else
+        tagName = NS_LITERAL_STRING("munder");
+    }
+    ed->GetTagListManager(getter_AddRefs(tlm));
+    ed->ReplaceContainer((nsIDOMNode*)elt, address_of(newNode), tagName, tlm, nsnull, nsnull, PR_TRUE);
+  }
+  else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") || name.EqualsLiteral("mover"))
+  {
+    retval = PR_TRUE;
+    ed->RemoveContainer(elt);
+  }
+  return retval;
+}
+
+
 void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> & startNode,
   PRInt32 & startOffset)
+// Mathematics contains objects that must have a fixed number of subobjects; e.g. an mfrac has two 
+// subobjects and msub and msup have one. This routine checks the cursor after a deletion and if it is
+// in mathematics it removes empty tags and if necessary inserts an input box. It needs to do this 
+// before calling the computation engine for cleanup
 {
-  PRUint16 type;
-  nsresult res;
-  nsCOMPtr<nsIDOMElement> el;
-  nsCOMPtr<nsIDOMNodeList> children;
-  nsCOMPtr<nsIDOMNode> node;
-  res = startNode->GetNodeType(&type);
-
-  if (type == 1 && startOffset > 0)  // it is possible that the previous node is a tempinput node.
-    // if so, put the cursor inside it.
-  {
-    PRBool isTemp;
-    el = do_QueryInterface(startNode);
-    if (el)
-    {
-      res = el->GetChildNodes(getter_AddRefs(children));
-      res = children->Item(startOffset - 1, getter_AddRefs(node));
-      if (node)
-      {
-        el = do_QueryInterface(node);
-        if (el)
+  nsresult res = NS_OK;
+  PRBool done =  PR_FALSE;
+  PRBool isEmpty = PR_FALSE;
+  PRBool fSeenBR = PR_FALSE;
+  nsCOMPtr<nsIDOMNode> node = startNode;
+  nsCOMPtr<nsIDOMElement> elt;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsCOMPtr<nsIDOMNode> nextSiblingNode;
+  nsCOMPtr<nsIDOMNode> resultNode;
+  nsCOMPtr<nsIDOMElement> inputbox;
+  PRUint32 dummy = 0;
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface((nsIHTMLEditor *)ed);
+  PRInt32 selOffset;
+  while (!done) {
+    res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+    done = !isEmpty;
+    if (isEmpty) {
+      // res = node->GetParentNode(getter_AddRefs(parentNode));
+      nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
+      res = node->GetNextSibling(getter_AddRefs(nextSiblingNode));
+      parentNode->RemoveChild(node, getter_AddRefs(resultNode));
+      // We use raw DOM methods, not editor methods since we don't want to undo this or
+      // call afterdeletion processing
+      node = parentNode;
+      res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+      done = !isEmpty;
+      elt = do_QueryInterface(node);
+      if (elt && IsSpecialMath(elt)) {
+        // we have deleted a child of node. If node is one of the
+        // math nodes that has a fixed number of children, we must replace the
+        // child with an input box. If elt is an msup, msub, msubsup (mroot?), we neeed
+        // to remove the tag (msup and msub) or convert msubsup to msub or msup.
+        if (!HandledScripts(ed, elt, nextSiblingNode))
         {
-        res = el->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTemp);
-          if (isTemp)
-          {
-            startNode = node;
-            startOffset = 0;
-          }
+          done = PR_TRUE;
+          // Insert an input box at node, offset
+          res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
+          if (NS_FAILED(res) || !inputbox) return;
+          res = elt->InsertBefore(inputbox, nextSiblingNode, getter_AddRefs(resultNode));
+          // Put the cursor in the input box BBM: is there a method for this?
+          res = inputbox->GetFirstChild(getter_AddRefs(node));
+          startNode = node;
+          startOffset = 1;
         }
       }
-    }
-  }
-  else {
-    PRUint32 length = TextNodeLength(startNode);
-    PRUint32 nodeLength;
-    if (type == 3 && length == 0) // position is in an empty text node. Look at previous node
-    {
-      nsCOMPtr<nsIDOMNode> parent;
-      PRInt32 offset;
-      nsAutoString(name);
-      nsAutoString(s);
-      nsEditor::GetNodeLocation(startNode, address_of(parent), &offset);
-      // special case. If parent is mi, mn, or mo and empty, we move the cursor again
-      parent->GetNodeName(name);
-      if (name.EqualsLiteral("mi")
-        ||name.EqualsLiteral("mn")
-        ||name.EqualsLiteral("mo"))
-      {
-    		nsCOMPtr<nsIDOM3Node> dom3node;
-    	  dom3node = do_QueryInterface(parent);
-    		dom3node->GetTextContent(s);
-      //  set up the iterators
-        nsAString::const_iterator cur, end;
-
-        s.BeginReading(cur);
-        s.EndReading(end);
-        for (; cur != end; cur++)
-        {
-          if ((*cur == PRUnichar(' ')) ||
-              (*cur == PRUnichar('\f')) ||
-              (*cur == PRUnichar('\n')) ||
-              (*cur == PRUnichar('\r')) ||
-              (*cur == PRUnichar('\t')) ||
-              (*cur == PRUnichar('\v')) ||
-              (*cur == PRUnichar(0x00A0)) ||
-              (*cur == PRUnichar(0x2028)) ||
-              (*cur == PRUnichar(0x2029)))
-          {}
-          else
-          {
-            nsEditor::GetNodeLocation(parent, address_of(parent), &offset);
-            break;
-          }
-        }
-      }
-
-      el = do_QueryInterface(parent);
-      if (el)
-      {
-        res = el->GetChildNodes(getter_AddRefs(children));
-        if (offset == 0) return;
-        res = children->Item(offset - 1, getter_AddRefs(node));
-        if (!node) return;
-        res = ed->GetLengthOfDOMNode(node, nodeLength);
+      else {
         startNode = node;
-        startOffset = nodeLength;
+        startOffset = selOffset;
       }
     }
   }
+
+  // PRUint16 type;
+  // nsresult res;
+  // nsCOMPtr<nsIDOMElement> el;
+  // nsCOMPtr<nsIDOMNodeList> children;
+  // res = startNode->GetNodeType(&type);
+
+  // if (type == 1 && startOffset > 0)  // it is possible that the previous node is a tempinput node.
+  //   // if so, put the cursor inside it.
+  // {
+  //   PRBool isTemp;
+  //   el = do_QueryInterface(startNode);
+  //   if (el)
+  //   {
+  //     res = el->GetChildNodes(getter_AddRefs(children));
+  //     res = children->Item(startOffset - 1, getter_AddRefs(node));
+  //     if (node)
+  //     {
+  //       el = do_QueryInterface(node);
+  //       if (el)
+  //       {
+  //       res = el->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTemp);
+  //         if (isTemp)
+  //         {
+  //           startNode = node;
+  //           startOffset = 0;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  // else {
+  //   PRUint32 length = TextNodeLength(startNode);
+  //   PRUint32 nodeLength;
+  //   if (type == 3 && length == 0) // position is in an empty text node. Look at previous node
+  //   {
+  //     nsCOMPtr<nsIDOMNode> parent;
+  //     PRInt32 offset;
+  //     nsAutoString(name);
+  //     nsAutoString(s);
+  //     nsEditor::GetNodeLocation(startNode, address_of(parent), &offset);
+  //     // special case. If parent is mi, mn, or mo and empty, we move the cursor again
+  //     parent->GetNodeName(name);
+  //     if (name.EqualsLiteral("mi")
+  //       ||name.EqualsLiteral("mn")
+  //       ||name.EqualsLiteral("mo"))
+  //     {
+  //   		nsCOMPtr<nsIDOM3Node> dom3node;
+  //   	  dom3node = do_QueryInterface(parent);
+  //   		dom3node->GetTextContent(s);
+  //     //  set up the iterators
+  //       nsAString::const_iterator cur, end;
+
+  //       s.BeginReading(cur);
+  //       s.EndReading(end);
+  //       for (; cur != end; cur++)
+  //       {
+  //         if ((*cur == PRUnichar(' ')) ||
+  //             (*cur == PRUnichar('\f')) ||
+  //             (*cur == PRUnichar('\n')) ||
+  //             (*cur == PRUnichar('\r')) ||
+  //             (*cur == PRUnichar('\t')) ||
+  //             (*cur == PRUnichar('\v')) ||
+  //             (*cur == PRUnichar(0x00A0)) ||
+  //             (*cur == PRUnichar(0x2028)) ||
+  //             (*cur == PRUnichar(0x2029)))
+  //         {}
+  //         else
+  //         {
+  //           nsEditor::GetNodeLocation(parent, address_of(parent), &offset);
+  //           break;
+  //         }
+  //       }
+  //     }
+
+  //     el = do_QueryInterface(parent);
+  //     if (el)
+  //     {
+  //       res = el->GetChildNodes(getter_AddRefs(children));
+  //       if (offset == 0) return;
+  //       res = children->Item(offset - 1, getter_AddRefs(node));
+  //       if (!node) return;
+  //       res = ed->GetLengthOfDOMNode(node, nodeLength);
+  //       startNode = node;
+  //       startOffset = nodeLength;
+  //     }
+  //   }
+  // }
 }
 
 
@@ -10305,11 +10477,6 @@ nsHTMLEditRules::CreateBogusNodeIfNeeded(nsISelection *aSelection)
 
 
 
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark  nsIEditActionListener methods
-#pragma mark -
-#endif
 
 NS_IMETHODIMP
 nsHTMLEditRules::WillCreateNode(const nsAString& aTag, nsIDOMNode *aParent, PRInt32 aPosition)

@@ -194,13 +194,13 @@ nsMenuListener::KeyPress(nsIDOMEvent* aKeyEvent)
     // Open one level.
     mMenuParent->Enter();
   }
-#if !defined(XP_MAC) && !defined(XP_MACOSX)
+#if !defined(XP_MACOSX)
   else if (theChar == NS_VK_F10) {
     // doesn't matter what modifier keys are down in Non-Mac platform
     // if the menu bar is active and F10 is pressed - deactivate it
     mMenuParent->DismissChain();
   }
-#endif // !XP_MAC && !XP_MACOSX
+#endif // !XP_MACOSX
   else {
     PRInt32 menuAccessKey = -1;
     nsMenuBarListener::GetMenuAccessKey(&menuAccessKey);

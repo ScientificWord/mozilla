@@ -41,9 +41,6 @@
 //#include "nsError.h"
 //#include "prtypes.h"
 
-#ifdef XP_MAC
-#include <Files.h>
-#endif
 
 #define nsresult long
 
@@ -95,13 +92,7 @@ typedef void     (*pfnXPIFinal)   (const char* URL, PRInt32 finalStatus);
  *  @returns    XPCOM status code indicating success or failure
  */
 PR_EXTERN(nsresult) XPI_Init( 
-#ifdef XP_MAC
-                              const FSSpec&     aXPIStubDir,
-                              const FSSpec&     aProgramDir,
-#else
                               const char*       aProgramDir,
-#endif
-                              const char*       aLogName,
                               pfnXPIProgress    progressCB);
 
 /** XPI_Install
@@ -115,11 +106,7 @@ PR_EXTERN(nsresult) XPI_Init(
  *  @returns status  Status from the installed archive
  */
 PR_EXTERN(PRInt32) XPI_Install( 
-#ifdef XP_MAC
-                                 const FSSpec& file,
-#else
                                  const char*    file,
-#endif
                                  const char* args, 
                                  long flags         );
 
