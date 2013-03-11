@@ -708,9 +708,6 @@ nsEditingSession::GetEditorForWindow(nsIDOMWindow *aWindow,
   return editorDocShell->GetEditor(outEditor);
 }
 
-#ifdef XP_MAC
-#pragma mark -
-#endif
 
 /*---------------------------------------------------------------------------
 
@@ -960,10 +957,6 @@ nsEditingSession::OnSecurityChange(nsIWebProgress *aWebProgress,
     return NS_OK;
 }
 
-
-#ifdef XP_MAC
-#pragma mark -
-#endif
 
 
 /*---------------------------------------------------------------------------
@@ -1225,9 +1218,6 @@ nsEditingSession::EndPageLoad(nsIWebProgress *aWebProgress,
 }
 
 
-#ifdef XP_MAC
-#pragma mark -
-#endif
 
 /*---------------------------------------------------------------------------
 
