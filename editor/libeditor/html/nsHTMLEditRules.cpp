@@ -3489,7 +3489,7 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
   nsCOMPtr<msiITagListManager> tlm;
   nsCOMPtr<nsIDOMNode> siblingNode = siblingElement;
   nsCOMPtr<nsIDOMNode> newNode;
-  elt->GetTagName(name);
+  elt->GetTagName(name) ;
   if (name.EqualsLiteral("msubsup") || name.EqualsLiteral("munderover"))
   {  
     retval = PR_TRUE;
