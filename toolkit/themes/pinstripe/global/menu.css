@@ -51,7 +51,7 @@ menuitem {
   -moz-box-align: center;
   color: MenuText;
   font: -moz-pull-down-menu;
-  font-size: larger;
+  /* font-size: larger; */
   list-style-image: none;
   -moz-image-region: auto;
 }
