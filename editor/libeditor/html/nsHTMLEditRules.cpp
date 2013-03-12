@@ -3548,6 +3548,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> resultNode;
   nsCOMPtr<nsIDOMElement> inputbox;
   PRUint32 dummy = 0;
+  nsAutoString name;
   nsCOMPtr<nsIEditor> editor = do_QueryInterface((nsIHTMLEditor *)ed);
   PRInt32 selOffset;
   while (!done) {
@@ -3556,10 +3557,16 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     if (isEmpty) {
       // res = node->GetParentNode(getter_AddRefs(parentNode));
       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
+      if (parentNode) {
+        res = parentNode->GetNodeName(name);
+        if (name.EqualsLiteral("td"))
+        {
+          done = PR_TRUE;
+          break;
+        }
+      }
       res = node->GetNextSibling(getter_AddRefs(nextSiblingNode));
-      parentNode->RemoveChild(node, getter_AddRefs(resultNode));
-      // We use raw DOM methods, not editor methods since we don't want to undo this or
-      // call afterdeletion processing
+      ed->DeleteNode(node);
       node = parentNode;
       res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
       done = !isEmpty;
@@ -3575,7 +3582,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           // Insert an input box at node, offset
           res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
           if (NS_FAILED(res) || !inputbox) return;
-          res = elt->InsertBefore(inputbox, nextSiblingNode, getter_AddRefs(resultNode));
+          res = ed->InsertNode(inputbox, elt, selOffset);
           // Put the cursor in the input box BBM: is there a method for this?
           res = inputbox->GetFirstChild(getter_AddRefs(node));
           startNode = node;
