@@ -1289,7 +1289,23 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
   }
 }
 
+bool IsDoublePrime(MNODE* exp)
+{
+   if (!ElementNameIs(exp, "mrow"))
+     return false;
 
+   MNODE* k = exp->first_kid;
+   if (!(k && ContentIs(k, "&#x2032;") && k->next))
+     return false;
+   
+   MNODE* kk = k->next;
+   if (!(kk && ContentIs(kk, "&#x2032;") && (0 == kk->next)))
+     return false;
+
+   return true;
+  
+   
+}
 
 // Lot's more to do in the following
 
@@ -1321,19 +1337,48 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
 
       // If the next is a prime, it is a minute
       bool haveMinutes = false;
-      if (mml_msup_node && mml_msup_node->next && mml_msup_node ->next -> next) {        
-         MNODE* nxt = mml_msup_node->next;
+      MNODE* node = mml_msup_node;
+      if (node && node->next && node -> next -> next) {        
+         MNODE* nxt = node->next;
          if (strcmp(nxt->src_tok, "mo") == 0 && ContentIs (nxt, "+") ) {
             MNODE* nxt2 = nxt->next;
             if (strcmp(nxt2->src_tok, "msup") == 0){
                MNODE* exp = nxt2->first_kid->next;
                if (exp &&  ContentIs (exp, "&#x2032;")){   // prime = 2032
                   haveMinutes = true;
-                  nodes_done += 2;
-
+                  // make an attribuate to use as a flag
+                  ATTRIB_REC* ar = new ATTRIB_REC("msiangle", "true");
+                  if (nxt2->attrib_list){
+                    InsertAttribute(nxt2->attrib_list, ar);
+                  } else {
+                    nxt2->attrib_list = ar;
+                  }
+                  node = nxt2;
                }     
             }
          }
+         // Then check for seconds
+         if (node && node->next && node -> next -> next) {        
+           MNODE* nxt = node->next;
+           if (strcmp(nxt->src_tok, "mo") == 0 && ContentIs (nxt, "+") ) {
+              MNODE* nxt2 = nxt->next;
+              if (strcmp(nxt2->src_tok, "msup") == 0){
+                 MNODE* exp = nxt2->first_kid->next;
+         
+                 if (IsDoublePrime(exp)){
+                    // make an attribuate to use as a flag
+                    ATTRIB_REC* ar = new ATTRIB_REC("msiangle", "true");
+                    if (nxt2->attrib_list) {
+                       InsertAttribute(nxt->attrib_list, ar);
+                    } else {
+                       nxt2->attrib_list = ar;
+                    }
+                    node = nxt2;
+                   
+                 }
+              }
+          }
+        }
       }  
       
       done = true;
@@ -1366,8 +1411,21 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
     break;
 
     case ET_PRIMES: {
-       
-       if (pAnalyzer -> Get_prime_is_derivative()) {
+       const char* v = GetATTRIBvalue(mml_msup_node->attrib_list, "msiangle");
+       if (v || !(pAnalyzer -> Get_prime_is_derivative())){
+          snode->semantic_type = SEM_TYP_INFIX_OP;
+          snode->contents = DuplicateString("&#x2062;");
+          SEMANTICS_NODE* new_contentA = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);      
+          SEMANTICS_NODE* new_contentB = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, exp, true, pAnalyzer);
+          new_contentB -> semantic_type = SEM_TYP_SIUNIT;
+          
+          MNODE* exp = mml_msup_node -> first_kid -> next;
+          if (exp &&  ContentIs (exp, "&#x2032;")){
+             new_contentB -> contents = DuplicateString("&#x2032;");
+          } else if (exp && ContentIs (exp, "&#x2033;")) {
+             new_contentB -> contents = DuplicateString("&#x2033;");
+          }
+       } else if (pAnalyzer -> Get_prime_is_derivative()) {
           AnalyzePrimed(mml_msup_node, snode, nodes_done, pAnalyzer );
           if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
              pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_primes++;
@@ -1529,7 +1587,7 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
             // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
             //                             mml_canonical_name, mml_msup_node,
             //                             pAnalyzer -> ScrStr()) );
-			pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
+			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
             int local_nodes_done;
             BUCKET_REC *br = ArgsToBucket(mml_msup_node, local_nodes_done, pAnalyzer);
             nodes_done += local_nodes_done;
