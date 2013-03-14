@@ -2021,12 +2021,17 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
   // get the root element
   nsIDOMElement *rootNode = mHTMLEditor->GetRoot();
+  nsCOMPtr<nsIDOMNode> pnode;
   if (!rootNode) return NS_ERROR_UNEXPECTED;
 
   if (bCollapsed)
   {
-    // if we are inside an empty block, delete it.
-    res = CheckForEmptyBlock(startNode, rootNode, aSelection, aHandled);
+    // if we are inside an empty block, delete it if it isn't directly below <body>
+    res = startNode->GetParentNode(getter_AddRefs(pnode));
+    if (pnode == rootNode) {
+      *aHandled = PR_TRUE;
+    } else
+      res = CheckForEmptyBlock(startNode, rootNode, aSelection, aHandled);
     if (NS_FAILED(res)) return res;
     if (*aHandled) return NS_OK;
 
@@ -2036,25 +2041,25 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     if (*aCancel) return NS_OK;
 
       // Skip over math tempnode, if we are in one.
-    nsCOMPtr<nsIDOMNode> parent;
-    nsCOMPtr<nsIDOMElement> parentEl;
-    PRUint16 nodeType;
-    startNode->GetNodeType(&nodeType);
-    nsAutoString nodeName;
-    PRBool tempinput;
-    if (nodeType == nsIDOMNode::TEXT_NODE)
-    {
-      startNode->GetParentNode(getter_AddRefs(parent));
-      parent->GetNodeName(nodeName);
-      if (nodeName.EqualsLiteral("mi")) {
-        parentEl = do_QueryInterface(parent);
-        parentEl->HasAttribute(NS_LITERAL_STRING("tempinput"), &tempinput);
-        if (tempinput) {
-          if (aAction == nsIEditor::eNext) startOffset = 2;
-          else startOffset = 0;
-        }
-      }
-    }
+  //  nsCOMPtr<nsIDOMNode> parent;
+  //  nsCOMPtr<nsIDOMElement> parentEl;
+  //  PRUint16 nodeType;
+  //  startNode->GetNodeType(&nodeType);
+  //  nsAutoString nodeName;
+  //  PRBool tempinput;
+  //  if (nodeType == nsIDOMNode::TEXT_NODE)
+  //  {
+  //    startNode->GetParentNode(getter_AddRefs(parent));
+  //    parent->GetNodeName(nodeName);
+  //    if (nodeName.EqualsLiteral("mi")) {
+  //      parentEl = do_QueryInterface(parent);
+  //      parentEl->HasAttribute(NS_LITERAL_STRING("tempinput"), &tempinput);
+  //      if (tempinput) {
+  //        if (aAction == nsIEditor::eNext) startOffset = 2;
+  //        else startOffset = 0;
+  //      }
+  //    }
+  //  }
 
 
     // We should delete nothing.
@@ -3553,13 +3558,13 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRInt32 selOffset;
   while (!done) {
     res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
-    done = !isEmpty;
-    if (isEmpty) {
+    done = !(isEmpty && node);
+    if (node && isEmpty) {
       // res = node->GetParentNode(getter_AddRefs(parentNode));
       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
       if (parentNode) {
         res = parentNode->GetNodeName(name);
-        if (name.EqualsLiteral("td"))
+        if (name.EqualsLiteral("td") || name.EqualsLiteral("body"))
         {
           done = PR_TRUE;
           break;
