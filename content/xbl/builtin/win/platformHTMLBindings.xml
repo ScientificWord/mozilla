@@ -181,6 +181,7 @@
       <handler event="keypress" key="v" modifiers="control" command="cmd_scrollPageDown"/>
       <handler event="keypress" key="w" modifiers="control" command="cmd_deleteWordBackward"/>
       <handler event="keypress" keycode="VK_F4" modifiers="alt" oncommand="doQuit();"/>
+      <handler event="keypress" keycode="VK_F4" modifiers="control" command="cmd_close"/>
     </handlers>
   </binding>
 </bindings>
