@@ -77,33 +77,41 @@
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="needminipage" select="0"/>
+  <xsl:variable name="needminipage" select="1"/>
   <xsl:if test="$inlineOffset and string-length($inlineOffset)">\raisebox{<xsl:value-of select="$inlineOffset"/>}{</xsl:if>
-	<xsl:if test="$limitframemetrics=1"><xsl:if test="not($inlineOffset) or not(string-length($inlineOffset))">{</xsl:if>
+	<xsl:if test="$limitframemetrics=1"><!-- <xsl:if test="not($inlineOffset) or not(string-length($inlineOffset))">{</xsl:if> -->
     <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/>
       <xsl:value-of select="$units"/>}
     </xsl:if>
     <xsl:choose>   
-      <xsl:when test="@border">\setlength\fboxrule{<xsl:value-of select="@border"/><xsl:value-of select="$units"/>} 
+      <xsl:when test="@borderw">\setlength\fboxrule{<xsl:value-of select="@borderw"/><xsl:value-of select="$units"/>} 
       </xsl:when>
       <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$units"/>} 
     </xsl:if>
   </xsl:if>
+
+
   <xsl:choose>
     <xsl:when test="$floatsonside=1">\begin{wrapfigure}
       <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
       <xsl:choose>
-        <xsl:when test="@placement='I'">{I}</xsl:when>
-        <xsl:when test="@placement='O'">{O}</xsl:when>
-        <xsl:when test="@placement='L'">{L}</xsl:when>
-        <xsl:when test="@placement='R'">{R}</xsl:when>
-        <xsl:otherwise>{R}</xsl:otherwise>
+        <xsl:when test="@placement='I'">{i}</xsl:when>
+        <xsl:when test="@placement='O'">{o}</xsl:when>
+        <xsl:when test="@placement='L'">{l}</xsl:when>
+        <xsl:when test="@placement='R'">{r}</xsl:when>
+        <xsl:when test="@placement='i'">{I}</xsl:when>
+        <xsl:when test="@placement='o'">{o}</xsl:when>
+        <xsl:when test="@placement='l'">{L}</xsl:when>
+        <xsl:when test="@placement='r'">{R}</xsl:when>
+       <xsl:otherwise>{r}</xsl:otherwise>
       </xsl:choose>
       <xsl:if test="@overhang">[<xsl:value-of select="@overhang"/><xsl:value-of select="$units"/>]</xsl:if>
       {<xsl:choose>
-        <xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="$width"/><xsl:value-of select="$units"/></xsl:when>
+        <xsl:when test="not(@rotation) or (@rotation='rot0')">
+          \dimexpr <xsl:value-of select="$width"/><xsl:value-of select="$units"/> +2\fboxsep +2\fboxrule + .1in
+        </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
             <xsl:when test="@overhang"><xsl:value-of select="$height"/></xsl:when>
@@ -194,7 +202,7 @@
     <xsl:when test="$floatcenter=1">\end{figure}</xsl:when>
     <xsl:when test="$floatsonside=1">\end{wrapfigure} </xsl:when>   
   </xsl:choose>
-  <xsl:if test="($limitframemetrics=1) or ($inlineOffset and string-length($inlineOffset))">}</xsl:if> 
+  <!-- <xsl:if test="($limitframemetrics=1) or ($inlineOffset and string-length($inlineOffset))">}</xsl:if>  -->
 </xsl:template>
 		  
 </xsl:stylesheet>
