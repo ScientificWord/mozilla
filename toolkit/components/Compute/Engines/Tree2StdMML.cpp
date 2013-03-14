@@ -856,12 +856,6 @@ MNODE* Tree2StdMML::BindDegMinSec(MNODE * dMML_list)
           plus->parent = l_anchor->parent;
       
     }  
-      //MNODE * new_row = MakeMROW(rover, rover->next);
-      //if (new_row != rover) {
-      //  the_next = new_row;
-      //  if (rover == rv)
-      //    rv = the_next;
-      //}
     
     rover = the_next;
   }
@@ -3184,6 +3178,9 @@ bool Tree2StdMML::NeedsInvisiblePlus(MNODE* dMML_mrow)
       c2 = dMML_mrow->next->first_kid;
       if (c2)
         c2 = c2->next;
+      if (ElementNameIs(c2, "mrow")) {
+        c2 = c2 -> first_kid;
+      }
       t2 = "mo";
     }
     if (c1 && c2 && ElementNameIs(c1, t1) && ElementNameIs(c2, t2)) {
@@ -3193,7 +3190,7 @@ bool Tree2StdMML::NeedsInvisiblePlus(MNODE* dMML_mrow)
             ContentIs(c2, "&#x2033;"))   // second
           rv = true;
       } else if (ContentIs(c1, "&#x2032;")) {
-        if (ContentIs(c2, "&#x2033;"))
+        if (ContentIs(c2, "&#x2033;") || ContentIs(c1, "&#x2032;"))
           rv = true;
       }
     }
