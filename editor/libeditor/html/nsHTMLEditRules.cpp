@@ -2026,12 +2026,25 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
   if (bCollapsed)
   {
-    // if we are inside an empty block, delete it if it isn't directly below <body>
+    // if we are inside an empty block, delete unless it is a child of <body> and there is no paragraph preceding it
     res = startNode->GetParentNode(getter_AddRefs(pnode));
-    if (pnode == rootNode) {
+    if (pnode == rootNode) {  // Check to see if there is real content before this node
       *aHandled = PR_TRUE;
-    } else
-      res = CheckForEmptyBlock(startNode, rootNode, aSelection, aHandled);
+      nsCOMPtr<nsIDOMNode> block;
+      PRBool bIsEmptyNode;
+      res = rootNode->GetFirstChild( getter_AddRefs(block));
+      while (*aHandled && block != startNode)
+      {
+        if (nsHTMLEditUtils::IsParagraph(block, mtagListManager))
+        {
+          *aHandled = PR_FALSE;
+        }
+        else
+          res = block->GetNextSibling( getter_AddRefs(block));
+      }
+      if (*aHandled) return NS_OK;
+    }
+    res = CheckForEmptyBlock(startNode, rootNode, aSelection, aHandled);
     if (NS_FAILED(res)) return res;
     if (*aHandled) return NS_OK;
 
