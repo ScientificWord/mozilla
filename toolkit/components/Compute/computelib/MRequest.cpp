@@ -300,7 +300,13 @@ U32 PlotServiceRequest::NameToPID (const char *name) {
   if (s == "GridLines")         return (PID_GraphGridLines );            
   if (s == "BGColor")           return (PID_GraphBGColor );            
   if (s == "Dimension")         return (PID_GraphDimension);            
-  if (s == "AxisScale")         return (PID_GraphAxesScaling);  
+  if (s == "AxisScale")         return (PID_GraphAxesScaling);
+  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxXMin);
+  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxXMax);
+  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxYMin);
+  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxYMax);
+  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxZMin);
+  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxZMax);
   if (s == "CameraLocationX")   return (PID_GraphCameraLocationX);  
   if (s == "CameraLocationY")   return (PID_GraphCameraLocationY);  
   if (s == "CameraLocationZ")   return (PID_GraphCameraLocationZ);  
@@ -326,9 +332,12 @@ U32 PlotServiceRequest::NameToPID (const char *name) {
   if (s == "YMax")              return (PID_PlotYMax);                  
   if (s == "ZMin")              return (PID_PlotZMin);                  
   if (s == "ZMax")              return (PID_PlotZMax);                  
+  if (s == "AnimMin")           return (PID_PlotAnimMin);                  
+  if (s == "AnimMax")           return (PID_PlotAnimMax);                  
   if (s == "XVar")              return (PID_PlotXVar);                  
   if (s == "YVar")              return (PID_PlotYVar);                  
   if (s == "ZVar")              return (PID_PlotZVar);                  
+  if (s == "AnimVar")           return (PID_PlotAnimVar);                  
   if (s == "XPts")              return (PID_PlotXPts);                  
   if (s == "YPts")              return (PID_PlotYPts);                  
   if (s == "ZPts")              return (PID_PlotZPts);                  
@@ -348,6 +357,7 @@ U32 PlotServiceRequest::NameToPID (const char *name) {
   if (s == "FontFamily")        return (PID_PlotFontFamily); 
   if (s == "IncludeLines")      return (PID_PlotIncludeLines);
   if (s == "TubeRadius")        return (PID_PlotTubeRadius);
+  if (s == "TubeRadialPts")     return (PID_PlotTubeRadialPts);
   if (s == "AISubIntervals")    return (PID_PlotAISubIntervals);
   if (s == "AIMethod")          return (PID_PlotAIMethod);
   if (s == "AIInfo")            return (PID_PlotAIInfo);
