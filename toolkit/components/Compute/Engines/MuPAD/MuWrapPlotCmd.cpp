@@ -94,6 +94,14 @@ char *MuPADPlotWrapper::CreatePLOTFUNCeStr(MuPADWrapper * const mpw, PlotService
     cmd += plot->ToString(plotstr);
     delete plot;
   }
+  if (psr->HasPlot(0))
+  {
+    cmd += " ";
+    plot = new MuPADPlot (mpw, psr, 0);  
+    string plotstr = "@PLOT@";
+    cmd += plot->ToString(plotstr);
+    delete plot;
+  }
 #ifdef XP_MACOSX
   if (filename.length() > 0)
     cmd += ", OutputFile = \"" + filename + "\"";

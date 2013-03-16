@@ -53,29 +53,8 @@ function msiEditorInsertText(textToInsert)
 
 function xmlFragToTeX(intermediateString)
 {
-  var str = '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">' + intermediateString + "</html>";
-  var xslFileURL = "chrome://prnc2ltx/content/latex.xsl";
-  var xsltStr = getXSLAsString(xslFileURL);
-  var texStr;
-
-  var xsltProcessor = new XSLTProcessor();
-
-  try{
-    var parser = new DOMParser();
-    var xslDoc = parser.parseFromString(xsltStr, "text/xml");
-    var parser = new DOMParser();
-    var intermediateDoc = parser.parseFromString(str, "text/xml");
-    xsltProcessor.importStylesheet(xslDoc);
-    var newDoc = xsltProcessor.transformToDocument(intermediateDoc);
-    texStr = newDoc.documentElement.textContent || "";
-    while (strResult.search(/\n\s*\n/) >= 0)
-      texStr = texStr.replace(/\n\s*\n/,"\n","g");
-  }
-  catch(e){
-    dump("error: "+e.message+"\n\n");
-  //  dump(resultString);
-  }
-  return texStr;
+  var xsltProcessor = setupXMLToTeXProcessor();
+  return processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString);
 }
 
 function msiEditorTestSelection()

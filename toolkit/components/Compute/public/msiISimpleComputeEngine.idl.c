@@ -218,6 +218,9 @@ interface msiISimpleComputeEngine : nsISupports
   const unsigned long Fixup  						 = CCID_Fixup;						
   const unsigned long Interpret						 = CCID_Interpret;						
 
+  void getVariables (in wstring expr, [retval] out wstring result);
+//  const unsigned long GetVariables         = CCID_GetVariables;
+
   /**
    * Plot the input.  A simple interface until we can figure out a better one.
   */
