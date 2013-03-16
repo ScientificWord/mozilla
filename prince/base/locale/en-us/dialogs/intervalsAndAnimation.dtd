@@ -8,6 +8,17 @@
 <!ENTITY AnimationVariable.label  "Animation Variable">
 <!ENTITY x.label  "x">
 <!ENTITY y.label  "y">
+<!ENTITY z.label  "z">
 <!ENTITY t.label  "t">
 <!ENTITY SwitchVariables.label  "Switch Variables">
 <!ENTITY AnimationTimeSettings.label  "Animation Time Settings">
+<!ENTITY TubeRadialPoints.label "Tube Radial Points">
+<!ENTITY animUseCommonSettings.label "Use plot animation settings">
+<!ENTITY animUseCustomSettings.label "Make settings for this item">
+<!ENTITY animStartSeconds.label "Animation start time (seconds)">
+<!ENTITY animVisibleBeforeStart.label "Visible before animation start">
+<!ENTITY animEndSeconds.label "Animation end time (seconds)">
+<!ENTITY animVisibleAfterEnd.label "Visible after animation end">
+<!ENTITY animFramesPerSecond.label "Frames per second">
+<!ENTITY UseVariable.label "Use variable as:">
+<!ENTITY to.label "to">

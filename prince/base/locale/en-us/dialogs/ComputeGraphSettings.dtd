@@ -68,7 +68,7 @@
 <!ENTITY plotvarinterval.label    "Variable Intervals and Automation">
 
 <!ENTITY plotcolor.label          "Plot Color">
-<!ENTITY plotcolor2.label         "Plot Color:">
+<!ENTITY plotcolor2.label         "Plot Color 2">
 <!ENTITY fillcolor.label          "Fill Color:">
 
 <!ENTITY layoutsize.label         "Size">
@@ -131,7 +131,9 @@
 <!ENTITY axisgridlines.label        "grid lines on">
 <!ENTITY axisnormal.label           "Normal">
 <!ENTITY axisboxed.label            "Boxed">
-<!ENTITY axistickmark.label         "Axis Tick Marks">
+<!ENTITY Xaxistickmark.label        "X-Axis Tick Marks">
+<!ENTITY Yaxistickmark.label        "Y-Axis Tick Marks">
+<!ENTITY Zaxistickmark.label        "Z-Axis Tick Marks">
 <!ENTITY axisframed.label           "Frame">
 <!ENTITY axisauto.label             "Automatic">
 
@@ -204,11 +206,14 @@
 
 <!ENTITY AIMethodLeft.label "Left">
 <!ENTITY AIMethodRight.label "Right">
+<!ENTITY AIMethodLeftAndRight.label "Left and Right">
 <!ENTITY AIMethodMiddle.label "Middle">
 <!ENTITY AIMethodLower.label "Lower">
 <!ENTITY AIMethodUpper.label "Upper">
+<!ENTITY AIMethodLowerAndUpper.label "Lower and Upper">
 <!ENTITY AIMethodLowerAbs.label "Lower Absolute">
 <!ENTITY AIMethodUpperAbs.label "Upper Absolute">
+<!ENTITY AIMethodLowerAndUpperAbs.label "Lower and Upper Absolute">
 <!ENTITY AIMethodTrapezoidal.label "Trapezoidal">
 <!ENTITY AIMethodSimpson.label "Simpson">
 
@@ -241,8 +246,12 @@
 <!ENTITY DirectionalShading.label "Directional shading">
 <!ENTITY BaseColor.label  "Base color">
 <!ENTITY XYZ.label  "XYZ">
+<!ENTITY XYZHue.label "XYZ[hue]">
+<!ENTITY XYZGreyscale.label "XYZ[greyscale]">
 <!ENTITY XY.label "XY">
 <!ENTITY X.label  "X">
+<!ENTITY Z.label  "Z">
+<!ENTITY Y.label  "Y">
 <!ENTITY ZHue.label "Z[hue]">
 <!ENTITY ZGreyscale.label "Z[greyscale]">
 <!ENTITY Flat.label "Flat">
@@ -275,7 +284,14 @@
 <!ENTITY VisibleBefore.label  "Visible Before">
 <!ENTITY VisibleAfter.label "Visible After">
 
+<!ENTITY cameraPositionAndOrientation.label "Camera position and orientation">
+<!ENTITY defaultCamera.label "Use default camera position">
 <!ENTITY Focalpoint.label "Focal point">
 <!ENTITY Position.label "Position">
 <!ENTITY UpVector.label "Up Vector">
 <!ENTITY ViewingAngle.label "ViewingAngle">
+<!ENTITY viewIntervals.label "View intervals">
+<!ENTITY animationSettings.label "Animation Settings">
+
+<!ENTITY plotradiusexpr.label "Radius">
+<!ENTITY plotradiusexpr.accesskey "R">

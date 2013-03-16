@@ -1,0 +1,6 @@
+<!-- Copyright (c) 2013 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Plot Animation Settings">
+<!ENTITY animStartSeconds.label "Animation start time (seconds)">
+<!ENTITY animEndSeconds.label "Animation end time (seconds)">
+<!ENTITY animFramesPerSecond.label "Frames per second">
