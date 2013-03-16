@@ -84,7 +84,7 @@ function plotOK () {
           var newval = document.getElementById(alist[i]).selectedItem.value;
           var oldval = window.arguments[0].getPlotValue (alist[i], plotno);  
           if (newval != oldval) {                                        
-            window.arguments[0].setPlotAttribute (PlotAttrName(alist[i], plotno), newval);
+            window.arguments[0].setPlotAttribute (alist[i], plotno, newval);
           }  
           break;
         case "IncludePoints":
@@ -94,7 +94,7 @@ function plotOK () {
           var newval = document.getElementById(alist[i]).checked ? "true" : "false";
           var oldval = window.arguments[0].getPlotValue (alist[i], plotno);  
           if (newval != oldval) {                                        
-            window.arguments[0].setPlotAttribute (PlotAttrName(alist[i], plotno), newval);
+            window.arguments[0].setPlotAttribute (alist[i], plotno, newval);
           }
           break;
                                                                           
@@ -107,7 +107,7 @@ function plotOK () {
           if (isNaN(newval))
             newval = oldval;
           if (newval != oldval) {                                        
-            window.arguments[0].setPlotAttribute (PlotAttrName(alist[i], plotno), newval);
+            window.arguments[0].setPlotAttribute (alist[i], plotno, newval);
           }  
           break;
         default:
@@ -115,7 +115,7 @@ function plotOK () {
           if ((newval != "") && (newval != "undefined")) {                 
             var oldval = window.arguments[0].getPlotValue (alist[i], plotno);                        
             if (newval != oldval) {                                        
-               window.arguments[0].setPlotAttribute (PlotAttrName(alist[i], plotno), newval);
+               window.arguments[0].setPlotAttribute (alist[i], plotno, newval);
             }                                                              
           }                                                                
           break;
@@ -145,7 +145,7 @@ function GetPlotColor (attributeName)
 	}
   var color = colorObj.TextColor;
 //  dump ("SMR in GetPlotColor setting the color to " + color + "\n");
-  window.arguments[0].setPlotAttribute (PlotAttrName(attributeName, plotno), color);
+  window.arguments[0].setPlotAttribute (attributeName, plotno, color);
 
 }
 

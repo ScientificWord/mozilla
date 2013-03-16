@@ -4051,9 +4051,16 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory, compression)
     }
     else
     {
-      if (aZipWriter.hasEntry(path))
-        aZipWriter.removeEntry(path,true);
-      aZipWriter.addEntryFile(path, compression, f, false);
+      if (f.fileSize == 0)
+      {
+        f.remove(false);
+      }
+      else
+      {
+        if (aZipWriter.hasEntry(path))
+          aZipWriter.removeEntry(path,true);
+        aZipWriter.addEntryFile(path, compression, f, false);
+      }
     }
     more = e.hasMoreElements();
   }
@@ -9771,6 +9778,28 @@ var msiNavigationUtils =
     return thePara;
   },
 
+  getFirstParagraphDescendant : function(aNode, editor)
+  {
+    var thePara = null;
+    var currNode = aNode;
+    var ii = 0;
+    switch (this.getTagClass(aNode, editor))
+    {
+      case "paratag":
+      case "listtag":
+        thePara = aNode;
+      break;
+      default:
+      break;
+    }
+    var childList = this.getSignificantContents(aNode);
+    for (ii = 0; !thePara && (ii < childList.length); ++ii)
+    {
+      thePara = this.getFirstParagraphDescendant(childList[ii], editor);
+    }
+    return thePara;
+  },
+
   nodeIsInMath : function(aNode)
   {
     return (this.getParentOfType(aNode, "math") !== null);
@@ -10678,6 +10707,83 @@ var msiNavigationUtils =
         return true;
     }
     return false;
+  },
+
+  getFenceContents : function(aNode)
+  {
+    var retArray = [];
+    if (!this.isFence(aNode))
+      return retArray;
+    var kids = msiNavigationUtils.getSignificantContents(aNode);
+    var jj, bSkip;
+    if (msiGetBaseNodeName(aNode) != "mfenced")
+    {
+      for (jj = 1; jj < kids.length - 1; ++jj)
+      {
+        bSkip = false;
+        if (msiGetBaseNodeName(kids[jj]) === "mo")
+        {
+          if (kids[jj].getAttribute("separator") == "true")
+            bSkip = true;
+          else
+          {
+            switch(kids[jj].textContent)
+            {
+              case ",":
+              case "|":
+              case ";":
+                bSkip = true;
+              break;
+            }
+          }
+        }
+        if (!bSkip)
+          retArray.push(kids[jj]);
+      }
+    }
+    return retArray;
+  },
+
+  getFenceDelimiters : function(aNode)
+  {
+    var retval = {start : null, end : null, sep : ","};
+    var kids, jj;
+    if (msiGetBaseNodeName(aNode) == "mfenced")
+    {
+      retval.start = aNode.getAttribute("open");
+      retval.end = aNode.getAttribute("close");
+      if (aNode.hasAttribute("separators"))
+        sep = aNode.getAttribute("separators");
+    }
+    else if (this.isFence(aNode))
+    {
+      kids = this.getSignificantContents(aNode);
+      retval.start = kids[0].textContent;
+      retval.end = kids[kids.length-1].textContent;
+      retval.sep = "";
+      for (jj = 1; jj < kids.length - 1; ++jj)
+      {
+        if (msiGetBaseNodeName(kids[jj]) === "mo")
+        {
+          if (kids[jj].getAttribute("separator") == "true")
+            retval.sep += kids[jj].textContent;
+          else
+          {
+            switch(kids[jj].textContent)
+            {
+              case ",":
+              case "|":
+              case ";":
+                retval.sep += kids[jj].textContent;
+              break;
+            }
+          }
+        }
+      }
+      if (!retval.sep.length)
+        retval.sep = ",";
+    }
+    return retval;
   },
 
   lastOffset : function(aNode)
@@ -12581,3 +12687,118 @@ function checkPackageDependenciesForEditor(editor)
   } catch(ex) {dump("Error in checkPackageDependenciesForEditor: " + ex + ".\n");}
 }
 
+function getCachedXSLTString(xslRootFileURLString)
+{
+  // we cache the xsl file as comp-???.xsl in the user's profile where ???
+  // is the leaf of xslPath
+  var leafnameRE = /[^\/]*$/;
+  var leafname;
+  var resultString = "";
+  var match;
+  var xslPath = xslRootFileURLString;
+  var contents;
+  var matcharray = leafnameRE.exec(xslPath);
+  leafname = matcharray[0];
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var cachefile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
+  cachefile.append("comp-" + leafname);
+  if (!cachefile.exists())
+  {
+    var stylesheetElement=/<xsl:stylesheet[^>]*>/;
+    var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
+    var myXMLHTTPRequest = new XMLHttpRequest();
+    myXMLHTTPRequest.open("GET", xslPath, false);
+    myXMLHTTPRequest.send(null);
+
+    var str = myXMLHTTPRequest.responseText;
+  // a bug in the Mozilla XSLT processor causes problems with included stylesheets, so
+  // we do the inclusions ourselves 
+    var filesSeen= []; 
+    while (match = includeFileRegEx.exec(str))
+    {
+      resultString += str.slice(0, match.index);
+      str = str.slice(match.index);
+      str = str.replace(match[0],""); // get rid of the matched pattern. Why does lastIndex not work?
+      if (filesSeen.indexOf(match[1]) < 0)
+      {
+        try {
+          xslPath = xslPath.replace(leafnameRE,match[1]);
+          myXMLHTTPRequest.open("GET", xslPath, false);
+          myXMLHTTPRequest.send(null);
+          contents = myXMLHTTPRequest.responseText;
+          if (contents)
+          {
+            // strip out the xml and xsl declarations
+            contents = contents.replace('<?xml version="1.0"?>','');
+            contents = contents.replace("</xsl:stylesheet>","");
+            contents = contents.replace(stylesheetElement,"");
+          }
+          filesSeen.push(match[1]);
+        }
+        catch(e)
+        {
+          dump("Reading include file, got "+e.message+"\n");
+        }
+      }
+      else {
+        contents="";
+        break;
+      }                         
+      str = contents + str;
+    }
+    resultString += str;
+    writeStringAsFile( resultString, cachefile); 
+  }
+  else {
+    path = msiFileURLFromFile( cachefile );
+    var myXMLHTTPRequest = new XMLHttpRequest();
+    myXMLHTTPRequest.open("GET", path.spec, false);
+    myXMLHTTPRequest.send(null);
+    resultString = myXMLHTTPRequest.responseText;
+  }
+  return resultString;
+}
+
+function getXSLAsString(xslPath)
+{
+  var resultString = "";
+  if (xslPath.length == 0) return resultString;
+  return getCachedXSLTString(xslPath);
+}
+
+function setupXMLToTeXProcessor()
+{
+  var xslFileURL = "chrome://prnc2ltx/content/latex.xsl";
+  var xsltStr = getXSLAsString(xslFileURL);
+  var xsltProcessor = new XSLTProcessor();
+
+  try
+  {
+    var parser = new DOMParser();
+    var xslDoc = parser.parseFromString(xsltStr, "text/xml");
+    xsltProcessor.importStylesheet(xslDoc);
+  }
+  catch(e)
+  { dump("error: " + e + "\n"); }
+
+  return xsltProcessor;
+}
+
+function processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString)
+{
+  var str = '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">' + intermediateString + "</html>";
+  var texStr;
+
+  try
+  {
+    var parser = new DOMParser();
+    var intermediateDoc = parser.parseFromString(str, "text/xml");
+    var newDoc = xsltProcessor.transformToDocument(intermediateDoc);
+    texStr = newDoc.documentElement.textContent || "";
+    while (texStr.search(/\n\s*\n/) >= 0)
+      texStr = texStr.replace(/\n\s*\n/,"\n","g");
+  }
+  catch(e)
+  { dump("error: "+e.message+"\n\n"); }
+  return texStr;
+}

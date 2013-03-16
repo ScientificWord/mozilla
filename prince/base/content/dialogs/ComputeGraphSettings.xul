@@ -19,7 +19,7 @@
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
-<!DOCTYPE dialog [									 
+<!DOCTYPE dialog [                                   
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeGraphSettings.dtd" >
 %DTD;
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
@@ -52,6 +52,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/ComputeGraphSettings.js" />
   <script type="application/x-javascript" src="chrome://prince/content/ComputePlotSettings.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -73,17 +74,35 @@
 
   <popupset id="msiEditorContentContextSet"/>
 
+  <broadcasterset>
+    <broadcaster id="animated" hidden="true" />
+    <broadcaster id="viewRangesActive" disabled="true" />
+    <broadcaster id="threeDim" collapsed="true" />
+    <broadcaster id="enableLinesAndPoints" />
+    <broadcaster id="use1LineColor" />
+    <broadcaster id="use2LineColors" />
+    <broadcaster id="use1FillColor" />
+    <broadcaster id="use2FillColors" />
+    <broadcaster id="useBaseColor" />
+    <broadcaster id="useDirectionalShading" />
+    <broadcaster id="useMesh" />
+    <broadcaster id="tubeOrLinePts" selectedIndex="0" />
+    <broadcaster id="approxIntPlot" collapsed="true" />
+    <broadcaster id="useAreaFill" collapsed="true" />
+    <broadcaster id="customCameraProperties" disabled="true" />
+  </broadcasterset>
+
   <vbox id="units"/>
-  <tabbox id="outer-box" flex="1">
+  <tabbox id="outer-box" flex="1" persist="selectedIndex">
     <tabs class="tabs-top">
     <!-- <tab label="&tabbar.layout;"      selected="0" /> -->
     <tab id="msiPlacementTab"/>
     <tab id="msiFrameTab"/>
-	  <tab label="&tabbar.labeling;"   selected="0" />
-	  <tab label="&tabbar.items;"       selected="1" />
-	  <tab label="&tabbar.axes;"        selected="0" />
-	  <tab label="&tabbar.view;"        selected="0" />
-	</tabs>
+      <tab label="&tabbar.labeling;"   selected="0" />
+      <tab label="&tabbar.items;"       selected="1" />
+      <tab label="&tabbar.axes;"        selected="0" />
+      <tab label="&tabbar.view;"        selected="0" />
+    </tabs>
 
     <tabpanels>
       <vbox>
@@ -185,10 +204,10 @@
       </tabpanel>   
          
       <tabpanel id="ItemsPlotted">
-	    <vbox>
-  		  <groupbox>
-  	        <caption label="&plotstyles.label;"/>
-            <hbox><description id="dimension"  value="2" /><label>&dimensions.label;</label></hbox>
+        <vbox>
+          <groupbox>
+            <caption label="&plotstyles.label;"/>
+            <hbox><description id="dimension"  value="2" /><spacer /><label>&dimensions.label;</label></hbox>
             <groupbox id="plotcs2d">
               <label>&plottype.label;</label>
               <menulist id="pt2d">
@@ -205,7 +224,7 @@
                   <menuitem label="&plottypeAI.label;"          value="approximateIntegral"/>
                 </menupopup>
               </menulist>
-   				  </groupbox>
+                  </groupbox>
             <groupbox id="plotcs3d" collapsed="true">
                <label>&plottype.label;</label>
                <menulist id="pt3d">
@@ -221,11 +240,11 @@
                    <menuitem label="&plottypevector.label;"      value="vectorField"/>
                  </menupopup>
                </menulist>
-				    </groupbox>
+                    </groupbox>
             <checkbox id="animate"     label="&animate.label;"/>
           </groupbox>
 
-  	      <!-- broadcaster id="args" value="about:blank"/ -->
+          <!-- broadcaster id="args" value="about:blank"/ -->
           <commandset id="tasksCommands">
             <commandset id="globalEditMenuItems"/>
             <commandset id="selectEditMenuItems"/>
@@ -264,135 +283,229 @@
               <groupbox>
                 <caption id="center" label="&plotexpr.label;"/>
                 <editor editortype="html" type="content-primary" context="msiEditorContentContext" 
-                        id="plotDlg-content-frame" flex="1" width="200" height="70"/>
+                        id="plotDlg-content-frame" flex="1" style="overflow: scroll" width="200" height="70"/>
               </groupbox>
-		        </vbox>
+                </vbox>
             <vbox>
-              <label control="plot" value="Item number" />
+              <label control="plotnumber" value="Item number" />
               <textbox id="plotnumber" class="narrow" type="number" increment="1" decimalplaces="0" min="1" max="1" label="&editplotitem.label;" onchange="populateDialog(this.valueNumber - 1);"/>
               <msibutton label="&newplot.label;"   command="cmd_newPlot"/>
               <msibutton label="&command.delete;"  command="cmd_deletePlot"/>
             </vbox>
-		      </hbox>
+              </hbox>
           <groupbox>
             <caption>&ItemColoring.label;</caption>
             <grid>
-              <columns><column flex="1" /><column/><column flex="1" /><column/><column flex="1" /></columns>
+              <columns><column flex="1" /><column flex="1" /><column flex="1" /><column/><column flex="1" /></columns>
               <rows>
                 <row>
+                  <hbox><label id="lineColorLabel" value="&plotcolor.label;" observes="use1LineColor" /></hbox>
+                  <hbox>
+                    <label id="directionalShadingLabel" value="&DirectionalShading.label;" control="DirectionalShading"
+                         observes="useDirectionalShading" />
+                  </hbox>
+                  <spacer />
+                  <hbox>
+                    <label id="baseColorLabel" value="&BaseColor.label;" control="basecolor" observes="use1FillColor" />
+                    <label id="lineColor2Label" value="&plotcolor2.label;" control="basecolor" observes="use2LineColors" />
+                  </hbox>
+                  <spacer />
+                </row>
+                <row>
+                  <hbox>
+                    <msibutton id="linecolor" class="color-button" oncommand="getColorAndUpdate('lineColorWell');" observes="use1LineColor" >
+                      <spacer id="lineColorWell" class="color-well"/>
+                    </msibutton>
+                  </hbox>
+                  <hbox>
+                    <menulist id="DirectionalShading" observes="useDirectionalShading">
+                      <menupopup>
+                        <menuitem label="&XYZ.label;" value="XYZ" />
+                        <menuitem label="&XYZHue.label;" value="XYZHue" />
+                        <menuitem label="&XYZGreyscale.label;" value="XYZGreyscale" />
+                        <menuitem label="&XY.label;" value="XY" />
+                        <menuitem label="&X.label;" value="X" />
+                        <menuitem label="&Y.label;" value="Y" />
+                        <menuitem label="&Z.label;" value="Z" />
+                        <menuitem label="&ZHue.label;" value="ZHue" />
+                        <menuitem label="&ZGreyscale.label;" value="ZGreyscale" />
+                        <menuitem label="&Flat.label;" value="Flat" />
+                      </menupopup>
+                    </menulist>
+                  </hbox>
                   <hbox/>
-                  <label value="&DirectionalShading.label;" control="dirshading" />
-                  <hbox/>
-                  <label value="&BaseColor.label;" control="basecolor" />
+                  <hbox>
+                    <msibutton id="basecolor" class="color-button" oncommand="getColorAndUpdate('baseColorWell');" observes="useBaseColor">
+                      <spacer id="baseColorWell" class="color-well"/>
+                    </msibutton>
+                  </hbox>
                   <hbox/>
                 </row>
                 <row>
                   <hbox/>
-                  <menulist id="dirshading">
-                    <menupopup>
-                      <menuitem label="&XYZ.label;"/>
-                      <menuitem label="&XY.label;"/>
-                      <menuitem label="&X.label;"/>
-                      <menuitem label="&ZHue.label;"/>
-                      <menuitem label="&ZGreyscale.label;"/>
-                      <menuitem label="&Flat.label;"/>
-                    </menupopup>
-                  </menulist>
                   <hbox/>
-                   <msibutton id="basecolor" class="color-button" oncommand="getColorAndUpdate('baseColorWell');">
-                    <spacer id="baseColorWell" class="color-well"/>
-                  </msibutton>
+                  <hbox/>
+                  <hbox><label id="secondaryColorLabel" value="&SecondaryColor.label;" control="secondcolor" observes="use2FillColors" /></hbox>
                   <hbox/>
                 </row>
                 <row>
                   <hbox/>
                   <hbox/>
                   <hbox/>
-                  <label value="&SecondaryColor.label;" control="secondcolor"/>
-                  <hbox/>
-                </row>
-                <row>
-                  <hbox/>
-                  <hbox/>
-                  <hbox/>
-                  <msibutton id="secondcolor" class="color-button" oncommand="getColorAndUpdate('secondColorWell');">
-                    <spacer id="secondColorWell" class="color-well" />
-                  </msibutton>
+                  <hbox>
+                    <msibutton id="secondcolor" class="color-button" oncommand="getColorAndUpdate('secondColorWell');" observes="use2FillColors" >
+                      <spacer id="secondColorWell" class="color-well" />
+                    </msibutton>
+                  </hbox>
                   <hbox/>
                 </row>
               </rows>
             </grid>
           </groupbox>
+          <deck selectedIndex="0" observes="tubeOrLinePts">
+            <groupbox>
+              <grid>
+                <columns><column/><column/><column/><column/><column/></columns>
+                <rows>
+                  <row id="lineAndPointLabels" observes="enableLinesAndPoints" >
+                    <label control="LineStyle" value="&LineStyle.label;" />
+                    <spacer flex="2" />
+                    <label control="LineThickness" value="&LineThickness.label;" />
+                    <spacer flex="2" />
+                    <label control= "pointmarker" value="&PointMarker.label;"/>
+                  </row>
+                  <row id="lineAndPointControls" observes="enableLinesAndPoints">
+                    <menulist id="LineStyle">
+                      <menupopup>
+                        <menuitem label="&Solid.label;" value="Solid" />
+                        <menuitem label="&Dash.label;" value="Dashed"/>
+                        <menuitem label="&Dots.label;" value="Dotted"/>
+                        <menuitem label="&DotDash.label;"  value="DotDash"/>
+                        <menuitem label="&DotDotDash.label;" value="DotDotDash"/>
+                      </menupopup>
+                    </menulist>
+                    <spacer flex="2" />
+                    <menulist id="LineThickness">
+                      <menupopup>
+                        <menuitem label="&plotlinethin.label;" value="thin" />
+                        <menuitem label="&plotlinemedium.label;" value="medium" />
+                        <menuitem label="&plotlinethick.label;" value="thick" />
+                      </menupopup>
+                    </menulist>
+                    <spacer flex="2" />
+                    <menulist id="pointmarker">
+                      <menupopup>
+                        <menuitem label="&Dot.label;" value="FilledCircles"/>
+                        <menuitem label="&Circle.label;" value="Circles"/>
+                        <menuitem label="&Cross.label;" value="Crosses"/>
+                        <menuitem label="&plotpointfilledsquares.label;" value="FilledSquares"/>
+                        <menuitem label="&Box.label;" value="Squares"/>
+                        <menuitem label="&Diamond.label;" value="Diamonds"/>
+                        <menuitem label="&plotpointfilleddiamonds.label;" value="FilledDiamonds"/>
+                        <menuitem label="&plotpointxcrosses.label;" value="XCrosses"/>
+                        <menuitem label="&plotpointstars.label;" value="Stars"/>
+                      </menupopup>
+                    </menulist>
+                  </row>
+                  <row observes="useAreaFill">
+                    <spacer flex="1"/>
+                    <label control="FillPattern" value="&AreaFillStyle.label;" />
+                    <menulist id="FillPattern">
+                      <menupopup>
+                        <menuitem label="&FillPatternSolid.label;" value="Solid" />
+                        <menuitem label="&FillPatternCrossedLines.label;" value="CrossedLines" />
+                        <menuitem label="&FillPatternDiaglLines.label;" value="DiagonalLines" />
+                        <menuitem label="&FillPatternForwardDiagLines.label;" value="ForwardDiagonalLines" />
+                        <menuitem label="&FillPatternHorizLines.label;" value="HorizontalLines" />
+                        <menuitem label="&FillPatternVertLines.label;" value="VerticalLines" />
+                        <menuitem label="&FillPatternCrossedDiagLines.label;" value="CrossedDiagonalLines" />
+                      </menupopup>
+                    </menulist>
+                    <spacer />
+                  </row>
+                </rows>
+              </grid>
+            </groupbox>
+            <groupbox>
+              <label value="&plotradiusexpr.label;" accesskey="&plotradiusexpr.accesskey;" control="plotDlg-tube-radius" />
+              <editor editortype="html" type="content" context="msiEditorContentContext" 
+                    id="plotDlg-tube-radius" style="overflow: scroll" flex="1" width="150" height="50"/>
+            </groupbox>
+          </deck>
           <groupbox>
             <grid>
-              <columns><column/><column/><column/></columns>
+              <columns><column/><column/><column/><column/></columns>
               <rows>
-                <row>
-                  <label control="linestyle" value="&LineStyle.label;" />
-                  <label control="linethickness" value="&LineThickness.label;" />
-                  <label contrl= "pointmarker" value="&PointMarker.label;"/>
-                </row>
-                <row>
-                  <menulist id="linestyle">
-                    <menupopup>
-                      <menuitem label="&Solid.label;"/>
-                      <menuitem label="&Dash.label;"/>
-                      <menuitem label="&Dots.label;"/>
-                      <menuitem label="&DotDash.label;"/>
-                      <menuitem label="&DotDotDash.label;"/>
-                    </menupopup>
-                  </menulist>
-                  <menulist id="linethickness">
-                    <menupopup>
-                      <menuitem label="&plotlinethin.label;"/>
-                      <menuitem label="&plotlinemedium.label;"/>
-                      <menuitem label="&plotlinethick.label;"/>
-                    </menupopup>
-                  </menulist>
-                  <menulist id="pointmarker">
-                    <menupopup>
-                      <menuitem label="&Dot.label;"/>
-                      <menuitem label="&Circle.label;"/>
-                      <menuitem label="&Cross.label;"/>
-                      <menuitem label="&Box.label;"/>
-                      <menuitem label="&Diamond.label;"/>
-                    </menupopup>
-                  </menulist>
-                </row>
-                <row>
+                <row observes="useMesh">
                   <label control="surfacestyle" value="&surfacestyle.label;" />
-                  <label conrol="surfacemesh" value="&surfacemesh.label;" />
+                  <spacer />
+                  <label control="surfacemesh" value="&surfacemesh.label;" />
+                  <spacer />
                 </row>
-                <row>
-                  <menulist id="surfacestyle">
+                <row observes="useMesh">
+                  <menulist id="SurfaceStyle">
                     <menupopup>
-                      <menuitem label="&surfacecolorpatch.label;"/>
-                      <menuitem label="&surfacehidden.label;"/>
-                      <menuitem label="&surfacewire.label;"/>
-                      <menuitem label="&surfacepoint.label;"/>
+                      <menuitem label="&surfacecolorpatch.label;" value="colorpatch" />
+                      <menuitem label="&surfacehidden.label;" value="hiddenline"/>
+                      <menuitem label="&surfacewire.label;" value="wireframe" />
+                      <menuitem label="&surfacepoint.label;" value="point" />
                     </menupopup>
                   </menulist>
-                  <menulist id="surfacemesh">
+                  <spacer />
+                  <menulist id="SurfaceMesh">
                     <menupopup>
-                      <menuitem label="&none.label;"/>
-                      <menuitem label="&mesh.label;"/>
-                      <menuitem label="&surfaceulines.label;"/>
-                      <menuitem label="&surfacevlines.label;"/>
-                      <menuitem label="&surfacecontour.label;"/>
+                      <menuitem label="&none.label;" value="none" />
+                      <menuitem label="&mesh.label;" value="mesh" />
+                      <menuitem label="&surfaceulines.label;" value="hlines" />
+                      <menuitem label="&surfacevlines.label;" value="vlines" />
+                      <menuitem label="&surfacecontour.label;" value="contours" />
                     </menupopup>
                   </menulist>
-                  <msibutton label="&VariablesAndIntervals.label;" oncommand="openDialog('chrome://prince/content/intervalsAndAnimation.xul', 'Plot Intervals and Animation', 'chrome,close,titlebar,modal,resizable');"/>
+                  <spacer />
+                </row>
+                <row observes="approxIntPlot">
+                  <label control="AISubIntervals" value="&NumberofIntervals.desc;"/>
+                  <label control="AIMethod" value="&ApproxMethod.desc;" />
+                  <label control="AIInfo" value="&ShowInfo.desc;" />
+                </row>
+                <row observes="approxIntPlot">
+                  <textbox id="AISubIntervals" type="number" class="narrow" increment="1" decimalplaces="0" min="1" max="999" />
+                  <menulist id="AIMethod" style="minwidth:80pts">
+                    <menupopup command="cmd_AIChangeMethod">
+                      <menuitem label="&AIMethodLeft.label;" value="Left" />
+                      <menuitem label="&AIMethodRight.label;" value="Right" />
+                      <menuitem label="&AIMethodLeftAndRight.label;" value="LeftRight" />
+                      <menuitem label="&AIMethodMiddle.label;" value="Middle" />
+                      <menuitem label="&AIMethodLower.label;" value="Lower" />
+                      <menuitem label="&AIMethodUpper.label;" value="Upper" />
+                      <menuitem label="&AIMethodLowerAndUpper.label;" value="LowerUpper" />
+                      <menuitem label="&AIMethodLowerAbs.label;" value="LowerAbsolute" />
+                      <menuitem label="&AIMethodUpperAbs.label;" value="UpperAbsolute" />
+                      <menuitem label="&AIMethodLowerAndUpperAbs.label;" value="LowerUpperAbsolute" />
+                      <menuitem label="&AIMethodTrapezoidal.label;" value="Trapezoidal" />
+                      <menuitem label="&AIMethodSimpson.label;" value="Simpson" />
+                    </menupopup>
+                  </menulist>
+                  <menulist id="AIInfo" style="minwidth:80pts">
+                    <menupopup>
+                      <menuitem label="&AIInfoNone.label;" value="" />
+                      <menuitem label="&AIInfoApproxValue.label;" value="IntMethod" />
+                      <menuitem label="&AIInfoApproxandExactValue.label;" value="IntMethod,Integral" />
+                      <menuitem label="&AIInfoBothValuesandError.label;" value="IntMethod,Integral,Error" />
+                    </menupopup>
+                  </menulist>
                 </row>
               </rows>
             </grid>
           </groupbox>
+          <msibutton label="&VariablesAndIntervals.label;" oncommand="openVariablesAndIntervalsDlg();" />
         </vbox>
         </tabpanel>
       <tabpanel id="Axes">
         <vbox>
           <groupbox>
           <caption label="&axisaxesscale.label;" />
-          <radiogroup id="axisscale" orient="horizontal">
+          <radiogroup id="AxisScale" orient="horizontal">
             <radio label="&axislinear.label;"  value="LinLin"      selected="true"/>
             <radio label="&axislinlog.label;"  value="LinLog"      selected="false"/>
             <radio label="&axisloglin.label;"  value="LogLin"      selected="false"/>
@@ -407,38 +520,66 @@
               <columns>
                 <column/>
                 <column/>
+                <column/>
               </columns>
               <rows>
                 <row>        
                   <label value="&axisxaxis.label;"/>
-                  <textbox style="width: 10em;" id="XAxisLabel" cols="20"/>
+                          <checkbox id="customXAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+                  <textbox style="width: 10em;" disabled="true" id="XAxisLabel" cols="20"/>
                 </row>
                 <row>
                   <label value="&axisyaxis.label;"/>
-                  <textbox style="width: 10em;" id="YAxisLabel" cols="20"/>
+                          <checkbox id="customYAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+                  <textbox style="width: 10em;" disabled="true" id="YAxisLabel" cols="20"/>
                 </row>
-                <row>
+                <row observes="threeDim">
                   <label value="&axiszaxis.label;"/>
-                  <textbox style="width: 10em;" id="ZAxisLabel" cols="20"/>
+                          <checkbox id="customZAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+                  <textbox style="width: 10em;" disabled="true" id="ZAxisLabel" cols="20"/>
                 </row>
               </rows>
             </grid>
           </groupbox>
           <groupbox>
             <hbox>
-              <description>&axistickmark.label;</description>
-              <menulist id="XTickCount">
-                <menupopup> 
-                  <menuitem label="&none.label;"   value="none"/>
-                  <menuitem label="&low.label;"    value="low"/>
-                  <menuitem label="&normal.label;" value="normal"/>
-                  <menuitem label="&high.label;"   value="high"/>
-                </menupopup>
-              </menulist>
+              <vbox>
+                <description>&Xaxistickmark.label;</description>
+                <menulist id="XTickCount">
+                  <menupopup> 
+                    <menuitem label="&none.label;"   value="none"/>
+                    <menuitem label="&low.label;"    value="low"/>
+                    <menuitem label="&normal.label;" value="normal"/>
+                    <menuitem label="&high.label;"   value="high"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox>
+                <description>&Yaxistickmark.label;</description>
+                <menulist id="YTickCount">
+                  <menupopup> 
+                    <menuitem label="&none.label;"   value="none"/>
+                    <menuitem label="&low.label;"    value="low"/>
+                    <menuitem label="&normal.label;" value="normal"/>
+                    <menuitem label="&high.label;"   value="high"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox observes="threeDim">
+                <description >&Zaxistickmark.label;</description>
+                <menulist id="ZTickCount">
+                  <menupopup> 
+                    <menuitem label="&none.label;"   value="none"/>
+                    <menuitem label="&low.label;"    value="low"/>
+                    <menuitem label="&normal.label;" value="normal"/>
+                    <menuitem label="&high.label;"   value="high"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
             </hbox>
             <!-- <checkbox id="disableticks" label="&axisdisable.label;"/> -->
-            <checkbox id="axestips"     label="&axistips.label;"/>
-            <checkbox id="gridlines"    label="&axisgridlines.label;"/>
+            <checkbox id="AxesTips"     label="&axistips.label;"/>
+            <checkbox id="GridLines"    label="&axisgridlines.label;"/>
           </groupbox>
 
           <groupbox>
@@ -468,7 +609,6 @@
        </vbox>
       </tabpanel>      
 
-
       <tabpanel id="View defaults">
         <separator/>
         <vbox>
@@ -480,86 +620,83 @@
           </row>
           <separator/>
           <vbox>
-            <checkbox id="OrthogonalProjection" label="&OrthogonalProjection.label;"/>
-            <checkbox id="KeepUp"               label="&KeepUpVector.label;"/>
-            <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
+            <checkbox id="defaultviewintervals" label="&viewinterval.label;" oncommand="makeViewIntervalsDefault(this);" />
           </vbox>
-          <groupbox>
-            <caption>Initial view intervals</caption>        
+          <groupbox observes="viewRangesActive" >
+            <caption>&viewIntervals.label;</caption>        
             <hbox>
               <label value="&axisxrange.label;"/>
-              <textbox id="xrangelow" style="width: 5em;" cols="6"/>
-              <textbox id="xrangehigh" style="width: 5em;" cols="6"/>
+              <textbox id="xrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
+              <textbox id="xrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
             </hbox>
             <hbox>
               <label value="&axisyrange.label;"/>
-              <textbox id="yrangelow" style="width: 5em;" cols="6"/>
-              <textbox id="yrangehigh" style="width: 5em;" cols="6"/>
+              <textbox id="yrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
+              <textbox id="yrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
             </hbox>
-            <hbox>
+            <hbox observes="threeDim" >
               <label value="&axiszrange.label;"/>
-              <textbox id="zrangelow" style="width: 5em;" cols="6"/>
-              <textbox id="zrangehigh" style="width: 5em;" cols="6"/>
+              <textbox id="zrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
+              <textbox id="zrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
             </hbox>
           </groupbox>
-          <grid align="center">
-            <columns>
-              <column width="100px"/>
-              <column width="60px"/>
-              <column width="60px"/>
-              <column width="60px"/>
-            </columns>
-            <rows>
-              <row>
-                <label />
-                <label text-align="center">x</label>
-                <label text-align="center">y</label>
-                <label text-align="center">z</label>
-              </row> 
-              <row >
-                <label text-align = "end">&Focalpoint.label;</label>
-                <textbox context="msiEditorContentContext" 
-                        id="FocalPointX" flex="1" height="20"/>
-                <textbox context="msiEditorContentContext" 
-                        id="FocalPointY" flex="1" height="20"/>
-                <textbox context="msiEditorContentContext" 
-                        id="FocalPointZ" flex="1" height="20"/>
-              </row>
-              <row>
-                <label text-align = "end">&Position.label;</label>
-                <textbox context="msiEditorContentContext" 
-                        id="CameraLocationX" flex="1" height="20"/>
-                <textbox context="msiEditorContentContext" 
-                        id="CameraLocationY" flex="1" height="20"/>
-                <textbox context="msiEditorContentContext" 
-                        id="CameraLocationZ" flex="1" height="20"/>
-              </row>
-              <row>
-                <label text-align = "end">&UpVector.label;</label>
-                <textbox context="msiEditorContentContext" 
-                        id="UpVectorX" flex="1" height="20"/>
-                <textbox context="msiEditorContentContext" 
-                        id="UpVectorY" flex="1" height="20"/>
-                <textbox context="msiEditorContentContext" 
-                        id="UpVectorZ" flex="1" height="20"/>
-              </row>
-              <row>
-                <label text-align = "end">&ViewingAngle.label;</label>
-                <textbox context="msiEditorContentContext" 
-                        id="ViewingAngle" flex="1" height="20"/>
-              </row>
-            </rows>  
-          </grid>
-       </vbox>
+          <groupbox caption="&cameraPositionAndOrientation.label;" observes="threeDim">
+            <checkbox id="defaultCameraCheckbox" label="&defaultCamera.label;" oncommand="changeDefaultCamera();" />
+            <grid align="center" observes="customCameraProperties">
+              <columns>
+                <column width="60px"/>
+                <column width="80px"/>
+                <column width="80px"/>
+                <column width="80px"/>
+              </columns>
+              <rows>
+                <row>
+                  <label />
+                  <label align="center">x</label>
+                  <label align="center">y</label>
+                  <label align="center">z</label>
+                </row> 
+                <row>
+                  <label text-align = "end">&Position.label;</label>
+                  <textbox id="CameraLocationX" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <textbox id="CameraLocationY" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <textbox id="CameraLocationZ" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                </row>
+                <row >
+                  <label text-align = "end">&Focalpoint.label;</label>
+                  <textbox id="FocalPointX" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <textbox id="FocalPointY" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <textbox id="FocalPointZ" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                </row>
+                <row>
+                  <label text-align = "end">&UpVector.label;</label>
+                  <textbox id="UpVectorX" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <textbox id="UpVectorY" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <textbox id="UpVectorZ" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                </row>
+                <row>
+                  <label text-align = "end">&ViewingAngle.label;</label>
+                  <textbox id="ViewingAngle" ilk="numberlike" significantDigits="3" flex="1" height="20"/>
+                  <checkbox id="OrthogonalProjection" label="&OrthogonalProjection.label;" />
+                  <checkbox id="KeepUp"               label="&KeepUpVector.label;" />
+                </row>
+              </rows>  
+            </grid>
+          </groupbox>
+          <hbox align="end" observes="animated">
+            <msibutton label="&animationSettings.label;" oncommand="openAnimationSettingsDlg();" />
+          </hbox>
+        </vbox>
       </tabpanel>      
     </tabpanels>
   </tabbox>
   <broadcaster id="role-image" />
   <broadcaster id="role-textframe" hidden="true"/>
 
-  <command id="cmd_editPlot"        oncommand="formatPlot();"/>
+  <!-- command id="cmd_editPlot"        oncommand="formatPlot();"/ -->
   <command id="cmd_newPlot"         oncommand="addPlot();"/>
   <command id="cmd_deletePlot"      oncommand="deletePlot();"/>
   <command id="cmd_changePlot"      oncommand="changePlot();"/>
   <command id="cmd_changePlotType"  oncommand="changePlotType();"/>
+  <command id="cmd_AIChangeMethod"  oncommand="changeAIMethod();"/>
 </dialog>

@@ -12,6 +12,7 @@ function Graph() {
   var i, list, length;
   this.plots = []; //an array of plots, see below
   this.modFlag = {}; //a Boolean for each attribute in GRAPHATTRIBUTES
+  this.userSetAttrs = [];  //a list of attributes by name which are not using default values
   this.errStr = "";
   this.currentDisplayedPlot = -1;
   list = this.graphAttributeList();
@@ -24,12 +25,26 @@ function Graph() {
 Graph.prototype = {
   COMPATTRIBUTES: ["ImageFile", "XAxisLabel", "YAxisLabel", "ZAxisLabel", "Width", "Height",
                               "Units", "AxesType", "EqualScaling", "EnableTicks", "XTickCount",
-                              "YTickCount", "AxesTips", "GridLines", "BGColor", "Dimension",
+                              "YTickCount", "ZTickCount", "AxesTips", "GridLines", "BGColor", "Dimension",
                               "AxisScale", "CameraLocationX", "CameraLocationY", "CameraLocationZ",
                               "FocalPointX", "FocalPointY", "FocalPointZ", "UpVectorX", "UpVectorY",
                               "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp",
-                              "OrientationTiltTurn"],
+                              "OrientationTiltTurn", "ViewingBoxXMin", "ViewingBoxXMax",
+                              "ViewingBoxYMin", "ViewingBoxYMax", "ViewingBoxZMin", "ViewingBoxZMax",
+                              "AnimateStart", "AnimateEnd", "AnimateFPS"],
   GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace"],
+  omitAttributeIfDefaultList : //["XAxisLabel", "YAxisLabel", "ZAxisLabel", 
+                               ["CameraLocationX", "CameraLocationY", "CameraLocationZ",
+                                "FocalPointX", "FocalPointY", "FocalPointZ",
+                                "UpVectorX", "UpVectorY","UpVectorZ",
+                                "ViewingAngle", "OrientationTiltTurn",
+                                "ViewingBoxXMin", "ViewingBoxXMax",
+                                "ViewingBoxYMin", "ViewingBoxYMax",
+                                "ViewingBoxZMin", "ViewingBoxZMax"],
+  plotVariablePropertyNames : ["XVar","YVar", "ZVar", "AnimVar"],
+  graphAxesPropertyNames : ["XAxisLabel","YAxisLabel","ZAxisLabel"],
+
+
   constructor: Graph,
   ser: new XMLSerializer(),
   addPlot: function (plot) {
@@ -47,11 +62,71 @@ Graph.prototype = {
   getNumPlots: function () {
     return (this.plots.length);
   },
+  getNumActivePlots : function() {
+    var nCount = 0;
+    for (var ii = 0; ii < this.plots.length; ++ii)
+    {
+      if (this.plots[ii].getPlotAttribute("PlotStatus") != "Deleted")
+        ++nCount;
+    }
+    return nCount;
+  },
   isModified: function (x) {
     return (this.modFlag[x]);
   },
   setModified: function (x) {
     this.modFlag[x] = true;
+  },
+  isUserSet: function(attr) {
+    return (this.userSetAttrs.indexOf(attr) >= 0);
+  },
+  markUserSet: function(attr, bUserSet) {
+    var nIndex = this.userSetAttrs.indexOf(attr);
+    if ((nIndex >= 0) && !bUserSet)
+      this.userSetAttrs.splice(nIndex,1);
+    else if ((nIndex < 0) && bUserSet)
+      this.userSetAttrs.push(attr);
+  },
+  cameraValuesUserSet : function()
+  {
+    var retval = false;
+    var camVals = ["CameraLocationX", "CameraLocationY", "CameraLocationZ",
+                              "FocalPointX", "FocalPointY", "FocalPointZ", "UpVectorX", "UpVectorY",
+                              "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp"];
+    for (var ii = 0; !retval && (ii < camVals.length); ++ii)
+    {
+      retval = this.isUserSet(camVals[ii]);
+    }
+    return retval;
+  },
+  markCameraValuesUserSet : function(bSet)
+  {
+    var camVals = ["CameraLocationX", "CameraLocationY", "CameraLocationZ",
+                              "FocalPointX", "FocalPointY", "FocalPointZ", "UpVectorX", "UpVectorY",
+                              "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp"];
+    for (var ii = 0; ii < camVals.length; ++ii)
+    {
+      this.markUserSet(camVals[ii], bSet);
+    }
+  },
+  plotAttrIsUserSet: function(plotno, attr) {
+    if (plotno < this.plots.length)
+    {
+      return this.plots[plotno].isUserSet(attr);
+    }
+    return true; //returning false would suggest there's a value to be used
+  },
+  markPlotAttrUserSet: function(plotno, attr, bUserSet) {
+    if (plotno < this.plots.length)
+    {
+      this.plots[plotno].markUserSet(attr,bUserSet);
+    }
+  },
+  varNameFromFoundVariable : function(plotno, whichVar)
+  {
+    if (plotno < this.plots.length)
+      return this.plots[plotno].varNameFromFoundVariable(whichVar);
+    return false;
   },
   computeGraph: function (editorElement, filename) {
     // call the compute engine to create an image
@@ -79,7 +154,7 @@ Graph.prototype = {
     // Otherwise, all the plots that are children of the graph are included
     var str = this.serializeGraph(plot);
     var eng = GetCurrentEngine();
-    var status, i;
+    var status, i, end;
 
     try {
       msiComputeLogger.Sent4("plotfuncQuery", "", str, "");
@@ -99,7 +174,10 @@ Graph.prototype = {
         plot.attributes["PlotStatus"] = status;
       }
       else {
-        for (i = 0; i < this.plots.length; i++) {
+        msidump("In GraphOverlay.js, Graph.computeQuery, no plot was passed in!");
+        //This really shouldn't happen - if it does, only plots[0] should be marked as "Inited"
+        end = (status == "Inited") ? 1 : this.plots.length;
+        for (i = 0; i < end; i++) {
           this.plots[i].attributes["PlotStatus"] = status;
         }
       }
@@ -143,18 +221,19 @@ Graph.prototype = {
     DOMFrame.appendChild(DOMPw);
     DOMFrame.appendChild(DOMCaption);
     DOMPw.appendChild(DOMObj);
-    this.reviseGraphDOMElement(DOMGraph, editorElement);
+    this.reviseGraphDOMElement(DOMGraph, forComp, editorElement, optplot);
     return DOMGraph;
   },
-  reviseGraphDOMElement: function (DOMgraph, editorElement) {
+  reviseGraphDOMElement: function (DOMgraph, forComp, editorElement, optplot) {
     var htmlns = "http://www.w3.org/1999/xhtml";
     var editor = msiGetEditor(editorElement);
     var DOMGs = DOMgraph.getElementsByTagName("graphSpec")[0];
     var DOMPw = DOMgraph.getElementsByTagName("plotwrapper")[0];
     var DOMFrame = DOMgraph.getElementsByTagName("msiframe")[0];
     var DOMCaption = DOMFrame.getElementsByTagName("imagecaption")[0];
-    var attr, value, alist, i, domPlots, plot, status, caption, captionloc, child;
-    this.frame.reviseFrameDOMElement(DOMFrame, DOMPw, editorElement);
+    var attr, value, alist, i, domPlots, plot, status, caption, captionloc, child, optnum;
+    var graphData = new graphVarData(this);
+    this.frame.reviseFrameDOMElement(DOMFrame, DOMPw, forComp, editorElement);
 
     // loop through graph attributes and insert them
     alist = this.graphAttributeList();
@@ -165,26 +244,49 @@ Graph.prototype = {
       {
         DOMGs.removeAttribute(attr);
       }
+      else if (forComp && this.omitAttributeIfDefault(attr) && !this.isUserSet(attr))
+      {
+        DOMGs.removeAttribute(attr);
+      }
       else
       {
         DOMGs.setAttribute(attr, value);
       }
     }
+    if (this.userSetAttrs.length)
+      DOMGs.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
 
-    // if the optional plot number was specified, just include one plot
+    // if the optional plot number was specified, include that plot first (since the query routine only operates on the first plot)
     // otherwise, for each plot, create a <plot> element
     // Clear out current plots first
     domPlots = DOMgraph.getElementsByTagName("plot");
     for (i = domPlots.length - 1; i >= 0; i--) {
       editor.deleteNode(domPlots[i]);
     }
+    optnum = -1;
+    if (optplot)
+    {
+      status = optplot.attributes.PlotStatus;
+      if (status === "ERROR") {
+        for (i = 0; (optnum < 0) && (i < this.plots.length); ++i)
+        {
+          if (this.plots[i] === optplot)
+            optnum = i;
+        }
+        this.errStr = "ERROR, Plot number " + optnum + " " + this.errStr;
+      } else {
+        DOMGs.appendChild(optplot.createPlotDOMElement(document, forComp, graphData));
+      }
+    }
     for (i = 0; i < this.plots.length; i++) {
       plot = this.plots[i];
+      if (optplot && (plot === optplot))
+        continue;   //we already got this one
       status = this.plots[i].attributes.PlotStatus;
       if (status === "ERROR") {
         this.errStr = "ERROR, Plot number " + i + " " + this.errStr;
       } else {
-        DOMGs.appendChild(plot.createPlotDOMElement(document, false, plot));
+        DOMGs.appendChild(plot.createPlotDOMElement(document, forComp, graphData));
       }
     }
     captionloc = this.getGraphAttribute("CaptionPlace");
@@ -218,7 +320,10 @@ Graph.prototype = {
     for (i = 0; i < DOMGs.attributes.length; i++) {
       key = DOMGs.attributes[i].nodeName;
       value = DOMGs.attributes[i].nodeValue;
-      this[key] = value;
+      if (key === "userSetAttrs")
+        this[key] = value.split( "/,\s*/");  //turn it into an array
+      else
+        this[key] = value;
     }
     DOMFrame = DOMGraph.getElementsByTagName("msiframe");
     if (DOMFrame.length > 0) {
@@ -288,18 +393,59 @@ Graph.prototype = {
     }
     return (this.getDefaultValue(key));
   },
+  getPlotValue : function(key, plotNum)
+  {
+    if (plotNum < this.plots.length)
+    {
+      return this.plots[plotNum].getPlotValue(key);
+    }
+    return "";
+  },
+  getDimension : function()
+  {
+    return Number(this.getValue("Dimension"));
+  },
   graphAttributeList: function () {
     return (this.GRAPHATTRIBUTES.concat(this.COMPATTRIBUTES));
   },
   graphCompAttributeList: function () {
     var NA = this.COMPATTRIBUTES;
-    var dim = this.getGraphAttribute("Dimension");
-    if (dim === "2") {
+    var dim = Number(this.getGraphAttribute("Dimension"));
+    if (dim === 2) {
       NA = attributeArrayRemove(NA, "ZAxisLabel");
       NA = attributeArrayRemove(NA, "OrientationTiltTurn");
     }
+    if (!this.isAnimated())
+    {
+      NA = attributeArrayRemove(NA, "AnimateStart");
+      NA = attributeArrayRemove(NA, "AnimateEnd");
+      NA = attributeArrayRemove(NA, "AnimateFPS");
+    }
     // TubeRadius?
     return NA;
+  },
+  isAnimated : function()
+  {
+    var rv = false;
+    for (var jj = 0; !rv && (jj < this.plots.length); ++jj)
+    {
+      if (this.plots[jj].attributes["Animate"] == "true")
+        rv = true;
+    }
+    return rv;
+  },
+  omitAttributeIfDefault : function(attr) {
+    return (this.omitAttributeIfDefaultList.indexOf(attr) >= 0);
+  },
+  plotAttributeList: function (plotnum) {
+    if (plotnum < this.plots.length)
+      return this.plots[plotnum].plotAttributeList();
+    return [];
+  },
+  plotElementList: function (plotnum) {
+    if (plotnum < this.plots.length)
+      return this.plots[plotnum].plotElementList();
+    return [];
   },
   serializeGraph: function (optionalplot) {
     var str;
@@ -316,6 +462,86 @@ Graph.prototype = {
   },
   setGraphAttribute: function (name, value) {
     this[name] = value;
+  },
+  setPlotValue : function(name, plotnum, value) {
+    if (plotnum < this.plots.length)
+    {
+      this.plots[plotnum].setPlotValue(name, value);
+    }
+  },
+  mapVCamNameToAttr : function(aProp)
+  {
+    switch(aProp)
+    {
+      case("positionX"):            return "CameraLocationX";
+      case("positionY"):            return "CameraLocationY";
+      case("positionZ"):            return "CameraLocationZ";
+      case("focalPointX"):          return "FocalPointX";
+      case("focalPointY"):          return "FocalPointY";
+      case("focalPointZ"):          return "FocalPointZ";
+      case("upVectorX"):            return "UpVectorX";
+      case("upVectorY"):            return "UpVectorY";
+      case("upVectorZ"):            return "UpVectorZ";
+      case("keepUpVector"):         return "KeepUp";
+      case("viewingAngle"):         return "ViewingAngle";
+      case("orthogonalProjection"): return "OrthogonalProjection";
+
+      case("XAxisTitle") :          return "XAxisLabel";
+      case("YAxisTitle") :          return "YAxisLabel";
+      case("ZAxisTitle") :          return "ZAxisLabel";
+      case("ViewingBoxXMin") : 
+      case("ViewingBoxXMax") :
+      case("ViewingBoxYMin") :
+      case("ViewingBoxYMax") :
+      case("ViewingBoxZMin") :
+      case("ViewingBoxZMax") :      return aProp;
+
+      default:  return null;
+    }
+  },
+  setCameraValsFromVCam : function(cameraVals, domGraph) {
+    if (cameraVals != null)
+    {
+      msidump("Got camera vals from VCam:\n");
+      var attrName;
+      var graphSpec;
+      var graphSpecList = domGraph.getElementsByTagName("graphSpec");
+      if (graphSpecList && graphSpecList.length)
+        graphSpec = graphSpecList[0];
+      for (var aProp in cameraVals)
+      {
+        msidump("  " + aProp + " = " + cameraVals[aProp] + "\n");
+        attrName = this.mapVCamNameToAttr(aProp);
+        if (!this.isUserSet(attrName))
+        {
+          this.setGraphAttribute(attrName, cameraVals[aProp]);
+          if (graphSpec)
+            graphSpec.setAttribute(attrName, cameraVals[aProp]);
+        }
+      }
+    }
+  },
+  setCoordSysValsFromVCam : function(coordSysVals, domGraph) {
+    if (coordSysVals != null)
+    {
+      msidump("Got coord sys vals from VCam:\n");
+      var attrName;
+      var graphSpec;
+      var graphSpecList = domGraph.getElementsByTagName("graphSpec");
+      if (graphSpecList && graphSpecList.length)
+        graphSpec = graphSpecList[0];
+      for (var aProp in coordSysVals)
+      {
+        msidump("  " + aProp + " = " + coordSysVals[aProp] + "\n");
+        attrName = this.mapVCamNameToAttr(aProp);
+        if (!this.isUserSet(attrName))
+        {
+          this.setGraphAttribute(attrName, coordSysVals[aProp]);
+          if (graphSpec)
+            graphSpec.setAttribute(attrName, coordSysVals[aProp]);
+        }
+      }
+    }
   },
   recomputeVCamImage: function (editorElement) {
     var filename = this.getGraphAttribute("ImageFile"); // the old name
@@ -418,27 +644,153 @@ Plot.prototype = {
                            "LineStyle", "PointStyle", "LineThickness", "LineColor",
                            "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
                            "PointSymbol", "SurfaceStyle", "IncludePoints",
-                           "SurfaceMesh", "CameraLocationX", "CameraLocationY",
-                           "CameraLocationZ", "FontFamily", "IncludeLines",
+                           "SurfaceMesh", "FontFamily", "IncludeLines",
                            "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
-                           "Animate", "AnimateStart", "AnimateEnd", "AnimateFPS",
-                           "AnimateVisBefore", "AnimateVisAfter",
-                           "ConfHorizontalPts", "ConfVerticalPts"],
-  PLOTELEMENTS: ["Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin",
-                            "XVar", "YVar", "ZVar", "XPts", "YPts", "ZPts", "TubeRadius"],
+                           "Animate", "AnimCommonOrCustomSettings", "AnimateStart", "AnimateEnd",
+                           "AnimateFPS", "AnimateVisBefore", "AnimateVisAfter",
+                           "ConfHorizontalPts", "ConfVerticalPts", "DefaultedVars"],
+  PLOTELEMENTS: ["Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin", "AnimMin", "AnimMax",
+                            "XVar", "YVar", "ZVar", "AnimVar", "XPts", "YPts", "ZPts", "TubeRadius", "TubeRadialPts"],
   // Plot elements are all MathML expressions.
+  userSetAttrs: [],
+
+  expectedVariableLists : function(plottype, dim, isParametric)
+  {
+    if (isParametric)
+    {
+      if (dim == 3)
+      {
+        switch(plottype)
+        {
+          case "curve":
+          case "tube":
+            return [["t"],["s"],["u"],["x"]];
+          break;
+          case "cylindrical":
+            return [["u","v",],["\u03b8","z"],["x","y"]];  //[u,v],[theta,z],[x,y]
+          break;
+          case "spherical":
+            return [["u","v"],["\u03b8","\u03d5"],["x","y"]];  //[u,v],[theta,phi],[x,y]
+          break;
+          default:
+            return [["u","v"],["x","y"]];
+          break;
+        }
+      }
+      else  //dim presumably 2
+      {
+        switch(plottype)
+        {
+          case "polar": 
+            return [["\u03b8"],["t"],["s"],["u"],["x"]];  //theta,t,s,u,x
+          break;
+          case "conformal":  //What would a user want from a conformal parametric plot??? Probably ends in an error anyway...
+            return [["z"],["t"],["s"],["u"],["x"]];
+          break;
+          default:
+            return [["t"],["s"],["u"],["x"]];
+          break;
+        }
+      }
+    }
+    else
+    {
+      if (dim == 3)
+      {
+        switch(plottype)
+        {
+          case "curve":
+          case "tube":   //What would a user want from a curve or tube plot NOT given parametrically? Again, probably isn't going to work anyway.
+            return [["x","y"],["u","v"],["s","t"]];
+          break;
+          case "cylindrical":
+            return [["\u03b8","z"],["x","y"]];  //[theta,z],[x,y] - Here "y" would be interpreted as the actual z-axis...
+          break;
+          case "spherical":
+            return [["\u03b8","\u03d5"],["x","y"]];  //[theta,phi],[x,y]
+          break;
+          case "implicit":
+          case "gradient":
+          case "vectorField":
+            return [["x","y","z"],["u","v","w"]];
+          break;
+          default:
+            return [["x","y"],["u","v"],["s","t"]];
+          break;
+        }
+      }
+      else
+      {
+        switch(plottype)
+        {
+          case "polar":
+            return [["\u03b8"],["x"],["u"]];  //theta,x,u
+          break;
+          case "implicit":
+          case "inequality":
+          case "gradient":
+          case "vectorField":
+            return [["x","y"],["u","v"],["s","t"]];
+          break;
+          case "conformal":
+            return [["z"],["w"],["\u03b6"],["x"]];  //z,w,zeta,x
+          break;
+          case "ode":
+            return [["x"],["t"],["s"]];
+          break;
+          default:
+            return [["x"],["u"],["t"],["s"]];
+          break;
+        }
+      }
+    }
+  },
   isModified: function (x) {
     return (this.modFlag[x]);
   },
   setModified: function (x) {
     this.modFlag[x] = true;
   },
-  createPlotDOMElement: function (doc, forComp) {
+  isUserSet: function(attr) {
+    return (this.userSetAttrs.indexOf(attr) >= 0);
+  },
+  markUserSet: function(attr, bUserSet) {
+    var nIndex = this.userSetAttrs.indexOf(attr);
+    if ((nIndex >= 0) && !bUserSet)
+      this.userSetAttrs.splice(nIndex,1);
+    else if ((nIndex < 0) && bUserSet)
+      this.userSetAttrs.push(attr);
+  },
+  getDimension : function()
+  {
+    return this.parent.getDimension();
+  },
+  varNameFromFoundVariable : function(whichVar)
+  {
+    if (!this.hasVariable(whichVar))
+      return false;
+    return (this.attributes["DefaultedVars"].indexOf(whichVar) < 0);
+  },
+  hasVariable : function(whichVar)
+  {
+    if (whichVar == "AnimVar")
+    {
+      return (this.attributes["Animate"] === "true");
+    }
+    var plottype = this.attributes["PlotType"];
+    var nWhichVar = Graph.prototype.plotVariablePropertyNames.indexOf(whichVar);
+    return ((nWhichVar >= 0) && (nWhichVar < plotVarsNeeded(this.getDimension(), plottype, false)) );
+      //pass "false" for animated to plotVarsNeeded, as we don't care about animation here
+  },
+  createPlotDOMElement: function (doc, forComp, graphData) {
      // return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
      // do the plot attributes as DOM attributes of <plot>
     var status = this.PlotStatus;
     var attr;
     if (status != "Deleted") {
+      var plotData = graphData ? graphData.findPlotData(this) : null;
+      if (plotData)
+        this.checkAnimationVar(plotData);
       var DOMPlot = doc.createElement("plot");
       var attrs = (forComp) ? this.plotCompAttributeList() : this.plotAttributeList();
       for (var i=0; i<attrs.length; i++) {
@@ -449,6 +801,7 @@ Plot.prototype = {
              DOMPlot.setAttribute (attr, value);
   //      }
       }
+      DOMPlot.setAttribute("PlotStatus", status);
       // do the plot elements as document fragment children of <plot>
       attrs = (forComp) ? this.plotCompElementList() : this.plotElementList();
       for (i=0; i<attrs.length; i++) {
@@ -456,7 +809,10 @@ Plot.prototype = {
         if (forComp || (this.element[attr])) {
           var DOMEnode = doc.createElement(attr);
           var textval = this.element[attr];
+          if ((attr == "Expression") && forComp)
+            textval = this.adjustExpressionForComputation(plotData);
           if ((textval !=="") && (textval !== "unspecified")) {
+            textval = runFixup(runFixup(textval));
             var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
             DOMEnode.appendChild (tNode.documentElement);
             DOMPlot.appendChild (DOMEnode);
@@ -466,6 +822,50 @@ Plot.prototype = {
       return DOMPlot;
     }
     return null;
+  },
+  adjustExpressionForComputation : function(plotData) {
+    switch(this.attributes.PlotStatus)
+    {
+      case "New":
+      case "Deleted":
+      case "ERROR":
+        return this.element["Expression"];
+      break;
+      default:
+      break;
+    }
+    switch( plotData.plottype )
+    {
+      case "polar":
+      case "spherical":
+      case "cylindrical":
+        if (!plotData.isParametric())
+        {
+          return runFixup(runFixup(createPolarExpression(this)));
+        }
+      break;
+
+      default:
+      break;
+    }
+    return this.element["Expression"];
+  },
+  //the following is really only correcting for "old-style" animated plots which may have been saved - where the 
+  //  animation var isn't identified as such, but is just an extra variable
+  checkAnimationVar : function(plotData) {
+    if (this.attributes["Animate"] === "true")
+    {
+      if (!this.element["AnimVar"] || !this.element["AnimVar"].length)
+      {
+        var numPlainVars = plotData.numPlainVariablesNeeded();
+        var extraVar = plotData.getVariableByIndex(numPlainVars);
+        if (extraVar && extraVar.length)
+        {
+          this.element["AnimVar"] = extraVar;
+          plotData.setVariableByIndex(numPlainVars, "");
+        }
+      }
+    }
   },
   revisePlotDOMElement: function (doc, forComp, domPlot) {
     // return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
@@ -490,6 +890,7 @@ Plot.prototype = {
           var DOMEnode = doc.createElement(attr);
           var textval = this.element[attr];
           if ((textval !== "") && (textval !== "unspecified")) {
+            textval = runFixup(runFixup(textval));
             var tNode = (new DOMParser()).parseFromString(textval, "text/xml");
             DOMEnode.appendChild(tNode.documentElement);
             DOMPlot.appendChild(DOMEnode);
@@ -519,8 +920,11 @@ Plot.prototype = {
     // of the first child. For DOM fragment, store serialization of the fragment.
     //var children = DOMPlot.childNodes;
     var child = DOMPlot.firstChild;
-    while (child) {
-      key = child.localName;
+    for (j = 0; j < DOMPlot.childNodes.length; ++j)
+    {
+      child = DOMPlot.childNodes[j];
+//      key = child.localName;
+      key = msiGetBaseNodeName(child);
       if (child.nodeType === Node.ELEMENT_NODE) {
         var mathnode = child.getElementsByTagName("math")[0];
         var serialized = this.parent.ser.serializeToString(mathnode);
@@ -531,59 +935,82 @@ Plot.prototype = {
   },
   getPlotValue: function (key) {
     // look up the value key. If not found, look up the default value.
-    var value = this[key];
+    var value;
+    if (key in this)
+      value = this[key];
+    else if (key in this.attributes)
+      value = this.attributes[key];
+    else if (key in this.element)
+      value = this.element[key];
     if ((value !== null) && (value !== "")) {
       return value;
     }
-    var ptype = this.PlotType;
-    if ((key === "XPts") || (key === "YPts") || (key === "ZPts")) {
-      var dim = this.parent.getValue("Dimension");
-      if (dim === "2") {
-        switch (ptype) {
-        case "implicit":
-          value = GetNumAsMathML(20);
-          break;
-        case "gradient":
-        case "vectorField":
-          value = GetNumAsMathML(10);
-          break;
-        case "inequality":
-          value = GetNumAsMathML(80);
-          break;
-        case "conformal":
-          value = GetNumAsMathML(20);
-          break;
-        default:
-          value = GetNumAsMathML(400);
-          break;
-        }
-      } else {
-        switch (ptype) {
-        case "parametric":
-        case "curve":
-          value = GetNumAsMathML(80);
-          break;
-        case "implicit":
-          value = GetNumAsMathML(6);
-          break;
-        case "gradient":
-        case "vectorField":
-          value = GetNumAsMathML(6);
-          break;
-        case "tube":
-          value = GetNumAsMathML(40);
-          break;
-        case "approximateIntegral":
-          value = GetNumAsMathML(400);
-          break;
-        default:
-          value = GetNumAsMathML(20);
-          break;
-        }
-      }
-      return value;
+    switch(key)
+    {
+      case "XPts":
+      case "YPts":
+      case "ZPts":
+        return this.getDefaultNumPlotPoints(key);
+      break;
+      case "AnimateStart":
+      case "AnimateEnd":
+      case "AnimateFPS":
+        if (this.getPlotValue("AnimCommonOrCustomSettings") === "common")
+          return this.parent.getValue(key);
+      break;
+      default:
+      break;
     }
-    return (plotGetDefaultPlotValue(key));
+    return (this.getDefaultPlotValue(key));
+  },
+  getDefaultNumPlotPoints : function (key) {
+    var ptype = this.attributes["PlotType"];
+    var dim = Number(this.parent.getValue("Dimension"));
+    var value;
+    if (dim === 2) {
+      switch (ptype) {
+      case "implicit":
+        value = GetNumAsMathML(20);
+        break;
+      case "gradient":
+      case "vectorField":
+        value = GetNumAsMathML(10);
+        break;
+      case "inequality":
+        value = GetNumAsMathML(80);
+        break;
+      case "conformal":
+        value = GetNumAsMathML(20);
+        break;
+      case "approximateIntegral":
+        value = GetNumAsMathML(400);
+        break;
+      default:
+        value = GetNumAsMathML(400);
+        break;
+      }
+    } else {
+      switch (ptype) {
+      case "parametric":
+      case "curve":
+        value = GetNumAsMathML(80);
+        break;
+      case "implicit":
+        value = GetNumAsMathML(6);
+        break;
+      case "gradient":
+      case "vectorField":
+        value = GetNumAsMathML(6);
+        break;
+      case "tube":
+        value = GetNumAsMathML(40);
+        break;
+      default:
+        value = GetNumAsMathML(20);
+        break;
+      }
+    }
+    return value;
   },
   getDefaultPlotValue: function (key) {
     // get defaults from preference system, or if not there, from hardcoded list
@@ -605,11 +1032,24 @@ Plot.prototype = {
       case 'ConfVerticalPts':
         value = "15";
         break;
+      case 'TubeRadialPts':
+        value = GetNumAsMathML(9);
+      break;
         //      default:
         //        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
       case 'Expression':
         value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi tempinput='true'></mi></math>";
         break;
+      case 'TubeRadius':
+        value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>";
+      break;
+      case 'AnimCommonOrCustomSettings':
+        value = "common";
+      break;
+      case 'AnimateVisBefore':
+      case 'AnimateVisAfter':
+        value = "true";
+      break;
       default:
         value = "";
       }
@@ -617,14 +1057,18 @@ Plot.prototype = {
     return value;
   },
   plotAttributeList: function () {
-    return (this.PLOTATTRIBUTES);
+    var NA = this.plotCompAttributeList();
+    NA.push("PlotStatus");  //this is the only thing removed in plotCompAttributeList() which should be returned!
+    return NA;
+//    return (this.PLOTATTRIBUTES);
   },
   plotElementList: function () {
-    return (this.PLOTELEMENTS);
+    return this.plotCompElementList();
+//    return (this.PLOTELEMENTS);
   },
   plotCompAttributeList: function () {
     var NA;
-    var dim = this.parent["Dimension"];
+    var dim = Number(this.parent["Dimension"]);
     var ptype = this.attributes["PlotType"];
     var animate = this.attributes["Animate"];
     NA = attributeArrayRemove(this.PLOTATTRIBUTES, "PlotStatus");
@@ -671,37 +1115,63 @@ Plot.prototype = {
     return NA;
   },
   plotCompElementList: function () {
-    var dim = this.parent["Dimension"];
+    var dim = this.getDimension();
     var animate = this.attributes["Animate"];
     var ptype = this.attributes["PlotType"];
     var NA = this.PLOTELEMENTS;
 
     if (ptype != "tube") {
       NA = attributeArrayRemove(NA, "TubeRadius");
+      NA = attributeArrayRemove(NA, "TubeRadialPts");
     }
 
-    var nvars = plotVarsNeeded(dim, ptype, animate);
+    var nvars = plotVarsNeeded(dim, ptype, false);
+//    var nvars = plotVarsNeeded(dim, ptype, animate);
 
     if (nvars < 2) {
+      NA = attributeArrayRemove(NA, "YVar");
       NA = attributeArrayRemove(NA, "YPts");
       NA = attributeArrayRemove(NA, "YMax");
       NA = attributeArrayRemove(NA, "YMin");
     }
 
     if (nvars < 3) {
+      NA = attributeArrayRemove(NA, "ZVar");
       NA = attributeArrayRemove(NA, "ZPts");
       NA = attributeArrayRemove(NA, "ZMax");
       NA = attributeArrayRemove(NA, "ZMin");
     }
 
+    if (!animate)
+    {
+      NA = attributeArrayRemove(NA, "AnimVar");
+      NA = attributeArrayRemove(NA, "AnimMax");
+      NA = attributeArrayRemove(NA, "AnimMin");
+    }
+
     return NA;
   },
   getPlotAttribute: function (name) {
-    return (this[name]);
+    return (this.attributes[name]);
+  },
+  setPlotValue : function (name, value) {
+    if (this.PLOTATTRIBUTES.indexOf(name) >= 0)
+      this.setPlotAttribute(name, value);
+    else if (this.PLOTELEMENTS.indexOf(name) >= 0)
+      this.setPlotElement(name, value);
   },
   setPlotAttribute: function (name, value) {
-    this[name] = value;
+    this.attributes[name] = value;
     this.setModified(name);
+  },
+  setPlotElement : function (name, value) {
+    this.element[name] = value;
+    this.setModified(name);
+  },
+  copyPlotAttributes : function(otherPlot, attrArray)
+  {
+    for (var jj = 0; jj < attrArray.length; ++jj)
+      this.setPlotValue( otherPlot.getPlotValue(attrArray[jj]) );
   },
   computeQuery: function () {
     // call the compute engine to guess at graph attributes
@@ -842,9 +1312,9 @@ Frame.prototype = {
       }
     }
   },
-  reviseFrameDOMElement: function (DOMFrame, DOMPw, editorElement) {
+  reviseFrameDOMElement: function (DOMFrame, DOMPw, forComp, editorElement) {
     var editor = msiGetEditor(editorElement);
-    var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, placeLocation, floattts, fltatt, ch, captionlocation;
+    var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, pos, placeLocation, floattts, fltatt, ch, captionlocation, x;
     var DOMObj = DOMPw.getElementsByTagName("object")[0];
     var frmStyle = "";
     var pwStyle = "";
@@ -997,11 +1467,25 @@ Frame.prototype = {
       // put the graph file in
       // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use
       // the load API
-      if (false) { //DOMObj.load) {
-        DOMObj.load(graph.getGraphAttribute("ImageFile"));
-      }
-      else {
-        DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
+      if (!forComp)  //don't trigger any loading if we're only serializing - this isn't a "real" <object>
+      {
+        var existingObjFile = DOMObj.getAttribute("data");
+        var newImageFile = graph.getGraphAttribute("ImageFile");
+        var bLoadIt = false;
+        if (newImageFile && newImageFile.length)
+        {
+          if (!existingObjFile || !existingObjFile.length)
+            bLoadIt = true;
+          else
+            bLoadIt = isDifferentPlotFile(existingObjFile, newImageFile, editorElement);
+        }
+        if (bLoadIt)
+        {
+          if (DOMObj.addEvent) //the object is connected to the VCam interface - use its "load" member
+            DOMObj.load(graph.getGraphAttribute("ImageFile"));
+          else
+            DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
+        }
       }
       var filetype = graph.getDefaultValue("DefaultFileType");
       msidump("SMR file type is " + filetype + "\n");
@@ -1015,7 +1499,7 @@ Frame.prototype = {
       }
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
-      DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
+//      DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
       editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
       editor.setAttribute(DOMObj, "style", objStyle);
@@ -1038,7 +1522,7 @@ function newPlotFromText(currentNode, expression, editorElement) {
     plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
     graph.addPlot(plot);
     graph.recomputeVCamImage(editorElement);
-    graph.reviseGraphDOMElement(currentNode, editorElement);
+    graph.reviseGraphDOMElement(currentNode, true, editorElement);
     //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
   }
   catch (e) {
@@ -1132,7 +1616,7 @@ function nonmodalRecreateGraph(graph, DOMGraph, editorElement) {
 
 //    var parent = DOMGraph.parentNode;
 //    var editor = msiGetEditor(editorElement);
-    graph.reviseGraphDOMElement(DOMGraph, editorElement);
+    graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
 //    insertGraph(DOMGraph, graph, editorElement);
 //    editor.deleteNode(DOMGraph);
   }
@@ -1162,6 +1646,11 @@ function makeRelPathAbsolute(relpath, editorElement) {
     dump("Error: " + e + "\n");
   }
   return longfilename;
+}
+function isDifferentPlotFile(oldpath, newpath, editorElement) {
+  var oldURI = msiCreateURI(msiMakeAbsoluteUrl(oldpath, editorElement));
+  var newURI = msiCreateURI(msiMakeAbsoluteUrl(newpath, editorElement));
+  return (!oldURI.equals(newURI));
 }
 function insertGraph(siblingElement, graph, editorElement) {
   /**----------------------------------------------------------------------------------*/
@@ -1250,15 +1739,77 @@ function wrapmi(thing) {
   // wrap this mathml fragment string inside a mathml <mi> element
   return ("<mi>" + thing + "</mi>");
 }
-function graphSaveVars(varList, plot) {
-  if (varList[0] !== "") {
-    plot.element["XVar"] = wrapMath(wrapmi(varList[0]));
+function graphSaveVars(varList, plot, animated) {
+  var nLast = varList.length - 1;
+  while (nLast >= 0 && varList[nLast] === "")
+    --nLast;
+  if (nLast < 0)
+  {
+    msidump("In GraphOverlay.js, graphSaveVars(), only empty variables passed in!\n");
+    return;
   }
-  if (varList[1] !== "") {
-    plot.element["YVar"] = wrapMath(wrapmi(varList[1]));
+
+  var varNames = ["XVar", "YVar", "ZVar"];
+  if (animated) {
+    plot.element["AnimVar"] = varList[nLast--];
   }
-  if (varList[2] !== "") {
-    plot.element["ZVar"] = wrapMath(wrapmi(varList[2]));
+  for (; nLast >= 0; --nLast)
+  {
+    if (varList[nLast] !== "") {
+      plot.element[varNames[nLast]] = varList[nLast];
+    }
+  }
+}
+function graphSaveVariablesAndDefaults(graph, plot, retVariables)
+{
+  var whichVar;
+  for (whichVar in retVariables.found)
+    plot.element[whichVar] = retVariables.found[whichVar];
+  plot.attributes["DefaultedVars"] = "";
+  for (whichVar in retVariables.defaulted)
+  {
+    plot.element[whichVar] = retVariables.defaulted[whichVar];
+    if (plot.attributes["DefaultedVars"].length)
+      plot.attributes["DefaultedVars"] += "," + whichVar;
+    else
+      plot.attributes["DefaultedVars"] = whichVar;
+  }
+  if ("axes" in retVariables)
+  {
+    var currAxesLabels = {};
+    var discarded = [];
+    var needReplace = [];
+    var axisName;
+    var nIndex = -1;
+    var jj, kk;
+    for (var jj = 0; jj < graph.graphAxesPropertyNames.length; ++jj)
+    {
+      axisName = graph.graphAxesPropertyNames[jj];
+      currAxesLabels[axisName] = graph.getValue(axisName);
+    }
+    for (whichVar in retVariables.axes)
+    {
+      if (currAxesLabels[whichVar] == retVariables.axes[whichVar])
+        continue;  //nothing to do
+      for (axisName in currAxesLabels)
+      {
+        if (currAxesLabels[axisName] == retVariables.axes[whichVar])
+          needReplace.push(axisName);
+      }
+      discarded.push(whichVar);
+      graph[whichVar] = retVariables.axes[whichVar];
+    }
+    var bForward, replaceVal;
+    for (jj = 0; jj < needReplace.length; ++jj)
+    {
+      bForward = (needReplace[jj] === graph.graphAxesPropertyNames[0]);
+      if (bForward)
+        replaceVal = discarded.shift();
+      else
+        replaceVal = discarded.pop();
+      if (replaceVal)
+        graph[needReplace[jj]] = currAxesLabels[replaceVal];
+    }
   }
 }
 function attributeArrayRemove(A, element) {
@@ -1313,7 +1864,8 @@ function plotVarsNeeded(dim, ptype, animate) {
     alert("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype);
     break;
   }
-  if (dim === "3") nvars++;
+  if ((dim === 3) && (ptype !== "explicitList"))
+    nvars++;
   if (animate === "true") nvars++;
   return (nvars);
 }
@@ -1351,100 +1903,113 @@ function parseQueryReturn(out, graph, plot) {
   var result;
   var variableList = [];
   var pt = plot.attributes["PlotType"];
-  var dim = plot.parent["Dimension"];
+  var dim = Number(graph["Dimension"]);
   var animated = (plot.attributes["Animate"] === "true");
-  var mathvars = false,
-    commas = false;
+//  var mathvars = false,
+//    commas = false;
+  var ii;
 
   // (1) try to identify all of the variables
   //     Variables are indicated by <mi>, but these might also be mathnames of functions
-  var count = 0;
-  var index = 0;
-  var start;
-  while ((start = out.indexOf("<mi", index)) >= 0) {
-    mathvars = true;
-    start = out.indexOf(">", start);
-    var stop = out.indexOf("</mi>", start) + 1; // find </mi>
-    index = stop + 1;
-    var v = out.slice(start + 1, stop - 1);
-    if (nameNotIn(v, stack)) {
-      stack.push(v);
-    }
-  }
-  for (var i = 0; i < stack.length; i++) {
-    if (varNotFun(stack[i])) {
-      variableList.push(stack[i]);
-    }
-  }
+//  var count = 0;
+//  var index = 0;
+//  var start;
+//  while ((start = out.indexOf("<mi", index)) >= 0) {
+//    mathvars = true;
+//    start = out.indexOf(">", start);
+//    var stop = out.indexOf("</mi>", start) + 1; // find </mi>
+//    index = stop + 1;
+//    var v = out.slice(start + 1, stop - 1);
+//    if (nameNotIn(v, stack)) {
+//      stack.push(v);
+//    }
+//  }
+//  for (var i = 0; i < stack.length; i++) {
+//    if (varNotFun(stack[i])) {
+//      variableList.push(stack[i]);
+//    }
+//  }
+  var fixedOut = runFixup(runFixup(out));
+  plot.element["Expression"] = fixedOut;  //this may be sharpened below, but for now
 
-  // check variables
-  var varsNeeded = plotVarsNeeded(dim, pt, animated);
+//  var varsList;
+//  varsList = GetCurrentEngine().getVariables(fixedExpr);
+//  var foundVariables = splitMathMLList(varsList);
+//  var isParametric = (foundVariables && foundVariables.length == dim);
+
+  var varData = new graphVarData( graph );
+  var retVariables;
+
+//  // check variables
+//  var varsNeeded = plotVarsNeeded(dim, pt, animated);
+//  var altvariableList;
 
   // (2) Given a list of potential variables, match them to x,y,z, and t
-  variableList = matchVarNames(variableList, animated);
-  if (variableList) graphSaveVars(variableList, plot);
+  try
+  {
+    retVariables = doAnalyzeVars(varData, plot);
+  } catch(ex) 
+  {msidump("Error in GraphOverlay.js, parseQueryReturn: " + ex + "\n");}
 
+//  for (ii = 0; ii < variableList.length; ++ii)
+//    variableList[ii] = variableList[ii].textContent;
+//  variableList = matchVarNames(variableList, animated);
+  if (retVariables)
+    graphSaveVariablesAndDefaults(graph, plot, retVariables);
+
+//  if (variableList) graphSaveVars(variableList, plot);
+
+  //rwa - following are now done during doAnalyzeVars() - if the plottype is to change, we should know it before
+  //      setting the variables!
   // (3) identify explicitList and parametric types
-  // graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");
-  // Count the number of elements in the returned expression. If it's equal to the
-  // dimension, set the plot type to parametric.
-  var commalst = out.match(/<mo>,<\/mo>/g);
-  if (commalst) {
-    commas = true;
-    var n = commalst.length + 1;
-    // probably only want to do the following for "rectangular" plots
-    if ((dim === n) && (pt != "vectorField") & (pt != "polar") && (pt != "cylindrical") && (pt != "spherical") && (pt != "tube")) {
-      plot.attributes["PlotType"] = "parametric";
-    }
-  }
-
   // (4) try to identify explicit lists
-  if ((!commas) && (!mathvars)) {
-    if (out.indexOf("<mtable>") >= 0) {
-      plot.attributes["PlotType"] = "explicitList";
-    }
-  }
+  var plotData = varData.findPlotData(plot);
+  plot.attributes["PlotType"] = pt = plotData.plottype;
 
+  //rwa - the adjustment of polar forms should only take place when building the computation input. We should
+  //  leave the user's original form stored. Accordingly, this functionality is now called from plot.createDOMPlotElement
+  //  (via a call to plot.adjustExpressionForComputation()).
   // (5) some special handling for polar, spherical, and cylindrical
   //     build an expression that looks like [r,t] for polar, [r,t,p] for spherical and cylindrical
   //     Allow constants. For animations, if there is only 1 var, it's the animation var.
-  if ((pt === "polar") || (pt === "spherical") || (pt === "cylindrical")) {
-    if (!commas) { // create [fn, xvar]
-      if ((!mathvars) || ((animated) && (actualVarCount(variableList) === 1))) {
-        // first arg is a constant, the rest are new
-        var animvar = variableList[0];
-        variableList[0] = newVar("1");
-        plot.element["XVar"] = wrapMath(wrapmi(variableList[0]));
-        variableList[1] = newVar("2");
-        plot.element["YVar"] = wrapMath(wrapmi(variableList[1]));
-        if (animated) {
-          if (pt === "polar") {
-            plot.element["YVar"] = wrapMath(wrapmi(animvar));
-          } else {
-            plot.element["ZVar"] = wrapMath(wrapmi(animvar));
-          }
-        }
-      }
-      //out = runFixup(createPolarExpr(out, variableList, pt));
-      plot.element["Expression"] = out;
-    }
-  }
+//  if ((pt === "polar") || (pt === "spherical") || (pt === "cylindrical")) {
+//    if (!bParametric)
+//    {
+//////    if (!commas) { // create [fn, xvar]
+////      if ( (!mathvars) || ((animated) && (actualVarCount(variableList) < 2)) ) {
+////        // first arg is a constant, the rest are new
+////        var animvar = variableList[0];
+////        variableList[0] = newVar("1");
+////        plot.element["XVar"] = wrapMath(wrapmi(variableList[0]));
+////        variableList[1] = newVar("2");
+////        plot.element["YVar"] = wrapMath(wrapmi(variableList[1]));
+////        if (animated) {
+////          if (pt === "polar") {
+////            plot.element["YVar"] = wrapMath(wrapmi(animvar));
+////          } else {
+////            plot.element["ZVar"] = wrapMath(wrapmi(animvar));
+////          }
+////        }
+//      fixedOut = runFixup(createPolarExpression(plot));
+////      }
+////      plot.element["Expression"] = fixedOut;  //This will be done in the next step anyway...
+//    }
+//  }
 
   // (6) add the ilk="enclosed-list" attribute to <mfenced>
-  if (out) {
+  if (fixedOut) {
     if ((pt === "polar") || (pt === "spherical") || (pt === "cylindrical") || (pt === "parametric") || (pt === "gradient") || (pt === "vectorField")) {
-      var hasilk = out.indexOf("ilk=", 0);
+      var hasilk = fixedOut.indexOf("ilk=", 0);
       if (hasilk === - 1) {
-        var s = out.indexOf("<mfenced", 0);
-        if (s > 0) {
-          out = out.slice(0, s) + "<mfenced ilk=\"enclosed-list\" " + out.slice(s + 8);
+        var s = fixedOut.indexOf("<mfenced", 0);
+        if (s >= 0) {
+          fixedOut = fixedOut.slice(0, s) + "<mfenced ilk=\"enclosed-list\" " + fixedOut.slice(s + 8);
         }
       }
-      out = runFixup(out);
-      plot.element["Expression"] = out;
+      fixedOut = runFixup(fixedOut);
+      plot.element["Expression"] = fixedOut;
     }
   }
-
 }
 function varNotFun(v) {
   // return true unless v is one of the function names
@@ -1468,7 +2033,1049 @@ function nameNotIn(vin, list) {
   }
   return ret;
 }
-function matchVarNames(variableList, animated) {
+
+//Here "expr" is a vector or set expressed as a MathML (fenced?) mrow or as an mfence.
+//We return the elements of the set or vector connoted by "expr" as MathML DOM nodes.
+//If "bFenced" is set to true, we insist on having opening and closing delimiters and separators, otherwise returning null.
+//  (Also if "bFenced" is true, we don't dump the complaining messages - this allows function to be used to test for a list.)
+function splitMathMLList(expr, bFenced)
+{
+  if (!bFenced)
+    bFenced = false;  //if this wasn't passed in at all, set to false
+  var retArray = [];
+
+  var littleDoc = (new DOMParser()).parseFromString (expr, "text/xml");
+  var topNode = littleDoc.documentElement;
+  var childName;
+  var bTopFound = false;
+  while (!bTopFound && (topNode.childNodes.length == 1))
+  {
+    childName = msiGetBaseNodeName(topNode.childNodes[0]);
+    switch(childName)
+    {
+      case "math":
+      case "mrow":
+      case "mstyle":
+      case "mfenced":
+        topNode = topNode.childNodes[0];
+      break;
+      default:
+        bTopFound = true;
+      break;
+    }
+  }
+  var theNodes = msiNavigationUtils.getSignificantContents(topNode);
+  if (msiGetBaseNodeName(topNode) == "mfenced")
+    return theNodes;
+  var nStart = 0;
+  var nEnd = theNodes.length - 1;
+  var aChild;
+  aChild = theNodes[nEnd];
+  if (aChild.nodeName != "mo")
+  {
+    if (bFenced)
+      return [topNode];
+    msidump("In GraphOverlay.js, splitMathMLList(), expression closes with non-delimiter: " + content + "\n");
+  }
+  else
+  {
+    if ((aChild.getAttribute("form") != "postfix") && !bFenced)
+      msidump("In GraphOverlay.js, splitMathMLList(), last <mo> isn't marked as postfix: " + content + "\n");  //But assume it is anyway
+    --nEnd;  //if the last is a closing delimiter, stop before it
+  }
+  aChild = theNodes[0];
+  if (aChild.nodeName != "mo")
+  {
+    if (bFenced)
+      return [topNode];
+    msidump("In GraphOverlay.js, splitMathMLList(), expression opens with non-delimiter: " + content + "\n");
+  }
+  else
+  {
+   if ((aChild.getAttribute("form") != "prefix") && !bFenced)
+      msidump("In GraphOverlay.js, splitMathMLList(), opening <mo> isn't marked as prefix: " + content + "\n");  //But assume it is anyway
+    ++nStart;  //if the last is a closing delimiter, stop before it
+  }
+
+  if (nStart == nEnd)  //Special code dealing with only one element - it may be an <mrow> or such simply containing the elements (though that isn't correct markup, really)
+  {
+    switch( msiGetBaseNodeName(theNodes[nStart]) )
+    {
+      case "mrow":
+      case "mstyle":
+      case "mphantom":
+      case "mpadded":
+        retArray = removeDelimitersFromNodeList( msiNavigationUtils.getSignificantContents(theNodes[nStart]) );
+        if (retArray.length > 1)
+        {
+          if (msiGetBaseNodeName(retArray[0]) == "mo")
+          {
+            switch(retArray[0].textContent)
+            {
+              case "{":
+              case "(":
+              case "[":
+                //don't want to use these contents if they're in a "fence inside a fence"
+              break;
+              default:
+                return retArray;
+              break;
+            }
+          }
+          else
+            return retArray;
+        }
+      break;
+    }
+  }
+
+  retArray = removeDelimitersFromNodeList(theNodes.slice(nStart, nEnd+1));
+  return retArray;
+}
+
+function removeDelimitersFromNodeList(nodeArray, delimiterList)
+{
+  if (!delimiterList)
+    delimiterList = [","];
+  var sep = 1;
+  var entry = 2;
+  var prevWas = sep;
+  var retArray = [];
+
+  var aChild;
+  for (var nKid = 0; nKid < nodeArray.length; ++nKid)
+  {
+    aChild = nodeArray[nKid];
+    if (aChild.nodeName == "mo")
+    {
+      var content = TrimString(aChild.textContent);
+      if (delimiterList.indexOf(content) >= 0)
+        prevWas = sep;
+      else if (prevWas == sep)
+      {
+        msidump("In GraphOverlay.js, splitMathMLList(), found <mo> where expected entry: " + content + "\n");
+        retArray.push(aChild);
+        prevWas = entry;
+      }
+      else
+        prevWas = sep;
+    } 
+    else if (prevWas == sep)
+    {
+      prevWas = entry;
+      retArray.push(aChild);
+    }
+  }
+  return retArray;
+}
+
+function orderMathNodes(node1, node2)
+{
+  if (node1.textContent < node2.textContent)
+    return -1;
+  if (node2.textContent < node1.textContent)
+    return 1;
+  return 0;
+}
+
+//function extractVariableData(graph, plotnum)
+//{
+//  var dim = graph["Dimension"];
+//  var fixedExpr = runFixup(runFixup(graph.getPlotValue("Expression", plotnum)));
+//  var splitExpr = splitMathMLExpression(fixedExpr);
+//  var bParametric = (splitExpr.length == dim);
+//  var aPlotType = graph.getPlotValue("PlotType",plotnum);
+//  var bAnimated = (graph.getPlotValue("Animate",plotnum)=="true");
+//  var varsNeeded = plotVarsNeeded(dim, aPlotType, bAnimated);
+//
+//  var rawvarsList =  GetCurrentEngine().getVariables(fixedExpr);
+//  var foundVarsList = splitMathMLList(rawvarsList);
+//  foundVarsList.sort(orderMathNodes);
+//  var textVars = [];
+//  var xmlVars = [];
+//  for (var ii = 0; ii < foundVarsList.length; ++ii)
+//  {
+//    textVars.push( foundVarsList[ii].textContent );
+//    xmlVars.push( graph.ser.serializeToString(foundVarsList[ii]) );
+//  }
+//
+//  retval = {mPlotType : aPlotType, mVarsNeeded : varsNeeded, mbAnimated : bAnimated,
+//            mExpr : fixedExpr, mVarList : foundVarsList, xmlVarList : xmlVars );
+//}
+
+var plotVarDataBase = 
+{
+  checkPlotType : function()
+  {
+    if (this.isExplicitList())
+      this.plottype = "explicitList";
+    else if (this.isParametric())
+    {
+      switch(this.plottype)
+      {
+        case "vectorField":
+        case "polar":
+        case "cylindrical":
+        case "spherical":
+        case "tube":
+        break;
+        default:
+          if ((this.dim == 3) && (this.numPlainVariablesFound() < 2))
+            this.plottype = "curve";
+          else
+            this.plottype = "parametric";
+        break;
+      }
+    }
+    return this.plottype;
+  },
+  numPlainVariablesNeeded : function()
+  {
+    return plotVarsNeeded(this.dim, this.plottype, false);
+  },
+  numPlainVariablesFound : function()
+  {
+    var foundVars = this.foundVarList();
+    if ((foundVars.length > 0) && this.animated)
+      return foundVars.length - 1;
+    return foundVars.length;
+  },
+  plotVarName : function(nWhichVar)
+  {
+    return Graph.prototype.plotVariablePropertyNames[nWhichVar];
+  },
+  getVariableByIndex : function(nWhichVar)
+  {
+    var whichVar = this.plotVarName(nWhichVar);
+    return this.mPlot.element[whichVar];
+  },
+  setVariableByIndex : function(nWhichVar, mathExpr)
+  {
+    var whichVar = this.plotVarName(nWhichVar);
+    this.mPlot.element[whichVar] = mathExpr;
+  },
+  expressionAsList : function()
+  {
+    if (!this.mSplitExprList)
+      this.mSplitExprList = splitMathMLList(this.mPlot.element["Expression"], true);
+    return this.mSplitExprList;
+  },
+  varTeXForm : function(whichVar)
+  {
+    if (!this.texVars)
+      this.texVars = {XVar : "", YVar : "", ZVar : "", AnimVar : ""};
+    if (!this.texVars[whichVar].length)
+    {
+      this.texVars[whichVar] = this.parent.convertXMLFragToSimpleTeX(this.mPlot.element[whichVar]);
+//      this.texVars[whichVar] = xmlFragToTeX(this.mPlot.element[whichVar]);
+    }
+    return this.texVars[whichVar];
+  },
+  foundVarList : function()
+  {
+    if (!this.mFoundVars)
+    {
+      var rawVars = GetCurrentEngine().getVariables(this.mPlot.element["Expression"]);
+      var foundVarList = splitMathMLList(rawVars);
+      foundVarList.sort(orderMathNodes);
+      this.mFoundVars = [];
+      var topVarNode;
+      for (var ii = 0; ii < foundVarList.length; ++ii)
+      {
+        if (msiGetBaseNodeName(foundVarList[ii]) == "math")
+          topVarNode = foundVarList[ii];
+        else
+        {
+          topVarNode = document.createElementNS(mmlns, "math");
+          topVarNode.appendChild(foundVarList[ii]);
+        }
+        this.mFoundVars.push( this.mPlot.parent.ser.serializeToString(topVarNode) );
+      }
+    }
+    return this.mFoundVars;
+  },
+  foundVarTeXList : function()
+  {
+    if (!this.mTeXFoundVars || !this.mTeXFoundVars.length)
+    {
+      var foundVars = this.foundVarList();
+      this.mTeXFoundVars = [];
+      for (var ii = 0; ii < foundVars.length; ++ii)
+        this.mTeXFoundVars.push( this.parent.convertXMLFragToSimpleTeX(foundVars[ii]) );
+    }
+    return this.mTeXFoundVars;
+  },
+  isParametric : function()
+  {
+    return (this.expressionAsList().length == this.dim);
+  },
+  isAnimated : function()
+  {
+    return this.animated;
+  },
+  isExplicitList : function()
+  {
+    if (this.foundVarList.length > 1)
+      return false;
+    if ((this.foundVarList.length > 0) && !this.animated)
+      return false;
+    if (this.expressionAsList().length == 1)
+    {
+      if (msiGetBaseNodeName( this.expressionAsList()[0] ) == "mtable")
+        return true;
+    }
+    return false;
+  },
+  varWasFound : function(whichVar)
+  {
+    return this.mPlot.varNameFromFoundVariable(whichVar);
+//    var foundList = this.foundVarTeXList();
+//    var texVar = this.varTeXForm(whichVar);
+//    for (var jj = 0; jj < foundList.length; ++jj)
+//    {
+//      if (foundList[jj] == texVar)
+//        return true;
+//    }
+//    return false;
+  },
+  varIsUserSet : function(whichVar)
+  {
+    return this.mPlot.isUserSet(whichVar);
+  },
+  matchVariableTeXForm : function(texVar)
+  {
+    var varName;
+    for (var ii = 0; ii < 4; ++ii)
+    {
+      varName = this.plotVarName(ii);
+      if (this.varTeXForm(varName) == texVar)
+        return varName;
+    }
+    return null;
+  }
+};
+
+function plotVarData(plot, dim, graphData)
+{
+  this.mPlot = plot;
+  this.parent = graphData;
+  this.dim = dim;
+  this.animated = (this.mPlot.attributes["Animate"] === "true");
+  this.plottype = plot.attributes["PlotType"];
+}
+
+plotVarData.prototype = plotVarDataBase;
+
+var graphVarDataBase = 
+{
+  graphAxisName : function(nWhichVar)
+  {
+    return this.mGraph.graphAxesPropertyNames[nWhichVar];
+  },
+  axisNameIsUserSet : function(whichVar)
+  {
+    return this.mGraph.isUserSet(whichVar);
+  },
+  findPlotData : function(aPlot)
+  {
+    for (var ii = 0; ii < this.plotData.length; ++ii)
+    {
+      if (this.plotData[ii].mPlot == aPlot)
+      {
+        return this.plotData[ii];
+      }
+    }
+    return null;  
+  },
+  plotVarIsUserSet : function(nWhichPlot, whichVar)
+  {
+    return this.plotData[nWhichPlot].varIsUserSet(whichVar);
+  },
+  matchAxisToTeXName : function(texName, matchArray)
+  {
+    var axisName;
+    var matchIndex;
+    for (var ii = 0; ii < this.dim; ++ii)
+    {
+      axisName = this.graphAxisName(ii);
+      matchIndex = matchArray.indexOf(ii);
+      if (matchIndex < 0)  //we're not looking for this one
+        continue;
+      if (this.mGraph.getValue(axisName) === texName)
+        return Graph.prototype.plotVariablePropertyNames[matchIndex];
+    }
+    return null;
+  },
+  getAxisNameAsVariable : function(varName)
+  {
+    var index = Graph.prototype.plotVariablePropertyNames.indexOf(varName);
+    var texForm;
+    if (index < this.dim)
+      texForm = this.mGraph.getValue(this.graphAxisName(index));
+    if (texForm)
+      return wrapMath(wrapmi(texForm));
+    return null;
+  },
+  getXMLToTeXProcessor : function()
+  {
+    if (!this.xsltProcessor)
+      this.xsltProcessor = setupXMLToTeXProcessor();
+    return this.xsltProcessor;
+  },
+  convertXMLFragToSimpleTeX : function(xmlStr)
+  {
+    var xsltProcessor = this.getXMLToTeXProcessor();
+    var res = processXMLFragWithLoadedStylesheet(xsltProcessor, xmlStr);
+    res = res.replace(/\\mathnormal/g, "");
+    res = res.replace(/\{([^\{\}]*)\}/g, "$1");
+    res = res.replace(/[\$\\]/g,"");
+    return res;
+  },
+  whichAxesTitlesSet : function()
+  {
+    var retArray = [];
+    var axisName, varName;
+    for (var ii = 0; ii < this.dim; ++ii)
+    {
+      axisName = this.graphAxisName(ii);
+      if (this.mGraph.isUserSet(axisName))
+      {
+        retArray.push(axisName);
+        continue;
+      }
+      for (var jj = 0; jj < this.plotData.length; ++jj)
+      {
+        switch(this.plotData[jj].mPlot.getPlotValue("PlotStatus"))
+        {
+          case "New":
+          case "Deleted":
+          case "ERROR":
+            continue;  //don't want to do anything in these cases
+          break;
+        }
+        varName = this.plotData[jj].matchVariableTeXForm(this.mGraph[axisName]);
+        if (varName && this.plotData[jj].varWasFound(varName))
+        {
+          if (Graph.prototype.plotVariablePropertyNames.indexOf(varName) == ii)
+          {
+            retArray.push(axisName);
+            break;
+          }
+        }
+      }
+    }
+    return retArray;
+  }
+};
+
+function graphVarData(graph)
+{
+  this.mGraph = graph;
+  this.dim = Number(graph["Dimension"]);
+  this.animated = graph.isAnimated();
+  this.plotData = [];
+  for (var ii = 0; ii < graph.plots.length; ++ii)
+  {
+    if (graph.plots[ii].attributes.PlotStatus !== "Deleted")
+      this.plotData.push( new plotVarData(graph.plots[ii], this.dim, this) );
+  }
+}
+
+graphVarData.prototype = graphVarDataBase;
+
+var varMatchDataBase = 
+{
+  getPlotData : function()
+  {
+    if (this.whichPlot !== 0)
+      return this.graphData.plotData[this.whichPlot - 1];
+    return null;
+  },
+  getPlot : function()
+  {
+    var pdata = this.getPlotData();
+    if (pdata)
+      return pdata.mPlot;
+    return null;
+  },
+  userSet : function()
+  {
+    if (this.whichPlot == 0)
+      return this.graphData.axisNameIsUserSet(this.whichVar);
+    return this.graphData.plotVarIsUserSet(this.whichPlot - 1, this.whichVar);
+  },
+  varWasFound : function()
+  {
+    var pdata = this.getPlotData();
+    if (pdata)
+      return pdata.varWasFound( this.whichVar );
+    return true; //this is at global graph level - matching an axis name
+  },
+  preferToDefaults : function()
+  {
+    var pdata = this.getPlotData();
+    if (!pdata)  //this is at global graph level - matching an axis name
+      return true;
+    if (this.whichVar == "AnimVar")
+    {
+      return this.targetAnimated;
+    }
+    else if ( Graph.prototype.plotVariablePropertyNames.indexOf(this.whichVar) >= this.targetNumPlainVars)
+      return false;
+    if (pdata.isParametric())
+    {
+      if (!this.targetParametric)
+        return false;
+    }
+    else if (this.targetParametric)
+      return false;
+    var ptype = pdata.plottype;
+    if (plotVarsShouldMatchAxes(this.targetPlotType, this.dim))
+    {
+      if (!plotVarsShouldMatchAxes(ptype, this.dim))
+        return false;
+    }
+    else if (plotVarsShouldMatchAxes(ptype, this.dim))
+      return false;
+
+    switch( this.targetPlotType )
+    {
+      case "cylindrical":
+      case "spherical":
+        if (ptype == "cylindrical" || ptype == "spherical")
+        {
+          return (this.whichVar !== "YVar");
+        }
+        else
+          return false;
+      break;
+    }
+    return true;
+  }
+//  itemIsParametric : function()
+//  {
+//    if ("expressionParametric" in this)
+//      return this.expressionParametric;
+//    if (this.whichPlot != 0)
+//    {
+//      var expr = graph.getPlotValue("Expression", this.whichPlot - 1);
+//      var exprListNodes = splitMathMLList(expr, false);
+//      this.expressionParametric = (exprListNodes && exprListNodes.length == this.dim);
+//      return this.expressionParametric;
+//    }
+//    return false;
+//  }
+};
+
+function varMatchData(graphVarData, nPlot, nVarMatched, matchingVarName, targPlotType, dim, numPlainVars, animated, parametric)
+{
+  this.graphData = graphVarData;
+  this.dim = dim;
+  this.matched = nVarMatched;
+  this.whichPlot = nPlot;
+  this.whichVar = matchingVarName;
+  this.targetAnimated = animated;
+  this.targetPlotType = targPlotType;
+  this.targetParametric = parametric;
+  this.targetNumPlainVars = numPlainVars;
+}
+
+varMatchData.prototype = varMatchDataBase;
+
+//New try.
+//function doAnalyzeVars(foundVarList, graphData, plot, dim, isAnimated, isParametric)
+function doAnalyzeVars(graphVarData, plot)
+{
+//First find matches with existing params in other plot items, if appropriate.
+  var ii, jj, kk;
+  var graph = graphVarData.mGraph;
+  var ourPlotData = graphVarData.findPlotData(plot);
+
+  var graphIsAnimated = graph.isAnimated();
+  var foundVarList = ourPlotData.foundVarList();
+  var isParametric = ourPlotData.isParametric();
+  var isAnimated = ourPlotData.isAnimated();
+  var dim = graphVarData.dim;
+  var ourPlotType = ourPlotData.checkPlotType();
+  var ourNumPlainVars = ourPlotData.numPlainVariablesNeeded();
+  var nVarsFound = foundVarList.length;
+  var nVarsAvailable = nVarsFound;
+  var nVarsNeeded = -1;
+
+  var matchData = [];
+  var numVars, numPlainVars;
+//  var nodeRE = /<\s*([^\s]+)\s([^>\/]+)(\/)?\s*>/g;
+
+  var newVarList = {};
+  for (ii = 0; ii < ourNumPlainVars; ++ii)
+    newVarList[ Graph.prototype.plotVariablePropertyNames[ii] ] = -1;
+  if (isAnimated)
+    newVarList["AnimVar"] = -1;
+
+//This should really be the key, then:
+  function orderMatches(matchDataA, matchDataB)
+  {
+    if (matchDataA.preferToDefaults())
+    {
+      if (!matchDataB.preferToDefaults())
+        return -1;
+    }
+    else if (matchDataB.preferToDefaults())
+      return 1;
+    if (matchDataA.userSet())
+    {
+      if (!matchDataB.userSet())
+        return -1;
+    }
+    else if (matchDataB.userSet)
+    {
+      return 1;
+    }
+    if (matchDataA.varWasFound())
+    {
+      if (!matchDataB.varWasFound())
+        return -1;
+    }
+    else if (matchDataB.varWasFound())
+    {
+      return 1;
+    }
+    if (matchDataA.itemIsParametric())
+    {
+      if (!matchDataB.itemIsParametric())
+        return 1;
+    }
+    else if (matchDataB.itemIsParametric())
+      return -1;
+    if (matchDataA.whichPlot < matchDataB.whichPlot)
+      return -1;
+    else if (matchDataB.whichPlot < matchDataA.whichPlot)
+      return 1;
+    if (matchDataA.whichVar < matchDataB.whichVar)
+      return -1;
+    else if (matchDataB.whichVar < matchDataA.whichVar)
+      return 1;
+    if (matchDataA.matched < matchDataB.matched)
+      return -1;
+    else if (matchDataB.matched < matchDataA.matched)
+      return 1;
+    return 0;  //should never never happen...
+  }
+
+  function findPlaceForVariable(nFoundVar, prefVarName, usedFoundVarsList, assignedVars)
+  {
+    if (usedFoundVarsList.indexOf(nFoundVar) >= 0)
+      return null;
+    if (assignedVars[prefVarName] < 0)
+      return prefVarName;
+    for (var ll in assignedVars)
+    {
+      if (ll == prefVarName)
+        continue;
+      if (assignedVars[ll] < 0)
+        return ll;
+    }
+    return null;
+  }
+
+  var plotData;
+  var matchingVarName;
+  var foundVarsTeX = ourPlotData.foundVarTeXList();
+
+  var axesMatch = plotVarsShouldMatchAxes(ourPlotType, dim);
+  if ((!isParametric) && axesMatch)
+  {
+    for (kk = 0; kk < foundVarsTeX.length; ++kk)
+    {
+      matchingVarName = graphVarData.matchAxisToTeXName(foundVarsTeX[kk], axesMatch);
+      if (matchingVarName)
+      {
+        matchData.push( new varMatchData(graphVarData, 0, kk, matchingVarName, ourPlotType, dim, ourNumPlainVars, false, isParametric) );  
+        //We pass "false" for "animated" for the global graph object; there's no axis string associated with animation variable
+      }
+    }
+  }
+
+  for (ii = 0; ii < graphVarData.plotData.length; ++ii)
+  {
+    if (graphVarData.plotData[ii] === ourPlotData)
+      continue;
+    plotData = graphVarData.plotData[ii];
+//    numPlainVars = plotData.numPlainVars();
+//    animated = plotData.isAnimated();
+    for (kk = 0; kk < foundVarsTeX.length; ++kk)
+    {
+      matchingVarName = plotData.matchVariableTeXForm(foundVarsTeX[kk]);
+      if (matchingVarName)
+      {
+        matchData.push( new varMatchData(graphVarData, ii+1, kk, matchingVarName, ourPlotType, dim, ourNumPlainVars, isAnimated, isParametric) );
+      }
+    }
+  }
+
+  matchData.sort(orderMatches);
+
+  var expectedList, expectedTeXList;
+  var usedFoundVars = [];
+  var varName;
+  var expectedVarLists = plot.expectedVariableLists(ourPlotType, dim, isParametric);
+  var expectedTeXVarLists = [];
+  var animatedVarList = ["t","s","\u03c4"];   //t,s,tau
+  var animatedTeXList = [];
+  for (ii = 0; isAnimated && (ii < animatedVarList.length); ++ii)
+  {
+    animatedTeXList.push( graphVarData.convertXMLFragToSimpleTeX( wrapMath(wrapmi(animatedVarList[ii])) ) );
+  }
+  var nIndex;
+
+  for (ii = 0; (nVarsAvailable > 0) && (ii < matchData.length); ++ii)
+  {
+    if (!matchData[ii].preferToDefaults())
+      break;
+    //We split the matches between those "better" than using default variable names and those "worse".
+    //When we get to the "worse" ones, break and process the defaults.
+
+    if (usedFoundVars.indexOf(matchData[ii].matched) >= 0)
+    {
+      matchData[ii].bNoMatch = true;
+      continue;
+    }
+    varName = matchData[ii].whichVar;
+    varName = findPlaceForVariable(matchData[ii].matched, varName, usedFoundVars, newVarList);
+    if (varName)
+    {
+      newVarList[varName] = matchData[ii].matched;
+      matchData[ii].bUsed = true;
+      usedFoundVars.push(matchData[ii].matched);
+      --nVarsAvailable;
+    }
+  }
+
+  //Now try the default ("expected") names
+  if (isAnimated && (nVarsAvailable >= 0))
+  {
+    for (jj = 0; jj < animatedVarList.length; ++jj)
+    {
+      nIndex = foundVarsTeX.indexOf(animatedVarList[jj]);
+      if ((nIndex >= 0) && (usedFoundVars.indexOf(nIndex) < 0))
+      {
+//        animatedIndex = nIndex;
+        usedFoundVars.push(nIndex);
+        newVarList["AnimVar"] = nIndex;
+        --nVarsAvailable;
+        break;
+      }
+    }
+  }
+  var defaultListUsed = -1;
+  for (ii = 0; ii < expectedVarLists.length; ++ii)
+  {
+    expectedTeXList = [];
+    expectedList = expectedVarLists[ii];
+    for (jj = 0; jj < expectedList.length; ++jj)
+      expectedTeXList.push( graphVarData.convertXMLFragToSimpleTeX( wrapMath(wrapmi(expectedList[jj])) ) );
+    expectedTeXVarLists.push(expectedTeXList);
+  }
+  for (ii = 0; (nVarsAvailable > 0) && (ii < expectedVarLists.length); ++ii)
+  {
+    expectedList = expectedVarLists[ii];
+    expectedTeXList = expectedTeXVarLists[ii];
+    for (jj = 0; (nVarsAvailable > 0) && (jj < expectedList.length); ++jj)
+    {
+      nIndex = foundVarsTeX.indexOf(expectedTeXList[jj]);
+      if ((nIndex >= 0) && (usedFoundVars.indexOf(nIndex) < 0))
+      {
+        if (defaultListUsed < 0)
+          defaultListUsed = ii;
+        varName = Graph.prototype.plotVariablePropertyNames[jj];
+        varName = findPlaceForVariable(nIndex, varName, usedFoundVars, newVarList);
+        if (varName)
+        {
+          newVarList[varName] = nIndex;
+          usedFoundVars.push(nIndex);
+          --nVarsAvailable;
+        }
+      }
+    }
+  }
+  if (defaultListUsed < 0)
+    defaultListUsed = 0;
+
+  //If there are matches left over, resume the loop
+  for (; (nVarsAvailable > 0) && (ii < matchData.length); ++ii)
+  {
+    if (usedFoundVars.indexOf(matchData[ii].matched) >= 0)
+    {
+      matchData[ii].bNoMatch = true;
+      continue;
+    }
+    varName = matchData[ii].whichVar;
+    varName = findPlaceForVariable(matchData[ii].matched, varName, usedFoundVars, newVarList);
+    if (varName)
+    {
+      newVarList[varName] = matchData[ii].matched;
+      matchData[ii].bUsed = true;
+      usedFoundVars.push(matchData[ii].matched);
+      --nVarsAvailable;
+    }
+  }
+
+  //Apportion the rest of the unused found variables, starting with the animation variable if present
+  if (isAnimated && (nVarsAvailable > 0) && (newVarList["AnimVar"] < 0) )
+  {
+    for (jj = 0; jj < foundVarsTeX.length; ++jj)
+    {
+      if (usedFoundVars.indexOf(jj) < 0)
+      {
+        newVarList["AnimVar"] = jj;
+        usedFoundVars.push(jj);
+        --nVarsAvailable;
+        break;
+      }
+    }
+  }
+  for (ii = 0; (nVarsAvailable > 0) && (ii < ourNumPlainVars); ++ii)
+  {
+    varName = Graph.prototype.plotVariablePropertyNames[ii];
+    if (newVarList[varName] < 0)
+    {
+      for (jj = 0; jj < foundVarsTeX.length; ++jj)
+      {
+        if (usedFoundVars.indexOf(jj) < 0)
+        {
+          newVarList[varName] = jj;
+          usedFoundVars.push(jj);
+          --nVarsAvailable;
+          break;
+        }
+      }
+    }
+  }
+
+  //Fill in any holes with default values
+  var outList = {found : {}, defaulted : {}};
+  for (varName in newVarList)
+  {
+    if (newVarList[varName] >= 0)
+    {
+      outList.found[varName] = foundVarList[ newVarList[varName] ];
+    }
+    else  //never found one - use a default?
+    {
+      for (jj = 0; jj < matchData.length; ++jj)
+      {
+        if (matchData.bUsed)
+        {
+          var aPlot = matchData.getPlot();
+          if (!aPlot)
+          {
+            outList.defaulted[varName] = graphVarData.getAxisNameAsVariable(varName);
+            if (outList.defaulted[varName])  //could have returned null
+              break;
+          }
+          if (aPlot && aPlot.varNameFromFoundVariable(varName))
+          {
+            outList.defaulted[varName] = aPlot.element[varName];
+            break;
+          }
+        }
+      }
+      if (!outList.defaulted[varName])  //fall back to expected list
+      {
+        if (varName == "AnimVar")
+          outList.defaulted[varName] = wrapMath(wrapmi(animatedVarList[0]));
+        else
+        {  
+          nIndex = Graph.prototype.plotVariablePropertyNames.indexOf(varName);
+          expectedList = expectedVarLists[defaultListUsed];
+          outList.defaulted[varName] = wrapMath(wrapmi(expectedList[nIndex]));
+        }
+      }
+    }
+  }
+
+//Now send back axis renaming suggestions:
+  if ((!isParametric) && plotVarsShouldMatchAxes(ourPlotType, dim))
+  {
+    outList.axes = {};
+    var alreadySetAxisNames = graphVarData.whichAxesTitlesSet();
+    var axisName;
+    for (ii = 0; ii < dim; ++ii)
+    {
+      varName = Graph.prototype.plotVariablePropertyNames[ii];
+      axisName = Graph.prototype.graphAxesPropertyNames[ii];
+      if ( (alreadySetAxisNames.indexOf(axisName) < 0) && (varName in newVarList) && (newVarList[varName] >= 0) )
+        outList.axes[axisName] = foundVarsTeX[newVarList[varName]];
+    }
+  }
+
+  return outList;
+}
+
+
+//function analyzeVars(variableList, plot, dim, animated, plotExp)
+//{
+//  var retObj = {plotType: plottype, varList : [], axesList : [], bParametric : false};
+//
+//  function compareMathNodes(node1, node2)
+//  {
+//    if (node1.textContent < node2.textContent)
+//      return -1;
+//    if (node2.textContent < node1.textContent)
+//      return 1;
+//    return 0;
+//  }
+//
+//  if (variableList.length)
+//    variableList.sort(compareMathNodes);
+//  var plottype = plot.attributes.PlotType;
+//  var textVarList = [];
+//  var newVarList = [];
+//  var ii, jj, kk;
+//  for (ii = 0; ii < variableList.length; ++ii)
+//    textVarList.push(variableList[ii].textContent);
+//  var expectedVarLists, expectedList, newVarsList;
+//  var expComponents;
+//  var nIndex;
+//  var animatedIndex = -1;
+//  var nVarsFound = textVarList.length;
+//  var nVarsNeeded = -1;
+//  try
+//  {
+//    expComponents = splitMathMLList(plotExp, true);
+//    retObj.bParametric = (expComponents && expComponents.length == dim);
+//    expectedVarLists = plot.expectedVariableLists(plottype, dim, retObj.bParametric);
+//    nVarsNeeded = expectedVarLists[0].length;
+//    if (animated)
+//      ++nVarsNeeded;
+//    for (ii = 0; ii < nVarsNeeded; ++ii)
+//      newVarList.push(-1);
+//  }
+//  catch(ex) {msidump("Error in GraphOverlay.js, analyzeVars: " + ex + "\n");}
+//
+//  if (animated)
+//  {
+//    var animatedVarList = ["t","s","\u03c4"];   //t,s,tau
+//    for (jj = 0; jj < animatedVarList.length; ++jj)
+//    {
+//      nIndex = textVarList.indexOf(animatedVarList[jj]);
+//      if (nIndex >= 0)
+//      {
+//        animatedIndex = nIndex;
+//        textVarList[nIndex] = "";
+//        --nVarsFound;
+//      }
+//    }
+//  }
+//  var nWhichFound = -1;
+//  for (ii = 0; (nVarsFound > 0) && (ii < expectedVarLists.length); ++ii)
+//  {
+//    expectedList = expectedVarLists[ii];
+//    for (jj = 0; (nVarsFound > 0) && (jj < expectedList.length); ++jj)
+//    {
+//      nIndex = textVarList.indexOf(expectedList[jj]);
+//      if (nIndex >= 0)
+//      {
+//        if (nWhichFound < 0)
+//          nWhichFound = ii;
+//        if (newVarList[jj] < 0)
+//          newVarList[jj] = nIndex;
+//        else
+//        {
+//          for (kk = 0; kk < nVarsNeeded; ++kk)
+//          {
+//            if (newVarList[kk] < 0)
+//            {
+//              newVarList[kk] = nIndex;
+//              break;
+//            }
+//          }
+//        }
+//        textVarList[nIndex] = "";
+//        --nVarsFound;
+//      }
+//    }
+//  }
+//  if (animatedIndex >= 0)
+//    newVarList[nVarsNeeded - 1] = animatedIndex;
+//  if (nWhichFound < 0)
+//    nWhichFound = 0;
+//
+//  jj = 0;
+//  for (ii = 0; (nVarsFound > 0) && (ii < nVarsNeeded); ++ii)
+//  {
+//    for (; (newVarList[ii] < 0) && (jj < textVarList.length); ++jj)
+//    {
+//      if (textVarList[jj].length > 0)
+//      {
+//        newVarList[ii] = jj;
+//        textVarList[jj] = "";
+//        --nVarsFound;
+//      }
+//    }
+//  }
+//  var mathNode;
+//  for (ii = 0; ii < variableList.length; ++ii)
+//  {
+//    if (msiGetBaseNodeName(variableList[ii]) != "math")
+//    {
+//      mathNode = document.createElementNS(mmlns, "math");
+//      mathNode.appendChild(variableList[ii]);
+//      variableList[ii] = mathNode;
+//    }
+//  }
+//  for (ii = 0; ii < nVarsNeeded; ++ii)
+//  {
+//    if (newVarList[ii] < 0)
+//      retObj.varList.push(wrapMath(wrapmi(expectedVarLists[nWhichFound][ii])));
+//    else
+//      retObj.varList.push( plot.parent.ser.serializeToString(variableList[newVarList[ii]]) );
+//  }
+//
+//  if (!retObj.bParametric)  //send back a suggestion for the axes:
+//  {
+//    jj = 0;
+//    if ((!variableList.length || (animated && variableList.length < 2)) && (plotExp.indexOf("<mtable>") >= 0))
+//      retObj.plotType = "explicitList";
+//
+//    switch(plottype)
+//    {
+//      case "rectangular":
+//      case "approximateIntegral":
+//      case "inequality":
+//      case "implicit":
+//      case "vectorField":
+//      case "gradient":
+//      case "ode":
+//        jj = retObj.varList.length;
+//        if ((jj > 0) && animated)
+//          --jj;
+//      break;
+//    }
+//    for (ii = 0; ii < jj; ++ii)
+//      retObj.axesList.push(retObj.varList[ii]);
+//  }
+//  else //it is parametric
+//  {
+//    switch(plottype)
+//    {
+//      case "vectorField":
+//      case "polar":
+//      case "cylindrical":
+//      case "spherical":
+//      case "tube":
+//      break;
+//      default:
+//        retObj.plotType = "parametric";
+//      break;
+//    }
+//  }
+//
+//  return retObj;
+//}
+
+function matchVarNames(variableList, animated)
+{
   // Given a list of variable names, assign them to the x, y, z, and animation
   // variables for a plot
   var newVarList = ["", "", "", ""];
@@ -1535,6 +3142,23 @@ function matchVarNames(variableList, animated) {
   return newVarList;
 }
 
+function createPolarExpression(plot)
+{
+  var plottype = plot.attributes["PlotType"];
+  var newexp = stripMath(plot.element["Expression"]);
+  var mrowIndex = newexp.indexOf("<mrow");
+  var needsMRow = (mrowIndex != 0);
+//  var needsMRow = (!newexp.startsWith("<mrow"));
+  if (needsMRow)
+    newexp = "<mfenced open=\"(\" close=\")\" separators=\",\"><mrow>" + newexp + "</mrow>";
+  else
+    newexp = "<mfenced open=\"(\" close=\")\" separators=\",\">" + newexp;
+  newexp += stripMath(plot.element["XVar"]);
+  if (plottype != "polar")
+    newexp += stripMath(plot.element["YVar"]);
+  newexp += "</mfenced>";
+  return wrapMath(newexp);
+}
 
 function createPolarExpr(mathexp, variableList, plottype) {
   var newexp = stripMath(mathexp);
@@ -1549,6 +3173,41 @@ function createPolarExpr(mathexp, variableList, plottype) {
 }
 function newVar(x) {
   return "o" + x;
+}
+
+function plotVarsShouldMatchAxes(plotType, dim)
+{
+  var retArray = [];
+  switch(plotType)
+  {
+    case "rectangular":
+    case "ode":
+    case "approximateIntegral":
+      for (ii = 0; ii < dim-1; ++ii)
+        retArray[ii] = ii;  //says the 1st var should match 1st axis, or vars 0 and 1 should match axes 0 and 1 if dim==3
+      return retArray;
+    break;
+
+    case "implicit":
+    case "inequality":
+    case "gradient":
+    case "vectorField":
+      for (ii = 0; ii < dim; ++ii)
+        retArray[ii] = ii;
+      return retArray;
+    break;
+    
+//    case "polar":
+//    case "parametric":
+//    case "conformal":
+//    case "curve":
+//    case "cylindrical":
+//    case "spherical":
+//    case "tube":
+//    default:
+//    break;
+  }
+  return null;
 }
 
 function stripMath(mathexp) {

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>                                       
+<!-- Copyright (c) 2013 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://prince/content/utilityOverlay.xul"? -->
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? --> 
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/plotAnimationSettings.dtd" >
+<!-- JLF to verify-->
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    id="plotAnimationSettingsDlg"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "startup();"
+    ondialogaccept = "return onAccept();"
+    ondialogcancel = "return onCancel();"
+    buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
+    width="350"
+    height="200"
+    persist="screenX screenY width height">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
+
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/plotAnimationSettings.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
+
+  <grid>
+	<columns>
+	  <column />
+	  <column />
+	</columns>
+	<rows>
+      <row>
+        <label value="&animStartSeconds.label;"   />
+        <textbox id="AnimateStart" type="number" />
+      </row>
+      <row>
+        <label value="&animEndSeconds.label;" />
+        <textbox id="AnimateEnd" type="number" />
+      </row>
+      <row>
+        <label value="&animFramesPerSecond.label;" />
+        <textbox id="AnimateFPS" type="number" />
+      </row>
+	</rows>
+  </grid>
+</dialog>
