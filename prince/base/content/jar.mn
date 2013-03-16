@@ -273,3 +273,6 @@ prince.jar:
   content/gotomarker.js                 (dialogs/gotomarker.js)
   content/msiGraphicsConversionDlg.xul  (dialogs/msiGraphicsConversionDlg.xul)
   content/msiGraphicsConversionDlg.js   (dialogs/msiGraphicsConversionDlg.js)
+  content/plotDlgUtils.js               (dialogs/plotDlgUtils.js)
+  content/plotAnimationSettings.js      (dialogs/plotAnimationSettings.js)
+  content/plotAnimationSettings.xul     (dialogs/plotAnimationSettings.xul)
