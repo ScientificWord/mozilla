@@ -77,6 +77,7 @@ private:
   static string MeshStr (MuPADPlot* T);
   static string OrientationStr (MuPADPlot* T);
   static string PlotFuncStr (MuPADPlot* T);
+  static string ApproxIntPlotStr(MuPADPlot* t);
   static string PlotStr (MuPADPlot* T);
   static string PointStyleStr (MuPADPlot* T);
   static string QueryStr (MuPADPlot* T);
@@ -84,8 +85,12 @@ private:
   static string SecondaryColorStr (MuPADPlot* T);
   static string StringToColorArrayStr (string val);
   static string SurfaceStyleStr (MuPADPlot* T);
+  static string DirectionalShadingStr(MuPADPlot* T);
+  static string DirectionalShadingStrFromName (string dirval);
+  static string FillTypeStrFromShading (string dirval);
   static string SurfaceMeshStr (MuPADPlot* T);
   static string TitleStr (MuPADPlot* T);
+  static string ViewingBoxStr (MuPADPlot *T);
   static string UNIMPLEMENTED(MuPADPlot* T);
   static string VarsStr (MuPADPlot* T);
 };

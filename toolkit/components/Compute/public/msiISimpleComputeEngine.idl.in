@@ -226,6 +226,9 @@ interface msiISimpleComputeEngine : nsISupports
   void plotfuncQuery(in wstring graph, [retval] out wstring result);
   const unsigned long Plotfunc_query						 = CCID_PlotFuncQuery;						
 
+  void getVariables (in wstring expr, [retval] out wstring result);
+  //const unsigned long GetVariables               = CCID_GetVariables;
+
   /**
    * Make a definition
   */

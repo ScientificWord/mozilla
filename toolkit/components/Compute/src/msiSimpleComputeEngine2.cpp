@@ -472,6 +472,14 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Quantile(const PRUnichar *expr, const PRU
   return CommandWithArgs( expr,result,CCID_Quantile, PID_quantile, q, PID_last );
 }
 
+/* void getVariables (in wstring expr, [retval] out wstring result); */
+NS_IMETHODIMP msiSimpleComputeEngine2::GetVariables(const PRUnichar *expr, PRUnichar **result)
+{
+  return BasicCommand(expr, result, CCID_GetVariables);
+}
+
+
+
 /* void perform (in string expr, in unsigned long operation, [retval] out string result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::Perform(const PRUnichar *expr, PRUint32 operation, PRUnichar **result)
 {   

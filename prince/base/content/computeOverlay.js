@@ -1312,6 +1312,68 @@ function onVCamDragMove(x, y) {
 
 function onVCamDragLeave(x, y) {}
 
+function queryVCamValues(obj, graph, domGraph)
+{
+  var cameraVals = null;
+  var coordSysVals = {XAxisTitle : "x", YAxisTitle : "y", ZAxisTitle : "z",
+                      ViewingBoxXMin : "-5", ViewingBoxXMax : "5",
+                      ViewingBoxYMin : "-5", ViewingBoxYMax : "5",
+                      ViewingBoxZMin : "-5", ViewingBoxZMax : "5"};
+  var camera, vcamDoc, kidNode, coordSysNode, sceneNode
+  var dim = obj.dimension;
+  var sceneNodeName = "Scene" + dim + "d";
+  var coordSysNodeName = "CoordinateSystem" + dim + "d";
+  
+  if (dim == 3)
+  {
+    cameraVals = {positionX : "0", positionY : "0", positionZ : "0",
+                    focalPointX : "0", focalPointY : "0", focalPointZ : "0",
+                    upVectorX : "0", upVectorY : "0", upVectorZ : "1",
+                    keepUpVector : "false", viewingAngle : "2.0944", orthogonalProjection : "false"};
+    if (obj.camera)
+    {
+      for (var aProp in cameraVals)
+      {
+        cameraVals[aProp] = obj.camera[aProp];
+      }
+//      aVal = camera.positionX;
+//      aVal = camera.positionY;
+//      aVal = camera.positionZ;
+//      aVal = camera.focalPointX;
+//      aVal = camera.focalPointY;
+//      aVal = camera.focalPointZ;
+//      aVal = camera.upVectorX;
+//      aVal = camera.upVectorY;
+//      aVal = camera.upVectorZ;
+    }
+    else
+      cameraVals = null;
+    if (graph)
+      graph.setCameraValsFromVCam(cameraVals, domGraph);
+  }
+  vcamDoc = obj.document;
+  if (vcamDoc)
+  {
+    sceneNode = vcamDoc.documentElement.getChildByTagName(sceneNodeName)
+    coordSysNode = sceneNode.getChildByTagName(coordSysNodeName);
+    if (coordSysNode)
+    {
+      kidNode = coordSysNode.firstChild;
+      while (kidNode)
+      {
+        if (kidNode.nodeName in coordSysVals)
+          coordSysVals[kidNode.nodeName] = kidNode.firstChild.nodeValue;
+        kidNode = kidNode.nextSibling;
+      }
+    }
+  }
+  if (!coordSysNode)
+    coordSysVals = null;
+  if (graph)
+    graph.setCoordSysValsFromVCam(coordSysVals, domGraph);
+    
+}
+
 function doVCamPreInitialize(obj, graph) {
   tryUntilSuccessful(200, 10, function() {
     var editorElement = msiGetActiveEditorElement();
@@ -1319,7 +1381,7 @@ function doVCamPreInitialize(obj, graph) {
     var domGraph = editor.getElementOrParentByTagName("graph", obj);
     var plotWrapper = obj.parentNode;
     try {
-      if (obj.addEvent && obj.readyState === 2) {
+      if (obj.addEvent && (obj.readyState === 2)) {
         obj.addEvent('leftMouseDown', onVCamMouseDown);
         obj.addEvent('leftMouseUp', onVCamMouseUp);
         obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
@@ -1329,6 +1391,7 @@ function doVCamPreInitialize(obj, graph) {
           obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
           obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
         }
+        queryVCamValues(obj, graph, domGraph);
         // add a method for writing a snapshot
         var fn = function() {
             return doMakeSnapshot(obj, graph, editorElement);

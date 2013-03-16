@@ -185,6 +185,7 @@ Undefine<UID(CCID_Undefine,0)>delete %s;
 ;;Plot Function 2d <UID(CCID_PlotFunc2d,0)>plotfunc2d(%expr%,%plotvar1%=%ll1%..%ul1%);
 ;;Plot Function 2d <UID(CCID_PlotFunc2d,1)>plot(plot::Function2d(%expr%,%plotvar1%=%ll1%..%ul1%),plot::Function2d(%expr2%,%plotvar2%=%ll2%..%ul2%,LineColor=RGB::Red));
 Plot Function 3d <UID(CCID_PlotFunc3d,0)>plotfunc3d(%expr%,%plotvar1%=%ll1%..%ul1%,%plotvar2%=%ll2%..%ul2%);
+Get Variables <UID(CCID_GetVariables,0)>tciindets(%s);
 
 END_OF_LIST<UID(CCID_Last,0)>
 <END_CONTEXT_COMMANDS>

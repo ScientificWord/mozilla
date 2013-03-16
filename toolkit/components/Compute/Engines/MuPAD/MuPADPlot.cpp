@@ -278,7 +278,9 @@ MuPADPlot::REPTOKFN MuPADPlot::tokenfns[] = {
      "@secondarycolor@", MuPADPlot::SecondaryColorStr,
      "@surfacestyle@",   MuPADPlot::SurfaceStyleStr,
      "@surfacemesh@",    MuPADPlot::SurfaceMeshStr,
+     "@dirshading@",     MuPADPlot::DirectionalShadingStr,
      "@title@",          MuPADPlot::TitleStr,
+     "@viewbox@",        MuPADPlot::ViewingBoxStr,
      "@vars@",           MuPADPlot::VarsStr,
      (char *)NULL,       NULL                
 };                                   
@@ -304,7 +306,7 @@ string MuPADPlot::AIFnParamsStr (MuPADPlot* T) {
 string MuPADPlot::AIMethodStr (MuPADPlot* T) {
   string pattern = "Simpson";
   U32 plottype;
-  string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotAIMethod, plottype);                                     
+  string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotAIMethod, plottype);
   if (val == "Exact") {
     pattern = "Exact";
   } else if (val == "Left") {
@@ -329,7 +331,7 @@ string MuPADPlot::AIMethodStr (MuPADPlot* T) {
 
 
 string MuPADPlot::AIParamsStr (MuPADPlot* T) {
-  string pattern = ",%AISubIntervals%,IntMethod=@aimethod@@aicolor@@aishowinfo@@fillpattern@";
+  string pattern = ",%AISubIntervals%,IntMethod=@aimethod@@basecolor@@aishowinfo@@fillpattern@";
   return pattern;
 }
 
@@ -453,8 +455,12 @@ string MuPADPlot::AxesTypeStr (MuPADPlot* T) {
 string MuPADPlot::BaseColorStr (MuPADPlot* T) {
   U32 plottype;                                                                                    
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotBaseColor, plottype); 
-  val = StringToColorArrayStr (val);                                    
-  string ret = ", FillColor=";
+  val = StringToColorArrayStr (val);
+  string ret;
+  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
+    ret = ", LineColor=";
+  else
+    ret = ", FillColor=";
   return ret+val;                                              
 }
 
@@ -568,6 +574,15 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
           }  
           break;
 
+        case PID_GraphViewBoxXMin:
+        case PID_GraphViewBoxXMax:
+        case PID_GraphViewBoxYMin:
+        case PID_GraphViewBoxYMax:
+        case PID_GraphViewBoxZMin:
+        case PID_GraphViewBoxZMax:
+          retstr += "@viewbox@";
+        break;
+
 //         case PID_GraphCameraLocationX:
 //         case PID_GraphCameraLocationY:
 //         case PID_GraphCameraLocationZ:
@@ -663,25 +678,27 @@ int hexval (char c) {
 
 // A color is a #rrggbb, where rr, gg, bb are $00 to $ff
 string MuPADPlot::LineColorStr (MuPADPlot* T) {
-  U32 plottype;                                                                                    
-  string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineColor, plottype); 
-  val = StringToColorArrayStr (val);                                    
+  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
+    return "";
+  U32 plottype;
+  string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineColor, plottype);
+  val = StringToColorArrayStr (val);
   string ret = ", LineColor=";
-  return ret+val;                                              
-}                                                          
+  return ret+val;
+}
 
 
 string MuPADPlot::LineStyleStr (MuPADPlot* T) {
   string ret = "";
   if ((T->ptype != "vectorField") && (T->ptype != "gradient") && (T->ptype != "tube")) {
-    U32 plottype;                                                                                    
-    string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineStyle, plottype);                                     
-    ret = ", LineStyle=Solid";                        
-    if ((val == "Dotted") || (val == "Dashed"))              
-      ret = ", LineStyle=" + val;                            
-  }    
-  return ret;                                              
-}                                                          
+    U32 plottype;
+    string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineStyle, plottype);
+    ret = ", LineStyle=Solid";
+    if ((val == "Dotted") || (val == "Dashed"))
+      ret = ", LineStyle=" + val;
+  }
+  return ret;
+}
                                                            
 
 string MuPADPlot::LineThicknessStr (MuPADPlot* T) {
@@ -723,7 +740,8 @@ string MuPADPlot::LocalOptsStr (MuPADPlot* T) {
         case PID_PlotDiscAdjust :                                                               
             retstr += "@discadjust@";
 		  break;                                                                                
-        case PID_PlotDirectionalShading :                                                       
+        case PID_PlotDirectionalShading :  //handled together with PID_PlotSurfaceStyle except for special cases
+            retstr += "@dirshading@";
 		  break;                                                                                
         case PID_PlotBaseColor		    :                                                       
           retstr += "@basecolor@";
@@ -781,7 +799,7 @@ string MuPADPlot::MeshStr (MuPADPlot* T) {
   int nv = T->numvars;
   if (T->animate) nv--;
   if (T->ptype == "tube") {
-    m = "Mesh=[#XPts#, #XPts#]";
+    m = "Mesh=[#XPts#, #TubeRadialPts#]";  //YPts holds the "TubeRadioPoints" value
   } else if (T->ptype == "conformal") {
     m = "Mesh=[#XPts#, #YPts#],Submesh=[#ConfHorizontalPts#,#ConfVerticalPts#]";
   } else {  
@@ -864,13 +882,45 @@ string MuPADPlot::PlotFuncStr(MuPADPlot* T) {
   return s;
 }
 
+string MuPADPlot::ApproxIntPlotStr(MuPADPlot* T) {
+  string aipstr;
+  U32 plottype;                                                                                    
+  string method = T->psr->RetrievePlotParam(T->plotno, PID_PlotAIMethod, plottype);
+  string secondColor = T->psr->RetrievePlotParam (T->plotno, PID_PlotSecondaryColor, plottype);
+  secondColor = StringToColorArrayStr(secondColor);
+  if (method == "LeftRight")
+  {
+    aipstr ="plot::Integral(@aifnparams@,%AISubIntervals%,IntMethod=RiemannLeft@basecolor@@aishowinfo@@fillpattern@),plot::Integral(@aifnparams@,%AISubIntervals%,IntMethod=RiemannRight,FillColor=";
+    aipstr += secondColor;
+    aipstr += "@aishowinfo@@fillpattern@),plot::Function2d(@reqparams@@localopts@)";
+  }
+  else if (method == "LowerUpper")
+  {
+    aipstr ="plot::Integral(@aifnparams@,%AISubIntervals%,IntMethod=RiemannLower@basecolor@@aishowinfo@@fillpattern@),plot::Integral(@aifnparams@,%AISubIntervals%,IntMethod=RiemannUpper,FillColor=";
+    aipstr += secondColor;
+    aipstr += "@aishowinfo@@fillpattern@),plot::Function2d(@reqparams@@localopts@)";
+  }
+  else if (method == "LowerUpperAbs")
+  {
+    aipstr ="plot::Integral(@aifnparams@,%AISubIntervals%,IntMethod=RiemannLowerAbs@basecolor@@aishowinfo@@fillpattern@),plot::Integral(@aifnparams@,%AISubIntervals%,IntMethod=RiemannUpperAbs,FillColor=";
+    aipstr += secondColor;
+    aipstr += "@aishowinfo@@fillpattern@),plot::Function2d(@reqparams@@localopts@)";
+  }
+  else
+  {
+    aipstr ="plot::Integral(@aifnparams@@aiparams@),plot::Function2d(@reqparams@@localopts@)";
+  }
+  return aipstr;
+}
 
 string MuPADPlot::PlotStr(MuPADPlot* T) {
   string pstr;
   if (T->ptype == "approximateIntegral") {
-    pstr = "plot::Integral(@aifnparams@@aiparams@),plot::Function2d(@reqparams@)";
-  } else if (T->plotno == 1) {
-    pstr = "@plotfunc@(@reqparams@@localopts@@globalparams@)";
+    pstr = ApproxIntPlotStr(T);
+//    pstr = "plot::Integral(@aifnparams@@aiparams@),plot::Function2d(@reqparams@)";
+  } else if (T->plotno == 0) {
+    pstr = "@globalparams@";
+//    pstr = "@plotfunc@(@reqparams@@localopts@@globalparams@)";
   } else {
     pstr = "@plotfunc@(@reqparams@@localopts@)";
   }
@@ -911,7 +961,11 @@ string MuPADPlot::SecondaryColorStr (MuPADPlot* T) {
   U32 plottype;                                                                                    
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotSecondaryColor, plottype); 
   val = StringToColorArrayStr (val);                                    
-  string ret = ", FillColor2=";
+  string ret;
+  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
+    ret = ", LineColor2=";
+  else
+    ret  = ", FillColor2=";
   return ret+val;                                              
 }
 
@@ -931,20 +985,76 @@ string MuPADPlot::SurfaceStyleStr (MuPADPlot* T) {
   string pattern = "";
   if ((T->ptype != "vectorField") && (T->ptype != "gradient")) {
     U32 plottype;                                                                                    
-    string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotSurfaceStyle, plottype);  
+    string val = T->psr->RetrievePlotParam(T->plotno, PID_PlotSurfaceStyle, plottype);  
+    string dirval = T->psr->RetrievePlotParam(T->plotno, PID_PlotDirectionalShading, plottype);
+    string fillType = FillTypeStrFromShading(dirval);
+    string colordir = DirectionalShadingStrFromName(dirval);
+    if (colordir != "")
+      colordir = ", FillColorDirection=" + colordir;
     if (val == "colorpatch") {
-      pattern = ", FillColorType=Rainbow, Filled=TRUE";
+      if (fillType == "")
+        fillType = "Rainbox";
+      pattern = ", FillColorType=" + fillType + ", Filled=TRUE";
     } else if (val == "hiddenline") {
+      if (fillType == "")
+        fillType = "Rainbox";
       pattern = ", XLinesVisible=FALSE, YLinesVisible=FALSE";
-      pattern += ", FillColorType=Rainbow, Filled=TRUE";
+      pattern += ", FillColorType=" + fillType + ", Filled=TRUE";
     } else if (val == "wireframe") {
       pattern = ", Filled=FALSE";
     } else if (val == "point") {
-    } 
+    }
+    pattern += colordir;
   }  
   return pattern;
 }
 
+string MuPADPlot::DirectionalShadingStr(MuPADPlot* T) {
+  string pattern = "";
+  U32 plottype;
+  if ((T->ptype != "vectorField") && (T->ptype != "gradient"))
+    return "";  //In all other cases, handled with SurfaceStyleStr
+  string val = T->psr->RetrievePlotParam(T->plotno, PID_PlotDirectionalShading, plottype);
+  string colordir = DirectionalShadingStrFromName(val);
+  if (colordir != "")
+    colordir = ", LineColorDirection=" + colordir;
+  string lineColorType = FillTypeStrFromShading(val);
+  pattern = ", LineColorType=" + lineColorType + colordir;
+  return pattern;
+}
+
+string MuPADPlot::DirectionalShadingStrFromName (string dirval) {
+  string shadedir = "";
+  if (dirval == "Flat") {
+    //leave it blank
+  } else if (dirval == "XYZ" || dirval == "XYZHue" || dirval == "XYZGreyscale") {
+    shadedir = "[1,1,1]";
+  } else if (dirval == "XY") {
+    shadedir = "[1,1,0]";
+  } else if (dirval == "X") {
+    shadedir = "[1,0,0]";
+  } else if (dirval == "Y") {
+    shadedir = "[0,1,0]";
+  } else if (dirval == "Z" || dirval == "ZHue" || dirval == "ZGreyscale") {
+    shadedir = "[0,0,1]";
+  }
+  
+  return shadedir;
+}
+
+string MuPADPlot::FillTypeStrFromShading (string dirval) {
+  string fillstr = "";
+  if (dirval == "Flat") {
+    fillstr = "Flat";
+  } else if (dirval == "XYZHue" || dirval == "ZHue") {
+    fillstr = "Rainbow";
+  } else if (dirval == "ZGreyscale" || dirval == "XYZGreyscale") {
+    fillstr = "Monochrome";
+  } else if (dirval == "XYZ" || dirval == "Z" || dirval == "XY" || dirval == "X" || dirval == "Y") {
+    fillstr = "Dichromatic";
+  }
+  return fillstr;
+}
 
 string MuPADPlot::SurfaceMeshStr (MuPADPlot* T) {
   string pattern = "";
@@ -962,7 +1072,6 @@ string MuPADPlot::SurfaceMeshStr (MuPADPlot* T) {
   return pattern;
 }
 
-
 string MuPADPlot::TitleStr (MuPADPlot *T) {
   U32 plottype;                                                                                    
   string val = T->psr->RetrievePlotParam (T->plotno, PID_GraphXAxisLabel, plottype);        
@@ -972,6 +1081,26 @@ string MuPADPlot::TitleStr (MuPADPlot *T) {
   return s;
 }
 
+string MuPADPlot::ViewingBoxStr (MuPADPlot *T) {
+  U32 plottype;                                                                                    
+  string s="";
+  string viewPatternStr[6] = {"ViewingBoxXMin=", "ViewingBoxXMax=",
+                              "ViewingBoxYMin=", "ViewingBoxYMax=",
+                              "ViewingBoxZMin=", "ViewingBoxZMax="};
+  int maxVal = (T->dim[0] == '3') ? PID_GraphViewBoxZMax : PID_GraphViewBoxYMax;
+  for (int viewProp = PID_GraphViewBoxXMin; viewProp <= PID_GraphViewBoxZMax; ++viewProp)
+  {
+    plottype = 0;
+    string val = T->psr->RetrievePlotParam (T->plotno, viewProp, plottype);
+    if (val != "")
+    {
+      if (s != "")
+        s += ", ";
+      s += viewPatternStr[viewProp - PID_GraphViewBoxXMin] + val;
+    }
+  }
+  return s;
+}
 
 string MuPADPlot::UNIMPLEMENTED(MuPADPlot* T) {
   string pstr = "";
@@ -982,21 +1111,35 @@ string MuPADPlot::UNIMPLEMENTED(MuPADPlot* T) {
 
 string MuPADPlot::VarsStr (MuPADPlot* T) {
   string v = "";
+  int numNonAnimVars = T->numvars - ((T->animate) ? 1 : 0);
     
   if (T->ptype == "conformal") {
     if (T->animate) {
-      v = "%XVar%=#XMin#+(#YMin#)*I..#XMax#+(#YMax#)*I,%ZVar%=#ZMax#..#ZMin#";
+      v = "%XVar%=#XMin#+(#YMin#)*I..#XMax#+(#YMax#)*I,%AnimVar%=#AnimMin#..#AnimMax#";
     } else {
       v = "%XVar%=#XMin#+(#YMin#)*I..#XMax#+(#YMax#)*I";
-    }  
-  } else if (T->numvars == 1) {
+    }
+  } else if (numNonAnimVars == 1) {
     v = "%XVar%=#XMin#..#XMax#";
-  } else if (T->numvars == 2) {
+  } else if (numNonAnimVars == 2) {
     v = "%XVar%=#XMin#..#XMax#, %YVar%=#YMin#..#YMax#";
-  } else if (T->numvars == 3) {
+  } else if (numNonAnimVars == 3) {
     v = "%XVar%=#XMin#..#XMax#, %YVar%=#YMin#..#YMax#, %ZVar%=#ZMin#..#ZMax#";
-  } else if (T->numvars == 4) {
-    v = "ERROR 4 vars not supported";  
+  } else if (numNonAnimVars == 4) {
+    v = "ERROR 4 non-animated vars not supported";  
+  }
+//  } else if (T->numvars == 1) {
+//    v = "%XVar%=#XMin#..#XMax#";
+//  } else if (T->numvars == 2) {
+//    v = "%XVar%=#XMin#..#XMax#, %YVar%=#YMin#..#YMax#";
+//  } else if (T->numvars == 3) {
+//    v = "%XVar%=#XMin#..#XMax#, %YVar%=#YMin#..#YMax#, %ZVar%=#ZMin#..#ZMax#";
+//  } else if (T->numvars == 4) {
+//    v = "ERROR 4 vars not supported";  
+//  }
+
+  if (T->animate) {
+    v += ",%AnimVar%=#AnimMin#..#AnimMax#";
   }
   return v;
 }

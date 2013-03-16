@@ -26,12 +26,35 @@
   screenY="40"
   persist="screenX screenY width height"
 >
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
+  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
 <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/intervalsAndAnimation.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
+  
+  <stringbundle id="computeBundle" src="chrome://prince/locale/compute.properties"/>
   <broadcasterset>
-    <broadcaster id="threed" hidden="true"/>
-    <broadcaster id="twod" hidden="true"/>
-    <broadcaster id="animated" hidden="true"/>
+    <broadcaster id="1Var"/>
+    <broadcaster id="2Vars" collapsed="true"/>
+    <broadcaster id="3Vars" collapsed="true"/>
+    <broadcaster id="4Vars" collapsed="true"/>
+    <broadcaster id="tube" collapsed="true"/>
+    <broadcaster id="isanimated" collapsed="true"/>
+    <broadcaster id="customAnimSettings" disabled="true"/>
   </broadcasterset>
   
   <groupbox>
@@ -43,47 +66,131 @@
         <column />
         <column />
         <column />
+        <column />
       </columns>
       <rows>
-        <row>
+        <row observes="1Var">
           <label value="&Variable.label;"/>
           <spacer />
           <label value="&Interval.label;" />
           <spacer />
           <label value="&PointsSampled.label;" />
-          <description value="Animation Variable" observes="animated"/>
+          <label value="&UseVariable.label;" observes="2Vars"/>
         </row>
-        <row>
+        <row observes="1Var">
           <label id ="var1">&x.label;</label>
-          <textbox id="var1start" type="number" />
-          <label value="to" />
-          <textbox id="var1end" type="number" />
-          <textbox id="ptssamp1" type="number"/>
-          <radiobutton id="var1anim" name="av" />
+          <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  id="var1StartEdit" flex="1" width="150" height="40"/>
+          <label value="&to.label;" />
+          <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  id="var1EndEdit" flex="1" width="150" height="40"/>
+		  <hbox><textbox id="ptssamp1" type="number" class="narrow" /></hbox>
+          <menulist id="var1Role" observes="2Vars" oncommand="onChangeRole(this);">
+            <menupopup> 
+              <menuitem label="&x.label;"      value="X"/>
+              <menuitem label="&y.label;"      value="Y"/>
+              <menuitem label="&z.label;"      value="Z"/>
+              <menuitem label="&AnimationVariable.label;"   value="Anim"/>
+            </menupopup>
+          </menulist>
         </row>
-        <row observes="threed">
+        <row observes="2Vars">
           <label id ="var2" >&y.label;</label>
-          <textbox id="var2start" type="number" />
-          <label value="to" />
-          <textbox id="var2end" type="number" />
-          <textbox id="ptssamp2" type="number"/>
-          <radiobutton id="var2anim" name="av" />
+          <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  id="var2StartEdit" flex="1" width="150" height="40"/>
+          <label value="&to.label;" />
+          <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  id="var2EndEdit" flex="1" width="150" height="40"/>
+          <hbox><textbox id="ptssamp2" type="number" class="narrow" /></hbox>
+          <menulist id="var2Role" oncommand="onChangeRole(this);">
+            <menupopup>
+              <menuitem label="&x.label;"      value="X"/>
+              <menuitem label="&y.label;"      value="Y"/>
+              <menuitem label="&z.label;"      value="Z"/>
+              <menuitem label="&AnimationVariable.label;"   value="Anim"/>
+            </menupopup>
+          </menulist>
         </row>
-        <row observes="animated">
-          <label id ="animparam" >&t.label;</label>
-          <textbox id="animstart" type="number" />
-          <label value="to" />
-          <textbox id="animend" type="number" />
-          <!-- <textbox id="ptssamp2" type="number"/> -->
+        <row observes="3Vars">
+          <label id ="var3" >&y.label;</label>
+          <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  id="var3StartEdit" flex="1" width="150" height="40"/>
+          <label value="&to.label;" />
+          <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  id="var3EndEdit" flex="1" width="150" height="40"/>
+          <hbox><textbox id="ptssamp3" type="number" class="narrow" /></hbox>
+          <menulist id="var3Role" oncommand="onChangeRole(this);">
+            <menupopup>
+              <menuitem label="&x.label;"      value="X"/>
+              <menuitem label="&y.label;"      value="Y"/>
+              <menuitem label="&z.label;"      value="Z"/>
+              <menuitem label="&AnimationVariable.label;"   value="Anim"/>
+            </menupopup>
+          </menulist>
+        </row>
+        <row observes="4Vars">
+          <label id ="var4" >&t.label;</label>
+          <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  id="var4StartEdit" flex="1" width="150" height="40"/>
+          <label value="&to.label;" />
+          <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  id="var4EndEdit" flex="1" width="150" height="40"/>
+          <hbox><textbox id="ptssamp4" type="number" class="narrow" /></hbox>
           <spacer/>
-          <radiobutton id="var3anim" name="av" />
+          <menulist id="var4Role" oncommand="onChangeRole(this);">
+            <menupopup>
+              <menuitem label="&x.label;"      value="X"/>
+              <menuitem label="&y.label;"      value="Y"/>
+              <menuitem label="&z.label;"      value="Z"/>
+              <menuitem label="&AnimationVariable.label;"   value="Anim"/>
+            </menupopup>
+          </menulist>
+        </row>
+        <row observes="tube">
+          <label value="&TubeRadialPoints.label;"/>
+          <spacer />
+          <spacer />
+          <spacer />
+          <textbox id="ptssampTubeRadius" type="number" />
+          <spacer />
         </row>
       </rows>
     </grid>
-    <msibutton label="&SwitchVariables.label;" observes="threed" command=""/>
+    <!-- msibutton label="&SwitchVariables.label;" observes="threed" command=""/ -->
   </groupbox>
-  <groupbox>
+  <groupbox id="animationTimeSettings" observes="isanimated">
     <caption value="&AnimationTimeSettings.label;" />
+    <hbox>
+      <radiogroup id="AnimCommonOrCustomSettings" orient="horizontal" value="common" oncommand="changeCommonOrCustomAnimationSettings();">
+        <radio label="&animUseCommonSettings.label;" group="commonSettingsOrCustomize" value="common" />
+        <spacer />
+        <radio label="&animUseCustomSettings.label;" group="commonSettingsOrCustomize" value="custom" />
+      </radiogroup>
+    </hbox>
+    <grid>
+      <columns>
+        <column />
+        <column />
+        <column />
+      </columns>
+      <rows>
+        <row>
+          <label value="&animStartSeconds.label;" observes="customAnimSettings"/>
+          <textbox id="AnimateStart" type="number" observes="customAnimSettings"/>
+          <checkbox id="AnimateVisBefore" label="&animVisibleBeforeStart.label;" checked="true" observes="customAnimSettings" />
+        </row>
+        <row>
+          <label value="&animEndSeconds.label;" observes="customAnimSettings" />
+          <textbox id="AnimateEnd" type="number" observes="customAnimSettings" />
+          <checkbox id="AnimateVisAfter" label="&animVisibleAfterEnd.label;" checked="true" observes="customAnimSettings" />
+        </row>
+        <row>
+          <label value="&animFramesPerSecond.label;" observes="customAnimSettings" />
+          <textbox id="AnimateFPS" type="number" observes="customAnimSettings" />
+          <spacer />
+        </row>
+      </rows>
+    </grid>
   </groupbox>
 
 

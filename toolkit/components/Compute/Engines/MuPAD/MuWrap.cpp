@@ -4182,6 +4182,10 @@ void MuPADWrapper::SetWrapperCmdContext(U32 cmd_ID, char *new_packages)
     context_cmdtemplatetype = CT_PLOTQUERY;
     break;
 
+  case CCID_GetVariables:
+    context_cmdtemplatetype = CT_NORMAL;
+  break;
+
   default:
     TCI_ASSERT(!"Unknown command ID.");
     break;
