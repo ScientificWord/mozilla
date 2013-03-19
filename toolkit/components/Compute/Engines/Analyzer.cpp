@@ -1291,8 +1291,15 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
 
 bool IsDoublePrime(MNODE* exp)
 {
+   // Look for either a doubleprime charcter, or an mrow with two primes
+   
+   if ( ElementNameIs(exp, "mi") || ElementNameIs(exp, "mo") )
+     return ContentIs(exp, "&#x2033;");
+      
    if (!ElementNameIs(exp, "mrow"))
      return false;
+
+  
 
    MNODE* k = exp->first_kid;
    if (!(k && ContentIs(k, "&#x2032;") && k->next))

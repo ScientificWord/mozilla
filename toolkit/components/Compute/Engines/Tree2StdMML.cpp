@@ -3183,7 +3183,7 @@ bool Tree2StdMML::NeedsInvisiblePlus(MNODE* dMML_mrow)
       }
       t2 = "mo";
     }
-    if (c1 && c2 && ElementNameIs(c1, t1) && ElementNameIs(c2, t2)) {
+    //if (c1 && c2 && ElementNameIs(c1, t1) && ElementNameIs(c2, t2)) {
 
       if (ContentIs(c1, "&#xb0;") || ContentIs(c1, "&#x2218;")) {  // degree
         if (ContentIs(c2, "&#x2032;") || // minute
@@ -3193,7 +3193,7 @@ bool Tree2StdMML::NeedsInvisiblePlus(MNODE* dMML_mrow)
         if (ContentIs(c2, "&#x2033;") || ContentIs(c1, "&#x2032;"))
           rv = true;
       }
-    }
+    //}
   }
   return rv;
 }

@@ -191,7 +191,9 @@ ExpType GetExpType(BaseType base_type, MNODE* exp, const Grammar* mml_entities)
         rv = ET_TRANSPOSE_INDICATOR;
       else if (ContentIs(exp, "H"))
         rv = ET_HTRANSPOSE_INDICATOR;
-    }
+    } else if (ContentIs(exp, "&#x2032;") || ContentIs(exp, "&#x2033;") )
+        rv = ET_PRIMES;
+    
   } else if (ElementNameIs(exp, "mn")) {
   } else if (ElementNameIs(exp, "mo")) {
     const char* exp_contents = exp->p_chdata;
