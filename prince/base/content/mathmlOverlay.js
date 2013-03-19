@@ -2194,8 +2194,14 @@ function insertmathunit(unitName, editorElement)
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var bUsedAppearance = false;
-    if (nameData.appearance != null)
-    {
+
+    if ( (unitName === "minarc") || (unitName === "secarc") ){
+       
+       dump("unitName is minarc or minsec\n");
+       mathmlEditor.InsertSuperscript();
+       
+    } else if (nameData.appearance != null) {
+
       if (("nodeName" in nameData.appearance) && nameData.appearance.childNodes.length > 0)
       {
 //        ADD HERE if !math mathmlEditor.insertMath();
