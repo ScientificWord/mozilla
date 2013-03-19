@@ -351,9 +351,9 @@ function mathNodeFromNumericText(text)
 {
   var numRes = numberRE.exec(text);
   if (numRes)
-    return ("<mn>" + numRes[0] + "</mo>");
+    return wrapMath("<mn>" + numRes[0] + "</mn>");
   numRes = sciNotationNumberRE.exec(text);
   if (numRes)
-    return ("<mn>" + numRes[0] + "</mo>");
-  return ("<mi>" + text + "</mi>");
+    return wrapMath("<mn>" + numRes[0] + "</mn>");
+  return wrapMath("<mi>" + text + "</mi>");
 }

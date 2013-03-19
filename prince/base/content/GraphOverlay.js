@@ -819,6 +819,8 @@ Plot.prototype = {
           }
         }
       }
+      if (this.userSetAttrs.length)
+        DOMPlot.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
       return DOMPlot;
     }
     return null;
@@ -911,7 +913,10 @@ Plot.prototype = {
       attr = DOMPlot.attributes[j];
       key = attr.nodeName;
       value = attr.nodeValue;
-      this.attributes[key] = value;
+      if (key === "userSetAttrs")
+        this[key] = value.split( "/,\s*/");  //turn it into an array
+      else
+        this.attributes[key] = value;
     }
 
     // the children of <plot> are in general <plotelement> <mathml...> </plotelement>
@@ -1105,6 +1110,7 @@ Plot.prototype = {
     }
 
     if (animate != "true") {
+      NA = attributeArrayRemove(NA, "AnimCommonOrCustomSettings");
       NA = attributeArrayRemove(NA, "AnimateStart");
       NA = attributeArrayRemove(NA, "AnimateEnd");
       NA = attributeArrayRemove(NA, "AnimateFPS");
@@ -1116,7 +1122,7 @@ Plot.prototype = {
   },
   plotCompElementList: function () {
     var dim = this.getDimension();
-    var animate = this.attributes["Animate"];
+    var animate = (this.attributes["Animate"] == "true");
     var ptype = this.attributes["PlotType"];
     var NA = this.PLOTELEMENTS;
 
