@@ -3385,6 +3385,28 @@ function doEditPlot() {
   graphObjectClickEvent();
 }
 
+function ensureVCamPreinitForPlot(graphNode, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  var objElement = graphNode.getElementsByTagName("object");
+  var theGraph;
+  if (objElement && objElement.length)
+    objElement = objElement[0];
+  var parent, newObj;
+  if (objElement)
+  {
+    theGraph = new Graph();
+    theGraph.extractGraphAttributes(graphNode);
+    parent = objElement.parentNode;
+    var newObj = document.createElementNS(xhtmlns, "object");
+    msiCopyElementAttributes(newObj, objElement, null, false); //pass a null editor although we have one - don't want to use editor methods here
+    parent.replaceChild(newObj, objElement);
+//    if (objElement.load)
+//      objElement.load(theGraph.getGraphAttribute("ImageFile"));
+    doVCamPreInitialize(newObj, theGraph);
+  }
+}
+
 // form a single run of math and put caret on end
 
 
