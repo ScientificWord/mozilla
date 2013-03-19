@@ -63,7 +63,7 @@ function startup(){
     plot = graph.plots[plotno];
     plotData = graphData.findPlotData(plot);
     dim = graph.getDimension();
-    isAnimated = plot.attributes["Animate"];
+    isAnimated = (plot.attributes["Animate"] == "true");
     if (isAnimated)
       animOffset = 1;
     plottype = plot.attributes["PlotType"];
