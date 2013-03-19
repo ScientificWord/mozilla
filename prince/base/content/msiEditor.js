@@ -1007,6 +1007,7 @@ function msiEditorDocumentObserver(editorElement)
           catch(e) {
             dump(e+"\n");
           }
+          doVCamPreinitForPlotsInDocument(editorElement);
         }
 
 //        if (this.mDumpMessage)
@@ -2870,55 +2871,58 @@ function EditorClick(event)
     return;
 //  if (event.target.onclick) return;
   var editorElement = msiGetEditorElementFromEvent(event);
-  if (event.detail == 2)
+  try
   {
-    EditorDblClick(event);
-    return;
-  }
-  else if (event.detail == 1)
-  {
-    var obj, theURI, targWin;
-    var objName = msiGetBaseNodeName(event.target);
-	  var editor = msiGetEditor(editorElement);
-	  var graphnode = getEventParentByTag(event, "plotwrapper");
-    var linkNode;
-    if (!graphnode)
+    if (event.detail == 2)
     {
-	    linkNode = getEventParentByTag(event, "xref");
-      if (!linkNode)
-	      linkNode = getEventParentByTag(event, "a");
+      EditorDblClick(event);
+      return;
     }
-    if (graphnode)
+    else if (event.detail == 1)
     {
-      var obj = graphnode.getElementsByTagName("object")[0];
-      if (obj != null) {
-        doVCamInitialize(obj);
+      var obj, theURI, targWin;
+      var objName = msiGetBaseNodeName(event.target);
+	    var editor = msiGetEditor(editorElement);
+	    var graphnode = getEventParentByTag(event, "plotwrapper");
+      var linkNode;
+      if (!graphnode)
+      {
+	      linkNode = getEventParentByTag(event, "xref");
+        if (!linkNode)
+	        linkNode = getEventParentByTag(event, "a");
+      }
+      if (graphnode)
+      {
+        var obj = graphnode.getElementsByTagName("object")[0];
+        if (obj != null) {
+          doVCamInitialize(obj);
+        }
+      }
+      else if (linkNode && (objName=="xref"))
+      {
+        theURI = event.target.getAttribute("href");
+        if (!theURI)
+          theURI = event.target.getAttribute("key");
+        if (theURI && theURI.length)
+          theURI = "#" + theURI;
+        msiClickLink(event, theURI, targWin, editorElement);
+      }
+      else if (linkNode)
+      {
+        theURI = event.target.getAttribute("href");
+        if (event.target.hasAttribute("target"))
+          targWin = event.target.getAttribute("target");
+        msiClickLink(event, theURI, targWin, editorElement);
+      }
+      else
+      {
+		    if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false")
+	      {
+	        document.getElementById("vcamactive").setAttribute("hidden",true);
+	      }
       }
     }
-    else if (linkNode && (objName=="xref"))
-    {
-      theURI = event.target.getAttribute("href");
-      if (!theURI)
-        theURI = event.target.getAttribute("key");
-      if (theURI && theURI.length)
-        theURI = "#" + theURI;
-      msiClickLink(event, theURI, targWin, editorElement);
-    }
-    else if (linkNode)
-    {
-      theURI = event.target.getAttribute("href");
-      if (event.target.hasAttribute("target"))
-        targWin = event.target.getAttribute("target");
-      msiClickLink(event, theURI, targWin, editorElement);
-    }
-    else
-    {
-		  if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false")
-	    {
-	      document.getElementById("vcamactive").setAttribute("hidden",true);
-	    }
-    }
-  }
+  } catch(ex) {msidump("Exception in msiEditor.js, EditorClick() : " + ex + "\n");}
 
 //  event.currentTarget should be "body" or something...
 
@@ -11354,4 +11358,33 @@ function msiSaveAsPicture(editorElement)
   var dialogResult = msiGetSaveLocationForImage(editorElement);
   if (dialogResult.filepickerClick != msIFilePicker.returnCancel)
     editor.saveSelectionAsImage(dialogResult.resultingLocalFile.path);
+}
+
+function doVCamPreinitForPlotsInDocument(editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  var aDocument = editor.document;
+  var ourExpr = "//*[local-name()='graph'][.//*[local-name()='object'][@type='application/x-mupad-graphics+gzip' or @type='application/x-mupad-graphics+xml']][.//*[local-name()='graphSpec']]";
+//  var ourExpr1 = "//*[local-name()='graph'][.//*[local-name()='object'][@type='application/x-mupad-graphics+gzip' or @type='application/x-mupad-graphics+xml']]";
+  var xPathEval = new XPathEvaluator();
+  var nsResolver = xPathEval.createNSResolver(aDocument.documentElement);
+  var resultNodes = xPathEval.evaluate(ourExpr, aDocument.documentElement, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+//  if (!resultNodes.snapshotLength)
+//    resultNodes = xPathEval.evaluate(ourExpr1, aDocument.documentElement, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+  var currNode;
+  try
+  {
+    for (var i = 0; i < resultNodes.snapshotLength; ++i)
+    {
+      currNode = resultNodes.snapshotItem(i);
+      if ("ensureVCamPreinitForPlot" in window)
+        ensureVCamPreinitForPlot(currNode, editorElement);
+      else
+      {
+        msidump("Document in editor with id [" + editorElement.id + "] contains plots but computeOverlay is not available.");
+        break;
+      }
+    }
+  }
+  catch(exc) {msidump("Exception in doVCamPreinitForPlotsInDocument: " + exc + "\n");}
 }
