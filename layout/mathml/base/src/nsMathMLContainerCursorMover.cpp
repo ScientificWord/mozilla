@@ -4,6 +4,7 @@
 #include "nsGkAtoms.h"
 #include "nsMathMLContainerCursorMover.h"
 #include "nsMathCursorUtils.h"
+#include "nsIDOMElement.h"
 
 NS_IMPL_ISUPPORTS1(nsMathMLContainerCursorMover, nsIMathMLCursorMover)
 
@@ -147,6 +148,17 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
   return NS_OK;
 }
 
+PRBool IsTempInput(nsIContent * pContent) 
+{
+  nsCOMPtr<nsIDOMElement> pContentElement;
+  PRBool fResult = PR_FALSE;
+  if (pContent->Tag() == nsGkAtoms::mi_) {
+    pContentElement = do_QueryInterface(pContent);
+    pContentElement->HasAttribute(NS_LITERAL_STRING("tempinput"), &fResult);
+  }
+  return fResult;
+}
+
 NS_IMETHODIMP
 nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
@@ -175,6 +187,13 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
 		{
 			if (nsGkAtoms::textFrame == frametype)
 			{
+        pContent = m_pMyFrame->GetContent();
+        if (IsTempInput(pContent))  {
+          *aOutOffset = 0; // middle of input box
+          *_retval = 0;
+          *aOutFrame = pTempFrame;
+          return NS_OK;
+        }
   			if (count == 0){
           *_retval = 0;
           PlaceCursorBefore(pTempFrame, PR_TRUE, aOutFrame, aOutOffset, count);
@@ -254,13 +273,17 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
 		{
 			if (nsGkAtoms::textFrame == frametype)
 			{
-				*aOutFrame = pTempFrame;
+	      pContent = m_pMyFrame->GetContent();
+			  *aOutFrame = pTempFrame;
 	      PRInt32 start, end;
 	      pTempFrame->GetOffsets(start,end);
-
-	      if (count > 0) {
+        if (IsTempInput(pContent))  {
+          *aOutOffset = 0; // middle of input box
+          *_retval = 0;
+          return NS_OK;
+        }
+        if (count > 0) {
           // Check for mn
-          pContent = m_pMyFrame->GetContent();
             
           if (pContent ->Tag() == nsGkAtoms::mn_) {
              *aOutOffset = (end - start - count);
