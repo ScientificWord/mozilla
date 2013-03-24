@@ -90,9 +90,7 @@
                 <xsl:text>}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>\mathnormal{</xsl:text>
                 <xsl:value-of select="$LaTeX-symbols"/>
-                <xsl:text>}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -125,9 +123,7 @@
                 <xsl:text>}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>\mathnormal{</xsl:text>
                 <xsl:value-of select="$LaTeX-symbols"/>
-                <xsl:text>}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -214,9 +210,7 @@
                 <xsl:text>}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>\mathnormal{</xsl:text>
                 <xsl:value-of select="$LaTeX-symbols"/>
-                <xsl:text>}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -258,9 +252,7 @@
                 <xsl:text>}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>\mathnormal{</xsl:text>
                 <xsl:value-of select="$LaTeX-symbols"/>
-                <xsl:text>}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -305,9 +297,7 @@
                 <xsl:text>}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>\mathnormal{</xsl:text>
                 <xsl:value-of select="$LaTeX-symbols"/>
-                <xsl:text>}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -340,9 +330,7 @@
                 <xsl:text>}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>\mathnormal{</xsl:text>
                 <xsl:value-of select="$LaTeX-symbols"/>
-                <xsl:text>}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -378,9 +366,7 @@
                 <xsl:text>}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>\mathnormal{</xsl:text>
                 <xsl:value-of select="$LaTeX-symbols"/>
-                <xsl:text>}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -412,9 +398,7 @@
                 <xsl:text>}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>\mathnormal{</xsl:text>
                 <xsl:value-of select="$LaTeX-symbols"/>
-                <xsl:text>}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -437,9 +421,7 @@
             <xsl:text>}</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>\mathnormal{</xsl:text>
             <xsl:value-of select="$LaTeX-symbols"/>
-            <xsl:text>}</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:otherwise>
