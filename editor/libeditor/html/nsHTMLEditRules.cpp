@@ -3454,8 +3454,10 @@ PRBool IsSpecialMath(nsIDOMElement * node)
   PRBool retval = PR_FALSE;
   PRBool isMath = nsHTMLEditUtils::IsMath(node);
   nsAutoString name;
+  nsAutoString form;
   nsCOMPtr<nsIDOMElement> parentEl;
   nsCOMPtr<nsIDOMNode> parent;
+
   if (isMath) {
     node->GetTagName(name);
     if (name.EqualsLiteral("msup") ||
@@ -3465,14 +3467,18 @@ PRBool IsSpecialMath(nsIDOMElement * node)
       name.EqualsLiteral("mroot") ||
       name.EqualsLiteral("msqrt") ||
       name.EqualsLiteral("mover") ||
-      name.EqualsLiteral("munder") )
+      name.EqualsLiteral("munder") || 
+      name.EqualsLiteral("mo"))
     {
-      retval = PR_TRUE;
+      if (! name.EqualsLiteral("mo"))
+        retval = PR_TRUE;
+      else {
+        node->GetAttribute(NS_LITERAL_STRING("form"), form);
+        retval = (form.EqualsLiteral("prefix") || form.EqualsLiteral("postfix"));
+      }
     } 
     else {
-      if (name.EqualsLiteral("mtd") ||
-        name.EqualsLiteral("mtr") ||
-        name.EqualsLiteral("mtable")) {
+      if (name.EqualsLiteral("mtd") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
         // Search up and see if the enclosing table has the attribute 'type="eqnarray"'. If so,
         // don't try to preserve the table cells.
         parentEl = node;
@@ -3496,6 +3502,69 @@ PRBool IsSpecialMath(nsIDOMElement * node)
   return retval;
 }
 
+
+void DeleteMatchingFence(nsHTMLEditor * ed, nsIDOMElement * elt)
+{
+  // if deleting a fence, delete the paired one.
+  nsAutoString form;
+  elt->GetAttribute(NS_LITERAL_STRING("form"), form);
+  if (form.EqualsLiteral("prefix") || form.EqualsLiteral("postfix"))
+  {
+    nsCOMPtr<nsIDOMTreeWalker> tw;
+    nsresult res;
+    nsCOMPtr<nsIDOMNode> mathNode;
+    nsCOMPtr<nsIDOMNode> node;
+    nsCOMPtr<nsIDOMElement> element;
+    nsAutoString nodeName;
+    nsCOMPtr<nsIDOMDocument> doc;
+    res = elt->GetOwnerDocument(getter_AddRefs(doc));
+    res = msiUtils::GetMathParent(elt, mathNode);
+    nsCOMPtr<nsIDOMDocumentTraversal> trav = do_QueryInterface(doc, &res);
+    res = trav->CreateTreeWalker(mathNode,
+         nsIDOMNodeFilter::SHOW_ELEMENT,
+         nsnull, PR_FALSE, getter_AddRefs(tw));
+    // find elt in the tree
+    tw->SetCurrentNode(elt);
+    // Now the tree is set up for examination
+    PRInt32 counter = 1;
+    nsAutoString tempform;
+    if (form.EqualsLiteral("postfix"))
+    {
+      tw->PreviousNode(getter_AddRefs(node));
+      while (counter > 0 && node) {
+        element = do_QueryInterface(node);
+        element->GetNodeName(nodeName);
+        if (nodeName.EqualsLiteral("mo"))
+        {
+          element->GetAttribute(NS_LITERAL_STRING("form"), tempform);
+          if (tempform.EqualsLiteral("prefix")) counter--;
+          else if (tempform.EqualsLiteral("postfix")) counter++;
+          if (counter == 0) // found matching postfix
+            ed->DeleteNode(node);
+        }
+        if (counter > 0) tw->PreviousNode(getter_AddRefs(node));
+      }
+    }
+    else if (form.EqualsLiteral("prefix")) // same thing in reverse
+    {
+      tw->NextNode(getter_AddRefs(node));
+      while (counter > 0 && node) {
+        element = do_QueryInterface(node);
+        element->GetNodeName(nodeName);
+        if (nodeName.EqualsLiteral("mo"))
+        {
+          element->GetAttribute(NS_LITERAL_STRING("form"), tempform);
+          if (tempform.EqualsLiteral("prefix")) counter++;
+          else if (tempform.EqualsLiteral("postfix")) counter--;
+          if (counter == 0) // found matching postfix
+            ed->DeleteNode(node);
+        }
+        if (counter > 0) tw->NextNode(getter_AddRefs(node));
+      }
+    }
+  }
+}
+
 PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * siblingElement)
 {
   // A subnode has been deleted. If elt is an msub or msup, remove that tag. If elt is an msubsup,
@@ -3503,6 +3572,7 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
   PRBool retval = PR_FALSE;
   nsresult res;
   nsAutoString name;
+  nsAutoString form;
   nsAutoString tagName;
   nsCOMPtr<msiITagListManager> tlm;
   nsCOMPtr<nsIDOMNode> siblingNode = siblingElement;
@@ -3582,6 +3652,10 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           done = PR_TRUE;
           break;
         }
+      }
+      if (name.EqualsLiteral("mo")) {
+        elt = do_QueryInterface(parentNode);
+        DeleteMatchingFence(ed, elt);
       }
       res = node->GetNextSibling(getter_AddRefs(nextSiblingNode));
       ed->DeleteNode(node);
