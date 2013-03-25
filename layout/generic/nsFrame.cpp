@@ -49,6 +49,7 @@
 #include "nsFrameList.h"
 #include "nsLineLayout.h"
 #include "nsIContent.h"
+#include "nsTextFragment.h"
 #include "nsContentUtils.h"
 #include "nsIAtom.h"
 #include "nsString.h"
@@ -4848,14 +4849,32 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
       }
 
       // Set outputs
-	  if (math)
-	  {
-	    aPos->mResultFrame = current;
-	    aPos->mResultContent = current?current->GetContent():nsnull;
-			if (!current) printf("Got null node for the cursor, nsFrame:4844\n");
-	    aPos->mContentOffset = offset;
-	  }
-	  else
+  	  if (math)
+  	  {
+  	    aPos->mResultFrame = current;
+  	    aPos->mResultContent = current?current->GetContent():nsnull;
+  			if (!current) printf("Got null node for the cursor, nsFrame:4844\n");
+  	    aPos->mContentOffset = offset;
+        // now check for the very special case of an input box.
+        PRBool fIsTempinput = PR_FALSE;
+        nsCOMPtr<nsIDOMElement> pContentElement;
+        if (aPos->mResultContent->GetParent()->Tag() == nsGkAtoms::mi_) {
+          pContentElement = do_QueryInterface(aPos->mResultContent->GetParent());
+          if (pContentElement) {
+            pContentElement->HasAttribute(NS_LITERAL_STRING("tempinput"), &fIsTempinput);
+            if (fIsTempinput) {
+              range = GetRangeForFrame(current);
+              aPos->mResultFrame = current;
+              if (*(aPos->mResultContent->GetText()->Get1b()) == '[')
+                aPos->mContentOffset = 1;
+              else
+                aPos->mContentOffset = 0;
+              printf("TempInput, test range is %d", &range.end);
+            }
+          }
+        }
+      }
+  	  else
       {
         range = GetRangeForFrame(current);
         aPos->mResultFrame = current;

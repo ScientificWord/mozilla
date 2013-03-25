@@ -496,6 +496,7 @@
                 label="&viewInvisibles.label;"/>
       <menuitem id="viewSectionExpanders"
                 type="checkbox"
+                checked="true"
                 accesskey="&viewSectionExpanders.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewSectionExpanders.label;"/>

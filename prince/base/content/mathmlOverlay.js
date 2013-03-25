@@ -539,6 +539,25 @@ var msiReviseMathnameCmd =
   }
 };
 
+function makeMathIfNeeded(editorElement)
+{
+  var retVal = true;
+  if (!isInMath(editorElement))
+  {
+    var editor = msiGetEditor(editorElement);
+    if (!(editor.selection.isCollapsed))
+    {
+      try {
+        textToMath(editor);
+      }
+      catch (e) {
+        retVal = false;
+      }
+    }
+  }
+  return retVal;
+}
+
 var msiParen =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -552,7 +571,8 @@ var msiParen =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    insertfence("(", ")", editorElement);
+    if (makeMathIfNeeded(editorElement))
+      insertfence("(", ")", editorElement);
   }
 };
 
@@ -569,7 +589,8 @@ var msiBracket =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    insertfence("[", "]", editorElement);
+    if (makeMathIfNeeded(editorElement))
+      insertfence("[", "]", editorElement);
   }
 };
 
@@ -586,7 +607,8 @@ var msiBrace =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    insertfence("{", "}", editorElement);
+    if (makeMathIfNeeded(editorElement))
+      insertfence("{", "}", editorElement);
   }
 };
 
@@ -603,7 +625,8 @@ var msiAbsValue =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    insertfence("|", "|", editorElement);
+    if (makeMathIfNeeded(editorElement))
+      insertfence("|", "|", editorElement);
   }
 };
 
@@ -620,7 +643,8 @@ var msiNorm =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    insertfence("\u2016", "\u2016", editorElement);
+    if (makeMathIfNeeded(editorElement))
+      insertfence("\u2016", "\u2016", editorElement);
   }
 };
 
@@ -3352,9 +3376,10 @@ function mathNodeToText(editor, node)
 	}
 }
 
-function nodeToMath(editor, node, startOffset, endOffset)
+function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnode)
 {
 	var newNode = {};
+  var newSelection = {};
 	if (node.nodeType == Node.TEXT_NODE)
 	{
 		if (startOffset >0)
@@ -3366,17 +3391,34 @@ function nodeToMath(editor, node, startOffset, endOffset)
 			editor.splitNode(node, endOffset - startOffset, newNode);
 			node = newNode.value;
 		}
-	}
-	var parent = node.parentNode;
-	var offset = offsetOfChild(parent, node);
-	var text = node.textContent;
-	for (var i = 0; i < text.length; i++)
-	{
-		editor.selection.collapse(parent, offset+i);
-    insertsymbol(text[i]);
-	}
-	editor.deleteNode(node);
-	coalescemath();
+  	var parent = node.parentNode;
+  	var offset = offsetOfChild(parent, node);
+  	var text = node.textContent;
+    var o, p;
+  	for (var i = 0; i < text.length; i++)
+  	{
+  		editor.selection.collapse(parent, offset+i);
+      insertsymbol(text[i]);
+      // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
+      //   o = 0;
+      //   p = parent.firstChild;
+      //   while (o++ < offset + i) p = p.nextSibling;
+      //   newSelection.startNode = p;
+      //   newSelection.startOffset = 0;
+      // } 
+      // if (lastnode && i===text.length-1) {
+      //   o = 0;
+      //   p = parent.firstChild;
+      //   while (o++ < offset + i && p && p.nextSibling) p = p.nextSibling;
+      //   newSelection.endNode = p;
+      //   newSelection.endOffset = p.childNodes.length;
+      // }
+  	}
+  	editor.deleteNode(node);
+  	var mathnode = coalescemath(null, true);
+    editor.selection.collapse(mathnode,0);
+    editor.selection.extend(mathnode, mathnode.childNodes.length);
+  }
 }
 
 
@@ -3434,6 +3476,7 @@ function mathToText(editor)
 function textToMath(editor)
 {
 	var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset;
+  var newSelection = {};
 	editor.beginTransaction();
 	if (editor.selection.isCollapsed)
 	{
@@ -3454,7 +3497,8 @@ function textToMath(editor)
       while (enumerator.hasMoreElements())
       {
         node = enumerator.getNext();
-        nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1);
+        nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1); //,
+          // node===startNode, node===endNode, newSelection);
       }
     }
 	}

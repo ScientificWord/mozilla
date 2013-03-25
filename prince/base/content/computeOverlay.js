@@ -3407,10 +3407,10 @@ function ensureVCamPreinitForPlot(graphNode, editorElement)
   }
 }
 
-// form a single run of math and put caret on end
+// form a single run of math but don't put caret on end
 
 
-function coalescemath(editorElement) {
+function coalescemath(editorElement, leaveCursorAsIs) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var selection = editor.selection;
@@ -3425,21 +3425,36 @@ function coalescemath(editorElement) {
         return;
       }
     }
-    var last = node_before(element);
-    if (!last || last.localName != "math") {
-      dump("previous is not math!\n");
-      return;
+    var left = node_before(element);
+    while (left) 
+    {
+      if (left.localName != "math") {
+        left = null;
+      }
+      if (left) {
+        editor.joinNodes(left, element, element.parentNode);
+        // joinNodes merges the nodes and deletes element
+        element = left;  // we do so so that element is the non-empty element.
+        left = node_before(element);
+      }
     }
-    var ch = element.firstChild; // move children to previous math element
-    var nextch;
-    while (ch) {
-      nextch = ch.nextSibling;
-      last.appendChild(element.removeChild(ch));
-      ch = nextch;
+    var right = node_after(element);
+    while (right) 
+    {
+      if (right.localName != "math") {
+        right = null;
+      }
+      if (right) {
+        editor.joinNodes(element, right, right.parentNode);
+        // joinNodes merges the nodes and deletes right
+        right = node_after(element);
+      }
     }
-    element.parentNode.removeChild(element); // now empty
-    editor.setCaretAfterElement(last_child(last));
   }
+  if (!leaveCursorAsIs) {
+    editor.setCaretAfterElement(last_child(element));
+  }
+  return element;
 }
 
 function findtagparent(node, tag) {
