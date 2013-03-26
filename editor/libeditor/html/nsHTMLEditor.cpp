@@ -6027,6 +6027,12 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
   if (!aNode || !outIsEmptyNode || !aSeenBR) return NS_ERROR_NULL_POINTER;
   nsresult res = NS_OK;
 
+  // hack to allow non-empty description list labels to be considered empty.
+  if (nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("descriptionLabel"))) {
+    *outIsEmptyNode = PR_TRUE;
+    return res;
+  }
+
   if (nsEditor::IsTextNode(aNode))
   {
     res = IsVisTextNode(aNode, outIsEmptyNode, aSafeToAskFrames);
