@@ -268,6 +268,11 @@ otfont {
   display: inline;
 }
 
+descriptionLabel {
+  display: inline;
+  background-color: #FFFFBB;
+}
+
 /* show footnotes by default*/
 note[type="footnote"], node[type="footnote"][hide="false"] {
   display: block;
