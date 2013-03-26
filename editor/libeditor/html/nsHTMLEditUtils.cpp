@@ -50,7 +50,13 @@
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsHTMLTags.h"
 #include "nsIDOMElement.h"
+#include "nsIDOMDocumentTraversal.h"
+#include "nsIDOMNodeFilter.h"
+#include "nsIDOMTreeWalker.h"
+#include "nsIEnumerator.h"
 #include "msiITagListManager.h"
+#include "msiUtils.h"
+
 
 nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
 
@@ -977,4 +983,76 @@ nsHTMLEditUtils::IsContainer(PRInt32 aTag, msiITagListManager * manager)
                "aTag out of range!");
 
   return kElements[aTag - 1].mIsContainer;
+}
+
+void
+nsHTMLEditUtils::MatchingFence( nsIDOMElement * element, nsIDOMElement ** other )
+{
+  // if node is a fence, return the paired one.
+  nsAutoString form;
+  element->GetAttribute(NS_LITERAL_STRING("form"), form);
+  if (form.EqualsLiteral("prefix") || form.EqualsLiteral("postfix"))
+  {
+    nsCOMPtr<nsIDOMTreeWalker> tw;
+    nsresult res;
+    nsCOMPtr<nsIDOMNode> mathNode;
+    nsCOMPtr<nsIDOMNode> node;
+    nsCOMPtr<nsIDOMElement> elt;
+    nsAutoString nodeName;
+    nsCOMPtr<nsIDOMDocument> doc;
+    *other = nsnull;
+    res = element->GetOwnerDocument(getter_AddRefs(doc));
+    res = msiUtils::GetMathParent(element, mathNode);
+    if (!mathNode) return;
+    nsCOMPtr<nsIDOMDocumentTraversal> trav = do_QueryInterface(doc, &res);
+    res = trav->CreateTreeWalker(mathNode,
+         nsIDOMNodeFilter::SHOW_ELEMENT,
+         nsnull, PR_FALSE, getter_AddRefs(tw));
+    tw->SetCurrentNode(element);
+    // Now the tree is set up for examination
+    PRInt32 counter = 1;
+    nsAutoString tempform;
+    if (form.EqualsLiteral("postfix"))
+    {
+      tw->PreviousNode(getter_AddRefs(node));
+      while (counter > 0 && node) {
+        elt = do_QueryInterface(node);
+        elt->GetNodeName(nodeName);
+        if (nodeName.EqualsLiteral("mo"))
+        {
+          elt->GetAttribute(NS_LITERAL_STRING("form"), tempform);
+          if (tempform.EqualsLiteral("prefix")) counter--;
+          else if (tempform.EqualsLiteral("postfix")) counter++;
+          if (counter == 0) // found matching postfix
+          {
+            *other = elt;
+            NS_ADDREF(*other);
+            return;
+          }
+        }
+        if (counter > 0) tw->PreviousNode(getter_AddRefs(node));
+      }
+    }
+    else if (form.EqualsLiteral("prefix")) // same thing in reverse
+    {
+      tw->NextNode(getter_AddRefs(node));
+      while (counter > 0 && node) {
+        elt = do_QueryInterface(node);
+        elt->GetNodeName(nodeName);
+        if (nodeName.EqualsLiteral("mo"))
+        {
+          elt->GetAttribute(NS_LITERAL_STRING("form"), tempform);
+          if (tempform.EqualsLiteral("prefix")) counter++;
+          else if (tempform.EqualsLiteral("postfix")) counter--;
+          if (counter == 0) // found matching postfix
+          {  
+            *other = elt;
+            NS_ADDREF(*other);
+            return;
+          }
+        }
+        if (counter > 0) tw->NextNode(getter_AddRefs(node));
+      }
+    }
+  }
 }
