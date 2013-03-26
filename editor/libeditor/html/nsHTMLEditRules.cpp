@@ -3467,15 +3467,9 @@ PRBool IsSpecialMath(nsIDOMElement * node)
       name.EqualsLiteral("mroot") ||
       name.EqualsLiteral("msqrt") ||
       name.EqualsLiteral("mover") ||
-      name.EqualsLiteral("munder") || 
-      name.EqualsLiteral("mo"))
+      name.EqualsLiteral("munder")) 
     {
-      if (! name.EqualsLiteral("mo"))
-        retval = PR_TRUE;
-      else {
-        node->GetAttribute(NS_LITERAL_STRING("form"), form);
-        retval = (form.EqualsLiteral("prefix") || form.EqualsLiteral("postfix"));
-      }
+      retval = PR_TRUE;
     } 
     else {
       if (name.EqualsLiteral("mtd") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
@@ -3505,65 +3499,13 @@ PRBool IsSpecialMath(nsIDOMElement * node)
 
 void DeleteMatchingFence(nsHTMLEditor * ed, nsIDOMElement * elt)
 {
-  // if deleting a fence, delete the paired one.
-  nsAutoString form;
-  elt->GetAttribute(NS_LITERAL_STRING("form"), form);
-  if (form.EqualsLiteral("prefix") || form.EqualsLiteral("postfix"))
-  {
-    nsCOMPtr<nsIDOMTreeWalker> tw;
-    nsresult res;
-    nsCOMPtr<nsIDOMNode> mathNode;
-    nsCOMPtr<nsIDOMNode> node;
-    nsCOMPtr<nsIDOMElement> element;
-    nsAutoString nodeName;
-    nsCOMPtr<nsIDOMDocument> doc;
-    res = elt->GetOwnerDocument(getter_AddRefs(doc));
-    res = msiUtils::GetMathParent(elt, mathNode);
-    nsCOMPtr<nsIDOMDocumentTraversal> trav = do_QueryInterface(doc, &res);
-    res = trav->CreateTreeWalker(mathNode,
-         nsIDOMNodeFilter::SHOW_ELEMENT,
-         nsnull, PR_FALSE, getter_AddRefs(tw));
-    // find elt in the tree
-    tw->SetCurrentNode(elt);
-    // Now the tree is set up for examination
-    PRInt32 counter = 1;
-    nsAutoString tempform;
-    if (form.EqualsLiteral("postfix"))
-    {
-      tw->PreviousNode(getter_AddRefs(node));
-      while (counter > 0 && node) {
-        element = do_QueryInterface(node);
-        element->GetNodeName(nodeName);
-        if (nodeName.EqualsLiteral("mo"))
-        {
-          element->GetAttribute(NS_LITERAL_STRING("form"), tempform);
-          if (tempform.EqualsLiteral("prefix")) counter--;
-          else if (tempform.EqualsLiteral("postfix")) counter++;
-          if (counter == 0) // found matching postfix
-            ed->DeleteNode(node);
-        }
-        if (counter > 0) tw->PreviousNode(getter_AddRefs(node));
-      }
-    }
-    else if (form.EqualsLiteral("prefix")) // same thing in reverse
-    {
-      tw->NextNode(getter_AddRefs(node));
-      while (counter > 0 && node) {
-        element = do_QueryInterface(node);
-        element->GetNodeName(nodeName);
-        if (nodeName.EqualsLiteral("mo"))
-        {
-          element->GetAttribute(NS_LITERAL_STRING("form"), tempform);
-          if (tempform.EqualsLiteral("prefix")) counter++;
-          else if (tempform.EqualsLiteral("postfix")) counter--;
-          if (counter == 0) // found matching postfix
-            ed->DeleteNode(node);
-        }
-        if (counter > 0) tw->NextNode(getter_AddRefs(node));
-      }
-    }
+  nsCOMPtr<nsIDOMElement> other;
+  nsHTMLEditUtils::MatchingFence(elt, getter_AddRefs(other));
+  if (other) {
+    ed->DeleteNode(other);
   }
 }
+
 
 PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * siblingElement)
 {
