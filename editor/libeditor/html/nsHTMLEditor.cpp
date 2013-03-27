@@ -3362,32 +3362,34 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
   nsCOMPtr<nsIArray> arrayOfNodes;
   res = NodesInRange(domRange, getter_AddRefs(arrayOfNodes));
   arrayOfNodes->GetLength(&length);
-  PRInt32 topLimit = length - 1;
+  PRInt32 topLimit = 0;
   PRInt32 bottomLimit = 0;
-
-  tempNode = do_QueryElementAt(arrayOfNodes, length - 1);
-  tempNode->GetNodeType(&nodeType);
-  if (nodeType == 3)  //text
-  {
-    domRange->GetStartOffset(&offset);
-    if (offset == 0) // none of the node is included, therefore we delete it
-      // i.e., offset == text node length
+  if (length > 0) {
+    topLimit = length - 1;
+    tempNode = do_QueryElementAt(arrayOfNodes, length - 1);
+    tempNode->GetNodeType(&nodeType);
+    if (nodeType == 3)  //text
     {
-      topLimit-- ;
+      domRange->GetStartOffset(&offset);
+      if (offset == 0) // none of the node is included, therefore we delete it
+        // i.e., offset == text node length
+      {
+        topLimit-- ;
+      }
+    }
+    tempNode = do_QueryElementAt(arrayOfNodes, 0);
+    tempNode->GetNodeType(&nodeType);
+    if (nodeType == 3)  //text
+    {
+      domRange->GetStartOffset(&offset);
+      if (offset > 0) // part of the node is excluded, therefore all of it is excluded,
+        // i.e., offset == text node length
+      {
+        bottomLimit = 1;
+      }
     }
   }
-  tempNode = do_QueryElementAt(arrayOfNodes, 0);
-  tempNode->GetNodeType(&nodeType);
-  if (nodeType == 3)  //text
-  {
-    domRange->GetStartOffset(&offset);
-    if (offset > 0) // part of the node is excluded, therefore all of it is excluded,
-      // i.e., offset == text node length
-    {
-      bottomLimit = 1;
-    }
-  }
- 
+   
 
   // now look at the range
   nodeData(startParent, nodeNameOrContents);
@@ -3445,7 +3447,7 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
   PRBool needReturn = PR_FALSE;
   nsCOMPtr<nsIDOM3Node> textNode;
   nsAutoString str;
-  NS_NAMED_LITERAL_STRING(strRet, "\n");
+  NS_NAMED_LITERAL_STRING(strRet, "");
   nsCOMPtr<nsIContent> content;
   while (currentNode)
   {
@@ -3459,25 +3461,28 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
         textNode->GetTextContent(str);
         // convert returns to spaces
         AddStringToContents(verbContents, str);
+        tempNode = currentNode;
+        tw->NextNode(getter_AddRefs(currentNode));
+        if (tempNode) DeleteNode(tempNode);
       }
       else // entering an element
       {
         if (IsBlockNode(currentNode)) {
           verbContents += strRet;
         }
+        tw->NextNode(getter_AddRefs(currentNode));
       }
     }
-    tw->NextNode(getter_AddRefs(currentNode));
+    else tw->NextNode(getter_AddRefs(currentNode));
   }
   doc->CreateTextNode(verbContents, getter_AddRefs(tnode));
   InsertNode(tnode, verbNode, 0);
-  if (length > 0)
-  {
-    for (int j = topLimit; j >= bottomLimit; j--) {
-      tempNode = do_QueryElementAt(arrayOfNodes, j);
-      if (tempNode) DeleteNode(tempNode);
-    }
-  }
+  // if (length > 0)
+  // {
+  //   for (int j = topLimit; j >= bottomLimit; j--) {
+  //     tempNode = do_QueryElementAt(arrayOfNodes, j);
+  //   }
+  // }
   return NS_OK;
 }
 
