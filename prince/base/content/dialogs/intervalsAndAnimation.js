@@ -198,7 +198,7 @@ function getAnimationDataFromDialog()
 function changeCommonOrCustomAnimationSettings()
 {
   var currVal = document.getElementById("AnimCommonOrCustomSettings").value;
-  document.getElementById("customAnimSettings").disabled = (currVal != "custom");
+  document.getElementById("customAnimSettings").setAttribute( "disabled", ((currVal != "custom") ? "true" : "false") );
 }
 
 function onAccept() {

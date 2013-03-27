@@ -3,4 +3,5 @@
 <!ENTITY windowTitle.label "Plot Animation Settings">
 <!ENTITY animStartSeconds.label "Animation start time (seconds)">
 <!ENTITY animEndSeconds.label "Animation end time (seconds)">
+<!ENTITY animCurrTimeSeconds.label "Current animation time (seconds)">
 <!ENTITY animFramesPerSecond.label "Frames per second">

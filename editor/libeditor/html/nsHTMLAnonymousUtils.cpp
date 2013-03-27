@@ -383,13 +383,13 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
       nsCOMPtr<nsIDOMDocument> domdoc2;
       nsCOMPtr<nsIDOMElement> broadcaster;
   //      res = GetXuldoc(getter_AddRefs(domdoc));
-      if (!NS_FAILED(res) && m_window && focusTagName.EqualsLiteral("plotwrapper"))
-      {
-        res = m_window->GetDocument( getter_AddRefs(domdoc2));
-        res = domdoc2->GetElementById(NS_LITERAL_STRING("vcamactive"), getter_AddRefs(broadcaster));
-        if (!NS_FAILED(res) && broadcaster)
-          broadcaster->SetAttribute(NS_LITERAL_STRING("hidden"), NS_LITERAL_STRING("false"));
-      }
+//      if (!NS_FAILED(res) && m_window && focusTagName.EqualsLiteral("plotwrapper"))
+//      {
+//        res = m_window->GetDocument( getter_AddRefs(domdoc2));
+//        res = domdoc2->GetElementById(NS_LITERAL_STRING("vcamactive"), getter_AddRefs(broadcaster));
+//        if (!NS_FAILED(res) && broadcaster)
+//          broadcaster->SetAttribute(NS_LITERAL_STRING("hidden"), NS_LITERAL_STRING("false"));
+//      }
     }
     if (NS_FAILED(res) || !m_window) return res;
   }
