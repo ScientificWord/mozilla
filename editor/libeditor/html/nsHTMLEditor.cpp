@@ -3398,18 +3398,6 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
   nodeData(endParent, nodeNameOrContents);
   offset = endOffset;
 
-// void               setStart(in nsIDOMNode refNode, in long offset)
-//                                         raises(RangeException, DOMException);
-//   void               setEnd(in nsIDOMNode refNode, in long offset)
-//                                         raises(RangeException, DOMException);
-//   void               setStartBefore(in nsIDOMNode refNode)
-//                                         raises(RangeException, DOMException);
-//   void               setStartAfter(in nsIDOMNode refNode)
-//                                         raises(RangeException, DOMException);
-//   void               setEndBefore(in nsIDOMNode refNode)
-//                                         raises(RangeException, DOMException);
-//   void               setEndAfter(in nsIDOMNode refNode)
-                                        // raises(RangeException, DOMException);
 
   // reset domRange. The endpoints should be non-text nodes, or just before or after text nodes
   domRange->SetStart(startParent, startOffset);
