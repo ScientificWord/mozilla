@@ -27,7 +27,7 @@
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
 
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
   <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
@@ -47,6 +47,10 @@
       <row>
         <label value="&animEndSeconds.label;" />
         <textbox id="AnimateEnd" type="number" />
+      </row>
+      <row>
+        <label value="&animCurrTimeSeconds.label;" />
+        <textbox id="AnimateCurrTime" type="number" />
       </row>
       <row>
         <label value="&animFramesPerSecond.label;" />
