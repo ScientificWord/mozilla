@@ -703,7 +703,7 @@ string MuPADPlot::LineStyleStr (MuPADPlot* T) {
 
 string MuPADPlot::LineThicknessStr (MuPADPlot* T) {
   U32 plottype;                                                                                    
-  string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineThickness, plottype);                                     
+  string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineThickness, plottype);
   string ret = "";
   if (val == "thin") {
     ret == ", LineWidth=0";

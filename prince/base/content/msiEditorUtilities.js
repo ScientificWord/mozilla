@@ -2029,12 +2029,22 @@ function msiEditorEnsureAttributeOrParam(anElement, attrName, attrVal, editor)
 
 function msiCopyElementAttributes(newElement, oldElement, editor, bSuppressID)
 {
+  var exclude = [];
+  if (bSuppressID)
+    exclude.push("id");
+  return msiCopyElementAttributesExcluding(newElement, oldElement, editor, exclude);
+}
+
+function msiCopyElementAttributesExcluding(newElement, oldElement, editor, exclusionList)
+{
   var theAttrs = oldElement.attributes;
   for (var jx = 0; jx < theAttrs.length; ++jx)
   {
 //    var attrName = msiGetBaseNodeName(theAttrs.item(jx));
     var attrName = theAttrs.item(jx).nodeName;
-    if (bSuppressID && theAttrs.item(jx).isId)
+    if (exclusionList && exclusionList.indexOf(attrName) >= 0)
+      continue;
+    else if (theAttrs.item(jx).isId && (exclusionList.indexOf("id") >= 0) )
       continue;
     switch(attrName)
     {
@@ -4720,6 +4730,15 @@ function msiMakeAbsoluteUrl(url, editorElement)
   } catch (e) {}
 
   return absoluteUrl;
+}
+
+function makeFilePathAbsolute(filepath, editorElement)
+{
+  var absUrl = msiMakeAbsoluteUrl(filepath, editorElement);
+  var absUri = msiURIFromString(absUrl); //in order to get it OS-compatible, go through additional steps
+  return msiPathFromFileURL( absUri );
+  //msiFileFromFileURL(cssUrl);
+  //return GetFilepath(absUrl);
 }
 
 // Get the HREF of the page's <base> tag or the document location
@@ -12654,6 +12673,42 @@ function tryUntilSuccessful(interval, timeout, funct)
     }
   },interval);
 }
+
+//function tryUntilSuccessfulWithHandlers(interval, timeout, funct, onSucceed, onFail, onException)
+//// Try function funct every interval milliseconds until it has run timeout times or funct returns true;
+////  if succeeds, call onSucceed; if fails, call onFail; if exception thrown call onException
+////  The exception handler should take the exception as argument and return true to abort the loop.
+//{
+//  var intervalId, count;
+//  count = 0;
+//  intervalId = setInterval(function () {
+//    var bDone = false;
+//    try
+//    {
+//      bDone = funct();
+//    }
+//    catch(ex) 
+//    {
+//      if (onException && onException(ex))
+//        clearInterval(intervalId);
+//    }
+//    if (bDone) {
+//      msidump("Success in 'tryUntilSuccessfulWithHandlers");
+//      clearInterval(intervalId);
+//      if (onSucceed)
+//        onSucceed();
+//    } else if (count >= timeout) {
+//      msidump("Failure in 'tryUntilSuccessfulWithHandlers");
+//      clearInterval(intervalId);
+//      if (onFail)
+//        onFail();
+//    } else {
+//      count++;
+//      msidump("A try failed in 'tryUntilSuccessfulWithHandlers");
+//    }
+//  },interval);
+//  msidump("intervalId in tryUntilSuccessfulWithHandlers is [" + intervalId + "\n");
+//}
 
 function checkPackageDependenciesForEditor(editor)
 {
