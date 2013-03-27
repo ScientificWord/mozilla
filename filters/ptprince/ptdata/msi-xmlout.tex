@@ -1538,9 +1538,10 @@
 \def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{%
        \ifmmode
-         
+         %
        \else
-         \@temptokena={\msitag{##1}}%       
+         \@temptokena={\msitag{##1}}%
+         \msihmode       
          \msitag{<texb enc="1" name="}#1\msitag{">}%
             <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
          \msitag{</texb>}%
@@ -1826,6 +1827,13 @@
   #1%
   \msiclosetag{imagecaption}{</imagecaption>}%
 }
+
+\def\msi@begin@filecontents#1\end%
+{
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\string\begin{filecontents}#1\string\end}%
+}
+
+   
 
 % A hack to fool the jbm filter into handling \dots gracefully
 \def\dots{\msitag{\U{2026}}}
