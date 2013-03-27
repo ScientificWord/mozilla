@@ -1856,7 +1856,8 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   //        PRInt32 offset;
   //        res = nsEditor::GetNodeLocation(splitNode, address_of(parent), &offset);
           res = GetTagString(splitNode, strTagName);
-  		    nsEditor::RemoveContainer(splitNode);
+  //        nsEditor::RemoveContainer(splitNode);
+          nsEditor::DeleteNode(splitNode);
           res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
   	      if (!s2.EqualsLiteral("true"))
             res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);

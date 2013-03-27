@@ -103,7 +103,7 @@ function Startup(){
     capEditorControl = document.getElementById("captionText");
     capEditorControl.mbSinglePara = true;
 //    capEditorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
-    captionnode = getFirstElementByTagName(graphnode,"imageCaption");
+    captionnode = getFirstElementByTagName(graphnode,"imagecaption");
     if (captionnode) {
       theStringSource = graph.ser.serializeToString(captionnode);
       if (!theStringSource || theStringSource.length === 0) {
@@ -218,13 +218,15 @@ function OK() {
     theWindow.nonmodalRecreateGraph(graph, window.arguments[2], editorElement);
   }
   catch (e) {}
-  var obj = graphnode.getElementsByTagName("object");
-  if (obj && obj.length)
-  {
-    obj = obj[0];
-    if (obj)
-      doVCamPreInitialize(obj, graph);
-  }
+  var parentWindow = window.opener;
+  parentWindow.ensureVCamPreinitForPlot(graphnode, editorElement);
+//  var obj = graphnode.getElementsByTagName("object");
+//  if (obj && obj.length)
+//  {
+//    obj = obj[0];
+//    if (obj)
+//      doVCamPreInitialize(obj, graph);
+//  }
 
   return true;
 }
@@ -531,6 +533,16 @@ function addPlot () {
   }
 }
 
+function plotValuesToCopy(oldplot)
+{
+  var copyAttrs = oldplot.plotAttributsList().concat(copyAttrs);
+  copyAttrs = attributeArrayRemove(copyAttrs, "PlotStatus");
+  copyAttrs = copyAttrs.concat(oldplot.plotElementList());
+  copyAttrs = attributeArrayRemove(copyAttrs, "Expression");
+  copyAttrs = attributeArrayRemove(copyAttrs, "TubeRadius");
+  return copyAttrs;
+}
+
 function addPlotDialogContents () {
   var plot = new Plot();
   graph.addPlot(plot);
@@ -546,13 +558,14 @@ function addPlotDialogContents () {
 //  document.getElementById("plot").selectedItem = newElement; 
   // grab the plottype from plot 1 and set it as default
   var firstPlotNum = getPlotInternalNum(1);
-  var oldtype = graph.plots[firstPlotNum].attributes["PlotType"];
-  if (oldtype == "") oldtype = "rectangular";
-  plot.attributes["PlotType"] = oldtype;
+  var copyAttrs;
+  if (plot.attributes["PlotType"] == "")
+    plot.attributes["PlotType"] = "rectangular";
   plot.attributes["PlotStatus"] = "New";
   if (firstPlotNum != plotnum)  //should also copy some other attributes
   {
-    plot.copyAttributes(graph.plots[firstPlotNum], ["XVar", "YVar", "ZVar", "AnimVar"]);
+    copyAttrs = plotValuesToCopy(graph.plots[firstPlotNum]);
+    plot.copyAttributes(graph.plots[firstPlotNum], copyAttrs);
   }
   populateDialog (plotnum);   
 }         
@@ -1055,12 +1068,12 @@ function makeAxisLabelCustom(control)
 
 function makeViewIntervalsDefault(control)
 {
-  document.getElementById("viewRangesActive").disabled = control.checked;
+  document.getElementById("viewRangesActive").setAttribute( "disabled", (control.checked ? "true" : "false") );
 }
 
 function changeDefaultCamera()
 {
-  document.getElementById("customCameraProperties").disabled = document.getElementById("defaultCameraCheckbox").checked;
+  document.getElementById("customCameraProperties").setAttribute( "disabled", (document.getElementById("defaultCameraCheckbox").checked ? "true" : "false") );
 }
 
 function changeAIMethod()
