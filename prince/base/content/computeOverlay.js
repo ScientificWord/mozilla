@@ -1323,6 +1323,7 @@ function queryVCamValues(obj, graph, domGraph)
   var dim = obj.dimension;
   var sceneNodeName = "Scene" + dim + "d";
   var coordSysNodeName = "CoordinateSystem" + dim + "d";
+  var aProp;
   
   if (dim == 3)
   {
@@ -1332,7 +1333,7 @@ function queryVCamValues(obj, graph, domGraph)
                     keepUpVector : "false", viewingAngle : "2.0944", orthogonalProjection : "false"};
     if (obj.camera)
     {
-      for (var aProp in cameraVals)
+      for (aProp in cameraVals)
       {
         cameraVals[aProp] = obj.camera[aProp];
       }
@@ -1350,6 +1351,15 @@ function queryVCamValues(obj, graph, domGraph)
       cameraVals = null;
     if (graph)
       graph.setCameraValsFromVCam(cameraVals, domGraph);
+  }
+  if (obj.isAnimated)
+  {
+    animVals = {beginTime : 0, endTime : 10, currentTime : 0};
+    for (aProp in animVals)
+      animVals[aProp] = obj[aProp];
+    animVals.framesPerSecond = 5;
+    if (graph)
+      graph.setAnimationValsFromVCam(animVals, domGraph);
   }
   vcamDoc = obj.document;
   if (vcamDoc)
@@ -1398,14 +1408,52 @@ function doVCamPreInitialize(obj, graph) {
           };
         plotWrapper.wrappedObj = obj;
         doMakeSnapshot(obj, graph, editorElement);
+        obj.vcamStatus = "initialized";  //add a property so we know we've successfully initialized the VCam object
         return true;
       }
     } catch (e) {
+      if (e.message == "NPMethod called on non-NPObject wrapped JSObject!")
+      {
+        obj.vcamStatus = "needRecreate";
+        return true;  //just to stop the repetition - this isn't going to succeed
+      }
       msidump(e.message);
     }
     return false;
   });
 }
+
+//function preInitializeVCam(obj, graph, editorElement, successHandler, failHandler, exceptionHandler) {
+//  tryUntilSuccessfulWithHandlers(200, 10, function() {
+//    msidump("Entering an attempt in preInitializeVCam\n");
+//    var editor = msiGetEditor(editorElement);
+//    var domGraph = editor.getElementOrParentByTagName("graph", obj);
+//    var plotWrapper = obj.parentNode;
+//    if (obj.addEvent && (obj.readyState === 2)) {
+//      obj.addEvent('leftMouseDown', onVCamMouseDown);
+//      obj.addEvent('leftMouseUp', onVCamMouseUp);
+//      obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
+//      obj.addEvent('dragMove', onVCamDragMove);
+//      obj.addEvent('dragLeave', (function() {}));
+//      if (graph) {
+//        obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
+//        obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
+//      }
+//      queryVCamValues(obj, graph, domGraph);
+//      // add a method for writing a snapshot
+//      var snapFn = function() {
+//        return doMakeSnapshot(obj, graph, editorElement);
+//      };
+//      plotWrapper.wrappedObj = obj;
+//      doMakeSnapshot(obj, graph, editorElement);
+//      obj.vcamStatus = "initialized";  //add a property so we know we've successfully initialized the VCam object
+//      msidump("Leaving a successful attempt in preInitializeVCam\n");
+//      return true;
+//    }
+//    msidump("Leaving an unsuccessful attempt in preInitializeVCam\n");
+//    return false;
+//  }, successHandler, failHandler, exceptionHandler);
+//}
 
 function onVCamMouseUp() {
   //  alert("Mouse up in plugin!");
@@ -3385,6 +3433,204 @@ function doEditPlot() {
   graphObjectClickEvent();
 }
 
+function checkVCamStatusForPlot(objElement, graph, editorElement)
+{
+  var graphPath, objPath;
+  if (!objElement.vcamStatus)
+    objElement.vcamStatus = "uninitialized";
+  else if (objElement.vcamStatus == "initialized")
+  {
+    if (!objElement.addEvent)
+      objElement.vcamStatus = "needRecreate";  //it was initialized but has become disconnected
+  }
+  if (!(objElement.vcamStatus == "needRecreate"))
+  {
+    graphPath = graph.getGraphAttribute("ImageFile");
+    objPath = objElement.getAttribute("data");
+    if (graphPath && objPath && isDifferentPlotFile(objPath, graphPath, editorElement))
+    {
+      if (objElement.load)
+        objElement.vcamStatus = "needReload";
+      else
+        objElement.vcamStatus = "needRecreate";
+        //the VCam scripting interface doesn't survive calling setAttribute("data") to change source file;
+        //if we can't call the VCam load function, we should regenerate the object node
+    }
+  }
+  return objElement.vcamStatus;
+}
+
+function regeneratePlotObject(objElement, graph, editorElement)
+{
+  var parent = objElement.parentNode;
+//  var newObj = objElement.ownerDocument.createElementNS(xhtmlns, "object");
+  var newObj = document.createElementNS(xhtmlns, "object");
+//Intentionally not passing in an editorElement - don't want to use editor methods here
+//In particular, this function shouldn't be used to do anything that should be undo-able;
+//  we're just replacing a vcam <object> that has become disfunctional
+  msiCopyElementAttributesExcluding(newObj, objElement, null, ["data","src","type"]);
+  newObj.vcamStatus = "uninitialized";
+  parent.replaceChild(newObj, objElement);
+  newObj.setAttribute("data", msiMakeAbsoluteUrl(graph.getGraphAttribute("ImageFile"),editorElement));
+  newObj.setAttribute("type", objElement.getAttribute("type"));
+  return newObj;
+}
+
+var preInitializeVCamCallbackObjectBase = 
+{
+  mCount : 0,
+  mInterval : 200,
+  mAttempts : 10,
+//  mStart : 0,
+
+  start : function(interval, nAttempts/*, startAt*/ )
+  {
+    if (interval)
+      this.mInterval = interval;
+    if (nAttempts)
+      this.mAttempts = nAttempts;
+//    if (startAt)
+//    {
+//      this.mStart = startAt;
+//      this.mAttempts += startAt;
+//    }
+    if (!this.mObj || !this.mGraph)
+      throw("Calling preInitializeVCam with null object node or graph object");
+    if (!this.mEditorElement)
+      this.mEditorElement = msiGetActiveEditorElement();
+//    if ((this.mStart > 0) || !this.tryOne())
+    if (!this.tryOne())
+    {
+      //start the timer
+      this.mTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+      this.mTimer.initWithCallback( this, this.mInterval, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
+    }
+  },
+  tryOne : function()
+  {
+    if ("checkVCamStatusForPlot" in window)
+      window.checkVCamStatusForPlot(this.mObj, this.mGraph, this.mEditorElement);
+    if (this.mObj.vcamStatus == "initialized")
+      return true;
+    var bDone = false;
+    try
+    {
+      bDone = this.doPreInitVCam();
+    }
+    catch(ex)
+    {
+      if (this.mbHandleException)
+        this.handleException(ex);
+      else
+        msidump("Exception in preInitializeVCam: " + ex.message + " - continuing to try.\n");
+    }
+    return bDone;
+  },
+  doPreInitVCam : function()
+  {
+    msidump("Entering an attempt in preInitializeVCam\n");
+    var editor = msiGetEditor(this.mEditorElement);
+    var domGraph = editor.getElementOrParentByTagName("graph", this.mObj);
+    var plotWrapper = this.mObj.parentNode;
+    if (this.mObj.addEvent && (this.mObj.readyState === 2)) {
+      this.mObj.addEvent('leftMouseDown', onVCamMouseDown);
+      this.mObj.addEvent('leftMouseUp', onVCamMouseUp);
+      this.mObj.addEvent('leftMouseDoubleClick', onVCamDblClick);
+      this.mObj.addEvent('dragMove', onVCamDragMove);
+      this.mObj.addEvent('dragLeave', (function() {}));
+      if (domGraph) {
+        this.mObj.addEvent('dragEnter', this.mGraph.provideDragEnterHandler(this.mEditorElement, domGraph));
+        this.mObj.addEvent('drop', this.mGraph.provideDropHandler(this.mEditorElement, domGraph));
+      }
+      queryVCamValues(this.mObj, this.mGraph, domGraph);
+      // add a method for writing a snapshot
+      var snapFn = function() {
+        return doMakeSnapshot(this.mObj, this.mGraph, this.mEditorElement);
+      };
+      plotWrapper.wrappedObj = this.mObj;
+      doMakeSnapshot(this.mObj, this.mGraph, this.mEditorElement);
+      this.mObj.vcamStatus = "initialized";  //add a property so we know we've successfully initialized the VCam object
+      msidump("Leaving a successful attempt in preInitializeVCam\n");
+      return true;
+    }
+    msidump("Leaving an unsuccessful attempt in preInitializeVCam; readyState reports [" + this.mObj.readyState + "]\n");
+    return false;
+  },
+  notify : function(aTimer)
+  { 
+    if (aTimer)
+      this.mTimer = aTimer;
+    ++this.mCount;
+//    if ((this.mCount > this.mStart) && this.tryOne())
+    if (this.tryOne())
+    {
+      this.mTimer.cancel();
+      if (this.onSuccess)
+        this.onSuccess(this);
+    }
+    else if (this.mCount >= this.mAttempts)
+    {
+      this.mTimer.cancel();
+      if (this.mbHandleFail)
+        this.handleFail();
+    }
+  },
+  handleFail : function()
+  {
+    var objPath = this.mObj.getAttribute("data");
+    var objFile = Components.classes["@mozilla.org/file/local;1"].
+                     createInstance(Components.interfaces.nsILocalFile);
+    objFile.initWithPath( makeFilePathAbsolute(objPath, this.mEditorElement));
+    if (objFile.exists())
+    {
+      msidump("preInitializeVCam failed but file " + objPath + " exists. Regenerating object.\n");
+      var newObj = regeneratePlotObject(this.mObj, this.mGraph, this.mEditorElement);
+      preInitializeVCam( newObj, this.mGraph, this.mEditorElement, false, false, 200, 20/*, 5*/ );  //don't want to spawn any more attempts, so pass null handlers
+    }
+    else
+      msidump("preInitializeVCam failed; file " + objPath + " doesn't exist.\n");
+  },
+  handleException : function(exc)
+  {
+    if (exc.message == "NPMethod called on non-NPObject wrapped JSObject!")
+    {
+      var parent = this.mObj.parentNode;
+      var newObj = regeneratePlotObject(this.mObj, this.mGraph, this.mEditorElement);
+      preInitializeVCam( newObj, this.mGraph, false, false );  //don't want to spawn any more attempts, so pass null handlers
+      return true;  //to stop the current timer
+    }
+    msidump("Exception in preInitializeVCam: " + exc.message + " - continuing to try.\n");
+    return false;
+  }
+};
+
+function preInitializeVCamCallbackObject(graph, objElement, editorElement, bHandleFail, bHandleException)
+{
+  this.mGraph = graph;
+  this.mObj = objElement;
+  this.mEditorElement = editorElement;
+  this.mbHandleFail = bHandleFail;
+  this.mbHandleException = bHandleException;
+}
+
+preInitializeVCamCallbackObject.prototype = preInitializeVCamCallbackObjectBase;
+
+function preInitializeVCam( objElement, theGraph, editorElement, bHandleFail, bHandleExceptions, useInterval, useIterations/*, delayStart*/ )
+{
+  if (!useInterval)
+    useInterval = 200;
+  if (!useIterations)
+    useIterations = 10;
+//  if (!delayStart)
+//    delayStart = 0;
+  var initializer = new preInitializeVCamCallbackObject(theGraph, objElement, editorElement, bHandleFail, bHandleExceptions);
+  initializer.start(useInterval, useIterations/*, delayStart*/);
+}
+
+//Warning! This function may replace the <object> node for the plot, so you should use getElementsByTagName()
+//again afterwards before referencing it. Furthermore, it calls tryUntilSuccessful() and so is asynchronous.
+//It's meant to set a plot which has been created (perhaps via a paste or document load) or modified into a
+//reliable state.
 function ensureVCamPreinitForPlot(graphNode, editorElement)
 {
   var editor = msiGetEditor(editorElement);
@@ -3397,13 +3643,23 @@ function ensureVCamPreinitForPlot(graphNode, editorElement)
   {
     theGraph = new Graph();
     theGraph.extractGraphAttributes(graphNode);
-    parent = objElement.parentNode;
-    var newObj = document.createElementNS(xhtmlns, "object");
-    msiCopyElementAttributes(newObj, objElement, null, false); //pass a null editor although we have one - don't want to use editor methods here
-    parent.replaceChild(newObj, objElement);
-//    if (objElement.load)
-//      objElement.load(theGraph.getGraphAttribute("ImageFile"));
-    doVCamPreInitialize(newObj, theGraph);
+    checkVCamStatusForPlot(objElement, theGraph, editorElement);
+    if (objElement.vcamStatus === "initialized")
+      return;
+    if ( (objElement.vcamStatus === "needRecreate") || (objElement.vcamStatus === "needReload") )
+    {
+      objElement = regeneratePlotObject(objElement, theGraph, editorElement);
+//    }
+//    else if (objElement.vcamStatus === "needReload")
+//    {
+//      var vcamUri = msiMakeAbsoluteUrl(theGraph.getGraphAttribute("ImageFile"),editorElement);
+////      var vcamPath = msiPathFromFileURL(msiURIFromString(vcamUri));
+//      msidump("In ensureVCamPreinitForPlot, calling vcam load [" + vcamUri + "]\n");
+//      objElement.load(vcamUri);
+//      objElement.setAttribute("data", vcamUri);
+//      objElement.vcamStatus = "uninitialized";
+    }
+    preInitializeVCam( objElement, theGraph, editorElement, true, true);
   }
 }
 

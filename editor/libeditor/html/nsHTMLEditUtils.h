@@ -42,6 +42,7 @@
 #include "nsError.h"  // for nsresult
 class nsIEditor;
 class nsIDOMNode;
+class nsIDOMElement;
 class nsString;
 class msiITagListManager;
 
@@ -94,6 +95,7 @@ public:
   static PRBool IsMathNode(nsIDOMNode *aNode);
   static PRBool CanContain(PRInt32 aParent, PRInt32 aChild, msiITagListManager * manager);
   static PRBool IsContainer(PRInt32 aTag, msiITagListManager * manager);
+  static void MatchingFence(nsIDOMElement *aNode, nsIDOMElement ** other);
 };
 
 #endif /* nsHTMLEditUtils_h__ */
