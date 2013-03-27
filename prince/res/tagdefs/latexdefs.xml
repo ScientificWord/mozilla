@@ -75,7 +75,8 @@
           <mathvar>monospace</mathvar></tag>
 				<tag nm="underline"><description>Underline</description></tag>
 				<tag nm="upper"><description>Upper case</description></tag>
-				<tag nm="rawTeX" hidden="1"><description>Raw TeX tag</description></tag>
+        <tag nm="rawTeX" hidden="1"><description>Raw TeX tag</description></tag>
+				<tag nm="descriptionLabel" ><description>Description label</description></tag>
 				<tag nm="text##lang1##" hidden="1" babel="1"><description>##lang## language</description></tag>
 				<tag nm="text##lang2##" hidden="1" babel="2"><description>##lang## language</description></tag>
         <!-- <tag nm="deleted"><description>Deleted text</description></tag>
@@ -296,7 +297,7 @@
           <initialcontents>
             <descriptionListItem>
               <bodyText>
-                <cursor/>
+                <descriptionLabel><cursor/>:</descriptionLabel>
                 <br/>
               </bodyText>
             </descriptionListItem>

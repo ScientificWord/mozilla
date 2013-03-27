@@ -379,7 +379,7 @@ section[nonum="true"] {
 }
 
 
-section[open="false"] {
+section[open="false"]>* {
   display: none;
 }
 
@@ -399,7 +399,7 @@ subsection[open="false"]>sectiontitle {
   display: block;
 }
 
-subsection[open="false"] {
+subsection[open="false"]>* {
   display: none;
 }
 
@@ -431,7 +431,7 @@ subsubsection[nonum="true"]>sectiontitle:before {
 }
 
 
-subsubsection[open="false"] {
+subsubsection[open="false"]*> {
   display: none;
 }
 

@@ -26,9 +26,9 @@ function plotStartup() {
             document.getElementById(alist[i]).checked = true;            
           break;
         case "AISubIntervals":            
-        case "AnimateStart":            
-        case "AnimateEnd": 
-        case "AnimateFPS":
+//        case "AnimateStart":            
+//        case "AnimateEnd": 
+//        case "AnimateFPS":
           var oldval = window.arguments[0].getPlotValue (alist[i], plotno);   
           document.getElementById(alist[i]).value = oldval;            
           break;
@@ -99,9 +99,9 @@ function plotOK () {
           break;
                                                                           
         case "AISubIntervals":
-        case "AnimateStart":
-        case "AnimateEnd":
-        case "AnimateFPS":
+//        case "AnimateStart":
+//        case "AnimateEnd":
+//        case "AnimateFPS":
           var newval = parseInt(document.getElementById(alist[i]).value, 10);
           var oldval = window.arguments[0].getPlotValue (alist[i], plotno);   
           if (isNaN(newval))
