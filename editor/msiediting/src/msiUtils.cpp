@@ -616,7 +616,6 @@ nsresult msiUtils::CreateInputbox(nsIEditor *editor,
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> inputbox;
   PRUint32 dummyFlags(msiIMathMLInsertion::FLAGS_NONE);
-  //TODO -- how do we do inputboxs?
   nsAutoString text(PRUnichar(0x200B)); // zero width space
   res = CreateMathMLLeafElement(editor, text, msiIMathMLEditingBC::MATHML_MI, -1, dummyFlags, inputbox);
   if (NS_SUCCEEDED(res) && inputbox)
