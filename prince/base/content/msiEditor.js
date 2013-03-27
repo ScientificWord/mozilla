@@ -587,6 +587,7 @@ var msiResizeListener =
       graph.setGraphAttribute("Height", newHeightInUnits);
       graph.recomputeVCamImage( editorElement);
       graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
+      ensureVCamPreinitForPlot(DOMGraph, editorElement);
 //      var obj = anElement.getElementsByTagName("object");
 //      if (obj.length > 0 && obj[0].hasAttribute("msigraph"))
 //      {
@@ -1007,7 +1008,7 @@ function msiEditorDocumentObserver(editorElement)
           catch(e) {
             dump(e+"\n");
           }
-          doVCamPreinitForPlotsInDocument(editorElement);
+          doVCamPreinitForPlotsInDocument(editorElement, true);
         }
 
 //        if (this.mDumpMessage)
@@ -10446,31 +10447,18 @@ function msiGoOnEvent(node, event) { msiCommandUpdater.onEvent(node, event); }
 //  }
 //}
 
-
-function msiDialogEditorContentFilter(anEditorElement)
+var msiDialogEditorContentFilterBase = 
 {
-  this.reject = 0;
-  this.accept = 1;
-  this.skip = 2;
-  this.acceptAll = 3;
-  this.mEditorElement = anEditorElement;
-  this.mAtomService = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
-  this.mXmlSerializer = new XMLSerializer();
-  this.mDOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
-  this.mbMathOnly = false;
-  this.mbSinglePara = false;
-  if (anEditorElement.mbSinglePara)
-    this.mbSinglePara = true;
-  this.defaultParaTag = "para";
-  this.mbAtFirst = true;
-  var editor = msiGetEditor(this.mEditorElement);
-  if (editor.tagListManager)
-  {
-    var namespace = new Object();
-    this.defaultParaTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-  }
+  reject : 0,
+  accept : 1,
+  skip : 2,
+  acceptAll : 3,
+  mAtomService : Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService),
+  mXmlSerializer : new XMLSerializer(),
+  mDOMUtils : Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils),
+  defaultParaTag : "para",
 
-  this.dlgNodeFilter = function(aNode)
+  dlgNodeFilter : function(aNode)
   {
     var nodename = aNode.nodeName;
     var namespaceAtom = null;
@@ -10510,6 +10498,10 @@ function msiDialogEditorContentFilter(anEditorElement)
       case "sw:dialogbase":
         return this.skip;
       break;
+      case "br":
+        if (aNode.hasAttribute("temp") && (aNode.getAttribute("temp")=="true") )
+          return this.reject;
+      break;
 //      case "mi":
 //        if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput")=="true") )
 //          return this.reject;
@@ -10519,8 +10511,8 @@ function msiDialogEditorContentFilter(anEditorElement)
     //We still need to fill in the tags for which we want to accept the tag but leave open the possibility of not accepting a child.
     //Examples may include field tags, list tags, etc.; the point being that one may occur as the parent of something like a
     //  sw:dialogbase paragraph. Not implemented that way at this point.  rwa, 8-
-  };
-  this.getXMLNodesForParent = function(newParent, parentNode)
+  },
+  getXMLNodesForParent : function(newParent, parentNode)
   {
     if (!parentNode || !parentNode.childNodes)
       return;
@@ -10548,8 +10540,8 @@ function msiDialogEditorContentFilter(anEditorElement)
         break;
       }
     }
-  };
-  this.getXMLNodesAsDocFragment = function()
+  },
+  getXMLNodesAsDocFragment : function()
   {
     var docFragment = null;
     var doc = this.mEditorElement.contentDocument;
@@ -10566,8 +10558,8 @@ function msiDialogEditorContentFilter(anEditorElement)
 //      dumpStr += this.mXmlSerializer.serializeToString(docFragment.childNodes[ix]);
 //    dump(dumpStr + "] for editorElement [" + this.mEditorElement.id + "].\n");
     return docFragment;
-  };
-  this.nodeHasRealContent = function(parentElement, bIsLast)
+  },
+  nodeHasRealContent : function(parentElement, bIsLast)
   {
     var bFoundContent = false;
     if (parentElement != null)
@@ -10595,8 +10587,8 @@ function msiDialogEditorContentFilter(anEditorElement)
 //      return bFoundContent;
     }
     return bFoundContent;
-  };
-  this.isNonEmpty = function()
+  },
+  isNonEmpty : function()
   {
     var parentElement = null;
     var doc = this.mEditorElement.contentDocument;
@@ -10604,8 +10596,8 @@ function msiDialogEditorContentFilter(anEditorElement)
     if (doc != null)
       parentElement = msiGetRealBodyElement(doc);
     return this.nodeHasRealContent( parentElement, true );
-  };
-  this.checkForTrailingBreak = function(parentNode)
+  },
+  checkForTrailingBreak : function(parentNode)
   {
     var lastNode = parentNode.lastChild;
     if (lastNode != null && lastNode != parentNode)
@@ -10620,8 +10612,8 @@ function msiDialogEditorContentFilter(anEditorElement)
       else
         this.checkForTrailingBreak(lastNode);
     }
-  };
-  this.hasNonEmptyMathContent = function()
+  },
+  hasNonEmptyMathContent : function()
   {
     var retval = false;
     var editor = msiGetEditor(this.mEditorElement);
@@ -10639,14 +10631,14 @@ function msiDialogEditorContentFilter(anEditorElement)
       }
     }
     return retval;
-  };
-  this.hasNonEmptyContent = function(bMathOnly)
+  },
+  hasNonEmptyContent : function(bMathOnly)
   {
     if (bMathOnly)
       return this.hasNonEmptyMathContent();
     return this.isNonEmpty();
-  };
-  this.getContentsAsRange = function()
+  },
+  getContentsAsRange : function()
   {
     var theRange = null;
     var doc = null;
@@ -10691,8 +10683,8 @@ function msiDialogEditorContentFilter(anEditorElement)
 //      dump("  [Note: the rootNode is [" + rootNode.nodeName + "], with child nodes [" + topChildrenStr + "].]\n");
     }
     return theRange;
-  };
-  this.findTrailingWhiteSpace = function(parentNode)
+  },
+  findTrailingWhiteSpace : function(parentNode)
   {
     var spaceNode = null;
     if (parentNode.nodeName == "br")
@@ -10709,8 +10701,8 @@ function msiDialogEditorContentFilter(anEditorElement)
         spaceNode = this.findTrailingWhiteSpace(lastNode);
     }
     return spaceNode;
-  };
-  this.getContentsAsDocumentFragment = function()
+  },
+  getContentsAsDocumentFragment : function()
   {
     var theFragment = null;
     var theRange = this.getContentsAsRange();
@@ -10727,8 +10719,8 @@ function msiDialogEditorContentFilter(anEditorElement)
 
     }
     return theFragment;
-  };
-  this.getDocumentFragmentString = function()
+  },
+  getDocumentFragmentString : function()
   {
     var theString = "";
 //    var theFragment = this.getContentsAsDocumentFragment();
@@ -10740,8 +10732,8 @@ function msiDialogEditorContentFilter(anEditorElement)
     }
 //    dump("In msiDialogEditorContentFilter.getDocumentFragmentString, returning [" + theString + "] for editorElement [" + this.mEditorElement.id + "].\n");
     return theString;
-  };
-  this.getMarkupString = function()
+  },
+  getMarkupString : function()
   {
     var theString = "";
     var docFragment = this.getXMLNodesAsDocFragment();
@@ -10752,8 +10744,8 @@ function msiDialogEditorContentFilter(anEditorElement)
     }
 //    dump("In msiDialogEditorContentFilter.getMarkupString, returning [" + theString + "] for editorElement [" + this.mEditorElement.id + "].\n");
     return theString;
-  };
-  this.getTextString = function()
+  },
+  getTextString : function()
   {
 //    var theFragment = this.getContentsAsDocumentFragment();
     var theFragment = this.getXMLNodesAsDocFragment();
@@ -10764,13 +10756,13 @@ function msiDialogEditorContentFilter(anEditorElement)
     }
 //    dump("In msiDialogEditorContentFilter.getTextString, returning [] for editorElement [" + this.mEditorElement.id + "].\n");
     return "";
-  };
-  this.hasTextContent = function()
+  },
+  hasTextContent : function()
   {
     var str = this.getTextString();
     return ( (str != null) && (str.length > 0) );
-  };
-  this.getFullContentString = function()
+  },
+  getFullContentString : function()
   {
     var theStr = "";
     var doc = null;
@@ -10784,8 +10776,8 @@ function msiDialogEditorContentFilter(anEditorElement)
       theStr = this.mXmlSerializer.serializeToString(rootNode);
     }
     return theStr;
-  };
-  this.getRootNode = function()
+  },
+  getRootNode : function()
   {
     var rootNode = null;
     var editor = msiGetEditor(this.mEditorElement);
@@ -10803,13 +10795,30 @@ function msiDialogEditorContentFilter(anEditorElement)
       rootNode = mathList[0];
     }
     return rootNode;
-  };
-  this.setMathOnly = function(bTrue)
+  },
+  setMathOnly : function(bTrue)
   {
     this.mbMathOnly = bTrue;
-  };
+  }
+};
+
+function msiDialogEditorContentFilter(anEditorElement)
+{
+  this.mEditorElement = anEditorElement;
+  this.mbMathOnly = false;
+  this.mbSinglePara = false;
+  if (anEditorElement.mbSinglePara)
+    this.mbSinglePara = true;
+  this.mbAtFirst = true;
+  var editor = msiGetEditor(this.mEditorElement);
+  if (editor.tagListManager)
+  {
+    var namespace = new Object();
+    this.defaultParaTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+  }
 }
 
+msiDialogEditorContentFilter.prototype = msiDialogEditorContentFilterBase;
 
 function OpenExtensions(aOpenMode)
 {
@@ -11360,7 +11369,7 @@ function msiSaveAsPicture(editorElement)
     editor.saveSelectionAsImage(dialogResult.resultingLocalFile.path);
 }
 
-function doVCamPreinitForPlotsInDocument(editorElement)
+function doVCamPreinitForPlotsInDocument(editorElement, bJustLoaded)
 {
   var editor = msiGetEditor(editorElement);
   var aDocument = editor.document;
@@ -11372,11 +11381,18 @@ function doVCamPreinitForPlotsInDocument(editorElement)
 //  if (!resultNodes.snapshotLength)
 //    resultNodes = xPathEval.evaluate(ourExpr1, aDocument.documentElement, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
   var currNode;
+  var objNodes;
   try
   {
     for (var i = 0; i < resultNodes.snapshotLength; ++i)
     {
       currNode = resultNodes.snapshotItem(i);
+      if (bJustLoaded)  //in this case, odds are apparently very high that the VCam object will not function as needed - mark it to be re-created
+      {
+        objNodes = currNode.getElementsByTagName("object");
+        if (objNodes && objNodes.length)
+          objNodes[0].vcamStatus = "needRecreate";
+      }
       if ("ensureVCamPreinitForPlot" in window)
         ensureVCamPreinitForPlot(currNode, editorElement);
       else
