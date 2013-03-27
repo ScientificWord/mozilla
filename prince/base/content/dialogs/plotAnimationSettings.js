@@ -1,9 +1,9 @@
 var graph;
-var animAttributes = ["AnimateStart", "AnimateEnd", "AnimateFPS"];
+var animAttributes = ["AnimateStart", "AnimateEnd", "AnimateFPS", "AnimateCurrTime"];
 
 function startup(){
 //  var graph = window.arguments[0];
-  var graph = window.arguments[0];
+  graph = window.arguments[0];
   for (var ii = 0; ii < animAttributes.length; ++ii)
     putValueToControl(animAttributes[ii], graph.getValue(animAttributes[ii]));
 }
