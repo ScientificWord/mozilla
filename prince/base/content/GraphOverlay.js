@@ -31,7 +31,7 @@ Graph.prototype = {
                               "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp",
                               "OrientationTiltTurn", "ViewingBoxXMin", "ViewingBoxXMax",
                               "ViewingBoxYMin", "ViewingBoxYMax", "ViewingBoxZMin", "ViewingBoxZMax",
-                              "AnimateStart", "AnimateEnd", "AnimateFPS"],
+                              "AnimateStart", "AnimateEnd", "AnimateFPS", "AnimateCurrTime"],
   GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace"],
   omitAttributeIfDefaultList : //["XAxisLabel", "YAxisLabel", "ZAxisLabel", 
                                ["CameraLocationX", "CameraLocationY", "CameraLocationZ",
@@ -420,6 +420,7 @@ Graph.prototype = {
       NA = attributeArrayRemove(NA, "AnimateStart");
       NA = attributeArrayRemove(NA, "AnimateEnd");
       NA = attributeArrayRemove(NA, "AnimateFPS");
+      NA = attributeArrayRemove(NA, "AnimateCurrTime");
     }
     // TubeRadius?
     return NA;
@@ -486,6 +487,11 @@ Graph.prototype = {
       case("viewingAngle"):         return "ViewingAngle";
       case("orthogonalProjection"): return "OrthogonalProjection";
 
+      case("beginTime"):            return "AnimateStart";
+      case("endTime"):              return "AnimateEnd";
+      case("currentTime"):          return "AnimateCurrTime";
+      case("framesPerSecond"):      return "AnimateFPS";
+
       case("XAxisTitle") :          return "XAxisLabel";
       case("YAxisTitle") :          return "YAxisLabel";
       case("ZAxisTitle") :          return "ZAxisLabel";
@@ -517,6 +523,28 @@ Graph.prototype = {
           this.setGraphAttribute(attrName, cameraVals[aProp]);
           if (graphSpec)
             graphSpec.setAttribute(attrName, cameraVals[aProp]);
+        }
+      }
+    }
+  },
+  setAnimationValsFromVCam : function(animVals, domGraph) {
+    if (animVals != null)
+    {
+      msidump("Got camera vals from VCam:\n");
+      var attrName;
+      var graphSpec;
+      var graphSpecList = domGraph.getElementsByTagName("graphSpec");
+      if (graphSpecList && graphSpecList.length)
+        graphSpec = graphSpecList[0];
+      for (var aProp in animVals)
+      {
+        msidump("  " + aProp + " = " + animVals[aProp] + "\n");
+        attrName = this.mapVCamNameToAttr(aProp);
+        if (attrName && !this.isUserSet(attrName))
+        {
+          this.setGraphAttribute(attrName, animVals[aProp]);
+          if (graphSpec)
+            graphSpec.setAttribute(attrName, animVals[aProp]);
         }
       }
     }
@@ -771,6 +799,10 @@ Plot.prototype = {
       return false;
     return (this.attributes["DefaultedVars"].indexOf(whichVar) < 0);
   },
+  isAnimated : function()
+  {
+    return (this.attributes["Animate"] === "true");
+  },
   hasVariable : function(whichVar)
   {
     if (whichVar == "AnimVar")
@@ -936,6 +968,16 @@ Plot.prototype = {
         this.element[key] = serialized;
       }
       child = child.nextSibling;
+    }
+  },
+  copyAttributes : function(otherPlot, attrArray)
+  {
+    var newVal;
+    for (var jj = 0; jj < attrArray.length; ++jj)
+    {
+      newVal = otherPlot.getPlotValue(attrArray[jj]);
+      if (newVal && newVal.length)
+        this.setPlotValue(attrArray[jj], newVal);
     }
   },
   getPlotValue: function (key) {
@@ -1487,10 +1529,28 @@ Frame.prototype = {
         }
         if (bLoadIt)
         {
-          if (DOMObj.addEvent) //the object is connected to the VCam interface - use its "load" member
-            DOMObj.load(graph.getGraphAttribute("ImageFile"));
+          var vcamUri = msiMakeAbsoluteUrl(graph.getGraphAttribute("ImageFile"),editorElement);
+//          var vcamPath = msiPathFromFileURL(msiURIFromString(vcamUri));
+//          if (DOMObj.addEvent) //the object is connected to the VCam interface - use its "load" member
+//          {
+//            DOMObj.load(vcamUri);
+//            msidump("In reviseDOMFrameElement, DOMObj.addEvent exists and we're calling load [" + vcamUri + "]; afterwards DOMObj.dimension reports [" + DOMObj.dimension + "]\n");
+//            DOMObj.setAttribute("data", vcamUri);
+//            msidump("In reviseDOMFrameElement, DOMObj.addEvent exists and we've called load and set object's data attribute; afterwards DOMObj.dimension reports [" + DOMObj.dimension + "]\n");
+//          }
+//          else
+//          {
+//            msidump("In reviseDOMFrameElement, DOMObj.addEvent doesn't exist and we're changing data attribute\n");
+
+          if (!existingObjFile || !existingObjFile.length)
+          {
+            msidump("In reviseDOMFrameElement, changing data attribute to [" + vcamUri + "]\n");
+            DOMObj.setAttribute( "data", vcamUri );
+          }
           else
-            DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
+            DOMObj.vcamState = "needReload";  //IF this is an already existing plot being revised, DON'T initiate a vcam load
+                                              //here! Marking it this way will cause the object to be recreated, which is necessary.
+//          }
         }
       }
       var filetype = graph.getDefaultValue("DefaultFileType");
@@ -1505,6 +1565,7 @@ Frame.prototype = {
       }
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
+      DOMObj.vcamStatus = "uninitialized";
 //      DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
       editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
@@ -1693,8 +1754,10 @@ function insertGraph(siblingElement, graph, editorElement) {
   var gDomElement = graph.createGraphDOMElement(false);
 
   addGraphElementToDocument(gDomElement, siblingElement, editorElement);
-  var obj = gDomElement.getElementsByTagName("object")[0];
-  doVCamPreInitialize(obj, graph);
+//  var obj = gDomElement.getElementsByTagName("object")[0];
+  var parentWindow = editorElement.ownerDocument.defaultView;
+  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
+//  doVCamPreInitialize(obj, graph);
   editorElement.focus();
 }
 function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElement) {
@@ -1872,7 +1935,8 @@ function plotVarsNeeded(dim, ptype, animate) {
   }
   if ((dim === 3) && (ptype !== "explicitList"))
     nvars++;
-  if (animate === "true") nvars++;
+  if (animate)
+    nvars++;
   return (nvars);
 }
 function testQuery(domgraph) {
