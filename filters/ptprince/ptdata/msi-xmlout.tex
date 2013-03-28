@@ -1827,9 +1827,11 @@
 \def\caption{\msi@caption}
 
 \def\msi@caption#1{%
-  \msiopentag{imagecaption}{<imagecaption>}%
+  \msiopentag{caption}{<caption align="bottom">}%
+  \msiopentag{bodyText}{<bodyText>}
   #1%
-  \msiclosetag{imagecaption}{</imagecaption>}%
+  \msiclosetag{bodyText}{</bodyText>}
+  \msiclosetag{caption}{</caption>}%
 }
 
 \def\msi@begin@filecontents#1\end%
