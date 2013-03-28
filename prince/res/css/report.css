@@ -32,14 +32,14 @@ part>sectiontitle:before {
 
 chapter {
   display: block;
-/*  counter-increment: chapter;
-  counter-reset: subchapter;
-  counter-reset: theorem; */
-}  
+  counter-increment: chapter;
+  counter-reset: section;
+/*  counter-reset: theorem; */
+}
 
 chapter sectiontitle {
   display: block;
-  margin: 10pt 0pt 0pt 0pt;
+  margin: 10pt 0 0 0;
   font-size: 20pt;
   font-weight: bold;
   text-align: left;
@@ -51,8 +51,8 @@ chapter sectiontitle:before {
 
 section {
   display: block;
-/*    counter-increment: section;
-  counter-reset: subsection;
+  counter-increment: section;
+/*  counter-reset: subsection;
   counter-reset: theorem; */
 }
 
@@ -63,16 +63,20 @@ section sectiontitle {
   font-weight: bold;
 }
 
-/*
+
 section>sectiontitle:before {
-  content: counter(section) ".  ";
+  content: counter(chapter) "." counter(section) ".  ";
 }
-*/
+
+section defaulttitletag:after {
+  content: "Replace this section title";
+  color: red;
+}
 
 subsection{
   display: block;
-/*    counter-increment: subsection;
-    counter-reset: subsubsection; */
+  counter-increment: subsection;
+/*  counter-reset: subsubsection; */
 }
 
 subsection sectiontitle {
@@ -81,16 +85,19 @@ subsection sectiontitle {
   font-size: 12pt;
 }
 
-/*
 subsection>sectiontitle:before {
-  content: counter(section) "." counter(subsection) ".  ";
+  content: counter(chapter) "." counter(section) "." counter(subsection) ".  ";
 }
-*/
+
+subsection defaulttitletag:after {
+  content: "Replace this subsection title";
+  color: red;
+}
 
 subsubsection {
   display:block;
-/*    counter-increment: subsubsection;
-    counter-reset: paragraph; */
+  counter-increment: subsubsection;
+/*    counter-reset: paragraph; */
 }
 
 subsubsection sectiontitle {
@@ -100,11 +107,14 @@ subsubsection sectiontitle {
   font-weight: bold;
 }
 
-/*
 subsubsection>sectiontitle:before {
-  content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
+  content: counter(chapter) "." counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
 }
-*/
+
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title"; 
+  color: red;
+}
 
 paragraph {
   display:block;
@@ -117,34 +127,25 @@ paragraph sectiontitle {
   font-style: italic;
 }
 
-/*  
 paragraph>sectiontitle:before {
-  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
-}
-*/
-
-section defaulttitletag:after {
-  content: "Replace this section title"; 
-  color: red;
-}
-
-subsection defaulttitletag:after {
-  content: "Replace this subsection title"; 
-  color: red;
-}
-
-subsubsection defaulttitletag:after {
-  content: "Replace this subsubsection title"; 
-  color: red;
+  content: "";
 }
 
 paragraph defaulttitletag:after {
-  content: "Replace this subsubsubsection title"; 
+  content: "Replace this subsubsubsection title";
   color: red;
 }
 
+subparagraph sectiontitle {
+  margin-left: 10pt;
+}
+
+subparagraph>sectiontitle:before {
+  content: "";
+}
+
 subparagraph defaulttitletag:after {
-  content: "Replace this subsubsubsubsection title"; 
+  content: "Replace this subsubsubsubsection title";
   color: red;
 }
 
@@ -236,7 +237,7 @@ bodyText {
 }
 bodyMath {
   display: block;
-  margin: 0pt 10pt 0pt 5pt;
+  margin: 0 10pt 0 5pt;
   color: rgb(0,128,64);
 }
 
@@ -416,8 +417,8 @@ pre, verbatim {
   
 /* Not in article.css (gp)
 item {
-  margin: 0pt 0pt 0pt 0pt; 
-  padding: 10pt 0pt 0pt 20pt; 
+  margin: 0 0 0 0;
+  padding: 10pt 0 0 20pt;
   display: list-item
 }
 */
