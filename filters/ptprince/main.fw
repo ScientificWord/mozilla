@@ -173,7 +173,7 @@ int main(int argc, char* argv[])
 
       std::cout <<   "\nReading input file " << s_inputfilename;
       
-      __asm {int 3};
+//      __asm {int 3};
 
       LOG("\nReading input file " << s_inputfilename);
       InputByteFile* pbf = new InputByteFile;
