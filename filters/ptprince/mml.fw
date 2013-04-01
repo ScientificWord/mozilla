@@ -34,8 +34,8 @@ char *upref_zstrs[] = {
       display=\"inline\">",
   "mml:",                         //  U8* namespace_prefix;
   "",
-  "mathcolor=\"gray\"",           //  U8* mathname_attrs;
-  "mathcolor=\"green\"",          //  U8* unitname_attrs;
+  "msimathname=\"true\"",         //  U8* mathname_attrs;
+  "msiunit=\"true\"",          //  U8* unitname_attrs;
   "mathcolor=\"black\"",          //  U8* text_in_math_attrs;
   "mathcolor=\"green\"",          //  U8* link_attrs;
   "true",                         //  U8* renderer_baselines;
