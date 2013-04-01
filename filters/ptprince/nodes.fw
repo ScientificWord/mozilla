@@ -55,13 +55,18 @@ OutputStream& OutputStream::operator<<(const char* str)
 
 OutputStream& OutputStream::operator<<(const char ch)
 {
-   m_str += ch;
-   return *this;
+   if (ch == '\n') {
+     m_stream << m_str.c_str() << "\n";
+     m_str = "";
+  } else {
+     m_str += ch;
+  }
+  return *this;
 }
 
 void OutputStream::Space()
 {
-   if (m_str.size() > 70){
+   if (m_str.size() > 150){
       m_stream << m_str.c_str() << "\n";
       m_str = "";
    } else {
