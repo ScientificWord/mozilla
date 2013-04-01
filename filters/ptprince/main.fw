@@ -146,6 +146,7 @@ int main(int argc, char* argv[])
       }
    }
    LOG("\nReading format file " << format);
+   
    Filename fn0(format, true);
    InputByteFile* pbf0 = new InputByteFile;
    if (!pbf0 -> Open(fn0)){
@@ -158,8 +159,8 @@ int main(int argc, char* argv[])
    Tokenizer* toks0 = new Tokenizer(plineSource0);
    InputStack::Push(toks0);
 
-   char* test = new char[5];
-   test[0]='M';test[1]='A';test[2]='R';test[3]='K';test[4]='0';
+   //char* test = new char[5];
+   //test[0]='M';test[1]='A';test[2]='R';test[3]='K';test[4]='0';
 
    Interpretter::MainLoop();
 
@@ -169,6 +170,11 @@ int main(int argc, char* argv[])
 
    try{
       s_inputfilename = argv[argc-2];
+
+      std::cout <<   "\nReading input file " << s_inputfilename;
+      
+//      __asm {int 3};
+
       LOG("\nReading input file " << s_inputfilename);
       InputByteFile* pbf = new InputByteFile;
       Filename* pFn = new Filename(s_inputfilename, true);
