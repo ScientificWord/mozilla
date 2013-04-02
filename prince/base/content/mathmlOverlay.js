@@ -3372,7 +3372,7 @@ function mathNodeToText(editor, node)
   if (node)
 	{
 		splitMathDeep(editor, node, -1, node.textContent);
-		coalescemath();
+		coalescemath(null, false);
 	}
 }
 
@@ -3469,7 +3469,7 @@ function mathToText(editor)
   }
 //  if (gProcessor)
 //    gProcessor.reset();
-  coalescemath();
+  coalescemath(null, true);
   editor.endTransaction();
 }
 
