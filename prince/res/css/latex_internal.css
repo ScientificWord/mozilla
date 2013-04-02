@@ -116,6 +116,7 @@ button.expander {
   margin-bottom: 4px;
   vertical-align: text-bottom;
   display: none;
+  -moz-user-select:none;
 }
 
 *[showexpanders="true"] button.expander {
