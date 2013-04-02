@@ -173,20 +173,17 @@
   <xsl:template match="html:preamble">
     <xsl:text>
 %% preamble
-\usepackage{amssymb,amsmath,xcolor,graphicx}
+\usepackage{amssymb,amsmath,xcolor,graphicx,xspace}
     </xsl:text>
     <xsl:if test="$compiler='xelatex'">
-\usepackage{xltxtra}
-\usepackage{xkeyval}
+\usepackage{xltxtra,xkeyval}
 \TeXXeTstate=1
 \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
     </xsl:if>
 
     <xsl:if test="$compiler!='xelatex'">\usepackage{textcomp}</xsl:if>
 
-    <xsl:text>\usepackage{xspace}</xsl:text>
-    <xsl:if test="count(//html:indexitem) &gt; 0"
-  >\usepackage{makeidx}</xsl:if>
+    <xsl:if test="count(//html:indexitem) &gt; 0">\usepackage{makeidx}</xsl:if>
 
     <xsl:for-each select="$packagelist/*"
   >
@@ -355,9 +352,7 @@
   <xsl:template match="html:columns[@count='2']"
   >
     twocolumn=true, columnsep=
-    <xsl:value-of select="@sep"
-/>
-    ,
+    <xsl:value-of select="@sep"/>,
   </xsl:template>
 
   <xsl:template match="html:columns[@count!='2']"
@@ -393,71 +388,33 @@
 </xsl:template>
 
 <xsl:template match="html:mainfont[@ot='1']">
-  \setmainfont[
-  <xsl:value-of select="@options"
-  />
-  ]{
-  <xsl:value-of select="@name"
-/>
-  }
+  \setmainfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
 
-<xsl:template match="html:mainfont[@name='Default']"
-></xsl:template>
+<xsl:template match="html:mainfont[@name='Default']"></xsl:template>
 
 <xsl:template match="html:sansfont[@ot='1']"
  >
-  \setsansfont[
-  <xsl:value-of select="@options"
- />
-  ]{
-  <xsl:value-of select="@name"
-/>
-  }
+  \setsansfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
 
 <xsl:template match="html:sansfont[@name='']"></xsl:template>
 
 <xsl:template match="html:fixedfont[@ot='1']">
-  \setmonofont[
-  <xsl:value-of select="@options"/>
-  ]{
-  <xsl:value-of select="@name"/>
-  }
+  \setmonofont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
 
 <xsl:template match="html:fixedfont[@name='']"></xsl:template>
 
 <xsl:template match="html:x1font">
-  \newfontfamily\
-  <xsl:value-of select="@internalname"/>
-  [
-  <xsl:value-of select="@options"/>
-  ]{
-  <xsl:value-of select="@name"/>
-  }
+  \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
-
 <xsl:template match="html:x2font">
-  \newfontfamily\
-  <xsl:value-of select="@internalname"/>
-  [
-  <xsl:value-of select="@options"/>
-  ]{
-  <xsl:value-of select="@name"/>
-  }
+  \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
-
 <xsl:template match="html:x3font">
-  \newfontfamily\
-  <xsl:value-of select="@internalname"/>
-  [
-  <xsl:value-of select="@options"/>
-  ]{
-  <xsl:value-of select="@name"/>
-  }
+  \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
-
 <!-- section headings redefined. Requires package titlesec -->
 <xsl:template match="html:sectitleformat">
   <xsl:if test="@enabled='true'">
@@ -467,29 +424,21 @@
       break{\clearpage}
     </xsl:if>
     \newcommand{\msi
-    <xsl:value-of select="@level"
-/>
-    }[1]{
-    <xsl:apply-templates select="html:titleprototype"/>
-    }
+    <xsl:value-of select="@level"/>
+    }[1]{<xsl:apply-templates select="html:titleprototype"/>}
 \titleformat{\
     <xsl:value-of select="@level"/>
     }[
     <xsl:value-of select="@sectStyle"/>
     ]{
-    <xsl:choose
-  >
-      <xsl:when test="@align='l'">\filright</xsl:when
-  >
-      <xsl:when test="@align='c'">\center</xsl:when
-  >
-      <xsl:otherwise>\filleft</xsl:otherwise
-  >
+    <xsl:choose>
+      <xsl:when test="@align='l'">\filright</xsl:when>
+      <xsl:when test="@align='c'">\center</xsl:when>
+      <xsl:otherwise>\filleft</xsl:otherwise>
     </xsl:choose>
     <xsl:apply-templates select="html:toprule"/>
     }{}{0pt}{\msi
-    <xsl:value-of select="@level"
-/>
+    <xsl:value-of select="@level"/>
     }[{
     <xsl:apply-templates select="html:bottomrule"/>
     }]
