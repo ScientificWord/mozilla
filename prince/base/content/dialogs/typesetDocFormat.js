@@ -24,6 +24,7 @@ var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
                      useOTF: false,  //currently same as xelatex (lualatex in future)
                      formatOK: false,//master control. If false, can't change anything
                      pageFormatOK: false,//geometry package not called if false
+                     secFormatOK: false,
                      useUni: false,//currently same as useOTF
                      fontsOK: false };// OK to choose fonts
 
@@ -184,6 +185,10 @@ function getEnableFlags(doc)
     document.getElementById("allowfontchoice").checked = fontsOK;
     var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
     document.getElementById("enablepagelayout").checked = formatPageOK;
+    var secFormatOK = progNode.getAttribute("secFormatOK") == "true";
+    document.getElementById("allowsectionheaders").checked = secFormatOK;
+    enableDisableSectFormat(document.getElementById("allowsectionheaders"));
+
 
     var e = document.getElementById('reformatok');
     if (canSetFormat){ // checked. enable.
@@ -781,6 +786,7 @@ function saveEnableFlags(doc, docformatnode)
   progNode.setAttribute("useUni", compilerInfo.useUni);
   progNode.setAttribute("useOTF", compilerInfo.useOTF);
   progNode.setAttribute("fontsOK", compilerInfo.fontsOK);
+  progNode.setAttribute("secFormatOK", compilerInfo.secFormatOK);
   progNode.setAttribute("pageFormatOK", document.getElementById("enablepagelayout").checked); 
 }
 
@@ -2888,9 +2894,14 @@ function enableDisablePageLayout(enable)
 function enableDisableSectFormat(checkbox)    
 {
   var bcaster = document.getElementById("secredefok");
-  if (checkbox.checked)
+  if (checkbox.checked){
     bcaster.removeAttribute("disabled");
-  else bcaster.setAttribute("disabled","true");
+    compilerInfo.secFormatOK = true;
+  }
+  else {
+    bcaster.setAttribute("disabled","true");
+    compilerInfo.secFormatOK = false;
+  }
   var to = document.getElementById("sections.name").label.toLowerCase();
   switchSectionTypeImp(null, to, true);
 }
