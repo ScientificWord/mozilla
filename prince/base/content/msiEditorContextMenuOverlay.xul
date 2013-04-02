@@ -202,6 +202,8 @@
                                    accesskey="&structSelectInner.accesskey;"
                                    oncommand="StructSelectTagContents()"/>
    <menuseparator/>
+   <menuitem id="structRefreshTag" label="Refresh"
+                                   oncommand="StructRefreshTag()"/>
    <menuitem id="structRemoveTag"  label="&structRemoveTag.label;"
                                    accesskey="&structRemoveTag.accesskey;"
                                    oncommand="StructRemoveTag()"/>
