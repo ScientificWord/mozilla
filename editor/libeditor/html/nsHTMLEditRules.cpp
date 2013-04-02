@@ -3588,8 +3588,14 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       // res = node->GetParentNode(getter_AddRefs(parentNode));
       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
       if (parentNode) {
+        PRBool isParagraph;
+        PRBool isTextTag;
+        nsCOMPtr<msiITagListManager> mtagListManager;
+        ed->GetTagListManager(getter_AddRefs(mtagListManager));
         res = parentNode->GetNodeName(name);
-        if (name.EqualsLiteral("td") || name.EqualsLiteral("body"))
+        mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
+        mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
+        if (isParagraph || isTextTag || name.EqualsLiteral("td") || name.EqualsLiteral("body"))
         {
           done = PR_TRUE;
           break;

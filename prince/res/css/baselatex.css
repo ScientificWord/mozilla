@@ -328,9 +328,9 @@ note[hide="true"] {
 note[type="footnote"] {
   margin: 1px 0;
   border-width: 1px 0;
-  border-color: blue;
+  border-color: #306060;
   border-style: solid;
-  color: blue;
+  color: #306060;
 }
 
 notewrapper[type="footnote"]:before {
@@ -368,14 +368,14 @@ notewrapper {
 }
 
 note {
-  margin: 0 20px;
+  margin: 0 5px;
   border-width: 1px;
   border-color: red;
   border-style: solid;
   display: block;
   color: red;
   float: right;
-  width: 3in
+  width: 40%;
 }
 
 
