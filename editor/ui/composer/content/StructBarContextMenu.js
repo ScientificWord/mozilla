@@ -128,6 +128,25 @@ function StructRemoveTag()
   editor.endTransaction();
 }
 
+function StructRefreshTag()
+{
+  // var editor = GetCurrentEditor();
+  // if (!editor) return;
+
+  // var element = gContextMenuFiringDocumentElement;
+
+  // try {
+  //   editor.markNodeDirty(element);
+  // }
+  // catch (e) {};
+  var editor = GetCurrentEditor();
+  if (!editor) return;
+  StructRemoveTag();
+  editor.undo(1);
+}
+
+
+
 function MoveChildNodesAfterElement(editor, element, targetElement, targetOffset)
 {
   var childNodes = element.childNodes;
