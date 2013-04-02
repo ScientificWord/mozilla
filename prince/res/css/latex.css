@@ -231,6 +231,16 @@ fontcolor {
 }
 
 
+/* paragraph indenting rule -- don't indent the first paragraph in a division */
+bodyText {
+  margin-bottom: 0 
+}
+
+bodyText + bodyText {
+  text-indent: 1.5em;
+  margin-top: 0 
+}
+
 img {
   -moz-force-broken-image-icon: 1;
   min-height: 6px; min-width: 6px;
@@ -331,6 +341,10 @@ chapter>sectiontitle:first-child, chapter>sectiontitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
+chapter>sectiontitle:before {
+  -moz-user-select: none;
+}
+
 /* Keep counters from incrementing on unnumbered structures */
 
 chapter[nonum="true"] {
@@ -360,6 +374,10 @@ chapter[open="false"]>sectiontitle:first-child {
 
 section>sectiontitle:first-child, section>sectiontitle{
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+section>sectiontitle:before {
+  -moz-user-select: none;
 }
 
 section[open="false"]>sectiontitle {
@@ -395,6 +413,10 @@ section[open="false"]>button.expander {
   display: inline;
 }
 
+subsection>sectiontitle:before {
+  -moz-user-select: none;
+}
+
 subsection[open="false"]>sectiontitle {
   display: block;
 }
@@ -416,6 +438,9 @@ subsection[nonum="true"]>sectiontitle:first-child:before, subsection[nonum="true
   content: "";
 }
 
+subsubsection>sectiontitle:before {
+  -moz-user-select: none;
+}
 
 subsubsection[nonum="true"] {
   counter-increment: none;
@@ -448,7 +473,9 @@ subsubsection[open="false"]>button.expander {
 }
 
 
-
+paragraphsectiontitle:before {
+  -moz-user-select: none;
+}
 
 paragraph[nonum="true"] {
   counter-increment: none;
@@ -565,6 +592,7 @@ msibr:before {
 
 button[class="frontmattertag"] {
   display: none;
+  -moz-user-select: none;
 }
 
 *[showfmbuttons="true"] button[class="frontmattertag"] {
@@ -586,6 +614,7 @@ body {
   font-family: Georgia;
   font-size: 12pt;
   line-height: 14pt;
+  margin-left: 10px;
 }
 
 /* selection is possible in paragraph and front matter tags */
@@ -1449,7 +1478,7 @@ underline {
   text-decoration: underline;
 }
 
-td bodyText {
+td bodyText, note bodyText {
   margin-top: 0;
   margin-bottom: 0
 }
