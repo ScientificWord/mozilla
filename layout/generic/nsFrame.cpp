@@ -5477,7 +5477,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         else
           pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
       }
-      else if (pLastChild->GetType() == nsGkAtoms::textFrame)
+      else if (pLastChild && pLastChild->GetType() == nsGkAtoms::textFrame)
       {
         PRUint32 length;
         nsCOMPtr<nsIContent> tc = pLastChild->GetContent();
