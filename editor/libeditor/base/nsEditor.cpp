@@ -814,7 +814,7 @@ nsEditor::DoTransaction(nsITransaction *aTxn)
         plcTxn = do_QueryInterface(topTxn);
         if (plcTxn)
         {
-          // there is a palceholder transaction on top of the undo stack.  It is
+          // there is a placeholder transaction on top of the undo stack.  It is
           // either the one we just created, or an earlier one that we are now merging
           // into.  From here on out remember this placeholder instead of the one
           // we just created.

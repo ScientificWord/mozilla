@@ -169,38 +169,39 @@ function GetFixedMath(math)
 
 
 //The function coalescemath is defined in computeOverlay.js
-//
-// // form a single run of math and put caret on end
-// function coalescemath() {
-//   var editor = GetCurrentEditor();
-//   var selection = editor.selection;
-//   if (selection) {
-//     var f = selection.focusNode;
-//     var element = findmathparent(f);
-//     if (!element) {
-//       f = f.previousSibling;
-//       element = findmathparent(f);
-//       if (!element) {
-// 	      dump("focus not in math!\n");
-//         return;
-//       }
-//     }
-//     var last = node_before(element);
-//     if (!last || last.localName != "math") {
-//       dump("previous is not math!\n");
-//       return;
-//     }
-//     var ch = element.firstChild;  // move children to previous math element
-//     var nextch;
-//     while (ch) {
-//       nextch = ch.nextSibling;
-//       last.appendChild(element.removeChild(ch));
-//       ch = nextch;
-//     }
-//     element.parentNode.removeChild(element);  // now empty
 
-//     editor.setCaretAfterElement(last_child(last));
-// } }
+// form a single run of math and put caret on end
+function coalescemath() {
+  var editor = GetCurrentEditor();
+  var selection = editor.selection;
+  if (selection) {
+    var f = selection.focusNode;
+    var element = findmathparent(f);
+    if (!element) {
+      f = f.previousSibling;
+      element = findmathparent(f);
+      if (!element) {
+	      dump("focus not in math!\n");
+        return;
+      }
+    }
+    var last = node_before(element);
+    if (!last || last.localName != "math") {
+      dump("previous is not math!\n");
+      return;
+    }
+    var ch = element.firstChild;  // move children to previous math element
+    var nextch;
+    while (ch) {
+      nextch = ch.nextSibling;
+      last.appendChild(element.removeChild(ch));
+      ch = nextch;
+    }
+    element.parentNode.removeChild(element);  // now empty
+
+    editor.setCaretAfterElement(last_child(last));
+  } 
+}
 
 
 
