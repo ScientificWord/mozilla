@@ -3,6 +3,14 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:regexp="http://exslt.org/regular-expressions">
 
+<xsl:template mode="texcomment" match="text()">
+  <xsl:call-template name="replace-substring">
+    <xsl:with-param name="original" select="."/>
+    <xsl:with-param name="substring" select="'&#x0A;'"/>
+    <xsl:with-param name="replacement" select="'&#x0A;% '"/>
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template mode="tex" match="text()">
   <xsl:value-of select="."/>
 </xsl:template>
