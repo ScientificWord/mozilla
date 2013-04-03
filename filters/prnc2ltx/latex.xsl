@@ -866,7 +866,7 @@ should not be done under some conditions -->
 <xsl:template match="html:texb">
   <xsl:if test="not(@pre) or (@pre='0')" >
     <xsl:if test="@enc='1'">
-%TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates/>}}%
+%TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates mode="texcomment"/>}}%
 <!-- %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>} -->
 %BeginExpansion
     </xsl:if>
