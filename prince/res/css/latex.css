@@ -456,7 +456,7 @@ subsubsection[nonum="true"]>sectiontitle:before {
 }
 
 
-subsubsection[open="false"]*> {
+subsubsection[open="false"]>* {
   display: none;
 }
 
