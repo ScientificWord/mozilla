@@ -12517,7 +12517,7 @@ function buildAllTagsViewStylesheet(editor)
     taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
     for (i = 0; i < taglist.length; i++)
     {
-      if (taglist[i].length && taglist[i][0] !== "(")
+      if (taglist[i].length && taglist[i].indexOf('(') < 0 && taglist[i].indexOf(')') < 0)  ///[0] !== "(")
         str += classtemplate.replace(classname,taglist[i],"g")+"\n";
     }
   }
