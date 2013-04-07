@@ -3088,9 +3088,9 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
   res = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res)) return res;
   if (!selection) return NS_ERROR_NULL_POINTER;
-  if (aBlockType.EqualsLiteral("verbatim")) {
-    return InsertVerbatim(selection);
-  }
+//  if (aBlockType.EqualsLiteral("verbatim")) {
+//    return InsertVerbatim(selection);
+//  }
   nsTextRulesInfo ruleInfo(nsTextEditRules::kMakeBasicBlock);
   ruleInfo.blockType = &aBlockType;
   ruleInfo.namespaceAtom = namespaceAtom;
