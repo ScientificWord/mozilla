@@ -3449,7 +3449,7 @@ GetEngine() {
 }
 
 
-PRBool IsSpecialMath(nsIDOMElement * node)
+PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty)
 {
   PRBool retval = PR_FALSE;
   PRBool isMath = nsHTMLEditUtils::IsMath(node);
@@ -3465,14 +3465,14 @@ PRBool IsSpecialMath(nsIDOMElement * node)
       name.EqualsLiteral("msubsup") ||
       name.EqualsLiteral("mfrac") ||
       name.EqualsLiteral("mroot") ||
-      name.EqualsLiteral("msqrt") ||
+      (name.EqualsLiteral("msqrt") && isEmpty) ||
       name.EqualsLiteral("mover") ||
       name.EqualsLiteral("munder")) 
     {
       retval = PR_TRUE;
     } 
     else {
-      if (name.EqualsLiteral("mtd") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
+      if ((name.EqualsLiteral("mtd") && isEmpty) || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
         // Search up and see if the enclosing table has the attribute 'type="eqnarray"'. If so,
         // don't try to preserve the table cells.
         parentEl = node;
@@ -3550,7 +3550,8 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
     ed->GetTagListManager(getter_AddRefs(tlm));
     ed->ReplaceContainer((nsIDOMNode*)elt, address_of(newNode), tagName, tlm, nsnull, nsnull, PR_TRUE);
   }
-  else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") || name.EqualsLiteral("mover"))
+  else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") ||
+           name.EqualsLiteral("mover"))
   {
     retval = PR_TRUE;
     ed->RemoveContainer(elt);
@@ -3611,7 +3612,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
       done = !isEmpty;
       elt = do_QueryInterface(node);
-      if (elt && IsSpecialMath(elt)) {
+      if (elt && IsSpecialMath(elt, isEmpty)) {
         // we have deleted a child of node. If node is one of the
         // math nodes that has a fixed number of children, we must replace the
         // child with an input box. If elt is an msup, msub, msubsup (mroot?), we neeed
