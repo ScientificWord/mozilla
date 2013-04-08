@@ -76,9 +76,16 @@
 <!ENTITY fileclose.acceltext						"Ctrl+F4">  
 
 #endif
+
+#ifdef XP_WIN
+<!ENTITY exitCmd.label "Exit">
+<!ENTITY fileexit.accesskey "x">
+<!ENTITY fileexit.keybinding "x">
+#else
 <!ENTITY exitCmd.label "Quit">
 <!ENTITY fileexit.accesskey "q">
 <!ENTITY fileexit.keybinding "q">
+#endif
 
 <!-- Edit menu items -->
 <!ENTITY editMenu.label "Edit">
