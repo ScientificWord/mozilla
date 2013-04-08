@@ -218,6 +218,10 @@
     <xsl:value-of select="."/>
   </xsl:template>
 
+  <xsl:template match="html:dialogbase">
+    <xsl:apply-templates/>
+  </xsl:template>
+
   <xsl:template match="html:babel">
     <xsl:if test="@lang1">
       \setdefaultlanguage{
@@ -416,6 +420,7 @@
   \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
 <!-- section headings redefined. Requires package titlesec -->
+
 <xsl:template match="html:sectitleformat">
   <xsl:if test="@enabled='true'">
     <xsl:if test="@newPage='true'">
@@ -423,34 +428,29 @@
       <xsl:value-of select="@level"/>
       break{\clearpage}
     </xsl:if>
-    \newcommand{\msi
-    <xsl:value-of select="@level"/>
-    }[1]{<xsl:apply-templates select="html:titleprototype"/>}
-\titleformat{\
-    <xsl:value-of select="@level"/>
-    }[
-    <xsl:value-of select="@sectStyle"/>
-    ]{
-    <xsl:choose>
-      <xsl:when test="@align='l'">\filright</xsl:when>
+    \newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates select="html:titleprototype"
+    />}\titleformat{\<xsl:value-of select="@level"/>}[<xsl:value-of select="@sectStyle"
+    />]{<xsl:choose>
+      <xsl:when test="@align='r'">\filleft</xsl:when>
       <xsl:when test="@align='c'">\center</xsl:when>
-      <xsl:otherwise>\filleft</xsl:otherwise>
-    </xsl:choose>
-    <xsl:apply-templates select="html:toprule"/>
-    }{}{0pt}{\msi
-    <xsl:value-of select="@level"/>
-    }[{
-    <xsl:apply-templates select="html:bottomrule"/>
-    }]
+      <xsl:otherwise>\filright</xsl:otherwise>
+    </xsl:choose>    
+    <xsl:apply-templates select="html:toprule"
+    />}{}{0pt}{\msi<xsl:value-of select="@level"/>}[{<xsl:apply-templates select="html:bottomrule"/>}]
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:dialogbase">
-  <xsl:apply-templates/>
+<xsl:template match="html:sectitlenum">
+  \the<xsl:value-of select="@level"/>
 </xsl:template>
 
+<xsl:template match="html:texparam">
+  #<xsl:value-of select="@num"/>
+</xsl:template>
+
+
 <xsl:template match="html:titleprototype">
-  <xsl:apply-templates mode="tex"/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:templatebase">
