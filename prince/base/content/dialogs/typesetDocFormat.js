@@ -1891,8 +1891,8 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
         {
           var ser = new XMLSerializer();
           xmlcode = ser.serializeToString(templatebase);
-          xmlcode = xmlcode.replace(/#1/,"#T");
-          var pattern = "\\the"+level;
+          xmlcode = xmlcode.replace(/<texparam num='1'\/>/,"#T");
+          var pattern = "<sectitlenum level='"+level+"'/>";
           xmlcode = xmlcode.replace(pattern, "#N");
         }
         if (!xmlcode) xmlcode="";
@@ -2209,8 +2209,8 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       if (fragment)
       {
         // replace #N with \the(section, subsection, etc) and #T with #1
-        fragment = fragment.replace(/#N/,"\\the"+name,'g');
-        fragment = fragment.replace(/#T/,"#1",'g');
+        fragment = fragment.replace(/#N/,"<sectitlenum level='"+name+"'/>",'g');
+        fragment = fragment.replace(/#T/,"<texparam num='1'/>",'g');
         dump("Contents being saved as section title prototype: "+fragment+"\n");
         var parser = new DOMParser();
         var doc = parser.parseFromString(fragment,"application/xhtml+xml");
