@@ -17,7 +17,7 @@
     onload = "startUp();"
     ondialogaccept="return onAccept();"
     buttons="accept,cancel"
-    buttonlabelaccept="Save changes to file"
+    buttonlabelaccept="&SaveChanges.label;"
     buttonlabelcancel="Done" 
     screenX="40"
     screenY="40"
