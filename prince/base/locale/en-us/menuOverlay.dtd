@@ -81,6 +81,7 @@
 <!ENTITY exitCmd.label "Exit">
 <!ENTITY fileexit.accesskey "x">
 <!ENTITY fileexit.keybinding "x">
+<!ENTITY fileexit.acceltext  "Alt+F4">
 #else
 <!ENTITY exitCmd.label "Quit">
 <!ENTITY fileexit.accesskey "q">
