@@ -26,3 +26,5 @@
 <!ENTITY deleteAssignment.label "Delete Assignment">
 <!ENTITY deleteAssignment.accesskey "D">
 <!ENTITY AddNewFunctionKeyAssignment.label  "Add New Function Key Assignments">
+<!ENTITY SaveChanges.label  "Make changes permanent">
+
