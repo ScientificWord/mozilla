@@ -144,7 +144,7 @@
       <menuitem id="docStyleItem" accesskey="&docStyle.accesskey;"
         observes="cmd_documentStyle" label="&docStyle.label;"/>
       <menuseparator id="menu_FileQuitSeparator"/>
-      <menuitem id="menu_FileQuitItem" accesskey="&fileexit.accesskey;" key="key_quit" 
+      <menuitem id="menu_FileQuitItem" accesskey="&fileexit.accesskey;" acceltext="&fileexit.acceltext;" key="key_quit" 
         observes="cmd_quit" label="&exitCmd.label;"/>
     </menupopup>
   </menu>
