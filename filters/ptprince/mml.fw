@@ -59,6 +59,7 @@ bool fix_IE_space_bug =  true;
 
 std::string s_mathml;
 std::string s_anomaly;
+bool s_equation = false;
 extern char* s_mmldirname;
 
 bool mathmlHandler(U32 type, const char* data)
@@ -68,6 +69,8 @@ bool mathmlHandler(U32 type, const char* data)
     s_mathml += data;
   } else if ( type == 1001 || type == 1005) {
     s_anomaly = data;
+  } else if ( type == 1010 ){
+    s_equation = true;
   }
   return true;
 }
@@ -98,8 +101,6 @@ void TakeDownMathML()
 }
 
 void ProcessMathML(const char* str, std::string& outp, std::string& anom){
-  //LPCONVERT convertfunc;
-  //convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
   ConvertInline( str, mathmlHandler, 2 );
   outp = s_mathml;
   s_mathml = "";

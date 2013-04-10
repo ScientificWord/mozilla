@@ -5051,8 +5051,11 @@ TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
 
   if ( tex_display_node && tex_display_node->parts ) {
 
-    if ( id==41 )       // \begin{equation}
-      theequation++;    // increment the equation counter
+    if ( id==41 )  {     // \begin{equation}
+      theequation++;     // increment the equation counter
+      // These are auto-numbered, which has to be handled outside in pretex
+      RecordAnomaly(1010, NULL, 0, 0);
+    }
 
     TNODE* mml_cont =  NULL;
     TNODE* tex_cont =  tex_display_node->parts->contents;
