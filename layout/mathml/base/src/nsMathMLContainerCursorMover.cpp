@@ -47,6 +47,12 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
   }
   // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame.
   pTempFrame = pFrame->GetParent();
+  // Hack alert. Most MathML tags have corresponding frames, but the menclose tag has a mathmlrowframe, and so
+  //  uses this code. When the cursor leaves an menclose tag, that counts as a visible motion, so count must be decremented.
+  //  This accounts for the next few lines
+  if (pFrame->GetContent()->Tag() == nsGkAtoms::menclose_) {
+    count = *_retval = 0;
+  }
   pMCM = do_QueryInterface(pTempFrame);
   if (pMCM)
     pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
