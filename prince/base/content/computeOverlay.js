@@ -3269,7 +3269,7 @@ function doComputeMapMuPADName(editorElement) {
   var o = {};
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
+  parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "showdefs", "modal,chrome,close,titlebar,resizable,dependent", o);
 
   if (o.Cancel) return;
   else {
@@ -3277,7 +3277,7 @@ function doComputeMapMuPADName(editorElement) {
   }
 
   var swpname = o.swpname;
-  var mupname = o.mupname;
+  var mupname = o.mupadname;
   var infile = o.infile;
 
   var eng = GetCurrentEngine();
