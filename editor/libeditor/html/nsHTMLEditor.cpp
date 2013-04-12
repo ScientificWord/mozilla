@@ -820,7 +820,7 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
     *aIsBlock = PR_TRUE;
     return NS_OK;
   }
-  mtagListManager->GetClassOfTag(strTagName, namespaceAtom, strTagClass);
+  mtagListManager->GetRealClassOfTag(strTagName, namespaceAtom, strTagClass);
   if (strTagClass.EqualsLiteral("paratag")||strTagClass.EqualsLiteral("structtag")||
       strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")||strTagClass.EqualsLiteral("frontmtag"))
   {
@@ -6530,8 +6530,8 @@ nsHTMLEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
     tag1->ToString(strTag2);
     nsAutoString type1;
     nsAutoString type2;
-    mtagListManager->GetClassOfTag(strTag1, dummyAtom, type1);
-    mtagListManager->GetClassOfTag(strTag2, dummyAtom, type2);
+    mtagListManager->GetRealClassOfTag(strTag1, dummyAtom, type1);
+    mtagListManager->GetRealClassOfTag(strTag2, dummyAtom, type2);
     return type1.Equals(type2);
   }
   return PR_FALSE;
