@@ -687,7 +687,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
 // BBM. I rather late in the game changed this to get the commandID from newState in the case of tag commands
 	if (commandID == 'cmd_paratag' || commandID == 'cmd_texttag' || commandID == 'cmd_listtag' || commandID == 'cmd_structtag' || commandID == 'cmd_envtag')
 	{
-		if (tagmanager) tagclass = tagmanager.getClassOfTag(newState, null);
+		if (tagmanager) tagclass = tagmanager.getRealClassOfTag(newState, null);
 		switch (tagclass)
 		{
 			case 'paratag' : commandID = 'cmd_paratag'; break;

@@ -86,6 +86,7 @@
 <!ENTITY exitCmd.label "Quit">
 <!ENTITY fileexit.accesskey "q">
 <!ENTITY fileexit.keybinding "q">
+<!ENTITY fileexit.acceltext  "Cmd+Q">
 #endif
 
 <!-- Edit menu items -->

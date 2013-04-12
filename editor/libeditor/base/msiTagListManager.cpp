@@ -891,8 +891,8 @@ nsString msiTagListManager::PrefixFromNameSpaceAtom(nsIAtom * atomNS)
 }
 
 
-/* AString getClassOfTag (in AString strTag, in nsIAtom atomNS); */
-NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
+/* AString getRealClassOfTag (in AString strTag, in nsIAtom atomNS); */
+NS_IMETHODIMP msiTagListManager::GetRealClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
 {
   nsAutoString rv;
   GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("realtagclass"), rv);
@@ -904,13 +904,19 @@ NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom
   return GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("tagclass"), _retval);
 }  
  
+/* AString getClassOfTag (in AString strTag, in nsIAtom atomNS); */
+NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
+{
+  return GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("tagclass"), _retval);
+}  
+ 
 
 
 /* PRBool getTagInClass (in AString strTagClass, in AString strTag, in nsIAtom atomNS); */
 NS_IMETHODIMP msiTagListManager::GetTagInClass(const nsAString & strTagClass, const nsAString & strTag, nsIAtom *atomNS, PRBool *_retval)
 {
   nsAutoString strClass;
-  GetClassOfTag(strTag, atomNS, strClass);
+  GetRealClassOfTag(strTag, atomNS, strClass);
   *_retval = (strTagClass.Equals(strClass));
   return NS_OK;  
 }
@@ -945,9 +951,9 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
   *_retval = PR_FALSE;
 	PRBool foundit = PR_FALSE;
   nsAutoString classOuter;
-  nsresult rv = GetClassOfTag(strTagOuter, atomNSOuter, classOuter);
+  nsresult rv = GetRealClassOfTag(strTagOuter, atomNSOuter, classOuter);
   nsAutoString classInner;
-  rv = GetClassOfTag(strTagInner, atomNSInner, classInner);
+  rv = GetRealClassOfTag(strTagInner, atomNSInner, classInner);
   // structtags are different: the level determines what can contain what.
   if (classOuter.Equals(classInner) && classOuter.EqualsLiteral("structtag"))
   {
@@ -1274,7 +1280,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
     {
       nsAutoString theclass;
       nsCOMPtr<nsIDOMNode> secttitle, br;
-      GetClassOfTag(secondNodeName, nsAtomSecond, theclass);
+      GetRealClassOfTag(secondNodeName, nsAtomSecond, theclass);
       if (theclass.EqualsLiteral("structtag"))
       {
         // insert a sectiontitle tag at the beginning of the second half of a split section.

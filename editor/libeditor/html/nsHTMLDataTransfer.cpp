@@ -1239,7 +1239,7 @@ PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
 			el->GetTagName(tagname);
 			if (!(tagname.EqualsLiteral("#text") || tagname.EqualsLiteral("br")))
 			{
-				tlm->GetClassOfTag(tagname, nsnull, classname);
+				tlm->GetRealClassOfTag(tagname, nsnull, classname);
 				if (!classname.EqualsLiteral("texttag")) return PR_FALSE;
 			}
 		}
@@ -1844,7 +1844,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
         else
         {
           nsAutoString tagClass;
-          mtagListManager->GetClassOfTag(strTagName, nsAtom, tagClass);
+          mtagListManager->GetRealClassOfTag(strTagName, nsAtom, tagClass);
     		  fCanContain = (tagClass.EqualsLiteral("structtag")||
     		    tagClass.EqualsLiteral("listparenttag")||
     		    tagClass.EqualsLiteral("envtag")||
