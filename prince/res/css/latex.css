@@ -593,6 +593,7 @@ msibr:before {
 button[class="frontmattertag"] {
   display: none;
   -moz-user-select: none;
+  -moz-user-focus: none;
 }
 
 *[showfmbuttons="true"] button[class="frontmattertag"] {

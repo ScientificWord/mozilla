@@ -1579,7 +1579,7 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   nsCOMPtr<msiITagListManager> tlm;
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   node->GetNodeName(tagName);
-  tlm->GetClassOfTag(tagName, nsnull, tagclass);
+  tlm->GetRealClassOfTag(tagName, nsnull, tagclass);
     // Search up the parent chain to find a suitable container
   while (!CanContainTag(ptr, tagName))
   {

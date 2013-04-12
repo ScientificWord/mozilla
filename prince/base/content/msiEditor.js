@@ -3939,7 +3939,7 @@ function msiGetPropertiesObjectFromSelection(editorElement)
 //rwa
 //rwa    if ( (retObj != null) && (retObj.theOffset == null) )  //in the case we've identified a revisable object
 //rwa    {
-//rwa      var parentNode = msiNavigationUtils.findWrappingStyleNode(retObj.theNode);
+//rwa      var  parentNode = msiNavigationUtils.findWrappingStyleNode(retObj.theNode);
 //rwa      if (parentNode != null)
 //rwa        retObj.theNode = parentNode;
 //rwa    }
@@ -5511,7 +5511,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       break;
 
       default:
-        tagclass = editor.tagListManager.getClassOfTag(name, null);
+        tagclass = editor.tagListManager.getRealClassOfTag(name, null);
         switch (tagclass)
         {
           case "texttag":
@@ -8060,7 +8060,7 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 //rwa//      continue;
 //rwa//    }
 //rwa//    // Now we go through the list of things that have properties dialogs.
-//rwa//    tagclass = editor.tagListManager.getClassOfTag(tag, null);
+//rwa//    tagclass = editor.tagListManager.getRealClassOfTag(tag, null);
 //rwa//    var propsdata;
 //rwa//    switch (tagclass)
 //rwa//    {
@@ -9731,7 +9731,7 @@ function setTagFieldContents(editor, propertyStack)
     if (st) st.value = "";
     if (ft) ft.value = "";
     while (str && (str.length > 0)) {
-    	klass = tagManager.getClassOfTag(str, null);
+    	klass = tagManager.getRealClassOfTag(str, null);
       textbox = null;
       switch(klass) {
         case "texttag" : textbox = tt;
