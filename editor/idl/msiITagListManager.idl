@@ -34,6 +34,7 @@ interface msiITagListManager : nsISupports
 
 	boolean getTagInClass( in AString strTagClass, in AString strTag, in nsIAtom atomNS);
 	AString getClassOfTag( in AString strTag, in nsIAtom atomNS);
+	AString getRealClassOfTag( in AString strTag, in nsIAtom atomNS);
 	boolean tagCanContainTag( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
 	boolean nodeCanContainTag( in nsIDOMNode node, in AString strTagInner, in nsIAtom atomNSInner);
 	boolean nodeCanContainNode( in nsIDOMNode nodeOuter, in nsIDOMNode nodeInner);
