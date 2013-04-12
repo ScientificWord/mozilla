@@ -9598,9 +9598,9 @@ var msiNavigationUtils =
     var retVal = "othertag";
     if (editor !== null)
     {
-      retVal = editor.tagListManager.getClassOfTag( node.nodeName, nsAtom);
+      retVal = editor.tagListManager.getRealClassOfTag( node.nodeName, nsAtom);
       if (retVal === null || retVal.length === 0)
-        retVal = editor.tagListManager.getClassOfTag( node.nodeName, null );
+        retVal = editor.tagListManager.getRealClassOfTag( node.nodeName, null );
     }
     return retVal;
   },
@@ -12182,7 +12182,7 @@ function isInlineElement(editor, element)
 {
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
   if (msiNavigationUtils.isMathNode(element)) return false;
-  var tagclass = editor.tagListManager.getClassOfTag(element.localName, null);
+  var tagclass = editor.tagListManager.getRealClassOfTag(element.localName, null);
   if (tagclass === "texttag" || tagclass === "othertag" || tagclass.length === 0) return true;
   return false;
 }

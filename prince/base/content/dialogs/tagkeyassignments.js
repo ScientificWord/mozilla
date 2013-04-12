@@ -192,7 +192,7 @@ function assignTag( obj )
   var tagmanager = editor.tagListManager;
   var command="";
   var data="";
-  var tagclass = tagmanager.getClassOfTag(tag,null);
+  var tagclass = tagmanager.getRealClassOfTag(tag,null);
   if (tagclass == "texttag")
     data = "toggleTextTag('"+tag+"',false);";
   else if (tagclass == "paratag")

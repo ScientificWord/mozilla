@@ -3591,13 +3591,21 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       if (parentNode) {
         PRBool isParagraph;
         PRBool isTextTag;
+        PRBool isFrontMatterTag;
         nsCOMPtr<msiITagListManager> mtagListManager;
         ed->GetTagListManager(getter_AddRefs(mtagListManager));
         res = parentNode->GetNodeName(name);
-        mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
-        mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
-        if (isParagraph || isTextTag || name.EqualsLiteral("td") || name.EqualsLiteral("body"))
-        {
+        if (!name.EqualsLiteral("body")){
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
+         mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"), name, nsnull, &isFrontMatterTag);
+          if (isParagraph || isTextTag || isFrontMatterTag || name.EqualsLiteral("td"))
+          {
+            done = PR_TRUE;
+            break;
+          }
+        }
+        else {
           done = PR_TRUE;
           break;
         }
@@ -8848,12 +8856,12 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
   {
     node = arrayOfNodes[i];
     node->GetLocalName(tagName);
-    tagListManager->GetClassOfTag( tagName, nsnull, tagClass);
+    tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
     while (!tagClass.EqualsLiteral("paratag") && !tagClass.EqualsLiteral("structtag") && !tagClass.EqualsLiteral("envtag"))
     {
       node->GetParentNode(getter_AddRefs(node));
       node->GetLocalName(tagName);
-      tagListManager->GetClassOfTag( tagName, nsnull, tagClass);
+      tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
     }
     if (tagClass.EqualsLiteral("paratag"))
     {
@@ -8868,12 +8876,12 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
     if (nodes[i])
     {
       node->GetLocalName(tagName);
-      tagListManager->GetClassOfTag( tagName, nsnull, tagClass);
+      tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
       while (node && !tagClass.EqualsLiteral("envtag"))
       {
         node->GetParentNode(getter_AddRefs(node));
         node->GetLocalName(tagName);
-        tagListManager->GetClassOfTag( tagName, nsnull, tagClass);
+        tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
       }
       if (node)
       {
@@ -10010,7 +10018,7 @@ nsHTMLEditRules::RemoveEmptyNodes()
         nsAutoString className;
         nsAutoString nodeName;
         res = mtagListManager->GetTagOfNode(node, &nsAtom, nodeName);
-        res = mtagListManager->GetClassOfTag(nodeName, nsAtom, className);
+        res = mtagListManager->GetRealClassOfTag(nodeName, nsAtom, className);
         if (  (bIsMailCite = nsHTMLEditUtils::IsMailCite(node, mtagListManager))  ||
               nsEditor::NodeIsType(node, nsEditProperty::a)      ||
               nsHTMLEditUtils::IsInlineStyle(node, mtagListManager)               ||

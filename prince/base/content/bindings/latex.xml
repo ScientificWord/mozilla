@@ -537,7 +537,9 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Title</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" oncommand=
+        "window.getSelection().collapse(this.parentNode,0); window.getSelection().extend(this.parentNode,this.parentNode.childNodes.length);"
+        >Title</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
