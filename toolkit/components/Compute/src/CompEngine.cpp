@@ -381,7 +381,7 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
         }
         U32 plotno = 0;
         for (ptr = ptr->first_kid; ptr != NULL; ptr=ptr->next) {
-           if ( (strcmp("plot", ptr->src_tok) ) == 0) {
+           if ( (strcmp("plot", ptr->src_tok) == 0) || (strcmp("plotLabel", ptr->src_tok) == 0) ) {
              ++plotno;
              for (ATTRIB_REC *aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->GetNext()) {
               psr->StorePlotParam (plotno, aptr->zattr_nom, aptr->zattr_val, zPT_ASCII_text);

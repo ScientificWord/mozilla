@@ -342,6 +342,11 @@ function getColor(ColorPickerID)
 function setColorWell(ColorWellID, color)
 {
   var colorWell = document.getElementById(ColorWellID);
+  setColorWellControl(colorWell, color);
+}
+
+function setColorWellControl(colorWell, color)
+{
   if (colorWell)
   {
     if (!color || color == "")
