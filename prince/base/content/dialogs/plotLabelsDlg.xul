@@ -1,0 +1,164 @@
+<?xml version="1.0"?>                                       
+<!-- Copyright (c) 2013 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/plotLabelsDlg.dtd" >
+<!-- JLF to verify-->
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    id="plotLabelsDlg"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "startup();"
+    ondialogaccept = "return onAccept();"
+    ondialogcancel = "return onCancel();"
+    buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
+    width="450"
+    height="500"
+    persist="screenX screenY width height">
+
+  <!-- Methods common to all editor dialogs -->
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
+
+  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" / -->
+  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/plotLabelsDlg.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
+
+  <broadcasterset>
+    <broadcaster id="hasLabels" disabled="false" />
+    <broadcaster id="is2D" hidden="false" />
+    <broadcaster id="is3D" hidden="true" />
+    <broadcaster id="orientationCartesian" hidden="false" />
+    <broadcaster id="orientationNotCartesian" hidden="true" />
+    <broadcaster id="notHeaderFooter" disabled="false" />
+    <broadcaster id="hasOrientation" disabled="false" />
+    <broadcaster id="orientation2Vals" hidden="false" />
+    <broadcaster id="orientation3Vals" hidden="true" />
+    <broadcaster id="hasVerticalAlignment" disabled="false" />
+  </broadcasterset>
+
+  <grid observes="hasLabels">
+	  <columns>
+	    <column />
+	    <column />
+	  </columns>
+	  <rows>
+      <row>
+        <label value="&labelText.label;" control="Text" accesskey="&labelText.accesskey;" observes="hasLabels" />
+        <label value="&labelItemNumber.label;" control="labelItemNumber" accesskey="&labelItemNumber.accesskey;" />
+      </row>
+      <row align="start">
+        <textbox id="Text" multiline="true" cols="60" rows="4" observes="hasLabels" />
+        <textbox id="labelItemNumber" type="number" min="0" max="1" />
+      </row>
+    </rows>
+  </grid>
+  <hbox>
+    <groupbox flex="1" observes="hasLabels">
+	  <caption label="&alignment.label;" />
+      <grid>
+        <columns><column/><column/></columns>
+        <rows>
+          <row>
+            <label value="&horizontalAlignment.label;" control="HorizontalAlignment" accesskey="&horizontalAlignment.accesskey;" observes="hasLabels"/>
+            <label value="&verticalAlignment.label;" control="VerticalAlignment" accesskey="&verticalAlignment.accesskey;" observes="hasVerticalAlignment" />
+          </row>
+          <row>
+            <menulist id="HorizontalAlignment" style="min-width: 60pt" observes="hasLabels">
+                <menupopup style="min-width: 60pt"> 
+                  <menuitem label="&alignCenter.label;"       value="Center"/>
+                  <menuitem label="&alignLeft.label;"         value="Left"/>
+                  <menuitem label="&alignRight.label;"        value="Right"/>
+                </menupopup>
+            </menulist>
+            <menulist id="VerticalAlignment" style="min-width: 60pt" observes="hasVerticalAlignment" >
+                <menupopup style="min-width: 60pt"> 
+                  <menuitem label="&alignBaseline.label;"     value="BaseLine"/>
+                  <menuitem label="&alignBottom.label;"       value="Bottom"/>
+                  <menuitem label="&alignCenter.label;"       value="Center"/>
+                  <menuitem label="&alignTop.label;"          value="Top"/>
+                </menupopup>
+            </menulist>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+    <vbox align="end">
+      <msibutton label="&addItem.label;" accesskey="&addItem.accesskey;" oncommand="onAddItem();" />
+      <msibutton label="&deleteItem.label;" accesskey="&deleteItem.accesskey;" oncommand="onDeleteItem();" observes="hasLabels" />
+      <msibutton label="&font.label;" accesskey="&font.accesskey;" oncommand="openFontSettingDlg();" observes="hasLabels" />
+    </vbox>
+  </hbox>
+  <groupbox observes="hasLabels" >
+    <caption label="&textPosition.label;" />
+    <radiogroup id="PositionType" value="positioned" orient="horizontal" oncommand="onPositionChoiceChange();" observes="hasLabels" >
+      <radio label="&positionedAt.label;" value="positioned" accesskey="&positionedAt.accesskey;" observes="hasLabels" />
+      <radio label="&header.label;" value="header" accesskey="&header.accesskey;" observes="hasLabels" />
+      <radio label="&footer.label;" value="footer" accesskey="&footer.accesskey;" observes="hasLabels" />
+    </radiogroup>
+    <hbox observes="hasLabels">
+      <label value="&positionX.label;" accesskey="&positionX.accesskey;" control="PositionX" observes="hasLabels" />
+      <textbox id="PositionX" ilk="numberlike" significantDigits="3" cols="12" observes="hasLabels" />
+      <label value="&positionY.label;" accesskey="&positionY.accesskey;" control="PositionY" observes="hasLabels" />
+      <textbox id="PositionY" ilk="numberlike" significantDigits="3" cols="12" observes="hasLabels" />
+      <label value="&positionZ.label;" accesskey="&positionZ.accesskey;" control="PositionZ" >
+        <observes element="is3D" attribute="hidden" />
+        <observes element="hasLabels" attribute="disabled" />
+	  </label>
+      <textbox id="PositionZ" ilk="numberlike" significantDigits="3" cols="12"  >
+        <observes element="is3D" attribute="hidden" />
+        <observes element="hasLabels" attribute="disabled" />
+	  </textbox>
+    </hbox>
+  </groupbox>
+  <groupbox observes="hasLabels">
+    <caption label="&textOrientation.label;" />
+    <checkbox id="Billboarding" label="&billboarding.label;" accesskey="&billboarding.accesskey;" oncommand="changeBillboarding();" >
+      <observes element="is3D" attribute="hidden" />
+      <observes element="hasLabels" attribute="disabled" />
+	</checkbox>
+    <radiogroup id="OrientationType" value="cartesian" orient="horizontal" oncommand="onChangeCoordinates();" observes="hasOrientation">
+      <radio label="&cartesian.label;" value="cartesian" accesskey="&cartesian.accesskey;" observes="hasOrientation" />
+      <radio label="&angle.label;" value="angle" accesskey="&angle.accesskey;">
+        <observes element="is2D" attribute="hidden" />
+        <observes element="hasOrientation" attribute="disabled" />
+      </radio>
+      <radio label="&tiltAndTurn.label;" value="tiltAndTurn" accesskey="&tiltAndTurn.accesskey;" >
+        <observes element="is3D" attribute="hidden" />
+        <observes element="hasOrientation" attribute="disabled" />
+      </radio>
+    </radiogroup>
+    <hbox observes="hasOrientation">
+	  <hbox observes="orientationCartesian">
+        <label value="&positionX.label;" accesskey="&positionX.accesskey;" control="OrientationX" observes="hasOrientation" />
+        <textbox id="OrientationX" ilk="numberlike" significantDigits="3" cols="12" observes="hasOrientation" />
+	  </hbox>
+	  <hbox observes="orientationNotCartesian">
+        <label value="&turn.label;" accesskey="&turn.accesskey;" control="Turn" observes="hasOrientation" />
+        <textbox id="Turn" ilk="numberlike" significantDigits="3" displayDegrees="true" cols="12" observes="hasOrientation" />
+	  </hbox>
+      <hbox observes="orientation2Vals">
+	    <hbox observes="orientationCartesian">
+          <label value="&positionY.label;" accesskey="&positionY.accesskey;" control="OrientationY" observes="hasOrientation" />
+          <textbox id="OrientationY" ilk="numberlike" significantDigits="3" cols="12" observes="hasOrientation" />
+		</hbox>
+		<hbox observes="orientationNotCartesian">
+          <label value="&tilt.label;" accesskey="&tilt.accesskey;" control="Tilt" observes="hasOrientation" />
+          <textbox id="Tilt" ilk="numberlike" significantDigits="3" displayDegrees="true" cols="12" observes="hasOrientation"/>
+		</hbox>
+      </hbox>
+      <hbox observes="orientation3Vals">
+        <label value="&positionZ.label;" accesskey="&positionZ.accesskey;" control="OrientationZ" observes="hasOrientation"/>
+        <textbox id="OrientationZ" ilk="numberlike" significantDigits="3" cols="12" observes="hasOrientation" />
+      </hbox>
+    </hbox>
+  </groupbox>
+</dialog>
