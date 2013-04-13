@@ -54,7 +54,8 @@ function Startup(){
     for ( i=0; i<alist.length; i++) { 
       id = mapid(alist[i]);                      
       if (document.getElementById(id)) {                    
-        document.getElementById(id).value = graph.getValue(alist[i]);
+        putValueToControlByID(id, graph.getValue(alist[i]));
+//        document.getElementById(id).value = graph.getValue(alist[i]);
       }                                                       
     } 
   ///  return; 
@@ -71,17 +72,19 @@ function Startup(){
     plot = graph.plots[firstActivePlot];
     graph.currentDisplayedPlot = -1;  //initialize to -1 so that populateDialog will execute (so that currentDisplayedPlot != plotnum)
     // some attributes can't be found as values of dialog elements  
-    setColorWell("baseColorWell", makeColorVal(plot.getPlotValue("BaseColor")));  
-    setColorWell("secondColorWell", makeColorVal(plot.getPlotValue("SecondaryColor")));
-    setColorWell("lineColorWell", makeColorVal(plot.getPlotValue("LineColor")));
+//    setColorWell("baseColorWell", makeColorVal(plot.getPlotValue("BaseColor")));  
+//    setColorWell("secondColorWell", makeColorVal(plot.getPlotValue("SecondaryColor")));
+//    setColorWell("lineColorWell", makeColorVal(plot.getPlotValue("LineColor")));
     alist = graph.frame.FRAMEATTRIBUTES; 
     for ( i=0; i<alist.length; i++) { 
       id = mapid(alist[i]);                      
-      if (document.getElementById(id)) {                    
-        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);         
+      if (document.getElementById(id)) {
+        putValueToControlByID(id, graph.frame.getFrameAttribute(alist[i]));
+//        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);         
       }                                                       
     }
     document.getElementById("defaultCameraCheckbox").checked = !graph.cameraValuesUserSet();
+    document.getElementById("defaultviewintervals").checked = !graph.viewRangesUserSet();
     placeLocation = graph.frame.getFrameAttribute("placeLocation");
     document.getElementById("placeForceHereCheck").checked = (placeLocation.search("H") != -1);
     document.getElementById("placeHereCheck").checked = (placeLocation.search("h") != -1);
@@ -244,7 +247,7 @@ function GetValuesFromDialog(){
   for (var i=0; i<alist.length; i++) {
     anID = mapid(alist[i]);
     if (document.getElementById(anID)) {
-      newval = getValueFromControl(anID);
+      newval = getValueFromControlByID(anID);
       if (newval != "undefined") {   // NOTE, "" is OK, e.g. delete a label              
         oldval = graph.getValue (alist[i]);                        
         if (newval != oldval) {                                        
@@ -254,6 +257,7 @@ function GetValuesFromDialog(){
     }                                                                   
   }                                                                               
   graph.markCameraValuesUserSet( !document.getElementById("defaultCameraCheckbox").checked );
+  graph.markViewRangesUserSet( !document.getElementById("defaultviewintervals").checked );
 
   // grab anything that's in the plot attribute list
   // we save data for only the currently displayed plot, since the others are
@@ -267,9 +271,9 @@ function GetValuesFromDialog(){
   for (var i=0; i<alist.length; i++) {
     anID = mapPlotID(alist[i], plotno);
     if (document.getElementById(anID)) {
-      var newval = getValueFromControl(anID);
+      var newval = getValueFromControlByID(anID);
 //      var newval = document.getElementById(anID).value;
-      if ((newval != "") && (newval != "undefined")) {                 
+      if (newval && (newval != "") && (newval != "undefined")) {                 
         var oldval = graph.getPlotValue (alist[i], plotno);                        
         if (newval != oldval) {                                        
            graph.setPlotValue(alist[i], plotno, newval);
@@ -787,42 +791,45 @@ function populateDialog (plotno) {
     {
       anID = mapPlotID(alist[i], plotno);
       if (document.getElementById(anID)) {
-        theVal = graph.getPlotValue (alist[i], plotno);                        
-        document.getElementById(anID).value = theVal;
+        theVal = graph.getPlotValue (alist[i], plotno);
+        putValueToControlByID(anID, theVal);
+//        document.getElementById(anID).value = theVal;
       }                                                                   
     }
-    setColorWell("baseColorWell", makeColorVal(graph.getPlotValue("BaseColor", plotno)));  
-    setColorWell("secondColorWell", makeColorVal(graph.getPlotValue("SecondaryColor", plotno)));
-    setColorWell("lineColorWell", makeColorVal(graph.getPlotValue("LineColor", plotno)));
-    
-    // AXES TAB
-    // GraphAxesScale
-    var oldval = graph.getValue ("AxisScale"); 
-    radioGroupSetCurrent ("AxisScale", oldval);
-    // GraphEqualScaling
-    if (document.getElementById("equalscale")) {  
-      var oldval = graph.getValue ("EqualScaling");  
-      if (oldval == "true") {
-         document.getElementById("equalscale").checked = true;            
-      }                                                               
-    }
-    // GraphAxesTips
-    if (document.getElementById("AxesTips")) {                            
-      var oldval = graph.getValue ("AxesTips");  
-      if (oldval == "true") {
-         document.getElementById("AxesTips").checked = true;            
-      }                                                               
-    }
-    // GraphGridLines
-    if (document.getElementById("GridLines")) {                            
-      var oldval = graph.getValue ("GridLines");  
-      if (oldval == "true") {
-         document.getElementById("GridLines").checked = true;            
-      }                                                               
-    }
-    // GraphAxesType
-    var oldval = graph.getValue ("AxesType");  
-    radioGroupSetCurrent ("axistype", oldval);
+//    setColorWell("baseColorWell", makeColorVal(graph.getPlotValue("BaseColor", plotno)));  
+//    setColorWell("secondColorWell", makeColorVal(graph.getPlotValue("SecondaryColor", plotno)));
+//    setColorWell("lineColorWell", makeColorVal(graph.getPlotValue("LineColor", plotno)));
+  
+//**rwa - these should already have been taken carae of, during the loop through the graph's attributes***//
+//    // AXES TAB
+//    // GraphAxesScale
+//    var oldval = graph.getValue ("AxisScale"); 
+//    radioGroupSetCurrent ("AxisScale", oldval);
+//    // GraphEqualScaling
+//    if (document.getElementById("equalscale")) {  
+//      var oldval = graph.getValue ("EqualScaling");  
+//      if (oldval == "true") {
+//         document.getElementById("equalscale").checked = true;            
+//      }                                                               
+//    }
+//    // GraphAxesTips
+//    if (document.getElementById("AxesTips")) {                            
+//      var oldval = graph.getValue ("AxesTips");  
+//      if (oldval == "true") {
+//         document.getElementById("AxesTips").checked = true;            
+//      }                                                               
+//    }
+//    // GraphGridLines
+//    if (document.getElementById("GridLines")) {                            
+//      var oldval = graph.getValue ("GridLines");  
+//      if (oldval == "true") {
+//         document.getElementById("GridLines").checked = true;            
+//      }                                                               
+//    }
+//    // GraphAxesType
+//    var oldval = graph.getValue ("AxesType");  
+//    radioGroupSetCurrent ("axistype", oldval);
+
     // Layout Tab
     // printAttribute
     var oldval = graph.getValue ("PrintAttribute");  
@@ -839,34 +846,35 @@ function populateDialog (plotno) {
     var oldval = graph.getValue ("CaptionPlace");  
     radioGroupSetCurrent ("captionplacement", oldval);
 
-    // Axes tab
-    var camLocX = graph.getValue ("CameraLocationX");
-    var camLocY = graph.getValue ("CameraLocationY");
-    var camLocZ = graph.getValue ("CameraLocationZ");
-    populateDescription ("CameraLocationX", camLocX);
-    populateDescription ("CameraLocationY", camLocY);
-    populateDescription ("CameraLocationZ", camLocZ);
-
-    var focalPtX = graph.getValue ("FocalPointX");
-    var focalPtY = graph.getValue ("FocalPointY");
-    var focalPtZ = graph.getValue ("FocalPointZ");
-    populateDescription ("FocalPointX", focalPtX);
-    populateDescription ("FocalPointY", focalPtY);
-    populateDescription ("FocalPointZ", focalPtZ);
-
-    var upVecX = graph.getValue ("UpVectorX");
-    var upVecY = graph.getValue ("UpVectorY");
-    var upVecZ = graph.getValue ("UpVectorZ");
-    populateDescription ("UpVectorX", upVecX);
-    populateDescription ("UpVectorY", upVecY);
-    populateDescription ("UpVectorZ", upVecZ);
-
-    var va = graph.getValue ("ViewingAngle");
-    var op = graph.getValue ("OrthogonalProjection");
-    var ku = graph.getValue ("KeepUp");
-    populateDescription ("ViewingAngle", va);
-    document.getElementById("OrthogonalProjection").checked = (op == "true")?true:false;
-    document.getElementById("KeepUp").checked = (ku == "true")?true:false;
+//**rwa - these should already have been taken carae of, during the loop through the graph's attributes***//
+//    // View tab
+//    var camLocX = graph.getValue ("CameraLocationX");
+//    var camLocY = graph.getValue ("CameraLocationY");
+//    var camLocZ = graph.getValue ("CameraLocationZ");
+//    populateDescription ("CameraLocationX", camLocX);
+//    populateDescription ("CameraLocationY", camLocY);
+//    populateDescription ("CameraLocationZ", camLocZ);
+//
+//    var focalPtX = graph.getValue ("FocalPointX");
+//    var focalPtY = graph.getValue ("FocalPointY");
+//    var focalPtZ = graph.getValue ("FocalPointZ");
+//    populateDescription ("FocalPointX", focalPtX);
+//    populateDescription ("FocalPointY", focalPtY);
+//    populateDescription ("FocalPointZ", focalPtZ);
+//
+//    var upVecX = graph.getValue ("UpVectorX");
+//    var upVecY = graph.getValue ("UpVectorY");
+//    var upVecZ = graph.getValue ("UpVectorZ");
+//    populateDescription ("UpVectorX", upVecX);
+//    populateDescription ("UpVectorY", upVecY);
+//    populateDescription ("UpVectorZ", upVecZ);
+//
+//    var va = graph.getValue ("ViewingAngle");
+//    var op = graph.getValue ("OrthogonalProjection");
+//    var ku = graph.getValue ("KeepUp");
+//    populateDescription ("ViewingAngle", va);
+//    document.getElementById("OrthogonalProjection").checked = (op == "true")?true:false;
+//    document.getElementById("KeepUp").checked = (ku == "true")?true:false;
   }
   catch (e)
   {
@@ -983,6 +991,7 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
     document.getElementById("plotcs3d").collapsed = false;            
     document.getElementById("plotcs2d").collapsed = true;
     document.getElementById("threeDim").collapsed = false;
+    document.getElementById("colorAlphaEnabled").setAttribute("hasAlpha", "true");
     bUseDirShading = true;
     bUseMesh = true;
     showFillColors = 2;
@@ -1003,6 +1012,7 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
     document.getElementById("plotcs2d").collapsed = false;            
     document.getElementById("plotcs3d").collapsed = true;
     document.getElementById("threeDim").collapsed = true;
+    document.getElementById("colorAlphaEnabled").setAttribute("hasAlpha", "false");
     switch(ptype)
     {
       case "inequality":            showFillColors = 2;   break;
@@ -1035,6 +1045,8 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
   document.getElementById("useMesh").collapsed = !bUseMesh;
   document.getElementById("approxIntPlot").collapsed = (ptype !== "approximateIntegral");
   document.getElementById("useAreaFill").collapsed = ((ptype != "approximateIntegral") && (ptype !== "inequality"));
+  changeDefaultCamera();  //this just enables or disables according to the checkbox state
+  changeDefaultViewIntervals();  //this just enables or disables according to the checkbox state
 }
 
 function openVariablesAndIntervalsDlg()
@@ -1046,6 +1058,76 @@ function openVariablesAndIntervalsDlg()
 function openAnimationSettingsDlg()
 {
   openDialog('chrome://prince/content/plotAnimationSettings.xul', 'Animation Settings', 'chrome,close,titlebar,modal,resizable', graph);
+}
+
+function openAxisFontSettingsDlg()
+{
+  var mapAttrs = {face : "AxisFontFamily", size : "AxisFontSize", bold : "AxisFontBold",
+                  italic : "AxisFontItalic", color : "AxisFontColor"};
+  var value, attrName;
+  var fontObj = {whichFont : "axes",
+                 face : graph.getGraphAttribute("AxisFontFamily"),
+                 size : graph.getGraphAttribute("AxisFontSize"),
+                 bold : graph.getGraphAttribute("AxisFontBold"),
+                 italic : graph.getGraphAttribute("AxisFontItalic"),
+                 color : graph.getGraphAttribute("AxisFontColor"),
+                 Canceled : false};
+//  alert("Plot Font dialog not implemented!");
+  openDialog('chrome://prince/content/plotFontSettings.xul', 'Axis Tick Font Settings', 'chrome,close,titlebar,modal,resizable', fontObj);
+  if (!fontObj.Canceled)
+  {
+    for (var attr in mapAttrs)
+    {
+      attrName = mapAttrs[attr];
+      value = fontObj[attr];
+      if (value && value != "")
+        graph.setGraphAttribute(attrName, value);
+      else
+        graph.setGraphAttribute(attrName, null);
+    }
+  }  
+}
+
+function openAxisTickFontSettingsDlg()
+{
+  var mapAttrs = {face : "TicksFontFamily", size : "TicksFontSize", bold : "TicksAxisFontBold",
+                  italic : "TicksFontItalic", color : "TicksFontColor"};
+  var value, attrName;
+  var fontObj = {whichFont : "axesTicks",
+                 face : graph.getGraphAttribute("TicksFontFamily"),
+                 size : graph.getGraphAttribute("TicksFontSize"),
+                 bold : graph.getGraphAttribute("TicksFontBold"),
+                 italic : graph.getGraphAttribute("TicksFontItalic"),
+                 color : graph.getGraphAttribute("TicksFontColor"),
+                 Canceled : false };
+  var defsize = Number(graph.getValue("AxisFontSize"));
+  if (defsize != Number.NaN)
+    defsize = 4 * defsize/5;
+  else
+    defsize = 8;
+  var defaultFont = {face : graph.getValue("AxisFontFamily"),
+                     size : String(defsize),
+                     bold : graph.getValue("AxisFontBold"),
+                     italic : graph.getValue("AxisFontItalic"),
+                     color : graph.getValue("AxisFontColor")};
+  openDialog('chrome://prince/content/plotFontSettings.xul', 'Axis Tick Font Settings', 'chrome,close,titlebar,modal,resizable', fontObj, defaultFont);
+  if (!fontObj.Canceled)
+  {
+    for (var attr in mapAttrs)
+    {
+      attrName = mapAttrs[attr];
+      value = fontObj[attr];
+      if (value && value != "")
+        graph.setGraphAttribute(attrName, value);
+      else
+        graph.setGraphAttribute(attrName, null);
+    }
+  }  
+}
+
+function openPlotLabelsDlg()
+{
+  openDialog('chrome://prince/content/plotLabelsDlg.xul', 'Plot Labels', 'chrome,close,titlebar,modal,resizable', graph);
 }
 
 function makeAxisLabelCustom(control)
@@ -1066,8 +1148,9 @@ function makeAxisLabelCustom(control)
   graph.markUserSet(whichAxis + "AxisLabel", control.checked);
 }
 
-function makeViewIntervalsDefault(control)
+function changeDefaultViewIntervals()
 {
+  var control = document.getElementById("defaultviewintervals");
   document.getElementById("viewRangesActive").setAttribute( "disabled", (control.checked ? "true" : "false") );
 }
 

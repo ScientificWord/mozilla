@@ -1306,6 +1306,15 @@ function onVCamDblClick(screenX, screenY) {
   goDoPrinceCommand("cmd_objectProperties", this, editorElement);
 }
 
+function onVCamTreeChange(treeEvent)
+{
+  try
+  {
+    msidump("Reported VCam tree change event: type is [" + treeEvent.type + "], target node is [" + treeEvent.target.nodeName + "], property changed is [" + treeEvent.property + "]\n");
+  } catch(exc)
+  {msidump("Got exception in onVCamTreeChange: " + exc + "\n");}
+}
+
 function onVCamDragMove(x, y) {
   return 1;
 }
@@ -3471,6 +3480,8 @@ function regeneratePlotObject(objElement, graph, editorElement)
   msiCopyElementAttributesExcluding(newObj, objElement, null, ["data","src","type"]);
   newObj.vcamStatus = "uninitialized";
   parent.replaceChild(newObj, objElement);
+//NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
+//  the scriptable vcam interface to work!
   newObj.setAttribute("data", msiMakeAbsoluteUrl(graph.getGraphAttribute("ImageFile"),editorElement));
   newObj.setAttribute("type", objElement.getAttribute("type"));
   return newObj;
@@ -3542,6 +3553,7 @@ var preInitializeVCamCallbackObjectBase =
         this.mObj.addEvent('dragEnter', this.mGraph.provideDragEnterHandler(this.mEditorElement, domGraph));
         this.mObj.addEvent('drop', this.mGraph.provideDropHandler(this.mEditorElement, domGraph));
       }
+      this.mObj.addEvent('treeChange', onVCamTreeChange);
       queryVCamValues(this.mObj, this.mGraph, domGraph);
       // add a method for writing a snapshot
       var snapFn = function() {
