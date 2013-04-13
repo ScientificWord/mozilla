@@ -118,3 +118,5 @@ en-US.jar:
   locale/msiGraphicsConversionDlg.dtd     (dialogs/msiGraphicsConversionDlg.dtd)
   locale/documentStyle.dtd                (dialogs/documentStyle.dtd)
   locale/plotAnimationSettings.dtd        (dialogs/plotAnimationSettings.dtd)
+  locale/plotLabelsDlg.dtd                (dialogs/plotLabelsDlg.dtd)
+  locale/plotFontSettings.dtd             (dialogs/plotFontSettings.dtd)
