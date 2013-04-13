@@ -1,25 +1,47 @@
 var numberRE = /(\-)?([0-9]+)?(\.[0-9]+)?/;  //Or delete the leading minus?
 var sciNotationNumberRE = /(\-)?([0-9]+)?(\.[0-9]+)?e(\-?[0-9]+)/i;  //Or delete the leading minus?
 
-function getValueFromControl(anID)
+function getValueFromControlByID(anID)
 {
   var theControl = document.getElementById(anID);
+  return getValueFromControl(theControl);
+}
+
+function getValueFromControl(theControl)
+{
   if (theControl)
   {
     if ( (theControl.nodeName == "spacer") && (theControl.getAttribute("class") == "color-well") )
     {
+      var theVal, alphaVal;
       var styleStr = theControl.getAttribute("style");
       var colorMatch = /background-color\:\s*([^;]+);?$/;
       if (styleStr && styleStr.length)
       {
         var matchRes = colorMatch.exec(styleStr);
         if (matchRes && matchRes[1])
-          return getColorFromCSSSpec(matchRes[1]);
+          theVal = getColorFromCSSSpec(matchRes[1]);
+        if (theControl.getAttribute("hasAlpha") == "true")
+        {
+          alphaVal = theControl.getAttribute("alpha");
+          if (!alphaVal || alphaVal.length == 0)
+            alphaVal = "ff";
+          else if (alphaVal.length == 1)
+            alphaVal += "0";
+          else
+            alphaVal = alphaVal.substr(0,2);
+          theVal += alphaVal;
+        }
       }
+      return theVal;
     }
     else if (theControl.nodeName == "checkbox")
     {
       return theControl.checked ? "true" : "false";
+    }
+    else if ( (theControl.nodeName == "textbox") && (theControl.getAttribute("ilk") == "numberlike") && (theControl.getAttribute("displayDegrees") == "true") )
+    {
+      return String( Number(theControl.value) * Math.PI/180 );
     }
     else
       return theControl.value;
@@ -27,41 +49,83 @@ function getValueFromControl(anID)
   return "undefined";
 }
 
+function decToTwoHexDigits(decStr)
+{
+  var num = Number(decStr);
+  var retStr = num.toString(16);
+  while (retStr.length < 2)
+    retStr = "0" + retStr;
+  return retStr;
+}
+
+function twoHexDigitsToNumber(hexStr)  //of course, it could be just one hex digit
+{
+  hexStr = hexStr.toLowerCase();
+  var hexDigits = "0123456789abcdef";
+  var nStart = 0;
+  if (hexStr[0] == "#")
+    nStart = 1;
+  var retval = hexDigits.indexOf(hexStr[nStart]);
+  if (retval < 0)
+    return Number.NaN;
+  var digit2 = 0;
+  if (hexStr.length > 1 + nStart)
+  {
+    digit2 = hexDigits.indexOf(hexStr[nStart + 1]);
+    if (digit2 < 0)
+      return Number.NaN;
+    retval = 16 * retval + digit2;
+  }
+  return retval;
+}
+
 function getColorFromCSSSpec(cssStr)
 {
-  function decToTwoHexDigits(decStr)
-  {
-    var num = Number(decStr);
-    var retStr = num.toString(16);
-    while (retStr.length < 2)
-      retStr = "0" + retStr;
-    return retStr;
-  }
   var rgbMatch = /rgb\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*\)/;
   var hexMatch = /#?([0-9a-fA-F]{1,6})/;
   var matchRes = rgbMatch.exec(cssStr);
   if (matchRes && matchRes[3])
   {
-    return decToTwoHexDigits(matchRes[1]) + decToTwoHexDigits(matchRes[2]) + decToTwoHexDigits(matchRes[3]);
+    return "#" + decToTwoHexDigits(matchRes[1]) + decToTwoHexDigits(matchRes[2]) + decToTwoHexDigits(matchRes[3]);
   }
   matchRes = hexMatch.exec(cssStr);
   if (matchRes && matchRes[1])
-    return matchRes[1];
+    return "#" + matchRes[1];
   return null;
 }
 
-function putValueToControl(anID, aVal)
+function putValueToControlByID(anID, aVal)
 {
   var theControl = document.getElementById(anID);
+  putValueToControl(theControl, aVal);
+}
+
+function putValueToControl(theControl, aVal)
+{
   if (theControl)
   {
     if ( (theControl.nodeName == "spacer") && (theControl.getAttribute("class") == "color-well") )
     {
-      setColorWell(anID, makeColorVal(aVal));
+      setColorWellControl(theControl, makeColorVal(aVal));
+      var alphaVal;
+      if (theControl.getAttribute("hasAlpha") == "true")
+      {
+        if (aVal[0] == "#")
+          alphaVal = aVal.substr(7);  //start after # and 6 characters
+        else
+          alphaVal = aVal.substr(6);
+        if (alphaVal.length == 0)
+          alphaVal = "ff";
+        else if (alphaVal.length == 1)
+          alphaVal += "0";
+        else
+          alphaVal = alphaVal.substr(0,2);
+        theControl.setAttribute("alpha", alphaVal);
+      }
     }
     else if (theControl.nodeName == "checkbox")
     {
-      theControl.checked = aVal ? "true" : "false";
+      theControl.checked = (aVal == "true");
     }
     else if ( (theControl.nodeName == "textbox") && (theControl.getAttribute("ilk") == "numberlike") )
     {
@@ -71,7 +135,9 @@ function putValueToControl(anID, aVal)
         sigDigits = Number(theControl.getAttribute("significantDigits"));
         if (isNaN(sigDigits))
           sigDigits = 5;
-      }     
+      }
+      if (theControl.getAttribute("displayDegrees") == "true")
+        aVal = String( Number(aVal) * 180/Math.PI );
       theControl.value = useSignificantDigits(aVal, sigDigits);
     }
     else
@@ -97,6 +163,7 @@ function testUseSignificantDigits()
   reportResults("11.99997",3,"12.0");
   reportResults("1.234789e4", 5, "12348");
   reportResults("-6.77775e4", 5, "-67777");
+  reportResults("0.0875631", 3, "0.0876");
 }
 
 function useSignificantDigits(aVal, sigDigits)
@@ -173,7 +240,7 @@ function useSignificantDigits(aVal, sigDigits)
   else if (exp < 0)
   {
     retStr = neg + "0.";
-    for (jj = 0; jj < sigDigits + exp; ++jj)
+    for (jj = 1; jj < (-exp); ++jj)
       retStr += "0";
     retStr += theDigits;
   }
@@ -190,7 +257,7 @@ function useSignificantDigits(aVal, sigDigits)
 
 function makeColorVal(attribStr)
 {
-  var retVal = attribStr.replace(/^([0-9a-fA-F]+)$/,"#$1");
+  var retVal = attribStr.replace(/^#?([0-9a-fA-F]{1,6}).*$/,"#$1");
   return retVal; 
 }
 
@@ -356,4 +423,39 @@ function mathNodeFromNumericText(text)
   if (numRes)
     return wrapMath("<mn>" + numRes[0] + "</mn>");
   return wrapMath("<mi>" + text + "</mi>");
+}
+
+function getPlotColorAndUpdate(id)
+{
+  var colorWell; 
+	colorWell = document.getElementById(id);
+  if (!colorWell) return;
+  var color = getValueFromControl(colorWell);
+  // Don't allow a blank color, i.e., using the "default"
+  var colorObj = { NoDefault:true, Type:"Rule", TextColor:color, PageColor:0, Cancel:false };
+  var alphaVal;
+  if (colorWell.getAttribute("hasAlpha") == "true")
+  {
+    alphaVal = colorWell.getAttribute("alpha");
+    colorObj.TextColor = color.substr(0, color.length - 2);
+    if (alphaVal && alphaVal.length)
+    {
+      colorObj.alpha = twoHexDigitsToNumber(alphaVal);
+      if (colorObj.alpha == Number.NaN)
+        colorObj.alpha = 255;
+    }
+    else
+      colorObj.alpha = 255;
+  }
+
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
+
+  // User canceled the gFrameTab
+  if (colorObj.Cancel)
+    return;
+
+  if ("alpha" in colorObj)
+    putValueToControl( colorWell, colorObj.TextColor + Number(colorObj.alpha).toString(16) );
+  else
+    putValueToControl( colorWell, colorObj.TextColor );
 }

@@ -9,7 +9,7 @@
 // PLOTFUNC    ::= Polar | Implicit2d | Inequality | Curve2d | Conformal | VectorField2d | 
 //                 VectorField2d | Ode2d | Cylindrical | Spherical | Function3d | Implicit3d | 
 //                 Inequality | Curve3d | Conformal | VectorField3d | VectorField3d | Ode3d | 
-//                 Tube | ApproximateIntegral | Curve3d
+//                 Tube | ApproximateIntegral | Curve3d | Text2d | Text3d
 // REQPARMS    ::= <EXPRESSION>,<VARS>,<MESH> 
 // MESH        ::= Mesh={<int> | [<int>,<int>] | [<int>,<int>,<int>]}
 // VARS        ::= <VAR>[,<VAR>[,<VAR>]]
@@ -77,8 +77,8 @@ string msiToString(int val) {
 
 int PlotVarsNeeded (string dim, string ptype, string animate) {
   int nvars = 0;  
-  if ((ptype == "curve") || (ptype == "tube")) {
-    nvars = 0;            // gets set to 1 below
+  if ((ptype == "curve") || (ptype == "tube") || (ptype == "text")) {
+    nvars = 0;            // gets set to 1 below, except for the text plots
   } else if (ptype == "explicitList") {
     nvars = 0;  
   } else if ((ptype == "rectangular") || (ptype == "polar") ||
@@ -93,7 +93,7 @@ int PlotVarsNeeded (string dim, string ptype, string animate) {
     TCI_ASSERT(!"ERROR: invalid plot type line 93 MuPADPlot.cpp");
 
   }  
-  if (dim == "3") 
+  if ((dim == "3") && (ptype != "text"))
     nvars++;
   if (animate == "true")
     nvars++;
@@ -282,6 +282,15 @@ MuPADPlot::REPTOKFN MuPADPlot::tokenfns[] = {
      "@title@",          MuPADPlot::TitleStr,
      "@viewbox@",        MuPADPlot::ViewingBoxStr,
      "@vars@",           MuPADPlot::VarsStr,
+     "@horizontalalignment@",  MuPADPlot::HorizontalAlignmentStr,
+     "@verticalalignment@",    MuPADPlot::VerticalAlignmentStr,
+     "@billboarding@",   MuPADPlot::BillboardingStr,
+     "@plottextstr@",             MuPADPlot::PlotTextStr,
+     "@plottextpositionstr@",     MuPADPlot::PlotTextPositionStr,
+     "@plottextorientationstr@",  MuPADPlot::PlotTextOrientationStr,
+     "@textfontstr@",    MuPADPlot::PlotTextFontStr,
+     "@axisfont@",       MuPADPlot::AxisFontStr,
+     "@ticksfont@",      MuPADPlot::TicksFontStr,
      (char *)NULL,       NULL                
 };                                   
   
@@ -580,7 +589,8 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
         case PID_GraphViewBoxYMax:
         case PID_GraphViewBoxZMin:
         case PID_GraphViewBoxZMax:
-          retstr += "@viewbox@";
+          if (retstr.find("@viewbox@")==string::npos)
+            retstr += "@viewbox@";
         break;
 
 //         case PID_GraphCameraLocationX:
@@ -622,6 +632,22 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
         case PID_GraphBGColor	   :
           retstr += "@bgcolor@";                                                            
 		  break;                                                                                
+        case PID_GraphFontFamily      :
+        case PID_GraphFontSize        :
+        case PID_GraphFontColor       :
+        case PID_GraphFontBold        :
+        case PID_GraphFontItalic      :
+          if (retstr.find("@axisfont@")==string::npos)
+            retstr += "@axisfont@";
+      break;         
+        case PID_GraphTicksFontFamily :
+        case PID_GraphTicksFontSize   :
+        case PID_GraphTicksFontColor  :
+        case PID_GraphTicksFontBold   :
+        case PID_GraphTicksFontItalic :
+          if (retstr.find("@ticksfont@")==string::npos)
+            retstr += "@ticksfont@";
+      break;         
       } // end switch                                                                           
   	} // end if                                                                                 
                                                                                                 
@@ -642,6 +668,9 @@ string MuPADPlot::GridLinesStr (MuPADPlot *T) {
 string MuPADPlot::IncludeLinesStr (MuPADPlot* T) {
   U32 plottype;                                                                                    
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotIncludeLines, plottype);                                     
+  string linestyle = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineStyle, plottype);
+  if ( (val == "") && (linestyle != "None") )
+    val = "true";
   string ret = "";
   if ((T->dim[0]=='2') && (T->ptype != "vectorField") && (T->ptype != "gradient") 
       && (T->ptype != "inequality") && (T->ptype != "conformal")) {
@@ -655,7 +684,13 @@ string MuPADPlot::IncludeLinesStr (MuPADPlot* T) {
 string MuPADPlot::IncludePointsStr (MuPADPlot* T) {
   U32 plottype;                                 
   string ret = "";                                                   
-  string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotIncludePoints, plottype);  
+  string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotIncludePoints, plottype);
+  if ( (val == "") && (T->dim[0] == '2') )
+  {
+    string linestyle = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineStyle, plottype);
+    if (linestyle == "None")
+      val = "true";
+  }
   if ((T->ptype != "implicit") && (T->ptype != "vectorField") && (T->ptype != "gradient") 
       && (T->ptype != "inequality") && (T->ptype != "conformal")) {
     ret = ", PointsVisible=";
@@ -664,6 +699,17 @@ string MuPADPlot::IncludePointsStr (MuPADPlot* T) {
   return ret;                                              
 }                                                          
 
+PRBool ishexdigit(char aChar)
+{
+  PRBool retval = PR_FALSE;
+  if ((aChar >= '0') && (aChar <= '9'))
+    retval = PR_TRUE;
+  else if ((aChar >= 'A') && (aChar <= 'F'))
+    retval = PR_TRUE;
+  else if ((aChar >= 'a') && (aChar <= 'f'))
+    retval = PR_TRUE;
+  return retval;
+}
 
 int hexval (char c) {
   if ((c >= '0') && (c <= '9')) 
@@ -675,6 +721,12 @@ int hexval (char c) {
   return 0; 
 }
 
+PRBool compareNoCase(string str1, string str2)
+{
+  const char* chars1 = str1.c_str();
+  const char* chars2 = str2.c_str();
+  return (!stricmp(chars1, chars2));
+}
 
 // A color is a #rrggbb, where rr, gg, bb are $00 to $ff
 string MuPADPlot::LineColorStr (MuPADPlot* T) {
@@ -706,11 +758,11 @@ string MuPADPlot::LineThicknessStr (MuPADPlot* T) {
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineThickness, plottype);
   string ret = "";
   if (val == "thin") {
-    ret == ", LineWidth=0";
+    ret = ", LineWidth=.3";  //these must be positive! Without units, represent millimeters
   } else if (val == "medium") {
-    ret == ", LineWidth=1";
+    ret = ", LineWidth=.7";
   } else if (val == "thick") {
-    ret == ", LineWidth=2";
+    ret = ", LineWidth=1.1";
   } 
   return ret;                                              
 }                                                          
@@ -730,7 +782,11 @@ string MuPADPlot::LocalOptsStr (MuPADPlot* T) {
 	  switch (i) {                                                                              
         case PID_PlotLineStyle :                                                                
           retstr += "@linestyle@";
-          break;                                                                                
+          if (retstr.find("@includelines@")==string::npos)
+            retstr += "@includelines@";
+          if (retstr.find("@includepoints@")==string::npos)
+            retstr += "@includepoints@";
+      break;                                                                                
         case PID_PlotLineThickness :                                                            
           retstr += "@linethickness@";
 		  break;                                                                                
@@ -753,25 +809,28 @@ string MuPADPlot::LocalOptsStr (MuPADPlot* T) {
           retstr += "@pointstyle@";
 		  break;                                                                                
         case PID_PlotIncludePoints		:  
-          retstr += "@includepoints@";
+          if (retstr.find("@includepoints@")==string::npos)
+            retstr += "@includepoints@";
 		  break;                                                                                
         case PID_PlotIncludeLines		:  
-          retstr += "@includelines@";
+          if (retstr.find("@includelines@")==string::npos)
+            retstr += "@includelines@";
 		  break;                                                                                
         case PID_PlotSurfaceStyle	    : 
           retstr += "@surfacestyle@";
+          if (retstr.find("@surfacemesh@")==string::npos)
+            retstr += "@surfacemesh@";
 		  break;                                                                                
         case PID_PlotSurfaceMesh		:                                                       
-          retstr += "@surfacemesh@";
+          if (retstr.find("@surfacemesh@")==string::npos)
+            retstr += "@surfacemesh@";
 		  break;                                                                                
         case PID_PlotCameraLocationX	:                                                       
 		  break;                                                                                
         case PID_PlotCameraLocationY	:                                                       
 		  break;                                                                                
-        case PID_PlotCameraLocationZ	:                                                       
-		  break;                                                                                
-        case PID_PlotFontFamily		    :                                                       
-          break;         
+        case PID_PlotCameraLocationZ	:
+		  break;
         case PID_PlotAnimateStart       :
           retstr += "@animatestart@";
 		  break;                                                             
@@ -786,9 +845,18 @@ string MuPADPlot::LocalOptsStr (MuPADPlot* T) {
 		  break;                                                             
         case PID_PlotAnimateVisAfter    :
           retstr += "@animatevisafter@";
-		  break;                                                                                
+		  break;
+        case PID_textPlotHorizontalAlignment :
+          retstr += "@horizontalalignment@";
+      break;                                                                                
+        case PID_textPlotVerticalAlignment :
+          retstr += "@verticalalignment@";
+      break;                                                                                
+        case PID_textPlotBillboarding :
+          retstr += "@billboarding@";
+      break;
       } // end switch                                                                           
-	} // end if                                                                                 
+	  } // end if                                                                                 
   } // end for                                                                                  
   return retstr;                                                                                
 }                                                                                               
@@ -913,11 +981,46 @@ string MuPADPlot::ApproxIntPlotStr(MuPADPlot* T) {
   return aipstr;
 }
 
+//Should look like:  
+//   plot::Text3d("<Text>",[PositionX,PositionY,PositionZ],TextOrientation=[OrientationX,OrientationY,OrientationZ,0,0,1],
+//                       TextFont=["Times New Roman",12,Bold,Italic,[colorR,colorG,colorB],other params
+//or:
+//   plot::Text2d("<Text>",[PositionX,PositionY],TextRotation=angleRadians,
+//                       TextFont=["Times New Roman",12,Bold,Italic,[colorR,colorG,colorB],other params
+//or:
+//  Footer="<Text>",FooterAlignment=<HorizontalAlignment>,FooterFont=[font description]
+//or:
+//  Header="<Text>",HeaderAlignment=<HorizontalAlignment>,HeaderFont=[font description]
+string MuPADPlot::TextPlotStr(MuPADPlot* T) {
+  string textPlotStr;
+  U32 plottype;
+  string position = T->psr->RetrievePlotParam(T->plotno, PID_textPlotPositionType, plottype);
+  if (position == "header")
+  {
+    textPlotStr = "Header=@plottextstr@@textfontstr@@horizontalalignment@";
+  }
+  else if (position == "footer")
+  {
+    textPlotStr = "Footer=@plottextstr@@textfontstr@@horizontalalignment@";
+  }
+  else if (T->dim[0] == '3')
+  {
+    textPlotStr = "plot::Text3d(@plottextstr@,@plottextpositionstr@@plottextorientationstr@@textfontstr@@localopts@)";
+  }
+  else
+  {
+    textPlotStr = "plot::Text2d(@plottextstr@,@plottextpositionstr@@plottextorientationstr@@textfontstr@@localopts@)";
+  }
+  return textPlotStr;
+}
+
 string MuPADPlot::PlotStr(MuPADPlot* T) {
   string pstr;
   if (T->ptype == "approximateIntegral") {
     pstr = ApproxIntPlotStr(T);
 //    pstr = "plot::Integral(@aifnparams@@aiparams@),plot::Function2d(@reqparams@)";
+  } else if (T->ptype == "text") {
+    pstr = TextPlotStr(T);
   } else if (T->plotno == 0) {
     pstr = "@globalparams@";
 //    pstr = "@plotfunc@(@reqparams@@localopts@@globalparams@)";
@@ -975,7 +1078,16 @@ string MuPADPlot::StringToColorArrayStr (string val) {
   double r = ((double) (hexval(val[1])*16+hexval(val[2])))/256.0;
   double g = ((double) (hexval(val[3])*16+hexval(val[4])))/256.0;
   double b = ((double) (hexval(val[5])*16+hexval(val[6])))/256.0;
-  sprintf (str, "[%0.3f, %0.3f, %0.3f]", r, g, b);
+  PRBool bHasAlpha = PR_FALSE;
+  if (val.length() > 8)
+    bHasAlpha = ishexdigit(val[7]) && ishexdigit(val[8]);
+  if (bHasAlpha)
+  {
+    double a = ((double) (hexval(val[7])*16+hexval(val[8])))/256.0;
+    sprintf (str, "[%0.3f, %0.3f, %0.3f, %0.3f]", r, g, b, a);
+  }
+  else
+    sprintf (str, "[%0.3f, %0.3f, %0.3f]", r, g, b);
   string ret = str;
   return ret;                                              
 }
@@ -998,11 +1110,12 @@ string MuPADPlot::SurfaceStyleStr (MuPADPlot* T) {
     } else if (val == "hiddenline") {
       if (fillType == "")
         fillType = "Rainbox";
-      pattern = ", XLinesVisible=FALSE, YLinesVisible=FALSE";
-      pattern += ", FillColorType=" + fillType + ", Filled=TRUE";
+//      pattern = ", XLinesVisible=FALSE, YLinesVisible=FALSE";
+      pattern = ", FillColorType=" + fillType + ", Filled=TRUE";
     } else if (val == "wireframe") {
       pattern = ", Filled=FALSE";
     } else if (val == "point") {
+      pattern = ", Filled=FALSE";
     }
     pattern += colordir;
   }  
@@ -1058,16 +1171,29 @@ string MuPADPlot::FillTypeStrFromShading (string dirval) {
 
 string MuPADPlot::SurfaceMeshStr (MuPADPlot* T) {
   string pattern = "";
-  if ((T->ptype != "tube") && (T->dim =="3")) {
+//  if ((T->ptype != "tube") && (T->dim =="3")) {  //Why exclude tube plots? But vector plots, yes:
+  if ((T->dim =="3") && (T->ptype != "vectorField") && (T->ptype != "gradient")) {
     U32 plottype;                                                                                    
-    string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotSurfaceMesh, plottype);       
+    string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotSurfaceMesh, plottype);
+    string surfaceStyle = T->psr->RetrievePlotParam(T->plotno, PID_PlotSurfaceStyle, plottype);
+    if ( (val == "") && (surfaceStyle == "hiddenline") )
+      val = "none";
+    string lineStrings[2][2] = {{"XLinesVisible", "YLinesVisible"}, {"ULinesVisible", "VLinesVisible"}};
+    int whichStrings = 0;
+    if ( (T->ptype == "cylindrical") || (T->ptype == "spherical") || (T->ptype == "parametric")
+                                     || (T->ptype == "ODE") || (T->ptype == "tube") )
+      whichStrings = 1;
     if (val == "none") {
-      pattern = ", XLinesVisible=FALSE, YLinesVisible=FALSE";
+//      pattern = ", XLinesVisible=FALSE, YLinesVisible=FALSE";
+      pattern = ", " + lineStrings[whichStrings][0] + "=FALSE, " + lineStrings[whichStrings][1] + "=FALSE";
     } else if (val == "vlines") {
-      pattern = ", XLinesVisible=FALSE";
-    } else if (val == "hlines") {
-      pattern = ", XLinesVisible=FALSE";
-    } 
+//      pattern = ", XLinesVisible=FALSE";
+      pattern = ", " + lineStrings[whichStrings][0] + "=FALSE";
+    } else if (val == "ulines") {
+//      pattern = ", YLinesVisible=FALSE";
+      pattern = ", " + lineStrings[whichStrings][1] + "=FALSE";
+    } else if (val == "contours")
+      pattern = ", " + lineStrings[whichStrings][0] + "=FALSE, " + lineStrings[whichStrings][1] + "=FALSE, ZContours=[Automatic, 15]";
   }  
   return pattern;
 }
@@ -1102,12 +1228,216 @@ string MuPADPlot::ViewingBoxStr (MuPADPlot *T) {
   return s;
 }
 
+string MuPADPlot::TextPropertyPrefix(MuPADPlot* T) {
+  string retStr;
+  U32 plottype;
+  if (T->ptype == "text") {
+    string position = T->psr->RetrievePlotParam(T->plotno, PID_textPlotPositionType, plottype);
+    if (position == "header")
+      retStr = "Header";
+    if (position == "footer")
+      retStr = "Footer";
+    else
+      retStr = "Text";
+  }
+  return retStr;
+}
+
+string MuPADPlot::HorizontalAlignmentStr(MuPADPlot* T) {
+  U32 plottype;
+  string hAlignStr = T->psr->RetrievePlotParam (T->plotno, PID_textPlotHorizontalAlignment, plottype);
+  if (hAlignStr != "")
+  {
+    string prefixStr = TextPropertyPrefix(T);
+    if ((prefixStr == "Header") || (prefixStr == "Footer"))
+      hAlignStr = "," + prefixStr + "Alignment=" + hAlignStr;
+    else
+      hAlignStr = ", HorizontalAlignment=" + hAlignStr;
+  }
+  return hAlignStr;
+}
+
+string MuPADPlot::VerticalAlignmentStr(MuPADPlot* T) {
+  U32 plottype;
+  string vAlignStr = T->psr->RetrievePlotParam (T->plotno, PID_textPlotVerticalAlignment, plottype);
+  if (vAlignStr != "")
+  {
+    string prefixStr = TextPropertyPrefix(T);
+    if ((prefixStr == "Header") || (prefixStr == "Footer"))
+      vAlignStr = "," + TextPropertyPrefix(T) + "Alignment=" + vAlignStr;
+    else
+      vAlignStr = ", VerticalAlignment=" + vAlignStr;
+  }
+  return vAlignStr;
+}
+
+string MuPADPlot::BillboardingStr(MuPADPlot* T) {
+  U32 plottype;
+  string bbStr;
+  if ((T->ptype == "text") && (T->dim[0] == '3')) {
+    string position = T->psr->RetrievePlotParam(T->plotno, PID_textPlotPositionType, plottype);
+    if ((position != "header") && (position != "footer"))
+      bbStr = T->psr->RetrievePlotParam (T->plotno, PID_textPlotBillboarding, plottype);
+  }
+  if (compareNoCase(bbStr, "true"))
+    bbStr = ",Billboarding=TRUE";
+  else
+    bbStr = ",Billboarding=FALSE";
+  return bbStr;
+}
+
+string MuPADPlot::PlotTextStr(MuPADPlot* T) {
+  string textStr = "\"";
+  U32 plottype;                                                                                    
+  textStr += T->psr->RetrievePlotParam (T->plotno, PID_textPlotText, plottype);
+  textStr += "\"";
+  return textStr;
+}
+
+string MuPADPlot::PlotTextPositionStr(MuPADPlot* T) {
+  U32 plottype;
+  string posStr;
+  if (T->ptype == "text") {
+    string position = T->psr->RetrievePlotParam(T->plotno, PID_textPlotPositionType, plottype);
+    if ((position != "header") && (position != "footer")) {
+      string xPosStr = T->psr->RetrievePlotParam (T->plotno, PID_textPlotPositionX, plottype);
+      if (xPosStr == "")
+        xPosStr = "0";
+      string yPosStr = T->psr->RetrievePlotParam (T->plotno, PID_textPlotPositionY, plottype);
+      if (yPosStr == "")
+        yPosStr = "0";
+      posStr = "[" + xPosStr + "," + yPosStr;
+      if (T->dim[0] == '3')
+      {
+        string zPosStr = T->psr->RetrievePlotParam (T->plotno, PID_textPlotPositionZ, plottype);
+        if (zPosStr == "")
+          zPosStr = "0";
+        posStr += "," + zPosStr;
+      }
+      posStr += "]";
+    }
+  }
+  return posStr;
+}
+
+string MuPADPlot::PlotTextOrientationStr(MuPADPlot* T) {
+  U32 plottype;
+  string orientStr;
+  if (T->ptype == "text") {
+    string position = T->psr->RetrievePlotParam(T->plotno, PID_textPlotPositionType, plottype);
+    if ((position != "header") && (position != "footer")) {
+      if (T->dim[0] == '3') {
+        string xOrient = T->psr->RetrievePlotParam (T->plotno, PID_textPlotOrientationX, plottype);
+        string yOrient = T->psr->RetrievePlotParam (T->plotno, PID_textPlotOrientationY, plottype);
+        string zOrient = T->psr->RetrievePlotParam (T->plotno, PID_textPlotOrientationZ, plottype);
+        if ((xOrient != "") || (yOrient != "") || (zOrient != "")) {
+          if (xOrient == "")
+            xOrient = "0";
+          if (yOrient == "")
+            yOrient = "0";
+          if (zOrient == "")
+            zOrient = "0";
+          PRBool alongZAxis = PR_FALSE;  //the orthogonal component of orientation will be the default 0,0,1 unless the text direction is along the z-axis
+          string testStr = xOrient + yOrient;
+          testStr = ExtendedReplace (testStr, "0", "");
+          testStr = ExtendedReplace (testStr, ".", "");
+          if (testStr == "")
+            alongZAxis = PR_TRUE;  
+          orientStr = ",TextOrientation=[" + xOrient + "," + yOrient + "," + zOrient;
+          if (alongZAxis)
+            orientStr += ",0,1,0]";
+          else
+            orientStr += ",0,0,1]";
+        }
+      } else {  //if dimension is 2:
+        string turnStr = T->psr->RetrievePlotParam (T->plotno, PID_textPlotTurn, plottype);
+        if (turnStr != "")
+          orientStr = ",TextRotation=" + turnStr;
+      }
+    }
+  }
+  return orientStr;
+}
+
+string MuPADPlot::PlotTextFontStr(MuPADPlot* T) {
+  U32 plottype;
+  string position = T->psr->RetrievePlotParam(T->plotno, PID_textPlotPositionType, plottype);
+  if (position == "header")
+    return GetFontDescriptionStr(T, "Header");
+  if (position == "header")
+    return GetFontDescriptionStr(T, "Footer");
+  return GetFontDescriptionStr(T, "Text");
+}
+
+string MuPADPlot::AxisFontStr(MuPADPlot* T) {
+  return GetFontDescriptionStr(T, "AxesTitle");
+}
+
+string MuPADPlot::TicksFontStr(MuPADPlot* T) {
+  return GetFontDescriptionStr(T, "TicksLabel");
+}
+
+string MuPADPlot::GetFontDescriptionStr(MuPADPlot* T, string whichFont) {
+  U32 plottype;
+  string fontStr, value;
+  int fontProperties[3][5] = { {PID_GraphFontFamily, PID_GraphFontSize, PID_GraphFontColor, PID_GraphFontBold, PID_GraphFontItalic},
+                             {PID_GraphTicksFontFamily, PID_GraphTicksFontSize, PID_GraphTicksFontColor, PID_GraphTicksFontBold, PID_GraphTicksFontItalic},
+                             {PID_textPlotTextFontFamily, PID_textPlotTextFontSize, PID_textPlotTextFontColor, PID_textPlotTextFontBold, PID_textPlotTextFontItalic}
+                           };
+  int nType = 2;
+  if (whichFont == "AxesTitle")
+    nType = 0;
+  else if (whichFont == "TicksLabel")
+    nType = 1;
+  PRBool bStarted = PR_FALSE;
+  for (int i = 0; i < 5; ++i)
+  {
+    value = T->psr->RetrievePlotParam (T->plotno, fontProperties[nType][i], plottype);
+    if (value != "")
+    {
+      switch(i)
+      {
+        case 0:
+          value = "\"" + value + "\"";
+        break;
+        case 3:
+          if (compareNoCase(value, "true"))
+            value = "Bold";
+          else
+            value = "";
+        break;
+        case 4:
+          if (compareNoCase(value, "true"))
+            value = "Italic";
+          else
+            value = "";
+        break;
+        case 2:
+          value = StringToColorArrayStr(value);
+        break;
+        default:
+        break;
+      }
+      if (value != "")
+      {
+        if (bStarted)
+          fontStr += "," + value;
+        else
+          fontStr += value;
+        bStarted = PR_TRUE;
+      }
+    }  
+  }
+  if (fontStr != "")
+    fontStr = "," + whichFont + "Font=[" + fontStr + "]";
+  return fontStr;
+}
+
 string MuPADPlot::UNIMPLEMENTED(MuPADPlot* T) {
   string pstr = "";
   cout << "MuPADPlot:: A required transformation method is not yet implemented\n";
   return pstr;
 }
-
 
 string MuPADPlot::VarsStr (MuPADPlot* T) {
   string v = "";
