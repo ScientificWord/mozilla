@@ -108,10 +108,12 @@
 <!ENTITY axisxlabel.label           "X Axis">
 <!ENTITY axisylabel.label           "Y Axis">
 <!ENTITY axiszlabel.label           "Z Axis">
+<!ENTITY axisFontSettings.label     "Axis Font">
 <!ENTITY axistickmarks.label        "Tick Marks">
 <!ENTITY axisdefault.label          "Default">
 <!ENTITY axisnone.label             "None">
 <!ENTITY axiscustom.label           "Custom">
+<!ENTITY tickFontSettings.label     "Axis Ticks Font">
 <!ENTITY axisnticks.label           "Number of X Ticks">
 <!ENTITY axisdisable.label          "Disable Tick Labeling">
 <!ENTITY axisxaxis.label            "X">
@@ -263,6 +265,7 @@
 <!ENTITY Solid.label  "Solid">
 <!ENTITY Dash.label "Dash">
 <!ENTITY Dots.label "Dots">
+<!ENTITY NoLines.label "Point">
 <!ENTITY DotDash.label  "DotDash">
 <!ENTITY DotDotDash.label "DotDotDash">
 
@@ -292,6 +295,7 @@
 <!ENTITY ViewingAngle.label "ViewingAngle">
 <!ENTITY viewIntervals.label "View intervals">
 <!ENTITY animationSettings.label "Animation Settings">
+<!ENTITY plotLabels.label "Plot Labels">
 
 <!ENTITY plotradiusexpr.label "Radius">
 <!ENTITY plotradiusexpr.accesskey "R">

@@ -583,8 +583,8 @@ var msiResizeListener =
       unithandler.initCurrentUnit(units);
       var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
       var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
-      graph.setGraphAttribute("Width", newWidthInUnits);
-      graph.setGraphAttribute("Height", newHeightInUnits);
+      graph.setGraphAttribute("Width", String(newWidthInUnits));
+      graph.setGraphAttribute("Height", String(newHeightInUnits));
       graph.recomputeVCamImage( editorElement);
       graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
       ensureVCamPreinitForPlot(DOMGraph, editorElement);

@@ -1,6 +1,7 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 //Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/fontlist.jsm"); 
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
@@ -8061,6 +8062,159 @@ var msiSearchStringManager =
   }
 
 };
+
+//*********************************************************************************************//
+//Following is currently unused, but I want to preserve it for a later clean-up of this material. The subclasses of
+//  msiSearchStringManager that appear below are confusing - they were implemented with more haste than forethought -
+//  and I've long intended to introduce some organization that would clarify them. (I only did this now because I
+//  thought I needed it, but later decided I could use a menulist instead of an autocomplete textbox anyway.)
+
+//Prototype for string array managers when arrays won't be edited - can use to just generate autocomplete textbox lists
+var msiSimpleSearchStringManagerBase =
+{
+  initSearchListForControl : function(aControl, bForce)
+  {
+    var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+    var docRecord = this.getRecordForDocument(aControlRecord.mDocument);
+    var editorElement = msiGetTopLevelEditorElement(aControl);
+    if (editorElement)
+      docRecord.mEditor = msiGetEditor(editorElement);
+    return this.initSearchList(aControlRecord, bForce);
+  },
+
+  initSearchList : function(aControlRecord, bForce)
+  {
+    return this.initSearchListForDocument(aControlRecord, aControlRecord.mDocument, bForce);
+  },
+
+  initSearchListForDocument : function(aControlRecord, aDocument, bForce)
+  {
+    var retVal = false;
+    try
+    {
+      var ACSA = this.setACSAImpGetService();
+      var currDocStrings = this.getSearchStringList(aDocument, bForce);
+      for (var ix = 0; ix < currDocKeys.length; ++ix)
+      {
+        if (currDocStrings[ix].length > 0)
+          ACSA.addString(aControlRecord.mKey, currDocStrings[ix]);
+      }
+      retVal = true;
+    }
+    catch(exc) {dump("Exception in msiSimpleSearchStringManager.initSearchList! Error is [" + exc + "]\n");}
+    return retVal;
+  },
+
+  //default implementation - derived instances should provide their own...
+  getSourceStringList: function(aDocument, editor)
+  {
+    return [];
+  },
+
+  getSearchStringList : function(aDocument, bForce)
+  {
+
+    var docRecord = this.getRecordForDocument(aDocument);
+    return this.updateMarkerList(docRecord, bForce);
+  },
+
+  updateSearchStringList : function(aDocRecord, bForce)
+  {
+    if (bForce || this.needsStringListRefresh(aDocRecord))
+    {
+      if (!("mEditor" in aDocRecord))
+      {
+        var editorElement = msiGetTopLevelEditorElement(window);
+        if (editorElement)
+          aDocRecord.mEditor = msiGetEditor(editorElement);
+      }
+      aDocRecord.stringList = this.getSourceStringList(aDocRecord.mDocument, aDocRecord.mEditor);
+      aDocRecord.bDocModified = false;
+    }
+    return aDocRecord.stringList;
+  },
+
+  needsStringListRefresh : function(aDocRecord)
+  {
+    if (("stringList" in aDocRecord)  && ("bDocModified" in aDocRecord) && (!aDocRecord.bDocModified))
+      return false;
+    return true;
+  }
+};
+
+msiSimpleSearchStringManagerBase.__proto__ = msiSearchStringManager;
+
+var msiSimpleAutoSearchListPrototype =
+{
+  resetList : function(bForce)
+  {
+    return this.mListManager.resetMarkerList(this.mListManagerRecord);
+  },
+
+  clearList : function()
+  {
+    return this.mKeyListManager.clearMarkerList(this.mKeyListManagerRecord);
+  },
+
+  changeSourceDocument : function(aDocument)
+  {
+    this.clearList();
+    this.mTargetDocument = aDocument;
+    return this.mListManager.initSearchListForDocument(this.mListManagerRecord, aDocument, true);
+  },
+
+  getIndexString : function()
+  {
+    if (this.mListManagerRecord)
+      return this.mListManagerRecord.mKey;
+    return "";
+  },
+
+  getDocument : function()
+  {
+    if ("mTargetDocument" in this)
+      return this.mTargetDocument;
+    if (this.mListManagerRecord)
+      return this.mListManagerRecord.mDocument;
+    return null;
+  },
+
+  detach : function()
+  {
+    this.mListManager.removeSearchStringArrayRecord(this.mListManagerRecord);
+    this.mbInitialized = false;
+    this.mListManagerRecord = null;
+  },
+
+  setACSAImp : function()
+  {
+    msiSearchStringManager.setACSAImpGetService();
+  },
+
+  setUpTextBoxControl : function(theControl)
+  {
+    theControl.searchStringList = this;
+    var currStr = "";
+    if (theControl.hasAttribute("onfocus"))
+      currStr = theControl.getAttribute("onfocus");
+    theControl.setAttribute("onfocus", "msiSearchStringManager.setACSAImp();" + currStr);
+    theControl.setAttribute("autocompletesearchparam", this.getIndexString());
+  }
+};
+
+//generic constructor for non-editable autocomplete string list; but must pass in an instance of
+//msiSimpleSearchStringManagerBase
+function msiSimpleAutoSearchList(aControl, listManager)
+{
+  this.mControl = aControl;
+  this.mListManager = listManager;
+  this.mlistManagerRecord = listManager.getSearchStringArrayRecordForControl(aControl);
+  this.mbInitialized = listManager.initSearchList(this.mListManagerRecord);
+}
+
+msiSimpleAutoSearchList.prototype = msiSimpleAutoSearchListPrototype;
+
+//***********************End of unused material*********************************************//
 
 var msiKeyListManager =
 {
