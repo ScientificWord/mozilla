@@ -1064,26 +1064,33 @@ function openAxisFontSettingsDlg()
 {
   var mapAttrs = {face : "AxisFontFamily", size : "AxisFontSize", bold : "AxisFontBold",
                   italic : "AxisFontItalic", color : "AxisFontColor"};
-  var value, attrName;
-  var fontObj = {whichFont : "axes",
-                 face : graph.getGraphAttribute("AxisFontFamily"),
-                 size : graph.getGraphAttribute("AxisFontSize"),
-                 bold : graph.getGraphAttribute("AxisFontBold"),
-                 italic : graph.getGraphAttribute("AxisFontItalic"),
-                 color : graph.getGraphAttribute("AxisFontColor"),
-                 Canceled : false};
-//  alert("Plot Font dialog not implemented!");
+  var value, attr, attrName;
+  var fontObj = {whichFont : "axes", face : "", size : "", bold : "", italic : "",
+                 color : "", Canceled : false};
+  for (attr in mapAttrs)
+  {
+    attrName = mapAttrs[attr];
+    if (!graph.omitAttributeIfDefault(attrName) || graph.isUserSet(attrName))
+      fontObj[attr] = graph.getGraphAttribute(attrName);
+  }
   openDialog('chrome://prince/content/plotFontSettings.xul', 'Axis Tick Font Settings', 'chrome,close,titlebar,modal,resizable', fontObj);
+
   if (!fontObj.Canceled)
   {
-    for (var attr in mapAttrs)
+    for (attr in mapAttrs)
     {
       attrName = mapAttrs[attr];
       value = fontObj[attr];
       if (value && value != "")
+      {
         graph.setGraphAttribute(attrName, value);
+        graph.markUserSet(attrName, true);
+      }
       else
+      {
         graph.setGraphAttribute(attrName, null);
+        graph.markUserSet(attrName, false);
+      }
     }
   }  
 }
@@ -1092,14 +1099,15 @@ function openAxisTickFontSettingsDlg()
 {
   var mapAttrs = {face : "TicksFontFamily", size : "TicksFontSize", bold : "TicksAxisFontBold",
                   italic : "TicksFontItalic", color : "TicksFontColor"};
-  var value, attrName;
-  var fontObj = {whichFont : "axesTicks",
-                 face : graph.getGraphAttribute("TicksFontFamily"),
-                 size : graph.getGraphAttribute("TicksFontSize"),
-                 bold : graph.getGraphAttribute("TicksFontBold"),
-                 italic : graph.getGraphAttribute("TicksFontItalic"),
-                 color : graph.getGraphAttribute("TicksFontColor"),
-                 Canceled : false };
+  var value, attr, attrName;
+  var fontObj = {whichFont : "axesTicks", face : "", size : "", bold : "", italic : "",
+                 color : "", Canceled : false };
+  for (attr in mapAttrs)
+  {
+    attrName = mapAttrs[attr];
+    if (!graph.omitAttributeIfDefault(attrName) || graph.isUserSet(attrName))
+      fontObj[attr] = graph.getGraphAttribute(attrName);
+  }
   var defsize = Number(graph.getValue("AxisFontSize"));
   if (defsize != Number.NaN)
     defsize = 4 * defsize/5;
@@ -1113,14 +1121,20 @@ function openAxisTickFontSettingsDlg()
   openDialog('chrome://prince/content/plotFontSettings.xul', 'Axis Tick Font Settings', 'chrome,close,titlebar,modal,resizable', fontObj, defaultFont);
   if (!fontObj.Canceled)
   {
-    for (var attr in mapAttrs)
+    for (attr in mapAttrs)
     {
       attrName = mapAttrs[attr];
       value = fontObj[attr];
       if (value && value != "")
+      {
         graph.setGraphAttribute(attrName, value);
+        graph.markUserSet(attrName, true);
+      }
       else
+      {
         graph.setGraphAttribute(attrName, null);
+        graph.markUserSet(attrName, false);
+      }
     }
   }  
 }
