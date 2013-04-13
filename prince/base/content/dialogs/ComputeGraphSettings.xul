@@ -107,6 +107,7 @@
     <broadcaster id="approxIntPlot" collapsed="true" />
     <broadcaster id="useAreaFill" collapsed="true" />
     <broadcaster id="customCameraProperties" disabled="true" />
+    <broadcaster id="colorAlphaEnabled" hasAlpha="false" />
   </broadcasterset>
 
   <vbox id="units"/>
@@ -185,7 +186,7 @@
         </groupbox>
       </tabpanel>       -->
 
-      <tabpanel id="Labelling">
+      <vbox id="Labelling">
         <vbox>
           <groupbox>        
             <label value="&labelingkey.label;"/>
@@ -218,9 +219,9 @@
               context="msiEditorContentContext" width="5in" flex="1"/>   
           </groupbox>       
        </vbox>
-      </tabpanel>   
+      </vbox>   
          
-      <tabpanel id="ItemsPlotted">
+      <vbox id="ItemsPlotted">
         <vbox>
           <groupbox>
             <caption label="&plotstyles.label;"/>
@@ -275,8 +276,6 @@
           </commandset>
           <commandset id="MSImathMenuCommands"/>
           
-#include ../keysfordialogs.inc
-
           <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
             <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="menutooltip">
               <menu id="editMenu"/>
@@ -330,8 +329,8 @@
                 </row>
                 <row>
                   <hbox>
-                    <msibutton id="linecolor" class="color-button" oncommand="getColorAndUpdate('lineColorWell');" observes="use1LineColor" >
-                      <spacer id="lineColorWell" class="color-well"/>
+                    <msibutton id="linecolor" class="color-button" oncommand="getPlotColorAndUpdate('lineColorWell');" observes="use1LineColor" >
+                      <spacer id="lineColorWell" hasAlpha="false" observes="colorAlphaEnabled" class="color-well"/>
                     </msibutton>
                   </hbox>
                   <hbox>
@@ -352,8 +351,8 @@
                   </hbox>
                   <hbox/>
                   <hbox>
-                    <msibutton id="basecolor" class="color-button" oncommand="getColorAndUpdate('baseColorWell');" observes="useBaseColor">
-                      <spacer id="baseColorWell" class="color-well"/>
+                    <msibutton id="basecolor" class="color-button" oncommand="getPlotColorAndUpdate('baseColorWell');" observes="useBaseColor">
+                      <spacer id="baseColorWell" hasAlpha="false" observes="colorAlphaEnabled" class="color-well"/>
                     </msibutton>
                   </hbox>
                   <hbox/>
@@ -370,8 +369,8 @@
                   <hbox/>
                   <hbox/>
                   <hbox>
-                    <msibutton id="secondcolor" class="color-button" oncommand="getColorAndUpdate('secondColorWell');" observes="use2FillColors" >
-                      <spacer id="secondColorWell" class="color-well" />
+                    <msibutton id="secondcolor" class="color-button" oncommand="getPlotColorAndUpdate('secondColorWell');" observes="use2FillColors" >
+                      <spacer id="secondColorWell" hasAlpha="false" observes="colorAlphaEnabled" class="color-well" />
                     </msibutton>
                   </hbox>
                   <hbox/>
@@ -397,8 +396,9 @@
                         <menuitem label="&Solid.label;" value="Solid" />
                         <menuitem label="&Dash.label;" value="Dashed"/>
                         <menuitem label="&Dots.label;" value="Dotted"/>
-                        <menuitem label="&DotDash.label;"  value="DotDash"/>
-                        <menuitem label="&DotDotDash.label;" value="DotDotDash"/>
+                        <menuitem label="&NoLines.label;" value="None"/>
+                        <!-- menuitem label="&DotDash.label;"  value="DotDash"/>
+                        <menuitem label="&DotDotDash.label;" value="DotDotDash"/ -->
                       </menupopup>
                     </menulist>
                     <spacer flex="2" />
@@ -487,7 +487,7 @@
                 </row>
                 <row observes="approxIntPlot">
                   <textbox id="AISubIntervals" type="number" class="narrow" increment="1" decimalplaces="0" min="1" max="999" />
-                  <menulist id="AIMethod" style="minwidth:80pts">
+                  <menulist id="AIMethod" style="min-width:80pts">
                     <menupopup command="cmd_AIChangeMethod">
                       <menuitem label="&AIMethodLeft.label;" value="Left" />
                       <menuitem label="&AIMethodRight.label;" value="Right" />
@@ -503,7 +503,7 @@
                       <menuitem label="&AIMethodSimpson.label;" value="Simpson" />
                     </menupopup>
                   </menulist>
-                  <menulist id="AIInfo" style="minwidth:80pts">
+                  <menulist id="AIInfo" style="min-width:80pts">
                     <menupopup>
                       <menuitem label="&AIInfoNone.label;" value="" />
                       <menuitem label="&AIInfoApproxValue.label;" value="IntMethod" />
@@ -517,8 +517,8 @@
           </groupbox>
           <msibutton label="&VariablesAndIntervals.label;" oncommand="openVariablesAndIntervalsDlg();" />
         </vbox>
-        </tabpanel>
-      <tabpanel id="Axes">
+        </vbox>
+      <vbox id="Axes">
         <vbox>
           <groupbox>
           <caption label="&axisaxesscale.label;" />
@@ -554,6 +554,10 @@
                   <label value="&axiszaxis.label;"/>
                           <checkbox id="customZAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
                   <textbox style="width: 10em;" disabled="true" id="ZAxisLabel" cols="20"/>
+                </row>
+                <row>
+                  <spacer flex="1"/>
+                  <msibutton label="&axisFontSettings.label;" oncommand="openAxisFontSettingsDlg();" />
                 </row>
               </rows>
             </grid>
@@ -594,6 +598,7 @@
                 </menulist>
               </vbox>
             </hbox>
+            <msibutton label="&tickFontSettings.label;" oncommand="openAxisTickFontSettingsDlg();" />
             <!-- <checkbox id="disableticks" label="&axisdisable.label;"/> -->
             <checkbox id="AxesTips"     label="&axistips.label;"/>
             <checkbox id="GridLines"    label="&axisgridlines.label;"/>
@@ -624,9 +629,9 @@
             </radiogroup>
           </groupbox>
        </vbox>
-      </tabpanel>      
+      </vbox>      
 
-      <tabpanel id="View defaults">
+      <vbox id="View defaults">
         <separator/>
         <vbox>
           <row>
@@ -637,24 +642,24 @@
           </row>
           <separator/>
           <vbox>
-            <checkbox id="defaultviewintervals" label="&viewinterval.label;" oncommand="makeViewIntervalsDefault(this);" />
+            <checkbox id="defaultviewintervals" label="&viewinterval.label;" oncommand="changeDefaultViewIntervals();" />
           </vbox>
           <groupbox observes="viewRangesActive" >
             <caption>&viewIntervals.label;</caption>        
             <hbox>
-              <label value="&axisxrange.label;"/>
-              <textbox id="xrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
-              <textbox id="xrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
+              <label value="&axisxrange.label;" observes="viewRangesActive"/>
+              <textbox id="xrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
+              <textbox id="xrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
             </hbox>
             <hbox>
-              <label value="&axisyrange.label;"/>
-              <textbox id="yrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
-              <textbox id="yrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
+              <label value="&axisyrange.label;" observes="viewRangesActive"/>
+              <textbox id="yrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
+              <textbox id="yrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
             </hbox>
             <hbox observes="threeDim" >
-              <label value="&axiszrange.label;"/>
-              <textbox id="zrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
-              <textbox id="zrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6"/>
+              <label value="&axiszrange.label;" observes="viewRangesActive"/>
+              <textbox id="zrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
+              <textbox id="zrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
             </hbox>
           </groupbox>
           <groupbox caption="&cameraPositionAndOrientation.label;" observes="threeDim">
@@ -669,42 +674,43 @@
               <rows>
                 <row>
                   <label />
-                  <label align="center">x</label>
-                  <label align="center">y</label>
-                  <label align="center">z</label>
+                  <label align="center" observes="customCameraProperties">x</label>
+                  <label align="center" observes="customCameraProperties">y</label>
+                  <label align="center" observes="customCameraProperties">z</label>
                 </row> 
                 <row>
-                  <label text-align = "end">&Position.label;</label>
-                  <textbox id="CameraLocationX" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
-                  <textbox id="CameraLocationY" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
-                  <textbox id="CameraLocationZ" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <label text-align = "end">&Position.label; observes="customCameraProperties"</label>
+                  <textbox id="CameraLocationX" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
+                  <textbox id="CameraLocationY" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
+                  <textbox id="CameraLocationZ" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
                 </row>
                 <row >
-                  <label text-align = "end">&Focalpoint.label;</label>
-                  <textbox id="FocalPointX" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
-                  <textbox id="FocalPointY" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
-                  <textbox id="FocalPointZ" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <label text-align = "end" observes="customCameraProperties">&Focalpoint.label;</label>
+                  <textbox id="FocalPointX" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
+                  <textbox id="FocalPointY" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
+                  <textbox id="FocalPointZ" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
                 </row>
                 <row>
-                  <label text-align = "end">&UpVector.label;</label>
-                  <textbox id="UpVectorX" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
-                  <textbox id="UpVectorY" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
-                  <textbox id="UpVectorZ" ilk="numberlike" significantDigits="4" flex="1" height="20"/>
+                  <label text-align = "end" observes="customCameraProperties">&UpVector.label;</label>
+                  <textbox id="UpVectorX" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
+                  <textbox id="UpVectorY" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
+                  <textbox id="UpVectorZ" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
                 </row>
                 <row>
-                  <label text-align = "end">&ViewingAngle.label;</label>
-                  <textbox id="ViewingAngle" ilk="numberlike" significantDigits="3" flex="1" height="20"/>
-                  <checkbox id="OrthogonalProjection" label="&OrthogonalProjection.label;" />
-                  <checkbox id="KeepUp"               label="&KeepUpVector.label;" />
+                  <label text-align = "end" observes="customCameraProperties">&ViewingAngle.label;</label>
+                  <textbox id="ViewingAngle" ilk="numberlike" significantDigits="3" flex="1" height="20" observes="customCameraProperties"/>
+                  <checkbox id="OrthogonalProjection" label="&OrthogonalProjection.label;" observes="customCameraProperties"/>
+                  <checkbox id="KeepUp"               label="&KeepUpVector.label;" observes="customCameraProperties" />
                 </row>
               </rows>  
             </grid>
           </groupbox>
-          <hbox align="end" observes="animated">
-            <msibutton label="&animationSettings.label;" oncommand="openAnimationSettingsDlg();" />
+          <hbox align="start">
+            <msibutton label="&animationSettings.label;" oncommand="openAnimationSettingsDlg();" observes="animated" />
+            <msibutton label="&plotLabels.label;" oncommand="openPlotLabelsDlg();" />
           </hbox>
         </vbox>
-      </tabpanel>      
+      </vbox>      
     </tabpanels>
   </tabbox>
   <broadcaster id="role-image" />

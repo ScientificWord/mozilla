@@ -93,6 +93,18 @@ private:
   static string ViewingBoxStr (MuPADPlot *T);
   static string UNIMPLEMENTED(MuPADPlot* T);
   static string VarsStr (MuPADPlot* T);
+  static string TextPlotStr(MuPADPlot* T);
+  static string TextPropertyPrefix(MuPADPlot* T);
+  static string HorizontalAlignmentStr(MuPADPlot* T);
+  static string VerticalAlignmentStr(MuPADPlot* T);
+  static string BillboardingStr(MuPADPlot* T);
+  static string PlotTextStr(MuPADPlot* T);
+  static string PlotTextPositionStr(MuPADPlot* T);
+  static string PlotTextOrientationStr(MuPADPlot* T);
+  static string PlotTextFontStr(MuPADPlot* T);
+  static string AxisFontStr(MuPADPlot* T);
+  static string TicksFontStr(MuPADPlot* T);
+  static string GetFontDescriptionStr(MuPADPlot* T, string whichFont);
 };
 
 #endif
