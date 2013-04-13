@@ -373,7 +373,7 @@ Graph.prototype = {
       key = DOMGs.attributes[i].nodeName;
       value = DOMGs.attributes[i].nodeValue;
       if (key === "userSetAttrs")
-        this[key] = value.split( "/,\s*/");  //turn it into an array
+        this[key] = value.split( /,\s*/);  //turn it into an array
       else
         this[key] = value;
     }
@@ -1038,7 +1038,7 @@ Plot.prototype = {
       key = attr.nodeName;
       value = attr.nodeValue;
       if (key === "userSetAttrs")
-        this[key] = value.split( "/,\s*/");  //turn it into an array
+        this[key] = value.split( /,\s*/);  //turn it into an array
       else
         this.attributes[key] = value;
     }
