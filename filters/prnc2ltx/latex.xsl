@@ -644,11 +644,10 @@ should not be done under some conditions -->
 \end{hebrew}
 </xsl:template>
 
-<xsl:template match="html:arabic">
-  
-\begin{arabic}
+<xsl:template match="html:Arabic">
+\begin{Arabic}
 <xsl:apply-templates/>
-\end{arabic}
+\end{Arabic}
 </xsl:template>
 
 <xsl:template match="html:centered"
