@@ -385,11 +385,11 @@
         <tabpanel orient="vertical">
           <groupbox>
             <caption label="&AutomaticSaving.label;"/>
-            <checkbox id="prefautosave" label="&EnableSilentAutoSave.label;"
+<!--             <checkbox id="prefautosave" label="&EnableSilentAutoSave.label;"
                       accesskey="&EnableSilentAutoSave.accesskey;"
                       oncommand=""/>
-            <hbox align="center">
-              <textbox type="number" style="width: 5em;" label="Save interval in seconds" preference="saveintervalseconds"/>
+ -->            <hbox align="center">
+              <textbox type="number" style="width: 5em;" preference="saveintervalseconds"/>
               <label value="&SaveIntervalSeconds.label;"/>
             </hbox>
 #ifndef PROD_SNB
