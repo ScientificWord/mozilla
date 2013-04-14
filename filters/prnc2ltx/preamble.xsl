@@ -224,49 +224,28 @@
 
   <xsl:template match="html:babel">
     <xsl:if test="@lang1">
-      \setdefaultlanguage{
-      <xsl:value-of select="@lang1"/>
-      }
+      \setdefaultlanguage{<xsl:value-of select="@lang1"/>}
     </xsl:if>
     <xsl:if test="@lang2">
-      \setotherlanguage{
-      <xsl:value-of select="@lang2"/>
-      }
+      \setotherlanguage{<xsl:value-of select="@lang2"/>}
     </xsl:if>
   </xsl:template>
 
   <!-- use docformat information to call the crop package -->
   <xsl:template match="html:crop">
     <xsl:if test="$pagelayoutok"
-  >
-      <xsl:variable name="unit">
+  ><xsl:variable name="unit">
         <xsl:value-of select="@unit"/>
       </xsl:variable
-  >
-      \usepackage[
-      <xsl:value-of select="@type"/>
-      <xsl:text>,</xsl:text
-  >
-      <xsl:choose
-    >
-        <xsl:when test="@paper='other'"
+  >\usepackage[<xsl:value-of select="@type"/><xsl:text>,</xsl:text
+  ><xsl:choose
+    ><xsl:when test="@paper='other'"
+      >width =<xsl:value-of select="@width"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
       >
-          width =
-          <xsl:value-of select="@width"/>
-          <xsl:value-of select="$unit"/>
-          <xsl:text>,</xsl:text
-      >
-          height =
-          <xsl:value-of select="@height"/>
-          <xsl:value-of select="$unit"/>
-          <xsl:text>,</xsl:text
-    >
-        </xsl:when>
+          height =<xsl:value-of select="@height"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
+    ></xsl:when>
         <xsl:otherwise
-      >
-          <xsl:value-of select="@paper"/>
-          <xsl:text>,</xsl:text>
-        </xsl:otherwise>
+      ><xsl:value-of select="@paper"/><xsl:text>,</xsl:text></xsl:otherwise>
         <!-- you can add any crop options you want here, separated with commas --> </xsl:choose
   >
       center]{crop}
@@ -279,99 +258,68 @@
     <xsl:if test="$pagelayoutok"
 >
       <xsl:variable name="unit">
-        <xsl:value-of select="@unit"
-/>
+        <xsl:value-of select="@unit"/>
       </xsl:variable>
-      \usepackage[
-      <xsl:apply-templates/>
-      ]{geometry}
+      \usepackage[<xsl:apply-templates/>]{geometry}
     </xsl:if
->
-  </xsl:template>
+></xsl:template>
 
   <xsl:template match="html:page">
     <xsl:if test="$pagelayoutok">
-      paper=
-      <xsl:value-of select="@paper"/>
-      paper, twoside=
-      <xsl:value-of select="@twoside"
-  />
-      ,
+      paper=<xsl:value-of select="@paper"/>paper, twoside=<xsl:value-of select="@twoside"
+  />,
       <!--landscape=<xsl:value-of select="@landscape"/>
       , -->
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:page[@paper='screen']">
-    <xsl:if test="$pagelayoutok"
+  <xsl:template match="html:page[@paper='screen']"><xsl:if test="$pagelayoutok"
  >paper=screen, twoside=false, landscape=false,</xsl:if>
   </xsl:template>
 
   <xsl:template match="html:page[@paper='other']">
     <xsl:if test="$pagelayoutok">
-      paperwidth=
-      <xsl:value-of select="@width"
-  />
-      , paperheight=
-      <xsl:value-of select="@height"
-/>
-      ,
+      paperwidth=<xsl:value-of select="@width"
+  />, paperheight=<xsl:value-of select="@height"
+/>,
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:textregion">
     <xsl:if test="$pagelayoutok">
-      textwidth=
-      <xsl:value-of select="@width"/>
-      , textheight=
-      <xsl:value-of select="@height"
-/>
-      ,
+      textwidth=<xsl:value-of select="@width"/>, textheight=<xsl:value-of select="@height"
+/>,
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:margin">
     <xsl:if test="$pagelayoutok">
-      left=
-      <xsl:value-of select="@left"/>
-      , top=
-      <xsl:value-of select="@top"
-/>
-      ,
+      left=<xsl:value-of select="@left"/>, top=<xsl:value-of select="@top"
+/>,
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:hedd">
     <xsl:if test="$pagelayoutok">
-      headheight=
-      <xsl:value-of select="@height"
-  />
-      , headsep=
-      <xsl:value-of select="@sep"
-/>
-      ,
+      headheight=<xsl:value-of select="@height"
+  />, headsep=<xsl:value-of select="@sep"
+/>,
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:columns[@count='2']"
   >
-    twocolumn=true, columnsep=
-    <xsl:value-of select="@sep"/>,
+    twocolumn=true, columnsep=<xsl:value-of select="@sep"/>,
   </xsl:template>
 
   <xsl:template match="html:columns[@count!='2']"
   ></xsl:template>
 
   <xsl:template match="html:marginnote[@hidden='false']"
-  >
-    <xsl:if test="$pagelayoutok">
-      marginparwidth=
-      <xsl:value-of select="@width"
-  />
-      , marginparsep=
-      <xsl:value-of select="@sep"
-/>
-      ,
+  ><xsl:if test="$pagelayoutok">
+      marginparwidth=<xsl:value-of select="@width"
+  />, marginparsep=<xsl:value-of select="@sep"
+/>,
     </xsl:if>
   </xsl:template>
 
