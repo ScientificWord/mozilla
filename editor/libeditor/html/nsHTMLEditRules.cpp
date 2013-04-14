@@ -8871,13 +8871,14 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
   }
 
   listCount = nodes.Count();
-  for (int i = 0; i < listCount; ++i)
+  for (i = 0; i < listCount; ++i)
   {
     if (nodes[i])
     {
+      node = nodes[i];
       node->GetLocalName(tagName);
       tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
-      while (node && !tagClass.EqualsLiteral("envtag"))
+      while (node && !tagClass.EqualsLiteral("envtag") && !tagName.EqualsLiteral("body"))
       {
         node->GetParentNode(getter_AddRefs(node));
         node->GetLocalName(tagName);
