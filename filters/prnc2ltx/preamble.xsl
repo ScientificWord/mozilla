@@ -224,14 +224,10 @@
 
   <xsl:template match="html:babel">
     <xsl:if test="@lang1">
-      \setdefaultlanguage{
-      <xsl:value-of select="@lang1"/>
-      }
+      \setdefaultlanguage{<xsl:value-of select="@lang1"/>}
     </xsl:if>
     <xsl:if test="@lang2">
-      \setotherlanguage{
-      <xsl:value-of select="@lang2"/>
-      }
+      \setotherlanguage{<xsl:value-of select="@lang2"/>}
     </xsl:if>
   </xsl:template>
 
@@ -246,33 +242,18 @@
       \usepackage[
       <xsl:value-of select="@type"/>
       <xsl:text>,</xsl:text
-  >
-      <xsl:choose
-    >
-        <xsl:when test="@paper='other'"
+  ><xsl:choose
+    ><xsl:when test="@paper='other'"
+      >width =<xsl:value-of select="@width"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
       >
-          width =
-          <xsl:value-of select="@width"/>
-          <xsl:value-of select="$unit"/>
-          <xsl:text>,</xsl:text
-      >
-          height =
-          <xsl:value-of select="@height"/>
-          <xsl:value-of select="$unit"/>
-          <xsl:text>,</xsl:text
-    >
-        </xsl:when>
-        <xsl:otherwise
-      >
-          <xsl:value-of select="@paper"/>
-          <xsl:text>,</xsl:text>
-        </xsl:otherwise>
+      height =<xsl:value-of select="@height"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
+    ></xsl:when><xsl:otherwise
+      ><xsl:value-of select="@paper"/><xsl:text>,</xsl:text></xsl:otherwise>
         <!-- you can add any crop options you want here, separated with commas --> </xsl:choose
   >
       center]{crop}
     </xsl:if
->
-  </xsl:template>
+></xsl:template>
 
   <!-- use docformat information to call the geometry package -->
   <xsl:template match="html:pagelayout[@latex='true']">
