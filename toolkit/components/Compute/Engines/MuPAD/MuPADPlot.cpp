@@ -57,6 +57,7 @@
 #include "MRequest.h"
 #include "MuWrapPlotCmd.h"
 
+#include "nsCRT.h"
 #include <string>
 #include <cmath>
 #include <iostream>
@@ -721,11 +722,12 @@ int hexval (char c) {
   return 0; 
 }
 
+
 PRBool compareNoCase(string str1, string str2)
 {
   const char* chars1 = str1.c_str();
   const char* chars2 = str2.c_str();
-  return (!stricmp(chars1, chars2));
+  return (PRBool) strcasecmp(chars1, chars2);
 }
 
 // A color is a #rrggbb, where rr, gg, bb are $00 to $ff
