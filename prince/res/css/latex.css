@@ -42,6 +42,10 @@ table {
 }
 */
 
+button[class="msi"]::-moz-selection{
+  background: blue;
+} 
+
 button[class="msi"]{
   position: relative;
   left: 0px;
