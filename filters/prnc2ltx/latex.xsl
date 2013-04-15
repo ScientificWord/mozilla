@@ -538,7 +538,11 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:descriptionListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>}
+</xsl:template>
+
+<xsl:template match="html:descriptionLabel">
+  [<xsl:apply-templates/>]{
 </xsl:template>
 
 <xsl:template match="html:citation">
@@ -699,6 +703,8 @@ should not be done under some conditions -->
 <xsl:template match="html:normalsize">{\normalsize <xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:phantom">\phantom {<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:underline">\underline {<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:sub">
   <xsl:choose>
