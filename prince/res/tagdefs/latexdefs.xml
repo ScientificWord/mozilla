@@ -1081,16 +1081,32 @@
 	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="makelof"><description>Make list of figures</description>
-          <realtagclass>othertag</realtagclass>
+          <realtagclass>paratag</realtagclass>
+          <nexttag>bodyText</nexttag>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <discardemptyblock>true</discardemptyblock>
         </tag>
         <tag nm="makelot"><description>Make list of tables</description>
-          <realtagclass>othertag</realtagclass>
+          <realtagclass>paratag</realtagclass>
+          <nexttag>bodyText</nexttag>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <discardemptyblock>true</discardemptyblock>
         </tag>
         <tag nm="maketitle"><description>Make title</description>
-          <realtagclass>othertag</realtagclass>
+          <realtagclass>paratag</realtagclass>
+          <nexttag>bodyText</nexttag>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <discardemptyblock>true</discardemptyblock>
         </tag>
         <tag nm="maketoc"><description>Make table of contents</description>
-          <realtagclass>othertag</realtagclass>
+          <realtagclass>paratag</realtagclass>
+          <nexttag>bodyText</nexttag>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <discardemptyblock>true</discardemptyblock>
         </tag>
         <tag nm="title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
