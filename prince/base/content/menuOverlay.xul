@@ -872,7 +872,7 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <command id="Tasks:InspectPage" oncommand="inspectDOMDocument(_content.document);"/>
     <command id="Tools:Extensions" oncommand="OpenExtensions('extensions');"/>
     <command id="Tools:Themes" oncommand="OpenExtensions('themes');"/>
-    <command id="Cascades" oncommand="window.openDialog('chrome://cascades/content/EdCssProps.xul','_blank', 'chrome,close,titlebar,resizable=yes');window.content.focus();"/>
+    <command id="Cascades" oncommand="window.openDialog('chrome://cascades/content/EdCssProps.xul','_blank', 'chrome,resizable,close,titlebar');window.content.focus();"/>
     <command id="cmd_MSIAutoSubDlg"       oncommand="msiGoDoCommand('cmd_MSIAutoSubDlg')"/>
   </commandset>
   <commandset id="tagsMenuCommands">
