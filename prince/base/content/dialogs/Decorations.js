@@ -34,8 +34,8 @@ function Startup()
   gDialog.decorationAboveStr = data.decorationAboveStr ? data.decorationAboveStr : "";
   gDialog.decorationBelowStr = data.decorationBelowStr ? data.decorationBelowStr : "";
   gDialog.decorationAroundStr = data.decorationAroundStr ? data.decorationAroundStr : "";
-  if (!gDialog.decorationAboveStr.length && !gDialog.decorationBelowStr.length && !gDialog.decorationAroundStr.length)
-    gDialog.decorationAboveStr = String.fromCharCode(0x00AF);
+  // if (!gDialog.decorationAboveStr.length && !gDialog.decorationBelowStr.length && !gDialog.decorationAroundStr.length)
+  //   gDialog.decorationAboveStr = String.fromCharCode(0x00AF);
 //  gDialog.decorationPos = data.decorationPos;
 //  if (!gDialog.decorationPos.length)
 //    gDialog.decorationPos = "over";
@@ -89,8 +89,8 @@ function InitDialog()
   if (gDialog.decorationAboveStr)
   {
     nWhichSel = setSelectionByValue(gDialog.DecorationsAboveGroup, gDialog.decorationAboveStr);
-    if (nWhichSel < 0)
-      setSelectionByIndex(0, gDialog.DecorationsAboveGroup.id);
+    // if (nWhichSel < 0)
+    //   setSelectionByIndex(0, gDialog.DecorationsAboveGroup.id);
   }
 
   makeMSIButtonGroup(gDialog.DecorationsBelowGroup, false);
@@ -98,8 +98,8 @@ function InitDialog()
   if (gDialog.decorationBelowStr)
   {
     nWhichSel = setSelectionByValue(gDialog.DecorationsBelowGroup, gDialog.decorationBelowStr);
-    if (nWhichSel < 0)
-      setSelectionByIndex(0, gDialog.DecorationsBelowGroup.id);
+    // if (nWhichSel < 0)
+    //   setSelectionByIndex(0, gDialog.DecorationsBelowGroup.id);
   }
 
   makeMSIButtonGroup(gDialog.DecorationsAroundGroup, false);
@@ -107,8 +107,8 @@ function InitDialog()
   if (gDialog.decorationAroundStr)
   {
     nWhichSel = setSelectionByValue(gDialog.DecorationsAroundGroup, gDialog.decorationAroundStr);
-    if (nWhichSel < 0)
-      setSelectionByIndex(0, gDialog.DecorationsAroundGroup.id);
+    // if (nWhichSel < 0)
+    //   setSelectionByIndex(0, gDialog.DecorationsAroundGroup.id);
   }
 
   checkInaccessibleAcceleratorKeys(document.documentElement);
