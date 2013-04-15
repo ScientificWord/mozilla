@@ -582,9 +582,10 @@
       <html:button type="button" class="msi" nopr="1" oncommand="" style="-moz-user-select:all;">
         Make title here
       </html:button>
-      <html:span style="display:none">
+      <html:span style="color: light-gray">
       <xbl:children/>
       </html:span>
+      <html:br/>
     </xbl:content>
   </xbl:binding>
 
@@ -599,7 +600,7 @@ Make table of contents here
     <html:span style="display:none">
     <xbl:children/>
     </html:span>
-    </xbl:content>
+      <html:br/>
   </xbl:binding>
 
   <xbl:binding id="fmtag-makelot"> /*front matter label*/
@@ -613,6 +614,7 @@ Make list of tables here
       <html:span style="display:none">
       <xbl:children/>
       </html:span>
+      <html:br/>
     </xbl:content>
   </xbl:binding>
 
@@ -627,6 +629,7 @@ Make list of figures here
     <html:span style="display:none">
     <xbl:children/>
     </html:span>
+      <html:br/>
     </xbl:content>
   </xbl:binding>
 
