@@ -727,7 +727,11 @@ PRBool compareNoCase(string str1, string str2)
 {
   const char* chars1 = str1.c_str();
   const char* chars2 = str2.c_str();
+#ifdef XP_WIN
+  return (!stricmp(chars1, chars2));
+#else
   return (PRBool) strcasecmp(chars1, chars2);
+#endif
 }
 
 // A color is a #rrggbb, where rr, gg, bb are $00 to $ff
