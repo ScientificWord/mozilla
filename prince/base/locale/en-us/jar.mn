@@ -120,3 +120,4 @@ en-US.jar:
   locale/plotAnimationSettings.dtd        (dialogs/plotAnimationSettings.dtd)
   locale/plotLabelsDlg.dtd                (dialogs/plotLabelsDlg.dtd)
   locale/plotFontSettings.dtd             (dialogs/plotFontSettings.dtd)
+  locale/latex.dtd                        (latex.dtd)
