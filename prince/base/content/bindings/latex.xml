@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 
+<!DOCTYPE xbl:bindings [
+  <!ENTITY % latexDTD SYSTEM "chrome://prince/locale/latex.dtd">
+   %latexDTD;
+]>
 <xbl:bindings id="latexbindings"
 	xmlns:xbl="http://www.mozilla.org/xbl" 
   xmlns:sw="http://www.sciword.com/namespaces/sciword"
@@ -537,9 +541,8 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" oncommand=
-        "window.getSelection().collapse(this.parentNode,0); window.getSelection().extend(this.parentNode,this.parentNode.childNodes.length);"
-        >Title</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" oncommand=""
+        >&title;</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -549,7 +552,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Author</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">&author;</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -559,7 +562,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Address</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">&address;</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -569,12 +572,12 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Date</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">&date;</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
 
-  <xbl:binding id="fmtag-maketitle"> /*front matter label*/
+<!--   <xbl:binding id="fmtag-maketitle"> /*front matter label*/
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
@@ -632,14 +635,14 @@ Make list of figures here
       <html:br/>
     </xbl:content>
   </xbl:binding>
+ -->
 
+  <xbl:binding id="texb">
+    <xbl:resources>
+      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+    </xbl:resources>
 
-	<xbl:binding id="texb">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-
-	  <xbl:content>
+    <xbl:content>
       <html:button type="button" class="msi" nopr="1" oncommand="">
         <html:texlogo>T<html:sub>E</html:sub>X</html:texlogo>: <html:label xbl:inherits="xbl:text=name"/>
       </html:button>
@@ -656,6 +659,62 @@ Make list of figures here
     </xbl:implementation>    
   </xbl:binding>
 
+  <xbl:binding id="maketitle">
+    <xbl:resources>
+      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+    </xbl:resources>
+
+    <xbl:content>
+      <html:button type="button" class="msi" nopr="1" oncommand="">&maketitle;
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="maketoc">
+    <xbl:resources>
+      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+    </xbl:resources>
+
+    <xbl:content>
+      <html:button type="button" class="msi" nopr="1" oncommand="">&maketoc;
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="makelot">
+    <xbl:resources>
+      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+    </xbl:resources>
+
+    <xbl:content>
+      <html:button type="button" class="msi" nopr="1" oncommand="">&makelot;
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="makelof">
+    <xbl:resources>
+      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+    </xbl:resources>
+
+    <xbl:content>
+      <html:button type="button" class="msi" nopr="1" oncommand="">&makelof;
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
 	<xbl:binding id="indexitem">
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
@@ -663,7 +722,7 @@ Make list of figures here
 
 	  <xbl:content>
       <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        Index: <html:label xbl:inherits="xbl:text=pri"/>
+        &index;<html:label xbl:inherits="xbl:text=pri"/>
       </html:button>
       <html:span style="display:none">
       <xbl:children/>
@@ -678,7 +737,7 @@ Make list of figures here
 
 	  <xbl:content>
       <html:button type="button" class="indexbutton" anonid="btn" nopr="1" state="1" xbl:inherits="pri,sec,ter,specAppearance" oncommand="">
-        Index: <html:label><xbl:children includes="prispec"/></html:label>
+        &index;<html:label><xbl:children includes="prispec"/></html:label>
       </html:button>
       <html:span style="display:none">
       <xbl:children/>
@@ -737,7 +796,7 @@ Make list of figures here
 
 	  <xbl:content>
       <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        Print index here
+        &printindex;
       </html:button>
       <html:span style="display:none">
       <xbl:children/>
@@ -767,7 +826,7 @@ Make list of figures here
 
 	  <xbl:content>
       <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        Marker: <html:label xbl:inherits="xbl:text=name"/>
+        &marker;<html:label xbl:inherits="xbl:text=name"/>
       </html:button>
       <html:span style="display:none">
       <xbl:children/>
@@ -783,7 +842,7 @@ Make list of figures here
 
 	  <xbl:content>
       <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        Cross reference: <html:label xbl:inherits="xbl:text=key"/>
+        &xref;Cross reference: <html:label xbl:inherits="xbl:text=key"/>
       </html:button>
       <html:span style="display:none">
       <xbl:children/>
