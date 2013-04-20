@@ -1284,6 +1284,19 @@ function doVCamCommandOnObject(obj, cmd, editorElement) {
   return;
 }
 
+function onCloseVCam(obj, editorElement)
+{
+  if (document.getElementById("vcamactive") && (document.getElementById("vcamactive").getAttribute("hidden")=="false"))
+    return;
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var graph = new Graph();
+  var graphNode = editor.getElementOrParentByTagName("graph", obj);
+  graph.extractGraphAttributes(graphNode);
+  queryVCamValues(obj, graph, graphNode, true);
+}
+
 var gProgressbar;
 
 function onVCamMouseDown(screenX, screenY) {
@@ -1321,13 +1334,12 @@ function onVCamDragMove(x, y) {
 
 function onVCamDragLeave(x, y) {}
 
-function queryVCamValues(obj, graph, domGraph)
+function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
 {
   var cameraVals = null;
-  var coordSysVals = {XAxisTitle : "x", YAxisTitle : "y", ZAxisTitle : "z",
+  var coordSysVals = {XAxisTitle : "x", YAxisTitle : "y",
                       ViewingBoxXMin : "-5", ViewingBoxXMax : "5",
-                      ViewingBoxYMin : "-5", ViewingBoxYMax : "5",
-                      ViewingBoxZMin : "-5", ViewingBoxZMax : "5"};
+                      ViewingBoxYMin : "-5", ViewingBoxYMax : "5"};
   var camera, vcamDoc, kidNode, coordSysNode, sceneNode
   var dim = obj.dimension;
   var sceneNodeName = "Scene" + dim + "d";
@@ -1340,6 +1352,9 @@ function queryVCamValues(obj, graph, domGraph)
                     focalPointX : "0", focalPointY : "0", focalPointZ : "0",
                     upVectorX : "0", upVectorY : "0", upVectorZ : "1",
                     keepUpVector : "false", viewingAngle : "2.0944", orthogonalProjection : "false"};
+    coordSysVals.ViewingBoxZMin = "-5";
+    coordSysVals.ViewingBoxZMax = "5";
+    coordSysVals.ZAxisTitle = "z";
     if (obj.camera)
     {
       for (aProp in cameraVals)
@@ -1359,7 +1374,9 @@ function queryVCamValues(obj, graph, domGraph)
     else
       cameraVals = null;
     if (graph)
-      graph.setCameraValsFromVCam(cameraVals, domGraph);
+    {
+      graph.setCameraValsFromVCam(cameraVals, domGraph, bUserSetIfChanged);
+    }
   }
   if (obj.isAnimated)
   {
@@ -1368,7 +1385,7 @@ function queryVCamValues(obj, graph, domGraph)
       animVals[aProp] = obj[aProp];
     animVals.framesPerSecond = 5;
     if (graph)
-      graph.setAnimationValsFromVCam(animVals, domGraph);
+      graph.setAnimationValsFromVCam(animVals, domGraph, bUserSetIfChanged);
   }
   vcamDoc = obj.document;
   if (vcamDoc)
@@ -1389,7 +1406,7 @@ function queryVCamValues(obj, graph, domGraph)
   if (!coordSysNode)
     coordSysVals = null;
   if (graph)
-    graph.setCoordSysValsFromVCam(coordSysVals, domGraph);
+    graph.setCoordSysValsFromVCam(coordSysVals, domGraph, bUserSetIfChanged);
     
 }
 
@@ -1473,9 +1490,18 @@ var VCamCommand;
 var setActionSpeed;
 var setAnimSpeed;
 var setLoopMode;
+var vcamCloseFunction;
 
 function doVCamCommand(cmd) {
   VCamCommand(cmd);
+}
+
+function doVCamClose()
+{
+  if (document.getElementById("vcamactive") && (document.getElementById("vcamactive").getAttribute("hidden")=="false"))
+    return;  //In other words, if we're being called because of the broadcaster turning VCam on, do nothing
+  var editorElement = msiGetActiveEditorElement();
+  return vcamCloseFunction(editorElement);
 }
 
 function doVCamInitialize(obj) {
@@ -1495,6 +1521,12 @@ function doVCamInitialize(obj) {
     var thisobj = obj;
     return function(factor) {
       thisobj.actionSpeed = factor;
+    };
+  }());
+  vcamCloseFunction = (function() {
+    var thisobj = obj;
+    return function(_editorElement) {
+      return onCloseVCam(thisobj, _editorElement);
     };
   }());
   var threedplot = obj.dimension === 3;
