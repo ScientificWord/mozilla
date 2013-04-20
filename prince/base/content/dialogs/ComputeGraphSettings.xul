@@ -679,7 +679,7 @@
                   <label align="center" observes="customCameraProperties">z</label>
                 </row> 
                 <row>
-                  <label text-align = "end">&Position.label; observes="customCameraProperties"</label>
+                  <label text-align = "end" observes="customCameraProperties">&Position.label;</label>
                   <textbox id="CameraLocationX" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
                   <textbox id="CameraLocationY" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
                   <textbox id="CameraLocationZ" ilk="numberlike" significantDigits="4" flex="1" height="20" observes="customCameraProperties"/>
