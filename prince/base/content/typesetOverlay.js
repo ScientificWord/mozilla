@@ -453,7 +453,7 @@ var msiInsertBibTeXBibliography =
     window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal,resizable", bibliographyData);
     if (!bibliographyData.Cancel)
     {
-      doInsertBibTeXBibliography(editorElement, bibliographyData);		  var editorElement = msiGetActiveEditorElement();
+      doInsertBibTeXBibliography(editorElement, bibliographyData);		  
 			msiGetEditor(editorElement).incrementModificationCount(1);
     }
   }
@@ -665,13 +665,13 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
           if (pkgObject)
           {
             if (pkgObject.opt && pkgObject.opt.length)
-              msiEditorEnsureElementAttribute(nextNode, "opt", pkgObject.opt,join(), editor)
+              msiEditorEnsureElementAttribute(nextNode, "opt", pkgObject.opt,join(), editor);
             else
-              msiEditorEnsureElementAttribute(nextNode, "opt", null, editor)
+              msiEditorEnsureElementAttribute(nextNode, "opt", null, editor);
             if ("pri" in pkgObject)
-              msiEditorEnsureElementAttribute(nextNode, "pri", String(pkgObject.pri), editor)
+              msiEditorEnsureElementAttribute(nextNode, "pri", String(pkgObject.pri), editor);
             else
-              msiEditorEnsureElementAttribute(nextNode, "pri", null, editor)
+              msiEditorEnsureElementAttribute(nextNode, "pri", null, editor);
             insertNewAfter = nextNode;
             pkgArray.splice( pkgIndex, 1 );  //Now that it's taken care of, remove it
           }
@@ -717,7 +717,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
       editor.deleteNode(delNodes[ix]);
 
 //    dump("In reviseLaTeXPackagesAndOptions(), before inserting new nodes.\n");
-    var insertPos = 0;
+    insertPos = 0;
     if (insertNewAfter)
       insertPos = msiNavigationUtils.offsetInParent(insertNewAfter) + 1;
     for (var jx = 0; jx < pkgArray.length; ++jx)
@@ -1149,13 +1149,12 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
 
 //This list needs to be variable depending on the document - have to have "isFrontMatterTag()" available as query on
 //tags.
-var gFrontMatterTags = ["author", "title", "makeTitle", "makeTOC"];
-
 function nodeIsFrontMatterNode(theNode)
 {
-  for (var i = 0; i < gFrontMatterTags.length; ++i)
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  if (editor.tagListManager.getTagInClass("frontmtag", theNode.tagName, null))
   {
-    if (theNode.nodeName.toLowerCase() == "gFrontMatterTags[i]")
       return NodeFilter.FILTER_ACCEPT;
   }
   return NodeFilter.FILTER_SKIP;
