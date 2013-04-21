@@ -1,204 +1,204 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE xbl:bindings [
-  <!ENTITY % latexDTD SYSTEM "chrome://prince/locale/latex.dtd">
-   %latexDTD;
+	<!ENTITY % latexDTD SYSTEM "chrome://prince/locale/latex.dtd">
+	 %latexDTD;
 ]>
 <xbl:bindings id="latexbindings"
 	xmlns:xbl="http://www.mozilla.org/xbl" 
-  xmlns:sw="http://www.sciword.com/namespaces/sciword"
-  xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  xmlns:html="http://www.w3.org/1999/xhtml" 
-  xmlns:mml="http://www.w3.org/1998/Math/MathML" >
+	xmlns:sw="http://www.sciword.com/namespaces/sciword"
+	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml" 
+	xmlns:mml="http://www.w3.org/1998/Math/MathML" >
 
 	<xbl:binding id="msidisplay">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <!-- html:button type="button" xbl:inherits="xbl:text=id" class="eqnnum" onclick="this.init()"/ -->
-      <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="eqnnum" onclick=""/>
-      <xbl:children/>
-    </xbl:content>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<!-- html:button type="button" xbl:inherits="xbl:text=id" class="eqnnum" onclick="this.init()"/ -->
+			<html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="eqnnum" onclick=""/>
+			<xbl:children/>
+		</xbl:content>
 
-    <xbl:implementation>
-      <xbl:constructor>
-        this.init();
-      </xbl:constructor>
-      
-      <xbl:method name="init">
-      <xbl:body>
-        <![CDATA[
-        var dispnode = this; 
-        var subnode;
-        var crect;
-        var crect2;
-        var button;
-        var newtop;
-        var tw = document.createTreeWalker(  
-          dispnode,  
-          NodeFilter.SHOW_ELEMENT,  
-          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
-          false); 
-        while (subnode = tw.nextNode()) {
-          if (subnode.hasAttribute("eqnnum"))
-          {
-            crect = subnode.getClientRects();
-            if (crect.length > 0)
-            {
-              crect = crect[0];
-              if (crect) {
-                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
-                newtop = (crect.bottom - crect.top)/2 -10;
-                if (button) button.setAttribute("style", "top:" + newtop + "px;");
-              }
-            }
-          }
-        }
-        tw = document.createTreeWalker(  
-          dispnode,  
-          NodeFilter.SHOW_ELEMENT,  
-          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
-          false); 
-        while (subnode = tw.nextNode()) {
-          if (subnode.hasAttribute("subeqnnum"))
-          {
-            crect = subnode.getClientRects();
-            if (crect.length > 0)
-            {
-              crect = crect[0];
-              if (crect) {
-                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+		<xbl:implementation>
+			<xbl:constructor>
+				this.init();
+			</xbl:constructor>
+			
+			<xbl:method name="init">
+			<xbl:body>
+				<![CDATA[
+				var dispnode = this; 
+				var subnode;
+				var crect;
+				var crect2;
+				var button;
+				var newtop;
+				var tw = document.createTreeWalker(  
+					dispnode,  
+					NodeFilter.SHOW_ELEMENT,  
+					{ acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+					false); 
+				while (subnode = tw.nextNode()) {
+					if (subnode.hasAttribute("eqnnum"))
+					{
+						crect = subnode.getClientRects();
+						if (crect.length > 0)
+						{
+							crect = crect[0];
+							if (crect) {
+								button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+								newtop = (crect.bottom - crect.top)/2 -10;
+								if (button) button.setAttribute("style", "top:" + newtop + "px;");
+							}
+						}
+					}
+				}
+				tw = document.createTreeWalker(  
+					dispnode,  
+					NodeFilter.SHOW_ELEMENT,  
+					{ acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+					false); 
+				while (subnode = tw.nextNode()) {
+					if (subnode.hasAttribute("subeqnnum"))
+					{
+						crect = subnode.getClientRects();
+						if (crect.length > 0)
+						{
+							crect = crect[0];
+							if (crect) {
+								button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
 
-                if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
-              }
-            }
-          }
-        }
-        ]]>
-      </xbl:body>
-      </xbl:method>
-    </xbl:implementation>
-  </xbl:binding>
+								if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
+							}
+						}
+					}
+				}
+				]]>
+			</xbl:body>
+			</xbl:method>
+		</xbl:implementation>
+	</xbl:binding>
 
 	<xbl:binding id="msidisplaybase">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <xbl:children/>
-    </xbl:content>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children/>
+		</xbl:content>
 
-    <xbl:implementation>
-      <xbl:constructor>
-        this.init();
-      </xbl:constructor>
-      
-      <xbl:method name="init">
-      <xbl:body>
-        <![CDATA[
-        var dispnode = this; 
-        var subnode;
-        var crect;
-        var crect2;
-        var button;
-        var newtop;
-        var tw = document.createTreeWalker(  
-          dispnode,  
-          NodeFilter.SHOW_ELEMENT,  
-          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
-          false); 
-        while (subnode = tw.nextNode()) {
-          if (subnode.hasAttribute("eqnnum"))
-          {
-            crect = subnode.getClientRects();
-            if (crect.length > 0)
-            {
-              crect = crect[0];
-              if (crect) {
-                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
-                newtop = (crect.bottom - crect.top)/2 -10;
-                if (button) button.setAttribute("style", "top:" + newtop + "px;");
-              }
-            }
-          }
-        }
-        tw = document.createTreeWalker(  
-          dispnode,  
-          NodeFilter.SHOW_ELEMENT,  
-          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
-          false); 
-        while (subnode = tw.nextNode()) {
-          if (subnode.hasAttribute("subeqnnum"))
-          {
-            crect = subnode.getClientRects();
-            if (crect.length > 0)
-            {
-              crect = crect[0];
-              if (crect) {
-                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+		<xbl:implementation>
+			<xbl:constructor>
+				this.init();
+			</xbl:constructor>
+			
+			<xbl:method name="init">
+			<xbl:body>
+				<![CDATA[
+				var dispnode = this; 
+				var subnode;
+				var crect;
+				var crect2;
+				var button;
+				var newtop;
+				var tw = document.createTreeWalker(  
+					dispnode,  
+					NodeFilter.SHOW_ELEMENT,  
+					{ acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+					false); 
+				while (subnode = tw.nextNode()) {
+					if (subnode.hasAttribute("eqnnum"))
+					{
+						crect = subnode.getClientRects();
+						if (crect.length > 0)
+						{
+							crect = crect[0];
+							if (crect) {
+								button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+								newtop = (crect.bottom - crect.top)/2 -10;
+								if (button) button.setAttribute("style", "top:" + newtop + "px;");
+							}
+						}
+					}
+				}
+				tw = document.createTreeWalker(  
+					dispnode,  
+					NodeFilter.SHOW_ELEMENT,  
+					{ acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+					false); 
+				while (subnode = tw.nextNode()) {
+					if (subnode.hasAttribute("subeqnnum"))
+					{
+						crect = subnode.getClientRects();
+						if (crect.length > 0)
+						{
+							crect = crect[0];
+							if (crect) {
+								button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
 
-                if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
-              }
-            }
-          }
-        }
-        ]]>
-      </xbl:body>
-      </xbl:method>
+								if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
+							}
+						}
+					}
+				}
+				]]>
+			</xbl:body>
+			</xbl:method>
 
-      <!-- xbl:method name="checkLayout">
-      <xbl:body>
-        <![CDATA[
-        var dispnode = this; 
-        var subnode;
-        var crect, crect2;
-        var ourCrect;
-        var button;
-        var newtop, newright, oldright;
+			<!-- xbl:method name="checkLayout">
+			<xbl:body>
+				<![CDATA[
+				var dispnode = this; 
+				var subnode;
+				var crect, crect2;
+				var ourCrect;
+				var button;
+				var newtop, newright, oldright;
 //        var tw = document.createTreeWalker(  
 //          dispnode,  
 //          NodeFilter.SHOW_ELEMENT,  
 //          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
 //          false); 
-        netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-        var theCells = this.getEquationArrayCells();
-        crect = this.getClientRects();
-        if (crect.length)
-          ourCrect = crect[0];
-        for (ix = 0; ix < theCells.length; ++ix)
-        {
+				netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+				var theCells = this.getEquationArrayCells();
+				crect = this.getClientRects();
+				if (crect.length)
+					ourCrect = crect[0];
+				for (ix = 0; ix < theCells.length; ++ix)
+				{
 //        while (subnode = tw.nextNode()) {
 //          if (subnode.hasAttribute("eqnnum"))
 //          {
-          subnode = theCells[ix];
-          button = document.getAnonymousElementByAttribute(subnode, "class", "eqnnum");
-          if (!button)
-            button = document.getAnonymousElementByAttribute(subnode, "class", "subeqnnum");
-          if (!button)
-            button = document.getAnonymousElementByAttribute(subnode, "class", "eqnmarker");
-          if (button)
-          {
-            crect = subnode.getClientRects();
-            if (crect.length > 0)
-            {
-              crect = crect[0];
-              crect2 = button.getClientRects();
-              oldright = 0;
-              if (crect2 && crect2.length)
-                oldright = crect2[0].right;
-              if (crect)
-              {
+					subnode = theCells[ix];
+					button = document.getAnonymousElementByAttribute(subnode, "class", "eqnnum");
+					if (!button)
+						button = document.getAnonymousElementByAttribute(subnode, "class", "subeqnnum");
+					if (!button)
+						button = document.getAnonymousElementByAttribute(subnode, "class", "eqnmarker");
+					if (button)
+					{
+						crect = subnode.getClientRects();
+						if (crect.length > 0)
+						{
+							crect = crect[0];
+							crect2 = button.getClientRects();
+							oldright = 0;
+							if (crect2 && crect2.length)
+								oldright = crect2[0].right;
+							if (crect)
+							{
 //                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
-                newtop = (crect.bottom - crect.top)/2 -10;
-                newright = (crect.right - oldright) - (ourCrect.right - crect.right);
-                button.setAttribute("style", "top:" + newtop + "px; right:" + newright + "px;");
-              }
-            }
-          }
+								newtop = (crect.bottom - crect.top)/2 -10;
+								newright = (crect.right - oldright) - (ourCrect.right - crect.right);
+								button.setAttribute("style", "top:" + newtop + "px; right:" + newright + "px;");
+							}
+						}
+					}
 //          if ("displayContainer" in subnode)
 //            subnode.displayContainer = this;
-        }
+				}
 //        tw = document.createTreeWalker(  
 //          dispnode,  
 //          NodeFilter.SHOW_ELEMENT,  
@@ -219,910 +219,910 @@
 //            }
 //          }
 //        }
-        ]]>
-      </xbl:body>
-      </xbl:method>
-      <xbl:method name="checkNumbering">
-      <xbl:body>
-        <![CDATA[
-          var ix, cellAttr;
-          var currNumAttr = this.getAttribute("numbering");
-          var newNumAttr = currNumAttr;
-          var theCells = this.getEquationArrayCells();
-          if (theCells != null)
-          {
-            newNumAttr = "none";
-            for (ix = 0; ix < theCells.length; ++ix)
-            {
-              cellAttr = theCells[ix].getAttribute("numbering");
-              if (!cellAttr || !cellAttr.length || cellAttr != "none")
-              {
-                newNumAttr = "eqns";
-                break;
-              }
-            }
-          }
-          if (newNumAttr && (!currNumAttr || newNumAttr != currNumAttr))
-            this.setAttribute("numbering", newNumAttr);
-        ]]>
-      </xbl:body>
-      </xbl:method>
-      <xbl:method name="getEquationArrayCells">
-      <xbl:body>
-        <![CDATA[
-          var theCells = [];
-          var ix, tableNode, aNode, cellNodes, rowNode, otherNode, typeAttr;
+				]]>
+			</xbl:body>
+			</xbl:method>
+			<xbl:method name="checkNumbering">
+			<xbl:body>
+				<![CDATA[
+					var ix, cellAttr;
+					var currNumAttr = this.getAttribute("numbering");
+					var newNumAttr = currNumAttr;
+					var theCells = this.getEquationArrayCells();
+					if (theCells != null)
+					{
+						newNumAttr = "none";
+						for (ix = 0; ix < theCells.length; ++ix)
+						{
+							cellAttr = theCells[ix].getAttribute("numbering");
+							if (!cellAttr || !cellAttr.length || cellAttr != "none")
+							{
+								newNumAttr = "eqns";
+								break;
+							}
+						}
+					}
+					if (newNumAttr && (!currNumAttr || newNumAttr != currNumAttr))
+						this.setAttribute("numbering", newNumAttr);
+				]]>
+			</xbl:body>
+			</xbl:method>
+			<xbl:method name="getEquationArrayCells">
+			<xbl:body>
+				<![CDATA[
+					var theCells = [];
+					var ix, tableNode, aNode, cellNodes, rowNode, otherNode, typeAttr;
 
-          function findMatrixCallback(theNode)
-          {
-            switch(theNode.nodeName)
-            {
-              case "msidisplay":
-              case "math":
-              case "mstyle":
-              case "mrow":
-              case "#text":
-                return NodeFilter.FILTER_SKIP;
-              break;
-              case "mtable":
-                return NodeFilter.FILTER_ACCEPT;
-              break;
-              default:
-                return NodeFilter.FILTER_REJECT;  //rejects whole subtree
-              break;
-            }
-          }
+					function findMatrixCallback(theNode)
+					{
+						switch(theNode.nodeName)
+						{
+							case "msidisplay":
+							case "math":
+							case "mstyle":
+							case "mrow":
+							case "#text":
+								return NodeFilter.FILTER_SKIP;
+							break;
+							case "mtable":
+								return NodeFilter.FILTER_ACCEPT;
+							break;
+							default:
+								return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+							break;
+						}
+					}
 
-          function findCellsCallback(theNode)
-          {
-            switch(theNode.nodeName)
-            {
-              case "mstyle":
-              case "mtr":
-              case "#text":
-                return NodeFilter.FILTER_SKIP;
-              break;
-              case "mtd":
-                return NodeFilter.FILTER_ACCEPT;
-              break;
-              case "msidisplay":
-              default:
-                return NodeFilter.FILTER_REJECT;  //rejects whole subtree
-              break;
-            }
-          }
-          
-          var walker = document.createTreeWalker( this, NodeFilter.SHOW_ELEMENT, findMatrixCallback, false ); 
-          while (aNode = walker.nextNode())
-          {
-            typeAttr = aNode.getAttribute("type");
-            if (typeAttr && (typeAttr == "eqnarray"))
-            {
-              tableNode = aNode;
-              break;
-            }
-          }
-          if (!tableNode)
-            return null;
+					function findCellsCallback(theNode)
+					{
+						switch(theNode.nodeName)
+						{
+							case "mstyle":
+							case "mtr":
+							case "#text":
+								return NodeFilter.FILTER_SKIP;
+							break;
+							case "mtd":
+								return NodeFilter.FILTER_ACCEPT;
+							break;
+							case "msidisplay":
+							default:
+								return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+							break;
+						}
+					}
+					
+					var walker = document.createTreeWalker( this, NodeFilter.SHOW_ELEMENT, findMatrixCallback, false ); 
+					while (aNode = walker.nextNode())
+					{
+						typeAttr = aNode.getAttribute("type");
+						if (typeAttr && (typeAttr == "eqnarray"))
+						{
+							tableNode = aNode;
+							break;
+						}
+					}
+					if (!tableNode)
+						return null;
 
-          walker = document.createTreeWalker( tableNode, NodeFilter.SHOW_ELEMENT, findCellsCallback, false );
-          while (aNode = walker.nextNode())
-          {
-            theCells.push(aNode);
-          }
-          return theCells;
-        ]]>
-      </xbl:body>
-      </xbl:method>
-      <xbl:method name="isWhitespaceNode">
-      <xbl:parameter name="aNode"/>
-      <xbl:body>
-        <![CDATA[
-          var whiteSpaceRE = /^\s+$/;
-          if (aNode.nodeName == "#text")
-          {
-            if (whiteSpaceRE.test(aNode.textContent))
-              return true;
-          }
-          return false;
-        ]]>
-      </xbl:body>
-      </xbl:method>
-      <xbl:method name="checkSubEqnContinuation">
-      <xbl:body>
-        <![CDATA[
-          var subContAttr = this.getAttribute("subEquationContinuation");
-          var bSubCont = (subContAttr != null) && (subContAttr == "true");
-          var bPrevSubCont, bNextSubCont, 
-          var bResetSubs = false;
-          var prevEqn = this.prevEquation;
-          var nextEqn = this.nextEquation;
-          if (bSubCont && prevEqn)
-          {
-            subContAttr = prevEqn.getAttribute("subEquationContinuation");
-            bPrevSubCont = (subContAttr != null) && (subContAttr == "true");
-            if (!bPrevSubCont)
-              bResetSubs = true;
-          }
-          if (bResetSubs)
-            this.setAttribute("subEquationReset", "true");
-          else  //we don't need this attribute if we're the same subEqCont status as the previous
-            this.removeAttribute("subEquationReset");
-          if (nextEqn)
-          {
-            subContAttr = nextEqn.getAttribute("subEquationContinuation");
-            bNextSubCont = (subContAttr != null) && (subContAttr == "true");
-            if (bNextSubCont && !bSubCont)
-              nextEqn.setAttribute("subEquationReset", "true");
-            else
-              nextEqn.removeAttribute("subEquationReset");
-          }
-        ]]>
-      </xbl:body>
-      </xbl:method>
-      <xbl:property name="prevEquation">
-        <xbl:getter>
-          <![CDATA[
-            var container = this.siblingEquationsContainer;
-            var eqnlist = container.getElementsByTagName("msidisplay");
-            for (var ix = 0; ix < eqnlist.length; ++ix)
-            {
-              if ( (eqnlist[ix] == this) && (ix > 0) )
-                return eqnlist[ix-1];
-            }
-            return null;
-          ]]>
-        </xbl:getter>
-      </xbl:property>
-      <xbl:property name="nextEquation">
-        <xbl:getter>
-          <![CDATA[
-            var container = this.siblingEquationsContainer;
-            var eqnlist = container.getElementsByTagName("msidisplay");
-            for (var ix = 0; ix < eqnlist.length; ++ix)
-            {
-              if ( (eqnlist[ix] == this) && (ix < eqnlist.length - 1) )
-                return eqnlist[ix+1];
-            }
-            return null;
-          ]]>
-        </xbl:getter>
-      </xbl:property>
-      <xbl:property name="siblingEquationsContainer">
-        <xbl:getter>
-          <![CDATA[
-            var findTags = ["body", "section"];  //this needs to be configurable! Should include all tags which reset equation counter.
-            var currName;
-            for (var aNode = this; aNode; aNode = aNode.parentNode)
-            {
-              currName = aNode.nodeName;
-              if (findTags.indexOf(currName) >= 0)
-                return aNode;
-            }
-            return document.documentElement; //should NOT happen
-          ]]>
-        </xbl:getter>
-      </xbl:property>
-      <xbl:property name="subEquationContinuation">
-        <xbl:getter>
-          <![CDATA[
-            var subContAttr = this.getAttribute("subEquationContinuation");
-            return (subContAttr != null) && (subContAttr == "true");
-          ]]>
-        </xbl:getter>
-        <xbl:setter>
-          <![CDATA[
-            var subContAttr = this.getAttribute("subEquationContinuation");
-            var bSubCont = (subContAttr != null) && (subContAttr == "true");
-            if (bSubCont != val)
-            {
-              if (val)
-                this.setAttribute("subEquationContinuation", "true");
-              else
-                this.removeAttribute("subEquationContinuation");
-              window.checkSubEqnContinuation(this);
-            }
-          ]]>
-        </xbl:setter>
-      </xbl:property>
-      <xbl:handler event="DOMNodeInserted">
-        <xbl:action>
-          <![CDATA[
-            this.checkNumbering();
-            this.init();
-          ]]>
-        </xbl:action>
-      </xbl:handler>
-      <xbl:handler event="DOMNodeRemoved">
-        <xbl:action>
-          <![CDATA[
-            this.checkNumbering();
-            this.init();
-          ]]>
-        </xbl:action>
-      </xbl:handler -->
-    </xbl:implementation>
-  </xbl:binding>
+					walker = document.createTreeWalker( tableNode, NodeFilter.SHOW_ELEMENT, findCellsCallback, false );
+					while (aNode = walker.nextNode())
+					{
+						theCells.push(aNode);
+					}
+					return theCells;
+				]]>
+			</xbl:body>
+			</xbl:method>
+			<xbl:method name="isWhitespaceNode">
+			<xbl:parameter name="aNode"/>
+			<xbl:body>
+				<![CDATA[
+					var whiteSpaceRE = /^\s+$/;
+					if (aNode.nodeName == "#text")
+					{
+						if (whiteSpaceRE.test(aNode.textContent))
+							return true;
+					}
+					return false;
+				]]>
+			</xbl:body>
+			</xbl:method>
+			<xbl:method name="checkSubEqnContinuation">
+			<xbl:body>
+				<![CDATA[
+					var subContAttr = this.getAttribute("subEquationContinuation");
+					var bSubCont = (subContAttr != null) && (subContAttr == "true");
+					var bPrevSubCont, bNextSubCont, 
+					var bResetSubs = false;
+					var prevEqn = this.prevEquation;
+					var nextEqn = this.nextEquation;
+					if (bSubCont && prevEqn)
+					{
+						subContAttr = prevEqn.getAttribute("subEquationContinuation");
+						bPrevSubCont = (subContAttr != null) && (subContAttr == "true");
+						if (!bPrevSubCont)
+							bResetSubs = true;
+					}
+					if (bResetSubs)
+						this.setAttribute("subEquationReset", "true");
+					else  //we don't need this attribute if we're the same subEqCont status as the previous
+						this.removeAttribute("subEquationReset");
+					if (nextEqn)
+					{
+						subContAttr = nextEqn.getAttribute("subEquationContinuation");
+						bNextSubCont = (subContAttr != null) && (subContAttr == "true");
+						if (bNextSubCont && !bSubCont)
+							nextEqn.setAttribute("subEquationReset", "true");
+						else
+							nextEqn.removeAttribute("subEquationReset");
+					}
+				]]>
+			</xbl:body>
+			</xbl:method>
+			<xbl:property name="prevEquation">
+				<xbl:getter>
+					<![CDATA[
+						var container = this.siblingEquationsContainer;
+						var eqnlist = container.getElementsByTagName("msidisplay");
+						for (var ix = 0; ix < eqnlist.length; ++ix)
+						{
+							if ( (eqnlist[ix] == this) && (ix > 0) )
+								return eqnlist[ix-1];
+						}
+						return null;
+					]]>
+				</xbl:getter>
+			</xbl:property>
+			<xbl:property name="nextEquation">
+				<xbl:getter>
+					<![CDATA[
+						var container = this.siblingEquationsContainer;
+						var eqnlist = container.getElementsByTagName("msidisplay");
+						for (var ix = 0; ix < eqnlist.length; ++ix)
+						{
+							if ( (eqnlist[ix] == this) && (ix < eqnlist.length - 1) )
+								return eqnlist[ix+1];
+						}
+						return null;
+					]]>
+				</xbl:getter>
+			</xbl:property>
+			<xbl:property name="siblingEquationsContainer">
+				<xbl:getter>
+					<![CDATA[
+						var findTags = ["body", "section"];  //this needs to be configurable! Should include all tags which reset equation counter.
+						var currName;
+						for (var aNode = this; aNode; aNode = aNode.parentNode)
+						{
+							currName = aNode.nodeName;
+							if (findTags.indexOf(currName) >= 0)
+								return aNode;
+						}
+						return document.documentElement; //should NOT happen
+					]]>
+				</xbl:getter>
+			</xbl:property>
+			<xbl:property name="subEquationContinuation">
+				<xbl:getter>
+					<![CDATA[
+						var subContAttr = this.getAttribute("subEquationContinuation");
+						return (subContAttr != null) && (subContAttr == "true");
+					]]>
+				</xbl:getter>
+				<xbl:setter>
+					<![CDATA[
+						var subContAttr = this.getAttribute("subEquationContinuation");
+						var bSubCont = (subContAttr != null) && (subContAttr == "true");
+						if (bSubCont != val)
+						{
+							if (val)
+								this.setAttribute("subEquationContinuation", "true");
+							else
+								this.removeAttribute("subEquationContinuation");
+							window.checkSubEqnContinuation(this);
+						}
+					]]>
+				</xbl:setter>
+			</xbl:property>
+			<xbl:handler event="DOMNodeInserted">
+				<xbl:action>
+					<![CDATA[
+						this.checkNumbering();
+						this.init();
+					]]>
+				</xbl:action>
+			</xbl:handler>
+			<xbl:handler event="DOMNodeRemoved">
+				<xbl:action>
+					<![CDATA[
+						this.checkNumbering();
+						this.init();
+					]]>
+				</xbl:action>
+			</xbl:handler -->
+		</xbl:implementation>
+	</xbl:binding>
 
 	<xbl:binding id="msidisplaynumbered" extends="latex.xml#msidisplaybase">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <xbl:children/>
-      <html:button type="button" xbl:inherits="xbl:text=marker" class="eqnnum" onclick=""/>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children/>
+			<html:button type="button" xbl:inherits="xbl:text=marker" class="eqnnum" onclick=""/>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="msidisplaysubnumbered" extends="latex.xml#msidisplaybase">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <xbl:children/>
-      <html:button type="button" xbl:inherits="xbl:text=marker" class="subeqnnum" onclick=""/>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children/>
+			<html:button type="button" xbl:inherits="xbl:text=marker" class="subeqnnum" onclick=""/>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="msidisplaymarker" extends="latex.xml#msidisplaybase">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <xbl:children/>
-      <html:button type="button" xbl:inherits="xbl:text=marker" class="eqnmarker" onclick=""/>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children/>
+			<html:button type="button" xbl:inherits="xbl:text=marker" class="eqnmarker" onclick=""/>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="msidisplayrowbase">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <xbl:children/>
-    </xbl:content>
-    <!-- xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children/>
+		</xbl:content>
+		<!-- xbl:implementation>
+			<xbl:constructor>
+				<![CDATA[
 //          var anEvent = document.createEvent("MutationEvents");
 //          anEvent.initMutationEvent("DOMNodeInserted", true, false);
 //          this.dispatchEvent(anEvent);
-        ]]>
-      </xbl:constructor>
-      <xbl:destructor>
-        <![CDATA[
+				]]>
+			</xbl:constructor>
+			<xbl:destructor>
+				<![CDATA[
 //          var anEvent = document.createEvent("MutationEvents");
 //          anEvent.initMutationEvent("DOMNodeRemoved", true, false);
 //          this.dispatchEvent(anEvent);
-        ]]>
-      </xbl:destructor>
-      <xbl:field name="displayContainer">null</xbl:field>
-    </xbl:implementation -->
-  </xbl:binding>
+				]]>
+			</xbl:destructor>
+			<xbl:field name="displayContainer">null</xbl:field>
+		</xbl:implementation -->
+	</xbl:binding>
 
 	<xbl:binding id="msidisplayrownumbered" extends="latex.xml#msidisplayrowbase">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <xbl:children/>
-      <mml:mtd class="eqnmarker">
-        <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="eqnnum" onclick=""/>
-      </mml:mtd>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children/>
+			<mml:mtd class="eqnmarker">
+				<html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="eqnnum" onclick=""/>
+			</mml:mtd>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="msidisplayrowsubnumbered" extends="latex.xml#msidisplayrowbase">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <xbl:children/>
-      <mml:mtd class="eqnmarker">
-        <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="subeqnnum" onclick=""/>
-      </mml:mtd>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children/>
+			<mml:mtd class="eqnmarker">
+				<html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="subeqnnum" onclick=""/>
+			</mml:mtd>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="msidisplayrowmarker">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-    <xbl:content>
-      <xbl:children/>
-      <mml:mtd class="eqnmarker">
-        <html:button type="button" xbl:inherits="xbl:text=marker" class="eqnmarker" onclick=""/>
-      </mml:mtd>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children/>
+			<mml:mtd class="eqnmarker">
+				<html:button type="button" xbl:inherits="xbl:text=marker" class="eqnmarker" onclick=""/>
+			</mml:mtd>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="fmtag-title"> /*front matter   */
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" oncommand=""
-        >&title;</html:button>
-      <xbl:children/>
-    </xbl:content>
-  </xbl:binding>
+	<xbl:binding id="fmtag-title"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand=""
+				>&title;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="fmtag-author"> /*front matter label*/
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">&author;</html:button>
-      <xbl:children/>
-    </xbl:content>
-  </xbl:binding>
+	<xbl:binding id="fmtag-author"> /*front matter label*/
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&author;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="fmtag-address"> /*front matter label*/
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">&address;</html:button>
-      <xbl:children/>
-    </xbl:content>
-  </xbl:binding>
+	<xbl:binding id="fmtag-address"> /*front matter label*/
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&address;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="fmtag-date"> /*front matter label*/
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button type="button" class="frontmattertag" nopr="1" onclick="">&date;</html:button>
-      <xbl:children/>
-    </xbl:content>
-  </xbl:binding>
+	<xbl:binding id="fmtag-date"> /*front matter label*/
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&date;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
 
 <!--   <xbl:binding id="fmtag-maketitle"> /*front matter label*/
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="" style="-moz-user-select:all;">
-        Make title here
-      </html:button>
-      <html:span style="color: light-gray">
-      <xbl:children/>
-      </html:span>
-      <html:br/>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="" style="-moz-user-select:all;">
+				Make title here
+			</html:button>
+			<html:span style="color: light-gray">
+			<xbl:children/>
+			</html:span>
+			<html:br/>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="fmtag-maketoc"> /*front matter label*/
-	  <xbl:resources>
-	    <xbl:stylesheet src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="" >
+	<xbl:binding id="fmtag-maketoc"> /*front matter label*/
+		<xbl:resources>
+			<xbl:stylesheet src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="" >
 Make table of contents here
-    </html:button>
-    <html:span style="display:none">
-    <xbl:children/>
-    </html:span>
-      <html:br/>
-  </xbl:binding>
+		</html:button>
+		<html:span style="display:none">
+		<xbl:children/>
+		</html:span>
+			<html:br/>
+	</xbl:binding>
 
-  <xbl:binding id="fmtag-makelot"> /*front matter label*/
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="">
+	<xbl:binding id="fmtag-makelot"> /*front matter label*/
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">
 Make list of tables here
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-      <html:br/>
-    </xbl:content>
-  </xbl:binding>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+			<html:br/>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="fmtag-makelof"> /*front matter label*/
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="">
+	<xbl:binding id="fmtag-makelof"> /*front matter label*/
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">
 Make list of figures here
-    </html:button>
-    <html:span style="display:none">
-    <xbl:children/>
-    </html:span>
-      <html:br/>
-    </xbl:content>
-  </xbl:binding>
+		</html:button>
+		<html:span style="display:none">
+		<xbl:children/>
+		</html:span>
+			<html:br/>
+		</xbl:content>
+	</xbl:binding>
  -->
 
-  <xbl:binding id="texb">
-    <xbl:resources>
-      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-    </xbl:resources>
+	<xbl:binding id="texb">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-    <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="">
-        <html:texlogo>T<html:sub>E</html:sub>X</html:texlogo>: <html:label xbl:inherits="xbl:text=name"/>
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-    
-    <xbl:implementation>
-      <xbl:property name="value"      onset="this.textContent = val; return val;"
-                                  onget="return this.textContent;"/>
-      <xbl:property name="role" readonly="true"  onget="return 'texbutton';"/>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">
+				<html:texlogo>T<html:sub>E</html:sub>X</html:texlogo>: <html:label xbl:inherits="xbl:text=name"/>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+		
+		<xbl:implementation>
+			<xbl:property name="value"      onset="this.textContent = val; return val;"
+																	onget="return this.textContent;"/>
+			<xbl:property name="role" readonly="true"  onget="return 'texbutton';"/>
 
-    </xbl:implementation>    
-  </xbl:binding>
+		</xbl:implementation>    
+	</xbl:binding>
 
-  <xbl:binding id="maketitle">
-    <xbl:resources>
-      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-    </xbl:resources>
+	<xbl:binding id="maketitle">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-    <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="">&maketitle;
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&maketitle;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="maketoc">
-    <xbl:resources>
-      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-    </xbl:resources>
+	<xbl:binding id="maketoc">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-    <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="">&maketoc;
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&maketoc;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="makelot">
-    <xbl:resources>
-      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-    </xbl:resources>
+	<xbl:binding id="makelot">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-    <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="">&makelot;
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&makelot;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="makelof">
-    <xbl:resources>
-      <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-    </xbl:resources>
+	<xbl:binding id="makelof">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-    <xbl:content>
-      <html:button type="button" class="msi" nopr="1" oncommand="">&makelof;
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&makelof;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="indexitem">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        &index;<html:label xbl:inherits="xbl:text=pri"/>
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="frontmatter" nopr="1" oncommand="">
+				&index;<html:label xbl:inherits="xbl:text=pri"/>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="indexitemSpecApp">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="indexbutton" anonid="btn" nopr="1" state="1" xbl:inherits="pri,sec,ter,specAppearance" oncommand="">
-        &index;<html:label><xbl:children includes="prispec"/></html:label>
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="indexbutton" anonid="btn" nopr="1" state="1" xbl:inherits="pri,sec,ter,specAppearance" oncommand="">
+				&index;<html:label><xbl:children includes="prispec"/></html:label>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
 	<!-- xbl:binding id="indexitemSpecAppCycle">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="indexbutton" anonid="btn" nopr="1" state="1" xbl:inherits="pri,sec,ter,specAppearance" 
-         oncommand="this.toggle(); ">
-        Index: <html:label>
-                 <xbl:children includes="prispec,secspec,terspec"/>
-                 <html:span class="indexPri" xbl:inherits="xbl:text=pri"/>
-                 <html:span class="indexSec" xbl:inherits="xbl:text=sec"/>
-                 <html:span class="indexTer" xbl:inherits="xbl:text=ter"/>
-               </html:label>
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:method name="toggle">
-        <xbl:body>
-          <![CDATA[
-            var theButton = document.getAnonymousElementByAttribute(this, "anonid", "btn");
-            var currState = 1 + Number(theButton.getAttribute("state"));
-            if (!this.getAttribute("sec") || !this.getAttribute("sec").length)
-            {
-              currState = 1;
-            }
-            else if (!this.getAttribute("ter") || !this.getAttribute("ter").length)
-            {
-              currState = 2;
-            }
-            else if (currState > 3)
-            {
-              currState = 1;
-            }
-            theButton.setAttribute("state", currState);
-          ]]>
-        </xbl:body>
-      </xbl:method>
-    </xbl:implementation>    
-  </xbl:binding -->
+		<xbl:content>
+			<html:button type="button" class="indexbutton" anonid="btn" nopr="1" state="1" xbl:inherits="pri,sec,ter,specAppearance" 
+				 oncommand="this.toggle(); ">
+				Index: <html:label>
+								 <xbl:children includes="prispec,secspec,terspec"/>
+								 <html:span class="indexPri" xbl:inherits="xbl:text=pri"/>
+								 <html:span class="indexSec" xbl:inherits="xbl:text=sec"/>
+								 <html:span class="indexTer" xbl:inherits="xbl:text=ter"/>
+							 </html:label>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:method name="toggle">
+				<xbl:body>
+					<![CDATA[
+						var theButton = document.getAnonymousElementByAttribute(this, "anonid", "btn");
+						var currState = 1 + Number(theButton.getAttribute("state"));
+						if (!this.getAttribute("sec") || !this.getAttribute("sec").length)
+						{
+							currState = 1;
+						}
+						else if (!this.getAttribute("ter") || !this.getAttribute("ter").length)
+						{
+							currState = 2;
+						}
+						else if (currState > 3)
+						{
+							currState = 1;
+						}
+						theButton.setAttribute("state", currState);
+					]]>
+				</xbl:body>
+			</xbl:method>
+		</xbl:implementation>    
+	</xbl:binding -->
 
 	<xbl:binding id="printindex">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        &printindex;
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="frontmatter" nopr="1" oncommand="">
+				&printindex;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="minpasses">  <!-- this will be removed in favor of a tex button-->
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        Minimum number of LaTeX passes = <html:label xbl:inherits="xbl:text=num"/>
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="frontmatter" nopr="1" oncommand="">
+				Minimum number of LaTeX passes = <html:label xbl:inherits="xbl:text=num"/>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="label">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        &marker;<html:label xbl:inherits="xbl:text=name"/>
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="frontmatter" nopr="1" oncommand="">
+				&marker;<html:label xbl:inherits="xbl:text=name"/>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
 
 	<xbl:binding id="xref">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="frontmatter" nopr="1" oncommand="">
-        &xref;Cross reference: <html:label xbl:inherits="xbl:text=key"/>
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="frontmatter" nopr="1" oncommand="">
+				&xref;Cross reference: <html:label xbl:inherits="xbl:text=key"/>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="latexstyleb">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <sw:button class="texbutton" nopr="1">
-        <sw:latex2>L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2> style:
-        <xbl:children includes="styleprop" />
-      </sw:button>
-      <sw:texbdata anonid = "styledata" ><xbl:children includes="styledata" /></sw:texbdata>
-    </xbl:content>
-    
-    <xbl:implementation>
-      <xbl:property name="value"      onset="this.getElementsByTagName('styledata')[0].textContent = val; return val;"
-                                  onget="return this.getElementsByTagName('styledata')[0].textContent;"/>
-      <xbl:property name="value2"      onset="this.getElementsByTagName('styledata')[1].textContent = val; return val;"
-                                  onget="return this.getElementsByTagName('styledata')[1].textContent;"/>
-      <xbl:property name="prop"       onget="return this.getElementsByTagName('styleprop')[0].textContent;"/>
-      <xbl:property name="role" readonly="true"  onget="return 'latexstylebutton';"/>
+		<xbl:content>
+			<sw:button class="texbutton" nopr="1">
+				<sw:latex2>L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2> style:
+				<xbl:children includes="styleprop" />
+			</sw:button>
+			<sw:texbdata anonid = "styledata" ><xbl:children includes="styledata" /></sw:texbdata>
+		</xbl:content>
+		
+		<xbl:implementation>
+			<xbl:property name="value"      onset="this.getElementsByTagName('styledata')[0].textContent = val; return val;"
+																	onget="return this.getElementsByTagName('styledata')[0].textContent;"/>
+			<xbl:property name="value2"      onset="this.getElementsByTagName('styledata')[1].textContent = val; return val;"
+																	onget="return this.getElementsByTagName('styledata')[1].textContent;"/>
+			<xbl:property name="prop"       onget="return this.getElementsByTagName('styleprop')[0].textContent;"/>
+			<xbl:property name="role" readonly="true"  onget="return 'latexstylebutton';"/>
 
-    </xbl:implementation>    
-  </xbl:binding>
+		</xbl:implementation>    
+	</xbl:binding>
 
 	<xbl:binding id="hspace">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <sw:invis><xbl:children/></sw:invis>
-      <sw:space xbl:inherits="flex,dim,fillWith"/>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
-        var theDim = this.getAttribute("dim");
-        if (theDim != null && theDim.length > 0)
-        {
-          var spaceObj = document.getAnonymousNodes(this)[1];
-          var spanObj = document.createElement("span");
-          spanObj.setAttribute("style","width: " + theDim + "; min-width: " + theDim + ";");
-          spaceObj.appendChild(spanObj);
-        }
-        else
-        {
-          var theFlex = this.getAttribute("flex");
-          if (theFlex != null && theFlex.length > 0)
-          {
-            var spaceObj = document.getAnonymousNodes(this)[1];
-            /*var sepObj = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "spacer");
-            sepObj.setAttribute("flex", theFlex);  */
-            var theFill = this.getAttribute("fillWith");
-            var theStyle = "";  /*may need to set this to -moz-box-flex: + theFlex? Depends on whether the attribute takes.*/
-            if (theFill == "line")
-              theStyle += "border-bottom-width: thin; border-bottom-style: solid;"
-            else if (theFill == "dots")
-              theStyle += "border-bottom-width: medium; border-bottom-style: dotted;"
-            if (theStyle.length > 0)
-              spaceObj.setAttribute("style", theStyle);
-            /*  sepObj.setAttribute("style", theStyle);
-              spaceObj.appendChild(sepObj); */
-          }
-        }
-        ]]>
-      </xbl:constructor>
-    </xbl:implementation>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<sw:invis><xbl:children/></sw:invis>
+			<sw:space xbl:inherits="flex,dim,fillWith"/>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:constructor>
+				<![CDATA[
+				var theDim = this.getAttribute("dim");
+				if (theDim != null && theDim.length > 0)
+				{
+					var spaceObj = document.getAnonymousNodes(this)[1];
+					var spanObj = document.createElement("span");
+					spanObj.setAttribute("style","width: " + theDim + "; min-width: " + theDim + ";");
+					spaceObj.appendChild(spanObj);
+				}
+				else
+				{
+					var theFlex = this.getAttribute("flex");
+					if (theFlex != null && theFlex.length > 0)
+					{
+						var spaceObj = document.getAnonymousNodes(this)[1];
+						/*var sepObj = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "spacer");
+						sepObj.setAttribute("flex", theFlex);  */
+						var theFill = this.getAttribute("fillWith");
+						var theStyle = "";  /*may need to set this to -moz-box-flex: + theFlex? Depends on whether the attribute takes.*/
+						if (theFill == "line")
+							theStyle += "border-bottom-width: thin; border-bottom-style: solid;"
+						else if (theFill == "dots")
+							theStyle += "border-bottom-width: medium; border-bottom-style: dotted;"
+						if (theStyle.length > 0)
+							spaceObj.setAttribute("style", theStyle);
+						/*  sepObj.setAttribute("style", theStyle);
+							spaceObj.appendChild(sepObj); */
+					}
+				}
+				]]>
+			</xbl:constructor>
+		</xbl:implementation>
+	</xbl:binding>
 
 	<xbl:binding id="vspace">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <sw:invis><xbl:children/></sw:invis>
-      <sw:vertspace xbl:inherits="dim,lineHt"/>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
-        var theDim = this.getAttribute("dim");
-        var theLineHeight = this.getAttribute("lineHt");
-        var styleAttr = "";
-        if (theDim != null && theDim.length > 0)
-          styleAttr = "padding-bottom: " + theDim + ";";
-        if (theLineHeight != null && theLineHeight.length > 0)
-          styleAttr += "line-height: " + theLineHeight + ";";
-        if (styleAttr.length > 0)
-        {
-          var spaceObj = document.getAnonymousNodes(this)[1];
-          var spanObj = document.createElement("span");
-          spanObj.setAttribute("class", "vertspace");
-          spanObj.setAttribute("style", styleAttr);
-          var textObj = document.createTextNode(" ");
-          spanObj.appendChild(textObj);
-          spaceObj.appendChild(spanObj);
-          /* spaceObj.setAttribute("style", styleAttr); */
-        }
-        else
-          dump("XBL vspace content doesn't have dim or lineHt attribute!\n");
-        ]]>
-      </xbl:constructor>
-    </xbl:implementation>
-  </xbl:binding>
-  
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<sw:invis><xbl:children/></sw:invis>
+			<sw:vertspace xbl:inherits="dim,lineHt"/>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:constructor>
+				<![CDATA[
+				var theDim = this.getAttribute("dim");
+				var theLineHeight = this.getAttribute("lineHt");
+				var styleAttr = "";
+				if (theDim != null && theDim.length > 0)
+					styleAttr = "padding-bottom: " + theDim + ";";
+				if (theLineHeight != null && theLineHeight.length > 0)
+					styleAttr += "line-height: " + theLineHeight + ";";
+				if (styleAttr.length > 0)
+				{
+					var spaceObj = document.getAnonymousNodes(this)[1];
+					var spanObj = document.createElement("span");
+					spanObj.setAttribute("class", "vertspace");
+					spanObj.setAttribute("style", styleAttr);
+					var textObj = document.createTextNode(" ");
+					spanObj.appendChild(textObj);
+					spaceObj.appendChild(spanObj);
+					/* spaceObj.setAttribute("style", styleAttr); */
+				}
+				else
+					dump("XBL vspace content doesn't have dim or lineHt attribute!\n");
+				]]>
+			</xbl:constructor>
+		</xbl:implementation>
+	</xbl:binding>
+	
 	<xbl:binding id="msirule">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <sw:invis><xbl:children/></sw:invis>
-      <sw:rulebox xbl:inherits="lift,width,height,color"/>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:method name="getNumberAndUnitFromString">
-        <xbl:parameter name="theString"/>
-        <xbl:body>
-          <![CDATA[
-            var matchArray = this.ourRegExp.exec(theString);
-            if (matchArray != null)
-            {
-              var retVal = new Object();
-              retVal.number = Number(matchArray[1]);
-              retVal.unit = matchArray[2];
-              return retVal;
-            }
-            return null;
-          ]]>
-        </xbl:body>
-      </xbl:method>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<sw:invis><xbl:children/></sw:invis>
+			<sw:rulebox xbl:inherits="lift,width,height,color"/>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:method name="getNumberAndUnitFromString">
+				<xbl:parameter name="theString"/>
+				<xbl:body>
+					<![CDATA[
+						var matchArray = this.ourRegExp.exec(theString);
+						if (matchArray != null)
+						{
+							var retVal = new Object();
+							retVal.number = Number(matchArray[1]);
+							retVal.unit = matchArray[2];
+							return retVal;
+						}
+						return null;
+					]]>
+				</xbl:body>
+			</xbl:method>
 
-      <xbl:method name="convertUnits">
-        <xbl:parameter name="invalue"/>
-        <xbl:parameter name="inunit"/>
-        <xbl:parameter name="outunit"/>
-        <xbl:body>
-          <![CDATA[
-            if (inunit == outunit) return invalue;
-            if (!(inunit in this.mUnitFactors) || !(outunit in this.mUnitFactors))
-            {
-              var dumpStr = "Bad units in msiUnitsList.convertUnits;";
-              if (!(inunit in this))
-                dumpStr += " in unit is [" + inunit + "];";
-              if (!(outunit in this))
-                dumpStr += " out unit is [" + outunit + "];";
-              dump( dumpStr + " returning.\n");
-              return invalue;
-            }
-            var outvalue = invalue*this.mUnitFactors[inunit];
-            outvalue /= this.mUnitFactors[outunit];
-            return outvalue;
-          ]]>
-        </xbl:body>
-      </xbl:method>
+			<xbl:method name="convertUnits">
+				<xbl:parameter name="invalue"/>
+				<xbl:parameter name="inunit"/>
+				<xbl:parameter name="outunit"/>
+				<xbl:body>
+					<![CDATA[
+						if (inunit == outunit) return invalue;
+						if (!(inunit in this.mUnitFactors) || !(outunit in this.mUnitFactors))
+						{
+							var dumpStr = "Bad units in msiUnitsList.convertUnits;";
+							if (!(inunit in this))
+								dumpStr += " in unit is [" + inunit + "];";
+							if (!(outunit in this))
+								dumpStr += " out unit is [" + outunit + "];";
+							dump( dumpStr + " returning.\n");
+							return invalue;
+						}
+						var outvalue = invalue*this.mUnitFactors[inunit];
+						outvalue /= this.mUnitFactors[outunit];
+						return outvalue;
+					]]>
+				</xbl:body>
+			</xbl:method>
 
-      <xbl:constructor>
-        <![CDATA[
-        this.mUnitFactors = 
-        {
-          pt: .3514598,  //mm per pt
-          in: 25.4,  //mm per in
-          mm: 1, // mm per mm
-          cm: 10 // mm per cm
-        };
-        var unitsStr = "";
-        for (var aUnit in this.mUnitFactors)
-        {
-          if (unitsStr.length > 0)
-            unitsStr += "|";
-          unitsStr += aUnit;
-        }
-        this.ourRegExp = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
-        var theWidth = this.getAttribute("width");
-        var theHeight = this.getAttribute("height");
-        var theLift = this.getAttribute("lift");
-        var theColor = this.getAttribute("color");
-        var styleAttr = "";
-        if (theWidth != null && theWidth.length > 0)
-          styleAttr = "width: " + theWidth + ";";
-        var putColorOn = "background-color: ";
-        if (theLift != null && theLift.length > 0)
-        {
-          var theUnitsList = window.msiCSSUnitsList;
-          var liftWithUnits = this.getNumberAndUnitFromString(theLift);
-          var htWithUnits = this.getNumberAndUnitFromString(theHeight);
-          if (htWithUnits.unit != liftWithUnits.unit)
-          {
-            htWithUnits.number = this.convertUnits(htWithUnits.number, htWithUnits.unit, liftWithUnits.unit);
-            htWithUnits.unit = liftWithUnits.unit;
-          }
-          if (liftWithUnits.number < 0)
-          {
-            htWithUnits.number += liftWithUnits.number;
-            liftWithUnits.number = -liftWithUnits.number;
-            if (htWithUnits.number > 0)
-              styleAttr += "padding-bottom: " + liftWithUnits.number + liftWithUnits.unit + "; line-height: " + htWithUnits.number + htWithUnits.unit + ";";
-            else
-            {
-              if (htWithUnits.number < 0)
-                styleAttr += "padding-bottom: " + (-htWithUnits.number) + liftWithUnits.unit + "; "
-              styleAttr += "border-bottom-style: solid; border-bottom-width: " + theHeight + "; ";
-              putColorOn = "border-bottom-color: ";
-            }
-          }
-          else if (liftWithUnits.number > 0)
-          {
-            htWithUnits.number += liftWithUnits.number;
-            liftWithUnits.number = -liftWithUnits.number;
-            styleAttr += "margin-bottom: " + liftWithUnits.number + liftWithUnits.unit + "; line-height: " + htWithUnits.number + htWithUnits.unit + " ;";
-          }
-          else
-            styleAttr += "line-height: " + theHeight + ";";
-          // styleAttr += "vertical-align: " + theLift + ";";
-        } else if (theHeight != null && theHeight.length > 0)
-          styleAttr += "line-height: " + theHeight + ";";
-        var parentStyleAttr = "height: " + theHeight + ";";
-        if (theColor != null && theColor.length > 0)
-          styleAttr += putColorOn + theColor + ";";
-        if (styleAttr.length > 0)
-        {
+			<xbl:constructor>
+				<![CDATA[
+				this.mUnitFactors = 
+				{
+					pt: .3514598,  //mm per pt
+					in: 25.4,  //mm per in
+					mm: 1, // mm per mm
+					cm: 10 // mm per cm
+				};
+				var unitsStr = "";
+				for (var aUnit in this.mUnitFactors)
+				{
+					if (unitsStr.length > 0)
+						unitsStr += "|";
+					unitsStr += aUnit;
+				}
+				this.ourRegExp = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
+				var theWidth = this.getAttribute("width");
+				var theHeight = this.getAttribute("height");
+				var theLift = this.getAttribute("lift");
+				var theColor = this.getAttribute("color");
+				var styleAttr = "";
+				if (theWidth != null && theWidth.length > 0)
+					styleAttr = "width: " + theWidth + ";";
+				var putColorOn = "background-color: ";
+				if (theLift != null && theLift.length > 0)
+				{
+					var theUnitsList = window.msiCSSUnitsList;
+					var liftWithUnits = this.getNumberAndUnitFromString(theLift);
+					var htWithUnits = this.getNumberAndUnitFromString(theHeight);
+					if (htWithUnits.unit != liftWithUnits.unit)
+					{
+						htWithUnits.number = this.convertUnits(htWithUnits.number, htWithUnits.unit, liftWithUnits.unit);
+						htWithUnits.unit = liftWithUnits.unit;
+					}
+					if (liftWithUnits.number < 0)
+					{
+						htWithUnits.number += liftWithUnits.number;
+						liftWithUnits.number = -liftWithUnits.number;
+						if (htWithUnits.number > 0)
+							styleAttr += "padding-bottom: " + liftWithUnits.number + liftWithUnits.unit + "; line-height: " + htWithUnits.number + htWithUnits.unit + ";";
+						else
+						{
+							if (htWithUnits.number < 0)
+								styleAttr += "padding-bottom: " + (-htWithUnits.number) + liftWithUnits.unit + "; "
+							styleAttr += "border-bottom-style: solid; border-bottom-width: " + theHeight + "; ";
+							putColorOn = "border-bottom-color: ";
+						}
+					}
+					else if (liftWithUnits.number > 0)
+					{
+						htWithUnits.number += liftWithUnits.number;
+						liftWithUnits.number = -liftWithUnits.number;
+						styleAttr += "margin-bottom: " + liftWithUnits.number + liftWithUnits.unit + "; line-height: " + htWithUnits.number + htWithUnits.unit + " ;";
+					}
+					else
+						styleAttr += "line-height: " + theHeight + ";";
+					// styleAttr += "vertical-align: " + theLift + ";";
+				} else if (theHeight != null && theHeight.length > 0)
+					styleAttr += "line-height: " + theHeight + ";";
+				var parentStyleAttr = "height: " + theHeight + ";";
+				if (theColor != null && theColor.length > 0)
+					styleAttr += putColorOn + theColor + ";";
+				if (styleAttr.length > 0)
+				{
 //          styleAttr += "font-size: " + theHeight + ";";
-          var spaceObj = document.getAnonymousNodes(this)[1];
-          var spanObj = document.createElement("span");
-          spanObj.setAttribute("class", "msirule");
-          if (styleAttr.length > 0)
-            spanObj.setAttribute("style", styleAttr);
-          dump("Creating span.msirule with style attribute [" + styleAttr + "].\n");
-          var textObj = document.createTextNode("");
-          spanObj.appendChild(textObj);
-          spaceObj.appendChild(spanObj);
+					var spaceObj = document.getAnonymousNodes(this)[1];
+					var spanObj = document.createElement("span");
+					spanObj.setAttribute("class", "msirule");
+					if (styleAttr.length > 0)
+						spanObj.setAttribute("style", styleAttr);
+					dump("Creating span.msirule with style attribute [" + styleAttr + "].\n");
+					var textObj = document.createTextNode("");
+					spanObj.appendChild(textObj);
+					spaceObj.appendChild(spanObj);
 //          if (parentStyleAttr.length > 0)
 //            spaceObj.setAttribute("style", parentStyleAttr);
-        }
-        else
-          dump("XBL msirule content doesn't have dimensions or color attribute!\n");
-        ]]>
-      </xbl:constructor>
-    </xbl:implementation>
+				}
+				else
+					dump("XBL msirule content doesn't have dimensions or color attribute!\n");
+				]]>
+			</xbl:constructor>
+		</xbl:implementation>
 
-  </xbl:binding>
+	</xbl:binding>
 
 	<xbl:binding id="msibreak">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <sw:breakobj xbl:inherits="invisDisplay,dim" />
-      <xbl:children/>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
-        var theDim = this.getAttribute("dim");
-        var styleAttr = "";
-        if (theDim != null && theDim.length > 0)
-          styleAttr = "padding-bottom: " + theDim + ";";
-        var displayForm = this.getAttribute("invisDisplay");
-        var nNumAnonObjs = document.getAnonymousNodes(this).length;
-        var breakObj = document.getAnonymousNodes(this)[0];
-        var firstChild = null;
-        if (breakObj.childNodes.length > 0)
-          firstChild = breakObj.childNodes[0];
-        if (styleAttr.length > 0)
-        {
-          var spanObj = document.createElement("span");
-          spanObj.setAttribute("class", "breakvspace");
-          spanObj.setAttribute("style", styleAttr);
-          var textObj = document.createTextNode(" ");
-          spanObj.appendChild(textObj);
-          if (firstChild != null)
-            breakObj.insertBefore(spanObj, firstChild);
-          else
-            breakObj.appendChild(spanObj);
-        }
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<sw:breakobj xbl:inherits="invisDisplay,dim" />
+			<xbl:children/>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:constructor>
+				<![CDATA[
+				var theDim = this.getAttribute("dim");
+				var styleAttr = "";
+				if (theDim != null && theDim.length > 0)
+					styleAttr = "padding-bottom: " + theDim + ";";
+				var displayForm = this.getAttribute("invisDisplay");
+				var nNumAnonObjs = document.getAnonymousNodes(this).length;
+				var breakObj = document.getAnonymousNodes(this)[0];
+				var firstChild = null;
+				if (breakObj.childNodes.length > 0)
+					firstChild = breakObj.childNodes[0];
+				if (styleAttr.length > 0)
+				{
+					var spanObj = document.createElement("span");
+					spanObj.setAttribute("class", "breakvspace");
+					spanObj.setAttribute("style", styleAttr);
+					var textObj = document.createTextNode(" ");
+					spanObj.appendChild(textObj);
+					if (firstChild != null)
+						breakObj.insertBefore(spanObj, firstChild);
+					else
+						breakObj.appendChild(spanObj);
+				}
 //        if (displayForm != null)
 //        {
 //          var dumpStr = "In displayForm clause; num anonymous nodes is [" + nNumAnonObjs + "], breakObj is [" + breakObj.nodeName + "], firstChild is [";
@@ -1144,84 +1144,84 @@ Make list of figures here
 //            dumpStr += " after insertion breakObj has a child [" + breakObj.childNodes[0].nodeName + "].\n";
 //          dump(dumpStr);
 //        }
-        ]]>
-      </xbl:constructor>
-    </xbl:implementation>
-  </xbl:binding>
+				]]>
+			</xbl:constructor>
+		</xbl:implementation>
+	</xbl:binding>
 
 	<xbl:binding id="mathmsibreak">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <sw:breakobj xbl:inherits="invisDisplay,dim" />
-      <xbl:children />
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
-        var theDim = this.getAttribute("dim");
-        var breakObj = document.getAnonymousNodes(this)[0];
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<sw:breakobj xbl:inherits="invisDisplay,dim" />
+			<xbl:children />
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:constructor>
+				<![CDATA[
+				var theDim = this.getAttribute("dim");
+				var breakObj = document.getAnonymousNodes(this)[0];
 //        var mathObj = null;
 //        var mathObj = document.getAnonymousNodes(this)[0];
-        if (theDim != null && theDim.length > 0)
-        {
-          var mmlNode = document.createElementNS("mml", "mspace");
-          mmlNode.setAttribute("depth", theDim);
-          breakObj.appendChild(mmlNode);
-          //mathObj.setAttribute("depth", theDim);
-          var mmlBreak = document.createElementNS("mml", "mspace");
-          mmlBreak.setAttribute("linebreak", "newline");
-          //mathObj.parentNode.appendChild(mmlBreak);
-          breakObj.appendChild(mmlBreak);
-        }
-        else //just a plain break
-        {
-          var theType = this.getAttribute("type");
-          var mmlTranslations = 
-          {
-            allowBreak: "goodbreak",
-            noBreak:    "nobreak",
-            lineBreak:  "newline",
-            newLine:    "newline",
-            pageBreak:  "newline"
-          };
-          if (theType in mmlTranslations)
-          {
-            var mmlBreak = document.createElementNS("mml", "mspace");
-            mmlBreak.setAttribute("linebreak", mmlTranslations[theType]);
-            //mathObj.setAttribute("linebreak", mmlTranslations[theType]);
-            breakObj.appendChild(mmlBreak);
-          }
-          else
-          {
-            switch(theType)
-            {
-              case "discretionaryHyphen":
-              break;
-              case "newPage":
-              break;
-            }
-          }
-        }
-        ]]>
-      </xbl:constructor>
-    </xbl:implementation>
-  </xbl:binding>
-  
-  <xbl:binding id="otfont">
-	  <xbl:content>
-      <html:span anonid="fontspan"><xbl:children/></html:span>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
-          var style = "font-family: " + this.getAttribute("fontname"); 
-          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
-          span.setAttribute("style", style);  
+				if (theDim != null && theDim.length > 0)
+				{
+					var mmlNode = document.createElementNS("mml", "mspace");
+					mmlNode.setAttribute("depth", theDim);
+					breakObj.appendChild(mmlNode);
+					//mathObj.setAttribute("depth", theDim);
+					var mmlBreak = document.createElementNS("mml", "mspace");
+					mmlBreak.setAttribute("linebreak", "newline");
+					//mathObj.parentNode.appendChild(mmlBreak);
+					breakObj.appendChild(mmlBreak);
+				}
+				else //just a plain break
+				{
+					var theType = this.getAttribute("type");
+					var mmlTranslations = 
+					{
+						allowBreak: "goodbreak",
+						noBreak:    "nobreak",
+						lineBreak:  "newline",
+						newLine:    "newline",
+						pageBreak:  "newline"
+					};
+					if (theType in mmlTranslations)
+					{
+						var mmlBreak = document.createElementNS("mml", "mspace");
+						mmlBreak.setAttribute("linebreak", mmlTranslations[theType]);
+						//mathObj.setAttribute("linebreak", mmlTranslations[theType]);
+						breakObj.appendChild(mmlBreak);
+					}
+					else
+					{
+						switch(theType)
+						{
+							case "discretionaryHyphen":
+							break;
+							case "newPage":
+							break;
+						}
+					}
+				}
+				]]>
+			</xbl:constructor>
+		</xbl:implementation>
+	</xbl:binding>
+	
+	<xbl:binding id="otfont">
+		<xbl:content>
+			<html:span anonid="fontspan"><xbl:children/></html:span>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:constructor>
+				<![CDATA[
+					var style = "font-family: " + this.getAttribute("fontname"); 
+					var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
+					span.setAttribute("style", style);  
 //          this.addEventListener("DOMAttrModified", attrChanged, false);
 //          function attrChanged { this.fontname = this.getAttribute("fontname");}
-      ]]></xbl:constructor>
+			]]></xbl:constructor>
 //      <xbl:property name="fontname">   
 //        <xbl:getter><![CDATA[
 //          return this.getAttribute("fontname");
@@ -1234,33 +1234,33 @@ Make list of figures here
 //          span.setAttribute("style", style);  
 //        ]]></xbl:setter>
 //      </xbl:property>
-    </xbl:implementation>
-  </xbl:binding>
+		</xbl:implementation>
+	</xbl:binding>
 
 
-  
-  <xbl:binding id="fontsize">
-	  <xbl:content>
-      <html:span anonid="fontsizespan"><xbl:children/></html:span>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
+	
+	<xbl:binding id="fontsize">
+		<xbl:content>
+			<html:span anonid="fontsizespan"><xbl:children/></html:span>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:constructor>
+				<![CDATA[
 // size will look like '18/22 pt'
-          var size = this.getAttribute("size");
-          size = size.split('/');  // size[0] is 18, size[1] is 22 pt.
-          var leadingAndUnits = size[1].split(' ');
-          var leading = leadingAndUnits[0];
-          var units = leadingAndUnits[1];
-          var style = "font-size: " + size[0] + units + ";";
-          if (/[1-9]/.test(leading))      // do not add line height if it is zero or blank.
-            style +=  " " + "line-height: " + leading + units; 
-          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
-          dump("Setting style on fontsize object to "+style+"\n");
-          span.setAttribute("style", style);  
+					var size = this.getAttribute("size");
+					size = size.split('/');  // size[0] is 18, size[1] is 22 pt.
+					var leadingAndUnits = size[1].split(' ');
+					var leading = leadingAndUnits[0];
+					var units = leadingAndUnits[1];
+					var style = "font-size: " + size[0] + units + ";";
+					if (/[1-9]/.test(leading))      // do not add line height if it is zero or blank.
+						style +=  " " + "line-height: " + leading + units; 
+					var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
+					dump("Setting style on fontsize object to "+style+"\n");
+					span.setAttribute("style", style);  
 //          this.addEventListener("DOMAttrModified", attrChanged, false);
 //          function attrChanged { this.size = this.getAttribute("size");}
-      ]]></xbl:constructor>
+			]]></xbl:constructor>
 //      <xbl:property name="size">   
 //        <xbl:getter><![CDATA[
 //          return this.getAttribute("size");
@@ -1273,24 +1273,24 @@ Make list of figures here
 //          span.setAttribute("style", style);  
 //        ]]></xbl:setter>
 //      </xbl:property>
-    </xbl:implementation>
-  </xbl:binding>
+		</xbl:implementation>
+	</xbl:binding>
 
-  
-  <xbl:binding id="fontcolor">
-	  <xbl:content>
-      <html:span anonid="fontcolorspan"><xbl:children/></html:span>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
-          var style = "color: " + this.getAttribute("color"); 
-          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontcolorspan");
-          dump("Setting style on fontcolor object to "+style+"\n");
-          span.setAttribute("style", style);  
+	
+	<xbl:binding id="fontcolor">
+		<xbl:content>
+			<html:span anonid="fontcolorspan"><xbl:children/></html:span>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:constructor>
+				<![CDATA[
+					var style = "color: " + this.getAttribute("color"); 
+					var span = document.getAnonymousElementByAttribute(this, "anonid", "fontcolorspan");
+					dump("Setting style on fontcolor object to "+style+"\n");
+					span.setAttribute("style", style);  
 //          this.addEventListener("DOMAttrModified", attrChanged, false);
 //          function attrChanged { this.size = this.getAttribute("size");}
-      ]]></xbl:constructor>
+			]]></xbl:constructor>
 //      <xbl:property name="size">   
 //        <xbl:getter><![CDATA[
 //          return this.getAttribute("size");
@@ -1303,330 +1303,330 @@ Make list of figures here
 //          span.setAttribute("style", style);  
 //        ]]></xbl:setter>
 //      </xbl:property>
-    </xbl:implementation>
-  </xbl:binding>
+		</xbl:implementation>
+	</xbl:binding>
 
 	<xbl:binding id="graph">
-	  <xbl:resources>
-	    <xbl:stylesheet  src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-        <sw:invis>
-          <xbl:children includes="graphSpec"/>
-        </sw:invis>
-        <xbl:children includes="plotwrapper"/>
-        <xbl:children includes="plotcaption"/>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:field name="plotplugin" >
-        this.getElementsByTagName('object')[0];
-      </xbl:field> 
-      <xbl:field name="document" >
-        this.plotplugin.document;
-      </xbl:field>
-      <xbl:field name="camera">
-        this.plotplugin.camera;
-      </xbl:field>
-    <!-- read-only properties -->
-      <xbl:property name="dimension" readonly="true" onget="return this.plotplugin.dimension;" />
-      <xbl:property name="readyState" readonly="true" onget="return this.plotplugin.readyState;" />
-      <xbl:property name="useGdiplus" readonly="true" onget="return this.plotplugin.useGdiplus;" />
-      <xbl:property name="isAnimated" readonly="true" 
-        onget="return this.plotplugin.isAnimated;" />
-      <xbl:property name="beginTime" readonly="true" 
-        onget="return this.plotplugin.beginTime;" />
-      <xbl:property name="endTime" readonly="true" onget="return this.plotplugin.endTime;" />
-    <!-- read-write properties -->
-      <xbl:property name="currentTime" onget="return this.plotplugin.currentTime;"
-        onset="this.plotplugin.currentTime = val; return val;"  />
-      <xbl:property name="cursorTool" onget="return this.plotplugin.cursorTool;"
-        onset="this.plotplugin.cursorTool = val; return val;"  />
-      <xbl:property name="animationLoopingMode" onget="return this.plotplugin.animationLoopingMode;" 
-        onset="this.plotplugin.animationLoopingMode = val; return val;"  />
-      <xbl:property name="animationSpeed" onget="return this.plotplugin.animationSpeed;" 
-        onset="this.plotplugin.animationSpeed = val; return val;"  />
-      <xbl:property name="rotateVerticalAction" onget="return this.plotplugin.rotateVerticalAction;" 
-        onset="this.plotplugin.rotateVerticalAction = val; return val;"  />
-      <xbl:property name="rotateHorizontalAction" onget="return this.plotplugin.rotateHorizontalAction;" 
-        onset="this.plotplugin.rotateHorizontalAction = val; return val;"  />
-      <xbl:property name="zoomAction" onget="return this.plotplugin.zoomAction;" 
-        onset="this.plotplugin.zoomAction = val; return val;"  />
-      <xbl:property name="actionSpeed" onget="return this.plotplugin.actionSpeed;" 
-        onset="this.plotplugin.actionSpeed = val; return val;"  />
-    <!-- methods -->
-      <xbl:method name="startAnimation">
-        <xbl:body>
-          this.plotplugin.startAnimation();
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="stopAnimation">
-        <xbl:body>
-          this.plotplugin.stopAnimation();
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="stepAnimationForwards">
-        <xbl:body>
-          this.plotplugin.stepAnimationForwards();
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="stepAnimationBackwards">
-        <xbl:body>
-          this.plotplugin.stepAnimationBackwards();
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="resetViewpoint">
-        <xbl:body>
-          this.plotplugin.resetViewpoint();
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="fitContents">
-        <xbl:body>
-          this.plotplugin.fitContents();
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="addEvent">
-        <xbl:parameter name="name"/>
-        <xbl:parameter name="handler"/>
-        <xbl:body>
-          this.plotplugin.addEvent(name, handler);
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="removeEvent">
-        <xbl:parameter name="name"/>
-        <xbl:parameter name="handler"/>
-        <xbl:body>
-          this.plotplugin.removeEvent(name, handler);
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="load">
-        <xbl:parameter name="url"/>
-        <xbl:body>
-          this.plotplugin.load(url);
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="makeSnapshot">
-        <xbl:parameter name="snapshotPath"/>
-        <xbl:parameter name="resolution"/>
-        <xbl:body>
-          this.plotplugin.makeSnapshot(abspath,res);
-        </xbl:body>
-      </xbl:method>
-    </xbl:implementation>
-  </xbl:binding>
+		<xbl:resources>
+			<xbl:stylesheet  src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+				<sw:invis>
+					<xbl:children includes="graphSpec"/>
+				</sw:invis>
+				<xbl:children includes="plotwrapper"/>
+				<xbl:children includes="plotcaption"/>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:field name="plotplugin" >
+				this.getElementsByTagName('object')[0];
+			</xbl:field> 
+			<xbl:field name="document" >
+				this.plotplugin.document;
+			</xbl:field>
+			<xbl:field name="camera">
+				this.plotplugin.camera;
+			</xbl:field>
+		<!-- read-only properties -->
+			<xbl:property name="dimension" readonly="true" onget="return this.plotplugin.dimension;" />
+			<xbl:property name="readyState" readonly="true" onget="return this.plotplugin.readyState;" />
+			<xbl:property name="useGdiplus" readonly="true" onget="return this.plotplugin.useGdiplus;" />
+			<xbl:property name="isAnimated" readonly="true" 
+				onget="return this.plotplugin.isAnimated;" />
+			<xbl:property name="beginTime" readonly="true" 
+				onget="return this.plotplugin.beginTime;" />
+			<xbl:property name="endTime" readonly="true" onget="return this.plotplugin.endTime;" />
+		<!-- read-write properties -->
+			<xbl:property name="currentTime" onget="return this.plotplugin.currentTime;"
+				onset="this.plotplugin.currentTime = val; return val;"  />
+			<xbl:property name="cursorTool" onget="return this.plotplugin.cursorTool;"
+				onset="this.plotplugin.cursorTool = val; return val;"  />
+			<xbl:property name="animationLoopingMode" onget="return this.plotplugin.animationLoopingMode;" 
+				onset="this.plotplugin.animationLoopingMode = val; return val;"  />
+			<xbl:property name="animationSpeed" onget="return this.plotplugin.animationSpeed;" 
+				onset="this.plotplugin.animationSpeed = val; return val;"  />
+			<xbl:property name="rotateVerticalAction" onget="return this.plotplugin.rotateVerticalAction;" 
+				onset="this.plotplugin.rotateVerticalAction = val; return val;"  />
+			<xbl:property name="rotateHorizontalAction" onget="return this.plotplugin.rotateHorizontalAction;" 
+				onset="this.plotplugin.rotateHorizontalAction = val; return val;"  />
+			<xbl:property name="zoomAction" onget="return this.plotplugin.zoomAction;" 
+				onset="this.plotplugin.zoomAction = val; return val;"  />
+			<xbl:property name="actionSpeed" onget="return this.plotplugin.actionSpeed;" 
+				onset="this.plotplugin.actionSpeed = val; return val;"  />
+		<!-- methods -->
+			<xbl:method name="startAnimation">
+				<xbl:body>
+					this.plotplugin.startAnimation();
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="stopAnimation">
+				<xbl:body>
+					this.plotplugin.stopAnimation();
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="stepAnimationForwards">
+				<xbl:body>
+					this.plotplugin.stepAnimationForwards();
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="stepAnimationBackwards">
+				<xbl:body>
+					this.plotplugin.stepAnimationBackwards();
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="resetViewpoint">
+				<xbl:body>
+					this.plotplugin.resetViewpoint();
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="fitContents">
+				<xbl:body>
+					this.plotplugin.fitContents();
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="addEvent">
+				<xbl:parameter name="name"/>
+				<xbl:parameter name="handler"/>
+				<xbl:body>
+					this.plotplugin.addEvent(name, handler);
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="removeEvent">
+				<xbl:parameter name="name"/>
+				<xbl:parameter name="handler"/>
+				<xbl:body>
+					this.plotplugin.removeEvent(name, handler);
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="load">
+				<xbl:parameter name="url"/>
+				<xbl:body>
+					this.plotplugin.load(url);
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="makeSnapshot">
+				<xbl:parameter name="snapshotPath"/>
+				<xbl:parameter name="resolution"/>
+				<xbl:body>
+					this.plotplugin.makeSnapshot(abspath,res);
+				</xbl:body>
+			</xbl:method>
+		</xbl:implementation>
+	</xbl:binding>
 
 	<xbl:binding id="collapsible">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <html:button class="expander"  
-        onclick="document.getBindingParent(this).toggle();">-</html:button>
-      <xbl:children />
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:property name="open" readonly="false">
-        <xbl:getter><![CDATA[
-          if (!this.parentNode.hasAttribute("open")) return true;
-          return (this.parentNode.getAttribute("open") == "true");
-          ]]>
-        </xbl:getter>
-        <xbl:setter><![CDATA[
-          this.parentNode.setAttribute("open",val);
-          var buttonsymbol = val==="false"?"+":"-";
-          if (this.parentNode.hasAttribute("subdoc"))
-          {
-            var fname = this.parentNode.getAttribute("subdoc");
-            if (!this.open) this.saveToDisk(fname);
-            else this.getFromDisk(fname);
-          }
-//          var len = document.getAnonymousNodes(this).length;
-          document.getAnonymousNodes(this)[0].textContent=buttonsymbol;
-          
-          ]]>
-        </xbl:setter>
-      </xbl:property>
-      <xbl:method name="toggle">
-        <xbl:body>
-        <![CDATA[
-          if (this.open) this.open = "false";
-          else this.open = "true";
-        ]]>
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="saveToDisk">
-        <xbl:parameter name="fname"/>
-        <xbl:body>
-        <![CDATA[
-          netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-          var serializer = new XMLSerializer();
-          var node = this.parentNode;
-          var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
-                         .createInstance(Components.interfaces.nsIFileOutputStream);
-          var ioService = Components.classes['@mozilla.org/network/io-service;1']  
-                .getService(Components.interfaces.nsIIOService);  
-          var fileHandler = ioService.getProtocolHandler('file')  
-                  .QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
-          var file = fileHandler.getFileFromURLSpec(this.baseURI);  
-          file = file.parent; // and now it points to the working directory
-          file.append(fname+".xml");
-          if (file.exists()) file.remove(false); 
-          foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0);   // write, create, truncate
-          serializer.serializeToStream(node, foStream, "");   
-          foStream.close();
-          // need to delete what we have saved
-          // Remove all nodes after the "this" node
-          var nextnode = node.firstChild;
-          while (nextnode.nodeType != Node.ELEMENT_NODE) nextnode = nextnode.nextSibling;
-          var lastNodeToKeep = nextnode;
-          nextnode = nextnode.nextSibling;
-          while (nextnode)
-          {
-            node.removeChild(nextnode);              
-            nextnode=lastNodeToKeep.nextSibling;
-          }
-        ]]>                                                                                         
-        </xbl:body>
-      </xbl:method>
-      <xbl:method name="getFromDisk">
-        <xbl:parameter name="fname"/>
-        <xbl:body>
-        <![CDATA[
-          netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-          var node = this.parentNode;
-          var ioService = Components.classes['@mozilla.org/network/io-service;1']  
-                .getService(Components.interfaces.nsIIOService);  
-          var fileHandler = ioService.getProtocolHandler('file')  
-                  .QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
-          var file = fileHandler.getFileFromURLSpec(this.baseURI);  
-          file = file.parent; // and now it points to the working directory
-          file.append(fname+".xml");
-          // now convert to URL
-          var url = ioService.newFileURI(file);  
-          var fileURL = url.spec;  
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<xbl:children />
+			<html:button class="expander"  
+				onclick="document.getBindingParent(this).toggle();">-</html:button>
+		</xbl:content>
+		<xbl:implementation>
+			<xbl:property name="open" readonly="false">
+				<xbl:getter><![CDATA[
+					if (!this.parentNode.hasAttribute("open")) return true;
+					return (this.parentNode.getAttribute("open") == "true");
+					]]>
+				</xbl:getter>
+				<xbl:setter><![CDATA[
+					this.parentNode.setAttribute("open",val);
+					var buttonsymbol = val==="false"?"+":"-";
+					if (this.parentNode.hasAttribute("subdoc"))
+					{
+						var fname = this.parentNode.getAttribute("subdoc");
+						if (!this.open) this.saveToDisk(fname);
+						else this.getFromDisk(fname);
+					}
+          var len = document.getAnonymousNodes(this).length;
+ 					document.getAnonymousNodes(this)[len - 1].textContent=buttonsymbol;
+					
+					]]>
+				</xbl:setter>
+			</xbl:property>
+			<xbl:method name="toggle">
+				<xbl:body>
+				<![CDATA[
+					if (this.open) this.open = "false";
+					else this.open = "true";
+				]]>
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="saveToDisk">
+				<xbl:parameter name="fname"/>
+				<xbl:body>
+				<![CDATA[
+					netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+					var serializer = new XMLSerializer();
+					var node = this.parentNode;
+					var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+												 .createInstance(Components.interfaces.nsIFileOutputStream);
+					var ioService = Components.classes['@mozilla.org/network/io-service;1']  
+								.getService(Components.interfaces.nsIIOService);  
+					var fileHandler = ioService.getProtocolHandler('file')  
+									.QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
+					var file = fileHandler.getFileFromURLSpec(this.baseURI);  
+					file = file.parent; // and now it points to the working directory
+					file.append(fname+".xml");
+					if (file.exists()) file.remove(false); 
+					foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0);   // write, create, truncate
+					serializer.serializeToStream(node, foStream, "");   
+					foStream.close();
+					// need to delete what we have saved
+					// Remove all nodes after the "this" node
+					var nextnode = node.firstChild;
+					while (nextnode.nodeType != Node.ELEMENT_NODE) nextnode = nextnode.nextSibling;
+					var lastNodeToKeep = nextnode;
+					nextnode = nextnode.nextSibling;
+					while (nextnode)
+					{
+						node.removeChild(nextnode);              
+						nextnode=lastNodeToKeep.nextSibling;
+					}
+				]]>                                                                                         
+				</xbl:body>
+			</xbl:method>
+			<xbl:method name="getFromDisk">
+				<xbl:parameter name="fname"/>
+				<xbl:body>
+				<![CDATA[
+					netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+					var node = this.parentNode;
+					var ioService = Components.classes['@mozilla.org/network/io-service;1']  
+								.getService(Components.interfaces.nsIIOService);  
+					var fileHandler = ioService.getProtocolHandler('file')  
+									.QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
+					var file = fileHandler.getFileFromURLSpec(this.baseURI);  
+					file = file.parent; // and now it points to the working directory
+					file.append(fname+".xml");
+					// now convert to URL
+					var url = ioService.newFileURI(file);  
+					var fileURL = url.spec;  
 
-          var req = new XMLHttpRequest();
-          req.open("GET", fileURL, false); 
-          req.send(null);
-          // print the name of the root element or error message
-          var dom = req.responseXML;
-          dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
-          var loadedNode = dom.documentElement;
-          var firstChild = loadedNode.firstChild;
-          while (firstChild.nodeType != Node.ELEMENT_NODE) firstChild = firstChild.nextSibling;
-          var importNode = firstChild.nextSibling;
-          while (importNode)
-          {
-            node.appendChild(document.adoptNode(importNode));
-            importNode = firstChild.nextSibling;
-          } 
-          file.remove(false);
-        ]]>
-        </xbl:body>
-      </xbl:method>
-    </xbl:implementation>
-  </xbl:binding>
-  
+					var req = new XMLHttpRequest();
+					req.open("GET", fileURL, false); 
+					req.send(null);
+					// print the name of the root element or error message
+					var dom = req.responseXML;
+					dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
+					var loadedNode = dom.documentElement;
+					var firstChild = loadedNode.firstChild;
+					while (firstChild.nodeType != Node.ELEMENT_NODE) firstChild = firstChild.nextSibling;
+					var importNode = firstChild.nextSibling;
+					while (importNode)
+					{
+						node.appendChild(document.adoptNode(importNode));
+						importNode = firstChild.nextSibling;
+					} 
+					file.remove(false);
+				]]>
+				</xbl:body>
+			</xbl:method>
+		</xbl:implementation>
+	</xbl:binding>
+	
 	<xbl:binding id="citation">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="frontmatter" oncommand="">
-        Cite: <html:span xbl:inherits="xbl:text=citekey"/>
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="frontmatter" oncommand="">
+				Cite: <html:span xbl:inherits="xbl:text=citekey"/>
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
 	<xbl:binding id="bibtexbibliography">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="button" class="frontmatter" oncommand="">
-        BIBTEX
-      </html:button>
-      <html:span style="display:none">
-      <xbl:children/>
-      </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="button" class="frontmatter" oncommand="">
+				BIBTEX
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="bibitem">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+	<xbl:binding id="bibitem">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button type="transparentbutton" class="frontmatter" xbl:inherits="xbl:text=bibitemkey" oncommand=""></html:button>
-      <xbl:children/>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button type="transparentbutton" class="frontmatter" xbl:inherits="xbl:text=bibitemkey" oncommand=""></html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="bibitemwithlabel">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+	<xbl:binding id="bibitemwithlabel">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button class="bibitemlabel" anonid="theButton" oncommand="">
-        <xbl:children includes="biblabel"/>
-        <html:span style="white-space: pre"> (<html:span xbl:inherits="xbl:text=bibitemkey"/>)</html:span>
-      </html:button>
-      <xbl:children/>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button class="bibitemlabel" anonid="theButton" oncommand="">
+				<xbl:children includes="biblabel"/>
+				<html:span style="white-space: pre"> (<html:span xbl:inherits="xbl:text=bibitemkey"/>)</html:span>
+			</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="theoremWithCustomLeadin">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+	<xbl:binding id="theoremWithCustomLeadin">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:button class="envLeadIn" anonid="theButton" oncommand="">
-        <xbl:children includes="envLeadIn"/></html:button>
-      <xbl:children/>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:button class="envLeadIn" anonid="theButton" oncommand="">
+				<xbl:children includes="envLeadIn"/></html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="theoremLeadin">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+	<xbl:binding id="theoremLeadin">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:span style="white-space: pre">(</html:span><xbl:children/><html:span style="white-space: pre">) </html:span>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:span style="white-space: pre">(</html:span><xbl:children/><html:span style="white-space: pre">) </html:span>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="imageCaptionBelow">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+	<xbl:binding id="imageCaptionBelow">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:div class="imagewrapper" xbl-inherits="key">
-        <html:p><html:object xbl-inherits="src,data,title,alt,width,height" /></html:p>
-        <xbl:children includes="imagecaption" />
-      </html:div>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:div class="imagewrapper" xbl-inherits="key">
+				<html:p><html:object xbl-inherits="src,data,title,alt,width,height" /></html:p>
+				<xbl:children includes="imagecaption" />
+			</html:div>
+		</xbl:content>
+	</xbl:binding>
 
-  <xbl:binding id="imageCaptionAbove">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
+	<xbl:binding id="imageCaptionAbove">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
 
-	  <xbl:content>
-      <html:div class="imagewrapper" xbl-inherits="key">
-        <xbl:children includes="imagecaption" />
-        <html:p><html:object xbl-inherits="src,data,title,alt,width,height" /></html:p>
-      </html:div>
-    </xbl:content>
-  </xbl:binding>
+		<xbl:content>
+			<html:div class="imagewrapper" xbl-inherits="key">
+				<xbl:children includes="imagecaption" />
+				<html:p><html:object xbl-inherits="src,data,title,alt,width,height" /></html:p>
+			</html:div>
+		</xbl:content>
+	</xbl:binding>
 
 </xbl:bindings>
