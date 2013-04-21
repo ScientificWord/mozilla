@@ -1046,8 +1046,17 @@ function msiEditorDocumentObserver(editorElement)
               bIsSinglePara = false;
   //          htmlEditor.insertHTML(editorElement.initialEditorContents);
 //              htmlEditor.insertHTMLWithContext(this.mEditorElement.mInitialEditorContents, null, null, "text/html", null,null,0,true);
+            if (("mInitialContentListener" in this.mEditorElement) && this.mEditorElement.mInitialContentListener)
+              htmlEditor.addInsertionListener(this.mEditorElement.mInitialContentListener);
             if (insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara, true))
+            {
               this.mbInsertInitialContents = false;
+              if (("mInitialContentListener" in this.mEditorElement) && this.mEditorElement.mInitialContentListener)
+              {
+                htmlEditor.removeInsertionListener(this.mEditorElement.mInitialContentListener);
+                this.mEditorElement.mInitialContentListener = null;
+              }
+            }
           }
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialContents: " + exc + "\n");}
         }
