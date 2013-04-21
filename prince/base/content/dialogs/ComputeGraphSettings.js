@@ -28,16 +28,22 @@ function getFirstElementByTagName(node, name) {
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
   var plotwrapper, units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
-    plot, theStringSource, oldval, captionnode, placeLocation;
-  var graphEditorControl, capEditorControl, radiusEditorcontrol;
+    plot, theStringSource, oldval, captionnode, placeLocation, obj, frame, topWindow;
+  var graphEditorControl, capEditorControl, radiusEditorControl;
   try {
     var gd = {};
     graphnode = window.arguments[2];
     var editorElement = window.arguments[0];
     graph = new Graph();
     graph.extractGraphAttributes(graphnode);
-    var frame = getFirstElementByTagName(graphnode,"msiframe");
+    frame = getFirstElementByTagName(graphnode,"msiframe");
     plotwrapper = getFirstElementByTagName(graphnode,"plotwrapper");
+    obj = getFirstElementByTagName(graphnode, "object");
+    topWindow = msiGetTopLevelWindow();
+    if (topWindow && topWindow.document && topWindow.document.getElementById("vcamactive") 
+         && (topWindow.document.getElementById("vcamactive").getAttribute("hidden")=="false"))
+      queryVCamValues(obj, graph, graphnode, true);
+
     units = graph["Units"];
     if (!units || units.length === 0) 
     {
@@ -97,6 +103,7 @@ function Startup(){
     graphEditorControl = document.getElementById("plotDlg-content-frame");
     graphEditorControl.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : msiEditorDocumentObserverG}];
     graphEditorControl.mbSinglePara = true;
+    graphEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
 //    graphEditorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
     theStringSource = graph.plots[firstActivePlot].element["Expression"];
 //    msiInitializeEditorForElement(editorControl, theStringSource, true);
@@ -118,6 +125,7 @@ function Startup(){
 
     radiusEditorControl = document.getElementById("plotDlg-tube-radius");
     radiusEditorControl.mbSinglePara = true;
+    radiusEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
     var ptype = graph.getPlotValue ("PlotType", firstActivePlot);
     if (ptype == "tube") {
       theStringSource = graph.plots[firstActivePlot].getPlotValue("TubeRadius");
@@ -149,7 +157,7 @@ function Startup(){
 var msiEditorDocumentObserverG = {
   observe: function (aSubject, aTopic, aData) {
     if (aTopic === "obs_documentCreated") {
-      var plotno = graph["plotnumber"];
+      var plotno = Number(graph["plotnumber"]);
       //      var editor = GetCurrentEditor();
       //      editor.addOverrideStyleSheet("chrome://editor/content/MathVarsDialog.css");
       populateDialog(plotno);
@@ -207,7 +215,7 @@ function OK() {
   editorElement = msiGetParentEditorElementForDialog(window);
   GetValuesFromDialog();
   graph.reviseGraphDOMElement(graphnode, false, editorElement);
-  graph.setGraphAttribute("returnvalue", true);
+  graph.setGraphAttribute("returnvalue", "true");
   //  var editor = msiGetEditor(editorElement);
   changed = true;
   if (changed) {
@@ -223,13 +231,13 @@ function OK() {
   catch (e) {}
   var parentWindow = window.opener;
   parentWindow.ensureVCamPreinitForPlot(graphnode, editorElement);
-//  var obj = graphnode.getElementsByTagName("object");
-//  if (obj && obj.length)
-//  {
-//    obj = obj[0];
-//    if (obj)
-//      doVCamPreInitialize(obj, graph);
-//  }
+  var obj = graphnode.getElementsByTagName("object");
+  if (obj && obj.length)
+  {
+    obj = obj[0];
+    if (obj)
+      parentWindow.doVCamInitialize(obj);
+  }
 
   return true;
 }
@@ -263,7 +271,7 @@ function GetValuesFromDialog(){
   // we save data for only the currently displayed plot, since the others are
   // already saved.
 //  var alist  = Plot.prototype.plotAttributeList();                                
-  var plotno = graph.getGraphAttribute("plotnumber");
+  var plotno = Number(graph.getGraphAttribute("plotnumber"));
   var plot = graph.plots[plotno];
   var alist  = plot.plotAttributeList();                                
   if (!plot) return;
@@ -518,7 +526,7 @@ function ExtractTextFromNode (node) {
 }
 
 function Cancel(){
-  graph.setGraphAttribute("returnvalue", false);
+  graph.setGraphAttribute("returnvalue", "false");
 }
 
 // This is the callback for the command button to add a new plot
@@ -529,7 +537,7 @@ function addPlot () {
   try
   {
     GetValuesFromDialog();
-    graph.setGraphAttribute("returnvalue", false);                 
+    graph.setGraphAttribute("returnvalue", "false");
     addPlotDialogContents();
   }
   catch(e){
@@ -539,7 +547,7 @@ function addPlot () {
 
 function plotValuesToCopy(oldplot)
 {
-  var copyAttrs = oldplot.plotAttributsList().concat(copyAttrs);
+  var copyAttrs = oldplot.plotAttributeList().concat(copyAttrs);
   copyAttrs = attributeArrayRemove(copyAttrs, "PlotStatus");
   copyAttrs = copyAttrs.concat(oldplot.plotElementList());
   copyAttrs = attributeArrayRemove(copyAttrs, "Expression");
@@ -551,7 +559,7 @@ function addPlotDialogContents () {
   var plot = new Plot();
   graph.addPlot(plot);
   var plotnum = graph.getNumActivePlots();
-  graph.setGraphAttribute("plotnumber", getPlotInternalNum(plotnum));
+  graph.setGraphAttribute("plotnumber", String(getPlotInternalNum(plotnum)));
   var plotNumControl  = document.getElementById('plotnumber');
   plotNumControl.max = plotnum;
   plotNumControl.valueNumber = plotnum;
@@ -562,6 +570,7 @@ function addPlotDialogContents () {
 //  document.getElementById("plot").selectedItem = newElement; 
   // grab the plottype from plot 1 and set it as default
   var firstPlotNum = getPlotInternalNum(1);
+  plotnum = getPlotInternalNum(plotnum);
   var copyAttrs;
   if (plot.attributes["PlotType"] == "")
     plot.attributes["PlotType"] = "rectangular";
@@ -571,7 +580,7 @@ function addPlotDialogContents () {
     copyAttrs = plotValuesToCopy(graph.plots[firstPlotNum]);
     plot.copyAttributes(graph.plots[firstPlotNum], copyAttrs);
   }
-  populateDialog (plotnum);   
+  populateDialog (plotnum);
 }         
 
 //// This is the callback for the command button to edit a plot
@@ -605,7 +614,8 @@ function deletePlot () {
   if (newplotno < 0) {   // no undeleted plots, add one.
     addPlotDialogContents();
   } else {               // use the next plot
-    graph.setGraphAttribute("plotnumber", getPlotInternalNum(newplotno));
+    newplotno = getPlotInternalNum(newplotno);
+    graph.setGraphAttribute("plotnumber", String(newplotno));
     populateDialog (newplotno);
   }
 }
@@ -621,7 +631,7 @@ function changePlotType () {
   var oldpt = graph.getPlotValue ("PlotType", plotno);                        
 //  if ((plotno == null) || (plotno == "")) {
 //  }
-  graph.setGraphAttribute("plotnumber", plotno);
+  graph.setGraphAttribute("plotnumber", String(plotno));
   var newpt;
   if (dim == 3) {
     newpt = document.getElementById("pt3d").value;            
@@ -640,7 +650,7 @@ function changePlotType () {
 function changePlot () {
   // save any changes to this plot, then change plots. Cancel ignores all changes
   GetValuesFromDialog();
-  graph.setGraphAttribute("returnvalue", false);                 
+  graph.setGraphAttribute("returnvalue", "false");
 
   // extract the plot number from the dialog
   var plotno = document.getElementById("plotnumber").value; 
@@ -648,7 +658,7 @@ function changePlot () {
     plotno = 1;
   }
   plotno = getPlotInternalNum(plotno);
-  graph.setGraphAttribute("plotnumber", plotno);
+  graph.setGraphAttribute("plotnumber", String(plotno));
   populateDialog (plotno);
 }
 
@@ -713,7 +723,7 @@ function populateDialog (plotno) {
       if (oldplotno >= 0)
         graph.plots[oldplotno].element["TubeRadius"] = radiusStringSource;
     }
-    graph["plotnumber"] = plotno;
+    graph["plotnumber"] = String(plotno);
     theStringSource = graph.plots[plotno].element["Expression"];
     if (!theStringSource || (theStringSource.length === 0))
     {
@@ -724,7 +734,9 @@ function populateDialog (plotno) {
       math.removeChild(math.firstChild);
     }
 //    insertXML(editor, theStringSource, math, 0, false);
+    editor.addInsertionListener(invisibleMathOpFilter);   //in plotDlgUtils.js
     editor.insertHTMLWithContext(theStringSource, "", "", "", null, math, 0, false);
+    editor.removeInsertionListener(invisibleMathOpFilter);
     graph.currentDisplayedPlot = plotno;
     if (ptype == "tube")
     {
@@ -733,7 +745,9 @@ function populateDialog (plotno) {
         radiusStringSource = GetComputeString("Math.emptyForInput");
       while (radiusMath.firstChild)
         radiusMath.removeChild(radiusMath.firstChild);
+      radiusEditor.addInsertionListener(invisibleMathOpFilter);   //in plotDlgUtils.js
       radiusEditor.insertHTMLWithContext(radiusStringSource, "", "", "", null, radiusMath, 0, false);
+      radiusEditor.removeInsertionListener(invisibleMathOpFilter);   //in plotDlgUtils.js
     }
   }
   catch (e)
@@ -1165,12 +1179,18 @@ function makeAxisLabelCustom(control)
 function changeDefaultViewIntervals()
 {
   var control = document.getElementById("defaultviewintervals");
-  document.getElementById("viewRangesActive").setAttribute( "disabled", (control.checked ? "true" : "false") );
+  if (control.checked)
+    document.getElementById("viewRangesActive").setAttribute("disabled", "true");
+  else
+    document.getElementById("viewRangesActive").removeAttribute("disabled");
 }
 
 function changeDefaultCamera()
 {
-  document.getElementById("customCameraProperties").setAttribute( "disabled", (document.getElementById("defaultCameraCheckbox").checked ? "true" : "false") );
+  if (document.getElementById("defaultCameraCheckbox").checked)
+    document.getElementById("customCameraProperties").setAttribute("disabled", "true");
+  else
+    document.getElementById("customCameraProperties").removeAttribute("disabled");
 }
 
 function changeAIMethod()
