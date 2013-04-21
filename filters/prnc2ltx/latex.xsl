@@ -997,8 +997,16 @@ should not be done under some conditions -->
 
 <xsl:template match="html:rawTeX">
   <xsl:value-of select="@tex"/>
-    <xsl:if test="not(string-length(translate(@tex,'}','')) &gt; string-length(translate(@tex,'{','')))">{</xsl:if>
-    <xsl:apply-templates/>}</xsl:template>
+  <xsl:choose>
+    <xsl:when test="@post">
+      <xsl:apply-templates/><xsl:value-of select="@post"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:if test="not(string-length(translate(@tex,'}','')) &gt; string-length(translate(@tex,'{','')))">{</xsl:if>
+      <xsl:apply-templates/>}
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template match="html:graphSpec">
 </xsl:template>

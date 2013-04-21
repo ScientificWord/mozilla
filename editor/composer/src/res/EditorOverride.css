@@ -87,8 +87,8 @@ a:link {
 input, button, textarea {
   -moz-user-select: all !important;
   -moz-user-input: auto !important;
-/*  -moz-user-focus: none !important;
-*/}
+  -moz-user-focus: none !important;
+}
 
 
 /* XXX Still need a better way of blocking other events to these widgets */
@@ -96,8 +96,8 @@ select, input[disabled], input[type="checkbox"], input[type="radio"], input[type
 button [class="frontmattertag"]{
   -moz-user-select: all !important;
   -moz-user-input: none !important;
-/*  -moz-user-focus: none !important;
-*/  -moz-user-modify: read-only  !important;
+  -moz-user-focus: none !important;
+  -moz-user-modify: read-only  !important;
 }
 
 isindex[prompt]
@@ -366,7 +366,7 @@ a[\_moz_anonclass="mozTableRemoveRow"]:active {
 
 
 button [class="frontmattertag"] {
-/*  -moz-user-select: none;  
-*/  -moz-user-modify: read-only;
+  -moz-user-select: none;  
+  -moz-user-modify: read-only;
 }
 
