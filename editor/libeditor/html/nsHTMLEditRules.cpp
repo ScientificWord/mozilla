@@ -3598,8 +3598,8 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
         if (!name.EqualsLiteral("body")){
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
-         mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"), name, nsnull, &isFrontMatterTag);
-          if (isParagraph || isTextTag || isFrontMatterTag || name.EqualsLiteral("td"))
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"), name, nsnull, &isFrontMatterTag);
+          if (isParagraph || isTextTag || /*isFrontMatterTag ||*/ name.EqualsLiteral("td"))
           {
             done = PR_TRUE;
             break;
@@ -4421,6 +4421,8 @@ nsHTMLEditRules::WillMakeBasicBlock(nsISelection *aSelection,
       if (!success) res = aSelection->Collapse(theBlock,0);
       selectionResetter.Abort();  // to prevent selection reseter from overriding us.
       *aHandled = PR_TRUE;
+      PRBool didSetCursor;
+      mHTMLEditor->SetSelectionOnCursorTag(theBlock, &didSetCursor);
     }
     return res;
   }
@@ -8388,6 +8390,8 @@ nsHTMLEditRules::ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsA
       if (NS_FAILED(res)) return res;
     }
   }
+  PRBool didSetCursor;
+  mHTMLEditor->SetSelectionOnCursorTag(newBlock, &didSetCursor);
   return res;
 }
 

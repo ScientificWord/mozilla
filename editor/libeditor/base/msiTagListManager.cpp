@@ -916,7 +916,7 @@ NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom
 NS_IMETHODIMP msiTagListManager::GetTagInClass(const nsAString & strTagClass, const nsAString & strTag, nsIAtom *atomNS, PRBool *_retval)
 {
   nsAutoString strClass;
-  GetRealClassOfTag(strTag, atomNS, strClass);
+  GetClassOfTag(strTag, atomNS, strClass);
   *_retval = (strTagClass.Equals(strClass));
   return NS_OK;  
 }
@@ -1168,6 +1168,7 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
   return NS_OK;
 }
 
+
 // 
 NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, nsIAtom *atomNS, nsIDOMDocument * doc, nsIDOMNode **_retval)
 {
@@ -1177,6 +1178,8 @@ NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, 
   strKey = strTag; 
   TagData * data;    
   nsCOMPtr<nsIDOMNode> retNode;
+  nsCOMPtr<nsIDOMNodeList> nodelist;
+  PRBool setCursor = PR_FALSE;
   
   PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
   if (fInHash && data && doc && data->initialContents)
@@ -1292,37 +1295,14 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
         return NS_OK;
       }
     }
-  //  if (!pnode) pnode = *secondNode;
-  //#if DEBUG_barry || DEBUG_Barry
-  //  editor->DumpNode(pnode,0);
-  //#endif        
     nsCOMPtr<nsIDOMNode> pnode = *secondNode;
-    nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
     if (pnode)
     {
-      nsCOMPtr<nsIDOMElement> element;
-      nsCOMPtr<nsIDOMNodeList> nodeList;
-      nsCOMPtr<nsIDOMNode> node, selNode;
-      PRUint32 nodeCount;
-      PRInt32 selOffset; 
-      element = do_QueryInterface(pnode);
-      rv = element->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
-      if (nodeList) nodeList->GetLength(&nodeCount);
-      if (nodeCount > 0)
-      {
-        nodeList->Item(0, getter_AddRefs(node));
-        nsEditor::GetNodeLocation(node, address_of(selNode), &selOffset);
-        editor->DeleteNode(node);
-        selPriv->SetInterlinePosition(PR_TRUE);
-        rv = selection->Collapse(selNode, selOffset);
-  //      rv = selection->Extend( selNode, selOffset+1 );
-  #if DEBUG_barry || DEBUG_Barry
-        editor->DumpNode(selNode,0);
-  #endif
+      PRBool setCursor;
+      editor->SetSelectionOnCursorTag( pnode, &setCursor);
+      if (setCursor)
         return NS_OK;
-      }
     }
-
     rv = selection->Collapse(*secondNode, 0);
   }
 // diagnostics:
