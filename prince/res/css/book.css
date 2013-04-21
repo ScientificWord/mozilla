@@ -199,10 +199,6 @@ button[class="msi"]{
   left: 5px;
 }
 
-maketitle, maketoc, makelof, makelot {
-  display: block;
-}
-
 /**********************/
 /* Main text elements */
 /**********************/

@@ -424,6 +424,8 @@ button[class="msi"]::-moz-selection, button[class="msi"][selected="true"] {
 texb, makelof, makelot, maketitle, maketoc{
   font-family: sans-serif;
   font-style: normal;
+  -moz-user-select: all;
+
 } 
 
 mml|menclose {
