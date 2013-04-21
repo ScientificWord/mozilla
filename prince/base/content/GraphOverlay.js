@@ -550,7 +550,58 @@ Graph.prototype = {
   setGraphAttribute: function (name, value) {
     if (!value || !value.length)
       value = this.getDefaultValue(name);
+    var bChanged = this.isValueDifferent(name, value);
     this[name] = value;
+    return bChanged;
+  },
+  isValueDifferent : function(name, value) {
+    var sigDigits = this.significantDigitsInVal(name);
+    if ((!this[name] || !this[name].length) && (value && value.length))
+      return true;
+    if ((this[name] && this[name].length) && (!value || !value.length))
+      return true;
+    if (sigDigits)
+      return ( useSignificantDigits(value, sigDigits) != useSignificantDigits(this[name], sigDigits) );
+    if (name == "userSetAttrs")
+    {
+      for (var ii = 0; ii < this.userSetAttrs.length; ++ii)
+      {
+        if (this.userSetAttrs[ii] != value[ii])
+          return true;
+      }
+      return false;
+    }
+    return (!(value == this[name]));
+  },
+  significantDigitsInVal : function(attr)
+  {
+    switch(attr)
+    {
+      case "ViewingBoxXMin":
+      case "ViewingBoxXMax":
+      case "ViewingBoxYMin":
+      case "ViewingBoxYMax":
+      case "ViewingBoxZMin":
+      case "ViewingBoxZMax":
+        return 4;
+      break;
+      case "CameraLocationX":
+      case "CameraLocationY":
+      case "CameraLocationZ":
+      case "FocalPointX":
+      case "FocalPointY":
+      case "FocalPointZ":
+      case "UpVectorX":
+      case "UpVectorY":
+      case "UpVectorZ":
+        return 4;
+      break;
+      case "ViewingAngle":
+        return 3;
+      break;
+      default:           return 0;   
+      break;
+    }
   },
   setPlotValue : function(name, plotnum, value) {
     if (plotnum < this.plots.length)
@@ -593,12 +644,13 @@ Graph.prototype = {
       default:  return null;
     }
   },
-  setCameraValsFromVCam : function(cameraVals, domGraph) {
+  setCameraValsFromVCam : function(cameraVals, domGraph, bUserSetIfChanged) {
     if (cameraVals != null)
     {
       msidump("Got camera vals from VCam:\n");
       var attrName;
       var graphSpec;
+      var bChanged = false;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
         graphSpec = graphSpecList[0];
@@ -606,20 +658,32 @@ Graph.prototype = {
       {
         msidump("  " + aProp + " = " + cameraVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
-        if (!this.isUserSet(attrName))
+        if (bUserSetIfChanged || !this.isUserSet(attrName))
         {
-          this.setGraphAttribute(attrName, cameraVals[aProp]);
+          bChanged = this.setGraphAttribute(attrName, cameraVals[aProp]) || bChanged;
           if (graphSpec)
             graphSpec.setAttribute(attrName, cameraVals[aProp]);
         }
       }
+      if (bUserSetIfChanged && bChanged)
+      {
+        for (var aProp in cameraVals)
+        {
+          attrName = this.mapVCamNameToAttr(aProp);
+          if (attrName)
+            this.markUserSet(attrName, true);
+        }
+        if (graphSpec)
+          graphSpec.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
+      }
     }
   },
-  setAnimationValsFromVCam : function(animVals, domGraph) {
+  setAnimationValsFromVCam : function(animVals, domGraph, bUserSetIfChanged) {
     if (animVals != null)
     {
       msidump("Got camera vals from VCam:\n");
       var attrName;
+      var bChanged = false;
       var graphSpec;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
@@ -628,20 +692,32 @@ Graph.prototype = {
       {
         msidump("  " + aProp + " = " + animVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
-        if (attrName && !this.isUserSet(attrName))
+        if ( attrName && (bUserSetIfChanged || !this.isUserSet(attrName)) )
         {
-          this.setGraphAttribute(attrName, animVals[aProp]);
+          bChanged = this.setGraphAttribute(attrName, animVals[aProp]) || bChanged;
           if (graphSpec)
             graphSpec.setAttribute(attrName, animVals[aProp]);
         }
       }
+      if (bUserSetIfChanged && bChanged)
+      {
+        for (var aProp in animVals)
+        {
+          attrName = this.mapVCamNameToAttr(aProp);
+          if (attrName)
+            this.markUserSet(attrName, true);
+        }
+        if (graphSpec)
+          graphSpec.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
+      }
     }
   },
-  setCoordSysValsFromVCam : function(coordSysVals, domGraph) {
+  setCoordSysValsFromVCam : function(coordSysVals, domGraph, bUserSetIfChanged) {
     if (coordSysVals != null)
     {
       msidump("Got coord sys vals from VCam:\n");
       var attrName;
+      var bChanged = false;
       var graphSpec;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
@@ -650,12 +726,23 @@ Graph.prototype = {
       {
         msidump("  " + aProp + " = " + coordSysVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
-        if (!this.isUserSet(attrName))
+        if (bUserSetIfChanged || !this.isUserSet(attrName))
         {
-          this.setGraphAttribute(attrName, coordSysVals[aProp]);
+          bChanged = this.setGraphAttribute(attrName, coordSysVals[aProp]) || bChanged;
           if (graphSpec)
             graphSpec.setAttribute(attrName, coordSysVals[aProp]);
         }
+      }
+      if (bUserSetIfChanged && bChanged)
+      {
+        for (var aProp in coordSysVals)
+        {
+          attrName = this.mapVCamNameToAttr(aProp);
+          if (attrName)
+            this.markUserSet(attrName, true);
+        }
+        if (graphSpec)
+          graphSpec.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
       }
     }
   },
@@ -3680,6 +3767,96 @@ function convertSphericalToCartesian(rho, theta, phi)
   var yval = Math.sin(theta) * planeLength;
   var zval = Math.cos(phi) * rho;
   return [xval, yval, zval];
+}
+
+var numberRE = /(\-)?([0-9]+)?(\.[0-9]+)?/;  //Or delete the leading minus?
+var sciNotationNumberRE = /(\-)?([0-9]+)?(\.[0-9]+)?e(\-?[0-9]+)/i;  //Or delete the leading minus?
+
+function useSignificantDigits(aVal, sigDigits)
+{
+  var scinotation = sciNotationNumberRE.exec(aVal);
+  var number;
+  var neg, whole, dec, exp, theDigits, firstPos, jj;
+  var retStr = "";
+  if (!scinotation || !scinotation[0])
+  {
+    number = numberRE.exec(aVal);
+    if (!number || !number[0])
+      return aVal;  //can't do anything with it!?
+    neg = (number[1]=="-") ? true : false;
+    whole = number[2] ? number[2] : "";
+    dec = number[3] ? number[3].substr(1) : ""; //skip the decimal point
+    exp = 0;
+  }
+  else
+  {
+    neg = (scinotation[1]=="-") ? true : false;
+    whole = scinotation[2] ? scinotation[2] : "";
+    dec = scinotation[3] ? scinotation[3].substr(1) : ""; //skip the decimal point
+    exp = (scinotation[4] && scinotation[4].length) ? Number(scinotation[4]) : 0;
+    if (isNaN(exp))
+      exp = 0;
+  }
+  if ((whole.length + dec.length) <= sigDigits)
+    return aVal;
+  theDigits = whole + dec;
+  firstPos = theDigits.search(/[^0]/);
+  if (firstPos < 0)
+    return "0";
+  var bCarry = false;
+  if (firstPos + sigDigits < theDigits.length)
+  {
+    if (theDigits[firstPos + sigDigits] == '5')
+    {
+      if ( (firstPos + sigDigits + 1 < theDigits.length) && (theDigits.substr(firstPos + sigDigits + 1).match(/[^0]/)) )
+        bCarry = true;
+      else
+        bCarry = !neg;
+    }
+    else if (Number(theDigits[firstPos + sigDigits]) > 5)
+      bCarry = true;
+    jj = 0;
+    if (bCarry)
+    {
+      for (jj = firstPos + sigDigits - 1; bCarry && (jj >= 0); --jj)
+      {
+        bCarry = (theDigits[jj] == '9');
+        retStr = (bCarry ? '0' : String(Number(theDigits[jj]) + 1) ) + retStr;
+      }
+      if (bCarry)
+        theDigits = "1" + retStr.substr(0,retStr.length - 1);
+      else
+        theDigits = theDigits.substr(firstPos, jj+1-firstPos) + retStr;
+    }
+    else
+      theDigits = theDigits.substr(firstPos, sigDigits);
+  }
+  else
+    theDigits = theDigits.substr(firstPos);
+  exp += whole.length - firstPos - 1;
+  neg = (neg ? "-" : "");
+  if ( (exp >= sigDigits) || (exp <= -(sigDigits)) )
+  {
+    if (theDigits.length <= 1)
+      theDigits += "0";
+    retStr = neg + theDigits[0] + "." + theDigits.substr(1) + "e" + exp;
+  }
+  else if (exp < 0)
+  {
+    retStr = neg + "0.";
+    for (jj = 1; jj < (-exp); ++jj)
+      retStr += "0";
+    retStr += theDigits;
+  }
+  else
+  {
+    retStr = neg + theDigits.substr(0, exp + 1);
+    if (exp + 1 < sigDigits)
+      retStr += "." + theDigits.substr(exp+1);
+//    for (jj = 0; jj < sigDigits - exp; ++jj)
+//      retStr += "0";
+  }
+  return retStr;
 }
 
 var plotObserver = {
