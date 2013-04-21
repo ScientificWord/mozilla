@@ -685,9 +685,10 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
   var tagmanager = editor.tagListManager;
 	var tagclass;
 // BBM. I rather late in the game changed this to get the commandID from newState in the case of tag commands
-	if (commandID == 'cmd_paratag' || commandID == 'cmd_texttag' || commandID == 'cmd_listtag' || commandID == 'cmd_structtag' || commandID == 'cmd_envtag')
+	if (commandID == 'cmd_paratag' || commandID == 'cmd_texttag' || commandID == 'cmd_listtag' || 
+    commandID == 'cmd_structtag' || commandID == 'cmd_envtag' || commandID == 'cmd_frontmtag')
 	{
-		if (tagmanager) tagclass = tagmanager.getRealClassOfTag(newState, null);
+		if (tagmanager) tagclass = tagmanager.getClassOfTag(newState, null);
 		switch (tagclass)
 		{
 			case 'paratag' : commandID = 'cmd_paratag'; break;
@@ -695,6 +696,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
 			case 'structtag' : commandID = 'cmd_structtag'; break;
 			case 'envtag' : commandID = 'cmd_envtag'; break;
 			case 'texttag' : commandID = 'cmd_texttag'; break;
+      case 'frontmtag' : commandID = 'cmd_frontmtag'; break;
 		}
 	}
   if (msiDeferStatefulCommand(commandID, newState, editorElement))
@@ -710,6 +712,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
 
   try
   {
+    // BBM: we need the next line of code in a number of places.
     editorElement.contentWindow.focus();   // needed for command dispatch to work
 
     var cmdParams = newCommandParams();
@@ -730,8 +733,19 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     {
       msiGoDoCommand('cmd_removeenv');
     }
-    else
-      msiGoDoCommandParams(commandID, cmdParams, editorElement);
+    else if (commandID=="cmd_frontmtag" && (newState === 'maketitle' || newState === 'maketoc' || newState === 'makelof' || newState === 'makelot'))
+    {
+      // var thenode = editor.document.createElement(newState);
+      // editor.insertElementAtSelection(thenode, true);
+      focusOnEditor();
+      var dataString="&lt;"+newState+"/&gt;";
+      var contextString = "";
+      var infoString="(0,0)";
+      editor.insertHTMLWithContext(dataString,
+-                                   contextString, infoString, "text/html",
+-                                   null,null,0,true);    
+    }
+    else msiGoDoCommandParams(commandID, cmdParams, editorElement);
     // BBM: temporary hack!
     switch (commandID)
     {
