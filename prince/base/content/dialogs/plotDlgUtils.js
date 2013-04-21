@@ -1,5 +1,6 @@
-var numberRE = /(\-)?([0-9]+)?(\.[0-9]+)?/;  //Or delete the leading minus?
-var sciNotationNumberRE = /(\-)?([0-9]+)?(\.[0-9]+)?e(\-?[0-9]+)/i;  //Or delete the leading minus?
+//Following have been moved to GraphOverlay.js
+//var numberRE = /(\-)?([0-9]+)?(\.[0-9]+)?/;  //Or delete the leading minus?
+//var sciNotationNumberRE = /(\-)?([0-9]+)?(\.[0-9]+)?e(\-?[0-9]+)/i;  //Or delete the leading minus?
 
 function getValueFromControlByID(anID)
 {
@@ -166,100 +167,65 @@ function testUseSignificantDigits()
   reportResults("0.0875631", 3, "0.0876");
 }
 
-function useSignificantDigits(aVal, sigDigits)
-{
-//var numberRE = /(\-)?([0-9]+)?(\.[0-9]+)?/;  //Or delete the leading minus?
-//var sciNotationNumberRE = /(\-)?([0-9]+)?(\.[0-9]+)?e(\-?[0-9]+)/i;  //Or delete the leading minus?
-  var scinotation = sciNotationNumberRE.exec(aVal);
-  var number;
-  var neg, whole, dec, exp, theDigits, firstPos, jj;
-  var retStr = "";
-  if (!scinotation || !scinotation[0])
-  {
-    number = numberRE.exec(aVal);
-    if (!number || !number[0])
-      return aVal;  //can't do anything with it!?
-    neg = (number[1]=="-") ? true : false;
-    whole = number[2] ? number[2] : "";
-    dec = number[3] ? number[3].substr(1) : ""; //skip the decimal point
-    exp = 0;
-  }
-  else
-  {
-    neg = (scinotation[1]=="-") ? true : false;
-    whole = scinotation[2] ? scinotation[2] : "";
-    dec = scinotation[3] ? scinotation[3].substr(1) : ""; //skip the decimal point
-    exp = (scinotation[4] && scinotation[4].length) ? Number(scinotation[4]) : 0;
-    if (isNaN(exp))
-      exp = 0;
-  }
-  if ((whole.length + dec.length) <= sigDigits)
-    return aVal;
-  theDigits = whole + dec;
-  firstPos = theDigits.search(/[^0]/);
-  if (firstPos < 0)
-    return "0";
-  var bCarry = false;
-  if (firstPos + sigDigits < theDigits.length)
-  {
-    if (theDigits[firstPos + sigDigits] == '5')
-    {
-      if ( (firstPos + sigDigits + 1 < theDigits.length) && (theDigits.substr(firstPos + sigDigits + 1).match(/[^0]/)) )
-        bCarry = true;
-      else
-        bCarry = !neg;
-    }
-    else if (Number(theDigits[firstPos + sigDigits]) > 5)
-      bCarry = true;
-    jj = 0;
-    if (bCarry)
-    {
-      for (jj = firstPos + sigDigits - 1; bCarry && (jj >= 0); --jj)
-      {
-        bCarry = (theDigits[jj] == '9');
-        retStr = (bCarry ? '0' : String(Number(theDigits[jj]) + 1) ) + retStr;
-      }
-      if (bCarry)
-        theDigits = "1" + retStr.substr(0,retStr.length - 1);
-      else
-        theDigits = theDigits.substr(firstPos, jj+1-firstPos) + retStr;
-    }
-    else
-      theDigits = theDigits.substr(firstPos, sigDigits);
-  }
-  else
-    theDigits = theDigits.substr(firstPos);
-  exp += whole.length - firstPos - 1;
-  neg = (neg ? "-" : "");
-  if ( (exp >= sigDigits) || (exp <= -(sigDigits)) )
-  {
-    if (theDigits.length <= 1)
-      theDigits += "0";
-    retStr = neg + theDigits[0] + "." + theDigits.substr(1) + "e" + exp;
-  }
-  else if (exp < 0)
-  {
-    retStr = neg + "0.";
-    for (jj = 1; jj < (-exp); ++jj)
-      retStr += "0";
-    retStr += theDigits;
-  }
-  else
-  {
-    retStr = neg + theDigits.substr(0, exp + 1);
-    if (exp + 1 < sigDigits)
-      retStr += "." + theDigits.substr(exp+1);
-//    for (jj = 0; jj < sigDigits - exp; ++jj)
-//      retStr += "0";
-  }
-  return retStr;
-}
-
 function makeColorVal(attribStr)
 {
   var retVal = attribStr.replace(/^#?([0-9a-fA-F]{1,6}).*$/,"#$1");
   return retVal; 
 }
+
+var invisibleMathOpFilter = 
+{
+  //parameters: in AString mimeType, in nsIURL contentSourceURL, in nsIDOMDocument sourceDocument,
+  //               in PRBool willDeleteSelection, inout nsIDOMNode docFragment, inout nsIDOMNode contentStartNode,
+  //               inout long contentStartOffset, inout nsIDOMNode contentEndNode, inout long contentEndOffset,
+  //               inout nsIDOMNode insertionPointNode, inout long insertionPointOffset, 
+  //               out boolean continueWithInsertion);
+  notifyOfInsertion : function(mimeType, contentSourceURL, sourceDocument, willDeleteSelection,
+                               docFragment, contentStartNode, contentStartOffset,
+                               contentEndNode, contentEndOffset, insertionPointNode,
+                               insertionPointOffset, continueWithInsertion)
+  {
+    //Set up for the simple case, since that's all we should encounter in our context
+    if ((contentEndNode.value != contentStartNode.value) || (contentStartNode.value != docFragment.value))
+    {
+      msidump("In plotDlgUtils.js, invisibleMathOpFilter, found different start and end nodes for fragment! Aborting...\n");
+      return;
+    }
+    if ((contentStartOffset.value != 0) || (contentEndOffset.value < contentEndNode.value.childNodes.length))
+    {
+      msidump("In plotDlgUtils.js, invisibleMathOpFilter, startOffset not 0 or endOffset not at node end!\n");
+      return;
+    }
+    var child, ii, jj;
+    var opList, opNode, text;
+    continueWithInsertion.value = true;
+    for (jj = docFragment.value.childNodes.length - 1; jj >= 0; --jj)
+    {
+      child = docFragment.value.childNodes[jj];
+      text = "";
+      if (child.nodeName == "mo")
+        text = child.textContent;
+      if ((text == "\u2061") || (text == "\u2062") || (text == "\u2063"))
+      {
+        docFragment.removeChild(child);
+        continue;
+      }
+      opList = child.getElementsByTagName("mo");
+      for (ii = opList.length - 1; ii >= 0; --ii)
+      {
+        opNode = opList.item(ii);
+        text = opNode.textContent;
+        if ((text == "\u2061") || (text == "\u2062") || (text == "\u2063"))
+        {
+          if (opNode.parentNode)
+            opNode.parentNode.removeChild(opNode);
+          else if (opNode == contentStartNode)
+            continueWithInsertion.value = false;
+        }
+      }
+    }
+  }
+};
 
 function putMathMLExpressionToControlByID(ctrlID, expr)
 {
@@ -296,7 +262,9 @@ function putMathMLExpressionToControl(ctrl, expr)
           topNode.parentNode.removeChild(topNode.nextSibling);
         while (topNode.firstChild)
           topNode.removeChild(topNode.firstChild);
+        editor.addInsertionListener(invisibleMathOpFilter);
         editor.insertHTMLWithContext(expr, "", "", "", null, topNode, 0, false);
+        editor.removeInsertionListener(invisibleMathOpFilter);
       }
     break;
 
