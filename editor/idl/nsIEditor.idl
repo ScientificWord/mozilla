@@ -524,6 +524,8 @@ interface nsIEditor  : nsISupports
    */
   void markNodeDirty(in nsIDOMNode node);
 
+  boolean  setSelectionOnCursorTag( in nsIDOMNode node);
+
 /* ---------- direction controller ---------- */
 
   /** 
