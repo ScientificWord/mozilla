@@ -317,11 +317,21 @@ U32 PlotServiceRequest::NameToPID (const char *name) {
   if (s == "UpVectorY")         return (PID_GraphUpVectorY      );  
   if (s == "UpVectorZ")         return (PID_GraphUpVectorZ      );  
   if (s == "ViewingAngle")      return (PID_GraphViewingAngle   );  
-  if (s == "OrthogonalProjection") return (PID_GraphOrthogonalProjection);  
-  if (s == "KeepUp")            return (PID_GraphKeepUp);  
-          
-//  if (s == "PlotStatus")          return (PID_PlotStatus);            
-  if (s == "PlotType")          return (PID_PlotType);            
+  if (s == "OrthogonalProjection") return (PID_GraphOrthogonalProjection);
+  if (s == "KeepUp")            return (PID_GraphKeepUp);
+  if (s == "AxisFontFamily")    return (PID_GraphFontFamily);
+  if (s == "AxisFontSize")      return (PID_GraphFontSize);
+  if (s == "AxisFontColor")     return (PID_GraphFontColor);
+  if (s == "AxisFontBold")      return (PID_GraphFontBold);
+  if (s == "AxisFontItalic")    return (PID_GraphFontItalic);
+  if (s == "TicksFontFamily")   return (PID_GraphTicksFontFamily);
+  if (s == "TicksFontSize")     return (PID_GraphTicksFontSize);
+  if (s == "TicksFontColor")    return (PID_GraphTicksFontColor);
+  if (s == "TicksFontBold")     return (PID_GraphTicksFontBold);
+  if (s == "TicksFontItalic")   return (PID_GraphTicksFontItalic);
+
+//  if (s == "PlotStatus")          return (PID_PlotStatus);
+  if (s == "PlotType")          return (PID_PlotType);
   if (s == "LineStyle")         return (PID_PlotLineStyle);            
   if (s == "LineThickness")     return (PID_PlotLineThickness);            
   if (s == "LineColor")         return (PID_PlotLineColor);                  
@@ -354,7 +364,6 @@ U32 PlotServiceRequest::NameToPID (const char *name) {
   if (s == "CameraLocationX")   return (PID_PlotCameraLocationX);            
   if (s == "CameraLocationY")   return (PID_PlotCameraLocationY);            
   if (s == "CameraLocationZ")   return (PID_PlotCameraLocationZ);            
-  if (s == "FontFamily")        return (PID_PlotFontFamily); 
   if (s == "IncludeLines")      return (PID_PlotIncludeLines);
   if (s == "TubeRadius")        return (PID_PlotTubeRadius);
   if (s == "TubeRadialPts")     return (PID_PlotTubeRadialPts);
@@ -370,6 +379,26 @@ U32 PlotServiceRequest::NameToPID (const char *name) {
   if (s == "AnimateVisAfter")   return (PID_PlotAnimateVisAfter); 
   if (s == "ConfHorizontalPts") return (PID_PlotConfHorizontalPts); 
   if (s == "ConfVerticalPts")   return (PID_PlotConfVerticalPts); 
+
+  if (s == "PositionType")      return (PID_textPlotPositionType);
+  if (s == "OrientationCartesian")  return (PID_textPlotOrientationCartesian);
+  if (s == "Text")              return (PID_textPlotText);
+  if (s == "PositionX")         return (PID_textPlotPositionX);
+  if (s == "PositionY")         return (PID_textPlotPositionY);
+  if (s == "PositionZ")         return (PID_textPlotPositionZ);
+  if (s == "OrientationX")      return (PID_textPlotOrientationX);
+  if (s == "OrientationY")      return (PID_textPlotOrientationY);
+  if (s == "OrientationZ")      return (PID_textPlotOrientationZ);
+  if (s == "Turn")              return (PID_textPlotTurn);
+  if (s == "Tilt")              return (PID_textPlotTilt);
+  if (s == "HorizontalAlignment") return (PID_textPlotHorizontalAlignment);
+  if (s == "VerticalAlignment")  return (PID_textPlotVerticalAlignment);
+  if (s == "Billboarding")       return (PID_textPlotBillboarding);
+  if (s == "TextFontFamily")     return (PID_textPlotTextFontFamily);
+  if (s == "TextFontSize")       return (PID_textPlotTextFontSize);
+  if (s == "TextFontColor")      return (PID_textPlotTextFontColor);
+  if (s == "TextFontBold")       return (PID_textPlotTextFontBold);
+  if (s == "TextFontItalic")     return (PID_textPlotTextFontItalic);
 
   return (-1);
 }

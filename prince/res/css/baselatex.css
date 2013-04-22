@@ -414,16 +414,19 @@ IncludeSubdoc>TeX {
 button [class="msi"] {
   font-family: sans-serif;
   font-style: normal;
+  -moz-user-select: all;
 }
 
-button[class="msi"]::-moz-selection {
+button[class="msi"]::-moz-selection, button[class="msi"][selected="true"] {
   background-color: blue;
 }
 
-/* texb, makelof, makelot, maketitle, maketoc{
+texb, makelof, makelot, maketitle, maketoc{
   font-family: sans-serif;
   font-style: normal;
-} */
+  -moz-user-select: all;
+
+} 
 
 mml|menclose {
   min-width: 1em;

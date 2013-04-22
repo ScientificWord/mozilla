@@ -1,0 +1,14 @@
+<!-- These are localizable entities for names that appear in prince/base/content/bindings/latex.xml -->
+<!ENTITY  title         "Title">
+<!ENTITY  author        "Author">
+<!ENTITY  address		"Address">
+<!ENTITY  date          "Date">
+<!ENTITY  maketitle     "Make title here">
+<!ENTITY  maketoc       "Make table of contents here">
+<!ENTITY  makelot       "Make list of tables here">
+<!ENTITY  makelof       "Make list of figures here">
+<!ENTITY  index         "Index: ">
+<!ENTITY  printindex    "Print index here">
+<!ENTITY  marker        "Marker: ">
+<!ENTITY  xref          "Cross reference: ">
+<!ENTITY  index         "Index: ">
