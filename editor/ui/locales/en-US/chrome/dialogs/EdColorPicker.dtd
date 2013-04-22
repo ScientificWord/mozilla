@@ -53,3 +53,5 @@
 <!ENTITY table.accesskey "T">
 <!ENTITY cell.label "Cell(s)">
 <!ENTITY cell.accesskey "C">
+<!ENTITY transparency.label "Transparency">
+<!ENTITY transparency.accesskey "y">

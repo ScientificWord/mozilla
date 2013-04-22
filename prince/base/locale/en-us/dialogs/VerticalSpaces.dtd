@@ -25,7 +25,7 @@
 <!ENTITY fixedSizeUnits.accesskey "n">
 
 <!ENTITY typesetGroup.label "Typeset behavior">
-<!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
+<!ENTITY typesetDiscardAtLineEnd.label "Discard at page end">
 <!ENTITY typesetDiscardAtLineEnd.accesskey "e">
 <!ENTITY typesetAlways.label "Always">
 <!ENTITY typesetAlways.accesskey "A">

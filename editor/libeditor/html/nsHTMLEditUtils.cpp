@@ -559,7 +559,7 @@ nsHTMLEditUtils::SupportsAlignAttr(nsIDOMNode * aNode, msiITagListManager * mana
   nsAutoString tagName;
   nodeAtom->ToString(tagName);
   nsAutoString tagClass;
-  manager->GetClassOfTag (tagName, nsnull, tagClass);
+  manager->GetRealClassOfTag (tagName, nsnull, tagClass);
   if (tagClass.EqualsLiteral("frontmtag")||tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("paratag")||tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("listtag")||tagClass.EqualsLiteral("envtag"))
     return PR_TRUE;
   return (nodeAtom == nsEditProperty::hr)

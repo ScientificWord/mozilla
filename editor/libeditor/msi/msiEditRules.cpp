@@ -1,5 +1,6 @@
 #include "msiEditRules.h"
 #include "nsCOMPtr.h"
+#include "nsString.h"
 #include "nsIServiceManager.h"
 #include "nsIRange.h"
 #include "msiEditor.h"
@@ -117,12 +118,42 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 
   
   nsCOMPtr<nsIDOMNode> startNode, endNode;
-  nsCOMPtr<nsIDOMNode> startMathNode;
-  nsCOMPtr<nsIDOMNode> endMathNode;
-  PRBool endsInMath;
+  nsCOMPtr<nsIDOMNode> theNode;
+  nsCOMPtr<nsIDOMNodeList> kids;
+  nsCOMPtr<msiITagListManager> tlmgr;
+  PRUint32 childcount;
+  nsAutoString name;
+  nsAutoString className;
+  // nsCOMPtr<nsIDOMNode> startMathNode;
+  // nsCOMPtr<nsIDOMNode> endMathNode;
+  // PRBool endsInMath;
   PRInt32 startOffset, endOffset;
+  nsIAtom * pAtom = nsnull;
 
   nsresult res;
+  
+  // If the selection consists of a single node which is a front matter node, and
+  // if the node is not empty, change the selection to the contents of that node.
+  mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  if ((startNode == endNode) && ((startOffset+1) == endOffset))
+  {
+    msiUtils::GetChildNode(endNode, startOffset, theNode);
+    if (! msiUtils::IsEmpty(theNode))
+    {
+      { 
+        mHTMLEditor->GetTagListManager((msiITagListManager**)getter_AddRefs(tlmgr));
+        tlmgr->GetTagOfNode(theNode,&pAtom, name);
+        tlmgr->GetClassOfTag(name, pAtom, className);
+        if (className.EqualsLiteral("frontmtag"))
+        {
+          msiUtils::GetNumberofChildren(theNode, childcount);
+          aSelection->Collapse(theNode,0);
+          aSelection->Extend(theNode, childcount);
+        }
+      }
+    }
+  }
 
 	nsCOMPtr<nsIDOMElement> cell;
 	res = mHTMLEditor->GetFirstSelectedCell(nsnull, getter_AddRefs(cell));

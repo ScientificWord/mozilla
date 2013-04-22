@@ -538,7 +538,11 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:descriptionListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>}
+</xsl:template>
+
+<xsl:template match="html:descriptionLabel">
+  [<xsl:apply-templates/>]{
 </xsl:template>
 
 <xsl:template match="html:citation">
@@ -644,11 +648,10 @@ should not be done under some conditions -->
 \end{hebrew}
 </xsl:template>
 
-<xsl:template match="html:arabic">
-  
-\begin{arabic}
+<xsl:template match="html:Arabic">
+\begin{Arabic}
 <xsl:apply-templates/>
-\end{arabic}
+\end{Arabic}
 </xsl:template>
 
 <xsl:template match="html:centered"
@@ -700,6 +703,8 @@ should not be done under some conditions -->
 <xsl:template match="html:normalsize">{\normalsize <xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:phantom">\phantom {<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:underline">\underline {<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:sub">
   <xsl:choose>
@@ -866,7 +871,7 @@ should not be done under some conditions -->
 <xsl:template match="html:texb">
   <xsl:if test="not(@pre) or (@pre='0')" >
     <xsl:if test="@enc='1'">
-%TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates/>}}%
+%TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates mode="texcomment"/>}}%
 <!-- %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>} -->
 %BeginExpansion
     </xsl:if>
@@ -992,8 +997,16 @@ should not be done under some conditions -->
 
 <xsl:template match="html:rawTeX">
   <xsl:value-of select="@tex"/>
-    <xsl:if test="not(string-length(translate(@tex,'}','')) &gt; string-length(translate(@tex,'{','')))">{</xsl:if>
-    <xsl:apply-templates/>}</xsl:template>
+  <xsl:choose>
+    <xsl:when test="@post">
+      <xsl:apply-templates/><xsl:value-of select="@post"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:if test="not(string-length(translate(@tex,'}','')) &gt; string-length(translate(@tex,'{','')))">{</xsl:if>
+      <xsl:apply-templates/>}
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template match="html:graphSpec">
 </xsl:template>

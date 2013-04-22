@@ -153,7 +153,7 @@ function startup(){
 function putAnimationDataToDialog()
 {
   for (var ii = 0; ii < animAttributes.length; ++ii)
-    putValueToControl(animAttributes[ii], plot.getPlotValue(animAttributes[ii]));
+    putValueToControlByID(animAttributes[ii], plot.getPlotValue(animAttributes[ii]));
   changeCommonOrCustomAnimationSettings();
 }
 
@@ -191,7 +191,7 @@ function getValuesFromDialog()
 function getAnimationDataFromDialog()
 {
   for (var ii = 0; ii < animAttributes.length; ++ii)
-    plot.setPlotValue(animAttributes[ii], getValueFromControl(animAttributes[ii]));
+    plot.setPlotValue(animAttributes[ii], getValueFromControlByID(animAttributes[ii]));
   changeCommonOrCustomAnimationSettings();
 }
 

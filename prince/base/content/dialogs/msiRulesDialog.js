@@ -91,7 +91,7 @@ function setUpData()
     {
       data[dataComponents[ix]] = new Object();
       data[dataComponents[ix]].units = "pt";
-      data[dataComponents[ix]].size = 0.00;
+      data[dataComponents[ix]].size = (ix==0? 0.00 : (ix==1 ? 100.0 : 1.0));
     }
   }
   if (!("ruleColor" in data) || data.ruleColor == null)

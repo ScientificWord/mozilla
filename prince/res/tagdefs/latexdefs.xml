@@ -114,6 +114,10 @@
         <contains>msiframe</contains>
         <contains>msibreak</contains>
         <contains>texb</contains>
+        <contains>maketitle</contains>
+        <contains>maketoc</contains>
+        <contains>makelot</contains>
+        <contains>makelof</contains>
       </classcontains>
 			<tags>
 				<tag id="defaultparagraph" nm="bodyText">
@@ -1080,19 +1084,15 @@
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
-        <tag nm="makelof"><description>Make list of figures</description>
-          <realtagclass>othertag</realtagclass>
+<!--         <tag nm="makelof"><description>Make list of figures</description>
         </tag>
         <tag nm="makelot"><description>Make list of tables</description>
-          <realtagclass>othertag</realtagclass>
         </tag>
         <tag nm="maketitle"><description>Make title</description>
-          <realtagclass>othertag</realtagclass>
         </tag>
         <tag nm="maketoc"><description>Make table of contents</description>
-          <realtagclass>othertag</realtagclass>
         </tag>
-        <tag nm="title"><description>Title</description>
+ -->        <tag nm="title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>bodyText</nexttag>
           <nextafteremptyblock>bodyText</nextafteremptyblock>

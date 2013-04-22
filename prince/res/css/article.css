@@ -269,10 +269,6 @@ abstract:before {
   -moz-user-select: -moz-none;
 }
 
-maketitle, maketoc, makelof, makelot {
-  display: block;
-}
-
 /**********************/
 /* Main text elements */
 /**********************/

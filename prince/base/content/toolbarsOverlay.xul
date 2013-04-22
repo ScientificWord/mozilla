@@ -180,7 +180,8 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
 #ifndef PROD_SW
     <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
       flex = "1"
-      mode="icons" customizable="true"  hidden = "true" observes="vcamactive">
+      mode="icons" customizable="true"  hidden = "true">
+	  <observes id="vcamactiveObserver" element="vcamactive" attribute="hidden" onbroadcast="doVCamClose();"/>
       <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
       <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents"/>
       <!-- <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/> -->
@@ -495,7 +496,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
 
   <textbox id="FrontMTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
     completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="frontmtag"
-		tooltiptext="&frontmtagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_paratag',this.value);"
+		tooltiptext="&frontmtagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_frontmtag',this.value);"
 		label="&frontmtagselect.label;"
     onfocus="this.select();"
     ontextentered="msiDoStatefulCommand('cmd_frontmtag',this.value);" />
