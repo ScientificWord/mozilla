@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="resource://app/res/css/latex.css" type="text/css"?>
+
+<!-- ?xul-overlay href="chrome://prince/content/menuOverlay.xul"? -->
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/plotFontSettings.dtd" >
+<!-- JLF to verify-->
+
+<dialog class="dialogScroll" id="plotfontdlg" title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    onload = "return startup();"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();"
+    buttons="accept,cancel" 
+    width="400px" 
+    height="440px"
+    screenX="40"
+    screenY="40"
+    persist="screenX screenY width height">
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/plotFontSettings.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+
+  <stringbundle id="computeBundle" src="chrome://prince/locale/compute.properties"/>
+
+  <broadcasterset>
+    <broadcaster id="isAxesFont" />
+    <broadcaster id="isTicksFont" hidden="true" />
+    <broadcaster id="faceUsingDefault" disabled="true" />
+    <broadcaster id="sizeUsingDefault" disabled="true" />
+    <broadcaster id="colorUsingDefault" disabled="true" />
+    <broadcaster id="styleUsingDefault" disabled="true" />
+  </broadcasterset>
+
+  <vbox>
+    <grid>
+      <columns>
+        <column />
+        <column />
+        <column />
+      </columns>
+      <rows>
+        <row align="start">
+          <vbox>
+            <checkbox id="faceUseDefault" label="&faceUseDefault.label;" accesskey="&faceUseDefault.accesskey;" oncommand="changeUseDefaults(this);" />
+            <checkbox id="restrictToWebFonts" label="&restrictToWebFonts.label;" accesskey="&restrictToWebFonts.accesskey;" tooltip="&restrictToWebFonts.tooltip;"
+                      observes="faceUsingDefault" oncommand="setUpFontList();" />
+          </vbox>
+          <spacer />
+          <checkbox id="sizeUseDefault" label="&sizeUseDefault.label;" accesskey="&sizeUseDefault.accesskey;" oncommand="changeUseDefaults(this);" />
+        </row>
+        <row align="start">
+          <hbox align="start" pack="center">
+            <label value="&fontface.label;" control="face" accesskey="&fontface.accesskey;" observes="faceUsingDefault" />
+            <menulist id="face" style="min-width: 120pt" oncommand="updateSample();" observes="faceUsingDefault" >
+              <menupopup>
+              </menupopup>
+            </menulist>
+          </hbox>
+          <spacer min-width="24pt"/>
+          <hbox>
+            <label value="&fontsize.label;" control="size" observes="sizeUsingDefault" accesskey="&fontsize.accesskey;"/>
+            <textbox id="size" type="number" min="0" style="width: 6em" max="200" increment="1"
+                     observes="sizeUsingDefault" onchange="updateSample();" />
+          </hbox>
+        </row>
+        <row>
+          <spacer min-height="15pt" />
+          <spacer />
+          <spacer />
+        </row>
+        <row align="start">
+          <checkbox id="colorUseDefault" label="&colorUseDefault.label;" accesskey="&colorUseDefault.accesskey;" oncommand="changeUseDefaults(this);" />
+          <spacer min-width="24pt"/>
+          <checkbox id="styleUseDefault" label="&styleUseDefault.label;" accesskey="&styleUseDefault.accesskey;" oncommand="changeUseDefaults(this);" />
+        </row>
+        <row align="start">
+          <hbox pack="center">
+            <label control="colorButton" value="&fontcolor.label;" accesskey="&fontcolor.accesskey;" observes="colorUsingDefault" />
+            <msibutton id="colorButton" class="color-button" observes="colorUsingDefault" oncommand="getColorAndUpdate();">
+              <spacer id="color" class="color-well"/>
+            </msibutton>
+          </hbox>
+          <spacer min-width="24pt"/>
+          <vbox align="center">
+            <checkbox id="bold" label="&bold.label;" accesskey="&bold.accesskey;" observes="styleUsingDefault" oncommand="updateSample()" />
+            <checkbox id="italic" label="&italic.label;" accesskey="&italic.accesskey;" observes="styleUsingDefault" oncommand="updateSample()" />
+          </vbox>
+        </row>  
+      </rows>
+    </grid>
+    <hbox>
+      <textbox id="fontSample" multiline="true" value="&sampleText;" rows="4" cols="50"/>
+    </hbox>
+  </vbox>
+</dialog>

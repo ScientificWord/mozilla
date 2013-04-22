@@ -12,6 +12,7 @@ function Graph() {
   var i, list, length;
   this.plots = []; //an array of plots, see below
   this.modFlag = {}; //a Boolean for each attribute in GRAPHATTRIBUTES
+  this.plotLabels = [];  //an array of plot labels
   this.userSetAttrs = [];  //a list of attributes by name which are not using default values
   this.errStr = "";
   this.currentDisplayedPlot = -1;
@@ -31,16 +32,18 @@ Graph.prototype = {
                               "UpVectorZ", "ViewingAngle", "OrthogonalProjection", "KeepUp",
                               "OrientationTiltTurn", "ViewingBoxXMin", "ViewingBoxXMax",
                               "ViewingBoxYMin", "ViewingBoxYMax", "ViewingBoxZMin", "ViewingBoxZMax",
-                              "AnimateStart", "AnimateEnd", "AnimateFPS", "AnimateCurrTime"],
+                              "AnimateStart", "AnimateEnd", "AnimateFPS", "AnimateCurrTime",
+                              "AxisFontFamily", "AxisFontSize", "AxisFontColor", "AxisFontItalic", "AxisFontBold",
+                              "TicksFontFamily", "TicksFontSize", "TicksFontColor", "TicksFontItalic", "TicksFontBold"],
   GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace"],
   omitAttributeIfDefaultList : //["XAxisLabel", "YAxisLabel", "ZAxisLabel", 
                                ["CameraLocationX", "CameraLocationY", "CameraLocationZ",
                                 "FocalPointX", "FocalPointY", "FocalPointZ",
-                                "UpVectorX", "UpVectorY","UpVectorZ",
-                                "ViewingAngle", "OrientationTiltTurn",
-                                "ViewingBoxXMin", "ViewingBoxXMax",
-                                "ViewingBoxYMin", "ViewingBoxYMax",
-                                "ViewingBoxZMin", "ViewingBoxZMax"],
+                                "UpVectorX", "UpVectorY","UpVectorZ", "ViewingAngle", "OrientationTiltTurn",
+                                "ViewingBoxXMin", "ViewingBoxXMax", "ViewingBoxYMin", "ViewingBoxYMax",
+                                "ViewingBoxZMin", "ViewingBoxZMax", "AxisFontFamily", "AxisFontSize",
+                                "AxisFontColor", "AxisFontItalic", "AxisFontBold", "TicksFontFamily",
+                                "TicksFontSize", "TicksFontColor", "TicksFontItalic", "TicksFontBold"],
   plotVariablePropertyNames : ["XVar","YVar", "ZVar", "AnimVar"],
   graphAxesPropertyNames : ["XAxisLabel","YAxisLabel","ZAxisLabel"],
 
@@ -58,6 +61,21 @@ Graph.prototype = {
       this.plots.splice(plotnum, 1);
     }
     return (this.plots.length);
+  },
+  addNewPlotLabel : function() {
+    var plotLabel = new PlotLabel(this.getDimension());
+    return this.addPlotLabel(plotLabel);
+  },
+  addPlotLabel : function(plotLabel) {
+    this.plotLabels.push(plotLabel);
+    plotLabel.parent = this;
+    return (this.plotLabels.length - 1);
+  },
+  deletePlotLabel : function(labelNum) {
+    if (labelNum >= 0 && labelNum < this.plotLabels.length) {
+      this.plotLabels.splice(labelNum, 1);
+    }
+    return this.plotLabels.length;
   },
   getNumPlots: function () {
     return (this.plots.length);
@@ -107,6 +125,26 @@ Graph.prototype = {
     for (var ii = 0; ii < camVals.length; ++ii)
     {
       this.markUserSet(camVals[ii], bSet);
+    }
+  },
+  viewRangesUserSet : function()
+  {
+    var retval = false;
+    var viewVals = ["ViewingBoxXMin", "ViewingBoxXMax", "ViewingBoxYMin", "ViewingBoxYMax",
+                    "ViewingBoxZMin", "ViewingBoxZMax"];
+    for (var ii = 0; !retval && (ii < viewVals.length); ++ii)
+    {
+      retval = this.isUserSet(viewVals[ii]);
+    }
+    return retval;
+  },
+  markViewRangesUserSet : function(bSet)
+  {
+    var viewVals = ["ViewingBoxXMin", "ViewingBoxXMax", "ViewingBoxYMin", "ViewingBoxYMax",
+                    "ViewingBoxZMin", "ViewingBoxZMax"];
+    for (var ii = 0; ii < viewVals.length; ++ii)
+    {
+      this.markUserSet(viewVals[ii], bSet);
     }
   },
   plotAttrIsUserSet: function(plotno, attr) {
@@ -231,7 +269,7 @@ Graph.prototype = {
     var DOMPw = DOMgraph.getElementsByTagName("plotwrapper")[0];
     var DOMFrame = DOMgraph.getElementsByTagName("msiframe")[0];
     var DOMCaption = DOMFrame.getElementsByTagName("imagecaption")[0];
-    var attr, value, alist, i, domPlots, plot, status, caption, captionloc, child, optnum;
+    var attr, value, alist, i, domPlots, plot, domPlotLabels, status, caption, captionloc, child, optnum;
     var graphData = new graphVarData(this);
     this.frame.reviseFrameDOMElement(DOMFrame, DOMPw, forComp, editorElement);
 
@@ -242,7 +280,14 @@ Graph.prototype = {
       value = this.getGraphAttribute(attr);
       if (value == null || value === "unspecified" || value === "undefined")
       {
-        DOMGs.removeAttribute(attr);
+        if (forComp && (attr == "TicksFontSize"))  //if we've set axis font size but not tick font size, want to make tick font size proportional
+        {
+          value = Number(this.getGraphAttribute("AxesFontSize"));
+          if (value != Number.NaN)
+            value = String( Math.round(4 * value/5) );
+        }
+        else
+          DOMGs.removeAttribute(attr);
       }
       else if (forComp && this.omitAttributeIfDefault(attr) && !this.isUserSet(attr))
       {
@@ -289,6 +334,13 @@ Graph.prototype = {
         DOMGs.appendChild(plot.createPlotDOMElement(document, forComp, graphData));
       }
     }
+    domPlotLabels = DOMgraph.getElementsByTagName("plotLabel");
+    for (i = domPlotLabels.length - 1; i >= 0; i--) {
+      editor.deleteNode(domPlotLabels[i]);
+    }
+    for (i = 0; i < this.plotLabels.length; ++i)
+      DOMGs.appendChild(this.plotLabels[i].createPlotLabelDOMElement(document, forComp));
+
     captionloc = this.getGraphAttribute("CaptionPlace");
     switch (captionloc) {
       case "labelabove": DOMFrame.setAttribute("captionloc","above"); break;
@@ -311,7 +363,7 @@ Graph.prototype = {
     }
   },
   extractGraphAttributes: function (DOMGraph) {
-    var key, value, i, plot, plotno, DOMGs, DOMPlots, DOMFrame, DOMPw;
+    var key, value, i, plot, plotno, plotLabel, DOMGs, DOMPlots, DOMFrame, DOMPw, DOMPlotLabels;
     DOMGs = DOMGraph.getElementsByTagName("graphSpec");
     if (DOMGs.length > 0) {
       DOMGs = DOMGs[0];
@@ -321,7 +373,7 @@ Graph.prototype = {
       key = DOMGs.attributes[i].nodeName;
       value = DOMGs.attributes[i].nodeValue;
       if (key === "userSetAttrs")
-        this[key] = value.split( "/,\s*/");  //turn it into an array
+        this[key] = value.split( /,\s*/);  //turn it into an array
       else
         this[key] = value;
     }
@@ -339,6 +391,13 @@ Graph.prototype = {
       plotno = this.addPlot(plot);
       plot.extractPlotAttributes(DOMPlots[i]);
       plot.attributes.PlotStatus = "Inited";
+    }
+    DOMPlotLabels = DOMGraph.getElementsByTagName("plotLabel");
+    for (i = 0; i < DOMPlotLabels.length; ++i)
+    {
+      plotLabel = new PlotLabel(this.getDimension());
+      this.addPlotLabel(plotLabel);
+      plotLabel.extractPlotLabelAttributes(DOMPlotLabels[i]);
     }
     if (DOMFrame){
       this.frame.extractFrameAttributes(DOMFrame, DOMPw);
@@ -380,6 +439,33 @@ Graph.prototype = {
     }
     else if (prefs.getPrefType(keyname) === prefs.PREF_BOOL) {
       value = prefs.getBoolPref(keyname);
+    }
+    if (!value)
+    {
+      switch(key)
+      {
+        case "AxisFontFamily":
+        case "TicksFontFamily":
+          value = "sans-serif";
+        break;  
+        case "AxisFontSize":
+          value = "10";
+        break;
+        case "TicksFontSize":
+          value = "8";
+        break;
+        case "AxisFontColor":
+        case "TicksFontColor":
+          value = "#000000";
+        break;
+        case "AxisFontItalic":
+        case "AxisFontBold":
+        case "TicksFontItalic":
+        case "TicksFontBold":
+          value = "false";
+        break;
+        default:                       break;
+      }
     }
     return value;
   },
@@ -462,7 +548,60 @@ Graph.prototype = {
     return str;
   },
   setGraphAttribute: function (name, value) {
+    if (!value || !value.length)
+      value = this.getDefaultValue(name);
+    var bChanged = this.isValueDifferent(name, value);
     this[name] = value;
+    return bChanged;
+  },
+  isValueDifferent : function(name, value) {
+    var sigDigits = this.significantDigitsInVal(name);
+    if ((!this[name] || !this[name].length) && (value && value.length))
+      return true;
+    if ((this[name] && this[name].length) && (!value || !value.length))
+      return true;
+    if (sigDigits)
+      return ( useSignificantDigits(value, sigDigits) != useSignificantDigits(this[name], sigDigits) );
+    if (name == "userSetAttrs")
+    {
+      for (var ii = 0; ii < this.userSetAttrs.length; ++ii)
+      {
+        if (this.userSetAttrs[ii] != value[ii])
+          return true;
+      }
+      return false;
+    }
+    return (!(value == this[name]));
+  },
+  significantDigitsInVal : function(attr)
+  {
+    switch(attr)
+    {
+      case "ViewingBoxXMin":
+      case "ViewingBoxXMax":
+      case "ViewingBoxYMin":
+      case "ViewingBoxYMax":
+      case "ViewingBoxZMin":
+      case "ViewingBoxZMax":
+        return 4;
+      break;
+      case "CameraLocationX":
+      case "CameraLocationY":
+      case "CameraLocationZ":
+      case "FocalPointX":
+      case "FocalPointY":
+      case "FocalPointZ":
+      case "UpVectorX":
+      case "UpVectorY":
+      case "UpVectorZ":
+        return 4;
+      break;
+      case "ViewingAngle":
+        return 3;
+      break;
+      default:           return 0;   
+      break;
+    }
   },
   setPlotValue : function(name, plotnum, value) {
     if (plotnum < this.plots.length)
@@ -505,12 +644,13 @@ Graph.prototype = {
       default:  return null;
     }
   },
-  setCameraValsFromVCam : function(cameraVals, domGraph) {
+  setCameraValsFromVCam : function(cameraVals, domGraph, bUserSetIfChanged) {
     if (cameraVals != null)
     {
       msidump("Got camera vals from VCam:\n");
       var attrName;
       var graphSpec;
+      var bChanged = false;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
         graphSpec = graphSpecList[0];
@@ -518,20 +658,32 @@ Graph.prototype = {
       {
         msidump("  " + aProp + " = " + cameraVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
-        if (!this.isUserSet(attrName))
+        if (bUserSetIfChanged || !this.isUserSet(attrName))
         {
-          this.setGraphAttribute(attrName, cameraVals[aProp]);
+          bChanged = this.setGraphAttribute(attrName, cameraVals[aProp]) || bChanged;
           if (graphSpec)
             graphSpec.setAttribute(attrName, cameraVals[aProp]);
         }
       }
+      if (bUserSetIfChanged && bChanged)
+      {
+        for (var aProp in cameraVals)
+        {
+          attrName = this.mapVCamNameToAttr(aProp);
+          if (attrName)
+            this.markUserSet(attrName, true);
+        }
+        if (graphSpec)
+          graphSpec.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
+      }
     }
   },
-  setAnimationValsFromVCam : function(animVals, domGraph) {
+  setAnimationValsFromVCam : function(animVals, domGraph, bUserSetIfChanged) {
     if (animVals != null)
     {
       msidump("Got camera vals from VCam:\n");
       var attrName;
+      var bChanged = false;
       var graphSpec;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
@@ -540,20 +692,32 @@ Graph.prototype = {
       {
         msidump("  " + aProp + " = " + animVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
-        if (attrName && !this.isUserSet(attrName))
+        if ( attrName && (bUserSetIfChanged || !this.isUserSet(attrName)) )
         {
-          this.setGraphAttribute(attrName, animVals[aProp]);
+          bChanged = this.setGraphAttribute(attrName, animVals[aProp]) || bChanged;
           if (graphSpec)
             graphSpec.setAttribute(attrName, animVals[aProp]);
         }
       }
+      if (bUserSetIfChanged && bChanged)
+      {
+        for (var aProp in animVals)
+        {
+          attrName = this.mapVCamNameToAttr(aProp);
+          if (attrName)
+            this.markUserSet(attrName, true);
+        }
+        if (graphSpec)
+          graphSpec.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
+      }
     }
   },
-  setCoordSysValsFromVCam : function(coordSysVals, domGraph) {
+  setCoordSysValsFromVCam : function(coordSysVals, domGraph, bUserSetIfChanged) {
     if (coordSysVals != null)
     {
       msidump("Got coord sys vals from VCam:\n");
       var attrName;
+      var bChanged = false;
       var graphSpec;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
@@ -562,12 +726,23 @@ Graph.prototype = {
       {
         msidump("  " + aProp + " = " + coordSysVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
-        if (!this.isUserSet(attrName))
+        if (bUserSetIfChanged || !this.isUserSet(attrName))
         {
-          this.setGraphAttribute(attrName, coordSysVals[aProp]);
+          bChanged = this.setGraphAttribute(attrName, coordSysVals[aProp]) || bChanged;
           if (graphSpec)
             graphSpec.setAttribute(attrName, coordSysVals[aProp]);
         }
+      }
+      if (bUserSetIfChanged && bChanged)
+      {
+        for (var aProp in coordSysVals)
+        {
+          attrName = this.mapVCamNameToAttr(aProp);
+          if (attrName)
+            this.markUserSet(attrName, true);
+        }
+        if (graphSpec)
+          graphSpec.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
       }
     }
   },
@@ -582,21 +757,25 @@ Graph.prototype = {
     newfilename = "plots/" + createUniqueFileName("plot", filetype);
     longnewfilename = makeRelPathAbsolute(newfilename, editorElement);
     this.setGraphAttribute("ImageFile", longnewfilename);
-    // the filename that computeGraph uses is the one in the graph structure
-    this.computeGraph(editorElement);
-    // if the new file exists, delete the old one
-    file = Components.classes["@mozilla.org/file/local;1"].
-                         createInstance(Components.interfaces.nsILocalFile);
-    file.initWithPath( makeRelPathAbsolute(filename, editorElement)) ;
-    if (file.exists())
+    try
     {
-      try {
-        file.remove(false);
-      }
-      catch (e)
+      // the filename that computeGraph uses is the one in the graph structure
+      this.computeGraph(editorElement);
+      // if the new file exists, delete the old one
+      file = Components.classes["@mozilla.org/file/local;1"].
+                           createInstance(Components.interfaces.nsILocalFile);
+      file.initWithPath( makeRelPathAbsolute(filename, editorElement)) ;
+      if (file.exists())
       {
+        try {
+          file.remove(false);
+        }
+        catch (e)
+        {
+        }
       }
     }
+    catch(exc) {msidump("In GraphOverlay.js, recomputeVCamImage(), exception: " + exc + "\n");}
     this.setGraphAttribute("ImageFile", newfilename);
     //  reset ImageFile property to relative path
   },
@@ -671,8 +850,8 @@ Plot.prototype = {
   PLOTATTRIBUTES: ["PlotStatus", "PlotType",
                            "LineStyle", "PointStyle", "LineThickness", "LineColor",
                            "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
-                           "PointSymbol", "SurfaceStyle", "IncludePoints",
-                           "SurfaceMesh", "FontFamily", "IncludeLines",
+                           "PointSymbol", "SurfaceStyle"/*,  "IncludePoints"*/,    //"IncludePoints" and "IncludeLines" are determined by LineStyle and/or SurfaceStyle
+                           "SurfaceMesh"/*,  "IncludeLines"*/, 
                            "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
                            "Animate", "AnimCommonOrCustomSettings", "AnimateStart", "AnimateEnd",
                            "AnimateFPS", "AnimateVisBefore", "AnimateVisAfter",
@@ -946,7 +1125,7 @@ Plot.prototype = {
       key = attr.nodeName;
       value = attr.nodeValue;
       if (key === "userSetAttrs")
-        this[key] = value.split( "/,\s*/");  //turn it into an array
+        this[key] = value.split( /,\s*/);  //turn it into an array
       else
         this.attributes[key] = value;
     }
@@ -1224,6 +1403,252 @@ Plot.prototype = {
   computeQuery: function () {
     // call the compute engine to guess at graph attributes
     this.parent.computeQuery(this);
+  }
+};
+
+// ************ Plot Labels; graph can have several plot labels ******
+function PlotLabel(dim)
+{
+  if (!dim)
+    dim = 2;
+  this.dimension = dim;
+  this.attributes = {};
+  var attrs = this.PLOTLABELATTRIBUTES;
+  for (var ii = 0; ii < attrs.length; ++ii)
+    this.setPlotLabelAttribute( attrs[ii], this.getDefaultPlotLabelAttribute(attrs[ii]) );
+}
+
+PlotLabel.prototype = 
+{
+  //The order of these IS significant
+  PLOTLABELATTRIBUTES : ["PlotType", "PositionType", "OrientationType", "Text",
+                         "PositionX", "PositionY", "PositionZ",
+                         "OrientationX", "OrientationY", "OrientationZ", "Turn", "Tilt",
+                         "HorizontalAlignment", "VerticalAlignment", "Billboarding",
+                         "TextFontFamily", "TextFontSize", "TextFontColor", "TextFontBold", "TextFontItalic"],
+  KEYATTRIBUTES: ["PositionType", "OrientationType","Billboarding"],
+  getDimension : function()
+  {
+    if (this.parent)
+      return this.parent.getDimension();
+    return this.dimension;
+  },
+  plotLabelAttributeList : function(forComp)
+  {
+    var theList = this.PLOTLABELATTRIBUTES;
+    var dim = this.getDimension();
+    var bNonCartesianOrientation = ((this.getPlotLabelAttribute("OrientationType") == "angle")
+                                    || (this.getPlotLabelAttribute("OrientationType") == "tiltAndTurn"));
+    var bNeedNonCartesianOrientation = bNonCartesianOrientation;
+    if (this.isHeaderOrFooter())
+    {
+      theList = attributeArrayRemove(theList, "PositionX");
+      theList = attributeArrayRemove(theList, "PositionY");
+      theList = attributeArrayRemove(theList, "PositionZ");
+      theList = attributeArrayRemove(theList, "OrientationX");
+      theList = attributeArrayRemove(theList, "OrientationY");
+      theList = attributeArrayRemove(theList, "OrientationZ");
+      theList = attributeArrayRemove(theList, "Billboarding");
+      theList = attributeArrayRemove(theList, "VerticalAlignment");
+      theList = attributeArrayRemove(theList, "OrientationType");
+      theList = attributeArrayRemove(theList, "Tilt");
+      theList = attributeArrayRemove(theList, "Turn");
+    }
+    else 
+    {
+      if (dim == 2)
+      {
+        if (forComp)
+          bNeedNonCartesianOrientation = true;
+        theList = attributeArrayRemove(theList, "PositionZ");
+        theList = attributeArrayRemove(theList, "OrientationZ");
+        theList = attributeArrayRemove(theList, "Tilt");
+        theList = attributeArrayRemove(theList, "Billboarding");
+      }
+      else if (forComp)
+        bNeedNonCartesianOrientation = false;
+      if (bNeedNonCartesianOrientation != bNonCartesianOrientation)
+        this.convertOrientation(bNeedNonCartesianOrientation);
+      if (bNeedNonCartesianOrientation)
+      {
+        theList = attributeArrayRemove(theList, "OrientationX");
+        theList = attributeArrayRemove(theList, "OrientationY");
+        theList = attributeArrayRemove(theList, "OrientationZ");
+      }
+      else
+      {
+        theList = attributeArrayRemove(theList, "Turn");
+        theList = attributeArrayRemove(theList, "Tilt");
+      }
+    }
+    if (forComp)
+      theList = attributeArrayRemove(theList, "OrientationType");
+
+    return theList;
+  },
+  plotLabelKeyAttributeList : function()
+  {
+    var theList = this.KEYATTRIBUTES;
+    var dim = this.getDimension();
+    if (dim == 2)
+      theList = attributeArrayRemove(theList, "Billboarding");
+    return theList;
+  },
+  extractPlotLabelAttributes : function(DOMPlotLabel)
+  {
+    var ii;
+    for (var ii = 0; ii < DOMPlotLabel.attributes.length; ++ii)
+    {
+      this.setPlotLabelAttribute(DOMPlotLabel.attributes[ii].nodeName, DOMPlotLabel.attributes[ii].nodeValue);
+    }
+  },
+  getPlotLabelAttribute : function(key, bNoDefault)
+  {
+    if (key in this.attributes)
+      return this.attributes[key];
+    if (!bNoDefault)
+      return this.getDefaultPlotLabelAttribute(key); //really?
+    return null;
+  },
+  getDefaultPlotLabelAttribute : function(key)
+  {
+    switch(key)
+    {
+      case "PlotType":                  return "text";  //this is always the same for plot labels
+      case "Text":                      return "";
+      case "PositionX":                 return "0";
+      case "PositionY":                 return "0";
+      case "PositionZ":                 return "0";
+      case "OrientationX":              return "1";
+      case "OrientationY":              return "0";
+      case "OrientationZ":              return "0";
+      case "OrientationType":           return "cartesian";
+      case "HorizontalAlignment":       return "Left";
+      case "VerticalAlignment":         return "BaseLine";
+      case "Billboarding":              return "true";
+      //Note that the font specifications are by default empty strings - this should cause engine to use axes font
+      case "TextFontName":              return "";
+      case "TextFontSize":              return "";
+      case "TextFontColor":             return "";
+      case "TextFontBold":              return "";
+      case "TextFontItalic":            return "";
+      case "PositionType":              return "positioned";
+      case "Turn":                      return "0";
+      case "Tilt":                      return "0";
+      default:
+      break;
+    }
+    return null;
+  },
+  setPlotLabelAttribute : function(key, value)
+  {
+    var bConvertOrientation = ( (key == "OrientationType") && (this.attributes.OrientationType != value) 
+                                && ((value == "cartesian") || (this.attributes.OrientationType == "cartesian")) );
+    if (this.PLOTLABELATTRIBUTES.indexOf(key) >= 0)
+    {
+      if (!value || !value.length)
+        value= this.getDefaultPlotLabelAttribute(key);
+      this.attributes[key] = value;
+    }
+    if (bConvertOrientation)
+      this.convertOrientation((value == "angle") || (value == "tiltAndTurn"));
+  },
+  createPlotLabelDOMElement: function (doc, forComp)
+  {
+     // return a DOM <plotLabel> node.
+    var DOMPlotLabel = doc.createElement("plotLabel");
+    this.revisePlotLabelDOMElement(doc, DOMPlotLabel, forComp);
+    return DOMPlotLabel;
+  },
+  revisePlotLabelDOMElement: function (doc, domPlotLabel, forComp)
+  {
+
+    var attr, val;
+    var attrs = this.plotLabelAttributeList(forComp);
+    for (var i=0; i<attrs.length; i++)
+    {
+      attr = attrs[i];
+      val = this.attributes[attr];
+      if (val && (val !== "") && (val !== "unspecified"))
+        domPlotLabel.setAttribute (attr, val);
+      else
+        domPlotLabel.removeAttribute(attr);
+    }
+  },
+  isHeaderOrFooter : function()
+  {
+    var val = this.getPlotLabelAttribute("PositionType");
+    return ((val === "header") || (val === "footer"));
+  },
+  clone : function()
+  {
+    var newLabel = new PlotLabel();
+    newLabel.dimension = this.dimension;
+    var attrs = this.plotLabelAttributeList();
+    for (var ii = 0; ii < attrs.length; ++ii)
+      newLabel.setPlotLabelAttribute( attrs[ii], this.getPlotLabelAttribute(attrs[ii]) );
+    return newLabel;
+  },
+  convertOrientation : function(fromCartesian)
+  {
+    if (this.isHeaderOrFooter())
+      return;
+    if (fromCartesian)
+      this.convertOrientationToTiltAndTurn();
+    else
+      this.convertOrientationToCartesian();
+  },
+  convertOrientationToTiltAndTurn : function()
+  {
+    var retVal;
+    if (this.getDimension() == 3)
+    {
+      retVal = convertCartesianToSpherical(Number(this.getPlotLabelAttribute("OrientationX")), 
+                                           Number(this.getPlotLabelAttribute("OrientationY")), 
+                                           Number(this.getPlotLabelAttribute("OrientationZ")));
+      this.setPlotLabelAttribute("Turn", String(retVal[1]));
+      this.setPlotLabelAttribute("Tilt", String((Math.PI/2) - retVal[2]));
+      //We do this transformation since a spherical coordinate of PI/2 should mean a tilt of 0
+    }
+    else
+    {
+      retVal = convertCartesianToPolar(Number(this.getPlotLabelAttribute("OrientationX")), 
+                                           Number(this.getPlotLabelAttribute("OrientationY")));
+      this.setPlotLabelAttribute("Turn", String(retVal[1]));
+    }
+  },
+  convertOrientationToCartesian : function()
+  {
+    //We use oldLength below so that if the user toggles from Cartesian to non-Cartesian and back she gets what she started with
+    var oldLength, retVal;
+    if (this.getDimension() == 3)
+    {
+      oldLength = this.getNorm([Number(this.getPlotLabelAttribute("OrientationX")), Number(this.getPlotLabelAttribute("OrientationY")), Number(this.getPlotLabelAttribute("OrientationZ"))]);
+      if (!oldLength)
+        oldLength = 1;
+      retVal = convertSphericalToCartesian(oldLength, Number(this.getPlotLabelAttribute("Turn")), 
+                                              (Math.PI/2) - Number(this.getPlotLabelAttribute("Tilt"))); 
+                                //We do this transformation since a spherical coordinate of PI/2 should mean a tilt of 0
+      this.setPlotLabelAttribute("OrientationX", String(retVal[0]));
+      this.setPlotLabelAttribute("OrientationY", String(retVal[1]));
+      this.setPlotLabelAttribute("OrientationZ", String(retVal[2]));
+    }
+    else
+    {
+      oldLength = this.getNorm([Number(this.getPlotLabelAttribute("OrientationX")), Number(this.getPlotLabelAttribute("OrientationY"))]);
+      if (!oldLength)
+        oldLength = 1;
+      retVal = convertPolarToCartesian(oldLength, Number(this.getPlotLabelAttribute("Turn")));
+      this.setPlotLabelAttribute("OrientationX", String(retVal[0]));
+      this.setPlotLabelAttribute("OrientationY", String(retVal[1]));
+    }
+  },
+  getNorm : function(anArray)
+  {
+    var sqSum = 0;
+    for (var ii = 0; ii < anArray.length; ++ii)
+      sqSum += anArray[ii] * anArray[ii];
+    return Math.sqrt(sqSum);
   }
 };
 
@@ -1553,6 +1978,8 @@ Frame.prototype = {
 //          }
         }
       }
+//NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
+//  the scriptable vcam interface to work!
       var filetype = graph.getDefaultValue("DefaultFileType");
       msidump("SMR file type is " + filetype + "\n");
       if (filetype === "xvz") {
@@ -3308,6 +3735,128 @@ function cssColor(hexColor) {
     return "rgb("+R+","+G+","+B+")";
   }
   return hexColor;
+}
+
+function convertCartesianToPolar(xval, yval)
+{
+  var r = Math.sqrt((xval * xval) + (yval * yval));
+  var theta = Math.atan2(yval, xval);
+  return [r, theta];
+}
+
+function convertCartesianToSpherical(xval, yval, zval)
+{
+  var planeLength = Math.sqrt((xval * xval) + (yval * yval));
+  var rho = Math.sqrt((planeLength * planeLength) + (zval * zval));
+  if (rho == 0)
+    return [0,0,0];
+  var theta = Math.atan2(yval, xval);
+  var phi = Math.acos(zval/rho);
+  return [rho, theta, phi];
+}
+
+function convertPolarToCartesian(r, theta)
+{
+  return [Math.cos(theta) * r, Math.sin(theta) * r];
+}
+
+function convertSphericalToCartesian(rho, theta, phi)
+{
+  var planeLength = Math.sin(phi) * rho;
+  var xval = Math.cos(theta) * planeLength;
+  var yval = Math.sin(theta) * planeLength;
+  var zval = Math.cos(phi) * rho;
+  return [xval, yval, zval];
+}
+
+var numberRE = /(\-)?([0-9]+)?(\.[0-9]+)?/;  //Or delete the leading minus?
+var sciNotationNumberRE = /(\-)?([0-9]+)?(\.[0-9]+)?e(\-?[0-9]+)/i;  //Or delete the leading minus?
+
+function useSignificantDigits(aVal, sigDigits)
+{
+  var scinotation = sciNotationNumberRE.exec(aVal);
+  var number;
+  var neg, whole, dec, exp, theDigits, firstPos, jj;
+  var retStr = "";
+  if (!scinotation || !scinotation[0])
+  {
+    number = numberRE.exec(aVal);
+    if (!number || !number[0])
+      return aVal;  //can't do anything with it!?
+    neg = (number[1]=="-") ? true : false;
+    whole = number[2] ? number[2] : "";
+    dec = number[3] ? number[3].substr(1) : ""; //skip the decimal point
+    exp = 0;
+  }
+  else
+  {
+    neg = (scinotation[1]=="-") ? true : false;
+    whole = scinotation[2] ? scinotation[2] : "";
+    dec = scinotation[3] ? scinotation[3].substr(1) : ""; //skip the decimal point
+    exp = (scinotation[4] && scinotation[4].length) ? Number(scinotation[4]) : 0;
+    if (isNaN(exp))
+      exp = 0;
+  }
+  if ((whole.length + dec.length) <= sigDigits)
+    return aVal;
+  theDigits = whole + dec;
+  firstPos = theDigits.search(/[^0]/);
+  if (firstPos < 0)
+    return "0";
+  var bCarry = false;
+  if (firstPos + sigDigits < theDigits.length)
+  {
+    if (theDigits[firstPos + sigDigits] == '5')
+    {
+      if ( (firstPos + sigDigits + 1 < theDigits.length) && (theDigits.substr(firstPos + sigDigits + 1).match(/[^0]/)) )
+        bCarry = true;
+      else
+        bCarry = !neg;
+    }
+    else if (Number(theDigits[firstPos + sigDigits]) > 5)
+      bCarry = true;
+    jj = 0;
+    if (bCarry)
+    {
+      for (jj = firstPos + sigDigits - 1; bCarry && (jj >= 0); --jj)
+      {
+        bCarry = (theDigits[jj] == '9');
+        retStr = (bCarry ? '0' : String(Number(theDigits[jj]) + 1) ) + retStr;
+      }
+      if (bCarry)
+        theDigits = "1" + retStr.substr(0,retStr.length - 1);
+      else
+        theDigits = theDigits.substr(firstPos, jj+1-firstPos) + retStr;
+    }
+    else
+      theDigits = theDigits.substr(firstPos, sigDigits);
+  }
+  else
+    theDigits = theDigits.substr(firstPos);
+  exp += whole.length - firstPos - 1;
+  neg = (neg ? "-" : "");
+  if ( (exp >= sigDigits) || (exp <= -(sigDigits)) )
+  {
+    if (theDigits.length <= 1)
+      theDigits += "0";
+    retStr = neg + theDigits[0] + "." + theDigits.substr(1) + "e" + exp;
+  }
+  else if (exp < 0)
+  {
+    retStr = neg + "0.";
+    for (jj = 1; jj < (-exp); ++jj)
+      retStr += "0";
+    retStr += theDigits;
+  }
+  else
+  {
+    retStr = neg + theDigits.substr(0, exp + 1);
+    if (exp + 1 < sigDigits)
+      retStr += "." + theDigits.substr(exp+1);
+//    for (jj = 0; jj < sigDigits - exp; ++jj)
+//      retStr += "0";
+  }
+  return retStr;
 }
 
 var plotObserver = {

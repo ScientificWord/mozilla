@@ -912,7 +912,7 @@ var msiDecorations =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    doDecorationsDlg(String.fromCharCode(0x00AF), "", "", "cmd_MSIdecorationsCmd", editorElement, this);
+    doDecorationsDlg(""/*String.fromCharCode(0x00AF)*/, "", "", "cmd_MSIdecorationsCmd", editorElement, this);
   }
 };
 

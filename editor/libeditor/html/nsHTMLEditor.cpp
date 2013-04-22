@@ -820,7 +820,7 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
     *aIsBlock = PR_TRUE;
     return NS_OK;
   }
-  mtagListManager->GetClassOfTag(strTagName, namespaceAtom, strTagClass);
+  mtagListManager->GetRealClassOfTag(strTagName, namespaceAtom, strTagClass);
   if (strTagClass.EqualsLiteral("paratag")||strTagClass.EqualsLiteral("structtag")||
       strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")||strTagClass.EqualsLiteral("frontmtag"))
   {
@@ -1663,7 +1663,6 @@ NS_IMETHODIMP nsHTMLEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent,
   if (!aInOutParent || !*aInOutParent || !aInOutOffset || !outBRNode) return NS_ERROR_NULL_POINTER;
   *outBRNode = nsnull;
   nsresult res;
-                                                                                                               // we need to insert a br.  unfortunately, we may have to split a text node to do it.
   nsCOMPtr<nsIDOMNode> node = *aInOutParent;
   PRInt32 theOffset = *aInOutOffset;
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
@@ -1741,8 +1740,7 @@ NS_IMETHODIMP nsHTMLEditor::CreateMsiBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent,
 {
   if (!aInOutParent || !*aInOutParent || !aInOutOffset || !outBRNode) return NS_ERROR_NULL_POINTER;
   *outBRNode = nsnull;
-  nsresult res;
-                                                                                                               // we need to insert a br.  unfortunately, we may have to split a text node to do it.
+  nsresult res;                                                                                         // we need to insert a br.  unfortunately, we may have to split a text node to do it.
   nsCOMPtr<nsIDOMNode> node = *aInOutParent;
   PRInt32 theOffset = *aInOutOffset;
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
@@ -3088,9 +3086,9 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
   res = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res)) return res;
   if (!selection) return NS_ERROR_NULL_POINTER;
-  if (aBlockType.EqualsLiteral("verbatim")) {
-    return InsertVerbatim(selection);
-  }
+//  if (aBlockType.EqualsLiteral("verbatim")) {
+//    return InsertVerbatim(selection);
+//  }
   nsTextRulesInfo ruleInfo(nsTextEditRules::kMakeBasicBlock);
   ruleInfo.blockType = &aBlockType;
   ruleInfo.namespaceAtom = namespaceAtom;
@@ -6530,8 +6528,8 @@ nsHTMLEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
     tag1->ToString(strTag2);
     nsAutoString type1;
     nsAutoString type2;
-    mtagListManager->GetClassOfTag(strTag1, dummyAtom, type1);
-    mtagListManager->GetClassOfTag(strTag2, dummyAtom, type2);
+    mtagListManager->GetRealClassOfTag(strTag1, dummyAtom, type1);
+    mtagListManager->GetRealClassOfTag(strTag2, dummyAtom, type2);
     return type1.Equals(type2);
   }
   return PR_FALSE;

@@ -538,8 +538,6 @@
 %\input msiframe.tex
 
 
-\def\msi@begin@equation{$$}
-\def\msi@end@equation{$$}
 
 %% \def\[#1\]{%
 %%   \msitag{<mml:math>}
@@ -809,15 +807,15 @@
 \@namedef{msi@end@alignat}{\string\end{alignat}$$\egroup}
 
 
-%\@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
+\def\msi@begin@equation{\bgroup\msi@dollar=0\relax$$\string\begin{equation}}
+\def\msi@end@equation{\string\end{equation}$$\egroup}
+
 
 \@namedef{msi@begin@equation*}{\bgroup\msi@dollar=0\relax$$\string\begin{equation*}}
 \@namedef{msi@end@equation*}{\string\end{equation*}$$\egroup}
 
 \@namedef{msi@begin@displaymath}{\bgroup\msi@dollar=0\relax$$\string\begin{equation*}}
 \@namedef{msi@end@displaymath}{\string\end{equation*}$$\egroup}
-
-
 
 
 \def\msi@begin@array{\begingroup\def\\{\char`\\\char`\\}\catcode`\&=12\string\begin{array}}
