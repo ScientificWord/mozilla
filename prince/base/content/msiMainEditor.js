@@ -333,7 +333,8 @@ function BuildRecentFilesMenu()
       // Build the menu
       var title = GetUnicharPref("editor.history_title_"+i);
 			var path = msiPathFromFileURL(msiURIFromString(url));
-      AppendRecentMenuitem(popup, title, path, menuIndex);
+      var fname = path.replace(/^.*\//,"");
+      AppendRecentMenuitem(popup, fname, path, menuIndex);
       menuIndex++;
     }
   }
@@ -418,7 +419,7 @@ function AppendRecentMenuitem(menupopup, title, url, menuIndex)
 //       itemString += title;
 //       itemString += " [";
 //      }
-      itemString += url;
+      itemString += title;
 //      if (title)
 //        itemString += "]";
 

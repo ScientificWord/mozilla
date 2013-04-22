@@ -39,7 +39,9 @@ static FieldTarget s_target;
 static TeXNodeList* s_pList = new TeXNodeList;
 static char* s_processor;
 
+
 static const bool s_bMathml = true;
+extern bool s_equation;
 
 @<Node declarations@>
 @<Semantic nest@>
@@ -709,6 +711,7 @@ void Typesetter::EndDisplay()
          SetupMathML();
          std::string s_mathml;
          std::string s_anom;
+         s_equation = false;
          ProcessMathML(theCStr, s_mathml, s_anom);
          LOG("\nGot back " << s_mathml.c_str());
 
@@ -730,6 +733,9 @@ void Typesetter::EndDisplay()
 
          std::string str;
          str += "<msidisplay";
+         if (!s_equation){
+           str += " numbering=\"none\" ";
+         }
          if (customLabel != ""){
            str += " customLabel=\"";
            str += customLabel;
