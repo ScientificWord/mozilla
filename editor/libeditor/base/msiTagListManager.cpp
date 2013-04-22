@@ -891,8 +891,8 @@ nsString msiTagListManager::PrefixFromNameSpaceAtom(nsIAtom * atomNS)
 }
 
 
-/* AString getClassOfTag (in AString strTag, in nsIAtom atomNS); */
-NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
+/* AString getRealClassOfTag (in AString strTag, in nsIAtom atomNS); */
+NS_IMETHODIMP msiTagListManager::GetRealClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
 {
   nsAutoString rv;
   GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("realtagclass"), rv);
@@ -901,6 +901,12 @@ NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom
     _retval = rv;
     return NS_OK;
   } 
+  return GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("tagclass"), _retval);
+}  
+ 
+/* AString getClassOfTag (in AString strTag, in nsIAtom atomNS); */
+NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
+{
   return GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("tagclass"), _retval);
 }  
  
@@ -945,9 +951,9 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
   *_retval = PR_FALSE;
 	PRBool foundit = PR_FALSE;
   nsAutoString classOuter;
-  nsresult rv = GetClassOfTag(strTagOuter, atomNSOuter, classOuter);
+  nsresult rv = GetRealClassOfTag(strTagOuter, atomNSOuter, classOuter);
   nsAutoString classInner;
-  rv = GetClassOfTag(strTagInner, atomNSInner, classInner);
+  rv = GetRealClassOfTag(strTagInner, atomNSInner, classInner);
   // structtags are different: the level determines what can contain what.
   if (classOuter.Equals(classInner) && classOuter.EqualsLiteral("structtag"))
   {
@@ -1162,6 +1168,7 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
   return NS_OK;
 }
 
+
 // 
 NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, nsIAtom *atomNS, nsIDOMDocument * doc, nsIDOMNode **_retval)
 {
@@ -1171,6 +1178,8 @@ NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, 
   strKey = strTag; 
   TagData * data;    
   nsCOMPtr<nsIDOMNode> retNode;
+  nsCOMPtr<nsIDOMNodeList> nodelist;
+  PRBool setCursor = PR_FALSE;
   
   PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
   if (fInHash && data && doc && data->initialContents)
@@ -1274,7 +1283,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
     {
       nsAutoString theclass;
       nsCOMPtr<nsIDOMNode> secttitle, br;
-      GetClassOfTag(secondNodeName, nsAtomSecond, theclass);
+      GetRealClassOfTag(secondNodeName, nsAtomSecond, theclass);
       if (theclass.EqualsLiteral("structtag"))
       {
         // insert a sectiontitle tag at the beginning of the second half of a split section.
@@ -1286,37 +1295,14 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
         return NS_OK;
       }
     }
-  //  if (!pnode) pnode = *secondNode;
-  //#if DEBUG_barry || DEBUG_Barry
-  //  editor->DumpNode(pnode,0);
-  //#endif        
     nsCOMPtr<nsIDOMNode> pnode = *secondNode;
-    nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
     if (pnode)
     {
-      nsCOMPtr<nsIDOMElement> element;
-      nsCOMPtr<nsIDOMNodeList> nodeList;
-      nsCOMPtr<nsIDOMNode> node, selNode;
-      PRUint32 nodeCount;
-      PRInt32 selOffset; 
-      element = do_QueryInterface(pnode);
-      rv = element->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
-      if (nodeList) nodeList->GetLength(&nodeCount);
-      if (nodeCount > 0)
-      {
-        nodeList->Item(0, getter_AddRefs(node));
-        nsEditor::GetNodeLocation(node, address_of(selNode), &selOffset);
-        editor->DeleteNode(node);
-        selPriv->SetInterlinePosition(PR_TRUE);
-        rv = selection->Collapse(selNode, selOffset);
-  //      rv = selection->Extend( selNode, selOffset+1 );
-  #if DEBUG_barry || DEBUG_Barry
-        editor->DumpNode(selNode,0);
-  #endif
+      PRBool setCursor;
+      editor->SetSelectionOnCursorTag( pnode, &setCursor);
+      if (setCursor)
         return NS_OK;
-      }
     }
-
     rv = selection->Collapse(*secondNode, 0);
   }
 // diagnostics:

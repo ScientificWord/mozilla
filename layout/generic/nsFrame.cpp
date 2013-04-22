@@ -1,3 +1,4 @@
+
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 // vim:cindent:ts=2:et:sw=2:
 /* ***** BEGIN LICENSE BLOCK *****
@@ -871,8 +872,8 @@ nsFrame::DisplaySelectionOverlay(nsDisplayListBuilder*   aBuilder,
                                  PRUint16                aContentType)
 {
 //check frame selection state
-  if ((GetStateBits() & NS_FRAME_SELECTED_CONTENT) != NS_FRAME_SELECTED_CONTENT)
-    return NS_OK;
+  // if ((GetStateBits() & NS_FRAME_SELECTED_CONTENT) != NS_FRAME_SELECTED_CONTENT)
+  //   return NS_OK;
   if (!IsVisibleForPainting(aBuilder))
     return NS_OK;
 

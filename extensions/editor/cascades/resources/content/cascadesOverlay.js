@@ -37,7 +37,7 @@
 
 function openCascadesDialog()
 {
-  window.openDialog("chrome://cascades/content/EdCssProps.xul","_blank", "chrome,close,modal,titlebar");
+  window.openDialog("chrome://cascades/content/EdCssProps.xul","_blank", "chrome,resizable,close,modal,titlebar");
   window.content.focus();
 }
 

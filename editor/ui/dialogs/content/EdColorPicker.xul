@@ -55,6 +55,7 @@
   <script type="application/x-javascript" src="chrome://editor/content/EdColorPicker.js"/>
 
   <broadcaster id="args" value=""/>
+  <broadcaster id="hasAlpha" hidden="true" />
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 
   <hbox id="TableOrCellGroup" align="center" collapsed="true">
@@ -97,5 +98,9 @@
         style="margin-right:0px;" oncommand="RemoveColor()"/>
     </hbox>
   </vbox>
+  <hbox>
+	<label value="&transparency.label;" accesskey="&transparency.accesskey;" observes="hasAlpha"/>
+    <scale id="Transparency" min="0" max="255" value="255" increment="5" pageincrement="25" observes="hasAlpha" />
+  </hbox>
   <separator class="groove"/>
 </dialog>

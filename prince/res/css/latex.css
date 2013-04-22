@@ -42,6 +42,10 @@ table {
 }
 */
 
+button[class="msi"]::-moz-selection{
+  background: blue;
+} 
+
 button[class="msi"]{
   position: relative;
   left: 0px;
@@ -456,7 +460,7 @@ subsubsection[nonum="true"]>sectiontitle:before {
 }
 
 
-subsubsection[open="false"]*> {
+subsubsection[open="false"]>* {
   display: none;
 }
 
@@ -593,6 +597,7 @@ msibr:before {
 button[class="frontmattertag"] {
   display: none;
   -moz-user-select: none;
+  -moz-user-focus: none;
 }
 
 *[showfmbuttons="true"] button[class="frontmattertag"] {
@@ -625,13 +630,17 @@ bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epi
   -moz-user-select: text;
 }
 
-/*  makelof, makelot, maketitle, maketoc {
-  -moz-user-select: none;
-  display:block;
-	height: 1.3em;
-	width: 100%;
-}  */
-
+/* maketitle, maketoc, makelot, makelof { 
+  -moz-appearance: button;
+  margin: 1px 5px 2px 5px;
+  min-width: 6.3em;
+  border: 3px solid;
+  -moz-border-top-colors: transparent ThreeDHighlight ThreeDLightShadow;
+  -moz-border-right-colors: transparent ThreeDDarkShadow ThreeDShadow;
+  -moz-border-bottom-colors: transparent ThreeDDarkShadow ThreeDShadow;
+  -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
+  background-color: ThreeDFace;
+} */
 
 /* front matter tags */
 address {
@@ -792,6 +801,7 @@ button[class="subeqnnum"][customLabel]:after{
   -moz-user-modify: read-only ! important;
 }
 
+
 title {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-title");
 }
@@ -809,19 +819,19 @@ date {
 }
 
 maketitle {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketitle");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#maketitle");
 }
 
 maketoc {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketoc");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#maketoc");
 }
 
 makelof {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelof");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#makelof");
 }
 
 makelot {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelot");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#makelot");
 }
 
 line {
