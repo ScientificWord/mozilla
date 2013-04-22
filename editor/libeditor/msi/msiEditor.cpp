@@ -1106,7 +1106,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             preventDefault = PR_TRUE;
           }
           else {
-            res = nsEditor::BeginUpdateViewBatch();
+            // res = nsEditor::BeginUpdateViewBatch();
             NS_NAMED_LITERAL_STRING(symbolStr," ");
             nsString str(symbolStr);
             PRUnichar * start = str.BeginWriting();
@@ -1115,7 +1115,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             preventDefault = PR_TRUE;
             if (NS_SUCCEEDED(res))
 		          res = CheckForAutoSubstitute(PR_TRUE);
-            res = nsEditor::EndUpdateViewBatch();
+            // res = nsEditor::EndUpdateViewBatch();
           }
           if (preventDefault)
             aKeyEvent->PreventDefault();
@@ -1132,11 +1132,11 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     if (defaultPrevented)
       return res;
     else 
-      res = nsEditor::BeginUpdateViewBatch();
+      // res = nsEditor::BeginUpdateViewBatch();
       res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
       if (NS_SUCCEEDED(res) &&(!(mFlags & eEditorPlaintextMask)))
 		    res = CheckForAutoSubstitute(PR_FALSE);
-      res = nsEditor::EndUpdateViewBatch();
+      // res = nsEditor::EndUpdateViewBatch();
       return res;
       
   }
