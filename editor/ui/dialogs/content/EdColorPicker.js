@@ -71,6 +71,7 @@ function Startup()
   gDialog.CellOrTableGroup = document.getElementById("CellOrTableGroup");
   gDialog.TableRadio       = document.getElementById("TableRadio");
   gDialog.CellRadio        = document.getElementById("CellRadio");
+  gDialog.Transparency     = document.getElementById("Transparency");
   gDialog.ColorSwatch      = document.getElementById("ColorPickerSwatch");
   gDialog.Ok               = document.documentElement.getButton("accept");
 
@@ -184,6 +185,12 @@ function Startup()
   {
     // Hide the "Default button -- user must pick a color
     document.getElementById("DefaultColorButton").collapsed = true;
+  }
+
+  if ("alpha" in gColorObj)
+  {
+    gDialog.Transparency.value = 255 - gColorObj.alpha;
+    document.getElementById("hasAlpha").hidden = false;
   }
 
   // Set focus to colorpicker if not set to table radio buttons above
@@ -322,6 +329,9 @@ function onAccept()
     if (TableOrCell && gDialog.TableRadio.selected)
       gColorObj.Type = "Table";
   }
+  if ("alpha" in gColorObj)
+    gColorObj.alpha = 255 - gDialog.Transparency.value;
+
   SaveWindowLocation();
 
   return true; // do close the window

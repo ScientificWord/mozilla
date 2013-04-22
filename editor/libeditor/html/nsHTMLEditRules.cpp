@@ -3449,7 +3449,7 @@ GetEngine() {
 }
 
 
-PRBool IsSpecialMath(nsIDOMElement * node)
+PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty)
 {
   PRBool retval = PR_FALSE;
   PRBool isMath = nsHTMLEditUtils::IsMath(node);
@@ -3465,14 +3465,14 @@ PRBool IsSpecialMath(nsIDOMElement * node)
       name.EqualsLiteral("msubsup") ||
       name.EqualsLiteral("mfrac") ||
       name.EqualsLiteral("mroot") ||
-      name.EqualsLiteral("msqrt") ||
+      (name.EqualsLiteral("msqrt") && isEmpty) ||
       name.EqualsLiteral("mover") ||
       name.EqualsLiteral("munder")) 
     {
       retval = PR_TRUE;
     } 
     else {
-      if (name.EqualsLiteral("mtd") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
+      if ((name.EqualsLiteral("mtd") && isEmpty) || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
         // Search up and see if the enclosing table has the attribute 'type="eqnarray"'. If so,
         // don't try to preserve the table cells.
         parentEl = node;
@@ -3550,7 +3550,8 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
     ed->GetTagListManager(getter_AddRefs(tlm));
     ed->ReplaceContainer((nsIDOMNode*)elt, address_of(newNode), tagName, tlm, nsnull, nsnull, PR_TRUE);
   }
-  else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") || name.EqualsLiteral("mover"))
+  else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") ||
+           name.EqualsLiteral("mover"))
   {
     retval = PR_TRUE;
     ed->RemoveContainer(elt);
@@ -3590,13 +3591,21 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       if (parentNode) {
         PRBool isParagraph;
         PRBool isTextTag;
+        PRBool isFrontMatterTag;
         nsCOMPtr<msiITagListManager> mtagListManager;
         ed->GetTagListManager(getter_AddRefs(mtagListManager));
         res = parentNode->GetNodeName(name);
-        mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
-        mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
-        if (isParagraph || isTextTag || name.EqualsLiteral("td") || name.EqualsLiteral("body"))
-        {
+        if (!name.EqualsLiteral("body")){
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"), name, nsnull, &isFrontMatterTag);
+          if (isParagraph || isTextTag || /*isFrontMatterTag ||*/ name.EqualsLiteral("td"))
+          {
+            done = PR_TRUE;
+            break;
+          }
+        }
+        else {
           done = PR_TRUE;
           break;
         }
@@ -3611,7 +3620,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
       done = !isEmpty;
       elt = do_QueryInterface(node);
-      if (elt && IsSpecialMath(elt)) {
+      if (elt && IsSpecialMath(elt, isEmpty)) {
         // we have deleted a child of node. If node is one of the
         // math nodes that has a fixed number of children, we must replace the
         // child with an input box. If elt is an msup, msub, msubsup (mroot?), we neeed
@@ -4412,6 +4421,8 @@ nsHTMLEditRules::WillMakeBasicBlock(nsISelection *aSelection,
       if (!success) res = aSelection->Collapse(theBlock,0);
       selectionResetter.Abort();  // to prevent selection reseter from overriding us.
       *aHandled = PR_TRUE;
+      PRBool didSetCursor;
+      mHTMLEditor->SetSelectionOnCursorTag(theBlock, &didSetCursor);
     }
     return res;
   }
@@ -8379,6 +8390,8 @@ nsHTMLEditRules::ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsA
       if (NS_FAILED(res)) return res;
     }
   }
+  PRBool didSetCursor;
+  mHTMLEditor->SetSelectionOnCursorTag(newBlock, &didSetCursor);
   return res;
 }
 
@@ -8847,12 +8860,12 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
   {
     node = arrayOfNodes[i];
     node->GetLocalName(tagName);
-    tagListManager->GetClassOfTag( tagName, nsnull, tagClass);
+    tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
     while (!tagClass.EqualsLiteral("paratag") && !tagClass.EqualsLiteral("structtag") && !tagClass.EqualsLiteral("envtag"))
     {
       node->GetParentNode(getter_AddRefs(node));
       node->GetLocalName(tagName);
-      tagListManager->GetClassOfTag( tagName, nsnull, tagClass);
+      tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
     }
     if (tagClass.EqualsLiteral("paratag"))
     {
@@ -8862,17 +8875,18 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
   }
 
   listCount = nodes.Count();
-  for (int i = 0; i < listCount; ++i)
+  for (i = 0; i < listCount; ++i)
   {
     if (nodes[i])
     {
+      node = nodes[i];
       node->GetLocalName(tagName);
-      tagListManager->GetClassOfTag( tagName, nsnull, tagClass);
-      while (node && !tagClass.EqualsLiteral("envtag"))
+      tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
+      while (node && !tagClass.EqualsLiteral("envtag") && !tagName.EqualsLiteral("body"))
       {
         node->GetParentNode(getter_AddRefs(node));
         node->GetLocalName(tagName);
-        tagListManager->GetClassOfTag( tagName, nsnull, tagClass);
+        tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
       }
       if (node)
       {
@@ -10009,7 +10023,7 @@ nsHTMLEditRules::RemoveEmptyNodes()
         nsAutoString className;
         nsAutoString nodeName;
         res = mtagListManager->GetTagOfNode(node, &nsAtom, nodeName);
-        res = mtagListManager->GetClassOfTag(nodeName, nsAtom, className);
+        res = mtagListManager->GetRealClassOfTag(nodeName, nsAtom, className);
         if (  (bIsMailCite = nsHTMLEditUtils::IsMailCite(node, mtagListManager))  ||
               nsEditor::NodeIsType(node, nsEditProperty::a)      ||
               nsHTMLEditUtils::IsInlineStyle(node, mtagListManager)               ||

@@ -173,20 +173,17 @@
   <xsl:template match="html:preamble">
     <xsl:text>
 %% preamble
-\usepackage{amssymb,amsmath,xcolor,graphicx}
+\usepackage{amssymb,amsmath,xcolor,graphicx,xspace}
     </xsl:text>
     <xsl:if test="$compiler='xelatex'">
-\usepackage{xltxtra}
-\usepackage{xkeyval}
+\usepackage{xltxtra,xkeyval}
 \TeXXeTstate=1
 \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
     </xsl:if>
 
     <xsl:if test="$compiler!='xelatex'">\usepackage{textcomp}</xsl:if>
 
-    <xsl:text>\usepackage{xspace}</xsl:text>
-    <xsl:if test="count(//html:indexitem) &gt; 0"
-  >\usepackage{makeidx}</xsl:if>
+    <xsl:if test="count(//html:indexitem) &gt; 0">\usepackage{makeidx}</xsl:if>
 
     <xsl:for-each select="$packagelist/*"
   >
@@ -221,51 +218,34 @@
     <xsl:value-of select="."/>
   </xsl:template>
 
+  <xsl:template match="html:dialogbase">
+    <xsl:apply-templates/>
+  </xsl:template>
+
   <xsl:template match="html:babel">
     <xsl:if test="@lang1">
-      \setdefaultlanguage{
-      <xsl:value-of select="@lang1"/>
-      }
+      \setdefaultlanguage{<xsl:value-of select="@lang1"/>}
     </xsl:if>
     <xsl:if test="@lang2">
-      \setotherlanguage{
-      <xsl:value-of select="@lang2"/>
-      }
+      \setotherlanguage{<xsl:value-of select="@lang2"/>}
     </xsl:if>
   </xsl:template>
 
   <!-- use docformat information to call the crop package -->
   <xsl:template match="html:crop">
     <xsl:if test="$pagelayoutok"
-  >
-      <xsl:variable name="unit">
+  ><xsl:variable name="unit">
         <xsl:value-of select="@unit"/>
       </xsl:variable
-  >
-      \usepackage[
-      <xsl:value-of select="@type"/>
-      <xsl:text>,</xsl:text
-  >
-      <xsl:choose
-    >
-        <xsl:when test="@paper='other'"
+  >\usepackage[<xsl:value-of select="@type"/><xsl:text>,</xsl:text
+  ><xsl:choose
+    ><xsl:when test="@paper='other'"
+      >width =<xsl:value-of select="@width"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
       >
-          width =
-          <xsl:value-of select="@width"/>
-          <xsl:value-of select="$unit"/>
-          <xsl:text>,</xsl:text
-      >
-          height =
-          <xsl:value-of select="@height"/>
-          <xsl:value-of select="$unit"/>
-          <xsl:text>,</xsl:text
-    >
-        </xsl:when>
+          height =<xsl:value-of select="@height"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
+    ></xsl:when>
         <xsl:otherwise
-      >
-          <xsl:value-of select="@paper"/>
-          <xsl:text>,</xsl:text>
-        </xsl:otherwise>
+      ><xsl:value-of select="@paper"/><xsl:text>,</xsl:text></xsl:otherwise>
         <!-- you can add any crop options you want here, separated with commas --> </xsl:choose
   >
       center]{crop}
@@ -278,101 +258,68 @@
     <xsl:if test="$pagelayoutok"
 >
       <xsl:variable name="unit">
-        <xsl:value-of select="@unit"
-/>
+        <xsl:value-of select="@unit"/>
       </xsl:variable>
-      \usepackage[
-      <xsl:apply-templates/>
-      ]{geometry}
+      \usepackage[<xsl:apply-templates/>]{geometry}
     </xsl:if
->
-  </xsl:template>
+></xsl:template>
 
   <xsl:template match="html:page">
     <xsl:if test="$pagelayoutok">
-      paper=
-      <xsl:value-of select="@paper"/>
-      paper, twoside=
-      <xsl:value-of select="@twoside"
-  />
-      ,
+      paper=<xsl:value-of select="@paper"/>paper, twoside=<xsl:value-of select="@twoside"
+  />,
       <!--landscape=<xsl:value-of select="@landscape"/>
       , -->
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:page[@paper='screen']">
-    <xsl:if test="$pagelayoutok"
+  <xsl:template match="html:page[@paper='screen']"><xsl:if test="$pagelayoutok"
  >paper=screen, twoside=false, landscape=false,</xsl:if>
   </xsl:template>
 
   <xsl:template match="html:page[@paper='other']">
     <xsl:if test="$pagelayoutok">
-      paperwidth=
-      <xsl:value-of select="@width"
-  />
-      , paperheight=
-      <xsl:value-of select="@height"
-/>
-      ,
+      paperwidth=<xsl:value-of select="@width"
+  />, paperheight=<xsl:value-of select="@height"
+/>,
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:textregion">
     <xsl:if test="$pagelayoutok">
-      textwidth=
-      <xsl:value-of select="@width"/>
-      , textheight=
-      <xsl:value-of select="@height"
-/>
-      ,
+      textwidth=<xsl:value-of select="@width"/>, textheight=<xsl:value-of select="@height"
+/>,
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:margin">
     <xsl:if test="$pagelayoutok">
-      left=
-      <xsl:value-of select="@left"/>
-      , top=
-      <xsl:value-of select="@top"
-/>
-      ,
+      left=<xsl:value-of select="@left"/>, top=<xsl:value-of select="@top"
+/>,
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:hedd">
     <xsl:if test="$pagelayoutok">
-      headheight=
-      <xsl:value-of select="@height"
-  />
-      , headsep=
-      <xsl:value-of select="@sep"
-/>
-      ,
+      headheight=<xsl:value-of select="@height"
+  />, headsep=<xsl:value-of select="@sep"
+/>,
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:columns[@count='2']"
   >
-    twocolumn=true, columnsep=
-    <xsl:value-of select="@sep"
-/>
-    ,
+    twocolumn=true, columnsep=<xsl:value-of select="@sep"/>,
   </xsl:template>
 
   <xsl:template match="html:columns[@count!='2']"
   ></xsl:template>
 
   <xsl:template match="html:marginnote[@hidden='false']"
-  >
-    <xsl:if test="$pagelayoutok">
-      marginparwidth=
-      <xsl:value-of select="@width"
-  />
-      , marginparsep=
-      <xsl:value-of select="@sep"
-/>
-      ,
+  ><xsl:if test="$pagelayoutok">
+      marginparwidth=<xsl:value-of select="@width"
+  />, marginparsep=<xsl:value-of select="@sep"
+/>,
     </xsl:if>
   </xsl:template>
 
@@ -393,72 +340,35 @@
 </xsl:template>
 
 <xsl:template match="html:mainfont[@ot='1']">
-  \setmainfont[
-  <xsl:value-of select="@options"
-  />
-  ]{
-  <xsl:value-of select="@name"
-/>
-  }
+  \setmainfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
 
-<xsl:template match="html:mainfont[@name='Default']"
-></xsl:template>
+<xsl:template match="html:mainfont[@name='Default']"></xsl:template>
 
 <xsl:template match="html:sansfont[@ot='1']"
  >
-  \setsansfont[
-  <xsl:value-of select="@options"
- />
-  ]{
-  <xsl:value-of select="@name"
-/>
-  }
+  \setsansfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
 
 <xsl:template match="html:sansfont[@name='']"></xsl:template>
 
 <xsl:template match="html:fixedfont[@ot='1']">
-  \setmonofont[
-  <xsl:value-of select="@options"/>
-  ]{
-  <xsl:value-of select="@name"/>
-  }
+  \setmonofont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
 
 <xsl:template match="html:fixedfont[@name='']"></xsl:template>
 
 <xsl:template match="html:x1font">
-  \newfontfamily\
-  <xsl:value-of select="@internalname"/>
-  [
-  <xsl:value-of select="@options"/>
-  ]{
-  <xsl:value-of select="@name"/>
-  }
+  \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
-
 <xsl:template match="html:x2font">
-  \newfontfamily\
-  <xsl:value-of select="@internalname"/>
-  [
-  <xsl:value-of select="@options"/>
-  ]{
-  <xsl:value-of select="@name"/>
-  }
+  \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
-
 <xsl:template match="html:x3font">
-  \newfontfamily\
-  <xsl:value-of select="@internalname"/>
-  [
-  <xsl:value-of select="@options"/>
-  ]{
-  <xsl:value-of select="@name"/>
-  }
+  \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}
 </xsl:template>
-
 <!-- section headings redefined. Requires package titlesec -->
+
 <xsl:template match="html:sectitleformat">
   <xsl:if test="@enabled='true'">
     <xsl:if test="@newPage='true'">
@@ -466,42 +376,29 @@
       <xsl:value-of select="@level"/>
       break{\clearpage}
     </xsl:if>
-    \newcommand{\msi
-    <xsl:value-of select="@level"
-/>
-    }[1]{
-    <xsl:apply-templates select="html:titleprototype"/>
-    }
-\titleformat{\
-    <xsl:value-of select="@level"/>
-    }[
-    <xsl:value-of select="@sectStyle"/>
-    ]{
-    <xsl:choose
-  >
-      <xsl:when test="@align='l'">\filright</xsl:when
-  >
-      <xsl:when test="@align='c'">\center</xsl:when
-  >
-      <xsl:otherwise>\filleft</xsl:otherwise
-  >
-    </xsl:choose>
-    <xsl:apply-templates select="html:toprule"/>
-    }{}{0pt}{\msi
-    <xsl:value-of select="@level"
-/>
-    }[{
-    <xsl:apply-templates select="html:bottomrule"/>
-    }]
+    \newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates select="html:titleprototype"
+    />}\titleformat{\<xsl:value-of select="@level"/>}[<xsl:value-of select="@sectStyle"
+    />]{<xsl:choose>
+      <xsl:when test="@align='r'">\filleft</xsl:when>
+      <xsl:when test="@align='c'">\center</xsl:when>
+      <xsl:otherwise>\filright</xsl:otherwise>
+    </xsl:choose>    
+    <xsl:apply-templates select="html:toprule"
+    />}{}{0pt}{\msi<xsl:value-of select="@level"/>}[{<xsl:apply-templates select="html:bottomrule"/>}]
   </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:dialogbase">
-  <xsl:apply-templates/>
+<xsl:template match="html:sectitlenum">
+  \the<xsl:value-of select="@level"/>
 </xsl:template>
 
+<xsl:template match="html:texparam">
+  #<xsl:value-of select="@num"/>
+</xsl:template>
+
+
 <xsl:template match="html:titleprototype">
-  <xsl:apply-templates mode="tex"/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:templatebase">

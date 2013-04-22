@@ -1,0 +1,24 @@
+
+<!ENTITY windowTitle.label "Plot Label Font Settings">
+<!ENTITY faceUseDefault.label "Use axes font face">
+<!ENTITY faceUseDefault.accesskey "a">
+<!ENTITY fontface.label "Font face">
+<!ENTITY fontface.accesskey "f">
+<!ENTITY sizeUseDefault.label "Use axes font size">
+<!ENTITY sizeUseDefault.accesskey "z">
+<!ENTITY fontsize.label "Font size">
+<!ENTITY fontsize.accesskey "s">
+<!ENTITY colorUseDefault.label "Use axes font color">
+<!ENTITY colorUseDefault.accesskey "l">
+<!ENTITY fontcolor.label "Font color">
+<!ENTITY fontcolor.accesskey "c">
+<!ENTITY styleUseDefault.label "Use axes font style">
+<!ENTITY styleUseDefault.accesskey "y">
+<!ENTITY bold.label "Bold">
+<!ENTITY bold.accesskey "B">
+<!ENTITY italic.label "Italic">
+<!ENTITY italic.accesskey "I">
+<!ENTITY sampleText "The lazy brown fox displays some text. Feel free to type other text here.">
+<!ENTITY restrictToWebFonts.label "Use web-safe fonts only">
+<!ENTITY restrictToWebFonts.accesskey "w">
+<!ENTITY restrictToWebFonts.tooltip "Restricts fonts to a set commonly recognized on the Web">

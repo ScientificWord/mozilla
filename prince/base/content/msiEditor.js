@@ -583,8 +583,8 @@ var msiResizeListener =
       unithandler.initCurrentUnit(units);
       var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
       var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
-      graph.setGraphAttribute("Width", newWidthInUnits);
-      graph.setGraphAttribute("Height", newHeightInUnits);
+      graph.setGraphAttribute("Width", String(newWidthInUnits));
+      graph.setGraphAttribute("Height", String(newHeightInUnits));
       graph.recomputeVCamImage( editorElement);
       graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
       ensureVCamPreinitForPlot(DOMGraph, editorElement);
@@ -1046,8 +1046,17 @@ function msiEditorDocumentObserver(editorElement)
               bIsSinglePara = false;
   //          htmlEditor.insertHTML(editorElement.initialEditorContents);
 //              htmlEditor.insertHTMLWithContext(this.mEditorElement.mInitialEditorContents, null, null, "text/html", null,null,0,true);
+            if (("mInitialContentListener" in this.mEditorElement) && this.mEditorElement.mInitialContentListener)
+              htmlEditor.addInsertionListener(this.mEditorElement.mInitialContentListener);
             if (insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara, true))
+            {
               this.mbInsertInitialContents = false;
+              if (("mInitialContentListener" in this.mEditorElement) && this.mEditorElement.mInitialContentListener)
+              {
+                htmlEditor.removeInsertionListener(this.mEditorElement.mInitialContentListener);
+                this.mEditorElement.mInitialContentListener = null;
+              }
+            }
           }
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialContents: " + exc + "\n");}
         }
@@ -3939,7 +3948,7 @@ function msiGetPropertiesObjectFromSelection(editorElement)
 //rwa
 //rwa    if ( (retObj != null) && (retObj.theOffset == null) )  //in the case we've identified a revisable object
 //rwa    {
-//rwa      var parentNode = msiNavigationUtils.findWrappingStyleNode(retObj.theNode);
+//rwa      var  parentNode = msiNavigationUtils.findWrappingStyleNode(retObj.theNode);
 //rwa      if (parentNode != null)
 //rwa        retObj.theNode = parentNode;
 //rwa    }
@@ -5511,7 +5520,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       break;
 
       default:
-        tagclass = editor.tagListManager.getClassOfTag(name, null);
+        tagclass = editor.tagListManager.getRealClassOfTag(name, null);
         switch (tagclass)
         {
           case "texttag":
@@ -8060,7 +8069,7 @@ msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBas
 //rwa//      continue;
 //rwa//    }
 //rwa//    // Now we go through the list of things that have properties dialogs.
-//rwa//    tagclass = editor.tagListManager.getClassOfTag(tag, null);
+//rwa//    tagclass = editor.tagListManager.getRealClassOfTag(tag, null);
 //rwa//    var propsdata;
 //rwa//    switch (tagclass)
 //rwa//    {
@@ -9731,7 +9740,7 @@ function setTagFieldContents(editor, propertyStack)
     if (st) st.value = "";
     if (ft) ft.value = "";
     while (str && (str.length > 0)) {
-    	klass = tagManager.getClassOfTag(str, null);
+    	klass = tagManager.getRealClassOfTag(str, null);
       textbox = null;
       switch(klass) {
         case "texttag" : textbox = tt;
