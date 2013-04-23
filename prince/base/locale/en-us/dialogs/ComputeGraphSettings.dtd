@@ -56,9 +56,11 @@
 <!ENTITY plotpointxcrosses.label    "X Crosses">
 
 <!ENTITY plotlinethickness.label  "Line Thickness">
+<!ENTITY plotlineverythin.label   "Very thin">
 <!ENTITY plotlinethin.label       "Thin">
 <!ENTITY plotlinemedium.label     "Medium">
 <!ENTITY plotlinethick.label      "Thick">
+<!ENTITY plotlineverythick.label  "Very thick">
 
 <!ENTITY plotadjust.label         "Adjust for discontinuities">
 <!ENTITY plotasymptote.label      "Show Asymptotes">
