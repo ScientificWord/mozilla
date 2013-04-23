@@ -302,11 +302,11 @@ U32 PlotServiceRequest::NameToPID (const char *name) {
   if (s == "Dimension")         return (PID_GraphDimension);            
   if (s == "AxisScale")         return (PID_GraphAxesScaling);
   if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxXMin);
-  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxXMax);
-  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxYMin);
-  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxYMax);
-  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxZMin);
-  if (s == "ViewingBoxXMin")    return (PID_GraphViewBoxZMax);
+  if (s == "ViewingBoxXMax")    return (PID_GraphViewBoxXMax);
+  if (s == "ViewingBoxYMin")    return (PID_GraphViewBoxYMin);
+  if (s == "ViewingBoxYMax")    return (PID_GraphViewBoxYMax);
+  if (s == "ViewingBoxZMin")    return (PID_GraphViewBoxZMin);
+  if (s == "ViewingBoxZMax")    return (PID_GraphViewBoxZMax);
   if (s == "CameraLocationX")   return (PID_GraphCameraLocationX);  
   if (s == "CameraLocationY")   return (PID_GraphCameraLocationY);  
   if (s == "CameraLocationZ")   return (PID_GraphCameraLocationZ);  
