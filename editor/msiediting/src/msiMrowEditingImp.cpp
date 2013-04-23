@@ -71,6 +71,16 @@ msiMrowEditingImp::IsRedundant(nsIEditor * editor, PRBool offsetOnBoundary, PRBo
       else
         *isRedundant = PR_TRUE;
     }  
+    if (*isRedundant)
+    {
+      nsCOMPtr<nsIDOMNode> parent;
+      m_mathmlNode->GetParentNode(getter_AddRefs(parent));
+      nsString localName;
+      if (parent)
+        parent->GetLocalName(localName);
+      if (localName.EqualsLiteral("mfenced"))
+        *isRedundant = PR_FALSE;
+    } 
   }
   return NS_OK;
 } 

@@ -594,18 +594,18 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
             retstr += "@viewbox@";
         break;
 
-//         case PID_GraphCameraLocationX:
-//         case PID_GraphCameraLocationY:
-//         case PID_GraphCameraLocationZ:
-//         case PID_GraphFocalPointX    :
-//         case PID_GraphFocalPointY    :
-//         case PID_GraphFocalPointZ    :
-//         case PID_GraphViewingAngle   :
-//           if (cameracount == 0) {
-//             retstr += "@camera@";
-//             cameracount++;
-//           }
-//           break;  
+        case PID_GraphCameraLocationX:
+        case PID_GraphCameraLocationY:
+        case PID_GraphCameraLocationZ:
+        case PID_GraphFocalPointX    :
+        case PID_GraphFocalPointY    :
+        case PID_GraphFocalPointZ    :
+        case PID_GraphViewingAngle   :
+//          if (cameracount == 0) {
+//            retstr += "@camera@";
+//            cameracount++;
+//          }
+          break;  
           
         case PID_GraphAxesType	   :  
           retstr += "@axestype@";                                                          
@@ -764,12 +764,16 @@ string MuPADPlot::LineThicknessStr (MuPADPlot* T) {
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineThickness, plottype);
   string ret = "";
   if (val == "thin") {
-    ret = ", LineWidth=.3";  //these must be positive! Without units, represent millimeters
+    ret = ", LineWidth=.4";  //these must be positive! Without units, represent millimeters
   } else if (val == "medium") {
     ret = ", LineWidth=.7";
   } else if (val == "thick") {
-    ret = ", LineWidth=1.1";
-  } 
+    ret = ", LineWidth=1";
+  } else if (val == "verythin") {
+    ret = ", LineWidth=.2";
+  } else if (val == "verythick") {
+    ret = ", LineWidth=1.4";
+  }
   return ret;                                              
 }                                                          
 
@@ -1219,14 +1223,14 @@ string MuPADPlot::ViewingBoxStr (MuPADPlot *T) {
   string viewPatternStr[6] = {"ViewingBoxXMin=", "ViewingBoxXMax=",
                               "ViewingBoxYMin=", "ViewingBoxYMax=",
                               "ViewingBoxZMin=", "ViewingBoxZMax="};
-  int maxVal = (T->dim[0] == '3') ? PID_GraphViewBoxZMax : PID_GraphViewBoxYMax;
-  for (int viewProp = PID_GraphViewBoxXMin; viewProp <= PID_GraphViewBoxZMax; ++viewProp)
+  int maxProp = (T->dim[0] == '3') ? PID_GraphViewBoxZMax : PID_GraphViewBoxYMax;
+  for (int viewProp = PID_GraphViewBoxXMin; viewProp <= maxProp; ++viewProp)
   {
     plottype = 0;
     string val = T->psr->RetrievePlotParam (T->plotno, viewProp, plottype);
     if (val != "")
     {
-      if (s != "")
+//      if (s != "")
         s += ", ";
       s += viewPatternStr[viewProp - PID_GraphViewBoxXMin] + val;
     }
