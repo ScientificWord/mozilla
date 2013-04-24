@@ -404,9 +404,11 @@
                     <spacer flex="2" />
                     <menulist id="LineThickness">
                       <menupopup>
+                        <menuitem label="&plotlineverythin.label;" value="verythin" />
                         <menuitem label="&plotlinethin.label;" value="thin" />
                         <menuitem label="&plotlinemedium.label;" value="medium" />
                         <menuitem label="&plotlinethick.label;" value="thick" />
+                        <menuitem label="&plotlineverythick.label;" value="verythick" />
                       </menupopup>
                     </menulist>
                     <spacer flex="2" />
