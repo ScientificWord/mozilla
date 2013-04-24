@@ -89,7 +89,7 @@ en-US.jar:
   locale/sectiontext.dtd                  (dialogs/sectiontext.dtd)
   locale/addruleforsection.dtd            (dialogs/addruleforsection.dtd)
   locale/Note.dtd                         (dialogs/Note.dtd)
-  locale/Frame.dtd                        (dialogs/Frame.dtd)
+  locale/Minipage.dtd                     (dialogs/Minipage.dtd)
   locale/fractionProperties.dtd           (dialogs/fractionProperties.dtd)
   locale/radicalProperties.dtd            (dialogs/radicalProperties.dtd)
   locale/useWorkInProgress.dtd            (dialogs/useWorkInProgress.dtd)
