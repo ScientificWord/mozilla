@@ -1,11 +1,11 @@
 
-<!ENTITY  windowTitle.label         "Frame">
-<!ENTITY  position.label            "Frame position">
+<!ENTITY  windowTitle.label         "Minipage">
+<!ENTITY  position.label            "Minipage position">
 
 <!--JLF Confirm use with BBM -->
 <!ENTITY  inner						"Inner margin">
 <!ENTITY  inline					"In line">
-<!ENTITY  inlineOffset    "Offset to Bottom of Frame">
+<!ENTITY  inlineOffset    "Offset to Bottom of Minipage">
 <!ENTITY  display					"Displayed">
 <!ENTITY  floating				"Floating">
 <!ENTITY  outer						"Outer margin">
@@ -47,25 +47,25 @@
 <!ENTITY unitLabel.label "Units">
 <!ENTITY  SizePlacement.label  "Size &amp; Placement">
 
-<!ENTITY Frametab.label "Frame">
+<!ENTITY Minipage.label "Minipage">
 <!ENTITY Placementtab.label "Placement">
 
-<!ENTITY frameTab.borderLabel "Border">
-<!ENTITY frameTab.backgroundLabel "Background">
-<!ENTITY frameTab.textAlignmentLabel "Text alignment">
-<!ENTITY frameTab.textCentered "centered">
-<!ENTITY frameTab.textJustified "justified">
-<!ENTITY frameTab.textLeft "left">
-<!ENTITY frameTab.textRight "right">
-<!ENTITY frameTab.textInside "inside">
-<!ENTITY frameTab.textOutside "outside">
+<!ENTITY Minipage.borderLabel "Border">
+<!ENTITY Minipage.backgroundLabel "Background">
+<!ENTITY Minipage.textAlignmentLabel "Text alignment">
+<!ENTITY Minipage.textCentered "centered">
+<!ENTITY Minipage.textJustified "justified">
+<!ENTITY Minipage.textLeft "left">
+<!ENTITY Minipage.textRight "right">
+<!ENTITY Minipage.textInside "inside">
+<!ENTITY Minipage.textOutside "outside">
 
-<!ENTITY frameTab.descLeft "Left">
-<!ENTITY frameTab.descToText "To text">
-<!ENTITY frameTab.descRight "Right">
-<!ENTITY frameTab.descTop "Top">
-<!ENTITY frameTab.descTopBottom "Top/Bottom">
-<!ENTITY frameTab.descBottom "Bottom">
+<!ENTITY Minipage.descLeft "Left">
+<!ENTITY Minipage.descToText "To text">
+<!ENTITY Minipage.descRight "Right">
+<!ENTITY Minipage.descTop "Top">
+<!ENTITY Minipage.descTopBottom "Top/Bottom">
+<!ENTITY Minipage.descBottom "Bottom">
 
 <!ENTITY sizeTab.label "Size">
 <!ENTITY sizeTab.actualSize "Actual size">
