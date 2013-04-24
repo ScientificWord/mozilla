@@ -2924,7 +2924,11 @@ var graphVarDataBase =
     var xsltProcessor = this.getXMLToTeXProcessor();
     var res = processXMLFragWithLoadedStylesheet(xsltProcessor, xmlStr);
     res = res.replace(/\\mathnormal/g, "");
-    res = res.replace(/\{([^\{\}]*)\}/g, "$1");
+    res = res.replace(/\\ensuremath/g, "");
+    res = res.replace(/\\operatorname\*?/g, "");
+    var bracesRE = /\{([^\{\}]*)\}/g;
+    while (bracesRE.test(res))
+      res = res.replace(bracesRE, "$1");
     res = res.replace(/[\$\\]/g,"");
     return res;
   },
