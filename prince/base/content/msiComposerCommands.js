@@ -9973,7 +9973,7 @@ function msiFrame(editorElement, editor, node)
 {
   if (editor==null) editor = msiGetEditor(editorElement);
   editor.beginTransaction();
-  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,dependent, resizable=yes", node);
+  window.openDialog("chrome://prince/content/Minipage.xul","frame", "chrome,close,titlebar,dependent, resizable=yes", node);
 	msiGetEditor(editorElement).incrementModificationCount(1);
   editor.endTransaction();
 }

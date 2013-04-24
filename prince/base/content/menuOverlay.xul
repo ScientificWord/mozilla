@@ -262,9 +262,9 @@
                 command="cmd_msiInsertRules" 
                 label="&insertLine.label;"/>
 			<menuitem id="insertFrame" 
-			          accesskey="&insertframe.accesskey;"      
+			          accesskey="&insertMinipage.accesskey;"      
 			          command="cmd_frame"       
-                label="&insertFrame.label;"/>
+                label="&insertMinipage.label;"/>
       <menuitem accesskey="&insertBreaks.accesskey;"               
                 command="cmd_msiInsertBreaks"                
                 label="&insertBreaks.label;"/>
