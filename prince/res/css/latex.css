@@ -1438,6 +1438,10 @@ typewriter {
   font-weight: 300
 }
 
+ltxframe {
+  border: thin solid black;
+}
+
 rtl {
   color: rgb(100,50,0);
   direction: rtl;
