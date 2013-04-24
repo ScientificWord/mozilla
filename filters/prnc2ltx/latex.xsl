@@ -787,6 +787,8 @@ should not be done under some conditions -->
   />}<xsl:apply-templates
   />}</xsl:template>
 
+<xsl:template match="html:ltxframe">\frame{<xsl:apply-templates/>}</xsl:template>
+
 <xsl:template match="html:tex"
   >\TeX{}</xsl:template>
 <xsl:template match="html:textquotedblleft"
