@@ -49,6 +49,7 @@
 				<tag nm="fontcolor" hidden="1"><description>Font color</description></tag>
 				<tag nm="fraktur"><description>Fraktur</description>
           <mathonly/><mathvar>fraktur</mathvar></tag>
+        <tag nm="ltxframe"><description>Frame</description></tag>
 				<tag nm="rtl"><description>Right-to-left font</description></tag>
 				<tag nm="Huge"><description>Huge</description></tag>
 				<tag nm="huge"><description>huge</description></tag>
