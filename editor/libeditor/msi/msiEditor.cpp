@@ -946,6 +946,22 @@ msiEditor::CreateReplaceScriptBaseTransaction(nsIDOMNode * script,
 }    
 
 //End nsIMathMLEditor
+//
+
+PRBool SpacesAtEndOfMathAddsSpace()
+{
+  nsresult rv;
+  PRBool thePref;
+  nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+
+  if (NS_SUCCEEDED(rv) && prefBranch) {
+    rv = prefBranch->GetBoolPref("swp.spaces.after.math", &thePref);
+    return thePref;
+  }
+  return PR_FALSE;
+}
+
 
 
 NS_IMETHODIMP 
@@ -1087,11 +1103,22 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         if (NS_SUCCEEDED(res) && currFocusNode && mathnode)
         {
           PRBool preventDefault(PR_FALSE);
+          PRBool prefset(PR_FALSE);
           if (symbol == ' ')
           {
             // SWP actually has some special behavior if you're at the end of math
-            if (!isShift)
+            prefset = SpacesAtEndOfMathAddsSpace();
+            if (!isShift) {
               res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+              // if preference is set, and we are now out of math, type a space
+              if (prefset) 
+              {
+                 res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
+                 res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+                 if (!mathnode)
+                   HandleKeyPress(aKeyEvent);
+              }
+            }
           }
           else if (symbol == '\t')
           {
