@@ -33,6 +33,8 @@
 <!ENTITY XMLSourceMinLineLength.label "XML source min line length">
 <!ENTITY Spacebar.label "Spacebar">
 <!ENTITY AfterSpaceSwitchesToMath.label "After space switches to math">
+<!ENTITY SpaceExits.label "Space at end of math exits math">
+<!ENTITY SpaceAfterMath.label "..and types a space">
 <!ENTITY CtrlT.label  "Ctrl + T">
 <!ENTITY CtrlM.label  "Ctrl + M">
 <!ENTITY ToggleMathText.label "Toggle math/text">

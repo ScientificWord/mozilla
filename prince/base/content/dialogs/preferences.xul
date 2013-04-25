@@ -366,7 +366,10 @@
                   onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id ="doublespacepref"
                   name="swp.space.after.space"
-                  type="bool"/>                  
+                  type="bool"/>   
+      <preference id ="spaceinmathaddsspace"
+                  name="swp.spaces.after.math"  
+                  type="bool"/>             
       <preference id ="ctrlTpref"
                   name="swp.ctrl.t"
                   type="string"/>                  
@@ -664,9 +667,13 @@
         </tabpanel>
 				<tabpanel id="prefMathEdit" orient="vertical">
 					<separator flex="1"/>
-					<groupbox orient="vertical">
+          <groupbox orient="vertical">
             <caption>&Spacebar.label;</caption>
             <checkbox id="doublespace" preference="doublespacepref" label="&AfterSpaceSwitchesToMath.label;"/>
+          </groupbox>
+					<groupbox orient="vertical">
+            <caption>&SpaceExits.label;</caption>
+            <checkbox id="spaceinmathaddsspace" preference="spaceinmathaddsspace" label="&SpaceAfterMath.label;" />
           </groupbox>
 					<hbox>
 						<groupbox>
