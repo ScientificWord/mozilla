@@ -298,7 +298,7 @@
                   onkeypress= ""
                   onchange  = "frameWidthChanged(this, event);"
                   onload    = "frameWidthChanged(this, event);"
-                  value     = "0"
+                  value     = "72"
                   persist   = "value"/>
                 <checkbox id="autoWidth" checked="true" persist = "checked" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
                 <textbox
@@ -307,7 +307,7 @@
                   onkeypress= ""
                   onchange  = "frameHeightChanged(this, event);"
                   onload    = "frameHeightChanged(this, event);"
-                  value     = "0"
+                  value     = "36"
                   persist   =  "value"/>
                 <checkbox id="autoHeight" checked="true" persist = "checked" oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
                 <checkbox observes="hasNaturalSize" id="constrainCheckbox" oncommand ="ToggleConstrain();"
