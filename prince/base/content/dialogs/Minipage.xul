@@ -8,7 +8,7 @@
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
-<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Minipage.dtd">
 <!--JLF - Localization pass on 6/28/2012-->
 <dialog id="FrameDlg"
   title="&windowTitle.label;"
@@ -27,7 +27,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/Frame.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/Minipage.js"/>
   <broadcaster id="role-image" />
   <broadcaster id="role-textframe" hidden="true"/>
   
