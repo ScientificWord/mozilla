@@ -353,7 +353,7 @@ InitOperators(void)
               if (SetOperator(operatorData, form, name, attributes)) {
                 index++;
                 if (1 == pass) gOperatorCount = index;
-                printf("OperatorCount is %d\n", gOperatorCount);
+//                printf("OperatorCount is %d\n", gOperatorCount);
               }
             }
           }
