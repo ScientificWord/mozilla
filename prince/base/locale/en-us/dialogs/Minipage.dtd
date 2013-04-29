@@ -47,7 +47,7 @@
 <!ENTITY unitLabel.label "Units">
 <!ENTITY  SizePlacement.label  "Size &amp; Placement">
 
-<!ENTITY Minipage.label "Minipage">
+<!ENTITY FrameTab.label "Frame">
 <!ENTITY Placementtab.label "Placement">
 
 <!ENTITY Minipage.borderLabel "Border">
