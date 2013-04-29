@@ -117,7 +117,7 @@
  
   <tabbox id="TabBox">
     <tabs flex="1">
-      <!--tab id="imageInputTab" label="&imageInputTab.label;"/ -->
+  <!--tab id="imageInputTab" label="&imageInputTab.label;"/ -->
       <tab id="imagePictureTab" label="&imagePictureTab.label;"/>
       <tab id="msiPlacementTab"/>
       <tab id="msiFrameTab"/>
@@ -155,14 +155,14 @@
           <!-- from EdDialogOverlay.xul -->
           <msibutton id="ChooseFile"  tabindex="3"/>
         </hbox>
-        <spacer class="spacer"/>
         <vbox id="msiFrameSize"/>
+        <spacer flex="1"/>
       </vbox>
       <vbox id="msiPlacement"/>
       <vbox id="msiFrame"/>
       <vbox id="imageLabeling">
-        <spacer flex="1"/>
-        <hbox>
+<!--         <spacer flex="1"/>
+ -->    <hbox>
           <label value="&imageKey.label;"/>
           <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
             completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
@@ -238,7 +238,6 @@
                   oncommand="ToggleShowLinkBorder();"/>
         <spacer class="spacer"/ -->
       <!-- /vbox -->
-            
     </tabpanels>
   </tabbox>
  
@@ -269,5 +268,5 @@
     <!-- from EdDialogOverlay -->
     <vbox id="AdvancedEdit"/>
   </hbox>
- 
+  <spacer class="spacer" flex="1"/>
 </dialog>
