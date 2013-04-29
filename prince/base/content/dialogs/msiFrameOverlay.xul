@@ -15,7 +15,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 #include ../editorkeys.inc
 
-  <tab id="msiFrameTab" label="&Minipage.label;" oncommand="redrawDiagram();"/>
+  <tab id="msiFrameTab" label="&FrameTab.label;" oncommand="redrawDiagram();"/>
   <tab id="msiPlacementTab" label="&Placementtab.label;"/>
   <vbox id="units" >
     <label id   = "frameUnitLabel"
@@ -36,8 +36,7 @@
     </menulist><spacer flex = "1"/></hbox>
   </vbox>
   <vbox id="msiFrame" align="start" onfocus="redrawDiagram();">
-<!--     <spacer flex="1"/>
- -->    <broadcaster id="lengthwithunits"
+    <broadcaster id="lengthwithunits"
       class     = "medwidth"
       unit      = "px"
       type      = "number"
@@ -109,8 +108,7 @@
         </groupbox>       
       </vbox>
     </hbox>
-<!--     <spacer flex="1"/>
- -->    <grid>
+    <grid>
       <columns>
         <column/>
         <column flex="1"/>
@@ -330,8 +328,7 @@
   </vbox>
 
   <vbox id="msiPlacement">
-<!--     <spacer flex="1"/>
- -->    <groupbox >
+    <groupbox >
       <caption label="&Placementtab.label;"/>
       <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="value">
       <hbox flex="1">
