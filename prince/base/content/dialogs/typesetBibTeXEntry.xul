@@ -24,7 +24,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetBibTeXEntry.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <!-- keyset>
