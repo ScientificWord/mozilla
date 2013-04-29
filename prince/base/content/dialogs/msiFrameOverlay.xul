@@ -5,7 +5,7 @@
 <?xml-stylesheet href="chrome://prince/content/Frame.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/form.css" type="text/css"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Minipage.dtd">
  <!-- JLF - localization pass 7/2/2012-->
 <overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       xmlns:html="http://www.w3.org/1999/xhtml">
@@ -15,7 +15,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 #include ../editorkeys.inc
 
-  <tab id="msiFrameTab" label="&Frametab.label;" oncommand="redrawDiagram();"/>
+  <tab id="msiFrameTab" label="&Minipage.label;" oncommand="redrawDiagram();"/>
   <tab id="msiPlacementTab" label="&Placementtab.label;"/>
   <vbox id="units" >
     <label id   = "frameUnitLabel"
@@ -34,11 +34,10 @@
         <menuitem value="px" label="&pixel;"/>
       </menupopup>
     </menulist><spacer flex = "1"/></hbox>
-    <spacer flex="1"/>
   </vbox>
   <vbox id="msiFrame" align="start" onfocus="redrawDiagram();">
-    <spacer flex="1"/>
-    <broadcaster id="lengthwithunits"
+<!--     <spacer flex="1"/>
+ -->    <broadcaster id="lengthwithunits"
       class     = "medwidth"
       unit      = "px"
       type      = "number"
@@ -77,14 +76,14 @@
           <caption>Colors</caption>
           <hbox>
             <vbox align="center">
-              <label value="&frameTab.borderLabel;"/>
+              <label value="&Minipage.borderLabel;"/>
               <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate('colorWell');">
                 <spacer persist="style" id="colorWell" class="color-well"  
                   style="background-color: black"/>
               </msibutton>
             </vbox>
             <vbox align="center">
-              <label value="&frameTab.backgroundLabel;" align="center"/>
+              <label value="&Minipage.backgroundLabel;" align="center"/>
                <msibutton id="bgcolorButton" class="color-button"
                     oncommand="getColorAndUpdate('bgcolorWell');">
                 <spacer persist="style" id="bgcolorWell" class="color-well"    
@@ -94,24 +93,24 @@
           </hbox>
         </groupbox>
         <groupbox>
-          <caption label="&frameTab.textAlignmentLabel;"/>      
+          <caption label="&Minipage.textAlignmentLabel;"/>      
           <hbox align="center">
             <menulist id = "textAlignment" value = "L" style="width: 10em" persist="value">
               <menupopup id = "alignments" >
-                <menuitem value="center" label="&frameTab.textCentered;"/>
-                <menuitem value="justify" label="&frameTab.textJustified;"/>
-                <menuitem value="left" label="&frameTab.textLeft;"/>
-                <menuitem value="right" label="&frameTab.textRight;"/>
-                <menuitem value="inner" label="&frameTab.textInside;"/>
-                <menuitem value="outer" label="&frameTab.textOutside;"/>
+                <menuitem value="center" label="&Minipage.textCentered;"/>
+                <menuitem value="justify" label="&Minipage.textJustified;"/>
+                <menuitem value="left" label="&Minipage.textLeft;"/>
+                <menuitem value="right" label="&Minipage.textRight;"/>
+                <menuitem value="inner" label="&Minipage.textInside;"/>
+                <menuitem value="outer" label="&Minipage.textOutside;"/>
               </menupopup>
             </menulist>         
           </hbox>
         </groupbox>       
       </vbox>
     </hbox>
-    <spacer flex="1"/>
-    <grid>
+<!--     <spacer flex="1"/>
+ -->    <grid>
       <columns>
         <column/>
         <column flex="1"/>
@@ -123,19 +122,19 @@
         <row>
           <hbox/>
           <hbox>
-            <description value="&frameTab.descLeft;" observes="role-textframe"/>
-            <description value="&frameTab.descToText;" observes="role-image"/>
+            <description value="&Minipage.descLeft;" observes="role-textframe"/>
+            <description value="&Minipage.descToText;" observes="role-image"/>
           </hbox>
           <hbox>
-            <description value="&frameTab.descRight;" observes="role-textframe"/>
+            <description value="&Minipage.descRight;" observes="role-textframe"/>
             <description value="&overhang;" observes="role-image"/>
           </hbox>
           <hbox>
-            <description value="&frameTab.descTop;" observes="role-textframe"/>
-            <description value="&frameTab.descTopBottom;" observes="role-image"/>
+            <description value="&Minipage.descTop;" observes="role-textframe"/>
+            <description value="&Minipage.descTopBottom;" observes="role-image"/>
           </hbox>
           <hbox>
-            <description value="&frameTab.descBottom;" observes="role-textframe"/>
+            <description value="&Minipage.descBottom;" observes="role-textframe"/>
           </hbox>
         </row>
         <row>
@@ -178,7 +177,7 @@
           </hbox>
         </row>
         <row>
-          <label value="&frameTab.borderLabel;"/>
+          <label value="&Minipage.borderLabel;"/>
           <hbox>
             <textbox
               id        = "borderLeftInput"
@@ -331,8 +330,8 @@
   </vbox>
 
   <vbox id="msiPlacement">
-    <spacer flex="1"/>
-    <groupbox >
+<!--     <spacer flex="1"/>
+ -->    <groupbox >
       <caption label="&Placementtab.label;"/>
       <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="value">
       <hbox flex="1">
@@ -357,8 +356,8 @@
         </vbox>
         <vbox>
           <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableHere(this);" persist="selectedIndex value">
-            <radio id="hereLeftRadio" label="&frameTab.descLeft;" value="L" observes="herePlacement" />
-            <radio id="hereRightRadio" label="&frameTab.descRight;" value="R" observes="herePlacement"/>
+            <radio id="hereLeftRadio" label="&Minipage.descLeft;" value="L" observes="herePlacement" />
+            <radio id="hereRightRadio" label="&Minipage.descRight;" value="R" observes="herePlacement"/>
             <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="herePlacement" />
             <radio id="hereOutsideRadio" label="&placement.hereOutside;" value="O" observes="herePlacement" />
             <radio id="hereFullWidthRadio" label="&placement.hereFull;" value="full" observes="herePlacement" />

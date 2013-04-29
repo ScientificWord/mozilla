@@ -55,7 +55,7 @@ function updateMetrics()
 {
 	// this function takes care of the mapping in the cases where there are constraints on margins, padding, etc.
   var sub;
-//	if (gFrameModeImage)
+	if (gFrameModeImage)
 	{
 		sub = metrics.margin;
 		sub.top    = sub.bottom = Dg.marginInput.top.value;
@@ -77,30 +77,30 @@ function updateMetrics()
 	  metrics.innermargin = metrics.outermargin = 0;  
 	  metrics.unit = frameUnitHandler.currentUnit;		            
 	}
- //  else
-	// {
-	// 	sub = metrics.margin;		
-	//   sub.top =    Dg.marginInput.top.value;
-	// 	sub.right =  Dg.marginInput.right.value; 
-	// 	sub.bottom = Dg.marginInput.bottom.value;
-	// 	sub.left =   Dg.marginInput.left.value;
-	// 	if (position == 0)
-	// 	{
-	// 		sub.right = sub.left = 0;
-	// 	}
-	// 	sub = metrics.padding;
-	//   sub.top =    Dg.paddingInput.top.value; 
-	// 	sub.right =  Dg.paddingInput.right.value; 
-	// 	sub.bottom = Dg.paddingInput.bottom.value; 
-	// 	sub.left =   Dg.paddingInput.left.value;
-	// 	sub = metrics.border;
-	//   sub.top =    Dg.borderInput.top.value; 
-	// 	sub.right =  Dg.borderInput.right.value; 
-	// 	sub.bottom = Dg.borderInput.bottom.value; 
-	// 	sub.left =   Dg.borderInput.left.value;
-	//   metrics.innermargin = metrics.outermargin = 0;  
-	//   metrics.unit = frameUnitHandler.currentUnit;		            
-	// }
+	else
+	{
+		sub = metrics.margin;		
+	  sub.top =    Dg.marginInput.top.value;
+		sub.right =  Dg.marginInput.right.value; 
+		sub.bottom = Dg.marginInput.bottom.value;
+		sub.left =   Dg.marginInput.left.value;
+		if (position == 0)
+		{
+			sub.right = sub.left = 0;
+		}
+		sub = metrics.padding;
+	  sub.top =    Dg.paddingInput.top.value; 
+		sub.right =  Dg.paddingInput.right.value; 
+		sub.bottom = Dg.paddingInput.bottom.value; 
+		sub.left =   Dg.paddingInput.left.value;
+		sub = metrics.border;
+	  sub.top =    Dg.borderInput.top.value; 
+		sub.right =  Dg.borderInput.right.value; 
+		sub.bottom = Dg.borderInput.bottom.value; 
+		sub.left =   Dg.borderInput.left.value;
+	  metrics.innermargin = metrics.outermargin = 0;  
+	  metrics.unit = frameUnitHandler.currentUnit;		            
+	}
 }
 
 function initFrameTab(dg, element, newElement, contentsElement)
@@ -211,8 +211,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
       widthStr = msiGetHTMLOrCSSStyleValue(dg.editorElement, contentsElement, widthAtt, "width");
       if (widthStr)
         width = frameUnitHandler.getValueFromString( widthStr, "px" );
-      else
-        width = frameUnitHandler("100", "px");
     }
     var height = 0;
     var heightStr = "";
@@ -223,7 +221,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
       heightStr = msiGetHTMLOrCSSStyleValue(dg.editorElement, contentsElement, heightAtt, "height");
       if (heightStr)
         height = frameUnitHandler.getValueFromString( heightStr, "px" );
-      else height = frameUnitHandler.getValueFromString( "50", "px");
     }
     if (!gConstrainWidth || !gConstrainHeight)
       setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
@@ -251,7 +248,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
     if ((pos=="inline") && element.hasAttribute("inlineOffset"))
       inlineOffset = frameUnitHandler.getValueFromString( element.getAttribute("inlineOffset"), frameUnitHandler.currentUnit );
 
-    // if (gFrameModeImage) 
+    if (gFrameModeImage) 
 		{
 		  placement = element.getAttribute("placement");
 			if (placement == "L")
@@ -278,26 +275,26 @@ function initFrameTab(dg, element, newElement, contentsElement)
 			if (padding == null) padding = 0;
 			dg.paddingInput.left.value = padding;
 		}  
-		// else
-		// {
-	 //    values = [0,0,0,0];
-	 //    if (element.hasAttribute(marginAtt))
-	 //      { values = parseLengths(element.getAttribute(marginAtt));}
-  //     if (inlineOffset > 0)
-  //       values[2] -= inlineOffset;  //NOTE! InlineOffset is added into the bottom margin property of an inline frame if it's positive. rwa
-	 //    for (i = 0; i<4; i++)
-	 //      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
-	 //    values = [0,0,0,0];
-	 //    if (contentsElement.hasAttribute("borderw"))
-	 //      { values = parseLengths(contentsElement.getAttribute("borderw"));}
-	 //    for (i = 0; i<4; i++)
-	 //      { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
-	 //    values = [0,0,0,0];
-	 //    if (contentsElement.hasAttribute(paddingAtt))
-	 //      { values = parseLengths(contentsElement.getAttribute(paddingAtt));}
-	 //    for (i = 0; i<4; i++)
-	 //      { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
-  //   }
+		else
+		{
+	    values = [0,0,0,0];
+	    if (element.hasAttribute(marginAtt))
+	      { values = parseLengths(element.getAttribute(marginAtt));}
+      if (inlineOffset > 0)
+        values[2] -= inlineOffset;  //NOTE! InlineOffset is added into the bottom margin property of an inline frame if it's positive. rwa
+	    for (i = 0; i<4; i++)
+	      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
+	    values = [0,0,0,0];
+	    if (contentsElement.hasAttribute("borderw"))
+	      { values = parseLengths(contentsElement.getAttribute("borderw"));}
+	    for (i = 0; i<4; i++)
+	      { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
+	    values = [0,0,0,0];
+	    if (contentsElement.hasAttribute(paddingAtt))
+	      { values = parseLengths(contentsElement.getAttribute(paddingAtt));}
+	    for (i = 0; i<4; i++)
+	      { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
+    }
 		placeLocation = element.getAttribute("placeLocation");
     if (!placeLocation)
       placeLocation = "";
@@ -447,13 +444,13 @@ function update( anId )
 //    case "Top":   document.getElementById(result[1]+"Top"+result[3]).value = document.getElementById(anId).value;
 //    case "Bottom": document.getElementById(result[1]+"Bottom"+result[3]).value = document.getElementById(anId).value;
 //  }
- // if (gFrameModeImage)
- 	// {
+  if (gFrameModeImage)
+ 	{
 		if (result[1] == "border" || result[1] == "padding")
 		{
 			extendInput( result[1] );
 		}
-	// }
+	}
   updateDiagram( result[1] );
 }
 
@@ -875,7 +872,7 @@ function setFrameAttributes(frameNode, contentsNode, editor)
   msiRequirePackage(gFrameTab.editorElement, "ragged2e", null);
 
   var inlineOffsetNum = getInlineOffset("px");  //returns 0 unless inline position is chosen!
-  // if (gFrameModeImage) {
+  if (gFrameModeImage) {
     var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
     msiEditorEnsureElementAttribute(frameNode, "sidemargin", sidemargin, editor);
     var topmargin = getSingleMeasurement("margin", "Top", metrics.unit, false);
@@ -910,24 +907,23 @@ function setFrameAttributes(frameNode, contentsNode, editor)
 			marginArray[1] = marginArray[3] = 0;
 		}
 		setStyleAttributeOnNode(frameNode, "margin", marginArray.join("px ")+"px", editor);
- //  }
- //  else 
-	// {
- //    var style = "";
- //    if (inlineOffsetNum > 0)
- //    {
- //      style = getSingleMeasurement("margin", "Top", "px", true);
- //      style += " " + getSingleMeasurement("margin", "Right", "px", true);
- //      var bottomMargin = getSingleMeasurement("margin", "Bottom", "px", false);
- //      style += " " + String( Number(bottomMargin) + inlineOffsetNum ) + "px ";
- //      style += getSingleMeasurement("margin", "Left", "px", true);
- //    }
- //    else
- //      style = getCompositeMeasurement("margin","px", true);
- //    setStyleAttributeOnNode(frameNode, "margin", style, editor);
- //    msiEditorEnsureElementAttribute(frameNode, "margin", getCompositeMeasurement("margin", metrics.unit, false), editor);
-	// }  
-  gFrameModeImage = true;
+  }
+  else 
+	{
+    var style = "";
+    if (inlineOffsetNum > 0)
+    {
+      style = getSingleMeasurement("margin", "Top", "px", true);
+      style += " " + getSingleMeasurement("margin", "Right", "px", true);
+      var bottomMargin = getSingleMeasurement("margin", "Bottom", "px", false);
+      style += " " + String( Number(bottomMargin) + inlineOffsetNum ) + "px ";
+      style += getSingleMeasurement("margin", "Left", "px", true);
+    }
+    else
+      style = getCompositeMeasurement("margin","px", true);
+    setStyleAttributeOnNode(frameNode, "margin", style, editor);
+    msiEditorEnsureElementAttribute(frameNode, "margin", getCompositeMeasurement("margin", metrics.unit, false), editor);
+	}  
   if (gFrameModeImage) {
     var borderwidth = getSingleMeasurement(borderAtt, "Left", metrics.unit, false);
     msiEditorEnsureElementAttribute(contentsNode, "borderw", borderwidth, editor);
