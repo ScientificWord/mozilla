@@ -8841,6 +8841,9 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
   nsresult res;
   nsCOMArray<nsIDOMNode> arrayOfNodes;
   nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMNode> outLeftNode;
+  nsCOMPtr<nsIDOMNode> outRightNode;
+  nsCOMPtr<nsIDOMNode> newParent;
   nsCOMPtr<msiITagListManager> tagListManager;
   mHTMLEditor->GetTagListManager(getter_AddRefs(tagListManager));
   nsAutoString tagClass;
@@ -8855,6 +8858,7 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
   PRInt32 listCount = arrayOfNodes.Count();
   PRInt32 i;
   PRInt32 offset;
+  PRInt32 parentOffset;
   nsCOMArray<nsIDOMNode> nodes;
   for (i=listCount-1; i>=0; i--)
   {
@@ -8871,6 +8875,11 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
     {
       if (nodes.IndexOf(node) < 0)  // don't duplicate
         nodes.AppendObject(node);
+    }
+    else if (tagClass.EqualsLiteral("envtag"))
+    {
+      // this means the entire environment is is the range to be removed
+      mEditor->RemoveContainer(node);
     }
   }
 
@@ -8890,7 +8899,10 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
       }
       if (node)
       {
-        mEditor->SplitNodeDeep( node, nodes[i], 0, &offset, PR_TRUE, nsnull, nsnull);
+        mEditor->SplitNodeDeep( node, nodes[i], 0, &offset, PR_TRUE, &outLeftNode, &outRightNode);
+        // Now we need to move nodes[1] to the split position, just past outLeftNode in node's parent
+        res = nsEditor::GetNodeLocation(node, address_of(newParent), &parentOffset);
+        res = mEditor->MoveNode((nsIDOMNode *)nodes[i], (nsIDOMNode *)newParent, parentOffset);
       }
     }
 
