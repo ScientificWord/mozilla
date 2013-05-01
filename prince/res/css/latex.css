@@ -264,6 +264,7 @@ plotwrapper {
   display: block;
 	top: 0;
 	left: 0;
+  text-indent : 0pt;
   -moz-user-select: all;
   -moz-user-focus: normal;
   cursor: pointer;
