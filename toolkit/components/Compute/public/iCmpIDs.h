@@ -373,7 +373,8 @@
 #define PID_textPlotTextFontColor            177
 #define PID_textPlotTextFontBold             178
 #define PID_textPlotTextFontItalic           179
-#define PID_last                    180
+#define PID_mupname                          180
+#define PID_last                    181
 #define PID_first_badparam        9000
 
 // Data types for strings passed into ComputeDLL
