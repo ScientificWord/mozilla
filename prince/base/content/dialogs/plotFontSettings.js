@@ -24,7 +24,10 @@ function startup()
     fontDefaults = window.arguments[1];
   computebundle = document.getElementById("computeBundle");
   fillInMissingDefaults();
-  setUpFontList();
+  try
+  {
+    setUpFontList();
+  } catch(ex) {msidump("In plotFontSettings.js, startup(), exception setting up font list: " + ex + "\n");}
 //  if (fontData.whichFont == "axesTicks")
 //    isAxesTicksFont = true;
 //  else if (fontData.whichFont == "axes")
@@ -273,7 +276,7 @@ function setUpFontList()
       return false;
     return true;
   }
-  var fontArray;
+  var fontArray = [];
   getOTFontlist();
   if (gSystemFonts.count)
   {

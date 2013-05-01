@@ -508,7 +508,15 @@ function clearPrevActiveEditor(timerData)
           msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
           var editor = msiGetEditor(theWindow.msiActiveEditorElement);
           if (editor && editor.tagListManager)
+          {
+//            try
+//            {
+////              editor instanceof Components.interfaces.nsIEditor;
+//              var nsiEditor = editor.QueryInterface(Components.interfaces.nsIEditor);
+//              editor.tagListManager.editor = nsiEditor;
+//            } catch(ex) {msidump("In msiSetActiveEditor, error setting tagListManager's editor to " + theWindow.msiActiveEditorElement.id + ": " + ex + "\n");}
             editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
+          }
         }
       }
       else
@@ -541,6 +549,17 @@ function msiResetActiveEditorElement()
   {
     topWindow.msiActiveEditorElement = topWindow.msiPrevEditorElement;
     topWindow.msiPrevEditorElement = null;
+    var editor = msiGetEditor(topWindow.msiActiveEditorElement);
+    if (editor && editor.tagListManager)
+    {
+//      try
+//      {
+////        editor instanceof Components.interfaces.nsIEditor;
+//        var nsiEditor = editor.QueryInterface(Components.interfaces.nsIEditor);
+//        editor.tagListManager.editor = nsiEditor;
+//      } catch(ex) {msidump("In msiSetActiveEditor, error setting tagListManager's editor to " + theWindow.msiActiveEditorElement.id + ": " + ex + "\n");}
+      editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
+    }
 //Logging stuff only
 //    logStr += ";\n  reverting to prev editor element.\n";
   }
@@ -623,9 +642,6 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //    prevEdId = theWindow.msiPrevEditorElement.id;
 //End logging stuff
 
-  var editor = msiGetEditor(theWindow.msiActiveEditorElement);
-  if (editor && bIsFocusEvent && editor.tagListManager)
-    editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
   var bIsDifferent = (!theWindow.msiActiveEditorElement || (theWindow.msiActiveEditorElement !== editorElement));
   if (bIsDifferent)
   {
@@ -667,6 +683,17 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //    To Do: update command states, Math/Text state...
   }
 
+  var editor = msiGetEditor(theWindow.msiActiveEditorElement);
+  if (editor && bIsFocusEvent && editor.tagListManager)
+  {
+//    try
+//    {
+//      var nsiEditor = editor.QueryInterface(Components.interfaces.nsIEditor);
+////      editor instanceof Components.interfaces.nsIEditor;
+//      editor.tagListManager.editor = nsiEditor;
+//    } catch(ex) {msidump("In msiSetActiveEditor, error setting tagListManager's editor to " + theWindow.msiActiveEditorElement.id + ": " + ex + "\n");}
+    editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
+  }
 //  if (!theWindow.bIgnoreNextFocus || !bIsFocusEvent)
 //  {
 ////Logging stuff only:
