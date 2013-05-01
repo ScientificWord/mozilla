@@ -555,6 +555,45 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
           DisposeSList(semantics_tree);
           return;
         }
+      } else if (UI_cmd_ID == CCID_DefineMupadName) {
+         //
+         U32 ptype;
+         const char *p_mupadname = msr.GetParam(PID_mupname, ptype);
+         U32 engineID = msr.GetEngineID();
+         DefStore* ds = msr.GetDefStore();
+         const char* ASCII_src = msr.GetASCIIMarkupPtr();
+         const U16* WIDE_src = msr.GetWideMarkupPtr();
+          
+         // semantics_tree
+         SEMANTICS_NODE* pst = semantics_tree;
+         if (!pst) return;
+
+         BUCKET_REC* pbuck = pst->bucket_list;
+         if (!pbuck) return;
+
+         SEMANTICS_NODE* pChild = pbuck->first_child;
+         if (!pChild) return;
+
+         const char* canonical = pChild -> canonical_ID;
+         ds ->PushDefInfo (engineID, 
+                           canonical,
+                           DT_MUPNAME,
+                           NULL,
+                           NULL,
+                           0,
+                           ASCII_src,
+                           WIDE_src
+                     );
+
+
+         //if (pChild ->semantic_type  == SEM_TYP_VARIABLE) {
+         //    MNODE* 
+            
+         //}
+
+         
+
+         // Get the canonical id 
       } else if (UI_cmd_ID == CCID_Undefine) {
         def_canon_ID = ConvertTreeToUnDef(semantics_tree);
         if (!def_canon_ID) {
