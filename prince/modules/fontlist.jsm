@@ -159,6 +159,8 @@ function  getOTFontlist()
        dump("Error in getOTFontList: "+e.message+"\n");
     }
   }
+  if (!gSystemFonts.init)
+    getSysFontList();
 }
 
 function addOTFontsToMenu(menu)
@@ -187,6 +189,33 @@ function addOTFontsToMenu(menu)
   }
 }
  
+//This is a fallback in case the otfont mechanism fails
+function getSysFontList()
+{
+//following copied from editor/composer/content/editor.js, but not normally used in favor of otfonts
+  var sysFontList;
+  if (!gSystemFonts.init)
+  {
+    // Build list of all local fonts once per editor??
+    try 
+    {
+      var enumerator = Components.classes["@mozilla.org/gfx/fontenumerator;1"]
+                                 .getService(Components.interfaces.nsIFontEnumerator);
+      var localFontCount = { value: 0 }
+      sysFontList = enumerator.EnumerateAllFonts(localFontCount);
+    }
+    catch(e) {dump("Error in fontlist.jsm, getSysFontList: " + e + "\n");}
+  }
+  if (sysFontList && sysFontList.length)
+  {
+    gSystemFonts.init = true;
+    gSystemFonts.list = [];
+    for (var i = 0; i < sysFontList.length; ++i)
+      gSystemFonts.list.push(sysFontList[i]);
+    gSystemFonts.count = gSystemFonts.list.length;
+  }
+}
+
 var gPrefsService;   
 var gPrefsBranch;
 
