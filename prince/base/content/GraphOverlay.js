@@ -2506,8 +2506,61 @@ function parseQueryReturn(out, graph, plot) {
       fixedOut = runFixup(fixedOut);
       plot.element["Expression"] = fixedOut;
     }
+    else if (pt === "explicitList")
+    {
+      plot.element.Expression = fixExplicitList(plotData, dim);
+    }
   }
 }
+
+function fixExplicitList(aPlotData, dim)
+{
+  var cellList = aPlotData.expressionAsList();
+  var tableInfo, tableNode;
+  var rowNode, cellNode, kids, topNode, topName, nrows;
+  var mathNode = document.createElementNS(mmlns, "math");
+  var bOkay = false;
+  if ((cellList.length == 1) && (msiGetBaseNodeName(cellList[0]) == "mtable"))
+  {
+    tableInfo = atomizeMTable(cellList[0]);
+    if (tableInfo.nCols == dim)
+    {
+      tableNode = cellList[0];
+      bOkay = true;
+    }
+    else
+      cellList = tableInfo.cellContentsList;
+  }
+
+  if (!bOkay)
+  {
+    nrows = Math.floor(cellList.length / dim);
+    tableNode = document.createElementNS(mmlns, "mtable");
+    for (var ii = 0; ii < nrows; ++ii)
+    {
+      rowNode = document.createElementNS(mmlns, "mtr");
+      for (var jj = 0; jj < dim; ++jj)
+      {
+        cellNode = document.createElementNS(mmlns, "mtd");
+        topNode = cellList[(ii * dim) + jj];
+        topName = msiGetBaseNodeName(topNode);
+        if ( (topName == "math") || (topName == "mrow") )
+          kids = msiNavigationUtils.getSignificantContents(topNode);
+        else
+          kids = [topNode];
+        for (var kk = 0; kk < kids.length; ++kk)
+        {
+          cellNode.appendChild( kids[kk].cloneNode(true) ); 
+        }
+        rowNode.appendChild(cellNode);
+      }
+      tableNode.appendChild(rowNode);
+    }
+  }
+  mathNode.appendChild(tableNode);
+  return aPlotData.mPlot.parent.ser.serializeToString(mathNode);
+}
+
 function varNotFun(v) {
   // return true unless v is one of the function names
   // \u03c0 is the unicode for PI?
@@ -2554,6 +2607,7 @@ function splitMathMLList(expr, bFenced)
       case "mrow":
       case "mstyle":
       case "mfenced":
+      case "mtable":
         topNode = topNode.childNodes[0];
       break;
       default:
@@ -2562,8 +2616,11 @@ function splitMathMLList(expr, bFenced)
     }
   }
   var theNodes = msiNavigationUtils.getSignificantContents(topNode);
-  if (msiGetBaseNodeName(topNode) == "mfenced")
+  var topName = msiGetBaseNodeName(topNode);
+  if (topName == "mfenced")
     return theNodes;
+  else if (topName == "mtable")
+    return getRowOrColumnVectorContentsAsList(topNode);
   var nStart = 0;
   var nEnd = theNodes.length - 1;
   var aChild;
@@ -2664,6 +2721,115 @@ function removeDelimitersFromNodeList(nodeArray, delimiterList)
     }
   }
   return retArray;
+}
+
+function getRowOrColumnVectorContentsAsList(tableNode)
+{
+  var tableContents = atomizeMTable(tableNode);
+  if ( (tableContents.nRows == 1) || (tableContents.nCols == 1) )
+    return tableContents.cellContentsList;
+  return [tableNode];
+}
+
+function atomizeMTable(tableNode)
+{
+  var retContents = {nRows : 0, nCols : 0, cellContentsList : []};
+  if (msiGetBaseNodeName(tableNode) != "mtable")
+    return retContents;
+  var ii, jj, nodeName;
+  var kids = msiNavigationUtils.getSignificantContents(tableNode);
+  var grandkids;
+  var nRow = 0;
+  var cellList = [];
+  var nodeArray = [];
+
+  function flushNodeArray()
+  {
+    if (nodeArray.length > 0)
+    {
+      cellList.push(encloseContentsInMathNode(nodeArray, true));
+      nodeArray.splice(0, nodeArray.length);
+    }
+  }
+  function flushCellArray()
+  {
+    if (cellList.length > 0)
+    {
+      if (retContents.nCols < cellList.length)
+        retContents.nCols = cellList.length;
+      retContents.cellContentsList = retContents.cellContentsList.concat(cellList);
+      cellList.splice(0, cellList.length);
+    }
+  }
+//  function checkNonVector()
+//  {
+//    if ((nRow == 2) && (retArray.length > 1))  //more than one row and the first row had more than one cell - not a vector
+//      return true;
+//    if ((nRow > 1) && (cellList.length > 1))  //more than one row and the row has more than one cell - not a vector
+//      return true;
+//    return false;
+//  }
+
+  for (jj = 0; jj < kids.length; ++jj)
+  {
+    nodeName = msiGetBaseNodeName(kids[jj]);
+    if ((cellList.length == 0) && (nodeArray.length == 0) ) //starting a new row, whether <mtr> or not
+    {
+      ++retContents.nRows;
+//      if (checkNonVector())
+//        return [tableNode];
+    }
+    if (nodeName == "mtr")
+    {
+      flushNodeArray();
+      flushCellArray();
+      grandkids = msiNavigationUtils.getSignificantContents(kids[jj]);
+      for (ii = 0; ii < grandkids.length; ++ii)
+      {
+        nodeName = msiGetBaseNodeName(grandkids[ii]);
+        if (nodeName == "mtd")
+        {
+          flushNodeArray();
+          cellList.push( encloseContentsInMathNode(msiNavigationUtils.getSignificantContents(grandkids[ii]),true) );
+        }
+        else
+          nodeArray.push(grandkids[ii]);
+      }
+      flushNodeArray();
+//      if (checkNonVector())
+//        return [tableNode];
+      flushCellArray();
+    }
+    else if (nodeName == "mtd")
+    {
+      flushNodeArray();
+      cellList.push( encloseContentsInMathNode(msiNavigationUtils.getSignificantContents(kids[jj]),true) );
+    }
+    else
+    {
+      nodeArray.push(kids[jj]);
+    }  
+  }
+  flushNodeArray();
+//  if (checkNonVector())
+//    return [tableNode];
+  flushCellArray();
+  return retContents;
+}
+
+function encloseContentsInMathNode(childNodes, bCopy)
+{
+  var mathNode = document.createElementNS(mmlns, "math");
+  var theChild;
+  for (var jj = 0; jj < childNodes.length; ++jj)
+  {
+    if (bCopy)
+      theChild = childNodes[jj].cloneNode(true);
+    else
+      theChild = childNodes[jj];
+    mathNode.appendChild(theChild);
+  }
+  return mathNode;
 }
 
 function orderMathNodes(node1, node2)
@@ -2812,15 +2978,17 @@ var plotVarDataBase =
   },
   isExplicitList : function()
   {
-    if (this.foundVarList.length > 1)
+    if (this.foundVarList().length > 1)
       return false;
-    if ((this.foundVarList.length > 0) && !this.animated)
+    if ((this.foundVarList().length > 0) && !this.animated)
       return false;
     if (this.expressionAsList().length == 1)
     {
       if (msiGetBaseNodeName( this.expressionAsList()[0] ) == "mtable")
         return true;
     }
+    else
+      return true;
     return false;
   },
   varWasFound : function(whichVar)
