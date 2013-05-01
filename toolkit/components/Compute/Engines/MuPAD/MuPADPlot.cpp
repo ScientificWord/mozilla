@@ -94,7 +94,7 @@ int PlotVarsNeeded (string dim, string ptype, string animate) {
     TCI_ASSERT(!"ERROR: invalid plot type line 93 MuPADPlot.cpp");
 
   }  
-  if ((dim == "3") && (ptype != "text"))
+  if ((dim == "3") && (ptype != "text") && (ptype != "explicitList"))
     nvars++;
   if (animate == "true")
     nvars++;
@@ -308,7 +308,7 @@ string MuPADPlot::AIColor (MuPADPlot* T) {
 //  Color=[.5,.2,.3],ShowInfo=[IntMethod,Integral,Error]),
 //  plot::Function2d(x^5,x=0..5))
 string MuPADPlot::AIFnParamsStr (MuPADPlot* T) {
-  string pattern = "plot::Function2d(@exp@,@vars@)";
+  string pattern = "plot::Function2d(@exp@@vars@)";
   return pattern;
 }
 
@@ -877,15 +877,16 @@ string MuPADPlot::MeshStr (MuPADPlot* T) {
   int nv = T->numvars;
   if (T->animate) nv--;
   if (T->ptype == "tube") {
-    m = "Mesh=[#XPts#, #TubeRadialPts#]";  //YPts holds the "TubeRadioPoints" value
+    m = ",Mesh=[#XPts#, #TubeRadialPts#]";  //YPts holds the "TubeRadioPoints" value
   } else if (T->ptype == "conformal") {
-    m = "Mesh=[#XPts#, #YPts#],Submesh=[#ConfHorizontalPts#,#ConfVerticalPts#]";
+    m = ",Mesh=[#XPts#, #YPts#],Submesh=[#ConfHorizontalPts#,#ConfVerticalPts#]";
   } else {  
     switch (nv) {
-      case 1:      m = "Mesh=#XPts#"; break;
-      case 2:      m = "Mesh=[#XPts#, #YPts#]";   break;
-      case 3:      m = "Mesh=[#XPts#, #YPts#, #ZPts#]";   break;
-      case 4:      m = "Mesh=[#XPts#, #YPts#, #ZPts#]";   break;
+      case 1:      m = ",Mesh=#XPts#"; break;
+      case 2:      m = ",Mesh=[#XPts#, #YPts#]";   break;
+      case 3:      m = ",Mesh=[#XPts#, #YPts#, #ZPts#]";   break;
+      case 4:      m = ",Mesh=[#XPts#, #YPts#, #ZPts#]";   break;
+      default:                                             break;
     }
   }  
   return m;
@@ -1063,9 +1064,14 @@ string MuPADPlot::QueryStr(MuPADPlot* T) {
 
 
 string MuPADPlot::ReqParamsStr (MuPADPlot* T) {
-  string pattern = "@exp@,@vars@,@mesh@";
-  if (T->ptype == "explicitList")
-    pattern = "@exp@";
+  string pattern = "@exp@@vars@@mesh@";
+//  if (T->ptype == "explicitList")
+//  {
+//    if (T->animate) 
+//      pattern = "@exp@@vars@";
+//    else
+//      pattern = "@exp@";
+//  }
   return pattern;
 }
 
@@ -1455,16 +1461,16 @@ string MuPADPlot::VarsStr (MuPADPlot* T) {
     
   if (T->ptype == "conformal") {
     if (T->animate) {
-      v = "%XVar%=#XMin#+(#YMin#)*I..#XMax#+(#YMax#)*I,%AnimVar%=#AnimMin#..#AnimMax#";
+      v = ",%XVar%=#XMin#+(#YMin#)*I..#XMax#+(#YMax#)*I,%AnimVar%=#AnimMin#..#AnimMax#";
     } else {
-      v = "%XVar%=#XMin#+(#YMin#)*I..#XMax#+(#YMax#)*I";
+      v = ",%XVar%=#XMin#+(#YMin#)*I..#XMax#+(#YMax#)*I";
     }
   } else if (numNonAnimVars == 1) {
-    v = "%XVar%=#XMin#..#XMax#";
+    v = ",%XVar%=#XMin#..#XMax#";
   } else if (numNonAnimVars == 2) {
-    v = "%XVar%=#XMin#..#XMax#, %YVar%=#YMin#..#YMax#";
+    v = ",%XVar%=#XMin#..#XMax#, %YVar%=#YMin#..#YMax#";
   } else if (numNonAnimVars == 3) {
-    v = "%XVar%=#XMin#..#XMax#, %YVar%=#YMin#..#YMax#, %ZVar%=#ZMin#..#ZMax#";
+    v = ",%XVar%=#XMin#..#XMax#, %YVar%=#YMin#..#YMax#, %ZVar%=#ZMin#..#ZMax#";
   } else if (numNonAnimVars == 4) {
     v = "ERROR 4 non-animated vars not supported";  
   }
