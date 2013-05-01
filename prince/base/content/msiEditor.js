@@ -1802,6 +1802,7 @@ function msiDocumentHasBeenSaved(editorElement)
 function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 {
   var document;
+  editorElement.focus();
   try {
     // if we don't have an editor or an document, bail
     var editor = msiGetEditor(editorElement);
