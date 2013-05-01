@@ -520,7 +520,26 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Undefine(const PRUnichar *expr, PRUnichar
 /* void defineMupadName(in wstring swpname, in wstring mupname, in wstring loc, [retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::DefineMupadName(const PRUnichar* swpname, const PRUnichar* mupname, const PRUnichar* loc, PRUnichar** result)
 {
-  return NS_ERROR_FAILURE;
+  
+  if (swpname == NULL || mupname == NULL)
+    return NS_ERROR_FAILURE;
+  
+  int cmdCode = CCID_DefineMupadName;
+  nsresult rv = NS_OK;
+  
+  U32 trans_ID  =  ComputeDLL::CreateTransaction( client_handle, swpname, MuPAD_eng_ID, cmdCode );
+  ComputeDLL::AddWideParam( trans_ID, PID_mupname, zPT_WIDE_text, mupname );
+  
+  rv =  DoTransaction( trans_ID, result );
+
+  ComputeDLL::ReleaseTransaction( trans_ID );
+  return rv;
+
+
+  DefStore* defs = ComputeDLL::GetDefStore(client_handle);
+  
+  return rv;
+
 }
 
 /* void getDefinitions ([retval] out wstring result); */

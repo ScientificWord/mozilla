@@ -461,6 +461,11 @@ const char *ComputeDLL::GetPtrASCIIresultPart(U32 trans_ID, U32 part_ID, int ind
   }
 }
 
+
+DefStore* ComputeDLL::GetDefStore(U32 client_ID) {
+  return workshop -> GetDefStore(client_ID);
+}
+
 const void *ComputeDLL::GetNextDef(U32 client_ID, U32 engine_ID, const void *curr_def)
 {
   return workshop->GetNextDef(client_ID, engine_ID,

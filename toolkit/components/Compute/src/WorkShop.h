@@ -50,6 +50,7 @@ public:
 
   U32   EngineNameToID( const char* engine_name );
 
+  DefStore* GetDefStore(U32 client_ID);
   // Client DefSore iterater - start "curr_def" at NULL
   const DefInfo* GetNextDef( U32 client_ID,U32 engine_ID,const DefInfo* curr_def );
   void  ClearDefs( U32 client_ID,U32 engine_ID );

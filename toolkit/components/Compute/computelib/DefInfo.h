@@ -7,6 +7,7 @@
 #define DT_NONE 0
 #define DT_VARIABLE 1
 #define DT_FUNCTION 2
+#define DT_MUPNAME 3
 
 class DefInfo
 {
