@@ -339,6 +339,8 @@ var graphicsConverter =
   ensureTypesetGraphicForElement : function(objElement, documentDir, aWindow, callbackObject)
   {
     dump("In graphicsConverter.ensureTypesetGraphicForElement, 1\n");
+    if (objElement.getAttribute("msigraph") == "true")
+      return false;
     var gfxFileStr = objElement.getAttribute("data");
     if (!gfxFileStr || !gfxFileStr.length)
       gfxFileStr = objElement.getAttribute("src");
