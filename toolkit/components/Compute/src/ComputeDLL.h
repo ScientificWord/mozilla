@@ -41,6 +41,8 @@ public:
   static const char * GetPtrASCIIresultPart(U32 trans_ID, U32 part,
                                             int index);
 
+  static DefStore* GetDefStore(U32 client_ID);
+
   static const void * GetNextDef(U32 client_ID, U32 engine_ID,
                                  const void *curr_def);
   static void  ClearDefs(U32 client_ID, U32 engine_ID);

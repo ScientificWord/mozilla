@@ -512,6 +512,18 @@ ClientInfo *MathWorkShop::LocateClientRec(U32 targ_handle)
   return NULL;
 }
 
+
+DefStore* MathWorkShop::GetDefStore(U32 client_ID) 
+{
+   DefStore* rv = NULL;
+   ClientInfo *ci = LocateClientRec(client_ID);
+   if (ci) {
+    rv = ci->defstore;
+   }
+   return rv;
+}
+
+
 const DefInfo *MathWorkShop::GetNextDef(U32 client_ID, U32 engine_ID,
                                         const DefInfo * curr_def)
 {
