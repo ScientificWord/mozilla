@@ -601,13 +601,13 @@ function deletePlot () {
   var newplotno, numplots, plotno, plotNumControl;
   plotNumControl    = document.getElementById('plotnumber');                    
 //  plotno = document.getElementById("plot").selectedItem.value;
-  plotno = plotNumControl.value;
+  plotno = Number(plotNumControl.value);
   var intPlotNum = getPlotInternalNum(plotno);
   graph.deletePlot(intPlotNum);
   // find the next plot if there is one, or the previous plot if there is one
   numplots = graph.getNumActivePlots();  //don't count the deleted ones
   plotNumControl.max = (numplots ? numplots : 1);
-  newplotno = plotno;
+  newplotno = intPlotNum;
   if (newplotno >= numplots) {
     newplotno = numplots - 1;
   }
@@ -616,6 +616,7 @@ function deletePlot () {
   } else {               // use the next plot
     newplotno = getPlotInternalNum(newplotno);
     graph.setGraphAttribute("plotnumber", String(newplotno));
+    graph.currentDisplayedPlot = -1; //to avoid copying plot attributes from the plot being deleted
     populateDialog (newplotno);
   }
 }
