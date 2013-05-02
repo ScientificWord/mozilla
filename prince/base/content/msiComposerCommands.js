@@ -510,6 +510,7 @@ function msiGoDoCommandParams(command, params, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+  editorElement && editorElement.focus();
   try
   {
 //    var controller = top.document.commandDispatcher.getControllerForCommand(command);
