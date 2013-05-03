@@ -444,8 +444,11 @@ function goHome() {
 
 function print() {
     try {
-        _content.print();
+        // _content = document.getElementById("help-content");
+        // _content.print();
+        PrintUtils.print(this);
     } catch (e) {
+      dump(e.message);
     }
 }
 

@@ -74,6 +74,7 @@
   <script type="application/javascript" src="chrome://global/content/viewZoomOverlay.js"/>
   <script type="application/javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/javascript" src="chrome://help/content/msiHelp.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
 
   <menupopup id="backMenu" position="after_start"
              onpopupshowing="return createBackMenu(event);"
