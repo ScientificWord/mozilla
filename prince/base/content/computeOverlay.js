@@ -1852,6 +1852,7 @@ function addResult(result, editorElement) {
   editor.insertHTMLWithContext(result, "", "", "", null, selection.focusNode, selection.focusOffset, false);
 }
 
+
 function runFixup(math) {
   try {
     var out = GetCurrentEngine().perform(math, GetCurrentEngine().Fixup);
