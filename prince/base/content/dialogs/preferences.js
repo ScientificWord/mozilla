@@ -358,6 +358,12 @@ function onComputeSettingChange(pref, force)
       if (mappedPref = prefMapper[prefId])
       {
         myDump("Setting user pref " + mappedPref + " to " + val +"\n");
+        if (mappedPref === "Default_matrix_delims") {
+          if (val === "matrix_brackets") val = 1;
+          else if (val === "matrix_parens") val = 2;
+          else if (val === "matrix_braces") val = 3;
+          else (val = 0); 
+        }
         currEngine.setUserPref(currEngine[mappedPref], val); 
       }
       else if (mappedPref = prefEngineMapper[prefId])
