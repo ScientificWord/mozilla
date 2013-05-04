@@ -1623,10 +1623,14 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
                                const nsAString & rowSignature,
                                PRBool markCaret,
                                PRUint32 & flags,
-                               nsCOMPtr<nsIDOMElement> & mathmlElement)
+                               nsCOMPtr<nsIDOMElement> & mathmlElement,
+                               const nsAString & delim)
 {
   nsresult res(NS_ERROR_FAILURE); 
   nsCOMPtr<nsIDOMElement> table;
+  nsCOMPtr<nsIDOMElement> row;
+  PRUint32 fenceflags = 0;
+  nsAutoString right;
   mathmlElement = nsnull;
   res = CreateMathMLElement(editor, msiEditingAtoms::mtable, table);
   if (NS_SUCCEEDED(res) && table)
@@ -1644,6 +1648,25 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
       }
       else
         res = NS_ERROR_FAILURE;  
+    }
+    if (NS_SUCCEEDED(res)) {
+      if (delim.Length() > 0) {
+        // create an mrow and fill it with mo, mtable, mo where the mo's are fence characters
+        if (delim.EqualsLiteral("[")) right = NS_LITERAL_STRING("]");
+        else if (delim.EqualsLiteral("(")) right = NS_LITERAL_STRING(")");
+        else if (delim.EqualsLiteral("{")) right = NS_LITERAL_STRING("}");
+        else // no need for fence 
+        {
+          mathmlElement = table;
+          return res;
+        }
+        res = CreateMRowFence(editor, (nsIDOMNode*)table, PR_FALSE, delim, right, PR_FALSE, flags, fenceflags, row);
+        if (NS_SUCCEEDED(res))
+        {
+          mathmlElement = row;
+          return res;
+        }
+      }
     }
     if (NS_SUCCEEDED(res)) 
         mathmlElement = table;

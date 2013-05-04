@@ -194,7 +194,8 @@ interface msiIEditingManager : nsISupports
                     in PRUint32 offset,
                     in PRUint32 rows,
                     in PRUint32 cols,
-                    in DOMString rowSignature);
+                    in DOMString rowSignature,
+                    in DOMString delim);
 
   /**
    * Call insertOperator to create an operator (mo) from symbol with attributes attrFlags,
