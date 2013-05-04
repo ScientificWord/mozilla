@@ -3107,11 +3107,12 @@ function reviseFence(fenceNode, left, right, editorElement)
 
 function insertmatrix(rows, cols, rowsignature, editorElement)
 {
+  var delim = "";
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
+  var prefs = GetPrefs();
   if (!rows || !cols)
   {
-    var prefs = GetPrefs();
     if (prefs)
     {
       try {
@@ -3127,12 +3128,17 @@ function insertmatrix(rows, cols, rowsignature, editorElement)
       catch(e) {}
     }
   }
+  var delimPref = prefs.getCharPref("swp.user.matrix_delim");
+  if (delimPref === "matrix_brackets") delim = "[";
+  else if (delimPref === "matrix_parens") delim = "(";
+  else if (delimPref === "matrix_braces") delim = "{";
+
   var editor = msiGetEditor(editorElement);
 
   try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    mathmlEditor.InsertMatrix(rows, cols, rowsignature);
+    mathmlEditor.InsertMatrix(rows, cols, rowsignature, delim);
     editorElement.contentWindow.focus();
   }
   catch (e)

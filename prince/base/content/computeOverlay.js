@@ -1622,6 +1622,7 @@ function GetCurrentEngine() {
       compsample.startup(inifile);
       compengine = 2;
       initComputeLogger(compsample);
+      initEnginePrefs(compsample);
     } catch (e) {
       var msg_key;
       if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE) msg_key = "Error.notavailable";
@@ -1634,6 +1635,23 @@ function GetCurrentEngine() {
   }
   return compsample;
 }
+
+
+
+function initEnginePrefs(compsample)
+{
+  var prefs = GetPrefs();
+  var delimstyle = prefs.getCharPref("swp.user.matrix_delim");
+  var val;
+  if (delimstyle === "matrix_brackets") val = 1;
+    else if (delimstyle === "matrix_parens") val = 2;
+    else if (delimstyle === "matrix_braces") val = 3;
+    else (val = 0); 
+  currEngine.setUserPref("Default_matrix_delims", val); 
+  // Do we need to set all the other engine settings. This is the only one that I
+  // know of that needs translation from strings to integers. BBM
+}
+
 
 // cursor helpers
 
