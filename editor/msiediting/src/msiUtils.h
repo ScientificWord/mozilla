@@ -234,7 +234,8 @@ public:
                                const nsAString & rowSignature,
                                PRBool markCaret,
                                PRUint32 & flags,
-                               nsCOMPtr<nsIDOMElement> & mathmlElement);
+                               nsCOMPtr<nsIDOMElement> & mathmlElement,
+                               const nsAString & delim);
                                
   static nsresult CreateDecoration(nsIEditor * editor,
                                    nsIDOMNode * child,

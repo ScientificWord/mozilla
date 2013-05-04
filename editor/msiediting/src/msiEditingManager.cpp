@@ -1097,15 +1097,16 @@ msiEditingManager::InsertMatrix(nsIEditor * editor,
                                 PRUint32 offset,
                                 PRUint32 rows,
                                 PRUint32 cols,
-                                const nsAString & rowSignature)
+                                const nsAString & rowSignature,
+                                const nsAString & delim)
 {
   nsresult res(NS_ERROR_FAILURE);
-  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSqRoot");
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMatrix");
   if (editor && selection && node)
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMtable(editor, rows, cols, rowSignature, PR_TRUE, flags, mathmlElement);
+    res = msiUtils::CreateMtable(editor, rows, cols, rowSignature, PR_TRUE, flags, mathmlElement, delim);
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
   }
