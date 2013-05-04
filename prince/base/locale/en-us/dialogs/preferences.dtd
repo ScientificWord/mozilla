@@ -98,8 +98,9 @@
 
 <!ENTITY matrices.label           "Matrices">
 <!ENTITY matrix_none.label          "none">
-<!ENTITY matrix_brackets.label      "[]">
-<!ENTITY matrix_parens.label        "()">
+<!ENTITY matrix_brackets.label      "[ ]">
+<!ENTITY matrix_parens.label        "( )">
+<!ENTITY matrix_braces.label        "{ }">
 
 <!ENTITY logs.label               "Base of Log">
 <!ENTITY dots.label               "Dot Accent">

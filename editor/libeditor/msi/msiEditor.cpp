@@ -659,7 +659,8 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 }
 
 NS_IMETHODIMP
-msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature)
+msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature,
+  const nsAString & delim)
 {
   nsresult res(NS_ERROR_FAILURE);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
@@ -692,7 +693,7 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertMatrix(editor, selection, theNode, 
-                                           theOffset, rows, cols, rowSignature);
+                                           theOffset, rows, cols, rowSignature, delim);
       }  
     }
   }
@@ -3512,7 +3513,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       PRUint32 flags(0);
       nMatrixRowLeft = 1;
       nMatrixRowRight = 2;
-      res = msiUtils::CreateMtable(editor, 2, 1, rowSignature, PR_TRUE, flags, newMatrix);
+      res = msiUtils::CreateMtable(editor, 2, 1, rowSignature, PR_TRUE, flags, newMatrix, NS_LITERAL_STRING(""));
 
       if (NS_SUCCEEDED(res) && newMatrix)
       {

@@ -823,6 +823,7 @@
                  <radio label="&matrix_none.label;"     id="matrix_none" value="matrix_none"      selected="true"/>
                  <radio label="&matrix_brackets.label;" id="matrix_brackets" value="matrix_brackets"  selected="false"/>
                  <radio label="&matrix_parens.label;"   id="matrix_parens" value="matrix_parens"    selected="false"/>
+                 <radio label="&matrix_braces.label;"   id="matrix_braces" value="matrix_braces"    selected="false"/>
               </radiogroup>
             </hbox>
           </groupbox>
