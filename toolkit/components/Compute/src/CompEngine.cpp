@@ -558,7 +558,7 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
       } else if (UI_cmd_ID == CCID_DefineMupadName) {
          //
          U32 ptype;
-         const char *p_mupadname = msr.GetParam(PID_mupname, ptype);
+         const char* p_mupadname = msr.GetParam(PID_mupname, ptype);
          U32 engineID = msr.GetEngineID();
          DefStore* ds = msr.GetDefStore();
          const char* ASCII_src = msr.GetASCIIMarkupPtr();
@@ -578,7 +578,7 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
          ds ->PushDefInfo (engineID, 
                            canonical,
                            DT_MUPNAME,
-                           NULL,
+                           DuplicateString(p_mupadname),
                            NULL,
                            0,
                            ASCII_src,
@@ -586,14 +586,6 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
                      );
 
 
-         //if (pChild ->semantic_type  == SEM_TYP_VARIABLE) {
-         //    MNODE* 
-            
-         //}
-
-         
-
-         // Get the canonical id 
       } else if (UI_cmd_ID == CCID_Undefine) {
         def_canon_ID = ConvertTreeToUnDef(semantics_tree);
         if (!def_canon_ID) {
