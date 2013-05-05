@@ -159,6 +159,10 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
 {
   SEMANTICS_NODE *s_tree = NULL;
   SEMANTICS_NODE *root = mr->GetSemanticsTree();
+  if (!root){
+    mr->PutResultCode(CR_failure);
+    return NULL;
+  }
   curr_msr = msr;
   const char *plotfilename  = NULL;
 
