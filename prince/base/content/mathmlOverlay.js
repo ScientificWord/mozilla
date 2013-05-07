@@ -10,6 +10,7 @@ function msiSetupMSIMathMenuCommands(editorElement)
   var commandTable = msiGetComposerCommandTable(editorElement);
 
   //dump("Registering msi math menu commands\n");
+
   commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
   commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
