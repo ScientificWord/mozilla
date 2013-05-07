@@ -20,6 +20,7 @@
 #include "nsCOMPtr.h"
 
 static jmp_buf mupad_mark;      // Address for long jump to jump to -- used in case of MuPAD DLL crash
+static bool b_stop_mupad = false;    
 
 // Our kernel message handler class.  A central, global data store for the MuPAD callbacks.
 class MuPADMssgHandler
@@ -208,9 +209,10 @@ static void MUP_CALLBACK on_plot_result_file(MUP_Kernel kernel, MUP_Cookie cooki
     client->plotfileStr = fname;
 }
 
+
 bool Stop_Interrupt()
 {
-  return false;
+  return b_stop_mupad;
 }
 
 // MuPAD DLL is giving us a time slice during computation
@@ -281,6 +283,11 @@ int MuPADEngine::GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
     TCI_ASSERT(0);
   }
   return rv;
+}
+
+void MuPADEngine::StopProcessor()
+{
+  b_stop_mupad = true;
 }
 
 bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, nsILocalFile *modulePath)
@@ -377,7 +384,7 @@ bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, n
 
 int MuPADEngine::Initialize(nsILocalFile *libpath, nsILocalFile *champath)
 {
-  printf("\n\n  jcs MuPADEngine::Initialize\n");
+  //printf("\n\n  jcs MuPADEngine::Initialize\n");
   const char* pathCham;
   nsAutoString temp;
   champath->GetPath(temp);
@@ -465,7 +472,7 @@ bool MuPADEngine::Exec(TCIString & cmd)
 
   const MUP_Char *p = static_cast<const MUP_Char*>(cmd);
 
-  printf("\n\n  jcs MuPADEngine::Exec(%s)\n", p);
+  //printf("\n\n  jcs MuPADEngine::Exec(%s)\n", p);
 
   // send command
   int send_cmd_ret = setjmp(mupad_mark);

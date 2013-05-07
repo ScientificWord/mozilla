@@ -22,6 +22,7 @@ public:
   bool SendPlotToProcessor(TCIString &cmd);
   void ClearEngStrPtrs();
   int GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln);
+  void StopProcessor();
   void CleanupAndUnloadDLL();
 
 protected:
