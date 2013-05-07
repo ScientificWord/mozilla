@@ -22,6 +22,22 @@ var msiEvaluateCommand = {
   }
 };
 
+var msiComputeStopCommand = {
+  isCommandEnabled: function(aCommand, editorElement) {
+    var theEditorElement = msiGetActiveEditorElement();
+    return (theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
+  },
+  getCommandStateParams: function(aCommand, aParams, editorElement) {},
+  doCommandParams: function(aCommand, aParams, editorElement) {},
+
+  doCommand: function(aCommand, editorElement) {
+    var theEditorElement = msiGetActiveEditorElement();
+    doComputeStopCommand(aCommand, theEditorElement, this);
+  }
+
+  
+};
+
 var msiEvaluateCommandKeyboard = {
   isCommandEnabled: function(aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
@@ -247,6 +263,8 @@ function doSetupMSIComputeMenuCommands(commandTable) {
   commandTable.registerCommand("cmd_MSIComputeInterpret", msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeFixup", msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputePassthru", msiEvaluateCommand);
+
+  commandTable.registerCommand("cmd_MSIComputeStop", msiComputeStop);
 }
 
 function goUpdateMSIcomputeMenuItems(commandset) {
@@ -358,6 +376,10 @@ function isSelectionMath(selection) {
     }
   }
   return findmathparent(selection.focusNode);
+}
+
+function doComputeStopCommand(cmd, editorElement, cmdHandler, inPlace) {
+
 }
 
 function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
