@@ -2462,6 +2462,7 @@ MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
     if (ElementNameIs(rover, "mfenced")) {
       bool is_parens = false;
       bool is_brackets = false;
+      bool is_braces = false;
 
       bool do_it = false;
       ATTRIB_REC *a_list = rover->attrib_list;
@@ -2474,6 +2475,9 @@ MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
         } else if (open_val[0] == '(' && close_val[0] == ')') {
           do_it = true;
           is_parens = true;
+        } else if (open_val[0] == '{' && close_val[0] == '}') {
+          do_it = true;
+          is_braces = true;
         }
       } else {
         do_it = true;
@@ -2487,6 +2491,8 @@ MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
             in_notation->nbracket_tables++;
           else if (is_parens)
             in_notation->nparen_tables++;
+          else if (is_braces)
+            in_notation->nbrace_tables++;
         }
 
         MNODE* parent = rover->parent;
