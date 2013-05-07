@@ -32,6 +32,7 @@ public:
 
   bool iLoadStrsAndDLL( nsILocalFile* engpath,nsILocalFile* libpath, nsILocalFile* modpath );
   int iInitialize( nsILocalFile* libpath,nsILocalFile* champath,nsILocalFile* vcampath );
+  void iStopProcessor();
   bool SetEngineState( int attr_ID,const char* new_value );
   void     iDisposeSList( SEMANTICS_NODE* slist );
   int      iGetEngStrPtr( int str_ID, const char** engstr, int* engstr_ln );

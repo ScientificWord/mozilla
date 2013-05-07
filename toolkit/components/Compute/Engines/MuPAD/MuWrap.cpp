@@ -404,6 +404,11 @@ bool MuPADWrapper::iLoadStrsAndDLL(nsILocalFile *engp, nsILocalFile *libp, nsILo
   return mupd_eng->LoadStrsAndDLL(engp, libp, modulep);
 }
 
+void MuPADWrapper::iStopProcessor()
+{
+   mupd_eng->StopProcessor();
+}
+
 int MuPADWrapper::iInitialize(nsILocalFile *libp, nsILocalFile *champ,
                                    nsILocalFile *vcamp)
 {
