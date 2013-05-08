@@ -10432,7 +10432,7 @@ function msiGoDoCommand(command, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  editorElement && editorElement.focus();
+  // editorElement && editorElement.focus();
 	msiCommandUpdater.doCommand(command, editorElement);
 }
 function msiGoUpdateCommand(command, editorElement) { msiCommandUpdater.updateCommand(command, editorElement); }
