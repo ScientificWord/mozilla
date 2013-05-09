@@ -1590,9 +1590,36 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
   }
 }
 
+function guaranteeSciFile( url )
+{
+  var file = msiFileFromFileURL(url); // file is .../foo_work/main.xhtml, usually
+  var dir = file.parent;            // dir is .../foo_work
+  var leaf = dir.leafName;                // leaf is "foo_work"
+  leaf = leaf.replace("_work","");    // leaf is now "foo"
+  var zipfile = dir.parent;
+  zipfile.append(leaf+".sci"); // zipfile is foo.sci, sibling of foo_work
+  if (!zipfile.exists())              // there was no sci file corresponding to foo_work, as in the shell file case
+  {   // correct that now
+    var compression;
+    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+    try
+    {
+      compression = prefs.getIntPref("swp.sci.compression");
+    }
+    catch(ex2) {compression = 0;}
+    var zw = Components.classes["@mozilla.org/zipwriter;1"]
+                          .createInstance(Components.interfaces.nsIZipWriter);
+    zipfile.create(0, 0755);
+    zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
+    zipDirectory(zw, "", dir, compression);
+    zw.close();
+  }
+}
+
 function msiEditorLoadUrl(editorElement, url, markerStr)
 {
   dump("msiEditorLoadUrl: url.spec= "+url.spec+"\n");
+  guaranteeSciFile(url);
   try {
     if (markerStr)
       editorElement.initialMarker = markerStr;
