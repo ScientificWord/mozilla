@@ -842,7 +842,7 @@ Make list of figures here
 
 		<xbl:content>
 			<html:button type="button" class="frontmatter" nopr="1" oncommand="">
-				&xref;Cross reference: <html:label xbl:inherits="xbl:text=key"/>
+				&xref; <html:label xbl:inherits="xbl:text=key"/>
 			</html:button>
 			<html:span style="display:none">
 			<xbl:children/>
