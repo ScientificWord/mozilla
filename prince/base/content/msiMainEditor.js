@@ -190,7 +190,10 @@ function msiEditorOnLoad()
     msiSetupMSIComputeMenuCommands(editorElement);
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
-  } catch (e) { dump("makeEditable failed: "+e+"\n"); }
+  } catch (e) 
+  { 
+    dump("makeEditable failed: "+e+"\n"); 
+  }
 }
 
 
