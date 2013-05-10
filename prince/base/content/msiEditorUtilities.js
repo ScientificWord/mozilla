@@ -505,7 +505,6 @@ function clearPrevActiveEditor(timerData)
           theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
         if (theWindow.msiActiveEditorElement !== null)
         {
-          msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
           var editor = msiGetEditor(theWindow.msiActiveEditorElement);
           if (editor && editor.tagListManager)
           {
@@ -515,8 +514,10 @@ function clearPrevActiveEditor(timerData)
 //              var nsiEditor = editor.QueryInterface(Components.interfaces.nsIEditor);
 //              editor.tagListManager.editor = nsiEditor;
 //            } catch(ex) {msidump("In msiSetActiveEditor, error setting tagListManager's editor to " + theWindow.msiActiveEditorElement.id + ": " + ex + "\n");}
+            editor.setEditorActive();
             editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
           }
+          theWindow.msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
         }
       }
       else
@@ -558,6 +559,7 @@ function msiResetActiveEditorElement()
 //        var nsiEditor = editor.QueryInterface(Components.interfaces.nsIEditor);
 //        editor.tagListManager.editor = nsiEditor;
 //      } catch(ex) {msidump("In msiSetActiveEditor, error setting tagListManager's editor to " + theWindow.msiActiveEditorElement.id + ": " + ex + "\n");}
+      editor.setEditorActive();
       editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
     }
 //Logging stuff only
@@ -675,6 +677,18 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //End logging stuff
     //To Do: re-parent appropriate dialogs at this point? or if there's a timer set, wait for it?
     theWindow.msiActiveEditorElement = editorElement;
+    var editor = msiGetEditor(theWindow.msiActiveEditorElement);
+    if (editor && bIsFocusEvent && editor.tagListManager)
+    {
+//    try
+//    {
+//      var nsiEditor = editor.QueryInterface(Components.interfaces.nsIEditor);
+////      editor instanceof Components.interfaces.nsIEditor;
+//      editor.tagListManager.editor = nsiEditor;
+//    } catch(ex) {msidump("In msiSetActiveEditor, error setting tagListManager's editor to " + theWindow.msiActiveEditorElement.id + ": " + ex + "\n");}
+      editor.setEditorActive();
+      editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
+    }
     if ((theWindow.msiClearEditorTimerList==null || theWindow.msiClearEditorTimerList.length === 0) && theWindow.msiSingleDialogList)
     {
       theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
@@ -683,17 +697,6 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //    To Do: update command states, Math/Text state...
   }
 
-  var editor = msiGetEditor(theWindow.msiActiveEditorElement);
-  if (editor && bIsFocusEvent && editor.tagListManager)
-  {
-//    try
-//    {
-//      var nsiEditor = editor.QueryInterface(Components.interfaces.nsIEditor);
-////      editor instanceof Components.interfaces.nsIEditor;
-//      editor.tagListManager.editor = nsiEditor;
-//    } catch(ex) {msidump("In msiSetActiveEditor, error setting tagListManager's editor to " + theWindow.msiActiveEditorElement.id + ": " + ex + "\n");}
-    editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
-  }
 //  if (!theWindow.bIgnoreNextFocus || !bIsFocusEvent)
 //  {
 ////Logging stuff only:

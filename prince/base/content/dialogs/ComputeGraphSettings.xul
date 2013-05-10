@@ -39,8 +39,8 @@
     buttons="accept,cancel"
     screenX="40"
     screenY="40"
-    width="450"
-    height="600"
+    width="500"
+    height="640"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
@@ -64,13 +64,13 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
 
 #include ../keysfordialogs.inc
 

@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2012 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!ENTITY windowTitle.label "Plot Variables and Animation">
-<!ENTITY Coordinates.label  "Coordinates">
+<!ENTITY VariablesTitle.label  "Variables and Sampling Points">
 <!ENTITY Variable.label "Variable">
 <!ENTITY Interval.label "Interval">
 <!ENTITY PointsSampled.label  "Points Sampled">

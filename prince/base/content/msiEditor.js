@@ -9571,15 +9571,15 @@ function newContextmenuListener(button, element)
   return function() { return InitStructBarContextMenu(button, element); };
 }
 
-function insertStructToolbarButton(tag, toolbar, realElement)
+function insertStructToolbarButton(tag, toolbar, realElement, theDocument)
 {
   var button;
   var uiButton;
   var uiCommand;
   if (tag==="math") {
-    document.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
+    theDocument.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
   }
-  button = document.createElementNS(XUL_NS, "toolbarbutton");
+  button = theDocument.createElementNS(XUL_NS, "toolbarbutton");
   button.setAttribute("label",   "<" + tag + ">");
   button.setAttribute("value",   tag);
   button.setAttribute("context", realElement?"structToolbarContext":"");
@@ -9658,7 +9658,7 @@ function msiUpdateStructToolbar(editorElement)
   // the theory here is that by following up the chain of parentNodes,
   // we will eventually get to the root <body> tag. But due to some bug,
   // there may be multiple <body> elements in the document.
-  document.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
+  theDocument.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
   var cursorSetProps = editor.readCursorSetProps().split(";"); // these are tags set on the cursor
   var cursorClearedProps = editor.readCursorClearedProps().split(";"); // these are tags cleared at the cursor
   for (i = 0; i < cursorClearedProps.length; i++)
@@ -9672,14 +9672,14 @@ function msiUpdateStructToolbar(editorElement)
   {
     property = cursorSetProps[i].split(",");
     if (property[0].length > 0) {
-      insertStructToolbarButton(property[0], toolbar, false);
+      insertStructToolbarButton(property[0], toolbar, false, theDocument);
       propertyStack.push(property[0]);
     }
   }
   do {
     tag = element.nodeName;
     if (cursorClearedProps.indexOf(tag) === -1) {
-      button = insertStructToolbarButton(tag, toolbar, true);
+      button = insertStructToolbarButton(tag, toolbar, true, theDocument);
       propertyStack.push(tag);
       button.addEventListener("command", newCommandListener(element), false);
 

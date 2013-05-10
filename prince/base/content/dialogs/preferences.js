@@ -10,6 +10,7 @@ var placementIdsPlot = {prefID : "GraphPlacement", placementRadio : "plotPlaceme
                         hereRadioGroup : "plotHerePlacementRadioGroup", placeForceHereCheckbox : "plotPlaceForceHereCheck",
                         placeHereCheckbox : "plotPlaceHereCheck", placeFloatsCheckbox : "plotPlaceFloatsCheck",
                         placeTopCheckbox : "plotPlaceTopCheck", placeBottomCheckbox : "plotPlaceBottomCheck"};
+var currPlotType;
 
 function myDump(aMessage) {
   var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
@@ -33,6 +34,7 @@ function initialize()
   showShellsInDir(tree);
   setGraphicLayoutPreferences("graphics");
   setGraphicLayoutPreferences("plot");
+  initPlotItemPreferences();
   setTypesetFilePrefTestboxes();
 }
 
@@ -135,7 +137,8 @@ function writeComputePreferences()
   {
     pref = document.getElementById(prefId);
     onComputeSettingChange(pref, true);    
-  }   
+  }
+  storePlotItemPreferences();
 }
 
 function setGraphicLayoutPreferences(whichPrefs)
@@ -526,7 +529,6 @@ function onChangeUnits(unitBox)
 }
 
 
-
 function getColorAndUpdate(id)
 {
   var colorWell = document.getElementById(id);
@@ -543,3 +545,469 @@ function getColorAndUpdate(id)
   // next line for immediate writing only 
   writeColorWell(id);
 }
+
+//***************************Plot Item tab**************************//
+var plotItemIds = ["plotLineColorWell", "plotDirectionalShading", "plotBaseColorWell", "plotSecondColorWell",
+                   "plotLineStyle", "plotLineThickness", "plotPointMarker", "plotFillPattern",
+                   "plotSurfaceStyle", "plotSurfaceMesh", "plotAISubIntervals", "plotAIMethod",
+                   "plotAIInfo", "plotPtssampTubeRadius", "plotPtssampConfHorizontal",
+                   "plotPtssampConfVertical"];  //(All other than the edit ones, which require special treatment)
+
+var plotVarEditControls = ["plotVar1StartEdit", "plotVar1EndEdit", "plotVar2StartEdit", "plotVar2EndEdit",
+                    "plotVar3StartEdit", "plotVar3EndEdit", "plotVar4StartEdit", "plotVar4EndEdit"];
+
+var plotVarControls = ["plotPtssamp1", "plotPtssamp2", "plotPtssamp3", "plotPtssamp4"];
+
+var plotVarEditsReady = [];
+
+function initPlotItemPreferences()
+{
+  currPlotType = document.getElementById("plotTypeList").value;
+  initPlotItemEditors();
+  setPlotItemBroadcasters();
+  setPlotItemPreferences();
+}
+
+var minMaxDocumentObserverBase = {
+  observe: function (aSubject, aTopic, aData)
+  {
+    if (aTopic === "obs_documentCreated")
+    {
+      plotVarEditsReady.push(this.ctrlID);
+      checkPlotVarEditsReady();
+    }
+  }
+};
+
+function minMaxDocumentObserver(ctrl)
+{
+  this.ctrlID = ctrl.id;
+}
+
+minMaxDocumentObserver.prototype = minMaxDocumentObserverBase;
+
+function checkPlotVarEditsReady()
+{
+  var isReady = true;
+  for (var anEditorId in plotVarEditControls)
+  {
+    if (plotVarEditsReady.indexOf(anEditorId) < 0)
+    {
+      isReady = false;
+      break;
+    }
+  }
+  if (!isReady)
+    msidump("Edits not yet ready in IntervalsAndAnimations dialog!\n");
+  return isReady;
+}
+
+function initPlotItemEditors()
+{
+  //Initialize editor controls
+  var fallbackVals = [-6, 6, -6, 6, -6, 6, 0, 10];
+  var editorElement, prefElement, theStringSource, key;
+  var editorInitializer = new msiEditorArrayInitializer();
+  for (var ii = 0; ii < plotVarEditControls.length; ++ii)
+  {
+    theStringSource = "";
+    editorElement = document.getElementById(plotVarEditControls[ii]);
+    try
+    {
+      prefElement = document.getElementById(editorElement.getAttribute("preference"));
+      theStringSource = prefElement.value;
+    } catch(ex) { 
+      dump("Exception trying to initialize editor " + plotVarEditControls[ii] + " in initPlotItemPreferences().\n");
+    }
+    if (!theStringSource.length)
+    {
+      key = getBasePlotPrefKeyName(prefElement.getAttribute(name));
+      theStringSource = getPlotDefaultValue(null, null, key);
+      if (!theStringSource.length)
+        theStringSource = GetNumAsMathML(fallbackVals[ii]);
+    }
+    editorElement.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(editorElement)}];
+    editorInitializer.addEditorInfo(editorElement, theStringSource, true);
+  }
+  editorInitializer.doInitialize();
+}
+
+function setPlotItemBroadcasters()
+{
+  var plotTypeObj = getPlotDimAndPlottype(currPlotType);
+  var numvars, dim, ptype;
+  if (currPlotType == "any")
+  {
+    dim = 3;
+    numvars = 4;
+    ptype = "any";
+  }
+  else
+  {
+    numvars = plotVarsNeeded(plotTypeObj.dim, plotTypeObj.plotType, true);
+    dim = currPlotType.dim;
+    ptype = currPlotType.plotType;
+  }
+  document.getElementById("plot.1Var").collapsed = (numvars < 1);
+  document.getElementById("plot.2Vars").collapsed = (numvars < 2);
+  document.getElementById("plot.3Vars").collapsed = (numvars < 3);
+  document.getElementById("plot.4Vars").collapsed = (numvars < 4);
+
+  var showFillColors = 0;
+  var showLineColors = 1;
+  var bUseMesh = false;
+  var bUseDirShading = false;
+  if (dim == 3)
+  {
+    document.getElementById("plot.threeDim").collapsed = false;
+    document.getElementById("plot.colorAlphaEnabled").setAttribute("hasAlpha", "true");
+    bUseDirShading = true;
+    bUseMesh = true;
+    showFillColors = 2;
+    showLineColors = 0;
+    switch(ptype)
+    {
+      case "curve":
+        showLineColors = 1;
+        showFillColors = 0;
+        bUseMesh = false;
+      break;
+      case "vectorField":
+      case "gradient":
+        bUseMesh = false;
+      break;
+      case "any":
+        showLineColors = 1;
+      break;
+    }
+  } else {
+    document.getElementById("plot.threeDim").collapsed = true;
+    document.getElementById("plot.colorAlphaEnabled").setAttribute("hasAlpha", "false");
+    switch(plotTypeObj.plotType)
+    {
+      case "inequality":            showFillColors = 2;   break;
+      case "conformal":             showLineColors = 2;   break;
+      case "approximateIntegral":
+        switch(aiMethod)
+        {
+          case "LeftRight":
+          case "LowerUpper":
+          case "LowerUpperAbs":
+            showFillColors = 2;
+          break;
+          default:
+            showFillColors = 1;
+          break;
+        }
+      break;
+    }
+  }
+//  document.getElementById("tubeOrLinePts").setAttribute( "selectedIndex", ((currPlotType ==="tube") ? 1 : 0) );
+  document.getElementById("plot.enableLinesAndPoints").collapsed = (showLineColors < 1);
+  document.getElementById("plot.use1LineColor").collapsed = (showLineColors < 1);
+  document.getElementById("plot.use2LineColors").collapsed = (showLineColors < 2);
+  document.getElementById("plot.use1FillColor").collapsed = (showFillColors < 1);
+  document.getElementById("plot.use2FillColors").collapsed = (showFillColors < 2);
+  document.getElementById("plot.useDirectionalShading").collapsed = !bUseDirShading;
+  document.getElementById("plot.useBaseColor").collapsed = (showFillColors < 1) && (showLineColors < 2);
+  document.getElementById("plot.useMesh").collapsed = !bUseMesh;
+  document.getElementById("plot.approxIntPlot").collapsed = (plotTypeObj.plotType !== "approximateIntegral");
+  document.getElementById("plot.useAreaFill").collapsed = ((plotTypeObj.plotType != "approximateIntegral") && (plotTypeObj.plotType !== "inequality"));
+  document.getElementById("plot.enableConformal").collapsed = (plotTypeObj.plotType != "conformal");
+}
+
+function onChangePlotType()
+{
+  storePlotItemPreferences();
+  currPlotType = document.getElementById("plotTypeList").value;
+  setPlotItemBroadcasters();
+  setPlotItemPreferences();
+}
+
+//<spacer id= hasAlpha="false" preference="plot.LineColor" observes="plot.colorAlphaEnabled" class="color-well"/>
+//<menulist id= preference="plot.DirectionalShading" observes="plot.useDirectionalShading">
+//<spacer id= preference="plot.BaseColor" hasAlpha="false" observes="plot.colorAlphaEnabled" class="color-well"/>
+//<spacer id= preference="plot.SecondaryColor" hasAlpha="false" observes="plot.colorAlphaEnabled" class="color-well" />
+//<menulist id= preference="plot.LineStyle">
+//<menulist id= prefernece="plot.LineThickness">
+//<menulist id= preference="plot.PointSymbol">
+//<menulist id= preference="plot.FillPattern">
+//<menulist id= preference="plot.SurfaceStyle">
+//<menulist id= preference="plot.SurfaceMesh">
+//<textbox id= type="number" class="narrow" preference="plot.AISubIntervals" increment="1" decimalplaces="0" min="1" max="999" />
+//<menulist id= preference="plot.AIMethod" style="min-width:80pts">
+//<menulist id= preference="plot.AIInfo" style="min-width:80pts">
+//  var editControls = [];
+//<textbox id= type="number" preference="plot.var1Pts" class="narrow" />
+//<textbox id= type="number" preference="plot.var2Pts" class="narrow" />
+//<textbox id= type="number" preference="plot.var3Pts" class="narrow" />
+//<textbox id= type="number" preference="plot.var4Pts" class="narrow" />
+//<textbox id= preference="plot.TubeRadialPoints" type="number" class="narrow" />
+
+//Following called for initialization, or in response to change in plot type menulist.
+function setPlotItemPreferences()
+{
+  var element, refPref, prefElement, prefId, prefName;
+  var plotTypeObj = getPlotDimAndPlottype(currPlotType);
+  var prefix = getPlotPrefPrefix(currPlotType);
+  for (var ii = 0; ii < plotItemIds.length; ++ii)
+  {
+    element = document.getElementById(plotItemIds[ii]);
+    if (element.hidden || element.disabled)
+      continue;
+    prefId = element.getAttribute("preference");
+    prefId = prefix + prefId.substr( prefId.lastIndexOf(".") + 1 );
+    element.setAttribute("preference", prefId);
+    prefElement = document.getElementById(prefId);
+    if (!prefElement)
+    {
+      refPref = getReferencePlotItemPreference(prefId);
+      prefElement = insertNewPrefElement(refPref, prefId);
+    }
+//    putValueToControl(element, theVal);
+  }
+  setPlotItemIntervalControls();
+}
+
+function setPlotItemIntervalControls()
+{
+  var varNames = ["X", "Y", "Z"];
+  var numvars, prefIdBase, startElement, endElement, ptsElement, refPref;
+  var startPrefId, endPrefId, ptsPrefId, prefElement;
+  var plotTypeObj = getPlotDimAndPlottype(currPlotType);
+  var prefix = getPlotPrefPrefix(currPlotType);
+  if (currPlotType == "any")
+    numvars = 4;
+  else
+    numvars = plotVarsNeeded(plotTypeObj.dim, plotTypeObj.plotType, true);
+  for (var jj = 1; jj <= numvars; ++jj)
+  {
+    startElement = document.getElementById("plotVar" + jj + "StartEdit");          //plotVar1StartEdit
+    endElement = document.getElementById("plotVar" + jj + "EndEdit");              //plotVar1EndEdit
+    ptsElement = document.getElementById("plotPtssamp" + jj);
+    if ( (!startElement.hidden && !startElement.disabled) ||
+                          (!endElement.hidden && !endElement.disabled) )
+    {
+      if (jj == numvars)
+      {
+        prefIdBase = prefix + "Anim";
+        document.getElementById("plotVar" + jj).textContent = getPlotIntervalVarName(plotTypeObj.plotType, "Anim");
+      }
+      else
+      {
+        prefIdBase = prefix + varNames[jj-1];
+        document.getElementById("plotVar" + jj).textContent = getPlotIntervalVarName(plotTypeObj.plotType, varNames[jj-1]);
+      }
+      
+      startPrefId = prefIdBase + "Min";
+      endPrefId = prefIdBase + "Max";
+      ptsPrefId = prefIdBase + "Pts";
+      startElement.setAttribute("preference", startPrefId);
+      prefElement = document.getElementById(startPrefId);
+      if (!prefElement)
+      {
+        refPref = getReferencePlotItemPreference(startPrefId);
+        prefElement = insertNewPrefElement(refPref, startPrefId);
+      }
+      putMathMLExpressionToControl(startElement, prefElement.value);
+
+      endElement.setAttribute("preference", endPrefId);
+      prefElement = document.getElementById(endPrefId);
+      if (!prefElement)
+      {
+        refPref = getReferencePlotItemPreference(endPrefId);
+        prefElement = insertNewPrefElement(refPref, endPrefId);
+      }
+      putMathMLExpressionToControl(endElement, prefElement.value);
+
+      if (ptsElement)
+      {
+        ptsElement.setAttribute("preference", ptsPrefId);
+        prefElement = document.getElementById(ptsPrefId);
+        if (!prefElement)
+        {
+          refPref = getReferencePlotItemPreference(ptsPrefId);
+          prefElement = insertNewPrefElement(refPref, ptsPrefId);
+        }
+      }
+    }
+  }
+}
+
+function storePlotItemPreferences()
+{
+  var ii, element, prefStr, refPref, prefElement, value, oldVal;
+  var prefix = getPlotPrefPrefix(currPlotType);
+  var serializer = new XMLSerializer();
+  for (ii = 0; ii < plotVarEditControls.length; ++ii)
+  {
+    element = document.getElementById(plotVarEditControls[ii]);
+    if (element.hidden || element.disabled)
+      continue;
+    prefElement = document.getElementById(element.getAttribute("preference"));
+    if (prefElement)
+      prefElement.value = getMathMLExpressionFromControl(element, serializer);
+  }
+  for (ii = 0; ii < plotItemIds.length; ++ii)
+  {
+    element = document.getElementById(plotItemIds[ii]);
+    if (element.hidden || element.disabled)
+      continue;
+    prefStr = element.getAttribute("preference");
+    prefElement = document.getElementById(prefStr);
+    refPref = getReferencePlotItemPreference(prefStr);
+    if ( (prefElement.getAttribute("msi-temp") == "true") && (refPref != prefElement) 
+                                                          && (prefElement.value == refPref.value) )
+      prefElement.parentNode.deleteChild(prefElement);
+  }
+}
+
+function getPlotDimAndPlottype(plotTypeDescription)
+{
+  switch(plotTypeDescription)
+  {
+    case "2d-rectangular":              return {dim : 2, plotType : "rectangular"};
+    case "3d-rectangular":              return {dim : 3, plotType : "rectangular"};
+    case "2d-explicitList":             return {dim : 2, plotType : "explicitList"};
+    case "3d-explicitList":             return {dim : 3, plotType : "explicitList"};
+    case "polar":                       return {dim : 2, plotType : "polar"};
+    case "2d-implicit":                 return {dim : 2, plotType : "implicit"};
+    case "3d-implicit":                 return {dim : 3, plotType : "implicit"};
+    case "inequality":                  return {dim : 2, plotType : "inequality"};
+    case "2d-parametric":               return {dim : 2, plotType : "parametric"};
+    case "3d-parametric":               return {dim : 3, plotType : "parametric"};
+    case "conformal":                   return {dim : 2, plotType : "conformal"};
+    case "2d-gradient":                 return {dim : 2, plotType : "gradient"};
+    case "3d-gradient":                 return {dim : 3, plotType : "gradient"};
+    case "2d-vectorField":              return {dim : 2, plotType : "vectorField"};
+    case "3d-vectorField":              return {dim : 3, plotType : "vectorField"};
+    case "ode":                         return {dim : 2, plotType : "ode"};
+    case "approximateIntegral":         return {dim : 2, plotType : "approximateIntegral"};
+    case "curve":                       return {dim : 3, plotType : "curve"};
+    case "cylindrical":                 return {dim : 3, plotType : "cylindrical"};
+    case "spherical":                   return {dim : 3, plotType : "spherical"};
+    case "tube":                        return {dim : 3, plotType : "tube"};
+    case "any":                         
+    default:                            return {dim : null, plotType : null};
+  }
+}
+
+function getPlotPrefPrefix(plotTypeDescription)
+{
+  var prefix = "plot.";
+  var plotTypeObj = getPlotDimAndPlottype(plotTypeDescription);
+  if (plotTypeObj.dim)
+  {
+    prefix += plotTypeObj.dim + "d.";
+    if (plotTypeObj.plotType)
+      prefix += plotTypeObj.plotType + ".";
+  }
+  return prefix;
+}
+
+function getReferencePlotItemPreference(prefStr)
+{
+  var prefixStr = prefStr.substr(0, prefStr.lastIndexOf("."));
+  var attribStr = prefStr.substr( prefStr.lastIndexOf(".") ); //but including the last "."
+  var refElement;
+  do {
+    prefixStr = prefixStr.substr( 0, prefixStr.lastIndexOf("."));
+    refElement = document.getElementById(prefixStr + attribStr);
+  } while (!refElement && (prefixStr.length > 4));  //"4" is the length of "plot", the beginning sequence for all these
+  return refElement;
+}
+
+//This should be called with something like "plot.2d.explicitPlot.LineColor" as prefId and the existing <preference>
+//  with id "plot.LineColor" as refPref.
+function insertNewPrefElement(refPref, prefId)
+{
+  var prefElement = document.createElementNS(XUL_NS, "preference");
+  var prefix = prefId.substr(0, prefId.lastIndexOf(".") + 1);
+  prefElement.setAttribute("id", prefId);
+  prefElement.setAttribute("msi-temp", "true");  //This tags the preference to be deleted if it doesn't get set by the user.
+  refPref.parentNode.insertBefore(prefElement, refPref.nextSibling);
+  var prefName = refPref.name.replace("plot.", prefix);
+  prefElement.name = prefName;
+  prefElement.value = refPref.value;
+  return prefElement;
+}
+
+function getPlotIntervalVarName(plotType, baseVarName)
+{
+  var compBundle = document.getElementById("computeBundle");
+  var rv = "";
+  var prefixStr;
+  switch(plotType)
+  {
+    case "curve":   prefixStr = "parametric";      break;
+    default:        prefixStr = plotType;          break;
+  }
+
+  var initialStr = "Intervals.";
+  try
+  {
+    rv = compBundle.getString(initialStr + prefixStr + baseVarName);
+  }
+  catch(exc)
+  {
+    try
+    {
+      rv = compBundle.getString(initialStr + baseVarName);
+    }
+    catch(ex)
+    {
+      msidump("Problem in preferences.js, getPlotIntervalVarName; unable to get string for " + initialStr + prefixStr + baseVarName + ".\n");
+      rv = "";
+    }
+  }
+  return rv;
+}
+
+//function writeAPlotPref(dim, plottype, prefID, value)
+//{
+////What about "ConfHorizontalPts", "ConfVerticalPts"?
+//  var thePref = document.getElementById(prefID);
+//  var key = thePref.getAttribute("name");
+//  var basekey = key.substr( key.lastIndexOf(".") );
+//  var oldval = getPlotDefaultValue(dim, plotType, key);
+//  if (oldval != value)
+//}
+//
+//function getBasePlotPrefKeyName(prefKey)
+//{
+//  return prefKey.substr( prefKey.lastIndexOf(".") + 1 );
+//}
+//
+//function getBestStoredPlotPrefKey(dim, plotType, key)
+//{
+//  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+//  var basePrefix = ["swp.plot"];
+//  var nLastDot = key.lastIndexOf(".");
+//  var subkey = key.substr( nLastDot + 1 );
+//  var prefType, value, currPrefix;
+//  for (; !value && (nLastDot >= basePrefix.length); nLastDot = currPrefix.lastIndexOf("."))
+//  {
+//    currPrefix = currPrefix.substr(0, nLastDot);
+//    currKey = currPrefix + "." + subkey;
+//    try 
+//    {
+//      var prefType = prefs.getPrefType(currKey);
+//      if (prefType == prefs.PREF_STRING)
+//        value = prefs.getCharPref(currKey);
+//      else if (prefType == prefs.PREF_INT)
+//      {
+//        value = String(prefs.getIntPref(currKey));
+//      }
+//      else if (prefType == prefs.PREF_BOOL)
+//      {
+//        value = prefs.getBoolPref(currKey);
+//        if (value)
+//          value = "true";
+//        else
+//          value = "false";
+//      }
+//    } catch(ex) {}
+//  }
+//  return currKey;
+//}
+

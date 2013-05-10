@@ -6,6 +6,16 @@
 <?xml-stylesheet href="chrome://prince/skin/preferences.css" type="text/css"?>
 #include ../productname.inc
 
+#ifndef PROD_SW
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+#endif
+
 <!DOCTYPE prefwindow SYSTEM "chrome://prince/locale/preferences.dtd">
 <!-- JLF to verify-->
 <prefwindow id="appPreferences"
@@ -17,8 +27,25 @@
             persist="height width xpos ypos"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+#ifndef PROD_SW
+#include ../keysfordialogs.inc
+
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+  <commandset id="MSImathMenuCommands"/>
+  
+#endif
 
   <prefpane id="prefGeneral" label="&GeneralTab.label;">
     <preferences>
@@ -186,72 +213,9 @@
       <preference id="DefaultFileType"
                   name="swp.graph.DefaultFileType"
                   type= "string"/>
-      <preference id="plot.XMax"
-                  name="swp.plot.XMax"
-                  type="string"/>
-      <preference id="plot.XMin"
-                  name="swp.plot.XMin"
-                  type="string" />
-      <preference id="plot.YMax"
-                  name="swp.plot.YMax"
-                  type="string" />
-      <preference id="plot.YMin"
-                  name="swp.plot.YMin"
-                  type="string" />
-      <preference id="plot.ZMax"
-                  name="swp.plot.ZMax"
-                  type="string" />
-      <preference id="plot.ZMin"
-                  name="swp.plot.ZMin"
-                  type="string" />
-      <preference id="XVar"
-                  name="swp.plot.XVar"
-                  type="string" />
-      <preference id="YVar"
-                  name="swp.plot.YVar"
-                  type="string" />
-      <preference id="ZVar"
-                  name="swp.plot.ZVar"
-                  type="string" />
-      <preference id="XPts"
-                  name="swp.plot.XPts"
-                  type="string" />
-      <preference id="YPts"
-                  name="swp.plot.YPts"
-                  type="string" />
-      <preference id="ZPts"
-                  name="swp.plot.ZPts"
-                  type="string" />
-      <preference id="Animate"
-                  name="swp.plot.Animate"
-                  type="bool"/>
-      <preference id="DiscAdjust"
-                  name="swp.plot.DiscAdjust"
-                  type="bool"/>
-      <preference id="IncludeLines"
-                  name="swp.plot.IncludeLines"
-                  type="bool"/>
-      <preference id="TubeRadius"
-                  name="swp.plot.TubeRadius"
-                  type="string" />
-      <preference id="AISubIntervals"
-                  name="swp.plot.AISubIntervals"
-                  type= "int"/>
-      <preference id="AIMethod"
-                  name="swp.plot.AIMethod"
-                  type="string"/>
-      <preference id="graph.AxisTips"
-                  name="swp.graph.AxisTips"
-                  type="bool"/>
-      <preference id="graph.GridLines"
-                  name="swp.graph.GridLines"
-                  type="bool"/>
-      <preference id="graph.AxisType"
-                  name="swp.graph.AxisType"
-                  type="string"/>
-      <preference id="enablerealtimespell"
+      <!-- preference id="enablerealtimespell"
                   name="swp.spellchecker.enablerealtimespell"
-                  type="bool"/>
+                  type="bool"/ --> <!-- Commented out as it's duplicated below - rwa 050613 -->
       <preference id="digitsRenderedpref"
                   name="swp.user.digitsrendered"
                   type="int"
@@ -322,10 +286,6 @@
                   onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="diffDpref"
                   name="swp.user.diffD"
-                  type="string"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
-      <preference id="diffdpref"
-                  name="swp.user.diffd"
                   type="string"
                   onchange = "onComputeSettingChange(this, true)"/>                  
       <preference id="expepref"
@@ -513,7 +473,7 @@
               <vbox align="center">
                   <label value="&units.label;"/>
                   <menulist id="graphicsUnitsList" value="pt" selectedIndex="2" preference="defaultGraphicsSizeUnits" oncommand="onChangeUnits(this);">
-                  <menupopup id = "unitList">
+                  <menupopup id = "graphicsUnitPopup">
                     <menuitem value="in" label="&unitsinches.label;"/>
                     <menuitem value="cm" label="&unitscm.label;"/>             
                     <menuitem value="mm" label="&unitsmm.label;"/>         
@@ -673,7 +633,7 @@
           </groupbox>
 					<groupbox orient="vertical">
             <caption>&SpaceExits.label;</caption>
-            <checkbox id="spaceinmathaddsspace" preference="spaceinmathaddsspace" label="&SpaceAfterMath.label;" />
+            <checkbox id="spaceinmathaddsspaceCheckbox" preference="spaceinmathaddsspace" label="&SpaceAfterMath.label;" />
           </groupbox>
 					<hbox>
 						<groupbox>
@@ -962,11 +922,155 @@
   </prefpane>
 
   <prefpane id="prefPlots" label="&PlotsTab.label;">
-    <tabbox id="outer-box" flex="1">
+    <preferences id="plotPrefs">
+      <preference id="plot.LineColor"
+                  name="swp.plot.LineColor"
+                  type="string"/>
+      <preference id="plot.DirectionalShading"
+                  name="swp.plot.DirectionalShading"
+                  type="string"/>
+      <preference id="plot.BaseColor"
+                  name="swp.plot.BaseColor"
+                  type="string"/>
+      <preference id="plot.SecondaryColor"
+                  name="swp.plot.SecondaryColor"
+                  type="string"/>
+      <preference id="plot.LineStyle"
+                  name="swp.plot.LineStyle"
+                  type="string"/>
+      <preference id="plot.LineThickness"
+                  name="swp.plot.LineThickness"
+                  type="string"/>
+      <preference id="plot.PointSymbol"
+                  name="swp.plot.PointSymbol"
+                  type="string"/>
+      <preference id="plot.FillPattern"
+                  name="swp.plot.FillPattern"
+                  type="string"/>
+      <preference id="plot.SurfaceStyle"
+                  name="swp.plot.SurfaceStyle"
+                  type="string"/>
+      <preference id="plot.SurfaceMesh"
+                  name="swp.plot.SurfaceMesh"
+                  type="string"/>
+      <preference id="plot.AISubIntervals"
+                  name="swp.plot.AISubIntervals"
+                  type="int"/>
+      <preference id="plot.AIMethod"
+                  name="swp.plot.AIMethod"
+                  type="string"/>
+      <preference id="plot.AIInfo"
+                  name="swp.plot.AIInfo"
+                  type="string"/>
+      <preference id="plot.XMin"
+                  name="swp.plot.XMin"
+                  type="string"/>
+      <preference id="plot.XMax"
+                  name="swp.plot.XMax"
+                  type="string"/>
+      <preference id="plot.YMin"
+                  name="swp.plot.YMin"
+                  type="string"/>
+      <preference id="plot.YMax"
+                  name="swp.plot.YMax"
+                  type="string"/>
+      <preference id="plot.ZMin"
+                  name="swp.plot.ZMin"
+                  type="string"/>
+      <preference id="plot.ZMax"
+                  name="swp.plot.ZMax"
+                  type="string"/>
+      <preference id="plot.AnimMin"
+                  name="swp.plot.AnimMin"
+                  type="string"/>
+      <preference id="plot.AnimMax"
+                  name="swp.plot.AnimMax"
+                  type="string"/>
+      <preference id="plot.XVar"
+                  name="swp.plot.XVar"
+                  type="string" />
+      <preference id="plot.YVar"
+                  name="swp.plot.YVar"
+                  type="string" />
+      <preference id="plot.ZVar"
+                  name="swp.plot.ZVar"
+                  type="string" />
+      <preference id="plot.XPts"
+                  name="swp.plot.XPts"
+                  type="number" />
+      <preference id="plot.YPts"
+                  name="swp.plot.YPts"
+                  type="number" />
+      <preference id="plot.ZPts"
+                  name="swp.plot.ZPts"
+                  type="number" />
+      <preference id="plot.TubeRadialPoints"
+                  name="swp.plot.TubeRadialPts"
+                  type="number" />
+      <preference id="plot.ConfHorizontalPts"
+                  name="swp.plot.ConfHorizontalPts"
+                  type="number" />
+      <preference id="plot.ConfVerticalPts"
+                  name="swp.plot.ConfVerticalPts"
+                  type="number" />
+      <preference id="plot.Animate"
+                  name="swp.plot.Animate"
+                  type="bool"/>
+      <preference id="plot.DiscAdjust"
+                  name="swp.plot.DiscAdjust"
+                  type="bool"/>
+      <preference id="plot.IncludeLines"
+                  name="swp.plot.IncludeLines"
+                  type="bool"/>
+      <preference id="plot.TubeRadius"
+                  name="swp.plot.TubeRadius"
+                  type="string" />
+      <preference id="plot.AISubIntervals"
+                  name="swp.plot.AISubIntervals"
+                  type= "int"/>
+      <preference id="plot.AIMethod"
+                  name="swp.plot.AIMethod"
+                  type="string"/>
+      <preference id="graph.AxisTips"
+                  name="swp.graph.AxisTips"
+                  type="bool"/>
+      <preference id="graph.GridLines"
+                  name="swp.graph.GridLines"
+                  type="bool"/>
+      <preference id="graph.AxisType"
+                  name="swp.graph.AxisType"
+                  type="string"/>
+    </preferences>
+
+    <broadcasterset>
+      <broadcaster id="plot.1Var"/>
+      <broadcaster id="plot.2Vars" collapsed="true"/>
+      <broadcaster id="plot.3Vars" collapsed="true"/>
+      <broadcaster id="plot.4Vars" collapsed="true"/>
+      <broadcaster id="plot.tube" collapsed="true"/>
+
+      <broadcaster id="plot.threeDim" collapsed="true" />
+      <broadcaster id="plot.enableLinesAndPoints" />
+      <broadcaster id="plot.use1LineColor" />
+      <broadcaster id="plot.use2LineColors" />
+      <broadcaster id="plot.use1FillColor" />
+      <broadcaster id="plot.use2FillColors" />
+      <broadcaster id="plot.useBaseColor" />
+      <broadcaster id="plot.useDirectionalShading" />
+      <broadcaster id="plot.useMesh" />
+      <broadcaster id="plot.approxIntPlot" collapsed="true" />
+      <broadcaster id="plot.useAreaFill" collapsed="true" />
+  	<broadcaster id="plot.enableConformal" collapsed="true" />
+      <broadcaster id="plot.colorAlphaEnabled" hasAlpha="false" />
+    </broadcasterset>
+    <stringbundle id="computeBundle" src="chrome://prince/locale/compute.properties"/>
+
+    <tabbox id="plot-outer-box" flex="1">
       <tabs class="tabs-top">
 	    <tab label="&tabbar.axes;"        selected="0" />
 	    <tab label="&tabbar.layout;"      selected="0" />
-	    <tab label="&tabbar.labeling;"   selected="0" />
+      <tab label="&tabbar.plotItems;"   selected="0" />
+	    <tab label="&tabbar.labeling;"    selected="0" />
 	    <tab label="&tabbar.view;"        selected="0" />
 	  </tabs>
     <tabpanels>
@@ -1073,7 +1177,7 @@
             <vbox align="center">
               <label value="&units.label;"/>
               <menulist id="plotUnitsList" preference="graph.defaultUnits" value="pt" selectedIndex="2" oncommand="onChangeUnits(this);">
-                <menupopup id = "unitList">
+                <menupopup id = "plotUnitPopup">
                   <menuitem value="in" label="&unitsinches.label;"/>
                   <menuitem value="cm" label="&unitscm.label;"/>
                   <menuitem value="mm" label="&unitsmm.label;"/>
@@ -1162,6 +1266,327 @@
           </grid>
         </groupbox>
       </tabpanel>      
+
+      <tabpanel id="PlotItems">
+        <vbox>
+          <groupbox>
+		    <caption label="&plotAppliesTo.label;"/>
+            <menulist id="plotTypeList" value="any">
+              <menupopup oncommand="onChangePlotType();">
+                <menuitem label="&plottypeGeneric.label;"        value="any" />
+                <menuitem label="&plottype2dRect.label;"         value="2d-rectangular" />
+                <menuitem label="&plottype3dRect.label;"         value="3d-rectangular" />
+                <menuitem label="&plottype2dPointList.label;"    value="2d-explicitList" />
+                <menuitem label="&plottype3dPointList.label;"    value="3d-explicitList" />
+                <menuitem label="&plottypePolar.label;"          value="polar" />
+                <menuitem label="&plottype2dImplicit.label;"     value="2d-implicit" />
+                <menuitem label="&plottype3dImplicit.label;"     value="3d-implicit" />
+                <menuitem label="&plottypeInequality.label;"     value="inequality" />
+                <menuitem label="&plottype2dParametric.label;"   value="2d-parametric" />
+                <menuitem label="&plottype3dParametric.label;"   value="3d-parametric" />
+                <menuitem label="&plottypeConformal.label;"      value="conformal" />
+                <menuitem label="&plottype2dGradient.label;"     value="2d-gradient" />
+                <menuitem label="&plottype3dGradient.label;"     value="3d-gradient" />
+                <menuitem label="&plottype2dVector.label;"       value="2d-vectorField "/>
+                <menuitem label="&plottype3dVector.label;"       value="3d-vectorField" />
+                <menuitem label="&plottypeOde.label;"            value="ode" />
+                <menuitem label="&plottypeAI.label;"             value="approximateIntegral" />
+                <menuitem label="&plottypeCurve.label;"          value="curve" />
+                <menuitem label="&plottypeCylindrical.label;"    value="cylindrical" />
+                <menuitem label="&plottypeSpherical.label;"      value="spherical" />
+                <menuitem label="&plottypeTube.label;"           value="tube" />
+              </menupopup>
+            </menulist>
+          </groupbox>
+
+          <groupbox>
+            <caption>&plotItemColoring.label;</caption>
+            <grid>
+              <columns><column flex="1" /><column flex="1" /><column flex="1" /><column/><column flex="1" /></columns>
+              <rows>
+                <row>
+                  <hbox><label id="plotLineColorLabel" value="&plotColor.label;" observes="plot.use1LineColor" /></hbox>
+                  <hbox>
+                    <label id="plotDirectionalShadingLabel" value="&plotDirectionalShading.label;" control="plotDirectionalShading"
+                         observes="plot.useDirectionalShading" />
+                  </hbox>
+                  <spacer />
+                  <hbox>
+                    <label id="plotBaseColorLabel" value="&plotBaseColor.label;" control="plotBasecolor" observes="plot.use1FillColor" />
+                    <label id="plotLineColor2Label" value="&plotColor2.label;" control="plotSecondColor" observes="plot.use2LineColors" />
+                  </hbox>
+                  <spacer />
+                </row>
+                <row>
+                  <hbox>
+                    <msibutton id="plotLineColor" class="color-button" oncommand="getPlotColorAndUpdate('plotLineColorWell');" observes="plot.use1LineColor" >
+                      <spacer id="plotLineColorWell" hasAlpha="false" preference="plot.LineColor" observes="plot.colorAlphaEnabled" class="color-well"/>
+                    </msibutton>
+                  </hbox>
+                  <hbox>
+                    <menulist id="plotDirectionalShading" preference="plot.DirectionalShading" observes="plot.useDirectionalShading">
+                      <menupopup>
+                        <menuitem label="&plotShadingXYZ.label;" value="XYZ" />
+                        <menuitem label="&plotShadingXYZHue.label;" value="XYZHue" />
+                        <menuitem label="&plotShadingXYZGreyscale.label;" value="XYZGreyscale" />
+                        <menuitem label="&plotShadingXY.label;" value="XY" />
+                        <menuitem label="&plotShadingX.label;" value="X" />
+                        <menuitem label="&plotShadingY.label;" value="Y" />
+                        <menuitem label="&plotShadingZ.label;" value="Z" />
+                        <menuitem label="&plotShadingZHue.label;" value="ZHue" />
+                        <menuitem label="&plotShadingZGreyscale.label;" value="ZGreyscale" />
+                        <menuitem label="&plotShadingFlat.label;" value="Flat" />
+                      </menupopup>
+                    </menulist>
+                  </hbox>
+                  <hbox/>
+                  <hbox>
+                    <msibutton id="plotBaseColor" class="color-button" oncommand="getPlotColorAndUpdate('plotBaseColorWell');" observes="plot.useBaseColor">
+                      <spacer id="plotBaseColorWell" preference="plot.BaseColor" hasAlpha="false" observes="plot.colorAlphaEnabled" class="color-well"/>
+                    </msibutton>
+                  </hbox>
+                  <hbox/>
+                </row>
+                <row>
+                  <hbox/>
+                  <hbox/>
+                  <hbox/>
+                  <hbox><label id="plotSecondaryColorLabel" value="&plotSecondaryColor.label;" control="plotSecondColor" observes="plot.use2FillColors" /></hbox>
+                  <hbox/>
+                </row>
+                <row>
+                  <hbox/>
+                  <hbox/>
+                  <hbox/>
+                  <hbox>
+                    <msibutton id="plotSecondColor" class="color-button" oncommand="getPlotColorAndUpdate('plotSecondColorWell');" observes="plot.use2FillColors" >
+                      <spacer id="plotSecondColorWell" preference="plot.SecondaryColor" hasAlpha="false" observes="plot.colorAlphaEnabled" class="color-well" />
+                    </msibutton>
+                  </hbox>
+                  <hbox/>
+                </row>
+              </rows>
+            </grid>
+          </groupbox>
+
+          <groupbox>
+            <caption label="&plotstyles.label;"/>
+            <grid>
+              <columns><column/><column/><column/><column/><column/></columns>
+              <rows>
+                <row id="plotLineAndPointLabels" observes="plot.enableLinesAndPoints" >
+                  <label control="plotLineStyle" value="&plotLineStyle.label;" />
+                  <spacer flex="2" />
+                  <label control="plotLineThickness" value="&plotLineThickness.label;" />
+                  <spacer flex="2" />
+                  <label control= "plotPointMarker" value="&plotPointMarker.label;"/>
+                </row>
+                <row id="plotLineAndPointControls" observes="plot.enableLinesAndPoints">
+                  <menulist id="plotLineStyle" preference="plot.LineStyle">
+                    <menupopup>
+                      <menuitem label="&plotLineStyleSolid.label;" value="Solid" />
+                      <menuitem label="&plotLineStyleDash.label;" value="Dashed"/>
+                      <menuitem label="&plotLineStyleDots.label;" value="Dotted"/>
+                      <menuitem label="&plotLineStyleNoLines.label;" value="None"/>
+                    </menupopup>
+                  </menulist>
+                  <spacer flex="2" />
+                  <menulist id="plotLineThickness" prefernece="plot.LineThickness">
+                    <menupopup>
+                      <menuitem label="&plotLineVeryThin.label;" value="verythin" />
+                      <menuitem label="&plotLineThin.label;" value="thin" />
+                      <menuitem label="&plotLineMedium.label;" value="medium" />
+                      <menuitem label="&plotLineThick.label;" value="thick" />
+                      <menuitem label="&plotLineVeryThick.label;" value="verythick" />
+                    </menupopup>
+                  </menulist>
+                  <spacer flex="2" />
+                  <menulist id="plotPointMarker" preference="plot.PointSymbol">
+                    <menupopup>
+                      <menuitem label="&plotPointDot.label;" value="FilledCircles"/>
+                      <menuitem label="&plotPointCircle.label;" value="Circles"/>
+                      <menuitem label="&plotPointCross.label;" value="Crosses"/>
+                      <menuitem label="&plotPointFilledSquares.label;" value="FilledSquares"/>
+                      <menuitem label="&plotPointBox.label;" value="Squares"/>
+                      <menuitem label="&plotPointDiamond.label;" value="Diamonds"/>
+                      <menuitem label="&plotPointFilledDiamonds.label;" value="FilledDiamonds"/>
+                      <menuitem label="&plotPointXcrosses.label;" value="XCrosses"/>
+                      <menuitem label="&plotPointStars.label;" value="Stars"/>
+                    </menupopup>
+                  </menulist>
+                </row>
+                <row observes="plot.useAreaFill">
+                  <spacer flex="1"/>
+                  <label control="plotFillPattern" value="&plotAreaFillStyle.label;" />
+                  <menulist id="plotFillPattern" preference="plot.FillPattern">
+                    <menupopup>
+                      <menuitem label="&plotFillPatternSolid.label;" value="Solid" />
+                      <menuitem label="&plotFillPatternCrossedLines.label;" value="CrossedLines" />
+                      <menuitem label="&plotFillPatternDiaglLines.label;" value="DiagonalLines" />
+                      <menuitem label="&plotFillPatternForwardDiagLines.label;" value="ForwardDiagonalLines" />
+                      <menuitem label="&plotFillPatternHorizLines.label;" value="HorizontalLines" />
+                      <menuitem label="&plotFillPatternVertLines.label;" value="VerticalLines" />
+                      <menuitem label="&plotFillPatternCrossedDiagLines.label;" value="CrossedDiagonalLines" />
+                    </menupopup>
+                  </menulist>
+                  <spacer />
+                </row>
+              </rows>
+            </grid>
+          </groupbox>
+
+          <groupbox>
+            <grid>
+              <columns><column/><column/><column/><column/></columns>
+              <rows>
+                <row observes="plot.useMesh">
+                  <label control="plotSurfaceStyle" value="&plotSurfaceStyle.label;" />
+                  <spacer />
+                  <label control="plotSurfaceMesh" value="&plotSurfaceMesh.label;" />
+                  <spacer />
+                </row>
+                <row observes="plot.useMesh">
+                  <menulist id="plotSurfaceStyle" preference="plot.SurfaceStyle">
+                    <menupopup>
+                      <menuitem label="&plotSurfaceColorpatch.label;" value="colorpatch" />
+                      <menuitem label="&plotSurfaceHidden.label;" value="hiddenline"/>
+                      <menuitem label="&plotSurfaceWire.label;" value="wireframe" />
+                      <menuitem label="&plotSurfacePoint.label;" value="point" />
+                    </menupopup>
+                  </menulist>
+                  <spacer />
+                  <menulist id="plotSurfaceMesh" preference="plot.SurfaceMesh">
+                    <menupopup>
+                      <menuitem label="&plotSurfaceMeshNone.label;" value="none" />
+                      <menuitem label="&plotSurfaceMeshMesh.label;" value="mesh" />
+                      <menuitem label="&plotSurfaceMeshUlines.label;" value="hlines" />
+                      <menuitem label="&plotSurfaceMeshVlines.label;" value="vlines" />
+                      <menuitem label="&plotSurfaceMeshContour.label;" value="contours" />
+                    </menupopup>
+                  </menulist>
+                  <spacer />
+                </row>
+                <row observes="plot.approxIntPlot">
+                  <label control="plotAISubIntervals" value="&plotAINumberofIntervals.desc;"/>
+                  <label control="plotAIMethod" value="&plotAIApproxMethod.desc;" />
+                  <label control="plotAIInfo" value="&plotAIShowInfo.desc;" />
+                </row>
+                <row observes="plot.approxIntPlot">
+                  <textbox id="plotAISubIntervals" type="number" class="narrow" preference="plot.AISubIntervals" increment="1" decimalplaces="0" min="1" max="999" />
+                  <menulist id="plotAIMethod" preference="plot.AIMethod" style="min-width:80pts">
+                    <menupopup>
+                      <menuitem label="&plotAIMethodLeft.label;" value="Left" />
+                      <menuitem label="&plotAIMethodRight.label;" value="Right" />
+                      <menuitem label="&plotAIMethodLeftAndRight.label;" value="LeftRight" />
+                      <menuitem label="&plotAIMethodMiddle.label;" value="Middle" />
+                      <menuitem label="&plotAIMethodLower.label;" value="Lower" />
+                      <menuitem label="&plotAIMethodUpper.label;" value="Upper" />
+                      <menuitem label="&plotAIMethodLowerAndUpper.label;" value="LowerUpper" />
+                      <menuitem label="&plotAIMethodLowerAbs.label;" value="LowerAbsolute" />
+                      <menuitem label="&plotAIMethodUpperAbs.label;" value="UpperAbsolute" />
+                      <menuitem label="&plotAIMethodLowerAndUpperAbs.label;" value="LowerUpperAbsolute" />
+                      <menuitem label="&plotAIMethodTrapezoidal.label;" value="Trapezoidal" />
+                      <menuitem label="&plotAIMethodSimpson.label;" value="Simpson" />
+                    </menupopup>
+                  </menulist>
+                  <menulist id="plotAIInfo" preference="plot.AIInfo" style="min-width:80pts">
+                    <menupopup>
+                      <menuitem label="&plotAIInfoNone.label;" value="" />
+                      <menuitem label="&plotAIInfoApproxValue.label;" value="IntMethod" />
+                      <menuitem label="&plotAIInfoApproxandExactValue.label;" value="IntMethod,Integral" />
+                      <menuitem label="&plotAIInfoBothValuesandError.label;" value="IntMethod,Integral,Error" />
+                    </menupopup>
+                  </menulist>
+                </row>
+              </rows>
+            </grid>
+          </groupbox>
+
+          <groupbox>
+            <caption label="&plotVariablesTitle.label;" />
+            <grid>
+              <columns>
+                <column style="text-align: center;"/>
+                <column />
+                <column />
+                <column />
+                <column />
+              </columns>
+              <rows>
+                <row observes="plot.1Var">
+                  <label value="&plotVariable.label;"/>
+                  <spacer />
+                  <label value="&plotInterval.label;" />
+                  <spacer />
+                  <label value="&plotPointsSampled.label;" />
+                </row>
+                <row observes="plot.1Var">
+                  <label id ="plotVar1">&plotVarX.label;</label>
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="plotVar1StartEdit" preference="plot.XMin" flex="1" width="150" height="40"/>
+                  <label value="&plotVarsTo.label;" />
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="plotVar1EndEdit" preference="plot.XMax" flex="1" width="150" height="40"/>
+		              <hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="narrow" /></hbox>
+                </row>
+                <row observes="plot.2Vars">
+                  <label id ="plotVar2" >&plotVarY.label;</label>
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="plotVar2StartEdit" preference="plot.YMin" flex="1" width="150" height="40"/>
+                  <label value="&plotVarsTo.label;" />
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="plotVar2EndEdit" preference="plot.YMax" flex="1" width="150" height="40"/>
+                  <hbox><textbox id="plotPtssamp2" type="number" preference="plot.YPts" class="narrow" /></hbox>
+                </row>
+                <row observes="plot.3Vars">
+                  <label id ="plotVar3" >&plotVarZ.label;</label>
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="plotVar3StartEdit" preference="plot.ZMin" flex="1" width="150" height="40"/>
+                  <label value="&plotVarsTo.label;" />
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="plotVar3EndEdit" preference="plot.ZMax" flex="1" width="150" height="40"/>
+                  <hbox><textbox id="plotPtssamp3" type="number" preference="plot.ZPts" class="narrow" /></hbox>
+                </row>
+                <row observes="plot.4Vars">
+                  <label id ="plotVar4" >&plotVarT.label;</label>
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="plotVar4StartEdit" preference="plot.AnimMin" flex="1" width="150" height="40"/>
+                  <label value="&plotVarsTo.label;" />
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="plotVar4EndEdit" preference="plot.AnimMax" flex="1" width="150" height="40"/>
+                  <spacer />
+                  <spacer />
+                </row>
+                <row observes="plot.tube">
+                  <label value="&plotTubeRadialPoints.label;"/>
+                  <spacer />
+                  <spacer />
+                  <spacer />
+                  <textbox id="plotPtssampTubeRadius" preference="plot.TubeRadialPoints" type="number" class="narrow" />
+                  <spacer />
+                </row>
+				<row observes="plot.enableConformal">
+                  <label value="&plotConfHorizontalPts.label;"/>
+                  <spacer />
+                  <spacer />
+                  <spacer />
+                  <textbox id="plotPtssampConfHorizontal" preference="plot.ConfHorizontalPts" type="number" class="narrow" />
+                  <spacer />
+				</row>
+				<row observes="plot.enableConformal">
+                  <label value="&plotConfVerticalPts.label;"/>
+                  <spacer />
+                  <spacer />
+                  <spacer />
+                  <textbox id="plotPtssampConfVertical" preference="plot.ConfVerticalPts" type="number" class="narrow" />
+                  <spacer />
+				</row>
+              </rows>
+            </grid>
+          </groupbox>
+
+        </vbox>
+      </tabpanel>
 
       <tabpanel id="&LabellingTab.label;">
         <vbox>
@@ -1341,5 +1766,24 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  
+  <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+
+#ifndef PROD_SW
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+
+  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
+#endif
+
 </prefwindow>

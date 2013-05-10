@@ -313,10 +313,12 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
   // We find out if we are in math -- by finding if cmd_MSIComputeEval is enabled
   // If so, we set imMathBroadcaster to disabled. Operations disabled in math, such
   // as insert footnote, will observe this and hence be disabled.
-  controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
-  computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
+//  controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
+//  computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
+  //rwa 050213 - The above WON'T DO - Scientific Word doesn't have computation at all! Use isInMath() instead:
   inMathBroadcaster = document.getElementById("inMathBroadcaster");
-  if (computeEnabled) {
+//  if (computeEnabled) {
+  if (isInMath(editorElement)) {
     inMathBroadcaster.setAttribute("disabled", "true");
   } else {
     inMathBroadcaster.removeAttribute("disabled");

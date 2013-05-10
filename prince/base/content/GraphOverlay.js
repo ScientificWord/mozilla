@@ -387,7 +387,7 @@ Graph.prototype = {
     }
     DOMPlots = DOMGraph.getElementsByTagName("plot");
     for (i = 0; i < DOMPlots.length; i++) {
-      plot = new Plot();
+      plot = new Plot(this.getDimension(), DOMPlots[i].getAttribute("PlotType"));
       plotno = this.addPlot(plot);
       plot.extractPlotAttributes(DOMPlots[i]);
       plot.attributes.PlotStatus = "Inited";
@@ -827,15 +827,18 @@ Graph.prototype = {
 
 // ************ Plot section; a graph can have many plots ******
 
-function Plot() {
+function Plot(dim, ptype) {
   var attr, i;
   this.element = {};
   this.attributes = {};
   this.modFlag = {};
   this.parent = null;
+  this.dimen = dim;
+  this.attributes["PlotType"]= ptype;
   for (i = 0; i < this.PLOTATTRIBUTES.length; i++) {
     attr = this.PLOTATTRIBUTES[i];
-    this.attributes[attr] = this.getDefaultPlotValue(attr);
+    if (attr != "PlotType")
+      this.attributes[attr] = this.getDefaultPlotValue(attr);
     this.modFlag[attr] = false;
   }
   for (i = 0; i < this.PLOTELEMENTS.length; i++) {
@@ -970,7 +973,11 @@ Plot.prototype = {
   },
   getDimension : function()
   {
-    return this.parent.getDimension();
+    if (this.parent)
+      return this.parent.getDimension();
+    if (this.dim)
+      return this.dim;
+    return 2;  //make a bad guess?
   },
   varNameFromFoundVariable : function(whichVar)
   {
@@ -1191,93 +1198,104 @@ Plot.prototype = {
   },
   getDefaultNumPlotPoints : function (key) {
     var ptype = this.attributes["PlotType"];
-    var dim = Number(this.parent.getValue("Dimension"));
-    var value;
-    if (dim === 2) {
-      switch (ptype) {
-      case "implicit":
-        value = GetNumAsMathML(20);
-        break;
-      case "gradient":
-      case "vectorField":
-        value = GetNumAsMathML(10);
-        break;
-      case "inequality":
-        value = GetNumAsMathML(80);
-        break;
-      case "conformal":
-        value = GetNumAsMathML(20);
-        break;
-      case "approximateIntegral":
-        value = GetNumAsMathML(400);
-        break;
-      default:
-        value = GetNumAsMathML(400);
-        break;
-      }
-    } else {
-      switch (ptype) {
-      case "parametric":
-      case "curve":
-        value = GetNumAsMathML(80);
-        break;
-      case "implicit":
-        value = GetNumAsMathML(6);
-        break;
-      case "gradient":
-      case "vectorField":
-        value = GetNumAsMathML(6);
-        break;
-      case "tube":
-        value = GetNumAsMathML(40);
-        break;
-      default:
-        value = GetNumAsMathML(20);
-        break;
+    var dim = this.getDimension();
+    var value = getPlotDefaultValue(dim, ptype, key);
+    if (!value)
+    {
+      if (dim === 2) {
+        switch (ptype) {
+        case "implicit":
+          value = 20;
+          break;
+        case "gradient":
+        case "vectorField":
+          value = 10;
+          break;
+        case "inequality":
+          value = 80;
+          break;
+        case "conformal":
+          value = 20;
+          break;
+        case "approximateIntegral":
+          value = 400;
+          break;
+        default:
+          value = 400;
+          break;
+        }
+      } else {
+        switch (ptype) {
+        case "parametric":
+        case "curve":
+          value = 80;
+          break;
+        case "implicit":
+          value = 6;
+          break;
+        case "gradient":
+        case "vectorField":
+          value = 6;
+          break;
+        case "tube":
+          value = 40;
+          break;
+        default:
+          value = 20;
+          break;
+        }
       }
     }
+    if (value)
+      return GetNumAsMathML(value);
     return value;
   },
   getDefaultPlotValue: function (key) {
     // get defaults from preference system, or if not there, from hardcoded list
     var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
-    var value;
-    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-    var keyname = "swp.plot." + key;
-    if (prefs.getPrefType(keyname) === prefs.PREF_STRING) {
-      value = prefs.getCharPref(keyname);
+    var ptype = this.attributes["PlotType"];
+    var dim = this.getDimension();
+    switch(key)
+    {
+      case "XPts":
+      case "YPts":
+      case "ZPts":
+        return this.getDefaultNumPlotPoints(key);
+      break;
     }
-    else {
+    var value = getPlotDefaultValue(dim, ptype, key);
+    if (!value)
+    {
       switch (key) {
-      case 'PlotStatus':
-        value = "New"; // this should never be moved from here
+        case 'PlotStatus':
+          value = "New"; // this should never be moved from here
+          break;
+        case 'ConfHorizontalPts':
+          value = "15";
+          break;
+        case 'ConfVerticalPts':
+          value = "15";
+          break;
+        case 'TubeRadialPts':
+          value = GetNumAsMathML(9);
         break;
-      case 'ConfHorizontalPts':
-        value = "15";
+          //      default:
+          //        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
+        case 'Expression':
+          value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi tempinput='true'></mi></math>";
+          break;
+        case 'TubeRadius':
+          value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>";
         break;
-      case 'ConfVerticalPts':
-        value = "15";
+        case 'AnimCommonOrCustomSettings':
+          value = "common";
         break;
-      case 'TubeRadialPts':
-        value = GetNumAsMathML(9);
-      break;
-        //      default:
-        //        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
-      case 'Expression':
-        value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi tempinput='true'></mi></math>";
+        case 'AnimateVisBefore':
+        case 'AnimateVisAfter':
+          value = "true";
         break;
-      case 'TubeRadius':
-        value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>";
-      break;
-      case 'AnimCommonOrCustomSettings':
-        value = "common";
-      break;
-      case 'AnimateVisBefore':
-      case 'AnimateVisAfter':
-        value = "true";
-      break;
-      default:
-        value = "";
+        default:
+          value = "";
       }
     }
     return value;
@@ -1294,7 +1312,7 @@ Plot.prototype = {
   },
   plotCompAttributeList: function () {
     var NA;
-    var dim = Number(this.parent["Dimension"]);
+    var dim = this.getDimension();
     var ptype = this.attributes["PlotType"];
     var animate = this.attributes["Animate"];
     NA = attributeArrayRemove(this.PLOTATTRIBUTES, "PlotStatus");
@@ -2010,11 +2028,12 @@ function newPlotFromText(currentNode, expression, editorElement) {
     var editor = msiGetEditor(editorElement);
     var graph = new Graph();
     graph.extractGraphAttributes(currentNode);
-    var plot = new Plot();
     var firstplot = graph.plots[0];
-    plot.element["Expression"] = expression;
-    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
+    var plot = new Plot(graph.getDimension(), firstplot.attributes["PlotType"]);
     graph.addPlot(plot);
+    plot.initialize();
+    plot.element["Expression"] = expression;
+//    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
     graph.recomputeVCamImage(editorElement);
     graph.reviseGraphDOMElement(currentNode, true, editorElement);
     //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
@@ -2200,14 +2219,12 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   graph.setGraphAttribute("Width", width);
   graph.setGraphAttribute("Height", height);
   graph.setGraphAttribute("Units", unit);
+  graph["Dimension"] = dimension;
 
-
-  var plot = new Plot();
+  var plot = new Plot(dimension, plottype);
   var plotnum = graph.addPlot(plot);
   plot.attributes["PlotStatus"] = "New";
   plot.element["Expression"] = expr;
-  graph["Dimension"] = dimension;
-  plot.attributes["PlotType"] = plottype;
   graph["plotnumber"] = plotnum;
   if ((arguments.length > 3) && (arguments[3] === true)) {
     plot.attributes["Animate"] = "true";
@@ -2400,7 +2417,7 @@ function parseQueryReturn(out, graph, plot) {
   var result;
   var variableList = [];
   var pt = plot.attributes["PlotType"];
-  var dim = Number(graph["Dimension"]);
+  var dim = graph.getDimension();
   var animated = (plot.attributes["Animate"] === "true");
 //  var mathvars = false,
 //    commas = false;
@@ -3140,7 +3157,7 @@ var graphVarDataBase =
 function graphVarData(graph)
 {
   this.mGraph = graph;
-  this.dim = Number(graph["Dimension"]);
+  this.dim = graph.getDimension();
   this.animated = graph.isAnimated();
   this.plotData = [];
   for (var ii = 0; ii < graph.plots.length; ++ii)
@@ -4029,6 +4046,41 @@ function useSignificantDigits(aVal, sigDigits)
 //      retStr += "0";
   }
   return retStr;
+}
+
+function getPlotDefaultValue(dim, plotType, key)
+{
+  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+  var prefix = ["swp.plot."];
+  var prefType, value;
+  if (dim)
+  {
+    prefix.unshift("swp.plot." + dim + "d.");
+    if (plotType)
+      prefix.unshift("swp.plot." + dim + "d." + plotType + ".");
+  }
+  for (var ii = 0; !value && (ii < prefix.length); ++ii)
+  {
+    try 
+    {
+      var prefType = prefs.getPrefType(prefix[ii] + key);
+      if (prefType == prefs.PREF_STRING)
+        value = prefs.getCharPref(prefix[ii] + key);
+      else if (prefType == prefs.PREF_INT)
+      {
+        value = String(prefs.getIntPref(prefix[ii] + key));
+      }
+      else if (prefType == prefs.PREF_BOOL)
+      {
+        value = prefs.getBoolPref(prefix[ii] + key);
+        if (value)
+          value = "true";
+        else
+          value = "false";
+      }
+    } catch(ex) {}
+  }
+  return value;
 }
 
 var plotObserver = {
