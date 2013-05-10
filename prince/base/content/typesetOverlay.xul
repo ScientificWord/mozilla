@@ -16,18 +16,18 @@
                   events="create, mode_switch"
                   oncommandupdate="goUpdateMSITypesetMenuItems(this)">
   
-    <command id="cmd_MSIDocFormatCmd"                       oncommand="debugger; msiGoDoCommand('cmd_MSIDocFormatCmd');"/>
-    <command id="cmd_MSIfrontMatterCmd"                     oncommand="msiGoDoCommand('cmd_MSIfrontMatterCmd');"/>
-    <command id="cmd_MSIpreambleCmd"                        oncommand="msiGoDoCommand('cmd_MSIpreambleCmd');"/>
-    <command id="cmd_MSIbibChoiceCmd"                       oncommand="msiGoDoCommand('cmd_MSIbibChoiceCmd');"/>
-    <command id="cmd_MSItypesetOptionsAndPackagesCmd"       oncommand="msiGoDoCommand('cmd_MSItypesetOptionsAndPackagesCmd');"/>
-    <command id="cmd_MSItypesetPDFPreviewCmd"               oncommand="msiGoDoCommand('cmd_previewPdf');"/>
-    <command id="cmd_MSItypesetPDFPrintCmd"                 oncommand="msiGoDoCommand('cmd_printPdf'');"/>
-    <command id="cmd_MSItypesetPDFCompileCmd"               oncommand="msiGoDoCommand('cmd_compilePdf');"/>
-    <!-- command id="cmd_MSItypesetGenSettingsCmd"              oncommand="msiGoDoCommand('cmd_MSItypesetGenSettingsCmd');"/>
-    <command id="cmd_MSItypesetExpertSettingsCmd"           oncommand="msiGoDoCommand('cmd_MSItypesetExpertSettingsCmd');"/  -->
-    <!-- command id="cmd_MSIrunBibTeXCmd"                       oncommand="msiGoDoCommand('cmd_MSIrunBibTeXCmd');"/ -->
-    <command id="cmd_MSIrunMakeIndexCmd"                    oncommand="msiGoDoCommand('cmd_MSIrunMakeIndexCmd');"/>
+    <command id="cmd_MSIDocFormatCmd"                       oncommand="goDoCommand('cmd_MSIDocFormatCmd');"/>
+    <command id="cmd_MSIfrontMatterCmd"                     oncommand="goDoCommand('cmd_MSIfrontMatterCmd');"/>
+    <command id="cmd_MSIpreambleCmd"                        oncommand="goDoCommand('cmd_MSIpreambleCmd');"/>
+    <command id="cmd_MSIbibChoiceCmd"                       oncommand="goDoCommand('cmd_MSIbibChoiceCmd');"/>
+    <command id="cmd_MSItypesetOptionsAndPackagesCmd"       oncommand="goDoCommand('cmd_MSItypesetOptionsAndPackagesCmd');"/>
+    <command id="cmd_MSItypesetPDFPreviewCmd"               oncommand="goDoCommand('cmd_previewPdf');"/>
+    <command id="cmd_MSItypesetPDFPrintCmd"                 oncommand="goDoCommand('cmd_printPdf'');"/>
+    <command id="cmd_MSItypesetPDFCompileCmd"               oncommand="goDoCommand('cmd_compilePdf');"/>
+    <!-- command id="cmd_MSItypesetGenSettingsCmd"              oncommand="goDoCommand('cmd_MSItypesetGenSettingsCmd');"/>
+    <command id="cmd_MSItypesetExpertSettingsCmd"           oncommand="goDoCommand('cmd_MSItypesetExpertSettingsCmd');"/  -->
+    <!-- command id="cmd_MSIrunBibTeXCmd"                       oncommand="goDoCommand('cmd_MSIrunBibTeXCmd');"/ -->
+    <command id="cmd_MSIrunMakeIndexCmd"                    oncommand="goDoCommand('cmd_MSIrunMakeIndexCmd');"/>
   </commandset>
 
 	<commandset id="MSItypesetInsertMenuCommands"
@@ -35,12 +35,12 @@
 							events="create, mode_switch"
 							oncommandupdate="goUpdateMSITypesetInsertMenuItems(this)">
 
-		<command id="cmd_MSIinsertIndexEntryCmd"								oncommand="msiGoDoCommand('cmd_MSIinsertIndexEntryCmd');" observes="inMathBroadcaster"/>
-		<command id="cmd_MSIinsertCrossReferenceCmd"						oncommand="msiGoDoCommand('cmd_MSIinsertCrossReferenceCmd');" observes="inMathBroadcaster"/>
-		<command id="cmd_MSIinsertCitationCmd"									oncommand="msiGoDoCommand('cmd_MSIinsertCitationCmd');" observes="inMathBroadcaster"/>
-		<command id="cmd_MSIinsertBibliographyCmd"							oncommand="msiGoDoCommand('cmd_MSIinsertBibliographyCmd');" observes="inMathBroadcaster"/>
-		<command id="cmd_MSIinsertTeXFieldCmd"									oncommand="msiGoDoCommand('cmd_MSIinsertTeXFieldCmd');"/>
-		<command id="cmd_MSIinsertSubdocumentCmd"								oncommand="msiGoDoCommand('cmd_MSIinsertSubdocumentCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertIndexEntryCmd"								oncommand="goDoCommand('cmd_MSIinsertIndexEntryCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertCrossReferenceCmd"						oncommand="goDoCommand('cmd_MSIinsertCrossReferenceCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertCitationCmd"									oncommand="goDoCommand('cmd_MSIinsertCitationCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertBibliographyCmd"							oncommand="goDoCommand('cmd_MSIinsertBibliographyCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertTeXFieldCmd"									oncommand="goDoCommand('cmd_MSIinsertTeXFieldCmd');"/>
+		<command id="cmd_MSIinsertSubdocumentCmd"								oncommand="goDoCommand('cmd_MSIinsertSubdocumentCmd');" observes="inMathBroadcaster"/>
 	</commandset>
 
   <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->
