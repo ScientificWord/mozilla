@@ -313,6 +313,7 @@ function setVariableRoleStrings()
     case "polar":
     case "cylindrical":
     case "spherical":
+    case "conformal":
       prefixStr = plotData.plottype;
     break;
     default:

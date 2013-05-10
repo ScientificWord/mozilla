@@ -6858,6 +6858,13 @@ NS_IMETHODIMP nsHTMLEditor::MathToText(nsISelection *selection)
   PRInt32 length = arrayOfNodes.Count();
 }
 
+NS_IMETHODIMP nsHTMLEditor::SetEditorActive()
+{
+  if (mtagListManager)
+    mtagListManager->SetEditor(this);
+  return NS_OK;
+}
+
 nsStringArray* charMap = nsnull;
 
 void InitCharMap()
