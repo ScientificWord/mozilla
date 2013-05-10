@@ -666,6 +666,13 @@ interface nsIHTMLEditor : nsISupports
 	boolean setCursorInNewHTML(in nsIDOMElement newElement);
   AString readCursorSetProps();
   AString readCursorClearedProps();
+
+  /**
+   * This function will be called from JavaScript when an editor gains
+   * the focus, loosely speaking. The only current effect is to notify
+   * the TagManager.
+   */
+  void setEditorActive();
 };
 
 
