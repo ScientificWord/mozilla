@@ -180,62 +180,131 @@
 
 <!ENTITY command.delete           "Delete">
 
+<!ENTITY tabbar.plotItems         "Plot Items">
 <!ENTITY plotstyles.label         "Plot Style Options">
 <!ENTITY plotcs.label             "Coordinate System">
-<!ENTITY plottyperec.label        "Rectangular">
-<!ENTITY plottypecur.label        "Curve in Space">
-<!ENTITY plottypecylindrical.label "Cylindrical">
-<!ENTITY plottypepolar.label       "Polar">
-<!ENTITY plottypesphere.label      "Spherical">
-<!ENTITY plottypeimplicit.label    "Implicit">
+
+<!ENTITY plotAppliesTo.label        "Setting for plot type:">
+<!ENTITY plottypeGeneric.label      "All plots">
+<!ENTITY plottype2dRect.label       "2D Rectangular">
+<!ENTITY plottype2dParametric.label "2D parametric">
+<!ENTITY plottypePolar.label        "Polar">
+<!ENTITY plottype2dPointList.label  "2D point plot">
+<!ENTITY plottype2dImplicit.label   "2D implicit">
+<!ENTITY plottypeInequality.label   "Inequality">
+<!ENTITY plottypeConformal.label    "Conformal">
+<!ENTITY plottypeOde.label          "ODE">
+<!ENTITY plottypeAI.label           "Approximate Integral">
+<!ENTITY plottype2dVector.label     "2D vector">
+<!ENTITY plottype2dGradient.label   "2D gradient">
+
+<!ENTITY plottype3dRect.label       "3D Rectangular">
+<!ENTITY plottype3dParametric.label "3D parametric">
+<!ENTITY plottypeCurve.label        "Curve in space">
+<!ENTITY plottypeCylindrical.label  "Cylindrical">
+<!ENTITY plottypeSpherical.label    "Spherical">
+<!ENTITY plottype3dImplicit.label   "3D implicit">
+<!ENTITY plottype3dPointList.label  "3D point plot">
+<!ENTITY plottype3dVector.label     "3D vector">
+<!ENTITY plottype3dGradient.label   "3D gradient">
+<!ENTITY plottypeTube.label         "Tube">
 
 <!ENTITY plottype.label           "Plot type">
 <!ENTITY plottypeexpression.label "Expression">
-<!ENTITY plottypeimplicit.label   "Implicit">
-<!ENTITY plottypeparametric.label "Parametric">
-<!ENTITY plottypeinequality.label "Inequality">
-<!ENTITY plottypeconformal.label  "Conformal">
-<!ENTITY plottypegradient.label   "Gradient">
-<!ENTITY plottypevector.label     "Vector Field">
-<!ENTITY plottypetube.label       "Tube">
-<!ENTITY plottypeode.label        "ODE">
-<!ENTITY plottypeAI.label         "Approximate Integral">
+
+<!ENTITY plotItemColoring.label   "Plot Color">
+<!ENTITY plotColor.label "Line color">
+<!ENTITY plotBaseColor.label     "Base color">
+<!ENTITY plotColor2.label        "Secondary color">
+<!ENTITY plotSecondaryColor.label   "Secondary color">
+
+<!ENTITY plotDirectionalShading.label "Directional shading">
+<!ENTITY plotShadingXYZ.label    "XYZ">
+<!ENTITY plotShadingXYZHue.label "XYZ hue">
+<!ENTITY plotShadingXYZGreyscale.label "Greyscale">
+<!ENTITY plotShadingXY.label     "XY">
+<!ENTITY plotShadingX.label		"X">
+<!ENTITY plotShadingY.label		"Y">
+<!ENTITY plotShadingZ.label		"Z">
+<!ENTITY plotShadingZHue.label	"Z hue">
+<!ENTITY plotShadingZGreyscale.label "Z greyscale">
+<!ENTITY plotShadingFlat.label   "Flat">
 
 <!ENTITY plotstyle.label          "Plot Style">
 <!ENTITY plotstyleline.label      "Line">
 <!ENTITY plotstylepoint.label     "Point">
 
-<!ENTITY plotlinestyle.label      "Line Style">
-<!ENTITY plotlinesolid.label      "Solid">
-<!ENTITY plotlinedash.label       "Dash">
-<!ENTITY plotlinedots.label       "Dots">
-<!ENTITY plotlinedotdash.label    "DotDash">
-<!ENTITY plotlinedotdotdash.label "DotDotDash">
+<!ENTITY plotLineStyle.label        "Line Style">
+<!ENTITY plotLineStyleSolid.label   "Solid">
+<!ENTITY plotLineStyleDash.label    "Dash">
+<!ENTITY plotLineStyleDots.label    "Dots">
+<!ENTITY plotLineStyleNoLines.label "No lines">
+<!ENTITY plotlinedotdash.label      "DotDash">
+<!ENTITY plotlinedotdotdash.label   "DotDotDash">
 
-<!ENTITY plotpointstyle.label       "Point Marker">
+<!ENTITY plotPointMarker.label      "Point Marker">
+<!ENTITY plotPointDot.label			"Dots">
+<!ENTITY plotPointCircle.label      "Circles">
+<!ENTITY plotPointFilledSquares.label  "Filled Squares">
+<!ENTITY plotPointBox.label			"Boxes">
+<!ENTITY plotPointDiamond.label     "Diamonds">
+<!ENTITY plotPointFilledDiamonds.label "Filled Diamonds">
+<!ENTITY plotPointXcrosses.label    "X Crosses">
+<!ENTITY plotPointStars.label       "Stars">
+
+<!ENTITY plotPointCross.label       "Crosses">
 <!ENTITY plotpointsquares.label     "Squares">
-<!ENTITY plotpointcircles.label     "Circles">
-<!ENTITY plotpointcrosses.label     "Crosses">
-<!ENTITY plotpointdiamonds.label    "Diamonds">
-<!ENTITY plotpointfilledsquares.label  "Filled Squares">
 <!ENTITY plotpointfilledcircles.label  "Filled Circles">
-<!ENTITY plotpointfilleddiamonds.label "Filled Diamonds">
-<!ENTITY plotpointstars.label       "Stars">
-<!ENTITY plotpointxcrosses.label    "X Crosses">
 
-<!ENTITY plotlinethickness.label  "Line Thickness">
-<!ENTITY plotlinethin.label       "Thin">
-<!ENTITY plotlinemedium.label     "Medium">
-<!ENTITY plotlinethick.label      "Thick">
+<!ENTITY plotAreaFillStyle.label      "Area Fill Style">
+<!ENTITY plotFillPatternSolid.label   "Solid">
+<!ENTITY plotFillPatternCrossedLines.label  "Crossed lines">
+<!ENTITY plotFillPatternDiaglLines.label    "Diagonal lines">
+<!ENTITY plotFillPatternForwardDiagLines.label  "Forward diagonal lines">
+<!ENTITY plotFillPatternHorizLines.label    "Horizontal lines">
+<!ENTITY plotFillPatternVertLines.label     "Vertical lines">
+<!ENTITY plotFillPatternCrossedDiagLines.label  "Crossed diagonal lines">
+
+<!ENTITY plotLineThickness.label  "Line Thickness">
+<!ENTITY plotLineVeryThin.label	  "Very thin">
+<!ENTITY plotLineThin.label       "Thin">
+<!ENTITY plotLineMedium.label     "Medium">
+<!ENTITY plotLineThick.label      "Thick">
+<!ENTITY plotLineVeryThick.label  "Very thick">
 
 <!ENTITY plotadjust.label         "Adjust for discontinuities">
 <!ENTITY plotasymptote.label      "Show Asymptotes">
 <!ENTITY plotnoadjust.label       "Don't adjust">
 
-<!ENTITY plotexprnrel.label       "Expressions and Relations">
-<!ENTITY plotvarinterval.label    "Variable Intervals and Automation">
+<!ENTITY plotAINumberofIntervals.desc  "Number of intervals">
+<!ENTITY plotAIApproxMethod.desc       "Integration method">
+<!ENTITY plotAIShowInfo.desc           "Show info">
+<!ENTITY plotAIMethodLeft.label		    "Left">
+<!ENTITY plotAIMethodRight.label		    "Right">
+<!ENTITY plotAIMethodLeftAndRight.label  "Left and right">
+<!ENTITY plotAIMethodMiddle.label		"Middle">
+<!ENTITY plotAIMethodLower.label			"Lower">
+<!ENTITY plotAIMethodUpper.label			"Upper">
+<!ENTITY plotAIMethodLowerAndUpper.label	"Lower and upper">
+<!ENTITY plotAIMethodLowerAbs.label		"Lower absolute">
+<!ENTITY plotAIMethodUpperAbs.label		"Upper absolute">
+<!ENTITY plotAIMethodLowerAndUpperAbs.label  "Lower and upper absolute">
+<!ENTITY plotAIMethodTrapezoidal.label	"Trapezoidal">
+<!ENTITY plotAIMethodSimpson.label		"Simpson">
 
-<!ENTITY plotcolor.label          "Plot Color">
+<!ENTITY plotexprnrel.label       "Expressions and Relations">
+<!ENTITY plotVariablesTitle.label "Variable Intervals and Sampling Points">
+<!ENTITY plotVariable.label       "Variable">
+<!ENTITY plotInterval.label       "Interval">
+<!ENTITY plotPointsSampled.label  "Points sampled">
+<!ENTITY plotVarX.label           "X">
+<!ENTITY plotVarsTo.label         "to">
+<!ENTITY plotVarY.label           "y">
+<!ENTITY plotVarZ.label           "z">
+<!ENTITY plotVarT.label           "t">
+<!ENTITY plotTubeRadialPoints.label  "Tube radial points">
+<!ENTITY plotConfHorizontalPts.label "Horizontal points">
+<!ENTITY plotConfVerticalPts.label "Vertical points">
 
 <!ENTITY layoutsize.label         "Size">
 <!ENTITY width.label              "Width">
@@ -326,16 +395,18 @@
 <!ENTITY orientationtilt.label      "Orientation: Tilt">
 <!ENTITY viewinterval.label         "Use default view intervals">
 
-<!ENTITY surfacestyle.label         "Surface Style">
-<!ENTITY surfacemesh.label          "Surface Mesh">
-<!ENTITY surfacecolorpatch.label    "Color Patch">
-<!ENTITY surfacehidden.label        "Hidden Line">
-<!ENTITY surfacewire.label          "Wire Frame">
-<!ENTITY surfacepoint.label         "Point">
-<!ENTITY surfaceulines.label        "U Lines">
-<!ENTITY surfacevlines.label        "V Lines">
-<!ENTITY surfacecontour.label       "Contour">
-<!ENTITY mesh.label                 "Mesh">
+<!ENTITY plotSurfaceStyle.label         "Surface Style">
+<!ENTITY plotSurfaceColorpatch.label    "Color Patch">
+<!ENTITY plotSurfaceHidden.label        "Hidden Line">
+<!ENTITY plotSurfaceWire.label          "Wire Frame">
+<!ENTITY plotSurfacePoint.label         "Point">
+
+<!ENTITY plotSurfaceMesh.label          "Surface Mesh">
+<!ENTITY plotSurfaceMeshUlines.label     "U Lines">
+<!ENTITY plotSurfaceMeshVlines.label     "V Lines">
+<!ENTITY plotSurfaceMeshContour.label    "Contour">
+<!ENTITY plotSurfaceMeshMesh.label       "Mesh">
+<!ENTITY plotSurfaceMeshNone.label		 "None">
 
 <!ENTITY includepoints.label        "Include Points">
 <!ENTITY includelines.label         "Include Lines">
@@ -404,3 +475,8 @@
 <!ENTITY ViewDefaults.label "View defaults">
 
 <!ENTITY TypesettingTab.label "Typesetting">
+
+<!ENTITY plotAIInfoNone.label          "No info">
+<!ENTITY plotAIInfoApproxValue.label	  "Approximated value">
+<!ENTITY plotAIInfoApproxandExactValue.label "Approximated and exact value">
+<!ENTITY plotAIInfoBothValuesandError.label	"Both values and error">

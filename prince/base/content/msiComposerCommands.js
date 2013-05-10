@@ -419,10 +419,14 @@ function isInMath(editorElement)
 
 function updateMathText(editorElement)
 {
-  var cmd = document.getElementById("cmd_MSImathtext");
-  var editor = msiGetEditor(editorElement);
-
-  cmd.setAttribute("isMath",isInMath(editorElement)?"true":"false");
+  var cmd;
+  var docList = msiGetUpdatableItemContainers(command, editorElement);
+  for (var i = 0; i < docList.length; ++i)
+  {
+    cmd = docList[i].getElementById("cmd_MSImathtext");
+    if (cmd)
+      cmd.setAttribute("isMath",isInMath(editorElement)?"true":"false");
+  }
 }
 
 function msiGoUpdateComposerMenuItems(commandset, editorElement)
@@ -928,15 +932,20 @@ function updateViewMenuFromEditor(editorElement)
                       ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"]];
-  for (var ix = 0; ix < invisChoices.length; ++ix)
+  var docList = msiGetUpdatableItemContainers(command, editorElement);
+  var menuItem;
+  for (var i = 0; i < docList.length; ++i)
   {
-    var menuItem = document.getElementById(invisChoices[ix][0]);
-    if (menuItem != null)
+    for (var ix = 0; ix < invisChoices.length; ++ix)
     {
-      if (editorElement.viewSettings[invisChoices[ix][1]])
-        menuItem.setAttribute("checked", "true");
-      else
-        menuItem.setAttribute("checked", "false");
+      menuItem = docList[i].getElementById(invisChoices[ix][0]);
+      if (menuItem != null)
+      {
+        if (editorElement.viewSettings[invisChoices[ix][1]])
+          menuItem.setAttribute("checked", "true");
+        else
+          menuItem.setAttribute("checked", "false");
+      }
     }
   }
 }
