@@ -263,8 +263,7 @@ function doSetupMSIComputeMenuCommands(commandTable) {
   commandTable.registerCommand("cmd_MSIComputeInterpret", msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeFixup", msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputePassthru", msiEvaluateCommand);
-
-  commandTable.registerCommand("cmd_MSIComputeStop", msiComputeStop);
+  commandTable.registerCommand("cmd_MSIComputeStop", msiComputeStopCommand);
 }
 
 function goUpdateMSIcomputeMenuItems(commandset) {
