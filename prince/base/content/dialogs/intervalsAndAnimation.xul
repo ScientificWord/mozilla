@@ -203,6 +203,13 @@
           <label value="&animStartSeconds.label;" observes="customAnimSettings"/>
           <textbox id="AnimateStart" type="number" observes="customAnimSettings"/>
           <checkbox id="AnimateVisBefore" label="&animVisibleBeforeStart.label;" checked="true" observes="customAnimSettings" />
+            <radio label="&animUseCustomSettings.label;" group="commonSettingsOrCustomize" value="custom" />
+          </radiogroup>
+        </row>
+        <row observes="customAnimSettings">
+          <label value="&animStartSeconds.label;"   />
+          <textbox id="AnimateStart" type="number" />
+          <checkbox id="AnimateVisBefore" label="&animVisibleBeforeStart.label;" checked="true" />
         </row>
         <row>
           <label value="&animEndSeconds.label;" observes="customAnimSettings" />
