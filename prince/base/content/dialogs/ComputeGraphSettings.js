@@ -556,7 +556,11 @@ function plotValuesToCopy(oldplot)
 }
 
 function addPlotDialogContents () {
-  var plot = new Plot();
+  var firstPlotNum = getPlotInternalNum(1);
+  var ptype = graph.getPlotValue("PlotType", firstPlotNum);
+  if (!ptype)
+    ptype = "Rectangular";
+  var plot = new Plot(graph.getDimension(), ptype);
   graph.addPlot(plot);
   var plotnum = graph.getNumActivePlots();
   graph.setGraphAttribute("plotnumber", String(getPlotInternalNum(plotnum)));
@@ -569,12 +573,12 @@ function addPlotDialogContents () {
 //  popup.appendChild(newElement);
 //  document.getElementById("plot").selectedItem = newElement; 
   // grab the plottype from plot 1 and set it as default
-  var firstPlotNum = getPlotInternalNum(1);
   plotnum = getPlotInternalNum(plotnum);
   var copyAttrs;
   if (plot.attributes["PlotType"] == "")
     plot.attributes["PlotType"] = "rectangular";
   plot.attributes["PlotStatus"] = "New";
+  firstPlotNum = getPlotInternalNum(1);
   if (firstPlotNum != plotnum)  //should also copy some other attributes
   {
     copyAttrs = plotValuesToCopy(graph.plots[firstPlotNum]);

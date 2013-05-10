@@ -777,6 +777,8 @@ msiTagListManager::GetEditor(nsEditor **aEditor)
 NS_IMETHODIMP 
 msiTagListManager::SetEditor(nsEditor * aEditor)
 {
+    if (mparentTags && (meditor != aEditor))
+      mparentTags->Clear();
     meditor = aEditor;
     return NS_OK;
 }

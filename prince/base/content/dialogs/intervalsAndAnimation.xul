@@ -8,6 +8,14 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/cleanup.css" type="text/css"?>
 
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
 <!DOCTYPE dialog [
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/intervalsAndAnimation.dtd" >
 %dialogDTD;
@@ -20,8 +28,8 @@
   ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
   onload="startup();"
-  width="400px"
-  height="400px"
+  width="680px"
+  height="430px"
   screenX="40"
   screenY="40"
   persist="screenX screenY width height"
@@ -35,8 +43,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
@@ -75,7 +83,7 @@
   <commandset id="MSImathMenuCommands"/>
   
   <groupbox>
-    <caption label="&Coordinates.label;" />
+    <caption label="&VariablesTitle.label;" />
     <grid>
       <columns>
         <column style="text-align: center;"/>
