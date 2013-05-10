@@ -126,58 +126,6 @@ function msiButtonPrefListener(editorElement)
   this.startup();
 }
 
-//function msiMainWindowMouseDownListener(event)
-//{
-//  var target = event.explicitOriginalTarget;
-//  if (!target)
-//    target = event.originalTarget;
-////  if (!target)
-////    return;
-//
-//  var changeActiveEditor = true;
-//  var nodeStr = "";
-//  if (target)
-//  {
-//    switch(target.nodeName)
-//    {
-//      case "menu":
-//      case "menulist":
-//      case "menuitem":
-//      case "menupopup":
-//      case "toolbar":
-//      case "toolbarbutton":
-//      case "toolbarpalette":
-//      case "toolbaritem":
-//        changeActiveEditor = false;
-//      break;
-//    }
-//    nodeStr = target.nodeName;
-//  }
-//  var logStr = "In msiMainWindowMouseDownListener, target.nodeType is [" + nodeStr + "]\n";
-//  msiKludgeLogString(logStr);
-////  window.bIgnoreNextFocus = !changeActiveEditor;
-//  if (!changeActiveEditor)
-//  {
-//    msiResetActiveEditorElement(this);
-//  }
-//}
-
-//TO DO - find out whether this ever happens (appears not to be called from anywhere)
-//function AfterHighlightColorChange()
-//{
-//  if (!IsHTMLEditor())
-//    return;
-//
-//  var button = document.getElementById("cmd_highlight");
-//  if (button) {
-//    var mixedObj = {};
-//    try {
-//      var state = GetCurrentEditor().getHighlightColorState(mixedObj);
-//      button.setAttribute("state", state);
-//      onHighlightColorChange();
-//    } catch (e) {}
-//  }
-//}
 
 function msiEditorArrayInitializer()
 {
@@ -1592,6 +1540,7 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 
 function guaranteeSciFile( url )
 {
+  if (url.scheme !== "file") return;
   var file = msiFileFromFileURL(url); // file is .../foo_work/main.xhtml, usually
   var dir = file.parent;            // dir is .../foo_work
   var leaf = dir.leafName;                // leaf is "foo_work"
