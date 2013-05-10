@@ -2850,7 +2850,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       try {
         var zw = Components.classes["@mozilla.org/zipwriter;1"]
                               .createInstance(Components.interfaces.nsIZipWriter);
-        if (zipfile.exists()) {zipfile.remove(0);}
+        if (zipfile.exists()) {zipfile.remove(false);}
         zipfile.create(0, 0755);
         zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
         zipDirectory(zw, "", workingDir, compression);
