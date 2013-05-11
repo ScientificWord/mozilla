@@ -159,7 +159,9 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
 {
   SEMANTICS_NODE *s_tree = NULL;
   SEMANTICS_NODE *root = mr->GetSemanticsTree();
-  if (!root){
+  U32 cmd_ID = msr->GetOpID();
+
+  if (!root && (cmd_ID != CCID_PlotFuncCmd) && (cmd_ID != CCID_PlotFuncQuery)){
     mr->PutResultCode(CR_failure);
     return NULL;
   }
@@ -169,7 +171,6 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   // We need the ID of the client we're serving for possible name mangling
   client_ID = msr->GetClientHandle();
 
-  U32 cmd_ID = msr->GetOpID();
   if (!cmd_ID) {
     const char *cmd_template = NULL;
     U32 subID;
