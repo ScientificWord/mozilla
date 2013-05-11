@@ -1391,7 +1391,7 @@
                     </menupopup>
                   </menulist>
                   <spacer flex="2" />
-                  <menulist id="plotLineThickness" prefernece="plot.LineThickness">
+                  <menulist id="plotLineThickness" preference="plot.LineThickness">
                     <menupopup>
                       <menuitem label="&plotLineVeryThin.label;" value="verythin" />
                       <menuitem label="&plotLineThin.label;" value="thin" />
