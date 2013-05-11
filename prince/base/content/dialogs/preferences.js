@@ -553,6 +553,8 @@ var plotItemIds = ["plotLineColorWell", "plotDirectionalShading", "plotBaseColor
                    "plotAIInfo", "plotPtssampTubeRadius", "plotPtssampConfHorizontal",
                    "plotPtssampConfVertical"];  //(All other than the edit ones, which require special treatment)
 
+var plotColorWells = ["plotLineColorWell", "plotBaseColorWell", "plotSecondColorWell"];
+
 var plotVarEditControls = ["plotVar1StartEdit", "plotVar1EndEdit", "plotVar2StartEdit", "plotVar2EndEdit",
                     "plotVar3StartEdit", "plotVar3EndEdit", "plotVar4StartEdit", "plotVar4EndEdit"];
 
@@ -729,7 +731,7 @@ function onChangePlotType()
 //<spacer id= preference="plot.BaseColor" hasAlpha="false" observes="plot.colorAlphaEnabled" class="color-well"/>
 //<spacer id= preference="plot.SecondaryColor" hasAlpha="false" observes="plot.colorAlphaEnabled" class="color-well" />
 //<menulist id= preference="plot.LineStyle">
-//<menulist id= prefernece="plot.LineThickness">
+//<menulist id= preference="plot.LineThickness">
 //<menulist id= preference="plot.PointSymbol">
 //<menulist id= preference="plot.FillPattern">
 //<menulist id= preference="plot.SurfaceStyle">
@@ -753,7 +755,7 @@ function setPlotItemPreferences()
   for (var ii = 0; ii < plotItemIds.length; ++ii)
   {
     element = document.getElementById(plotItemIds[ii]);
-    if (element.hidden || element.disabled)
+    if (element.hidden || element.disabled || element.collapsed)
       continue;
     prefId = element.getAttribute("preference");
     prefId = prefix + prefId.substr( prefId.lastIndexOf(".") + 1 );
@@ -762,11 +764,14 @@ function setPlotItemPreferences()
     if (!prefElement)
     {
       refPref = getReferencePlotItemPreference(prefId);
-      prefElement = insertNewPrefElement(refPref, prefId);
+      if (refPref)
+        prefElement = insertNewPrefElement(refPref, prefId);
     }
 //    putValueToControl(element, theVal);
   }
   setPlotItemIntervalControls();
+  for (var jj = 0; jj < plotColorWells.length; ++jj)
+    setPlotColorWell(plotColorWells[jj]);
 }
 
 function setPlotItemIntervalControls()
@@ -785,8 +790,8 @@ function setPlotItemIntervalControls()
     startElement = document.getElementById("plotVar" + jj + "StartEdit");          //plotVar1StartEdit
     endElement = document.getElementById("plotVar" + jj + "EndEdit");              //plotVar1EndEdit
     ptsElement = document.getElementById("plotPtssamp" + jj);
-    if ( (!startElement.hidden && !startElement.disabled) ||
-                          (!endElement.hidden && !endElement.disabled) )
+    if ( !startElement.hidden && !startElement.disabled && !startElement.collapsed &&
+                          !endElement.hidden && !endElement.disabled && !endElement.collapsed )
     {
       if (jj == numvars)
       {
@@ -807,7 +812,8 @@ function setPlotItemIntervalControls()
       if (!prefElement)
       {
         refPref = getReferencePlotItemPreference(startPrefId);
-        prefElement = insertNewPrefElement(refPref, startPrefId);
+        if (refPref)
+          prefElement = insertNewPrefElement(refPref, startPrefId);
       }
       putMathMLExpressionToControl(startElement, prefElement.value);
 
@@ -816,7 +822,8 @@ function setPlotItemIntervalControls()
       if (!prefElement)
       {
         refPref = getReferencePlotItemPreference(endPrefId);
-        prefElement = insertNewPrefElement(refPref, endPrefId);
+        if (refPref)
+          prefElement = insertNewPrefElement(refPref, endPrefId);
       }
       putMathMLExpressionToControl(endElement, prefElement.value);
 
@@ -827,7 +834,8 @@ function setPlotItemIntervalControls()
         if (!prefElement)
         {
           refPref = getReferencePlotItemPreference(ptsPrefId);
-          prefElement = insertNewPrefElement(refPref, ptsPrefId);
+          if (refPref)
+            prefElement = insertNewPrefElement(refPref, ptsPrefId);
         }
       }
     }
@@ -842,16 +850,18 @@ function storePlotItemPreferences()
   for (ii = 0; ii < plotVarEditControls.length; ++ii)
   {
     element = document.getElementById(plotVarEditControls[ii]);
-    if (element.hidden || element.disabled)
+    if (element.hidden || element.disabled || element.collapsed)
       continue;
     prefElement = document.getElementById(element.getAttribute("preference"));
     if (prefElement)
       prefElement.value = getMathMLExpressionFromControl(element, serializer);
   }
+  for (var jj = 0; jj < plotColorWells.length; ++jj)
+    storePlotColorWell(plotColorWells[jj]);
   for (ii = 0; ii < plotItemIds.length; ++ii)
   {
     element = document.getElementById(plotItemIds[ii]);
-    if (element.hidden || element.disabled)
+    if (element.hidden || element.disabled || element.collapsed)
       continue;
     prefStr = element.getAttribute("preference");
     prefElement = document.getElementById(prefStr);
@@ -921,14 +931,18 @@ function getReferencePlotItemPreference(prefStr)
 //  with id "plot.LineColor" as refPref.
 function insertNewPrefElement(refPref, prefId)
 {
-  var prefElement = document.createElementNS(XUL_NS, "preference");
-  var prefix = prefId.substr(0, prefId.lastIndexOf(".") + 1);
-  prefElement.setAttribute("id", prefId);
-  prefElement.setAttribute("msi-temp", "true");  //This tags the preference to be deleted if it doesn't get set by the user.
-  refPref.parentNode.insertBefore(prefElement, refPref.nextSibling);
-  var prefName = refPref.name.replace("plot.", prefix);
-  prefElement.name = prefName;
-  prefElement.value = refPref.value;
+  var prefElement;
+  try
+  {
+    prefElement = document.createElementNS(XUL_NS, "preference");
+    var prefix = prefId.substr(0, prefId.lastIndexOf(".") + 1);
+    prefElement.setAttribute("id", prefId);
+    prefElement.setAttribute("msi-temp", "true");  //This tags the preference to be deleted if it doesn't get set by the user.
+    refPref.parentNode.insertBefore(prefElement, refPref.nextSibling);
+    var prefName = refPref.name.replace("plot.", prefix);
+    prefElement.name = prefName;
+    prefElement.value = refPref.value;
+  } catch(ex) {dump("In preferences.js, insertNewprefElement(), exception: " + ex + "\n"); prefElement = null;}
   return prefElement;
 }
 
@@ -961,6 +975,22 @@ function getPlotIntervalVarName(plotType, baseVarName)
     }
   }
   return rv;
+}
+
+function setPlotColorWell(colorId)
+{
+  var colorWell = document.getElementById(colorId);
+  var pref = document.getElementById(colorWell.getAttribute("preference"));
+  if (pref)
+    putValueToControl(colorWell, pref.value);
+}
+
+function storePlotColorWell(colorId)
+{
+  var colorWell = document.getElementById(colorId);
+  var pref = document.getElementById(colorWell.getAttribute("preference"));
+  if (pref)
+    pref.value = getValueFromControl(colorWell);
 }
 
 //function writeAPlotPref(dim, plottype, prefID, value)

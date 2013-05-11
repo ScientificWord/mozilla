@@ -108,6 +108,7 @@ function putValueToControl(theControl, aVal)
     if ( (theControl.nodeName == "spacer") && (theControl.getAttribute("class") == "color-well") )
     {
       setColorWellControl(theControl, makeColorVal(aVal));
+      theControl.color = aVal;
       var alphaVal;
       if (theControl.getAttribute("hasAlpha") == "true")
       {
