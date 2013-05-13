@@ -1857,7 +1857,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   //        res = nsEditor::GetNodeLocation(splitNode, address_of(parent), &offset);
           res = GetTagString(splitNode, strTagName);
   //        nsEditor::RemoveContainer(splitNode);
-          nsEditor::DeleteNode(splitNode);
+          if (!strTagName.EqualsLiteral("sectiontitle")) nsEditor::DeleteNode(splitNode);
           res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
   	      if (!s2.EqualsLiteral("true"))
             res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);
@@ -1885,7 +1885,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     } else { //is splitNode is wrapped, replace splitNode with its wrapper.
       nsCOMPtr<nsIDOMNode> wrapperNode;
       res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));
-       res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
+      res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
          &outOffset, PR_FALSE, &outLeftNode, &outRightNode);
     }
     FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
