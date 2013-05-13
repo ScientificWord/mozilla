@@ -2600,7 +2600,7 @@ function msiSoftSave( editor, editorElement, noTeX)
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
   if (success) editor.contentsMIMEType = aMimeType;
-  editor.selection = saveSelection;
+//  editor.selection = saveSelection;
   return success;
 }
 
