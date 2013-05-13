@@ -1656,3 +1656,27 @@ msiTagListManager::RebuildHash()
 	BuildHashTables(mdocTagInfo, &retval);
 	return NS_OK;
 }
+
+/* PRInt32 getMinDepth (); */
+NS_IMETHODIMP 
+msiTagListManager::GetMinDepth(PRInt32 *_retval)
+{
+  nsCOMPtr<nsIDOMNodeList> taglist;
+  nsCOMPtr<nsIDOMNode> tag;
+  nsCOMPtr<nsIDOMElement> tagElement;
+  PRUint32 count;
+  nsAutoString val;
+  nsresult rv;
+  PRInt32 errorCode;
+
+  rv = mdocTagInfo->GetElementsByTagName(NS_LITERAL_STRING("mindepth"), getter_AddRefs(taglist));
+  taglist->GetLength(&count);
+  if (count > 0)
+  {
+    rv = taglist->Item(0, getter_AddRefs(tag));
+    tagElement = do_QueryInterface(tag);
+    tagElement->GetAttribute(NS_LITERAL_STRING("value"), val); 
+    *_retval = val.ToInteger(&errorCode);   
+    return NS_OK;
+  }
+}
