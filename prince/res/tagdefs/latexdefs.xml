@@ -9,6 +9,7 @@
     <ns abbrev="html">http://www.w3.org/1999/xhtml</ns>
 	  <ns abbrev="mml">http://www.w3.org/1998/Math/MathML</ns -->
 	</namespaces>
+  <mindepth value="2" />
 	<tagclasses>
 		<tagclass>
 			<tagclassname>hidden</tagclassname>
@@ -373,7 +374,7 @@
 				<tag nm="section">
           <level>2</level>
           <description>Section</description>
-          <discardemptyblock>true</discardemptyblock>
+          <discardemptyblock>false</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
              <section>
@@ -383,7 +384,7 @@
                </sectiontitle>
              </section>
            </initialcontents>
-          <nextafteremptyblock>chapter</nextafteremptyblock>
+          <nextafteremptyblock></nextafteremptyblock>
           <prefsub>subsection</prefsub>
         </tag>
 				<tag nm="subsection">
