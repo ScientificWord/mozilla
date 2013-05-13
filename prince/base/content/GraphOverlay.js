@@ -1,4 +1,6 @@
+// Copyright (c) 2004-2013 MacKichan Software, Inc. All rights reserved
 #include productname.inc
+
 #ifndef PROD_SW
 Components.utils.import("resource://app/modules/os.jsm");
 //----------------------------------------------------------------------------------
