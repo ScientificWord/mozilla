@@ -1661,7 +1661,7 @@ function GetCurrentEngine() {
 
 
 
-function initEnginePrefs(compsample)
+function initEnginePrefs(currEngine)
 {
   var prefs = GetPrefs();
   var delimstyle = prefs.getCharPref("swp.user.matrix_delim");
