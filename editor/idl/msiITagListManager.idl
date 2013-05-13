@@ -28,8 +28,8 @@ interface msiITagListManager : nsISupports
 
 	AString currentValue( in AString strTagClass, out nsIAtom atomNS );
 	void enable();
-  void reset();  //initializes the store to an empty store
-  boolean AddTagInfo ( in AString strTagInfoPath );   
+    void reset();  //initializes the store to an empty store
+    boolean AddTagInfo ( in AString strTagInfoPath );   
 	void buildStringArray( in  AString strTagClass ); 
 
 	boolean getTagInClass( in AString strTagClass, in AString strTag, in nsIAtom atomNS);
@@ -39,25 +39,26 @@ interface msiITagListManager : nsISupports
 	boolean nodeCanContainTag( in nsIDOMNode node, in AString strTagInner, in nsIAtom atomNSInner);
 	boolean nodeCanContainNode( in nsIDOMNode nodeOuter, in nsIDOMNode nodeInner);
 	boolean levelCanContainLevel( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
-  boolean getDiscardEmptyBlockNode( in nsIDOMNode node);
+    boolean getDiscardEmptyBlockNode( in nsIDOMNode node);
 	void fixTagsAfterSplit( in nsIDOMNode firstNode, inout nsIDOMNode secondNode);
-  AString getStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
-  AString getTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
-  void buildParentTagList();
+    AString getStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
+    AString getTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
+    void buildParentTagList();
   // return a comma-separated list of all the tags containing the selection.
-  AString getParentTagList(in AString strSep, in boolean includeTypeInState, in boolean includedNS);
+    AString getParentTagList(in AString strSep, in boolean includeTypeInState, in boolean includedNS);
 	nsIAtom nameSpaceAtomOfTagKey( in AString key);
 	AString getDefaultParagraphTag( out nsIAtom atomNamespace );
 	AString getClearTextTag( out nsIAtom atomNamespace );
 	AString getClearStructTag( out nsIAtom atomNamespace );
 	AString getClearEnvTag( out nsIAtom atomNamespace );
 	AString getClearListTag( out nsIAtom atomNamepace );
-  nsIDOMNode getNewInstanceOfNode( in AString strTag, in nsIAtom atomNS, in nsIDOMDocument doc);
+    nsIDOMNode getNewInstanceOfNode( in AString strTag, in nsIAtom atomNS, in nsIDOMDocument doc);
 	boolean selectionContainedInTag( in AString strTag, in nsIAtom atomNS);
   // return a comma-separated list of all the tags in a class -- used for section tags mostly. The includeNS parameter is not used yet.
-  AString getTagsInClass( in AString strTagClass, in AString strSep, in boolean includeNS );
-  void    setTagVisibility( in AString strTag, in nsIAtom atomNS, in boolean hidden);
-  void    setTagName( in AString strCurrent, in nsIAtom atomNS, in AString strNew);
-	AString getBabelTags();
+    AString getTagsInClass( in AString strTagClass, in AString strSep, in boolean includeNS );
+    void    setTagVisibility( in AString strTag, in nsIAtom atomNS, in boolean hidden);
+    void    setTagName( in AString strCurrent, in nsIAtom atomNS, in AString strNew);
+    AString getBabelTags();
 	void		rebuildHash();
+	PRInt32 getMinDepth();
 };
