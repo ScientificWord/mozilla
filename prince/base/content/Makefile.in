@@ -5,7 +5,6 @@ topsrcdir	= @top_srcdir@
 srcdir	    = @srcdir@
 VPATH		= @srcdir@
 
-PROD_SW = 1
 include $(DEPTH)/config/autoconf.mk
 
 include $(topsrcdir)/config/rules.mk
