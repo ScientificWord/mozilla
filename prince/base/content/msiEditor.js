@@ -929,7 +929,7 @@ function msiEditorDocumentObserver(editorElement)
           addObjectResizeListenerForEditor(this.mEditorElement);
 //          addDOMEventListenerForEditor(editorElement);
 
-          this.mEditorElement.pdfModCount = 0;
+          this.mEditorElement.pdfModCount = -1;
 
           // Force color widgets to update
           msiOnFontColorChange();
