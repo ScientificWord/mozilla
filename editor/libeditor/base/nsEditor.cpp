@@ -1829,6 +1829,7 @@ NS_IMETHODIMP nsEditor::DeleteNode(nsIDOMNode * aElement)
 nsresult
 nsEditor::SetSelectionOnCursorTag(nsIDOMNode * node, PRBool * setCursor)
 {
+  NS_ENSURE_TRUE(node, NS_ERROR_NULL_POINTER);
   nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsCOMPtr<nsIDOMNode> selNode;
