@@ -44,7 +44,7 @@
   </broadcasterset -->
 
 
-	<tabbox>
+	<tabbox id="tabbox" persist="selectedIndex">
 	  <tabs>
 		  <tab label="&classOptionsTab.label;"/>
 		  <tab label="&packageOptionsTab.label;"/>
