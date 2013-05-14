@@ -107,7 +107,7 @@
     <key name="i">insertMathSymbol("&int;");</key>
     <key name="I">insertMathSymbol("&infin;");</key>
     <key name="o">insertMathSymbol("&emptyset;");</key>
-    <key name="p">insertMathSymbol("&prod;");</key>
+    <key name="p">insertOperator("&prod;", "auto", "auto");</key>
     <key name="P">insertMathSymbol("&weierp;");</key>
     <key name="[">msiGoDoCommand("cmd_MSIbracketCmd");</key>
     <key name="{">msiGoDoCommand("cmd_MSIbraceCmd");</key> 
@@ -115,7 +115,7 @@
     <key name="}">msiGoDoCommand("cmd_MSIbraceCmd");</key>
     <key name="a">insertMathSymbol("&angle;");</key>
     <key name="A">insertMathSymbol("&ForAll;");</key>
-    <key name="s">insertMathSymbol("&sum;");</key>
+    <key name="s">insertOperator("&sum;", "auto", "auto");</key>
     <key name="S">insertMathSymbol("&oplus;");</key>
     <key name="d">insertMathSymbol("&PartialD;");</key>
     <key name="D">insertMathSymbol("&diam;");</key>
