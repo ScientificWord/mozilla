@@ -8878,7 +8878,7 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
     }
     else if (tagClass.EqualsLiteral("envtag"))
     {
-      // this means the entire environment is is the range to be removed
+      // this means the entire environment is in the range to be removed
       mEditor->RemoveContainer(node);
     }
   }
@@ -8897,7 +8897,7 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
         node->GetLocalName(tagName);
         tagListManager->GetRealClassOfTag( tagName, nsnull, tagClass);
       }
-      if (node)
+      if (node && tagClass.EqualsLiteral("envtag"))
       {
         mEditor->SplitNodeDeep( node, nodes[i], 0, &offset, PR_TRUE, &outLeftNode, &outRightNode);
         // Now we need to move nodes[1] to the split position, just past outLeftNode in node's parent
