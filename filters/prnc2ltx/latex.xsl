@@ -530,19 +530,19 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:numberedListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:bulletListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:descriptionListItem">
-\item <xsl:apply-templates/>}
+\item <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:descriptionLabel">
-  [<xsl:apply-templates/>]{
+  [<xsl:apply-templates/>]
 </xsl:template>
 
 <xsl:template match="html:citation">
