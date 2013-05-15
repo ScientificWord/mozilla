@@ -31,8 +31,8 @@ function Package()
     {
       if (optionStr && optionStr.length > 0)
         this.setOptions(optionStr.split(","));
-      else if (this.packageOptions.length)
-        this.packageOptions = new Array();
+      else if (this.opt.length)
+        this.opt = new Array();
     };
   this.findOption = function(theOption)
     {
@@ -53,9 +53,9 @@ function packageListToString(packageList)
   {
     if (i > 0)
       packagesStr += "\n";
-    if (packageList[i].packageOptions.length)
-      packagesStr += "[" + packageList[i].getOptionsStr() + "]";
-    packagesStr += "{" + packageList[i].packageName + "}";
+    if (packageList[i].opt.length > 0)
+      packagesStr += "[" + packageList[i].opt.join() + "]";
+    packagesStr += "{" + packageList[i].pkg + "}";
   }
   return packagesStr;
 }
@@ -75,7 +75,7 @@ function packageAndOptionsStringToPackageList(packagesStr)
       {
         packageList[i].setOptionsFromStr(optionsAndName[2]);
       }
-      packageList[i].packageName = optionsAndName[3];
+      packageList[i].pkg = optionsAndName[3];
     }
   }
   return packageList;

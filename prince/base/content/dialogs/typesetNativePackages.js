@@ -1,6 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
 var gBodyElement;
+var gDialog;
 
 const emptyElementStr=" ";
 
