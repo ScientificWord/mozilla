@@ -1064,6 +1064,7 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
   document.getElementById("useMesh").collapsed = !bUseMesh;
   document.getElementById("approxIntPlot").collapsed = (ptype !== "approximateIntegral");
   document.getElementById("useAreaFill").collapsed = ((ptype != "approximateIntegral") && (ptype !== "inequality"));
+  document.getElementById("useDiscAdjust").collapsed = ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implicit")); 
   changeDefaultCamera();  //this just enables or disables according to the checkbox state
   changeDefaultViewIntervals();  //this just enables or disables according to the checkbox state
 }
