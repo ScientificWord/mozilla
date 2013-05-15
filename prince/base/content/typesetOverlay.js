@@ -5,28 +5,6 @@ const typesetOverlayJS_duplicateTest = "Bad";
 var gBibChoice = "manual";  //a kludge - must get hooked up to editor to really work
 var gBibItemList = ["bibItem1", "bibItem2", "journalBibEntry", "bookBibEntry"];
 
-//function SetupMSITypesetMenuCommands()
-//{
-//  var commandTable = GetComposerCommandTable();
-//  
-//  //dump("Registering msi math menu commands\n");
-//  commandTable.registerCommand("cmd_MSIDocFormatCmd",                   msiDocFormat);
-//  commandTable.registerCommand("cmd_MSIfrontMatterCmd",                 msiFrontMatter);
-//  commandTable.registerCommand("cmd_MSIpreambleCmd",                    msiPreamble);
-//  commandTable.registerCommand("cmd_MSIbibChoiceCmd",                   msiBibChoice);
-//  commandTable.registerCommand("cmd_MSItypesetOptionsAndPackagesCmd",   msiTypesetOptionsAndPackages);
-//  commandTable.registerCommand("cmd_MSItypesetOutputChoiceCmd",         msiTypesetOutputChoice);
-//  commandTable.registerCommand("cmd_MSItypesetPreviewCmd",              msiTypesetPreview);
-//  commandTable.registerCommand("cmd_MSItypesetPrintCmd",                msiTypesetPrint);
-//  commandTable.registerCommand("cmd_MSItypesetCompileCmd",              msiTypesetCompile);
-//  commandTable.registerCommand("cmd_MSItypesetPDFPreviewCmd",           msiTypesetPDFPreview);
-//  commandTable.registerCommand("cmd_MSItypesetPDFPrintCmd",             msiTypesetPDFPrint);
-//  commandTable.registerCommand("cmd_MSItypesetPDFCompileCmd",           msiTypesetPDFCompile);
-//  commandTable.registerCommand("cmd_MSItypesetGenSettingsCmd",          msiTypesetGenSettings);
-//  commandTable.registerCommand("cmd_MSItypesetExpertSettingsCmd",       msiTypesetExpertSettings);
-//  commandTable.registerCommand("cmd_MSIrunBibTeXCmd",                   msiRunBibTeX);
-//  commandTable.registerCommand("cmd_MSIrunMakeIndexCmd",                msiRunMakeIndex);
-//}
 
 function msiSetupMSITypesetMenuCommands(editorElement)
 {
@@ -53,17 +31,6 @@ function msiSetupMSITypesetMenuCommands(editorElement)
   commandTable.registerCommand("cmd_reviseManualBibItemCmd",            msiReviseManualBibItemCmd);
 }
 
-//function SetupMSITypesetInsertMenuCommands()
-//{
-//  var commandTable = GetComposerCommandTable();
-//
-//  commandTable.registerCommand("cmd_MSIinsertIndexEntryCmd",            msiInsertIndexEntry);
-//  commandTable.registerCommand("cmd_MSIinsertCrossReferenceCmd",	      msiInsertCrossReference);
-//  commandTable.registerCommand("cmd_MSIinsertCitationCmd",					    msiInsertCitation);
-//  commandTable.registerCommand("cmd_MSIinsertBibliographyCmd",			    msiInsertBibliography);
-//  commandTable.registerCommand("cmd_MSIinsertTeXFieldCmd",					    msiInsertTeXField);
-//  commandTable.registerCommand("cmd_MSIinsertSubdocumentCmd",				    msiInsertSubdocument);
-//}
 
 function msiSetupMSITypesetInsertMenuCommands(editorElement)
 {
@@ -126,8 +93,6 @@ function doParamCommand(commandID, newValue)
   } catch(e) { dump("error thrown in doParamCommand: "+e+"\n"); }
 }
 
-//ljh
-//msiDocFormat
 var msiDocFormat =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -552,7 +517,7 @@ function doDocFormatDlg()
 
 function doFrontMatterDlg(editorElement, commandHandler)
 {
-  var frontMatterData = new Object();
+  var frontMatterData = {};
   var frontMatterFrag = getFrontMatterDocumentFragment(editorElement.contentDocument);
   var serializer = Components.classes["@mozilla.org/xmlextras/xmlserializer;1"]
                                .createInstance(Components.interfaces.nsIDOMSerializer);
@@ -664,14 +629,14 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
           pkgObject = pkgArray[pkgIndex];
           if (pkgObject)
           {
-            if (pkgObject.opt && pkgObject.opt.length)
-              msiEditorEnsureElementAttribute(nextNode, "opt", pkgObject.opt,join(), editor);
-            else
-              msiEditorEnsureElementAttribute(nextNode, "opt", null, editor);
-            if ("pri" in pkgObject)
-              msiEditorEnsureElementAttribute(nextNode, "pri", String(pkgObject.pri), editor);
-            else
-              msiEditorEnsureElementAttribute(nextNode, "pri", null, editor);
+//            if (pkgObject.opt && pkgObject.opt.length)
+              msiEditorEnsureElementAttribute(nextNode, "opt", pkgObject.opt, editor);
+//            else
+//              msiEditorEnsureElementAttribute(nextNode, "opt", null, editor);
+//            if ("pri" in pkgObject)
+//              msiEditorEnsureElementAttribute(nextNode, "pri", String(pkgObject.pri), editor);
+//            else
+//              msiEditorEnsureElementAttribute(nextNode, "pri", 100, editor);
             insertNewAfter = nextNode;
             pkgArray.splice( pkgIndex, 1 );  //Now that it's taken care of, remove it
           }
@@ -729,7 +694,6 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
           insertParent =  nextNode;
       editor.insertNode( newNode, insertParent, insertPos++);
       msiEditorEnsureElementAttribute(newNode, "req", pkgObject.pkg, editor);
-      if (pkgObject.packageOptions && pkgObject.packageOptions.length)
         msiEditorEnsureElementAttribute(newNode, "opt", pkgObject.opt, editor);
       if ("pri" in pkgObject)
         msiEditorEnsureElementAttribute(newNode, "pri", String(pkgObject.pri), editor);
@@ -772,7 +736,8 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
     }
     if ("packagePriority" in srcPkg)
     {
-      retVal.pri = srcPkg.packagePriority;
+      if (!isNaN(srcPkg.packagePriority))
+        retVal.pri = srcPkg.packagePriority;
     }
     return retVal;
   }
