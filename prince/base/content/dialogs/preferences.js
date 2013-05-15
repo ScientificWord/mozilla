@@ -6,17 +6,17 @@ var placementIdsGraphics = {prefID : "defaultGraphicsPlacement", placementRadio 
                             hereRadioGroup : "herePlacementRadioGroup", placeForceHereCheckbox : "placeForceHereCheck",
                             placeHereCheckbox : "placeHereCheck", placeFloatsCheckbox : "placeFloatsCheck",
                             placeTopCheckbox : "placeTopCheck", placeBottomCheckbox : "placeBottomCheck"};
-var placementIdsPlot = {prefID : "GraphPlacement", placementRadio : "plotPlacementRadioGroup",
+var placementIdsPlot = {prefID : "graph.placement", placementRadio : "plotPlacementRadioGroup",
                         hereRadioGroup : "plotHerePlacementRadioGroup", placeForceHereCheckbox : "plotPlaceForceHereCheck",
                         placeHereCheckbox : "plotPlaceHereCheck", placeFloatsCheckbox : "plotPlaceFloatsCheck",
                         placeTopCheckbox : "plotPlaceTopCheck", placeBottomCheckbox : "plotPlaceBottomCheck"};
 var currPlotType;
 
-function myDump(aMessage) {
-  var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-                                 .getService(Components.interfaces.nsIConsoleService);
-  consoleService.logStringMessage(aMessage);
-}
+//function myDump(aMessage) {
+//  var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+//                                 .getService(Components.interfaces.nsIConsoleService);
+//  consoleService.logStringMessage(aMessage);
+//}
 
 var chromedoc;
 
@@ -71,7 +71,7 @@ function showShellsInDir(tree)
     listbox.selectedIndex =0; 
   }
   catch(e) {
-    myDump(e.toString());
+    dump(e.toString());
   }
 }
 
@@ -113,7 +113,7 @@ function onAccept(){
     document.getElementById("prefTypesetting").writePreferences(true);
   }
   catch(e) {
-    myDump(e.toString());
+    dump(e.toString());
   }
 }
 
@@ -204,7 +204,7 @@ function writeColorWell(id)
 
 function writeGraphicLayoutPreferences(whichPrefs)
 {
-  var pref;
+  var pref, elem;
   switch(whichPrefs)
   {
     case "graphics":
@@ -224,10 +224,12 @@ function writeGraphicLayoutPreferences(whichPrefs)
       writeGraphicPlacementPreferences(placementIdsPlot);
       //The following are necessary since when changing the units, the unit handler changes the values, but
       //this doesn't fire the needed event.
-      pref = document.getElementById("GraphHSize");
-      pref.value = document.getElementById("plotWidth").value;
-      pref = document.getElementById("GraphVSize");
-      pref.value = document.getElementById("plotHeight").value;
+      elem = document.getElementById("plotWidth");
+      pref = document.getElementById(elem.getAttribute("preference"));
+      pref.value = elem.value;
+      elem = document.getElementById("plotHeight")
+      pref = document.getElementById(elem.getAttribute("preference"));
+      pref.value = elem.value;
 //      pref = document.getElementById("defaultGraphSizeUnits");
 //      pref.value = document.getElementById("plotUnitsList").value;
       writeColorWell("graph.padding.CW");
@@ -360,7 +362,7 @@ function onComputeSettingChange(pref, force)
       var mappedPref;
       if (mappedPref = prefMapper[prefId])
       {
-        myDump("Setting user pref " + mappedPref + " to " + val +"\n");
+        dump("Setting user pref " + mappedPref + " to " + val +"\n");
         if (mappedPref === "Default_matrix_delims") {
           if (val === "matrix_brackets") val = 1;
           else if (val === "matrix_parens") val = 2;
@@ -371,27 +373,27 @@ function onComputeSettingChange(pref, force)
       }
       else if (mappedPref = prefEngineMapper[prefId])
       {
-        myDump("Setting engine attribute " + mappedPref + " to " + val + "\n");
+        dump("Setting engine attribute " + mappedPref + " to " + val + "\n");
         currEngine.setEngineAttr(currEngine[mappedPref], val);      
       }
       else if (mappedPref = prefLogMapper[prefId])
       {
-        myDump("Setting logger pref " + mappedPref + " to " + val + "\n");
+        dump("Setting logger pref " + mappedPref + " to " + val + "\n");
         msiComputeLogger[mappedPref](val);
       }
       else
       {
-        myDump("Invalid prefId: "+prefId+"\n");
+        dump("Invalid prefId: "+prefId+"\n");
       }
     }
     catch(e)
     {
-      myDump(e.message+", prefId = "+prefId+"\n");
+      dump(e.message+", prefId = "+prefId+"\n");
     }
   } 
   catch(e)
   {
-    myDump(e.message+"\n");
+    dump(e.message+"\n");
   } 
 }
 
@@ -564,11 +566,14 @@ var plotVarEditsReady = [];
 
 function initPlotItemPreferences()
 {
+  addNonRootPlotPrefs();
   currPlotType = document.getElementById("plotTypeList").value;
   initPlotItemEditors();
   setPlotItemBroadcasters();
   setPlotItemPreferences();
 }
+
+var bPlotEditsReady = false;
 
 var minMaxDocumentObserverBase = {
   observe: function (aSubject, aTopic, aData)
@@ -576,7 +581,7 @@ var minMaxDocumentObserverBase = {
     if (aTopic === "obs_documentCreated")
     {
       plotVarEditsReady.push(this.ctrlID);
-      checkPlotVarEditsReady();
+      bPlotEditsReady = checkPlotVarEditsReady();
     }
   }
 };
@@ -632,6 +637,25 @@ function initPlotItemEditors()
     editorInitializer.addEditorInfo(editorElement, theStringSource, true);
   }
   editorInitializer.doInitialize();
+}
+
+function addNonRootPlotPrefs()
+{
+  var refPref, prefId;
+  var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+                              .getService(Components.interfaces.nsIPrefService);
+  var plotBranch = prefService.getBranch("swp.plot.");
+  var childCount = {value : 0};
+  var children = plotBranch.getChildList("", childCount);
+  for (var jj = 0; jj < children.length; ++jj)
+  {
+    prefId = children[jj];
+    prefId = prefId.substr( prefId.lastIndexOf(".") + 1);
+    prefId = "plot." + prefId;
+    refPref = document.getElementById(prefId);
+    if (refPref)
+      prefElement = insertNewPrefElement(refPref, "swp.plot." + children[jj]);
+  }
 }
 
 function setPlotItemBroadcasters()
@@ -716,7 +740,9 @@ function setPlotItemBroadcasters()
   document.getElementById("plot.approxIntPlot").collapsed = (plotTypeObj.plotType !== "approximateIntegral");
   document.getElementById("plot.useAreaFill").collapsed = ((plotTypeObj.plotType != "approximateIntegral") && (plotTypeObj.plotType !== "inequality"));
   document.getElementById("plot.enableConformal").collapsed = (plotTypeObj.plotType != "conformal");
-}
+  document.getElementById("plot.useDiscAdjust").collapsed = ((plotTypeObj.plotType != "rectangular")
+                                && (plotTypeObj.plotType != "parametric") && (plotTypeObj.plotType != "implicit"));
+}                                
 
 function onChangePlotType()
 {
@@ -755,7 +781,7 @@ function setPlotItemPreferences()
   for (var ii = 0; ii < plotItemIds.length; ++ii)
   {
     element = document.getElementById(plotItemIds[ii]);
-    if (element.hidden || element.disabled || element.collapsed)
+    if (elementDisabledOrHidden(element))
       continue;
     prefId = element.getAttribute("preference");
     prefId = prefix + prefId.substr( prefId.lastIndexOf(".") + 1 );
@@ -769,9 +795,10 @@ function setPlotItemPreferences()
     }
 //    putValueToControl(element, theVal);
   }
-  setPlotItemIntervalControls();
   for (var jj = 0; jj < plotColorWells.length; ++jj)
     setPlotColorWell(plotColorWells[jj]);
+  try { setPlotItemIntervalControls(); }
+  catch(ex) {}
 }
 
 function setPlotItemIntervalControls()
@@ -790,8 +817,7 @@ function setPlotItemIntervalControls()
     startElement = document.getElementById("plotVar" + jj + "StartEdit");          //plotVar1StartEdit
     endElement = document.getElementById("plotVar" + jj + "EndEdit");              //plotVar1EndEdit
     ptsElement = document.getElementById("plotPtssamp" + jj);
-    if ( !startElement.hidden && !startElement.disabled && !startElement.collapsed &&
-                          !endElement.hidden && !endElement.disabled && !endElement.collapsed )
+    if ( !elementDisabledOrHidden(startElement) && !elementDisabledOrHidden(endElement))
     {
       if (jj == numvars)
       {
@@ -850,7 +876,7 @@ function storePlotItemPreferences()
   for (ii = 0; ii < plotVarEditControls.length; ++ii)
   {
     element = document.getElementById(plotVarEditControls[ii]);
-    if (element.hidden || element.disabled || element.collapsed)
+    if (elementDisabledOrHidden(element))
       continue;
     prefElement = document.getElementById(element.getAttribute("preference"));
     if (prefElement)
@@ -861,14 +887,14 @@ function storePlotItemPreferences()
   for (ii = 0; ii < plotItemIds.length; ++ii)
   {
     element = document.getElementById(plotItemIds[ii]);
-    if (element.hidden || element.disabled || element.collapsed)
+    if (elementDisabledOrHidden(element))
       continue;
     prefStr = element.getAttribute("preference");
     prefElement = document.getElementById(prefStr);
     refPref = getReferencePlotItemPreference(prefStr);
     if ( (prefElement.getAttribute("msi-temp") == "true") && (refPref != prefElement) 
                                                           && (prefElement.value == refPref.value) )
-      prefElement.parentNode.deleteChild(prefElement);
+      prefElement.parentNode.removeChild(prefElement);
   }
 }
 
@@ -931,7 +957,7 @@ function getReferencePlotItemPreference(prefStr)
 //  with id "plot.LineColor" as refPref.
 function insertNewPrefElement(refPref, prefId)
 {
-  var prefElement;
+  var prefElement, val;
   try
   {
     prefElement = document.createElementNS(XUL_NS, "preference");
@@ -941,7 +967,12 @@ function insertNewPrefElement(refPref, prefId)
     refPref.parentNode.insertBefore(prefElement, refPref.nextSibling);
     var prefName = refPref.name.replace("plot.", prefix);
     prefElement.name = prefName;
-    prefElement.value = refPref.value;
+    prefElement.type = refPref.type;
+    val = prefElement.valueFromPreferences;
+    if (val)
+      prefElement.value = val;
+    else
+      prefElement.value = refPref.value;
   } catch(ex) {dump("In preferences.js, insertNewprefElement(), exception: " + ex + "\n"); prefElement = null;}
   return prefElement;
 }
@@ -951,26 +982,31 @@ function getPlotIntervalVarName(plotType, baseVarName)
   var compBundle = document.getElementById("computeBundle");
   var rv = "";
   var prefixStr;
-  switch(plotType)
+  if (!plotType)
+    prefixStr = "";
+  else
   {
-    case "curve":   prefixStr = "parametric";      break;
-    default:        prefixStr = plotType;          break;
+    switch(plotType)
+    {
+      case "curve":   prefixStr = "parametric";      break;
+      default:        prefixStr = plotType;          break;
+    }
   }
 
   var initialStr = "Intervals.";
   try
   {
-    rv = compBundle.getString(initialStr + prefixStr + baseVarName);
+    rv = compBundle.getString(initialStr + prefixStr + baseVarName + "Var");
   }
   catch(exc)
   {
     try
     {
-      rv = compBundle.getString(initialStr + baseVarName);
+      rv = compBundle.getString(initialStr + baseVarName + "Var");
     }
     catch(ex)
     {
-      msidump("Problem in preferences.js, getPlotIntervalVarName; unable to get string for " + initialStr + prefixStr + baseVarName + ".\n");
+      msidump("Problem in preferences.js, getPlotIntervalVarName; unable to get string for " + initialStr + prefixStr + baseVarName + "Var.\n");
       rv = "";
     }
   }
@@ -993,6 +1029,17 @@ function storePlotColorWell(colorId)
     pref.value = getValueFromControl(colorWell);
 }
 
+function elementDisabledOrHidden(anElement)
+{
+  var node = anElement;
+  var rv = false;
+  while (node && !rv && (node.id != "PlotItems"))
+  {
+    rv = (node.disabled || node.hidden || node.collapsed);
+    node = node.parentNode;
+  }
+  return rv;
+}
 //function writeAPlotPref(dim, plottype, prefID, value)
 //{
 ////What about "ConfHorizontalPts", "ConfVerticalPts"?

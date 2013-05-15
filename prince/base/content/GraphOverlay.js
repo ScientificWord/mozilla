@@ -1346,7 +1346,7 @@ Plot.prototype = {
       NA = attributeArrayRemove(NA, "AxisScale");
     }
 
-    if ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implict")) {
+    if ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implicit")) {
       NA = attributeArrayRemove(NA, "DiscAdjust");
     }
 

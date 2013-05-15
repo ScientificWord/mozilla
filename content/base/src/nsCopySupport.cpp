@@ -69,6 +69,7 @@
 #include "nsContentUtils.h"
 #include "nsContentCID.h"
 #include "nsIURL.h"
+#include "nsNetUtil.h"
 
 static NS_DEFINE_CID(kCClipboardCID,           NS_CLIPBOARD_CID);
 static NS_DEFINE_CID(kCTransferableCID,        NS_TRANSFERABLE_CID);
@@ -125,17 +126,19 @@ static PRBool PathIsRelative( nsAString & path)
 static PRBool PathToAbs( nsAString& path, nsAString& abspath, nsIDocument * doc)
 {
   abspath = path;
-  if (!PathIsRelative(path) || path.First() == '/') {
+//  if (!PathIsRelative(path) || path.First() == '/') {
+  if (!PathIsRelative(path)) {
     return PR_FALSE;
   }
   nsresult res;
   nsCOMPtr<nsIURI> srcURI = doc->GetDocumentURI();
-  nsCOMPtr<nsIURL> srcURL = do_QueryInterface(srcURI);
+//  nsCOMPtr<nsIURL> srcURL = do_QueryInterface(srcURI);
   nsCAutoString dirPath;
-  res = srcURL->GetDirectory(dirPath);
+  res = NS_MakeAbsoluteURI(dirPath, NS_ConvertUTF16toUTF8(path), srcURI);
+//  res = srcURL->GetDirectory(dirPath);
   abspath.Truncate(0);
   AppendASCIItoUTF16(dirPath, abspath);
-  abspath.Append(path);
+//  abspath.Append(path);
 
   return PR_TRUE;
 }

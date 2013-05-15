@@ -165,7 +165,7 @@
       <preference id="graph.borderColor" 
                   name="swp.graph.borderColor" 
                   type="string"/>
-       <preference id="graph.defaultUnits" 
+      <preference id="graph.defaultUnits" 
                   name="swp.graph.defaultUnits" 
                   type="string"/>
       <preference id="graph.placement" 
@@ -1060,8 +1060,9 @@
       <broadcaster id="plot.useMesh" />
       <broadcaster id="plot.approxIntPlot" collapsed="true" />
       <broadcaster id="plot.useAreaFill" collapsed="true" />
-  	<broadcaster id="plot.enableConformal" collapsed="true" />
+  	  <broadcaster id="plot.enableConformal" collapsed="true" />
       <broadcaster id="plot.colorAlphaEnabled" hasAlpha="false" />
+	  <broadcaster id="plot.useDiscontAdjust" collapsed="false" />
     </broadcasterset>
     <stringbundle id="computeBundle" src="chrome://prince/locale/compute.properties"/>
 
@@ -1500,6 +1501,7 @@
                 </row>
               </rows>
             </grid>
+            <checkbox id="plot.adjustDiscont" label="&plotadjust.label;" preference="plot.DiscAdjust" observes="plot.useDiscAdjust" />
           </groupbox>
 
           <groupbox>
