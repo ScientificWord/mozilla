@@ -158,8 +158,8 @@
 4.1=Include Catalan,catalan
 4.2=Exclude Catalan,
 5=Croatian
-5.1=Include Croation,croation
-5.2=Exclude Croation,
+5.1=Include Croatian,croatian
+5.2=Exclude Croatian,
 6=Czech
 6.1=Include Czech,czech
 6.2=Exclude Czech,
@@ -1062,7 +1062,7 @@
 6.1=No - default,noncompatible
 6.2=Yes,compatible
 7=Language
-7.1=Croation,croatian
+7.1=Croatian,croatian
 7.2=Danish,danish
 7.3=English - default,english
 7.4=French,french
