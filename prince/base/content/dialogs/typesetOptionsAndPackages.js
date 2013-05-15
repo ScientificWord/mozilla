@@ -1,9 +1,8 @@
  // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+ "use strict";
 
 var gBodyElement;
-
-const emptyElementStr=" ";
-
+var emptyElementStr=" ";
 var data;
 
 function fillUsedPackagesList(strResult, objArray) {
@@ -16,10 +15,11 @@ function fillUsedPackagesList(strResult, objArray) {
   var addobj;
   var optstring;
   var optarray;
+  var F = function (x) { return x.pkg===fieldArray[1];};
   for (i = 0; i < lineArray.length; i++) {
     fieldArray = lineArray[i].split(/;\s*/);
     if (fieldArray.length < 4) break;
-    var o = objArray.filter(function (x) { return x.pkg===fieldArray[1];})[0];
+    var o = objArray.filter(F)[0];
     if (o) {
       obj = o;
       addobj = false;
@@ -29,7 +29,7 @@ function fillUsedPackagesList(strResult, objArray) {
       addobj = true;
       obj={usedby: [], pkg: "", opt: [], pri: NaN};
       obj.pkg = fieldArray[1];
-    } 
+    }
     if (fieldArray[2].length > 0) {
       optstring = fieldArray[2];
       optarray = optstring.split(/\s*,\s*/,"g");
@@ -219,6 +219,7 @@ function addOptionNames(arr, docclass)
   var returnArray=[];
   var request = new XMLHttpRequest();
   request.open("GET", "chrome://user/content/classes.opt", false); 
+  request.overrideMimeType("text/plain");
   request.send(null);
   // print the name of the root element or error message
   var optfile = request.responseText;
@@ -307,7 +308,7 @@ function goNative()
   if (!packagesData.Cancel)
   {
     gDialog.packages = packagesData.packages;
-		msiGetEditor(editorElement).incrementModificationCount(1);
+    msiGetEditor(editorElement).incrementModificationCount(1);
   }
 }
 
@@ -326,7 +327,7 @@ function doModifyDialog()
   {
     gDialog.docClassOptions = classOptionData.options;
     document.getElementById("optionsDescriptionBox").value=gDialog.docClassOptions.join(",");
-		msiGetEditor(editorElement).incrementModificationCount(1);
+    msiGetEditor(editorElement).incrementModificationCount(1);
   }
 }
 
@@ -386,7 +387,7 @@ function addPackage()
       gDialog.packagesInUseListbox.selectItem( gDialog.packagesInUseListbox.appendItem(addPackageData.newPackage, '') );
       selectPackage(newPackage.pkg);
       checkDisabledControls();
-  		msiGetEditor(editorElement).incrementModificationCount(1);
+      msiGetEditor(editorElement).incrementModificationCount(1);
     }
   }
 }
@@ -435,7 +436,7 @@ function modifyPackage(packageName)
   {
     gDialog.packages[whichPackage].opt = packageData.options;
     setPackageDescriptionLine(gDialog.packages[whichPackage]);
-		msiGetEditor(editorElement).incrementModificationCount(1);
+    msiGetEditor(editorElement).incrementModificationCount(1);
   }
 }
 
@@ -514,7 +515,10 @@ function setPackageDescriptionLine(thePackage)
   {
     var caption = document.getElementById("currentPackageDescriptionCaption");
     caption.label = gDialog.descCaptionTemplate.replace(caption.getAttribute("replaceTemplate"), thePackage.pkg);
-    gDialog.currentPackageDescription.value = thePackage.opt;
+    if (!thePackage.opt) {
+      thePackage.opt = [];
+    }
+    gDialog.currentPackageDescription.value = thePackage.opt.join();
   }
 }
 
@@ -531,7 +535,7 @@ function comparePackagesByPriority(a,b)
   if (aPriority > bPriority)
     return 1;
   return 0;
-};
+}
 
 //The algorithm here is intended to do the following:
 //  (i) Reflect any changes the user made to ordering in priority settings;
