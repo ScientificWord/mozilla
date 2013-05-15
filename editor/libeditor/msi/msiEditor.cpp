@@ -52,6 +52,7 @@
 #include "nsIURI.h"
 #include "nsIURL.h"
 #include "msiIUtil.h"
+#include "nsNetUtil.h"
 //#include "msiEditingManager.h"
 
 static PRInt32 instanceCounter = 0;
@@ -3857,8 +3858,11 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
   nsCOMPtr<nsIURL> srcURL;
   nsCOMPtr<nsIURI> destURI;
   nsCOMPtr<nsIURI> srcURI;
+  nsCOMPtr<nsIFile> srcIFile;
   nsCOMPtr<nsILocalFile> srcFile;
+  nsCOMPtr<nsIFile> srcDir;
   nsCOMPtr<nsIFile> srcFileClone;
+  nsCOMPtr<nsIFile> destIFile;
   nsCOMPtr<nsILocalFile> destFile;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMElement> elem;
@@ -3902,27 +3906,40 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
         srcURI = srcDoc->GetDocumentURI();
         srcURL = do_QueryInterface(srcURI);
         nsCAutoString dirPath;
-        res = srcURL->GetDirectory(dirPath);
-        absPath.Truncate(0);
-        AppendASCIItoUTF16(dirPath, absPath);
-        absPath.Append(dataPath);
-        dataPath = absPath;
-        // now dataPath is an absolute path
+        nsCAutoString srcSpec;
+        res = NS_MakeAbsoluteURI(srcSpec, NS_ConvertUTF16toUTF8(dataPath), srcURI);
+
+//        res = srcURL->GetDirectory(dirPath);
+        res = NS_GetFileFromURLSpec(srcSpec, getter_AddRefs(srcIFile));
+//        absPath.Truncate(0);
+//        AppendASCIItoUTF16(dirPath, absPath);
+//        absPath.Append(dataPath);
+//        dataPath = absPath;
+//        // now dataPath is an absolute path
       }
+      else
+        res = NS_GetFileFromURLSpec(NS_ConvertUTF16toUTF8(dataPath), getter_AddRefs(srcIFile));
+      srcFile = do_QueryInterface(srcIFile);
+
       destURI = doc->GetDocumentURI();
       destURL = do_QueryInterface(destURI);
       nsCAutoString dirPath;
-      res = destURL->GetDirectory(dirPath);
+//      res = destURL->GetDirectory(dirPath);
+      res = destURL->GetSpec(dirPath);  //We'll take the parent of the nsILocalFile we create from this
       char * unescaped = strdup(dirPath.get());
       nsUnescape(unescaped);
       dirPath.Assign(unescaped, PR_UINT32_MAX); 
-      res = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(destFile));
-      res = NS_NewLocalFile(dataPath, PR_FALSE, getter_AddRefs(srcFile));
+//      res = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(destFile));
+      res = NS_GetFileFromURLSpec(dirPath, getter_AddRefs(destIFile));
+      nsCOMPtr<nsIFile> dirAsFile;
+      res = destIFile->GetParent(getter_AddRefs(dirAsFile));
+      destFile = do_QueryInterface(dirAsFile);
+//      res = NS_NewLocalFile(dataPath, PR_FALSE, getter_AddRefs(srcFile));
       // Now take apart the source path to get a name for the dest file.
       res = srcFile->Clone(getter_AddRefs(srcFileClone));
       res = srcFileClone->GetLeafName(leafname);
-      res = srcFileClone->GetParent(getter_AddRefs(srcFileClone));
-      res = srcFileClone->GetLeafName(srcDirName);
+      res = srcFileClone->GetParent(getter_AddRefs(srcDir));
+      res = srcDir->GetLeafName(srcDirName);
       res = destFile->Append(srcDirName);
       res = destFile->Exists(&fExists);
       if (!fExists) {
