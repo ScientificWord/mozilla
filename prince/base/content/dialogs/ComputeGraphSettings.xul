@@ -108,6 +108,7 @@
     <broadcaster id="useAreaFill" collapsed="true" />
     <broadcaster id="customCameraProperties" disabled="true" />
     <broadcaster id="colorAlphaEnabled" hasAlpha="false" />
+    <broadcaster id="useDiscAdjust" collapsed="false" />
   </broadcasterset>
 
   <vbox id="units"/>
@@ -517,6 +518,7 @@
               </rows>
             </grid>
           </groupbox>
+          <checkbox id="DiscAdjust" label="&plotadjust.label;" observes="useDiscAdjust" />
           <msibutton label="&VariablesAndIntervals.label;" oncommand="openVariablesAndIntervalsDlg();" />
         </vbox>
         </vbox>
