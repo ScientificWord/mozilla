@@ -58,7 +58,7 @@
       <toolbarbutton id="pasteButton"/>
       <toolbarbutton id="undoButton"/>
       <toolbarbutton id="redoButton"/>
-      <toolbarbutton id="stopButton"/>
+      
 #ifndef PROD_SW
       <toolbarbutton id="evalButton"/>
       <toolbarbutton id="evalnumButton"/>
@@ -69,6 +69,7 @@
       <toolbarbutton id="plot3DButton" />
       <toolbarbutton id="defineButton" />
       <toolbarbutton id="showdefsButton" />
+      <toolbarbutton id="stopButton"/>
       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" />
 #endif
       <toolbarbutton id="radicalButton"/>
@@ -286,7 +287,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     label="&MSIComputeShowDefs.label;" observes="cmd_MSIComputeShowDefs">
   </toolbarbutton>
 
-  <toolbarbutton id="stopButton" class="toolbarbutton-1" tooltoptext="&stopButton.tooltip;"
+  <toolbarbutton id="stopButton" class="toolbarbutton-1" tooltiptext="&stopButton.tooltip;"
     label="&stopButton.label;" observes="cmd_MSIComputeStop" >
   </toolbarbutton>
 #endif

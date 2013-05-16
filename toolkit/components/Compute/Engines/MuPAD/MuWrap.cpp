@@ -161,7 +161,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   SEMANTICS_NODE *root = mr->GetSemanticsTree();
   U32 cmd_ID = msr->GetOpID();
 
-  if (!root && (cmd_ID != CCID_PlotFuncCmd) && (cmd_ID != CCID_PlotFuncQuery)){
+  if (!root &&  cmd_ID == CCID_PassThru){
     mr->PutResultCode(CR_failure);
     return NULL;
   }
