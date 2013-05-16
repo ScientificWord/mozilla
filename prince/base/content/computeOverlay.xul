@@ -208,6 +208,7 @@
     <command id="cmd_MSIComputeInterpret"                oncommand="doComputeCommand('cmd_compute_Interpret')"/>
     <command id="cmd_MSIComputeFixup"                    oncommand="doComputeCommand('cmd_compute_Fixup')"/>
     <command id="cmd_MSIComputePassthru"                 oncommand="doGlobalComputeCommand('cmd_compute_Passthru')"/>
+    <command id="cmd_MSIComputeStop"                     oncommand="doComputeCommand('cmd_compute_stop')"/>
     <!-- For disabling certain menu items when in math -->
   </commandset>
  
