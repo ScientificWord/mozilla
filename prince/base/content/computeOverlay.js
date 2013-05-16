@@ -940,6 +940,9 @@ function doGlobalComputeCommand(cmd, editorElement) {
   case "cmd_compute_Passthru":
     doComputePassthru(editorElement);
     break;
+  case "cmd_compute_stop":
+    doComputeStopCommand();
+    break;
   default:
     dump("Unknown global compute command. (" + cmd + ")\n");
     return;
@@ -1669,8 +1672,10 @@ function initEnginePrefs(currEngine)
   if (delimstyle === "matrix_brackets") val = 1;
     else if (delimstyle === "matrix_parens") val = 2;
     else if (delimstyle === "matrix_braces") val = 3;
-    else (val = 0); 
-  currEngine.setUserPref("Default_matrix_delims", val); 
+    else val = 0;
+  var eng = GetCurrentEngine();
+  dump("HERE" + eng);
+  eng.setUserPref("Default_matrix_delims", val); 
   // Do we need to set all the other engine settings. This is the only one that I
   // know of that needs translation from strings to integers. BBM
 }
