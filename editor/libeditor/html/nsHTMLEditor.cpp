@@ -7165,8 +7165,14 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("\\thinspace ")); break;
       case 0x200B :
         _retval.Append(NS_LITERAL_STRING("{}")); break;
+      case 0x2018 :
+        _retval.Append(NS_LITERAL_STRING("`")); break;
       case 0x2019 :
         _retval.Append(NS_LITERAL_STRING("'")); break;
+      case 0x201A :
+        _retval.Append(NS_LITERAL_STRING("\\quotesinglbase ")); break;
+      case 0x201E :
+        _retval.Append(NS_LITERAL_STRING("\\quotedblbase ")); break;
       case 0x2020 :
         _retval.Append(NS_LITERAL_STRING("\\dag ")); break;
       case 0x2021 :
@@ -7175,6 +7181,10 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("${}^{\\prime}$")); break;
       case 0x2033 :
         _retval.Append(NS_LITERAL_STRING("${}^{\\prime\\prime}$")); break;
+      case 0x2039 :
+        _retval.Append(NS_LITERAL_STRING("\\guilsinglleft ")); break;
+      case 0x203A :
+        _retval.Append(NS_LITERAL_STRING("\\guilsinglright ")); break;
       case 0x20A0 :
         _retval.Append(NS_LITERAL_STRING("\\texteuro ")); break;
       case 0x20A3 :
