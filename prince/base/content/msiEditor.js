@@ -10800,7 +10800,7 @@ function msiDialogEditorContentFilter(anEditorElement)
     this.mbSinglePara = true;
   this.mbAtFirst = true;
   var editor = msiGetEditor(this.mEditorElement);
-  if (editor.tagListManager)
+  if (editor && editor.tagListManager)
   {
     var namespace = new Object();
     this.defaultParaTag = editor.tagListManager.getDefaultParagraphTag(namespace);

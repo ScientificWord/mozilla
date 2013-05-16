@@ -180,6 +180,10 @@
 \TeXXeTstate=1
 \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
     </xsl:if>
+    <xsl:if test="not($compiler='xelatex')">
+\usepackage[T1]{fontenc}
+    </xsl:if>
+
 
     <xsl:if test="$compiler!='xelatex'">\usepackage{textcomp}</xsl:if>
 
