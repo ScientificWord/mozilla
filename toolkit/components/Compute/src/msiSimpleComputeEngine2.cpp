@@ -123,6 +123,13 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Startup(nsILocalFile *engFile)
   return rv;
 }
 
+/* void stopProcessor(); */
+NS_IMETHODIMP msiSimpleComputeEngine2::StopProcessor()
+{
+  Shutdown();
+  return NS_OK;
+}
+
 /* void shutdown (); */
 NS_IMETHODIMP msiSimpleComputeEngine2::Shutdown()
 {
