@@ -23,6 +23,8 @@ interface msiIEngineWrapper : nsISupports
    */
   long initialize(in nsILocalFile libpath, in nsILocalFile champath, in nsILocalFile vcampath);
 
+  
+
   /**
    * process the math service request. Returns 1 if OK.
    */
