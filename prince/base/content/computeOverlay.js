@@ -32,7 +32,7 @@ var msiComputeStopCommand = {
 
   doCommand: function(aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    doComputeStopCommand(aCommand, theEditorElement, this);
+    doComputeStopCommand();
   }
 
   
@@ -379,8 +379,9 @@ function isSelectionMath(selection) {
   return findmathparent(selection.focusNode);
 }
 
-function doComputeStopCommand(cmd, editorElement, cmdHandler, inPlace) {
-
+function doComputeStopCommand() {
+   var eng = GetCurrentEngine();
+   eng.stopProcessor();
 }
 
 function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {

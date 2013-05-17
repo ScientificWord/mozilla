@@ -69,7 +69,7 @@
       <toolbarbutton id="plot3DButton" />
       <toolbarbutton id="defineButton" />
       <toolbarbutton id="showdefsButton" />
-      <toolbarbutton id="stopButton"/>
+      <toolbarbutton id="stopButton" />
       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" />
 #endif
       <toolbarbutton id="radicalButton"/>
@@ -161,7 +161,7 @@ defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicB
 #ifdef PROD_SW
       defaultset="fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #else
-defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
+defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,stopButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #endif
       mode="icons" 
       customizable="true" />
