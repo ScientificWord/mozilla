@@ -72,6 +72,11 @@ void ComputeDLL::TermCompDLL()
   transactions_list = NULL;
 }
 
+void ComputeDLL::StopProcessor()
+{
+  workshop -> StopProcessor();
+}
+
 //  "C:\\xml\\compute\\testjig\\mplInstall.gmr"
 //  "C:\\xml\\compute\\testjig\\mupInstall.gmr"
 // returns an engine "ID"
