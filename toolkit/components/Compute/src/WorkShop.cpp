@@ -78,6 +78,19 @@ MathWorkShop::~MathWorkShop()
   }
 }
 
+void MathWorkShop::StopProcessor()
+{
+  EngineInfo *el_rover = engine_list;
+  while (el_rover) {
+     if (el_rover->comp_eng) {
+          el_rover->comp_eng->StopProcessor();
+          el_rover = el_rover->next;
+     }
+  }
+
+}
+
+
 U32 MathWorkShop::GetClientHandle(U32 parentID)
 {
   client_counter++;

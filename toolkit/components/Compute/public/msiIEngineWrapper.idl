@@ -47,6 +47,8 @@ interface msiIEngineWrapper : nsISupports
   */
   long execute(in string cmd);
 
+  void stopProcessor();
+
   /**
    * cleanup engine
   */
