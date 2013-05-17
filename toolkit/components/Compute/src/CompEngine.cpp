@@ -122,6 +122,12 @@ CompEngine::~CompEngine()
   }
 }
 
+void CompEngine::StopProcessor()
+{
+   if (wrapper)
+     wrapper->StopProcessor();
+}
+
 bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* baseDir, 
                                           MathResult & mr)
 {

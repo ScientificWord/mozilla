@@ -12,6 +12,7 @@ class ComputeDLL
 public:
   static int InitCompDLL();
   static void TermCompDLL();
+  static void StopProcessor();
 
   static U32 InstallEngine(U32 trans_ID, nsILocalFile *install_script,
                              int *result_code);

@@ -43,6 +43,8 @@ public:
   MathWorkShop();
   ~MathWorkShop();
 
+  void StopProcessor();
+
   // Clients are 1-to-1 with DefStores - they may or may not have a parent.
   //  parentID = 0 indicates no parent at all.
   U32   GetClientHandle( U32 parentID );

@@ -36,6 +36,8 @@ public:
              Grammar * mathml_grammar, PrefsStore * up_store);
   ~CompEngine();
 
+  void StopProcessor();
+
   bool InitUnderlyingEngine(Grammar * install_dbase, nsILocalFile * baseDir, MathResult & mr);
 
   void Execute(MathServiceRequest & msr, MathResult & mr);
