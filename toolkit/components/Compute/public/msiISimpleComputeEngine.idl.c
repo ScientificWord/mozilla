@@ -333,6 +333,12 @@ interface msiISimpleComputeEngine : nsISupports
   */
   void perform(in wstring expr, in unsigned long operation, [retval] out wstring result);
 
+  /** 
+   * Stop a computation
+  */
+  void stopProcessor();
+  
+
   /**
    * Shutdown the engine
   */
