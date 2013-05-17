@@ -105,6 +105,14 @@ NS_IMETHODIMP msiMuPADEngineWrapper::Execute(const char *cmd, PRInt32 *_retval)
 }
 
 /* void cleanup (); */
+NS_IMETHODIMP msiMuPADEngineWrapper::StopProcessor()
+{
+  MuPAD_wrapper->iStopProcessor();
+  return NS_OK;
+}
+
+
+/* void cleanup (); */
 NS_IMETHODIMP msiMuPADEngineWrapper::Cleanup()
 {
   MuPAD_wrapper->iCleanupAndUnloadDLL();
