@@ -168,11 +168,17 @@ function getValuesFromDialog()
     {
       rowObj = rowData[aRowId];
       plot.setPlotValue( rowObj.whichVar + "Var", getMathMLExpressionFromControl(rowObj.varName, serialize) );
-      plot.setPlotValue( rowObj.whichVar + "Min", getMathMLExpressionFromControl(rowObj.startEdit, serialize) );
-      plot.setPlotValue( rowObj.whichVar + "Max", getMathMLExpressionFromControl(rowObj.endEdit, serialize) );
       plot.markUserSet(rowObj.whichVar + "Var", true);
-      plot.markUserSet(rowObj.whichVar + "Min", true);
-      plot.markUserSet(rowObj.whichVar + "Max", true);
+      if (!isEmptyMathEditControl(rowObj.startEdit))
+      {
+        plot.setPlotValue( rowObj.whichVar + "Min", getMathMLExpressionFromControl(rowObj.startEdit, serialize) );
+        plot.markUserSet(rowObj.whichVar + "Min", true);
+      }
+      if (!isEmptyMathEditControl(rowObj.endEdit))
+      {
+        plot.setPlotValue( rowObj.whichVar + "Max", getMathMLExpressionFromControl(rowObj.endEdit, serialize) );
+        plot.markUserSet(rowObj.whichVar + "Max", true);
+      }
       if (rowObj.whichVar !== "Anim")
       {
         plot.setPlotValue( rowObj.whichVar + "Pts", getMathMLExpressionFromControl(rowObj.numPtsTextbox, serialize) );
