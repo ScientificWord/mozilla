@@ -973,7 +973,7 @@ function setFrameAttributes(frameNode, contentsNode, editor)
     contentsNode.setAttribute(widthAtt,gFrameTab.widthInput.value);
   }
   var pos = document.getElementById("placementRadioGroup").selectedItem;
-  var posid = pos.getAttribute("id") || "";
+  var posid = (pos && pos.getAttribute("id")) || "";
   msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
   var bgcolor = gFrameTab.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");

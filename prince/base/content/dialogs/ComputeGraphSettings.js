@@ -412,8 +412,9 @@ function GetValuesFromDialog(){
     }                                                               
   }
   // GraphAxesType
-  if (document.getElementById("placementRadioGroup")) {                            
-    var newval = document.getElementById("placementRadioGroup").selectedItem.id;
+  if (document.getElementById("placementRadioGroup")) {
+    var placement = document.getElementById("placementRadioGroup").selectedItem;
+    var newval = placement ? placement.id : "";
     var oldval = graph.getValue ("Placement"); 
     if (newval != oldval) {                                        
       graph.setGraphAttribute ("Placement", newval);

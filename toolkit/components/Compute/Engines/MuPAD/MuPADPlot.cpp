@@ -469,6 +469,8 @@ string MuPADPlot::BaseColorStr (MuPADPlot* T) {
   string ret;
   if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
     ret = ", LineColor=";
+  else if (T->ptype=="conformal")
+    ret = ", LineColor2=";
   else
     ret = ", FillColor=";
   return ret+val;                                              
@@ -742,6 +744,8 @@ string MuPADPlot::LineColorStr (MuPADPlot* T) {
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineColor, plottype);
   val = StringToColorArrayStr (val);
   string ret = ", LineColor=";
+  if (T->ptype == "conformal")
+    ret = ", Color=";
   return ret+val;
 }
 
