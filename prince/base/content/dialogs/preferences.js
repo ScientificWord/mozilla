@@ -653,7 +653,7 @@ function addNonRootPlotPrefs()
     prefId = prefId.substr( prefId.lastIndexOf(".") + 1);
     prefId = "plot." + prefId;
     refPref = document.getElementById(prefId);
-    if (refPref)
+    if ( refPref && (prefId != ("plot." + children[jj])) )
       prefElement = insertNewPrefElement(refPref, "swp.plot." + children[jj]);
   }
 }
@@ -870,7 +870,7 @@ function setPlotItemIntervalControls()
 
 function storePlotItemPreferences()
 {
-  var ii, element, prefStr, refPref, prefElement, value, oldVal;
+  var ii, element, prefStr, refPref, prefElement, value, badVal;
   var prefix = getPlotPrefPrefix(currPlotType);
   var serializer = new XMLSerializer();
   for (ii = 0; ii < plotVarEditControls.length; ++ii)
@@ -880,22 +880,40 @@ function storePlotItemPreferences()
       continue;
     prefElement = document.getElementById(element.getAttribute("preference"));
     if (prefElement)
-      prefElement.value = getMathMLExpressionFromControl(element, serializer);
+    {
+      if (!isEmptyMathEditControl(element))
+        prefElement.value = getMathMLExpressionFromControl(element, serializer);
+    }
   }
   for (var jj = 0; jj < plotColorWells.length; ++jj)
     storePlotColorWell(plotColorWells[jj]);
   for (ii = 0; ii < plotItemIds.length; ++ii)
   {
+    badVal = false;
     element = document.getElementById(plotItemIds[ii]);
     if (elementDisabledOrHidden(element))
       continue;
     prefStr = element.getAttribute("preference");
     prefElement = document.getElementById(prefStr);
     refPref = getReferencePlotItemPreference(prefStr);
+    value = getValueFromControl(element);
+    badVal = isBadPlotPrefValue(refPref, value);
     if ( (prefElement.getAttribute("msi-temp") == "true") && (refPref != prefElement) 
-                                                          && (prefElement.value == refPref.value) )
+             && (badVal || (prefElement.value == refPref.value)) )
       prefElement.parentNode.removeChild(prefElement);
+    else if (badVal)
+      prefElement.value = prefElement.defaultValue;
   }
+}
+
+function isBadPlotPrefValue(prefElem, value)
+{
+  if (!value.length)
+  {
+    //Can have a switch on prefElem.name if some prefs can have a legal empty value, but I don't know of one...
+    return true;
+  }
+  return false;
 }
 
 function getPlotDimAndPlottype(plotTypeDescription)
@@ -957,14 +975,15 @@ function getReferencePlotItemPreference(prefStr)
 //  with id "plot.LineColor" as refPref.
 function insertNewPrefElement(refPref, prefId)
 {
-  var prefElement, val;
+  var prefElement, val, prefsElement;
   try
   {
+    prefsElement = document.getElementById("plotPrefs");
     prefElement = document.createElementNS(XUL_NS, "preference");
     var prefix = prefId.substr(0, prefId.lastIndexOf(".") + 1);
     prefElement.setAttribute("id", prefId);
     prefElement.setAttribute("msi-temp", "true");  //This tags the preference to be deleted if it doesn't get set by the user.
-    refPref.parentNode.insertBefore(prefElement, refPref.nextSibling);
+    prefsElement.insertBefore(prefElement, refPref.nextSibling);
     var prefName = refPref.name.replace("plot.", prefix);
     prefElement.name = prefName;
     prefElement.type = refPref.type;
@@ -1023,10 +1042,15 @@ function setPlotColorWell(colorId)
 
 function storePlotColorWell(colorId)
 {
+  var theVal;
   var colorWell = document.getElementById(colorId);
   var pref = document.getElementById(colorWell.getAttribute("preference"));
   if (pref)
-    pref.value = getValueFromControl(colorWell);
+  {
+    theVal = getValueFromControl(colorWell);
+    if (theVal.length)
+      pref.value = theVal;
+  }
 }
 
 function elementDisabledOrHidden(anElement)
