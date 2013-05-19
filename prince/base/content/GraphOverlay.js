@@ -2913,7 +2913,10 @@ var plotVarDataBase =
   },
   numPlainVariablesNeeded : function()
   {
-    return plotVarsNeeded(this.dim, this.plottype, false);
+    var nVars = plotVarsNeeded(this.dim, this.plottype, false);
+    if (this.plottype == "conformal")
+      --nVars;
+    return nVars;
   },
   numPlainVariablesFound : function()
   {

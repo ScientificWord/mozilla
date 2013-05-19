@@ -8,6 +8,7 @@ function getValueFromControlByID(anID)
   return getValueFromControl(theControl);
 }
 
+//This function should return a string value
 function getValueFromControl(theControl)
 {
   if (theControl)
@@ -383,6 +384,52 @@ function getMathMLExpressionFromControl(ctrl, ser)
   return retval;
 }
 
+function isEmptyMathEditControl(editCtrl)
+{
+  var exprDoc, topNode, kids, ii;
+  var rv = true;
+  if (editCtrl.getAttribute("editortype") == "html")
+  {
+    exprDoc = editCtrl.contentDocument;
+    topNode = exprDoc.getElementsByTagName("math")[0];
+    rv = isEmptyMathNode(topNode);
+  }
+  else
+    rv = (editCtrl.value.length == 0);
+  return rv;
+}
+
+function isEmptyMathNode(aNode)
+{
+  var rv = true;
+  var kids;
+  if (!aNode)
+    return true;
+  switch(msiGetBaseNodeName(aNode))
+  {
+    case "mi":
+      rv = msiNavigationUtils.isEmptyInputBox(aNode) || (aNode.textContent.length = 0);
+    break;
+
+    case "math":
+    case "mrow":
+    case "mstyle":
+    case "mphantom":
+    case "maction":
+      kids = msiNavigationUtils.getSignificantContents(aNode);
+      for (ii = 0; rv && (ii < kids.length); ++ii)
+      {
+        rv = isEmptyMathNode(kids[ii]);
+      }
+    break;
+
+    default:
+      rv = (aNode.textContent.length == 0);
+    break;
+  }
+  return rv;
+}
+
 function mathNodeFromNumericText(text)
 {
   var numRes = numberRE.exec(text);
@@ -406,7 +453,8 @@ function getPlotColorAndUpdate(id)
   if (colorWell.getAttribute("hasAlpha") == "true")
   {
     alphaVal = colorWell.getAttribute("alpha");
-    colorObj.TextColor = color.substr(0, color.length - 2);
+    if (color && color.length > 6)
+      colorObj.TextColor = color.substr(0, color.length - 2);
     if (alphaVal && alphaVal.length)
     {
       colorObj.alpha = twoHexDigitsToNumber(alphaVal);
