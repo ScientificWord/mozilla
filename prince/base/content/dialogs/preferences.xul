@@ -1062,7 +1062,7 @@
       <broadcaster id="plot.useAreaFill" collapsed="true" />
   	  <broadcaster id="plot.enableConformal" collapsed="true" />
       <broadcaster id="plot.colorAlphaEnabled" hasAlpha="false" />
-	  <broadcaster id="plot.useDiscontAdjust" collapsed="false" />
+	  <broadcaster id="plot.useDiscAdjust" collapsed="false" />
     </broadcasterset>
     <stringbundle id="computeBundle" src="chrome://prince/locale/compute.properties"/>
 

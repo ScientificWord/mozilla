@@ -3867,6 +3867,9 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMElement> elem;
   PRBool fExists;
+  PRBool bNeedUnique = PR_FALSE;
+  PRBool bNotifyGraphSpec = PR_FALSE;
+  nsAutoString msiGraphAttr;
   // get the data attribute from each <object>
   if (objnodes) {
     res = objnodes->Item(count, getter_AddRefs(node));
@@ -3875,7 +3878,19 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
     node = anode;
   }
   elem = do_QueryInterface(node);
-  if (srcDoc == doc) {
+  attr = NS_LITERAL_STRING("msigraph");
+  elem->GetAttribute(attr, msiGraphAttr);
+  if (msiGraphAttr.EqualsLiteral("true")) {
+    bNeedUnique = PR_TRUE;
+    bNotifyGraphSpec = PR_TRUE;
+  } else {
+    msiGraphAttr.Truncate(0);
+    attr = NS_LITERAL_STRING("msisnap");
+    elem->GetAttribute(attr, msiGraphAttr);
+    if (msiGraphAttr.EqualsLiteral("true"))
+      bNeedUnique = PR_TRUE;
+  }
+  if (!bNeedUnique && (srcDoc == doc)) {
     // nothing to do, except make sure recently copied files show up
     // if copying a graphic from another document, we have written a file to 
     // the document directory tree, but it may not be ready to show up yet.
@@ -3942,13 +3957,54 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
       res = srcDir->GetLeafName(srcDirName);
       res = destFile->Append(srcDirName);
       res = destFile->Exists(&fExists);
-      if (!fExists) {
+      if (!fExists)
         destFile->Create(1, 0755);
       res = destFile->Append(leafname);
+      PRBool isSameFile;
+      res = destFile->Equals(srcFile, &isSameFile);
+      if (isSameFile && !bNeedUnique) {
+        nsCOMPtr<nsITimer> timer = do_CreateInstance("@mozilla.org/timer;1");
+        if (!timer) {
+          return NS_OK;
+        }
+        timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, static_cast<void*>(elem), 200,
+                                  nsITimer::TYPE_ONE_SHOT);
+        m_timerlist.AppendObject(timer); 
+        return NS_OK;
+      }
+
+      destFile->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0755);
       nsAutoString newDataAttribute(srcDirName);
       newDataAttribute.Append(NS_LITERAL_STRING("/"));
+      res = destFile->GetLeafName(leafname);
       newDataAttribute.Append(leafname);
       elem->SetAttribute(attr, newDataAttribute);
+      if (bNotifyGraphSpec) {
+        nsCOMPtr<nsIDOMNode> gsNode;
+        nsCOMPtr<nsIDOMNode> parent;
+        nsCOMPtr<nsIDOMElement> graphSpec;
+        nsCOMPtr<nsIDOMNodeList> gsNodes;
+        nsAutoString tagName;
+        PRUint32 gsCount;
+        nsCOMPtr<nsIDOMNode> kidNode = node;
+        do {
+          res = kidNode->GetParentNode(getter_AddRefs(parent));
+          if (NS_SUCCEEDED(res) && parent)
+            parent->GetNodeName(tagName);
+          kidNode = parent;
+        } while (kidNode && !tagName.EqualsLiteral("graph"));
+        if (NS_SUCCEEDED(res) && parent) {
+          nsCOMPtr<nsIDOMElement> graphNode = do_QueryInterface(kidNode);
+          res = graphNode->GetElementsByTagName(NS_LITERAL_STRING("graphSpec"), getter_AddRefs(gsNodes));
+          gsNodes->GetLength(&gsCount);
+          if (NS_SUCCEEDED(res) && (gsCount > 0)) {
+            gsNodes->Item(0, getter_AddRefs(gsNode));
+            graphSpec = do_QueryInterface(gsNode);
+            attr = NS_LITERAL_STRING("ImageFile");
+            graphSpec->SetAttribute(attr, newDataAttribute);
+          }
+        }
+      }
       // now we are ready to copy from srcFile to destFile
       nsCOMPtr<msiIUtil> utils = do_GetService("@mackichan.com/msiutil;1", &res);
       PRBool success;
@@ -3961,11 +4017,12 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
 //      str * mystruct = new str();
 //      mystruct->elem = elem;
 //      mystruct->ed = static_cast<nsEditor*>(m_editor);
-      timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, (void*)elem, 200,
+      nsIDOMElement* elemPtr = elem;
+      NS_ADDREF(elemPtr);  //Have to do this to ensure that the pointer passed to the timer callback sticks around
+      timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, (void*)elemPtr, 200,
                                     nsITimer::TYPE_ONE_SHOT);
       m_timerlist.AppendObject(timer); 
       
-    }
   }
 }
 
@@ -3998,6 +4055,8 @@ void msiContentFilter::SetDataFromTimer(nsITimer *aTimer, void *closure)
       elem->RemoveAttribute(NS_LITERAL_STRING("src"));
       elem->SetAttribute(NS_LITERAL_STRING("src"), dataPath);
     }
+    nsIDOMElement* elemPtr = elem;
+    NS_RELEASE(elemPtr);  //Since we had to addref it previously to ensure its persistence
   }
 }
 
