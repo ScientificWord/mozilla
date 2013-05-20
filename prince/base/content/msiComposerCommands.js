@@ -2084,7 +2084,7 @@ function msiEditorOutputProgressListener(editorElement)
 
             // this should cause notification to listeners that doc has changed
             editor.resetModificationCount();
-            editor.pdfModCount = 0;
+            editor.pdfModCount = -1;
 
             // Set UI based on whether we're editing a remote or local url
             SetSaveAndPublishUI(urlstring);
@@ -2972,10 +2972,11 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 
   }
 
-
+  var prefs = GetPrefs();
+  prefs.setCharPref("swp.lastfilesaved", destLocalFile.path+".sci");
   if (!aSaveCopy)
   {
-    pdfModCount = 0;
+    pdfModCount = -1;
     editor.resetModificationCount();
   }
   // this should cause notification to listeners that document has changed
