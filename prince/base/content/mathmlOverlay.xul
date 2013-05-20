@@ -19,6 +19,7 @@
 
 <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
 <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+<script type="application/x-javascript" src="chrome://prince/content/symbols.js"/>
 
 
 #include mathmlkeys.inc
@@ -181,6 +182,10 @@ oncommand="msiGoDoCommand('cmd_marker')"/>
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00A3;&#x00B9;" tooltiptext="&MSISymbolTabLatin1;"/>
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"/>
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x201C;&#x201D;" tooltiptext="&MSISymbolTabPunctuation;"/>
+      <tab id="cachebar2" label="User" mathsym="true" tooltiptext="&MSISymbolTabDrag.tooltip;" linkedpanel="cachepanel2"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, 
+
+        );"
+        />
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 
@@ -218,7 +223,6 @@ oncommand="msiGoDoCommand('cmd_marker')"/>
   <toolbarbutton id ="symbolvarrho" />
   <toolbarbutton id ="symbolbackepsilon" />
   <toolbarbutton id ="symbolomicron" />
-  <toolbarbutton id ="symbolstigma" />
 </tabpanel>
 
 <!-- UPPERCASE GREEK -->
@@ -879,6 +883,8 @@ oncommand="msiGoDoCommand('cmd_marker')"/>
         <toolbarbutton id ="symbolguilsinglleft" />
         <toolbarbutton id ="symbolguilsinglright" />
       </tabpanel>
+      <tabpanel id='cachepanel2' observers="cachepanel"/>
+
     </tabpanels>
     <!--/vbox>
     </arrowscrollbox -->
@@ -950,9 +956,7 @@ oncommand="msiGoDoCommand('cmd_marker')"/>
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolomicron" label="&#x03BF;" tooltiptext="&symbolomicron.tooltip;" msivalue="&#x03BF;"
             observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolstigma" label="&#x03DB;" tooltiptext="&symbolstigma.tooltip;" msivalue="&#x03DB;"
-             observes="cmd_MSIsymbolCmd"/>
-
+  
 
 <!-- UPPERCASE GREEK -->
         <toolbarbutton id ="symbolGamma" label="&#x0393;" tooltiptext="&symbolGamma.tooltip;"  msivalue="&#x0393;"
