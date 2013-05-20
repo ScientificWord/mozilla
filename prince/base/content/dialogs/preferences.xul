@@ -52,6 +52,9 @@
       <preference id="defaultshell" 
                   name="swp.defaultShell" 
                   type="string"/>
+      <preference id="openLastFile"
+                  name="swp.openlastfile"
+                  type="bool" />
       <preference id="selectedSkin" 
                   name="general.skins.selectedSkin" 
                   type="string"/>
@@ -449,6 +452,7 @@
               <listbox preference="defaultshell" flex = "1" onselect="onShellSelect();" id="dircontents"/>
             </vbox>
           </hbox>
+          <checkbox label="&openLastFile.label;" preference="openLastFile" id="openLastSaved" />
         </tabpanel>
         <tabpanel orient="vertical">
           <groupbox>

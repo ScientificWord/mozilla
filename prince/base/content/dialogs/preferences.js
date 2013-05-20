@@ -1,3 +1,4 @@
+"use strict";
 Components.utils.import("resource://app/modules/computelogger.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
@@ -227,7 +228,7 @@ function writeGraphicLayoutPreferences(whichPrefs)
       elem = document.getElementById("plotWidth");
       pref = document.getElementById(elem.getAttribute("preference"));
       pref.value = elem.value;
-      elem = document.getElementById("plotHeight")
+      elem = document.getElementById("plotHeight");
       pref = document.getElementById(elem.getAttribute("preference"));
       pref.value = elem.value;
 //      pref = document.getElementById("defaultGraphSizeUnits");
@@ -334,7 +335,7 @@ function initializePrefMappersIfNeeded()
     prefEngineMapper = new Object();
     prefEngineMapper.digitsusedpref  = "Digits";
     prefEngineMapper.degreepref      = "MaxDegree";
-    prefEngineMapper.principalpref   = "PvalOnly"
+    prefEngineMapper.principalpref   = "PvalOnly";
     prefEngineMapper.specialpref     = "IgnoreSCases";
   }
   if (prefLogMapper == null)
@@ -740,8 +741,8 @@ function setPlotItemBroadcasters()
   document.getElementById("plot.approxIntPlot").collapsed = (plotTypeObj.plotType !== "approximateIntegral");
   document.getElementById("plot.useAreaFill").collapsed = ((plotTypeObj.plotType != "approximateIntegral") && (plotTypeObj.plotType !== "inequality"));
   document.getElementById("plot.enableConformal").collapsed = (plotTypeObj.plotType != "conformal");
-  document.getElementById("plot.useDiscAdjust").collapsed = ((plotTypeObj.plotType != "rectangular")
-                                && (plotTypeObj.plotType != "parametric") && (plotTypeObj.plotType != "implicit"));
+  document.getElementById("plot.useDiscAdjust").collapsed = ((plotTypeObj.plotType != "rectangular") &&
+                                (plotTypeObj.plotType != "parametric") && (plotTypeObj.plotType != "implicit"));
 }                                
 
 function onChangePlotType()
@@ -941,7 +942,7 @@ function getPlotDimAndPlottype(plotTypeDescription)
     case "cylindrical":                 return {dim : 3, plotType : "cylindrical"};
     case "spherical":                   return {dim : 3, plotType : "spherical"};
     case "tube":                        return {dim : 3, plotType : "tube"};
-    case "any":                         
+    case "any":                         ;
     default:                            return {dim : null, plotType : null};
   }
 }
