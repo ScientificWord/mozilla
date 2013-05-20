@@ -31,7 +31,7 @@
   <m nm="rho" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rho;<![CDATA[");]]></data></m>
   <m nm="varsigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sigmav;<![CDATA[");]]></data></m>
   <m nm="sigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sigma;<![CDATA[");]]></data></m>
-  <m nm="stigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&stigma;<![CDATA[");]]></data></m>
+<!--  <m nm="stigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&stigma;<![CDATA[");]]></data></m> -->
   <m nm="vartheta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&thetav;<![CDATA[");]]></data></m>
   <m nm="tau" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&tau;<![CDATA[");]]></data></m>
   <m nm="backepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&backepsilon;<![CDATA[");]]></data></m>
