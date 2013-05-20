@@ -1220,6 +1220,15 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
         docurl = msiURIFromString(docurlstring);
       if (docurl != null) dump("Url in args is "+docurl.spec+"\n");
     };
+    if (!docurl) {
+      var prefs = GetPrefs();
+      var fUseLastSavedFile = prefs.getBoolPref("swp.openlastfile");
+      if (fUseLastSavedFile) {
+        docurlstring = prefs.getCharPref("swp.lastfilesaved");
+        if (docurlstring.length > 0)
+          docurl = msiURIFromString("file://"+docurlstring);
+      }
+    }
 // Two cases: if (docurl), then the url of a doc to load was passed. It might be for a shell.
 //            if (!docurl), nothing was passed. Load the default shell.
     if (!docurl)

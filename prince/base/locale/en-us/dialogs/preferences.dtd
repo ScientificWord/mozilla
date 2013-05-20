@@ -47,6 +47,7 @@
 <!ENTITY InitialViewIntervals.label  "Initial View Intervals">
 <!ENTITY General.label  "General">
 <!ENTITY Expert.label "Expert">
+<!ENTITY openLastFile.label "Open the last file saved, if it is present">
 
 
 <!ENTITY miscellaneousOptions.label "Miscellaneous Options">
