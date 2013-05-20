@@ -639,13 +639,15 @@ function exportToWeb()
 
    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
    fp.init(window, "Export to Web", msIFilePicker.modeSave);
-   fp.appendFilter("Compressed zip file", "*.zip");
-   fp.appendFilter("Directory", "");
-   try 
+   fp.appendFilter("Complete zip file ", "*.zip");
+   fp.appendFilter("Zip file with web refs for CSS", "*.zip");
+   fp.appendFilter("Zip file with MathJax", "*.zip");
+   fp.appendFilter("Zip file with web refs for CSS and MathJax", "*.zip");
+     try 
    {
      var dialogResult = fp.show();
      if (dialogResult != msIFilePicker.returnCancel)
-       if (!saveforweb(editor.document, (fp.filterIndex == 1), fp.file ))
+       if (!saveforweb(editor.document, fp.filterIndex, fp.file ))
          AlertWithTitle("Export", "Web file not created.");
    }
    catch (ex) 
