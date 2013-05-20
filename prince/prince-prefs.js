@@ -204,5 +204,5 @@ pref("swp.user.trigargs", false);
 pref("swp.user.upperthreshold", 4);
 pref("swp.user.usearc", false);
 pref("swp.savetoweb.mathjaxsrc", "https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML");
-pref("swp.savetoweb.cssurl", "www.mackichan/supportfiles/6.0/css");
+pref("swp.savetoweb.cssurl", "http://www.mackichan.com/supportfiles/6.0/css/");
 pref("font.mathfont-family", "MathJax_Main, Asana Math, XITS Math, Symbol, DejaVu Sans, Cambria Math");

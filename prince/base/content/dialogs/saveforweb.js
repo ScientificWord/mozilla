@@ -169,6 +169,10 @@ function appendRelativePath(dir, relPath)
 {
    var f = dir.clone();
    var arr = relPath.split("/");
+   if (!dir.exists())
+   {
+       dir.create(1, 493);
+   }
    for  (var i = 0; i < arr.length; i++)
    {
      f.append(arr[i]);
@@ -212,10 +216,12 @@ function handleStyleSheet (oldHRef, newHRef, dir, depth, fUseWebCss, cssurl)  //
   // while it is open, look for @import and -moz-binding commands that may need to be changed.
   try {
     var f;
+    var re = /resource:\/\/app\/res\/([a-zA-Z0-9_\/\.\-]+)/i;
+    if (fUseWebCss && re.test(oldHRef)) return;
+
     if (newHRef.indexOf("://") < 0)  //BBM: this is hopefully a test that the url string is relative
     {
       f = appendRelativePath(dir, newHRef);
-      var re = /resource:\/\/app\/res\/([a-zA-Z0-9_\/\.\-]+)/i;
       var match;
       var contents = getFileAsString( oldHRef );
 
@@ -224,7 +230,13 @@ function handleStyleSheet (oldHRef, newHRef, dir, depth, fUseWebCss, cssurl)  //
         while ((match = re.exec(contents))!= null)
         {
           handleStyleSheet(match[0],match[1],dir, ++depth, fUseWebCss, cssurl);
-          contents = contents.replace(match[0],match[1].replace(/^css\//i,""));
+          if (fUseWebCss) {
+            contents = contents.replace(match[0], cssurl+match[1].replace(/^css\//i,""));
+
+          }
+          else {
+            contents = contents.replace(match[0],match[1].replace(/^css\//i,""));
+          }
         }
         //contents = contents.replace(re2,"/*$1*/","gm");
       } 
