@@ -1225,8 +1225,12 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       var fUseLastSavedFile = prefs.getBoolPref("swp.openlastfile");
       if (fUseLastSavedFile) {
         docurlstring = prefs.getCharPref("swp.lastfilesaved");
-        if (docurlstring.length > 0)
-          docurl = msiURIFromString("file://"+docurlstring);
+        if (docurlstring.length > 0) {
+          var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+          file.initWithPath(docurlstring);
+          if (file.exists())
+            docurl = msiURIFromString("file://"+docurlstring);
+        }
       }
     }
 // Two cases: if (docurl), then the url of a doc to load was passed. It might be for a shell.
