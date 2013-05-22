@@ -1,4 +1,4 @@
-function startup()
+function symbolStartup()
 {
 //  var editorElement = msiGetActiveEditorElement(window.parent);
 //  window.msiSetupHTMLEditorCommands(editorElement);
