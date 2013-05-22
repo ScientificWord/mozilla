@@ -1,5 +1,17 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
+<!ENTITY insertmenuLTP.label "LaTeX position mark" >
+<!ENTITY insertmenuLTP.accesskey "X" >
+<!ENTITY LTPmakeTOC.label "Make Table of Contents" >
+<!ENTITY LTPmakeTOC.accesskey "C" >
+<!ENTITY LTPmakeLOT.label "Make List of Tables" >
+<!ENTITY LTPmakeLOT.accesskey "T" >
+<!ENTITY LTPmakeLOF.label "Make List of Figures" >
+<!ENTITY LTPmakeLOF.accesskey "F" >
+<!ENTITY LTPappendix.label "Start Appendices" >
+<!ENTITY LTPappendix.accesskey "S" >
+<!ENTITY LTPmakeTitle.label "Make Title" >
+<!ENTITY LTPmakeTitle.accesskey "M" >
 <!ENTITY MSIInsertMenu.label  "Insert">
 <!ENTITY MSIMathMenu.label "Math">
 <!ENTITY MSIMathMenu.accesskey "m">
