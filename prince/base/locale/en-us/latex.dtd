@@ -7,6 +7,7 @@
 <!ENTITY  maketoc       "Make table of contents here">
 <!ENTITY  makelot       "Make list of tables here">
 <!ENTITY  makelof       "Make list of figures here">
+<!ENTITY  appendix      "Start appendices here">
 <!ENTITY  index         "Index: ">
 <!ENTITY  printindex    "Print index here">
 <!ENTITY  marker        "Marker: ">

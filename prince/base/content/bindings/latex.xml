@@ -715,6 +715,20 @@ Make list of figures here
 		</xbl:content>
 	</xbl:binding>
 
+	<xbl:binding id="appendix">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&appendix;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
+
 	<xbl:binding id="indexitem">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>

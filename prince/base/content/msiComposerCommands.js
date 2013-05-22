@@ -161,6 +161,12 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_zoomout", msiZoomOutCommand);
   commandTable.registerCommand("cmd_zoomreset", msiZoomResetCommand);
   commandTable.registerCommand("cmd_showhelp", msiShowHelpCommand);
+  commandTable.registerCommand("cmd_maketitle", msiMakeTitleCommand);
+  commandTable.registerCommand("cmd_maketoc", msiMakeTOCCommand);
+  commandTable.registerCommand("cmd_makelot", msiMakeLOTCommand);
+  commandTable.registerCommand("cmd_makelof", msiMakeLOFCommand);
+  commandTable.registerCommand("cmd_appendix", msiAppendixCommand);
+
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -10529,5 +10535,110 @@ var msiShowHelpCommand =
     catch (e) {
       finalThrow(cmdFailString('showhelp'), e.message);
     }
+  }
+}
+
+var msiMakeTitleCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertTag('maketitle');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('maketitle'), e.message);
+    }
+  }
+}
+
+var msiMakeTOCCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertTag('maketoc');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('maketoc'), e.message);
+    }
+  }
+}
+
+var msiMakeLOTCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertTag('makelot');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('makelot'), e.message);
+    }
+  }
+}
+
+var msiMakeLOFCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertTag('makelof');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('makelof'), e.message);
+    }
+  }
+}
+
+var msiAppendixCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertTag('appendix');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('appendix'), e.message);
+    }
+  }
+}
+
+
+function msiInsertTag(tagname){
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var node = editor.document.createElement(tagname);
+  editor.insertElementAtSelection(node,true);
+  var sel = editor.selection;
+  var insertedNode = sel.focusNode;
+  while (insertedNode && insertedNode.tagName != tagname) insertedNode = insertedNode.parentNode;
+  if (insertedNode && insertedNode.tagName == tagname)
+  {
+    editor.setCaretAfterElement(insertedNode);
   }
 }
