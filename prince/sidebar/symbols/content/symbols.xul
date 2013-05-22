@@ -14,7 +14,7 @@
 
 <page id       = "symbol-panels"
       xmlns    = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-      onload   = "startup()" 
+      onload   = "symbolStartup()" 
       onresize = "windowChanged();"
 >
 
