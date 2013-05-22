@@ -1240,7 +1240,10 @@ Plot.prototype = {
           value = 6;
           break;
         case "tube":
-          value = 40;
+          if (key == "TubeRadialPts")
+            value = 9;
+          else
+            value = 40;
           break;
         default:
           value = 20;
@@ -1262,6 +1265,7 @@ Plot.prototype = {
       case "XPts":
       case "YPts":
       case "ZPts":
+      case "TubeRadialPts":
         return this.getDefaultNumPlotPoints(key);
       break;
     }
@@ -1278,9 +1282,6 @@ Plot.prototype = {
         case 'ConfVerticalPts':
           value = "15";
           break;
-        case 'TubeRadialPts':
-          value = GetNumAsMathML(9);
-        break;
           //      default:
           //        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
         case 'Expression':

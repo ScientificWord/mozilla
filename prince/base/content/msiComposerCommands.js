@@ -8858,7 +8858,23 @@ var msiEditTableCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return msiIsInTable();
+    if (msiIsInTable())
+      return true;
+    var propObj;
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    if (editor && editor.selection.isCollapsed)
+    {
+      var aNode = editor.selection.focusNode;
+      var anOffset = editor.selection.focusOffset;
+      if ((aNode.nodeType != nsIDOMNode.TEXT_NODE) || (anOffset == 0))
+      {
+        aNode = msiFindRevisableNodeToLeft(aNode, anOffset, editor);
+        if (editor.getElementOrParentByTagName("table", aNode))
+          return true;
+      }
+    }
+    return false;
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},

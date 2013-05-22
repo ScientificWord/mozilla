@@ -34,6 +34,8 @@
   screenY="40"
   persist="screenX screenY width height"
 >
+<!-- Scripts specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/intervalsAndAnimation.js"/>
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
@@ -50,7 +52,6 @@
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
 <!-- Scripts specific to this dialog -->
-  <script type="application/x-javascript" src="chrome://prince/content/intervalsAndAnimation.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
   

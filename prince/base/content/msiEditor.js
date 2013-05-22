@@ -1222,7 +1222,11 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     };
     if (!docurl) {
       var prefs = GetPrefs();
-      var fUseLastSavedFile = prefs.getBoolPref("swp.openlastfile");
+      var fUseLastSavedFile;
+      try
+      {
+        fUseLastSavedFile = prefs.getBoolPref("swp.openlastfile");
+      } catch(ex) {msidump("Exception in msiLoadInitialDocument; couldn't get preference swp.lastfilesaved\n"); fUseLastSavedFile = false;}
       if (fUseLastSavedFile) {
         docurlstring = prefs.getCharPref("swp.lastfilesaved");
         if (docurlstring.length > 0) {
@@ -4155,6 +4159,77 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editorElement)
       return retObj;
     }
   }
+
+  aNode = msiFindRevisableNodeToLeft(aNode, anOffset, editor);
+//  var nextNode = null;
+////  if (anOffset >= aNode.childNodes.length)
+//  if (msiNavigationUtils.positionIsAtEnd(aNode, anOffset))
+//    nextNode = aNode;
+//  for (var ix = anOffset; (nextNode == null) && (ix > 0); --ix)
+//  {
+//    //NOTE that we should never be in this clause if this is a text node, since unless anOffset == 0 we would have bailed out in the previous clause.
+//    if ( !msiNavigationUtils.isIgnorableWhitespace(aNode.childNodes[ix-1]) )
+//    {
+//      nextNode = aNode.childNodes[ix-1];
+//      break;
+//    }
+//  }
+//  if (ix != 0 && nextNode == null)
+//  {
+//    dump("Unexpected result in msiFindObjectToLeft! Return null.\n");
+//    return retObj;
+//  }
+//
+//  //Now the only way that nextNode should be null is really if we're at the beginning of aNode:
+////  while ((nextNode == null) && msiNavigationUtils.boundaryIsTransparent(aNode, editor, posAndDir))
+//  while ( (nextNode == null) && msiNavigationUtils.positionIsAtStart(aNode, ix) )
+//  {
+//    if (msiNavigationUtils.boundaryIsTransparent(aNode, editor, msiNavigationUtils.leftEndToLeft))
+//    //Move to left and try again...
+//      nextNode = aNode.previousSibling;
+//    else
+//      return retObj;  //No reasonable object to revise here.
+//    //Move to our parent since we're at his beginning,
+//    if (nextNode == null)
+//    {
+//      var nextParent = aNode.parentNode;
+////      ix = msiNavigationUtils.offsetInParent(aNode);  //Should we just say 0 since we found no previousSibling?
+//      ix = 0;
+//      aNode = nextParent;
+//    }
+//  }
+//
+//  if (nextNode != null)  //In this case we've identified an object to our left. We check whether we should descend into it:
+//  {
+//    aNode = nextNode;
+////    nextNode = null;
+//    while (nextNode != null && msiNavigationUtils.boundaryIsTransparent(nextNode, editor, msiNavigationUtils.rightEndToLeft))
+//      nextNode = msiNavigationUtils.getLastSignificantChild(nextNode);
+//    if (nextNode != null)
+//      aNode = nextNode;
+////      aNode = aNode.lastChild;
+//  }
+//
+  //Finally, one last check on the validity of aNode. If it fails, there's nothing good to revise.
+  if (msiNavigationUtils.cannotSelectNodeForProperties(aNode))
+    return retObj;
+
+//  returnVal.theNode = aNode;
+  if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+  {
+//    returnVal.theOffset = aNode.length - 1;
+    retObj = new msiCharPropertiesObjectData();
+    retObj.initFromNodeAndOffset(aNode, aNode.length, editorElement);
+  }
+  else
+    retObj = msiCreatePropertiesObjectDataFromNode(aNode, editorElement);
+//    returnVal.theOffset = null;
+
+  return retObj;
+}
+
+function msiFindRevisableNodeToLeft(aNode, anOffset, editor)
+{
   var nextNode = null;
 //  if (anOffset >= aNode.childNodes.length)
   if (msiNavigationUtils.positionIsAtEnd(aNode, anOffset))
@@ -4182,7 +4257,7 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editorElement)
     //Move to left and try again...
       nextNode = aNode.previousSibling;
     else
-      return retObj;  //No reasonable object to revise here.
+      return nextNode;  //No reasonable object to revise here.
     //Move to our parent since we're at his beginning,
     if (nextNode == null)
     {
@@ -4203,23 +4278,7 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editorElement)
       aNode = nextNode;
 //      aNode = aNode.lastChild;
   }
-
-  //Finally, one last check on the validity of aNode. If it fails, there's nothing good to revise.
-  if (msiNavigationUtils.cannotSelectNodeForProperties(aNode))
-    return retObj;
-
-//  returnVal.theNode = aNode;
-  if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
-  {
-//    returnVal.theOffset = aNode.length - 1;
-    retObj = new msiCharPropertiesObjectData();
-    retObj.initFromNodeAndOffset(aNode, aNode.length, editorElement);
-  }
-  else
-    retObj = msiCreatePropertiesObjectDataFromNode(aNode, editorElement);
-//    returnVal.theOffset = null;
-
-  return retObj;
+  return aNode;
 }
 
 /******Display Mode stuff - for the time being, only applicable to main editor window, but leave the functions here anyway******/
