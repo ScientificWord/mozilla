@@ -56,7 +56,8 @@ function insertTag( name, delSelection )
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
   if (delSelection) deleteSelection();
-  HTMLEditor.insertHTML("<"+name+"/>");
+  var node = editor.document.createElement(name);
+  editor.insertElementAtSelection(node,true);
 }
   
 
