@@ -32,6 +32,11 @@ caption {
 
 table {
   margin: 0px;
+  border-collapse: collapse;
+}
+
+table:focus {
+  border-collapse: separate;
 }
 
 /*table {

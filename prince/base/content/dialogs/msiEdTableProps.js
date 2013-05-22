@@ -1596,10 +1596,10 @@ function DoStyleChangesForACell(destCell)
     if (bEmptyStyle)
     {
       if ( (styleValStr != null) && styleValStr.length )
-        theStyle += styleProp + ": " + styleValStr + ";";
+        theStyle += styleProp + ": " + styleValStr + " !important;";
     }
     else if ((styleValStr != null) && styleValStr.length)
-      globalCellElement.style.setProperty( styleProp, styleValStr, "");
+      globalCellElement.style.setProperty( styleProp, styleValStr, "important");
     else
       globalCellElement.style.removeProperty( styleProp );
   }
