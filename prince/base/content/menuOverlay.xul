@@ -586,6 +586,12 @@
           oncommandupdate="msiGoUpdateComposerMenuItems(this)"
   >
     <!-- format menu -->
+    <command id="cmd_maketitle" oncommand="msiGoDoCommand('cmd_maketitle')" />
+    <command id="cmd_maketoc"   oncommand="msiGoDoCommand('cmd_maketoc')" />
+    <command id="cmd_makelot"   oncommand="msiGoDoCommand('cmd_makelot')" />
+    <command id="cmd_makelof"   oncommand="msiGoDoCommand('cmd_makelof')" />
+    <command id="cmd_appendix"  oncommand="msiGoDoCommand('cmd_appendix')" />
+
     <command id="cmd_listProperties"  oncommand="msiGoDoCommand('cmd_listProperties')"/>
     <command id="cmd_pageProperties"  oncommand="msiGoDoCommand('cmd_pageProperties')"/>
     <command id="cmd_colorProperties" oncommand="msiGoDoCommand('cmd_colorProperties')"/>

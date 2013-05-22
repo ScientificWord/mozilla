@@ -93,6 +93,7 @@ oncommand="msiGoDoCommand('cmd_marker')"/>
                   oncommandupdate="goUpdateMSIMathMenuItems(this)">
     <command id="cmd_MSIaddMatrixRowsCmd"          oncommand="msiGoDoCommand('cmd_MSIaddMatrixRowsCmd')"/>
     <command id="cmd_MSIaddMatrixColumnsCmd"       oncommand="msiGoDoCommand('cmd_MSIaddMatrixColumnsCmd')"/>
+
   </commandset>
 
 
@@ -155,6 +156,16 @@ oncommand="msiGoDoCommand('cmd_marker')"/>
             command="cmd_MSIinsertSubdocumentCmd"/ -->
         </menupopup>
       </menu>
+      <menu id="insertmenuLaTeXPositions" label="&insertmenuLTP.label;" accesskey="&insertmenuLTP.accesskey;">
+        <menupopup>
+          <menuitem id="LTPmakeTitle" label="&LTPmakeTitle.label;" accesskey="&LTPmakeTitle.accesskey;" command="cmd_maketitle" />
+          <menuitem id="LTPmakeTOC" label="&LTPmakeTOC.label;" accesskey="&LTPmakeTOC.accesskey;" command="cmd_maketoc" />
+          <menuitem id="LTPmakeLOT" label="&LTPmakeLOT.label;" accesskey="&LTPmakeLOT.accesskey;" command="cmd_makelot" />
+          <menuitem id="LTPmakeLOF" label="&LTPmakeLOF.label;" accesskey="&LTPmakeLOF.accesskey;" command="cmd_makelof" />
+          <menuitem id="LTPappendix" label="&LTPappendix.label;" accesskey="&LTPappendix.accesskey;" command="cmd_appendix" />
+        </menupopup>
+      </menu>  
+
       <menuitem id="insertmenuHyperlink" label="&insertmenuHyperlink.label;"
         accesskey="&insertmenuHyperlink.accesskey;" command="cmd_link" />
       <menuitem id="insertmenuHTMLField" label="&insertmenuHTMLField.label;"

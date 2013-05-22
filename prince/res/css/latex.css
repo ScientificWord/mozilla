@@ -245,9 +245,14 @@ bodyText {
   margin-bottom: 0 
 }
 
+/* ... but indent the following paragraphs */
 bodyText + bodyText {
   text-indent: 1.5em;
   margin-top: 0 
+}
+
+td bodyText {
+  text-indent: 0
 }
 
 img {
@@ -839,6 +844,10 @@ makelof {
 
 makelot {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#makelot");
+}
+
+appendix {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#appendix");
 }
 
 line {
