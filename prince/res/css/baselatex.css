@@ -421,7 +421,7 @@ button[class="msi"]::-moz-selection, button[class="msi"][selected="true"] {
   background-color: blue;
 }
 
-texb, makelof, makelot, maketitle, maketoc{
+texb, makelof, makelot, maketitle, maketoc, appendix {
   font-family: sans-serif;
   font-style: normal;
   -moz-user-select: all;

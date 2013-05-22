@@ -995,7 +995,7 @@ should not be done under some conditions -->
 <xsl:template match="html:frontmatter">\frontmatter<xsl:apply-templates/></xsl:template>
 <xsl:template match="html:mainmatter">\mainmatter<xsl:apply-templates/></xsl:template>
 <xsl:template match="html:backmatter">\backmatter<xsl:apply-templates/></xsl:template>
-<xsl:template match="html:appendix">\appendix<xsl:apply-templates/></xsl:template>
+<xsl:template match="html:appendix">\appendix</xsl:template>
 
 <xsl:template match="html:rawTeX">
   <xsl:value-of select="@tex"/>
