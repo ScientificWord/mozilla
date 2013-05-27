@@ -1904,7 +1904,7 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
         childNode = do_QueryInterface(child);
         childNode->SetEditableFlag(PR_TRUE);
         res = DeleteNode(child);
-  //      if (res != NS_OK) break;
+        if (res != NS_OK) break;
         res = elem->GetFirstChild(getter_AddRefs(child));
       }
     // }
