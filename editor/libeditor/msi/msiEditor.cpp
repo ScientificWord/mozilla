@@ -2166,6 +2166,18 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
              }                                             
            }
          }
+//rwa         nsCOMPtr<nsIDOMNode> tmpNode;
+//rwa         PRInt32 tmpOffset;
+//rwa         nsresult rv(NS_OK);
+//rwa         dummyNode = startNode;
+//rwa         while (NS_SUCCEEDED(rv) && (dummyNode != commonAncestor))
+//rwa         {
+//rwa           if (!ShouldSelectWholeObject(dummyNode))
+//rwa           {
+//rwa             break;
+//rwa           }
+//rwa           rv = GetNodeLocation(tmpNode, address_of(dummyNode), &tmpOffset);
+//rwa         }
        } // end focus and/or anchor maybe in math
        if (doSet)
        {
@@ -3901,7 +3913,9 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
 //    str * mystruct = new str();
 //    mystruct->elem = elem;
 //    mystruct->ed = static_cast<nsEditor*>(m_editor);
-    timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, static_cast<void*>(elem), 200,
+    nsIDOMElement* elemPtr = elem;
+    NS_ADDREF(elemPtr);  //Have to do this to ensure that the pointer passed to the timer callback sticks around
+    timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, static_cast<void*>(elemPtr), 200,
                                   nsITimer::TYPE_ONE_SHOT);
     m_timerlist.AppendObject(timer); 
     return NS_OK;
@@ -3967,7 +3981,9 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
         if (!timer) {
           return NS_OK;
         }
-        timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, static_cast<void*>(elem), 200,
+        nsIDOMElement* elemPtr = elem;
+        NS_ADDREF(elemPtr);  //Have to do this to ensure that the pointer passed to the timer callback sticks around
+        timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, static_cast<void*>(elemPtr), 200,
                                   nsITimer::TYPE_ONE_SHOT);
         m_timerlist.AppendObject(timer); 
         return NS_OK;
