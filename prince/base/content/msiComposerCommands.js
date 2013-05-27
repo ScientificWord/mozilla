@@ -9993,6 +9993,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       dump("msiNote: exception = '"+e.message+"'\n");
     }
   }
+  editor.setCursorInNewHTML(node);
   editor.endTransaction();
 }
 
