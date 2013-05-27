@@ -998,9 +998,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             lastInsertNode = curNode;
           }
         }
-        selection->Collapse(parentNode, offsetOfNewNode);
-        res = mRules->DidDoAction(selection, &ruleInfo, res);
-        return res;
+//        selection->Collapse(parentNode, offsetOfNewNode);
+//        res = mRules->DidDoAction(selection, &ruleInfo, res);
+//        return res;
       }
       else
       {
