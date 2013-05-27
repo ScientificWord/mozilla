@@ -1417,8 +1417,11 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
   nsresult rv = NS_OK;
   nsCOMPtr<nsIDOMNode> node = aNode;
   nsCOMPtr<nsIDOMNode> parent = aNode;
+  nsCOMPtr<nsIDOMNode> tmp;
   PRInt32 offset = aOffset;
   PRBool  bResetPromotion = PR_FALSE;
+  PRBool bIsAtObjEnd = PR_FALSE;
+  PRUint32 numChildren;
   
   // default values
   *outNode = node;
@@ -1453,8 +1456,33 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
     else
     {
       node = GetChildAt(parent,offset);
+      if (!node)
+      {
+        GetLengthOfDOMNode(parent, numChildren); 
+        if (offset >= (PRInt32)numChildren)
+          bIsAtObjEnd = PR_TRUE;
+        else if (offset > 0)
+        {
+          tmp = GetChildAt(parent, offset-1);
+          if (IsLastNode(tmp))
+            bIsAtObjEnd = PR_TRUE;
+        }
+        while (bIsAtObjEnd && (parent!=common))  //When bIsAtObjEnd is true, the selection should contain no part of parent, since no part of parent is after the starting point
+        {
+          node = parent;
+          rv = GetNodeLocation(node, address_of(parent), &offset);
+          NS_ENSURE_SUCCESS(rv, rv);
+          if (offset == -1)
+            return NS_OK; // we hit generated content; STOP
+          GetLengthOfDOMNode(parent, numChildren);
+          bIsAtObjEnd = IsLastNode(node);
+          if (!bIsAtObjEnd)
+            node = GetChildAt(parent, offset+1);
+        }
+        if (!bIsAtObjEnd && !node)
+          node = parent;
+      }
     }
-    if (!node) node = parent;
 
     // finding the real start for this point.  look up the tree for as long as we are the 
     // first node in the container, and as long as we haven't hit the body node.
@@ -1536,7 +1564,32 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
       if (offset) offset--; // we want node _before_ offset
       node = GetChildAt(parent,offset);
     }
-    if (!node) node = parent;
+    if (!node)
+    {
+      GetLengthOfDOMNode(parent, numChildren); 
+      if (offset == 0)
+        bIsAtObjEnd = PR_TRUE;
+      else if (offset+1 < (PRInt32)numChildren)
+      {
+        tmp = GetChildAt(parent, offset+1);
+        if (IsFirstNode(tmp))
+          bIsAtObjEnd = PR_TRUE;
+      }
+      while (bIsAtObjEnd && (parent!=common))  //When bIsAtObjEnd is true, the selection should contain no part of parent, since no part of parent is before the endpoint
+      {
+        node = parent;
+        rv = GetNodeLocation(node, address_of(parent), &offset);
+        NS_ENSURE_SUCCESS(rv, rv);
+        if (offset == -1)
+          return NS_OK; // we hit generated content; STOP
+        GetLengthOfDOMNode(parent, numChildren);
+        bIsAtObjEnd = IsFirstNode(node);
+        if (!bIsAtObjEnd)   //in which case we know offset>0
+          node = GetChildAt(parent, offset-1);
+      }
+      if (!bIsAtObjEnd && !node)
+        node = parent;
+    }
     
     // finding the real end for this point.  look up the tree for as long as we are the 
     // last node in the container, and as long as we haven't hit the body node.
