@@ -28,7 +28,7 @@ function princeStartUp()
   else
   {
     if (button = document.getElementById("printPreviewButtonMac")) button.hidden = true;
-     if (button = document.getElementById("printPreviewMenuItemMac")) button.hidden=true;
+    if (button = document.getElementById("printPreviewMenuItemMac")) button.hidden=true;
   }
   var prefs = GetPrefs();
   var wantdebug = prefs.getBoolPref("swp.debugtools");
@@ -428,7 +428,7 @@ function openTeX()
     }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     
-    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, false);
+    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, false, false);
   }                       
 }
 

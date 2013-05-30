@@ -1068,7 +1068,7 @@ function openDocument()
       dump("Ready to edit page: " + fp.fileURL.spec +"\n");
       var newdocumentfile;
       newdocumentfile = createWorkingDirectory(fp.file);
-      msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
+      msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false);
       msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
     }
   }
@@ -1119,7 +1119,7 @@ function openNewDocument()
         thefile.initWithPath(data.filename);
         newdocumentfile = createWorkingDirectory(thefile);
         var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
-        msiEditPage( url, window, false);
+        msiEditPage( url, window, false, true);
       } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
 
     }
@@ -8467,7 +8467,7 @@ var msiEditLinkCommand =
     {
       var element = msiGetEditor(editorElement).getSelectedElement("href");
       if (element)
-        msiEditPage(msiURIFromString(element.href), window, false);
+        msiEditPage(msiURIFromString(element.href), window, false, false);
     }
     catch (e) {
       finalThrow(cmdFailString('editlink'), e.message);
