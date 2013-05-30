@@ -2,6 +2,13 @@
 
 \newcounter{MaxMatrixCols}
 
+\msi@inpreamble = 0
+
+
+%%\def\msiToPreamble#1{\expandafter\preambleToks\expandafter{\the\preambleToks #1}}
+
+
+
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
 \def\href#1#2{%
@@ -197,6 +204,7 @@
 %     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\input{tcilatex}}}
    \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msiclosetag{preamble}{</preamble>}%
+   \msi@inpreamble = 0
    \br\msitag{</head>}
    \br\msiopentag{body}{<body>}
    %%\msihmode\br\msiopentag{docbody}{<docbody>}%
@@ -1715,7 +1723,8 @@
    
    \br\msitag{<head>}
    \br\msiopentag{preamble}{<preamble>}
-   
+   \msi@inpreamble=1
+
    \def\makeatother{%
        \msihmode
        \msitag{<texb enc="1" name="makeatother">}%
