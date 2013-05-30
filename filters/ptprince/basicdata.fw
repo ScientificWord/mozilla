@@ -84,6 +84,7 @@ static int msidobraces;
 static int msidollar;
 static int msioutput;
 static int msitraceall;
+static int msiinpreamble;
 @}
 
 
@@ -154,6 +155,7 @@ int Global::msidobraces;
 int Global::msidollar;
 int Global::msioutput;
 int Global::msitraceall;
+int Global::msiinpreamble;
 @}
 
 
