@@ -36,9 +36,9 @@
       <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
      <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
-        <menupopup id="menupopup_RecentFiles"
+        <<menupopup id="menupopup_RecentFiles"
            oncommand="msiEditPage(msiFileURLFromAbsolutePath(event.target.getAttribute('value')).spec, window,
-            false);"/>
+            false, false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
       <menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"
@@ -373,7 +373,7 @@
   </menu>  
 
 
-  <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;" key="msiMacHelp">
+  <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;" key="&helpMac.commandkey;">
     <menupopup id="helpPopup" >
       <menuitem id="helpmenuContents" 
                 label="&helpmenuContents.label;" 
