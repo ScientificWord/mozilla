@@ -129,6 +129,10 @@ function msiEditorOnLoad()
       document.getElementById( "args" ).setAttribute( "value", window.arguments[0] );
     }
   }
+  if ( window.arguments && window.arguments[3] )
+  {
+      document.getElementById( "args" ).setAttribute( "isShell", window.arguments[3] );
+  }
 
   // get default character set if provided
   if ("arguments" in window && window.arguments.length > 1)
