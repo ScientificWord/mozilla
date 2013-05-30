@@ -133,7 +133,7 @@ NS_IMETHODIMP DeleteElementTxn::UndoTransaction(void)
   if (!mParent) { return NS_OK; } // this is a legal state, the txn is a no-op
   if (!mElement) { return NS_ERROR_NULL_POINTER; }
 
-#ifdef NS_DEBUG
+#ifdef Never
   // begin debug output
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(mElement);
   nsAutoString elementTag(NS_LITERAL_STRING("text node"));
