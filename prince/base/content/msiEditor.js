@@ -1123,7 +1123,7 @@ function isShell (filename)
   return foundit;
 }
 
-function EditorStartupForEditorElement(editorElement, topwindow)
+function EditorStartupForEditorElement(editorElement, topwindow, isShell)
 {
 
 //  msiDumpWithID("Entering EditorStartupForEditorElement for element [@].\n", editorElement);
@@ -1182,7 +1182,7 @@ function EditorStartupForEditorElement(editorElement, topwindow)
   }
 
   msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
-  msiLoadInitialDocument(editorElement, is_topLevel);
+  msiLoadInitialDocument(editorElement, is_topLevel, isShell);
 }
 
   // Get url for editor content and load it.
@@ -1209,9 +1209,12 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     var dir;
     var charset = "";
     var initMarker = "";
+    var isShell = false;
     if (theArgs)
     {
       charset = theArgs.getAttribute("charset");
+      isShell = theArgs.getAttribute("isShell") == "true";
+      editorElement.isShellFile == isShell;
       initMarker = theArgs.getAttribute("initialMarker");
       if (initMarker && initMarker.length)
         editorElement.initialMarker = initMarker;
@@ -1276,7 +1279,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
         needToCreateDirectory = true;
       }
     }
-    else editorElement.isShellFile = false;
+    else editorElement.isShellFile = isShell;
     if (!docurl)
     {
       dump("Unable to find Doc Url\n");
@@ -1814,7 +1817,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     {
       if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
       // if the document is a shell and has never been saved, it will be deleted by Revert
-        doRevert(false, editorElement, true);
+        file.remove(false);
       return true;
     }
   }
@@ -11116,7 +11119,7 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
 //  }
 
   if (!targEditor)
-    targEditor = msiEditPage(fullTargURI, theWindow, false, winNameToUse);
+    targEditor = msiEditPage(fullTargURI, theWindow, false, false, winNameToUse);
   else if (targURI)
   {
     msiCheckAndSaveDocument(targEditor, "cmd_close", true);
@@ -11230,7 +11233,7 @@ function msiCheckOpenWindowForURIMatch(uri, win)
 //  We must always find an existing window with requested URL
 // (When calling from a dialog, "launchWindow" is dialog's "opener"
 //   and we need a delay to let dialog close)
-function msiEditPage(url, launchWindow, delay, windowName)
+function msiEditPage(url, launchWindow, delay, isShell, windowName)
 {
   // Always strip off "view-source:" and #anchors; kludge: accept string url or nsIURI url.
   var urlstring, fullUrlstring;
@@ -11291,6 +11294,7 @@ function msiEditPage(url, launchWindow, delay, windowName)
         {
           // We found an editor with our url
           useEditorElement.focus();
+          useEditorElement.isShellFile = isShell;
           if (marker && marker.length)
             msiGoToMarker(useEditorElement, marker);
           return useEditorElement;
@@ -11315,6 +11319,7 @@ function msiEditPage(url, launchWindow, delay, windowName)
         msiSetEditMode(msiGetPreviousNonSourceDisplayMode(useEditorElement), useEditorElement);
       msiEditorLoadUrl(useEditorElement, uri, marker);
       useEditorElement.focus();
+      useEditorElement.isShellFile = isShell;
       msiSetSaveAndPublishUI(uri.spec, useEditorElement);
 
 //      if (emptyWindow.IsInHTMLSourceMode())
@@ -11330,10 +11335,10 @@ function msiEditPage(url, launchWindow, delay, windowName)
       windowName = "_blank";
     if (delay)
     {
-      win = launchWindow.delayedOpenWindow("chrome://prince/content", "chrome,all,dialog=no", url);
+      win = launchWindow.delayedOpenWindow("chrome://prince/content", null, "chrome,all,dialog=no", url, null, null, isShell);
     }
     else
-      win = launchWindow.openDialog("chrome://prince/content", windowName, "chrome,all,dialog=no", uri.spec, charsetArg, markerArg);
+      win = launchWindow.openDialog("chrome://prince/content", windowName, "chrome,all,dialog=no", uri.spec, charsetArg, markerArg, isShell);
 
     return useEditorElement;
   } catch(e) {}
