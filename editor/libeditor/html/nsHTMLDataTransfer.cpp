@@ -1731,11 +1731,12 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   nsCOMPtr<nsIDOMNSHTMLElement> newHTMLElement;
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsCOMPtr<nsIDOM3Node> dom3node;
-  nsAutoString leftName, rightName, sNewNodeName, sInclusion, strContents, strTagName;
+  nsAutoString leftName, rightName, sNewNodeName, sInclusion, strContents, strTagName, strTmp, classname;
   PRInt32 outOffset, newsplitpointOffset, offsetOfNewStructure, offset;
   PRUint32 nodeCount, length;
-  PRBool fDiscardNode, isEmpty, success, fCanContain, fInclusion;
+  PRBool fDiscardNode, isEmpty, success, fCanContain, fInclusion, hasStructureAncestor;
   nsIAtom * atomNS = nsnull;
+  PRBool fIsStruct = PR_FALSE;
   NS_PRECONDITION(splitpointNode, "null arg");
 
   // With the cursor at splitpointNode and splitpointOffset, we want to split the enclosing paragraph
@@ -1796,26 +1797,27 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       // sort. When it ends, the enclosing object just continues. The opposite case is provided by sections 
       // and subsections. When a subsection ends, it must be followed by another subsection or else the 
       // section must end. In this case the block parent of splitNode has to be split.
-      if (!fInclusion && StructureHasStructureAncestor(splitNode, mtagListManager)) 
+      hasStructureAncestor = StructureHasStructureAncestor(splitNode, mtagListManager);
+
+      GetTagString(newsplitpointNode, strTmp);
+      classname = NS_LITERAL_STRING("structtag");
+      mtagListManager->GetTagInClass(classname, strTmp, atomNS, &fIsStruct);
+      if (!isEmpty || hasStructureAncestor || !fIsStruct);
       {
         return InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);
       }
-      else
-      {
-        // We've run off the end of our structure.  
-      }
     }
   }
-  bool inMath = false;
+  PRBool inMath = PR_FALSE;
   if (splitpointNode){
-     if (nsHTMLEditUtils::IsMath(splitpointNode))
-       inMath = true;
-     else {
-       nsCOMPtr<nsIDOMNode> parent;
-       splitpointNode->GetParentNode(getter_AddRefs(parent));
-       if (parent &&  nsHTMLEditUtils::IsMath(parent))
-         inMath = true;
-     }
+    if (nsHTMLEditUtils::IsMath(splitpointNode)){
+      inMath = PR_TRUE;
+    }
+    else {
+      splitpointNode->GetParentNode(getter_AddRefs(parent));
+      if (parent &&  nsHTMLEditUtils::IsMath(parent))
+        inMath = PR_TRUE;
+    }
   }
 
   if (inMath) {
@@ -1824,11 +1826,13 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   } else { //is splitNode is wrapped, replace splitNode with its wrapper.
     nsCOMPtr<nsIDOMNode> wrapperNode;
         // Don't allow splitting top level sections when empty
-    nsCOMPtr<nsIDOMNode> parent;
     splitpointNode->GetParentNode(getter_AddRefs(parent));
-    if (!isEmpty || StructureHasStructureAncestor(parent, mtagListManager))
+    hasStructureAncestor = StructureHasStructureAncestor(parent, mtagListManager);
+    GetTagString(splitpointNode, strTmp);
+    classname = NS_LITERAL_STRING("structtag");
+    mtagListManager->GetTagInClass(classname, strTmp, atomNS, &fIsStruct);
+    if (!isEmpty || hasStructureAncestor || !fIsStruct);
     {    
-      nsCOMPtr<nsIDOMNode> parent;
       splitpointNode->GetParentNode(getter_AddRefs(parent));
       res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));
       res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
