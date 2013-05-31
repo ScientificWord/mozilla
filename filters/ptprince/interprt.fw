@@ -32,6 +32,7 @@ Here are some variables global to the interpreter
 //static Primitive* curcmddata;
 extern const char* s_outputdir;
 extern const char* s_docdir;
+extern std::string s_preambleExtra;
 @}
 
 
@@ -321,6 +322,7 @@ CMD_BREAKPOINT,
 CMD_CHECKOUTER,
 CMD_MSITRACEON,
 CMD_MSITRACEOFF,
+CMD_MSIPREAMBLEEXTRA,
 @}
 
 
@@ -330,6 +332,7 @@ NewPrimitive("msibreak", CMD_BREAKPOINT);
 NewPrimitive("msicheckouter", CMD_CHECKOUTER);
 NewPrimitive("msitraceon", CMD_MSITRACEON);
 NewPrimitive("msitraceoff", CMD_MSITRACEOFF);
+NewPrimitive("msipreambleextra", CMD_MSIPREAMBLEEXTRA);
 @}
 
 
@@ -359,6 +362,11 @@ case CMD_MSITRACEOFF:{
   #ifdef LOGGING
      LogFile::TheLog().TurnOff();
   #endif
+  break;
+}
+
+case CMD_MSIPREAMBLEEXTRA:{
+  Typesetter::AppendTag(s_preambleExtra.c_str());
   break;
 }
 
