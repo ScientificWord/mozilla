@@ -32,6 +32,7 @@ extern Typesetter ts;
 const char* s_inputfilename;
 const char* s_outputdir = 0;
 const char* s_docdir = 0;
+std::string s_preambleExtra;
 
 
 char* s_mmldirname = ".";
