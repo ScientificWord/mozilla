@@ -77,11 +77,11 @@ case CMD_ASSIGN_DIM:{
    ScanOptionalEquals(pList);
    ScanDim(false, false, false, &n, pList);
 
-   if (Global::msioutput == 0){
+   if (Global::msioutput == 0 && Global::msiinpreamble){
       StringUtils::AppendToks(*pList);
       String str = StringBuilder::Create();
       std::string strTemp;
-      strTemp = "<texb enc=\"1\" name=\"TeX assignment\">";
+      strTemp = "\n<texb pre=\"1\" enc=\"1\" name=\"TeX assignment\">";
       strTemp +="<![CDATA[";
       int i = 0;
       while (i < str.Size()){
@@ -90,7 +90,8 @@ case CMD_ASSIGN_DIM:{
       }
       strTemp += "]]></texb>";
       StringBuilder::Discard(str);
-      Typesetter::AppendTag(strTemp.c_str());
+      s_preambleExtra += strTemp;
+      //Typesetter::AppendTag(strTemp.c_str());
      
    }
    LOG("\n----Set " << defining << " = "
