@@ -575,6 +575,8 @@ public:
   // return the line number of the aFrame, and (optionally) the containing block frame.
   static PRInt32 GetLineNumber(nsIFrame *aFrame, nsIFrame** aContainingBlock = nsnull);
 
+  static PRBool IsMSIPlotOrGraphicContainer(nsIContent* aContent);
+
 protected:
 
   // Test if we are selecting a table object:
