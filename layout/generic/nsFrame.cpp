@@ -2007,6 +2007,9 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
 
   // Do not touch any nsFrame members after this point without adding
   // weakFrame checks.
+  if (IsMSIPlotOrGraphicContainer(offsets.content))
+    offsets.secondaryOffset = offsets.offset;
+
   rv = fc->HandleClick(offsets.content, offsets.StartOffset(),
                        offsets.EndOffset(), me->isShift, control,
                        offsets.associateWithNext);
@@ -5318,6 +5321,16 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   // properly placing the cursor in fractions, radicals, etc.
   PRBool selectable = PR_FALSE;
   nsIFrame *traversedFrame = this;
+  nsFrame* frameInstance = static_cast<nsFrame*>(this);
+  if (frameInstance->IsMSIPlotOrGraphicContainer(GetContent()))
+  {
+    if (aDirection == eDirPrevious)
+      nsFrame::GetFirstLeaf(presContext, &traversedFrame);
+    else
+      nsFrame::GetLastLeaf(presContext, &traversedFrame);
+    if (!traversedFrame)
+      traversedFrame = this;
+  }
   while (!selectable) {
     nsIFrame *blockFrame;
     nsCOMPtr<nsILineIteratorNavigator> it;
@@ -6155,6 +6168,67 @@ nsIFrame::IsFocusable(PRInt32 *aTabIndex, PRBool aWithMouse)
 PRBool
 nsIFrame::HasTerminalNewline() const
 {
+  return PR_FALSE;
+}
+
+/**
+ * return PR_TRUE to prevent passing two offset positions to TakeFocus() after a mouse click.
+ */
+/* static */
+PRBool nsFrame::IsMSIPlotOrGraphicContainer( nsIContent* aContent)
+{
+  if (aContent && !aContent->IsNodeOfType(nsINode::eTEXT))
+  {
+    nsAutoString buf;
+    nsAutoString resizeAttr;
+    nsCOMPtr<nsIDOMElement> pContentElement;
+    nsresult res;
+    aContent->Tag()->ToString(buf);
+    if (buf.EqualsLiteral("plotwrapper") || buf.EqualsLiteral("graph"))
+      return PR_TRUE;
+    
+    pContentElement = do_QueryInterface(aContent);
+    if (pContentElement)
+    {
+      //If this is an object we put resizing handles around, don't want clicking to create a selection
+      res = pContentElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), resizeAttr);
+      if (NS_SUCCEEDED(res) && resizeAttr.EqualsLiteral("true"))
+        return PR_TRUE;
+    }
+
+    if (buf.EqualsLiteral("object"))  //Probably don't want if it didn't have the msi_resize attribute, but...
+    {
+      nsIContent* parentContent = aContent->GetParent();
+      if (parentContent && IsMSIPlotOrGraphicContainer(parentContent))
+        return PR_TRUE;
+    }
+
+    if (buf.EqualsLiteral("msiframe"))  //May contain, e.g., a <plotwrapper>, or an image <object>
+    {
+      nsCOMPtr<nsIDOMNode> kid;    
+      nsCOMPtr<nsIDOMNodeList> childList;    
+      PRUint32 len;
+      PRBool rv = PR_FALSE;
+      nsCOMPtr<nsIDOMNode> contentNode = do_QueryInterface(aContent);
+
+      contentNode->GetChildNodes(getter_AddRefs(childList));   
+      //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
+      //  as a direct DOM child, we'll answer PR_FALSE.
+      childList->GetLength(&len);
+      for (PRUint32 i = 0; !rv && (i < len); i++)
+      {
+        childList->Item(i, getter_AddRefs(kid));
+        pContentElement = do_QueryInterface(kid);
+        if (pContentElement)
+        {
+          res = pContentElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), resizeAttr);
+          if (NS_SUCCEEDED(res) && resizeAttr.EqualsLiteral("true"))
+            rv = PR_TRUE;
+        }
+      }
+      return rv;
+    }
+  }
   return PR_FALSE;
 }
 

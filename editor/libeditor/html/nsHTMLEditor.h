@@ -832,7 +832,6 @@ protected:
   nsresult InsertVerbatim(nsISelection *aSelection);
 
 
-
 // Data members
 protected:
 
@@ -907,6 +906,8 @@ protected:
 
   nsresult ApplyGraphicsDefaults( nsIDOMElement* graphic, PRBool bIsPlot=PR_FALSE );
   nsresult GetGraphicsDefaultsAsString( nsAString& retStr, PRBool bIsPlot=PR_FALSE );
+
+  nsCOMPtr<nsIDOMElement> FindResizableElement(nsCOMPtr<nsIDOMElement> inElement);  //in nsHTMLAnonymousUtils.cpp
 
 
   /* PACKED BOOLEANS FOR RESIZING, ABSOLUTE POSITIONING AND */
