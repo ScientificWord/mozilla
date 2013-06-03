@@ -442,15 +442,15 @@
   \fi}
 
 
-\def\pagenumbering#1{%
-   \msiopentag{latexstyleb}{<latexstyleb>}%
-      \msiopentag{styleprop}{<styleprop>}%
-         page number style
-      \msiclosetag{styleprop}{</styleprop>}%
-      \msiopentag{styledata}{<styledata>}%
-         #1
-      \msiclosetag{styledata}{</styledata>}%
-   \msiclosetag{latexstyleb}{</latexstyleb>}}
+%% \def\pagenumbering#1{%
+%%    \msiopentag{latexstyleb}{<latexstyleb>}%
+%%       \msiopentag{styleprop}{<styleprop>}%
+%%          page number style
+%%       \msiclosetag{styleprop}{</styleprop>}%
+%%       \msiopentag{styledata}{<styledata>}%
+%%          #1
+%%       \msiclosetag{styledata}{</styledata>}%
+%%    \msiclosetag{latexstyleb}{</latexstyleb>}}
 
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
@@ -1796,12 +1796,18 @@
 
 \def\msidefaultb#1{%
     \msihmode
-    \msiopentag{texb}{<texb enc="1" name="#1">}%
-       \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname\@gobbleargs}
+    \ifnum\msi@inpreamble=1
+    \else
+      \msiopentag{texb}{<texb enc="1" name="#1">}%
+         \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname\@gobbleargs
+    \fi}
 
-\def\@endtexb{%        
+\def\@endtexb{% 
+    \ifnum\msi@inpreamble=1
+    \else       
        \msitag{]]>}%
-    \msiclosetag{texb}{</texb>}}
+       \msiclosetag{texb}{</texb>}%
+    \fi}
 
 
 \def\msi@begin@figure{%

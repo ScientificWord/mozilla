@@ -323,6 +323,7 @@ CMD_CHECKOUTER,
 CMD_MSITRACEON,
 CMD_MSITRACEOFF,
 CMD_MSIPREAMBLEEXTRA,
+CMD_MSITOPREAMBLEEXTRA,
 @}
 
 
@@ -333,6 +334,7 @@ NewPrimitive("msicheckouter", CMD_CHECKOUTER);
 NewPrimitive("msitraceon", CMD_MSITRACEON);
 NewPrimitive("msitraceoff", CMD_MSITRACEOFF);
 NewPrimitive("msipreambleextra", CMD_MSIPREAMBLEEXTRA);
+NewPrimitive("msitopreambleextra", CMD_MSITOPREAMBLEEXTRA);
 @}
 
 
@@ -367,6 +369,24 @@ case CMD_MSITRACEOFF:{
 
 case CMD_MSIPREAMBLEEXTRA:{
   Typesetter::AppendTag(s_preambleExtra.c_str());
+  break;
+}
+
+case CMD_MSITOPREAMBLEEXTRA:{
+  TokenList* tl = new TokenList;
+  ScanTokenList(tl, false);
+  StringUtils::AppendToks(*tl);
+  String str = StringBuilder::Create();
+  
+  int i = 0;
+  while (i < str.Size()){
+     s_preambleExtra += (char) str[i];
+     ++i;
+  }
+
+  StringBuilder::Discard(str);
+
+  delete tl;
   break;
 }
 

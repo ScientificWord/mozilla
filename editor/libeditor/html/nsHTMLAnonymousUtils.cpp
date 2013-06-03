@@ -59,6 +59,7 @@
 #include "nsIDOMCSSStyleDeclaration.h"
 
 #include "nsUnicharUtils.h"
+#include "nsIDOMNodeList.h"
 
 // retrieve an integer stored into a CSS computed float value
 static PRInt32 GetCSSFloatValue(nsIDOMCSSStyleDeclaration * aDecl,
@@ -222,6 +223,48 @@ nsHTMLEditor::DeleteRefToAnonymousNode(nsIDOMElement* aElement,
   }
 }  
 
+//Utility used in CheckSelectionStateForAnonymousButtons below
+nsCOMPtr<nsIDOMElement> nsHTMLEditor::FindResizableElement(nsCOMPtr<nsIDOMElement> inElement)
+{
+  nsAutoString strResizeAttr;
+  nsAutoString tagName;
+  nsCOMPtr<nsIDOMElement> outElement;
+  if (!inElement)
+    return outElement;
+  nsCOMPtr<nsIDOMNode> theNode = do_QueryInterface(inElement);
+  PRBool resizeRequested = PR_FALSE;
+  nsresult res;
+
+  res = inElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), strResizeAttr);
+  if (NS_SUCCEEDED(res) && strResizeAttr.EqualsLiteral("true"))
+  {
+    outElement = inElement;
+  }
+  if (!outElement)
+    res = inElement->GetTagName(tagName);
+  if ( !outElement && NS_SUCCEEDED(res) && (tagName.EqualsLiteral("plotwrapper") || tagName.EqualsLiteral("graph")
+                                   || tagName.EqualsLiteral("msiframe")) )
+  {
+    nsCOMPtr<nsIDOMNode> childNode;
+    nsCOMPtr<nsIDOMNodeList> childList;
+    nsCOMPtr<nsIDOMElement> childElem;
+    res = theNode->GetChildNodes( getter_AddRefs(childList));
+    if (NS_SUCCEEDED(res))
+    {
+      PRUint32 length(0);
+      childList->GetLength(&length);
+      for (PRUint32 i = 0; (!outElement) && (i < length); ++i)
+      {
+        childList->Item(i, getter_AddRefs(childNode));
+        childElem = do_QueryInterface(childNode);
+        if (childElem)
+          outElement = FindResizableElement(childElem);
+      }
+    }
+  }
+  return outElement;
+}
+
 // The following method is mostly called by a selection listener. When a
 // selection change is notified, the method is called to check if resizing
 // handles, a grabber and/or inline table editing UI need to be displayed
@@ -252,6 +295,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   nsAutoString strResizeAttr;
   PRBool resizeRequested = PR_FALSE;
   nsCOMPtr<nsIDOMElement> tempElement;
+  nsCOMPtr<nsIDOMElement> foundResizeElement;
   nsCOMPtr<nsIDOMNode> node;
   tempElement = focusElement;
 
@@ -262,6 +306,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     if (strResizeAttr.EqualsLiteral("true")) 
     {
       resizeRequested = PR_TRUE;
+      foundResizeElement = tempElement;
       break;
     }
     node = do_QueryInterface(tempElement);
@@ -271,7 +316,13 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     if (!tempElement) break;
   }
   
-  if (resizeRequested) focusElement = tempElement;
+  if (!resizeRequested)
+  {
+    foundResizeElement = FindResizableElement(focusElement);   //if focusElement is a good suspect, this checks its children
+    if (foundResizeElement)
+      resizeRequested = PR_TRUE;
+  }
+  if (resizeRequested) focusElement = foundResizeElement;
   // what's its tag?
   nsAutoString focusTagName;
   res = focusElement->GetTagName(focusTagName);

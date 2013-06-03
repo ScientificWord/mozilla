@@ -467,9 +467,9 @@ string MuPADPlot::BaseColorStr (MuPADPlot* T) {
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotBaseColor, plottype); 
   val = StringToColorArrayStr (val);
   string ret;
-  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
-    ret = ", LineColor=";
-  else if (T->ptype=="conformal")
+//  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
+//    ret = ", LineColor=";
+  if (T->ptype=="conformal")
     ret = ", LineColorType=Functional, LineColor2=";
   else
     ret = ", FillColor=";
@@ -738,8 +738,8 @@ PRBool compareNoCase(string str1, string str2)
 
 // A color is a #rrggbb, where rr, gg, bb are $00 to $ff
 string MuPADPlot::LineColorStr (MuPADPlot* T) {
-  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
-    return "";
+//  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
+//    return "";
   U32 plottype;
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineColor, plottype);
   val = StringToColorArrayStr (val);
@@ -750,7 +750,8 @@ string MuPADPlot::LineColorStr (MuPADPlot* T) {
 
 string MuPADPlot::LineStyleStr (MuPADPlot* T) {
   string ret = "";
-  if ((T->ptype != "vectorField") && (T->ptype != "gradient") && (T->ptype != "tube")) {
+//  if ((T->ptype != "vectorField") && (T->ptype != "gradient") && (T->ptype != "tube")) {
+  if (T->ptype != "tube") {
     U32 plottype;
     string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotLineStyle, plottype);
     ret = ", LineStyle=Solid";
@@ -1083,9 +1084,9 @@ string MuPADPlot::SecondaryColorStr (MuPADPlot* T) {
   string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotSecondaryColor, plottype); 
   val = StringToColorArrayStr (val);                                    
   string ret;
-  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
-    ret = ", LineColor2=";
-  else
+//  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
+//    ret = ", LineColor2=";
+//  else
     ret  = ", FillColor2=";
   return ret+val;                                              
 }
@@ -1143,14 +1144,14 @@ string MuPADPlot::SurfaceStyleStr (MuPADPlot* T) {
 string MuPADPlot::DirectionalShadingStr(MuPADPlot* T) {
   string pattern = "";
   U32 plottype;
-  if ((T->ptype != "vectorField") && (T->ptype != "gradient"))
-    return "";  //In all other cases, handled with SurfaceStyleStr
-  string val = T->psr->RetrievePlotParam(T->plotno, PID_PlotDirectionalShading, plottype);
-  string colordir = DirectionalShadingStrFromName(val);
-  if (colordir != "")
-    colordir = ", LineColorDirection=" + colordir;
-  string lineColorType = FillTypeStrFromShading(val);
-  pattern = ", LineColorType=" + lineColorType + colordir;
+//  if ((T->ptype != "vectorField") && (T->ptype != "gradient"))
+//    return "";  //In all other cases, handled with SurfaceStyleStr
+//  string val = T->psr->RetrievePlotParam(T->plotno, PID_PlotDirectionalShading, plottype);
+//  string colordir = DirectionalShadingStrFromName(val);
+//  if (colordir != "")
+//    colordir = ", LineColorDirection=" + colordir;
+//  string lineColorType = FillTypeStrFromShading(val);
+//  pattern = ", LineColorType=" + lineColorType + colordir;
   return pattern;
 }
 
