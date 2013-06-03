@@ -1,0 +1,30 @@
+*.sizeSelector label {
+  width: 2em;
+  margin: 0px ! important;
+}
+
+#tablegrid:hover *.sizeSelector label:hover, #tablegrid:hover *.sizeSelector label.selected {
+  background-color: rgb(10,36,106) ! important;
+}
+
+*.sizeSelector label {
+  border: 2px solid !important;
+}
+
+#widthPixelOrPercentMenulist {
+  min-width: 10em;
+}
+
+
+
+
+*.sizeSelector label[mark="true"] {
+  background-color: rgb(0,0,0)
+}
+
+#tablegrid:hover *.sizeSelector label[mark="true"]:hover, #tablegrid:hover *.sizeSelector label[mark="true"].selected {
+  background-color: rgb(128,150,150) ! important;
+}
+
+#gridcoordinates { visibility: hidden; }
+#tablegrid:hover #gridcoordinates { visibility: visible; }
