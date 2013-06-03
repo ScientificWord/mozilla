@@ -1980,6 +1980,101 @@ nsresult msiEditor::GetMatrixCellAt(nsIDOMNode *aMatrix, PRInt32 whichRow, PRInt
   return m_msiEditingMan->GetMatrixCellAt(aMatrix, whichRow, whichCol, _retval);
 }
 
+PRBool msiEditor::ShouldSelectWholeObject(nsCOMPtr<nsIDOMNode> & aNode)
+{
+  if (IsTextNode(aNode))
+    return PR_FALSE;
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+  nsAutoString tagName;
+  PRBool rv = PR_FALSE;
+  if (element)
+    element->GetTagName(tagName);
+  if (tagName.EqualsLiteral("graph") || tagName.EqualsLiteral("graphSpec") ||
+          tagName.EqualsLiteral("object") || tagName.EqualsLiteral("plot") ||
+          tagName.EqualsLiteral("plotwrapper"))
+    rv = PR_TRUE;
+  else if (tagName.EqualsLiteral("msiframe"))
+  {
+    nsCOMPtr<nsIDOMNodeList> childList;
+    nsCOMPtr<nsIDOMNode> kid;
+    aNode->GetChildNodes( getter_AddRefs(childList));
+    PRUint32 length;
+    childList->GetLength(&length);
+    //We check the children - if an msiframe is a minipage, any <object>s or plots in it should be contained
+    //in paragraph tags, hence not direct children.
+    for (PRUint32 ix = 0; !rv && (ix < length); ++ix)
+    {
+      childList->Item(ix, getter_AddRefs(kid));
+      element = do_QueryInterface(kid);
+      if (element)
+      {
+        element->GetTagName(tagName);
+        if (tagName.EqualsLiteral("plotwrapper") || tagName.EqualsLiteral("object"))
+          rv = PR_TRUE;
+      }
+    }
+  }
+  return rv;
+}
+
+PRBool msiEditor::PositionIsAtBeginning(nsCOMPtr<nsIDOMNode> & parentNode, PRInt32 offset)
+{
+  if (offset == 0)
+    return PR_TRUE;
+  if (IsTextNode(parentNode))
+  {
+//    PRBool bEmptyTextNode = PR_FALSE;
+//    nsresult rv = IsVisTextNode( parentNode, &bEmptyTextNode, PR_FALSE);
+//    if (NS_SUCCEEDED(rv))
+//      return bEmptyTextNode;
+    return PR_FALSE;  //we know offset > 0
+  }
+  else
+  {
+    nsCOMPtr<nsIDOMNode> childNode;
+    nsCOMPtr<nsIDOMNode> tmpNode;
+    PRInt32 tmpOffset;
+    nsresult rv = GetFirstEditableChild(childNode, address_of(childNode));
+    if (NS_SUCCEEDED(rv))
+    {
+      rv = GetNodeLocation(childNode, address_of(tmpNode), &tmpOffset);
+      if (NS_SUCCEEDED(rv))
+        return (offset <= tmpOffset);
+    }
+  }
+  return PR_FALSE;
+}
+
+PRBool msiEditor::PositionIsAtEnd(nsCOMPtr<nsIDOMNode> & parentNode, PRInt32 offset)
+{
+  PRUint32 len;
+  GetLengthOfDOMNode(parentNode, len);
+  if (offset >= (PRInt32)len)
+    return PR_TRUE;
+  if (IsTextNode(parentNode))
+  {
+//    PRBool bEmptyTextNode = PR_FALSE;
+//    nsresult rv = IsVisTextNode( parentNode, &bEmptyTextNode, PR_FALSE);
+//    if (NS_SUCCEEDED(rv))
+//      return bEmptyTextNode;
+    return PR_FALSE;    //we know offset < len
+  }
+  else
+  {
+    nsCOMPtr<nsIDOMNode> childNode;
+    nsCOMPtr<nsIDOMNode> tmpNode;
+    PRInt32 tmpOffset;
+    nsresult rv = GetLastEditableChild(childNode, address_of(childNode));
+    if (NS_SUCCEEDED(rv))
+    {
+      rv = GetNodeLocation(childNode, address_of(tmpNode), &tmpOffset);
+      if (NS_SUCCEEDED(rv))
+        return (offset >= tmpOffset);
+    }
+  }
+  return PR_FALSE;
+}
+
 nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
                                  PRBool selecting, PRBool & preventDefault)
 {
@@ -2019,6 +2114,13 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
        collapse = PR_TRUE;
     else if (NS_SUCCEEDED(res) && commonAncestor)
     {
+       nsCOMPtr<nsIDOMNode> oldFocusNode;
+       PRUint32 oldFocusOffset(msiIMathMLEditingBC::INVALID);
+
+       msiSelection->GetMsiFocusNode(getter_AddRefs(oldFocusNode));
+       msiSelection->GetMsiFocusOffset(&oldFocusOffset);
+       ComparePoints(oldFocusNode, oldFocusOffset, focusNode, focusOffset, &compareOldFocusFocus);
+
        nsCOMPtr<msiIMathMLCaret> mathCaret;
        res = GetMathMLCaretInterface(commonAncestor, 0, getter_AddRefs(mathCaret));
        if (NS_SUCCEEDED(res) && mathCaret)
@@ -2055,12 +2157,12 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
              res = GetMathMLCaretInterface(mathParent, 0, getter_AddRefs(mathCaret));
            if (NS_SUCCEEDED(res) && mathCaret)
            {
-             nsCOMPtr<nsIDOMNode> oldFocusNode;
-             PRUint32 oldFocusOffset(msiIMathMLEditingBC::INVALID);
-    
-             msiSelection->GetMsiFocusNode(getter_AddRefs(oldFocusNode));
-             msiSelection->GetMsiFocusOffset(&oldFocusOffset);
-             ComparePoints(oldFocusNode, oldFocusOffset, focusNode, focusOffset, &compareOldFocusFocus);
+//             nsCOMPtr<nsIDOMNode> oldFocusNode;
+//             PRUint32 oldFocusOffset(msiIMathMLEditingBC::INVALID);
+//    
+//             msiSelection->GetMsiFocusNode(getter_AddRefs(oldFocusNode));
+//             msiSelection->GetMsiFocusOffset(&oldFocusOffset);
+//             ComparePoints(oldFocusNode, oldFocusOffset, focusNode, focusOffset, &compareOldFocusFocus);
              msiSelection->GetMsiAnchorNode(getter_AddRefs(anchorNode));
              msiSelection->GetMsiAnchorOffset(&anchorOffset);
              if (compareFocusAnchor < 0 ) //focus before anchor
@@ -2136,48 +2238,115 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
              }                                             
            }                                               
          }
+         PRBool bEndIsFocus = PR_TRUE;
          if (startSet || endSet)
-         {
            doSet = PR_TRUE;
-           if (!startSet)
+         if (!startSet)
+         {
+           if (compareFocusAnchor < 0 ) //focus before anchor
            {
-             if (compareFocusAnchor < 0 ) //focus before anchor
-             {
-               startNode = focusNode;
-               startOffset = focusOffset;
-             }
-             else
-             {
-               startNode = anchorNode;
-               startOffset = anchorOffset;
-             }                                             
+             startNode = focusNode;
+             startOffset = focusOffset;
            }
-           if(!endSet)
+           else
            {
-             if (compareFocusAnchor < 0 ) //focus before anchor
-             {
-               endNode = anchorNode;
-               endOffset = anchorOffset;
-             }
-             else
-             {
-               endNode = focusNode;
-               endOffset = focusOffset;
-             }                                             
-           }
+             startNode = anchorNode;
+             startOffset = anchorOffset;
+           }                                             
          }
-//rwa         nsCOMPtr<nsIDOMNode> tmpNode;
-//rwa         PRInt32 tmpOffset;
-//rwa         nsresult rv(NS_OK);
-//rwa         dummyNode = startNode;
-//rwa         while (NS_SUCCEEDED(rv) && (dummyNode != commonAncestor))
-//rwa         {
-//rwa           if (!ShouldSelectWholeObject(dummyNode))
-//rwa           {
-//rwa             break;
-//rwa           }
-//rwa           rv = GetNodeLocation(tmpNode, address_of(dummyNode), &tmpOffset);
-//rwa         }
+         if(!endSet)
+         {
+           if (compareFocusAnchor < 0 ) //focus before anchor
+           {
+             endNode = anchorNode;
+             endOffset = anchorOffset;
+             bEndIsFocus = PR_FALSE;
+           }
+           else
+           {
+             endNode = focusNode;
+             endOffset = focusOffset;
+           }                                             
+         }
+         nsCOMPtr<nsIDOMNode> tmpNode;
+         nsCOMPtr<nsIDOMNode> targNode;
+         PRInt32 tmpOffset, targOffset;
+         nsresult rv(NS_OK);
+         PRBool bAtEdge = PR_TRUE;
+         if (!bEndIsFocus && (compareOldFocusFocus > 0)) // old focus is after the focus; we're extending to the left
+           bAtEdge = PR_FALSE;  //so we don't want to drop back to the right
+         PRInt32 currOffset = startOffset;
+         dummyNode = startNode;
+         while (dummyNode && (dummyNode != commonAncestor))
+         {
+           rv = GetNodeLocation(dummyNode, address_of(tmpNode), &tmpOffset);
+           bAtEdge = bAtEdge && PositionIsAtEnd(dummyNode, currOffset);  //If we ever find part of our node in the selection, bAtEdge can't be true
+           if (NS_SUCCEEDED(rv) && ShouldSelectWholeObject(dummyNode))
+           {
+             targNode = tmpNode;  //parent of dummy
+             if (bAtEdge)         //selection doesn't include any of our node; move out to right
+               targOffset = tmpOffset + 1;
+             else                                //mvoe out to left
+               targOffset = tmpOffset;
+           }
+           dummyNode = tmpNode;
+           currOffset = tmpOffset;
+         }
+         if (targNode)
+         {
+           startNode = targNode;
+           startOffset = targOffset;
+           doSet = PR_TRUE;
+         }
+         currOffset = endOffset;
+         dummyNode = endNode;
+         targOffset = 0;
+         targNode = nsnull;
+         bAtEdge = PR_TRUE;
+         if (bEndIsFocus && (compareOldFocusFocus < 0)) // old focus is before the focus; we're extending to the right
+           bAtEdge = PR_FALSE;  //so we don't want to fall back to the left
+         while (dummyNode && (dummyNode != commonAncestor))
+         {
+           rv = GetNodeLocation(dummyNode, address_of(tmpNode), &tmpOffset);
+           bAtEdge = bAtEdge && PositionIsAtBeginning(dummyNode, currOffset);
+           if (NS_SUCCEEDED(rv) && ShouldSelectWholeObject(dummyNode))
+           {
+             targNode = tmpNode;  //parent of dummy
+             if (bAtEdge)         //selection doesn't include any of our node; move out to left
+               targOffset = tmpOffset;
+             else                                //mvoe out to right
+               targOffset = tmpOffset + 1;
+           }
+           dummyNode = tmpNode;
+           currOffset = tmpOffset;
+         }
+         if (targNode)
+         {
+           endNode = targNode;
+           endOffset = targOffset;
+           doSet = PR_TRUE;
+         }
+         //Finally check commonAncestor itself to see whether we can select part of it:
+         dummyNode = commonAncestor;
+         targNode = nsnull;
+         while (dummyNode && ShouldSelectWholeObject(dummyNode))
+         {
+           rv = GetNodeLocation(dummyNode, address_of(tmpNode), &tmpOffset);
+           if (NS_SUCCEEDED(rv))
+           {
+             targNode = tmpNode;
+             targOffset = tmpOffset;
+           }
+           dummyNode = targNode;
+         }
+         if (targNode)
+         {
+           startNode = targNode;
+           startOffset = targOffset;
+           endNode = targNode;
+           endOffset = targOffset + 1;
+           doSet = PR_TRUE;
+         }
        } // end focus and/or anchor maybe in math
        if (doSet)
        {
