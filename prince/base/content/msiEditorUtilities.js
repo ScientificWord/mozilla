@@ -1809,11 +1809,13 @@ function msiEnsureElementCSSProperty(elementNode, propName, propValue, editor)
   var replaceStr = "";
   if (propValue && propValue.length)
     replaceStr = propName + ": " + propValue + ";";
-  var searchRE = new RegExp(propName + "\\:\\s*[^;]+;?");
+  var searchRE = new RegExp(propName + "\:\s*[^;]+;?");
+//  var searchRE = new RegExp(propName + "\\:\\s*[^;]+;?");
   if (currStyleStr && currStyleStr.length)
   {
-    if (searchRE.test(currStyleStr))
-      currStyleStr.replace(searchRE, replaceStr);
+//    if (searchRE.test(currStyleStr))
+    if (searchRE.exec(currStyleStr))
+      currStyleStr = currStyleStr.replace(searchRE, replaceStr);
     else
       currStyleStr += replaceStr;
   }
