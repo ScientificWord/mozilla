@@ -1223,7 +1223,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
         docurl = msiURIFromString(docurlstring);
       if (docurl != null) dump("Url in args is "+docurl.spec+"\n");
     };
-    if (!docurl) {
+    if (!docurl && bTopLevel) {
       var prefs = GetPrefs();
       var fUseLastSavedFile;
       try
@@ -5844,6 +5844,9 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
           }
         break;
 
+        case "caption":
+        break;
+
         case "th":
         case "td":
         default:
@@ -5919,77 +5922,83 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
     var colspan = 1;
     var rowspan = 1;
 
-    switch(msiGetBaseNodeName(cellNode))
+    try 
     {
-      case "th":
-      case "td":
-      case "mtd":
-        while ( (currPos.m_nRow <= numRows) && (currPos.m_nCol <= numCols) && (aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1] != null) )
-        {
-          ++currPos.m_nCol;
-        }
-        if (currPos.m_nCol > numCols)  //There's no empty spot in this row for the cell data.
-        {
-          dump("In msiEditor.js, msiGetRowAndColumnData(), problem with too many cells in row [" + currPos.m_nRow + "].\n");
-          return;
-        }
-        aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1] = {mNode : cellNode, mRowContinuation : 0, mColContinuation : 0};
-        if (cellNode.hasAttribute("colspan"))
-          colspan = Number(cellNode.getAttribute("colspan"));
-        if (colspan == 0)
-          colspan = numCols - currPos.m_nCol + 1;
-        else if (colspan > numCols - currPos.m_nCol + 1)
-          colspan = numCols - currPos.m_nCol + 1;
-        if (cellNode.hasAttribute("rowspan"))
-          rowspan = Number(cellNode.getAttribute("rowspan"));
-        if (rowspan == 0)
-          rowspan = numRows - currPos.m_nRow + 1;
-        else if (rowspan > numRows - currPos.m_nRow + 1)
-          rowspan = numRows - currPos.m_nRow + 1;
-        setRowData(aTableData, currPos.m_nRow-1, "lastNonemptyCell", currPos.m_nCol - 2 + colspan);
-        setColData(aTableData, currPos.m_nCol-1, "lastNonemptyCell", currPos.m_nRow - 2 + rowspan);
-        if (colspan != 1)
-        {
-          aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1].mColContinuation = colspan - 1;
-          setColData(aTableData, currPos.m_nCol-1, "firstCol", currPos.m_nCol - 1);
-          setColData(aTableData, currPos.m_nCol-1, "lastCol", currPos.m_nCol - 2 + colspan); //lastCol calculation is (nCol-1) + (colspan-1)
-        }
-        if (rowspan != 1)
-        {
-          aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1].mRowContinuation = rowspan - 1;
-          setRowData(aTableData, currPos.m_nRow-1, "firstRow", currPos.m_nRow - 1);
-          setRowData(aTableData, currPos.m_nRow-1, "lastRow", currPos.m_nRow - 2 + rowspan);   //lastRow calculation is (nRow-1) + (rowspan-1)
-        }
-        for (var ii = 0; ii < rowspan; ++ii)
-        {
-          for (var jj = 0; jj < colspan; ++jj)
+      switch(msiGetBaseNodeName(cellNode))
+      {
+        case "th":
+        case "td":
+        case "mtd":
+          while ( (currPos.m_nRow <= numRows) && (currPos.m_nCol <= numCols) && (aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1] != null) )
           {
-            if (!ii && !jj)
-              continue;
-            if (!aTableData.cellInfoArray[currPos.m_nRow-1+ii][currPos.m_nCol-1+jj])
-              aTableData.cellInfoArray[currPos.m_nRow-1+ii][currPos.m_nCol-1+jj] = {mNode : cellNode, mRowContinuation : -ii, mColContinuation : -jj};
-//            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mNode = cellNode;
-//            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mRowContinuation = -ii-1;
-//            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mColContinuation = -jj-1;
-            if (ii > 0)
+            ++currPos.m_nCol;
+          }
+          if (currPos.m_nCol > numCols)  //There's no empty spot in this row for the cell data.
+          {
+            dump("In msiEditor.js, msiGetRowAndColumnData(), problem with too many cells in row [" + currPos.m_nRow + "].\n");
+            return;
+          }
+          aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1] = {mNode : cellNode, mRowContinuation : 0, mColContinuation : 0};
+          if (cellNode.hasAttribute("colspan"))
+            colspan = Number(cellNode.getAttribute("colspan"));
+          if (colspan == 0)
+            colspan = numCols - currPos.m_nCol + 1;
+          else if (colspan > numCols - currPos.m_nCol + 1)
+            colspan = numCols - currPos.m_nCol + 1;
+          if (cellNode.hasAttribute("rowspan"))
+            rowspan = Number(cellNode.getAttribute("rowspan"));
+          if (rowspan == 0)
+            rowspan = numRows - currPos.m_nRow + 1;
+          else if (rowspan > numRows - currPos.m_nRow + 1)
+            rowspan = numRows - currPos.m_nRow + 1;
+          setRowData(aTableData, currPos.m_nRow-1, "lastNonemptyCell", currPos.m_nCol - 2 + colspan);
+          setColData(aTableData, currPos.m_nCol-1, "lastNonemptyCell", currPos.m_nRow - 2 + rowspan);
+          if (colspan != 1)
+          {
+            aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1].mColContinuation = colspan - 1;
+            setColData(aTableData, currPos.m_nCol-1, "firstCol", currPos.m_nCol - 1);
+            setColData(aTableData, currPos.m_nCol-1, "lastCol", currPos.m_nCol - 2 + colspan); //lastCol calculation is (nCol-1) + (colspan-1)
+          }
+          if (rowspan != 1)
+          {
+            aTableData.cellInfoArray[currPos.m_nRow-1][currPos.m_nCol-1].mRowContinuation = rowspan - 1;
+            setRowData(aTableData, currPos.m_nRow-1, "firstRow", currPos.m_nRow - 1);
+            setRowData(aTableData, currPos.m_nRow-1, "lastRow", currPos.m_nRow - 2 + rowspan);   //lastRow calculation is (nRow-1) + (rowspan-1)
+          }
+          for (var ii = 0; ii < rowspan; ++ii)
+          {
+            for (var jj = 0; jj < colspan; ++jj)
             {
-              setRowData(aTableData, currPos.m_nRow-1+ii, "firstRow", currPos.m_nRow - 1);
-              setRowData(aTableData, currPos.m_nRow-1+ii, "lastRow", currPos.m_nRow - 2 + rowspan);
-            }
-            if (jj > 0)
-            {
-              setColData(aTableData, currPos.m_nCol-1+jj, "firstCol", currPos.m_nCol - 1);
-              setColData(aTableData, currPos.m_nCol-1+jj, "lastCol", currPos.m_nCol - 2 + colspan);
+              if (!ii && !jj)
+                continue;
+              if (!aTableData.cellInfoArray[currPos.m_nRow-1+ii][currPos.m_nCol-1+jj])
+                aTableData.cellInfoArray[currPos.m_nRow-1+ii][currPos.m_nCol-1+jj] = {mNode : cellNode, mRowContinuation : -ii, mColContinuation : -jj};
+  //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mNode = cellNode;
+  //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mRowContinuation = -ii-1;
+  //            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mColContinuation = -jj-1;
+              if (ii > 0)
+              {
+                setRowData(aTableData, currPos.m_nRow-1+ii, "firstRow", currPos.m_nRow - 1);
+                setRowData(aTableData, currPos.m_nRow-1+ii, "lastRow", currPos.m_nRow - 2 + rowspan);
+              }
+              if (jj > 0)
+              {
+                setColData(aTableData, currPos.m_nCol-1+jj, "firstCol", currPos.m_nCol - 1);
+                setColData(aTableData, currPos.m_nCol-1+jj, "lastCol", currPos.m_nCol - 2 + colspan);
+              }
             }
           }
-        }
-        currPos.m_nCol += colspan;  //we don't change nRow here, incidentally - it can only change at the outer level of the loop (in the calling function).
-      break;
+          currPos.m_nCol += colspan;  //we don't change nRow here, incidentally - it can only change at the outer level of the loop (in the calling function).
+        break;
 
-      default:
-        // We end up here when the cell contains a text node. Not an error.
-        // dump("In msiEditor.js, msiGetRowAndColumnData(), bad cell node passed in to addCellToList - node is [" + msiGetBaseNodeName(cellNode) + "].\n");
-      break;
+        default:
+          // We end up here when the cell contains a text node. Not an error.
+          // dump("In msiEditor.js, msiGetRowAndColumnData(), bad cell node passed in to addCellToList - node is [" + msiGetBaseNodeName(cellNode) + "].\n");
+        break;
+      }
+    }
+    catch(e) {
+      dump(e.message);
     }
   }
 
@@ -9419,10 +9428,10 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
     return;
 
       //HERE USE MODELESS DIALOG FUNCTIONALITY??
-//  msiOpenModelessDialog("chrome://editor/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,dependent", editorElement,
+//  msiOpenModelessDialog("chrome://prince/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,dependent", editorElement,
 //                                         command, commandHandler, "")
 
-  window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
+  window.openDialog("chrome://prince/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
 	msiGetEditor(editorElement).incrementModificationCount(1);
   editorElement.focus();
 }
