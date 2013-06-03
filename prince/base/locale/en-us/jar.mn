@@ -108,6 +108,7 @@ en-US.jar:
   locale/MatrixInsertRowsCols.dtd		  (dialogs/MatrixInsertRowsCols.dtd)
   locale/equationArrayDialog.dtd		  (dialogs/equationArrayDialog.dtd)
   locale/preferences.dtd	  (dialogs/preferences.dtd)
+  locale/EdInsertTable.dtd                (dialogs/EdInsertTable.dtd)
   locale/typesetBibitemDlg.dtd            (dialogs/typesetBibitemDlg.dtd)
   locale/xrefDialog.dtd                   (dialogs/xrefDialog.dtd)
   locale/envproperties.dtd                (dialogs/envproperties.dtd)
