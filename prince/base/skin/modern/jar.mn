@@ -14,6 +14,7 @@ modern.jar:
   skin/modern/decorationsDialog.css     (decorationsDialog.css)
   skin/modern/operatorsDialog.css       (operatorsDialog.css)
   skin/modern/mathmlmatrix.css          (mathmlmatrix.css)
+  skin/modern/EdInsertTable.css          (EdInsertTable.css)
   skin/modern/preferences.css          (preferences.css)
   skin/modern/msiMathDlgStyle.css       (msiMathDlgStyle.css)
   skin/modern/MathVarsDialog.css        (MathVarsDialog.css)
