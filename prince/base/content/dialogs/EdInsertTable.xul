@@ -25,11 +25,11 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
-<?xml-stylesheet href="chrome://editor/content/EditorInsertTable.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EdInsertTable.css" type="text/css"?>
 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
-<!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorInsertTable.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/EdInsertTable.dtd">
 
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -44,7 +44,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdInsertTable.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/EdInsertTable.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
