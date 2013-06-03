@@ -26,6 +26,7 @@ classic.jar:
   skin/classic/documentStyle.css	(documentStyle.css)
   skin/classic/editor.css	                                (editor.css)
   skin/classic/EditorDialog.css	                                (EditorDialog.css)
+  skin/classic/EdInsertTable.css          (EdInsertTable.css)
   skin/classic/editorModeToolbar.css	(editorModeToolbar.css)
   skin/classic/editorPrimaryToolbar.css	(editorPrimaryToolbar.css)
   skin/classic/icons/advanced.png	(icons/advanced.png)
