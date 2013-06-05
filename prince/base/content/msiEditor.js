@@ -9400,7 +9400,7 @@ function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, comma
   {
       // Edit properties of existing table
     var theData = {reviseCommand : command, reviseData : reviseObjectData};
-    msiOpenModelessDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,resizable,close,titlebar,dependent", editorElement,
+    msiOpenModelessDialog("chrome://prince/content/EdTableInsert.xul", "_blank", "chrome,resizable,close,titlebar,dependent", editorElement,
                                          command, commandHandler, theData);
 //      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal", "","TablePanel");
     editorElement.contentWindow.focus();
@@ -9431,7 +9431,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
 //  msiOpenModelessDialog("chrome://prince/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,dependent", editorElement,
 //                                         command, commandHandler, "")
 
-  window.openDialog("chrome://prince/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
+  window.openDialog("chrome://prince/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,resizable", "");
 	msiGetEditor(editorElement).incrementModificationCount(1);
   editorElement.focus();
 }

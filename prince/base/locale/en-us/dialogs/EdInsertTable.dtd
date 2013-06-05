@@ -24,15 +24,15 @@
 <!ENTITY windowTitle.label "Insert Table">
 
 <!ENTITY size.label "Size">
-<!ENTITY numRowsEditField.label "Rows:">
+<!ENTITY numRowsEditField.label "Rows">
 <!ENTITY numRowsEditField.accesskey "R">
-<!ENTITY numColumnsEditField.label "Columns:">
+<!ENTITY numColumnsEditField.label "Columns">
 <!ENTITY numColumnsEditField.accesskey "C">
-<!ENTITY widthEditField.label "Width:">
+<!ENTITY widthEditField.label "Table width">
 <!ENTITY widthEditField.accesskey "W">
-<!ENTITY autoWidth.label "Automatic">
+<!ENTITY autoWidth.label "Automatic, or">
 <!ENTITY autoWidth.accesskey "A">
-<!ENTITY borderEditField.label "Border:">
+<!ENTITY borderEditField.label "Border">
 <!ENTITY borderEditField.accesskey "B">
 <!ENTITY borderEditField.tooltip "Type a number for the table's border, or type zero (0) for no border">
 <!ENTITY pixels.label "pixels">
@@ -41,21 +41,208 @@
 <!ENTITY preciselyTab.label "Precisely">
 <!ENTITY cellTab.label "Cell">
 
-<!ENTITY horizAlignment.label "Horiz. alignment:">
+<!ENTITY horizAlignment.label "Horiz. alignment">
 <!ENTITY unspecifiedHAlignment.label "Unspecified">
 <!ENTITY leftHAlignment.label "Left">
 <!ENTITY centerHAlignment.label "Center">
 <!ENTITY rightHAlignment.label "Right">
 
-<!ENTITY vertAlignment.label "Vert. alignment:">
+<!ENTITY vertAlignment.label "Vert. alignment">
 <!ENTITY unspecifiedVAlignment.label "Unspecified">
 <!ENTITY topVAlignment.label "Top">
 <!ENTITY middleVAlignment.label "Middle">
 <!ENTITY bottomVAlignment.label "Bottom">
 
-<!ENTITY textWrapping.label "Text wrapping:">
+<!ENTITY textWrapping.label "Text wrapping">
 <!ENTITY wrapWrapping.label "Wrap">
 <!ENTITY nowrapWrapping.label "Don't wrap">
 
 <!ENTITY cellSpacing.label "Cellspacing">
 <!ENTITY cellPadding.label "Cellpadding">
+<!ENTITY tableWindow.title                "Table Properties">
+<!ENTITY applyButton.label                "Apply">
+<!ENTITY applyButton.accesskey            "A">
+<!ENTITY closeButton.label                "Close">
+<!ENTITY tableTab.label                   "Table">
+<!ENTITY cellsTab.label                   "Cells">
+<!ENTITY linesTab.label                   "Lines">
+
+<!-- !ENTITY tableRows.label                  "Rows">
+<!ENTITY tableRows.accesskey              "R">
+<!ENTITY tableColumns.label               "Columns">
+<!ENTITY tableColumns.accesskey           "C" -->
+
+<!ENTITY tableRowHeight.label             "Row height">
+<!ENTITY tableRowHeight.accesskey         "H">
+<!ENTITY tableColumnWidth.label           "Column width">
+<!ENTITY tableColumnWidth.accesskey       "W">
+
+<!-- !ENTITY tableBorderSpacing.label         "Spacing">
+<!ENTITY tableSpacing.label               "Spacing">
+<!ENTITY tableSpacing.accesskey           "S">
+<!ENTITY tablePadding.label               "Padding">
+<!ENTITY tablePadding.accesskey           "P">
+<!ENTITY tablePxBetwBrdrCellContent.label "space between cell edge and content" -->
+
+<!ENTITY tableSize.label                  "Size">
+<!ENTITY tableRows.label                  "Rows">
+<!ENTITY tableRows.accesskey              "R">
+<!ENTITY tableColumns.label               "Columns">
+<!ENTITY tableColumns.accesskey           "C">
+<!ENTITY tableRowHeight.label             "Row height">
+<!ENTITY tableRowHeight.accesskey         "h">
+<!ENTITY tableWidth.label                 "Table width">
+<!ENTITY tableWidth.accesskey             "w">
+<!ENTITY autoWidth.label                  "Auto">
+<!ENTITY autoWidth.accesskey              "A">
+<!ENTITY tableLocation.label              "Table location">
+<!ENTITY tableLocation.accesskey          "l">
+<!ENTITY location.label                   "Location">
+<!ENTITY location.accesskey               "L">
+<!ENTITY floatLocation.label              "Float">
+<!ENTITY rowAlignment.label               "Row Alignment">
+<!ENTITY rowAlignment.accesskey           "R">
+<!ENTITY tableBaseline.label              "Table Baseline">
+<!ENTITY tableBaseline.accesskey          "B">
+<!ENTITY BaselineTopRow.label             "Same as top row">
+<!ENTITY BaselineTopRow.accesskey         "T">
+<!ENTITY BaselineVerticalCenter.label     "At vertical center">
+<!ENTITY BaselineVerticalCenter.accesskey "C">
+<!ENTITY BaselineBottomRow.label          "Same as bottom row">
+<!ENTITY BaselineBottomRow.accesskey      "B">
+
+<!ENTITY tableCaption.label               "Caption">
+<!ENTITY tableCaption.accesskey           "N">
+<!ENTITY tableCaptionAbove.label          "Above Table">
+<!ENTITY tableCaptionBelow.label          "Below Table">
+<!ENTITY tableCaptionNone.label           "None">
+<!ENTITY backgroundInheritColor.label     "(Let page color show through)">
+
+<!-- !ENTITY cellPercent.label                "percent of table" -->
+
+<!ENTITY borderSideSelection.label        "Selected side">
+<!ENTITY borderSideSelection.accesskey    "s">
+<!ENTITY borderSelectAll.label            "All">
+<!ENTITY borderSelectTop.label            "Top">
+<!ENTITY borderSelectRight.label          "Right">
+<!ENTITY borderSelectBottom.label         "Bottom">
+<!ENTITY borderSelectLeft.label           "Left">
+<!ENTITY cellBorderStyleList.label        "Line style">
+<!ENTITY cellBorderStyleList.accesskey    "y">
+
+<!ENTITY borderStyleNone.label  "None">
+<!ENTITY borderStyleHidden.label "Hidden">
+<!ENTITY borderStyleDotted.label "Dotted">
+<!ENTITY borderStyleDashed.label "Dashed">
+<!ENTITY borderStyleSolid.label "Solid">
+<!ENTITY borderStyleDouble.label "Double">
+<!ENTITY borderStyleGroove.label "Groove">
+<!ENTITY borderStyleRidge.label "Ridge">
+<!ENTITY borderStyleInset.label "Inset">
+<!ENTITY borderStyleOutset.label "Outset">
+
+<!ENTITY borderColor.label "Line color"> 
+
+<!ENTITY cellSelection.label              "Selection">
+<!ENTITY cellSelectCell.label             "Cell">
+<!ENTITY cellSelectRow.label              "Row">
+<!ENTITY cellSelectColumn.label           "Column">
+<!ENTITY cellSelectTable.label            "Table">
+<!-- !ENTITY cellSelectNext.label             "Next">
+<!ENTITY cellSelectNext.accesskey         "N">
+<!ENTITY cellSelectPrevious.label         "Previous">
+<!ENTITY cellSelectPrevious.accesskey     "P">
+<!ENTITY cellApplyBeforeMove.label        "Apply changes before changing selection">
+<!ENTITY cellKeepCurrentData.label        "Keep current settings" -->
+<!-- LOCALIZATION NOTE Next 2 form 1 sentence (we don't want to use HTML tag to wrap) -->
+<!-- !ENTITY applyBeforeChange1.label         "Current changes will be applied">
+<!ENTITY applyBeforeChange2.label         "before changing the selection.">
+<!ENTITY cellRowSpan.label                "Row Span">
+<!ENTITY cellColSpan.label                "Column Span">
+<!ENTITY cellContentAlignment.label       "Cell Alignment">
+<!ENTITY cellHorizontal.label             "Horizontal">
+<!ENTITY cellHorizontal.accesskey         "Z">
+<!ENTITY cellVertical.label               "Vertical">
+<!ENTITY cellVertical.accesskey           "V" -->
+
+<!ENTITY cellStyle.label                  "Cell Style">
+<!ENTITY cellStyle.accesskey              "C">
+<!ENTITY cellNormal.label                 "Normal">
+<!ENTITY cellHeader.label                 "Header">
+<!-- !ENTITY cellTextWrap.label               "Text Wrap">
+<!ENTITY cellTextWrap.accesskey           "T" -->
+<!ENTITY cellWrap.label                   "Wrap Text">
+<!ENTITY cellWrap.accesskey               "W">
+<!-- !ENTITY cellNoWrap.label                 "Don't wrap" -->
+
+<!ENTITY AlignTop.label                   "Top">
+<!ENTITY AlignTop.accesskey               "T">
+<!ENTITY AlignMiddle.label                "Middle">
+<!ENTITY AlignMiddle.accesskey            "M">
+<!ENTITY AlignBottom.label                "Bottom">
+<!ENTITY AlignBottom.accesskey            "B">
+<!ENTITY cellAlignJustify.label           "Justify">
+<!ENTITY cellAlignAtChar.label            "At Character">
+<!ENTITY cellInheritColor.label           "(Let table color show through)">
+<!-- !ENTITY cellUseCheckboxHelp.label        "Use checkboxes to determine which properties are applied to all selected cells" -->
+
+<!-- Used in both Table and Cell panels  -->
+<!ENTITY tableBorderWidth.label           "Line width">
+<!ENTITY tableBorderWidth.accesskey       "B">
+<!ENTITY borderWidthNone.label            "None">
+<!ENTITY borderWidthThin.label            "Thin">
+<!ENTITY borderWidthMedium.label          "Medium">
+<!ENTITY borderWidthThick.label           "Thick">
+<!ENTITY size.label                       "Size">
+<!ENTITY pixels.label                     "pixels">
+<!ENTITY backgroundColor.label            "Background Color">
+<!ENTITY backgroundColor.accesskey        "B">
+<!ENTITY BackgroundSelectionWholeTable.label        "Whole Table">
+<!ENTITY BackgroundSelectionWholeTable.accesskey    "W">
+<!ENTITY BackgroundSelectionSelectedCells.label     "Selected Cells">
+<!ENTITY BackgroundSelectionSelectedCells.accesskey "S">
+<!ENTITY AlignLeft.label                  "Left">
+<!ENTITY AlignLeft.accesskey              "L">
+<!ENTITY AlignCenter.label                "Center">
+<!ENTITY AlignCenter.accesskey            "C">
+<!ENTITY AlignRight.label                 "Right">
+<!ENTITY AlignRight.accesskey             "R">
+
+<!ENTITY CellContentAlign.label "Cell content alignment">
+<!ENTITY Horizontal.label "Horizontal">
+<!ENTITY hAlignLeft.label  "Left">
+<!ENTITY hAlignCenter.label "Center">
+<!ENTITY hAlignRight.label  "Right">
+
+<!ENTITY Vertical.label "Vertical">
+<!ENTITY vAlignTop.label  "Top">
+<!ENTITY vAlignCenter.label "Center">
+<!ENTITY vAlignBottom.label "Bottom">
+
+<!ENTITY inline.label "Inline">
+<!ENTITY left.label "Left">
+<!ENTITY inside.label "Inside">
+<!ENTITY center.label "Center">
+<!ENTITY right.label  "Right">
+<!ENTITY outside.label  "Outside">
+<!ENTITY none.label "None">
+<!ENTITY here.label "Here">
+<!ENTITY onpageoffloats.label "On page of floats">
+<!ENTITY topofpage.label  "Top of page">
+<!ENTITY bottomofpage.label "Bottom of page">
+<!ENTITY Tablebaseline.label  "Table Baseline">
+<!ENTITY baseline.label "Baseline">
+<!ENTITY sameastoprow.label "Same as top row">
+<!ENTITY atverticalcenter.label "At vertical center">
+<!ENTITY sameasbottomrow.label  "Same as bottom row">
+<!ENTITY Caption.label  "Caption">
+<!ENTITY abovetable.label "Above table">
+<!ENTITY belowtable.label "Below table">
+<!ENTITY Basecolor.label  "Base color">
+<!ENTITY Rowheight.label  "Row height">
+<!ENTITY Columnwidth.label  "Column width">
+<!ENTITY Cellcolor.label  "Cell color">
+<!ENTITY interit.label  "Inherit">
+
+<!ENTITY currentUnits "Current units: ">
+<!ENTITY other.label "Other" >
