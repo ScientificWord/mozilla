@@ -654,8 +654,9 @@ should not be done under some conditions -->
 \end{Arabic}
 </xsl:template>
 
-<xsl:template match="html:centered"
->\begin{center}<xsl:apply-templates/>\end{center}\par</xsl:template>
+<xsl:template match="html:centered">
+\begin{center}<xsl:apply-templates/>\end{center}\par
+</xsl:template>
 
 <xsl:template match="html:pre">
 \begin{verbatim}

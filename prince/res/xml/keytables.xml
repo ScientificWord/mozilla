@@ -29,7 +29,7 @@
 	  <key name="E">insertMathSymbol("&epsi;");</key>
 	  <key name="F">insertMathSymbol("&Phi;");</key>
 	  <key name="G">insertMathSymbol("&Gamma;");</key>
-	  <key name="I">insertMathSymbol("&gammad;");</key>
+	  <key name="I">insertMathSymbol("&#x3dc;");</key>
 	  <key name="K">insertMathSymbol("&kappav;");</key>
 	  <key name="L">insertMathSymbol("&Lambda;");</key>
 	  <key name="O">insertMathSymbol("&Omega;");</key>
