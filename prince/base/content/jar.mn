@@ -252,7 +252,7 @@ prince.jar:
   content/passes.xul               (dialogs/passes.xul)
   content/passes.js                (dialogs/passes.js)
   content/msiEdTableProps.js       (dialogs/msiEdTableProps.js)
-  content/msiEdTableProps.xul      (dialogs/msiEdTableProps.xul)
+# content/msiEdTableProps.xul      (dialogs/msiEdTableProps.xul)
   content/msiEdReviseChars.js    (dialogs/msiEdReviseChars.js)
   content/msiEdReviseChars.xul     (dialogs/msiEdReviseChars.xul)
   content/MatrixInsertRowsCols.xul    (dialogs/MatrixInsertRowsCols.xul)
