@@ -19,7 +19,7 @@
  * 
  * Contributor(s): 
  */
-
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 //Cancel() is in EdDialogCommon.js
 var gTableElement = null;
 var gRows;
@@ -27,11 +27,20 @@ var gColumns;
 var gActiveEditor;
 var gCellID = 12;
 var gPrefs;
+var unitHandler;
+
+function TablePropertyChanged(property) {
+  dump(property);
+}
 
 // dialog initialization code
 function Startup()
 {
-  debugger;
+  var prefs = GetPrefs();
+  var defaultUnit;
+  var hAlign ;  
+  var vAlign;   
+  var wrapping;
   gActiveEditor = msiGetTableEditor();
   if (!gActiveEditor)
   {
@@ -51,18 +60,38 @@ function Startup()
     window.close();
     return;
   }
+  unitHandler = new UnitHandler();
   gDialog.rowsInput      = document.getElementById("rowsInput");
-  gRows = gDialog.rowsInput.value;
   gDialog.columnsInput   = document.getElementById("columnsInput");
-  gColumns = gDialog.columnsInput.value;
   gDialog.widthInput     = document.getElementById("widthInput");
-  gDialog.borderInput    = document.getElementById("borderInput");
-  gDialog.horizAlignment = document.getElementById("horizAlignment");
-  gDialog.vertAlignment  = document.getElementById("vertAlignment");
-  gDialog.textWrapping   = document.getElementById("textWrapping");
-  gDialog.cellSpacing    = document.getElementById("cellSpacing");
-  gDialog.cellPadding    = document.getElementById("cellPadding");
   gDialog.autoCheckbox   = document.getElementById("autoWidthCheckbox");
+  gDialog.CellHeightInput= document.getElementById("CellHeightInput");
+  gDialog.CellWidthInput = document.getElementById("CellWidthInput");
+  gDialog.currentunits   = document.getElementById("currentunits");
+  gDialog.unitMenulist   = document.getElementById("unitMenulist");
+  gDialog.OkButton = document.documentElement.getButton("accept");
+  gDialog.sizeLabel = document.getElementById("sizeLabel");
+  gRows = gDialog.rowsInput.value;
+  gColumns = gDialog.columnsInput.value;
+
+  var fieldList = [];
+  fieldList.push(gDialog.CellHeightInput);
+  fieldList.push(gDialog.CellWidthInput);
+  fieldList.push(gDialog.widthInput);
+  unitHandler.setEditFieldList(fieldList);
+  if (prefs)
+    defaultUnit = prefs.getCharPref("swp.defaultTableUnits");
+  gDialog.currentunits.setAttribute("value", unitHandler.getDisplayString(defaultUnit));
+  try {
+    unitHandler.buildUnitMenu(gDialog.unitMenulist, defaultUnit);
+
+  // need to check this and use default value from preferences if appropriate.
+    unitHandler.initCurrentUnit(gDialog.unitMenulist.value, defaultUnit);
+  }
+  catch(e) {
+    dump(e.message);
+  }
+
 
   var cellid;
   if (gRows <= 6 && gColumns <= 6) cellid = 10*(Number(gRows) -1 )+Number(gColumns);
@@ -71,14 +100,11 @@ function Startup()
     // Table is too big for the 'quickly' tab; activate the 'precisely' tab.
     document.getElementById("tabpanel-tabs").selectedIndex = 1;
   }
-  gDialog.widthPixelOrPercentMenulist = document.getElementById("widthPixelOrPercentMenulist");
-  gDialog.OkButton = document.documentElement.getButton("accept");
-  gDialog.sizeLabel = document.getElementById("sizeLabel");
 
-  gTableElement.setAttribute("border", gDialog.borderInput.value);
-  if (gDialog.widthInput.value)
-    gTableElement.setAttribute("width", Number(gDialog.widthInput.value) +
-                                        (gDialog.widthPixelOrPercentMenulist.value == "pc" ? "%" : ""));
+//  gTableElement.setAttribute("border", gDialog.borderInput.value);
+  // if (gDialog.widthInput.value)
+  //   gTableElement.setAttribute("width", Number(gDialog.widthInput.value) +
+  //                                       (gDialog.widthPixelOrPercentMenulist.value == "pc" ? "%" : ""));
   
   // Make a copy to use for AdvancedEdit
   globalElement = gTableElement.cloneNode(false);
@@ -93,9 +119,9 @@ function Startup()
         globalElement.setAttribute("style", "text-align: left;");
       }
 
-      var hAlign = gPrefs.getCharPref("editor.table.default_align");
-      var vAlign = gPrefs.getCharPref("editor.table.default_valign");
-      var wrapping = gPrefs.getCharPref("editor.table.default_wrapping");
+      hAlign = gPrefs.getCharPref("editor.table.default_align");
+      vAlign = gPrefs.getCharPref("editor.table.default_valign");
+      wrapping = gPrefs.getCharPref("editor.table.default_wrapping");
 
       var cellSpacing = gPrefs.getCharPref("editor.table.default_cellspacing");
       if (cellSpacing)
@@ -135,15 +161,19 @@ function InitDialog(hAlign, vAlign, wrapping)
   msiInitPixelOrPercentMenulist(globalElement, null, "width", "widthPixelOrPercentMenulist", gPercent);
   /*gDialog.borderInput.value = globalElement.getAttribute("border");*/
 
-  gDialog.horizAlignment.value = hAlign;
-  gDialog.vertAlignment.value  = vAlign;
-  gDialog.textWrapping.selectedItem = (wrapping == "nowrap") ?
-                                       document.getElementById("nowrapRadio") :
+  gDialog.horizAlignment.value = hAlign || "";
+  gDialog.vertAlignment.value  = vAlign || "";                                       document.getElementById("nowrapRadio") :
                                        document.getElementById("wrapRadio");
-  gDialog.cellSpacing.value    = globalElement.getAttribute("cellspacing");
-  gDialog.cellPadding.value    = globalElement.getAttribute("cellpadding");
   checkEnableWidthControls();
 }
+
+function onChangeTableUnits()
+{
+  var val = document.getElementById("unitMenulist").value;;
+  unitHandler.setCurrentUnit(val);
+  document.getElementById("currentunits").setAttribute("value", unitHandler.getDisplayString(val));
+}
+
 
 function ChangeRowOrColumn(id)
 {
@@ -158,6 +188,40 @@ function ChangeRowOrColumn(id)
 
   SetElementEnabled(gDialog.OkButton, enable);
   SetElementEnabledById("AdvancedEditButton1", enable);
+  if (enable) 
+  {  
+    gRows = gDialog.rowsInput.value;  
+    gColumns = gDialog.columnsInput.value;
+    gCellID = 10*(gColumns) - - gRows;
+    DisplaySize();
+  }
+}
+
+function GetColorAndUpdate(ColorWellID)
+{
+  var colorWell = document.getElementById(ColorWellID);
+  if (!colorWell) return;
+  var colorObj= {
+    TextColor: "#ffffff",
+    alpha: 255,
+    Cancel: false
+  }
+  if (ColorWellID === "borderCW") {
+    colorObj.TextColor = "#000000";
+  }
+
+
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
+
+  // User canceled the dialog
+  if (colorObj.Cancel)
+    return;
+  
+
+  // var changeArray = createPreviewChangeArray();
+  // var borderSideAttrStr = "";
+  var theColor = colorObj.TextColor;
+  setColorWell(ColorWellID, theColor);
 }
 
 
@@ -180,7 +244,7 @@ function ValidateData()
     return false;
 
   // Set attributes: NOTE: These may be empty strings (last param = false)
-  msiValidateNumber(gDialog.borderInput, null, 0, gMaxPixels, globalElement, "border", false);
+  // msiValidateNumber(gDialog.borderInput, null, 0, gMaxPixels, globalElement, "border", false);
   // TODO: Deal with "BORDER" without value issue
   if (gValidationError) return false;
 
@@ -195,8 +259,8 @@ function ValidateData()
     gDialog.widthPixelOrPercentMenulist.value = gDialog.widthPixelOrPercentMenulist.selectedItem.value;
   }
 
-  SetOrResetAttribute(globalElement, "cellspacing", gDialog.cellSpacing.value);
-  SetOrResetAttribute(globalElement, "cellpadding", gDialog.cellPadding.value);
+  // SetOrResetAttribute(globalElement, "cellspacing", gDialog.cellSpacing.value);
+  // SetOrResetAttribute(globalElement, "cellpadding", gDialog.cellPadding.value);
 
   if (gValidationError)
     return false;
