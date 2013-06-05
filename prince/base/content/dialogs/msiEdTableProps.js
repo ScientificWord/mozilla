@@ -241,9 +241,25 @@ function createCellDataObject(srcData)
 
 function createCellBorderData(srcBorderData)
 {
-  var borderData = { style : {top : "solid", right : "solid", bottom : "solid", left : "solid"},
-                     width : {top : "thin", right : "thin", bottom : "thin", left : "thin"},
-                     color : {top : "#000000", right : "#000000", bottom : "#000000", left : "#000000"} };
+  var borderData = { 
+    style : {
+      top : "solid", 
+      right : "solid", 
+      bottom : "solid", 
+      left : "solid"
+    },
+    width : {
+      top : "thin", 
+      right : "thin", 
+      bottom : "thin", 
+      left : "thin"
+    },
+    color : {
+      top : "#000000", 
+      right : "#000000", 
+      bottom : "#000000", 
+      left : "#000000"} 
+    };
   var aSide;
   if (srcBorderData)
   {

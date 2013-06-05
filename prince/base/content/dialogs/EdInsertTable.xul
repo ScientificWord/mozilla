@@ -49,11 +49,13 @@
 
   <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
+  <broadcaster id="currentunits" value=""/>
   <tabbox>
     <tabs id="tabpanel-tabs">
       <tab label="&quicklyTab.label;"/>
-      <tab label="&preciselyTab.label;"/>
-      <tab label="&cellTab.label;"/>
+      <tab id="TableTab" label="&tableTab.label;"/>
+      <tab id="CellsTab" label="&cellsTab.label;"/>
+      <tab id="LinesTab" label="&linesTab.label;"/>
     </tabs>
     <tabpanels>
       <vbox id="tablegrid" flex="1">
@@ -142,96 +144,263 @@
         </hbox>
         <spacer class="spacer" flex="1"/>
       </vbox>
-      <vbox>
-        <groupbox><caption label="&size.label;"/>
+      <tabpanel>
+        <vbox>
           <hbox>
-          <grid>
-            <columns>
-              <column flex="1"/>
-              <column flex="1"/>
-            </columns>
+            <groupbox flex="1"><caption label="&size.label;"/>
+              <grid>
+                <columns>
+                  <column flex="1"/>
+                  <column flex="1"/>
+                </columns>
+                <rows>
+                  <row align="center">
+                    <label control="rowsInput" class="align-right"
+                           value="&numRowsEditField.label;"
+                           accesskey="&numRowsEditField.accesskey;"/>
+                    <textbox value="2" class="narrow" id="rowsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
+                    <spacer/>
+                  </row>
+                  <row align="center">
+                    <label control="columnsInput" class="align-right"
+                           value="&numColumnsEditField.label;"
+                           accesskey="&numColumnsEditField.accesskey;"/>
+                    <textbox value="4" class="narrow" id="columnsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
+                    <spacer/>
+                  </row>
+                </rows>
+              </grid>
+            </groupbox>
+            <groupbox flex="1"><caption label="&widthEditField.label;"/>
+              <checkbox id="autoWidthCheckbox" label="&autoWidth.label;" accesskey="&autoWidth.accesskey;" checked="true" persist="checked" oncommand="checkEnableWidthControls();"/>
+              <textbox value="100" class="narrow" id="widthInput" oninput="MakePersistsValue(this);" persist="value"/>
+              <menulist id="unitMenulist" persist="value" oncommand=" onChangeTableUnits();"/>
+              <spacer flex="1"/>
+              <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>        
+            </groupbox>
+            <groupbox orient="vertical" align="start">
+              <caption label="&tableLocation.label;"/>
+              <grid>
+                <columns>
+                  <column/>
+                  <column/>
+                </columns>
+                <rows>
+                  <row align="center">
+                    <label value="&location.label;" control="tableLocationList" />
+                    <menulist id="tableLocationList" oncommand="">
+                      <menupopup>
+                        <menuitem label="&inline.label;"  value=""/>
+                        <menuitem label="&left.label;" value="left"/>
+                        <menuitem label="&inside.label;" value="inside"/>
+                        <menuitem label="&center.label;" value="center"/>
+                        <menuitem label="&right.label;" value="right"/>
+                        <menuitem label="&outside.label;" value="outside"/>
+                      </menupopup>
+                    </menulist> 
+                  </row>
+                  <row>
+                    <label value="&floatLocation.label;" control="floatLocationList"/>
+                    <menulist id="floatLocationList" oncommand="">
+                      <menupopup>
+                        <menuitem label="&none.label;"  value=""/>
+                        <menuitem label="&here.label;" value="h"/>
+                        <menuitem label="&onpageoffloats.label;" value="p"/>
+                        <menuitem label="&topofpage.label;" value="t"/>
+                        <menuitem label="&bottomofpage.label;" value="b"/>
+                      </menupopup>
+                    </menulist> 
+                  </row>
+                  <row align="center">
+                    <label value="&Tablebaseline.label;" control="baselineList"/>
+                    <menulist id="baselineList" oncommand="TablePropertyChanged('TableBaselineRadioGroup');">
+                      <menupopup>
+                        <menuitem label="&baseline.label;" value="baseline"/>
+                        <menuitem label="&sameastoprow.label;"  value="top"/>
+                        <menuitem label="&atverticalcenter.label;" value="middle"/>
+                        <menuitem label="&sameasbottomrow.label;" value="bottom"/>
+                      </menupopup>
+                    </menulist>
+                  </row>
+                  <row align="center">
+                    <label value="&Caption.label;" control="captionLocation"/>
+                    <menulist id="captionLocation" oncommand="TablePropertyChanged('TableCaptionList');">
+                      <menupopup>
+                        <menuitem label="&none.label;"  value=""/>
+                        <menuitem label="&abovetable.label;" value="top"/>
+                        <menuitem label="&belowtable.label;" value="bottom"/>
+                      </menupopup>
+                    </menulist>
+                    <!-- <label id="BackgroundColorLabel" value="&Basecolor.label;"/>
+                    <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('tableBackgroundCW');">
+                      <spacer id="tableBackgroundCW" class="color-well"/>
+                    </msibutton><spacer flex="2"/></hbox> -->
+                  </row>
+                </rows>
+              </grid> 
+            </groupbox>
+          </hbox>
+        </vbox>
+      </tabpanel>
+      <!-- Cells PANEL -->
+      <tabpanel id ="tableprops">
+        <vbox>
+          <!-- cell size groupbox -->
+          <groupbox flex="1"><caption label="&size.label;"/>
+            <grid>
+              <columns><column/><column/><column flex="1"/></columns>
+              <rows>
+                <row align="center">
+                  <label value="&Rowheight.label;"/>
+                  <textbox id="CellHeightInput" type="number" class="medwidth" 
+                           oninput=""/>
+<!--                   <menulist id="cellUnitsList" oncommand="onChangeCellUnits();" />
+ -->                </row>
+                <row align="center">
+                  <label value="&Columnwidth.label;"/>
+                  <textbox id="CellWidthInput" type="number" class="medwidth" 
+                           oninput=""/>
+                </row>
+              </rows>
+            </grid>
+            <spacer flex="1"/>
+            <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>
+          </groupbox>
+        </vbox>
+        <groupbox><caption label="&CellContentAlign.label;"/>
+          <grid>                  
+            <columns><column/><column/></columns>
             <rows>
               <row align="center">
-                <label control="rowsInput" class="align-right"
-                       value="&numRowsEditField.label;"
-                       accesskey="&numRowsEditField.accesskey;"/>
-                <textbox value="2" class="narrow" id="rowsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
-                <spacer/>
+                <label value="&Horizontal.label;"/>
+                <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
+                  <menupopup>
+                    <menuitem label="&hAlignLeft.label;"  value="left"/>
+                    <menuitem label="&hAlignCenter.label;" value="center"/>
+                    <menuitem label="&hAlignRight.label;" value="right"/>
+                  </menupopup>
+                </menulist>
+
               </row>
               <row align="center">
-                <label control="columnsInput" class="align-right"
-                       value="&numColumnsEditField.label;"
-                       accesskey="&numColumnsEditField.accesskey;"/>
-                <textbox value="4" class="narrow" id="columnsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
-                <spacer/>
+                <label value="&Vertical.label;"/>
+                <menulist id="vAlignChoices"  oncommand="AlignmentChanged('RowAlignRadioGroup');">
+                  <menupopup>
+                    <menuitem label="&vAlignTop.label;"  value="top"/>
+                    <menuitem label="&vAlignCenter.label;" value="center"/>
+                    <menuitem label="&vAlignBottom.label;" value="bottom"/>
+                  </menupopup>
+                </menulist>
               </row>
             </rows>
           </grid>
-          <groupbox><caption label="&widthEditField.label;"/>
-            <checkbox id="autoWidthCheckbox" label="&autoWidth.label;" accesskey="&autoWidth.accesskey;" checked="true" persist="checked" oncommand="checkEnableWidthControls();"/>
-            <textbox value="100" class="narrow" id="widthInput" oninput="forceInteger(this.id); MakePersistsValue(this)" persist="value"/>
-            <menulist value="pc" id="widthPixelOrPercentMenulist" flex="1" persist="value"/>
-                  <!-- child elements are appended by JS -->
-          </groupbox>
-        </hbox>
-        <spacer class="spacer"/>
         </groupbox>
-        <spacer class="spacer"/>
-        <hbox align="center">
-          <label control="borderInput" class="align-right"
-              value="&borderEditField.label;"
-              accesskey="&borderEditField.accesskey;"
-              tooltiptext="&borderEditField.tooltip;" />
-          <textbox value="1" class="narrow" id="borderInput" oninput="forceInteger(this.id); MakePersistsValue(this)" persist="value"/>
-          <label id="&pixels.label;"/>  
-        </hbox>
-      </vbox>
-      <grid>
-        <columns><column/><column/></columns>
-        <rows>
-          <row align="center">
-            <label value="&horizAlignment.label;"/>
-            <menulist id="horizAlignment">
-              <menupopup>
-                <menuitem label="&unspecifiedHAlignment.label;" value=""/>
-                <menuitem label="&leftHAlignment.label;"        value="left"/>
-                <menuitem label="&centerHAlignment.label;"      value="center"/>
-                <menuitem label="&rightHAlignment.label;"       value="right"/>
-              </menupopup>
-            </menulist>
-          </row>
-          <row align="center">
-            <label value="&vertAlignment.label;"/>
-            <menulist id="vertAlignment">
-              <menupopup>
-                <menuitem label="&unspecifiedVAlignment.label;" value=""/>
-                <menuitem label="&topVAlignment.label;"         value="top"/>
-                <menuitem label="&middleVAlignment.label;"      value="middle"/>
-                <menuitem label="&bottomVAlignment.label;"      value="bottom"/>
-              </menupopup>
-            </menulist>
-          </row>
-          <row align="center">
-            <label value="&textWrapping.label;"/>
-            <radiogroup id="textWrapping" orient="horizontal">
-              <radio id="wrapRadio"   label="&wrapWrapping.label;"       value=""/>
-              <radio id="nowrapRadio" label="&nowrapWrapping.label;" value="nowrap"/>
-            </radiogroup>
-          </row>
-          <row align="center">
-            <label value="&cellSpacing.label;"/>
-            <hbox>
-              <textbox value="2" class="narrow" id="cellSpacing" oninput="forceInteger(this.id);"/>
-            </hbox>
-          </row>
-          <row align="center">
-            <label value="&cellPadding.label;"/>
-            <hbox>
-              <textbox value="2" class="narrow" id="cellPadding" oninput="forceInteger(this.id);"/>
-            </hbox>
-          </row>
-        </rows>
-      </grid>
+        <groupbox orient="vertical" align="center">
+          <caption label="&other.label;"/>
+          <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" />
+        
+          <label id="BackgroundColorLabel" value="&backgroundColor.label;"/>
+          <msibutton class="color-button" oncommand="GetColorAndUpdate('backgroundCW');">
+            <spacer id="backgroundCW" class="color-well"/>
+          </msibutton>
+        </groupbox>
+        <spacer flex="1"/>
+      </tabpanel><!-- Cells Panel -->
+     
+      <!-- Lines PANEL -->
+      <tabpanel>
+        <vbox>
+          <hbox>
+            <vbox>
+              <hbox>
+                <label control="BorderSideSelectionList" value="&borderSideSelection.label;" accesskey="&borderSideSelection.accesskey;" />
+                <menulist id="BorderSideSelectionList" value="all" oncommand="setCurrSide(this.value);">
+                  <menupopup>
+                    <menuitem label="&borderSelectAll.label;"  value="all"/>
+                    <menuitem label="&borderSelectTop.label;"  value="top"/>
+                    <menuitem label="&borderSelectRight.label;"  value="right"/>
+                    <menuitem label="&borderSelectBottom.label;"  value="bottom"/>
+                    <menuitem label="&borderSelectLeft.label;"  value="left"/>
+                  </menupopup>
+                </menulist>
+              </hbox>
+              <description id="BordersPreview" class="MSISample"  flex="1" valign="center"
+                  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+                  xmlns:mml="http://www.w3.org/1998/Math/MathML">
+                <xhtml:table align="center" valign="center" style="table-layout: auto; empty-cells: show; width: 3em; height: 3em; font-size: 100%; overflow: hidden; text-align: center; vertical-align: middle">
+                  <xhtml:tr height="15%">
+                    <xhtml:td style="border-width: 0;"><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-style: dotted; border-width: 0 thin; border-color: red"><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: 0;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                  </xhtml:tr>
+                  <xhtml:tr height="30%">
+                    <xhtml:td style="border-style: dotted; border-width: thin 0; border-color: red"><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td id="BordersPreviewCenterCell" style="border-style: dotted; border-width: thin; border-color: red;" ><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-style: dotted; border-width: thin 0; border-color: red;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                  </xhtml:tr>
+                  <xhtml:tr height="15%">
+                    <xhtml:td style="border-width: 0;"><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-style: dotted; border-width: 0 thin; border-color: red"><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: 0;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                  </xhtml:tr>
+                </xhtml:table>
+              </description>
+            </vbox>
+            <vbox>
+              <grid>
+                <columns>
+                  <column flex="1"/>
+                  <column flex="1"/>
+                </columns>
+                <rows>
+                  <row align="center">
+                    <label control="cellBorderStyleList"
+                           value="&cellBorderStyleList.label;"
+                           accesskey="&cellBorderStyleList.accesskey;"/>
+                    <menulist id="cellBorderStyleList" oncommand="checkPreviewChanges(this.id);">
+                      <menupopup>
+                        <menuitem label="" value="inherit"/>
+                        <menuitem label="&borderStyleNone.label;"  value="none" selected = "true"/>
+                        <!--menuitem label="&borderStyleHidden.label;"  value="hidden"/-->
+                        <menuitem label="&borderStyleSolid.label;"  value="solid"/>
+                        <!--menuitem label="&borderStyleDotted.label;"  value="dotted"/-->
+                        <!--menuitem label="&borderStyleDashed.label;"  value="dashed"/-->
+                        <menuitem label="&borderStyleDouble.label;"  value="double"/>
+                        <!--menuitem label="&borderStyleGroove.label;"  value="groove"/-->
+                        <!--menuitem label="&borderStyleRidge.label;"  value="ridge"/-->
+                        <!--menuitem label="&borderStyleInset.label;"  value="inset"/-->
+                        <!--menuitem label="&borderStyleOutset.label;"  value="outset"/-->
+                      </menupopup>
+                    </menulist>
+                  </row>
+                  <row align="center">
+                    <label control="BorderWidthInput"
+                           value="&tableBorderWidth.label;"
+                           accesskey="&tableBorderWidth.accesskey;"/>
+                    <!-- textbox class="narrow" id="BorderWidthInput" oninput="forceInteger(this.id);"/>
+                    <label align="left" value="&pixels.label;"/ -->
+                    <menulist id="cellBorderWidthList" oncommand="checkPreviewChanges(this.id);">
+                      <menupopup>
+                        <menuitem label="&borderWidthNone.label;" value="none"/>
+                        <menuitem label="&borderWidthThin.label;" value="thin"/>
+                        <menuitem label="&borderWidthMedium.label;" value="medium"/>
+                        <menuitem label="&borderWidthThick.label;" value="thick"/>
+                      </menupopup>
+                    </menulist>
+                  </row>
+                  <row align="center">
+                    <label id="BorderColorLabel" value="&borderColor.label;"/>
+                    <msibutton class="color-button" oncommand="GetColorAndUpdate('borderCW');">
+                      <spacer id="borderCW" class="color-well"/>
+                    </msibutton>
+                  </row>
+                </rows>
+              </grid>
+            </vbox>
+            <!-- label id="CellInheritColor" value="&cellInheritColor.label;" collapsed="true"/ -->
+          </hbox>
+        </vbox>
+      </tabpanel>
     </tabpanels>
   </tabbox>
   <!-- from EdDialogOverlay -->

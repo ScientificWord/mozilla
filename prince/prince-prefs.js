@@ -172,6 +172,8 @@ pref("swp.spellchecker.enablerealtimespell", true);
 pref("swp.viewPDF","default");
 pref("swp.webzip.compression", 9);
 pref("swp.zoom_factor",            "1.0");
+pref("swp.defaultTableUnits", "in");
+
 pref("toolkit.defaultChromeURI", "chrome://prince/content/prince.xul");
 pref("toolkit.scrollbar.clickToScroll.scrollDelay", 100);
 pref("toolkit.scrollbar.scrollIncrement", 20);
