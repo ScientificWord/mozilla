@@ -442,16 +442,6 @@
   \fi}
 
 
-%% \def\pagenumbering#1{%
-%%    \msiopentag{latexstyleb}{<latexstyleb>}%
-%%       \msiopentag{styleprop}{<styleprop>}%
-%%          page number style
-%%       \msiclosetag{styleprop}{</styleprop>}%
-%%       \msiopentag{styledata}{<styledata>}%
-%%          #1
-%%       \msiclosetag{styledata}{</styledata>}%
-%%    \msiclosetag{latexstyleb}{</latexstyleb>}}
-
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
 
@@ -1749,8 +1739,34 @@
 \futurelet\@brackettok\@gobbleit[
 \futurelet\@startok\@gobbleit*
 
-\def\@inbrace#1{\@temptokena={\msitag{#1}}\{\the\@temptokena\}\@gobbleargs}
-\def\@inbracket[#1]{\@temptokena={\msitag{[#1]}}\the\@temptokena\@gobbleargs}
+\begingroup
+  \@make@braces@other
+  \catcode`\[=1
+  \catcode`\]=2
+  \gdef\msi@lbrace[{]
+  \gdef\msi@rbrace[}]
+\endgroup
+
+\def\@inbrace#1{%
+   \ifnum\msi@inpreamble=1
+     \expandafter\msitopreambleextra\expandafter{\msi@lbrace}%
+     \msitopreambleextra{#1}%
+     \expandafter\msitopreambleextra\expandafter{\msi@rbrace}%
+   \else
+     \@temptokena={\msitag{#1}}%
+     \{\the\@temptokena\}
+   \fi
+   \@gobbleargs}
+
+\def\@inbracket[#1]{%
+   \ifnum\msi@inpreamble=1
+     \msitopreambleextra{[#1]}%
+   \else
+     \@temptokena={\msitag{[#1]}}%
+     \the\@temptokena
+   \fi
+   \@gobbleargs}
+
 \def\@astar*{*\@gobbleargs}
 
 \def\@gobbleargs{\futurelet\atok\@gobblemore}
@@ -1767,16 +1783,11 @@
        \ifx\atok\@startok
          \let\@donext\@astar
        \else
-         %\ifx\atok\@spacetok
-         %   \let\@donext\@aspace
-         %\else 
-            \let\@donext\@endgobble
-         %\fi
+         \let\@donext\@endgobble
        \fi
      \fi
    \fi
    \@donext}
-
 
 
 
@@ -1794,16 +1805,26 @@
 \def\msidefaulta#1{%
   \expandafter\msidefaultb\expandafter{\msi@cdr#1xxxx}}
 
+
 \def\msidefaultb#1{%
     \msihmode
     \ifnum\msi@inpreamble=1
+      \temptoksa={<texb enc="1" name="#1">}%
+      \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
+      \msiopentag{texb}{}%
+      \msitopreambleextra{<![CDATA[}
+      \expandafter\temptoksa\expandafter{\csname#1\endcsname}
+      \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
     \else
       \msiopentag{texb}{<texb enc="1" name="#1">}%
-         \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname\@gobbleargs
-    \fi}
+         \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname
+    \fi
+    \@gobbleargs}
 
 \def\@endtexb{% 
     \ifnum\msi@inpreamble=1
+       \msitopreambleextra{]]></texb>}
+       \msiclosetag{texb}{}
     \else       
        \msitag{]]>}%
        \msiclosetag{texb}{</texb>}%
