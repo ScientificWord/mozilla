@@ -143,6 +143,8 @@
 #include "../../msiediting/src/msiUtils.h"
 #include "../../../content/base/src/nsAttrName.h"
 #include "../../msiediting/src/msiEditingAtoms.h"
+#include "msiIMathMLEditor.h"
+
 
 #define DEBUG_barry 1
 
@@ -917,14 +919,20 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                 (nsHTMLEditUtils::IsMath(targetNode)) )
       {
         if ( ! nsHTMLEditUtils::IsMath(curNode) ) {
-           // putting text into math -- change the text to math and carry on
-           // First wrap in an <mtext>
-           nsCOMPtr<nsIDOMElement> mtextElement;
-           res = msiUtils::CreateMathMLElement(this, msiEditingAtoms::mtext, mtextElement);
-           PRInt32 offset = 0;
-           res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(mtextElement), &offset, PR_TRUE);
+          // nsCOMPtr<nsIDOM3Node> d3node = do_QueryInterface(curNode);
+          // nsCOMPtr<nsISupports> nsEd = do_QueryInterface((nsIHTMLEditor *)this);
+          // nsCOMPtr<msiIMathMLEditor> msiEd = do_QueryInterface(nsEd);
+          // nsAutoString contents;
+          // res = d3node->GetTextContent(contents);
+          // res = msiEd->InsertSymbol(contents);
+          //  // // putting text into math -- change the text to math and carry on
+           // // First wrap in an <mtext>
+           // nsCOMPtr<nsIDOMElement> mtextElement;
+           // res = msiUtils::CreateMathMLElement(this, msiEditingAtoms::mtext, mtextElement);
+           // PRInt32 offset = 0;
+           // res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(mtextElement), &offset, PR_TRUE);
 
-           curNode = mtextElement;
+           // curNode = mtextElement;
         }
       
         //putting in math; check to see if it is going into math.
