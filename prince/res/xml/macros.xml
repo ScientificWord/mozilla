@@ -1,762 +1,736 @@
 <?xml version="1.0"?>
 <!DOCTYPE macros SYSTEM "resource://gre/res/dtd/mathml.dtd">
 <macros>
-<!-- Lowercase Greek -->
-  <m nm="alpha" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&alpha;<![CDATA[");]]></data></m>
-  <m nm="beta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&beta;<![CDATA[");]]></data></m>
-  <m nm="gamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&gamma;<![CDATA[");]]></data></m>
-  <m nm="delta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&delta;<![CDATA[");]]></data></m>
-  <m nm="varepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&epsiv;<![CDATA[");]]></data></m>
-  <m nm="zeta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&zeta;<![CDATA[");]]></data></m>
-  <m nm="eta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&eta;<![CDATA[");]]></data></m>
-  <m nm="theta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&theta;<![CDATA[");]]></data></m>
-  <m nm="iota" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&iota;<![CDATA[");]]></data></m>
-  <m nm="kappa" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&kappa;<![CDATA[");]]></data></m>
-  <m nm="lambda" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lambda;<![CDATA[");]]></data></m>
-  <m nm="mu" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&mu;<![CDATA[");]]></data></m>
-  <m nm="nu" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&nu;<![CDATA[");]]></data></m>
-  <m nm="xi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&xi;<![CDATA[");]]></data></m>
-  <m nm="omicron" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&omicron;<![CDATA[");]]></data></m>
-  <m nm="upsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&upsi;<![CDATA[");]]></data></m>
-  <m nm="epsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&epsi;<![CDATA[");]]></data></m>
-  <m nm="chi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&chi;<![CDATA[");]]></data></m>
-  <m nm="omega" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&omega;<![CDATA[");]]></data></m>
-  <m nm="varkappa" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&kappav;<![CDATA[");]]></data></m>
-  <m nm="phi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&phi;<![CDATA[");]]></data></m>
-  <m nm="varphi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&phiv;<![CDATA[");]]></data></m>
-  <m nm="pi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&pi;<![CDATA[");]]></data></m>
-  <m nm="varpi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&piv;<![CDATA[");]]></data></m>
-  <m nm="psi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&psi;<![CDATA[");]]></data></m>
-  <m nm="varrho" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rhov;<![CDATA[");]]></data></m>
-  <m nm="rho" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rho;<![CDATA[");]]></data></m>
-  <m nm="varsigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sigmav;<![CDATA[");]]></data></m>
-  <m nm="sigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sigma;<![CDATA[");]]></data></m>
-<!--  <m nm="stigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&stigma;<![CDATA[");]]></data></m> -->
-  <m nm="vartheta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&thetav;<![CDATA[");]]></data></m>
-  <m nm="tau" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&tau;<![CDATA[");]]></data></m>
-  <m nm="backepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&backepsilon;<![CDATA[");]]></data></m>
-<!--Big Operators -->
-  <m nm="int"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="iint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&Int;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="iiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&tint;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="iiiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&qint;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="idotsint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;&ctdot;&int;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="oint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&conint;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="sum"  tp="sc"><data><![CDATA[insertMathOperator("]]>&sum;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="prod"  tp="sc"><data><![CDATA[insertMathOperator("]]>&prod;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigcap"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xcap;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigwedge"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xwedge;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigoplus"  tp="sc"><data><![CDATA[insertMathOperator("]]>&oplus;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigodot"  tp="sc"><data><![CDATA[insertMathOperator("]]>&odot;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigsqcup"  tp="sc"><data><![CDATA[insertMathOperator("]]>&sqcup;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="coprod"  tp="sc"><data><![CDATA[insertMathOperator("]]>&coprod;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigcup"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xcup;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigvee"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xvee;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigotimes"  tp="sc"><data><![CDATA[insertMathOperator("]]>&otimes;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="biguplus"  tp="sc"><data><![CDATA[insertMathOperator("]]>&uplus;<![CDATA[", "", "", false);]]></data></m>
-      
-<!-- Uppercase Greek -->												  
-  <m nm="Delta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Delta;<![CDATA[");]]></data></m>
-  <m nm="Pi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Pi;<![CDATA[");]]></data></m>
-  <m nm="digamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x3dc;<![CDATA[");]]></data></m>
-  <m nm="Psi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Psi;<![CDATA[");]]></data></m>
-  <m nm="Gamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Gamma;<![CDATA[");]]></data></m>
-  <m nm="Sigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Sigma;<![CDATA[");]]></data></m>
-  <m nm="Lambda" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Lambda;<![CDATA[");]]></data></m>
-  <m nm="Theta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Theta;<![CDATA[");]]></data></m>
-  <m nm="Omega" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Omega;<![CDATA[");]]></data></m>
-  <m nm="Upsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Upsi;<![CDATA[");]]></data></m>
-  <m nm="Phi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Phi;<![CDATA[");]]></data></m>
-  <m nm="Xi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Xi;<![CDATA[");]]></data></m>
-
-<!-- Binary Operations -->
-  <m nm="amalg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&amalg;<![CDATA[");]]></data></m>
-  <m nm="cup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cup;<![CDATA[");]]></data></m>
-<!-- Latex 2.09  <m nm="rhd"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vrtri;<![CDATA[");]]></data></m> -->
-  <m nm="And" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x0026;<![CDATA[");]]></data></m>
-  <m nm="curlyvee"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cuvee;<![CDATA[");]]></data></m>
-  <m nm="rightthreetimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rthree;<![CDATA[");]]></data></m>
-  <m nm="ast" fm="0"><data>&lowast;</data><context/><info>0,0</info></m>
-  <m nm="curlywedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cuwed;<![CDATA[");]]></data></m>
-  <m nm="rtimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtimes;<![CDATA[");]]></data></m>
-  <m nm="barwedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&barwed;<![CDATA[");]]></data></m>
-  <m nm="dagger"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dagger;<![CDATA[");]]></data></m>
-  <m nm="setminus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&setmn;<![CDATA[");]]></data></m> 
-<!-- AMS  <m nm="bigcirc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cir;<![CDATA[");]]></data></m> -->
-  <m nm="ddagger"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Dagger;<![CDATA[");]]></data></m>
-  <m nm="smallint"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&int;<![CDATA[");]]></data></m>
-  <m nm="bigtriangledown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xdtri;<![CDATA[");]]></data></m>
-  <m nm="smalldiamond"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&diam;<![CDATA[");]]></data></m>
-  <m nm="diamond"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&diam;<![CDATA[");]]></data></m>
-  <m nm="smallsetminus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ssetmn;<![CDATA[");]]></data></m> 
-  <m nm="bigtriangleup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xutri;<![CDATA[");]]></data></m>
-  <m nm="div"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&div;<![CDATA[");]]></data></m>
-  <m nm="sqcap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqcap;<![CDATA[");]]></data></m>
-  <m nm="boxdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sdotb;<![CDATA[");]]></data></m>
-  <m nm="divideontimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&divonx;<![CDATA[");]]></data></m>
-  <m nm="sqcup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqcup;<![CDATA[");]]></data></m>
-  <m nm="boxminus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&minusb;<![CDATA[");]]></data></m>
-  <m nm="dotplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&plusdo;<![CDATA[");]]></data></m>
-  <m nm="star"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sstarf;<![CDATA[");]]></data></m>
-  <m nm="boxplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&plusb;<![CDATA[");]]></data></m>
-  <m nm="doublebarwedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Barwed;<![CDATA[");]]></data></m>
-  <m nm="times"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&times;<![CDATA[");]]></data></m>
-  <m nm="boxtimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&boxtimes;<![CDATA[");]]></data></m>
-  <m nm="intercal"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&intcal;<![CDATA[");]]></data></m>
-  <m nm="triangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ltri;<![CDATA[");]]></data></m>
-  <m nm="smalltriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ltri;<![CDATA[");]]></data></m>
-  <m nm="bullet"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bull;<![CDATA[");]]></data></m>
-  <m nm="leftthreetimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lthree;<![CDATA[");]]></data></m>
-  <m nm="triangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtri;<![CDATA[");]]></data></m>
-  <m nm="smalltriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtri;<![CDATA[");]]></data></m>
-  <m nm="cap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cap;<![CDATA[");]]></data></m>
-<!-- LATEX 2.09 <m nm="lhd"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vltri;<![CDATA[");]]></data></m> -->
-<!-- Latex 2.09 <m nm="unlhd"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x22B4;<![CDATA[");]]></data></m> -->
-  <m nm="Cap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Cap;<![CDATA[");]]></data></m>
-  <m nm="ltimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ltimes;<![CDATA[");]]></data></m>
-<!-- Latex 2.09 <m nm="unrhd"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtrie;<![CDATA[");]]></data></m> -->
-  <m nm="cdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sdot;<![CDATA[");]]></data></m>
-  <m nm="mp"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&mnplus;<![CDATA[");]]></data></m>
-  <m nm="uplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uplus;<![CDATA[");]]></data></m>
-  <m nm="centerdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&centerdot;<![CDATA[");]]></data></m>
-  <m nm="odot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&odot;<![CDATA[");]]></data></m>
-  <m nm="vee"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&or;<![CDATA[");]]></data></m>
-  <m nm="circ"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&compfn;<![CDATA[");]]></data></m>
-  <m nm="ominus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ominus;<![CDATA[");]]></data></m>
-  <m nm="veebar"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&veebar;<![CDATA[");]]></data></m>
-  <m nm="circledast"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&oast;<![CDATA[");]]></data></m>
-  <m nm="oplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&oplus;<![CDATA[");]]></data></m>
-  <m nm="wedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&and;<![CDATA[");]]></data></m>
-  <m nm="circledcirc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ocir;<![CDATA[");]]></data></m>
-  <m nm="oslash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&osol;<![CDATA[");]]></data></m>
-  <m nm="wr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&wreath;<![CDATA[");]]></data></m>
-  <m nm="circleddash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&odash;<![CDATA[");]]></data></m>
-  <m nm="otimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&otimes;<![CDATA[");]]></data></m>
-  <m nm="Cup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Cup;<![CDATA[");]]></data></m>
-  <m nm="pm"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&plusmn;<![CDATA[");]]></data></m>
-<!-- Binary Relations -->
-  <m nm="approx"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&approx;<![CDATA[");]]></data></m>
-  <m nm="gtreqless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gel;<![CDATA[");]]></data></m>
-<!-- AMS <m nm="smallfrown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&frown;<![CDATA[");]]></data></m> -->
-  <m nm="approxeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ape;<![CDATA[");]]></data></m>
-  <m nm="gtreqqless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gtreqqless;<![CDATA[");]]></data></m>
-<!-- AMS <m nm="smallsmile"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&smile;<![CDATA[");]]></data></m> -->
-  <m nm="asymp"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&asymp;<![CDATA[");]]></data></m>
-  <m nm="gtrless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gl;<![CDATA[");]]></data></m>
-  <m nm="smile"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&smile;<![CDATA[");]]></data></m>
-  <m nm="gtrsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gsim;<![CDATA[");]]></data></m>
-  <m nm="sqsubset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsub;<![CDATA[");]]></data></m>
-  <m nm="backsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bsim;<![CDATA[");]]></data></m>
-  <m nm="in"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Element;<![CDATA[");]]></data></m>
-  <m nm="sqsubseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsube;<![CDATA[");]]></data></m>
-  <m nm="backsimeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bsime;<![CDATA[");]]></data></m>
-  <m nm="Join"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Join;<![CDATA[");]]></data></m>
-  <m nm="sqsupset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsup;<![CDATA[");]]></data></m>
-  <m nm="because"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Because;<![CDATA[");]]></data></m>
-  <m nm="leq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&le;<![CDATA[");]]></data></m>
-  <m nm="sqsupseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsupe;<![CDATA[");]]></data></m>
-  <m nm="between"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&twixt;<![CDATA[");]]></data></m>
-  <m nm="leqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leqq;<![CDATA[");]]></data></m>
-  <m nm="Subset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Sub;<![CDATA[");]]></data></m>
-  <m nm="smallblacktriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&blacktriangleleft;<![CDATA[");]]></data></m>
-  <m nm="leqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leqslant;<![CDATA[");]]></data></m>
-  <m nm="subset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sub;<![CDATA[");]]></data></m>
-  <m nm="smallblacktriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtrif;<![CDATA[");]]></data></m>
-  <m nm="lessapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lessapprox;<![CDATA[");]]></data></m>
-  <m nm="subseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sube;<![CDATA[");]]></data></m>
-  <m nm="bowtie"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bowtie;<![CDATA[");]]></data></m>
-  <m nm="lessdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lessdot;<![CDATA[");]]></data></m>
-  <m nm="subseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&subE;<![CDATA[");]]></data></m>
-  <m nm="bumpeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bumpe;<![CDATA[");]]></data></m>	  
-  <m nm="lesseqgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leg;<![CDATA[");]]></data></m>
-  <m nm="succ"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sc;<![CDATA[");]]></data></m>
-  <m nm="Bumpeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bump;<![CDATA[");]]></data></m>
-  <m nm="lesseqqgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lesseqqgtr;<![CDATA[");]]></data></m>
-  <m nm="succapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&succapprox;<![CDATA[");]]></data></m>
-  <m nm="circeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cire;<![CDATA[");]]></data></m>
-  <m nm="lessgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lg;<![CDATA[");]]></data></m>
-  <m nm="succcurlyeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sccue;<![CDATA[");]]></data></m>
-  <m nm="cong"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cong;<![CDATA[");]]></data></m>
-  <m nm="lesssim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lsim;<![CDATA[");]]></data></m>
-  <m nm="succeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sce;<![CDATA[");]]></data></m>
-  <m nm="curlyeqprec"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cuepr;<![CDATA[");]]></data></m>
-  <m nm="ll"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ll;<![CDATA[");]]></data></m>
-  <m nm="succsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scsim;<![CDATA[");]]></data></m>
-  <m nm="curlyeqsucc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cuesc;<![CDATA[");]]></data></m>
-  <m nm="lll"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Ll;<![CDATA[");]]></data></m>
-  <m nm="supset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sup;<![CDATA[");]]></data></m>
-  <m nm="dashv"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dashv;<![CDATA[");]]></data></m>
-  <m nm="mid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&mid;<![CDATA[");]]></data></m>
-  <m nm="Supset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Sup;<![CDATA[");]]></data></m>
-  <m nm="doteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&esdot;<![CDATA[");]]></data></m>
-  <m nm="models"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&models;<![CDATA[");]]></data></m>
-  <m nm="supseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supe;<![CDATA[");]]></data></m>
-  <m nm="doteqdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&eDot;<![CDATA[");]]></data></m>
-  <!-- m nm="Doteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Doteq;<![CDATA[");]]></data></m --> 
-  <m nm="ni"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ni;<![CDATA[");]]></data></m>
-  <m nm="supseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supE;<![CDATA[");]]></data></m>
-  <m nm="eqcirc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ecir;<![CDATA[");]]></data></m>
-  <m nm="parallel"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&par;<![CDATA[");]]></data></m>
-  <m nm="therefore"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Therefore;<![CDATA[");]]></data></m>
-  <m nm="eqsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&eqsim;<![CDATA[");]]></data></m>
-  <m nm="perp"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&perp;<![CDATA[");]]></data></m>
-  <m nm="thickapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&thkap;<![CDATA[");]]></data></m>	 
-  <m nm="eqslantgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&egs;<![CDATA[");]]></data></m>
-  <m nm="pitchfork"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&fork;<![CDATA[");]]></data></m>
-  <m nm="thicksim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&thksim;<![CDATA[");]]></data></m> 
-  <m nm="eqslantless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&els;<![CDATA[");]]></data></m>
-  <m nm="prec"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&pr;<![CDATA[");]]></data></m>
-  <m nm="trianglelefteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&trianglelefteq;<![CDATA[");]]></data></m>
-  <m nm="equiv"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&equiv;<![CDATA[");]]></data></m>
-  <m nm="precapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&precapprox;<![CDATA[");]]></data></m>
-  <m nm="triangleq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&trie;<![CDATA[");]]></data></m>
-  <m nm="fallingdotseq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&efDot;<![CDATA[");]]></data></m>
-  <m nm="preccurlyeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prcue;<![CDATA[");]]></data></m>
-  <m nm="trianglerighteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtrie;<![CDATA[");]]></data></m>
-  <m nm="frown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&frown;<![CDATA[");]]></data></m>
-  <m nm="preceq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&pre;<![CDATA[");]]></data></m>
-  <m nm="varpropto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vprop;<![CDATA[");]]></data></m>
-  <m nm="geq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ge;<![CDATA[");]]></data></m>
-  <m nm="precsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prsim;<![CDATA[");]]></data></m>
-  <m nm="vartriangle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&utri;<![CDATA[");]]></data></m>
-  <m nm="geqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gE;<![CDATA[");]]></data></m>
-  <m nm="propto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prop;<![CDATA[");]]></data></m>
-  <m nm="vartriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vltri;<![CDATA[");]]></data></m>
-  <m nm="geqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&geqslant;<![CDATA[");]]></data></m>
-  <m nm="risingdotseq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&erDot;<![CDATA[");]]></data></m>
-  <m nm="vartriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vrtri;<![CDATA[");]]></data></m>
-  <m nm="gg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gg;<![CDATA[");]]></data></m>
-<!--  <m nm="shortmid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&shortmid;<![CDATA[");]]></data></m> -->
-  <m nm="vDash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vDash;<![CDATA[");]]></data></m>
-  <m nm="ggg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Gg;<![CDATA[");]]></data></m>
-<!-- AMS  <m nm="shortparallel"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&shortparallel;<![CDATA[");]]></data></m> -->
-  <m nm="Vdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Vdash;<![CDATA[");]]></data></m>
-  <m nm="gtrapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gtrapprox;<![CDATA[");]]></data></m>
-  <m nm="sim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sim;<![CDATA[");]]></data></m>
-  <m nm="vdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vdash;<![CDATA[");]]></data></m>
-  <m nm="gtrdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gtrdot;<![CDATA[");]]></data></m>
-  <m nm="simeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&simeq;<![CDATA[");]]></data></m>
-  <m nm="Vvdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Vvdash;<![CDATA[");]]></data></m> 
-<!-- Negated Relations --> 
-  <m nm="ne"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ne;<![CDATA[");]]></data></m>
-  <m nm="neq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ne;<![CDATA[");]]></data></m>
-  <m nm="notin"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&notin;<![CDATA[");]]></data></m>
-  <m nm="lvertneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lvnE;<![CDATA[");]]></data></m> 
-  <m nm="gvertneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gvnE;<![CDATA[");]]></data></m> 
-  <m nm="nleq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nle;<![CDATA[");]]></data></m>
-  <m nm="ngeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nge;<![CDATA[");]]></data></m>
-  <m nm="nless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nlt;<![CDATA[");]]></data></m>
-  <m nm="ngtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ngt;<![CDATA[");]]></data></m>
-  <m nm="nprec"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&npr;<![CDATA[");]]></data></m>
-  <m nm="nsucc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsc;<![CDATA[");]]></data></m>
-  <m nm="lneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lnE;<![CDATA[");]]></data></m>
-  <m nm="gneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gnE;<![CDATA[");]]></data></m>
-  <m nm="nleqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nles;<![CDATA[");]]></data></m> 
-  <m nm="ngeqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nges;<![CDATA[");]]></data></m> 
-  <m nm="lneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lne;<![CDATA[");]]></data></m>
-  <m nm="gneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gne;<![CDATA[");]]></data></m>
-  <m nm="npreceq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&npre;<![CDATA[");]]></data></m> 
-  <m nm="nsucceq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsce;<![CDATA[");]]></data></m> 
-  <m nm="precnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prnsim;<![CDATA[");]]></data></m>
-  <m nm="succnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scnsim;<![CDATA[");]]></data></m>
-  <m nm="lnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lnsim;<![CDATA[");]]></data></m>
-  <m nm="gnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gnsim;<![CDATA[");]]></data></m>
-  <m nm="nleqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nlE;<![CDATA[");]]></data></m> 
-  <m nm="ngeqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ngE;<![CDATA[");]]></data></m>   
-  <m nm="precneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prnE;<![CDATA[");]]></data></m>
-  <m nm="succneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scnE;<![CDATA[");]]></data></m>
-  <m nm="precnapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prnap;<![CDATA[");]]></data></m>
-  <m nm="succnapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scnap;<![CDATA[");]]></data></m>
-  <m nm="lnapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lnap;<![CDATA[");]]></data></m>
-  <m nm="gnapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gnap;<![CDATA[");]]></data></m>
-  <m nm="nsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsim;<![CDATA[");]]></data></m>
-  <m nm="ncong"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ncong;<![CDATA[");]]></data></m>
-  <m nm="varsubsetneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vsubne;<![CDATA[");]]></data></m> 
-  <m nm="varsupsetneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vsupne;<![CDATA[");]]></data></m> 
-  <m nm="nsubseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsubE;<![CDATA[");]]></data></m> 
-  <m nm="nsupseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsupE;<![CDATA[");]]></data></m> 
-  <m nm="subsetneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&subnE;<![CDATA[");]]></data></m> 
-  <m nm="supsetneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supnE;<![CDATA[");]]></data></m>
-  <m nm="varsubsetneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vsubnE;<![CDATA[");]]></data></m> 
-  <m nm="varsupsetneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vsupnE;<![CDATA[");]]></data></m> 
-  <m nm="subsetneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&subne;<![CDATA[");]]></data></m>
-  <m nm="supsetneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supne;<![CDATA[");]]></data></m>
-  <m nm="nsubseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsube;<![CDATA[");]]></data></m>
-  <m nm="nsupseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsupe;<![CDATA[");]]></data></m>
-  <m nm="nparallel"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&npar;<![CDATA[");]]></data></m>
-  <m nm="nmid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nmid;<![CDATA[");]]></data></m>
-  <m nm="nshortmid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsmid;<![CDATA[");]]></data></m> 
-  <m nm="nshortparallel"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nspar;<![CDATA[");]]></data></m> 
-  <m nm="nvdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nvdash;<![CDATA[");]]></data></m>
-  <m nm="nVdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nVdash;<![CDATA[");]]></data></m>
-  <m nm="nvDash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nvDash;<![CDATA[");]]></data></m>
-  <m nm="nVDash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nVDash;<![CDATA[");]]></data></m>
-  <m nm="ntrianglerighteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nrtrie;<![CDATA[");]]></data></m>
-  <m nm="ntrianglelefteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nltrie;<![CDATA[");]]></data></m>
-  <m nm="ntriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nrtri;<![CDATA[");]]></data></m>
-  <m nm="ntriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nltri;<![CDATA[");]]></data></m>	 
-  <m nm="nleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nlarr;<![CDATA[");]]></data></m>
-  <m nm="nrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nrarr;<![CDATA[");]]></data></m>
-  <m nm="nLeftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nlArr;<![CDATA[");]]></data></m>
-  <m nm="nRightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nrArr;<![CDATA[");]]></data></m>
-  <m nm="nLeftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nhArr;<![CDATA[");]]></data></m>
-  <m nm="nleftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nharr;<![CDATA[");]]></data></m>
-<!-- Arrows --> 
-  <m nm="circlearrowleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&olarr;<![CDATA[");]]></data></m>
-  <m nm="acwopencirclearrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&olarr;<![CDATA[");]]></data></m>
-  <m nm="longmapsto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xmap;<![CDATA[");]]></data></m>
-  <m nm="circlearrowright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&orarr;<![CDATA[");]]></data></m>
-  <m nm="cwopencirclearrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&orarr;<![CDATA[");]]></data></m>
-  <m nm="Longrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xrArr;<![CDATA[");]]></data></m>
-  <m nm="curvearrowleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cularr;<![CDATA[");]]></data></m>
-  <m nm="longrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xrarr;<![CDATA[");]]></data></m>
-  <m nm="curvearrowright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&curarr;<![CDATA[");]]></data></m>
-  <m nm="looparrowleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larrlp;<![CDATA[");]]></data></m>
-  <m nm="dashleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lBarr;<![CDATA[");]]></data></m>
-  <m nm="leftdbkarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lBarr;<![CDATA[");]]></data></m>
-  <m nm="looparrowright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrlp;<![CDATA[");]]></data></m>
-  <m nm="dashrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rBarr;<![CDATA[");]]></data></m>
-  <m nm="dbkarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rBarr;<![CDATA[");]]></data></m>
-  <m nm="Lsh"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lsh;<![CDATA[");]]></data></m>
-  <m nm="Downarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dArr;<![CDATA[");]]></data></m>
-  <m nm="mapsto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&map;<![CDATA[");]]></data></m>
-  <m nm="downarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&darr;<![CDATA[");]]></data></m>
-  <m nm="multimap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&mumap;<![CDATA[");]]></data></m>
-  <m nm="downdownarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ddarr;<![CDATA[");]]></data></m>
-  <m nm="nearrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nearr;<![CDATA[");]]></data></m> 
-  <m nm="downharpoonleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dharl;<![CDATA[");]]></data></m>
-  <m nm="nwarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nwarr;<![CDATA[");]]></data></m>
-  <m nm="downharpoonright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dharr;<![CDATA[");]]></data></m>
-  <m nm="Rightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rArr;<![CDATA[");]]></data></m>
-  <m nm="hookleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larrhk;<![CDATA[");]]></data></m>
-  <m nm="rightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarr;<![CDATA[");]]></data></m>
-  <m nm="hookrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrhk;<![CDATA[");]]></data></m>
-  <m nm="rightarrowtail"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrtl;<![CDATA[");]]></data></m>
-  <m nm="iff"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&iff;<![CDATA[");]]></data></m>
-  <m nm="rightharpoondown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rhard;<![CDATA[");]]></data></m>
-  <m nm="impliedby"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lArr;<![CDATA[");]]></data></m>
-  <m nm="rightharpoonup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rharu;<![CDATA[");]]></data></m>
-  <m nm="implies"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Implies;<![CDATA[");]]></data></m>
-  <m nm="rightleftarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rlarr;<![CDATA[");]]></data></m>
-  <m nm="leadsto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrc;<![CDATA[");]]></data></m>
-  <m nm="rightleftharpoons"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rlhar;<![CDATA[");]]></data></m>
-  <m nm="Leftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lArr;<![CDATA[");]]></data></m>
-  <m nm="rightrightarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rrarr;<![CDATA[");]]></data></m>
-  <m nm="leftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larr;<![CDATA[");]]></data></m>
-  <m nm="rightsquigarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrw;<![CDATA[");]]></data></m>
-  <m nm="leftarrowtail"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larrtl;<![CDATA[");]]></data></m>
-  <m nm="Rrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rAarr;<![CDATA[");]]></data></m>
-  <m nm="leftharpoondown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lhard;<![CDATA[");]]></data></m>
-  <m nm="Rsh"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rsh;<![CDATA[");]]></data></m>
-  <m nm="leftharpoonup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lharu;<![CDATA[");]]></data></m>
-  <m nm="searrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&searr;<![CDATA[");]]></data></m>
-  <m nm="leftleftarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&llarr;<![CDATA[");]]></data></m>
-  <m nm="swarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&swarr;<![CDATA[");]]></data></m>
-  <m nm="Leftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&hArr;<![CDATA[");]]></data></m>
-  <m nm="twoheadleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Larr;<![CDATA[");]]></data></m>
-  <m nm="leftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&harr;<![CDATA[");]]></data></m>
-  <m nm="twoheadrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Rarr;<![CDATA[");]]></data></m>
-  <m nm="leftrightarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lrarr;<![CDATA[");]]></data></m>
-  <m nm="Uparrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uArr;<![CDATA[");]]></data></m>
-  <m nm="leftrightharpoons"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lrhar;<![CDATA[");]]></data></m>
-  <m nm="uparrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uarr;<![CDATA[");]]></data></m>
-  <m nm="leftrightsquigarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&harrw;<![CDATA[");]]></data></m>
-  <m nm="Updownarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vArr;<![CDATA[");]]></data></m>
-  <m nm="Lleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lAarr;<![CDATA[");]]></data></m>
-  <m nm="updownarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&varr;<![CDATA[");]]></data></m>
-  <m nm="Longleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xlArr;<![CDATA[");]]></data></m>
-  <m nm="upharpoonleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uharl;<![CDATA[");]]></data></m>
-  <m nm="longleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xlarr;<![CDATA[");]]></data></m>
-  <m nm="upharpoonright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uharr;<![CDATA[");]]></data></m>
-  <m nm="Longleftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xhArr;<![CDATA[");]]></data></m>
-  <m nm="upuparrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uuarr;<![CDATA[");]]></data></m>
-  <m nm="longleftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xharr;<![CDATA[");]]></data></m>   
-<!-- Delimiters -->
-  <m nm="lceil"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lceil;<![CDATA[");]]></data></m>
-  <m nm="rceil"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rceil;<![CDATA[");]]></data></m>
-  <m nm="langle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&langle;<![CDATA[");]]></data></m>
-  <m nm="rangle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rangle;<![CDATA[");]]></data></m>
-  <m nm="lfloor"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lfloor;<![CDATA[");]]></data></m>
-  <m nm="rfloor"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rfloor;<![CDATA[");]]></data></m>
-  <m nm="ulcorner"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ulcorner;<![CDATA[");]]></data></m>
-  <m nm="urcorner"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&urcorner;<![CDATA[");]]></data></m>
-  <m nm="llcorner"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&llcorner;<![CDATA[");]]></data></m>
-  <m nm="lrcorner"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lrcorner;<![CDATA[");]]></data></m>	
-<!--Miscellaneous Symbols -->
-  <m nm="aleph" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&aleph;<![CDATA[");]]></data></m>
-  <m nm="heartsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&heartsuit;<![CDATA[");]]></data></m>
-  <m nm="angle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ang;<![CDATA[");]]></data></m>
-  <m nm="hslash" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&hslash;<![CDATA[");]]></data></m> 
-  <m nm="backprime"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bprime;<![CDATA[");]]></data></m>
-  <m nm="Im"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&image;<![CDATA[");]]></data></m>
-  <m nm="backslash" fm="0"><data>&bsol;</data><context/><info>0,0</info></m>
-  <m nm="imath"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&imath;<![CDATA[");]]></data></m>
-  <m nm="Bbbk" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&kopf;<![CDATA[");]]></data></m>
-  <m nm="complexes" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&complexes;<![CDATA[");]]></data></m>
-  <m nm="BbbC" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&complexes;<![CDATA[");]]></data></m>
-  <m nm="naturals" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&naturals;<![CDATA[");]]></data></m>
-  <m nm="BbbN" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&naturals;<![CDATA[");]]></data></m>
-  <m nm="rationals" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rationals;<![CDATA[");]]></data></m>
-  <m nm="BbbQ" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rationals;<![CDATA[");]]></data></m>
-  <m nm="integers" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&integers;<![CDATA[");]]></data></m>
-  <m nm="BbbZ" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&integers;<![CDATA[");]]></data></m>
-  <m nm="reals" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&reals;<![CDATA[");]]></data></m>
-  <m nm="BbbR" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&reals;<![CDATA[");]]></data></m>
-  <m nm="degree"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&deg;<![CDATA[");]]></data></m>
-  <m nm="infty" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&infin;<![CDATA[");]]></data></m>
-  <m nm="beth" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&beth;<![CDATA[");]]></data></m>
-  <m nm="jmath" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&jmath;<![CDATA[");]]></data></m>
-  <m nm="bigstar" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&bigstar;<![CDATA[");]]></data></m>
-  <m nm="lambdabar" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lambdabar;<![CDATA[");]]></data></m>  
-  <m nm="blacklozenge" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lozf;<![CDATA[");]]></data></m>
-  <m nm="mdlgblklozenge" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lozf;<![CDATA[");]]></data></m>
-  <m nm="blacksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
-  <m nm="smblksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
-  <m nm="blacktriangle" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&utrif;<![CDATA[");]]></data></m>
-  <m nm="ldots" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&hellip;<![CDATA[");]]></data><context/><info>0,0</info></m>
-  <m nm="dots" fm="0"><data>&hellip;</data><context/><info>0,0</info></m>
-  <m nm="blacktriangledown" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&dtrif;<![CDATA[");]]></data></m>
-  <m nm="lnot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&not;<![CDATA[");]]></data></m>
-  <m nm="neg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&not;<![CDATA[");]]></data></m>
-  <m nm="bot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bottom;<![CDATA[");]]></data></m>
-  <m nm="lozenge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lozenge;<![CDATA[");]]></data></m>
-  <m nm="cdots"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ctdot;<![CDATA[");]]></data></m>
-  <m nm="maltese" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&malt;<![CDATA[");]]></data></m>
-  <m nm="measuredangle" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&angmsd;<![CDATA[");]]></data></m>
-  <m nm="checkmark" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&check;<![CDATA[");]]></data></m>			   
-  <m nm="mho" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&mho;<![CDATA[");]]></data></m>
-  <m nm="circledR" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&circledR;<![CDATA[");]]></data></m>  
-  <m nm="nabla"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nabla;<![CDATA[");]]></data></m>
-  <m nm="circledS"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&oS;<![CDATA[");]]></data></m>
-  <m nm="Laplace"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Laplacetrf;<![CDATA[");]]></data></m>
-  <m nm="scrL"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Laplacetrf;<![CDATA[");]]></data></m>
-  <m nm="Fourier"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Fouriertrf;<![CDATA[");]]></data></m>
-  <m nm="scrF"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Fouriertrf;<![CDATA[");]]></data></m>
-  <m nm="natural" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&natur;<![CDATA[");]]></data></m>
-  <m nm="clubsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&clubs;<![CDATA[");]]></data></m>
-  <m nm="nexists"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&NotExists;<![CDATA[");]]></data></m>
-  <m nm="complement"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&comp;<![CDATA[");]]></data></m>
-  <m nm="partial"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&PartialD;<![CDATA[");]]></data></m>						  
-  <m nm="dag" fm="1"><data>&dagger;</data><context/><info>0,0</info></m>
-  <m nm="pounds" fm="0"><data>&#xa3;</data><context/><info>0,0</info></m>
-  <m nm="daleth" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&daleth;<![CDATA[");]]></data></m>
-  <m nm="prime"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prime;<![CDATA[");]]></data></m>
-  <m nm="ddag" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Dagger;<![CDATA[");]]></data></m>
-  <m nm="ddots"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dtdot;<![CDATA[");]]></data></m>
-  <m nm="diagdown"  tp="sc"><data><![CDATA[insertMathSymbol(]]></data></m>
-  <m nm="Re" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&realpart;<![CDATA[");]]></data></m>
-  <m nm="diagup"  tp="sc"><data><![CDATA[insertMathSymbol(]]></data></m>
-  <m nm="sharp" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sharp;<![CDATA[");]]></data></m>
-  <m nm="Diamond" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Diamond;<![CDATA[");]]></data></m>
-  <m nm="spadesuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&spades;<![CDATA[");]]></data></m>
-  <m nm="diamondsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&diams;<![CDATA[");]]></data></m>
-  <m nm="sphericalangle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&angsph;<![CDATA[");]]></data></m>
-  <m nm="square"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&square;<![CDATA[");]]></data></m>
-  <m nm="mdlgwhtsquare"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&square;<![CDATA[");]]></data></m>
-  <m nm="ell" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&ell;<![CDATA[");]]></data></m>
-  <m nm="surd"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&radic;<![CDATA[");]]></data></m>
-  <m nm="sqrt"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&radic;<![CDATA[");]]></data></m>
-  <m nm="emptyset" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&empty;<![CDATA[");]]></data></m>
-  <m nm="eth" fm="0"><data>&eth;</data><context/><info>0,0</info></m>
-  <m nm="dh" fm="0"><data>&eth;</data><context/><info>0,0</info></m>
-  <m nm="top"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&top;<![CDATA[");]]></data></m>
-  <m nm="euro" fm="0"><data>&euro;</data><context/><info>0,0</info></m>
-  <m nm="triangle" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&utri;<![CDATA[");]]></data></m>
-  <m nm="exists" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Exists;<![CDATA[");]]></data></m>
-  <m nm="triangledown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dtri;<![CDATA[");]]></data></m>
-  <m nm="Finv"   tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x2132;<![CDATA[");]]></data></m> 
-  <m nm="varnothing" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&emptyv;<![CDATA[");]]></data></m>
-  <m nm="flat" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&flat;<![CDATA[");]]></data></m>
-  <m nm="vdots"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vellip;<![CDATA[");]]></data></m>
-  <m nm="forall" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&ForAll;<![CDATA[");]]></data></m>
-  <m nm="Vert"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Verbar;<![CDATA[");]]></data></m>
-  <m nm="Game" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Game;<![CDATA[");]]></data></m>
-  <m nm="wp" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&weierp;<![CDATA[");]]></data></m>
-  <m nm="gimel" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&gimel;<![CDATA[");]]></data></m>
-  <m nm="yen" fm="0"><data>&yen;</data><context/><info>0,0</info></m>
-  <m nm="hbar" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&hbar;<![CDATA[");]]></data></m>
-  <m nm="texttrademark" fm="0"><data>&trade;</data><context/><info>0,0</info></m>
-  <m nm="textcurrency" fm="0"><data>&curren;</data><context/><info>0,0</info></m>
-<!-- Latin Extended -->
-  <m nm="Amacr" fm="0"><data>&#x0100;</data><context/><info>0,0</info></m>
-  <m nm="DJ" fm="0"><data>&#x110;</data><context/><info>0,0</info></m>
-  <m nm="amacr" fm="0"><data>&#x0101;</data><context/><info>0,0</info></m>
+  <m nm="AA" fm="0"><data>&#x00C5;</data><context/><info>0,0</info></m>
+  <m nm="aa" fm="0"><data>&#x00E5;</data><context/><info>0,0</info></m>
+  <m nm="Aacute" fm="0"><data>&#x00C1;</data><context/><info>0,0</info></m>
+  <m nm="aacute" fm="0"><data>&#x00E1;</data><context/><info>0,0</info></m>
   <m nm="Abreve" fm="0"><data>&#x0102;</data><context/><info>0,0</info></m>
   <m nm="abreve" fm="0"><data>&#x0103;</data><context/><info>0,0</info></m>
+  <m nm="Acirc" fm="0"><data>&#x00C2;</data><context/><info>0,0</info></m>
+  <m nm="acirc" fm="0"><data>&#x00E2;</data><context/><info>0,0</info></m>
+  <m nm="Acircumflex" fm="0"><data>&#x00C2;</data><context/><info>0,0</info></m>
+  <m nm="acircumflex" fm="0"><data>&#x00E2;</data><context/><info>0,0</info></m>
+  <m nm="acute" fm="0"><data>&#x00B4;</data><context/><info>0,0</info></m>
+  <m nm="acwopencirclearrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&olarr;<![CDATA[");]]></data></m>
+  <m nm="Adieresis" fm="0"><data>&#x00C4;</data><context/><info>0,0</info></m>
+  <m nm="adieresis" fm="0"><data>&#x00E4;</data><context/><info>0,0</info></m>
+  <m nm="AE" fm="0"><data>&#x00C6;</data><context/><info>0,0</info></m>
+  <m nm="ae" fm="0"><data>&#x00E6;</data><context/><info>0,0</info></m>
+  <m nm="Agrave" fm="0"><data>&#x00C0;</data><context/><info>0,0</info></m>
+  <m nm="agrave" fm="0"><data>&#x00E0;</data><context/><info>0,0</info></m>
+  <m nm="aleph" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&aleph;<![CDATA[");]]></data></m>
+  <m nm="alpha" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&alpha;<![CDATA[");]]></data></m>
+  <m nm="Amacr" fm="0"><data>&#x0100;</data><context/><info>0,0</info></m>
+  <m nm="amacr" fm="0"><data>&#x0101;</data><context/><info>0,0</info></m>
+  <m nm="amalg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&amalg;<![CDATA[");]]></data></m>
+  <m nm="And" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x0026;<![CDATA[");]]></data></m>
+  <m nm="angle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ang;<![CDATA[");]]></data></m>
   <m nm="Aogon" fm="0"><data>&#x0104;</data><context/><info>0,0</info></m>
   <m nm="aogon" fm="0"><data>&#x0105;</data><context/><info>0,0</info></m>
+  <m nm="approx"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&approx;<![CDATA[");]]></data></m>
+  <m nm="approxeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ape;<![CDATA[");]]></data></m>
+  <m nm="ast" fm="0"><data>&lowast;</data><context/><info>0,0</info></m>
+  <m nm="asymp"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&asymp;<![CDATA[");]]></data></m>
+  <m nm="Atilde" fm="0"><data>&#x00C3;</data><context/><info>0,0</info></m>
+  <m nm="atilde" fm="0"><data>&#x00E3;</data><context/><info>0,0</info></m>
+  <m nm="Auml" fm="0"><data>&#x00C4;</data><context/><info>0,0</info></m>
+  <m nm="auml" fm="0"><data>&#x00E4;</data><context/><info>0,0</info></m>
+  <m nm="backepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&backepsilon;<![CDATA[");]]></data></m>
+  <m nm="backprime"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bprime;<![CDATA[");]]></data></m>
+  <m nm="backsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bsim;<![CDATA[");]]></data></m>
+  <m nm="backsimeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bsime;<![CDATA[");]]></data></m>
+  <m nm="backslash" fm="0"><data>&bsol;</data><context/><info>0,0</info></m>
+  <m nm="barwedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&barwed;<![CDATA[");]]></data></m>
+  <m nm="BbbC" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&complexes;<![CDATA[");]]></data></m>
+  <m nm="Bbbk" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&kopf;<![CDATA[");]]></data></m>
+  <m nm="BbbN" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&naturals;<![CDATA[");]]></data></m>
+  <m nm="BbbQ" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rationals;<![CDATA[");]]></data></m>
+  <m nm="BbbR" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&reals;<![CDATA[");]]></data></m>
+  <m nm="BbbZ" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&integers;<![CDATA[");]]></data></m>
+  <m nm="because"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Because;<![CDATA[");]]></data></m>
+  <m nm="beta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&beta;<![CDATA[");]]></data></m>
+  <m nm="beth" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&beth;<![CDATA[");]]></data></m>
+  <m nm="between"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&twixt;<![CDATA[");]]></data></m>
+  <m nm="bigcap"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xcap;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigcup"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xcup;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigodot"  tp="sc"><data><![CDATA[insertMathOperator("]]>&odot;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigoplus"  tp="sc"><data><![CDATA[insertMathOperator("]]>&oplus;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigotimes"  tp="sc"><data><![CDATA[insertMathOperator("]]>&otimes;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigsqcup"  tp="sc"><data><![CDATA[insertMathOperator("]]>&sqcup;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigstar" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&bigstar;<![CDATA[");]]></data></m>
+  <m nm="bigtriangledown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xdtri;<![CDATA[");]]></data></m>
+  <m nm="bigtriangleup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xutri;<![CDATA[");]]></data></m>
+  <m nm="biguplus"  tp="sc"><data><![CDATA[insertMathOperator("]]>&uplus;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigvee"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xvee;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigwedge"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xwedge;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="blacklozenge" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lozf;<![CDATA[");]]></data></m>
+  <m nm="blacksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
+  <m nm="blacktriangle" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&utrif;<![CDATA[");]]></data></m>
+  <m nm="blacktriangledown" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&dtrif;<![CDATA[");]]></data></m>
+  <m nm="bot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bottom;<![CDATA[");]]></data></m>
+  <m nm="bowtie"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bowtie;<![CDATA[");]]></data></m>
+  <m nm="boxdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sdotb;<![CDATA[");]]></data></m>
+  <m nm="boxminus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&minusb;<![CDATA[");]]></data></m>
+  <m nm="boxplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&plusb;<![CDATA[");]]></data></m>
+  <m nm="boxtimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&boxtimes;<![CDATA[");]]></data></m>
+  <m nm="brvbar" fm="0"><data>&#x00A6;</data><context/><info>0,0</info></m>
+  <m nm="bullet"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bull;<![CDATA[");]]></data></m>
+  <m nm="Bumpeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bump;<![CDATA[");]]></data></m>
+  <m nm="bumpeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bumpe;<![CDATA[");]]></data></m>	  
   <m nm="Cacute" fm="0"><data>&#x0106;</data><context/><info>0,0</info></m>
   <m nm="cacute" fm="0"><data>&#x0107;</data><context/><info>0,0</info></m>
-  <m nm="Ccirc" fm="0"><data>&#x0108;</data><context/><info>0,0</info></m>
-  <m nm="ccirc" fm="0"><data>&#x0109;</data><context/><info>0,0</info></m>
-  <m nm="Cdot" fm="0"><data>&#x010A;</data><context/><info>0,0</info></m>
-  <m nm="dotc" fm="0"><data>&#x010B;</data><context/><info>0,0</info></m>
+  <m nm="cap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cap;<![CDATA[");]]></data></m>
+  <m nm="Cap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Cap;<![CDATA[");]]></data></m>
   <m nm="Ccaron" fm="0"><data>&#x010C;</data><context/><info>0,0</info></m>
   <m nm="ccaron" fm="0"><data>&#x010D;</data><context/><info>0,0</info></m>
+  <m nm="Ccedil" fm="0"><data>&#x00C7;</data><context/><info>0,0</info></m>
+  <m nm="ccedil" fm="0"><data>&#x00E7;</data><context/><info>0,0</info></m>
+  <m nm="Ccedilla" fm="0"><data>&#x00C7;</data><context/><info>0,0</info></m>
+  <m nm="ccedilla" fm="0"><data>&#x00E7;</data><context/><info>0,0</info></m>
+  <m nm="Ccirc" fm="0"><data>&#x0108;</data><context/><info>0,0</info></m>
+  <m nm="ccirc" fm="0"><data>&#x0109;</data><context/><info>0,0</info></m>
+  <m nm="cdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sdot;<![CDATA[");]]></data></m>
+  <m nm="Cdot" fm="0"><data>&#x010A;</data><context/><info>0,0</info></m>
+  <m nm="cdotp" fm="0"><data>&#x00B7;</data><context/><info>0,0</info></m>
+  <m nm="cdots"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ctdot;<![CDATA[");]]></data></m>
+  <m nm="cedilla" fm="0"><data>&#x00B8;</data><context/><info>0,0</info></m>
+  <m nm="centerdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&centerdot;<![CDATA[");]]></data></m>
+  <m nm="cents" fm="0"><data>&#x00A2;</data><context/><info>0,0</info></m>
+  <m nm="checkmark" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&check;<![CDATA[");]]></data></m>			   
+  <m nm="chi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&chi;<![CDATA[");]]></data></m>
+  <m nm="circ"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&compfn;<![CDATA[");]]></data></m>
+  <m nm="circeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cire;<![CDATA[");]]></data></m>
+  <m nm="circlearrowleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&olarr;<![CDATA[");]]></data></m>
+  <m nm="circlearrowright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&orarr;<![CDATA[");]]></data></m>
+  <m nm="circledast"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&oast;<![CDATA[");]]></data></m>
+  <m nm="circledcirc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ocir;<![CDATA[");]]></data></m>
+  <m nm="circleddash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&odash;<![CDATA[");]]></data></m>
+  <m nm="circledR" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&circledR;<![CDATA[");]]></data></m>  
+  <m nm="circledS"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&oS;<![CDATA[");]]></data></m>
+  <m nm="clubsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&clubs;<![CDATA[");]]></data></m>
+  <m nm="complement"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&comp;<![CDATA[");]]></data></m>
+  <m nm="complexes" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&complexes;<![CDATA[");]]></data></m>
+  <m nm="cong"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cong;<![CDATA[");]]></data></m>
+  <m nm="coprod"  tp="sc"><data><![CDATA[insertMathOperator("]]>&coprod;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="copyright" fm="0"><data>&#x00A9;</data><context/><info>0,0</info></m>
+  <m nm="Cup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Cup;<![CDATA[");]]></data></m>
+  <m nm="cup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cup;<![CDATA[");]]></data></m>
+  <m nm="curlyeqprec"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cuepr;<![CDATA[");]]></data></m>
+  <m nm="curlyeqsucc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cuesc;<![CDATA[");]]></data></m>
+  <m nm="curlyvee"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cuvee;<![CDATA[");]]></data></m>
+  <m nm="curlywedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cuwed;<![CDATA[");]]></data></m>
+  <m nm="curvearrowleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cularr;<![CDATA[");]]></data></m>
+  <m nm="curvearrowright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&curarr;<![CDATA[");]]></data></m>
+  <m nm="cwopencirclearrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&orarr;<![CDATA[");]]></data></m>
+  <m nm="dag" fm="1"><data>&dagger;</data><context/><info>0,0</info></m>
+  <m nm="dagger"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dagger;<![CDATA[");]]></data></m>
+  <m nm="daleth" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&daleth;<![CDATA[");]]></data></m>
+  <m nm="dash" fm="0"><data>&#x00AD;</data><context/><info>0,0</info></m>
+  <m nm="dashleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lBarr;<![CDATA[");]]></data></m>
+  <m nm="dashrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rBarr;<![CDATA[");]]></data></m>
+  <m nm="dashv"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dashv;<![CDATA[");]]></data></m>
+  <m nm="dbkarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rBarr;<![CDATA[");]]></data></m>
   <m nm="Dcaron" fm="0"><data>&#x010E;</data><context/><info>0,0</info></m>
   <m nm="dcaron" fm="0"><data>&#x010F;</data><context/><info>0,0</info></m>
+  <m nm="ddag" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Dagger;<![CDATA[");]]></data></m>
+  <m nm="ddagger"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Dagger;<![CDATA[");]]></data></m>
+  <m nm="ddots"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dtdot;<![CDATA[");]]></data></m>
+  <m nm="degree"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&deg;<![CDATA[");]]></data></m>
+  <m nm="degree"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&deg;<![CDATA[");]]></data></m>
+  <m nm="delta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&delta;<![CDATA[");]]></data></m>
+  <m nm="Delta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Delta;<![CDATA[");]]></data></m>
+  <m nm="DH" fm="0"><data>&#xd0;</data><context/><info>0,0</info></m>
+  <m nm="dh" fm="0"><data>&#xf0;</data><context/><info>0,0</info></m>
+  <m nm="dh" fm="0"><data>&eth;</data><context/><info>0,0</info></m>
+  <m nm="diagdown"  tp="sc"><data><![CDATA[insertMathSymbol(]]></data></m>
+  <m nm="diagup"  tp="sc"><data><![CDATA[insertMathSymbol(]]></data></m>
+  <m nm="diamond"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&diam;<![CDATA[");]]></data></m>
+  <m nm="Diamond" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Diamond;<![CDATA[");]]></data></m>
+  <m nm="diamondsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&diams;<![CDATA[");]]></data></m>
+  <m nm="digamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x3dc;<![CDATA[");]]></data></m>
+  <m nm="div"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&div;<![CDATA[");]]></data></m>
+  <m nm="div"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&divide;<![CDATA[");]]></data></m>
+  <m nm="divideontimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&divonx;<![CDATA[");]]></data></m>
+  <m nm="DJ" fm="0"><data>&#x110;</data><context/><info>0,0</info></m>
+  <m nm="dj" fm="0"><data>&#x111;</data><context/><info>0,0</info></m>
+  <m nm="dotc" fm="0"><data>&#x010B;</data><context/><info>0,0</info></m>
+  <m nm="doteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&esdot;<![CDATA[");]]></data></m>
+  <m nm="doteqdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&eDot;<![CDATA[");]]></data></m>
+  <m nm="dotplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&plusdo;<![CDATA[");]]></data></m>
+  <m nm="dots" fm="0"><data>&hellip;</data><context/><info>0,0</info></m>
+  <m nm="doublebarwedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Barwed;<![CDATA[");]]></data></m>
+  <m nm="DoubleDot" fm="0"><data>&#x00A8;</data><context/><info>0,0</info></m>
+  <m nm="downarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&darr;<![CDATA[");]]></data></m>
+  <m nm="Downarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dArr;<![CDATA[");]]></data></m>
+  <m nm="downdownarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ddarr;<![CDATA[");]]></data></m>
+  <m nm="downharpoonleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dharl;<![CDATA[");]]></data></m>
+  <m nm="downharpoonright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dharr;<![CDATA[");]]></data></m>
+  <m nm="Eacute" fm="0"><data>&#x00C9;</data><context/><info>0,0</info></m>
+  <m nm="eacute" fm="0"><data>&#x00E9;</data><context/><info>0,0</info></m>
   <m nm="Ebreve" fm="0"><data>&#x0114;</data><context/><info>0,0</info></m>
   <m nm="ebreve" fm="0"><data>&#x0115;</data><context/><info>0,0</info></m>
-  <m nm="Emacr" fm="0"><data>&#x0112;</data><context/><info>0,0</info></m>
-  <m nm="emacr" fm="0"><data>&#x0113;</data><context/><info>0,0</info></m>
-  <m nm="Edot" fm="0"><data>&#x0116;</data><context/><info>0,0</info></m>
-  <m nm="edot" fm="0"><data>&#x0117;</data><context/><info>0,0</info></m>
-  <m nm="Eogon" fm="0"><data>&#x0118;</data><context/><info>0,0</info></m>
-  <m nm="eogon" fm="0"><data>&#x0119;</data><context/><info>0,0</info></m>
   <m nm="Ecaron" fm="0"><data>&#x011A;</data><context/><info>0,0</info></m>
   <m nm="ecaron" fm="0"><data>&#x011B;</data><context/><info>0,0</info></m>
-  <m nm="Gcirc" fm="0"><data>&#x011C;</data><context/><info>0,0</info></m>
-  <m nm="gcirc" fm="0"><data>&#x011D;</data><context/><info>0,0</info></m>
+  <m nm="Ecirc" fm="0"><data>&#x00CA;</data><context/><info>0,0</info></m>
+  <m nm="ecirc" fm="0"><data>&#x00EA;</data><context/><info>0,0</info></m>
+  <m nm="Ecircumflex" fm="0"><data>&#x00CA;</data><context/><info>0,0</info></m>
+  <m nm="ecircumflex" fm="0"><data>&#x00EA;</data><context/><info>0,0</info></m>
+  <m nm="Edieresis" fm="0"><data>&#x00CB;</data><context/><info>0,0</info></m>
+  <m nm="edieresis" fm="0"><data>&#x00EB;</data><context/><info>0,0</info></m>
+  <m nm="Edot" fm="0"><data>&#x0116;</data><context/><info>0,0</info></m>
+  <m nm="edot" fm="0"><data>&#x0117;</data><context/><info>0,0</info></m>
+  <m nm="Egrave" fm="0"><data>&#x00C8;</data><context/><info>0,0</info></m>
+  <m nm="egrave" fm="0"><data>&#x00E8;</data><context/><info>0,0</info></m>
+  <m nm="ell" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&ell;<![CDATA[");]]></data></m>
+  <m nm="Emacr" fm="0"><data>&#x0112;</data><context/><info>0,0</info></m>
+  <m nm="emacr" fm="0"><data>&#x0113;</data><context/><info>0,0</info></m>
+  <m nm="emdash" fm="0"><data>&mdash;</data><context/><info>0,0</info></m>
+  <m nm="emptyset" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&empty;<![CDATA[");]]></data></m>
+  <m nm="endash" fm="0"><data>&ndash;</data><context/><info>0,0</info></m>
+  <m nm="Eogon" fm="0"><data>&#x0118;</data><context/><info>0,0</info></m>
+  <m nm="eogon" fm="0"><data>&#x0119;</data><context/><info>0,0</info></m>
+  <m nm="epsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&epsi;<![CDATA[");]]></data></m>
+  <m nm="eqcirc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ecir;<![CDATA[");]]></data></m>
+  <m nm="eqsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&eqsim;<![CDATA[");]]></data></m>
+  <m nm="eqslantgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&egs;<![CDATA[");]]></data></m>
+  <m nm="eqslantless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&els;<![CDATA[");]]></data></m>
+  <m nm="equiv"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&equiv;<![CDATA[");]]></data></m>
+  <m nm="eta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&eta;<![CDATA[");]]></data></m>
+  <m nm="eth" fm="0"><data>&eth;</data><context/><info>0,0</info></m>
+  <m nm="Euml" fm="0"><data>&#x00CB;</data><context/><info>0,0</info></m>
+  <m nm="euml" fm="0"><data>&#x00EB;</data><context/><info>0,0</info></m>
+  <m nm="euro" fm="0"><data>&euro;</data><context/><info>0,0</info></m>
+  <m nm="exists" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Exists;<![CDATA[");]]></data></m>
+  <m nm="fallingdotseq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&efDot;<![CDATA[");]]></data></m>
+  <m nm="Finv"   tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x2132;<![CDATA[");]]></data></m> 
+  <m nm="flat" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&flat;<![CDATA[");]]></data></m>
+  <m nm="forall" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&ForAll;<![CDATA[");]]></data></m>
+  <m nm="Fourier"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Fouriertrf;<![CDATA[");]]></data></m>
+  <m nm="frac12" fm="0"><data>&#x00BD;</data><context/><info>0,0</info></m>
+  <m nm="frac14" fm="0"><data>&#x00BC;</data><context/><info>0,0</info></m>
+  <m nm="frac34" fm="0"><data>&#x00BE;</data><context/><info>0,0</info></m>
+  <m nm="frown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&frown;<![CDATA[");]]></data></m>
+  <m nm="Game" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Game;<![CDATA[");]]></data></m>
+  <m nm="gamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&gamma;<![CDATA[");]]></data></m>
+  <m nm="Gamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Gamma;<![CDATA[");]]></data></m>
   <m nm="Gbreve" fm="0"><data>&#x011E;</data><context/><info>0,0</info></m>
   <m nm="gbreve" fm="0"><data>&#x011F;</data><context/><info>0,0</info></m>
-  <m nm="Gdot" fm="0"><data>&#x0120;</data><context/><info>0,0</info></m>
-  <m nm="gdot" fm="0"><data>&#x0121;</data><context/><info>0,0</info></m>
   <m nm="Gcedil" fm="0"><data>&#x0122;</data><context/><info>0,0</info></m>
   <m nm="gcedil" fm="0"><data>&#x0123;</data><context/><info>0,0</info></m>
+  <m nm="Gcirc" fm="0"><data>&#x011C;</data><context/><info>0,0</info></m>
+  <m nm="gcirc" fm="0"><data>&#x011D;</data><context/><info>0,0</info></m>
+  <m nm="Gdot" fm="0"><data>&#x0120;</data><context/><info>0,0</info></m>
+  <m nm="gdot" fm="0"><data>&#x0121;</data><context/><info>0,0</info></m>
+  <m nm="geq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ge;<![CDATA[");]]></data></m>
+  <m nm="geqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gE;<![CDATA[");]]></data></m>
+  <m nm="geqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&geqslant;<![CDATA[");]]></data></m>
+  <m nm="gg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gg;<![CDATA[");]]></data></m>
+  <m nm="ggg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Gg;<![CDATA[");]]></data></m>
+  <m nm="gimel" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&gimel;<![CDATA[");]]></data></m>
+  <m nm="gnapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gnap;<![CDATA[");]]></data></m>
+  <m nm="gneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gne;<![CDATA[");]]></data></m>
+  <m nm="gneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gnE;<![CDATA[");]]></data></m>
+  <m nm="gnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gnsim;<![CDATA[");]]></data></m>
+  <m nm="gtrapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gtrapprox;<![CDATA[");]]></data></m>
+  <m nm="gtrdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gtrdot;<![CDATA[");]]></data></m>
+  <m nm="gtreqless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gel;<![CDATA[");]]></data></m>
+  <m nm="gtreqqless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gtreqqless;<![CDATA[");]]></data></m>
+  <m nm="gtrless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gl;<![CDATA[");]]></data></m>
+  <m nm="gtrsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gsim;<![CDATA[");]]></data></m>
+  <m nm="guillemotleft" fm="0"><data>&#x00AB;</data><context/><info>0,0</info></m>
+  <m nm="guillemotright" fm="0"><data>&#x00BB;</data><context/><info>0,0</info></m>
+  <m nm="guilsinglleft" fm="0"><data>&lsaquo;</data><context/><info>0,0</info></m>
+  <m nm="guilsinglright" fm="0"><data>&rsaquo;</data><context/><info>0,0</info></m>
+  <m nm="gvertneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gvnE;<![CDATA[");]]></data></m> 
+  <m nm="hbar" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&hbar;<![CDATA[");]]></data></m>
   <m nm="Hcirc" fm="0"><data>&#x0124;</data><context/><info>0,0</info></m>
   <m nm="hcirc" fm="0"><data>&#x0125;</data><context/><info>0,0</info></m>
+  <m nm="heartsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&heartsuit;<![CDATA[");]]></data></m>
+  <m nm="hookleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larrhk;<![CDATA[");]]></data></m>
+  <m nm="hookrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrhk;<![CDATA[");]]></data></m>
+  <m nm="hslash" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&hslash;<![CDATA[");]]></data></m> 
   <m nm="Hstrok" fm="0"><data>&#x0126;</data><context/><info>0,0</info></m>
   <m nm="hstrok" fm="0"><data>&#x0127;</data><context/><info>0,0</info></m>
-  <m nm="textcrh" fm="0"><data>&#x0127;</data><context/><info>0,0</info></m>
+  <m nm="Iacute" fm="0"><data>&#x00CD;</data><context/><info>0,0</info></m>
+  <m nm="iacute" fm="0"><data>&#x00ED;</data><context/><info>0,0</info></m>
   <m nm="Ibreve" fm="0"><data>&#x012C;</data><context/><info>0,0</info></m>
   <m nm="ibreve" fm="0"><data>&#x012D;</data><context/><info>0,0</info></m>
-  <m nm="Itilde" fm="0"><data>&#x0128;</data><context/><info>0,0</info></m>
-  <m nm="itilde" fm="0"><data>&#x0129;</data><context/><info>0,0</info></m>
-  <m nm="Imacr" fm="0"><data>&#x012A;</data><context/><info>0,0</info></m>
-  <m nm="imacr" fm="0"><data>&#x012B;</data><context/><info>0,0</info></m>
-  <m nm="Iogon" fm="0"><data>&#x012E;</data><context/><info>0,0</info></m>
-  <m nm="iogon" fm="0"><data>&#x012F;</data><context/><info>0,0</info></m>
+  <m nm="Icirc" fm="0"><data>&#x00CE;</data><context/><info>0,0</info></m>
+  <m nm="icirc" fm="0"><data>&#x00EE;</data><context/><info>0,0</info></m>
+  <m nm="Icircumflex" fm="0"><data>&#x00CE;</data><context/><info>0,0</info></m>
+  <m nm="icircumflex" fm="0"><data>&#x00EE;</data><context/><info>0,0</info></m>
+  <m nm="Idieresis" fm="0"><data>&#x00CF;</data><context/><info>0,0</info></m>
+  <m nm="idieresis" fm="0"><data>&#x00EF;</data><context/><info>0,0</info></m>
   <m nm="Idot" fm="0"><data>&#x0130;</data><context/><info>0,0</info></m>
+  <m nm="idotsint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;&ctdot;&int;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iff"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&iff;<![CDATA[");]]></data></m>
+  <m nm="Igrave" fm="0"><data>&#x00CC;</data><context/><info>0,0</info></m>
+  <m nm="igrave" fm="0"><data>&#x00EC;</data><context/><info>0,0</info></m>
+  <m nm="iiiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&qint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&tint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&Int;<![CDATA[", "", "", false);]]></data></m>
   <m nm="IJ" fm="0"><data>&#x0132;</data><context/><info>0,0</info></m>
   <m nm="ij" fm="0"><data>&#x0133;</data><context/><info>0,0</info></m>
-  <m nm="OE" fm="0"><data>&#x152;</data><context/><info>0,0</info></m>
-  <m nm="oe" fm="0"><data>&#x153;</data><context/><info>0,0</info></m>
+  <m nm="Im"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&image;<![CDATA[");]]></data></m>
+  <m nm="Imacr" fm="0"><data>&#x012A;</data><context/><info>0,0</info></m>
+  <m nm="imacr" fm="0"><data>&#x012B;</data><context/><info>0,0</info></m>
+  <m nm="imath"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&imath;<![CDATA[");]]></data></m>
+  <m nm="impliedby"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lArr;<![CDATA[");]]></data></m>
+  <m nm="implies"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Implies;<![CDATA[");]]></data></m>
+  <m nm="in"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Element;<![CDATA[");]]></data></m>
+  <m nm="infty" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&infin;<![CDATA[");]]></data></m>
+  <m nm="int"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="integers" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&integers;<![CDATA[");]]></data></m>
+  <m nm="intercal"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&intcal;<![CDATA[");]]></data></m>
+  <m nm="Iogon" fm="0"><data>&#x012E;</data><context/><info>0,0</info></m>
+  <m nm="iogon" fm="0"><data>&#x012F;</data><context/><info>0,0</info></m>
+  <m nm="iota" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&iota;<![CDATA[");]]></data></m>
+  <m nm="Itilde" fm="0"><data>&#x0128;</data><context/><info>0,0</info></m>
+  <m nm="itilde" fm="0"><data>&#x0129;</data><context/><info>0,0</info></m>
+  <m nm="Iuml" fm="0"><data>&#x00CF;</data><context/><info>0,0</info></m>
+  <m nm="iuml" fm="0"><data>&#x00EF;</data><context/><info>0,0</info></m>
   <m nm="Jcirc" fm="0"><data>&#x0134;</data><context/><info>0,0</info></m>
   <m nm="jcirc" fm="0"><data>&#x0135;</data><context/><info>0,0</info></m>
+  <m nm="jmath" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&jmath;<![CDATA[");]]></data></m>
+  <m nm="Join"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Join;<![CDATA[");]]></data></m>
+  <m nm="kappa" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&kappa;<![CDATA[");]]></data></m>
   <m nm="Kcedil" fm="0"><data>&#x0136;</data><context/><info>0,0</info></m>
   <m nm="kcedil" fm="0"><data>&#x0137;</data><context/><info>0,0</info></m>
   <m nm="kgreen" fm="0"><data>&#x0138;</data><context/><info>0,0</info></m>
+  <m nm="L" fm="0"><data>&#x0141;</data><context/><info>0,0</info></m>
+  <m nm="l" fm="0"><data>&#x0142;</data><context/><info>0,0</info></m>
   <m nm="Lacute" fm="0"><data>&#x0139;</data><context/><info>0,0</info></m>
   <m nm="lacute" fm="0"><data>&#x013A;</data><context/><info>0,0</info></m>
-  <m nm="Lcedil" fm="0"><data>&#x013B;</data><context/><info>0,0</info></m>
-  <m nm="lcedil" fm="0"><data>&#x013C;</data><context/><info>0,0</info></m>
+  <m nm="Lambda" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Lambda;<![CDATA[");]]></data></m>
+  <m nm="lambda" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lambda;<![CDATA[");]]></data></m>
+  <m nm="lambdabar" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lambdabar;<![CDATA[");]]></data></m>  
+  <m nm="langle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&langle;<![CDATA[");]]></data></m>
+  <m nm="Laplace"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Laplacetrf;<![CDATA[");]]></data></m>
   <m nm="Lcaron" fm="0"><data>&#x013D;</data><context/><info>0,0</info></m>
   <m nm="lcaron" fm="0"><data>&#x013E;</data><context/><info>0,0</info></m>
+  <m nm="Lcedil" fm="0"><data>&#x013B;</data><context/><info>0,0</info></m>
+  <m nm="lcedil" fm="0"><data>&#x013C;</data><context/><info>0,0</info></m>
+  <m nm="lceil"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lceil;<![CDATA[");]]></data></m>
+  <m nm="ldots" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&hellip;<![CDATA[");]]></data><context/><info>0,0</info></m>
+  <m nm="leadsto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrc;<![CDATA[");]]></data></m>
+  <m nm="Leftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lArr;<![CDATA[");]]></data></m>
+  <m nm="leftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larr;<![CDATA[");]]></data></m>
+  <m nm="leftarrowtail"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larrtl;<![CDATA[");]]></data></m>
+  <m nm="leftdbkarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lBarr;<![CDATA[");]]></data></m>
+  <m nm="leftharpoondown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lhard;<![CDATA[");]]></data></m>
+  <m nm="leftharpoonup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lharu;<![CDATA[");]]></data></m>
+  <m nm="leftleftarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&llarr;<![CDATA[");]]></data></m>
+  <m nm="Leftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&hArr;<![CDATA[");]]></data></m>
+  <m nm="leftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&harr;<![CDATA[");]]></data></m>
+  <m nm="leftrightarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lrarr;<![CDATA[");]]></data></m>
+  <m nm="leftrightharpoons"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lrhar;<![CDATA[");]]></data></m>
+  <m nm="leftrightsquigarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&harrw;<![CDATA[");]]></data></m>
+  <m nm="leftthreetimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lthree;<![CDATA[");]]></data></m>
+  <m nm="leq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&le;<![CDATA[");]]></data></m>
+  <m nm="leqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leqq;<![CDATA[");]]></data></m>
+  <m nm="leqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leqslant;<![CDATA[");]]></data></m>
+  <m nm="lessapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lessapprox;<![CDATA[");]]></data></m>
+  <m nm="lessdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lessdot;<![CDATA[");]]></data></m>
+  <m nm="lesseqgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leg;<![CDATA[");]]></data></m>
+  <m nm="lesseqqgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lesseqqgtr;<![CDATA[");]]></data></m>
+  <m nm="lessgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lg;<![CDATA[");]]></data></m>
+  <m nm="lesssim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lsim;<![CDATA[");]]></data></m>
+  <m nm="lfloor"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lfloor;<![CDATA[");]]></data></m>
+  <m nm="ll"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ll;<![CDATA[");]]></data></m>
+  <m nm="llcorner"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&llcorner;<![CDATA[");]]></data></m>
+  <m nm="Lleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lAarr;<![CDATA[");]]></data></m>
+  <m nm="lll"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Ll;<![CDATA[");]]></data></m>
   <m nm="Lmidot" fm="0"><data>&#x013F;</data><context/><info>0,0</info></m>
   <m nm="lmidot" fm="0"><data>&#x0140;</data><context/><info>0,0</info></m>
+  <m nm="lnapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lnap;<![CDATA[");]]></data></m>
+  <m nm="lneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lne;<![CDATA[");]]></data></m>
+  <m nm="lneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lnE;<![CDATA[");]]></data></m>
+  <m nm="lnot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&not;<![CDATA[");]]></data></m>
+  <m nm="lnot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&not;<![CDATA[");]]></data></m>
+  <m nm="lnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lnsim;<![CDATA[");]]></data></m>
+  <m nm="Longleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xlArr;<![CDATA[");]]></data></m>
+  <m nm="longleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xlarr;<![CDATA[");]]></data></m>
+  <m nm="Longleftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xhArr;<![CDATA[");]]></data></m>
+  <m nm="longleftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xharr;<![CDATA[");]]></data></m>   
+  <m nm="longmapsto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xmap;<![CDATA[");]]></data></m>
+  <m nm="longrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xrarr;<![CDATA[");]]></data></m>
+  <m nm="Longrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xrArr;<![CDATA[");]]></data></m>
+  <m nm="looparrowleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larrlp;<![CDATA[");]]></data></m>
+  <m nm="looparrowright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrlp;<![CDATA[");]]></data></m>
+  <m nm="lozenge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lozenge;<![CDATA[");]]></data></m>
+  <m nm="lq" fm="0"><data>&lsquo;</data><context/><info>0,0</info></m>
+  <m nm="lrcorner"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lrcorner;<![CDATA[");]]></data></m>	
+  <m nm="Lsh"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lsh;<![CDATA[");]]></data></m>
   <m nm="Lstrok" fm="0"><data>&#x0141;</data><context/><info>0,0</info></m>
-  <m nm="L" fm="0"><data>&#x0141;</data><context/><info>0,0</info></m>
   <m nm="lstrok" fm="0"><data>&#x0142;</data><context/><info>0,0</info></m>
-  <m nm="l" fm="0"><data>&#x0142;</data><context/><info>0,0</info></m>
+  <m nm="ltimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ltimes;<![CDATA[");]]></data></m>
+  <m nm="lvertneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lvnE;<![CDATA[");]]></data></m> 
+  <m nm="maltese" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&malt;<![CDATA[");]]></data></m>
+  <m nm="mapsto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&map;<![CDATA[");]]></data></m>
+  <m nm="mdlgblklozenge" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lozf;<![CDATA[");]]></data></m>
+  <m nm="mdlgwhtsquare"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&square;<![CDATA[");]]></data></m>
+  <m nm="measuredangle" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&angmsd;<![CDATA[");]]></data></m>
+  <m nm="mho" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&mho;<![CDATA[");]]></data></m>
+  <m nm="micro" fm="0"><data>&#x00B5;</data><context/><info>0,0</info></m>
+  <m nm="mid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&mid;<![CDATA[");]]></data></m>
+  <m nm="models"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&models;<![CDATA[");]]></data></m>
+  <m nm="mp"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&mnplus;<![CDATA[");]]></data></m>
+  <m nm="mu" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&mu;<![CDATA[");]]></data></m>
+  <m nm="multimap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&mumap;<![CDATA[");]]></data></m>
+  <m nm="nabla"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nabla;<![CDATA[");]]></data></m>
   <m nm="Nacute" fm="0"><data>&#x0143;</data><context/><info>0,0</info></m>
   <m nm="nacute" fm="0"><data>&#x0144;</data><context/><info>0,0</info></m>
-  <m nm="Ncedil" fm="0"><data>&#x0145;</data><context/><info>0,0</info></m>
-  <m nm="ncedil" fm="0"><data>&#x0146;</data><context/><info>0,0</info></m>
+  <m nm="napos" fm="0"><data>&#x0149;</data><context/><info>0,0</info></m>
+  <m nm="natural" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&natur;<![CDATA[");]]></data></m>
+  <m nm="naturals" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&naturals;<![CDATA[");]]></data></m>
   <m nm="Ncaron" fm="0"><data>&#x0147;</data><context/><info>0,0</info></m>
   <m nm="ncaron" fm="0"><data>&#x0148;</data><context/><info>0,0</info></m>
-  <m nm="napos" fm="0"><data>&#x0149;</data><context/><info>0,0</info></m>
+  <m nm="Ncedil" fm="0"><data>&#x0145;</data><context/><info>0,0</info></m>
+  <m nm="ncedil" fm="0"><data>&#x0146;</data><context/><info>0,0</info></m>
+  <m nm="ncong"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ncong;<![CDATA[");]]></data></m>
+  <m nm="ne"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ne;<![CDATA[");]]></data></m>
+  <m nm="nearrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nearr;<![CDATA[");]]></data></m> 
+  <m nm="neg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&not;<![CDATA[");]]></data></m>
+  <m nm="neq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ne;<![CDATA[");]]></data></m>
+  <m nm="nexists"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&NotExists;<![CDATA[");]]></data></m>
   <m nm="NG" fm="0"><data>&#x14a;</data><context/><info>0,0</info></m>
   <m nm="ng" fm="0"><data>&#x14b;</data><context/><info>0,0</info></m>
-  <m nm="Omacr" fm="0"><data>&#x014C;</data><context/><info>0,0</info></m>
-  <m nm="omacr" fm="0"><data>&#x014D;</data><context/><info>0,0</info></m>
-  <m nm="Odblac" fm="0"><data>&#x0150;</data><context/><info>0,0</info></m>
-  <m nm="odblac" fm="0"><data>&#x0151;</data><context/><info>0,0</info></m>
+  <m nm="ngeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nge;<![CDATA[");]]></data></m>
+  <m nm="ngeqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ngE;<![CDATA[");]]></data></m>   
+  <m nm="ngeqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nges;<![CDATA[");]]></data></m> 
+  <m nm="ngtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ngt;<![CDATA[");]]></data></m>
+  <m nm="ni"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ni;<![CDATA[");]]></data></m>
+  <m nm="nLeftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nlArr;<![CDATA[");]]></data></m>
+  <m nm="nleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nlarr;<![CDATA[");]]></data></m>
+  <m nm="nLeftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nhArr;<![CDATA[");]]></data></m>
+  <m nm="nleftrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nharr;<![CDATA[");]]></data></m>
+  <m nm="nleq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nle;<![CDATA[");]]></data></m>
+  <m nm="nleqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nlE;<![CDATA[");]]></data></m> 
+  <m nm="nleqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nles;<![CDATA[");]]></data></m> 
+  <m nm="nless"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nlt;<![CDATA[");]]></data></m>
+  <m nm="nmid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nmid;<![CDATA[");]]></data></m>
+  <m nm="notin"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&notin;<![CDATA[");]]></data></m>
+  <m nm="nparallel"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&npar;<![CDATA[");]]></data></m>
+  <m nm="nprec"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&npr;<![CDATA[");]]></data></m>
+  <m nm="npreceq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&npre;<![CDATA[");]]></data></m> 
+  <m nm="nRightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nrArr;<![CDATA[");]]></data></m>
+  <m nm="nrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nrarr;<![CDATA[");]]></data></m>
+  <m nm="nshortmid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsmid;<![CDATA[");]]></data></m> 
+  <m nm="nshortparallel"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nspar;<![CDATA[");]]></data></m> 
+  <m nm="nsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsim;<![CDATA[");]]></data></m>
+  <m nm="nsubseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsube;<![CDATA[");]]></data></m>
+  <m nm="nsubseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsubE;<![CDATA[");]]></data></m> 
+  <m nm="nsucc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsc;<![CDATA[");]]></data></m>
+  <m nm="nsucceq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsce;<![CDATA[");]]></data></m> 
+  <m nm="nsupseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsupe;<![CDATA[");]]></data></m>
+  <m nm="nsupseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsupE;<![CDATA[");]]></data></m> 
+  <m nm="Ntilde" fm="0"><data>&#x00D1;</data><context/><info>0,0</info></m>
+  <m nm="ntilde" fm="0"><data>&#x00F1;</data><context/><info>0,0</info></m>
+  <m nm="ntriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nltri;<![CDATA[");]]></data></m>	 
+  <m nm="ntrianglelefteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nltrie;<![CDATA[");]]></data></m>
+  <m nm="ntriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nrtri;<![CDATA[");]]></data></m>
+  <m nm="ntrianglerighteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nrtrie;<![CDATA[");]]></data></m>
+  <m nm="nu" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&nu;<![CDATA[");]]></data></m>
+  <m nm="nVdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nVdash;<![CDATA[");]]></data></m>
+  <m nm="nvdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nvdash;<![CDATA[");]]></data></m>
+  <m nm="nVDash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nVDash;<![CDATA[");]]></data></m>
+  <m nm="nvDash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nvDash;<![CDATA[");]]></data></m>
+  <m nm="nwarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nwarr;<![CDATA[");]]></data></m>
+  <m nm="O" fm="0"><data>&#x00D8;</data><context/><info>0,0</info></m>
+  <m nm="o" fm="0"><data>&#x00F8;</data><context/><info>0,0</info></m>
+  <m nm="Oacute" fm="0"><data>&#x00D3;</data><context/><info>0,0</info></m>
+  <m nm="oacute" fm="0"><data>&#x00F3;</data><context/><info>0,0</info></m>
   <m nm="Obreve" fm="0"><data>&#x014E;</data><context/><info>0,0</info></m>
   <m nm="obreve" fm="0"><data>&#x014F;</data><context/><info>0,0</info></m>
-  <m nm="Racute" fm="0"><data>&#x0154;</data><context/><info>0,0</info></m>
-  <m nm="racute" fm="0"><data>&#x0155;</data><context/><info>0,0</info></m>
-  <m nm="Rcedil" fm="0"><data>&#x0156;</data><context/><info>0,0</info></m>
-  <m nm="rcedil" fm="0"><data>&#x0157;</data><context/><info>0,0</info></m>
-  <m nm="Rcaron" fm="0"><data>&#x0158;</data><context/><info>0,0</info></m>
-  <m nm="rcaron" fm="0"><data>&#x0159;</data><context/><info>0,0</info></m>
-  <m nm="Sacute" fm="0"><data>&#x015A;</data><context/><info>0,0</info></m>
-  <m nm="sacute" fm="0"><data>&#x015B;</data><context/><info>0,0</info></m>
-  <m nm="Scirc" fm="0"><data>&#x015C;</data><context/><info>0,0</info></m>
-  <m nm="scirc" fm="0"><data>&#x015D;</data><context/><info>0,0</info></m>
-  <m nm="Scedil" fm="0"><data>&#x015E;</data><context/><info>0,0</info></m>
-  <m nm="scedil" fm="0"><data>&#x015F;</data><context/><info>0,0</info></m>
-  <m nm="Scaron" fm="0"><data>&#x0160;</data><context/><info>0,0</info></m>
-  <m nm="scaron" fm="0"><data>&#x0161;</data><context/><info>0,0</info></m>
-  <m nm="Tcedil" fm="0"><data>&#x0162;</data><context/><info>0,0</info></m>
-  <m nm="tcedil" fm="0"><data>&#x0163;</data><context/><info>0,0</info></m>
-  <m nm="Tcaron" fm="0"><data>&#x0164;</data><context/><info>0,0</info></m>
-  <m nm="tcaron" fm="0"><data>&#x0165;</data><context/><info>0,0</info></m>
-  <m nm="Tstrok" fm="0"><data>&#x0166;</data><context/><info>0,0</info></m>
-  <m nm="tstrok" fm="0"><data>&#x0167;</data><context/><info>0,0</info></m>
-  <m nm="Utilde" fm="0"><data>&#x0168;</data><context/><info>0,0</info></m>
-  <m nm="utilde" fm="0"><data>&#x0169;</data><context/><info>0,0</info></m>
-  <m nm="Umacr" fm="0"><data>&#x016A;</data><context/><info>0,0</info></m>
-  <m nm="umacr" fm="0"><data>&#x016B;</data><context/><info>0,0</info></m>
-  <m nm="Ubreve" fm="0"><data>&#x016C;</data><context/><info>0,0</info></m>
-  <m nm="ubreve" fm="0"><data>&#x016D;</data><context/><info>0,0</info></m>
-  <m nm="Uring" fm="0"><data>&#x016E;</data><context/><info>0,0</info></m>
-  <m nm="uring" fm="0"><data>&#x016F;</data><context/><info>0,0</info></m>
-  <m nm="Udblac" fm="0"><data>&#x0170;</data><context/><info>0,0</info></m>
-  <m nm="udblac" fm="0"><data>&#x0171;</data><context/><info>0,0</info></m>
-  <m nm="Uogon" fm="0"><data>&#x0172;</data><context/><info>0,0</info></m>
-  <m nm="uogon" fm="0"><data>&#x0173;</data><context/><info>0,0</info></m>
-  <m nm="Wcirc" fm="0"><data>&#x0174;</data><context/><info>0,0</info></m>
-  <m nm="wcirc" fm="0"><data>&#x0175;</data><context/><info>0,0</info></m>
-  <m nm="Ycirc" fm="0"><data>&#x0176;</data><context/><info>0,0</info></m>
-  <m nm="ycirc" fm="0"><data>&#x0177;</data><context/><info>0,0</info></m>
-  <m nm="Yuml" fm="0"><data>&#x0178;</data><context/><info>0,0</info></m>
-  <m nm="Ydieresis" fm="0"><data>&#x0178;</data><context/><info>0,0</info></m>
-  <m nm="Zacute" fm="0"><data>&#x0179;</data><context/><info>0,0</info></m>
-  <m nm="zacute" fm="0"><data>&#x017A;</data><context/><info>0,0</info></m>
-  <m nm="Zdot" fm="0"><data>&#x017B;</data><context/><info>0,0</info></m>
-  <m nm="zdot" fm="0"><data>&#x017C;</data><context/><info>0,0</info></m>
-  <m nm="Zcaron" fm="0"><data>&#x017D;</data><context/><info>0,0</info></m>
-  <m nm="zcaron" fm="0"><data>&#x017E;</data><context/><info>0,0</info></m>
-  <m nm="dj" fm="0"><data>&#x111;</data><context/><info>0,0</info></m>
-<!--Latin-1 -->
-  <m nm="degree"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&deg;<![CDATA[");]]></data></m>
-  <m nm="textdegree"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&deg;<![CDATA[");]]></data></m>
-  <m nm="Agrave" fm="0"><data>&#x00C0;</data><context/><info>0,0</info></m>
-  <m nm="DH" fm="0"><data>&#xd0;</data><context/><info>0,0</info></m>
-  <m nm="agrave" fm="0"><data>&#x00E0;</data><context/><info>0,0</info></m>
-  <m nm="dh" fm="0"><data>&#xf0;</data><context/><info>0,0</info></m>
-  <m nm="textexclamdown" fm="0"><data>&#xa1;</data><context/><info>0,0</info></m>
-  <m nm="Aacute" fm="0"><data>&#x00C1;</data><context/><info>0,0</info></m>
-  <m nm="Ntilde" fm="0"><data>&#x00D1;</data><context/><info>0,0</info></m>
-  <m nm="aacute" fm="0"><data>&#x00E1;</data><context/><info>0,0</info></m>
-  <m nm="ntilde" fm="0"><data>&#x00F1;</data><context/><info>0,0</info></m>
-  <m nm="cents" fm="0"><data>&#x00A2;</data><context/><info>0,0</info></m>
-  <m nm="textcent" fm="0"><data>&#x00A2;</data><context/><info>0,0</info></m>
-  <m nm="sup2" fm="0"><data>&#x00B2;</data><context/><info>0,0</info></m>
-  <m nm="texttwosuperior" fm="0"><data>&#x00B2;</data><context/><info>0,0</info></m>
-  <m nm="Acirc" fm="0"><data>&#x00C2;</data><context/><info>0,0</info></m>
-  <m nm="Acircumflex" fm="0"><data>&#x00C2;</data><context/><info>0,0</info></m>
-  <m nm="Ograve" fm="0"><data>&#x00D2;</data><context/><info>0,0</info></m>
-  <m nm="acirc" fm="0"><data>&#x00E2;</data><context/><info>0,0</info></m>
-  <m nm="acircumflex" fm="0"><data>&#x00E2;</data><context/><info>0,0</info></m>
-  <m nm="ograve" fm="0"><data>&#x00F2;</data><context/><info>0,0</info></m>
-  <m nm="pounds" fm="0"><data>&#x00A3;</data><context/><info>0,0</info></m>
-  <m nm="sterling" fm="0"><data>&#x00A3;</data><context/><info>0,0</info></m>
-  <m nm="sup3" fm="0"><data>&#x00B3;</data><context/><info>0,0</info></m>
-  <m nm="textthreesuperior" fm="0"><data>&#x00B3;</data><context/><info>0,0</info></m>
-  <m nm="Atilde" fm="0"><data>&#x00C3;</data><context/><info>0,0</info></m>
-  <m nm="Oacute" fm="0"><data>&#x00D3;</data><context/><info>0,0</info></m>
-  <m nm="atilde" fm="0"><data>&#x00E3;</data><context/><info>0,0</info></m>
-  <m nm="oacute" fm="0"><data>&#x00F3;</data><context/><info>0,0</info></m>
-  <m nm="acute" fm="0"><data>&#x00B4;</data><context/><info>0,0</info></m>
-  <m nm="textasciiacute" fm="0"><data>&#x00B4;</data><context/><info>0,0</info></m>
-  <m nm="Auml" fm="0"><data>&#x00C4;</data><context/><info>0,0</info></m>
-  <m nm="Adieresis" fm="0"><data>&#x00C4;</data><context/><info>0,0</info></m>
   <m nm="Ocirc" fm="0"><data>&#x00D4;</data><context/><info>0,0</info></m>
-  <m nm="Ocircumflex" fm="0"><data>&#x00D4;</data><context/><info>0,0</info></m>
-  <m nm="auml" fm="0"><data>&#x00E4;</data><context/><info>0,0</info></m>
-  <m nm="adieresis" fm="0"><data>&#x00E4;</data><context/><info>0,0</info></m>
   <m nm="ocirc" fm="0"><data>&#x00F4;</data><context/><info>0,0</info></m>
+  <m nm="Ocircumflex" fm="0"><data>&#x00D4;</data><context/><info>0,0</info></m>
   <m nm="ocircumflex" fm="0"><data>&#x00F4;</data><context/><info>0,0</info></m>
-  <m nm="micro" fm="0"><data>&#x00B5;</data><context/><info>0,0</info></m>
-  <m nm="textmu" fm="0"><data>&#x00B5;</data><context/><info>0,0</info></m>
-  <m nm="AA" fm="0"><data>&#x00C5;</data><context/><info>0,0</info></m>
-  <m nm="Otilde" fm="0"><data>&#x00D5;</data><context/><info>0,0</info></m>
-  <m nm="aa" fm="0"><data>&#x00E5;</data><context/><info>0,0</info></m>
-  <m nm="otilde" fm="0"><data>&#x00F5;</data><context/><info>0,0</info></m>
-  <m nm="brvbar" fm="0"><data>&#x00A6;</data><context/><info>0,0</info></m>
-  <m nm="textbrokenbar" fm="0"><data>&#x00A6;</data><context/><info>0,0</info></m>
-  <m nm="para" fm="0"><data>&#x00B6;</data><context/><info>0,0</info></m>
-  <m nm="P" fm="0"><data>&#x00B6;</data><context/><info>0,0</info></m>
-  <m nm="AE" fm="0"><data>&#x00C6;</data><context/><info>0,0</info></m>
-  <m nm="Ouml" fm="0"><data>&#x00D6;</data><context/><info>0,0</info></m>
+  <m nm="Odblac" fm="0"><data>&#x0150;</data><context/><info>0,0</info></m>
+  <m nm="odblac" fm="0"><data>&#x0151;</data><context/><info>0,0</info></m>
   <m nm="Odieresis" fm="0"><data>&#x00D6;</data><context/><info>0,0</info></m>
-  <m nm="ae" fm="0"><data>&#x00E6;</data><context/><info>0,0</info></m>
-  <m nm="ouml" fm="0"><data>&#x00F6;</data><context/><info>0,0</info></m>
   <m nm="odieresis" fm="0"><data>&#x00F6;</data><context/><info>0,0</info></m>
-  <m nm="sect" fm="0"><data>&#x00A7;</data><context/><info>0,0</info></m>
-  <m nm="S" fm="0"><data>&#x00A7;</data><context/><info>0,0</info></m>
-  <m nm="textperiodcentered" fm="0"><data>&#x00B7;</data><context/><info>0,0</info></m>
-  <m nm="cdotp" fm="0"><data>&#x00B7;</data><context/><info>0,0</info></m>
-  <m nm="Ccedil" fm="0"><data>&#x00C7;</data><context/><info>0,0</info></m>
-  <m nm="Ccedilla" fm="0"><data>&#x00C7;</data><context/><info>0,0</info></m>
-  <m nm="ccedil" fm="0"><data>&#x00E7;</data><context/><info>0,0</info></m>
-  <m nm="ccedilla" fm="0"><data>&#x00E7;</data><context/><info>0,0</info></m>
-  <m nm="DoubleDot" fm="0"><data>&#x00A8;</data><context/><info>0,0</info></m>
-  <m nm="textasciidieresis" fm="0"><data>&#x00A8;</data><context/><info>0,0</info></m>
-  <m nm="cedilla" fm="0"><data>&#x00B8;</data><context/><info>0,0</info></m>
-  <m nm="Egrave" fm="0"><data>&#x00C8;</data><context/><info>0,0</info></m>
-  <m nm="O" fm="0"><data>&#x00D8;</data><context/><info>0,0</info></m>
-  <m nm="egrave" fm="0"><data>&#x00E8;</data><context/><info>0,0</info></m>
-  <m nm="o" fm="0"><data>&#x00F8;</data><context/><info>0,0</info></m>
-  <m nm="copyright" fm="0"><data>&#x00A9;</data><context/><info>0,0</info></m>
-  <m nm="textcopyright" fm="0"><data>&#x00A9;</data><context/><info>0,0</info></m>
-  <m nm="sup1" fm="0"><data>&#x00B9;</data><context/><info>0,0</info></m>
-  <m nm="textonesuperior" fm="0"><data>&#x00B9;</data><context/><info>0,0</info></m>
-  <m nm="Eacute" fm="0"><data>&#x00C9;</data><context/><info>0,0</info></m>
-  <m nm="Ugrave" fm="0"><data>&#x00D9;</data><context/><info>0,0</info></m>
-  <m nm="eacute" fm="0"><data>&#x00E9;</data><context/><info>0,0</info></m>
-  <m nm="ugrave" fm="0"><data>&#x00F9;</data><context/><info>0,0</info></m>
+  <m nm="odot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&odot;<![CDATA[");]]></data></m>
+  <m nm="OE" fm="0"><data>&#x152;</data><context/><info>0,0</info></m>
+  <m nm="oe" fm="0"><data>&#x153;</data><context/><info>0,0</info></m>
+  <m nm="Ograve" fm="0"><data>&#x00D2;</data><context/><info>0,0</info></m>
+  <m nm="ograve" fm="0"><data>&#x00F2;</data><context/><info>0,0</info></m>
+  <m nm="oint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&conint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="Omacr" fm="0"><data>&#x014C;</data><context/><info>0,0</info></m>
+  <m nm="omacr" fm="0"><data>&#x014D;</data><context/><info>0,0</info></m>
+  <m nm="Omega" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Omega;<![CDATA[");]]></data></m>
+  <m nm="omega" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&omega;<![CDATA[");]]></data></m>
+  <m nm="omicron" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&omicron;<![CDATA[");]]></data></m>
+  <m nm="ominus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ominus;<![CDATA[");]]></data></m>
+  <m nm="oplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&oplus;<![CDATA[");]]></data></m>
   <m nm="ordf" fm="0"><data>&#x00AA;</data><context/><info>0,0</info></m>
-  <m nm="textordfeminine" fm="0"><data>&#x00AA;</data><context/><info>0,0</info></m>
   <m nm="ordm" fm="0"><data>&#x00BA;</data><context/><info>0,0</info></m>
-  <m nm="Ecirc" fm="0"><data>&#x00CA;</data><context/><info>0,0</info></m>
-  <m nm="Ecircumflex" fm="0"><data>&#x00CA;</data><context/><info>0,0</info></m>
-  <m nm="Uacute" fm="0"><data>&#x00DA;</data><context/><info>0,0</info></m>
-  <m nm="ecirc" fm="0"><data>&#x00EA;</data><context/><info>0,0</info></m>
-  <m nm="ecircumflex" fm="0"><data>&#x00EA;</data><context/><info>0,0</info></m>
-  <m nm="uacute" fm="0"><data>&#x00FA;</data><context/><info>0,0</info></m>
-  <m nm="guillemotleft" fm="0"><data>&#x00AB;</data><context/><info>0,0</info></m>
-  <m nm="guillemotright" fm="0"><data>&#x00BB;</data><context/><info>0,0</info></m>
-  <m nm="Euml" fm="0"><data>&#x00CB;</data><context/><info>0,0</info></m>
-  <m nm="Edieresis" fm="0"><data>&#x00CB;</data><context/><info>0,0</info></m>
-  <m nm="Ucirc" fm="0"><data>&#x00DB;</data><context/><info>0,0</info></m>
-  <m nm="Ucircumflex" fm="0"><data>&#x00DB;</data><context/><info>0,0</info></m>
-  <m nm="euml" fm="0"><data>&#x00EB;</data><context/><info>0,0</info></m>
-  <m nm="edieresis" fm="0"><data>&#x00EB;</data><context/><info>0,0</info></m>
-  <m nm="ucirc" fm="0"><data>&#x00FB;</data><context/><info>0,0</info></m>
-  <m nm="ucircumflex" fm="0"><data>&#x00FB;</data><context/><info>0,0</info></m>
-  <m nm="frac14" fm="0"><data>&#x00BC;</data><context/><info>0,0</info></m>
-  <m nm="textonequarter" fm="0"><data>&#x00BC;</data><context/><info>0,0</info></m>
-  <m nm="Igrave" fm="0"><data>&#x00CC;</data><context/><info>0,0</info></m>
-  <m nm="Uuml" fm="0"><data>&#x00DC;</data><context/><info>0,0</info></m>
-  <m nm="Udieresis" fm="0"><data>&#x00DC;</data><context/><info>0,0</info></m>
-  <m nm="igrave" fm="0"><data>&#x00EC;</data><context/><info>0,0</info></m>
-  <m nm="uuml" fm="0"><data>&#x00FC;</data><context/><info>0,0</info></m>
-  <m nm="udieresis" fm="0"><data>&#x00FC;</data><context/><info>0,0</info></m>
-  <m nm="dash" fm="0"><data>&#x00AD;</data><context/><info>0,0</info></m>
-  <m nm="shy" fm="0"><data>&#x00AD;</data><context/><info>0,0</info></m>
-  <m nm="frac12" fm="0"><data>&#x00BD;</data><context/><info>0,0</info></m>
-  <m nm="textonehalf" fm="0"><data>&#x00BD;</data><context/><info>0,0</info></m>
-  <m nm="Iacute" fm="0"><data>&#x00CD;</data><context/><info>0,0</info></m>
-  <m nm="Yacute" fm="0"><data>&#x00DD;</data><context/><info>0,0</info></m>
-  <m nm="iacute" fm="0"><data>&#x00ED;</data><context/><info>0,0</info></m>
-  <m nm="yacute" fm="0"><data>&#x00FD;</data><context/><info>0,0</info></m>
-  <m nm="textregistered" fm="0"><data>&#x00AE;</data><context/><info>0,0</info></m>
-  <m nm="frac34" fm="0"><data>&#x00BE;</data><context/><info>0,0</info></m>
-  <m nm="textthreequarters" fm="0"><data>&#x00BE;</data><context/><info>0,0</info></m>
-  <m nm="Icirc" fm="0"><data>&#x00CE;</data><context/><info>0,0</info></m>
-  <m nm="Icircumflex" fm="0"><data>&#x00CE;</data><context/><info>0,0</info></m>
-  <m nm="TH" fm="0"><data>&#x00DE;</data><context/><info>0,0</info></m>
-  <m nm="icirc" fm="0"><data>&#x00EE;</data><context/><info>0,0</info></m>
-  <m nm="icircumflex" fm="0"><data>&#x00EE;</data><context/><info>0,0</info></m>
-  <m nm="th" fm="0"><data>&#x00FE;</data><context/><info>0,0</info></m>
+  <m nm="oslash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&osol;<![CDATA[");]]></data></m>
+  <m nm="Otilde" fm="0"><data>&#x00D5;</data><context/><info>0,0</info></m>
+  <m nm="otilde" fm="0"><data>&#x00F5;</data><context/><info>0,0</info></m>
+  <m nm="otimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&otimes;<![CDATA[");]]></data></m>
+  <m nm="Ouml" fm="0"><data>&#x00D6;</data><context/><info>0,0</info></m>
+  <m nm="ouml" fm="0"><data>&#x00F6;</data><context/><info>0,0</info></m>
   <m nm="OverBar" fm="0"><data>&#x00AF;</data><context/><info>0,0</info></m>
-  <m nm="textasciimacron" fm="0"><data>&#x00AF;</data><context/><info>0,0</info></m>
-  <m nm="textquestiondown" fm="0"><data>&#x00BF;</data><context/><info>0,0</info></m>
-  <m nm="Iuml" fm="0"><data>&#x00CF;</data><context/><info>0,0</info></m>
-  <m nm="Idieresis" fm="0"><data>&#x00CF;</data><context/><info>0,0</info></m>
-  <m nm="ss" fm="0"><data>&#x00DF;</data><context/><info>0,0</info></m>
-  <m nm="iuml" fm="0"><data>&#x00EF;</data><context/><info>0,0</info></m>
-  <m nm="idieresis" fm="0"><data>&#x00EF;</data><context/><info>0,0</info></m>
-  <m nm="yuml" fm="0"><data>&#x00FF;</data><context/><info>0,0</info></m>
-  <m nm="ydieresis" fm="0"><data>&#x00FF;</data><context/><info>0,0</info></m>
-  <m nm="lnot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&not;<![CDATA[");]]></data></m>
+  <m nm="P" fm="0"><data>&#x00B6;</data><context/><info>0,0</info></m>
+  <m nm="para" fm="0"><data>&#x00B6;</data><context/><info>0,0</info></m>
+  <m nm="parallel"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&par;<![CDATA[");]]></data></m>
+  <m nm="partial"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&PartialD;<![CDATA[");]]></data></m>						  
+  <m nm="perp"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&perp;<![CDATA[");]]></data></m>
+  <m nm="Phi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Phi;<![CDATA[");]]></data></m>
+  <m nm="phi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&phi;<![CDATA[");]]></data></m>
+  <m nm="Pi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Pi;<![CDATA[");]]></data></m>
+  <m nm="pi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&pi;<![CDATA[");]]></data></m>
+  <m nm="pitchfork"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&fork;<![CDATA[");]]></data></m>
   <m nm="pm"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&plusmn;<![CDATA[");]]></data></m>
-  <m nm="div"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&divide;<![CDATA[");]]></data></m>
-  <m nm="times"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&times;<![CDATA[");]]></data></m>
-<!-- Punctuation -->
-  <m nm="endash" fm="0"><data>&ndash;</data><context/><info>0,0</info></m>
-  <m nm="emdash" fm="0"><data>&mdash;</data><context/><info>0,0</info></m>
-  <m nm="lq" fm="0"><data>&lsquo;</data><context/><info>0,0</info></m>
-  <m nm="rq" fm="0"><data>&rsquo;</data><context/><info>0,0</info></m>
+  <m nm="pm"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&plusmn;<![CDATA[");]]></data></m>
+  <m nm="pounds" fm="0"><data>&#x00A3;</data><context/><info>0,0</info></m>
+  <m nm="pounds" fm="0"><data>&#xa3;</data><context/><info>0,0</info></m>
+  <m nm="prec"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&pr;<![CDATA[");]]></data></m>
+  <m nm="precapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&precapprox;<![CDATA[");]]></data></m>
+  <m nm="preccurlyeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prcue;<![CDATA[");]]></data></m>
+  <m nm="preceq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&pre;<![CDATA[");]]></data></m>
+  <m nm="precnapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prnap;<![CDATA[");]]></data></m>
+  <m nm="precneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prnE;<![CDATA[");]]></data></m>
+  <m nm="precnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prnsim;<![CDATA[");]]></data></m>
+  <m nm="precsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prsim;<![CDATA[");]]></data></m>
+  <m nm="prime"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prime;<![CDATA[");]]></data></m>
+  <m nm="prod"  tp="sc"><data><![CDATA[insertMathOperator("]]>&prod;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="propto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prop;<![CDATA[");]]></data></m>
+  <m nm="Psi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Psi;<![CDATA[");]]></data></m>
+  <m nm="psi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&psi;<![CDATA[");]]></data></m>
+  <m nm="quotdblbase" fm="0"><data>&ldquor;</data><context/><info>0,0</info></m>
+  <m nm="quotedblbase" fm="0"><data>&ldquor;</data><context/><info>0,0</info></m>
   <m nm="quotesinglbase" fm="0"><data>&lsquor;</data><context/><info>0,0</info></m>
   <m nm="quotsinglbase" fm="0"><data>&lsquor;</data><context/><info>0,0</info></m>
-  <m nm="quotedblbase" fm="0"><data>&ldquor;</data><context/><info>0,0</info></m>
-  <m nm="quotdblbase" fm="0"><data>&ldquor;</data><context/><info>0,0</info></m>
+  <m nm="Racute" fm="0"><data>&#x0154;</data><context/><info>0,0</info></m>
+  <m nm="racute" fm="0"><data>&#x0155;</data><context/><info>0,0</info></m>
+  <m nm="rangle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rangle;<![CDATA[");]]></data></m>
+  <m nm="rationals" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rationals;<![CDATA[");]]></data></m>
+  <m nm="Rcaron" fm="0"><data>&#x0158;</data><context/><info>0,0</info></m>
+  <m nm="rcaron" fm="0"><data>&#x0159;</data><context/><info>0,0</info></m>
+  <m nm="Rcedil" fm="0"><data>&#x0156;</data><context/><info>0,0</info></m>
+  <m nm="rcedil" fm="0"><data>&#x0157;</data><context/><info>0,0</info></m>
+  <m nm="rceil"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rceil;<![CDATA[");]]></data></m>
+  <m nm="Re" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&realpart;<![CDATA[");]]></data></m>
+  <m nm="reals" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&reals;<![CDATA[");]]></data></m>
+  <m nm="rfloor"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rfloor;<![CDATA[");]]></data></m>
+  <m nm="rho" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rho;<![CDATA[");]]></data></m>
+  <m nm="rightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarr;<![CDATA[");]]></data></m>
+  <m nm="Rightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rArr;<![CDATA[");]]></data></m>
+  <m nm="rightarrowtail"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrtl;<![CDATA[");]]></data></m>
+  <m nm="rightharpoondown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rhard;<![CDATA[");]]></data></m>
+  <m nm="rightharpoonup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rharu;<![CDATA[");]]></data></m>
+  <m nm="rightleftarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rlarr;<![CDATA[");]]></data></m>
+  <m nm="rightleftharpoons"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rlhar;<![CDATA[");]]></data></m>
+  <m nm="rightrightarrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rrarr;<![CDATA[");]]></data></m>
+  <m nm="rightsquigarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrw;<![CDATA[");]]></data></m>
+  <m nm="rightthreetimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rthree;<![CDATA[");]]></data></m>
+  <m nm="risingdotseq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&erDot;<![CDATA[");]]></data></m>
+  <m nm="rq" fm="0"><data>&rsquo;</data><context/><info>0,0</info></m>
+  <m nm="Rrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rAarr;<![CDATA[");]]></data></m>
+  <m nm="Rsh"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rsh;<![CDATA[");]]></data></m>
+  <m nm="rtimes"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtimes;<![CDATA[");]]></data></m>
+  <m nm="S" fm="0"><data>&#x00A7;</data><context/><info>0,0</info></m>
+  <m nm="Sacute" fm="0"><data>&#x015A;</data><context/><info>0,0</info></m>
+  <m nm="sacute" fm="0"><data>&#x015B;</data><context/><info>0,0</info></m>
+  <m nm="Scaron" fm="0"><data>&#x0160;</data><context/><info>0,0</info></m>
+  <m nm="scaron" fm="0"><data>&#x0161;</data><context/><info>0,0</info></m>
+  <m nm="Scedil" fm="0"><data>&#x015E;</data><context/><info>0,0</info></m>
+  <m nm="scedil" fm="0"><data>&#x015F;</data><context/><info>0,0</info></m>
+  <m nm="Scirc" fm="0"><data>&#x015C;</data><context/><info>0,0</info></m>
+  <m nm="scirc" fm="0"><data>&#x015D;</data><context/><info>0,0</info></m>
+  <m nm="scrF"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Fouriertrf;<![CDATA[");]]></data></m>
+  <m nm="scrL"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Laplacetrf;<![CDATA[");]]></data></m>
+  <m nm="searrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&searr;<![CDATA[");]]></data></m>
+  <m nm="sect" fm="0"><data>&#x00A7;</data><context/><info>0,0</info></m>
+  <m nm="setminus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&setmn;<![CDATA[");]]></data></m> 
+  <m nm="sharp" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sharp;<![CDATA[");]]></data></m>
+  <m nm="shy" fm="0"><data>&#x00AD;</data><context/><info>0,0</info></m>
+  <m nm="sigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sigma;<![CDATA[");]]></data></m>
+  <m nm="Sigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Sigma;<![CDATA[");]]></data></m>
+  <m nm="sim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sim;<![CDATA[");]]></data></m>
+  <m nm="simeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&simeq;<![CDATA[");]]></data></m>
+  <m nm="smallblacktriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&blacktriangleleft;<![CDATA[");]]></data></m>
+  <m nm="smallblacktriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtrif;<![CDATA[");]]></data></m>
+  <m nm="smalldiamond"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&diam;<![CDATA[");]]></data></m>
+  <m nm="smallint"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&int;<![CDATA[");]]></data></m>
+  <m nm="smallsetminus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ssetmn;<![CDATA[");]]></data></m> 
+  <m nm="smalltriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ltri;<![CDATA[");]]></data></m>
+  <m nm="smalltriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtri;<![CDATA[");]]></data></m>
+  <m nm="smblksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
+  <m nm="smile"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&smile;<![CDATA[");]]></data></m>
+  <m nm="spadesuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&spades;<![CDATA[");]]></data></m>
+  <m nm="sphericalangle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&angsph;<![CDATA[");]]></data></m>
+  <m nm="sqcap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqcap;<![CDATA[");]]></data></m>
+  <m nm="sqcup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqcup;<![CDATA[");]]></data></m>
+  <m nm="sqrt"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&radic;<![CDATA[");]]></data></m>
+  <m nm="sqsubset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsub;<![CDATA[");]]></data></m>
+  <m nm="sqsubseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsube;<![CDATA[");]]></data></m>
+  <m nm="sqsupset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsup;<![CDATA[");]]></data></m>
+  <m nm="sqsupseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsupe;<![CDATA[");]]></data></m>
+  <m nm="square"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&square;<![CDATA[");]]></data></m>
+  <m nm="ss" fm="0"><data>&#x00DF;</data><context/><info>0,0</info></m>
+  <m nm="star"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sstarf;<![CDATA[");]]></data></m>
+  <m nm="sterling" fm="0"><data>&#x00A3;</data><context/><info>0,0</info></m>
+  <m nm="subset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sub;<![CDATA[");]]></data></m>
+  <m nm="Subset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Sub;<![CDATA[");]]></data></m>
+  <m nm="subseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sube;<![CDATA[");]]></data></m>
+  <m nm="subseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&subE;<![CDATA[");]]></data></m>
+  <m nm="subsetneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&subne;<![CDATA[");]]></data></m>
+  <m nm="subsetneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&subnE;<![CDATA[");]]></data></m> 
+  <m nm="succ"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sc;<![CDATA[");]]></data></m>
+  <m nm="succapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&succapprox;<![CDATA[");]]></data></m>
+  <m nm="succcurlyeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sccue;<![CDATA[");]]></data></m>
+  <m nm="succeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sce;<![CDATA[");]]></data></m>
+  <m nm="succnapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scnap;<![CDATA[");]]></data></m>
+  <m nm="succneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scnE;<![CDATA[");]]></data></m>
+  <m nm="succnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scnsim;<![CDATA[");]]></data></m>
+  <m nm="succsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scsim;<![CDATA[");]]></data></m>
+  <m nm="sum"  tp="sc"><data><![CDATA[insertMathOperator("]]>&sum;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="sup1" fm="0"><data>&#x00B9;</data><context/><info>0,0</info></m>
+  <m nm="sup2" fm="0"><data>&#x00B2;</data><context/><info>0,0</info></m>
+  <m nm="sup3" fm="0"><data>&#x00B3;</data><context/><info>0,0</info></m>
+  <m nm="Supset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Sup;<![CDATA[");]]></data></m>
+  <m nm="supset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sup;<![CDATA[");]]></data></m>
+  <m nm="supseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supe;<![CDATA[");]]></data></m>
+  <m nm="supseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supE;<![CDATA[");]]></data></m>
+  <m nm="supsetneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supne;<![CDATA[");]]></data></m>
+  <m nm="supsetneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supnE;<![CDATA[");]]></data></m>
+  <m nm="surd"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&radic;<![CDATA[");]]></data></m>
+  <m nm="swarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&swarr;<![CDATA[");]]></data></m>
+  <m nm="tau" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&tau;<![CDATA[");]]></data></m>
+  <m nm="Tcaron" fm="0"><data>&#x0164;</data><context/><info>0,0</info></m>
+  <m nm="tcaron" fm="0"><data>&#x0165;</data><context/><info>0,0</info></m>
+  <m nm="Tcedil" fm="0"><data>&#x0162;</data><context/><info>0,0</info></m>
+  <m nm="tcedil" fm="0"><data>&#x0163;</data><context/><info>0,0</info></m>
+  <m nm="textasciiacute" fm="0"><data>&#x00B4;</data><context/><info>0,0</info></m>
+  <m nm="textasciidieresis" fm="0"><data>&#x00A8;</data><context/><info>0,0</info></m>
+  <m nm="textasciimacron" fm="0"><data>&#x00AF;</data><context/><info>0,0</info></m>
+  <m nm="textbrokenbar" fm="0"><data>&#x00A6;</data><context/><info>0,0</info></m>
+  <m nm="textcent" fm="0"><data>&#x00A2;</data><context/><info>0,0</info></m>
+  <m nm="textcopyright" fm="0"><data>&#x00A9;</data><context/><info>0,0</info></m>
+  <m nm="textcrh" fm="0"><data>&#x0127;</data><context/><info>0,0</info></m>
+  <m nm="textcurrency" fm="0"><data>&curren;</data><context/><info>0,0</info></m>
+  <m nm="textdegree"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&deg;<![CDATA[");]]></data></m>
+  <m nm="textexclamdown" fm="0"><data>&#xa1;</data><context/><info>0,0</info></m>
+  <m nm="textmu" fm="0"><data>&#x00B5;</data><context/><info>0,0</info></m>
+  <m nm="textonehalf" fm="0"><data>&#x00BD;</data><context/><info>0,0</info></m>
+  <m nm="textonequarter" fm="0"><data>&#x00BC;</data><context/><info>0,0</info></m>
+  <m nm="textonesuperior" fm="0"><data>&#x00B9;</data><context/><info>0,0</info></m>
+  <m nm="textordfeminine" fm="0"><data>&#x00AA;</data><context/><info>0,0</info></m>
+  <m nm="textperiodcentered" fm="0"><data>&#x00B7;</data><context/><info>0,0</info></m>
+  <m nm="textquestiondown" fm="0"><data>&#x00BF;</data><context/><info>0,0</info></m>
   <m nm="textquotedblleft" fm="0"><data>&ldquo;</data><context/><info>0,0</info></m>
   <m nm="textquotedblright" fm="0"><data>&rdquo;</data><context/><info>0,0</info></m>
-  <m nm="guilsinglleft" fm="0"><data>&lsaquo;</data><context/><info>0,0</info></m>
-  <m nm="guilsinglright" fm="0"><data>&rsaquo;</data><context/><info>0,0</info></m>
-
+  <m nm="textregistered" fm="0"><data>&#x00AE;</data><context/><info>0,0</info></m>
+  <m nm="textthreequarters" fm="0"><data>&#x00BE;</data><context/><info>0,0</info></m>
+  <m nm="textthreesuperior" fm="0"><data>&#x00B3;</data><context/><info>0,0</info></m>
+  <m nm="texttrademark" fm="0"><data>&trade;</data><context/><info>0,0</info></m>
+  <m nm="texttwosuperior" fm="0"><data>&#x00B2;</data><context/><info>0,0</info></m>
+  <m nm="TH" fm="0"><data>&#x00DE;</data><context/><info>0,0</info></m>
+  <m nm="th" fm="0"><data>&#x00FE;</data><context/><info>0,0</info></m>
+  <m nm="therefore"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Therefore;<![CDATA[");]]></data></m>
+  <m nm="Theta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Theta;<![CDATA[");]]></data></m>
+  <m nm="theta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&theta;<![CDATA[");]]></data></m>
+  <m nm="thickapprox"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&thkap;<![CDATA[");]]></data></m>	 
+  <m nm="thicksim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&thksim;<![CDATA[");]]></data></m> 
+  <m nm="times"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&times;<![CDATA[");]]></data></m>
+  <m nm="times"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&times;<![CDATA[");]]></data></m>
+  <m nm="top"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&top;<![CDATA[");]]></data></m>
+  <m nm="triangle" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&utri;<![CDATA[");]]></data></m>
+  <m nm="triangledown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&dtri;<![CDATA[");]]></data></m>
+  <m nm="triangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ltri;<![CDATA[");]]></data></m>
+  <m nm="trianglelefteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&trianglelefteq;<![CDATA[");]]></data></m>
+  <m nm="triangleq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&trie;<![CDATA[");]]></data></m>
+  <m nm="triangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtri;<![CDATA[");]]></data></m>
+  <m nm="trianglerighteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtrie;<![CDATA[");]]></data></m>
+  <m nm="Tstrok" fm="0"><data>&#x0166;</data><context/><info>0,0</info></m>
+  <m nm="tstrok" fm="0"><data>&#x0167;</data><context/><info>0,0</info></m>
+  <m nm="twoheadleftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Larr;<![CDATA[");]]></data></m>
+  <m nm="twoheadrightarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Rarr;<![CDATA[");]]></data></m>
+  <m nm="Uacute" fm="0"><data>&#x00DA;</data><context/><info>0,0</info></m>
+  <m nm="uacute" fm="0"><data>&#x00FA;</data><context/><info>0,0</info></m>
+  <m nm="Ubreve" fm="0"><data>&#x016C;</data><context/><info>0,0</info></m>
+  <m nm="ubreve" fm="0"><data>&#x016D;</data><context/><info>0,0</info></m>
+  <m nm="Ucirc" fm="0"><data>&#x00DB;</data><context/><info>0,0</info></m>
+  <m nm="ucirc" fm="0"><data>&#x00FB;</data><context/><info>0,0</info></m>
+  <m nm="Ucircumflex" fm="0"><data>&#x00DB;</data><context/><info>0,0</info></m>
+  <m nm="ucircumflex" fm="0"><data>&#x00FB;</data><context/><info>0,0</info></m>
+  <m nm="Udblac" fm="0"><data>&#x0170;</data><context/><info>0,0</info></m>
+  <m nm="udblac" fm="0"><data>&#x0171;</data><context/><info>0,0</info></m>
+  <m nm="Udieresis" fm="0"><data>&#x00DC;</data><context/><info>0,0</info></m>
+  <m nm="udieresis" fm="0"><data>&#x00FC;</data><context/><info>0,0</info></m>
+  <m nm="Ugrave" fm="0"><data>&#x00D9;</data><context/><info>0,0</info></m>
+  <m nm="ugrave" fm="0"><data>&#x00F9;</data><context/><info>0,0</info></m>
+  <m nm="ulcorner"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ulcorner;<![CDATA[");]]></data></m>
+  <m nm="Umacr" fm="0"><data>&#x016A;</data><context/><info>0,0</info></m>
+  <m nm="umacr" fm="0"><data>&#x016B;</data><context/><info>0,0</info></m>
+  <m nm="Uogon" fm="0"><data>&#x0172;</data><context/><info>0,0</info></m>
+  <m nm="uogon" fm="0"><data>&#x0173;</data><context/><info>0,0</info></m>
+  <m nm="Uparrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uArr;<![CDATA[");]]></data></m>
+  <m nm="uparrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uarr;<![CDATA[");]]></data></m>
+  <m nm="updownarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&varr;<![CDATA[");]]></data></m>
+  <m nm="Updownarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vArr;<![CDATA[");]]></data></m>
+  <m nm="upharpoonleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uharl;<![CDATA[");]]></data></m>
+  <m nm="upharpoonright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uharr;<![CDATA[");]]></data></m>
+  <m nm="uplus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uplus;<![CDATA[");]]></data></m>
+  <m nm="Upsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Upsi;<![CDATA[");]]></data></m>
+  <m nm="upsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&upsi;<![CDATA[");]]></data></m>
+  <m nm="upuparrows"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&uuarr;<![CDATA[");]]></data></m>
+  <m nm="urcorner"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&urcorner;<![CDATA[");]]></data></m>
+  <m nm="Uring" fm="0"><data>&#x016E;</data><context/><info>0,0</info></m>
+  <m nm="uring" fm="0"><data>&#x016F;</data><context/><info>0,0</info></m>
+  <m nm="Utilde" fm="0"><data>&#x0168;</data><context/><info>0,0</info></m>
+  <m nm="utilde" fm="0"><data>&#x0169;</data><context/><info>0,0</info></m>
+  <m nm="Uuml" fm="0"><data>&#x00DC;</data><context/><info>0,0</info></m>
+  <m nm="uuml" fm="0"><data>&#x00FC;</data><context/><info>0,0</info></m>
+  <m nm="varepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&epsiv;<![CDATA[");]]></data></m>
+  <m nm="varkappa" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&kappav;<![CDATA[");]]></data></m>
+  <m nm="varnothing" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&emptyv;<![CDATA[");]]></data></m>
+  <m nm="varphi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&phiv;<![CDATA[");]]></data></m>
+  <m nm="varpi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&piv;<![CDATA[");]]></data></m>
+  <m nm="varpropto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vprop;<![CDATA[");]]></data></m>
+  <m nm="varrho" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rhov;<![CDATA[");]]></data></m>
+  <m nm="varsigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sigmav;<![CDATA[");]]></data></m>
+  <m nm="varsubsetneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vsubne;<![CDATA[");]]></data></m> 
+  <m nm="varsubsetneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vsubnE;<![CDATA[");]]></data></m> 
+  <m nm="varsupsetneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vsupne;<![CDATA[");]]></data></m> 
+  <m nm="varsupsetneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vsupnE;<![CDATA[");]]></data></m> 
+  <m nm="vartheta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&thetav;<![CDATA[");]]></data></m>
+  <m nm="vartriangle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&utri;<![CDATA[");]]></data></m>
+  <m nm="vartriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vltri;<![CDATA[");]]></data></m>
+  <m nm="vartriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vrtri;<![CDATA[");]]></data></m>
+  <m nm="vDash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vDash;<![CDATA[");]]></data></m>
+  <m nm="vdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vdash;<![CDATA[");]]></data></m>
+  <m nm="Vdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Vdash;<![CDATA[");]]></data></m>
+  <m nm="vdots"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vellip;<![CDATA[");]]></data></m>
+  <m nm="vee"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&or;<![CDATA[");]]></data></m>
+  <m nm="veebar"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&veebar;<![CDATA[");]]></data></m>
+  <m nm="Vert"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Verbar;<![CDATA[");]]></data></m>
+  <m nm="Vvdash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Vvdash;<![CDATA[");]]></data></m> 
+  <m nm="Wcirc" fm="0"><data>&#x0174;</data><context/><info>0,0</info></m>
+  <m nm="wcirc" fm="0"><data>&#x0175;</data><context/><info>0,0</info></m>
+  <m nm="wedge"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&and;<![CDATA[");]]></data></m>
+  <m nm="wp" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&weierp;<![CDATA[");]]></data></m>
+  <m nm="wr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&wreath;<![CDATA[");]]></data></m>
+  <m nm="Xi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Xi;<![CDATA[");]]></data></m>
+  <m nm="xi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&xi;<![CDATA[");]]></data></m>
+  <m nm="Yacute" fm="0"><data>&#x00DD;</data><context/><info>0,0</info></m>
+  <m nm="yacute" fm="0"><data>&#x00FD;</data><context/><info>0,0</info></m>
+  <m nm="Ycirc" fm="0"><data>&#x0176;</data><context/><info>0,0</info></m>
+  <m nm="ycirc" fm="0"><data>&#x0177;</data><context/><info>0,0</info></m>
+  <m nm="ydieresis" fm="0"><data>&#x00FF;</data><context/><info>0,0</info></m>
+  <m nm="Ydieresis" fm="0"><data>&#x0178;</data><context/><info>0,0</info></m>
+  <m nm="yen" fm="0"><data>&yen;</data><context/><info>0,0</info></m>
+  <m nm="yuml" fm="0"><data>&#x00FF;</data><context/><info>0,0</info></m>
+  <m nm="Yuml" fm="0"><data>&#x0178;</data><context/><info>0,0</info></m>
+  <m nm="Zacute" fm="0"><data>&#x0179;</data><context/><info>0,0</info></m>
+  <m nm="zacute" fm="0"><data>&#x017A;</data><context/><info>0,0</info></m>
+  <m nm="Zcaron" fm="0"><data>&#x017D;</data><context/><info>0,0</info></m>
+  <m nm="zcaron" fm="0"><data>&#x017E;</data><context/><info>0,0</info></m>
+  <m nm="Zdot" fm="0"><data>&#x017B;</data><context/><info>0,0</info></m>
+  <m nm="zdot" fm="0"><data>&#x017C;</data><context/><info>0,0</info></m>
+  <m nm="zeta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&zeta;<![CDATA[");]]></data></m>
 </macros>
