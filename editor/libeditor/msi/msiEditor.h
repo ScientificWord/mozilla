@@ -32,7 +32,8 @@ public:
    virtual ~msiEditor();
 
   // nsISupports
-  NS_DECL_ISUPPORTS_INHERITED
+
+ NS_DECL_ISUPPORTS_INHERITED
   
   //msiIMathMLEditor
   NS_DECL_MSIIMATHMLEDITOR
