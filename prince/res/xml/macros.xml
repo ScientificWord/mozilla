@@ -312,7 +312,7 @@
   <m nm="Lcedil" fm="0"><data>&#x013B;</data><context/><info>0,0</info></m>
   <m nm="lcedil" fm="0"><data>&#x013C;</data><context/><info>0,0</info></m>
   <m nm="lceil"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lceil;<![CDATA[");]]></data></m>
-  <m nm="ldots" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&hellip;<![CDATA[");]]></data><context/><info>0,0</info></m>
+  <m nm="ldots" fm="0"><data>&hellip;</data><context/><info>0,0</info></m>
   <m nm="leadsto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rarrc;<![CDATA[");]]></data></m>
   <m nm="Leftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lArr;<![CDATA[");]]></data></m>
   <m nm="leftarrow"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&larr;<![CDATA[");]]></data></m>
