@@ -1194,7 +1194,7 @@
 
 %% \'{\^{e}}
 
-\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\noexpand\csname#1\endcsname\else\@hex{#2}\fi}}
+\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\string\csname#1\endcsname{}\else\@hex{#2}\fi}}
 
 
 %% Spacing
@@ -1884,7 +1884,11 @@
    
 
 % A hack to fool the jbm filter into handling \dots gracefully
-\def\dots{\msitag{\U{2026}}}
+%\def\dots{%
+%  \ifmmode
+%    \msitag{\U{2026}}%
+%  \else
+%    }
 
 \input latex-default.tex
 \input tcilatex.tex
