@@ -10899,6 +10899,8 @@ var msiNavigationUtils =
 
   cannotSelectNodeForProperties : function(aNode)
   {
+    if (!aNode)
+      return true;
     if (this.nodeIsPieceOfUnbreakable(aNode))
       return true;
     return false;
@@ -12937,7 +12939,7 @@ function getCachedXSLTString(xslRootFileURLString)
   var resultString = "";
   var match;
   var xslPath = xslRootFileURLString;
-  var contents;
+  var contents, path;
   var matcharray = leafnameRE.exec(xslPath);
   leafname = matcharray[0];
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);

@@ -472,7 +472,9 @@ Graph.prototype = {
     return value;
   },
   getGraphAttribute: function (name) {
-    return (this[name]);
+    if (this[name])
+      return (this[name]);
+    return null;
   },
   getValue: function (key) {
     var value = this.getGraphAttribute(key);

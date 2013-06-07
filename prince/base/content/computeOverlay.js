@@ -80,10 +80,212 @@ function SetupMSIComputeMenuCommands() {
   doSetupMSIComputeMenuCommands(commandTable);
 }
 
+var msiPlotInsertionTimerBase = 
+{
+  mGraphNode : null,
+//  mIncrement : 300,
+//  totalTime : 600,
+  mTimer : null,
+//  mMSecsUsed : 0,
+  ourWindow : null,
+  notify : function(aTimer)
+  { 
+    if (aTimer)
+      this.mTimer = aTimer;
+//    mMSecsUsed += this.increment;
+//    if (mmSecsUsed >= this.totalTime)
+//    {
+      if (this.mTimer)
+        this.mTimer.cancel();
+      if (this.mGraphNode && this.ourWindow)
+        this.ourWindow.ensureVCamPreinitForPlot(this.mGraphNode, this.mEditorElement);
+//    }
+  }
+};
+
+function msiPlotInsertionTimer(graphNode, editorElement, hostWindow, nmSecs, incr)
+{
+  this.mEditorElement = editorElement;
+  this.totalTime = nmSecs;
+  this.increment = incr;
+  this.mGraphNode = graphNode;
+  this.ourWindow = hostWindow;
+}
+
+msiPlotInsertionTimer.prototype = msiPlotInsertionTimerBase;
+
+//This is an nsIContentFilter - we're only interested for now in identifying <graph> objects.
+var msiEditorInsertionListenerBase = 
+{
+  timersToAdd : [],
+  dataSize : {textChars : 0, nodes : 0},
+  hostWindow : null,
+  notifyOfInsertion : function(mimeType, contentSourceURL, sourceDocument, willDeleteSelection,
+                                    docFragment, contentStartNode, contentStartOffset,
+                                    contentEndNode, contentEndOffset, insertionPointNode,
+                                    insertionPointOffset, continueWithInsertion)
+  {
+    var currNode;
+    currNode = contentStartNode.value;
+    var currOffset = contentStartOffset.value;
+    var startOffsets = [currOffset];
+    var endOffsets = [contentEndOffset.value];
+//    var startNodes = [{node : contentStartNode, offset : contentStartOffset}];
+//    var endNodes = [{node : contentEndNode, offset : contentEndOffset}];
+    while (currNode && currNode != docFragment.value)
+    {
+      currOffset = msiNavigationUtils.offsetInParent(currNode);
+      currNode = currNode.parentNode;
+      startOffsets.push( currOffset );
+//      startNodes.push( {node : parent, offset : currOffset} );
+    }
+    currNode = contentEndNode.value;
+    while (currNode && currNode != docFragment.value)
+    {
+      currOffset = msiNavigationUtils.offsetInParent(currNode);
+      currNode = currNode.parentNode;
+      endOffsets.push( currOffset );
+//      startNodes.push( {node : parent, offset : currOffset} );
+    }
+    this.checkForPlots(docFragment.value, startOffsets, endOffsets);
+    continueWithInsertion.value = true;
+  },
+
+  checkForPlots : function(aNode, startOffsets, endOffsets)
+  {
+    var aStart = startOffsets.length ? startOffsets.pop() : 0;
+    var anEnd = endOffsets.length ? endOffsets.pop() : -1;
+    if (msiNavigationUtils.isTextNode(aNode))
+    {
+      if (anEnd < 0)
+        anEnd = aNode.data.length;
+      this.dataSize.textChars += anEnd - aStart;
+      return;
+    }
+    ++this.dataSize.nodes;
+    if (anEnd < 0)
+      anEnd = aNode.childNodes.length - 1;
+    else if (!endOffsets.length)  //this is the last one - the endOffset handed in - it will be one too many in this case
+      --anEnd;
+    if (msiGetBaseNodeName(aNode) == "graph")
+    {
+      this.timersToAdd.push(aNode);
+    }
+    var ourStarts = [];
+    var ourEnds = [];
+    for (var jj = aStart; jj <= anEnd; ++jj)
+    {
+      if (jj == aStart)
+        ourStarts = startOffsets;
+      else
+        ourStarts = [];
+      if (jj == anEnd)
+        ourEnds = endOffsets;
+      else
+        ourEnds = [];
+      this.checkForPlots(aNode.childNodes[jj], ourStarts, ourEnds);
+    }
+  },
+  addPlotInsertionTimers : function()
+  {
+    var nmSecs = 200;
+    nmSecs += this.dataSize.nodes * 10;
+    nmSecs += this.dataSize.textChars/2;
+    var plotInsertTimer, theTimer;
+    for (var ix = 0; ix < this.timersToAdd.length; ++ix)
+    {
+      plotInsertionTimer = new msiPlotInsertionTimer(this.timersToAdd[ix], this.editorElement, this.hostWindow);
+      theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+      theTimer.initWithCallback( plotInsertionTimer, nmSecs, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+    }
+  }
+};
+
+function msiEditorInsertionListener(editorElement, aWindow)
+{
+  this.editorElement = editorElement;
+  this.editor = msiGetEditor(editorElement);
+  this.hostWindow = aWindow;
+}
+
+msiEditorInsertionListener.prototype = msiEditorInsertionListenerBase;
+
+var msiEditorInsertionCommandControllerBase = 
+{
+  defaultController : {},
+  srcWindow : null,
+  cmdNames : ["cmd_paste", "cmd_undo", "cmd_redo"],
+  supportsCommand : function(cmd)
+  {
+    return ( this.cmdNames.indexOf(cmd) >= 0 );
+  },
+  isCommandEnabled : function(cmd)
+  {
+    if (this.defaultController[cmd])
+      return this.defaultController[cmd].isCommandEnabled(cmd);
+    var bCanDo = {value : false};
+    var bDummy = {value : false};
+    if (this.mEditor)
+    {
+      switch(cmd)
+      {
+        case "cmd_paste":
+          this.mEditor.canPaste(bCanDo);
+          return bCanDo.value;
+        break;
+        case "cmd_undo":   
+          this.mEditor.canUndo(bCanDo, bDummy);
+          return bCanDo.value;
+        break;
+        case "cmd_redo":
+          this.mEditor.canRedo(bCanDo, bDummy);
+          return bCanDo.value;
+        break;
+      }
+    }
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+  doCommand : function(cmd)
+  {
+    if (!this.mEditor)
+      this.mEditor = msiGetEditor(this.mEditorElement);
+    this.insertionListener = new msiEditorInsertionListener(this.mEditorElement, this.srcWindow);
+    if (this.mEditor && this.insertionListener)
+      this.mEditor.addInsertionListener(this.insertionListener);
+    if (this.defaultController[cmd])
+      this.defaultController[cmd].doCommand(cmd);
+    if (this.mEditor && this.insertionListener)
+    {
+      this.mEditor.removeInsertionListener(this.insertionListener);
+      this.insertionListener.addPlotInsertionTimers();
+    }
+  }
+};
+
+function msiEditorInsertionCommandController(editorElement, srcWindow)
+{
+  this.mEditorElement = editorElement;
+  this.mEditor = msiGetEditor(editorElement);
+  this.srcWindow = srcWindow;
+  var controllers = editorElement.contentWindow.controllers;
+  for (var ix = 0; ix < this.cmdNames.length; ++ix)
+  {
+    this.defaultController[this.cmdNames[ix]] = controllers.getControllerForCommand(this.cmdNames[ix]);
+  }
+}
+
+msiEditorInsertionCommandController.prototype = msiEditorInsertionCommandControllerBase;
+
 function msiSetupMSIComputeMenuCommands(editorElement) {
   var commandTable = msiGetComposerCommandTable(editorElement);
   //dump("Registering msi compute menu commands\n");
   doSetupMSIComputeMenuCommands(commandTable);
+  
+  var ourEditorInsertionController = new msiEditorInsertionCommandController(editorElement, window);
+  commandTable.registerCommand("cmd_paste", ourEditorInsertionController);
+//  commandTable.registerCommand("cmd_undo", ourEditorInsertionController);
+//  commandTable.registerCommand("cmd_redo", ourEditorInsertionController);
 }
 
 function doSetupMSIComputeMenuCommands(commandTable) {
