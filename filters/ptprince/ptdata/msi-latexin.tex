@@ -716,30 +716,36 @@
 \set@typeset@protect
 
 \def\@ifundefined#1{%
-  \expandafter\ifx\csname#1\endcsname\relax
-    \let\reserved@@a\@firstoftwo
+  \begingroup
+  \msi@output=1
+   \expandafter\ifx\csname#1\endcsname\relax
+     \global\let\reserved@@a\@firstoftwo
   \else
-    \let\reserved@@a\@secondoftwo
+     \global\let\reserved@@a\@secondoftwo
   \fi
+  \endgroup
   \reserved@@a}
 
 \edef\@qend{\expandafter\@cdr\string\end\@nil}
 \edef\@qrelax{\expandafter\@cdr\string\relax\@nil}
 \long\def\@ifnextchar#1#2#3{%
-  \let\reserved@d=#1%
-  \def\reserved@a{#2}%
-  \def\reserved@b{#3}%
+  {\msi@output=1
+   \global\let\reserved@d=#1%
+   \gdef\reserved@a{#2}%
+   \gdef\reserved@b{#3}%
+  }
   \futurelet\@let@token\@ifnch}
 \def\@ifnch{%
+ {\msi@output=1
   \ifx\@let@token\@sptoken
-    \let\reserved@c\@xifnch
+    \global\let\reserved@c\@xifnch
   \else
     \ifx\@let@token\reserved@d
-      \let\reserved@c\reserved@a
+      \global\let\reserved@c\reserved@a
     \else
-      \let\reserved@c\reserved@b
+      \global\let\reserved@c\reserved@b
     \fi
-  \fi
+  \fi}
   \reserved@c}
 \def\:{\let\@sptoken= } \:  % this makes \@sptoken a space token
 \def\:{\@xifnch} \expandafter\def\: {\futurelet\@let@token\@ifnch}

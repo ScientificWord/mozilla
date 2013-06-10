@@ -1413,13 +1413,15 @@
 \def\text{\@mathintextfalse\catcode`\$=\active\@text}
 
 \def\@text#1{%
-  \msitag{\msipassthru}%
-  \char`\{%
-  \msiopentag{mtext}{<mtext>}%
-  \begingroup #1\endgroup%
-  \msiclosetag{mtext}{</mtext>}%
-  \char`\}
-  \catcode`\$=3\relax}
+  \begingroup
+    \msitag{\msipassthru}%
+    \char`\{%
+    \msiopentag{mtext}{<mtext>}%
+    \begingroup \msihmode #1\endgroup%
+    \msiclosetag{mtext}{</mtext>}%
+    \char`\}
+    \catcode`\$=3\relax
+  \endgroup}
 
    
 \def\vspace{%
