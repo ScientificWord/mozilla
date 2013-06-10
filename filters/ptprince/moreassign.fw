@@ -135,16 +135,39 @@ case CMD_LET:{
 
 @$@<Assignments@>+=@{@-
 case CMD_LET:{
-
+   TokenList* pList = new TokenList;
+   pList -> push_back(CurTok());
    TeXToken defining;
    @<Scan definable symbol@>
+   pList -> push_back(CurTok());
    GetRawToken();
+   pList -> push_back(CurTok());
    if (CurTok() == TeXToken(TT_OTHER, '=', 0)){
       GetRawToken();
+      pList -> push_back(CurTok());
    }
    if (CurTok() == TeXToken(TT_SPACE, ' ', 0)){
       GetRawToken();
+      pList -> push_back(CurTok());
    }
+   if (Global::msioutput == 0 && Global::msiinpreamble){
+      StringUtils::AppendToks(*pList);
+      String str = StringBuilder::Create();
+      std::string strTemp;
+      strTemp = "\n<texb pre=\"1\" enc=\"1\" name=\"TeX assignment\">";
+      strTemp +="<![CDATA[";
+      int i = 0;
+      while (i < str.Size()){
+          strTemp += (char) str[i];
+          ++i;
+      }
+      strTemp += "]]></texb>";
+      StringBuilder::Discard(str);
+      s_preambleExtra += strTemp;
+      //Typesetter::AppendTag(strTemp.c_str());
+     
+   }
+ 
    SymbolData* pDef;
    if (CurTok().Type() == TT_SYMBOL){
       LOG("\n----Set " << defining
