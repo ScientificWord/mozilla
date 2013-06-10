@@ -94,8 +94,9 @@
 %% \begin{document}
 
 \def\msi@begin@document{%
-   \global\msi@output=0\relax
+   \global\msi@output=1\relax % prevent output of next line in premable
    \global\let\input\@@input
+   \global\msi@output=0\relax
    \out@begin@document
 }
 
