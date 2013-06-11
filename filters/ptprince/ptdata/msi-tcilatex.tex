@@ -1,7 +1,8 @@
 \makeatletter
 
 \@ifundefined{@TCILATEX}
-  {\gdef\@TCILATEX{\relax}}
+  {\gdef\@TCILATEX{\relax}%
+   \msitopreambleextra{<texb enc="1" name="tcilatex"><![CDATA[\input{tcilatex}]]></texb>}}
   {\endinput}
 
   
