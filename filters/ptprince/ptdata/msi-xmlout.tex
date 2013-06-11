@@ -445,7 +445,7 @@
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
 
-
+\def\@descr{descriptionListItem}
 \newif\if@first@item
 
 
@@ -457,8 +457,12 @@
      \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
    \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}}%
-   \expandafter\startitemtag\expandafter{\itemprefix}%
-   \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+   \expandafter\startitemtag\expandafter{\itemprefix}%      
+   \ifx\itemprefix\@descr
+     \msitag{<bodyText><descriptionLabel>}#1\msitag{</descriptionLabel></bodyText>}%
+   \else
+     \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+   \fi
 }
 
 \def\out@itemb{
