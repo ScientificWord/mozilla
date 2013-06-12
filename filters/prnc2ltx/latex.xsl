@@ -497,7 +497,7 @@ should not be done under some conditions -->
 
 <xsl:template match="html:proof">
 \begin{proof}<xsl:apply-templates mode="envleadin"/>
-<xsl:apply-templates/>\end{proof}
+<xsl:apply-templates/>\end{proof}\par
 </xsl:template>
 
 <xsl:template match="html:envLeadIn"></xsl:template>
