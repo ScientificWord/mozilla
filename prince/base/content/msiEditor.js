@@ -11444,11 +11444,13 @@ function msiSaveAsPicture(editorElement)
     editor.saveSelectionAsImage(dialogResult.resultingLocalFile.path);
 }
 
-function doVCamPreinitForPlotsInDocument(editorElement, bJustLoaded)
+function doVCamPreinitForPlotsInDocument(editorElement, bJustLoaded, bNeedVCamFlaggedOnly)
 {
   var editor = msiGetEditor(editorElement);
   var aDocument = editor.document;
   var ourExpr = "//*[local-name()='graph'][.//*[local-name()='object'][@type='application/x-mupad-graphics+gzip' or @type='application/x-mupad-graphics+xml']][.//*[local-name()='graphSpec']]";
+  if (bNeedVCamFlaggedOnly)
+    ourExpr = "//*[local-name()='graph'][@needPreInit='true'][.//*[local-name()='object'][@type='application/x-mupad-graphics+gzip' or @type='application/x-mupad-graphics+xml']][.//*[local-name()='graphSpec']]";
 //  var ourExpr1 = "//*[local-name()='graph'][.//*[local-name()='object'][@type='application/x-mupad-graphics+gzip' or @type='application/x-mupad-graphics+xml']]";
   var xPathEval = new XPathEvaluator();
   var nsResolver = xPathEval.createNSResolver(aDocument.documentElement);
@@ -11462,6 +11464,7 @@ function doVCamPreinitForPlotsInDocument(editorElement, bJustLoaded)
     for (var i = 0; i < resultNodes.snapshotLength; ++i)
     {
       currNode = resultNodes.snapshotItem(i);
+      msiEditorEnsureElementAttribute(currNode, "needPreInit", null, null);  //clear the attribute flag if it's present
       if (bJustLoaded)  //in this case, odds are apparently very high that the VCam object will not function as needed - mark it to be re-created
       {
         objNodes = currNode.getElementsByTagName("object");
@@ -11478,4 +11481,16 @@ function doVCamPreinitForPlotsInDocument(editorElement, bJustLoaded)
     }
   }
   catch(exc) {msidump("Exception in doVCamPreinitForPlotsInDocument: " + exc + "\n");}
+}
+
+
+function onNewPlotsInDocument()
+{
+  var editorElement = msiGetActiveEditorElement();
+  var aBroadcaster = document.getElementById("newPlotsInDocument");
+  if (aBroadcaster && (aBroadcaster.getAttribute("newplots") == "true") )
+  {
+    doVCamPreinitForPlotsInDocument(editorElement, false, true);
+    aBroadcaster.setAttribute("newplots", "false");
+  }
 }
