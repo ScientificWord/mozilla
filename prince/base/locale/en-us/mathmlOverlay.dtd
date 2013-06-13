@@ -12,6 +12,12 @@
 <!ENTITY LTPappendix.accesskey "S" >
 <!ENTITY LTPmakeTitle.label "Make Title" >
 <!ENTITY LTPmakeTitle.accesskey "M" >
+<!ENTITY LTPmainMatter.label "Main Matter" >
+<!ENTITY LTPmainMatter.accesskey "N" >
+<!ENTITY LTPbackMatter.label "Back Matter" >
+<!ENTITY LTPbackMatter.accesskey "B" >
+<!ENTITY LTPprintIndex.label "Print Index" >
+<!ENTITY LTPprintIndex.accesskey "P" >
 <!ENTITY MSIInsertMenu.label  "Insert">
 <!ENTITY MSIMathMenu.label "Math">
 <!ENTITY MSIMathMenu.accesskey "m">

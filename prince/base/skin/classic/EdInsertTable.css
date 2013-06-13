@@ -28,3 +28,19 @@
 
 #gridcoordinates { visibility: hidden; }
 #tablegrid:hover #gridcoordinates { visibility: visible; }
+
+#BordersPreview table {
+  table-layout: auto;
+  empty-cells: show;
+  font-size: 100%;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+  border-collapse: collapse;
+}
+
+#BordersPreview td {
+  border: thin solid rgb(187,187,187);
+  height: 3em;
+  width: 3em;
+}
