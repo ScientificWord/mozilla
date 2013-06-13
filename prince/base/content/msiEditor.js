@@ -9400,7 +9400,7 @@ function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, comma
   {
       // Edit properties of existing table
     var theData = {reviseCommand : command, reviseData : reviseObjectData};
-    msiOpenModelessDialog("chrome://prince/content/EdTableInsert.xul", "_blank", "chrome,resizable,close,titlebar,dependent", editorElement,
+    msiOpenModelessDialog("chrome://prince/content/EdInsertTable.xul", "_blank", "chrome,resizable,close,titlebar,dependent", editorElement,
                                          command, commandHandler, theData);
 //      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal", "","TablePanel");
     editorElement.contentWindow.focus();

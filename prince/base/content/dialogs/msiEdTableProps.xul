@@ -231,21 +231,21 @@
               <description id="BordersPreview" class="MSISample"	flex="1" valign="center"
                   xmlns:xhtml="http://www.w3.org/1999/xhtml"
                   xmlns:mml="http://www.w3.org/1998/Math/MathML">
-                <xhtml:table align="center" valign="center" style="table-layout: auto; empty-cells: show; width: 3em; height: 3em; font-size: 100%; overflow: hidden; text-align: center; vertical-align: middle">
-                  <xhtml:tr height="15%">
-                    <xhtml:td style="border-width: 0;"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-style: dotted; border-width: 0 thin; border-color: red"><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-width: 0;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                <xhtml:table align="center" valign="center" >
+                  <xhtml:tr >
+                    <xhtml:td ><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td ><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td ><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
-                  <xhtml:tr height="30%">
-                    <xhtml:td style="border-style: dotted; border-width: thin 0; border-color: red"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td id="BordersPreviewCenterCell" style="border-style: dotted; border-width: thin; border-color: red;" ><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-style: dotted; border-width: thin 0; border-color: red;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                  <xhtml:tr >
+                    <xhtml:td ><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td id="BordersPreviewCenterCell"><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td ><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
-                  <xhtml:tr height="15%">
-                    <xhtml:td style="border-width: 0;"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-style: dotted; border-width: 0 thin; border-color: red"><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-width: 0;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                  <xhtml:tr >
+                    <xhtml:td ><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td ><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td ><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                 </xhtml:table>
               </description>

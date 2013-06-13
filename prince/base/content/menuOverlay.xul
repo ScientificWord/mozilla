@@ -592,6 +592,11 @@
     <command id="cmd_makelot"   oncommand="msiGoDoCommand('cmd_makelot')" />
     <command id="cmd_makelof"   oncommand="msiGoDoCommand('cmd_makelof')" />
     <command id="cmd_appendix"  oncommand="msiGoDoCommand('cmd_appendix')" />
+    <command id="cmd_mainmatter" oncommand="msiGoDoCommand('cmd_mainmatter')" />
+    <command id="cmd_backmatter"  oncommand="msiGoDoCommand('cmd_backmatter')" />
+    <command id="cmd_printindex" oncommand="msiGoDoCommand('cmd_printindex')" />
+
+
 
     <command id="cmd_listProperties"  oncommand="msiGoDoCommand('cmd_listProperties')"/>
     <command id="cmd_pageProperties"  oncommand="msiGoDoCommand('cmd_pageProperties')"/>

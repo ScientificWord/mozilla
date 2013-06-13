@@ -41,11 +41,17 @@ table:focus {
 
 /*table {
   border-collapse: collapse;
-  border-style: dotted;
-  border-color: red;
-  border-width: 1px;
+  border-style: solid;
+  border-color: #BBBBBB;
+  border-width: thin;
+}*/
+
+td {
+  border-style: solid;
+  border-color: #BBBBBB;
+  border-width: thin;
+
 }
-*/
 
 button[class="msi"]::-moz-selection{
   background: blue;
