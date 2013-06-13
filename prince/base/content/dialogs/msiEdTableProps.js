@@ -59,19 +59,6 @@ From C++:
 */
 
 //var gSelectedCellCount = 0;
-var gOurCellData;
-var gInitialCellData;
-var gCollatedCellData;  //This starts out as the same as the previous, but changes as the user makes selections in the dialog.
-var gColElementArray;
-var gRowElementArray;
-
-var gTableColor;
-var gTableCaptionPlacement;
-var gTableBaseline = "baseline";
-var gBorderCollapse = "collapse";  //This should be the default???
-
-var gCellChangeData;
-var gTableChangeData;
 var gCurrentSide = "";
 var gBorderSides = ["top", "right", "bottom", "left"];
 
