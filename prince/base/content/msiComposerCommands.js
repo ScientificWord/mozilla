@@ -166,6 +166,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_makelot", msiMakeLOTCommand);
   commandTable.registerCommand("cmd_makelof", msiMakeLOFCommand);
   commandTable.registerCommand("cmd_appendix", msiAppendixCommand);
+  commandTable.registerCommand("cmd_mainmatter", msiMainMatterCommand);
+  commandTable.registerCommand("cmd_backmatter", msiBackMatterCommand);
+  commandTable.registerCommand("cmd_printindex", msiPrintIndexCommand);
 
 }
 
@@ -10628,6 +10631,61 @@ var msiAppendixCommand = {
     }
   }
 }
+
+var msiMainMatterCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertTag('mainmatter');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('mainmatter'), e.message);
+    }
+  }
+}
+
+var msiBackMatterCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertTag('backmatter');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('backmatter'), e.message);
+    }
+  }
+}
+
+var msiPrintIndexCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertTag('printindex');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('printindex'), e.message);
+    }
+  }
+}
+
 
 
 function msiInsertTag(tagname){
