@@ -1421,11 +1421,11 @@
   \begingroup
     \msitag{\msipassthru}%
     \char`\{%
-    \msitag{<mspace width="thickmathspace"/>}
+    \msitag{<mspace width="thickmathspace"/>}%
     \msiopentag{mtext}{<mtext>}%
     \begingroup \msihmode #1\endgroup%
     \msiclosetag{mtext}{</mtext>}%
-    \msitag{<mspace width="thickmathspace"/>}
+    \msitag{<mspace width="thickmathspace"/>}%
     \char`\}
     \catcode`\$=3\relax
   \endgroup}
@@ -1729,14 +1729,14 @@
        \msihmode
        \msitag{<texb enc="1" name="makeatother">}%
            <![CDATA[\string\makeatother]]>%
-       \msitag{</texb>}
+       \msitag{</texb>}%
        \catcode`\@=12}
 
    \def\makeatletter{%
        \msihmode
        \msitag{<texb enc="1" name="makeatletter">}%
            <![CDATA[\string\makeatletter]]>%
-       \msitag{</texb>}
+       \msitag{</texb>}%
        \catcode`\@=11}
 
 }
@@ -1908,6 +1908,6 @@
 %    }
 
 \input latex-default.tex
-\input tcilatex.tex
+%\input tcilatex.tex
 
 \catcode`\<=\active
