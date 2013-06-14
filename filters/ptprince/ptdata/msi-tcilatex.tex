@@ -1,10 +1,14 @@
 \makeatletter
 
-\@ifundefined{@TCILATEX}
-  {\gdef\@TCILATEX{\relax}%
-   \msitopreambleextra{<texb enc="1" name="tcilatex"><![CDATA[\input{tcilatex}]]></texb>}}
-  {\endinput}
 
+\ifnum\msi@inpreamble=1
+   \msitopreambleextra{<texb pre="1" enc="1" name="tcilatex"><![CDATA[\input{tcilatex}]]></texb>}
+   \msi@output=1
+\fi
+
+\@ifundefined{@TCILATEX}
+  {\gdef\@TCILATEX{\relax}}%
+  {\endinput}
   
 
 \def\QTR#1{%
