@@ -115,7 +115,10 @@ function Startup(){
 //    capEditorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
     captionnode = getFirstElementByTagName(graphnode,"imagecaption");
     if (captionnode) {
-      theStringSource = graph.ser.serializeToString(captionnode);
+      theStringSource = "";
+      for (i = 0; i < captionnode.childNodes.length; ++i)
+        theStringSource += graph.ser.serializeToString(captionnode.childNodes[i]);
+//      theStringSource = graph.ser.serializeToString(captionnode);
       if (!theStringSource || theStringSource.length === 0) {
         theStringSource = "<br temp='1'/>";
       }

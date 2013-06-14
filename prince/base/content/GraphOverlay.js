@@ -807,7 +807,7 @@ Graph.prototype = {
         dropData = DNDUtils.getData("text/html", 0);
         str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
         //      dragService.endDragSession(true);
-        scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
+        thisGraph.scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
       }
       return 1;
     };
@@ -815,6 +815,7 @@ Graph.prototype = {
   provideDropHandler: function (editorElement, domGraph) {
     var __domGraph = domGraph;
     var __editorElement = editorElement;
+    var thisGraph = this;
     return function () {
       var dropData, str;
       var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
@@ -822,7 +823,7 @@ Graph.prototype = {
       netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
       dropData = DNDUtils.getData("text/html", 0);
       str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
-      scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
+      thisGraph.scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
       //    dragService.endDragSession(true);
       return 1;
     };
@@ -2036,9 +2037,9 @@ function newPlotFromText(currentNode, expression, editorElement) {
     var firstplot = graph.plots[0];
     var plot = new Plot(graph.getDimension(), firstplot.attributes["PlotType"]);
     graph.addPlot(plot);
-    plot.initialize();
     plot.element["Expression"] = expression;
 //    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
+    graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement);
     graph.reviseGraphDOMElement(currentNode, true, editorElement);
     //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
@@ -3334,12 +3335,12 @@ function doAnalyzeVars(graphVarData, plot)
     {
       return 1;
     }
-    if (matchDataA.itemIsParametric())
+    if (matchDataA.targetParametric)
     {
-      if (!matchDataB.itemIsParametric())
+      if (!matchDataB.targetParametric)
         return 1;
     }
-    else if (matchDataB.itemIsParametric())
+    else if (matchDataB.targetParametric)
       return -1;
     if (matchDataA.whichPlot < matchDataB.whichPlot)
       return -1;
@@ -3872,6 +3873,7 @@ function newVar(x) {
 function plotVarsShouldMatchAxes(plotType, dim)
 {
   var retArray = [];
+  var ii;
   switch(plotType)
   {
     case "rectangular":
