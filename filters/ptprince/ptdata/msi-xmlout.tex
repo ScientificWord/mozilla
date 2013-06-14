@@ -1421,9 +1421,11 @@
   \begingroup
     \msitag{\msipassthru}%
     \char`\{%
+    \msitag{<mspace width="thickmathspace"/>}
     \msiopentag{mtext}{<mtext>}%
     \begingroup \msihmode #1\endgroup%
     \msiclosetag{mtext}{</mtext>}%
+    \msitag{<mspace width="thickmathspace"/>}
     \char`\}
     \catcode`\$=3\relax
   \endgroup}
