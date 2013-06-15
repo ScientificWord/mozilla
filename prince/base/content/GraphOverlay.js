@@ -1964,6 +1964,7 @@ Frame.prototype = {
       // put the graph file in
       // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use
       // the load API
+      DOMObj.vcamStatus = "uninitialized";
       if (!forComp)  //don't trigger any loading if we're only serializing - this isn't a "real" <object>
       {
         var existingObjFile = DOMObj.getAttribute("data");
@@ -2016,7 +2017,6 @@ Frame.prototype = {
       }
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
-      DOMObj.vcamStatus = "uninitialized";
 //      DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
       editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
@@ -2041,7 +2041,9 @@ function newPlotFromText(currentNode, expression, editorElement) {
 //    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
     graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement);
-    graph.reviseGraphDOMElement(currentNode, true, editorElement);
+    graph.reviseGraphDOMElement(currentNode, false, editorElement);
+    ensureVCamPreinitForPlot(currentNode, editorElement);
+//    nonmodalRecreateGraph(graph, currentNode, editorElement);
     //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
   }
   catch (e) {

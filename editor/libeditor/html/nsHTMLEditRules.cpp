@@ -2360,7 +2360,8 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
       // make sure it's not a table element.  If so, cancel the operation
       // (translation: users cannot backspace or delete across table cells)
-      if (nsHTMLEditUtils::IsTableElement(visNode, mtagListManager))
+      if (nsHTMLEditUtils::IsTableElement(visNode, mtagListManager) ||
+                mHTMLEditor->ShouldSelectWholeObject(visNode))
       {
         *aCancel = PR_TRUE;
         return NS_OK;
@@ -6060,10 +6061,16 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
     while ((bIsEmptyNode || bIndivisibleNode) && !nsHTMLEditUtils::IsTableElement(block, mtagListManager) && (block != aBodyNode))
     {
       emptyBlock = block;
-      block = mHTMLEditor->GetBlockNodeParent(emptyBlock);
-      res = mHTMLEditor->IsEmptyNode(block, &bIsEmptyNode, PR_TRUE, PR_FALSE);
-      bIndivisibleNode = bIndivisibleNode && mHTMLEditor->ShouldSelectWholeObject(block);
-      if (NS_FAILED(res)) return res;
+      res = emptyBlock->GetParentNode(getter_AddRefs(parentNode));
+      bIndivisibleNode = bIndivisibleNode && mHTMLEditor->ShouldSelectWholeObject(parentNode);
+      if (bIndivisibleNode)
+        block = parentNode;
+      else
+      {
+        block = mHTMLEditor->GetBlockNodeParent(emptyBlock);
+        res = mHTMLEditor->IsEmptyNode(block, &bIsEmptyNode, PR_TRUE, PR_FALSE);
+        if (NS_FAILED(res)) return res;
+      }
     }
   }
 
