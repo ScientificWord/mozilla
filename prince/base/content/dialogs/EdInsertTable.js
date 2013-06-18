@@ -42,6 +42,7 @@ var gTableColor;
 var gTableCaptionPlacement;
 var gTableBaseline = "baseline";
 var gBorderCollapse = "collapse";  //This should be the default???
+var gTableCaptionElement;
 
 var gCollatedCellData;
 var gCellChangeData;
@@ -52,6 +53,53 @@ var gSelectionTypeStr = "Cell";
 var gApplyUsed = false;
 var gIsMatrix = false; //We have to set this in the initialization code.
 var data = null;
+
+function initGDialogObject()
+{
+  gDialog.rowsInput      = document.getElementById("rowsInput");
+  gDialog.columnsInput   = document.getElementById("columnsInput");
+  gDialog.widthInput     = document.getElementById("widthInput");
+  gDialog.autoCheckbox   = document.getElementById("autoWidthCheckbox");
+  gDialog.CellHeightInput= document.getElementById("CellHeightInput");
+  gDialog.CellWidthInput = document.getElementById("CellWidthInput");
+  gDialog.currentunits   = document.getElementById("currentunits");
+  gDialog.unitMenulist   = document.getElementById("unitMenulist");
+  gDialog.wrapping       = document.getElementById("TextWrapCheckbox");
+  gDialog.vAlignChoices  = document.getElementById("vAlignChoices");
+  gDialog.hAlignChoices  = document.getElementById("hAlignChoices");
+  gDialog.BordersPreviewCenterCell = document.getElementById("BordersPreviewCenterCell");
+  gDialog.BorderSideSelectionList = document.getElementById("BorderSideSelectionList");
+  gDialog.CellBorderStyleList = document.getElementById("cellBorderStyleList");
+  gDialog.CellBorderWidthList = document.getElementById("cellBorderWidthList");
+  gDialog.borderCW = document.getElementById("borderCW");
+
+  gDialog.OkButton = document.documentElement.getButton("accept");
+  gDialog.sizeLabel = document.getElementById("sizeLabel");
+  gRows = gDialog.rowsInput.value;
+  gColumns = gDialog.columnsInput.value;
+}
+
+function initUnitHandler()
+{
+  unitHandler = new UnitHandler();
+  var fieldList = [];
+  fieldList.push(gDialog.CellHeightInput);
+  fieldList.push(gDialog.CellWidthInput);
+  fieldList.push(gDialog.widthInput);
+  unitHandler.setEditFieldList(fieldList);
+  if (gPrefs)
+    defaultUnit = gPrefs.getCharPref("swp.defaultTableUnits");
+  gDialog.currentunits.setAttribute("value", unitHandler.getDisplayString(defaultUnit));
+  try {
+    unitHandler.buildUnitMenu(gDialog.unitMenulist, defaultUnit);
+
+  // need to check this and use default value from preferences if appropriate.
+    unitHandler.initCurrentUnit(gDialog.unitMenulist.value, defaultUnit);
+  }
+  catch(e) {
+    dump(e.message);
+  }  
+}
 
 function ChangeCellSize(textID)
 {
@@ -87,18 +135,18 @@ function AlignmentChanged(radioGroupID)
 
 function TablePropertyChanged(controlID)
 {
-  switch(controlID)
-  {
-    case "TableCaptionList":
-      gTableChangeData.caption = true;
-      gTableCaptionPlacement = gDialog.captionLocation.value;
-    break;
-
-    case "TableBaselineRadioGroup":
-      gTableChangeData.baseline = true;
-      gTableBaseline = gDialog.baselineList.value;
-    break;
-  }
+//  switch(controlID)
+//  {
+//    case "TableCaptionList":
+//      gTableChangeData.caption = true;
+//      gTableCaptionPlacement = gDialog.captionLocation.value;
+//    break;
+//
+//    case "TableBaselineRadioGroup":
+//      gTableChangeData.baseline = true;
+//      gTableBaseline = gDialog.baselineList.value;
+//    break;
+//  }
 }
 
 function enableControlsByID(id)
@@ -178,6 +226,7 @@ function Startup()
   var hAlign ;  
   var vAlign;   
   var wrapping;
+  var newTable;
   gPrefs = GetPrefs();
   gActiveEditor = msiGetTableEditor();
   if (!gActiveEditor)
@@ -187,62 +236,46 @@ function Startup()
     return;
   }
 
-  try {
-    gTableElement = gActiveEditor.createElementWithDefaults("table");
-    gTableElement.setAttribute("req","tabulary");
-  } catch (e) {}
+  data = window.arguments[0];
+  if (!data) {
+    newTable = true;
+    try {
+      gTableElement = gActiveEditor.createElementWithDefaults("table");
+      gTableElement.setAttribute("req","tabulary");
+    } 
+    catch (e) {
 
+    }
+  }
+  else {
+    newTable = false;
+    gTableElement = data.reviseData.mTableElement;
+    // We disable resetting row and column count -- the user has more direct ways of doing that.
+    document.getElementById("QuicklyTab").setAttribute("collapsed", true);
+    document.getElementById("tablegrid").setAttribute("collapsed", true);
+    document.getElementById("rowsInput").disabled = true;
+    document.getElementById("columnsInput").disabled = true;
+  }
+
+
+  if (!gTableElement)
+  {
+    try {
+      gTableElement = gActiveEditor.getElementOrParentByTagName("table", null);
+    } catch (e) {}
+  }
   if(!gTableElement)
   {
-    dump("Failed to create a new table!\n");
+    dump("Failed to get table element!\n");
     window.close();
     return;
   }
-  unitHandler = new UnitHandler();
-  gDialog.rowsInput      = document.getElementById("rowsInput");
-  gDialog.columnsInput   = document.getElementById("columnsInput");
-  gDialog.widthInput     = document.getElementById("widthInput");
-  gDialog.autoCheckbox   = document.getElementById("autoWidthCheckbox");
-  gDialog.CellHeightInput= document.getElementById("CellHeightInput");
-  gDialog.CellWidthInput = document.getElementById("CellWidthInput");
-  gDialog.currentunits   = document.getElementById("currentunits");
-  gDialog.unitMenulist   = document.getElementById("unitMenulist");
-  gDialog.wrapping       = document.getElementById("TextWrapCheckbox");
-  gDialog.vAlignChoices  = document.getElementById("vAlignChoices");
-  gDialog.hAlignChoices  = document.getElementById("hAlignChoices");
-  gDialog.BordersPreviewCenterCell = document.getElementById("BordersPreviewCenterCell");
-  gDialog.BorderSideSelectionList = document.getElementById("BorderSideSelectionList");
-  gDialog.CellBorderStyleList = document.getElementById("cellBorderStyleList");
-  gDialog.CellBorderWidthList = document.getElementById("cellBorderWidthList");
-  gDialog.borderCW = document.getElementById("borderCW");
 
-  gDialog.OkButton = document.documentElement.getButton("accept");
-  gDialog.sizeLabel = document.getElementById("sizeLabel");
-  gRows = gDialog.rowsInput.value;
-  gColumns = gDialog.columnsInput.value;
+  initGDialogObject();
+  initUnitHandler();
 
-  var fieldList = [];
-  fieldList.push(gDialog.CellHeightInput);
-  fieldList.push(gDialog.CellWidthInput);
-  fieldList.push(gDialog.widthInput);
-  unitHandler.setEditFieldList(fieldList);
-  if (gPrefs)
-    defaultUnit = gPrefs.getCharPref("swp.defaultTableUnits");
-  gDialog.currentunits.setAttribute("value", unitHandler.getDisplayString(defaultUnit));
-  try {
-    unitHandler.buildUnitMenu(gDialog.unitMenulist, defaultUnit);
+  setDataFromReviseData(data.reviseData, data.reviseCommand);
 
-  // need to check this and use default value from preferences if appropriate.
-    unitHandler.initCurrentUnit(gDialog.unitMenulist.value, defaultUnit);
-  }
-  catch(e) {
-    dump(e.message);
-  }
-  //setVariablesForControls();
-//temp hack
-      setDataFromReviseData(data.reviseData, data.reviseCommand);
-
-  data = window.arguments[0];
   var theCommand = "cmd_editTable";
   if (data)
   {
@@ -266,21 +299,7 @@ function Startup()
 //    if (!gSelection) return;
 //  }
 
-  if (!gTableElement)
-  {
-    try {
-      gTableElement = gActiveEditor.getElementOrParentByTagName("table", null);
-   
-    } catch (e) {}
-  }
-  if(!gTableElement)
-  {
-    dump("Failed to get table element!\n");
-    window.close();
-    return;
-  }
   globalTableElement = gTableElement.cloneNode(false);
-
 
   var cellid;
   if (gRows <= 6 && gColumns <= 6) cellid = 10*(Number(gRows) -1 )+Number(gColumns);
@@ -466,8 +485,9 @@ function SetOrResetAttribute(element, attributeName, attributeValue)
 
 function onAccept()
 {
-  if (ValidateData())
-  {
+//  if (ValidateData())
+//  {
+    var color;
     try 
     {
       var wrapping = gDialog.wrapping.checked;
@@ -489,15 +509,18 @@ function onAccept()
       dump(e);
     }
 
-    gActiveEditor.beginTransaction();
-    try {
-      gActiveEditor.cloneAttributes(gTableElement, globalElement);
+//    try {
+//      if (globalElement) gActiveEditor.cloneAttributes(gTableElement, globalElement);
+
+// This is code for creating a new table, not for revising
 
       // Create necessary rows and cells for the table
       var tableBody = gActiveEditor.createElementWithDefaults("tbody");
+      var style;
       if (tableBody)
       {
         gTableElement.appendChild(tableBody);
+        color = getColor('backgroundCW');
 
         // Create necessary rows and cells for the table
         for (var i = 0; i < gRows; i++)
@@ -511,6 +534,12 @@ function onAccept()
               var newCell = gActiveEditor.createElementWithDefaults("td");
               if (newCell)
               {
+                style = gDialog.BordersPreviewCenterCell.getAttribute("style") || "";
+                if (gDialog.CellWidthInput.value > 0) style += "width: " + gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value + "; ";
+                if (gDialog.CellHeightInput.value > 0) style += "height: " + gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value + "; ";
+                if (color && color != '#FFFFFF' && color != 'white') style += 'background-color: ' + color + '; ';
+
+                newCell.setAttribute("style", style)
                 newRow.appendChild(newCell);
               }
             }
@@ -563,22 +592,290 @@ function onAccept()
       // true means delete selection when inserting
       gActiveEditor.insertElementAtSelection(gTableElement, true);
 
-      if (deletePlaceholder && gTableElement && gTableElement.nextSibling)
-      {
-        // Delete the placeholder <br>
-        gActiveEditor.deleteNode(gTableElement.nextSibling);
-      }
-    } catch (e) {}
+//      if (deletePlaceholder && gTableElement && gTableElement.nextSibling)
+//      {
+//        // Delete the placeholder <br>
+//        gActiveEditor.deleteNode(gTableElement.nextSibling);
+//      }
 
-    gActiveEditor.endTransaction();
+    ApplyTableAttributes();
+    ApplyColAndRowAttributes();
+    ApplyCellAttributes();
+
     gDialog.rowsInput.value = gRows;
     gDialog.columnsInput.value = gColumns;
     MakePersistsValue(gDialog.rowsInput);
     MakePersistsValue(gDialog.columnsInput);
     SaveWindowLocation();
     return true;
+
+}
+
+function ApplyColAndRowAttributes()
+{
+  if (gIsMatrix)
+  {
+    ApplyMatrixColAndRowAttributes();
+    return;
   }
-  return false;
+
+  var tableDims = data.reviseData.getTableDims();
+
+  var colsInSelection = data.reviseData.getColsInSelection(gSelectionTypeStr);
+  var colElements = getColElements();
+
+  if (!colElements.length && gCollatedCellData.size.bWidthSet && ShouldSetWidthOnCols())
+    colElements = insertColElementsInTable(gTableElement, tableDims.nCols);
+  msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), colElements contains [" + colElements.length + "] elements.\n", ["tableEdit"]);
+
+  if (gCellChangeData.size.width && colElements && colElements.length)
+  {
+    var theWidth = "";
+    var contiguousSelectedCols = 1;
+    var currSelectedCol = -1;
+//    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;  we should be using something more like this...
+    if (gCollatedCellData.size.bWidthSet)
+      theWidth = cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px");
+
+    function getEndsOfSpanContaining(aColIndex, colElementArray)
+    {
+      var theSpan = {mStart : aColIndex, mEnd : aColIndex};
+      if (colElementArray[aColIndex] == null)
+      {
+        dump("In msiEdTableProps.js, ApplyColAndRowAttributes(), getEndsOfSpanContaining() called with aColIndex = [" + aColIndex + "]; array element not found!\n");
+      }  
+      if (colElementArray[aColIndex].mSpan < 0)
+        theSpan.mStart += colElementArray[aColIndex].mSpan;
+      theSpan.mEnd = theSpan.mStart + colElementArray[theSpan.mStart].mSpan - 1;
+      return theSpan;
+    }
+
+    function separateAColNode(firstCol, splitCol, colElementArray)
+    {
+      var originalCol = colElementArray[firstCol].mNode;
+      var newCol = null;
+      var oldStart = firstCol;
+      var insertPos = 0;
+      if (colElementArray[firstCol].mSpan < 0)
+      {
+        dump("In msiEdTableProps.js, ApplyColAndRowAttributes(), separateAColNode() called on middle of a col node!\n");
+        return null;
+      }
+      var lastCol = firstCol + colElementArray[firstCol].mSpan - 1;
+      var retVal = {mOriginalNode : originalCol, mNewNode : null};
+      if (msiGetBaseNodeName(originalCol) != "col")
+      {
+        retVal.mOriginalNode = originalCol.ownerDocument.createElement("col");
+        gActiveEditor.insertNode(retVal.mOriginalNode, originalCol, 0);
+        gActiveEditor.removeAttribute(originalCol, "span");
+        originalCol = retVal.mOriginalNode;
+        gActiveEditor.setAttribute(originalCol, "span", String(splitCol - firstCol));
+        colElementArray[firstCol].mNode = originalCol;
+        for (var kk = firstCol + 1; kk < splitCol; ++kk)
+        {
+          colElements[kk].mNode = originalCol;
+          colElements[kk].mSpan = firstCol - kk;
+        }
+      }
+      retVal.mNewNode = originalCol.ownerDocument.createElement("col");
+      newCol = retVal.mNewNode;
+      msiCopyElementAttributes(newCol, originalCol, gActiveEditor);
+      insertPos = msiNavigationUtils.offsetInParent(originalCol) + 1;
+      gActiveEditor.insertNode(newCol, originalCol.parentNode, insertPos);
+      gActiveEditor.setAttribute( newCol, "span", String(lastCol - splitCol + 1) );
+      colElementArray[firstCol].mSpan = splitCol - firstCol;
+      colElementArray[splitCol].mNode = newCol;
+      colElementArray[splitCol].mSpan = lastCol - splitCol + 1;
+      for (kk = splitCol + 1; kk <= lastCol; ++kk)
+      {
+        colElementArray[kk].mNode = newCol;
+        colElementArray[kk].mSpan = splitCol - kk;
+      }
+      return retVal;
+    }
+
+    var insertPos = 0;
+    var kk = 0;
+    var preCols, ourCols, postCols, splitCols;
+
+    for (var ix = 0; ix < colsInSelection.length; ++ix)  //This loop should be thought of as operating over the contiguous blocks in colsInSelection.
+    {
+      startCol = colsInSelection[ix];
+      endCol = startCol;
+      for (ix = ix+1; ix < colsInSelection.length; ++ix)
+      {
+        if (colsInSelection[ix] != endCol + 1)  //Have we arrived at a gap in the selection?
+        {
+          --ix;  //set it back to the last value without a gap
+          break;
+        }
+        ++endCol;
+      }
+      msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), startCol is [" + startCol + "] and endCol is [" + endCol + "].\n", ["tableEdit"]);
+
+      //There are three things that must be done each time through:
+      //  First, if startCol isn't the start of a <col> or <colgroup> - that is, is in the middle of one - we have to split it and insert a new <col>
+      //    Note here that if colRecord.mNode is a <colgroup> (can anything else occur here?), it needs to be replaced by a new <col> child node.
+      //  Then we apply the width attribute to (or remove it from) the newly created <col>.
+      //  Finally, if endCol < endSpan, we have to create a new <col> to hold the remaining columns.
+      //After this is done, we reset ix, and thus startCol and startSpan, and go through the outer loop again. Though there should
+      //  only be multiple passes through the outer loop if the columns in the selection aren't contiguous. (Does <ctrl-click> work to select in tables?)
+      colRecord = colElements[startCol];
+      ourStart = startCol;
+
+      //When we're done with the following loop, we'll have split the <col> nodes covering the contiguous selected columns 
+      //  from startCol to endCol into appropriate ones and applied the width attribute (and whatever we need to apply).
+      for (var ourStart = startCol; ourStart <= endCol; ++ourStart)
+      {
+        preCols = null;
+        ourCols = null;
+        postCols = null;
+        theSpan = getEndsOfSpanContaining(ourStart, colElements);
+        msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), inner loop, theSpan is [" + theSpan.mStart + "," + theSpan.mEnd + "].\n", ["tableEdit"]);
+        if (theSpan.mStart < ourStart)  //We must split off the columns before ours
+        {
+          splitCols = separateAColNode(theSpan.mStart, ourStart, colElements);
+          preCols = splitCols.mOriginalNode;
+          ourCols = splitCols.mNewNode;
+
+//          if (msiGetBaseNodeName(preCols) != "col")  //if we only have a <colgroup> we should split it up, so create <col> element
+//          {
+//            ourCols = preCols.ownerDocument.createElement("col");
+//            gActiveEditor.insertNode(ourCols, preCols, 0);
+//            preCols = ourCols;
+//            colElements[theSpan.mStart].mNode = preCols;
+//            colElements[theSpan.mStart].mSpan = ourStart - theSpan.mStart;
+//            for (kk = theSpan.mStart + 1; kk < ourStart; ++kk)
+//            {
+//              colElements[kk].mNode = preCols;
+//              colElements[kk].mSpan = theSpan.mStart - kk;
+//            }
+//          }
+//          gActiveEditor.setAttribute(preCols, "span", String(ourStart - theSpan.mStart));
+//          ourCols = preCols.ownerDocument.createElement("col");
+//          msiCopyElementAttributes(ourCols, preCols, gActiveEditor);
+//          insertPos = msiNavigationUtils.offsetInParent(preCols) + 1;
+//          gActiveEditor.insertNode(ourCols, colRecord.mNode.parentNode, insertPos);
+//          gActiveEditor.setAttribute(ourCols, "span", String(theSpan.mEnd - ourStart + 1));
+//          colElements[ourStart].mNode = ourCols;
+//          for (kk = ourStart + 1; kk <= theSpan.mEnd; ++kk)
+//          {
+//            colElements[kk].mNode = ourCols;
+//            colElements[kk].mSpan = ourStart - kk;
+//          }
+        }
+        else    //Otherwise, preCols is null and the first is ourCols.
+          ourCols = colElements[theSpan.mStart].mNode;
+
+        if (theSpan.mEnd > endCol)  //in this case we have to separate off the columns that come after
+        {
+          msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), inner loop, calling separateAColNode with ourStart [" + ourStart + "] and endCol [" + endCol + "].\n", ["tableEdit"]);
+          splitCols = separateAColNode(ourStart, endCol + 1, colElements);
+          ourCols = splitCols.mOriginalNode;
+          ourStart = endCol;
+          msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), inner loop, after calling separateAColNode; now ourStart is [" + ourStart + "]; splitCols.mNewNode has span [" + splitCols.mNewNode.getAttribute("span") + "].\n", ["tableEdit"]);
+        }
+        else
+          ourStart = theSpan.mEnd;
+
+        if (theWidth.length)
+          gActiveEditor.setAttribute(ourCols, "width", theWidth);
+        else
+          gActiveEditor.removeAttribute(ourCols, "width");
+      }
+    }
+  }
+
+  var theRowElements = getRowElements();
+  var rowsInSelection = data.reviseData.getRowsInSelection(gSelectionTypeStr);
+  if (gCellChangeData.size.height && ShouldSetHeightOnRows())
+  {
+    var theHeight = "";
+    if (gCollatedCellData.size.bHeightSet)
+      theHeight = cellUnitsHandler.getValueOf(gDialog.CellHeightInput, "px");
+    var theRowNode, newNode;
+
+    for (var ix = 0; ix < rowsInSelection.length; ++ix)
+    {
+      theRowNode = theRowElements[rowsInSelection[ix]];
+      switch(msiGetBaseNodeName(theRowNode))
+      {
+        case "thead":
+        case "tfoot":
+        case "tbody":
+          newNode = theRowNode.ownerDocument.createElement("tr");
+          gActiveEditor.insertNode(newNode, theRowNode, theRowNode.childNodes.length);
+          theRowNode = newNode;
+        break;
+        case "td":
+        case "th":
+          newNode = theRowNode.ownerDocument.createElement("tr");
+          insertPos = msiNavigationUtils.offsetInParent(theRowNode);
+          gActiveEditor.insertNode(newNode, theRowNode.parentNode, insertPos);
+          gActiveEditor.deleteNode(theRowNode);
+          gActiveEditor.insertNode(theRowNode, newNode, 0);
+          theRowNode = newNode;
+        break;
+        default:
+        break;
+      }
+
+      if (theHeight.length)
+        gActiveEditor.setAttribute(theRowNode, "height", theHeight);
+      else
+        gActiveEditor.removeAttribute(theRowNode, "height");
+    }
+  }
+
+}
+
+function ApplyCellAttributes()
+{
+//  var cellIter = data.reviseData.beginSelectedCellIteration('Cell');
+  var cellIter = data.reviseData.beginSelectedCellIteration(gSelectionTypeStr);
+  var currCell = data.reviseData.getNextSelectedCell(cellIter);
+  while (currCell)
+  {
+    var nRow = cellIter.nRow;
+    var nCol = cellIter.nCol;
+    ApplyAttributesToOneCell(currCell, nRow, nCol);
+    currCell = data.reviseData.getNextSelectedCell(cellIter);
+  }
+}
+
+function ApplyAttributesToOneCell(destElement, nRow, nCol)
+{
+  var aVal = null;
+  var aValStr = "";
+  if (gCellChangeData.size.height && (gCellChangeData.size.height == true))
+  {
+    aVal = cellUnitsHandler.getValueString(gDialog.CellHeightInput.value);
+    SetAnAttribute(destElement, "cellheight", aVal);
+  }
+
+  if (gCellChangeData.size.width && (gCellChangeData.size.width == true) )
+  {
+    aVal = cellUnitsHandler.getValueString(gDialog.CellWidthInput.value);
+    SetAnAttribute(destElement, "cellwidth", aVal);
+  }
+
+  var theSide;
+  for (var ix = 0; ix < gCellChangeData.border.style.length; ++ix)
+  {
+    theSide = gCellChangeData.border.style[ix];
+    if (theSide == "all")
+      SetAnAttribute(destElement, "lines", gCollatedCellData.border.style[theSide]);
+    else
+      SetAnAttribute(destElement, "line-" + theSide, gCollatedCellData.border.style[theSide]);
+  }
+
+  if (gCellChangeData.align.halign)
+    SetAnAttribute(destElement, "align", gCollatedCellData.align.halign);
+  if (gCellChangeData.align.valign)
+    SetAnAttribute(destElement, "valign", gCollatedCellData.align.valign);
+
+  DoStyleChangesForACell(destElement);
+
 }
 
 function SelectArea(cellID)
@@ -665,43 +962,23 @@ function DisplaySize()
   ShowSize();
 }
 
-function checkPreviewChanges(controlID)
+function checkPreviewChanges()
 {
-  var bChanged = false;
-  var theChanges = createPreviewChangeArray();
-  var sideString = (gCurrentSide == "all") ? "" : gCurrentSide + "-";
- // var bBackgroundIsSelection = (gDialog.BackgroundSelectionRadioGroup.value == "selection");
-  switch(controlID)
-  {
-    case "cellBorderStyleList":
-      if (gCollatedCellData.border.style[gCurrentSide] != gDialog.CellBorderStyleList.value)
-      {
-        gCollatedCellData.border.style[gCurrentSide] = gDialog.CellBorderStyleList.value;
-        bChanged = true;
-        theChanges.style["border-" + sideString + "style"] = gDialog.CellBorderStyleList.value;
-        gCellChangeData.border.style.push(gCurrentSide);
-        if (borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value) != gBorderCollapse)
-        {
-          gBorderCollapse = borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value);
-          gTableChangeData.borderCollapse = true;
-        }
-      }
-    break;
-    case "cellBorderWidthList":
-      if (gCollatedCellData.border.width[gCurrentSide] != gDialog.CellBorderWidthList.value)
-      {
-        gCollatedCellData.border.width[gCurrentSide] = gDialog.CellBorderWidthList.value;
-        bChanged = true;
-        theChanges.style["border-" + sideString + "width"] = gDialog.CellBorderWidthList.value;
-        gCellChangeData.border.width.push(gCurrentSide);
-      }
-    break;
+  var sides = ["top","bottom","left","right"];
+  var i;
+  var style;
 
-    default:
-    break;
+  style = gDialog.BordersPreviewCenterCell.getAttribute("style") || "";
+  for (i = 0; i < 4; i++) {
+    if (gDialog.BorderSideSelectionList.value ==="all" || gDialog.BorderSideSelectionList.value === sides[i]) {
+      // remove part of style string
+      style.replace("/border-"+sides[i]+": [^;]*;/","");
+      // border-bottom: thick solid red
+      style += 'border-' + sides[i] + ": " + gDialog.CellBorderWidthList.value + ' ' + gDialog.CellBorderStyleList.value + ' ' + 
+        'black' + '; ';
+    }
   }
-  if (bChanged)
-    updateSample(theChanges);
+  gDialog.BordersPreviewCenterCell.setAttribute("style", style);
 }
 
 function createPreviewChangeArray()
@@ -961,3 +1238,141 @@ function translateSelectionTypeString(selTypeStr)
   }
   return SELECT_CELL;  //put it out here just for redundancy's sake
 }
+
+function ApplyTableAttributes()
+{
+  var newAlign = gTableCaptionPlacement;
+  if (!newAlign)
+    newAlign = "";
+  var logStr;
+
+  if (gTableCaptionElement)
+  {
+    // Get current alignment
+    var align = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side").toLowerCase();
+    // This is the default
+    if (!align) align = "top";
+
+    if (newAlign == "")
+    {
+      // Remove existing caption
+      try {
+        gActiveEditor.deleteNode(gTableCaptionElement);
+      } catch(e) {}
+      gTableCaptionElement = null;
+    }
+    else if(newAlign != align)
+    {
+      try {
+        logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [";
+        if (newAlign == "top") // This is default, so don't explicitly set it
+          gActiveEditor.removeAttributeOrEquivalent(gTableCaptionElement, "align", false);
+        else
+        {
+          gActiveEditor.setAttributeOrEquivalent(gTableCaptionElement, "align", newAlign, false);
+          logStr += newAlign;
+        }
+        logStr += "].\n";
+        msiKludgeLogString(logStr, ["tableEdit"]);
+
+      } catch(e) {}
+    }
+  }
+  else if (newAlign != "")
+  {
+    // Create and insert a caption:
+    try {
+      gTableCaptionElement = gActiveEditor.createElementWithDefaults("caption");
+    } catch (e) {}
+    if (gTableCaptionElement)
+    {
+      if (newAlign != "top")
+      {
+        gTableCaptionElement.setAttribute("align", newAlign);
+        logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [" + newAlign + "].\n";
+        msiKludgeLogString(logStr, ["tableEdit"]);
+      }
+      // Insert it into the table - caption is always inserted as first child
+      try {
+        gActiveEditor.insertNode(gTableCaptionElement, gTableElement, 0);
+      } catch(e) {}
+
+      // Put selecton back where it was
+//      ChangeSelection(RESET_SELECTION);
+    }
+  }
+
+  logStr = "";
+  var bEmptyStyle = (!globalTableElement.style);
+  var theStyleString = "";
+  function doSetStyleAttr(styleProp, styleVal)
+  {
+    var styleValStr;
+    if (styleVal != null)
+      styleValStr = String(styleVal);
+    if (bEmptyStyle)
+    {
+      if ( (styleValStr != null) && styleValStr.length )
+        theStyleString += styleProp + ": " + styleValStr + ";";
+    }
+    else if ((styleValStr!=null) && styleValStr.length)
+      globalTableElement.style.setProperty(styleProp, styleValStr, "");
+    else
+      globalTableElement.style.removeProperty(styleProp);
+  }
+  if (gTableChangeData.baseline)
+  {
+    doSetStyleAttr("vertical-align", gTableBaseline);
+    SetAnAttribute(gTableElement, "valign", gTableBaseline);
+//    logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [vertical-align] on table element style to [" + gTableBaseline + "]\n";
+  }
+  if (gTableChangeData.background)
+  {
+    doSetStyleAttr("background-color", gTableColor);
+//    logStr += "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [background-color] on table element style to [" + gTableColor + "]\n";
+  }
+  if (gTableChangeData.borderCollapse)
+  {
+    doSetStyleAttr("border-collapse", gBorderCollapse);
+  }
+//  if (gTableChangeData.size.width)
+//    globalTableElement.style.setProperty("width", widthStr);
+//  if (gTableChangeData.size.height)
+//    globalTableElement.style.setProperty("height", heightStr);
+  var pos = gDialog.tableLocationList.value;
+  var float = gDialog.floatLocationList.value;  
+  gTableElement.setAttribute("req","tabulary");
+  if (gDialog.tableWidthAutoCheckbox.checked)
+    gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
+  else
+    gTableElement.setAttribute("width",tableUnitsHandler.getValueAs(gDialog.tableWidth.value, "pt")+"pt");
+  if (pos) {
+    if (pos == "inline" || pos == "display") float = "";
+    if (float != "") {
+      gTableElement.setAttribute("pos","float");
+      msiRequirePackage(gActiveEditorElement, "wrapfig", "");
+      gTableElement.setAttribute("placement",placementCodeFrom(pos));
+      gTableElement.setAttribute("placeLocation", float);
+      doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");
+    }
+    else 
+    {
+      if (pos == "inline") doSetStyleAttr("display", "inline-table");
+      else 
+      {
+        doSetStyleAttr("display", "block");
+//        doSetStyleAttr("text-align", "center");
+      }
+    }
+  }
+  else doSetStyleAttr("display", "inline-table");
+  if (!bEmptyStyle)
+    theStyleString = globalTableElement.getAttribute("style");
+  if (theStyleString && theStyleString.length)
+    gActiveEditor.setAttribute(gTableElement, "style", theStyleString);
+  else
+    gActiveEditor.removeAttributeOrEquivalent(gTableElement, "style", false);
+  logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [style] on table element to [" + theStyleString + "]\n";
+  msiKludgeLogString(logStr, ["tableEdit"]);
+}
+
