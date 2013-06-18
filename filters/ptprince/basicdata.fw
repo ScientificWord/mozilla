@@ -1,6 +1,6 @@
 @A@<Basic TeX data types and parameters@>
 
-Now we introduce the data types used throughout the rest of \TeX{}.
+Introduce the data types used throughout the rest of \TeX{}.
 These include integers, dimensions, glue, tokens, token lists,
 fonts, and boxes. We also gather together all of the parameters
 defined in the \TeX{} language. These include simple parameters
