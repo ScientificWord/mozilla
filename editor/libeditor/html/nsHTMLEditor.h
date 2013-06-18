@@ -165,6 +165,9 @@ public:
 
   NS_DECL_NSIHTMLEDITOR
 
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
+
   /* ------------ nsIHTMLObjectResizer methods -------------- */
   /* -------- Implemented in nsHTMLObjectResizer.cpp -------- */
   NS_DECL_NSIHTMLOBJECTRESIZER
@@ -574,6 +577,8 @@ protected:
 
   virtual PRBool IsBlockNode(nsIDOMNode *aNode);
   
+  static PRBool ShouldSelectWholeObject(nsCOMPtr<nsIDOMNode> & aNode);
+
   nsCOMPtr<nsIDOMNode> GetEnclosingTable(nsIDOMNode *aNode);
 
   /** content-based query returns PR_TRUE if <aProperty aAttribute=aValue> effects aNode
@@ -1023,6 +1028,7 @@ protected:
   nsCOMPtr<nsIDOMElement> mPositioningShadow;
 
   PRInt32      mGridSize;
+  PRBool       mHaveNewPlots;
 
   nsresult CreateGrabber(nsIDOMNode * aParentNode, nsIDOMElement ** aReturn);
   nsresult StartMoving(nsIDOMElement * aHandle);
