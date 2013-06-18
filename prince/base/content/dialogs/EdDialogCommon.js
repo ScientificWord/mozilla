@@ -361,7 +361,7 @@ function getColor(ColorPickerID)
     if (color && color == "")
       return null;
     // Clear color so next if it's called again before
-    //  color picker is actually used, we dedect the "don't set color" state
+    //  color picker is actually used, we detect the "don't set color" state
     colorPicker.setAttribute("color","");
   }
 
@@ -386,6 +386,7 @@ function setColorWell(ColorWellID, color)
     {
       colorWell.removeAttribute("default");
       // Use setAttribute so colorwell can be a XUL element, such as button
+      colorWell.setAttribute("color", color);
       colorWell.setAttribute("style", "background-color:"+color);
     }
   }

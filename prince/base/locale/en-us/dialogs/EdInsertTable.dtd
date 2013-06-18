@@ -123,13 +123,19 @@
 <!ENTITY borderSideSelection.label        "Selected side">
 <!ENTITY borderSideSelection.accesskey    "s">
 <!ENTITY borderSelectAll.label            "All">
+<!ENTITY borderSelectAll.accesskey           "a">
 <!ENTITY borderSelectTop.label            "Top">
+<!ENTITY borderSelectTop.accesskey           "t">
 <!ENTITY borderSelectRight.label          "Right">
+<!ENTITY borderSelectRight.accesskey           "r">
 <!ENTITY borderSelectBottom.label         "Bottom">
+<!ENTITY borderSelectBottom.accesskey           "b">
 <!ENTITY borderSelectLeft.label           "Left">
+<!ENTITY borderSelectLeft.accesskey           "l">
+<!ENTITY borderSelectOutline.label        "Outline">
+<!ENTITY borderSelectOutline.accesskey    "o">
 <!ENTITY cellBorderStyleList.label        "Line style">
 <!ENTITY cellBorderStyleList.accesskey    "y">
-
 <!ENTITY borderStyleNone.label  "None">
 <!ENTITY borderStyleHidden.label "Hidden">
 <!ENTITY borderStyleDotted.label "Dotted">
