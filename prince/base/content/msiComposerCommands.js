@@ -1203,6 +1203,7 @@ var msiSaveCommand =
 
 function doSoftSave(editorElement, editor, noTeX)
 {
+  var result;
   if (editor)
   {
     // we should be doing this only for top level documents, and we should restore the focus

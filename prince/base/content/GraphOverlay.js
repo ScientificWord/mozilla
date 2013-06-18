@@ -472,7 +472,9 @@ Graph.prototype = {
     return value;
   },
   getGraphAttribute: function (name) {
-    return (this[name]);
+    if (this[name])
+      return (this[name]);
+    return null;
   },
   getValue: function (key) {
     var value = this.getGraphAttribute(key);
@@ -805,7 +807,7 @@ Graph.prototype = {
         dropData = DNDUtils.getData("text/html", 0);
         str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
         //      dragService.endDragSession(true);
-        scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
+        thisGraph.scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
       }
       return 1;
     };
@@ -813,6 +815,7 @@ Graph.prototype = {
   provideDropHandler: function (editorElement, domGraph) {
     var __domGraph = domGraph;
     var __editorElement = editorElement;
+    var thisGraph = this;
     return function () {
       var dropData, str;
       var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
@@ -820,7 +823,7 @@ Graph.prototype = {
       netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
       dropData = DNDUtils.getData("text/html", 0);
       str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
-      scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
+      thisGraph.scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
       //    dragService.endDragSession(true);
       return 1;
     };
@@ -1961,6 +1964,7 @@ Frame.prototype = {
       // put the graph file in
       // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use
       // the load API
+      DOMObj.vcamStatus = "uninitialized";
       if (!forComp)  //don't trigger any loading if we're only serializing - this isn't a "real" <object>
       {
         var existingObjFile = DOMObj.getAttribute("data");
@@ -2013,7 +2017,6 @@ Frame.prototype = {
       }
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
-      DOMObj.vcamStatus = "uninitialized";
 //      DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
       editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
@@ -2034,11 +2037,13 @@ function newPlotFromText(currentNode, expression, editorElement) {
     var firstplot = graph.plots[0];
     var plot = new Plot(graph.getDimension(), firstplot.attributes["PlotType"]);
     graph.addPlot(plot);
-    plot.initialize();
     plot.element["Expression"] = expression;
 //    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
+    graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement);
-    graph.reviseGraphDOMElement(currentNode, true, editorElement);
+    graph.reviseGraphDOMElement(currentNode, false, editorElement);
+    ensureVCamPreinitForPlot(currentNode, editorElement);
+//    nonmodalRecreateGraph(graph, currentNode, editorElement);
     //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
   }
   catch (e) {
@@ -3332,12 +3337,12 @@ function doAnalyzeVars(graphVarData, plot)
     {
       return 1;
     }
-    if (matchDataA.itemIsParametric())
+    if (matchDataA.targetParametric)
     {
-      if (!matchDataB.itemIsParametric())
+      if (!matchDataB.targetParametric)
         return 1;
     }
-    else if (matchDataB.itemIsParametric())
+    else if (matchDataB.targetParametric)
       return -1;
     if (matchDataA.whichPlot < matchDataB.whichPlot)
       return -1;
@@ -3870,6 +3875,7 @@ function newVar(x) {
 function plotVarsShouldMatchAxes(plotType, dim)
 {
   var retArray = [];
+  var ii;
   switch(plotType)
   {
     case "rectangular":

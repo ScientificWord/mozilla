@@ -191,6 +191,7 @@
 \def\out@preamble@tex#1{%
    \msitag{<preambleTeX><![CDATA[#1]]></preambleTeX>}}
 
+
 %% \document and \enddocument
 
 \def\out@begin@document{%
@@ -445,7 +446,7 @@
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
 
-
+\def\@descr{descriptionListItem}
 \newif\if@first@item
 
 
@@ -457,8 +458,12 @@
      \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
    \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}}%
-   \expandafter\startitemtag\expandafter{\itemprefix}%
-   \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+   \expandafter\startitemtag\expandafter{\itemprefix}%      
+   \ifx\itemprefix\@descr
+     \msitag{<bodyText><descriptionLabel>}#1\msitag{</descriptionLabel></bodyText>}%
+   \else
+     \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+   \fi
 }
 
 \def\out@itemb{
@@ -1194,7 +1199,7 @@
 
 %% \'{\^{e}}
 
-\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\noexpand\csname#1\endcsname\else\@hex{#2}\fi}}
+\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\string\csname#1\endcsname{}\else\@hex{#2}\fi}}
 
 
 %% Spacing
@@ -1413,13 +1418,17 @@
 \def\text{\@mathintextfalse\catcode`\$=\active\@text}
 
 \def\@text#1{%
-  \msitag{\msipassthru}%
-  \char`\{%
-  \msiopentag{mtext}{<mtext>}%
-  \begingroup #1\endgroup%
-  \msiclosetag{mtext}{</mtext>}%
-  \char`\}
-  \catcode`\$=3\relax}
+  \begingroup
+    \msitag{\msipassthru}%
+    \char`\{%
+    \msitag{<mspace width="thickmathspace"/>}%
+    \msiopentag{mtext}{<mtext>}%
+    \begingroup \msihmode #1\endgroup%
+    \msiclosetag{mtext}{</mtext>}%
+    \msitag{<mspace width="thickmathspace"/>}%
+    \char`\}
+    \catcode`\$=3\relax
+  \endgroup}
 
    
 \def\vspace{%
@@ -1720,14 +1729,14 @@
        \msihmode
        \msitag{<texb enc="1" name="makeatother">}%
            <![CDATA[\string\makeatother]]>%
-       \msitag{</texb>}
+       \msitag{</texb>}%
        \catcode`\@=12}
 
    \def\makeatletter{%
        \msihmode
        \msitag{<texb enc="1" name="makeatletter">}%
            <![CDATA[\string\makeatletter]]>%
-       \msitag{</texb>}
+       \msitag{</texb>}%
        \catcode`\@=11}
 
 }
@@ -1795,8 +1804,13 @@
 
 \def\msidefault#1{%
   \ifmmode
-    \string#1%
-    \def\@next{\relax}%
+    %\string#1%
+    \msitag{\msipassthru}%
+    \char`\{
+    \msiopentag{texb}{<texb enc="1" name="#1">}%
+       \msitag{<![CDATA[#1}
+    %\def\@next{\relax}%
+    \let\@next\@gobbleargs
   \else
     \def\@next{\expandafter\msidefaulta\expandafter{\string #1}}%
   \fi
@@ -1825,9 +1839,12 @@
     \ifnum\msi@inpreamble=1
        \msitopreambleextra{]]></texb>}
        \msiclosetag{texb}{}
-    \else       
-       \msitag{]]>}%
-       \msiclosetag{texb}{</texb>}%
+    \else
+         \msitag{]]>}%
+         \msiclosetag{texb}{</texb>}%
+         \ifmmode
+           \char`\} % to close off msipassthru
+         \fi
     \fi}
 
 
@@ -1884,9 +1901,13 @@
    
 
 % A hack to fool the jbm filter into handling \dots gracefully
-\def\dots{\msitag{\U{2026}}}
+%\def\dots{%
+%  \ifmmode
+%    \msitag{\U{2026}}%
+%  \else
+%    }
 
 \input latex-default.tex
-\input tcilatex.tex
+%\input tcilatex.tex
 
 \catcode`\<=\active

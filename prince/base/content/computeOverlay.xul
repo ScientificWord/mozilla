@@ -241,6 +241,9 @@
     <command id="cmd_vcQuery"         oncommand="doVCamCommand('cmd_vcQuery')"/>
     <command id="cmd_vcSelObj"        oncommand="doVCamCommand('cmd_vcSelObj')"/>
     <command id="cmd_vcFitContents"   oncommand="doVCamCommand('cmd_vcFitContents')"/>
+    <command id="cmd_vcUpdatePlots" newplots="false">
+	    <observes id="vcamNewPlotObserver" element="newPlotsInDocument" attribute="newplots" onbroadcast="onNewPlotsInDocument();"/>
+    </command>
   </commandset>
 
   <broadcasterset id="vcam_broadcasterset">
@@ -248,6 +251,7 @@
     <broadcaster id="3dplot" hidden = "true" />
     <broadcaster id="2dplot" hidden = "true" />
     <broadcaster id="animplot" hidden = "true" />
+    <broadcaster id="newPlotsInDocument" newplots = "false" onbroadcast="onNewPlotsInDocument();"/>
   </broadcasterset>
   
   

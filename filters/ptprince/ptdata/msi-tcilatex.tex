@@ -1,9 +1,14 @@
 \makeatletter
 
-\@ifundefined{@TCILATEX}
-  {\gdef\@TCILATEX{\relax}}
-  {\endinput}
 
+\ifnum\msi@inpreamble=1
+   \msitopreambleextra{<texb pre="1" enc="1" name="tcilatex"><![CDATA[\input{tcilatex}]]></texb>}
+   \msi@output=1
+\fi
+
+\@ifundefined{@TCILATEX}
+  {\gdef\@TCILATEX{\relax}}%
+  {\endinput}
   
 
 \def\QTR#1{%
@@ -35,13 +40,13 @@
    \msiclosetag{QTR}{</QTR>}%
 }
 
-\def\QTP#1{%
-   \msitag{^^0a}%
-   \msihmode
-   \msiopentag{QTP}{<QTP type="#1">}% 
-   \begingroup
-   \everypar={\msiclosetag{QTP}{</QTP>}\endgroup}%
-}
+%%\def\QTP#1{%
+%%   \msitag{^^0a}%
+%%   \msihmode
+%%   \msiopentag{QTP}{<QTP type="#1">}% 
+%%   \begingroup
+%%   \everypar={\msiclosetag{QTP}{</QTP>}\endgroup}%
+%%}
 
 
 \MSIMathQuote{\FORMULA}

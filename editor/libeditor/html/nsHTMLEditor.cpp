@@ -188,6 +188,7 @@ nsHTMLEditor::nsHTMLEditor()
 , mGridSize(0)
 , m_fOneShot(PR_FALSE)
 , mfocusedPlot(nsnull)
+, mHaveNewPlots(PR_FALSE)
 {
   mHTMLCSSUtils = nsnull;
   nsCOMPtr<msiTagListManager> manager;
@@ -4820,6 +4821,43 @@ static nsresult SetSelectionAroundHeadChildren(nsCOMPtr<nsISelection> aSelection
   return aSelection->Extend(headNode, childCount+1);
 }
 
+PRBool nsHTMLEditor::ShouldSelectWholeObject(nsCOMPtr<nsIDOMNode> & aNode)
+{
+  if (IsTextNode(aNode))
+    return PR_FALSE;
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+  nsAutoString tagName;
+  PRBool rv = PR_FALSE;
+  if (element)
+    element->GetTagName(tagName);
+  if (tagName.EqualsLiteral("graph") || tagName.EqualsLiteral("graphSpec") ||
+          tagName.EqualsLiteral("object") || tagName.EqualsLiteral("plot") ||
+          tagName.EqualsLiteral("plotwrapper"))
+    rv = PR_TRUE;
+  else if (tagName.EqualsLiteral("msiframe"))
+  {
+    nsCOMPtr<nsIDOMNodeList> childList;
+    nsCOMPtr<nsIDOMNode> kid;
+    aNode->GetChildNodes( getter_AddRefs(childList));
+    PRUint32 length;
+    childList->GetLength(&length);
+    //We check the children - if an msiframe is a minipage, any <object>s or plots in it should be contained
+    //in paragraph tags, hence not direct children.
+    for (PRUint32 ix = 0; !rv && (ix < length); ++ix)
+    {
+      childList->Item(ix, getter_AddRefs(kid));
+      element = do_QueryInterface(kid);
+      if (element)
+      {
+        element->GetTagName(tagName);
+        if (tagName.EqualsLiteral("plotwrapper") || tagName.EqualsLiteral("object"))
+          rv = PR_TRUE;
+      }
+    }
+  }
+  return rv;
+}
+
 NS_IMETHODIMP
 nsHTMLEditor::GetHeadContentsAsHTML(nsAString& aOutputString)
 {
@@ -4942,6 +4980,7 @@ nsHTMLEditor::StartOperation(PRInt32 opID, nsIEditor::EDirection aDirection)
   nsEditor::StartOperation(opID, aDirection);  // will set mAction, mDirection
   if (! ((mAction==kOpInsertText) || (mAction==kOpInsertIMEText)) )
     ClearInlineStylesCache();
+  mHaveNewPlots = PR_FALSE;
   if (mRules) return mRules->BeforeEdit(mAction, mDirection);
   return NS_OK;
 }
@@ -4955,6 +4994,17 @@ nsHTMLEditor::EndOperation()
   // post processing
   if (! ((mAction==kOpInsertText) || (mAction==kOpInsertIMEText) || (mAction==kOpIgnore)) )
     ClearInlineStylesCache();
+  if (mHaveNewPlots && ((mAction == kOpHTMLPaste) || (mAction == nsEditor::kOpUndo) || (mAction == nsEditor::kOpRedo)) )
+  {
+    nsCOMPtr<nsIDOMDocument> domdoc1;
+    nsCOMPtr<nsIDOMElement> broadcaster;
+    nsresult res = m_window->GetDocument( getter_AddRefs(domdoc1));
+    res = domdoc1->GetElementById(NS_LITERAL_STRING("newPlotsInDocument"), getter_AddRefs(broadcaster));
+    if (!NS_FAILED(res) && broadcaster)
+      broadcaster->SetAttribute(NS_LITERAL_STRING("newplots"), NS_LITERAL_STRING("true"));
+    mHaveNewPlots = PR_FALSE;
+  }
+
   nsresult res = NS_OK;
   if (mRules) res = mRules->AfterEdit(mAction, mDirection);
   nsEditor::EndOperation();  // will clear mAction, mDirection
@@ -5155,6 +5205,57 @@ void nsHTMLEditor::IsTextPropertySetByContent(nsIDOMNode        *aNode,
     }
     else {
       node = nsnull;
+    }
+  }
+}
+
+void
+nsHTMLEditor::ContentAppended(nsIDocument *aDocument, nsIContent* aContainer,
+                          PRInt32 aNewIndexInContainer)
+{
+  if ((mAction != kOpHTMLPaste) && (mAction != nsEditor::kOpUndo) && (mAction != nsEditor::kOpRedo))
+    nsEditor::ContentInserted(aDocument, aContainer, nsnull, aNewIndexInContainer);
+
+  PRUint32 count = aContainer->GetChildCount();
+  for (PRUint32 i = aNewIndexInContainer; i < count; ++i) {
+    ContentInserted(aDocument, aContainer, aContainer->GetChildAt(i), aNewIndexInContainer);
+  }
+}
+
+void
+nsHTMLEditor::ContentInserted(nsIDocument *aDocument, nsIContent* aContainer,
+                          nsIContent* aChild, PRInt32 aIndexInContainer)
+{
+  nsEditor::ContentInserted(aDocument, aContainer, aChild, aIndexInContainer);
+  if ( aChild && ((mAction == kOpHTMLPaste) || (mAction == nsEditor::kOpUndo) || (mAction == nsEditor::kOpRedo)) )
+  {
+    nsAutoString buf;
+    aChild->Tag()->ToString(buf);
+    nsCOMPtr<nsIDOMElement> aGraph = do_QueryInterface(aChild);
+    if (buf.EqualsLiteral("graph"))
+    {
+      mHaveNewPlots = PR_TRUE;
+      aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
+    }
+    nsCOMPtr<nsIDOMNode> childNode = do_QueryInterface(aChild);
+    if (!IsTextNode(childNode))
+    {
+      nsCOMPtr<nsIDOMElement> childElem = do_QueryInterface(aChild);
+      PRUint32 length = 0;
+      nsCOMPtr<nsIDOMNodeList> graphList;
+      nsresult res = childElem->GetElementsByTagName(NS_LITERAL_STRING("graph"), getter_AddRefs(graphList));
+      if (NS_SUCCEEDED(res))
+        graphList->GetLength(&length);
+      if (length > 0)
+      {
+        mHaveNewPlots = PR_TRUE;
+        for (PRUint32 i = 0; i < length; ++i)
+        {
+          res = graphList->Item(0, getter_AddRefs(childNode));
+          aGraph = do_QueryInterface(childNode);
+          aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
+        }
+      }
     }
   }
 }
