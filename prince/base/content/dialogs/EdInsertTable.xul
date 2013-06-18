@@ -33,6 +33,7 @@
 
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml"
     onload = "Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
@@ -44,7 +45,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/EdInsertTable.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdTableProps.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
@@ -52,13 +53,13 @@
   <broadcaster id="currentunits" value=""/>
   <tabbox>
     <tabs id="tabpanel-tabs">
-      <tab label="&quicklyTab.label;"/>
+      <tab id="QuicklyTab" label="&quicklyTab.label;"/>
       <tab id="TableTab" label="&tableTab.label;"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
     </tabs>
     <tabpanels>
-      <vbox id="tablegrid" flex="1">
+      <tabpanel id="tablegrid" flex="1">
         <spacer class="spacer" flex="1"/>
         <grid class="sizeSelector">
           <columns><column flex="1"/><column/><column flex="1"/></columns>
@@ -143,8 +144,8 @@
           <spacer class="spacer" flex="1"/>
         </hbox>
         <spacer class="spacer" flex="1"/>
-      </vbox>
-      <tabpanel>
+      </tabpanel>
+      <tabpanel id="tableTabPanel">
         <vbox>
           <hbox>
             <groupbox flex="1"><caption label="&size.label;"/>
@@ -254,8 +255,7 @@
                   <label value="&Rowheight.label;"/>
                   <textbox id="CellHeightInput" type="number" class="medwidth" 
                            oninput=""/>
-<!--                   <menulist id="cellUnitsList" oncommand="onChangeTableUnits();" />
- -->                </row>
+                </row>
                 <row align="center">
                   <label value="&Columnwidth.label;"/>
                   <textbox id="CellWidthInput" type="number" class="medwidth" 
@@ -306,28 +306,27 @@
         </groupbox>
         <spacer flex="1"/>
       </tabpanel><!-- Cells Panel -->
-     
       <!-- Lines PANEL -->
-      <tabpanel>
+      <tabpanel id = "lineprops">
         <vbox>
           <hbox>
             <vbox>
               <hbox>
                 <label control="BorderSideSelectionList" value="&borderSideSelection.label;" accesskey="&borderSideSelection.accesskey;" />
-                <menulist id="BorderSideSelectionList" value="all" oncommand="setCurrSide(this.value);">
+                <menulist id="BorderSideSelectionList" value="all"  oncommand="checkPreviewChanges();">
                   <menupopup>
-                    <menuitem label="&borderSelectAll.label;"  value="all"/>
-                    <menuitem label="&borderSelectTop.label;"  value="top"/>
-                    <menuitem label="&borderSelectRight.label;"  value="right"/>
-                    <menuitem label="&borderSelectBottom.label;"  value="bottom"/>
-                    <menuitem label="&borderSelectLeft.label;"  value="left"/>
+                    <menuitem id="all" label="&borderSelectAll.label;"  
+                      value="all"/>
+                    <menuitem id="top" label="&borderSelectTop.label;"  value="top" />
+                    <menuitem id="right" label="&borderSelectRight.label;"  value="right" />
+                    <menuitem id="bottom" label="&borderSelectBottom.label;"  value="bottom"/>
+                    <menuitem id="left" label="&borderSelectLeft.label;"  value="left"/>
+                    <menuitem id="outline" label="&borderSelectOutline.label;"  value="outline"/>
                   </menupopup>
                 </menulist>
               </hbox>
-              <description id="BordersPreview" class="MSISample"  flex="1" valign="center"
-                  xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                  xmlns:mml="http://www.w3.org/1998/Math/MathML">
-                <xhtml:table align="center" valign="center">
+              <description id="BordersPreview" class="MSISample"  flex="1" valign="center">
+                <xhtml:table align="center" valign="center" style="border-collapse: separate; border-spacing: 0;">
                   <xhtml:tr>
                     <xhtml:td><xhtml:span>te</xhtml:span></xhtml:td>
                     <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
@@ -357,7 +356,7 @@
                     <label control="cellBorderStyleList"
                            value="&cellBorderStyleList.label;"
                            accesskey="&cellBorderStyleList.accesskey;"/>
-                    <menulist id="cellBorderStyleList" oncommand="checkPreviewChanges(this.id);">
+                    <menulist id="cellBorderStyleList" oncommand="checkPreviewChanges();">
                       <menupopup>
                         <menuitem label="" value="inherit"/>
                         <menuitem label="&borderStyleNone.label;"  value="none" selected = "true"/>
@@ -379,7 +378,7 @@
                            accesskey="&tableBorderWidth.accesskey;"/>
                     <!-- textbox class="narrow" id="BorderWidthInput" oninput="forceInteger(this.id);"/>
                     <label align="left" value="&pixels.label;"/ -->
-                    <menulist id="cellBorderWidthList" oncommand="checkPreviewChanges(this.id);">
+                    <menulist id="cellBorderWidthList" oncommand="checkPreviewChanges();">
                       <menupopup>
                         <menuitem label="&borderWidthNone.label;" value="none"/>
                         <menuitem label="&borderWidthThin.label;" value="thin"/>
@@ -390,7 +389,7 @@
                   </row>
                   <row align="center">
                     <label id="BorderColorLabel" value="&borderColor.label;"/>
-                    <msibutton class="color-button" oncommand="GetColorAndUpdate('borderCW');">
+                    <msibutton class="color-button" oncommand="GetColorAndUpdate('borderCW'); checkPreviewChanges();">
                       <spacer id="borderCW" class="color-well"/>
                     </msibutton>
                   </row>
