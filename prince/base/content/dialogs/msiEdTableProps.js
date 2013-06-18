@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  Copyright 2009 MacKichan Software, Inc. *
  * ***** END LICENSE BLOCK ***** */
+"use strict";
+
 Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 
 
@@ -31,6 +33,8 @@ var gColCount = 1;
 var gLastRowIndex;
 var gLastColIndex;
 var gNewRowCount;
+var unitHandler;
+var newTable;
 //var gNewColCount;
 //var gCurRowIndex;
 //var gCurColIndex;
@@ -57,8 +61,22 @@ From C++:
                           Note: This is the value if all rows (thus all cells) are selected
  3 TABLESELECTION_COLUMN All cells are in 1 or more columns
 */
+var gCellID = 12;
 
 //var gSelectedCellCount = 0;
+var gOurCellData;
+var gInitialCellData;
+var gCollatedCellData = {};  //This starts out as the same as the previous, but changes as the user makes selections in the dialog.
+var gColElementArray;
+var gRowElementArray;
+
+var gTableColor;
+var gTableCaptionPlacement;
+var gTableBaseline = "baseline";
+var gBorderCollapse = "collapse";  //This should be the default???
+
+var gCellChangeData;
+var gTableChangeData;
 var gCurrentSide = "";
 var gBorderSides = ["top", "right", "bottom", "left"];
 
@@ -83,6 +101,112 @@ var data;
 
 // dialog initialization code
 
+function MakePersistsValue(elt)
+{
+  elt.setAttribute("value", elt.value);
+}
+
+function SelectSize(cell)
+{
+  gColumns  = (gCellID % 10);
+  gRows     = Math.ceil(gCellID / 10);
+
+  gDialog.rowsInput.value    = gRows;
+  gDialog.columnsInput.value = gColumns;
+
+  DisplaySize();
+}
+
+
+function DisplaySize()
+{
+  var i, anyCell;
+  for (i = 1; i < 80; i += 10)
+  {
+    anyCell = document.getElementById("c"+i);
+    while (anyCell)
+    {
+      anyCell.removeAttribute("mark");
+      anyCell = anyCell.nextSibling;
+    }
+  }
+
+  var numCellID;
+  numCellID = Math.min(gRows-1,7)*10 + Math.min(gColumns,8);
+  for (i = numCellID; i > 0; i -= 10)
+  {
+    anyCell = document.getElementById("c"+i);
+    while (anyCell)
+    {
+      anyCell.setAttribute("mark", "true");
+      anyCell = anyCell.previousSibling;
+    }
+  }
+  ShowSize();
+}
+
+function SelectArea(cellID)
+{
+  var numCellID = Number(cellID.substr(1));
+
+  // early way out if we can...
+  if (gCellID == numCellID)
+    return;
+
+  gCellID = numCellID;
+
+  var i, anyCell;
+  for (i = 1; i < 60; i += 10)
+  {
+    anyCell = document.getElementById("c"+i);
+    while (anyCell)
+    {
+      anyCell.removeAttribute("class");
+      anyCell = anyCell.nextSibling;
+    }
+  }
+
+  for (i = numCellID; i > 0; i -= 10)
+  {
+    anyCell = document.getElementById("c"+i);
+    while (anyCell)
+    {
+      anyCell.setAttribute("class", "selected");
+      anyCell = anyCell.previousSibling;
+    }
+  }
+  ShowSize();
+}
+
+function ShowSize()
+{
+  var columns  = (gCellID % 10);
+  var rows     = Math.ceil(gCellID / 10);
+  gDialog.sizeLabel.value = rows + " x " + columns;
+}
+
+function ChangeRowOrColumn(id)
+{
+  // Allow only integers
+  forceInteger(id);
+
+  // Enable OK only if both rows and columns have a value > 0
+  var enable = gDialog.rowsInput.value.length > 0 && 
+                              gDialog.rowsInput.value > 0 &&
+                              gDialog.columnsInput.value.length > 0 &&
+                              gDialog.columnsInput.value > 0;
+
+  SetElementEnabled(gDialog.OkButton, enable);
+  SetElementEnabledById("AdvancedEditButton1", enable);
+  if (enable) 
+  {  
+    gRows = gDialog.rowsInput.value;  
+    gColumns = gDialog.columnsInput.value;
+    gCellID = 10*(gColumns) - - gRows;  //forces gRows to a number
+    DisplaySize();
+  }
+}
+
 function setVariablesForControls()
 {
   // Get dialog widgets - Table Panel
@@ -90,15 +214,17 @@ function setVariablesForControls()
   gDialog.TableTab =  document.getElementById("TableTab");
   gDialog.CellsTab =  document.getElementById("CellsTab");
   gDialog.LinesTab =  document.getElementById("LinesTab");
+  gDialog.sizeLabel = document.getElementById("sizeLabel");
 
 //  gDialog.tableRowCount = document.getElementById("tableRowCount");
 //  gDialog.tableColumnCount = document.getElementById("tableColumnCount");
-  gDialog.tableRowsNumber = document.getElementById("tableRowNum");
-  gDialog.tableColsNumber = document.getElementById("tableColNum");
+  gDialog.rowsInput = document.getElementById("rowsInput");
+  gDialog.columnsInput = document.getElementById("columnsInput");
+  gDialog.widthInput     = document.getElementById("widthInput");
 
   gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
   gDialog.tableWidth =  document.getElementById("tableWidth");
-  gDialog.tableUnitsList = document.getElementById("tableUnitsList");
+  gDialog.unitMenulist = document.getElementById("unitMenulist");
   gDialog.tableWidthAutoCheckbox = document.getElementById("autoWidthCheckbox");
 
   gDialog.tableLocationList =  document.getElementById("tableLocationList");
@@ -111,7 +237,7 @@ function setVariablesForControls()
   gDialog.CellHeightInput = document.getElementById("CellHeightInput");
   gDialog.CellHeightUnits = document.getElementById("CellHeightUnits");
   gDialog.CellWidthInput = document.getElementById("CellWidthInput");
-  gDialog.cellUnitsList = document.getElementById("cellUnitsList");
+  // gDialog.cellUnitsList = document.getElementById("cellUnitsList");
 
   gDialog.hAlignChoices = document.getElementById("hAlignChoices");
   gDialog.vAlignChoices = document.getElementById("vAlignChoices");
@@ -125,7 +251,6 @@ function setVariablesForControls()
   gDialog.CellBorderStyleList = document.getElementById("cellBorderStyleList");
   gDialog.CellBorderWidthList = document.getElementById("cellBorderWidthList");
   gDialog.borderCW = document.getElementById("borderCW");
-
 }
 
 function getValueForAllSides(aData, defaultVal)
@@ -155,8 +280,8 @@ function setUpCollatedCellData(collatedCellData, initialCellData)
   collatedCellData.border.color.defaultVal = "black";
   collatedCellData.border.color.__defineGetter__( "all", function() {return getValueForAllSides(this, this.defaultVal);} );
   collatedCellData.border.color.__defineSetter__( "all", function(aVal) {setValueForAllSides(this, aVal);} );
-  collatedCellData.size.bHeightSet = (initialCellData.size.bHeightSet != null) && (initialCellData.size.bHeightSet == true);
-  collatedCellData.size.bWidthSet = (initialCellData.size.bWidthSet != null) && (initialCellData.size.bWidthSet == true);
+  collatedCellData.size.bHeightSet = (initialCellData.size.bHeightSet != null) && (initialCellData.size.bHeightSet === true);
+  collatedCellData.size.bWidthSet = (initialCellData.size.bWidthSet != null) && (initialCellData.size.bWidthSet === true);
 }
 
 function setDataFromReviseData(reviseData, commandStr)
@@ -217,6 +342,10 @@ function createCellDataObject(srcData)
     srcBackground = srcData.background;
     srcCellType = srcData.cellType;
   }
+  else
+  {
+    srcBorder = srcSize = srcAlign = srcWrap = srcBackground = srcCellType = null;
+  }
   var retObj = { border      : createCellBorderData(srcBorder),
                  size        : createCellSizeData(srcSize),
                  align       : createCellAlignData(srcAlign),
@@ -228,25 +357,9 @@ function createCellDataObject(srcData)
 
 function createCellBorderData(srcBorderData)
 {
-  var borderData = { 
-    style : {
-      top : "solid", 
-      right : "solid", 
-      bottom : "solid", 
-      left : "solid"
-    },
-    width : {
-      top : "thin", 
-      right : "thin", 
-      bottom : "thin", 
-      left : "thin"
-    },
-    color : {
-      top : "#000000", 
-      right : "#000000", 
-      bottom : "#000000", 
-      left : "#000000"} 
-    };
+  var borderData = { style : {top : "solid", right : "solid", bottom : "solid", left : "solid"},
+                     width : {top : "thin", right : "thin", bottom : "thin", left : "thin"},
+                     color : {top : "#000000", right : "#000000", bottom : "#000000", left : "#000000"} };
   var aSide;
   if (srcBorderData)
   {
@@ -286,10 +399,12 @@ function createCellSizeData(srcSizeData)
 function createCellAlignData(srcAlignData)
 {
   var retAlignData = { halign : "left", valign : "middle" };
-  if ("halign" in srcAlignData)
-    retAlignData.halign = srcAlignData.halign;
-  if ("valign" in srcAlignData)
-    retAlignData.valign = srcAlignData.valign;
+  if (srcAlignData) {
+    if ("halign" in srcAlignData)
+      retAlignData.halign = srcAlignData.halign;
+    if ("valign" in srcAlignData)
+      retAlignData.valign = srcAlignData.valign;
+  }
   return retAlignData;
 }
 
@@ -312,17 +427,14 @@ function UseCSSForCellProp(propName)
     case "border-style":
 //      return (!gIsMatrix);
       return false;
-    break;
 
     case "width":
     case "cellwidth":
       return (!gIsMatrix && !ShouldSetWidthOnCols());
-    break;
     case "cellheight":
     case "height":
       return (gIsMatrix || !ShouldSetHeightOnRows());
 //      return (!gIsMatrix && !ShouldSetHeightOnRows());
-    break;
   }
   return true;
 }
@@ -345,17 +457,14 @@ function translateSelectionTypeString(selTypeStr)
   {
     case "Row":
       return SELECT_ROW;
-    break;
     case "Column":
       return SELECT_COLUMN;
-    break;
-    case "Table":  //For Table mode, doesn't seem to matter what we say the selection type is. On the other hand, our code will
-                   //  pay attention to the selection type string rather than this variable.
-    case "Cell":
-    case "CellGroup":
+//    case "Table":  //For Table mode, doesn't seem to matter what we say the //selection type is. On the other hand, our code will
+//                   //  pay attention to the selection type string rather than this //variable.
+//    case "Cell":
+//    case "CellGroup":
     default:
       return SELECT_CELL;
-    break;
   }
   return SELECT_CELL;  //put it out here just for redundancy's sake
 }
@@ -388,6 +497,19 @@ function Startup()
       return;
     }
   }
+  else {
+    newTable = true;
+    gInitialCellData = gCollatedCellData = createCellDataObject(null);
+ 
+    try {
+      gTableElement = gActiveEditor.createElementWithDefaults("table");
+      gTableElement.setAttribute("req","tabulary");
+    } 
+    catch (e) {
+
+    }
+  }
+
 
 //  if (!gSelection)  //should get set in "setDataFromReviseData" call
 //  {
@@ -558,7 +680,30 @@ function InitDialog()
 //  InitCellsPanel();
 }
 
-var tableUnitsHandler;
+
+function initUnitHandler()
+{
+  unitHandler = new UnitHandler();
+  var fieldList = [];
+  var defaultUnit;
+  fieldList.push(gDialog.CellHeightInput);
+  fieldList.push(gDialog.CellWidthInput);
+  fieldList.push(gDialog.widthInput);
+  unitHandler.setEditFieldList(fieldList);
+  if (gPrefs)
+    defaultUnit = gPrefs.getCharPref("swp.defaultTableUnits");
+  gDialog.unitMenulist.setAttribute("value", unitHandler.getDisplayString(defaultUnit));
+  try {
+    unitHandler.buildUnitMenu(gDialog.unitMenulist, defaultUnit);
+
+  // need to check this and use default value from preferences if appropriate.
+    unitHandler.initCurrentUnit(gDialog.unitMenulist.value, defaultUnit);
+  }
+  catch(e) {
+    dump(e.message);
+  }  
+}
+
 
 function initTablePanel()
 {
@@ -571,38 +716,38 @@ function initTablePanel()
   var re;
   var match;
   var currUnit = "in";
-  tableUnitsHandler = new UnitHandler();
+  initUnitHandler();
   var tableStyle = gTableElement.getAttribute("style");
   if (gTableElement.hasAttribute("width"))
   {
     widthStr = gTableElement.getAttribute("width");
-    widthVal = tableUnitsHandler.getNumberAndUnitFromString(widthStr);
+    widthVal = unitHandler.getNumberAndUnitFromString(widthStr);
     if (!widthVal)
-      widthVal = tableUnitsHandler.getNumberAndUnitFromString(widthStr + "pt");
+      widthVal = unitHandler.getNumberAndUnitFromString(widthStr + "pt");
   }
   else if (gTableElement.hasAttribute("style"))
   {
     re = /width:\s*(\d*[^;]*)(;|$)/;
 //    match = re.exec(gTableElement.getAttribute("style"));
     match = re.exec(tableStyle);
-    if (match && match.length > 1) widthVal = tableUnitsHandler.getNumberAndUnitFromString(match[1]);
+    if (match && match.length > 1) widthVal = unitHandler.getNumberAndUnitFromString(match[1]);
   }
   if (gTableElement.hasAttribute("height"))
   {
     heightStr = gTableElement.getAttribute("height");
-    heightVal = tableUnitsHandler.getNumberAndUnitFromString(heightStr);
+    heightVal = unitHandler.getNumberAndUnitFromString(heightStr);
     if (!heightVal)
-      heightVal = tableUnitsHandler.getNumberAndUnitFromString(heightStr + "pt");
+      heightVal = unitHandler.getNumberAndUnitFromString(heightStr + "pt");
   }
   else if (gTableElement.hasAttribute("style"))
   {
     re = /height:\s*(\d*[^;]*)(;|$)/;
 //    match = re.exec(gTableElement.getAttribute("style"));
     match = re.exec(tableStyle);
-    if (match && match.length > 1) heightVal = tableUnitsHandler.getNumberAndUnitFromString(match[1]);
+    if (match && match.length > 1) heightVal = unitHandler.getNumberAndUnitFromString(match[1]);
   }
 
-  tableUnitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
+//  unitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
   if (widthVal)
   {
     currUnit = widthVal.unit;
@@ -610,8 +755,8 @@ function initTablePanel()
   }
   else
     gDialog.tableWidthAutoCheckbox.checked = true;
-  tableUnitsHandler.initCurrentUnit(currUnit);
-  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, currUnit);
+  // unitHandler.initCurrentUnit(currUnit);
+  // unitHandler.buildUnitMenu(gDialog.unitMenulist, currUnit);
   checkEnableWidthControls();
 
   try {
@@ -624,8 +769,8 @@ function initTablePanel()
   gLastColIndex = gColCount-1;
 //  gDialog.tableRowCount.value = gRowCount;
 //  gDialog.tableColumnCount.value = gColCount; 
-  gDialog.tableRowsNumber.value = " " + gRowCount;
-  gDialog.tableColsNumber.value = " " + gColCount;
+  gDialog.rowsInput.value = " " + gRowCount;
+  gDialog.columnsInput.value = " " + gColCount;
   if (widthVal && widthVal.number) gDialog.tableWidth.value = widthVal.number;
   if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
   gDialog.baselineList.value = gTableBaseline;
@@ -688,7 +833,7 @@ function initLinesPanel()
 
 function onChangeTableUnits()
 {
-  tableUnitsHandler.setCurrentUnit(gDialog.tableUnitsList.value);
+  unitHandler.setCurrentUnit(gDialog.unitMenulist.value);
 }
 
 
@@ -709,19 +854,19 @@ function setCurrSide(newSide)
 
 var cellUnitsHandler;
 
-function onChangeCellUnits()
-{
-  cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
-}
+// function onChangeCellUnits()
+// {
+//   cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
+// }
 
 function initCellsPanel()
 {
 //  var previousValue = gDialog.CellWidthInput.value;
-  cellUnitsHandler = new UnitHandler();
-  cellUnitsHandler.setEditFieldList([gDialog.CellWidthInput,gDialog.CellHeightInput]);
-  cellUnitsHandler.initCurrentUnit(gCellWidthUnit);
-  cellUnitsHandler.buildUnitMenu(gDialog.cellUnitsList, gCellWidthUnit);
-
+  cellUnitsHandler = unitHandler;
+//  cellUnitsHandler.setEditFieldList([gDialog.CellWidthInput,gDialog.CellHeightInput]);
+//  cellUnitsHandler.initCurrentUnit(gCellWidthUnit);
+//  cellUnitsHandler.buildUnitMenu(gDialog.cellUnitsList, gCellWidthUnit);
+//
 
 //  var theUnitsList = new msiCSSWithFontUnitsList(gCellFontSize, "pt");
 //  gWidthUnitsController = new msiUnitsListbox(gDialog.CellWidthUnits, [gDialog.CellWidthInput], theUnitsList);
@@ -1380,8 +1525,8 @@ function ValidateData()
 //rwa   else
 //rwa     globalElement = globalCellElement;
 //rwa
-  gCellWidthUnit = gDialog.cellUnitsList.value;
-  gCellHeightUnit = gCellWidthUnit;
+  // gCellWidthUnit = gDialog.cellUnitsList.value;
+  // gCellHeightUnit = gCellWidthUnit;
   return true;
 }
 
@@ -1437,13 +1582,13 @@ function ChangeCellSize(textID)
   {
     case "CellWidthInput":
       gCellChangeData.size.width = true;
-      gCellWidthUnit = gDialog.cellUnitsList.value;
-      gCollatedCellData.size.width = cellUnitsHandler.getValueOf(gDialog.CellWidthInput.value, gCellWidthUnit);
+      gCellWidthUnit = unitHandler.getCurrentUnit();
+      gCollatedCellData.size.width = unitHandler.getValueOf(gDialog.CellWidthInput.value, gCellWidthUnit);
     break;
     case "CellHeightInput":
       gCellChangeData.size.height = true;
-      gCellHeightUnit = gDialog.cellUnitsList.value;
-      gCollatedCellData.size.height = cellUnitsHandler.getValueOf(gDialog.CellHeightInput.value, gCellHeightUnit);
+      gCellHeightUnit = unitHandler.getCurrentUnit();
+      gCollatedCellData.size.height = unitHandler.getValueOf(gDialog.CellHeightInput.value, gCellHeightUnit);
     break;
   }
 }
@@ -1564,7 +1709,7 @@ function SetAnAttribute(destElement, theAttr, theAttrValue)
   //  modifying a table in the document and
   //  we need transaction system for undo
   try {
-    if (!theAttrValue || theAttrValue.length == 0)
+    if (!theAttrValue || theAttrValue.length === 0)
       gActiveEditor.removeAttributeOrEquivalent(destElement, theAttr, false);
     else
       msiEditorEnsureElementAttribute(destElement, theAttr, theAttrValue, gActiveEditor);
@@ -1623,7 +1768,7 @@ function DoStyleChangesForACell(destCell)
   {
     logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
     msiKludgeLogString(logStr, ["tableEdit"]);
-    var theWidth = cellUnitsHandler.getValueStringAs(gDialog.CellWidthInput.value, "px");
+    var theWidth = unitHandler.getValueStringAs(gDialog.CellWidthInput.value, "px");
     doSetStyleAttr("width", theWidth);
     doSetStyleAttr("min-width", theWidth);
   }
@@ -1635,7 +1780,7 @@ function DoStyleChangesForACell(destCell)
   if (gDialog.CellHeightInput.value && gDialog.CellHeightInput.value > 0)
   {
 //      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-    var theHeight = cellUnitsHandler.getValueStringAs(gDialog.CellHeightInput.value, "px");
+    var theHeight = unitHandler.getValueStringAs(gDialog.CellHeightInput.value, "px");
     logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(theHeight) + "px]\n";
     msiKludgeLogString(logStr, ["tableEdit"]);
     doSetStyleAttr("height", theHeight);
@@ -1689,7 +1834,7 @@ function ApplyTableAttributes()
     // This is the default
     if (!align) align = "top";
 
-    if (newAlign == "")
+    if (newAlign === "")
     {
       // Remove existing caption
       try {
@@ -1714,7 +1859,7 @@ function ApplyTableAttributes()
       } catch(e) {}
     }
   }
-  else if (newAlign != "")
+  else if (newAlign !== "")
   {
     // Create and insert a caption:
     try {
@@ -1781,10 +1926,10 @@ function ApplyTableAttributes()
   if (gDialog.tableWidthAutoCheckbox.checked)
     gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
   else
-    gTableElement.setAttribute("width",tableUnitsHandler.getValueAs(gDialog.tableWidth.value, "pt")+"pt");
+    gTableElement.setAttribute("width",unitHandler.getValueAs(gDialog.widthInput.value, "pt")+"pt");
   if (pos) {
     if (pos == "inline" || pos == "display") float = "";
-    if (float != "") {
+    if (float !== "") {
       gTableElement.setAttribute("pos","float");
       msiRequirePackage(gActiveEditorElement, "wrapfig", "");
       gTableElement.setAttribute("placement",placementCodeFrom(pos));
@@ -2004,7 +2149,7 @@ function findRowElementsInNode(aNode)
       case "th":
          //What to do here? If we encounter a <td> where we're looking for a <tr>, it means there aren't any <tr>'s in this node. However,
         //  there is an implied one - if we are a <tbody>, <thead>, or <tfoot> we should probably return it??
-        if (rowList.length == 0)
+        if (rowList.length === 0)
         {
           rowList.push(aNode);
           bDone = true;
@@ -2021,6 +2166,68 @@ function findRowElementsInNode(aNode)
 //This function currently just applies column widths and row heights
 function ApplyColAndRowAttributes()
 {
+  function getEndsOfSpanContaining(aColIndex, colElementArray)
+  {
+    var theSpan = {mStart : aColIndex, mEnd : aColIndex};
+    if (colElementArray[aColIndex] == null)
+    {
+      dump("In msiEdTableProps.js, ApplyColAndRowAttributes(), getEndsOfSpanContaining() called with aColIndex = [" + aColIndex + "]; array element not found!\n");
+    }  
+    if (colElementArray[aColIndex].mSpan < 0)
+      theSpan.mStart += colElementArray[aColIndex].mSpan;
+    theSpan.mEnd = theSpan.mStart + colElementArray[theSpan.mStart].mSpan - 1;
+    return theSpan;
+  }
+
+  function separateAColNode(firstCol, splitCol, colElementArray)
+  {
+    var originalCol = colElementArray[firstCol].mNode;
+    var newCol = null;
+    var oldStart = firstCol;
+    var insertPos = 0;
+    var kk;
+    if (colElementArray[firstCol].mSpan < 0)
+    {
+      dump("In msiEdTableProps.js, ApplyColAndRowAttributes(), separateAColNode() called on middle of a col node!\n");
+      return null;
+    }
+    var lastCol = firstCol + colElementArray[firstCol].mSpan - 1;
+    var retVal = {mOriginalNode : originalCol, mNewNode : null};
+    if (msiGetBaseNodeName(originalCol) != "col")
+    {
+      retVal.mOriginalNode = originalCol.ownerDocument.createElement("col");
+      gActiveEditor.insertNode(retVal.mOriginalNode, originalCol, 0);
+      gActiveEditor.removeAttribute(originalCol, "span");
+      originalCol = retVal.mOriginalNode;
+      gActiveEditor.setAttribute(originalCol, "span", String(splitCol - firstCol));
+      colElementArray[firstCol].mNode = originalCol;
+      for (var kk = firstCol + 1; kk < splitCol; ++kk)
+      {
+        colElements[kk].mNode = originalCol;
+        colElements[kk].mSpan = firstCol - kk;
+      }
+    }
+
+    if (data == null || data.reviseData == null) return;
+
+    retVal.mNewNode = originalCol.ownerDocument.createElement("col");
+    newCol = retVal.mNewNode;
+    msiCopyElementAttributes(newCol, originalCol, gActiveEditor);
+    insertPos = msiNavigationUtils.offsetInParent(originalCol) + 1;
+    gActiveEditor.insertNode(newCol, originalCol.parentNode, insertPos);
+    gActiveEditor.setAttribute( newCol, "span", String(lastCol - splitCol + 1) );
+    colElementArray[firstCol].mSpan = splitCol - firstCol;
+    colElementArray[splitCol].mNode = newCol;
+    colElementArray[splitCol].mSpan = lastCol - splitCol + 1;
+    for (kk = splitCol + 1; kk <= lastCol; ++kk)
+    {
+      colElementArray[kk].mNode = newCol;
+      colElementArray[kk].mSpan = splitCol - kk;
+    }
+    return retVal;
+  }
+
+  if (data == null || data.reviseData == null) return;
   if (gIsMatrix)
   {
     ApplyMatrixColAndRowAttributes();
@@ -2043,64 +2250,8 @@ function ApplyColAndRowAttributes()
     var currSelectedCol = -1;
 //    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;  we should be using something more like this...
     if (gCollatedCellData.size.bWidthSet)
-      theWidth = cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px");
+      theWidth = unitHandler.getValueAs(gDialog.CellWidthInput.value, "px");
 
-    function getEndsOfSpanContaining(aColIndex, colElementArray)
-    {
-      var theSpan = {mStart : aColIndex, mEnd : aColIndex};
-      if (colElementArray[aColIndex] == null)
-      {
-        dump("In msiEdTableProps.js, ApplyColAndRowAttributes(), getEndsOfSpanContaining() called with aColIndex = [" + aColIndex + "]; array element not found!\n");
-      }  
-      if (colElementArray[aColIndex].mSpan < 0)
-        theSpan.mStart += colElementArray[aColIndex].mSpan;
-      theSpan.mEnd = theSpan.mStart + colElementArray[theSpan.mStart].mSpan - 1;
-      return theSpan;
-    }
-
-    function separateAColNode(firstCol, splitCol, colElementArray)
-    {
-      var originalCol = colElementArray[firstCol].mNode;
-      var newCol = null;
-      var oldStart = firstCol;
-      var insertPos = 0;
-      if (colElementArray[firstCol].mSpan < 0)
-      {
-        dump("In msiEdTableProps.js, ApplyColAndRowAttributes(), separateAColNode() called on middle of a col node!\n");
-        return null;
-      }
-      var lastCol = firstCol + colElementArray[firstCol].mSpan - 1;
-      var retVal = {mOriginalNode : originalCol, mNewNode : null};
-      if (msiGetBaseNodeName(originalCol) != "col")
-      {
-        retVal.mOriginalNode = originalCol.ownerDocument.createElement("col");
-        gActiveEditor.insertNode(retVal.mOriginalNode, originalCol, 0);
-        gActiveEditor.removeAttribute(originalCol, "span");
-        originalCol = retVal.mOriginalNode;
-        gActiveEditor.setAttribute(originalCol, "span", String(splitCol - firstCol));
-        colElementArray[firstCol].mNode = originalCol;
-        for (var kk = firstCol + 1; kk < splitCol; ++kk)
-        {
-          colElements[kk].mNode = originalCol;
-          colElements[kk].mSpan = firstCol - kk;
-        }
-      }
-      retVal.mNewNode = originalCol.ownerDocument.createElement("col");
-      newCol = retVal.mNewNode;
-      msiCopyElementAttributes(newCol, originalCol, gActiveEditor);
-      insertPos = msiNavigationUtils.offsetInParent(originalCol) + 1;
-      gActiveEditor.insertNode(newCol, originalCol.parentNode, insertPos);
-      gActiveEditor.setAttribute( newCol, "span", String(lastCol - splitCol + 1) );
-      colElementArray[firstCol].mSpan = splitCol - firstCol;
-      colElementArray[splitCol].mNode = newCol;
-      colElementArray[splitCol].mSpan = lastCol - splitCol + 1;
-      for (kk = splitCol + 1; kk <= lastCol; ++kk)
-      {
-        colElementArray[kk].mNode = newCol;
-        colElementArray[kk].mSpan = splitCol - kk;
-      }
-      return retVal;
-    }
 
     var insertPos = 0;
     var kk = 0;
@@ -2195,15 +2346,17 @@ function ApplyColAndRowAttributes()
   }
 
   var theRowElements = getRowElements();
+  var ix;
+  var insertPos;
   var rowsInSelection = data.reviseData.getRowsInSelection(gSelectionTypeStr);
   if (gCellChangeData.size.height && ShouldSetHeightOnRows())
   {
     var theHeight = "";
     if (gCollatedCellData.size.bHeightSet)
-      theHeight = cellUnitsHandler.getValueOf(gDialog.CellHeightInput, "px");
+      theHeight = unitHandler.getValueOf(gDialog.CellHeightInput, "px");
     var theRowNode, newNode;
 
-    for (var ix = 0; ix < rowsInSelection.length; ++ix)
+    for (ix = 0; ix < rowsInSelection.length; ++ix)
     {
       theRowNode = theRowElements[rowsInSelection[ix]];
       switch(msiGetBaseNodeName(theRowNode))
@@ -2239,6 +2392,7 @@ function ApplyColAndRowAttributes()
 
 function ApplyMatrixColAndRowAttributes()
 {
+  if (data == null || data.reviseData == null) return;
   var whiteSpace = /(^\s+)/;
   var defColWidth = "auto";
   var colWidths = [];
@@ -2255,7 +2409,7 @@ function ApplyMatrixColAndRowAttributes()
   var colsInSelection = data.reviseData.getColsInSelection(gSelectionTypeStr);
   var theWidth = "auto";
   if (gCollatedCellData.size.bWidthSet)
-    theWidth = cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px");
+    theWidth = unitHandler.getValueAs(gDialog.CellWidthInput.value, "px");
 //    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;
   for (var ix = 0; ix < colsInSelection.length; ++ix)
     colWidths[colsInSelection[ix]] = theWidth;
@@ -2264,7 +2418,7 @@ function ApplyMatrixColAndRowAttributes()
   bAllAuto = (colWidthsStr == "auto");
   for (nCol = 1; nCol < tableDims.nCols; ++nCol)
   {
-    bAllAuto == bAllAuto && (colWidths[nCol] == "auto");
+    bAllAuto = bAllAuto && (colWidths[nCol] === "auto");
     colWidthsStr += " " + colWidths[nCol];
   }
   if (bAllAuto)
@@ -2287,6 +2441,7 @@ function ApplyMatrixColAndRowAttributes()
 
 function ApplyMatrixColAndRowLines()
 {
+  if (data == null || data.reviseData == null) return;
   var whiteSpace = /(^\s+)/;
   var matrixRowLines = [];
   var matrixColLines = [];
@@ -2316,6 +2471,7 @@ function ApplyMatrixColAndRowLines()
   var bDoRows = false;
   var bDoCols = false;
   var logStr;
+  var jx;
 
   for (var ix = 0; ix < gCellChangeData.border.style.length; ++ix)
   {
@@ -2366,7 +2522,7 @@ function ApplyMatrixColAndRowLines()
   if (bDoRows)
   {
     matrixRowLinesStr = matrixRowLines[0];
-    for (var ix = 1; ix < matrixRowLines.length; ++ix)
+    for (ix = 1; ix < matrixRowLines.length; ++ix)
       matrixRowLinesStr += " " + matrixRowLines[ix];
     gActiveEditor.setAttribute(gTableElement, "rowlines", matrixRowLinesStr);
     logStr = "In msiEdTableProps.js, ApplyMatrixColAndRowLines(); set attribute [rowlines] on table element to [" + matrixRowLinesStr + "]\n";
@@ -2375,7 +2531,7 @@ function ApplyMatrixColAndRowLines()
   if (bDoCols)
   {
     matrixColLinesStr = matrixColLines[0];
-    for (var ix = 1; ix < matrixColLines.length; ++ix)
+    for (ix = 1; ix < matrixColLines.length; ++ix)
       matrixColLinesStr += " " + matrixColLines[ix];
     gActiveEditor.setAttribute(gTableElement, "columnlines", matrixColLinesStr);
     logStr = "In msiEdTableProps.js, ApplyMatrixColAndRowLines(); set attribute [columnlines] on table element to [" + matrixColLinesStr + "]\n";
@@ -2385,6 +2541,7 @@ function ApplyMatrixColAndRowLines()
 
 function ApplyMatrixAlignment()
 {
+  if (data == null || data.reviseData == null) return;
   var bDoHAlign = gCellChangeData.align.halign;
   var bDoVAlign = gCellChangeData.align.valign;
   if (!bDoHAlign && !bDoVAlign)
@@ -2444,6 +2601,7 @@ function ApplyMatrixAlignment()
 function ApplyCellAttributes()
 {
 //  var cellIter = data.reviseData.beginSelectedCellIteration('Cell');
+  if (data == null || data.reviseData == null) return;
   var cellIter = data.reviseData.beginSelectedCellIteration(gSelectionTypeStr);
   var currCell = data.reviseData.getNextSelectedCell(cellIter);
   while (currCell)
@@ -2459,20 +2617,20 @@ function ApplyAttributesToOneCell(destElement, nRow, nCol)
 {
   var aVal = null;
   var aValStr = "";
-  if (gCellChangeData.size.height && (gCellChangeData.size.height == true))
+  if (gCellChangeData.size.height && (gCellChangeData.size.height === true))
   {
-    aVal = cellUnitsHandler.getValueString(gDialog.CellHeightInput.value);
+    aVal = unitHandler.getValueString(gDialog.CellHeightInput.value);
     SetAnAttribute(destElement, "cellheight", aVal);
   }
 
-  if (gCellChangeData.size.width && (gCellChangeData.size.width == true) )
+  if (gCellChangeData.size.width && (gCellChangeData.size.width === true) )
   {
-    aVal = cellUnitsHandler.getValueString(gDialog.CellWidthInput.value);
+    aVal = unitHandler.getValueString(gDialog.CellWidthInput.value);
     SetAnAttribute(destElement, "cellwidth", aVal);
   }
 
   var theSide;
-  for (var ix = 0; ix < gCellChangeData.border.style.length; ++ix)
+  for (ix = 0; ix < gCellChangeData.border.style.length; ++ix)
   {
     theSide = gCellChangeData.border.style[ix];
     if (theSide == "all")
@@ -2682,7 +2840,7 @@ function getCellDataForSelection(reviseData)
 
 function collateCellData(ourCellData, reviseData)
 {
-  var retCellData = new Object();
+  var retCellData = {};
   retCellData.border = collateCellBorderData(ourCellData, reviseData);
   retCellData.size = collateCellSizeData(ourCellData, reviseData);
   retCellData.align = collateCellAlignmentData(ourCellData, reviseData);
@@ -2711,7 +2869,7 @@ function findMedian(anArray, defaultVal)
 {
   if (!anArray.length)
     return defaultVal;
-  var sortArray = new Array();
+  var sortArray = [];
   sortArray = anArray.concat([]);  //is this really the best way to copy an array?
   sortArray.sort( function(a,b) {return (a-b);} );
   var nMid = Math.floor( (sortArray.length-1) / 2 );
@@ -2774,10 +2932,8 @@ function interpretBorderStyle(styleStr)
   {
     case "inset":
       return "ridge";
-    break;
     case "outset":
       return "groove";
-    break;
     default:
     break;
   }
@@ -2826,6 +2982,7 @@ function collateCellBorderData(ourCellData, reviseData)
   var borderNames = ["top", "right", "bottom", "left"];
   var nRow = 0;
   var nCol = 0;
+  var ix;
   var theStyle, theWidth, theColor, whichSide;
   while (currCell)
   {
@@ -2836,7 +2993,7 @@ function collateCellBorderData(ourCellData, reviseData)
       var styleData = ourCellData[nRow][nCol].border.style;
       if (styleData)
       {
-        for (var ix = 0; ix < borderNames.length; ++ix)
+        for (ix = 0; ix < borderNames.length; ++ix)
         {
           whichSide = borderNames[ix];
           theStyle = styleData[whichSide];
@@ -2908,11 +3065,11 @@ function collateCellSizeData(ourCellData, reviseData)
   var theCellData = null;
   var cellIter = reviseData.beginSelectedCellIteration(gSelectionTypeStr);
   var currCell = reviseData.getNextSelectedCell(cellIter);
-  var widthUnitsCount = { pt : 0, in : 0, mm : 0, cm : 0, pc : 0, em : 0, ex : 0, px : 0 };
-  var heightUnitsCount = { pt : 0, in : 0, mm : 0, cm : 0, pc : 0, em : 0, ex : 0, px : 0 };
+  var widthUnitsCount = { pt : 0, "in" : 0, mm : 0, cm : 0, pc : 0, em : 0, ex : 0, px : 0 };
+  var heightUnitsCount = { pt : 0, "in" : 0, mm : 0, cm : 0, pc : 0, em : 0, ex : 0, px : 0 };
   var widthAutoCount = 0;
   var heightAutoCount = 0;
-  var fontSizeCount = new Object();
+  var fontSizeCount = {};
 
   while (currCell)
   {
@@ -2996,7 +3153,7 @@ function collateCellAlignmentData(ourCellData, reviseData)
       ++vAlignCount[theVAlign];
     currCell = reviseData.getNextSelectedCell(cellIter);
   }
-  var retAlign = new Object();
+  var retAlign = {};
   retAlign.halign = findPlurality(hAlignCount);
   retAlign.valign = findPlurality(vAlignCount);
   return retAlign;
@@ -3204,6 +3361,7 @@ function getCellDataForCell(aCell, nRow, nCol)
 function getBorderDataForCell(aCell, nRow, nCol, elementUnitsList, computedStyle)
 {
   var borderData = null;
+  var ix;
   if (gIsMatrix)
     borderData = getBorderDataForMatrixCell(aCell, nRow, nCol, elementUnitsList);
   else
