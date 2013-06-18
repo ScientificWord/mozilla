@@ -1858,13 +1858,15 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
       switch ( id ) {
         case  1  :		// \ldots<uID3.17.1>
         case  2  :		// \cdots<uID3.17.2>
+        case  3  :		// \vdots<uID3.17.3>
+        case  4  :		// \ddots<uID3.17.4>
 	        rv  =  MML_IDENTIFIER;
 		    break;
 
-        case  3  :		// \vdots<uID3.17.3>
-        case  4  :		// \ddots<uID3.17.4>
-	        rv  =  MML_TEXT;
-		    break;
+        //case  3  :		// \vdots<uID3.17.3>
+        //case  4  :		// \ddots<uID3.17.4>
+	      //  rv  =  MML_TEXT;
+		    //break;
 
         case 14  :		// \partial<uID3.17.14>
 		      rv  =  MML_OPERATOR;

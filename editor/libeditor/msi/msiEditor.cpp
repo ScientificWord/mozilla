@@ -1980,43 +1980,6 @@ nsresult msiEditor::GetMatrixCellAt(nsIDOMNode *aMatrix, PRInt32 whichRow, PRInt
   return m_msiEditingMan->GetMatrixCellAt(aMatrix, whichRow, whichCol, _retval);
 }
 
-PRBool msiEditor::ShouldSelectWholeObject(nsCOMPtr<nsIDOMNode> & aNode)
-{
-  if (IsTextNode(aNode))
-    return PR_FALSE;
-  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
-  nsAutoString tagName;
-  PRBool rv = PR_FALSE;
-  if (element)
-    element->GetTagName(tagName);
-  if (tagName.EqualsLiteral("graph") || tagName.EqualsLiteral("graphSpec") ||
-          tagName.EqualsLiteral("object") || tagName.EqualsLiteral("plot") ||
-          tagName.EqualsLiteral("plotwrapper"))
-    rv = PR_TRUE;
-  else if (tagName.EqualsLiteral("msiframe"))
-  {
-    nsCOMPtr<nsIDOMNodeList> childList;
-    nsCOMPtr<nsIDOMNode> kid;
-    aNode->GetChildNodes( getter_AddRefs(childList));
-    PRUint32 length;
-    childList->GetLength(&length);
-    //We check the children - if an msiframe is a minipage, any <object>s or plots in it should be contained
-    //in paragraph tags, hence not direct children.
-    for (PRUint32 ix = 0; !rv && (ix < length); ++ix)
-    {
-      childList->Item(ix, getter_AddRefs(kid));
-      element = do_QueryInterface(kid);
-      if (element)
-      {
-        element->GetTagName(tagName);
-        if (tagName.EqualsLiteral("plotwrapper") || tagName.EqualsLiteral("object"))
-          rv = PR_TRUE;
-      }
-    }
-  }
-  return rv;
-}
-
 PRBool msiEditor::PositionIsAtBeginning(nsCOMPtr<nsIDOMNode> & parentNode, PRInt32 offset)
 {
   if (offset == 0)

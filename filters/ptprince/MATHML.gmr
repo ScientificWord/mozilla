@@ -902,7 +902,6 @@ unknown_op<uID3.5.7>infix,25
 ;Miscellaneous symbols
 
 &hellip;<uID3.17.1>,U02026
-&#x2026;<uID3.17.1>,U02026
 &ctdot;<uID3.17.2>,U022EF
 &vellip;<uID3.17.3>,U022EE
 &dtdot;<uID3.17.4>,U022F1
@@ -1051,8 +1050,7 @@ $<uID3.17.108>prefix,67,U00024
 \textvisiblespace<uID3.17.120>
 &trade;<uID3.17.121>,U02122
 
-\dots<uID3.17.125>
-&#x2026;<uID3.17.125>,U02026
+&hellip;<uID3.17.125>,U02026
 \dotsb<uID3.17.126>
 \dotsc<uID3.17.127>
 \dotsm<uID3.17.128>

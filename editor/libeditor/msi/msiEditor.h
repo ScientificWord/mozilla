@@ -86,7 +86,7 @@ nsresult GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
 PRBool IsSelectionCollapsed();
 nsresult IsPointWithinCurrentSelection(nsCOMPtr<nsIDOMNode> & node, PRUint32 offset, 
                                        PRBool & withinSelection);
-PRBool ShouldSelectWholeObject(nsCOMPtr<nsIDOMNode> & aNode);
+
 PRBool PositionIsAtBeginning(nsCOMPtr<nsIDOMNode> & parentNode, PRInt32 offset);
 PRBool PositionIsAtEnd(nsCOMPtr<nsIDOMNode> & parentNode, PRInt32 offset);
                             
