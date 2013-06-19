@@ -273,6 +273,16 @@ descriptionLabel {
   background-color: #FFFFBB;
 }
 
+numberedLabel {
+  display: inline;
+  background-color: #FFFFBB;
+}
+
+bulletLabel {
+  display: inline;
+  background-color: #FFFFBB;
+}
+
 /* show footnotes by default*/
 note[type="footnote"], node[type="footnote"][hide="false"] {
   display: block;
