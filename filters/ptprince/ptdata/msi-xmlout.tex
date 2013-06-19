@@ -81,7 +81,7 @@
     \msiopentag{texb}{<texb enc="1" name="addtocounter">}
        \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
     \msiclosetag{texb}{</texb>}}
-    
+
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
@@ -167,8 +167,8 @@
       \expandafter\msiappend\the\temptoksb MSIXYZZY
       \let\@next\msi@nextopt
    \fi
-   \@next}  
-  
+   \@next}
+
 \def\out@documentclassA[#1]#2{%
    %\msi@firstopttrue
    %\temptoksa={}%
@@ -269,7 +269,7 @@
    \msitag{^^0a}\msiopentag{thanks}{<thanks>}#1\msiclosetag{thanks}{</thanks>}}
 
 \def\out@and{\msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
-   
+
 \def\out@author#1{%
   \begingroup
    \def\\{\msitag{^^0a}%
@@ -308,7 +308,7 @@
         \fi}}
 
 \def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
-   
+
 
 \def\MSISimpleEnvironment{%
   \@ifnextchar[{\msi@simple@envA}{\msi@simple@envB}}
@@ -370,7 +370,7 @@
       {\@namedef{msi@begin@#2}{\msi@open@element<#2>}}%
       {\@namedef{msi@end@#2}{\msi@close@element</#2>}}}%
 
-   
+
 %% %% Newcommand and renewcommand
  
  \def\newcommand{\@ifnextchar*{\@newcommand}{\@newcommand{}}}
@@ -447,22 +447,31 @@
 \def\msi@pass#1{\def#1{\msitag{#1}}}
 
 \def\@descr{descriptionListItem}
+\def\@enumerate{numberedListItem}
+\def\@bullet{bulletListItem}
 \newif\if@first@item
-
 
 \def\out@itema[#1]{
    \if@first@item
      \@first@itemfalse
-   \else     
+   \else
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
      \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
-   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}}%
-   \expandafter\startitemtag\expandafter{\itemprefix}%      
+   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
+   \expandafter\startitemtag\expandafter{\itemprefix}%
    \ifx\itemprefix\@descr
-     \msitag{<bodyText><descriptionLabel>}#1\msitag{</descriptionLabel></bodyText>}%
+     \msitag{<descriptionLabel>}#1\msitag{</descriptionLabel>}%
    \else
-     \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+     \ifx\itemprefix\@enumerate
+       \msitag{<numberedLabel>}#1\msitag{</numberedLabel>}%
+	 \else
+       \ifx\itemprefix\@bullet
+         \msitag{<bulletLabel>}#1\msitag{</bulletLabel>}%
+	   \else
+         \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+	   \fi
+	 \fi
    \fi
 }
 
@@ -476,8 +485,6 @@
    \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
    \expandafter\startitemtag\expandafter{\itemprefix}%
 }
-
-
 
 
 \def\out@bibitemA[#1]#2{%
@@ -524,7 +531,7 @@
 }
 
 
-       
+
 \def\msi@begin@thebibliography#1{%
   \everypar={}%
   \msihmode\msitag{^^0a^^0a}%
@@ -652,7 +659,7 @@
 \def\hspace{%
    \@ifnextchar*{\@hspacestar}{\@hspace}}
 
-\def\@hspace#1{   
+\def\@hspace#1{
    \ifmmode
      \string\hspace\@brace{#1}%
    \else
@@ -706,7 +713,7 @@
 %  \def\@make@linebreak@other{%
 %    \catcode`\^^M=13\relax
 %  }
-%  
+%
 %  \def\@make@linebreak@normal{%
 %    \catcode`\^^M=5\relax
 %  }
@@ -735,7 +742,7 @@
      \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
      \msiextproc[jbm][\begin{align*}#1\end{align*}]%
      \msiclosetag[mml][</mml:math>]
-  ]  
+  ]
   \gdef\@scan@align#1\end{align}[%
      \egroup
      \@make@braces@normal
@@ -925,7 +932,7 @@
         \catcode`\&=4%
       \else
         \mathtabularfalse
-      \fi   
+      \fi
       \msihmode\msiopentag{table}{<table opt="#2" _moz_resizing="true"  cellpadding="4" border="1">}%
       \br\msiopentag{tbody}{<tbody>}%
       \begingroup
@@ -944,7 +951,7 @@
       \else
         \mathtabularfalse
       \fi
-      \msihmode   
+      \msihmode
       \msiopentag{table}{<table cellspacing="2" cellpadding="2" border="1">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
@@ -990,7 +997,7 @@
   \ifmathtabular
     \msiclosetag{bodyText}{</bodyText>}%
   \fi}
-  
+
 
 \def\msi@end@tabular{% 
         \crcr
@@ -999,7 +1006,7 @@
      \ifmathtabular\char`\}\fi
   \endgroup}
 
-\expandafter\def\csname msi@end@tabular*\endcsname{%  
+\expandafter\def\csname msi@end@tabular*\endcsname{%
         \crcr
         \egroup % the \halign
      \endgroup % to do the closetabular
@@ -1070,7 +1077,7 @@
       \catcode`##=\other
       \catcode`\<=\active
       \msiopentag{verb}{<verb>}%
-      \@sverb   
+      \@sverb
 }
 
 \def\verb@egroup{\msiclosetag{verb}{</verb>}\egroup}
@@ -1430,7 +1437,7 @@
     \catcode`\$=3\relax
   \endgroup}
 
-   
+
 \def\vspace{%
   \@ifnextchar*{\vspaceStar}{\vspaceB}}
 
@@ -1509,7 +1516,7 @@
      \ifmmode
        \expandafter\string\csname #2\endcsname{##1}%
      \else
-       \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%     
+       \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%
      \fi}}
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
@@ -1523,7 +1530,7 @@
      \ifmmode
        \expandafter\string\csname #2\endcsname{##1}%
      \else
-       \msitag{^^0a}\msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%   
+       \msitag{^^0a}\msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%
      \fi}}
 
 \def\msi@simple@elmB#1{\msi@simple@elmA[#1]{#1}}
@@ -1558,7 +1565,7 @@
          %
        \else
          \@temptokena={\msitag{##1}}%
-         \msihmode       
+         \msihmode
          \msitag{<texb enc="1" name="}#1\msitag{">}%
             <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}]]>%
          \msitag{</texb>}%
@@ -1716,11 +1723,11 @@
    \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>}\br
    \the\msi@extrapi
    \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\br
-   
+
    \msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
              xmlns:mml="http://www.w3.org/1998/Math/MathML"
              xmlns:sw="http://www.sciword.com/namespaces/sciword">}
-   
+
    \br\msitag{<head>}
    \br\msiopentag{preamble}{<preamble>}
    \msi@inpreamble=1
@@ -1898,7 +1905,6 @@
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\string\begin{filecontents}#1\string\end}%
 }
 
-   
 
 % A hack to fool the jbm filter into handling \dots gracefully
 %\def\dots{%
