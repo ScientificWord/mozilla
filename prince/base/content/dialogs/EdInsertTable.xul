@@ -329,17 +329,17 @@
                 <xhtml:table align="center" valign="center" style="border-collapse: separate; border-spacing: 0;">
                   <xhtml:tr>
                     <xhtml:td><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-bottom: 0"><xhtml:span>text</xhtml:span></xhtml:td>
                     <xhtml:td><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                   <xhtml:tr>
-                    <xhtml:td><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-right: 0"><xhtml:span>te</xhtml:span></xhtml:td>
                     <xhtml:td id="BordersPreviewCenterCell" ><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>xt</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-left: 0"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                   <xhtml:tr>
                     <xhtml:td><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-top: 0"><xhtml:span>text</xhtml:span></xhtml:td>
                     <xhtml:td><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                 </xhtml:table>
@@ -358,7 +358,7 @@
                            accesskey="&cellBorderStyleList.accesskey;"/>
                     <menulist id="cellBorderStyleList" oncommand="checkPreviewChanges();">
                       <menupopup>
-                        <menuitem label="" value="inherit"/>
+                        <menuitem label="&borderStyleUnspec.label;" value="unspec"/>
                         <menuitem label="&borderStyleNone.label;"  value="none" selected = "true"/>
                         <!--menuitem label="&borderStyleHidden.label;"  value="hidden"/-->
                         <menuitem label="&borderStyleSolid.label;"  value="solid"/>
@@ -380,6 +380,7 @@
                     <label align="left" value="&pixels.label;"/ -->
                     <menulist id="cellBorderWidthList" oncommand="checkPreviewChanges();">
                       <menupopup>
+                        <menuitem label="&borderWidthUnspec.label;" value="unspec" />
                         <menuitem label="&borderWidthNone.label;" value="none"/>
                         <menuitem label="&borderWidthThin.label;" value="thin"/>
                         <menuitem label="&borderWidthMedium.label;" value="medium"/>
