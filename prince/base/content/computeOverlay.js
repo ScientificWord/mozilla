@@ -1548,6 +1548,36 @@ function onVCamDblClick(screenX, screenY) {
   goDoPrinceCommand("cmd_objectProperties", this, editorElement);
 }
 
+function onVCamRightMouseDown(screenX, screenY)
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var evt = editor.document.createEvent("MouseEvents");
+  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView, 1,
+    screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
+  this.dispatchEvent(evt);
+}
+
+function onVCamRightMouseUp(screenX, screenY)
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var evt = editor.document.createEvent("MouseEvents");
+  evt.initMouseEvent("mouseup", true, true, editor.document.defaultView, 1,
+    screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
+  this.dispatchEvent(evt);
+}
+
+function onVCamKeyDown(aKeyCodeMaybe)
+{
+  dump("In onVCamKeyDown, keyCode was " + (aKeyCodeMaybe ? "null" : aKeyCodeMaybe) + "\n");
+}
+
+function onVCamKeyUp()
+{
+  dump("In onVCamKeyUp, keyCode was " + (aKeyCodeMaybe ? "null" : aKeyCodeMaybe) + "\n");
+}
+
 function onVCamTreeChange(treeEvent)
 {
   try
@@ -3717,7 +3747,13 @@ function doComputePassthru(editorElement) {
 
 
 function doComputePlot(math, dimension, type, animate, editorElement) {
-  insertNewGraph(math, dimension, type, animate, editorElement);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var selection;
+  if (editor)
+    selection = editor.selection;
+  insertNewGraph(math, dimension, type, animate, editorElement, selection);
 }
 
 function doEditPlot() {
@@ -3835,7 +3871,11 @@ var preInitializeVCamCallbackObjectBase =
         this.mObj.addEvent('dragEnter', this.mGraph.provideDragEnterHandler(this.mEditorElement, domGraph));
         this.mObj.addEvent('drop', this.mGraph.provideDropHandler(this.mEditorElement, domGraph));
       }
-      this.mObj.addEvent('treeChange', onVCamTreeChange);
+      this.mObj.addEvent("rightMouseDown", onVCamRightMouseDown);
+      this.mObj.addEvent("rightMouseUp", onVCamRightMouseUp);
+      this.mObj.addEvent("keyDown", onVCamKeyDown);
+      this.mObj.addEvent("keyUp", onVCamKeyUp);
+//      this.mObj.addEvent('treeChange', onVCamTreeChange);
       queryVCamValues(this.mObj, this.mGraph, domGraph);
       // add a method for writing a snapshot
       var snapFn = function() {
