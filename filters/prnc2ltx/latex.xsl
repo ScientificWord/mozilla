@@ -533,8 +533,16 @@ should not be done under some conditions -->
 \item <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="html:numberedLabel">
+  [<xsl:apply-templates/>]
+</xsl:template>
+
 <xsl:template match="html:bulletListItem">
 \item <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:bulletLabel">
+  [<xsl:apply-templates/>]
 </xsl:template>
 
 <xsl:template match="html:descriptionListItem">
