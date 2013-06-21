@@ -120,6 +120,10 @@
 
 <!-- !ENTITY cellPercent.label                "percent of table" -->
 
+<!ENTITY borderWidthUnspec.label    "-- unspecified --">
+<!ENTITY borderStyleUnspec.label    "-- unspecified --">
+
+
 <!ENTITY borderSideSelection.label        "Selected side">
 <!ENTITY borderSideSelection.accesskey    "s">
 <!ENTITY borderSelectAll.label            "All">
