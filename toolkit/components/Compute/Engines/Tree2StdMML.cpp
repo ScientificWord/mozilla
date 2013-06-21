@@ -2722,7 +2722,7 @@ MNODE* Tree2StdMML::MakeMROW(MNODE* l_anchor, MNODE* r_anchor)
 
   rv->first_kid = l_anchor;
   rv->parent = l_anchor->parent; // sew together LHS of mrow
-  if (l_anchor->parent->first_kid == l_anchor)
+  if (l_anchor->parent && (l_anchor->parent->first_kid == l_anchor))
     l_anchor->parent->first_kid = rv;
   if (l_anchor->prev)
     l_anchor->prev->next = rv;
@@ -2766,7 +2766,7 @@ MNODE* Tree2StdMML::MakeSCRIPT(MNODE* l_anchor, MNODE* r_anchor)
   base->first_kid = l_anchor;
   base->parent = rv;
   rv->parent = l_anchor->parent; // sew together LHS of msup
-  if (l_anchor->parent->first_kid == l_anchor)
+  if (l_anchor->parent && (l_anchor->parent->first_kid == l_anchor))
     l_anchor->parent->first_kid = rv;
   if (l_anchor->prev)
     l_anchor->prev->next = rv;
