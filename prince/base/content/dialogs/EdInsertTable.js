@@ -483,7 +483,7 @@ function SetOrResetAttribute(element, attributeName, attributeValue)
     element.removeAttribute(attributeName);
 }
 
-function onAccept()
+function onAcceptNewTable()
 {
 //  if (ValidateData())
 //  {

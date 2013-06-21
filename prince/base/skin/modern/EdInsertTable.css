@@ -1,3 +1,7 @@
+@namespace xhtml url(http://www.w3.org/1999/xhtml);
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+
 *.sizeSelector label {
   width: 2em;
   margin: 0px ! important;
@@ -28,3 +32,19 @@
 
 #gridcoordinates { visibility: hidden; }
 #tablegrid:hover #gridcoordinates { visibility: visible; }
+
+#BordersPreview xhtml|table {
+  table-layout: auto;
+  empty-cells: show;
+  font-size: 100%;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+  border-collapse: collapse;
+}
+
+#BordersPreview xhtml|td {
+  border: thin solid rgb(230,230,230);
+  height: 3em;
+  width: 3em;
+}

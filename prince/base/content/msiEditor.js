@@ -5917,6 +5917,8 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
 
   function addCellToList(aTableData, cellNode, currPos)
   {
+    // next line added by BBM
+    return;
     var numCols = aTableData.cellInfoArray[0].length;
     var numRows = aTableData.cellInfoArray.length;
     var colspan = 1;
@@ -6854,6 +6856,7 @@ msiTablePropertiesObjectData.prototype =
 
   getNextSelectedCell : function(cellIter)
   {
+    return null;
     var bFound = false;
     var ix = cellIter.nRow;
     var startJ = cellIter.nCol;
@@ -7586,6 +7589,8 @@ msiTablePropertiesObjectData.prototype =
 
     function addColsToRangeList(rangeList, tableInfo, startingCol, endingCol)
     {
+      //added by BBM
+      return;
       var newRange = null;
       for (var ix = 0; ix < tableInfo.m_nRows; ++ix)
       {

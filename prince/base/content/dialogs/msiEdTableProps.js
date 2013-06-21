@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
+408.483.I967/* ***** BEGIN LICENSE BLOCK *****
  Copyright 2009 MacKichan Software, Inc. *
  * ***** END LICENSE BLOCK ***** */
 "use strict";
@@ -483,6 +483,26 @@ function Startup()
   setVariablesForControls();
 
   data = window.arguments[0];
+  if (!data) {
+    newTable = true;
+    try {
+      gTableElement = gActiveEditor.createElementWithDefaults("table");
+      gTableElement.setAttribute("req","tabulary");
+    } 
+    catch (e) {
+
+    }
+  }
+  else {
+    newTable = false;
+    gTableElement = data.reviseData.mTableElement;
+    // We disable resetting row and column count -- the user has more direct ways of doing that.
+    document.getElementById("QuicklyTab").setAttribute("collapsed", true);
+    document.getElementById("tablegrid").setAttribute("collapsed", true);
+    document.getElementById("rowsInput").disabled = true;
+    document.getElementById("columnsInput").disabled = true;
+  }
+
   var theCommand = "cmd_editTable";
   if (data)
   {
@@ -508,6 +528,7 @@ function Startup()
     catch (e) {
 
     }
+    initUnitHandler(null);
   }
 
 
@@ -681,24 +702,22 @@ function InitDialog()
 }
 
 
-function initUnitHandler()
+function initUnitHandler(unit)
 {
   unitHandler = new UnitHandler();
   var fieldList = [];
-  var defaultUnit;
+  var initUnit = unit;
   fieldList.push(gDialog.CellHeightInput);
   fieldList.push(gDialog.CellWidthInput);
   fieldList.push(gDialog.widthInput);
   unitHandler.setEditFieldList(fieldList);
-  if (gPrefs)
-    defaultUnit = gPrefs.getCharPref("swp.defaultTableUnits");
-  gDialog.unitMenulist.setAttribute("value", unitHandler.getDisplayString(defaultUnit));
+  if (!unit && gPrefs)
+    initUnit = gPrefs.getCharPref("swp.defaultTableUnits");
+  gDialog.unitMenulist.setAttribute("value", initUnit);
   try {
-    unitHandler.buildUnitMenu(gDialog.unitMenulist, defaultUnit);
-
-  // need to check this and use default value from preferences if appropriate.
-    unitHandler.initCurrentUnit(gDialog.unitMenulist.value, defaultUnit);
-  }
+    unitHandler.buildUnitMenu(gDialog.unitMenulist, initUnit);
+    unitHandler.initCurrentUnit(initUnit);
+  document.getElementById("currentunits").setAttribute("value", unitHandler.getDisplayString(initUnit));  }
   catch(e) {
     dump(e.message);
   }  
@@ -715,9 +734,17 @@ function initTablePanel()
   var heightStr = "";
   var re;
   var match;
-  var currUnit = "in";
-  initUnitHandler();
+  var tempUnitHandler = new UnitHandler();
+
+  // find unit. They can always be found on a cell; table attributes are often missing.
+  var cellNode = gTableElement.getElementsByTagName("td")[0];
+  var currUnit;
+  if (cellNode && cellNode.getAttribute("cellwidth")){
+    currUnit = tempUnitHandler.getNumberAndUnitFromString(cellNode.getAttribute("cellwidth")).unit;
+  }
+  initUnitHandler(currUnit);
   var tableStyle = gTableElement.getAttribute("style");
+  // The next 30 lines seem superfluous, but maybe harmless. Leave them for now.
   if (gTableElement.hasAttribute("width"))
   {
     widthStr = gTableElement.getAttribute("width");
@@ -833,7 +860,9 @@ function initLinesPanel()
 
 function onChangeTableUnits()
 {
-  unitHandler.setCurrentUnit(gDialog.unitMenulist.value);
+  var val = gDialog.unitMenulist.value
+  unitHandler.setCurrentUnit(val);
+  document.getElementById("currentunits").setAttribute("value", unitHandler.getDisplayString(val));
 }
 
 
@@ -1012,7 +1041,7 @@ function GetColorAndUpdate(ColorWellID)
     case "tableBackgroundCW":
          colorObj.BackgroundColor = gTableColor;
       break;
-    case "cellBackgroundCW":
+    case "backgroundCW":
       colorObj.BackgroundColor = gCollatedCellData.background;
       colorObj.SelectedType = "Cell";
       break;
@@ -1035,7 +1064,7 @@ function GetColorAndUpdate(ColorWellID)
   var theColor;
   switch( ColorWellID )
   {
-    case "cellBackgroundCW":
+    case "backgroundCW":
       theColor = colorObj.BackgroundColor;  //this is where it's coming back
       gCollatedCellData.background = theColor;
       changeArray.style["background-color"] = theColor;  //this is where it's coming back
@@ -1055,7 +1084,7 @@ function GetColorAndUpdate(ColorWellID)
 //      SetColor(ColorWellID, gCollatedCellData.border.color[gCurrentSide]);  Do we really want to actually SetColor at this point?
       borderSideAttrStr = getBorderSideAttrString(gCurrentSide, "color");
       changeArray.style[borderSideAttrStr] = theColor;
-      gCellChangeData.border.color.push(gCurrentSide);
+      if (!newTable) gCellChangeData.border.color.push(gCurrentSide);
       setColorWell(ColorWellID, theColor);
 //      SetCheckbox('CellColorCheckbox');
     break;
@@ -1610,6 +1639,7 @@ function AlignmentChanged(radioGroupID)
 
 function TablePropertyChanged(controlID)
 {
+  if (newTable) return;
   switch(controlID)
   {
     case "TableCaptionList":
@@ -1722,106 +1752,242 @@ function SetAnAttribute(destElement, theAttr, theAttrValue)
   } catch(e) {}
 }
 
+
+
+function GetSelectedCells(selection)
+{
+  var rangeCount = selection.rangeCount;
+  var cells = [];
+  var i;
+  if (newTable) {
+    // in effect all cells are selected
+    var htmlcollection;
+    htmlcollection = gTableElement.getElementOrParentByTagName("td");
+    for (i = 0; i < htmlcollection.length; i++) cells.push(htmlcollection[i]);
+    htmlcollection = gTableElement.getElementOrParentByTagName("th");
+    for (i = 0; i < htmlcollection.length; i++) cells.push(htmlcollection[i]);
+  }
+  else {
+    for (var i = 0; i < rangeCount; i++) {
+      var range = selection.getRangeAt(i);
+      var startContainer = range.startContainer;
+      var startOffset    = range.startOffset;
+      var endContainer   = range.endContainer;
+      var endOffset      = range.endOffset;
+      if (startContainer.nodeType == Node.ELEMENT_NODE)
+        startContainer = startContainer.childNodes.item(startOffset);
+      if (endContainer.nodeType == Node.ELEMENT_NODE)
+        endContainer = endContainer.childNodes.item(endOffset -
+                         (selection.isCollapsed ? 0 : 1));
+    
+      var node = startContainer;
+      var direction = "down";
+      var nextNode = node;
+      do {
+        node = nextNode;
+        var tmp = node;
+        // find a potential th/td ancestor
+        while (tmp) {
+          if (tmp instanceof Components.interfaces.nsIDOMHTMLTableCellElement) {
+            if (cells.indexOf(tmp) == -1)
+              cells.push(tmp);
+            break;
+          }
+          tmp = tmp.parentNode;
+        }
+    
+        // let's traverse the tree
+        if (direction == "down") {
+          if (node.firstChild)
+            nextNode = node.firstChild
+          else if (node.nextSibling)
+            nextNode = node.nextSibling;
+          else {
+            direction = "up";
+            nextNode = node.parentNode;
+          }
+        }
+        else {
+          if (node.nextSibling) {
+            nextNode = node.nextSibling;
+            direction = "down";
+          }
+          else
+            nextNode = node.parentNode;
+        }
+      } while (node != endContainer);
+    }
+  }
+  return cells;
+}
+
+function UpdateCells(editor)
+{
+  var selection = editor.selection;
+  var cells = GetSelectedCells(selection);
+  // at this points cells array contains all the cells to impact
+  for (var i = 0; i < cells.length; i++) {
+    var c = cells[i];
+    DoStyleChangesForACell(c);
+
+    // var txn = new diStyleAttrChangeTxn(c, "width", gDialog.cellsWidthMenulist.value, "");
+    // editor.doTransaction(txn);
+    // editor.incrementModificationCount(1);  
+
+    // txn = new diStyleAttrChangeTxn(c, "height", gDialog.cellsHeightMenulist.value, "");
+    // editor.doTransaction(txn);
+    // editor.incrementModificationCount(1);  
+
+    // txn = new diStyleAttrChangeTxn(c, "text-align", gDialog.cellsHAlignMenulist.value, "");
+    // editor.doTransaction(txn);
+    // editor.incrementModificationCount(1);  
+
+    // txn = new diStyleAttrChangeTxn(c, "vertical-align", gDialog.cellsVAlignMenulist.value, "");
+    // editor.doTransaction(txn);
+    // editor.incrementModificationCount(1);  
+
+    // txn = new diStyleAttrChangeTxn(c, "white-space", gDialog.cellsNoWrapCheckbox.checked ? "now-wrap" : "", "");
+    // editor.doTransaction(txn);
+    // editor.incrementModificationCount(1);  
+
+    // txn = new diStyleAttrChangeTxn(c, "background-color", gDialog.bgColorColorpicker.color, "");
+    // editor.doTransaction(txn);
+    // editor.incrementModificationCount(1);  
+
+    // if (c.nodeName.toLowerCase() != (gDialog.cellsHeadersCheckbox.checked ? "th" : "td"))
+    //   editor.switchTableCellHeaderType(c);
+  }
+}
+
 function DoStyleChangesForACell(destCell)
 {
-  globalCellElement = destCell.cloneNode(false);
-  var destStyle = destCell.getAttribute("style");
-  var bEmptyStyle = false;
-  if (destStyle && destStyle.length)
-    globalCellElement.setAttribute("style", destStyle);
-  if (!globalCellElement.style)
-    bEmptyStyle = true;
-  var borderProps = ["style", "width", "color"];
-  var logStr = "";
-  var theStyle = "";
-  var theProp;
+  var style;
+  var color;
+  color = getColor('backgroundCW');
+  style = gDialog.BordersPreviewCenterCell.getAttribute("style") || "";
+  if (gDialog.CellWidthInput.value > 0) style += "width: " + gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value + "; ";
+  if (gDialog.CellHeightInput.value > 0) style += "height: " + gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value + "; ";
+  if (color && color != '#FFFFFF' && color != 'white') style += 'background-color: ' + color + '; ';
 
+  destCell.setAttribute("style", style)
+}
+//   globalCellElement = destCell.cloneNode(false);
+//   var destStyle = destCell.getAttribute("style");
+//   var bEmptyStyle = false;
+//   if (destStyle && destStyle.length)
+//     globalCellElement.setAttribute("style", destStyle);
+//   if (!globalCellElement.style)
+//     bEmptyStyle = true;
+//   var borderProps = ["style", "width", "color"];
+//   var logStr = "";
+//   var theStyle = "";
+//   var theProp;
+
+
+
+//   function doSetStyleAttr(styleProp, styleVal)
+//   {
+//     var styleValStr;
+//     if (styleVal)
+//       styleValStr = String(styleVal);
+//     if (bEmptyStyle)
+//     {
+//       if ( (styleValStr != null) && styleValStr.length )
+//         theStyle += styleProp + ": " + styleValStr + " !important;";
+//     }
+//     else if ((styleValStr != null) && styleValStr.length)
+//       globalCellElement.style.setProperty( styleProp, styleValStr, "important");
+//     else
+//       globalCellElement.style.removeProperty( styleProp );
+//   }
+
+//   for (var nProp = 0; nProp < borderProps.length; ++nProp)
+//   {
+//     theProp = borderProps[nProp];
+//     if (UseCSSForCellProp("border-" + theProp))
+//     {
+//       for (var ix = 0; ix < gCellChangeData.border[theProp].length; ++ix)
+//       {
+//         theSide = gCellChangeData.border[theProp][ix];
+//         doSetStyleAttr( getBorderSideAttrString(theSide, theProp), gCollatedCellData.border[theProp][theSide] );
+//       }
+//     }
+//   }
+//   if (gDialog.CellWidthInput.value && gDialog.CellWidthInput.value > 0)
+//   {
+//     logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
+//     msiKludgeLogString(logStr, ["tableEdit"]);
+//     var theWidth = unitHandler.getValueStringAs(gDialog.CellWidthInput.value, "px");
+//     doSetStyleAttr("width", theWidth);
+//     doSetStyleAttr("min-width", theWidth);
+//   }
+//   else
+//   {
+//     doSetStyleAttr("width", null);
+//     doSetStyleAttr("min-width", null);
+//   }
+//   if (gDialog.CellHeightInput.value && gDialog.CellHeightInput.value > 0)
+//   {
+// //      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
+//     var theHeight = unitHandler.getValueStringAs(gDialog.CellHeightInput.value, "px");
+//     logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(theHeight) + "px]\n";
+//     msiKludgeLogString(logStr, ["tableEdit"]);
+//     doSetStyleAttr("height", theHeight);
+//   }
+//   else
+//     doSetStyleAttr("height", null);
+
+//   if (gCellChangeData.align.halign && UseCSSForCellProp("halign"))
+//     doSetStyleAttr("text-align", gCollatedCellData.align.halign);
+//   if (gCellChangeData.align.valign && UseCSSForCellProp("valign"))
+//     doSetStyleAttr("vertical-align", gCollatedCellData.align.valign);
+//   if (gCellChangeData.wrap && UseCSSForCellProp("wrap"))
+//   {
+//     if (gCollatedCellData.wrap == "nowrap")
+//       doSetStyleAttr("white-space", "nowrap");
+//     else
+//     {
+//       var currWhiteSpace = globalCellElement.style ? globalCellElement.style.getProperty("white-space") : null;
+//       if (currWhiteSpace && currWhiteSpace == "nowrap")
+//         globalCellElement.style.removeProperty("white-space");
+//     }
+//   }
+//   if (gCellChangeData.background)
+//   {
+//     if (gCollatedCellData.background == "transparent")
+//       doSetStyleAttr("background-color", null);
+//     else
+//       doSetStyleAttr("background-color", gCollatedCellData.background);
+//   }
+//   if (!bEmptyStyle)
+//     theStyle = globalCellElement.getAttribute("style");
+//   if (theStyle && theStyle.length)
+//     gActiveEditor.setAttribute(destCell, "style", theStyle);
+//   else
+//     gActiveEditor.removeAttributeOrEquivalent(destCell, "style", false);
+//   logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); set attribute [style] on cell element to [" + theStyle + "]\n";
+//   msiKludgeLogString(logStr, ["tableEdit"]);
+// }
+
+function ApplyTableAttributes()
+{
   function doSetStyleAttr(styleProp, styleVal)
   {
     var styleValStr;
-    if (styleVal)
+    if (styleVal != null)
       styleValStr = String(styleVal);
     if (bEmptyStyle)
     {
       if ( (styleValStr != null) && styleValStr.length )
-        theStyle += styleProp + ": " + styleValStr + " !important;";
+        theStyleString += styleProp + ": " + styleValStr + ";";
     }
-    else if ((styleValStr != null) && styleValStr.length)
-      globalCellElement.style.setProperty( styleProp, styleValStr, "important");
+    else if ((styleValStr!=null) && styleValStr.length)
+      globalTableElement.style.setProperty(styleProp, styleValStr, "");
     else
-      globalCellElement.style.removeProperty( styleProp );
+      globalTableElement.style.removeProperty(styleProp);
   }
 
-  for (var nProp = 0; nProp < borderProps.length; ++nProp)
-  {
-    theProp = borderProps[nProp];
-    if (UseCSSForCellProp("border-" + theProp))
-    {
-      for (var ix = 0; ix < gCellChangeData.border[theProp].length; ++ix)
-      {
-        theSide = gCellChangeData.border[theProp][ix];
-        doSetStyleAttr( getBorderSideAttrString(theSide, theProp), gCollatedCellData.border[theProp][theSide] );
-      }
-    }
-  }
-  if (gDialog.CellWidthInput.value && gDialog.CellWidthInput.value > 0)
-  {
-    logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
-    msiKludgeLogString(logStr, ["tableEdit"]);
-    var theWidth = unitHandler.getValueStringAs(gDialog.CellWidthInput.value, "px");
-    doSetStyleAttr("width", theWidth);
-    doSetStyleAttr("min-width", theWidth);
-  }
-  else
-  {
-    doSetStyleAttr("width", null);
-    doSetStyleAttr("min-width", null);
-  }
-  if (gDialog.CellHeightInput.value && gDialog.CellHeightInput.value > 0)
-  {
-//      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-    var theHeight = unitHandler.getValueStringAs(gDialog.CellHeightInput.value, "px");
-    logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(theHeight) + "px]\n";
-    msiKludgeLogString(logStr, ["tableEdit"]);
-    doSetStyleAttr("height", theHeight);
-  }
-  else
-    doSetStyleAttr("height", null);
-
-  if (gCellChangeData.align.halign && UseCSSForCellProp("halign"))
-    doSetStyleAttr("text-align", gCollatedCellData.align.halign);
-  if (gCellChangeData.align.valign && UseCSSForCellProp("valign"))
-    doSetStyleAttr("vertical-align", gCollatedCellData.align.valign);
-  if (gCellChangeData.wrap && UseCSSForCellProp("wrap"))
-  {
-    if (gCollatedCellData.wrap == "nowrap")
-      doSetStyleAttr("white-space", "nowrap");
-    else
-    {
-      var currWhiteSpace = globalCellElement.style ? globalCellElement.style.getProperty("white-space") : null;
-      if (currWhiteSpace && currWhiteSpace == "nowrap")
-        globalCellElement.style.removeProperty("white-space");
-    }
-  }
-  if (gCellChangeData.background)
-  {
-    if (gCollatedCellData.background == "transparent")
-      doSetStyleAttr("background-color", null);
-    else
-      doSetStyleAttr("background-color", gCollatedCellData.background);
-  }
-  if (!bEmptyStyle)
-    theStyle = globalCellElement.getAttribute("style");
-  if (theStyle && theStyle.length)
-    gActiveEditor.setAttribute(destCell, "style", theStyle);
-  else
-    gActiveEditor.removeAttributeOrEquivalent(destCell, "style", false);
-  logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); set attribute [style] on cell element to [" + theStyle + "]\n";
-  msiKludgeLogString(logStr, ["tableEdit"]);
-}
-
-function ApplyTableAttributes()
-{
+  
   var newAlign = gTableCaptionPlacement;
   if (!newAlign)
     newAlign = "";
@@ -1886,39 +2052,27 @@ function ApplyTableAttributes()
   logStr = "";
   var bEmptyStyle = (!globalTableElement.style);
   var theStyleString = "";
-  function doSetStyleAttr(styleProp, styleVal)
-  {
-    var styleValStr;
-    if (styleVal != null)
-      styleValStr = String(styleVal);
-    if (bEmptyStyle)
-    {
-      if ( (styleValStr != null) && styleValStr.length )
-        theStyleString += styleProp + ": " + styleValStr + ";";
-    }
-    else if ((styleValStr!=null) && styleValStr.length)
-      globalTableElement.style.setProperty(styleProp, styleValStr, "");
-    else
-      globalTableElement.style.removeProperty(styleProp);
-  }
-  if (gTableChangeData.baseline)
+
+  // newTable impliies that all members of gTableChangeData are true
+
+  if (newTable || gTableChangeData.baseline)
   {
     doSetStyleAttr("vertical-align", gTableBaseline);
     SetAnAttribute(gTableElement, "valign", gTableBaseline);
 //    logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [vertical-align] on table element style to [" + gTableBaseline + "]\n";
   }
-  if (gTableChangeData.background)
-  {
-    doSetStyleAttr("background-color", gTableColor);
-//    logStr += "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [background-color] on table element style to [" + gTableColor + "]\n";
-  }
-  if (gTableChangeData.borderCollapse)
+//   if (newTable || gTableChangeData.background)
+//   {
+//     doSetStyleAttr("background-color", gTableColor);
+// //    logStr += "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [background-color] on table element style to [" + gTableColor + "]\n";
+//   }
+  if (newTable || gTableChangeData.borderCollapse)
   {
     doSetStyleAttr("border-collapse", gBorderCollapse);
   }
-//  if (gTableChangeData.size.width)
+//  if (newTable || gTableChangeData.size.width)
 //    globalTableElement.style.setProperty("width", widthStr);
-//  if (gTableChangeData.size.height)
+//  if (newTable || gTableChangeData.size.height)
 //    globalTableElement.style.setProperty("height", heightStr);
   var pos = gDialog.tableLocationList.value;
   var float = gDialog.floatLocationList.value;  
@@ -2600,30 +2754,31 @@ function ApplyMatrixAlignment()
 
 function ApplyCellAttributes()
 {
-//  var cellIter = data.reviseData.beginSelectedCellIteration('Cell');
-  if (data == null || data.reviseData == null) return;
-  var cellIter = data.reviseData.beginSelectedCellIteration(gSelectionTypeStr);
-  var currCell = data.reviseData.getNextSelectedCell(cellIter);
-  while (currCell)
-  {
-    var nRow = cellIter.nRow;
-    var nCol = cellIter.nCol;
-    ApplyAttributesToOneCell(currCell, nRow, nCol);
-    currCell = data.reviseData.getNextSelectedCell(cellIter);
-  }
+  UpdateCells(gActiveEditor);
+// //  var cellIter = data.reviseData.beginSelectedCellIteration('Cell');
+//   if (data == null || data.reviseData == null) return;
+//   var cellIter = data.reviseData.beginSelectedCellIteration(gSelectionTypeStr);
+//   var currCell = data.reviseData.getNextSelectedCell(cellIter);
+//   while (currCell)
+//   {
+//     var nRow = cellIter.nRow;
+//     var nCol = cellIter.nCol;
+//     ApplyAttributesToOneCell(currCell, nRow, nCol);
+//     currCell = data.reviseData.getNextSelectedCell(cellIter);
+//   }
 }
 
 function ApplyAttributesToOneCell(destElement, nRow, nCol)
 {
   var aVal = null;
   var aValStr = "";
-  if (gCellChangeData.size.height && (gCellChangeData.size.height === true))
+//  if (gCellChangeData.size.height && (gCellChangeData.size.height === true))
   {
     aVal = unitHandler.getValueString(gDialog.CellHeightInput.value);
     SetAnAttribute(destElement, "cellheight", aVal);
   }
 
-  if (gCellChangeData.size.width && (gCellChangeData.size.width === true) )
+//  if (gCellChangeData.size.width && (gCellChangeData.size.width === true) )
   {
     aVal = unitHandler.getValueString(gDialog.CellWidthInput.value);
     SetAnAttribute(destElement, "cellwidth", aVal);
@@ -2685,9 +2840,139 @@ function doHelpButton()
 {
   openHelp("table_properties");
 }
+function onAcceptNewTable()
+{
+//  if (ValidateData())
+//  {
+    var color;
+    try 
+    {
+      var wrapping = gDialog.wrapping.checked;
+      gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
+
+      var align = gDialog.hAlignChoices.value;
+      gPrefs.setCharPref("editor.table.default_align", align);
+
+      var valign = gDialog.vAlignChoices.value;
+      gPrefs.setCharPref("editor.table.default_valign", valign);
+
+      // var cellSpacing = globalElement.getAttribute("cellspacing");
+      // gPrefs.setCharPref("editor.table.default_cellspacing", cellSpacing);
+
+      // var cellPadding = globalElement.getAttribute("cellpadding");
+      // gPrefs.setCharPref("editor.table.default_cellpadding", cellPadding);
+    }
+    catch (e) {
+      dump(e);
+    }
+
+//    try {
+//      if (globalElement) gActiveEditor.cloneAttributes(gTableElement, globalElement);
+
+// This is code for creating a new table, not for revising
+
+      // Create necessary rows and cells for the table
+      var tableBody = gActiveEditor.createElementWithDefaults("tbody");
+      var style;
+      ApplyTableAttributes();
+      if (tableBody)
+      {
+        gTableElement.appendChild(tableBody);
+        color = getColor('backgroundCW');
+
+        // Create necessary rows and cells for the table
+        for (var i = 0; i < gRows; i++)
+        {
+          var newRow = gActiveEditor.createElementWithDefaults("tr");
+          if (newRow)
+          {
+            tableBody.appendChild(newRow);
+            for (var j = 0; j < gColumns; j++)
+            {
+              var newCell = gActiveEditor.createElementWithDefaults("td");
+              if (newCell)
+              {
+                style = gDialog.BordersPreviewCenterCell.getAttribute("style") || "";
+                if (gDialog.CellWidthInput.value > 0) 
+                {
+                  style += "width: " + gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value + "; ";
+                  newCell.setAttribute('cellwidth', gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value);
+                }
+                if (gDialog.CellHeightInput.value > 0) {
+                  style += "height: " + gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value + "; ";
+                  gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value
+                  newCell.setAttribute('cellheight', gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value);
+                }
+                if (color && color != '#FFFFFF' && color != 'white') style += 'background-color: ' + color + '; ';
+
+                newCell.setAttribute("style", style)
+                newRow.appendChild(newCell);
+              }
+            }
+          }
+        }
+      }
+      // Detect when entire cells are selected:
+        // Get number of cells selected
+      var tagNameObj = { value: "" };
+      var countObj = { value: 0 };
+      var element = gActiveEditor.getSelectedOrParentTableElement(tagNameObj, countObj);
+      var deletePlaceholder = false;
+
+      if (tagNameObj.value == "table")
+      {
+        //Replace entire selected table with new table, so delete the table
+        gActiveEditor.deleteTable();
+      }
+      else if (tagNameObj.value == "td")
+      {
+        if (countObj.value >= 1)
+        {
+          if (countObj.value > 1)
+          {
+            // Assume user wants to replace a block of
+            //  contiguous cells with a table, so
+            //  join the selected cells
+            gActiveEditor.joinTableCells(false);
+          
+            // Get the cell everything was merged into
+            element = gActiveEditor.getFirstSelectedCell();
+          
+            // Collapse selection into just that cell
+            gActiveEditor.selection.collapse(element,0);
+          }
+
+          if (element)
+          {
+            // Empty just the contents of the cell
+            gActiveEditor.deleteTableCellContents();
+          
+            // Collapse selection to start of empty cell...
+            gActiveEditor.selection.collapse(element,0);
+            // ...but it will contain a <br> placeholder
+            deletePlaceholder = true;
+          }
+        }
+      }
+
+      // true means delete selection when inserting
+      gActiveEditor.insertElementAtSelection(gTableElement, true);
+
+//      if (deletePlaceholder && gTableElement && gTableElement.nextSibling)
+//      {
+//        // Delete the placeholder <br>
+//        gActiveEditor.deleteNode(gTableElement.nextSibling);
+//      }
+
+    return true;
+
+}
 
 function onAccept()
 {
+  if (!data) {
+    return onAcceptNewTable();
+  }
   // Do same as Apply and close window if ValidateData succeeded
   var retVal = Apply();
   if (retVal)
@@ -2724,46 +3009,86 @@ function doInitialPreviewSetup()
 
 function checkPreviewChanges(controlID)
 {
-  var bChanged = false;
-  var theChanges = createPreviewChangeArray();
-  var sideString = (gCurrentSide == "all") ? "" : gCurrentSide + "-";
- // var bBackgroundIsSelection = (gDialog.BackgroundSelectionRadioGroup.value == "selection");
-  switch(controlID)
-  {
-    case "cellBorderStyleList":
-      if (gCollatedCellData.border.style[gCurrentSide] != gDialog.CellBorderStyleList.value)
-      {
-        gCollatedCellData.border.style[gCurrentSide] = gDialog.CellBorderStyleList.value;
-        bChanged = true;
-        theChanges.style["border-" + sideString + "style"] = gDialog.CellBorderStyleList.value;
-        gCellChangeData.border.style.push(gCurrentSide);
-        if (borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value) != gBorderCollapse)
-        {
-          gBorderCollapse = borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value);
-          gTableChangeData.borderCollapse = true;
-        }
-      }
-    break;
-    case "cellBorderWidthList":
-      if (gCollatedCellData.border.width[gCurrentSide] != gDialog.CellBorderWidthList.value)
-      {
-        gCollatedCellData.border.width[gCurrentSide] = gDialog.CellBorderWidthList.value;
-        bChanged = true;
-        theChanges.style["border-" + sideString + "width"] = gDialog.CellBorderWidthList.value;
-        gCellChangeData.border.width.push(gCurrentSide);
-      }
-    break;
+  var sides = ["top","bottom","left","right"];
+  var i;
+  var style;
+  var borderw
+  var borderst;
+  var bordercolor = "unspec";
+  var bordervalues;
+  var valuearray;
 
-    default:
-    break;
+  style = gDialog.BordersPreviewCenterCell.getAttribute("style") || "";
+  for (i = 0; i < 4; i++) {
+    if (gDialog.BorderSideSelectionList.value ==="all" || gDialog.BorderSideSelectionList.value === sides[i]) {
+      // remove part of style string
+      borderw = gDialog.CellBorderWidthList.value;
+      borderst = gDialog.CellBorderStyleList.value;
+      if (borderw != "unspec" || borderst != "unspec" || bordercolor != "unspec") {
+        bordervalues = style;
+        bordervalues.replace("/border-"+sides[i]+": ([^;]*);/","");
+        bordervalues.replace("! important;", "");
+        // bordervalues now looks like "thick solid red"
+        valuearray = bordervalues.split(" ");
+        valuearray = valuearray.slice(0,3);
+        if (borderw !== "unspec") valuearray[0] = borderw==="none"?0:borderw;
+        else valuearray[0]="";
+        if (borderst !== "unspec") valuearray[1] = borderst;
+        else valuearray[1] = "";
+        if (bordercolor != "unspec") valuearray[2] = bordercolor;
+        else valuearray[2] = "";
+        style.replace("/border-"+sides[i]+": ([^;]*);/","");
+        // sample style attribute: border-bottom: thick solid red
+        style += 'border-' + sides[i] + ": " + valuearray.join(" ") + ' ! important; ';
+      }
+      else {
+        style.replace("/border-"+sides[i]+": ([^;]*);/","");
+      }
+    }
   }
-  if (bChanged)
-    updateSample(theChanges);
+  gDialog.BordersPreviewCenterCell.setAttribute("style", style);
+ //  var bChanged = false;
+ //  var theChanges = createPreviewChangeArray();
+ //  var sideString = (gCurrentSide == "all") ? "" : gCurrentSide + "-";
+ // // var bBackgroundIsSelection = (gDialog.BackgroundSelectionRadioGroup.value == "selection");
+ //  switch(controlID)
+ //  {
+ //    case "cellBorderStyleList":
+ //      if (gCollatedCellData.border.style[gCurrentSide] != gDialog.CellBorderStyleList.value)
+ //      {
+ //        gCollatedCellData.border.style[gCurrentSide] = gDialog.CellBorderStyleList.value;
+ //        bChanged = true;
+ //        theChanges.style["border-" + sideString + "style"] = gDialog.CellBorderStyleList.value;
+ //        gCellChangeData.border.style.push(gCurrentSide);
+ //        if (borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value) != gBorderCollapse)
+ //        {
+ //          gBorderCollapse = borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value);
+ //          gTableChangeData.borderCollapse = true;
+ //        }
+ //      }
+ //    break;
+ //    case "cellBorderWidthList":
+ //      if (gCollatedCellData.border.width[gCurrentSide] != gDialog.CellBorderWidthList.value)
+ //      {
+ //        gCollatedCellData.border.width[gCurrentSide] = gDialog.CellBorderWidthList.value;
+ //        bChanged = true;
+ //        theChanges.style["border-" + sideString + "width"] = gDialog.CellBorderWidthList.value;
+ //        gCellChangeData.border.width.push(gCurrentSide);
+ //      }
+ //    break;
+
+ //    default:
+ //    break;
+ //  }
+ //  if (bChanged)
+ //    updateSample(theChanges);
 }
 
 //Aren't all of these handled using style changes?
 function updateSample(newValues)
 {
+  //BBM
+  return;
   var sizeStrings = {none : "1px", thin : "2px", medium : "3px", thick : "4px"};
   
   for (var styleChange in newValues.style)
