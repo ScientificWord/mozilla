@@ -284,7 +284,7 @@ nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is no pr
 //cursor should be in.
 {
   nsIFrame *pTemp = pFrame;
-  nsIFrame *pNextTemp = nsnull;
+  nsIFrame *pNextTemp = pFrame; //initialize with this to start the loop
   nsIFrame *pTextFrame = nsnull;
   nsCOMPtr<nsIDOMNode> pNode;
   nsAutoString tagName;
@@ -292,6 +292,7 @@ nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is no pr
   pNode->GetNodeName(tagName);
   while (!pTextFrame && !tagName.EqualsLiteral("body") && pTemp)
   {
+    pTemp = pNextTemp;
     while (pTemp && !tagName.EqualsLiteral("body") && !GetPrevSib(pTemp))
     {
       pNextTemp = GetSignificantParent(pTemp);
