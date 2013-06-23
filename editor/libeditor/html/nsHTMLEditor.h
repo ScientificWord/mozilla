@@ -577,7 +577,7 @@ protected:
 
   virtual PRBool IsBlockNode(nsIDOMNode *aNode);
   
-  static PRBool ShouldSelectWholeObject(nsCOMPtr<nsIDOMNode> & aNode);
+  static PRBool ShouldSelectWholeObject(nsIDOMNode *aNode);
 
   nsCOMPtr<nsIDOMNode> GetEnclosingTable(nsIDOMNode *aNode);
 
