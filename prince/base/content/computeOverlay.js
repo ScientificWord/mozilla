@@ -1555,7 +1555,7 @@ function onVCamRightMouseDown(screenX, screenY)
   var evt = editor.document.createEvent("MouseEvents");
   evt.initMouseEvent("mousedown", true, true, editor.document.defaultView, 1,
     screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
-  this.dispatchEvent(evt);
+  this.parentNode.dispatchEvent(evt);
 }
 
 function onVCamRightMouseUp(screenX, screenY)
@@ -1565,17 +1565,17 @@ function onVCamRightMouseUp(screenX, screenY)
   var evt = editor.document.createEvent("MouseEvents");
   evt.initMouseEvent("mouseup", true, true, editor.document.defaultView, 1,
     screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
-  this.dispatchEvent(evt);
+  this.parentNode.dispatchEvent(evt);
 }
 
 function onVCamKeyDown(aKeyCodeMaybe)
 {
-  dump("In onVCamKeyDown, keyCode was " + (aKeyCodeMaybe ? "null" : aKeyCodeMaybe) + "\n");
+  dump("In onVCamKeyDown, keyCode was " + (aKeyCodeMaybe ? aKeyCodeMaybe : "null") + "\n");
 }
 
-function onVCamKeyUp()
+function onVCamKeyUp(aKeyCodeMaybe)
 {
-  dump("In onVCamKeyUp, keyCode was " + (aKeyCodeMaybe ? "null" : aKeyCodeMaybe) + "\n");
+  dump("In onVCamKeyUp, keyCode was " + (aKeyCodeMaybe ? aKeyCodeMaybe : "null") + "\n");
 }
 
 function onVCamTreeChange(treeEvent)
