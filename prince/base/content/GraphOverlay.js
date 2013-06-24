@@ -3141,6 +3141,10 @@ var plotVarDataBase =
     {
       var rawVars = GetCurrentEngine().getVariables(this.mPlot.element["Expression"]);
       var foundVarList = splitMathMLList(rawVars);
+      //special check for returning the empty set symbol
+      if ( (foundVarList.length == 1) && (msiGetBaseNodeName(foundVarList[0]) == "mi") 
+            && (foundVarList[0].textContent == "\u2205") )
+        foundVarList = [];
       foundVarList.sort(orderMathNodes);
       this.mFoundVars = [];
       var topVarNode;
