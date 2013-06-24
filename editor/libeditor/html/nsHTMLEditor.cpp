@@ -4821,7 +4821,7 @@ static nsresult SetSelectionAroundHeadChildren(nsCOMPtr<nsISelection> aSelection
   return aSelection->Extend(headNode, childCount+1);
 }
 
-PRBool nsHTMLEditor::ShouldSelectWholeObject(nsCOMPtr<nsIDOMNode> & aNode)
+PRBool nsHTMLEditor::ShouldSelectWholeObject(nsIDOMNode *aNode)
 {
   if (IsTextNode(aNode))
     return PR_FALSE;
@@ -6122,6 +6122,10 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
   // hack to allow non-empty description list labels to be considered empty.
   if (nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("descriptionLabel"))) {
     *outIsEmptyNode = PR_TRUE;
+    return res;
+  }
+  if (ShouldSelectWholeObject(aNode)) {
+    *outIsEmptyNode = PR_FALSE;
     return res;
   }
 
