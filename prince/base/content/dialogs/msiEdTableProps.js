@@ -1,4 +1,4 @@
-408.483.I967/* ***** BEGIN LICENSE BLOCK *****
+/* ***** BEGIN LICENSE BLOCK *****
  Copyright 2009 MacKichan Software, Inc. *
  * ***** END LICENSE BLOCK ***** */
 "use strict";
@@ -223,9 +223,9 @@ function setVariablesForControls()
   gDialog.widthInput     = document.getElementById("widthInput");
 
   gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
-  gDialog.tableWidth =  document.getElementById("tableWidth");
+  gDialog.tableWidthInput =  document.getElementById("tableWidthInput");
   gDialog.unitMenulist = document.getElementById("unitMenulist");
-  gDialog.tableWidthAutoCheckbox = document.getElementById("autoWidthCheckbox");
+  gDialog.autoWidthCheckbox = document.getElementById("autoWidthCheckbox");
 
   gDialog.tableLocationList =  document.getElementById("tableLocationList");
   gDialog.floatLocationList =  document.getElementById("floatLocationList");
@@ -709,7 +709,7 @@ function initUnitHandler(unit)
   var initUnit = unit;
   fieldList.push(gDialog.CellHeightInput);
   fieldList.push(gDialog.CellWidthInput);
-  fieldList.push(gDialog.widthInput);
+  fieldList.push(gDialog.tableWidthInput);
   unitHandler.setEditFieldList(fieldList);
   if (!unit && gPrefs)
     initUnit = gPrefs.getCharPref("swp.defaultTableUnits");
@@ -778,10 +778,10 @@ function initTablePanel()
   if (widthVal)
   {
     currUnit = widthVal.unit;
-    gDialog.tableWidthAutoCheckbox.checked = false;
+    gDialog.autoWidthCheckbox.checked = false;
   }
   else
-    gDialog.tableWidthAutoCheckbox.checked = true;
+    gDialog.autoWidthCheckbox.checked = true;
   // unitHandler.initCurrentUnit(currUnit);
   // unitHandler.buildUnitMenu(gDialog.unitMenulist, currUnit);
   checkEnableWidthControls();
@@ -798,7 +798,7 @@ function initTablePanel()
 //  gDialog.tableColumnCount.value = gColCount; 
   gDialog.rowsInput.value = " " + gRowCount;
   gDialog.columnsInput.value = " " + gColCount;
-  if (widthVal && widthVal.number) gDialog.tableWidth.value = widthVal.number;
+  if (widthVal && widthVal.number) gDialog.tableWidthInput.value = widthVal.number;
   if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
   gDialog.baselineList.value = gTableBaseline;
 
@@ -809,7 +809,7 @@ function initTablePanel()
     gTableCaptionPlacement = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side");
     if (gTableCaptionPlacement != "top")
       gTableCaptionPlacement = "bottom";
-    gDialog.TableCaptionList.value = gTableCaptionPlacement;
+    gDialog.captionLocation.value = gTableCaptionPlacement;
   }
   var pos = gTableElement.getAttribute("pos");
   var placement = gTableElement.getAttribute("placement");
@@ -1668,8 +1668,8 @@ function DisableRadioGroup(aGroup)
 
 function checkEnableWidthControls()
 {
-  var bDisabled = gDialog.tableWidthAutoCheckbox.checked;
-  enableControlsByID(["tableWidth"], !bDisabled);
+  var bDisabled = gDialog.autoWidthCheckbox.checked;
+  enableControlsByID(["tableWidthInput"], !bDisabled);
 }
 
 function EnableDisableControls()
@@ -1828,7 +1828,7 @@ function UpdateCells(editor)
   // at this points cells array contains all the cells to impact
   for (var i = 0; i < cells.length; i++) {
     var c = cells[i];
-    DoStyleChangesForACell(c);
+    ApplyAttributesToOneCell(c);
 
     // var txn = new diStyleAttrChangeTxn(c, "width", gDialog.cellsWidthMenulist.value, "");
     // editor.doTransaction(txn);
@@ -2077,10 +2077,10 @@ function ApplyTableAttributes()
   var pos = gDialog.tableLocationList.value;
   var float = gDialog.floatLocationList.value;  
   gTableElement.setAttribute("req","tabulary");
-  if (gDialog.tableWidthAutoCheckbox.checked)
+  if (gDialog.autoWidthCheckbox.checked)
     gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
   else
-    gTableElement.setAttribute("width",unitHandler.getValueAs(gDialog.widthInput.value, "pt")+"pt");
+    gTableElement.setAttribute("width",unitHandler.getValueAs(gDialog.tableWidthInput.value, "pt")+"pt");
   if (pos) {
     if (pos == "inline" || pos == "display") float = "";
     if (float !== "") {
@@ -2768,37 +2768,88 @@ function ApplyCellAttributes()
 //   }
 }
 
-function ApplyAttributesToOneCell(destElement, nRow, nCol)
+function translate(cssstyle) {
+  // convert CSS-speak to LaTeX-speak
+  switch (cssstyle) {
+    case "none":
+    case "unspec": return null;
+    case "solid" : 
+    case "double": return cssstyle;
+    default:       return null;
+  }
+}
+
+function ApplyAttributesToOneCell(destElement)
 {
   var aVal = null;
   var aValStr = "";
-//  if (gCellChangeData.size.height && (gCellChangeData.size.height === true))
+  var theSide;
+  var lineobj = {left: null, right: null, top: null, bottom: null};
+  var names = ['left','right','top','bottom'];
+  var regex = /border-(left|right|top|bottom).*?(none|solid|double)/g;
+  var borderregex = /border:.*?(none|solid|double)/g;
+  var stylestring = document.getElementById("BordersPreviewCenterCell").getAttribute("style");
+  var borderDone = false;
+  if (stylestring) {
+    var matches;
+    var match;
+    var currLine;
+    var i;
+    matches = stylestring.match(borderregex);
+    if (matches && matches.length > 0) {
+      match = borderregex.exec(matches[0]);
+      if (match.length > 1) {
+        currLine = translate(match[1]);
+        if (currLine == null) 
+          destElement.removeAttribute('lines');
+        else
+          SetAnAttribute(destElement, "lines", currLine);
+        borderDone = true;
+      }
+    }
+    if (!borderDone)
+    {
+      matches = stylestring.match(regex);
+      for (i = 0; i<matches.length; i++) {
+        match = regex.exec(matches[i]);
+        if (match.length > 2) {
+          lineobj[match[1]] = match[2];
+        }
+      }
+      for (i = 0; i < 4; i++) {
+        currLine = translate(lineobj[names[i]]);
+        if (currLine == null) {
+          destElement.removeAttribute("line-"+names[i]);
+        }
+        else {
+          SetAnAttribute(destElement, "line-" + names[i], currLine);
+        }
+      }
+    }
+  }
+  if (Number(gDialog.CellHeightInput.value) !== 0)
   {
     aVal = unitHandler.getValueString(gDialog.CellHeightInput.value);
     SetAnAttribute(destElement, "cellheight", aVal);
   }
 
-//  if (gCellChangeData.size.width && (gCellChangeData.size.width === true) )
+  if (Number(gDialog.CellWidthInput.value) !== 0)
   {
     aVal = unitHandler.getValueString(gDialog.CellWidthInput.value);
     SetAnAttribute(destElement, "cellwidth", aVal);
   }
 
-  var theSide;
-  for (ix = 0; ix < gCellChangeData.border.style.length; ++ix)
-  {
-    theSide = gCellChangeData.border.style[ix];
-    if (theSide == "all")
-      SetAnAttribute(destElement, "lines", gCollatedCellData.border.style[theSide]);
-    else
-      SetAnAttribute(destElement, "line-" + theSide, gCollatedCellData.border.style[theSide]);
-  }
-
-  if (gCellChangeData.align.halign)
-    SetAnAttribute(destElement, "align", gCollatedCellData.align.halign);
-  if (gCellChangeData.align.valign)
-    SetAnAttribute(destElement, "valign", gCollatedCellData.align.valign);
-
+//  for (ix = 0; ix < gCellChangeData.border.style.length; ++ix)
+//  {
+//    theSide = gCellChangeData.border.style[ix];
+//    if (theSide == "all")
+//      SetAnAttribute(destElement, "lines", gCollatedCellData.border.style[theSide]);
+//    else
+//      SetAnAttribute(destElement, "line-" + theSide, gCollatedCellData.border.style[theSide]);
+//  }
+    
+  SetAnAttribute(destElement, "align", document.getElementById("hAlignChoices").value);
+  SetAnAttribute(destElement, "valign", document.getElementById("vAlignChoices").value);
   DoStyleChangesForACell(destElement);
 
 }
@@ -2892,21 +2943,8 @@ function onAcceptNewTable()
               var newCell = gActiveEditor.createElementWithDefaults("td");
               if (newCell)
               {
-                style = gDialog.BordersPreviewCenterCell.getAttribute("style") || "";
-                if (gDialog.CellWidthInput.value > 0) 
-                {
-                  style += "width: " + gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value + "; ";
-                  newCell.setAttribute('cellwidth', gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value);
-                }
-                if (gDialog.CellHeightInput.value > 0) {
-                  style += "height: " + gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value + "; ";
-                  gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value
-                  newCell.setAttribute('cellheight', gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value);
-                }
-                if (color && color != '#FFFFFF' && color != 'white') style += 'background-color: ' + color + '; ';
-
-                newCell.setAttribute("style", style)
                 newRow.appendChild(newCell);
+                ApplyAttributesToOneCell(newCell);              
               }
             }
           }
