@@ -1013,7 +1013,9 @@ Plot.prototype = {
     if (status != "Deleted") {
       var plotData = graphData ? graphData.findPlotData(this) : null;
       if (plotData)
+      {
         this.checkAnimationVar(plotData);
+      }
       var DOMPlot = doc.createElement("plot");
       var attrs = (forComp) ? this.plotCompAttributeList() : this.plotAttributeList();
       for (var i=0; i<attrs.length; i++) {
@@ -2029,15 +2031,26 @@ Frame.prototype = {
   }
 };
 
-function newPlotFromText(currentNode, expression, editorElement) {
+function newPlotFromText(currentNode, expression, editorElement, selection) {
   try {
     var editor = msiGetEditor(editorElement);
     var graph = new Graph();
     graph.extractGraphAttributes(currentNode);
     var firstplot = graph.plots[0];
-    var plot = new Plot(graph.getDimension(), firstplot.attributes["PlotType"]);
+    var plottype;
+    if (firstplot)
+      plottype = firstplot.attributes["PlotType"];
+    else
+      plottype = "rectangular";
+    var domParser = new DOMParser();
+    var parsedExpr = domParser.parseFromString ("<body>" + expression + "</body>", "text/xml");
+    parsedExpr = extractMathContent(parsedExpr.documentElement);
+    var checkedExpr = preParsePlotExpression(parsedExpr, plottype, null, editorElement);
+    var fixedExpr = runFixup(GetFixedMath(checkedExpr));
+
+    var plot = new Plot(graph.getDimension(), plottype);
     graph.addPlot(plot);
-    plot.element["Expression"] = expression;
+    plot.element["Expression"] = fixedExpr;
 //    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
     graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement);
@@ -2214,12 +2227,13 @@ function insertGraph(siblingElement, graph, editorElement) {
 //  doVCamPreInitialize(obj, graph);
   editorElement.focus();
 }
-function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElement) {
+function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElement, selection) {
   /**-----------------------------------------------------------------------------------------*/
   // Create the <graph> element and insert into the document following this math element
   // primary entry point
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-  var expr = runFixup(GetFixedMath(math));
+  var checkedExpr = preParsePlotExpression(math, plottype, selection, editorElement);
+  var expr = runFixup(GetFixedMath(checkedExpr));
   var graph = new Graph();
   var width = GetStringPref("swp.graph.HSize");
   var height = GetStringPref("swp.graph.VSize");
@@ -2240,6 +2254,164 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   plot.computeQuery();
   insertGraph(math, graph, editorElement);
 }
+
+function preParsePlotExpression(math, plotType, selection, editorElement)
+{
+  var retMath = math;
+  var retMathObj;
+  if (selection)
+  {
+    if (!selection.isCollapsed)
+    {
+      retMathObj = extractSelectedMath(math, selection, editorElement);
+      return extractPlottableExpression(retMathObj.mathObj, plotType, retMathObj.focusNode, retMathObj.focusOffset);
+    }
+    return extractPlottableExpression(retMath, plotType, selection.focusNode, selection.focusOffset);
+  }
+  return extractPlottableExpression(retMath, plotType);
+}
+
+function extractSelectedMath(math, selection, editorElement)
+{
+  var retMathObj = {};
+  var topNode, startOffset, endOffset;
+  var theRange = selection.getRangeAt(0);
+  var bHasContentBefore = msiNavigationUtils.nodeHasContentBeforeRangeStart(theRange, math);
+  var bHasContentAfter = msiNavigationUtils.nodeHasContentAfterRangeEnd(theRange, math);
+  if (!bHasContentBefore && !bHasContentAfter)  //the whole math object is in the selection - just return what we're given
+    return { mathObj : math, focusNode : selection.focusNode, focusOffset : selection.focusOffset };
+  //Otherwise
+  var bFocusAtStart = (msiNavigationUtils.comparePositions(selection.anchorNode, selection.anchorOffset, selection.focusNode, selection.focusOffset) > 0);
+  retMathObj.mathObj = CloneTheRange(math, theRange, editorElement);
+  retMathObj.focusNode = retMathObj.mathObj;
+//  if (bFocusAtStart)
+//    retMathObj.focusOffset = 0;
+//  else
+  retMathObj.focusOffset = retMathObj.mathObj.childNodes.length;
+  return retMathObj;
+}
+
+function extractMathContent(aNode)
+{
+  if (msiGetBaseNodeName(aNode) == "math")
+    return aNode;
+  var mathReturn;
+  if (msiNavigationUtils.isMathNode(aNode))
+  {
+    mathReturn = document.createElementNS(mmlns, "math");
+    mathReturn.appendChild(aNode);
+    return mathReturn;
+  }
+  //Look to see if we have a string of math objects (may particularly happen if aNode is a documentFragment)
+  var kids = msiNavigationUtils.getSignificantContents(aNode);
+  var ii,
+      bStarted = false,
+      bFinished = false,
+      isMath = false;
+  for (ii = 0; (ii < kids.length) && (!bStarted || !bFinished); ++ii)
+  {
+    //if we find a <math> node, we just return the first one
+    if (msiGetBaseNodeName(kids[ii]) == "math")
+      return kids[ii];
+
+    isMath = msiNavigationUtils.isMathNode(kids[ii]);
+    if (!bStarted && isMath)
+      mathReturn = document.createElementNS(mmlns, "math");
+    bStarted = bStarted || isMath;
+    bFinished = bStarted && !isMath;
+    if (bStarted && !bFinished)
+      mathReturn.appendChild(kids[ii]);
+  }
+  if (mathReturn)
+    return mathReturn;
+  //No top-level math, see if anything is nested?
+  for (ii = 0; ii < kids.length; ++ii)
+  {
+    mathReturn = extractMathContent(kids[ii]);
+    if (mathReturn)
+      return mathReturn;
+  }
+  return null;
+}
+
+function extractPlottableExpression(mathNode, plotType, focusNode, focusOffset)
+{
+  var currNode;
+  var tempNode = mathNode;
+  do
+  {
+    currNode = tempNode;
+    if (currNode == focusNode)
+      break;
+    tempNode = msiNavigationUtils.getSingleWrappedChild(currNode);
+    if (!tempNode)
+    {
+      tempNode = msiNavigationUtils.getSingleSignificantChild(currNode, false);
+      if (tempNode && !msiNavigationUtils.isOrdinaryMRow(tempNode))
+        tempNode = null;
+    }
+  } while (tempNode);
+  var topFocusNode, topFocusPos;
+  if (focusNode)
+    topFocusNode = msiNavigationUtils.findTopChildContaining(focusNode, currNode);
+  else  //no focus node/offset passed in; we'll look for plottable expression starting from the end
+  {
+    topFocusNode = currNode;
+    focusOffset = currNode.childNodes.length;
+  }
+  if (!topFocusNode)  //focusNode isn't in our mathNode at all?
+  {
+    if (msiNavigationUtils.comparePositions(focusNode, focusOffset, currNode, currNode.childNodes.length) > 0)
+      topFocusPos = currNode.childNodes.length;
+    else
+      topFocusPos = 0;
+  }
+  else if (topFocusNode == currNode)
+    topFocusPos = focusOffset;
+  else
+  {
+    topFocusPos = msiNavigationUtils.offsetInParent(topFocusNode);
+    if (focusOffset)
+      ++topFocusPos;
+  }
+  var binOps = [];
+  for (var ii = 0; ii < currNode.childNodes.length; ++ii)
+  {
+    if (msiNavigationUtils.isBinaryRelation(currNode.childNodes[ii]))
+      binOps.push(ii);
+  }
+  var okayOps = 0;
+  if ((plotType == "implicit") || (plotType == "inequality"))
+    okayOps = 1;
+  if (binOps.length == okayOps)
+    return mathNode;
+  var numOps = 0;
+  var endPos, startPos;
+  for (endPos = topFocusPos; endPos < currNode.childNodes.length; ++endPos)  //We start actually to the right of the focus in this loop
+  {
+    if (binOps.indexOf(endPos) >= 0)
+      ++numOps;
+    if (numOps > okayOps)
+      break;
+  }
+  for (startPos = topFocusPos - 1; startPos >= 0; --startPos)
+  {
+    if (binOps.indexOf(startPos) >= 0)
+      ++numOps;
+    if (numOps > okayOps)
+    {
+      ++startPos;
+      break;
+    }
+  }
+  if (startPos < 0)
+    startPos = 0;
+  var newMathNode = document.createElementNS(mmlns, "math");
+  for (ii = startPos; ii < endPos; ++ii)
+    newMathNode.appendChild(currNode.childNodes[ii].cloneNode(true));
+  return newMathNode;
+}
+
 function recreateGraph(DOMGraph, editorElement) {
   /**----------------------------------------------------------------------------------*/
   // regenerate the graph  based on the contents of <graph>
@@ -2451,6 +2623,7 @@ function parseQueryReturn(out, graph, plot) {
 //      variableList.push(stack[i]);
 //    }
 //  }
+  plot.element["OriginalExpression"] = plot.element["Expression"];  //store original form - should display it in dialog
   var fixedOut = runFixup(runFixup(out));
   plot.element["Expression"] = fixedOut;  //this may be sharpened below, but for now
 
@@ -2968,6 +3141,10 @@ var plotVarDataBase =
     {
       var rawVars = GetCurrentEngine().getVariables(this.mPlot.element["Expression"]);
       var foundVarList = splitMathMLList(rawVars);
+      //special check for returning the empty set symbol
+      if ( (foundVarList.length == 1) && (msiGetBaseNodeName(foundVarList[0]) == "mi") 
+            && (foundVarList[0].textContent == "\u2205") )
+        foundVarList = [];
       foundVarList.sort(orderMathNodes);
       this.mFoundVars = [];
       var topVarNode;
