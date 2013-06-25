@@ -10236,6 +10236,44 @@ var msiNavigationUtils =
     return false;
   },
 
+  isBinaryRelation : function(node)
+  {
+    var text, symbolPanel, topWin;
+    var ii, jj;
+    this.getBinaryRelationList();
+    if (msiGetBaseNodeName(node) == "mo")
+    {
+      text = node.textContent;
+      if ((text == "=") || (text == "<") || (text == ">")) //short-circuit for most common cases
+        return true;
+      return (this.binaryRelationList.indexOf(text) >= 0);
+    }
+    return false;
+  },
+
+  getBinaryRelationList : function()
+  {
+    if (this.binaryRelationList && this.binaryRelationList.length)
+      return;
+
+    this.binaryRelationList = [];
+    var symPanelIds = ["symbol_binRel", "symbol_negRel"];
+    var topWin = msiGetTopLevelWindow(window);
+    var ii, jj, text, symbolPanel;
+    for (ii = 0; ii < 2; ++ii)
+    {
+      symbolPanel = topWin.document.getElementById(symPanelIds[ii]);
+      if (!symbolPanel)
+        continue;
+      for (jj = 0; jj < symbolPanel.childNodes.length; ++jj)
+      {
+        text = symbolPanel.childNodes[jj].getAttribute("msivalue");
+        if (text && text.length)
+          this.binaryRelationList.push(text);
+      }
+    }
+  },
+
   getEmbellishedOperator : function(node)
   {
     if ( node !== null)
