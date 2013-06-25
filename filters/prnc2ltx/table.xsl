@@ -19,6 +19,21 @@
 
 <xsl:template name="buildtable">
   <xsl:variable name="theTable" select="." />
+  <xsl:variable name="topCaption">
+    <xsl:choose>
+      <xsl:when test="html:caption[not(@align)]">1</xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="bottomCaption">
+    <xsl:choose>
+      <xsl:when test="html:caption[@align='bottom']">1</xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="caption" select="html:caption"/>
+ 
+
   <xsl:variable name="embedded" select="count(ancestor::html:table)"/>
   <xsl:variable name="tabularType">
     <xsl:choose>
@@ -46,7 +61,9 @@
   </xsl:variable>
   <xsl:variable name="cellData" select="exsl:node-set($cellData.tf)"/>
   <xsl:text xml:space="preserve">
-</xsl:text><xsl:if test="$embedded!=0">{</xsl:if>\begin{<xsl:value-of select="$tabularType"/>}<xsl:choose>
+</xsl:text><xsl:if test="$embedded!=0">{</xsl:if>
+<xsl:if test="$topCaption='1'"><xsl:apply-templates select="$caption"/></xsl:if>
+\begin{<xsl:value-of select="$tabularType"/>}<xsl:choose>
     <xsl:when test="@width &gt; 0">{<xsl:value-of select="$mmWidth" />mm}</xsl:when>
     <xsl:otherwise></xsl:otherwise>
   </xsl:choose>
@@ -130,7 +147,9 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
-\end{<xsl:value-of select="$tabularType"/>}<xsl:if test="$embedded">}</xsl:if>
+\end{<xsl:value-of select="$tabularType"/>}
+<xsl:if test="$bottomCaption='1'"><xsl:apply-templates select="$caption"/></xsl:if>
+<xsl:if test="$embedded">}</xsl:if>
 </xsl:template>    
 
 <xsl:template match="html:table">
@@ -145,7 +164,8 @@
       <xsl:choose>
         <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>
         <xsl:otherwise><xsl:value-of select="substring(@placement,1,1)"/></xsl:otherwise>
-      </xsl:choose>}{0pt}
+      </xsl:choose>}
+      {<xsl:value-of select="@width"/>}
       <xsl:call-template name="buildtable"/>
       \end{wraptable}
     </xsl:when>
@@ -551,17 +571,10 @@
         </xsl:if>
         <xsl:choose>
           <xsl:when test="$theCellData/@alignment">
-            <xsl:choose>
-              <xsl:when test="$tabularType='tabulary'">
-                <xsl:value-of select="translate(substring(normalize-space($theCellData/@alignment),1,1),'lcrj', 'LCRJ')" />
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="translate(substring(normalize-space($theCellData/@alignment),1,1),'LCRJ', 'lcrj')" />
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="translate(substring(normalize-space($theCellData/@alignment),1,1),'LCRJ', 'lcrj')" />
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>L</xsl:text>
+            <xsl:text>l</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
         <xsl:if test="string-length($theCellData/@width)">
