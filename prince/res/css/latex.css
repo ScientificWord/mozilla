@@ -53,6 +53,69 @@ td {
 
 }
 
+td[lines="none"] {
+  border-style: none;
+}
+
+td[lines="solid"] {
+  border: thin solid black;
+}
+
+td[lines="double"] {
+  border-style: medium double black;
+}
+
+td[line-left="none"] {
+  border-style-left: none;
+}
+
+td[line-left="solid"] {
+  border-left: thin solid black;
+}
+
+td[line-left="double"] {
+  border-style-left: medium double black;
+}
+
+
+td[line-right="none"] {
+  border-style-right: none;
+}
+
+td[line-right="solid"] {
+  border-right: thin solid black;
+}
+
+td[line-right="double"] {
+  border-style-right: medium double black;
+}
+
+
+td[line-top="none"] {
+  border-style-top: none;
+}
+
+td[line-top="solid"] {
+  border-top: thin solid black;
+}
+
+td[line-top="double"] {
+  border-style-top: medium double black;
+}
+
+
+td[line-bottom="none"] {
+  border-style-bottom: none;
+}
+
+td[line-bottom="solid"] {
+  border-bottom: thin solid black;
+}
+
+td[line-bottom="double"] {
+  border-style-bottom: medium double black;
+}
+
 button[class="msi"]::-moz-selection{
   background: blue;
 } 

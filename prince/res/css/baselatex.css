@@ -99,65 +99,7 @@ td {
 display: table-cell
 }
 
-td[lines="none"] {
-  border-style: none;
-}
 
-td[lines="solid"] {
-  border-style: solid;
-}
-
-td[lines="double"] {
-  border-style: double;
-}
-
-td[line-top="none"] {
-  border-top-style: none;
-}
-
-td[line-top="solid"] {
-  border-top-style: solid;
-}
-
-td[line-top="double"] {
-  border-top-style: double;
-}
-
-td[line-right="none"] {
-  border-right-style: none;
-}
-
-td[line-right="solid"] {
-  border-right-style: solid;
-}
-
-td[line-right="double"] {
-  border-right-style: double;
-}
-
-td[line-bottom="none"] {
-  border-bottom-style: none;
-}
-
-td[line-bottom="solid"] {
-  border-bottom-style: solid;
-}
-
-td[line-bottom="double"] {
-  border-bottom-style: double;
-}
-
-td[line-left="none"] {
-  border-left-style: none;
-}
-
-td[line-left="solid"] {
-  border-left-style: solid;
-}
-
-td[line-left="double"] {
-  border-left-style: double;
-}
 
 texb {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#texb");

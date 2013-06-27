@@ -256,3 +256,5 @@
 
 <!ENTITY currentUnits "Current units: ">
 <!ENTITY other.label "Other" >
+<!ENTITY rowheightRule "A row's height will be the height of its tallest cell" >
+<!ENTITY colwidthRule "A column's width will be the width of its widest cell" >
