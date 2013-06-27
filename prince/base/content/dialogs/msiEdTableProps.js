@@ -487,6 +487,7 @@ function Startup()
     newTable = true;
     try {
       gTableElement = gActiveEditor.createElementWithDefaults("table");
+      gTableElement.removeAttribute("border");
       gTableElement.setAttribute("req","tabulary");
     } 
     catch (e) {
@@ -501,6 +502,7 @@ function Startup()
     document.getElementById("tablegrid").setAttribute("collapsed", true);
     document.getElementById("rowsInput").disabled = true;
     document.getElementById("columnsInput").disabled = true;
+    document.getElementById("mainTabBox").selectedTab = document.getElementById("TableTab");
   }
 
   var theCommand = "cmd_editTable";
@@ -517,19 +519,7 @@ function Startup()
       return;
     }
   }
-  else {
-    newTable = true;
-    gInitialCellData = gCollatedCellData = createCellDataObject(null);
- 
-    try {
-      gTableElement = gActiveEditor.createElementWithDefaults("table");
-      gTableElement.setAttribute("req","tabulary");
-    } 
-    catch (e) {
-
-    }
-    initUnitHandler(null);
-  }
+  initUnitHandler(null);
 
 
 //  if (!gSelection)  //should get set in "setDataFromReviseData" call
@@ -1864,7 +1854,7 @@ function DoStyleChangesForACell(destCell)
   var style;
   var color;
   color = getColor('backgroundCW');
-  style = gDialog.BordersPreviewCenterCell.getAttribute("style") || "";
+  style = "";
   if (gDialog.CellWidthInput.value > 0) style += "width: " + gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value + "; ";
   if (gDialog.CellHeightInput.value > 0) style += "height: " + gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value + "; ";
   if (color && color != '#FFFFFF' && color != 'white') style += 'background-color: ' + color + '; ';
@@ -2810,10 +2800,12 @@ function ApplyAttributesToOneCell(destElement)
     if (!borderDone)
     {
       matches = stylestring.match(regex);
-      for (i = 0; i<matches.length; i++) {
-        match = regex.exec(matches[i]);
-        if (match.length > 2) {
-          lineobj[match[1]] = match[2];
+      if (matches) {
+        for (i = 0; i<matches.length; i++) {
+          match = regex.exec(matches[i]);
+          if (match && match.length > 2) {
+            lineobj[match[1]] = match[2];
+          }
         }
       }
       for (i = 0; i < 4; i++) {
@@ -2898,7 +2890,7 @@ function onAcceptNewTable()
     var color;
     try 
     {
-      var wrapping = gDialog.wrapping.checked;
+      var wrapping = gDialog.TextWrapCheckbox.checked;
       gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
 
       var align = gDialog.hAlignChoices.value;
@@ -3060,9 +3052,9 @@ function checkPreviewChanges(controlID)
   for (i = 0; i < 4; i++) {
     if (gDialog.BorderSideSelectionList.value ==="all" || gDialog.BorderSideSelectionList.value === sides[i]) {
       // remove part of style string
-      borderw = gDialog.CellBorderWidthList.value;
       borderst = gDialog.CellBorderStyleList.value;
-      if (borderw != "unspec" || borderst != "unspec" || bordercolor != "unspec") {
+      borderw = borderst==="double"?"medium":"thin";
+      if (borderst != "unspec") {
         bordervalues = style;
         bordervalues.replace("/border-"+sides[i]+": ([^;]*);/","");
         bordervalues.replace("! important;", "");

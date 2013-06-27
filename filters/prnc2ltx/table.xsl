@@ -159,13 +159,13 @@
       <xsl:call-template name="buildtable"/>
       \end{center}
     </xsl:when>
-    <xsl:when test="@pos='float'"> 
+    <xsl:when test="@pos='float' or html:caption"> 
       \begin{wraptable}{
       <xsl:choose>
         <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>
         <xsl:otherwise><xsl:value-of select="substring(@placement,1,1)"/></xsl:otherwise>
       </xsl:choose>}
-      {<xsl:value-of select="@width"/>}
+      {<xsl:choose><xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when><xsl:otherwise>0pt</xsl:otherwise></xsl:choose>}
       <xsl:call-template name="buildtable"/>
       \end{wraptable}
     </xsl:when>
