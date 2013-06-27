@@ -31,21 +31,21 @@ table {
 /* give a red dotted border to tables and cells with no border
    otherwise they are invisible
 */
-table:not([chrome])[empty-cells],
+/*table:not([chrome])[empty-cells],
   table:not([chrome])[border="0"],
   /* next two selectors on line below for the case where tbody is omitted */
-  table:not([chrome])[border="0"] > tr > td, table:not([chrome])[border="0"] > tr > th,
+/*  table:not([chrome])[border="0"] > tr > td, table:not([chrome])[border="0"] > tr > th,
   table:not([chrome])[border="0"] > thead > tr > td, table:not([chrome])[border="0"] > tbody > tr > td, table:not([chrome])[border="0"] > tfoot > tr > td,
   table:not([chrome])[border="0"] > thead > tr > th, table:not([chrome])[border="0"] > tbody > tr > th, table:not([chrome])[border="0"] > tfoot > tr > th,
   table:not([chrome]):not([border]),
-  /* next two selectors on line below for the case where tbody is omitted */
+   next two selectors on line below for the case where tbody is omitted 
   table:not([chrome]):not([border]) > tr > td, table:not([chrome]):not([border]) > tr >  th,
   table:not([chrome]):not([border]) > thead > tr > td, table:not([chrome]):not([border]) > tbody > tr > td, table:not([chrome]):not([border]) > tfoot > tr > td,
   table:not([chrome]):not([border]) > thead > tr > th, table:not([chrome]):not([border]) > tbody > tr > th, table:not([chrome]):not([border]) > tfoot > tr > th
 {
   border: 1px dotted red;
 }
-
+*/
 /* give a green dashed border to forms otherwise they are invisible
 */
 form
