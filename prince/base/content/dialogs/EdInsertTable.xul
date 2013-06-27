@@ -51,7 +51,7 @@
   <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
   <broadcaster id="currentunits" value=""/>
-  <tabbox>
+  <tabbox id="mainTabBox">
     <tabs id="tabpanel-tabs">
       <tab id="QuicklyTab" label="&quicklyTab.label;"/>
       <tab id="TableTab" label="&tableTab.label;"/>
@@ -245,65 +245,73 @@
       </tabpanel>
       <!-- Cells PANEL -->
       <tabpanel id ="tableprops">
-        <vbox>
-          <!-- cell size groupbox -->
-          <groupbox flex="1"><caption label="&size.label;"/>
-            <grid>
-              <columns><column/><column/><column flex="1"/></columns>
-              <rows>
-                <row align="center">
-                  <label value="&Rowheight.label;"/>
-                  <textbox id="CellHeightInput" type="number" class="medwidth" 
-                           oninput=""/>
-                </row>
-                <row align="center">
-                  <label value="&Columnwidth.label;"/>
-                  <textbox id="CellWidthInput" type="number" class="medwidth" 
-                           oninput=""/>
-                </row>
-              </rows>
-            </grid>
+        <vbox><hbox>
+          <vbox>
+            <!-- cell size groupbox -->
+            <groupbox flex="1"><caption label="&size.label;"/>
+              <grid>
+                <columns><column/><column/><column flex="1"/></columns>
+                <rows>
+                  <row align="center">
+                    <label value="&Rowheight.label;"/>
+                    <textbox id="CellHeightInput" type="number" class="medwidth" 
+                             oninput=""/>
+                  </row>
+                  <row align="center">
+                    <label value="&Columnwidth.label;"/>
+                    <textbox id="CellWidthInput" type="number" class="medwidth" 
+                             oninput=""/>
+                  </row>
+                </rows>
+              </grid>
             <spacer flex="1"/>
             <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>
           </groupbox>
         </vbox>
-        <groupbox><caption label="&CellContentAlign.label;"/>
-          <grid>                  
-            <columns><column/><column/></columns>
-            <rows>
-              <row align="center">
-                <label value="&Horizontal.label;"/>
-                <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
-                  <menupopup>
-                    <menuitem label="&hAlignLeft.label;"  value="left"/>
-                    <menuitem label="&hAlignCenter.label;" value="center"/>
-                    <menuitem label="&hAlignRight.label;" value="right"/>
-                  </menupopup>
-                </menulist>
+          <groupbox><caption label="&CellContentAlign.label;"/>
+            <grid>                  
+              <columns><column/><column/></columns>
+              <rows>
+                <row align="center">
+                  <label value="&Horizontal.label;"/>
+                  <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
+                    <menupopup>
+                      <menuitem label="&hAlignLeft.label;"  value="left"/>
+                      <menuitem label="&hAlignCenter.label;" value="center"/>
+                      <menuitem label="&hAlignRight.label;" value="right"/>
+                    </menupopup>
+                  </menulist>
 
-              </row>
-              <row align="center">
-                <label value="&Vertical.label;"/>
-                <menulist id="vAlignChoices"  oncommand="AlignmentChanged('RowAlignRadioGroup');">
-                  <menupopup>
-                    <menuitem label="&vAlignTop.label;"  value="top"/>
-                    <menuitem label="&vAlignCenter.label;" value="center"/>
-                    <menuitem label="&vAlignBottom.label;" value="bottom"/>
-                  </menupopup>
-                </menulist>
-              </row>
-            </rows>
-          </grid>
-        </groupbox>
-        <groupbox orient="vertical" align="center">
-          <caption label="&other.label;"/>
-          <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" />
-        
-          <label id="BackgroundColorLabel" value="&backgroundColor.label;"/>
-          <msibutton class="color-button" oncommand="GetColorAndUpdate('backgroundCW');">
-            <spacer id="backgroundCW" class="color-well"/>
-          </msibutton>
-        </groupbox>
+                </row>
+                <row align="center">
+                  <label value="&Vertical.label;"/>
+                  <menulist id="vAlignChoices"  oncommand="AlignmentChanged('RowAlignRadioGroup');">
+                    <menupopup>
+                      <menuitem label="&vAlignTop.label;"  value="top"/>
+                      <menuitem label="&vAlignCenter.label;" value="center"/>
+                      <menuitem label="&vAlignBottom.label;" value="bottom"/>
+                    </menupopup>
+                  </menulist>
+                </row>
+              </rows>
+            </grid>
+          </groupbox>
+          <groupbox orient="vertical" align="center">
+            <caption label="&other.label;"/>
+            <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" />
+          
+            <label id="BackgroundColorLabel" value="&backgroundColor.label;"/>
+            <msibutton class="color-button" oncommand="GetColorAndUpdate('backgroundCW');">
+              <spacer id="backgroundCW" class="color-well"/>
+            </msibutton>
+          </groupbox>
+        </hbox>
+
+          <vbox>
+            <label>&rowheightRule;</label>
+            <label>&colwidthRule;</label>
+          </vbox>
+      </vbox>
         <spacer flex="1"/>
       </tabpanel><!-- Cells Panel -->
       <!-- Lines PANEL -->
@@ -315,14 +323,13 @@
                 <label control="BorderSideSelectionList" value="&borderSideSelection.label;" accesskey="&borderSideSelection.accesskey;" />
                 <menulist id="BorderSideSelectionList" value="all"  oncommand="checkPreviewChanges();">
                   <menupopup>
-                    <menuitem id="all" label="&borderSelectAll.label;"  
-                      value="all"/>
-                    <menuitem id="top" label="&borderSelectTop.label;"  value="top" />
-                    <menuitem id="right" label="&borderSelectRight.label;"  value="right" />
-                    <menuitem id="bottom" label="&borderSelectBottom.label;"  value="bottom"/>
-                    <menuitem id="left" label="&borderSelectLeft.label;"  value="left"/>
-                    <menuitem id="outline" label="&borderSelectOutline.label;"  value="outline"/>
-                  </menupopup>
+                    <menuitem label="&borderSelectAll.label;" value="all"/>
+                    <menuitem label="&borderSelectTop.label;"  value="top" />
+                    <menuitem label="&borderSelectRight.label;"  value="right" />
+                    <menuitem label="&borderSelectBottom.label;"  value="bottom"/>
+                    <menuitem label="&borderSelectLeft.label;"  value="left"/>
+<!--                     <menuitem id="outline" label="&borderSelectOutline.label;"  value="outline"/>
+ -->              </menupopup>
                 </menulist>
               </hbox>
               <description id="BordersPreview" class="MSISample"  flex="1" valign="center">
@@ -372,12 +379,10 @@
                       </menupopup>
                     </menulist>
                   </row>
-                  <row align="center">
+<!--                   <row align="center">
                     <label control="BorderWidthInput"
                            value="&tableBorderWidth.label;"
                            accesskey="&tableBorderWidth.accesskey;"/>
-                    <!-- textbox class="narrow" id="BorderWidthInput" oninput="forceInteger(this.id);"/>
-                    <label align="left" value="&pixels.label;"/ -->
                     <menulist id="cellBorderWidthList" oncommand="checkPreviewChanges();">
                       <menupopup>
                         <menuitem label="&borderWidthUnspec.label;" value="unspec" />
@@ -394,7 +399,7 @@
                       <spacer id="borderCW" class="color-well"/>
                     </msibutton>
                   </row>
-                </rows>
+ -->                </rows>
               </grid>
             </vbox>
             <!-- label id="CellInheritColor" value="&cellInheritColor.label;" collapsed="true"/ -->

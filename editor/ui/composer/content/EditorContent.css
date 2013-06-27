@@ -61,9 +61,9 @@ table {
 }
 
 /* give a red dotted border to tables and cells with no border
-   otherwise they are invisible
+   otherwise they are invisible -- BBM now done in LaTeX.css
 */
-table[empty-cells],
+/*table[empty-cells],
   table[border="0"],
   /* next two selectors on line below for the case where tbody is omitted */
   table[border="0"] > tr > td, table[border="0"] > tr > th,
@@ -77,7 +77,7 @@ table[empty-cells],
 {
   border: 1px solid rgb(230,230,230);
 }
-
+*/
 /* give a green dashed border to forms otherwise they are invisible
 */
 form
