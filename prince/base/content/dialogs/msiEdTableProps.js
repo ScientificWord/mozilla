@@ -718,20 +718,14 @@ function initTablePanel()
 {
   var rowCountObj = { value: 0 };
   var colCountObj = { value: 0 };
-  var widthVal;
-  var heightVal;
+  var widthVal = 0;
+  var heightVal = 0;
   var widthStr = "";
   var heightStr = "";
   var re;
   var match;
-  var tempUnitHandler = new UnitHandler();
-
-  // find unit. They can always be found on a cell; table attributes are often missing.
-  var cellNode = gTableElement.getElementsByTagName("td")[0];
-  var currUnit;
-  if (cellNode && cellNode.getAttribute("cellwidth")){
-    currUnit = tempUnitHandler.getNumberAndUnitFromString(cellNode.getAttribute("cellwidth")).unit;
-  }
+  var currUnit = gTableElement.getAttribute("unit");
+  currUnit = currUnit || "pt";
   initUnitHandler(currUnit);
   var tableStyle = gTableElement.getAttribute("style");
   // The next 30 lines seem superfluous, but maybe harmless. Leave them for now.
@@ -789,7 +783,7 @@ function initTablePanel()
   gDialog.rowsInput.value = " " + gRowCount;
   gDialog.columnsInput.value = " " + gColCount;
   if (widthVal && widthVal.number) gDialog.tableWidthInput.value = widthVal.number;
-  if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
+// if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
   gDialog.baselineList.value = gTableBaseline;
 
   // Be sure to get caption from table in doc, not the copied "globalTableElement"
@@ -862,10 +856,10 @@ function setCurrSide(newSide)
     return;
 
   gCurrentSide = newSide;
-  gDialog.CellBorderStyleList.value = gCollatedCellData.border.style[gCurrentSide];
-  gDialog.CellBorderWidthList.value = gCollatedCellData.border.width[gCurrentSide];
-  var cellBorderColor = gCollatedCellData.border.color[gCurrentSide];
-  setColorWell("borderCW", cellBorderColor);
+  // gDialog.CellBorderStyleList.value = gCollatedCellData.border.style[gCurrentSide];
+  // gDialog.CellBorderWidthList.value = gCollatedCellData.border.width[gCurrentSide];
+  // var cellBorderColor = gCollatedCellData.border.color[gCurrentSide];
+  // setColorWell("borderCW", cellBorderColor);
   //Note that this one shouldn't require redrawing sample
 //  SetColor("borderCW", cellBorderColor);
 }
@@ -890,13 +884,13 @@ function initCellsPanel()
 //  var theUnitsList = new msiCSSWithFontUnitsList(gCellFontSize, "pt");
 //  gWidthUnitsController = new msiUnitsListbox(gDialog.CellWidthUnits, [gDialog.CellWidthInput], theUnitsList);
 //  gHeightUnitsController = new msiUnitsListbox(gDialog.CellHeightUnits, [gDialog.CellHeightInput], theUnitsList);
-  var widthStr = String(gCollatedCellData.size.width) + gCellWidthUnit;
-  var heightStr = String(gCollatedCellData.size.height) + gCellHeightUnit;
+  // var widthStr = String(gCollatedCellData.size.width) + gCellWidthUnit;
+  // var heightStr = String(gCollatedCellData.size.height) + gCellHeightUnit;
 
-  gDialog.CellHeightInput.value = gCollatedCellData.size.height;
-  gDialog.CellHeightUnits = gCellHeightUnit;
-  gDialog.CellWidthInput.value = gCollatedCellData.size.width;
-  gDialog.TextWrapCheckbox.checked = (gCollatedCellData.wrap != "nowrap");
+  gDialog.CellHeightInput.value = 0;
+  gDialog.CellHeightUnits = unitHandler.getCurrentUnit();
+  gDialog.CellWidthInput.value = 0;
+  gDialog.TextWrapCheckbox.checked = true;
   
 }
 
@@ -1818,7 +1812,7 @@ function UpdateCells(editor)
   // at this points cells array contains all the cells to impact
   for (var i = 0; i < cells.length; i++) {
     var c = cells[i];
-    ApplyAttributesToOneCell(c);
+    ApplyAttributesToOneCell(c, makeSourceLineObject(document.getElementById("BordersPreviewCenterCell")));
 
     // var txn = new diStyleAttrChangeTxn(c, "width", gDialog.cellsWidthMenulist.value, "");
     // editor.doTransaction(txn);
@@ -1977,7 +1971,9 @@ function ApplyTableAttributes()
       globalTableElement.style.removeProperty(styleProp);
   }
 
-  
+  var unit = unitHandler.getCurrentUnit();
+
+  if (unit) gTableElement.setAttribute("unit", unit)
   var newAlign = gTableCaptionPlacement;
   if (!newAlign)
     newAlign = "";
@@ -2758,6 +2754,7 @@ function ApplyCellAttributes()
 //   }
 }
 
+
 function translate(cssstyle) {
   // convert CSS-speak to LaTeX-speak
   switch (cssstyle) {
@@ -2769,32 +2766,28 @@ function translate(cssstyle) {
   }
 }
 
-function ApplyAttributesToOneCell(destElement)
+function makeSourceLineObject(cell)
 {
-  var aVal = null;
-  var aValStr = "";
-  var theSide;
   var lineobj = {left: null, right: null, top: null, bottom: null};
   var names = ['left','right','top','bottom'];
-  var regex = /border-(left|right|top|bottom).*?(none|solid|double)/g;
-  var borderregex = /border:.*?(none|solid|double)/g;
-  var stylestring = document.getElementById("BordersPreviewCenterCell").getAttribute("style");
+  var regex = /border-(left|right|top|bottom).*?(none|solid|double)/g;  // find items like 'border-left', etc
+  var borderregex = /border:.*?(none|solid|double)/g;  // find items like border:
+  var stylestring = cell.getAttribute("style");
   var borderDone = false;
+  var matches;
+  var match;
+  var currLine;
+  var i;
   if (stylestring) {
-    var matches;
-    var match;
-    var currLine;
-    var i;
-    matches = stylestring.match(borderregex);
+    matches = stylestring.match(borderregex);  //find 'border:'
     if (matches && matches.length > 0) {
       match = borderregex.exec(matches[0]);
       if (match.length > 1) {
-        currLine = translate(match[1]);
-        if (currLine == null) 
-          destElement.removeAttribute('lines');
-        else
-          SetAnAttribute(destElement, "lines", currLine);
-        borderDone = true;
+        currLine = match[1];
+        if (currLine !== "unspec") {
+          lineobj.left = lineobj.right = lineobj.top = lineobj.bottom = currLine;
+          borderDone = true;
+        }
       }
     }
     if (!borderDone)
@@ -2808,28 +2801,112 @@ function ApplyAttributesToOneCell(destElement)
           }
         }
       }
-      for (i = 0; i < 4; i++) {
-        currLine = translate(lineobj[names[i]]);
-        if (currLine == null) {
-          destElement.removeAttribute("line-"+names[i]);
-        }
-        else {
-          SetAnAttribute(destElement, "line-" + names[i], currLine);
-        }
-      }
     }
+  }
+  return lineobj;
+}
+
+function makeTargetLineObject(cell)
+{
+  var lineobj = {left: null, right: null, top: null, bottom: null};
+  var names = ['left','right','top','bottom'];
+  var nm;
+  var i;
+  var val;
+  if (cell.hasAttribute("lines")) {
+    val = cell.getAttribute("lines");
+    lineobj.left = lineobj.right = lineobj.top = lineobj.bottom = val;
+    return lineobj;
+  }
+  for (i = 0; i < 4; i++) {
+    nm = "line-" + names[i];
+    if (cell.hasAttribute(nm)) {
+      lineobj[names[i]] = cell.getAttribute(nm);
+    }
+  }
+  return lineobj;
+}
+
+
+function allSame( lineobj ) // this is applied to targets, which have values of null, solid, and double only
+{
+  var allsame = true;
+  var i;
+  var nm;
+  var names = ['left','right','top','bottom'];
+  var firstVal = lineobj.left;
+    //Check to see if all values are the same
+  for (i = 0; i < 4; i++) {
+    nm = names[i];
+    if (lineobj[nm] != firstVal) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function mergeLineObjects(target, source)
+{
+  var i;
+  var nm;
+  var names = ['left','right','top','bottom'];
+  var val;
+  for (i = 0; i < 4; i++) {
+    nm = names[i];
+    val = source[nm];
+    if (val != null) {  // skip if val==null; remove from target if val=='none'; otherwise copy val to target
+      if (val === "none") {
+        target[nm] = null;
+      }
+      else target[nm] = val;
+    }
+  }
+  return target;
+}
+
+function ApplyAttributesToOneCell(destElement, newLineObject)
+{
+  var source = makeSourceLineObject(document.getElementById("BordersPreviewCenterCell"));
+  var target = makeTargetLineObject(destElement);
+  var i;
+  var nm;
+  var names = ['left','right','top','bottom'];
+  target = mergeLineObjects(target, source);
+  var allsame = allSame(target);
+  if (allsame) {  // put in a lines attribute
+    if (target.left != null) {
+      destElement.setAttribute("lines", target.left);
+    }
+    else destElement.removeAttribute("lines");
+    for (i = 0; i < 4; i++) {
+      destElement.removeAttribute("line-"+names[i]);
+    }
+  }
+  else
+  {
+    for (i = 0; i < 4; i++) {
+      nm = names[i];
+      if (target[nm] == null) {
+        destElement.removeAttribute("line-" + nm);
+      }
+      else destElement.setAttribute("line-"+nm, target[nm]);
+    }
+    destElement.removeAttribute("lines");
   }
   if (Number(gDialog.CellHeightInput.value) !== 0)
   {
     aVal = unitHandler.getValueString(gDialog.CellHeightInput.value);
     SetAnAttribute(destElement, "cellheight", aVal);
   }
+  else destElement.removeAttribute("cellheight");
 
   if (Number(gDialog.CellWidthInput.value) !== 0)
   {
     aVal = unitHandler.getValueString(gDialog.CellWidthInput.value);
     SetAnAttribute(destElement, "cellwidth", aVal);
   }
+  else destElement.removeAttribute("cellwidth");
+
 
 //  for (ix = 0; ix < gCellChangeData.border.style.length; ++ix)
 //  {
@@ -2865,7 +2942,7 @@ function Apply()
 
     ApplyTableAttributes();
 
-    ApplyColAndRowAttributes();
+//    ApplyColAndRowAttributes();
 
     // We may have just a table, so check for cell element
 //    if (globalCellElement)
@@ -2936,7 +3013,7 @@ function onAcceptNewTable()
               if (newCell)
               {
                 newRow.appendChild(newCell);
-                ApplyAttributesToOneCell(newCell);              
+                ApplyAttributesToOneCell(newCell, makeSourceLineObject(document.getElementById("BordersPreviewCenterCell")));              
               }
             }
           }
@@ -3005,6 +3082,10 @@ function onAccept()
   }
   // Do same as Apply and close window if ValidateData succeeded
   var retVal = Apply();
+  if (gActiveEditor) {
+    gActiveEditor.deleteNode(gTableElement);
+    gActiveEditor.undo(1);
+  }
   if (retVal)
     SaveWindowLocation();
 
