@@ -363,7 +363,7 @@
                     <label control="cellBorderStyleList"
                            value="&cellBorderStyleList.label;"
                            accesskey="&cellBorderStyleList.accesskey;"/>
-                    <menulist id="cellBorderStyleList" oncommand="checkPreviewChanges();">
+                    <menulist id="cellBorderStyleList" value="unspec" oncommand="checkPreviewChanges();">
                       <menupopup>
                         <menuitem label="&borderStyleUnspec.label;" value="unspec"/>
                         <menuitem label="&borderStyleNone.label;"  value="none" selected = "true"/>
