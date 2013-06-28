@@ -47,9 +47,7 @@ table:focus {
 }*/
 
 td {
-  border-style: solid;
-  border-color: #BBBBBB;
-  border-width: thin;
+  border: 0.9px solid #BBBBBB;
 
 }
 
@@ -62,7 +60,7 @@ td[lines="solid"] {
 }
 
 td[lines="double"] {
-  border-style: medium double black;
+  border: medium double black;
 }
 
 td[line-left="none"] {
@@ -74,7 +72,7 @@ td[line-left="solid"] {
 }
 
 td[line-left="double"] {
-  border-style-left: medium double black;
+  border-left: medium double black;
 }
 
 
@@ -87,7 +85,7 @@ td[line-right="solid"] {
 }
 
 td[line-right="double"] {
-  border-style-right: medium double black;
+  border-right: medium double black;
 }
 
 
@@ -100,7 +98,7 @@ td[line-top="solid"] {
 }
 
 td[line-top="double"] {
-  border-style-top: medium double black;
+  border-top: medium double black;
 }
 
 
@@ -113,7 +111,7 @@ td[line-bottom="solid"] {
 }
 
 td[line-bottom="double"] {
-  border-style-bottom: medium double black;
+  border-bottom: medium double black;
 }
 
 button[class="msi"]::-moz-selection{
