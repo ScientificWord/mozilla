@@ -6,7 +6,11 @@
  
   <binding id="inputFields">
     <handlers>
-       <handler event="keypress" key="y" modifiers="accel" command="cmd_redo"/>
+      <handler event="keypress" key="a" modifiers="accel" command="cmd_selectAll"/>
+      <handler event="keypress" keycode="c" modifiers="accel" command="cmd_copy"/>
+      <handler event="keypress" keycode="v" modifiers="accel" command="cmd_paste"/>
+      <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_undo"/>
+      <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_redo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_undo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_redo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="control" command="cmd_deleteWordBackward"/>

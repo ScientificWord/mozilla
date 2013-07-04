@@ -17,12 +17,10 @@
     </resources>
 
     <content>
-      <children/>
       <xul:hbox class="textbox-input-box" flex="1" xbl:inherits="context,spellcheck">
-        <xul:image class="textbox-left"/>
         <html:input class="textbox-input" flex="1" anonid="input"
-                    xbl:inherits="onfocus,onblur,value,type,maxlength,disabled,size,readonly,tabindex,accesskey"/>
-        <xul:image class="textbox-right"/>
+                    xbl:inherits="onfocus,onblur,xbl:text=value,disabled,tabindex,type,maxlength,size,readonly,accesskey"/>
+        <children/>
       </xul:hbox>
     </content>
 
