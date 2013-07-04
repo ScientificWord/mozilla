@@ -42,17 +42,17 @@
   </hbox>
   <vbox>
     <label control="name" accesskey="&name.accesskey;" value="&name.label;"/>
-    <textbox id="name" multiline="true" rows="1" value="" wrap="off"/>
+    <textbox id="name" value="" wrap="off"/>
   </vbox>
   <hbox>
     <vbox>
       <label control="req" accesskey="&RequiresPackage.accesskey;" value="&RequiresPackage.label;"/>
-      <textbox id="req" multiline="true" rows="1"  value=""/>
+      <textbox id="req" value=""/>
     </vbox>
     <spacer width="30px"/>
     <vbox>
       <label control="opt" accesskey="&Options.accesskey;" value="&Options.label;"/>
-      <textbox id="opt" multiline="true" rows="1"  value=""/>
+      <textbox id="opt" value=""/>
     </vbox>
   </hbox>
   
