@@ -73,7 +73,7 @@
     </columns>
     <rows>
       <row align="center">
-        <label id="MisspelledWordLabel" value="&misspelledWord.label;"/>
+        <label id="MisspelledWordLabel" value="&misspelledWord.label; "/>
         <label class="bold" id="MisspelledWord"/>
         <!--msibutton class="spell-check" label="&recheckButton.label;" oncommand="Recheck();"
                 accesskey="&recheckButton.accesskey;"/ -->
@@ -125,8 +125,20 @@
             <msibutton class="spell-check" id="EditDictionary"  oncommand="EditDictionary()" label="&editUserDictionaryButton.label;"
                     accesskey="&editUserDictionaryButton.accesskey;"/>
           </hbox>
+          <hbox flex="1">
+            <spacer flex="3"/>
+            <msibutton class="spell-check" dlgtype="cancel" id="Stop" label="&stopButton.label;" oncommand="CancelSpellCheck();"
+                    accesskey="&stopButton.accesskey;"/>
+            <spacer flex="1"/>
+            <msibutton class="spell-check" id="Close" label="&closeButton.label;" oncommand="onClose();"
+                    accesskey="&closeButton.accesskey;"/>
+            <msibutton class="spell-check" id="Send" label="&sendButton.label;" oncommand="onClose();"
+                    accesskey="&sendButton.accesskey;" hidden="true"/>
+          </hbox>
+
         </vbox>
       </row>
+#ifndef XP_MACOSX
       <label value ="&languagePopup.label;"
              control="LanguageMenulist"
              accesskey="&languagePopup.accesskey;"/>
@@ -134,20 +146,40 @@
         <menulist id="LanguageMenulist" oncommand="SelectLanguage()">
           <menupopup onpopupshowing="InitLanguageMenu(gDialog.LanguageMenulist.selectedItem.value);">
             <!-- dynamic content populated by JS -->
-            <menuseparator/>
+<!--             <menuseparator/>
             <menuitem value="more-cmd" label="&moreDictionaries.label;"/>
-          </menupopup>
+ -->          </menupopup>
         </menulist>
-        <hbox flex="1">
-          <msibutton class="spell-check" dlgtype="cancel" id="Stop" label="&stopButton.label;" oncommand="CancelSpellCheck();"
-                  accesskey="&stopButton.accesskey;"/>
-          <spacer flex="1"/>
-          <msibutton class="spell-check" id="Close" label="&closeButton.label;" oncommand="onClose();"
-                  accesskey="&closeButton.accesskey;"/>
-          <msibutton class="spell-check" id="Send" label="&sendButton.label;" oncommand="onClose();"
-                  accesskey="&sendButton.accesskey;" hidden="true"/>
-        </hbox>
       </row>
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </rows>
   </grid>
 </dialog>
