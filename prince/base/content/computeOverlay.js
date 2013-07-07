@@ -1552,10 +1552,14 @@ function onVCamRightMouseDown(screenX, screenY)
 {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  var evt = editor.document.createEvent("MouseEvents");
-  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView, 1,
-    screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
-  this.parentNode.dispatchEvent(evt);
+  var graphNode = editor.getElementOrParentByTagName("graph", this);
+  var contextMenu = document.getElementById("msiEditorContentContext");
+  if (contextMenu)
+    contextMenu.showPopup(graphNode, screenX, screenY, "none", "none");
+//  var evt = editor.document.createEvent("MouseEvents");
+//  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView, 1,
+//    screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
+//  this.parentNode.dispatchEvent(evt);
 }
 
 function onVCamRightMouseUp(screenX, screenY)
@@ -1823,6 +1827,7 @@ function doVCamInitialize(obj) {
     }());
   }
   vcamToolbarFromPlugin(obj);
+  editorElement.focus();
 }
 
 function showAnimationTime(obj) {

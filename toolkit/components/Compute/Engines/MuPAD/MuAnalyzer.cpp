@@ -1655,6 +1655,7 @@ void MuAnalyzer::AnalyzeOPERATOR(MNODE * eng_node, SEMANTICS_NODE * snode,
         p = 21;
       } else if (!strcmp(eng_node->p_chdata, "not")) {
         strcpy(buffer, "&#xac;");
+        snode->semantic_type = SEM_TYP_PREFIX_OP;
         p = 22;
       }
     } else if (zln == 5) {

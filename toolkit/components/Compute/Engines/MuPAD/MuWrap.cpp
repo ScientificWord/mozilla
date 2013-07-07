@@ -323,9 +323,9 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
               tmp[zln - 2] = 0;
               delete[] zeng_output;
               zeng_output = tmp;
-			      } else {
+            } else {
                     TCI_ASSERT(0);
-			      }
+            }
           }
 
           MNODE *eng_tree = MuPAD_parser->MuPADStr2Tree(zeng_output);
@@ -381,7 +381,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
       }
       delete[] zEngine_input;
     } else if (error_code) {
-	  mupd_eng->ClearEngStrPtrs();
+    mupd_eng->ClearEngStrPtrs();
       mr->PutResultCode(error_code);
     }
     delete[] eng_zstr;
@@ -661,7 +661,7 @@ char *MuPADWrapper::CreateEngineCommandStr(MathServiceRequest & msr,
   case CT_CALCCHANGEVAR:
     rv = CreateSIntegraleStr(msr, cmd_ID, eng_expr, cmd_template, error_code);
     break;
- 																				    
+                                            
   case CT_CALCAPPROXINT:
     rv = CreateAPPROXINTeStr(msr, eng_expr, cmd_template, error_code);
     break;
@@ -845,14 +845,14 @@ char *MuPADWrapper::ProcessSemNode(SEMANTICS_NODE * s_node,
     case SEM_TYP_PREFIX_OP:
     case SEM_TYP_INFIX_OP:
     case SEM_TYP_POSTFIX_OP:{
-        bool is_infix;
+        bool is_infix = false;
         rv = OPERATORtoEstr(s_node, modulus, is_infix, error_code);
         if (rv && is_infix && s_node->bucket_list) {
           rv = NestInParens(rv, false);
         } else if (s_node->semantic_type == SEM_TYP_PREFIX_OP
                    && s_node->contents) {
           char ch = s_node->contents[0];
-          if (ch == '+' || !strcmp(s_node->contents, "&#x2212;") || !strcmp(s_node->contents, "-") )
+          if (!is_infix && (ch == '+' || !strcmp(s_node->contents, "&#x2212;") || !strcmp(s_node->contents, "-")) )
             rv = NestInParens(rv, false);
         }
       }
@@ -876,7 +876,7 @@ char *MuPADWrapper::ProcessSemNode(SEMANTICS_NODE * s_node,
         BUCKET_REC *bucket_info = s_node->bucket_list;
         if (bucket_info->first_child) {
           rv = ProcessSemList(bucket_info->first_child, modulus, error_code);
-		}
+    }
         else
           TCI_ASSERT(0);
       }
@@ -887,7 +887,7 @@ char *MuPADWrapper::ProcessSemNode(SEMANTICS_NODE * s_node,
         BUCKET_REC *bucket_info = s_node->bucket_list;
         if (bucket_info->first_child){
           rv = ProcessSemList(bucket_info->first_child, modulus, error_code);
-		}
+    }
         else
           TCI_ASSERT(0);
       }
@@ -2335,23 +2335,23 @@ char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
 
     // nExplicitDiffs = # of explicit differentials    
     int nExplicitDiffs = 0;
-	BUCKET_REC* v_bucket = FindBucketRec(bigop_snode->bucket_list, MB_INTEG_VAR);
-	BUCKET_REC* tmp = v_bucket;
-	while (tmp){
+  BUCKET_REC* v_bucket = FindBucketRec(bigop_snode->bucket_list, MB_INTEG_VAR);
+  BUCKET_REC* tmp = v_bucket;
+  while (tmp){
        tmp = FindBucketRec(tmp -> next, MB_INTEG_VAR);
-	   ++nExplicitDiffs;
-	}
-	//--nExplicitDiffs;
+     ++nExplicitDiffs;
+  }
+  //--nExplicitDiffs;
 
     bool used_x = false;
     bool used_y = false;
     bool used_z = false;
 
-	int nTimes = n_integs;
+  int nTimes = n_integs;
 
     while (n_integs > 0) {
        //indefinite integral<uID5.3>tciint(%integrand%%comma%%variable%)
-	   char* var_str = NULL;
+     char* var_str = NULL;
 
        if (nExplicitDiffs > 0){
 
@@ -2364,34 +2364,34 @@ char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
               return NULL;
             }
 
-			v_bucket = FindBucketRec(v_bucket -> next, MB_INTEG_VAR);
+      v_bucket = FindBucketRec(v_bucket -> next, MB_INTEG_VAR);
 
             if (StringEqual(var_str, "q1x"))
-		       used_x = true;
-		    else if (StringEqual(var_str, "q1y"))
-		       used_y = true;
-		    else if (StringEqual(var_str, "q1z"))
-		       used_z = true;
-		 }
-	   } else {
-	     if (!used_x) {
-		    var_str = DuplicateString("q1x");
-			used_x = true;
+           used_x = true;
+        else if (StringEqual(var_str, "q1y"))
+           used_y = true;
+        else if (StringEqual(var_str, "q1z"))
+           used_z = true;
+     }
+     } else {
+       if (!used_x) {
+        var_str = DuplicateString("q1x");
+      used_x = true;
             ClientAliases_REC* curr_client = GetClientAliasesRec(client_ID);
             curr_client->AKAs_list = PushNamingRecord("q1x", "mix", "x", Ilk_Var, curr_client->AKAs_list);
                      
-  		 } else if (!used_y){
-		    var_str = DuplicateString("q1y");
-			used_y = true;
-		 } else if (!used_z) {
-		    var_str = DuplicateString("q1z");
-			used_z = true;
-		 }
-	   }
-		   
+       } else if (!used_y){
+        var_str = DuplicateString("q1y");
+      used_y = true;
+     } else if (!used_z) {
+        var_str = DuplicateString("q1z");
+      used_z = true;
+     }
+     }
+       
 
 
-	   
+     
        size_t bln = strlen(db_production);
        if (rv)
          bln += strlen(rv);
@@ -2411,22 +2411,22 @@ char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
        if (nTimes == n_integs){
             // First time 
 
-	       StrReplace(new_rv, bln, "%integrand%", integrand_str);	 
+         StrReplace(new_rv, bln, "%integrand%", integrand_str);  
            StrReplace(new_rv, bln, "%lower%", lower_str);
            StrReplace(new_rv, bln, "%upper%", upper_str);
 
-		   delete[] integrand_str;
-		   integrand_str = 0;    
+       delete[] integrand_str;
+       integrand_str = 0;    
            delete[] lower_str;
-		   lower_str = 0;
+       lower_str = 0;
            delete[] upper_str;
-		   upper_str = 0;
+       upper_str = 0;
 
 
-	   } else {
-	       // Subsequent times...
+     } else {
+         // Subsequent times...
 
-           StrReplace(new_rv, bln, "%integrand%", rv); 		  
+           StrReplace(new_rv, bln, "%integrand%", rv);      
        }
 
        StrReplace(new_rv, bln, "%comma%", ",");
@@ -2438,7 +2438,7 @@ char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
        rv = new_rv;
 
        n_integs--;
-	   nExplicitDiffs--;
+     nExplicitDiffs--;
 
     }                           // loop thru multiple integral
 
@@ -2466,6 +2466,7 @@ char* MuPADWrapper::OPERATORtoEstr(SEMANTICS_NODE * sem_op_node,
 
     if (GetdBaseNamedRecord("INFIXOPS", key, &db_maple_op, ID, subID)) {
       op_found = true;
+      is_infix = true;
       if (db_maple_op && *db_maple_op) {
         size_t zln = strlen(db_maple_op);
         char ch = db_maple_op[0];
@@ -2506,16 +2507,33 @@ char* MuPADWrapper::OPERATORtoEstr(SEMANTICS_NODE * sem_op_node,
 }
 
 char *MuPADWrapper::INTERVALtoEstr(SEMANTICS_NODE * interval_info,
-                                   int& error_code)
+                                   int& error_code, bool bUseIntervalForm)
 {
   char *zh_rv = NULL;
   error_code = 0;
 
   char *key = interval_info->contents;
   const char *db_production;
+  const char *our_template = NULL;
   U32 ID, subID;
   GetdBaseNamedRecord("SCHEMATA", key, &db_production, ID, subID);
-  if (db_production) {          // interval<uID33.0>%lower%..%upper%
+  if (bUseIntervalForm)
+  {
+    if (interval_info->variant == SNV_InclExclInterval)
+      our_template = "Dom::Interval([%lower%],%upper%)";
+    else if (interval_info->variant == SNV_InclInclInterval)
+      our_template = "Dom::Interval([%lower%],[%upper%])";
+    else if (interval_info->variant == SNV_ExclInclInterval)
+      our_template = "Dom::Interval(%lower%,[%upper%])";
+    else
+      our_template = "Dom::Interval(%lower%,%upper%)";
+  }
+  else if (db_production)
+  {
+    our_template = db_production;
+  }
+//  if (db_production) {          // interval<uID33.0>%lower%..%upper%
+  if (our_template) {
     char *lower_str = NULL;
     char *upper_str = NULL;
 
@@ -2543,9 +2561,9 @@ char *MuPADWrapper::INTERVALtoEstr(SEMANTICS_NODE * interval_info,
 
     if (lower_str && upper_str) {
       size_t bln =
-        strlen(db_production) + strlen(lower_str) + strlen(upper_str);
+        strlen(our_template) + strlen(lower_str) + strlen(upper_str);
       zh_rv = new char[bln];
-      strcpy(zh_rv, db_production);
+      strcpy(zh_rv, our_template);
       StrReplace(zh_rv, bln, "%lower%", lower_str);
       StrReplace(zh_rv, bln, "%upper%", upper_str);
     }
@@ -4147,7 +4165,7 @@ void MuPADWrapper::SetWrapperCmdContext(U32 cmd_ID, char *new_packages)
     case 134 :  //Plot 3D Gradient
     case 135 :  //Plot 3D Vector Field
       context_cmdtemplatetype  =  CT_UNKNOWN;
-	break;
+  break;
 */
 
   case CCID_Define:            //DEFINE
@@ -4167,7 +4185,7 @@ void MuPADWrapper::SetWrapperCmdContext(U32 cmd_ID, char *new_packages)
     case 143 :  //Settings...
     case 144 :  //Interpret
       context_cmdtemplatetype  =  CT_UNKNOWN;
-	break;
+  break;
 */
   case CCID_Factor_in_ring:    //Factor in ring<uID145.0>tcifactor(%s);
     context_cmdtype = CC_FACTOR_IN_RING;
@@ -5869,6 +5887,8 @@ char *MuPADWrapper::Piecewise2Estr(SEMANTICS_NODE * pw_list, int& error_code)
 
     char *dr_list_str = NULL;
     U32 dr_ln = 0;
+    U32 ow_ln = 0;
+    U32 ow_obj_ln = 0;
 
     const char *ptr = strstr(db_production, "%dr_list%");
     if (ptr) {
@@ -5884,6 +5904,9 @@ char *MuPADWrapper::Piecewise2Estr(SEMANTICS_NODE * pw_list, int& error_code)
       int tally = 0;
 
       BUCKET_REC *b_rover = pw_list->bucket_list;
+      char *otherwise_str = NULL;
+      char* otherwise_obj = NULL;
+      bool bUseOtherwiseStr = false;
       while (b_rover) {
         SEMANTICS_NODE *s_one_piece = b_rover->first_child;
         BUCKET_REC *exp_bucket =
@@ -5891,22 +5914,31 @@ char *MuPADWrapper::Piecewise2Estr(SEMANTICS_NODE * pw_list, int& error_code)
         BUCKET_REC *dom_bucket =
           FindBucketRec(s_one_piece->bucket_list, MB_UNNAMED);
 
+        char * domain_str = NULL;
+        bool bOtherwiseCase = false;
         if (dom_bucket && dom_bucket->first_child) {
           SEMANTICS_NODE *curr_handle = dom_bucket->first_child;
-          char *obj_str = SemDomainToEstr(curr_handle, err_code);
+          domain_str = SemDomainToEstr(curr_handle, err_code);
           if (err_code) {
             error_code = err_code;
             delete[] dr_list_str;
             return NULL;
           }
-          if (obj_str) {
-            if (tally)
-              dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, ",");
-            dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, "[");
-            dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, obj_str);
-            tally++;
-            delete[] obj_str;
+        }
+        if (domain_str && !strcmp(domain_str, "otherwise"))
+          bOtherwiseCase = true;
+        if (domain_str && !bOtherwiseCase) {
+          if (tally) {
+            dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, ",");
+            otherwise_str = AppendStr2HeapStr(otherwise_str, ow_ln, " and ");
           }
+          dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, "[");
+          dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, domain_str);
+          otherwise_str = AppendStr2HeapStr(otherwise_str, ow_ln, "not(");
+          otherwise_str = AppendStr2HeapStr(otherwise_str, ow_ln, domain_str);
+          otherwise_str = AppendStr2HeapStr(otherwise_str, ow_ln, ")");
+          tally++;
+          delete[] domain_str;
         }
         if (exp_bucket && exp_bucket->first_child) {
           SEMANTICS_NODE *curr_handle = exp_bucket->first_child;
@@ -5917,17 +5949,35 @@ char *MuPADWrapper::Piecewise2Estr(SEMANTICS_NODE * pw_list, int& error_code)
             return NULL;
           }
           if (obj_str) {
-            if (tally)
-              dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, ",");
-            dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, obj_str);
-            dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, "]");
-            tally++;
+            if (bOtherwiseCase) {
+              otherwise_obj = AppendStr2HeapStr(otherwise_obj, ow_obj_ln, obj_str);
+              bUseOtherwiseStr = true;
+            } else {
+              if (tally)
+                dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, ",");
+              dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, obj_str);
+              dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, "]");
+              tally++;
+            }
             delete[] obj_str;
           }
         }
         b_rover = b_rover->next;
       }
+      if (bUseOtherwiseStr)
+      {
+        if (tally)
+          dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, ",");
+        dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, "[");
+        dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, otherwise_str);
+        dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, ",");
+        dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, otherwise_obj);
+        dr_list_str = AppendStr2HeapStr(dr_list_str, dr_ln, "]");
+      }
+      delete[] otherwise_str;
+      delete[] otherwise_obj;
     }
+
     // Compose the return string
     // piecewise<uID?.0>piecewise(%dr_list%)
     size_t bln = strlen(db_production) + 1;
@@ -6041,16 +6091,120 @@ int MuPADWrapper::GetEngineMessageID(SEMANTICS_NODE * s_tree)
   NUMBER canonical_ID = "mn7" contents = "7"
 */
 
+U32 MuPADWrapper::GetRelationExpressionOpType(SEMANTICS_NODE * s_node)
+{
+  if ((s_node->semantic_type == SEM_TYP_INFIX_OP) && s_node->contents)
+  {
+      //check for "=", "<", ">", "<=", ">=", "&leq;", "&geq;", "&NotEqual;"
+    if (!strcmp(s_node->contents, "=") || !strcmp(s_node->contents, "&#x3c;") || !strcmp(s_node->contents, "&#x3e;") ||
+//          !strcmp(s_node->contents, "<=") || !strcmp(s_node->contents, ">=") ||  //these two forms appear to always be translated previously?
+          !strcmp(s_node->contents, "&#x2264;") || !strcmp(s_node->contents, "&#x2265;") || !strcmp(s_node->contents, "&#x2260;") )
+      return binOrderRelation;
+      //check for "in", "Element", "sub", "sube", "sup", "supe"
+    if ( !strcmp(s_node->contents, "&#x220a;") || !strcmp(s_node->contents, "&#x2208;") ||
+         !strcmp(s_node->contents, "&#x2282;") || !strcmp(s_node->contents, "&#x2286;") ||
+             !strcmp(s_node->contents, "&#x2283;") || !strcmp(s_node->contents, "&#x2287;") )
+      return binInclusionRelation;
+    if (!strcmp(s_node->contents, "&#x2227;") || !strcmp(s_node->contents, "&#x2228;") ) //"and", "or"
+      return binConnectingOperation;
+  }
+  else if ((s_node->semantic_type == SEM_TYP_PREFIX_OP) && s_node->contents)
+  {
+    if (!strcmp(s_node->contents, "&#xac;")) //"not"
+      return unaryNegationOperation;
+  }
+  return opTypeUnknown;
+}
+
+SEMANTICS_NODE * MuPADWrapper::FindRelationExpressionOperator(SEMANTICS_NODE * s_list, U32 whichType, bool bReturnLast)
+{
+  SEMANTICS_NODE * rv = NULL;
+  SEMANTICS_NODE *s_rover = s_list;
+  U32 findType = whichType;
+  if (!findType)
+    findType = anyType;
+  U32 currType = opTypeUnknown;
+  while (s_rover)
+  {
+    currType = GetRelationExpressionOpType(s_rover);
+    if (currType & findType)
+    {
+      rv = s_rover;
+      if (!bReturnLast)
+        return rv;
+    }
+    s_rover = s_rover->next;
+  }
+  
+  return rv;
+}
+
+//Utility for getting the string before the first or after the last nested relation inside a precedence group
+char *MuPADWrapper::RetrieveNestedSemDomainOperandStr(SEMANTICS_NODE * s_node, bool bRightHand, int& error_code)
+{
+  char* zh_rv = NULL;
+  U32 zh_ln = 0;
+  if ( (s_node->semantic_type != SEM_TYP_PRECEDENCE_GROUP) || !s_node->bucket_list 
+         || !s_node->bucket_list->first_child )
+    return zh_rv;
+  s_node = s_node->bucket_list->first_child;
+  SEMANTICS_NODE *s_temp = FindRelationExpressionOperator(s_node, binOrderRelation | binInclusionRelation, bRightHand);   //get first or last binary comparison relation
+  if (s_temp)
+  {
+    SEMANTICS_NODE *s_save = NULL;
+    SEMANTICS_NODE *s_nested_op = NULL;
+    SEMANTICS_NODE *s_nested_operand = NULL;
+    s_nested_op = s_temp;
+    if (bRightHand)
+    {
+      if (s_temp->next)
+        s_nested_operand = s_temp->next;
+    }
+    else
+    {
+      if (s_temp->prev)
+        s_nested_operand = s_temp->prev;
+    }
+    //Try recursing in case this operand is another nested relational expression
+    zh_rv = RetrieveNestedSemDomainOperandStr(s_nested_operand, bRightHand, error_code);
+    if (!zh_rv && s_nested_operand)
+    {
+      if (!bRightHand)
+      {
+        s_save = s_nested_operand;
+        s_save->next = NULL;
+        //if we're looking for the left-hand operand of the first relation, move back to the start of the list (shouldn't ever really do anything, but...)
+        while (s_nested_operand->prev)
+          s_nested_operand = s_nested_operand->prev;
+      }
+      zh_rv = ProcessSemList(s_nested_operand, NULL, error_code);  //recurse to get the string for relation to the left
+      if (s_save)
+        s_save->next = s_nested_op;
+    }
+  }
+  return zh_rv;
+}
+
+//We assume here that precendence has been taken care of, so we don't worry about grouping per se. But we do have to
+//  worry about things like 2<=x<=5, which will come in as <SEM_TYP_PRECEDENCE_GROUP><SEM_TYP_INFIX_OP><SEM_TYP_PRECEDENCE_GROUP>,
+//  but we need to parse into "2<=x and x<=5", or even possibly <NUMBER><INFIX_OP><VARIABLE><INFIX_OP><NUMBER>.
 char *MuPADWrapper::SemDomainToEstr(SEMANTICS_NODE * s_list, int& error_code)
 {
   char *zh_rv = NULL;
   U32 zh_ln = 0;
 
   if (s_list && s_list->semantic_type == SEM_TYP_TEXT)
+  {
+    if (!strcmp(s_list->contents, "otherwise"))
+    {
+      zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, "otherwise");  //this should act as "otherwise" if it's the last condition in the piecewise list
+      return zh_rv;
+    }
     s_list = s_list->next;
+  }
 
   while (s_list
-         // && !s_list->next    // but s_list->next could be a precedence group??
+         && !s_list->next    // but s_list->next could be a precedence group??
          && s_list->semantic_type == SEM_TYP_PRECEDENCE_GROUP) {
     if (s_list->bucket_list && s_list->bucket_list->first_child)
       s_list = s_list->bucket_list->first_child;
@@ -6058,45 +6212,503 @@ char *MuPADWrapper::SemDomainToEstr(SEMANTICS_NODE * s_list, int& error_code)
       TCI_ASSERT(0);
   }
 
-  int var_pos = 0;
-  int tally = 0;
-  SEMANTICS_NODE *s_var = NULL;
-  SEMANTICS_NODE *s_rover = s_list;
-  while (s_rover) {
-    if (s_rover->semantic_type == SEM_TYP_VARIABLE) {
-      s_var = s_rover;
-      var_pos = tally;
-    }
-    tally++;
-    s_rover = s_rover->next;
-  }
-  if (s_var) {
-    if (tally == 3)
-      zh_rv = ProcessSemList(s_list, NULL, error_code);
-    else {
-      if (tally == 5 && var_pos == 2) {
-        SEMANTICS_NODE *s_save = s_var->next;
-        s_var->next = NULL;
-        char *zh_str = ProcessSemList(s_list, NULL, error_code);
-        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);
-        delete[] zh_str;
+  //First look for connecting operators
+  char* zh_str = NULL;
+  U32 zh_str_ln = 0;
+  SEMANTICS_NODE* s_rover = s_list;
+  SEMANTICS_NODE* s_save = NULL;
+  SEMANTICS_NODE* s_temp = NULL;
 
-        s_var->next = s_save;
-        char *zh_str1 = ProcessSemList(s_var, NULL, error_code);
-        if (zh_str1) {
-          zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " and ");
-          zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str1);
-          delete[] zh_str1;
+  SEMANTICS_NODE * s_op = FindRelationExpressionOperator(s_list, binConnectingOperation, false);
+  if (s_op)
+  {
+    while (s_rover)
+    {
+      //When we run out of logical connectors, we'll come through one last time without s_op and output the end of the list
+      s_temp = (s_op && s_op != s_rover) ? s_op->prev : NULL;
+      if (s_temp)
+        s_temp->next = NULL;
+      zh_str = SemDomainToEstr(s_rover, error_code);  //recurse - this time there'll be no connecting operators
+      if (s_temp)
+        s_temp->next = s_op;
+      if (zh_str)
+      {
+        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, "(");
+        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);
+        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, ")");
+        delete[] zh_str;
+        zh_str = NULL;
+      }
+      if (s_op)
+      {
+        s_rover = s_op->next;
+        if (s_rover)
+        {
+          if (!strcmp(s_op->contents, "&#x2227;"))
+            zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " and ");
+          else if (!strcmp(s_op->contents, "&#x2228;"))
+            zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " or ");
+          else
+            zh_rv = ProcessSemNode(s_op, NULL, error_code);
+          s_op = FindRelationExpressionOperator(s_rover, binConnectingOperation, false);
         }
-      } else {
-        TCI_ASSERT(0);
+      }
+      else
+        s_rover = NULL;
+    }
+    return zh_rv;
+  }
+
+  s_op = FindRelationExpressionOperator(s_list, unaryNegationOperation, false);
+  if (s_op)
+  {
+    TCI_ASSERT(s_op == s_list);
+    s_rover = s_op->next;
+    if (!strcmp(s_op->contents, "&#xac;")) //"not"
+      zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, "not");
+    else
+      zh_rv = ProcessSemNode(s_op, NULL, error_code);
+    if (s_rover)
+    {
+      zh_str = SemDomainToEstr(s_rover, error_code);
+      if (zh_str)
+      {
+        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, "(");
+        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);
+        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, ")");
+        delete[] zh_str;
       }
     }
-  } else {
-    TCI_ASSERT(0);
+    return zh_rv;
   }
+
+  //Now we're in a (more or less) normal case. Just look for binary relations; if there are more than one (or if
+  //  there are more nested in precedence group operands), we connect them with "and", repeating each right-hand
+  //  operand as the left-hand operand in the next expression.
+//  s_op = FindRelationExpressionOperator(s_list, binOrderRelation | binInclusionRelation, false);
+//  if (s_op)
+//  {
+  SEMANTICS_NODE* s_nested_op = NULL;
+  SEMANTICS_NODE* l_nested_operand = NULL;
+  SEMANTICS_NODE* r_nested_operand = NULL;
+  bool pastOp = false;
+  zh_str = NULL;
+  zh_str_ln = 0;
+  char* zh_rh_str = NULL;
+  U32 zh_rh_ln = 0;
+  while (s_rover)
+  {
+    switch(s_rover->semantic_type)
+    {
+      case SEM_TYP_INFIX_OP:
+        if ( !strcmp(s_rover->contents, "&#x220a;") || !strcmp(s_rover->contents, "&#x2208;") )
+          zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, " in ");
+        else
+          zh_str = ProcessSemNode(s_rover, NULL, error_code);
+        if ( GetRelationExpressionOpType(s_rover) & (binOrderRelation | binInclusionRelation) )
+        {
+          if (zh_rh_str)  //this was the right-hand operand from previous op - we'll use it as left-hand
+          {
+            zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " and ");
+            zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_rh_str);
+            delete[] zh_rh_str;
+            zh_rh_str = NULL;
+            zh_rh_ln = 0;
+          }
+          pastOp = true;
+        }
+        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);  //We do this here so zh_str won't be added to zh_rh_str below
+        delete[] zh_str;
+        zh_str = NULL;
+        zh_str_ln = 0;
+      break;
+
+      case SEM_TYP_PRECEDENCE_GROUP:
+        //Here, we check whether the precedence group contains one of our binary relations (at its top level). If so,
+        //  we recursively use SemDomainToEstr() on the precedence group. If additionally it's adjacent to one of our 
+        //  binary relations, we extract the left- and/or right-hand sides to be used as the right- and/or left-hand 
+        //  operands of the adjacent relations. If it doesn't contain one of our binary relations, we just output it
+        //  normally (with ProcessSemNode) and keep going.
+        if (s_rover->bucket_list && s_rover->bucket_list->first_child)
+        {
+          //get first binary comparison relation
+          s_temp = FindRelationExpressionOperator(s_rover->bucket_list->first_child, binOrderRelation | binInclusionRelation, false);  
+          if (s_temp)
+          {
+            if ( s_rover->prev && (GetRelationExpressionOpType(s_rover->prev) & (binOrderRelation | binInclusionRelation)) )
+            {
+              if (zh_rh_str)
+              {
+                TCI_ASSERT(0);  //this shouldn't happen! we're just after a relation, so this should be NULL
+                delete[] zh_rh_str;
+              }
+              zh_rh_ln = 0;
+              zh_rh_str = RetrieveNestedSemDomainOperandStr(s_rover, false, error_code);
+            }
+            if (zh_rh_str)
+            {
+              zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_rh_str);
+              zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " and ");
+              delete[] zh_rh_str;
+              zh_rh_str = NULL;
+              zh_rh_ln = 0;
+            }
+            zh_str = SemDomainToEstr(s_rover->bucket_list->first_child, error_code);
+
+            if ( s_rover->next && (GetRelationExpressionOpType(s_rover->next) & (binOrderRelation | binInclusionRelation)) )
+            {
+              if (zh_rh_str)
+              {
+                TCI_ASSERT(0);  //this shouldn't happen! we're just after a relation, so this should be NULL
+                delete[] zh_rh_str;
+              }
+              zh_rh_str = RetrieveNestedSemDomainOperandStr(s_rover, true, error_code);
+              zh_rh_ln = zh_rh_str ? strlen(zh_rh_str) : 0;
+              zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);  //We do this here so zh_str won't be added to zh_rh_str below
+              delete[] zh_str;
+              zh_str = NULL;
+              zh_str_ln = 0;
+            }
+          }
+          else
+            zh_str = ProcessSemNode(s_rover, NULL, error_code);
+        }
+      break;
+
+      case SEM_TYP_INTERVAL:
+        zh_str = INTERVALtoEstr(s_rover, error_code, true);
+      break;
+
+      case SEM_TYP_UCONSTANT:
+      case SEM_TYP_VARIABLE:
+        if (!strcmp(s_rover->contents, "&#x211d;"))
+          zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "R_");
+        else if (!strcmp(s_rover->contents, "&#x2102;"))
+          zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "C_");
+        else if (!strcmp(s_rover->contents, "&#x2124;"))
+          zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "Z_");
+        else if (!strcmp(s_rover->contents, "&#x211a;"))
+          zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "Q_");
+        else
+          zh_str = ProcessSemNode(s_rover, NULL, error_code);
+      break;
+  
+      default:
+        zh_str = ProcessSemNode(s_rover, NULL, error_code);
+      break;
+    }
+    if (zh_str)
+    {
+      zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);
+      if (pastOp)
+        zh_rh_str = AppendStr2HeapStr(zh_rh_str, zh_rh_ln, zh_str);  //We do this here so zh_str won't be added to zh_rh_str below
+      delete[] zh_str;
+      zh_str = NULL;
+      zh_str_ln = 0;
+    }
+	s_rover = s_rover->next;
+  }
+  if (zh_rh_str)
+    delete[] zh_rh_str;
+
   return zh_rv;
 }
+
+//char *MuPADWrapper::SemDomainToEstr(SEMANTICS_NODE * s_list, int& error_code)
+//{
+//  char *zh_rv = NULL;
+//  U32 zh_ln = 0;
+//
+//  if (s_list && s_list->semantic_type == SEM_TYP_TEXT)
+//  {
+//    if (!strcmp(s_list->contents, "otherwise"))
+//    {
+//      zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, "otherwise");  //this should act as "otherwise" if it's the last condition in the piecewise list
+//      return zh_rv;
+//    }
+//    s_list = s_list->next;
+//  }
+//
+//  while (s_list
+//         && !s_list->next    // but s_list->next could be a precedence group??
+//         && s_list->semantic_type == SEM_TYP_PRECEDENCE_GROUP) {
+//    if (s_list->bucket_list && s_list->bucket_list->first_child)
+//      s_list = s_list->bucket_list->first_child;
+//    else
+//      TCI_ASSERT(0);
+//  }
+//
+//  int rel_pos = -1;
+//  int rel_pos2 = -1;
+//  int conn_pos = -1;
+//  int conn_pos2 = -1;
+//  int in_pos = -1;
+//  int not_pos = -1;
+//  int tally = 0;
+//  SEMANTICS_NODE *s_lhs = NULL;
+//  SEMANTICS_NODE *s_rhs = NULL;
+//  SEMANTICS_NODE *s_lhs2 = NULL;
+//  SEMANTICS_NODE *s_rhs2 = NULL;
+//  SEMANTICS_NODE *s_rover = s_list;
+//  while (s_rover) {
+//    if (IsBinRelation(s_rover)) {
+//      if (rel_pos < 0)
+//        rel_pos = tally;
+//      else if (rel_pos2 < 0)
+//        rel_pos2 = tally;
+//    } else if (IsLogicalConnectingOperator(s_rover)) {
+//      if (conn_pos < 0)
+//        conn_pos = tally;
+//      else if (conn_pos2 < 0)
+//        conn_pos2 = tally;
+//    } else if (IsSetMembershipOperator(s_rover)) {
+//      in_pos = tally;
+//    } else if (IsNegationOperator(s_rover)) {
+//      not_pos = tally;
+//    }
+//    tally++;
+//    s_rover = s_rover->next;
+//  }
+//  if ((rel_pos >= 0) || (conn_pos >= 0) || (in_pos >= 0) || (not_pos >= 0)) //at least one relation or connecting operator
+//  {
+//    s_rover = s_list;
+//    SEMANTICS_NODE *s_temp = NULL;
+//    SEMANTICS_NODE *s_save = NULL;
+//    tally = 0;
+//    char *zh_lhs, *zh_rhs, *zh_str;
+//    char *zh_lhs2, *zh_rhs2;
+//    U32 zh_str_ln = 0;
+//    while ( s_rover && ((rel_pos < 0) || (tally < rel_pos)) )
+//    {
+//      zh_str_ln = 0;
+//      zh_str = NULL;
+//      zh_lhs = NULL;
+//      s_rhs = NULL;
+//      //First check to see whether this operand is a nested binary relation
+//      s_temp = FindBinRelation(s_rover, true);  //ask for the last binary relation inside this node - if it exists, we'll want its right-hand-side for the left-hand side of our relation
+//      while (s_temp)
+//      {
+//        s_rhs = s_temp;
+//        while (s_temp->next)
+//          s_temp = s_temp->next;  //This should hopefully only be executed once at each level - otherwise there is more than one operand to the right of the relation?
+//        s_temp = FindBinRelation(s_temp, true);
+//      }
+//      if (s_rhs)
+//      {
+//        s_rhs = s_rhs->next;  //move this pointer to after the nested relation
+//        zh_lhs = ProcessSemList(s_rhs, NULL, error_code);  //
+//      }
+//
+//      if ( s_rhs || ((conn_pos >= 0) && (tally==conn_pos-1 || tally==conn_pos+1)) || ((not_pos >= 0) && (tally==not_pos+1)) )  //if this is an operand of an "and" or "or", it should be a domain expression too
+//      {
+//        //Since this is reset each time through, it'll only be kept if the nested relation is the last thing before rel_pos
+//        s_save = s_rover->next;
+//        s_rover->next = NULL;
+//        zh_str = SemDomainToEstr(s_rover, error_code);  //recurse to get the string for relation to the left
+//        s_rover->next = s_save;
+//        if ((not_pos >= 0) && (tally == not_pos+1))
+//          zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, ")");
+//      }
+//      else if (tally == in_pos)
+//      {
+//        zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, " in ");
+//      }
+//      else if (tally == not_pos)
+//      {
+//        zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "not(");
+//      }
+//      else if (tally == conn_pos)
+//      {
+//        if (!strcmp(s_rover->contents, "&#x2227;"))
+//          zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, " and ");
+//        else if (!strcmp(s_rover->contents, "&#x2228;"))
+//          zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, " or ");
+//      }
+//      else if (tally == in_pos+1)
+//      {
+//        if (s_rover->semantic_type == SEM_TYP_INTERVAL)
+//          zh_str = INTERVALtoEstr(s_rover, error_code, true);
+//        else if (s_rover->semantic_type == SEM_TYP_UCONSTANT || s_rover->semantic_type == SEM_TYP_VARIABLE)
+//        {
+//          if (!strcmp(s_rover->contents, "&#x211d;"))
+//            zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "R_");
+//          else if (!strcmp(s_rover->contents, "&#x2102;"))
+//            zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "C_");
+//          else if (!strcmp(s_rover->contents, "&#x2124;"))
+//            zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "Z_");
+//          else if (!strcmp(s_rover->contents, "&#x211a;"))
+//            zh_str = AppendStr2HeapStr(zh_str, zh_str_ln, "Q_");
+//          else
+//            zh_str = ProcessSemNode(s_rover, NULL, error_code);
+//        }
+//        else
+//          zh_str = ProcessSemNode(s_rover, NULL, error_code);
+//      }
+//      else
+//      {
+//        zh_str = ProcessSemNode(s_rover, NULL, error_code);
+//      }
+//      if (zh_str)
+//      {
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);
+//        delete[] zh_str;
+//      }
+//      ++tally;
+//      s_rover = s_rover->next;
+//    }
+//    char* zh_rel = NULL;
+//    //Now we've reached our (first) binary relation
+//    if (tally==rel_pos)     //There was a nested binary relation; s_rhs points to its right-hand argument, which will be our left-hand argument
+//    {
+//      if (zh_lhs)
+//      {
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " and ");  //we need this since we know there was a binary relation to our left
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_lhs);
+//      }
+//      zh_rel = ProcessSemNode(s_rover, NULL, error_code);
+//      zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_rel);
+//      ++tally;
+//      s_rover = s_rover->next;
+//    }
+//    zh_rhs = NULL;
+//    while ( s_rover && ((rel_pos2 < 0) || (tally < rel_pos2)) )
+//    {
+//      zh_str = NULL;
+//      zh_str_ln = 0;
+//      zh_lhs2 = NULL;
+//      s_lhs = NULL;
+//      s_rhs = NULL;
+//      s_lhs2 = NULL;
+//      SEMANTICS_NODE *s_temp2 = FindBinRelation(s_rover, true);  //ask for the last binary relation inside this node
+//      if (s_temp2)
+//      {
+//        s_save = s_rover->next;
+//        s_rover->next = NULL;
+//        zh_str = SemDomainToEstr(s_rover, error_code);  //recurse to get the string for child relation
+//        s_rover->next = s_save;
+//      }
+//      else
+//        zh_str = ProcessSemNode(s_rover, NULL, error_code);
+//      if (s_temp2 && (rel_pos >= 0) && (tally==rel_pos + 1))
+//      {
+//        s_temp = FindBinRelation(s_rover, false);  //ask for the first binary relation inside this node unless we're looking for the LHS of a second relation - we'll want its right-hand-side for the left-hand side of our relation
+//        while (s_temp)
+//        {
+//          s_lhs = s_temp;
+//          while (s_temp->prev)
+//            s_temp = s_temp->prev;  //This should hopefully only be executed once at each level - otherwise there is more than one operand to the left of the relation?
+//          s_temp = FindBinRelation(s_temp, false);
+//        }
+//        if (s_lhs)
+//        {
+//          s_save = s_lhs;
+//          s_lhs = s_lhs->prev;
+//          s_lhs->next = NULL;
+//          zh_rhs = ProcessSemList(s_lhs->parent->first_child, NULL, error_code);  //this is the right-hand side of the current relation
+//          s_lhs->next = s_save;  //restore it
+//        }
+//      }
+//      if (tally == rel_pos2 - 1)
+//      {
+//        while (s_temp2)  //now we'll want its right-hand-side for the left-hand side of our next relation
+//        {
+//          s_rhs = s_temp2;
+//          while (s_temp2->next)
+//            s_temp2 = s_temp2->next;  //This should hopefully only be executed once at each level - otherwise there is more than one operand to the left of the relation?
+//          s_temp2 = FindBinRelation(s_temp, true);
+//        }
+//      }
+//      if (s_rhs)
+//      {
+//        s_rhs = s_rhs->next;  //move to after the relation
+//        zh_lhs2 = ProcessSemList(s_rhs, NULL, error_code);
+//      }
+//      if (zh_rhs)
+//      {
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_rhs);
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " and ");  //we need this since we know there was a binary relation to our left
+//      }
+//      zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);
+//      if (zh_lhs2)
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_lhs2);
+//      ++tally;
+//      s_rover = s_rover->next;
+//    }
+//    if (s_rover)  //this is the (apparently rare) case where there is a second relation in the same list
+//    {
+//      zh_rel = ProcessSemNode(s_rover, NULL, error_code);
+//      zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_rel);
+//      ++tally;
+//      s_rover = s_rover->next;
+//    }
+//    while (s_rover)
+//    {
+//      zh_rhs2 = NULL;
+//      s_lhs2 = NULL;
+//      s_temp = FindBinRelation(s_rover, false);  //ask for the first binary relation inside this node
+//      if (s_temp)
+//      {
+//        s_save = s_rover->next;
+//        s_rover->next = NULL;
+//        zh_str = SemDomainToEstr(s_rover, error_code);  //recurse to get the string for child relation
+//        s_rover->next = s_save;
+//      }
+//      else
+//        zh_str = ProcessSemNode(s_rover, NULL, error_code);
+//      while (s_temp)
+//      {
+//        s_lhs2 = s_temp;
+//        while (s_temp->prev)
+//          s_temp = s_temp->prev;  //This should hopefully only be executed once at each level - otherwise there is more than one operand to the left of the relation?
+//        s_temp = FindBinRelation(s_temp, false);
+//      }
+//      if (s_lhs2 && (rel_pos >= 0) && (tally == rel_pos + 1))
+//      {
+//        s_save = s_lhs2;
+//        s_lhs2 = s_lhs2->prev;
+//        s_lhs2->next = NULL;
+//        zh_rhs2 = ProcessSemList(s_lhs2->parent->first_child, NULL, error_code);  //this is the right-hand side of the current relation
+//        s_lhs2->next = s_save;  //restore it
+//      }
+//      if (zh_rhs2)
+//      {
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_rhs2);
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " and ");  //we need this since we know there was a binary relation to our left
+//      }
+//      if (zh_str)
+//      {
+//        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);
+//        delete[] zh_str;
+//      }
+//    }
+//
+////  if (s_var) {
+////    if (tally == 3)
+////      zh_rv = ProcessSemList(s_list, NULL, error_code);
+////    else {
+////      if (tally == 5 && var_pos == 2) {
+////        SEMANTICS_NODE *s_save = s_var->next;
+////        s_var->next = NULL;
+////        char *zh_str = ProcessSemList(s_list, NULL, error_code);
+////        zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str);
+////        delete[] zh_str;
+////
+////        s_var->next = s_save;
+////        char *zh_str1 = ProcessSemList(s_var, NULL, error_code);
+////        if (zh_str1) {
+////          zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, " and ");
+////          zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, zh_str1);
+////          delete[] zh_str1;
+////        }
+////      } else {
+////        TCI_ASSERT(0);
+////      }
+////    }
+//  } else {
+//    TCI_ASSERT(0);
+//  }
+//  return zh_rv;
+//}
 
 // The semantic analyzer identifies ODE funcs and records them
 //  in a MB_ODEFUNC bucket in the bucket_list of an SEM_TYP_ODE_SYSTEM.
