@@ -398,7 +398,7 @@ void Tree2StdMML::LookupMOInfo(MNODE* mml_node)
 
     const char* str_unicode = str_prec;
 
-    while (str_unicode && *str_unicode != ',')
+    while (*str_unicode && *str_unicode != ',')
       str_unicode++;
 
     if (*str_unicode)
@@ -566,9 +566,10 @@ MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
         switch (rover->form) {
 
             case OP_prefix:
-              if (rover->next && rover -> next -> p_chdata) {
+              if (rover->next) {
                 // Check nabla times special case
                 if ( ( (rover -> p_chdata) && 0 == strcmp(rover -> p_chdata , "&#x2207;") ) &&
+                     ( rover -> next -> p_chdata ) &&
                      ( ( 0 == strcmp(rover -> next -> p_chdata , "&#xd7;") ) || 
                        ( 0 == strcmp(rover -> next -> p_chdata , "&#x22c5;") ) ) )
                 {
