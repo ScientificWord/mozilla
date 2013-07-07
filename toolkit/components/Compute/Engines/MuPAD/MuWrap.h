@@ -50,6 +50,14 @@ public:
   void      iCleanupAndUnloadDLL();
   char*     ProcessSemList(  SEMANTICS_NODE* head, const char* modulus, int& error_code );
 
+//constants to use in analyzing domain expressions
+  static const U32 opTypeUnknown = 0;
+  static const U32 binOrderRelation = 1;
+  static const U32 binInclusionRelation = 2;
+  static const U32 binConnectingOperation = 4;
+  static const U32 unaryNegationOperation = 8;
+  static const U32 anyType = binOrderRelation | binInclusionRelation | binConnectingOperation | unaryNegationOperation;
+
 private:
   char*     Execute( const char* cmd );
   bool  RenderPlot( const char* VCamFile, const char* outFile);
@@ -70,7 +78,7 @@ private:
                                 bool& is_infix, int& error_code );
   char*     POLISHOPtoEstr(   SEMANTICS_NODE* node_info, const char* modulus,
                                 bool& is_infix, int& error_code );
-  char*     INTERVALtoEstr(   SEMANTICS_NODE* node_info, int& error_code );
+  char*     INTERVALtoEstr(   SEMANTICS_NODE* node_info, int& error_code, bool bUseIntervalForm = false );
   char*     FRACTIONtoEstr(   SEMANTICS_NODE* node_info, const char* key, int& error_code );
   char*     POWERFORMtoEstr(  SEMANTICS_NODE* node_info, bool no_surds,
                                         const char* modulus,  int& error_code );
@@ -171,6 +179,9 @@ private:
 
   int       GetEngineMessageID( SEMANTICS_NODE* s_tree );
 
+  U32       GetRelationExpressionOpType(SEMANTICS_NODE * s_node);
+  SEMANTICS_NODE * FindRelationExpressionOperator(SEMANTICS_NODE * s_list, U32 whichType, bool bReturnLast);
+  char*     RetrieveNestedSemDomainOperandStr(SEMANTICS_NODE * s_list, bool bRightHand, int& error_code);
   char*     SemDomainToEstr( SEMANTICS_NODE* s_list, int& error_code );
   void      ODEFuncName2eStr( SEMANTICS_NODE* curr_handle, char** sfor_func_str, U32& sfor_ln );
   bool  NumericFuncName2eStr( SEMANTICS_NODE* curr_handle, char** sfor_func_str, U32& sfor_ln );
