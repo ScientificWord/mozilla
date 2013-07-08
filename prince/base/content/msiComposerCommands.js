@@ -900,6 +900,7 @@ function getViewSettingsFromViewMenu()
   var viewSettings = new msiViewSettings(1);   //1 is really the default - hide invisibles, show everything else
   var invisChoices = [["viewInvisibles","showInvisibles"],
                       ["viewSectionExpanders","showSectionExpanders"],
+                      ["viewShortTitles","showShortTitles"],
                       ["viewFMButtons","showFMButtons"],
                       ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
@@ -937,6 +938,7 @@ function updateViewMenuFromEditor(editorElement)
 
   var invisChoices = [["viewInvisibles","showInvisibles"],
                       ["viewSectionExpanders","showSectionExpanders"],
+                      ["viewShortTitles","showShortTitles"],
                       ["viewFMButtons","showFMButtons"],
                       ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],

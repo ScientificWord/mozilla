@@ -481,6 +481,23 @@ shortTitle {
   display: none;
 }
 
+body[showshort='true'] shortTitle {
+  display: inline;
+  color: green;
+}
+
+body[showshort='true'] shortTitle:before {
+  content: '[';
+  display: inline;
+  color: green;
+}
+
+body[showshort='true'] shortTitle:after {
+  content: '] ';
+  display: inline;
+  color: green;
+}
+
 msiframe {
   display: block;
 }
