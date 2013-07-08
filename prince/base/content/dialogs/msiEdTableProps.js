@@ -1743,7 +1743,7 @@ function GetSelectedCells(selection)
   var rangeCount = selection.rangeCount;
   var cells = [];
   var i;
-  if (newTable) {
+  if (newTable || data.reviseCommand === "cmd_editTable") {
     // in effect all cells are selected
     var htmlcollection;
     htmlcollection = gTableElement.getElementOrParentByTagName("td");
@@ -1813,6 +1813,8 @@ function UpdateCells(editor)
   for (var i = 0; i < cells.length; i++) {
     var c = cells[i];
     ApplyAttributesToOneCell(c, makeSourceLineObject(document.getElementById("BordersPreviewCenterCell")));
+  }
+}
 
     // var txn = new diStyleAttrChangeTxn(c, "width", gDialog.cellsWidthMenulist.value, "");
     // editor.doTransaction(txn);
@@ -1840,8 +1842,8 @@ function UpdateCells(editor)
 
     // if (c.nodeName.toLowerCase() != (gDialog.cellsHeadersCheckbox.checked ? "th" : "td"))
     //   editor.switchTableCellHeaderType(c);
-  }
-}
+    //}
+    //}
 
 function DoStyleChangesForACell(destCell)
 {

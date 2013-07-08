@@ -64,7 +64,7 @@
   <tabbox id="tabboxid" flex="1">
       <tabs>
         <tab label="&format.label;"/>
-        <tab label="&advanced.label;"/>    
+        <tab label="&shorttitle.label;"/>    
       </tabs>
     <tabpanels flex="1">
       <tabpanel>
