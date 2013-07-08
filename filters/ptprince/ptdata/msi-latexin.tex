@@ -4453,10 +4453,15 @@
 \@halfwidth .5\@wholewidth
 
 
+\newif\if@newtheoremstar
+\@newtheoremstarfalse
 
+\def\newtheorem{%
+  \@ifnextchar*{\@newtheoremstartrue\msi@newtheorem}{\@newtheoremstarfalse\msi@newtheorem?}%
+}
 
-\def\newtheorem#1{%
-  \@ifnextchar[{\out@newtheorema{#1}}{\@nthm{#1}}}
+\def\msi@newtheorem#1#2{%
+  \@ifnextchar[{\out@newtheorema{#2}}{\@nthm{#2}}}
 
   
 \def\@nthm#1#2{%
