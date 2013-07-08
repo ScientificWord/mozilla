@@ -254,24 +254,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
   EditorStartupForEditorElement(editorElement, topwindow);
   msiDumpWithID("In msiInitializeEditorForElement for element [@], back from EditorStartupForEditorElement call.\n", editorElement);
 
-  // Initialize our source text <editor>
   try {
-//    editorElement.mSourceContentWindow = document.getElementById("content-source");
-//    editorElement.mSourceContentWindow.makeEditable("text", false);
-//    editorElement.mSourceTextEditor = editorElement.mSourceContentWindow.getEditor(editorElement.mSourceContentWindow.contentWindow);
-//    editorElement.mSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-//    editorElement.mSourceTextEditor.enableUndo(false);
-//    editorElement.mSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
-//    editorElement.mSourceTextEditor.rootElement.style.whiteSpace = "pre";
-//    editorElement.mSourceTextEditor.rootElement.style.margin = 0;
-//    //ljh I don't understand why a new instance of the controller is being created?????
-//    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-//                               .createInstance(Components.interfaces.nsIControllerContext);
-//    controller.init(null);
-//    controller.setCommandContext(editorElement.mSourceContentWindow);
-//    editorElement.mSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-//    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-//                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
     var commandTable = msiGetComposerCommandTable(editorElement);
     commandTable.registerCommand("cmd_find",        msiFindCommand);
     commandTable.registerCommand("cmd_findNext",    msiFindAgainCommand);
@@ -310,27 +293,8 @@ function msiSourceTextObserver(editorElement)
     window.updateCommands("undo");
   };
 };
-//
-//function TextEditorOnLoad()
-//{
-//    // See if argument was passed.
-//    if ( window.arguments && window.arguments[0] ) {
-//        // Opened via window.openDialog with URL as argument.
-//        // Put argument where EditorStartup expects it.
-//        document.getElementById( "args" ).setAttribute( "value", window.arguments[0] );
-//    }
-//    // Continue with normal startup.
-//    EditorStartup();
-//}
 
-// This should be called by all editor users when they close their window
-//  or other similar "done with editor" actions, like recycling a Mail Composer window.
-//function EditorCleanup()
-//{
-////  SwitchInsertCharToAnotherEditorOrClose();
-//}
 
-//var DocumentReloadListener =
 function aDocumentReloadListener(editorElement)
 {
   this.mEditorElement  = editorElement;
@@ -352,15 +316,6 @@ function aDocumentReloadListener(editorElement)
     } catch (e) {}
   };
 };
-
-//function addEditorClickEventListener()
-//{
-//  try {
-//    var bodyelement = GetBodyElement();
-//    if (bodyelement)
-//      bodyelement.addEventListener("click", EditorClick, false);
-//  } catch (e) {}
-//}
 
 
 function msiGetBodyElement(editorElement)
@@ -410,11 +365,6 @@ function addObjectResizeListenerForEditor(editorElement)
 
 function addFocusEventListenerForEditor(editorElement)
 {
-//  if (msiIsTopLevelEditor(editorElement))
-//  {
-//  }
-//  else
-//  {
     try
     {
       editorElement.contentWindow.addEventListener("focus", msiEditorOnFocus, true);
@@ -2087,13 +2037,6 @@ function msiOnParagraphFormatChange(paraMenuList, commandID)
   if (!paraMenuList)
     return;
 
-//  var documentList = msiGetUpdatableItemContainers(commandID);  //Returns the documents containing the command nodes to update.
-//
-//  for (var i = 0; i < documentList.length; ++i)
-//  {
-//    var theDoc = documentList[i];
-//    if (paraMenuList.ownerDocument == theDoc)
-//    {
       try
       {
         var commandNode = theDoc.getElementById(commandID);
@@ -2135,13 +2078,6 @@ function msiOnParagraphFormatChange(paraMenuList, commandID)
 
 function onFontFaceChange(fontFaceMenuList, commandID)
 {
-//  var documentList = msiGetUpdatableItemContainers(commandID);  //Returns the documents containing the command nodes to update.
-//
-//  for (var i = 0; i < documentList.length; ++i)
-//  {
-//    var theDoc = documentList[i];
-//    if (theDoc == fontFaceMenuList.ownerDocument)
-//    {
       try
       {
         var commandNode = theDoc.getElementById(commandID);
@@ -2172,8 +2108,6 @@ function onFontFaceChange(fontFaceMenuList, commandID)
       {
         AlertWithTitle("Error in onFontFaceChange", exc);
       }
-//    break;
-//  }
 }
 
 function msiEditorSelectFontSize(editorElement)
@@ -4929,6 +4863,10 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
     theBody.setAttribute("showexpanders", "true");
   else
     theBody.removeAttribute("showexpanders");
+  if (viewSettings.showShortTitles)
+    theBody.setAttribute("showshort", "true");
+  else
+    theBody.removeAttribute("showshort");
   if (viewSettings.showFMButtons)
     theBody.setAttribute("showfmbuttons", "true");
   else
@@ -5253,10 +5191,10 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         break;
 
       case "table":
-//        objStr = GetString("Table");
-////        scriptStr = "msiEditorInsertOrEditTable(false, editorElement, 'cmd_objectProperties', this)";
-//        commandStr = "cmd_editTable";
-//        break;
+       objStr = GetString("Table");
+//        scriptStr = "msiEditorInsertOrEditTable(false, editorElement, 'cmd_objectProperties', this)";
+       commandStr = "cmd_editTable";
+       break;
       case "th":
 //        name = "td";
       case "td":
@@ -6613,8 +6551,14 @@ msiTablePropertiesObjectData.prototype =
   mColSelectionArray : [],
 
 
-  matrixStrArray : ["MatrixCell", "MatrixCellGroup", "MatrixRow", "MatrixColumn", "Matrix"],
-  tableStrArray : ["TableCell", "TableCellGroup", "TableRow", "TableColumn", "Table"],
+  matrixStrArray : [//"MatrixCell", 
+                    "MatrixCellGroup", 
+                    // "MatrixRow", "MatrixColumn", 
+                    "Matrix"],
+  tableStrArray : [//"TableCell", 
+                    "TableCellGroup", 
+                    // "TableRow", "TableColumn", 
+                    "Table"],
 
 //Interface:
   initFromNode : function(aNode, editorElement, bSelected)
@@ -6947,7 +6891,10 @@ msiTablePropertiesObjectData.prototype =
     // (ii) We don't want to show Table Row properties only if the rows selection includes the whole table, and similarly for columns.
     //(iii) if we do have a cell then the others should show up if present? (If we have a cell in a one-row table, would we want to activate
     //      column properties?)
-    var ourArray = ["mCell", "mSelection", "mRowSelection", "mColSelection", "mTableElement"];
+    var ourArray = [//"mCell", 
+      "mSelection", 
+      //"mRowSelection", "mColSelection", 
+      "mTableElement"];
     var strArray = null;
     var commandArray = null;
     var strArray = this.getMenuStringArray();
@@ -6955,53 +6902,59 @@ msiTablePropertiesObjectData.prototype =
     if (this.isMatrix())
     {
 //      strArray = ["MatrixCell", "MatrixCellGroup", "MatrixRow", "MatrixColumn", "Matrix"];
-      commandArray = ["cmd_MSIreviseMatrixCellCmd", "cmd_MSIreviseMatrixCellGroupCmd", "cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd", "cmd_MSIreviseMatrixCmd"];
+      commandArray = [//"cmd_MSIreviseMatrixCellCmd", 
+      "cmd_MSIreviseMatrixCellGroupCmd", //"cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd", 
+      "cmd_MSIreviseMatrixCmd"];
     }
     else
     {
 //      strArray = ["TableCell", "TableCellGroup", "TableRow", "TableColumn", "Table"];
-      commandArray = ["cmd_editTableCell", "cmd_editTableCellGroup", "cmd_editTableRows", "cmd_editTableCols", "cmd_editTable"];
+      commandArray = [//"cmd_editTableCell", 
+      "cmd_editTableCellGroup", 
+      //"cmd_editTableRows", "cmd_editTableCols", 
+      "cmd_editTable"];
     }
 
     //New decision - abandon this. Whatever part of a table or matrix we're in or have selected, we can bring up a properties dialog.
     var bDoIt = true;
     for (var ix = 0; ix < ourArray.length; ++ix)
     {
-      bDoIt = (this[ourArray[ix]] != null);
-      if (bDoIt && (ix > 0) && (ix < ourArray.length - 1))  //if selection is within a cell, don't show anything else except table
-      {
-        if (this.mCell != null)
-          bDoIt = false;
-      }
-      if (bDoIt)
-      {
-        switch(ourArray[ix])
-        {
-          case "mCell":
-            if ((this.mRowSelection == null) && (this.mColSelection == null))  //means selecting all rows or cols gives whole table - so selection is essentially whole table
-              bDoIt = false;
-          break;
-          case "mSelection":   //The "Cell Group" properties should only appear if the selection doesn't match any of the other types
-            if ((this.mSelection == this.mRowSelection) || (this.mSelection == this.mColSelection))
-              bDoIt = false;
-            if (this.allCellsSelected())
-              bDoIt = false;
-          break;
-          case "mRowSelection":
-            if (this.mSelection != this.mRowSelection)
-              bDoIt = false;
-          break;
-          case "mColSelection":
-            if (this.mSelection != this.mColSelection)
-              bDoIt = false;
-          break;
-        }
-      }
-      if (bDoIt)
-      {
+      // bDoIt = (this[ourArray[ix]] != null);
+      // if (bDoIt && (ix > 0) && (ix < ourArray.length - 1))  //if selection is within a cell, don't show anything else except table
+      // {
+      //   if (this.mCell != null)
+      //     bDoIt = false;
+      // }
+      // if (bDoIt)
+      // {
+      //   switch(ourArray[ix])
+      //   {
+      //     // case "mCell":
+      //     //   if ((this.mRowSelection == null) && (this.mColSelection == null))  //means selecting all rows or cols gives whole table - so selection is essentially whole table
+      //     //     bDoIt = false;
+      //     // break;
+      //     case "mSelection":   //The "Cell Group" properties should only appear if the selection doesn't match any of the other types
+      //       bDoIt = true;
+      //       // if ((this.mSelection == this.mRowSelection) || (this.mSelection == this.mColSelection))
+      //       //   bDoIt = false;
+      //       // if (this.allCellsSelected())
+      //       //   bDoIt = false;
+      //     break;
+      //     // case "mRowSelection":
+      //     //   if (this.mSelection != this.mRowSelection)
+      //     //     bDoIt = false;
+      //     // break;
+      //     // case "mColSelection":
+      //     //   if (this.mSelection != this.mColSelection)
+      //     //     bDoIt = false;
+      //     // break;
+      //   }
+      // }
+      // if (bDoIt)
+      // {
         this.menuStrings.push( msiFormatPropertiesMenuString( strArray[ix] ) );
         this.commandStrings.push( commandArray[ix] );
-      }
+      // }
     }
   },
 
@@ -7065,22 +7018,22 @@ msiTablePropertiesObjectData.prototype =
 
   markRowSelected : function(tableData, nWhichRow, nSelectionType)
   {
-    if (!tableData.rowsData[nWhichRow])
-      tableData.rowsData[nWhichRow] = new Object();
-    if (!tableData.rowsData[nWhichRow].mSelected)
-      tableData.rowsData[nWhichRow].mSelected = nSelectionType;
-    else
-      tableData.rowsData[nWhichRow].mSelected |= nSelectionType;
+    // if (!tableData.rowsData[nWhichRow])
+    //   tableData.rowsData[nWhichRow] = new Object();
+    // if (!tableData.rowsData[nWhichRow].mSelected)
+    //   tableData.rowsData[nWhichRow].mSelected = nSelectionType;
+    // else
+    //   tableData.rowsData[nWhichRow].mSelected |= nSelectionType;
   },
 
   markColumnSelected : function(tableData, nWhichCol, nSelectionType)
   {
-    if (!tableData.colsData[nWhichCol])
-      tableData.colsData[nWhichCol] = new Object();
-    if (!tableData.colsData[nWhichCol].mSelected)
-      tableData.colsData[nWhichCol].mSelected = nSelectionType;
-    else
-      tableData.colsData[nWhichCol].mSelected |= nSelectionType;
+    // if (!tableData.colsData[nWhichCol])
+    //   tableData.colsData[nWhichCol] = new Object();
+    // if (!tableData.colsData[nWhichCol].mSelected)
+    //   tableData.colsData[nWhichCol].mSelected = nSelectionType;
+    // else
+    //   tableData.colsData[nWhichCol].mSelected |= nSelectionType;
   },
 
   markCellSelected : function(aCell, tableData, nSelectionType)
@@ -7205,102 +7158,6 @@ msiTablePropertiesObjectData.prototype =
     var testRange = this.normalizeRange(aRange);
     var parent = testRange.commonAncestorContainer;
 
-//    function markRowSelected(tableData, nWhichRow, nSelectionType)
-//    {
-//      if (!tableData.rowsData[nWhichRow])
-//        tableData.rowsData[nWhichRow] = new Object();
-//      if (!tableData.rowsData[nWhichRow].mSelected)
-//        tableData.rowsData[nWhichRow].mSelected = nSelectionType;
-//      else
-//        tableData.rowsData[nWhichRow].mSelected |= nSelectionType;
-//    }
-//
-//    function markColumnSelected(tableData, nWhichCol, nSelectionType)
-//    {
-//      if (!tableData.colsData[nWhichCol])
-//        tableData.colsData[nWhichCol] = new Object();
-//      if (!tableData.colsData[nWhichCol].mSelected)
-//        tableData.colsData[nWhichCol].mSelected = nSelectionType;
-//      else
-//        tableData.colsData[nWhichCol].mSelected |= nSelectionType;
-//    }
-//
-//    function markCellSelected(aCell, tableData, nSelectionType)
-//    {
-//      var bDone = false;
-//      for (var ii = 0; !bDone && (ii < tableData.m_nRows); ++ii)
-//      {
-//        for (var jj = 0; !bDone && (jj < tableData.cellInfoArray[ii].length); ++jj)
-//        {
-//          if ( tableData.cellInfoArray[ii][jj] && tableData.cellInfoArray[ii][jj].mNode && (tableData.cellInfoArray[ii][jj].mNode == aCell) )
-//          {
-//            //Since we'll come first to the top left corner of an "extended" cell, we worry only about setting things to our right and below us.
-//            //  (Recall from above that we recorded negative "mContinuation" values for the cells not at the upper left.)
-//            for (var kk = 0; kk <= tableData.cellInfoArray[ii][jj].mRowContinuation; ++kk)
-//            {
-//              for (var ll = 0; ll <= tableData.cellInfoArray[ii][jj].mColContinuation; ++ll)
-//              {
-//                if (tableData.cellInfoArray[ii + kk][jj + ll].mSelected)
-//                  tableData.cellInfoArray[ii + kk][jj + ll].mSelected |= nSelectionType;
-//                else
-//                  tableData.cellInfoArray[ii + kk][jj + ll].mSelected = nSelectionType;
-//                markColumnSelected(tableData, jj + ll, nSelectionType);
-//              }
-//              markRowSelected(tableData, ii + kk, nSelectionType);
-//            }
-//            bDone = true;
-//          }
-//        }
-//      }
-//      return bDone;
-//    }
-//
-//    function markCellsInNode(aNode, aRange, tableInfo)
-//    {
-//      var startPos = 0;
-//      var endPos = msiNavigationUtils.lastOffset(aNode);
-//      if (aRange)
-//      {
-//        if (aRange.startContainer == aNode)
-//          startPos = aRange.startOffset;
-//        if (aRange.endContainer == aNode)
-//          endPos = aRange.endOffset;
-//      }
-//
-//      switch( msiGetBaseNodeName(aNode) )
-//      {
-//        case "mtd":
-//        case "td":
-//        case "th":
-//          if (!aRange)
-//            markCellSelected(aNode, tableInfo, msiPropertiesObjectDataBase.Selected_SomeSelected);
-//          else if (aRange.collapsed)
-//            markCellSelected(aNode, tableInfo, msiPropertiesObjectDataBase.Selected_MixedSelection);  //"3" means the cell is partially selected
-//          else if (msiNavigationUtils.nodeHasContentBeforeRangeStart(aRange, aNode) || msiNavigationUtils.nodeHasContentAfterRangeEnd(aRange, aNode))
-//            markCellSelected(aNode, tableInfo, msiPropertiesObjectDataBase.Selected_MixedSelection);  //"3" means the cell is partially selected
-//          else
-//            markCellSelected(aNode, tableInfo, msiPropertiesObjectDataBase.Selected_SomeSelection);
-//        break;
-//
-//        case "mtr":
-//        case "mlabeledtr":
-//        case "tr":
-//        case "thead":
-//        case "tfoot":
-//        case "tbody":
-//        case "table":
-//        case "mtable":
-//          for (var ix = startPos; ix < endPos; ++ix)
-//          {
-//            if (aNode.childNodes[ix])
-//              markCellsInNode(aNode.childNodes[ix], null, tableInfo);
-//          }
-//        break;
-//
-//        default:
-//        break;
-//      }
-//    }
 
     while (testRange.startContainer != parent)
     {
@@ -7322,50 +7179,6 @@ msiTablePropertiesObjectData.prototype =
     //For starters, we'll assume (as does code elsewhere) that the array of ranges in a Selection is always document-ordered.
     //  This should be tested, however. (And we're also assuming that any array of ranges passed to this function came from an
     //  actual selection in the document.)
-//    var currRangeStart = 0;
-//    var bAfterStart = false;
-//    var bBeforeEnd = false;
-
-//    function checkRowSelection(tableData)
-//    {
-//      var bAllCellsSelected = true;
-//      for (var ii = 0; ii < tableData.rowsData.length; ++ii)
-//      {
-//        if (tableData.rowsData[ii] && ("mSelected" in tableData.rowsData[ii]) && (tableData.rowsData[ii].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) )
-//        {
-//          bAllCellsSelected = true;
-//          for (var jj = 0; bAllCellsSelected && jj < tableData.m_nRows; ++jj)
-//          {
-//            bAllCellsSelected = ( tableData.cellInfoArray[ii][jj] && ("mSelected" in tableData.cellInfoArray[ii][jj]) && (tableData.cellInfoArray[ii][jj].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) );
-//          }
-//          if (!bAllCellsSelected)
-//            tableData.rowsData[ii].mSelected |= msiPropertiesObjectDataBase.Selected_SomeUnselected;
-//        }
-//        if (!tableData.rowsData[ii] || !("mSelected" in tableData.rowsData[ii]) || (tableData.rowsData[ii].mSelected != msiPropertiesObjectDataBase.Selected_SomeSelected) )
-//          this.markRowSelected(tableData, ii, msiPropertiesObjectDataBase.Selected_SomeUnselected);
-//      }
-//    }
-//
-//    function checkColumnSelection(tableData)
-//    {
-//      var bAllCellsSelected = true;
-//      for (var jj = 0; jj < tableData.colsData.length; ++jj)
-//      {
-//        if (tableData.colsData[jj] && ("mSelected" in tableData.colsData[jj]) && (tableData.colsData[jj].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) )
-//        {
-//          bAllCellsSelected = true;
-//          for (var ii = 0; bAllCellsSelected && ii < tableData.m_nRows; ++ii)
-//          {
-//            bAllCellsSelected = ( tableData.cellInfoArray[ii][jj] && ("mSelected" in tableData.cellInfoArray[ii][jj]) && (tableData.cellInfoArray[ii][jj].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) );
-//          }
-//          if (!bAllCellsSelected)
-//            tableData.colsData[jj].mSelected |= msiPropertiesObjectDataBase.Selected_SomeUnselected;
-//        }
-//        if (!tableData.colsData[jj] || !("mSelected" in tableData.colsData[jj]) || (tableData.colsData[jj].mSelected != msiPropertiesObjectDataBase.Selected_SomeSelected) )
-//          this.markColumnSelected(tableData, jj, msiPropertiesObjectDataBase.Selected_SomeUnselected);
-//      }
-//    }
-//
     for (var ii = 0; ii < rangeArray.length; ++ii)
     {
       this.markCellsInRange(rangeArray[ii], ii);
@@ -9300,11 +9113,13 @@ function msiGoUpdateTableMenuItems(commandset, editorElement)
       else if (commandID == "cmd_DeleteTable" ||
                commandID == "cmd_NormalizeTable" ||
                commandID == "cmd_editTable" ||
-               commandID == "cmd_TableOrCellColor" ||
+      //       commandID == "cmd_TableOrCellColor" ||
                commandID == "cmd_SelectTable")
       {
         msiGoSetCommandEnabled(commandID, enabledIfTable, editorElement);
-      } else {
+      } 
+      else 
+      {
         msiGoSetCommandEnabled(commandID, enabled, editorElement);
       }
     }
@@ -10138,97 +9953,7 @@ function msiSetGraphicFrameAttrsFromGraphic(imageObj, editor)
   }
 }
 
-//
-// Command Updater functions
-//
-//function msiGoUpdateCommand(command, editorElement)
-//{
-//  if (!editorElement)
-//    editorElement = msiGetActiveEditorElement();
-//
-//  try {
-//    var bLogIt = (command == "cmd_MSImathtext");
-//    if (bLogIt)
-//    {
-//      var bStopHere = true;
-//      goUpdateCommand(command);
-////      return;
-//    }
-//
-//    var controller = null;
-//    var bControllerFromTop = false;
-//    if (editorElement)
-//      controller = msiGetControllerForCommand(command, editorElement);
-//    if (!controller)
-//    {
-//      controller = top.document.commandDispatcher.getControllerForCommand(command);
-//      bControllerFromTop = true;
-//    }
-//
-//    var enabled = false;
-//
-//    if ( controller )
-//      enabled = controller.isCommandEnabled(command);
-//
-//    if (bLogIt)
-//    {
-//      var logStr = "In msiGoUpdateCommand for cmd_MSImathtext; editorElement is [";
-//      if (editorElement)
-//        logStr += editorElement.id;
-//      logStr += "], and controller is ";
-//      if (!controller)
-//        logStr += "not found.\n";
-//      else if (bControllerFromTop)
-//        logStr += "found from top.document.commandDispatcher.\n";
-//      else
-//        logStr += "found from msiGetControllerForCommand for the editorElement.\n";
-//      msiKludgeLogString(logStr);
-//    }
-//
-//    msiGoSetCommandEnabled(command, enabled, editorElement);
-//  }
-//  catch (e) {
-//    dump("An error occurred updating the "+command+" command\n");
-//  }
-//}
 
-//function msiGoDoCommand(command, editorElement)
-//{
-//  if (!editorElement)
-//    editorElement = msiGetActiveEditorElement();
-//  try {
-//    var controller = null;
-//    if (editorElement)
-//      controller = msiGetControllerForCommand(command, editorElement);
-//    if (!controller)
-//      controller = top.document.commandDispatcher.getControllerForCommand(command);
-//    if ( controller && controller.isCommandEnabled(command))
-//      controller.doCommand(command);
-//  }
-//  catch (e) {
-//    dump("An error occurred executing the "+command+" command\n");
-//  }
-//}
-
-
-//function msiGoSetCommandEnabled(id, enabled, editorElement)
-//{
-//  if (!editorElement)
-//    editorElement = msiGetActiveEditorElement();
-//  var docList = msiGetUpdatableItemContainers(id, editorElement);
-//
-//  for (var i = 0; i < docList.length; ++i)
-//  {
-//    var node = docList[i].getElementById(id);
-//    if ( node )
-//    {
-//      if ( enabled )
-//        node.removeAttribute("disabled");
-//      else
-//        node.setAttribute('disabled', 'true');
-//    }
-//  }
-//}
 
 function msiDoUpdateCommands(eventStr, editorElement)
 {
@@ -10238,43 +9963,6 @@ function msiDoUpdateCommands(eventStr, editorElement)
     window.updateCommands(eventStr);
 }
 
-//function msiGoSetMenuValue(command, labelAttribute, editorElement)
-//{
-//  if (!editorElement)
-//    editorElement = msiGetActiveEditorElement();
-//  var docList = msiGetUpdatableItemContainers(command, editorElement);
-//
-//  for (var i = 0; i < docList.length; ++i)
-//  {
-////    var commandNode = top.document.getElementById(command);
-//    var commandNode = docList[i].getElementById(command);
-//    if ( commandNode )
-//    {
-//      var label = commandNode.getAttribute(labelAttribute);
-//      if ( label )
-//        commandNode.setAttribute('label', label);
-//    }
-//  }
-//}
-
-//function msiGoSetAccessKey(command, valueAttribute, editorElement)
-//{
-//  if (!editorElement)
-//    editorElement = msiGetActiveEditorElement();
-//  var docList = msiGetUpdatableItemContainers(command, editorElement);
-//
-//  for (var i = 0; i < docList.length; ++i)
-//  {
-////    var commandNode = top.document.getElementById(command);
-//    var commandNode = docList[i].getElementById(command);
-//    if ( commandNode )
-//    {
-//      var value = commandNode.getAttribute(valueAttribute);
-//      if ( value )
-//        commandNode.setAttribute('accesskey', value);
-//    }
-//  }
-//}
 
 /**
  * Command Updater
@@ -10299,13 +9987,6 @@ var msiCommandUpdater = {
    */
   _getControllerForCommand: function(command, editorElement) {
     try {
-
-//      var bLogIt = (command == "cmd_MSImathtext");
-//      if (bLogIt)
-//      {
-//        var bStopHere = true;
-//  //      return;
-//      }
 
       var controller = null;
       var bControllerFromTop = false;
@@ -10391,13 +10072,6 @@ var msiCommandUpdater = {
           node.setAttribute('disabled', 'true');
       }
     }
-//    var element = document.getElementById(command);
-//    if (!element)
-//      return;
-//    if (enabled)
-//      element.removeAttribute("disabled");
-//    else
-//      element.setAttribute("disabled", "true");
   },
 
   /**
@@ -10927,8 +10601,7 @@ function openStructureTagDialog(tagname, node, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  msiDoModelessPropertiesDialog("chrome://prince/content/structureproperties.xul", "structureproperties", "chrome,close,titlebar,resizable, dependent",
-                                                     editorElement, "cmd_reviseStructureNode", node, node);
+  msiDoModelessPropertiesDialog("chrome://prince/content/structureproperties.xul", "structureproperties", "chrome,close,titlebar,resizable, dependent", editorElement, "cmd_reviseStructureNode", node, node);
 // openDialog( "chrome://prince/content/structureproperties.xul",
 //                             "structureproperties",
 //                             "chrome, close, titlebar, resizable, dependent",
@@ -10939,12 +10612,12 @@ function openParaTagDialog(tagname, node, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  msiDoModelessPropertiesDialog("chrome://prince/content/paragraphproperties.xul", "paraproperties", "chrome,close,titlebar,resizable, dependent",
-                                                     editorElement, "cmd_reviseParagraphNode", node, node);
-//  openDialog( "chrome://prince/content/paragraphproperties.xul",
-//                             "paraproperties",
-//                             "chrome, close, titlebar, resizable, dependent",
-//                             node);
+  if (tagname === "title"){
+    msiDoModelessPropertiesDialog("chrome://prince/content/titleProperties.xul", "titleproperties", "chrome,close,titlebar,resizable, dependent", editorElement, "cmd_reviseParagraphNode", node, node);
+  }
+  else{
+    msiDoModelessPropertiesDialog("chrome://prince/content/paragraphproperties.xul", "paraproperties", "chrome,close,titlebar,resizable, dependent", editorElement, "cmd_reviseParagraphNode", node, node);
+  } 
 }
 
 function openEnvTagDialog(tagname, aNode, editorElement)
