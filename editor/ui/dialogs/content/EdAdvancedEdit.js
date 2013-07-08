@@ -64,8 +64,9 @@ var gUpdateTreeValue = true;
  **/
 function Startup()
 {
-  var editor = GetCurrentEditor();
-
+   var editorElement = getCurrentEditorElement();
+   var editor = msiGetEditor(editorElement);
+   
   // Element to edit is passed in
   if (!editor || !window.arguments[1])
   {
