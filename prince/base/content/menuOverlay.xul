@@ -501,6 +501,12 @@
                 accesskey="&viewSectionExpanders.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewSectionExpanders.label;"/>
+      <menuitem id="viewShortTitles"
+                type="checkbox"
+                checked="true"
+                accesskey="&viewShortTitles.accesskey;"
+                observes="cmd_viewInvisibles"
+                label="&viewShortTitles.label;"/>
       <menuitem id="viewFMButtons"
                 type="checkbox"
                 accesskey="&viewFMButtons.accesskey;"

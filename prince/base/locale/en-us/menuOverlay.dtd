@@ -163,6 +163,8 @@
 <!ENTITY viewFMButtons.accesskey "F" >
 <!ENTITY viewSectionExpanders.label "Section Expanders" >
 <!ENTITY viewSectionExpanders.accesskey "p" >
+<!ENTITY viewShortTitles.label "Short Titles" >
+<!ENTITY viewShortTitles.accesskey "T" >
 <!ENTITY viewHelperLines.label "Helper Lines" >
 <!ENTITY viewHelperLines.accesskey "H" >
 <!ENTITY viewInputBoxes.label "Input Boxes" >
