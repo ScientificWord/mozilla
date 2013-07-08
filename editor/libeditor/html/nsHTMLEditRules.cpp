@@ -6047,7 +6047,13 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
   nsCOMPtr<nsIDOMNode> block, emptyBlock;
   nsCOMPtr<nsIDOMNode> parentNode = aStartNode;
   PRBool bIndivisibleNode = mHTMLEditor->ShouldSelectWholeObject(parentNode);
-  if (IsBlockNode(aStartNode) || nsHTMLEditUtils::IsMath(aStartNode) || bIndivisibleNode)
+  PRUint16 nodeType;
+  aStartNode->GetNodeType(&nodeType);
+  PRBool isTextNode = (nodeType == nsIDOMNode::TEXT_NODE);
+  if (nsHTMLEditUtils::IsMath(aStartNode) && isTextNode) {
+    res = aStartNode->GetParentNode(getter_AddRefs(block));
+  }
+  else if (IsBlockNode(aStartNode) || (nsHTMLEditUtils::IsMath(aStartNode) && !isTextNode) || bIndivisibleNode)
     block = aStartNode;
   else
     block = mHTMLEditor->GetBlockNodeParent(aStartNode);
@@ -6118,11 +6124,21 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       element = do_QueryInterface(parent);
       element ->GetLocalName(name);
       if (name.EqualsLiteral("mfrac") || name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") ||
-        name.EqualsLiteral("mtable") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtd") || name.EqualsLiteral("mroot") ||
+        name.EqualsLiteral("mtable") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtd") || name.EqualsLiteral("mroot") || name.EqualsLiteral("msqrt") ||
         name.EqualsLiteral("msubsup"))
       {
         // BBM: this keeps us from deleting children of math structures that require a fixed number of children.
         // BBM: We should really replace the emptyBlock with an input box.
+        res = mHTMLEditor->IsEmptyNode(parent, &bIsEmptyNode, PR_TRUE, PR_FALSE);
+        if (bIsEmptyNode) {
+          nsCOMPtr<nsIDOMNode> grandparent;
+          res = parent->GetParentNode(getter_AddRefs(grandparent));
+          if (NS_FAILED(res)) return res;
+          res = nsEditor::GetChildOffset(parent, grandparent, offset);
+          if (NS_FAILED(res)) return res;
+          res = aSelection->Collapse(grandparent, offset+1);
+          res = mHTMLEditor->DeleteNode(parent);
+        }
         *aHandled = PR_TRUE;
         return res;
       }
