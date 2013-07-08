@@ -329,7 +329,9 @@
 
 % should check for second optional
 \def\out@newtheorema#1[#2]#3{%
-  \msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
+  \msitag{^^0a<newtheorem }%
+  \if@newtheoremstar\msitag{star="1" }\fi%
+  \msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
   \@ifundefined{msi@begin@#1}%
     {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
@@ -337,14 +339,18 @@
 
 \def\out@newtheoremb#1#2{%
   \@ifundefined{msi@begin@#1}%
-    {\msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
+    {\msitag{^^0a<newtheorem }%
+     \if@newtheoremstar\msitag{star="1" }\fi% 
+     \msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
     {}}
 
 %% recheck this one
 \def\out@newtheoremc#1#2[#3]{%
-  \msitag{<newtheorem name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
+  \msitag{^^0a<newtheorem }
+  \if@newtheoremstar\msitag{star="1" }\fi% 
+  \msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
   \@ifundefined{msi@begin@#1}%
     {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
@@ -1904,10 +1910,29 @@
   \msiclosetag{caption}{</caption>}%
 }
 
-\def\msi@begin@filecontents#1\end%
-{
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\string\begin{filecontents}#1\string\end}%
-}
+\bgroup
+  \@make@braces@other
+  \catcode `|=0
+  \catcode`\[=1
+  \catcode`\]=2
+  \catcode`\\=12
+  |gdef|msi@scan@filecontents#1\end{filecontents}[%
+     |out@filecontents[#1]%
+     |end[filecontents]%
+     |@make@braces@normal%
+  ] 
+|egroup
+
+\def\msi@begin@filecontents{%
+  \@make@braces@other
+  \catcode `|=0
+  \catcode`\[=1
+  \catcode`\]=2
+  \catcode`\\=12
+  \msi@scan@filecontents}
+
+\def\out@filecontents#1{%
+   \expandafter\global\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\begin{filecontents}#1\end{filecontents}}}
 
 
 % A hack to fool the jbm filter into handling \dots gracefully
