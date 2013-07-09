@@ -482,7 +482,7 @@ function Startup()
 
   setVariablesForControls();
 
-  data = window.arguments[0];
+  data = window.arguments[3];
   if (!data) {
     newTable = true;
     try {
@@ -1746,9 +1746,9 @@ function GetSelectedCells(selection)
   if (newTable || data.reviseCommand === "cmd_editTable") {
     // in effect all cells are selected
     var htmlcollection;
-    htmlcollection = gTableElement.getElementOrParentByTagName("td");
+    htmlcollection = gTableElement.getElementsByTagName("td");
     for (i = 0; i < htmlcollection.length; i++) cells.push(htmlcollection[i]);
-    htmlcollection = gTableElement.getElementOrParentByTagName("th");
+    htmlcollection = gTableElement.getElementsByTagName("th");
     for (i = 0; i < htmlcollection.length; i++) cells.push(htmlcollection[i]);
   }
   else {
