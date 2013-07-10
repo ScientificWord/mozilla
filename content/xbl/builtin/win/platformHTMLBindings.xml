@@ -6,11 +6,12 @@
  
   <binding id="inputFields">
     <handlers>
-      <handler event="keypress" key="a" modifiers="accel" command="cmd_selectAll"/>
-      <handler event="keypress" keycode="c" modifiers="accel" command="cmd_copy"/>
-      <handler event="keypress" keycode="v" modifiers="accel" command="cmd_paste"/>
-      <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_undo"/>
-      <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_redo"/>
+      <handler event="keypress" key="a" modifiers="control" command="cmd_selectAll"/>
+      <handler event="keypress" key="c" modifiers="control" command="cmd_copy"/>
+      <handler event="keypress" key="v" modifiers="control" command="cmd_paste"/>
+      <handler event="keypress" key="x" modifiers="control" command="cmd_cut"/>
+      <handler event="keypress" key="z" modifiers="control" command="cmd_undo"/>
+      <handler event="keypress" key="z" modifiers="control,shift" command="cmd_redo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_undo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_redo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="control" command="cmd_deleteWordBackward"/>
@@ -46,6 +47,8 @@
       <handler event="keypress" key="y" modifiers="accel" command="cmd_redo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_undo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_redo"/>
+      <handler event="keypress" key="z" modifiers="control" command="cmd_undo"/>
+      <handler event="keypress" key="z" modifiers="control,shift" command="cmd_redo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="control" command="cmd_deleteWordBackward"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="control" command="cmd_deleteWordForward"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="shift" command="cmd_cutOrDelete"/>
@@ -59,6 +62,9 @@
       <handler event="keypress" keycode="VK_HOME" modifiers="shift,control" command="cmd_selectTop"/>
       <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_copy"/>
       <handler event="keypress" keycode="VK_INSERT" modifiers="shift" command="cmd_paste"/>
+      <handler event="keypress" key="c" modifiers="control" command="cmd_copy"/>
+      <handler event="keypress" key="v" modifiers="control" command="cmd_paste"/>
+      <handler event="keypress" key="x" modifiers="control" command="cmd_cut"/>
       <handler event="keypress" keycode="VK_LEFT" command="cmd_charPrevious"/>
       <handler event="keypress" keycode="VK_LEFT" modifiers="shift"
           command="cmd_selectCharPrevious"/>
