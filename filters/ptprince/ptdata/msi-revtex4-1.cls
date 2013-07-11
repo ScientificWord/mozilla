@@ -122,29 +122,29 @@
 \def\accepted{%
   \@ifnextchar[{\@accepteda}{\@acceptedb}}
 \def\@accepteda[#1]#2{%
-  \msiopentag{accepted}{<accepted xalt="#1">}#2\msiclosetag{accepted}{</accepted>}}%
-\def\@acceptedb#1{\msiopentag{accepted}{<accepted>}#1\msiclosetag{accepted}{</accepted>}}%
+  \msiopentag{accepted}{<accepted xalt="#1">}#2\msiclosetag{accepted}{</accepted>^^0a}}%
+\def\@acceptedb#1{\msiopentag{accepted}{<accepted>}#1\msiclosetag{accepted}{</accepted>^^0a}}%
 
 %\published[Published text]{date}
 \def\published{%
   \@ifnextchar[{\@publisheda}{\@publishedb}}
 \def\@publisheda[#1]#2{%
-  \msiopentag{published}{<published xalt="#1">}#2\msiclosetag{published}{</published>}}%
-\def\@publishedb#1{\msiopentag{published}{<published>}#1\msiclosetag{published}{</published>}}%
+  \msiopentag{published}{<published xalt="#1">}#2\msiclosetag{published}{</published>^^0a}}%
+\def\@publishedb#1{\msiopentag{published}{<published>}#1\msiclosetag{published}{</published>^^0a}}%
 
 %\received[Received text]{date}
 \def\received{%
   \@ifnextchar[{\@receiveda}{\@receivedb}}
 \def\@receiveda[#1]#2{%
-  \msiopentag{received}{<received xalt="#1">}#2\msiclosetag{received}{</received>}}%
-\def\@receivedb#1{\msiopentag{received}{<received>}#1\msiclosetag{received}{</received>}}%
+  \msiopentag{received}{<received xalt="#1">}#2\msiclosetag{received}{</received>^^0a}}%
+\def\@receivedb#1{\msiopentag{received}{<received>}#1\msiclosetag{received}{</received>^^0a}}%
 
 %\revised[Revised text]{date}
 \def\revised{%
   \@ifnextchar[{\@reviseda}{\@revisedb}}
 \def\@reviseda[#1]#2{%
-  \msiopentag{revised}{<revised xalt="#1">}#2\msiclosetag{revised}{</revised>}}%
-\def\@revisedb#1{\msiopentag{revised}{<revised>}#1\msiclosetag{revised}{</revised>}}%
+  \msiopentag{revised}{<revised xalt="#1">}#2\msiclosetag{revised}{</revised>^^0a}}%
+\def\@revisedb#1{\msiopentag{revised}{<revised>}#1\msiclosetag{revised}{</revised>^^0a}}%
 
 \msi@extrapi{%
   \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>}\br
