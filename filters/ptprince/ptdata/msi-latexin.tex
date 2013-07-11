@@ -4457,11 +4457,17 @@
 \@newtheoremstarfalse
 
 \def\newtheorem{%
-  \@ifnextchar*{\@newtheoremstartrue\msi@newtheorem}{\@newtheoremstarfalse\msi@newtheorem?}%
-}
+  \begingroup
+    \msi@inpreamble=0
+    \@ifnextchar*{\msi@newtheorem@star}{\msi@newtheorem}}
 
-\def\msi@newtheorem#1#2{%
+\def\msi@newtheorem@star#1#2{%  #1 = *
+  \@newtheoremstartrue
   \@ifnextchar[{\out@newtheorema{#2}}{\@nthm{#2}}}
+
+\def\msi@newtheorem#1{%
+  \@newtheoremstarfalse
+  \@ifnextchar[{\out@newtheorema{#1}}{\@nthm{#1}}}
 
   
 \def\@nthm#1#2{%
