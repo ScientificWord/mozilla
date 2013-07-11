@@ -146,10 +146,6 @@
   \msiopentag{revised}{<revised xalt="#1">}#2\msiclosetag{revised}{</revised>}}%
 \def\@revisedb#1{\msiopentag{revised}{<revised>}#1\msiclosetag{revised}{</revised>}}%
 
-\def\@reviseda[#1]#2{%
-  \msitag{<revised alt="#1">#2</revised>}}
-\def\@revisedb#1{\msitag{<revised>#1</revised>^^0a}}
-
 \msi@extrapi{%
   \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>}\br
 }
