@@ -323,12 +323,15 @@
 
 %% newtheorem
 
-\def\theoremstyle#1{\def\msi@currentthmstyle{#1}}
+\def\theoremstyle#1{%
+  \def\msi@currentthmstyle{#1}%
+  \msitag{^^0a<theoremstyle style="#1"/>}}
 \theoremstyle{plain}
 
 
 % should check for second optional
 \def\out@newtheorema#1[#2]#3{%
+  \endgroup% started in \newtheorem
   \msitag{^^0a<newtheorem }%
   \if@newtheoremstar\msitag{star="1" }\fi%
   \msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
@@ -338,6 +341,7 @@
     {}}
 
 \def\out@newtheoremb#1#2{%
+  \endgroup% started in \newtheorem
   \@ifundefined{msi@begin@#1}%
     {\msitag{^^0a<newtheorem }%
      \if@newtheoremstar\msitag{star="1" }\fi% 
@@ -348,6 +352,7 @@
 
 %% recheck this one
 \def\out@newtheoremc#1#2[#3]{%
+  \endgroup% started in \newtheorem
   \msitag{^^0a<newtheorem }
   \if@newtheoremstar\msitag{star="1" }\fi% 
   \msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
@@ -1800,19 +1805,22 @@
 \def\@endgobble{\@endtexb\relax}
 
 \def\@gobblemore{%
-   \ifx\atok\@bracetok
-     \let\@donext\@inbrace
-   \else
-     \ifx\atok\@brackettok
-       \let\@donext\@inbracket
+  \begingroup
+     \msi@inpreamble=0
+     \ifx\atok\@bracetok
+       \global\let\@donext\@inbrace
      \else
-       \ifx\atok\@startok
-         \let\@donext\@astar
+       \ifx\atok\@brackettok
+         \global\let\@donext\@inbracket
        \else
-         \let\@donext\@endgobble
+         \ifx\atok\@startok
+           \global\let\@donext\@astar
+         \else
+           \global\let\@donext\@endgobble
+         \fi
        \fi
      \fi
-   \fi
+   \endgroup
    \@donext}
 
 
@@ -1820,6 +1828,7 @@
 % Here #1 = some unknown control sequence 
 
 \def\msidefault#1{%
+  
   \ifmmode
     %\string#1%
     \msitag{\msipassthru}%
