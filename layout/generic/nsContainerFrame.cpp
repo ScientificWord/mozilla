@@ -394,8 +394,16 @@ nsContainerFrame::PeekOffsetNoAmount(PRBool aForward, PRInt32* aOffset)
 {
   NS_ASSERTION (aOffset && *aOffset <= 1, "aOffset out of range");
   // Don't allow the caret to stay in an empty (leaf) container frame.
-  return (GetFirstChild(nsnull) != nsnull);  //By RWA
-  return PR_TRUE;  //By BBM
+  if (GetFirstChild(nsnull) != nsnull)  //By RWA
+    return PR_TRUE;
+  if (nsFrame::IsMSIPlotOrGraphicContainer(GetContent()))  //By RWA
+  {
+    //We're only in this case if we have no child frames - we're either an Object or some phantom frame
+    nsRect rect = GetRect();
+    if (rect.width && rect.height)
+      return PR_TRUE;
+  }
+//  return PR_TRUE;  //By BBM
   return PR_FALSE;
 }
 
