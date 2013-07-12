@@ -2708,6 +2708,10 @@ function parseQueryReturn(out, graph, plot) {
     {
       plot.element.Expression = fixExplicitList(plotData, dim);
     }
+    else if ( (pt === "inequality") && (plotData.expressionAsList().length > 1) )
+    {
+      plot.element.Expression = fixInequalityList(plotData);
+    }
   }
 }
 
@@ -2757,6 +2761,42 @@ function fixExplicitList(aPlotData, dim)
   }
   mathNode.appendChild(tableNode);
   return aPlotData.mPlot.parent.ser.serializeToString(mathNode);
+}
+
+function fixInequalityList(plotData)
+{
+  var exprList = plotData.expressionAsList();
+  if (exprList.length <= 1)
+    return plotData.mPlot.element["Expression"];  //leave it unchanged
+
+  var mathNode = document.createElementNS(mmlns, "math");
+  var fenceNode = document.createElementNS(mmlns, "mfenced");
+  var elemNode, listNode;
+  var jj, kk;
+  fenceNode.setAttribute("open", "(");
+  fenceNode.setAttribute("close", ")");  //these are the defaults - shouldn't be necessary?
+  for (jj = 0; jj < exprList.length; ++jj)
+  {
+    listNode = exprList[jj];
+    if (msiGetBaseNodeName(listNode) == "math")
+    {
+      if (listNode.childNodes.length > 1)
+      {
+        elemNode = document.createElementNS(mmlns, "mrow");
+        for (kk = 0; kk < listNode.childNodes.length; ++kk)
+        {
+          elemNode.appendChild(listNode.childNodes[kk].cloneNode(true));
+        }
+      }
+      else
+        elemNode = listNode.childNodes[0].cloneNode(true);
+      fenceNode.appendChild(elemNode);
+    }
+    else
+      fenceNode.appendChild(listNode.cloneNode(true));
+  }
+  mathNode.appendChild(fenceNode);
+  return plotData.mPlot.parent.ser.serializeToString(mathNode);
 }
 
 function varNotFun(v) {
@@ -3175,7 +3215,7 @@ var plotVarDataBase =
   },
   isParametric : function()
   {
-    return (this.expressionAsList().length == this.dim);
+    return ((this.expressionAsList().length == this.dim) && (this.plottype != "inequality"));
   },
   isAnimated : function()
   {
