@@ -471,6 +471,8 @@ string MuPADPlot::BaseColorStr (MuPADPlot* T) {
 //    ret = ", LineColor=";
   if (T->ptype=="conformal")
     ret = ", LineColorType=Functional, LineColor2=";
+  else if (T->ptype=="inequality")
+    ret = ",FillColorTrue=";
   else
     ret = ", FillColor=";
   return ret+val;                                              
@@ -837,7 +839,10 @@ string MuPADPlot::LocalOptsStr (MuPADPlot* T) {
         case PID_PlotSurfaceMesh		:                                                       
           if (retstr.find("@surfacemesh@")==string::npos)
             retstr += "@surfacemesh@";
-		  break;                                                                                
+		  break; 
+		case PID_PlotFillPattern        :
+          retstr += "@fillpattern@";
+		  break;                                                                                 
         case PID_PlotCameraLocationX	:                                                       
 		  break;                                                                                
         case PID_PlotCameraLocationY	:                                                       
@@ -1087,6 +1092,9 @@ string MuPADPlot::SecondaryColorStr (MuPADPlot* T) {
 //  if ( (T->dim[0] == '3') && ((T->ptype=="vectorField") || (T->ptype=="gradient")) )
 //    ret = ", LineColor2=";
 //  else
+  if (T->ptype=="inequality")
+    ret  = ", FillColorFalse=";
+  else
     ret  = ", FillColor2=";
   return ret+val;                                              
 }
