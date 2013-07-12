@@ -17,6 +17,7 @@ pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");  /* for linux *
 /* for Prince */
 pref("browser.cache.disk.enable",           false);
 pref("browser.hiddenWindowChromeURL", "chrome://prince/content/hiddenwindow.xul");
+pref("browser.chromeURL", "chrome://prince/content/prince.xul");
 pref("editor.active_link_color",            "#000088");
 pref("editor.always_show_publish_dialog",    false);
 pref("editor.author",                      "");
