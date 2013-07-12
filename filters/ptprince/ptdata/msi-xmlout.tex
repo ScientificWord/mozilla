@@ -1100,7 +1100,6 @@
 
 %\def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
 
-\MSIMathQuote{\fbox}
 
 \def\{{\ifmmode\string\{\else\char123\relax\fi}
 \def\}{\ifmmode\string\}\else\char125\relax\fi}
@@ -1413,7 +1412,7 @@
 
 \def\unit#1{\string\unit\@brace{#1}}
 
-\MSIMathQuote{\QABOVED} % special case? Why is this here?
+
 
 \newif\if@mathintext
 \@mathintextfalse 
@@ -1445,8 +1444,8 @@
     \msiclosetag{mtext}{</mtext>}%
     \msitag{<mspace width="thickmathspace"/>}%
     \char`\}
-    \catcode`\$=3\relax
-  \endgroup}
+  \endgroup
+  \catcode`\$=3\relax}
 
 
 \def\vspace{%
@@ -1464,6 +1463,7 @@
      \msitag{<vspace dim="#1" type="customSpace"></vspace>}%
    \fi
 }
+
 
 
 
