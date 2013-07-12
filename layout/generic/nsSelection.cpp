@@ -1,4 +1,5 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+
 /* vim: set ts=2 sw=2 et tw=78: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -2776,7 +2777,7 @@ nsFrameSelection::GetFrameForNodeOffset(nsIContent *aNode,
     if (childIndex > 0 || numChildren > 0) {
 
       nsCOMPtr<nsIContent> childNode = theNode->GetChildAt(childIndex);
-      while (childIndex > 0 && childNode && childNode->TextIsOnlyWhitespace())
+      while ( childIndex > 0 && childNode && (childNode->TextIsOnlyWhitespace() || !childNode->MayHaveFrame()) )
       {
         childIndex--;
         childNode = theNode->GetChildAt(childIndex);

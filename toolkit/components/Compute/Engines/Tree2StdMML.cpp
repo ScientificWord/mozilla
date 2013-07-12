@@ -297,7 +297,7 @@ void Tree2StdMML::FixInvisibleFences(MNODE* dMML_tree)
     if (ElementNameIs(rover, "mfenced")) {
 
         const char* opener = GetATTRIBvalue(rover->attrib_list, "open");
-        if (opener[0] == 'I' && opener[1] == 0) {
+        if (opener && opener[0] == 'I' && opener[1] == 0) {
           ATTRIB_REC* ar_open = new ATTRIB_REC("open", "");
           rover->attrib_list = MergeAttrsLists(rover->attrib_list, ar_open);
         }
