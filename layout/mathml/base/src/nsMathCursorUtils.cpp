@@ -6,6 +6,7 @@
 #include "nsMathMLCursorMover.h"
 #include "nsIDOMNodeList.h"
 #include "nsGkAtoms.h"
+#include "nsFrame.h"
 
 PRBool IsMathFrame( nsIFrame * aFrame );
 nsIFrame * GetLastChild(nsIFrame * pFrame);
@@ -206,6 +207,8 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
     if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
       return pFrame;
   }
+  if (nsFrame::IsMSIPlotOrGraphicContainer( pFrame->GetContent() ))
+    return pFrame;
   pChild = pFrame->GetFirstChild(nsnull);
   while (pChild && !(pRet = GetFirstTextFrame(pChild)))
   {
@@ -260,6 +263,8 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
   if (type == nsGkAtoms::textFrame)
     //if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
       return pFrame;
+  if (nsFrame::IsMSIPlotOrGraphicContainer( pFrame->GetContent() ))
+    return pFrame;
   PRInt16 n = 0;
   pChild = GetLastChild(pFrame);
   while (n++ < 1000)  // was PR_TRUE
