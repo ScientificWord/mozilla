@@ -200,6 +200,12 @@
 </xsl:template>
 
 <xsl:template match="html:td|html:th" mode="doOutput">
+  <xsl:if test="@ccolor">\cellcolor <xsl:choose
+      ><xsl:when test="substring(./@ccolor,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@ccolor,2,8),'abcdef','ABCDEF')"/>
+      </xsl:when>
+      <xsl:otherwise>{<xsl:value-of select="./@ccolor"/></xsl:otherwise>
+    </xsl:choose>}
+  </xsl:if>
   <xsl:apply-templates/>
 </xsl:template>
 
