@@ -9489,7 +9489,7 @@ var msiJoinTableCellsCommand =
       return false;
     }
     catch (e) {
-      finalThrow(cmdFailString('reviserules'), e.message);
+      throw(msiException('Error in msiJoinTableCellsCommand', e.message));
     }
   },
 
