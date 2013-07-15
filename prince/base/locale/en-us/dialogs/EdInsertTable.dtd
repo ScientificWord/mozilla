@@ -252,9 +252,10 @@
 <!ENTITY Rowheight.label  "Row height">
 <!ENTITY Columnwidth.label  "Column width">
 <!ENTITY Cellcolor.label  "Cell color">
-<!ENTITY interit.label  "Inherit">
+<!ENTITY inherit.label  "Inherit">
 
 <!ENTITY currentUnits "Current units: ">
 <!ENTITY other.label "Other" >
 <!ENTITY rowheightRule "A row's height will be the height of its tallest cell" >
 <!ENTITY colwidthRule "A column's width will be the width of its widest cell" >
+<!ENTITY cellsizeInstructions "Use cell dimension of 0.0 to leave current dimensions unchanged" >
