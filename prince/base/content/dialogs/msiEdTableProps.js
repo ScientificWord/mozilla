@@ -50,6 +50,8 @@ const RESET_SELECTION = 0;
 var gAdvancedEditUsed;
 var gAlignWasChar = false;
 var gIsMatrix = false;
+var gColumns;
+var gRows;
 
 /*
 From C++:
@@ -290,23 +292,11 @@ function setDataFromReviseData(reviseData, commandStr)
 //  gSelectedCellsType = translateSelectionTypeString(gSelectionTypeStr);
   gTableElement = reviseData.getReferenceNode();
   gIsMatrix = reviseData.isMatrix();
-  //Another question - do we want to retain the set of selected cells? Or always use a iterator function similar to getNextSelectedCell?
-  //NOTE that this will be either Cell, CellGroup, Rows, Columns, or Table. We should probably also add ColGroup and RowGroup, but...
-  //Also, do we want to retain the dialog's use of a cloned table element to perform actions on? If so, we'd need to be using a cloned
-  //  "objectData" object?
-  gInitialCellData = getCellDataForSelection(reviseData);
-  gCollatedCellData = createCellDataObject(gInitialCellData);
-  setUpCollatedCellData(gCollatedCellData, gInitialCellData);
-  setUpChangeData();
   EnableDisableControls();
 
   var theBaseline = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableElement, "valign", "vertical-align");
   if (theBaseline && (theBaseline.length > 0) )
     gTableBaseline = theBaseline;
-  var theTableColor = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableElement, bgcolor, cssBackgroundColorStr);
-  if (theTableColor && (theTableColor.length > 0) )
-    gTableColor = ConvertRGBColorIntoHEXColor(theTableColor);
-  gBorderCollapse = borderStyleToBorderCollapse(gCollatedCellData.border.style["all"]);
 }
 
 function setUpChangeData()
@@ -1050,9 +1040,9 @@ function GetColorAndUpdate(ColorWellID)
   {
     case "backgroundCW":
       theColor = colorObj.BackgroundColor;  //this is where it's coming back
-      gCollatedCellData.background = theColor;
-      changeArray.style["background-color"] = theColor;  //this is where it's coming back
-      gCellChangeData.background = true;
+//      gCollatedCellData.background = theColor;
+//      changeArray.style["background-color"] = theColor;  //this is where it's coming back
+//      gCellChangeData.background = true;
       setColorWell(ColorWellID, theColor);
       break;
     case "tableBackgroundCW":
@@ -1845,115 +1835,63 @@ function UpdateCells(editor)
     //}
     //}
 
+
 function DoStyleChangesForACell(destCell)
 {
+  function setStyleAttribute( propName, value) {
+    var j;
+    try {
+      j = propArray.indexOf(propName); 
+      if (j >0) {
+        styleArray[j][0] = propName;
+        styleArray[j][1] = value;
+      }
+      else styleArray.push([propName, value]);
+    }
+    catch(e) {
+      1+2;
+    }
+  }
+
   var style;
   var color;
-  color = getColor('backgroundCW');
-  style = "";
-  if (gDialog.CellWidthInput.value > 0) style += "width: " + gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value + "; ";
-  if (gDialog.CellHeightInput.value > 0) style += "height: " + gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value + "; ";
-  if (color && color != '#FFFFFF' && color != 'white') style += 'background-color: ' + color + '; ';
+  var styleArray, propArray;
+  var i, j;
+  var length;
+  color = destCell.getAttribute("ccolor");  // this was set in the caller
+  style = destCell.getAttribute("style")||"";
+  styleArray = style.split(';');
+  length = styleArray.length;
+  for (i = length - 1; i >= 0; i--){
+    if (styleArray[i].length > 0) {
+      styleArray[i] = styleArray[i].split(':');
+      for (j = 0; j < 2; j++) {
+        styleArray[i][j] = styleArray[i][j].replace(/,|\s/,'');
+      }
+    } else styleArray.splice(i,1);
+  }
+  // rearrange styleArray into two parallel arrays, useful for indexOf
+  length = styleArray.length;  // it may have changed
+  propArray = [];
+  for (i = 0; i < length; i++) {
+    propArray.push(styleArray[i][0]);
+  }
+  if (gDialog.CellWidthInput.value > 0) {
+    setStyleAttribute("width", gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value);
+  }
+  if (gDialog.CellHeightInput.value > 0) {
+    setStyleAttribute("height", gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value );
+  }
+  if (color) {
+    setStyleAttribute('background-color', color);
+  }
+  length = styleArray.length;
+  for (i = 0; i < length; i++){
+    styleArray[i] = styleArray[i].join(": ");
+  }
+  destCell.setAttribute("style", styleArray.join(";"));
 
-  destCell.setAttribute("style", style)
 }
-//   globalCellElement = destCell.cloneNode(false);
-//   var destStyle = destCell.getAttribute("style");
-//   var bEmptyStyle = false;
-//   if (destStyle && destStyle.length)
-//     globalCellElement.setAttribute("style", destStyle);
-//   if (!globalCellElement.style)
-//     bEmptyStyle = true;
-//   var borderProps = ["style", "width", "color"];
-//   var logStr = "";
-//   var theStyle = "";
-//   var theProp;
-
-
-
-//   function doSetStyleAttr(styleProp, styleVal)
-//   {
-//     var styleValStr;
-//     if (styleVal)
-//       styleValStr = String(styleVal);
-//     if (bEmptyStyle)
-//     {
-//       if ( (styleValStr != null) && styleValStr.length )
-//         theStyle += styleProp + ": " + styleValStr + " !important;";
-//     }
-//     else if ((styleValStr != null) && styleValStr.length)
-//       globalCellElement.style.setProperty( styleProp, styleValStr, "important");
-//     else
-//       globalCellElement.style.removeProperty( styleProp );
-//   }
-
-//   for (var nProp = 0; nProp < borderProps.length; ++nProp)
-//   {
-//     theProp = borderProps[nProp];
-//     if (UseCSSForCellProp("border-" + theProp))
-//     {
-//       for (var ix = 0; ix < gCellChangeData.border[theProp].length; ++ix)
-//       {
-//         theSide = gCellChangeData.border[theProp][ix];
-//         doSetStyleAttr( getBorderSideAttrString(theSide, theProp), gCollatedCellData.border[theProp][theSide] );
-//       }
-//     }
-//   }
-//   if (gDialog.CellWidthInput.value && gDialog.CellWidthInput.value > 0)
-//   {
-//     logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
-//     msiKludgeLogString(logStr, ["tableEdit"]);
-//     var theWidth = unitHandler.getValueStringAs(gDialog.CellWidthInput.value, "px");
-//     doSetStyleAttr("width", theWidth);
-//     doSetStyleAttr("min-width", theWidth);
-//   }
-//   else
-//   {
-//     doSetStyleAttr("width", null);
-//     doSetStyleAttr("min-width", null);
-//   }
-//   if (gDialog.CellHeightInput.value && gDialog.CellHeightInput.value > 0)
-//   {
-// //      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-//     var theHeight = unitHandler.getValueStringAs(gDialog.CellHeightInput.value, "px");
-//     logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(theHeight) + "px]\n";
-//     msiKludgeLogString(logStr, ["tableEdit"]);
-//     doSetStyleAttr("height", theHeight);
-//   }
-//   else
-//     doSetStyleAttr("height", null);
-
-//   if (gCellChangeData.align.halign && UseCSSForCellProp("halign"))
-//     doSetStyleAttr("text-align", gCollatedCellData.align.halign);
-//   if (gCellChangeData.align.valign && UseCSSForCellProp("valign"))
-//     doSetStyleAttr("vertical-align", gCollatedCellData.align.valign);
-//   if (gCellChangeData.wrap && UseCSSForCellProp("wrap"))
-//   {
-//     if (gCollatedCellData.wrap == "nowrap")
-//       doSetStyleAttr("white-space", "nowrap");
-//     else
-//     {
-//       var currWhiteSpace = globalCellElement.style ? globalCellElement.style.getProperty("white-space") : null;
-//       if (currWhiteSpace && currWhiteSpace == "nowrap")
-//         globalCellElement.style.removeProperty("white-space");
-//     }
-//   }
-//   if (gCellChangeData.background)
-//   {
-//     if (gCollatedCellData.background == "transparent")
-//       doSetStyleAttr("background-color", null);
-//     else
-//       doSetStyleAttr("background-color", gCollatedCellData.background);
-//   }
-//   if (!bEmptyStyle)
-//     theStyle = globalCellElement.getAttribute("style");
-//   if (theStyle && theStyle.length)
-//     gActiveEditor.setAttribute(destCell, "style", theStyle);
-//   else
-//     gActiveEditor.removeAttributeOrEquivalent(destCell, "style", false);
-//   logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); set attribute [style] on cell element to [" + theStyle + "]\n";
-//   msiKludgeLogString(logStr, ["tableEdit"]);
-// }
 
 function ApplyTableAttributes()
 {
@@ -2870,6 +2808,7 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
 {
   var source = makeSourceLineObject(document.getElementById("BordersPreviewCenterCell"));
   var target = makeTargetLineObject(destElement);
+  var color;
   var i;
   var nm;
   var names = ['left','right','top','bottom'];
@@ -2921,6 +2860,11 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
     
   SetAnAttribute(destElement, "align", document.getElementById("hAlignChoices").value);
   SetAnAttribute(destElement, "valign", document.getElementById("vAlignChoices").value);
+  color = document.getElementById('backgroundCW').getAttribute("color");
+  if (color && (color.length > 0) )
+  {
+    SetAnAttribute(destElement, "ccolor", color);
+  }
   DoStyleChangesForACell(destElement);
 
 }
@@ -3000,7 +2944,7 @@ function onAcceptNewTable()
       if (tableBody)
       {
         gTableElement.appendChild(tableBody);
-        color = getColor('backgroundCW');
+        color = document.getElementById('backgroundCW').getAttribute("color");
 
         // Create necessary rows and cells for the table
         for (var i = 0; i < gRows; i++)
