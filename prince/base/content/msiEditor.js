@@ -9107,7 +9107,11 @@ function msiGoUpdateTableMenuItems(commandset, editorElement)
           commandID == "cmd_ConvertToTable")
       {
         // Call the update method in the command class
-        msiGoUpdateCommand(commandID, editorElement);
+        try {
+          msiGoUpdateCommand(commandID, editorElement);
+        }
+        catch(e) {          
+        }
       }
       // Directly set with the values calculated here
       else if (commandID == "cmd_DeleteTable" ||
@@ -9116,11 +9120,19 @@ function msiGoUpdateTableMenuItems(commandset, editorElement)
       //       commandID == "cmd_TableOrCellColor" ||
                commandID == "cmd_SelectTable")
       {
-        msiGoSetCommandEnabled(commandID, enabledIfTable, editorElement);
+        try {
+            msiGoSetCommandEnabled(commandID, enabledIfTable, editorElement);
+        }
+        catch(e) {          
+        }
       } 
       else 
       {
-        msiGoSetCommandEnabled(commandID, enabled, editorElement);
+        try {
+          msiGoSetCommandEnabled(commandID, enabled, editorElement);
+        }
+        catch(e) {          
+        }
       }
     }
   }

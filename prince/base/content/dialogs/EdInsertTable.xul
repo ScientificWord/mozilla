@@ -266,6 +266,7 @@
               </grid>
             <spacer flex="1"/>
             <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>
+            <label>&cellsizeInstructions;</label>
           </groupbox>
         </vbox>
           <groupbox><caption label="&CellContentAlign.label;"/>
