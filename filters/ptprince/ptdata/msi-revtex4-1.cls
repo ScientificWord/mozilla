@@ -110,37 +110,41 @@
 \def\out@endpage#1{%
    \msitag{^^0a}\msiopentag{endpage}{<endpage>}#1\msiclosetag{endpage}{</endpage>}}
 
-%\received[Received text]{date}
-\def\received{%
-  \@ifnextchar[{\@receiveda}{\@receivedb}}
-\def\@receiveda[#1]#2{%
-  \msitag{<received alt="#1">#2</received>}%
-}
-\def\@receivedb#1{\@receiveda[]{#1}}
-
-%\revised[Revised text]{date}
-\def\revised{%
-  \@ifnextchar[{\@reviseda}{\@revisedb}}
-\def\@reviseda[#1]#2{%
-  \msitag{<revised alt="#1">#2</revised>}%
-}
-\def\@revisedb#1{\@reviseda[]{#1}}
+%%\accepted[Accepted text]{date}
+%%Alternate version, but Jon says the one used is better
+%\def\accepted{%
+%  \@ifnextchar[{\@accepteda}{\@acceptedb}}
+%\def\@accepteda[#1]#2{%
+%  \msitag{<accepted alt="#1">#2</accepted>}}%
+%\def\@acceptedb#1{\msitag{<accepted>#1</accepted>}}%
 
 %\accepted[Accepted text]{date}
 \def\accepted{%
   \@ifnextchar[{\@accepteda}{\@acceptedb}}
 \def\@accepteda[#1]#2{%
-  \msitag{<accepted alt="#1">#2</accepted>}%
-}
-\def\@acceptedb#1{\@accepteda[]{#1}}
+  \msiopentag{accepted}{<accepted xalt="#1">}#2\msiclosetag{accepted}{</accepted>^^0a}}%
+\def\@acceptedb#1{\msiopentag{accepted}{<accepted>}#1\msiclosetag{accepted}{</accepted>^^0a}}%
 
 %\published[Published text]{date}
 \def\published{%
   \@ifnextchar[{\@publisheda}{\@publishedb}}
 \def\@publisheda[#1]#2{%
-  \msitag{<published alt="#1">#2</published>}%
-}
-\def\@publishedb#1{\@publisheda[]{#1}}
+  \msiopentag{published}{<published xalt="#1">}#2\msiclosetag{published}{</published>^^0a}}%
+\def\@publishedb#1{\msiopentag{published}{<published>}#1\msiclosetag{published}{</published>^^0a}}%
+
+%\received[Received text]{date}
+\def\received{%
+  \@ifnextchar[{\@receiveda}{\@receivedb}}
+\def\@receiveda[#1]#2{%
+  \msiopentag{received}{<received xalt="#1">}#2\msiclosetag{received}{</received>^^0a}}%
+\def\@receivedb#1{\msiopentag{received}{<received>}#1\msiclosetag{received}{</received>^^0a}}%
+
+%\revised[Revised text]{date}
+\def\revised{%
+  \@ifnextchar[{\@reviseda}{\@revisedb}}
+\def\@reviseda[#1]#2{%
+  \msiopentag{revised}{<revised xalt="#1">}#2\msiclosetag{revised}{</revised>^^0a}}%
+\def\@revisedb#1{\msiopentag{revised}{<revised>}#1\msiclosetag{revised}{</revised>^^0a}}%
 
 \msi@extrapi{%
   \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>}\br
