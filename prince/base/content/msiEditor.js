@@ -1335,7 +1335,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     }
     dump("Trying to load editor with url = "+docurl.spec+"\n");
     msiEditorLoadUrl(editorElement, docurl);
-    msiUpdateWindowTitle(null, null);
+    msiUpdateWindowTitle();
   }
   catch (e) {
     dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
@@ -4637,7 +4637,7 @@ function msiSetEditMode(mode, editorElement)
       if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
       {
         editor.document.title = title;
-        msiUpdateWindowTitle(title, null);
+        msiUpdateWindowTitle();
       }
     }
     // Restore unlimited undo count

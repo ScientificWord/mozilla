@@ -248,10 +248,10 @@ function msiEditorCanClose(editorElement)
 
 function UpdateWindowTitle()
 {
-  msiUpdateWindowTitle( null, null);
+  msiUpdateWindowTitle();
 }
 
-function msiUpdateWindowTitle(documentTitle, fileName)
+function msiUpdateWindowTitle()
 {
   try 
   {
@@ -264,40 +264,14 @@ function msiUpdateWindowTitle(documentTitle, fileName)
 		  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
 		  var fileURL = msiURIFromString(sciurlstring);
 			var file = msiFileFromFileURL(fileURL);
-			filename = file.leafName;
-		  
-//       var docUrl = msiGetEditorURL(editorElement); //docUrl is a string
-//       if (docUrl) // && !IsUrlAboutBlank(docUrl))
-//       {
-//         docUrl = msiFindOriginalDocname(docUrl);
-//         var path = unescape(docUrl);
-//         var regEx = /\.sci$/i;  // BBM: localize this
-//         if (regEx.test(path))
-//         {
-//           var parentDirRegEx = /(.*\/)([^\/]*).sci$/i; //BBM: localize this
-//           var arr = parentDirRegEx.exec(path);
-//           if (arr && (arr.length > 2) && arr[2].length > 0)
-//           {
-//             docUrl = //arr[1]+
-//               arr[2]+".sci";
-//           }
-//         }
-// 
-//         var scheme = GetScheme(docUrl);
-//         var filename  = GetFilename(docUrl);
-//         if (!filename || filename.length == 0)
-//           filename = GetFilename(docUrl);
-//         filename = unescape(filename);
-// 
-//         // Save changed title in the recent pages data in prefs
-//      }
+			var leaf = file.leafName;
     }
 //    else filename = fileName;
 //    SaveRecentFilesPrefs();
     // Set window title with " - Scientific WorkPlace/Word/Notebook" appended
     var xulWin = document.getElementById('prince');
-    if (!filename) filename="untitled";
-    document.title = filename + xulWin.getAttribute("titlemodifierseparator") + 
+    if (!leaf) leaf="untitled";
+    document.title = leaf + xulWin.getAttribute("titlemodifierseparator") + 
                    xulWin.getAttribute("title");
   } catch (e) 
   {
@@ -355,6 +329,7 @@ function SaveRecentFilesPrefs()
   var editorElement = msiGetTopLevelEditorElement();
   var curUrl = unescape(StripPassword(msiGetEditorURL(editorElement)));
   var historyCount = 10;
+  var origName;
   try {
     historyCount = gPrefs.getIntPref("editor.history.url_maximum"); 
   } catch(e) {}
@@ -364,8 +339,13 @@ function SaveRecentFilesPrefs()
 
   if (historyCount && !IsUrlAboutBlank(curUrl) &&  GetScheme(curUrl) != "data")
   {
-    titleArray.push(unescape(msiGetDocumentTitle(editorElement)));
-    urlArray.push(msiFindOriginalDocname(curUrl));
+    origName = msiFindOriginalDocname(curUrl);
+    if (origName.indexOf(".sci") != origName.length-4){
+      titleArray.push(unescape(msiGetDocumentTitle(editorElement)));
+      urlArray.push(msiFindOriginalDocname(curUrl));
+    } 
+    else // not a sci file; might as well exit
+      return;
   }
 
   for (var i = 0; i < historyCount && urlArray.length < historyCount; i++)
