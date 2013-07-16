@@ -43,7 +43,7 @@
       </menu>
       <menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"
           label="&cleanupCmd.label;"/>
-      <menuitem accesskey="&fileclose.accesskey;" observes="cmd_close"/>
+      <menuitem accesskey="&fileclose.accesskey;" observes="cmd_close" label="&closeCmd.label;"/>
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
         label="&saveCmd.label;" />
