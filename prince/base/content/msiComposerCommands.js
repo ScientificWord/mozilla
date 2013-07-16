@@ -1839,6 +1839,7 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
                             | msiWebPersist.PERSIST_FLAGS_DONT_FIXUP_LINKS
                             | msiWebPersist.PERSIST_FLAGS_DONT_CHANGE_FILENAMES
                             | msiWebPersist.PERSIST_FLAGS_FIXUP_ORIGINAL_DOM;
+    onsaveMetaData(editorDoc);
     persistObj.saveDocument(editorDoc, aDestinationLocation, aRelatedFilesParentDir,
                             aMimeType, outputFlags, wrapColumn);
     editorElement.mPersistObj = persistObj;
