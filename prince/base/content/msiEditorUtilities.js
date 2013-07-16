@@ -3661,12 +3661,12 @@ function msiSetDocumentTitle(editorElement, title)
     newtitle = theFilename.value;
   if (newtitle.length > 0) title = newtitle;
   try {
-    msiGetEditor(editorElement).msietDocumentTitle(title);
+    msiGetEditor(editorElement).msiSetDocumentTitle(title);
 
     // Update window title (doesn't work if called from a dialog)
     if ("msiUpdateWindowTitle" in window)
     {
-      window.msiUpdateWindowTitle(msiGetDocumentTitle(editorElement),newtitle);
+      window.msiUpdateWindowTitle();
     }
   } catch (e) {}
 }
