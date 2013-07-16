@@ -20,7 +20,6 @@ LICENSE
 SECTION 3
 MAINTENANCE & SUPPORT
 	3.1	Telephone Support. MacKichan will offer telephone and/or electronic mail (e-mail) support to you during the hours of 8:00 a.m. to 5:00 p.m. (Pacific time), Monday through Friday, excluding national holidays observed by MacKichan. MacKichan shall not be obligated to answer support questions from persons other than you.
-	
 	3.2	Software Updates. Upon the publication of a new version of the Product or Documentation, you may choose to continue to use the version of the Program licensed to you in paragraph 2.1. You may also choose to purchase a new license for the new version(s) of the Program or Documentation in accordance with the terms of the upgrade policy established by MacKichan from time to time.
 
 SECTION 4
