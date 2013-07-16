@@ -2970,7 +2970,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         // We need to set new document uri before notifying listeners
         SetDocumentURI(newURI);
         document.getElementById("filename").value = leafname;
-        msiUpdateWindowTitle(null, destLocalFile.leafName);
+        msiUpdateWindowTitle();
       }
     }
   }
@@ -6554,7 +6554,7 @@ function msiFinishDocumentInfoDialog(editorElement, dlgInfo)
     var docInfo = dlgInfo.parentData;
     docInfo.resetFromDialogInfo(dlgInfo);
     docInfo.putDocInfoToDocument();
-    msiUpdateWindowTitle(null, null);
+    msiUpdateWindowTitle();
   }
 }
 
