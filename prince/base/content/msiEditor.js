@@ -1,4 +1,4 @@
-// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+ // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 "use strict";
 Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
@@ -124,6 +124,62 @@ function msiButtonPrefListener(editorElement)
     }
   };
   this.startup();
+}
+
+function initMetaData( doc ) {
+  var node = doc.getElementById("sw-meta");
+  if (node) return; // if the node exists, it has already been initialized.
+  try {
+    var headnode = doc.getElementsByTagName("head")[0];
+  }
+  catch(e) {}
+  if (!node) {
+    node = doc.createElement("sw-meta");
+    node.setAttribute("id", "sw-meta");
+    // put in the head
+    headnode.insertBefore(node, headnode.firstChild);
+  }
+  // Initial data are version, created, lastrevised
+  var product = "Scientific Workplace";
+#ifdef PROD_SWP
+  product = "Scientific Workplace";
+#endif
+#ifdef PROD_SW
+  product = "Scientific Word";
+#endif
+#ifdef PROD_SW
+  product = "Scientific Notebook";
+#endif
+  node.setAttribute("product", product);
+  node.setAttribute("version", navigator.productSub);
+  var dt = new Date();
+  var datetime = dt.toString();
+  node.setAttribute("created", datetime);
+  node.setAttribute("lastrevised", datetime);
+}
+
+function onsaveMetaData( doc ) {
+  var node = doc.getElementById("sw-meta");
+  if (!node) {  // meta tag doesn't exist; create one, but creation time will be wrong. C'est la vie.
+    return initMetaData(doc);
+  }
+  var dt = new Date();
+  var datetime = dt.toString();
+  node.setAttribute("lastrevised", datetime);
+}
+
+function updateMetaData( doc, updateObject ) {
+  var prop;
+  var node;
+  var node = doc.getElementById("sw-meta");
+  if (!node) {  // meta tag doesn't exist; create one, but creation time will be wrong. C'est la vie.
+    initMetaData(doc);
+  }
+  node = doc.getElementById("sw-meta");
+  if (!node) { return; } //wtf?
+  for (prop in updateObject) {
+    node.setAttribute(prop, udateObject[prop]); // rely on caller to make updateObject contain only strings
+  }
 }
 
 
@@ -662,7 +718,6 @@ function msiEditorDocumentObserver(editorElement)
     if (commandManager != aSubject)
     {
       msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic + "]; returning, as commandManager doesn't equal aSubject; aSubject is [" + aSubject + "], while commandManager is [" + commandManager + "].\n", this.mEditorElement);
-//      if (commandManager != null)
         return;
     }
     var editor = null;
@@ -676,15 +731,10 @@ function msiEditorDocumentObserver(editorElement)
     var edStr = "";
     if (editor != null)
       edStr = "non-null";
-//    if (this.mDumpMessage > 0)
-//      msiDumpWithID("In documentCreated observer for editor [@]; aTopic is [" + aTopic + "], aData is [" + aData + "]; msiGetEditor returned [" + edStr + "] before switch.\n", editorElement);
 
     switch(aTopic)
     {
       case "obs_documentCreated":
-        // Just for convenience
-//        gContentWindow = window.content;
-
         // Get state to see if document creation succeeded
         msiDumpWithID("Got obs_documentCreated message in documentCreated observer for editor [@]; aData is [" + aData + "]; msiGetEditor returned [" + edStr + "].\n", editorElement);
         setZoom();
@@ -725,6 +775,9 @@ function msiEditorDocumentObserver(editorElement)
           return;
 
         var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
+        if (is_topLevel) {
+          initMetaData(msiGetEditor(this.mEditorElement).document);
+        }
         var seconds = GetIntPref("swp.saveintervalseconds");
         if (!seconds) seconds = 120;
         if (is_topLevel && (seconds > 0))
@@ -1548,7 +1601,8 @@ function msiEditorLoadUrl(editorElement, url, markerStr)
              null,                                         // referrer
              null,                                         // post-data stream
              null);
-  } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
+  } 
+  catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
 }
 
 // This should be called by all Composer types
