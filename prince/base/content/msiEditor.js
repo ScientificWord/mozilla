@@ -460,6 +460,13 @@ function msiEditorKeyListener(event)
         event.stopPropagation();
       }
     break;
+//    case event.DOM_VK_ESCAPE:
+//      if (msiEditorCheckEscape(event))
+//      {
+//        event.preventDefault();
+//        event.stopPropagation();
+//      }
+//    break;
     default:
     break;
   }
@@ -539,7 +546,7 @@ var msiResizeListener =
       var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
       graph.setGraphAttribute("Width", String(newWidthInUnits));
       graph.setGraphAttribute("Height", String(newHeightInUnits));
-      graph.recomputeVCamImage( editorElement);
+//      graph.recomputeVCamImage( editorElement);
       graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
       ensureVCamPreinitForPlot(DOMGraph, editorElement);
 //      var obj = anElement.getElementsByTagName("object");
@@ -3706,6 +3713,18 @@ function msiEditorDoTab(event)
   }
 
   return bHandled; //Actually want to return false if the event has been handled
+}
+
+//Only check in case we've brought up the context menu "artificially"; then we need to close it
+function msiEditorCheckEscape(event)
+{
+  var contextMenu = document.getElementById("msiEditorContentContext");
+  if (contextMenu.open)
+  {
+    contextMenu.hidePopup();
+    return true;
+  }
+  return false;
 }
 
 //function msiGetCharForProperties(editorElement)
