@@ -1,8 +1,10 @@
 <keyset id="msiEditorKeys">
   <key id="msiBoldKey" modifiers="accel" key="b" oncommand="msiDoStatefulCommand('cmd_texttag','bold');"/>    
-  <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand('cmd_texttag','underline');"/>    
-	<key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>    
-  <key id="msiCloseFileKey" modifiers="accel" keycode="VK_F4" observes="cmd_close"/>    
+  <key id="msiSelectAllKey" modifiers="accel" key="a" command="cmd_selectAll"/>    
+  <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand(cmd_texttag','underline');"/>    
+	<key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>  
+  <key id="msiCloseFileKey" modifiers="accel" keycode="w" observes="cmd_close"/>   
+  <key id="msiCloseFileKeyWin" modifiers="accel" keycode="VK_F4" observes="cmd_close"/>
   <key id="msiArrowPrevKey" keycode="VK_LEFT" command="cmd_charPrevious"/>
   <key id="msiArrowNextKey" keycode="VK_RIGHT" command="cmd_charNext"/>
   <key id="msiSelectPrevKey" keycode="VK_LEFT" command="cmd_selectCharPrevious" modifiers="shift"/>
@@ -46,4 +48,6 @@
   <command id="cmd_selectLinePrevious" oncommand="msiGoDoCommand('cmd_selectLinePrevious')"/>
   <command id="cmd_selectLineNext" oncommand="msiGoDoCommand('cmd_selectLineNext')" />
   <command id="cmd_showhelp" oncommand="msiGoDoCommand('cmd_showhelp')"/>
+  <command id="cmd_close" oncommand="msiGoDoCommand('cmd_close')"/>
+  <command id="cmd_selectAll" oncommand="msiGoDoCommand('cmd_selectAll')"/>
 </commandset>
