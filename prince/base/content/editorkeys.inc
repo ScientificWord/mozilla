@@ -3,7 +3,7 @@
   <key id="msiSelectAllKey" modifiers="accel" key="a" command="cmd_selectAll"/>    
   <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand(cmd_texttag','underline');"/>    
 	<key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>  
-  <key id="msiCloseFileKey" modifiers="accel" keycode="w" observes="cmd_close"/>   
+  <key id="msiCloseFileKey" modifiers="accel" key="w" observes="cmd_close"/>   
   <key id="msiCloseFileKeyWin" modifiers="accel" keycode="VK_F4" observes="cmd_close"/>
   <key id="msiArrowPrevKey" keycode="VK_LEFT" command="cmd_charPrevious"/>
   <key id="msiArrowNextKey" keycode="VK_RIGHT" command="cmd_charNext"/>
