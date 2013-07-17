@@ -45,8 +45,6 @@
 <overlay id="EdDialogOverlay"
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-//#include ../../../../prince/base/content/editorkeys.inc
-//<script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
 
 <vbox id="AdvancedEdit">
   <hbox flex="1" style="margin-top: 0.2em" align="center">
