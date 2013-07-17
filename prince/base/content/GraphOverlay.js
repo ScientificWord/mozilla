@@ -91,6 +91,9 @@ Graph.prototype = {
     }
     return nCount;
   },
+  plotFailed: function() {
+    return (this.errStr && (this.errStr.length > 0));
+  },
   isModified: function (x) {
     return (this.modFlag[x]);
   },
@@ -171,17 +174,25 @@ Graph.prototype = {
   computeGraph: function (editorElement, filename) {
     // call the compute engine to create an image
     ComputeCursor(editorElement);
+    var oldError, newError;
     var str = this.serializeGraph();
     if (this.errStr === "") {
       try {
+        oldError = GetCurrentEngine().getEngineErrors();  //to compare below
         var topWin = msiGetTopLevelWindow();
         topWin.msiComputeLogger.Sent4("plotfuncCmd", filename, str, "");
         var out = GetCurrentEngine().plotfuncCmd(str);
         msiComputeLogger.Received(out);
       }
       catch (e) {
-        alert("Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
+//        alert("Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
         msiComputeLogger.Exception(e);
+      }
+      newError = GetCurrentEngine().getEngineErrors();
+      if (newError && (newError.length > 0) && (newError != oldError))
+      {
+        this.errStr = newError;
+        alert("Computation Error", "Compute Graph: " + this.errStr);
       }
     } else {
       msidump(this.errStr);
@@ -192,6 +203,7 @@ Graph.prototype = {
     // call the compute engine to guess at graph attributes
     // If plot is not null, then we build a graph with a single plot to send to the engine.
     // Otherwise, all the plots that are children of the graph are included
+    this.errStr = "";   //Reset this each time we start the plotting process
     var str = this.serializeGraph(plot);
     var eng = GetCurrentEngine();
     var status, i, end;
@@ -206,7 +218,8 @@ Graph.prototype = {
     }
     catch (e) {
       status = "ERROR";
-      dump("Computation Error", "Query Graph: " + eng.getEngineErrors() + "\n");
+      this.errStr = eng.getEngineErrors();
+      dump("Computation Error", "Query Graph: " + this.errStr + "\n");
       msiComputeLogger.Exception(e);
     }
     finally {
@@ -300,6 +313,7 @@ Graph.prototype = {
         DOMGs.setAttribute(attr, value);
       }
     }
+    DOMGs.setAttribute("errStr", this.errStr);  //preserve this so we'll know not to try activating VCam, etc.
     if (this.userSetAttrs.length)
       DOMGs.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
 
@@ -362,6 +376,7 @@ Graph.prototype = {
       }
       caption="<wrapper>"+caption+"</wrapper>";
       insertXML(editor, caption, DOMCaption, 0);
+//      editor.insertHTMLWithContext(caption, "", "", "", null, DOMCaption, 0, false);
     }
   },
   extractGraphAttributes: function (DOMGraph) {
@@ -763,6 +778,7 @@ Graph.prototype = {
     this.setGraphAttribute("ImageFile", longnewfilename);
     try
     {
+      GetCurrentEngine().clearEngineStrings();  //clear errors before starting a plot
       // the filename that computeGraph uses is the one in the graph structure
       this.computeGraph(editorElement);
       // if the new file exists, delete the old one
@@ -2215,6 +2231,7 @@ function insertGraph(siblingElement, graph, editorElement) {
   } catch (e) {
     dump("Error: " + e + "\n");
   }
+  GetCurrentEngine().clearEngineStrings();  //clear errors before starting a plot
   //  dump("In insertGraph, about to computeGraph.\n");
   graph.computeGraph(editorElement, longfilename);
   graph.setGraphAttribute("ImageFile", "plots/" + leaf);

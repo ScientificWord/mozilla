@@ -43,6 +43,10 @@ interface msiIEngineWrapper : nsISupports
   */
   long getEngStrPtr(in long str_ID, out string engstr, out long engstr_ln);
   /**
+   * clear the strings to/from/error the engine
+  */
+  void clearEngStrPtrs();
+  /**
    * execute the string
   */
   long execute(in string cmd);
