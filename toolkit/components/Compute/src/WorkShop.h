@@ -67,6 +67,7 @@ public:
 
   bool    SetEngineAttr( U32 engine_ID,int attr_ID,const char* s_val );
   const char* GetEngineAttr( U32 engine_ID,int attr_ID );
+  void        ClearEngineStrs(U32 engine_ID);
 
   int         SetClientPref( U32 client_ID,U32 pref_ID,const char* pref_value );
   const char* GetClientPref( U32 client_ID,U32 pref_ID,int no_inherit );

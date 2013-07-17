@@ -52,6 +52,8 @@ public:
                                  const char *s_val);
   static const char * GetEngineStateAttr(U32 engine_ID, int attr_ID);
 
+  static void ClearEngineStrs(U32 engine_ID);
+
   static int  SetUserPref(U32 client_ID, U32 pref_ID,
                           const char *ascii_str);
   static int  SetWideUserPref(U32 client_ID, U32 pref_ID,

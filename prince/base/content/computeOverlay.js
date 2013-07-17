@@ -1555,7 +1555,10 @@ function onVCamRightMouseDown(screenX, screenY)
   var graphNode = editor.getElementOrParentByTagName("graph", this);
   var contextMenu = document.getElementById("msiEditorContentContext");
   if (contextMenu)
+  {
     contextMenu.showPopup(graphNode, screenX, screenY, "none", "none");
+	contextMenu.focus();
+  }
 //  var evt = editor.document.createEvent("MouseEvents");
 //  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView, 1,
 //    screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
@@ -3962,6 +3965,11 @@ function preInitializeVCam( objElement, theGraph, editorElement, bHandleFail, bH
     useIterations = 10;
 //  if (!delayStart)
 //    delayStart = 0;
+  if (theGraph && theGraph.plotFailed())
+  {
+    dump("Plot failed; not initializing VCam.\n");
+    return;
+  }
   var initializer = new preInitializeVCamCallbackObject(theGraph, objElement, editorElement, bHandleFail, bHandleExceptions);
   initializer.start(useInterval, useIterations/*, delayStart*/);
 }

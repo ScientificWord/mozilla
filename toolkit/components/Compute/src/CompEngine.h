@@ -44,7 +44,7 @@ public:
 
   bool SetEngineAttr(int attr_ID, int i_val, const char* s_val);
   const char *GetEngineAttr(int attr_ID);
-
+  void ClearEngineStrs();
 
   void ReleaseClient(U32 client_ID, U32 engine_ID, DefStore * defstore);
 
