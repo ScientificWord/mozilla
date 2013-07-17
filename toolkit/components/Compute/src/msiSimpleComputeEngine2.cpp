@@ -736,6 +736,15 @@ NS_IMETHODIMP msiSimpleComputeEngine2::GetEngineErrors(PRUnichar **result)
   return NS_OK;
 }
 
+/* void clearEngineStrings (); */
+NS_IMETHODIMP msiSimpleComputeEngine2::ClearEngineStrings()
+{
+  ComputeDLL::ClearEngineStrs(MuPAD_eng_ID);
+  nsMemory::Free(engine_errors);
+  engine_errors = nsnull;
+  return NS_OK;
+}
+
 static
 void SetupNodeAttrs()
 {

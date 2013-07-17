@@ -492,6 +492,11 @@ const char *ComputeDLL::GetEngineStateAttr(U32 engine_ID, int attr_ID)
   return workshop->GetEngineAttr(engine_ID, attr_ID);
 }
 
+void ComputeDLL::ClearEngineStrs(U32 engine_ID)
+{
+  return workshop->ClearEngineStrs(engine_ID);
+}
+
 int ComputeDLL::SetUserPref(U32 client_ID, U32 pref_ID, const char *ascii_str)
 {
   return workshop->SetClientPref(client_ID, pref_ID, ascii_str);

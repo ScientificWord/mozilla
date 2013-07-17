@@ -614,6 +614,15 @@ const char *MathWorkShop::GetEngineAttr(U32 engine_ID, int attr_ID)
   return rv;
 }
 
+void MathWorkShop::ClearEngineStrs(U32 engine_ID)
+{
+  EngineInfo *ei = LocateEngineInfo(NULL, engine_ID);
+  if (ei) {
+    CompEngine *eng = ei->comp_eng;
+    eng->ClearEngineStrs();
+  }
+}
+
 int MathWorkShop::SetClientPref(U32 client_ID, U32 pref_ID,
                                 const char *pref_value)
 {
