@@ -58,7 +58,7 @@ function descriptionOfItem( row )
   if (row < 0)
   {
     dump("Calling descriptionOfItem with row ="+row+"\n");
-    return;
+    return "";
   }
   var i = row;
   var tree = document.getElementById("frag-tree");
@@ -286,9 +286,13 @@ function renameFragment(tree)
   var s = tree.view.getCellText( i,namecol);
   var data = new Object();
   var savedata = new Object();
+  var regexp = /\.frg$/i;
   savedata.filename = s;
   data.filename = s;
-  data.role = "renamefrag";
+  if (!regexp.test(s))
+    data.role="folder";
+  else
+    data.role = "frag";
   savedata.description = data.description = descriptionOfItem(row);
   dump('found item '+s+'\n');
   window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable", data);
@@ -299,10 +303,9 @@ function renameFragment(tree)
   var file = getUserResourceFile("fragments","");
   var newname = data.filename;
   var oldname = s;
-  if (nameChanged)
+  if (nameChanged && data.role == "frag")
   {
     dump('new name is '+data.filename+'\n');
-    var regexp = /\.frg$/i;
     newname = data.filename;
     if (!regexp.test(newname)) newname += '.frg';
   }
@@ -360,7 +363,7 @@ function newFragmentFolder()
   var j;
   for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
   var data = new Object();
-  data.role = "newfolder";
+  data.role = "folder";
   window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable", data);
   if (data.filename.length > 0)
   {
@@ -547,8 +550,8 @@ var fragObserver =
     else if (session.isDataFlavorSupported("text/html"))
     {
       var data = new Object();
-      data.role = "newfrag";
-      data.description = "Enter a short description of what the fragment does."
+      data.role = "frag";
+//      data.description = "Enter a short description of what the fragment does."
       window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable", data);
       if (data.filename.length > 0)
       {
@@ -662,8 +665,8 @@ function createFragmentFromClip()
       createInstance(Components.interfaces.nsITransferable); 
     if (!trans) return false; 
     var data = new Object();
-    data.role = "newfrag";
-    data.description = "Enter a short description of what the fragment does."
+    data.role = "frag";
+//    data.description = "Enter a short description of what the fragment does."
     window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable", data);
     if (data.filename.length > 0)
     {

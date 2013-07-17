@@ -1,8 +1,12 @@
-<!ENTITY  fragmentname.title         "Fragment Name and Description">
+<!ENTITY  fragmentname.title                "Fragment Name and Description">
 <!ENTITY  fragmentname.fragmentname         "Fragment Name">
-<!ENTITY  fragmentname.renamefragment         "Rename Fragment to">
-<!ENTITY  fragmentname.foldername         "New Folder Name">
-<!ENTITY  fragmentname.description         "Fragment Description">
+<!ENTITY  fragmentname.renamefragment       "Rename Fragment to">
+<!ENTITY  fragmentname.renamefolder         "Rename Folder to">
+<!ENTITY  fragmentname.foldername           "New Folder Name">
+<!ENTITY  fragmentname.description          "Fragment Description">
+<!ENTITY  fragmentname.folderdescription    "Folder Description">
+<!ENTITY  fragmentname.descriptionprompt    "Enter a short description of what the fragment or folder does.">
+
 <!ENTITY  executejs.label	"Enter JavaScript to execute">
 <!ENTITY  executejs.title	"Execute JavaScript">
 
