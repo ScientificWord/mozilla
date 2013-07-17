@@ -21,22 +21,20 @@
     screenY="40"
     persist="screenX screenY width height">
 
-  <broadcaster id="newfrag" hidden="false"/>
-  <broadcaster id="renamefrag" hidden="true"/>
-  <broadcaster id="newfolder" hidden="true"/>
-  <broadcaster id="fragdescription" hidden="true"/>
+  <broadcaster id="frag" hidden="true"/>
+  <broadcaster id="folder" hidden="true"/>
+  <label id="descriptionprompt" value="&fragmentname.descriptionprompt;" hidden="true"/>
   
   <script type="application/x-javascript" src="chrome://prince/content/fragmentname.js"/>
   
   <spacer flex="1"/>
-  <label value = "&fragmentname.fragmentname;" observes="newfrag"/>
-  <label value = "&fragmentname.renamefragment;" observes="renamefrag"/>
-  <label value = "&fragmentname.foldername;" observes="newfolder"/>
+  <label value = "&fragmentname.fragmentname;" observes="frag"/>
+  <label value = "&fragmentname.foldername;" observes="folder"/>
   
   <textbox id = "fragment-name"/>
   <spacer flex="1"/>
-  <label value = "&fragmentname.description;" observes="fragdescription"/>
-  <textbox id = "fragment-description" multiline="true" width="200" observes="fragdescription"/>
+  <label value = "&fragmentname.description;" observes="frag"/>
+  <textbox id = "fragment-description" multiline="true" width="200" observes="frag"/>
   <spacer flex="1"/>
                                                           
 </dialog>
