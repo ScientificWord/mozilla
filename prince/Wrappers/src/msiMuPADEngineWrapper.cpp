@@ -97,6 +97,13 @@ NS_IMETHODIMP msiMuPADEngineWrapper::GetEngStrPtr(PRInt32 str_ID, char **engstr,
   return NS_OK;
 }
 
+/* void clearEngStrPtrs (); */
+NS_IMETHODIMP msiMuPADEngineWrapper::ClearEngStrPtrs()
+{
+  MuPAD_wrapper->iClearEngStrPtrs();
+  return NS_OK;
+}
+
 /* long execute (in string cmd); */
 NS_IMETHODIMP msiMuPADEngineWrapper::Execute(const char *cmd, PRInt32 *_retval)
 {

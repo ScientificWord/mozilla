@@ -286,6 +286,11 @@ interface msiISimpleComputeEngine : nsISupports
   void getEngineErrors([retval] out wstring result);
 
   /**
+   * Clear previous error and return strings.
+  */
+  void clearEngineStrings();
+
+  /**
    * User Pref IDs.
   */
     const unsigned long mml_version                = CLPF_mml_version;
