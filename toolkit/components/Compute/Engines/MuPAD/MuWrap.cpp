@@ -154,6 +154,11 @@ void MuPADWrapper::iCleanupAndUnloadDLL()
   mupd_eng->CleanupAndUnloadDLL();
 }
 
+void MuPADWrapper::iClearEngStrPtrs()
+{
+  mupd_eng->ClearEngStrPtrs();
+}
+
 SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
                                               MathResult * mr)
 {

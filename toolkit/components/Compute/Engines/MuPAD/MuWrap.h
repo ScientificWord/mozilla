@@ -48,6 +48,7 @@ public:
 
   void      iReleaseClient( U32 client_ID, const char* def_list );
   void      iCleanupAndUnloadDLL();
+  void      iClearEngStrPtrs();
   char*     ProcessSemList(  SEMANTICS_NODE* head, const char* modulus, int& error_code );
 
 //constants to use in analyzing domain expressions
