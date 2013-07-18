@@ -1156,15 +1156,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   return res;
 }
 
-PRBool IsWhiteSpaceOnly( nsString str )
-{
-  nsAString::const_iterator start, end;
-  str.BeginReading(start);
-  str.EndReading(end);
-  while (start != end && *start <= 32) ++start;
-  if (start == end) return PR_TRUE;
-  return PR_FALSE;
-}
+//PRBool IsWhiteSpaceOnly( nsString str )
+// Function was never called. Removed 2013-07-18
 
 // InsertReturn -- usually splits a paragraph
 nsresult
@@ -1239,6 +1232,7 @@ PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
   nsAutoString tagname;
   nsAutoString classname;
 
+    
   while (child)
   {
     el = do_QueryInterface(child);
@@ -1249,7 +1243,7 @@ PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
       {
         tlm->GetRealClassOfTag(tagname, nsnull, classname);
         if (!classname.EqualsLiteral("texttag")) 
-          return HasNoSignificantTags(child,tlm);
+          return PR_FALSE;
       }
     }
     child->GetNextSibling(getter_AddRefs(tmp));
