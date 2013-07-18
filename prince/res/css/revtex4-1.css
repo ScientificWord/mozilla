@@ -1,117 +1,266 @@
 
-math {
-  direction: ltr;
-}
+/* revtex4-1.css */
+
+/************************/
+/* Division header tags */
+/************************/
 
 part {
   display: block;
   counter-increment: part;
 }
-
-part sectiontitle {
+part>sectiontitle:first-child {
   display: block;
-  font-size: x-large;
+  font-size: 200%;
   font-weight: bold;
+  color: rgb(9, 62, 125);
+  text-align:center;
 }
 
-part>sectiontitle:before {
+part>sectiontitle:first-child:before {
   content: "Part " counter(part,upper-roman);
   display: block;
   font-size: large;
   font-weight: bold;
+  margin-bottom: 5pt;
+  -moz-user-select: -moz-none;
 }
 
+/* There are no chapters in articles, so comment out this group (gp)
 chapter {
   display: block;
-/*  counter-increment: chapter;
-  counter-reset: subchapter;
-  counter-reset: theorem; */
-}  
-
-chapter sectiontitle {
-  display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: 14pt;
-  font-weight: bold;
+  position: relative;
+  counter-increment: chapter;
+  counter-reset: section theorem;
 }
+
+chapter>sectiontitle{
+  font-size: large;
+  font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
+}
+
+chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
+  content: "Chapter " counter(chapter,upper-roman) " ";
+  display: block;
+  margin-left: .2in;
+  font-size: large;
+  font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
+  -moz-user-select: -moz-none;
+}
+
+chapter[open="false"]>sectiontitle:before{
+  content: "Chapter " counter(chapter) "  ";
+  font-family: sans-serif;
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  -moz-user-select: -moz-none;
+}
+*/
 
 section {
   display: block;
-/*    counter-increment: section;
-  counter-reset: subsection;
-  counter-reset: theorem; */
-}  
+  counter-increment: section;
+  counter-reset: subsection theorem eqnnumber subeqnnumber;
+  position: relative;
+  top: 0;
+  left: 0;
+}
 
-section sectiontitle {
+section>sectiontitle:first-child{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 0 0 0;
+  font-size: 175%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+}
+
+section>sectiontitle:first-child[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: 175%;
+  font-weight: bold;
+}
+
+section>sectiontitle:first-child:before, section[open="true"]>sectiontitle:first-child:before  {
+  content: counter(section) ".  ";
+  -moz-user-modify: read-only;
+  -moz-user-select: -moz-none;
+}
+
+section[nonum="true"]>sectiontitle:first-child:before, section[nonum="true"][open="true"]>sectiontitle:first-child:before  {
+  content: "";
+  -moz-user-modify: read-only;
+}
+
+
+section>sectiontitle:first-child[open="false"], section>sectiontitle[open="false"] {
+  display: block;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
 }
 
-/*
-section>sectiontitle:before {
-  content: counter(section) ".  ";
-}
-*/
-
-subsection{
+section>sectiontitle{
   display: block;
-/*    counter-increment: subsection;
-    counter-reset: subsubsection; */
-}
-
-subsection sectiontitle {
-  display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
+  font-weight: bold;
 }
 
-/*
-subsection>sectiontitle:before {
-  content: counter(section) "." counter(subsection) ".  ";
+/* Was in revtex4-1.css, but not in article.css.  Commenting out for now (gp)
+section defaulttitletag:after {
+  content: "Replace this section title"; 
+  color: red;
+}
+
+subsection defaulttitletag:after {
+  content: "Replace this subsection title"; 
+  color: red;
+}
+
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title"; 
+  color: red;
+}
+
+paragraph defaulttitletag:after {
+  content: "Replace this subsubsubsection title"; 
+  color: red;
+}
+
+subparagraph defaulttitletag:after {
+  content: "Replace this subsubsubsubsection title"; 
+  color: red;
 }
 */
+
+subsection {
+  display: block;
+  counter-increment: subsection;
+  counter-reset: subsubsection;
+}
+
+subsection>sectiontitle:first-child {
+  display: block;
+  margin: 10pt 0 0 0;
+  font-size: 150%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+}
+
+subsection>sectiontitle:first-child:before {
+  content: counter(section) "." counter(subsection) ".  ";
+  -moz-user-modify: read-only;
+  -moz-user-select: -moz-none;
+}
+
+subsection[nonum="true"]>sectiontitle:first-child:before {
+  content: "";
+}
+
 
 subsubsection {
   display:block;
-/*    counter-increment: subsubsection;
-    counter-reset: paragraph; */
+  counter-increment: subsubsection;
+  counter-reset: paragraph;
 }
 
-subsubsection sectiontitle {
+subsubsection>sectiontitle:first-child {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
-  margin-left: 10pt;
-  font-size: medium;
+  margin: 10pt 0 0 0;
+  font-size: 120%;
   font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
-/*
-subsubsection>sectiontitle:before {
+subsubsection>sectiontitle:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
+  -moz-user-select: -moz-none;
 }
-*/
+subsubsection[nonum="true"]>sectiontitle:first-child:before {
+  content: "";
+  -moz-user-select: -moz-none;
+}
+
+
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title";
+  color: gray;
+}
 
 paragraph {
   display:block;
-/*    counter-increment: paragraph;  */
+  counter-increment: paragraph;
 }
 
-paragraph sectiontitle {
-  font-size: medium;
+paragraph>sectiontitle:first-child {
+  font-size: 100%;
+  font-weight: bold;
+  font-style: normal;
+  color: rgb(9, 62, 125);
+}
+
+paragraph>sectiontitle:first-child:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+paragraph[nonum="true"]>sectiontitle:first-child:before {
+  content: "";
+  -moz-user-select: -moz-none;
+}
+
+subparagraph {
+  display: block;	/* Should be a run-in header, but someone esle will have to figure out how to do that.  Instead, use Version 5.5 behavior. */
+  counter-increment: subparagraph;
+}
+
+subparagraph>sectiontitle:first-child {
+  font-size: 100%;
+  font-weight: bold;
+  font-style: normal;
+  color: rgb(9, 62, 125);
+  margin-left: 10pt;
+}
+
+/*************************/
+/* Front matter elements */
+/*************************/
+
+title {
+  font-size: x-large;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+}
+
+author {
   font-weight: normal;
-  font-style: italic;
+  display: block;
+  padding-top: 10pt;
+  text-align: center;
 }
 
-/*  
-paragraph>sectiontitle:before {
-  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
+address {
+  display: block;
+  text-align: center;
 }
-*/
+
+date {
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+  text-align: center;
+}
 
 abstract {
   display: block;
@@ -132,17 +281,6 @@ abstract:before {
   text-align: center;
   font-size: medium; font-weight: bold;
   -moz-user-select: -moz-none;
-}
-
-p {
-  display: block;
-  margin: 10pt 10pt 5pt 5pt;
-}
-
-mathp {
-  display: block;
-  margin: 10pt 10pt 5pt 5pt;
-  color: rgb(0,128,64);
 }
 
 preprint {
@@ -233,20 +371,6 @@ published {
   -moz-user-select: text;
 }
 
-title {
-  font-size: x-large;
-  display: block;
-  margin-top: 12pt;
-  text-align: center;
-}
-
-author {
-  font-weight: normal;
-  display: block;
-  padding-top: 10pt;
-  text-align: center;
-}
-
 affiliation {
   font-weight: normal;
   display: block;
@@ -275,11 +399,6 @@ noaffiliation { /* use maketitle from latex.css as the example (gp) */
   -moz-user-select: text;
   -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-noaffiliation");
   -moz-user-select: text;
-}
-
-address {
-  display: block;
-  text-align: center;
 }
 
 email {
@@ -314,73 +433,50 @@ keywords {
   -moz-user-select: text;
 }
 
-date {
-  font-weight: normal;
+/**********************/
+/* Main text elements */
+/**********************/
+
+p {
   display: block;
-  padding-top: 2pt;
-  text-align: center;
+  margin: 10pt 10pt 5pt 5pt;
 }
 
-/* Not in article.css (gp)
-pre, verbatim {
-  font-family: Courier; white-space: pre
+math {
+  direction: ltr;
 }
-*/
-  
-/* Not in article.css (gp)
-item {
-  margin: 0pt 0pt 0pt 0pt; 
-  padding: 10pt 0pt 0pt 20pt; 
-  display: list-item
-}
-*/
 
-/* Not in article.css (gp)
-item:before {
-  content: counters(item, ".") ":  ";
-  counter-increment: item;
+bodyText {
+  display: block;
+  margin: 10pt 0 5pt 0;
 }
-*/
-   
-/* Not in article.css (gp)
-enumerate {
-  counter-reset: item;
+
+rtlBodyText {
+  display: block;
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  margin: 10pt 10pt 5pt 5pt;
 }
-*/
 
-/* Not in article.css (gp)
-description {
-  counter-reset: item;
+bodyMath {
+  display: block;
+  margin: 0 10pt 0 5pt;
+  color: rgb(0,128,64);
 }
-*/
 
-/* Not in article.css (gp)
-itemize {
-  list-style: disc; 
-  counter-reset: item;
-}
-*/
-
-/* Not in article.css (gp)
-img {
-  display: inline; 
-  margin: 2em
-} 
-*/
-
-quote {
+quote, shortQuote {
   display: block; 
   margin-left: 20pt;
   margin-right: 20pt;
 }
 
-quotation {
+quotation, longQuotation {
   display: block; 
   margin-left: 20pt;
   margin-right: 20pt;
 }
 
-center {
+centeredEnv, centered {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
   text-align: center;
@@ -397,6 +493,38 @@ flushleft {
   margin: 10pt 10pt 5pt 5pt;
   text-align: left;
 }
+
+pre, verbatim {
+  font-family: Courier; white-space: pre
+}
+
+/***************/
+/* Lists, etc. */
+/***************/
+
+theorem {
+  display: block;
+  font-style: italic;
+  counter-increment: theorem;
+}
+
+theorem:before {
+  content:  "Theorem " counter(section) "."  counter(theorem) ". " ;
+  -moz-user-select: -moz-none;
+}
+
+proof {
+  display: block;
+}
+
+proof:before {
+  content: "Proof. ";
+}
+
+
+/***************/
+/* Text tags   */
+/***************/
 
 em {
   font-style: italic;
@@ -489,62 +617,5 @@ huge {
 
 Huge {
   font-size: 183%
-}
-
-theorem {
-  display: block;
-  font-style: italic;
-/*  counter-increment: theorem; */
-}
-/*
-theorem:before {
-  content:  attr(type) " " counter(section) "."  counter(theorem) ". " ;
-} */
-
-/* Not in article.css (gp)
-tabular {
-  display: table
-}
-
-proof {
-  display: block;
-}
-
-proof:before {
-  content: "Proof. ";
-}
-
-tr {
-  display: table-row
-}
-
-td {
-  display: table-cell
-}
-*/
-
-section defaulttitletag:after {
-  content: "Replace this section title"; 
-  color: red;
-}
-
-subsection defaulttitletag:after {
-  content: "Replace this subsection title"; 
-  color: red;
-}
-
-subsubsection defaulttitletag:after {
-  content: "Replace this subsubsection title"; 
-  color: red;
-}
-
-paragraph defaulttitletag:after {
-  content: "Replace this subsubsubsection title"; 
-  color: red;
-}
-
-subparagraph defaulttitletag:after {
-  content: "Replace this subsubsubsubsection title"; 
-  color: red;
 }
 
