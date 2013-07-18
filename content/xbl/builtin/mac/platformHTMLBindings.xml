@@ -114,23 +114,6 @@
   <binding id="editor">
     <handlers>
 #include ../editor-base.inc
-      <!-- Special keystrokes for Prince -->
-      <handler event="keypress" key=">" command="cmd_insertSubstructure" modifiers="accel,shift"/>
-      <handler event="keypress" key="w" modifiers="accel" command="cmd_close" />
-      <handler event="keypress" key=" " modifiers="control" command="cmd_macrofragment"/>
-      <handler event="keypress" key="f" command="cmd_find" modifiers="accel"/>
-      <handler event="keypress" key="y" command="cmd_redo" modifiers="accel" />
-      <handler event="keypress" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
-      <handler event="keypress" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
-      <handler event="keypress" key="1" action="document.getElementById('TextTagSelections').focus();"   modifiers="accel"/>
-      <handler event="keypress" key="2" action="document.getElementById('ParaTagSelections').focus();"   modifiers="accel"/>
-      <handler event="keypress" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="accel"/>
-      <handler event="keypress" key="4" action="document.getElementById('OtherTagSelections').focus();"  modifiers="accel"/>
-      <handler event="keypress" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
-      <handler event="keypress" key="-" command="cmd_zoomout" modifiers="accel"/>
-      <handler event="keypress" key="0" command="cmd_zoomrest" modifiers="accel"/>
-      <!-- End of keystrokes for Prince -->
-
       <handler event="keypress" key="a" command="cmd_selectAll" modifiers="accel"/>
       <handler event="keypress" keycode="VK_HOME" command="cmd_scrollTop" /> 
       <handler event="keypress" keycode="VK_END"  command="cmd_scrollBottom" /> 
