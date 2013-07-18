@@ -25,11 +25,10 @@
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
       <menuitem id="menu_newDocument" label="&newDocument.label;" 
-                accesskey="&newDocument.accesskey;" key="key_newDocument"
+                accesskey="&newDocument.accesskey;" key="msiNewFileKey"
                 oncommand="openNewDocument();"/>
       <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;"
-                  key="openeditorkb"
-                  oncommand = "openDocument();" 
+                  key="msiOpenFileKey" oncommand="openDocument();" 
                   label="&openFileCmd.label;"/>
       <menuitem oncommand="openTeX();" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
       <menuitem observes="cmd_exportTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
@@ -43,11 +42,11 @@
       </menu>
       <menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"
           label="&cleanupCmd.label;"/>
-      <menuitem accesskey="&fileclose.accesskey;" observes="cmd_close" label="&closeCmd.label;"/>
+      <menuitem accesskey="&fileclose.accesskey;" key="msiCloseFileKey" observes="cmd_close" label="&closeCmd.label;"/>
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
         label="&saveCmd.label;" />
-      <menuitem accesskey="&filesaveas.accesskey;" 
+      <menuitem accesskey="&filesaveas.accesskey;" key="msiSaveAsKey" 
         label="&saveAsCmd.label;" observes="cmd_saveAs"/>
       <menuitem accesskey="&filesavecopyas.accesskey;" 
         label="&saveCopyAsCmd.label;" observes="cmd_saveCopyAs"/>
@@ -154,12 +153,12 @@
     <menupopup id="edEditMenuPopup">
       <menuitem id="menu_undo"
                 label="&undoCmd.label;"
-                key="key_undo"
+                key="msiUndoKey"
                 accesskey="&undoCmd.accesskey;"
                 observes="cmd_undo"/>
       <menuitem id="menu_redo"
                 label="&redoCmd.label;"
-                key="key_redo"
+                key="msiRedoKey"
                 accesskey="&redoCmd.accesskey;"
                 observes="cmd_redo"/>
       <menuseparator id="edEditMenuSep1" />
@@ -170,12 +169,12 @@
       </menu>
       <menuitem id="menu_cut"
                 label="&cutCmd.label;"
-                key="key_cut"
+                key="msiCutKey"
                 accesskey="&cutCmd.accesskey;"
                 observes="cmd_cut"/>
       <menuitem id="menu_copy"
                 label="&copyCmd.label;"
-                key="key_copy"
+                key="msiCopyKey"
                 accesskey="&copy.accesskey;"
                 observes="cmd_copy"/>
       <menuitem id="menu_copytex"
@@ -191,42 +190,39 @@
                 observes="cmd_savepicture"/>
       <menuitem id="menu_paste"
                 label="&pasteCmd.label;"
-                key="key_paste"
+                key="msiPasteKey"
                 accesskey="&pasteCmd.accesskey;"
                 observes="cmd_paste"/>
       <menuitem id="menu_pastenoformatting"
                 label="&pasteNoFormattingCmd.label;"
-                key="key_paste"
+                key="msiPasteKeyNoFormatting"
                 accesskey="&pasteNoFormattingCmd.accesskey;"
                 observes="cmd_pasteNoFormatting"/>
       <menuitem id="menu_delete"
                 label="&deleteCmd.label;"
-                key="key_delete"
+                key="msiDeleteKey"
                 accesskey="&deleteCmd.accesskey;"
                 observes="cmd_delete"/>
       <menuseparator id="edEditMenuSep2" />
       <menuitem id="menu_selectAll"
                 label="&selectAllCmd.label;"
-                key="key_selectAll"
+                key="msiSelectAllKey"
                 accesskey="&selectAllCmd.accesskey;"
                 observes="cmd_selectAll"/>
       <menuseparator id="sep_find"/>
       <menuitem id="menu_find"           
                 label="&findCmd.label;"
-                key="findkb"
+                key="msiFindKey"
                 accesskey="&editfind.accesskey;"
                 observes="cmd_find" />
       <menuitem id="menu_findnext"       
-                accesskey="&editfindnext.accesskey;"        
-                key="findnextkb"     
-                observes="cmd_findNext" 
-                acceltext="&editfindnext.acceltext;"/>
+                key="msiFindNextKey"     
+                observes="cmd_findNext"/>
       <menuitem id="menu_findprev"       
-                accesskey="&editfindprev.accesskey;"        
-                key="findprevkb"     
+                key="msiFindPrevKey"     
                 observes="cmd_findPrev" 
                 acceltext="&editfindprev.acceltext;"/>
-#      <menuitem id="menu_replace"       accesskey="&editreplace.accesskey;"        key="findprevkb"     observes="cmd_findPrev"/>
+#     <menuitem id="menu_replace"       accesskey="&editreplace.accesskey;"        key="findprevkb"     observes="cmd_findPrev"/>
       <menuseparator id="sep_checkspelling"/>
       <menuitem id="menu_checkspelling" 
                 accesskey="&editcheckspelling.accesskey;"
@@ -542,14 +538,17 @@
           <menuitem id="viewZoomEnlarge" 
                     accesskey="&viewZoomEnlarge.accesskey;" 
                     label="&viewZoomEnlarge.label;" 
+                    key="msiZoomInKey"
                     observes="cmd_zoomin"/>
           <menuitem id="viewZoomReduce" 
                     accesskey="&viewZoomReduce.accesskey;" 
                     label="&viewZoomReduce.label;" 
+                    key="msiZoomOutKey"
                     observes="cmd_zoomout"/>
           <menuitem id="viewZoomReset" 
                     accesskey="&viewZoomReset.accesskey;" 
                     label="&viewZoomReset.label;" 
+                    key="msiZoomReset"
                     observes="cmd_zoomreset"/>
         </menupopup>
       </menu>
