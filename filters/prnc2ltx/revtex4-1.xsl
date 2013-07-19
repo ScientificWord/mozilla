@@ -17,6 +17,14 @@
 \volumeyear{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
+<xsl:template match="html:volumenumber">
+\volumenumber{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:volumename">
+\volumename{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
 <xsl:template match="html:issuenumber">
 \issuenumber{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
@@ -34,19 +42,19 @@
 </xsl:template>
 
 <xsl:template match="html:received">
-\received<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
+\received<xsl:if test="@xalt and string-length(@xalt)">[<xsl:value-of select="@xalt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:revised">
-\revised<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
+\revised<xsl:if test="@xalt and string-length(@xalt)">[<xsl:value-of select="@xalt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:accepted">
-\accepted<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
+\accepted<xsl:if test="@xalt and string-length(@xalt)">[<xsl:value-of select="@xalt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:published">
-\published<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
+\published<xsl:if test="@xalt and string-length(@xalt)">[<xsl:value-of select="@xalt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:affiliation">
