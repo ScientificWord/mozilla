@@ -114,11 +114,11 @@
         <observes element="defaultCompiler" attribute="printCommand"/>
         <menupopup id="printMenuPop" tooltiptext="" >
           <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
-                    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
+                    key="msiDirectPrintKey" oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs7" element="defaultCompiler" attribute="defcomp" />
           </menuitem>        
           <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
-                    oncommand="msiGoDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
+                    key="msiTypesetPrintKey" oncommand="msiGoDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs8" element="defaultCompiler" attribute="defcomp" />
           </menuitem>        
           <menuseparator/>
