@@ -191,6 +191,7 @@
                     <label value="&location.label;" control="tableLocationList" />
                     <menulist id="tableLocationList" oncommand="">
                       <menupopup>
+                        <menuitem label="&unspecified;"  selected="true" value=""/>
                         <menuitem label="&inline.label;"  value=""/>
                         <menuitem label="&left.label;" value="left"/>
                         <menuitem label="&inside.label;" value="inside"/>
@@ -200,7 +201,7 @@
                       </menupopup>
                     </menulist> 
                   </row>
-                  <row>
+                  <row align="center">
                     <label value="&floatLocation.label;" control="floatLocationList"/>
                     <menulist id="floatLocationList" oncommand="">
                       <menupopup>
@@ -277,6 +278,7 @@
                   <label value="&Horizontal.label;"/>
                   <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
                     <menupopup>
+                      <menuitem label="&unspecified;"  value=""/>
                       <menuitem label="&hAlignLeft.label;"  value="left"/>
                       <menuitem label="&hAlignCenter.label;" value="center"/>
                       <menuitem label="&hAlignRight.label;" value="right"/>
@@ -288,6 +290,7 @@
                   <label value="&Vertical.label;"/>
                   <menulist id="vAlignChoices"  oncommand="AlignmentChanged('RowAlignRadioGroup');">
                     <menupopup>
+                      <menuitem label="&unspecified;"  value=""/>
                       <menuitem label="&vAlignTop.label;"  value="top"/>
                       <menuitem label="&vAlignCenter.label;" value="center"/>
                       <menuitem label="&vAlignBottom.label;" value="bottom"/>
@@ -299,8 +302,16 @@
           </groupbox>
           <groupbox orient="vertical" align="center">
             <caption label="&other.label;"/>
-            <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" />
-          
+            <label value="&textWrapping.label;"/>
+            <menulist id="textwrapchoice" label="unspecified" >
+              <menupopup>
+                <menuitem label="&unspecified;"  value=""/>
+                <menuitem label="&wrapWrapping.label;"  value="true"/>
+                <menuitem label="&wrapNoWrapping.label;"  value="false"/>
+              </menupopup>
+            </menulist>
+<!--             <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" />
+ -->          
             <label id="BackgroundColorLabel" value="&backgroundColor.label;"/>
             <msibutton class="color-button" oncommand="GetColorAndUpdate('backgroundCW');">
               <spacer id="backgroundCW" class="color-well"/>
@@ -366,8 +377,8 @@
                            accesskey="&cellBorderStyleList.accesskey;"/>
                     <menulist id="cellBorderStyleList" value="unspec" oncommand="checkPreviewChanges();">
                       <menupopup>
-                        <menuitem label="&borderStyleUnspec.label;" value="unspec"/>
-                        <menuitem label="&borderStyleNone.label;"  value="none" selected = "true"/>
+                        <menuitem label="&unspecified;" value=""  selected="true"/>
+                        <menuitem label="&borderStyleNone.label;"  value="none"/>
                         <!--menuitem label="&borderStyleHidden.label;"  value="hidden"/-->
                         <menuitem label="&borderStyleSolid.label;"  value="solid"/>
                         <!--menuitem label="&borderStyleDotted.label;"  value="dotted"/-->
