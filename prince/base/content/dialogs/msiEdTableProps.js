@@ -471,7 +471,8 @@ function Startup()
   }
 
   setVariablesForControls();
-
+  initUnitHandler(null);
+  
   data = window.arguments[3];
   if (!data) {
     newTable = true;
@@ -509,7 +510,6 @@ function Startup()
       return;
     }
   }
-  initUnitHandler(null);
 
 
 //  if (!gSelection)  //should get set in "setDataFromReviseData" call
@@ -1979,27 +1979,10 @@ function ApplyTableAttributes()
   var bEmptyStyle = (!globalTableElement.style);
   var theStyleString = "";
 
-  // newTable impliies that all members of gTableChangeData are true
+  doSetStyleAttr("vertical-align", gTableBaseline);
+  SetAnAttribute(gTableElement, "valign", gTableBaseline);
 
-  if (newTable || gTableChangeData.baseline)
-  {
-    doSetStyleAttr("vertical-align", gTableBaseline);
-    SetAnAttribute(gTableElement, "valign", gTableBaseline);
-//    logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [vertical-align] on table element style to [" + gTableBaseline + "]\n";
-  }
-//   if (newTable || gTableChangeData.background)
-//   {
-//     doSetStyleAttr("background-color", gTableColor);
-// //    logStr += "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [background-color] on table element style to [" + gTableColor + "]\n";
-//   }
-  if (newTable || gTableChangeData.borderCollapse)
-  {
-    doSetStyleAttr("border-collapse", gBorderCollapse);
-  }
-//  if (newTable || gTableChangeData.size.width)
-//    globalTableElement.style.setProperty("width", widthStr);
-//  if (newTable || gTableChangeData.size.height)
-//    globalTableElement.style.setProperty("height", heightStr);
+  doSetStyleAttr("border-collapse", gBorderCollapse);
   var pos = gDialog.tableLocationList.value;
   var float = gDialog.floatLocationList.value;  
   gTableElement.setAttribute("req","tabulary");
@@ -2007,7 +1990,7 @@ function ApplyTableAttributes()
     gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
   else
     gTableElement.setAttribute("width",unitHandler.getValueAs(gDialog.tableWidthInput.value, "pt")+"pt");
-  if (pos) {
+  if (pos && pos.length > 0) {
     if (pos == "inline" || pos == "display") float = "";
     if (float !== "") {
       gTableElement.setAttribute("pos","float");
@@ -2022,7 +2005,6 @@ function ApplyTableAttributes()
       else 
       {
         doSetStyleAttr("display", "block");
-//        doSetStyleAttr("text-align", "center");
       }
     }
   }
@@ -2033,8 +2015,6 @@ function ApplyTableAttributes()
     gActiveEditor.setAttribute(gTableElement, "style", theStyleString);
   else
     gActiveEditor.removeAttributeOrEquivalent(gTableElement, "style", false);
-  logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [style] on table element to [" + theStyleString + "]\n";
-  msiKludgeLogString(logStr, ["tableEdit"]);
 }
 
 function placementCodeFrom(pos)
@@ -2811,6 +2791,7 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
   var color;
   var i;
   var nm;
+  var temp;
   var names = ['left','right','top','bottom'];
   target = mergeLineObjects(target, source);
   var allsame = allSame(target);
@@ -2857,9 +2838,14 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
 //    else
 //      SetAnAttribute(destElement, "line-" + theSide, gCollatedCellData.border.style[theSide]);
 //  }
-    
-  SetAnAttribute(destElement, "align", document.getElementById("hAlignChoices").value);
-  SetAnAttribute(destElement, "valign", document.getElementById("vAlignChoices").value);
+  temp = document.getElementById("hAlignChoices").value;  
+  if (temp && temp.length > 0) {
+    SetAnAttribute(destElement, "align", temp);
+  }
+  temp = document.getElementById("vAlignChoices").value;
+  if (temp && temp.length > 0) {
+    SetAnAttribute(destElement, "valign", temp);
+  }
   color = document.getElementById('backgroundCW').getAttribute("color");
   if (color && (color.length > 0) )
   {
@@ -2913,20 +2899,20 @@ function onAcceptNewTable()
     var color;
     try 
     {
-      var wrapping = gDialog.TextWrapCheckbox.checked;
-      gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
+      var wrapping = document.getElementBId.textwrapchoice.value;  // values are '','true','false'
+      if (wrapping.length > 0) {
+        gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
+      }
 
       var align = gDialog.hAlignChoices.value;
-      gPrefs.setCharPref("editor.table.default_align", align);
+      if (align.length > 0) {
+        gPrefs.setCharPref("editor.table.default_align", align);
+      }
 
       var valign = gDialog.vAlignChoices.value;
-      gPrefs.setCharPref("editor.table.default_valign", valign);
-
-      // var cellSpacing = globalElement.getAttribute("cellspacing");
-      // gPrefs.setCharPref("editor.table.default_cellspacing", cellSpacing);
-
-      // var cellPadding = globalElement.getAttribute("cellpadding");
-      // gPrefs.setCharPref("editor.table.default_cellpadding", cellPadding);
+      if (valign.length > 0) {
+        gPrefs.setCharPref("editor.table.default_valign", valign);
+      }
     }
     catch (e) {
       dump(e);
@@ -2938,78 +2924,78 @@ function onAcceptNewTable()
 // This is code for creating a new table, not for revising
 
       // Create necessary rows and cells for the table
-      var tableBody = gActiveEditor.createElementWithDefaults("tbody");
-      var style;
-      ApplyTableAttributes();
-      if (tableBody)
-      {
-        gTableElement.appendChild(tableBody);
-        color = document.getElementById('backgroundCW').getAttribute("color");
+    var tableBody = gActiveEditor.createElementWithDefaults("tbody");
+    var style;
+    ApplyTableAttributes();
+    if (tableBody)
+    {
+      gTableElement.appendChild(tableBody);
+      color = document.getElementById('backgroundCW').getAttribute("color");
 
-        // Create necessary rows and cells for the table
-        for (var i = 0; i < gRows; i++)
+      // Create necessary rows and cells for the table
+      for (var i = 0; i < gRows; i++)
+      {
+        var newRow = gActiveEditor.createElementWithDefaults("tr");
+        if (newRow)
         {
-          var newRow = gActiveEditor.createElementWithDefaults("tr");
-          if (newRow)
+          tableBody.appendChild(newRow);
+          for (var j = 0; j < gColumns; j++)
           {
-            tableBody.appendChild(newRow);
-            for (var j = 0; j < gColumns; j++)
+            var newCell = gActiveEditor.createElementWithDefaults("td");
+            if (newCell)
             {
-              var newCell = gActiveEditor.createElementWithDefaults("td");
-              if (newCell)
-              {
-                newRow.appendChild(newCell);
-                ApplyAttributesToOneCell(newCell, makeSourceLineObject(document.getElementById("BordersPreviewCenterCell")));              
-              }
+              newRow.appendChild(newCell);
+              ApplyAttributesToOneCell(newCell, makeSourceLineObject(document.getElementById("BordersPreviewCenterCell")));              
             }
           }
         }
       }
+    }
       // Detect when entire cells are selected:
         // Get number of cells selected
-      var tagNameObj = { value: "" };
-      var countObj = { value: 0 };
-      var element = gActiveEditor.getSelectedOrParentTableElement(tagNameObj, countObj);
-      var deletePlaceholder = false;
+    var tagNameObj = { value: "" };
+    var countObj = { value: 0 };
+    var element = gActiveEditor.getSelectedOrParentTableElement(tagNameObj, countObj);
+    var deletePlaceholder = false;
 
-      if (tagNameObj.value == "table")
+    if (tagNameObj.value == "table")
+    {
+      //Replace entire selected table with new table, so delete the table
+      gActiveEditor.deleteTable();
+    }
+    else if (tagNameObj.value == "td")
+    {
+      if (countObj.value >= 1)
       {
-        //Replace entire selected table with new table, so delete the table
-        gActiveEditor.deleteTable();
-      }
-      else if (tagNameObj.value == "td")
-      {
-        if (countObj.value >= 1)
+        if (countObj.value > 1)
         {
-          if (countObj.value > 1)
-          {
-            // Assume user wants to replace a block of
-            //  contiguous cells with a table, so
-            //  join the selected cells
-            gActiveEditor.joinTableCells(false);
-          
-            // Get the cell everything was merged into
-            element = gActiveEditor.getFirstSelectedCell();
-          
-            // Collapse selection into just that cell
-            gActiveEditor.selection.collapse(element,0);
-          }
+          // Assume user wants to replace a block of
+          //  contiguous cells with a table, so
+          //  join the selected cells
+          gActiveEditor.joinTableCells(false);
+        
+          // Get the cell everything was merged into
+          element = gActiveEditor.getFirstSelectedCell();
+        
+          // Collapse selection into just that cell
+          gActiveEditor.selection.collapse(element,0);
+        }
 
-          if (element)
-          {
-            // Empty just the contents of the cell
-            gActiveEditor.deleteTableCellContents();
-          
-            // Collapse selection to start of empty cell...
-            gActiveEditor.selection.collapse(element,0);
-            // ...but it will contain a <br> placeholder
-            deletePlaceholder = true;
-          }
+        if (element)
+        {
+          // Empty just the contents of the cell
+          gActiveEditor.deleteTableCellContents();
+        
+          // Collapse selection to start of empty cell...
+          gActiveEditor.selection.collapse(element,0);
+          // ...but it will contain a <br> placeholder
+          deletePlaceholder = true;
         }
       }
+    }
 
-      // true means delete selection when inserting
-      gActiveEditor.insertElementAtSelection(gTableElement, true);
+    // true means delete selection when inserting
+    gActiveEditor.insertElementAtSelection(gTableElement, true);
 
 //      if (deletePlaceholder && gTableElement && gTableElement.nextSibling)
 //      {
@@ -3017,8 +3003,7 @@ function onAcceptNewTable()
 //        gActiveEditor.deleteNode(gTableElement.nextSibling);
 //      }
 
-    return true;
-
+  return true;
 }
 
 function onAccept()
