@@ -10,6 +10,7 @@
   <key id="msiCopyKey" key="c" command="cmd_copy" modifiers="accel"/>
   <key id="msiCutKey" key="x" command="cmd_cut" modifiers="accel"/>
   <key id="msiDeleteKey" keycode="VK_DELETE" command="cmd_delete" modifiers="accel"/>
+  <key id="msiDirectPrintKey" key="p" oncommand="msiGoDoCommand('cmd_printDirect');" modifiers="accel"/>
   <key id="msiFindKey" key="f" command="cmd_find" modifiers="accel"/>
   <key id="msiFindNextKey" keycode="VK_F3" keytext="F3" command="cmd_findNext" />
   <key id="msiFindPrevKey" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
@@ -34,6 +35,7 @@
   <key id="msiSymbolKeyboardKey" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
   <key id="msiTextTagKey" key="1" action="document.getElementById('TextTagSelections').focus();" modifiers="accel"/>
   <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>  
+  <key id="msiTypesetPrintKey" key="p" oncommand="msiGoDoCommand('cmd_printPdf');" modifiers="accel,shift"/>
   <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand(cmd_texttag','underline');"/>    
   <key id="msiUndoKey" key="z" command="cmd_undo" modifiers="accel"/>
   <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
