@@ -309,7 +309,8 @@ fontcolor {
 
 /* paragraph indenting rule -- don't indent the first paragraph in a division */
 bodyText {
-  margin-bottom: 0 
+  margin-bottom: 0;
+  line-height: 1.3em; 
 }
 
 /* ... but indent the following paragraphs */
