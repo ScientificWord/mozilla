@@ -1,6 +1,6 @@
 rem @echo off
-pushd %2
+pushd %1
 set path="%MSITEXBIN%"
-makeindex %4
+makeindex %3
 echo done > sentinel
 popd
