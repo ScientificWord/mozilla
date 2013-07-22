@@ -113,10 +113,6 @@ printindex {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#printindex");
 }
 
-minpasses {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#minpasses");
-}
-
 indexitem {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#indexitem");
 }
