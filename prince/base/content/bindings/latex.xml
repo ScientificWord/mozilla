@@ -818,21 +818,6 @@ Make list of figures here
 		</xbl:content>
 	</xbl:binding>
 
-	<xbl:binding id="minpasses">  <!-- this will be removed in favor of a tex button-->
-		<xbl:resources>
-			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-		</xbl:resources>
-
-		<xbl:content>
-			<html:button type="button" class="frontmatter" nopr="1" oncommand="">
-				Minimum number of LaTeX passes = <html:label xbl:inherits="xbl:text=num"/>
-			</html:button>
-			<html:span style="display:none">
-			<xbl:children/>
-			</html:span>
-		</xbl:content>
-	</xbl:binding>
-
 	<xbl:binding id="label">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
