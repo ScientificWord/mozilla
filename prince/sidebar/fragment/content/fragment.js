@@ -297,9 +297,7 @@ function renameFragment(tree)
   dump('found item '+s+'\n');
   window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable", data);
   var nameChanged = ((data.filename.length > 0) && (savedata.filename != data.filename));
-  var descChanged = (data.description != savedata.description);
-  if (!nameChanged && !descChanged) return;
-  if (descChanged) writeDescriptionOfItem(row, data.description);
+  writeDescriptionOfItem(row, data.description);
   var file = getUserResourceFile("fragments","");
   var newname = data.filename;
   var oldname = s;
