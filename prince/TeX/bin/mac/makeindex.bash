@@ -1,5 +1,8 @@
-pushd $2
-export PATH=$MSITEXBIN:$PATH
-makeindex $4
-echo done > sentinel
-popd
+#!/bin/sh
+
+# $1 is the target directory, $2 is the file to compile, $3 is usually "SWP"
+cd $1
+/usr/texbin/makeindex $3 
+touch sentinel
+exit 0
+
