@@ -494,14 +494,16 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   if (/\\xref|\\pageref|\\vxref|\\vref|\\vpageref|\\cite/.test(str)) runcount = 2;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
+  var minpasses = 1;
   if (matcharr && matcharr.length > 1) 
   {
-    runcount = matcharr[1];
-    if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
+    minpasses = matcharr[1];
   }
   if (compileInfo.runMakeIndex || compileInfo.runBibTeX) {
     if (compileInfo.passCount < 3) compileInfo.passCount = 3;
   }
+  if (compileInfo.passCount < minpasses) compileInfo.passCount = minpasses;
+
 
 //  dump("\n"+str);
   if (!str || str.length < 3) return false;
