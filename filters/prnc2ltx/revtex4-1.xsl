@@ -74,11 +74,11 @@
 </xsl:template>
 
 <xsl:template match="html:email">
-\email{<xsl:apply-templates/>}<xsl:text/>
+\email<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:homepage">
-\homepage{<xsl:apply-templates/>}<xsl:text/>
+\homepage<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:pacs">
