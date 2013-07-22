@@ -6,7 +6,7 @@ function onAccept()
 {
   var data = window.arguments[0];
   data.filename = document.getElementById("fragment-name").value;
-  data.description = document.getElementById("fragment-description").getAttribute('value');
+  data.description = document.getElementById("fragment-description").value;
 }
 
 function onCancel()
