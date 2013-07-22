@@ -103,7 +103,7 @@ function setProgressStatement(done)
   else
   {
     progressStatement = document.getElementById("passStatusTemplate").value;
-    progressStatement = progressStatement.replace("#n", (Number(passData.passCounter) + 1));
+    progressStatement = progressStatement.replace("#n", (Number(passData.passCounter)));
     progressStatement = progressStatement.replace("#m", (Number(passData.passCount)));
   }
   document.getElementById("passStatus").value = progressStatement;
