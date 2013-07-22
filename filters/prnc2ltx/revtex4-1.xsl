@@ -73,6 +73,14 @@
 \noaffiliation
 </xsl:template>
 
+<xsl:template match="html:firstname">
+\firstname{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:surname">
+\surname{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
 <xsl:template match="html:email">
 \email<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
