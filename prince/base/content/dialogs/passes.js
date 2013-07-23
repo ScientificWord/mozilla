@@ -20,7 +20,7 @@ var timerCallback =
      } 
      if (sentinel.exists())
      {
-       if (++passData.passCounter < passData.passCount)
+       if (passData.passCounter++ < passData.passCount)
        {
          setProgressStatement(false);
          sentinel.remove(false);
@@ -61,7 +61,7 @@ function Init()
 {
   
   passData = window.arguments[0];
-  passData.passCounter = 0;
+  passData.passCounter = 1;
   document.getElementById("numpasses").value = passData.passCount;
   sentinel = Components.classes["@mozilla.org/file/local;1"].
       createInstance(Components.interfaces.nsILocalFile);
@@ -73,13 +73,11 @@ function Init()
   if (passData.runMakeIndex) {
     theIndexProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theIndexProcess.init(passData.indexexe);
-    passData.passCount ++; // since running makeindex will count as a pass.
   }
   if (passData.runBibTeX)
   {
     theBibTeXProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theBibTeXProcess.init(passData.bibtexexe);
-    passData.passCount ++; // since running BibTeX will count as a pass.
   }
   Components.utils.reportError("in Init\n");
   var dlg = document.getElementById("passesDlg");
