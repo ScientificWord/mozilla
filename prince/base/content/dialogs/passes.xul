@@ -24,7 +24,7 @@
     height="400"
     screenX="40"
     screenY="40"
-    persist="screenX screenY width height"
+    persist="screenX screenY"
     >
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
