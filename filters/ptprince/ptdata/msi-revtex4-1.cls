@@ -146,6 +146,9 @@
   \msiopentag{revised}{<revised xalt="#1">}#2\msiclosetag{revised}{</revised>^^0a}}%
 \def\@revisedb#1{\msiopentag{revised}{<revised>}#1\msiclosetag{revised}{</revised>^^0a}}%
 
+% Handle the REVTeX widetext environment
+\MSISimpleEnvironment{widetext}
+
 \msi@extrapi{%
   \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>}\br
 }
