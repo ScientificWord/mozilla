@@ -97,4 +97,7 @@
 \keywords{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
+<xsl:template match="html:widetext">
+\begin{widetext}<xsl:apply-templates/>\end{widetext}</xsl:template>
+
 </xsl:stylesheet>
