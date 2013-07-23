@@ -521,6 +521,12 @@ proof:before {
   content: "Proof. ";
 }
 
+widetext {
+  display: block;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 
 /***************/
 /* Text tags   */
