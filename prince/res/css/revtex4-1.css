@@ -525,8 +525,24 @@ widetext {
   display: block;
   margin-left: 0;
   margin-right: 0;
+  background-color: rbg(200,225,251);
 }
 
+acknowledgments {
+  display: block;
+  margin-left: 0;
+  margin-right: 0;
+  background-color: rbg(254,252,186);
+}
+
+acknowledgments:before {
+  content: "Acknowledgments";
+  display: block;
+  font-size: 175%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+  -moz-user-select: -moz-none;
+}
 
 /***************/
 /* Text tags   */
