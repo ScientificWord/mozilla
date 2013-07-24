@@ -100,4 +100,7 @@
 <xsl:template match="html:widetext">
 \begin{widetext}<xsl:apply-templates/>\end{widetext}</xsl:template>
 
+<xsl:template match="html:acknowledgments">
+\begin{acknowledgments}<xsl:apply-templates/>\end{acknowledgments}</xsl:template>
+
 </xsl:stylesheet>
