@@ -149,6 +149,9 @@
 % Handle the REVTeX widetext environment
 \MSISimpleEnvironment{widetext}
 
+% Handle the REVTeX acknowledgments environment
+\MSISimpleEnvironment{acknowledgments}
+
 \msi@extrapi{%
   \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>}\br
 }
