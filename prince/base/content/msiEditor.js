@@ -9929,12 +9929,6 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
         element.setAttribute("hide","false");
       }
     }
-    else if (elementName==="vspace") {
-      msiGoDoCommand('cmd_reviseVerticalSpaces');
-    }
-    else if (elementName==="hspace") {
-      msiGoDoCommand("cmd_reviseHorizontalSpaces");
-    }
     else if (elementName == "table"||elementName=="thead"||elementName=="tr"||elementName=="td")
     {
       msiTable(element,editorElement);
