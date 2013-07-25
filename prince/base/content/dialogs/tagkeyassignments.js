@@ -20,6 +20,11 @@ function clearInputs()
 function handleChar(event, object)
 {
   var key=event.keyCode;
+  if (key==event.DOM_VK_TAB) {
+    document.getElementById("taglistradio").focus();
+    clear(event);
+    return;
+  }
   if (key < event.DOM_VK_F1){
     clear(event);
     return;

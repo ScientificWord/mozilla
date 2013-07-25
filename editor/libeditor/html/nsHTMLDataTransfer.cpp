@@ -4274,36 +4274,54 @@ nsresult nsHTMLEditor::ParseFragment(const nsAString & aFragStr,
 {
   // figure out if we are parsing full context or not
   PRBool bContext = aTagStack.IsEmpty();
+  nsCOMPtr<nsIDOMDocumentFragment> contextfrag;
 
   // create the parser to do the conversion.
   nsresult res;
+  PRInt16 count = 2;
   nsCOMPtr<nsIParser> parser = do_CreateInstance(kCParserCID, &res);
   NS_ENSURE_SUCCESS(res, res);
   NS_ENSURE_TRUE(parser, NS_ERROR_FAILURE);
 
   // create the html fragment sink
-  nsCOMPtr<nsIContentSink> sink;
-  if (bContext)
-    sink = do_CreateInstance(NS_XMLFRAGMENTSINK2_CONTRACTID);
-  else
-    sink = do_CreateInstance(NS_XMLFRAGMENTSINK2_CONTRACTID);
+  while (count > 0) {
+    nsCOMPtr<nsIContentSink> sink;
+    if (count == 2) {
+      if (bContext)
+        sink = do_CreateInstance(NS_XMLFRAGMENTSINK2_CONTRACTID);
+      else
+        sink = do_CreateInstance(NS_XMLFRAGMENTSINK2_CONTRACTID);
+    }
+    else {
+      if (bContext)
+        sink = do_CreateInstance(NS_HTMLFRAGMENTSINK2_CONTRACTID);
+      else
+        sink = do_CreateInstance(NS_HTMLFRAGMENTSINK2_CONTRACTID);
+    }
 
-  NS_ENSURE_TRUE(sink, NS_ERROR_FAILURE);
-  nsCOMPtr<nsIFragmentContentSink> fragSink(do_QueryInterface(sink));
-  NS_ENSURE_TRUE(fragSink, NS_ERROR_FAILURE);
+    NS_ENSURE_TRUE(sink, NS_ERROR_FAILURE);
+    nsCOMPtr<nsIFragmentContentSink> fragSink(do_QueryInterface(sink));
+    NS_ENSURE_TRUE(fragSink, NS_ERROR_FAILURE);
 
-  fragSink->SetTargetDocument(aTargetDocument);
+    fragSink->SetTargetDocument(aTargetDocument);
 
-  // parse the fragment
-  parser->SetContentSink(sink);
-  if (bContext)
-    parser->Parse(aFragStr, (void*)0, NS_LITERAL_CSTRING("text/xml"), PR_TRUE, eDTDMode_fragment);
-  else
-    parser->ParseFragment(aFragStr, 0, aTagStack, PR_TRUE, NS_LITERAL_CSTRING("text/xml"), eDTDMode_quirks);
-  // get the fragment node
-  nsCOMPtr<nsIDOMDocumentFragment> contextfrag;
-  res = fragSink->GetFragment(getter_AddRefs(contextfrag));
-  NS_ENSURE_SUCCESS(res, res);
+    // parse the fragment
+    parser->SetContentSink(sink);
+    if (bContext)
+      parser->Parse(aFragStr, (void*)0, NS_LITERAL_CSTRING("text/xml"), PR_TRUE, eDTDMode_fragment);
+    else
+      parser->ParseFragment(aFragStr, 0, aTagStack, PR_TRUE, NS_LITERAL_CSTRING("text/xml"), eDTDMode_quirks);
+    // get the fragment node
+    res = fragSink->GetFragment(getter_AddRefs(contextfrag));
+    if (res == NS_OK) {
+      count = 0;
+    }
+    else {
+      --count;
+      if (count == 0) return NS_ERROR_FAILURE;
+    }
+  }
+
   *outNode = do_QueryInterface(contextfrag);
 
   return res;
@@ -4327,43 +4345,7 @@ nsresult nsHTMLEditor::CreateTagStack(nsTArray<nsAutoString> &aTagStack, nsIDOMN
     {
       nsAutoString* tagName = aTagStack.AppendElement();
       NS_ENSURE_TRUE(tagName, NS_ERROR_OUT_OF_MEMORY);
-
-//       nsAutoString attrnameStr;
-//       nsAutoString prefixStr;
-//       nsAutoString valueStr;
-//       nsCOMPtr<nsIDOMElement> element;
-//       nsCOMPtr<nsIContent> content;
-// //      nsCOMPtr<nsIDOMNamedNodeMap> attributeMap;
-//
-//       element = do_QueryInterface(node);
-//       content = do_QueryInterface(node);
       node->GetNodeName(*tagName);
-      //BBM experimental: add attributes also.
-//       count = content->GetAttrCount();
-//       for (index = count; index > 0; )
-//       {
-//         --index;
-//         const nsAttrName* name = content->GetAttrNameAt(index);
-//         PRInt32 namespaceID = name->NamespaceID();
-//         nsIAtom* attrName = name->LocalName();
-//         nsIAtom* prefixName = name->GetPrefix();
-//
-//         attrName->ToString(attrnameStr);
-//         if (prefixName) prefixName->ToString(prefixStr);
-//         if (attrnameStr.EqualsLiteral("xmlns") && prefixStr.EqualsLiteral("xmlns"))
-//           prefixStr.Truncate(0);
-//         content->GetAttr(namespaceID, attrName, valueStr);
-//         tagName->AppendLiteral(" ");
-//         if (!prefixStr.IsEmpty())
-//         {
-//           tagName->Append(prefixStr);
-//           tagName->AppendLiteral(":");
-//         }
-//         tagName->Append(attrnameStr);
-//         tagName->AppendLiteral("=\"");
-//         tagName->Append(valueStr);
-//         tagName->AppendLiteral("\"");
-//       }
     }
 
     res = temp->GetParentNode(getter_AddRefs(node));
