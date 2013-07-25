@@ -75,11 +75,11 @@
       <groupbox id="sizeGroupbox" orient="horizontal">
         <caption label="&sizeGroupbox.label;"/>
         <vbox id="fixedSizeControls">
-          <hbox>
+          <hbox align="center">
             <label control="fixedSizeTextbox" value="&fixedDepth.label;"	accesskey="&fixedDepth.accesskey;"/>
             <textbox id="fixedSizeTextbox" />
           </hbox>
-          <hbox>
+          <hbox align="center">
             <label control="fixedSizeUnitsbox" value="&fixedSizeUnits.label;"	accesskey="&fixedSizeUnits.accesskey;"/>
             <menulist id="fixedSizeUnitsbox" >
             <!-- menulist id="fixedSizeUnitsbox"  oncommand="changeUnits(this);"  -->
