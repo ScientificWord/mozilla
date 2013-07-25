@@ -4,7 +4,7 @@ function setCompact(aMenuItemId)
 {
   if (document.getElementById(aMenuItemId).getAttribute('checked')=='true')
   {
-    document.getElementById('Sthemymbol-tabbox').setAttribute('iconsize','small');
+    document.getElementById('Symbol-tabbox').setAttribute('iconsize','small');
   }
   else
   {

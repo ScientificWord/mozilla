@@ -1,11 +1,11 @@
-<?xml version="1.0"?>
+<?xml version="1.0"?> 
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 #include productname.inc
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 
 <!DOCTYPE overlay [
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/menuOverlay.dtd">
-%DTD;
+%DTD;                                     
 <!ENTITY % toolbarDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
  %toolbarDTD;
 ]>
@@ -24,11 +24,11 @@
 
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
-      <menuitem id="menu_newDocument" label="&newDocument.label;"
+      <menuitem id="menu_newDocument" label="&newDocument.label;" 
                 accesskey="&newDocument.accesskey;" key="msiNewFileKey"
                 oncommand="openNewDocument();"/>
       <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;"
-                  key="msiOpenFileKey" oncommand="openDocument();"
+                  key="msiOpenFileKey" oncommand="openDocument();" 
                   label="&openFileCmd.label;"/>
       <menuitem oncommand="openTeX();" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
       <menuitem observes="cmd_exportTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
@@ -46,42 +46,109 @@
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
         label="&saveCmd.label;" />
-      <menuitem accesskey="&filesaveas.accesskey;" key="msiSaveAsKey"
+      <menuitem accesskey="&filesaveas.accesskey;" key="msiSaveAsKey" 
         label="&saveAsCmd.label;" observes="cmd_saveAs"/>
-      <menuitem accesskey="&filesavecopyas.accesskey;"
+      <menuitem accesskey="&filesavecopyas.accesskey;" 
         label="&saveCopyAsCmd.label;" observes="cmd_saveCopyAs"/>
       <menuitem accesskey="&filerevert.accesskey;" observes="cmd_revert"
         label="&fileRevert.label;" />
       <menuseparator/>
       <menuitem id="printSetupMenuItem" observes="cmd_printSetup" label="&printSetupCmd.label;"
             accesskey="&fileprintsetup.accesskey;"/>
-      <menuitem id="printPreviewMenuItem"
-            accesskey="&fileprintpreview.accesskey;"
-            label="&printPreviewCmd.label;"
-            oncommand="msiGoDoCommand('cmd_previewDirect');"/>
-      <menuitem id="printMenuItem"
-            accesskey="&fileprint.accesskey;"
-            key="msiDirectPrintKey"
+#ifdef PROD_SNB
+      <menu id="printPreviewMenuItem" 
+            accesskey="&fileprintpreview.accesskey;" 
+            key="printpreviewkb" 
+            label="&printPreviewCmd.label;" 
+            persist="defcomp previewCommand" 
+            oncommand="msiGoDoCommand('cmd_preview');"/>
+      <menuitem id="printMenuItem" 
+            accesskey="&fileprint.accesskey;" 
+            key="printkb" 
             label="&printCmd.label;"
-            oncommand="msiGoDoCommand('cmd_printDirect');"/>
-      <menuitem id="printPreviewMenuPdf" label="&pdfpreviewButton.label;"
-            oncommand="msiGoDoCommand('cmd_previewPdf'); event.stopPropagation();">
-      </menuitem>
-      <menuitem id="printMenuPdf" label="&pdfprintButton.label;"
-            key="msiTypesetPrintKey" oncommand="msiGoDoCommand('cmd_printPdf');event.stopPropagation();">
-      </menuitem>
+            oncommand="msiGoDoCommand(this.getAttribute('cmd_print'));"/>
+#else
+      <menuitem id="printPreviewMenuItemMac" 
+            accesskey="&fileprintpreview.accesskey;" 
+            key="printpreviewkb" 
+            label="&printPreviewCmdMac.label;" 
+            oncommand="msiGoDoCommand('cmd_previewPdf');"/>
+      <menu id="printPreviewMenuItem" 
+            accesskey="&fileprintpreview.accesskey;" 
+            key="printpreviewkb" 
+            label="&printPreviewCmd.label;" 
+            persist="defcomp previewCommand" 
+            oncommand="msiGoDoCommand(this.getAttribute('previewCommand'));">
+        <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
+        <observes element="defaultCompiler" attribute="previewCommand"/>
+        <menupopup id="printPreviewMenu" tooltiptext="" >
+          <menuitem id="printPreviewMenuItem1" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
+                    oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);" >
+            <observes id="ppmObs1" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>        
+          <menuitem id="printPreviewMenuItem1pdf" label="&pdfpreviewButton.label;" persist="default" default="false"
+                    oncommand="msiGoDoCommand('cmd_previewPdf'); event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
+            <observes id="ppmObs2" element="defaultCompiler" attribute="defcomp"  />
+          </menuitem>        
+          <menuseparator/>
+          <menu id="chooseDefPrinter3" label="&chooseDefPrinter.label;" >
+	          <menupopup id="menuChooseDefPrinterPopup3">
+	            <menuitem id="directMode3" label="&direct;" checked="true" 
+                oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefaultmenu(this);">
+                <observes id="ppmObs3" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	            <menuitem id="pdfMode3" label="&pdf;" 
+                oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefaultmenu(this);">
+                <observes id="ppmObs4" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	          </menupopup>
+          </menu>
+        </menupopup>
+      </menu>
+      <menu id="printMenuItem" 
+            accesskey="&fileprint.accesskey;" 
+            key="printkb" 
+            label="&printCmd.label;"
+            oncommand="msiGoDoCommand(this.getAttribute('printCommand'));">
+        <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
+        <observes element="defaultCompiler" attribute="printCommand"/>
+        <menupopup id="printMenuPop" tooltiptext="" >
+          <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
+                    key="msiDirectPrintKey" oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
+            <observes id="ppmObs7" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>        
+          <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
+                    key="msiTypesetPrintKey" oncommand="msiGoDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
+            <observes id="ppmObs8" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>        
+          <menuseparator/>
+          <menu id="chooseDefPrinter4" label="&chooseDefPrinter.label;" >
+	          <menupopup id="menuChooseDefPrinterPopup10">
+	            <menuitem id="directMode7" label="&direct;" checked="true" 
+                oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefaultmenu(this);">
+                <observes id="ppmObs10" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	            <menuitem id="pdfMode7" label="&pdf;" 
+                oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefaultmenu(this);">
+                <observes id="ppmObs11" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	          </menupopup>
+          </menu>
+        </menupopup>
+      </menu>
+#endif
       <menuseparator/>
       <menuitem id="docInfoMenuItem" accesskey="&docInfo.accesskey;"
         observes="cmd_documentInfo" label="&docInfo.label;"/>
       <menuitem id="docStyleItem" accesskey="&docStyle.accesskey;"
         observes="cmd_documentStyle" label="&docStyle.label;"/>
       <menuseparator id="menu_FileQuitSeparator"/>
-      <menuitem id="menu_FileQuitItem" accesskey="&fileexit.accesskey;" acceltext="&fileexit.acceltext;" key="key_quit"
+      <menuitem id="menu_FileQuitItem" accesskey="&fileexit.accesskey;" acceltext="&fileexit.acceltext;" key="key_quit" 
         observes="cmd_quit" label="&exitCmd.label;"/>
     </menupopup>
   </menu>
-
-  <menu id="editMenu" label="&editMenu.label;" accesskey="&editmenu.accesskey;" onpopupshowing="msiEditorInitFormatMenu(event, this);"
+  
+  <menu id="editMenu" label="&editMenu.label;" accesskey="&editmenu.accesskey;" onpopupshowing="msiEditorInitFormatMenu(event, this);" 
         onpopuphidden="msiCleanUpPropertiesMenu(event, this, 'propertiesMenu');">
     <menupopup id="edEditMenuPopup">
       <menuitem id="menu_undo"
@@ -143,29 +210,29 @@
                 accesskey="&selectAllCmd.accesskey;"
                 observes="cmd_selectAll"/>
       <menuseparator id="sep_find"/>
-      <menuitem id="menu_find"
+      <menuitem id="menu_find"           
                 label="&findCmd.label;"
                 key="msiFindKey"
                 accesskey="&editfind.accesskey;"
                 observes="cmd_find" />
-      <menuitem id="menu_findnext"
-                key="msiFindNextKey"
+      <menuitem id="menu_findnext"       
+                key="msiFindNextKey"     
                 observes="cmd_findNext"/>
-      <menuitem id="menu_findprev"
-                key="msiFindPrevKey"
-                observes="cmd_findPrev"
+      <menuitem id="menu_findprev"       
+                key="msiFindPrevKey"     
+                observes="cmd_findPrev" 
                 acceltext="&editfindprev.acceltext;"/>
 #     <menuitem id="menu_replace"       accesskey="&editreplace.accesskey;"        key="findprevkb"     observes="cmd_findPrev"/>
       <menuseparator id="sep_checkspelling"/>
-      <menuitem id="menu_checkspelling"
+      <menuitem id="menu_checkspelling" 
                 accesskey="&editcheckspelling.accesskey;"
-                key="checkspellingkb"
-                observes="cmd_spelling"
+                key="checkspellingkb"   
+                observes="cmd_spelling" 
                 label="&checkSpellingCmd.label;"/>
-      <menuitem id="menu_countwords"
+      <menuitem id="menu_countwords" 
                 accesskey="&countWords.accesskey;"
-                key="countwordskb"
-                observes="cmd_countwords"
+                key="countwordskb"   
+                observes="cmd_countwords" 
                 disabled="false"
                 label="&countWords.label;"/>
     </menupopup>
@@ -174,36 +241,36 @@
   <!-- Insert menu -->
   <menu id="insertMenu" label="&insertMenu.label;" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup"  onpopupshowing="msiInitFontStyleMenu(this)">
-      <menuitem id="insertImage"
-                accesskey="&insertimage.accesskey;"
-                command="cmd_image"
+      <menuitem id="insertImage" 
+                accesskey="&insertimage.accesskey;"      
+                command="cmd_image"  
                 label="&insertImageCmd.label;"/>
-      <menuitem id="insertVideo"
-                accesskey="&insertVideo.accesskey;"
-                command="cmd_video"
+      <menuitem id="insertVideo" 
+                accesskey="&insertVideo.accesskey;"      
+                command="cmd_video"  
                 label="&insertVideoCmd.label;"/>
-      <menuitem id="insertTable"
-                accesskey="&inserttable.accesskey;"
-                command="cmd_InsertTable"
+      <menuitem id="insertTable" 
+                accesskey="&inserttable.accesskey;"      
+                command="cmd_InsertTable" 
                 label="&insertTableCmd.label;"/>
-      <menuitem id="insertLine"
-                accesskey="&insertline.accesskey;"
-                command="cmd_msiInsertRules"
+      <menuitem id="insertLine" 
+                accesskey="&insertline.accesskey;"      
+                command="cmd_msiInsertRules" 
                 label="&insertLine.label;"/>
-			<menuitem id="insertFrame"
-			          accesskey="&insertMinipage.accesskey;"
-			          command="cmd_frame"
+			<menuitem id="insertFrame" 
+			          accesskey="&insertMinipage.accesskey;"      
+			          command="cmd_frame"       
                 label="&insertMinipage.label;"/>
-      <menuitem accesskey="&insertBreaks.accesskey;"
-                command="cmd_msiInsertBreaks"
+      <menuitem accesskey="&insertBreaks.accesskey;"               
+                command="cmd_msiInsertBreaks"                
                 label="&insertBreaks.label;"/>
       <menu accesskey="&insertSpacingObjects.accesskey;"   id="insertSpacesMenu"        label="&insertSpacingObjects.label;">
         <menupopup>
-          <menuitem accesskey="&insertHorizontalSpaces.accesskey;"
-                    observes="cmd_insertHorizontalSpaces"
+          <menuitem accesskey="&insertHorizontalSpaces.accesskey;"      
+                    observes="cmd_insertHorizontalSpaces"      
                     label="&insertHorizontalSpaces.label;"/>
-          <menuitem accesskey="&insertVerticalSpaces.accesskey;"
-                    observes="cmd_insertVerticalSpaces"
+          <menuitem accesskey="&insertVerticalSpaces.accesskey;"        
+                    observes="cmd_insertVerticalSpaces"        
                     label="&insertVerticalSpaces.label;"/>
         </menupopup>
       </menu>
@@ -211,78 +278,78 @@
   </menu>
   <menu id="goMenu" label="&gomenu.label;" accesskey="&gomenu.accesskey;">
     <menupopup id="goPopup">
-      <!-- menuitem label="&gomenuPrevSection.label;"
-                id="gomenuPrevSection"
-                observes="cmd_prevSection"
+      <!-- menuitem label="&gomenuPrevSection.label;" 
+                id="gomenuPrevSection" 
+                observes="cmd_prevSection" 
                 accesskey="&gomenuPrevSection.accesskey;"/>
-      <menuitem label="&gomenuNextSection.label;"
-                id="gomenuNextSection"
-                observes="cmd_nextSection"
+      <menuitem label="&gomenuNextSection.label;" 
+                id="gomenuNextSection" 
+                observes="cmd_nextSection" 
                 accesskey="&gomenuNextSection.accesskey;"/>
-      <menuitem label="&gomenuLinks.label;"
-                id="gomenuLinks"
-                observes="cmd_unimp"
+      <menuitem label="&gomenuLinks.label;" 
+                id="gomenuLinks" 
+                observes="cmd_unimp" 
                 accesskey="&gomenuLinks.accesskey;"/>
       <menuseparator id="goMenuSeparator1"/ -->
-      <menuitem label="&gomenuMarker.label;"
-                id="gomenuMarker"
-                observes="cmd_gotoMarker"
+      <menuitem label="&gomenuMarker.label;" 
+                id="gomenuMarker" 
+                observes="cmd_gotoMarker" 
                 accesskey="&gomenuMarker.accesskey;"/>
-      <menuitem label="&gomenuParagraph.label;"
-                id="gomenuParagraph"
-                observes="cmd_gotoparagraph"
+      <menuitem label="&gomenuParagraph.label;" 
+                id="gomenuParagraph" 
+                observes="cmd_gotoparagraph" 
                 accesskey="&gomenuParagraph.accesskey;"/>
     </menupopup>
   </menu>
-
+  
   <menu id="tagMenu" label="&tagmenu.label;" accesskey="&tagmenu.accesskey;">
     <menupopup id="tagPopup">
-  <!--    <menuitem label="&tagmenuAppearance.label;"
-                id="tagmenuAppearance"
-                observes="Cascades"
+  <!--    <menuitem label="&tagmenuAppearance.label;" 
+                id="tagmenuAppearance" 
+                observes="Cascades" 
                 accesskey="&tagmenuAppearance.accesskey;"/>
                 -->
-      <menuitem label="&tagmenuFunctionKeys.label;"
-                id="tagmenuFunctionKeys"
-                observes="cmd_tagkeyassignments"
+      <menuitem label="&tagmenuFunctionKeys.label;" 
+                id="tagmenuFunctionKeys" 
+                observes="cmd_tagkeyassignments" 
                 accesskey="&tagmenuFunctionKeys.accesskey;"/>
       <menuitem id="menutagadvanced" label="&tagmenuAdvanced.label;" accesskey="&tagmenuAdvanced.accesskey;"
         observes="cmd_otfont" />
     </menupopup>
   </menu>
-  <!--menu id="tableMenu"/>  -->
+  <!--menu id="tableMenu"/>  -->  
 #ifndef PROD_SNB
   <menu id="MSITypesetMenu"/>
 #endif
   <menu id="toolsMenu" label="&toolsmenu.label;" accesskey="&toolsmenu.accesskey;">
     <menupopup id="menu_ToolsPopup">
-      <menuitem label="&toolsmenuJavaScriptdebugger.label;"
+      <menuitem label="&toolsmenuJavaScriptdebugger.label;" 
                 accesskey="&toolsmenuJavaScriptdebugger.accesskey;"
                 hidden="true"
-                id="venkmanName"
+                id="venkmanName" 
                 oncommand="start_venkman();"/>
-      <menuitem id="menu_inspector"
-                label="&inspectorTaskCmd.label;"
-                accesskey="&inspectorTaskCmd.accesskey;"
+      <menuitem id="menu_inspector" 
+                label="&inspectorTaskCmd.label;" 
+                accesskey="&inspectorTaskCmd.accesskey;" 
                 hidden="true"
                 command="Tasks:Inspector"/>
-      <menuitem label="&toolsmenuExtensions.label;"
-                accesskey="&toolsmenuExtensions.accesskey;"
-                id="menu_extensions"
+      <menuitem label="&toolsmenuExtensions.label;" 
+                accesskey="&toolsmenuExtensions.accesskey;" 
+                id="menu_extensions" 
                 observes="Tools:Extensions"/>
-      <menuitem label="&toolsmenuThemes.label;"
-                accesskey="&toolsmenuThemes.accesskey;"
-                id="menu_themes"
+      <menuitem label="&toolsmenuThemes.label;" 
+                accesskey="&toolsmenuThemes.accesskey;" 
+                id="menu_themes" 
                 observes="Tools:Themes"/>
       <menuseparator id="toolsMenuSeparator"/>
-      <menuitem label="&autoSubstituteDlg.label;"
-                accesskey="&autoSubstituteDlg.accesskey;"
+      <menuitem label="&autoSubstituteDlg.label;" 
+                accesskey="&autoSubstituteDlg.accesskey;" 
                 observes="cmd_MSIAutoSubDlg"/>
       <menuseparator id="menu_PrefsSeparator"/>
       <menuitem id="menu_preferences"
-                label="&Options.label;"
+                label="&Options.label;" 
                 accesskey="&Options.accesskey;"
-                oncommand="msiPrefs();"/>
+                oncommand="msiPrefs();"/> 
 #ifdef XP_MACOSX
       <!--menuitem id="menu_mac_services" label="&servicesMenuMac.label;"/ -->
       <menuitem id="menu_mac_hide_app" label="&hideThisAppCmdMac.label;" key="key_hideThisAppCmdMac"/>
@@ -299,100 +366,100 @@
         </rule>
       </template>
     </menupopup>
-  </menu>
+  </menu>  
 
 
   <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;">
 <!--      key="msiMacHelp"
  -->    <menupopup id="helpPopup" >
-      <menuitem id="helpmenuContents"
-                label="&helpmenuContents.label;"
-                accesskey="&helpmenuContents.accesskey;"
-                key="keyhelpcontents"
+      <menuitem id="helpmenuContents" 
+                label="&helpmenuContents.label;" 
+                accesskey="&helpmenuContents.accesskey;" 
+                key="keyhelpcontents" 
                 oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"/>
-      <menuitem id="helpmenuSearch"
-                label="&helpmenuSearch.label;"
-                accesskey="&helpmenuSearch.accesskey;"
+      <menuitem id="helpmenuSearch" 
+                label="&helpmenuSearch.label;" 
+                accesskey="&helpmenuSearch.accesskey;" 
                 observes="cmd_unimp"/>
-      <menuitem id="helpmenuIndex"
-                label="&helpmenuIndex.label;"
-                accesskey="&helpmenuIndex.accesskey;"
-                observes="cmd_unimp"/>
-      <menuseparator/>
-      <menuitem id="helpmenuWebsite"
-                label="&helpmenuWebsite.label;"
-                accesskey="&helpmenuWebsite.accesskey;"
+      <menuitem id="helpmenuIndex" 
+                label="&helpmenuIndex.label;" 
+                accesskey="&helpmenuIndex.accesskey;" 
                 observes="cmd_unimp"/>
       <menuseparator/>
-      <menuitem id="helpmenuRegister"
-                label="&helpmenuRegister.label;"
-                accesskey="&helpmenuRegister.accesskey;"
+      <menuitem id="helpmenuWebsite" 
+                label="&helpmenuWebsite.label;" 
+                accesskey="&helpmenuWebsite.accesskey;" 
                 observes="cmd_unimp"/>
-      <menuitem id="helpmenuFeatures"
-                label="&helpmenuFeatures.label;"
-                accesskey="&helpmenuFeatures.accesskey;"
+      <menuseparator/>
+      <menuitem id="helpmenuRegister" 
+                label="&helpmenuRegister.label;" 
+                accesskey="&helpmenuRegister.accesskey;" 
                 observes="cmd_unimp"/>
-      <menuitem id="helpmenuLicense"
-                label="&helpmenuLicense.label;"
-                accesskey="&helpmenuLicense.accesskey;"
+      <menuitem id="helpmenuFeatures" 
+                label="&helpmenuFeatures.label;" 
+                accesskey="&helpmenuFeatures.accesskey;" 
+                observes="cmd_unimp"/>
+      <menuitem id="helpmenuLicense" 
+                label="&helpmenuLicense.label;" 
+                accesskey="&helpmenuLicense.accesskey;" 
                 observes="cmd_unimp"/>
       <menuseparator id="aboutSeparator"/>
-      <menuitem accesskey="&aboutCmd.accesskey;"
-                label="&aboutCmd.label;"
-                id="aboutName"
+      <menuitem accesskey="&aboutCmd.accesskey;" 
+                label="&aboutCmd.label;" 
+                id="aboutName" 
                 oncommand="goAboutDialog();"/>
     </menupopup>
   </menu>
-
+  
   <menu id="viewMenu" label="&viewMenu.label;" accesskey="&viewMenu.accesskey;" >
     <menupopup id="viewMenuPopup">
-      <menuitem id="viewNormalMode"
-                type="radio"
-                group="mode"
-                accesskey="&NormalMode.accesskey;"
+      <menuitem id="viewNormalMode"   
+                type="radio" 
+                group="mode" 
+                accesskey="&NormalMode.accesskey;"     
                 observes="cmd_NormalMode"
                 label="&NormalMode.label;"/>
-      <menuitem id="viewAllTagsMode"
-                type="radio"
-                group="mode"
-                accesskey="&TagsMode.accesskey;"
+      <menuitem id="viewAllTagsMode"  
+                type="radio" 
+                group="mode" 
+                accesskey="&TagsMode.accesskey;"    
                 observes="cmd_AllTagsMode"
                 label="&TagsMode.label;"/>
-      <menuitem id="viewSourceMode"
-                type="radio"
-                group="mode"
-                accesskey="&SourceMode.accesskey;"
+      <menuitem id="viewSourceMode"   
+                type="radio" 
+                group="mode" 
+                accesskey="&SourceMode.accesskey;" 
                 observes="cmd_HTMLSourceMode"
                 label="&SourceMode.label;"/>
-      <menuitem id="viewPreviewMode"
-                type="radio"
-                group="mode"
-                accesskey="&PreviewMode.accesskey;"
+      <menuitem id="viewPreviewMode"  
+                type="radio" 
+                group="mode" 
+                accesskey="&PreviewMode.accesskey;"    
                 observes="cmd_PreviewMode"
                   label="&PreviewMode.label;"/>
       <menuseparator/>
 #ifndef PROD_SNB
-      <menuitem id="viewTeXLog"
-                accesskey="&viewTeXLog.accesskey;"
-                observes="cmd_showTeXLog"
+      <menuitem id="viewTeXLog"  
+                accesskey="&viewTeXLog.accesskey;"    
+                observes="cmd_showTeXLog" 
                 label="&viewTeXLog.label;"/>
-      <menuitem id="viewTeXFile"
-                accesskey="&viewTeXFile.accesskey;"
-                observes="cmd_showTeXFile"
+      <menuitem id="viewTeXFile"  
+                accesskey="&viewTeXFile.accesskey;"    
+                observes="cmd_showTeXFile" 
                 label="&viewTeXFile.label;"/>
       <menuseparator/>
 #endif
       <menu id="sidebar-menu" label="&viewSidebars.label;" accesskey="&viewsidebars.accesskey;" >
         <menupopup>
-          <menuitem id="viewsidebarleft"
-                    type="checkbox"
-                    checked="true"
+          <menuitem id="viewsidebarleft" 
+                    type="checkbox" 
+                    checked="true" 
                     observes="cmd_viewStatusBar"
                     accesskey="&viewStatusBar.accesskey;"
                     label="&viewsidebarleft.label;" />
-          <menuitem id="viewsidebarright"
-                    type="checkbox"
-                    checked="true"
+          <menuitem id="viewsidebarright" 
+                    type="checkbox" 
+                    checked="true" 
                     observes="cmd_viewStatusBar"
                     accesskey="&viewStatusBar.accesskey;"
                     label="&viewsidebarright.label;" />
@@ -412,7 +479,7 @@
                 accesskey="&viewFootnotes.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewFootnotes.label;"/>
-      <menuitem id="viewOtherNotes"
+      <menuitem id="viewOtherNotes" 
                 type="checkbox"
                 checked="true"
                 persist="checked"
@@ -441,7 +508,7 @@
                 accesskey="&viewFMButtons.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewFMButtons.label;"/>
-      <menuitem id="viewHelperLines"
+      <menuitem id="viewHelperLines" 
                 type="checkbox"
                 accesskey="&viewHelperLines.accesskey;"
                 checked="true"
@@ -453,13 +520,13 @@
                 checked="true"
                 observes="cmd_viewInvisibles"
                 label="&viewInputBoxes.label;"/>
-      <menuitem id="viewIndexEntries"
+      <menuitem id="viewIndexEntries" 
                 type="checkbox"
                 accesskey="&viewIndexEntries.accesskey;"
                 checked="true"
                 observes="cmd_viewInvisibles"
                 label="&viewIndexEntries.label;"/>
-      <menuitem id="viewMarkers"
+      <menuitem id="viewMarkers"  
                 type="checkbox"
                 accesskey="&viewMarkers.accesskey;"
                 checked="true"
@@ -468,26 +535,26 @@
       <menuseparator/>
       <menu id="viewZoom" accesskey="&viewZoom.accesskey;" label="&viewZoom.label;" >
         <menupopup id="viewZoomPopup" >
-          <menuitem id="viewZoomEnlarge"
-                    accesskey="&viewZoomEnlarge.accesskey;"
-                    label="&viewZoomEnlarge.label;"
+          <menuitem id="viewZoomEnlarge" 
+                    accesskey="&viewZoomEnlarge.accesskey;" 
+                    label="&viewZoomEnlarge.label;" 
                     key="msiZoomInKey"
                     observes="cmd_zoomin"/>
-          <menuitem id="viewZoomReduce"
-                    accesskey="&viewZoomReduce.accesskey;"
-                    label="&viewZoomReduce.label;"
+          <menuitem id="viewZoomReduce" 
+                    accesskey="&viewZoomReduce.accesskey;" 
+                    label="&viewZoomReduce.label;" 
                     key="msiZoomOutKey"
                     observes="cmd_zoomout"/>
-          <menuitem id="viewZoomReset"
-                    accesskey="&viewZoomReset.accesskey;"
-                    label="&viewZoomReset.label;"
+          <menuitem id="viewZoomReset" 
+                    accesskey="&viewZoomReset.accesskey;" 
+                    label="&viewZoomReset.label;" 
                     key="msiZoomReset"
                     observes="cmd_zoomreset"/>
         </menupopup>
       </menu>
     </menupopup>
   </menu>
-
+  
   <!-- commands updated when the editor gets created -->
   <commandset id="commonEditorMenuItems"
           commandupdater="true"
@@ -505,7 +572,7 @@
     <command id="cmd_openTeX" oncommand="openTeX();" />
     <command id="cmd_exportTeX" oncommand="exportTeX();" />
     <command id="cmd_exportToWeb" oncommand="exportToWeb();" />
-
+    
     <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
     <command id="cmd_printPdf"    oncommand="msiGoDoCommand('cmd_printPdf');;event.stopPropagation();"/>
     <command id="cmd_previewDirect"  oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();"/>
@@ -569,15 +636,15 @@
 
     <command id="cmd_insertHorizontalSpaces"   oncommand="msiGoDoCommand('cmd_insertHorizontalSpaces')"/>
     <command id="cmd_insertVerticalSpaces"     oncommand="msiGoDoCommand('cmd_insertVerticalSpaces')"/>
-    <command id="cmd_msiInsertRules"   observes="inMathBroadcaster"
+    <command id="cmd_msiInsertRules"   observes="inMathBroadcaster" 
       oncommand="msiGoDoCommand('cmd_msiInsertRules')"/>
-    <command id="cmd_msiInsertBreaks"  observes="inMathBroadcaster"
+    <command id="cmd_msiInsertBreaks"  observes="inMathBroadcaster" 
                  oncommand="msiGoDoCommand('cmd_msiInsertBreaks')"/>
-    <command id="cmd_note"      observes="inMathBroadcaster"
+    <command id="cmd_note"      observes="inMathBroadcaster"  
                  oncommand="msiGoDoCommand('cmd_note')"/>
-    <command id="cmd_footnote"  observes="inMathBroadcaster"
+    <command id="cmd_footnote"  observes="inMathBroadcaster"  
        oncommand="msiGoDoCommand('cmd_footnote')"/>
-    <command id="cmd_frame"     observes="inMathBroadcaster"
+    <command id="cmd_frame"     observes="inMathBroadcaster"  
        oncommand="msiGoDoCommand('cmd_frame')"/>
     <command id="cmd_citation"  observes="inMathBroadcaster"            oncommand="msiGoDoCommand('cmd_MSIinsertCitationCmd')"/>
 
@@ -619,9 +686,9 @@
     <command id="cmd_prevSection"              oncommand="msiGoDoCommand('cmd_prevSection')"/>
     <command id="cmd_nextSection"              oncommand="msiGoDoCommand('cmd_nextSection')"/>
     <command id="cmd_gotoMarker"               oncommand="msiGoDoCommand('cmd_gotoMarker')"/>
-
+    
   </commandset>
-
+  
   <commandset id="composerSaveMenuItems"
           commandupdater="true"
           events="create, save"
@@ -643,7 +710,7 @@
     <command id="cmd_zoomin" oncommand="msiGoDoCommand('cmd_zoomin')"/>
     <command id="cmd_zoomout" oncommand="msiGoDoCommand('cmd_zoomout')"/>
     <command id="cmd_zoomreset" oncommand="msiGoDoCommand('cmd_zoomreset')"/>
-
+                                        
   </commandset>
 
 
@@ -653,36 +720,36 @@
           events="create, mode_switch, undo"
           oncommandupdate="msiGoUpdateComposerMenuItems(this)"
   >
-    <command id="cmd_undo"
+    <command id="cmd_undo" 
              oncommand="msiGoDoCommand('cmd_undo')"
              acceltext="&undoCmd.acceltext;"
              disabled="true"/>
-    <command id="cmd_redo"
+    <command id="cmd_redo" 
              oncommand="msiGoDoCommand('cmd_redo')"
              acceltext="&redoCmd.acceltext;"
              disabled="true"/>
-    <command id="cmd_cut"
+    <command id="cmd_cut" 
              oncommand="msiGoDoCommand('cmd_cut')"
              acceltext="&cutCmd.acceltext;"
              />
-    <command id="cmd_copy"
+    <command id="cmd_copy" 
             oncommand="msiGoDoCommand('cmd_copy')"
             acceltext="&copyCmd.acceltext;"
             disabled="true"/>
-    <command id="cmd_copytex"
+    <command id="cmd_copytex" 
              oncommand="msiGoDoCommand('cmd_copytex')"
-             disabled="true">
-      <observes element="cmd_copy" attribute="disabled" />
+             disabled="true">      
+      <observes element="cmd_copy" attribute="disabled" /> 
     </command>
-    <command id="cmd_copypicture"
+    <command id="cmd_copypicture" 
             oncommand="msiGoDoCommand('cmd_copypicture')">
-      <observes element="cmd_copy" attribute="disabled" />
+      <observes element="cmd_copy" attribute="disabled" /> 
     </command>
-    <command id="cmd_savepicture"
+    <command id="cmd_savepicture" 
             oncommand="msiGoDoCommand('cmd_savepicture')">
-      <observes element="cmd_copy" attribute="disabled" />
+      <observes element="cmd_copy" attribute="disabled" /> 
     </command>
-    <command id="cmd_paste"
+    <command id="cmd_paste" 
              oncommand="msiGoDoCommand('cmd_paste')"
              acceltext="&pasteCmd.acceltext;"
              disabled="true"/>
@@ -732,7 +799,7 @@
 
     <command id="cmd_increaseFont"                    oncommand="msiGoDoCommand('cmd_increaseFont')"/>
     <command id="cmd_decreaseFont"                    oncommand="msiGoDoCommand('cmd_decreaseFont')"/>
-
+    
     <command id="cmd_removeStyles"                    oncommand="msiGoDoCommand('cmd_removeStyles')"/>
     <command id="cmd_removeLinks"                     oncommand="msiGoDoCommand('cmd_removeLinks')"/>
     <command id="cmd_removeNamedAnchors"              oncommand="msiGoDoCommand('cmd_removeNamedAnchors')"/>
@@ -769,19 +836,19 @@
     <command id="cmd_SelectColumn"        oncommand="msiGoDoCommand('cmd_SelectColumn')"/>
     <command id="cmd_SelectCell"          oncommand="msiGoDoCommand('cmd_SelectCell')"/>
     <command id="cmd_SelectAllCells"      oncommand="msiGoDoCommand('cmd_SelectAllCells')"/>
-    <command id="cmd_InsertTable"         observes="inMathBroadcaster"
+    <command id="cmd_InsertTable"         observes="inMathBroadcaster" 
       oncommand="msiGoDoCommand('cmd_InsertTable')"/>
-    <command id="cmd_InsertRowAbove"      observes="inMathBroadcaster"
+    <command id="cmd_InsertRowAbove"      observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_InsertRowAbove')"/>
-    <command id="cmd_InsertRowBelow"      observes="inMathBroadcaster"
+    <command id="cmd_InsertRowBelow"      observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_InsertRowBelow')"/>
-    <command id="cmd_InsertColumnBefore"  observes="inMathBroadcaster"
+    <command id="cmd_InsertColumnBefore"  observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_InsertColumnBefore')"/>
-    <command id="cmd_InsertColumnAfter"   observes="inMathBroadcaster"
+    <command id="cmd_InsertColumnAfter"   observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_InsertColumnAfter')"/>
-    <command id="cmd_InsertCellBefore"    observes="inMathBroadcaster"
+    <command id="cmd_InsertCellBefore"    observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_InsertCellBefore')"/>
-    <command id="cmd_InsertCellAfter"     observes="inMathBroadcaster"
+    <command id="cmd_InsertCellAfter"     observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_InsertCellAfter')"/>
     <command id="cmd_DeleteTable"         oncommand="msiGoDoCommand('cmd_DeleteTable')"/>
     <command id="cmd_DeleteRow"           oncommand="msiGoDoCommand('cmd_DeleteRow')"/>
@@ -804,17 +871,17 @@
     <command id="cmd_DeleteMatrixColumn"        oncommand="msiGoDoCommand('cmd_DeleteMatrixColumn')"/>
     <command id="cmd_DeleteMatrixCellContents"  oncommand="msiGoDoCommand('cmd_DeleteMatrixCellContents')"/>
 
-    <command id="cmd_NormalizeTable"     observes="inMathBroadcaster"
+    <command id="cmd_NormalizeTable"     observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_NormalizeTable')"/>
-    <command id="cmd_JoinTableCells"     observes="inMathBroadcaster"
+    <command id="cmd_JoinTableCells"     observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_JoinTableCells')"/>
-    <command id="cmd_SplitTableCell"     observes="inMathBroadcaster"
+    <command id="cmd_SplitTableCell"     observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_SplitTableCell')"/>
-    <command id="cmd_ConvertToTable"     observes="inMathBroadcaster"
+    <command id="cmd_ConvertToTable"     observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_ConvertToTable')"/>
-    <command id="cmd_TableOrCellColor"   observes="inMathBroadcaster"
+    <command id="cmd_TableOrCellColor"   observes="inMathBroadcaster" 
  oncommand="msiGoDoCommand('cmd_TableOrCellColor')"/>
-    <command id="cmd_editTable"           observes="inMathBroadcaster"
+    <command id="cmd_editTable"           observes="inMathBroadcaster" 
 oncommand="msiGoDoCommand('cmd_editTable')"/>
   </commandset>
   <commandset id="tasksCommands">
@@ -826,12 +893,12 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <command id="cmd_MSIAutoSubDlg"       oncommand="msiGoDoCommand('cmd_MSIAutoSubDlg')"/>
   </commandset>
   <commandset id="tagsMenuCommands">
-    <command id="cmd_otfont" observes="inMathBroadcaster"
+    <command id="cmd_otfont" observes="inMathBroadcaster" 
       oncommand="callOTFontDialog();"/>
     <command id="cmd_tagkeyassignments" oncommand="callFunctionKeyDialog();"/>
   </commandset>
 
-
+    
 #ifdef DEBUG
   <menu id="debugMenu" label="&debugMenu.label;" accesskey="&debugMenu.accesskey;">
   <menupopup id="menu_debugPopup">
@@ -844,8 +911,8 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <menuitem label="&outputHTMLCmd.label;"
            oncommand="msiEditorGetHTML()"/>
     <menuitem label="Execute JavaScript"
-           oncommand='window.openDialog("chrome://prince/content/ExecuteJS.xul","Execute JavaScript",
-      "chrome,close,titlebar,resizable,modal=false");' />
+           oncommand='window.openDialog("chrome://prince/content/ExecuteJS.xul","Execute JavaScript", 
+      "chrome,close,titlebar,resizable,modal=false");' />                                  
     <menuseparator />
     <menuitem label="&pasteAsQuotationCmd.label;"
            accesskey="&editpastequotation.accesskey;"
@@ -907,8 +974,8 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
             oncommand='msiStopAnimation();' />
     <menuitem label="Start animation"
             oncommand='msiStartAnimation();' />
-    <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://prince/content/chamtest.xul","Cham Test",
-      "chrome,close,titlebar,resizable,modal=false");' />
+    <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://prince/content/chamtest.xul","Cham Test", 
+      "chrome,close,titlebar,resizable,modal=false");' /> 
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
     <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/ -->
     <menuitem label="&OpenAllSubdocs.label;" accesskey="&OpenAllSubdocs.accesskey;" oncommand="openAllSubdocs();"/>
@@ -916,5 +983,5 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     </menupopup>
   </menu>
 #endif
-
+  
 </overlay>
