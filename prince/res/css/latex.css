@@ -64,7 +64,7 @@ td[lines="double"] {
 }
 
 td[line-left="none"] {
-  border-style-left: none;
+  border-left-style: none;
 }
 
 td[line-left="solid"] {
@@ -77,7 +77,7 @@ td[line-left="double"] {
 
 
 td[line-right="none"] {
-  border-style-right: none;
+  border-right-style: none;
 }
 
 td[line-right="solid"] {
@@ -90,7 +90,7 @@ td[line-right="double"] {
 
 
 td[line-top="none"] {
-  border-style-top: none;
+  border-top-style: none;
 }
 
 td[line-top="solid"] {
@@ -103,7 +103,7 @@ td[line-top="double"] {
 
 
 td[line-bottom="none"] {
-  border-style-bottom: none;
+  border-bottom-style: none;
 }
 
 td[line-bottom="solid"] {
