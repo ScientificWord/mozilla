@@ -4,8 +4,8 @@
   <key id="msiArrowNextKey" keycode="VK_RIGHT" command="cmd_charNext"/>
   <key id="msiArrowPrevKey" keycode="VK_LEFT" command="cmd_charPrevious"/>
   <key id="msiArrowUpKey" keycode="VK_UP" command="cmd_linePrevious"/>
-  <key id="msiBoldKey" modifiers="accel" key="b" oncommand="msiDoStatefulCommand('cmd_texttag','bold');"/>    
-  <key id="msiCloseFileKey" modifiers="accel" key="w" observes="cmd_close"/>   
+  <key id="msiBoldKey" modifiers="accel" key="b" oncommand="msiDoStatefulCommand('cmd_texttag','bold');"/>
+  <key id="msiCloseFileKey" modifiers="accel" key="w" observes="cmd_close"/>
   <key id="msiCloseFileKeyWin" modifiers="accel" keycode="VK_F4" observes="cmd_close"/>
   <key id="msiCopyKey" key="c" command="cmd_copy" modifiers="accel"/>
   <key id="msiCutKey" key="x" command="cmd_cut" modifiers="accel"/>
@@ -25,7 +25,7 @@
   <key id="msiPasteKeyNoFormatting" key="v" command="cmd_pasteNoFormatting" modifiers="accel,shift"/>
   <key id="msiRedoKey" key="z" command="cmd_redo" modifiers="accel,shift" />
   <key id="msiSaveAsKey" key="s" command="cmd_saveAs" modifiers="accel,shift" />
-  <key id="msiSelectAllKey" modifiers="accel" key="a" command="cmd_selectAll"/>    
+  <key id="msiSelectAllKey" modifiers="accel" key="a" command="cmd_selectAll"/>
   <key id="msiSelectDownKey" keycode="VK_DOWN" command="cmd_selectLineNext" modifiers="shift"/>
   <key id="msiSelectMacroKey" key=" " modifiers="control,accel" command="cmd_macrofragment"/>
   <key id="msiSelectNextKey" keycode="VK_RIGHT" command="cmd_selectCharNext" modifiers="shift"/>
@@ -34,9 +34,9 @@
   <key id="msiStructTagKey" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="accel"/>
   <key id="msiSymbolKeyboardKey" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
   <key id="msiTextTagKey" key="1" action="document.getElementById('TextTagSelections').focus();" modifiers="accel"/>
-  <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>  
+  <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>
   <key id="msiTypesetPrintKey" key="p" oncommand="msiGoDoCommand('cmd_printPdf');" modifiers="accel,shift"/>
-  <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand(cmd_texttag','underline');"/>    
+  <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand(cmd_texttag','underline');"/>
   <key id="msiUndoKey" key="z" command="cmd_undo" modifiers="accel"/>
   <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
   <key id="msiZoomOutKey" key="-" command="cmd_zoomout" modifiers="accel"/>

@@ -33,7 +33,7 @@
   <radiogroup id="keyresult">
   <groupbox>
     <caption label="&AddNewFunctionKeyAssignment.label;"/>
-    <label>&newKey.label; </label>
+    <label control="newkeys" tabindex="10">&newKey.label; </label>
     <hbox>
       <vbox>
         <textbox id="newkeys" style="width: 11.5em" onkeypress="handleChar(event,this);"
@@ -42,8 +42,8 @@
       </vbox>  
       <vbox style="width:3in">
         <hbox>
-          <radio id = "taglistradio" group="keyresult" label="&tagradio.label;" accesskey="&tagradio.accesskey;" selected="true" value="alltaglist" oncommand="radioswitched(event, this);"/>
-          <textbox timeout="50" id="alltaglist" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          <radio id = "taglistradio" tabindex="20" group="keyresult" label="&tagradio.label;" accesskey="&tagradio.accesskey;" selected="true" value="alltaglist" oncommand="radioswitched(event, this);"/>
+          <textbox timeout="50" id="alltaglist" type="autocomplete" tabindex="30" enablehistory="true" minresultsforpopup="1"
             completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag listtag structtag envtag frontmtag" 
 	          tooltiptext="&alltaglist.tooltip;"
  	          label="&alltaglist.label;"   
@@ -51,14 +51,14 @@
             <!--onfocus="this.select();"  onmousedown="doTagListMouseDown(event);" -->
         </hbox>
         <hbox>
-          <radio id="scriptradio" group="keyresult" label="&scriptradio.label;" accesskey="&scriptradio.accesskey;" selected="false" persist = "selected" value="keyscript" oncommand="radioswitched(event, this);"/>
+          <radio id="scriptradio" group="keyresult" label="&scriptradio.label;" accesskey="&scriptradio.accesskey;" selected="false" persist = "selected" value="keyscript" tabindex="40" oncommand="radioswitched(event, this);"/>
           <textbox id="keyscript" style="width: 16em" onkeypress=""
-            tooltip="&scripttext.tooltip;" disabled="true" persist="disabled"/>
+            tooltip="&scripttext.tooltip;" tabindex="50" disabled="true" persist="disabled"/>
         </hbox>
         <hbox>
-          <radio id="reserveOS" group="keyresult" label="&reserveForOS.label;" accesskey="&reserveForOS.accesskey;" tooltip="&reserveForOS.tooltip;" selected="false" persist="selected" value="reservedforOS" oncommand="radioswitched(event, this);"/>
+          <radio id="reserveOS" group="keyresult" tabindex="60" label="&reserveForOS.label;" accesskey="&reserveForOS.accesskey;" tooltip="&reserveForOS.tooltip;" selected="false" persist="selected" value="reservedforOS" oncommand="radioswitched(event, this);"/>
         </hbox>
-        <msibutton id="assignkey" label="&assignKey.label;" accesskey="&assignKey.accesskey;" disabled="true" oncommand="assignKey();"/>
+        <msibutton id="assignkey" label="&assignKey.label;" accesskey="&assignKey.accesskey;" disabled="true" tabindex="70" oncommand="assignKey();"/>
       </vbox>
     </hbox>
   </groupbox>
@@ -66,17 +66,17 @@
   <caption label="&currentassignment.label;"/>
   <hbox>
     <listbox id="currentkeyslist" tooltip="&currentkeys.tooltip;" 
-          style="max-width:10em; max-height:50em;" onselect="selectCurrentKey(this);"  >
+          style="max-width:10em; max-height:50em;" tabindex="80" onselect="selectCurrentKey(this);"  >
     </listbox>
     <vbox style="width:3.5in">
       <spacer flex="1"/>
-      <label id="tagorscript" value="&tagOrScript.scriptLabel;" accesskey="&tagOrScript.scriptAccesskey;" tooltip="&tagOrScript.tooltip;"/>
-      <label id="tagorscriptTag" value="&tagOrScript.tagLabel;" hidden="true"/>
-      <label id="tagorscriptScript" value="&tagOrScript.scriptLabel;" hidden="true"/>
-      <label id="tagorscriptReserved" value="&tagOrScript.reservedLabel;" hidden="true"/>
-      <textbox id="nameoftagorscript" multiline="true" readonly="true" value="" flex="1"/>
+      <label id="tagorscript" control="nameoftagorscript" value="&tagOrScript.scriptLabel;" accesskey="&tagOrScript.scriptAccesskey;" tooltip="&tagOrScript.tooltip;"/>
+      <label id="tagorscriptTag" control="nameoftagorscript" value="&tagOrScript.tagLabel;" hidden="true"/>
+      <label id="tagorscriptScript" control="nameoftagorscript" value="&tagOrScript.scriptLabel;" hidden="true"/>
+      <label id="tagorscriptReserved" control="nameoftagorscript" value="&tagOrScript.reservedLabel;" hidden="true"/>
+      <textbox id="nameoftagorscript" multiline="true" tabindex="90" readonly="true" value="" flex="1"/>
       <spacer flex=".2"/>
-      <msibutton id="deleteassignment" label = "&deleteAssignment.label;" accesskey="&deleteAssignment.accesskey;" disabled="true" oncommand="deleteAssignment();"/>
+      <msibutton id="deleteassignment" label = "&deleteAssignment.label;" accesskey="&deleteAssignment.accesskey;" tabindex="100" disabled="true" oncommand="deleteAssignment();"/>
       <spacer flex="1"/>
     </vbox>
   </hbox>
