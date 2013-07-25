@@ -17,7 +17,19 @@ function princeStartUp()
 {
   // take out parts of the UI not needed on the Mac
   // protect these statements because some of these buttons don't exist in SNB
+  var os = getOS(window);
+  var button;
   var menuitem;
+  if ('osx' == os)
+  {
+    if (button = document.getElementById("printPreviewButton")) button.hidden=true;
+    if (button = document.getElementById("printPreviewMenuItem")) button.hidden=true;
+  }
+  else
+  {
+    if (button = document.getElementById("printPreviewButtonMac")) button.hidden = true;
+    if (button = document.getElementById("printPreviewMenuItemMac")) button.hidden=true;
+  }
   var prefs = GetPrefs();
   var wantdebug = prefs.getBoolPref("swp.debugtools");
   if (wantdebug)
@@ -25,7 +37,7 @@ function princeStartUp()
     if (menuitem = document.getElementById("venkmanName")) menuitem.hidden = false;
     if (menuitem = document.getElementById("menu_inspector")) menuitem.hidden = false;
   }
-
+  
   msiEditorOnLoad();
 }
 
@@ -46,8 +58,8 @@ function GetCurrentEditor() {
 	  editor = msiGetEditor(editorElement);
 //    editor instanceof Components.interfaces.nsIPlaintextEditor;
 //    editor instanceof Components.interfaces.nsIHTMLEditor;
-  } catch (e) {
-		throw ("Failure in GetCurrentEditor: \n" + e.message);
+  } catch (e) { 
+		throw ("Failure in GetCurrentEditor: \n" + e.message); 
 	}
   return editor;
 }
@@ -143,7 +155,7 @@ function runFixup(math)
   try {
     var out = GetCurrentEngine().perform(math,GetCurrentEngine().Fixup);
     return out;
-  }
+  } 
 	catch(e) {
 		throw("Failure in RunFixup():\n"+ e.message);
   }
@@ -188,7 +200,7 @@ function coalescemath() {
     element.parentNode.removeChild(element);  // now empty
 
     editor.setCaretAfterElement(last_child(last));
-  }
+  } 
 }
 
 
@@ -291,7 +303,7 @@ function openTeX()
 //  dump("Open TeX \n");
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-  fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);
+  fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);     
   fp.appendFilter(GetString("TeXFiles"), "*.tex; *.ltx; *.shl");
   fp.appendFilters(msIFilePicker.filterXML)
 
@@ -300,15 +312,15 @@ function openTeX()
 
   try {
     fp.show();
-    // need to handle cancel (uncaught exception at present)
+    // need to handle cancel (uncaught exception at present) 
   }
   catch (ex) {
     dump("filePicker.chooseInputFile threw an exception\n");
     dump(e+"\n");
-
+    
   }
 
-  // This checks for already open window and activates it...
+  // This checks for already open window and activates it... 
   // note that we have to test the native path length
   // since file.URL will be "file:///" if no filename picked (Cancel button used)
   dump("\nFile picked: " + fp.file.path);
@@ -322,9 +334,9 @@ function openTeX()
 //         files are. This is usually resource://app.                                                                  //
 //       The input .tex file.                                                                                 //
 //       The output directory where the auxiliary files that are generated (such as .css, etc.) go.           //
-//       The output <filename>.sci file.
+//       The output <filename>.sci file.                                    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    
     msiSaveFilePickerDirectory(fp, "tex");
     var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
     var infile =  "\""+fp.file.path+"\"";
@@ -361,7 +373,7 @@ function openTeX()
       docdir.append(defdocdirstring);
       if (!docdir.exists()) docdir.create(1,0755);
       dump("default document directory is "+docdir.path+"\n");
-    }
+    }                                                                
 
     var outdir = docdir.clone();
     outdir.append(filename + "_work");
@@ -387,7 +399,7 @@ function openTeX()
     } else {
       exefile.append("pretex");
     }
-
+    
     var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     dataDir.append("ptdata");
     dump("\n\nExe="+exefile.path);
@@ -399,25 +411,25 @@ function openTeX()
 	dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
 
     // run pretex.exe
-
-    try
+    
+    try 
     {
       var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
       theProcess.init(exefile);
       var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, fp.file.path, outfile.path];
       theProcess.run(true, args, args.length);
-    }
-    catch (ex)
+    } 
+    catch (ex) 
     {
          dump("\nUnable to open TeX:\n");
 		     dump("\nexe  = "  + exefile);
          dump("\narg paths = " + dataDir.path + "\n   " + fp.file.path + "\n    " + outfile.path + "\n     " + outdir.path);
          dump(ex+"\n");
-    }
+    }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
-
+    
     msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, false, false);
-  }
+  }                       
 }
 
 #define INTERNAL_XSLT
@@ -440,14 +452,14 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
     texprogNode = texprogNodes[0];
     if (texprogNode.hasAttribute("prog")) compiler = texprogNode.getAttribute("prog");
   }
-
+  
   var xslfiles = processingInstructionsList(document, "sw-xslt", false);
   //  if nothing returned, use the default xlt
   if (xslfiles.length < 1) xslfiles = ["latex.xsl"];
   var xslSheet=xslfiles[0];
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var documentPath = document.documentURI;
-  var docurl = msiURIFromString(documentPath);
+  var docurl = msiURIFromString(documentPath);                                      
   var workingDir;
 	var parentDir;
   var outTeX;
@@ -483,7 +495,7 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
   var minpasses = 1;
-  if (matcharr && matcharr.length > 1)
+  if (matcharr && matcharr.length > 1) 
   {
     minpasses = matcharr[1];
   }
@@ -504,11 +516,11 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
 		var k;
 		for (k = 0; k < specialDirs.length; k++)
 		{
-      str = str.replace("{../"+specialDirs[k]+"/", "{"+prefix+specialDirs[k]+"/", "g");
+      str = str.replace("{../"+specialDirs[k]+"/", "{"+prefix+specialDirs[k]+"/", "g");		  
 		}
 	}
-
-  if (outTeXfile.exists())
+    
+  if (outTeXfile.exists()) 
     outTeXfile.remove(false);
   outTeXfile.create(0, 0755);
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
@@ -533,15 +545,15 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
 			if (s.exists())
 			{
 				// copy files from s to d
-				var entries = s.directoryEntries;
+				var entries = s.directoryEntries;  
 				if (entries.hasMoreElements())
 				{
 				  if (!d.exists())
 					  d.create(1,0755);
-  				while(entries.hasMoreElements())
-  				{
-  				  var entry = entries.getNext();
-  				  entry.QueryInterface(Components.interfaces.nsIFile);
+  				while(entries.hasMoreElements())  
+  				{  
+  				  var entry = entries.getNext();  
+  				  entry.QueryInterface(Components.interfaces.nsIFile);  
   				  entry.copyTo(d,"");
   				}
   			}
@@ -610,7 +622,7 @@ function exportTeX()
 
       }
     }
-  }
+  }  
 
   if (dialogResult != msIFilePicker.returnCancel)
     if (!documentAsTeXFile(editor, editor.document, fp.file, compileInfo ))
@@ -633,14 +645,14 @@ function exportToWeb()
    fp.appendFilter("Zip file with web refs for CSS", "*.zip");
    fp.appendFilter("Zip file with MathJax", "*.zip");
    fp.appendFilter("Zip file with web refs for CSS and MathJax", "*.zip");
-     try
+     try 
    {
      var dialogResult = fp.show();
      if (dialogResult != msIFilePicker.returnCancel)
        if (!saveforweb(editor.document, fp.filterIndex, fp.file ))
          AlertWithTitle("Export", "Web file not created.");
    }
-   catch (ex)
+   catch (ex) 
    {
      dump("filePicker threw an exception in exportToWeb: "+ex.message+"\n");
    }
@@ -648,17 +660,17 @@ function exportToWeb()
 
 
 /* ==== */
-/* =
+/* = 
 compileTeXFile:
   compiler -- a string, either 'pdflatex' or 'xelatex', giving which compiler to use.
-  infileLeaf -- the name of the input TeX file without '.tex' or the initial part of the path
+  infileLeaf -- the name of the input TeX file without '.tex' or the initial part of the path 
   infilePath -- the full name of the input TeX file, including the path and 'tex'
   outputDir -- the directory in which to put the resulting file
-  compileInfo -- an object for storing the required # of passes, whether makeindex needs
+  compileInfo -- an object for storing the required # of passes, whether makeindex needs 
        to be called, etc.
-
+  
   returns -- a boolean to indicate whether the expected file appears where it is supposed to
-
+  
  = */
 /* ==== */
 
@@ -703,7 +715,7 @@ function setBibTeXRunArgs(passData)
 
 function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo )
 {
-  // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex
+  // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
   var passData;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
@@ -740,7 +752,7 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   var i;
   window.openDialog("chrome://prince/content/passes.xul","about", "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
     passData);
-//    There was some commented code here for using the pipe-console object from the enigmail project. We are not
+//    There was some commented code here for using the pipe-console object from the enigmail project. We are not 
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
 
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
@@ -767,24 +779,24 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
     dump("\nFinal output filename: "+tempOutputfile.path+"\n");
     return true;
   }
-  else return false;
+  else return false;    
 }
 
 
 function printPDFFile(infile)
 {
-  // the following requires that the printpdf batch file (or a hard link to it) be in xpi-stage/prince/TeX/bin/printpdf.cmd
+  // the following requires that the printpdf batch file (or a hard link to it) be in xpi-stage/prince/TeX/bin/printpdf.cmd 
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   exefile.append("printpdf.cmd");
   dump("\nexecutable file: "+exefile.path+"\n");
-  try
+  try 
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
     var args = [infile.path];
     theProcess.run(true, args, args.length);
-  }
+  } 
   catch (ex) {
     dump("\nUnable to run Acrobat: "+ex.message+"\n");
     return false;
@@ -792,7 +804,7 @@ function printPDFFile(infile)
 }
 
 // compileDocument compiles the current document of the current editor; it converts it to TeX and then PDF.
-// Returns true if everything succeeded.
+// Returns true if everything succeeded. 
 function compileDocument()
 {
   var editorElement = msiGetActiveEditorElement();
@@ -813,7 +825,7 @@ function compileDocument()
   if (pdfViewer && (pdfViewer.src != "about:blank"))
     pdfViewer.loadURI("about:blank");   // this releases the currently displayed pdf preview.
   dump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
-
+  
   if (graphicsTimers)
   {
     var checkGraphicsCallback = (function(callbackObj) {
@@ -842,7 +854,7 @@ function compileDocument()
 
       }
     }
-  }
+  }  
 
   editorElement.pdfModCount = editor.getModificationCount();
   dump(editorElement.pdfModCount+"\n");
@@ -865,13 +877,13 @@ function compileDocument()
       if (outputfile.exists()) AlertWithTitle("Locked file","the tex directory was not deleted");
       outputfile.create(1, 0755);
     }
-    catch(e) {}; //
+    catch(e) {}; // 
     var pdffile = outputfile.clone();
     outputfile.append("main.tex");
     if (outputfile.exists()) outputfile.remove(false);
-
+    
     dump("TeX file="+outputfile.path + "\n");
-//    dump("PDF file is " + pdffile.path + "\n");
+//    dump("PDF file is " + pdffile.path + "\n"); 
     var compileInfo = new Object();  // an object to hold pass counts and whether makeindex needs to run.
     if (documentAsTeXFile(editor, editor.document, null, compileInfo ))
     {
@@ -879,19 +891,19 @@ function compileDocument()
       {
         pdffile.append(compileInfo.finalPDFleaf);
         if (!pdffile.exists())
-        {
+        {  
           AlertWithTitle("TeX Error", "Unable to create a PDF file.");
           goDoCommand("cmd_showTeXLog");
           return null;
         }
-        else
+        else 
         {
           return pdffile;
         }
       }
       else return null;
     }
-    else
+    else 
     {
       AlertWithTitle("XSLT Error", "Unable to create a TeX file");
       return null;
@@ -920,9 +932,9 @@ function printTeX(preview )
         {
           document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
           // Switch to the preview pane (third in the deck)
-          goDoCommand("cmd_PreviewMode");
+          goDoCommand("cmd_PreviewMode"); 
         }
-        else
+        else 
         {
           var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
           var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
@@ -936,7 +948,7 @@ function printTeX(preview )
             {
               extension = "cmd";
             }
-            else
+            else 
             {
               extension = "bash";
             }
@@ -953,10 +965,10 @@ function printTeX(preview )
             exefile.initWithPath(pdfAction);
             arr=[pdffile.path];
             theProcess.init(exefile);
-            theProcess.run(false, arr, arr.length);
+            theProcess.run(false, arr, arr.length);             
           }
         }
-      }
+      } 
       else
         printPDFFile(pdffile);
     }
@@ -982,7 +994,7 @@ function compileTeX(compiler)
 
     var graphicsTimers = graphicsConverter.ensureTypesetGraphicsForDocument(editor.document, window);
     document.getElementById("preview-frame").loadURI("about:blank");
-  // now save this TeX string and run TeX on it.
+  // now save this TeX string and run TeX on it.  
     checkPackageDependenciesForEditor(editor);
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
@@ -1004,25 +1016,25 @@ function compileTeX(compiler)
     if (outputfile.exists()) outputfile.remove(false);
     pdffile.append(outleaf + ".pdf");
     if (pdffile.exists()) pdffile.remove(false);
-
-    dump("TeX file="+outputfile.path)+"\n";
+    
+    dump("TeX file="+outputfile.path)+"\n";  
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     fp.init(window, "Save PDF file", msIFilePicker.modeSave);
 
     fp.appendFilter("Compiled files","*.pdf");
     fp.appendFilters(msIFilePicker.filterAll);
 
-    try
+    try 
     {
       fp.show();
-      // need to handle cancel (uncaught exception at present)
+      // need to handle cancel (uncaught exception at present) 
     }
-    catch (ex)
+    catch (ex)                                                                      
     {
       dump("filePicker threw an exception\n");
       return;
     }
-
+  
     if (graphicsTimers)
     {
       var checkGraphicsCallback = (function(callbackObj) {
@@ -1076,8 +1088,8 @@ function compileTeX(compiler)
         }
         else
         // move the output result to the place indicated by fp.
-          pdffile.move(fp.file.parent, fp.file.leafName);
-      }
+          pdffile.move(fp.file.parent, fp.file.leafName); 
+      } 
     }
   }
   catch(e) {
@@ -1087,27 +1099,27 @@ function compileTeX(compiler)
 }
 
 function initializeAutoCompleteStringArray()
-
-{
+ 
+{ 
  dump("===> initializeAutoCompleteStringArray\n");
-
+                            
 //   var stringArraySearch = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService(Components.interfaces.nsIAutoCompleteSearchStringArray);
-//   stringArraySearch.editor = GetCurrentEditor();
+//   stringArraySearch.editor = GetCurrentEditor(); 
 }
 
-
-
-
-//In msiEditor.js // handle events on prince-specific elements here, or call the default goDoCommand()
-//In msiEditor.js function goDoPrinceCommand (cmdstr, element)
+ 
+ 
+ 
+//In msiEditor.js // handle events on prince-specific elements here, or call the default goDoCommand() 
+//In msiEditor.js function goDoPrinceCommand (cmdstr, element) 
 //In msiEditor.js {
 //In msiEditor.js    if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
 //In msiEditor.js    {
 //In msiEditor.js       graphClickEvent(cmdstr);
 //In msiEditor.js    }
-//In msiEditor.js    else
-//In msiEditor.js    {
-//In msiEditor.js       goDoCommand(cmdstr);
+//In msiEditor.js    else 
+//In msiEditor.js    { 
+//In msiEditor.js       goDoCommand(cmdstr);  
 //In msiEditor.js    }
 //In msiEditor.js }
 
@@ -1246,7 +1258,7 @@ function documentToTeXString(document, xslPath)
     while (strResult.search(/\\par[ \t\n]+/) >= 0)
 		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
     while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
-		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");
+		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");  
 		//while (strResult.search(/\\par/) >= 0)
 		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
   }

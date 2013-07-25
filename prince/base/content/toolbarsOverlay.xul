@@ -1,27 +1,27 @@
-<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. --> 
 #include productname.inc
 
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbaroverride.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/printpreview.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>  
 
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd">
 <!--JLF - Localization pass on 6/25/2012 -->
 <overlay id="toolbarsOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-
+  
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/-->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/--> 
   <script type="application/x-javascript" src="chrome://prince/content/toolbarsOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>     
   <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
 
-
+         
   <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="mode" flex="1"
-     mode="icons" iconsize="large" >
+     mode="icons" iconsize="large" >       
     <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
       <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
         label="&CustomizeToolbars.label;" />
@@ -48,11 +48,9 @@
       <toolbarbutton id="exportwebButton"/>
       <toolbarbutton id="importimageButton"/>
       <toolbarbutton id="importtexButton"/>
-      <toolbarbutton id="printDirectButton"/>
-      <toolbarbutton id="printPDFButton"/>
-      <toolbarbutton id="printPreviewPDFButton"/>
-      <toolbarbutton id="printPreviewDirectButton"/>
-      <toolbarbutton id="printPreviewDirectButtonMac"/>
+      <toolbarbutton id="printButton"/>
+      <toolbarbutton id="printPreviewButton"/>
+      <toolbarbutton id="printPreviewButtonMac"/>
       <toolbarbutton id="spellcheckButton"/>
       <toolbarbutton id="cutButton"/>
       <toolbarbutton id="copyButton"/>
@@ -60,7 +58,7 @@
       <toolbarbutton id="pasteButton"/>
       <toolbarbutton id="undoButton"/>
       <toolbarbutton id="redoButton"/>
-
+      
 #ifndef PROD_SW
       <toolbarbutton id="evalButton"/>
       <toolbarbutton id="evalnumButton"/>
@@ -117,31 +115,31 @@
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
       <toolbaritem id="FrontMTags" title="&frontmtagselect.label;"><textbox id="FrontMTagSelections"/></toolbaritem>
       <toolbaritem id="zoomer" title="Zoom settings" ><textbox id="zoomValue" label="&ZoomSetting.label;" tooltiptext="&ZoomSetting.tooltip;" type="number" observes="cmd_textZoomSet"/></toolbaritem>
-
+      
     </toolbarpalette>
-    <toolbar
-      id="StandardToolbar"
+    <toolbar 
+      id="StandardToolbar" 
       toolbarname="Standard Toolbar"
-      class="chromeclass-toolbar"
+      class="chromeclass-toolbar" 
       persist="collapsed"
       flex = "1"
-      tbalign="center"
+      tbalign="center" 
       context="toolbar-context-menu"
 #ifdef PROD_SNB
- defaultset= "newButton,openButton,saveButton,printDirectButton,printPreviewDirectButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+ defaultset= "newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
 #else
 defaultset=
-"newButton,openButton,saveButton,printDirectButton,printPreviewDirectButton,printPDFButton,printPreviewPDFButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+"newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
 #endif
-      mode="icons"
+      mode="icons" 
       customizable="true" />
-    <toolbar
-      id="EditingToolbar"
+    <toolbar 
+      id="EditingToolbar" 
       toolbarname="Editing Toolbar"
-      class="chromeclass-toolbar"
-      persist="collapsed"
+      class="chromeclass-toolbar" 
+      persist="collapsed" 
       flex = "1"
-      tbalign="center"
+      tbalign="center" 
       context="toolbar-context-menu"
 #ifdef PROD_SNB
 defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,importtexButton"
@@ -150,38 +148,38 @@ defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicB
 #else
 defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
 #endif
-      mode="icons"
+      mode="icons" 
       customizable="true" />
-    <toolbar
-      id="MathToolbar"
+    <toolbar 
+      id="MathToolbar" 
       toolbarname="Math Toolbar"
-      class="chromeclass-toolbar"
-      persist="collapsed"
+      class="chromeclass-toolbar" 
+      persist="collapsed" 
       flex = "1"
-      tbalign="center"
+      tbalign="center" 
       context="toolbar-context-menu"
 #ifdef PROD_SW
       defaultset="fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #else
 defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,stopButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #endif
-      mode="icons"
+      mode="icons" 
       customizable="true" />
     <toolbarset context="toolbar-context-menu"/>
-    <toolbar
-      id="SymbolToolbar"
+    <toolbar 
+      id="SymbolToolbar" 
       toolbarname="Symbol Toolbar"
-      class="chromeclass-toolbar"
-      persist="collapsed"
+      class="chromeclass-toolbar" 
+      persist="collapsed" 
       flex = "1"
       tbalign="center"
-      collapsed="true"
+      collapsed="true" 
       context="symbol-palettes-context-menu" >
       <tabbox textsize="small" id="Symbol-tabbox" />
     </toolbar>
 
 #ifndef PROD_SW
-    <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed"
+    <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
       flex = "1"
       mode="icons" customizable="true"  hidden = "true">
 	    <observes id="vcamactiveObserver" element="vcamactive" attribute="hidden" onbroadcast="doVCamClose();"/>
@@ -213,7 +211,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
           <menuitem id="actionspeed8s" name = "action" type="radio" label="8x slower" oncommand="setActionSpeed(0.125);" />
           <menuitem id="actionspeed4s" name = "action" type="radio" label="4x slower" oncommand="setActionSpeed(0.25);" />
           <menuitem id="actionspeed2s" name = "action" type="radio" label="2x slower" oncommand="setActionSpeed(0.5);" />
-          <menuitem id="actionspeedN"  name = "action" type="radio" label="Natural"   oncommand="setActionSpeed(1.0);" checked="true"/>
+          <menuitem id="actionspeedN"  name = "action" type="radio" checked="true" label="Natural" oncommand="setActionSpeed(1.0);" />
           <menuitem id="actionspeed2f" name = "action" type="radio" label="2x faster" oncommand="setActionSpeed(2.0);" />
           <menuitem id="actionspeed4f" name = "action" type="radio" label="4x faster" oncommand="setActionSpeed(4.0);" />
           <menuitem id="actionspeed8f" name = "action" type="radio" label="8x faster" oncommand="setActionSpeed(8.0);" />
@@ -226,8 +224,8 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
       <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
       <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
         <menupopup>
-          <menuitem id="runonce"      name= "looptype" type="radio" label="Run once"       oncommand="setLoopMode(0);" checked="true" />
-          <menuitem id="loop"         name= "looptype" type="radio" label="Loop"           oncommand="setLoopMode(1);" />
+          <menuitem id="runonce"      name= "looptype" type="radio" checked="true" label="Run once" oncommand="setLoopMode(0);" />
+          <menuitem id="loop"         name= "looptype" type="radio" label="Loop" oncommand="setLoopMode(1);" />
           <menuitem id="backandforth" name= "looptype" type="radio" label="Back and forth" oncommand="setLoopMode(2);" />
         </menupopup>
       </toolbarbutton>
@@ -236,7 +234,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
           <menuitem id="animspeed8s" name = "anim" type="radio" label="8x slower" oncommand="setAnimSpeed(0.125);" />
           <menuitem id="animspeed4s" name = "anim" type="radio" label="4x slower" oncommand="setAnimSpeed(0.250);" />
           <menuitem id="animspeed2s" name = "anim" type="radio" label="2x slower" oncommand="setAnimSpeed(0.5);" />
-          <menuitem id="animspeedN"  name = "anim" type="radio" label="Natural"   oncommand="setAnimSpeed(1.0);" checked="true" />
+          <menuitem id="animspeedN"  name = "anim" type="radio" checked="true" label="Natural" oncommand="setAnimSpeed(1.0);" />
           <menuitem id="animspeed2f" name = "anim" type="radio" label="2x faster" oncommand="setAnimSpeed(2.0);" />
           <menuitem id="animspeed4f" name = "anim" type="radio" label="4x faster" oncommand="setAnimSpeed(4.0);" />
           <menuitem id="animspeed8f" name = "anim" type="radio" label="8x faster" oncommand="setAnimSpeed(8.0);" />
@@ -355,27 +353,85 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
   <toolbarbutton id="saveButton" class="toolbarbutton-1" observes="cmd_save"
                  tooltiptext="&saveToolbarCmd.tooltip;"
                   label="&saveToolbarCmd.label;" />
+#ifdef PROD_SNB
+  <toolbarbutton id="printPreviewButton"  class="toolbarbutton-1"
+        oncommand="msiGoDoCommand('cmd_preview');"/>
+  <toolbarbutton id="printButton"  class="toolbarbutton-1"
+        oncommand="msiGoDoCommand('cmd_print');"/>
+        <!-- label="&printPreviewCmd.label;" 
+        tooltiptext="&printPreviewToolbarCmd.tooltip;"
+        label="&printCmd.label;"
+        tooltiptext="&printToolbarCmd.tooltip;" -->
 
-                  <!-- print buttons -->
+#else
+  <toolbarbutton id="printButton" type="menu-button" class="toolbarbutton-1"
+                 label="&printToolbarCmd.label;"
+                 tooltiptext="&printToolbarCmd.tooltip;"
+                 persist="defcomp printCommand"
+                 oncommand="msiGoDoCommand(this.getAttribute('printCommand'));" >
+    <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp"/>
+    <observes element="defaultCompiler" attribute="printCommand"/>
+    <menupopup id="printMenu" tooltiptext="" >
+      <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
+                oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();" for="direct" onbroadcast="setDefault(this);" >
+        <observes id="pmitb1" element="defaultCompiler" attribute="defcomp" />
+      </menuitem>
+      <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
+                observes="cmd_printPdf"  for="pdf" onbroadcast="setDefault(this);">
+        <observes id="pmitb2" element="defaultCompiler" attribute="defcomp"  />
+      </menuitem>
+      <menuseparator/>
+      <menu id="chooseDefPrinter" label="&chooseDefPrinter.label;" >
+	      <menupopup id="menuChooseDefPrinterPopup">
+	        <menuitem id="directMode" label="&direct;" persist="default"
+            oncommand="return setDefaultPrinter('direct',event);" for="direct" onbroadcast="setDefault(this);">
+            <observes id="pmitb7" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>
+	        <menuitem id="pdfMode" label="&pdf;"   persist="default"  checked="true"  
+            oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
+            <observes id="pmitb8" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>
+	      </menupopup>
+      </menu>
+    </menupopup>
+  </toolbarbutton>
 
-  <toolbarbutton id="printDirectButton" class="toolbarbutton-1"
-                 label="&printButton.label;"
-                 tooltiptext="&printButton.tooltip;"
-                 oncommand="msiGoDoCommand('cmd_printDirect'));" />
-  <toolbarbutton id="printPreviewDirectButton" class="toolbarbutton-1"
-                 label="&printPreviewToolbarCmd.label;"
-                 tooltiptext="&printPreviewToolbarCmd.tooltip;"
-                 oncommand="msiGoDoCommand('cmd_previewDirect');" />
-
-#ifndef PROD_SNB
-  <toolbarbutton id="printPDFButton" class="toolbarbutton-1"
-                 label="&pdfprintButton.label;"
-                 tooltiptext="&pdfprintButton.tooltip;"
-                 oncommand="msiGoDoCommand('cmd_printPdf'));" />
-  <toolbarbutton id="printPreviewPDFButton" class="toolbarbutton-1"
+  <toolbarbutton id="printPreviewButtonMac" class="toolbarbutton-1"
                  label="&pdfpreviewButton.label;"
                  tooltiptext="&pdfpreviewButton.tooltip;"
                  oncommand="msiGoDoCommand('cmd_previewPdf');" />
+
+  <toolbarbutton id="printPreviewButton" type="menu-button" class="toolbarbutton-1"
+                 label="&printPreviewToolbarCmd.label;"
+                 tooltiptext="&printPreviewToolbarCmd.tooltip;"
+                 persist="defcomp previewCommand" 
+                 oncommand="msiGoDoCommand(this.getAttribute('previewCommand'));" >
+    <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp"/>
+    <observes id="printButtonObs" element="defaultCompiler" attribute="previewCommand"/>
+    <menupopup id="previewMenu">
+      <menuitem id="directPreviewMenuItem" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
+                observes="cmd_previewDirect" for="direct" onbroadcast="setDefault(this);" >
+        <observes id="pmitb10" element="defaultCompiler" attribute="defcomp" />
+      </menuitem>
+      <menuitem id="pdfPreviewMenuItem" label="&pdfpreviewButton.label;" persist="default" default="false"
+                observes="cmd_previewPdf" for="pdf" onbroadcast="setDefault(this);">
+        <observes id="pmitb11" element="defaultCompiler" attribute="defcomp" />
+      </menuitem>
+      <menuseparator/>
+      <menu id="chooseDefPrinter2" label="&chooseDefPrinter.label;" >
+	      <menupopup id="menuChooseDefPrinterPopup2">
+	        <menuitem id="directMode2" label="&direct;" checked="true" persist="default"
+            oncommand="return setDefaultPrinter('direct',event);" for="direct" onbroadcast="setDefault(this);">
+            <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>
+	        <menuitem id="pdfMode2" label="&pdf;"  persist="default"
+            oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
+            <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>
+	      </menupopup>
+      </menu>
+    </menupopup>
+  </toolbarbutton>
   <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
 #endif
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
@@ -402,7 +458,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
                  label="&findToolbarCmd.label;" observes="cmd_find"
                  tooltiptext="&findToolbarCmd.tooltip;"/>
 
-  <toolbarbutton id="spellcheckButton" class="toolbarbutton-1"
+  <toolbarbutton id="spellcheckButton" class="toolbarbutton-1" 
                  label="&spellToolbarCmd.label;" observes="cmd_spelling"
                  tooltiptext="&spellToolbarCmd.tooltip;"/>
 
@@ -469,6 +525,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     <!--command id="cmd_showXSLTLog" oncommand="msiGoDoCommand('cmd_showXSLTLog');" / -->
     <command id="cmd_textBold" oncommand="msiDoStatefulCommand('cmd_texttag','bold');" />
     <command id="cmd_textItalic" oncommand="msiDoStatefulCommand('cmd_texttag','italics');" />
+    <broadcaster id="defaultCompiler" persist="defcomp previewCommand printCommand" defcomp="pdf" previewCommand="cmd_previewPdf" printCommand="cmd_printPdf"/>
   </broadcasterset>
 
 
