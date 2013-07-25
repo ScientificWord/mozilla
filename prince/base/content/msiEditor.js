@@ -140,9 +140,9 @@ function initMetaData( doc ) {
     headnode.insertBefore(node, headnode.firstChild);
   }
   // Initial data are version, created, lastrevised
-  var product = "Scientific WorkPlace";
+  var product = "Scientific Workplace";
 #ifdef PROD_SWP
-  product = "Scientific WorkPlace";
+  product = "Scientific Workplace";
 #endif
 #ifdef PROD_SW
   product = "Scientific Word";
