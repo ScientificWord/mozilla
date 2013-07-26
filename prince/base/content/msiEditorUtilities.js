@@ -11260,10 +11260,11 @@ var msiSpaceUtils =
     bigSkip :               {dimensions: "12pt"},
     strut :                 {lineHeight: "100%"},
     mathStrut:              {lineHeight:  "100%"}   //not really right, but for the moment
+    // BBM: revisit this
   },
 
   breaksInfo : {
-    allowBreak :            {charContent: "&#x200b;"},  //this is the zero-width space  -   showInvisibleChars:  "|"?
+    allowBreak :            {charContent: "&#x00ad;", showInvisibleChars: "|"},  //this is the zero-width space  -   showInvisibleChars:  "|"?
     discretionaryHyphen :   {charContent: "&#x00ad;", showInvisibleChars: "-"},
     noBreak:                {charContent: "&#x2060;", showInvisibleChars: "~"},
     pageBreak:              {charContent: "<newPageRule></newPageRule>"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
