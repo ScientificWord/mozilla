@@ -930,7 +930,12 @@ function printTeX(preview )
         var pdfAction = prefs.getCharPref("swp.prefPDFPath");
         if (pdfAction == "default")
         {
-          document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
+          try {
+            document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
+          }
+          catch (e) {
+            return;
+          }
           // Switch to the preview pane (third in the deck)
           goDoCommand("cmd_PreviewMode"); 
         }
