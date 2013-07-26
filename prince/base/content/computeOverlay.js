@@ -2101,15 +2101,32 @@ function appendLabeledResult(result, label, math, editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
 
   var editor = msiGetEditor(editorElement);
-
+  var resultArray;
   var preStr;
+  var midStr;
   var postStr;
-
+  editor.beginTransaction();
   var resultLoc = label.search(/%result%/);
+  var res1Loc = -1;
+  var res2Loc = -1;
+  var resPre;
+  var resPost;
+  if (resultLoc == -1) {
+    res1Loc = label.search(/%res1%/);
+    res2Loc = label.search(/%res2%/);
+  }
+  var temp;
+  var space = "<hspace type='thinSpace' dim='0.17em'/>";
 
   if (-1 == resultLoc) {
-    preStr = label;
-    postStr = "";
+    if (res1Loc == res2Loc == -1) {
+      preStr = label;
+      postStr = "";
+    }  else {  //res1 or res2 or both found
+      preStr  = label.substr(0, res1Loc);
+      midStr  =  label.substr(res1Loc + 6, res2Loc - (res1Loc + 6));
+      postStr = label.substr(res2Loc + 6);
+    }
   } else {
     preStr = label.substr(0, resultLoc);
     var match = "%result%";
@@ -2117,10 +2134,26 @@ function appendLabeledResult(result, label, math, editorElement) {
   }
 
   editor.setCaretAfterElement(math);
-  editor.insertHTML(preStr);
-  editor.insertHTML(result);
-  editor.insertHTML(postStr);
-
+  if (res2Loc == -1 && res1Loc == -1) {
+    editor.insertHTML(preStr);
+    editor.insertHTML(result);
+    editor.insertHTML(postStr);
+  }
+  else {
+    resPre = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow>";
+    resPost = "</mrow></math>";
+    temp = result.replace(resPre, "");
+    temp = temp.replace(resPost,"");
+    resultArray = temp.split("<mo>,</mo>");
+    if (resultArray && resultArray.length > 1) {
+      editor.insertHTML(preStr + space);
+      editor.insertHTML(resPre + resultArray[0] + resPost + space);
+      editor.insertHTML(midStr + space);
+      editor.insertHTML(resPre + resultArray[1] + resPost + space);
+      editor.insertHTML(postStr + space);
+    }
+  }
+  editor.endTransaction();
 }
 
 function appendTaggedResult(result, label, body, index, editorElement) {
