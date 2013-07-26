@@ -36,7 +36,7 @@
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
         <menupopup id="menupopup_RecentFiles"
-           oncommand="msiEditPage(msiFileURLFromAbsolutePath(event.target.getAttribute('value')).spec, window,
+           oncommand="loadDocumentFromURI(event.target.getAttribute('value'), window,
             false, false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
