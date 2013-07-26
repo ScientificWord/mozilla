@@ -95,7 +95,7 @@ breakobj {
   white-space: pre;
 }
 
-*[showinvis="true"] breakobj:before {
+*[showinvis="true"] breakobj:before, *[showinvis="true"] msibreak:before {
   color: green;
   content: attr(invisDisplay);
 }
