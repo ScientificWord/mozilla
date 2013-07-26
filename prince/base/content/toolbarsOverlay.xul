@@ -1,27 +1,27 @@
-<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. --> 
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 #include productname.inc
 
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbaroverride.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/printpreview.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>  
+<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>
 
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd">
 <!--JLF - Localization pass on 6/25/2012 -->
 <overlay id="toolbarsOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  
+
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/--> 
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/-->
   <script type="application/x-javascript" src="chrome://prince/content/toolbarsOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>     
+  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
   <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
 
-         
+
   <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="mode" flex="1"
-     mode="icons" iconsize="large" >       
+     mode="icons" iconsize="large" >
     <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
       <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
         label="&CustomizeToolbars.label;" />
@@ -58,7 +58,7 @@
       <toolbarbutton id="pasteButton"/>
       <toolbarbutton id="undoButton"/>
       <toolbarbutton id="redoButton"/>
-      
+
 #ifndef PROD_SW
       <toolbarbutton id="evalButton"/>
       <toolbarbutton id="evalnumButton"/>
@@ -115,15 +115,15 @@
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
       <toolbaritem id="FrontMTags" title="&frontmtagselect.label;"><textbox id="FrontMTagSelections"/></toolbaritem>
       <toolbaritem id="zoomer" title="Zoom settings" ><textbox id="zoomValue" label="&ZoomSetting.label;" tooltiptext="&ZoomSetting.tooltip;" type="number" observes="cmd_textZoomSet"/></toolbaritem>
-      
+
     </toolbarpalette>
-    <toolbar 
-      id="StandardToolbar" 
+    <toolbar
+      id="StandardToolbar"
       toolbarname="Standard Toolbar"
-      class="chromeclass-toolbar" 
+      class="chromeclass-toolbar"
       persist="collapsed"
       flex = "1"
-      tbalign="center" 
+      tbalign="center"
       context="toolbar-context-menu"
 #ifdef PROD_SNB
  defaultset= "newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
@@ -131,15 +131,15 @@
 defaultset=
 "newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
 #endif
-      mode="icons" 
+      mode="icons"
       customizable="true" />
-    <toolbar 
-      id="EditingToolbar" 
+    <toolbar
+      id="EditingToolbar"
       toolbarname="Editing Toolbar"
-      class="chromeclass-toolbar" 
-      persist="collapsed" 
+      class="chromeclass-toolbar"
+      persist="collapsed"
       flex = "1"
-      tbalign="center" 
+      tbalign="center"
       context="toolbar-context-menu"
 #ifdef PROD_SNB
 defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,importtexButton"
@@ -148,38 +148,38 @@ defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicB
 #else
 defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
 #endif
-      mode="icons" 
+      mode="icons"
       customizable="true" />
-    <toolbar 
-      id="MathToolbar" 
+    <toolbar
+      id="MathToolbar"
       toolbarname="Math Toolbar"
-      class="chromeclass-toolbar" 
-      persist="collapsed" 
+      class="chromeclass-toolbar"
+      persist="collapsed"
       flex = "1"
-      tbalign="center" 
+      tbalign="center"
       context="toolbar-context-menu"
 #ifdef PROD_SW
       defaultset="fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #else
 defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plot3DButton,defineButton,showdefsButton,stopButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
 #endif
-      mode="icons" 
+      mode="icons"
       customizable="true" />
     <toolbarset context="toolbar-context-menu"/>
-    <toolbar 
-      id="SymbolToolbar" 
+    <toolbar
+      id="SymbolToolbar"
       toolbarname="Symbol Toolbar"
-      class="chromeclass-toolbar" 
-      persist="collapsed" 
+      class="chromeclass-toolbar"
+      persist="collapsed"
       flex = "1"
       tbalign="center"
-      collapsed="true" 
+      collapsed="true"
       context="symbol-palettes-context-menu" >
       <tabbox textsize="small" id="Symbol-tabbox" />
     </toolbar>
 
 #ifndef PROD_SW
-    <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
+    <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed"
       flex = "1"
       mode="icons" customizable="true"  hidden = "true">
 	    <observes id="vcamactiveObserver" element="vcamactive" attribute="hidden" onbroadcast="doVCamClose();"/>
@@ -358,7 +358,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
         oncommand="msiGoDoCommand('cmd_preview');"/>
   <toolbarbutton id="printButton"  class="toolbarbutton-1"
         oncommand="msiGoDoCommand('cmd_print');"/>
-        <!-- label="&printPreviewCmd.label;" 
+        <!-- label="&printPreviewCmd.label;"
         tooltiptext="&printPreviewToolbarCmd.tooltip;"
         label="&printCmd.label;"
         tooltiptext="&printToolbarCmd.tooltip;" -->
@@ -387,7 +387,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
             oncommand="return setDefaultPrinter('direct',event);" for="direct" onbroadcast="setDefault(this);">
             <observes id="pmitb7" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
-	        <menuitem id="pdfMode" label="&pdf;"   persist="default"  checked="true"  
+	        <menuitem id="pdfMode" label="&pdf;"   persist="default"  checked="true"
             oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
             <observes id="pmitb8" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
@@ -404,7 +404,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
   <toolbarbutton id="printPreviewButton" type="menu-button" class="toolbarbutton-1"
                  label="&printPreviewToolbarCmd.label;"
                  tooltiptext="&printPreviewToolbarCmd.tooltip;"
-                 persist="defcomp previewCommand" 
+                 persist="defcomp previewCommand"
                  oncommand="msiGoDoCommand(this.getAttribute('previewCommand'));" >
     <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp"/>
     <observes id="printButtonObs" element="defaultCompiler" attribute="previewCommand"/>
@@ -458,7 +458,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
                  label="&findToolbarCmd.label;" observes="cmd_find"
                  tooltiptext="&findToolbarCmd.tooltip;"/>
 
-  <toolbarbutton id="spellcheckButton" class="toolbarbutton-1" 
+  <toolbarbutton id="spellcheckButton" class="toolbarbutton-1"
                  label="&spellToolbarCmd.label;" observes="cmd_spelling"
                  tooltiptext="&spellToolbarCmd.tooltip;"/>
 
