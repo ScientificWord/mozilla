@@ -18,6 +18,8 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
   const PR_SYNC        = 0x40
   const PR_EXCL        = 0x80
 
+  var parser = new DOMParser;
+
 //-----------------------------------------------------------------------------------
 function msiSetupHTMLEditorCommands(editorElement)
 {
@@ -699,7 +701,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
   var tagmanager = editor.tagListManager;
 	var tagclass;
 // BBM. I rather late in the game changed this to get the commandID from newState in the case of tag commands
-	if (commandID == 'cmd_paratag' || commandID == 'cmd_texttag' || commandID == 'cmd_listtag' || 
+	if (commandID == 'cmd_paratag' || commandID == 'cmd_texttag' || commandID == 'cmd_listtag' ||
     commandID == 'cmd_structtag' || commandID == 'cmd_envtag' || commandID == 'cmd_frontmtag')
 	{
 		if (tagmanager) tagclass = tagmanager.getClassOfTag(newState, null);
@@ -757,7 +759,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
       var infoString="(0,0)";
       editor.insertHTMLWithContext(dataString,
 -                                   contextString, infoString, "text/html",
--                                   null,null,0,true);    
+-                                   null,null,0,true);
     }
     else msiGoDoCommandParams(commandID, cmdParams, editorElement);
     // BBM: temporary hack!
@@ -1073,6 +1075,7 @@ function openDocument()
       dump("Ready to edit page: " + fp.fileURL.spec +"\n");
       var newdocumentfile;
       newdocumentfile = createWorkingDirectory(fp.file);
+      
       msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false);
       msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
     }
@@ -2997,7 +3000,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   // Set UI based on whether we're editing a remote or local url
   if (!aSaveCopy)
     msiSetSaveAndPublishUI(sciurlstring, editorElement);
-  SaveRecentFilesPrefs()
+  SaveRecentFilesPrefs();
   return true;
 }
 
@@ -5566,7 +5569,7 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
   var logStr = "";
   if (contentStr && contentStr.length)
   {
-    var parser = new DOMParser();
+    parser = new DOMParser();
     contentStr = "<body>" + contentStr + "</body>";
     msiKludgeLogString("In msiComposerCommands.js, in msiReviseHorizontalSpace, retrieving content string and got [" + contentStr + "].\n", ["spaces"]);
     var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
@@ -5643,7 +5646,7 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
         editor.deleteNode(ourNode.childNodes[ix]);
       if (cntNodeList)
       {
-//        var parser = new DOMParser();
+//        parser = new DOMParser();
 //        var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
 //        var cntNodeList = cntDoc.documentElement.childNodes;
         for (ix = 0; ix < cntNodeList.length; ++ix)
@@ -5835,7 +5838,7 @@ function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
   var logStr = "";
   if (contentStr && contentStr.length)
   {
-    var parser = new DOMParser();
+    parser = new DOMParser();
     contentStr = "<body>" + contentStr + "</body>";
     msiKludgeLogString("In msiComposerCommands.js, in msiReviseVerticalSpace, retrieving content string and got [" + contentStr + "].\n", ["spaces"]);
     var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
@@ -5872,7 +5875,7 @@ function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
         editor.deleteNode(ourNode.childNodes[ix]);
       if (cntNodeList)
       {
-//        var parser = new DOMParser();
+//        parser = new DOMParser();
 //        var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
 //        var cntNodeList = cntDoc.documentElement.childNodes;
         for (ix = 0; ix < cntNodeList.length; ++ix)
@@ -6208,8 +6211,20 @@ function msiInsertBreaks(dialogData, editorElement)
   var invisStr = msiSpaceUtils.getBreakShowInvis(dialogData.breakType);
   if (invisStr)
     node.setAttribute('invisDisplay',invisStr);
-  if (contentStr)
-    node.textContent = contentStr;
+  if (contentStr && contentStr.length > 0) {
+
+    // This code is a horrendous hack caused by the fact that assigning "&#x200b;" to the text content results in "&amp;#x200b"
+    parser = new DOMParser();
+    contentStr = "<body>" + contentStr + "</body>";
+    msiKludgeLogString("In msiComposerCommands.js, in msiReviseBreaks, retrieving content string and got [" + contentStr + "].\n", ["spaces"]);
+    var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
+    cntNodeList = cntDoc.documentElement.childNodes;
+    node.textContent = cntNodeList[0].textContent
+
+    //    node.textContent = contentStr;  //This was the original code. and
+    //var newContent = document.createTextNode(contentStr);
+    //node.appendChild(newContent);
+  }
   editor.endTransaction();
 }
 
@@ -6225,7 +6240,7 @@ function msiReviseBreaks(reviseData, dialogData, editorElement)
   var logStr = "";
   if (contentStr && contentStr.length)
   {
-    var parser = new DOMParser();
+    parser = new DOMParser();
     contentStr = "<body>" + contentStr + "</body>";
     msiKludgeLogString("In msiComposerCommands.js, in msiReviseBreaks, retrieving content string and got [" + contentStr + "].\n", ["spaces"]);
     var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
@@ -6254,7 +6269,7 @@ function msiReviseBreaks(reviseData, dialogData, editorElement)
         editor.deleteNode(ourNode.childNodes[ix]);
       if (cntNodeList)
       {
-//        var parser = new DOMParser();
+//        parser = new DOMParser();
 //        var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
 //        var cntNodeList = cntDoc.documentElement.childNodes;
         for (ix = 0; ix < cntNodeList.length; ++ix)
