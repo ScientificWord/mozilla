@@ -88,7 +88,7 @@
           </vbox>
           <vbox>
             <msibutton id = "browsexml" label = "&Browse.label;" oncommand="browse('xml')" />
-            <msibutton class="dialog-button" id = "addxml" label = "&Add.label;" oncommand="add('xmllist','xmlfile','xml');" />
+            <msibutton id = "addxml" label = "&Add.label;" oncommand="add('xmllist','xmlfile','xml');" />
             <msibutton label="&Remove.label;" oncommand="remove('xmllist')"/>
             <msibutton label="&MoveUp.label;" oncommand="moveup('xmllist')"/>
             <msibutton label="&MoveDown.label;" oncommand="movedown('xmllist')"/>
@@ -108,7 +108,7 @@
           </vbox>
           <vbox>
             <msibutton id = "browsexslt" label = "&Browse.label;" oncommand="browse('xsl')" />
-            <msibutton class="dialog-button" id = "addxslt" label = "&Add.label;" oncommand="add('xsllist','xslfile','xsl');" />
+            <msibutton id = "addxslt" label = "&Add.label;" oncommand="add('xsllist','xslfile','xsl');" />
             <msibutton label="&Remove.label;" oncommand="remove('addxslt')"/>
             <msibutton label="&MoveUp.label;" oncommand="moveup('addxslt')"/>
             <msibutton label="&MoveDown.label;" oncommand="movedown('addxslt')"/>
@@ -130,7 +130,7 @@
           </vbox>
           <vbox>
             <msibutton id = "browsestyle" label = "Browse" oncommand="browse('style')" />
-            <msibutton class="dialog-button" id = "replacelatexstyle" label = "Replace" oncommand="" />
+            <msibutton id = "replacelatexstyle" label = "Replace" oncommand="" />
             <separator flex="1"/>
           </vbox>
         </hbox> -->
