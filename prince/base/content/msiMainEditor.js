@@ -20,6 +20,45 @@ function msiShowHideToolbarSeparators(toolbar) {
   }
 }
 
+function loadDocumentFromURI(pathString) {
+  var newdocumentfile;
+  var file;
+  var url = msiFileURLFromAbsolutePath(pathString);
+  file = msiFileFromFileURL(url);
+  if (file && file.exists()){
+    newdocumentfile = createWorkingDirectory(file);
+    msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false);
+  }
+  else {
+    // BBM: make this localizable
+    AlertWithTitle("Recent file has been deleted", "The file "+file.leafName+" has been moved or deletedBuild.");
+    var popup = document.getElementById("menupopup_RecentFiles");
+    if (popup){
+      var items = popup.childNodes;
+      var i;
+      for (i = 0; i < items.length; i++)
+      {
+        if (pathString === items[i].getAttribute('value')){
+          popup.removeChild(items[i]);
+          break;
+        }
+      }
+    }
+    var historyCount = gPrefs.getIntPref("editor.history.url_maximum");
+    var historyUrl;
+    var thisUrl = msiFileURLStringFromFile( file );
+    for (var j = 0; j < historyCount; j++)
+    {
+      historyUrl = GetUnicharPref("editor.history_url_"+j);
+      if (historyUrl === thisUrl) {
+        SetUnicharPref("editor.history_url_"+j, "");
+        break;
+      }
+    }
+  }
+}
+
+
 function msiShowHideToolbarButtons()
 {
   dump("===> msiShowHideToolbarButtons\n");
@@ -35,7 +74,7 @@ function msiShowHideToolbarButtons()
   msiShowHideToolbarSeparators(document.getElementById("EditToolbar"));
   msiShowHideToolbarSeparators(document.getElementById("FormatToolbar"));
 }
-  
+
 
 function msiMainWindowMouseDownListener(event)
 {
@@ -77,7 +116,7 @@ function msiMainWindowMouseDownListener(event)
 //  window.bIgnoreNextFocus = !changeActiveEditor;
   if (!changeActiveEditor)
   {
-    msiResetActiveEditorElement(this.document.defaultView);                             
+    msiResetActiveEditorElement(this.document.defaultView);
   }
 }
 
@@ -95,7 +134,7 @@ function msiMainWindowMouseDownListener(event)
 //      button.setAttribute("state", state);
 //      onHighlightColorChange();
 //    } catch (e) {}
-//  }      
+//  }
 //}
 
 function initSidebars()
@@ -119,8 +158,8 @@ function msiEditorOnLoad()
   // See if argument was passed.
   if ( window.arguments && window.arguments[0] )
   {
-    // The following is a hack. When Prince starts up, there seems to be a single argument attached which is not a string, 
-    // but a C++ object wrapped by JavaScript. The following line forces conversion to a string and then searches it for 
+    // The following is a hack. When Prince starts up, there seems to be a single argument attached which is not a string,
+    // but a C++ object wrapped by JavaScript. The following line forces conversion to a string and then searches it for
     // 'xpconnect wrapped'. Ugly, but it works. It would be better to find the offending first call.
     if ((window.arguments[0]+"@@@").search("xpconnect wrapped")<0)
     // Opened via window.openDialog with URL as argument.
@@ -189,14 +228,14 @@ function msiEditorOnLoad()
 //    commandTable.registerCommand("cmd_find",        msiFindCommand);
 //    commandTable.registerCommand("cmd_findNext",    msiFindAgainCommand);
 //    commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
-//    
+//
     msiSetupMSIMathMenuCommands(editorElement);
     msiSetupMSIComputeMenuCommands(editorElement);
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
-  } catch (e) 
-  { 
-    dump("makeEditable failed: "+e+"\n"); 
+  } catch (e)
+  {
+    dump("makeEditable failed: "+e+"\n");
   }
 }
 
@@ -253,14 +292,14 @@ function UpdateWindowTitle()
 
 function msiUpdateWindowTitle()
 {
-  try 
+  try
   {
    var editorElement = msiGetTopLevelEditorElement();
     if (editorElement.isShellFile) fileName = "not saved";
     else //if (!fileName)
     {
 //      filename = editorElement.fileLeafName;
-			var htmlurlstring = msiGetEditorURL(editorElement); 
+			var htmlurlstring = msiGetEditorURL(editorElement);
 		  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
 		  var fileURL = msiURIFromString(sciurlstring);
 			var file = msiFileFromFileURL(fileURL);
@@ -271,11 +310,11 @@ function msiUpdateWindowTitle()
     // Set window title with " - Scientific WorkPlace/Word/Notebook" appended
     var xulWin = document.getElementById('prince');
     if (!leaf) leaf="untitled";
-    document.title = leaf + xulWin.getAttribute("titlemodifierseparator") + 
+    document.title = leaf + xulWin.getAttribute("titlemodifierseparator") +
                    xulWin.getAttribute("title");
-  } catch (e) 
+  } catch (e)
   {
-    dump(e+"\n"); 
+    dump(e+"\n");
   }
 }
 
@@ -309,14 +348,16 @@ function BuildRecentFilesMenu()
     var url = GetUnicharPref("editor.history_url_"+i);
 
     // Skip over current url
-    if (url && url != curUrl)
+    if (url && url != curUrl && url.length > 0)
     {
       // Build the menu
       var title = GetUnicharPref("editor.history_title_"+i);
 			var path = msiPathFromFileURL(msiURIFromString(url));
       var fname = path.replace(/^.*\//,"");
-      AppendRecentMenuitem(popup, fname, path, menuIndex);
-      menuIndex++;
+      if (fname.indexOf('.sci') == fname.length-4) {
+        AppendRecentMenuitem(popup, fname, path, menuIndex);
+        menuIndex++;
+      }
     }
   }
 }
@@ -331,45 +372,44 @@ function SaveRecentFilesPrefs()
   var historyCount = 10;
   var origName;
   try {
-    historyCount = gPrefs.getIntPref("editor.history.url_maximum"); 
+    historyCount = gPrefs.getIntPref("editor.history.url_maximum");
   } catch(e) {}
 
-  var titleArray = [];
+  // var titleArray = [];
   var urlArray = [];
 
   if (historyCount && !IsUrlAboutBlank(curUrl) &&  GetScheme(curUrl) != "data")
   {
     origName = msiFindOriginalDocname(curUrl);
-    if (origName.indexOf(".sci") != origName.length-4){
-      titleArray.push(unescape(msiGetDocumentTitle(editorElement)));
-      urlArray.push(msiFindOriginalDocname(curUrl));
-    } 
-    else // not a sci file; might as well exit
-      return;
+    if (origName.indexOf(".sci") == origName.length-4){
+      // titleArray.push(unescape(msiGetDocumentTitle(editorElement)));
+      urlArray.push(origName);
+    }
   }
 
   for (var i = 0; i < historyCount && urlArray.length < historyCount; i++)
   {
     var url = unescape(GetUnicharPref("editor.history_url_"+i));
 
-    // Continue if URL pref is missing because 
+    // Continue if URL pref is missing because
     // a URL not found during loading may have been removed
 
-    // Skip over current and "data" URLs
-    if (url && url != curUrl && GetScheme(url) != "data")
+    // Skip over current and "data" URLs and ""
+    if (url && url.length > 0 && url != curUrl && GetScheme(url) != "data")
     {
-      var title = unescape(GetUnicharPref("editor.history_title_"+i));
+      // var title = unescape(GetUnicharPref("editor.history_title_"+i));
       var duplicate = false;
       for (var j = 0; j <urlArray.length; j++)
       {
-        if (title == titleArray[j] && url == urlArray[j])
+        // if (title == titleArray[j] && url == urlArray[j])
+        if (url == urlArray[j])
         {
           duplicate = true;
           break;
         }
       }
       if (!duplicate) {
-        titleArray.push(title);
+ //       titleArray.push(title);
         urlArray.push(url);
       }
     }
@@ -378,7 +418,7 @@ function SaveRecentFilesPrefs()
   // Resave the list back to prefs in the new order
   for (i = 0; i < urlArray.length; i++)
   {
-    SetUnicharPref("editor.history_title_"+i, titleArray[i]);
+//    SetUnicharPref("editor.history_title_"+i, titleArray[i]);
     SetUnicharPref("editor.history_url_"+i, urlArray[i]);
   }
 }
@@ -438,7 +478,7 @@ function msiEditorInitFileMenu()
   if (historyCount)
   {
     historyUrl = GetUnicharPref("editor.history_url_0");
-    
+
     // See if there's more if current file is only entry in history list
     if (historyUrl && historyUrl == docUrl)
       historyUrl = GetUnicharPref("editor.history_url_1");
@@ -568,7 +608,7 @@ function msiEditorWindowOnFocus(event)
       break;
       default:
         bFound = true;
-      break; 
+      break;
     }
   }
 //Logging stuff only
