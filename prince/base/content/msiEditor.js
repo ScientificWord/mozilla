@@ -4,6 +4,7 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
+#include productname.inc
 const msiEditorJS_duplicateTest = "Bad";
 
 
@@ -11008,6 +11009,7 @@ function msiCheckOpenWindowForURIMatch(uri, win)
 function msiEditPage(url, launchWindow, delay, isShell, windowName)
 {
   // Always strip off "view-source:" and #anchors; kludge: accept string url or nsIURI url.
+  if (!url.spec) url = msiURIFromString(url);  //some url's are passed as strings
   var urlstring, fullUrlstring;
   try {
     fullUrlstring = url.spec.replace(/^view-source:/, "");
