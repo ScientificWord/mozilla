@@ -1,6 +1,6 @@
-var EXPORTED_SYMBOLS = ["initializeFontFamilyList", "gSystemFonts", 
+var EXPORTED_SYMBOLS = ["initializeFontFamilyList", "gSystemFonts",
   "addOTFontsToMenu", "getOTFontlist" ];
-Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 
 // font section
@@ -25,7 +25,7 @@ function initializeFontFamilyList(force, window)
   try { texbindir= prefs.getCharPref("swp.tex.bindir"); }
   catch(exc) {dump("texbindir not set in preferences\n");}
   if (!force)
-  { 
+  {
     if (outfile.exists()) return;
   }
   // Mac and Linux don't need the bigfontlist.txt intermediate file
@@ -47,56 +47,60 @@ function initializeFontFamilyList(force, window)
     }
     catch (ex)
     {
-       dump("\nUnable to run BuildFontFamilyList.bash\n");
-       dump(ex+"\n");
-    }         
-    return;
+      dump("\nUnable to run BuildFontFamilyList.bash\n");
+      dump(ex+"\n");
+      return;
+    }
   }
-  dump("BuildFontFamilyList on Windows\n");
-  var listfile = dir.clone(); 
-  listfile.append("bigfontlist.txt");
-  if (listfile.exists()) listfile.remove(false);
-  var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
-  var useBash = false;
-  exefile.append("BuildFontFamilyList.cmd");
-  if (!exefile.exists())
-  {
-    exefile=exefile.parent;
-    exefile.append("BuildFontFamilyList.bash");
-    useBash = true;
-    if (!exefile.exists()) return;
+  else {
+
+    dump("BuildFontFamilyList on Windows\n");
+    var listfile = dir.clone();
+    listfile.append("bigfontlist.txt");
+    if (listfile.exists()) listfile.remove(false);
+    var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    var useBash = false;
+    exefile.append("BuildFontFamilyList.cmd");
+    if (!exefile.exists())
+    {
+      exefile=exefile.parent;
+      exefile.append("BuildFontFamilyList.bash");
+      useBash = true;
+      if (!exefile.exists()) return;
+    }
+
+    try
+    {
+      var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+      theProcess.init(exefile);
+      dump("TexBinDir is "+texbindir+"\n");
+      // for windows only -- we assume only windows will have %programfiles% in it
+      if (useBash)
+        texbindir = texbindir.replace("%","!","g");
+      var outpath=listfile.path;
+  //    var opargs = outpath.split(/\s+/);  //Was thiswhat was intended below? Neither version would seem to work...
+  //    var opargs = outpath.split(/\w+/);
+
+  //    var args =[texbindir].concat(opargs);
+      var args = [texbindir, outpath];       //Maybe just this?
+
+      theProcess.run(true, args, args.length);
+    }
+    catch (ex)
+    {
+         dump("\nUnable to run OtfInfo.exe\n");
+         dump(ex+"\n");
+         return;
+    }
   }
-
-  try 
-  {
-    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    theProcess.init(exefile);
-    dump("TexBinDir is "+texbindir+"\n");
-    // for windows only -- we assume only windows will have %programfiles% in it
-    if (useBash)
-      texbindir = texbindir.replace("%","!","g");
-    var outpath=listfile.path;
-//    var opargs = outpath.split(/\s+/);  //Was thiswhat was intended below? Neither version would seem to work...
-//    var opargs = outpath.split(/\w+/);
-
-//    var args =[texbindir].concat(opargs);
-    var args = [texbindir, outpath];       //Maybe just this?
-    
-    theProcess.run(true, args, args.length);
-  } 
-  catch (ex) 
-  {
-       dump("\nUnable to run OtfInfo.exe\n");
-       dump(ex+"\n");
-  }      
   if (!listfile.exists())
   {
     dump("Failed to create bigfontlist.txt\n");
     return;
   }
   var uri = msiFileURLFromAbsolutePath( listfile.path )
-  var myXMLHTTPRequest = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]  
-                     .createInstance(Components.interfaces.nsIXMLHttpRequest);  
+  var myXMLHTTPRequest = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
+                     .createInstance(Components.interfaces.nsIXMLHttpRequest);
   myXMLHTTPRequest.overrideMimeType("text/plain");
   myXMLHTTPRequest.open("GET", uri.spec, false);
   myXMLHTTPRequest.send(null);
@@ -131,12 +135,12 @@ function newValue(element, index, array)
   return element != array[index-1];
 }
 
-function  getOTFontlist() 
-{ 
+function  getOTFontlist()
+{
   if (!gSystemFonts.init)
   {
     // Build list of all system fonts once per editor
-    try 
+    try
     {
       var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
       var fontlistfile=dsprops.get("ProfD", Components.interfaces.nsIFile);
@@ -155,7 +159,7 @@ function  getOTFontlist()
       gSystemFonts.count = gSystemFonts.list.length;
 	  gSystemFonts.init = true; // we won't have to do this again.
     }
-    catch(e) { 
+    catch(e) {
        dump("Error in getOTFontList: "+e.message+"\n");
     }
   }
@@ -175,7 +179,7 @@ function addOTFontsToMenu(menu)
     for (var i = 0; i < gSystemFonts.count; ++i)
     {
       if (gSystemFonts.list[i] != "")
-      {                                                                             
+      {
         var itemNode = menu.menulist.ownerDocument.createElementNS(XUL_NS, "menuitem");
         itemNode.setAttribute("label", gSystemFonts.list[i]);
         itemNode.setAttribute("value", gSystemFonts.list[i]);
@@ -188,7 +192,7 @@ function addOTFontsToMenu(menu)
     dump(e + "\n");
   }
 }
- 
+
 //This is a fallback in case the otfont mechanism fails
 function getSysFontList()
 {
@@ -197,7 +201,7 @@ function getSysFontList()
   if (!gSystemFonts.init)
   {
     // Build list of all local fonts once per editor??
-    try 
+    try
     {
       var enumerator = Components.classes["@mozilla.org/gfx/fontenumerator;1"]
                                  .getService(Components.interfaces.nsIFontEnumerator);
@@ -216,7 +220,7 @@ function getSysFontList()
   }
 }
 
-var gPrefsService;   
+var gPrefsService;
 var gPrefsBranch;
 
 
