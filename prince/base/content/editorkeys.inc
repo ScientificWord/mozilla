@@ -16,7 +16,8 @@
   <key id="msiFindPrevKey" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
   <key id="msiFMTagKey" key="4" action="document.getElementById('OtherTagSelections').focus();" modifiers="accel"/>
   <key id="msiGreekKeyboardKey" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
-  <key id="msiInsertSubstructKey" key=">" command="cmd_insertSubstructure" modifiers="accel,shift"/>
+<!--   <key i.d="msiInsertSubstructKey" key=">" command="cmd_insertSubstructure" modifiers="accel,shift"/>
+        this is in platformbindings-->
   <key id="msiMacHelp" key="?" modifiers="accel,shift" command="cmd_showhelp"/>
   <key id="msiNewFileKey" key="n" modifiers="accel" oncommand="openNewDocument();"/>
   <key id="msiOpenFileKey" key="o" modifiers="accel" oncommand = "openDocument();" />
