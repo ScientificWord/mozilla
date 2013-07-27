@@ -667,4 +667,19 @@
   }
 </xsl:template>
 
+<xsl:template name="metadata">
+  <xsl:if test="html:sw-meta/@product">
+      %% Produced by <xsl:value-of select="html:sw-meta/@product"/>
+  </xsl:if>
+  <xsl:if test="html:sw-meta/@version">
+      %% Version <xsl:value-of select="html:sw-meta/@version"/>
+  </xsl:if>
+  <xsl:if test="html:sw-meta/@created">
+      %% Created <xsl:value-of select="html:sw-meta/@created"/>
+  </xsl:if>
+  <xsl:if test="html:sw-meta/@lastrevised">
+      %% Last revised <xsl:value-of select="html:sw-meta/@lastrevised"/>
+  </xsl:if>
+</xsl:template>
+
 </xsl:stylesheet>
