@@ -101,7 +101,7 @@ oncommand="msiGoDoCommand('cmd_marker')"/>
   <menu id="insertMenu">
     <menupopup id="insertMenuPopup">
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"/>
-      <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    observes="cmd_MSItextmath" />
+      <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    key="MSIinlineTextKey" observes="cmd_MSItextmath" />
       <menu id="mathobjectsmenu" label="&MSImathObjectsMenu.label;" accesskey="&MSImathObjectsMenu.accesskey;" >
 		    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
 		      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>
