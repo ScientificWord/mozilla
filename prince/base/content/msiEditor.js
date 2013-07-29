@@ -9566,8 +9566,15 @@ function insertStructToolbarButton(tag, toolbar, realElement, theDocument)
   var button;
   var uiButton;
   var uiCommand;
+  var editorElement = msiGetActiveEditorElement();
   if (tag==="math") {
-    theDocument.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
+    try {
+      setMathTextToggle(editorElement, true);
+    }
+    catch(e)
+    {
+      msidump(e.message);
+    }     
   }
   button = theDocument.createElementNS(XUL_NS, "toolbarbutton");
   button.setAttribute("label",   "<" + tag + ">");
@@ -9648,7 +9655,7 @@ function msiUpdateStructToolbar(editorElement)
   // the theory here is that by following up the chain of parentNodes,
   // we will eventually get to the root <body> tag. But due to some bug,
   // there may be multiple <body> elements in the document.
-  theDocument.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
+  setMathTextToggle(editorElement, false);
   var cursorSetProps = editor.readCursorSetProps().split(";"); // these are tags set on the cursor
   var cursorClearedProps = editor.readCursorClearedProps().split(";"); // these are tags cleared at the cursor
   for (i = 0; i < cursorClearedProps.length; i++)

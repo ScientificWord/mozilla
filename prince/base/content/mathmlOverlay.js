@@ -83,12 +83,8 @@ function msiSetupMSIMathMenuCommands(editorElement)
 
 function goUpdateMSIMathMenuItems(commandset)
 {
-  return;  //ljh todo -- do something reasonable
-}
-
-function msiGoUpdateMSIMathMenuItems(commandset)
-{
-  return;  //ljh todo -- do something reasonable
+   var editorElement = msiGetActiveEditorElement();
+   setMathTextToggle(editorElement, null);
 }
 
 // like doStatefulCommand()
