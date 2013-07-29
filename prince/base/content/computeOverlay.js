@@ -490,11 +490,12 @@ function goUpdateMSIcomputeMenuItems(commandset) {
   controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
   computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
   inMathBroadcaster = document.getElementById("inMathBroadcaster");
-  if (computeEnabled) {
-    inMathBroadcaster.setAttribute("disabled", "true");
-  } else {
-    inMathBroadcaster.removeAttribute("disabled");
-  }
+  // BBM: this is wrong. We still can be in or out of math with computing disabled; i.e., Scientific Word
+  // if (computeEnabled) {
+  //   inMathBroadcaster.setAttribute("disabled", "true");
+  // } else {
+  //   inMathBroadcaster.removeAttribute("disabled");
+  // }
 }
 
 function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
@@ -502,7 +503,6 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
   var commandID;
   var controller;
   var computeEnabled;
-  var inMathBroadcaster;
   for (var i = 0; i < commandset.childNodes.length; i++) {
     commandNode = commandset.childNodes[i];
     commandID = commandNode.id;
@@ -511,19 +511,8 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
       if (commandNode.hasAttribute("state")) msiGoUpdateCommandState(commandID, editorElement);
     }
   }
-  // We find out if we are in math -- by finding if cmd_MSIComputeEval is enabled
-  // If so, we set imMathBroadcaster to disabled. Operations disabled in math, such
-  // as insert footnote, will observe this and hence be disabled.
-//  controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
-//  computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
-  //rwa 050213 - The above WON'T DO - Scientific Word doesn't have computation at all! Use isInMath() instead:
-  inMathBroadcaster = document.getElementById("inMathBroadcaster");
-//  if (computeEnabled) {
-  if (isInMath(editorElement)) {
-    inMathBroadcaster.setAttribute("disabled", "true");
-  } else {
-    inMathBroadcaster.removeAttribute("disabled");
-  }
+// This next line has nothing to do with computation
+// setMathTextToggle(editorElement, null);
 }
 
 // const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
