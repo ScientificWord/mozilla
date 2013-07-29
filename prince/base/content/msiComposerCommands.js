@@ -121,7 +121,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_previewDirect",         msiPreviewDirectCommand);
   commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
   commandTable.registerCommand("cmd_compilePdf",         msiCompileCommand);
-  commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
+//  commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
   commandTable.registerCommand("cmd_insertReturnFancy", msiInsertReturnFancyCommand);
   commandTable.registerCommand("cmd_insertSubstructure", msiInsertSubstructureCommand);
   commandTable.registerCommand("cmd_documentInfo",       msiDocumentInfoCommand);
@@ -428,15 +428,17 @@ function isInMath(editorElement)
 }
 
 
-function updateMathText(editorElement)
+function updateMathText(editorElement, ismath)
 {
-  var cmd;
-  var docList = msiGetUpdatableItemContainers(command, editorElement);
-  for (var i = 0; i < docList.length; ++i)
-  {
-    cmd = docList[i].getElementById("cmd_MSImathtext");
-    if (cmd)
-      cmd.setAttribute("isMath",isInMath(editorElement)?"true":"false");
+  try {
+    // var docList = msiGetUpdatableItemContainers(command, editorElement);
+    if (ismath == null) {
+      ismath = isInMath(editorElement);
+    }
+    setMathTextToggle(editorElement, ismath);
+  }
+  catch(e) {
+    msidump(e.message);
   }
 }
 
@@ -446,6 +448,7 @@ function msiGoUpdateComposerMenuItems(commandset, editorElement)
 
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+  msiUpdateStructToolbar(editorElement);
   for (var i = 0; i < commandset.childNodes.length; i++)
   {
     var commandNode = commandset.childNodes[i];
@@ -1136,24 +1139,24 @@ function openNewDocument()
 
 //// STRUCTURE TOOLBAR
 ////
-var msiUpdateStructToolbarCommand =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    var editorElement = msiGetActiveEditorElement();
-    try {
-      msiUpdateStructToolbar(editorElement);
-    }
-    catch (e) {
-// silent fail
-      return false;
-    }
-    return true;
-  },
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
-  doCommand: function(aCommand)  {}
-}
+// var msiUpdateStructToolbarCommand =
+// {
+//   isCommandEnabled: function(aCommand, dummy)
+//   {
+//     var editorElement = msiGetActiveEditorElement();
+//     try {
+//       msiUpdateStructToolbar(editorElement);
+//     }
+//     catch (e) {
+// // silent fail
+//       return false;
+//     }
+//     return true;
+//   },
+//   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+//   doCommandParams: function(aCommand, aParams, aRefCon) {},
+//   doCommand: function(aCommand)  {}
+// }
 
 // ******* File output commands and utilities ******** //
 //-----------------------------------------------------------------------------------
