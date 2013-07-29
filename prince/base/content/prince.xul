@@ -189,7 +189,8 @@
 	<commandset id="MSIVCamCommands" />
   <commandset id="mainCommandSet"/> <!-- from MozRepl-->
 
-  <broadcaster id="inMathBroadcaster" />
+ 
+
 
 # All JS files which are not content (only) dependent that prince.xul
 # wishes to include *must* go into the global-scripts.inc file
