@@ -37,9 +37,8 @@
 <!ENTITY fileprint.keybinding    "P">
 <!ENTITY filequit.keybinding    "Q">
 
-<!ENTITY NormalModeTab.label "Normal">
+<!ENTITY NormalMode.label "Normal">
 <!ENTITY NormalMode.tooltip "Normal Mode">
-<!ENTITY NormalMode.label "Normal Edit Tab">
 <!ENTITY NormalMode.accesskey "n">
 <!ENTITY TagModeTab.label "Tag">
 <!ENTITY TagMode.tooltip "Tag Tab">
