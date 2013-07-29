@@ -100,7 +100,7 @@
     </deck>
     <hbox id="EditModeToolbar" hidden="false" persist="collapsed">
       <tabs id="EditModeTabs" align="start" class="tabs-bottom" flex="1">
-       <tab id="NormalModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="1" label="&NormalModeTab.label;" 
+       <tab id="NormalModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="1" label="&NormalMode.label;" 
           oncommand="goDoCommand('cmd_NormalMode');" tooltiptext="&NormalMode.tooltip;"/>
        <tab id="TagModeButton"      class="tab-bottom edit-mode _plain" type="text" selected="0" label="&TagsMode.label;"  
            oncommand="goDoCommand('cmd_AllTagsMode');" tooltiptext="&TagsMode.tooltip;"/>
