@@ -53,6 +53,7 @@
 </xsl:template>
 
 <xsl:template match="html:head">
+  <xsl:call-template name="metadata"/>
 \documentclass<xsl:if test="//html:documentclass/@options">[<xsl:value-of select="//html:documentclass/@options"/>]</xsl:if>
 <xsl:if test="//html:colist/@*">[<xsl:for-each select="//html:colist/@*"
     ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if test="(position()>1) and (position()!=last())">, </xsl:if></xsl:if></xsl:for-each>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}

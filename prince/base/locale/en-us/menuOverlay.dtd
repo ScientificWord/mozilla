@@ -829,19 +829,17 @@
 
 <!-- Display Mode toolbar and View menu items -->
 <!ENTITY NormalModeTab.label "Normal">
-<!ENTITY NormalMode.label "Normal Edit Mode">
+<!ENTITY NormalMode.label "Normal">
 <!ENTITY NormalMode.accesskey "n">
 <!ENTITY NormalMode.tooltip "Show table borders and named anchors">
 <!ENTITY TagsMode.label "XML Tags">
 <!ENTITY TagsMode.accesskey "X">
 <!ENTITY TagsMode.tooltip "Display icons for tags">
 
-<!ENTITY SourceMode.label "XML Source">
-<!-- Toolbar has an image with "HTML" text, so don't include it in the string -->
 <!ENTITY SourceMode.label "Source">
 <!ENTITY SourceMode.accesskey "m">
 <!ENTITY SourceMode.tooltip "Edit XML source">
-<!ENTITY PreviewMode.label "Preview">
+<!ENTITY PreviewMode.label "PDF Preview">
 <!ENTITY PreviewMode.accesskey "p">
 <!ENTITY PreviewMode.tooltip "Display as WYSIWYG">
 

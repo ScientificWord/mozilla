@@ -15,6 +15,7 @@ TAGDEF_RESOURCES := $(wildcard $(srcdir)/tagdefs/*.xml)
 FRAG_RESOURCES := $(wildcard $(srcdir)/fragments/*.frg)
 CONSTANTS1_RESOURCES := $(wildcard $(srcdir)/fragments/Constants1/*.frg)
 CONSTANTS2_RESOURCES := $(wildcard $(srcdir)/fragments/Constants2/*.frg)
+CONSTANTS3_RESOURCES := $(wildcard $(srcdir)/fragments/Constants3/*.frg)
 DINGBAT_RESOURCES := $(wildcard $(srcdir)/fragments/dingbats/*.frg)
 CM2_RESOURCES := $(wildcard $(srcdir)/cm2/*)
 
@@ -24,8 +25,11 @@ libs::	$(CSS_RESOURCES) $(XBL_RESOURCES) $(CM2_RESOURCES)
 	$(INSTALL)	$(TAGDEF_RESOURCES)	$(FINAL_TARGET)/res/tagdefs
 	$(INSTALL)	$(XML_RESOURCES)	$(FINAL_TARGET)/res/xml
 	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments
-#	$(INSTALL)	$(CONSTANTS1_RESOURCES)	$(FINAL_TARGET)/res/fragments/Constants
-#	$(INSTALL)	$(CONSTANTS2_RESOURCES)	$(FINAL_TARGET)/res/fragments/Constants
+# The next line forces creation of the Constants directory if necessary
+	$(INSTALL)  $(srcdir)/fragments/about.frg $(FINAL_TARGET)/res/fragments/Constants
+	cp $(srcdir)/fragments/Constants1/*.frg	$(FINAL_TARGET)/res/fragments/Constants
+	cp $(srcdir)/fragments/Constants2/*.frg	$(FINAL_TARGET)/res/fragments/Constants
+	cp $(srcdir)/fragments/Constants3/*.frg	$(FINAL_TARGET)/res/fragments/Constants
 	$(INSTALL)	$(DINGBAT_RESOURCES)	$(FINAL_TARGET)/res/fragments/dingbats
 	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
 	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css
