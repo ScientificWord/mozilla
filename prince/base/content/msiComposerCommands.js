@@ -2927,16 +2927,16 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       var count = 0;
       if (re.test(workingDir.leafName))
       {
-        while (count < 2) {
+        while (count < 2 && workingDir.exists()) {
           try
           {
-            workingDir.remove(1);
+            workingDir.remove(1); 
           }
           catch(e)
           {
             AlertWithTitle("Unable to remove working directory", "Cannot remove working directory. Does another program have one of the directory's files open?", window);
-            count++;
           }
+          count++;
         }
       }
     }
