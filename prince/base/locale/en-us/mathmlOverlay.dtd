@@ -535,7 +535,7 @@
 <!ENTITY symbolsqrt.tooltip        "sqrt">
 <!ENTITY symboltop.tooltip            "top">
 <!ENTITY symbolbot.tooltip            "bot">
-<!ENTITY symboldh.tooltip     "dh">
+<!ENTITY symboldh.tooltip     "eth">
 <!ENTITY symbollambdabar.tooltip    "lambdabar">
 <!ENTITY symbolangle.tooltip          "angle">
 <!ENTITY symbolmeasuredangle.tooltip  "measuredangle">
