@@ -13084,3 +13084,28 @@ function processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString)
   { dump("error: "+e.message+"\n\n"); }
   return texStr;
 }
+
+function setMathTextToggle(editorElement, ismath)
+{
+  var inMathBroadcaster;
+  var inlineMathState; // watched by the inline Math command
+  var noInlineMathState; // watched by the Text command
+
+  if (ismath == null) {
+    ismath = isInMath(editorElement);
+  }
+  inMathBroadcaster = document.getElementById("inMathBroadcaster");
+  inlineMathState = document.getElementById("inlineMathState");
+  noInlineMathState = document.getElementById("noInlineMathState");
+  if (ismath) {
+    inMathBroadcaster.setAttribute("disabled", "true");
+    noInlineMathState.removeAttribute("hidden");
+    inlineMathState.setAttribute("hidden", "true");
+    document.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
+  } else {
+    inMathBroadcaster.removeAttribute("disabled");
+    inlineMathState.removeAttribute("hidden");
+    noInlineMathState.setAttribute("hidden", "true");
+    document.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
+  }
+}
