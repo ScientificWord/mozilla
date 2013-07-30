@@ -638,7 +638,7 @@
     <command id="cmd_insertVerticalSpaces"     oncommand="msiGoDoCommand('cmd_insertVerticalSpaces')"/>
     <command id="cmd_msiInsertRules"   observes="inMathBroadcaster" 
       oncommand="msiGoDoCommand('cmd_msiInsertRules')"/>
-    <command id="cmd_msiInsertBreaks"  observes="inMathBroadcaster" 
+    <command id="cmd_msiInsertBreaks"  
                  oncommand="msiGoDoCommand('cmd_msiInsertBreaks')"/>
     <command id="cmd_note"      observes="inMathBroadcaster"  
                  oncommand="msiGoDoCommand('cmd_note')"/>

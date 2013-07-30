@@ -1242,7 +1242,8 @@ PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
       if (!(tagname.EqualsLiteral("#text") || tagname.EqualsLiteral("br")))
       {
         tlm->GetRealClassOfTag(tagname, nsnull, classname);
-        if (!classname.EqualsLiteral("texttag")) 
+        if (!(classname.EqualsLiteral("texttag") || classname.EqualsLiteral("paratag") 
+            || classname.EqualsLiteral("structtag") || classname.EqualsLiteral("envtag") || classname.EqualsLiteral("listtag") || classname.EqualsLiteral("listparenttag")))
           return PR_FALSE;
       }
     }
