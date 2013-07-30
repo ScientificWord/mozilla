@@ -490,11 +490,12 @@ function goUpdateMSIcomputeMenuItems(commandset) {
   controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
   computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
   inMathBroadcaster = document.getElementById("inMathBroadcaster");
-  if (computeEnabled) {
-    inMathBroadcaster.setAttribute("disabled", "true");
-  } else {
-    inMathBroadcaster.removeAttribute("disabled");
-  }
+  // BBM: this is wrong. We still can be in or out of math with computing disabled; i.e., Scientific Word
+  // if (computeEnabled) {
+  //   inMathBroadcaster.setAttribute("disabled", "true");
+  // } else {
+  //   inMathBroadcaster.removeAttribute("disabled");
+  // }
 }
 
 function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
@@ -502,7 +503,6 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
   var commandID;
   var controller;
   var computeEnabled;
-  var inMathBroadcaster;
   for (var i = 0; i < commandset.childNodes.length; i++) {
     commandNode = commandset.childNodes[i];
     commandID = commandNode.id;
@@ -511,19 +511,8 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
       if (commandNode.hasAttribute("state")) msiGoUpdateCommandState(commandID, editorElement);
     }
   }
-  // We find out if we are in math -- by finding if cmd_MSIComputeEval is enabled
-  // If so, we set imMathBroadcaster to disabled. Operations disabled in math, such
-  // as insert footnote, will observe this and hence be disabled.
-//  controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
-//  computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
-  //rwa 050213 - The above WON'T DO - Scientific Word doesn't have computation at all! Use isInMath() instead:
-  inMathBroadcaster = document.getElementById("inMathBroadcaster");
-//  if (computeEnabled) {
-  if (isInMath(editorElement)) {
-    inMathBroadcaster.setAttribute("disabled", "true");
-  } else {
-    inMathBroadcaster.removeAttribute("disabled");
-  }
+// This next line has nothing to do with computation
+// setMathTextToggle(editorElement, null);
 }
 
 // const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
@@ -2101,15 +2090,32 @@ function appendLabeledResult(result, label, math, editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
 
   var editor = msiGetEditor(editorElement);
-
+  var resultArray;
   var preStr;
+  var midStr;
   var postStr;
-
+  editor.beginTransaction();
   var resultLoc = label.search(/%result%/);
+  var res1Loc = -1;
+  var res2Loc = -1;
+  var resPre;
+  var resPost;
+  if (resultLoc == -1) {
+    res1Loc = label.search(/%res1%/);
+    res2Loc = label.search(/%res2%/);
+  }
+  var temp;
+  var space = "<hspace type='thinSpace' dim='0.17em'/>";
 
   if (-1 == resultLoc) {
-    preStr = label;
-    postStr = "";
+    if (res1Loc == res2Loc == -1) {
+      preStr = label;
+      postStr = "";
+    }  else {  //res1 or res2 or both found
+      preStr  = label.substr(0, res1Loc);
+      midStr  =  label.substr(res1Loc + 6, res2Loc - (res1Loc + 6));
+      postStr = label.substr(res2Loc + 6);
+    }
   } else {
     preStr = label.substr(0, resultLoc);
     var match = "%result%";
@@ -2117,10 +2123,26 @@ function appendLabeledResult(result, label, math, editorElement) {
   }
 
   editor.setCaretAfterElement(math);
-  editor.insertHTML(preStr);
-  editor.insertHTML(result);
-  editor.insertHTML(postStr);
-
+  if (res2Loc == -1 && res1Loc == -1) {
+    editor.insertHTML(preStr);
+    editor.insertHTML(result);
+    editor.insertHTML(postStr);
+  }
+  else {
+    resPre = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow>";
+    resPost = "</mrow></math>";
+    temp = result.replace(resPre, "");
+    temp = temp.replace(resPost,"");
+    resultArray = temp.split("<mo>,</mo>");
+    if (resultArray && resultArray.length > 1) {
+      editor.insertHTML(preStr + space);
+      editor.insertHTML(resPre + resultArray[0] + resPost + space);
+      editor.insertHTML(midStr + space);
+      editor.insertHTML(resPre + resultArray[1] + resPost + space);
+      editor.insertHTML(postStr + space);
+    }
+  }
+  editor.endTransaction();
 }
 
 function appendTaggedResult(result, label, body, index, editorElement) {

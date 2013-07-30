@@ -1,5 +1,6 @@
 dropmarker {
   -moz-appearance: menulist-button;
+  cursor: pointer;
   width: 16px;
   height: 16px;
   -moz-box-align: center;

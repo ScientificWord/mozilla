@@ -140,6 +140,18 @@ body[showinvis="true"] hspace {
   border-bottom: thin solid;
 }
 
+body[showinvis="true"] hspace[type="noIndent"]:before {
+  border-bottom-style: none;
+  content: "☒";
+}
+
+body[showinvis="true"] hspace[type="noIndent"] {
+  position: relative;
+  left: -2.5em;
+  width: 0;
+  border-bottom-style: none;
+}
+
 hspace[type="emSpace"] {
   min-width: 1em;
 }
