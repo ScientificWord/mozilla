@@ -1749,29 +1749,29 @@
         <toolbarbutton id ="symbolddag" label="&#x2021;" tooltiptext="&symbolddag.tooltip;"       msivalue="&#x2021;"
            mathsym="false" observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symbolbeth" label="&#x2136;" tooltiptext="&symbolbeth.tooltip;"       msivalue="&#x2136;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgimel" label="&#x2137;" tooltiptext="&symbolgimel.tooltip;"       msivalue="&#x2137;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symboldaleth" label="&#x2138;" tooltiptext="&symboldaleth.tooltip;"       msivalue="&#x2138;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolsharp" label="&#x266F;" tooltiptext="&symbolsharp.tooltip;"       msivalue="&#x266F;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolflat" label="&#x266D;" tooltiptext="&symbolflat.tooltip;"       msivalue="&#x266D;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolnatural" label="&#x266E;" tooltiptext="&symbolnatural.tooltip;"       msivalue="&#x266E;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolclubsuit" label="&#x2663;" tooltiptext="&symbolclubsuit.tooltip;"       msivalue="&#x2663;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symboldiamondsuit" label="&#x2662;" tooltiptext="&symboldiamondsuit.tooltip;"       msivalue="&#x2662;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolheartsuit" label="&#x2661;" tooltiptext="&symbolheartsuit.tooltip;"       msivalue="&#x2661;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolspadesuit" label="&#x2660;" tooltiptext="&symbolspadesuit.tooltip;"       msivalue="&#x2660;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolcheckmark" label="&#x2713;" tooltiptext="&symbolcheckmark.tooltip;"       msivalue="&#x2713;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolmaltese" label="&#x2720;" tooltiptext="&symbolmaltese.tooltip;"       msivalue="&#x2720;"
-           mathsym="false" observes="cmd_MSItextCmd"/>
+           mathsym="false" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolBbbk" label="&#x1D55C;" tooltiptext="&symbolBbbk.tooltip;"       msivalue="&#x1D55C;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolBbbC" label="&#x2102;" tooltiptext="&symbolBbbC.tooltip;"       msivalue="&#x2102;"
