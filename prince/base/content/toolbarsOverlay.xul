@@ -114,8 +114,8 @@
       <toolbaritem id="ParaTags" title="&paratagselect.label;"><textbox id="ParaTagSelections"/></toolbaritem>
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
       <toolbaritem id="FrontMTags" title="&frontmtagselect.label;"><textbox id="FrontMTagSelections"/></toolbaritem>
-      <toolbaritem id="zoomer" title="Zoom settings" ><textbox id="zoomValue" label="&ZoomSetting.label;" tooltiptext="&ZoomSetting.tooltip;" type="number" observes="cmd_textZoomSet"/></toolbaritem>
-
+     <!--  <toolbaritem id="zoomer" title="Zoom settings" ><textbox id="zoomValue" label="&ZoomSetting.label;" tooltiptext="&ZoomSetting.tooltip;" style="width: 5em" onchange= observes="cmd_textZoomSet"/></toolbaritem>
+ -->
     </toolbarpalette>
     <toolbar
       id="StandardToolbar"

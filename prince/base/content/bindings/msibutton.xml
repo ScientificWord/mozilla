@@ -21,7 +21,7 @@
           <xul:stack>
             <xul:hbox>
               <xul:image class="msibutton-left"/>
-              <xul:hbox class="msibutton-mid" pack="center" flex="1" align="center"/>
+              <xul:hbox class="msibutton-mid" flex="1"/>
               <xul:image class="msibutton-strut"/>
               <xul:image class="msibutton-right"/>
             </xul:hbox>
