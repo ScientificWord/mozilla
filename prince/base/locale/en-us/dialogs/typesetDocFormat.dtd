@@ -57,11 +57,11 @@
 <!ENTITY docformatHideNotes "Hide notes">
 <!ENTITY docformatTwoPageMessage	"You are laying out the right page. The left page is a mirror image of this.">
 <!ENTITY docformatpaperSize	"Paper Size">
-<!ENTITY camera.label	"Camera">
+<!ENTITY camera.label	"Camera ">
 <!ENTITY camera.accesskey	"C">
-<!ENTITY cross.label	"Cross">
+<!ENTITY cross.label	" Cross ">
 <!ENTITY cross.accesskey	"s">
-<!ENTITY frame.label	"Frame">
+<!ENTITY frame.label	" Frame ">
 <!ENTITY frame.accesskey	"F">
 					
 <!ENTITY docformatUseOpenType "Use OpenType fonts (may make your document not portable)?">

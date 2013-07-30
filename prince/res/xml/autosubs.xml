@@ -175,7 +175,6 @@
   <sub ctx="math" tp="sc"><pattern>uCo</pattern><data>insertMathunit('C','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uda</pattern><data>insertMathunit('d','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('deg','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('°','true');</data></sub> -->
   <sub ctx="math" tp="sc"><pattern>udg</pattern><data>insertMathunit('dg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>udme</pattern><data>insertMathunit('dm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>udmn</pattern><data>insertMathunit('minarc','true');</data></sub>
@@ -331,5 +330,4 @@
   <sub ctx="math" tp="sc"><pattern>WeibullInv</pattern><data>insertMathname('WeibullInv','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>xpnd</pattern><data>insertMathname('expand','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>zero</pattern><data>insertMathname('zero','true');</data></sub>
-
 </subs>
