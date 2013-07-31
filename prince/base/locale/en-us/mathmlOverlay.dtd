@@ -532,7 +532,7 @@
 <!ENTITY symbolemptyset.tooltip       "emptyset">
 <!ENTITY symbolvarnothing.tooltip     "varnothing">
 <!ENTITY symbolnabla.tooltip          "nabla">
-<!ENTITY symbolsqrt.tooltip        "sqrt">
+<!ENTITY symbolsqrt.tooltip        "surd">
 <!ENTITY symboltop.tooltip            "top">
 <!ENTITY symbolbot.tooltip            "bot">
 <!ENTITY symboldh.tooltip     "eth">
@@ -543,7 +543,7 @@
 <!ENTITY symbolcircledS.tooltip       "circledS">
 <!ENTITY symbolscrL.tooltip        "scrL">
 <!ENTITY symbolscrF.tooltip        "scrF">
-<!ENTITY symbolneg.tooltip           "neg">
+<!ENTITY symbolneg.tooltip           "lnot">
 <!ENTITY symbolcomplement.tooltip   "complement">
 <!ENTITY symbolFinv.tooltip         "Finv">
 <!ENTITY symbolGame.tooltip           "Game">
