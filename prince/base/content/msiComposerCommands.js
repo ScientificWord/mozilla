@@ -5007,10 +5007,10 @@ var msiLinkCommand =
       var imageData = {isVideo : false, mNode : element};
       msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, "cmd_reviseImage", element, imageData);
-//      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable=true,chrome,close,titlebar,dependent", imageData);
+//      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable,chrome,close,titlebar,dependent", imageData);
     }
     else
-      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar,dependent");
+      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable,chrome,close,titlebar,dependent");
 		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
   }
@@ -5026,7 +5026,7 @@ var msiReviseHyperlinkCommand =
     var linkNode = msiGetReviseObjectFromCommandParams(aParams);
     if (linkNode != null && editorElement != null)
     {
-      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar,dependent");
+      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable,chrome,close,titlebar,dependent");
     }
 		msiGetEditor(editorElement).incrementModificationCount(1);
     editorElement.focus();
