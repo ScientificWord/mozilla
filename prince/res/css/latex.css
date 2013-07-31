@@ -134,6 +134,10 @@ hspace * {
   visibility: hidden;
 }
 
+body {
+   line-height: 1.3em; 
+}
+
 body[showinvis="true"] hspace {
   visibility: visible;
   color: green;
@@ -319,17 +323,24 @@ fontcolor {
 }
 
 
-/* paragraph indenting rule -- don't indent the first paragraph in a division */
-bodyText {
+/* paragraph indenting rule -- indent all paragraphs except as in the next rules */
+bodyText,
+bodyMath,
+rtlBodyText,
+p {
+  text-indent: 1.5em;
   margin-bottom: 0;
-  line-height: 1.3em; 
+  line-height: 1.3em;
 }
 
-/* ... but indent the following paragraphs */
-bodyText + bodyText {
-  text-indent: 1.5em;
-  margin-top: 0 
+/* ... but don't indent the following paragraphs */
+sectiontitle + bodyText,
+sectiontitle + bodyMath,
+sectiontitle + rtlBodyText,
+sectiontitle + p {
+  text-indent: 0;
 }
+
 
 td bodyText {
   text-indent: 0
