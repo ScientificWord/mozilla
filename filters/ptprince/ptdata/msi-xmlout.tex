@@ -332,9 +332,10 @@
 % should check for second optional
 \def\out@newtheorema#1[#2]#3{%
   \endgroup% started in \newtheorem
-  \msitag{^^0a<newtheorem }%
-  \if@newtheoremstar\msitag{star="1" }\fi%
-  \msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
+  %\msitag{^^0a<newtheorem }%
+  %\if@newtheoremstar\msitag{star="1" }\fi%
+  %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
+  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
   \@ifundefined{msi@begin@#1}%
     {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
@@ -343,9 +344,10 @@
 \def\out@newtheoremb#1#2{%
   \endgroup% started in \newtheorem
   \@ifundefined{msi@begin@#1}%
-    {\msitag{^^0a<newtheorem }%
-     \if@newtheoremstar\msitag{star="1" }\fi% 
-     \msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
+    {%\msitag{^^0a<newtheorem }%
+     %\if@newtheoremstar\msitag{star="1" }\fi% 
+     %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
+     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
     {}}
@@ -353,9 +355,10 @@
 %% recheck this one
 \def\out@newtheoremc#1#2[#3]{%
   \endgroup% started in \newtheorem
-  \msitag{^^0a<newtheorem }
-  \if@newtheoremstar\msitag{star="1" }\fi% 
-  \msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
+  %\msitag{^^0a<newtheorem }
+  %\if@newtheoremstar\msitag{star="1" }\fi% 
+  %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
+  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}[#3]}}
   \@ifundefined{msi@begin@#1}%
     {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
