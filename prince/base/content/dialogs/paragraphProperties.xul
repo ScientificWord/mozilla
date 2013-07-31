@@ -42,17 +42,17 @@
         <hbox align="center">
           <label value="&label.before.text;" accesskey="&accesskey.before.text;" control="beforetext" />
           <spacer flex="1" />
-          <textbox id="beforetext" type="number" decimalplaces="2" increment="1" width="40px" />    
+          <textbox id="beforetext" type="number" decimalplaces="2" increment="1" width="80px" />    
          </hbox>
         <hbox align="center">
           <label value="&label.after.text;" accesskey="&accesskey.after.text;" control="aftertext" />
           <spacer flex="1" />
-          <textbox id="aftertext" type="number" decimalplaces="2" increment="1" width="40px" />   
+          <textbox id="aftertext" type="number" decimalplaces="2" increment="1" width="80px" />   
          </hbox>
         <hbox align="center">
           <label value="&label.first.line;" accesskey="&accesskey.first.line;" control="firstline"/>
           <spacer flex="1" />
-          <textbox id="firstline" type="number" decimalplaces="2" increment="1" width="40px" />   
+          <textbox id="firstline" type="number" decimalplaces="2" increment="1" width="80px" />   
          </hbox>
       </groupbox>
       <groupbox>
@@ -60,12 +60,12 @@
         <hbox align="center">
           <label value="&label.above.paragraph;" accesskey="&accesskey.above.paragraph;" control="aboveparagraph"/>
           <spacer flex="1" />
-          <textbox id="aboveparagraph" type="number" decimalplaces="2" increment="1" width="40px" />   
+          <textbox id="aboveparagraph" type="number" decimalplaces="2" increment="1" width="80px" />   
          </hbox>
         <hbox align="center">
           <label value="&label.below.paragraph;" accesskey="&accesskey.below.paragraph;" control="belowparagraph" />
           <spacer flex="1" />
-          <textbox id="belowparagraph" type="number" decimalplaces="2" increment="1" width="40px" />  
+          <textbox id="belowparagraph" type="number" decimalplaces="2" increment="1" width="80px" />  
         </hbox>
       </groupbox>
       <groupbox>
@@ -80,13 +80,13 @@
             </menupopup>
           </menulist>
           <spacer flex="1" />
-          <textbox id="leadingval" type="number" decimalplaces="2" increment="1" width="40px" />  
+          <textbox id="leadingval" type="number" decimalplaces="2" increment="1" width="80px" />  
         </hbox>
       </groupbox>
       </vbox>
       <vbox flex="1">
         <label value="&label.units;" />
-        <menulist id="otfont.units" style="width:5em">
+        <menulist id="otfont.units" style="width:80px">
           <menupopup>
             <menuitem id="otfont.pt" label="&pt.label;" value="pt" />
             <menuitem id="otfont.cm" label="&cm.label;" value="cm" />
@@ -117,17 +117,17 @@
         <hbox align="center">
           <label value="&width.label;" accesskey="&width.accesskey;" control="borderwidth" />
           <spacer flex="1" />
-          <textbox id="borderwidth" type="number" decimalplaces="2" increment="1" width="40px" />  
+          <textbox id="borderwidth" type="number" decimalplaces="2" increment="1" width="80px" />  
         </hbox>
         <hbox align="center">
           <label value="&sidepadding.label;" accesskey="&sidepadding.accesskey;" control="bordersidepad" />
           <spacer flex="1" />
-          <textbox id="bordersidepad" type="number" decimalplaces="2" increment="1" width="40px" />  
+          <textbox id="bordersidepad" type="number" decimalplaces="2" increment="1" width="80px" />  
         </hbox>
         <hbox align="center">
           <label value="&toppadding.label;" accesskey="&toppadding.accesskey;" control="bordertoppad" />
           <spacer flex="1" />
-          <textbox id="bordertoppad" type="number" decimalplaces="2" increment="1" width="40px" />  
+          <textbox id="bordertoppad" type="number" decimalplaces="2" increment="1" width="80px" />  
         </hbox>
       </groupbox>
       <groupbox>
