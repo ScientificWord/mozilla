@@ -743,6 +743,10 @@ function getMisc(docformat)
 function onAccept()
 {
 // first check that something is set
+  var editorElement;
+  var editor;
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   var head;
