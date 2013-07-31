@@ -688,7 +688,10 @@ void InputStack::Push(TokenSource* pSource)
 void InputStack::GetRawToken()
 {
    @<Clean Stack@>
-   (s_stack -> back()) -> GetToken(&s_curtok);
+   if (!(s_stack -> empty())){
+     (s_stack -> back()) -> GetToken(&s_curtok);
+   } else {
+   }
    LOG("\nInput: " << s_curtok);
 }
 @}
