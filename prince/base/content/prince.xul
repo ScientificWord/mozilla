@@ -70,12 +70,12 @@
 
 <sidebaritems id="sidebaritems">
 <!--JLF with BBM-->
-  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/beta/What%27s%20new%20sidebar.xhtml" title="&NewsSidebar.title;"/>
+  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/beta/What%27s%20new%20sidebar.xhtml" title="&NewsSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
   <!--sidebaritem id="sidebaritem-ajarfile"   name="jarfile" src="jar:file:///C:/Documents and Settings/Barry/My Documents/SWPDocs/guided tour of prince.sci!/main.xhtml" title="Guide"/-->
-  <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="&FragmentsSidebar.title;"/>
-  <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="&BookmarksSidebar.title;"/>                              
+  <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="&FragmentsSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
+  <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="&BookmarksSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>                              
   <!-- <sidebaritem id="sidebaritem-log"   name="compute log" src="chrome://global/content/engineconsole.xul" title="&EnginelogSidebar.title;"/>                               -->
-  <sidebaritem id="sidebaritem-symbols"   height="244" name="symbols" src="chrome://prince/content/symbols.xul" title="&SymbolsSidebar.title;"/>
+  <sidebaritem id="sidebaritem-symbols"   height="500px" name="symbols" src="chrome://prince/content/symbols.xul" title="&SymbolsSidebar.title;" persist="height width screenx screeny" width="200px" screenx="200px"/>
 </sidebaritems>
 
 <!-- sidebar/toolbar/content/status -->
