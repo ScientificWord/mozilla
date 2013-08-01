@@ -613,7 +613,7 @@
   <m nm="textcopyright" fm="0"><data>&#x00A9;</data><context/><info>0,0</info></m>
   <m nm="textcrh" fm="0"><data>&#x0127;</data><context/><info>0,0</info></m>
   <m nm="textcurrency" fm="0"><data>&curren;</data><context/><info>0,0</info></m>
-  <m nm="textdegree"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&deg;<![CDATA[");]]></data></m>
+  <m nm="textdegree" fm="0"><data>&#x00B0;</data><context/><info>0,0</info></m>
   <m nm="textexclamdown" fm="0"><data>&#xa1;</data><context/><info>0,0</info></m>
   <m nm="textmu" fm="0"><data>&#x00B5;</data><context/><info>0,0</info></m>
   <m nm="textonehalf" fm="0"><data>&#x00BD;</data><context/><info>0,0</info></m>
