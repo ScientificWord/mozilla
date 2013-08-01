@@ -38,20 +38,20 @@ var msiComputeStopCommand = {
   
 };
 
-var msiEvaluateCommandKeyboard = {
-  isCommandEnabled: function(aCommand, editorElement) {
-    var theEditorElement = msiGetActiveEditorElement();
-    return (theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
-  },
+// var msiEvaluateCommandKeyboard = {
+//   isCommandEnabled: function(aCommand, editorElement) {
+//     var theEditorElement = msiGetActiveEditorElement();
+//     return (theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
+//   },
 
-  getCommandStateParams: function(aCommand, aParams, editorElement) {},
-  doCommandParams: function(aCommand, aParams, editorElement) {},
+//   getCommandStateParams: function(aCommand, aParams, editorElement) {},
+//   doCommandParams: function(aCommand, aParams, editorElement) {},
 
-  doCommand: function(aCommand, editorElement) {
-    var theEditorElement = msiGetActiveEditorElement();
-    doComputeCommand(aCommand, theEditorElement, this, false);
-  }
-};
+//   doCommand: function(aCommand, editorElement) {
+//     var theEditorElement = msiGetActiveEditorElement();
+//     doComputeCommand(aCommand, theEditorElement, this, false);
+//   }
+// };
 
 var msiDefineCommand = {
   isCommandEnabled: function(aCommand, dummy) {
