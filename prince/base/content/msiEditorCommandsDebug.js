@@ -51,12 +51,6 @@ function msiEditorInsertText(textToInsert)
 }
 
 
-function xmlFragToTeX(intermediateString)
-{
-  var xsltProcessor = setupXMLToTeXProcessor();
-  return processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString);
-}
-
 function msiEditorTestSelection()
 {
   dump("Testing selection\n");
