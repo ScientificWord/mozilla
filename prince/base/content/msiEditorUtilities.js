@@ -13109,3 +13109,13 @@ function setMathTextToggle(editorElement, ismath)
     document.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
   }
 }
+
+function xmlFragToTeX(intermediateString)
+{
+  var xsltProcessor = setupXMLToTeXProcessor();
+  var retStr;
+  var editor = msiGetCurrentEditor();
+  retStr = processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString);
+  retStr = editor.filterCharsForLaTeX(retStr);
+  return retStr;
+}
