@@ -7306,6 +7306,8 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("\\AA ")); break;
       case 0x20EE :
         _retval.Append(NS_LITERAL_STRING("$\\vdots$")); break;
+      case 0x2122 :
+        _retval.Append(NS_LITERAL_STRING("\\texttrademark")); break;
       case 0x22F1 :
         _retval.Append(NS_LITERAL_STRING("$\\ddots$")); break;
       case 0xE2D4 :
