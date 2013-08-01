@@ -45,13 +45,13 @@
 <window
   id     = "standaloneSidebar"
   windowtype = "SWP:standaloneSidebar"
-  width  = "300"
-  height = "300"
+  width  = "300px"
+  height = "500px"
   onload = "Startup()"
   onclose = "Onclose()"
   onunload = "Shutdown()"
-  screenX="40"
-  screenY="40"
+  screenX="400px"
+  screenY="400px"
   persist="screenX screenY width height"
   xmlns  = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
