@@ -2712,21 +2712,9 @@
 -->
 
           <xsl:otherwise>
-		    <xsl:choose>
-              <xsl:when test="$script-unicodes='true'">
-<!--
-  Unicodes that are NOT known to LaTeX aren't scripted in MATH
-
-                <xsl:text>\U{</xsl:text>
-                <xsl:value-of select="$first-char"/>
-                <xsl:text>}</xsl:text>
+<!-- BBM: we want to let unidentified unicodes through, since XeLaTeX can handle them, and for PDFLaTeX we post-process
 -->
-                <xsl:text>\protect\rule{0.1in}{0.1in}</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:text>\protect\rule{0.1in}{0.1in}</xsl:text>
-              </xsl:otherwise>
-		    </xsl:choose>
+             <xsl:value-of select="$first-char"/>
           </xsl:otherwise>
         </xsl:choose>
     
