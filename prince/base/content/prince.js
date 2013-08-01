@@ -481,10 +481,6 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   var xslPath;
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
-  if (compiler === "pdflatex")  //convert utf-8 characters to tex strings
-  {
-    str = editor.filterCharsForLaTeX(str);
-  }
   compileInfo.runMakeIndex = /\\makeindex/.test(str);
   compileInfo.runBibTeX = /\\bibliography/.test(str);
   compileInfo.passCount = 1;
@@ -1240,10 +1236,22 @@ function documentToTeXString(document, xslPath)
 {
   var xsltString = "";
   var strResult = "";
+  var editorElement = msiGetActiveEditorElement();
+  editor = msiGetEditor(editorElement);
   xsltString = getXSLAsString(xslPath);
 #ifndef PROD_SW
   rebuildSnapshots(document);
 #endif
+  var compiler = "pdflatex";
+  // Determine which compiler to use
+  var texprogNode;
+  var texprogNodes = document.getElementsByTagName("texprogram");
+  if (texprogNodes.length > 0)
+  {
+    texprogNode = texprogNodes[0];
+    if (texprogNode.hasAttribute("prog")) compiler = texprogNode.getAttribute("prog");
+  }
+
 
   var xsltProcessor = new XSLTProcessor();
 
@@ -1266,6 +1274,11 @@ function documentToTeXString(document, xslPath)
 		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");  
 		//while (strResult.search(/\\par/) >= 0)
 		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
+    if (compiler === "pdflatex")  //convert utf-8 characters to tex strings
+    {
+      strResult = editor.filterCharsForLaTeX(strResult);
+    }
+
   }
   catch(e){
     dump("error: "+e.message+"\n\n");
