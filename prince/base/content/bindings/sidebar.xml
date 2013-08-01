@@ -626,7 +626,7 @@
             var src  = item.getAttribute("src");
             // make it float, make it float
             window.openDialog("chrome://prince/content/standaloneSidebar.xul","_blank",
-                              "chrome,modal=no,dependent,titlebar,scrollbars=yes,resizable", name, label, src, item);
+                              "chrome,dependent,titlebar,scrollbars=yes,resizable", name, label, src, item);
 
           // close this one
             this._close();
