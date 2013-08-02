@@ -38,27 +38,61 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 spinbuttons {
-  height: 24px;
-  min-height: 24px;
   -moz-appearance: spinner;
   cursor: default;
 }
 
+.spinbuttons-button {
+  min-width: 13px;
+  min-height: 8px;
+  margin: 0 !important;
+  border: 2px solid;
+  -moz-border-top-colors: ThreeDHighlight ThreeDLightShadow;
+  -moz-border-right-colors: ThreeDDarkShadow ThreeDShadow;
+  -moz-border-bottom-colors: ThreeDDarkShadow ThreeDShadow;
+  -moz-border-left-colors: ThreeDHighlight ThreeDLightShadow;
+  background-color: ThreeDFace;
+}
+
+.spinbuttons-button > .button-box {
+  border: 0;
+}
+
+.spinbuttons-button:hover:active
+{
+  border: 2px solid;
+  -moz-border-top-colors: ThreeDDarkShadow ThreeDShadow;
+  -moz-border-right-colors: ThreeDDarkShadow ThreeDShadow;
+  -moz-border-bottom-colors: ThreeDDarkShadow ThreeDShadow;
+  -moz-border-left-colors: ThreeDDarkShadow ThreeDShadow;
+}
+
+.spinbuttons-button[disabled="true"] {
+  border: 2px solid;
+  -moz-border-top-colors: ThreeDHighlight ThreeDLightShadow !important;
+  -moz-border-right-colors: ThreeDDarkShadow ThreeDShadow !important;
+  -moz-border-bottom-colors: ThreeDDarkShadow ThreeDShadow !important;
+  -moz-border-left-colors: ThreeDHighlight ThreeDLightShadow !important;
+}
+
 .spinbuttons-up {
-  -moz-appearance: none;
-  -moz-box-flex: 1;
-  min-width: 1px;
-  min-height: 1px;
-  margin: 0;
-  padding: 0;
+  -moz-appearance: spinner-upbutton;
+  background-image: url("chrome://global/skin/arrow/arrow-up.gif");
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.spinbuttons-up[disabled="true"] {
+  background-image: url("chrome://global/skin/arrow/arrow-up-dis.gif");
 }
 
 .spinbuttons-down {
-  -moz-appearance: none;
-  -moz-box-flex: 1;
-  min-width: 1px;
-  min-height: 1px;
-  margin: 0;
-  padding: 0;
+  -moz-appearance: spinner-downbutton;
+  background-image: url("chrome://global/skin/arrow/arrow-dn.gif");
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
+.spinbuttons-down[disabled="true"] {
+  background-image: url("chrome://global/skin/arrow/arrow-dn-dis.gif");
+}
