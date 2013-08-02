@@ -1040,6 +1040,9 @@ function setFrameAttributes(frameNode, contentsNode, editor)
       if (floatparam != "full") {
         msiRequirePackage(gFrameTab.editorElement, "wrapfig","");
       }
+      if (placeLocation.indexOf("H") >= 0) {
+        msiRequirePackage(gFrameTab.editorElement,"float","");
+      }
       var floatshort = floatparam.slice(0,1);
       msiEditorEnsureElementAttribute(frameNode, "placement",floatshort, editor);
       needsWrapfig = true;
@@ -1047,7 +1050,7 @@ function setFrameAttributes(frameNode, contentsNode, editor)
       else if (floatparam == "O" || floatparam=="R") floatparam = "right";
       else {
         floatparam = "none";
-        needWrapfig = true;
+        needsWrapfig = true;
       }
       setStyleAttributeOnNode(frameNode, "float", floatparam, editor);
       if (floatparam == "right") side = "Right";
