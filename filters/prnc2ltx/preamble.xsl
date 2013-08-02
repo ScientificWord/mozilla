@@ -226,13 +226,26 @@
     <xsl:apply-templates/>
   </xsl:template>
 
-  <xsl:template match="html:babel">
-    <xsl:if test="@lang1">
+  <xsl:template match="html:babel"><xsl:choose>
+    <xsl:when test="@pkg='babel'">
+      \usepackage[
+      <xsl:if test="@lang2">
+        <xsl:value-of select="@lang2"/>,
+      </xsl:if>
+      <xsl:if test="@lang1">
+        <xsl:value-of select="@lang1"/>
+      </xsl:if>
+      ]{babel}
+    </xsl:when>
+    <xsl:otherwise>
+      \usepackage{polyglossia}
+      <xsl:if test="@lang1">
       \setdefaultlanguage{<xsl:value-of select="@lang1"/>}
-    </xsl:if>
-    <xsl:if test="@lang2">
-      \setotherlanguage{<xsl:value-of select="@lang2"/>}
-    </xsl:if>
+      </xsl:if>
+      <xsl:if test="@lang2">
+        \setotherlanguage{<xsl:value-of select="@lang2"/>}
+      </xsl:if>
+    </xsl:otherwise></xsl:choose>
   </xsl:template>
 
   <!-- use docformat information to call the crop package -->
