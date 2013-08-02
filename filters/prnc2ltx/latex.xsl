@@ -826,7 +826,8 @@ should not be done under some conditions -->
 <xsl:template match="html:explicit-item">[<xsl:apply-templates/>]  
 </xsl:template>
 
-<xsl:template match="html:a">\ref{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:a">\href{<xsl:value-of select="@href"/>}
+{<xsl:apply-templates/>} </xsl:template>
 
 
 <xsl:template match="html:marker">\label{<xsl:value-of select="@id"/>}</xsl:template>
