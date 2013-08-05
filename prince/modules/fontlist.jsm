@@ -54,20 +54,20 @@ function initializeFontFamilyList(force, window)
   }
   else {
 
-    dump("BuildFontFamilyList on Windows\n");
+//    dump("BuildFontFamilyList on Windows\n");
     var listfile = dir.clone();
     listfile.append("bigfontlist.txt");
     if (listfile.exists()) listfile.remove(false);
     var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
     var useBash = false;
     exefile.append("BuildFontFamilyList.cmd");
-    if (!exefile.exists())
-    {
-      exefile=exefile.parent;
-      exefile.append("BuildFontFamilyList.bash");
-      useBash = true;
-      if (!exefile.exists()) return;
-    }
+    // if (!exefile.exists())
+    // {
+    //   exefile=exefile.parent;
+    //   exefile.append("BuildFontFamilyList.bash");
+    //   useBash = true;
+    //   if (!exefile.exists()) return;
+    // }
 
     try
     {
@@ -75,14 +75,14 @@ function initializeFontFamilyList(force, window)
       theProcess.init(exefile);
       dump("TexBinDir is "+texbindir+"\n");
       // for windows only -- we assume only windows will have %programfiles% in it
-      if (useBash)
-        texbindir = texbindir.replace("%","!","g");
+      // if (useBash)
+      //   texbindir = texbindir.replace("%","!","g");
       var outpath=listfile.path;
-  //    var opargs = outpath.split(/\s+/);  //Was thiswhat was intended below? Neither version would seem to work...
+  //    var opargs = outpath.split(/\s+/);  //Was this what was intended below? Neither version would seem to work...
   //    var opargs = outpath.split(/\w+/);
 
   //    var args =[texbindir].concat(opargs);
-      var args = [texbindir, outpath];       //Maybe just this?
+      var args = ['"'+texbindir+'"', outpath];       //Maybe just this?
 
       theProcess.run(true, args, args.length);
     }

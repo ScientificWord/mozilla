@@ -1173,6 +1173,24 @@ function toggleSidebar(aCommandID, forceOpen) {
   sidebarTitle.setAttribute("label", title);
 }
 
+function showSidebar(sidebarnum, checkbox, forceOpen)
+{
+  var sidebar=document.getElementById("sidebar"+sidebarnum);
+  if (sidebar == null) return;
+  var splitter=document.getElementById("splitter"+sidebarnum);
+  if (splitter == null) return;
+  if (checkbox.getAttribute("checked") === "true") {
+    // show the sidebar
+    sidebar.removeAttribute("hidden");
+    // splitter.removeAttribute("hidden");
+  }
+  else
+  {
+    sidebar.setAttribute("hidden", "true");
+    // splitter.setAttribute("hidden", "true");
+  }
+}
+
 function setStatusBarVisibility()
 {
   var currentstate;

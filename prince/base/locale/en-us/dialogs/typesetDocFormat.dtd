@@ -10,9 +10,9 @@
 <!ENTITY docformatNotestab "Notes">
 <!ENTITY docformatAdvancedtab "Advanced">
 
-<!ENTITY docformatTwosided "Two-sided">
+<!ENTITY docformatTwosided "Two-sided ">
 <!ENTITY docformatTwoColumns "2 Columns">
-<!ENTITY docformatUnits	"Units">
+<!ENTITY docformatUnits	" Units">
 <!ENTITY docformatfinishpageSize	"Finished Page Size">
 <!ENTITY docformatLandscape "Landscape">
 <!ENTITY docformatCentered "Center">
@@ -73,9 +73,9 @@
 <!ENTITY docformatFixed "Fixed Width">
 
 <!ENTITY pageonpaper.label "Place of page on paper">
-<!ENTITY pageonpapercenter.label "Centered">
+<!ENTITY pageonpapercenter.label " Centered">
 <!ENTITY popcenter.accesskey "d">
-<!ENTITY pageonpaperupperleft.label "Upper left">
+<!ENTITY pageonpaperupperleft.label "Upper left ">
 <!ENTITY popupperleft.accesskey "U">
 
 <!ENTITY bodytextarea.tooltip "Body text area">
@@ -167,7 +167,7 @@
 <!-- For Page Layout Tab -->
 <!ENTITY EnableOverridePageLayout.label "Enable overriding page layout">
 <!ENTITY EnableOverridePageLayout.accesskey "E">
-<!ENTITY Orientation.label  "Orientation">
+<!ENTITY Orientation.label  " Orientation">
 <!ENTITY Orientation.accesskey  "O">
 <!ENTITY PageHeight.label "Page height">
 <!ENTITY PageWidth.label  "Page width">
@@ -187,8 +187,8 @@
 <!ENTITY GoNativeAddlFontsExtra2.accesskey  "t">
 <!ENTITY GoNativeAddlFontsExtra3.accesskey  "v">
 <!--  Note: OldStyleNums.label and Swash.label are used in multiple places -->
-<!ENTITY OldStyleNums.label  "Old style nums">
-<!ENTITY Swash.label  "Swash">
+<!ENTITY OldStyleNums.label  "Old style nums ">
+<!ENTITY Swash.label  " Swash">
 <!ENTITY AdditionalFonts.label  "Additional Fonts">
 <!-- Note: InternalFontName.label is used in multiple places -->
 <!ENTITY InternalFontName.label  "Internal font name">
@@ -213,7 +213,7 @@
 <!ENTITY UppercaseRoman.label "Uppercase Roman">
 <!ENTITY UppercaseLetters.label "Uppercase letters">
 <!ENTITY LowercaseLetters.label "Lowercase letters">
-<!ENTITY StartNewPage.label "Start New Page">
+<!ENTITY StartNewPage.label "Start New Page  ">
 <!ENTITY HeaderStyle.label  "Header Style">
 <!ENTITY Hang.label "Hang">
 <!ENTITY Runin.label  "Runin">

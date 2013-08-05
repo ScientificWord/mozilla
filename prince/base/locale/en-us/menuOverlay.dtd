@@ -149,7 +149,9 @@
 <!ENTITY viewSidebars.label "Sidebars">
 <!ENTITY viewsidebars.accesskey "S">
 <!ENTITY viewsidebarleft.label  "View Sidebar on Left">
+<!ENTITY viewsidebarleft.accesskey "L">
 <!ENTITY viewsidebarright.label "View Sidebar on Right">
+<!ENTITY viewsidebarright.accesskey "R">
 <!ENTITY viewToolbars.label "Toolbars">
 <!ENTITY viewToolbars.accesskey "l">
 <!ENTITY viewToolbarsCustomize.label  "Customize">

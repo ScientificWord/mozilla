@@ -2769,7 +2769,8 @@ function saveLanguageSettings(preambleNode)
 	var hidden;
 	var lang1;
 	var lang2;
-	var isPolyglossia = (document.getElementById("xelatex"))
+  var texprogram = compilerInfo.prog;
+	var isPolyglossia = (texprogram == "xelatex");
 	var needsResetting = true;
 	lang1 = document.getElementById("babelLang1").value;
 	if (lang1 === "def") lang1=null;
@@ -2781,7 +2782,7 @@ function saveLanguageSettings(preambleNode)
 		var lang2;
 		removeExistingPreambleNodes("babel", preambleNode);
     var node = editor.createNode("babel",preambleNode,0);
-		node.setAttribute("req", isPolyglossia ? "polyglossia" : "babel");
+		node.setAttribute("pkg", isPolyglossia ? "polyglossia" : "babel");
     if (lang1)
     	node.setAttribute("lang1", lang1);
     if (lang2)
