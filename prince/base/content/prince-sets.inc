@@ -22,12 +22,6 @@
 <broadcaster id="canPrint"/>
 
 <broadcasterset id="mainBroadcasterSet">
-  <broadcaster id="viewFragDirSidebar" autoCheck="false" label="Fragments"
-               type="checkbox" group="sidebar" sidebarurl="frag-tree"
-               oncommand="toggleSidebar('viewFragDirSidebar');"/>
-  <broadcaster id="viewOutlineSidebar" autoCheck="false" label="Document Outline"
-               type="checkbox" group="sidebar" sidebarurl="docoutline"
-               oncommand="toggleSidebar('viewOutlineSidebar');"/>
 </broadcasterset>
 <broadcasterset id="vcam_broadcasterset"/>
 
