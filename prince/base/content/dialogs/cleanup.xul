@@ -4,7 +4,7 @@
   Created by Barry MacKichan on 2011/1/27.
   Copyright (c)  MacKichan Software, Inc.. All rights reserved.
 -->
-
+#include productname.inc
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/cleanup.css" type="text/css"?>
@@ -34,10 +34,14 @@
   &instructions;
 </description>
 <separator/>
+#ifndef PROD_SNB
+
 <checkbox id="auxfiles" persist="checked" checked="true" label="&auxfiles.label;"/>
 <checkbox id="logfiles" persist="checked" checked="true" label="&logfiles.label;"/>
 <checkbox id="pdffiles" persist="checked" label="&pdffiles.label;"/>
 <checkbox id="texfiles" persist="checked" label="&texfiles.label;"/>
+#endif
+<!-- The following two items are unsafe unless we are sure that all subdocs are loaded -->
 <!--checkbox id="orphanimagefiles" persist="checked" checked="true" label="&orphanimagefiles.label;"/>
 <checkbox id="orphanplotfiles" persist="checked" checked="true" label="&orphanplotfiles.label;"/ -->
 <checkbox id="cachedconversions" persist="checked" label="&cachedconversionfiles.label;"/>
