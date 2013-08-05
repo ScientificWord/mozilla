@@ -64,21 +64,6 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIaddMatrixRowsCmd",       msiInsertMatrixRowsCommand);
   commandTable.registerCommand("cmd_MSIaddMatrixColumnsCmd",    msiInsertMatrixColumnsCommand);
   commandTable.registerCommand("cmd_MSIreviseEqnArrayCommand",    msiReviseEqnArrayCommand);
-
-//  try {
-//    editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
-//  } catch(e) { dump("Error setting up msiColorObj\n"); msiKludgeLogString("Error setting up msiColorObj\n"); }
-
-// too slow for debugging.  Turn back on if you want style-correct toolbars
-//  // build symbol panels, since overlays don't seem to fire onload handlers
-//  doPanelLoad(document.getElementById("symbol.lcGreek"),"mi");
-//  doPanelLoad(document.getElementById("symbol.ucGreek"),"mi");
-//  doPanelLoad(document.getElementById("symbol.binOp"),"mo");
-//  doPanelLoad(document.getElementById("symbol.binRel"),"mo");
-//  doPanelLoad(document.getElementById("symbol.negRel"),"mo");
-//  doPanelLoad(document.getElementById("symbol.arrow"),"mo");
-//  doPanelLoad(document.getElementById("symbol.misc"),"mi");
-//  doPanelLoad(document.getElementById("symbol.delims"),"mo");
 }
 
 function goUpdateMSIMathMenuItems(commandset)
@@ -2783,8 +2768,6 @@ function doColorsDlg(editorElement)
     if (editorElement.mgMathStyleSheet != null)
     {
       editor.removeOverrideStyleSheet(editorElement.mgMathStyleSheet);
-//      editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
-//      editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
     }
     else
     {
