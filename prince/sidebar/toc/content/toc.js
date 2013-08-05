@@ -91,14 +91,14 @@ function buildTOC()
   doTag=true;
   stylestring = stylestring.replace(re, ""+(doTag?"html:"+tagArr.join("|html:"):"html:xxx"));
 
-  dump( stylestring+"\n");
+  // dump( stylestring+"\n");
 
   var parser = new DOMParser();
   var dom = parser.parseFromString(stylestring, "text/xml");
-  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
+  // dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
   try {gProcessor.importStylesheet(dom.documentElement);}
   catch(e){
-    dump("Error importing xsl sheet: "+e.message+"\n");
+    // dump("Error importing xsl sheet: "+e.message+"\n");
   }
   var newFragment;
   if (editor) newFragment = gProcessor.transformToFragment(editor.document, document);
