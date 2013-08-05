@@ -423,31 +423,60 @@ no indent - disregarded completely
   <mml:mspace width="1.000000in" />
   <mml:mi>m</mml:mi>
 -->
-
     <xsl:choose>
-      <xsl:when test="@width='thickmathspace'
-      and             @linebreak='nobreak'">
-        <xsl:text>~</xsl:text>
-      </xsl:when>
-      <xsl:when test="@width='0.500000in'">
-        <xsl:text>\hspace{0.5in}</xsl:text>
-      </xsl:when>
-      <xsl:when test="@width='veryverythinmathspace'">
-      </xsl:when>
-      <xsl:when test="@width='thickmathspace'">
-        <xsl:text>\;</xsl:text>
-      </xsl:when>
-      <xsl:when test="@width='thinmathspace'">
-        <xsl:text>\,</xsl:text>
-      </xsl:when>
-      <xsl:when test="@width='negativethinmathspace'">
-        <xsl:text>\!</xsl:text>
-      </xsl:when>
-      <xsl:when test="@linebreak='goodbreak'">
-        <xsl:text xml:space="preserve">\allowbreak </xsl:text>
+      <xsl:when test="@type">
+        <xsl:choose>
+          <xsl:when test="@type='normalSpace'"> </xsl:when>
+          <xsl:when test="@type='requiredSpace'">\ </xsl:when>
+          <xsl:when test="@type='nonBreakingSpace'">~</xsl:when>
+          <xsl:when test="@type='emSpace'">\quad </xsl:when>
+          <xsl:when test="@type='twoEmSpace'">\qquad </xsl:when>
+          <xsl:when test="@type='thinSpace'">\thinspace </xsl:when>
+          <xsl:when test="@type='thickSpace'">\ </xsl:when>
+          <xsl:when test="@type='italicCorrectionSpace'">\/ </xsl:when>
+          <xsl:when test="@type='negativeThinSpace'">\negthinspace </xsl:when>
+          <xsl:when test="@type='zeroSpace'">{}</xsl:when>
+          <xsl:when test="@type='noIndent'">\noindent </xsl:when>
+          <xsl:when test="@type='customSpace'">\hspace<xsl:if test="@atEnd='true'">*</xsl:if> {
+            <xsl:if test="@class='stretchySpace'">\stretch{<xsl:value-of select="@flex"/>}</xsl:if>
+            <xsl:if test="@dim">
+              <xsl:value-of select="@dim"/>
+            </xsl:if>
+             }
+            <xsl:if test="@fillWith">
+              <xsl:if test="@fillWith='dots'">\dotfill </xsl:if>
+              <xsl:if test="@fillWith='line'">\hrulefill </xsl:if>
+            </xsl:if>
+          </xsl:when>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>?mspace?</xsl:text>
+        <xsl:choose>
+          <xsl:when test="@width='thickmathspace'
+          and             @linebreak='nobreak'">
+            <xsl:text>~</xsl:text>
+          </xsl:when>
+          <xsl:when test="@width='0.500000in'">
+            <xsl:text>\hspace{0.5in}</xsl:text>
+          </xsl:when>
+          <xsl:when test="@width='veryverythinmathspace'">
+          </xsl:when>
+          <xsl:when test="@width='thickmathspace'">
+            <xsl:text>\;</xsl:text>
+          </xsl:when>
+          <xsl:when test="@width='thinmathspace'">
+            <xsl:text>\,</xsl:text>
+          </xsl:when>
+          <xsl:when test="@width='negativethinmathspace'">
+            <xsl:text>\!</xsl:text>
+          </xsl:when>
+          <xsl:when test="@linebreak='goodbreak'">
+            <xsl:text xml:space="preserve">\allowbreak </xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>?mspace?</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
