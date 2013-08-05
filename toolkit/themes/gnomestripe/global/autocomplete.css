@@ -49,20 +49,20 @@
 /* for an explanation of the -moz-tree-cell rules, see http://developer.mozilla.org/en/docs/XUL_Tutorial:Styling_A_Tree.
    The sw-checked properties are returned by the autocomplete code (nsAutoCompleteResultsStringArray).	*/
 
-treechildren::-moz-tree-image(sw_checked) {
+/*treechildren::-moz-tree-image(sw_checked) {
  list-style-image: url(chrome://global/skin/menu/menu-check.png);
  padding-left: 2px; 
 }   
- /* the width of this gif is 16 pixels. The next rule keeps the left margin even */
-
+ /* the width of this gif is 16 pixels. The next rule keeps the left margin even 
+*/
 treechildren:-moz-tree-cell-text {
-  -moz-margin-start: 21px !important;
+  -moz-margin-start: 10px !important;
 }
 
-treechildren:-moz-tree-cell-text(sw_checked) {
+/*treechildren:-moz-tree-cell-text(sw_checked) {
   -moz-margin-start: 3px !important;
 }
-
+*/
 treechildren::-moz-tree-cell-text(sw_mathonly) {
   color: red;
 }   
