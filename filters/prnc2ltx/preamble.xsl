@@ -200,7 +200,8 @@
     <xsl:for-each select="$preambletexbuttons/*"
   >
       <xsl:if test="@pre='1'">
-        <xsl:text></xsl:text>
+        <xsl:text>
+        </xsl:text>
         <xsl:apply-templates mode="tex"/>
       </xsl:if>
     </xsl:for-each>
