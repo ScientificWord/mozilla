@@ -341,8 +341,8 @@
                   type="string"/>                  
     </preferences>
 
-    <tabbox>
-      <tabs>
+    <tabbox id="generalTabbox" persist="selectedIndex" selectedIndex="0">
+      <tabs persist="selectedIndex" selectedIndex="0">
         <tab id="prefgeneral" label="&GeneralTab.label;"/>
         <tab id="prefstartup" label="&StartUpShellTab.label;"/>
         <tab id="prefgraphics" label="&GraphicsTab.label;"/>
@@ -593,7 +593,7 @@
                   name="swp.sourceview.minlinelength"
                   type="int"/>
     </preferences>
-    <tabbox flex="1">
+    <tabbox id="editTabbox" flex="1" persist="selectedIndex" selectedIndex="0">
 	    <tabs class="tabs-top">
 	      <tab label="&EditingParameters.label;"       selected="1" />
 	      <tab label="&Math.label;"/>
@@ -661,7 +661,7 @@
   </prefpane>
 #ifndef PROD_SW
   <prefpane id="prefComp" label="&Computation.label;">
-    <tabbox id="outer-box" flex="1">
+    <tabbox id="outer-box" flex="1" persist="selectedIndex" selectedIndex="0">
 	    <tabs class="tabs-top">
 	     <tab label="&tabbar.input;"       selected="1" />
 	     <tab label="&tabbar.output;"      selected="0" />
@@ -1070,7 +1070,7 @@
     </broadcasterset>
     <stringbundle id="computeBundle" src="chrome://prince/locale/compute.properties"/>
 
-    <tabbox id="plot-outer-box" flex="1">
+    <tabbox id="plot-outer-box" flex="1" persist="selectedIndex" selectedIndex="0">
       <tabs class="tabs-top">
 	    <tab label="&tabbar.axes;"        selected="0" />
 	    <tab label="&tabbar.layout;"      selected="0" />
@@ -1686,7 +1686,7 @@
                   name="swp.typeset.passThroughUniMacro"
                   type="bool"/>
     </preferences>
-    <tabbox>
+    <tabbox id="typesettingTabbox"  persist="selectedIndex" selectedIndex="0">
       <tabs>
         <tab id="prefgeneralTypesetting" label="&General.label;"/>
         <tab id="prefexpertTypesetting" label="&Expert.label;"/>
@@ -1744,7 +1744,7 @@
   </prefpane>
 #endif
   <prefpane id="prefAdvanced" label="&prefAdvanced.label;">
-    <tabbox>
+    <tabbox id="advTabbox" persist="selectedIndex" selectedIndex="0">
       <tabs>
         <tab id="prefAdvancedPrefs" label="&prefAdvancedPrefs.label;"/>
         <tab id="prefAdvancedPlugins" label="&prefAdvancedPlugins.label;"/>
