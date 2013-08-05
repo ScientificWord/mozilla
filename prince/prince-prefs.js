@@ -7,9 +7,12 @@ pref("nglayout.debug.disable_xul_cache", true);
 pref("nglayout.debug.disable_xul_fastload", true); */
 #ifdef XP_WIN32
 pref("swp.tex.bindir","%programfiles%\\texlive\\2010\\bin\\win32");  /* for windows */
+pref("swp.bibtex.dir","%programfiles%\\texlive\\2010\\texmf-dist\\BibTeX\\bib");  /* for windows */
 #elifdef XP_MACOSX
 pref("swp.tex.bindir","/usr/texbin"); /* Mac system preference for TeX puts the right thing on the path */
+pref("swp.bibtex.dir","/usr/texbin"); /* Mac system preference for TeX puts the right thing on the path */
 #else /*XP_UNIX*/
+pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");  /* for linux */
 pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");  /* for linux */
 #endif
 
