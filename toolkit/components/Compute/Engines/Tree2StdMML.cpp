@@ -352,7 +352,8 @@ void Tree2StdMML::LookupMOInfo(MNODE* mml_node)
             op_ilk = OP_prefix;
             set_form = true;
         } else if (op_ilk == OP_none && ((ContentIs(mml_node, "&#x2212;") || ContentIs(mml_node, "-")))) {
-          if (mml_node->prev == 0 || (ContentIs(mml_node->prev, "&#x2212;") || ContentIs(mml_node->prev, "-"))) {  
+          if (mml_node->prev == 0 || (ContentIs(mml_node->prev, "&#x2212;") || ContentIs(mml_node->prev, "-")
+                                        || ContentIs(mml_node->prev, "+"))) {  
             op_ilk = OP_prefix;
             set_form = true;
           }

@@ -216,19 +216,23 @@
   <toolbarbutton id ="symboldelta" />
   <toolbarbutton id ="symbolepsilon" />
   <toolbarbutton id ="symbolvarepsilon" />
+  <toolbarbutton id ="symbolbackepsilon" />
   <toolbarbutton id ="symbolzeta" />
   <toolbarbutton id ="symboleta" />
   <toolbarbutton id ="symboltheta" />
   <toolbarbutton id ="symbolvartheta" />
   <toolbarbutton id ="symboliota" />
   <toolbarbutton id ="symbolkappa" />
+  <toolbarbutton id ="symbolvarkappa" />
   <toolbarbutton id ="symbollambda" />
   <toolbarbutton id ="symbolmu" />
   <toolbarbutton id ="symbolnu" />
   <toolbarbutton id ="symbolxi" />
+  <toolbarbutton id ="symbolomicron" />
   <toolbarbutton id ="symbolpi" />
   <toolbarbutton id ="symbolvarpi" />
   <toolbarbutton id ="symbolrho" />
+  <toolbarbutton id ="symbolvarrho" />
   <toolbarbutton id ="symbolsigma" />
   <toolbarbutton id ="symbolvarsigma" />
   <toolbarbutton id ="symboltau" />
@@ -238,10 +242,6 @@
   <toolbarbutton id ="symboltextchi" />
   <toolbarbutton id ="symbolpsi" />
   <toolbarbutton id ="symbolomega" />
-  <toolbarbutton id ="symbolvarkappa" />
-  <toolbarbutton id ="symbolvarrho" />
-  <toolbarbutton id ="symbolbackepsilon" />
-  <toolbarbutton id ="symbolomicron" />
 </tabpanel>
 
 <!-- UPPERCASE GREEK -->
@@ -392,8 +392,8 @@
         <toolbarbutton id ="symbolgeqq" />
         <toolbarbutton id ="symbolgeqslant" />
         <toolbarbutton id ="symbolgtrless" />
-        <toolbarbutton id ="symbolvartriangleright" />
-        <toolbarbutton id ="symbolvartriangleleft" />
+ <!--       <toolbarbutton id ="symbolvartriangleright" />  -->
+ <!--       <toolbarbutton id ="symbolvartriangleleft" />  -->
         <toolbarbutton id ="symboltrianglerighteq" />
         <toolbarbutton id ="symboltrianglelefteq" />
       	<toolbarbutton id ="symbolbetween" />
@@ -422,42 +422,42 @@
         <toolbarbutton id ="symboleqsim" />
         <toolbarbutton id ="symbollessdot" />
         <toolbarbutton id ="symbolgtrdot" />
-        <toolbarbutton id ="symbolshortmid" />
-        <toolbarbutton id ="symbolshortparallel" />
-         <toolbarbutton id ="symbolthicksim" />
-        <toolbarbutton id ="symbolthickapprox" />
+ <!--       <toolbarbutton id ="symbolshortmid" />  -->
+ <!--       <toolbarbutton id ="symbolshortparallel" />  -->
+ <!--       <toolbarbutton id ="symbolthicksim" />  -->
+ <!--       <toolbarbutton id ="symbolthickapprox" />  -->
         <toolbarbutton id ="symbolapproxeq" />
         <toolbarbutton id ="symbolsuccapprox" />
         <toolbarbutton id ="symbolprecapprox" />
-        <toolbarbutton id ="symbolvartriangle" />
+ <!--       <toolbarbutton id ="symbolvartriangle" />  -->
       </tabpanel>
 
 <!-- NEGATED RELATIONS -->
       <tabpanel id="symbol_negRel" align="baseline">
         <toolbarbutton id ="symbolne" />
         <toolbarbutton id ="symbolnotin" />
-        <toolbarbutton id ="symbollvertneqq" />
-        <toolbarbutton id ="symbolgvertneqq" />
+ <!--       <toolbarbutton id ="symbollvertneqq" />  -->
+ <!--       <toolbarbutton id ="symbolgvertneqq" />  -->
         <toolbarbutton id ="symbolnleq" />
         <toolbarbutton id ="symbolngeq" />
         <toolbarbutton id ="symbolnless" />
         <toolbarbutton id ="symbolngtr" />
         <toolbarbutton id ="symbolnprec" />
         <toolbarbutton id ="symbolnsucc" />
-        <toolbarbutton id ="symbollneqq" />
-        <toolbarbutton id ="symbolgneqq" />
-        <toolbarbutton id ="symbolnleqslant" />
-        <toolbarbutton id ="symbolngeqslant" />
+  <!--      <toolbarbutton id ="symbollneqq" />		 -->
+  <!--      <toolbarbutton id ="symbolgneqq" />		 -->
+  <!--      <toolbarbutton id ="symbolnleqslant" />	 -->
+  <!--      <toolbarbutton id ="symbolngeqslant" />	 -->
         <toolbarbutton id ="symbollneq" />
         <toolbarbutton id ="symbolgneq" />
-        <toolbarbutton id ="symbolnpreceq" />
-        <toolbarbutton id ="symbolnsucceq" />
+ <!--       <toolbarbutton id ="symbolnpreceq" /> -->
+ <!--       <toolbarbutton id ="symbolnsucceq" /> -->
         <toolbarbutton id ="symbolprecnsim" />
         <toolbarbutton id ="symbolsuccnsim" />
         <toolbarbutton id ="symbollnsim" />
         <toolbarbutton id ="symbolgnsim" />
-        <toolbarbutton id ="symbolnleqq" />
-        <toolbarbutton id ="symbolngeqq" />
+  <!--      <toolbarbutton id ="symbolnleqq" />	 -->
+  <!--      <toolbarbutton id ="symbolngeqq" />	 -->
         <toolbarbutton id ="symbolprecneqq" />
         <toolbarbutton id ="symbolsuccneqq" />
         <toolbarbutton id ="symbolprecnapprox" />
@@ -466,13 +466,13 @@
         <toolbarbutton id ="symbolgnapprox" />
         <toolbarbutton id ="symbolnsim" />
         <toolbarbutton id ="symbolncong" />
-        <toolbarbutton id ="symbolvarsubsetneq" />
+ <!--       <toolbarbutton id ="symbolvarsubsetneq" />
         <toolbarbutton id ="symbolvarsupsetneq" />
         <toolbarbutton id ="symbolnsubseteqq" />
         <toolbarbutton id ="symbolnsupseteqq" />
         <toolbarbutton id ="symbolsubsetneqq" />
-    		<toolbarbutton id ="symbolsupsetneqq" />
- <!--       <toolbarbutton id ="symbolvarsubsetneqq" />
+  		<toolbarbutton id ="symbolsupsetneqq" />
+        <toolbarbutton id ="symbolvarsubsetneqq" />
         <toolbarbutton id ="symbolvarsupsetneqq" />
         -->
         <toolbarbutton id ="symbolsubsetneq" />
@@ -598,9 +598,7 @@
         <toolbarbutton id ="symboltop" />
         <toolbarbutton id ="symbolbot" />
         <toolbarbutton id ="symboldh" />
-
         <toolbarbutton id ="symbollambdabar" />
-
         <toolbarbutton id ="symbolangle" />
         <toolbarbutton id ="symbolmeasuredangle" />
         <toolbarbutton id ="symbolsphericalangle" />
@@ -685,7 +683,7 @@
         <toolbarbutton id ="symboltextasciidieresis" />
         <toolbarbutton id ="symbolcedilla" />
         <toolbarbutton id ="symboltextcopyright" />
-        <toolbarbutton id ="e" />
+        <toolbarbutton id ="symboltextregistered" />
         <toolbarbutton id ="symbolguillemotleft" />
         <toolbarbutton id ="symbolguillemotright" />
         <toolbarbutton id ="symbolshy" />
