@@ -288,16 +288,23 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:title">
-\title{<xsl:apply-templates/>}<xsl:text/>
+\title{<xsl:apply-templates />}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:author">
-\author{<xsl:value-of select="normalize-space(child::text())"/><xsl:text/>
-<xsl:if test="../html:address">~\\<xsl:value-of select="normalize-space(../html:address)"/></xsl:if>
-}</xsl:template>               
+ \author{<xsl:apply-templates mode="frontmatter"/>
+   <xsl:if test="../html:address">~\\</xsl:if>
+   <xsl:apply-templates select="../html:address" mode="frontmatter" />
+ }</xsl:template>  
 
-          
-<xsl:template match="html:abstract">
+<!-- Special handling for footnotes in front matter tags          
+ -->
+
+ <xsl:template match="html:note[@type='footnote']" mode="frontmatter">
+  \thanks{<xsl:apply-templates/>}
+ </xsl:template>
+
+ <xsl:template match="html:abstract">
 \begin{abstract}
 <xsl:apply-templates/>
 \end{abstract}
