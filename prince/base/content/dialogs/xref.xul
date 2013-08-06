@@ -41,5 +41,6 @@
       <radio label="&reftypePageNumber.label;" accesskey="&reftypePageNumber.accesskey;" group="reftype" value="page" />
       <radio label="&reftypeObjectCounter.label;" accesskey="&reftypeObjectCounter.accesskey;" group="reftype" value="obj" />
     </radiogroup>
+    <checkbox id='varioref' persist='checked' label="refVario.label" accesskey="&refVario.accesskey;"/>
   </groupbox>
 </dialog>
