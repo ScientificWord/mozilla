@@ -1644,17 +1644,13 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolimath" label="&#x1D6A4;" tooltiptext="&symbolimath.tooltip;"       msivalue="&#x1D6A4;"
            observes="cmd_MSIsymbolCmd"/>
-      <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
-       <toolbarbutton id ="symboljmath" label="&#xEEF0;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#xEEF0;"
-           observes="cmd_MSIsymbolCmd"/>
-           -->
-            <toolbarbutton id ="symboljmath" label="&#x1D6A5;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#x1D6A5;"
+        <toolbarbutton id ="symboljmath" label="&#x1D6A5;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#x1D6A5;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolell" label="&#x2113;" tooltiptext="&symbolell.tooltip;"       msivalue="&#x2113;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolwp" label="&#x2118;" tooltiptext="&symbolwp.tooltip;"       msivalue="&#x2118;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolhbar" label="&#x0127;" tooltiptext="&symbolhbar.tooltip;"       msivalue="&#x0127;"
+        <toolbarbutton id ="symbolhbar" label="&#x210F;" tooltiptext="&symbolhbar.tooltip;"       msivalue="&#x210F;"
            observes="cmd_MSIsymbolCmd"/>
    <!--     <toolbarbutton id ="symbolhslash" label="&#x210F;" tooltiptext="&symbolhslash.tooltip;"       msivalue="&#x210F;"
            observes="cmd_MSIsymbolCmd"/> -->
