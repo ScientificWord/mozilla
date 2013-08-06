@@ -1025,7 +1025,6 @@ function doInsertCrossReference(editorElement, dlgData)
   xrefNode.setAttribute("reftype", dlgData.refType);
   if (dlgData.vario)
     xrefNode.setAttribute("req", "varioref");
-  else xrefNode.removeAttribute(xrefNode, editor);
   editor.insertElementAtSelection(xrefNode, true);
 }
 
@@ -1038,7 +1037,7 @@ function doReviseCrossReference(editorElement, xrefNode, dlgData)
   msiEditorEnsureElementAttribute(xrefNode, "reftype", dlgData.refType, editor);
   if (dlgData.vario)
     msiEditorEnsureElementAttribute(xrefNode, "req", "varioref", editor);
-  else xrefNode.removeAttribute(xrefNode, editor);
+  else xrefNode.removeAttribute("req");
   editor.endTransaction();
 }
 
