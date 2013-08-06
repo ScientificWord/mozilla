@@ -4,7 +4,7 @@
   Created by Barry MacKichan on 2011/1/27.
   Copyright (c)  MacKichan Software, Inc.. All rights reserved.
 -->
-#include productname.inc
+#include ../productname.inc
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/cleanup.css" type="text/css"?>
