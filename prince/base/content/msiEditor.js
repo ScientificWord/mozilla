@@ -1828,7 +1828,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     {
       if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
       // if the document is a shell and has never been saved, it will be deleted by Revert
-        file.remove(false);
+        if (file.exists()) file.remove(false);
       return true;
     }
   }
@@ -9693,52 +9693,33 @@ function msiUpdateStructToolbar(editorElement)
   setTagFieldContents(editor, propertyStack);
 }
 
-function setTagFieldContents(editor, propertyStack)
+function setTagFieldContents(editor, propertyStack)  // probably should be renamed to setTagButtons
 {
   var tagManager = editor.tagListManager;
   var str = propertyStack.pop();
   var klass;
   var textbox;
   var tt, pt, st, ft;
+  tt = document.getElementById("TextTagSelections");
+  pt = document.getElementById("ParaTagSelections");
+  st = document.getElementById("StructTagSelections");
+  ft = document.getElementById("FrontMTagSelections");
+  if (tt) tt.value = "";
+  if (pt) pt.value = "";
+  if (st) st.value = "";
+  if (ft) ft.value = "";
   try
   {
-    document.getElementById("cmd_textBold").setAttribute("checked", "false");
-    document.getElementById("cmd_textItalic").setAttribute("checked", "false");
-    tt = document.getElementById("TextTagSelections");
-    pt = document.getElementById("ParaTagSelections");
-    st = document.getElementById("StructTagSelections");
-    ft = document.getElementById("FrontMTagSelections");
-    if (tt) tt.value = "";
-    if (pt) pt.value = "";
-    if (st) st.value = "";
-    if (ft) ft.value = "";
+    document.getElementById("cmd_textBold").removeAttribute("checked");
+    document.getElementById("cmd_textItalic").removeAttribute("checked");
     while (str && (str.length > 0)) {
-    	klass = tagManager.getRealClassOfTag(str, null);
-      textbox = null;
-      switch(klass) {
-        case "texttag" : textbox = tt;
-          break;
-        case "paratag" :
-        case "listtag" : textbox = pt;
-        break;
-        case "structtag" :
-        case "envtag"  : textbox = st;
-        break;
-        case "frontmtag" : textbox = ft;
-        break;
-        default : break;
+      if (str === "bold") {
+        document.getElementById("cmd_textBold").setAttribute("checked", "true");
       }
-      if (textbox) {
-        textbox.value = str;
-        if (str === "bold") {
-          document.getElementById("cmd_textBold").setAttribute("checked", "true");
-        }
-        else if (str === "italics") {
-          document.getElementById("cmd_textItalic").setAttribute("checked", "true");
-        }
+      else if (str === "italics") {
+        document.getElementById("cmd_textItalic").setAttribute("checked", "true");
       }
-      str = propertyStack.pop();
-    }
+    str = propertyStack.pop();
   }
   catch(e) {
     dump(e);
