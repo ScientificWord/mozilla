@@ -26,6 +26,7 @@ function Startup()
   data.Cancel = false;
   gDialog.key = data.key;
   gDialog.refType = data.refType;
+  gDialog.vario.checked = data.vario;
   if (data && ("reviseData" in data))
     setDataFromReviseData(data.reviseData);
 
@@ -58,6 +59,9 @@ function setDataFromReviseData(reviseData)
       gDialog.key = refnode.getAttribute("href");
     if (refnode.hasAttribute("reftype")) 
       gDialog.refType = refnode.getAttribute("reftype");
+    if (refnode.getAttribute("req")=="varioref")
+      gDialog.vario.checked = true;
+    else gDialog.vario.checked = false;
     bIsRevise = true;
   }
 }
@@ -66,6 +70,7 @@ function onAccept()
 {
   data.refType = gReftype.value;
   data.key = gKey.value;
+  data.vario = document.getElementById("varioref").checked;
   try
   {
     var theWindow = window.opener;
