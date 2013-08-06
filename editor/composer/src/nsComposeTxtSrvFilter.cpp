@@ -59,6 +59,7 @@ nsComposeTxtSrvFilter::nsComposeTxtSrvFilter() :
   mCiteAtom        = do_GetAtom("cite");
   mTrueAtom        = do_GetAtom("true");
   mMozSignatureAtom= do_GetAtom("moz-signature");
+  mMi              = do_GetAtom("mi");
 }
 
 NS_IMPL_ISUPPORTS1(nsComposeTxtSrvFilter, nsITextServicesFilter)
@@ -100,6 +101,8 @@ nsComposeTxtSrvFilter::Skip(nsIDOMNode* aNode, PRBool *_retval)
                                NS_LITERAL_STRING("moz-email-headers-table"),
                                eCaseMatters);
       } 
+    } else if (tag == mMi) {
+      *_retval = PR_TRUE;
     }
   }
 
