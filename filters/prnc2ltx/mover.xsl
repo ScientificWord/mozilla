@@ -159,6 +159,9 @@
         <xsl:text>true</xsl:text>
       </xsl:when>
 -->
+      <xsl:when test="./*[2][normalize-space(string())='&#x005E;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x0060;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
@@ -320,6 +323,11 @@
 
       <xsl:when test="$mover-structure/is-accent='true'">
         <xsl:choose>
+          <xsl:when test="./*[2][normalize-space(string())='&#x005E;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\hat'"/>
+            </xsl:call-template>
+          </xsl:when>
           <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\hat'"/>
