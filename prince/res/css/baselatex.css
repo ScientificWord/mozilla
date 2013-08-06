@@ -145,8 +145,8 @@ latexstyleb {
 
 xref {
   content: attr(key);
-  -moz-appearance: button;
-}
+/*  -moz-appearance: button;
+*/}
 
 requestimplementation {
   -moz-appearance: button;
