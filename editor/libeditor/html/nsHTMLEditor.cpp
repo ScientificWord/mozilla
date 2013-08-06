@@ -1,3 +1,4 @@
+
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -7314,6 +7315,17 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("\\j")); break;
       case 0xE897 :
         _retval.Append(NS_LITERAL_STRING("\\ ")); break;
+      case 0xD835 : // upper plane character coming
+        switch ((int)(*(++cur))) {
+          case 0xDEA4 :
+            _retval.Append(NS_LITERAL_STRING("\\imath")); break;
+          case 0xDEA5 :
+            _retval.Append(NS_LITERAL_STRING("\\jmath")); break;
+          default:
+            tf->ssprintf(str, fmt.get(), *cur);
+            _retval.Append(str); break;
+        }
+        break;
       default :
         tf->ssprintf(str, fmt.get(), *cur);
         _retval.Append(str); break;
