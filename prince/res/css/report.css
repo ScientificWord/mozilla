@@ -204,24 +204,6 @@ abstract:before {
 /* Main text elements */
 /**********************/
 
-appendix {
-  display: block;
-  position: relative;
-  margin-left: 0;
-  padding: 10px 0;
-  border: thin solid black;
-  background-color: #E1EEFD;
-  -moz-border-radius: 10px;
-}
-
-appendix:before {
-  content: "appendix";
-  display: block;
-  text-align: left;
-  font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
-  -moz-user-select: text;
-}
 p {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
