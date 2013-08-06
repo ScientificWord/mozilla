@@ -26,7 +26,8 @@ function Startup()
   data.Cancel = false;
   gDialog.key = data.key;
   gDialog.refType = data.refType;
-  gDialog.vario.checked = data.vario;
+  gDialog.vario = document.getElementById("varioref");
+  //gDialog.vario.checked = data.reviseData.mNode.getAttribute("req")=="varioref";
   if (data && ("reviseData" in data))
     setDataFromReviseData(data.reviseData);
 
