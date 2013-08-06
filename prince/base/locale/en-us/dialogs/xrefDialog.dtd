@@ -5,6 +5,8 @@
 <!ENTITY keyList.label "Key">
 <!ENTITY keyList.accesskey "K">
 <!ENTITY reftypeRadio.label "Print">
+<!ENTITY refVario.label "Use varioref">
+<!ENTITY refVario.accesskey "v">
 <!ENTITY reftypePageNumber.label "Page number">
 <!ENTITY reftypePageNumber.accesskey "p">
 <!ENTITY reftypeObjectCounter.label "Object counter">
