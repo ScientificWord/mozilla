@@ -79,6 +79,7 @@ protected:
   nsCOMPtr<nsIAtom> mCiteAtom;
   nsCOMPtr<nsIAtom> mTrueAtom;
   nsCOMPtr<nsIAtom> mMozSignatureAtom;
+  nsCOMPtr<nsIAtom> mMi;
 };
 
 #define NS_COMPOSERTXTSRVFILTER_CID \
