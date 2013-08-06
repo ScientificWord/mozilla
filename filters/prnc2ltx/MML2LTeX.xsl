@@ -48,6 +48,15 @@
      <xsl:apply-templates select="exsl:node-set($the-math)"/>
   </xsl:template>
 
+  <xsl:template match="mml:menclose">
+    <xsl:choose>
+      <xsl:when test="@notation='box'">
+        \fbox{<xsl:apply-templates/>}
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
+  </xsl:template>
+
 
   <xsl:template match="sw-domath">
       
