@@ -1083,6 +1083,12 @@
 
 
 
+<!-- !ENTITY texttrademark "&#x2122;" -->
+      <xsl:when test="$first-char='&#x2122;'">
+        <xsl:text xml:space="preserve">\texttrademark </xsl:text>
+      </xsl:when>
+
+
 <!-- !ENTITY angst "&#x212B;" -->
       <xsl:when test="$first-char='&#x212B;'">
         <xsl:text xml:space="preserve">\AA </xsl:text>
