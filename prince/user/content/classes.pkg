@@ -71,7 +71,7 @@ ragged2e
 relsize
 remreset
 rotating
-revsymb
+revsymb4-1
 scalefnt
 showidx
 showkeys
@@ -192,7 +192,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -323,7 +323,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -454,7 +454,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -586,7 +586,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -716,7 +716,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -847,7 +847,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -979,7 +979,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -1110,7 +1110,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -1242,7 +1242,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -1373,7 +1373,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -1504,7 +1504,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -1636,7 +1636,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -1767,7 +1767,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -1898,7 +1898,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -2033,7 +2033,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -2165,7 +2165,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -2297,7 +2297,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -2430,7 +2430,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -2561,7 +2561,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -2692,7 +2692,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -2824,7 +2824,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -2955,7 +2955,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -3085,7 +3085,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -3217,7 +3217,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -3349,7 +3349,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -3480,7 +3480,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -3612,7 +3612,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -3745,7 +3745,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -3876,7 +3876,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -4007,7 +4007,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -4138,7 +4138,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -4269,7 +4269,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -4405,7 +4405,7 @@ pspicture
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -4543,7 +4543,7 @@ pspicture
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -4675,7 +4675,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -4805,7 +4805,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -4942,7 +4942,7 @@ pspicture
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -5079,7 +5079,7 @@ pspicture
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -5219,7 +5219,7 @@ pspicture
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -5352,7 +5352,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -5483,7 +5483,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -5615,7 +5615,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -5746,7 +5746,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -5877,7 +5877,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -6008,7 +6008,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -6139,7 +6139,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -6271,7 +6271,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -6397,7 +6397,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -6526,7 +6526,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -6658,7 +6658,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -6789,7 +6789,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -6921,7 +6921,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -7053,7 +7053,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 sectsty
@@ -7183,7 +7183,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -7311,7 +7311,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -7441,7 +7441,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -7572,7 +7572,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -7702,7 +7702,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -7833,7 +7833,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -7964,7 +7964,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -8095,7 +8095,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -8226,7 +8226,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -8357,7 +8357,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -8489,7 +8489,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -8621,7 +8621,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -8751,7 +8751,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 showidx
@@ -8882,7 +8882,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -9014,7 +9014,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -9146,7 +9146,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -9277,7 +9277,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -9408,7 +9408,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -9539,7 +9539,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -9670,7 +9670,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
@@ -9801,7 +9801,7 @@ portland
 ragged2e
 relsize
 remreset
-revsymb
+revsymb4-1
 rotating
 scalefnt
 setspace
