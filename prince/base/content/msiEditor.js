@@ -9719,7 +9719,8 @@ function setTagFieldContents(editor, propertyStack)  // probably should be renam
       else if (str === "italics") {
         document.getElementById("cmd_textItalic").setAttribute("checked", "true");
       }
-    str = propertyStack.pop();
+      str = propertyStack.pop();
+    }
   }
   catch(e) {
     dump(e);
