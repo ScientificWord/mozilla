@@ -13,7 +13,7 @@
     onload = "Startup();"
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
     width="330"
-    height="196"
+    height="206"
     screenX="40"
     screenY="40"
     persist="screenX screenY width height"
@@ -38,8 +38,8 @@
   <groupbox>
     <caption label="&reftypeRadio.label;"/>
     <radiogroup id="reftype" selectedItem="0" orient="horizontal">
-      <radio label="&reftypePageNumber.label;" accesskey="&reftypePageNumber.accesskey;" group="reftype" value="page" />
       <radio label="&reftypeObjectCounter.label;" accesskey="&reftypeObjectCounter.accesskey;" group="reftype" value="obj" />
+      <radio label="&reftypePageNumber.label;" accesskey="&reftypePageNumber.accesskey;" group="reftype" value="page" />
     </radiogroup>
     <checkbox id='varioref' persist='checked' label="&refVario.label;" accesskey="&refVario.accesskey;"/>
   </groupbox>
