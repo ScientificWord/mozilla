@@ -296,6 +296,9 @@ should not be done under some conditions -->
    <xsl:if test="../html:address">~\\</xsl:if>
    <xsl:apply-templates select="../html:address" mode="frontmatter" />
  }</xsl:template>  
+ <!-- for the sake of the above template, -->
+ <xsl:template match="html:msibr" mode="frontmatter">~\\
+</xsl:template>
 
 <!-- Special handling for footnotes in front matter tags          
  -->
