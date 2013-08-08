@@ -12,8 +12,16 @@
   <xsl:variable name="upperCaseAlpha">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
   <xsl:variable name="lowerCaseAlpha">abcdefghijklmnopqrstuvwxyz</xsl:variable>
 
-  <xsl:template name="buildincludegraphics"><xsl:variable name="theUnit"><xsl:call-template name="unit"/></xsl:variable><xsl:variable name="imageWidth"><xsl:call-template name="getImageWidth"><xsl:with-param name="objNode" select="."/></xsl:call-template></xsl:variable>
-  \includegraphics[<xsl:if test="@rot">angle=<xsl:value-of select="@rot"/>,</xsl:if>
+  <xsl:template name="buildincludegraphics">
+    <xsl:variable name="theUnit">
+      <xsl:call-template name="unit"/>
+    </xsl:variable>
+    <xsl:variable name="imageWidth">
+      <xsl:call-template name="getImageWidth">
+        <xsl:with-param name="objNode" select="."/>
+      </xsl:call-template>
+    </xsl:variable>
+\includegraphics[<xsl:if test="@rot">angle=<xsl:value-of select="@rot"/>,</xsl:if>
   <xsl:if test="number($imageWidth) != 0"> width=<xsl:value-of select="$imageWidth"/>
 <xsl:value-of select="$theUnit"/>,</xsl:if>
   <xsl:if test="@imageHeight and (number(@imageHeight) != 0)"> totalheight=<xsl:value-of select="@imageHeight"/>
@@ -22,6 +30,7 @@
 <xsl:value-of select="$theUnit"/>, natheight=<xsl:value-of select="@naturalHeight"/>
 <xsl:value-of select="$theUnit"/>
 </xsl:if>]{<xsl:call-template name="getSourceName"/>}
+<xsl:if test="@key"> \label{<xsl:value-of select="@key"/>}</xsl:if>
 </xsl:template>
 
 <xsl:template name="convertHourMinSecThirtiethTimeToSeconds">
@@ -214,14 +223,15 @@
     </xsl:variable>
     <xsl:if test="@border">
     \setlength\fboxrule{<xsl:value-of select="@border"/>
-<xsl:value-of select="$theUnit"/>}
-    <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/>
-<xsl:value-of select="$theUnit"/>}</xsl:if>
-    <xsl:if test="@border-color">{\color    
-      <xsl:choose><xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}</xsl:when><xsl:otherwise>{black}</xsl:otherwise></xsl:choose>
-</xsl:if>
-    \framebox{
-  </xsl:if>
+      <xsl:value-of select="$theUnit"/>}
+      <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/>
+        <xsl:value-of select="$theUnit"/>}</xsl:if>
+      <xsl:if test="@border-color">{\color    
+        <xsl:choose><xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
+          <xsl:otherwise>{black}</xsl:otherwise></xsl:choose>
+      </xsl:if>
+      \framebox{
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="@isVideo='true'">
         <xsl:call-template name="buildincludemovie"/>
