@@ -197,7 +197,7 @@ function checkEnableControls()
     if (customControlGroup.hasAttribute("collapsed"))
     {
       customControlGroup.removeAttribute("collapsed");
-      window.sizeToContent();
+      //window.sizeToContent();
     }
     data.customSpaceData.customType = document.getElementById("fixedOrStretchyRadioGroup").value;
     if (data.customSpaceData.customType == "stretchy")
@@ -220,7 +220,7 @@ function checkEnableControls()
     if ( !(customControlGroup.hasAttribute("collapsed")) || (customControlGroup.getAttribute("collapsed") == "false") )
     {
       customControlGroup.setAttribute("collapsed", "true");
-      window.sizeToContent();
+      //window.sizeToContent();
     }
   }
 }
