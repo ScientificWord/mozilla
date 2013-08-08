@@ -22,6 +22,8 @@
     buttons="accept,cancel"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
+    width="429"
+    height="366"
     persist="width height screenX screenY">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
