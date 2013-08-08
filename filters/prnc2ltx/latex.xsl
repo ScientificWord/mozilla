@@ -76,7 +76,10 @@
 <xsl:when test="@name='pdftex'"> \textsc{pdf}\TeX{}</xsl:when>
 <xsl:when test="@name='pdflatex'"> \textsc{pdf}\LaTeX{}</xsl:when>
 <xsl:when test="@name='xetex'"> \XeTeX{}</xsl:when>
-<xsl:when test="@name='xelatex'"> \XeLaTeX{}</xsl:when></xsl:choose></xsl:template>
+<xsl:when test="@name='xelatex'"> \XeLaTeX{}</xsl:when>
+<xsl:when test="@name='amstex'"> \AmS-\TeX{}</xsl:when>
+<xsl:when test="@name='amslatex'"> \AmS-\LaTeX{}</xsl:when>
+</xsl:choose></xsl:template>
 
 
 
