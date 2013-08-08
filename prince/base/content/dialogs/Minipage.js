@@ -52,12 +52,9 @@ function onOK() {
 		{
 			if (editor.selection.isCollapsed)
 			{
-				msiframe = editor.document.createElement("msiframe");
-				var para = editor.document.createElement("bodyText");
-				msiframe.appendChild(para);
-				var br = editor.document.createElement("br");
-				para.appendChild(br);
+        msiframe = editor.tagListManager.getNewInstanceOfNode( "msiframe", null, editor.document);
 				editor.insertElementAtSelection(msiframe, true);
+        editor.setCursorInNewHTML(msiframe);
 			}
 			else
 			{
