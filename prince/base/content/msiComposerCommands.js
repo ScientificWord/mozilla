@@ -2876,7 +2876,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         zw.close();
       }
       catch(ex3) {
-        throw Components.results.NS_ERROR_UNEXPECTED;
+        throw ex3.message;
       }
 //   If successful, i.e., if we got this far:
 //   If A==B (a straight save), rename A.bak to A.tempbak, rename A.sci to A.bak, rename A.tempsci to A.sci.

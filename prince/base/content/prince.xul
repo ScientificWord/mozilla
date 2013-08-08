@@ -56,7 +56,7 @@
   <popupset id="mainPopupSet"/>
   <popup id="sidebarPopup"/>
 
-  <toolbox class="toolbox-top" id="EditorToolbox">
+  <toolbox class="toolbox-top" id="EditorToolbox" defaultmode="icons" defaulticonsize="large">
 # The entire main menubar is placed into prince-menubar.inc, so that it can be shared by 
 # hiddenWindo#w.xul.
 #include prince-menubar.inc 

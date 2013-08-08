@@ -76,7 +76,10 @@
 <xsl:when test="@name='pdftex'"> \textsc{pdf}\TeX{}</xsl:when>
 <xsl:when test="@name='pdflatex'"> \textsc{pdf}\LaTeX{}</xsl:when>
 <xsl:when test="@name='xetex'"> \XeTeX{}</xsl:when>
-<xsl:when test="@name='xelatex'"> \XeLaTeX{}</xsl:when></xsl:choose></xsl:template>
+<xsl:when test="@name='xelatex'"> \XeLaTeX{}</xsl:when>
+<xsl:when test="@name='amstex'"> \AmS-\TeX{}</xsl:when>
+<xsl:when test="@name='amslatex'"> \AmS-\LaTeX{}</xsl:when>
+</xsl:choose></xsl:template>
 
 
 
@@ -296,6 +299,9 @@ should not be done under some conditions -->
    <xsl:if test="../html:address">~\\</xsl:if>
    <xsl:apply-templates select="../html:address" mode="frontmatter" />
  }</xsl:template>  
+ <!-- for the sake of the above template, -->
+ <xsl:template match="html:msibr" mode="frontmatter">~\\
+</xsl:template>
 
 <!-- Special handling for footnotes in front matter tags          
  -->
