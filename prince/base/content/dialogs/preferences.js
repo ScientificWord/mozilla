@@ -118,6 +118,13 @@ function onAccept(){
   }
 }
 
+function skinChanged()
+{
+  var chromedoc = window.arguments[0]["chromeDoc"];
+//  chromedoc.getElementById("EditorToolbox").customizeDone(true);
+}
+
+
 function writeComputePreferences()
 {
   document.getElementById("prefComp").writePreferences(true);
