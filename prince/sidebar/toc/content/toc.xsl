@@ -17,7 +17,7 @@
   <treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <treerow>
       <treecell>
-        <xsl:attribute name="label">Footnote: <xsl:value-of select="."/></xsl:attribute>
+        <xsl:attribute name="label">Footnote: <xsl:value-of select="normalize-space(.)"/></xsl:attribute>
         <xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>
       </treecell>
     </treerow>
@@ -37,6 +37,7 @@
   </tree>
 </xsl:template>
 
+
 <xsl:template match="##sectiontags##">
 	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 		<xsl:attribute name="container">true</xsl:attribute>
@@ -44,12 +45,12 @@
 	  <treerow>
 		  <treecell>
 			  <xsl:attribute name="label">
-			    <xsl:value-of select="*[1]"/>
-			  </xsl:attribute>
+			    <xsl:value-of select="normalize-space(html:sectiontitle/text())"/>
+ 			  </xsl:attribute>
 			  <xsl:attribute name="value">
 			    <xsl:value-of select="@id"/>
 			  </xsl:attribute>		
-			</treecell>
+		  </treecell>
 		</treerow>
     <treechildren>
       <xsl:apply-templates/>
@@ -67,7 +68,7 @@
 			<treecell>
 				<xsl:attribute name="label">Figure: 
 				  <xsl:choose>
-				    <xsl:when test="string-length(@title) &gt; 0"><xsl:value-of select = "@title"/>
+				    <xsl:when test="string-length(@title) &gt; 0"><xsl:value-of select = "normalize-space(@title)"/>
 				    </xsl:when>
 				    <xsl:otherwise><xsl:value-of select = "@alt"/>
 				    </xsl:otherwise>
@@ -87,7 +88,7 @@
 			<treecell>
 				<xsl:attribute name="label">Table</xsl:attribute>
 				<xsl:attribute name="value">
-					<xsl:value-of select="@id"/>
+					<xsl:value-of select="normalize-space(@id)"/>
 				</xsl:attribute>		
 			</treecell>
 		</treerow>
