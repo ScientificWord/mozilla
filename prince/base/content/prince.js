@@ -481,13 +481,13 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   var xslPath;
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
-  compileInfo.runMakeIndex = /\\makeindex/.test(str);
-  compileInfo.runBibTeX = /\\bibliography/.test(str);
+  compileInfo.runMakeIndex = /\\\\makeindex/.test(str);
+  compileInfo.runBibTeX = /\\\\bibliography/.test(str);
   compileInfo.passCount = 1;
   var runcount = 1;
-  if (/\\tableofcontents|\\listoffigures|\\listoftables|\\includemovie/.test(str)) runcount = 3;
+  if (RegExp("\\\\tableofcontents|\\\\listoffigures|\\\\listoftables|\\\\includemovie").test(str)) runcount = 3;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  if (/\\xref|\\pageref|\\vxref|\\vref|\\vpageref|\\cite/.test(str)) runcount = 2;
+  if (RegExp("\\\\ref|\\\\xref|\\\\pageref|\\\\vxref|\\\\vref|\\\\vpageref|\\\\cite").test(str)) runcount = 2;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
   var minpasses = 1;
