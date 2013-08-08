@@ -39,7 +39,10 @@
     ondialogcancel="return onCancel();"
     persist="screenX screenY width height"
     screenX="40"
-    screenY="40">
+    screenY="40"
+    width="730"
+    height="300"
+>
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
