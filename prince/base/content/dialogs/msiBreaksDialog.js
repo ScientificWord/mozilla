@@ -147,7 +147,7 @@ function checkEnableControls()
     if (customControlGroup.hasAttribute("collapsed"))
     {
       customControlGroup.removeAttribute("collapsed");
-      window.sizeToContent();
+      //window.sizeToContent();
     }
 //    document.getElementById("fixedSizeControls").removeAttribute("collapsed");
 //    enableControlsByID(typesetControlGroup, true);
@@ -157,7 +157,7 @@ function checkEnableControls()
     if ( !(customControlGroup.hasAttribute("collapsed")) || (customControlGroup.getAttribute("collapsed") == "false") )
     {
       customControlGroup.setAttribute("collapsed", "true");
-      window.sizeToContent();
+      //window.sizeToContent();
     }
   }
 }

@@ -5,16 +5,18 @@ pref("javascript.options.showInConsole", true);
 pref("javascript.options.strict", true);
 pref("nglayout.debug.disable_xul_cache", true);
 pref("nglayout.debug.disable_xul_fastload", true); */
+/* InstallBuilder now fills these in
 #ifdef XP_WIN32
-pref("swp.tex.bindir","%programfiles%\\texlive\\2010\\bin\\win32");  /* for windows */
-pref("swp.bibtex.dir","%programfiles%\\texlive\\2010\\texmf-dist\\BibTeX\\bib");  /* for windows */
+pref("swp.tex.bindir","%programfiles%\\texlive\\2010\\bin\\win32");  
+pref("swp.bibtex.dir","%programfiles%\\texlive\\2010\\texmf-dist\\BibTeX\\bib");  
 #elifdef XP_MACOSX
-pref("swp.tex.bindir","/usr/texbin"); /* Mac system preference for TeX puts the right thing on the path */
-pref("swp.bibtex.dir","/usr/texbin"); /* Mac system preference for TeX puts the right thing on the path */
-#else /*XP_UNIX*/
-pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");  /* for linux */
-pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");  /* for linux */
-#endif
+pref("swp.tex.bindir","/usr/texbin"); 
+pref("swp.bibtex.dir","/usr/texbin"); 
+#else 
+pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux"); 
+pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux"); 
+#endif */
+
 
 /* default table prefs */
 /* for Prince */
@@ -73,7 +75,9 @@ pref("security.xpconnect.plugin.unrestricted", true);
 pref("spellchecker.enablerealtimespell",      true);
 pref("spellchecker.realtimespell.warning_color", "red");
 pref("swp.messagelogger","dump");
-pref("swp.bibtex.dir", "/swp55/TCITeX/BibTeX/bib");
+pref("swp.tex.bindir", "@@TeX_Bindir@@");
+pref("swp.bibtex.dir", "@@BibTeX_Dir@@");
+pref("swp.texmf.local", "@@TeXmf_Local@@");
 pref("swp.ctrl.m","math"); // other value is 'toggle'
 pref("swp.ctrl.t","text"); // other value is'toggle'
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
