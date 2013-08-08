@@ -605,12 +605,14 @@ function restoreDefaultSet()
 
   // Restore the default icon size and mode.
   var defaultMode = gToolbox.getAttribute("defaultmode");
-  var defaultIconsSmall = gToolbox.getAttribute("defaulticonsize") == "small";
+  defaultMode  = defaultMode ||  "icons";
+  var defaultIconSize = gToolbox.getAttribute("defaulticonsize") || "small";
+  var defaultIconsSmall = defaultIconSize == "small";
 
-  updateIconSize(defaultIconsSmall, true);
-  document.getElementById("smallicons").checked = defaultIconsSmall;
-  updateToolbarMode(defaultMode, true);
-  document.getElementById("modelist").value = defaultMode;
+  // updateIconSize(defaultIconsSmall, true);
+  // document.getElementById("smallicons").checked = defaultIconsSmall;
+  // updateToolbarMode(defaultMode, true);
+  // document.getElementById("modelist").value = defaultMode;
 
   // Now rebuild the palette.
   buildPalette();
