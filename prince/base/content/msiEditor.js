@@ -830,7 +830,11 @@ function msiEditorDocumentObserver(editorElement)
 				  {
 						var cssFile = htmlFile.parent;
 					  cssFile.append("css");
-					  cssFile.append("msi_Tags.css")
+					  cssFile.append("msi_Tags.css");
+            if (!(cssFile.exists()))
+            {
+              buildAllTagsViewStylesheet(editor);
+            }
 					  dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
             var stylesheet;
             try
