@@ -347,7 +347,11 @@ nsMathMLTokenFrame::SetTextStyle()
                //  TransformVariantChar(data[0], eMATHVARIANT_italic).
                //  Equals(data)
                 ((data[0]>='A' && data[0]<='Z')||
-                  (data[0]>='a' && data[0]<= 'z'))) {
+                  (data[0]>='a' && data[0]<= 'z') ||
+                  (data[0]>=0x391 && data[0]<=0x3F6))) {
+        // BBM: the last line slants Greek. We really should make this dependent on preferences,
+        // for cultural differences.
+        
         // Transformation exists.  Try to make the BMP character look like the
         // styled character using the style system until bug 114365 is resolved.
         fontstyle.AssignLiteral("italic");
