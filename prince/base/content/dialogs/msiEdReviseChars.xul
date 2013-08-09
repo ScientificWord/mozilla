@@ -41,7 +41,7 @@
       <rows>
         <row> -->
   <radiogroup orient="horizontal" id="AccentAbove" value="">          
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0302;" label="^"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0302;" label="&#x0302;"/>
           <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030c;" label="&#x02c7;"/>
           <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0303;" label="~"/>
           <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0301;" label="&#x00b4;"/>
