@@ -379,8 +379,13 @@ function openTeX()
     outdir.append(filename + "_work");
     var outfile = outdir.clone();
     outfile.append("main.xhtml");
-	  if (outdir.exists()) outdir.remove(true);
-    outdir.create(1 , 0755);
+    try {
+      if (outdir.exists()) outdir.remove(true);
+      outdir.create(1 , 0755);
+    }
+    catch(e){
+      3;
+    }
     var css = outdir.clone();
     css.append("css");
     css.create(1 , 0755);
