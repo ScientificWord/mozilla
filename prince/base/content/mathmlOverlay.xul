@@ -201,10 +201,11 @@
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00A3;&#x00B9;" tooltiptext="&MSISymbolTabLatin1;"/>
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"/>
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x201C;&#x201D;" tooltiptext="&MSISymbolTabPunctuation;"/>
-      <tab id="cachebar2" label="User" mathsym="true" tooltiptext="&MSISymbolTabDrag.tooltip;" linkedpanel="cachepanel2"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, 
+<!--       <tab id="cachebar2" label="User" mathsym="true" tooltiptext="&MSISymbolTabDrag.tooltip;" linkedpanel="cachepanel2"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, 
 
         );"
         />
+ -->    
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 
