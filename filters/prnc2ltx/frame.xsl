@@ -156,11 +156,14 @@
     <xsl:if test="not(@background-color)">{#FFFFFF}</xsl:if>{
   </xsl:if>
   <xsl:if test="$needminipage=1">
-    {\begin{minipage}[t]{
+    {\begin{<xsl:if test="@kind='table'">table</xsl:if>
+      <xsl:if test="not(@kind='table')">minipage</xsl:if>}[t]
+    <xsl:if test="not(@kind='table')"> 
     <xsl:choose>
       <xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="$width"/></xsl:when>
       <xsl:otherwise><xsl:value-of select="$width"/></xsl:otherwise>
     </xsl:choose><xsl:value-of select="$units"/>} %
+    </xsl:if>
   </xsl:if>
   <xsl:choose>
     <xsl:when test="@textalignment='center'">\centering </xsl:when>
@@ -192,7 +195,7 @@
     </xsl:choose>
   </xsl:if>
   <xsl:if test="$needminipage=1">
-  \end{minipage}}
+  \end{<xsl:if test="@kind='table'">table</xsl:if><xsl:if test="not(@kind='table')">   minipage</xsl:if>}}
   </xsl:if>  
   <xsl:if test="$usecolor=1">}</xsl:if>
   }
