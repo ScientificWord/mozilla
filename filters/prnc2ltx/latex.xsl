@@ -405,6 +405,13 @@ should not be done under some conditions -->
 <xsl:apply-templates/>
 <xsl:if test="position()!=last()">\par </xsl:if>
 </xsl:template>
+<xsl:template match="html:bodyMath">
+  <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
+    <xsl:call-template name="maketables" />
+  </xsl:if>
+<xsl:apply-templates/>
+<xsl:if test="position()!=last()">\par </xsl:if>
+</xsl:template>
 
 
 
@@ -643,6 +650,10 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:note//html:bodyText[position()=last()]">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:note//html:bodyMath[position()=last()]">
   <xsl:apply-templates/>
 </xsl:template>
 
