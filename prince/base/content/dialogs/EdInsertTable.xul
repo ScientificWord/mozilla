@@ -270,7 +270,7 @@
               </grid>
             <spacer flex="1"/>
             <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>
-            <label>&cellsizeInstructions;</label>
+            <description style="width:230px">&cellsizeInstructions;</description>
           </groupbox>
         </vbox>
           <groupbox><caption label="&CellContentAlign.label;"/>
