@@ -8,7 +8,7 @@
 
 <!-- xsl:variable name="tagsList" select="document('latexdefs.xml')//*[local-name()='tagproperties']/*[local-name()='tagclasses']"/ -->
 
-<xsl:variable name="paraList"><xsl:text>__bodyText__rtlBodyText__sectiontitle__centered__</xsl:text></xsl:variable>
+<xsl:variable name="paraList"><xsl:text>__bodyText__bodyMath__rtlBodyText__sectiontitle__centered__</xsl:text></xsl:variable>
 
 <xsl:variable name="envList"><xsl:text>__bulletlist__numberedlist__descriptionlist__set__book__part__chapter__section__subsection</xsl:text>
   <xsl:text>__subsubsection__paragraph__subparagraph__longQuotation__dedication__centeredEnv__preface__glossary__verbatim__note</xsl:text>
@@ -180,6 +180,13 @@
 <xsl:template match="html:td//*[self::html:br and position()=last()]" />
 
 <xsl:template match="html:td//html:bodyText">
+  <xsl:apply-templates/>
+  <xsl:if test="following-sibling::*">
+    <xsl:text xml:space="preserve">\msipar </xsl:text>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template match="html:td//html:bodyMath">
   <xsl:apply-templates/>
   <xsl:if test="following-sibling::*">
     <xsl:text xml:space="preserve">\msipar </xsl:text>
