@@ -3829,7 +3829,7 @@ function regeneratePlotObject(objElement, graph, editorElement)
 //    doVCamCommand("cmd_refresh");
 //  }
 //  catch(ex) {dump("Exception in regeneratePlotObject: " + ex + "\n");}
-  return objElement;
+//  return objElement;
 
   var parent = objElement.parentNode;
 //  var newObj = objElement.ownerDocument.createElementNS(xhtmlns, "object");
@@ -4030,7 +4030,7 @@ function ensureVCamPreinitForPlot(graphNode, editorElement)
       return;
     if ( (objElement.vcamStatus === "needRecreate") || (objElement.vcamStatus === "needReload") )
     {
-      doVCamInitialize(objElement);
+//      doVCamInitialize(objElement);
       objElement = regeneratePlotObject(objElement, theGraph, editorElement);
 //    }
 //    else if (objElement.vcamStatus === "needReload")
