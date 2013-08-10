@@ -1493,6 +1493,10 @@ function doVCamCommandOnObject(obj, cmd, editorElement) {
     case "cmd_vcFitContents":
       obj.fitContents();
       break;
+//    case "cmd_refresh":  // shouldn't be needed, but this causes the display to refresh
+//      obj.camera.focalPointX = obj.camera.focalPointX;
+//      break;
+
     default:
     }
   } catch (e) {
@@ -3819,6 +3823,14 @@ function checkVCamStatusForPlot(objElement, graph, editorElement)
 
 function regeneratePlotObject(objElement, graph, editorElement)
 {
+//  try
+//  {
+//    doVCamInitialize(objElement);
+//    doVCamCommand("cmd_refresh");
+//  }
+//  catch(ex) {dump("Exception in regeneratePlotObject: " + ex + "\n");}
+  return objElement;
+
   var parent = objElement.parentNode;
 //  var newObj = objElement.ownerDocument.createElementNS(xhtmlns, "object");
   var newObj = document.createElementNS(xhtmlns, "object");
@@ -3958,6 +3970,7 @@ var preInitializeVCamCallbackObjectBase =
   {
     if (exc.message == "NPMethod called on non-NPObject wrapped JSObject!")
     {
+      msidump("preInitializeVCam exception: NPMethod called on non-NPObject wrapped JSObject!\n");
       var parent = this.mObj.parentNode;
       var newObj = regeneratePlotObject(this.mObj, this.mGraph, this.mEditorElement);
       preInitializeVCam( newObj, this.mGraph, false, false );  //don't want to spawn any more attempts, so pass null handlers
@@ -4017,6 +4030,7 @@ function ensureVCamPreinitForPlot(graphNode, editorElement)
       return;
     if ( (objElement.vcamStatus === "needRecreate") || (objElement.vcamStatus === "needReload") )
     {
+      doVCamInitialize(objElement);
       objElement = regeneratePlotObject(objElement, theGraph, editorElement);
 //    }
 //    else if (objElement.vcamStatus === "needReload")
