@@ -384,16 +384,6 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_absPos":
         msiPokeMultiStateUI(command, params);
         break;
-
-      case "cmd_texttag":
-      case "cmd_paratag":
-      case "cmd_listag":
-      case "cmd_structtag":
-      case "cmd_envtag":
-      case "cmd_frontmtag":
-        msiPokeTagStateUI(command, params);
-        break;
-
       case "cmd_viewInvisibles":
         updateViewMenuFromEditor(editorElement);
       break;
@@ -402,6 +392,12 @@ function msiGoUpdateCommandState(command, editorElement)
         updateMathText(editorElement);
       break;
 
+      case "cmd_texttag":
+      case "cmd_paratag":
+      case "cmd_listag":
+      case "cmd_structtag":
+      case "cmd_envtag":
+      case "cmd_frontmtag":
       case "cmd_decreaseZIndex":
       case "cmd_increaseZIndex":
       case "cmd_indent":
@@ -409,7 +405,6 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_increaseFont":
       case "cmd_decreaseFont":
       case "cmd_removeStyles":
-
       case "cmd_smiley":
         break;
 
@@ -647,53 +642,55 @@ function msiPokeMultiStateUI(uiID, cmdParams)
   } catch(e) {}
 }
 
-function msiPokeTagStateUI(uiID, cmdParams)
-{
-  var textboxName;
-  switch (uiID)
-  {
-    case "cmd_texttag":
-      textboxName = "TextTagSelections";
-      break;
-    case "cmd_paratag":
-    case "cmd_listtag":
-      textboxName = "ParaTagSelections";
-      break;
-    case "cmd_structtag":
-    case "cmd_envtag":
-      textboxName = "StructTagSelections";
-      break;
-    case "cmd_frontmtag":
-      textboxName = "FrontMTagSelections";
-      break;
-    default:
-      break;
-//      return;
-  }
-  var desiredAttrib;
-  desiredAttrib = cmdParams.getStringValue("state_attribute");
-
-  try
-  {
-    var docList = msiGetUpdatableItemContainers(uiID, msiGetActiveEditorElement());
-    for (var i = 0; i < docList.length; ++i)
-    {
-      var commandNode = docList[i].getElementById(uiID);
-      if (commandNode)
-      {
-        var uiState = commandNode.getAttribute("state");
-        if (desiredAttrib != uiState)
-        {
-          commandNode.setAttribute("state", desiredAttrib);
-    //      commandNode.setAttribute("value", desiredAttrib);
-          var textbox = docList[i].getElementById(textboxName);
-          if (textbox)
-            textbox.textValue = desiredAttrib;
-        }
-      }
-    }
-  } catch(e) {}
-}
+//function msiPokeTagStateUI(uiID, cmdParams)
+//{
+//  return;
+//  var textboxName;
+//  switch (uiID)
+//  {
+//    case "cmd_texttag":
+//      textboxName = "TextTagSelections";
+//      break;
+//    case "cmd_paratag":
+//    case "cmd_listtag":
+//      textboxName = "ParaTagSelections";
+//      break;
+//    case "cmd_structtag":
+//    case "cmd_envtag":
+//      textboxName = "StructTagSelections";
+//      break;
+//    case "cmd_frontmtag":
+//      textboxName = "FrontMTagSelections";
+//      break;
+//    default:
+//      break;
+////      return;
+//  }
+//  var desiredAttrib;
+//  desiredAttrib = cmdParams.getStringValue("state_attribute");
+//
+//  try
+//  {
+//    var docList = msiGetUpdatableItemContainers(uiID, msiGetActiveEditorElement());
+//    for (var i = 0; i < docList.length; ++i)
+//    {
+//      var commandNode = docList[i].getElementById(uiID);
+//      if (commandNode)
+//      {
+//        var uiState = commandNode.getAttribute("state");
+//        if (desiredAttrib != uiState)
+//        {
+//          commandNode.setAttribute("state", desiredAttrib);
+//    //      commandNode.setAttribute("value", desiredAttrib);
+//          var textbox = docList[i].getElementById(textboxName);
+//          if (textbox)
+//            textbox.textValue = desiredAttrib;
+//        }
+//      }
+//    }
+//  } 
+//  catch(e) {}
+//}
 //
 //
 function msiDoStatefulCommand(commandID, newState, editorElement)
@@ -774,7 +771,6 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
       case "cmd_structtag":
       case "cmd_envtag":
       case "cmd_frontmtag":
-        msiPokeTagStateUI(commandID, cmdParams);
         break;
       default:
         msiPokeMultiStateUI(commandID, cmdParams);
@@ -816,7 +812,7 @@ function msiDoTagBibItem(dlgData, paraContainer, editorElement)
   }
   try
   {
-    msiPokeTagStateUI("cmd_listtag", cmdParams);
+//    msiPokeTagStateUI("cmd_listtag", cmdParams);
     msiResetStructToolbar(editorElement);
   } catch(exc) { dump("Error after applying tag in msidoTagBibItem: " + exc + "\n"); }
 }
