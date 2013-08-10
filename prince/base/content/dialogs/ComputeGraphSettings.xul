@@ -297,10 +297,10 @@
 
           <hbox>
             <vbox>
-              <groupbox>
+              <groupbox style="height: 150px">
                 <caption id="center" label="&plotexpr.label;"/>
                 <editor editortype="html" type="content-primary" context="msiEditorContentContext" 
-                        id="plotDlg-content-frame" flex="1" style="overflow: scroll" width="200" height="70"/>
+                        id="plotDlg-content-frame" flex="1" style="overflow-y: scroll;" width="400" height="1000"/>
               </groupbox>
                 </vbox>
             <vbox>
