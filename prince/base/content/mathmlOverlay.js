@@ -1487,6 +1487,8 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
       bMovableLimits = "true";
 
     msiEditorEnsureElementAttribute(operatorNode, "movablelimits", bMovableLimits, editor);
+    if (bMovableLimits == "false")
+      msiEditorEnsureElementAttribute(operatorNode, "largeop", "true", editor);
     var bLimitPlacementChanged = msiEditorEnsureElementAttribute(operatorNode, "msiLimitPlacement", ((limitPlacementStr.length > 0) ? limitPlacementStr : null), editor);
 
     //Now try to match the new ones with the old; if they differ on limit placement, we may have to replace <msubsup>/<msub>/<msup>
@@ -2147,9 +2149,21 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
     if (newMathNameData.type == "operator")  //should now be an "mo"
     {
       var limitPlacement = "";
+      var bMovableLimits = "false";
+
       if ( ("limitPlacement" in newMathNameData) && (newMathNameData.limitPlacement != "auto") )
-        limitPlacement = newMathNameData.limitPlacement;
-      msiEditorEnsureElementAttribute(wrappedMathName, "limitPlacement", limitPlacement, editor);
+	    {
+        if (newMathNameData.limitPlacement == "atRight")
+          limitPlacement = "msiLimitsAtRight";
+        else if (newMathNameData.limitPlacement == "aboveBelow")
+        limitPlacement = "msiLimitsAboveBelow";
+        else
+          bMovableLimits = "true";
+      }
+      msiEditorEnsureElementAttribute(wrappedMathName, "msiLimitPlacement", limitPlacement, editor);
+      msiEditorEnsureElementAttribute(wrappedMathName, "movablelimits", bMovableLimits, editor);
+      if (bMovableLimits == "false")
+        msiEditorEnsureElementAttribute(wrappedMathName, "largeop", "true", editor);
     }
     else  //an "mi"
     {
@@ -2367,25 +2381,36 @@ function insertMathnameObject(mathNameObj, editorElement)
     {
       node = mathmlEditor.document.createElementNS(mmlns,"mo");
       node.setAttribute("msimathname","true");
-      var limitPlacement = "auto";
+      var bMovableLimits = "true";
+      var limitPlacement = "";
       var sizeSpec = "auto";
-      if ("limitPlacement" in mathNameObj)
+      if (("limitPlacement" in mathNameObj) && (mathNameObj.limitPlacement != "auto"))
       {
-        limitPlacement = mathNameObj.limitPlacement;
+        bMovableLimits = "false";
+        if (mathNameObj.limitPlacement == "atRight")
+          limitPlacement = "msiLimitsAtRight";
+        else if (mathNameObj.limitPlacement == "aboveBelow")
+          limitPlacement = "msiLimitsAboveBelow";
+        else
+          bMovableLimits = "true";
+//        limitPlacement = mathNameObj.limitPlacement;
       }
       if ("size" in mathNameObj)
       {
         sizeSpec = mathNameObj.size;
       }
-      node.setAttribute("limitPlacement",limitPlacement);
+      node.setAttribute("msiLimitPlacement",limitPlacement);
+      node.setAttribute("movablelimits", bMovableLimits);
+      if (bMovableLimits == "false")
+        msiEditorEnsureElementAttribute(node, "largeop", "true", editor);
       node.setAttribute("size", sizeSpec);
-	  addTextToElement(node, mathNameObj.val);
+	    addTextToElement(node, mathNameObj.val);
       mathmlEditor.InsertMathNodeAtSelection(node);
     }
     else {
       node = mathmlEditor.document.createElementNS(mmlns,"mi");
       node.setAttribute("msimathname","true");
-	  addTextToElement(node, mathNameObj.val);
+	    addTextToElement(node, mathNameObj.val);
       mathmlEditor.InsertMathNodeAtSelection(node);
     }
   }
@@ -3520,4 +3545,3 @@ function switchToTextMode(editor)
     toggleMathText(editor);
   }
 }
-

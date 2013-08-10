@@ -117,9 +117,9 @@ function getDataFromPropertiesObject(reviseObject)
       //Now work out the "size" and "limitplacement" stuff:
       if (mathNameNode.hasAttribute("msiLimitPlacement"))
       {
-        if (mathNameNode.getAttribute("msiLimitPlacement") == "")
+        if (mathNameNode.getAttribute("msiLimitPlacement") == "msiLimitsAtRight")
           retObject.limitPlacement = "atRight";
-        else if (mathNameNode.getAttribute("msiLimitPlacement") == "")
+        else if (mathNameNode.getAttribute("msiLimitPlacement") == "msiLimitsAboveBelow")
           retObject.limitPlacement == "aboveBelow";
       }
       if ("displaystyle" in foundAttrs)
