@@ -2902,6 +2902,7 @@ function EditorClick(event)
         var obj = graphnode.getElementsByTagName("object")[0];
         if (obj != null) {
           doVCamInitialize(obj);
+//          doVCamCommand("cmd_refresh");
         }
       }
       else if (linkNode && (objName=="xref"))
