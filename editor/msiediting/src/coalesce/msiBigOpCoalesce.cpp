@@ -34,18 +34,18 @@ msiBigOpCoalesce::msiBigOpCoalesce(nsIDOMNode* mathmlNode, PRUint32 offset, nsCO
       else // bigOp == MO
       {
         m_maxOffset = 1;
-        nsCOMPtr<nsIDOMNode> child;
-        bigOp->GetFirstChild(getter_AddRefs(child));
-        if (child)
-        {
-          nsCOMPtr<nsIDOMText> text(do_QueryInterface(child));
-          if (text)
-          {
-             nsCOMPtr<nsIDOMCharacterData> characterdata(do_QueryInterface(text));
-             if (characterdata)
-                characterdata->GetLength(&m_maxOffset);
-          }
-        }
+//        nsCOMPtr<nsIDOMNode> child;
+//        bigOp->GetFirstChild(getter_AddRefs(child));
+//        if (child)
+//        {
+//          nsCOMPtr<nsIDOMText> text(do_QueryInterface(child));
+//          if (text)
+//          {
+//             nsCOMPtr<nsIDOMCharacterData> characterdata(do_QueryInterface(text));
+//             if (characterdata)
+//                characterdata->GetLength(&m_maxOffset);
+//          }
+//        }
       }
     }
     else if (scriptType == MATHML_MUNDEROVER || scriptType == MATHML_MSUBSUP)
