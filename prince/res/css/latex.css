@@ -761,6 +761,21 @@ date {
   text-align: center;
 }
 
+part {
+  margin-top: 1in;
+}
+
+chapter {
+  margin-top: .75in;
+}
+
+section {
+  margin-top: .5in;
+}
+
+abstract {
+  margin-bottom: .5in;
+}
 
 
 /* Key to the entries below for msidisplay:
