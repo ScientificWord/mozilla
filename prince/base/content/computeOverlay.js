@@ -3559,6 +3559,13 @@ function doComputeDefine(math, editorElement) {
     msiComputeLogger.Sent4("define", mathstr, "specifying", subscript);
     try {
       ComputeCursor(editorElement);
+      if (subscript === "1" || subscript === "2") {
+        var pos = mathstr.search("<math ");
+        if (pos != -1){
+          var repl =  "<math deftype= \"" + subscript + "\" ";
+          mathstr = mathstr.replace(/\<math /, repl);
+        }
+      }
       var out = GetCurrentEngine().define(mathstr, subscript);
       msiComputeLogger.Received(out);
       // there is no result

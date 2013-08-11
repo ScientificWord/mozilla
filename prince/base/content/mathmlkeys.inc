@@ -3,8 +3,9 @@
 	  <key id="MSIinlineTextKey" modifiers="accel" key="t" command="cmd_MSItextmath"/>
 	  <key id="MSIdisplayKey"    modifiers="accel" key="d"    command="cmd_MSIdisplayMathCmd"/>
 	  <key id="MSIfractionKey"   modifiers="accel" key="/"   command="cmd_MSIfractionCmd"/>
-  	  <key id="MSIIntegralKey"   modifiers="accel" key="i" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
-      <key id="MSISummationKey"  modifiers="accel" key="7" oncommand="insertOperator('&#x03A3;', 'auto', 'auto');"/>
+  	<key id="MSIIntegralKey"   modifiers="accel" key="i" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
+    <key id="MSIIntegralKey2"  modifiers="accel" key="8" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
+    <key id="MSISummationKey"  modifiers="accel" key="7" oncommand="insertOperator('&#x03A3;', 'auto', 'auto');"/>
 	  <key id="MSIradicalKey"    modifiers="accel" key="r"    command="cmd_MSIradicalCmd"/>
 	  <key id="MSIAltsupKey"     modifiers="accel" key="h"        command="cmd_MSIsupCmd"/>
 	  <key id="MSISupKey"        modifiers="accel" keycode="VK_UP"                   command="cmd_MSIsupCmd"/>
@@ -18,5 +19,6 @@
 	  <key id="MSIanglebracketsKey" modifiers="accel shift" key="&lt;" oncommand="insertfence('&#x2329;','&#x232A;',null)"/>
 	  <key id="MSIGreekKey"      modifiers="accel" key="g"                             command="cmd_oneshotGreek"/>
 	  <key id="MSISymbolKey"     modifiers="accel" key="k"                             command="cmd_oneshotSymbol"/>
+    <key id="MSIDefineKey"     modifiers="accel" key="="    command="cmd_compute_Define"/>
 	</keyset>
 

@@ -3198,7 +3198,7 @@ bool Tree2StdMML::NeedsInvisiblePlus(MNODE* dMML_mrow)
             ContentIs(c2, "&#x2033;"))   // second
           rv = true;
       } else if (ContentIs(c1, "&#x2032;")) {
-        if (ContentIs(c2, "&#x2033;") || ContentIs(c1, "&#x2032;"))
+        if (ContentIs(c2, "&#x2033;") || ContentIs(c2, "&#x2032;"))
           rv = true;
       }
     //}
