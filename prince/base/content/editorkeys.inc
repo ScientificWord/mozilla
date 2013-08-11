@@ -14,14 +14,12 @@
   <key id="msiFindKey" key="f" command="cmd_find" modifiers="accel"/>
   <key id="msiFindNextKey" keycode="VK_F3" keytext="F3" command="cmd_findNext" />
   <key id="msiFindPrevKey" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
-  <key id="msiFMTagKey" key="4" action="document.getElementById('OtherTagSelections').focus();" modifiers="accel"/>
   <key id="msiGreekKeyboardKey" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
 <!--   <key i.d="msiInsertSubstructKey" key=">" command="cmd_insertSubstructure" modifiers="accel,shift"/>
         this is in platformbindings-->
   <key id="msiMacHelp" key="?" modifiers="accel,shift" command="cmd_showhelp"/>
   <key id="msiNewFileKey" key="n" modifiers="accel" oncommand="openNewDocument();"/>
   <key id="msiOpenFileKey" key="o" modifiers="accel" oncommand = "openDocument();" />
-  <key id="msiParaTagKey" key="2" action="document.getElementById('ParaTagSelections').focus();" modifiers="accel"/>
   <key id="msiPasteKey" key="v" command="cmd_paste" modifiers="accel"/>
   <key id="msiPasteKeyNoFormatting" key="v" command="cmd_pasteNoFormatting" modifiers="accel,shift"/>
   <key id="msiRedoKey" key="z" command="cmd_redo" modifiers="accel,shift" />
@@ -32,10 +30,12 @@
   <key id="msiSelectNextKey" keycode="VK_RIGHT" command="cmd_selectCharNext" modifiers="shift"/>
   <key id="msiSelectPrevKey" keycode="VK_LEFT" command="cmd_selectCharPrevious" modifiers="shift"/>
   <key id="msiSelectUpKey" keycode="VK_UP" command="cmd_selectLinePrevious" modifiers="shift"/>
-  <key id="msiStructTagKey" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="accel"/>
   <key id="msiSymbolKeyboardKey" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
-  <key id="msiTextTagKey" key="1" action="document.getElementById('TextTagSelections').focus();" modifiers="accel"/>
-  <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>
+<!--   <key id="msiTextTagKey" key="1" action="document.getElementById('TextTagSelections').focus();" modifiers="accel"/>
+  <key id="msiParaTagKey" key="2" action="document.getElementById('ParaTagSelections').focus();" modifiers="accel"/>
+  <key id="msiStructTagKey" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="accel"/>
+  <key id="msiFMTagKey" key="4" action="document.getElementById('FrontMTagSelections').focus();" modifiers="accel"/>
+ -->  <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>
   <key id="msiTypesetPrintKey" key="p" oncommand="msiGoDoCommand('cmd_printPdf');" modifiers="accel,shift"/>
   <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand(cmd_texttag','underline');"/>
   <key id="msiUndoKey" key="z" command="cmd_undo" modifiers="accel"/>

@@ -15,3 +15,8 @@
       <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
       <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
       <handler event="keypress" key="v" command="cmd_pasteNoFormatting" modifiers="accel,shift"/>
+      <handler event="keypress" key="1" action="focusOn('TextTagSelections')" modifiers="accel"/>
+      <handler event="keypress" key="2" action="focusOn('ParaTagSelections')" modifiers="accel"/>
+      <handler event="keypress" key="3" action="focusOn('StructTagSelections')" modifiers="accel"/>
+      <handler event="keypress" key="4" action="focusOn('FrontMTagSelections')" modifiers="accel"/>
+

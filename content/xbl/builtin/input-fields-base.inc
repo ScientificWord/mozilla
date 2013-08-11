@@ -9,4 +9,8 @@
     <handler event="keypress" key="v" modifiers="accel" command="cmd_paste"/>
     <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
     <handler event="keypress" key="z" modifiers="accel" command="cmd_undo"/>
+    <handler event="keypress" key="1" action="focusOn('TextTagSelections')" modifiers="accel"/>
+    <handler event="keypress" key="2" action="focusOn('ParaTagSelections')" modifiers="accel"/>
+    <handler event="keypress" key="3" action="focusOn('StructTagSelections')" modifiers="accel"/>
+    <handler event="keypress" key="4" action="focusOn('FrontMTagSelections')" modifiers="accel"/>
 
