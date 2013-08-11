@@ -197,14 +197,6 @@
     >{<xsl:value-of select="@package"/>}  %%  <xsl:value-of select="@pri"/>
     </xsl:for-each>
     <!--xsl:apply-templates/ -->
-    <xsl:for-each select="$preambletexbuttons/*"
-  >
-      <xsl:if test="@pre='1'">
-        <xsl:text>
-        </xsl:text>
-        <xsl:apply-templates mode="tex"/>
-      </xsl:if>
-    </xsl:for-each>
 
     <!-- back to template match="html:preamble"-->
     <!-- xsl:call-template name="generateMissingNewTheorems" / -->
@@ -217,6 +209,14 @@
     <!-- </xsl:if>
     -->
     <xsl:apply-templates/>
+    <xsl:for-each select="$preambletexbuttons/*">
+      <xsl:if test="@pre='1'">
+        <xsl:text>
+        </xsl:text>
+        <xsl:apply-templates mode="tex"/>
+      </xsl:if>
+    </xsl:for-each>
+
   </xsl:template>
 
   <xsl:template match="html:preambleTeX">
