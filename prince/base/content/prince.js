@@ -150,6 +150,11 @@ function doQuit() {
 //   coalescemath();
 // }
 
+function focusOn(id) {
+  var node = document.getElementById(id);
+  if (node) node.focus();
+}
+
 function runFixup(math)
 {
   try {
