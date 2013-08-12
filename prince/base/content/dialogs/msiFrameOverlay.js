@@ -8,6 +8,8 @@ var scaledWidthDefault;
 var scaledHeightDefault;
 var scaledHeight;
 var scaledWidth; 
+var trueWidth = 0;
+var trueHeight = 0;
 var Dg;
 var position;
 var marginAtt = "margin";
@@ -23,6 +25,7 @@ var gActualWidth = 0;
 var gActualHeight = 0;
 var gDefaultPlacement = "";
 var gDefaultInlineOffset = "";
+
 
 function setHasNaturalSize(istrue)
 // images frequently have a natural size
@@ -70,37 +73,38 @@ function updateMetrics()
               sub.left  = Number(Dg.marginInput.left.value);
         break;
     }
+    metrics.margin = sub;
     sub = metrics.padding;
     sub.top    = sub.right  = sub.bottom = sub.left   = Dg.paddingInput.left.value;
+    metrics.padding = sub;
     sub = metrics.border;
     sub.top    = sub.right  = sub.bottom = sub.left   = Dg.borderInput.left.value;
+    metrics.border = sub;
     metrics.innermargin = metrics.outermargin = 0;  
     metrics.unit = frameUnitHandler.currentUnit;                
   }
- //  else
-  // {
-  //  sub = metrics.margin;   
-  //   sub.top =    Dg.marginInput.top.value;
-  //  sub.right =  Dg.marginInput.right.value; 
-  //  sub.bottom = Dg.marginInput.bottom.value;
-  //  sub.left =   Dg.marginInput.left.value;
-  //  if (position == 0)
-  //  {
-  //    sub.right = sub.left = 0;
-  //  }
-  //  sub = metrics.padding;
-  //   sub.top =    Dg.paddingInput.top.value; 
-  //  sub.right =  Dg.paddingInput.right.value; 
-  //  sub.bottom = Dg.paddingInput.bottom.value; 
-  //  sub.left =   Dg.paddingInput.left.value;
-  //  sub = metrics.border;
-  //   sub.top =    Dg.borderInput.top.value; 
-  //  sub.right =  Dg.borderInput.right.value; 
-  //  sub.bottom = Dg.borderInput.bottom.value; 
-  //  sub.left =   Dg.borderInput.left.value;
-  //   metrics.innermargin = metrics.outermargin = 0;  
-  //   metrics.unit = frameUnitHandler.currentUnit;               
-  // }
+}
+
+function rescaleMetrics(width, height) // width and height in current units.
+{
+  var totalWidth = Number(width) + Number(metrics.margin.left) + Number(metrics.margin.right) + Number(metrics.padding.left) +
+    Number(metrics.padding.right) + Number(metrics.border.left) + Number(metrics.border.right);
+  var totalHeight = Number(height) + Number(metrics.margin.top) + Number(metrics.margin.bottom) + Number(metrics.padding.top) +
+    Number(metrics.padding.bottom) + Number(metrics.border.top) + Number(metrics.border.bottom);
+  if (totalWidth == 0 || totalHeight == 0) return;
+  var oldScale = scale;
+  if (toPixels(totalWidth) > 100) {
+    scale = scale * (100/toPixels(totalWidth));
+  }
+  if (toPixels(totalHeight) > 64) {
+    scale = scale * (64/toPixels(totalHeight));
+  }
+  if (toPixels(totalWidth) <50 && toPixels(totalHeight) < 32)
+    scale = Math.min (scale*(100/toPixels(totalWidth)), scale*(64/toPixels(totalHeight)));
+  if (oldScale != scale) {
+    scaledWidth = toPixels(trueWidth);
+    scaledHeight = toPixels(trueHeight);
+  }
 }
 
 function initFrameTab(dg, element, newElement, contentsElement)
@@ -549,6 +553,7 @@ function updateDiagram( attribute )
   var i;
   var values = [];
   updateMetrics();
+  rescaleMetrics(trueWidth,trueHeight);
    for (i = 0; i<4; i++)
      { values.push( Math.max(0,toPixels(metrics[attribute][sides[i].toLowerCase()]  )));}
    if (values[1] == values[3])
@@ -775,10 +780,9 @@ function setWidthAndHeight(width, height, event)
 
 function setContentSize(width, height)  
 // width and height are the size of the image in pixels
-// If the height or width is too large, we adjust scale here.
 {
-  if (width > 150/scale) scale = 150/width;
-  if (height > 200/scale) scale = 200/height;
+  trueWidth = frameUnitHandler.getValueOf(width,"px");
+  trueHeight = frameUnitHandler.getValueOf(height,"px");
 
   scaledWidth = Math.round(scale*width);
   if (scaledWidth == 0) scaledWidth = 40;
@@ -1252,13 +1256,13 @@ function setActualSize()
 {
   if (gActualWidth && gActualHeight)
   {
-    frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
-    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
+    width = frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
+    height = frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
   }
   else if (gConstrainWidth && gConstrainHeight)
   {
-    frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gConstrainWidth,"px");
-    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gConstrainHeight,"px");
+    width = frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gConstrainWidth,"px");
+    height = frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gConstrainHeight,"px");
   }
 //  frameTabDlg.unitList.selectedIndex = 0;
   doDimensionEnabling();
