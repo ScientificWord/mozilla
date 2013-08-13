@@ -56,7 +56,7 @@ static const int ALL_NODES = INT_MAX;
 SEMANTICS_NODE* GetSemanticsFromNode(MNODE* mml_node, BUCKET_REC* bucket, Analyzer* pAnalyzer);
 
 
-SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list, BUCKET_REC* parent_bucket, Analyzer* pAnalyzer);
+SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list, BUCKET_REC* parent_bucket, bool isLHSofDef, Analyzer* pAnalyzer);
 
 SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
                                  BUCKET_REC* parent_bucket,
@@ -195,7 +195,7 @@ SEMANTICS_NODE* AppendNewBucketRecord(U32 which_bucket, SEMANTICS_NODE* sem_chil
       if (fromNode)
          contents = GetSemanticsFromNode(base, bucket, pAnalyzer);
 	    else
-	       contents = GetSemanticsList(base, bucket, pAnalyzer);
+	       contents = GetSemanticsList(base, bucket, false, pAnalyzer);
 
 
       bucket->first_child = contents;
@@ -488,7 +488,7 @@ SEMANTICS_NODE* Analyzer::BuildSemanticsTree(MathServiceRequest& msr,
       mr.PutResultCode(CR_baddefformat);
     }
   } else {
-    rv = GetSemanticsList(dMML_tree, NULL, this);
+    rv = GetSemanticsList(dMML_tree, NULL, false, this);
   }
 
   if (GetAnalyzerData() -> DE_FuncNames()) {
@@ -1646,7 +1646,7 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
       if (ElementNameIs(m_var, "mrow"))
         m_var = sub->first_kid;
 
-      SEMANTICS_NODE* s_var = GetSemanticsList(m_var, var_bucket, pAnalyzer);
+      SEMANTICS_NODE* s_var = GetSemanticsList(m_var, var_bucket, isLHSofDef, pAnalyzer);
 
       // Remove infix operators?
       s_var = RemoveInfixOps(s_var);
@@ -1681,6 +1681,9 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
   if (base) {
     BaseType bt = GetBaseType(mml_msub_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
     ExpType sub_type = GetSubScriptType(mml_msub_node, bt, base->next);
+    if (pAnalyzer -> GetAnalyzerData() -> IsDefinedFunction (mml_msub_node)) {
+       bt = BT_FUNCTION;
+    }
 
     switch (bt) {
     case BT_OPERATOR:
@@ -2292,7 +2295,7 @@ void AnalyzeMTABLE(MNODE* mml_mtable_node,
                 mml_cell = NULL;
             }
             if (mml_cell) {
-              SEMANTICS_NODE *s_cell = GetSemanticsList(mml_cell, cell_bucket, pAnalyzer);
+              SEMANTICS_NODE *s_cell = GetSemanticsList(mml_cell, cell_bucket, false, pAnalyzer);
               cell_bucket->first_child = s_cell;
               if (s_cell)
                 s_cell->parent = cell_bucket;
@@ -2380,7 +2383,7 @@ BUCKET_REC* ArgsToBucket(MNODE* func_node, int& nodes_done, Analyzer* pAnalyzer)
       } else {                  // Here, the rest of the nodes in the list become the arg
         // sin &af; cos &af; x
         a_rec = MakeBucketRec(MB_UNNAMED, NULL);
-        SEMANTICS_NODE* s_arg = GetSemanticsList(mml_rover, a_rec, pAnalyzer);
+        SEMANTICS_NODE* s_arg = GetSemanticsList(mml_rover, a_rec, false, pAnalyzer);
         a_rec->first_child = s_arg;
         while (mml_rover) {
           local_nodes_done++;
@@ -2422,7 +2425,7 @@ BUCKET_REC* ArgBucketFromMROW(MNODE* mml_mrow, Analyzer* pAnalyzer)
 
         // we get here when processing trigargs, "sinh at"
         rv = MakeBucketRec(MB_UNNAMED, NULL);
-        SEMANTICS_NODE* s_arg = GetSemanticsList(candidate, rv, pAnalyzer);
+        SEMANTICS_NODE* s_arg = GetSemanticsList(candidate, rv, false, pAnalyzer);
         rv->first_child = s_arg;
 
     }
@@ -2541,10 +2544,11 @@ BUCKET_REC* GetFencedArgs(MNODE* mml_fence, Analyzer* pAnalyzer)
 //  and recorded as children of the generated semantic operator node.
 
 SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
-                                 BUCKET_REC* parent_bucket, 
+                                 BUCKET_REC* parent_bucket,
+                                 bool isLHSofDef, 
                                  Analyzer* pAnalyzer)
 {
-  return GetSemanticsList(dMML_list, parent_bucket, ALL_NODES, false, pAnalyzer);
+  return GetSemanticsList(dMML_list, parent_bucket, ALL_NODES, isLHSofDef, pAnalyzer);
 }
 
 SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
@@ -2782,7 +2786,7 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node,
 
               BUCKET_REC* new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
               rv->bucket_list = AppendBucketRec(NULL, new_a_rec);
-              SEMANTICS_NODE* s_node = GetSemanticsList(mml_node->first_kid, new_a_rec, pAnalyzer);
+              SEMANTICS_NODE* s_node = GetSemanticsList(mml_node->first_kid, new_a_rec, isLHSofDef, pAnalyzer);
 
               new_a_rec->first_child = s_node;
               if (s_node) 
@@ -2944,7 +2948,7 @@ SEMANTICS_NODE* GetSemanticsFromNode(MNODE* mml_node, BUCKET_REC* bucket, Analyz
   if (mml_node) {
     if (ElementNameIs(mml_node, "mrow")) {
       if (mml_node->first_kid)
-        rv = GetSemanticsList(mml_node->first_kid, bucket, pAnalyzer);
+        rv = GetSemanticsList(mml_node->first_kid, bucket, false, pAnalyzer);
       else
         TCI_ASSERT(0);
     } else
@@ -3330,7 +3334,7 @@ void OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
           if (integrand_ender){
             MNODE *save = integrand_ender->next;
             integrand_ender->next = NULL;            
-            node = GetSemanticsList(integrand_starter, a_rec, pAnalyzer);
+            node = GetSemanticsList(integrand_starter, a_rec, false, pAnalyzer);
             integrand_ender->next = save;
          } else {
             // Have no integrand: \int dx
@@ -3350,7 +3354,7 @@ void OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
 
           BUCKET_REC *a_rec = MakeBucketRec(MB_OPERAND, NULL);
           AppendBucketRecord(bigop_snode->bucket_list, a_rec);
-          SEMANTICS_NODE *contents = GetSemanticsList(integrand_starter, a_rec, pAnalyzer);
+          SEMANTICS_NODE *contents = GetSemanticsList(integrand_starter, a_rec, false, pAnalyzer);
           a_rec->first_child = contents;
           contents->parent = a_rec;
         }
@@ -4530,7 +4534,7 @@ bool NodeIsFunction(MNODE* mml_node, const Grammar* mml_entities, AnalyzerData* 
 {
   // might be f^-1 or something, in which case the whole expr is the function
   if (HasScriptChildren(mml_node))
-    return NodeIsFunction(mml_node->first_kid, mml_entities, my_analyzer_data);
+    return (my_analyzer_data->IsDefinedFunction(mml_node) || NodeIsFunction(mml_node->first_kid, mml_entities, my_analyzer_data));
   else if (ElementNameIs(mml_node, "mi")) {
     if (IsTrigArgFuncName(mml_entities, mml_node->p_chdata) ||
         IsReservedFuncName(mml_entities, mml_node->p_chdata) ||
