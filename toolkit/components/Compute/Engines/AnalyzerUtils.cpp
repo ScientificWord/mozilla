@@ -379,7 +379,10 @@ void OverrideInvisibleTimesOnLHS(MNODE * dMML_tree)
       m_rover = m_rover->first_kid;
 
     //TODO deal with embellished functions (non-SWP feature)
-    if (ElementNameIs(m_rover, "mi") && ElementNameIs(m_rover->next, "mo")) {
+
+    if ( (ElementNameIs(m_rover, "mi") || (ElementNameIs(m_rover, "msub") && 
+                                           ElementNameIs(m_rover->first_kid, "mi") )) && 
+           ElementNameIs(m_rover->next, "mo") ) {
       const char* src_token = m_rover->next->p_chdata;
       if (StringEqual(src_token, "&#x2062;") && m_rover->next->next) {
         
