@@ -23,9 +23,8 @@ public:
 
 private:
   enum {ALL_NODES = INT_MAX};
-  SEMANTICS_NODE * GetSemanticsList(MNODE * eng_list,
-                                    BUCKET_REC * parent, int mml_node_lim);
-  SEMANTICS_NODE * GetSemanticsList(MNODE* eng_list, BUCKET_REC* parent);
+  SEMANTICS_NODE* GetSemanticsList(MNODE* eng_list, BUCKET_REC * parent, int mml_node_lim);
+  SEMANTICS_NODE* GetSemanticsList(MNODE* eng_list, BUCKET_REC* parent);
   SEMANTICS_NODE *SNodeFromMNodes(MNODE * eng_node, int & eng_nodes_done);
   void SNodeFromOneMNode(SEMANTICS_NODE * snode,
                          MNODE * eng_node, int & local_nodes_done);
