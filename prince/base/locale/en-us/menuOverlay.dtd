@@ -46,7 +46,6 @@
 <!ENTITY exporttoweb.accesskey  "X">
 <!ENTITY reloadCmd.key "R">
 <!ENTITY reloadCmd.label "Reload">
-
 <!ENTITY publishCmd.label "Publish">
 <!ENTITY publishcmd.accesskey "u">
 <!ENTITY publishAsCmd.label "Publish As...">
@@ -61,8 +60,10 @@
 <!ENTITY sendPage.accesskey "g">
 <!ENTITY printSetupCmd.label "Page Setup...">
 <!ENTITY fileprintsetup.accesskey "u">
-<!ENTITY printPreviewCmd.label "Print Preview">
+<!ENTITY printPreviewCmd.label "Direct Print Preview">
 <!ENTITY printPreviewCmdMac.label "Typeset PDF Preview">
+<!ENTITY printPreviewPDF.label "Typeset PDF Preview">
+<!ENTITY directPrint.label "Direct Print">
 <!ENTITY fileprintpreview.accesskey "w">
 <!ENTITY printCmd.label "Print">
 <!ENTITY printButtonCmd.label "Print...">
