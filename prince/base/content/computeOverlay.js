@@ -3559,10 +3559,14 @@ function doComputeDefine(math, editorElement) {
     msiComputeLogger.Sent4("define", mathstr, "specifying", subscript);
     try {
       ComputeCursor(editorElement);
+      var typepos = mathstr.search("deftype=\""); 
+      if (typepos != -1){
+        subscript = mathstr[typepos + 9];
+      }
       if (subscript === "1" || subscript === "2") {
         var pos = mathstr.search("<math ");
-        if (pos != -1){
-          var repl =  "<math deftype= \"" + subscript + "\" ";
+        if ((pos != -1) && (typepos == -1)){
+          var repl =  "<math deftype=\"" + subscript + "\" ";
           mathstr = mathstr.replace(/\<math /, repl);
         }
       }
