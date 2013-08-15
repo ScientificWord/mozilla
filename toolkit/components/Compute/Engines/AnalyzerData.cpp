@@ -19,7 +19,7 @@ bool AnalyzerData::IsDefinedFunction(MNODE* mnode)
   DefInfo* di = GetDI(mi_canonical_str);
   delete[] mi_canonical_str;
     
-  return (di != NULL && di->def_type == DT_FUNCTION);
+  return (di != NULL && (di->def_type == DT_FUNCTION || di->def_type == DT_MUPNAME));
 
 }
 
