@@ -580,7 +580,14 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
          SEMANTICS_NODE* pChild = pbuck->first_child;
          if (!pChild) return;
 
-         const char* canonical = pChild -> canonical_ID;
+         BUCKET_REC* pChildBuck = pChild->bucket_list;
+         if (!pChildBuck) return;
+
+         SEMANTICS_NODE* pFunc = pChildBuck->first_child;
+         if (!pFunc) return;
+
+
+         const char* canonical = pFunc -> canonical_ID;
          ds ->PushDefInfo (engineID, 
                            canonical,
                            DT_MUPNAME,
