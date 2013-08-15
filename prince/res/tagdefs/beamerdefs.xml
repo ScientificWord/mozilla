@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE tagproperties [
 <!ATTLIST tag id ID #IMPLIED> ]>
-<tagproperties> 
+<tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">
 	<tagclasses>
 		<tagclass>
 			<tagclassname>envtag</tagclassname>
@@ -29,14 +29,11 @@
 					<nexttag>framesubtitle</nexttag>
 					<description>Beamer frame title</description>
           <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>framesubtitle</nextafteremptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents>
             <frametitle>
-              <bodyText>
-                <defaulttitletag/>
                 <cursor/>
                 <br/>
-              </bodyText>
           </frametitle>
           </initialcontents>
 				</tag>

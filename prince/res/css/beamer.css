@@ -9,87 +9,87 @@ frametitle, framesubtitle, institute {
 beamerframe {
   display: block;
   position: relative;
-  margin-left: 100px;
-  padding: 10px 0;
+  margin-left: 50px;
+  padding: 10px;
   border: thin solid black;
   background-color: #EEE0E0;
-  -moz-border-radius: 10px;
+  -moz-border-radius: 4px;
 }
 
 *[showinvis="true"] stepnumberedlist {
   display: block;
   padding: 10px;
   border: 5px solid rgb(190,220,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 *[showinvis="true"] stepbulletlist {
   display: block;
   padding: 10px;
   border: 5px solid rgb(190,220,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 *[showinvis="true"] alertstepnumberedlist {
   display: block;
   padding: 10px;
   border: 5px solid rgb(255,220,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 *[showinvis="true"] alertstepbulletlist {
   display: block;
   padding: 10px;
   border: 5px solid rgb(255,220,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 *[showinvis="true"] stepnumberedListItem {
   display: block;
   border: 5px solid rgb(190,210,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 *[showinvis="true"] stepbulletListItem {
   display: block;
   border: 5px solid rgb(190,210,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 *[showinvis="true"] alertstepnumberedListItem {
   display: block;
   border: 5px solid rgb(255,210,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 *[showinvis="true"] alertstepbulletListItem {
   display: block;
   border: 5px solid rgb(255,210,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 stepnumberedListItem {
   display: block;
   border: 5px solid rgb(190,210,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 stepbulletListItem {
   display: block;
   border: 5px solid rgb(190,210,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 alertstepnumberedListItem {
   display: block;
   border: 5px solid rgb(255,210,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 alertstepbulletListItem {
   display: block;
   border: 5px solid rgb(255,210,220);
-  -moz-border-radius: 20px;
+  -moz-border-radius: 4px;
 }
 
 stepnumberedListItem,
@@ -127,9 +127,13 @@ alertstepnumberedListItem>bodyText:first-child:first-line { content: '  ';
 
 
 frametitle{
+  display: block;
   font-size: 120%;
+  color: rgb(100,100,200);
 }
 
 framesubtitle{
+  display: block; 
   font-size: 110%;
+  color: rgb(75,75,150);
 }
