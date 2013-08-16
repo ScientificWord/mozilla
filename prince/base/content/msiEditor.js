@@ -148,7 +148,7 @@ function initMetaData( doc ) {
 #ifdef PROD_SW
   product = "Scientific Word";
 #endif
-#ifdef PROD_SW
+#ifdef PROD_SNB
   product = "Scientific Notebook";
 #endif
   node.setAttribute("product", product);
