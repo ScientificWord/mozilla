@@ -1,4 +1,4 @@
-// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.sub::ACTION_SUBSTITUTE)
 #include "nsCOMPtr.h"
 #include "nsISupportsPrimitives.h"
 #include "msiEditor.h"
@@ -2941,6 +2941,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   nsCOMPtr<nsIDOMNode> pnode;
   PRUint32 offset, length, offset2;
   PRBool fCanEndHere = PR_TRUE;
+  PRBool fValidChar;
   nsAutoString theText;
   nsAutoString tag;
   nsIAtom * atomNS;
@@ -2956,11 +2957,39 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
 //      while (prevChar == ' ' && theText[offset] == ' ') --offset;
       nodeIn->GetParentNode(getter_AddRefs(pnode));
       rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
-        pnode = nsnull;
+      fValidChar = PR_TRUE;
       fCanEndHere = PR_TRUE;
-      if (tag.EqualsLiteral("mi")) fCanEndHere = (offset==0);
+      if (tag.EqualsLiteral("mi")) {
+        fCanEndHere = (offset==0);
+        nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(pnode);
+        nsAutoString val;
+        if (nodeElement) {
+          rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
+          if (val.EqualsLiteral("true")) 
+          {
+            fValidChar = PR_FALSE;
+          }
+          if (fValidChar) {
+            rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msiunit"), val);
+            if (val.EqualsLiteral("true")) {
+              fValidChar = PR_FALSE;
+            }
+          }
+          if (!fValidChar) {
+            _result = msiIAutosub::STATE_FAIL;
+            if (*nodeOut) // we did find a match earlier
+            {
+              // *nodeOut and offsetOut should still be valid
+              NS_ADDREF(*nodeOut);
+            } 
+            return NS_OK;
+          }          
+        }
+      }
       // check for double spaces in text mode; possible to convert to math
-			if (!inMath && (prevChar == ' ') && (theText[offset] == 160))
+      pnode = nsnull;
+      prevChar = theText[offset];
+			if (!inMath && (prevChar == ' ') && ((prevChar == 160) || (prevChar == 32)))
 			{
 				if (TwoSpacesSwitchesToMath())
 				{		
@@ -2971,7 +3000,6 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
 				}
 			}
 			
-			prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
       {
@@ -3025,6 +3053,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   node2 = nsnull;
   nsCOMPtr<nsIDOMNode> tempnode;
   tempnode = nodeIn;
+  PRBool validNode = PR_TRUE;
   while (node2 == nsnull)
   {
     tempnode->GetPreviousSibling(getter_AddRefs(node2));
@@ -3045,9 +3074,24 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       else
       {
         rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
+        if (tag.EqualsLiteral("mi")) {
+          nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(node2);
+          nsAutoString val;
+          rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
+          if (val.EqualsLiteral("true")) 
+          {
+            validNode = PR_FALSE;
+          }
+          if (validNode) {
+            rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msiunit"), val);
+            if (val.EqualsLiteral("true")) {
+              validNode = PR_FALSE;
+            }
+          }
+        }
         PRBool fTagIsTextTag;
         rv =  mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"),tag,atomNS, &fTagIsTextTag);
-        if (!(fTagIsTextTag || tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))  
+        if (!(fTagIsTextTag || (tag.EqualsLiteral("mi") && validNode) || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))  
         {
           _result = msiIAutosub::STATE_FAIL;
           if (*nodeOut) // we did find a match earlier
@@ -3123,6 +3167,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
       //DumpNode(originalNode, 0, true);
 
       selection->Extend(originalNode,originalOffset);
+
 
       //printf("\njcs Extended selection:\n");
       //DumpSelection(selection);
