@@ -512,7 +512,7 @@
       <menuseparator/>                                                                                                                                        
       <menu id="MSIDefinitionsMenu" label="&MSIDefinitionsMenu.label;" accesskey="&MSIDefinitionsMenu.accesskey;">
         <menupopup id="MSIDefinitionsPopup">
-          <menuitem label="&MSIComputeDefineCmd.label;"    accesskey="&MSIComputeDefineCmd.accesskey;"   observes="cmd_MSIComputeDefine"/>
+          <menuitem label="&MSIComputeDefineCmd.label;"    accesskey="&MSIComputeDefineCmd.accesskey;"  key="MSIdefineKey" observes="cmd_MSIComputeDefine"/>
           <menuitem label="&MSIComputeUndefineCmd.label;"  accesskey="&MSIComputeUndefineCmd.accesskey;"   observes="cmd_MSIComputeUndefine"/>
           <menuseparator/>                                                                                                                                        
           <menuitem label="&MSIComputeShowDefsCmd.label;"   accesskey="&MSIComputeShowDefsCmd.accesskey;"       observes="cmd_MSIComputeShowDefs"/>
