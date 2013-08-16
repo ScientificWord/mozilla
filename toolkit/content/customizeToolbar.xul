@@ -79,15 +79,6 @@
         ondragdrop="nsDragAndDrop.drop(event, paletteDNDObserver);"/>
 
   <box align="center">
-    <label value="&show.label;"/>
-    <menulist id="modelist" value="icons" oncommand="updateToolbarMode(this.value);">
-      <menupopup>
-        <menuitem value="full" label="&iconsAndText.label;"/>
-        <menuitem value="icons" label="&icons.label;"/>
-        <menuitem value="text" label="&text.label;"/>
-      </menupopup>
-    </menulist>
-    
     <checkbox id="smallicons" oncommand="updateIconSize(this.checked);" label="&useSmallIcons.label;"/>
     
     <msibutton label="&addNewToolbar.label;" oncommand="addNewToolbar();" icon="add"/>
