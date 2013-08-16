@@ -8,7 +8,7 @@
 <!ENTITY refVario.label "Use varioref">
 <!ENTITY refVario.accesskey "v">
 <!ENTITY reftypeObjectCounter.label "Object counter">
-<!ENTITY reftypeObjectCounter.accesskey "o">
+<!ENTITY reftypeObjectCounter.accesskey "O">
 <!ENTITY reftypePageNumber.label "Page number">
 <!ENTITY reftypePageNumber.accesskey "p">
 <!ENTITY keyList.tooltip  "Enter a key name">
