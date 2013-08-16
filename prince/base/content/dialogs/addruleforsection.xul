@@ -59,7 +59,7 @@
     </groupbox>
     <spacer flex="1"/>
     <hbox>
-      <radiogroup id="rulealign" label="&RuleAlignment.label">
+      <radiogroup id="rulealign" label="&ruleAlignment.label;">
         <radio id="left" label="&left.label;" selected = "true" value="l" accesskey="&left.accesskey;" />
         <radio id="center" label="&center.label;" value="c" accesskey="&center.accesskey;" />
         <radio id="right" label="&right.label;" value="r" accesskey="&right.accesskey;" />
