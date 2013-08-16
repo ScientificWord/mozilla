@@ -76,13 +76,9 @@ function finishToolbarCustomization()
 
 function initDialog()
 {
-  var mode = gToolbox.getAttribute("mode");
-  document.getElementById("modelist").value = mode;
   gToolboxIconSize = gToolbox.getAttribute("iconsize");
   var smallIconsCheckbox = document.getElementById("smallicons");
   smallIconsCheckbox.checked = gToolboxIconSize == "small";
-  if (mode == "text")
-    smallIconsCheckbox.disabled = true;
 
   // Build up the palette of other items.
   buildPalette();
@@ -604,8 +600,6 @@ function restoreDefaultSet()
   }
 
   // Restore the default icon size and mode.
-  var defaultMode = gToolbox.getAttribute("defaultmode");
-  defaultMode  = defaultMode ||  "icons";
   var defaultIconSize = gToolbox.getAttribute("defaulticonsize") || "small";
   var defaultIconsSmall = defaultIconSize == "small";
 
@@ -682,25 +676,6 @@ function updateIconSize(aUseSmallIcons, localDefault)
   }
 }
 
-function updateToolbarMode(aModeValue, localDefault)
-{
-  setAttribute(gToolbox, "mode", aModeValue);
-  gToolboxDocument.persist(gToolbox.id, "mode");
-
-  for (var i = 0; i < gToolbox.childNodes.length; ++i) {
-    var toolbar = getToolbarAt(i);
-    if (isCustomizableToolbar(toolbar)) {
-      var toolbarMode = (localDefault && toolbar.hasAttribute("defaultmode")) ?
-                        toolbar.getAttribute("defaultmode") :
-                        aModeValue;
-      setAttribute(toolbar, "mode", toolbarMode);
-      gToolboxDocument.persist(toolbar.id, "mode");
-    }
-  }
-
-  var iconSizeCheckbox = document.getElementById("smallicons");
-  iconSizeCheckbox.disabled = aModeValue == "text";
-}
 
 
 function setAttribute(aElt, aAttr, aVal)
