@@ -10030,6 +10030,9 @@ function msiSetGraphicFrameAttrsFromGraphic(imageObj, editor)
     msiEnsureElementCSSProperty(frameObj, "height", String(unitHandler.getValueAs(height, "px")), editor);
     msiEditorEnsureElementAttribute(frameObj, "units", theUnits, editor);
   }
+  var rotation = imageObj.getAttribute("rotation");
+  if (rotation && rotation.length)
+    msiEditorEnsureElementAttribute(frameObj, "rotation", rotation, editor);
 }
 
 
@@ -11244,6 +11247,7 @@ function doVCamPreinitForPlotsInDocument(editorElement, bJustLoaded, bNeedVCamFl
 
 function onNewPlotsInDocument()
 {
+//  return;
   var editorElement = msiGetActiveEditorElement();
   var aBroadcaster = document.getElementById("newPlotsInDocument");
   if (aBroadcaster && (aBroadcaster.getAttribute("newplots") == "true") )

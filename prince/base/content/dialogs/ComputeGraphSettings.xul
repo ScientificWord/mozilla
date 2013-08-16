@@ -297,10 +297,10 @@
 
           <hbox>
             <vbox>
-              <groupbox style="height: 150px">
+              <groupbox>
                 <caption id="center" label="&plotexpr.label;"/>
                 <editor editortype="html" type="content-primary" context="msiEditorContentContext" 
-                        id="plotDlg-content-frame" flex="1" style="overflow-y: scroll;" width="400" height="1000"/>
+                        id="plotDlg-content-frame" flex="1" style="overflow: scroll" width="200" height="70"/>
               </groupbox>
                 </vbox>
             <vbox>
@@ -572,10 +572,10 @@
                 <description>&Xaxistickmark.label;</description>
                 <menulist id="XTickCount">
                   <menupopup> 
-                    <menuitem label="&none.label;"   value="none"/>
-                    <menuitem label="&low.label;"    value="low"/>
-                    <menuitem label="&normal.label;" value="normal"/>
-                    <menuitem label="&high.label;"   value="high"/>
+                    <menuitem label="&none.label;"   value="None"/>
+                    <menuitem label="&low.label;"    value="Low"/>
+                    <menuitem label="&normal.label;" value="Normal"/>
+                    <menuitem label="&high.label;"   value="High"/>
                   </menupopup>
                 </menulist>
               </vbox>

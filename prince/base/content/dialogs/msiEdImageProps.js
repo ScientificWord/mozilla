@@ -2104,7 +2104,7 @@ function adjustObjectForFileType(imageNode, extension)
 function readSizeFromPDFFile(pdfSrc)
 {
   var pdfSrcUrl = msiMakeAbsoluteUrl(pdfSrc);
-  var theText = getFileAsString(pdfSrcUrl.spec);
+  var theText = getFileAsString(pdfSrcUrl);
 
 //  var wdthRE = /(\/Width)\s+([0-9]+)/i;
 //  var htRE = /(\/Height\s+([0-9]+)/i;
