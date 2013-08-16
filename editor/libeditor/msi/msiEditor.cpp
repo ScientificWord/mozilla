@@ -2959,7 +2959,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
       fValidChar = PR_TRUE;
       fCanEndHere = PR_TRUE;
-      if (tag.EqualsLiteral("mi")) {
+      if (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) {
         fCanEndHere = (offset==0);
         nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(pnode);
         nsAutoString val;
@@ -2988,8 +2988,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       }
       // check for double spaces in text mode; possible to convert to math
       pnode = nsnull;
-      prevChar = theText[offset];
-			if (!inMath && (prevChar == ' ') && ((prevChar == 160) || (prevChar == 32)))
+			if (!inMath && (prevChar == ' ') && ((theText[offset] == 160) || (theText[offset] == 32)))
 			{
 				if (TwoSpacesSwitchesToMath())
 				{		
@@ -2999,7 +2998,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
 					return NS_OK;
 				}
 			}
-			
+			prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
       {
@@ -3074,7 +3073,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       else
       {
         rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
-        if (tag.EqualsLiteral("mi")) {
+        if (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) {
           nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(node2);
           nsAutoString val;
           rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
@@ -3091,7 +3090,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         }
         PRBool fTagIsTextTag;
         rv =  mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"),tag,atomNS, &fTagIsTextTag);
-        if (!(fTagIsTextTag || (tag.EqualsLiteral("mi") && validNode) || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))  
+        if (!(fTagIsTextTag || ((tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) && validNode) || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))  
         {
           _result = msiIAutosub::STATE_FAIL;
           if (*nodeOut) // we did find a match earlier
