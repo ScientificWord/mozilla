@@ -37,8 +37,7 @@
   </keyset>
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-<!--JLF - Review 7/2/2012, liftSizeTextbox, widthSizeTextbox, heightSizeTextbox and sizeUnitsbox need to have initial values set and 
-persistence to maintain user's entries. -->
+
   <vbox>
     <groupbox id="sizeGroupbox">
       <caption label="&sizeGroupbox.label;"/>
@@ -50,24 +49,22 @@ persistence to maintain user's entries. -->
         <rows>
           <row>
             <label control="liftSizeTextbox" value="&liftSize.label;"	accesskey="&liftSize.accesskey;"/>
-            <textbox id="liftSizeTextbox" value="1" persist="value"/>
+            <textbox id="liftSizeTextbox" value="1" persist="defaultvalue"/>
           </row>
           <row>
             <label control="widthSizeTextbox" value="&widthSize.label;"	accesskey="&widthSize.accesskey;"/>
-            <textbox id="widthSizeTextbox" value="100" persist="value"/>
+            <textbox id="widthSizeTextbox" value="100" persist="defaultvalue"/>
           </row>
           <row>
             <label control="heightSizeTextbox" value="&heightSize.label;"	accesskey="&heightSize.accesskey;"/>
-            <textbox id="heightSizeTextbox" value="1" persist="value"/>
+            <textbox id="heightSizeTextbox" value="1" persist="defaultvalue"/>
           </row>
           <row>
             <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accesskey;"/>
-            <menulist id="sizeUnitsbox">
-            <!-- menulist id="sizeUnitsbox"  oncommand="changeUnits(this);"  -->
+            <menulist id="sizeUnitsbox" persist="value">
                <menupopup>
                </menupopup>
              </menulist>
-            <!-- listbox id="fixedSizeUnitsbox" onselect="changeUnits(this);"/ -->
           </row>
         </rows>
       </grid>
