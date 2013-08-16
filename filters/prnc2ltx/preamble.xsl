@@ -173,7 +173,7 @@
   <xsl:template match="html:preamble">
     <xsl:text>
 %% preamble
-\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl} % ,revsymb4-1}
+\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl, rotating} % ,revsymb4-1}
     </xsl:text>
     <xsl:if test="$compiler='xelatex'">
 \usepackage{xltxtra,xkeyval}
