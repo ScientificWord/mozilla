@@ -103,6 +103,7 @@
     <vbox>
       <groupbox>
         <caption id="label" label="&vars.label;"/>
+        <description id="instructions"/>
         <editor editortype="html" type="content-primary" context="msiEditorContentContext" height="60" width="150" id="vars-frame"/>
       </groupbox>
     </vbox>
