@@ -19,6 +19,5 @@
 	  <key id="MSIanglebracketsKey" modifiers="accel shift" key="&lt;" oncommand="insertfence('&#x2329;','&#x232A;',null)"/>
 	  <key id="MSIGreekKey"      modifiers="accel" key="g"                             command="cmd_oneshotGreek"/>
 	  <key id="MSISymbolKey"     modifiers="accel" key="k"                             command="cmd_oneshotSymbol"/>
-    <key id="MSIDefineKey"     modifiers="accel" key="="    command="cmd_compute_Define"/>
 	</keyset>
 
