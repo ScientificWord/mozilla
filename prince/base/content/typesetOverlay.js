@@ -394,7 +394,7 @@ var msiInsertCrossReference =
 //      return;
 //    }
 //  var xref = gActiveEditor.getSelectedElement("xref");
-    var xrefData = {key: "", refType : "page"};
+    var xrefData = {key: "", refType : "obj"};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/xref.xul", "Cross Reference", "chrome, resizable=yes, close, titlebar, dependent",
                                                                                 editorElement, "cmd_MSIinsertCrossReferenceCmd", this, xrefData);
 //  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome, resizable=yes, close, titlebar", xref);
