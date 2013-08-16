@@ -49,7 +49,7 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
              char* mi_canonical_str = GetCanonicalIDforMathNode(base, pData -> GetGrammar());
 
              DefInfo* di = pData ->GetDI (mi_canonical_str);
-             if (di && di->def_type == DT_FUNCTION) {
+             if (di && (di->def_type == DT_FUNCTION || di->def_type == DT_MUPNAME)) {
                if (di->n_subscripted_args)
                   rv = BT_SUBARG_FUNCTION;
                else
@@ -418,7 +418,7 @@ IdentIlk GetMIilk(char* mi_canonical_str,
       if (isLHSofDef) {
         // Here, we're re-defining a symbol - the type of any previous def is irrelevent
       } else {
-        if (di->def_type == DT_FUNCTION)
+        if (di->def_type == DT_FUNCTION || di->def_type == DT_MUPNAME)
           rv = MI_function;
         else if (di->def_type == DT_VARIABLE)
           rv = MI_variable;
