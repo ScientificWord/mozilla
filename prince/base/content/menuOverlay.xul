@@ -55,88 +55,12 @@
       <menuseparator/>
       <menuitem id="printSetupMenuItem" observes="cmd_printSetup" label="&printSetupCmd.label;"
             accesskey="&fileprintsetup.accesskey;"/>
-#ifdef PROD_SNB
-      <menu id="printPreviewMenuItem" 
-            accesskey="&fileprintpreview.accesskey;" 
-            key="printpreviewkb" 
-            label="&printPreviewCmd.label;" 
-            persist="defcomp previewCommand" 
-            oncommand="msiGoDoCommand('cmd_preview');"/>
-      <menuitem id="printMenuItem" 
+      <menuitem id="printPreviewPDF" key="msiTypesetPrintKey"
+            label="&printPreviewPDF.label;"/>
+      <menuitem id="directPrintPreview" label="&printPreviewCmd.label;"/>
+      <menuitem id="msiDirectPrintMenuItem" label="&directPrint.label;"
             accesskey="&fileprint.accesskey;" 
-            key="printkb" 
-            label="&printCmd.label;"
-            oncommand="msiGoDoCommand(this.getAttribute('cmd_print'));"/>
-#else
-      <menuitem id="printPreviewMenuItemMac" 
-            accesskey="&fileprintpreview.accesskey;" 
-            key="printpreviewkb" 
-            label="&printPreviewCmdMac.label;" 
-            oncommand="msiGoDoCommand('cmd_previewPdf');"/>
-      <menu id="printPreviewMenuItem" 
-            accesskey="&fileprintpreview.accesskey;" 
-            key="printpreviewkb" 
-            label="&printPreviewCmd.label;" 
-            persist="defcomp previewCommand" 
-            oncommand="msiGoDoCommand(this.getAttribute('previewCommand'));">
-        <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
-        <observes element="defaultCompiler" attribute="previewCommand"/>
-        <menupopup id="printPreviewMenu" tooltiptext="" >
-          <menuitem id="printPreviewMenuItem1" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
-                    oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);" >
-            <observes id="ppmObs1" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
-          <menuitem id="printPreviewMenuItem1pdf" label="&pdfpreviewButton.label;" persist="default" default="false"
-                    oncommand="msiGoDoCommand('cmd_previewPdf'); event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
-            <observes id="ppmObs2" element="defaultCompiler" attribute="defcomp"  />
-          </menuitem>        
-          <menuseparator/>
-          <menu id="chooseDefPrinter3" label="&chooseDefPrinter.label;" >
-	          <menupopup id="menuChooseDefPrinterPopup3">
-	            <menuitem id="directMode3" label="&direct;" checked="true" 
-                oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefaultmenu(this);">
-                <observes id="ppmObs3" element="defaultCompiler" attribute="defcomp" />
-              </menuitem>        
-	            <menuitem id="pdfMode3" label="&pdf;" 
-                oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefaultmenu(this);">
-                <observes id="ppmObs4" element="defaultCompiler" attribute="defcomp" />
-              </menuitem>        
-	          </menupopup>
-          </menu>
-        </menupopup>
-      </menu>
-      <menu id="printMenuItem" 
-            accesskey="&fileprint.accesskey;" 
-            key="printkb" 
-            label="&printCmd.label;"
-            oncommand="msiGoDoCommand(this.getAttribute('printCommand'));">
-        <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
-        <observes element="defaultCompiler" attribute="printCommand"/>
-        <menupopup id="printMenuPop" tooltiptext="" >
-          <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
-                    key="msiDirectPrintKey" oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
-            <observes id="ppmObs7" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
-          <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
-                    key="msiTypesetPrintKey" oncommand="msiGoDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
-            <observes id="ppmObs8" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
-          <menuseparator/>
-          <menu id="chooseDefPrinter4" label="&chooseDefPrinter.label;" >
-	          <menupopup id="menuChooseDefPrinterPopup10">
-	            <menuitem id="directMode7" label="&direct;" checked="true" 
-                oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefaultmenu(this);">
-                <observes id="ppmObs10" element="defaultCompiler" attribute="defcomp" />
-              </menuitem>        
-	            <menuitem id="pdfMode7" label="&pdf;" 
-                oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefaultmenu(this);">
-                <observes id="ppmObs11" element="defaultCompiler" attribute="defcomp" />
-              </menuitem>        
-	          </menupopup>
-          </menu>
-        </menupopup>
-      </menu>
-#endif
+            key="msiDirectPrintKey" />
       <menuseparator/>
       <menuitem id="docInfoMenuItem" accesskey="&docInfo.accesskey;"
         observes="cmd_documentInfo" label="&docInfo.label;"/>
