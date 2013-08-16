@@ -1618,7 +1618,7 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
     {
       for (aProp in cameraVals)
       {
-        cameraVals[aProp] = obj.camera[aProp];
+        cameraVals[aProp] = String(obj.camera[aProp]);
       }
 //      aVal = camera.positionX;
 //      aVal = camera.positionY;
@@ -1641,7 +1641,7 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
   {
     animVals = {beginTime : 0, endTime : 10, currentTime : 0};
     for (aProp in animVals)
-      animVals[aProp] = obj[aProp];
+      animVals[aProp] = String(obj[aProp]);
     animVals.framesPerSecond = 5;
     if (graph)
       graph.setAnimationValsFromVCam(animVals, domGraph, bUserSetIfChanged);
@@ -1657,7 +1657,7 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
       while (kidNode)
       {
         if (kidNode.nodeName in coordSysVals)
-          coordSysVals[kidNode.nodeName] = kidNode.firstChild.nodeValue;
+          coordSysVals[kidNode.nodeName] = String(kidNode.firstChild.nodeValue);
         kidNode = kidNode.nextSibling;
       }
     }
@@ -3559,17 +3559,6 @@ function doComputeDefine(math, editorElement) {
     msiComputeLogger.Sent4("define", mathstr, "specifying", subscript);
     try {
       ComputeCursor(editorElement);
-      var typepos = mathstr.search("deftype=\""); 
-      if (typepos != -1){
-        subscript = mathstr[typepos + 9];
-      }
-      if (subscript === "1" || subscript === "2") {
-        var pos = mathstr.search("<math ");
-        if ((pos != -1) && (typepos == -1)){
-          var repl =  "<math deftype=\"" + subscript + "\" ";
-          mathstr = mathstr.replace(/\<math /, repl);
-        }
-      }
       var out = GetCurrentEngine().define(mathstr, subscript);
       msiComputeLogger.Received(out);
       // there is no result

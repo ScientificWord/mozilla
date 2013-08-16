@@ -35,6 +35,7 @@
         use a different command -->
     <command id="cmd_MSIComputeEvalKeyboard" key="MSIevalKey" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
 
+
     <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand2(event, 'cmd_compute_EvaluateNumeric')"/>
     <command id="cmd_MSIComputeSimplify"                 oncommand="doComputeCommand2(event, 'cmd_compute_Simplify')"/>
     <command id="cmd_MSIComputeCombineExponentials"      oncommand="doComputeCommand('cmd_compute_CombineExponentials')"/>
@@ -205,6 +206,7 @@
     <!-- command id="cmd_MSIComputeUserSettings"             oncommand="doGlobalComputeCommand('cmd_compute_UserSettings')"/>
     <command id="cmd_MSIComputeSettings"                 oncommand="doGlobalComputeCommand('cmd_compute_Settings')"/>
     <command id="cmd_MSIComputeSwitchEngines"            oncommand="doGlobalComputeCommand('cmd_compute_SwitchEngines')"/ -->
+    <command id="cmd_MSIComputeDefine"                   oncommand="doComputeCommand('cmd_compute_Define')"/>
     <command id="cmd_MSIComputeInterpret"                oncommand="doComputeCommand('cmd_compute_Interpret')"/>
     <command id="cmd_MSIComputeFixup"                    oncommand="doComputeCommand('cmd_compute_Fixup')"/>
     <command id="cmd_MSIComputePassthru"                 oncommand="doGlobalComputeCommand('cmd_compute_Passthru')"/>
@@ -510,8 +512,8 @@
       <menuseparator/>                                                                                                                                        
       <menu id="MSIDefinitionsMenu" label="&MSIDefinitionsMenu.label;" accesskey="&MSIDefinitionsMenu.accesskey;">
         <menupopup id="MSIDefinitionsPopup">
-          <menuitem label="&MSIComputeDefineCmd.label;"    accesskey="&MSIComputeDefineCmd.accesskey;"     key="MSIdefineKey" observes="cmd_MSIComputeDefine"/>
-          <menuitem label="&MSIComputeUndefineCmd.label;"  accesskey="&MSIComputeUndefineCmd.accesskey;"                      observes="cmd_MSIComputeUndefine"/>
+          <menuitem label="&MSIComputeDefineCmd.label;"    accesskey="&MSIComputeDefineCmd.accesskey;"   observes="cmd_MSIComputeDefine"/>
+          <menuitem label="&MSIComputeUndefineCmd.label;"  accesskey="&MSIComputeUndefineCmd.accesskey;"   observes="cmd_MSIComputeUndefine"/>
           <menuseparator/>                                                                                                                                        
           <menuitem label="&MSIComputeShowDefsCmd.label;"   accesskey="&MSIComputeShowDefsCmd.accesskey;"       observes="cmd_MSIComputeShowDefs"/>
           <menuitem label="&MSIComputeClearDefsCmd.label;"  accesskey="&MSIComputeClearDefsCmd.accesskey;"      observes="cmd_MSIComputeClearDefs"/>
@@ -523,7 +525,7 @@
       <menuitem label="&MSIComputeSettingsCmd.label;"       accesskey="&MSIComputeSettingsCmd.accesskey;"                   observes="cmd_MSIComputeSettings"/>
       <menuitem label="&MSIComputeSwitchEnginesCmd.label;"  accesskey="&MSIComputeSwitchEnginesCmd.accesskey;"              observes="cmd_MSIComputeSwitchEngines"/>
       <menuseparator/ -->                                                                                                                                        
-      <menuitem label="&MSIComputeInterpretCmd.label;"  accesskey="&MSIComputeInterpretCmd.accesskey;" key="MSIinterpretKey" observes="cmd_MSIComputeInterpret"/>
+      <menuitem label="&MSIComputeInterpretCmd.label;"  accesskey="&MSIComputeInterpretCmd.accesskey;"  observes="cmd_MSIComputeInterpret"/>
       <menuitem label="&MSIComputeFixupCmd.label;"      accesskey="&MSIComputeFixupCmd.accesskey;"     observes="cmd_MSIComputeFixup"/>
       <menuitem label="&MSIComputePassthruCmd.label;"   accesskey="&MSIComputePassthruCmd.accesskey;"  observes="cmd_MSIComputePassthru"/>
     </menupopup>
