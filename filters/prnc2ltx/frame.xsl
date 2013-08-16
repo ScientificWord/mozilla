@@ -15,7 +15,8 @@
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="@imageWidth"><xsl:value-of select="@imageWidth"/></xsl:when>
-      <xsl:otherwise><xsl:value-of select="@width"/></xsl:otherwise>
+      <xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
+      <xsl:otherwise><xsl:text>0</xsl:text></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="units">
@@ -29,7 +30,8 @@
     <xsl:choose>
       <xsl:when test="@frametype='image'">0pt</xsl:when>
       <xsl:when test="@imageHeight"><xsl:value-of select="@imageHeight"/></xsl:when>
-      <xsl:otherwise><xsl:value-of select="@height"/></xsl:otherwise>
+      <xsl:when test="@height"><xsl:value-of select="@height"/></xsl:when>
+      <xsl:otherwise><xsl:text>0</xsl:text></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="limitframemetrics">
@@ -114,8 +116,8 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
-            <xsl:when test="@overhang"><xsl:value-of select="$height"/></xsl:when>
-            <xsl:otherwise>0</xsl:otherwise>
+            <xsl:when test="@overhang"><xsl:value-of select="$height"/><xsl:value-of select="$units"/></xsl:when>
+            <xsl:otherwise>0pt</xsl:otherwise>
           </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>}
@@ -136,8 +138,11 @@
       <xsl:otherwise>\\</xsl:otherwise>
     </xsl:choose>
   </xsl:if>
-  <xsl:if test="@rotation='rot90'">\begin{turn}{-90}</xsl:if>
-  <xsl:if test="@rotation='rot270'">\begin{turn}{90}</xsl:if>{ 
+  <xsl:choose>
+    <xsl:when test="@rotation='rot90'">\begin{turn}{-90}</xsl:when>
+    <xsl:when test="@rotation='rot270'">\begin{turn}{90}</xsl:when>
+    <xsl:otherwise></xsl:otherwise>
+  </xsl:choose>
   <xsl:if test="$usecolor=1">\fcolorbox
     <xsl:if test="@border-color">
       <xsl:choose>
@@ -156,12 +161,12 @@
     <xsl:if test="not(@background-color)">{#FFFFFF}</xsl:if>{
   </xsl:if>
   <xsl:if test="$needminipage=1">
-    {\begin{<xsl:if test="@kind='table'">table</xsl:if>
+    \begin{<xsl:if test="@kind='table'">table</xsl:if>
       <xsl:if test="not(@kind='table')">minipage</xsl:if>}[t]
     <xsl:if test="not(@kind='table')"> 
     <xsl:choose>
-      <xsl:when test="not(@rotation) or (@rotation='rot0')"><xsl:value-of select="$width"/></xsl:when>
-      <xsl:otherwise><xsl:value-of select="$width"/></xsl:otherwise>
+      <xsl:when test="not(@rotation) or (@rotation='rot0')">{<xsl:value-of select="$width"/></xsl:when>
+      <xsl:otherwise>{<xsl:value-of select="$width"/></xsl:otherwise>
     </xsl:choose><xsl:value-of select="$units"/>} %
     </xsl:if>
   </xsl:if>
@@ -195,10 +200,10 @@
     </xsl:choose>
   </xsl:if>
   <xsl:if test="$needminipage=1">
-  \end{<xsl:if test="@kind='table'">table</xsl:if><xsl:if test="not(@kind='table')">   minipage</xsl:if>}}
+  \end{<xsl:if test="@kind='table'">table</xsl:if><xsl:if test="not(@kind='table')">minipage</xsl:if>}
   </xsl:if>  
   <xsl:if test="$usecolor=1">}</xsl:if>
-  }
+  <xsl:if test="@rotation='rot90' or @rotation='rot270'">\end{turn}</xsl:if>
   <xsl:choose>
     <xsl:when test="(@pos='inline') and (@frametype='image')">\end{center}}}</xsl:when>
     <xsl:when test="$isdisplay=1">\end{center}</xsl:when>
