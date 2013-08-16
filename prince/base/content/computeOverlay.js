@@ -3515,6 +3515,7 @@ function doComputeQuantile(math, editorElement, cmd, cmdHandler) {
   var o = {};
   o.title = GetComputeString("Quantile.title");
   o.label = GetComputeString("Quantile.label");
+  o.description = GetComputeString("Quantile.description");
   o.mParentWin = this;
   o.theMath = math;
   o.afterDialog = function(editorElement) {
