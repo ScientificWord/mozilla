@@ -594,7 +594,7 @@ function setSubstitutionControlFromSub(autoSubName)
           {
 //            insertinlinemath(theEditorElement);
 //            dump("In setsubstitutionControlFromSub(), inserting inline math in editor control.\n");
-            theText = "<math>" + theText + "</math>";
+            theText = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" + theText + "</math>";
           }
         }
 //        insertXMLAtCursor(theEditor, theText, true, true);
