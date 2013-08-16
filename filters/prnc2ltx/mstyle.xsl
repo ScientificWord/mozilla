@@ -94,7 +94,7 @@ veryverythickmathspace  number h-unit                      0.388889em
       </xsl:if>
     </xsl:variable>
 
-
+    <xsl:value-of select="$first-is-mfrac"/>
     <xsl:choose>
 
 <!-- The LaTeX fractions that we script have "built-in" style attributes -->
