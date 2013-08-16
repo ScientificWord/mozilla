@@ -21,7 +21,8 @@
         <xsl:with-param name="objNode" select="."/>
       </xsl:call-template>
     </xsl:variable>
-\includegraphics[<xsl:if test="@rot">angle=<xsl:value-of select="@rot"/>,</xsl:if>
+\includegraphics[<xsl:if test="@rotation">angle=<xsl:if test="@rotation='rot90'">
+  -90</xsl:if><xsl:if test="@rotation='rot270'">90</xsl:if>,</xsl:if>
   <xsl:if test="number($imageWidth) != 0"> width=<xsl:value-of select="$imageWidth"/>
 <xsl:value-of select="$theUnit"/>,</xsl:if>
   <xsl:if test="@imageHeight and (number(@imageHeight) != 0)"> totalheight=<xsl:value-of select="@imageHeight"/>
