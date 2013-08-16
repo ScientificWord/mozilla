@@ -37,6 +37,7 @@
 
 #include "CreateElementTxn.h"
 #include "nsEditor.h"
+#include "nsIHTMLEditor.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMNodeList.h"
 #include "nsISelection.h"
@@ -98,9 +99,32 @@ NS_IMETHODIMP CreateElementTxn::DoTransaction(void)
   nsCOMPtr<nsIContent> newContent;
  
   //new call to use instead to get proper HTML element, bug# 39919
-  nsresult result = mEditor->CreateHTMLContent(mTag, getter_AddRefs(newContent));
+  // BBM: changed to use initial content defined in Tagdefs file.
+  nsresult result;
+  nsCOMPtr<nsIDOMNode> newNode;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)mEditor);
+  if (htmlEditor) {
+    nsCOMPtr<msiITagListManager> tlm;
+    nsCOMPtr<nsIDOMDocument> doc;
+    result = htmlEditor->GetTagListManager(getter_AddRefs(tlm));
+    if (tlm && !NS_FAILED(result)) {
+      result = mEditor->GetDocument(getter_AddRefs(doc));
+      if (doc && !NS_FAILED(result)) {
+        tlm->GetNewInstanceOfNode(mTag, nsnull, doc, getter_AddRefs(newNode));
+      }
+    }
+  }
+  nsCOMPtr<nsIDOMElement>newElement;
+  if (newNode) {
+    newElement = do_QueryInterface(newNode);
+  }
+  else
+  {
+    result = mEditor->CreateHTMLContent(mTag, getter_AddRefs(newContent));    
+    newElement = do_QueryInterface(newContent);
+  }
+//  nsresult result = mEditor->CreateHTMLContent(mTag, getter_AddRefs(newContent));
   if (NS_FAILED(result)) return result;
-  nsCOMPtr<nsIDOMElement>newElement = do_QueryInterface(newContent);
   if (!newElement) return NS_ERROR_NULL_POINTER;
   mNewNode = do_QueryInterface(newElement);
   // Try to insert formatting whitespace for the new node:
