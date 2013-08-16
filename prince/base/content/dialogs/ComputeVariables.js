@@ -14,6 +14,11 @@ function Startup(){
     label.setAttribute("label", data.label);
   }
 
+  if (data.description && data.description.length > 0) {
+    var instructions = document.getElementById("instructions");
+    instructions.setAttribute("value", data.description);
+  }
+
   var theStringSource = GetComputeString("Math.emptyForInput");
   if (("vars" in data) && data.vars.length > 0)
     theStringSource = data.vars;
