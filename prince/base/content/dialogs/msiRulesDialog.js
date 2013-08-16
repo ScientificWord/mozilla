@@ -25,6 +25,16 @@ function Startup()
   }
 
   doSetOKCancel(onAccept, onCancel);
+  var tb = document.getElementById("liftSizeTextbox");
+  if (tb.getAttribute("defaultvalue"))
+    tb.value = tb.getAttribute("defaultvalue");
+  tb = document.getElementById("widthSizeTextbox");
+  if (tb.getAttribute("defaultvalue"))
+    tb.value = tb.getAttribute("defaultvalue");
+  tb = document.getElementById("heightSizeTextbox");
+  if (tb.getAttribute("defaultvalue"))
+    tb.value = tb.getAttribute("defaultvalue");
+
   data = window.arguments[0];
   if (!data)
     data = new Object();
@@ -90,8 +100,9 @@ function setUpData()
     if (!(dataComponents[ix] in data) || (data[dataComponents[ix]] == null))
     {
       data[dataComponents[ix]] = new Object();
-      data[dataComponents[ix]].units = "pt";
-      data[dataComponents[ix]].size = (ix==0? 0.00 : (ix==1 ? 100.0 : 1.0));
+      data[dataComponents[ix]].units = document.getElementById("sizeUnitsbox").value;
+      data[dataComponents[ix]].size = (ix==0? document.getElementById("liftSizeTextbox").value : 
+        (ix==1 ? document.getElementById("widthSizeTextbox").value : document.getElementById("heightSizeTextbox").value));
     }
   }
   if (!("ruleColor" in data) || data.ruleColor == null)
@@ -150,6 +161,12 @@ function getColorAndUpdate()
 function onAccept()
 {
   var theUnits = document.getElementById("sizeUnitsbox").value;
+  var tb = document.getElementById("liftSizeTextbox");
+  tb.setAttribute("defaultvalue",tb.value);
+  tb = document.getElementById("widthSizeTextbox");
+  tb.setAttribute("defaultvalue",tb.value);
+  tb = document.getElementById("heightSizeTextbox");
+  tb.setAttribute("defaultvalue",tb.value);
   var sizeBoxes = [document.getElementById("liftSizeTextbox"), document.getElementById("widthSizeTextbox"),
                              document.getElementById("heightSizeTextbox")];
   for (var ix = 0; ix < dataComponents.length; ++ix)
