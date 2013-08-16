@@ -31,7 +31,7 @@ shift
 goto checkParams
 :doIt
 pushd "%BIBTARGDIR%"
-set path="%MSITEXBIN%"
+set path="@@TeX_Bindir@@"
 bibtex "%BIBTARGFILE%"
 echo done > sentinel
 popd
