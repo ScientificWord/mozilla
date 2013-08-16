@@ -2560,7 +2560,7 @@ function addrule()
   nextbox.hidden=false;
   nextbox.setAttribute("style","height:3px;background-color:black;");
   window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", 
-    "rchrome,close,titlebar,resizable,alwaysRaised", nextbox, secUnitHandler.currentUnit);
+    "chrome,close,titlebar,resizable,alwaysRaised", nextbox, secUnitHandler.currentUnit);
   boxlist[i] = nextbox;
 }
 
