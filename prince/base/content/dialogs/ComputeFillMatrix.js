@@ -109,7 +109,7 @@ function OK(){
   if (data.type >= 4) {
     var doc = document.getElementById("fillmat-content-frame").contentDocument;
     var mathnodes = doc.getElementsByTagName("math");
-    if (mathnodes.length == 0) {
+    if (mathnodes.length === 0) {
       dump("No math in center field!\n");
       return false;  // should leave dialog up but doesn't seem to work
     }
@@ -151,6 +151,7 @@ function Switch(id){
   case "band":
     val = false;
     break;
+  default: return;
   }
   var theEditor = document.getElementById("fillmat-content-frame");
   msiEnableEditorControl(theEditor, !val);
