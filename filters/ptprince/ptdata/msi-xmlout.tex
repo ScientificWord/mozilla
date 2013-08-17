@@ -1443,11 +1443,13 @@
   \begingroup
     \msitag{\msipassthru}%
     \char`\{%
+    \msitag{<mrow>}%
     \msitag{<mspace width="thickmathspace"/>}%
     \msiopentag{mtext}{<mtext>}%
     \begingroup \msihmode #1\endgroup%
     \msiclosetag{mtext}{</mtext>}%
     \msitag{<mspace width="thickmathspace"/>}%
+    \msitag{</mrow>}%
     \char`\}
   \endgroup
   \catcode`\$=3\relax}
