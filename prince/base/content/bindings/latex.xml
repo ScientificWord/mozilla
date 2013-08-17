@@ -450,7 +450,7 @@
 		</xbl:resources>
 		<xbl:content>
 			<xbl:children/>
-			<html:button type="button" xbl:inherits="xbl:text=marker" class="eqnnum" onclick=""/>
+			<html:button type="button" xbl:inherits="xbl:text=marker,customLabel" class="eqnnum" onclick=""/>
 		</xbl:content>
 	</xbl:binding>
 

@@ -2559,7 +2559,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
     else
     {
       bRowsNumbered = true;
-      if (currData.mCustomLabel && currData.mCustomLabel.length)
+      if (dialogData.numbering==="numberingCustom" && currData.mCustomLabel && currData.mCustomLabel.length)
       {
         customLabelStr = currData.mCustomLabel;
         infoStr += " has custom label '" + customLabelStr + "'";
@@ -2620,7 +2620,10 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
     else
       infoStr += "there is no additional spacing after the line.";
 
-    msiEditorEnsureElementAttribute(rowNode, "customLabel", customLabelStr, editor);
+    if (dialogData.numbering==="numberingCustom") {
+      msiEditorEnsureElementAttribute(rowNode, "customLabel", customLabelStr, editor);
+    }
+    else rowNode.removeAttribute("customLabel");
     msiEditorEnsureElementAttribute(rowNode, "suppressAnnotation", suppAnnotationStr, editor);
     msiEditorEnsureElementAttribute(rowNode, "marker", markerStr, editor);
     msiEditorEnsureElementAttribute(rowNode, "id", markerStr, editor);
