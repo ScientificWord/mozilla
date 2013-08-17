@@ -900,7 +900,7 @@ mtr button[class="eqnnum"], mtr button[class="subeqnnum"], mtr button[class="eqn
 }
 
 button[class="eqnnum"]:after{
-  content: "  " counter(section) "." counter(eqnnumber);
+  content: "  (" counter(section) "." counter(eqnnumber) ")";
   -moz-user-modify: read-only ! important;
 }
 
@@ -910,7 +910,7 @@ button[class="eqnnum"][customLabel]:after{
 }
 
 button[class="subeqnnum"]:after{
-  content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
+  content: "  (" counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
   -moz-user-modify: read-only ! important;
 }
 
