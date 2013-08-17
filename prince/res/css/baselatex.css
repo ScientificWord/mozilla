@@ -22,7 +22,8 @@ mml|* [msiunit="true"] {color: green;
 mml|mtd {border-color: green; }
 msidisplay mml|math {border-color: green; 
   border-width: 1px; 
-  border-style: solid; }
+  border-style: solid; 
+  min-height: 12px;}
 mml|mtext { color: black; }
 [msiclass="msi_passthrough"] {color: orange; }
 mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
