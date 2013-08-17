@@ -232,6 +232,7 @@ function onAccept()
   data.enableAlignment = gDialog.enableAlignmentCheckbox.checked;
   data.alignment = gDialog.alignmentRadioGroup.value;
   data.wholeMarker = gDialog.wholeDisplayKeyList.value;
+  data.numbering = gDialog.lineNumberingRadioGroup.value;
   getLineDataFromDialog(data.currLine);
 
 //  putDataToReviseData( data.reviseData );
