@@ -1603,7 +1603,7 @@
 
 \def\fbox#1{\ifmmode
               \msitag{\msipassthru{<menclose notation='box'>}}%
-              \msitag{\msipassthru}{\msihmode #1\par}%
+              \msitag{\msipassthru}{\msihmode #1}%
               \msitag{\msipassthru{</menclose>}}%
             \else
               \msiopentag{fbox}{<smallbox>}#1\msiclosetag{fbox}{</smallbox>}%
