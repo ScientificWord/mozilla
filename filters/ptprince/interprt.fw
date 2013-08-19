@@ -961,8 +961,8 @@ case CMD_MSIHMODE : {
    } else if (Typesetter::GetMode() == MODE_MATH){
      Typesetter::GotoHMode();
      s_groupStack[s_groupStackTop].m_mode = MODE_HORIZONTAL;
-     inp.Putback(Global::msieverypar);
-     inp.Putback(Global::everypar);
+     //inp.Putback(Global::msieverypar);
+     //inp.Putback(Global::everypar);
    }
     
    break;
