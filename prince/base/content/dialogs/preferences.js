@@ -566,7 +566,8 @@ var plotItemIds = ["plotLineColorWell", "plotDirectionalShading", "plotBaseColor
 var plotColorWells = ["plotLineColorWell", "plotBaseColorWell", "plotSecondColorWell"];
 
 var plotVarEditControls = ["plotVar1StartEdit", "plotVar1EndEdit", "plotVar2StartEdit", "plotVar2EndEdit",
-                    "plotVar3StartEdit", "plotVar3EndEdit", "plotVar4StartEdit", "plotVar4EndEdit"];
+                    "plotVar3StartEdit", "plotVar3EndEdit", "plotVar4StartEdit", "plotVar4EndEdit",
+                    "xrangelow", "xrangehigh", "yrangelow", "yrangehigh", "zrangelow", "zrangehigh"];
 
 var plotVarControls = ["plotPtssamp1", "plotPtssamp2", "plotPtssamp3", "plotPtssamp4"];
 
