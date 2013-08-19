@@ -1443,11 +1443,13 @@
   \begingroup
     \msitag{\msipassthru}%
     \char`\{%
+    \msitag{<mrow>}%
     \msitag{<mspace width="thickmathspace"/>}%
     \msiopentag{mtext}{<mtext>}%
     \begingroup \msihmode #1\endgroup%
     \msiclosetag{mtext}{</mtext>}%
     \msitag{<mspace width="thickmathspace"/>}%
+    \msitag{</mrow>}%
     \char`\}
   \endgroup
   \catcode`\$=3\relax}
@@ -1603,7 +1605,7 @@
 
 \def\fbox#1{\ifmmode
               \msitag{\msipassthru{<menclose notation='box'>}}%
-              \msitag{\msipassthru}{\msihmode #1\par}%
+              \msitag{\msipassthru}{\msihmode #1}%
               \msitag{\msipassthru{</menclose>}}%
             \else
               \msiopentag{fbox}{<smallbox>}#1\msiclosetag{fbox}{</smallbox>}%

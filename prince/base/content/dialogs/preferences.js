@@ -377,6 +377,11 @@ function onComputeSettingChange(pref, force)
           else if (val === "matrix_braces") val = 3;
           else (val = 0); 
         }
+        if (mappedPref === "Output_imaginaryi") {
+          if (val === "imagi_i") val = 0;
+          else if (val === "imagi_j") val = 1;
+          else (val = 2); 
+        }
         currEngine.setUserPref(currEngine[mappedPref], val); 
       }
       else if (mappedPref = prefEngineMapper[prefId])
