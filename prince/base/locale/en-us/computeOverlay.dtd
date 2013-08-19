@@ -10,6 +10,7 @@
 <!ENTITY MSIComputeEvalCmd.keybinding "e">  
 <!ENTITY MSIComputeEvalNumCmd.label "Evaluate Numeric">
 <!ENTITY MSIComputeEvalNumCmd.accesskey "U">
+<!ENTITY MSIComputeEvalNumCmd.keybinding "e">  
 <!ENTITY MSIComputeSimplifyCmd.label "Simplify">
 <!ENTITY MSIComputeSimplifyCmd.accesskey "y">
 

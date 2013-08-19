@@ -265,7 +265,7 @@
   <menu id="MSIComputeMenu" label="&MSIComputeMenu.label;" accesskey="&MSIComputeMenu.accesskey;">
     <menupopup id="MSIComputePopup">
       <menuitem label="&MSIComputeEvalCmd.label;"     accesskey="&MSIComputeEvalCmd.accesskey;"   key="MSIevalKey"  observes="cmd_MSIComputeEval" />
-      <menuitem label="&MSIComputeEvalNumCmd.label;"       accesskey="&MSIComputeEvalNumCmd.accesskey;"    observes="cmd_MSIComputeEvalNum"/>
+      <menuitem label="&MSIComputeEvalNumCmd.label;"       accesskey="&MSIComputeEvalNumCmd.accesskey;" key="MSIevalNumKey"   observes="cmd_MSIComputeEvalNum"/>
       <menuseparator/>                                                                                                                       
       <menuitem label="&MSIComputeSimplifyCmd.label;"      accesskey="&MSIComputeSimplifyCmd.accesskey;"                    observes="cmd_MSIComputeSimplify"/>
       <menu id="MSICombineMenu" label="&MSICombineMenu.label;" accesskey="&MSICombineMenu.accesskey;">
