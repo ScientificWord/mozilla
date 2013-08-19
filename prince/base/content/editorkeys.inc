@@ -46,7 +46,7 @@
 </keyset>
 
 <!--commands needed for some of these key bindings-->
-<commandset>
+<!-- <commandset>
   <command id="cmd_charPrevious" oncommand="msiGoDoCommand('cmd_charPrevious')"/>
   <command id="cmd_charNext" oncommand="msiGoDoCommand('cmd_charNext')"/>
   <command id="cmd_selectCharPrevious" oncommand="msiGoDoCommand('cmd_selectCharPrevious')" />
@@ -58,4 +58,4 @@
   <command id="cmd_showhelp" oncommand="msiGoDoCommand('cmd_showhelp')"/>
   <command id="cmd_close" oncommand="msiGoDoCommand('cmd_close')"/>
   <command id="cmd_selectAll" oncommand="msiGoDoCommand('cmd_selectAll')"/>
-</commandset>
+</commandset> -->
