@@ -227,6 +227,7 @@ note[type="footnote"], node[type="footnote"][hide="false"] {
   float: left;
   width: 100%;
   clear: right;
+  font-size: small;
 }
 
 /* never show footnotes marked 'hide'*/
