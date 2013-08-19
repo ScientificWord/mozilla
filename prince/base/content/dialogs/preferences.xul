@@ -355,7 +355,7 @@
                       accesskey="&EnableSilentAutoSave.accesskey;"
                       oncommand=""/>
  -->            <hbox align="center">
-              <textbox type="number" style="width: 5em;" label="Save interval in seconds" preference="saveintervalseconds"/>
+              <textbox type="number" label="Save interval in seconds" preference="saveintervalseconds" class="medwidth"/>
               <label value="&SaveIntervalSeconds.label;"/>
             </hbox>
 #ifndef PROD_SNB
@@ -466,11 +466,11 @@
                 <rows>
                   <row align="center">
                     <label value="&DefaultSizeNewGraphicsWidth.label;"/>
-                    <textbox id="graphicsWidth" type="number" decimalplaces="2" preference="defaultGraphicsHSize" style="width: 5em;"/>
+                    <textbox id="graphicsWidth" type="number" decimalplaces="2" preference="defaultGraphicsHSize" class="medwidth"/>
                   </row>
                   <row align="center">
                     <label value="&DefaultSizeNewGraphicsHeight.label;"/>
-                    <textbox type="number" decimalplaces="2" preference="defaultGraphicsVSize" id="graphicsHeight" style="width: 5em;"/>
+                    <textbox type="number" decimalplaces="2" preference="defaultGraphicsVSize" id="graphicsHeight" class="medwidth"/>
                   </row>
                 </rows>
               </grid>
@@ -500,7 +500,7 @@
               <vbox>
                 <radio id="inline" value="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
                 <label value="&DefaultNewGraphicsInlineOffset.label;"/>
-                <textbox id="graphicsInlineOffset" type="number" decimalplaces="2" preference="defaultGraphicsInlineOffset" style="width: 5em;"/>
+                <textbox id="graphicsInlineOffset" type="number" decimalplaces="2" preference="defaultGraphicsInlineOffset" class="medwidth"/>
               </vbox>
               <vbox>
                 <radio id="display" value="display" label="&DefaultPlacementNewGraphicsDisplayed.label;" radioGroup="placementRadioGroup"/>
@@ -545,15 +545,15 @@
                 <row align="center">
                   <label value="&SideMargin.label;"/>
                   <textbox id="graphicsSideMargin" type="number" decimalplaces="2"
-                    preference="defaultGraphicsHMargin" style="width: 5em;"/>
+                    preference="defaultGraphicsHMargin" class="medwidth"/>
                   <label value="&TopBottomMargin.label;"/>
                   <textbox id="graphicsVMargin" type="number" decimalplaces="2"
-                    preference="defaultGraphicsVMargin" style="width: 5em;"/>
+                    preference="defaultGraphicsVMargin" class="medwidth"/>
                 </row>
                 <row align="center">
                   <label value="&Padding.label;"/>
                   <textbox id="graphicsPadding" type="number" decimalplaces="2"
-                    preference="defaultGraphicsPadding" style="width: 5em;"/>
+                    preference="defaultGraphicsPadding" class="medwidth"/>
                   <label value="&PaddingColor.label;"/>
                   <msibutton id="graphics.padding,colorbutton" class="color-button" oncommand="getColorAndUpdate('graphics.padding.CW');">
                     <spacer id="graphics.padding.CW" class="color-well" preference="graphics.BGColor"/>
@@ -562,7 +562,7 @@
                 <row align="center">
                   <label value="&BorderWidth.label;"/>
                   <textbox id="graphicsBorder" type="number" decimalplaces="2" 
-                    preference="defaultGraphicsBorderWidth" style="width: 5em;"/>
+                    preference="defaultGraphicsBorderWidth" class="medwidth"/>
                   <label value="&BorderColor.label;"/>
                   <msibutton id="graphics.border,colorbutton" class="color-button" oncommand="getColorAndUpdate('graphics.border.CW');">
                     <spacer id="graphics.border.CW" class="color-well" preference="graphics.borderColor"/>
@@ -733,13 +733,13 @@
             <hbox align="center">
               <description>&DigitsRendered.label;</description>
               <spacer flex="1"/>
-              <textbox type="number" id ="digitsRendered" preference="digitsRenderedpref"   class="medwidth"/>
+              <textbox type="number" id ="digitsRendered" preference="digitsRenderedpref" class="medwidth"/>
             </hbox>
             <vbox>
               <hbox align="center">
                 <description>&UpperThreshold.label;</description>
                 <spacer flex="1"/>
-                <textbox type="number" id ="upper" preference="upperthresholdpref"  style="width: 3em"/>
+                <textbox type="number" id ="upper" preference="upperthresholdpref" class="medwidth"/>
               </hbox>
               <description>&DigitsLeftofDecimal.label;</description>
             </vbox>
@@ -747,7 +747,7 @@
               <hbox align="center">
                 <description>&Lowerthreshold.label;</description>
                 <spacer flex="1"/>
-                <textbox type="number" id ="lower" preference="lowerthresholdpref"  sstyle="width: 3em"/>
+                <textbox type="number" id ="lower" preference="lowerthresholdpref" class="medwidth"/>
               </hbox>
               <description>&ZerosRightofDecimal.label;</description>
             </vbox>
@@ -875,7 +875,7 @@
             <hbox align="center">
               <description>&desc.Digits;</description>
               <spacer flex="1"/>
-              <textbox type="number" id ="digitsUsed" preference="digitsUsedpref" style="width: 3em"/>
+              <textbox type="number" id ="digitsUsed" preference="digitsusedpref" class="medwidth"/>
             </hbox>
             <groupbox>
               <caption label="&solve.label;"/>
@@ -883,7 +883,7 @@
                 <description>&desc.Max;</description>
                 <spacer flex="1"/>
                 <textbox id ="degree" preference="degreepref" type="number" decimalplaces="0" min="0" increment="1" 
-                  style="width: 3em" value="2"/>
+                  class="medwidth" value="2"/>
               </hbox>
               <hbox align="center">
                 <description>&desc.Principal;</description>
@@ -1171,11 +1171,11 @@
               <rows>
                 <row align="center">
                    <label value="&DefaultSizeNewPlotsWidth.label;"/> 
-                   <textbox type="number" preference="graph.HSize" decimalplaces="2" id="plotWidth" style="width: 5em;"/>
+                   <textbox type="number" preference="graph.HSize" decimalplaces="2" id="plotWidth" class="medwidth"/>
                 </row>
                 <row align="center">
                    <label value="&DefaultSizeNewPlotsHeight.label;"/>
-                   <textbox type="number" preference="graph.VSize" decimalplaces="2" id="plotHeight" style="width: 5em;"/>
+                   <textbox type="number" preference="graph.VSize" decimalplaces="2" id="plotHeight"  class="medwidth"/>
                 </row>
               </rows>
             </grid>
@@ -1244,15 +1244,15 @@
               <row align="center">
                 <label value="&SideMargin.label;"/>
                 <textbox id="graphSideMargin" type="number" decimalplaces="2"
-                  preference="graph.HMargin" style="width: 5em;"/>
-                <label value="TopBottomMargin.label;"/>
+                  preference="graph.HMargin" class="medwidth"/>
+                <label value="&TopBottomMargin.label;"/>
                 <textbox id="graphVMargin" type="number" decimalplaces="2"
-                  preference="graph.VMargin" style="width: 5em;"/>
+                  preference="graph.VMargin"  class="medwidth"/>
               </row>
               <row align="center">
                 <label value="&Padding.label;"/>
                 <textbox id="graphPadding" type="number" decimalplaces="2"
-                  preference="graph.padding" style="width: 5em;"/>
+                  preference="graph.padding" class="medwidth"/>
                 <label value="&PaddingColor.label;"/>
                 <msibutton id="graph.padding,colorbutton" class="color-button" oncommand="getColorAndUpdate('graph.padding.CW');">
                   <spacer id="graph.padding.CW" class="color-well" preference="graph.BGColor"/>
@@ -1261,7 +1261,7 @@
               <row align="center">
                 <label value="&BorderWidth.label;"/>
                 <textbox id="graphBorder" type="number" decimalplaces="2" 
-                  preference="graph.border" style="width: 5em;"/>
+                  preference="graph.border" class="medwidth"/>
                 <label value="&BorderColor.label;"/>
                 <msibutton id="graph.border,colorbutton" class="color-button" oncommand="getColorAndUpdate('graph.border.CW');">
                   <spacer id="graph.border.CW" class="color-well" preference="graph.borderColor"/>
@@ -1533,7 +1533,7 @@
                   <label value="&plotVarsTo.label;" />
                   <editor editortype="html" type="content" context="msiEditorContentContext" 
                           id="plotVar1EndEdit" preference="plot.XMax" flex="1" width="150" height="40"/>
-		              <hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="narrow" /></hbox>
+		              <hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.2Vars">
                   <label id ="plotVar2" >&plotVarY.label;</label>
@@ -1542,7 +1542,7 @@
                   <label value="&plotVarsTo.label;" />
                   <editor editortype="html" type="content" context="msiEditorContentContext" 
                           id="plotVar2EndEdit" preference="plot.YMax" flex="1" width="150" height="40"/>
-                  <hbox><textbox id="plotPtssamp2" type="number" preference="plot.YPts" class="narrow" /></hbox>
+                  <hbox><textbox id="plotPtssamp2" type="number" preference="plot.YPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.3Vars">
                   <label id ="plotVar3" >&plotVarZ.label;</label>
@@ -1551,7 +1551,7 @@
                   <label value="&plotVarsTo.label;" />
                   <editor editortype="html" type="content" context="msiEditorContentContext" 
                           id="plotVar3EndEdit" preference="plot.ZMax" flex="1" width="150" height="40"/>
-                  <hbox><textbox id="plotPtssamp3" type="number" preference="plot.ZPts" class="narrow" /></hbox>
+                  <hbox><textbox id="plotPtssamp3" type="number" preference="plot.ZPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.4Vars">
                   <label id ="plotVar4" >&plotVarT.label;</label>
@@ -1625,18 +1625,27 @@
             <caption>&InitialViewIntervals.label;</caption>        
             <hbox align="center">
               <label value="&axisxrange.label;"/>
-               <editor editortype="html" type="content" context="msiEditorContentContext" id="xrangelow" style="width: 5em;" preference="plot.XMin"/>
-              <textbox id="xrangehigh" style="width: 5em;" cols="6" preference="plot.XMax"/>
-            </hbox>
+                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="xrangelow" preference="plot.XMin" flex="1" width="150" height="40"/>
+
+<!--                <editor editortype="html" type="content" context="msiEditorContentContext" id="xrangelow" style="width: 5em;" preference="plot.XMin"/>
+ -->              <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="xrangehigh" preference="plot.XMax" flex="1" width="150" height="40"/>
+<!--              <textbox id="xrangehigh" style="width: 5em;" cols="6" preference="plot.XMax"/>
+ -->        </hbox>
             <hbox align="center">
               <label value="&axisyrange.label;"/>
-              <textbox id="yrangelow" style="width: 5em;" cols="6" preference="plot.YMin"/>
-              <textbox id="yrangehigh" style="width: 5em;" cols="6" preference="plot.YMax"/>
+              <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="yrangelow" preference="plot.YMin" flex="1" width="150" height="40"/>
+              <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="yrangehigh" preference="plot.YMax" flex="1" width="150" height="40"/>
             </hbox>
             <hbox align="center">
               <label value="&axiszrange.label;"/>
-              <textbox id="zrangelow" style="width: 5em;" cols="6" preference="plot.ZMin"/>
-              <textbox id="zrangehigh" style="width: 5em;" cols="6" preference="plot.ZMax"/>
+              <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="zrangelow" preference="plot.ZMin" flex="1" width="150" height="40"/>
+              <editor editortype="html" type="content" context="msiEditorContentContext" 
+                          id="zrangehigh" preference="plot.ZMax" flex="1" width="150" height="40"/>
             </hbox>
           </groupbox>
           <groupbox>
