@@ -1951,6 +1951,10 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
           TeX_atom_ilk  =  TeX_ATOM_BIN;
         break;
 
+        case 151 :   // FScr -- fourier
+          rv = MML_IDENTIFIER;
+        break;
+
         default :
           check_mml_gmr =  TRUE;
         break;
@@ -8121,7 +8125,7 @@ TNODE* LaTeX2MMLTree::FinishMMLBindings( TNODE* mml_list ) {
   rv  =  AddOperatorInfo( rv );
 // Some <mspace> nodes can be absorbed into the lspace
 //  and rspace of adjacent <mo>s.
-//  rv  =  AbsorbMSpaces( rv );
+  rv  =  AbsorbMSpaces( rv );
 
   if ( math_field_ID == MF_GEOMETRY )
     rv  =  BindGeometryObjs( rv );
@@ -8137,21 +8141,21 @@ TNODE* LaTeX2MMLTree::FinishMMLBindings( TNODE* mml_list ) {
 // Nest operands with their operators
 //  according to operator precedences.
 
-  rv  =  BindByOpPrecedence( rv,68,66 );
-  InsertApplyFunction( rv );				// 65
-  rv  =  BindByOpPrecedence( rv,65,54 );
+ rv  =  BindByOpPrecedence( rv,68,66 );
+ InsertApplyFunction( rv );				// 65
+ rv  =  BindByOpPrecedence( rv,65,54 );
 
-  rv  =  BindByOpPrecedence( rv,53,40 );
+ rv  =  BindByOpPrecedence( rv,53,40 );
   InsertInvisibleTimes( rv );				// 39
-//  rv  =  AbsorbMSpaces( rv );
+  rv  =  AbsorbMSpaces( rv );
   rv  =  BindByOpPrecedence( rv,39,39 );
   rv  =  BindByOpPrecedence( rv,29,29 );
   InsertInvisibleTimes( rv );				// 39
 
 
-  rv  =  BindByOpPrecedence( rv,39,28 );	// -> + -
-  InsertInvisibleTimes( rv );				// 39
-  rv  =  BindByOpPrecedence( rv,27,2 );
+   rv  =  BindByOpPrecedence( rv,39,28 );	// -> + -
+   InsertInvisibleTimes( rv );				// 39
+   rv  =  BindByOpPrecedence( rv,27,2 );
 
   return rv;
 }
