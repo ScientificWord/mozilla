@@ -1734,12 +1734,13 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   nsCOMPtr<nsIDOMNSHTMLElement> newHTMLElement;
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsCOMPtr<nsIDOM3Node> dom3node;
-  nsAutoString leftName, rightName, sNewNodeName, sInclusion, strContents, strTagName, strTmp, classname;
+  nsAutoString leftName, rightName, sNewNodeName, sInclusion, strContents, strTagName, strTmp, structClassname, envClassname;
   PRInt32 outOffset, newsplitpointOffset, offsetOfNewStructure, offset;
   PRUint32 nodeCount, length;
   PRBool fDiscardNode, isEmpty, success, fCanContain, fInclusion, hasStructureAncestor;
   nsIAtom * atomNS = nsnull;
   PRBool fIsStruct = PR_FALSE;
+  PRBool fIsEnv = PR_FALSE;
   NS_PRECONDITION(splitpointNode, "null arg");
 
   // With the cursor at splitpointNode and splitpointOffset, we want to split the enclosing paragraph
@@ -1803,9 +1804,11 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       hasStructureAncestor = StructureHasStructureAncestor(splitNode, mtagListManager);
 
       GetTagString(newsplitpointNode, strTmp);
-      classname = NS_LITERAL_STRING("structtag");
-      mtagListManager->GetTagInClass(classname, strTmp, atomNS, &fIsStruct);
-      if (!isEmpty || hasStructureAncestor || !fIsStruct);
+      structClassname = NS_LITERAL_STRING("structtag");
+      envClassname = NS_LITERAL_STRING("envtag");
+      mtagListManager->GetTagInClass(structClassname, strTmp, atomNS, &fIsStruct);
+      mtagListManager->GetTagInClass(envClassname, strTmp, atomNS, &fIsEnv);
+      if (!isEmpty || hasStructureAncestor || !(fIsStruct || fIsEnv));
       {
         return InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);
       }
@@ -1832,9 +1835,11 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     splitpointNode->GetParentNode(getter_AddRefs(parent));
     hasStructureAncestor = StructureHasStructureAncestor(parent, mtagListManager);
     GetTagString(splitpointNode, strTmp);
-    classname = NS_LITERAL_STRING("structtag");
-    mtagListManager->GetTagInClass(classname, strTmp, atomNS, &fIsStruct);
-    if (!isEmpty || hasStructureAncestor || !fIsStruct);
+      structClassname = NS_LITERAL_STRING("structtag");
+      envClassname = NS_LITERAL_STRING("envtag");
+      mtagListManager->GetTagInClass(structClassname, strTmp, atomNS, &fIsStruct);
+      mtagListManager->GetTagInClass(envClassname, strTmp, atomNS, &fIsEnv);
+    if (!isEmpty || hasStructureAncestor || !(fIsStruct || fIsEnv));
     {    
       splitpointNode->GetParentNode(getter_AddRefs(parent));
       res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));

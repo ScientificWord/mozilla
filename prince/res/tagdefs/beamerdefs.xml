@@ -26,7 +26,7 @@
 			<tagclassname>paratag</tagclassname>
 			<tags>
 				<tag nm="frametitle">
-					<nexttag>framesubtitle</nexttag>
+					<nexttag>bodyText</nexttag>
 					<description>Beamer frame title</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -68,28 +68,28 @@
 			<tags>
 				<tag nm="stepbulletlist" hidden="1">
           <description>Step bullet list</description>
-					<nexttag>none</nexttag>
+					<nexttag>bodyText</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
 			    <contains>stepbulletListItem</contains>
         </tag>
 				<tag nm="stepnumberedlist" hidden="1">
           <description>Step numbered list</description>
-					<nexttag>none</nexttag>
+					<nexttag>bodyText</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
 			    <contains>stepnumberedListItem</contains>
         </tag>
 				<tag nm="alertstepbulletlist" hidden="1">
           <description>Alert step bullet list</description>
-					<nexttag>none</nexttag>
+					<nexttag>bodyText</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
 			    <contains>alertstepbulletListItem</contains>
         </tag>
 				<tag nm="alertstepnumberedlist" hidden="1">
           <description>Alert step numbered list</description>
-					<nexttag>none</nexttag>
+					<nexttag>bodyText</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
 			    <contains>alertstepnumberedListItem</contains>
@@ -151,7 +151,6 @@
           <initialcontents> 
             <alertstepnumberedlistItem>
               <bodyText>
-                <defaulttitletag/>
                 <cursor/>
                 <br/>
               </bodyText>
