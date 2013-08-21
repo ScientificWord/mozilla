@@ -2953,9 +2953,12 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         {
           newWorkingDir = workingDir.parent.clone();
           newWorkingDir.append(leafname+"_work");
-          if (newWorkingDir.exists())
-             newWorkingDir.remove(true); // recursive delete
-          workingDir.moveTo(null, leafname+"_work");
+          if (newWorkingDir.path !== workingDir.path)
+          {
+            if (newWorkingDir.exists())
+               newWorkingDir.remove(true); // recursive delete
+            workingDir.moveTo(null, leafname+"_work");
+          }
           newMainfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
           newMainfile.initWithPath(destLocalFile.path.replace(".sci","")+"_work");
         }
