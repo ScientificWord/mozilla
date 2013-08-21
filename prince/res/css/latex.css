@@ -1090,8 +1090,9 @@ proposition[numbering="none"] > sectiontitle:first-child::before {
   -moz-user-modify: read-only;
 }
 
-theorem > sectiontitle:first-child::before {
-  content: 'Theorem ' counter(section) "." counter(theorem) ' ';
+theorem > *:first-child:before {
+  content: 'Theorem ' counter(section) "." counter(theorem) '  ';
+  font-weight: bold;
   -moz-user-modify: read-only;
 }
 
@@ -1325,7 +1326,7 @@ summary[numbering="none"] > sectiontitle:first-child::before {
   -moz-user-modify: read-only;
 }
 
-proof > sectiontitle:first-child::before {
+proof > *:first-child::before {
   content: 'Proof ';
   -moz-user-modify: read-only;
   background-color: lightgray;
