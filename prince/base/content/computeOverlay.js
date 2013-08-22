@@ -1976,17 +1976,17 @@ function isEqualSign(node) {
 
 function FindLeftEndOfSide(mathElement, node) {
   // find left end of mathElement containing the node
-  var leftEnd = first_child(mathElement);
+  var leftEnd = mathElement.firstChild;
   var m = leftEnd;
 
   while (m) {
     if (isAChildOf(node, m)) break;
 
     if (isEqualSign(m)) {
-      leftEnd = node_after(m);
+      leftEnd = m.nextSibling;
     }
 
-    m = node_after(m);
+    m = m.nextSibling;;
   }
 
   return leftEnd;
@@ -2000,7 +2000,7 @@ function FindRightEndOfSide(mathElement, leftEnd) {
     if (isEqualSign(next)) break;
     else rightEnd = next;
 
-    next = node_after(next);
+    next = next.nextSibling;;
   }
 
   return rightEnd;
@@ -2058,9 +2058,9 @@ function appendResult(result, sep, math, editorElement) {
 
 function GetOffset(math, node) {
   var i = 1;
-  var n = first_child(math);
+  var n = math.firstChild;
   while (n != node) {
-    n = node_after(n);
+    n = n.nextSibling;
     ++i;
   }
   return i;
