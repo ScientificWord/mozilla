@@ -1,0 +1,361 @@
+<?xml version="1.0"?>
+<!DOCTYPE tagproperties [
+<!ATTLIST tag id ID #IMPLIED> ]>
+<tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+   <tagclasses>
+      <tagclass>
+         <tagclassname>frontmtag</tagclassname>
+            <classcontains/>
+            <tags>
+            <!-- Front matter tags to add for REVTeX4-1
+                %\author{\firstname{Ann} \surname{Author}} %% existing definition should be okay
+                \def\firstname#1{\out@firstname{#1}} %% May need to add as text tag, but ignore for now
+                \def\surname#1{\out@surname{#1}}     %% May need to add as text tag, but ignore for now
+
+                %\affiliation{%
+                % Authors' institution and/or address\\
+                % This line break forced with \textbackslash\textbackslash
+                %}%
+
+                %\altaffiliation[Also at ]{Physics Department, XYZ University.}%Lines break automatically or can be forced with \\
+
+                %\collaboration{MUSO Collaboration}%\noaffiliation
+
+                %\noaffiliation
+
+                %\email[optional text]{Second.Author@institution.edu}
+
+                %\homepage[optional text]{Second.Author@institution.edu}
+
+                %\pacs{PACS number}
+
+                %\keywords{one two three}
+
+                %\preprint{HEP/123-qed}
+
+                %\volumeyear{year}
+
+                %\volumenumber{number}
+
+                %\issuenumber{number}
+
+                %\eid{identifier}
+
+                %\startpage{page #}
+
+                %\endpage{page #}
+
+                %\accepted[Accepted text]{date}
+
+                %\published[Published text]{date}
+
+                %\received[Received text]{date}
+
+                %\revised[Revised text]{date}
+
+                % Handle the REVTeX widetext environment
+                \MSISimpleEnvironment{widetext}
+
+                % Handle the REVTeX acknowledgments environment
+                \MSISimpleEnvironment{acknowledgments}
+            -->
+ 
+                <tag nm="affiliation">
+                    <description>Affiliation</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <affiliation>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </affiliation>
+                    </initialcontents>
+                </tag>
+                <tag nm="altaffiliation">
+                    <description>Altaffiliation</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <altaffiliation>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </altaffiliation>
+                    </initialcontents>
+                </tag>
+                <tag nm="noaffiliation">
+                    <description>Noaffiliation</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <noaffiliation>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </noaffiliation>
+                    </initialcontents>
+                </tag>
+                <tag nm="email">
+                    <description>Email</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <email>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </email>
+                    </initialcontents>
+                </tag>
+                <tag nm="homepage">
+                    <description>Homepage</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <homepage>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </homepage>
+                    </initialcontents>
+                </tag>
+                <tag nm="pacs">
+                    <description>PACS number</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <pacs>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </pacs>
+                    </initialcontents>
+                </tag>
+                <tag nm="keywords">
+                    <description>Keywords</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <keywords>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </keywords>
+                    </initialcontents>
+                </tag>
+                <tag nm="preprint">
+                    <description>Preprint</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <preprint>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </preprint>
+                    </initialcontents>
+                </tag>
+                <tag nm="volumeyear">
+                    <description>Volume year</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <volumeyear>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </volumeyear>
+                    </initialcontents>
+                </tag>
+                <tag nm="volumenumber">
+                    <description>Volume number</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <volumenumber>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </volumenumber>
+                    </initialcontents>
+                </tag>
+                <tag nm="issuenumber">
+                    <description>Issue number</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <issuenumber>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </issuenumber>
+                    </initialcontents>
+                </tag>
+                <tag nm="eid">
+                    <description>eid</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <eid>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </eid>
+                    </initialcontents>
+                </tag>
+                <tag nm="startpage">
+                    <description>Start page</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <startpage>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </startpage>
+                    </initialcontents>
+                </tag>
+                <tag nm="endpage">
+                    <description>End page</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <endpage>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </endpage>
+                    </initialcontents>
+                </tag>
+                <tag nm="accepted">
+                    <description>Accepted</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <accepted>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </accepted>
+                    </initialcontents>
+                </tag>
+                <tag nm="published">
+                    <description>Published</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <published>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </published>
+                    </initialcontents>
+                </tag>
+                <tag nm="received">
+                    <description>Received</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <received>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </received>
+                    </initialcontents>
+                </tag>
+                <tag nm="revised">
+                    <description>Revised</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <revised>
+                            <cursor/>
+                            <br type="_moz"/>
+                        </revised>
+                    </initialcontents>
+                </tag>
+            </tags>
+        </tagclass>
+        <tagclass>
+            <tagclassname>envtag</tagclassname>
+                <classcontains>
+                    <contains>paratag</contains>
+                    <contains>structtag</contains>
+                    <contains>envtag</contains>
+                </classcontains>
+            <tags>
+				<tag nm="widetext">
+                    <level>*</level>
+                    <description>Wide text</description>
+	  	            <inclusion>true</inclusion>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <nexttag>bodyText</nexttag>
+                    <initialcontents>
+                        <widetext>
+                            <bodyText>
+                                <cursor/>
+                                <br/>
+                            </bodyText>
+                        </widetext>
+                    </initialcontents>
+                </tag>
+            <tags>
+				<tag nm="acknowledgments">
+                    <level>*</level>
+                    <description>Acknowledgments</description>
+	  	            <inclusion>true</inclusion>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <nexttag>bodyText</nexttag>
+                    <initialcontents>
+                        <acknowledgments>
+                            <bodyText>
+                                <cursor/>
+                                <br/>
+                            </bodyText>
+                        </acknowledgments>
+                    </initialcontents>
+                </tag>
+            </tags>
+        </tagclass>
+    </tagclasses>
+</tagproperties>
