@@ -1106,7 +1106,7 @@
             </abstract>
           </initialcontents>
         </tag>
-        <tag nm="address"><description>Address</description>ymsi
+        <tag nm="address"><description>Address</description>
           <realtagclass>paratag</realtagclass>
 	  		  <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
