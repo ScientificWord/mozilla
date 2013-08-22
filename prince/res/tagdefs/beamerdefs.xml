@@ -2,164 +2,164 @@
 <!DOCTYPE tagproperties [
 <!ATTLIST tag id ID #IMPLIED> ]>
 <tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">
-	<tagclasses>
-		<tagclass>
-			<tagclassname>envtag</tagclassname>
-			<tags>
-				<tag nm="beamerframe">
-					<description>Beamer slide frame</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents>
-            <beamerframe>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </beamerframe>
-          </initialcontents>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <nexttag>bodyText</nexttag>
-				</tag>
-			</tags>
-		</tagclass>
-		<tagclass>
-			<tagclassname>paratag</tagclassname>
-			<tags>
-				<tag nm="frametitle">
-					<nexttag>bodyText</nexttag>
-					<description>Beamer frame title</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <initialcontents>
-            <frametitle>
-                <cursor/>
-                <br/>
-          </frametitle>
-          </initialcontents>
-				</tag>
-				<tag nm="framesubtitle">
-					<nexttag>bodyText</nexttag>
-					<description>Beamer frame subtitle</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <initialcontents>
-            <framesubtitle>
-              <cursor/>
-              <br/>
-            </framesubtitle>
-          </initialcontents>
-				</tag>
-				<tag nm="institute">
-					<nexttag>bodyText</nexttag>
-					<description>Beamer institute</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <initialcontents>
-            <institute>
-              <cursor/>
-              <br/>
-            </institute>
-          </initialcontents>
-				</tag>
-			</tags>
-		</tagclass>
-    <tagclass>
-			<tagclassname>listparenttag</tagclassname>
-			<tags>
-				<tag nm="stepbulletlist" hidden="1">
-          <description>Step bullet list</description>
-					<nexttag>bodyText</nexttag>
-          <htmllist>ul</htmllist>
-          <discardemptyblock>true</discardemptyblock>
-			    <contains>stepbulletListItem</contains>
-        </tag>
-				<tag nm="stepnumberedlist" hidden="1">
-          <description>Step numbered list</description>
-					<nexttag>bodyText</nexttag>
-          <htmllist>ul</htmllist>
-          <discardemptyblock>true</discardemptyblock>
-			    <contains>stepnumberedListItem</contains>
-        </tag>
-				<tag nm="alertstepbulletlist" hidden="1">
-          <description>Alert step bullet list</description>
-					<nexttag>bodyText</nexttag>
-          <htmllist>ul</htmllist>
-          <discardemptyblock>true</discardemptyblock>
-			    <contains>alertstepbulletListItem</contains>
-        </tag>
-				<tag nm="alertstepnumberedlist" hidden="1">
-          <description>Alert step numbered list</description>
-					<nexttag>bodyText</nexttag>
-          <htmllist>ul</htmllist>
-          <discardemptyblock>true</discardemptyblock>
-			    <contains>alertstepnumberedListItem</contains>
-        </tag>
-			</tags>
-		</tagclass>
-		<tagclass>
-			<tagclassname>listtag</tagclassname>
-			<tags>
-				<tag nm="stepbulletListItem">
-          <description>Step bullet list item</description>
-          <htmllistparent>stepbulletlist</htmllistparent>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents>
-            <stepbulletListItem>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </stepbulletListItem>
-          </initialcontents>
-			    <contains>paratag</contains>
-			    <contains>br</contains>
-        </tag>
-				<tag nm="stepnumberedListItem">
-          <description>Step numbered list item</description>
-          <htmllistparent>stepnumberedlist</htmllistparent>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> 
-            <stepnumberedListItem>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </stepnumberedListItem>
-          </initialcontents>
-			    <contains>paratag</contains>
-			    <contains>br</contains>
-        </tag>
-				<tag nm="alertstepbulletListItem">
-          <description>Alert step bullet list item</description>
-          <htmllistparent>alertstepbulletlist</htmllistparent>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> 
-            <alertstepbulletListItem>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </alertstepbulletListItem>
-          </initialcontents>
-			    <contains>paratag</contains>
-			    <contains>br</contains>
-        </tag>
-				<tag nm="alertstepnumberedlistItem">
-          <description>Alert step number list item</description>
-          <htmllistparent>alertstepnumberedlist</htmllistparent>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> 
-            <alertstepnumberedlistItem>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </alertstepnumberedlistItem>
-          </initialcontents>
-			    <contains>paratag</contains>
-			    <contains>br</contains>
-        </tag>
-			</tags>
-		</tagclass>
-	</tagclasses>
+    <tagclasses>
+        <tagclass>
+            <tagclassname>envtag</tagclassname>
+            <tags>
+                <tag nm="beamerframe">
+                    <description>Beamer slide frame</description>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <beamerframe>
+                            <bodyText>
+                                <cursor/>
+                                <br/>
+                            </bodyText>
+                        </beamerframe>
+                    </initialcontents>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <nexttag>bodyText</nexttag>
+                </tag>
+            </tags>
+        </tagclass>
+        <tagclass>
+            <tagclassname>paratag</tagclassname>
+            <tags>
+                <tag nm="frametitle">
+                    <nexttag>bodyText</nexttag>
+                    <description>Beamer frame title</description>
+                    <discardemptyblock>true</discardemptyblock>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <initialcontents>
+                        <frametitle>
+                            <cursor/>
+                            <br/>
+                        </frametitle>
+                    </initialcontents>
+                </tag>
+                <tag nm="framesubtitle">
+                    <nexttag>bodyText</nexttag>
+                    <description>Beamer frame subtitle</description>
+                    <discardemptyblock>true</discardemptyblock>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <initialcontents>
+                        <framesubtitle>
+                            <cursor/>
+                            <br/>
+                        </framesubtitle>
+                    </initialcontents>
+                </tag>
+                <tag nm="institute">
+                    <nexttag>bodyText</nexttag>
+                    <description>Beamer institute</description>
+                    <discardemptyblock>true</discardemptyblock>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <initialcontents>
+                        <institute>
+                            <cursor/>
+                            <br/>
+                        </institute>
+                    </initialcontents>
+                </tag>
+            </tags>
+        </tagclass>
+        <tagclass>
+            <tagclassname>listparenttag</tagclassname>
+            <tags>
+                <tag nm="stepbulletlist" hidden="1">
+                    <description>Step bullet list</description>
+                    <nexttag>bodyText</nexttag>
+                    <htmllist>ul</htmllist>
+                    <discardemptyblock>true</discardemptyblock>
+                    <contains>stepbulletListItem</contains>
+                </tag>
+                <tag nm="stepnumberedlist" hidden="1">
+                    <description>Step numbered list</description>
+                    <nexttag>bodyText</nexttag>
+                    <htmllist>ul</htmllist>
+                    <discardemptyblock>true</discardemptyblock>
+                    <contains>stepnumberedListItem</contains>
+                </tag>
+                <tag nm="alertstepbulletlist" hidden="1">
+                    <description>Alert step bullet list</description>
+                    <nexttag>bodyText</nexttag>
+                    <htmllist>ul</htmllist>
+                    <discardemptyblock>true</discardemptyblock>
+                    <contains>alertstepbulletListItem</contains>
+                </tag>
+                <tag nm="alertstepnumberedlist" hidden="1">
+                    <description>Alert step numbered list</description>
+                    <nexttag>bodyText</nexttag>
+                    <htmllist>ul</htmllist>
+                    <discardemptyblock>true</discardemptyblock>
+                    <contains>alertstepnumberedListItem</contains>
+                </tag>
+            </tags>
+        </tagclass>
+        <tagclass>
+            <tagclassname>listtag</tagclassname>
+            <tags>
+                <tag nm="stepbulletListItem">
+                    <description>Step bullet list item</description>
+                    <htmllistparent>stepbulletlist</htmllistparent>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <stepbulletListItem>
+                            <bodyText>
+                                <cursor/>
+                                <br/>
+                            </bodyText>
+                        </stepbulletListItem>
+                    </initialcontents>
+                    <contains>paratag</contains>
+                    <contains>br</contains>
+                </tag>
+                <tag nm="stepnumberedListItem">
+                    <description>Step numbered list item</description>
+                    <htmllistparent>stepnumberedlist</htmllistparent>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents> 
+                         <stepnumberedListItem>
+                             <bodyText>
+                                 <cursor/>
+                                 <br/>
+                             </bodyText>
+                         </stepnumberedListItem>
+                    </initialcontents>
+                    <contains>paratag</contains>
+                    <contains>br</contains>
+                </tag>
+                <tag nm="alertstepbulletListItem">
+                    <description>Alert step bullet list item</description>
+                    <htmllistparent>alertstepbulletlist</htmllistparent>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents> 
+                        <alertstepbulletListItem>
+                            <bodyText>
+                                <cursor/>
+                                <br/>
+                            </bodyText>
+                        </alertstepbulletListItem>
+                    </initialcontents>
+                    <contains>paratag</contains>
+                    <contains>br</contains>
+                </tag>
+                <tag nm="alertstepnumberedlistItem">
+                    <description>Alert step number list item</description>
+                    <htmllistparent>alertstepnumberedlist</htmllistparent>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents> 
+                        <alertstepnumberedlistItem>
+                            <bodyText>
+                                <cursor/>
+                                <br/>
+                            </bodyText>
+                        </alertstepnumberedlistItem>
+                    </initialcontents>
+                    <contains>paratag</contains>
+                    <contains>br</contains>
+                </tag>
+            </tags>
+        </tagclass>
+    </tagclasses>
 </tagproperties>
