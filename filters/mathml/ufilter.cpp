@@ -110,6 +110,12 @@ U16 MMLFilter::TranslateBuffer( const char* srcbuffer,
 	  			const_cast<U8*>(reinterpret_cast<const U8*>(srcbuffer)),
    				FALSE,msgcount,anomaly_list,eqn_option );
 
+  // leave out top level <mrow>
+  if (XML_tree && (NULL == strcmp((const char*) XML_tree->zuID, "5.750.1"))){
+    XML_tree = XML_tree -> parts -> contents;
+  }
+    
+
 
   MMLTreeToRenderer( XML_tree,anomaly_list,
 	  			const_cast<U8*>(reinterpret_cast<const U8*>(srcbuffer)),
