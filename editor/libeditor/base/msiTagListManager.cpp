@@ -257,25 +257,30 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   nsString strClearEnvTag;
 	nsString strClearListTag;
   rv = docTagInfo->GetElementById(NS_LITERAL_STRING("defaultparagraph"), getter_AddRefs(nodeElement));
-  if (rv == NS_OK && nodeElement)
+  if (rv == NS_OK && nodeElement) {
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strDefPara);
-  if (rv==NS_OK) mdefaultParagraph.key.Assign(strDefPara);
+    if (rv==NS_OK && strDefPara.Length()>0) mdefaultParagraph.key.Assign(strDefPara);
+  }
   rv = docTagInfo->GetElementById(NS_LITERAL_STRING("cleartexttag"), getter_AddRefs(nodeElement));
-  if (rv == NS_OK && nodeElement)
+  if (rv == NS_OK && nodeElement) {
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearTextTag);
-  if (rv==NS_OK) mclearTextTag.key.Assign(strClearTextTag);
+    if (rv==NS_OK && strClearTextTag.Length()>0) mclearTextTag.key.Assign(strClearTextTag);
+  }
   rv = docTagInfo->GetElementById(NS_LITERAL_STRING("clearsectiontag"), getter_AddRefs(nodeElement));
-  if (rv == NS_OK && nodeElement)
+  if (rv == NS_OK && nodeElement) {
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearSectionTag);
-  if (rv==NS_OK) mclearStructTag.key.Assign(strClearSectionTag);
+    if (rv==NS_OK && strClearSectionTag.Length() > 0) mclearStructTag.key.Assign(strClearSectionTag);
+  }
   rv = docTagInfo->GetElementById(NS_LITERAL_STRING("clearenvironmenttag"), getter_AddRefs(nodeElement));
-  if (rv == NS_OK && nodeElement)
+  if (rv == NS_OK && nodeElement) {
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearEnvTag);
-  if (rv==NS_OK) mclearEnvTag.key.Assign(strClearEnvTag);
+    if (rv==NS_OK && strClearEnvTag.Length() > 0) mclearEnvTag.key.Assign(strClearEnvTag);
+  }
   rv = docTagInfo->GetElementById(NS_LITERAL_STRING("clearlisttag"), getter_AddRefs(nodeElement));
-  if (rv == NS_OK && nodeElement)
+  if (rv == NS_OK && nodeElement) {
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearListTag);
-  if (rv==NS_OK) mclearListTag.key.Assign(strClearListTag);
+    if (rv==NS_OK && strClearListTag.Length() > 0) mclearListTag.key.Assign(strClearListTag);
+  }
   // build the name space list
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsString strNameSpace;
