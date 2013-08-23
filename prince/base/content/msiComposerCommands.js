@@ -5164,6 +5164,73 @@ var msiReviseCharsCommand =
   doCommand: function(aCommand, dummy)  {}
 };
 
+
+function msiRevCharQuick(accent)
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var sel = editor.selection; // this operation applies only to the last character in the selection, if it is a single-character mi or mo (in math)
+  var isMath = isInMath(editorElement);
+  var lastNode = sel.focusNode; 
+  var offset = sel.focusOffset;
+  var firstNode = sel.anchorNode;
+  var firstOffset = sel.anchorOffset;
+  var wasCollapsed = sel.isCollapsed;
+  if (1 === msiNavigationUtils.comparePositions(sel.anchorNode, sel.anchorOffset, sel.focusNode, sel.focusOffset)) {
+    lastNode = sel.anchorNode;
+    offset = sel.anchorOffset;
+    firstNode = sel.focusNode;
+    firstOffset = sel.focusOffset;
+  }
+  var character;
+  var combined = {};
+  var normalizer = Components.classes["@mozilla.org/intl/unicodenormalizer;1"]
+                               .createInstance(Components.interfaces.nsIUnicodeNormalizer);
+  if (!isMath) {
+    var forceMath = false;
+    //  assert lastNode is a text node
+    if (lastNode.nodeType !== Node.TEXT_NODE) return;
+    if (offset === 0) return; // TODO: it is possible that there is a contiguous text node, and that we want to decorate the
+      // last character in that node;
+    character = lastNode.nodeValue.slice(offset-1,offset);
+    normalizer.NormalizeUnicodeNFC(character+accent, combined);
+    editor.beginTransaction();
+    editor.selection.collapse(lastNode, offset -1);
+    editor.selection.extend(lastNode, offset);
+    editor.insertText(combined.value);
+    editor.endTransaction();
+    editor.selection.collapse(firstNode, firstOffset); 
+    editor.selection.extend(lastNode, offset -1 + combined.value.length);
+  }
+  else
+  {
+    //we're in math. We require that lastNode be in an mi or an mo, and that there is only one text character there.
+    var node;
+    if (lastNode.nodeType === Node.TEXT_NODE) node = lastNode.parentNode;
+    else node = lastNode;
+    while (node && node.tagName !== "mo" && node.tagName !== "mi") {
+      node = node.lastChild;
+    }
+    if ((node == null) || (node.tagName !== "mo" && node.tagName !== "mi"))  return;
+    editor.beginTransaction();
+    editor.selectElement(node);
+    var newNode = editor.document.createElementNS(mmlns, "mover");
+    editor.insertNode(newNode, sel.anchorNode, sel.anchorOffset);
+    editor.insertNode(node, newNode, 0);
+    var minode = editor.document.createElementNS(mmlns, "mi");
+    editor.insertNode(minode, newNode, 1);
+    editor.selection.collapse(minode, 0);
+    editor.insertText(accent);
+    editor.endTransaction();
+    editor.setCaretAfterElement(newNode);
+    if (!wasCollapsed) {
+        editor.selection.extend(firstNode, firstOffset);
+    }
+  }
+}
+
+
+
 function msiReviseChars(reviseData, dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
