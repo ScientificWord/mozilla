@@ -1258,7 +1258,12 @@ nsresult msiUtils::CreateMathname(nsIEditor * editor,
   msiEditingAtoms::msitrue->ToString(msitrue);
   if (name.Length() > 0)
     caretPos = name.Length();
-  res = CreateMathMLLeafElement(editor, name, msiIMathMLEditingBC::MATHML_MI, caretPos, flags, mathname);
+  // Some mathnames are <mo>'s. Which ones?
+  if (name.EqualsLiteral("mod")) {
+    res = CreateMathMLLeafElement(editor, name, msiIMathMLEditingBC::MATHML_MO, caretPos, flags, mathname);
+  } else {
+    res = CreateMathMLLeafElement(editor, name, msiIMathMLEditingBC::MATHML_MI, caretPos, flags, mathname);
+  }
   if (NS_SUCCEEDED(res) && mathname) 
   {
     mathname->SetAttribute(isUnit?msiunit:msimathname, msitrue);
