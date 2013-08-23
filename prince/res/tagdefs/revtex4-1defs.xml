@@ -2,10 +2,52 @@
 <!DOCTYPE tagproperties [
 <!ATTLIST tag id ID #IMPLIED> ]>
 <tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">
-   <tagclasses>
-      <tagclass>
-         <tagclassname>frontmtag</tagclassname>
-            <classcontains/>
+    <tagclasses>
+        <tagclass>
+            <tagclassname>envtag</tagclassname>
+                <classcontains>
+                    <contains>paratag</contains>
+                    <contains>structtag</contains>
+                    <contains>envtag</contains>
+                </classcontains>
+            <tags>
+                <tag nm="widetext">
+                    <level>*</level>
+                    <description>Wide text</description>
+                      <inclusion>true</inclusion>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <nexttag>bodyText</nexttag>
+                    <initialcontents>
+                        <widetext>
+                            <bodyText>
+                                <cursor/>
+                                <br/>
+                            </bodyText>
+                        </widetext>
+                    </initialcontents>
+                </tag>
+                <tag nm="acknowledgments">
+                    <level>*</level>
+                    <description>Acknowledgments</description>
+                      <inclusion>true</inclusion>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <nexttag>bodyText</nexttag>
+                    <initialcontents>
+                        <acknowledgments>
+                            <bodyText>
+                                <cursor/>
+                                <br/>
+                            </bodyText>
+                        </acknowledgments>
+                    </initialcontents>
+                </tag>
+            </tags>
+        </tagclass>
+        <tagclass>
+            <tagclassname>frontmtag</tagclassname>
+                <classcontains/>
             <tags>
             <!-- Front matter tags to add for REVTeX4-1
                 %\author{\firstname{Ann} \surname{Author}} %% existing definition should be okay
@@ -310,49 +352,6 @@
                             <cursor/>
                             <br type="_moz"/>
                         </revised>
-                    </initialcontents>
-                </tag>
-            </tags>
-        </tagclass>
-        <tagclass>
-            <tagclassname>envtag</tagclassname>
-                <classcontains>
-                    <contains>paratag</contains>
-                    <contains>structtag</contains>
-                    <contains>envtag</contains>
-                </classcontains>
-            <tags>
-				<tag nm="widetext">
-                    <level>*</level>
-                    <description>Wide text</description>
-	  	            <inclusion>true</inclusion>
-                    <nextafteremptyblock>bodyText</nextafteremptyblock>
-                    <discardemptyblock>true</discardemptyblock>
-                    <nexttag>bodyText</nexttag>
-                    <initialcontents>
-                        <widetext>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
-                            </bodyText>
-                        </widetext>
-                    </initialcontents>
-                </tag>
-            <tags>
-				<tag nm="acknowledgments">
-                    <level>*</level>
-                    <description>Acknowledgments</description>
-	  	            <inclusion>true</inclusion>
-                    <nextafteremptyblock>bodyText</nextafteremptyblock>
-                    <discardemptyblock>true</discardemptyblock>
-                    <nexttag>bodyText</nexttag>
-                    <initialcontents>
-                        <acknowledgments>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
-                            </bodyText>
-                        </acknowledgments>
                     </initialcontents>
                 </tag>
             </tags>
