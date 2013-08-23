@@ -918,7 +918,7 @@ min<uID7.1.20>prefix,29,min
 lim<uID7.1.21>prefix,29
 gcd<uID7.1.22>prefix,47,gcd
 ;lcm<uID7.1.23>prefix,47
-mod<uID7.1.23>infix,29,mod
+mod<uID7.1.23>infix,10,mod
 
 Beta<uID7.1.24>prefix,47,Beta
 
