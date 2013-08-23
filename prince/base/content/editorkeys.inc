@@ -31,18 +31,13 @@
   <key id="msiSelectPrevKey" keycode="VK_LEFT" command="cmd_selectCharPrevious" modifiers="shift"/>
   <key id="msiSelectUpKey" keycode="VK_UP" command="cmd_selectLinePrevious" modifiers="shift"/>
   <key id="msiSymbolKeyboardKey" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
-<!--   <key id="msiTextTagKey" key="1" action="document.getElementById('TextTagSelections').focus();" modifiers="accel"/>
-  <key id="msiParaTagKey" key="2" action="document.getElementById('ParaTagSelections').focus();" modifiers="accel"/>
-  <key id="msiStructTagKey" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="accel"/>
-  <key id="msiFMTagKey" key="4" action="document.getElementById('FrontMTagSelections').focus();" modifiers="accel"/>
- -->  <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>
+  <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>
   <key id="msiTypesetPrintKey" key="p" oncommand="msiGoDoCommand('cmd_printPdf');" modifiers="accel,shift"/>
   <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand(cmd_texttag','underline');"/>
   <key id="msiUndoKey" key="z" command="cmd_undo" modifiers="accel"/>
   <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
   <key id="msiZoomOutKey" key="-" command="cmd_zoomout" modifiers="accel"/>
   <key id="msiZoomReset" key="0" command="cmd_zoomreset" modifiers="accel"/>
-
 </keyset>
 
 <!--commands needed for some of these key bindings-->
