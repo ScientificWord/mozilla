@@ -1239,6 +1239,7 @@ char *MuPADWrapper::FUNCTIONtoEstr(SEMANTICS_NODE * s_func, int& error_code)
   bool user_func = false;
   bool pass_thru = false;
   bool in_defstore = false;
+  bool is_mupname = false;
 
   if (s_func->msi_class) {
     pass_thru = true;
@@ -1246,6 +1247,19 @@ char *MuPADWrapper::FUNCTIONtoEstr(SEMANTICS_NODE * s_func, int& error_code)
     DefStore *defstore = curr_msr->GetDefStore();
     U32 engine_ID = curr_msr->GetEngineID();
     DefInfo *di = defstore->GetDefInfo(engine_ID, s_func->canonical_ID);
+    if (di && di->def_type == DT_MUPNAME){
+       is_mupname = true;
+       char* mupname = DuplicateString(di->src_markup);
+       char* parenloc = strchr(mupname, '(');
+       if (parenloc != NULL) {
+         int i = parenloc - mupname;
+         mupname[i] = '\0';
+       }
+       new_production = AppendStr2HeapStr(new_production, np_ln, mupname);
+       new_production = AppendStr2HeapStr(new_production, np_ln, "%arg_list%");
+       in_defstore = true;
+
+    }
     if (di && di->arg_list)
       in_defstore = true;
   }
@@ -1292,7 +1306,7 @@ char *MuPADWrapper::FUNCTIONtoEstr(SEMANTICS_NODE * s_func, int& error_code)
     }
   }
 
-  if (user_func || pass_thru) {
+  if (!is_mupname && (user_func || pass_thru) ){
     // Here, the user has entered a function that is NOT pre-defined
     //  on the engine.  We get a name for this function that can be sent
     //  to the engine.  The name-generating algorithm adds a namespace
