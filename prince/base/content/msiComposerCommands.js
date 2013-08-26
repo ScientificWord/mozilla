@@ -5164,6 +5164,64 @@ var msiReviseCharsCommand =
   doCommand: function(aCommand, dummy)  {}
 };
 
+function getStandAloneForm(aUniChar)
+{
+  var retVal = null;
+  switch(aUniChar)
+  {
+    case "\u0302":
+      retVal = "^";
+    break;
+    case "\u030c":
+      retVal =  "\u02c7";
+    break;
+    case "\u0303":
+      retVal = "~";
+    break;
+    case "\u0301":
+      retVal = "\u00b4";
+    break;
+    case "\u0300":
+      retVal = "\u0060";
+    break;
+    case "\u0306":
+      retVal = "\u02d8";
+    break;
+    case "\u0305":
+      retVal = "\u00af";
+    break;
+    case "\u030b":
+      retVal = "\u02dd";
+    break;
+    case "\u030a":
+      retVal = "\u02da";
+    break;
+    case "\u0307":
+      retVal = "\u02d9";
+    break;
+    case "\u0308":
+      retVal = "\u00a8";
+    break;
+      retVal = "\u20db";
+    break;
+    case "\u0327":
+      retVal = "\u00b8";
+    break;
+    case "\u0328":
+      retVal = "\u02db";
+    break;
+    case "\u0323":
+      retVal = "\u02d3";
+    break;
+    case "\u0332":
+      retVal = "\u005f";
+    break;
+    default:
+      retVal = aUniChar;  //Just return what was passed in
+    break;
+  }
+  return retVal;
+}
 
 function msiRevCharQuick(accent)
 {
@@ -5176,6 +5234,10 @@ function msiRevCharQuick(accent)
   var firstNode = sel.anchorNode;
   var firstOffset = sel.anchorOffset;
   var wasCollapsed = sel.isCollapsed;
+  var newNode;
+  var mathNode;
+  var minode;
+  var baseminode;
   if (1 === msiNavigationUtils.comparePositions(sel.anchorNode, sel.anchorOffset, sel.focusNode, sel.focusOffset)) {
     lastNode = sel.anchorNode;
     offset = sel.anchorOffset;
@@ -5184,23 +5246,41 @@ function msiRevCharQuick(accent)
   }
   var character;
   var combined = {};
+  var inoutParent = {};
+  var inoutOffset = {};
   var normalizer = Components.classes["@mozilla.org/intl/unicodenormalizer;1"]
                                .createInstance(Components.interfaces.nsIUnicodeNormalizer);
   if (!isMath) {
-    var forceMath = false;
+    var forceMath = (accent[0] == '\u20d7');
     //  assert lastNode is a text node
-    if (lastNode.nodeType !== Node.TEXT_NODE) return;
+    while (lastNode && lastNode.nodeType !== Node.TEXT_NODE) lastNode = lastNode.lastChild;
+    if ( !lastNode || lastNode.nodeType !== Node.TEXT_NODE) return;
     if (offset === 0) return; // TODO: it is possible that there is a contiguous text node, and that we want to decorate the
       // last character in that node;
-    character = lastNode.nodeValue.slice(offset-1,offset);
-    normalizer.NormalizeUnicodeNFC(character+accent, combined);
     editor.beginTransaction();
+    character = lastNode.nodeValue.slice(offset-1,offset);
     editor.selection.collapse(lastNode, offset -1);
     editor.selection.extend(lastNode, offset);
-    editor.insertText(combined.value);
+    if (forceMath) {
+      accent[0]= getStandAloneForm(accent[0]);
+      var htmlstr = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mover><mi>#1</mi><mi>#2</mi></mover></math>";
+      htmlstr = htmlstr.replace('#1', character);
+      htmlstr = htmlstr.replace('#2', accent);
+      editor.insertHTML(htmlstr);
+      // if the cursor (which is collapsed) is in the <mover>, move it to just after.
+      var mover = editor.selection.anchorNode;
+      while (mover && mover.tagName !== 'mover' && mover.tagName !== 'body') mover = mover.parentNode;
+      if (mover && mover.tagName === 'mover') {
+        editor.setCaretAfterElement(mover);
+      }
+    }
+    else {
+      normalizer.NormalizeUnicodeNFC(character+accent, combined);
+      editor.insertText(combined.value);
+//      editor.selection.collapse(firstNode, firstOffset); 
+//      editor.selection.extend(lastNode, offset -1 + combined.value.length);
+    }
     editor.endTransaction();
-    editor.selection.collapse(firstNode, firstOffset); 
-    editor.selection.extend(lastNode, offset -1 + combined.value.length);
   }
   else
   {
@@ -5219,8 +5299,8 @@ function msiRevCharQuick(accent)
     editor.insertNode(node, newNode, 0);
     var minode = editor.document.createElementNS(mmlns, "mi");
     editor.insertNode(minode, newNode, 1);
-    editor.selection.collapse(minode, 0);
-    editor.insertText(accent);
+    var newTextNode = editor.document.createTextNode(getStandAloneForm(accent));
+    editor.insertNode(newTextNode, minode, 0);
     editor.endTransaction();
     editor.setCaretAfterElement(newNode);
     if (!wasCollapsed) {
