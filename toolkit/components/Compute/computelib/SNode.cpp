@@ -334,7 +334,7 @@ void FenceToMatrix(SEMANTICS_NODE * operand)
       brover = brover->next;
     }
 
-    if (n_cols > 1) {
+    if (n_cols > 1){
       operand->semantic_type = SEM_TYP_TABULATION;
       operand->nrows = n_rows;
       operand->ncols = n_cols;
