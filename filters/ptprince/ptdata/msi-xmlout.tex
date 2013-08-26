@@ -1131,15 +1131,26 @@
 
 % Operators
 
-
-\def\TEXTsymbol#1{%
+{\catcode`\<=\active
+\gdef\TEXTsymbol#1{%
   \ifmmode
     \temptoksa={\TEXTsymbol{#1}}%
     \the\temptoksa
   \else
-    $#1$%
+    \ifx#1\backslash
+      \char`\\%
+    \fi
+    \ifx#1\vert
+      \char`\|%
+    \fi
+    \ifx#1<
+      \char`\&lt;%
+    \fi
+    \ifx#1>
+      \char`\&gt;%
+    \fi
   \fi
-}
+}}
 
 \msi@pass{\backslash}
 
