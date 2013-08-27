@@ -1,6 +1,6 @@
 
 \msi@extrapi{%
-  \msitag{<?sw-tagdefs href="resource://ap/res/tagdefs/beamerderfs.xml" type="text/xml" ?>}\br
+  \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/beamerdefs.xml" type="text/xml" ?>}\br
   \msitag{<?sw-xslt href="beamer.xsl" type="text/xml" ?>}\br
 }
 
