@@ -153,6 +153,7 @@
 \MSISimpleEnvironment{acknowledgments}
 
 \msi@extrapi{%
+  \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/revtex4-1defs.xml" type="text/xml" ?>}\br
   \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>}\br
 }
 
