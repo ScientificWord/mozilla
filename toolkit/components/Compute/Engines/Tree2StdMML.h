@@ -42,6 +42,8 @@ protected:
   void AddOperatorInfo(MNODE * dMML_list);
   void AddDDOperatorInfo(MNODE* dMML_list);
 
+  void FixDotDotMN(MNODE* dMML_tree);
+
   MNODE* BindMixedNumbers(MNODE* dMML_list);
   MNODE* BindDegMinSec(MNODE* dMML_list);
   MNODE* BindDelimitedIntegrals(MNODE* dMML_list);
