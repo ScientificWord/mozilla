@@ -68,6 +68,76 @@ Tree2StdMML::~Tree2StdMML()
 }
 
 
+void Tree2StdMML::FixDotDotMN(MNODE* dMML_tree)
+{
+  if (dMML_tree == NULL)
+    return;
+
+  MNODE* rover = dMML_tree;
+  while (rover) {
+    MNODE* curr = rover;
+    rover = rover -> next;
+    if (ElementNameIs(curr, "mn")) {
+       char* mn = const_cast<char*>(curr -> p_chdata);
+       char* p0 = strchr(mn, '.');
+       bool found = false;
+       while (p0) {
+         if (*(p0+1) == '.') {
+           // Found ..
+           found = true;
+           break;
+         }
+         p0 = strchr(p0+1, '.');          
+       }
+       if (found){
+          // Copy Original data after the ..
+          char* rem_content = DuplicateString(p0 + 2);
+          
+//          if (p0 == curr -> p_chdata){
+//             MNODE* prev = curr -> prev;
+//            DelinkTNode(curr);
+//             DisposeTNode(curr);
+//             curr = prev;
+//          } else {
+             *p0 = '\0';  // Truncate m_pchData
+//          }
+          // p0 points just after ..
+          
+          // Create a <mo> with ..
+          MNODE* dotdot = MakeTNode(0,0,0);
+          SetElementName(dotdot, "mo");
+          SetContent(dotdot, "..");
+
+          MNODE* fin = curr->next;
+          curr->next = dotdot;
+          dotdot->prev = curr;
+          
+          // Create a remainder <mn>
+          MNODE* rem = NULL;
+          //if (rem_content && (strlen(rem_content) != 0)){             
+             rem = MakeTNode(0,0,0);
+             SetElementName(rem, "mn");
+             SetContent(rem, rem_content);
+          //}
+
+          // link it together
+                    
+          rem->next = fin;
+          if (fin) 
+            fin->prev = rem;
+
+          rem->prev = dotdot;
+          dotdot->next = rem;
+
+          MNODE* new_row = MakeMROW(curr, rem);
+       }
+    } else {
+       FixDotDotMN(curr -> first_kid);
+    }
+  } 
+}
+
+
 MNODE* Tree2StdMML::TreeToCanonicalForm(MNODE* dMML_tree,
                                         INPUT_NOTATION_REC* in_notation)
 {
@@ -117,6 +187,7 @@ MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
 MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 {
   MNODE* rv = dMML_tree;
+  FixDotDotMN(rv);
   RemoveMSTYLEs(rv);
   RemoveHSPACEs(rv);
   RemoveEmptyTags(dMML_tree);
