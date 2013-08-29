@@ -1793,7 +1793,7 @@ bool Tree2StdMML::NodeIsOperator(MNODE* mml_node)
       //XXX  might be max/lim/lcm etc.
 	  if ( ContentIs(mml_node, "lim") || ContentIs(mml_node, "max") ||
 	       ContentIs(mml_node, "min") ||	ContentIs(mml_node, "lcm") ||
-		   ContentIs(mml_node, "gcd") ) {
+		     ContentIs(mml_node, "gcd") || ContentIs(mml_node, "seq") ) {
 	    return true;
 	  }	else {
 	    //TODO look up in def. store and other places
