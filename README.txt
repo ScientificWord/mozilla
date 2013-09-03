@@ -304,3 +304,4 @@ for later use by other users.
 	where directory name is the directory where you
 	installed Mozilla. For example, the default directory
 	is /usr/local/mozilla/icons/mozicon50.xpm.
+
