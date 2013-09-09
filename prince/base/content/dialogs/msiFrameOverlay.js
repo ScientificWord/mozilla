@@ -707,7 +707,7 @@ function enableFloating( )
     updateDiagram("margin");
     bEnableInlineOffset = true;
   }
-  showHideControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
+  showDisableControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
 }
 
 /************************************/

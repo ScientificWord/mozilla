@@ -333,9 +333,9 @@
       <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="value">
       <hbox flex="1">
         <vbox>
-          <radio id="inline" value="inline" label="&inline;" radioGroup="placementRadioGroup" persist="selected"/>
-          <label value="&inlineOffset;" id="frameInlineOffsetLabel"/>
-          <textbox id = "frameInlineOffsetInput" type = "number" value = "0" min="-Infinity" persist = "value"/>
+          <radio id="inline" value="inline" class="medwidth" label="&inline;" radioGroup="placementRadioGroup" persist="selected"/>
+          <description value="&inlineOffset;" id="frameInlineOffsetLabel" class="medwidth"/>
+          <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0" min="-Infinity" persist = "value"/>
         </vbox>
         <vbox>
           <radio id="display" selected="true" value="display" label="&display;" radioGroup="placementRadioGroup" persist="selected"/>
