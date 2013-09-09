@@ -130,6 +130,10 @@ msiMnCoalesce::Coalesce(nsIEditor * editor,
               else
                 newCaretPos = m_offset + caretPos;
             }
+            else {
+              nodeHasMark = msiUtils::NodeHasCaretMark(m_mathmlNode, caretPos, onText);
+              newCaretPos = caretPos + newTextLen;
+            }
             if (newCaretPos <= msiIMathMLEditingBC::LAST_VALID ||
                 newCaretPos <= msiIMathMLEditingBC::TO_LEFT    ||
                 newCaretPos <= msiIMathMLEditingBC::TO_RIGHT)
