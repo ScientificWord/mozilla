@@ -108,7 +108,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 {
   if (!aSelection || !aCancel || !aHandled) { return NS_ERROR_NULL_POINTER; }
 
-  printf("In msiEditRules::WillDeleteSelection\n");
+  // printf("In msiEditRules::WillDeleteSelection\n");
   //DumpSelection(aSelection);
 
 
