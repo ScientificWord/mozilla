@@ -33,6 +33,8 @@ glob:*/dump_syms/*
 glob:*.xcodeproj
 glob:*.pbxproj
 glob:*.save
+glob:*.build
+glob:*.hmap
 .tm_properties
 .tmhotkeys
 mozilla\.mchg
