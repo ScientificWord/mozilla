@@ -518,6 +518,22 @@ function showHideControlsByID(theControls, bShow)
   }
 }
 
+function showDisableControlsByID(theControls, bShow)
+{
+  var theControl = null;
+  for (var ix = 0; ix < theControls.length; ++ix)
+  {
+    theControl = document.getElementById(theControls[ix]);
+    if (theControl != null)
+    {
+      if (!bShow)
+        theControl.setAttribute("disabled", "true");
+      else if (theControl.hasAttribute("disabled"))
+        theControl.removeAttribute("disabled");
+    }
+  }
+}
+
 function showHideControls(theControls, bShow)
 {
   for (var ix = 0; ix < theControls.length; ++ix)
