@@ -46,17 +46,3 @@
       <key event="keypress" key='!' modifiers="accel,shift" oncommand="msiRevCharQuick('&#x20d7;');"/>
 </keyset>
 
-<!--commands needed for some of these key bindings-->
-<!-- <commandset>
-  <command id="cmd_charPrevious" oncommand="msiGoDoCommand('cmd_charPrevious')"/>
-  <command id="cmd_charNext" oncommand="msiGoDoCommand('cmd_charNext')"/>
-  <command id="cmd_selectCharPrevious" oncommand="msiGoDoCommand('cmd_selectCharPrevious')" />
-  <command id="cmd_selectCharNext" oncommand="msiGoDoCommand('cmd_selectCharNext')" />
-  <command id="cmd_linePrevious" oncommand="msiGoDoCommand('cmd_linePrevious')"/>
-  <command id="cmd_lineNext" oncommand="msiGoDoCommand('cmd_lineNext')"/>
-  <command id="cmd_selectLinePrevious" oncommand="msiGoDoCommand('cmd_selectLinePrevious')"/>
-  <command id="cmd_selectLineNext" oncommand="msiGoDoCommand('cmd_selectLineNext')" />
-  <command id="cmd_showhelp" oncommand="msiGoDoCommand('cmd_showhelp')"/>
-  <command id="cmd_close" oncommand="msiGoDoCommand('cmd_close')"/>
-  <command id="cmd_selectAll" oncommand="msiGoDoCommand('cmd_selectAll')"/>
-</commandset> -->
