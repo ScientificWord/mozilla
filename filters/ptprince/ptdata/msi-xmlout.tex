@@ -677,16 +677,20 @@
 \def\hspace{%
    \@ifnextchar*{\@hspacestar}{\@hspace}}
 
-\def\@hspace#1{
+\def\@hspace#1{%
    \ifmmode
      \string\hspace\@brace{#1}%
    \else
-     \msitag{<hspace dim="#1" type="customSpace"></hspace>}%
+     \msitag{<hspace dim="#1" type="customSpace" atEnd="false"></hspace>}%
    \fi
 }
 
-\def\@hspacestar#1#2{
-   \@hspace{#2}%
+\def\@hspacestar#1#2{%
+   \ifmmode
+     \string\hspace\@brace{#2}%
+   \else
+     \msitag{<hspace dim="#2" type="customSpace" atEnd="true"></hspace>}%
+   \fi
 }
 
 \def\@paragraphs{%
