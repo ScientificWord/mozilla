@@ -186,10 +186,12 @@
    \msi@opendocument
    \br\msitag{<documentclass class="#1"/>}}
 
-
+\newcount\preambleid
 
 \def\out@preamble@tex#1{%
-   \msitag{<preambleTeX><![CDATA[#1]]></preambleTeX>}}
+   \advance\preambleid by 1
+   \msitag{<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1]]></preambleTeX>}%
+   \preambleToks={}}
 
 
 %% \document and \enddocument
@@ -1763,6 +1765,7 @@
 
    \br\msitag{<head>}
    \br\msiopentag{preamble}{<preamble>}
+   \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msi@inpreamble=1
 
    \def\makeatother{%
