@@ -959,6 +959,7 @@
 
 \def\msitabularstarB#1#2{%
    \begingroup
+      \msi@dollar=`\$%
       \ifmmode
         \string\msipassthru\char`\{% 
         \mathtabulartrue
@@ -988,6 +989,7 @@
 
 \def\msi@begin@tabularA[#1]#2{%
    \begingroup
+      \msi@dollar=`\$%
       \ifmmode
         \string\msipassthru\char`\{% 
         \mathtabulartrue
