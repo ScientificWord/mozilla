@@ -439,21 +439,21 @@
 
 
 %\MSITextElement[a]{ref}
-%%<xref key="mykey" reftype="page" req="varioref"/>
+%%<xref key="mykey" reftype="page"/>
 %\MSITextElement{pageref}
 
 \def\ref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" reftype="obj" req="varioref"/>}}%
+    \msitag{\msipassthru{<xref key="#1" href"#1" reftype="obj"/>}}%
   \else
-    \msitag{<xref key="#1" reftype="obj" req="varioref"/>}
+    \msitag{<xref key="#1" href"#1" reftype="obj"/>}
   \fi}
 
 \def\pageref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" reftype="page" req="varioref"/>}}%
+    \msitag{\msipassthru{<xref key="#1" href"#1" reftype="page"/>}}%
   \else
-    \msitag{<xref key="#1" reftype="page" req="varioref"/>}
+    \msitag{<xref key="#1"  href"#1" reftype="page"/>}
   \fi}
 
 
