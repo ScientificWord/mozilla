@@ -1,0 +1,23 @@
+%% msi-varioref.sty
+
+%% Handle vref and vpageref from the varioref package
+
+%\MSITextElement[a]{vref}
+%%<xref key="mykey" reftype="page" req="varioref"/>
+%\MSITextElement{vpageref}
+
+\def\vref#1{%
+  \ifmmode
+    \msitag{\msipassthru{<xref key="#1" reftype="obj" req="varioref"/>}}%
+  \else
+    \msitag{<xref key="#1" reftype="obj" req="varioref"/>}
+  \fi}
+
+\def\vpageref#1{%
+  \ifmmode
+    \msitag{\msipassthru{<xref key="#1" reftype="page" req="varioref"/>}}%
+  \else
+    \msitag{<xref key="#1" reftype="page" req="varioref"/>}
+  \fi}
+
+\endinput
