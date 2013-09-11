@@ -4,8 +4,7 @@
 <?xml-stylesheet href="chrome://global/skin/toolbarsOverlay.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/xrefDialog.dtd">
-<!--JLF - Localization pass on 6/28/2012-->
-<!--JLF - complete persist feature for location -->
+
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&xrefDialog.title;" 
     buttons="accept,cancel"
