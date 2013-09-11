@@ -4,10 +4,7 @@
 
 \msi@inpreamble = 0
 
-
 %%\def\msiToPreamble#1{\expandafter\preambleToks\expandafter{\the\preambleToks #1}}
-
-
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
@@ -17,7 +14,6 @@
    \else
       \msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
    \fi}
-
 
 % This writes the css file my.css. 
 % Do this at the end because it happens that we don't know what css are required. 
