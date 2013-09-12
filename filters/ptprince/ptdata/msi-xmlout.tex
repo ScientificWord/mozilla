@@ -444,16 +444,16 @@
 
 \def\ref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" href"#1" reftype="obj"/>}}%
+    \msitag{\msipassthru{<xref key="#1" href="#1" reftype="obj"/>}}%
   \else
-    \msitag{<xref key="#1" href"#1" reftype="obj"/>}
+    \msitag{<xref key="#1" href="#1" reftype="obj"/>}
   \fi}
 
 \def\pageref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" href"#1" reftype="page"/>}}%
+    \msitag{\msipassthru{<xref key="#1" href="#1" reftype="page"/>}}%
   \else
-    \msitag{<xref key="#1"  href"#1" reftype="page"/>}
+    \msitag{<xref key="#1" href="#1" reftype="page"/>}
   \fi}
 
 
