@@ -51,6 +51,16 @@ bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
    @<Scan filename@>
    const char* name = fn.GetNameString();
    const char* ext = fn.GetExtString();
+   if (Global::msioutput == 0 && Global::msiinpreamble) {
+     std::string strTemp;
+     strTemp = "\n<texb pre=\"1\" enc=\"1\" name=\"Input\">";
+     strTemp +="<![CDATA[";
+     strTemp += "\\input{";
+     strTemp += name;
+     strTemp += "}";
+     strTemp += "]]></texb>";
+     Typesetter::AppendTag(strTemp.c_str());
+   }
    if (ext == 0)
      ext = "tex";
 
