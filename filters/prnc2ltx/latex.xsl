@@ -593,18 +593,17 @@ should not be done under some conditions -->
   <xsl:choose>
     <xsl:when test="@req='varioref'">
       <xsl:choose>
-        <xsl:when test="@reftype='page'">\vpageref{<xsl:value-of select="@key"/>}\xspace%%</xsl:when>
-        <xsl:otherwise>\vref{<xsl:value-of select="@key"/>}\xspace%%</xsl:otherwise>
+        <xsl:when test="@reftype='page'">\vpageref{<xsl:value-of select="@key"/>}</xsl:when>
+        <xsl:otherwise>\vref{<xsl:value-of select="@key"/>}</xsl:otherwise>
       </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
-        <xsl:when test="@reftype='page'">\pageref{<xsl:value-of select="@key"/>}\xspace%%</xsl:when>
-        <xsl:otherwise>\ref{<xsl:value-of select="@key"/>}\xspace%%</xsl:otherwise>
+        <xsl:when test="@reftype='page'">\pageref{<xsl:value-of select="@key"/>}</xsl:when>
+        <xsl:otherwise>\ref{<xsl:value-of select="@key"/>}</xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
-  
 </xsl:template>
 
 
