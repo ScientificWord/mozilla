@@ -1267,19 +1267,7 @@
     \msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}%
   \fi}
 
-
-
-
-
-
-\bgroup
-  \catcode`\%=12
-  \gdef\strut{\msitag{<vspace lineHt="100%" type="strut"/>}}
-\egroup
-
-
 \def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace>}}
-
 
 \def\thinspace{%
    \ifmmode
@@ -1473,25 +1461,40 @@
   \catcode`\$=3\relax}
 
 
+\def\smallskip{\msitag{<vspace type="smallSkip" dim="3pt"></vspace>}}
+
+\def\medskip{\msitag{<vspace type="mediumSkip" dim="6pt"></vspace>}}
+
+\def\bigskip{\msitag{<vspace type="bigSkip" dim="12pt"></vspace>}}
+
+\bgroup
+  \catcode`\%=12
+  \gdef\strut{\msitag{<vspace type="strut" lineHt="100%"/>}}
+\egroup
+
+\bgroup
+  \catcode`\%=12
+  \gdef\mathstrut{\msitag{<vspace type="mathStrut" lineHt="100%"/>}}
+\egroup
+
 \def\vspace{%
-  \@ifnextchar*{\vspaceStar}{\vspaceB}}
+  \@ifnextchar*{\@vspacestar}{\@vspace}}
 
-\def\vspaceStar#1#2{%
-  \@starredtrue
-  \vspaceB{#2}}
-
-
-\def\vspaceB#1{%
+\def\@vspace#1{%
    \ifmmode
      \string\vspace\@brace{#1}%
    \else
-     \msitag{<vspace dim="#1" type="customSpace"></vspace>}%
+     \msitag{<vspace type="customSpace" dim="#1" atEnd="false"></vspace>}%
    \fi
 }
 
-
-
-
+\def\@vspacestar#1#2{%
+   \ifmmode
+     \string\vspace\@brace{#2}%
+   \else
+     \msitag{<vspace type="customSpace" dim="#2" atEnd="true"></vspace>}%
+   \fi
+}
 
 \def\MSICounter#1{%
   \expandafter\newcount\csname c@#1\endcsname}
