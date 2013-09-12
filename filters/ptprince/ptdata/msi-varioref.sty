@@ -8,16 +8,16 @@
 
 \def\vref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" reftype="obj" req="varioref"/>}}%
+    \msitag{\msipassthru{<xref key="#1" href="#1"reftype="obj" req="varioref"/>}}%
   \else
-    \msitag{<xref key="#1" reftype="obj" req="varioref"/>}
+    \msitag{<xref key="#1" href="#1"reftype="obj" req="varioref"/>}
   \fi}
 
 \def\vpageref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" reftype="page" req="varioref"/>}}%
+    \msitag{\msipassthru{<xref key="#1" href="#1"reftype="page" req="varioref"/>}}%
   \else
-    \msitag{<xref key="#1" reftype="page" req="varioref"/>}
+    \msitag{<xref key="#1" href="#1"reftype="page" req="varioref"/>}
   \fi}
 
 \endinput
