@@ -457,7 +457,8 @@
 
 \def\TeXButton#1#2{%
    \ifmmode
-     \string\TeXButton{#1}{#2}%
+     %\string\TeXButton{#1}{#2}%
+     \msitag{\msipassthru{<texb enc="1" name="#1"><![CDATA[#2]]></texb>}}
    \else
      \msihmode\msitag{<texb enc="1" name="}\@wrap{#1}\msitag{"><![CDATA[#2]]></texb>}%
    \fi}
