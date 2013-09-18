@@ -655,9 +655,12 @@
 
 \def\rule{%
   \@ifnextchar[{\@rulea}{\@ruleb}}%
+
 \def\@rulea[#1]#2#3{%
   \ifmmode
-     \string\rule[#1]\char123#2\char125\char123#3\char125
+     %\string\rule[#1]\@brace{#2}\@brace{#3}%
+    \msitag{\msipassthru{<msirule lift="#1" width="#2" height="#3" %
+                     style="vertical-align: #1; width: #2; height: #3; background-color: rgb(0, 0, 0);"/>}}%
   \else
     \msitag{<msirule lift="#1" width="#2" height="#3" %
                      style="vertical-align: #1; width: #2; height: #3; background-color: rgb(0, 0, 0);"/>}%
@@ -665,7 +668,8 @@
 }
 \def\@ruleb#1#2{%
   \ifmmode
-    \string\rule\char123#1\char125\char123#2\char125
+    \msitag{\msipassthru{<msirule lift="0" width="#1" height="#2" %
+                     style="vertical-align: 0; width: #1; height: #2; background-color: rgb(0, 0, 0);"/>}}%
   \else
     \msitag{<msirule lift="0" width="#1" height="#2" %
                      style="vertical-align: 0; width: #1; height: #2; background-color: rgb(0, 0, 0);"/>}%
