@@ -1637,9 +1637,9 @@
             \fi}
 
 \def\frame#1{\ifmmode
-               \msitag{\frame{#1}}%
+               \msitag{\msipassthru{<smallbox>#1</smallbox>}}%
              \else
-               \msiopentag{frame}{<frame>}#1\msiclosetag{frame}{</frame>}%
+               \msiopentag{frame}{<smallbox>}#1\msiclosetag{frame}{</smallbox>}%
              \fi}
 
 
