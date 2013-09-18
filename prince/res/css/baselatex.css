@@ -498,6 +498,7 @@ body[showshort='true'] shortTitle:after {
 
 msiframe {
   display: block;
+  text-indent: 0;
 }
 
 msiframe[pos="inline"] {
