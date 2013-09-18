@@ -43,8 +43,8 @@
 #include ../productname.inc
 
 var gDialog;
-var globalElement;
-var globalImage;
+// var globalElement;
+// var globalImage;
 var gEditorElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
@@ -85,6 +85,22 @@ var bNeedTypeset = true;
 #endif
 
 // dialog initialization code
+
+/*An essay on the files in this module;
+
+An image can be inserted as an <object> or as an <object> wrapped in a frame <msiframe>. The frame is necessary for placing captions correctly on the screen. When this dialog is created, it may be passed an <object> (when an image is being revised) or not (when a new image is inserted).
+
+Ron's code uses two temporary elemnts (an <object> and a <msiframe>) to collect the attributes for the final objects, although it really doesn't seem necessary, as the attributes are all applied inside the onAccept function, and take place inside a transaction.
+
+imageElement: this is passed as a parameter in the revision case; in the new image case, it is null until it is assigned in onAccept.
+
+wrapperElement: if imageElement is passed, and has an <msiframe> parent, the parent is assigned to wrapperElement. Otherwise it is null until it is assigned in onAccept.
+
+globalImage: a temporary holder for image attributes.
+globalElement: a temporary holder for frame attributes. If there is no frame, the image will get all the frame attributes. This is done by letting globalElement = globalImage.
+
+*/
+
 function Startup()
 {
   gEditorElement = msiGetParentEditorElementForDialog(window);
@@ -134,8 +150,7 @@ function Startup()
     }
   }
   var tagName = gVideo ? "embed" : "object";
-//  var tagName = "object";
-  if (imageElement)
+  if (imageElement)  // if the image already exists, search for a frame.
   {
     if (imageElement.nodeName !== "msiframe")
     {
@@ -143,7 +158,8 @@ function Startup()
       {
         wrapperElement = imageElement.parentNode;
       }
-      else wrapperElement = imageElement;  //shouldn't happen
+      else 
+        wrapperElement = imageElement;  // no frame
     } 
     else
     {
@@ -167,7 +183,6 @@ function Startup()
   }
   if (!gVideo && !imageElement)
   {
-    // Does this ever get run?
     try {
       imageElement = getSelectionParentByTag(editor,"input");
       if (!imageElement || imageElement.getAttribute("type") != "image") {
@@ -190,29 +205,16 @@ function Startup()
   else
   {
     gInsertNewImage = true;
-
-    // We don't have an element selected,
-    //  so create one with default attributes
-    try {
-      imageElement = editor.createElementWithDefaults(tagName);
-      wrapperElement = imageElement;
-    } catch(e) {}
-
-    if (!imageElement)
-    {
-      dump("Failed to get selected element or create a new one!\n");
-      window.close();
-      return;
-    }
   }
 
   initKeyList();
 
-  // Make a copy to use for AdvancedEdit
-  globalElement = wrapperElement.cloneNode(true);
-  globalImage = globalElement;
-  if (msiGetBaseNodeName(globalElement) == "msiframe")
-    globalImage = globalElement.getElementsByTagName(tagname)[0];
+  // if inserting a new image, create elements now.
+  if (imageElement == null) {
+    imageElement = editor.createElementWithDefaults(tagName);
+    wrapperElement = editor.createElementWithDefaults("msiframe");
+  }
+
 
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
@@ -226,6 +228,7 @@ function Startup()
 
   // By default turn constrain on, but both width and height must be in pixels
 //  frameTabDlg.constrainCheckbox.checked = true;
+
 
   window.mMSIDlgManager = new msiDialogConfigManager(window);
   window.mMSIDlgManager.configureDialog();
@@ -264,7 +267,7 @@ var gBorderdesc = ["border-top-width","border-right-width","border-bottom-width"
 function fillInValue(element, index, array)
 {
   if (!element || element.length == 0)
-    element= msiGetHTMLOrCSSStyleValue(null, globalImage, gBorderdesc[index], null);
+    element= msiGetHTMLOrCSSStyleValue(null, imageElement, gBorderdesc[index], null);
 }
 
 function getSourceLocationFromElement(imageNode)
@@ -447,12 +450,6 @@ function InitImage()
   var height = 0;
   var pixelWidth = 0;
   var pixelHeight = 0;
-//  var width = msiInitPixelOrPercentMenulist(globalImage,
-//                    gInsertNewImage ? null : imageElement,
-//                    widthAtt, "widthUnitsMenulist", gPixel);
-//  var height = msiInitPixelOrPercentMenulist(globalImage,
-//                    gInsertNewImage ? null : imageElement,
-//                    heightAtt, "heightUnitsMenulist", gPixel);
 
   loadDefaultsFromPrefs();
 
@@ -639,13 +636,13 @@ function InitImage()
     constrainProportions( "frameWidthInput", "frameHeightInput", null );
   // set spacing editfields
   var herePlacement;
-  var placement = globalElement.getAttribute("placement");
+  var placement = wrapperElement.getAttribute("placement");
   if (placement == "here");
     gDialog.herePlacementRadioGroup.value=globalElement.getAttribute("herePlacement");
 
   // dialog.border.value       = globalElement.getAttribute("border");
   var bordervalues;
-  var bv = msiGetHTMLOrCSSStyleValue(null, globalImage, "border", null);
+  var bv = msiGetHTMLOrCSSStyleValue(null, imageElement, "border", null);
   var i;
   if (bv.length > 0)
   {
@@ -2455,8 +2452,8 @@ function ValidateImage()
   var src = TrimString(gDialog.srcInput.value);
   src = checkSourceAndImportSetting(src, gDialog.isImport);
 
-  globalImage.setAttribute("src", src);
-  globalImage.setAttribute("data", src);
+  imageElement.setAttribute("src", src);
+  imageElement.setAttribute("data", src);
 
 //  var title = TrimString(gDialog.titleInput.value);
 //  if (title)
@@ -2467,7 +2464,7 @@ function ValidateImage()
   var alt = TrimString(gDialog.altTextInput.value);
 
 //  dump("3\n");
-  globalImage.setAttribute("alt", alt);
+  imageElement.setAttribute("alt", alt);
 
   if (gDialog.keyInput.controller)
   {
@@ -2494,12 +2491,12 @@ function ValidateImage()
   {
     // Get user values for width and height
     width = msiValidateNumber(frameTabDlg.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
-                           globalImage, "width", false, true);
+                           imageElement, "width", false, true);
     if (gValidationError)
       return false;
 
     height = msiValidateNumber(frameTabDlg.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
-                            globalImage, "height", false, true);
+                            imageElement, "height", false, true);
     if (gValidationError)
       return false;
   }
@@ -2516,14 +2513,14 @@ function ValidateImage()
   //  and we couldn't obtain actual dimensions
   var srcChanged = (src != gInitialSrc);
   if (width)
-    globalImage.setAttribute("width", width);
+    imageElement.setAttribute("width", width);
   else if (srcChanged)
-    editor.removeAttributeOrEquivalent(globalImage, "width", true);
+    editor.removeAttributeOrEquivalent(imageElement, "width", true);
 
   if (height)
-    globalImage.setAttribute("height", height);
+    imageElement.setAttribute("height", height);
   else if (srcChanged) 
-    editor.removeAttributeOrEquivalent(globalImage, "height", true);
+    editor.removeAttributeOrEquivalent(imageElement, "height", true);
 
   // spacing attributes
 //  gValidateTab = gDialog.tabBorder;
@@ -2613,8 +2610,6 @@ function onAccept()
 
   gDialog.relativeURL       = document.getElementById( "makeRelativeCheckbox" ).checked;  //check this in case it's changed
   gDoAltTextError = true;
-//  dump("**************************************************************************\n");
-//  dump("in onAccept\n");
   if (ValidateData())
   {
     var editorElement = msiGetParentEditorElementForDialog(window);
@@ -2624,140 +2619,94 @@ function onAccept()
     try
     {
       var tagname = gVideo ? "embed" : "object";
-//      var tagname = "object";
-//      var frameElement = null;
       gCaptionData.m_captionStr = getCaptionEditContents();
       var bHasCaption = (gCaptionData.m_captionStr && gCaptionData.m_captionStr.length);
-      var bHasCaption = true;
       var posInParent;
-      if (imageElement)
-      {
-        imgExists = true;
-//        frameElement = imageElement.parentNode;
-//        if (!frameElement || frameElement.localName != 'msiframe')
-//        {
-//          var newframe = editor.createElementWithDefaults("msiframe");
-//          if (frameElement) frameElement.removeChild(imageElement); 
-//          newframe.appendChild(imageElement);
-//          if (frameElement) frameElement.appendChild(newframe);
-//          frameElement = newframe;
-//        }
-      }
-      else
+
+
+
+
+      imgExists = !gInsertNewImage;
+      if (!imgExists)
       {      
-        imageElement = editor.createElementWithDefaults(tagname);
+//        imageElement = editor.createElementWithDefaults(tagname);
         imageElement.addEventListener("load", imageLoaded, true);
-        wrapperElement = imageElement;
       }
 
       if (bHasCaption)
       {
-        if (wrapperElement == imageElement)
+        if (wrapperElement == null) wrapperElement = editor.createElementWithDefaults("msiframe");
+        wrapperElement.setAttribute("frametype", "image");
+        if (gInsertNewImage)
+          wrapperElement.appendChild(imageElement);
+        else
         {
-          wrapperElement = editor.createElementWithDefaults("msiframe");
-          wrapperElement.setAttribute("frametype", "image");
-          if (gInsertNewImage)
-            wrapperElement.appendChild(imageElement);
-          else
-          {
-            posInParent = msiNavigationUtils.offsetInParent(imageElement);
-            var imageParent = imageElement.parentNode;
-            editor.deleteNode(imageElement);
-            wrapperElement.appendChild(imageElement);
-//            editor.insertNode(imageElement, wrapperElement, 0);
-            editor.insertNode(wrapperElement, imageParent, posInParent);
-          }
+          posInParent = msiNavigationUtils.offsetInParent(imageElement);
+          var imageParent = imageElement.parentNode;
+          editor.deleteNode(imageElement);
+          wrapperElement.appendChild(imageElement);
+          editor.insertNode(wrapperElement, imageParent, posInParent);
         }
       }
-      else if (wrapperElement != imageElement)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
+      else if (wrapperElement != imageElement && wrapperElement && wrapperElement.parentNode)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
       {
         posInParent = msiNavigationUtils.offsetInParent(wrapperElement);
         editor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
         editor.deleteNode(wrapperElement);
         wrapperElement = imageElement;
-//        frameElement = editor.createElementWithDefaults("msiframe");
-//        frameElement.appendChild(imageElement);
       }
 
-      var capData = findCaptionNodes(wrapperElement);
-      var capPosition = gDialog.captionPlacementGroup.value;
-      if (!capPosition || !capPosition.length)
-        capPosition = "below";
-//      syncCaptionAndExisting(gCaptionData.m_captionStr.below, capData.belowCaption, editor, wrapperElement, "below");
-//      var capAttrStr = "";
-//      if (capData.aboveCaption && capData.aboveCaption.length)
-//        capAttrStr = "above";
-//      if (capData.belowCaption && capData.belowCaption.length)
-//        capAttrStr += "below";
-//      if (!capAttrStr.length)
-//        capAttrStr = null;  //since EnsureElementAttribute will remove the attribute if a null is passed in.
-      
-          // 'true' means delete the selection before inserting
-//      var oldWrapper = wrapperElement;
-//      var oldImage = imageElement;
-      if (gInsertNewImage)
+      if (bHasCaption) {
+        var capData = findCaptionNodes(wrapperElement);
+        var capPosition = gDialog.captionPlacementGroup.value;
+        if (!capPosition || !capPosition.length)
+          capPosition = "below";
+      }
+      if (gInsertNewImage) {
+        if (!bHasCaption) wrapperElement = imageElement;
         editor.insertElementAtSelection(wrapperElement, true);
-//      if (msiGetBaseNodeName(wrapperElement) == "msiframe")
-//      {
-//        wrapperElement = msiEditorFindJustInsertedElement("msiframe", editor);
-//        imageElement = msiNavigationUtils.getChildrenByTagName(wrapperElement, "object")[0];
-//      }
-//      else
-//        wrapperElement = imageElement = msiEditorFindJustInsertedElement("object", editor);
-//      dump("In msiEdImageProps.onAccept(), oldWrapper is [" + ((wrapperElement == oldWrapper) ? "same as" : "different from") + "] one in document.\n");
-//      dump("In msiEdImageProps.onAccept(), oldImage is [" + ((imageElement == oldImage) ? "same as" : "different from") + "] one in document.\n");
+      }
       syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
-    
-//      globalImage.setAttribute("data",gDialog.srcInput.value);  //This happens correctly in ValidateImage(); don't repeat here
       var extension = getExtension(gDialog.srcInput.value).toLowerCase();
-      adjustObjectForFileType(globalImage, extension);
+      adjustObjectForFileType(imageElement, extension);
 
-      msiEnsureElementPackage(globalImage,"graphics",null);
+      msiEnsureElementPackage(imageElement,"graphics",null);
       if (gVideo)
       {
-        setVideoSettingsToElement(globalImage, null);
-        msiEnsureElementPackage(globalImage,"hyperref",null);
-        msiEnsureElementPackage(globalImage,"movie15",null);
+        setVideoSettingsToElement(imageElement, null);
+        msiEnsureElementPackage(imageElement,"hyperref",null);
+        msiEnsureElementPackage(imageElement,"movie15",null);
       }
 
       if (gConstrainWidth > 0)
-        msiEditorEnsureElementAttribute(globalImage, "naturalWidth", String(frameUnitHandler.getValueOf(gConstrainWidth, "px")), null);
+        msiEditorEnsureElementAttribute(imageElement, "naturalWidth", String(frameUnitHandler.getValueOf(gConstrainWidth, "px")), null);
       if (gConstrainHeight > 0)
-        msiEditorEnsureElementAttribute(globalImage, "naturalHeight", String(frameUnitHandler.getValueOf(gConstrainHeight, "px")), null);
+        msiEditorEnsureElementAttribute(imageElement, "naturalHeight", String(frameUnitHandler.getValueOf(gConstrainHeight, "px")), null);
 
-      msiEditorEnsureElementAttribute(globalImage, "originalSrcUrl", gOriginalSrcUrl, null);
+      msiEditorEnsureElementAttribute(imageElement, "originalSrcUrl", gOriginalSrcUrl, null);
       if (!gDialog.isImport)
-        msiEditorEnsureElementAttribute(globalImage, "byReference", "true", null);
+        msiEditorEnsureElementAttribute(imageElement, "byReference", "true", null);
           
-      setFrameAttributes(globalElement, globalImage, null);
-//      setFrameAttributes(wrapperElement, imageElement);
-//      msiEditorEnsureElementAttribute(wrapperElement, "captionLoc", capAttrStr, editor);  //Now taken care of above
+      setFrameAttributes(wrapperElement||imageElement, imageElement, null, bHasCaption); // if there is no frame, globalElement == globalImage
 
       var theKey = gDialog.keyInput.value;
       if (!theKey.length)
         theKey = null;
-      msiEditorEnsureElementAttribute(globalImage, "key", theKey, null);
-      msiEditorEnsureElementAttribute(globalImage, "id", theKey, null);
-      msiSetGraphicFrameAttrsFromGraphic(globalImage, null);  //unless we first end the transaction, this seems to have trouble!
+      msiEditorEnsureElementAttribute(imageElement, "key", theKey, null);
+      msiEditorEnsureElementAttribute(imageElement, "id", theKey, null);
+      msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
 
-      var imgAttrList = ["src","data","title","alt","req","imageWidth","imageHeight","naturalWidth","naturalHeight","key","units","rotation","msi_resize","borderw","padding","border-color","background-color","style","type","byReference","originalSrcUrl"];
+      var imgAttrList = ["src","data","title","alt","req","imageWidth","imageHeight","naturalWidth","naturalHeight","key","units","rotation","msi_resize","borderw","padding","border-color","background-color","type","byReference","originalSrcUrl","style"];
       var imgParamList = ["scale","autoplay","controller","showlogo","starttime","endtime"];
       if (gVideo)
       {
-        //msiEditorEnsureElementAttribute(globalImage, "autoplay", "false", null);
-        //msiEditorEnsureElementAttribute(globalImage, "controller", "true", null);
-        msiEditorEnsureAttributeOrParam(globalImage, "showlogo", "false", null);
-        msiEditorEnsureAttributeOrParam(globalImage, "scale", "aspect", null);
-        msiEditorEnsureElementAttribute(globalImage, "isVideo", "true", null);
+        //msiEditorEnsureElementAttribute(imageElement, "autoplay", "false", null);
+        //msiEditorEnsureElementAttribute(imageElement, "controller", "true", null);
+        msiEditorEnsureAttributeOrParam(imageElement, "showlogo", "false", null);
+        msiEditorEnsureAttributeOrParam(imageElement, "scale", "aspect", null);
+        msiEditorEnsureElementAttribute(imageElement, "isVideo", "true", null);
         imgAttrList = imgAttrList.concat(["scale","autoplay","controller","showlogo","starttime","endtime","isVideo"]);
       }
-
-      msiCopySpecifiedElementAttributes(imageElement, globalImage, editor, imgAttrList);
-      if (msiGetBaseNodeName(globalImage) == "object")
-        msiCopySpecifiedObjElementParams(imageElement, globalImage, imgParamList, editor);
-
-      var frameAttrList = ["title","req","width","height","units","sidemargin","topmargin","overhang","pos","textalignment","inlineOffset","placeLocation","placement","style"];
-      msiCopySpecifiedElementAttributes(wrapperElement, globalElement, editor, frameAttrList);
     }
     catch (e)
     {
