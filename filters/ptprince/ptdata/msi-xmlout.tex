@@ -1629,7 +1629,7 @@
 
 
 \def\fbox#1{\ifmmode
-              \msitag{\msipassthru{<menclose notation='box'>}}%
+              \msitag{\msipassthru{<menclose notation='box' type='fbox'>}}%
               \msitag{\msipassthru}{\msihmode #1}%
               \msitag{\msipassthru{</menclose>}}%
             \else
@@ -1637,7 +1637,10 @@
             \fi}
 
 \def\frame#1{\ifmmode
-               \msitag{\msipassthru{<smallbox>#1</smallbox>}}%
+%               \msitag{\msipassthru{<smallbox>#1</smallbox>}}%
+              \msitag{\msipassthru{<menclose notation='box' type='frame'>}}%
+              \msitag{\msipassthru}{\msihmode #1}%
+              \msitag{\msipassthru{</menclose>}}%
              \else
                \msiopentag{frame}{<smallbox>}#1\msiclosetag{frame}{</smallbox>}%
              \fi}
