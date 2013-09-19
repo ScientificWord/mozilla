@@ -719,7 +719,8 @@ function handleChar(event, id)
   if ((event.keyCode != event.DOM_VK_UP) && (event.keyCode != event.DOM_VK_DOWN))
     updateTextNumber(element, id, event);
   update(id);
-  event.preventDefault();
+  if ((event.keyCode === event.DOM_VK_UP) || (event.keyCode === event.DOM_VK_DOWN))
+    event.preventDefault();
 }
 
 function geomHandleChar(event, id, tbid)
