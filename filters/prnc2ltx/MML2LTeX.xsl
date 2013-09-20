@@ -51,7 +51,20 @@
   <xsl:template match="mml:menclose">
     <xsl:choose>
       <xsl:when test="@notation='box'">
-        \fbox{<xsl:apply-templates/>}
+        <xsl:choose>
+          <xsl:when test="@type='fbox'">
+            \fbox{<xsl:apply-templates/>}
+          </xsl:when>
+          <xsl:when test="@type='frame'">
+            \frame{<xsl:apply-templates/>}
+          </xsl:when>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:when test="@notation='roundedbox'">
+          \fbox{<xsl:apply-templates/>}
+      </xsl:when>
+      <xsl:when test="@notation='circle'">
+          \fbox{<xsl:apply-templates/>}
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
