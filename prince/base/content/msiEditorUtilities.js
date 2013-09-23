@@ -1965,7 +1965,7 @@ function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, e
 function msiEnsureElementAttribute(elementNode, attribName, attribValue)
 {
   var retVal = false;
-  if (!attribValue || !attribValue.length)
+  if (!attribValue || attribValue.toString().length == 0)
   {
     if (elementNode.hasAttribute(attribName))
     {

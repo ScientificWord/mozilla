@@ -7,7 +7,7 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 var graphicsConverter =
 {
   nativeGraphicTypes : ["png", "gif", "jpg", "jpeg", "pdf", "svg", "xvc","xvz"],
-  typesetGraphicTypes : ["eps", "pdf", "png", "jpg"],
+  typesetGraphicTypes : ["eps", "pdf", "png", "jpg", "svg"],
 
   getGraphicsFilterDirPath : function(filterName)
   {
