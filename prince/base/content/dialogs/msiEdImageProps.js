@@ -43,8 +43,6 @@
 #include ../productname.inc
 
 var gDialog;
-// var globalElement;
-// var globalImage;
 var gEditorElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
@@ -71,7 +69,7 @@ var gIsGoingAway = false;
 var gInsertNewImage = true;
 var gCaptionData;
 var gVideo = false;
-
+var isSVGFile = false;
 var gErrorMessageShown = false;
 var importTimer;
 //var nativeGraphicTypes = ["png", "gif", "jpg", "jpeg", "pdf", "svg", "xvc","xvz"];
@@ -86,18 +84,17 @@ var bNeedTypeset = true;
 
 // dialog initialization code
 
-/*An essay on the files in this module;
+/*
+
+An essay on the files in this module;
 
 An image can be inserted as an <object> or as an <object> wrapped in a frame <msiframe>. The frame is necessary for placing captions correctly on the screen. When this dialog is created, it may be passed an <object> (when an image is being revised) or not (when a new image is inserted).
 
-Ron's code uses two temporary elemnts (an <object> and a <msiframe>) to collect the attributes for the final objects, although it really doesn't seem necessary, as the attributes are all applied inside the onAccept function, and take place inside a transaction.
+Ron's code uses two temporary elements (an <object> and a <msiframe>) to collect the attributes for the final objects, although it really doesn't seem necessary, as the attributes are all applied inside the onAccept function, and take place inside a transaction.
 
 imageElement: this is passed as a parameter in the revision case; in the new image case, it is null until it is assigned in onAccept.
 
 wrapperElement: if imageElement is passed, and has an <msiframe> parent, the parent is assigned to wrapperElement. Otherwise it is null until it is assigned in onAccept.
-
-globalImage: a temporary holder for image attributes.
-globalElement: a temporary holder for frame attributes. If there is no frame, the image will get all the frame attributes. This is done by letting globalElement = globalImage.
 
 */
 
@@ -159,7 +156,7 @@ function Startup()
         wrapperElement = imageElement.parentNode;
       }
       else 
-        wrapperElement = imageElement;  // no frame
+        wrapperElement = null;  // no frame
     } 
     else
     {
@@ -212,14 +209,14 @@ function Startup()
   // if inserting a new image, create elements now.
   if (imageElement == null) {
     imageElement = editor.createElementWithDefaults(tagName);
-    wrapperElement = editor.createElementWithDefaults("msiframe");
+    // Don't create a wrapper element until needed
   }
 
 
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
-  initFrameTab(frameTabDlg, wrapperElement, gInsertNewImage, imageElement);
+  initFrameTab(frameTabDlg, wrapperElement||imageElement, gInsertNewImage, imageElement);
   InitDialog();
 //  ChangeLinkLocation();
 
@@ -560,7 +557,8 @@ function InitImage()
   if (!gCaptionData)
     gCaptionData = {m_position : "below", m_captionStr : ""};
   var position = "below";
-  var capData = findCaptionNodes(wrapperElement);
+  var element = wrapperElement || imageElement;
+  var capData = findCaptionNodes(element);
   if (capData.belowCaption)
   {
     gCaptionData.m_captionStr = getNodeChildrenAsString(capData.belowCaption);
@@ -636,13 +634,14 @@ function InitImage()
     constrainProportions( "frameWidthInput", "frameHeightInput", null );
   // set spacing editfields
   var herePlacement;
-  var placement = wrapperElement.getAttribute("placement");
+  var element = wrapperElement || imageElement
+  var placement = element.getAttribute("placement");
   if (placement == "here");
-    gDialog.herePlacementRadioGroup.value=globalElement.getAttribute("herePlacement");
+    gDialog.herePlacementRadioGroup.value=element.getAttribute("herePlacement");
 
   // dialog.border.value       = globalElement.getAttribute("border");
   var bordervalues;
-  var bv = msiGetHTMLOrCSSStyleValue(null, imageElement, "border", null);
+  var bv = msiGetHTMLOrCSSStyleValue(null, element, "border", null);
   var i;
   if (bv.length > 0)
   {
@@ -1020,7 +1019,6 @@ function makeImagePathRelative(filePath)
   return filePath;  //if the above failed, was it already relative?
 }
 
-var isSVGFile = false;
 function chooseFile()
 {
 //  if (gTimerID)
@@ -2572,38 +2570,45 @@ function ValidateImage()
 
 function imageLoaded(event)
 {
-  if (isSVGFile)
-  {
-    var svg = event.target.contentDocument.documentElement;
-    if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
+  try {
+    var isSVGFile = /\.svg$/.test(event.data);
+    if (isSVGFile)
     {
-      var currentUnit = frameUnitHandler.currentUnit;
-      var width = svg.getAttribute("height");
-      var numregexp = /(\d+\.*\d*)([A-Za-z]*$)/;
-      var arr = numregexp.exec(width);
-      if (arr) {
-        frameUnitHandler.setCurrentUnit(arr[2]);
-        width = frameUnitHandler.getValueAs(arr[1],"px");
-        width = Math.round(width);
-      }
-      var height = svg.getAttribute("width");
-      var arr = numregexp.exec(height);
-      if (arr) 
+      var svg = event.target.contentDocument.documentElement;
+      if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
       {
-        frameUnitHandler.setCurrentUnit(arr[2]);
-        height = frameUnitHandler.getValueAs(arr[1],"px");
-        height = Math.round(height);
+        var currentUnit = frameUnitHandler.currentUnit;
+        var width = svg.getAttribute("height");
+        var numregexp = /(\d+\.*\d*)([A-Za-z]*$)/;
+        var arr = numregexp.exec(width);
+        if (arr) {
+          frameUnitHandler.setCurrentUnit(arr[2]);
+          width = frameUnitHandler.getValueAs(arr[1],"px");
+          width = Math.round(width);
+        }
+        var height = svg.getAttribute("width");
+        var arr = numregexp.exec(height);
+        if (arr) 
+        {
+          frameUnitHandler.setCurrentUnit(arr[2]);
+          height = frameUnitHandler.getValueAs(arr[1],"px");
+          height = Math.round(height);
+        }
+        svg.setAttribute("viewBox", "0 0 "+height+" "+width);
+        svg.setAttribute("width","100%");
+        svg.setAttribute("height","100%");
       }
-      svg.setAttribute("viewBox", "0 0 "+height+" "+width);
-      svg.setAttribute("width","100%");
-      svg.setAttribute("height","100%");
     }
   }
+  catch (e) {
 
+  }
 }
 
 function onAccept()
 {
+  /* The variables imageElement and wrapperElement point to the image element we are revising, and possibly the wrapper element if there was one. We want to preserve these in the revising case because they might contain attributes the user added. We can tell if we are in the revising case because then gInsertNewImage is false. That there was a wrapper element originally does not imply that there will or will not be one now, since the user may have added or deleted a caption.
+  */
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
   gIsGoingAway = true;
   importTimerHandler.stopLoading();
@@ -2620,16 +2625,13 @@ function onAccept()
     {
       var tagname = gVideo ? "embed" : "object";
       gCaptionData.m_captionStr = getCaptionEditContents();
-      var bHasCaption = (gCaptionData.m_captionStr && gCaptionData.m_captionStr.length);
+      var bHasCaption = (gCaptionData.m_captionStr && (gCaptionData.m_captionStr.length>0));
       var posInParent;
-
-
-
 
       imgExists = !gInsertNewImage;
       if (!imgExists)
       {      
-//        imageElement = editor.createElementWithDefaults(tagname);
+        if (imageElement == null) imageElement = editor.createElementWithDefaults(tagname);
         imageElement.addEventListener("load", imageLoaded, true);
       }
 
@@ -2641,14 +2643,24 @@ function onAccept()
           wrapperElement.appendChild(imageElement);
         else
         {
-          posInParent = msiNavigationUtils.offsetInParent(imageElement);
+          // If we are revising an image element and adding a wrapper element where there wasn't one before, we
+          // need to remove the margin, padding, border, background color style attributes from the image.
           var imageParent = imageElement.parentNode;
-          editor.deleteNode(imageElement);
-          wrapperElement.appendChild(imageElement);
-          editor.insertNode(wrapperElement, imageParent, posInParent);
+          var style;
+          if (imageParent.tagName !== "msiframe") {
+            editor.deleteNode(imageElement);
+            wrapperElement.appendChild(imageElement);
+            style = imageElement.getAttribute("style");
+            style = style.replace(/margin[^;]+;/,'');
+            style = style.replace(/border[^;]+;/,'');
+            style = style.replace(/background[^;]+;/,'');
+            style = style.replace(/padding[^;]+;/,'');
+            imageElement.setAttribute("style", style);
+            editor.insertNode(wrapperElement, imageParent, posInParent);
+          }
         }
       }
-      else if (wrapperElement != imageElement && wrapperElement && wrapperElement.parentNode)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
+      else if (wrapperElement && wrapperElement.parentNode && wrapperElement != imageElement)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
       {
         posInParent = msiNavigationUtils.offsetInParent(wrapperElement);
         editor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
@@ -2666,7 +2678,7 @@ function onAccept()
         if (!bHasCaption) wrapperElement = imageElement;
         editor.insertElementAtSelection(wrapperElement, true);
       }
-      syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement, capPosition);
+      syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement || imageElement, capPosition);
       var extension = getExtension(gDialog.srcInput.value).toLowerCase();
       adjustObjectForFileType(imageElement, extension);
 
@@ -2696,8 +2708,6 @@ function onAccept()
       msiEditorEnsureElementAttribute(imageElement, "id", theKey, null);
       msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
 
-      var imgAttrList = ["src","data","title","alt","req","imageWidth","imageHeight","naturalWidth","naturalHeight","key","units","rotation","msi_resize","borderw","padding","border-color","background-color","type","byReference","originalSrcUrl","style"];
-      var imgParamList = ["scale","autoplay","controller","showlogo","starttime","endtime"];
       if (gVideo)
       {
         //msiEditorEnsureElementAttribute(imageElement, "autoplay", "false", null);
@@ -2705,7 +2715,6 @@ function onAccept()
         msiEditorEnsureAttributeOrParam(imageElement, "showlogo", "false", null);
         msiEditorEnsureAttributeOrParam(imageElement, "scale", "aspect", null);
         msiEditorEnsureElementAttribute(imageElement, "isVideo", "true", null);
-        imgAttrList = imgAttrList.concat(["scale","autoplay","controller","showlogo","starttime","endtime","isVideo"]);
       }
     }
     catch (e)
