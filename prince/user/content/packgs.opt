@@ -591,6 +591,15 @@
 1.5=Rejne,Rejne
 1.6=Bjarne,Bjarne
 
+[fontenc]
+1=Font encoding,
+1.1=OT1,OT1
+1.2=T1,T1
+1.3=OML,OML
+1.4=OMS,OMS
+1.5=OT4,OT4
+1.6=TS1,TS1
+
 [footmisc]
 1=Numbering
 1.1=Normal - default,
