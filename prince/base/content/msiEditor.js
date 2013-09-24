@@ -3475,10 +3475,30 @@ function msiEditorNextField(bShift, editorElement)
 
     if (selInfo)
     {
-      if (!selInfo.bInTransaction)
-        anEditor.beginTransaction();
-      anEditor.selection.collapse(selInfo.mNode, selInfo.mOffset);
-      anEditor.endTransaction();
+      try {
+        if (!selInfo.bInTransaction)
+          anEditor.beginTransaction();
+        // avoid putting the cursor in a place that can't accept text
+        var tlmanager = anEditor.tagListManager;
+        var namespace = null;
+        if (tlmanager.nodeCanContainTag(selInfo.mNode, '#text', namespace))
+          anEditor.selection.collapse(selInfo.mNode, selInfo.mOffset);
+        else {
+          var treeWalker = anEditor.document.createTreeWalker(
+            selInfo.mNode,
+            NodeFilter.SHOW_ELEMENT,
+            { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },
+            false
+          );
+          while(treeWalker.nextNode() && !tlmanager.nodeCanContainTag(treeWalker.currentNode, '#text', namespace));
+          if (treeWalker.currentNode) anEditor.selection.collapse(treeWalker.currentNode, 0);
+          // else ????
+        }
+        anEditor.endTransaction();
+      }
+      catch(e) {
+        msidump(e.message);
+      }
       return true;
     }
     return false;
