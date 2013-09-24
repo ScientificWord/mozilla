@@ -9614,7 +9614,7 @@ nsHTMLEditRules::AdjustSpecialBreaks(PRBool aSafeToAskFrames)
       if (NS_FAILED(res)) return res;
       nsCOMPtr<nsIDOMNode> para;
       res = mHTMLEditor->CreateDefaultParagraph(theNode, (PRInt32)len, getter_AddRefs(para));
-      res = CreateMozBR(para, (PRInt32)0, address_of(brNode));
+//     res = CreateMozBR(para, (PRInt32)0, address_of(brNode));
       if (NS_FAILED(res)) return res;
     }
   }
