@@ -6978,7 +6978,7 @@ void InitCharMap()
     charMap = new nsStringArray(250);
     charMap->AppendString(NS_LITERAL_STRING("~")); // a0
     charMap->AppendString(NS_LITERAL_STRING("\\textexclamdown"));
-    charMap->AppendString(NS_LITERAL_STRING("\\hbox{\\rm\\rlap/c}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\mbox{\\rm\\rlap/c}"));
     charMap->AppendString(NS_LITERAL_STRING("\\pounds "));
     charMap->AppendString(NS_LITERAL_STRING("\\textcurrency "));
     charMap->AppendString(NS_LITERAL_STRING("\\yen "));
