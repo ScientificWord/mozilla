@@ -85,6 +85,7 @@ SEMANTICS_NODE *MuAnalyzer::BuildSemanticsTree(MNODE * eng_tree, U32 cmd_ID,
   case CCID_PLU_Decomposition:
   case CCID_QR_Decomposition:
   case CCID_Singular_Values:
+  case CCID_SVD:
   case CCID_Rational_Canonical_Form: 
     FixMapleCholesky(rv);
     break;
