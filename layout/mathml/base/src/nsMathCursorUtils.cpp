@@ -155,13 +155,16 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
 
   if (fInside)
   {
-    pChild = GetFirstTextFrame(pFrame);
-    if (pChild)
-    {
-      count = 0;
-      *aOutOffset = count;
-      *aOutFrame = pChild;
-    }
+    // BBM: modified 2013-09-27
+    // pChild = GetFirstTextFrame(pFrame);
+    // if (pChild)
+    // {
+    //   count = 0;
+    //   *aOutOffset = count;
+    //   *aOutFrame = pChild;
+    // }
+    *aOutOffset = 0;
+    *aOutFrame = pFrame;
   }
   else // don't put the cursor inside the tag
   {
@@ -316,11 +319,25 @@ nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame ) // if there is no pr
 }
 
 nsIFrame * GetSignificantParent(nsIFrame * pFrame)
+// Finds the first ancestor that has different content from pFrame
 {
   nsCOMPtr<nsIContent> pContent = pFrame->GetContent();
   nsIFrame * rval = pFrame->GetParent();
   while (rval && rval->GetContent() == pContent)
     rval = rval->GetParent();
+  return rval;
+}
+
+nsIFrame * GetTopFrameForContent(nsIFrame * pFrame)
+{
+  nsCOMPtr<nsIContent> pContent = pFrame->GetContent();
+  nsIFrame * rval = pFrame;
+  nsIFrame * pParent;
+  pParent = rval->GetParent();
+  while (pParent->GetContent() == pContent) {
+  	rval = pParent;
+    pParent = rval->GetParent();
+  }
   return rval;
 }
 
