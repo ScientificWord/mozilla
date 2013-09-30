@@ -78,6 +78,10 @@
 #endif
 
 #include "nsIDOMText.h"
+#include "nsIDOMDocument.h"
+#include "nsIDOMDocumentTraversal.h"
+#include "nsIDOMNodeFilter.h"
+#include "nsIDOMTreeWalker.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsIDOMHTMLAreaElement.h"
 #include "nsIDOMHTMLImageElement.h"
@@ -85,6 +89,8 @@
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIDeviceContext.h"
 #include "nsIEditorDocShell.h"
+#include "nsIEditor.h"
+#include "nsIHTMLEditor.h"
 #include "nsIEventStateManager.h"
 #include "nsISelection.h"
 #include "nsIDOMHTMLElement.h"
@@ -106,6 +112,7 @@
 #include "nsITextControlFrame.h"
 #include "nsINameSpaceManager.h"
 #include "nsIPercentHeightObserver.h"
+#include "msiITagListManager.h"
 
 #ifdef IBMBIDI
 #include "nsBidiPresUtils.h"
@@ -8053,15 +8060,55 @@ NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 NS_IMETHODIMP
 nsFrame::MoveLeftAtDocStart(nsISelection * sel)
 {
+  nsresult res;
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  PRBool fTakesText = PR_FALSE;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEditor = do_QueryInterface(editor);
+  htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsIDocument *doc = shell->GetDocument();
+  nsIAtom * namespaceatom;
+  namespaceatom = nsnull;
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
     do_QueryInterface(doc);
   if (htmlDoc) {
+    NS_NAMED_LITERAL_STRING(strText,"#text");
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
-    sel->Collapse(bodyElement, 0);
+
+    // Now use a tree walker to find an element that can take text.
+
+    doctrav = do_QueryInterface(htmlDoc);
+    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    if (!(NS_SUCCEEDED(res) && tw)) return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsIDOMNode> currentNode;
+    tw->GetCurrentNode(getter_AddRefs(currentNode));
+    while (currentNode)
+    {
+      res = tlm->NodeCanContainTag( currentNode, strText, namespaceatom, &fTakesText);
+      if (fTakesText) // this is where we want the cursor to go
+      {
+        sel->Collapse(currentNode, 0);
+        return NS_OK;
+      }
+      tw->NextNode(getter_AddRefs(currentNode));
+    }
+    sel->Collapse(bodyElement, 0);  // get executed only if there is nothing else found.
   }
   return NS_OK;
 
