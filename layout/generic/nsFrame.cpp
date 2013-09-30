@@ -8111,6 +8111,7 @@ nsFrame::MoveLeftAtDocStart(nsISelection * sel)
     sel->Collapse(bodyElement, 0);  // get executed only if there is nothing else found.
   }
   return NS_OK;
+}
 
 //  nsIFrame* parent = this;
 //  nsIAtom * frametype = parent->GetType();
@@ -8134,24 +8135,99 @@ nsFrame::MoveLeftAtDocStart(nsISelection * sel)
 //    return NS_OK;
 //  }
 //  return NS_ERROR_FAILURE;
-}
+
 
 NS_IMETHODIMP
 nsFrame::MoveRightAtDocEnd(nsISelection * sel)
 {
-  PRUint32 offset;
+  nsresult res;
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  PRBool fTakesText = PR_FALSE;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEditor = do_QueryInterface(editor);
+  htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsIDocument *doc = shell->GetDocument();
+  nsIAtom * namespaceatom;
+  PRUint32 offset;
+  namespaceatom = nsnull;
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
     do_QueryInterface(doc);
   if (htmlDoc) {
+    NS_NAMED_LITERAL_STRING(strText,"#text");
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
-    nsCOMPtr<nsIDOMNodeList> nodeList;    
-    bodyElement->GetChildNodes(getter_AddRefs(nodeList));
-    nodeList->GetLength(&offset);
-    sel->Collapse(bodyElement, offset);
+
+    // Now use a tree walker to find an element that can take text.
+
+    doctrav = do_QueryInterface(htmlDoc);
+    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    if (!(NS_SUCCEEDED(res) && tw)) return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsIDOMNode> currentNode;
+    tw->GetCurrentNode(getter_AddRefs(currentNode));
+    nsCOMPtr<nsIDOMNode> lastElement;
+    nsString name;
+    // find the last visible element
+    while (currentNode) {
+      lastElement = currentNode;
+      tw->LastChild(getter_AddRefs(currentNode));
+    }
+    // set the tree walker position to the last element
+    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    tw->SetCurrentNode(lastElement);
+    currentNode = lastElement;
+    while (currentNode)
+    {
+      nsAutoString tagname;
+      res = currentNode->GetNodeName(tagname);
+      if (tagname.EqualsLiteral("#text")) 
+        fTakesText = PR_TRUE;
+      else
+        res = tlm->NodeCanContainTag( currentNode, strText, namespaceatom, &fTakesText);
+      if (fTakesText) // this is where we want the cursor to go
+      {
+        if (tagname.EqualsLiteral("#text")) {
+          nsAutoString nodeText;
+          currentNode->GetNodeValue(nodeText);
+          sel->Collapse(currentNode, nodeText.Length());
+          return NS_OK;
+        }
+
+        nsCOMPtr<nsIDOMNodeList> childList;    
+        PRUint32 len;
+        currentNode->GetChildNodes(getter_AddRefs(childList));   
+        //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
+        //  as a direct DOM child, we'll answer PR_FALSE.
+        childList->GetLength(&len);
+        offset = len;
+        nsCOMPtr<nsIDOMNode> maybeBreak;
+        childList->Item(offset-1, getter_AddRefs(maybeBreak));
+        if (maybeBreak) {
+          maybeBreak->GetNodeName(name);
+          if (name.EqualsLiteral("br")) {
+            offset -= 1;
+          }
+        }
+        sel->Collapse(currentNode, offset);
+        return NS_OK;
+      }
+      tw->PreviousNode(getter_AddRefs(currentNode));
+    }
+    sel->Collapse(bodyElement, 0);  // gets executed only if there is nothing else found.
   }
   return NS_OK;
 }
