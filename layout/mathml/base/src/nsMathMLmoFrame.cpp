@@ -1182,16 +1182,21 @@ nsresult
 nsMathMLmoFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, 
    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
 {
- if (IsInvisibleOp()) return MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
- else
- {
-   if (count == 0) PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
-   else 
-   {
-     count = 0;
-     MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-   }
- }
+  if (IsInvisibleOp()) 
+    return MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+  else
+  {
+    if (count == 0) {
+      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    }
+    else 
+    {
+      count = 0;
+      *_retval = 0;
+      MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+//      PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    }
+  }
  return NS_OK;
 }
  
@@ -1206,6 +1211,7 @@ nsMathMLmoFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRI
     else 
     {
       count = 0;
+      *_retval = 0;
       MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     }
   }
