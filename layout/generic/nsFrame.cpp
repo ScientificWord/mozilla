@@ -47,6 +47,7 @@
 #include "nsFrame.h"
 #include "nsMathMLFrame.h"
 #include "nsMathMLCursorMover.h"
+#include "nsMathCursorUtils.h"
 #include "nsFrameList.h"
 #include "nsLineLayout.h"
 #include "nsIContent.h"
@@ -77,6 +78,10 @@
 #endif
 
 #include "nsIDOMText.h"
+#include "nsIDOMDocument.h"
+#include "nsIDOMDocumentTraversal.h"
+#include "nsIDOMNodeFilter.h"
+#include "nsIDOMTreeWalker.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsIDOMHTMLAreaElement.h"
 #include "nsIDOMHTMLImageElement.h"
@@ -84,6 +89,8 @@
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIDeviceContext.h"
 #include "nsIEditorDocShell.h"
+#include "nsIEditor.h"
+#include "nsIHTMLEditor.h"
 #include "nsIEventStateManager.h"
 #include "nsISelection.h"
 #include "nsIDOMHTMLElement.h"
@@ -105,6 +112,7 @@
 #include "nsITextControlFrame.h"
 #include "nsINameSpaceManager.h"
 #include "nsIPercentHeightObserver.h"
+#include "msiITagListManager.h"
 
 #ifdef IBMBIDI
 #include "nsBidiPresUtils.h"
@@ -4793,6 +4801,81 @@ static PRBool IsMovingInFrameDirection(nsIFrame* frame, nsDirection aDirection, 
 
 PRBool IsMathFrame( nsIFrame * aFrame );
 
+PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInFrameDirection, PRBool * math, PRBool * fBailing )
+{
+  nsIAtom * frameType;
+  PRInt32 ctr = 0;
+  nsresult res;
+  nsCOMPtr<nsIMathMLCursorMover> pMathCM;
+  PRInt32 count = 1;
+  nsIFrame * pBefore = nsnull;
+  nsIFrame * pAfter = nsnull;
+  PRUint32 textlength;
+
+  frameType = (*current)->GetType();
+  if (nsGkAtoms::textFrame == frameType) {
+    if (!movingInFrameDirection && *offset > 0) {
+      (*offset)--;
+      return PR_TRUE;
+    }
+    textlength = (*current)->GetContent()->TextLength();
+    if (movingInFrameDirection && *offset < textlength) {
+      (*offset)++;
+      return PR_TRUE;
+    }
+    pMathCM =  do_QueryInterface(GetTopFrameForContent((*current)->GetParent()));
+    if (movingInFrameDirection) { //moving out of the text node.
+      if (pMathCM) {
+        pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
+        return (count == 0);
+      }
+      else return PR_FALSE;
+    }
+    if (*offset == 0 && !movingInFrameDirection)
+    {
+      if (pMathCM) {
+        pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
+        return (count == 0);
+      }
+    }
+    return PR_FALSE;
+  }
+  // otherwise current is an element and offset points between children
+  // Find the nodes before and after offset.
+  pAfter = (*current)->GetFirstChild(nsnull);
+  while (ctr < *offset) {
+    if (ctr == *offset - 1) pBefore = pAfter;
+    pAfter = pAfter->GetNextSibling();
+    (ctr)++;
+  }
+  if (movingInFrameDirection) {
+    if (pAfter) {
+      pMathCM =  do_QueryInterface(pAfter);
+      if (pMathCM) pMathCM->EnterFromLeft(nsnull, current, offset, count, fBailing, &count);
+      return (count == 0);
+    }
+    else {
+      pMathCM =  do_QueryInterface(pBefore);
+      if (pMathCM) pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
+      return (count == 0);
+    }
+  }
+  if (!movingInFrameDirection) {
+    if (pBefore) {
+      pMathCM =  do_QueryInterface(pBefore);
+      if (pMathCM) pMathCM->EnterFromRight(nsnull, current, offset, count, fBailing, &count);
+      return (count == 0);
+    }
+    else {
+      pMathCM =  do_QueryInterface(pAfter);
+      if (pMathCM) pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
+      return (count == 0);
+    }
+    return PR_FALSE;
+  }
+}
+
+
 NS_IMETHODIMP
 nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
 {
@@ -4827,8 +4910,30 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
         PRBool movingInFrameDirection =
           IsMovingInFrameDirection(current, aPos->mDirection, aPos->mVisual);
 
-        if (eatingNonRenderableWS)
+        if (eatingNonRenderableWS) {
+          nsIFrame * pNext;
+          nsIFrame * pPrevious;
+          nsIFrame * f;
           done = current->PeekOffsetNoAmount(movingInFrameDirection, &offset);
+          // PeekOffsetNoAmount returns true if there is a character for the cursor to sit beside. We also want to return 
+          // true when the next frame is math
+          if (!done) {
+            if (movingInFrameDirection) {
+              pNext = current->GetNextSibling();
+              done = pNext && (IsMathFrame(pNext) || IsMathFrame(pNext->GetParent()));
+            }
+            else 
+            {
+              // have to search for previous sibling.
+              pPrevious = current->GetParent()->GetFirstChild(nsnull);
+              while (pPrevious && pPrevious->GetNextSibling() != current) pPrevious = pPrevious->GetNextSibling();
+              if (pPrevious) done = (IsMathFrame(pPrevious) || IsMathFrame(pPrevious->GetParent()));
+            }
+          }
+        }
+        else if (math) {
+          done = InitiateMathMove(&current, &offset, movingInFrameDirection, &math, &fBailing );
+        }
         else
           done = current->PeekOffsetCharacter(movingInFrameDirection, &offset);
 
@@ -5431,7 +5536,8 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   // Mozilla uses; that means it is a leaf. For mathematics, we need to check to see if we should instead
   // choose a parent of this frame.
   //  printf("Moving to a new frame; check to see if we are in math\n");
-  nsIFrame* pFrame = IsMathFrame(this) ? this : nsnull;  // will succeed if "this" is a math frame.
+//  nsIFrame* pFrame = IsMathFrame(this) ? this : nsnull;  // will succeed if "this" is a math frame. BBM: changed 2013-09-26
+  nsIFrame* pFrame = IsMathFrame(traversedFrame) ? traversedFrame : nsnull;  // will succeed if "traversedFrame" is a math frame.
   nsIFrame* pFrameChild;
   nsIFrame * pChild;
   nsIFrame * pLastChild = nsnull;
@@ -5439,6 +5545,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   nsIFrame* pMathChild;
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
   PRInt32 count = 1;
+  if (*aOutJumpedLine) count = 0;
   if (pFrame) // 'this' is a math frame
   {
 //    printf("Starting in a math frame\n");
@@ -5524,9 +5631,21 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   }
   else
   {
-    pFrame = IsParentMathFrame(this)?GetParent():nsnull;
+//    pFrame = IsParentMathFrame(this)?GetParent():nsnull; // BBM: 2013-09-26
+    pFrame = IsParentMathFrame(traversedFrame)?traversedFrame->GetParent():nsnull;
     if (pFrame)
     {
+//      nsAutoString name;
+//      nsCOMPtr<nsIDOMElement> frameNode;
+      pFrame = GetTopFrameForContent(pFrame);
+//     frameNode = do_QueryInterface(pFrame->GetContent()); 
+//      if (frameNode) frameNode->GetNodeName(name);
+//
+//      while (!(name.EqualsLiteral("mo")) && !(name.EqualsLiteral("mi") && !(name.EqualsLiteral("mn")))) {
+//        pFrame = pFrame->GetParent();
+//        frameNode = do_QueryInterface(pFrame->GetContent()); 
+//        if (frameNode) frameNode->GetNodeName(name);
+//      }
       nsMathMLFrame::DumpMathFrameData(pFrame);
       // this is not a math frame, but a parent is. Probably this is a text frame.
       // Check if the next frame is a text frame. If so, bail and let the default code take care of it.
@@ -5537,9 +5656,9 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         pFrame = nsnull;
       }
       else if ((pMathCM = GetMathCursorMover(pFrame)) && (aDirection == eDirNext))
-        pMathCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, &count);
+        pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
       else if (pMathCM)
-        pMathCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, &count);
+        pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
     }
 //    if (*fBailing) goto bailedOut;
   }
@@ -6997,7 +7116,7 @@ nsFrame::TraceMsg(const char* aFormatString, ...)
 void
 nsFrame::VerifyDirtyBitSet(nsIFrame* aFrameList)
 {
-  for (nsIFrame*f = aFrameList; f; f = f->GetNextSibling()) {
+  for (nsIFrame* f = aFrameList; f; f = f->GetNextSibling()) {
     NS_ASSERTION(f->GetStateBits() & NS_FRAME_IS_DIRTY, "dirty bit not set");
   }
 }
@@ -7941,17 +8060,58 @@ NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 NS_IMETHODIMP
 nsFrame::MoveLeftAtDocStart(nsISelection * sel)
 {
+  nsresult res;
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  PRBool fTakesText = PR_FALSE;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEditor = do_QueryInterface(editor);
+  htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsIDocument *doc = shell->GetDocument();
+  nsIAtom * namespaceatom;
+  namespaceatom = nsnull;
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
     do_QueryInterface(doc);
   if (htmlDoc) {
+    NS_NAMED_LITERAL_STRING(strText,"#text");
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
-    sel->Collapse(bodyElement, 0);
+
+    // Now use a tree walker to find an element that can take text.
+
+    doctrav = do_QueryInterface(htmlDoc);
+    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    if (!(NS_SUCCEEDED(res) && tw)) return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsIDOMNode> currentNode;
+    tw->GetCurrentNode(getter_AddRefs(currentNode));
+    while (currentNode)
+    {
+      res = tlm->NodeCanContainTag( currentNode, strText, namespaceatom, &fTakesText);
+      if (fTakesText) // this is where we want the cursor to go
+      {
+        sel->Collapse(currentNode, 0);
+        return NS_OK;
+      }
+      tw->NextNode(getter_AddRefs(currentNode));
+    }
+    sel->Collapse(bodyElement, 0);  // get executed only if there is nothing else found.
   }
   return NS_OK;
+}
 
 //  nsIFrame* parent = this;
 //  nsIAtom * frametype = parent->GetType();
@@ -7975,24 +8135,99 @@ nsFrame::MoveLeftAtDocStart(nsISelection * sel)
 //    return NS_OK;
 //  }
 //  return NS_ERROR_FAILURE;
-}
+
 
 NS_IMETHODIMP
 nsFrame::MoveRightAtDocEnd(nsISelection * sel)
 {
-  PRUint32 offset;
+  nsresult res;
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  PRBool fTakesText = PR_FALSE;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEditor = do_QueryInterface(editor);
+  htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsIDocument *doc = shell->GetDocument();
+  nsIAtom * namespaceatom;
+  PRUint32 offset;
+  namespaceatom = nsnull;
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
     do_QueryInterface(doc);
   if (htmlDoc) {
+    NS_NAMED_LITERAL_STRING(strText,"#text");
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
-    nsCOMPtr<nsIDOMNodeList> nodeList;    
-    bodyElement->GetChildNodes(getter_AddRefs(nodeList));
-    nodeList->GetLength(&offset);
-    sel->Collapse(bodyElement, offset);
+
+    // Now use a tree walker to find an element that can take text.
+
+    doctrav = do_QueryInterface(htmlDoc);
+    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    if (!(NS_SUCCEEDED(res) && tw)) return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsIDOMNode> currentNode;
+    tw->GetCurrentNode(getter_AddRefs(currentNode));
+    nsCOMPtr<nsIDOMNode> lastElement;
+    nsString name;
+    // find the last visible element
+    while (currentNode) {
+      lastElement = currentNode;
+      tw->LastChild(getter_AddRefs(currentNode));
+    }
+    // set the tree walker position to the last element
+    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    tw->SetCurrentNode(lastElement);
+    currentNode = lastElement;
+    while (currentNode)
+    {
+      nsAutoString tagname;
+      res = currentNode->GetNodeName(tagname);
+      if (tagname.EqualsLiteral("#text")) 
+        fTakesText = PR_TRUE;
+      else
+        res = tlm->NodeCanContainTag( currentNode, strText, namespaceatom, &fTakesText);
+      if (fTakesText) // this is where we want the cursor to go
+      {
+        if (tagname.EqualsLiteral("#text")) {
+          nsAutoString nodeText;
+          currentNode->GetNodeValue(nodeText);
+          sel->Collapse(currentNode, nodeText.Length());
+          return NS_OK;
+        }
+
+        nsCOMPtr<nsIDOMNodeList> childList;    
+        PRUint32 len;
+        currentNode->GetChildNodes(getter_AddRefs(childList));   
+        //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
+        //  as a direct DOM child, we'll answer PR_FALSE.
+        childList->GetLength(&len);
+        offset = len;
+        nsCOMPtr<nsIDOMNode> maybeBreak;
+        childList->Item(offset-1, getter_AddRefs(maybeBreak));
+        if (maybeBreak) {
+          maybeBreak->GetNodeName(name);
+          if (name.EqualsLiteral("br")) {
+            offset -= 1;
+          }
+        }
+        sel->Collapse(currentNode, offset);
+        return NS_OK;
+      }
+      tw->PreviousNode(getter_AddRefs(currentNode));
+    }
+    sel->Collapse(bodyElement, 0);  // gets executed only if there is nothing else found.
   }
   return NS_OK;
 }

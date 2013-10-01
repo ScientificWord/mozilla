@@ -1544,6 +1544,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
           }
           else
             BidiLevelFromMove(mShell, pos.mResultContent, pos.mContentOffset, aKeycode, tHint);
+          break;
       }
 #ifdef VISUALSELECTION
       // Handle visual selection
