@@ -41,14 +41,25 @@
 #include "nsIDOMRange.h"
 #include "nsIContent.h"
 #include "nsLayoutCID.h"
-
-// hooks
+#include "nsIDOMHTMLDocument.h"
+#include "nsIDOMDocumentTraversal.h"
+#include "nsIDOMNodeFilter.h"
+#include "nsIDOMTreeWalker.h"
+#include "nsIDOMNodeList.h"
+#include "nsISelection.h"// hooks
 #include "nsIClipboardDragDropHooks.h"
 #include "nsIClipboardDragDropHookList.h"
 #include "nsISimpleEnumerator.h"
 #include "nsIDocShell.h"
 #include "nsIDocument.h"
 #include "nsIInterfaceRequestorUtils.h"
+#include "nsIHTMLDocument.h"
+#include "nsIDOMHTMLElement.h"
+#include "nsIHTMLEditor.h"
+#include "nsEditor.h"
+#include "nsIAtom.h"
+
+
 
 
 /******************************************************************************
@@ -233,6 +244,106 @@ nsEditorUtils::IsLeafNode(nsIDOMNode *aNode)
     aNode->HasChildNodes(&hasChildren);
   return !hasChildren;
 }
+
+PRBool
+nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, PRBool isForward)
+{
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMDocument> doc;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  nsCOMPtr<nsIDOMNode> currentNode;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsCOMPtr<nsIDOMNode> startSearchNode;
+  nsCOMPtr<nsIDOMNode> startNode;
+  nsEditor * ed = static_cast<nsEditor*>(aEditor);
+  PRInt32 startOffset;
+  nsresult res;
+  nsCOMPtr<nsIDOMNodeList> childList;    
+  res = aEditor->GetDocument(getter_AddRefs(doc));
+  if (doc) doctrav = do_QueryInterface(doc);
+  else return PR_FALSE;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  PRBool canTakeText = PR_FALSE;
+  nsIAtom * nsatom = nsnull;
+  nsString text = NS_LITERAL_STRING("#text");
+  nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+  nsCOMPtr<nsIDOMHTMLDocument> htmlDoc = do_QueryInterface(doc);
+  nsAutoString name;
+  ed->GetStartNodeAndOffset(sel, address_of(startNode), &startOffset); 
+  htmlDoc->GetBody(getter_AddRefs(bodyElement));
+  if (htmlEditor) {
+    htmlEditor -> GetTagListManager(getter_AddRefs(tlm));
+    if (ed->IsTextNode(startNode))
+      startNode->GetParentNode(getter_AddRefs(parentNode));
+    else
+      parentNode = startNode;
+
+    tlm -> NodeCanContainTag(parentNode, text, nsatom, &canTakeText);
+    if (!canTakeText) {
+      // we must move the cursor to a place that can accept text.
+      res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
+      // find where to start the search
+      if (ed->IsTextNode(startNode)) startSearchNode = startNode;
+      else {
+        res = startNode->GetChildNodes(getter_AddRefs(childList)); 
+        childList->Item(startOffset  + (isForward? 0 : -1), getter_AddRefs(startSearchNode));  
+      }
+      tw->SetCurrentNode(startSearchNode);
+      currentNode = startSearchNode;
+      while (currentNode)
+      {
+//          nsAutoString tagname;
+//          res = currentNode->GetNodeName(tagname);
+        if (ed->IsTextNode(currentNode)) {
+          res = currentNode->GetParentNode(getter_AddRefs(parentNode));
+          res = tlm->NodeCanContainTag( parentNode, text, nsatom, &canTakeText);
+        }
+        else
+          res = tlm->NodeCanContainTag( currentNode, text, nsatom, &canTakeText);
+        if (canTakeText) // this is where we want the cursor to go
+        {
+          if (ed->IsTextNode(currentNode)) {
+            if (isForward) {
+              sel->Collapse(currentNode, 0);
+            } else {
+              nsAutoString nodeText;
+              currentNode->GetNodeValue(nodeText);
+              sel->Collapse(currentNode, nodeText.Length());
+            }
+            return PR_TRUE;
+          }
+          if (isForward) {
+            startOffset = 0;
+          }
+          else {
+            PRUint32 len;
+            currentNode->GetChildNodes(getter_AddRefs(childList));   
+            //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
+            //  as a direct DOM child, we'll answer PR_FALSE.
+            childList->GetLength(&len);
+            startOffset = len;
+            nsCOMPtr<nsIDOMNode> maybeBreak;
+            childList->Item(startOffset-1, getter_AddRefs(maybeBreak));
+            if (maybeBreak) {
+              maybeBreak->GetNodeName(name);
+              if (name.EqualsLiteral("br")) {
+                startOffset -= 1;
+              }
+            }
+          }
+          sel->Collapse(currentNode, startOffset);
+          return PR_TRUE;
+        }
+        if (isForward)
+          tw->NextNode(getter_AddRefs(currentNode));
+        else
+          tw->PreviousNode(getter_AddRefs(currentNode));
+      }
+    }
+  }  
+}
+
 
 /******************************************************************************
  * utility methods for drag/drop/copy/paste hooks
