@@ -67,7 +67,6 @@
 #include "nsILookAndFeel.h"
 #include "nsWidgetsCID.h"
 #include "DeleteTextTxn.h"
-#include "nsIDOMDocumentTraversal.h"
 #include "nsIHTMLDocument.h"
 #include "nsIDOMHTMLElement.h"
 #include "nsIHTMLEditor.h"
@@ -1061,8 +1060,13 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
     if (selPriv) res = selPriv->SetInterlinePosition(PR_TRUE);
   }
   // Check that the cursor is in a place that can accept text.
+  nsCOMPtr<nsIEditor> editor = static_cast<nsEditor*>(mEditor);
+  PRBool retval;
+  retval = nsEditorUtils::JiggleCursor(editor, aSelection, (aCollapsedAction == 1));
+  if (retval) res = NS_OK;
+
+/*  
   res = mEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);  
-  
   nsCOMPtr<msiITagListManager> tlm;
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
   nsCOMPtr<nsIDOMDocument> doc;
@@ -1153,7 +1157,7 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
           tw->PreviousNode(getter_AddRefs(currentNode));
       }
     }
-  }
+  } */
   return res;
 }
 
