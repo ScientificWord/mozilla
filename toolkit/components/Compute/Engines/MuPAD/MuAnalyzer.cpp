@@ -113,6 +113,9 @@ SEMANTICS_NODE *MuAnalyzer::BuildSemanticsTree(MNODE * eng_tree, U32 cmd_ID,
     rv = FixQuantileResult(rv);
     break;
 
+  case CCID_Definiteness_Tests:
+    rv = FixDefinitenessTests(rv);
+
   default:
     break;
   }
@@ -2231,6 +2234,22 @@ SEMANTICS_NODE *MuAnalyzer::FixQuantileResult(SEMANTICS_NODE * s_list)
 
   return s_qresult;
 }
+
+
+
+SEMANTICS_NODE *MuAnalyzer::FixDefinitenessTests(SEMANTICS_NODE * s_list)
+{
+  char* cont  = s_list->contents;
+  if (cont){
+    if (0 == strcmp(cont, "indef")) {
+       s_list -> contents = DuplicateString("is indefinite");
+    } else if (0 == strcmp(cont, "posdef")) {
+       s_list -> contents = DuplicateString("is positive definite");
+    }
+  }
+  return s_list;
+}
+
 
 SEMANTICS_NODE* MuAnalyzer::RemoveParens(SEMANTICS_NODE * expr)
 {
