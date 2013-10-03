@@ -264,11 +264,13 @@ nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, PRBool isFor
   if (doc) doctrav = do_QueryInterface(doc);
   else return PR_FALSE;
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor) return PR_FALSE;
   PRBool canTakeText = PR_FALSE;
   nsIAtom * nsatom = nsnull;
   nsString text = NS_LITERAL_STRING("#text");
   nsCOMPtr<nsIDOMHTMLElement> bodyElement;
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc = do_QueryInterface(doc);
+  if (!htmlDoc) return PR_FALSE;
   nsAutoString name;
   ed->GetStartNodeAndOffset(sel, address_of(startNode), &startOffset); 
   htmlDoc->GetBody(getter_AddRefs(bodyElement));
