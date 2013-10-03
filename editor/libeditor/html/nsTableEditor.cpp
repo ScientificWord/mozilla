@@ -3842,7 +3842,7 @@ nsHTMLEditor::IsEmptyCell(nsIDOMElement *aCell)
 {
   nsCOMPtr<nsIDOMNode> cellChild;
 
-  // Check if target only contains empty text node or <br>
+  // Check if target only contains empty text or paragraph node or <br>
   nsresult res = aCell->GetFirstChild(getter_AddRefs(cellChild));
   if (NS_FAILED(res)) return PR_FALSE;
 
@@ -3859,7 +3859,7 @@ nsHTMLEditor::IsEmptyCell(nsIDOMElement *aCell)
       // Or check if no real content
       if (!isEmpty)
       {
-        res = IsEmptyNode(cellChild, &isEmpty, PR_FALSE, PR_FALSE);
+        res = IsEmptyNode(cellChild, &isEmpty, PR_TRUE, PR_FALSE);
         if (NS_FAILED(res)) return PR_FALSE;
       }
 
