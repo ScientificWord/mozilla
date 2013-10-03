@@ -77,7 +77,6 @@ var gTableCaptionPlacement;
 var gTableBaseline = "baseline";
 var gBorderCollapse = "collapse";  //This should be the default???
 
-var gCellChangeData;
 var gTableChangeData;
 var gCurrentSide = "";
 var gBorderSides = ["top", "right", "bottom", "left"];
@@ -1976,11 +1975,11 @@ function ApplyTableAttributes()
   }
 
   logStr = "";
-  var bEmptyStyle = (!globalTableElement.style);
+  var bEmptyStyle = true; //(!globalTableElement.style);
   var theStyleString = "";
 
-  doSetStyleAttr("vertical-align", gTableBaseline);
-  SetAnAttribute(gTableElement, "valign", gTableBaseline);
+  doSetStyleAttr("vertical-align", gDialog.baselineList.value);
+  SetAnAttribute(gTableElement, "valign", gDialog.baselineList.value);
 
   doSetStyleAttr("border-collapse", gBorderCollapse);
   var pos = gDialog.tableLocationList.value;
