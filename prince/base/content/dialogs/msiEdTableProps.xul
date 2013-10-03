@@ -157,14 +157,12 @@
               <rows>
                 <row align="center">
                   <label value="&Rowheight.label;"/>
-                  <textbox id="CellHeightInput" type="number" class="medwidth" 
-                           oninput="ChangeCellSize(this.id);"/>
+                  <textbox id="CellHeightInput" type="number" class="medwidth" />
                   <menulist id="cellUnitsList" oncommand="onChangeCellUnits();" />
                 </row>
                 <row align="center">
                   <label value="&Columnwidth.label;"/>
-                  <textbox id="CellWidthInput" type="number" class="medwidth" 
-                           oninput="ChangeCellSize(this.id);"/>
+                  <textbox id="CellWidthInput" type="number" class="medwidth" />
                 </row>
               </rows>
             </grid>
@@ -175,7 +173,7 @@
               <rows>
                 <row align="center">
                   <label value="&Horizontal.label;"/>
-                  <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
+                  <menulist id="hAlignChoices">
                     <menupopup>
                       <menuitem label="&hAlignLeft.label;"  value="left"/>
                       <menuitem label="&hAlignCenter.label;" value="center"/>
@@ -186,7 +184,7 @@
                 </row>
                 <row align="center">
                   <label value="&Vertical.label;"/>
-                  <menulist id="vAlignChoices"  oncommand="AlignmentChanged('RowAlignRadioGroup');">
+                  <menulist id="vAlignChoices">
                     <menupopup>
                       <menuitem label="&vAlignTop.label;"  value="top"/>
                       <menuitem label="&vAlignCenter.label;" value="center"/>
