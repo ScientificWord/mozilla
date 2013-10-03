@@ -3012,10 +3012,10 @@ function onAccept()
   }
   // Do same as Apply and close window if ValidateData succeeded
   var retVal = Apply();
-  if (gActiveEditor) {
-    gActiveEditor.deleteNode(gTableElement);
-    gActiveEditor.undo(1);
-  }
+//  if (gActiveEditor) {
+//    gActiveEditor.deleteNode(gTableElement);
+//    gActiveEditor.undo(1);
+//  }
   if (retVal)
     SaveWindowLocation();
 
