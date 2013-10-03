@@ -994,6 +994,13 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
        if (preventDefault) return NS_OK;
      }
    }
+   // Check that the selection does not include table cells
+   nsCOMPtr<nsIDOMElement> tableOrCellElement;
+   res = GetFirstSelectedCell(nsnull, getter_AddRefs(tableOrCellElement));
+   if (tableOrCellElement) {
+     return res;
+   }
+
     // Check for mapped characters -- function keys or one-shot mapping
     
     if (mKeyMap)
@@ -1151,6 +1158,12 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         }    
       }    
     }    
+  }
+  // Check that the selection does not include table cells
+  nsCOMPtr<nsIDOMElement> tableOrCellElement;
+  res = GetFirstSelectedCell(nsnull, getter_AddRefs(tableOrCellElement));
+  if (tableOrCellElement) {
+    return res;
   }
   // if not handled then pass along to nsHTMLEditor
   nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
