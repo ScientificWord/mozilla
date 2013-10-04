@@ -723,7 +723,7 @@ function initTablePanel()
     widthStr = gTableElement.getAttribute("width");
     widthVal = unitHandler.getNumberAndUnitFromString(widthStr);
     if (!widthVal)
-      widthVal = unitHandler.getNumberAndUnitFromString(widthStr + "pt");
+      widthVal = unitHandler.getNumberAndUnitFromString(widthStr + currUnit);
   }
   else if (gTableElement.hasAttribute("style"))
   {
@@ -1988,7 +1988,7 @@ function ApplyTableAttributes()
   if (gDialog.autoWidthCheckbox.checked)
     gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
   else
-    gTableElement.setAttribute("width",unitHandler.getValueAs(gDialog.tableWidthInput.value, "pt")+"pt");
+    gTableElement.setAttribute("width",gDialog.tableWidthInput.value + unit);
   if (pos && pos.length > 0) {
     if (pos == "inline" || pos == "display") float = "";
     if (float !== "") {
