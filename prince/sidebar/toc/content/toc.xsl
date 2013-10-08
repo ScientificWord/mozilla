@@ -10,7 +10,8 @@
 
 <xsl:template match="text()|@*"></xsl:template>
 
-<xsl:template match="*"><!--map all nodes to blank unless they match a rule below--> </xsl:template>
+<xsl:template match="*"><!--map all nodes to blank unless they match a rule below--> 
+</xsl:template>
 <xsl:template match="html:*"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="##TAG##">
@@ -37,6 +38,15 @@
   </tree>
 </xsl:template>
 
+<xsl:template match="html:sectiontitle/html:*">
+  <xsl:value-of select="normalize-space(.)"/>
+</xsl:template>
+
+<xsl:template match="html:sectiontitle/html:shortTitle"/>
+
+<xsl:template match="html:sectiontitle">
+	<xsl:value-of select="normalize-space(text())"/>
+</xsl:template>
 
 <xsl:template match="##sectiontags##">
 	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -45,7 +55,7 @@
 	  <treerow>
 		  <treecell>
 			  <xsl:attribute name="label">
-			    <xsl:value-of select="normalize-space(html:sectiontitle/text())"/>
+			    <xsl:apply-templates/>
  			  </xsl:attribute>
 			  <xsl:attribute name="value">
 			    <xsl:value-of select="@id"/>
