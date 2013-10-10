@@ -107,7 +107,7 @@
 
 \def\@brace#1{\char123\relax#1\char125\relax}
 
-\def\br{\msitag{^^0a}}
+\def\br{\ifvmode\msitag{^^0a}\fi}
 
 
 %% \documentclass.
@@ -1254,7 +1254,7 @@
   \ifmmode
     \char`\\\char`\ %
   \else
-    \msihmode\msitag{<hspace type="requiredSpace" dim="1em"/>}%
+    \msihmode\msitag{<hspace type="requiredSpace" />}%
   \fi}
 
 \def~{%
@@ -1277,24 +1277,28 @@
    \ifmmode
       \string\thinspace
    \else
-      \msihmode\msitag{<hspace dim="0.17em" type="thinSpace">}\@hex{2009}\msitag{</hspace>}%
+      \msihmode\msitag{<hspace type="thinSpace"/>}%
    \fi
 }
+
+
 
 \def\thickspace{%
    \ifmmode
       \string\thickspace
    \else
-      \msihmode\msitag{<hspace dim="0.5em" type="thickSpace">}\@hex{2002}\msitag{</hspace>}%
+      \msihmode\msitag{<hspace type="thickSpace"/>}%
    \fi
 }
+
+\let\:\medspace
 
 
 \def\negthinspace{%
    \ifmmode
       \string\negthinspace
    \else
-      \msihmode\msitag{<hspace dim="0.0em" type="negativeThinSpace"></hspace>}%
+      \msihmode\msitag{<hspace type="negativeThinSpace" />}%
    \fi
 }
 
