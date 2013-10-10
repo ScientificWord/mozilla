@@ -9571,7 +9571,7 @@ function msiGetNumberOfContiguousSelectedColumns(editorElement)
 
 function msiResetStructToolbar(editorElement)
 {
-  editorElement.mLastFocusNode = null;
+//  editorElement.mLastFocusNode = null;
   msiUpdateStructToolbar(editorElement);
 }
 
@@ -9765,12 +9765,13 @@ function msiSelectFocusNodeAncestor(editorElement, element, inner)
     }
     else
     {
-      if (element == msiGetBodyElement(editorElement))
-        editor.selectAll();
-      else
+      // if (element == msiGetBodyElement(editorElement))
+      //   editor.selectAll();
+      // else
         editor.selectElement(element);
     }
   }
+  top.document.commandDispatcher.focusedWindow.focus();
   msiResetStructToolbar(editorElement);
 }
 

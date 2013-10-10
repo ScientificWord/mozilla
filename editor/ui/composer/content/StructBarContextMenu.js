@@ -46,9 +46,13 @@ function InitStructBarContextMenu(button, docElement)
   var tag = docElement.nodeName.toLowerCase();
 
   var structRemoveTag = document.getElementById("structRemoveTag");
+  var structSelect = document.getElementById("structSelect");
+  var structChangeTag = document.getElementById("structChangeTag");
   var enableRemove;
 
   switch (tag) {
+    case "html":
+    case "#document":
     case "body":
     case "tbody":
     case "thead":
@@ -66,8 +70,7 @@ function InitStructBarContextMenu(button, docElement)
       break;
   }
   SetElementEnabled(structRemoveTag, enableRemove);
-
-  var structChangeTag = document.getElementById("structChangeTag");
+  SetElementEnabled(structSelect, tag != "body" && tag != "html");
   SetElementEnabled(structChangeTag, (tag != "body"));
 }
 
@@ -178,6 +181,7 @@ function StructSelectTag()
   var editorElement = msiGetActiveEditorElement();
 //  msiSelectFocusNodeAncestor(gContextMenuFiringDocumentElement);
   msiSelectFocusNodeAncestor(editorElement, gContextMenuFiringDocumentElement,false);
+  top.document.commandDispatcher.focusedWindow.focus();
 }
 
 
@@ -186,6 +190,7 @@ function StructSelectTagContents()
   var editorElement = msiGetActiveEditorElement();
 //  msiSelectFocusNodeAncestor(gContextMenuFiringDocumentElement);
   msiSelectFocusNodeAncestor(editorElement, gContextMenuFiringDocumentElement, true);
+  top.document.commandDispatcher.focusedWindow.focus();
 }
 
 function OpenAdvancedProperties()
