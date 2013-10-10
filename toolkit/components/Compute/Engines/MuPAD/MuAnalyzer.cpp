@@ -2242,9 +2242,9 @@ SEMANTICS_NODE *MuAnalyzer::FixDefinitenessTests(SEMANTICS_NODE * s_list)
   char* cont  = s_list->contents;
   if (cont){
     if (0 == strcmp(cont, "indef")) {
-       s_list -> contents = DuplicateString("is indefinite");
+       s_list -> contents = DuplicateString("indefinite");
     } else if (0 == strcmp(cont, "posdef")) {
-       s_list -> contents = DuplicateString("is positive definite");
+       s_list -> contents = DuplicateString("positive definite");
     }
   }
   return s_list;
