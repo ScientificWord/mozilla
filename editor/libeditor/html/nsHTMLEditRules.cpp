@@ -3596,6 +3596,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
         nsCOMPtr<msiITagListManager> mtagListManager;
         ed->GetTagListManager(getter_AddRefs(mtagListManager));
         res = parentNode->GetNodeName(name);
+        if (name.EqualsLiteral("html")) return;
         if (!name.EqualsLiteral("body")){
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
