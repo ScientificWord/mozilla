@@ -609,10 +609,15 @@ inline bool bActive(const TeXToken* tt)
 
 
 @$@<Clean Stack@>@M==@{@-
-while (!(s_stack -> empty()) && ((s_stack->back()) -> bEmpty())){
-   TokenSource* b = s_stack -> back();
-   s_stack -> pop_back();
-   delete b;
+while (!(s_stack -> empty())) {
+ TokenSource* ts = s_stack->back();
+ if (ts == NULL || ts->bEmpty()){ 
+     s_stack -> pop_back();
+     delete ts;
+ } else {
+     break;
+ }
+
 }
 @}
 
