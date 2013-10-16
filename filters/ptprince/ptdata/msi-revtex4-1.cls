@@ -153,8 +153,8 @@
 \MSISimpleEnvironment{acknowledgments}
 
 \msi@extrapi{%
-  \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/revtex4-1defs.xml" type="text/xml" ?>}\br
-  \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>}\br
+  \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/revtex4-1defs.xml" type="text/xml" ?>^^0a}
+  \msitag{<?sw-xslt href="revtex4-1.xsl" type="text/xml" ?>^^0a}
 }
 
 \def\classcss{@import url("resource://app/res/css/revtex4-1.css");}

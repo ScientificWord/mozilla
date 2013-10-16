@@ -355,9 +355,9 @@
 \newcommand\@tocrmarg{2.55em}
 \newcommand\@dotsep{4.5}
 \setcounter{tocdepth}{2}
-\def\tableofcontents{\br\msitag{\tableofcontents}}
-\def\listoffigures{\br\msitag{\listoffigures}}
-\def\listoftables{\br\msitag{\listoftables}}
+\def\tableofcontents{\msi@br\msitag{\tableofcontents}}
+\def\listoffigures{\msi@br\msitag{\listoffigures}}
+\def\listoftables{\msi@br\msitag{\listoftables}}
 
 \newdimen\bibindent
 \setlength\bibindent{1.5em}
