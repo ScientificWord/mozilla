@@ -145,11 +145,8 @@
 <!ENTITY cellStyle.accesskey              "C">
 <!ENTITY cellNormal.label                 "Normal">
 <!ENTITY cellHeader.label                 "Header">
-<!-- !ENTITY cellTextWrap.label               "Text Wrap:">
-<!ENTITY cellTextWrap.accesskey           "T" -->
 <!ENTITY cellWrap.label                   "Wrap Text">
 <!ENTITY cellWrap.accesskey               "W">
-<!-- !ENTITY cellNoWrap.label                 "Don't wrap" -->
 
 <!ENTITY AlignTop.label                   "Top">
 <!ENTITY AlignTop.accesskey               "T">

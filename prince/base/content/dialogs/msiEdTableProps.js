@@ -1713,10 +1713,10 @@ function SetAnAttribute(destElement, theAttr, theAttrValue)
   //  we need transaction system for undo
   try {
     if (!theAttrValue || theAttrValue.length === 0)
-      gActiveEditor.removeAttributeOrEquivalent(destElement, theAttr, false);
+      gActiveEditor.removeAttribute(destElement, theAttr);
     else
-      msiEditorEnsureElementAttribute(destElement, theAttr, theAttrValue, gActiveEditor);
-//      gActiveEditor.setAttributeOrEquivalent(destElement, attr, attrValue, false);
+//      gActiveEditor.setAttribute(destElement, theAttr, theAttrValue);
+      gActiveEditor.setAttributeOrEquivalent(destElement, attr, attrValue, false);
     var logStr = "In msiEdTableProps.js, SetAnAttribute(); set attribute [" + theAttr + "] on [" + destElement.nodeName + "] element to [";
     if (theAttrValue && theAttrValue.length)
       logStr += theAttrValue;
@@ -1888,7 +1888,8 @@ function DoStyleChangesForACell(destCell)
   for (i = 0; i < length; i++){
     styleArray[i] = styleArray[i].join(": ");
   }
-  destCell.setAttribute("style", styleArray.join(";"));
+  SetAnAttribute(destCell, "style", styleArray.join(";"));
+//destCell.setAttribute("style", styleArray.join(";"));
 
 }
 
@@ -1910,110 +1911,116 @@ function ApplyTableAttributes()
       globalTableElement.style.removeProperty(styleProp);
   }
 
-  var unit = unitHandler.getCurrentUnit();
+  try {
+    var unit = unitHandler.getCurrentUnit();
 
-  if (unit) gTableElement.setAttribute("unit", unit)
-  var newAlign = gTableCaptionPlacement;
-  if (!newAlign)
-    newAlign = "";
-  var logStr;
+    if (unit && globalTableElement) 
+      SetAnAttribute(globalTableElement,"unit", unit);
+    var newAlign = gTableCaptionPlacement;
+    if (!newAlign)
+      newAlign = "";
+    var logStr;
 
-  if (gTableCaptionElement)
-  {
-    // Get current alignment
-    var align = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side").toLowerCase();
-    // This is the default
-    if (!align) align = "top";
-
-    if (newAlign === "")
-    {
-      // Remove existing caption
-      try {
-        gActiveEditor.deleteNode(gTableCaptionElement);
-      } catch(e) {}
-      gTableCaptionElement = null;
-    }
-    else if(newAlign != align)
-    {
-      try {
-        logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [";
-        if (newAlign == "top") // This is default, so don't explicitly set it
-          gActiveEditor.removeAttributeOrEquivalent(gTableCaptionElement, "align", false);
-        else
-        {
-          gActiveEditor.setAttributeOrEquivalent(gTableCaptionElement, "align", newAlign, false);
-          logStr += newAlign;
-        }
-        logStr += "].\n";
-        msiKludgeLogString(logStr, ["tableEdit"]);
-
-      } catch(e) {}
-    }
-  }
-  else if (newAlign !== "")
-  {
-    // Create and insert a caption:
-    try {
-      gTableCaptionElement = gActiveEditor.createElementWithDefaults("caption");
-    } catch (e) {}
     if (gTableCaptionElement)
     {
-      if (newAlign != "top")
+      // Get current alignment
+      var align = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side").toLowerCase();
+      // This is the default
+      if (!align) align = "top";
+
+      if (newAlign === "")
       {
-        gTableCaptionElement.setAttribute("align", newAlign);
-        logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [" + newAlign + "].\n";
-        msiKludgeLogString(logStr, ["tableEdit"]);
+        // Remove existing caption
+        try {
+          gActiveEditor.deleteNode(gTableCaptionElement);
+        } catch(e) {}
+        gTableCaptionElement = null;
       }
-      // Insert it into the table - caption is always inserted as first child
-      try {
-        gActiveEditor.insertNode(gTableCaptionElement, gTableElement, 0);
-      } catch(e) {}
+      else if(newAlign != align)
+      {
+        try {
+          logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [";
+          if (newAlign == "top") // This is default, so don't explicitly set it
+            gActiveEditor.removeAttributeOrEquivalent(gTableCaptionElement, "align", false);
+          else
+          {
+            gActiveEditor.setAttributeOrEquivalent(gTableCaptionElement, "align", newAlign, false);
+            logStr += newAlign;
+          }
+          logStr += "].\n";
+          msiKludgeLogString(logStr, ["tableEdit"]);
 
-      // Put selecton back where it was
-//      ChangeSelection(RESET_SELECTION);
+        } catch(e) {}
+      }
     }
-  }
-
-  logStr = "";
-  var bEmptyStyle = true; //(!globalTableElement.style);
-  var theStyleString = "";
-
-  doSetStyleAttr("vertical-align", gDialog.baselineList.value);
-  SetAnAttribute(gTableElement, "valign", gDialog.baselineList.value);
-
-  doSetStyleAttr("border-collapse", gBorderCollapse);
-  var pos = gDialog.tableLocationList.value;
-  var float = gDialog.floatLocationList.value;  
-  gTableElement.setAttribute("req","tabulary");
-  if (gDialog.autoWidthCheckbox.checked)
-    gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
-  else
-    gTableElement.setAttribute("width",gDialog.tableWidthInput.value + unit);
-  if (pos && pos.length > 0) {
-    if (pos == "inline" || pos == "display") float = "";
-    if (float !== "") {
-      gTableElement.setAttribute("pos","float");
-      msiRequirePackage(gActiveEditorElement, "wrapfig", "");
-      gTableElement.setAttribute("placement",placementCodeFrom(pos));
-      gTableElement.setAttribute("placeLocation", float);
-      doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");
-    }
-    else 
+    else if (newAlign !== "")
     {
-      if (pos == "inline") doSetStyleAttr("display", "inline-table");
+      // Create and insert a caption:
+      try {
+        gTableCaptionElement = gActiveEditor.createElementWithDefaults("caption");
+      } catch (e) {}
+      if (gTableCaptionElement)
+      {
+        if (newAlign != "top")
+        {
+          setAnAttribute(gTableCaptionElement,"align", newAlign);
+          logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [" + newAlign + "].\n";
+          msiKludgeLogString(logStr, ["tableEdit"]);
+        }
+        // Insert it into the table - caption is always inserted as first child
+        try {
+          gActiveEditor.insertNode(gTableCaptionElement, gTableElement, 0);
+        } catch(e) {}
+
+        // Put selecton back where it was
+  //      ChangeSelection(RESET_SELECTION);
+      }
+    }
+
+    logStr = "";
+    var bEmptyStyle = true; //(!globalTableElement.style);
+    var theStyleString = "";
+
+    doSetStyleAttr("vertical-align", gDialog.baselineList.value);
+    SetAnAttribute(gTableElement, "valign", gDialog.baselineList.value);
+
+    doSetStyleAttr("border-collapse", gBorderCollapse);
+    var pos = gDialog.tableLocationList.value;
+    var float = gDialog.floatLocationList.value;  
+    setAnAttribute(gTableElement,"req","tabulary");
+    if (gDialog.autoWidthCheckbox.checked)
+      gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
+    else
+      setAnAttribute(gTableElement,"width",gDialog.tableWidthInput.value + unit);
+    if (pos && pos.length > 0) {
+      if (pos == "inline" || pos == "display") float = "";
+      if (float !== "") {
+        setAnAttribute(gTableElement,"pos","float");
+        msiRequirePackage(gActiveEditorElement, "wrapfig", "");
+        setAnAttribute(gTableElement,"placement",placementCodeFrom(pos));
+        setAnAttribute(gTableElement,"placeLocation", float);
+        doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");
+      }
       else 
       {
-        doSetStyleAttr("display", "block");
+        if (pos == "inline") doSetStyleAttr("display", "inline-table");
+        else 
+        {
+          doSetStyleAttr("display", "block");
+        }
       }
     }
+    else doSetStyleAttr("display", "inline-table");
+    if (!bEmptyStyle)
+      theStyleString = globalTableElement.getAttribute("style");
+    if (theStyleString && theStyleString.length)
+      setAnAttribute(gTableElement, "style", theStyleString);
+    else
+      gActiveEditor.removeAttributeOrEquivalent(gTableElement, "style", false);
   }
-  else doSetStyleAttr("display", "inline-table");
-  if (!bEmptyStyle)
-    theStyleString = globalTableElement.getAttribute("style");
-  if (theStyleString && theStyleString.length)
-    gActiveEditor.setAttribute(gTableElement, "style", theStyleString);
-  else
-    gActiveEditor.removeAttributeOrEquivalent(gTableElement, "style", false);
+  catch(e){
+    msidump(e.message);
+  }
 }
 
 function placementCodeFrom(pos)
@@ -2796,11 +2803,13 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
   var allsame = allSame(target);
   if (allsame) {  // put in a lines attribute
     if (target.left != null) {
-      destElement.setAttribute("lines", target.left);
+      
+      gActiveEditor.setAttribute(destElement, "lines", target.left);
+//      destElement.setAttribute("lines", target.left);
     }
-    else destElement.removeAttribute("lines");
+    else gActiveEditor.removeAttribute(destElement,destElement,"lines");
     for (i = 0; i < 4; i++) {
-      destElement.removeAttribute("line-"+names[i]);
+      gActiveEditor.removeAttribute(destElement,"line-"+names[i]);
     }
   }
   else
@@ -2808,25 +2817,25 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
     for (i = 0; i < 4; i++) {
       nm = names[i];
       if (target[nm] == null) {
-        destElement.removeAttribute("line-" + nm);
+        gActiveEditor.removeAttribute(destElement,"line-" + nm);
       }
-      else destElement.setAttribute("line-"+nm, target[nm]);
+      else gActiveEditor.setAttribute(destElement, "line-"+nm, target[nm]);
     }
-    destElement.removeAttribute("lines");
+    gActiveEditor.removeAttribute(destElement,"lines");
   }
   if (Number(gDialog.CellHeightInput.value) !== 0)
   {
     aVal = unitHandler.getValueString(gDialog.CellHeightInput.value);
     SetAnAttribute(destElement, "cellheight", aVal);
   }
-  else destElement.removeAttribute("cellheight");
+  else gActiveEditor.removeAttribute(destElement,"cellheight");
 
   if (Number(gDialog.CellWidthInput.value) !== 0)
   {
     aVal = unitHandler.getValueString(gDialog.CellWidthInput.value);
     SetAnAttribute(destElement, "cellwidth", aVal);
   }
-  else destElement.removeAttribute("cellwidth");
+  else gActiveEditor.removeAttribute(destElement,"cellwidth");
 
 
 //  for (ix = 0; ix < gCellChangeData.border.style.length; ++ix)
@@ -2878,7 +2887,6 @@ function Apply()
     // We may have just a table, so check for cell element
 //    if (globalCellElement)
     ApplyCellAttributes();
-
     gActiveEditor.endTransaction();
 
     SetCloseButton();
@@ -2896,9 +2904,10 @@ function onAcceptNewTable()
 //  if (ValidateData())
 //  {
     var color;
+
     try 
     {
-      var wrapping = document.getElementBId.textwrapchoice.value;  // values are '','true','false'
+      var wrapping = document.getElementById.textwrapchoice.value;  // values are '','true','false'
       if (wrapping.length > 0) {
         gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
       }
@@ -2994,6 +3003,7 @@ function onAcceptNewTable()
     }
 
     // true means delete selection when inserting
+    gActiveEditor.markNodeDirty(gTableElement);
     gActiveEditor.insertElementAtSelection(gTableElement, true);
 
 //      if (deletePlaceholder && gTableElement && gTableElement.nextSibling)
@@ -3001,7 +3011,6 @@ function onAcceptNewTable()
 //        // Delete the placeholder <br>
 //        gActiveEditor.deleteNode(gTableElement.nextSibling);
 //      }
-
   return true;
 }
 
@@ -3011,14 +3020,17 @@ function onAccept()
     return onAcceptNewTable();
   }
   // Do same as Apply and close window if ValidateData succeeded
+  gActiveEditor.beginTransaction();
   var retVal = Apply();
+  gActiveEditor.endTransaction();
 //  if (gActiveEditor) {
 //    gActiveEditor.deleteNode(gTableElement);
 //    gActiveEditor.undo(1);
 //  }
+  gActiveEditor.markNodeDirty(gTableElement);
+
   if (retVal)
     SaveWindowLocation();
-
   return retVal;
 }
 
