@@ -36,7 +36,7 @@
 \msi@dollar=`\$
 
 \def\msi@pass#1{\def#1{\msitag{<texb>#1</texb>}}}
-\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
+\def\msi@pass@newline#1{\def#1{\msi@br\msihmode\msitag{<texb>#1</texb>}}}
 
 \msi@pass@newline{\@settodim}
 \msi@pass@newline{\settoheight}
@@ -102,12 +102,12 @@
    \fi
    \msiclosetag{td}{</td>}}
 
-\def\msi@stylesheets{\msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br}
+\def\msi@stylesheets{\msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>^^0a}}
 
 
 \def\@brace#1{\char123\relax#1\char125\relax}
 
-\def\br{\ifvmode\msitag{^^0a}\fi}
+\def\msi@br{\ifvmode\msitag{^^0a}\fi}
 
 
 %% \documentclass.
@@ -175,14 +175,14 @@
    \msi@opendocument
    \temptoksa{#1}
    \ifx\temptoksa\relax
-     \br\msitag{<documentclass class="#2"/>}%
+     \msi@br\msitag{<documentclass class="#2"/>}%
    \else
-     \br\msitag{<documentclass class="#2" options="#1"/>}%
+     \msi@br\msitag{<documentclass class="#2" options="#1"/>}%
    \fi}
 
 \def\out@documentclassB#1{%
    \msi@opendocument
-   \br\msitag{<documentclass class="#1"/>}}
+   \msi@br\msitag{<documentclass class="#1"/>}}
 
 \newcount\preambleid
 
@@ -206,9 +206,9 @@
    \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msiclosetag{preamble}{</preamble>}%
    \msi@inpreamble = 0
-   \br\msitag{</head>}
-   \br\msiopentag{body}{<body>}
-   %%\msihmode\br\msiopentag{docbody}{<docbody>}%
+   \msi@br\msitag{</head>}
+   \msi@br\msiopentag{body}{<body>}
+   %%\msihmode\msi@br\msiopentag{docbody}{<docbody>}%
    \msipreambleextra
    \@paragraphs
    \msivmode
@@ -216,18 +216,18 @@
 
 \def\out@end@document{%
    %%\br\msiclosetag{docbody}{</docbody>}%
-   \br\msiclosetag{body}{</body>}%
-   \br\msitag{</html>}%
+   \msi@br\msiclosetag{body}{</body>}%
+   \msi@br\msitag{</html>}%
    \msimakecss
    \endinput}
 
 
 %% \usepackage
 \def\out@usepackageA[#1]#2{%
-   \br\msitag{<usepackage req="#2" options="#1"/>}}
+   \msi@br\msitag{<usepackage req="#2" options="#1"/>}}
 
 \def\out@usepackageB#1{%
-   \br\msitag{<usepackage req="#1"/>}}
+   \msi@br\msitag{<usepackage req="#1"/>}}
 
 
 %% Frontmatter
@@ -284,10 +284,10 @@
 }
 
 \def\out@date#1{%
-   \msihmode\br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
+   \msihmode\msi@br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
 
 \def\out@dateA#1#2{%
-   \msihmode\br
+   \msihmode\msi@br
    \msiopentag{date}{<date>}%
       #2%
       \msiopentag{option}{<option>}%
@@ -304,7 +304,7 @@
            %\msitag{\msipassthru{<#1/>}}%
            \expandafter\msitag\expandafter{\csname#2\endcsname}%
         \else
-           \msihmode\br\msitag{<#1/>}%
+           \msihmode\msi@br\msitag{<#1/>}%
         \fi}}
 
 \def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
@@ -337,8 +337,8 @@
   %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
   \@ifundefined{msi@begin@#1}%
-    {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
-     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
+    {\@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
+     \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
 
 \def\out@newtheoremb#1#2{%
@@ -348,8 +348,8 @@
      %\if@newtheoremstar\msitag{star="1" }\fi% 
      %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
      \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
-     \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
-     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
+     \@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
+     \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
 
 %% recheck this one
@@ -360,8 +360,8 @@
   %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}[#3]}}
   \@ifundefined{msi@begin@#1}%
-    {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
-     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
+    {\@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
+     \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
 
 
@@ -472,7 +472,7 @@
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
      \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
-   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
+   \def\startitemtag##1{\msi@br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
    \expandafter\startitemtag\expandafter{\itemprefix}%
    \ifx\itemprefix\@descr
      \msitag{<descriptionLabel>}#1\msitag{</descriptionLabel>}%
@@ -496,7 +496,7 @@
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
      \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
-   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
+   \def\startitemtag##1{\msi@br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
    \expandafter\startitemtag\expandafter{\itemprefix}%
 }
 
@@ -508,9 +508,9 @@
      \msiclosetag{bodyText}{</bodyText>}%
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \br\msihmode\msiopentag{bibitem}{}<bibitem bibtemkey="#2" hasLabel="true">%
+   \msi@br\msihmode\msiopentag{bibitem}{}<bibitem bibtemkey="#2" hasLabel="true">%
    \msitag{<biblabel class="bibitemlabel">}#1\msitag{</biblabel>}%
-   \br\msiopentag{bodyText}{<bodyText>}%
+   \msi@br\msiopentag{bodyText}{<bodyText>}%
    \endgroup
 }
 
@@ -521,8 +521,8 @@
      \msiclosetag{bodyText}{</bodyText>}%
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \br\msiopentag{bibitem}{<bibitem bibitemkey="}#1\msitag{" hasLabel="false">}%
-   \br\msiopentag{bodyText}{<bodyText>}
+   \msi@br\msiopentag{bibitem}{<bibitem bibitemkey="}#1\msitag{" hasLabel="false">}%
+   \msi@br\msiopentag{bodyText}{<bodyText>}
    \endgroup%
 }
 
@@ -541,7 +541,7 @@
       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
 
    \expandafter\def\csname msi@end@#2\endcsname{%
-      \br\msiclosetag{#1}{</#1>}}
+      \msi@br\msiclosetag{#1}{</#1>}}
 }
 
 
@@ -553,7 +553,7 @@
   \msiopentag{bibliography}{<bibliography>}}
 
 \def\msi@end@thebibliography{%
-  \br\msiclosetag{bibliography}{</bibliography>}}
+  \msi@br\msiclosetag{bibliography}{</bibliography>}}
 
 
 \def\msi@thm@like#1{}
@@ -698,7 +698,7 @@
 \def\@paragraphs{%
   \let\@par\par
   \def\par{\msiclosetag{bodyText}{</bodyText>}\@par}%
-  \everypar{\msihmode\br\msiopentag{bodyText}{<bodyText>}}%
+  \everypar{\msihmode\msi@br\msiopentag{bodyText}{<bodyText>}}%
 }
 
 
@@ -958,7 +958,7 @@
         \mathtabularfalse
       \fi
       \msihmode\msiopentag{table}{<table opt="#2" _moz_resizing="true"  cellpadding="4" border="1">}%
-      \br\msiopentag{tbody}{<tbody>}%
+      \msi@br\msiopentag{tbody}{<tbody>}%
       \begingroup
         \aftergroup\msi@closetabular
         \let\\=\@cr
@@ -1081,7 +1081,7 @@
 
 
 \def\out@verbatim#1{%
-  \br\msihmode
+  \msi@br\msihmode
   \msiopentag{verbatim}{<verbatim>}%
   \msiopentag{bodyText}{<bodyText>}%
    #1%
@@ -1713,7 +1713,7 @@
 
 
 \def\footnote{%
-    \br\@start@notewrapper
+    \msi@br\@start@notewrapper
     \msiopentag{note}{<note type="footnote">}%
     \msiopentag{bodyText}{<bodyText>}%
     % Next couple lines read the brace following \footnote and then does \footnoteb
@@ -1766,18 +1766,18 @@
 \newtoks\msi@extrapi
 
 \def\msi@opendocument{%
-   \msitag{<?xml version="1.0" encoding="UTF-8"?>}\br
-   \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br
-   \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>}\br
+   \msitag{<?xml version="1.0" encoding="UTF-8"?>^^0a}
+   \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>^^0a}
+   \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>^^0a}
    \the\msi@extrapi
-   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\br
+   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\msi@br
 
    \msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
              xmlns:mml="http://www.w3.org/1998/Math/MathML"
              xmlns:sw="http://www.sciword.com/namespaces/sciword">}
 
-   \br\msitag{<head>}
-   \br\msiopentag{preamble}{<preamble>}
+   \msi@br\msitag{<head>}
+   \msi@br\msiopentag{preamble}{<preamble>}
    \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msi@inpreamble=1
 
