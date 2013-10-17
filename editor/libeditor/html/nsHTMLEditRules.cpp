@@ -2247,7 +2247,9 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
           res = JoinNodesSmart(sibling, startNode, address_of(selNode), &selOffset);
           if (NS_FAILED(res)) return res;
           // fix up selection
-          res = aSelection->Collapse(selNode, selOffset);
+          // BBM 2013-10-17
+          //res = aSelection->Collapse(selNode, selOffset);
+          res = aSelection->Collapse(sibling, selOffset);
         }
       }
       if (NS_FAILED(res)) return res;
