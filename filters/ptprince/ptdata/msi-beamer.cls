@@ -1,7 +1,7 @@
 
 \msi@extrapi{%
-  \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/beamerdefs.xml" type="text/xml" ?>}\br
-  \msitag{<?sw-xslt href="beamer.xsl" type="text/xml" ?>}\br
+  \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/beamerdefs.xml" type="text/xml" ?>^^0a}
+  \msitag{<?sw-xslt href="beamer.xsl" type="text/xml" ?>^^0a}
 }
 
 \MSITextElement{usetheme}
