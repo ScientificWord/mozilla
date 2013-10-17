@@ -4435,8 +4435,9 @@ nsNavHistory::OnIdle()
 void // static
 nsNavHistory::IdleTimerCallback(nsITimer* aTimer, void* aClosure)
 {
-  nsNavHistory* history = static_cast<nsNavHistory*>(aClosure);
-  (void)history->OnIdle();
+  // BBM 2013-10-16 we don't need this and it generates warnings.
+//  nsNavHistory* history = static_cast<nsNavHistory*>(aClosure);
+//  (void)history->OnIdle();
 }
 
 // nsIDownloadHistory **********************************************************
