@@ -48,25 +48,24 @@ table:focus {
 
 td {
   border: 0.9px solid #BBBBBB;
-
 }
 
-td[lines="none"] {
+/*td[lines="none"] {
   border-style: none;
-}
+}*/
 
 td[lines="solid"] {
-  border: thin solid black;
+  border: thin solid;
 }
 
 td[lines="double"] {
   border: medium double black;
 }
 
-td[line-left="none"] {
+/*td[line-left="none"] {
   border-left-style: none;
 }
-
+*/
 td[line-left="solid"] {
   border-left: thin solid black;
 }
@@ -76,10 +75,10 @@ td[line-left="double"] {
 }
 
 
-td[line-right="none"] {
+/*td[line-right="none"] {
   border-right-style: none;
 }
-
+*/
 td[line-right="solid"] {
   border-right: thin solid black;
 }
@@ -89,9 +88,9 @@ td[line-right="double"] {
 }
 
 
-td[line-top="none"] {
+/*td[line-top="none"] {
   border-top-style: none;
-}
+}*/
 
 td[line-top="solid"] {
   border-top: thin solid black;
@@ -102,9 +101,9 @@ td[line-top="double"] {
 }
 
 
-td[line-bottom="none"] {
+/*td[line-bottom="none"] {
   border-bottom-style: none;
-}
+}*/
 
 td[line-bottom="solid"] {
   border-bottom: thin solid black;
