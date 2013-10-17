@@ -2220,6 +2220,8 @@ nsHTMLEditor::InsertElementAtSelection(nsIDOMElement* aElement, PRBool aDeleteSe
       nsCOMPtr<nsIDOMNode> tempNode;
       PRInt32 tempOffset;
       nsresult result = DeleteSelectionAndPrepareToCreateNode(tempNode,tempOffset);
+      // This possibly split a text node, so tempNode would be the parent and tempOffset will the the offset of the new node
+      selection->Collapse(tempNode,tempOffset);
       if (NS_FAILED(result))
         return result;
     }
