@@ -343,8 +343,11 @@ PRBool nsEditor::NodeIsTypeString(nsIDOMNode *aNode, const nsAString &aTag, msiI
   PRBool fIsInTagClass;
   if (manager) {
     nsAutoString strNodeName;
+    nsAutoString strClassName;
     nodeAtom->ToString(strNodeName);
-    manager->GetTagInClass(aTag, strNodeName, nsnull, &fIsInTagClass);
+    manager->GetRealClassOfTag(aTag, nsnull, strClassName);
+    fIsInTagClass = aTag.Equals(strClassName);
+//    manager->GetTagInClass(aTag, strNodeName, nsnull, &fIsInTagClass);
     if (fIsInTagClass) return PR_TRUE;
   }
   return PR_FALSE;
@@ -1801,21 +1804,21 @@ NS_IMETHODIMP nsEditor::DeleteNode(nsIDOMNode * aElement)
   PRInt32 i, offset;
   nsCOMPtr<nsIDOMNode> parent;
   nsAutoRules beginRulesSniffing(this, kOpCreateNode, nsIEditor::ePrevious);
-//  nsCOMPtr<nsISelection>selection;
+  nsCOMPtr<nsISelection>selection;
 
   // save node location for selection updating code.
   nsresult result = GetNodeLocation(aElement, address_of(parent), &offset);
   if (NS_FAILED(result)) return result;
-//  result = GetSelection(getter_AddRefs(selection));
-//  nsCOMPtr<nsIDOMRange> range;
-//  selection->GetRangeAt(0, getter_AddRefs(range));
+  result = GetSelection(getter_AddRefs(selection));
+  nsCOMPtr<nsIDOMRange> range;
+  selection->GetRangeAt(0, getter_AddRefs(range));
   for (i = 0; i < mActionListeners.Count(); i++)
     mActionListeners[i]->WillDeleteNode(aElement);
 
   nsRefPtr<DeleteElementTxn> txn;
   result = CreateTxnForDeleteElement(aElement, getter_AddRefs(txn));
   if (NS_SUCCEEDED(result))  {
-//    nsAutoTrackDOMPoint tracker(mRangeUpdater, address_of(parent), &offset);
+    nsAutoTrackDOMPoint tracker(mRangeUpdater, address_of(parent), &offset);
     result = DoTransaction(txn);
 //    selection->Collapse(parent, offset);
   }
