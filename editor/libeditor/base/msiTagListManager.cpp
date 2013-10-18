@@ -925,6 +925,10 @@ NS_IMETHODIMP msiTagListManager::GetTagInClass(const nsAString & strTagClass, co
   nsAutoString strClass;
   GetClassOfTag(strTag, atomNS, strClass);
   *_retval = (strTagClass.Equals(strClass));
+  if (!*_retval) {
+    GetRealClassOfTag(strTag, atomNS, strClass);
+    *_retval = strTagClass.Equals(strClass);
+  }
   return NS_OK;  
 }
 
