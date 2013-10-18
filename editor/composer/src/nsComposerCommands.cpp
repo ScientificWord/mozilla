@@ -319,8 +319,8 @@ nsFrontMTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
       htmlEditor->CreateElementWithDefaults(newState, getter_AddRefs(element));
       return htmlEditor->InsertElementAtSelection(element, true);
     }
-    else // env or structure -- we assume text tags never arise here.
-    {
+    // env or structure -- we assume text tags never arise here.
+    else {
       return htmlEditor->SetStructureTag(newState);
     }
   }

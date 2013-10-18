@@ -2956,7 +2956,14 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
           if (newWorkingDir.path !== workingDir.path)
           {
             if (newWorkingDir.exists())
+            {
+              try {
                newWorkingDir.remove(true); // recursive delete
+              }
+              catch (e) {
+                AlertWithTitle("Unable to remove old working directory", "Cannot remove old working directory. Does another program have one of the directory's files (pdf, tex) open?", window);
+              }
+            }
             workingDir.moveTo(null, leafname+"_work");
           }
           newMainfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
