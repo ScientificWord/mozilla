@@ -2042,7 +2042,18 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         else
           res = block->GetNextSibling( getter_AddRefs(block));
       }
-      if (*aHandled) return NS_OK;
+      if (*aHandled) {
+        // there's nothing before startNode. We can't delete it, but if it is empty
+        // and not a default paragraph, we can replace it with a default paragraph.
+        PRBool *fEmpty;
+        res = CheckForEmptyBlock(startNode, rootNode, aSelection, fEmpty);
+        if (*fEmpty) {
+          nsCOMPtr<nsIDOMNode> para;
+          res = mHTMLEditor->CreateDefaultParagraph(rootNode, startOffset, getter_AddRefs(para));
+          res = mHTMLEditor->DeleteNode(startNode);
+        }
+        return NS_OK;
+      }
     }
     res = CheckForEmptyBlock(startNode, rootNode, aSelection, aHandled);
     if (NS_FAILED(res)) return res;
@@ -3602,7 +3613,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
         if (!name.EqualsLiteral("body")){
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
-          mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"), name, nsnull, &isFrontMatterTag);
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("istag"), name, nsnull, &isFrontMatterTag);
           if (isParagraph || isTextTag || /*isFrontMatterTag ||*/ name.EqualsLiteral("td"))
           {
             done = PR_TRUE;
