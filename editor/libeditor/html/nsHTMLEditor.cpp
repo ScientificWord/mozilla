@@ -7353,16 +7353,38 @@ NS_IMETHODIMP nsHTMLEditor::ReadCursorClearedProps(nsAString & _retval)
 }
 
 NS_IMETHODIMP
-nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, nsIDOMNode **outParaNode)
+nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, PRBool markCursor, nsIDOMNode **outParaNode)
 {
   nsString defPara;
   nsIAtom * atomDummy;
   nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  PRUint32 i;
   GetTagListManager(getter_AddRefs(tlm));
   tlm->GetDefaultParagraphTag(&atomDummy, defPara);
   // else insert the default paragraph
   nsCOMPtr<nsIDOMNode> para;
+  nsCOMPtr<nsIDOMElement> paraElem;
   CreateNode(defPara, inParent, inOffset, getter_AddRefs(para));
+  paraElem =do_QueryInterface(para);
+  if (!markCursor) {
+    paraElem->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
+    if (nodeList)
+    {
+      PRUint32 len;
+      nsCOMPtr<nsIDOMNode> node;
+      nsCOMPtr<nsIDOMNode> nodeReturn;
+      nsCOMPtr<nsIDOMNode> parent;
+      nodeList->GetLength(&len);
+      for (i = 0; i < len; i++) {
+        nodeList->Item(i, getter_AddRefs(node));
+        if (node) {
+          node->GetParentNode(getter_AddRefs(parent));
+          if (parent) parent->RemoveChild(node, getter_AddRefs(nodeReturn));
+        }
+      }
+    }
+  }
   *outParaNode = para;
   return NS_OK;
 }
