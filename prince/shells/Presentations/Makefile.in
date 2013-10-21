@@ -14,8 +14,8 @@ SHELL_RESOURCES := $(wildcard  $(srcdir)/*.sci) \
 
 libs:: $(SHELL_RESOURCES)	
 #	-mkdir $(FINAL_TARGET)/shells
-	-mkdir -p $(FINAL_TARGET)/shells/Other
-	$(INSTALL) $(SHELL_RESOURCES) $(FINAL_TARGET)/shells/Other
+	-mkdir -p $(FINAL_TARGET)/shells/Presentations
+	$(INSTALL) $(SHELL_RESOURCES) $(FINAL_TARGET)/shells/Presentations
 
 
 
