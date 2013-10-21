@@ -11,7 +11,7 @@ DIRS		= Articles Books Theses Other Presentations
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
-SHELL_RESOURCES := $(wildcard	$(srcdir)/*.sci \
+SHELL_RESOURCES := $(wildcard	$(srcdir)/*.sci) \
 	$(NULL)
 
 libs::	$(SHELL_RESOURCES)
