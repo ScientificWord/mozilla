@@ -15,8 +15,8 @@ SHELL_RESOURCES := $(wildcard	$(srcdir)/*.sci) \
 	$(NULL)
 
 libs::	$(SHELL_RESOURCES)
-	-mkdir $(FINAL_TARGET)/shells
-	$(INSTALL) $(SHELL_RESOURCES)	$(FINAL_TARGET)/shells
+	- mkdir $(FINAL_TARGET)/shells
+	- cp $(SHELL_RESOURCES)	$(FINAL_TARGET)/shells
 
 
 
