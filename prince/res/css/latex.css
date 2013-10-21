@@ -33,6 +33,7 @@ caption {
 table {
   margin: 0px 5px;
   border-collapse: collapse;
+  display: inline-table;
 }
 
 table:focus {
