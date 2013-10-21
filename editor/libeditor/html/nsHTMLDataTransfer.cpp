@@ -1760,7 +1760,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     ||strTagName.EqualsLiteral("#document"))
   {
     nsCOMPtr<nsIDOMNode> para;
-    return CreateDefaultParagraph(splitNode, 0, getter_AddRefs(para));
+    return CreateDefaultParagraph(splitNode, 0, PR_TRUE, getter_AddRefs(para));
     // nsCOMPtr<nsIDOMNode> brNode;
     // return InsertBR(address_of(brNode));  // only inserts a br node
   }

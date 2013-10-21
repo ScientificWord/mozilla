@@ -3005,6 +3005,7 @@ function onAcceptNewTable()
     // true means delete selection when inserting
     gActiveEditor.markNodeDirty(gTableElement);
     gActiveEditor.insertElementAtSelection(gTableElement, true);
+    gTableElement.normalize();
 
 //      if (deletePlaceholder && gTableElement && gTableElement.nextSibling)
 //      {
