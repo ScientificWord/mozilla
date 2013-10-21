@@ -1591,7 +1591,7 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
     if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm))
     {
       nsCOMPtr<nsIDOMNode> para;
-      htmlEditor->CreateDefaultParagraph(parent, aPosition, getter_AddRefs(para));
+      htmlEditor->CreateDefaultParagraph(parent, aPosition, PR_FALSE, getter_AddRefs(para));
       if (!para)
       {
         return NS_ERROR_FAILURE;

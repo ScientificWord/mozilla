@@ -646,7 +646,7 @@ interface nsIHTMLEditor : nsISupports
 
   boolean isAnonymousElement(in nsIDOMElement aElement);
 
-  nsIDOMNode createDefaultParagraph(in nsIDOMNode inParent, in long inOffset);
+  nsIDOMNode createDefaultParagraph(in nsIDOMNode inParent, in long inOffset, in boolean markCursor);
 
 
   /**
