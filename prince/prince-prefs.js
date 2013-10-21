@@ -102,7 +102,7 @@ pref("swp.graphics.BGColor", "#FFFFFF");
 pref("swp.graphics.borderColor", "#000000");
 pref("swp.graphicsUseDefaultWidth", false);
 pref("swp.graphicsUseDefaultHeight", false);
-pref("swp.defaultShell", "articles/Standard_LaTeX_Article.sci");
+pref("swp.defaultShell", "Articles/Standard_LaTeX_Article.sci");
 pref("swp.fancyreturn",true);
 pref("swp.generateTeXonsave", true);
 pref("swp.graph.DefaultFileType", "xvc");
