@@ -1350,7 +1350,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
   offsetused = mDomSelections[index]->FetchFocusOffset();
   weakNodeUsed = mDomSelections[index]->FetchFocusNode();
-  DumpSelection(mDomSelections[index]);
+  // DumpSelection(mDomSelections[index]);
   nsIFrame *frame;
   nsIFrame *leavingFrame;
   result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
@@ -1562,7 +1562,9 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
     }
 #endif // VISUALSELECTION
     result = TakeFocus(pos.mResultContent, pos.mContentOffset, pos.mContentOffset, aContinueSelection, PR_FALSE);
-  } else if (aKeycode == nsIDOMKeyEvent::DOM_VK_RIGHT && !aContinueSelection) {
+  } 
+  else 
+    if (aKeycode == nsIDOMKeyEvent::DOM_VK_RIGHT && !aContinueSelection) {
     // Collapse selection if PeekOffset failed, we either
     //  1. bumped into the BRFrame, bug 207623
     //  2. had select-all in a text input (DIV range), bug 352759.

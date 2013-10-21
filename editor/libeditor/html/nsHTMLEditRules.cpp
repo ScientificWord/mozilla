@@ -2049,7 +2049,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         res = CheckForEmptyBlock(startNode, rootNode, aSelection, fEmpty);
         if (*fEmpty) {
           nsCOMPtr<nsIDOMNode> para;
-          res = mHTMLEditor->CreateDefaultParagraph(rootNode, startOffset, getter_AddRefs(para));
+          res = mHTMLEditor->CreateDefaultParagraph(rootNode, startOffset, PR_FALSE, getter_AddRefs(para));
           res = mHTMLEditor->DeleteNode(startNode);
         }
         return NS_OK;
@@ -9627,7 +9627,7 @@ nsHTMLEditRules::AdjustSpecialBreaks(PRBool aSafeToAskFrames)
       res = nsEditor::GetLengthOfDOMNode(theNode, len);
       if (NS_FAILED(res)) return res;
       nsCOMPtr<nsIDOMNode> para;
-      res = mHTMLEditor->CreateDefaultParagraph(theNode, (PRInt32)len, getter_AddRefs(para));
+      res = mHTMLEditor->CreateDefaultParagraph(theNode, (PRInt32)len, PR_FALSE, getter_AddRefs(para));
 //     res = CreateMozBR(para, (PRInt32)0, address_of(brNode));
       if (NS_FAILED(res)) return res;
     }
