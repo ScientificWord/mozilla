@@ -26,10 +26,10 @@ libs::	$(CSS_RESOURCES) $(XBL_RESOURCES) $(CM2_RESOURCES)
 	$(INSTALL)	$(XML_RESOURCES)	$(FINAL_TARGET)/res/xml
 	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments
 # The next line forces creation of the Constants directory if necessary
-	$(INSTALL)  $(srcdir)/fragments/Constants1/About.frg $(FINAL_TARGET)/res/fragments/Constants
-	cp $(srcdir)/fragments/Constants1/*.frg	$(FINAL_TARGET)/res/fragments/Constants
-	cp $(srcdir)/fragments/Constants2/*.frg	$(FINAL_TARGET)/res/fragments/Constants
-	cp $(srcdir)/fragments/Constants3/*.frg	$(FINAL_TARGET)/res/fragments/Constants
+	- mkdir $(FINAL_TARGET)/res/fragments/Constants
+	- cp $(srcdir)/fragments/Constants1/*.frg	$(FINAL_TARGET)/res/fragments/Constants
+	- cp $(srcdir)/fragments/Constants2/*.frg	$(FINAL_TARGET)/res/fragments/Constants
+	- cp $(srcdir)/fragments/Constants3/*.frg	$(FINAL_TARGET)/res/fragments/Constants
 	$(INSTALL)	$(DINGBAT_RESOURCES)	$(FINAL_TARGET)/res/fragments/dingbats
 	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
 	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css
