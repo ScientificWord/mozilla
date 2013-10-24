@@ -1204,7 +1204,7 @@ end_proc:
 tcivariance := proc()
   local A;
 begin
-   if testtype(args(1),Dom::Matrix) then
+ if testtype(args(1),Dom::Matrix) then
     A := tcistatdata( args(1) );
     if linalg::ncols(A) = 1 then
       tcivariance1( A );
@@ -1213,6 +1213,8 @@ begin
     end_if;
   elif testtype(args(1),DOM_LIST) then
     stats::variance( args(1) );
+  elif testtype(args(1),DOM_SET) then
+    stats::variance( coerce(args(1),DOM_LIST) );
   else
     stats::variance( [args()] );
   end_if;
