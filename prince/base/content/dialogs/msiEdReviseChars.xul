@@ -16,7 +16,7 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         onload = "Startup()"
         onfocus = "onFocus()"
-        buttons="accept,cancel,help"
+        buttons="accept,cancel"
         ondialogaccept = "return onAccept();"
         ondialogcancel = "return onClose();"
         screenX="40"

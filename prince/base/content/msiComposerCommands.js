@@ -5491,8 +5491,12 @@ function msiReviseChars(reviseData, dialogData, editorElement)
   }
 
   msiKludgeLogString("In msiComposerCommands.js, msiReviseChars, before checkContents or msiEditorReplaceTextWithText call.\n", ["reviseChars"]);
-  if (bIsText && !bForceMath)
-      msiEditorReplaceTextWithText(editor, refNode, startOffset, endOffset, dialogData.mCompiledText);
+  if (bIsText && !bForceMath) {
+    msiEditorReplaceTextWithText(editor, refNode, startOffset, endOffset, dialogData.mCompiledText);
+    var sel = editor.selection;
+    sel.collapse(refNode, endOffset);
+    //top.document.commandDispatcher.focusedWindow.focus();
+  }
   else
     checkContents(refNode, dialogData.mCompiledBaseChar, theLowerAccent, theUpperAccent);
 
