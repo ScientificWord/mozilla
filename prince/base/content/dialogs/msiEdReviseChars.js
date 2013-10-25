@@ -394,6 +394,8 @@ function Apply()
     if (!theWindow || !("msiReviseChars" in theWindow))
       theWindow = msiGetTopLevelWindow();
     theWindow.msiReviseChars(data.reviseData, data, editorElement);
+    editorElement.focus();
+    //theWindow.document.commandDispatcher.focusedWindow.focus();
   }
     
 //  try {
