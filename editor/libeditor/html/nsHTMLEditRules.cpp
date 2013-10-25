@@ -2051,8 +2051,8 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
           nsCOMPtr<nsIDOMNode> para;
           res = mHTMLEditor->CreateDefaultParagraph(rootNode, startOffset, PR_FALSE, getter_AddRefs(para));
           res = mHTMLEditor->DeleteNode(startNode);
+          return NS_OK;
         }
-        return NS_OK;
       }
     }
     res = CheckForEmptyBlock(startNode, rootNode, aSelection, aHandled);
@@ -6058,7 +6058,10 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
   // if we are inside an empty block, delete it.
   // Note: do NOT delete table elements this way.
   nsresult res = NS_OK;
-  nsCOMPtr<nsIDOMNode> block, emptyBlock;
+  if (aHandled) *aHandled = PR_FALSE;
+    else return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMNode> block;
+  nsCOMPtr<nsIDOMNode> emptyBlock;
   nsCOMPtr<nsIDOMNode> parentNode = aStartNode;
   PRBool bIndivisibleNode = mHTMLEditor->ShouldSelectWholeObject(parentNode);
   PRUint16 nodeType;
