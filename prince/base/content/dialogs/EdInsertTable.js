@@ -873,6 +873,7 @@ function ApplyAttributesToOneCell(destElement, nRow, nCol)
     SetAnAttribute(destElement, "align", gCollatedCellData.align.halign);
   if (gCellChangeData.align.valign)
     SetAnAttribute(destElement, "valign", gCollatedCellData.align.valign);
+  SetAnAttribute(destElement, "_moz_dirty", "");
 
   DoStyleChangesForACell(destElement);
 
