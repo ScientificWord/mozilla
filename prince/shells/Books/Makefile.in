@@ -13,8 +13,7 @@ SHELL_RESOURCES := $(wildcard	$(srcdir)/*.sci) \
 
 
 libs:: $(SHELL_RESOURCES)	
-#	- mkdir $(FINAL_TARGET)/shells
-	- kdir -p $(FINAL_TARGET)/shells/Books
+	- mkdir -p $(FINAL_TARGET)/shells/Books
 	- cp $(SHELL_RESOURCES) $(FINAL_TARGET)/shells/Books
 
 
