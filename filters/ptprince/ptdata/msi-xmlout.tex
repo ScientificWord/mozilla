@@ -412,7 +412,7 @@
 }
 
 \def\cite{%
-  \msihmode
+  \ifvmode\msihmode\fi
   \@ifnextchar[{\@tempswatrue\begingroup\attrib@text\out@citex}{\@tempswafalse\begingroup\attrib@text\out@citey}}
 
 
@@ -422,19 +422,29 @@
 
 
 \def\out@citex[#1]#2{%
-   \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
-                            citekey="}#2\msitag{" 
-                            hasRemark="true">}%
-        \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
-            #1%
-        \msiclosetag{biblabel}{</biblabel>}%
-  \msiclosetag{citation}{</citation>}
+   \ifmmode
+     \msitag{\msipassthru{<citation xmlns="http://www.w3.org/1999/xhtml" citekey="#2"  hasRemark="true">
+                            <biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">#1</biblabel>
+                           </citation>}}%
+   \else
+     \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                              citekey="}#2\msitag{" 
+                              hasRemark="true">}%
+          \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
+              #1%
+          \msiclosetag{biblabel}{</biblabel>}%
+     \msiclosetag{citation}{</citation>}%
+   \fi
   \endgroup}
 
 \def\out@citey#1{%
-  \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
-                                  citekey="}#1\msitag{" hasRemark="false">}%
-  \msiclosetag{citation}{</citation>}
+  \ifmmode
+    \msitag{\msipassthru{<citation xmlns="http://www.w3.org/1999/xhtml citekey="#1" hasRemark="false"></citation>}}%
+  \else
+    \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                                    citekey="}#1\msitag{" hasRemark="false">}%
+    \msiclosetag{citation}{</citation>}%
+  \fi
   \endgroup}
 
 
