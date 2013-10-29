@@ -20,13 +20,13 @@ var timerCallback =
      } 
      if (sentinel.exists())
      {
-       if (passData.passCounter++ < passData.passCount)
+       if (passData.passCounter < passData.passCount)
        {
          setProgressStatement(false);
          sentinel.remove(false);
          if (passData.runBibTeX)
          {
-           theBibTeXProcess.run(false, passData.bibtexArgs, passData.bibtexArgs.length);
+           theBibTeXProcess.run(false, passData.args, passData.args.length);
            passData.runBibTeX = false;
          }
          else if (passData.runMakeIndex)
@@ -36,6 +36,7 @@ var timerCallback =
          }
          else
          {
+           passData.passCounter++;
            theProcess.run(false, passData.args, passData.args.length);
          }
        }
