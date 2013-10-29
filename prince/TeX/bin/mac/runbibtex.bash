@@ -1,32 +1,9 @@
-while [ $# -gt 0 ]
-do
-  case "$1" in
-    "-x")
-	  export MSITEXBIN="$2"
-	  shift
-	  ;;
-    "-s")
-	  export BSTINPUTS="$2\\\\"
-	  shift
-	  ;;
-    "-b")
-	  export BIBINPUTS="$2\\\\"
-	  shift
-	  ;;
-    "-d")
-	  BIBTARGDIR="$2"
-	  shift
-	  ;;
-	*)
-	  BIBTARGFILE="$1"
-	  ;;
-  esac
-  shift
-done
-pushd $BIBTARGDIR
-export PATH=$MSITEXBIN:$PATH
-#echo BIBINPUTS "$BIBINPUTS", BSTINPUTS "$BSTINPUTS", BIBTARGDIR "$BIBTARGDIR", MSITEXBIN "$MSITEXBIN"
-#echo bibtex "$BIBTARGFILE"
-bibtex "$BIBTARGFILE"
+#!/bin/sh
+
+# $1 is the target directory, $2 is the file to compile, $3 is usually "SWP"
+cd $1
+export PATH=$MSITEXBIN
+bibtex main 
 echo done > sentinel
-popd
+exit 0
+
