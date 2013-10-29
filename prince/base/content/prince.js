@@ -482,8 +482,10 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
     isDefaultLocation = true;
 		outTeXdir = workingDir.clone();
     outTeXdir.append("tex");
+    outTeXdir.remove(true);
     if (!outTeXdir.exists()) outTeXdir.create(1, 0755);
     outTeXfile = outTeXdir;
+    // delete current contents of the tex directory
     outTeXfile.append(bareleaf.replace(/\.xhtml$/,"") + ".tex");
   }
   var outfileTeXPath = outTeXfile.path;
@@ -491,8 +493,8 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   var xslPath;
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
-  compileInfo.runMakeIndex = /\\\\makeindex/.test(str);
-  compileInfo.runBibTeX = /\\\\bibliography/.test(str);
+  compileInfo.runMakeIndex = /\\printindex/.test(str);
+  compileInfo.runBibTeX = /\\bibliography/.test(str);
   compileInfo.passCount = 1;
   var runcount = 1;
   if (RegExp("\\\\tableofcontents|\\\\listoffigures|\\\\listoftables|\\\\includemovie").test(str)) runcount = 3;
@@ -763,29 +765,11 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
 
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   outputfile.initWithPath( passData.outputDir );
-  var tempOutputfile;
-  tempOutputfile = outputfile.clone();
   var leaf = "main.pdf";
   outputfile.append(leaf); // outputfile is now main.pdf. If this file exists, it is because Acrobat wouldn't let it go.
-  tempOutputfile.append(compiledFileLeaf+".pdf"); // this is SWP.pdf, to be renamed
-  var n = 0;
-  dump("Leaf is "+leaf+"\n");
-  while (outputfile.exists())
-  {
-    leaf = "main"+(n++)+".pdf";
-    outputfile = outputfile.parent;
-    outputfile.append(leaf);
-  }
-  // now outputfile's leaf is main[n].pdf, and doesn't exist.
-  if (tempOutputfile.exists())
-  {
-    tempOutputfile.moveTo(null, leaf);     // rename SWP.pdf to main[i].pdf
-    compileInfo.finalPDFleaf = leaf;
-    currPDFfileLeaf = leaf;
-    dump("\nFinal output filename: "+tempOutputfile.path+"\n");
-    return true;
-  }
-  else return false;    
+  compileInfo.finalPDFleaf = leaf;
+  currPDFfileLeaf = leaf;
+  return true;
 }
 
 
