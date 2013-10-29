@@ -26,7 +26,8 @@ function Startup()
   gDialog.databaseFileList = [];
   gDialog.databaseFileList = gDialog.databaseFileList.concat(data.dbFileList);
   gDialog.styleFile = data.styleFile;  //a string representation of file path
-  gDialog.bibTeXDir = null; //nsiLocalFile
+  gDialog.bibTeXDirs = []; //nsiLocalFile array
+  gDialog.bibTeXStyleDirs = []; //nsiLocalFile array
 
   InitDialog();
 
@@ -150,21 +151,20 @@ function doAccept()
 //}
 
 
-function getBibTeXDirectory()
+function getBibTeXDirectories()
 {
-  if (gDialog.bibTeXDir == null)
-    gDialog.bibTeXDir = lookUpBibTeXDirectory();
+    gDialog.bibTeXDirs = lookUpBibTeXDirectories();
 
-  return gDialog.bibTeXDir;
+  return gDialog.bibTeXDirs;
 }
 
-function getBibTeXStyleDirectory()
+function getBibTeXStyleDirectories()
 {
-  if (gDialog.bibTeXStyleDir == null)
-    gDialog.bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
+    gDialog.bibTeXStyleDirs = lookUpBibTeXStyleDirectories();
 
-  return gDialog.bibTeXStyleDir;
+  return gDialog.bibTeXStyleDirs;
 }
+
 
 function fillDatabaseFileListbox()
 {
@@ -173,20 +173,26 @@ function fillDatabaseFileListbox()
   var rowCount = gDialog.dbFileListbox.getRowCount();
   for (var i = rowCount - 1; i >= 0; --i)
     gDialog.dbFileListbox.removeItemAt(i);
-
-  var bibDir = getBibTeXDirectory();  //returns an nsiLocalFile
+  
+  var bibDirs= getBibTeXDirectories();  //returns an array of 2 nsILocalFiles
   var sortedDirList;
-  if (bibDir && bibDir.exists())
+  var bibDir;
+  var j;
+  for (j=bibDirs.length - 1; j >= 0; j--)
   {
-    sortedDirList = new Array();
-    addDirToSortedFilesList(sortedDirList, bibDir, ["bib"], true);
-    sortedDirList.sort( sortFileEntries );
-    var newItem = null;
-    for (var i = 0; i < sortedDirList.length; ++i)
+    bibDir = bibDirs[j];
+    if (bibDir && bibDir.exists())
     {
-      newItem = gDialog.dbFileListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
-      if (gDialog.databaseFileList.indexOf(sortedDirList[i].fileName) >= 0)
-        gDialog.dbFileListbox.addItemToSelection(newItem);
+      sortedDirList = new Array();
+      addDirToSortedFilesList(sortedDirList, bibDir, ["bib"], true);
+      sortedDirList.sort( sortFileEntries );
+      var newItem = null;
+      for (var i = 0; i < sortedDirList.length; ++i)
+      {
+        newItem = gDialog.dbFileListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
+        if (gDialog.databaseFileList.indexOf(sortedDirList[i].fileName) >= 0)
+          gDialog.dbFileListbox.addItemToSelection(newItem);
+      }
     }
   }
 }
@@ -196,27 +202,32 @@ function fillStyleFileListbox()
   var theListbox = document.getElementById("styleFileListbox");
   //Clear the listbox
   var rowCount = theListbox.getRowCount();
+  var j;
   for (var i = rowCount - 1; i >= 0; --i)
     theListbox.removeItemAt(i);
 
-  var bibDir = getBibTeXStyleDirectory();  //returns an nsiLocalFile
-  if (bibDir && bibDir.exists())
+  var bibDirs = getBibTeXStyleDirectories();  //returns an nsiLocalFile array
+  for (j=bibDirs.length - 1; j >= 0; j--)
   {
-    sortedDirList = new Array();
-    addDirToSortedFilesList(sortedDirList, bibDir, ["bst"], true);
-    sortedDirList.sort( sortFileEntries );
-    var selItem = null;
-    for (var i = 0; i < sortedDirList.length; ++i)
+    bibDir = bibDirs[j];
+    if (bibDir && bibDir.exists())
     {
-      if (gDialog.styleFile == sortedDirList[i].fileName)
-        selItem = theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
-      else
-        theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
+      sortedDirList = new Array();
+      addDirToSortedFilesList(sortedDirList, bibDir, ["bst"], true);
+      sortedDirList.sort( sortFileEntries );
+      var selItem = null;
+      for (var i = 0; i < sortedDirList.length; ++i)
+      {
+        if (gDialog.styleFile == sortedDirList[i].fileName)
+          selItem = theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
+        else
+          theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
+      }
+      if (selItem != null)
+        theListbox.selectItem(selItem);
+      else if (sortedDirList.length > 0)
+        theListbox.selectedIndex = 0;
     }
-    if (selItem != null)
-      theListbox.selectItem(selItem);
-    else if (sortedDirList.length > 0)
-      theListbox.selectedIndex = 0;
   }
 }
 
