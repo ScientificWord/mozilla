@@ -124,41 +124,48 @@ function sortFileEntries(firstEntry, secondEntry)
 
 function addDirToSortedFilesList(theList, theDir, extensionList, bRecursive)
 {
+  if (!theDir.exists()) return;
   var enumer = theDir.directoryEntries;
-  while (enumer.hasMoreElements())
-  {
-    var theEntry = enumer.getNext();
-    theEntry = theEntry.QueryInterface(Components.interfaces.nsILocalFile);
-    if (theEntry.isDirectory() && bRecursive)
-      addDirToSortedFilesList(theList, theEntry, extensionList, true);
-    else
+  try {
+    while (enumer.hasMoreElements())
     {
-      var fileName  = theEntry.leafName;
-      if (extensionList.length > 0)
-      {
-        var dotIndex  = fileName.lastIndexOf('.');
-        if (dotIndex >= 0 && findInArray(extensionList, fileName.substring(dotIndex+1)) >= 0)
-          fileName = fileName.substring(0, dotIndex);
-        else
-          fileName = "";
+      var theEntry = enumer.getNext();
+      theEntry = theEntry.QueryInterface(Components.interfaces.nsILocalFile);
+      if (theEntry.isDirectory()) {
+        if (bRecursive) addDirToSortedFilesList(theList, theEntry, extensionList, true);
       }
-      if (fileName.length > 0)
+      else
       {
-        var nFoundAt = findItemInFilesList(theList, fileName);
-        if (nFoundAt >= 0)
+        var fileName  = theEntry.leafName;
+        if (extensionList.length > 0)
         {
-          fileName = theEntry.parent.leafName + "/" + fileName;
-          var oldPath = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-          oldPath.initWithPath(theList[nFoundAt].filePath);
-          theList[nFoundAt].fileName = oldPath.parent.leafName + "/" + theList[nFoundAt].fileName;
+          var dotIndex  = fileName.lastIndexOf('.');
+          if (dotIndex >= 0 && findInArray(extensionList, fileName.substring(dotIndex+1)) >= 0)
+            fileName = fileName.substring(0, dotIndex);
+          else
+            fileName = "";
         }
-        var newEntry = new Object();
-        newEntry.fileName = fileName;
-        newEntry.filePath = theEntry.path;
-        theList.push(newEntry);
-//        addItemToSortedFilesList(theList, fileName, theEntry.path);
+        if (fileName.length > 0)
+        {
+          var nFoundAt = findItemInFilesList(theList, fileName);
+          if (nFoundAt >= 0)
+          {
+            fileName = theEntry.parent.leafName + "/" + fileName;
+            var oldPath = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+            oldPath.initWithPath(theList[nFoundAt].filePath);
+            theList[nFoundAt].fileName = oldPath.parent.leafName + "/" + theList[nFoundAt].fileName;
+          }
+          var newEntry = new Object();
+          newEntry.fileName = fileName;
+          newEntry.filePath = theEntry.path;
+          theList.push(newEntry);
+  //        addItemToSortedFilesList(theList, fileName, theEntry.path);
+        }
       }
     }
+  }
+  catch(e) {
+    msidump(e.message);
   }
 }
 
@@ -191,24 +198,86 @@ function addItemToSortedFilesList(theList, theFileEntry)
   theList.push(theFileEntry);
 }
 
-//Returns a nsiLocalFile
-function lookUpBibTeXDirectory()
+
+//function callMeForTesting() {
+//  var env = Components.classes["@mozilla.org/process/environment;1"].
+//            getService(Components.interfaces.nsIEnvironment);
+//  env.set("MSITEX", "/usr/local/texlive/2013/");
+//  env.set("MSIBIBTEX", "/Users/barry/library/texlive/TeXMF-var/");
+//}
+
+
+//Returns an array of two nsIFiles
+function lookUpBibTeXDirectories()
 {
+//  callMeForTesting();
+  var env = Components.classes["@mozilla.org/process/environment;1"].
+            getService(Components.interfaces.nsIEnvironment);
+  var bibDirs = [];
+  var bibDir = Components.classes["@mozilla.org/file/local;1"].
+    createInstance(Components.interfaces.nsILocalFile);
+  var bibDir2 = Components.classes["@mozilla.org/file/local;1"].
+    createInstance(Components.interfaces.nsILocalFile);
+
   var bibPath = null;
-  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
   try
   {
-    bibPath = prefs.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
-    if (!bibPath || !bibPath.exists())
-    {
-      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-      bibPath = dsprops.get("CurProcD", Components.interfaces.nsIFile);
-
+    bibPath = env.get("MSIBIBTEX");
+    if (bibPath) {
+      bibDir.initWithPath(bibPath);
+      bibDir.append("bib");
+      bibDirs.push(bibDir);
     }
-  } 
-  catch(exception) { }
+    bibPath = env.get("MSITEX");
+    if (bibPath) {
+      bibDir2.initWithPath(bibPath);
+      bibDir2.append("texmf-dist");
+      bibDir2.append("bibtex");
+      bibDir2.append("bib");
+      bibDirs.push(bibDir2);
+    }
+  }
+  catch(e) {
 
-  return bibPath;
+  }
+  return bibDirs;
+}
+
+
+//Returns an array of two nsIFiles
+function lookUpBibTeXStyleDirectories()
+{
+//  callMeForTesting();
+  var env = Components.classes["@mozilla.org/process/environment;1"].
+            getService(Components.interfaces.nsIEnvironment);
+  var bibDirs = [];
+  var bibDir = Components.classes["@mozilla.org/file/local;1"].
+    createInstance(Components.interfaces.nsILocalFile);
+  var bibDir2 = Components.classes["@mozilla.org/file/local;1"].
+    createInstance(Components.interfaces.nsILocalFile);
+
+  var bibPath = null;
+  try
+  {
+    bibPath = env.get("MSIBIBTEX");
+    if (bibPath) {
+      bibDir.initWithPath(bibPath);
+      bibDir.append("bst");
+      bibDirs.push(bibDir);
+    }
+    bibPath = env.get("MSITEX");
+    if (bibPath) {
+      bibDir2.initWithPath(bibPath);
+      bibDir2.append("texmf-dist");
+      bibDir2.append("bibtex");
+      bibDir2.append("bst");
+      bibDirs.push(bibDir2);
+    }
+  }
+  catch(e) {
+
+  }
+  return bibDirs;
 }
 
 
