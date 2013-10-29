@@ -9976,6 +9976,14 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       openFontColorDialog(elementName,element);
     }
+    else if (elementName == "bibitem") 
+    {
+      msiGoDoCommand("cmd_reviseManualBibItemCmd");
+    }
+    else if (elementName == "bibtexbibliography")
+    {
+      msiGoDoCommand('cmd_reviseBibTeXBibliographyCmd');
+    }
     else if (elementName == "fontsize")
     {
       openFontSizeDialog(elementName,element);
