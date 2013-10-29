@@ -158,7 +158,7 @@
                   <vbox id="sectiontextareacontainer"  style="overflow: hidden; width:200px; min-height:20px"  >
 		                <iframe id="sectiontextarea" tooltiptext="&EnterSectionText.tooltip;"
 		                  onclick="toggleselection(this);"	
-		                  src="resource://app/shells/StdDialogShell.xhtml"> 
+		                  src="chrome://prince/content/StdDialogShell.xhtml"> 
 		                </iframe> 
 		              </vbox>
                 </deck>                                                                                                                         
