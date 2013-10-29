@@ -200,8 +200,8 @@
 
     <!-- back to template match="html:preamble"-->
     <!-- xsl:call-template name="generateMissingNewTheorems" / -->
-    <xsl:call-template name="writeNewTheoremList" />
-
+<!--     <xsl:call-template name="writeNewTheoremList" />
+ -->
     <!--put this in only if graphicx is used, which, now, it always is-->
     <!-- <xsl:if test="$packagelist//*[@package='graphicx']">
     -->
