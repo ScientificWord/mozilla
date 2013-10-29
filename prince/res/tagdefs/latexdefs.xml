@@ -256,8 +256,9 @@
 				<tag nm="bibliography" hidden="1">
           <level>0</level>
           <description>Bibliography</description>
+          <nexttag>none</nexttag>
+          <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
-					<nexttag>none</nexttag>
 	  		  <inclusion>true</inclusion>
 			    <contains>bibitem</contains>
         </tag>
@@ -314,7 +315,8 @@
           <htmllistparent>bibliography</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <bibitem>
+            <bibitem bibitemkey="key" hasLabel="true">
+              <biblabel class="bibitemlabel">(Label)</biblabel>
               <bodyText>
                 <cursor/>
                 <br/>
