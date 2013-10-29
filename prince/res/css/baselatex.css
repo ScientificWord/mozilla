@@ -458,7 +458,13 @@ bibtexbibliography {
 bibliography {
   list-style-type: none;
   list-style-position: outside;
+
   counter-reset: bibliographylist;
+}
+
+bibliography:before {
+  content: References;
+  font-size: 150%;
 }
 
 bibitem {
@@ -467,6 +473,7 @@ bibitem {
 }
 
 bibitem[hasLabel="true"] {
+  display:  block;
   counter-increment: none;
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
 }
