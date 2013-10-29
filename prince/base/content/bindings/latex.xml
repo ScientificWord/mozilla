@@ -594,7 +594,7 @@
 
 	<xbl:binding id="fmtag-maketoc"> /*front matter label*/
 		<xbl:resources>
-			<xbl:stylesheet src="resource://app/res/css/latex_internal.css"/>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
 		<xbl:content>
 			<html:button type="button" class="msi" nopr="1" oncommand="" >
@@ -1546,7 +1546,7 @@ Make list of figures here
 		</xbl:resources>
 
 		<xbl:content>
-			<html:button type="button" class="frontmatter" oncommand="">
+			<html:button type="button" class="frontmatter" command='cmd_reviseBibTeXBibliographyCmd'>
 				BIBTEX
 			</html:button>
 			<html:span style="display:none">
@@ -1561,7 +1561,7 @@ Make list of figures here
 		</xbl:resources>
 
 		<xbl:content>
-			<html:button type="transparentbutton" class="frontmatter" xbl:inherits="xbl:text=bibitemkey" oncommand=""></html:button>
+			<html:button type="transparentbutton" class="frontmatter" xbl:inherits="xbl:text=bibitemkey" command="cmd_reviseManualBibItemCmd"></html:button>
 			<xbl:children/>
 		</xbl:content>
 	</xbl:binding>
@@ -1572,7 +1572,7 @@ Make list of figures here
 		</xbl:resources>
 
 		<xbl:content>
-			<html:button class="bibitemlabel" anonid="theButton" oncommand="">
+			<html:button class="bibitemlabel" anonid="theButton" command="cmd_reviseManualBibItemCmd">
 				<xbl:children includes="biblabel"/>
 				<html:span style="white-space: pre"> (<html:span xbl:inherits="xbl:text=bibitemkey"/>)</html:span>
 			</html:button>
