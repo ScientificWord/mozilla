@@ -1180,11 +1180,11 @@
 
 
 {\catcode`\$=11\relax
- \gdef\${\char`\${}}
+ \gdef\${\ifmmode\msitag{\$}\else\char`\${}\fi}
  \catcode`\_=11\relax
- \gdef\_{\char`\_{}}
+ \gdef\_{\ifmmode\msitag{\_}\else\char`\_{}\fi}
  \catcode`\%=11\relax
- \gdef\%{\char`\%{}}
+ \gdef\%{\ifmmode\msitag{\%}\else\char`\%{}\fi}
 }
 
 
