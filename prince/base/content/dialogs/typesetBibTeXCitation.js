@@ -190,20 +190,22 @@ function checkDisableControls()
 }
 
 
-function getBibTeXDirectory()
+function getBibTeXDirectories()
 {
 //  if (gDialog.bibTeXDirs == [])
-    gDialog.bibTeXDir = lookUpBibTeXDirectories();
+    gDialog.bibTeXDirs = lookUpBibTeXDirectories();
 
   return gDialog.bibTeXDirs;
 }
 
 function fillDatabaseFileListbox()
 {
+  try {
   var theListbox = document.getElementById("databaseFileListbox");
   //Clear the listbox
   var rowCount = theListbox.getRowCount();
   var i;
+  var j;
   for (var i = rowCount - 1; i >= 0; --i)
     theListbox.removeItemAt(i);
   var bibDir;
@@ -220,17 +222,22 @@ function fillDatabaseFileListbox()
       var ourFileName = gDialog.databaseFile ? gDialog.databaseFile.leafName : "";
       if (ourFileName.length)
         ourFileName = ourFileName.substring(0, ourFileName.lastIndexOf("."));
-      for (var i = 0; i < sortedDirList.length; ++i)
+      for (var j = 0; j < sortedDirList.length; ++j)
       {
-        if (ourFileName == sortedDirList[i].fileName)
-          selItem = theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
+        if (ourFileName == sortedDirList[j].fileName)
+          selItem = theListbox.appendItem(sortedDirList[j].fileName, sortedDirList[j].filePath);
         else
-          theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
+          theListbox.appendItem(sortedDirList[j].fileName, sortedDirList[j].filePath);
       }
       if (selItem != null)
         theListbox.selectItem(selItem);
     }
   }
+}
+catch(e)
+{
+  msidump(e.message);
+}
 }
 
 

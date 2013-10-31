@@ -198,6 +198,39 @@ function addItemToSortedFilesList(theList, theFileEntry)
   theList.push(theFileEntry);
 }
 
+function getEnvObject()
+{
+  try
+  {
+    // var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    // var theFile = dsprops.get("Home", Components.interfaces.nsIFile);
+    // theFile.append(".mackichan");
+    // theFile.append("MSITeX.bash");
+
+    // var path = theFile.path;
+    var myXMLHTTPRequest = new XMLHttpRequest();
+    myXMLHTTPRequest.open("GET", "resource://app/MSITeX.bash", false);
+    myXMLHTTPRequest.send(null);
+    var text = myXMLHTTPRequest.responseText;
+    var lines = text.split("\n");
+    var line;
+    var envitem;
+    var env = {};
+    var i;
+    for (i = 0; i < lines.length; i++)
+    {
+      line = lines[i];
+      envitem = line.split(' ')[1].split("=");
+      env[envitem[0]] = envitem[1];
+    }
+  }
+  catch(e) {
+    msidump(e.message);
+  }
+  return env;
+
+}
+
 
 //function callMeForTesting() {
 //  var env = Components.classes["@mozilla.org/process/environment;1"].
@@ -211,8 +244,7 @@ function addItemToSortedFilesList(theList, theFileEntry)
 function lookUpBibTeXDirectories()
 {
 //  callMeForTesting();
-  var env = Components.classes["@mozilla.org/process/environment;1"].
-            getService(Components.interfaces.nsIEnvironment);
+  var env = getEnvObject();
   var bibDirs = [];
   var bibDir = Components.classes["@mozilla.org/file/local;1"].
     createInstance(Components.interfaces.nsILocalFile);
@@ -222,13 +254,13 @@ function lookUpBibTeXDirectories()
   var bibPath = null;
   try
   {
-    bibPath = env.get("MSIBIBTEX");
+    bibPath = env.MSIBIBTEX;
     if (bibPath) {
       bibDir.initWithPath(bibPath);
       bibDir.append("bib");
       bibDirs.push(bibDir);
     }
-    bibPath = env.get("MSITEX");
+    bibPath = env.MSITEX;
     if (bibPath) {
       bibDir2.initWithPath(bibPath);
       bibDir2.append("texmf-dist");
@@ -248,8 +280,7 @@ function lookUpBibTeXDirectories()
 function lookUpBibTeXStyleDirectories()
 {
 //  callMeForTesting();
-  var env = Components.classes["@mozilla.org/process/environment;1"].
-            getService(Components.interfaces.nsIEnvironment);
+  var env = getEnvObject();
   var bibDirs = [];
   var bibDir = Components.classes["@mozilla.org/file/local;1"].
     createInstance(Components.interfaces.nsILocalFile);
@@ -259,13 +290,13 @@ function lookUpBibTeXStyleDirectories()
   var bibPath = null;
   try
   {
-    bibPath = env.get("MSIBIBTEX");
+    bibPath = env.MSIBIBTEX;
     if (bibPath) {
       bibDir.initWithPath(bibPath);
       bibDir.append("bst");
       bibDirs.push(bibDir);
     }
-    bibPath = env.get("MSITEX");
+    bibPath = env.MSITEX;
     if (bibPath) {
       bibDir2.initWithPath(bibPath);
       bibDir2.append("texmf-dist");
