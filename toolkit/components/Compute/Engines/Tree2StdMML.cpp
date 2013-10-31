@@ -988,9 +988,10 @@ MNODE* Tree2StdMML::BindIntegral(MNODE* dMML_list)
         bool in_row;
         if (NodeIsDifferential(i_rover,in_row)) {
             PermuteDifferential(i_rover);
-            		  if (!in_row)
-            			  i_rover = i_rover->next;
+            if (!in_row)
+            	i_rover = i_rover->next;
             i_end = i_rover;
+            
 
             n_integrals--;
   	        while (i_rover && n_integrals) {
@@ -1002,8 +1003,8 @@ MNODE* Tree2StdMML::BindIntegral(MNODE* dMML_list)
               if (NodeIsDifferential(i_rover,in_row)) {
             	  PermuteDifferential(i_rover);
             	  if (!in_row)
-            		i_rover = i_rover->next;
-                  i_end = i_rover;
+            		  i_rover = i_rover->next;
+                i_end = i_rover;
             	  n_integrals--;
               }
             }
@@ -1015,7 +1016,7 @@ MNODE* Tree2StdMML::BindIntegral(MNODE* dMML_list)
   }
 
   // At this point, we've spanned \int ... dx
-  if (is_delimited) {		// we nest
+  if (is_delimited && i_end) {		// we nest
     MNODE* arg = dMML_list->next;
     MNODE* new_row = MakeMROW(arg, i_end);  // bind integrand
     if (new_row != arg) {
