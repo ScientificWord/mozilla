@@ -5296,13 +5296,13 @@ TNODE* LaTeX2MMLTree::MathHSpacesToMML( TNODE* tex_math_space,
   TCI_BOOL has_hspace =  FALSE;
   U16 TeX_fill  =  0;
 
-  U8 mtext_buffer[256];
+  U8 mtext_buffer[5000];
   mtext_buffer[0] =  0;
 
-  U8 munic_buffer[256];
+  U8 munic_buffer[5000];
   munic_buffer[0] =  0;
 
-  U8 hspace_buffer[128];
+  U8 hspace_buffer[5000];
   hspace_buffer[0]  =  0;
 
   I16 ems_width =  0;
